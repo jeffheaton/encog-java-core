@@ -1,10 +1,11 @@
 /*
-  * Encog Neural Network and Bot Library for Java
+  * Encog Neural Network and Bot Library for Java v0.5
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
-  * Copyright 2008, Heaton Research Inc., and individual contributors as indicated
-  * by the @authors tag. See the copyright.txt in the distribution for a
-  * full listing of individual contributors.
+  * 
+  * Copyright 2008, Heaton Research Inc., and individual contributors.
+  * See the copyright.txt in the distribution for a full listing of 
+  * individual contributors.
   *
   * This is free software; you can redistribute it and/or modify it
   * under the terms of the GNU Lesser General Public License as
@@ -34,9 +35,6 @@ import org.encog.util.BoundNumbers;
  * requires training data to be stored for each of the layers.
  * The Backpropagation class creates a BackpropagationLayer object
  * for each of the layers in the neural network that it is training.
- * 
- * @author Jeff Heaton
- * @version 2.1
  */
 
 public class BackpropagationLayer {

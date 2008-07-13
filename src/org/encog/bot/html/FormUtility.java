@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java
+  * Encog Neural Network and Bot Library for Java v0.5
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -42,9 +42,6 @@ import java.util.*;
  * This class is released under the:
  * GNU Lesser General Public License (LGPL)
  * http://www.gnu.org/copyleft/lesser.html
- * 
- * @author Jeff Heaton
- * @version 1.1
  */
 public class FormUtility
 {

@@ -1,10 +1,11 @@
 /*
-  * Encog Neural Network and Bot Library for Java
+  * Encog Neural Network and Bot Library for Java v0.5
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
-  * Copyright 2008, Heaton Research Inc., and individual contributors as indicated
-  * by the @authors tag. See the copyright.txt in the distribution for a
-  * full listing of individual contributors.
+  * 
+  * Copyright 2008, Heaton Research Inc., and individual contributors.
+  * See the copyright.txt in the distribution for a full listing of 
+  * individual contributors.
   *
   * This is free software; you can redistribute it and/or modify it
   * under the terms of the GNU Lesser General Public License as
@@ -26,23 +27,10 @@ package org.encog.bot.html;
 import java.util.*;
 
 /**
- * The Heaton Research Spider Copyright 2007 by Heaton
- * Research, Inc.
- * 
- * HTTP Programming Recipes for Java ISBN: 0-9773206-6-9
- * http://www.heatonresearch.com/articles/series/16/
- * 
  * HTMLTag: This class holds a single HTML tag. This class
  * subclasses the AttributeList class. This allows the
  * HTMLTag class to hold a collection of attributes, just as
  * an actual HTML tag does.
- * 
- * This class is released under the:
- * GNU Lesser General Public License (LGPL)
- * http://www.gnu.org/copyleft/lesser.html
- * 
- * @author Jeff Heaton
- * @version 1.1
  */
 public class HTMLTag
 {

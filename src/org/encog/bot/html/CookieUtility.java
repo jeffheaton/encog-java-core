@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java
+  * Encog Neural Network and Bot Library for Java v0.5
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -36,9 +36,6 @@ import java.util.StringTokenizer;
  * Set-Cookie headers and loads the cookies into the map.
  * The saveCookies method writes out the cookie map to the a
  * URLConnection object as Cookie headers.
- * 
- * @author $Author$
- * @version $Revision$
  */
 public class CookieUtility
 {
