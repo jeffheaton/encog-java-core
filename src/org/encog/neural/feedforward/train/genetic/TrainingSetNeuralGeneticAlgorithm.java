@@ -73,9 +73,6 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 
 	/**
 	 * Returns the root mean square error for a complet training set.
-	 * 
-	 * @param len
-	 *            The length of a complete training set.
 	 * @return The current error for the neural network.
 	 * @throws NeuralNetworkException
 	 */

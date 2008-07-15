@@ -107,7 +107,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Get the cut length.
-	 * @return
+	 * @return The cut length.
 	 */
 	public int getCutLength() {
 		return this.cutLength;

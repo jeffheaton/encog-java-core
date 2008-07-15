@@ -103,12 +103,12 @@ public class Spider
    * parameter specifies the class that the spider is to
    * report progress to.
    * 
+   * @param options The options to run the spider with.
+   * 
    * @param report
    *          A class that implements the SpiderReportable
    *          interface, that will receive information that
    *          the spider finds.
-   * @param timeout
-   *          How many miliseconds to wait for data.
    * @throws ClassNotFoundException
    *           Thrown if an error occurs while creating the
    *           workload manager.

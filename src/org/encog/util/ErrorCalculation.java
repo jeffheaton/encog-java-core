@@ -36,9 +36,7 @@ public class ErrorCalculation {
 
 	/**
 	 * Returns the root mean square error for a complete training set.
-	 * 
-	 * @param len
-	 *            The length of a complete training set.
+     *
 	 * @return The current error for the neural network.
 	 */
 	public double calculateRMS() {

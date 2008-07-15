@@ -172,9 +172,7 @@ public class Backpropagation implements Train {
 
 	/**
 	 * Returns the root mean square error for a complete training set.
-	 * 
-	 * @param len
-	 *            The length of a complete training set.
+	 *
 	 * @return The current error for the neural network.
 	 */
 	public double getError() {
@@ -199,7 +197,7 @@ public class Backpropagation implements Train {
 			calcError(this.ideal[j]);
 		}
 		learn();
-		
+
 		this.error = this.network.calculateError(this.input, this.ideal);
 	}
 

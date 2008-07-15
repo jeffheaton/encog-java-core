@@ -75,13 +75,7 @@ public class YahooSearch {
 	/**
 	 * Called to extract a list from the specified URL.
 	 * 
-	 * @param url
-	 *            The URL to extract the list from.
-	 * @param listType
-	 *            What type of list, specify its beginning tag (i.e.
-	 *            <UL>)
-	 * @param optionList
-	 *            Which list to search, zero for first.
+	 * @param searchFor What to search for.
 	 * @throws IOException
 	 *             Thrown if an IO exception occurs.
 	 */

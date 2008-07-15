@@ -240,8 +240,8 @@ public class MatrixMath {
 	/**
 	 * Calculate the length of a vector.
 	 * 
-	 * @param v
-	 *            vector
+	 * @param input The matrix to calculate the length of.
+	 *            
 	 * @return Vector length.
 	 */
 	public static double vectorLength(final Matrix input) {

@@ -119,8 +119,8 @@ public class Prune {
 	 *            The training data.
 	 * @param ideal
 	 *            The ideal results for the training data.
-	 * @param minError
-	 *            The minimum error that is acceptable.
+	 * @param maxError
+	 *            The max error that is acceptable.
 	 */
 	public Prune(final double rate, final double momentum,
 			final double train[][], final double ideal[][],

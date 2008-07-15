@@ -44,10 +44,9 @@ public class TrainingSetNeuralChromosome extends
 	/**
 	 * The constructor, takes a list of cities to set the initial "genes" to.
 	 * 
-	 * @param cities
-	 *            The order that this chromosome would visit the cities. These
-	 *            cities can be thought of as the genes of this chromosome.
-	 * @throws NeuralNetworkException
+	 * @param genetic The genetic algorithm used with this chromosome.
+	 * @param network The neural network to train.
+	 * @throws NeuralNetworkException Error setting up the training.
 	 */
 	public TrainingSetNeuralChromosome(
 			final TrainingSetNeuralGeneticAlgorithm genetic,

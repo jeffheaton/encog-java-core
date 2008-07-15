@@ -165,8 +165,10 @@ abstract public class SimulatedAnnealing<UNIT_TYPE> {
 	}
 
 	/**
-	 * @param globalError
-	 *            the globalError to set
+	 * Set the error.
+	 * 
+	 * @param error
+	 *            The globalError to set.
 	 */
 	public void setError(final double error) {
 		this.error = error;

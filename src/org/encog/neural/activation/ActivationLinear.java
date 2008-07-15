@@ -43,7 +43,7 @@ public class ActivationLinear implements ActivationFunction {
 
 	/**
 	 * A threshold function for a neural network.
-	 * @param The input to the function.
+	 * @param d The input to the function.
 	 * @return The output from the function.
 	 */
 	public double activationFunction(final double d) {
@@ -52,7 +52,7 @@ public class ActivationLinear implements ActivationFunction {
 
 	/**
 	 * Some training methods require the derivative.
-	 * @param The input.
+	 * @param d The input.
 	 * @return The output.
 	 */
 	public double derivativeFunction(double d) {

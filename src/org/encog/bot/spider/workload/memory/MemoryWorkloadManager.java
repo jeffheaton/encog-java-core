@@ -105,9 +105,9 @@ public class MemoryWorkloadManager implements WorkloadManager {
   /**
    * Determine if the workload contains the specified URL.
    * 
-   * @param url
-   * @return
-   * @throws WorkloadException
+   * @param url The URL to check.
+   * @return True if the URL is contained by the workload.
+   * @throws WorkloadException An error occured accessing the workload.
    */
   public boolean contains(URL url) {
     return (this.workload.containsKey(url));

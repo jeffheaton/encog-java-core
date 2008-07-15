@@ -158,10 +158,8 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	 *            Returns the first offspring
 	 * @param offspring2
 	 *            Returns the second offspring.
-	 * @return The amount of mutation that was applied.
 	 * @throws NeuralNetworkException
 	 */
-
 	public void mate(final Chromosome<GENE_TYPE, GA_TYPE> father,
 			final Chromosome<GENE_TYPE, GA_TYPE> offspring1,
 			final Chromosome<GENE_TYPE, GA_TYPE> offspring2)
