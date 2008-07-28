@@ -31,7 +31,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.matrix.MatrixCODEC;
+import org.encog.neural.Network;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.ErrorCalculation;
 
 
@@ -46,7 +49,7 @@ import org.encog.util.ErrorCalculation;
  * is the output layer.  Any layers added between these two layers
  * are the hidden layers.
  */
-public class FeedforwardNetwork implements Serializable {
+public class FeedforwardNetwork implements Serializable, Network {
 	/**
 	 * Serial id for this class.
 	 */
@@ -109,14 +112,14 @@ public class FeedforwardNetwork implements Serializable {
 	 * @throws NeuralNetworkException
 	 *             An error happened trying to determine the error.
 	 */
-	public double calculateError(final double input[][], final double ideal[][])
+	public double calculateError(final NeuralDataSet data)
 			throws NeuralNetworkError {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
-		for (int i = 0; i < ideal.length; i++) {
-			computeOutputs(input[i]);
+		for (int i = 0; i < data.size(); i++) {
+			computeOutputs(data.getInput(i));
 			errorCalculation.updateError(this.outputLayer.getFire(), 
-					ideal[i]);
+					data.getIdeal(i));
 		}
 		return (errorCalculation.calculateRMS());
 	}
@@ -175,12 +178,12 @@ public class FeedforwardNetwork implements Serializable {
 	 * @throws MatrixException A matrix error occurred.
 	 * @throws NeuralNetworkException A neural network error occurred.
 	 */
-	public double[] computeOutputs(final double input[]) {
+	public NeuralData computeOutputs(final NeuralData input) {
 
-		if (input.length != this.inputLayer.getNeuronCount()) {
+		if (input.size() != this.inputLayer.getNeuronCount()) {
 			throw new NeuralNetworkError(
 					"Size mismatch: Can't compute outputs for input size="
-							+ input.length + " for input layer size="
+							+ input.size() + " for input layer size="
 							+ this.inputLayer.getNeuronCount());
 		}
 

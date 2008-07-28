@@ -3,6 +3,8 @@ package org.encog.neural.feedforward.train;
 import java.util.Iterator;
 
 import org.encog.neural.XOR;
+import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.feedforward.FeedforwardLayer;
 import org.encog.neural.feedforward.FeedforwardNetwork;
 import org.encog.neural.feedforward.train.backpropagation.Backpropagation;
@@ -22,8 +24,10 @@ public class TestBackpropagation extends TestCase {
 	
 	public void testBackpropagation() throws Throwable
 	{
+		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		
 		FeedforwardNetwork network = createNetwork();
-		Train train = new Backpropagation(network, XOR.XOR_INPUT, XOR.XOR_IDEAL, 0.7, 0.9); 	
+		Train train = new Backpropagation(network, trainingData, 0.7, 0.9); 	
 
 		for (int i = 0; i < 5000; i++) 
 		{
@@ -66,37 +70,4 @@ public class TestBackpropagation extends TestCase {
 		TestCase.assertEquals(3,hidden.getMatrixSize());
 		TestCase.assertEquals(6, network.getInputLayer().getMatrixSize());
 	}
-	
-	/*
-	public void testGenetic() throws Throwable
-	{
-		Network network = createNetwork();
-		Train train = new NeuralNetworkGeneticAlgorithm(network, true, XOR.XOR_INPUT, XOR.XOR_IDEAL,5000,0.1,0.25,0.5);	
-
-		for (int i = 0; i < 100; i++) 
-		{
-			train.iteration();
-			network = train.getNetwork();
-		}
-		
-		TestCase.assertTrue("Error too high for genetic algorithm",train.getError()<0.1);
-		TestCase.assertTrue("XOR outputs not correct",XOR.verifyXOR(network, 0.1));
-
-	}
-	
-	public void testAnneal() throws Throwable
-	{
-		Network network = createNetwork();
-		Train train = new NeuralSimulatedAnnealing(network,XOR.XOR_INPUT, XOR.XOR_IDEAL,10,2,100);	
-
-		for (int i = 0; i < 100; i++) 
-		{
-			train.iteration();
-			network = train.getNetwork();
-		}
-		
-		TestCase.assertTrue("Error too high for simulated annealing",train.getError()<0.1);
-		TestCase.assertTrue("XOR outputs not correct",XOR.verifyXOR(network, 0.1));
-
-	}*/
 }

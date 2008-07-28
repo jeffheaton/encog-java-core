@@ -64,10 +64,7 @@ public class TrainingSetNeuralChromosome extends
 		this.updateNetwork();
 
 		// update the cost with the new genes
-		final double input[][] = this.getGeneticAlgorithm().getInput();
-		final double ideal[][] = this.getGeneticAlgorithm().getIdeal();
-
-		setCost(getNetwork().calculateError(input, ideal));
+		setCost(getNetwork().calculateError(this.getGeneticAlgorithm().getTraining()));
 
 	}
 

@@ -24,6 +24,8 @@
   */
 package org.encog.util;
 
+import org.encog.neural.data.NeuralData;
+
 
 /**
  * ErrorCalculation: An implementation of root mean square (RMS)
@@ -64,6 +66,11 @@ public class ErrorCalculation {
 			this.globalError += delta * delta;
 			this.setSize += ideal.length;
 		}
+	}
+	
+	public void updateError(final NeuralData actual, final NeuralData ideal)
+	{
+		updateError(actual.getData(),ideal.getData());
 	}
 
 }

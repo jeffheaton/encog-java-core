@@ -27,6 +27,7 @@ package org.encog.neural.hopfield;
 import org.encog.matrix.BiPolarUtil;
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
+import org.encog.neural.Network;
 import org.encog.neural.NeuralNetworkError;
 
 
@@ -37,7 +38,7 @@ import org.encog.neural.NeuralNetworkError;
  * single layer.  Hopfield neural networks are usually used for 
  * pattern recognition.    
  */
-public class HopfieldNetwork {
+public class HopfieldNetwork implements Network {
 
 	/**
 	 * The weight matrix for this neural network. A Hopfield neural network is a

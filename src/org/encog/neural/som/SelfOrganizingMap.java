@@ -28,6 +28,7 @@ import java.io.Serializable;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
+import org.encog.neural.Network;
 import org.encog.neural.som.NormalizeInput.NormalizationType;
 
 
@@ -36,7 +37,7 @@ import org.encog.neural.som.NormalizeInput.NormalizationType;
  * special type of neural network that is used to classify input into groups.
  * The SOM makes use of unsupervised training.
  */
-public class SelfOrganizingMap implements Serializable {
+public class SelfOrganizingMap implements Serializable, Network {
 
 	/**
 	 * The serial id for this class.

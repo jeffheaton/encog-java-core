@@ -26,6 +26,7 @@ package org.encog.neural.feedforward.train.backpropagation;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
+import org.encog.neural.data.NeuralData;
 import org.encog.neural.feedforward.FeedforwardLayer;
 import org.encog.util.BoundNumbers;
 
@@ -144,11 +145,11 @@ public class BackpropagationLayer {
 	 * Calculate the error for the given ideal values.
 	 * @param ideal Ideal output values.
 	 */
-	public void calcError(final double ideal[]) {
+	public void calcError(final NeuralData ideal) {
 
 		// layer errors and deltas for output layer
 		for (int i = 0; i < this.layer.getNeuronCount(); i++) {
-			setError(i, ideal[i] - this.layer.getFire(i));
+			setError(i, ideal.getData(i) - this.layer.getFire(i));
 			setErrorDelta(i, BoundNumbers.bound(calculateDelta(i)));
 		}
 	}

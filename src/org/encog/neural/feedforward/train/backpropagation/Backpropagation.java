@@ -28,6 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.feedforward.FeedforwardLayer;
 import org.encog.neural.feedforward.FeedforwardNetwork;
 import org.encog.neural.feedforward.train.Train;
@@ -84,15 +86,7 @@ public class Backpropagation implements Train {
 	 */
 	private final Map<FeedforwardLayer, BackpropagationLayer> layerMap = new HashMap<FeedforwardLayer, BackpropagationLayer>();
 
-	/**
-	 * Input patterns to train with.
-	 */
-	private final double input[][];
-
-	/**
-	 * The ideal output for each of the input patterns.
-	 */
-	private final double ideal[][];
+	private NeuralDataSet training;
 
 	/**
 	 * 
@@ -107,13 +101,12 @@ public class Backpropagation implements Train {
 	 *            have on the current iteration.
 	 */
 	public Backpropagation(final FeedforwardNetwork network,
-			final double input[][], final double ideal[][],
+			final NeuralDataSet training,
 			final double learnRate, final double momentum) {
 		this.network = network;
 		this.learnRate = learnRate;
 		this.momentum = momentum;
-		this.input = input;
-		this.ideal = ideal;
+		this.training = training;
 
 		for (final FeedforwardLayer layer : network.getLayers()) {
 			final BackpropagationLayer bpl = new BackpropagationLayer(this,
@@ -128,12 +121,12 @@ public class Backpropagation implements Train {
 	 * @param ideal
 	 *            What the output neurons should have yielded.
 	 */
-	public void calcError(final double ideal[]) {
+	public void calcError(final NeuralData ideal) {
 
-		if (ideal.length != this.network.getOutputLayer().getNeuronCount()) {
+		if (ideal.size() != this.network.getOutputLayer().getNeuronCount()) {
 			throw new NeuralNetworkError(
 					"Size mismatch: Can't calcError for ideal input size="
-							+ ideal.length + " for output layer size="
+							+ ideal.size() + " for output layer size="
 							+ this.network.getOutputLayer().getNeuronCount());
 		}
 
@@ -192,13 +185,13 @@ public class Backpropagation implements Train {
 	 */
 	public void iteration() {
 
-		for (int j = 0; j < this.input.length; j++) {
-			this.network.computeOutputs(this.input[j]);
-			calcError(this.ideal[j]);
+		for (int j = 0; j < this.training.size(); j++) {
+			this.network.computeOutputs(this.training.getInput(j));
+			calcError(this.training.getIdeal(j));
 		}
 		learn();
 
-		this.error = this.network.calculateError(this.input, this.ideal);
+		this.error = this.network.calculateError(this.training);
 	}
 
 	/**

@@ -31,6 +31,8 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 
 
 /**
@@ -54,7 +56,7 @@ public class FeedforwardLayer implements Serializable {
 	 * Results from the last time that the outputs were calculated for this
 	 * layer.
 	 */
-	private double fire[];
+	private NeuralData fire;
 
 	/**
 	 * The weight and threshold matrix.
@@ -83,7 +85,7 @@ public class FeedforwardLayer implements Serializable {
 	 */
 	public FeedforwardLayer(final ActivationFunction thresholdFunction,
 			final int neuronCount) {
-		this.fire = new double[neuronCount];
+		this.fire = new BasicNeuralData(neuronCount);
 		this.activationFunction = thresholdFunction;
 	}
 
@@ -110,11 +112,11 @@ public class FeedforwardLayer implements Serializable {
 	 * @param pattern The input pattern.
 	 * @return The output from this layer.
 	 */
-	public double[] computeOutputs(final double pattern[]) {
+	public NeuralData computeOutputs(final NeuralData pattern) {
 		int i;
 		if (pattern != null) {
 			for (i = 0; i < getNeuronCount(); i++) {
-				setFire(i, pattern[i]);
+				setFire(i, pattern.getData(i));
 			}
 		}
 
@@ -138,15 +140,15 @@ public class FeedforwardLayer implements Serializable {
 	 * @param pattern
 	 * @return A matrix that represents the input pattern.
 	 */
-	private Matrix createInputMatrix(final double pattern[]) {
-		final Matrix result = new Matrix(1, pattern.length + 1);
-		for (int i = 0; i < pattern.length; i++) {
-			result.set(0, i, pattern[i]);
+	private Matrix createInputMatrix(final NeuralData pattern) {
+		final Matrix result = new Matrix(1, pattern.size() + 1);
+		for (int i = 0; i < pattern.size(); i++) {
+			result.set(0, i, pattern.getData(i));
 		}
 
 		// add a "fake" first column to the input so that the threshold is
 		// always multiplied by one, resulting in it just being added.
-		result.set(0, pattern.length, 1);
+		result.set(0, pattern.size(), 1);
 
 		return result;
 	}
@@ -157,7 +159,7 @@ public class FeedforwardLayer implements Serializable {
 	 * 
 	 * @return The output array.
 	 */
-	public double[] getFire() {
+	public NeuralData getFire() {
 		return this.fire;
 	}
 
@@ -167,7 +169,7 @@ public class FeedforwardLayer implements Serializable {
 	 * @return The output from the specified neuron.
 	 */
 	public double getFire(final int index) {
-		return this.fire[index];
+		return this.fire.getData(index);
 	}
 
 	/**
@@ -195,7 +197,7 @@ public class FeedforwardLayer implements Serializable {
 	 * @return the neuronCount
 	 */
 	public int getNeuronCount() {
-		return this.fire.length;
+		return this.fire.size();
 	}
 
 	/**
@@ -287,7 +289,7 @@ public class FeedforwardLayer implements Serializable {
 	 * @param f The fire value for the specified neuron.
 	 */
 	public void setFire(final int index, final double f) {
-		this.fire[index] = f;
+		this.fire.setData(index, f);
 	}
 
 	/**
@@ -300,7 +302,7 @@ public class FeedforwardLayer implements Serializable {
 					"Weight matrix includes threshold values, and must have at least 2 rows.");
 		}
 		if (matrix != null) {
-			this.fire = new double[matrix.getRows() - 1];
+			this.fire = new BasicNeuralData(matrix.getRows() - 1);
 		}
 		this.matrix = matrix;
 

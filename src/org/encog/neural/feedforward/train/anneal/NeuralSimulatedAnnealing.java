@@ -27,6 +27,7 @@ package org.encog.neural.feedforward.train.anneal;
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.anneal.SimulatedAnnealing;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.feedforward.FeedforwardNetwork;
 
 
@@ -47,12 +48,7 @@ public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> {
 	/**
 	 * The training data.
 	 */
-	protected double input[][];
-
-	/**
-	 * The ideal results to the training data.
-	 */
-	protected double ideal[][];
+	protected NeuralDataSet training;
 
 
 	/**
@@ -72,11 +68,10 @@ public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> {
 	 *            The number of cycles in a training iteration.
 	 */
 	public NeuralSimulatedAnnealing(final FeedforwardNetwork network,
-			final double input[][], final double ideal[][],
+			final NeuralDataSet training,
 			final double startTemp, final double stopTemp, final int cycles) {
 		this.network = network;
-		this.input = input;
-		this.ideal = ideal;
+		this.training = training;
 		this.temperature = startTemp;
 		setStartTemperature(startTemp);
 		setStopTemperature(stopTemp);
@@ -90,7 +85,7 @@ public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> {
 	 */
 	@Override
 	public double determineError() throws NeuralNetworkError {
-		return this.network.calculateError(this.input, this.ideal);
+		return this.network.calculateError(this.training);
 	}
 
 	/**

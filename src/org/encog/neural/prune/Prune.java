@@ -26,6 +26,7 @@ package org.encog.neural.prune;
 
 import java.util.Collection;
 
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.feedforward.FeedforwardLayer;
 import org.encog.neural.feedforward.FeedforwardNetwork;
 import org.encog.neural.feedforward.train.backpropagation.Backpropagation;
@@ -55,12 +56,7 @@ public class Prune {
 	/**
 	 * The training set.
 	 */
-	protected double train[][];
-
-	/**
-	 * The ideal results from the training set.
-	 */
-	protected double ideal[][];
+	protected NeuralDataSet training;
 
 	/**
 	 * The desired learning rate.
@@ -123,12 +119,11 @@ public class Prune {
 	 *            The max error that is acceptable.
 	 */
 	public Prune(final double rate, final double momentum,
-			final double train[][], final double ideal[][],
+			final NeuralDataSet training,
 			final double maxError) {
 		this.rate = rate;
 		this.momentum = momentum;
-		this.train = train;
-		this.ideal = ideal;
+		this.training = training;
 		this.maxError = maxError;
 	}
 
@@ -140,11 +135,9 @@ public class Prune {
 	 * @param train
 	 * @param ideal
 	 */
-	public Prune(final FeedforwardNetwork network, final double train[][],
-			final double ideal[][],final double maxError) {
+	public Prune(final FeedforwardNetwork network, final NeuralDataSet training,final double maxError) {
 		this.currentNetwork = network;
-		this.train = train;
-		this.ideal = ideal;
+		this.training = training;
 		this.maxError = maxError;
 	}
 
@@ -172,7 +165,7 @@ public class Prune {
 	 * @return The error for the specified neural network.
 	 */
 	protected double determineError(final FeedforwardNetwork network) {
-		return network.calculateError(this.train, this.ideal);
+		return network.calculateError(this.training);
 
 	}
 
@@ -281,15 +274,15 @@ public class Prune {
 
 			this.currentNetwork = new FeedforwardNetwork();
 			this.currentNetwork.addLayer(new FeedforwardLayer(
-					this.train[0].length));
+					this.training.getInput(0).size()));
 			this.currentNetwork.addLayer(new FeedforwardLayer(
 					this.hiddenNeuronCount));
 			this.currentNetwork.addLayer(new FeedforwardLayer(
-					this.ideal[0].length));
+					this.training.getIdeal(0).size()));
 			this.currentNetwork.reset();
 
 			this.backprop = new Backpropagation(this.currentNetwork,
-					this.train, this.ideal, this.rate, this.momentum);
+					this.training, this.rate, this.momentum);
 		}
 	}
 
@@ -331,15 +324,14 @@ public class Prune {
 
 		this.currentNetwork = new FeedforwardNetwork();
 		this.currentNetwork
-				.addLayer(new FeedforwardLayer(this.train[0].length));
+				.addLayer(new FeedforwardLayer(this.training.getInput(0).size()));
 		this.currentNetwork.addLayer(new FeedforwardLayer(
 				this.hiddenNeuronCount));
 		this.currentNetwork
-				.addLayer(new FeedforwardLayer(this.ideal[0].length));
+				.addLayer(new FeedforwardLayer(this.training.getIdeal(0).size()));
 		this.currentNetwork.reset();
 
-		this.backprop = new Backpropagation(this.currentNetwork, this.train,
-				this.ideal, this.rate, this.momentum);
+		this.backprop = new Backpropagation(this.currentNetwork, this.training, this.rate, this.momentum);
 
 	}
 

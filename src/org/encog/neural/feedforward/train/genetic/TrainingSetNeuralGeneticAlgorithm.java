@@ -25,6 +25,8 @@
 package org.encog.neural.feedforward.train.genetic;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.feedforward.FeedforwardNetwork;
 
 
@@ -38,12 +40,10 @@ import org.encog.neural.feedforward.FeedforwardNetwork;
 public class TrainingSetNeuralGeneticAlgorithm extends
 		NeuralGeneticAlgorithm<TrainingSetNeuralGeneticAlgorithm> {
 
-	protected double input[][];
-	protected double ideal[][];
+	protected NeuralDataSet training;
 
 	public TrainingSetNeuralGeneticAlgorithm(final FeedforwardNetwork network,
-			final boolean reset, final double input[][],
-			final double ideal[][], final int populationSize,
+			final boolean reset, final NeuralDataSet training, final int populationSize,
 			final double mutationPercent, final double percentToMate)
 			throws NeuralNetworkError {
 
@@ -52,8 +52,7 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 		this.setPopulationSize(populationSize);
 		this.setPercentToMate(percentToMate);
 
-		this.input = input;
-		this.ideal = ideal;
+		this.training = training;
 
 		setChromosomes(new TrainingSetNeuralChromosome[getPopulationSize()]);
 		for (int i = 0; i < getChromosomes().length; i++) {
@@ -78,21 +77,14 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 	 */
 	public double getError() throws NeuralNetworkError {
 		final FeedforwardNetwork network = this.getNetwork();
-		return network.calculateError(this.input, this.ideal);
+		return network.calculateError(this.training);
 	}
 
 	/**
-	 * @return the ideal
+	 * @return the training data
 	 */
-	public double[][] getIdeal() {
-		return this.ideal;
-	}
-
-	/**
-	 * @return the input
-	 */
-	public double[][] getInput() {
-		return this.input;
+	public NeuralDataSet getTraining() {
+		return this.training;
 	}
 
 }

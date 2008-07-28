@@ -1,5 +1,7 @@
 package org.encog.neural;
 
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.feedforward.FeedforwardLayer;
 import org.encog.neural.feedforward.FeedforwardNetwork;
 
@@ -15,11 +17,11 @@ public class XOR {
 		{
 			for(int trainingSet=0;trainingSet<XOR.XOR_IDEAL.length;trainingSet++)
 			{
-				double actual[] = network.computeOutputs(XOR.XOR_INPUT[trainingSet]);
+				NeuralData actual = network.computeOutputs(new BasicNeuralData(XOR.XOR_INPUT[trainingSet]));
 				
 				for(int i=0;i<XOR.XOR_IDEAL[0].length;i++)
 				{
-					double diff = Math.abs(actual[i]-XOR.XOR_IDEAL[trainingSet][i]);
+					double diff = Math.abs(actual.getData(i)-XOR.XOR_IDEAL[trainingSet][i]);
 					if( diff>tolerance )
 						return false;
 				}
