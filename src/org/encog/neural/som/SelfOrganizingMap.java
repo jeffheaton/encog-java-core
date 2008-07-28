@@ -29,6 +29,8 @@ import java.io.Serializable;
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.Network;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.som.NormalizeInput.NormalizationType;
 
 
@@ -152,7 +154,7 @@ public class SelfOrganizingMap implements Serializable, Network {
 	 *            The input patter to present to the neural network.
 	 * @return The winning neuron.
 	 */
-	public int winner(final double input[]) {
+	public int winner(final NeuralData input) {
 		final NormalizeInput normalizedInput = new NormalizeInput(input,
 				this.normalizationType);
 		return winner(normalizedInput);
@@ -191,6 +193,34 @@ public class SelfOrganizingMap implements Serializable, Network {
 		}
 
 		return win;
+	}
+
+	@Override
+	public NeuralData compute(NeuralData pattern) {
+		final NormalizeInput input = new NormalizeInput(pattern,
+				this.normalizationType);
+		
+		NeuralData output = new BasicNeuralData(this.outputNeuronCount);
+		
+		for (int i = 0; i < this.outputNeuronCount; i++) {
+			final Matrix optr = this.outputWeights.getRow(i);
+			this.output[i] = MatrixMath
+					.dotProduct(input.getInputMatrix(), optr)
+					* input.getNormfac();
+			
+			double d = (this.output[i]+1.0)/2.0;
+			
+			if( d <0 ) {
+				output.setData(i, 0.0);
+			}
+			
+			if( d>1 ) {
+				output.setData(i, 1.0);
+			}
+		}
+		
+		
+		return output;
 	}
 
 }

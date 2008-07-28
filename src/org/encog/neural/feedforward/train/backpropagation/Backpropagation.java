@@ -186,7 +186,7 @@ public class Backpropagation implements Train {
 	public void iteration() {
 
 		for (int j = 0; j < this.training.size(); j++) {
-			this.network.computeOutputs(this.training.getInput(j));
+			this.network.compute(this.training.getInput(j));
 			calcError(this.training.getIdeal(j));
 		}
 		learn();

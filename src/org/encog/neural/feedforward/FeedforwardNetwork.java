@@ -117,7 +117,7 @@ public class FeedforwardNetwork implements Serializable, Network {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		for (int i = 0; i < data.size(); i++) {
-			computeOutputs(data.getInput(i));
+			compute(data.getInput(i));
 			errorCalculation.updateError(this.outputLayer.getFire(), 
 					data.getIdeal(i));
 		}
@@ -178,7 +178,7 @@ public class FeedforwardNetwork implements Serializable, Network {
 	 * @throws MatrixException A matrix error occurred.
 	 * @throws NeuralNetworkException A neural network error occurred.
 	 */
-	public NeuralData computeOutputs(final NeuralData input) {
+	public NeuralData compute(final NeuralData input) {
 
 		if (input.size() != this.inputLayer.getNeuronCount()) {
 			throw new NeuralNetworkError(

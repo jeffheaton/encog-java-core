@@ -26,6 +26,7 @@ package org.encog.neural.som;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
+import org.encog.neural.data.NeuralData;
 
 
 /**
@@ -74,7 +75,7 @@ public class NormalizeInput {
 	 * @param type
 	 *            What type of normalization to use.
 	 */
-	public NormalizeInput(final double input[], final NormalizationType type) {
+	public NormalizeInput(final NeuralData input, final NormalizationType type) {
 		this.type = type;
 		calculateFactors(input);
 		this.inputMatrix = this.createInputMatrix(input, this.synth);
@@ -90,14 +91,14 @@ public class NormalizeInput {
 	 *            The synthetic input.
 	 * @return A matrix that contains the input pattern and the synthetic input.
 	 */
-	protected Matrix createInputMatrix(final double pattern[],
+	protected Matrix createInputMatrix(final NeuralData pattern,
 			final double extra) {
-		final Matrix result = new Matrix(1, pattern.length + 1);
-		for (int i = 0; i < pattern.length; i++) {
-			result.set(0, i, pattern[i]);
+		final Matrix result = new Matrix(1, pattern.size() + 1);
+		for (int i = 0; i < pattern.size(); i++) {
+			result.set(0, i, pattern.getData(i));
 		}
 
-		result.set(0, pattern.length, extra);
+		result.set(0, pattern.size(), extra);
 
 		return result;
 	}
@@ -133,12 +134,12 @@ public class NormalizeInput {
 	 * @param input
 	 *            The input to normalize.
 	 */
-	protected void calculateFactors(final double input[]) {
+	protected void calculateFactors(final NeuralData input) {
 
-		final Matrix inputMatrix = Matrix.createColumnMatrix(input);
+		final Matrix inputMatrix = Matrix.createColumnMatrix(input.getData());
 		double len = MatrixMath.vectorLength(inputMatrix);
 		len = Math.max(len, SelfOrganizingMap.VERYSMALL);
-		final int numInputs = input.length;
+		final int numInputs = input.size();
 
 		if (this.type == NormalizationType.MULTIPLICATIVE) {
 			this.normfac = 1.0 / len;

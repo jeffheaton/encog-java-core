@@ -29,6 +29,8 @@ import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.Network;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.bipolar.BiPolarNeuralData;
 
 
 
@@ -81,17 +83,16 @@ public class HopfieldNetwork implements Network {
 	 * @throws HopfieldException
 	 *             The pattern caused a matrix math error.
 	 */
-	public boolean[] present(final boolean[] pattern) {
+	public NeuralData compute(final NeuralData pattern) {
 
-		final boolean output[] = new boolean[pattern.length];
+		final BiPolarNeuralData output = new BiPolarNeuralData(pattern.size());
 
 		// convert the input pattern into a matrix with a single row.
 		// also convert the boolean values to bipolar(-1=false, 1=true)
-		final Matrix inputMatrix = Matrix.createRowMatrix(BiPolarUtil
-				.bipolar2double(pattern));
+		final Matrix inputMatrix = Matrix.createRowMatrix(pattern.getData());
 
 		// Process each value in the pattern
-		for (int col = 0; col < pattern.length; col++) {
+		for (int col = 0; col < pattern.size(); col++) {
 			Matrix columnMatrix = this.weightMatrix.getCol(col);
 			columnMatrix = MatrixMath.transpose(columnMatrix);
 
@@ -102,9 +103,9 @@ public class HopfieldNetwork implements Network {
 
 			// Convert the dot product to either true or false.
 			if (dotProduct > 0) {
-				output[col] = true;
+				output.setData(col,true);
 			} else {
-				output[col] = false;
+				output.setData(col,false);
 			}
 		}
 
@@ -121,16 +122,15 @@ public class HopfieldNetwork implements Network {
 	 * @throws HopfieldException
 	 *             The pattern size must match the size of this neural network.
 	 */
-	public void train(final boolean[] pattern) {
-		if (pattern.length != this.weightMatrix.getRows()) {
+	public void train(final NeuralData pattern) {
+		if (pattern.size() != this.weightMatrix.getRows()) {
 			throw new NeuralNetworkError("Can't train a pattern of size "
-					+ pattern.length + " on a hopfield network of size "
+					+ pattern.size() + " on a hopfield network of size "
 					+ this.weightMatrix.getRows());
 		}
 
 		// Create a row matrix from the input, convert boolean to bipolar
-		final Matrix m2 = Matrix.createRowMatrix(BiPolarUtil
-				.bipolar2double(pattern));
+		final Matrix m2 = Matrix.createRowMatrix(pattern.getData());
 		// Transpose the matrix and multiply by the original input matrix
 		final Matrix m1 = MatrixMath.transpose(m2);
 		final Matrix m3 = MatrixMath.multiply(m1, m2);

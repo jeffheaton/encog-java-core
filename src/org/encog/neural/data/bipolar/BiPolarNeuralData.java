@@ -11,6 +11,12 @@ public class BiPolarNeuralData implements NeuralData {
 		data = new boolean[size];
 	}
 	
+	public BiPolarNeuralData(boolean[] d)
+	{
+		data = new boolean[d.length];
+		System.arraycopy(d, 0, data, 0, d.length);
+	}
+	
 	@Override
 	public double[] getData() {
 		return BiPolarUtil.bipolar2double(data);
@@ -35,6 +41,16 @@ public class BiPolarNeuralData implements NeuralData {
 	@Override
 	public int size() {
 		return this.data.length;
+	}
+	
+	
+	public void setData(int index,boolean value)
+	{
+		data[index] = value;
+	}
+
+	public boolean getBoolean(int i) {
+		return data[i];
 	}
 
 }

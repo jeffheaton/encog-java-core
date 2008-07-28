@@ -17,7 +17,7 @@ public class XOR {
 		{
 			for(int trainingSet=0;trainingSet<XOR.XOR_IDEAL.length;trainingSet++)
 			{
-				NeuralData actual = network.computeOutputs(new BasicNeuralData(XOR.XOR_INPUT[trainingSet]));
+				NeuralData actual = network.compute(new BasicNeuralData(XOR.XOR_INPUT[trainingSet]));
 				
 				for(int i=0;i<XOR.XOR_IDEAL[0].length;i++)
 				{
