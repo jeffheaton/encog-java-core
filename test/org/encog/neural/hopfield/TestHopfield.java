@@ -3,6 +3,7 @@ package org.encog.neural.hopfield;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
+import org.encog.neural.networks.hopfield.HopfieldNetwork;
 
 import junit.framework.TestCase;
 
