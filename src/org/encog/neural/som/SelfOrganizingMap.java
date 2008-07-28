@@ -28,9 +28,9 @@ import java.io.Serializable;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
-import org.encog.neural.Network;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.Network;
 import org.encog.neural.som.NormalizeInput.NormalizationType;
 
 

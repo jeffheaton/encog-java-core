@@ -27,10 +27,10 @@ package org.encog.neural.hopfield;
 import org.encog.matrix.BiPolarUtil;
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
-import org.encog.neural.Network;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
+import org.encog.neural.networks.Network;
 
 
 

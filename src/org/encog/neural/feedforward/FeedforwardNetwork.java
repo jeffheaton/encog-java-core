@@ -31,10 +31,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.matrix.MatrixCODEC;
-import org.encog.neural.Network;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.Network;
 import org.encog.util.ErrorCalculation;
 
 
