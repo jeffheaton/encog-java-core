@@ -5,9 +5,10 @@ import java.util.Iterator;
 import org.encog.neural.XOR;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.feedforward.FeedforwardLayer;
-import org.encog.neural.feedforward.FeedforwardNetwork;
-import org.encog.neural.feedforward.train.backpropagation.Backpropagation;
+import org.encog.neural.networks.Train;
+import org.encog.neural.networks.feedforward.FeedforwardLayer;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.feedforward.train.backpropagation.Backpropagation;
 
 import junit.framework.TestCase;
 

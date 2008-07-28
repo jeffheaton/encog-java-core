@@ -2,8 +2,8 @@ package org.encog.neural;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.feedforward.FeedforwardLayer;
-import org.encog.neural.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.feedforward.FeedforwardLayer;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 
 
 public class XOR {

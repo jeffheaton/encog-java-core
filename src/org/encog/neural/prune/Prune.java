@@ -27,9 +27,9 @@ package org.encog.neural.prune;
 import java.util.Collection;
 
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.feedforward.FeedforwardLayer;
-import org.encog.neural.feedforward.FeedforwardNetwork;
-import org.encog.neural.feedforward.train.backpropagation.Backpropagation;
+import org.encog.neural.networks.feedforward.FeedforwardLayer;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.feedforward.train.backpropagation.Backpropagation;
 
 
 

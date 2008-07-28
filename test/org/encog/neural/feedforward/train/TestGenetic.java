@@ -4,8 +4,8 @@ package org.encog.neural.feedforward.train;
 import org.encog.neural.XOR;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.feedforward.FeedforwardNetwork;
-import org.encog.neural.feedforward.train.genetic.TrainingSetNeuralGeneticAlgorithm;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.feedforward.train.genetic.TrainingSetNeuralGeneticAlgorithm;
 
 import junit.framework.TestCase;
 

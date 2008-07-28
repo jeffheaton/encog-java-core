@@ -22,13 +22,13 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.feedforward.train.anneal;
+package org.encog.neural.networks.feedforward.train.anneal;
 
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.anneal.SimulatedAnnealing;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 
 
 

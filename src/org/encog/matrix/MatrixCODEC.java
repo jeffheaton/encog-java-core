@@ -24,8 +24,8 @@
   */
 package org.encog.matrix;
 
-import org.encog.neural.feedforward.FeedforwardLayer;
-import org.encog.neural.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.feedforward.FeedforwardLayer;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 
 
 

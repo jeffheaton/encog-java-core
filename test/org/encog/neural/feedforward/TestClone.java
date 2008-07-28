@@ -1,6 +1,7 @@
 package org.encog.neural.feedforward;
 
 import org.encog.neural.XOR;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 
 import junit.framework.TestCase;
 
