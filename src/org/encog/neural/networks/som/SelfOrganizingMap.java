@@ -22,7 +22,7 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.som;
+package org.encog.neural.networks.som;
 
 import java.io.Serializable;
 
@@ -31,7 +31,7 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Network;
-import org.encog.neural.som.NormalizeInput.NormalizationType;
+import org.encog.neural.networks.som.NormalizeInput.NormalizationType;
 
 
 /**
