@@ -26,9 +26,9 @@ package org.encog.neural.networks.feedforward.train.anneal;
 
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.anneal.SimulatedAnnealing;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.solve.anneal.SimulatedAnnealing;
 
 
 

@@ -24,8 +24,8 @@
   */
 package org.encog.neural.networks.feedforward.train.genetic;
 
-import org.encog.neural.genetic.GeneticAlgorithm;
 import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.solve.genetic.GeneticAlgorithm;
 
 
 

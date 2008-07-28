@@ -28,9 +28,9 @@ import java.util.Arrays;
 
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.genetic.Chromosome;
-import org.encog.neural.genetic.GeneticAlgorithm;
 import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.solve.genetic.Chromosome;
+import org.encog.solve.genetic.GeneticAlgorithm;
 
 
 
