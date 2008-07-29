@@ -1,18 +1,45 @@
 package org.encog.neural.data.basic;
 
 import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.Iterator;
 import java.util.List;
 
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataError;
+import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
-public class BasicNeuralDataSet implements NeuralDataSet {
-	private List<NeuralData> input = new ArrayList<NeuralData>();
-	private List<NeuralData> ideal = new ArrayList<NeuralData>();
+public class BasicNeuralDataSet implements NeuralDataSet  {
+	private List<NeuralDataPair> data = new ArrayList<NeuralDataPair>();
+	private List<BasicNeuralIterator> iterators = new ArrayList<BasicNeuralIterator>(); 
+	
+	public class BasicNeuralIterator implements Iterator<NeuralDataPair> {
+		
+		private int currentIndex = 0;
+
+		@Override
+		public boolean hasNext() {
+			return currentIndex<data.size();
+		}
+
+		@Override
+		public NeuralDataPair next() {
+			if( !hasNext() ) {
+				return null;
+			}
+			
+			return data.get(this.currentIndex++);
+		}
+
+		@Override
+		public void remove() {
+			iterators.remove(this);			
+		}
+	}	
 	
 	public BasicNeuralDataSet()
 	{
-		
 	}
 	
 	public BasicNeuralDataSet(double input[][],double ideal[][])
@@ -27,27 +54,40 @@ public class BasicNeuralDataSet implements NeuralDataSet {
 	
 	public void add(NeuralData inputData,NeuralData idealData)
 	{
-		this.input.add(inputData);
-		this.ideal.add(idealData);
-	}
-	
-	public void add(NeuralData inputData)
-	{
-		this.input.add(inputData);
-	}
-	
-	public NeuralData getInput(int index)
-	{
-		return input.get(index);
-	}
-	
-	public NeuralData getIdeal(int index)
-	{
-		return ideal.get(index);
+		if( !this.iterators.isEmpty() )
+		{
+			throw new ConcurrentModificationException();
+		}
+		NeuralDataPair pair = new BasicNeuralDataPair(inputData,idealData);
+		this.data.add(pair);
 	}
 
 	@Override
-	public int size() {
-		return input.size();
+	public void add(NeuralDataPair inputData) {
+		data.add(inputData);		
+	}
+
+	@Override
+	public Iterator<NeuralDataPair> iterator() {
+		BasicNeuralIterator result = new BasicNeuralIterator();
+		this.iterators.add(result);
+		return result;
+	}
+
+	@Override
+	public int getIdealSize() {
+		if(data.isEmpty())
+			return 0;
+		NeuralDataPair first = data.get(0);
+		return first.getIdeal().size();
+	}
+
+	@Override
+	public int getInputSize() {
+		if(data.isEmpty())
+			return 0;
+		NeuralDataPair first = data.get(0);
+		return first.getInput().size();
 	}
 }
+

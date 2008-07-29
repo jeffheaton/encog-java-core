@@ -29,6 +29,7 @@ import java.util.Map;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.Train;
 import org.encog.neural.networks.feedforward.FeedforwardLayer;
@@ -185,9 +186,9 @@ public class Backpropagation implements Train {
 	 */
 	public void iteration() {
 
-		for (int j = 0; j < this.training.size(); j++) {
-			this.network.compute(this.training.getInput(j));
-			calcError(this.training.getIdeal(j));
+		for(NeuralDataPair pair: this.training) {
+			this.network.compute(pair.getInput());
+			calcError(pair.getIdeal());
 		}
 		learn();
 

@@ -33,8 +33,10 @@ import java.util.List;
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.Network;
+import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.util.ErrorCalculation;
 
 
@@ -49,7 +51,7 @@ import org.encog.util.ErrorCalculation;
  * is the output layer.  Any layers added between these two layers
  * are the hidden layers.
  */
-public class FeedforwardNetwork implements Serializable, Network {
+public class FeedforwardNetwork implements Serializable, Network, EncogPersistedObject {
 	/**
 	 * Serial id for this class.
 	 */
@@ -116,10 +118,10 @@ public class FeedforwardNetwork implements Serializable, Network {
 			throws NeuralNetworkError {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
-		for (int i = 0; i < data.size(); i++) {
-			compute(data.getInput(i));
+		for( NeuralDataPair pair: data ) {
+			compute(pair.getInput());
 			errorCalculation.updateError(this.outputLayer.getFire(), 
-					data.getIdeal(i));
+					pair.getIdeal());
 		}
 		return (errorCalculation.calculateRMS());
 	}
@@ -305,5 +307,10 @@ public class FeedforwardNetwork implements Serializable, Network {
 		for (final FeedforwardLayer layer : this.layers) {
 			layer.reset();
 		}
+	}
+
+	@Override
+	public String getName() {
+		return "FeedforwardNetwork";
 	}
 }

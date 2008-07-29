@@ -26,6 +26,7 @@ package org.encog.neural.networks.som;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
+import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
 
@@ -119,6 +120,8 @@ public class TrainSelfOrganizingMap {
 	 * training iteration.
 	 */
 	private Matrix correc;
+	
+	private int trainSize;
 
 	/**
 	 * Construct the trainer for a self organizing map.
@@ -139,9 +142,11 @@ public class TrainSelfOrganizingMap {
 		this.inputNeuronCount = som.getInputNeuronCount();
 
 		this.totalError = 1.0;
+		this.trainSize = 0;
 
-		for (int tset = 0; tset < train.size(); tset++) {
-			final Matrix dptr = Matrix.createColumnMatrix(train.getInput(tset).getData());
+		for(NeuralDataPair pair: train) {
+			this.trainSize++;
+			final Matrix dptr = Matrix.createColumnMatrix(pair.getInput().getData());
 			if (MatrixMath.vectorLength(dptr) < SelfOrganizingMap.VERYSMALL) {
 				throw (new RuntimeException(
 						"Multiplicative normalization has null training case"));
@@ -219,8 +224,8 @@ public class TrainSelfOrganizingMap {
 
 		this.globalError = 0.0;
 		// loop through all training sets to determine correction
-		for (int tset = 0; tset < this.train.size(); tset++) {
-			final NormalizeInput input = new NormalizeInput(this.train.getInput(tset),
+		for(NeuralDataPair pair: this.train) {
+			final NormalizeInput input = new NormalizeInput(pair.getInput(),
 					this.som.getNormalizationType());
 			final int best = this.som.winner(input);
 
@@ -231,13 +236,13 @@ public class TrainSelfOrganizingMap {
 			double diff;
 
 			for (int i = 0; i < this.inputNeuronCount; i++) {
-				diff = this.train.getIdeal(tset).getData(i) * input.getNormfac()
+				diff = pair.getIdeal().getData(i) * input.getNormfac()
 						- wptr.get(0, i);
 				length += diff * diff;
 				if (this.learnMethod == LearningMethod.SUBTRACTIVE) {
 					this.correc.add(best, i, diff);
 				} else {
-					this.work.set(0, i, this.learnRate * this.train.getInput(tset).getData(i)
+					this.work.set(0, i, this.learnRate * pair.getInput().getData(i)
 							* input.getNormfac() + wptr.get(0, i));
 				}
 			}
@@ -273,28 +278,30 @@ public class TrainSelfOrganizingMap {
 	 * Force a win, if no neuron won.
 	 */
 	protected void forceWin() {
-		int best, which = 0;
+		int best; 
+		NeuralDataPair which = null;
 
 		final Matrix outputWeights = this.som.getOutputWeights();
 		
 		// Loop over all training sets.  Find the training set with
 		// the least output.
 		double dist = Double.MAX_VALUE;
-		for (int tset = 0; tset < this.train.size(); tset++) {
-			best = this.som.winner(this.train.getInput(tset));
+		for(NeuralDataPair pair: train) {
+			best = this.som.winner(pair.getInput());
 			final double output[] = this.som.getOutput();
 			
 			if (output[best] < dist) {
 				dist = output[best];
-				which = tset;
+				which = pair;
 			}
 		}
 
-		final NormalizeInput input = new NormalizeInput(this.train.getInput(which),
+		final NormalizeInput input = new NormalizeInput(which.getInput(),
 				this.som.getNormalizationType());
 		best = this.som.winner(input);
 		final double output[] = this.som.getOutput();
-
+		int which2 = 0;
+		
 		dist = Double.MIN_VALUE;
 		int i = this.outputNeuronCount;
 		while ((i--) > 0) {
@@ -303,15 +310,15 @@ public class TrainSelfOrganizingMap {
 			}
 			if (output[i] > dist) {
 				dist = output[i];
-				which = i;
+				which2 = i;
 			}
 		}
 
 		for (int j = 0; j < input.getInputMatrix().getCols(); j++) {
-			outputWeights.set(which, j, input.getInputMatrix().get(0,j));
+			outputWeights.set(which2, j, input.getInputMatrix().get(0,j));
 		}
 
-		normalizeWeight(outputWeights, which);
+		normalizeWeight(outputWeights, which2);
 	}
 
 	/**
@@ -364,7 +371,7 @@ public class TrainSelfOrganizingMap {
 			}
 		}
 
-		if ((winners < this.outputNeuronCount) && (winners < this.train.size())) {
+		if ((winners < this.outputNeuronCount) && (winners < this.trainSize)) {
 			forceWin();
 			return;
 		}

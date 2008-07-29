@@ -274,11 +274,11 @@ public class Prune {
 
 			this.currentNetwork = new FeedforwardNetwork();
 			this.currentNetwork.addLayer(new FeedforwardLayer(
-					this.training.getInput(0).size()));
+					this.training.getInputSize()));
 			this.currentNetwork.addLayer(new FeedforwardLayer(
 					this.hiddenNeuronCount));
 			this.currentNetwork.addLayer(new FeedforwardLayer(
-					this.training.getIdeal(0).size()));
+					this.training.getIdealSize()));
 			this.currentNetwork.reset();
 
 			this.backprop = new Backpropagation(this.currentNetwork,
@@ -324,11 +324,11 @@ public class Prune {
 
 		this.currentNetwork = new FeedforwardNetwork();
 		this.currentNetwork
-				.addLayer(new FeedforwardLayer(this.training.getInput(0).size()));
+				.addLayer(new FeedforwardLayer(this.training.getInputSize()));
 		this.currentNetwork.addLayer(new FeedforwardLayer(
 				this.hiddenNeuronCount));
 		this.currentNetwork
-				.addLayer(new FeedforwardLayer(this.training.getIdeal(0).size()));
+				.addLayer(new FeedforwardLayer(this.training.getIdealSize()));
 		this.currentNetwork.reset();
 
 		this.backprop = new Backpropagation(this.currentNetwork, this.training, this.rate, this.momentum);

@@ -55,5 +55,10 @@ public class ActivationTANH implements ActivationFunction {
 	public double derivativeFunction(double d) {
 		return( 1.0-Math.pow(activationFunction(d), 2.0) );
 	}
+	
+	@Override
+	public String getName() {
+		return "TANH";
+	}
 
 }

@@ -59,4 +59,9 @@ public class ActivationLinear implements ActivationFunction {
 		throw new NeuralNetworkError("Can't use the linear activation function where a derivative is required.");
 	}
 
+	@Override
+	public String getName() {
+		return "Linear";
+	}
+
 }

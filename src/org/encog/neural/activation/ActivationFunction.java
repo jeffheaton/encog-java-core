@@ -51,4 +51,6 @@ public interface ActivationFunction extends Serializable {
 	 * @return The output.
 	 */
 	public double derivativeFunction(double d);
+	
+	public String getName();
 }
