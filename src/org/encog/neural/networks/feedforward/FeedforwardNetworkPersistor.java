@@ -11,7 +11,6 @@ import org.xml.sax.helpers.AttributesImpl;
 
 public class FeedforwardNetworkPersistor implements Persistor {
 
-	@Override
 	public void save(EncogPersistedObject object,TransformerHandler hd) throws NeuralNetworkException 
 	{
 		try

@@ -35,7 +35,6 @@ public class BasicNeuralData implements NeuralData {
 		return data[index];
 	}
 
-	@Override
 	public int size() {
 		return data.length;
 	}

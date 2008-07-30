@@ -53,7 +53,6 @@ public class ActivationSigmoid implements ActivationFunction {
 		return d*(1.0-d);
 	}
 
-	@Override
 	public String getName() {
 		return "Sigmoid";
 	}

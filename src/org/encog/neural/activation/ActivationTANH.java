@@ -56,7 +56,6 @@ public class ActivationTANH implements ActivationFunction {
 		return( 1.0-Math.pow(activationFunction(d), 2.0) );
 	}
 	
-	@Override
 	public String getName() {
 		return "TANH";
 	}

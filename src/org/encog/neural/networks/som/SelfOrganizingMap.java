@@ -195,7 +195,6 @@ public class SelfOrganizingMap implements Serializable, Network {
 		return win;
 	}
 
-	@Override
 	public NeuralData compute(NeuralData pattern) {
 		final NormalizeInput input = new NormalizeInput(pattern,
 				this.normalizationType);

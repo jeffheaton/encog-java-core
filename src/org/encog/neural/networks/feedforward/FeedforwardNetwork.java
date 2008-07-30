@@ -309,7 +309,6 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 		}
 	}
 
-	@Override
 	public String getName() {
 		return "FeedforwardNetwork";
 	}

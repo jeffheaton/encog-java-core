@@ -18,50 +18,42 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 
 	public class XMLNeuralDataSetIterator implements Iterator<NeuralDataPair>
 	{
-		@Override
 		public boolean hasNext() {
 			// TODO Auto-generated method stub
 			return false;
 		}
 
-		@Override
 		public NeuralDataPair next() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		@Override
 		public void remove() {
 			// TODO Auto-generated method stub
 			
 		}		
 	}
 	
-	@Override
 	public void add(NeuralData inputData, NeuralData idealData) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void add(NeuralDataPair inputData) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public int getIdealSize() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
 	public int getInputSize() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
 	public Iterator<NeuralDataPair> iterator() {
 		// TODO Auto-generated method stub
 		return null;

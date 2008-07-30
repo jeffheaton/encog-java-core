@@ -14,12 +14,10 @@ public class BasicNeuralDataPair implements NeuralDataPair {
 		this.ideal = ideal;
 	}
 	
-	@Override
 	public NeuralData getIdeal() {
 		return this.ideal;
 	}
 
-	@Override
 	public NeuralData getInput() {
 		return this.input;
 	}

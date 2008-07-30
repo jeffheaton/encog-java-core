@@ -18,12 +18,10 @@ public class BasicNeuralDataSet implements NeuralDataSet  {
 		
 		private int currentIndex = 0;
 
-		@Override
 		public boolean hasNext() {
 			return currentIndex<data.size();
 		}
 
-		@Override
 		public NeuralDataPair next() {
 			if( !hasNext() ) {
 				return null;
@@ -32,7 +30,6 @@ public class BasicNeuralDataSet implements NeuralDataSet  {
 			return data.get(this.currentIndex++);
 		}
 
-		@Override
 		public void remove() {
 			iterators.remove(this);			
 		}
@@ -62,19 +59,16 @@ public class BasicNeuralDataSet implements NeuralDataSet  {
 		this.data.add(pair);
 	}
 
-	@Override
 	public void add(NeuralDataPair inputData) {
 		data.add(inputData);		
 	}
-
-	@Override
+	
 	public Iterator<NeuralDataPair> iterator() {
 		BasicNeuralIterator result = new BasicNeuralIterator();
 		this.iterators.add(result);
 		return result;
 	}
 
-	@Override
 	public int getIdealSize() {
 		if(data.isEmpty())
 			return 0;
@@ -82,7 +76,6 @@ public class BasicNeuralDataSet implements NeuralDataSet  {
 		return first.getIdeal().size();
 	}
 
-	@Override
 	public int getInputSize() {
 		if(data.isEmpty())
 			return 0;
