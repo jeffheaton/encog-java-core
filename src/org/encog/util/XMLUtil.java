@@ -29,6 +29,9 @@ public class XMLUtil {
   public static String findElementAsString(Element e,String find)
   {
     Element el = findElement(e,find);
+    
+    if( el==null )
+    	return null;
 
     for ( Node child = el.getFirstChild(); child != null;
         child = child.getNextSibling() ) {

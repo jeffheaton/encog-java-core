@@ -43,9 +43,11 @@ public class TestPersist extends TestCase {
 		encog.add(network);
 		encog.save("c:\\encog.xml");
 		
-		//EncogPersistedCollection encog2 =  new EncogPersistedCollection();
-		//encog2.load("c:\\encog.xml");
-
+		EncogPersistedCollection encog2 =  new EncogPersistedCollection();
+		encog2.load("c:\\encog.xml");
+		System.out.println(encog2.getEncogVersion());
+		FeedforwardNetwork n = (FeedforwardNetwork) encog2.getList().get(0);
+		TestCase.assertTrue("Error too high for load",n.calculateError(trainingData)<0.1);
 
 	}
 		

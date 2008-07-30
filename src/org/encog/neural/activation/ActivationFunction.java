@@ -26,6 +26,8 @@ package org.encog.neural.activation;
 
 import java.io.Serializable;
 
+import org.encog.neural.persist.EncogPersistedObject;
+
 /**
  * ActivationFunction: This interface allows various 
  * activation functions to be used with the feedforward
@@ -34,7 +36,7 @@ import java.io.Serializable;
  * Activation functions scale the output into the
  * desired range. 
  */
-public interface ActivationFunction extends Serializable {
+public interface ActivationFunction extends Serializable, EncogPersistedObject {
 
 	/**
 	 * A activation function for a neural network.

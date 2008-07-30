@@ -1,27 +1,27 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v0.5
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.encog.neural.networks.feedforward;
 
 import java.io.Serializable;
@@ -34,17 +34,14 @@ import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 
-
 /**
- * FeedforwardLayer: This class represents one layer in a 
- * feed forward neural network.  This layer could be input,
- * output, or hidden, depending on its placement inside of
- * the FeedforwardNetwork class.  
+ * FeedforwardLayer: This class represents one layer in a feed forward neural
+ * network. This layer could be input, output, or hidden, depending on its
+ * placement inside of the FeedforwardNetwork class.
  * 
- * An activation function can also be specified.  Usually
- * all layers in a neural network will use the same activation
- * function.  By default this class uses the sigmoid activation
- * function.
+ * An activation function can also be specified. Usually all layers in a neural
+ * network will use the same activation function. By default this class uses the
+ * sigmoid activation function.
  */
 public class FeedforwardLayer implements Serializable {
 	/**
@@ -80,8 +77,11 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Construct this layer with a non-default threshold function.
-	 * @param thresholdFunction The threshold function to use.
-	 * @param neuronCount How many neurons in this layer.
+	 * 
+	 * @param thresholdFunction
+	 *            The threshold function to use.
+	 * @param neuronCount
+	 *            How many neurons in this layer.
 	 */
 	public FeedforwardLayer(final ActivationFunction thresholdFunction,
 			final int neuronCount) {
@@ -91,7 +91,9 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Construct this layer with a sigmoid threshold function.
-	 * @param neuronCount How many neurons in this layer.
+	 * 
+	 * @param neuronCount
+	 *            How many neurons in this layer.
 	 */
 	public FeedforwardLayer(final int neuronCount) {
 		this(new ActivationSigmoid(), neuronCount);
@@ -103,13 +105,16 @@ public class FeedforwardLayer implements Serializable {
 	 * @return The cloned layer.
 	 */
 	public FeedforwardLayer cloneStructure() {
-		return new FeedforwardLayer(this.activationFunction,this.getNeuronCount());
+		return new FeedforwardLayer(this.activationFunction, this
+				.getNeuronCount());
 	}
 
 	/**
-	 * Compute the outputs for this layer given the input pattern.
-	 * The output is also stored in the fire instance variable.
-	 * @param pattern The input pattern.
+	 * Compute the outputs for this layer given the input pattern. The output is
+	 * also stored in the fire instance variable.
+	 * 
+	 * @param pattern
+	 *            The input pattern.
 	 * @return The output from this layer.
 	 */
 	public NeuralData computeOutputs(final NeuralData pattern) {
@@ -126,7 +131,8 @@ public class FeedforwardLayer implements Serializable {
 			final Matrix col = this.matrix.getCol(i);
 			final double sum = MatrixMath.dotProduct(col, inputMatrix);
 
-			this.next.setFire(i, this.activationFunction.activationFunction(sum));
+			this.next.setFire(i, this.activationFunction
+					.activationFunction(sum));
 		}
 
 		return this.fire;
@@ -165,7 +171,9 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Get the output from an individual neuron.
-	 * @param index The neuron specified.
+	 * 
+	 * @param index
+	 *            The neuron specified.
 	 * @return The output from the specified neuron.
 	 */
 	public double getFire(final int index) {
@@ -174,6 +182,7 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Get the weight and threshold matrix.
+	 * 
 	 * @return The weight and threshold matrix.
 	 */
 	public Matrix getMatrix() {
@@ -182,6 +191,7 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Get the size of the matrix, or zero if one is not defined.
+	 * 
 	 * @return The size of the matrix.
 	 */
 	public int getMatrixSize() {
@@ -194,6 +204,7 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Get the neuron count for this layer.
+	 * 
 	 * @return the neuronCount
 	 */
 	public int getNeuronCount() {
@@ -216,6 +227,7 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Determine if this layer has a matrix.
+	 * 
 	 * @return True if this layer has a matrix.
 	 */
 	public boolean hasMatrix() {
@@ -224,6 +236,7 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Determine if this is a hidden layer.
+	 * 
 	 * @return True if this is a hidden layer.
 	 */
 	public boolean isHidden() {
@@ -232,6 +245,7 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Determine if this is an input layer.
+	 * 
 	 * @return True if this is an input layer.
 	 */
 	public boolean isInput() {
@@ -240,6 +254,7 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Determine if this is an output layer.
+	 * 
 	 * @return True if this is an output layer.
 	 */
 	public boolean isOutput() {
@@ -285,8 +300,11 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Set the last output value for the specified neuron.
-	 * @param index The specified neuron.
-	 * @param f The fire value for the specified neuron.
+	 * 
+	 * @param index
+	 *            The specified neuron.
+	 * @param f
+	 *            The fire value for the specified neuron.
 	 */
 	public void setFire(final int index, final double f) {
 		this.fire.setData(index, f);
@@ -294,7 +312,9 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Assign a new weight and threshold matrix to this layer.
-	 * @param matrix The new matrix.
+	 * 
+	 * @param matrix
+	 *            The new matrix.
 	 */
 	public void setMatrix(final Matrix matrix) {
 		if (matrix.getRows() < 2) {
@@ -310,18 +330,25 @@ public class FeedforwardLayer implements Serializable {
 
 	/**
 	 * Set the next layer.
-	 * @param next the next layer.
+	 * 
+	 * @param next
+	 *            the next layer.
 	 */
 	public void setNext(final FeedforwardLayer next) {
 		this.next = next;
-		// add one to the neuron count to provide a threshold value in row 0
-		this.matrix = new Matrix(this.getNeuronCount() + 1, next
-				.getNeuronCount());
+
+		if (matrix == null) {
+			// add one to the neuron count to provide a threshold value in row 0
+			this.matrix = new Matrix(this.getNeuronCount() + 1, next
+					.getNeuronCount());
+		}
 	}
 
 	/**
 	 * Set the previous layer.
-	 * @param previous the previous layer.
+	 * 
+	 * @param previous
+	 *            the previous layer.
 	 */
 	public void setPrevious(final FeedforwardLayer previous) {
 		this.previous = previous;
