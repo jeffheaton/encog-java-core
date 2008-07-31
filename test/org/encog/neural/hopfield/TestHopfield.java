@@ -3,16 +3,24 @@ package org.encog.neural.hopfield;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.neural.networks.hopfield.HopfieldNetwork;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.hopfield.HopfieldLayer;
+import org.encog.neural.networks.hopfield.TrainHopfield;
+import org.encog.neural.networks.Train;
 
 import junit.framework.TestCase;
 
 public class TestHopfield extends TestCase {
 	public void testHopfield() throws Throwable
-	{
+	{		
 		boolean input[] = { true, false, true, false };
-		HopfieldNetwork network = new HopfieldNetwork(4);
-		network.train(new BiPolarNeuralData(input));
+		
+		FeedforwardNetwork network = new FeedforwardNetwork();
+		network.addLayer(new HopfieldLayer(4));
+		
+		NeuralData data = new BiPolarNeuralData(input);
+		Train train = new TrainHopfield(data,network);
+		train.iteration();
 		BiPolarNeuralData output = (BiPolarNeuralData) network.compute(new BiPolarNeuralData(input));
 		TestCase.assertTrue(output.getBoolean(0));
 		TestCase.assertFalse(output.getBoolean(1));
@@ -25,8 +33,11 @@ public class TestHopfield extends TestCase {
 
 		try {
 			boolean input[] = { true, false, true };
-			HopfieldNetwork network = new HopfieldNetwork(4);
-			network.train(new BiPolarNeuralData(input));
+			NeuralData data = new BiPolarNeuralData(input);
+			FeedforwardNetwork network = new FeedforwardNetwork();
+			network.addLayer( new HopfieldLayer(4) );
+			Train train = new TrainHopfield(data,network);
+			train.iteration();
 			TestCase.assertTrue(false);
 		}
 		catch(NeuralNetworkError e)

@@ -14,6 +14,10 @@ public class BasicNeuralDataPair implements NeuralDataPair {
 		this.ideal = ideal;
 	}
 	
+	public BasicNeuralDataPair(NeuralData input) {
+		this.input = input;
+	}
+
 	public NeuralData getIdeal() {
 		return this.ideal;
 	}

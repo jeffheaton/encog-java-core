@@ -33,6 +33,8 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.BasicLayer;
+import org.encog.neural.networks.Layer;
 
 /**
  * FeedforwardLayer: This class represents one layer in a feed forward neural
@@ -43,32 +45,12 @@ import org.encog.neural.data.basic.BasicNeuralData;
  * network will use the same activation function. By default this class uses the
  * sigmoid activation function.
  */
-public class FeedforwardLayer implements Serializable {
+public class FeedforwardLayer extends BasicLayer implements Serializable {
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -3698708039331150031L;
 
-	/**
-	 * Results from the last time that the outputs were calculated for this
-	 * layer.
-	 */
-	private NeuralData fire;
-
-	/**
-	 * The weight and threshold matrix.
-	 */
-	private Matrix matrix;
-
-	/**
-	 * The next layer in the neural network.
-	 */
-	private FeedforwardLayer next;
-
-	/**
-	 * The previous layer in the neural network.
-	 */
-	private FeedforwardLayer previous;
 
 	/**
 	 * Which activation function to use for this layer.
@@ -85,7 +67,7 @@ public class FeedforwardLayer implements Serializable {
 	 */
 	public FeedforwardLayer(final ActivationFunction thresholdFunction,
 			final int neuronCount) {
-		this.fire = new BasicNeuralData(neuronCount);
+		this.setFire( new BasicNeuralData(neuronCount) );
 		this.activationFunction = thresholdFunction;
 	}
 
@@ -117,7 +99,7 @@ public class FeedforwardLayer implements Serializable {
 	 *            The input pattern.
 	 * @return The output from this layer.
 	 */
-	public NeuralData computeOutputs(final NeuralData pattern) {
+	public NeuralData compute(final NeuralData pattern) {
 		int i;
 		if (pattern != null) {
 			for (i = 0; i < getNeuronCount(); i++) {
@@ -125,17 +107,17 @@ public class FeedforwardLayer implements Serializable {
 			}
 		}
 
-		final Matrix inputMatrix = createInputMatrix(this.fire);
+		final Matrix inputMatrix = createInputMatrix(this.getFire());
 
-		for (i = 0; i < this.next.getNeuronCount(); i++) {
-			final Matrix col = this.matrix.getCol(i);
+		for (i = 0; i < this.getNext().getNeuronCount(); i++) {
+			final Matrix col = this.getMatrix().getCol(i);
 			final double sum = MatrixMath.dotProduct(col, inputMatrix);
 
-			this.next.setFire(i, this.activationFunction
+			this.getNext().setFire(i, this.activationFunction
 					.activationFunction(sum));
 		}
 
-		return this.fire;
+		return this.getFire();
 	}
 
 	/**
@@ -159,107 +141,6 @@ public class FeedforwardLayer implements Serializable {
 		return result;
 	}
 
-	/**
-	 * Get the output array from the last time that the output of this layer was
-	 * calculated.
-	 * 
-	 * @return The output array.
-	 */
-	public NeuralData getFire() {
-		return this.fire;
-	}
-
-	/**
-	 * Get the output from an individual neuron.
-	 * 
-	 * @param index
-	 *            The neuron specified.
-	 * @return The output from the specified neuron.
-	 */
-	public double getFire(final int index) {
-		return this.fire.getData(index);
-	}
-
-	/**
-	 * Get the weight and threshold matrix.
-	 * 
-	 * @return The weight and threshold matrix.
-	 */
-	public Matrix getMatrix() {
-		return this.matrix;
-	}
-
-	/**
-	 * Get the size of the matrix, or zero if one is not defined.
-	 * 
-	 * @return The size of the matrix.
-	 */
-	public int getMatrixSize() {
-		if (this.matrix == null) {
-			return 0;
-		} else {
-			return this.matrix.size();
-		}
-	}
-
-	/**
-	 * Get the neuron count for this layer.
-	 * 
-	 * @return the neuronCount
-	 */
-	public int getNeuronCount() {
-		return this.fire.size();
-	}
-
-	/**
-	 * @return the next layer.
-	 */
-	public FeedforwardLayer getNext() {
-		return this.next;
-	}
-
-	/**
-	 * @return the previous layer.
-	 */
-	public FeedforwardLayer getPrevious() {
-		return this.previous;
-	}
-
-	/**
-	 * Determine if this layer has a matrix.
-	 * 
-	 * @return True if this layer has a matrix.
-	 */
-	public boolean hasMatrix() {
-		return this.matrix != null;
-	}
-
-	/**
-	 * Determine if this is a hidden layer.
-	 * 
-	 * @return True if this is a hidden layer.
-	 */
-	public boolean isHidden() {
-		return ((this.next != null) && (this.previous != null));
-	}
-
-	/**
-	 * Determine if this is an input layer.
-	 * 
-	 * @return True if this is an input layer.
-	 */
-	public boolean isInput() {
-		return (this.previous == null);
-	}
-
-	/**
-	 * Determine if this is an output layer.
-	 * 
-	 * @return True if this is an output layer.
-	 */
-	public boolean isOutput() {
-		return (this.next == null);
-	}
 
 	/**
 	 * Prune one of the neurons from this layer. Remove all entries in this
@@ -270,12 +151,12 @@ public class FeedforwardLayer implements Serializable {
 	 */
 	public void prune(final int neuron) {
 		// delete a row on this matrix
-		if (this.matrix != null) {
-			setMatrix(MatrixMath.deleteRow(this.matrix, neuron));
+		if (this.getMatrix() != null) {
+			setMatrix(MatrixMath.deleteRow(this.getMatrix(), neuron));
 		}
 
 		// delete a column on the previous
-		final FeedforwardLayer previous = this.getPrevious();
+		final Layer previous = this.getPrevious();
 		if (previous != null) {
 			if (previous.getMatrix() != null) {
 				previous.setMatrix(MatrixMath.deleteCol(previous.getMatrix(),
@@ -283,75 +164,6 @@ public class FeedforwardLayer implements Serializable {
 			}
 		}
 
-	}
-
-	/**
-	 * Reset the weight matrix and threshold values to random numbers between -1
-	 * and 1.
-	 */
-	public void reset() {
-
-		if (this.matrix != null) {
-			this.matrix.ramdomize(-1, 1);
-
-		}
-
-	}
-
-	/**
-	 * Set the last output value for the specified neuron.
-	 * 
-	 * @param index
-	 *            The specified neuron.
-	 * @param f
-	 *            The fire value for the specified neuron.
-	 */
-	public void setFire(final int index, final double f) {
-		this.fire.setData(index, f);
-	}
-
-	/**
-	 * Assign a new weight and threshold matrix to this layer.
-	 * 
-	 * @param matrix
-	 *            The new matrix.
-	 */
-	public void setMatrix(final Matrix matrix) {
-		if (matrix.getRows() < 2) {
-			throw new NeuralNetworkError(
-					"Weight matrix includes threshold values, and must have at least 2 rows.");
-		}
-		if (matrix != null) {
-			this.fire = new BasicNeuralData(matrix.getRows() - 1);
-		}
-		this.matrix = matrix;
-
-	}
-
-	/**
-	 * Set the next layer.
-	 * 
-	 * @param next
-	 *            the next layer.
-	 */
-	public void setNext(final FeedforwardLayer next) {
-		this.next = next;
-
-		if (matrix == null) {
-			// add one to the neuron count to provide a threshold value in row 0
-			this.matrix = new Matrix(this.getNeuronCount() + 1, next
-					.getNeuronCount());
-		}
-	}
-
-	/**
-	 * Set the previous layer.
-	 * 
-	 * @param previous
-	 *            the previous layer.
-	 */
-	public void setPrevious(final FeedforwardLayer previous) {
-		this.previous = previous;
 	}
 
 	/**
@@ -368,6 +180,39 @@ public class FeedforwardLayer implements Serializable {
 
 	public ActivationFunction getActivationFunction() {
 		return this.activationFunction;
+	}
+	
+	/**
+	 * Assign a new weight and threshold matrix to this layer.
+	 * 
+	 * @param matrix
+	 *            The new matrix.
+	 */
+	public void setMatrix(final Matrix matrix) {
+		if (matrix.getRows() < 2) {
+			throw new NeuralNetworkError(
+					"Weight matrix includes threshold values, and must have at least 2 rows.");
+		}
+		if (matrix != null) {
+			this.setFire( new BasicNeuralData(matrix.getRows() - 1) );
+		}
+		super.setMatrix(matrix);
+	}
+	
+	/**
+	 * Set the next layer.
+	 * 
+	 * @param next
+	 *            the next layer.
+	 */
+	public void setNext(final Layer next) {
+		super.setNext(next);
+
+		if (!this.hasMatrix()) {
+			// add one to the neuron count to provide a threshold value in row 0
+			this.setMatrix( new Matrix(this.getNeuronCount() + 1, next
+					.getNeuronCount()));
+		}
 	}
 
 }

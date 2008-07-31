@@ -5,6 +5,7 @@ import java.util.Iterator;
 import org.encog.neural.XOR;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Train;
 import org.encog.neural.networks.feedforward.FeedforwardLayer;
 import org.encog.neural.networks.feedforward.FeedforwardNetwork;
@@ -33,7 +34,7 @@ public class TestBackpropagation extends TestCase {
 		for (int i = 0; i < 5000; i++) 
 		{
 			train.iteration();
-			network = train.getNetwork();
+			network = (FeedforwardNetwork)train.getNetwork();
 		}
 		
 		TestCase.assertTrue("Error too high for backpropagation",train.getError()<0.1);
@@ -58,8 +59,8 @@ public class TestBackpropagation extends TestCase {
 	public void testPrune() throws Throwable
 	{
 		FeedforwardNetwork network = createNetwork();
-		Iterator<FeedforwardLayer> itr = network.getHiddenLayers().iterator();
-		FeedforwardLayer hidden = itr.next();
+		Iterator<Layer> itr = network.getHiddenLayers().iterator();
+		FeedforwardLayer hidden = (FeedforwardLayer)itr.next();
 		
 		TestCase.assertEquals(3,hidden.getNeuronCount());
 		TestCase.assertEquals(4,hidden.getMatrixSize());

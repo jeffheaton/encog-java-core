@@ -103,4 +103,10 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	public char getDelimiter() {
 		return delimiter;
 	}
+
+	@Override
+	public void add(NeuralData data1) {
+		// TODO Auto-generated method stub
+		
+	}
 }

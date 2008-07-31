@@ -24,6 +24,7 @@
   */
 package org.encog.matrix;
 
+import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.feedforward.FeedforwardLayer;
 import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 
@@ -49,7 +50,7 @@ public class MatrixCODEC {
 		// copy data to array
 		int index = 0;
 
-		for (final FeedforwardLayer layer : network.getLayers()) {
+		for (final Layer layer : network.getLayers()) {
 
 			// now the weight matrix(if it exists)
 			if (layer.getNext() != null) {
@@ -69,7 +70,7 @@ public class MatrixCODEC {
 		int size = 0;
 
 		// first determine size
-		for (final FeedforwardLayer layer : network.getLayers()) {
+		for (final Layer layer : network.getLayers()) {
 			// count the size of the weight matrix
 			if (layer.hasMatrix()) {
 				size += layer.getMatrixSize();
@@ -82,7 +83,7 @@ public class MatrixCODEC {
 		// copy data to array
 		int index = 0;
 
-		for (final FeedforwardLayer layer : network.getLayers()) {
+		for (final Layer layer : network.getLayers()) {
 
 			// now the weight matrix(if it exists)
 			if (layer.getNext() != null) {

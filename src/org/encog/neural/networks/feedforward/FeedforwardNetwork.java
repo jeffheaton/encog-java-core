@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
@@ -38,6 +39,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.Network;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.util.ErrorCalculation;
+import org.encog.neural.networks.Layer;
 
 
 /**
@@ -60,17 +62,17 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	/**
 	 * The input layer.
 	 */
-	protected FeedforwardLayer inputLayer;
+	protected Layer inputLayer;
 	
 	/**
 	 * The output layer.
 	 */
-	protected FeedforwardLayer outputLayer;
+	protected Layer outputLayer;
 	
 	/**
 	 * All of the layers in the neural network.
 	 */
-	protected List<FeedforwardLayer> layers = new ArrayList<FeedforwardLayer>();
+	protected List<Layer> layers = new ArrayList<Layer>();
 	
 	/**
 	 * Construct an empty neural network.
@@ -84,7 +86,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 * 
 	 * @param layer The layer to be added.
 	 */
-	public void addLayer(final FeedforwardLayer layer) {
+	public void addLayer(final Layer layer) {
 		// setup the forward and back pointer
 		if (this.outputLayer != null) {
 			layer.setPrevious(this.outputLayer);
@@ -133,7 +135,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 */
 	public int calculateNeuronCount() {
 		int result = 0;
-		for (final FeedforwardLayer layer : this.layers) {
+		for (final Layer layer : this.layers) {
 			result += layer.getNeuronCount();
 		}
 		return result;
@@ -162,8 +164,8 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	public FeedforwardNetwork cloneStructure() {
 		final FeedforwardNetwork result = new FeedforwardNetwork();
 
-		for (final FeedforwardLayer layer : this.layers) {
-			final FeedforwardLayer clonedLayer = new FeedforwardLayer(layer
+		for (final Layer layer : this.layers) {
+			final Layer clonedLayer = new FeedforwardLayer(layer
 					.getNeuronCount());
 			result.addLayer(clonedLayer);
 		}
@@ -189,11 +191,11 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 							+ this.inputLayer.getNeuronCount());
 		}
 
-		for (final FeedforwardLayer layer : this.layers) {
+		for (final Layer layer : this.layers) {
 			if (layer.isInput()) {
-				layer.computeOutputs(input);
+				layer.compute(input);
 			} else if (layer.isHidden()) {
-				layer.computeOutputs(null);
+				layer.compute(null);
 			}
 		}
 
@@ -209,11 +211,11 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 * @return True if the two networks are equal.
 	 */
 	public boolean equals(final FeedforwardNetwork other) {
-		final Iterator<FeedforwardLayer> otherLayers = other.getLayers()
+		final Iterator<Layer> otherLayers = other.getLayers()
 				.iterator();
 
-		for (final FeedforwardLayer layer : this.getLayers()) {
-			final FeedforwardLayer otherLayer = otherLayers.next();
+		for (final Layer layer : this.getLayers()) {
+			final Layer otherLayer = otherLayers.next();
 
 			if (layer.getNeuronCount() != otherLayer.getNeuronCount()) {
 				return false;
@@ -252,9 +254,9 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 * Get a collection of the hidden layers in the network.
 	 * @return The hidden layers.
 	 */
-	public Collection<FeedforwardLayer> getHiddenLayers() {
-		final Collection<FeedforwardLayer> result = new ArrayList<FeedforwardLayer>();
-		for (final FeedforwardLayer layer : this.layers) {
+	public Collection<Layer> getHiddenLayers() {
+		final Collection<Layer> result = new ArrayList<Layer>();
+		for (final Layer  layer : this.layers) {
 			if (layer.isHidden()) {
 				result.add(layer);
 			}
@@ -266,7 +268,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 * Get the input layer.
 	 * @return The input layer.
 	 */
-	public FeedforwardLayer getInputLayer() {
+	public Layer getInputLayer() {
 		return this.inputLayer;
 	}
 
@@ -274,7 +276,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 * Get all layers.
 	 * @return All layers.
 	 */
-	public List<FeedforwardLayer> getLayers() {
+	public List<Layer> getLayers() {
 		return this.layers;
 	}
 
@@ -282,7 +284,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 * Get the output layer.
 	 * @return The output layer.
 	 */
-	public FeedforwardLayer getOutputLayer() {
+	public Layer getOutputLayer() {
 		return this.outputLayer;
 	}
 
@@ -292,7 +294,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 */
 	public int getWeightMatrixSize() {
 		int result = 0;
-		for (final FeedforwardLayer layer : this.layers) {
+		for (final Layer layer : this.layers) {
 			result += layer.getMatrixSize();
 		}
 		return result;
@@ -304,10 +306,11 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 * @throws MatrixException
 	 */
 	public void reset() {
-		for (final FeedforwardLayer layer : this.layers) {
+		for (final Layer layer : this.layers) {
 			layer.reset();
 		}
 	}
+	
 
 	public String getName() {
 		return "FeedforwardNetwork";

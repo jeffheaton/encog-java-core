@@ -24,13 +24,12 @@
   */
 package org.encog.neural.networks.hopfield;
 
-import org.encog.matrix.BiPolarUtil;
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.neural.networks.Network;
+import org.encog.neural.networks.BasicLayer;
+import org.encog.neural.persist.EncogPersistedObject;
 
 
 
@@ -40,7 +39,7 @@ import org.encog.neural.networks.Network;
  * single layer.  Hopfield neural networks are usually used for 
  * pattern recognition.    
  */
-public class HopfieldNetwork implements Network {
+public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
 	/**
 	 * The weight matrix for this neural network. A Hopfield neural network is a
@@ -51,8 +50,9 @@ public class HopfieldNetwork implements Network {
 	 */
 	private Matrix weightMatrix;
 
-	public HopfieldNetwork(final int size) {
+	public HopfieldLayer(final int size) {
 		this.weightMatrix = new Matrix(size, size);
+		this.setFire(new BiPolarNeuralData(size) );
 
 	}
 
@@ -83,9 +83,7 @@ public class HopfieldNetwork implements Network {
 	 * @throws HopfieldException
 	 *             The pattern caused a matrix math error.
 	 */
-	public NeuralData compute(final NeuralData pattern) {
-
-		final BiPolarNeuralData output = new BiPolarNeuralData(pattern.size());
+	public NeuralData compute(final NeuralData pattern) {		
 
 		// convert the input pattern into a matrix with a single row.
 		// also convert the boolean values to bipolar(-1=false, 1=true)
@@ -103,48 +101,28 @@ public class HopfieldNetwork implements Network {
 
 			// Convert the dot product to either true or false.
 			if (dotProduct > 0) {
-				output.setData(col,true);
+				this.getFire().setData(col,true);
 			} else {
-				output.setData(col,false);
+				this.getFire().setData(col,false);
 			}
 		}
 
-		return output;
+		return this.getFire();
 	}
 
-	/**
-	 * Train the neural network for the specified pattern. The neural network
-	 * can be trained for more than one pattern. To do this simply call the
-	 * train method more than once.
-	 * 
-	 * @param pattern
-	 *            The pattern to train on.
-	 * @throws HopfieldException
-	 *             The pattern size must match the size of this neural network.
-	 */
-	public void train(final NeuralData pattern) {
-		if (pattern.size() != this.weightMatrix.getRows()) {
-			throw new NeuralNetworkError("Can't train a pattern of size "
-					+ pattern.size() + " on a hopfield network of size "
-					+ this.weightMatrix.getRows());
-		}
 
-		// Create a row matrix from the input, convert boolean to bipolar
-		final Matrix m2 = Matrix.createRowMatrix(pattern.getData());
-		// Transpose the matrix and multiply by the original input matrix
-		final Matrix m1 = MatrixMath.transpose(m2);
-		final Matrix m3 = MatrixMath.multiply(m1, m2);
+	@Override
+	public String getName() {
+		return "HopfieldNetwork";
+	}
 
-		// matrix 3 should be square by now, so create an identity
-		// matrix of the same size.
-		final Matrix identity = MatrixMath.identity(m3.getRows());
-
-		// subtract the identity matrix
-		final Matrix m4 = MatrixMath.subtract(m3, identity);
-
-		// now add the calculated matrix, for this pattern, to the
-		// existing weight matrix.
-		this.weightMatrix = MatrixMath.add(this.weightMatrix, m4);
-
+	public void setMatrix(Matrix matrix) {
+		this.weightMatrix = matrix;		
+	}
+	
+	@Override
+	public BiPolarNeuralData getFire()
+	{
+		return (BiPolarNeuralData)super.getFire();
 	}
 }

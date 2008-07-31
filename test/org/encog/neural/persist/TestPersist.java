@@ -33,7 +33,7 @@ public class TestPersist extends TestCase {
 		for (int i = 0; i < 5000; i++) 
 		{
 			train.iteration();
-			network = train.getNetwork();
+			network = (FeedforwardNetwork) train.getNetwork();
 		}
 		
 		TestCase.assertTrue("Error too high for backpropagation",train.getError()<0.1);

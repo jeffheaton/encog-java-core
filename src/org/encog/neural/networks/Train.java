@@ -48,7 +48,7 @@ public interface Train {
 	 * Get the current best network from the training.
 	 * @return The best network.
 	 */
-	public FeedforwardNetwork getNetwork();
+	public Network getNetwork();
 
 	/**
 	 * Perform one iteration of training.

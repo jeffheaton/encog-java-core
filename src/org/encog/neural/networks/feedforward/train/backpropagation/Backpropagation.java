@@ -1,27 +1,27 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v0.5
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.encog.neural.networks.feedforward.train.backpropagation;
 
 import java.util.HashMap;
@@ -31,31 +31,27 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Train;
 import org.encog.neural.networks.feedforward.FeedforwardLayer;
 import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 
-
-
 /**
- * Backpropagation: This class implements a backpropagation 
- * training algorithm for feed forward neural networks.
- * It is used in the same manner as any other training class 
- * that implements the Train interface.
+ * Backpropagation: This class implements a backpropagation training algorithm
+ * for feed forward neural networks. It is used in the same manner as any other
+ * training class that implements the Train interface.
  * 
- * Backpropagation is a common neural network training algorithm.
- * It works by analyzing the error of the output of the neural 
- * network.  Each neuron in the output layer's contribution, according
- * to weight, to this error is determined.  These weights are 
- * then adjusted to minimize this error.  This process continues
- * working its way backwards through the layers of the neural
+ * Backpropagation is a common neural network training algorithm. It works by
+ * analyzing the error of the output of the neural network. Each neuron in the
+ * output layer's contribution, according to weight, to this error is
+ * determined. These weights are then adjusted to minimize this error. This
+ * process continues working its way backwards through the layers of the neural
  * network.
  * 
- * This implementation of the backpropagation algorithm uses both
- * momentum and a learning rate.  The learning rate specifies the 
- * degree to which the weight matrixes will be modified through
- * each iteration.  The momentum specifies how much the previous
- * learning iteration affects the current.  To use no momentum
+ * This implementation of the backpropagation algorithm uses both momentum and a
+ * learning rate. The learning rate specifies the degree to which the weight
+ * matrixes will be modified through each iteration. The momentum specifies how
+ * much the previous learning iteration affects the current. To use no momentum
  * at all specify zero.
  */
 public class Backpropagation implements Train {
@@ -85,7 +81,7 @@ public class Backpropagation implements Train {
 	 * A map between neural network layers and the corresponding
 	 * BackpropagationLayer.
 	 */
-	private final Map<FeedforwardLayer, BackpropagationLayer> layerMap = new HashMap<FeedforwardLayer, BackpropagationLayer>();
+	private final Map<Layer, BackpropagationLayer> layerMap = new HashMap<Layer, BackpropagationLayer>();
 
 	private NeuralDataSet training;
 
@@ -102,17 +98,20 @@ public class Backpropagation implements Train {
 	 *            have on the current iteration.
 	 */
 	public Backpropagation(final FeedforwardNetwork network,
-			final NeuralDataSet training,
-			final double learnRate, final double momentum) {
+			final NeuralDataSet training, final double learnRate,
+			final double momentum) {
 		this.network = network;
 		this.learnRate = learnRate;
 		this.momentum = momentum;
 		this.training = training;
 
-		for (final FeedforwardLayer layer : network.getLayers()) {
-			final BackpropagationLayer bpl = new BackpropagationLayer(this,
-					layer);
-			this.layerMap.put(layer, bpl);
+		for (final Layer layer : network.getLayers()) {
+			if (layer instanceof FeedforwardLayer) {
+				final BackpropagationLayer bpl = new BackpropagationLayer(this,
+						(FeedforwardLayer) layer);
+				this.layerMap.put(layer, bpl);
+			}
+
 		}
 	}
 
@@ -132,28 +131,33 @@ public class Backpropagation implements Train {
 		}
 
 		// clear out all previous error data
-		for (final FeedforwardLayer layer : this.network.getLayers()) {
+		for (final Layer layer : this.network.getLayers()) {
 			getBackpropagationLayer(layer).clearError();
 		}
 
 		for (int i = this.network.getLayers().size() - 1; i >= 0; i--) {
-			final FeedforwardLayer layer = this.network.getLayers().get(i);
-			if (layer.isOutput()) {
+			final Layer layer = this.network.getLayers().get(i);
 
-				getBackpropagationLayer(layer).calcError(ideal);
-			} else {
-				getBackpropagationLayer(layer).calcError();
+			if (layer instanceof FeedforwardLayer) {
+
+				if (layer.isOutput()) {
+
+					getBackpropagationLayer(layer).calcError(ideal);
+				} else {
+					getBackpropagationLayer(layer).calcError();
+				}
 			}
 		}
 	}
 
 	/**
 	 * Get the BackpropagationLayer that corresponds to the specified layer.
-	 * @param layer The specified layer.
+	 * 
+	 * @param layer
+	 *            The specified layer.
 	 * @return The BackpropagationLayer that corresponds to the specified layer.
 	 */
-	public BackpropagationLayer getBackpropagationLayer(
-			final FeedforwardLayer layer) {
+	public BackpropagationLayer getBackpropagationLayer(final Layer layer) {
 		final BackpropagationLayer result = this.layerMap.get(layer);
 
 		if (result == null) {
@@ -166,7 +170,7 @@ public class Backpropagation implements Train {
 
 	/**
 	 * Returns the root mean square error for a complete training set.
-	 *
+	 * 
 	 * @return The current error for the neural network.
 	 */
 	public double getError() {
@@ -175,6 +179,7 @@ public class Backpropagation implements Train {
 
 	/**
 	 * Get the current best neural network.
+	 * 
 	 * @return The current best neural network.
 	 */
 	public FeedforwardNetwork getNetwork() {
@@ -186,7 +191,7 @@ public class Backpropagation implements Train {
 	 */
 	public void iteration() {
 
-		for(NeuralDataPair pair: this.training) {
+		for (NeuralDataPair pair : this.training) {
 			this.network.compute(pair.getInput());
 			calcError(pair.getIdeal());
 		}
@@ -201,8 +206,11 @@ public class Backpropagation implements Train {
 	 */
 	public void learn() {
 
-		for (final FeedforwardLayer layer : this.network.getLayers()) {
-			getBackpropagationLayer(layer).learn(this.learnRate, this.momentum);
+		for (final Layer layer : this.network.getLayers()) {
+			if (layer instanceof FeedforwardLayer) {
+				getBackpropagationLayer(layer).learn(this.learnRate,
+						this.momentum);
+			}
 		}
 
 	}

@@ -5,6 +5,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkException;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.feedforward.FeedforwardLayer;
 import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 import org.encog.neural.persist.EncogPersistedCollection;
@@ -25,8 +26,8 @@ public class FeedforwardNetworkPersistor implements Persistor {
 			FeedforwardNetwork network = (FeedforwardNetwork) object;
 			hd.startElement("", "", network.getName(), atts);
 			hd.startElement("", "", "layers", atts);
-			for (FeedforwardLayer layer : network.getLayers()) {
-				saveLayer(hd, layer);
+			for (Layer layer : network.getLayers()) {
+				saveLayer(hd, (FeedforwardLayer)layer);
 			}
 			hd.endElement("", "", "layers");
 			hd.endElement("", "", network.getName());

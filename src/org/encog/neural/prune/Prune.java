@@ -27,6 +27,7 @@ package org.encog.neural.prune;
 import java.util.Collection;
 
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.feedforward.FeedforwardLayer;
 import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 import org.encog.neural.networks.feedforward.train.backpropagation.Backpropagation;
@@ -151,7 +152,7 @@ public class Prune {
 	protected FeedforwardNetwork clipHiddenNeuron(final int neuron) {
 		final FeedforwardNetwork result = (FeedforwardNetwork) this.currentNetwork
 				.clone();
-		final Collection<FeedforwardLayer> c = result.getHiddenLayers();
+		final Collection<Layer> c = result.getHiddenLayers();
 		final Object layers[] = c.toArray();
 		((FeedforwardLayer) layers[0]).prune(neuron);
 		return result;
@@ -229,7 +230,7 @@ public class Prune {
 	 * @return The current number of hidden neurons.
 	 */
 	protected int getHiddenCount() {
-		final Collection<FeedforwardLayer> c = this.currentNetwork
+		final Collection<Layer> c = this.currentNetwork
 				.getHiddenLayers();
 		final Object layers[] = c.toArray();
 		return ((FeedforwardLayer) layers[0]).getNeuronCount();

@@ -236,7 +236,7 @@ public class TrainSelfOrganizingMap {
 			double diff;
 
 			for (int i = 0; i < this.inputNeuronCount; i++) {
-				diff = pair.getIdeal().getData(i) * input.getNormfac()
+				diff = pair.getInput().getData(i) * input.getNormfac()
 						- wptr.get(0, i);
 				length += diff * diff;
 				if (this.learnMethod == LearningMethod.SUBTRACTIVE) {
