@@ -43,7 +43,7 @@ public class TestSOM extends TestCase {
 
 		do {
 			train.iteration();
-			System.out.println(train.getTotalError());
+			//System.out.println(train.getTotalError());
 			tries++;
 		} while ((train.getTotalError() > MAX_ERROR) && tries<1000 );
 		
