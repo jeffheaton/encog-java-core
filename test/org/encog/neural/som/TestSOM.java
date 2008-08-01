@@ -39,9 +39,24 @@ public class TestSOM extends TestCase {
 
 		do {
 			train.iteration();
-			System.out.println( train.getTotalError() );
-		} while ((train.getTotalError() > MAX_ERROR) );
+			System.out.println(train.getTotalError());
+			tries++;
+		} while ((train.getTotalError() > MAX_ERROR) && tries<1000 );
+		
+		TestCase.assertTrue(tries<100);
+		
+		int data1Neuron = som.winner(data1);
+		int data2Neuron = som.winner(data2);
+		
+		TestCase.assertTrue(data1Neuron!=data2Neuron);
+		
+		int data3Neuron = som.winner(data3);
+		int data4Neuron = som.winner(data4);
+		
+		TestCase.assertTrue(data3Neuron==data1Neuron);
+		TestCase.assertTrue(data4Neuron==data2Neuron);
 
+		
 		
 	}
 }
