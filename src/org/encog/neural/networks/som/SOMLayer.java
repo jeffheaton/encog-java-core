@@ -31,6 +31,7 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.BasicLayer;
+import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Network;
 import org.encog.neural.networks.som.NormalizeInput.NormalizationType;
 
@@ -53,22 +54,6 @@ public class SOMLayer extends BasicLayer implements Serializable {
 	public static final double VERYSMALL = 1.E-30;
 
 	/**
-	 * The weights of the output neurons base on the input from the input
-	 * neurons.
-	 */
-	private Matrix outputWeights;
-
-	/**
-	 * Number of input neurons
-	 */
-	protected int inputNeuronCount;
-
-	/**
-	 * Number of output neurons
-	 */
-	protected int outputNeuronCount;
-
-	/**
 	 * The normalization type.
 	 */
 	protected NormalizationType normalizationType;
@@ -83,23 +68,11 @@ public class SOMLayer extends BasicLayer implements Serializable {
 	 * @param normalizationType
 	 *            The normalization type to use.
 	 */
-	public SOMLayer(final int inputCount, final int outputCount,
+	public SOMLayer(final int inputCount, 
 			final NormalizationType normalizationType) {
 
-		this.inputNeuronCount = inputCount;
-		this.outputNeuronCount = outputCount;
-		this.outputWeights = new Matrix(this.outputNeuronCount,
-				this.inputNeuronCount + 1);
-		this.normalizationType = normalizationType;
-		this.setFire(new BasicNeuralData(outputCount));
-	}
-
-	/**
-	 * Get the input neuron count.
-	 * @return The input neuron count.
-	 */
-	public int getInputNeuronCount() {
-		return this.inputNeuronCount;
+		super(inputCount);
+		this.normalizationType = normalizationType;		
 	}
 
 	/**
@@ -110,66 +83,14 @@ public class SOMLayer extends BasicLayer implements Serializable {
 		return this.normalizationType;
 	}
 
-
-	/**
-	 * Get the output neuron count.
-	 * @return The output neuron count.
-	 */
-	public int getOutputNeuronCount() {
-		return this.outputNeuronCount;
-	}
-
-	/**
-	 * Get the output neuron weights.
-	 * @return The output neuron weights.
-	 */
-	public Matrix getOutputWeights() {
-		return this.outputWeights;
-	}
-
-	/**
-	 * Set the output neuron weights.
-	 * @param outputWeights The new output neuron weights.
-	 */
-	public void setOutputWeights(final Matrix outputWeights) {
-		this.outputWeights = outputWeights;
-	}
-
-	/**
-	 * Determine the winner for the specified input. This is the number of the
-	 * winning neuron.
-	 * 
-	 * @param input
-	 *            The input patter to present to the neural network.
-	 * @return The winning neuron.
-	 */
-	public int winner(final NeuralData input) {
-		
-		NeuralData output = compute(input);
-		
-		int win = 0;
-
-		double biggest = Double.MIN_VALUE;
-		for (int i = 0; i < this.outputNeuronCount; i++) {
-
-			if (output.getData(i) > biggest) {
-				biggest = output.getData(i);
-				win = i;
-			}			
-		}
-
-		return win;
-	}
-
-
 	public NeuralData compute(NeuralData pattern) {
 		final NormalizeInput input = new NormalizeInput(pattern,
 				this.normalizationType);
 		
-		NeuralData output = new BasicNeuralData(this.outputNeuronCount);
+		NeuralData output = new BasicNeuralData(this.getNext().getNeuronCount());
 		
-		for (int i = 0; i < this.outputNeuronCount; i++) {
-			final Matrix optr = this.outputWeights.getRow(i);
+		for (int i = 0; i < this.getNext().getNeuronCount(); i++) {
+			final Matrix optr = this.getMatrix().getRow(i);
 			output.setData(i, MatrixMath
 					.dotProduct(input.getInputMatrix(), optr)
 					* input.getNormfac());
@@ -183,10 +104,27 @@ public class SOMLayer extends BasicLayer implements Serializable {
 			if( d>1 ) {
 				output.setData(i, 1.0);
 			}
+			
+			this.getNext().setFire(i, output.getData(i));
 		}
 		
 		
 		return output;
+	}
+	
+	/**
+	 * Set the next layer.
+	 * 
+	 * @param next
+	 *            the next layer.
+	 */
+	public void setNext(final Layer next) {
+		super.setNext(next);
+
+		if (!this.hasMatrix()) {
+			this.setMatrix( new Matrix(next.getNeuronCount(),
+					this.getNeuronCount() + 1) );
+		}
 	}
 
 }

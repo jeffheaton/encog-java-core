@@ -4,6 +4,8 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.networks.BasicLayer;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 import org.encog.neural.networks.som.SOMLayer;
 import org.encog.neural.networks.som.TrainSelfOrganizingMap;
 import org.encog.neural.networks.som.NormalizeInput.NormalizationType;
@@ -27,14 +29,16 @@ public class TestSOM extends TestCase {
 		NeuralData data3 = new BasicNeuralData(pattern3);
 		NeuralData data4 = new BasicNeuralData(pattern4);
 		
-		SOMLayer som = new SOMLayer(4,2,NormalizationType.MULTIPLICATIVE);
+		FeedforwardNetwork network = new FeedforwardNetwork();
+		network.addLayer(new SOMLayer(4,NormalizationType.MULTIPLICATIVE));
+		network.addLayer(new BasicLayer(2));		
 		
 		NeuralDataSet trainingSet = new BasicNeuralDataSet();
 		trainingSet.add(data1);
 		trainingSet.add(data2);
 		
 		final TrainSelfOrganizingMap train = new TrainSelfOrganizingMap(
-				som, trainingSet,LearningMethod.SUBTRACTIVE,0.5);
+				network, trainingSet,LearningMethod.SUBTRACTIVE,0.5);
 		int tries = 1;
 
 		do {
@@ -45,13 +49,13 @@ public class TestSOM extends TestCase {
 		
 		TestCase.assertTrue(tries<100);
 		
-		int data1Neuron = som.winner(data1);
-		int data2Neuron = som.winner(data2);
+		int data1Neuron = network.winner(data1);
+		int data2Neuron = network.winner(data2);
 		
 		TestCase.assertTrue(data1Neuron!=data2Neuron);
 		
-		int data3Neuron = som.winner(data3);
-		int data4Neuron = som.winner(data4);
+		int data3Neuron = network.winner(data3);
+		int data4Neuron = network.winner(data4);
 		
 		TestCase.assertTrue(data3Neuron==data1Neuron);
 		TestCase.assertTrue(data4Neuron==data2Neuron);

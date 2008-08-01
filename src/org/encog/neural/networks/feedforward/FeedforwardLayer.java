@@ -67,7 +67,7 @@ public class FeedforwardLayer extends BasicLayer implements Serializable {
 	 */
 	public FeedforwardLayer(final ActivationFunction thresholdFunction,
 			final int neuronCount) {
-		this.setFire( new BasicNeuralData(neuronCount) );
+		super(neuronCount);
 		this.activationFunction = thresholdFunction;
 	}
 

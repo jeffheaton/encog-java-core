@@ -29,6 +29,8 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.Layer;
+import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 
 
 
@@ -52,7 +54,7 @@ public class TrainSelfOrganizingMap {
 	/**
 	 * The self organizing map to train.
 	 */
-	private final SOMLayer som;
+	private final SOMLayer somLayer;
 	
 	/**
 	 * The learning method.
@@ -103,7 +105,7 @@ public class TrainSelfOrganizingMap {
 	/** 
 	 * The best network found so far.
 	 */
-	private final SOMLayer bestnet;
+	private final Matrix bestMatrix;
 
 
 	/**
@@ -123,6 +125,8 @@ public class TrainSelfOrganizingMap {
 	private Matrix correc;
 	
 	private int trainSize;
+	
+	private FeedforwardNetwork network;
 
 	/**
 	 * Construct the trainer for a self organizing map.
@@ -131,16 +135,18 @@ public class TrainSelfOrganizingMap {
 	 * @param learnMethod The learning method.
 	 * @param learnRate The learning rate.
 	 */
-	public TrainSelfOrganizingMap(final SOMLayer som,
+	public TrainSelfOrganizingMap(final FeedforwardNetwork network,
 			final NeuralDataSet train,LearningMethod learnMethod,double learnRate) {
-		this.som = som;
+		this.network = network;
 		this.train = train;
 		this.totalError = 1.0;
 		this.learnMethod = learnMethod;
 		this.learnRate = learnRate;
+		
+		this.somLayer = findSOMLayer();
 
-		this.outputNeuronCount = som.getOutputNeuronCount();
-		this.inputNeuronCount = som.getInputNeuronCount();
+		this.outputNeuronCount = this.somLayer.getNext().getNeuronCount();
+		this.inputNeuronCount = this.somLayer.getNeuronCount();
 
 		this.totalError = 1.0;
 		this.trainSize = 0;
@@ -155,8 +161,7 @@ public class TrainSelfOrganizingMap {
 
 		}
 
-		this.bestnet = new SOMLayer(this.inputNeuronCount,
-				this.outputNeuronCount, this.som.getNormalizationType());
+		this.bestMatrix = somLayer.getMatrix().clone();
 
 		this.won = new int[this.outputNeuronCount];
 		this.correc = new Matrix(this.outputNeuronCount,
@@ -169,6 +174,17 @@ public class TrainSelfOrganizingMap {
 
 		initialize();
 		this.bestError = Double.MAX_VALUE;
+	}
+
+	private SOMLayer findSOMLayer() {
+
+		for(Layer layer: this.network.getLayers() )
+		{
+			if( layer instanceof SOMLayer )
+				return (SOMLayer)layer;
+		}
+		
+		return null;
 	}
 
 	/**
@@ -191,24 +207,11 @@ public class TrainSelfOrganizingMap {
 
 			for (int j = 0; j <= this.inputNeuronCount; j++) {
 				final double corr = f * this.correc.get(i, j);
-				this.som.getOutputWeights().add(i, j, corr);
+				this.somLayer.getMatrix().add(i, j, corr);
 				length += corr * corr;
 			}
 		}
 	}
-
-	/**
-	 * Copy the weights from one matrix to another.
-	 * @param source The source SOM.
-	 * @param target The target SOM.
-	 */
-	private void copyWeights(final SOMLayer source,
-			final SOMLayer target) {
-
-		MatrixMath.copy(source.getOutputWeights(), target
-				.getOutputWeights());
-	}
-
 
 	/**
 	 * Evaludate the current error level of the network.
@@ -225,11 +228,11 @@ public class TrainSelfOrganizingMap {
 		// loop through all training sets to determine correction
 		for(NeuralDataPair pair: this.train) {
 			final NormalizeInput input = new NormalizeInput(pair.getInput(),
-					this.som.getNormalizationType());
-			final int best = this.som.winner(pair.getInput());
+					this.somLayer.getNormalizationType());
+			final int best = this.network.winner(pair.getInput());
 
 			this.won[best]++;
-			final Matrix wptr = this.som.getOutputWeights().getRow(best);
+			final Matrix wptr = this.somLayer.getMatrix().getRow(best);
 
 			double length = 0.0;
 			double diff;
@@ -280,14 +283,14 @@ public class TrainSelfOrganizingMap {
 		int best; 
 		NeuralDataPair which = null;
 
-		final Matrix outputWeights = this.som.getOutputWeights();
+		final Matrix outputWeights = this.somLayer.getMatrix();
 		
 		// Loop over all training sets.  Find the training set with
 		// the least output.
 		double dist = Double.MAX_VALUE;
 		for(NeuralDataPair pair: train) {
-			best = this.som.winner(pair.getInput());
-			NeuralData output = this.som.getFire();
+			best = this.network.winner(pair.getInput());
+			NeuralData output = this.somLayer.getFire();
 			
 			if (output.getData(best) < dist) {
 				dist = output.getData(best);
@@ -296,9 +299,9 @@ public class TrainSelfOrganizingMap {
 		}
 
 		final NormalizeInput input = new NormalizeInput(which.getInput(),
-				this.som.getNormalizationType());
-		best = this.som.winner(which.getInput());
-		final NeuralData output = this.som.getFire();
+				this.somLayer.getNormalizationType());
+		best = this.network.winner(which.getInput());
+		final NeuralData output = this.somLayer.getFire();
 		int which2 = 0;
 		
 		dist = Double.MIN_VALUE;
@@ -341,10 +344,10 @@ public class TrainSelfOrganizingMap {
 	 */
 	public void initialize() {
 
-		this.som.getOutputWeights().ramdomize(-1, 1);
+		this.somLayer.getMatrix().ramdomize(-1, 1);
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
-			normalizeWeight(this.som.getOutputWeights(), i);
+			normalizeWeight(this.somLayer.getMatrix(), i);
 		}
 	}
 
@@ -360,7 +363,7 @@ public class TrainSelfOrganizingMap {
 
 		if (this.totalError < this.bestError) {
 			this.bestError = this.totalError;
-			copyWeights(this.som, this.bestnet);
+			MatrixMath.copy(this.somLayer.getMatrix(), this.bestMatrix);
 		}
 
 		int winners = 0;
@@ -383,10 +386,10 @@ public class TrainSelfOrganizingMap {
 
 		// done
 
-		copyWeights(this.som, this.bestnet);
+		MatrixMath.copy(this.somLayer.getMatrix(), this.bestMatrix);
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
-			normalizeWeight(this.som.getOutputWeights(), i);
+			normalizeWeight(this.somLayer.getMatrix(), i);
 		}
 	}
 

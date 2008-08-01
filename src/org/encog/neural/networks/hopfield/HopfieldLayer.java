@@ -51,9 +51,8 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 	private Matrix weightMatrix;
 
 	public HopfieldLayer(final int size) {
-		this.weightMatrix = new Matrix(size, size);
-		this.setFire(new BiPolarNeuralData(size) );
-
+		super(size);
+		this.weightMatrix = new Matrix(size, size);		
 	}
 
 	/**

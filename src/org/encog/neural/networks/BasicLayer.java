@@ -2,10 +2,11 @@ package org.encog.neural.networks;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 
-public abstract class BasicLayer implements Layer{
+public class BasicLayer implements Layer{
 	/**
 	 * Results from the last time that the outputs were calculated for this
 	 * layer.
@@ -26,6 +27,11 @@ public abstract class BasicLayer implements Layer{
 	 * The previous layer in the neural network.
 	 */
 	private Layer previous;
+	
+
+	public BasicLayer(final int neuronCount) {
+		this.setFire( new BasicNeuralData(neuronCount) );
+	}
 	
 	/**
 	 * Get the output array from the last time that the output of this layer was
@@ -189,6 +195,11 @@ public abstract class BasicLayer implements Layer{
 	@Override
 	public void setFire(NeuralData fire) {
 		this.fire = fire;		
+	}
+
+	@Override
+	public NeuralData compute(NeuralData pattern) {
+		return pattern;
 	}
 
 }
