@@ -30,6 +30,7 @@ import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.BasicLayer;
 import org.encog.neural.networks.Network;
 import org.encog.neural.networks.som.NormalizeInput.NormalizationType;
 
@@ -39,7 +40,7 @@ import org.encog.neural.networks.som.NormalizeInput.NormalizationType;
  * special type of neural network that is used to classify input into groups.
  * The SOM makes use of unsupervised training.
  */
-public class SelfOrganizingMap implements Serializable, Network {
+public class SelfOrganizingMap extends BasicLayer implements Serializable {
 
 	/**
 	 * The serial id for this class.
@@ -56,11 +57,6 @@ public class SelfOrganizingMap implements Serializable, Network {
 	 * neurons.
 	 */
 	private Matrix outputWeights;
-
-	/**
-	 * Output neuron activations
-	 */
-	protected double output[];
 
 	/**
 	 * Number of input neurons
@@ -94,8 +90,8 @@ public class SelfOrganizingMap implements Serializable, Network {
 		this.outputNeuronCount = outputCount;
 		this.outputWeights = new Matrix(this.outputNeuronCount,
 				this.inputNeuronCount + 1);
-		this.output = new double[this.outputNeuronCount];
 		this.normalizationType = normalizationType;
+		this.setFire(new BasicNeuralData(outputCount));
 	}
 
 	/**
@@ -114,13 +110,6 @@ public class SelfOrganizingMap implements Serializable, Network {
 		return this.normalizationType;
 	}
 
-	/**
-	 * Get the output neurons.
-	 * @return The output neurons.
-	 */
-	public double[] getOutput() {
-		return this.output;
-	}
 
 	/**
 	 * Get the output neuron count.
@@ -155,45 +144,23 @@ public class SelfOrganizingMap implements Serializable, Network {
 	 * @return The winning neuron.
 	 */
 	public int winner(final NeuralData input) {
-		final NormalizeInput normalizedInput = new NormalizeInput(input,
-				this.normalizationType);
-		return winner(normalizedInput);
-	}
-
-	/**
-	 * Determine the winner for the specified input. This is the number of the
-	 * winning neuron.
-	 * @param input The input pattern.
-	 * @return The winning neuron.
-	 */
-	public int winner(final NormalizeInput input) {
+		
+		NeuralData output = compute(input);
+		
 		int win = 0;
 
 		double biggest = Double.MIN_VALUE;
 		for (int i = 0; i < this.outputNeuronCount; i++) {
-			final Matrix optr = this.outputWeights.getRow(i);
-			this.output[i] = MatrixMath
-					.dotProduct(input.getInputMatrix(), optr)
-					* input.getNormfac();
-			
-			this.output[i] = (this.output[i]+1.0)/2.0;
 
-			if (this.output[i] > biggest) {
-				biggest = this.output[i];
+			if (output.getData(i) > biggest) {
+				biggest = output.getData(i);
 				win = i;
-			}
-			
-			if( this.output[i] <0 ) {
-				this.output[i]=0;
-			}
-			
-			if( this.output[i]>1 ) {
-				this.output[i]=1;
-			}
+			}			
 		}
 
 		return win;
 	}
+
 
 	public NeuralData compute(NeuralData pattern) {
 		final NormalizeInput input = new NormalizeInput(pattern,
@@ -203,11 +170,11 @@ public class SelfOrganizingMap implements Serializable, Network {
 		
 		for (int i = 0; i < this.outputNeuronCount; i++) {
 			final Matrix optr = this.outputWeights.getRow(i);
-			this.output[i] = MatrixMath
+			output.setData(i, MatrixMath
 					.dotProduct(input.getInputMatrix(), optr)
-					* input.getNormfac();
+					* input.getNormfac());
 			
-			double d = (this.output[i]+1.0)/2.0;
+			double d = (output.getData(i)+1.0)/2.0;
 			
 			if( d <0 ) {
 				output.setData(i, 0.0);

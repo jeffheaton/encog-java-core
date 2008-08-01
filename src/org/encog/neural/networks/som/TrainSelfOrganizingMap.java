@@ -26,6 +26,7 @@ package org.encog.neural.networks.som;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
+import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
@@ -181,8 +182,6 @@ public class TrainSelfOrganizingMap {
 				continue;
 			}
 
-			final Matrix wptr = this.som.getOutputWeights().getRow(i);
-
 			double f = 1.0 / this.won[i];
 			if (this.learnMethod == LearningMethod.SUBTRACTIVE) {
 				f *= this.learnRate;
@@ -192,7 +191,7 @@ public class TrainSelfOrganizingMap {
 
 			for (int j = 0; j <= this.inputNeuronCount; j++) {
 				final double corr = f * this.correc.get(i, j);
-				wptr.add(0, j, corr);
+				this.som.getOutputWeights().add(i, j, corr);
 				length += corr * corr;
 			}
 		}
@@ -227,7 +226,7 @@ public class TrainSelfOrganizingMap {
 		for(NeuralDataPair pair: this.train) {
 			final NormalizeInput input = new NormalizeInput(pair.getInput(),
 					this.som.getNormalizationType());
-			final int best = this.som.winner(input);
+			final int best = this.som.winner(pair.getInput());
 
 			this.won[best]++;
 			final Matrix wptr = this.som.getOutputWeights().getRow(best);
@@ -288,18 +287,18 @@ public class TrainSelfOrganizingMap {
 		double dist = Double.MAX_VALUE;
 		for(NeuralDataPair pair: train) {
 			best = this.som.winner(pair.getInput());
-			final double output[] = this.som.getOutput();
+			NeuralData output = this.som.getFire();
 			
-			if (output[best] < dist) {
-				dist = output[best];
+			if (output.getData(best) < dist) {
+				dist = output.getData(best);
 				which = pair;
 			}
 		}
 
 		final NormalizeInput input = new NormalizeInput(which.getInput(),
 				this.som.getNormalizationType());
-		best = this.som.winner(input);
-		final double output[] = this.som.getOutput();
+		best = this.som.winner(which.getInput());
+		final NeuralData output = this.som.getFire();
 		int which2 = 0;
 		
 		dist = Double.MIN_VALUE;
@@ -308,8 +307,8 @@ public class TrainSelfOrganizingMap {
 			if (this.won[i] != 0) {
 				continue;
 			}
-			if (output[i] > dist) {
-				dist = output[i];
+			if (output.getData(i) > dist) {
+				dist = output.getData(i);
 				which2 = i;
 			}
 		}

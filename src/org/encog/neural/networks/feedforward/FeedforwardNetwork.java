@@ -311,6 +311,11 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 		}
 	}
 	
+	public int winner(NeuralData input)
+	{
+		return 0;
+		
+	}
 
 	public String getName() {
 		return "FeedforwardNetwork";
