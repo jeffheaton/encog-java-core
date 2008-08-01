@@ -4,7 +4,7 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.networks.som.SelfOrganizingMap;
+import org.encog.neural.networks.som.SOMLayer;
 import org.encog.neural.networks.som.TrainSelfOrganizingMap;
 import org.encog.neural.networks.som.NormalizeInput.NormalizationType;
 import org.encog.neural.networks.som.TrainSelfOrganizingMap.LearningMethod;
@@ -27,7 +27,7 @@ public class TestSOM extends TestCase {
 		NeuralData data3 = new BasicNeuralData(pattern3);
 		NeuralData data4 = new BasicNeuralData(pattern4);
 		
-		SelfOrganizingMap som = new SelfOrganizingMap(4,2,NormalizationType.MULTIPLICATIVE);
+		SOMLayer som = new SOMLayer(4,2,NormalizationType.MULTIPLICATIVE);
 		
 		NeuralDataSet trainingSet = new BasicNeuralDataSet();
 		trainingSet.add(data1);

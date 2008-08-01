@@ -138,7 +138,7 @@ public class NormalizeInput {
 
 		final Matrix inputMatrix = Matrix.createColumnMatrix(input.getData());
 		double len = MatrixMath.vectorLength(inputMatrix);
-		len = Math.max(len, SelfOrganizingMap.VERYSMALL);
+		len = Math.max(len, SOMLayer.VERYSMALL);
 		final int numInputs = input.size();
 
 		if (this.type == NormalizationType.MULTIPLICATIVE) {

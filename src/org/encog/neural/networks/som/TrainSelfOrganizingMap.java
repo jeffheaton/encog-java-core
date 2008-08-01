@@ -52,7 +52,7 @@ public class TrainSelfOrganizingMap {
 	/**
 	 * The self organizing map to train.
 	 */
-	private final SelfOrganizingMap som;
+	private final SOMLayer som;
 	
 	/**
 	 * The learning method.
@@ -103,7 +103,7 @@ public class TrainSelfOrganizingMap {
 	/** 
 	 * The best network found so far.
 	 */
-	private final SelfOrganizingMap bestnet;
+	private final SOMLayer bestnet;
 
 
 	/**
@@ -131,7 +131,7 @@ public class TrainSelfOrganizingMap {
 	 * @param learnMethod The learning method.
 	 * @param learnRate The learning rate.
 	 */
-	public TrainSelfOrganizingMap(final SelfOrganizingMap som,
+	public TrainSelfOrganizingMap(final SOMLayer som,
 			final NeuralDataSet train,LearningMethod learnMethod,double learnRate) {
 		this.som = som;
 		this.train = train;
@@ -148,14 +148,14 @@ public class TrainSelfOrganizingMap {
 		for(NeuralDataPair pair: train) {
 			this.trainSize++;
 			final Matrix dptr = Matrix.createColumnMatrix(pair.getInput().getData());
-			if (MatrixMath.vectorLength(dptr) < SelfOrganizingMap.VERYSMALL) {
+			if (MatrixMath.vectorLength(dptr) < SOMLayer.VERYSMALL) {
 				throw (new RuntimeException(
 						"Multiplicative normalization has null training case"));
 			}
 
 		}
 
-		this.bestnet = new SelfOrganizingMap(this.inputNeuronCount,
+		this.bestnet = new SOMLayer(this.inputNeuronCount,
 				this.outputNeuronCount, this.som.getNormalizationType());
 
 		this.won = new int[this.outputNeuronCount];
@@ -202,8 +202,8 @@ public class TrainSelfOrganizingMap {
 	 * @param source The source SOM.
 	 * @param target The target SOM.
 	 */
-	private void copyWeights(final SelfOrganizingMap source,
-			final SelfOrganizingMap target) {
+	private void copyWeights(final SOMLayer source,
+			final SOMLayer target) {
 
 		MatrixMath.copy(source.getOutputWeights(), target
 				.getOutputWeights());
@@ -399,7 +399,7 @@ public class TrainSelfOrganizingMap {
 	protected void normalizeWeight(final Matrix matrix, final int row) {
 
 		double len = MatrixMath.vectorLength(matrix.getRow(row));
-		len = Math.max(len, SelfOrganizingMap.VERYSMALL);
+		len = Math.max(len, SOMLayer.VERYSMALL);
 
 		len = 1.0 / len;
 		for (int i = 0; i < this.inputNeuronCount; i++) {

@@ -40,7 +40,7 @@ import org.encog.neural.networks.som.NormalizeInput.NormalizationType;
  * special type of neural network that is used to classify input into groups.
  * The SOM makes use of unsupervised training.
  */
-public class SelfOrganizingMap extends BasicLayer implements Serializable {
+public class SOMLayer extends BasicLayer implements Serializable {
 
 	/**
 	 * The serial id for this class.
@@ -83,7 +83,7 @@ public class SelfOrganizingMap extends BasicLayer implements Serializable {
 	 * @param normalizationType
 	 *            The normalization type to use.
 	 */
-	public SelfOrganizingMap(final int inputCount, final int outputCount,
+	public SOMLayer(final int inputCount, final int outputCount,
 			final NormalizationType normalizationType) {
 
 		this.inputNeuronCount = inputCount;

@@ -311,10 +311,30 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 		}
 	}
 	
-	public int winner(NeuralData input)
-	{
-		return 0;
+	/**
+	 * Determine the winner for the specified input. This is the number of the
+	 * winning neuron.
+	 * 
+	 * @param input
+	 *            The input patter to present to the neural network.
+	 * @return The winning neuron.
+	 */
+	public int winner(final NeuralData input) {
 		
+		NeuralData output = compute(input);
+		
+		int win = 0;
+		
+		double biggest = Double.MIN_VALUE;
+		for (int i = 0; i < output.size(); i++) {
+
+			if (output.getData(i) > biggest) {
+				biggest = output.getData(i);
+				win = i;
+			}			
+		}
+
+		return win;
 	}
 
 	public String getName() {
