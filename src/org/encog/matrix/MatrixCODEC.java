@@ -24,9 +24,9 @@
   */
 package org.encog.matrix;
 
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
-import org.encog.neural.networks.feedforward.FeedforwardLayer;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.layers.FeedforwardLayer;
 
 
 
@@ -45,7 +45,7 @@ public class MatrixCODEC {
 	 *            An array of doubles.
 	 */
 	public static void arrayToNetwork(final Double array[],
-			final FeedforwardNetwork network) {
+			final BasicNetwork network) {
 
 		// copy data to array
 		int index = 0;
@@ -66,7 +66,7 @@ public class MatrixCODEC {
 	 * 
 	 * @return The memory of the neuron.
 	 */
-	public static Double[] networkToArray(final FeedforwardNetwork network) {
+	public static Double[] networkToArray(final BasicNetwork network) {
 		int size = 0;
 
 		// first determine size

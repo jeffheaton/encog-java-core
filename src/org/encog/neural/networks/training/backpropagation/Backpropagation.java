@@ -22,7 +22,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.networks.feedforward.train.backpropagation;
+package org.encog.neural.networks.training.backpropagation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,10 +31,10 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Train;
-import org.encog.neural.networks.feedforward.FeedforwardLayer;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.layers.FeedforwardLayer;
 
 /**
  * Backpropagation: This class implements a backpropagation training algorithm
@@ -75,7 +75,7 @@ public class Backpropagation implements Train {
 	/**
 	 * THe network that is being trained.
 	 */
-	private final FeedforwardNetwork network;
+	private final BasicNetwork network;
 
 	/**
 	 * A map between neural network layers and the corresponding
@@ -97,7 +97,7 @@ public class Backpropagation implements Train {
 	 *            The influence that previous iteration's training deltas will
 	 *            have on the current iteration.
 	 */
-	public Backpropagation(final FeedforwardNetwork network,
+	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
 			final double momentum) {
 		this.network = network;
@@ -182,7 +182,7 @@ public class Backpropagation implements Train {
 	 * 
 	 * @return The current best neural network.
 	 */
-	public FeedforwardNetwork getNetwork() {
+	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 

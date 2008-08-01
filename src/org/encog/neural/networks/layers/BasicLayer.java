@@ -1,10 +1,11 @@
-package org.encog.neural.networks;
+package org.encog.neural.networks.layers;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.Layer;
 
 public class BasicLayer implements Layer{
 	/**

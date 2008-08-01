@@ -3,9 +3,9 @@ package org.encog.neural.hopfield;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
-import org.encog.neural.networks.hopfield.HopfieldLayer;
-import org.encog.neural.networks.hopfield.TrainHopfield;
+import org.encog.neural.networks.layers.HopfieldLayer;
+import org.encog.neural.networks.training.hopfield.TrainHopfield;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Train;
 
 import junit.framework.TestCase;
@@ -15,7 +15,7 @@ public class TestHopfield extends TestCase {
 	{		
 		boolean input[] = { true, false, true, false };
 		
-		FeedforwardNetwork network = new FeedforwardNetwork();
+		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new HopfieldLayer(4));
 		
 		NeuralData data = new BiPolarNeuralData(input);
@@ -34,7 +34,7 @@ public class TestHopfield extends TestCase {
 		try {
 			boolean input[] = { true, false, true };
 			NeuralData data = new BiPolarNeuralData(input);
-			FeedforwardNetwork network = new FeedforwardNetwork();
+			BasicNetwork network = new BasicNetwork();
 			network.addLayer( new HopfieldLayer(4) );
 			Train train = new TrainHopfield(data,network);
 			train.iteration();

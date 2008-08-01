@@ -27,10 +27,10 @@ package org.encog.neural.prune;
 import java.util.Collection;
 
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
-import org.encog.neural.networks.feedforward.FeedforwardLayer;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
-import org.encog.neural.networks.feedforward.train.backpropagation.Backpropagation;
+import org.encog.neural.networks.layers.FeedforwardLayer;
+import org.encog.neural.networks.training.backpropagation.Backpropagation;
 
 
 
@@ -52,7 +52,7 @@ public class Prune {
 	/**
 	 * The neural network that is currently being processed.
 	 */
-	protected FeedforwardNetwork currentNetwork;
+	protected BasicNetwork currentNetwork;
 
 	/**
 	 * The training set.
@@ -136,7 +136,7 @@ public class Prune {
 	 * @param train
 	 * @param ideal
 	 */
-	public Prune(final FeedforwardNetwork network, final NeuralDataSet training,final double maxError) {
+	public Prune(final BasicNetwork network, final NeuralDataSet training,final double maxError) {
 		this.currentNetwork = network;
 		this.training = training;
 		this.maxError = maxError;
@@ -149,8 +149,8 @@ public class Prune {
 	 *            The neuron to clip.
 	 * @return Returns the new neural network.
 	 */
-	protected FeedforwardNetwork clipHiddenNeuron(final int neuron) {
-		final FeedforwardNetwork result = (FeedforwardNetwork) this.currentNetwork
+	protected BasicNetwork clipHiddenNeuron(final int neuron) {
+		final BasicNetwork result = (BasicNetwork) this.currentNetwork
 				.clone();
 		final Collection<Layer> c = result.getHiddenLayers();
 		final Object layers[] = c.toArray();
@@ -165,7 +165,7 @@ public class Prune {
 	 *            The neural network that we are seeking a error rate for.
 	 * @return The error for the specified neural network.
 	 */
-	protected double determineError(final FeedforwardNetwork network) {
+	protected double determineError(final BasicNetwork network) {
 		return network.calculateError(this.training);
 
 	}
@@ -179,7 +179,7 @@ public class Prune {
 	protected boolean findNeuron() {
 
 		for (int i = 0; i < this.currentNetwork.getHiddenLayerCount(); i++) {
-			final FeedforwardNetwork trial = this.clipHiddenNeuron(i);
+			final BasicNetwork trial = this.clipHiddenNeuron(i);
 			final double e2 = determineError(trial);
 			if (e2 < this.maxError) {
 				this.currentNetwork = trial;
@@ -194,7 +194,7 @@ public class Prune {
 	 * 
 	 * @return The neural network.
 	 */
-	public FeedforwardNetwork getCurrentNetwork() {
+	public BasicNetwork getCurrentNetwork() {
 		return this.currentNetwork;
 	}
 
@@ -273,7 +273,7 @@ public class Prune {
 			this.cycles = 0;
 			this.hiddenNeuronCount++;
 
-			this.currentNetwork = new FeedforwardNetwork();
+			this.currentNetwork = new BasicNetwork();
 			this.currentNetwork.addLayer(new FeedforwardLayer(
 					this.training.getInputSize()));
 			this.currentNetwork.addLayer(new FeedforwardLayer(
@@ -323,7 +323,7 @@ public class Prune {
 		this.cycles = 0;
 		this.done = false;
 
-		this.currentNetwork = new FeedforwardNetwork();
+		this.currentNetwork = new BasicNetwork();
 		this.currentNetwork
 				.addLayer(new FeedforwardLayer(this.training.getInputSize()));
 		this.currentNetwork.addLayer(new FeedforwardLayer(

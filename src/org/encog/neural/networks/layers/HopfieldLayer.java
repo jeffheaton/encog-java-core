@@ -22,13 +22,12 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.networks.hopfield;
+package org.encog.neural.networks.layers;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.neural.networks.BasicLayer;
 import org.encog.neural.persist.EncogPersistedObject;
 
 

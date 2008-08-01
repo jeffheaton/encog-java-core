@@ -1,4 +1,4 @@
-package org.encog.neural.networks.hopfield;
+package org.encog.neural.networks.training.hopfield;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
@@ -8,21 +8,22 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Train;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.layers.HopfieldLayer;
 
 public class TrainHopfield implements Train {
 
 	private NeuralDataSet trainingSet;
-	private FeedforwardNetwork network;
+	private BasicNetwork network;
 
-	public TrainHopfield(NeuralDataSet trainingSet, FeedforwardNetwork network) {
+	public TrainHopfield(NeuralDataSet trainingSet, BasicNetwork network) {
 		this.trainingSet = trainingSet;
 		this.network = network;
 	}
 
-	public TrainHopfield(NeuralData pattern, FeedforwardNetwork network) {
+	public TrainHopfield(NeuralData pattern, BasicNetwork network) {
 		this.network = network;
 		this.trainingSet = new BasicNeuralDataSet();
 		this.trainingSet.add(new BasicNeuralDataPair(pattern));
@@ -35,7 +36,7 @@ public class TrainHopfield implements Train {
 	}
 
 	@Override
-	public FeedforwardNetwork getNetwork() {
+	public BasicNetwork getNetwork() {
 		// TODO Auto-generated method stub
 		return null;
 	}

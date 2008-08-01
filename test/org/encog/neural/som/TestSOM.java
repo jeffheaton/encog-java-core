@@ -4,12 +4,12 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.networks.BasicLayer;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
-import org.encog.neural.networks.som.SOMLayer;
-import org.encog.neural.networks.som.TrainSelfOrganizingMap;
-import org.encog.neural.networks.som.NormalizeInput.NormalizationType;
-import org.encog.neural.networks.som.TrainSelfOrganizingMap.LearningMethod;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.SOMLayer;
+import org.encog.neural.networks.training.som.TrainSelfOrganizingMap;
+import org.encog.neural.networks.training.som.TrainSelfOrganizingMap.LearningMethod;
+import org.encog.util.NormalizeInput.NormalizationType;
 
 import junit.framework.TestCase;
 
@@ -29,7 +29,7 @@ public class TestSOM extends TestCase {
 		NeuralData data3 = new BasicNeuralData(pattern3);
 		NeuralData data4 = new BasicNeuralData(pattern4);
 		
-		FeedforwardNetwork network = new FeedforwardNetwork();
+		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new SOMLayer(4,NormalizationType.MULTIPLICATIVE));
 		network.addLayer(new BasicLayer(2));		
 		

@@ -22,12 +22,12 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.networks.feedforward.train.anneal;
+package org.encog.neural.networks.training.anneal;
 
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.solve.anneal.SimulatedAnnealing;
 
 
@@ -43,7 +43,7 @@ public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> {
 	/**
 	 * The neural network that is to be trained.
 	 */
-	protected FeedforwardNetwork network;
+	protected BasicNetwork network;
 
 	/**
 	 * The training data.
@@ -67,7 +67,7 @@ public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> {
 	 * @param cycles
 	 *            The number of cycles in a training iteration.
 	 */
-	public NeuralSimulatedAnnealing(final FeedforwardNetwork network,
+	public NeuralSimulatedAnnealing(final BasicNetwork network,
 			final NeuralDataSet training,
 			final double startTemp, final double stopTemp, final int cycles) {
 		this.network = network;
@@ -101,7 +101,7 @@ public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> {
 	 * Get the best network from the training.
 	 * @return The best network.
 	 */
-	public FeedforwardNetwork getNetwork() {
+	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 

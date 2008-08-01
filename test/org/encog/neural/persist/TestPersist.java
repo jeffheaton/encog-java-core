@@ -5,17 +5,17 @@ import java.util.Iterator;
 import org.encog.neural.XOR;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Train;
-import org.encog.neural.networks.feedforward.FeedforwardLayer;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
-import org.encog.neural.networks.feedforward.train.backpropagation.Backpropagation;
+import org.encog.neural.networks.layers.FeedforwardLayer;
+import org.encog.neural.networks.training.backpropagation.Backpropagation;
 
 import junit.framework.TestCase;
 
 public class TestPersist extends TestCase {
-	private FeedforwardNetwork createNetwork() 
+	private BasicNetwork createNetwork() 
 	{
-		FeedforwardNetwork network = new FeedforwardNetwork();
+		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new FeedforwardLayer(2));
 		network.addLayer(new FeedforwardLayer(3));
 		network.addLayer(new FeedforwardLayer(1));
@@ -27,13 +27,13 @@ public class TestPersist extends TestCase {
 	{
 		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
-		FeedforwardNetwork network = createNetwork();
+		BasicNetwork network = createNetwork();
 		Train train = new Backpropagation(network, trainingData, 0.7, 0.9); 	
 
 		for (int i = 0; i < 5000; i++) 
 		{
 			train.iteration();
-			network = (FeedforwardNetwork) train.getNetwork();
+			network = (BasicNetwork) train.getNetwork();
 		}
 		
 		TestCase.assertTrue("Error too high for backpropagation",train.getError()<0.1);
@@ -46,7 +46,7 @@ public class TestPersist extends TestCase {
 		EncogPersistedCollection encog2 =  new EncogPersistedCollection();
 		encog2.load("c:\\encog.xml");
 		System.out.println(encog2.getEncogVersion());
-		FeedforwardNetwork n = (FeedforwardNetwork) encog2.getList().get(0);
+		BasicNetwork n = (BasicNetwork) encog2.getList().get(0);
 		TestCase.assertTrue("Error too high for load",n.calculateError(trainingData)<0.1);
 
 	}

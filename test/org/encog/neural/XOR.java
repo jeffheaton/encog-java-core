@@ -2,8 +2,8 @@ package org.encog.neural;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.feedforward.FeedforwardLayer;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.FeedforwardLayer;
 
 
 public class XOR {
@@ -13,7 +13,7 @@ public class XOR {
 
 		public static double XOR_IDEAL[][] = { { 0.0 }, { 1.0 }, { 1.0 }, { 0.0 } };
 		
-		public static boolean verifyXOR(FeedforwardNetwork network,double tolerance) 
+		public static boolean verifyXOR(BasicNetwork network,double tolerance) 
 		{
 			for(int trainingSet=0;trainingSet<XOR.XOR_IDEAL.length;trainingSet++)
 			{
@@ -31,9 +31,9 @@ public class XOR {
 			return true;
 		}
 		
-		public static FeedforwardNetwork createThreeLayerNet()
+		public static BasicNetwork createThreeLayerNet()
 		{
-			FeedforwardNetwork network = new FeedforwardNetwork();
+			BasicNetwork network = new BasicNetwork();
 			network.addLayer(new FeedforwardLayer(2));
 			network.addLayer(new FeedforwardLayer(3));
 			network.addLayer(new FeedforwardLayer(1));

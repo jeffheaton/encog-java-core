@@ -22,7 +22,7 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.networks.feedforward;
+package org.encog.neural.networks;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,10 +36,9 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.Network;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.util.ErrorCalculation;
-import org.encog.neural.networks.Layer;
+import org.encog.neural.networks.layers.FeedforwardLayer;
 
 
 /**
@@ -53,7 +52,7 @@ import org.encog.neural.networks.Layer;
  * is the output layer.  Any layers added between these two layers
  * are the hidden layers.
  */
-public class FeedforwardNetwork implements Serializable, Network, EncogPersistedObject {
+public class BasicNetwork implements Serializable, Network, EncogPersistedObject {
 	/**
 	 * Serial id for this class.
 	 */
@@ -77,7 +76,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	/**
 	 * Construct an empty neural network.
 	 */
-	public FeedforwardNetwork() {
+	public BasicNetwork() {
 	}
 
 	/**
@@ -149,7 +148,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 */
 	@Override
 	public Object clone() {
-		final FeedforwardNetwork result = cloneStructure();
+		final BasicNetwork result = cloneStructure();
 		final Double copy[] = MatrixCODEC.networkToArray(this);
 		MatrixCODEC.arrayToNetwork(copy, result);
 		return result;
@@ -161,8 +160,8 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 * @return A cloned copy of the structure of the neural network.
 	 */
 
-	public FeedforwardNetwork cloneStructure() {
-		final FeedforwardNetwork result = new FeedforwardNetwork();
+	public BasicNetwork cloneStructure() {
+		final BasicNetwork result = new BasicNetwork();
 
 		for (final Layer layer : this.layers) {
 			final Layer clonedLayer = new FeedforwardLayer(layer
@@ -210,7 +209,7 @@ public class FeedforwardNetwork implements Serializable, Network, EncogPersisted
 	 *            The other neural network.
 	 * @return True if the two networks are equal.
 	 */
-	public boolean equals(final FeedforwardNetwork other) {
+	public boolean equals(final BasicNetwork other) {
 		final Iterator<Layer> otherLayers = other.getLayers()
 				.iterator();
 

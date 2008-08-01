@@ -24,7 +24,6 @@
   */
 package org.encog.neural.networks;
 
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
 
 
 /**

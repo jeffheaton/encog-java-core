@@ -22,9 +22,9 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.networks.feedforward.train.genetic;
+package org.encog.neural.networks.training.genetic;
 
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.solve.genetic.GeneticAlgorithm;
 
 
@@ -50,7 +50,7 @@ public class NeuralGeneticAlgorithm<GA_TYPE extends GeneticAlgorithm<?>>
 	 * Get the current best neural network.
 	 * @return The current best neural network.
 	 */
-	public FeedforwardNetwork getNetwork() {
+	public BasicNetwork getNetwork() {
 		final NeuralChromosome<GA_TYPE> c = getChromosome(0);
 		c.updateNetwork();
 		return c.getNetwork();

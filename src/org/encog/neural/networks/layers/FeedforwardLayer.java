@@ -22,7 +22,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.networks.feedforward;
+package org.encog.neural.networks.layers;
 
 import java.io.Serializable;
 
@@ -33,7 +33,6 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.BasicLayer;
 import org.encog.neural.networks.Layer;
 
 /**

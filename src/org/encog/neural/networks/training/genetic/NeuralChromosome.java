@@ -22,13 +22,13 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.networks.feedforward.train.genetic;
+package org.encog.neural.networks.training.genetic;
 
 import java.util.Arrays;
 
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.solve.genetic.Chromosome;
 import org.encog.solve.genetic.GeneticAlgorithm;
 
@@ -57,12 +57,12 @@ abstract public class NeuralChromosome<GA_TYPE extends GeneticAlgorithm<?>>
 	private static final Double ZERO = Double.valueOf(0);
 	private static final double RANGE = 20.0;
 
-	private FeedforwardNetwork network;
+	private BasicNetwork network;
 
 	/**
 	 * @return the network
 	 */
-	public FeedforwardNetwork getNetwork() {
+	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 
@@ -108,7 +108,7 @@ abstract public class NeuralChromosome<GA_TYPE extends GeneticAlgorithm<?>>
 	 * @param network
 	 *            the network to set
 	 */
-	public void setNetwork(final FeedforwardNetwork network) {
+	public void setNetwork(final BasicNetwork network) {
 		this.network = network;
 	}
 

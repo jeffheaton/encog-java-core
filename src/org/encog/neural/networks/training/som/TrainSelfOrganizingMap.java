@@ -22,15 +22,17 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.networks.som;
+package org.encog.neural.networks.training.som;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.layers.SOMLayer;
+import org.encog.util.NormalizeInput;
 
 
 
@@ -126,7 +128,7 @@ public class TrainSelfOrganizingMap {
 	
 	private int trainSize;
 	
-	private FeedforwardNetwork network;
+	private BasicNetwork network;
 
 	/**
 	 * Construct the trainer for a self organizing map.
@@ -135,7 +137,7 @@ public class TrainSelfOrganizingMap {
 	 * @param learnMethod The learning method.
 	 * @param learnRate The learning rate.
 	 */
-	public TrainSelfOrganizingMap(final FeedforwardNetwork network,
+	public TrainSelfOrganizingMap(final BasicNetwork network,
 			final NeuralDataSet train,LearningMethod learnMethod,double learnRate) {
 		this.network = network;
 		this.train = train;

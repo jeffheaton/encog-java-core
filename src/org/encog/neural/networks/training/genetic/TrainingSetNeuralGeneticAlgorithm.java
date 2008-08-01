@@ -22,12 +22,12 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural.networks.feedforward.train.genetic;
+package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.BasicNetwork;
 
 
 
@@ -42,7 +42,7 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 
 	protected NeuralDataSet training;
 
-	public TrainingSetNeuralGeneticAlgorithm(final FeedforwardNetwork network,
+	public TrainingSetNeuralGeneticAlgorithm(final BasicNetwork network,
 			final boolean reset, final NeuralDataSet training, final int populationSize,
 			final double mutationPercent, final double percentToMate)
 			throws NeuralNetworkError {
@@ -56,7 +56,7 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 
 		setChromosomes(new TrainingSetNeuralChromosome[getPopulationSize()]);
 		for (int i = 0; i < getChromosomes().length; i++) {
-			final FeedforwardNetwork chromosomeNetwork = (FeedforwardNetwork) network
+			final BasicNetwork chromosomeNetwork = (BasicNetwork) network
 					.clone();
 			if (reset) {
 				chromosomeNetwork.reset();
@@ -76,7 +76,7 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 	 * @throws NeuralNetworkException
 	 */
 	public double getError() throws NeuralNetworkError {
-		final FeedforwardNetwork network = this.getNetwork();
+		final BasicNetwork network = this.getNetwork();
 		return network.calculateError(this.training);
 	}
 

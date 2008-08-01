@@ -5,9 +5,9 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkException;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
-import org.encog.neural.networks.feedforward.FeedforwardLayer;
-import org.encog.neural.networks.feedforward.FeedforwardNetwork;
+import org.encog.neural.networks.layers.FeedforwardLayer;
 import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
@@ -23,7 +23,7 @@ public class FeedforwardNetworkPersistor implements Persistor {
 			throws NeuralNetworkException {
 		try {
 			AttributesImpl atts = new AttributesImpl();
-			FeedforwardNetwork network = (FeedforwardNetwork) object;
+			BasicNetwork network = (BasicNetwork) object;
 			hd.startElement("", "", network.getName(), atts);
 			hd.startElement("", "", "layers", atts);
 			for (Layer layer : network.getLayers()) {
@@ -84,7 +84,7 @@ public class FeedforwardNetworkPersistor implements Persistor {
 	@Override
 	public EncogPersistedObject load(Element networkNode)
 			throws NeuralNetworkException {
-		FeedforwardNetwork network = new FeedforwardNetwork();
+		BasicNetwork network = new BasicNetwork();
 
 		Element layers = XMLUtil.findElement(networkNode, "layers");
 		for (Node child = layers.getFirstChild(); child != null; child = child
