@@ -81,7 +81,6 @@ public class FeedforwardNetworkPersistor implements Persistor {
 		hd.endElement("", "", "Matrix");
 	}
 
-	@Override
 	public EncogPersistedObject load(Element networkNode)
 			throws NeuralNetworkException {
 		BasicNetwork network = new BasicNetwork();

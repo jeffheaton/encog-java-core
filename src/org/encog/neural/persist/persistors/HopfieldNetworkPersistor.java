@@ -9,14 +9,12 @@ import org.w3c.dom.Element;
 
 public class HopfieldNetworkPersistor implements Persistor {
 
-	@Override
 	public EncogPersistedObject load(Element node)
 			throws NeuralNetworkException {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void save(EncogPersistedObject object, TransformerHandler hd)
 			throws NeuralNetworkException {
 		// TODO Auto-generated method stub

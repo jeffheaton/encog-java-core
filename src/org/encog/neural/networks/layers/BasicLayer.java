@@ -192,13 +192,10 @@ public class BasicLayer implements Layer{
 
 	}
 
-	
-	@Override
 	public void setFire(NeuralData fire) {
 		this.fire = fire;		
 	}
 
-	@Override
 	public NeuralData compute(NeuralData pattern) {
 		return pattern;
 	}

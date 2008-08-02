@@ -29,19 +29,16 @@ public class TrainHopfield implements Train {
 		this.trainingSet.add(new BasicNeuralDataPair(pattern));
 	}
 
-	@Override
 	public double getError() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
 	public BasicNetwork getNetwork() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void iteration() {
 		for (Layer layer : this.network.getLayers()) {
 			if (layer instanceof HopfieldLayer) {

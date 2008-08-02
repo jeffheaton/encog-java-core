@@ -83,7 +83,6 @@ public class BasicNeuralDataSet implements NeuralDataSet  {
 		return first.getInput().size();
 	}
 
-	@Override
 	public void add(NeuralData data) {
 		this.data.add(new BasicNeuralDataPair(data));		
 	}

@@ -109,8 +109,6 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 		return this.getFire();
 	}
 
-
-	@Override
 	public String getName() {
 		return "HopfieldNetwork";
 	}

@@ -94,7 +94,6 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 			
 	}
 
-	@Override
 	public void add(NeuralData data1) {
 		// TODO Auto-generated method stub
 		

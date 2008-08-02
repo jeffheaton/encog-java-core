@@ -35,7 +35,6 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 			}
 		}
 		
-		@Override
 		public boolean hasNext() {
 			if( this.reader==null )
 				return false;
@@ -43,13 +42,11 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 			
 		}
 
-		@Override
 		public NeuralDataPair next() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		@Override
 		public void remove() {
 			// TODO Auto-generated method stub
 			
@@ -64,28 +61,23 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 		this.delimiter = delimiter;
 	}
 
-	@Override
 	public void add(NeuralData inputData, NeuralData idealData) {
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 		
 	}
 
-	@Override
 	public void add(NeuralDataPair inputData) {
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 
-	@Override
 	public int getIdealSize() {
 		return this.idealSize;
 	}
 
-	@Override
 	public int getInputSize() {
 		return this.inputSize;
 	}
 
-	@Override
 	public Iterator<NeuralDataPair> iterator() {
 		return new CSVNeuralIterator();
 	}
@@ -104,7 +96,6 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 		return delimiter;
 	}
 
-	@Override
 	public void add(NeuralData data1) {
 		// TODO Auto-generated method stub
 		
