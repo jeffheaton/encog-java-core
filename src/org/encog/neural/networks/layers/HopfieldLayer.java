@@ -40,37 +40,11 @@ import org.encog.neural.persist.EncogPersistedObject;
  */
 public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
-	/**
-	 * The weight matrix for this neural network. A Hopfield neural network is a
-	 * single layer, fully connected neural network.
-	 * 
-	 * The inputs and outputs to/from a Hopfield neural network are always
-	 * boolean values.
-	 */
-	private Matrix weightMatrix;
 
 	public HopfieldLayer(final int size) {
 		super(size);
 		this.setFire(new BiPolarNeuralData(size));
-		this.weightMatrix = new Matrix(size, size);		
-	}
-
-	/**
-	 * Get the weight matrix for this neural network.
-	 * 
-	 * @return The matrix for this network.
-	 */
-	public Matrix getMatrix() {
-		return this.weightMatrix;
-	}
-
-	/**
-	 * Get the size of this neural network.
-	 * 
-	 * @return The size of the neural network.
-	 */
-	public int getSize() {
-		return this.weightMatrix.getRows();
+		this.setMatrix(new Matrix(size, size));		
 	}
 
 	/**
@@ -90,7 +64,7 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
 		// Process each value in the pattern
 		for (int col = 0; col < pattern.size(); col++) {
-			Matrix columnMatrix = this.weightMatrix.getCol(col);
+			Matrix columnMatrix = this.getMatrix().getCol(col);
 			columnMatrix = MatrixMath.transpose(columnMatrix);
 
 			// The output for this input element is the dot product of the
@@ -111,10 +85,6 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
 	public String getName() {
 		return "HopfieldNetwork";
-	}
-
-	public void setMatrix(Matrix matrix) {
-		this.weightMatrix = matrix;		
 	}
 	
 	@Override

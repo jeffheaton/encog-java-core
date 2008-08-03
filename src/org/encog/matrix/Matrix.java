@@ -26,6 +26,8 @@ package org.encog.matrix;
 
 import java.io.Serializable;
 
+import org.encog.neural.persist.EncogPersistedObject;
+
 
 /**
  * Matrix: This class implements a mathematical matrix.  Matrix
@@ -33,7 +35,7 @@ import java.io.Serializable;
  * of the classes developed in this book will make use of the
  * matrix classes in this package.
  */
-public class Matrix implements Cloneable, Serializable {
+public class Matrix implements Cloneable, Serializable,EncogPersistedObject {
 
 	/**
 	 * Serial id for this class.
@@ -263,6 +265,11 @@ public class Matrix implements Cloneable, Serializable {
 			throw new MatrixError("The col:" + col + " is out of range:"
 					+ getCols());
 		}
+	}
+
+	public String getName() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

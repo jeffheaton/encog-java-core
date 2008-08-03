@@ -6,8 +6,9 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
+import org.encog.neural.persist.EncogPersistedObject;
 
-public class BasicLayer implements Layer{
+public class BasicLayer implements Layer, EncogPersistedObject {
 	/**
 	 * Results from the last time that the outputs were calculated for this
 	 * layer.
@@ -198,6 +199,10 @@ public class BasicLayer implements Layer{
 
 	public NeuralData compute(NeuralData pattern) {
 		return pattern;
+	}
+
+	public String getName() {
+		return "BasicLayer";
 	}
 
 }

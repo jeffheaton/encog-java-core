@@ -32,6 +32,7 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Network;
+import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.util.NormalizeInput;
 import org.encog.util.NormalizeInput.NormalizationType;
 
@@ -41,7 +42,7 @@ import org.encog.util.NormalizeInput.NormalizationType;
  * special type of neural network that is used to classify input into groups.
  * The SOM makes use of unsupervised training.
  */
-public class SOMLayer extends BasicLayer implements Serializable {
+public class SOMLayer extends BasicLayer implements Serializable, EncogPersistedObject {
 
 	/**
 	 * The serial id for this class.
@@ -125,6 +126,10 @@ public class SOMLayer extends BasicLayer implements Serializable {
 			this.setMatrix( new Matrix(next.getNeuronCount(),
 					this.getNeuronCount() + 1) );
 		}
+	}
+
+	public String getName() {
+		return "SOMLayer";
 	}
 
 }

@@ -34,6 +34,7 @@ import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
+import org.encog.neural.persist.EncogPersistedObject;
 
 /**
  * FeedforwardLayer: This class represents one layer in a feed forward neural
@@ -44,7 +45,7 @@ import org.encog.neural.networks.Layer;
  * network will use the same activation function. By default this class uses the
  * sigmoid activation function.
  */
-public class FeedforwardLayer extends BasicLayer implements Serializable {
+public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPersistedObject {
 	/**
 	 * Serial id for this class.
 	 */
@@ -212,6 +213,10 @@ public class FeedforwardLayer extends BasicLayer implements Serializable {
 			this.setMatrix( new Matrix(this.getNeuronCount() + 1, next
 					.getNeuronCount()));
 		}
+	}
+
+	public String getName() {
+		return "FeedforwardNetwork";
 	}
 
 }

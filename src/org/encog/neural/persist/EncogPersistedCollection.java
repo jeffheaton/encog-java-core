@@ -18,7 +18,7 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
 import org.encog.neural.NeuralNetworkException;
-import org.encog.neural.persist.persistors.FeedforwardNetworkPersistor;
+import org.encog.neural.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
