@@ -9,8 +9,9 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.persist.EncogPersistedObject;
 
-public class BasicNeuralDataSet implements NeuralDataSet  {
+public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject  {
 	private List<NeuralDataPair> data = new ArrayList<NeuralDataPair>();
 	private List<BasicNeuralIterator> iterators = new ArrayList<BasicNeuralIterator>(); 
 	
@@ -86,5 +87,26 @@ public class BasicNeuralDataSet implements NeuralDataSet  {
 	public void add(NeuralData data) {
 		this.data.add(new BasicNeuralDataPair(data));		
 	}
+
+	@Override
+	public String getName() {
+		return "BasicNeuralDataSet";
+	}
+
+	/**
+	 * @return the data
+	 */
+	public List<NeuralDataPair> getData() {
+		return data;
+	}
+
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(List<NeuralDataPair> data) {
+		this.data = data;
+	}
+	
+	
 }
 
