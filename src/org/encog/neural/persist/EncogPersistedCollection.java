@@ -156,7 +156,6 @@ public class EncogPersistedCollection {
 
 	public void load(InputStream is) throws NeuralNetworkException {
 		try {
-			System.out.println("Loading");
 			// setup the XML parser stuff
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 
