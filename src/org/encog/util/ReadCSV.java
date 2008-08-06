@@ -58,21 +58,28 @@ public class ReadCSV {
 
 	private final Map<String, Integer> columns = new HashMap<String, Integer>();
 
-	private final String data[];
+	private String data[];
+	
+	private final String delim;
 
-	public ReadCSV(final String filename) throws IOException {
+	public ReadCSV(final String filename, boolean headers,char delim) throws IOException {
 		this.reader = new BufferedReader(new FileReader(filename));
 
+
+		this.delim = ""+delim;
+
 		// read the column heads
-		final String line = this.reader.readLine();
-		final StringTokenizer tok = new StringTokenizer(line, ",");
-		int i = 0;
-		while (tok.hasMoreTokens()) {
-			final String header = tok.nextToken();
-			this.columns.put(header.toLowerCase(), i++);
+		if( headers ) {
+			final String line = this.reader.readLine();
+			final StringTokenizer tok = new StringTokenizer(line, this.delim);
+			int i = 0;
+			while (tok.hasMoreTokens()) {
+				final String header = tok.nextToken();
+				this.columns.put(header.toLowerCase(), i++);
+			}
 		}
 
-		this.data = new String[i];
+		this.data = null;
 	}
 
 	public void close() throws IOException {
@@ -100,6 +107,11 @@ public class ReadCSV {
 		final String str = get(column);
 		return Double.parseDouble(str);
 	}
+	
+	public double getDouble(final int index) {
+		final String str = get(index);
+		return Double.parseDouble(str);
+	}
 
 	public int getInt(final String col) {
 		final String str = get(col);
@@ -107,7 +119,22 @@ public class ReadCSV {
 			return Integer.parseInt(str);
 		} catch (final NumberFormatException e) {
 			return 0;
-		}
+		}		
+	}
+	
+	private void initData(String line)
+	{
+		final StringTokenizer tok = new StringTokenizer(line, this.delim);
+
+		int i = 0;
+		while (tok.hasMoreTokens()) {
+			tok.nextToken();
+				i++;
+			}
+		
+	
+	this.data = new String[i];
+		
 	}
 
 	public boolean next() throws IOException {
@@ -116,7 +143,12 @@ public class ReadCSV {
 			return false;
 		}
 
-		final StringTokenizer tok = new StringTokenizer(line, ",");
+		if( this.data==null )
+		{
+			initData(line);
+		}
+		
+		final StringTokenizer tok = new StringTokenizer(line, this.delim);
 
 		int i = 0;
 		while (tok.hasMoreTokens()) {
