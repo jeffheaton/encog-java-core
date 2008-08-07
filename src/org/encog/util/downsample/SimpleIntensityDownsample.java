@@ -19,7 +19,7 @@ public class SimpleIntensityDownsample {
 	private int downSampleTop;
 	private int downSampleBottom;
 
-	public DownSample(Image image) {
+	public SimpleIntensityDownsample(Image image) {
 		this.image = image;
 		ImageSize size = new ImageSize(image);
 		this.imageHeight = size.getHeight();
