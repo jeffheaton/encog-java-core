@@ -24,9 +24,13 @@
   */
 package org.encog.bot.spider;
 
-import java.io.*;
-import java.net.*;
-import java.util.logging.*;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.encog.bot.spider.workload.WorkloadException;
 

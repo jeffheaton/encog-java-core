@@ -24,11 +24,13 @@
   */
 package org.encog.neural;
 
+import org.encog.EncogError;
+
 /**
  * NeuralNetworkError: Used by the neural network classes to 
  * indicate an error.
  */
-public class NeuralNetworkError extends RuntimeException {
+public class NeuralNetworkError extends EncogError {
 	/**
 	 * Serial id for this class.
 	 */
