@@ -3,6 +3,7 @@ package org.encog.neural.data.image;
 import java.awt.Image;
 
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.util.downsample.Downsample;
 
 public class ImageNeuralData extends BasicNeuralData {
 	
@@ -25,6 +26,14 @@ public class ImageNeuralData extends BasicNeuralData {
 	 */
 	public void setImage(Image image) {
 		this.image = image;
+	}
+
+	public void downsample(Downsample downsampler, boolean findBounds, int height, int width) {
+		if( findBounds ) {
+			downsampler.findBounds();
+		}
+		double sample[] = downsampler.downSample(height, width);
+		this.setData(sample);
 	}
 	
 	
