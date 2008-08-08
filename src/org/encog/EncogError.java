@@ -3,6 +3,11 @@ package org.encog;
 public class EncogError extends RuntimeException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5909341149180956178L;
+
+	/**
 	 * Construct a message exception.
 	 * 
 	 * @param msg

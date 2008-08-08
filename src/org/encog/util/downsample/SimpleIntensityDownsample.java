@@ -6,7 +6,7 @@ import java.awt.image.PixelGrabber;
 import org.encog.EncogError;
 import org.encog.util.ImageSize;
 
-public class SimpleIntensityDownsample {
+public class SimpleIntensityDownsample implements Downsample {
 
 	private Image image;
 	private int pixelMap[];
@@ -20,6 +20,10 @@ public class SimpleIntensityDownsample {
 	private int downSampleBottom;
 
 	public SimpleIntensityDownsample(Image image) {
+		processImage(image);
+	}
+	
+	public void processImage(Image image) {
 		this.image = image;
 		ImageSize size = new ImageSize(image);
 		this.imageHeight = size.getHeight();
@@ -47,7 +51,6 @@ public class SimpleIntensityDownsample {
 		}
 
 		this.pixelMap = (int[]) grabber.getPixels();
-		findBounds();
 
 		// now downsample
 
@@ -106,7 +109,7 @@ public class SimpleIntensityDownsample {
 			}
 		}
 
-		return 0.0;
+		return (redTotal+greenTotal+blueTotal)/(total*3);
 	}
 
 	/**
