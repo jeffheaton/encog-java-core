@@ -3,6 +3,7 @@ package org.encog.neural.data.temporal;
 public class TemporalPoint implements Comparable<TemporalPoint> {
 	private int sequence;
 	private double[] data;
+	private boolean used;
 			
 	public TemporalPoint(int size) {
 		this.data = new double[size];
@@ -56,4 +57,20 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 	{
 		return this.data[index];
 	}
+
+	/**
+	 * @return the used
+	 */
+	public boolean isUsed() {
+		return used;
+	}
+
+	/**
+	 * @param used the used to set
+	 */
+	void setUsed(boolean used) {
+		this.used = used;
+	}
+	
+	
 }

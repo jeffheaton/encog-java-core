@@ -20,7 +20,8 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	private int lowSequence;
 	private int highSequence;
 	private int desiredSetSize;
-	private double scalingRatio;
+	private int inputNeuronCount;
+	private int outputNeuronCount;
 	
 	public static final String ADD_NOT_SUPPORTED = "Direct adds to the temporal dataset are not supported.  Add TemporalPoint objects and call generate.";
 	
@@ -40,6 +41,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		}
 		
 		this.descriptions.add(desc);
+		calculateNeuronCounts();
 	}
 	
 	public void clear()
@@ -158,14 +160,35 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		
 		for(TemporalPoint point:points)
 		{
-			if( (point.getSequence()>=this.getLowSequence()) &&
-				(point.getSequence()<=this.getHighSequence()) )
+			if( isPointInRange(point) )
 			{
 				result++;
 			}
 		}
 		
 		return result;
+	}
+	
+	private void indexPoints()
+	{
+		int setSize = calculateActualSetSize();	
+		int skip = this.calculatePointsInRange()/setSize;
+		
+		int i=0;
+		
+		for(TemporalPoint point:points)
+		{
+			point.setUsed(false);
+			if( this.isPointInRange(point))
+			{
+				i++;
+				if( i>skip )
+				{
+					i=0;
+					point.setUsed(true);
+				}
+			}
+		}
 	}
 	
 	public int calculateActualSetSize()
@@ -175,23 +198,75 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		return result;
 	}
 	
-	private BasicNeuralData generateNeuralData(int index)
+	public void calculateNeuronCounts()
 	{
-		BasicNeuralData result = new BasicNeuralData(this.inputWindowSize); 
-		return result;
+		this.inputNeuronCount = 0;
+		this.outputNeuronCount = 0;
+		
+		for(TemporalDataDescription desc: this.descriptions)
+		{
+			if( desc.isInput())
+				this.inputNeuronCount++;
+			if( desc.isPredict())
+				this.outputNeuronCount++;
+		}
 	}
 	
+	public boolean isPointInRange(TemporalPoint point)
+	{
+		return( (point.getSequence()>=this.getLowSequence()) &&
+				(point.getSequence()<=this.getHighSequence()) );
+	
+	}
+	
+	private BasicNeuralData generateNeuralData(int index,boolean input)
+	{		
+		BasicNeuralData result;
+		int size = 0;
+		int resultIndex = 0;
+		
+		if( input )
+			size = this.inputNeuronCount*this.inputWindowSize;
+		else
+			size = this.outputNeuronCount*this.predictWindowSize;
+		
+		result = new BasicNeuralData(size);
+		
+		for(TemporalPoint point: this.points)
+		{
+			if( point.isUsed() )
+			{
+				int pointIndex = 0;
+				
+				for(TemporalDataDescription desc:this.descriptions)
+				{
+					if( (input && desc.isInput()) ||
+							(!input && desc.isPredict()) )
+					{
+						result.setData(resultIndex++, point.getData(pointIndex++));
+					}
+				}
+			}
+			
+			
+		}		
+				
+		return result;
+	}	
 	
 	public void generate()
 	{
-		int setSize = calculateActualSetSize();
+		int setSize = calculateActualSetSize();	
+		int range = setSize-this.predictWindowSize;
 		
-		for(int i=0;i<setSize;i++)
+		indexPoints();
+		
+		for(int i=0;i<range;i++)
 		{
-			BasicNeuralData input = generateNeuralData(i);
-			BasicNeuralData ideal = generateNeuralData(i);
+			BasicNeuralData input = generateNeuralData(i,true);
+			BasicNeuralData ideal = generateNeuralData(i+this.inputWindowSize,false);
 			BasicNeuralDataPair pair = new BasicNeuralDataPair(input,ideal);
 			super.add(pair);
-		}
+		}		
 	}
 }

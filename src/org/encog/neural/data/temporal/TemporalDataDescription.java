@@ -11,13 +11,17 @@ public class TemporalDataDescription {
 		
 	private double low;
 	private double high;
+	private boolean input;
+	private boolean predict;
 	private Type type;
 	
-	public TemporalDataDescription(double low,double high,Type type)
+	public TemporalDataDescription(double low,double high,Type type, boolean input,boolean predict)
 	{
 		this.low = low;
 		this.type = type;
 		this.high = high;
+		this.input = input;
+		this.predict = predict;
 	}
 
 	/**
@@ -39,6 +43,20 @@ public class TemporalDataDescription {
 	 */
 	public Type getType() {
 		return type;
+	}
+
+	/**
+	 * @return the input
+	 */
+	public boolean isInput() {
+		return input;
+	}
+
+	/**
+	 * @return the predict
+	 */
+	public boolean isPredict() {
+		return predict;
 	}
 	
 	
