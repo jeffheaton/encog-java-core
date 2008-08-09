@@ -1,6 +1,10 @@
 package org.encog.neural.data.temporal;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -14,7 +18,7 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	
 	private List<TemporalDataDescription> descriptions = new ArrayList<TemporalDataDescription>();
-	private Set<TemporalPoint> points = new TreeSet<TemporalPoint>();
+	private List<TemporalPoint> points = new ArrayList<TemporalPoint>();
 	private int inputWindowSize;
 	private int predictWindowSize;
 	private int lowSequence;
@@ -22,6 +26,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	private int desiredSetSize;
 	private int inputNeuronCount;
 	private int outputNeuronCount;
+	private Date startingPoint;
 	
 	public static final String ADD_NOT_SUPPORTED = "Direct adds to the temporal dataset are not supported.  Add TemporalPoint objects and call generate.";
 	
@@ -30,8 +35,9 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		this.inputWindowSize = inputWindowSize;
 		this.predictWindowSize = predictWindowSize;
 		this.lowSequence = Integer.MIN_VALUE;
-		this.highSequence = -Integer.MAX_VALUE;
+		this.highSequence = Integer.MAX_VALUE;
 		this.desiredSetSize = Integer.MAX_VALUE;
+		this.startingPoint = null;
 	}
 	
 	public void addDescription(TemporalDataDescription desc)
@@ -39,6 +45,9 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		if( this.points.size()>0 ) {
 			throw new TemporalError("Can't add anymore descriptions, there are already temporal points defined.");
 		}
+		
+		int index = this.descriptions.size();
+		desc.setIndex(index);
 		
 		this.descriptions.add(desc);
 		calculateNeuronCounts();
@@ -56,7 +65,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		return this.descriptions;
 	}
 	
-	public Set<TemporalPoint> getPoints()
+	public List<TemporalPoint> getPoints()
 	{
 		return this.points;
 	}
@@ -154,6 +163,25 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		return point;
 	}
 	
+	public TemporalPoint createPoint(Date when)
+	{
+		int sequence = 0;
+		
+		if( startingPoint!=null )
+		{
+			
+		}
+		else
+		{
+			this.startingPoint = when;
+		}
+		
+		TemporalPoint point = new TemporalPoint(this.descriptions.size());
+		point.setSequence(sequence);
+		this.points.add(point);
+		return point;
+	}
+	
 	public int calculatePointsInRange()
 	{
 		int result = 0;
@@ -167,28 +195,6 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		}
 		
 		return result;
-	}
-	
-	private void indexPoints()
-	{
-		int setSize = calculateActualSetSize();	
-		int skip = this.calculatePointsInRange()/setSize;
-		
-		int i=0;
-		
-		for(TemporalPoint point:points)
-		{
-			point.setUsed(false);
-			if( this.isPointInRange(point))
-			{
-				i++;
-				if( i>skip )
-				{
-					i=0;
-					point.setUsed(true);
-				}
-			}
-		}
 	}
 	
 	public int calculateActualSetSize()
@@ -206,9 +212,9 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		for(TemporalDataDescription desc: this.descriptions)
 		{
 			if( desc.isInput())
-				this.inputNeuronCount++;
+				this.inputNeuronCount+=this.inputWindowSize;
 			if( desc.isPredict())
-				this.outputNeuronCount++;
+				this.outputNeuronCount+=this.predictWindowSize;
 		}
 	}
 	
@@ -219,54 +225,162 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	
 	}
 	
-	private BasicNeuralData generateNeuralData(int index,boolean input)
+	public BasicNeuralData generateInputNeuralData(int index)
 	{		
-		BasicNeuralData result;
-		int size = 0;
+		if( index+this.inputWindowSize > this.points.size())
+		{
+			throw new TemporalError("Can't generate input temporal data beyond the end of provided data.");
+		}
+		
+		BasicNeuralData result = new BasicNeuralData(this.inputNeuronCount);
 		int resultIndex = 0;
 		
-		if( input )
-			size = this.inputNeuronCount*this.inputWindowSize;
-		else
-			size = this.outputNeuronCount*this.predictWindowSize;
-		
-		result = new BasicNeuralData(size);
-		
-		for(TemporalPoint point: this.points)
+		for(int i=0;i<this.inputWindowSize;i++)
 		{
-			if( point.isUsed() )
+			int descriptionIndex = 0;
+
+			for(TemporalDataDescription desc:this.descriptions)
 			{
-				int pointIndex = 0;
-				
-				for(TemporalDataDescription desc:this.descriptions)
+				if( desc.isInput() )
 				{
-					if( (input && desc.isInput()) ||
-							(!input && desc.isPredict()) )
-					{
-						result.setData(resultIndex++, point.getData(pointIndex++));
-					}
+					result.setData(resultIndex++,this.formatData(desc, index+i));
 				}
+				descriptionIndex++;
+			}
+		}
+		return result;
+	}
+	
+	private double getDataRAW(TemporalDataDescription desc,int index)
+	{
+		 TemporalPoint point = this.points.get(index);
+		 return point.getData(desc.getIndex());
+	}
+	
+	private double getDataDeltaChange(TemporalDataDescription desc,int index)
+	{
+		if( index==0 )
+			return 0.0;
+		TemporalPoint point = this.points.get(index);
+		TemporalPoint previousPoint = this.points.get(index-1);
+		return point.getData(desc.getIndex())-previousPoint.getData(desc.getIndex());
+	}
+	
+	private double getDataPercentChange(TemporalDataDescription desc,int index)
+	{
+		if( index==0 )
+			return 0.0;
+		TemporalPoint point = this.points.get(index);
+		TemporalPoint previousPoint = this.points.get(index-1);
+		double currentValue = point.getData(desc.getIndex());
+		double previousValue = previousPoint.getData(desc.getIndex());
+		return (currentValue-previousValue)/currentValue;
+	}
+	
+	private double formatData(TemporalDataDescription desc,int index)
+	{
+		double result = 0;
+		
+		switch(desc.getType())
+		{
+			case DELTA_CHANGE:
+				result = getDataDeltaChange(desc, index);
+				break;
+			case PERCENT_CHANGE:
+				result = getDataPercentChange(desc, index);
+				break;
+			case RAW:
+				result = getDataRAW(desc,index);
+				break;
+		}
+		
+		if( desc.getActivationFunction()!=null )
+		{
+			result = desc.getActivationFunction().activationFunction(result);
+		}
+		
+		return result;
+	}
+	
+	public BasicNeuralData generateOutputNeuralData(int index)
+	{		
+		if( index+this.predictWindowSize > this.points.size())
+		{
+			throw new TemporalError("Can't generate prediction temporal data beyond the end of provided data.");
+		}
+		
+		BasicNeuralData result = new BasicNeuralData(this.outputNeuronCount);
+		int resultIndex = 0;
+		
+		for(int i=0;i<this.predictWindowSize;i++)
+		{
+			int descriptionIndex = 0;
+
+			for(TemporalDataDescription desc:this.descriptions)
+			{
+				if( desc.isPredict() )
+				{
+					result.setData(resultIndex++,this.formatData(desc, index+i));
+				}
+				descriptionIndex++;
 			}
 			
-			
-		}		
-				
+		}
 		return result;
-	}	
+	}
 	
+	
+	
+	/**
+	 * @return the inputNeuronCount
+	 */
+	public int getInputNeuronCount() {
+		return inputNeuronCount;
+	}
+
+	/**
+	 * @return the outputNeuronCount
+	 */
+	public int getOutputNeuronCount() {
+		return outputNeuronCount;
+	}
+	
+	public int calculateStartIndex()
+	{
+		for(int i=0;i<this.points.size(); i++ )
+		{
+			TemporalPoint point = this.points.get(i);
+			if( this.isPointInRange(point))
+			{
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+
 	public void generate()
 	{
+		Collections.sort(this.points);
+		int start = calculateStartIndex();
 		int setSize = calculateActualSetSize();	
-		int range = setSize-this.predictWindowSize;
-		
-		indexPoints();
-		
-		for(int i=0;i<range;i++)
+		int range = start+(setSize-this.predictWindowSize-this.inputWindowSize);
+
+		for(int i=start;i<range;i++)
 		{
-			BasicNeuralData input = generateNeuralData(i,true);
-			BasicNeuralData ideal = generateNeuralData(i+this.inputWindowSize,false);
+			BasicNeuralData input = generateInputNeuralData(i);
+			BasicNeuralData ideal = generateOutputNeuralData(i+this.inputWindowSize);
 			BasicNeuralDataPair pair = new BasicNeuralDataPair(input,ideal);
 			super.add(pair);
 		}		
 	}
+
+	/**
+	 * @return the startingPoint
+	 */
+	public Date getStartingPoint() {
+		return startingPoint;
+	}
+	
+	
 }

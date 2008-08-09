@@ -28,7 +28,6 @@ public class ImageSize implements ImageObserver {
 		
 	}
 
-	@Override
 	public boolean imageUpdate(Image img, int infoflags, int x, int y,
 			int width, int height) {
 		int c = (ImageObserver.HEIGHT|ImageObserver.WIDTH);

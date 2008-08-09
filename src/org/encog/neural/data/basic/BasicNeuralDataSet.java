@@ -88,7 +88,6 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject  
 		this.data.add(new BasicNeuralDataPair(data));		
 	}
 
-	@Override
 	public String getName() {
 		return "BasicNeuralDataSet";
 	}

@@ -35,7 +35,6 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		this.valueXML = "value";
 	}
 	
-	@Override
 	public EncogPersistedObject load(Element pairs)
 			throws NeuralNetworkException {
 		
@@ -89,7 +88,6 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		
 	}
 
-	@Override
 	public void save(EncogPersistedObject object, TransformerHandler hd)
 			throws NeuralNetworkException {
 		try {
