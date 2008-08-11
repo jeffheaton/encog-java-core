@@ -19,6 +19,6 @@ public class TestTimeSpan extends TestCase {
 		TestCase.assertEquals(1, new TimeSpan(date1,date2).getSpan(TimeUnit.MONTHS));
 		date1 = DateUtil.createDate(12, 31, 2008);
 		date2 = DateUtil.createDate(1, 1, 2009);
-		TestCase.assertEquals(0, new TimeSpan(date1,date2).getSpan(TimeUnit.MONTHS));
+		TestCase.assertEquals(1, new TimeSpan(date1,date2).getSpan(TimeUnit.MONTHS));
 	}
 }

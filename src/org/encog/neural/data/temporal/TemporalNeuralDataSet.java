@@ -10,6 +10,7 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.util.time.TimeSpan;
 import org.encog.util.time.TimeUnit;
 
 public class TemporalNeuralDataSet extends BasicNeuralDataSet {
@@ -162,18 +163,27 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		return point;
 	}
 	
-	public TemporalPoint createPoint(Date when)
+	public int getSequenceFromDate(Date when)
 	{
-		int sequence = 0;
+		int sequence; 
 		
 		if( startingPoint!=null )
 		{
+			TimeSpan span = new TimeSpan(this.startingPoint,when);			
+			sequence = (int)span.getSpan(this.sequenceGrandularity);
 		}
 		else
 		{
 			this.startingPoint = when;
+			sequence = 0;
 		}
 		
+		return sequence;
+	}
+	
+	public TemporalPoint createPoint(Date when)
+	{
+		int sequence = getSequenceFromDate(when);		
 		TemporalPoint point = new TemporalPoint(this.descriptions.size());
 		point.setSequence(sequence);
 		this.points.add(point);

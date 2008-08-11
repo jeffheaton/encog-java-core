@@ -27,6 +27,8 @@ package org.encog.util;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -64,10 +66,19 @@ public class ReadCSV {
 
 	public ReadCSV(final String filename, boolean headers,char delim) throws IOException {
 		this.reader = new BufferedReader(new FileReader(filename));
-
-
 		this.delim = ""+delim;
-
+		begin(headers);
+	}
+	
+	public ReadCSV(InputStream is, boolean headers,char delim) throws IOException
+	{
+		this.reader = new BufferedReader(new InputStreamReader(is));
+		this.delim = ""+delim;
+		begin(headers);
+	}
+	
+	private void begin(boolean headers) throws IOException
+	{
 		// read the column heads
 		if( headers ) {
 			final String line = this.reader.readLine();
@@ -79,7 +90,7 @@ public class ReadCSV {
 			}
 		}
 
-		this.data = null;
+		this.data = null;	
 	}
 
 	public void close() throws IOException {

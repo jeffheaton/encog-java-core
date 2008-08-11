@@ -4,7 +4,7 @@ import org.encog.neural.activation.ActivationFunction;
 
 public class TemporalDataDescription {
 	
-	enum Type
+	public enum Type
 	{
 		RAW,
 		PERCENT_CHANGE,

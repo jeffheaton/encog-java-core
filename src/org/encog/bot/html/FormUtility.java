@@ -161,6 +161,7 @@ public class FormUtility
   {
     this.os = os;
     this.boundary = boundary;
+    this.first = true;
   }
 
   /**
