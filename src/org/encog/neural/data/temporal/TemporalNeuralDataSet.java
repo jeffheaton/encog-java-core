@@ -1,19 +1,16 @@
 package org.encog.neural.data.temporal;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.util.time.TimeUnit;
 
 public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	
@@ -27,6 +24,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	private int inputNeuronCount;
 	private int outputNeuronCount;
 	private Date startingPoint;
+	private TimeUnit sequenceGrandularity;
 	
 	public static final String ADD_NOT_SUPPORTED = "Direct adds to the temporal dataset are not supported.  Add TemporalPoint objects and call generate.";
 	
@@ -38,6 +36,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		this.highSequence = Integer.MAX_VALUE;
 		this.desiredSetSize = Integer.MAX_VALUE;
 		this.startingPoint = null;
+		this.sequenceGrandularity = TimeUnit.DAYS;
 	}
 	
 	public void addDescription(TemporalDataDescription desc)
@@ -169,7 +168,6 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		
 		if( startingPoint!=null )
 		{
-			
 		}
 		else
 		{
@@ -381,6 +379,22 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	public Date getStartingPoint() {
 		return startingPoint;
 	}
+
+	/**
+	 * @return the sequenceGrandularity
+	 */
+	public TimeUnit getSequenceGrandularity() {
+		return sequenceGrandularity;
+	}
+
+	/**
+	 * @param sequenceGrandularity the sequenceGrandularity to set
+	 */
+	public void setSequenceGrandularity(TimeUnit sequenceGrandularity) {
+		this.sequenceGrandularity = sequenceGrandularity;
+	}
+	
+	
 	
 	
 }
