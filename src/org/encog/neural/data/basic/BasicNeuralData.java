@@ -38,4 +38,17 @@ public class BasicNeuralData implements NeuralData {
 	public int size() {
 		return data.length;
 	}
+	
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder("[BasicNeuralData:");
+		for(int i=0;i<this.data.length;i++)
+		{
+			if( i!=0 )
+				builder.append(',');
+			builder.append(this.data[i]);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 }

@@ -25,5 +25,16 @@ public class BasicNeuralDataPair implements NeuralDataPair {
 	public NeuralData getInput() {
 		return this.input;
 	}
+	
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder("[NeuralDataPair:");
+		builder.append("Input:");
+		builder.append(this.getInput());
+		builder.append("Ideal:");
+		builder.append(this.getIdeal());
+		builder.append("]");
+		return builder.toString();
+	}
 
 }

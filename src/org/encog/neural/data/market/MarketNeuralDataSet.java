@@ -28,7 +28,7 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	
 	public void addDescription(TemporalDataDescription desc)
 	{
-		if( desc instanceof MarketDataDescription )
+		if( !(desc instanceof MarketDataDescription) )
 			throw new MarketError("Only MarketDataDescription objects may be used with the MarketNeuralDataSet container.");
 		super.addDescription(desc);
 	}
@@ -43,8 +43,10 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 		int sequence = this.getSequenceFromDate(when);
 		TemporalPoint result = this.pointIndex.get(sequence);
 		
-		if( result==null )
+		if( result==null ) {
 			result = super.createPoint(when);
+			this.pointIndex.put(result.getSequence(), result);
+		}
 		
 		return result;
 	}
@@ -75,6 +77,10 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	
 	public void load(Date begin, Date end)
 	{
+		// define the strating point if it is not already defined
+		if(this.getStartingPoint()==null)
+			this.setStartingPoint(begin);
+		
 		// clear out any loaded points
 		getPoints().clear();
 		
@@ -91,6 +97,9 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 		{
 			loadSymbol(symbol,begin,end);
 		}
+		
+		// resort the points
+		sortPoints();
 	}
 
 

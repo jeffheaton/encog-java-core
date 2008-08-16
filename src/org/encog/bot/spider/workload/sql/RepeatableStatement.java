@@ -253,6 +253,7 @@ public class RepeatableStatement
       }
     } catch (SQLException e)
     {
+    	System.out.println(sql);
       throw (new WorkloadException(e));
     } finally
     {

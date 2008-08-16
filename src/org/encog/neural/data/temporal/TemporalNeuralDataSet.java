@@ -282,7 +282,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		TemporalPoint previousPoint = this.points.get(index-1);
 		double currentValue = point.getData(desc.getIndex());
 		double previousValue = previousPoint.getData(desc.getIndex());
-		return (currentValue-previousValue)/currentValue;
+		return (currentValue-previousValue)/previousValue;
 	}
 	
 	private double formatData(TemporalDataDescription desc,int index)
@@ -366,11 +366,16 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		
 		return -1;
 	}
+	
+	public void sortPoints()
+	{
+		Collections.sort(this.points);
+	}
 
 	public void generate()
 	{
-		Collections.sort(this.points);
-		int start = calculateStartIndex();
+		sortPoints();
+		int start = calculateStartIndex()+1;
 		int setSize = calculateActualSetSize();	
 		int range = start+(setSize-this.predictWindowSize-this.inputWindowSize);
 
@@ -402,6 +407,13 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	public void setSequenceGrandularity(TimeUnit sequenceGrandularity) {
 		this.sequenceGrandularity = sequenceGrandularity;
+	}
+
+	/**
+	 * @param startingPoint the startingPoint to set
+	 */
+	public void setStartingPoint(Date startingPoint) {
+		this.startingPoint = startingPoint;
 	}
 	
 	

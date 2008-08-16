@@ -13,6 +13,11 @@ public class MarketDataDescription extends TemporalDataDescription {
 		this.ticker = ticker;
 		this.dataType = dataType;
 	}
+	
+	public MarketDataDescription(TickerSymbol ticker, MarketDataType dataType, boolean input, boolean predict)
+	{
+		this(ticker,dataType,null,input,predict);
+	}
 
 	/**
 	 * @return the ticker

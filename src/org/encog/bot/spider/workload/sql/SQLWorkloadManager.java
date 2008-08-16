@@ -333,7 +333,7 @@ public class SQLWorkloadManager implements WorkloadManager
     URL result = null;
 
     url = url.trim();
-    if (url.length() > this.maxURLSize)
+    if (this.maxURLSize!=-1 && url.length() > this.maxURLSize)
     {
       throw new WorkloadException("URL size is too big, must be under "
           + this.maxURLSize + " bytes.");
@@ -1113,6 +1113,9 @@ public class SQLWorkloadManager implements WorkloadManager
    */
   private String truncate(String str, int length)
   {
+	  if( length==-1)
+		  return str;
+	  
     if (str.length() < length)
     {
       return str;

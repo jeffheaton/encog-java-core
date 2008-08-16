@@ -188,7 +188,7 @@ public class SpiderParseHTML extends ParseHTML {
     catch (MalformedURLException e) {
       logger.log(Level.INFO, "Malformed URL found:" + u);
     } catch (WorkloadException e) {
-      logger.log(Level.INFO, "Invalid URL found:" + u);
+      logger.log(Level.INFO, "Invalid URL found:" + u+","+e.getMessage());
     }
   }
 

@@ -1,5 +1,7 @@
 package org.encog.neural.data.temporal;
 
+import java.text.SimpleDateFormat;
+
 public class TemporalPoint implements Comparable<TemporalPoint> {
 	private int sequence;
 	private double[] data;
@@ -55,5 +57,21 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 	{
 		return this.data[index];
 	}	
+	
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder("[TemporalPoint:");
+		builder.append("Seq:");
+		builder.append(this.sequence);
+		builder.append(",Data:");
+		for(int i=0;i<this.data.length;i++)
+		{
+			if( i>0 )
+				builder.append(',');
+			builder.append(this.data[i]);
+		}
+		builder.append("]");
+		return builder.toString();
+	}
 	
 }

@@ -92,7 +92,8 @@ public class SpiderWorker implements Runnable {
       is = connection.getInputStream();
 
       // parse the URL
-      if (connection.getContentType().equalsIgnoreCase("text/html")) {
+      String contentType = connection.getContentType(); 
+      if (contentType.toLowerCase().startsWith("text/html")) {
         SpiderParseHTML parse = new SpiderParseHTML(connection.getURL(),
             new SpiderInputStream(is, null), this.spider);
         this.spider.getReport().spiderProcessURL(this.url, parse);
