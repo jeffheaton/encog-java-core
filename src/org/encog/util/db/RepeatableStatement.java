@@ -22,16 +22,18 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.bot.spider.workload.sql;
-
-import java.sql.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.logging.*;
-
-import org.encog.bot.spider.workload.WorkloadException;
+package org.encog.util.db;
 
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Semaphore;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * RepeatableStatement: This class implements a repeatable
@@ -115,12 +117,12 @@ public class RepeatableStatement
    * The logger.
    */
   private static Logger logger = Logger
-      .getLogger("com.heatonresearch.httprecipes.spider.workload.sql.RepeatableStatement");
+      .getLogger("org.encog.util.db.RepeatableStatement");
 
   /**
    * The SQLWorkloadManager that created this object.
    */
-  private SQLWorkloadManager manager;
+  private RepeatableConnection manager;
 
   /**
    * The SQL for this statement.
@@ -195,7 +197,7 @@ public class RepeatableStatement
    * @throws SQLException
    *           Thrown if an exception occurs.
    */
-  public void create(SQLWorkloadManager manager) throws SQLException
+  public void create(RepeatableConnection manager) throws SQLException
   {
     close();
     this.manager = manager;
@@ -212,7 +214,7 @@ public class RepeatableStatement
    *           Thrown if the SQL cannot be executed, and
    *           retrying the statement has failed.
    */
-  public void execute(Object... parameters) throws WorkloadException
+  public void execute(Object... parameters) 
   {
     PreparedStatement statement = null;
 
@@ -247,14 +249,14 @@ public class RepeatableStatement
             this.manager.tryOpen();
           } else
           {
-            throw (new WorkloadException(e));
+            throw (new DBError(e));
           }
         }
       }
     } catch (SQLException e)
     {
     	System.out.println(sql);
-      throw (new WorkloadException(e));
+      throw (new DBError(e));
     } finally
     {
       if (statement != null)
@@ -276,7 +278,7 @@ public class RepeatableStatement
    *           Thrown if the SQL cannot be executed, and
    *           retrying the statement has failed.
    */
-  public Results executeQuery(Object... parameters) throws WorkloadException
+  public Results executeQuery(Object... parameters) 
   {
 
     for (;;)
@@ -302,7 +304,7 @@ public class RepeatableStatement
           this.manager.tryOpen();
         } else
         {
-          throw (new WorkloadException(e));
+          throw (new DBError(e));
         }
       }
     }

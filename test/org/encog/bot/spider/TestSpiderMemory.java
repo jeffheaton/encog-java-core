@@ -46,20 +46,17 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 	}
 
 
-	@Override
 	public boolean beginHost(String host) {
 		return host.equalsIgnoreCase("www.httprecipes.com");
 	}
 
 
-	@Override
 	public void init(Spider spider) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	@Override
 	public boolean spiderFoundURL(URL url, URL source, URLType type) {
 		if( type != URLType.HYPERLINK )
 		{
@@ -73,7 +70,6 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 	}
 
 
-	@Override
 	public void spiderProcessURL(URL url, InputStream stream)
 			throws IOException {
 		// TODO Auto-generated method stub
@@ -81,7 +77,6 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 	}
 
 
-	@Override
 	public void spiderProcessURL(URL url, SpiderParseHTML parse)
 			throws IOException {
 	    try {
@@ -93,7 +88,6 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 	}
 
 
-	@Override
 	public void spiderURLError(URL url) {
 		// TODO Auto-generated method stub
 		

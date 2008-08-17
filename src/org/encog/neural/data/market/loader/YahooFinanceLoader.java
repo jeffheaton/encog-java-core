@@ -19,7 +19,6 @@ import org.encog.util.ReadCSV;
 
 public class YahooFinanceLoader implements MarketLoader {
 
-	@Override
 	public Collection<LoadedMarketData> load(TickerSymbol ticker,
 			Set<MarketDataType> dataNeeded, Date from, Date to) {
 		try

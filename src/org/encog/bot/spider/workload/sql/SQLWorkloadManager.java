@@ -26,12 +26,8 @@ package org.encog.bot.spider.workload.sql;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +37,9 @@ import java.util.logging.Logger;
 import org.encog.bot.spider.Spider;
 import org.encog.bot.spider.workload.WorkloadException;
 import org.encog.bot.spider.workload.WorkloadManager;
+import org.encog.util.db.DBError;
+import org.encog.util.db.RepeatableStatement;
+import org.encog.util.db.RepeatableConnection;
 
 
 /**
@@ -117,25 +116,6 @@ public class SQLWorkloadManager implements WorkloadManager
 
   private RepeatableStatement stmtGetHost;
 
-  /**
-   * The driver for the JDBC connection.
-   */
-  private String driver;
-
-  /**
-   * The URL for the JDBC connection.
-   */
-  private String url;
-
-  /**
-   * The UID for the JDBC connection.
-   */
-  private String uid;
-
-  /**
-   * The PWD for the JDBC connection.
-   */
-  private String pwd;
 
   /**
    * Only one thread at a time is allowed to add to the
@@ -159,11 +139,6 @@ public class SQLWorkloadManager implements WorkloadManager
   private int maxHostSize;
 
   /**
-   * All of the RepeatableStatement objects.
-   */
-  private List<RepeatableStatement> statements = new ArrayList<RepeatableStatement>();
-
-  /**
    * Used to obtain the next URL.
    */
   private RepeatableStatement.Results workResultSet = null;
@@ -176,7 +151,7 @@ public class SQLWorkloadManager implements WorkloadManager
   /**
    * A connection to a JDBC database.
    */
-  private Connection connection;
+  private RepeatableConnection connection;
 
   /**
    * The current host.
@@ -286,11 +261,6 @@ public class SQLWorkloadManager implements WorkloadManager
       this.workResultSet = null;
     }
 
-    for (RepeatableStatement statement : this.statements)
-    {
-      statement.close();
-    }
-
     if (this.connection != null)
     {
       this.connection.close();
@@ -352,7 +322,7 @@ public class SQLWorkloadManager implements WorkloadManager
   /**
    * @return the connection
    */
-  public Connection getConnection()
+  public RepeatableConnection getConnection()
   {
     return this.connection;
   }
@@ -486,68 +456,37 @@ public class SQLWorkloadManager implements WorkloadManager
     this.addLock = new Semaphore(1);
     this.workLatch = new CountDownLatch(1);
     this.workLatch.countDown();
+    
+    this.connection = new RepeatableConnection(
+    		spider.getOptions().dbClass,
+    		spider.getOptions().dbURL,
+    		spider.getOptions().dbUID,
+    		spider.getOptions().dbPWD);
 
-    this.driver = spider.getOptions().dbClass;
-    this.url = spider.getOptions().dbURL;
-    this.uid = spider.getOptions().dbUID;
-    this.pwd = spider.getOptions().dbPWD;
+    this.stmtClear =  this.connection.createStatement(this.holder.getSQLClear());
+    this.stmtClear2 =  this.connection.createStatement(this.holder.getSQLClear2());
+    this.stmtAdd = this.connection.createStatement(this.holder.getSQLAdd());
+    this.stmtAdd2 = this.connection.createStatement(this.holder.getSQLAdd2());
+    this.stmtGetWork = this.connection.createStatement(this.holder.getSQLGetWork());
+    this.stmtGetWork2 = this.connection.createStatement(this.holder.getSQLGetWork2());
+    this.stmtWorkloadEmpty = this.connection.createStatement(this.holder.getSQLWorkloadEmpty());
+    this.stmtSetWorkloadStatus = this.connection.createStatement(this.holder.getSQLSetWorkloadStatus());
+    this.stmtSetWorkloadStatus2 = this.connection.createStatement(this.holder.getSQLSetWorkloadStatus2());
+    this.stmtGetDepth = this.connection.createStatement(this.holder.getSQLGetDepth());
+    this.stmtGetSource = this.connection.createStatement(this.holder.getSQLGetSource());
+    this.stmtResume = this.connection.createStatement(this.holder.getSQLResume());
+    this.stmtResume2 = this.connection.createStatement(this.holder.getSQLResume2());
+    this.stmtGetWorkloadID = this.connection.createStatement(this.holder.getSQLGetWorkloadID());
+    this.stmtGetHostID = this.connection.createStatement(this.holder.getSQLGetHostID());
+    this.stmtGetNextHost = this.connection.createStatement(this.holder.getSQLGetNextHost());
+    this.stmtSetHostStatus = this.connection.createStatement(this.holder.getSQLSetHostStatus());
+    this.stmtGetHost = this.connection.createStatement(this.holder.getSQLGetHost());
 
-    this.statements.add(this.stmtClear = new RepeatableStatement(this.holder
-        .getSQLClear()));
-    this.statements.add(this.stmtClear2 = new RepeatableStatement(this.holder
-        .getSQLClear2()));
-    this.statements.add(this.stmtAdd = new RepeatableStatement(this.holder
-        .getSQLAdd()));
-    this.statements.add(this.stmtAdd2 = new RepeatableStatement(this.holder
-        .getSQLAdd2()));
-    this.statements.add(this.stmtGetWork = new RepeatableStatement(this.holder
-        .getSQLGetWork()));
-    this.statements.add(this.stmtGetWork2 = new RepeatableStatement(this.holder
-        .getSQLGetWork2()));
-    this.statements.add(this.stmtWorkloadEmpty = new RepeatableStatement(
-        this.holder.getSQLWorkloadEmpty()));
-    this.statements.add(this.stmtSetWorkloadStatus = new RepeatableStatement(
-        this.holder.getSQLSetWorkloadStatus()));
-    this.statements.add(this.stmtSetWorkloadStatus2 = new RepeatableStatement(
-        this.holder.getSQLSetWorkloadStatus2()));
-    this.statements.add(this.stmtGetDepth = new RepeatableStatement(this.holder
-        .getSQLGetDepth()));
-    this.statements.add(this.stmtGetSource = new RepeatableStatement(
-        this.holder.getSQLGetSource()));
-    this.statements.add(this.stmtResume = new RepeatableStatement(this.holder
-        .getSQLResume()));
-    this.statements.add(this.stmtResume2 = new RepeatableStatement(this.holder
-        .getSQLResume2()));
-    this.statements.add(this.stmtGetWorkloadID = new RepeatableStatement(
-        this.holder.getSQLGetWorkloadID()));
-    this.statements.add(this.stmtGetHostID = new RepeatableStatement(
-        this.holder.getSQLGetHostID()));
-    this.statements.add(this.stmtGetNextHost = new RepeatableStatement(
-        this.holder.getSQLGetNextHost()));
-    this.statements.add(this.stmtSetHostStatus = new RepeatableStatement(
-        this.holder.getSQLSetHostStatus()));
-    this.statements.add(this.stmtGetHost = new RepeatableStatement(this.holder
-        .getSQLGetHost()));
+    connection.open();
 
-    try
-    {
-      open();
-
-      this.maxURLSize = getColumnSize("spider_workload", "url");
-      this.maxHostSize = getColumnSize("spider_host", "host");
-    } catch (InstantiationException e)
-    {
-      throw (new WorkloadException(e));
-    } catch (IllegalAccessException e)
-    {
-      throw (new WorkloadException(e));
-    } catch (ClassNotFoundException e)
-    {
-      throw (new WorkloadException(e));
-    } catch (SQLException e)
-    {
-      throw (new WorkloadException(e));
-    }
+    this.maxURLSize = this.getColumnSize("spider_workload", "url");
+    this.maxHostSize = this.getColumnSize("spider_host", "host");
+    
   }
 
   /**
@@ -766,33 +705,6 @@ public class SQLWorkloadManager implements WorkloadManager
     return result;
   }
 
-  /**
-   * Return the size of the specified column.
-   *
-   * @param table
-   *          The table that contains the column.
-   * @param column
-   *          The column to get the size for.
-   * @return The size of the column.
-   * @throws SQLException
-   *           For SQL errors.
-   */
-  public int getColumnSize(String table, String column) throws SQLException
-  {
-    ResultSet rs = this.connection.getMetaData().getColumns(null, null, table,
-        null);
-    while (rs.next())
-    {
-
-      String c = rs.getString("COLUMN_NAME");
-      int size = rs.getInt("COLUMN_SIZE");
-      if (c.equalsIgnoreCase(column))
-      {
-        return size;
-      }
-    }
-    return -1;
-  }
 
   /**
    * Get the host name associated with the specified host
@@ -878,7 +790,7 @@ public class SQLWorkloadManager implements WorkloadManager
       StringBuilder str = new StringBuilder();
       str.append("Failed to find previously visited Host,");
       str.append("Host=\"");
-      str.append(this.url.toString());
+      str.append(host);
       str.append("\".");
       throw (new WorkloadException(str.toString()));
     } else
@@ -1047,33 +959,6 @@ public class SQLWorkloadManager implements WorkloadManager
     }
   }
 
-  /**
-   * Open a database connection.
-   *
-   * @throws InstantiationException
-   *           Thrown if the database driver could not be
-   *           opened.
-   * @throws IllegalAccessException
-   *           Thrown if the database driver can not be
-   *           acccessed.
-   * @throws ClassNotFoundException
-   *           Thrown if the wrong type of class is
-   *           returned.
-   * @throws WorkloadException
-   *           Thrown if the database cannot be opened.
-   * @throws SQLException
-   *           Thrown if a SQL error occurs.
-   */
-  private void open() throws InstantiationException, IllegalAccessException,
-      ClassNotFoundException, SQLException, WorkloadException
-  {
-    Class.forName(this.driver).newInstance();
-    this.connection = DriverManager.getConnection(this.url, this.uid, this.pwd);
-    for (RepeatableStatement statement : this.statements)
-    {
-      statement.create(this);
-    }
-  }
 
   /**
    * Set the status for the specified URL.
@@ -1125,67 +1010,45 @@ public class SQLWorkloadManager implements WorkloadManager
     }
   }
 
-  /**
-   * Try to open the database connection.
-   *
-   * @throws WorkloadException
-   *           Thrown if the open fails.
-   */
-  void tryOpen() throws WorkloadException
-  {
-    Exception ex = null;
-
-    logger.log(Level.SEVERE,
-        "Lost connection to database, trying to reconnect.");
-
-    for (int i = 1; i < 120; i++)
-    {
-      try
-      {
-        close();
-      } catch (Exception e1)
-      {
-        logger.log(Level.SEVERE,
-            "Failed while trying to close lost connection, ignoring...", e1);
-      }
-
-      ex = null;
-
-      try
-      {
-        logger.log(Level.SEVERE, "Attempting database reconnect");
-        open();
-        logger.log(Level.SEVERE, "Database connection reestablished");
-        break;
-      } catch (Exception e)
-      {
-        ex = e;
-        logger.log(Level.SEVERE, "Reconnect failed", ex);
-      }
-
-      if (ex != null)
-      {
-        try
-        {
-          logger.log(Level.SEVERE, "Reconnect attempt " + i
-              + " failed.  Waiting to try again.");
-          Thread.sleep(30000);
-        } catch (InterruptedException e)
-        {
-        }
-      }
-    }
-
-    if (ex != null)
-    {
-      throw (new WorkloadException(ex));
-    }
-
-  }
-
   public SQLHolder createSQLHolder()
   {
     return new SQLHolder();
+  }
+  
+  /**
+   * Return the size of the specified column.
+   *
+   * @param table
+   *          The table that contains the column.
+   * @param column
+   *          The column to get the size for.
+   * @return The size of the column.
+   * @throws SQLException
+   *           For SQL errors.
+   */
+  public int getColumnSize(String table, String column)
+  {
+	  try
+	  {
+    ResultSet rs = this.connection.getConnection().getMetaData().getColumns(null, null, table,
+        null);
+    while (rs.next())
+    {
+
+      String c = rs.getString("COLUMN_NAME");
+      int size = rs.getInt("COLUMN_SIZE");
+      if (c.equalsIgnoreCase(column))
+      {
+        return size;
+      }
+    }
+    return -1;
+	  }
+	  catch(SQLException e)
+	  {
+		  throw new DBError(e);
+	  }
+	  
   }
 
 }

@@ -28,6 +28,7 @@ import java.sql.*;
 
 import org.encog.bot.spider.workload.sql.SQLHolder;
 import org.encog.bot.spider.workload.sql.SQLWorkloadManager;
+import org.encog.util.db.DBError;
 
 
 /**
@@ -52,9 +53,11 @@ public class OracleWorkloadManager extends SQLWorkloadManager
    * @throws SQLException
    *           For SQL errors.
    */
-  public int getColumnSize(String table, String column) throws SQLException
+  public int getColumnSize(String table, String column) 
   {
-    ResultSet rs = this.getConnection().getMetaData().getColumns(null, null,
+	  try
+	  {
+    ResultSet rs = this.getConnection().getConnection().getMetaData().getColumns(null, null,
         table, "%");
     while (rs.next())
     {
@@ -67,5 +70,10 @@ public class OracleWorkloadManager extends SQLWorkloadManager
       }
     }
     return -1;
+	  }
+	  catch(SQLException e)
+	  {
+		  throw new DBError(e);
+	  }
   }
 }

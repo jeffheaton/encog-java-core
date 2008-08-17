@@ -1,5 +1,6 @@
 package org.encog.bot.spider;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -17,6 +18,7 @@ import org.encog.bot.spider.SpiderOptions;
 import org.encog.bot.spider.SpiderParseHTML;
 import org.encog.bot.spider.SpiderReportable;
 import org.encog.bot.spider.workload.sql.SQLWorkloadManager;
+import org.encog.util.Directory;
 
 import junit.framework.TestCase;
 
@@ -25,55 +27,29 @@ public class TestSpiderDB extends TestCase implements SpiderReportable {
     private String driver = "org.apache.derby.jdbc.EmbeddedDriver";
     private String protocol = "jdbc:derby:";
     private String base = "www.httprecipes.com";
+    public static final String DB_LOCATION = "derbyDB";
     
     private int urlsProcessed;
 	
-    private void loadDriver() {
-        try {
-            Class.forName(driver).newInstance();
-            System.out.println("Loaded the appropriate driver");
-        } catch (ClassNotFoundException cnfe) {
-            System.err.println("\nUnable to load the JDBC driver " + driver);
-            System.err.println("Please check your CLASSPATH.");
-            cnfe.printStackTrace(System.err);
-        } catch (InstantiationException ie) {
-            System.err.println(
-                        "\nUnable to instantiate the JDBC driver " + driver);
-            ie.printStackTrace(System.err);
-        } catch (IllegalAccessException iae) {
-            System.err.println(
-                        "\nNot allowed to access the JDBC driver " + driver);
-            iae.printStackTrace(System.err);
-        }
-    }
-	
-	
 	public void testSpider() throws Exception
 	{
-		loadDriver();
+		Directory.deleteDirectory(new File(TestSpiderDB.DB_LOCATION));
+		
+		Class.forName(driver).newInstance();
 		
         Connection conn = null;
-            ArrayList statements = new ArrayList();
-            PreparedStatement psInsert = null;
-            PreparedStatement psUpdate = null;
             Statement s = null;
-            ResultSet rs = null;
             
             Properties props = new Properties();
             props.put("user", "user1");
             props.put("password", "user1");
 
-            String dbName = "derbyDB"; // the name of the database
-
-            conn = DriverManager.getConnection(protocol + dbName
+            conn = DriverManager.getConnection(protocol + TestSpiderDB.DB_LOCATION
                     + ";create=true", props);
-
-            System.out.println("Connected to and created database " + dbName);
 
             conn.setAutoCommit(true);
 
             s = conn.createStatement();
-            statements.add(s);
 
             // We create a table...
             StringBuilder sql = new StringBuilder();
@@ -97,14 +73,13 @@ public class TestSpiderDB extends TestCase implements SpiderReportable {
             sql.append(" \"SOURCE_ID\" int NOT NULL)");
             s.execute(sql.toString());
             
-            System.out.println("Created table location");
             
             SpiderOptions options = new SpiderOptions();
             options.corePoolSize = 10;
             options.dbClass = driver;
             options.dbPWD = "user1";
             options.dbUID = "user1";
-            options.dbURL = protocol + dbName;
+            options.dbURL = protocol + TestSpiderDB.DB_LOCATION;
             options.startup = SpiderOptions.STARTUP_CLEAR;
             options.workloadManager = SQLWorkloadManager.class.getCanonicalName();
             
@@ -114,25 +89,24 @@ public class TestSpiderDB extends TestCase implements SpiderReportable {
             spider.process();
             TestCase.assertTrue(this.urlsProcessed>100);
             
+            Directory.deleteDirectory(new File(TestSpiderDB.DB_LOCATION));
+            
 
 
 	}
 
 
-	@Override
 	public boolean beginHost(String host) {
 		return host.equalsIgnoreCase("www.httprecipes.com");
 	}
 
 
-	@Override
 	public void init(Spider spider) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	@Override
 	public boolean spiderFoundURL(URL url, URL source, URLType type) {
 		if( type != URLType.HYPERLINK )
 		{
@@ -146,7 +120,6 @@ public class TestSpiderDB extends TestCase implements SpiderReportable {
 	}
 
 
-	@Override
 	public void spiderProcessURL(URL url, InputStream stream)
 			throws IOException {
 		// TODO Auto-generated method stub
@@ -154,7 +127,6 @@ public class TestSpiderDB extends TestCase implements SpiderReportable {
 	}
 
 
-	@Override
 	public void spiderProcessURL(URL url, SpiderParseHTML parse)
 			throws IOException {
 	    try {
@@ -166,7 +138,6 @@ public class TestSpiderDB extends TestCase implements SpiderReportable {
 	}
 
 
-	@Override
 	public void spiderURLError(URL url) {
 		// TODO Auto-generated method stub
 		

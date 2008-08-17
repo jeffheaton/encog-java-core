@@ -24,7 +24,12 @@
   */
 package org.encog.bot.spider.workload.sql.oracle;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.encog.bot.spider.workload.sql.SQLHolder;
+import org.encog.util.db.DBError;
+import org.encog.util.db.RepeatableConnection;
 
 /**
  * OracleHolder: This class is an adaption of the SQLHolder
@@ -34,7 +39,9 @@ import org.encog.bot.spider.workload.sql.SQLHolder;
  */
 public class OracleHolder extends SQLHolder
 {
-  public String getSQLAdd()
+
+
+public String getSQLAdd()
   {
     return "INSERT INTO spider_workload(workload_id,host,url,status,depth,url_hash,source_id) VALUES(spider_workload_seq.NEXTVAL,?,?,?,?,?,?)";
   }
@@ -43,4 +50,6 @@ public class OracleHolder extends SQLHolder
   {
     return "INSERT INTO spider_host(host_id,host,status,urls_done,urls_error) VALUES(spider_host_seq.NEXTVAL,?,?,?,?)";
   }
+  
+ 
 }

@@ -24,6 +24,12 @@
   */
 package org.encog.bot.spider.workload.sql;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.encog.util.db.DBError;
+import org.encog.util.db.RepeatableConnection;
+
 /**
  * SQLHolder: This class holds the SQL statements used
  * by the Heaton Research Spider.  This is the generic 
@@ -33,6 +39,7 @@ package org.encog.bot.spider.workload.sql;
  */
 public class SQLHolder
 {
+
 
   public String getSQLClear()
   {
@@ -123,5 +130,7 @@ public class SQLHolder
   {
     return "SELECT host FROM spider_host WHERE host_id =  ?";
   }
+  
+
 
 }
