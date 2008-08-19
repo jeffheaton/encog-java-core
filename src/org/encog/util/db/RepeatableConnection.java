@@ -162,7 +162,7 @@ public class RepeatableConnection {
 	    this.connection = DriverManager.getConnection(this.url, this.uid, this.pwd);
 	    for (RepeatableStatement statement : this.statements)
 	    {
-	      statement.create(this);
+	      statement.init(this);
 	    }
 		  }
 		  catch(SQLException e)

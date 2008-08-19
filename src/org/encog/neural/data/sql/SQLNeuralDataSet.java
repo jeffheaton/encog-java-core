@@ -1,17 +1,17 @@
 package org.encog.neural.data.sql;
 
-import java.io.IOException;
-import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Iterator;
 
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.util.ReadCSV;
+import org.encog.util.db.RepeatableConnection;
+import org.encog.util.db.RepeatableStatement;
+import org.encog.util.db.RepeatableStatement.Results;
 
 public class SQLNeuralDataSet implements NeuralDataSet {
 	
@@ -20,36 +20,29 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	private String filename;
 	private int inputSize;
 	private int idealSize;
-	private char delimiter;
-	private boolean headers;
+	private RepeatableConnection connection;
+	private RepeatableStatement statement;
+
 	
 	public class SQLNeuralIterator implements Iterator<NeuralDataPair>
 	{
-		private ReadCSV reader;
 		private boolean dataReady;
+		private Results results;
 		
 		public SQLNeuralIterator()
 		{
-			try {
-				this.reader = null;
-				this.reader = new ReadCSV(filename,headers,delimiter);
-				dataReady = false;
-			} catch (IOException e) {
-				throw new NeuralNetworkError(e);
-			}
+			this.results = statement.executeQuery();
 		}
 		
 		
 		public boolean hasNext() {
-			if( this.reader==null )
-				return false;
-			
+				
 			if( dataReady )
 				return true;
 			
 			try
 			{
-				if( reader.next() )
+				if( results.getResultSet().next() )
 				{
 					dataReady = true;
 					return true;
@@ -60,60 +53,54 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 					return false;
 				}
 			}
-			catch(IOException e)
+			catch(SQLException e)
 			{
-				throw new NeuralNetworkError(e);
+				throw new NeuralDataError(e);
 			}
 			
 		}
 
 		public NeuralDataPair next()  {
-						
+				try {		
 			NeuralData input = new BasicNeuralData(inputSize);
 			NeuralData ideal = null;
 			
-			for(int i=0;i<inputSize;i++)
-			{
-				input.setData(i, reader.getDouble(i));
+			for(int i=1;i<=inputSize;i++)
+			{				
+				input.setData(i-1, results.getResultSet().getDouble(i));
 			}
 			
 			if( idealSize>0 )
 			{
 				ideal = new BasicNeuralData(idealSize);
-				for(int i=0;i<idealSize;i++)
+				for(int i=1;i<=idealSize;i++)
 				{
-					ideal.setData(i, reader.getDouble(i+inputSize));
+					ideal.setData(i-1, results.getResultSet().getDouble(i+inputSize));
 				}
 				 
 			}
 			
 			this.dataReady = false;		
 			return new BasicNeuralDataPair(input,ideal);
+				}
+				catch(SQLException e)
+				{
+				throw new NeuralDataError(e);
+				}
 		}
 
 		public void remove() {
-			try {
-				this.reader.close();
-			} catch (IOException e) {
-				// Not much we can do at this point, and throwing will
-				// break the interface.
-			}
-			
+			results.close();			
 		}	
 	}
 	
-	public SQLNeuralDataSet(String filename, int inputSize,int idealSize)
+	public SQLNeuralDataSet(String sql, int inputSize,int idealSize, String driver, String url, String uid,String pwd)
 	{
-		this(filename,inputSize,idealSize,',');
-	}
-	
-	public SQLNeuralDataSet(String filename, int inputSize,int idealSize,char delimiter)
-	{
-		this.filename = filename;
 		this.inputSize = inputSize;
 		this.idealSize = idealSize;
-		this.delimiter = delimiter;
-		this.headers = headers;
+		this.connection = new RepeatableConnection(driver, url, uid, pwd);
+		this.statement = this.connection.createStatement(sql);
+		this.connection.open();
 	}
 
 	public void add(NeuralData inputData, NeuralData idealData) {
@@ -144,15 +131,18 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		return filename;
 	}
 
-	/**
-	 * @return the delimiter
-	 */
-	public char getDelimiter() {
-		return delimiter;
-	}
 
 	public void add(NeuralData data1) {
 		throw new NeuralDataError(SQLNeuralDataSet.ADD_NOT_SUPPORTED);		
+	}
+	
+	public void close()
+	{
+		if( this.statement!=null )
+			this.statement.close();
+		
+		if( this.connection!=null )
+			this.connection.close();
 	}
 
 }

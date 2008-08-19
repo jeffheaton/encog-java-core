@@ -197,7 +197,7 @@ public class RepeatableStatement
    * @throws SQLException
    *           Thrown if an exception occurs.
    */
-  public void create(RepeatableConnection manager) throws SQLException
+  public void init(RepeatableConnection manager) throws SQLException
   {
     close();
     this.manager = manager;
