@@ -93,7 +93,7 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		for (Node child = inputNode.getFirstChild(); child != null; child = child.getNextSibling()) {
 			if (!(child instanceof Element))
 				continue;
-			Element node = (Element) child;
+
 			if( child.getNodeName().equals(this.valueXML))
 			{
 				String str = child.getTextContent();

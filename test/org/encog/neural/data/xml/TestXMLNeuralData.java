@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 
 import org.encog.neural.XOR;
-import org.encog.neural.data.csv.TestCSVNeuralData;
 
 import junit.framework.TestCase;
 

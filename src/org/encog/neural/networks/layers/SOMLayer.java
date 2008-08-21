@@ -32,7 +32,6 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
-import org.encog.neural.networks.Network;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.util.NormalizeInput;
 import org.encog.util.NormalizeInput.NormalizationType;

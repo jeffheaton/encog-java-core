@@ -43,7 +43,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.XMLUtil;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -130,7 +129,7 @@ public class EncogPersistedCollection {
 	public static Persistor createPersistor(String name) {
 		try {
 			name += "Persistor";
-			Class c = Class.forName("org.encog.neural.persist.persistors."
+			Class<?> c = Class.forName("org.encog.neural.persist.persistors."
 					+ name);
 			Persistor persistor = (Persistor) c.newInstance();
 			return persistor;
@@ -155,7 +154,7 @@ public class EncogPersistedCollection {
 					.getName());
 
 			String name = obj.getClass().getSimpleName();
-			Persistor persistor = this.createPersistor(name);
+			Persistor persistor = EncogPersistedCollection.createPersistor(name);
 			persistor.save(obj, hd);
 
 		}
@@ -221,7 +220,7 @@ public class EncogPersistedCollection {
 				continue;
 			Element node = (Element) child;
 
-			Persistor persistor = this.createPersistor(node.getNodeName());
+			Persistor persistor = EncogPersistedCollection.createPersistor(node.getNodeName());
 			if (persistor != null) {
 				EncogPersistedObject object = persistor.load(node);
 				this.list.add(object);

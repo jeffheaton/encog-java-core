@@ -27,12 +27,9 @@ package org.encog.neural.persist.persistors;
 
 import javax.xml.transform.sax.TransformerHandler;
 
-import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
-import org.encog.neural.networks.layers.FeedforwardLayer;
 import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;

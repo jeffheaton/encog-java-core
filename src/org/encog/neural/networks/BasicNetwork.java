@@ -30,7 +30,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;

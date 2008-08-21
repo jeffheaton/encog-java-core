@@ -27,7 +27,6 @@ package org.encog.neural.networks;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.basic.BasicNeuralData;
 
 public interface Layer {
 	public NeuralData compute(final NeuralData pattern);

@@ -3,23 +3,10 @@ package org.encog.bot.spider;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.Properties;
-import java.util.logging.Level;
-
-import org.encog.bot.spider.Spider;
-import org.encog.bot.spider.SpiderOptions;
-import org.encog.bot.spider.SpiderParseHTML;
-import org.encog.bot.spider.SpiderReportable;
-import org.encog.bot.spider.workload.memory.MemoryWorkloadManager;
-import org.encog.bot.spider.workload.sql.SQLWorkloadManager;
 
 import junit.framework.TestCase;
+
+import org.encog.bot.spider.workload.memory.MemoryWorkloadManager;
 
 public class TestSpiderMemory extends TestCase implements SpiderReportable {
 

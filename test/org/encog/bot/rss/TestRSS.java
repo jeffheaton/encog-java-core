@@ -1,14 +1,8 @@
 package org.encog.bot.rss;
 
-import java.io.IOException;
 import java.net.URL;
 
-import javax.xml.parsers.ParserConfigurationException;
-
 import junit.framework.TestCase;
-
-import org.encog.bot.rss.RSS;
-import org.xml.sax.SAXException;
 
 
 

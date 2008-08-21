@@ -25,8 +25,6 @@
 
 package org.encog.neural.data.temporal;
 
-import java.text.SimpleDateFormat;
-
 public class TemporalPoint implements Comparable<TemporalPoint> {
 	private int sequence;
 	private double[] data;

@@ -25,7 +25,6 @@
 
 package org.encog.neural.data.market.loader;
 
-import org.encog.EncogError;
 import org.encog.neural.data.market.MarketError;
 
 public class LoaderError extends MarketError {

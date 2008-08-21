@@ -125,12 +125,12 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 		}	
 	}
 	
-	public CSVNeuralDataSet(String filename, int inputSize,int idealSize)
+	public CSVNeuralDataSet(String filename, int inputSize,int idealSize,boolean headers)
 	{
-		this(filename,inputSize,idealSize,',');
+		this(filename,inputSize,idealSize,headers,',');
 	}
 	
-	public CSVNeuralDataSet(String filename, int inputSize,int idealSize,char delimiter)
+	public CSVNeuralDataSet(String filename, int inputSize,int idealSize,boolean headers,char delimiter)
 	{
 		this.filename = filename;
 		this.inputSize = inputSize;

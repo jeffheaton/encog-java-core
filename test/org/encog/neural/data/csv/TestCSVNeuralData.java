@@ -5,10 +5,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import org.encog.neural.XOR;
-import org.encog.neural.data.NeuralDataPair;
-
 import junit.framework.TestCase;
+
+import org.encog.neural.XOR;
 
 public class TestCSVNeuralData extends TestCase {
 
@@ -43,8 +42,7 @@ public class TestCSVNeuralData extends TestCase {
 	{
 		generateCSV();
 		
-		int row = 0;
-		CSVNeuralDataSet set = new CSVNeuralDataSet("xor.csv",2,1);
+		CSVNeuralDataSet set = new CSVNeuralDataSet("xor.csv",2,1,true);
 		
 		XOR.testXORDataSet(set);
 		

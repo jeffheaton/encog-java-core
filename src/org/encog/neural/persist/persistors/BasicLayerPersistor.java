@@ -30,7 +30,6 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.HopfieldLayer;
 import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;

@@ -1,7 +1,6 @@
 package org.encog.neural.persist;
 
 import java.io.File;
-import java.util.Iterator;
 
 import org.encog.neural.XOR;
 import org.encog.neural.data.NeuralData;

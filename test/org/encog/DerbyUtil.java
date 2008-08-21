@@ -6,7 +6,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.encog.bot.spider.TestSpiderDB;
 import org.encog.util.Directory;
 
 public class DerbyUtil {

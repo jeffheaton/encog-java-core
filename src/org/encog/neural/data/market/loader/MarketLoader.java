@@ -27,7 +27,6 @@ package org.encog.neural.data.market.loader;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 import java.util.Set;
 
 import org.encog.neural.data.market.MarketDataType;

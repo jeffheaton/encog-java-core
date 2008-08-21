@@ -3,7 +3,6 @@ package org.encog.neural.data.temporal;
 import java.util.Iterator;
 
 import org.encog.neural.activation.ActivationTANH;
-import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.temporal.TemporalDataDescription.Type;
 

@@ -3,16 +3,13 @@ package org.encog.neural.data.market;
 import java.util.Date;
 import java.util.Iterator;
 
+import junit.framework.TestCase;
+
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.market.loader.MarketLoader;
 import org.encog.neural.data.market.loader.YahooFinanceLoader;
-import org.encog.neural.data.temporal.TemporalDataDescription;
-import org.encog.neural.data.temporal.TemporalNeuralDataSet;
 import org.encog.neural.data.temporal.TemporalPoint;
-import org.encog.neural.data.temporal.TemporalDataDescription.Type;
 import org.encog.util.time.DateUtil;
-
-import junit.framework.TestCase;
 
 public class TestMarketData extends TestCase {
 	

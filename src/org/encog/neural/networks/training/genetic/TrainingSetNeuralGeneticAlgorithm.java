@@ -25,7 +25,6 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 

@@ -2,13 +2,11 @@ package org.encog.neural.persist;
 
 import java.io.File;
 
-import org.encog.neural.XOR;
-import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.csv.CSVNeuralDataSet;
-import org.encog.neural.data.csv.TestCSVNeuralData;
-
 import junit.framework.TestCase;
+
+import org.encog.neural.XOR;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.csv.TestCSVNeuralData;
 
 public class TestDataPersist extends TestCase {
 	
