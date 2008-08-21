@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -31,7 +31,7 @@ import java.util.logging.*;
 import org.encog.bot.html.HTMLTag;
 import org.encog.bot.html.ParseHTML;
 import org.encog.bot.html.URLUtility;
-import org.encog.bot.spider.workload.WorkloadException;
+import org.encog.bot.spider.workload.WorkloadError;
 
 
 
@@ -86,7 +86,7 @@ public class SpiderParseHTML extends ParseHTML {
    *           management.
    */
   public SpiderParseHTML(URL base, SpiderInputStream is, Spider spider)
-      throws WorkloadException {
+  {
     super(is);
     this.stream = is;
     this.spider = spider;
@@ -178,7 +178,7 @@ public class SpiderParseHTML extends ParseHTML {
         if (this.spider.getReport().spiderFoundURL(url, this.base, type)) {
           try {
             this.spider.addURL(url, this.base, this.depth + 1);
-          } catch (WorkloadException e) {
+          } catch (WorkloadError e) {
             throw new IOException(e.getMessage());
           }
         }
@@ -187,7 +187,7 @@ public class SpiderParseHTML extends ParseHTML {
 
     catch (MalformedURLException e) {
       logger.log(Level.INFO, "Malformed URL found:" + u);
-    } catch (WorkloadException e) {
+    } catch (WorkloadError e) {
       logger.log(Level.INFO, "Invalid URL found:" + u+","+e.getMessage());
     }
   }

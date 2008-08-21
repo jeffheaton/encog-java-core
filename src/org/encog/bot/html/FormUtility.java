@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -24,9 +24,18 @@
   */
 package org.encog.bot.html;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 /**
  * The Heaton Research Spider Copyright 2007 by Heaton

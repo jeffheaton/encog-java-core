@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -24,9 +24,15 @@
   */
 package org.encog.bot.spider.filter;
 
-import java.io.*;
-import java.net.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * RobotsFilter: This filter causes the spider to skip URL's

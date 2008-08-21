@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -29,7 +29,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 import org.encog.bot.spider.Spider;
-import org.encog.bot.spider.workload.WorkloadException;
+import org.encog.bot.spider.workload.WorkloadError;
 import org.encog.bot.spider.workload.WorkloadManager;
 
 
@@ -125,11 +125,11 @@ public class MemoryWorkloadManager implements WorkloadManager {
    *           Thrown if, The String could not be 
    *           converted.
    */
-  public URL convertURL(String url) throws WorkloadException {
+  public URL convertURL(String url) {
     try {
       return new URL(url);
     } catch (MalformedURLException e) {
-      throw new WorkloadException(e);
+      throw new WorkloadError(e);
     }
   }
 
@@ -215,7 +215,7 @@ public class MemoryWorkloadManager implements WorkloadManager {
    *           Thrown if there is an error setting up the
    *           workload manager.
    */
-  public void init(Spider spider) throws WorkloadException {
+  public void init(Spider spider) {
   }
 
   /**
@@ -274,8 +274,8 @@ public class MemoryWorkloadManager implements WorkloadManager {
    *           Thrown if we were unable to resume the
    *           processing.
    */
-  public void resume() throws WorkloadException {
-    throw (new WorkloadException(
+  public void resume()  {
+    throw (new WorkloadError(
         "Memory based workload managers can not resume."));
   }
 

@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -24,11 +24,13 @@
   */
 package org.encog.bot.spider;
 
+import org.encog.bot.BotError;
+
 /**
  * SpiderException: This exception is thrown when the spider
  * encounters an error.
  */
-public class SpiderException extends Exception {
+public class SpiderError extends BotError {
 
 	/**
 	 * Serial id for this class.
@@ -41,7 +43,7 @@ public class SpiderException extends Exception {
    * @param message
    *          The message for the exception.
    */
-  public SpiderException(String message) {
+  public SpiderError(String message) {
     super(message);
   }
 
@@ -51,7 +53,7 @@ public class SpiderException extends Exception {
    * @param t
    *          The exception that occured.
    */
-  public SpiderException(Throwable t) {
+  public SpiderError(Throwable t) {
     super(t);
   }
 }

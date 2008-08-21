@@ -1,3 +1,28 @@
+/*
+  * Encog Neural Network and Bot Library for Java v1.x
+  * http://www.heatonresearch.com/encog/
+  * http://code.google.com/p/encog-java/
+  * 
+  * Copyright 2008, Heaton Research Inc., and individual contributors.
+  * See the copyright.txt in the distribution for a full listing of 
+  * individual contributors.
+  *
+  * This is free software; you can redistribute it and/or modify it
+  * under the terms of the GNU Lesser General Public License as
+  * published by the Free Software Foundation; either version 2.1 of
+  * the License, or (at your option) any later version.
+  *
+  * This software is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this software; if not, write to the Free
+  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  */
+
 package org.encog.neural.persist;
 
 import java.io.FileInputStream;
@@ -17,7 +42,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
-import org.encog.neural.NeuralNetworkException;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.XMLUtil;
 import org.w3c.dom.Document;
@@ -37,17 +62,17 @@ public class EncogPersistedCollection {
 		this.list.add(obj);
 	}
 
-	public void save(String filename) throws NeuralNetworkException {
+	public void save(String filename){
 		try {
 			OutputStream os = new FileOutputStream(filename);
 			save(os);
 			os.close();
 		} catch (IOException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		}
 	}
 
-	public void save(OutputStream os) throws NeuralNetworkException {
+	public void save(OutputStream os) {
 		try {
 			StreamResult streamResult = new StreamResult(os);
 			SAXTransformerFactory tf = (SAXTransformerFactory) SAXTransformerFactory
@@ -70,16 +95,10 @@ public class EncogPersistedCollection {
 			hd.endElement("", "", "Document");
 			hd.endDocument();
 		} catch (TransformerConfigurationException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		} catch (SAXException e) {
-			throw new NeuralNetworkException(e);
-		} catch (ClassNotFoundException e) {
-			throw new NeuralNetworkException(e);
-		} catch (InstantiationException e) {
-			throw new NeuralNetworkException(e);
-		} catch (IllegalAccessException e) {
-			throw new NeuralNetworkException(e);
-		}
+			throw new NeuralNetworkError(e);
+		} 
 	}
 
 	private void saveHeader(TransformerHandler hd) throws SAXException {
@@ -124,11 +143,11 @@ public class EncogPersistedCollection {
 		}
 	}
 
-	private void saveObjects(TransformerHandler hd) throws SAXException,
-			ClassNotFoundException, InstantiationException,
-			IllegalAccessException, NeuralNetworkException {
+	private void saveObjects(TransformerHandler hd){
 		AttributesImpl atts = new AttributesImpl();
-		hd.startElement("", "", "objects", atts);
+		try {
+			hd.startElement("", "", "objects", atts);
+		
 
 		for (EncogPersistedObject obj : this.list) {
 			atts.clear();
@@ -142,19 +161,23 @@ public class EncogPersistedCollection {
 		}
 
 		hd.endElement("", "", "objects");
+		}
+		catch (SAXException e) {
+			throw new NeuralNetworkError(e);
+		}
 	}
 
-	public void load(String filename) throws NeuralNetworkException {
+	public void load(String filename) {
 		try {
 			InputStream is = new FileInputStream(filename);
 			load(is);
 			is.close();
 		} catch (IOException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		}
 	}
 
-	public void load(InputStream is) throws NeuralNetworkException {
+	public void load(InputStream is) {
 		try {
 			// setup the XML parser stuff
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
@@ -183,15 +206,15 @@ public class EncogPersistedCollection {
 			}
 
 		} catch (javax.xml.parsers.ParserConfigurationException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		} catch (org.xml.sax.SAXException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		} catch (java.io.IOException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		}
 	}
 
-	private void loadObjects(Element objects) throws NeuralNetworkException  {
+	private void loadObjects(Element objects)  {
 		for (Node child = objects.getFirstChild(); child != null; child = child
 				.getNextSibling()) {
 			if (!(child instanceof Element))
@@ -206,7 +229,7 @@ public class EncogPersistedCollection {
 		}
 	}
 
-	private void loadHeader(Element node) throws NeuralNetworkException {
+	private void loadHeader(Element node) {
 		try {
 			this.platform = XMLUtil.findElementAsString(node, "platform");
 			this.encogVersion = XMLUtil.findElementAsString(node,
@@ -214,7 +237,7 @@ public class EncogPersistedCollection {
 			this.fileVersion = XMLUtil
 					.findElementAsInt(node, "fileVersion", -1);
 		} catch (Exception e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		}
 
 	}

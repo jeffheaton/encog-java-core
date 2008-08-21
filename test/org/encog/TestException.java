@@ -1,9 +1,9 @@
 package org.encog;
 
+import junit.framework.TestCase;
+
 import org.encog.matrix.MatrixError;
 import org.encog.neural.NeuralNetworkError;
-
-import junit.framework.TestCase;
 
 public class TestException extends TestCase {
 	public void testExceptions()

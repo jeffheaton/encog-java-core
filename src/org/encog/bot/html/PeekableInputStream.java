@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -24,7 +24,8 @@
   */
 package org.encog.bot.html;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * PeekableInputStream: This is a special input stream that

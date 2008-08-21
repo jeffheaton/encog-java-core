@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -48,7 +48,7 @@ public interface WorkloadManager {
 	 * @return True if the URL was added, false otherwise.
 	 * @throws WorkloadException
 	 */
-	public boolean add(URL url, URL source, int depth) throws WorkloadException;
+	public boolean add(URL url, URL source, int depth);
 
 	/**
 	 * Clear the workload.
@@ -57,7 +57,7 @@ public interface WorkloadManager {
 	 *           An error prevented the workload from being
 	 *           cleared.
 	 */
-	public void clear() throws WorkloadException;
+	public void clear();
 
 	/**
 	 * Determine if the workload contains the specified URL.
@@ -66,7 +66,7 @@ public interface WorkloadManager {
 	 * @return True if the specified URL is contained.
 	 * @throws WorkloadException
 	 */
-	public boolean contains(URL url) throws WorkloadException;
+	public boolean contains(URL url);
 
 	/**
 	 * Convert the specified String to a URL. If the string is
@@ -80,7 +80,7 @@ public interface WorkloadManager {
 	 *           Thrown if, The String could not be 
 	 *           converted.
 	 */
-	public URL convertURL(String url) throws WorkloadException;
+	public URL convertURL(String url);
 
 	/**
 	 * Get the current host.
@@ -98,7 +98,7 @@ public interface WorkloadManager {
 	 * @throws WorkloadException
 	 *           Thrown if the depth could not be found.
 	 */
-	public int getDepth(URL url) throws WorkloadException;
+	public int getDepth(URL url);
 
 	/**
 	 * Get the source page that contains the specified URL.
@@ -110,7 +110,7 @@ public interface WorkloadManager {
 	 *           Thrown if the source of the specified URL
 	 *           could not be found.
 	 */
-	public URL getSource(URL url) throws WorkloadException;
+	public URL getSource(URL url);
 
 	/**
 	 * Get a new URL to work on. Wait if there are no URL's
@@ -122,7 +122,7 @@ public interface WorkloadManager {
 	 * @throws WorkloadException
 	 *           Thrown if the next URL could not be obtained.
 	 */
-	public URL getWork() throws WorkloadException;
+	public URL getWork();
 
 	/**
 	 * Setup this workload manager for the specified spider.
@@ -133,7 +133,7 @@ public interface WorkloadManager {
 	 *           Thrown if there is an error setting up the
 	 *           workload manager.
 	 */
-	public void init(Spider spider) throws WorkloadException;
+	public void init(Spider spider);
 
 	/**
 	 * Mark the specified URL as error.
@@ -144,7 +144,7 @@ public interface WorkloadManager {
 	 *           Thrown if the specified URL could not be
 	 *           marked.
 	 */
-	public void markError(URL url) throws WorkloadException;
+	public void markError(URL url);
 
 	/**
 	 * Mark the specified URL as successfully processed.
@@ -155,7 +155,7 @@ public interface WorkloadManager {
 	 *           Thrown if the specified URL could not be
 	 *           marked.
 	 */
-	public void markProcessed(URL url) throws WorkloadException;
+	public void markProcessed(URL url);
 
 	/**
 	 * Move on to process the next host. This should only be
@@ -166,7 +166,7 @@ public interface WorkloadManager {
 	 *           Thrown if the workload manager was unable to
 	 *           move to the next host.
 	 */
-	public String nextHost() throws WorkloadException;
+	public String nextHost();
 
 	/**
 	 * Setup the workload so that it can be resumed from where
@@ -176,7 +176,7 @@ public interface WorkloadManager {
 	 *           Thrown if we were unable to resume the
 	 *           processing.
 	 */
-	public void resume() throws WorkloadException;
+	public void resume();
 
 	/**
 	 * If there is currently no work available, then wait
@@ -198,6 +198,6 @@ public interface WorkloadManager {
 	 *           Thrown if there was an error determining if
 	 *           the workload is empty.
 	 */
-	public boolean workloadEmpty() throws WorkloadException;
+	public boolean workloadEmpty();
 
 }

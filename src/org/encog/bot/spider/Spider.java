@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -37,7 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.encog.bot.spider.filter.SpiderFilter;
-import org.encog.bot.spider.workload.WorkloadException;
 import org.encog.bot.spider.workload.WorkloadManager;
 
 
@@ -128,15 +127,23 @@ public class Spider
    *           Exception thrown if there are any issues with
    *           the workload.
    */
-  public Spider(SpiderOptions options, SpiderReportable report)
-      throws InstantiationException, IllegalAccessException,
-      ClassNotFoundException, WorkloadException
-  {
+  public Spider(SpiderOptions options, SpiderReportable report)      
+  {	  
     this.options = options;
     this.report = report;
 
-    this.workloadManager = (WorkloadManager) Class.forName(
-        options.workloadManager).newInstance();
+    try {
+		this.workloadManager = (WorkloadManager) Class.forName(
+		    options.workloadManager).newInstance();
+	} catch (InstantiationException e) {
+		throw(new SpiderError(e));
+	} catch (IllegalAccessException e) {
+		throw(new SpiderError(e));
+	} catch (ClassNotFoundException e) {
+		throw(new SpiderError(e));
+	}
+
+
     this.workloadManager.init(this);
     report.init(this);
 
@@ -152,7 +159,16 @@ public class Spider
     {
       for (String name : options.filter)
       {
-        SpiderFilter filter = (SpiderFilter) Class.forName(name).newInstance();
+        SpiderFilter filter;
+		try {
+			filter = (SpiderFilter) Class.forName(name).newInstance();
+		} catch (InstantiationException e) {
+			throw(new SpiderError(e));
+		} catch (IllegalAccessException e) {
+			throw(new SpiderError(e));
+		} catch (ClassNotFoundException e) {
+			throw(new SpiderError(e));
+		}
         this.filters.add(filter);
       }
     }
@@ -175,7 +191,7 @@ public class Spider
    *           Exception thrown if there are any issues with
    *           the workload.
    */
-  public void addURL(URL url, URL source, int depth) throws WorkloadException
+  public void addURL(URL url, URL source, int depth)
   {
     // check the depth
     if ((this.options.maxDepth != -1) && (depth > this.options.maxDepth))
@@ -285,7 +301,7 @@ public class Spider
    *           Called if any blocking operation is
    *           interrupted.
    */
-  public void process() throws WorkloadException
+  public void process()
   {
     this.cancel = false;
     this.startTime = new Date();
@@ -312,7 +328,7 @@ public class Spider
    *           Exception thrown if there are any issues with
    *           the workload.
    */
-  private void processHost() throws WorkloadException
+  private void processHost()
   {
     URL url = null;
 

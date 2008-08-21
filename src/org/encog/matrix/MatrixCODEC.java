@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -26,7 +26,6 @@ package org.encog.matrix;
 
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
-import org.encog.neural.networks.layers.FeedforwardLayer;
 
 
 

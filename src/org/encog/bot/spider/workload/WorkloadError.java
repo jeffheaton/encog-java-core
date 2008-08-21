@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -22,37 +22,40 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural;
+package org.encog.bot.spider.workload;
 
-import org.encog.EncogError;
+import org.encog.bot.BotError;
 
 /**
- * NeuralNetworkError: Used by the neural network classes to 
- * indicate an error.
+ * WorkloadException: This exception is thrown when the
+ * workload manager encounters an error.
  */
-public class NeuralNetworkError extends EncogError {
+public class WorkloadError extends BotError {
+
 	/**
 	 * Serial id for this class.
 	 */
-	private static final long serialVersionUID = 7167228729133120101L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Construct a message exception.
-	 * 
-	 * @param msg
-	 *            The exception message.
-	 */
-	public NeuralNetworkError(final String msg) {
-		super(msg);
-	}
+  /**
+   * Construct a WorkloadException with the specified
+   * message.
+   * 
+   * @param message
+   *          The exception message.
+   */
+  public WorkloadError(String message) {
+    super(message);
+  }
 
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param t
-	 *            The other exception.
-	 */
-	public NeuralNetworkError(final Throwable t) {
-		super(t);
-	}
+  /**
+   * Called to wrap another exception as a
+   * WorkloadError.
+   * 
+   * @param t
+   *          An exception to be wrapped.
+   */
+  public WorkloadError(Throwable t) {
+    super(t);
+  }
 }

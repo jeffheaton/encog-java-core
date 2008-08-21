@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -32,7 +32,7 @@ import java.net.URLConnection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.encog.bot.spider.workload.WorkloadException;
+import org.encog.bot.spider.workload.WorkloadError;
 
 
 /**
@@ -105,7 +105,7 @@ public class SpiderWorker implements Runnable {
       logger.log(Level.INFO, "I/O error on URL:" + this.url.toString());
       try {
         this.spider.getWorkloadManager().markError(this.url);
-      } catch (WorkloadException e1) {
+      } catch (WorkloadError e1) {
         logger.log(Level.WARNING, "Error marking workload(1).", e);
       }
       this.spider.getReport().spiderURLError(this.url);
@@ -113,7 +113,7 @@ public class SpiderWorker implements Runnable {
     } catch (Throwable e) {
       try {
         this.spider.getWorkloadManager().markError(this.url);
-      } catch (WorkloadException e1) {
+      } catch (WorkloadError e1) {
         logger.log(Level.WARNING, "Error marking workload(2).", e);
       }
 
@@ -139,7 +139,7 @@ public class SpiderWorker implements Runnable {
             this.spider.getWorkloadManager().getDepth(connection.getURL()));
         this.spider.getWorkloadManager().markProcessed(connection.getURL());
       }
-    } catch (WorkloadException e) {
+    } catch (WorkloadError e) {
       logger.log(Level.WARNING, "Error marking workload(3).", e);
     }
 

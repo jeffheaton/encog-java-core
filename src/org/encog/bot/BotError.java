@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -22,13 +22,16 @@
   * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   */
-package org.encog.neural;
 
-/**
- * NeuralNetworkError: Used by the neural network classes to 
- * indicate an error.
- */
-public class NeuralNetworkException extends Exception {
+package org.encog.bot;
+
+import org.encog.EncogError;
+
+public class BotError extends EncogError {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4280940104791165511L;
 
 	/**
 	 * Construct a message exception.
@@ -36,7 +39,7 @@ public class NeuralNetworkException extends Exception {
 	 * @param msg
 	 *            The exception message.
 	 */
-	public NeuralNetworkException(final String msg) {
+	public BotError(final String msg) {
 		super(msg);
 	}
 
@@ -46,7 +49,7 @@ public class NeuralNetworkException extends Exception {
 	 * @param t
 	 *            The other exception.
 	 */
-	public NeuralNetworkException(final Throwable t) {
+	public BotError(final Throwable t) {
 		super(t);
-	}
+	}	
 }

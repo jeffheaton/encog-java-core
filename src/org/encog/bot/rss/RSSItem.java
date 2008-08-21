@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -24,9 +24,10 @@
   */
 package org.encog.bot.rss;
 
-import java.util.*;
+import java.util.Date;
 
-import org.w3c.dom.*;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * RSSItem: This is the class that holds individual RSS items,

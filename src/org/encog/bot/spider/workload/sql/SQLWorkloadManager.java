@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -35,7 +35,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.encog.bot.spider.Spider;
-import org.encog.bot.spider.workload.WorkloadException;
+import org.encog.bot.spider.workload.WorkloadError;
 import org.encog.bot.spider.workload.WorkloadManager;
 import org.encog.util.db.DBError;
 import org.encog.util.db.RepeatableStatement;
@@ -175,7 +175,7 @@ public class SQLWorkloadManager implements WorkloadManager
    * @return True if the URL was added, false otherwise.
    * @throws WorkloadException
    */
-  public boolean add(URL url, URL source, int depth) throws WorkloadException
+  public boolean add(URL url, URL source, int depth)
   {
     boolean result = false;
     try
@@ -225,7 +225,7 @@ public class SQLWorkloadManager implements WorkloadManager
     {
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     } finally
     {
       this.addLock.release();
@@ -240,13 +240,13 @@ public class SQLWorkloadManager implements WorkloadManager
    *           An error prevented the workload from being
    *           cleared.
    */
-  public void clear() throws WorkloadException
+  public void clear() 
   {
     this.stmtClear.execute();
     this.stmtClear2.execute();
   }
 
-  public void close() throws SQLException, WorkloadException
+  public void close()
   {
     if (this.workResultSet != null)
     {
@@ -273,16 +273,16 @@ public class SQLWorkloadManager implements WorkloadManager
    *
    * @param url The URL to search the workload for.
    * @return True of the workload contains the specified URL.
-   * @throws WorkloadException
+   * @
    */
-  public boolean contains(URL url) throws WorkloadException
+  public boolean contains(URL url) 
   {
     try
     {
       return (getWorkloadID(url, false) != -1);
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     }
   }
 
@@ -294,18 +294,18 @@ public class SQLWorkloadManager implements WorkloadManager
    * @param url
    *          A String to convert into a URL.
    * @return The URL.
-   * @throws WorkloadException
+   * @
    *           Thrown if, The String could not be 
    *           converted.
    */
-  public URL convertURL(String url) throws WorkloadException
+  public URL convertURL(String url) 
   {
     URL result = null;
 
     url = url.trim();
     if (this.maxURLSize!=-1 && url.length() > this.maxURLSize)
     {
-      throw new WorkloadException("URL size is too big, must be under "
+      throw new WorkloadError("URL size is too big, must be under "
           + this.maxURLSize + " bytes.");
     }
 
@@ -314,7 +314,7 @@ public class SQLWorkloadManager implements WorkloadManager
       result = new URL(url);
     } catch (MalformedURLException e)
     {
-      throw new WorkloadException(e);
+      throw new WorkloadError(e);
     }
     return result;
   }
@@ -343,10 +343,10 @@ public class SQLWorkloadManager implements WorkloadManager
    * @param url
    *          The URL to get the depth of.
    * @return The depth of the specified URL.
-   * @throws WorkloadException
+   * @
    *           Thrown if the depth could not be found.
    */
-  public int getDepth(URL url) throws WorkloadException
+  public int getDepth(URL url) 
   {
     RepeatableStatement.Results rs = null;
     try
@@ -363,7 +363,7 @@ public class SQLWorkloadManager implements WorkloadManager
       return 1;
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     } finally
     {
       if (rs != null)
@@ -379,11 +379,11 @@ public class SQLWorkloadManager implements WorkloadManager
    * @param url
    *          The URL to seek the source for.
    * @return The source of the specified URL.
-   * @throws WorkloadException
+   * @
    *           Thrown if the source of the specified URL
    *           could not be found.
    */
-  public URL getSource(URL url) throws WorkloadException
+  public URL getSource(URL url) 
   {
     RepeatableStatement.Results rs = null;
     try
@@ -400,10 +400,10 @@ public class SQLWorkloadManager implements WorkloadManager
       return null;
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     } catch (MalformedURLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     } finally
     {
       if (rs != null)
@@ -420,10 +420,10 @@ public class SQLWorkloadManager implements WorkloadManager
    * in progress.
    *
    * @return The next URL to work on,
-   * @throws WorkloadException
+   * @
    *           Thrown if the next URL could not be obtained.
    */
-  public URL getWork() throws WorkloadException
+  public URL getWork() 
   {
     URL url = null;
     do
@@ -447,11 +447,11 @@ public class SQLWorkloadManager implements WorkloadManager
    *
    * @param spider
    *          The spider using this workload manager.
-   * @throws WorkloadException
+   * @
    *           Thrown if there is an error setting up the
    *           workload manager.
    */
-  public void init(Spider spider) throws WorkloadException
+  public void init(Spider spider) 
   {
     this.addLock = new Semaphore(1);
     this.workLatch = new CountDownLatch(1);
@@ -494,11 +494,11 @@ public class SQLWorkloadManager implements WorkloadManager
    *
    * @param url
    *          The URL that had an error.
-   * @throws WorkloadException
+   * @
    *           Thrown if the specified URL could not be
    *           marked.
    */
-  public void markError(URL url) throws WorkloadException
+  public void markError(URL url) 
   {
     try
     {
@@ -506,7 +506,7 @@ public class SQLWorkloadManager implements WorkloadManager
       this.workLatch.countDown();
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     }
   }
 
@@ -515,11 +515,11 @@ public class SQLWorkloadManager implements WorkloadManager
    *
    * @param url
    *          The URL to mark as processed.
-   * @throws WorkloadException
+   * @
    *           Thrown if the specified URL could not be
    *           marked.
    */
-  public void markProcessed(URL url) throws WorkloadException
+  public void markProcessed(URL url) 
   {
     try
     {
@@ -527,7 +527,7 @@ public class SQLWorkloadManager implements WorkloadManager
       this.workLatch.countDown();
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     }
   }
 
@@ -536,15 +536,15 @@ public class SQLWorkloadManager implements WorkloadManager
    * called after getWork returns null.
    *
    * @return The name of the next host.
-   * @throws WorkloadException
+   * @
    *           Thrown if the workload manager was unable to
    *           move to the next host.
    */
-  public String nextHost() throws WorkloadException
+  public String nextHost() 
   {
     if (this.currentHostID == -1)
     {
-      throw new WorkloadException(
+      throw new WorkloadError(
           "Attempting to obtain host before adding first URL.");
     } else
     {
@@ -591,7 +591,7 @@ public class SQLWorkloadManager implements WorkloadManager
 
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     }
 
   }
@@ -600,11 +600,11 @@ public class SQLWorkloadManager implements WorkloadManager
    * Setup the workload so that it can be resumed from where
    * the last spider left the workload.
    *
-   * @throws WorkloadException
+   * @
    *           Thrown if we were unable to resume the
    *           processing.
    */
-  public void resume() throws WorkloadException
+  public void resume() 
   {
     RepeatableStatement.Results rs = null;
 
@@ -614,7 +614,7 @@ public class SQLWorkloadManager implements WorkloadManager
 
       if (!rs.getResultSet().next())
       {
-        throw (new WorkloadException(
+        throw (new WorkloadError(
             "Can't resume, unable to determine current host."));
       }
 
@@ -622,7 +622,7 @@ public class SQLWorkloadManager implements WorkloadManager
       this.currentHost = getHost(this.currentHostID);
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     } finally
     {
       if (rs != null)
@@ -661,11 +661,11 @@ public class SQLWorkloadManager implements WorkloadManager
    *
    * @return Returns true if there are no more workload
    *         units.
-   * @throws WorkloadException
+   * @
    *           Thrown if there was an error determining if
    *           the workload is empty.
    */
-  public boolean workloadEmpty() throws WorkloadException
+  public boolean workloadEmpty() 
   {
     RepeatableStatement.Results rs = null;
 
@@ -679,7 +679,7 @@ public class SQLWorkloadManager implements WorkloadManager
       return (rs.getResultSet().getInt(1) < 1);
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     } finally
     {
       if (rs != null)
@@ -713,10 +713,10 @@ public class SQLWorkloadManager implements WorkloadManager
    * @param hostID
    *          The host id to look up.
    * @return The name of the host.
-   * @throws WorkloadException
+   * @
    *           Thrown if unable to obtain the host name.
    */
-  private String getHost(int hostID) throws WorkloadException
+  private String getHost(int hostID) 
   {
     RepeatableStatement.Results rs = null;
 
@@ -725,12 +725,12 @@ public class SQLWorkloadManager implements WorkloadManager
       rs = this.stmtGetHost.executeQuery(hostID);
       if (!rs.getResultSet().next())
       {
-        throw new WorkloadException("Can't find previously created host.");
+        throw new WorkloadError("Can't find previously created host.");
       }
       return rs.getResultSet().getString(1);
     } catch (SQLException e)
     {
-      throw new WorkloadException(e);
+      throw new WorkloadError(e);
     } finally
     {
       if (rs != null)
@@ -749,13 +749,13 @@ public class SQLWorkloadManager implements WorkloadManager
    *          Should an exception be thrown if the host is
    *          not located.
    * @return The id of the specified host name.
-   * @throws WorkloadException
+   * @
    *           Thrown if the host id is not found, and is
    *           required.
    * @throws SQLException
    *           Thrown if a SQL error occurs.
    */
-  private int getHostID(String host, boolean require) throws WorkloadException,
+  private int getHostID(String host, boolean require) throws
       SQLException
   {
     RepeatableStatement.Results rs = null;
@@ -792,7 +792,7 @@ public class SQLWorkloadManager implements WorkloadManager
       str.append("Host=\"");
       str.append(host);
       str.append("\".");
-      throw (new WorkloadException(str.toString()));
+      throw (new WorkloadError(str.toString()));
     } else
     {
       return -1;
@@ -810,14 +810,14 @@ public class SQLWorkloadManager implements WorkloadManager
    *          Should an exception be thrown if the host is
    *          not located.
    * @return The id of the specified host name.
-   * @throws WorkloadException
+   * @
    *           Thrown if the host id is not found, and is
    *           required.
    * @throws SQLException
    *           Thrown if a SQL error occurs.
    */
   private int getHostID(URL url, boolean require) throws SQLException,
-      WorkloadException
+      WorkloadError
   {
     String host = url.getHost().toLowerCase();
     return getHostID(host, require);
@@ -828,14 +828,14 @@ public class SQLWorkloadManager implements WorkloadManager
    * does not wait for work, rather it simply returns null.
    *
    * @return The next URL to process.
-   * @throws WorkloadException
+   * @
    *           Thrown if unable to obtain a URL.
    */
-  private URL getWorkInternal() throws WorkloadException
+  private URL getWorkInternal() 
   {
     if (this.currentHostID == -1)
     {
-      throw new WorkloadException(
+      throw new WorkloadError(
           "Attempting to obtain work before adding first URL.");
     }
 
@@ -878,10 +878,10 @@ public class SQLWorkloadManager implements WorkloadManager
 
     } catch (SQLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     } catch (MalformedURLException e)
     {
-      throw (new WorkloadException(e));
+      throw (new WorkloadError(e));
     }
   }
 
@@ -894,14 +894,14 @@ public class SQLWorkloadManager implements WorkloadManager
    *          Should an exception be thrown if the workload
    *          is not located.
    * @return The ID of the workload.
-   * @throws WorkloadException
+   * @
    *           Thrown if the host id is not found, and is
    *           required.
    * @throws SQLException
    *           Thrown if a SQL error occurs.
    */
   private int getWorkloadID(URL url, boolean require) throws SQLException,
-      WorkloadException
+      WorkloadError
   {
     int hash = 0;
     RepeatableStatement.Results rs = null;
@@ -932,7 +932,7 @@ public class SQLWorkloadManager implements WorkloadManager
       str.append("\", URL=\"");
       str.append(url.toString());
       str.append("\".");
-      throw (new WorkloadException(str.toString()));
+      throw (new WorkloadError(str.toString()));
     } else
     {
       return -1;
@@ -944,10 +944,10 @@ public class SQLWorkloadManager implements WorkloadManager
    *
    * @param host
    *          The host to mark.
-   * @throws WorkloadException
+   * @
    *           Thrown if the host cannot be marked.
    */
-  private void markHostProcessed(String host) throws WorkloadException
+  private void markHostProcessed(String host) 
   {
     try
     {
@@ -955,7 +955,7 @@ public class SQLWorkloadManager implements WorkloadManager
       this.stmtSetHostStatus.execute(Status.STATUS_DONE, hostID);
     } catch (SQLException e)
     {
-      throw new WorkloadException(e);
+      throw new WorkloadError(e);
     }
   }
 
@@ -967,13 +967,12 @@ public class SQLWorkloadManager implements WorkloadManager
    *          The URL to set the status for.
    * @param status
    *          What to set the status to.
-   * @throws WorkloadException
+   * @
    *           Thrown if the status cannot be set.
    * @throws SQLException
    *           Thrown if a SQL error occurs.
    */
-  private void setStatus(URL url, String status) throws SQLException,
-      WorkloadException
+  private void setStatus(URL url, String status) throws SQLException
   {
     int id = getWorkloadID(url, true);
     this.stmtSetWorkloadStatus.execute("" + status, id);

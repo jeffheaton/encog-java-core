@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -24,12 +24,7 @@
   */
 package org.encog.bot.spider.workload.sql.oracle;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.encog.bot.spider.workload.sql.SQLHolder;
-import org.encog.util.db.DBError;
-import org.encog.util.db.RepeatableConnection;
 
 /**
  * OracleHolder: This class is an adaption of the SQLHolder

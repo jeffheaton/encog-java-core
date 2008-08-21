@@ -15,16 +15,19 @@ public class TestGenetic extends TestCase {
 		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		BasicNetwork network = XOR.createThreeLayerNet();
 				
-		TrainingSetNeuralGeneticAlgorithm train = new TrainingSetNeuralGeneticAlgorithm(network, true, trainingData,5000,0.1,0.25);	
+		TrainingSetNeuralGeneticAlgorithm train = new TrainingSetNeuralGeneticAlgorithm(network, true, trainingData,500,0.1,0.25);	
 
-		for (int i = 0; i < 100; i++) 
-		{
-			train.iteration();
-			network = train.getNetwork();
-		}
+		train.iteration();
+		double error1 = train.getError();
+		train.iteration();
+		network = (BasicNetwork)train.getNetwork();
+		double error2 = train.getError();
 		
-		TestCase.assertTrue("Error too high for genetic algorithm",train.getError()<0.1);
-		TestCase.assertTrue("XOR outputs not correct",XOR.verifyXOR(network, 0.1));
+		double improve = (error1-error2)/error1;
+		
+		System.out.println(improve);
+		
+		TestCase.assertTrue("Genetic algorithm did not improve.",improve>0.0001);
 
 	}
 }

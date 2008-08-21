@@ -34,7 +34,7 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
             options.corePoolSize = 10;
             options.startup = SpiderOptions.STARTUP_CLEAR;
             options.workloadManager = MemoryWorkloadManager.class.getCanonicalName();
-            
+            options.filter.add("org.encog.bot.spider.filter.RobotsFilter");
             Spider spider = new Spider(options, this);
            
             spider.addURL(new URL("http://www.httprecipes.com"), null, 1);

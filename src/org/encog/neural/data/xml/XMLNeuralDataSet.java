@@ -1,30 +1,44 @@
+/*
+  * Encog Neural Network and Bot Library for Java v1.x
+  * http://www.heatonresearch.com/encog/
+  * http://code.google.com/p/encog-java/
+  * 
+  * Copyright 2008, Heaton Research Inc., and individual contributors.
+  * See the copyright.txt in the distribution for a full listing of 
+  * individual contributors.
+  *
+  * This is free software; you can redistribute it and/or modify it
+  * under the terms of the GNU Lesser General Public License as
+  * published by the Free Software Foundation; either version 2.1 of
+  * the License, or (at your option) any later version.
+  *
+  * This software is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+  * Lesser General Public License for more details.
+  *
+  * You should have received a copy of the GNU Lesser General Public
+  * License along with this software; if not, write to the Free
+  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+  */
+
 package org.encog.neural.data.xml;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.encog.bot.html.ParseHTML;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.NeuralNetworkException;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.csv.CSVNeuralDataSet;
 import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLReaderFactory;
 
 public class XMLNeuralDataSet extends BasicNeuralDataSet {
 
@@ -35,7 +49,7 @@ public class XMLNeuralDataSet extends BasicNeuralDataSet {
 			String pairXML,
 			String inputXML,
 			String idealXML,
-			String valueXML) throws NeuralNetworkException
+			String valueXML)
 	{
 				
 		try {
@@ -67,11 +81,11 @@ public class XMLNeuralDataSet extends BasicNeuralDataSet {
 			is.close();
 
 		} catch (javax.xml.parsers.ParserConfigurationException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		} catch (org.xml.sax.SAXException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		} catch (java.io.IOException e) {
-			throw new NeuralNetworkException(e);
+			throw new NeuralNetworkError(e);
 		}	
 	}
 	

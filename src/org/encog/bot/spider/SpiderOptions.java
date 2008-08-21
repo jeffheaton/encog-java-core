@@ -1,5 +1,5 @@
 /*
-  * Encog Neural Network and Bot Library for Java v0.5
+  * Encog Neural Network and Bot Library for Java v1.x
   * http://www.heatonresearch.com/encog/
   * http://code.google.com/p/encog-java/
   * 
@@ -131,25 +131,30 @@ public class SpiderOptions {
    *           configuration items between the file and this
    *           object.
    */
-  public void load(String inputFile) throws IOException, SpiderException {
+  public void load(String inputFile) 
+  {
+      try {
     FileReader f = new FileReader(new File(inputFile));
     BufferedReader r = new BufferedReader(f);
     String line;
     while ((line = r.readLine()) != null) {
-      try {
+
         parseLine(line);
-      } catch (IllegalArgumentException e) {
-        throw (new SpiderException(e));
-      } catch (SecurityException e) {
-        throw (new SpiderException(e));
-      } catch (IllegalAccessException e) {
-        throw (new SpiderException(e));
-      } catch (NoSuchFieldException e) {
-        throw (new SpiderException(e));
-      }
     }
     r.close();
     f.close();
+      } catch (IllegalArgumentException e) {
+          throw (new SpiderError(e));
+        } catch (SecurityException e) {
+          throw (new SpiderError(e));
+        } catch (IllegalAccessException e) {
+          throw (new SpiderError(e));
+        } catch (NoSuchFieldException e) {
+          throw (new SpiderError(e));
+        } catch (IOException e) {
+        	throw (new SpiderError(e));
+		}
+
   }
 
   /**
