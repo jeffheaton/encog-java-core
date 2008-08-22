@@ -86,9 +86,8 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	public int compareTo(final Chromosome<GENE_TYPE, GA_TYPE> other) {
 		if (getCost() > other.getCost()) {
 			return 1;
-		} else {
-			return -1;
 		}
+		return -1;
 	}
 
 	/**

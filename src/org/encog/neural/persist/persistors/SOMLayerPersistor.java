@@ -60,7 +60,7 @@ public class SOMLayerPersistor implements Persistor {
 			layer = null;
 		
 		Element matrixElement = XMLUtil.findElement(layerNode, "weightMatrix");
-		if (matrixElement != null) {
+		if (matrixElement != null && layer!=null ) {
 			Element e = XMLUtil.findElement(matrixElement, "Matrix");
 			Persistor persistor = EncogPersistedCollection
 					.createPersistor("Matrix");
@@ -101,7 +101,7 @@ public class SOMLayerPersistor implements Persistor {
 			atts.clear();
 
 			if (layer.hasMatrix()) {
-				if (layer.getMatrix() instanceof EncogPersistedObject) {
+
 					Persistor persistor = EncogPersistedCollection
 							.createPersistor(layer.getMatrix().getClass()
 									.getSimpleName());
@@ -109,7 +109,7 @@ public class SOMLayerPersistor implements Persistor {
 					hd.startElement("", "", "weightMatrix", atts);
 					persistor.save(layer.getMatrix(), hd);
 					hd.endElement("", "", "weightMatrix");
-				}
+				
 			}
 
 			hd.endElement("", "", layer.getClass().getSimpleName());

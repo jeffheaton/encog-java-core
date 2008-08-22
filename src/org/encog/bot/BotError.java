@@ -27,6 +27,11 @@ package org.encog.bot;
 
 import org.encog.EncogError;
 
+/**
+ * A bot related error has occured.
+ * @author jheaton
+ *
+ */
 public class BotError extends EncogError {
 	/**
 	 * 

@@ -31,4 +31,5 @@ public interface NeuralDataSet extends Iterable<NeuralDataPair> {
 	public int getInputSize();
 	public int getIdealSize();
 	public void add(NeuralData data1);
+	public void close();
 }

@@ -52,13 +52,13 @@ public class TestSpiderDB extends TestCase implements SpiderReportable {
 		s.execute(sql.toString());
 
 		SpiderOptions options = new SpiderOptions();
-		options.corePoolSize = 10;
-		options.dbClass = DerbyUtil.DRIVER;
-		options.dbPWD = "user1";
-		options.dbUID = "user1";
-		options.dbURL = DerbyUtil.PROTOCOL + DerbyUtil.DB_LOCATION;
-		options.startup = SpiderOptions.STARTUP_CLEAR;
-		options.workloadManager = SQLWorkloadManager.class.getCanonicalName();
+		options.setCorePoolSize( 10 );
+		options.setDbClass( DerbyUtil.DRIVER );
+		options.setDbPWD( "user1" );
+		options.setDbUID( "user1" );
+		options.setDbURL( DerbyUtil.PROTOCOL + DerbyUtil.DB_LOCATION );
+		options.setStartup( SpiderOptions.STARTUP_CLEAR );
+		options.setWorkloadManager( SQLWorkloadManager.class.getCanonicalName() );
 
 		Spider spider = new Spider(options, this);
 
@@ -66,6 +66,7 @@ public class TestSpiderDB extends TestCase implements SpiderReportable {
 		spider.process();
 		TestCase.assertTrue(this.urlsProcessed > 100);
 
+		DerbyUtil.shutdown();
 		DerbyUtil.cleanup();
 	}
 

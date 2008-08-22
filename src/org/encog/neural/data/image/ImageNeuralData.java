@@ -35,8 +35,9 @@ public class ImageNeuralData extends BasicNeuralData {
 	private Image image;
 	
 	public ImageNeuralData(Image image)
-	{
+	{		
 		super(1);
+		this.image = image;
 	}
 
 	/**

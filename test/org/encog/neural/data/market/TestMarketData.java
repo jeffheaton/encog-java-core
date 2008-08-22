@@ -20,8 +20,8 @@ public class TestMarketData extends TestCase {
 		TickerSymbol tickerAAPL = new TickerSymbol("AAPL",null);
 		TickerSymbol tickerMSFT = new TickerSymbol("MSFT",null);
 		MarketNeuralDataSet marketData = new MarketNeuralDataSet(loader, 5,1);
-		marketData.addDescription(new MarketDataDescription(tickerAAPL,MarketDataType.ADJUSTED_CLOSE, true, true));
-		marketData.addDescription(new MarketDataDescription(tickerMSFT,MarketDataType.ADJUSTED_CLOSE, true, false));		
+		marketData.addDescription(new MarketDataDescription(tickerAAPL,MarketDataType.CLOSE, true, true));
+		marketData.addDescription(new MarketDataDescription(tickerMSFT,MarketDataType.CLOSE, true, false));		
 		marketData.addDescription(new MarketDataDescription(tickerAAPL,MarketDataType.VOLUME, true, false));
 		marketData.addDescription(new MarketDataDescription(tickerMSFT,MarketDataType.VOLUME, true, false));		
 		Date begin = DateUtil.createDate(7, 1, 2008);
@@ -73,11 +73,11 @@ public class TestMarketData extends TestCase {
 		TestCase.assertEquals(0.03, Math.round(pair.getInput().getData(4)*1000.0)/1000.0);
 		TestCase.assertEquals(0.0020, Math.round(pair.getInput().getData(5)*1000.0)/1000.0);
 		TestCase.assertEquals(0.566, Math.round(pair.getInput().getData(6)*1000.0)/1000.0);
-		TestCase.assertEquals(0.927, Math.round(pair.getInput().getData(7)*1000.0)/1000.0);
+		TestCase.assertEquals(0.929, Math.round(pair.getInput().getData(7)*1000.0)/1000.0);
 		TestCase.assertEquals(0.025, Math.round(pair.getInput().getData(8)*1000.0)/1000.0);
 		TestCase.assertEquals(-0.0070, Math.round(pair.getInput().getData(9)*1000.0)/1000.0);
 		TestCase.assertEquals(0.084, Math.round(pair.getInput().getData(10)*1000.0)/1000.0);
-		TestCase.assertEquals(-0.083, Math.round(pair.getInput().getData(11)*1000.0)/1000.0);
+		TestCase.assertEquals(-0.084, Math.round(pair.getInput().getData(11)*1000.0)/1000.0);
 		TestCase.assertEquals(-0.03, Math.round(pair.getInput().getData(12)*1000.0)/1000.0);
 		TestCase.assertEquals(-0.024, Math.round(pair.getInput().getData(13)*1000.0)/1000.0);
 		TestCase.assertEquals(0.0080, Math.round(pair.getInput().getData(14)*1000.0)/1000.0);
@@ -94,11 +94,11 @@ public class TestMarketData extends TestCase {
 		TestCase.assertEquals(0.03, Math.round(pair.getInput().getData(0)*1000.0)/1000.0);
 		TestCase.assertEquals(0.0020, Math.round(pair.getInput().getData(1)*1000.0)/1000.0);
 		TestCase.assertEquals(0.566, Math.round(pair.getInput().getData(2)*1000.0)/1000.0);
-		TestCase.assertEquals(0.927, Math.round(pair.getInput().getData(3)*1000.0)/1000.0);
+		TestCase.assertEquals(0.929, Math.round(pair.getInput().getData(3)*1000.0)/1000.0);
 		TestCase.assertEquals(0.025, Math.round(pair.getInput().getData(4)*1000.0)/1000.0);
 		TestCase.assertEquals(-0.0070, Math.round(pair.getInput().getData(5)*1000.0)/1000.0);
 		TestCase.assertEquals(0.084, Math.round(pair.getInput().getData(6)*1000.0)/1000.0);
-		TestCase.assertEquals(-0.083, Math.round(pair.getInput().getData(7)*1000.0)/1000.0);
+		TestCase.assertEquals(-0.084, Math.round(pair.getInput().getData(7)*1000.0)/1000.0);
 		TestCase.assertEquals(-0.03, Math.round(pair.getInput().getData(8)*1000.0)/1000.0);
 		TestCase.assertEquals(-0.024, Math.round(pair.getInput().getData(9)*1000.0)/1000.0);
 		TestCase.assertEquals(0.0080, Math.round(pair.getInput().getData(10)*1000.0)/1000.0);
@@ -110,7 +110,7 @@ public class TestMarketData extends TestCase {
 		TestCase.assertEquals(-0.023, Math.round(pair.getInput().getData(16)*1000.0)/1000.0);
 		TestCase.assertEquals(-0.0080, Math.round(pair.getInput().getData(17)*1000.0)/1000.0);
 		TestCase.assertEquals(0.107, Math.round(pair.getInput().getData(18)*1000.0)/1000.0);
-		TestCase.assertEquals(0.178, Math.round(pair.getInput().getData(19)*1000.0)/1000.0);
+		TestCase.assertEquals(0.202, Math.round(pair.getInput().getData(19)*1000.0)/1000.0);
 		
 
 		

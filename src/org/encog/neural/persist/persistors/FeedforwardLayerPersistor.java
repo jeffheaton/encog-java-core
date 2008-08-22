@@ -84,7 +84,7 @@ public class FeedforwardLayerPersistor implements Persistor {
 			hd.endElement("", "", "activation");
 
 			if (layer.hasMatrix()) {
-				if (layer.getMatrix() instanceof EncogPersistedObject) {
+				
 					Persistor persistor = EncogPersistedCollection
 							.createPersistor(layer.getMatrix().getClass()
 									.getSimpleName());
@@ -92,7 +92,7 @@ public class FeedforwardLayerPersistor implements Persistor {
 					hd.startElement("", "", "weightMatrix", atts);
 					persistor.save(layer.getMatrix(), hd);
 					hd.endElement("", "", "weightMatrix");
-				}
+				
 			}
 
 			hd.endElement("", "", layer.getClass().getSimpleName());

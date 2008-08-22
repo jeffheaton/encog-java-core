@@ -25,6 +25,11 @@
 
 package org.encog.neural.persist;
 
+/**
+ * This interface flags an class as being able to be persisted into an
+ * Encog collection.
+ * @author jheaton
+ *
+ */
 public interface EncogPersistedObject {
-	public String getName();
 }

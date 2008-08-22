@@ -35,4 +35,12 @@ public class DerbyUtil {
     {
     	Directory.deleteDirectory(new File(DerbyUtil.DB_LOCATION));
     }
+
+	public static void shutdown() {
+		try {
+			DriverManager.getConnection("jdbc:derby:"+DerbyUtil.DB_LOCATION+";shutdown=true");
+		} catch (SQLException e) {
+		}
+		
+	}
 }

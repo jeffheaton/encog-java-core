@@ -119,8 +119,6 @@ public class RepeatableConnection {
 	        logger.log(Level.SEVERE, "Reconnect failed", ex);
 	      }
 
-	      if (ex != null)
-	      {
 	        try
 	        {
 	          logger.log(Level.SEVERE, "Reconnect attempt " + i
@@ -129,7 +127,7 @@ public class RepeatableConnection {
 	        } catch (InterruptedException e)
 	        {
 	        }
-	      }
+	      
 	    }
 
 	    if (ex != null)

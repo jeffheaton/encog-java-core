@@ -40,7 +40,8 @@ public class TestSQLDataSet extends TestCase {
 				2,1, DerbyUtil.DRIVER, DerbyUtil.PROTOCOL+DerbyUtil.DB_LOCATION, DerbyUtil.UID,DerbyUtil.PWD);
 		
 		XOR.testXORDataSet(data);
-		
+				
+		DerbyUtil.shutdown();
 		DerbyUtil.cleanup();
 
 	}

@@ -56,7 +56,7 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject  
 		}
 
 		public void remove() {
-			iterators.remove(this);			
+			throw new UnsupportedOperationException();			
 		}
 	}	
 	
@@ -128,6 +128,12 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject  
 	 */
 	public void setData(List<NeuralDataPair> data) {
 		this.data = data;
+	}
+
+	@Override
+	public void close() {
+		// nothing to close
+		
 	}
 	
 	

@@ -49,9 +49,9 @@ public class MateWorker<CHROMOSME_TYPE extends Chromosome<?, ?>> implements
 
 	@SuppressWarnings("unchecked")
 	public Integer call() throws Exception {
-		this.mother.mate((Chromosome)this.father, 
-				(Chromosome)this.child1, 
-				(Chromosome)this.child2);
+		this.mother.mate(this.father, 
+				this.child1, 
+				this.child2);
 		return null;
 	}
 

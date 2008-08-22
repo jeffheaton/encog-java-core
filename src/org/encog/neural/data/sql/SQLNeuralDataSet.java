@@ -72,11 +72,9 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 					dataReady = true;
 					return true;
 				}
-				else 
-				{
-					dataReady = false;
-					return false;
-				}
+				
+				dataReady = false;
+				return false;				
 			}
 			catch(SQLException e)
 			{

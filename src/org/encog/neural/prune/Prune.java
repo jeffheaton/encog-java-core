@@ -67,7 +67,7 @@ public class Prune {
 	/**
 	 * The desired momentum.
 	 */
-	protected double momentum;;
+	protected double momentum;
 	protected double maxError;
 
 	/**
@@ -309,8 +309,7 @@ public class Prune {
 	 */
 	public int pruneSelective() {
 		final int i = this.getHiddenCount();
-		while (findNeuron()) {
-			;
+		while (findNeuron()) {			
 		}
 		return (i - this.getHiddenCount());
 	}

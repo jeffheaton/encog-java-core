@@ -27,10 +27,10 @@ package org.encog.neural.data;
 
 public interface NeuralData {
 
-	public void setData(double[] data);
-	public void setData(int index,double d);
-	public double[] getData();
-	public double getData(int index);
-	public int size();
+	void setData(double[] data);
+	void setData(int index,double d);
+	double[] getData();
+	double getData(int index);
+	int size();
 	
 }

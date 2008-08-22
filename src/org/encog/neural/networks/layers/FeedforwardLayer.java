@@ -194,9 +194,8 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 			throw new NeuralNetworkError(
 					"Weight matrix includes threshold values, and must have at least 2 rows.");
 		}
-		if (matrix != null) {
-			this.setFire( new BasicNeuralData(matrix.getRows() - 1) );
-		}
+		this.setFire( new BasicNeuralData(matrix.getRows() - 1) );
+		
 		super.setMatrix(matrix);
 	}
 	

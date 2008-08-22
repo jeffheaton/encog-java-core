@@ -299,7 +299,9 @@ public class TrainSelfOrganizingMap {
 				which = pair;
 			}
 		}
-
+		
+		if( which!=null )
+		{
 		final NormalizeInput input = new NormalizeInput(which.getInput(),
 				this.somLayer.getNormalizationType());
 		best = this.network.winner(which.getInput());
@@ -323,6 +325,7 @@ public class TrainSelfOrganizingMap {
 		}
 
 		normalizeWeight(outputWeights, which2);
+		}
 	}
 
 	/**
@@ -345,8 +348,6 @@ public class TrainSelfOrganizingMap {
 	 * Called to initialize the SOM.
 	 */
 	public void initialize() {
-
-		this.somLayer.getMatrix().ramdomize(-1, 1);
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
 			normalizeWeight(this.somLayer.getMatrix(), i);

@@ -42,10 +42,11 @@ public class TestCSVNeuralData extends TestCase {
 	{
 		generateCSV();
 		
-		CSVNeuralDataSet set = new CSVNeuralDataSet("xor.csv",2,1,true);
+		CSVNeuralDataSet set = new CSVNeuralDataSet("xor.csv",2,1,false);
 		
 		XOR.testXORDataSet(set);
 		
+		set.close();
 		new File(TestCSVNeuralData.FILENAME).delete();
 	}	
 }

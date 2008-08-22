@@ -42,6 +42,7 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	public ImageNeuralDataSet(Class<Downsample> downsampler, boolean findBounds)
 	{
 		this.downsampler = downsampler;
+		this.findBounds = findBounds;
 		this.height = -1;
 		this.width = -1;
 	}
@@ -50,23 +51,23 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	public void add(NeuralData data) {
 		if( !(data instanceof ImageNeuralData) )
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
-		else
-			super.add(data);
+		
+		super.add(data);
 	}
 
 	public void add(NeuralData inputData,NeuralData idealData)
 	{
 		if( !(inputData instanceof ImageNeuralData) )
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
-		else
-			super.add(inputData,idealData);
+		
+		super.add(inputData,idealData);
 	}
 
 	public void add(NeuralDataPair inputData) {
 		if( !(inputData.getInput() instanceof ImageNeuralData) )
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
-		else
-			super.add(inputData);
+		
+		super.add(inputData);
 	}
 	
 	public void downsample(int height,int width)

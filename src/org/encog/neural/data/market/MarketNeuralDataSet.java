@@ -101,7 +101,7 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	
 	public void load(Date begin, Date end)
 	{
-		// define the strating point if it is not already defined
+		// define the starting point if it is not already defined
 		if(this.getStartingPoint()==null)
 			this.setStartingPoint(begin);
 		

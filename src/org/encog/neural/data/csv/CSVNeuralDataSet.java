@@ -25,7 +25,9 @@
 package org.encog.neural.data.csv;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
@@ -45,6 +47,7 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	private int idealSize;
 	private char delimiter;
 	private boolean headers;
+	private List<CSVNeuralIterator> iterators = new ArrayList<CSVNeuralIterator>();
 	
 	public class CSVNeuralIterator implements Iterator<NeuralDataPair>
 	{
@@ -77,11 +80,8 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 					dataReady = true;
 					return true;
 				}
-				else 
-				{
-					dataReady = false;
-					return false;
-				}
+				dataReady = false;
+				return false;
 			}
 			catch(IOException e)
 			{
@@ -115,13 +115,17 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 		}
 
 		public void remove() {
+			
+			throw new UnsupportedOperationException();
+		}
+
+
+		public void close() {
 			try {
 				this.reader.close();
 			} catch (IOException e) {
-				// Not much we can do at this point, and throwing will
-				// break the interface.
-			}
-			
+				throw new NeuralDataError("Can't close CSV file.");
+			}			
 		}	
 	}
 	
@@ -176,5 +180,14 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 
 	public void add(NeuralData data1) {
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);		
+	}
+
+	@Override
+	public void close() {
+		for(CSVNeuralIterator iterator: this.iterators)
+		{
+			iterator.close();
+		}
+		
 	}
 }

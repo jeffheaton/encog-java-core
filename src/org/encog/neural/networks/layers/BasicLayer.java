@@ -95,9 +95,8 @@ public class BasicLayer implements Layer, EncogPersistedObject {
 	public int getMatrixSize() {
 		if (this.matrix == null) {
 			return 0;
-		} else {
-			return this.matrix.size();
-		}
+		} 
+		return this.matrix.size();		
 	}
 
 	/**

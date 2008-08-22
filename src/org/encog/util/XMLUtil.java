@@ -70,23 +70,23 @@ public class XMLUtil {
   {
     String str = findElementAsString(e,find);
     if ( str==null )
-      return 0;
+      return def;
     try {
       return Long.parseLong(str);
-    } catch ( java.lang.Exception ex ) {
-      return 0;
+    } catch ( NumberFormatException ex ) {
+      return def;
     }
   }
 
-  public static int findElementAsInt(Element e,String find,long def)
+  public static int findElementAsInt(Element e,String find,int def)
   {
     String str = findElementAsString(e,find);
     if ( str==null )
-      return 0;
+      return def;
     try {
       return Integer.parseInt(str);
-    } catch ( java.lang.Exception ex ) {
-      return 0;
+    } catch ( NumberFormatException ex ) {
+      return def;
     }
   }
 
