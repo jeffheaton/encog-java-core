@@ -34,7 +34,13 @@ import java.io.Serializable;
 /**
  * SerializeObject: Load or save an object using Java serialization.
  */
-public class SerializeObject {
+public final class SerializeObject {
+	
+	/**
+	 * Private constructor.
+	 */
+	private SerializeObject() {
+	}
 	
 	/**
 	 * Load an object.

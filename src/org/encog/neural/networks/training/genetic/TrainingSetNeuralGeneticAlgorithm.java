@@ -24,7 +24,6 @@
   */
 package org.encog.neural.networks.training.genetic;
 
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 
@@ -39,12 +38,27 @@ import org.encog.neural.networks.BasicNetwork;
 public class TrainingSetNeuralGeneticAlgorithm extends
 		NeuralGeneticAlgorithm<TrainingSetNeuralGeneticAlgorithm> {
 
-	protected NeuralDataSet training;
+	/**
+	 * The training set to use.
+	 */
+	private NeuralDataSet training;
 
-	public TrainingSetNeuralGeneticAlgorithm(final BasicNetwork network,
-			final boolean reset, final NeuralDataSet training, final int populationSize,
-			final double mutationPercent, final double percentToMate)
-			throws NeuralNetworkError {
+	/**
+	 * Construct a training object.
+	 * @param network The network to train.
+	 * @param reset Should each chromosome be reset.
+	 * @param training The training set.
+	 * @param populationSize The population size.
+	 * @param mutationPercent The mutation percent.
+	 * @param percentToMate The percent to mate.
+	 */
+	public TrainingSetNeuralGeneticAlgorithm(
+			final BasicNetwork network,
+			final boolean reset, 
+			final NeuralDataSet training, 
+			final int populationSize,
+			final double mutationPercent, 
+			final double percentToMate) {
 
 		this.setMutationPercent(mutationPercent);
 		this.setMatingPopulation(percentToMate * 2);
@@ -61,7 +75,8 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 				chromosomeNetwork.reset();
 			}
 
-			final TrainingSetNeuralChromosome c = new TrainingSetNeuralChromosome(
+			final TrainingSetNeuralChromosome c = 
+				new TrainingSetNeuralChromosome(
 					this, chromosomeNetwork);
 			c.updateGenes();
 			setChromosome(i, c);
@@ -74,7 +89,7 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 	 * @return The current error for the neural network.
 	 * @throws NeuralNetworkException
 	 */
-	public double getError() throws NeuralNetworkError {
+	public double getError() {
 		final BasicNetwork network = this.getNetwork();
 		return network.calculateError(this.training);
 	}

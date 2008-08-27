@@ -27,23 +27,35 @@ package org.encog.neural.persist.persistors;
 
 import javax.xml.transform.sax.TransformerHandler;
 
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.w3c.dom.Element;
 
+/**
+ * Persist the sigmoid activation function.
+ * @author jheaton
+ *
+ */
 public class ActivationSigmoidPersistor implements Persistor  {
 
-	public EncogPersistedObject load(Element node)
-			throws NeuralNetworkError {
+	/**
+	 * Load from the specified node. 
+	 * @param node The node to load from.
+	 * @return The EncogPersistedObject that was loaded.
+	 */
+	public EncogPersistedObject load(final Element node) {
 		return new ActivationSigmoid();
 	}
 
-	public void save(EncogPersistedObject object, TransformerHandler hd)
-			throws NeuralNetworkError {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * Save the specified object.
+	 * @param object The object to save. 
+	 * @param hd The XML object.
+	 */
+	public void save(final EncogPersistedObject object, 
+			final TransformerHandler hd) {
+
 	}
 
 }

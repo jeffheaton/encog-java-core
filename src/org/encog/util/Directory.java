@@ -27,9 +27,24 @@ package org.encog.util;
 
 import java.io.File;
 
-public class Directory {
+/**
+ * Directory utilities.
+ * @author jheaton
+ */
+public final class Directory {
 
-	static public boolean deleteDirectory(File path) {
+	/**
+	 * Private constructor.
+	 */
+	private Directory() {		
+	}
+	
+	/**
+	 * Delete a directory and all children.
+	 * @param path The path to delete.
+	 * @return True if successful.
+	 */
+	public static boolean deleteDirectory(final File path) {
 		if (path.exists()) {
 			File[] files = path.listFiles();
 			for (int i = 0; i < files.length; i++) {

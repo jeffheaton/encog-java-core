@@ -1,27 +1,27 @@
 /*
-  * Encog Neural Network and Bot Library for Java v1.x
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v1.x
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 
 package org.encog.solve.genetic;
 
@@ -32,53 +32,53 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.encog.neural.NeuralNetworkError;
-
-
-
 /**
- * GeneticAlgorithm: Implements a genetic algorithm.
- * This is an abstract class.  Other classes are provided in this
- * book that use this base class to train neural networks or
- * provide an answer to the traveling salesman problem.
+ * GeneticAlgorithm: Implements a genetic algorithm. This is an abstract class.
+ * Other classes are provided in this book that use this base class to train
+ * neural networks or provide an answer to the traveling salesman problem.
  * 
- * The genetic algorithm is also capable of using a thread pool
- * to speed execution.  
+ * The genetic algorithm is also capable of using a thread pool to speed
+ * execution.
  */
 abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>> {
+
+	/**
+	 * Threadpool timeout.
+	 */
+	public static final int TIMEOUT = 120;
 	
 	/**
 	 * How many chromosomes should be created.
 	 */
 	private int populationSize;
-	
+
 	/**
 	 * The percent that should mutate.
 	 */
 	private double mutationPercent;
-	
+
 	/**
 	 * What percent should be chosen to mate. They will choose partners from the
 	 * entire mating population.
 	 */
 	private double percentToMate;
-	
+
 	/**
 	 * Percent of the population that the mating population chooses partners.
 	 * from.
 	 */
 	private double matingPopulation;
-	
+
 	/**
 	 * Should the same gene be prevented from repeating.
 	 */
 	private boolean preventRepeat;
-	
+
 	/**
 	 * How much genetic material should be cut when mating.
 	 */
 	private int cutLength;
-	
+
 	/**
 	 * An optional thread pool to use.
 	 */
@@ -91,7 +91,9 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Get a specific chromosome.
-	 * @param i The chromosome to return, 0 for the first one.
+	 * 
+	 * @param i
+	 *            The chromosome to return, 0 for the first one.
 	 * @return A chromosome.
 	 */
 	public CHROMOSOME_TYPE getChromosome(final int i) {
@@ -100,6 +102,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Return the entire population.
+	 * 
 	 * @return the chromosomes
 	 */
 	public CHROMOSOME_TYPE[] getChromosomes() {
@@ -108,6 +111,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Get the cut length.
+	 * 
 	 * @return The cut length.
 	 */
 	public int getCutLength() {
@@ -116,6 +120,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Get the mating population.
+	 * 
 	 * @return The mating population percent.
 	 */
 	public double getMatingPopulation() {
@@ -124,6 +129,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Get the mutation percent.
+	 * 
 	 * @return The mutation percent.
 	 */
 	public double getMutationPercent() {
@@ -132,6 +138,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Get the percent to mate.
+	 * 
 	 * @return The percent to mate.
 	 */
 	public double getPercentToMate() {
@@ -140,6 +147,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Get the optional threadpool.
+	 * 
 	 * @return the pool
 	 */
 	public ExecutorService getPool() {
@@ -148,6 +156,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Get the population size.
+	 * 
 	 * @return The population size.
 	 */
 	public int getPopulationSize() {
@@ -156,6 +165,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Should repeating genes be prevented.
+	 * 
 	 * @return True if repeating genes should be prevented.
 	 */
 	public boolean isPreventRepeat() {
@@ -168,14 +178,17 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 	 * 
 	 * @throws NeuralNetworkException
 	 */
-	public void iteration() throws NeuralNetworkError {
+	public void iteration() {
 
-		final int countToMate = (int) (getPopulationSize() * getPercentToMate());
+		final int countToMate = (int) (getPopulationSize() 
+				* getPercentToMate());
 		final int offspringCount = countToMate * 2;
 		int offspringIndex = getPopulationSize() - offspringCount;
-		final int matingPopulationSize = (int) (getPopulationSize() * getMatingPopulation());
+		final int matingPopulationSize = (int) (getPopulationSize() 
+				* getMatingPopulation());
 
-		final Collection<Callable<Integer>> tasks = new ArrayList<Callable<Integer>>();
+		final Collection<Callable<Integer>> tasks 
+		  = new ArrayList<Callable<Integer>>();
 
 		// mate and form the next generation
 		for (int i = 0; i < countToMate; i++) {
@@ -185,7 +198,8 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 			final CHROMOSOME_TYPE child1 = this.chromosomes[offspringIndex];
 			final CHROMOSOME_TYPE child2 = this.chromosomes[offspringIndex + 1];
 
-			final MateWorker<CHROMOSOME_TYPE> worker = new MateWorker<CHROMOSOME_TYPE>(
+			final MateWorker<CHROMOSOME_TYPE> worker 
+			  = new MateWorker<CHROMOSOME_TYPE>(
 					mother, father, child1, child2);
 
 			try {
@@ -197,14 +211,13 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 			} catch (final Exception e) {
 				e.printStackTrace();
 			}
-
-			// mother.mate(father,chromosomes[offspringIndex],chromosomes[offspringIndex+1]);
+			
 			offspringIndex += 2;
 		}
 
 		if (this.pool != null) {
 			try {
-				this.pool.invokeAll(tasks, 120, TimeUnit.SECONDS);
+				this.pool.invokeAll(tasks, TIMEOUT, TimeUnit.SECONDS);
 			} catch (final InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -217,8 +230,11 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Set the specified chromosome.
-	 * @param i The chromosome to set.
-	 * @param value The value for the specified chromosome.
+	 * 
+	 * @param i
+	 *            The chromosome to set.
+	 * @param value
+	 *            The value for the specified chromosome.
 	 */
 	public void setChromosome(final int i, final CHROMOSOME_TYPE value) {
 		this.chromosomes[i] = value;
@@ -226,6 +242,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Set the entire population.
+	 * 
 	 * @param chromosomes
 	 *            the chromosomes to set
 	 */
@@ -235,7 +252,9 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Set the cut length.
-	 * @param cutLength The cut length.
+	 * 
+	 * @param cutLength
+	 *            The cut length.
 	 */
 	public void setCutLength(final int cutLength) {
 		this.cutLength = cutLength;
@@ -243,7 +262,9 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Set the mating population percent.
-	 * @param matingPopulation The mating population percent.
+	 * 
+	 * @param matingPopulation
+	 *            The mating population percent.
 	 */
 	public void setMatingPopulation(final double matingPopulation) {
 		this.matingPopulation = matingPopulation;
@@ -251,7 +272,8 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Set the mutation percent.
-	 * @param mutationPercent
+	 * 
+	 * @param mutationPercent The percent to mutate.
 	 */
 	public void setMutationPercent(final double mutationPercent) {
 		this.mutationPercent = mutationPercent;
@@ -259,7 +281,8 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Set the percent to mate.
-	 * @param percentToMate
+	 * 
+	 * @param percentToMate The percent to mate.
 	 */
 	public void setPercentToMate(final double percentToMate) {
 		this.percentToMate = percentToMate;
@@ -267,6 +290,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Set the optional thread pool.
+	 * 
 	 * @param pool
 	 *            the pool to set
 	 */
@@ -276,20 +300,26 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 	/**
 	 * Set the population size.
-	 * @param populationSize The population size.
+	 * 
+	 * @param populationSize
+	 *            The population size.
 	 */
 	public void setPopulationSize(final int populationSize) {
 		this.populationSize = populationSize;
 	}
 
 	/**
-	 * Set the gene
-	 * @param preventRepeat
+	 * Set the gene.
+	 * 
+	 * @param preventRepeat Should repeats be prevented.
 	 */
 	public void setPreventRepeat(final boolean preventRepeat) {
 		this.preventRepeat = preventRepeat;
 	}
 
+	/**
+	 * Sort the chromosomes.
+	 */
 	public void sortChromosomes() {
 		Arrays.sort(this.chromosomes);
 	}

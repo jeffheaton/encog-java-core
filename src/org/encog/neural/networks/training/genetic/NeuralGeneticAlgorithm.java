@@ -28,8 +28,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.solve.genetic.GeneticAlgorithm;
 
 
-
-
 /**
  * NeuralGeneticAlgorithm: Implements a genetic algorithm that 
  * allows a feedforward neural network to be trained using a 

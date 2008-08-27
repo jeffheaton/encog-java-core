@@ -1,58 +1,51 @@
 /*
-  * Encog Neural Network and Bot Library for Java v1.x
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v1.x
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.encog.solve.genetic;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import org.encog.neural.NeuralNetworkError;
-
-
-
 /**
- * Chromosome: Implements a chromosome to genetic algorithm.
- * This is an abstract class.  Other classes are provided in this
- * book that use this base class to train neural networks or
- * provide an answer to the traveling salesman problem.
+ * Chromosome: Implements a chromosome to genetic algorithm. This is an abstract
+ * class. Other classes are provided in this book that use this base class to
+ * train neural networks or provide an answer to the traveling salesman problem.
  * 
- * Lifeforms in this genetic algorithm consist of one single 
- * chromosome each.  Therefore, this class represents a virtual
- * lifeform.  The chromosome is a string of objects that represent
- * one solution.  For a neural network, this string of objects
- * usually represents the weight and threshold matrix.
+ * Lifeforms in this genetic algorithm consist of one single chromosome each.
+ * Therefore, this class represents a virtual lifeform. The chromosome is a
+ * string of objects that represent one solution. For a neural network, this
+ * string of objects usually represents the weight and threshold matrix.
  * 
- * Chromosomes are made up of genes.  These are of the generic type
- * GENE_TYPE.  For a neural network this type would most likely
- * be double values.  
+ * Chromosomes are made up of genes. These are of the generic type GENE_TYPE.
+ * For a neural network this type would most likely be double values.
  */
 
 abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 		implements Comparable<Chromosome<GENE_TYPE, GA_TYPE>> {
 
 	/**
-	 * The cost for this chromosome.  The lower the better.
+	 * The cost for this chromosome. The lower the better.
 	 */
 	private double cost;
 
@@ -68,9 +61,9 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 	/**
 	 * Called to calculate the cost for this chromosome.
-	 * @throws NeuralNetworkError
+	 * 
 	 */
-	abstract public void calculateCost() throws NeuralNetworkError;
+	public abstract void calculateCost();
 
 	/**
 	 * Used to compare two chromosomes. Used to sort by cost.
@@ -99,7 +92,9 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 	/**
 	 * Get the specified gene.
-	 * @param gene The specified gene.
+	 * 
+	 * @param gene
+	 *            The specified gene.
 	 * @return The gene specified.
 	 */
 	public GENE_TYPE getGene(final int gene) {
@@ -108,6 +103,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 	/**
 	 * Used the get the entire gene array.
+	 * 
 	 * @return the genes
 	 */
 	public GENE_TYPE[] getGenes() {
@@ -157,16 +153,15 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	 *            Returns the first offspring
 	 * @param offspring2
 	 *            Returns the second offspring.
-	 * @throws NeuralNetworkException
 	 */
 	public void mate(final Chromosome<GENE_TYPE, GA_TYPE> father,
 			final Chromosome<GENE_TYPE, GA_TYPE> offspring1,
-			final Chromosome<GENE_TYPE, GA_TYPE> offspring2)
-			throws NeuralNetworkError {
+			final Chromosome<GENE_TYPE, GA_TYPE> offspring2) {
 		final int geneLength = getGenes().length;
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() * (geneLength - getGeneticAlgorithm()
+		final int cutpoint1 = (int) (Math.random() 
+				* (geneLength - getGeneticAlgorithm()
 				.getCutLength()));
 		final int cutpoint2 = cutpoint1 + getGeneticAlgorithm().getCutLength();
 
@@ -177,8 +172,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 		// handle cut section
 		for (int i = 0; i < geneLength; i++) {
-			if ((i < cutpoint1) || (i > cutpoint2)) {
-			} else {
+			if (!(i < cutpoint1 || i > cutpoint2)) {
 				offspring1.setGene(i, father.getGene(i));
 				offspring2.setGene(i, this.getGene(i));
 				taken1.add(offspring1.getGene(i));
@@ -188,7 +182,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 		// handle outer sections
 		for (int i = 0; i < geneLength; i++) {
-			if ((i < cutpoint1) || (i > cutpoint2)) {
+			if (i < cutpoint1 || i > cutpoint2) {
 				if (getGeneticAlgorithm().isPreventRepeat()) {
 					offspring1.setGene(i, getNotTaken(this, taken1));
 					offspring2.setGene(i, getNotTaken(father, taken2));
@@ -215,10 +209,11 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	/**
 	 * Called to mutate this chromosome.
 	 */
-	abstract public void mutate();
+	public abstract void mutate();
 
 	/**
 	 * Set the cost for this chromosome.
+	 * 
 	 * @param cost
 	 *            the cost to set
 	 */
@@ -228,8 +223,11 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 	/**
 	 * Set the specified gene's value.
-	 * @param gene The specified gene.
-	 * @param value The value to set the specified gene to.
+	 * 
+	 * @param gene
+	 *            The specified gene.
+	 * @param value
+	 *            The value to set the specified gene to.
 	 */
 	public void setGene(final int gene, final GENE_TYPE value) {
 		this.genes[gene] = value;
@@ -237,25 +235,27 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 	/**
 	 * Set the entire gene array.
+	 * 
 	 * @param genes
 	 *            the genes to set
 	 */
-	public void setGenes(final GENE_TYPE[] genes) throws NeuralNetworkError {
+	public void setGenes(final GENE_TYPE[] genes) {
 		this.genes = genes;
 	}
 
 	/**
 	 * Set the genes directly, not allowed to be overridden.
+	 * 
 	 * @param genes
 	 *            the genes to set
 	 */
-	public final void setGenesDirect(final GENE_TYPE[] genes)
-			throws NeuralNetworkError {
+	public final void setGenesDirect(final GENE_TYPE[] genes) {
 		this.genes = genes;
 	}
 
 	/**
 	 * Set the genetic algorithm.
+	 * 
 	 * @param geneticAlgorithm
 	 *            the geneticAlgorithm to set
 	 */
@@ -265,6 +265,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 	/**
 	 * Get the size of the gene array.
+	 * 
 	 * @return The size of the gene array.
 	 */
 	private int size() {
@@ -273,6 +274,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 
 	/**
 	 * Convert the chromosome to a string.
+	 * 
 	 * @return The chromosome as a string.
 	 */
 	@Override

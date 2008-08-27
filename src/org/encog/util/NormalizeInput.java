@@ -1,34 +1,33 @@
 /*
-  * Encog Neural Network and Bot Library for Java v1.x
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v1.x
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.encog.util;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.SOMLayer;
-
 
 /**
  * NormalizeInput: Input into a Self Organizing Map must be normalized.
@@ -44,7 +43,14 @@ public class NormalizeInput {
 	 * 
 	 */
 	public enum NormalizationType {
-		Z_AXIS, MULTIPLICATIVE
+		/**
+		 * Use z-axis normalization.
+		 */
+		Z_AXIS, 
+		/**
+		 * Use multiplicative normalization.
+		 */
+		MULTIPLICATIVE
 	}
 
 	/**
@@ -55,17 +61,17 @@ public class NormalizeInput {
 	/**
 	 * The normalization factor.
 	 */
-	protected double normfac;
+	private double normfac;
 
 	/**
 	 * The synthetic input.
 	 */
-	protected double synth;
+	private double synth;
 
 	/**
 	 * The input expressed as a matrix.
 	 */
-	protected Matrix inputMatrix;
+	private final Matrix inputMatrix;
 
 	/**
 	 * Normalize an input array into a matrix. The resulting matrix will have
@@ -76,10 +82,39 @@ public class NormalizeInput {
 	 * @param type
 	 *            What type of normalization to use.
 	 */
-	public NormalizeInput(final NeuralData input, final NormalizationType type) {
+	public NormalizeInput(final NeuralData input, 
+			final NormalizationType type) {
 		this.type = type;
 		calculateFactors(input);
-		this.inputMatrix = this.createInputMatrix(input, this.synth);
+		this.inputMatrix = createInputMatrix(input, this.synth);
+	}
+
+	/**
+	 * Determine both the normalization factor and the synthetic input for the
+	 * given input.
+	 * 
+	 * @param input The input to normalize.
+	 */
+	protected void calculateFactors(final NeuralData input) {
+
+		final Matrix inputMatrix2 = Matrix.createColumnMatrix(
+				input.getData());
+		double len = MatrixMath.vectorLength(inputMatrix2);
+		len = Math.max(len, SOMLayer.VERYSMALL);
+		final int numInputs = input.size();
+
+		if (this.type == NormalizationType.MULTIPLICATIVE) {
+			this.normfac = 1.0 / len;
+			this.synth = 0.0;
+		} else {
+			this.normfac = 1.0 / Math.sqrt(numInputs);
+			final double d = numInputs - Math.pow(len, 2);
+			if (d > 0.0) {
+				this.synth = Math.sqrt(d) * this.normfac;
+			} else {
+				this.synth = 0;
+			}
+		}
 	}
 
 	/**
@@ -106,6 +141,7 @@ public class NormalizeInput {
 
 	/**
 	 * Get the resulting input matrix.
+	 * 
 	 * @return The resulting input matrix.
 	 */
 	public Matrix getInputMatrix() {
@@ -114,6 +150,7 @@ public class NormalizeInput {
 
 	/**
 	 * The normalization factor.
+	 * 
 	 * @return The normalization factor.
 	 */
 	public double getNormfac() {
@@ -122,37 +159,10 @@ public class NormalizeInput {
 
 	/**
 	 * The synthetic input.
+	 * 
 	 * @return The synthetic input.
 	 */
 	public double getSynth() {
 		return this.synth;
-	}
-
-	/**
-	 * Determine both the normalization factor and the synthetic input for the
-	 * given input.
-	 * 
-	 * @param input
-	 *            The input to normalize.
-	 */
-	protected void calculateFactors(final NeuralData input) {
-
-		final Matrix inputMatrix = Matrix.createColumnMatrix(input.getData());
-		double len = MatrixMath.vectorLength(inputMatrix);
-		len = Math.max(len, SOMLayer.VERYSMALL);
-		final int numInputs = input.size();
-
-		if (this.type == NormalizationType.MULTIPLICATIVE) {
-			this.normfac = 1.0 / len;
-			this.synth = 0.0;
-		} else {
-			this.normfac = 1.0 / Math.sqrt(numInputs);
-			final double d = numInputs - Math.pow(len,2);
-			if (d > 0.0) {
-				this.synth = Math.sqrt(d) * this.normfac;
-			} else {
-				this.synth = 0;
-			}
-		}
 	}
 }

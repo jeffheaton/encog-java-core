@@ -685,7 +685,7 @@ public class SQLWorkloadManager implements WorkloadManager {
 
 		this.connection = new RepeatableConnection(
 				spider.getOptions().getDbClass(),				
-				spider.getOptions().getDbUID(), 
+				spider.getOptions().getDbURL(), 
 				spider.getOptions().getDbUID(), spider
 						.getOptions().getDbPWD());
 

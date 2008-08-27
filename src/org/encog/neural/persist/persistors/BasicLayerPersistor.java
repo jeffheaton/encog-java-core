@@ -1,27 +1,27 @@
 /*
-  * Encog Neural Network and Bot Library for Java v1.x
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v1.x
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 
 package org.encog.neural.persist.persistors;
 
@@ -38,32 +38,52 @@ import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+/**
+ * Persistence methods for the basic neural layer.
+ * 
+ * @author jheaton
+ */
 public class BasicLayerPersistor implements Persistor {
 
-	public EncogPersistedObject load(Element layerNode)
-			{
-		String str = layerNode.getAttribute("neuronCount");
-		int neuronCount = Integer.parseInt(str);
+	/**
+	 * Load from the specified node.
+	 * 
+	 * @param layerNode
+	 *            The node to load from.
+	 * @return The EncogPersistedObject that was loaded.
+	 */
+	public EncogPersistedObject load(final Element layerNode) {
+		final String str = layerNode.getAttribute("neuronCount");
+		final int neuronCount = Integer.parseInt(str);
 
-		BasicLayer layer = new BasicLayer(neuronCount);
-		Element matrixElement = XMLUtil.findElement(layerNode, "weightMatrix");
+		final BasicLayer layer = new BasicLayer(neuronCount);
+		final Element matrixElement = XMLUtil.findElement(layerNode,
+				"weightMatrix");
 		if (matrixElement != null) {
-			Element e = XMLUtil.findElement(matrixElement, "Matrix");
-			Persistor persistor = EncogPersistedCollection
+			final Element e = XMLUtil.findElement(matrixElement, "Matrix");
+			final Persistor persistor = EncogPersistedCollection
 					.createPersistor("Matrix");
-			Matrix matrix = (Matrix) persistor.load(e);
+			final Matrix matrix = (Matrix) persistor.load(e);
 			layer.setMatrix(matrix);
 		}
 		return layer;
 	}
 
-	public void save(EncogPersistedObject object, TransformerHandler hd)
-			 {
+	/**
+	 * Save the specified object.
+	 * 
+	 * @param object
+	 *            The object to save.
+	 * @param hd
+	 *            The XML object.
+	 */
+	public void save(final EncogPersistedObject object,
+			final TransformerHandler hd) {
 
 		try {
-			BasicLayer layer = (BasicLayer) object;
+			final BasicLayer layer = (BasicLayer) object;
 
-			AttributesImpl atts = new AttributesImpl();
+			final AttributesImpl atts = new AttributesImpl();
 			atts.addAttribute("", "", "neuronCount", "CDATA", ""
 					+ layer.getNeuronCount());
 			hd.startElement("", "", layer.getClass().getSimpleName(), atts);
@@ -71,19 +91,19 @@ public class BasicLayerPersistor implements Persistor {
 			atts.clear();
 
 			if (layer.hasMatrix()) {
-				
-					Persistor persistor = EncogPersistedCollection
-							.createPersistor(layer.getMatrix().getClass()
-									.getSimpleName());
-					atts.clear();
-					hd.startElement("", "", "weightMatrix", atts);
-					persistor.save(layer.getMatrix(), hd);
-					hd.endElement("", "", "weightMatrix");
-				
+
+				final Persistor persistor = EncogPersistedCollection
+						.createPersistor(layer.getMatrix().getClass()
+								.getSimpleName());
+				atts.clear();
+				hd.startElement("", "", "weightMatrix", atts);
+				persistor.save(layer.getMatrix(), hd);
+				hd.endElement("", "", "weightMatrix");
+
 			}
 
 			hd.endElement("", "", layer.getClass().getSimpleName());
-		} catch (SAXException e) {
+		} catch (final SAXException e) {
 			throw new NeuralNetworkError(e);
 		}
 	}

@@ -1,27 +1,27 @@
 /*
-  * Encog Neural Network and Bot Library for Java v1.x
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v1.x
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 
 package org.encog.neural.networks.layers;
 
@@ -46,12 +46,12 @@ import org.encog.neural.persist.EncogPersistedObject;
  * network will use the same activation function. By default this class uses the
  * sigmoid activation function.
  */
-public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPersistedObject {
+public class FeedforwardLayer extends BasicLayer implements Serializable,
+		EncogPersistedObject {
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -3698708039331150031L;
-
 
 	/**
 	 * Which activation function to use for this layer.
@@ -88,8 +88,7 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 	 * @return The cloned layer.
 	 */
 	public FeedforwardLayer cloneStructure() {
-		return new FeedforwardLayer(this.activationFunction, this
-				.getNeuronCount());
+		return new FeedforwardLayer(this.activationFunction, getNeuronCount());
 	}
 
 	/**
@@ -110,12 +109,12 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 
 		final Matrix inputMatrix = createInputMatrix(this.getFire());
 
-		for (i = 0; i < this.getNext().getNeuronCount(); i++) {
-			final Matrix col = this.getMatrix().getCol(i);
+		for (i = 0; i < getNext().getNeuronCount(); i++) {
+			final Matrix col = getMatrix().getCol(i);
 			final double sum = MatrixMath.dotProduct(col, inputMatrix);
 
-			this.getNext().setFire(i, this.activationFunction
-					.activationFunction(sum));
+			getNext().setFire(i,
+					this.activationFunction.activationFunction(sum));
 		}
 
 		return this.getFire();
@@ -127,6 +126,7 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 	 * threshold.
 	 * 
 	 * @param pattern
+	 *            The pattern to create the matrix for.
 	 * @return A matrix that represents the input pattern.
 	 */
 	private Matrix createInputMatrix(final NeuralData pattern) {
@@ -142,6 +142,12 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 		return result;
 	}
 
+	/**
+	 * @return The activation function for this layer.
+	 */
+	public ActivationFunction getActivationFunction() {
+		return this.activationFunction;
+	}
 
 	/**
 	 * Prune one of the neurons from this layer. Remove all entries in this
@@ -152,12 +158,12 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 	 */
 	public void prune(final int neuron) {
 		// delete a row on this matrix
-		if (this.getMatrix() != null) {
-			setMatrix(MatrixMath.deleteRow(this.getMatrix(), neuron));
+		if (getMatrix() != null) {
+			setMatrix(MatrixMath.deleteRow(getMatrix(), neuron));
 		}
 
 		// delete a column on the previous
-		final Layer previous = this.getPrevious();
+		final Layer previous = getPrevious();
 		if (previous != null) {
 			if (previous.getMatrix() != null) {
 				previous.setMatrix(MatrixMath.deleteCol(previous.getMatrix(),
@@ -168,22 +174,6 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 	}
 
 	/**
-	 * Produce a string form of the layer.
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder result = new StringBuilder();
-		result.append("[FeedforwardLayer: Neuron Count=");
-		result.append(getNeuronCount());
-		result.append("]");
-		return result.toString();
-	}
-
-	public ActivationFunction getActivationFunction() {
-		return this.activationFunction;
-	}
-	
-	/**
 	 * Assign a new weight and threshold matrix to this layer.
 	 * 
 	 * @param matrix
@@ -192,13 +182,14 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 	public void setMatrix(final Matrix matrix) {
 		if (matrix.getRows() < 2) {
 			throw new NeuralNetworkError(
-					"Weight matrix includes threshold values, and must have at least 2 rows.");
+					"Weight matrix includes threshold values, "
+							+ "and must have at least 2 rows.");
 		}
-		this.setFire( new BasicNeuralData(matrix.getRows() - 1) );
-		
+		this.setFire(new BasicNeuralData(matrix.getRows() - 1));
+
 		super.setMatrix(matrix);
 	}
-	
+
 	/**
 	 * Set the next layer.
 	 * 
@@ -208,15 +199,22 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,EncogPe
 	public void setNext(final Layer next) {
 		super.setNext(next);
 
-		if (!this.hasMatrix()) {
+		if (!hasMatrix()) {
 			// add one to the neuron count to provide a threshold value in row 0
-			this.setMatrix( new Matrix(this.getNeuronCount() + 1, next
-					.getNeuronCount()));
+			setMatrix(new Matrix(getNeuronCount() + 1, next.getNeuronCount()));
 		}
 	}
 
-	public String getName() {
-		return "FeedforwardNetwork";
+	/**
+	 * @return The string form of the layer.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
+		result.append("[FeedforwardLayer: Neuron Count=");
+		result.append(getNeuronCount());
+		result.append("]");
+		return result.toString();
 	}
 
 }

@@ -25,7 +25,31 @@
 
 package org.encog.neural.data;
 
+/**
+ * Training data is stored in two ways, depending on if the data is for
+ * supervised, or unsupervised training.
+ * 
+ * For supervised training just an input value is provided, and the 
+ * ideal output values are null.
+ * 
+ * For unsupervised training both input and the expected ideal outputs
+ * are provided.
+ * 
+ * This interface abstracts classes that provide a holder for both of
+ * these two data items.
+ * 
+ * @author jheaton
+ */
 public interface NeuralDataPair {
-	public NeuralData getInput();
-	public NeuralData getIdeal();
+	
+	/**
+	 * @return The input that the neural network 
+	 */
+	NeuralData getInput();
+	
+	/**
+	 * @return The ideal data that the neural network should produce
+	 * for the specified input.
+	 */
+	NeuralData getIdeal();
 }

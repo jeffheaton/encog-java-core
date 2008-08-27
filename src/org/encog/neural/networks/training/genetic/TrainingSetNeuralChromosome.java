@@ -24,7 +24,6 @@
   */
 package org.encog.neural.networks.training.genetic;
 
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 
 
@@ -46,11 +45,10 @@ public class TrainingSetNeuralChromosome extends
 	 * 
 	 * @param genetic The genetic algorithm used with this chromosome.
 	 * @param network The neural network to train.
-	 * @throws NeuralNetworkException Error setting up the training.
 	 */
 	public TrainingSetNeuralChromosome(
 			final TrainingSetNeuralGeneticAlgorithm genetic,
-			final BasicNetwork network) throws NeuralNetworkError {
+			final BasicNetwork network)  {
 		this.setGeneticAlgorithm(genetic);
 		this.setNetwork(network);
 
@@ -58,13 +56,17 @@ public class TrainingSetNeuralChromosome extends
 		updateGenes();
 	}
 
+	/**
+	 * Calculate the cost for this chromosome.
+	 */
 	@Override
-	public void calculateCost() throws NeuralNetworkError {
+	public void calculateCost() {
 		// update the network with the new gene values
 		this.updateNetwork();
 
 		// update the cost with the new genes
-		setCost(getNetwork().calculateError(this.getGeneticAlgorithm().getTraining()));
+		setCost(getNetwork().calculateError(
+				this.getGeneticAlgorithm().getTraining()));
 
 	}
 
@@ -76,7 +78,7 @@ public class TrainingSetNeuralChromosome extends
 	 * @throws NeuralNetworkException
 	 */
 	@Override
-	public void setGenes(final Double[] list) throws NeuralNetworkError {
+	public void setGenes(final Double[] list) {
 
 		// copy the new genes
 		super.setGenes(list);

@@ -1,27 +1,27 @@
 /*
-  * Encog Neural Network and Bot Library for Java v1.x
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v1.x
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.encog.neural.prune;
 
 import java.util.Collection;
@@ -32,78 +32,106 @@ import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.layers.FeedforwardLayer;
 import org.encog.neural.networks.training.backpropagation.Backpropagation;
 
-
-
-
 /**
- * Prune: The prune class provides some basic help for determining
- * the correct number of neurons to put in a hidden layer.  Two
- * types of prune are supported.
+ * Prune: The prune class provides some basic help for determining the correct
+ * number of neurons to put in a hidden layer. Two types of prune are supported.
  * 
- * Selective - Try removing neurons from the hidden layers and if
- * the affect on the accuracy of the neural network is not great
- * then make the removal permanent. 
+ * Selective - Try removing neurons from the hidden layers and if the affect on
+ * the accuracy of the neural network is not great then make the removal
+ * permanent.
  * 
- * Incremental - Start with one neuron in the hidden layer and 
- * increase until the neural network error is acceptable.
+ * Incremental - Start with one neuron in the hidden layer and increase until
+ * the neural network error is acceptable.
  */
 public class Prune {
 
 	/**
 	 * The neural network that is currently being processed.
 	 */
-	protected BasicNetwork currentNetwork;
+	private BasicNetwork currentNetwork;
 
 	/**
 	 * The training set.
 	 */
-	protected NeuralDataSet training;
+	private NeuralDataSet training;
 
 	/**
 	 * The desired learning rate.
 	 */
-	protected double rate;
+	private double rate;
 
 	/**
 	 * The desired momentum.
 	 */
-	protected double momentum;
-	protected double maxError;
+	private double momentum;
+	
+	/**
+	 * The max error accepted.
+	 */
+	private double maxError;
 
 	/**
 	 * The current error.
 	 */
-	protected double error;
+	private double error;
 
 	/**
 	 * Used to determine if training is still effectve. Holds the error level
 	 * the last time the error level was tracked. This is 1000 cycles ago. If no
 	 * significant drop in error occurs for 1000 cycles, training ends.
 	 */
-	protected double markErrorRate;
+	private double markErrorRate;
 
 	/**
 	 * Used with markErrorRate. This is the number of cycles since the error was
 	 * last marked.
 	 */
-	protected int sinceMark;
+	private int sinceMark;
 
 	/**
 	 * The number of cycles used.
 	 */
-	protected int cycles;
+	private int cycles;
 
 	/**
 	 * The number of hidden neurons.
 	 */
-	protected int hiddenNeuronCount;
+	private int hiddenNeuronCount;
 
 	/**
 	 * Flag to indicate if the incremental prune process is done or not.
 	 */
-	protected boolean done;
+	private boolean done;
 
-	Backpropagation backprop;
+	/**
+	 * The trainer to use.
+	 */
+	private Backpropagation backprop;
+	
+	/**
+	 * Maximum number of tries.
+	 */
+	public static final int MAX_TRY = 1000;
+	
+	/**
+	 * One percent.
+	 */
+	public static final double ONE_PERCENT = 0.01;
+
+	/**
+	 * Constructor that is designed to setup for a selective prune.
+	 * 
+	 * @param network
+	 *            The neural network that we wish to prune.
+	 * @param training The training set to use.
+	 * @param maxError The max error allowed.
+	 */
+	public Prune(final BasicNetwork network, final NeuralDataSet training,
+			final double maxError) {
+		this.currentNetwork = network;
+		this.training = training;
+		this.maxError = maxError;
+	}
 
 	/**
 	 * Constructor used to setup the prune object for an incremental prune.
@@ -112,32 +140,15 @@ public class Prune {
 	 *            The desired learning rate.
 	 * @param momentum
 	 *            The desired momentum.
-	 * @param train
+	 * @param training
 	 *            The training data.
-	 * @param ideal
-	 *            The ideal results for the training data.
 	 * @param maxError
 	 *            The max error that is acceptable.
 	 */
 	public Prune(final double rate, final double momentum,
-			final NeuralDataSet training,
-			final double maxError) {
+			final NeuralDataSet training, final double maxError) {
 		this.rate = rate;
 		this.momentum = momentum;
-		this.training = training;
-		this.maxError = maxError;
-	}
-
-	/**
-	 * Constructor that is designed to setup for a selective prune.
-	 * 
-	 * @param network
-	 *            The neural network that we wish to prune.
-	 * @param train
-	 * @param ideal
-	 */
-	public Prune(final BasicNetwork network, final NeuralDataSet training,final double maxError) {
-		this.currentNetwork = network;
 		this.training = training;
 		this.maxError = maxError;
 	}
@@ -150,10 +161,9 @@ public class Prune {
 	 * @return Returns the new neural network.
 	 */
 	protected BasicNetwork clipHiddenNeuron(final int neuron) {
-		final BasicNetwork result = (BasicNetwork) this.currentNetwork
-				.clone();
+		final BasicNetwork result = (BasicNetwork) this.currentNetwork.clone();
 		final Collection<Layer> c = result.getHiddenLayers();
-		final Object layers[] = c.toArray();
+		final Object[] layers = c.toArray();
 		((FeedforwardLayer) layers[0]).prune(neuron);
 		return result;
 	}
@@ -179,7 +189,7 @@ public class Prune {
 	protected boolean findNeuron() {
 
 		for (int i = 0; i < this.currentNetwork.getHiddenLayerCount(); i++) {
-			final BasicNetwork trial = this.clipHiddenNeuron(i);
+			final BasicNetwork trial = clipHiddenNeuron(i);
 			final double e2 = determineError(trial);
 			if (e2 < this.maxError) {
 				this.currentNetwork = trial;
@@ -227,12 +237,12 @@ public class Prune {
 
 	/**
 	 * The current number of hidden neurons being evaluated.
+	 * 
 	 * @return The current number of hidden neurons.
 	 */
 	protected int getHiddenCount() {
-		final Collection<Layer> c = this.currentNetwork
-				.getHiddenLayers();
-		final Object layers[] = c.toArray();
+		final Collection<Layer> c = this.currentNetwork.getHiddenLayers();
+		final Object[] layers = c.toArray();
 		return ((FeedforwardLayer) layers[0]).getNeuronCount();
 	}
 
@@ -256,8 +266,9 @@ public class Prune {
 			this.sinceMark = 0;
 		} else {
 			this.sinceMark++;
-			if (this.sinceMark > 10000) {
-				if ((this.markErrorRate - this.error) < 0.01) {
+			if (this.sinceMark > Prune.MAX_TRY) {
+				if (this.markErrorRate - this.error 
+						< Prune.ONE_PERCENT) {
 					doit = true;
 				}
 				this.markErrorRate = this.error;
@@ -274,12 +285,12 @@ public class Prune {
 			this.hiddenNeuronCount++;
 
 			this.currentNetwork = new BasicNetwork();
-			this.currentNetwork.addLayer(new FeedforwardLayer(
-					this.training.getInputSize()));
+			this.currentNetwork.addLayer(new FeedforwardLayer(this.training
+					.getInputSize()));
 			this.currentNetwork.addLayer(new FeedforwardLayer(
 					this.hiddenNeuronCount));
-			this.currentNetwork.addLayer(new FeedforwardLayer(
-					this.training.getIdealSize()));
+			this.currentNetwork.addLayer(new FeedforwardLayer(this.training
+					.getIdealSize()));
 			this.currentNetwork.reset();
 
 			this.backprop = new Backpropagation(this.currentNetwork,
@@ -308,10 +319,13 @@ public class Prune {
 	 * @return The number of neurons that were pruned.
 	 */
 	public int pruneSelective() {
-		final int i = this.getHiddenCount();
-		while (findNeuron()) {			
-		}
-		return (i - this.getHiddenCount());
+		final int i = getHiddenCount();
+		boolean stop;
+		do {
+			stop = findNeuron();
+		} while(!stop);
+		
+		return i - getHiddenCount();
 	}
 
 	/**
@@ -323,15 +337,16 @@ public class Prune {
 		this.done = false;
 
 		this.currentNetwork = new BasicNetwork();
-		this.currentNetwork
-				.addLayer(new FeedforwardLayer(this.training.getInputSize()));
+		this.currentNetwork.addLayer(new FeedforwardLayer(this.training
+				.getInputSize()));
 		this.currentNetwork.addLayer(new FeedforwardLayer(
 				this.hiddenNeuronCount));
-		this.currentNetwork
-				.addLayer(new FeedforwardLayer(this.training.getIdealSize()));
+		this.currentNetwork.addLayer(new FeedforwardLayer(this.training
+				.getIdealSize()));
 		this.currentNetwork.reset();
 
-		this.backprop = new Backpropagation(this.currentNetwork, this.training, this.rate, this.momentum);
+		this.backprop = new Backpropagation(this.currentNetwork, this.training,
+				this.rate, this.momentum);
 
 	}
 

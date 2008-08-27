@@ -6,21 +6,23 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.persist.EncogPersistedObject;
 
-
-
 /**
- * HopfieldNetwork: This class implements a Hopfield neural network.
- * A Hopfield neural network is fully connected and consists of a 
- * single layer.  Hopfield neural networks are usually used for 
- * pattern recognition.    
+ * HopfieldLayer: This class implements a Hopfield neural network. A Hopfield
+ * neural network is fully connected and consists of a single layer. Hopfield
+ * neural networks are usually used for pattern recognition.
  */
 public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
-
+	/**
+	 * Construct a hopfield layer of the specified size.
+	 * 
+	 * @param size
+	 *            The number of neurons in this layer.
+	 */
 	public HopfieldLayer(final int size) {
 		super(size);
 		this.setFire(new BiPolarNeuralData(size));
-		this.setMatrix(new Matrix(size, size));		
+		setMatrix(new Matrix(size, size));
 	}
 
 	/**
@@ -29,10 +31,8 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 	 * @param pattern
 	 *            The pattern to be presented to the neural network.
 	 * @return The output from the neural network.
-	 * @throws HopfieldException
-	 *             The pattern caused a matrix math error.
 	 */
-	public NeuralData compute(final NeuralData pattern) {		
+	public NeuralData compute(final NeuralData pattern) {
 
 		// convert the input pattern into a matrix with a single row.
 		// also convert the boolean values to bipolar(-1=false, 1=true)
@@ -40,7 +40,7 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
 		// Process each value in the pattern
 		for (int col = 0; col < pattern.size(); col++) {
-			Matrix columnMatrix = this.getMatrix().getCol(col);
+			Matrix columnMatrix = getMatrix().getCol(col);
 			columnMatrix = MatrixMath.transpose(columnMatrix);
 
 			// The output for this input element is the dot product of the
@@ -50,22 +50,20 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
 			// Convert the dot product to either true or false.
 			if (dotProduct > 0) {
-				this.getFire().setData(col,true);
+				this.getFire().setData(col, true);
 			} else {
-				this.getFire().setData(col,false);
+				this.getFire().setData(col, false);
 			}
 		}
 
 		return this.getFire();
 	}
 
-	public String getName() {
-		return "HopfieldNetwork";
-	}
-	
+	/**
+	 * @return Get the fire data.
+	 */
 	@Override
-	public BiPolarNeuralData getFire()
-	{
-		return (BiPolarNeuralData)super.getFire();
+	public BiPolarNeuralData getFire() {
+		return (BiPolarNeuralData) super.getFire();
 	}
 }

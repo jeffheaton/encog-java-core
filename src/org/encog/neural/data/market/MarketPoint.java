@@ -29,12 +29,24 @@ import java.util.Date;
 
 import org.encog.neural.data.temporal.TemporalPoint;
 
+/**
+ * Hold one market datapoint.
+ * @author jheaton
+ *
+ */
 public class MarketPoint extends TemporalPoint {
 
+	/**
+	 * When to hold the data from.
+	 */
 	private Date when;
 
-	
-	public MarketPoint(Date when, int size) {
+	/** 
+	 * Construct a MarketPoint with the specified date and size.
+	 * @param when When is this data from.
+	 * @param size What is the size of the data.
+	 */
+	public MarketPoint(final Date when, final int size) {
 		super(size);
 		this.when = when;
 	}

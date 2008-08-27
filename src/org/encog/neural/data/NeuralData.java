@@ -25,12 +25,41 @@
 
 package org.encog.neural.data;
 
+/**
+ * Defines an array of data.  This is an array of double values that could
+ * be used either for input data, actual output data or ideal output data.
+ * @author jheaton
+ */
 public interface NeuralData {
 
+	/**
+	 * Set all of the data as an array of doubles.
+	 * @param data An array of doubles. 
+	 */
 	void setData(double[] data);
-	void setData(int index,double d);
+	
+	/**
+	 * Set the specified element.
+	 * @param index The index to set.
+	 * @param d The data for the specified element.
+	 */
+	void setData(int index, double d);
+	
+	/**	
+	 * @return All of the elements as an array.
+	 */
 	double[] getData();
+	
+	/**
+	 * Get the element specified index value.  
+	 * @param index The index to read.
+	 * @return The value at the specified inedx.
+	 */
 	double getData(int index);
+	
+	/**
+	 * @return How many elements are stored in this object.
+	 */
 	int size();
 	
 }

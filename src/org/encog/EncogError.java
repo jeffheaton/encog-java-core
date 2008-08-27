@@ -25,6 +25,10 @@
 
 package org.encog;
 
+/**
+ * General error class for Encog.
+ * @author jheaton
+ */
 public class EncogError extends RuntimeException {
 
 	/**

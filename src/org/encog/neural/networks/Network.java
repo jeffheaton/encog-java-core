@@ -27,6 +27,17 @@ package org.encog.neural.networks;
 
 import org.encog.neural.data.NeuralData;
 
+/**
+ * Interface that defines a neural network.
+ * @author jheaton
+ *
+ */
 public interface Network {
-	public NeuralData compute(NeuralData pattern);
+	
+	/**
+	 * Compute the output from the neural network. 
+	 * @param pattern The input pattern.
+	 * @return The output.
+	 */
+	NeuralData compute(NeuralData pattern);
 }

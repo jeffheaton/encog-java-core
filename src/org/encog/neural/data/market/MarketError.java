@@ -27,9 +27,13 @@ package org.encog.neural.data.market;
 
 import org.encog.neural.data.temporal.TemporalError;
 
+/**
+ * Thrown when an error occurs processing market data.
+ * @author jheaton
+ */
 public class MarketError extends TemporalError {
 	/**
-	 * 
+	 * The serial id for this class.
 	 */
 	private static final long serialVersionUID = 9199552396430520659L;
 
