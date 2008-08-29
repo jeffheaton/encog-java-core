@@ -148,7 +148,6 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	/**
 	 * Close this data set.
 	 */
-	@Override
 	public void close() {
 		// nothing to close
 

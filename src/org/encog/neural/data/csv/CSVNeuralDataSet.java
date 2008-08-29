@@ -250,7 +250,6 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	/**
 	 * Close any iterators from this dataset.
 	 */
-	@Override
 	public void close() {
 		for (final CSVNeuralIterator iterator : this.iterators) {
 			iterator.close();
