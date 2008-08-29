@@ -41,8 +41,8 @@ import java.util.Set;
  * For a neural network this type would most likely be double values.
  */
 
-abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
-		implements Comparable<Chromosome<GENE_TYPE, GA_TYPE>> {
+abstract public class Chromosome<GENE_TYPE>
+		implements Comparable<Chromosome<GENE_TYPE>> {
 
 	/**
 	 * The cost for this chromosome. The lower the better.
@@ -57,7 +57,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	/**
 	 * The genetic algorithm that this chromosome is associated with.
 	 */
-	private GA_TYPE geneticAlgorithm;
+	private GeneticAlgorithm<GENE_TYPE> geneticAlgorithm;
 
 	/**
 	 * Called to calculate the cost for this chromosome.
@@ -76,7 +76,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	 *         greater than 0 if the argument is a chromosome what a cost less
 	 *         than this chromosome.
 	 */
-	public int compareTo(final Chromosome<GENE_TYPE, GA_TYPE> other) {
+	public int compareTo(final Chromosome<GENE_TYPE> other) {
 		if (getCost() > other.getCost()) {
 			return 1;
 		}
@@ -113,7 +113,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	/**
 	 * @return the geneticAlgorithm
 	 */
-	public GA_TYPE getGeneticAlgorithm() {
+	public GeneticAlgorithm<GENE_TYPE> getGeneticAlgorithm() {
 		return this.geneticAlgorithm;
 	}
 
@@ -128,7 +128,7 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	 *            An array of the taken genes.
 	 * @return Those genes in source that are not taken.
 	 */
-	private GENE_TYPE getNotTaken(final Chromosome<GENE_TYPE, GA_TYPE> source,
+	private GENE_TYPE getNotTaken(final Chromosome<GENE_TYPE> source,
 			final Set<GENE_TYPE> taken) {
 		final int geneLength = source.size();
 
@@ -154,9 +154,9 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public void mate(final Chromosome<GENE_TYPE, GA_TYPE> father,
-			final Chromosome<GENE_TYPE, GA_TYPE> offspring1,
-			final Chromosome<GENE_TYPE, GA_TYPE> offspring2) {
+	public void mate(final Chromosome<GENE_TYPE> father,
+			final Chromosome<GENE_TYPE> offspring1,
+			final Chromosome<GENE_TYPE> offspring2) {
 		final int geneLength = getGenes().length;
 
 		// the chromosome must be cut at two positions, determine them
@@ -259,7 +259,8 @@ abstract public class Chromosome<GENE_TYPE, GA_TYPE extends GeneticAlgorithm<?>>
 	 * @param geneticAlgorithm
 	 *            the geneticAlgorithm to set
 	 */
-	public void setGeneticAlgorithm(final GA_TYPE geneticAlgorithm) {
+	public void setGeneticAlgorithm(final 
+			GeneticAlgorithm<GENE_TYPE> geneticAlgorithm) {
 		this.geneticAlgorithm = geneticAlgorithm;
 	}
 

@@ -27,10 +27,8 @@ package org.encog.neural.networks.training.genetic;
 import java.util.Arrays;
 
 import org.encog.matrix.MatrixCODEC;
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.solve.genetic.Chromosome;
-import org.encog.solve.genetic.GeneticAlgorithm;
 
 /**
  * NeuralChromosome: Implements a chromosome that allows a feedforward neural
@@ -45,8 +43,8 @@ import org.encog.solve.genetic.GeneticAlgorithm;
  * The generic type GA_TYPE specifies the GeneticAlgorithm derived class that
  * implements the genetic algorithm that this class is to be used with.
  */
-public abstract class NeuralChromosome<GA_TYPE extends GeneticAlgorithm< ? >>
-		extends Chromosome<Double, GA_TYPE> {
+public abstract class NeuralChromosome
+		extends Chromosome<Double> {
 
 	/**
 	 * Zero.

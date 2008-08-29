@@ -36,7 +36,7 @@ import org.encog.neural.networks.BasicNetwork;
  * network.  The neural network is trained using training sets.
  */
 public class TrainingSetNeuralGeneticAlgorithm extends
-		NeuralGeneticAlgorithm<TrainingSetNeuralGeneticAlgorithm> {
+		NeuralGeneticAlgorithm {
 
 	/**
 	 * The training set to use.

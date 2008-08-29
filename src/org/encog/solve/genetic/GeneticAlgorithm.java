@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
  */
-abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>> {
+abstract public class GeneticAlgorithm<GENE_TYPE> {
 
 	/**
 	 * Threadpool timeout.
@@ -87,7 +87,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 	/**
 	 * The population.
 	 */
-	private CHROMOSOME_TYPE[] chromosomes;
+	private Chromosome<GENE_TYPE>[] chromosomes;
 
 	/**
 	 * Get a specific chromosome.
@@ -96,7 +96,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 	 *            The chromosome to return, 0 for the first one.
 	 * @return A chromosome.
 	 */
-	public CHROMOSOME_TYPE getChromosome(final int i) {
+	public Chromosome<GENE_TYPE> getChromosome(final int i) {
 		return this.chromosomes[i];
 	}
 
@@ -105,7 +105,7 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 	 * 
 	 * @return the chromosomes
 	 */
-	public CHROMOSOME_TYPE[] getChromosomes() {
+	public Chromosome<GENE_TYPE>[] getChromosomes() {
 		return this.chromosomes;
 	}
 
@@ -192,14 +192,16 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 
 		// mate and form the next generation
 		for (int i = 0; i < countToMate; i++) {
-			final CHROMOSOME_TYPE mother = this.chromosomes[i];
+			final Chromosome<GENE_TYPE> mother = this.chromosomes[i];
 			final int fatherInt = (int) (Math.random() * matingPopulationSize);
-			final CHROMOSOME_TYPE father = this.chromosomes[fatherInt];
-			final CHROMOSOME_TYPE child1 = this.chromosomes[offspringIndex];
-			final CHROMOSOME_TYPE child2 = this.chromosomes[offspringIndex + 1];
+			final Chromosome<GENE_TYPE> father = this.chromosomes[fatherInt];
+			final Chromosome<GENE_TYPE> child1 = 
+				this.chromosomes[offspringIndex];
+			final Chromosome<GENE_TYPE> child2 = 
+				this.chromosomes[offspringIndex + 1];
 
-			final MateWorker<CHROMOSOME_TYPE> worker 
-			  = new MateWorker<CHROMOSOME_TYPE>(
+			final MateWorker<GENE_TYPE> worker 
+			  = new MateWorker<GENE_TYPE>(
 					mother, father, child1, child2);
 
 			try {
@@ -236,7 +238,8 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 	 * @param value
 	 *            The value for the specified chromosome.
 	 */
-	public void setChromosome(final int i, final CHROMOSOME_TYPE value) {
+	public void setChromosome(final int i, 
+			final Chromosome<GENE_TYPE> value) {
 		this.chromosomes[i] = value;
 	}
 
@@ -246,7 +249,8 @@ abstract public class GeneticAlgorithm<CHROMOSOME_TYPE extends Chromosome<?, ?>>
 	 * @param chromosomes
 	 *            the chromosomes to set
 	 */
-	public void setChromosomes(final CHROMOSOME_TYPE[] chromosomes) {
+	public void setChromosomes(final 
+			Chromosome<GENE_TYPE>[] chromosomes) {
 		this.chromosomes = chromosomes;
 	}
 

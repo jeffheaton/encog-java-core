@@ -31,28 +31,28 @@ import java.util.concurrent.Callable;
  * MateWorker: This class is used in conjunction with a thread pool. This allows
  * the genetic algorithm to offload all of those calculations to a thread pool.
  */
-public class MateWorker<CHROMOSME_TYPE extends Chromosome<?, ?>> implements
+public class MateWorker<GENE_TYPE> implements
 		Callable<Integer> {
 	
 	/**
 	 * The mother.
 	 */
-	private final CHROMOSME_TYPE mother;
+	private final Chromosome<GENE_TYPE> mother;
 	
 	/**
 	 * The father.
 	 */
-	private final CHROMOSME_TYPE father;
+	private final Chromosome<GENE_TYPE> father;
 	
 	/**
 	 * The first child.
 	 */
-	private final CHROMOSME_TYPE child1;
+	private final Chromosome<GENE_TYPE> child1;
 	
 	/**
 	 * The second child.
 	 */
-	private final CHROMOSME_TYPE child2;
+	private final Chromosome<GENE_TYPE> child2;
 
 	/**
 	 * 
@@ -61,8 +61,10 @@ public class MateWorker<CHROMOSME_TYPE extends Chromosome<?, ?>> implements
 	 * @param child1 The first child.
 	 * @param child2 The second child.
 	 */
-	public MateWorker(final CHROMOSME_TYPE mother, final CHROMOSME_TYPE father,
-			final CHROMOSME_TYPE child1, final CHROMOSME_TYPE child2) {
+	public MateWorker(final Chromosome<GENE_TYPE> mother, 
+			final Chromosome<GENE_TYPE> father,
+			final Chromosome<GENE_TYPE> child1, 
+			final Chromosome<GENE_TYPE> child2) {
 		this.mother = mother;
 		this.father = father;
 		this.child1 = child1;

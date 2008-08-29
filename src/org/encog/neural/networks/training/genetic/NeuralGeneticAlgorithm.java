@@ -41,15 +41,15 @@ import org.encog.solve.genetic.GeneticAlgorithm;
  * implement a subclass of this one that properly calculates
  * the cost.
  */
-public class NeuralGeneticAlgorithm<GA_TYPE extends GeneticAlgorithm<?>>
-		extends GeneticAlgorithm<NeuralChromosome<GA_TYPE>> {
+public class NeuralGeneticAlgorithm
+		extends GeneticAlgorithm<Double> {
 
 	/**
 	 * Get the current best neural network.
 	 * @return The current best neural network.
 	 */
 	public BasicNetwork getNetwork() {
-		final NeuralChromosome<GA_TYPE> c = getChromosome(0);
+		final NeuralChromosome c = (NeuralChromosome) getChromosome(0);
 		c.updateNetwork();
 		return c.getNetwork();
 	}
