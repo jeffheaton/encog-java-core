@@ -39,7 +39,27 @@ import org.encog.util.time.TimeSpan;
 import org.encog.util.time.TimeUnit;
 
 /**
- * This class implements a temporal neural data set.
+ * This class implements a temporal neural data set. A temporal neural dataset
+ * is designed to use a neural network to predict.
+ * 
+ * A temporal dataset is a stream of data over a time range. This time range is
+ * broken up into "points". Each point can contain one or more values. These
+ * values are either the values that you would like to predict, or use to
+ * predict. It is possible for a value to be both predicted and used to predict.
+ * For example, if you were trying to predict a trend in a stock's price
+ * fluctuations you might very well use the security price for both.
+ * 
+ * Each point that we have data for is stored in the TemporalPoint class. Each
+ * TemporalPoint will contain one more data values. These data values are
+ * described by the TemporalDataDescription class. For example, if you had five
+ * TemporalDataDescription objects added to this class, each Temporal point
+ * object would contain five values.
+ * 
+ * Points are arranged by sequence number.  No two points can have the same 
+ * sequence numbers.  Methods are provided to allow you to add points using the
+ * Date class.  These dates are resolved to sequence number using the level
+ * of granularity specified for this class.  No two points can occupy the same
+ * granularity increment.
  * 
  * @author jheaton
  */
@@ -97,7 +117,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	private Date startingPoint;
 
 	/**
-	 * What is the grandularity of the temporal points? Days, months, years,
+	 * What is the granularity of the temporal points? Days, months, years,
 	 * etc?
 	 */
 	private TimeUnit sequenceGrandularity;
@@ -105,8 +125,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	/**
 	 * Error message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = 
-		"Direct adds to the temporal dataset are not supported.  "
+	public static final String ADD_NOT_SUPPORTED = "Direct adds to the temporal dataset are not supported.  "
 			+ "Add TemporalPoint objects and call generate.";
 
 	/**
@@ -453,7 +472,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 *            The index to get data from.
 	 * @return The requested data.
 	 */
-	private double getDataDeltaChange(final TemporalDataDescription desc, 
+	private double getDataDeltaChange(final TemporalDataDescription desc,
 			final int index) {
 		if (index == 0) {
 			return 0.0;
@@ -473,8 +492,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 *            The index to get data from.
 	 * @return The requested data.
 	 */
-	private double getDataPercentChange(
-			final TemporalDataDescription desc, 
+	private double getDataPercentChange(final TemporalDataDescription desc,
 			final int index) {
 		if (index == 0) {
 			return 0.0;
@@ -488,11 +506,14 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
 	 * Format data according to the type specified in the description.
-	 * @param desc The data description.
-	 * @param index The index to format the data at.
+	 * 
+	 * @param desc
+	 *            The data description.
+	 * @param index
+	 *            The index to format the data at.
 	 * @return The formatted data.
 	 */
-	private double formatData(final TemporalDataDescription desc, 
+	private double formatData(final TemporalDataDescription desc,
 			final int index) {
 		double result = 0;
 
@@ -519,13 +540,14 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
 	 * Generate neural ideal data for the specified index.
-	 * @param index The index to generate for.
+	 * 
+	 * @param index
+	 *            The index to generate for.
 	 * @return The neural data generated.
 	 */
 	public BasicNeuralData generateOutputNeuralData(final int index) {
 		if (index + this.predictWindowSize > this.points.size()) {
-			throw new TemporalError(
-					"Can't generate prediction temporal data "
+			throw new TemporalError("Can't generate prediction temporal data "
 					+ "beyond the end of provided data.");
 		}
 
@@ -563,6 +585,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
 	 * Calculate the index to start at.
+	 * 
 	 * @return the starting index.
 	 */
 	public int calculateStartIndex() {

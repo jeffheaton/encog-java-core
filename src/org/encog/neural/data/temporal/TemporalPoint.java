@@ -27,7 +27,9 @@ package org.encog.neural.data.temporal;
 
 /**
  * A temporal point is all of the data captured at one point in time to be used
- * for prediction.
+ * for prediction.  One or more data items might be captured at this point.
+ * The TemporalDataDescription class is used to describe each of these data
+ * items captured at each point.
  * 
  * @author jheaton
  */
