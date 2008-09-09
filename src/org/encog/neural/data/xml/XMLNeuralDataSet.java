@@ -41,7 +41,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * A data source that reads XML files.
+ * A data source that reads XML files.  This class is memory based, 
+ * so large enough datasets could cause memory issues.
  */
 public class XMLNeuralDataSet extends BasicNeuralDataSet {
 
