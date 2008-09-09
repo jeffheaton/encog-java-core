@@ -31,7 +31,13 @@ import org.encog.neural.data.NeuralDataPair;
 /**
  * A basic implementation of the NeuralDataPair interface.  This 
  * implementation simply holds and input and ideal NeuralData
- * object.
+ * object.  
+ * 
+ * For supervised training both input and ideal should
+ * be specified.  
+ * 
+ * For unsupervised training the input property
+ * should be valid, however the ideal property should contain null.
  * @author jheaton
  *
  */
