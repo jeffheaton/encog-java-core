@@ -30,8 +30,8 @@ import org.encog.neural.persist.EncogPersistedObject;
 
 /**
  * Matrix: This class implements a mathematical matrix. Matrix math is very
- * important to neural network processing. Many of the classes developed in this
- * book will make use of the matrix classes in this package.
+ * important to neural network processing. Many of the neural network classes
+ * make use of the matrix classes in this package.
  */
 public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 

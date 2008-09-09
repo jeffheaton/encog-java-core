@@ -26,7 +26,8 @@ package org.encog.matrix;
 
 /**
  * MatrixMath: This class can perform many different mathematical operations on
- * matrixes.
+ * matrixes.  The matrixes passed in will not be modified, rather a new matrix,
+ * with the operation performed, will be returned.
  */
 public final class MatrixMath {
 

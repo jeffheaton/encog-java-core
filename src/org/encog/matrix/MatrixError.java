@@ -24,10 +24,13 @@
   */
 package org.encog.matrix;
 
+import org.encog.EncogError;
+
+
 /**
  * MatrixError: Used by the matrix classes to indicate an error.
  */
-public class MatrixError extends RuntimeException {
+public class MatrixError extends EncogError {
 
 	/**
 	 * Serial id for this class.
