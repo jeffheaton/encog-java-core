@@ -30,7 +30,8 @@ import java.util.Date;
 import org.encog.neural.data.temporal.TemporalPoint;
 
 /**
- * Hold one market datapoint.
+ * Hold one market datapoint.  This class is based on the TemporalPoint,
+ * however it is designed to take its sequence number from a date.
  * @author jheaton
  *
  */

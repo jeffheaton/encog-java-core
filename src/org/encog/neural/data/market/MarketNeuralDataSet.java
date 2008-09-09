@@ -41,7 +41,9 @@ import org.encog.util.time.TimeUnit;
 
 /**
  * A data set that is designed to hold market data. This class is based on the
- * TemporalNeuralDataSet.
+ * TemporalNeuralDataSet.  This class is designed to load financial data from
+ * external sources.  This class is designed to track financial data across days.
+ * However, it should be usable with other levels of granularity as well.   
  * 
  * @author jheaton
  * 
