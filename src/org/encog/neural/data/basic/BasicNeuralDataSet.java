@@ -38,7 +38,8 @@ import org.encog.neural.persist.EncogPersistedObject;
 /**
  * Basic implementation of the NeuralDataSet class.  This class simply
  * stores the neural data in an ArrayList.  This class is memory based, 
- * so large enough datasets could cause memory issues.
+ * so large enough datasets could cause memory issues.  Many other dataset
+ * types extend this class.
  * @author jheaton
  */
 public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
