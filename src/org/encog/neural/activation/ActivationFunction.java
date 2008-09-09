@@ -30,9 +30,21 @@ import org.encog.neural.persist.EncogPersistedObject;
 
 /**
  * ActivationFunction: This interface allows various activation functions to be
- * used with the feedforward neural network. Activation functions are applied to
+ * used with the neural network. Activation functions are applied to
  * the output from each layer of a neural network. Activation functions scale
  * the output into the desired range.
+ * 
+ * Methods are provided both to process the activation function, as well as
+ * the derivative of the function.  Some training algorithms, particularly
+ * back propagation, require that it be possible to take the derivative
+ * of the activation function.
+ * 
+ * Not all activation functions support derivatives.  If you implement an 
+ * activation function that is not derivable then an exception should be thrown
+ * inside of the derivativeFunction method implementation.
+ * 
+ * Non-derivable activation functions are perfectly valid, they simply cannot be
+ * used with every training algorithm. 
  */
 public interface ActivationFunction extends Serializable, EncogPersistedObject {
 
