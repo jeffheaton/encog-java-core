@@ -19,7 +19,7 @@
 	</target>
 
 	<target name="doc" depends="init" description="produce javadoc ">
-		<javadoc sourcepath="${src}" destdir="${doc}"/>
+		<javadoc sourcepath="${src}" destdir="${doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;"/>
 	</target>
 
 	<target name="dist" depends="compile,doc" description="generate the distribution">
