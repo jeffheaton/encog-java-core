@@ -44,6 +44,9 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * The default level of precision for matrix compares.
 	 */
 	public static final int DEFAULT_PRECISION = 10;
+	
+	private String name;
+	private String description;
 
 	/**
 	 * Turn an array of doubles into a column matrix.
@@ -444,5 +447,35 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 					+ getCols());
 		}
 	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	
+	
 
 }
