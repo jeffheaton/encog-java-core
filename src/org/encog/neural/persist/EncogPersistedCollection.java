@@ -348,5 +348,22 @@ public class EncogPersistedCollection {
 			throw new NeuralNetworkError(e);
 		}
 	}
+	
+	public static void addAttribute(final AttributesImpl atts,final String name,final String value)
+	{
+		String v = value;
+		if( v==null )
+			v="";
+		atts.addAttribute("", "", name, "CDATA", v );	
+	}
+	
+	public static AttributesImpl createAttributes(final EncogPersistedObject obj)
+	{
+		AttributesImpl result = new AttributesImpl();
+		EncogPersistedCollection.addAttribute(result, "native",""+obj.getClass().getName());
+		EncogPersistedCollection.addAttribute(result, "name",obj.getName());
+		EncogPersistedCollection.addAttribute(result, "description",obj.getDescription());
+		return result;
+	}
 
 }

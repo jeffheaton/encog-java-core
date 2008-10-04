@@ -53,10 +53,14 @@ public class HopfieldLayerPersistor implements Persistor {
 	 * @return The EncogPersistedObject that was loaded.
 	 */
 	public EncogPersistedObject load(final Element layerNode) {
+		final String name = layerNode.getAttribute("name");
+		final String description = layerNode.getAttribute("description");
 		final String str = layerNode.getAttribute("neuronCount");
 		final int neuronCount = Integer.parseInt(str);
 
 		final HopfieldLayer layer = new HopfieldLayer(neuronCount);
+		layer.setName(name);
+		layer.setDescription(description);
 		final Element matrixElement = XMLUtil.findElement(layerNode,
 				"weightMatrix");
 		if (matrixElement != null) {
@@ -83,9 +87,8 @@ public class HopfieldLayerPersistor implements Persistor {
 		try {
 			final HopfieldLayer layer = (HopfieldLayer) object;
 
-			final AttributesImpl atts = new AttributesImpl();
-			atts.addAttribute("", "", "neuronCount", "CDATA", ""
-					+ layer.getNeuronCount());
+			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
+			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""+layer.getNeuronCount());
 			hd.startElement("", "", layer.getClass().getSimpleName(), atts);
 
 			atts.clear();

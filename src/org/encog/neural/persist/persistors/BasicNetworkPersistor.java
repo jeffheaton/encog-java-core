@@ -54,7 +54,12 @@ public class BasicNetworkPersistor implements Persistor {
 	 */
 	public EncogPersistedObject load(final Element networkNode) {
 		final BasicNetwork network = new BasicNetwork();
-
+		
+		final String name = networkNode.getAttribute("name");
+		final String description = networkNode.getAttribute("description");
+		network.setName(name);
+		network.setDescription(description);
+		
 		final Element layers = XMLUtil.findElement(networkNode, "layers");
 		for (Node child = layers.getFirstChild(); child != null; child = child
 				.getNextSibling()) {
@@ -83,7 +88,8 @@ public class BasicNetworkPersistor implements Persistor {
 	public void save(final EncogPersistedObject object,
 			final TransformerHandler hd) {
 		try {
-			final AttributesImpl atts = new AttributesImpl();
+			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
+			
 			final BasicNetwork network = (BasicNetwork) object;
 			hd.startElement("", "", network.getClass().getSimpleName(), atts);
 			hd.startElement("", "", "layers", atts);

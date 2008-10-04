@@ -56,6 +56,9 @@ public class BasicLayer implements Layer, EncogPersistedObject {
 	 * The previous layer in the neural network.
 	 */
 	private Layer previous;
+	
+	private String description;
+	private String name;
 
 	/**
 	 * Construct a basic layer with the specified neuron count.
@@ -245,4 +248,36 @@ public class BasicLayer implements Layer, EncogPersistedObject {
 	public void setPrevious(final Layer previous) {
 		this.previous = previous;
 	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * @param description the description to set
+	 */
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+	
+	
 }

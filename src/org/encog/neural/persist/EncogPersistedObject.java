@@ -32,4 +32,9 @@ package org.encog.neural.persist;
  *
  */
 public interface EncogPersistedObject {
+	public void setDescription(String theDescription);
+	public String getDescription();
+	
+	public void setName(String theName);
+	public String getName();
 }

@@ -69,6 +69,10 @@ public class BasicNetwork implements Serializable, Network,
 	 * All of the layers in the neural network.
 	 */
 	private List<Layer> layers = new ArrayList<Layer>();
+	
+	private String description;
+	
+	private String name;
 
 	/**
 	 * Construct an empty neural network.
@@ -343,5 +347,29 @@ public class BasicNetwork implements Serializable, Network,
 	public int hashCode() {
 		return super.hashCode();
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String theDescription) {
+		this.description = theDescription;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 	
 }

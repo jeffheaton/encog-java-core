@@ -54,6 +54,8 @@ public class FeedforwardLayerPersistor implements Persistor {
 	 */
 	public EncogPersistedObject load(final Element layerNode) {
 		final String str = layerNode.getAttribute("neuronCount");
+		final String name = layerNode.getAttribute("name");
+		final String description = layerNode.getAttribute("description");
 		final int neuronCount = Integer.parseInt(str);
 		final Element activationElement = XMLUtil.findElement(layerNode,
 				"activation");
@@ -63,6 +65,8 @@ public class FeedforwardLayerPersistor implements Persistor {
 		final FeedforwardLayer layer = new FeedforwardLayer(
 				(ActivationFunction) persistor.load(activationElement),
 				neuronCount);
+		layer.setName(name);
+		layer.setDescription(description);
 		final Element matrixElement = XMLUtil.findElement(layerNode,
 				"weightMatrix");
 		if (matrixElement != null) {
@@ -89,16 +93,13 @@ public class FeedforwardLayerPersistor implements Persistor {
 		try {
 			final FeedforwardLayer layer = (FeedforwardLayer) object;
 
-			final AttributesImpl atts = new AttributesImpl();
-			atts.addAttribute("", "", "neuronCount", "CDATA", ""
-					+ layer.getNeuronCount());
+			AttributesImpl atts = EncogPersistedCollection.createAttributes(layer);
+			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""+layer.getNeuronCount());
 			hd.startElement("", "", layer.getClass().getSimpleName(), atts);
 
-			atts.clear();
-			atts.addAttribute("", "", "native", "CDATA", layer
-					.getActivationFunction().getClass().getName());
-			atts.addAttribute("", "", "name", "CDATA", layer
-					.getActivationFunction().getClass().getSimpleName());
+			atts =  new AttributesImpl();
+			EncogPersistedCollection.addAttribute(atts, "native", layer.getActivationFunction().getClass().getName());
+			EncogPersistedCollection.addAttribute(atts, "name", layer.getActivationFunction().getClass().getSimpleName());
 			hd.startElement("", "", "activation", atts);
 			hd.endElement("", "", "activation");
 

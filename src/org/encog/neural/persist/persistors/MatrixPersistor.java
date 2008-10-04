@@ -29,6 +29,7 @@ import javax.xml.transform.sax.TransformerHandler;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.w3c.dom.Element;
@@ -52,10 +53,15 @@ public class MatrixPersistor implements Persistor {
 	 * @return The EncogPersistedObject that was loaded.
 	 */
 	public EncogPersistedObject load(final Element matrixElement) {
+		final String name = matrixElement.getAttribute("name");
+		final String description = matrixElement.getAttribute("description");
 		final int rows = Integer.parseInt(matrixElement.getAttribute("rows"));
 		final int cols = Integer.parseInt(matrixElement.getAttribute("cols"));
 		final Matrix result = new Matrix(rows, cols);
 
+		result.setName(name);
+		result.setDescription(description);
+		
 		int row = 0;
 
 		for (Node child = matrixElement.getFirstChild(); 
@@ -90,9 +96,10 @@ public class MatrixPersistor implements Persistor {
 			final TransformerHandler hd) {
 		try {
 			final Matrix matrix = (Matrix) object;
-			final AttributesImpl atts = new AttributesImpl();
-			atts.addAttribute("", "", "rows", "CDATA", "" + matrix.getRows());
-			atts.addAttribute("", "", "cols", "CDATA", "" + matrix.getCols());
+			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
+			EncogPersistedCollection.addAttribute(atts, "rows", ""+matrix.getRows());
+			EncogPersistedCollection.addAttribute(atts, "cols", ""+matrix.getCols());
+
 			hd.startElement("", "", "Matrix", atts);
 			for (int row = 0; row < matrix.getRows(); row++) {
 				atts.clear();

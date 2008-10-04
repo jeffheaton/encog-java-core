@@ -67,6 +67,8 @@ public class SOMLayerPersistor implements Persistor {
 		final String str = layerNode.getAttribute("neuronCount");
 		final String normType = layerNode.getAttribute("normalization");
 		final int neuronCount = Integer.parseInt(str);
+		final String name = layerNode.getAttribute("name");
+		final String description = layerNode.getAttribute("description");
 
 		SOMLayer layer;
 
@@ -87,6 +89,9 @@ public class SOMLayerPersistor implements Persistor {
 			final Matrix matrix = (Matrix) persistor.load(e);
 			layer.setMatrix(matrix);
 		}
+		
+		layer.setName(name);
+		layer.setDescription(description);
 		return layer;
 	}
 
@@ -104,10 +109,8 @@ public class SOMLayerPersistor implements Persistor {
 		try {
 			final SOMLayer layer = (SOMLayer) object;
 
-			final AttributesImpl atts = new AttributesImpl();
-			atts.addAttribute("", "", "neuronCount", "CDATA", ""
-					+ layer.getNeuronCount());
-
+			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
+			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""+layer.getNeuronCount());
 			String normType = null;
 
 			if (layer.getNormalizationType()  

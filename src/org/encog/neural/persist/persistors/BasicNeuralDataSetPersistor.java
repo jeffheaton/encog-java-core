@@ -36,6 +36,7 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.util.XMLUtil;
@@ -118,8 +119,12 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 	 */
 	public EncogPersistedObject load(final Element pairs) {
 
+		final String name = pairs.getAttribute("name");
+		final String description = pairs.getAttribute("description");
 		final BasicNeuralDataSet result = new BasicNeuralDataSet();
-
+		result.setName(name);
+		result.setDescription(description);
+		
 		for (Node child = pairs.getFirstChild(); child != null; child = child
 				.getNextSibling()) {
 			if (!(child instanceof Element)) {
@@ -192,9 +197,10 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		try {
 			final BasicNeuralDataSet set = (BasicNeuralDataSet) object;
 
-			final AttributesImpl atts = new AttributesImpl();
+			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
 			hd.startElement("", "", object.getClass().getSimpleName(), atts);
 
+			atts.clear();
 			for (final NeuralDataPair pair : set) {
 				hd.startElement("", "", this.pairXML, atts);
 				hd.startElement("", "", this.inputXML, atts);
