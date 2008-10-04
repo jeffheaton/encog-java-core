@@ -407,7 +407,7 @@ public class TrainSelfOrganizingMap {
 		}
 
 		if (winners < this.outputNeuronCount && winners < this.trainSize) {
-			forceWin();
+			//forceWin();
 			return;
 		}
 
