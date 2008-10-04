@@ -56,7 +56,7 @@ public class TestSOM extends TestCase {
 		
 		double diff = (error2-error1)/error1;
 		
-		TestCase.assertTrue(diff<0.0);		
+		TestCase.assertTrue(diff<=0.0);		
 	}
 	
 	public void testRunSOM()
