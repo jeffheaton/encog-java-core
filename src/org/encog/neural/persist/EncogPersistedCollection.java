@@ -365,5 +365,25 @@ public class EncogPersistedCollection {
 		EncogPersistedCollection.addAttribute(result, "description",obj.getDescription());
 		return result;
 	}
+	
+	/**
+	 * Called to search all Encog objects in this collection for one with a name
+	 * that passes what was passed in.
+	 * @param name The name we are searching for.
+	 * @return The Encog object with the correct name.
+	 */
+	public EncogPersistedObject find(String name)
+	{
+		for(EncogPersistedObject obj: this.list)
+		{
+			if( name.equals(obj.getName()))
+			{
+				return obj;
+			}
+		}
+		return null;
+	}
+	
+	
 
 }
