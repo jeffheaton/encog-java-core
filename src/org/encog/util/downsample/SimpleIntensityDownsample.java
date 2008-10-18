@@ -127,10 +127,6 @@ public class SimpleIntensityDownsample implements Downsample {
 				greenTotal += green;
 				blueTotal += blue;
 				total++;
-
-				if (this.pixelMap[loc] != -1) {
-					return 1.0;
-				}
 			}
 		}
 
