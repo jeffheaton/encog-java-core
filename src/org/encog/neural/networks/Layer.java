@@ -46,6 +46,11 @@ public interface Layer {
 	 * @param layer The previous layer.
 	 */
 	void setPrevious(Layer layer);
+	
+	/**
+	 * @return Get the previous layer.
+	 */
+	Layer getPrevious();
 
 	/**
 	 * Set the next layer.

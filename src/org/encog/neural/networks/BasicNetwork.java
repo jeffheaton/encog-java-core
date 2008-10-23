@@ -105,6 +105,55 @@ public class BasicNetwork implements Serializable, Network,
 		// add the new layer to the list
 		this.layers.add(layer);
 	}
+	
+	/**
+	 * Add a layer after the base layer.
+	 * @param baseLayer The layer to add after.
+	 * @param newLayer The new layer to add.
+	 */
+	public void addLayer(final Layer baseLayer,final Layer newLayer)
+	{
+		int index = 0;
+		while( index<layers.size() )
+		{
+			if( this.layers.get(index)==baseLayer )
+				break;
+			index++;
+		}
+		
+		if( index==layers.size() )
+		{
+			throw new NeuralNetworkError("The specified base layer must be part of the network.");
+		}
+		
+		Layer next = baseLayer.getNext();
+		baseLayer.setNext(newLayer);
+		newLayer.setPrevious(next);
+		this.layers.add(index+1, newLayer);
+		
+	}
+	
+	/**
+	 * Remove a layer, adjust the weight matrixes and back pointers.
+	 * @param layer The layer to remove.
+	 */
+	public void removeLayer(final Layer layer) {
+		Layer previous  = layer.getPrevious();
+		Layer next = layer.getNext();
+				
+		this.layers.remove(layer);
+		
+		if( next!=null )
+		{
+			next.setPrevious(previous);
+		}
+		
+		if( previous!=null )
+		{
+			previous.setNext(next);
+		}
+	}
+	
 
 	/**
 	 * Calculate the error for this neural network. The error is calculated
