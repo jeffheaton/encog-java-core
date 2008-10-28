@@ -56,7 +56,7 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,
 	/**
 	 * Which activation function to use for this layer.
 	 */
-	private final ActivationFunction activationFunction;
+	private ActivationFunction activationFunction;
 
 	/**
 	 * Construct this layer with a non-default threshold function.
@@ -148,6 +148,10 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,
 	public ActivationFunction getActivationFunction() {
 		return this.activationFunction;
 	}
+	
+	public void setActivationFunction(ActivationFunction f) {
+		this.activationFunction = f;
+	}
 
 	/**
 	 * Prune one of the neurons from this layer. Remove all entries in this
@@ -215,6 +219,12 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,
 		result.append(getNeuronCount());
 		result.append("]");
 		return result.toString();
+	}
+	
+	public void setNeuronCount(int count)
+	{
+		this.setFire(new BasicNeuralData(count));
+		setMatrix(new Matrix(getNeuronCount() + 1, getNext().getNeuronCount()));
 	}
 
 }
