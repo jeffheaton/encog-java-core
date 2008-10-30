@@ -277,7 +277,10 @@ public class BasicLayer implements Layer, EncogPersistedObject {
 		this.name = name;
 	}
 	
-	
+	public void setNeuronCount(int count)
+	{
+		this.setFire(new BasicNeuralData(count));
+	}
 	
 	
 }

@@ -3,6 +3,7 @@ package org.encog.neural.networks.layers;
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.persist.EncogPersistedObject;
 
@@ -65,5 +66,11 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 	@Override
 	public BiPolarNeuralData getFire() {
 		return (BiPolarNeuralData) super.getFire();
+	}
+	
+	public void setNeuronCount(int count)
+	{
+		this.setFire(new BiPolarNeuralData(count));
+		setMatrix(new Matrix(count, count));
 	}
 }
