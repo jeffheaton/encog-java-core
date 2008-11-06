@@ -133,10 +133,10 @@ public class SOMLayer extends BasicLayer implements Serializable,
 	public void setNeuronCount(int count)
 	{
 		this.setFire(new BasicNeuralData(count));
-		
-		if (!hasMatrix()) {
+		if( this.getNext()!=null ) {
 			setMatrix(new Matrix(this.getNext().getNeuronCount(), getNeuronCount() + 1));
 		}
+
 	}
 
 	/**
