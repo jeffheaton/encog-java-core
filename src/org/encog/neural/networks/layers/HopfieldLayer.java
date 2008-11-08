@@ -6,6 +6,9 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.persist.EncogPersistedObject;
+import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
+import org.encog.neural.persist.persistors.HopfieldLayerPersistor;
 
 /**
  * HopfieldLayer: This class implements a Hopfield neural network. A Hopfield
@@ -72,5 +75,9 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 	{
 		this.setFire(new BiPolarNeuralData(count));
 		setMatrix(new Matrix(count, count));
+	}
+	
+	public Persistor createPersistor() {
+		return new HopfieldLayerPersistor();
 	}
 }

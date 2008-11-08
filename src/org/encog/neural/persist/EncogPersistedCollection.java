@@ -43,6 +43,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.encog.EncogError;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.util.XMLUtil;
 import org.w3c.dom.Document;
@@ -337,8 +338,17 @@ public class EncogPersistedCollection {
 						.getName());
 
 				final String name = obj.getClass().getSimpleName();
-				final Persistor persistor = EncogPersistedCollection
+				Persistor persistor = EncogPersistedCollection
 						.createPersistor(name);
+				
+				if( persistor==null ) {
+					persistor = obj.createPersistor();
+				}
+				
+				if( persistor==null ) {
+					throw new EncogError("No persistor defined for object: " + name);
+				}
+				
 				persistor.save(obj, hd);
 
 			}
@@ -383,6 +393,22 @@ public class EncogPersistedCollection {
 		}
 		return null;
 	}
+	
+	public void delete(String name)
+	{
+		Object []array = this.list.toArray();
+		
+		for(int i=0;i<array.length;i++)
+		{
+			EncogPersistedObject obj = (EncogPersistedObject)array[i];
+			if( name.equals(obj.getName()))
+			{
+				this.list.remove(obj);
+			}
+		}
+
+	}
+
 	
 	
 

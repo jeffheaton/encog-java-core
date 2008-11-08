@@ -37,4 +37,5 @@ public interface EncogPersistedObject {
 	
 	public void setName(String theName);
 	public String getName();
+	public Persistor createPersistor();
 }

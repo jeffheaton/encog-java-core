@@ -198,7 +198,7 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 			final BasicNeuralDataSet set = (BasicNeuralDataSet) object;
 
 			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
-			hd.startElement("", "", object.getClass().getSimpleName(), atts);
+			hd.startElement("", "", "BasicNeuralDataSet", atts);
 
 			atts.clear();
 			for (final NeuralDataPair pair : set) {
@@ -222,7 +222,7 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 				hd.endElement("", "", this.pairXML);
 			}
 
-			hd.endElement("", "", object.getClass().getSimpleName());
+			hd.endElement("", "", "BasicNeuralDataSet");
 		} catch (final SAXException e) {
 			throw new NeuralNetworkError(e);
 		}

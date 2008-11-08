@@ -24,6 +24,10 @@
  */
 package org.encog.neural.activation;
 
+import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.ActivationLinearPersistor;
+import org.encog.neural.persist.persistors.ActivationSigmoidPersistor;
+
 /**
  * ActivationSigmoid: The sigmoid activation function takes on a sigmoidal
  * shape. Only positive numbers are generated. Do not use this activation
@@ -88,5 +92,8 @@ public class ActivationSigmoid implements ActivationFunction {
 		this.name = name;
 	}
 	
+	public Persistor createPersistor() {
+		return new ActivationSigmoidPersistor();
+	}
 	
 }

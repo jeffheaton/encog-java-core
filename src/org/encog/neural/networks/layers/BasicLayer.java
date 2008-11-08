@@ -29,6 +29,8 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
 import org.encog.neural.persist.EncogPersistedObject;
+import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.BasicLayerPersistor;
 
 /**
  * Basic functionality that most of the nueral layers require.
@@ -280,6 +282,10 @@ public class BasicLayer implements Layer, EncogPersistedObject {
 	public void setNeuronCount(int count)
 	{
 		this.setFire(new BasicNeuralData(count));
+	}
+
+	public Persistor createPersistor() {
+		return new BasicLayerPersistor();
 	}
 	
 	

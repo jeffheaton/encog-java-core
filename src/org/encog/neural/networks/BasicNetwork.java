@@ -36,6 +36,9 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.persist.EncogPersistedObject;
+import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.BasicNetworkPersistor;
+import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
 import org.encog.util.ErrorCalculation;
 import org.encog.neural.networks.layers.FeedforwardLayer;
 
@@ -419,6 +422,9 @@ public class BasicNetwork implements Serializable, Network,
 		this.name = name;
 	}
 	
+	public Persistor createPersistor() {
+		return new BasicNetworkPersistor();
+	}
 	
 	
 }

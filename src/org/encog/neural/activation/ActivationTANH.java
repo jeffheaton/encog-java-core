@@ -24,6 +24,10 @@
  */
 package org.encog.neural.activation;
 
+import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.ActivationLinearPersistor;
+import org.encog.neural.persist.persistors.ActivationTANHPersistor;
+
 /**
  * ActivationTANH: The hyperbolic tangent activation function takes the curved
  * shape of the hyperbolic tangent. This activation function produces both
@@ -92,5 +96,8 @@ public class ActivationTANH implements ActivationFunction {
 		this.name = name;
 	}
 	
+	public Persistor createPersistor() {
+		return new ActivationTANHPersistor();
+	}
 	
 }
