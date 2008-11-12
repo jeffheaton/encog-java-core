@@ -3,7 +3,6 @@ package org.encog.neural.persist;
 import java.io.File;
 
 import org.encog.matrix.Matrix;
-import org.encog.neural.XOR;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -11,6 +10,7 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Train;
+import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.FeedforwardLayer;
 import org.encog.neural.networks.layers.HopfieldLayer;

@@ -1,4 +1,4 @@
-package org.encog.neural;
+package org.encog.neural.networks;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.networks.BasicNetwork;

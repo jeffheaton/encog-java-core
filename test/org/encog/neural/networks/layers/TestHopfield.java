@@ -1,4 +1,4 @@
-package org.encog.neural.hopfield;
+package org.encog.neural.networks.layers;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;

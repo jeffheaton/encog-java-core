@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 import org.encog.DerbyUtil;
-import org.encog.neural.XOR;
+import org.encog.neural.networks.XOR;
 
 import junit.framework.TestCase;
 

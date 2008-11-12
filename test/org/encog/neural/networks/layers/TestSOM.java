@@ -1,4 +1,4 @@
-package org.encog.neural.som;
+package org.encog.neural.networks.layers;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.data.NeuralData;

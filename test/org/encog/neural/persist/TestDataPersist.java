@@ -4,9 +4,9 @@ import java.io.File;
 
 import junit.framework.TestCase;
 
-import org.encog.neural.XOR;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.csv.TestCSVNeuralData;
+import org.encog.neural.networks.XOR;
 
 public class TestDataPersist extends TestCase {
 	

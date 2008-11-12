@@ -7,7 +7,7 @@ import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
-import org.encog.neural.XOR;
+import org.encog.neural.networks.XOR;
 
 public class TestCSVNeuralData extends TestCase {
 

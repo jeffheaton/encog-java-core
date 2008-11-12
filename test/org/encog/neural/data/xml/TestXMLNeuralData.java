@@ -5,7 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 
-import org.encog.neural.XOR;
+import org.encog.neural.networks.XOR;
 
 import junit.framework.TestCase;
 
