@@ -260,5 +260,14 @@ public class ReadCSV {
 		}
 		return true;
 	}
+	
+	public int getColumnCount()
+	{
+		if(this.data==null)
+			return 0;
+		else
+			return this.data.length;
+	}
+	
 
 }
