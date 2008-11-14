@@ -178,7 +178,10 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 			return 0;
 		}
 		final NeuralDataPair first = this.data.get(0);
-		return first.getIdeal().size();
+		if( first.getIdeal()==null )
+			return 0;
+		else
+			return first.getIdeal().size();
 	}
 
 	/**
