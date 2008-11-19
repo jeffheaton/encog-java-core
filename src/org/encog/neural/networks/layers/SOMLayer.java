@@ -33,7 +33,6 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
 import org.encog.neural.persist.persistors.SOMLayerPersistor;
 import org.encog.util.NormalizeInput;
 import org.encog.util.NormalizeInput.NormalizationType;

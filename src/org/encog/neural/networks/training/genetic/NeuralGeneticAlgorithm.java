@@ -25,6 +25,7 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.Train;
 import org.encog.solve.genetic.GeneticAlgorithm;
 
 
@@ -42,7 +43,7 @@ import org.encog.solve.genetic.GeneticAlgorithm;
  * the cost.
  */
 public class NeuralGeneticAlgorithm
-		extends GeneticAlgorithm<Double> {
+		extends GeneticAlgorithm<Double> implements Train {
 
 	/**
 	 * Get the current best neural network.
@@ -52,6 +53,10 @@ public class NeuralGeneticAlgorithm
 		final NeuralChromosome c = (NeuralChromosome) getChromosome(0);
 		c.updateNetwork();
 		return c.getNetwork();
+	}
+
+	public double getError() {
+		return this.getChromosome(0).getCost();
 	}
 
 }

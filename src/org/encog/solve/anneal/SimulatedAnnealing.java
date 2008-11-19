@@ -40,8 +40,9 @@ package org.encog.solve.anneal;
  * and wander randomly through states of higher energy; the slow cooling gives
  * them more chances of finding configurations with lower internal energy than
  * the initial one.
+ * @param <UNIT_TYPE> What type of data makes up the solution.
  */
-abstract public class SimulatedAnnealing<UNIT_TYPE> {
+public abstract class SimulatedAnnealing<UNIT_TYPE> {
 
 	/**
 	 * The starting temperature.

@@ -90,8 +90,11 @@ public class SOMLayerPersistor implements Persistor {
 			layer.setMatrix(matrix);
 		}
 		
-		layer.setName(name);
-		layer.setDescription(description);
+		if( layer!=null )
+		{
+			layer.setName(name);
+			layer.setDescription(description);
+		}
 		return layer;
 	}
 

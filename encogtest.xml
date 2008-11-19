@@ -6,7 +6,7 @@
 <encogVersion>1.0.0</encogVersion>
 </Header>
 <objects>
-<BasicNeuralDataSet>
+<BasicNeuralDataSet native="org.encog.neural.data.basic.BasicNeuralDataSet" name="" description="">
 <NeuralDataPair>
 <input>
 <value>0.0</value>

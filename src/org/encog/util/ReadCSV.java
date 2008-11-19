@@ -265,8 +265,8 @@ public class ReadCSV {
 	{
 		if(this.data==null)
 			return 0;
-		else
-			return this.data.length;
+		
+		return this.data.length;
 	}
 	
 

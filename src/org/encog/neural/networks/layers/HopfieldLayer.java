@@ -3,11 +3,9 @@ package org.encog.neural.networks.layers;
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
 import org.encog.neural.persist.persistors.HopfieldLayerPersistor;
 
 /**

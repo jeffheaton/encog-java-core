@@ -28,6 +28,7 @@ package org.encog.neural.networks.training.anneal;
 import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.Train;
 import org.encog.solve.anneal.SimulatedAnnealing;
 
 /**
@@ -36,7 +37,7 @@ import org.encog.solve.anneal.SimulatedAnnealing;
  * generic SimulatedAnnealing class. It is used in the same manner as any other
  * training class that implements the Train interface.
  */
-public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> {
+public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> implements Train {
 	/**
 	 * The neural network that is to be trained.
 	 */

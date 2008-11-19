@@ -25,8 +25,30 @@
 
 package org.encog.util.time;
 
+/**
+ * Get the name or code for a time unit.
+ * @author jheaton
+ */
 public interface TimeUnitNames {
+	
+	/**
+	 * Get the singular form of the specified time unit.
+	 * @param unit The time unit.
+	 * @return The singular form of the specified time unit.
+	 */
 	public String singular(TimeUnit unit);
+	
+	/**
+	 * Get the plural name for the specified time unit.
+	 * @param unit The time unit.
+	 * @return Return the plural name for the specified unit.
+	 */
 	public String plural(TimeUnit unit);
+	
+	/**
+	 * Get the code for the specified time unit.
+	 * @param unit The time unit.
+	 * @return Return the code for the specified time unit.
+	 */
 	public String code(TimeUnit unit);
 }

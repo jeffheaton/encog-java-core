@@ -27,7 +27,6 @@ package org.encog.neural.activation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.ActivationLinearPersistor;
-import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
 
 /**
  * ActivationLinear: The Linear layer is really not an activation function at

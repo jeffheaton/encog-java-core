@@ -28,7 +28,6 @@ import java.io.Serializable;
 
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.ActivationLinearPersistor;
 import org.encog.neural.persist.persistors.MatrixPersistor;
 
 /**

@@ -25,6 +25,11 @@
 
 package org.encog.util.time;
 
+/**
+ * Time units.
+ * @author jheaton
+ *
+ */
 public enum TimeUnit {
 	SECONDS,
 	MINUTES,

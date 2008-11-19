@@ -221,7 +221,6 @@ abstract public class GeneticAlgorithm<GENE_TYPE> {
 			try {
 				this.pool.invokeAll(tasks, TIMEOUT, TimeUnit.SECONDS);
 			} catch (final InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

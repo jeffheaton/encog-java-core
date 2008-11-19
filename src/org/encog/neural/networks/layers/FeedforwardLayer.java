@@ -37,7 +37,6 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.BasicLayerPersistor;
 import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
 
 /**

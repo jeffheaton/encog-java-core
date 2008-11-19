@@ -28,13 +28,26 @@ package org.encog.util.time;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Simple date utility class.  Used mainly to create Data objects.
+ * @author jheaton
+ *
+ */
 public class DateUtil {
+	
 	/**
-	 * January is 1.
-	 * @param month
-	 * @param day
-	 * @param year
-	 * @return
+	 * Private constructor.
+	 */
+	private DateUtil()
+	{		
+	}
+	
+	/**
+	 * Construct a date. 
+	 * @param month The month, January is 1.
+	 * @param day The day.
+	 * @param year The year.
+	 * @return The newly created Date object.
 	 */
 	public static Date createDate(int month,int day,int year)
 	{

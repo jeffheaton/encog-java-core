@@ -36,7 +36,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor;
-import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
 
 /**
  * Basic implementation of the NeuralDataSet class.  This class simply
@@ -180,8 +179,8 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 		final NeuralDataPair first = this.data.get(0);
 		if( first.getIdeal()==null )
 			return 0;
-		else
-			return first.getIdeal().size();
+		
+		return first.getIdeal().size();
 	}
 
 	/**
