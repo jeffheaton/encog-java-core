@@ -96,16 +96,10 @@ public class BasicNetwork implements Serializable, Network,
 			this.outputLayer.setNext(layer);
 		}
 
-		// update the inputLayer and outputLayer variables
-		if (this.layers.size() == 0) {
-			this.inputLayer = layer; 
-			this.outputLayer = layer;
-		} else {
-			this.outputLayer = layer;
-		}
-
 		// add the new layer to the list
 		this.layers.add(layer);
+		
+		resync();
 	}
 	
 	/**
@@ -130,8 +124,12 @@ public class BasicNetwork implements Serializable, Network,
 		
 		Layer next = baseLayer.getNext();
 		baseLayer.setNext(newLayer);
-		newLayer.setPrevious(next);
+		newLayer.setPrevious(baseLayer);
+		newLayer.setNext(next);
 		this.layers.add(index+1, newLayer);
+		this.outputLayer = this.layers.get(layers.size()-1);
+		
+		resync();
 		
 	}
 	
@@ -154,6 +152,8 @@ public class BasicNetwork implements Serializable, Network,
 		{
 			previous.setNext(next);
 		}
+		
+		resync();
 	}
 	
 
@@ -423,6 +423,24 @@ public class BasicNetwork implements Serializable, Network,
 	
 	public Persistor createPersistor() {
 		return new BasicNetworkPersistor();
+	}
+	
+	/**
+	 * Rebuild the next/prev structure from the list.
+	 */
+	private void resync()
+	{
+		if(this.layers.size()>0)
+		{
+			this.outputLayer = this.layers.get(this.layers.size()-1);
+			this.inputLayer = this.layers.get(0);
+		}
+		else
+		{
+			this.outputLayer = null;
+			this.inputLayer = null;
+		}
+				
 	}
 	
 	

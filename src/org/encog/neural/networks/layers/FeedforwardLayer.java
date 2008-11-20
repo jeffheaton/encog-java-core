@@ -205,7 +205,7 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,
 	public void setNext(final Layer next) {
 		super.setNext(next);
 
-		if (!hasMatrix()) {
+		if (!hasMatrix() && this.getNext()!=null ) {
 			// add one to the neuron count to provide a threshold value in row 0
 			setMatrix(new Matrix(getNeuronCount() + 1, next.getNeuronCount()));
 		}
@@ -226,7 +226,9 @@ public class FeedforwardLayer extends BasicLayer implements Serializable,
 	public void setNeuronCount(int count)
 	{
 		this.setFire(new BasicNeuralData(count));
-		setMatrix(new Matrix(getNeuronCount() + 1, getNext().getNeuronCount()));
+		if( getNext()!=null) {
+			setMatrix(new Matrix(getNeuronCount() + 1, getNext().getNeuronCount()));
+		}
 	}
 	
 	public Persistor createPersistor() {
