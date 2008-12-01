@@ -31,6 +31,8 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
+import org.encog.neural.networks.Network;
+import org.encog.neural.networks.Train;
 import org.encog.neural.networks.layers.SOMLayer;
 import org.encog.util.NormalizeInput;
 
@@ -38,7 +40,7 @@ import org.encog.util.NormalizeInput;
  * TrainSelfOrganizingMap: Implements an unsupervised training algorithm for use
  * with a Self Organizing Map.
  */
-public class TrainSelfOrganizingMap {
+public class TrainSelfOrganizingMap implements Train {
 
 	/**
 	 * The default reduction to use.
@@ -445,5 +447,13 @@ public class TrainSelfOrganizingMap {
 			matrix.set(row, i, matrix.get(row, i) * len);
 		}
 		matrix.set(row, this.inputNeuronCount, 0);
+	}
+
+	public double getError() {
+		return this.bestError;
+	}
+
+	public Network getNetwork() {
+		return this.network;
 	}
 }
