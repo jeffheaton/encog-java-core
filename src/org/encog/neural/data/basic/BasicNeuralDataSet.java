@@ -112,10 +112,20 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	 * @param ideal The ideal output for training.
 	 */
 	public BasicNeuralDataSet(final double[][] input, final double[][] ideal) {
-		for (int i = 0; i < input.length; i++) {
-			final BasicNeuralData inputData = new BasicNeuralData(input[i]);
-			final BasicNeuralData idealData = new BasicNeuralData(ideal[i]);
-			this.add(inputData, idealData);
+		if( ideal!=null )
+		{
+			for (int i = 0; i < input.length; i++) {
+				final BasicNeuralData inputData = new BasicNeuralData(input[i]);
+				final BasicNeuralData idealData = new BasicNeuralData(ideal[i]);
+				this.add(inputData, idealData);
+			}
+		}
+		else
+		{
+			for (int i = 0; i < input.length; i++) {
+				final BasicNeuralData inputData = new BasicNeuralData(input[i]);
+				this.add(inputData);
+			}
 		}
 	}
 
