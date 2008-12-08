@@ -25,6 +25,8 @@
 
 package org.encog.neural.data.bipolar;
 
+import java.io.Serializable;
+
 import org.encog.matrix.BiPolarUtil;
 import org.encog.neural.data.NeuralData;
 
@@ -35,7 +37,7 @@ import org.encog.neural.data.NeuralData;
  * @author jheaton
  *
  */
-public class BiPolarNeuralData implements NeuralData {
+public class BiPolarNeuralData implements NeuralData, Serializable {
 	
 	/**
 	 * The data held by this object.

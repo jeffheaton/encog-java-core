@@ -24,6 +24,8 @@
  */
 package org.encog.neural.data.basic;
 
+import java.io.Serializable;
+
 import org.encog.neural.data.NeuralData;
 
 /**
@@ -32,7 +34,7 @@ import org.encog.neural.data.NeuralData;
  * @author jheaton
  *
  */
-public class BasicNeuralData implements NeuralData {
+public class BasicNeuralData implements NeuralData, Serializable {
 	
 	/**
 	 * The data held by this object.

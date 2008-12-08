@@ -25,13 +25,15 @@
 
 package org.encog.neural.persist;
 
+import java.io.Serializable;
+
 /**
  * This interface flags an class as being able to be persisted into an
  * Encog collection.
  * @author jheaton
  *
  */
-public interface EncogPersistedObject {
+public interface EncogPersistedObject extends Serializable {
 	public void setDescription(String theDescription);
 	public String getDescription();
 	

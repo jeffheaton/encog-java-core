@@ -24,6 +24,8 @@
  */
 package org.encog.neural.networks.layers;
 
+import java.io.Serializable;
+
 import org.encog.matrix.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -37,7 +39,7 @@ import org.encog.neural.persist.persistors.BasicLayerPersistor;
  * 
  * @author jheaton
  */
-public class BasicLayer implements Layer, EncogPersistedObject {
+public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	/**
 	 * Results from the last time that the outputs were calculated for this
 	 * layer.

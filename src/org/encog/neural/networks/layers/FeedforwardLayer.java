@@ -48,7 +48,7 @@ import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
  * network will use the same activation function. By default this class uses the
  * sigmoid activation function.
  */
-public class FeedforwardLayer extends BasicLayer implements Serializable,
+public class FeedforwardLayer extends BasicLayer implements 
 		EncogPersistedObject {
 	/**
 	 * Serial id for this class.
