@@ -257,4 +257,9 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 		return new BasicNeuralDataSetPersistor();
 	}
 
+	public boolean isSupervised() {
+		if( this.data.size()==0 )
+			return false;
+		return( this.data.get(0).isSupervised() );
+	}
 }
