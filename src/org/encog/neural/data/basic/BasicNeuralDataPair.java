@@ -106,4 +106,8 @@ public class BasicNeuralDataPair implements NeuralDataPair {
 		return builder.toString();
 	}
 
+	public boolean isSupervised() {
+		return this.ideal!=null;
+	}
+
 }
