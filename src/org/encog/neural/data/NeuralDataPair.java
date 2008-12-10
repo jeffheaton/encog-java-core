@@ -52,4 +52,10 @@ public interface NeuralDataPair {
 	 * for the specified input.
 	 */
 	NeuralData getIdeal();
+	
+	/**
+	 * @return True if this training pair is supervised.  That is, it has 
+	 * both input and ideal data.
+	 */
+	boolean isSupervised();
 }
