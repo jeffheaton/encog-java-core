@@ -35,7 +35,7 @@ import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.BasicLayerPersistor;
 
 /**
- * Basic functionality that most of the nueral layers require.
+ * Basic functionality that most of the neural layers require.
  * 
  * @author jheaton
  */
