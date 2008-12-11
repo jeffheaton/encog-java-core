@@ -47,6 +47,10 @@ import org.w3c.dom.Element;
 public class XMLNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -5960796361565902008L;
+	/**
 	 * Error Message: adds are not supported.
 	 */
 	public static final String ADD_NOT_SUPPORTED = 

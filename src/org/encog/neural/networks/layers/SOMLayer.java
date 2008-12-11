@@ -77,7 +77,9 @@ public class SOMLayer extends BasicLayer implements Serializable,
 
 	/**
 	 * Compute the output from this layer.
-	 * @param pattern The pattern to compute for.
+	 * 
+	 * @param pattern
+	 *            The pattern to compute for.
 	 * @return The output from the layer.
 	 */
 	public NeuralData compute(final NeuralData pattern) {
@@ -110,12 +112,33 @@ public class SOMLayer extends BasicLayer implements Serializable,
 	}
 
 	/**
+	 * Create a persistor.
+	 * @return The newly created persistor.
+	 */
+	public Persistor createPersistor() {
+		return new SOMLayerPersistor();
+	}
+
+	/**
 	 * Get the normalization type.
 	 * 
 	 * @return The normalization type.
 	 */
 	public NormalizationType getNormalizationType() {
 		return this.normalizationType;
+	}
+
+	/**
+	 * Set the neuron count. 
+	 * @param count The neuron count.
+	 */
+	public void setNeuronCount(final int count) {
+		this.setFire(new BasicNeuralData(count));
+		if (getNext() != null) {
+			setMatrix(new Matrix(getNext().getNeuronCount(),
+					getNeuronCount() + 1));
+		}
+
 	}
 
 	/**
@@ -131,26 +154,15 @@ public class SOMLayer extends BasicLayer implements Serializable,
 			setMatrix(new Matrix(next.getNeuronCount(), getNeuronCount() + 1));
 		}
 	}
-	
-	public void setNeuronCount(int count)
-	{
-		this.setFire(new BasicNeuralData(count));
-		if( this.getNext()!=null ) {
-			setMatrix(new Matrix(this.getNext().getNeuronCount(), getNeuronCount() + 1));
-		}
-
-	}
 
 	/**
-	 * @param normalizationType the normalizationType to set
+	 * Set the normalization type.
+	 * @param normalizationType
+	 *            the normalizationType to set
 	 */
-	public void setNormalizationType(NormalizationType normalizationType) {
+	public void setNormalizationType(
+			final NormalizationType normalizationType) {
 		this.normalizationType = normalizationType;
 	}
-	
-	public Persistor createPersistor() {
-		return new SOMLayerPersistor();
-	}
-	
 
 }

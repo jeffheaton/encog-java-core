@@ -41,6 +41,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Persist the basic network.
+ * 
  * @author jheaton
  */
 public class BasicNetworkPersistor implements Persistor {
@@ -54,12 +55,12 @@ public class BasicNetworkPersistor implements Persistor {
 	 */
 	public EncogPersistedObject load(final Element networkNode) {
 		final BasicNetwork network = new BasicNetwork();
-		
+
 		final String name = networkNode.getAttribute("name");
 		final String description = networkNode.getAttribute("description");
 		network.setName(name);
 		network.setDescription(description);
-		
+
 		final Element layers = XMLUtil.findElement(networkNode, "layers");
 		for (Node child = layers.getFirstChild(); child != null; child = child
 				.getNextSibling()) {
@@ -83,13 +84,14 @@ public class BasicNetworkPersistor implements Persistor {
 	 * @param object
 	 *            The node to load from.
 	 * @param hd
-	 * 		The XML object.
+	 *            The XML object.
 	 */
 	public void save(final EncogPersistedObject object,
 			final TransformerHandler hd) {
 		try {
-			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
-			
+			final AttributesImpl atts = EncogPersistedCollection
+					.createAttributes(object);
+
 			final BasicNetwork network = (BasicNetwork) object;
 			hd.startElement("", "", network.getClass().getSimpleName(), atts);
 			hd.startElement("", "", "layers", atts);

@@ -45,12 +45,13 @@ public class ReadCSV {
 	/**
 	 * The standard date format to be used.
 	 */
-	private static final DateFormat SDF = 
-		new SimpleDateFormat("yyyy-MM-dd");
+	private static final DateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
 	 * Format a date.
-	 * @param date The date to format.
+	 * 
+	 * @param date
+	 *            The date to format.
 	 * @return The formatted date.
 	 */
 	public static String displayDate(final Date date) {
@@ -59,7 +60,9 @@ public class ReadCSV {
 
 	/**
 	 * Parse a date.
-	 * @param when The date string.
+	 * 
+	 * @param when
+	 *            The date string.
 	 * @return The parsed date.
 	 */
 	public static Date parseDate(final String when) {
@@ -92,10 +95,15 @@ public class ReadCSV {
 
 	/**
 	 * Construct a CSV reader from an input stream.
-	 * @param is The InputStream to read from.
-	 * @param headers Are headers present?
-	 * @param delim What is the delimiter.
-	 * @throws IOException An IO error occurred.
+	 * 
+	 * @param is
+	 *            The InputStream to read from.
+	 * @param headers
+	 *            Are headers present?
+	 * @param delim
+	 *            What is the delimiter.
+	 * @throws IOException
+	 *             An IO error occurred.
 	 */
 	public ReadCSV(final InputStream is, final boolean headers, 
 			final char delim)
@@ -107,10 +115,15 @@ public class ReadCSV {
 
 	/**
 	 * Construct a CSV reader from a filename.
-	 * @param filename The filename.
-	 * @param headers The headers.
-	 * @param delim The delimiter.
-	 * @throws IOException An IO exception occured.
+	 * 
+	 * @param filename
+	 *            The filename.
+	 * @param headers
+	 *            The headers.
+	 * @param delim
+	 *            The delimiter.
+	 * @throws IOException
+	 *             An IO exception occured.
 	 */
 	public ReadCSV(final String filename, final boolean headers,
 			final char delim) throws IOException {
@@ -121,8 +134,11 @@ public class ReadCSV {
 
 	/**
 	 * Reader the headers.
-	 * @param headers Are headers present.
-	 * @throws IOException An IO exception happened.
+	 * 
+	 * @param headers
+	 *            Are headers present.
+	 * @throws IOException
+	 *             An IO exception happened.
 	 */
 	private void begin(final boolean headers) throws IOException {
 		// read the column heads
@@ -141,7 +157,9 @@ public class ReadCSV {
 
 	/**
 	 * Close the file.
-	 * @throws IOException An exception occured.
+	 * 
+	 * @throws IOException
+	 *             An exception occured.
 	 */
 	public void close() throws IOException {
 		this.reader.close();
@@ -149,7 +167,9 @@ public class ReadCSV {
 
 	/**
 	 * Get the specified column as a string.
-	 * @param i The column index, starting at zero.
+	 * 
+	 * @param i
+	 *            The column index, starting at zero.
 	 * @return The column as a string.
 	 */
 	public String get(final int i) {
@@ -173,10 +193,26 @@ public class ReadCSV {
 	}
 
 	/**
+	 * Get the column count.
+	 * 
+	 * @return The column count.
+	 */
+	public int getColumnCount() {
+		if (this.data == null) {
+			return 0;
+		}
+
+		return this.data.length;
+	}
+
+	/**
 	 * Get the column as a date.
-	 * @param column The column header name.  
+	 * 
+	 * @param column
+	 *            The column header name.
 	 * @return The column as a date.
-	 * @throws ParseException If an error occured while parsing.
+	 * @throws ParseException
+	 *             If an error occured while parsing.
 	 */
 	public Date getDate(final String column) throws ParseException {
 		final String str = get(column);
@@ -185,7 +221,9 @@ public class ReadCSV {
 
 	/**
 	 * Get the column as a double specified by index.
-	 * @param index The column index, starting at zero.
+	 * 
+	 * @param index
+	 *            The column index, starting at zero.
 	 * @return The data at the specified column.
 	 */
 	public double getDouble(final int index) {
@@ -195,7 +233,9 @@ public class ReadCSV {
 
 	/**
 	 * Get the specified column as a double.
-	 * @param column The column name that we want to get.
+	 * 
+	 * @param column
+	 *            The column name that we want to get.
 	 * @return The column data as a double.
 	 */
 	public double getDouble(final String column) {
@@ -205,7 +245,9 @@ public class ReadCSV {
 
 	/**
 	 * Obtain a column as an integer referenced by a string.
-	 * @param col The column header name being read.
+	 * 
+	 * @param col
+	 *            The column header name being read.
 	 * @return The column data as an integer.
 	 */
 	public int getInt(final String col) {
@@ -219,7 +261,9 @@ public class ReadCSV {
 
 	/**
 	 * Count the columns and create a an array to hold them.
-	 * @param line One line from the file
+	 * 
+	 * @param line
+	 *            One line from the file
 	 */
 	private void initData(final String line) {
 		final StringTokenizer tok = new StringTokenizer(line, this.delim);
@@ -235,9 +279,11 @@ public class ReadCSV {
 	}
 
 	/**
-	 * Read the next line. 
+	 * Read the next line.
+	 * 
 	 * @return True if there are more lines to read.
-	 * @throws IOException An error occured.
+	 * @throws IOException
+	 *             An error occured.
 	 */
 	public boolean next() throws IOException {
 		final String line = this.reader.readLine();
@@ -260,14 +306,5 @@ public class ReadCSV {
 		}
 		return true;
 	}
-	
-	public int getColumnCount()
-	{
-		if(this.data==null)
-			return 0;
-		
-		return this.data.length;
-	}
-	
 
 }

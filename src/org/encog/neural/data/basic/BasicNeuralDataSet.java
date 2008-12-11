@@ -38,17 +38,19 @@ import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor;
 
 /**
- * Basic implementation of the NeuralDataSet class.  This class simply
- * stores the neural data in an ArrayList.  This class is memory based, 
- * so large enough datasets could cause memory issues.  Many other dataset
- * types extend this class.
+ * Basic implementation of the NeuralDataSet class. This class simply stores the
+ * neural data in an ArrayList. This class is memory based, so large enough
+ * datasets could cause memory issues. Many other dataset types extend this
+ * class.
+ * 
  * @author jheaton
  */
 public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
-	
+
 	/**
-	 * An iterator to be used with the BasicNeuralDataSet.  This iterator does
+	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
 	 * not support removes.
+	 * 
 	 * @author jheaton
 	 */
 	public class BasicNeuralIterator implements Iterator<NeuralDataPair> {
@@ -60,14 +62,16 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 
 		/**
 		 * Is there more data for the iterator to read?
+		 * 
 		 * @return Returns true if there is more data to read.
 		 */
 		public boolean hasNext() {
 			return this.currentIndex < BasicNeuralDataSet.this.data.size();
 		}
 
-		/** 
+		/**
 		 * Read the next item.
+		 * 
 		 * @return The next item.
 		 */
 		public NeuralDataPair next() {
@@ -87,6 +91,11 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	}
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -2279722928570071183L;
+
+	/**
 	 * The data held by this object.
 	 */
 	private List<NeuralDataPair> data = new ArrayList<NeuralDataPair>();
@@ -96,8 +105,15 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	 */
 	private final List<BasicNeuralIterator> iterators = 
 		new ArrayList<BasicNeuralIterator>();
-	
+
+	/**
+	 * The description for this object.
+	 */
 	private String description;
+
+	/**
+	 * The name for this object.
+	 */
 	private String name;
 
 	/**
@@ -108,20 +124,20 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 
 	/**
 	 * Construct a data set from an input and idea array.
-	 * @param input The input into the neural network for training.
-	 * @param ideal The ideal output for training.
+	 * 
+	 * @param input
+	 *            The input into the neural network for training.
+	 * @param ideal
+	 *            The ideal output for training.
 	 */
 	public BasicNeuralDataSet(final double[][] input, final double[][] ideal) {
-		if( ideal!=null )
-		{
+		if (ideal != null) {
 			for (int i = 0; i < input.length; i++) {
 				final BasicNeuralData inputData = new BasicNeuralData(input[i]);
 				final BasicNeuralData idealData = new BasicNeuralData(ideal[i]);
 				this.add(inputData, idealData);
 			}
-		}
-		else
-		{
+		} else {
 			for (int i = 0; i < input.length; i++) {
 				final BasicNeuralData inputData = new BasicNeuralData(input[i]);
 				this.add(inputData);
@@ -130,18 +146,23 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	}
 
 	/**
-	 * Add input to the training set with no expected output.  This is
-	 * used for unsupervised training.
-	 * @param data The input to be added to the training set.
+	 * Add input to the training set with no expected output. This is used for
+	 * unsupervised training.
+	 * 
+	 * @param data
+	 *            The input to be added to the training set.
 	 */
 	public void add(final NeuralData data) {
 		this.data.add(new BasicNeuralDataPair(data));
 	}
 
 	/**
-	 * Add input and expected output.  This is used for supervised training.
-	 * @param inputData The input data to train on.
-	 * @param idealData The ideal data to use for training.
+	 * Add input and expected output. This is used for supervised training.
+	 * 
+	 * @param inputData
+	 *            The input data to train on.
+	 * @param idealData
+	 *            The ideal data to use for training.
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
 		if (!this.iterators.isEmpty()) {
@@ -154,8 +175,10 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 
 	/**
 	 * Add a neural data pair to the list.
-	 * @param inputData A NeuralDataPair object that contains both 
-	 * input and ideal data.
+	 * 
+	 * @param inputData
+	 *            A NeuralDataPair object that contains both input and ideal
+	 *            data.
 	 */
 	public void add(final NeuralDataPair inputData) {
 		this.data.add(inputData);
@@ -170,7 +193,16 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	}
 
 	/**
+	 * Create a persistor for this object.
+	 * @return A persistor for this object.
+	 */
+	public Persistor createPersistor() {
+		return new BasicNeuralDataSetPersistor();
+	}
+
+	/**
 	 * Get the data held by this container.
+	 * 
 	 * @return the data
 	 */
 	public List<NeuralDataPair> getData() {
@@ -178,8 +210,16 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	}
 
 	/**
-	 * Get the size of the ideal dataset.  This is obtained
-	 * from the first item in the list.
+	 * @return the description
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+
+	/**
+	 * Get the size of the ideal dataset. This is obtained from the first item
+	 * in the list.
+	 * 
 	 * @return The size of the ideal data.
 	 */
 	public int getIdealSize() {
@@ -187,15 +227,17 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 			return 0;
 		}
 		final NeuralDataPair first = this.data.get(0);
-		if( first.getIdeal()==null )
+		if (first.getIdeal() == null) {
 			return 0;
-		
+		}
+
 		return first.getIdeal().size();
 	}
 
 	/**
-	 * Get the size of the input dataset.  This is obtained
-	 * from the first item in the list.
+	 * Get the size of the input dataset. This is obtained from the first item
+	 * in the list.
+	 * 
 	 * @return The size of the input data.
 	 */
 	public int getInputSize() {
@@ -207,7 +249,28 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	}
 
 	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * Determine if this neural data set is supervied.  All of the pairs
+	 * should be either supervised or not, so simply check the first pair.
+	 * If the list is empty then assume unsupervised.
+	 * @return True if supervised.
+	 */
+	public boolean isSupervised() {
+		if (this.data.size() == 0) {
+			return false;
+		}
+		return this.data.get(0).isSupervised();
+	}
+
+	/**
 	 * Create an iterator for this collection.
+	 * 
 	 * @return An iterator to access this collection.
 	 */
 	public Iterator<NeuralDataPair> iterator() {
@@ -225,41 +288,18 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	}
 
 	/**
-	 * @return the description
+	 * @param description
+	 *            the description to set
 	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
+	public void setDescription(final String description) {
 		this.description = description;
 	}
 
 	/**
-	 * @return the name
+	 * @param name
+	 *            the name to set
 	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
-	}
-	
-
-	public Persistor createPersistor() {
-		return new BasicNeuralDataSetPersistor();
-	}
-
-	public boolean isSupervised() {
-		if( this.data.size()==0 )
-			return false;
-		return( this.data.get(0).isSupervised() );
 	}
 }

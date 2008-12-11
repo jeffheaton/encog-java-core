@@ -41,6 +41,11 @@ import org.encog.util.downsample.Downsample;
 public class ImageNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 3368190842312829906L;
+
+	/**
 	 * Error message to inform the caller that only ImageNeuralData objects can
 	 * be used with this collection.
 	 */

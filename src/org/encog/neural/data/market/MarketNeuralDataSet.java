@@ -41,14 +41,19 @@ import org.encog.util.time.TimeUnit;
 
 /**
  * A data set that is designed to hold market data. This class is based on the
- * TemporalNeuralDataSet.  This class is designed to load financial data from
- * external sources.  This class is designed to track financial data across days.
- * However, it should be usable with other levels of granularity as well.   
+ * TemporalNeuralDataSet. This class is designed to load financial data from
+ * external sources. This class is designed to track financial data across days.
+ * However, it should be usable with other levels of granularity as well.
  * 
  * @author jheaton
  * 
  */
 public class MarketNeuralDataSet extends TemporalNeuralDataSet {
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 170791819906003867L;
 
 	/**
 	 * The loader to use to obtain the data.
@@ -82,20 +87,24 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	/**
 	 * Add one description of the type of market data that we are seeking at
 	 * each datapoint.
-	 * @param desc The data description.
+	 * 
+	 * @param desc
+	 *            The data description.
 	 */
 	public void addDescription(final TemporalDataDescription desc) {
 		if (!(desc instanceof MarketDataDescription)) {
 			throw new MarketError(
-					"Only MarketDataDescription objects may be used " 
-					+ "with the MarketNeuralDataSet container.");
+					"Only MarketDataDescription objects may be used "
+							+ "with the MarketNeuralDataSet container.");
 		}
 		super.addDescription(desc);
 	}
 
 	/**
 	 * Create a datapoint at the specified date.
-	 * @param when The date to create the point at.
+	 * 
+	 * @param when
+	 *            The date to create the point at.
 	 * @return Returns the TemporalPoint created for the specified date.
 	 */
 	public TemporalPoint createPoint(final Date when) {
@@ -119,8 +128,11 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 
 	/**
 	 * Load data from the loader.
-	 * @param begin The beginning date.
-	 * @param end The ending date.
+	 * 
+	 * @param begin
+	 *            The beginning date.
+	 * @param end
+	 *            The ending date.
 	 */
 	public void load(final Date begin, final Date end) {
 		// define the starting point if it is not already defined
@@ -149,9 +161,13 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 
 	/**
 	 * Load one point of market data.
-	 * @param ticker The ticker symbol to load.
-	 * @param point The point to load at.
-	 * @param item The item being loaded.
+	 * 
+	 * @param ticker
+	 *            The ticker symbol to load.
+	 * @param point
+	 *            The point to load at.
+	 * @param item
+	 *            The item being loaded.
 	 */
 	private void loadPointFromMarketData(final TickerSymbol ticker,
 			final TemporalPoint point, final LoadedMarketData item) {
@@ -167,9 +183,13 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 
 	/**
 	 * Load one ticker symbol.
-	 * @param ticker The ticker symbol to load.
-	 * @param from Load data from this date.
-	 * @param to Load data to this date.
+	 * 
+	 * @param ticker
+	 *            The ticker symbol to load.
+	 * @param from
+	 *            Load data from this date.
+	 * @param to
+	 *            Load data to this date.
 	 */
 	private void loadSymbol(final TickerSymbol ticker, final Date from,
 			final Date to) {

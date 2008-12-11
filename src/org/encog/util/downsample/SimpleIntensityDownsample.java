@@ -1,27 +1,27 @@
 /*
-  * Encog Neural Network and Bot Library for Java v1.x
-  * http://www.heatonresearch.com/encog/
-  * http://code.google.com/p/encog-java/
-  * 
-  * Copyright 2008, Heaton Research Inc., and individual contributors.
-  * See the copyright.txt in the distribution for a full listing of 
-  * individual contributors.
-  *
-  * This is free software; you can redistribute it and/or modify it
-  * under the terms of the GNU Lesser General Public License as
-  * published by the Free Software Foundation; either version 2.1 of
-  * the License, or (at your option) any later version.
-  *
-  * This software is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  * Lesser General Public License for more details.
-  *
-  * You should have received a copy of the GNU Lesser General Public
-  * License along with this software; if not, write to the Free
-  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-  */
+ * Encog Neural Network and Bot Library for Java v1.x
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 
 package org.encog.util.downsample;
 
@@ -31,47 +31,88 @@ import java.awt.image.PixelGrabber;
 import org.encog.EncogError;
 import org.encog.util.ImageSize;
 
+/**
+ * Downsample an image using a simple intensity scale. Color information is
+ * discarded.
+ * 
+ * @author jheaton
+ */
 public class SimpleIntensityDownsample implements Downsample {
 
+	/**
+	 * The image to downsample.
+	 */
 	private Image image;
-	private int pixelMap[];
+	
+	/**
+	 * The pixel map from the image.
+	 */
+	private int[] pixelMap;
+	
+	/**
+	 * The downsample x-ratio.
+	 */
 	private double ratioX;
+	
+	/**
+	 * The downsample y-ratio.
+	 */
 	private double ratioY;
+	
+	/**
+	 * The image height.
+	 */
 	private int imageHeight;
+	
+	/**
+	 * The image width.
+	 */
 	private int imageWidth;
+	
+	/** 
+	 * The left boundary of the downsample.
+	 */
 	private int downSampleLeft;
+	
+	/**
+	 * The right boundary of the downsample.
+	 */
 	private int downSampleRight;
+	
+	/** 
+	 * The top boundary of the downsample.
+	 */
 	private int downSampleTop;
+	
+	/**
+	 * The bottom boundary of the downsample.
+	 */
 	private int downSampleBottom;
 
-	public SimpleIntensityDownsample(Image image) {
+	/**
+	 * Construct the downsample utility for the specified image.
+	 * @param image The image to downsample.
+	 */
+	public SimpleIntensityDownsample(final Image image) {
 		processImage(image);
-	}
-	
-	public void processImage(Image image) {
-		this.image = image;
-		ImageSize size = new ImageSize(image);
-		this.imageHeight = size.getHeight();
-		this.imageWidth = size.getWidth();
-		this.downSampleLeft = 0;
-		this.downSampleTop = 0;
-		this.downSampleRight = this.imageWidth;
-		this.downSampleBottom = this.imageHeight;
 	}
 
 	/**
 	 * Called to downsample the image and store it in the down sample component.
+	 * @param height The height to downsample to.
+	 * @param width THe width to downsample to.
+	 * @return The downsampled image.
 	 */
-	public double[] downSample(int height, int width) {
+	public double[] downSample(final int height, final int width) {
 
-		double[] result = new double[height * width];
+		final double[] result = new double[height * width];
 
 		final PixelGrabber grabber = new PixelGrabber(this.image, 0, 0,
 				this.imageWidth, this.imageWidth, true);
 
 		try {
 			grabber.grabPixels();
-		} catch (InterruptedException e) {
+		} catch (final InterruptedException e) {
 			throw new EncogError(e);
 		}
 
@@ -104,8 +145,8 @@ public class SimpleIntensityDownsample implements Downsample {
 	 * @return Returns true if there were ANY pixels in the specified quadrant.
 	 */
 	private double downSampleRegion(final int x, final int y) {
-		final int startX = (int) (this.downSampleLeft + (x * this.ratioX));
-		final int startY = (int) (this.downSampleTop + (y * this.ratioY));
+		final int startX = (int) (this.downSampleLeft + x * this.ratioX);
+		final int startY = (int) (this.downSampleTop + y * this.ratioY);
 		final int endX = (int) (startX + this.ratioX);
 		final int endY = (int) (startY + this.ratioY);
 
@@ -117,11 +158,11 @@ public class SimpleIntensityDownsample implements Downsample {
 
 		for (int yy = startY; yy <= endY; yy++) {
 			for (int xx = startX; xx <= endX; xx++) {
-				final int loc = xx + (yy * this.imageWidth);
-				int pixel = this.pixelMap[loc];
-				int red = (pixel >> 16) & 0xff;
-				int green = (pixel >> 8) & 0xff;
-				int blue = (pixel) & 0xff;
+				final int loc = xx + yy * this.imageWidth;
+				final int pixel = this.pixelMap[loc];
+				final int red = pixel >> 16 & 0xff;
+				final int green = pixel >> 8 & 0xff;
+				final int blue = pixel & 0xff;
 
 				redTotal += red;
 				greenTotal += green;
@@ -130,17 +171,12 @@ public class SimpleIntensityDownsample implements Downsample {
 			}
 		}
 
-		return (redTotal+greenTotal+blueTotal)/(total*3);
+		return (redTotal + greenTotal + blueTotal) / (total * 3);
 	}
 
 	/**
 	 * This method is called to automatically crop the image so that whitespace
 	 * is removed.
-	 * 
-	 * @param w
-	 *            The width of the image.
-	 * @param h
-	 *            The height of the image
 	 */
 	public void findBounds() {
 		// top line
@@ -176,6 +212,76 @@ public class SimpleIntensityDownsample implements Downsample {
 	}
 
 	/**
+	 * @return the downSampleBottom
+	 */
+	public int getDownSampleBottom() {
+		return this.downSampleBottom;
+	}
+
+	/**
+	 * @return the downSampleLeft
+	 */
+	public int getDownSampleLeft() {
+		return this.downSampleLeft;
+	}
+
+	/**
+	 * @return the downSampleRight
+	 */
+	public int getDownSampleRight() {
+		return this.downSampleRight;
+	}
+
+	/**
+	 * @return the downSampleTop
+	 */
+	public int getDownSampleTop() {
+		return this.downSampleTop;
+	}
+
+	/**
+	 * @return the image
+	 */
+	public Image getImage() {
+		return this.image;
+	}
+
+	/**
+	 * @return the imageHeight
+	 */
+	public int getImageHeight() {
+		return this.imageHeight;
+	}
+
+	/**
+	 * @return the imageWidth
+	 */
+	public int getImageWidth() {
+		return this.imageWidth;
+	}
+
+	/**
+	 * @return the pixelMap
+	 */
+	public int[] getPixelMap() {
+		return this.pixelMap;
+	}
+
+	/**
+	 * @return the ratioX
+	 */
+	public double getRatioX() {
+		return this.ratioX;
+	}
+
+	/**
+	 * @return the ratioY
+	 */
+	public double getRatioY() {
+		return this.ratioY;
+	}
+
+	/**
 	 * This method is called internally to see if there are any pixels in the
 	 * given scan line. This method is used to perform autocropping.
 	 * 
@@ -185,11 +291,26 @@ public class SimpleIntensityDownsample implements Downsample {
 	 */
 	private boolean hLineClear(final int y) {
 		for (int i = 0; i < this.imageWidth; i++) {
-			if (this.pixelMap[(y * this.imageWidth) + i] != -1) {
+			if (this.pixelMap[y * this.imageWidth + i] != -1) {
 				return false;
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * Process the image and prepare it to be downsampled.
+	 * @param image The image to downsample.
+	 */
+	public void processImage(final Image image) {
+		this.image = image;
+		final ImageSize size = new ImageSize(image);
+		this.imageHeight = size.getHeight();
+		this.imageWidth = size.getWidth();
+		this.downSampleLeft = 0;
+		this.downSampleTop = 0;
+		this.downSampleRight = this.imageWidth;
+		this.downSampleBottom = this.imageHeight;
 	}
 
 	/**
@@ -201,83 +322,11 @@ public class SimpleIntensityDownsample implements Downsample {
 	 */
 	private boolean vLineClear(final int x) {
 		for (int i = 0; i < this.imageHeight; i++) {
-			if (this.pixelMap[(i * this.imageWidth) + x] != -1) {
+			if (this.pixelMap[i * this.imageWidth + x] != -1) {
 				return false;
 			}
 		}
 		return true;
 	}
 
-	/**
-	 * @return the image
-	 */
-	public Image getImage() {
-		return image;
-	}
-
-	/**
-	 * @return the pixelMap
-	 */
-	public int[] getPixelMap() {
-		return pixelMap;
-	}
-
-	/**
-	 * @return the ratioX
-	 */
-	public double getRatioX() {
-		return ratioX;
-	}
-
-	/**
-	 * @return the ratioY
-	 */
-	public double getRatioY() {
-		return ratioY;
-	}
-
-	/**
-	 * @return the imageHeight
-	 */
-	public int getImageHeight() {
-		return imageHeight;
-	}
-
-	/**
-	 * @return the imageWidth
-	 */
-	public int getImageWidth() {
-		return imageWidth;
-	}
-
-	/**
-	 * @return the downSampleLeft
-	 */
-	public int getDownSampleLeft() {
-		return downSampleLeft;
-	}
-
-	/**
-	 * @return the downSampleRight
-	 */
-	public int getDownSampleRight() {
-		return downSampleRight;
-	}
-
-	/**
-	 * @return the downSampleTop
-	 */
-	public int getDownSampleTop() {
-		return downSampleTop;
-	}
-
-	/**
-	 * @return the downSampleBottom
-	 */
-	public int getDownSampleBottom() {
-		return downSampleBottom;
-	}
-	
-	
-	
 }

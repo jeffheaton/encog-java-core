@@ -46,9 +46,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * The default level of precision for matrix compares.
 	 */
 	public static final int DEFAULT_PRECISION = 10;
-	
-	private String name;
-	private String description;
 
 	/**
 	 * Turn an array of doubles into a column matrix.
@@ -79,9 +76,19 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * The name of this object.
+	 */
+	private String name;
+
+	/**
+	 * The description for this object.
+	 */
+	private String description;
+
+	/**
 	 * The matrix data.
 	 */
-	private double[][] matrix;
+	private final double[][] matrix;
 
 	/**
 	 * Construct a bipolar matrix from an array of booleans.
@@ -167,6 +174,15 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * Create a Persistor for this object.
+	 * 
+	 * @return The new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new MatrixPersistor();
+	}
+
+	/**
 	 * Check to see if this matrix equals another, using default precision.
 	 * 
 	 * @param matrix
@@ -175,21 +191,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public boolean equals(final Matrix matrix) {
 		return equals(matrix, Matrix.DEFAULT_PRECISION);
-	}
-
-	/**
-	 * Compute a hash code for this matrix.
-	 * 
-	 * @return The hash code.
-	 */
-	public int hashCode() {
-		long result = 0;
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				result += get(r, c);
-			}
-		}
-		return (int) (result % Integer.MAX_VALUE);
 	}
 
 	/**
@@ -294,8 +295,24 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
 	 * Get the specified row as a sub-matrix.
-	 * @param row The row to get.
+	 * 
+	 * @param row
+	 *            The row to get.
 	 * @return A matrix.
 	 */
 	public Matrix getRow(final int row) {
@@ -320,6 +337,21 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public int getRows() {
 		return this.matrix.length;
+	}
+
+	/**
+	 * Compute a hash code for this matrix.
+	 * 
+	 * @return The hash code.
+	 */
+	public int hashCode() {
+		long result = 0;
+		for (int r = 0; r < getRows(); r++) {
+			for (int c = 0; c < getCols(); c++) {
+				result += get(r, c);
+			}
+		}
+		return (int) (result % Integer.MAX_VALUE);
 	}
 
 	/**
@@ -387,6 +419,24 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * Set the description for this object.
+	 * 
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	/**
 	 * Get the size of the array. This is the number of elements it would take
 	 * to store the matrix as a packed array.
 	 * 
@@ -448,38 +498,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 			throw new MatrixError("The col:" + col + " is out of range:"
 					+ getCols());
 		}
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	
-	public Persistor createPersistor() {
-		return new MatrixPersistor();
 	}
 
 }

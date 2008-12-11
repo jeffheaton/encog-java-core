@@ -25,8 +25,6 @@
 
 package org.encog.neural.networks.layers;
 
-import java.io.Serializable;
-
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
@@ -48,7 +46,7 @@ import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
  * network will use the same activation function. By default this class uses the
  * sigmoid activation function.
  */
-public class FeedforwardLayer extends BasicLayer implements 
+public class FeedforwardLayer extends BasicLayer implements
 		EncogPersistedObject {
 	/**
 	 * Serial id for this class.
@@ -145,14 +143,18 @@ public class FeedforwardLayer extends BasicLayer implements
 	}
 
 	/**
+	 * Create a persistor for this layer.
+	 * @return A persistor.
+	 */
+	public Persistor createPersistor() {
+		return new FeedforwardLayerPersistor();
+	}
+
+	/**
 	 * @return The activation function for this layer.
 	 */
 	public ActivationFunction getActivationFunction() {
 		return this.activationFunction;
-	}
-	
-	public void setActivationFunction(ActivationFunction f) {
-		this.activationFunction = f;
 	}
 
 	/**
@@ -180,6 +182,14 @@ public class FeedforwardLayer extends BasicLayer implements
 	}
 
 	/**
+	 * Set the activation function for this layer.
+	 * @param f The activation function.
+	 */
+	public void setActivationFunction(final ActivationFunction f) {
+		this.activationFunction = f;
+	}
+
+	/**
 	 * Assign a new weight and threshold matrix to this layer.
 	 * 
 	 * @param matrix
@@ -197,6 +207,18 @@ public class FeedforwardLayer extends BasicLayer implements
 	}
 
 	/**
+	 * Set the neuron count for the layer.
+	 * @param count How many neurons should this layer have.
+	 */
+	public void setNeuronCount(final int count) {
+		this.setFire(new BasicNeuralData(count));
+		if (getNext() != null) {
+			setMatrix(new Matrix(getNeuronCount() + 1, getNext()
+					.getNeuronCount()));
+		}
+	}
+
+	/**
 	 * Set the next layer.
 	 * 
 	 * @param next
@@ -205,7 +227,7 @@ public class FeedforwardLayer extends BasicLayer implements
 	public void setNext(final Layer next) {
 		super.setNext(next);
 
-		if (!hasMatrix() && this.getNext()!=null ) {
+		if (!hasMatrix() && getNext() != null) {
 			// add one to the neuron count to provide a threshold value in row 0
 			setMatrix(new Matrix(getNeuronCount() + 1, next.getNeuronCount()));
 		}
@@ -221,18 +243,6 @@ public class FeedforwardLayer extends BasicLayer implements
 		result.append(getNeuronCount());
 		result.append("]");
 		return result.toString();
-	}
-	
-	public void setNeuronCount(int count)
-	{
-		this.setFire(new BasicNeuralData(count));
-		if( getNext()!=null) {
-			setMatrix(new Matrix(getNeuronCount() + 1, getNext().getNeuronCount()));
-		}
-	}
-	
-	public Persistor createPersistor() {
-		return new FeedforwardLayerPersistor();
 	}
 
 }

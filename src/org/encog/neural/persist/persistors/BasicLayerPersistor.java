@@ -55,7 +55,7 @@ public class BasicLayerPersistor implements Persistor {
 	public EncogPersistedObject load(final Element layerNode) {
 		final String str = layerNode.getAttribute("neuronCount");
 		final int neuronCount = Integer.parseInt(str);
-		
+
 		final String name = layerNode.getAttribute("name");
 		final String description = layerNode.getAttribute("description");
 
@@ -88,8 +88,10 @@ public class BasicLayerPersistor implements Persistor {
 		try {
 			final BasicLayer layer = (BasicLayer) object;
 
-			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
-			EncogPersistedCollection.addAttribute(atts, "neuronCount",""+layer.getNeuronCount());
+			final AttributesImpl atts = EncogPersistedCollection
+					.createAttributes(object);
+			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""
+					+ layer.getNeuronCount());
 
 			hd.startElement("", "", layer.getClass().getSimpleName(), atts);
 

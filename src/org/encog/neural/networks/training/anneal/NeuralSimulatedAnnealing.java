@@ -37,7 +37,8 @@ import org.encog.solve.anneal.SimulatedAnnealing;
  * generic SimulatedAnnealing class. It is used in the same manner as any other
  * training class that implements the Train interface.
  */
-public class NeuralSimulatedAnnealing extends SimulatedAnnealing<Double> implements Train {
+public class NeuralSimulatedAnnealing 
+extends SimulatedAnnealing<Double> implements Train {
 	/**
 	 * The neural network that is to be trained.
 	 */

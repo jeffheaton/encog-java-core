@@ -26,6 +26,11 @@ package org.encog.util.db;
 
 import org.encog.EncogError;
 
+/**
+ * DBError: Thrown when a database error occurs.
+ * @author jheaton
+ *
+ */
 public class DBError extends EncogError {
 	/**
 	 * 

@@ -40,8 +40,9 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Persist a hopfield layer.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class HopfieldLayerPersistor implements Persistor {
 
@@ -87,8 +88,10 @@ public class HopfieldLayerPersistor implements Persistor {
 		try {
 			final HopfieldLayer layer = (HopfieldLayer) object;
 
-			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
-			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""+layer.getNeuronCount());
+			final AttributesImpl atts = EncogPersistedCollection
+					.createAttributes(object);
+			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""
+					+ layer.getNeuronCount());
 			hd.startElement("", "", layer.getClass().getSimpleName(), atts);
 
 			atts.clear();

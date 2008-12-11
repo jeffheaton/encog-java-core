@@ -55,6 +55,9 @@ public class NeuralGeneticAlgorithm
 		return c.getNetwork();
 	}
 
+	/**
+	 * @return The error from the last iteration.
+	 */
 	public double getError() {
 		return this.getChromosome(0).getCost();
 	}

@@ -61,12 +61,11 @@ public class MatrixPersistor implements Persistor {
 
 		result.setName(name);
 		result.setDescription(description);
-		
+
 		int row = 0;
 
-		for (Node child = matrixElement.getFirstChild(); 
-		child != null; child = child
-				.getNextSibling()) {
+		for (Node child = matrixElement.getFirstChild(); child != null; 
+			child = child.getNextSibling()) {
 			if (!(child instanceof Element)) {
 				continue;
 			}
@@ -96,9 +95,12 @@ public class MatrixPersistor implements Persistor {
 			final TransformerHandler hd) {
 		try {
 			final Matrix matrix = (Matrix) object;
-			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
-			EncogPersistedCollection.addAttribute(atts, "rows", ""+matrix.getRows());
-			EncogPersistedCollection.addAttribute(atts, "cols", ""+matrix.getCols());
+			final AttributesImpl atts = EncogPersistedCollection
+					.createAttributes(object);
+			EncogPersistedCollection.addAttribute(atts, "rows", ""
+					+ matrix.getRows());
+			EncogPersistedCollection.addAttribute(atts, "cols", ""
+					+ matrix.getCols());
 
 			hd.startElement("", "", "Matrix", atts);
 			for (int row = 0; row < matrix.getRows(); row++) {

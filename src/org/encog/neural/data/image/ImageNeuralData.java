@@ -45,6 +45,10 @@ import org.encog.util.downsample.Downsample;
 public class ImageNeuralData extends BasicNeuralData {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -4645971270240180450L;
+	/**
 	 * The image associated with this class.
 	 */
 	private Image image;

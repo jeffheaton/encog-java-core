@@ -40,6 +40,10 @@ import org.encog.neural.data.NeuralData;
 public class BiPolarNeuralData implements NeuralData, Serializable {
 	
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6082894455587612231L;
+	/**
 	 * The data held by this object.
 	 */
 	private boolean[] data;

@@ -197,7 +197,8 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		try {
 			final BasicNeuralDataSet set = (BasicNeuralDataSet) object;
 
-			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
+			final AttributesImpl atts = 
+				EncogPersistedCollection.createAttributes(object);
 			hd.startElement("", "", "BasicNeuralDataSet", atts);
 
 			atts.clear();

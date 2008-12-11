@@ -41,8 +41,9 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Persist a som.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class SOMLayerPersistor implements Persistor {
 
@@ -50,7 +51,7 @@ public class SOMLayerPersistor implements Persistor {
 	 * String token for the multiplicative normalization method.
 	 */
 	public static final String NORM_TYPE_MULTIPLICATIVE = "MULTIPLICATIVE";
-	
+
 	/**
 	 * String token for the z-axis normalization method.
 	 */
@@ -89,9 +90,8 @@ public class SOMLayerPersistor implements Persistor {
 			final Matrix matrix = (Matrix) persistor.load(e);
 			layer.setMatrix(matrix);
 		}
-		
-		if( layer!=null )
-		{
+
+		if (layer != null) {
 			layer.setName(name);
 			layer.setDescription(description);
 		}
@@ -112,15 +112,18 @@ public class SOMLayerPersistor implements Persistor {
 		try {
 			final SOMLayer layer = (SOMLayer) object;
 
-			final AttributesImpl atts = EncogPersistedCollection.createAttributes(object);
-			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""+layer.getNeuronCount());
+			final AttributesImpl atts = EncogPersistedCollection
+					.createAttributes(object);
+			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""
+					+ layer.getNeuronCount());
 			String normType = null;
 
-			if (layer.getNormalizationType()  
-				== NormalizationType.MULTIPLICATIVE) {
-				normType = SOMLayerPersistor.NORM_TYPE_MULTIPLICATIVE;
-			} else if (layer.getNormalizationType()  
-				== NormalizationType.Z_AXIS) {
+			if (layer.getNormalizationType() 
+					== NormalizationType.MULTIPLICATIVE) {
+				normType = 
+					SOMLayerPersistor.NORM_TYPE_MULTIPLICATIVE;
+			} else if (layer.getNormalizationType() 
+					== NormalizationType.Z_AXIS) {
 				normType = SOMLayerPersistor.NORM_TYPE_Z_AXIS;
 			}
 

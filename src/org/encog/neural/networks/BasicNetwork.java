@@ -42,10 +42,9 @@ import org.encog.util.ErrorCalculation;
 import org.encog.neural.networks.layers.FeedforwardLayer;
 
 /**
- * BasicNetwork: This class implements a neural
- * network. This class works in conjunction the Layer classes. Layers
- * are added to the BasicNetwork to specify the structure of the
- * neural network.
+ * BasicNetwork: This class implements a neural network. This class works in
+ * conjunction the Layer classes. Layers are added to the BasicNetwork to
+ * specify the structure of the neural network.
  * 
  * The first layer added is the input layer, the final layer added is the output
  * layer. Any layers added between these two layers are the hidden layers.
@@ -70,10 +69,16 @@ public class BasicNetwork implements Serializable, Network,
 	/**
 	 * All of the layers in the neural network.
 	 */
-	private List<Layer> layers = new ArrayList<Layer>();
-	
+	private final List<Layer> layers = new ArrayList<Layer>();
+
+	/**
+	 * The description of this object.
+	 */
 	private String description;
-	
+
+	/**
+	 * The name of this object.
+	 */
 	private String name;
 
 	/**
@@ -98,64 +103,42 @@ public class BasicNetwork implements Serializable, Network,
 
 		// add the new layer to the list
 		this.layers.add(layer);
-		
+
 		resync();
 	}
-	
+
 	/**
 	 * Add a layer after the base layer.
-	 * @param baseLayer The layer to add after.
-	 * @param newLayer The new layer to add.
+	 * 
+	 * @param baseLayer
+	 *            The layer to add after.
+	 * @param newLayer
+	 *            The new layer to add.
 	 */
-	public void addLayer(final Layer baseLayer,final Layer newLayer)
-	{
+	public void addLayer(final Layer baseLayer, final Layer newLayer) {
 		int index = 0;
-		while( index<layers.size() )
-		{
-			if( this.layers.get(index)==baseLayer )
+		while (index < this.layers.size()) {
+			if (this.layers.get(index) == baseLayer) {
 				break;
+			}
 			index++;
 		}
-		
-		if( index==layers.size() )
-		{
-			throw new NeuralNetworkError("The specified base layer must be part of the network.");
+
+		if (index == this.layers.size()) {
+			throw new NeuralNetworkError(
+					"The specified base layer must be part of the network.");
 		}
-		
-		Layer next = baseLayer.getNext();
+
+		final Layer next = baseLayer.getNext();
 		baseLayer.setNext(newLayer);
 		newLayer.setPrevious(baseLayer);
 		newLayer.setNext(next);
-		this.layers.add(index+1, newLayer);
-		this.outputLayer = this.layers.get(layers.size()-1);
-		
+		this.layers.add(index + 1, newLayer);
+		this.outputLayer = this.layers.get(this.layers.size() - 1);
+
 		resync();
-		
+
 	}
-	
-	/**
-	 * Remove a layer, adjust the weight matrixes and back pointers.
-	 * @param layer The layer to remove.
-	 */
-	public void removeLayer(final Layer layer) {
-		Layer previous  = layer.getPrevious();
-		Layer next = layer.getNext();
-				
-		this.layers.remove(layer);
-		
-		if( next!=null )
-		{
-			next.setPrevious(previous);
-		}
-		
-		if( previous!=null )
-		{
-			previous.setNext(next);
-		}
-		
-		resync();
-	}
-	
 
 	/**
 	 * Calculate the error for this neural network. The error is calculated
@@ -168,12 +151,12 @@ public class BasicNetwork implements Serializable, Network,
 	public double calculateError(final NeuralDataSet data) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
-		for (NeuralDataPair pair : data) {
+		for (final NeuralDataPair pair : data) {
 			compute(pair.getInput());
 			errorCalculation.updateError(this.outputLayer.getFire(), pair
 					.getIdeal());
 		}
-		return (errorCalculation.calculateRMS());
+		return errorCalculation.calculateRMS();
 	}
 
 	/**
@@ -249,6 +232,14 @@ public class BasicNetwork implements Serializable, Network,
 	}
 
 	/**
+	 * Create a persistor for this object.
+	 * @return The newly created persistor.
+	 */
+	public Persistor createPersistor() {
+		return new BasicNetworkPersistor();
+	}
+
+	/**
 	 * Compare the two neural networks. For them to be equal they must be of the
 	 * same structure, and have the same matrix values.
 	 * 
@@ -259,7 +250,7 @@ public class BasicNetwork implements Serializable, Network,
 	public boolean equals(final BasicNetwork other) {
 		final Iterator<Layer> otherLayers = other.getLayers().iterator();
 
-		for (final Layer layer : this.getLayers()) {
+		for (final Layer layer : getLayers()) {
 			final Layer otherLayer = otherLayers.next();
 
 			if (layer.getNeuronCount() != otherLayer.getNeuronCount()) {
@@ -268,19 +259,16 @@ public class BasicNetwork implements Serializable, Network,
 
 			// make sure they either both have or do not have
 			// a weight matrix.
-			if ((layer.getMatrix() == null) 
-					&& (otherLayer.getMatrix() != null)) {
+			if (layer.getMatrix() == null && otherLayer.getMatrix() != null) {
 				return false;
 			}
 
-			if ((layer.getMatrix() != null) 
-					&& (otherLayer.getMatrix() == null)) {
+			if (layer.getMatrix() != null && otherLayer.getMatrix() == null) {
 				return false;
 			}
 
 			// if they both have a matrix, then compare the matrices
-			if ((layer.getMatrix() != null) 
-					&& (otherLayer.getMatrix() != null)) {
+			if (layer.getMatrix() != null && otherLayer.getMatrix() != null) {
 				if (!layer.getMatrix().equals(otherLayer.getMatrix())) {
 					return false;
 				}
@@ -288,6 +276,13 @@ public class BasicNetwork implements Serializable, Network,
 		}
 
 		return true;
+	}
+
+	/**
+	 * @return The description for this object.
+	 */
+	public String getDescription() {
+		return this.description;
 	}
 
 	/**
@@ -333,6 +328,13 @@ public class BasicNetwork implements Serializable, Network,
 	}
 
 	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
 	 * Get the output layer.
 	 * 
 	 * @return The output layer.
@@ -355,6 +357,38 @@ public class BasicNetwork implements Serializable, Network,
 	}
 
 	/**
+	 * Generate a hash code.
+	 * 
+	 * @return THe hash code.
+	 */
+	public int hashCode() {
+		return super.hashCode();
+	}
+
+	/**
+	 * Remove a layer, adjust the weight matrixes and back pointers.
+	 * 
+	 * @param layer
+	 *            The layer to remove.
+	 */
+	public void removeLayer(final Layer layer) {
+		final Layer previous = layer.getPrevious();
+		final Layer next = layer.getNext();
+
+		this.layers.remove(layer);
+
+		if (next != null) {
+			next.setPrevious(previous);
+		}
+
+		if (previous != null) {
+			previous.setNext(next);
+		}
+
+		resync();
+	}
+
+	/**
 	 * Reset the weight matrix and the thresholds.
 	 * 
 	 * @throws MatrixException
@@ -363,6 +397,36 @@ public class BasicNetwork implements Serializable, Network,
 		for (final Layer layer : this.layers) {
 			layer.reset();
 		}
+	}
+
+	/**
+	 * Rebuild the next/prev structure from the list.
+	 */
+	private void resync() {
+		if (this.layers.size() > 0) {
+			this.outputLayer = this.layers.get(this.layers.size() - 1);
+			this.inputLayer = this.layers.get(0);
+		} else {
+			this.outputLayer = null;
+			this.inputLayer = null;
+		}
+
+	}
+
+	/**
+	 * Set the description for this object.
+	 * @param theDescription The description.
+	 */
+	public void setDescription(final String theDescription) {
+		this.description = theDescription;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 	/**
@@ -375,7 +439,7 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public int winner(final NeuralData input) {
 
-		NeuralData output = compute(input);
+		final NeuralData output = compute(input);
 
 		int win = 0;
 
@@ -390,58 +454,5 @@ public class BasicNetwork implements Serializable, Network,
 
 		return win;
 	}
-	
-	/**
-	 * Generate a hash code.
-	 * @return THe hash code.
-	 */
-	public int hashCode() {
-		return super.hashCode();
-	}
 
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String theDescription) {
-		this.description = theDescription;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public Persistor createPersistor() {
-		return new BasicNetworkPersistor();
-	}
-	
-	/**
-	 * Rebuild the next/prev structure from the list.
-	 */
-	private void resync()
-	{
-		if(this.layers.size()>0)
-		{
-			this.outputLayer = this.layers.get(this.layers.size()-1);
-			this.inputLayer = this.layers.get(0);
-		}
-		else
-		{
-			this.outputLayer = null;
-			this.inputLayer = null;
-		}
-				
-	}
-	
-	
 }

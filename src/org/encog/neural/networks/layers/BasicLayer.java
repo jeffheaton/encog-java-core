@@ -41,6 +41,11 @@ import org.encog.neural.persist.persistors.BasicLayerPersistor;
  */
 public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -5682296868750703898L;
+
+	/**
 	 * Results from the last time that the outputs were calculated for this
 	 * layer.
 	 */
@@ -60,8 +65,15 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 * The previous layer in the neural network.
 	 */
 	private Layer previous;
-	
+
+	/**
+	 * The description for this object.
+	 */
 	private String description;
+
+	/**
+	 * The name for this object.
+	 */
 	private String name;
 
 	/**
@@ -84,6 +96,21 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	public NeuralData compute(final NeuralData pattern) {
 		return pattern;
+	}
+
+	/**
+	 * Create a persistor for this layer.
+	 * @return The new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new BasicLayerPersistor();
+	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return this.description;
 	}
 
 	/**
@@ -126,6 +153,13 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 			return 0;
 		}
 		return this.matrix.size();
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
 	}
 
 	/**
@@ -201,6 +235,14 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	}
 
 	/**
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
 	 * Set the last output value for the specified neuron.
 	 * 
 	 * @param index
@@ -234,6 +276,22 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	}
 
 	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Set the neuron count.
+	 * @param count How many neurons on this layer.
+	 */
+	public void setNeuronCount(final int count) {
+		this.setFire(new BasicNeuralData(count));
+	}
+
+	/**
 	 * Set the next layer.
 	 * 
 	 * @param next
@@ -253,42 +311,4 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		this.previous = previous;
 	}
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	public void setNeuronCount(int count)
-	{
-		this.setFire(new BasicNeuralData(count));
-	}
-
-	public Persistor createPersistor() {
-		return new BasicLayerPersistor();
-	}
-	
-	
 }

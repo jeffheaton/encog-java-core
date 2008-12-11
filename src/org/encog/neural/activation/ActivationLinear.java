@@ -41,8 +41,15 @@ public class ActivationLinear implements ActivationFunction {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
-	
+
+	/**
+	 * The description for this object.
+	 */
 	private String description;
+	
+	/**
+	 * The name of this object.
+	 */
 	private String name;
 
 	/**
@@ -57,6 +64,14 @@ public class ActivationLinear implements ActivationFunction {
 	}
 
 	/**
+	 * Create a persistor for this object.
+	 * @return The new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new ActivationLinearPersistor();
+	}
+
+	/**
 	 * Some training methods require the derivative.
 	 * 
 	 * @param d
@@ -65,41 +80,38 @@ public class ActivationLinear implements ActivationFunction {
 	 */
 	public double derivativeFunction(final double d) {
 		throw new NeuralNetworkError(
-				"Can't use the linear activation function " 
-				+ "where a derivative is required.");
+				"Can't use the linear activation function "
+						+ "where a derivative is required.");
 	}
 
 	/**
 	 * @return the description
 	 */
 	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
+		return this.description;
 	}
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param description
+	 *            the description to set
 	 */
-	public void setName(String name) {
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(final String name) {
 		this.name = name;
 	}
-	
-	public Persistor createPersistor() {
-		return new ActivationLinearPersistor();
-	}
-	
-	
+
 }

@@ -55,10 +55,10 @@ import org.encog.util.time.TimeUnit;
  * TemporalDataDescription objects added to this class, each Temporal point
  * object would contain five values.
  * 
- * Points are arranged by sequence number.  No two points can have the same 
- * sequence numbers.  Methods are provided to allow you to add points using the
- * Date class.  These dates are resolved to sequence number using the level
- * of granularity specified for this class.  No two points can occupy the same
+ * Points are arranged by sequence number. No two points can have the same
+ * sequence numbers. Methods are provided to allow you to add points using the
+ * Date class. These dates are resolved to sequence number using the level of
+ * granularity specified for this class. No two points can occupy the same
  * granularity increment.
  * 
  * @author jheaton
@@ -66,15 +66,25 @@ import org.encog.util.time.TimeUnit;
 public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 7846736117000051687L;
+
+	/**
+	 * Error message: adds are not supported.
+	 */
+	public static final String ADD_NOT_SUPPORTED = "Direct adds to the temporal dataset are not supported.  "
+			+ "Add TemporalPoint objects and call generate.";
+
+	/**
 	 * Descriptions of the data needed.
 	 */
-	private List<TemporalDataDescription> descriptions = 
-		new ArrayList<TemporalDataDescription>();
+	private final List<TemporalDataDescription> descriptions = new ArrayList<TemporalDataDescription>();
 
 	/**
 	 * The temporal points at which we have data.
 	 */
-	private List<TemporalPoint> points = new ArrayList<TemporalPoint>();
+	private final List<TemporalPoint> points = new ArrayList<TemporalPoint>();
 
 	/**
 	 * The size of the input window, this is the data being used to predict.
@@ -117,16 +127,9 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	private Date startingPoint;
 
 	/**
-	 * What is the granularity of the temporal points? Days, months, years,
-	 * etc?
+	 * What is the granularity of the temporal points? Days, months, years, etc?
 	 */
 	private TimeUnit sequenceGrandularity;
-
-	/**
-	 * Error message: adds are not supported.
-	 */
-	public static final String ADD_NOT_SUPPORTED = "Direct adds to the temporal dataset are not supported.  "
-			+ "Add TemporalPoint objects and call generate.";
 
 	/**
 	 * Construct a dataset.
@@ -148,46 +151,14 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	}
 
 	/**
-	 * Add a data description.
+	 * Adding directly is not supported. Rather, add temporal points and
+	 * generate the training data.
 	 * 
-	 * @param desc
-	 *            The data description to add.
+	 * @param data
+	 *            Not used.
 	 */
-	public void addDescription(final TemporalDataDescription desc) {
-		if (this.points.size() > 0) {
-			throw new TemporalError(
-					"Can't add anymore descriptions, there are "
-							+ "already temporal points defined.");
-		}
-
-		int index = this.descriptions.size();
-		desc.setIndex(index);
-
-		this.descriptions.add(desc);
-		calculateNeuronCounts();
-	}
-
-	/**
-	 * Clear the entire dataset.
-	 */
-	public void clear() {
-		descriptions.clear();
-		points.clear();
-		this.getData().clear();
-	}
-
-	/**
-	 * @return A list of the data descriptions.
-	 */
-	public List<TemporalDataDescription> getDescriptions() {
-		return this.descriptions;
-	}
-
-	/**
-	 * @return The temporal points.
-	 */
-	public List<TemporalPoint> getPoints() {
-		return this.points;
+	public void add(final NeuralData data) {
+		throw new TemporalError(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 
 	/**
@@ -216,162 +187,23 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	}
 
 	/**
-	 * Adding directly is not supported. Rather, add temporal points and
-	 * generate the training data.
+	 * Add a data description.
 	 * 
-	 * @param data
-	 *            Not used.
+	 * @param desc
+	 *            The data description to add.
 	 */
-	public void add(final NeuralData data) {
-		throw new TemporalError(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
-	}
-
-	/**
-	 * @return the inputWindowSize
-	 */
-	public int getInputWindowSize() {
-		return inputWindowSize;
-	}
-
-	/**
-	 * @param inputWindowSize
-	 *            the inputWindowSize to set
-	 */
-	public void setInputWindowSize(final int inputWindowSize) {
-		this.inputWindowSize = inputWindowSize;
-	}
-
-	/**
-	 * @return the predictWindowSize
-	 */
-	public int getPredictWindowSize() {
-		return predictWindowSize;
-	}
-
-	/**
-	 * @param predictWindowSize
-	 *            the predictWindowSize to set
-	 */
-	public void setPredictWindowSize(final int predictWindowSize) {
-		this.predictWindowSize = predictWindowSize;
-	}
-
-	/**
-	 * @return the lowSequence
-	 */
-	public int getLowSequence() {
-		return lowSequence;
-	}
-
-	/**
-	 * @param lowSequence
-	 *            the lowSequence to set
-	 */
-	public void setLowSequence(final int lowSequence) {
-		this.lowSequence = lowSequence;
-	}
-
-	/**
-	 * @return the highSequence
-	 */
-	public int getHighSequence() {
-		return highSequence;
-	}
-
-	/**
-	 * @param highSequence
-	 *            the highSequence to set
-	 */
-	public void setHighSequence(final int highSequence) {
-		this.highSequence = highSequence;
-	}
-
-	/**
-	 * @return the desiredSetSize
-	 */
-	public int getDesiredSetSize() {
-		return desiredSetSize;
-	}
-
-	/**
-	 * @param desiredSetSize
-	 *            the desiredSetSize to set
-	 */
-	public void setDesiredSetSize(final int desiredSetSize) {
-		this.desiredSetSize = desiredSetSize;
-	}
-
-	/**
-	 * Create a temporal data point using a sequence number. They can also be
-	 * created using time. No two points should have the same sequence number.
-	 * 
-	 * @param sequence
-	 *            The sequence number.
-	 * @return A new TemporalPoint object.
-	 */
-	public TemporalPoint createPoint(final int sequence) {
-		TemporalPoint point = new TemporalPoint(this.descriptions.size());
-		point.setSequence(sequence);
-		this.points.add(point);
-		return point;
-	}
-
-	/**
-	 * Create a sequence number from a time. The first date will be zero, and
-	 * subsequent dates will be increased according to the grandularity
-	 * specified.
-	 * 
-	 * @param when
-	 *            The date to generate the sequence number for.
-	 * @return A sequence number.
-	 */
-	public int getSequenceFromDate(final Date when) {
-		int sequence;
-
-		if (startingPoint != null) {
-			TimeSpan span = new TimeSpan(this.startingPoint, when);
-			sequence = (int) span.getSpan(this.sequenceGrandularity);
-		} else {
-			this.startingPoint = when;
-			sequence = 0;
+	public void addDescription(final TemporalDataDescription desc) {
+		if (this.points.size() > 0) {
+			throw new TemporalError(
+					"Can't add anymore descriptions, there are "
+							+ "already temporal points defined.");
 		}
 
-		return sequence;
-	}
+		final int index = this.descriptions.size();
+		desc.setIndex(index);
 
-	/**
-	 * Create a temporal point from a time. Using the grandularity each date is
-	 * given a unique sequence number. No two dates that fall in the same
-	 * grandularity should be specified.
-	 * 
-	 * @param when
-	 *            The time that this point should be created at.
-	 * @return The point TemporalPoint created.
-	 */
-	public TemporalPoint createPoint(final Date when) {
-		int sequence = getSequenceFromDate(when);
-		TemporalPoint point = new TemporalPoint(this.descriptions.size());
-		point.setSequence(sequence);
-		this.points.add(point);
-		return point;
-	}
-
-	/**
-	 * Calculate how many points are in the high and low range. These are the
-	 * points that the training set will be generated on.
-	 * 
-	 * @return The number of points.
-	 */
-	public int calculatePointsInRange() {
-		int result = 0;
-
-		for (TemporalPoint point : points) {
-			if (isPointInRange(point)) {
-				result++;
-			}
-		}
-
-		return result;
+		this.descriptions.add(desc);
+		calculateNeuronCounts();
 	}
 
 	/**
@@ -394,7 +226,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		this.inputNeuronCount = 0;
 		this.outputNeuronCount = 0;
 
-		for (TemporalDataDescription desc : this.descriptions) {
+		for (final TemporalDataDescription desc : this.descriptions) {
 			if (desc.isInput()) {
 				this.inputNeuronCount += this.inputWindowSize;
 			}
@@ -405,103 +237,78 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	}
 
 	/**
-	 * Is the specified point within the range. If a point is in the selection
-	 * range, then the point will be used to generate the training sets.
+	 * Calculate how many points are in the high and low range. These are the
+	 * points that the training set will be generated on.
 	 * 
-	 * @param point
-	 *            The point to consider.
-	 * @return True if the point is within the range.
+	 * @return The number of points.
 	 */
-	public boolean isPointInRange(final TemporalPoint point) {
-		return ((point.getSequence() >= this.getLowSequence()) && (point
-				.getSequence() <= this.getHighSequence()));
+	public int calculatePointsInRange() {
+		int result = 0;
 
-	}
-
-	/**
-	 * Generate input neural data for the specified index.
-	 * 
-	 * @param index
-	 *            The index to generate neural data for.
-	 * @return The input neural data generated.
-	 */
-	public BasicNeuralData generateInputNeuralData(final int index) {
-		if (index + this.inputWindowSize > this.points.size()) {
-			throw new TemporalError("Can't generate input temporal data "
-					+ "beyond the end of provided data.");
-		}
-
-		BasicNeuralData result = new BasicNeuralData(this.inputNeuronCount);
-		int resultIndex = 0;
-
-		for (int i = 0; i < this.inputWindowSize; i++) {
-			int descriptionIndex = 0;
-
-			for (TemporalDataDescription desc : this.descriptions) {
-				if (desc.isInput()) {
-					result.setData(resultIndex++, this.formatData(desc, index
-							+ i));
-				}
-				descriptionIndex++;
+		for (final TemporalPoint point : this.points) {
+			if (isPointInRange(point)) {
+				result++;
 			}
 		}
+
 		return result;
 	}
 
 	/**
-	 * Get data between two points in raw form.
+	 * Calculate the index to start at.
 	 * 
-	 * @param desc
-	 *            The data description.
-	 * @param index
-	 *            The index to get data from.
-	 * @return The requested data.
+	 * @return the starting index.
 	 */
-	private double getDataRAW(final TemporalDataDescription desc,
-			final int index) {
-		TemporalPoint point = this.points.get(index);
-		return point.getData(desc.getIndex());
+	public int calculateStartIndex() {
+		for (int i = 0; i < this.points.size(); i++) {
+			final TemporalPoint point = this.points.get(i);
+			if (isPointInRange(point)) {
+				return i;
+			}
+		}
+
+		return -1;
 	}
 
 	/**
-	 * Get data between two points in delta form.
-	 * 
-	 * @param desc
-	 *            The data description.
-	 * @param index
-	 *            The index to get data from.
-	 * @return The requested data.
+	 * Clear the entire dataset.
 	 */
-	private double getDataDeltaChange(final TemporalDataDescription desc,
-			final int index) {
-		if (index == 0) {
-			return 0.0;
-		}
-		TemporalPoint point = this.points.get(index);
-		TemporalPoint previousPoint = this.points.get(index - 1);
-		return point.getData(desc.getIndex())
-				- previousPoint.getData(desc.getIndex());
+	public void clear() {
+		this.descriptions.clear();
+		this.points.clear();
+		getData().clear();
 	}
 
 	/**
-	 * Get data between two points in percent form.
+	 * Create a temporal point from a time. Using the grandularity each date is
+	 * given a unique sequence number. No two dates that fall in the same
+	 * grandularity should be specified.
 	 * 
-	 * @param desc
-	 *            The data description.
-	 * @param index
-	 *            The index to get data from.
-	 * @return The requested data.
+	 * @param when
+	 *            The time that this point should be created at.
+	 * @return The point TemporalPoint created.
 	 */
-	private double getDataPercentChange(final TemporalDataDescription desc,
-			final int index) {
-		if (index == 0) {
-			return 0.0;
-		}
-		TemporalPoint point = this.points.get(index);
-		TemporalPoint previousPoint = this.points.get(index - 1);
-		double currentValue = point.getData(desc.getIndex());
-		double previousValue = previousPoint.getData(desc.getIndex());
-		return (currentValue - previousValue) / previousValue;
+	public TemporalPoint createPoint(final Date when) {
+		final int sequence = getSequenceFromDate(when);
+		final TemporalPoint point = new TemporalPoint(this.descriptions.size());
+		point.setSequence(sequence);
+		this.points.add(point);
+		return point;
+	}
+
+	/**
+	 * Create a temporal data point using a sequence number. They can also be
+	 * created using time. No two points should have the same sequence number.
+	 * 
+	 * @param sequence
+	 *            The sequence number.
+	 * @return A new TemporalPoint object.
+	 */
+	public TemporalPoint createPoint(final int sequence) {
+		final TemporalPoint point = new TemporalPoint(this.descriptions.size());
+		point.setSequence(sequence);
+		this.points.add(point);
+		return point;
 	}
 
 	/**
@@ -539,6 +346,56 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	}
 
 	/**
+	 * Generate the training sets.
+	 */
+	public void generate() {
+		sortPoints();
+		final int start = calculateStartIndex() + 1;
+		final int setSize = calculateActualSetSize();
+		final int range = start + setSize - this.predictWindowSize
+				- this.inputWindowSize;
+
+		for (int i = start; i < range; i++) {
+			final BasicNeuralData input = generateInputNeuralData(i);
+			final BasicNeuralData ideal = generateOutputNeuralData(i
+					+ this.inputWindowSize);
+			final BasicNeuralDataPair pair = new BasicNeuralDataPair(input,
+					ideal);
+			super.add(pair);
+		}
+	}
+
+	/**
+	 * Generate input neural data for the specified index.
+	 * 
+	 * @param index
+	 *            The index to generate neural data for.
+	 * @return The input neural data generated.
+	 */
+	public BasicNeuralData generateInputNeuralData(final int index) {
+		if (index + this.inputWindowSize > this.points.size()) {
+			throw new TemporalError("Can't generate input temporal data "
+					+ "beyond the end of provided data.");
+		}
+
+		final BasicNeuralData result = new BasicNeuralData(
+				this.inputNeuronCount);
+		int resultIndex = 0;
+
+		for (int i = 0; i < this.inputWindowSize; i++) {
+			int descriptionIndex = 0;
+
+			for (final TemporalDataDescription desc : this.descriptions) {
+				if (desc.isInput()) {
+					result.setData(resultIndex++, formatData(desc, index + i));
+				}
+				descriptionIndex++;
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * Generate neural ideal data for the specified index.
 	 * 
 	 * @param index
@@ -551,16 +408,16 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 					+ "beyond the end of provided data.");
 		}
 
-		BasicNeuralData result = new BasicNeuralData(this.outputNeuronCount);
+		final BasicNeuralData result = new BasicNeuralData(
+				this.outputNeuronCount);
 		int resultIndex = 0;
 
 		for (int i = 0; i < this.predictWindowSize; i++) {
 			int descriptionIndex = 0;
 
-			for (TemporalDataDescription desc : this.descriptions) {
+			for (final TemporalDataDescription desc : this.descriptions) {
 				if (desc.isPredict()) {
-					result.setData(resultIndex++, this.formatData(desc, index
-							+ i));
+					result.setData(resultIndex++, formatData(desc, index + i));
 				}
 				descriptionIndex++;
 			}
@@ -570,73 +427,213 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	}
 
 	/**
+	 * Get data between two points in delta form.
+	 * 
+	 * @param desc
+	 *            The data description.
+	 * @param index
+	 *            The index to get data from.
+	 * @return The requested data.
+	 */
+	private double getDataDeltaChange(final TemporalDataDescription desc,
+			final int index) {
+		if (index == 0) {
+			return 0.0;
+		}
+		final TemporalPoint point = this.points.get(index);
+		final TemporalPoint previousPoint = this.points.get(index - 1);
+		return point.getData(desc.getIndex())
+				- previousPoint.getData(desc.getIndex());
+	}
+
+	/**
+	 * Get data between two points in percent form.
+	 * 
+	 * @param desc
+	 *            The data description.
+	 * @param index
+	 *            The index to get data from.
+	 * @return The requested data.
+	 */
+	private double getDataPercentChange(final TemporalDataDescription desc,
+			final int index) {
+		if (index == 0) {
+			return 0.0;
+		}
+		final TemporalPoint point = this.points.get(index);
+		final TemporalPoint previousPoint = this.points.get(index - 1);
+		final double currentValue = point.getData(desc.getIndex());
+		final double previousValue = previousPoint.getData(desc.getIndex());
+		return (currentValue - previousValue) / previousValue;
+	}
+
+	/**
+	 * Get data between two points in raw form.
+	 * 
+	 * @param desc
+	 *            The data description.
+	 * @param index
+	 *            The index to get data from.
+	 * @return The requested data.
+	 */
+	private double getDataRAW(final TemporalDataDescription desc,
+			final int index) {
+		final TemporalPoint point = this.points.get(index);
+		return point.getData(desc.getIndex());
+	}
+
+	/**
+	 * @return A list of the data descriptions.
+	 */
+	public List<TemporalDataDescription> getDescriptions() {
+		return this.descriptions;
+	}
+
+	/**
+	 * @return the desiredSetSize
+	 */
+	public int getDesiredSetSize() {
+		return this.desiredSetSize;
+	}
+
+	/**
+	 * @return the highSequence
+	 */
+	public int getHighSequence() {
+		return this.highSequence;
+	}
+
+	/**
 	 * @return the inputNeuronCount
 	 */
 	public int getInputNeuronCount() {
-		return inputNeuronCount;
+		return this.inputNeuronCount;
+	}
+
+	/**
+	 * @return the inputWindowSize
+	 */
+	public int getInputWindowSize() {
+		return this.inputWindowSize;
+	}
+
+	/**
+	 * @return the lowSequence
+	 */
+	public int getLowSequence() {
+		return this.lowSequence;
 	}
 
 	/**
 	 * @return the outputNeuronCount
 	 */
 	public int getOutputNeuronCount() {
-		return outputNeuronCount;
+		return this.outputNeuronCount;
 	}
 
 	/**
-	 * Calculate the index to start at.
+	 * @return The temporal points.
+	 */
+	public List<TemporalPoint> getPoints() {
+		return this.points;
+	}
+
+	/**
+	 * @return the predictWindowSize
+	 */
+	public int getPredictWindowSize() {
+		return this.predictWindowSize;
+	}
+
+	/**
+	 * Create a sequence number from a time. The first date will be zero, and
+	 * subsequent dates will be increased according to the grandularity
+	 * specified.
 	 * 
-	 * @return the starting index.
+	 * @param when
+	 *            The date to generate the sequence number for.
+	 * @return A sequence number.
 	 */
-	public int calculateStartIndex() {
-		for (int i = 0; i < this.points.size(); i++) {
-			TemporalPoint point = this.points.get(i);
-			if (this.isPointInRange(point)) {
-				return i;
-			}
+	public int getSequenceFromDate(final Date when) {
+		int sequence;
+
+		if (this.startingPoint != null) {
+			final TimeSpan span = new TimeSpan(this.startingPoint, when);
+			sequence = (int) span.getSpan(this.sequenceGrandularity);
+		} else {
+			this.startingPoint = when;
+			sequence = 0;
 		}
 
-		return -1;
-	}
-
-	/**
-	 * Sort the points.
-	 */
-	public void sortPoints() {
-		Collections.sort(this.points);
-	}
-
-	/**
-	 * Generate the training sets.
-	 */
-	public void generate() {
-		sortPoints();
-		int start = calculateStartIndex() + 1;
-		int setSize = calculateActualSetSize();
-		int range = start
-				+ (setSize - this.predictWindowSize - this.inputWindowSize);
-
-		for (int i = start; i < range; i++) {
-			BasicNeuralData input = generateInputNeuralData(i);
-			BasicNeuralData ideal = generateOutputNeuralData(i
-					+ this.inputWindowSize);
-			BasicNeuralDataPair pair = new BasicNeuralDataPair(input, ideal);
-			super.add(pair);
-		}
-	}
-
-	/**
-	 * @return the startingPoint
-	 */
-	public Date getStartingPoint() {
-		return startingPoint;
+		return sequence;
 	}
 
 	/**
 	 * @return the sequenceGrandularity
 	 */
 	public TimeUnit getSequenceGrandularity() {
-		return sequenceGrandularity;
+		return this.sequenceGrandularity;
+	}
+
+	/**
+	 * @return the startingPoint
+	 */
+	public Date getStartingPoint() {
+		return this.startingPoint;
+	}
+
+	/**
+	 * Is the specified point within the range. If a point is in the selection
+	 * range, then the point will be used to generate the training sets.
+	 * 
+	 * @param point
+	 *            The point to consider.
+	 * @return True if the point is within the range.
+	 */
+	public boolean isPointInRange(final TemporalPoint point) {
+		return point.getSequence() >= getLowSequence()
+				&& point.getSequence() <= getHighSequence();
+
+	}
+
+	/**
+	 * @param desiredSetSize
+	 *            the desiredSetSize to set
+	 */
+	public void setDesiredSetSize(final int desiredSetSize) {
+		this.desiredSetSize = desiredSetSize;
+	}
+
+	/**
+	 * @param highSequence
+	 *            the highSequence to set
+	 */
+	public void setHighSequence(final int highSequence) {
+		this.highSequence = highSequence;
+	}
+
+	/**
+	 * @param inputWindowSize
+	 *            the inputWindowSize to set
+	 */
+	public void setInputWindowSize(final int inputWindowSize) {
+		this.inputWindowSize = inputWindowSize;
+	}
+
+	/**
+	 * @param lowSequence
+	 *            the lowSequence to set
+	 */
+	public void setLowSequence(final int lowSequence) {
+		this.lowSequence = lowSequence;
+	}
+
+	/**
+	 * @param predictWindowSize
+	 *            the predictWindowSize to set
+	 */
+	public void setPredictWindowSize(final int predictWindowSize) {
+		this.predictWindowSize = predictWindowSize;
 	}
 
 	/**
@@ -653,6 +650,13 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	public void setStartingPoint(final Date startingPoint) {
 		this.startingPoint = startingPoint;
+	}
+
+	/**
+	 * Sort the points.
+	 */
+	public void sortPoints() {
+		Collections.sort(this.points);
 	}
 
 }

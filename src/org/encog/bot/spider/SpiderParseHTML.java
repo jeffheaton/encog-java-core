@@ -211,8 +211,7 @@ public class SpiderParseHTML extends ParseHTML {
 		int i = 0;
 		do {
 			i = read();
-		}
-		while (i != -1);
-		
+		} while (i != -1);
+
 	}
 }

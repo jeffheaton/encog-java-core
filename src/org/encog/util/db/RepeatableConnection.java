@@ -32,6 +32,13 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * RepeatableConnection: Establish a database connection that can be reconnected
+ * if it is broken.
+ * 
+ * @author jheaton
+ * 
+ */
 public class RepeatableConnection {
 
 	/**
@@ -68,8 +75,21 @@ public class RepeatableConnection {
 	/**
 	 * All of the RepeatableStatement objects.
 	 */
-	private final List<RepeatableStatement> statements = new ArrayList<RepeatableStatement>();
+	private final List<RepeatableStatement> statements = 
+		new ArrayList<RepeatableStatement>();
 
+	/**
+	 * Construct a repeatable statement.
+	 * 
+	 * @param driver
+	 *            The driver to use.
+	 * @param url
+	 *            The URL to connect to.
+	 * @param uid
+	 *            The user id to use.
+	 * @param pwd
+	 *            The password to use.
+	 */
 	public RepeatableConnection(final String driver, final String url,
 			final String uid, final String pwd) {
 		this.driver = driver;
@@ -78,6 +98,9 @@ public class RepeatableConnection {
 		this.pwd = pwd;
 	}
 
+	/**
+	 * Close the connection.
+	 */
 	public void close() {
 		for (final RepeatableStatement statement : this.statements) {
 			statement.close();
@@ -93,9 +116,16 @@ public class RepeatableConnection {
 
 	}
 
+	/**
+	 * Create a statement.
+	 * 
+	 * @param sql
+	 *            The SQL.
+	 * @return The new statement.
+	 */
 	public RepeatableStatement createStatement(final String sql) {
-		RepeatableStatement result;
-		this.statements.add(result = new RepeatableStatement(sql));
+		final RepeatableStatement result = new RepeatableStatement(sql);
+		this.statements.add(result);
 		return result;
 	}
 
@@ -144,16 +174,6 @@ public class RepeatableConnection {
 	/**
 	 * Open a database connection.
 	 * 
-	 * @throws InstantiationException
-	 *             Thrown if the database driver could not be opened.
-	 * @throws IllegalAccessException
-	 *             Thrown if the database driver can not be acccessed.
-	 * @throws ClassNotFoundException
-	 *             Thrown if the wrong type of class is returned.
-	 * @throws WorkloadException
-	 *             Thrown if the database cannot be opened.
-	 * @throws SQLException
-	 *             Thrown if a SQL error occurs.
 	 */
 	public void open() {
 		try {
@@ -176,9 +196,6 @@ public class RepeatableConnection {
 
 	/**
 	 * Try to open the database connection.
-	 * 
-	 * @throws WorkloadException
-	 *             Thrown if the open fails.
 	 */
 	void tryOpen() {
 		Exception ex = null;

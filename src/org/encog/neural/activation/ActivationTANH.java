@@ -39,8 +39,15 @@ public class ActivationTANH implements ActivationFunction {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
-	
+
+	/**
+	 * The description of this object.
+	 */
 	private String description;
+	
+	/**
+	 * The name of this object.
+	 */
 	private String name;
 
 	/**
@@ -54,6 +61,14 @@ public class ActivationTANH implements ActivationFunction {
 		final double result = (Math.exp(d * 2.0) - 1.0)
 				/ (Math.exp(d * 2.0) + 1.0);
 		return result;
+	}
+
+	/**
+	 * Create a persistor for this object.
+	 * @return The new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new ActivationTANHPersistor();
 	}
 
 	/**
@@ -71,32 +86,30 @@ public class ActivationTANH implements ActivationFunction {
 	 * @return the description
 	 */
 	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
+		return this.description;
 	}
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param description
+	 *            the description to set
 	 */
-	public void setName(String name) {
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(final String name) {
 		this.name = name;
 	}
-	
-	public Persistor createPersistor() {
-		return new ActivationTANHPersistor();
-	}
-	
+
 }

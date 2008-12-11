@@ -37,8 +37,15 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 5622349801036468572L;
-	
+
+	/**
+	 * The description of this object.
+	 */
 	private String description;
+	
+	/**
+	 * The name of this object.
+	 */
 	private String name;
 
 	/**
@@ -50,6 +57,14 @@ public class ActivationSigmoid implements ActivationFunction {
 	 */
 	public double activationFunction(final double d) {
 		return 1.0 / (1 + Math.exp(-1.0 * d));
+	}
+
+	/**
+	 * Create a persistor for this object.
+	 * @return The new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new ActivationSigmoidPersistor();
 	}
 
 	/**
@@ -67,32 +82,30 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * @return the description
 	 */
 	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * @param description the description to set
-	 */
-	public void setDescription(String description) {
-		this.description = description;
+		return this.description;
 	}
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param description
+	 *            the description to set
 	 */
-	public void setName(String name) {
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(final String name) {
 		this.name = name;
 	}
-	
-	public Persistor createPersistor() {
-		return new ActivationSigmoidPersistor();
-	}
-	
+
 }

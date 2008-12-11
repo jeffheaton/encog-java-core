@@ -449,10 +449,16 @@ public class TrainSelfOrganizingMap implements Train {
 		matrix.set(row, this.inputNeuronCount, 0);
 	}
 
+	/**
+	 * @return The error from the last iteration.
+	 */
 	public double getError() {
 		return this.bestError;
 	}
 
+	/**
+	 * @return The trained network.
+	 */
 	public Network getNetwork() {
 		return this.network;
 	}

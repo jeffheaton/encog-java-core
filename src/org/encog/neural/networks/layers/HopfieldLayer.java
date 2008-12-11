@@ -16,6 +16,11 @@ import org.encog.neural.persist.persistors.HopfieldLayerPersistor;
 public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
 	/**
+	 * This serial id.
+	 */
+	private static final long serialVersionUID = -668012704280836167L;
+
+	/**
 	 * Construct a hopfield layer of the specified size.
 	 * 
 	 * @param size
@@ -62,20 +67,29 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 	}
 
 	/**
+	 * Create a persistor for this layer.
+	 * @return A persistor.
+	 */
+	public Persistor createPersistor() {
+		return new HopfieldLayerPersistor();
+	}
+
+	/**
 	 * @return Get the fire data.
 	 */
 	@Override
 	public BiPolarNeuralData getFire() {
 		return (BiPolarNeuralData) super.getFire();
 	}
-	
-	public void setNeuronCount(int count)
-	{
+
+	/**
+	 * Set the neuron count for this layer.
+	 * 
+	 * @param count
+	 *            The neuron count.
+	 */
+	public void setNeuronCount(final int count) {
 		this.setFire(new BiPolarNeuralData(count));
 		setMatrix(new Matrix(count, count));
-	}
-	
-	public Persistor createPersistor() {
-		return new HopfieldLayerPersistor();
 	}
 }

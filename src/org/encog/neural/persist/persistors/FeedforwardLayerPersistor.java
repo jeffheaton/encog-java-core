@@ -41,6 +41,7 @@ import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * Persist a feedforward layer.
+ * 
  * @author jheaton
  */
 public class FeedforwardLayerPersistor implements Persistor {
@@ -93,13 +94,17 @@ public class FeedforwardLayerPersistor implements Persistor {
 		try {
 			final FeedforwardLayer layer = (FeedforwardLayer) object;
 
-			AttributesImpl atts = EncogPersistedCollection.createAttributes(layer);
-			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""+layer.getNeuronCount());
+			AttributesImpl atts = EncogPersistedCollection
+					.createAttributes(layer);
+			EncogPersistedCollection.addAttribute(atts, "neuronCount", ""
+					+ layer.getNeuronCount());
 			hd.startElement("", "", layer.getClass().getSimpleName(), atts);
 
-			atts =  new AttributesImpl();
-			EncogPersistedCollection.addAttribute(atts, "native", layer.getActivationFunction().getClass().getName());
-			EncogPersistedCollection.addAttribute(atts, "name", layer.getActivationFunction().getClass().getSimpleName());
+			atts = new AttributesImpl();
+			EncogPersistedCollection.addAttribute(atts, "native", layer
+					.getActivationFunction().getClass().getName());
+			EncogPersistedCollection.addAttribute(atts, "name", layer
+					.getActivationFunction().getClass().getSimpleName());
 			hd.startElement("", "", "activation", atts);
 			hd.endElement("", "", "activation");
 

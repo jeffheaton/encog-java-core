@@ -197,7 +197,8 @@ public class TimeSpan {
 		final Calendar toCalendar = Calendar.getInstance();
 		fromCalendar.setTime(this.from);
 		toCalendar.setTime(this.to);
-		return (toCalendar.getTimeInMillis() - fromCalendar.getTimeInMillis()) / 1000;
+		return (toCalendar.getTimeInMillis() 
+				- fromCalendar.getTimeInMillis()) / 1000;
 
 	}
 

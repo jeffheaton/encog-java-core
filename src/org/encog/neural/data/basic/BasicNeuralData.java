@@ -37,6 +37,11 @@ import org.encog.neural.data.NeuralData;
 public class BasicNeuralData implements NeuralData, Serializable {
 	
 	/**
+	 * The serial id. 
+	 */
+	private static final long serialVersionUID = -3644304891793584603L;
+	
+	/**
 	 * The data held by this object.
 	 */
 	private double[] data;

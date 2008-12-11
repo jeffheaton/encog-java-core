@@ -31,17 +31,53 @@ package org.encog.util.time;
  *
  */
 public enum TimeUnit {
+	/**
+	 * Seconds.
+	 */
 	SECONDS,
+	/**
+	 * Minutes.
+	 */
 	MINUTES,
+	/**
+	 * Hours.
+	 */
 	HOURS,
+	/**
+	 * Days.
+	 */
 	DAYS,
+	/**
+	 * Weeks.
+	 */
 	WEEKS,
+	/**
+	 * Fortnights.
+	 */
 	FORTNIGHTS,
+	/**
+	 * Months.
+	 */
 	MONTHS,
+	/**
+	 * Years.
+	 */
 	YEARS,
+	/**
+	 * Decades.
+	 */
 	DECADES,
+	/**
+	 * Scores.
+	 */
 	SCORES,
+	/**
+	 * Centuries.
+	 */
 	CENTURIES,
+	/**
+	 * Millennia.
+	 */
 	MILLENNIA
 	
 }
