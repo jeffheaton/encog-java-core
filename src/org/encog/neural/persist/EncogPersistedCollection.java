@@ -409,7 +409,22 @@ public class EncogPersistedCollection {
 
 	}
 
-	
+	public void loadResource(String resourceName)
+	{
+		try
+		{
+			ClassLoader loader = this.getClass().getClassLoader();
+			InputStream is = loader.getResourceAsStream (resourceName);
+			if( is==null )
+				throw new EncogError("Can't read resource: " + resourceName );
+			load(is);
+			is.close();
+		}
+		catch(IOException e)
+		{
+			throw new EncogError(e);
+		}
+	}
 	
 
 }
