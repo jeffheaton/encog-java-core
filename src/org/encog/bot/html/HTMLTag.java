@@ -34,30 +34,26 @@ import java.util.Set;
  * attributes, just as an actual HTML tag does.
  */
 public class HTMLTag {
-	
-	/**
-	 * The attributes.
+	public enum Type {
+		BEGIN, END, BOTH
+	};
+
+	/*
+	 * The attributes
 	 */
-	private final Map<String, String> attributes = 
-		new HashMap<String, String>();
+	private Map<String, String> attributes = new HashMap<String, String>();
 
 	/**
 	 * The tag name.
 	 */
 	private String name = "";
 
-	/**
-	 * Is this both a beginning and ending tag.
-	 */
-	private boolean ending;
+	private Type type;
 
-	/**
-	 * Clear the HTML tag.
-	 */
 	public void clear() {
 		this.attributes.clear();
 		this.name = "";
-		this.ending = false;
+		this.type = Type.BEGIN;
 	}
 
 	/**
@@ -67,23 +63,15 @@ public class HTMLTag {
 	 *            The name of an attribute.
 	 * @return The value of the specified attribute.
 	 */
-	public String getAttributeValue(final String name) {
+	public String getAttributeValue(String name) {
 		return this.attributes.get(name.toLowerCase());
 	}
 
 	/**
 	 * Get the tag name.
-	 * @return The tag name.
 	 */
 	public String getName() {
 		return this.name;
-	}
-
-	/**
-	 * @return the ending
-	 */
-	public boolean isEnding() {
-		return this.ending;
 	}
 
 	/**
@@ -94,40 +82,36 @@ public class HTMLTag {
 	 * @param value
 	 *            The value of the attribute.
 	 */
-	public void setAttribute(final String name, final String value) {
+	public void setAttribute(String name, String value) {
 		this.attributes.put(name.toLowerCase(), value);
 	}
 
 	/**
-	 * @param ending
-	 *            The ending to set.
+	 * Set the tag name.
 	 */
-	public void setEnding(final boolean ending) {
-		this.ending = ending;
-	}
-
-	/**
-	 *  Set the tag name.
-	 * @param s The name.
-	 */
-	public void setName(final String s) {
+	public void setName(String s) {
 		this.name = s;
 	}
 
 	/**
-	 * Convert this tag back into string form, with the beginning < and 
-	 * ending >.
+	 * Convert this tag back into string form, with the beginning < and ending >.
 	 * 
+	 * @param id
+	 *            A zero based index that specifies the attribute to retrieve.
 	 * @return The Attribute object that was found.
 	 */
 	@Override
 	public String toString() {
-		final StringBuilder buffer = new StringBuilder("<");
+		StringBuilder buffer = new StringBuilder("<");
+
+		if (type == Type.END)
+			buffer.append("/");
+
 		buffer.append(this.name);
 
-		final Set<String> set = this.attributes.keySet();
-		for (final String key : set) {
-			final String value = this.attributes.get(key);
+		Set<String> set = this.attributes.keySet();
+		for (String key : set) {
+			String value = this.attributes.get(key);
 			buffer.append(' ');
 
 			if (value == null) {
@@ -143,10 +127,23 @@ public class HTMLTag {
 
 		}
 
-		if (this.ending) {
+		if (this.type == Type.BOTH) {
 			buffer.append('/');
 		}
 		buffer.append(">");
 		return buffer.toString();
 	}
+
+	public Type getType() {
+		return type;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+
+	public Map<String, String> getAttributes() {
+		return attributes;
+	}
+
 }

@@ -29,409 +29,462 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * ParseHTML: This is the class that actually parses the HTML and outputs
- * HTMLTag objects and raw text.
- */
-public class ParseHTML {
+public class ParseHTML
+{
 
-	/**
-	 * Special char.
-	 */
-	public static final char BULL = 149;
+  /*
+   * A mapping of certain HTML encoded values(i.e. &nbsp;)
+   * to their actual character values.
+   */
+  private static Map<String, Character> charMap;
 
-	/**
-	 * Special char.
-	 */
-	public static final char TRADE = 129;
+  /**
+   * The stream that we are parsing from.
+   */
+  private PeekableInputStream source;
 
-	/**
-	 * Carriage return.
-	 */
-	public static final char CR = '\r';
+  /**
+   * The current HTML tag. Access this property if the read
+   * function returns 0.
+   */
+  private HTMLTag tag = new HTMLTag();
 
-	/**
-	 * Linefeed.
-	 */
-	public static final char LF = '\n';
+  private String lockedEndTag;
 
-	/**
-	 * The maximum name that will be parsed.
-	 */
-	public static final int MAX_NAME_LENGTH = 1000;
+  /**
+   * The constructor should be passed an InputStream that we
+   * will parse from.
+   * 
+   * @param is
+   *          An InputStream to parse from.
+   */
+  public ParseHTML(InputStream is)
+  {
+    this.source = new PeekableInputStream(is);
 
-	/**
-	 * A mapping of certain HTML encoded values(i.e. &nbsp;) to their actual
-	 * character values.
-	 */
-	private static Map<String, Character> charMap;
+    if (charMap == null)
+    {
+      charMap = new HashMap<String, Character>();
+      charMap.put("nbsp", ' ');
+      charMap.put("lt", '<');
+      charMap.put("gt", '>');
+      charMap.put("amp", '&');
+      charMap.put("quot", '\"');
+      charMap.put("bull", (char) 149);
+      charMap.put("trade", (char) 129);
+    }
+  }
 
-	/**
-	 * The stream that we are parsing from.
-	 */
-	private final PeekableInputStream source;
+  /**
+   * Return the last tag found, this is normally called just
+   * after the read function returns a zero.
+   * 
+   * @return The last HTML tag found.
+   */
+  public HTMLTag getTag()
+  {
+    return this.tag;
+  }
 
-	/**
-	 * The current HTML tag. Access this property if the read function returns
-	 * 0.
-	 */
-	private final HTMLTag tag = new HTMLTag();
+  /**
+   * Read a single character from the HTML source, if this
+   * function returns zero(0) then you should call getTag to
+   * see what tag was found. Otherwise the value returned is
+   * simply the next character found.
+   * 
+   * @return The character read, or zero if there is an HTML
+   *         tag. If zero is returned, then call getTag to
+   *         get the next tag.
+   * 
+   * @throws IOException
+   *           If an error occurs while reading.
+   */
+  public int read() throws IOException
+  {
+    // handle locked end tag
+    if (this.lockedEndTag != null)
+    {
+      if (peekEndTag(this.lockedEndTag))
+      {
+        this.lockedEndTag = null;
+      } else
+      {
+        return this.source.read();
+      }
+    }
 
-	/**
-	 * The end-tag that we are locked to. Useful for Javascript.
-	 */
-	private String lockedEndTag;
+    // look for next tag
+    if (this.source.peek() == '<')
+    {
+      parseTag();
+      if (this.tag.getType()==HTMLTag.Type.BEGIN
+          && (this.tag.getName().equalsIgnoreCase("script") || this.tag
+              .getName().equalsIgnoreCase("style")))
+      {
+        this.lockedEndTag = this.tag.getName().toLowerCase();
+      }
+      return 0;
+    } else if (this.source.peek() == '&')
+    {
+      return parseSpecialCharacter();
+    } else
+    {
+      return (this.source.read());
+    }
+  }
 
-	/**
-	 * The constructor should be passed an InputStream that we will parse from.
-	 * 
-	 * @param is
-	 *            An InputStream to parse from.
-	 */
-	public ParseHTML(final InputStream is) {
-		this.source = new PeekableInputStream(is);
+  /**
+   * Convert the HTML document back to a string.
+   */
+  @Override
+  public String toString()
+  {
+    try
+    {
+      StringBuilder result = new StringBuilder();
 
-		if (charMap == null) {
-			charMap = new HashMap<String, Character>();
-			charMap.put("nbsp", ' ');
-			charMap.put("lt", '<');
-			charMap.put("gt", '>');
-			charMap.put("amp", '&');
-			charMap.put("quot", '\"');
-			charMap.put("bull", ParseHTML.BULL);
-			charMap.put("trade", ParseHTML.TRADE);
-		}
-	}
+      int ch = 0;
+      StringBuilder text = new StringBuilder();
+      do
+      {
+        ch = read();
+        if (ch == 0)
+        {
+          if (text.length() > 0)
+          {
+            result.append("Text:" + text.toString() + "\n");
+            text.setLength(0);
+          }
+          result.append("Tag:" + getTag() + "\n");
+        } else if (ch != -1)
+        {
+          text.append((char) ch);
+        }
+      } while (ch != -1);
+      if (text.length() > 0)
+      {
+        result.append("Text:" + text.toString().trim()+"\n");
+      }
+      return result.toString();
+    } catch (IOException e)
+    {
+      return "[IO Error]";
+    }
+  }
 
-	/**
-	 * Remove any whitespace characters that are next in the InputStream.
-	 * 
-	 * @throws IOException
-	 *             If an I/O exception occurs.
-	 */
-	protected void eatWhitespace() throws IOException {
-		while (Character.isWhitespace((char) this.source.peek())) {
-			this.source.read();
-		}
-	}
+  /**
+   * Parse any special characters(i.e. &nbsp);
+   * 
+   * @return The character that was parsed.
+   * @throws IOException
+   *           If a read error occurs
+   */
+  private char parseSpecialCharacter() throws IOException
+  {
+    char result = (char) this.source.read();
+    int advanceBy = 0;
 
-	/**
-	 * Return the last tag found, this is normally called just after the read
-	 * function returns a zero.
-	 * 
-	 * @return The last HTML tag found.
-	 */
-	public HTMLTag getTag() {
-		return this.tag;
-	}
+    // is there a special character?
+    if (result == '&')
+    {
+      int ch = 0;
+      StringBuilder buffer = new StringBuilder();
 
-	/**
-	 * Parse an attribute name, if one is present.
-	 * 
-	 * @throws IOException
-	 *             If an I/O exception occurs.
-	 * @return The attribute name.
-	 */
-	protected String parseAttributeName() throws IOException {
-		eatWhitespace();
+      // loop through and read special character
+      do
+      {
+        ch = this.source.peek(advanceBy++);
+        if ((ch != '&') && (ch != ';') && !Character.isWhitespace(ch))
+        {
+          buffer.append((char) ch);
+        }
 
-		if ("\"\'".indexOf(this.source.peek()) == -1) {
-			final StringBuilder buffer = new StringBuilder();
-			while (!Character.isWhitespace(this.source.peek())
-					&& this.source.peek() != '=' && this.source.peek() != '>'
-					&& this.source.peek() != -1) {
-				final int ch = parseSpecialCharacter();
-				buffer.append((char) ch);
-			}
-			return buffer.toString();
-		}
-		return parseString();
-	}
+      } while ((ch != ';') && (ch != -1) && !Character.isWhitespace(ch));
 
-	/**
-	 * Parse any special characters(i.e. &nbsp);
-	 * 
-	 * @return The character that was parsed.
-	 * @throws IOException
-	 *             If a read error occurs
-	 */
-	private char parseSpecialCharacter() throws IOException {
-		char result = (char) this.source.read();
-		int advanceBy = 0;
+      String b = buffer.toString().trim().toLowerCase();
 
-		// is there a special character?
-		if (result == '&') {
-			int ch = 0;
-			final StringBuilder buffer = new StringBuilder();
+      // did we find a special character?
+      if (b.length() > 0)
+      {
+        if (b.charAt(0) == '#')
+        {
+          try
+          {
+            result = (char) Integer.parseInt(b.substring(1));
+          } catch (NumberFormatException e)
+          {
+            advanceBy = 0;
+          }
+        } else
+        {
+          if (charMap.containsKey(b))
+          {
+            result = charMap.get(b);
+          } else
+          {
+            advanceBy = 0;
+          }
+        }
+      } else
+      {
+        advanceBy = 0;
+      }
+    }
 
-			// loop through and read special character
-			do {
-				ch = this.source.peek(advanceBy++);
-				if (ch != '&' && ch != ';' && !Character.isWhitespace(ch)) {
-					buffer.append((char) ch);
-				}
+    while (advanceBy > 0)
+    {
+      read();
+      advanceBy--;
+    }
 
-			} while (ch != ';' && ch != -1 && !Character.isWhitespace(ch));
+    return result;
+  }
 
-			final String b = buffer.toString().trim().toLowerCase();
+  /**
+   * Check to see if the ending tag is present.
+   * @param name The type of end tag being sought.
+   * @return True if the ending tag was found.
+   * @throws IOException Thrown if an IO error occurs.
+   */
+  private boolean peekEndTag(String name) throws IOException
+  {
+    int i = 0;
 
-			// did we find a special character?
-			if (b.length() > 0) {
-				if (b.charAt(0) == '#') {
-					try {
-						result = (char) Integer.parseInt(b.substring(1));
-					} catch (final NumberFormatException e) {
-						advanceBy = 0;
-					}
-				} else {
-					if (charMap.containsKey(b)) {
-						result = charMap.get(b);
-					} else {
-						advanceBy = 0;
-					}
-				}
-			} else {
-				advanceBy = 0;
-			}
-		}
+    // pass any whitespace
+    while ((this.source.peek(i) != -1)
+        && Character.isWhitespace(this.source.peek(i)))
+    {
+      i++;
+    }
 
-		while (advanceBy > 0) {
-			read();
-			advanceBy--;
-		}
+    // is a tag beginning
+    if (this.source.peek(i) != '<')
+    {
+      return false;
+    } else
+    {
+      i++;
+    }
 
-		return result;
-	}
+    // pass any whitespace
+    while ((this.source.peek(i) != -1)
+        && Character.isWhitespace(this.source.peek(i)))
+    {
+      i++;
+    }
 
-	/**
-	 * Called to parse a double or single quote string.
-	 * 
-	 * @return The string parsed.
-	 * @throws IOException
-	 *             If an I/O exception occurs.
-	 */
-	protected String parseString() throws IOException {
-		final StringBuilder result = new StringBuilder();
-		eatWhitespace();
-		if ("\"\'".indexOf(this.source.peek()) != -1) {
-			final int delim = this.source.read();
-			while (this.source.peek() != delim && this.source.peek() != -1) {
-				if (result.length() > MAX_NAME_LENGTH) {
-					break;
-				}
-				final int ch = parseSpecialCharacter();
-				if (ch == ParseHTML.CR || ch == ParseHTML.LF) {
-					continue;
-				}
-				result.append((char) ch);
-			}
-			if ("\"\'".indexOf(this.source.peek()) != -1) {
-				this.source.read();
-			}
-		} else {
-			while (!Character.isWhitespace(this.source.peek())
-					&& this.source.peek() != -1 && this.source.peek() != '>') {
-				result.append(parseSpecialCharacter());
-			}
-		}
+    // is it an end tag
+    if (this.source.peek(i) != '/')
+    {
+      return false;
+    } else
+    {
+      i++;
+    }
 
-		return result.toString();
-	}
+    // pass any whitespace
+    while ((this.source.peek(i) != -1)
+        && Character.isWhitespace(this.source.peek(i)))
+    {
+      i++;
+    }
 
-	/**
-	 * Called when a tag is detected. This method will parse the tag.
-	 * 
-	 * @throws IOException
-	 *             If an I/O exception occurs.
-	 */
-	protected void parseTag() throws IOException {
-		this.tag.clear();
-		final StringBuilder tagName = new StringBuilder();
+    // does the name match
+    for (int j = 0; j < name.length(); j++)
+    {
+      if (Character.toLowerCase(this.source.peek(i)) != Character
+          .toLowerCase(name.charAt(j)))
+      {
+        return false;
+      }
+      i++;
+    }
 
-		this.source.read();
+    return true;
+  }
 
-		// Is it a comment?
-		if (this.source.peek(0) == '!' && this.source.peek(1) == '-'
-				&& this.source.peek(2) == '-') {
-			while (this.source.peek() != -1) {
-				if (this.source.peek(0) == '-' && this.source.peek(1) == '-'
-						&& this.source.peek(2) == '>') {
-					break;
-				}
-				if (this.source.peek() != '\r') {
-					tagName.append((char) this.source.peek());
-				}
-				this.source.read();
-			}
-			tagName.append("--");
-			this.source.read();
-			this.source.read();
-			this.source.read();
-			return;
-		}
+  /**
+   * Remove any whitespace characters that are next in the
+   * InputStream.
+   * 
+   * @throws IOException
+   *           If an I/O exception occurs.
+   */
+  protected void eatWhitespace() throws IOException
+  {
+    while (Character.isWhitespace((char) this.source.peek()))
+    {
+      this.source.read();
+    }
+  }
 
-		// Find the tag name
-		while (this.source.peek() != -1) {
-			if (Character.isWhitespace((char) this.source.peek())
-					|| this.source.peek() == '>') {
-				break;
-			}
-			tagName.append((char) this.source.read());
-		}
+  /**
+   * Parse an attribute name, if one is present.
+   * 
+   * @throws IOException
+   *           If an I/O exception occurs.
+   */
+  protected String parseAttributeName() throws IOException
+  {
+    eatWhitespace();
 
-		eatWhitespace();
-		this.tag.setName(tagName.toString());
+    if ("\"\'".indexOf(this.source.peek()) == -1)
+    {
+      StringBuilder buffer = new StringBuilder();
+      while (!Character.isWhitespace(this.source.peek())
+          && (this.source.peek() != '=') && (this.source.peek() != '>')
+          && (this.source.peek() != -1))
+      {
+        int ch = parseSpecialCharacter();
+        buffer.append((char) ch);
+      }
+      return buffer.toString();
+    } else
+    {
+      return (parseString());
+    }
+  }
 
-		// get the attributes
+  /**
+   * Called to parse a double or single quote string.
+   * 
+   * @return The string parsed.
+   * @throws IOException
+   *           If an I/O exception occurs.
+   */
+  protected String parseString() throws IOException
+  {
+    StringBuilder result = new StringBuilder();
+    eatWhitespace();
+    if ("\"\'".indexOf(this.source.peek()) != -1)
+    {
+      int delim = this.source.read();
+      while ((this.source.peek() != delim) && (this.source.peek() != -1))
+      {
+        if (result.length() > 1000)
+        {
+          break;
+        }
+        int ch = parseSpecialCharacter();
+        if ((ch == 13) || (ch == 10))
+        {
+          continue;
+        }
+        result.append((char) ch);
+      }
+      if ("\"\'".indexOf(this.source.peek()) != -1)
+      {
+        this.source.read();
+      }
+    } else
+    {
+      while (!Character.isWhitespace(this.source.peek())
+          && (this.source.peek() != -1) && (this.source.peek() != '>'))
+      {
+        result.append(parseSpecialCharacter());
+      }
+    }
 
-		while (this.source.peek() != '>' && this.source.peek() != -1) {
-			final String attributeName = parseAttributeName();
-			String attributeValue = null;
+    return result.toString();
+  }
 
-			if (attributeName.equals("/")) {
-				eatWhitespace();
-				if (this.source.peek() == '>') {
-					this.tag.setEnding(true);
-					break;
-				}
-			}
+  /**
+   * Called when a tag is detected. This method will parse
+   * the tag.
+   * 
+   * @throws IOException
+   *           If an I/O exception occurs.
+   */
+  protected void parseTag() throws IOException
+  {
+	this.tag = new HTMLTag();
+    StringBuilder tagName = new StringBuilder();
 
-			// is there a value?
-			eatWhitespace();
-			if (this.source.peek() == '=') {
-				this.source.read();
-				attributeValue = parseString();
-			}
+    this.source.read();
 
-			this.tag.setAttribute(attributeName, attributeValue);
-		}
-		this.source.read();
-	}
+    // Is it a comment?
+    if ((this.source.peek(0) == '!') && (this.source.peek(1) == '-')
+        && (this.source.peek(2) == '-'))
+    {
+      while (this.source.peek() != -1)
+      {
+        if ((this.source.peek(0) == '-') && (this.source.peek(1) == '-')
+            && (this.source.peek(2) == '>'))
+        {
+          break;
+        }
+        if (this.source.peek() != '\r')
+        {
+          tagName.append((char) this.source.peek());
+        }
+        this.source.read();
+      }
+      tagName.append("--");
+      this.source.read();
+      this.source.read();
+      this.source.read();
+      return;
+    }
 
-	/**
-	 * Check to see if the ending tag is present.
-	 * 
-	 * @param name
-	 *            The type of end tag being saught.
-	 * @return True if the ending tag was found.
-	 * @throws IOException
-	 *             Thrown if an IO error occurs.
-	 */
-	private boolean peekEndTag(final String name) throws IOException {
-		int i = 0;
+    // Find the tag name
+    while (this.source.peek() != -1)
+    {
+      // if this is the end of the tag, then stop
+      if (Character.isWhitespace((char) this.source.peek())
+          || (this.source.peek() == '>') )
+      {
+        break;
+      }
+      
+      // if this is both a begin and end tag then stop
+      if( tagName.length()>0 && (this.source.peek()=='/') )
+      {
+    	  break;
+      }
+      
+      tagName.append((char) this.source.read());
+    }
 
-		// pass any whitespace
-		while (this.source.peek(i) != -1
-				&& Character.isWhitespace(this.source.peek(i))) {
-			i++;
-		}
+    eatWhitespace();
+    
+    if( tagName.charAt(0)=='/' )
+    {
+    	this.tag.setName(tagName.substring(1).toString());
+    	this.tag.setType(HTMLTag.Type.END);
+    }
+    else
+    {
+    	this.tag.setName(tagName.toString());
+    	this.tag.setType(HTMLTag.Type.BEGIN);
+    }
+    // get the attributes
 
-		// is a tag beginning
-		if (this.source.peek(i) != '<') {
-			return false;
-		}
+    while ((this.source.peek() != '>') && (this.source.peek() != -1))
+    {
+      String attributeName = parseAttributeName();
+      String attributeValue = null;
 
-		i++;
+      if (attributeName.equals("/"))
+      {
+        eatWhitespace();
+        if (this.source.peek() == '>')
+        {
+          this.tag.setType(HTMLTag.Type.BOTH);
+          break;
+        }
+      }
 
-		// pass any whitespace
-		while (this.source.peek(i) != -1
-				&& Character.isWhitespace(this.source.peek(i))) {
-			i++;
-		}
+      // is there a value?
+      eatWhitespace();
+      if (this.source.peek() == '=')
+      {
+        this.source.read();
+        attributeValue = parseString();
+      }
 
-		// is it an end tag
-		if (this.source.peek(i) != '/') {
-			return false;
-		}
-
-		i++;
-
-		// pass any whitespace
-		while (this.source.peek(i) != -1
-				&& Character.isWhitespace(this.source.peek(i))) {
-			i++;
-		}
-
-		// does the name match
-		for (int j = 0; j < name.length(); j++) {
-			if (Character.toLowerCase(this.source.peek(i)) != Character
-					.toLowerCase(name.charAt(j))) {
-				return false;
-			}
-			i++;
-		}
-
-		return true;
-	}
-
-	/**
-	 * Read a single character from the HTML source, if this function returns
-	 * zero(0) then you should call getTag to see what tag was found. Otherwise
-	 * the value returned is simply the next character found.
-	 * 
-	 * @return The character read, or zero if there is an HTML tag. If zero is
-	 *         returned, then call getTag to get the next tag.
-	 * 
-	 * @throws IOException
-	 *             If an error occurs while reading.
-	 */
-	public int read() throws IOException {
-		// handle locked end tag
-		if (this.lockedEndTag != null) {
-			if (peekEndTag(this.lockedEndTag)) {
-				this.lockedEndTag = null;
-			} else {
-				return this.source.read();
-			}
-		}
-
-		// look for next tag
-		if (this.source.peek() == '<') {
-			parseTag();
-			if (!this.tag.isEnding()
-					&& (this.tag.getName().equalsIgnoreCase("script") 
-							|| this.tag.getName().equalsIgnoreCase("style"))) {
-				this.lockedEndTag = this.tag.getName().toLowerCase();
-			}
-			return 0;
-		} else if (this.source.peek() == '&') {
-			return parseSpecialCharacter();
-		} else {
-			return this.source.read();
-		}
-	}
-
-	/**
-	 * Convert the HTML document back to a string.
-	 * 
-	 * @return The string form of the object.
-	 */
-	@Override
-	public String toString() {
-		try {
-			final StringBuilder result = new StringBuilder();
-
-			int ch = 0;
-			final StringBuilder text = new StringBuilder();
-			do {
-				ch = read();
-				if (ch == 0) {
-					if (text.length() > 0) {
-						System.out.println("Text:" + text.toString());
-						text.setLength(0);
-					}
-					System.out.println("Tag:" + getTag());
-				} else if (ch != -1) {
-					text.append((char) ch);
-				}
-			} while (ch != -1);
-			if (text.length() > 0) {
-				System.out.println("Text:" + text.toString().trim());
-			}
-			return result.toString();
-		} catch (final IOException e) {
-			return "[IO Error]";
-		}
-	}
+      this.tag.setAttribute(attributeName, attributeValue);
+    }
+    this.source.read();
+  }
 
 }
