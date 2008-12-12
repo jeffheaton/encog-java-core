@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<Document>
+<Header>
+<platform>Java</platform>
+<fileVersion>0</fileVersion>
+<encogVersion>1.0.0</encogVersion>
+</Header>
+<objects>
+
+<ParseTemplate name="parse-native">
+   <recognize id="letter">
+      <element type="ALLOW_ONE">
+         <char from="a" to="z"/>
+         <char from="A" to="Z"/>
+      </element>
+   </recognize>
+   
+   <recognize id="digit">
+      <element type="ALLOW_ONE">
+         <char from="0" to="9"/>
+      </element>
+   </recognize>
+
+   <recognize id="number">
+       <element type="ALLOW_MULTIPLE">
+           <unit type="digit"/>
+       </element>
+   </recognize>
+
+
+   <recognize id="word">
+      <element type="ALLOW_MULTIPLE">
+         <unit type="letter"/>
+         <char value="'"/>
+      </element>
+   </recognize>
+   
+   <recognize id="whitespaceChar">
+      <element type="ALLOW_ONE">
+         <char value=" "/>
+         <char value="\r"/>
+         <char value="\n"/>
+         <char value="\t"/>
+      </element>
+   </recognize>
+   <recognize id="whitespace" ignore="true">
+      <element type="ALLOW_MULTIPLE">
+         <unit type="whitespaceChar"/>
+      </element>
+   </recognize>
+      <recognize id="questionChar">
+         <element type="ALLOW_ONE">
+            <char value="&gt;"/>
+            <char value=":"/>
+            <char value="."/>
+            <char value=")"/>
+         </element>
+      </recognize>
+      <recognize id="question" ignore="false">
+         <element type="ALLOW_ONE">
+            <unit id="a" type="number"/>
+         </element>
+         <element type="ALLOW_ONE">
+            <unit type="questionChar"/>
+         </element>
+         <element type="ALLOW_ONE">
+            <unit id="b" type="word"/>
+         </element>
+      </recognize>
+
+      <recognize id="weight" class="Weight">
+          <element type="ALLOW_ONE">
+              <unit type="number"/>
+          </element>
+
+          <element type="ALLOW_ONE">
+              <unit type="weightUnit"/>
+          </element>
+      </recognize>
+
+</ParseTemplate>
+
+
+
+<BasicNeuralDataSet native="org.encog.neural.data.basic.BasicNeuralDataSet" name="data-1" description="Training data">
+<NeuralDataPair>
+<input>
+<value>0.0</value>
+<value>0.0</value>
+</input>
+<ideal>
+<value>0.0</value>
+</ideal>
+</NeuralDataPair>
+<NeuralDataPair>
+<input>
+<value>1.0</value>
+<value>0.0</value>
+</input>
+<ideal>
+<value>1.0</value>
+</ideal>
+</NeuralDataPair>
+<NeuralDataPair>
+<input>
+<value>0.0</value>
+<value>1.0</value>
+</input>
+<ideal>
+<value>1.0</value>
+</ideal>
+</NeuralDataPair>
+<NeuralDataPair>
+<input>
+<value>1.0</value>
+<value>1.0</value>
+</input>
+<ideal>
+<value>0.0</value>
+</ideal>
+</NeuralDataPair>
+</BasicNeuralDataSet>
+</objects>
+</Document>
