@@ -1,0 +1,201 @@
+package org.encog.parse.units;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.encog.parse.Parse;
+import org.encog.parse.recognize.Recognize;
+import org.encog.parse.recognize.RecognizeElement;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+
+
+public class UnitManager {
+
+  public final static String BASE_WEIGHT = "base-weight";
+
+  private Collection<UnitConversion> conversions = new ArrayList<UnitConversion>();
+  private Map<String,String> aliases = new HashMap<String,String>();
+
+  private void loadConvert(Element inputNode)
+  {
+    //   <convert from="lb" to "base-weight" pre="0" post="0" ratio="4536"/>
+
+    String from = inputNode.getAttribute("from");
+    String to = inputNode.getAttribute("to");
+    String pre = inputNode.getAttribute("pre");
+    String post = inputNode.getAttribute("post");
+    String ratio = inputNode.getAttribute("ratio");
+
+    double numPre = Double.parseDouble(pre);
+    double numPost = Double.parseDouble(post);
+    double numRatio = Double.parseDouble(ratio);
+
+    UnitConversion convert = new UnitConversion(from,to,numPre,numPost,numRatio);
+    conversions.add(convert);
+  }
+
+  private void loadAlias(Element inputNode)
+  {
+//System.out.println("load alias");
+    String from = inputNode.getAttribute("from");
+    String to = inputNode.getAttribute("to");
+    aliases.put(from.toLowerCase(),to);
+  }
+
+
+  private void loadConversions(Element list)
+  {
+    for ( Node child = list.getFirstChild(); child != null;
+        child = child.getNextSibling() ) {
+      if ( !(child instanceof Element ) )
+        continue;
+      Element node = (Element)child;
+
+      if (node.getNodeName().equals("convert") )
+        loadConvert(node);
+    }
+  }
+
+  private void loadAliases(Element list)
+  {
+    for ( Node child = list.getFirstChild(); child != null;
+        child = child.getNextSibling() ) {
+      if ( !(child instanceof Element ) )
+        continue;
+      Element node = (Element)child;
+
+      if (node.getNodeName().equals("alias") )
+        loadAlias(node);
+    }
+  }
+
+
+
+
+  public void load(InputStream in)
+  {
+    try {
+      // setup the XML parser stuff
+      DocumentBuilderFactory dbf =
+      DocumentBuilderFactory.newInstance();
+
+      DocumentBuilder db = null;
+      db = dbf.newDocumentBuilder();
+
+      Document doc = null;
+      doc = db.parse(in);
+      Element memory = doc.getDocumentElement();
+
+
+      // read in the data
+
+      // first count the number of training sets
+
+      for ( Node child = memory.getFirstChild(); child != null;
+          child = child.getNextSibling() ) {
+        if ( !(child instanceof Element ) )
+          continue;
+        Element node = (Element)child;
+
+        if (node.getNodeName().equals("conversions") )
+          loadConversions(node);
+        else if (node.getNodeName().equals("aliases") )
+          loadAliases(node);
+      }
+
+    } catch ( javax.xml.parsers.ParserConfigurationException e ) {
+      System.out.println(e);
+
+    } catch ( org.xml.sax.SAXException e ) {
+      System.out.println(e);
+
+    } catch ( java.io.IOException e ) {
+      System.out.println(e);
+
+    }
+  }
+
+  public void load(String name)
+  {
+    try {
+      InputStream is = new FileInputStream(new File(name));
+      load(is);
+      is.close();
+    } catch ( java.io.FileNotFoundException e ) {
+
+    } catch ( java.io.IOException e ) {
+
+    }
+  }
+
+  public String resolveAlias(String in)
+  {
+    String base = (String)aliases.get(in.toLowerCase());
+    if(base==null)
+      return in;
+    else
+      return base;
+  }
+
+  public double convert(String from,String to,double input)
+  {
+    from = resolveAlias(from);
+    to = resolveAlias(to);
+
+    Iterator itr = conversions.iterator();
+    while(itr.hasNext())
+    {
+      UnitConversion convert = (UnitConversion) itr.next();
+      if( convert.getFrom().equals(from) && convert.getTo().equals(to) )
+        return convert.convert(input);
+    }
+    return 0;
+  }
+
+  public void createRecognizers(Parse parse)
+  {
+    Map<Object,Object> map = new HashMap<Object,Object>();// put everything in a map to eliminate duplicates
+
+    Iterator itr = conversions.iterator();
+
+    // create the recognizers
+    Recognize weightRecognize = parse.getTemplate().createRecognizer("weightUnit");
+    RecognizeElement weightElement = weightRecognize.createElement(RecognizeElement.ALLOW_ONE);
+
+    // get all of the units
+    while(itr.hasNext())
+    {
+      UnitConversion unit = (UnitConversion)itr.next();
+      map.put(unit.getFrom(),null);
+      map.put(unit.getTo(),null);          
+    }
+
+    // get all of the aliases
+    itr = aliases.entrySet().iterator();
+    while(itr.hasNext())
+    {
+      Map.Entry entry = (Map.Entry)itr.next();
+      map.put(entry.getKey(),null);
+      map.put(entry.getValue(),null);  
+    }
+
+    // now add all of the units to the correct recognizers
+    itr = map.entrySet().iterator();
+    while(itr.hasNext())
+    {
+      Map.Entry entry = (Map.Entry)itr.next();     
+      weightElement.addAcceptedSignal("word",entry.getKey().toString());      
+    }
+  }
+}
