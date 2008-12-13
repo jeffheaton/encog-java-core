@@ -22,33 +22,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.bot.browse.range;
+package org.encog.nlp.memory;
 
-import java.net.URL;
+/**
+ *
+ * @author  jheaton
+ */
+public class FormatException extends java.lang.Exception {
+    
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-import org.encog.bot.browse.Address;
 
-
-public class Link extends DocumentRange {
-	private Address target;
-
-	public Address getTarget() {
-		return target;
-	}
-
-	public void setTarget(Address target) {
-		this.target = target;
-	}
-	
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
-		result.append("[Link:");
-		result.append(target);
-		result.append("|");
-		result.append(this.getTextOnly());
-		result.append("]");
-		return result.toString();
-	}
-	
+	/**
+     * Creates a new instance of <code>MemoryLoadException</code> without detail message.
+     */
+    public FormatException() {
+    }
+    
+    
+    /**
+     * Constructs an instance of <code>MemoryLoadException</code> with the specified detail message.
+     * @param msg the detail message.
+     */
+    public FormatException(String msg) {
+        super(msg);
+    }    
 }

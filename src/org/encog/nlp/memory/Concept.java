@@ -22,33 +22,50 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.bot.browse.range;
+package org.encog.nlp.memory;
 
-import java.net.URL;
-
-import org.encog.bot.browse.Address;
-
-
-public class Link extends DocumentRange {
-	private Address target;
-
-	public Address getTarget() {
-		return target;
-	}
-
-	public void setTarget(Address target) {
-		this.target = target;
-	}
-	
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
-		result.append("[Link:");
-		result.append(target);
-		result.append("|");
-		result.append(this.getTextOnly());
-		result.append("]");
-		return result.toString();
-	}
-	
+/**
+ *
+ * @author  jheaton
+ */
+public class Concept {
+    
+    /** Creates a new instance of Concept */
+    public Concept() {
+    }
+    
+    public long getSerialNumber()
+    {
+        return -1;
+    }
+    
+    public boolean isEmpty()
+    {
+        return false;
+    }
+    
+    public int hashCode()
+    {
+        String str = toString();
+        return str.hashCode();
+    }    
+    
+    public static boolean compareSingle(String word1,String word2)
+    {
+        if( word1.equals(word2) )
+            return true;
+        
+       if( word1.endsWith("s") && !word1.equalsIgnoreCase("its") )
+            word1 = word1.substring(0,word1.length()-1);
+        
+        if( word2.endsWith("s") && !word2.equalsIgnoreCase("its") )
+            word2 = word2.substring(0,word2.length()-1);       
+            
+        return word1.equals(word2);
+    }
+    
+    public Concept makeSolid()
+    {
+        return this;
+    }            
 }
