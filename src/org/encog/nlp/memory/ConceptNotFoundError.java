@@ -24,30 +24,33 @@
  */
 package org.encog.nlp.memory;
 
+import org.encog.EncogError;
+import org.encog.nlp.NLPError;
+
 /**
  *
  * @author  jheaton
  */
-public class FormatException extends java.lang.Exception {
-    
-    /**
+public class ConceptNotFoundError extends NLPError {
+ 
+	/**
+	 * Construct a message exception.
 	 * 
+	 * @param msg
+	 *            The exception message.
 	 */
-	private static final long serialVersionUID = 1L;
-
+	public ConceptNotFoundError(final String msg) {
+		super(msg);
+	}
 
 	/**
-     * Creates a new instance of <code>MemoryLoadException</code> without detail message.
-     */
-    public FormatException() {
-    }
-    
-    
-    /**
-     * Constructs an instance of <code>MemoryLoadException</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public FormatException(String msg) {
-        super(msg);
-    }    
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public ConceptNotFoundError(final Throwable t) {
+		super(t);
+	}
+ 
 }

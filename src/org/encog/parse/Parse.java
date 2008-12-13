@@ -43,8 +43,9 @@ public class Parse {
   private ParseTemplate template;
 
   public Signal parseFile(String name)
-  throws IOException,FileNotFoundException
   {
+	  try
+	  {
     FileReader fileReader = new FileReader(name);
     BufferedReader bufferedReader = new BufferedReader(fileReader);
 
@@ -57,6 +58,11 @@ public class Parse {
     bufferedReader.close();
     fileReader.close();
     return parse(contents);
+	  }
+	  catch(IOException e)
+	  {
+		  throw new ParseError(e);
+	  }
   }
 
   public static void setUnitMananger(UnitManager unitManager)

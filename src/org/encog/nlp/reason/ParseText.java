@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.encog.nlp.Context;
+import org.encog.nlp.NLPError;
 import org.encog.parse.signal.Signal;
 
 
@@ -51,8 +52,9 @@ abstract public class ParseText {
     abstract public String parse(String input);
     
     public void loadFile(String filename)
-    throws IOException
     {
+    	try
+    	{
         String line;
         FileReader f;
         BufferedReader r;
@@ -69,6 +71,11 @@ abstract public class ParseText {
         } while( line!=null );
         r.close();
         f.close();
+    	}
+    	catch(IOException e)
+    	{
+    		throw new NLPError(e);
+    	}
     }     
     
     void splitWords(String input,List<String> words)

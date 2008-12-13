@@ -77,22 +77,16 @@ public class Recognize {
 
   public boolean recognize(Signal signal)
   {
-    try {
+
       boolean found;
       do {
         found = recognizeIteration(signal);
       } while (found);
       return found;
-    } catch (InstantiationException e) {
-      System.out.println(e);
-    } catch (IllegalAccessException e) {
-      System.out.println(e);
-    }
-    return false;
+    
   }  
 
   protected boolean recognizeIteration(Signal signal)
-  throws InstantiationException,IllegalAccessException
   {
     startIndex = -1;
     index = 0;

@@ -62,7 +62,7 @@ public class ConceptHolder {
 	}
 
 	public Concept find(final long serialNumber)
-			throws ConceptNotFoundException {
+			throws ConceptNotFoundError {
 		Concept result = null;
 
 		if (serialNumber > 0) {

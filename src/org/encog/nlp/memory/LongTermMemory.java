@@ -27,6 +27,9 @@ package org.encog.nlp.memory;
 import java.util.*;
 import java.io.*;
 
+import org.encog.EncogError;
+import org.encog.nlp.NLPError;
+
 /**
  *
  * @author  jheaton
@@ -67,14 +70,18 @@ public class LongTermMemory {
     }
     
     public void save(String path)
-    throws FileNotFoundException
     {
-        FileOutputStream f = new FileOutputStream(path);
-        save(f);
+        FileOutputStream f;
+		try {
+			f = new FileOutputStream(path);
+	        save(f);
+		} catch (FileNotFoundException e) {
+			throw new NLPError(e);
+		}
+
     }
     
     private void loadConcept(String line)
-    throws FormatException
     {
         StringTokenizer tok = new StringTokenizer(line,"|");
         tok.nextElement();
@@ -89,14 +96,13 @@ public class LongTermMemory {
         }
         catch(NumberFormatException e)
         {
-            throw new FormatException("Illegal concept number:"+strNum);
+            throw new FormatError("Illegal concept number:"+strNum);
         }
         VarConcept lconcept = new VarConcept(serialNumber,s);     
         concepts.load(lconcept);
     }
     
     private void loadRelation(String line)
-    throws FormatException,ConceptNotFoundException
     {
         StringTokenizer tok = new StringTokenizer(line,"|");
         String strSource,strType,strTarget;
@@ -110,7 +116,7 @@ public class LongTermMemory {
         }
         catch(NoSuchElementException e)
         {
-            throw new FormatException("Not enough arguments on line: " + line );
+            throw new FormatError("Not enough arguments on line: " + line );
         }
         
         long sourceNum =0,typeNum =0,targetNum =0;
@@ -121,7 +127,7 @@ public class LongTermMemory {
         }
         catch(NumberFormatException e)
         {
-            throw new FormatException("Illegal source on line:" + line);
+            throw new FormatError("Illegal source on line:" + line);
         }
         
         try
@@ -130,7 +136,7 @@ public class LongTermMemory {
         }
         catch(NumberFormatException e)
         {
-            throw new FormatException("Illegal type on line:" + line);
+            throw new FormatError("Illegal type on line:" + line);
         }        
         
         try
@@ -139,7 +145,7 @@ public class LongTermMemory {
         }
         catch(NumberFormatException e)
         {
-            throw new FormatException("Illegal target on line:" + line);
+            throw new FormatError("Illegal target on line:" + line);
         }                
         
         Concept source = concepts.find(sourceNum);
@@ -151,8 +157,9 @@ public class LongTermMemory {
     }
     
     public void load(InputStream is)
-    throws IOException,FormatException,ConceptNotFoundException
     {
+    	try
+    	{
         String line;
         BufferedReader br = new BufferedReader(new InputStreamReader(is));        
         
@@ -169,13 +176,24 @@ public class LongTermMemory {
                     break;
             }
         }
+    	}
+    	catch(IOException e)
+    	{
+    		throw new EncogError(e);
+    	}
     }
 
     public void load(String path)
-    throws FileNotFoundException,IOException,FormatException,ConceptNotFoundException
     {
+    	try
+    	{
         FileInputStream f = new FileInputStream(path);
         load(f);
+    	}
+    	catch(IOException e)
+    	{
+    		throw new NLPError(e);
+    	}
     }
         
     public void addRelation(Concept source,Concept type,Concept target)

@@ -24,6 +24,8 @@
  */
 package org.encog.nlp;
 
+import java.io.IOException;
+
 import org.encog.nlp.memory.Concept;
 import org.encog.nlp.memory.ConstConcept;
 import org.encog.nlp.memory.LongTermMemory;
@@ -41,20 +43,27 @@ public class Context {
 	private Parse parse;
 	private UnitManager units;
 	
-	private void initParse(String basePath)
+	private void initParse() 
 	{
+		try
+		{
 	    UnitManager units = new UnitManager();
-	    units.load(basePath+"units.xml");
+	    //units.load(basePath+"units.xml");
 
 	    parse = new Parse();
 	    
 	    Parse.setUnitMananger(units);
-	    //parse.load(basePath+"template.xml");
+	    parse.load();
 	    units.createRecognizers(parse);
+		}
+		catch(IOException e)
+		{
+			throw(new NLPError(e));
+		}
 	    		
 	}
 	
-	private void initNLP(String basePath)
+	private void initNLP()
 	{
 		memory = new LongTermMemory();
 		evaluate = new EvaluateText(this);
@@ -93,10 +102,10 @@ public class Context {
 		this.units = units;
 	}
 
-	public void init(String basePath)
+	public void init() throws IOException
 	{
-		initParse(basePath);
-		initNLP(basePath);
+		initParse();
+		initNLP();
 	}
 	
     public Concept getTypeConcept(String word)

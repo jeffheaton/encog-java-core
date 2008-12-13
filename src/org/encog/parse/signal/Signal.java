@@ -26,6 +26,8 @@ package org.encog.parse.signal;
 
 import java.util.*;
 
+import org.encog.parse.ParseError;
+
 public class Signal {
   private char value = 0;
   private List<Signal> data = new ArrayList<Signal>();
@@ -87,20 +89,27 @@ public class Signal {
   }
 
   public Signal pack(int begin,int end,String type)
-  throws InstantiationException,IllegalAccessException
   {
     return pack(begin,end,type,Signal.class);
   }
 
   public Signal pack(int begin,int end,String type,Class signalClass)
-  throws InstantiationException,IllegalAccessException
   {
     delta = true;
     Object array[] = data.toArray();
 
     // create the new recognized signal of the correct type, 
     // defaults to Signal if none specified
-    Signal temp = (Signal)signalClass.newInstance(); 
+    Signal temp;
+    
+	try {
+		temp = (Signal)signalClass.newInstance();
+	} catch (InstantiationException e) {
+		throw new ParseError(e);
+	} catch (IllegalAccessException e) {
+		throw new ParseError(e);
+	} 
+	
     for (int i=0;i<array.length;i++) {
       Signal signal = (Signal)array[i];
       if ( (i>=begin) && (i<end) ) {

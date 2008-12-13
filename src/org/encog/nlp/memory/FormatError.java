@@ -24,30 +24,32 @@
  */
 package org.encog.nlp.memory;
 
+import org.encog.EncogError;
+
 /**
  *
  * @author  jheaton
  */
-public class ConceptNotFoundException extends java.lang.Exception {
-    
-    /**
+public class FormatError extends EncogError {
+ 
+	/**
+	 * Construct a message exception.
 	 * 
+	 * @param msg
+	 *            The exception message.
 	 */
-	private static final long serialVersionUID = 1L;
-
+	public FormatError(final String msg) {
+		super(msg);
+	}
 
 	/**
-     * Creates a new instance of <code>ConceptNotFound</code> without detail message.
-     */
-    public ConceptNotFoundException() {
-    }
-    
-    
-    /**
-     * Constructs an instance of <code>ConceptNotFound</code> with the specified detail message.
-     * @param msg the detail message.
-     */
-    public ConceptNotFoundException(String msg) {
-        super(msg);
-    }
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public FormatError(final Throwable t) {
+		super(t);
+	}
+ 
 }

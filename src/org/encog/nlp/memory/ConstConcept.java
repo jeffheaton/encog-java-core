@@ -70,7 +70,6 @@ public class ConstConcept extends Concept {
     }
     
     public static ConstConcept find(long id)
-    throws ConceptNotFoundException
     {
         ConstConcept result = null;
         
@@ -81,7 +80,7 @@ public class ConstConcept extends Concept {
         }
         
         if( result==null )
-            throw new ConceptNotFoundException("Can't find concept with serial number: " + id );
+            throw new ConceptNotFoundError("Can't find concept with serial number: " + id );
         
         return result;
     }
