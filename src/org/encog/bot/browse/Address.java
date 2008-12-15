@@ -24,6 +24,7 @@
  */
 package org.encog.bot.browse;
 
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
