@@ -27,7 +27,6 @@ package org.encog.bot.browse;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-
 public class Address {
 	private String original;
 	private URL url;
