@@ -24,18 +24,11 @@
  */
 package org.encog.parse;
 
-import java.util.*;
-import javax.xml.parsers.*;
-
 import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.parse.recognize.Recognize;
-import org.encog.parse.recognize.RecognizeElement;
 import org.encog.parse.signal.Signal;
 import org.encog.parse.units.UnitManager;
-import org.w3c.dom.*;
-
 import java.io.*;
-import java.net.URL;
 
 
 public class Parse {  

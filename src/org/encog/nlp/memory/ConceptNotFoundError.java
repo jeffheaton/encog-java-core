@@ -24,7 +24,6 @@
  */
 package org.encog.nlp.memory;
 
-import org.encog.EncogError;
 import org.encog.nlp.NLPError;
 
 /**
@@ -33,6 +32,11 @@ import org.encog.nlp.NLPError;
  */
 public class ConceptNotFoundError extends NLPError {
  
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -7456922868236165377L;
+
 	/**
 	 * Construct a message exception.
 	 * 

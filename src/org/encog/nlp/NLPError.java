@@ -4,6 +4,11 @@ import org.encog.EncogError;
 
 public class NLPError extends EncogError {
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 8005297054151951786L;
+
+	/**
 	 * Construct a message exception.
 	 * 
 	 * @param msg

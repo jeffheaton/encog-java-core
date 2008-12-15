@@ -33,6 +33,11 @@ import org.encog.EncogError;
 public class FormatError extends EncogError {
  
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -2976352312371441609L;
+
+	/**
 	 * Construct a message exception.
 	 * 
 	 * @param msg

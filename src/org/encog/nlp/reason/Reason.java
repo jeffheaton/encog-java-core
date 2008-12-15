@@ -25,7 +25,6 @@
 package org.encog.nlp.reason;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.encog.nlp.Context;
@@ -51,8 +50,8 @@ public class Reason {
 		if (concept1.equals(concept2)) {
 			return true;
 		}
-		final List list1 = getBaseConcepts(concept1);
-		final List list2 = getBaseConcepts(concept2);
+		final List<Concept> list1 = getBaseConcepts(concept1);
+		final List<Concept> list2 = getBaseConcepts(concept2);
 		return countListOverlap(list1, list2) > 0;
 	}
 
@@ -63,7 +62,7 @@ public class Reason {
 				&& compareConcept(relation1.getTarget(), relation2.getTarget());
 	}
 
-	public int countListOverlap(final List list1, final List list2) {
+	public int countListOverlap(final List<Concept> list1, final List<Concept> list2) {
 		int result = 0;
 		for (final Object obj : list1) {
 			if (list2.contains(obj)) {
@@ -121,11 +120,11 @@ public class Reason {
 
 	public boolean query3(final RelationHolder question) {
 		for (final Relation shortRelation : question.getBaseRelations()) {
-			final List matches = searchShort(shortRelation.getSource());
-			final Iterator itr2 = matches.iterator();
+			final List<Relation> matches = searchShort(shortRelation.getSource());
+
 			boolean foundOne = false;
-			while (itr2.hasNext()) {
-				final Relation longRelation = (Relation) itr2.next();
+
+			for( Relation longRelation: matches ) {
 				if (compareRelation(longRelation, shortRelation)) {
 					foundOne = true;
 					break;
@@ -139,7 +138,7 @@ public class Reason {
 		return true;
 	}
 
-	public List searchShort(final Concept concept) {
+	public List<Relation> searchShort(final Concept concept) {
 		final List<Relation> result = new ArrayList<Relation>();
 		final List<Concept> search = getBaseConcepts(concept);
 		for (final Concept c : search) {

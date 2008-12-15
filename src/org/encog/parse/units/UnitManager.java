@@ -30,7 +30,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -165,7 +164,7 @@ public class UnitManager {
 
   public String resolveAlias(String in)
   {
-    String base = (String)aliases.get(in.toLowerCase());
+    String base = aliases.get(in.toLowerCase());
     if(base==null)
       return in;
     else
@@ -177,10 +176,8 @@ public class UnitManager {
     from = resolveAlias(from);
     to = resolveAlias(to);
 
-    Iterator itr = conversions.iterator();
-    while(itr.hasNext())
+    for(UnitConversion convert: this.conversions)
     {
-      UnitConversion convert = (UnitConversion) itr.next();
       if( convert.getFrom().equals(from) && convert.getTo().equals(to) )
         return convert.convert(input);
     }
@@ -191,34 +188,27 @@ public class UnitManager {
   {
     Map<Object,Object> map = new HashMap<Object,Object>();// put everything in a map to eliminate duplicates
 
-    Iterator itr = conversions.iterator();
-
     // create the recognizers
     Recognize weightRecognize = parse.getTemplate().createRecognizer("weightUnit");
     RecognizeElement weightElement = weightRecognize.createElement(RecognizeElement.ALLOW_ONE);
 
     // get all of the units
-    while(itr.hasNext())
+    for(UnitConversion unit: this.conversions)
     {
-      UnitConversion unit = (UnitConversion)itr.next();
       map.put(unit.getFrom(),null);
       map.put(unit.getTo(),null);          
     }
 
     // get all of the aliases
-    itr = aliases.entrySet().iterator();
-    while(itr.hasNext())
+    for(Map.Entry<String,String> entry: this.aliases.entrySet())
     {
-      Map.Entry entry = (Map.Entry)itr.next();
       map.put(entry.getKey(),null);
       map.put(entry.getValue(),null);  
     }
 
     // now add all of the units to the correct recognizers
-    itr = map.entrySet().iterator();
-    while(itr.hasNext())
-    {
-      Map.Entry entry = (Map.Entry)itr.next();     
+    for(Map.Entry<String,String> entry: this.aliases.entrySet())
+    {     
       weightElement.addAcceptedSignal("word",entry.getKey().toString());      
     }
   }

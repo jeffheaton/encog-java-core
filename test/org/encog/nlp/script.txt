@@ -1,0 +1,46 @@
+Expect:Okay.
+Submit:Jack is male.
+Expect:Yes
+Submit:Is Jack male?
+Expect:Okay.
+Submit:The sky is blue or black.
+Expect:Okay.
+Submit:An ant is a bug or an insect.
+Expect:Yes
+Submit:Is an Ant a bug?
+Expect:Yes
+Submit:Is an Ant a insect?
+Expect:No
+Submit:Is an Ant a dog?
+Expect:Okay.
+Submit:Jack and Jill are friends.
+Expect:Yes
+Submit:Are Jack and Jill friends?
+Expect:Okay.
+Submit:Jack is the brother of Jill.
+Expect:Okay.
+Submit:Jill is Jack's sister.
+Expect:Yes
+Submit:Is Jack Jill's brother?
+Expect:Yes
+Submit:Is Jill the sister of Jack?
+Expect:No
+Submit:Is Jack the father of Jill?
+Expect:No
+Submit:Is Jack Jill's father?
+Expect:Yes
+Submit:Is Jack a brother?
+Expect:No
+Submit:Is Jack a sister?
+Expect:Okay.
+Submit:A male is a male person.
+Expect:Okay.
+Submit:A man is an individual that produces small usually mobile gametes which fertilize the eggs of a female.
+Expect:Yes
+Submit:Does a man produce gametes?
+Expect:No
+Submit:Does a man produce nonsense?
+Expect:Okay.
+Submit:A parent is one that begets or brings forth offspring.
+Expect:Yes
+Submit:Does a parent beget offsprings?

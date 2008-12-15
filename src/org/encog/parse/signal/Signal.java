@@ -63,7 +63,7 @@ public class Signal {
     return this.name;
   }
 
-  public List getData()
+  public List<Signal> getData()
   {
     return data;
   }
@@ -93,7 +93,7 @@ public class Signal {
     return pack(begin,end,type,Signal.class);
   }
 
-  public Signal pack(int begin,int end,String type,Class signalClass)
+  public Signal pack(int begin,int end,String type,Class<Signal> signalClass)
   {
     delta = true;
     Object array[] = data.toArray();
@@ -103,7 +103,7 @@ public class Signal {
     Signal temp;
     
 	try {
-		temp = (Signal)signalClass.newInstance();
+		temp = signalClass.newInstance();
 	} catch (InstantiationException e) {
 		throw new ParseError(e);
 	} catch (IllegalAccessException e) {
@@ -162,7 +162,7 @@ public class Signal {
     result+="[";
 
     if (types.size()>0) {
-      Iterator typesIterator = types.iterator();
+      Iterator<String> typesIterator = types.iterator();
       while (typesIterator.hasNext()) {
         String type = (String)typesIterator.next();
         result+=type;
@@ -237,7 +237,8 @@ public class Signal {
     return null;
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     String result = "";
 

@@ -4,6 +4,11 @@ import org.encog.EncogError;
 
 public class ParseError extends EncogError {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2610215232632261403L;
+
+	/**
 	 * Construct a message exception.
 	 * 
 	 * @param msg

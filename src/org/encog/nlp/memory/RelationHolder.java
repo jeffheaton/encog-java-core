@@ -126,7 +126,7 @@ public class RelationHolder {
     
     
 
-    public List searchTypeTarget(Concept type,Concept target)
+    public List<Relation> searchTypeTarget(Concept type,Concept target)
     {
         List<Relation> result = new ArrayList<Relation>();
         
@@ -160,7 +160,7 @@ public class RelationHolder {
         return count;
     }
     
-    public Collection getBaseConcepts()
+    public Collection<Concept> getBaseConcepts()
     {
         Set<Concept> result = new HashSet<Concept>();
 

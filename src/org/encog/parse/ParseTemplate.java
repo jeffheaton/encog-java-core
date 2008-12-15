@@ -24,21 +24,20 @@
  */
 package org.encog.parse;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.ParseTemplatePersistor;
 import org.encog.parse.recognize.Recognize;
-import org.encog.parse.recognize.RecognizeElement;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 public class ParseTemplate implements EncogPersistedObject {
 
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -2422158614923586260L;
 	private Collection<Recognize> recognizers = new ArrayList<Recognize>();
 	private String name;
 	private String description;
