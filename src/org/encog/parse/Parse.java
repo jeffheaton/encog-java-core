@@ -71,6 +71,11 @@ public class Parse {
   private boolean parseIteration(Signal input)
   {
     boolean changed = false;
+    
+    if( this.template == null )
+    {
+    	throw new ParseError("Must load a template before calling the Parse object.");
+    }
 
     for(Recognize recognize:template.getRecognizers()) {
       if(recognize.recognize(input))
@@ -100,10 +105,10 @@ public ParseTemplate getTemplate() {
 	return template;
 }
 
-public void load() throws IOException {
+public void load()  {
 	EncogPersistedCollection encog = new EncogPersistedCollection();
 	encog.loadResource("org/encog/data/template.eg");
-	this.template = (ParseTemplate) encog.find("parse-native");	
+	this.template = (ParseTemplate) encog.find("parse-native");
 }
 
 

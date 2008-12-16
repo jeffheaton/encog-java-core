@@ -37,6 +37,7 @@ import org.encog.bot.browse.range.HierarchyElement;
 import org.encog.bot.browse.range.Input;
 import org.encog.bot.browse.range.Link;
 import org.encog.bot.browse.range.Span;
+import org.encog.bot.dataunit.CodeDataUnit;
 import org.encog.bot.dataunit.DataUnit;
 import org.encog.bot.dataunit.TagDataUnit;
 import org.encog.bot.dataunit.TextDataUnit;
@@ -65,12 +66,31 @@ public class LoadWebPage {
 		StringBuilder text = new StringBuilder();
 		int ch;
 		ParseHTML parse = new ParseHTML(is);
+		boolean style = false;
+		boolean script = false;
 
 		while ((ch = parse.read()) != -1) {
 			if (ch == 0) {
-				createTextDataUnit(text.toString());
+				
+				if( style==true )
+					createCodeDataUnit(text.toString());
+				else if( script==true )
+					createCodeDataUnit(text.toString());
+				else
+					createTextDataUnit(text.toString());
+				style = false;
+				script = false;
+				
 				text.setLength(0);
 				createTagDataUnit(parse.getTag());
+				if( parse.getTag().getName().equalsIgnoreCase("style") )
+				{
+					style = true;
+				}
+				else if( parse.getTag().getName().equalsIgnoreCase("script") )
+				{
+					script = true;
+				}
 			} else {
 				text.append((char) ch);
 			}
@@ -252,6 +272,14 @@ public class LoadWebPage {
 		if (str.trim().length() > 0) {
 			TextDataUnit d = new TextDataUnit();
 			d.setText(str);
+			page.addDataUnit(d);
+		}
+	}
+	
+	private void createCodeDataUnit(String str) {
+		if (str.trim().length() > 0) {
+			CodeDataUnit d = new CodeDataUnit();
+			d.setCode(str);
 			page.addDataUnit(d);
 		}
 	}

@@ -45,8 +45,6 @@ public class Context {
 	
 	private void initParse() 
 	{
-		try
-		{
 	    UnitManager units = new UnitManager();
 	    //units.load(basePath+"units.xml");
 
@@ -54,13 +52,7 @@ public class Context {
 	    
 	    Parse.setUnitMananger(units);
 	    parse.load();
-	    units.createRecognizers(parse);
-		}
-		catch(IOException e)
-		{
-			throw(new NLPError(e));
-		}
-	    		
+	    units.createRecognizers(parse);	    		
 	}
 	
 	private void initNLP()

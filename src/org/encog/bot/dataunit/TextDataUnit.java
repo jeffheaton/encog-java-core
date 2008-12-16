@@ -39,6 +39,11 @@ public class TextDataUnit extends DataUnit {
 		text = str;
 		
 	}
+	
+	public String getText()
+	{
+		return this.text;
+	}
 
 
 }
