@@ -32,10 +32,14 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.neural.persist.EncogPersistedObject;
+import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.SpiderOptionsPersistor;
+
 /**
  * SpiderOptions: This class contains options for the spider's execution.
  */
-public class SpiderOptions {
+public class SpiderOptions implements EncogPersistedObject {
 
 	/**
 	 * The default timeout.
@@ -145,6 +149,9 @@ public class SpiderOptions {
 	public int getCorePoolSize() {
 		return this.corePoolSize;
 	}
+	
+	private String name;
+	private String description;
 
 	/**
 	 * @return the dbClass
@@ -228,75 +235,6 @@ public class SpiderOptions {
 	 */
 	public String getWorkloadManager() {
 		return this.workloadManager;
-	}
-
-	/**
-	 * Load the spider settings from a configuration file.
-	 * 
-	 * @param inputFile
-	 *            The name of the configuration file.
-	 */
-	public void load(final String inputFile) {
-		try {
-			final FileReader f = new FileReader(new File(inputFile));
-			final BufferedReader r = new BufferedReader(f);
-			String line;
-			while ((line = r.readLine()) != null) {
-
-				parseLine(line);
-			}
-			r.close();
-			f.close();
-		} catch (final IllegalArgumentException e) {
-			throw new SpiderError(e);
-		} catch (final SecurityException e) {
-			throw new SpiderError(e);
-		} catch (final IOException e) {
-			throw new SpiderError(e);
-		}
-
-	}
-
-	/**
-	 * Process each line of a configuration file.
-	 * 
-	 * @param line
-	 *            The line of text read from the configuration file.
-	 */
-	@SuppressWarnings("unchecked")
-	private void parseLine(final String line) {
-		String name, value;
-		final int i = line.indexOf(':');
-		if (i == -1) {
-			return;
-		}
-		name = line.substring(0, i).trim();
-		value = line.substring(i + 1).trim();
-
-		if (value.trim().length() == 0) {
-			value = null;
-		}
-
-		try {
-			final Field field = this.getClass().getField(name);
-			if (field.getType() == String.class) {
-				field.set(this, value);
-			} else if (field.getType() == List.class) {
-				final List<String> list = (List<String>) field.get(this);
-				list.add(value);
-			} else {
-				final int x = Integer.parseInt(value);
-				field.set(this, x);
-			}
-		} catch (final SecurityException e) {
-			throw new SpiderError(e);
-		} catch (final NoSuchFieldException e) {
-			throw new SpiderError(e);
-		} catch (final IllegalArgumentException e) {
-			throw new SpiderError(e);
-		} catch (final IllegalAccessException e) {
-			throw new SpiderError(e);
-		}
 	}
 
 	/**
@@ -402,5 +340,29 @@ public class SpiderOptions {
 	public void setWorkloadManager(final String workloadManager) {
 		this.workloadManager = workloadManager;
 	}
+
+	@Override
+	public Persistor createPersistor() {
+		// TODO Auto-generated method stub
+		return new SpiderOptionsPersistor();
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+
 
 }

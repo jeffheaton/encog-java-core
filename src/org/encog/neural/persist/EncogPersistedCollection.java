@@ -53,24 +53,27 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * An EncogPersistedCollection holds a collection of EncogPersistedObjects.
- * This allows the various neural networks and some data sets to be peristed.
- * They are persisted to an XML form.
+ * An EncogPersistedCollection holds a collection of EncogPersistedObjects. This
+ * allows the various neural networks and some data sets to be peristed. They
+ * are persisted to an XML form.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class EncogPersistedCollection {
-	
+
 	/**
-	 * Create a persistor object.  These objects know how to persist
-	 * certain types of classes.
-	 * @param className The name of the class to create a persistor for.
+	 * Create a persistor object. These objects know how to persist certain
+	 * types of classes.
+	 * 
+	 * @param className
+	 *            The name of the class to create a persistor for.
 	 * @return The persistor for the specified class.
 	 */
 	public static Persistor createPersistor(final String className) {
 		try {
 			String name = className + "Persistor";
-			final Class< ? > c = Class
+			final Class<?> c = Class
 					.forName("org.encog.neural.persist.persistors." + name);
 			final Persistor persistor = (Persistor) c.newInstance();
 			return persistor;
@@ -86,14 +89,13 @@ public class EncogPersistedCollection {
 	/**
 	 * The object to be persisted.
 	 */
-	private final List<EncogPersistedObject> list = 
-		new ArrayList<EncogPersistedObject>();
-	
+	private final List<EncogPersistedObject> list = new ArrayList<EncogPersistedObject>();
+
 	/**
 	 * The platform this collection was created on.
 	 */
 	private String platform;
-	
+
 	/**
 	 * The version of the persisted file.
 	 */
@@ -106,7 +108,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Add an EncogPersistedObject to the collection.
-	 * @param obj The object to add.
+	 * 
+	 * @param obj
+	 *            The object to add.
 	 */
 	public void add(final EncogPersistedObject obj) {
 		this.list.add(obj);
@@ -149,7 +153,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Load from an input stream.
-	 * @param is The stream to load from.
+	 * 
+	 * @param is
+	 *            The stream to load from.
 	 */
 	public void load(final InputStream is) {
 		try {
@@ -168,8 +174,7 @@ public class EncogPersistedCollection {
 
 			// first count the number of training sets
 
-			for (Node child = memory.getFirstChild(); 
-			  child != null; child = child
+			for (Node child = memory.getFirstChild(); child != null; child = child
 					.getNextSibling()) {
 				if (!(child instanceof Element)) {
 					continue;
@@ -194,7 +199,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Load from a file.
-	 * @param filename The filename to load from.
+	 * 
+	 * @param filename
+	 *            The filename to load from.
 	 */
 	public void load(final String filename) {
 		try {
@@ -208,7 +215,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Load the XML header.
-	 * @param node The node to load from.
+	 * 
+	 * @param node
+	 *            The node to load from.
 	 */
 	private void loadHeader(final Element node) {
 		try {
@@ -225,7 +234,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Load the objects list.
-	 * @param objects The node to load from.
+	 * 
+	 * @param objects
+	 *            The node to load from.
 	 */
 	private void loadObjects(final Element objects) {
 		for (Node child = objects.getFirstChild(); child != null; child = child
@@ -246,13 +257,14 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Save to an output stream.
-	 * @param os The stream to save to.
+	 * 
+	 * @param os
+	 *            The stream to save to.
 	 */
 	public void save(final OutputStream os) {
 		try {
 			final StreamResult streamResult = new StreamResult(os);
-			final SAXTransformerFactory tf = 
-				(SAXTransformerFactory) TransformerFactory
+			final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory
 					.newInstance();
 			// SAX2.0 ContentHandler.
 			final TransformerHandler hd = tf.newTransformerHandler();
@@ -280,7 +292,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Save to a file.
-	 * @param filename The filename to save to.
+	 * 
+	 * @param filename
+	 *            The filename to save to.
 	 */
 	public void save(final String filename) {
 		try {
@@ -294,8 +308,11 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Save the XML header.
-	 * @param hd The object to save to.
-	 * @throws SAXException An error processing the XML.
+	 * 
+	 * @param hd
+	 *            The object to save to.
+	 * @throws SAXException
+	 *             An error processing the XML.
 	 */
 	private void saveHeader(final TransformerHandler hd) throws SAXException {
 		String data;
@@ -325,7 +342,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Save the list of objects.
-	 * @param hd The persistance object.
+	 * 
+	 * @param hd
+	 *            The persistance object.
 	 */
 	private void saveObjects(final TransformerHandler hd) {
 		final AttributesImpl atts = new AttributesImpl();
@@ -340,15 +359,16 @@ public class EncogPersistedCollection {
 				final String name = obj.getClass().getSimpleName();
 				Persistor persistor = EncogPersistedCollection
 						.createPersistor(name);
-				
-				if( persistor==null ) {
+
+				if (persistor == null) {
 					persistor = obj.createPersistor();
 				}
-				
-				if( persistor==null ) {
-					throw new EncogError("No persistor defined for object: " + name);
+
+				if (persistor == null) {
+					throw new EncogError("No persistor defined for object: "
+							+ name);
 				}
-				
+
 				persistor.save(obj, hd);
 
 			}
@@ -358,73 +378,77 @@ public class EncogPersistedCollection {
 			throw new NeuralNetworkError(e);
 		}
 	}
-	
-	public static void addAttribute(final AttributesImpl atts,final String name,final String value)
-	{
+
+	public static void addAttribute(final AttributesImpl atts,
+			final String name, final String value) {
 		String v = value;
-		if( v==null )
-			v="";
-		atts.addAttribute("", "", name, "CDATA", v );	
+		if (v == null)
+			v = "";
+		atts.addAttribute("", "", name, "CDATA", v);
 	}
-	
-	public static AttributesImpl createAttributes(final EncogPersistedObject obj)
-	{
+
+	public static AttributesImpl createAttributes(final EncogPersistedObject obj) {
 		AttributesImpl result = new AttributesImpl();
-		EncogPersistedCollection.addAttribute(result, "native",""+obj.getClass().getName());
-		EncogPersistedCollection.addAttribute(result, "name",obj.getName());
-		EncogPersistedCollection.addAttribute(result, "description",obj.getDescription());
+		EncogPersistedCollection.addAttribute(result, "native", ""
+				+ obj.getClass().getName());
+		EncogPersistedCollection.addAttribute(result, "name", obj.getName());
+		EncogPersistedCollection.addAttribute(result, "description", obj
+				.getDescription());
 		return result;
 	}
-	
+
+	public static void addProperty(final TransformerHandler hd, String name,
+			String value) {
+		try {
+			AttributesImpl atts = new AttributesImpl();
+			hd.startElement("", "", name, atts);
+			hd.characters(value.toCharArray(), 0, value.length());
+			hd.endElement("", "", name);
+		} catch (SAXException e) {
+			throw new EncogError(e);
+		}
+	}
+
 	/**
 	 * Called to search all Encog objects in this collection for one with a name
 	 * that passes what was passed in.
-	 * @param name The name we are searching for.
+	 * 
+	 * @param name
+	 *            The name we are searching for.
 	 * @return The Encog object with the correct name.
 	 */
-	public EncogPersistedObject find(String name)
-	{
-		for(EncogPersistedObject obj: this.list)
-		{
-			if( name.equals(obj.getName()))
-			{
+	public EncogPersistedObject find(String name) {
+		for (EncogPersistedObject obj : this.list) {
+			if (name.equals(obj.getName())) {
 				return obj;
 			}
 		}
 		return null;
 	}
-	
-	public void delete(String name)
-	{
-		Object []array = this.list.toArray();
-		
-		for(int i=0;i<array.length;i++)
-		{
-			EncogPersistedObject obj = (EncogPersistedObject)array[i];
-			if( name.equals(obj.getName()))
-			{
+
+	public void delete(String name) {
+		Object[] array = this.list.toArray();
+
+		for (int i = 0; i < array.length; i++) {
+			EncogPersistedObject obj = (EncogPersistedObject) array[i];
+			if (name.equals(obj.getName())) {
 				this.list.remove(obj);
 			}
 		}
 
 	}
 
-	public void loadResource(String resourceName)
-	{
-		try
-		{
+	public void loadResource(String resourceName) {
+		try {
 			ClassLoader loader = this.getClass().getClassLoader();
-			InputStream is = loader.getResourceAsStream (resourceName);
-			if( is==null )
-				throw new EncogError("Can't read resource: " + resourceName );
+			InputStream is = loader.getResourceAsStream(resourceName);
+			if (is == null)
+				throw new EncogError("Can't read resource: " + resourceName);
 			load(is);
 			is.close();
-		}
-		catch(IOException e)
-		{
+		} catch (IOException e) {
 			throw new EncogError(e);
 		}
 	}
-	
 
 }
