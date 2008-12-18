@@ -10,19 +10,16 @@ public abstract class BasicExtract implements Extract {
 
 	private Collection<ExtractListener> listeners = new ArrayList<ExtractListener>();
 	
-	@Override
 	public void addListener(ExtractListener listener) {
 		this.listeners.add(listener);
 		
 	}
 	
-	@Override
 	public void removeListener(ExtractListener listener) {
 		this.listeners.remove(listener);
 		
 	}
 
-	@Override
 	public Collection<ExtractListener> getListeners() {
 		return this.listeners;
 	}

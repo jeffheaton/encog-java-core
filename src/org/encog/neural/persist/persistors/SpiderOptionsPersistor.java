@@ -12,13 +12,11 @@ import org.w3c.dom.Element;
 public class SpiderOptionsPersistor implements Persistor {
 	
 	
-	@Override
 	public EncogPersistedObject load(Element node) {
 		XML2Object xml2obj = new XML2Object();
 		return xml2obj.load(node, new SpiderOptions());
 	}
 
-	@Override
 	public void save(EncogPersistedObject object, TransformerHandler hd) {
 		Object2XML obj2xml = new Object2XML();
 		obj2xml.save(object, hd);

@@ -26,7 +26,7 @@ public class PropertyData implements EncogPersistedObject {
 	public Map<String, String> getData() {
 		return data;
 	}
-	@Override
+
 	public Persistor createPersistor() {
 		return new PropertyDataPersistor();
 	}

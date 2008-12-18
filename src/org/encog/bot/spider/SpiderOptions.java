@@ -341,7 +341,6 @@ public class SpiderOptions implements EncogPersistedObject {
 		this.workloadManager = workloadManager;
 	}
 
-	@Override
 	public Persistor createPersistor() {
 		// TODO Auto-generated method stub
 		return new SpiderOptionsPersistor();
