@@ -28,12 +28,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.bot.browse.Address;
+import org.encog.bot.browse.WebPage;
 
 public class Form extends DocumentRange {
 	public enum Method { POST, GET };
 	protected Address action;
 	protected Method method;
 	protected List<FormElement> elements = new ArrayList<FormElement>();
+	
+	public Form(WebPage source)
+	{
+		super(source);
+	}
 	
 	
 	public Address getAction() {
@@ -77,13 +83,6 @@ public class Form extends DocumentRange {
 		return builder.toString();
 	}
 
-
-
-	public void addElement(FormElement input) {
-		this.elements.add(input);
-		input.setOwner(this);
-	}
-
 	public Input findType(String type,int index)
 	{
 		for(FormElement element: this.elements) {
@@ -98,11 +97,6 @@ public class Form extends DocumentRange {
 			}
 		}
 		return null;
-	}
-
-
-	public List<FormElement> getElements() {
-		return elements;
 	}
 
 }

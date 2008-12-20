@@ -26,6 +26,10 @@
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist}" />
 
+		<copy todir="${build}/org/encog/data">
+			<fileset dir="src/org/encog/data"/>
+		</copy>
+
 		<!-- Put everything in ${build} into the encog-core.jar file -->
 		<jar jarfile="${dist}/encog-core.jar" basedir="${build}" />
 	</target>

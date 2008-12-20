@@ -24,6 +24,8 @@
  */
 package org.encog.bot.browse.range;
 
+import org.encog.bot.browse.WebPage;
+
 public class Input extends FormElement {
 
 	private String type;
@@ -33,6 +35,11 @@ public class Input extends FormElement {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	
+	public Input(WebPage source)
+	{
+		super(source);
 	}
 	
 	public String toString()

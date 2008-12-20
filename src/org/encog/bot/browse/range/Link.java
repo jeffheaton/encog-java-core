@@ -27,11 +27,17 @@ package org.encog.bot.browse.range;
 import java.net.URL;
 
 import org.encog.bot.browse.Address;
+import org.encog.bot.browse.WebPage;
 
 
 public class Link extends DocumentRange {
 	private Address target;
 
+	public Link(WebPage source)
+	{
+		super(source);
+	}
+	
 	public Address getTarget() {
 		return target;
 	}

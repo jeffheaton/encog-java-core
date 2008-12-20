@@ -33,7 +33,6 @@ import java.net.URL;
 import org.encog.bot.browse.range.Div;
 import org.encog.bot.browse.range.DocumentRange;
 import org.encog.bot.browse.range.Form;
-import org.encog.bot.browse.range.HierarchyElement;
 import org.encog.bot.browse.range.Input;
 import org.encog.bot.browse.range.Link;
 import org.encog.bot.browse.range.Span;
@@ -49,7 +48,7 @@ public class LoadWebPage {
 	protected WebPage page;
 	protected URL base;
 	protected Form lastForm;
-	protected HierarchyElement lastHierarchyElement;
+	protected DocumentRange lastHierarchyElement;
 
 	public LoadWebPage(URL base) {
 		this.base = base;
@@ -128,7 +127,7 @@ public class LoadWebPage {
 	}
 
 	protected void loadLink(int index, HTMLTag tag) {
-		Link link = new Link();
+		Link link = new Link(this.page);
 		String href = tag.getAttributeValue("href");
 
 		if (href != null) {
@@ -140,7 +139,7 @@ public class LoadWebPage {
 	}
 
 	protected void loadTitle(int index, HTMLTag tag) {
-		DocumentRange title = new DocumentRange();
+		DocumentRange title = new DocumentRange(this.page);
 		title.setBegin(index);
 		title.setEnd(findEndTag(index + 1, tag));
 		this.page.setTitle(title);
@@ -150,7 +149,7 @@ public class LoadWebPage {
 		String method = tag.getAttributeValue("method");
 		String action = tag.getAttributeValue("action");
 
-		Form form = new Form();
+		Form form = new Form(this.page);
 		form.setBegin(index);
 		form.setEnd(findEndTag(index + 1, tag));
 
@@ -173,7 +172,7 @@ public class LoadWebPage {
 		String name = tag.getAttributeValue("name");
 		String value = tag.getAttributeValue("value");
 
-		Input input = new Input();
+		Input input = new Input(this.page);
 		input.setType(type);
 		input.setName(name);
 		input.setValue(value);
@@ -227,7 +226,7 @@ public class LoadWebPage {
 	}
 
 	private void loadSpan(int index, HTMLTag tag) {
-		Span span = new Span();
+		Span span = new Span(this.page);
 		String classAttribute = tag.getAttributeValue("class");
 		String idAttribute = tag.getAttributeValue("id");
 
@@ -239,7 +238,7 @@ public class LoadWebPage {
 	}
 
 	private void loadDiv(int index, HTMLTag tag) {
-		Div div = new Div();
+		Div div = new Div(this.page);
 		String classAttribute = tag.getAttributeValue("class");
 		String idAttribute = tag.getAttributeValue("id");
 
@@ -250,7 +249,7 @@ public class LoadWebPage {
 		addHierarchyElement(div);
 	}
 	
-	private void addHierarchyElement(HierarchyElement element)
+	private void addHierarchyElement(DocumentRange element)
 	{
 		if( this.lastHierarchyElement==null )
 			this.page.addContent(element);

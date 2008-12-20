@@ -76,7 +76,7 @@ public final class Encog {
 	 * Private constructor.
 	 */
 	private Encog() {
-		this.properties.put(Encog.ENCOG_VERSION, "1.1.0");
+		this.properties.put(Encog.ENCOG_VERSION, "1.2.0");
 		this.properties.put(Encog.ENCOG_FILE_VERSION, "0");
 	}
 

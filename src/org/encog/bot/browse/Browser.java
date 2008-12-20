@@ -32,6 +32,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.encog.bot.browse.range.DocumentRange;
 import org.encog.bot.browse.range.Form;
 import org.encog.bot.browse.range.FormElement;
 import org.encog.bot.browse.range.Input;
@@ -73,15 +74,18 @@ public class Browser {
 
 		// add the parameters if present
 		FormUtility formData = new FormUtility(os, null);
-		for (FormElement element : form.getElements()) {
-			if (element == submit || element.isAutoSend()) {
-				String name = element.getName();
-				String value = element.getValue();
-				if (name != null) {
-					if (value == null) {
-						value = "";
+		for (DocumentRange dr : form.getElements()) {
+			if (dr instanceof FormElement) {
+				FormElement element = (FormElement) dr;
+				if (element == submit || element.isAutoSend()) {
+					String name = element.getName();
+					String value = element.getValue();
+					if (name != null) {
+						if (value == null) {
+							value = "";
+						}
+						formData.add(name, value);
 					}
-					formData.add(name,value);
 				}
 			}
 		}
@@ -91,7 +95,7 @@ public class Browser {
 			String action = form.getAction().getUrl().toString();
 			os.close();
 			action += "?";
-			action +=os.toString();
+			action += os.toString();
 			targetURL = new URL(action);
 			connection = targetURL.openConnection();
 			is = connection.getInputStream();

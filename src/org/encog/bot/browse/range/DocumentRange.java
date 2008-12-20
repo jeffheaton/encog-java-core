@@ -24,6 +24,9 @@
  */
 package org.encog.bot.browse.range;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.encog.bot.browse.WebPage;
 import org.encog.bot.dataunit.DataUnit;
 import org.encog.bot.dataunit.TextDataUnit;
@@ -32,6 +35,16 @@ public class DocumentRange {
 	private int begin;
 	private int end;
 	private WebPage source;
+	private String idAttribute;
+	private String classAttribute;
+	private List<DocumentRange> elements = new ArrayList<DocumentRange>();
+	private DocumentRange parent;
+	
+	public DocumentRange(WebPage source)
+	{
+		this.source = source;
+	}
+	
 	public int getBegin() {
 		return begin;
 	}
@@ -61,6 +74,7 @@ public class DocumentRange {
 			if( du instanceof TextDataUnit)
 			{
 				result.append(du.toString());
+				result.append("\n");
 			}
 		}
 		
@@ -71,4 +85,49 @@ public class DocumentRange {
 	{
 		return getTextOnly();
 	}
+	public List<DocumentRange> getElements() {
+		return elements;
+	}
+	public void setElements(List<DocumentRange> elements) {
+		this.elements = elements;
+	}
+	public DocumentRange getParent() {
+		return parent;
+	}
+	public void setParent(DocumentRange parent) {
+		this.parent = parent;
+	}
+	
+	public void addElement(DocumentRange element)
+	{
+		this.elements.add(element);
+		element.setParent(this);
+	}
+	
+	/**
+	 * @return the idAttribute
+	 */
+	public String getIdAttribute() {
+		return idAttribute;
+	}
+	/**
+	 * @param idAttribute the idAttribute to set
+	 */
+	public void setIdAttribute(String idAttribute) {
+		this.idAttribute = idAttribute;
+	}
+
+	/**
+	 * @return the classAttribute
+	 */
+	public String getClassAttribute() {
+		return classAttribute;
+	}
+	/**
+	 * @param classAttribute the classAttribute to set
+	 */
+	public void setClassAttribute(String classAttribute) {
+		this.classAttribute = classAttribute;
+	}
+
 }

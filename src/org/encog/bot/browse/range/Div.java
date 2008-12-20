@@ -24,7 +24,15 @@
  */
 package org.encog.bot.browse.range;
 
-public class Div extends HierarchyElement {
+import org.encog.bot.browse.WebPage;
+
+public class Div extends DocumentRange {
+	
+	public Div(WebPage source)
+	{
+		super(source);
+	}
+	
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();

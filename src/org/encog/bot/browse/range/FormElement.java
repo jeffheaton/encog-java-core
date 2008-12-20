@@ -24,10 +24,17 @@
  */
 package org.encog.bot.browse.range;
 
+import org.encog.bot.browse.WebPage;
+
 abstract public class FormElement extends DocumentRange {
 	private String name;
 	private String value;
 	private Form owner;
+	
+	public FormElement(WebPage source)
+	{
+		super(source);
+	}
 	
 	public Form getOwner() {
 		return owner;
