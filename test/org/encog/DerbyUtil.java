@@ -9,15 +9,15 @@ import java.util.Properties;
 import org.encog.util.Directory;
 
 public class DerbyUtil {
-    public static final String DRIVER = "org.apache.derby.jdbc.EmbeddedDriver";
-    public static final String PROTOCOL = "jdbc:derby:";
-	public static final String DB_LOCATION = "DerbyDB";
-	public static final String UID = "user1";
-	public static final String PWD = "user1";
+ 	
+    public static final String DRIVER = "org.hsqldb.jdbcDriver";
+    public static final String URL = "jdbc:hsqldb:mem:encog";
+	public static final String UID = "sa";
+	public static final String PWD = "";
     
     public static void loadDriver() throws InstantiationException, IllegalAccessException, ClassNotFoundException 
     {
-    	Class.forName(DerbyUtil.DRIVER).newInstance();
+    	Class.forName("org.hsqldb.jdbcDriver"); 
     }
     
     public static Connection getConnection() throws SQLException
@@ -27,20 +27,14 @@ public class DerbyUtil {
         props.put("password", DerbyUtil.PWD);
 
         String dbName = "derbyDB"; // the name of the database
-    	return DriverManager.getConnection(DerbyUtil.PROTOCOL + dbName
-                + ";create=true", props);
+    	return DriverManager.getConnection(DerbyUtil.URL, props);
     }
     
-    public static void cleanup()
-    {
-    	Directory.deleteDirectory(new File(DerbyUtil.DB_LOCATION));
-    }
-
 	public static void shutdown() {
-		try {
+		/*try {
 			DriverManager.getConnection("jdbc:derby:"+DerbyUtil.DB_LOCATION+";shutdown=true");
 		} catch (SQLException e) {
-		}
+		}*/
 		
 	}
 }

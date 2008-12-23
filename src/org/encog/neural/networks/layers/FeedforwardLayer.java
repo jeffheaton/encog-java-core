@@ -129,7 +129,7 @@ public class FeedforwardLayer extends BasicLayer implements
 	 *            The pattern to create the matrix for.
 	 * @return A matrix that represents the input pattern.
 	 */
-	private Matrix createInputMatrix(final NeuralData pattern) {
+	public static Matrix createInputMatrix(final NeuralData pattern) {
 		final Matrix result = new Matrix(1, pattern.size() + 1);
 		for (int i = 0; i < pattern.size(); i++) {
 			result.set(0, i, pattern.getData(i));
