@@ -6,7 +6,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.encog.util.orm.DataObject;
 
-@Entity(name = "lexicon_word_type")
+@Entity
 @Table(name="lexicon_word_type",
     uniqueConstraints = {@UniqueConstraint(columnNames={"code"})} )
 public class WordType extends DataObject {

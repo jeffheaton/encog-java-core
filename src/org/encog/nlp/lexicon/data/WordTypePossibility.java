@@ -8,7 +8,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.encog.util.orm.DataObject;
 
-@Entity(name = "lexicon_word_type_poss")
+@Entity
 @Table(name="lexicon_word_type_poss" )
 public class WordTypePossibility extends DataObject {
 	

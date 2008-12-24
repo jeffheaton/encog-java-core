@@ -14,7 +14,7 @@ import org.encog.util.orm.DataObject;
 import org.hibernate.annotations.Index;
 
 
-@Entity(name = "lexicon_word" )
+@Entity
 @Table(name="lexicon_word",
     uniqueConstraints = {@UniqueConstraint(columnNames={"text"})} )
 public class Word extends DataObject {

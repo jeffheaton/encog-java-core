@@ -8,7 +8,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.encog.util.orm.DataObject;
 
-@Entity(name = "lexicon_fix")
+@Entity
 @Table(name="lexicon_fix",
     uniqueConstraints = {@UniqueConstraint(columnNames={"text","pre"})} )
 public class Fix extends DataObject {
