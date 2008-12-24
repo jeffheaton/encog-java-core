@@ -21,7 +21,7 @@ public class Lemma extends DataObject {
 	private Collection<Word> uses = new ArrayList<Word>();
 	
 	
-	@ManyToOne(targetEntity = Word.class)
+	@ManyToOne
 	@JoinColumn(nullable = false)
 	private Word root;
 	

@@ -16,7 +16,7 @@ public class Fix extends DataObject {
 	private String text;
 	private boolean pre;
 	
-	@ManyToOne(targetEntity = WordType.class)
+	@ManyToOne
 	@JoinColumn(nullable = true)
 	private WordType wordType;
 	

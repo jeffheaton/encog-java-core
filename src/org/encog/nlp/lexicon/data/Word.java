@@ -22,7 +22,7 @@ public class Word extends DataObject {
 	@Index( name="index_lexicon_word")
 	private String text;
 
-	@ManyToOne(targetEntity = Lemma.class)
+	@ManyToOne
 	@JoinColumn(nullable = true)
 	private Lemma lemma;
 	
