@@ -30,6 +30,15 @@ public class SessionManager {
 		init(new AnnotationConfiguration().configure());
 	}
 	
+	public void initHSQL(String path)
+	{
+		init("org.hsqldb.jdbcDriver",
+			"jdbc:hsqldb:file:"+path,
+			"sa",
+			"",
+			"org.hibernate.dialect.HSQLDialect");
+	}
+	
 	public void init(String driver,String url,String uid,String pwd,String dialect)
 	{
 		AnnotationConfiguration config = new AnnotationConfiguration();
