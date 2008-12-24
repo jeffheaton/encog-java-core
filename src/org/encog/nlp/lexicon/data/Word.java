@@ -23,11 +23,9 @@ public class Word extends DataObject {
 	private String text;
 
 	@ManyToOne
-	@JoinColumn(nullable = true)
 	private Lemma lemma;
 	
 	@OneToMany(mappedBy = "word" )
-	@JoinColumn(name = "id", nullable = false)
 	private Collection<WordTypePossibility> types = new ArrayList<WordTypePossibility>();
 
 	public String getText() {

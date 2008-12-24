@@ -17,12 +17,10 @@ import org.encog.util.orm.DataObject;
 public class Lemma extends DataObject {
 
 	@OneToMany(mappedBy = "lemma" )
-	@JoinColumn(name = "id", nullable = false)
 	private Collection<Word> uses = new ArrayList<Word>();
 	
 	
 	@ManyToOne
-	@JoinColumn(nullable = false)
 	private Word root;
 	
 	@Override

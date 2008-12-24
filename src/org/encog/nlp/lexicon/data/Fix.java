@@ -17,7 +17,6 @@ public class Fix extends DataObject {
 	private boolean pre;
 	
 	@ManyToOne
-	@JoinColumn(nullable = true)
 	private WordType wordType;
 	
 	@Override

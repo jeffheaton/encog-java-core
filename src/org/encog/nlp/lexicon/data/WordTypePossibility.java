@@ -13,11 +13,9 @@ import org.encog.util.orm.DataObject;
 public class WordTypePossibility extends DataObject {
 	
 	@ManyToOne(targetEntity = Word.class)
-	@JoinColumn(nullable = false)
 	private Word word;
 	
 	@ManyToOne(targetEntity = WordType.class)
-	@JoinColumn(nullable = false)
 	private WordType type;
 	
 	@Override

@@ -1,5 +1,8 @@
 package org.encog.util.orm;
 
+import java.sql.SQLException;
+
+import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 
@@ -43,15 +46,28 @@ public class ORMSession {
 	{
 		return session.createQuery(sql);
 	}
-		
-	public void close()
+	
+	public Query createSQLQuery(String sql)
 	{
-		session.close();
+		return session.createSQLQuery(sql);
+	}
+		
+	public void close() 
+	{
+		try
+		{
+			session.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	public void clear()
 	{
 		session.clear();
+
 	}
 	
 	public void evict(DataObject obj)
@@ -62,6 +78,10 @@ public class ORMSession {
 	public void flush()
 	{
 		session.flush();
+	}
+
+	public void executeSQL(String sql) {
+		createSQLQuery(sql).executeUpdate();
 	}
 
 }

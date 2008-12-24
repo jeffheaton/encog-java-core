@@ -33,7 +33,7 @@ public class SessionManager {
 	public void initHSQL(String path)
 	{
 		init("org.hsqldb.jdbcDriver",
-			"jdbc:hsqldb:file:"+path,
+			"jdbc:hsqldb:file:"+path+";type=cached;shutdown=true",
 			"sa",
 			"",
 			"org.hibernate.dialect.HSQLDialect");
