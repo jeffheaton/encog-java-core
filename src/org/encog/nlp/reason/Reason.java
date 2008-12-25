@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.nlp.Context;
+import org.encog.nlp.lexicon.EncogLexicon;
+import org.encog.nlp.lexicon.data.Lemma;
+import org.encog.nlp.lexicon.data.Word;
 import org.encog.nlp.memory.Concept;
 import org.encog.nlp.memory.ConstConcept;
 import org.encog.nlp.memory.Relation;
@@ -94,10 +97,21 @@ public class Reason {
 		}
 	}
 
-	public Concept getWordType(final String word) {
+	/*public Concept getWordType(final String word) {
+		
 		final VarConcept concept = this.context.getMemory().getConcepts()
 				.create(word);
 
+		Word lexWord = this.context.getLexicon().findWord(word);
+		if(lexWord!=null)
+		{
+			Lemma lexLemma = this.context.getLexicon().findLemma(lexWord);
+			if( lexLemma.hasUse(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_SPLIT)) )
+			{
+				return 
+			}
+		}
+		
 		final List<Relation> list = searchSourceType(concept,
 				ConstConcept.CONCEPT_SUBTYPE);
 
@@ -116,7 +130,7 @@ public class Reason {
 			}
 		}
 		return null;
-	}
+	}*/
 
 	public boolean query3(final RelationHolder question) {
 		for (final Relation shortRelation : question.getBaseRelations()) {

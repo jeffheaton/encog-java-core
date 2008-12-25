@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.nlp.Context;
+import org.encog.nlp.lexicon.EncogLexicon;
+import org.encog.nlp.lexicon.data.Lemma;
+import org.encog.nlp.lexicon.data.Word;
 import org.encog.nlp.memory.Concept;
 import org.encog.nlp.memory.ConstConcept;
 import org.encog.nlp.memory.Relation;
@@ -168,6 +171,11 @@ public class EvaluateText extends ParseText {
 			this.currentWord++;
 		}
 	}
+	
+	private boolean isWordType(Word usedWord, Lemma lemma, String type)
+	{
+		return context.getLexicon().hasWordType(usedWord,lemma,context.getLexicon().getWordType(type));
+	}
 
 	void parseWord(String word) {
 		// System.out.println(">>>>>>" + word);
@@ -190,8 +198,15 @@ public class EvaluateText extends ParseText {
 		} else if (compareWord("to have its own")) {
 			word = "owns";
 		}
-
-		final Concept wordType = this.reason.getWordType(word);
+		
+		Word lexWord = context.getLexicon().findWord(word);
+		Lemma lemma = context.getLexicon().findLemma(lexWord);
+		
+		boolean isQuestionEmbed = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_QUESTION_EMBED));
+		boolean isQuestionSimple = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_QUESTION_SIMPLE));
+		boolean isSplit = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_SPLIT));
+		boolean isAction = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_SPLIT));
+		
 		final int location = getLocation();
 
 		if (word.equals("(")) {
@@ -206,8 +221,8 @@ public class EvaluateText extends ParseText {
 		} else if (word.equals("a") || word.equals("an") || word.equals("the")) {
 			return;
 		} else if ((location == Relation.RELATION_NODE_SOURCE || location == Relation.RELATION_NODE_NONE)
-				&& (wordType == ConstConcept.CONCEPT_WTYPE_QUESTION_EMBED || wordType == ConstConcept.CONCEPT_WTYPE_QUESTION_SIMPLE)) {
-			if (wordType == ConstConcept.CONCEPT_WTYPE_QUESTION_EMBED) {
+				&& (isQuestionEmbed || isQuestionSimple)) {
+			if (isQuestionEmbed) {
 				this.actions.beginQuestion(word);
 			} else {
 				this.type = TYPE_YESNO;
@@ -218,7 +233,7 @@ public class EvaluateText extends ParseText {
 			this.actions.side(location, this.context.getTypeConcept("of"),
 					this.context.getMemory().getConcepts().create(
 							stripPossessive(word)));
-		} else if (ConstConcept.CONCEPT_WTYPE_SPLIT.equals(wordType))// split
+		} else if (isSplit)// split
 		// words
 		{
 			this.actions.split();
@@ -233,7 +248,7 @@ public class EvaluateText extends ParseText {
 		} else if (word.equals("of") || word.equals("by")
 				|| word.equals("with") || word.equals("in")
 				|| word.equals("as") || word.equals("for")
-				|| ConstConcept.CONCEPT_WTYPE_ACTION.equals(wordType)) { // action words
+				|| isAction) { // action words
 			if (location == Relation.RELATION_NODE_TARGET) {
 				if (this.lastRelation
 						.countContents(Relation.RELATION_NODE_TARGET) < 1) {

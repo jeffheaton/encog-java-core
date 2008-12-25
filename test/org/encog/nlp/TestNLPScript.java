@@ -19,7 +19,10 @@ import junit.framework.TestCase;
 
 import org.encog.EncogError;
 import org.encog.nlp.Context;
+import org.encog.nlp.lexicon.EncogLexicon;
 import org.encog.nlp.memory.RomMemory;
+import org.encog.util.orm.ORMSession;
+import org.encog.util.orm.SessionManager;
 
 
 /**
@@ -28,12 +31,26 @@ import org.encog.nlp.memory.RomMemory;
  */
 public class TestNLPScript extends TestCase {
 	private Context context;
+	
+	
+	static final String DRIVER = "com.mysql.jdbc.Driver";
+    static final String URL = "jdbc:mysql://localhost/lex2";
+    static final String UID = "root";
+    static final String PWD = "";
+    static final String DIALECT = "org.hibernate.dialect.MySQLDialect";
+	
     
     /** Creates a new instance of UnitTest 
      * @throws IOException */
     public TestNLPScript() throws IOException { 
+    	
+    	SessionManager.getInstance().init(DRIVER, URL, UID, PWD, DIALECT);
+    	
+    	//SessionManager.getInstance().initHSQL("/Users/jeff/Data/encog");
+		ORMSession session = SessionManager.getInstance().openSession();
+    	EncogLexicon lexicon = new EncogLexicon(session);
     	context = new Context();
-    	context.init();
+    	context.init(lexicon);
         RomMemory.load(context.getMemory());       
     }
     
@@ -53,6 +70,7 @@ public class TestNLPScript extends TestCase {
         do
         {
             line = r.readLine();
+            System.out.println(line);
             if( line!=null )
             {
                 int i = line.indexOf(':');

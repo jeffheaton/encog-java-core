@@ -26,6 +26,7 @@ package org.encog.nlp;
 
 import java.io.IOException;
 
+import org.encog.nlp.lexicon.EncogLexicon;
 import org.encog.nlp.memory.Concept;
 import org.encog.nlp.memory.ConstConcept;
 import org.encog.nlp.memory.LongTermMemory;
@@ -42,6 +43,7 @@ public class Context {
 	private EvaluateText evaluate;
 	private Parse parse;
 	private UnitManager units;
+	private EncogLexicon lexicon;
 	
 	private void initParse() 
 	{
@@ -94,13 +96,18 @@ public class Context {
 		this.units = units;
 	}
 
-	public void init() throws IOException
+	public void init(EncogLexicon lexicon) throws IOException
 	{
+		this.lexicon = lexicon;
 		initParse();
 		initNLP();
 	}
 	
-    public Concept getTypeConcept(String word)
+    public EncogLexicon getLexicon() {
+		return lexicon;
+	}
+
+	public Concept getTypeConcept(String word)
     {
         if( word.equalsIgnoreCase("has") || word.equalsIgnoreCase("have") )
             return ConstConcept.CONCEPT_HAS;

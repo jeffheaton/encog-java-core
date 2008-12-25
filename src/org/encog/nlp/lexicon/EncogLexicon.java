@@ -63,12 +63,14 @@ public class EncogLexicon {
 		return (Word)q.uniqueResult();
 	}
 	
+	public Lemma findLemma(String str)
+	{
+		Word word = this.findWord(str);
+		return this.findLemma(word);
+	}
+	
 	public Lemma findLemma(Word word)
 	{
-		if( word==null )
-		{
-			System.out.println("CRUD!");
-		}
 		Query q = session.createQuery("from org.encog.nlp.lexicon.data.Lemma where root = :w");
 		q.setEntity("w", word);
 		return (Lemma)q.uniqueResult();
@@ -230,6 +232,22 @@ public class EncogLexicon {
 	public WordType getWordType(String code)
 	{
 		return this.wordTypes.get(code);
+	}
+
+	public void addType(String word, WordType wordType) {
+		addType(findWord(word),wordType);
+		
+	}
+
+	public boolean hasWordType(Word usedWord,Lemma lemma, WordType wordType) {
+		for(Word pos: lemma.getUses())
+		{
+			if( usedWord.equals(pos) && pos.hasType(wordType))
+			{
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }

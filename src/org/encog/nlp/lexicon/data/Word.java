@@ -85,5 +85,9 @@ public class Word extends DataObject {
 		result.append("]");
 		return result.toString();
 	}
+
+	public boolean hasType(WordType wordType) {
+		return this.types.contains(wordType);
+	}
 	
 }
