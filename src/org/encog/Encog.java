@@ -28,6 +28,7 @@ package org.encog;
 import java.util.HashMap;
 import java.util.Map;
 
+
 /**
  * Main Encog class, does little more than provide version information.
  * 
