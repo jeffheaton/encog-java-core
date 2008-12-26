@@ -35,7 +35,7 @@ Submit:Is Jack a sister?
 Expect:Okay.
 Submit:A male is a male person.
 Expect:Okay.
-Submit:A man is an individual that produces small usually mobile gametes which fertilize the eggs of a female.
+Submit:A man is an individual that produces small mobile gametes which fertilize the eggs of a female.
 Expect:Yes
 Submit:Does a man produce gametes?
 Expect:No

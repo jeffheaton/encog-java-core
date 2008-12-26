@@ -74,6 +74,18 @@ public class Lemma extends DataObject {
 	public void setRoot(Word root) {
 		this.root = root;
 	}
+
+
+	public Word findFix(Fix fix) {
+		for(Word word: this.uses)
+		{
+			if( word.hasFix(fix) )
+			{
+				return word;
+			}
+		}
+		return null;
+	}
 	
 	
 	

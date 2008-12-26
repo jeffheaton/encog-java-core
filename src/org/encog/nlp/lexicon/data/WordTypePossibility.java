@@ -40,6 +40,16 @@ public class WordTypePossibility extends DataObject {
 		this.type = type;
 	}
 	
+	@Override
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[WordTypePossibility:");
+		result.append(this.type.getCode());
+		result.append("]");
+		return result.toString();
+	}
+	
 	
 
 }

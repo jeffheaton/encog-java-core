@@ -135,9 +135,15 @@ public class EncogLexicon {
 		{
 			if( str.endsWith(fix.getText())  && word.length()>fix.length()  )
 			{
-				Word temp = findWord(str.substring(0,str.length()-fix.length()));
-				if( temp!=null )
-					return temp;
+				Word result;
+				String removed = str.substring(0,str.length()-fix.length());
+				result = this.findWord(removed);
+				if( result==null )
+				{
+					result = this.findWord(removed+"e");
+				}
+				if( result!=null )
+					return result;
 			}
 		}
 		else if( fix.isPre() )
@@ -184,6 +190,7 @@ public class EncogLexicon {
 	{
 		// determine all prefixes and suffixes that this word has
 		Collection<Fix> fixes = determineWordFixes(word);
+		word.getFixes().addAll(fixes);
 		
 		// determine the root word and setup word types by fix
 		Word rootWord = word;
@@ -249,5 +256,6 @@ public class EncogLexicon {
 		}
 		return false;
 	}
-	
+
+
 }

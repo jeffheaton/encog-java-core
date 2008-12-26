@@ -49,6 +49,7 @@ public class TestNLPScript extends TestCase {
     	//SessionManager.getInstance().initHSQL("/Users/jeff/Data/encog");
 		ORMSession session = SessionManager.getInstance().openSession();
     	EncogLexicon lexicon = new EncogLexicon(session);
+    	lexicon.loadCache();
     	context = new Context();
     	context.init(lexicon);
         RomMemory.load(context.getMemory());       
@@ -81,6 +82,7 @@ public class TestNLPScript extends TestCase {
                     String s = context.getEvaluate().parse(rest);
                     if( expect!=null ) 
                     {
+                    	System.out.println("O:"+s);
                     	Assert.assertTrue(s.equalsIgnoreCase(expect));
                     }
                     expect = null;

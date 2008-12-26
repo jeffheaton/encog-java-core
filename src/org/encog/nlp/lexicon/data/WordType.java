@@ -32,5 +32,14 @@ public class WordType extends DataObject {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public String toString()
+	{
+		StringBuilder result =  new StringBuilder();
+		result.append("[WordType:");
+		result.append(this.code);
+		result.append("]");
+		return result.toString();
+	}
 
 }

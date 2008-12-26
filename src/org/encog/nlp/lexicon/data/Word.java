@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -28,6 +29,10 @@ public class Word extends DataObject {
 	@OneToMany(mappedBy = "word" )
 	private Collection<WordTypePossibility> types = new ArrayList<WordTypePossibility>();
 
+	@ManyToMany
+	private Collection<Fix> fixes = new ArrayList<Fix>();
+	
+	
 	public String getText() {
 		return text;
 	}
@@ -87,7 +92,25 @@ public class Word extends DataObject {
 	}
 
 	public boolean hasType(WordType wordType) {
-		return this.types.contains(wordType);
+		for( WordTypePossibility pos: this.types)
+		{
+			if( pos.getType().equals(wordType) )
+				return true;
+		}
+		return false;
 	}
+
+	public Collection<Fix> getFixes() {
+		return fixes;
+	}
+
+	public boolean hasFix(Fix fix) {
+		if( fix.isPre() )
+			return this.text.startsWith(fix.getText());
+		else
+			return this.text.endsWith(fix.getText());
+	}
+	
+	
 	
 }

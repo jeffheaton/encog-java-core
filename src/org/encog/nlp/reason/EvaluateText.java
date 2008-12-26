@@ -171,11 +171,6 @@ public class EvaluateText extends ParseText {
 			this.currentWord++;
 		}
 	}
-	
-	private boolean isWordType(Word usedWord, Lemma lemma, String type)
-	{
-		return context.getLexicon().hasWordType(usedWord,lemma,context.getLexicon().getWordType(type));
-	}
 
 	void parseWord(String word) {
 		// System.out.println(">>>>>>" + word);
@@ -200,12 +195,24 @@ public class EvaluateText extends ParseText {
 		}
 		
 		Word lexWord = context.getLexicon().findWord(word);
-		Lemma lemma = context.getLexicon().findLemma(lexWord);
+		Lemma lemma = null;
 		
-		boolean isQuestionEmbed = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_QUESTION_EMBED));
-		boolean isQuestionSimple = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_QUESTION_SIMPLE));
-		boolean isSplit = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_SPLIT));
-		boolean isAction = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_SPLIT));
+		if( lexWord!=null )
+			lemma = context.getLexicon().findLemma(lexWord);
+		
+		boolean isQuestionEmbed = false;
+		boolean isQuestionSimple = false;
+		boolean isSplit = false;
+		boolean isAction = false;
+		
+		if( lexWord!=null )
+		{
+			isQuestionEmbed = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_QUESTION_EMBED));
+			isQuestionSimple = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_QUESTION_SIMPLE));
+			isSplit = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_SPLIT));
+			isAction = lexWord.hasType(context.getLexicon().getWordType(EncogLexicon.WORD_TYPE_ACTION));
+		}
+
 		
 		final int location = getLocation();
 
