@@ -34,6 +34,8 @@ import java.io.*;
 public class Parse {  
   private static UnitManager unitManager;
   private ParseTemplate template;
+  public static final String RESOURCE_NAME = "org/encog/data/template.eg";
+  public static final String RESOURCE_ITEM_NAME = "parse-native";
 
   public Signal parseFile(String name)
   {
@@ -107,8 +109,8 @@ public ParseTemplate getTemplate() {
 
 public void load()  {
 	EncogPersistedCollection encog = new EncogPersistedCollection();
-	encog.loadResource("org/encog/data/template.eg");
-	this.template = (ParseTemplate) encog.find("parse-native");
+	encog.loadResource(Parse.RESOURCE_NAME);
+	this.template = (ParseTemplate) encog.find(Parse.RESOURCE_ITEM_NAME);
 }
 
 

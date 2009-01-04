@@ -149,4 +149,22 @@ public class Recognize {
 	public void setSignalClass(Class signalClass) {
 		this.signalClass = signalClass;
 	}
+	
+	
+	
+	/**
+	 * @return the pattern
+	 */
+	public List<RecognizeElement> getPattern() {
+		return pattern;
+	}
+
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[Recognize:");
+		result.append(this.type);
+		result.append(']');
+		return result.toString();
+	}
 }

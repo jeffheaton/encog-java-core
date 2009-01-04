@@ -101,4 +101,13 @@ public class RecognizeElement {
     } else
       return( charsKnown.indexOf(signal.getValue())!=-1 );       
   }
+  
+  public String toString()
+  {
+	  StringBuilder result = new StringBuilder();
+	  result.append("[RecognizeElement:");
+	  result.append(this.name);
+	  result.append(']');
+	  return result.toString();
+  }
 }
