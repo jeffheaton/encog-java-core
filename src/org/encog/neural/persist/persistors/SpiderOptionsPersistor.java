@@ -13,8 +13,10 @@ public class SpiderOptionsPersistor implements Persistor {
 	
 	
 	public EncogPersistedObject load(Element node) {
+		SpiderOptions result = new SpiderOptions();
 		XML2Object xml2obj = new XML2Object();
-		return xml2obj.load(node, new SpiderOptions());
+		xml2obj.load(node, result);
+		return result;
 	}
 
 	public void save(EncogPersistedObject object, TransformerHandler hd) {

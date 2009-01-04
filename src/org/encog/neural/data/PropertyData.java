@@ -40,4 +40,17 @@ public class PropertyData implements EncogPersistedObject {
 	{
 		data.put(name,value);
 	}
+	
+	public int size() {
+		return this.data.size();
+	}
+	public Map<String, String> getMap() {
+		return this.data;
+	}
+	public boolean isDefined(String key) {
+		return this.data.containsKey(key);
+	}
+	public void remove(String key) {
+		this.data.remove(key);	
+	}
 }

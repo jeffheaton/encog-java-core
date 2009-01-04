@@ -15,9 +15,11 @@ import org.w3c.dom.Node;
 
 public class XML2Object {
 
-	public EncogPersistedObject load(Element node, EncogPersistedObject target) {
+	public void load(Element node, EncogPersistedObject target) {
 
 		try {
+			target.setName(node.getAttribute("name"));
+			target.setDescription(node.getAttribute("description"));
 			for (Node child = node.getFirstChild(); child != null; child = child
 					.getNextSibling()) {
 				if (!(child instanceof Element)) {
@@ -44,7 +46,6 @@ public class XML2Object {
 				}
 
 			}
-			return target;
 		} catch (NoSuchFieldException e) {
 			throw new EncogError(e);
 		} catch (NumberFormatException e) {
