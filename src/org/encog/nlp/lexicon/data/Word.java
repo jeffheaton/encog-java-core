@@ -28,6 +28,8 @@ public class Word extends DataObject {
 	
 	@OneToMany(mappedBy = "word" )
 	private Collection<WordTypePossibility> types = new ArrayList<WordTypePossibility>();
+	
+	private int gutenbergCount;
 
 	@ManyToMany
 	private Collection<Fix> fixes = new ArrayList<Fix>();
@@ -76,6 +78,16 @@ public class Word extends DataObject {
 
 	public Collection<WordTypePossibility> getTypes() {
 		return types;
+	}
+	
+	
+
+	public int getGutenbergCount() {
+		return gutenbergCount;
+	}
+
+	public void setGutenbergCount(int gutenbergCount) {
+		this.gutenbergCount = gutenbergCount;
 	}
 
 	@Override
