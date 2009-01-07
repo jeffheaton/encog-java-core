@@ -43,6 +43,11 @@ public class Recognize {
 	public Recognize(String type) {
 		this.type = type;
 	}
+	
+	public Recognize()
+	{
+		this.type = "Untitled";
+	}
 
 	public void add(RecognizeElement re) {
 		pattern.add(re);
