@@ -245,6 +245,13 @@ public class EncogLexicon {
 		addType(findWord(word),wordType);
 		
 	}
+	
+	public void registerGutenbergCount(String word, int count)
+	{
+		Word w = obtainWord(word);
+		w.setGutenbergCount(w.getGutenbergCount()+count);
+		session.save(w);
+	}
 
 	public boolean hasWordType(Word usedWord,Lemma lemma, WordType wordType) {
 		for(Word pos: lemma.getUses())
