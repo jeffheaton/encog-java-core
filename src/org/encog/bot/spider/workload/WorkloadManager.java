@@ -24,17 +24,50 @@
  */
 package org.encog.bot.spider.workload;
 
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.encog.bot.spider.Spider;
 
 /**
- * WorkloadManager: This interface defines a workload manager. A workload
- * manager handles the lists of URLs that have been processed, resulted in an
- * error, and are waiting to be processed.
+ * MemoryWorkloadManager: This class implements a workload manager that stores
+ * the list of URL's in memory. This workload manager only supports spidering
+ * against a single host. For multiple hosts use the SQLWorkloadManager.
  */
-public interface WorkloadManager {
+public class WorkloadManager {
+	
+	/**
+	 * How many seconds to wait for work.
+	 */
+	public static final int WAIT_FOR_WORK = 5;
+	
+	/**
+	 * The current workload, a map between URL and URLStatus objects.
+	 */
+	private final Map<URL, URLStatus> workload = new HashMap<URL, URLStatus>();
+
+	/**
+	 * The list of those items, which are already in the workload, that are
+	 * waiting for processing.
+	 */
+	private final BlockingQueue<URL> waiting = new LinkedBlockingQueue<URL>();
+
+	/**
+	 * How many URL's are currently being processed.
+	 */
+	private int workingCount = 0;
+
+	/**
+	 * Because the MemoryWorkloadManager only supports a single host, the
+	 * currentHost is set to the host of the first URL added.
+	 */
+	private String currentHost;
+
 	/**
 	 * Add the specified URL to the workload.
 	 * 
@@ -45,24 +78,39 @@ public interface WorkloadManager {
 	 * @param depth
 	 *            The depth of this URL.
 	 * @return True if the URL was added, false otherwise.
-	 * @throws WorkloadException
 	 */
-	boolean add(URL url, URL source, int depth);
+	public boolean add(final URL url, final URL source, final int depth) {
+		if (!contains(url)) {
+			this.waiting.add(url);
+			setStatus(url, source, URLStatus.Status.WAITING, depth);
+			if (this.currentHost == null) {
+				this.currentHost = url.getHost().toLowerCase();
+			}
+			return true;
+		}
+		return false;
+
+	}
 
 	/**
 	 * Clear the workload.
 	 */
-	void clear();
+	public void clear() {
+		this.workload.clear();
+		this.waiting.clear();
+		this.workingCount = 0;
+	}
 
 	/**
 	 * Determine if the workload contains the specified URL.
 	 * 
 	 * @param url
-	 *            The URL to search for.
-	 * @return True if the specified URL is contained.
-	 * @throws WorkloadException
+	 *            The URL to check.
+	 * @return True if the URL is contained by the workload.
 	 */
-	boolean contains(URL url);
+	public boolean contains(final URL url) {
+		return this.workload.containsKey(url);
+	}
 
 	/**
 	 * Convert the specified String to a URL. If the string is too long or has
@@ -72,14 +120,22 @@ public interface WorkloadManager {
 	 *            A String to convert into a URL.
 	 * @return The URL.
 	 */
-	URL convertURL(String url);
+	public URL convertURL(final String url) {
+		try {
+			return new URL(url);
+		} catch (final MalformedURLException e) {
+			throw new WorkloadError(e);
+		}
+	}
 
 	/**
 	 * Get the current host.
 	 * 
 	 * @return The current host.
 	 */
-	String getCurrentHost();
+	public String getCurrentHost() {
+		return this.currentHost;
+	}
 
 	/**
 	 * Get the depth of the specified URL.
@@ -88,7 +144,11 @@ public interface WorkloadManager {
 	 *            The URL to get the depth of.
 	 * @return The depth of the specified URL.
 	 */
-	int getDepth(URL url);
+	public int getDepth(final URL url) {
+		final URLStatus s = this.workload.get(url);
+		assert s != null;
+		return s.getDepth();
+	}
 
 	/**
 	 * Get the source page that contains the specified URL.
@@ -97,7 +157,13 @@ public interface WorkloadManager {
 	 *            The URL to seek the source for.
 	 * @return The source of the specified URL.
 	 */
-	URL getSource(URL url);
+	public URL getSource(final URL url) {
+		final URLStatus s = this.workload.get(url);
+		if (s == null) {
+			return null;
+		}
+		return s.getSource();
+	}
 
 	/**
 	 * Get a new URL to work on. Wait if there are no URL's currently available.
@@ -106,15 +172,30 @@ public interface WorkloadManager {
 	 * 
 	 * @return The next URL to work on,
 	 */
-	URL getWork();
+	public URL getWork() {
+		URL url;
+		try {
+			url = this.waiting.poll(WAIT_FOR_WORK, TimeUnit.SECONDS);
+			if (url != null) {
+				setStatus(url, null, URLStatus.Status.WORKING, -1);
+				this.workingCount++;
+			}
+			return url;
+		} catch (final InterruptedException e) {
+			return null;
+		}
+
+	}
 
 	/**
-	 * Setup this workload manager for the specified spider.
+	 * Setup this workload manager for the specified spider. This method is not
+	 * used by the MemoryWorkloadManager.
 	 * 
 	 * @param spider
 	 *            The spider using this workload manager.
 	 */
-	void init(Spider spider);
+	public void init(final Spider spider) {
+	}
 
 	/**
 	 * Mark the specified URL as error.
@@ -122,7 +203,13 @@ public interface WorkloadManager {
 	 * @param url
 	 *            The URL that had an error.
 	 */
-	void markError(URL url);
+	public void markError(final URL url) {
+		this.workingCount--;
+		assert this.workingCount > 0;
+		this.waiting.remove(url);
+		setStatus(url, null, URLStatus.Status.ERROR, -1);
+
+	}
 
 	/**
 	 * Mark the specified URL as successfully processed.
@@ -130,38 +217,88 @@ public interface WorkloadManager {
 	 * @param url
 	 *            The URL to mark as processed.
 	 */
-	void markProcessed(URL url);
+	public void markProcessed(final URL url) {
+		this.workingCount--;
+		assert this.workingCount > 0;
+		this.waiting.remove(url);
+		setStatus(url, null, URLStatus.Status.PROCESSED, -1);
+	}
 
 	/**
 	 * Move on to process the next host. This should only be called after
-	 * getWork returns null.
+	 * getWork returns null. Because the MemoryWorkloadManager is single host
+	 * only, this function simply returns null.
 	 * 
 	 * @return The name of the next host.
 	 */
-	String nextHost();
+	public String nextHost() {
+		return null;
+	}
 
 	/**
 	 * Setup the workload so that it can be resumed from where the last spider
 	 * left the workload.
 	 */
-	void resume();
+	public void resume() {
+		throw new WorkloadError(
+				"Memory based workload managers can not resume.");
+	}
+
+	/**
+	 * Set the source, status and depth for the specified URL.
+	 * 
+	 * @param url
+	 *            The URL to set.
+	 * @param source
+	 *            The source of this URL.
+	 * @param status
+	 *            The status of this URL.
+	 * @param depth
+	 *            The depth of this URL.
+	 */
+	private void setStatus(final URL url, final URL source,
+			final URLStatus.Status status, final int depth) {
+		URLStatus s = this.workload.get(url);
+		if (s == null) {
+			s = new URLStatus();
+			this.workload.put(url, s);
+		}
+		s.setStatus(status);
+
+		if (source != null) {
+			s.setSource(source);
+		}
+
+		if (depth != -1) {
+			s.setDepth(depth);
+		}
+	}
 
 	/**
 	 * If there is currently no work available, then wait until a new URL has
-	 * been added to the workload.
+	 * been added to the workload. Because the MemoryWorkloadManager uses a
+	 * blocking queue, this method is not needed. It is implemented to support
+	 * the interface.
 	 * 
 	 * @param time
 	 *            The amount of time to wait.
 	 * @param length
-	 *            What time unit is being used.
+	 *            What tiem unit is being used.
 	 */
-	void waitForWork(int time, TimeUnit length);
+	public void waitForWork(final int time, final TimeUnit length) {
+	}
 
 	/**
 	 * Return true if there are no more workload units.
 	 * 
 	 * @return Returns true if there are no more workload units.
 	 */
-	boolean workloadEmpty();
+	public boolean workloadEmpty() {
+		if (!this.waiting.isEmpty()) {
+			return false;
+		}
+
+		return this.workingCount < 1;
+	}
 
 }

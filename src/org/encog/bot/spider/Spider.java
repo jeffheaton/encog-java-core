@@ -30,9 +30,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeUnit; 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -78,17 +80,13 @@ public class Spider {
 	/**
 	 * The Java thread executor that will manage the thread pool.
 	 */
-	private final ThreadPoolExecutor threadPool;
+	private final ExecutorService threadPool;
 
 	/**
 	 * The BlockingQueue that will hold tasks for the thread pool.
 	 */
 	private final BlockingQueue<Runnable> tasks;
 
-	/**
-	 * The options for the spider.
-	 */
-	private final SpiderOptions options;
 
 	/**
 	 * Filters used to block specific URL's.
@@ -104,6 +102,10 @@ public class Spider {
 	 * The time that the spider ended.
 	 */
 	private Date stopTime;
+	
+	private String userAgent;
+	private int timeout;
+	private int maxDepth = -1;
 
 	/**
 	 * Construct a spider object. The options parameter specifies the options
@@ -117,56 +119,15 @@ public class Spider {
 	 *            A class that implements the SpiderReportable interface, that
 	 *            will receive information that the spider finds.
 	 */
-	public Spider(final SpiderOptions options, final SpiderReportable report) {
-		this.options = options;
+	public Spider(final int threads, final SpiderReportable report) {
+
 		this.report = report;
-
-		try {
-			this.workloadManager = (WorkloadManager) Class.forName(
-					options.getWorkloadManager()).newInstance();
-		} catch (final InstantiationException e) {
-			throw new SpiderError(e);
-		} catch (final IllegalAccessException e) {
-			throw new SpiderError(e);
-		} catch (final ClassNotFoundException e) {
-			throw new SpiderError(e);
-		}
-
+		this.workloadManager = new WorkloadManager();
 		this.workloadManager.init(this);
 		report.init(this);
 
 		this.tasks = new SynchronousQueue<Runnable>();
-		this.threadPool = new ThreadPoolExecutor(options.getCorePoolSize(),
-				options.getMaximumPoolSize(), options.getKeepAliveTime(),
-				TimeUnit.SECONDS, this.tasks);
-		this.threadPool
-				.setRejectedExecutionHandler(
-						new ThreadPoolExecutor.CallerRunsPolicy());
-
-		// add filters
-		if (options.getFilter() != null) {
-			for (final String name : options.getFilter()) {
-				SpiderFilter filter;
-				try {
-					filter = (SpiderFilter) Class.forName(name).newInstance();
-				} catch (final InstantiationException e) {
-					throw new SpiderError(e);
-				} catch (final IllegalAccessException e) {
-					throw new SpiderError(e);
-				} catch (final ClassNotFoundException e) {
-					throw new SpiderError(e);
-				}
-				this.filters.add(filter);
-			}
-		}
-
-		// perform startup
-		if (options.getStartup().equalsIgnoreCase(
-				SpiderOptions.STARTUP_RESUME)) {
-			this.workloadManager.resume();
-		} else {
-			this.workloadManager.clear();
-		}
+		this.threadPool = Executors.newFixedThreadPool(threads);
 	}
 
 	/**
@@ -178,8 +139,8 @@ public class Spider {
 	 */
 	public void addURL(final URL url, final URL source, final int depth) {
 		// check the depth
-		if (this.options.getMaxDepth() != -1 
-				&& depth > this.options.getMaxDepth()) {
+		if (this.maxDepth != -1 
+				&& depth > this.maxDepth) {
 			return;
 		}
 
@@ -218,14 +179,6 @@ public class Spider {
 		return this.filters;
 	}
 
-	/**
-	 * Get the options for this spider.
-	 * 
-	 * @return The options for this spider.
-	 */
-	public SpiderOptions getOptions() {
-		return this.options;
-	}
 
 	/**
 	 * Get the object that the spider reports to.
@@ -298,7 +251,7 @@ public class Spider {
 		// second, notify any filters of a new host
 		for (final SpiderFilter filter : this.filters) {
 			try {
-				filter.newHost(host, this.options.getUserAgent());
+				filter.newHost(host, this.userAgent);
 			} catch (final IOException e) {
 				logger.log(Level.INFO, "Error while reading robots.txt file:"
 						+ e.getMessage());
@@ -314,8 +267,7 @@ public class Spider {
 			} else {
 				this.workloadManager.waitForWork(WAIT4WORK, TimeUnit.SECONDS);
 			}
-		} while ((url != null || this.threadPool.getActiveCount() > 0)
-				&& !this.cancel);
+		} while ((url != null ) && !this.cancel);
 	}
 
 	/**
@@ -326,5 +278,31 @@ public class Spider {
 	public void setReport(final SpiderReportable report) {
 		this.report = report;
 	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+	}
+
+	public int getTimeout() {
+		return timeout;
+	}
+
+	public void setTimeout(int timeout) {
+		this.timeout = timeout;
+	}
+
+	public int getMaxDepth() {
+		return maxDepth;
+	}
+
+	public void setMaxDepth(int maxDepth) {
+		this.maxDepth = maxDepth;
+	}
+	
+	
 
 }

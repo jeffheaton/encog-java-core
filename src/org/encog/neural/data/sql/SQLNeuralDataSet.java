@@ -27,6 +27,7 @@ package org.encog.neural.data.sql;
 
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.List;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
@@ -34,9 +35,9 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.util.db.RepeatableConnection;
-import org.encog.util.db.RepeatableStatement;
-import org.encog.util.db.RepeatableStatement.Results;
+import org.encog.util.orm.ORMSession;
+import org.encog.util.orm.SessionManager;
+import org.hibernate.ScrollableResults;
 
 /**
  * A dataset based on a SQL query. This is not a memory based dataset, so it can
@@ -58,17 +59,15 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		 * Is read and ready?
 		 */
 		private boolean dataReady;
+		
+		private ScrollableResults results;
 
-		/**
-		 * Holds results from the SQL query.
-		 */
-		private final Results results;
 
 		/**
 		 * Construct an iterator. Execute a query and retrieve results.
 		 */
 		public SQLNeuralIterator() {
-			this.results = SQLNeuralDataSet.this.statement.executeQuery();
+			this.results = session.createSQLQuery(sql).scroll();
 		}
 
 		/**
@@ -81,17 +80,15 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				return true;
 			}
 
-			try {
-				if (this.results.getResultSet().next()) {
+
+				if (this.results.next()) {
 					this.dataReady = true;
 					return true;
 				}
 
 				this.dataReady = false;
 				return false;
-			} catch (final SQLException e) {
-				throw new NeuralDataError(e);
-			}
+
 
 		}
 
@@ -100,34 +97,30 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		 * @return The next training set pair.
 		 */
 		public NeuralDataPair next() {
-			try {
+			
 				final NeuralData input = new BasicNeuralData(
 						SQLNeuralDataSet.this.inputSize);
 				NeuralData ideal = null;
-
-				for (int i = 1; i <= SQLNeuralDataSet.this.inputSize; i++) {
-					input.setData(i - 1, this.results.getResultSet().getDouble(
-							i));
+				
+				
+				for (int i = 0; i < SQLNeuralDataSet.this.inputSize; i++) {
+					double d = Double.parseDouble(results.get(i).toString());
+					input.setData(i, d);
 				}
 
 				if (SQLNeuralDataSet.this.idealSize > 0) {
 					ideal = 
 					new BasicNeuralData(SQLNeuralDataSet.this.idealSize);
-					for (int i = 1; i <= SQLNeuralDataSet.this.idealSize; i++) {
-						ideal.setData(i - 1,
-							this.results
-							.getResultSet()
-							.getDouble(
-							i + SQLNeuralDataSet.this.inputSize));
+					for (int i = 0; i < SQLNeuralDataSet.this.idealSize; i++) {
+						double d = Double.parseDouble(results.get(i + SQLNeuralDataSet.this.inputSize).toString());
+						ideal.setData(i, d);
 					}
 
 				}
 
 				this.dataReady = false;
 				return new BasicNeuralDataPair(input, ideal);
-			} catch (final SQLException e) {
-				throw new NeuralDataError(e);
-			}
+			
 		}
 
 		/**
@@ -160,15 +153,9 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 */
 	private final int idealSize;
 	
-	/**
-	 * The database connection.
-	 */
-	private final RepeatableConnection connection;
-
-	/**
-	 * The SQL statement being used.
-	 */
-	private final RepeatableStatement statement;
+	private ORMSession session;
+	
+	private String sql;
 
 	/**
 	 * Construct a SQL dataset.
@@ -181,13 +168,16 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 * @param pwd The database password.
 	 */
 	public SQLNeuralDataSet(final String sql, final int inputSize,
-			final int idealSize, final String driver, final String url,
+			final int idealSize, final String driver, final String dialect, final String url,
 			final String uid, final String pwd) {
+
 		this.inputSize = inputSize;
 		this.idealSize = idealSize;
-		this.connection = new RepeatableConnection(driver, url, uid, pwd);
-		this.statement = this.connection.createStatement(sql);
-		this.connection.open();
+		this.sql = sql;
+		
+		SessionManager.getInstance().init(driver, url, uid, pwd, dialect);
+		this.session = SessionManager.getInstance().openSession();
+		
 	}
 
 	/**
@@ -220,12 +210,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 * Close the SQL connection.
 	 */
 	public void close() {
-		if (this.statement != null) {
-			this.statement.close();
-		}
-
-		if (this.connection != null) {
-			this.connection.close();
+		if (this.session != null) {
+			this.session.close();
 		}
 	}
 

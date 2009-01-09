@@ -14,6 +14,7 @@ public class DerbyUtil {
     public static final String URL = "jdbc:hsqldb:mem:encog";
 	public static final String UID = "sa";
 	public static final String PWD = "";
+	public static final String DIALECT = "org.hibernate.dialect.HSQLDialect";
     
     public static void loadDriver() throws InstantiationException, IllegalAccessException, ClassNotFoundException 
     {

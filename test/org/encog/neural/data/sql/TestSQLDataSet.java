@@ -37,7 +37,13 @@ public class TestSQLDataSet extends TestCase {
 		
 		SQLNeuralDataSet data = new SQLNeuralDataSet(
 				"SELECT in1,in2,ideal1 FROM xor ORDER BY id",
-				2,1, DerbyUtil.DRIVER, DerbyUtil.URL, DerbyUtil.UID,DerbyUtil.PWD);
+				2,
+				1, 
+				DerbyUtil.DRIVER, 
+				DerbyUtil.DIALECT,
+				DerbyUtil.URL, 
+				DerbyUtil.UID,
+				DerbyUtil.PWD);
 		
 		XOR.testXORDataSet(data);
 				

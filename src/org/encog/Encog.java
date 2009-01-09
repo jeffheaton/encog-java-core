@@ -28,6 +28,8 @@ package org.encog;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.util.orm.ORMSession;
+
 
 /**
  * Main Encog class, does little more than provide version information.
@@ -53,6 +55,8 @@ public final class Encog {
 	 * The instance.
 	 */
 	private static Encog instance;
+	
+	private ORMSession session;
 
 	/**
 	 * Get the instance to the singleton.
@@ -88,4 +92,11 @@ public final class Encog {
 		return this.properties;
 	}
 
+	public ORMSession getSession() {
+		return session;
+	}
+
+	public void setSession(ORMSession session) {
+		this.session = session;
+	}
 }

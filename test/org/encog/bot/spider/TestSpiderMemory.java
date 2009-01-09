@@ -6,8 +6,6 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.encog.bot.spider.workload.memory.MemoryWorkloadManager;
-
 public class TestSpiderMemory extends TestCase implements SpiderReportable {
 
     private String base = "www.httprecipes.com";
@@ -16,13 +14,8 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 	
 	
 	public void testSpider() throws Exception
-	{            
-            SpiderOptions options = new SpiderOptions();
-            options.setCorePoolSize( 10 );
-            options.setStartup( SpiderOptions.STARTUP_CLEAR );
-            options.setWorkloadManager( MemoryWorkloadManager.class.getCanonicalName() );
-            options.getFilter().add("org.encog.bot.spider.filter.RobotsFilter");
-            Spider spider = new Spider(options, this);
+	{                       
+            Spider spider = new Spider(10, this);
            
             spider.addURL(new URL("http://www.httprecipes.com"), null, 1);
             spider.process();

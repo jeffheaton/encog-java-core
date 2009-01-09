@@ -78,11 +78,11 @@ public class SpiderWorker implements Runnable {
 			logger.fine("Processing: " + this.url);
 			// get the URL's contents
 			connection = this.url.openConnection();
-			connection.setConnectTimeout(this.spider.getOptions().getTimeout());
-			connection.setReadTimeout(this.spider.getOptions().getTimeout());
-			if (this.spider.getOptions().getUserAgent() != null) {
+			connection.setConnectTimeout(this.spider.getTimeout());
+			connection.setReadTimeout(this.spider.getTimeout());
+			if (this.spider.getUserAgent() != null) {
 				connection.setRequestProperty("User-Agent", this.spider
-						.getOptions().getUserAgent());
+						.getUserAgent());
 			}
 
 			// read the URL
