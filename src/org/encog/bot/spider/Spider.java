@@ -30,16 +30,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit; 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.encog.bot.spider.filter.SpiderFilter;
 import org.encog.bot.spider.workload.WorkloadManager;
+import org.encog.util.concurrency.EncogConcurrency;
 
 /**
  * Spider: This is the main class that implements the Heaton Research Spider.
@@ -77,16 +75,6 @@ public class Spider {
 	 */
 	private WorkloadManager workloadManager;
 
-	/**
-	 * The Java thread executor that will manage the thread pool.
-	 */
-	private final ExecutorService threadPool;
-
-	/**
-	 * The BlockingQueue that will hold tasks for the thread pool.
-	 */
-	private final BlockingQueue<Runnable> tasks;
-
 
 	/**
 	 * Filters used to block specific URL's.
@@ -119,15 +107,12 @@ public class Spider {
 	 *            A class that implements the SpiderReportable interface, that
 	 *            will receive information that the spider finds.
 	 */
-	public Spider(final int threads, final SpiderReportable report) {
+	public Spider(final SpiderReportable report) {
 
 		this.report = report;
 		this.workloadManager = new WorkloadManager();
 		this.workloadManager.init(this);
 		report.init(this);
-
-		this.tasks = new SynchronousQueue<Runnable>();
-		this.threadPool = Executors.newFixedThreadPool(threads);
 	}
 
 	/**
@@ -231,7 +216,6 @@ public class Spider {
 			processHost();
 		} while (this.workloadManager.nextHost() != null);
 
-		this.threadPool.shutdown();
 		this.stopTime = new Date();
 	}
 
@@ -261,9 +245,10 @@ public class Spider {
 		// now process this host
 		do {
 			url = this.workloadManager.getWork();
+			
 			if (url != null) {
 				final SpiderWorker worker = new SpiderWorker(this, url);
-				this.threadPool.execute(worker);
+				EncogConcurrency.getInstance().processTask(worker);
 			} else {
 				this.workloadManager.waitForWork(WAIT4WORK, TimeUnit.SECONDS);
 			}

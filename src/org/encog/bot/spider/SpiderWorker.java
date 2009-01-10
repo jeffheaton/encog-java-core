@@ -32,12 +32,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.encog.bot.spider.workload.WorkloadError;
+import org.encog.util.concurrency.EncogTask;
 
 /**
  * SpiderWorker: This class forms the workloads that are passed onto the thread
  * pool.
  */
-public class SpiderWorker implements Runnable {
+public class SpiderWorker implements EncogTask {
 	/**
 	 * The logger.
 	 */

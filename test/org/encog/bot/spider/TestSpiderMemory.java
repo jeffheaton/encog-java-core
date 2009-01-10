@@ -15,7 +15,7 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 	
 	public void testSpider() throws Exception
 	{                       
-            Spider spider = new Spider(10, this);
+            Spider spider = new Spider(this);
            
             spider.addURL(new URL("http://www.httprecipes.com"), null, 1);
             spider.process();
