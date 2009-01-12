@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 import org.encog.util.Directory;
+import org.encog.util.orm.ORMSession;
+import org.encog.util.orm.SessionManager;
 
 public class DerbyUtil {
  	
@@ -29,6 +31,18 @@ public class DerbyUtil {
 
         String dbName = "derbyDB"; // the name of the database
     	return DriverManager.getConnection(DerbyUtil.URL, props);
+    }
+    
+    public static ORMSession getSession()
+    {
+    	SessionManager.getInstance().init(
+    			DerbyUtil.DRIVER, 
+    			DerbyUtil.URL, 
+    			DerbyUtil.UID,
+    			DerbyUtil.PWD, 
+    			DerbyUtil.DIALECT);
+    	SessionManager.getInstance().export();
+    	return SessionManager.getInstance().openSession();
     }
     
 	public static void shutdown() {

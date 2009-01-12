@@ -37,7 +37,10 @@ import java.util.logging.Logger;
 
 import org.encog.bot.spider.filter.SpiderFilter;
 import org.encog.bot.spider.workload.WorkloadManager;
+import org.encog.bot.spider.workload.data.WorkloadHost;
+import org.encog.bot.spider.workload.data.WorkloadLocation;
 import org.encog.util.concurrency.EncogConcurrency;
+import org.encog.util.orm.ORMSession;
 
 /**
  * Spider: This is the main class that implements the Heaton Research Spider.
@@ -94,6 +97,7 @@ public class Spider {
 	private String userAgent;
 	private int timeout;
 	private int maxDepth = -1;
+	private ORMSession session;
 
 	/**
 	 * Construct a spider object. The options parameter specifies the options
@@ -107,10 +111,11 @@ public class Spider {
 	 *            A class that implements the SpiderReportable interface, that
 	 *            will receive information that the spider finds.
 	 */
-	public Spider(final SpiderReportable report) {
+	public Spider(final SpiderReportable report, ORMSession session) {
 
+		this.session = session;
 		this.report = report;
-		this.workloadManager = new WorkloadManager();
+		this.workloadManager = new WorkloadManager(session);
 		this.workloadManager.init(this);
 		report.init(this);
 	}
@@ -223,9 +228,9 @@ public class Spider {
 	 * Process one individual host.
 	 */
 	private void processHost() {
-		URL url = null;
+		WorkloadLocation url = null;
 
-		final String host = this.workloadManager.getCurrentHost();
+		final WorkloadHost host = this.workloadManager.getCurrentHost();
 
 		// first notify the manager
 		if (!this.report.beginHost(host)) {

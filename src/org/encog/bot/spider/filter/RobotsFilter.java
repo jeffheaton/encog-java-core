@@ -34,6 +34,8 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.bot.spider.workload.data.WorkloadHost;
+
 /**
  * RobotsFilter: This filter causes the spider to skip URL's from a robots.txt
  * file.
@@ -164,13 +166,13 @@ public class RobotsFilter implements SpiderFilter {
 	 * @throws IOException
 	 *             Thrown if an I/O error occurs.
 	 */
-	public void newHost(final String host, final String userAgent)
+	public void newHost(final WorkloadHost host, final String userAgent)
 			throws IOException {
 		String str;
 		this.active = false;
 		this.userAgent = userAgent;
 
-		this.robotURL = new URL("http", host, MAXLINE, "/robots.txt");
+		this.robotURL = new URL("http", host.getHost(), MAXLINE, "/robots.txt");
 
 		final URLConnection http = this.robotURL.openConnection();
 

@@ -1,12 +1,15 @@
 package org.encog.bot.spider.workload.data;
 
-import java.net.URL;
+import javax.persistence.Entity;
 
 import org.encog.util.orm.DataObject;
 
+@Entity(name = "workload_location")
 public class WorkloadLocation extends DataObject {
 
-	private URL url;
+	private String url;
+	private WorkloadHost host;
+	private long hash;
 	
 	/**
 	 * The depth of this URL.
@@ -16,7 +19,9 @@ public class WorkloadLocation extends DataObject {
 	/**
 	 * The source of this URL.
 	 */
-	private URL source;
+	private String source;
+	
+	private WorkloadStatus status;
 
 	/**
 	 * @return the depth
@@ -28,7 +33,7 @@ public class WorkloadLocation extends DataObject {
 	/**
 	 * @return the source
 	 */
-	public URL getSource() {
+	public String getSource() {
 		return this.source;
 	}
 
@@ -44,7 +49,7 @@ public class WorkloadLocation extends DataObject {
 	 * @param source
 	 *            the source to set
 	 */
-	public void setSource(final URL source) {
+	public void setSource(final String source) {
 		this.source = source;
 	}	
 	
@@ -54,12 +59,36 @@ public class WorkloadLocation extends DataObject {
 		
 	}
 
-	public URL getUrl() {
+	public String getUrl() {
 		return url;
 	}
 
-	public void setUrl(URL url) {
+	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public WorkloadStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(WorkloadStatus status) {
+		this.status = status;
+	}
+
+	public WorkloadHost getHost() {
+		return host;
+	}
+
+	public void setHost(WorkloadHost host) {
+		this.host = host;
+	}
+
+	public long getHash() {
+		return hash;
+	}
+
+	public void setHash(long hash) {
+		this.hash = hash;
 	}
 	
 	

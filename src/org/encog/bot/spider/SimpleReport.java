@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.encog.bot.spider.workload.data.WorkloadHost;
+
 /**
  * SimpleReport: This is a very simple implementation of the SpiderReportable
  * interface. It stays within a single host and does not process any data.
@@ -36,7 +38,7 @@ public class SimpleReport implements SpiderReportable {
 	/**
 	 * The current host, only accept URL's from this host.
 	 */
-	private String host;
+	private WorkloadHost host;
 
 	/**
 	 * This function is called when the spider is ready to process a new host.
@@ -46,7 +48,7 @@ public class SimpleReport implements SpiderReportable {
 	 *            The new host that is about to be processed.
 	 * @return True if this host should be processed, false otherwise.
 	 */
-	public boolean beginHost(final String host) {
+	public boolean beginHost(final WorkloadHost host) {
 		if (this.host == null) {
 			this.host = host;
 			return true;
@@ -77,7 +79,7 @@ public class SimpleReport implements SpiderReportable {
 	 */
 	public boolean spiderFoundURL(final URL url, final URL source,
 			final URLType type) {
-		if (this.host != null && !this.host.equalsIgnoreCase(url.getHost())) {
+		if (this.host != null && !this.host.getHost().equalsIgnoreCase(url.getHost())) {
 			return false;
 		}
 

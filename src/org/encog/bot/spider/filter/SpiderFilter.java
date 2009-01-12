@@ -27,6 +27,8 @@ package org.encog.bot.spider.filter;
 import java.io.IOException;
 import java.net.URL;
 
+import org.encog.bot.spider.workload.data.WorkloadHost;
+
 /**
  * SpiderFilter: Filters will cause the spider to skip URL's.
  */
@@ -52,5 +54,5 @@ public interface SpiderFilter {
 	 * @throws IOException
 	 *             Thrown if an I/O error occurs.
 	 */
-	void newHost(String host, String userAgent) throws IOException;
+	void newHost(WorkloadHost host, String userAgent) throws IOException;
 }

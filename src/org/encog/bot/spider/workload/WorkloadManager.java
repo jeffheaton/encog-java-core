@@ -37,6 +37,11 @@ import java.util.logging.Logger;
 import org.encog.bot.spider.Spider;
 import org.encog.bot.spider.workload.WorkloadError;
 import org.encog.bot.spider.workload.data.WorkloadHost;
+import org.encog.bot.spider.workload.data.WorkloadLocation;
+import org.encog.bot.spider.workload.data.WorkloadStatus;
+import org.encog.nlp.lexicon.data.Word;
+import org.encog.util.orm.ORMSession;
+import org.hibernate.Query;
 
 
 /**
@@ -88,16 +93,18 @@ public class WorkloadManager {
 	 * The maximum size that a host can be.
 	 */
 	private int maxHostSize;
+	
+	private ORMSession session;
 
 	/**
 	 * The current host.
 	 */
-	private String currentHost;
-
-	/**
-	 * The ID of the current host.
-	 */
-	private int currentHostID = -1;
+	private WorkloadHost currentHost;
+	
+	public WorkloadManager(ORMSession session)
+	{
+		this.session = session;
+	}
 
 	/**
 	 * Add the specified URL to the workload.
@@ -122,41 +129,42 @@ public class WorkloadManager {
 				result = true;
 
 				// get the host
-				int hostID = getHostID(url, false);
+				WorkloadHost host = getHost(url, false);
 
-				if (hostID == -1) {
-					WorkloadHost host = new WorkloadHost();
+				if (host == null) {
+					host = new WorkloadHost();
 					host.setHost(strHost);
-					host.setStatus(WorkloadStatus.WAITING);
-					this.stmtAdd2.execute(strHost, Status.STATUS_WAITING, 0, 0);
-					hostID = getHostID(url, true);
+					session.save(host);
 				}
 
 				// need to set the current host for the first time?
-				if (this.currentHostID == -1) {
-					this.currentHostID = hostID;
-					this.currentHost = strHost;
-					this.stmtSetHostStatus.execute(Status.STATUS_PROCESSING,
-							this.currentHostID);
+				if (this.currentHost == null) {
+					this.currentHost = host;
+							
+					host.setStatus(WorkloadStatus.WORKING);
+
 				}
 
 				// now add workload element
-				if (source != null) {
-					final int sourceID = getWorkloadID(source, true);
-					this.stmtAdd.execute(hostID, strURL, Status.STATUS_WAITING,
-							depth, computeHash(url), sourceID);
-				} else {
-					this.stmtAdd.execute(hostID, strURL, Status.STATUS_WAITING,
-							depth, computeHash(url), 0);
-				}
-
+				
+				WorkloadLocation location = new WorkloadLocation();
+				
+				if( source==null )
+					location.setSource(null);
+				else
+					location.setSource(source.toString());
+				location.setStatus(WorkloadStatus.WAITING);
+				location.setHost(this.currentHost);
+				location.setHash(computeHash(url));
+				location.setDepth(depth);
+				location.setUrl(url.toString());
+				this.session.save(location);
+				
 				this.workLatch.countDown();
 			}
 
 		} catch (final InterruptedException e) {
 			throw new WorkloadError(e);			
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
 		} finally {
 			this.addLock.release();
 		}
@@ -167,29 +175,15 @@ public class WorkloadManager {
 	 * Clear the workload.
 	 */
 	public void clear() {
-		this.stmtClear.execute();
-		this.stmtClear2.execute();
+		//this.stmtClear.execute();
+		//this.stmtClear2.execute();
 	}
 
 	/**
 	 * Close the workload manager.
 	 */
 	public void close() {
-		if (this.workResultSet != null) {
-			try {
-				this.workResultSet.close();
-			} catch (final Exception e) {
-				logger
-						.log(Level.SEVERE,
- "Error trying to close workload result set, ignoring...");
-			}
-			this.workResultSet = null;
-		}
-
-		if (this.connection != null) {
-			this.connection.close();
-		}
-
+		this.session.close();
 	}
 
 	/**
@@ -203,7 +197,7 @@ public class WorkloadManager {
 		final String str = url.toString().trim();
 
 		int result = str.hashCode();
-		result = result % SQLWorkloadManager.HASH_MASK;
+		result = result % WorkloadManager.HASH_MASK;
 		return result;
 	}
 
@@ -215,11 +209,7 @@ public class WorkloadManager {
 	 * @return True of the workload contains the specified URL. @
 	 */
 	public boolean contains(final URL url) {
-		try {
-			return getWorkloadID(url, false) != -1;
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		}
+		return this.getLocation(url)!=null;
 	}
 
 	/**
@@ -247,14 +237,6 @@ public class WorkloadManager {
 		return result;
 	}
 
-	/**
-	 * Create the correct type of SQL holder for this workload managers.
-	 * This will likely be overridden by subclasses.
-	 * @return A SQL holder.
-	 */
-	public SQLHolder createSQLHolder() {
-		return new SQLHolder();
-	}
 
 	/**
 	 * Return the size of the specified column.
@@ -266,38 +248,7 @@ public class WorkloadManager {
 	 * @return The size of the column.
 	 */
 	public int getColumnSize(final String table, final String column) {
-		try {
-			final ResultSet rs = this.connection.getConnection().getMetaData()
-					.getColumns(null, null, table, null);
-			while (rs.next()) {
-
-				final String c = rs.getString("COLUMN_NAME");
-				final int size = rs.getInt("COLUMN_SIZE");
-				if (c.equalsIgnoreCase(column)) {
-					return size;
-				}
-			}
-			return -1;
-		} catch (final SQLException e) {
-			throw new DBError(e);
-		}
-
-	}
-
-	/**
-	 * @return the connection
-	 */
-	public RepeatableConnection getConnection() {
-		return this.connection;
-	}
-
-	/**
-	 * Get the current host.
-	 * 
-	 * @return The current host.
-	 */
-	public String getCurrentHost() {
-		return this.currentHost;
+		return -1;
 	}
 
 	/**
@@ -309,49 +260,13 @@ public class WorkloadManager {
 	 *         be found.
 	 */
 	public int getDepth(final URL url) {
-		RepeatableStatement.Results rs = null;
-		try {
-			rs = this.stmtGetDepth.executeQuery(computeHash(url));
-			while (rs.getResultSet().next()) {
-				final String u = rs.getResultSet().getString(1);
-				if (u.equals(url.toString())) {
-					return rs.getResultSet().getInt(2);
-				}
-			}
-			return 1;
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-		}
+		WorkloadLocation location = getLocation(url);
+		if( location==null )
+			return -1;
+		else
+			return location.getDepth();
 	}
 
-	/**
-	 * Get the host name associated with the specified host id.
-	 * 
-	 * @param hostID
-	 *            The host id to look up.
-	 * @return The name of the host. @ Thrown if unable to obtain the host name.
-	 */
-	private String getHost(final int hostID) {
-		RepeatableStatement.Results rs = null;
-
-		try {
-			rs = this.stmtGetHost.executeQuery(hostID);
-			if (!rs.getResultSet().next()) {
-				throw new WorkloadError("Can't find previously created host.");
-			}
-			return rs.getResultSet().getString(1);
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-		}
-	}
 
 	/**
 	 * Get the id for the specified host name.
@@ -365,28 +280,18 @@ public class WorkloadManager {
 	 * @throws SQLException
 	 *             Thrown if a SQL error occurs.
 	 */
-	private int getHostID(final String host, final boolean require)
-			throws SQLException {
-		RepeatableStatement.Results rs = null;
-
+	private WorkloadHost getHost(final String host, final boolean require)
+	{
 		// is this the current host?
-		if (this.currentHostID != -1) {
-			if (this.currentHost.equalsIgnoreCase(host)) {
-				return this.currentHostID;
+		if (this.currentHost != null) {
+			if (this.currentHost.getHost().equalsIgnoreCase(host)) {
+				return this.currentHost;
 			}
 		}
-
-		// use the database to find it
-		try {
-			rs = this.stmtGetHostID.executeQuery(host);
-			if (rs.getResultSet().next()) {
-				return rs.getResultSet().getInt(1);
-			}
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-		}
+		
+		Query q = session.createQuery("from org.encog.bot.spider.workload.data.WorkloadHost where host = :h");
+		q.setString("h", host);
+		WorkloadHost result = (WorkloadHost)q.uniqueResult();		
 
 		if (require) {
 			final StringBuilder str = new StringBuilder();
@@ -395,8 +300,9 @@ public class WorkloadManager {
 			str.append(host);
 			str.append("\".");
 			throw new WorkloadError(str.toString());
-		}
-		return -1;
+		}		
+		
+		return result;
 	}
 
 	/**
@@ -412,10 +318,18 @@ public class WorkloadManager {
 	 * @throws SQLException
 	 *             Thrown if a SQL error occurs.
 	 */
-	private int getHostID(final URL url, final boolean require)
-			throws SQLException  {
+	private WorkloadHost getHost(final URL url, final boolean require)
+	{
 		final String host = url.getHost().toLowerCase();
-		return getHostID(host, require);
+		return getHost(host, require);
+	}
+	
+	private WorkloadLocation getLocation(final URL url)
+	{
+		Query q = session.createQuery("from org.encog.bot.spider.workload.data.WorkloadLocation where url = :u");
+		q.setString("u", url.toString());
+		WorkloadLocation result = (WorkloadLocation)q.uniqueResult();		
+		return result;
 	}
 
 	/**
@@ -427,24 +341,21 @@ public class WorkloadManager {
 	 *         specified URL could not be found.
 	 */
 	public URL getSource(final URL url) {
-		RepeatableStatement.Results rs = null;
-		try {
-			rs = this.stmtGetSource.executeQuery(computeHash(url));
-			while (rs.getResultSet().next()) {
-				final String u = rs.getResultSet().getString(1);
-				if (u.equals(url.toString())) {
-					return new URL(rs.getResultSet().getString(2));
-				}
-			}
+		WorkloadLocation result = getLocation(url);
+		if( result==null )
 			return null;
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		} catch (final MalformedURLException e) {
-			throw new WorkloadError(e);
-		} finally {
-			if (rs != null) {
-				rs.close();
+		else
+		{
+			URL r = null;
+			try
+			{
+				r = new URL(result.getSource());
 			}
+			catch(MalformedURLException e)
+			{
+				throw new WorkloadError(e);
+			}
+			return r;
 		}
 	}
 
@@ -456,8 +367,8 @@ public class WorkloadManager {
 	 * @return The next URL to work on, @ Thrown if the next URL could not be
 	 *         obtained.
 	 */
-	public URL getWork() {
-		URL url = null;
+	public WorkloadLocation getWork() {
+		WorkloadLocation url = null;
 		do {
 			url = getWorkInternal();
 			if (url == null) {
@@ -477,90 +388,21 @@ public class WorkloadManager {
 	 * 
 	 * @return The next URL to process. @ Thrown if unable to obtain a URL.
 	 */
-	private URL getWorkInternal() {
-		if (this.currentHostID == -1) {
+	private WorkloadLocation getWorkInternal() {
+		if (this.currentHost == null ) {
 			throw new WorkloadError(
 					"Attempting to obtain work before adding first URL.");
 		}
 
-		try {
-			boolean requery = false;
-
-			if (this.workResultSet == null) {
-				requery = true;
-			} else {
-				if (!this.workResultSet.getResultSet().next()) {
-					requery = true;
-				}
-			}
-
-			if (requery) {
-				if (this.workResultSet != null) {
-					this.workResultSet.close();
-				}
-
-				this.workResultSet = this.stmtGetWork.executeQuery(
-						Status.STATUS_WAITING, this.currentHostID);
-
-				if (!this.workResultSet.getResultSet().next()) {
-					return null;
-				}
-			}
-
-			final int id = this.workResultSet.getResultSet().getInt(1);
-			final String url = this.workResultSet.getResultSet().getString(2);
-
-			this.stmtGetWork2.execute(Status.STATUS_PROCESSING, id);
-			return new URL(url);
-
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		} catch (final MalformedURLException e) {
-			throw new WorkloadError(e);
-		}
+		Query q = session.createQuery("from org.encog.bot.spider.workload.data.WorkloadLocation WHERE status = :s ORDER BY id");
+		q.setMaxResults(1);
+		q.setEntity("s", WorkloadStatus.WAITING);
+		WorkloadLocation result = (WorkloadLocation)q.uniqueResult();		
+		return result;
+		
+		
 	}
 
-	/**
-	 * Get the workload ID, given a URL.
-	 * 
-	 * @param url
-	 *            The URL to look up.
-	 * @param require
-	 *            Should an exception be thrown if the workload is not located.
-	 * @return The ID of the workload. @ Thrown if the host id is not found, and
-	 *         is required.
-	 * @throws SQLException
-	 *             Thrown if a SQL error occurs.
-	 */
-	private int getWorkloadID(final URL url, final boolean require)
-			throws SQLException  {
-		int hash = 0;
-		RepeatableStatement.Results rs = null;
-		try {
-			hash = computeHash(url);
-			rs = this.stmtGetWorkloadID.executeQuery(hash);
-			while (rs.getResultSet().next()) {
-				if (rs.getResultSet().getString(2).equals(url.toString())) {
-					return rs.getResultSet().getInt(1);
-				}
-			}
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-		}
-
-		if (require) {
-			final StringBuilder str = new StringBuilder();
-			str.append("Failed to find previously visited URL, hash=\"");
-			str.append(hash);
-			str.append("\", URL=\"");
-			str.append(url.toString());
-			str.append("\".");
-			throw new WorkloadError(str.toString());
-		}
-		return -1;
-	}
 
 	/**
 	 * Setup this workload manager for the specified spider.
@@ -574,101 +416,13 @@ public class WorkloadManager {
 		this.workLatch = new CountDownLatch(1);
 		this.workLatch.countDown();
 
-		this.connection = new RepeatableConnection(
-				spider.getOptions().getDbClass(),				
-				spider.getOptions().getDbURL(), 
-				spider.getOptions().getDbUID(), spider
-						.getOptions().getDbPWD());
-
-		this.stmtClear = this.connection.createStatement(this.holder
-				.getSQLClear());
-		this.stmtClear2 = this.connection.createStatement(this.holder
-				.getSQLClear2());
-		this.stmtAdd = this.connection.createStatement(this.holder.getSQLAdd());
-		this.stmtAdd2 = this.connection.createStatement(this.holder
-				.getSQLAdd2());
-		this.stmtGetWork = this.connection.createStatement(this.holder
-				.getSQLGetWork());
-		this.stmtGetWork2 = this.connection.createStatement(this.holder
-				.getSQLGetWork2());
-		this.stmtWorkloadEmpty = this.connection.createStatement(this.holder
-				.getSQLWorkloadEmpty());
-		this.stmtSetWorkloadStatus = this.connection
-				.createStatement(this.holder.getSQLSetWorkloadStatus());
-		this.stmtSetWorkloadStatus2 = this.connection
-				.createStatement(this.holder.getSQLSetWorkloadStatus2());
-		this.stmtGetDepth = this.connection.createStatement(this.holder
-				.getSQLGetDepth());
-		this.stmtGetSource = this.connection.createStatement(this.holder
-				.getSQLGetSource());
-		this.stmtResume = this.connection.createStatement(this.holder
-				.getSQLResume());
-		this.stmtResume2 = this.connection.createStatement(this.holder
-				.getSQLResume2());
-		this.stmtGetWorkloadID = this.connection.createStatement(this.holder
-				.getSQLGetWorkloadID());
-		this.stmtGetHostID = this.connection.createStatement(this.holder
-				.getSQLGetHostID());
-		this.stmtGetNextHost = this.connection.createStatement(this.holder
-				.getSQLGetNextHost());
-		this.stmtSetHostStatus = this.connection.createStatement(this.holder
-				.getSQLSetHostStatus());
-		this.stmtGetHost = this.connection.createStatement(this.holder
-				.getSQLGetHost());
-
-		this.connection.open();
 
 		this.maxURLSize = getColumnSize("spider_workload", "url");
 		this.maxHostSize = getColumnSize("spider_host", "host");
 
 	}
 
-	/**
-	 * Mark the specified URL as error.
-	 * 
-	 * @param url
-	 * The URL that had an error. @ Thrown if the specified URL could not be
-	 *            marked.
-	 */
-	public void markError(final URL url) {
-		try {
-			setStatus(url, Status.STATUS_ERROR);
-			this.workLatch.countDown();
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		}
-	}
 
-	/**
-	 * Mark the specified host as processed.
-	 * 
-	 * @param host
-	 * The host to mark. @ Thrown if the host cannot be marked.
-	 */
-	private void markHostProcessed(final String host) {
-		try {
-			final int hostID = this.getHostID(host, true);
-			this.stmtSetHostStatus.execute(Status.STATUS_DONE, hostID);
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		}
-	}
-
-	/**
-	 * Mark the specified URL as successfully processed.
-	 * 
-	 * @param url
-	 * The URL to mark as processed. @ Thrown if the specified URL could not be
-	 *            marked.
-	 */
-	public void markProcessed(final URL url) {
-		try {
-			setStatus(url, Status.STATUS_DONE);
-			this.workLatch.countDown();
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		}
-	}
 
 	/**
 	 * Move on to process the next host. This should only be called after
@@ -678,47 +432,7 @@ public class WorkloadManager {
 	 *         unable to move to the next host.
 	 */
 	public String nextHost() {
-		if (this.currentHostID == -1) {
-			throw new WorkloadError(
-					"Attempting to obtain host before adding first URL.");
-		}
-		markHostProcessed(this.currentHost);
-
-		try {
-			boolean requery = false;
-
-			if (this.hostResultSet == null) {
-				requery = true;
-			} else {
-				if (!this.hostResultSet.getResultSet().next()) {
-					requery = true;
-				}
-			}
-
-			if (requery) {
-				if (this.hostResultSet != null) {
-					this.hostResultSet.close();
-				}
-
-				this.hostResultSet = this.stmtGetNextHost
-						.executeQuery(Status.STATUS_WAITING);
-
-				if (!this.hostResultSet.getResultSet().next()) {
-					return null;
-				}
-			}
-
-			this.currentHostID = this.hostResultSet.getResultSet().getInt(1);
-			this.currentHost = this.hostResultSet.getResultSet().getString(2);
-			this.stmtSetHostStatus.execute(Status.STATUS_PROCESSING,
-					this.currentHostID);
-			logger.log(Level.INFO, "Moving to new host: " + this.currentHost);
-			return this.currentHost;
-
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		}
-
+		return null;
 	}
 
 	/**
@@ -727,53 +441,9 @@ public class WorkloadManager {
 	 *  @ Thrown if we were unable to resume the processing.
 	 */
 	public void resume() {
-		RepeatableStatement.Results rs = null;
-
-		try {
-			rs = this.stmtResume.executeQuery();
-
-			if (!rs.getResultSet().next()) {
-				throw new WorkloadError(
-						"Can't resume, unable to determine current host.");
-			}
-
-			this.currentHostID = rs.getResultSet().getInt(1);
-			this.currentHost = getHost(this.currentHostID);
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-		}
-
-		this.stmtResume2.execute();
-
+		
 	}
 
-	/**
-	 * Set the status for the specified URL.
-	 * 
-	 * @param url
-	 *            The URL to set the status for.
-	 * @param status
-	 * What to set the status to. @ Thrown if the status cannot be set.
-	 * @throws SQLException
-	 *             Thrown if a SQL error occurs.
-	 */
-	private void setStatus(final URL url, final String status)
-			throws SQLException {
-		final int id = getWorkloadID(url, true);
-		this.stmtSetWorkloadStatus.execute("" + status, id);
-		if (status.equalsIgnoreCase(Status.STATUS_ERROR)) {
-			this.stmtSetWorkloadStatus2.execute(0, 1, url.getHost()
-					.toLowerCase());
-		} else if (status.equalsIgnoreCase(Status.STATUS_DONE)) {
-			this.stmtSetWorkloadStatus2.execute(1, 0, url.getHost()
-					.toLowerCase());
-		}
-
-	}
 
 	/**
 	 * Truncate a string to the specified length.
@@ -820,21 +490,13 @@ public class WorkloadManager {
 	 *         there was an error determining if the workload is empty.
 	 */
 	public boolean workloadEmpty() {
-		RepeatableStatement.Results rs = null;
-
-		try {
-			rs = this.stmtWorkloadEmpty.executeQuery(this.currentHostID);
-			if (!rs.getResultSet().next()) {
-				return true;
-			}
-			return rs.getResultSet().getInt(1) < 1;
-		} catch (final SQLException e) {
-			throw new WorkloadError(e);
-		} finally {
-			if (rs != null) {
-				rs.close();
-			}
-		}
+		return true;
 	}
+
+	public WorkloadHost getCurrentHost() {
+		return currentHost;
+	}
+	
+	
 
 }

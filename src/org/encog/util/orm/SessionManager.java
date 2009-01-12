@@ -68,6 +68,9 @@ public class SessionManager {
 			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.Fix.class);
 			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.WordType.class);
 			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.WordTypePossibility.class);
+			this.config.addAnnotatedClass(org.encog.bot.spider.workload.data.WorkloadHost.class);
+			this.config.addAnnotatedClass(org.encog.bot.spider.workload.data.WorkloadLocation.class);
+			
 			
             sessionFactory = config.buildSessionFactory();
         } catch (Throwable ex) {

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
+import org.encog.bot.spider.workload.data.WorkloadHost;
+
 /**
  * SpiderReportable: This interface defines a class that the spider can report
  * its findings to.
@@ -42,7 +44,7 @@ public interface SpiderReportable {
 	 *            The new host that is about to be processed.
 	 * @return True if this host should be processed, false otherwise.
 	 */
-	boolean beginHost(String host);
+	boolean beginHost(WorkloadHost host);
 
 	/**
 	 * Called when the spider is starting up. This method provides the
