@@ -7,39 +7,24 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 
 public class SessionManager {
 	
-	private static SessionManager instance;
 	private SessionFactory sessionFactory;
 	private AnnotationConfiguration config;
 	
-	private SessionManager()
-	{	
+	public SessionManager()
+	{
+		this(new AnnotationConfiguration().configure());
 	}
 	
-	public static SessionManager getInstance() 
+	public SessionManager(String path)
 	{
-		if( instance==null )
-		{
-			instance = new SessionManager();
-		}
-		
-		return instance;
-	}
-	
-	public void init()
-	{
-		init(new AnnotationConfiguration().configure());
-	}
-	
-	public void initHSQL(String path)
-	{
-		init("org.hsqldb.jdbcDriver",
+		this("org.hsqldb.jdbcDriver",
 			"jdbc:hsqldb:file:"+path+";type=cached;shutdown=true",
 			"sa",
 			"",
 			"org.hibernate.dialect.HSQLDialect");
 	}
 	
-	public void init(String driver,String url,String uid,String pwd,String dialect)
+	public SessionManager(String driver,String url,String uid,String pwd,String dialect)
 	{
 		AnnotationConfiguration config = new AnnotationConfiguration();
 		config.setProperty("hibernate.connection.driver_class",driver);
@@ -55,7 +40,12 @@ public class SessionManager {
 		init(config);
 	}
 	
-	public void init(AnnotationConfiguration config)
+	public SessionManager(AnnotationConfiguration config)
+	{
+		init(config);	
+	}
+	
+	private void init(AnnotationConfiguration config)
 	{
 		try {
 			this.config = config;
@@ -68,8 +58,7 @@ public class SessionManager {
 			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.Fix.class);
 			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.WordType.class);
 			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.WordTypePossibility.class);
-			this.config.addAnnotatedClass(org.encog.bot.spider.workload.data.WorkloadHost.class);
-			this.config.addAnnotatedClass(org.encog.bot.spider.workload.data.WorkloadLocation.class);
+			this.config.addAnnotatedClass(org.encog.bot.spider.WorkloadItem.class);
 			
 			
             sessionFactory = config.buildSessionFactory();
