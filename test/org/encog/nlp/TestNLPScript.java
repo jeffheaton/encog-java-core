@@ -44,10 +44,10 @@ public class TestNLPScript extends TestCase {
      * @throws IOException */
     public TestNLPScript() throws IOException { 
     	
-    	SessionManager.getInstance().init(DRIVER, URL, UID, PWD, DIALECT);
+    	SessionManager manager = new SessionManager(DRIVER, URL, UID, PWD, DIALECT);
     	
     	//SessionManager.getInstance().initHSQL("/Users/jeff/Data/encog");
-		ORMSession session = SessionManager.getInstance().openSession();
+		ORMSession session = manager.openSession();
     	EncogLexicon lexicon = new EncogLexicon(session);
     	lexicon.loadCache();
     	context = new Context();

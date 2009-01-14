@@ -3,18 +3,18 @@ package org.encog.neural.data.sql;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import org.encog.DerbyUtil;
-import org.encog.neural.networks.XOR;
-
 import junit.framework.TestCase;
+
+import org.encog.HSQLUtil;
+import org.encog.neural.networks.XOR;
 
 public class TestSQLDataSet extends TestCase {
 	
 	public void testSQLDataSet() throws Exception
 	{
-		DerbyUtil.loadDriver();
+		HSQLUtil.loadDriver();
 		//DerbyUtil.cleanup();
-		Connection conn = DerbyUtil.getConnection();
+		Connection conn = HSQLUtil.getConnection();
 		
 		conn.setAutoCommit(true);
 
@@ -39,15 +39,15 @@ public class TestSQLDataSet extends TestCase {
 				"SELECT in1,in2,ideal1 FROM xor ORDER BY id",
 				2,
 				1, 
-				DerbyUtil.DRIVER, 
-				DerbyUtil.DIALECT,
-				DerbyUtil.URL, 
-				DerbyUtil.UID,
-				DerbyUtil.PWD);
+				HSQLUtil.DRIVER, 
+				HSQLUtil.DIALECT,
+				HSQLUtil.URL, 
+				HSQLUtil.UID,
+				HSQLUtil.PWD);
 		
 		XOR.testXORDataSet(data);
 				
-		DerbyUtil.shutdown();
+		HSQLUtil.shutdown();
 		//DerbyUtil.cleanup();
 
 	}

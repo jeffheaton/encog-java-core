@@ -10,7 +10,7 @@ import org.encog.util.Directory;
 import org.encog.util.orm.ORMSession;
 import org.encog.util.orm.SessionManager;
 
-public class DerbyUtil {
+public class HSQLUtil {
  	
     public static final String DRIVER = "org.hsqldb.jdbcDriver";
     public static final String URL = "jdbc:hsqldb:mem:encog";
@@ -26,23 +26,35 @@ public class DerbyUtil {
     public static Connection getConnection() throws SQLException
     {
     	Properties props = new Properties();
-        props.put("user", DerbyUtil.UID);
-        props.put("password", DerbyUtil.PWD);
+        props.put("user", HSQLUtil.UID);
+        props.put("password", HSQLUtil.PWD);
 
         String dbName = "derbyDB"; // the name of the database
-    	return DriverManager.getConnection(DerbyUtil.URL, props);
+    	return DriverManager.getConnection(HSQLUtil.URL, props);
     }
     
     public static ORMSession getSession()
     {
-    	SessionManager.getInstance().init(
-    			DerbyUtil.DRIVER, 
-    			DerbyUtil.URL, 
-    			DerbyUtil.UID,
-    			DerbyUtil.PWD, 
-    			DerbyUtil.DIALECT);
-    	SessionManager.getInstance().export();
-    	return SessionManager.getInstance().openSession();
+    	SessionManager manager = new SessionManager(
+    			HSQLUtil.DRIVER, 
+    			HSQLUtil.URL, 
+    			HSQLUtil.UID,
+    			HSQLUtil.PWD, 
+    			HSQLUtil.DIALECT);
+    	manager.export();
+    	return manager.openSession();
+    }
+    
+    public static SessionManager getSessionManager()
+    {
+    	SessionManager manager = new SessionManager(
+    			HSQLUtil.DRIVER, 
+    			HSQLUtil.URL, 
+    			HSQLUtil.UID,
+    			HSQLUtil.PWD, 
+    			HSQLUtil.DIALECT);
+    	manager.export();
+    	return manager;
     }
     
 	public static void shutdown() {

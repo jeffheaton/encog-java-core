@@ -4,12 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import org.encog.DerbyUtil;
-import org.encog.bot.spider.workload.data.WorkloadHost;
-import org.encog.util.orm.ORMSession;
-import org.encog.util.orm.SessionManager;
-
 import junit.framework.TestCase;
+
+import org.encog.HSQLUtil;
+import org.encog.bot.spider.Spider;
+import org.encog.bot.spider.SpiderParseHTML;
+import org.encog.bot.spider.SpiderReportable;
+import org.encog.util.orm.SessionManager;
 
 public class TestSpiderMemory extends TestCase implements SpiderReportable {
 
@@ -18,19 +19,15 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 	private int urlsProcessed;
 
 	public void testSpider() throws Exception {
-		ORMSession session = DerbyUtil.getSession();
+		SessionManager manager = HSQLUtil.getSessionManager();
 
 		
-		Spider spider = new Spider(this, session);
-		spider.addURL(new URL("http://www.httprecipes.com"), null, 1);
-		spider.process();
+		Spider spider = new Spider(manager, this);
+		spider.process(new URL("http://www.httprecipes.com"));
 		TestCase.assertTrue(this.urlsProcessed > 100);
 
 	}
 
-	public boolean beginHost(WorkloadHost host) {
-		return host.getHost().equalsIgnoreCase("www.httprecipes.com");
-	}
 
 	public void init(Spider spider) {
 		// TODO Auto-generated method stub
@@ -50,8 +47,6 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 
 	public void spiderProcessURL(URL url, InputStream stream)
 			throws IOException {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void spiderProcessURL(URL url, SpiderParseHTML parse)
@@ -60,6 +55,7 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 			parse.readAll();
 		} catch (IOException e) {
 		}
+		//System.out.println(url);
 		this.urlsProcessed++;
 
 	}
@@ -68,5 +64,7 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 		// TODO Auto-generated method stub
 
 	}
+
+
 
 }
