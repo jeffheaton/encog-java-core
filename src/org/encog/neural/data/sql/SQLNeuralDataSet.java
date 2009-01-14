@@ -153,6 +153,7 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 */
 	private final int idealSize;
 	
+	private SessionManager manager;
 	private ORMSession session;
 	
 	private String sql;
@@ -175,8 +176,9 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		this.idealSize = idealSize;
 		this.sql = sql;
 		
-		SessionManager.getInstance().init(driver, url, uid, pwd, dialect);
-		this.session = SessionManager.getInstance().openSession();
+		
+		this.manager = new SessionManager(driver,url,uid,pwd,dialect);
+		this.session = this.manager.openSession();
 		
 	}
 
