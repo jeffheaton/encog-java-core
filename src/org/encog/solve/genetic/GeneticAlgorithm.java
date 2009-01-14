@@ -32,6 +32,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.encog.util.concurrency.EncogConcurrency;
+
 /**
  * GeneticAlgorithm: Implements a genetic algorithm. This is an abstract class.
  * Other classes are provided in this book that use this base class to train
@@ -78,11 +80,6 @@ abstract public class GeneticAlgorithm<GENE_TYPE> {
 	 * How much genetic material should be cut when mating.
 	 */
 	private int cutLength;
-
-	/**
-	 * An optional thread pool to use.
-	 */
-	private ExecutorService pool;
 
 	/**
 	 * The population.
@@ -146,15 +143,6 @@ abstract public class GeneticAlgorithm<GENE_TYPE> {
 	}
 
 	/**
-	 * Get the optional threadpool.
-	 * 
-	 * @return the pool
-	 */
-	public ExecutorService getPool() {
-		return this.pool;
-	}
-
-	/**
 	 * Get the population size.
 	 * 
 	 * @return The population size.
@@ -187,9 +175,6 @@ abstract public class GeneticAlgorithm<GENE_TYPE> {
 		final int matingPopulationSize = (int) (getPopulationSize() 
 				* getMatingPopulation());
 
-		final Collection<Callable<Integer>> tasks 
-		  = new ArrayList<Callable<Integer>>();
-
 		// mate and form the next generation
 		for (int i = 0; i < countToMate; i++) {
 			final Chromosome<GENE_TYPE> mother = this.chromosomes[i];
@@ -204,26 +189,12 @@ abstract public class GeneticAlgorithm<GENE_TYPE> {
 			  = new MateWorker<GENE_TYPE>(
 					mother, father, child1, child2);
 
-			try {
-				if (this.pool != null) {
-					tasks.add(worker);
-				} else {
-					worker.call();
-				}
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
+			  EncogConcurrency.getInstance().processTask(worker);
 			
 			offspringIndex += 2;
 		}
 
-		if (this.pool != null) {
-			try {
-				this.pool.invokeAll(tasks, TIMEOUT, TimeUnit.SECONDS);
-			} catch (final InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		EncogConcurrency.getInstance().waitForComplete(5);
 
 		// sort the next generation
 		sortChromosomes();
@@ -289,16 +260,6 @@ abstract public class GeneticAlgorithm<GENE_TYPE> {
 	 */
 	public void setPercentToMate(final double percentToMate) {
 		this.percentToMate = percentToMate;
-	}
-
-	/**
-	 * Set the optional thread pool.
-	 * 
-	 * @param pool
-	 *            the pool to set
-	 */
-	public void setPool(final ExecutorService pool) {
-		this.pool = pool;
 	}
 
 	/**

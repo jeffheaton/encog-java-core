@@ -27,12 +27,14 @@ package org.encog.solve.genetic;
 
 import java.util.concurrent.Callable;
 
+import org.encog.util.concurrency.EncogTask;
+
 /**
  * MateWorker: This class is used in conjunction with a thread pool. This allows
  * the genetic algorithm to offload all of those calculations to a thread pool.
  */
 public class MateWorker<GENE_TYPE> implements
-		Callable<Integer> {
+		EncogTask {
 	
 	/**
 	 * The mother.
@@ -71,15 +73,10 @@ public class MateWorker<GENE_TYPE> implements
 		this.child2 = child2;
 	}
 
-	/**
-	 * Execute the background task.
-	 * @return Not used, need to match prototype.
-	 * @throws Exception Something went wrong.
-	 */
-	@SuppressWarnings("unchecked")
-	public Integer call() throws Exception {
+
+	@Override
+	public void run() {
 		this.mother.mate(this.father, this.child1, this.child2);
-		return null;
 	}
 
 }
