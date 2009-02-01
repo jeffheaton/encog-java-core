@@ -30,6 +30,7 @@ public class Word extends DataObject {
 	private Collection<WordTypePossibility> types = new ArrayList<WordTypePossibility>();
 	
 	private int gutenbergCount;
+	private int wikiCount;
 
 	@ManyToMany
 	private Collection<Fix> fixes = new ArrayList<Fix>();
@@ -122,6 +123,15 @@ public class Word extends DataObject {
 		else
 			return this.text.endsWith(fix.getText());
 	}
+
+	public int getWikiCount() {
+		return wikiCount;
+	}
+
+	public void setWikiCount(int wikiCount) {
+		this.wikiCount = wikiCount;
+	}
+	
 	
 	
 	

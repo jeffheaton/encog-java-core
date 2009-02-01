@@ -14,6 +14,7 @@ import org.encog.nlp.lexicon.data.WordType;
 import org.encog.nlp.lexicon.data.WordTypePossibility;
 import org.encog.util.orm.ORMSession;
 import org.hibernate.Query;
+import org.hibernate.ScrollableResults;
 
 public class EncogLexicon {
 
@@ -113,10 +114,20 @@ public class EncogLexicon {
 		session.save(fix);
 	}
 	
-	public Iterator<Word> iterateWordList()
+	public long countWordList()
 	{
-		Query q = session.createQuery("from org.encog.nlp.lexicon.data.Word");
-		return q.iterate();
+		Long l = (Long)session.createQuery("SELECT COUNT(*) FROM Word").uniqueResult();
+		return l.longValue();
+		
+	}
+	
+	public Iterator iterateWordList(int start,int size)
+	{
+		Query q = session.createQuery("from org.encog.nlp.lexicon.data.Word w ORDER BY w.text");
+		q.setFirstResult(start);
+		q.setMaxResults(size);
+		Iterator result = q.iterate();
+		return result;
 	}
 
 	public Map<String, Fix> getPrefixes() {
@@ -250,6 +261,13 @@ public class EncogLexicon {
 	{
 		Word w = obtainWord(word);
 		w.setGutenbergCount(w.getGutenbergCount()+count);
+		session.save(w);
+	}
+	
+	public void registerWikiCount(String word, int count)
+	{
+		Word w = obtainWord(word);
+		w.setWikiCount(w.getWikiCount()+count);
 		session.save(w);
 	}
 
