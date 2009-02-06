@@ -46,7 +46,6 @@ public class SpiderWorker implements EncogTask {
 		this.work = work;
 	}
 	
-	@Override
 	public void run() {
 		
 		URLConnection connection = null;

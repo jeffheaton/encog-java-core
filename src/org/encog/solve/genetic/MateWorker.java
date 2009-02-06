@@ -74,7 +74,6 @@ public class MateWorker<GENE_TYPE> implements
 	}
 
 
-	@Override
 	public void run() {
 		this.mother.mate(this.father, this.child1, this.child2);
 	}
