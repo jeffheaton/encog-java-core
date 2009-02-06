@@ -1,9 +1,10 @@
 /*
- * Encog Neural Network and Bot Library for Java v1.x
+ * Encog Artificial Intelligence Framework v1.x
+ * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
@@ -35,15 +36,26 @@ import org.encog.nlp.memory.VarConcept;
 import org.encog.nlp.reason.EvaluateText;
 import org.encog.parse.Parse;
 import org.encog.parse.units.UnitManager;
+import org.encog.util.orm.ORMSession;
 
 
-public class Context {
+public class EncogNLP {
 
 	private LongTermMemory memory;
 	private EvaluateText evaluate;
 	private Parse parse;
 	private UnitManager units;
 	private EncogLexicon lexicon;
+	private ORMSession session;
+	
+	public EncogNLP(ORMSession session)
+	{
+		this.session = session;		
+		this.lexicon = new EncogLexicon(this.session);		
+    	this.lexicon.loadCache();
+		initParse();
+		initNLP();		
+	}
 	
 	private void initParse() 
 	{
@@ -94,13 +106,6 @@ public class Context {
 
 	public void setUnits(UnitManager units) {
 		this.units = units;
-	}
-
-	public void init(EncogLexicon lexicon) throws IOException
-	{
-		this.lexicon = lexicon;
-		initParse();
-		initNLP();
 	}
 	
     public EncogLexicon getLexicon() {

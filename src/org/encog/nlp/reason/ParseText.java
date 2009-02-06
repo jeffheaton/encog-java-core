@@ -1,9 +1,10 @@
 /*
- * Encog Neural Network and Bot Library for Java v1.x
+ * Encog Artificial Intelligence Framework v1.x
+ * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
@@ -31,7 +32,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 
-import org.encog.nlp.Context;
+import org.encog.nlp.EncogNLP;
 import org.encog.nlp.NLPError;
 import org.encog.parse.signal.Signal;
 
@@ -41,10 +42,10 @@ import org.encog.parse.signal.Signal;
  * @author  jheaton
  */
 abstract public class ParseText {   
-    private Context context;
+    private EncogNLP context;
     
     /** Creates a new instance of ParseText */
-    public ParseText (Context context) {
+    public ParseText (EncogNLP context) {
     	this.context = context;
     }
     

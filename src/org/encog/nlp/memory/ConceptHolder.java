@@ -1,15 +1,10 @@
 /*
- * LongConceptHolder.java
- *
- * Created on April 26, 2004, 8:01 AM
- */
-
-/*
- * Encog Neural Network and Bot Library for Java v1.x
+ * Encog Artificial Intelligence Framework v1.x
+ * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
