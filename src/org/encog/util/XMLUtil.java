@@ -1,9 +1,10 @@
 /*
- * Encog Neural Network and Bot Library for Java v1.x
+ * Encog Artificial Intelligence Framework v1.x
+ * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
@@ -23,6 +24,16 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.encog.util;
+
+import java.io.OutputStream;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -169,4 +180,19 @@ public final class XMLUtil {
 	private XMLUtil() {
 	}
 
+	public static TransformerHandler saveXML(OutputStream os) throws TransformerConfigurationException
+	{
+		final StreamResult streamResult = new StreamResult(os);
+		final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory
+				.newInstance();
+		// SAX2.0 ContentHandler.
+		final TransformerHandler hd = tf.newTransformerHandler();
+		final Transformer serializer = hd.getTransformer();
+		serializer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+
+		serializer.setOutputProperty(OutputKeys.INDENT, "yes");
+		hd.setResult(streamResult);
+		return hd;
+	}
+	
 }
