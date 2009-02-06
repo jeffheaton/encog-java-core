@@ -18,7 +18,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.EncogError;
-import org.encog.nlp.Context;
+import org.encog.nlp.EncogNLP;
 import org.encog.nlp.lexicon.EncogLexicon;
 import org.encog.nlp.memory.RomMemory;
 import org.encog.util.orm.ORMSession;
@@ -30,7 +30,7 @@ import org.encog.util.orm.SessionManager;
  * @author  jheaton
  */
 public class TestNLPScript extends TestCase {
-	private Context context;
+	private EncogNLP context;
 	
 	
 	static final String DRIVER = "com.mysql.jdbc.Driver";
@@ -48,10 +48,10 @@ public class TestNLPScript extends TestCase {
     	
     	//SessionManager.getInstance().initHSQL("/Users/jeff/Data/encog");
 		ORMSession session = manager.openSession();
-    	EncogLexicon lexicon = new EncogLexicon(session);
-    	lexicon.loadCache();
-    	context = new Context();
-    	context.init(lexicon);
+    	
+    	context = new EncogNLP(session);
+    	
+    	
         RomMemory.load(context.getMemory());       
     }
     
