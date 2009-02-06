@@ -92,13 +92,27 @@ public class XML2Object {
 			}
 			final Element e = (Element) child;
 			String value = XMLUtil.getElementValue(e);
-			
-			if( e.getNodeName().equals("S"))
-			{
+
+			if (e.getNodeName().equals("S")) {
 				result.add(value);
 			}
 		}
 
 		return result;
+	}
+
+	public void loadObject(Element element, EncogPersistedObject obj) {
+		for (Node child = element.getFirstChild(); child != null; child = child
+				.getNextSibling()) {
+			if (!(child instanceof Element)) {
+				continue;
+			}
+			
+			if( child.getNodeName().equals(obj.getClass().getSimpleName()))
+			{
+				load(element,obj);
+				return;
+			}
+		}
 	}
 }
