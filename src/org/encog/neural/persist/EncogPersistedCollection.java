@@ -263,16 +263,8 @@ public class EncogPersistedCollection {
 	 */
 	public void save(final OutputStream os) {
 		try {
-			final StreamResult streamResult = new StreamResult(os);
-			final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory
-					.newInstance();
-			// SAX2.0 ContentHandler.
-			final TransformerHandler hd = tf.newTransformerHandler();
-			final Transformer serializer = hd.getTransformer();
-			serializer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
-
-			serializer.setOutputProperty(OutputKeys.INDENT, "yes");
-			hd.setResult(streamResult);
+			final TransformerHandler hd = XMLUtil.saveXML(os);
+				
 			hd.startDocument();
 			final AttributesImpl atts = new AttributesImpl();
 			// USERS tag.
