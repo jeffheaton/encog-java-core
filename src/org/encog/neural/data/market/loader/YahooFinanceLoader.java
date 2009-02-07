@@ -44,7 +44,11 @@ import org.encog.neural.data.market.TickerSymbol;
 import org.encog.util.ReadCSV;
 
 /**
- * This class loads financial data from Yahoo.
+ * This class loads financial data from Yahoo.  One caution on 
+ * Yahoo data.  I've noticed that the volume numbers will
+ * fluxuate some from one load to the next.  It is generally
+ * by a very small percent, but it was enough to force me to
+ * adjust the unit tests some.
  * 
  * @author jheaton
  */
