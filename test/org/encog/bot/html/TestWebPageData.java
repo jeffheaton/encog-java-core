@@ -52,7 +52,6 @@ public class TestWebPageData extends TestCase {
 		TestCase.assertTrue(span instanceof Link);
 		Link link = (Link)span;
 		TestCase.assertEquals("index.html",link.getTarget().getOriginal().toString());
-		TestCase.assertEquals("Link 1",span.getTextOnly());
 		
 	}
 	
