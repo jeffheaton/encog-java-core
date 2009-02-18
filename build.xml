@@ -7,6 +7,7 @@
 	<property name="build" location="bin" />
 	<property name="dist" location="lib" />
 	<property name="doc" location="doc" />
+	<property name="classpath" value="jar/antlr-2.7.6.jar:jar/commons-collections-3.1.jar:jar/dom4j-1.6.1.jar:jar/ejb3-persistence.jar:jar/hibernate3.jar:jar/hibernate-annotations.jar:jar/hibernate-commons-annotations.jar:jar/hibernate-core.jar:jar/javassist-3.4.GA.jar:jar/jta-1.1.jar:jar/slf4j-api-1.5.6.jar:jar/slf4j-jdk14-1.5.6.jar" />
 
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
@@ -15,11 +16,11 @@
 
 	<target name="compile" depends="init" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${build} -->
-		<javac srcdir="${src}" source="1.5" target="1.5" destdir="${build}" />
+		<javac srcdir="${src}" source="1.5" target="1.5" destdir="${build}" classpath="${classpath}" />
 	</target>
 
 	<target name="doc" depends="init" description="produce javadoc ">
-		<javadoc sourcepath="${src}" destdir="${doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;"/>
+		<javadoc sourcepath="${src}" destdir="${doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;" classpath="${classpath}" />
 	</target>
 
 	<target name="dist" depends="compile,doc" description="generate the distribution">
