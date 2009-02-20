@@ -5,8 +5,8 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.encog.HSQLUtil;
 import org.encog.neural.networks.XOR;
+import org.encog.util.HSQLUtil;
 
 public class TestSQLDataSet extends TestCase {
 	

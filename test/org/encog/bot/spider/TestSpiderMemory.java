@@ -6,10 +6,10 @@ import java.net.URL;
 
 import junit.framework.TestCase;
 
-import org.encog.HSQLUtil;
 import org.encog.bot.spider.Spider;
 import org.encog.bot.spider.SpiderParseHTML;
 import org.encog.bot.spider.SpiderReportable;
+import org.encog.util.HSQLUtil;
 import org.encog.util.orm.SessionManager;
 
 public class TestSpiderMemory extends TestCase implements SpiderReportable {
