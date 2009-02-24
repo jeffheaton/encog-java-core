@@ -27,7 +27,6 @@ package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.ActivationLinearPersistor;
 
 /**
  * ActivationLinear: The Linear layer is really not an activation function at
@@ -44,32 +43,14 @@ public class ActivationLinear implements ActivationFunction {
 	private static final long serialVersionUID = -5356580554235104944L;
 
 	/**
-	 * The description for this object.
-	 */
-	private String description;
-	
-	/**
-	 * The name of this object.
-	 */
-	private String name;
-
-	/**
 	 * A threshold function for a neural network.
 	 * 
 	 * @param d
 	 *            The input to the function.
 	 * @return The output from the function.
 	 */
-	public double activationFunction(final double d) {
-		return d;
-	}
+	public void activationFunction(final double[] d) {
 
-	/**
-	 * Create a persistor for this object.
-	 * @return The new persistor.
-	 */
-	public Persistor createPersistor() {
-		return new ActivationLinearPersistor();
 	}
 
 	/**
@@ -79,40 +60,9 @@ public class ActivationLinear implements ActivationFunction {
 	 *            The input.
 	 * @return The output.
 	 */
-	public double derivativeFunction(final double d) {
+	public void derivativeFunction(final double[] d) {
 		throw new NeuralNetworkError(
 				"Can't use the linear activation function "
 						+ "where a derivative is required.");
 	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 }

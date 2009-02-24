@@ -26,7 +26,6 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.ActivationSigmoidPersistor;
 
 /**
  * ActivationSigmoid: The sigmoid activation function takes on a sigmoidal
@@ -39,15 +38,6 @@ public class ActivationSigmoid implements ActivationFunction {
 	 */
 	private static final long serialVersionUID = 5622349801036468572L;
 
-	/**
-	 * The description of this object.
-	 */
-	private String description;
-	
-	/**
-	 * The name of this object.
-	 */
-	private String name;
 
 	/**
 	 * A threshold function for a neural network.
@@ -56,16 +46,13 @@ public class ActivationSigmoid implements ActivationFunction {
 	 *            The input to the function.
 	 * @return The output from the function.
 	 */
-	public double activationFunction(final double d) {
-		return 1.0 / (1 + Math.exp(-1.0 * d));
-	}
+	public void activationFunction(final double d[]) {
 
-	/**
-	 * Create a persistor for this object.
-	 * @return The new persistor.
-	 */
-	public Persistor createPersistor() {
-		return new ActivationSigmoidPersistor();
+		for(int i=0;i<d.length;i++)
+		{
+			d[i] = 1.0 / (1 + Math.exp(-1.0 * d[i]));
+		}
+
 	}
 
 	/**
@@ -75,38 +62,12 @@ public class ActivationSigmoid implements ActivationFunction {
 	 *            The input.
 	 * @return The output.
 	 */
-	public double derivativeFunction(final double d) {
-		return d * (1.0 - d);
-	}
+	public void derivativeFunction(final double d[]) {
+		
+		for(int i=0;i<d.length;i++)
+		{
+			d[i] = d[i] * (1.0 - d[i]);
+		}
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
 	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 }

@@ -47,7 +47,7 @@ import org.encog.neural.persist.EncogPersistedObject;
  * Non-derivable activation functions are perfectly valid, they simply cannot be
  * used with every training algorithm. 
  */
-public interface ActivationFunction extends Serializable, EncogPersistedObject {
+public interface ActivationFunction extends Serializable {
 
 	/**
 	 * A activation function for a neural network.
@@ -56,7 +56,7 @@ public interface ActivationFunction extends Serializable, EncogPersistedObject {
 	 *            The input to the function.
 	 * @return The output from the function.
 	 */
-	double activationFunction(double d);
+	void activationFunction(double[] d);
 
 	/**
 	 * Performs the derivative of the activation function function on the input.
@@ -65,6 +65,6 @@ public interface ActivationFunction extends Serializable, EncogPersistedObject {
 	 *            The input.
 	 * @return The output.
 	 */
-	double derivativeFunction(double d);
+	void derivativeFunction(double[] d);
 
 }

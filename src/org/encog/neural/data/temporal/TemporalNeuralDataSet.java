@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.encog.neural.activation.ActivationUtil;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -323,27 +324,27 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	private double formatData(final TemporalDataDescription desc,
 			final int index) {
-		double result = 0;
+		double[] result = new double[1];
 
 		switch (desc.getType()) {
 		case DELTA_CHANGE:
-			result = getDataDeltaChange(desc, index);
+			result[0] = getDataDeltaChange(desc, index);
 			break;
 		case PERCENT_CHANGE:
-			result = getDataPercentChange(desc, index);
+			result[0] = getDataPercentChange(desc, index);
 			break;
 		case RAW:
-			result = getDataRAW(desc, index);
+			result[0] = getDataRAW(desc, index);
 			break;
 		default:
 			throw new TemporalError("Unsupported data type.");
 		}
 
 		if (desc.getActivationFunction() != null) {
-			result = desc.getActivationFunction().activationFunction(result);
+			desc.getActivationFunction().activationFunction(result);
 		}
 
-		return result;
+		return result[0];
 	}
 
 	/**

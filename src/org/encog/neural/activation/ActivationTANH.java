@@ -26,7 +26,6 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.ActivationTANHPersistor;
 
 /**
  * ActivationTANH: The hyperbolic tangent activation function takes the curved
@@ -41,15 +40,6 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
 
-	/**
-	 * The description of this object.
-	 */
-	private String description;
-	
-	/**
-	 * The name of this object.
-	 */
-	private String name;
 
 	/**
 	 * A threshold function for a neural network.
@@ -58,18 +48,19 @@ public class ActivationTANH implements ActivationFunction {
 	 *            The input to the function.
 	 * @return The output from the function.
 	 */
-	public double activationFunction(final double d) {
-		final double result = (Math.exp(d * 2.0) - 1.0)
-				/ (Math.exp(d * 2.0) + 1.0);
-		return result;
-	}
+	public void activationFunction(final double[] d) {
+		
+		for(int i=0;i<d.length;i++)
+		{
+			d[i] = activationFunction(d[i]);
+		}
 
-	/**
-	 * Create a persistor for this object.
-	 * @return The new persistor.
-	 */
-	public Persistor createPersistor() {
-		return new ActivationTANHPersistor();
+	}
+	
+	private double activationFunction(double d)
+	{
+		return (Math.exp(d * 2.0) - 1.0)
+		/ (Math.exp(d * 2.0) + 1.0);
 	}
 
 	/**
@@ -79,38 +70,12 @@ public class ActivationTANH implements ActivationFunction {
 	 *            The input.
 	 * @return The output.
 	 */
-	public double derivativeFunction(final double d) {
-		return 1.0 - Math.pow(activationFunction(d), 2.0);
-	}
+	public void derivativeFunction(final double[] d) {
+		
+		for(int i=0;i<d.length;i++)
+		{
+			d[i] = 1.0 - Math.pow(activationFunction(d[i]), 2.0);
+		}
 
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
 	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 }

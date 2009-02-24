@@ -183,9 +183,10 @@ public class BackpropagationLayer {
 	 * @return The delta to be used to learn.
 	 */
 	private double calculateDelta(final int i) {
-		return getError(i)
-				* this.layer.getActivationFunction().derivativeFunction(
-						this.layer.getFire(i));
+		double[] d = new double[1];
+		d[0] = this.layer.getFire(i);
+		this.layer.getActivationFunction().derivativeFunction(d);
+		return (getError(i) * d[0]);
 	}
 
 	/**

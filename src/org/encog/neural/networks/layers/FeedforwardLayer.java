@@ -113,9 +113,11 @@ public class FeedforwardLayer extends BasicLayer implements
 			final Matrix col = getMatrix().getCol(i);
 			final double sum = MatrixMath.dotProduct(col, inputMatrix);
 
-			getNext().setFire(i,
-					this.activationFunction.activationFunction(sum));
+			getNext().setFire(i,sum);
 		}
+		
+		// apply the activation function
+		this.activationFunction.activationFunction(getNext().getFire().getData());
 
 		return this.getFire();
 	}
