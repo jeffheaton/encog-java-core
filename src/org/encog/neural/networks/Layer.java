@@ -43,17 +43,6 @@ public interface Layer {
 	NeuralData compute(final NeuralData pattern);
 
 	/**
-	 * Set the previous layer.
-	 * @param layer The previous layer.
-	 */
-	void setPrevious(Layer layer);
-	
-	/**
-	 * @return Get the previous layer.
-	 */
-	Layer getPrevious();
-
-	/**
 	 * Set the next layer.
 	 * @param layer The next layer.
 	 */
@@ -65,24 +54,9 @@ public interface Layer {
 	int getNeuronCount();
 
 	/**
-	 * @return True if this is an input layer.
-	 */
-	boolean isInput();
-
-	/** 
-	 * @return True if this is a hidden layer.
-	 */
-	boolean isHidden();
-
-	/**
 	 * Reset the weight matrix to random values.
 	 */
 	void reset();
-
-	/**
-	 * @return Is this an output matrix.
-	 */
-	boolean isOutput();
 
 	/**
 	 * @return The next layer.

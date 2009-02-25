@@ -28,10 +28,15 @@ package org.encog.neural.networks;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.encog.matrix.MatrixCODEC;
+import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -68,11 +73,6 @@ public class BasicNetwork implements Serializable, Network,
 	private Layer outputLayer;
 
 	/**
-	 * All of the layers in the neural network.
-	 */
-	private final List<Layer> layers = new ArrayList<Layer>();
-
-	/**
 	 * The description of this object.
 	 */
 	private String description;
@@ -96,16 +96,14 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The layer to be added.
 	 */
 	public void addLayer(final Layer layer) {
-		// setup the forward and back pointer
-		if (this.outputLayer != null) {
-			layer.setPrevious(this.outputLayer);
+		if( this.inputLayer==null)
+			this.outputLayer = this.inputLayer = layer;
+		else
+		{
 			this.outputLayer.setNext(layer);
+			this.outputLayer = layer;
 		}
-
-		// add the new layer to the list
-		this.layers.add(layer);
-
-		resync();
+		
 	}
 
 	/**
@@ -117,27 +115,10 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The new layer to add.
 	 */
 	public void addLayer(final Layer baseLayer, final Layer newLayer) {
-		int index = 0;
-		while (index < this.layers.size()) {
-			if (this.layers.get(index) == baseLayer) {
-				break;
-			}
-			index++;
-		}
-
-		if (index == this.layers.size()) {
-			throw new NeuralNetworkError(
-					"The specified base layer must be part of the network.");
-		}
-
-		final Layer next = baseLayer.getNext();
+		if( baseLayer==this.outputLayer )
+			this.outputLayer = newLayer;
+		newLayer.setNext(baseLayer.getNext());
 		baseLayer.setNext(newLayer);
-		newLayer.setPrevious(baseLayer);
-		newLayer.setNext(next);
-		this.layers.add(index + 1, newLayer);
-		this.outputLayer = this.layers.get(this.layers.size() - 1);
-
-		resync();
 
 	}
 
@@ -167,8 +148,9 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public int calculateNeuronCount() {
 		int result = 0;
-		for (final Layer layer : this.layers) {
-			result += layer.getNeuronCount();
+		for(Layer layer: this.getLayers())
+		{
+			result+=layer.getNeuronCount();
 		}
 		return result;
 	}
@@ -181,29 +163,10 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	@Override
 	public Object clone() {
-		final BasicNetwork result = cloneStructure();
-		final Double[] copy = MatrixCODEC.networkToArray(this);
-		MatrixCODEC.arrayToNetwork(copy, result);
-		return result;
+		return null;
 	}
 
-	/**
-	 * Return a clone of the structure of this neural network.
-	 * 
-	 * @return A cloned copy of the structure of the neural network.
-	 */
 
-	public BasicNetwork cloneStructure() {
-		final BasicNetwork result = new BasicNetwork();
-
-		for (final Layer layer : this.layers) {
-			final Layer clonedLayer = new FeedforwardLayer(layer
-					.getNeuronCount());
-			result.addLayer(clonedLayer);
-		}
-
-		return result;
-	}
 
 	/**
 	 * Compute the output for a given input to the neural network.
@@ -221,14 +184,19 @@ public class BasicNetwork implements Serializable, Network,
 							+ this.inputLayer.getNeuronCount());
 		}
 
-		for (final Layer layer : this.layers) {
-			if (layer.isInput()) {
-				layer.compute(input);
-			} else if (layer.isHidden()) {
-				layer.compute(null);
+		Layer current = this.inputLayer;
+		while(current!=null)
+		{
+			if( isInput(current) )
+			{
+				current.compute(input);
+			} else if( isHidden(current) )
+			{
+				current.compute(null);	
 			}
+			current = current.getNext();
 		}
-
+		
 		return this.outputLayer.getSynapse().getFire();
 	}
 
@@ -249,6 +217,7 @@ public class BasicNetwork implements Serializable, Network,
 	 * @return True if the two networks are equal.
 	 */
 	public boolean equals(final BasicNetwork other) {
+		/*
 		final Iterator<Layer> otherLayers = other.getLayers().iterator();
 
 		for (final Layer layer : getLayers()) {
@@ -274,7 +243,7 @@ public class BasicNetwork implements Serializable, Network,
 					return false;
 				}
 			}
-		}
+		}*/
 
 		return true;
 	}
@@ -292,7 +261,11 @@ public class BasicNetwork implements Serializable, Network,
 	 * @return The hidden layer count.
 	 */
 	public int getHiddenLayerCount() {
-		return this.layers.size() - 2;
+		int result = this.calculateNeuronCount() - 2;
+		if( result<0 )
+			return 0;
+		else
+			return result;
 	}
 
 	/**
@@ -302,11 +275,23 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public Collection<Layer> getHiddenLayers() {
 		final Collection<Layer> result = new ArrayList<Layer>();
-		for (final Layer layer : this.layers) {
-			if (layer.isHidden()) {
-				result.add(layer);
+		
+		Set<Layer> map = new HashSet<Layer>();
+		Layer current = this.inputLayer;
+		while(current!=null)
+		{
+			if( !map.contains(current.getNext()))
+			{
+				if( current.getNext()!=null )
+				{
+					if( isHidden(current) )
+						result.add(current);
+					map.add(current.getNext());
+					current = current.getNext();
+				}
 			}
-		}
+		}		
+		
 		return result;
 	}
 
@@ -317,15 +302,6 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public Layer getInputLayer() {
 		return this.inputLayer;
-	}
-
-	/**
-	 * Get all layers.
-	 * 
-	 * @return All layers.
-	 */
-	public List<Layer> getLayers() {
-		return this.layers;
 	}
 
 	/**
@@ -351,7 +327,7 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public int getWeightMatrixSize() {
 		int result = 0;
-		for (final Layer layer : this.layers) {
+		for (final Layer layer : this.getLayers() ) {
 			result += layer.getSynapse().getMatrixSize();
 		}
 		return result;
@@ -373,20 +349,20 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The layer to remove.
 	 */
 	public void removeLayer(final Layer layer) {
-		final Layer previous = layer.getPrevious();
 		final Layer next = layer.getNext();
+		final Collection<Layer> prev = this.getPreviousLayers(layer);
 
-		this.layers.remove(layer);
-
-		if (next != null) {
-			next.setPrevious(previous);
+		if( layer==this.inputLayer )
+		{
+			this.inputLayer = layer.getNext();
 		}
-
-		if (previous != null) {
-			previous.setNext(next);
+		
+		for(Layer l: prev)
+		{
+			l.setNext(next);
+			if( next==null )
+				this.outputLayer = l;
 		}
-
-		resync();
 	}
 
 	/**
@@ -395,23 +371,9 @@ public class BasicNetwork implements Serializable, Network,
 	 * @throws MatrixException
 	 */
 	public void reset() {
-		for (final Layer layer : this.layers) {
+		for (final Layer layer : this.getLayers()) {
 			layer.reset();
 		}
-	}
-
-	/**
-	 * Rebuild the next/prev structure from the list.
-	 */
-	private void resync() {
-		if (this.layers.size() > 0) {
-			this.outputLayer = this.layers.get(this.layers.size() - 1);
-			this.inputLayer = this.layers.get(0);
-		} else {
-			this.outputLayer = null;
-			this.inputLayer = null;
-		}
-
 	}
 
 	/**
@@ -454,6 +416,85 @@ public class BasicNetwork implements Serializable, Network,
 		}
 
 		return win;
+	}
+	
+	public boolean isInput(Layer layer)
+	{
+		return this.inputLayer==layer;
+	}
+	
+	public boolean isOutput(Layer layer)
+	{
+		return this.outputLayer==layer;
+	}
+	
+	public boolean isHidden(Layer layer)
+	{
+		return !isInput(layer) && !isOutput(layer);
+	}
+	
+	/**
+	 * Prune one of the neurons from this layer. Remove all entries in this
+	 * weight matrix and other layers.
+	 * 
+	 * @param neuron
+	 *            The neuron to prune. Zero specifies the first neuron.
+	 */
+	public void prune(final Layer targetLayer, final int neuron) {
+		// delete a row on this matrix
+		if (targetLayer.getSynapse().getMatrix() != null) {
+			targetLayer.getSynapse().setMatrix(MatrixMath.deleteRow(targetLayer.getSynapse().getMatrix(), neuron));
+		}
+
+		// delete a column on the previous
+		final Collection<Layer> previous = this.getPreviousLayers(targetLayer);
+		
+		for(Layer prevLayer: previous )
+		{
+		if (previous != null) {
+			if (prevLayer.getSynapse().getMatrix() != null) {
+				prevLayer.getSynapse().setMatrix(MatrixMath.deleteCol(prevLayer.getSynapse().getMatrix(),
+						neuron));
+			}
+		}
+		}
+
+	}
+	
+	public Collection<Layer> getLayers()
+	{
+		Set<Layer> map = new HashSet<Layer>();
+		Layer current = this.inputLayer;
+		while(current!=null)
+		{
+			if( current!=null )
+			{
+				map.add(current);
+			}
+			
+			if( !map.contains(current.getNext()))
+				current = current.getNext();
+			
+			
+				
+		}
+		
+		
+
+		return map;
+	}
+	
+	public Collection<Layer> getPreviousLayers(Layer targetLayer)
+	{
+		Collection<Layer> result = new HashSet<Layer>();
+		for(Layer layer: this.getLayers())
+		{
+			if( layer.getNext() == targetLayer )
+			{
+				result.add(layer);
+			}
+		}
+		return result;
 	}
 
 }

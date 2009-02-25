@@ -160,30 +160,6 @@ public class FeedforwardLayer extends BasicLayer implements
 	}
 
 	/**
-	 * Prune one of the neurons from this layer. Remove all entries in this
-	 * weight matrix and other layers.
-	 * 
-	 * @param neuron
-	 *            The neuron to prune. Zero specifies the first neuron.
-	 */
-	public void prune(final int neuron) {
-		// delete a row on this matrix
-		if (getSynapse().getMatrix() != null) {
-			setMatrix(MatrixMath.deleteRow(getSynapse().getMatrix(), neuron));
-		}
-
-		// delete a column on the previous
-		final Layer previous = getPrevious();
-		if (previous != null) {
-			if (previous.getSynapse().getMatrix() != null) {
-				previous.getSynapse().setMatrix(MatrixMath.deleteCol(previous.getSynapse().getMatrix(),
-						neuron));
-			}
-		}
-
-	}
-
-	/**
 	 * Set the activation function for this layer.
 	 * @param f The activation function.
 	 */

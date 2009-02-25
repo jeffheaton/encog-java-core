@@ -60,7 +60,7 @@ public class TestBackpropagation extends TestCase {
 		TestCase.assertEquals(4,hidden.getSynapse().getMatrixSize());
 		TestCase.assertEquals(9, network.getInputLayer().getSynapse().getMatrixSize());
 		
-		hidden.prune(1);
+		network.prune(hidden, 1);
 		
 		TestCase.assertEquals(2,hidden.getNeuronCount());
 		TestCase.assertEquals(3,hidden.getSynapse().getMatrixSize());

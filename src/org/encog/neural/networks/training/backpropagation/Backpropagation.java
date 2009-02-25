@@ -25,6 +25,7 @@
  */
 package org.encog.neural.networks.training.backpropagation;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -139,19 +140,34 @@ public class Backpropagation implements Train {
 			getBackpropagationLayer(layer).clearError();
 		}
 
-		for (int i = this.network.getLayers().size() - 1; i >= 0; i--) {
-			final Layer layer = this.network.getLayers().get(i);
+		Layer current = this.network.getOutputLayer();
+		
+		while( current!=null )
+		{
+			
+			if (current instanceof FeedforwardLayer) {
 
-			if (layer instanceof FeedforwardLayer) {
+				if( network.isOutput(current)) {
 
-				if (layer.isOutput()) {
-
-					getBackpropagationLayer(layer).calcError(ideal);
+					getBackpropagationLayer(current).calcError(ideal);
 				} else {
-					getBackpropagationLayer(layer).calcError();
+					getBackpropagationLayer(current).calcError(network.isHidden(current));
+				}
+			}
+			
+			// move to the next layer
+			Collection<Layer> previous = network.getPreviousLayers(current);
+			if( previous.size() == 0 )
+				current = null;
+			else
+			{
+				for(Layer prevLayer: previous )
+				{
+					current = prevLayer;
 				}
 			}
 		}
+	
 	}
 
 	/**

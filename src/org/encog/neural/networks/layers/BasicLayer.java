@@ -54,11 +54,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	private Synapse synapse;
 
 	/**
-	 * The previous layer in the neural network.
-	 */
-	private Layer previous;
-
-	/**
 	 * The description for this object.
 	 */
 	private String description;
@@ -129,40 +124,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	}
 
 	/**
-	 * @return the previous layer.
-	 */
-	public Layer getPrevious() {
-		return this.previous;
-	}
-
-	/**
-	 * Determine if this is a hidden layer.
-	 * 
-	 * @return True if this is a hidden layer.
-	 */
-	public boolean isHidden() {
-		return this.next != null && this.previous != null;
-	}
-
-	/**
-	 * Determine if this is an input layer.
-	 * 
-	 * @return True if this is an input layer.
-	 */
-	public boolean isInput() {
-		return this.previous == null;
-	}
-
-	/**
-	 * Determine if this is an output layer.
-	 * 
-	 * @return True if this is an output layer.
-	 */
-	public boolean isOutput() {
-		return this.next == null;
-	}
-
-	/**
 	 * Reset the weight matrix and threshold values to random numbers between -1
 	 * and 1.
 	 */
@@ -199,16 +160,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	public void setNext(final Layer next) {
 		this.next = next;
-	}
-
-	/**
-	 * Set the previous layer.
-	 * 
-	 * @param previous
-	 *            the previous layer.
-	 */
-	public void setPrevious(final Layer previous) {
-		this.previous = previous;
 	}
 
 	public Synapse getSynapse() {

@@ -135,7 +135,7 @@ public class BackpropagationLayer {
 	/**
 	 * Calculate the current error.
 	 */
-	public void calcError() {
+	public void calcError(boolean hidden) {
 
 		final BackpropagationLayer next = this.backpropagation
 				.getBackpropagationLayer(this.layer.getNext());
@@ -150,7 +150,7 @@ public class BackpropagationLayer {
 			accumulateThresholdDelta(i, next.getErrorDelta(i));
 		}
 
-		if (this.layer.isHidden()) {
+		if (hidden) {
 			// hidden layer deltas
 			for (int i = 0; i < this.layer.getNeuronCount(); i++) {
 				setErrorDelta(i, BoundNumbers.bound(calculateDelta(i)));

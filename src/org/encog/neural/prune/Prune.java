@@ -165,7 +165,6 @@ public class Prune {
 		final BasicNetwork result = (BasicNetwork) this.currentNetwork.clone();
 		final Collection<Layer> c = result.getHiddenLayers();
 		final Object[] layers = c.toArray();
-		((FeedforwardLayer) layers[0]).prune(neuron);
 		return result;
 	}
 
