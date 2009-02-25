@@ -103,23 +103,23 @@ public class FeedforwardLayer extends BasicLayer implements
 		int i;
 		if (pattern != null) {
 			for (i = 0; i < getNeuronCount(); i++) {
-				setFire(i, pattern.getData(i));
+				this.getSynapse().setFire(i, pattern.getData(i));
 			}
 		}
 
-		final Matrix inputMatrix = createInputMatrix(this.getFire());
+		final Matrix inputMatrix = createInputMatrix(this.getSynapse().getFire());
 
 		for (i = 0; i < getNext().getNeuronCount(); i++) {
-			final Matrix col = getMatrix().getCol(i);
+			final Matrix col = getSynapse().getMatrix().getCol(i);
 			final double sum = MatrixMath.dotProduct(col, inputMatrix);
 
-			getNext().setFire(i,sum);
+			getNext().getSynapse().setFire(i,sum);
 		}
 		
 		// apply the activation function
-		this.activationFunction.activationFunction(getNext().getFire().getData());
+		this.activationFunction.activationFunction(getNext().getSynapse().getFire().getData());
 
-		return this.getFire();
+		return this.getSynapse().getFire();
 	}
 
 	/**
@@ -168,15 +168,15 @@ public class FeedforwardLayer extends BasicLayer implements
 	 */
 	public void prune(final int neuron) {
 		// delete a row on this matrix
-		if (getMatrix() != null) {
-			setMatrix(MatrixMath.deleteRow(getMatrix(), neuron));
+		if (getSynapse().getMatrix() != null) {
+			setMatrix(MatrixMath.deleteRow(getSynapse().getMatrix(), neuron));
 		}
 
 		// delete a column on the previous
 		final Layer previous = getPrevious();
 		if (previous != null) {
-			if (previous.getMatrix() != null) {
-				previous.setMatrix(MatrixMath.deleteCol(previous.getMatrix(),
+			if (previous.getSynapse().getMatrix() != null) {
+				previous.getSynapse().setMatrix(MatrixMath.deleteCol(previous.getSynapse().getMatrix(),
 						neuron));
 			}
 		}
@@ -203,9 +203,9 @@ public class FeedforwardLayer extends BasicLayer implements
 					"Weight matrix includes threshold values, "
 							+ "and must have at least 2 rows.");
 		}
-		this.setFire(new BasicNeuralData(matrix.getRows() - 1));
+		this.getSynapse().setFire(new BasicNeuralData(matrix.getRows() - 1));
 
-		super.setMatrix(matrix);
+		super.getSynapse().setMatrix(matrix);
 	}
 
 	/**
@@ -213,7 +213,7 @@ public class FeedforwardLayer extends BasicLayer implements
 	 * @param count How many neurons should this layer have.
 	 */
 	public void setNeuronCount(final int count) {
-		this.setFire(new BasicNeuralData(count));
+		this.getSynapse().setFire(new BasicNeuralData(count));
 		if (getNext() != null) {
 			setMatrix(new Matrix(getNeuronCount() + 1, getNext()
 					.getNeuronCount()));
@@ -229,7 +229,7 @@ public class FeedforwardLayer extends BasicLayer implements
 	public void setNext(final Layer next) {
 		super.setNext(next);
 
-		if (!hasMatrix() && getNext() != null) {
+		if (!getSynapse().hasMatrix() && getNext() != null) {
 			// add one to the neuron count to provide a threshold value in row 0
 			setMatrix(new Matrix(getNeuronCount() + 1, next.getNeuronCount()));
 		}

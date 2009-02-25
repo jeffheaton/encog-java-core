@@ -59,7 +59,7 @@ public final class MatrixCODEC {
 
 			// now the weight matrix(if it exists)
 			if (layer.getNext() != null) {
-				index = layer.getMatrix().fromPackedArray(array, index);
+				index = layer.getSynapse().getMatrix().fromPackedArray(array, index);
 			}
 		}
 	}
@@ -77,8 +77,8 @@ public final class MatrixCODEC {
 		// first determine size
 		for (final Layer layer : network.getLayers()) {
 			// count the size of the weight matrix
-			if (layer.hasMatrix()) {
-				size += layer.getMatrixSize();
+			if (layer.getSynapse().hasMatrix()) {
+				size += layer.getSynapse().getMatrixSize();
 			}
 		}
 
@@ -93,7 +93,7 @@ public final class MatrixCODEC {
 			// now the weight matrix(if it exists)
 			if (layer.getNext() != null) {
 
-				final Double[] matrix = layer.getMatrix().toPackedArray();
+				final Double[] matrix = layer.getSynapse().getMatrix().toPackedArray();
 				for (int i = 0; i < matrix.length; i++) {
 					result[index++] = matrix[i];
 				}

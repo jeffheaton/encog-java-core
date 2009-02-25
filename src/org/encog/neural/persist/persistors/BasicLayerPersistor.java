@@ -69,7 +69,7 @@ public class BasicLayerPersistor implements Persistor {
 			final Persistor persistor = EncogPersistedCollection
 					.createPersistor("Matrix");
 			final Matrix matrix = (Matrix) persistor.load(e);
-			layer.setMatrix(matrix);
+			layer.getSynapse().setMatrix(matrix);
 		}
 		return layer;
 	}
@@ -97,14 +97,14 @@ public class BasicLayerPersistor implements Persistor {
 
 			atts.clear();
 
-			if (layer.hasMatrix()) {
+			if (layer.getSynapse().hasMatrix()) {
 
 				final Persistor persistor = EncogPersistedCollection
-						.createPersistor(layer.getMatrix().getClass()
+						.createPersistor(layer.getSynapse().getMatrix().getClass()
 								.getSimpleName());
 				atts.clear();
 				hd.startElement("", "", "weightMatrix", atts);
-				persistor.save(layer.getMatrix(), hd);
+				persistor.save(layer.getSynapse().getMatrix(), hd);
 				hd.endElement("", "", "weightMatrix");
 
 			}

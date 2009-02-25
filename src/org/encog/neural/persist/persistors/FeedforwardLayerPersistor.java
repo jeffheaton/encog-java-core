@@ -108,14 +108,14 @@ public class FeedforwardLayerPersistor implements Persistor {
 			hd.startElement("", "", "activation", atts);
 			hd.endElement("", "", "activation");
 
-			if (layer.hasMatrix()) {
+			if (layer.getSynapse().hasMatrix()) {
 
 				final Persistor persistor = EncogPersistedCollection
-						.createPersistor(layer.getMatrix().getClass()
+						.createPersistor(layer.getSynapse().getMatrix().getClass()
 								.getSimpleName());
 				atts.clear();
 				hd.startElement("", "", "weightMatrix", atts);
-				persistor.save(layer.getMatrix(), hd);
+				persistor.save(layer.getSynapse().getMatrix(), hd);
 				hd.endElement("", "", "weightMatrix");
 
 			}

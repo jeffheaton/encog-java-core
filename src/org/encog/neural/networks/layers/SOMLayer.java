@@ -91,7 +91,7 @@ public class SOMLayer extends BasicLayer implements Serializable,
 				.getNeuronCount());
 
 		for (int i = 0; i < getNext().getNeuronCount(); i++) {
-			final Matrix optr = getMatrix().getRow(i);
+			final Matrix optr = getSynapse().getMatrix().getRow(i);
 			output.setData(i, MatrixMath.dotProduct(input.getInputMatrix(),
 					optr)
 					* input.getNormfac());
@@ -106,7 +106,7 @@ public class SOMLayer extends BasicLayer implements Serializable,
 				output.setData(i, 1.0);
 			}
 
-			getNext().setFire(i, output.getData(i));
+			getNext().getSynapse().setFire(i, output.getData(i));
 		}
 
 		return output;
@@ -134,9 +134,9 @@ public class SOMLayer extends BasicLayer implements Serializable,
 	 * @param count The neuron count.
 	 */
 	public void setNeuronCount(final int count) {
-		this.setFire(new BasicNeuralData(count));
+		this.getSynapse().setFire(new BasicNeuralData(count));
 		if (getNext() != null) {
-			setMatrix(new Matrix(getNext().getNeuronCount(),
+			getSynapse().setMatrix(new Matrix(getNext().getNeuronCount(),
 					getNeuronCount() + 1));
 		}
 
@@ -151,8 +151,8 @@ public class SOMLayer extends BasicLayer implements Serializable,
 	public void setNext(final Layer next) {
 		super.setNext(next);
 
-		if (!hasMatrix()) {
-			setMatrix(new Matrix(next.getNeuronCount(), getNeuronCount() + 1));
+		if (!getSynapse().hasMatrix()) {
+			getSynapse().setMatrix(new Matrix(next.getNeuronCount(), getNeuronCount() + 1));
 		}
 	}
 

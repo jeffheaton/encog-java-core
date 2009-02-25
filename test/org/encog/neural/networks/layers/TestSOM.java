@@ -39,7 +39,7 @@ public class TestSOM extends TestCase {
 		network.addLayer(layer = new SOMLayer(4,NormalizationType.MULTIPLICATIVE));
 		network.addLayer(new BasicLayer(2));
 		
-		layer.setMatrix(matrix);
+		layer.getSynapse().setMatrix(matrix);
 		
 		NeuralDataSet trainingSet = new BasicNeuralDataSet();
 		trainingSet.add(data1);
@@ -78,7 +78,7 @@ public class TestSOM extends TestCase {
 		network.addLayer(layer = new SOMLayer(4,NormalizationType.MULTIPLICATIVE));
 		network.addLayer(new BasicLayer(2));
 		
-		layer.setMatrix(matrix);
+		layer.getSynapse().setMatrix(matrix);
 		
 		int data1Neuron = network.winner(data1);
 		int data2Neuron = network.winner(data2);

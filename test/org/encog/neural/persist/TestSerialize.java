@@ -117,7 +117,7 @@ public class TestSerialize extends TestCase {
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(layer = new SOMLayer(4,NormalizationType.MULTIPLICATIVE));
 		network.addLayer(new BasicLayer(2));	
-		layer.setMatrix(matrix);
+		layer.getSynapse().setMatrix(matrix);
 		
 		BasicNetwork network2 = roundTrip(network);
 		

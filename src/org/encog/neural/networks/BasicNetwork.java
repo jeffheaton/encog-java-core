@@ -154,7 +154,7 @@ public class BasicNetwork implements Serializable, Network,
 
 		for (final NeuralDataPair pair : data) {
 			compute(pair.getInput());
-			errorCalculation.updateError(this.outputLayer.getFire(), pair
+			errorCalculation.updateError(this.outputLayer.getSynapse().getFire(), pair
 					.getIdeal());
 		}
 		return errorCalculation.calculateRMS();
@@ -229,7 +229,7 @@ public class BasicNetwork implements Serializable, Network,
 			}
 		}
 
-		return this.outputLayer.getFire();
+		return this.outputLayer.getSynapse().getFire();
 	}
 
 	/**
@@ -260,17 +260,17 @@ public class BasicNetwork implements Serializable, Network,
 
 			// make sure they either both have or do not have
 			// a weight matrix.
-			if (layer.getMatrix() == null && otherLayer.getMatrix() != null) {
+			if (layer.getSynapse().getMatrix() == null && otherLayer.getSynapse().getMatrix() != null) {
 				return false;
 			}
 
-			if (layer.getMatrix() != null && otherLayer.getMatrix() == null) {
+			if (layer.getSynapse().getMatrix() != null && otherLayer.getSynapse().getMatrix() == null) {
 				return false;
 			}
 
 			// if they both have a matrix, then compare the matrices
-			if (layer.getMatrix() != null && otherLayer.getMatrix() != null) {
-				if (!layer.getMatrix().equals(otherLayer.getMatrix())) {
+			if (layer.getSynapse().getMatrix() != null && otherLayer.getSynapse().getMatrix() != null) {
+				if (!layer.getSynapse().getMatrix().equals(otherLayer.getSynapse().getMatrix())) {
 					return false;
 				}
 			}
@@ -352,7 +352,7 @@ public class BasicNetwork implements Serializable, Network,
 	public int getWeightMatrixSize() {
 		int result = 0;
 		for (final Layer layer : this.layers) {
-			result += layer.getMatrixSize();
+			result += layer.getSynapse().getMatrixSize();
 		}
 		return result;
 	}

@@ -44,23 +44,14 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	/**
 	 * The serial id.
 	 */
-	private static final long serialVersionUID = -5682296868750703898L;
-
-	/**
-	 * Results from the last time that the outputs were calculated for this
-	 * layer.
-	 */
-	private NeuralData fire;
-
-	/**
-	 * The weight and threshold matrix.
-	 */
-	private Matrix matrix;
+	private static final long serialVersionUID = -5682296868750703898L;	
 
 	/**
 	 * The next layer in the neural network.
 	 */
 	private Layer next;
+	
+	private Synapse synapse;
 
 	/**
 	 * The previous layer in the neural network.
@@ -84,7 +75,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 *            How many neurons does this layer have.
 	 */
 	public BasicLayer(final int neuronCount) {
-		this.setFire(new BasicNeuralData(neuronCount));
+		this.setSynapse(new Synapse(neuronCount,0));
 	}
 
 	/**
@@ -115,48 +106,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	}
 
 	/**
-	 * Get the output array from the last time that the output of this layer was
-	 * calculated.
-	 * 
-	 * @return The output array.
-	 */
-	public NeuralData getFire() {
-		return this.fire;
-	}
-
-	/**
-	 * Get the output from an individual neuron.
-	 * 
-	 * @param index
-	 *            The neuron specified.
-	 * @return The output from the specified neuron.
-	 */
-	public double getFire(final int index) {
-		return this.fire.getData(index);
-	}
-
-	/**
-	 * Get the weight and threshold matrix.
-	 * 
-	 * @return The weight and threshold matrix.
-	 */
-	public Matrix getMatrix() {
-		return this.matrix;
-	}
-
-	/**
-	 * Get the size of the matrix, or zero if one is not defined.
-	 * 
-	 * @return The size of the matrix.
-	 */
-	public int getMatrixSize() {
-		if (this.matrix == null) {
-			return 0;
-		}
-		return this.matrix.size();
-	}
-
-	/**
 	 * @return the name
 	 */
 	public String getName() {
@@ -169,7 +118,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 * @return the neuronCount
 	 */
 	public int getNeuronCount() {
-		return this.fire.size();
+		return this.synapse.getNeuronCount();
 	}
 
 	/**
@@ -184,15 +133,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	public Layer getPrevious() {
 		return this.previous;
-	}
-
-	/**
-	 * Determine if this layer has a matrix.
-	 * 
-	 * @return True if this layer has a matrix.
-	 */
-	public boolean hasMatrix() {
-		return this.matrix != null;
 	}
 
 	/**
@@ -228,8 +168,8 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	public void reset() {
 
-		if (getMatrix() != null) {
-			getMatrix().ramdomize(-1, 1);
+		if (this.synapse.getMatrix() != null) {
+			this.synapse.getMatrix().ramdomize(-1, 1);
 
 		}
 
@@ -244,52 +184,11 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	}
 
 	/**
-	 * Set the last output value for the specified neuron.
-	 * 
-	 * @param index
-	 *            The specified neuron.
-	 * @param f
-	 *            The fire value for the specified neuron.
-	 */
-	public void setFire(final int index, final double f) {
-		this.getFire().setData(index, f);
-	}
-
-	/**
-	 * Set the fire data.
-	 * 
-	 * @param fire
-	 *            The fire data.
-	 */
-	public void setFire(final NeuralData fire) {
-		this.fire = fire;
-	}
-
-	/**
-	 * Assign a new weight and threshold matrix to this layer.
-	 * 
-	 * @param matrix
-	 *            The new matrix.
-	 */
-	public void setMatrix(final Matrix matrix) {
-		this.matrix = matrix;
-
-	}
-
-	/**
 	 * @param name
 	 *            the name to set
 	 */
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	/**
-	 * Set the neuron count.
-	 * @param count How many neurons on this layer.
-	 */
-	public void setNeuronCount(final int count) {
-		this.setFire(new BasicNeuralData(count));
 	}
 
 	/**
@@ -311,5 +210,15 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	public void setPrevious(final Layer previous) {
 		this.previous = previous;
 	}
+
+	public Synapse getSynapse() {
+		return synapse;
+	}
+
+	public void setSynapse(Synapse synapse) {
+		this.synapse = synapse;
+	}
+	
+	
 
 }

@@ -34,7 +34,10 @@ public class Synapse {
 	public Synapse(int sourceNeurons,int targetNeurons)
 	{
 		this.fire = new BasicNeuralData(sourceNeurons);
-		this.matrix = new Matrix(sourceNeurons + 1, targetNeurons);
+		if( targetNeurons>0 )
+		{
+			this.matrix = new Matrix(sourceNeurons + 1, targetNeurons);
+		}
 		
 	}
 	
@@ -129,5 +132,9 @@ public class Synapse {
 	public void setMatrix(final Matrix matrix) {
 		this.matrix = matrix;
 
+	}
+
+	public void setFire(int i, double data) {
+		this.fire.setData(i, data);		
 	}
 }
