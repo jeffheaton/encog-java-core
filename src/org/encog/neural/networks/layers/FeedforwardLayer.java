@@ -54,11 +54,6 @@ public class FeedforwardLayer extends BasicLayer implements
 	private static final long serialVersionUID = -3698708039331150031L;
 
 	/**
-	 * Which activation function to use for this layer.
-	 */
-	private ActivationFunction activationFunction;
-
-	/**
 	 * Construct this layer with a non-default threshold function.
 	 * 
 	 * @param thresholdFunction
@@ -69,7 +64,7 @@ public class FeedforwardLayer extends BasicLayer implements
 	public FeedforwardLayer(final ActivationFunction thresholdFunction,
 			final int neuronCount) {
 		super(neuronCount);
-		this.activationFunction = thresholdFunction;
+		this.setActivationFunction( thresholdFunction );
 	}
 
 	/**
@@ -88,7 +83,7 @@ public class FeedforwardLayer extends BasicLayer implements
 	 * @return The cloned layer.
 	 */
 	public FeedforwardLayer cloneStructure() {
-		return new FeedforwardLayer(this.activationFunction, getNeuronCount());
+		return new FeedforwardLayer(this.getActivationFunction(), getNeuronCount());
 	}
 
 	/**
@@ -115,7 +110,7 @@ public class FeedforwardLayer extends BasicLayer implements
 			}
 			
 			// apply the activation function
-			this.activationFunction.activationFunction(result.getData());
+			this.getActivationFunction().activationFunction(result.getData());
 	
 			return result;
 		}
@@ -156,20 +151,7 @@ public class FeedforwardLayer extends BasicLayer implements
 		return new FeedforwardLayerPersistor();
 	}
 
-	/**
-	 * @return The activation function for this layer.
-	 */
-	public ActivationFunction getActivationFunction() {
-		return this.activationFunction;
-	}
 
-	/**
-	 * Set the activation function for this layer.
-	 * @param f The activation function.
-	 */
-	public void setActivationFunction(final ActivationFunction f) {
-		this.activationFunction = f;
-	}
 
 
 	/**

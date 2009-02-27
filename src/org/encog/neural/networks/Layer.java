@@ -26,6 +26,7 @@
 package org.encog.neural.networks;
 
 import org.encog.matrix.Matrix;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.Synapse;
 
@@ -66,4 +67,6 @@ public interface Layer {
 	Synapse getNext();	
 	
 	Layer getNextLayer();
+	
+	ActivationFunction getActivationFunction();
 }

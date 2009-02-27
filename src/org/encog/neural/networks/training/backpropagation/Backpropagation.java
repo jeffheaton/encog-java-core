@@ -137,23 +137,14 @@ public class Backpropagation implements Train {
 							+ this.network.getOutputLayer().getNeuronCount());
 		}
 
-		// clear out all previous error data
-		for (final Layer layer : this.network.getLayers()) {
-			getBackpropagationLayer(layer).clearError();
-		}
-
 		Layer current = this.network.getOutputLayer();
+		double[] backDeltas = this.calculateInitialDelta(this.fire, ideal);
 		
 		while( current!=null )
-		{
-			
+		{			
 			if (current instanceof FeedforwardLayer) {
-
-				if( network.isOutput(current)) {
-
-					getBackpropagationLayer(current).calcError(this.fire,ideal);
-				} else {
-					getBackpropagationLayer(current).calcError(network.isHidden(current));
+				if( !network.isOutput(current)) {
+					backDeltas = getBackpropagationLayer(current).calcError(backDeltas, network.isHidden(current));
 				}
 			}
 			
@@ -253,5 +244,27 @@ public class Backpropagation implements Train {
 			}
 		}
 
+	}
+	
+	/**
+	 * Calculate the error for the given ideal values.
+	 * 
+	 * @param ideal
+	 *            Ideal output values.
+	 */
+	public double []calculateInitialDelta(final NeuralData actual, final NeuralData ideal) {
+		Layer outputLayer = this.network.getOutputLayer();
+		double[] result = new double[outputLayer.getNeuronCount()];	
+		// layer errors and deltas for output layer
+		for (int i = 0; i < outputLayer.getNeuronCount(); i++) {
+			result[i] = actual.getData(i);
+		}
+		
+		outputLayer.getActivationFunction().derivativeFunction(result);
+		
+		for (int i = 0; i < outputLayer.getNeuronCount(); i++) {
+			result[i]*= ideal.getData(i) - actual.getData(i);
+		}
+		return result;
 	}
 }

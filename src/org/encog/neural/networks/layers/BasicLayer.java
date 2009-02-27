@@ -28,6 +28,7 @@ package org.encog.neural.networks.layers;
 import java.io.Serializable;
 
 import org.encog.matrix.Matrix;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
@@ -47,6 +48,12 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	private static final long serialVersionUID = -5682296868750703898L;	
 	
 	private Synapse next;
+	
+	/**
+	 * Which activation function to use for this layer.
+	 */
+	private ActivationFunction activationFunction;
+
 
 	/**
 	 * The description for this object.
@@ -168,7 +175,21 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		else
 			return null;
 	}
+
 	
-	
+	/**
+	 * @return The activation function for this layer.
+	 */
+	public ActivationFunction getActivationFunction() {
+		return this.activationFunction;
+	}
+
+	/**
+	 * Set the activation function for this layer.
+	 * @param f The activation function.
+	 */
+	public void setActivationFunction(final ActivationFunction f) {
+		this.activationFunction = f;
+	}
 
 }

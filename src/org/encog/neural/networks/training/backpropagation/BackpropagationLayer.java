@@ -39,16 +39,7 @@ import org.encog.util.BoundNumbers;
  */
 
 public class BackpropagationLayer {
-	
-	/**
-	 * The errors.
-	 */
-	private final double[] error;
 
-	/**
-	 * The changes from the errors.
-	 */
-	private final double[] errorDelta;
 
 	/**
 	 * Accumulate the error deltas for each weight matrix and bias value.
@@ -93,11 +84,6 @@ public class BackpropagationLayer {
 		this.backpropagation = backpropagation;
 		this.layer = layer;
 
-		final int neuronCount = layer.getNeuronCount();
-
-		this.error = new double[neuronCount];
-		this.errorDelta = new double[neuronCount];
-
 		if (layer.getNext() != null) {
 			this.accMatrixDelta = new Matrix(layer.getNeuronCount() + 1, layer
 					.getNext().getToNeuronCount());
@@ -137,91 +123,42 @@ public class BackpropagationLayer {
 	/**
 	 * Calculate the current error.
 	 */
-	public void calcError(boolean hidden) {
-
+	public double []calcError(double[] lastDeltas, boolean hidden) {
+		
+		double[] thisDeltas = new double[layer.getNeuronCount()];
+		double[] error = new double[this.layer.getNeuronCount()];
+		
 		final BackpropagationLayer next = this.backpropagation
 				.getBackpropagationLayer(this.layer.getNext().getToLayer());
 
 		for (int i = 0; i < this.layer.getNext().getToNeuronCount(); i++) {
 			for (int j = 0; j < this.layer.getNext().getFromNeuronCount(); j++) {
-				accumulateMatrixDelta(j, i, next.getErrorDelta(i)
+				accumulateMatrixDelta(j, i, lastDeltas[i]
 						* this.lastOutput.getData(j));
-				setError(j, getError(j) + this.layer.getNext().getMatrix().get(j, i)
-						* next.getErrorDelta(i));
+				
+				error[j]+=(this.layer.getNext().getMatrix().get(j, i)
+						* lastDeltas[i]);
 			}
-			accumulateThresholdDelta(i, next.getErrorDelta(i));
+			accumulateThresholdDelta(i, lastDeltas[i]);
 		}
 
 		if (hidden) {
 			NeuralData actual = this.lastOutput;
 			// hidden layer deltas
 			for (int i = 0; i < this.layer.getNeuronCount(); i++) {
-				setErrorDelta(i, BoundNumbers.bound(calculateDelta(actual,i)));
+				thisDeltas[i] = actual.getData(i);
+			}
+			
+			this.layer.getActivationFunction().derivativeFunction(thisDeltas);	
+			
+			for (int i = 0; i < this.layer.getNeuronCount(); i++) {
+				thisDeltas[i] *= error[i];
 			}
 		}
-
+		return thisDeltas;
 	}
 
-	/**
-	 * Calculate the error for the given ideal values.
-	 * 
-	 * @param ideal
-	 *            Ideal output values.
-	 */
-	public void calcError(final NeuralData actual, final NeuralData ideal) {
-
-		// layer errors and deltas for output layer
-		for (int i = 0; i < this.layer.getNeuronCount(); i++) {
-			setError(i, ideal.getData(i) - actual.getData(i));
-			setErrorDelta(i, BoundNumbers.bound(calculateDelta(actual,i)));
-		}
-	}
-
-	/**
-	 * Calculate the delta for actual vs ideal. This is the amount that will be
-	 * applied during learning.
-	 * 
-	 * @param i
-	 *            The neuron being calculated for.
-	 * @return The delta to be used to learn.
-	 */
-	private double calculateDelta(NeuralData actual, final int i) {
-		double[] d = new double[1];
-		d[0] = actual.getData(i);
-		this.layer.getActivationFunction().derivativeFunction(d);
-		return (getError(i) * d[0]);
-	}
-
-	/**
-	 * Clear any error values.
-	 */
-	public void clearError() {
-		for (int i = 0; i < this.layer.getNeuronCount(); i++) {
-			this.error[i] = 0;
-		}
-	}
-
-	/**
-	 * Get the error for the specified neuron.
-	 * 
-	 * @param index
-	 *            The index for the specified neuron.
-	 * @return The error for the specified neuron.
-	 */
-	public double getError(final int index) {
-		return this.error[index];
-	}
-
-	/**
-	 * Get the error delta for the specified neuron.
-	 * 
-	 * @param index
-	 *            The specified neuron.
-	 * @return The error delta.
-	 */
-	public double getErrorDelta(final int index) {
-		return this.errorDelta[index];
-	}
+	
 
 	/**
 	 * Learn from the last error calculation.
@@ -242,30 +179,6 @@ public class BackpropagationLayer {
 			this.layer.getNext().getMatrix().add(this.matrixDelta);			
 			this.accMatrixDelta.clear();
 		}
-	}
-
-	/**
-	 * Set the error for the specified neuron.
-	 * 
-	 * @param index
-	 *            The specified neuron.
-	 * @param e
-	 *            The error value.
-	 */
-	public void setError(final int index, final double e) {
-		this.error[index] = BoundNumbers.bound(e);
-	}
-
-	/**
-	 * Set the error delta for the specified neuron.
-	 * 
-	 * @param index
-	 *            The specified neuron.
-	 * @param d
-	 *            The error delta.
-	 */
-	public void setErrorDelta(final int index, final double d) {
-		this.errorDelta[index] = d;
 	}
 
 	public NeuralData getLastOutput() {
