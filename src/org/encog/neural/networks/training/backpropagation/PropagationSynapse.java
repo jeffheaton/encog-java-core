@@ -27,9 +27,9 @@ package org.encog.neural.networks.training.backpropagation;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.networks.layers.FeedforwardLayer;
-import org.encog.util.BoundNumbers;
+import org.encog.neural.networks.layers.Synapse;
 
 /**
  * BackpropagationLayer: The back propagation training algorithm requires
@@ -38,7 +38,7 @@ import org.encog.util.BoundNumbers;
  * network that it is training.
  */
 
-public class BackpropagationLayer {
+public class PropagationSynapse {
 
 
 	/**
@@ -59,14 +59,9 @@ public class BackpropagationLayer {
 	private Matrix matrixDelta;
 
 	/**
-	 * The parent object.
-	 */
-	private final Backpropagation backpropagation;
-
-	/**
 	 * The actual layer that this training layer corresponds to.
 	 */
-	private final FeedforwardLayer layer;
+	private final Synapse synapse;
 	
 	private NeuralData lastOutput;
 
@@ -79,18 +74,14 @@ public class BackpropagationLayer {
 	 * @param layer
 	 *            The layer that this object corresponds to.
 	 */
-	public BackpropagationLayer(final Backpropagation backpropagation,
-			final FeedforwardLayer layer) {
-		this.backpropagation = backpropagation;
-		this.layer = layer;
-
-		if (layer.getNext() != null) {
-			this.accMatrixDelta = new Matrix(layer.getNeuronCount() + 1, layer
-					.getNext().getToNeuronCount());
-			this.matrixDelta = new Matrix(layer.getNeuronCount() + 1, layer
-					.getNext().getToNeuronCount());
-			this.biasRow = layer.getNeuronCount();
-		}
+	public PropagationSynapse(final Synapse synapse) {		
+		this.synapse = synapse;
+		int fromCount = synapse.getFromNeuronCount();
+		int toCount = synapse.getToNeuronCount();
+		
+		this.accMatrixDelta = new Matrix(fromCount+1,toCount);
+		this.matrixDelta = new Matrix(fromCount+1,toCount);
+		this.biasRow = fromCount;		
 	}
 
 	/**
@@ -123,20 +114,17 @@ public class BackpropagationLayer {
 	/**
 	 * Calculate the current error.
 	 */
-	public double []calcError(double[] lastDeltas, boolean hidden) {
+	public double []calcError(ActivationFunction activation, double[] lastDeltas, boolean hidden) {
 		
-		double[] thisDeltas = new double[layer.getNeuronCount()];
-		double[] error = new double[this.layer.getNeuronCount()];
-		
-		final BackpropagationLayer next = this.backpropagation
-				.getBackpropagationLayer(this.layer.getNext().getToLayer());
-
-		for (int i = 0; i < this.layer.getNext().getToNeuronCount(); i++) {
-			for (int j = 0; j < this.layer.getNext().getFromNeuronCount(); j++) {
+		double[] thisDeltas = new double[synapse.getFromNeuronCount()];
+		double[] error = new double[synapse.getFromNeuronCount()];
+	
+		for (int i = 0; i < synapse.getToNeuronCount(); i++) {
+			for (int j = 0; j < synapse.getFromNeuronCount(); j++) {
 				accumulateMatrixDelta(j, i, lastDeltas[i]
 						* this.lastOutput.getData(j));
 				
-				error[j]+=(this.layer.getNext().getMatrix().get(j, i)
+				error[j]+=(synapse.getMatrix().get(j, i)
 						* lastDeltas[i]);
 			}
 			accumulateThresholdDelta(i, lastDeltas[i]);
@@ -145,13 +133,13 @@ public class BackpropagationLayer {
 		if (hidden) {
 			NeuralData actual = this.lastOutput;
 			// hidden layer deltas
-			for (int i = 0; i < this.layer.getNeuronCount(); i++) {
+			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
 				thisDeltas[i] = actual.getData(i);
 			}
 			
-			this.layer.getActivationFunction().derivativeFunction(thisDeltas);	
+			activation.derivativeFunction(thisDeltas);	
 			
-			for (int i = 0; i < this.layer.getNeuronCount(); i++) {
+			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
 				thisDeltas[i] *= error[i];
 			}
 		}
@@ -170,15 +158,12 @@ public class BackpropagationLayer {
 	 */
 	public void learn(final double learnRate, final double momentum) {
 		// process the matrix
-		if (this.layer.getNext()!=null ) {
-
 			final Matrix m1 = MatrixMath.multiply(this.accMatrixDelta,
 					learnRate);
 			final Matrix m2 = MatrixMath.multiply(this.matrixDelta, momentum);
 			this.matrixDelta = MatrixMath.add(m1, m2);
-			this.layer.getNext().getMatrix().add(this.matrixDelta);			
+			this.synapse.getMatrix().add(this.matrixDelta);			
 			this.accMatrixDelta.clear();
-		}
 	}
 
 	public NeuralData getLastOutput() {

@@ -37,6 +37,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Train;
 import org.encog.neural.networks.layers.FeedforwardLayer;
+import org.encog.neural.networks.layers.Synapse;
 
 /**
  * Backpropagation: This class implements a backpropagation training algorithm
@@ -85,8 +86,8 @@ public class Backpropagation implements Train {
 	 * A map between neural network layers and the corresponding
 	 * BackpropagationLayer.
 	 */
-	private final Map<Layer, BackpropagationLayer> layerMap = 
-		new HashMap<Layer, BackpropagationLayer>();
+	private final Map<Synapse, PropagationSynapse> synapseMap = 
+		new HashMap<Synapse, PropagationSynapse>();
 
 	/**
 	 * The training data to use.
@@ -113,10 +114,10 @@ public class Backpropagation implements Train {
 		this.training = training;
 
 		for (final Layer layer : network.getLayers()) {
-			if (layer instanceof FeedforwardLayer) {
-				final BackpropagationLayer bpl = new BackpropagationLayer(this,
-						(FeedforwardLayer) layer);
-				this.layerMap.put(layer, bpl);
+			if (layer.getNext()!=null) {
+				final PropagationSynapse bpl = new PropagationSynapse(
+						layer.getNext());
+				this.synapseMap.put(layer.getNext(), bpl);
 			}
 
 		}
@@ -144,7 +145,7 @@ public class Backpropagation implements Train {
 		{			
 			if (current instanceof FeedforwardLayer) {
 				if( !network.isOutput(current)) {
-					backDeltas = getBackpropagationLayer(current).calcError(backDeltas, network.isHidden(current));
+					backDeltas = getPropagationSynapse(current.getNext()).calcError(current.getActivationFunction(),backDeltas, network.isHidden(current));
 				}
 			}
 			
@@ -170,8 +171,8 @@ public class Backpropagation implements Train {
 	 *            The specified layer.
 	 * @return The BackpropagationLayer that corresponds to the specified layer.
 	 */
-	public BackpropagationLayer getBackpropagationLayer(final Layer layer) {
-		final BackpropagationLayer result = this.layerMap.get(layer);
+	public PropagationSynapse getPropagationSynapse(final Synapse synapse) {
+		final PropagationSynapse result = this.synapseMap.get(synapse);
 
 		if (result == null) {
 			throw new NeuralNetworkError(
@@ -208,8 +209,11 @@ public class Backpropagation implements Train {
 		Layer current = this.network.getInputLayer();
 		while(current!=null)
 		{
-			BackpropagationLayer bLayer = this.getBackpropagationLayer(current);
-			bLayer.setLastOutput(currentPattern);			
+			if( !network.isOutput(current) )
+			{
+				PropagationSynapse bLayer = this.getPropagationSynapse(current.getNext());
+				bLayer.setLastOutput(currentPattern);
+			}
 			currentPattern = current.compute(currentPattern);			
 			current = current.getNextLayer();			
 		}
@@ -238,8 +242,8 @@ public class Backpropagation implements Train {
 	public void learn() {
 
 		for (final Layer layer : this.network.getLayers()) {
-			if (layer instanceof FeedforwardLayer) {
-				getBackpropagationLayer(layer).learn(this.learnRate,
+			if (layer.getNext()!=null) {
+				getPropagationSynapse(layer.getNext()).learn(this.learnRate,
 						this.momentum);
 			}
 		}
