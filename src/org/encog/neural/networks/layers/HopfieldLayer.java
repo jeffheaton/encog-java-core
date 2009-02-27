@@ -53,8 +53,8 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 	 */
 	public HopfieldLayer(final int size) {
 		super(size);
-		this.getSynapse().setFire(new BiPolarNeuralData(size));
-		getSynapse().setMatrix(new Matrix(size, size));
+		//this.getNext().setFire(new BiPolarNeuralData(size));
+		getNext().setMatrix(new Matrix(size, size));
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 
 		// Process each value in the pattern
 		for (int col = 0; col < pattern.size(); col++) {
-			Matrix columnMatrix = getSynapse().getMatrix().getCol(col);
+			Matrix columnMatrix = getNext().getMatrix().getCol(col);
 			columnMatrix = MatrixMath.transpose(columnMatrix);
 
 			// The output for this input element is the dot product of the
@@ -103,7 +103,8 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 	 * @return Get the fire data.
 	 */
 	public BiPolarNeuralData getFire() {
-		return (BiPolarNeuralData) super.getSynapse().getFire();
+		//return (BiPolarNeuralData) super.getNext().getFire();
+		return null;
 	}
 
 	/**
@@ -113,7 +114,7 @@ public class HopfieldLayer extends BasicLayer implements EncogPersistedObject {
 	 *            The neuron count.
 	 */
 	public void setNeuronCount(final int count) {
-		this.getSynapse().setFire(new BiPolarNeuralData(count));
-		getSynapse().setMatrix(new Matrix(count, count));
+		//getNext().setFire(new BiPolarNeuralData(count));
+		getNext().setMatrix(new Matrix(count, count));
 	}
 }

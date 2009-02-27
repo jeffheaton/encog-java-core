@@ -116,10 +116,10 @@ public class TrainHopfield implements Train {
 	 */
 	public void trainHopfieldLayer(final HopfieldLayer layer,
 			final NeuralData pattern) {
-		if (pattern.size() != layer.getSynapse().getMatrix().getRows()) {
+		if (pattern.size() != layer.getNext().getMatrix().getRows()) {
 			throw new NeuralNetworkError("Can't train a pattern of size "
 					+ pattern.size() + " on a hopfield network of size "
-					+ layer.getSynapse().getMatrix().getRows());
+					+ layer.getNext().getMatrix().getRows());
 		}
 
 		// Create a row matrix from the input, convert boolean to bipolar
@@ -137,6 +137,6 @@ public class TrainHopfield implements Train {
 
 		// now add the calculated matrix, for this pattern, to the
 		// existing weight matrix.
-		layer.getSynapse().setMatrix(MatrixMath.add(layer.getSynapse().getMatrix(), m4));
+		layer.getNext().setMatrix(MatrixMath.add(layer.getNext().getMatrix(), m4));
 	}
 }

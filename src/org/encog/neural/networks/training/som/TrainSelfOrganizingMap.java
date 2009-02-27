@@ -174,7 +174,7 @@ public class TrainSelfOrganizingMap implements Train {
 
 		this.somLayer = findSOMLayer();
 
-		this.outputNeuronCount = this.somLayer.getNext().getNeuronCount();
+		this.outputNeuronCount = this.somLayer.getNext().getToNeuronCount();
 		this.inputNeuronCount = this.somLayer.getNeuronCount();
 
 		this.totalError = 1.0;
@@ -191,7 +191,7 @@ public class TrainSelfOrganizingMap implements Train {
 
 		}
 
-		this.bestMatrix = this.somLayer.getSynapse().getMatrix().clone();
+		this.bestMatrix = this.somLayer.getNext().getMatrix().clone();
 
 		this.won = new int[this.outputNeuronCount];
 		this.correc = new Matrix(this.outputNeuronCount,
@@ -225,7 +225,7 @@ public class TrainSelfOrganizingMap implements Train {
 
 			for (int j = 0; j <= this.inputNeuronCount; j++) {
 				final double corr = f * this.correc.get(i, j);
-				this.somLayer.getSynapse().getMatrix().add(i, j, corr);
+				this.somLayer.getNext().getMatrix().add(i, j, corr);
 				length += corr * corr;
 			}
 		}
@@ -250,7 +250,7 @@ public class TrainSelfOrganizingMap implements Train {
 			final int best = this.network.winner(pair.getInput());
 
 			this.won[best]++;
-			final Matrix wptr = this.somLayer.getSynapse().getMatrix().getRow(best);
+			final Matrix wptr = this.somLayer.getNext().getMatrix().getRow(best);
 
 			double length = 0.0;
 			double diff;
@@ -317,26 +317,26 @@ public class TrainSelfOrganizingMap implements Train {
 		int best;
 		NeuralDataPair which = null;
 
-		final Matrix outputWeights = this.somLayer.getSynapse().getMatrix();
+		final Matrix outputWeights = this.somLayer.getNext().getMatrix();
 
 		// Loop over all training sets. Find the training set with
 		// the least output.
 		double dist = Double.MAX_VALUE;
 		for (final NeuralDataPair pair : this.train) {
 			best = this.network.winner(pair.getInput());
-			final NeuralData output = this.somLayer.getSynapse().getFire();
+			//final NeuralData output = this.somLayer.getNext().getFire();
 
-			if (output.getData(best) < dist) {
+			/*if (output.getData(best) < dist) {
 				dist = output.getData(best);
 				which = pair;
-			}
+			}*/
 		}
 
 		if (which != null) {
 			final NormalizeInput input = new NormalizeInput(which.getInput(),
 					this.somLayer.getNormalizationType());
 			best = this.network.winner(which.getInput());
-			final NeuralData output = this.somLayer.getSynapse().getFire();
+			//final NeuralData output = this.somLayer.getNext().getFire();
 			int which2 = 0;
 
 			dist = Double.MIN_VALUE;
@@ -345,10 +345,10 @@ public class TrainSelfOrganizingMap implements Train {
 				if (this.won[i] != 0) {
 					continue;
 				}
-				if (output.getData(i) > dist) {
+				/*if (output.getData(i) > dist) {
 					dist = output.getData(i);
 					which2 = i;
-				}
+				}*/
 			}
 
 			for (int j = 0; j < input.getInputMatrix().getCols(); j++) {
@@ -383,7 +383,7 @@ public class TrainSelfOrganizingMap implements Train {
 	public void initialize() {
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
-			normalizeWeight(this.somLayer.getSynapse().getMatrix(), i);
+			normalizeWeight(this.somLayer.getNext().getMatrix(), i);
 		}
 	}
 
@@ -399,7 +399,7 @@ public class TrainSelfOrganizingMap implements Train {
 
 		if (this.totalError < this.bestError) {
 			this.bestError = this.totalError;
-			MatrixMath.copy(this.somLayer.getSynapse().getMatrix(), this.bestMatrix);
+			MatrixMath.copy(this.somLayer.getNext().getMatrix(), this.bestMatrix);
 		}
 
 		int winners = 0;
@@ -423,10 +423,10 @@ public class TrainSelfOrganizingMap implements Train {
 
 		// done
 
-		MatrixMath.copy(this.somLayer.getSynapse().getMatrix(), this.bestMatrix);
+		MatrixMath.copy(this.somLayer.getNext().getMatrix(), this.bestMatrix);
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
-			normalizeWeight(this.somLayer.getSynapse().getMatrix(), i);
+			normalizeWeight(this.somLayer.getNext().getMatrix(), i);
 		}
 	}
 

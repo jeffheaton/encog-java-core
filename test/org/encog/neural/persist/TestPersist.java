@@ -113,7 +113,7 @@ public class TestPersist extends TestCase {
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(layer = new SOMLayer(4,NormalizationType.MULTIPLICATIVE));
 		network.addLayer(new BasicLayer(2));	
-		layer.getSynapse().setMatrix(matrix);
+		layer.getNext().setMatrix(matrix);
 		
 		EncogPersistedCollection encog = new EncogPersistedCollection();
 		encog.add(network);

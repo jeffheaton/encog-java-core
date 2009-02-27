@@ -32,8 +32,8 @@ public class CreateNetwork {
 		network.addLayer(layer2 = new FeedforwardLayer(3));
 		network.addLayer(new FeedforwardLayer(1));
 		
-		layer1.setMatrix(matrix1);
-		layer2.setMatrix(matrix2);
+		//layer1.setMatrix(matrix1);
+		//layer2.setMatrix(matrix2);
 		
 		return network;
 	}

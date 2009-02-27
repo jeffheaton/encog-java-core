@@ -45,13 +45,8 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -5682296868750703898L;	
-
-	/**
-	 * The next layer in the neural network.
-	 */
-	private Layer next;
 	
-	private Synapse synapse;
+	private Synapse next;
 
 	/**
 	 * The description for this object.
@@ -62,6 +57,8 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 * The name for this object.
 	 */
 	private String name;
+	
+	private int neuronCount;
 
 	/**
 	 * Construct a basic layer with the specified neuron count.
@@ -70,7 +67,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 *            How many neurons does this layer have.
 	 */
 	public BasicLayer(final int neuronCount) {
-		this.setSynapse(new Synapse(neuronCount,0));
+		this.neuronCount = neuronCount;
 	}
 
 	/**
@@ -113,14 +110,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 * @return the neuronCount
 	 */
 	public int getNeuronCount() {
-		return this.synapse.getNeuronCount();
-	}
-
-	/**
-	 * @return the next layer.
-	 */
-	public Layer getNext() {
-		return this.next;
+		return this.neuronCount;
 	}
 
 	/**
@@ -129,8 +119,8 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	public void reset() {
 
-		if (this.synapse.getMatrix() != null) {
-			this.synapse.getMatrix().ramdomize(-1, 1);
+		if (this.next != null) {
+			this.next.getMatrix().ramdomize(-1, 1);
 
 		}
 
@@ -152,22 +142,31 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		this.name = name;
 	}
 
-	/**
-	 * Set the next layer.
-	 * 
-	 * @param next
-	 *            the next layer.
-	 */
-	public void setNext(final Layer next) {
-		this.next = next;
+
+
+	public Synapse getNext() {
+		return next;
 	}
 
-	public Synapse getSynapse() {
-		return synapse;
+	public void setNext(Synapse synapse) {
+		this.next = synapse;
 	}
 
-	public void setSynapse(Synapse synapse) {
-		this.synapse = synapse;
+	@Override
+	public void setNext(Layer next) {
+		Synapse synapse = new Synapse(this,next);
+		setNext(synapse);		
+	}
+
+	@Override
+	public Layer getNextLayer() {
+		// get the next layer
+		if( getNext()!=null )
+		{
+			return getNext().getToLayer();
+		}
+		else
+			return null;
 	}
 	
 	

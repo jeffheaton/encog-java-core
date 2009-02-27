@@ -88,7 +88,7 @@ public class SOMLayerPersistor implements Persistor {
 			final Persistor persistor = EncogPersistedCollection
 					.createPersistor("Matrix");
 			final Matrix matrix = (Matrix) persistor.load(e);
-			layer.getSynapse().setMatrix(matrix);
+			layer.getNext().setMatrix(matrix);
 		}
 
 		if (layer != null) {
@@ -137,14 +137,14 @@ public class SOMLayerPersistor implements Persistor {
 
 			atts.clear();
 
-			if (layer.getSynapse().hasMatrix()) {
+			if (layer.getNext()!=null) {
 
 				final Persistor persistor = EncogPersistedCollection
-						.createPersistor(layer.getSynapse().getMatrix().getClass()
+						.createPersistor(layer.getNext().getMatrix().getClass()
 								.getSimpleName());
 				atts.clear();
 				hd.startElement("", "", "weightMatrix", atts);
-				persistor.save(layer.getSynapse().getMatrix(), hd);
+				persistor.save(layer.getNext().getMatrix(), hd);
 				hd.endElement("", "", "weightMatrix");
 
 			}

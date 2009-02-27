@@ -88,10 +88,10 @@ public class SOMLayer extends BasicLayer implements Serializable,
 				this.normalizationType);
 
 		final NeuralData output = new BasicNeuralData(getNext()
-				.getNeuronCount());
+				.getToNeuronCount());
 
-		for (int i = 0; i < getNext().getNeuronCount(); i++) {
-			final Matrix optr = getSynapse().getMatrix().getRow(i);
+		for (int i = 0; i < getNext().getToNeuronCount(); i++) {
+			final Matrix optr = getNext().getMatrix().getRow(i);
 			output.setData(i, MatrixMath.dotProduct(input.getInputMatrix(),
 					optr)
 					* input.getNormfac());
@@ -106,7 +106,7 @@ public class SOMLayer extends BasicLayer implements Serializable,
 				output.setData(i, 1.0);
 			}
 
-			getNext().getSynapse().setFire(i, output.getData(i));
+			//getNext().setFire(i, output.getData(i));
 		}
 
 		return output;
@@ -129,18 +129,7 @@ public class SOMLayer extends BasicLayer implements Serializable,
 		return this.normalizationType;
 	}
 
-	/**
-	 * Set the neuron count. 
-	 * @param count The neuron count.
-	 */
-	public void setNeuronCount(final int count) {
-		this.getSynapse().setFire(new BasicNeuralData(count));
-		if (getNext() != null) {
-			getSynapse().setMatrix(new Matrix(getNext().getNeuronCount(),
-					getNeuronCount() + 1));
-		}
 
-	}
 
 	/**
 	 * Set the next layer.
@@ -149,11 +138,8 @@ public class SOMLayer extends BasicLayer implements Serializable,
 	 *            the next layer.
 	 */
 	public void setNext(final Layer next) {
-		super.setNext(next);
-
-		if (!getSynapse().hasMatrix()) {
-			getSynapse().setMatrix(new Matrix(next.getNeuronCount(), getNeuronCount() + 1));
-		}
+		Synapse synapse = new Synapse(this,next);
+		super.setNext(synapse);
 	}
 
 	/**

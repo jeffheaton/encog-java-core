@@ -78,6 +78,8 @@ public class Backpropagation implements Train {
 	 * THe network that is being trained.
 	 */
 	private final BasicNetwork network;
+	
+	private NeuralData fire;
 
 	/**
 	 * A map between neural network layers and the corresponding
@@ -149,7 +151,7 @@ public class Backpropagation implements Train {
 
 				if( network.isOutput(current)) {
 
-					getBackpropagationLayer(current).calcError(ideal);
+					getBackpropagationLayer(current).calcError(this.fire,ideal);
 				} else {
 					getBackpropagationLayer(current).calcError(network.isHidden(current));
 				}
@@ -206,6 +208,23 @@ public class Backpropagation implements Train {
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
+	
+	private void backpropCompute(NeuralData input)
+	{
+		this.network.checkInputSize(input);
+
+		NeuralData currentPattern = input;
+		Layer current = this.network.getInputLayer();
+		while(current!=null)
+		{
+			BackpropagationLayer bLayer = this.getBackpropagationLayer(current);
+			bLayer.setLastOutput(currentPattern);			
+			currentPattern = current.compute(currentPattern);			
+			current = current.getNextLayer();			
+		}
+		
+		this.fire = currentPattern;
+	}
 
 	/**
 	 * Perform one iteration of training.
@@ -213,7 +232,7 @@ public class Backpropagation implements Train {
 	public void iteration() {
 
 		for (final NeuralDataPair pair : this.training) {
-			this.network.compute(pair.getInput());
+			backpropCompute(pair.getInput());
 			calcError(pair.getIdeal());
 		}
 		learn();

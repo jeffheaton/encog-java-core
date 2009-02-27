@@ -100,26 +100,30 @@ public class FeedforwardLayer extends BasicLayer implements
 	 * @return The output from this layer.
 	 */
 	public NeuralData compute(final NeuralData pattern) {
-		int i;
-		if (pattern != null) {
-			for (i = 0; i < getNeuronCount(); i++) {
-				this.getSynapse().setFire(i, pattern.getData(i));
-			}
-		}
-
-		final Matrix inputMatrix = createInputMatrix(this.getSynapse().getFire());
-
-		for (i = 0; i < getNext().getNeuronCount(); i++) {
-			final Matrix col = getSynapse().getMatrix().getCol(i);
-			final double sum = MatrixMath.dotProduct(col, inputMatrix);
-
-			getNext().getSynapse().setFire(i,sum);
-		}
 		
-		// apply the activation function
-		this.activationFunction.activationFunction(getNext().getSynapse().getFire().getData());
-
-		return this.getSynapse().getFire();
+		
+		
+		if( this.getNext()!=null )
+		{
+			NeuralData result = new BasicNeuralData(getNext().getToNeuronCount());
+			final Matrix inputMatrix = createInputMatrix(pattern);
+	
+			for (int i = 0; i < getNext().getToNeuronCount(); i++) {
+				final Matrix col = getNext().getMatrix().getCol(i);
+				final double sum = MatrixMath.dotProduct(col, inputMatrix);
+				result.setData(i,sum);
+			}
+			
+			// apply the activation function
+			this.activationFunction.activationFunction(result.getData());
+	
+			return result;
+		}
+		else
+		{
+			// must be the output layer, so just return it
+			return pattern;
+		}
 	}
 
 	/**
@@ -167,49 +171,6 @@ public class FeedforwardLayer extends BasicLayer implements
 		this.activationFunction = f;
 	}
 
-	/**
-	 * Assign a new weight and threshold matrix to this layer.
-	 * 
-	 * @param matrix
-	 *            The new matrix.
-	 */
-	public void setMatrix(final Matrix matrix) {
-		if (matrix.getRows() < 2) {
-			throw new NeuralNetworkError(
-					"Weight matrix includes threshold values, "
-							+ "and must have at least 2 rows.");
-		}
-		this.getSynapse().setFire(new BasicNeuralData(matrix.getRows() - 1));
-
-		super.getSynapse().setMatrix(matrix);
-	}
-
-	/**
-	 * Set the neuron count for the layer.
-	 * @param count How many neurons should this layer have.
-	 */
-	public void setNeuronCount(final int count) {
-		this.getSynapse().setFire(new BasicNeuralData(count));
-		if (getNext() != null) {
-			setMatrix(new Matrix(getNeuronCount() + 1, getNext()
-					.getNeuronCount()));
-		}
-	}
-
-	/**
-	 * Set the next layer.
-	 * 
-	 * @param next
-	 *            the next layer.
-	 */
-	public void setNext(final Layer next) {
-		super.setNext(next);
-
-		if (!getSynapse().hasMatrix() && getNext() != null) {
-			// add one to the neuron count to provide a threshold value in row 0
-			setMatrix(new Matrix(getNeuronCount() + 1, next.getNeuronCount()));
-		}
-	}
 
 	/**
 	 * @return The string form of the layer.

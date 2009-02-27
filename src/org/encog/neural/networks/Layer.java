@@ -46,7 +46,9 @@ public interface Layer {
 	 * Set the next layer.
 	 * @param layer The next layer.
 	 */
-	void setNext(Layer layer);
+	void setNext(Synapse next);
+	
+	void setNext(Layer next);
 
 	/**
 	 * @return The neuron count.
@@ -61,7 +63,7 @@ public interface Layer {
 	/**
 	 * @return The next layer.
 	 */
-	Layer getNext();
+	Synapse getNext();	
 	
-	Synapse getSynapse();
+	Layer getNextLayer();
 }

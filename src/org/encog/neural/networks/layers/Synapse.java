@@ -28,50 +28,24 @@ package org.encog.neural.networks.layers;
 import org.encog.matrix.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.Layer;
 
 public class Synapse {
 	
-	public Synapse(int sourceNeurons,int targetNeurons)
-	{
-		this.fire = new BasicNeuralData(sourceNeurons);
-		if( targetNeurons>0 )
-		{
-			this.matrix = new Matrix(sourceNeurons + 1, targetNeurons);
-		}
-		
-	}
-	
-	
-	/**
-	 * Results from the last time that the outputs were calculated for this
-	 * layer.
-	 */
-	private NeuralData fire;
+	private Layer fromLayer;
+	private Layer toLayer;
+
 
 	/**
 	 * The weight and threshold matrix.
 	 */
 	private Matrix matrix;
 	
-	/**
-	 * Get the output array from the last time that the output of this layer was
-	 * calculated.
-	 * 
-	 * @return The output array.
-	 */
-	public NeuralData getFire() {
-		return this.fire;
-	}
-
-	/**
-	 * Get the output from an individual neuron.
-	 * 
-	 * @param index
-	 *            The neuron specified.
-	 * @return The output from the specified neuron.
-	 */
-	public double getFire(final int index) {
-		return this.fire.getData(index);
+	public Synapse(Layer fromLayer,Layer toLayer)
+	{
+		this.fromLayer = fromLayer;
+		this.toLayer = toLayer;	
+		this.matrix = new Matrix(getFromNeuronCount() + 1, getToNeuronCount());		
 	}
 	
 	/**
@@ -95,33 +69,17 @@ public class Synapse {
 		return this.matrix.size();
 	}
 	
-	/**
-	 * Get the neuron count for this layer.
-	 * 
-	 * @return the neuronCount
-	 */
-	public int getNeuronCount() {
-		return this.fire.size();
+	
+	public int getFromNeuronCount() {
+		return this.fromLayer.getNeuronCount();
 	}
 	
-	/**
-	 * Determine if this layer has a matrix.
-	 * 
-	 * @return True if this layer has a matrix.
-	 */
-	public boolean hasMatrix() {
-		return this.matrix != null;
+	public int getToNeuronCount() {
+		return this.toLayer.getNeuronCount();
 	}
 	
-	/**
-	 * Set the fire data.
-	 * 
-	 * @param fire
-	 *            The fire data.
-	 */
-	public void setFire(final NeuralData fire) {
-		this.fire = fire;
-	}
+
+
 
 	/**
 	 * Assign a new weight and threshold matrix to this layer.
@@ -134,7 +92,44 @@ public class Synapse {
 
 	}
 
-	public void setFire(int i, double data) {
-		this.fire.setData(i, data);		
+	public Layer getFromLayer() {
+		return fromLayer;
 	}
+
+
+
+
+	public void setFromLayer(Layer fromLayer) {
+		this.fromLayer = fromLayer;
+	}
+
+
+
+
+	public Layer getToLayer() {
+		return toLayer;
+	}
+
+
+
+
+	public void setToLayer(Layer toLayer) {
+		this.toLayer = toLayer;
+	}
+
+
+
+
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[Synapse: from=");
+		result.append(this.getFromNeuronCount());
+		result.append(",to=");
+		result.append(this.getToNeuronCount());
+		result.append("]");
+		return result.toString();
+	}
+	
+	
 }

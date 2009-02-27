@@ -500,5 +500,27 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 					+ getCols());
 		}
 	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[Matrix: rows=");
+		result.append(getRows());
+		result.append(",cols=");
+		result.append(getCols());
+		result.append("]");
+		return result.toString();
+	}
+
+	public void add(Matrix matrix) {
+		for(int row = 0; row<this.getRows();row ++)
+		{
+			for(int col = 0; col<this.getCols();col ++)
+			{
+				this.add(row,col,matrix.get(row, col));
+			}
+		}
+		
+	}
 
 }

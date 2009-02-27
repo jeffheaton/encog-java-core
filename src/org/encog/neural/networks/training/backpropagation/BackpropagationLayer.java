@@ -76,6 +76,8 @@ public class BackpropagationLayer {
 	 * The actual layer that this training layer corresponds to.
 	 */
 	private final FeedforwardLayer layer;
+	
+	private NeuralData lastOutput;
 
 	/**
 	 * Construct a BackpropagationLayer object that corresponds to a specific
@@ -98,9 +100,9 @@ public class BackpropagationLayer {
 
 		if (layer.getNext() != null) {
 			this.accMatrixDelta = new Matrix(layer.getNeuronCount() + 1, layer
-					.getNext().getNeuronCount());
+					.getNext().getToNeuronCount());
 			this.matrixDelta = new Matrix(layer.getNeuronCount() + 1, layer
-					.getNext().getNeuronCount());
+					.getNext().getToNeuronCount());
 			this.biasRow = layer.getNeuronCount();
 		}
 	}
@@ -138,22 +140,23 @@ public class BackpropagationLayer {
 	public void calcError(boolean hidden) {
 
 		final BackpropagationLayer next = this.backpropagation
-				.getBackpropagationLayer(this.layer.getNext());
+				.getBackpropagationLayer(this.layer.getNext().getToLayer());
 
-		for (int i = 0; i < this.layer.getNext().getNeuronCount(); i++) {
-			for (int j = 0; j < this.layer.getNeuronCount(); j++) {
+		for (int i = 0; i < this.layer.getNext().getToNeuronCount(); i++) {
+			for (int j = 0; j < this.layer.getNext().getFromNeuronCount(); j++) {
 				accumulateMatrixDelta(j, i, next.getErrorDelta(i)
-						* this.layer.getSynapse().getFire(j));
-				setError(j, getError(j) + this.layer.getSynapse().getMatrix().get(j, i)
+						* this.lastOutput.getData(j));
+				setError(j, getError(j) + this.layer.getNext().getMatrix().get(j, i)
 						* next.getErrorDelta(i));
 			}
 			accumulateThresholdDelta(i, next.getErrorDelta(i));
 		}
 
 		if (hidden) {
+			NeuralData actual = this.lastOutput;
 			// hidden layer deltas
 			for (int i = 0; i < this.layer.getNeuronCount(); i++) {
-				setErrorDelta(i, BoundNumbers.bound(calculateDelta(i)));
+				setErrorDelta(i, BoundNumbers.bound(calculateDelta(actual,i)));
 			}
 		}
 
@@ -165,12 +168,12 @@ public class BackpropagationLayer {
 	 * @param ideal
 	 *            Ideal output values.
 	 */
-	public void calcError(final NeuralData ideal) {
+	public void calcError(final NeuralData actual, final NeuralData ideal) {
 
 		// layer errors and deltas for output layer
 		for (int i = 0; i < this.layer.getNeuronCount(); i++) {
-			setError(i, ideal.getData(i) - this.layer.getSynapse().getFire(i));
-			setErrorDelta(i, BoundNumbers.bound(calculateDelta(i)));
+			setError(i, ideal.getData(i) - actual.getData(i));
+			setErrorDelta(i, BoundNumbers.bound(calculateDelta(actual,i)));
 		}
 	}
 
@@ -182,9 +185,9 @@ public class BackpropagationLayer {
 	 *            The neuron being calculated for.
 	 * @return The delta to be used to learn.
 	 */
-	private double calculateDelta(final int i) {
+	private double calculateDelta(NeuralData actual, final int i) {
 		double[] d = new double[1];
-		d[0] = this.layer.getSynapse().getFire(i);
+		d[0] = actual.getData(i);
 		this.layer.getActivationFunction().derivativeFunction(d);
 		return (getError(i) * d[0]);
 	}
@@ -230,14 +233,13 @@ public class BackpropagationLayer {
 	 */
 	public void learn(final double learnRate, final double momentum) {
 		// process the matrix
-		if (this.layer.getSynapse().hasMatrix()) {
+		if (this.layer.getNext()!=null ) {
 
 			final Matrix m1 = MatrixMath.multiply(this.accMatrixDelta,
 					learnRate);
 			final Matrix m2 = MatrixMath.multiply(this.matrixDelta, momentum);
 			this.matrixDelta = MatrixMath.add(m1, m2);
-			this.layer.setMatrix(MatrixMath.add(this.layer.getSynapse().getMatrix(),
-					this.matrixDelta));
+			this.layer.getNext().getMatrix().add(this.matrixDelta);			
 			this.accMatrixDelta.clear();
 		}
 	}
@@ -264,5 +266,13 @@ public class BackpropagationLayer {
 	 */
 	public void setErrorDelta(final int index, final double d) {
 		this.errorDelta[index] = d;
+	}
+
+	public NeuralData getLastOutput() {
+		return lastOutput;
+	}
+
+	public void setLastOutput(NeuralData lastOutput) {
+		this.lastOutput = lastOutput;
 	}
 }
