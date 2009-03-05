@@ -23,60 +23,34 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.networks.layers;
+package org.encog.neural.networks.synapse;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
 
-public class Synapse {
+public interface Synapse {
 	
-	private Layer fromLayer;
-	private Layer toLayer;
-
-
-	/**
-	 * The weight and threshold matrix.
-	 */
-	private Matrix matrix;
-	
-	public Synapse(Layer fromLayer,Layer toLayer)
-	{
-		this.fromLayer = fromLayer;
-		this.toLayer = toLayer;	
-		this.matrix = new Matrix(getFromNeuronCount() + 1, getToNeuronCount());		
-	}
 	
 	/**
 	 * Get the weight and threshold matrix.
 	 * 
 	 * @return The weight and threshold matrix.
 	 */
-	public Matrix getMatrix() {
-		return this.matrix;
-	}
+	public Matrix getMatrix();
 
 	/**
 	 * Get the size of the matrix, or zero if one is not defined.
 	 * 
 	 * @return The size of the matrix.
 	 */
-	public int getMatrixSize() {
-		if (this.matrix == null) {
-			return 0;
-		}
-		return this.matrix.size();
-	}
+	public int getMatrixSize();
 	
 	
-	public int getFromNeuronCount() {
-		return this.fromLayer.getNeuronCount();
-	}
+	public int getFromNeuronCount();
 	
-	public int getToNeuronCount() {
-		return this.toLayer.getNeuronCount();
-	}
+	public int getToNeuronCount();
 	
 
 
@@ -87,49 +61,12 @@ public class Synapse {
 	 * @param matrix
 	 *            The new matrix.
 	 */
-	public void setMatrix(final Matrix matrix) {
-		this.matrix = matrix;
+	public void setMatrix(final Matrix matrix);
 
-	}
+	public Layer getFromLayer();
 
-	public Layer getFromLayer() {
-		return fromLayer;
-	}
+	public void setFromLayer(Layer fromLayer);
 
-
-
-
-	public void setFromLayer(Layer fromLayer) {
-		this.fromLayer = fromLayer;
-	}
-
-
-
-
-	public Layer getToLayer() {
-		return toLayer;
-	}
-
-
-
-
-	public void setToLayer(Layer toLayer) {
-		this.toLayer = toLayer;
-	}
-
-
-
-
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
-		result.append("[Synapse: from=");
-		result.append(this.getFromNeuronCount());
-		result.append(",to=");
-		result.append(this.getToNeuronCount());
-		result.append("]");
-		return result.toString();
-	}
-	
+	public Layer getToLayer();
 	
 }

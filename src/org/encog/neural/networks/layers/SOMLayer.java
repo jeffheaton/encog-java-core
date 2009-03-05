@@ -32,6 +32,7 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
+import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.SOMLayerPersistor;
@@ -138,8 +139,8 @@ public class SOMLayer extends BasicLayer implements Serializable,
 	 *            the next layer.
 	 */
 	public void setNext(final Layer next) {
-		Synapse synapse = new Synapse(this,next);
-		super.setNext(synapse);
+		/*Synapse synapse = new Synapse(this,next);
+		super.setNext(synapse);*/
 	}
 
 	/**

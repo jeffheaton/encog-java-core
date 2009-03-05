@@ -25,6 +25,8 @@
  */
 package org.encog.matrix;
 
+import org.encog.neural.data.NeuralData;
+
 /**
  * MatrixMath: This class can perform many different mathematical operations on
  * matrixes.  The matrixes passed in will not be modified, rather a new matrix,
@@ -332,6 +334,28 @@ public final class MatrixMath {
 			rtn += Math.pow(v[i], 2);
 		}
 		return Math.sqrt(rtn);
+	}
+	
+	/**
+	 * Take a simple double array and turn it into a matrix that can be used to
+	 * calculate the results of the input array. Also takes into account the
+	 * threshold.
+	 * 
+	 * @param pattern
+	 *            The pattern to create the matrix for.
+	 * @return A matrix that represents the input pattern.
+	 */
+	public static Matrix createInputMatrix(final NeuralData pattern) {
+		final Matrix result = new Matrix(1, pattern.size() + 1);
+		for (int i = 0; i < pattern.size(); i++) {
+			result.set(0, i, pattern.getData(i));
+		}
+
+		// add a "fake" first column to the input so that the threshold is
+		// always multiplied by one, resulting in it just being added.
+		result.set(0, pattern.size(), 1);
+
+		return result;
 	}
 
 	/**

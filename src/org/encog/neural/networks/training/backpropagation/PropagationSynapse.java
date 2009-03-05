@@ -29,7 +29,7 @@ import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.networks.layers.Synapse;
+import org.encog.neural.networks.synapse.Synapse;
 
 /**
  * BackpropagationLayer: The back propagation training algorithm requires

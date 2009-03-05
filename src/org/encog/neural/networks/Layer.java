@@ -28,7 +28,7 @@ package org.encog.neural.networks;
 import org.encog.matrix.Matrix;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.networks.layers.Synapse;
+import org.encog.neural.networks.synapse.Synapse;
 
 /**
  * This interface defines all necessary methods for a neural network layer.

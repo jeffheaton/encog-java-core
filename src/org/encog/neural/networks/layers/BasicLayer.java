@@ -32,6 +32,8 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
+import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.BasicLayerPersistor;
@@ -161,7 +163,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 
 	@Override
 	public void setNext(Layer next) {
-		Synapse synapse = new Synapse(this,next);
+		Synapse synapse = new WeightedSynapse(this,next);
 		setNext(synapse);		
 	}
 

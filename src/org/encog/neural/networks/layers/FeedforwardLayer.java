@@ -101,7 +101,7 @@ public class FeedforwardLayer extends BasicLayer implements
 		if( this.getNext()!=null )
 		{
 			NeuralData result = new BasicNeuralData(getNext().getToNeuronCount());
-			final Matrix inputMatrix = createInputMatrix(pattern);
+			final Matrix inputMatrix = MatrixMath.createInputMatrix(pattern);
 	
 			for (int i = 0; i < getNext().getToNeuronCount(); i++) {
 				final Matrix col = getNext().getMatrix().getCol(i);
@@ -121,27 +121,7 @@ public class FeedforwardLayer extends BasicLayer implements
 		}
 	}
 
-	/**
-	 * Take a simple double array and turn it into a matrix that can be used to
-	 * calculate the results of the input array. Also takes into account the
-	 * threshold.
-	 * 
-	 * @param pattern
-	 *            The pattern to create the matrix for.
-	 * @return A matrix that represents the input pattern.
-	 */
-	public static Matrix createInputMatrix(final NeuralData pattern) {
-		final Matrix result = new Matrix(1, pattern.size() + 1);
-		for (int i = 0; i < pattern.size(); i++) {
-			result.set(0, i, pattern.getData(i));
-		}
 
-		// add a "fake" first column to the input so that the threshold is
-		// always multiplied by one, resulting in it just being added.
-		result.set(0, pattern.size(), 1);
-
-		return result;
-	}
 
 	/**
 	 * Create a persistor for this layer.
