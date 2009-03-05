@@ -100,14 +100,7 @@ public class FeedforwardLayer extends BasicLayer implements
 		
 		if( this.getNext()!=null )
 		{
-			NeuralData result = new BasicNeuralData(getNext().getToNeuronCount());
-			final Matrix inputMatrix = MatrixMath.createInputMatrix(pattern);
-	
-			for (int i = 0; i < getNext().getToNeuronCount(); i++) {
-				final Matrix col = getNext().getMatrix().getCol(i);
-				final double sum = MatrixMath.dotProduct(col, inputMatrix);
-				result.setData(i,sum);
-			}
+			NeuralData result = getNext().compute(pattern);
 			
 			// apply the activation function
 			this.getActivationFunction().activationFunction(result.getData());

@@ -69,4 +69,6 @@ public interface Synapse {
 
 	public Layer getToLayer();
 	
+	NeuralData compute(NeuralData input);
+	
 }
