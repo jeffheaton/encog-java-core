@@ -27,7 +27,6 @@ package org.encog.neural.data;
 
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.TextDataPersistor;
 
 public class TextData implements EncogPersistedObject {
 	private String text;
@@ -53,7 +52,7 @@ public class TextData implements EncogPersistedObject {
 	}
 
 	public Persistor createPersistor() {		
-		return new TextDataPersistor();
+		return null;
 	}
 	
 	

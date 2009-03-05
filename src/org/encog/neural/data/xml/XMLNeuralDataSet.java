@@ -37,7 +37,6 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -87,16 +86,16 @@ public class XMLNeuralDataSet extends BasicNeuralDataSet {
 
 			// read in the data
 
-			BasicNeuralDataSetPersistor persistor = 
+			/*BasicNeuralDataSetPersistor persistor = 
 				new BasicNeuralDataSetPersistor();
 
 			persistor.setIdealXML(idealXML);
 			persistor.setInputXML(inputXML);
 			persistor.setPairXML(pairXML);
-			persistor.setValueXML(valueXML);
+			persistor.setValueXML(valueXML);*/
 
-			BasicNeuralDataSet set = (BasicNeuralDataSet) persistor.load(node);
-			this.setData(set.getData());
+			//BasicNeuralDataSet set = (BasicNeuralDataSet) persistor.load(node);
+			//this.setData(set.getData());
 
 			is.close();
 

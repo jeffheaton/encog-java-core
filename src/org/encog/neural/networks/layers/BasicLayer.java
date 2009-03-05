@@ -36,7 +36,6 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.BasicLayerPersistor;
 
 /**
  * Basic functionality that most of the neural layers require.
@@ -96,7 +95,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 * @return The new persistor.
 	 */
 	public Persistor createPersistor() {
-		return new BasicLayerPersistor();
+		return null;
 	}
 
 	/**

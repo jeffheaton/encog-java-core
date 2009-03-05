@@ -30,7 +30,6 @@ import java.util.Collection;
 
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.ParseTemplatePersistor;
 import org.encog.parse.recognize.Recognize;
 
 public class ParseTemplate implements EncogPersistedObject {
@@ -61,7 +60,7 @@ public class ParseTemplate implements EncogPersistedObject {
 	}
 
 	public Persistor createPersistor() {
-		return new ParseTemplatePersistor();
+		return null;
 	}
 
 	/**

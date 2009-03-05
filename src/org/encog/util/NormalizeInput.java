@@ -28,7 +28,6 @@ package org.encog.util;
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.networks.layers.SOMLayer;
 
 /**
  * NormalizeInput: Input into a Self Organizing Map must be normalized.
@@ -101,7 +100,7 @@ public class NormalizeInput {
 		final Matrix inputMatrix2 = Matrix.createColumnMatrix(
 				input.getData());
 		double len = MatrixMath.vectorLength(inputMatrix2);
-		len = Math.max(len, SOMLayer.VERYSMALL);
+		len = Math.max(len, Double.MIN_VALUE);
 		final int numInputs = input.size();
 
 		if (this.type == NormalizationType.MULTIPLICATIVE) {

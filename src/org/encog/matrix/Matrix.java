@@ -29,7 +29,6 @@ import java.io.Serializable;
 
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.MatrixPersistor;
 
 /**
  * Matrix: This class implements a mathematical matrix. Matrix math is very
@@ -180,7 +179,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @return The new persistor.
 	 */
 	public Persistor createPersistor() {
-		return new MatrixPersistor();
+		return null;
 	}
 
 	/**

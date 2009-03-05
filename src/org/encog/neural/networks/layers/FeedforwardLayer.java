@@ -35,7 +35,7 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.Layer;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.FeedforwardLayerPersistor;
+
 
 /**
  * FeedforwardLayer: This class represents one layer in a feed forward neural
@@ -128,7 +128,7 @@ public class FeedforwardLayer extends BasicLayer implements
 	 * @return A persistor.
 	 */
 	public Persistor createPersistor() {
-		return new FeedforwardLayerPersistor();
+		return null;
 	}
 
 
