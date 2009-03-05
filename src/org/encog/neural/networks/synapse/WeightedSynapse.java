@@ -4,7 +4,7 @@ import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.Layer;
+import org.encog.neural.networks.layers.Layer;
 
 public class WeightedSynapse extends BasicSynapse {
 

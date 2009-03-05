@@ -34,9 +34,8 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Train;
-import org.encog.neural.networks.layers.FeedforwardLayer;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 
 /**
@@ -143,11 +142,11 @@ public class Backpropagation implements Train {
 		
 		while( current!=null )
 		{			
-			if (current instanceof FeedforwardLayer) {
+			
 				if( !network.isOutput(current)) {
 					backDeltas = getPropagationSynapse(current.getNext()).calcError(current.getActivationFunction(),backDeltas, network.isHidden(current));
 				}
-			}
+			
 			
 			// move to the next layer
 			Collection<Layer> previous = network.getPreviousLayers(current);

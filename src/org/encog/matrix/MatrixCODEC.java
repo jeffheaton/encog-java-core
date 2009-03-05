@@ -26,7 +26,7 @@
 package org.encog.matrix;
 
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.Layer;
+import org.encog.neural.networks.layers.Layer;
 
 /**
  * MatrixCODEC: The matrix CODEC can encode or decode a matrix to/from an array

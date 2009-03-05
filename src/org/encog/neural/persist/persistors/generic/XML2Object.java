@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.neural.networks.Layer;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;

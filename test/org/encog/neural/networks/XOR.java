@@ -7,7 +7,8 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.FeedforwardLayer;
+import org.encog.neural.networks.layers.BasicLayer;
+
 
 
 public class XOR {
@@ -59,9 +60,9 @@ public class XOR {
 		public static BasicNetwork createThreeLayerNet()
 		{
 			BasicNetwork network = new BasicNetwork();
-			network.addLayer(new FeedforwardLayer(2));
-			network.addLayer(new FeedforwardLayer(3));
-			network.addLayer(new FeedforwardLayer(1));
+			network.addLayer(new BasicLayer(2));
+			network.addLayer(new BasicLayer(3));
+			network.addLayer(new BasicLayer(1));
 			network.reset();
 			return network;
 		}

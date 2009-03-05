@@ -2,7 +2,7 @@ package org.encog.neural.networks;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.FeedforwardLayer;
+import org.encog.neural.networks.layers.BasicLayer;
 
 public class CreateNetwork {
 	
@@ -26,11 +26,11 @@ public class CreateNetwork {
 		Matrix matrix1 = new Matrix(matrixData1);
 		Matrix matrix2 = new Matrix(matrixData2);
 		
-		FeedforwardLayer layer1,layer2;
+		BasicLayer layer1,layer2;
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(layer1 = new FeedforwardLayer(2));
-		network.addLayer(layer2 = new FeedforwardLayer(3));
-		network.addLayer(new FeedforwardLayer(1));
+		network.addLayer(layer1 = new BasicLayer(2));
+		network.addLayer(layer2 = new BasicLayer(3));
+		network.addLayer(new BasicLayer(1));
 		
 		//layer1.setMatrix(matrix1);
 		//layer2.setMatrix(matrix2);

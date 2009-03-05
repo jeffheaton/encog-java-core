@@ -519,6 +519,28 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 				this.add(row,col,matrix.get(row, col));
 			}
 		}
+	}
+	
+	public void multiply(double value) {
+		
+		
+		for(int row = 0; row<this.getRows();row ++)
+		{
+			for(int col = 0; col<this.getCols();col ++)
+			{
+				this.matrix[row][col]*=value;
+			}
+		}
+	}
+
+	public void set(double value) {
+		for(int row = 0; row<this.getRows();row ++)
+		{
+			for(int col = 0; col<this.getCols();col ++)
+			{
+				this.matrix[row][col]=value;
+			}
+		}
 		
 	}
 

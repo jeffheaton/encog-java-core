@@ -23,7 +23,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.networks;
+package org.encog.neural.networks.layers;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.activation.ActivationFunction;
@@ -69,4 +69,6 @@ public interface Layer {
 	Layer getNextLayer();
 	
 	ActivationFunction getActivationFunction();
+	
+	Synapse getNextRecurrent();
 }

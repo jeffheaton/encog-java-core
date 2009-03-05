@@ -158,12 +158,17 @@ public class PropagationSynapse {
 	 */
 	public void learn(final double learnRate, final double momentum) {
 		// process the matrix
-			final Matrix m1 = MatrixMath.multiply(this.accMatrixDelta,
-					learnRate);
+		this.accMatrixDelta.multiply(learnRate);
+		this.matrixDelta.multiply(momentum);
+		this.matrixDelta = MatrixMath.add(this.accMatrixDelta, this.matrixDelta);
+		this.synapse.getMatrix().add(this.matrixDelta);			
+		this.accMatrixDelta.clear();
+				
+			/*final Matrix m1 = MatrixMath.multiply(this.accMatrixDelta, learnRate);
 			final Matrix m2 = MatrixMath.multiply(this.matrixDelta, momentum);
 			this.matrixDelta = MatrixMath.add(m1, m2);
 			this.synapse.getMatrix().add(this.matrixDelta);			
-			this.accMatrixDelta.clear();
+			this.accMatrixDelta.clear();*/
 	}
 
 	public NeuralData getLastOutput() {

@@ -41,10 +41,11 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.util.ErrorCalculation;
-import org.encog.neural.networks.layers.FeedforwardLayer;
 
 /**
  * BasicNetwork: This class implements a neural network. This class works in

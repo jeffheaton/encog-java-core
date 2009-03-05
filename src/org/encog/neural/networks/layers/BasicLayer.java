@@ -27,11 +27,10 @@ package org.encog.neural.networks.layers;
 
 import java.io.Serializable;
 
-import org.encog.matrix.Matrix;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.persist.EncogPersistedObject;
@@ -49,6 +48,8 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	private static final long serialVersionUID = -5682296868750703898L;	
 	
 	private Synapse next;
+	
+	private Synapse nextRecurrent;
 	
 	/**
 	 * Which activation function to use for this layer.
@@ -69,25 +70,62 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	private int neuronCount;
 
 	/**
-	 * Construct a basic layer with the specified neuron count.
+	 * Construct this layer with a non-default threshold function.
 	 * 
+	 * @param thresholdFunction
+	 *            The threshold function to use.
 	 * @param neuronCount
-	 *            How many neurons does this layer have.
+	 *            How many neurons in this layer.
 	 */
-	public BasicLayer(final int neuronCount) {
+	public BasicLayer(final ActivationFunction thresholdFunction,
+			final int neuronCount) {
 		this.neuronCount = neuronCount;
+		this.setActivationFunction( thresholdFunction );
 	}
 
 	/**
-	 * This layer is too basic to know how to compute a pattern, it simply
-	 * passes the pattern on.
+	 * Construct this layer with a sigmoid threshold function.
+	 * 
+	 * @param neuronCount
+	 *            How many neurons in this layer.
+	 */
+	public BasicLayer(final int neuronCount) {
+		this(new ActivationTANH(), neuronCount);
+	}
+
+	/**
+	 * Compute the outputs for this layer given the input pattern. The output is
+	 * also stored in the fire instance variable.
 	 * 
 	 * @param pattern
-	 *            The pattern to compute against.
-	 * @return The input pattern is returned.
+	 *            The input pattern.
+	 * @return The output from this layer.
 	 */
 	public NeuralData compute(final NeuralData pattern) {
-		return pattern;
+		
+		// do we have a recurrent connection to ourself?
+		if( this.getNextRecurrent()!=null )
+		{
+			NeuralData result = getNextRecurrent().compute(pattern);
+			// apply the activation function
+			this.getActivationFunction().activationFunction(result.getData());
+			return result;
+		}
+		
+		if( this.getNext()!=null )
+		{
+			NeuralData result = getNext().compute(pattern);
+			
+			// apply the activation function
+			this.getActivationFunction().activationFunction(result.getData());
+	
+			return result;
+		}
+		else
+		{
+			// must be the output layer, so just return it
+			return pattern;
+		}
 	}
 
 	/**
@@ -131,6 +169,11 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 			this.next.getMatrix().ramdomize(-1, 1);
 
 		}
+		
+		if( this.nextRecurrent!=null )
+		{
+			this.nextRecurrent.getMatrix().ramdomize(-1, 1);
+		}
 
 	}
 
@@ -163,7 +206,12 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	@Override
 	public void setNext(Layer next) {
 		Synapse synapse = new WeightedSynapse(this,next);
-		setNext(synapse);		
+		this.next = synapse;		
+	}
+	
+	public void setNextRecurrant(Layer next) {
+		Synapse synapse = new WeightedSynapse(this,next);
+		this.nextRecurrent = synapse;
 	}
 
 	@Override
@@ -175,6 +223,11 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		}
 		else
 			return null;
+	}
+	
+	public Synapse getNextRecurrent()
+	{
+		return this.nextRecurrent;
 	}
 
 	

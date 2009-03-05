@@ -6,10 +6,10 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.CreateNetwork;
-import org.encog.neural.networks.Layer;
 import org.encog.neural.networks.Train;
 import org.encog.neural.networks.XOR;
-import org.encog.neural.networks.layers.FeedforwardLayer;
+import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.backpropagation.Backpropagation;
 
 import junit.framework.TestCase;
@@ -54,7 +54,7 @@ public class TestBackpropagation extends TestCase {
 	{
 		BasicNetwork network = CreateNetwork.createXORNetworkUntrained();
 		Iterator<Layer> itr = network.getHiddenLayers().iterator();
-		FeedforwardLayer hidden = (FeedforwardLayer)itr.next();
+		BasicLayer hidden = (BasicLayer)itr.next();
 		
 		TestCase.assertEquals(3,hidden.getNeuronCount());
 		TestCase.assertEquals(4,hidden.getNext().getMatrixSize());

@@ -1,6 +1,7 @@
 package org.encog.neural.networks.synapse;
 
-import org.encog.neural.networks.Layer;
+import org.encog.matrix.Matrix;
+import org.encog.neural.networks.layers.Layer;
 
 public abstract class BasicSynapse implements Synapse {
 	
@@ -8,7 +9,7 @@ public abstract class BasicSynapse implements Synapse {
 	private Layer toLayer;
 	
 	public int getFromNeuronCount() {
-		return this.fromLayer.getNeuronCount();
+		return this.fromLayer.getNeuronCount();		
 	}
 	
 	public int getToNeuronCount() {
