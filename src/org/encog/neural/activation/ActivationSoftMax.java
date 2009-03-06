@@ -4,7 +4,6 @@ import org.encog.neural.NeuralNetworkError;
 
 public class ActivationSoftMax implements ActivationFunction {
 
-	@Override
 	public void activationFunction(double[] d) {
                 
         double sum = 0;
@@ -17,7 +16,6 @@ public class ActivationSoftMax implements ActivationFunction {
         }
 	}
 
-	@Override
 	public void derivativeFunction(double[] d) {
 		throw new NeuralNetworkError(
 				"Can't use the softmax activation function "

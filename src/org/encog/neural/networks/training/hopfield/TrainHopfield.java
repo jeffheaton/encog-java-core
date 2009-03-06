@@ -25,17 +25,14 @@ public class TrainHopfield implements Train {
 		this.trainingSet = trainingSet;
 	}
 	
-	@Override
 	public double getError() {
 		return 0.0;
 	}
 
-	@Override
 	public Network getNetwork() {
 		return network;
 	}
 
-	@Override
 	public void iteration() {
 		for (final Layer layer : this.network.getLayers()) {
 			Synapse recurrent = layer.getNextRecurrent();

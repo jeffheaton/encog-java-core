@@ -4,7 +4,6 @@ import org.encog.neural.persist.Persistor;
 
 public class ActivationSIN implements ActivationFunction {
 
-	@Override
 	public void activationFunction(double[] d) {	
 		for(int i=0;i<d.length;i++)
 		{
@@ -12,7 +11,6 @@ public class ActivationSIN implements ActivationFunction {
 		}
 	}
 
-	@Override
 	public void derivativeFunction(double[] d) {
 		
 		for(int i=0;i<d.length;i++)

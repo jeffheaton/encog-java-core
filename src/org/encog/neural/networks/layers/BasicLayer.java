@@ -203,7 +203,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		this.next = synapse;
 	}
 
-	@Override
 	public void setNext(Layer next) {
 		Synapse synapse = new WeightedSynapse(this,next);
 		this.next = synapse;		
@@ -214,7 +213,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		this.nextRecurrent = synapse;
 	}
 
-	@Override
 	public Layer getNextLayer() {
 		// get the next layer
 		if( getNext()!=null )

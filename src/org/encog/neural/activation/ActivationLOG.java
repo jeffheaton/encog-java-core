@@ -2,7 +2,6 @@ package org.encog.neural.activation;
 
 public class ActivationLOG implements ActivationFunction {
 
-	@Override
 	public void activationFunction(double[] d) {
 		
 		for(int i=0;i<d.length;i++)
@@ -15,7 +14,6 @@ public class ActivationLOG implements ActivationFunction {
 
 	}
 
-	@Override
 	public void derivativeFunction(double[] d) {
 				
 		for(int i=0;i<d.length;i++)

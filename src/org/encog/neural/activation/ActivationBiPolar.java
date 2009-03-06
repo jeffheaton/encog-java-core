@@ -5,7 +5,6 @@ import org.encog.neural.NeuralNetworkError;
 
 public class ActivationBiPolar implements ActivationFunction {
 
-	@Override
 	public void activationFunction(double[] d) {
 		for(int i=0;i<d.length;i++)
 		{
@@ -17,7 +16,6 @@ public class ActivationBiPolar implements ActivationFunction {
 		
 	}
 
-	@Override
 	public void derivativeFunction(double[] d) {
 		throw new NeuralNetworkError(
 				"Can't use the bipolar activation function "
