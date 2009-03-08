@@ -173,17 +173,22 @@ public class BasicNetwork implements Serializable, Network,
 	public NeuralData compute(final NeuralData input) {
 
 		checkInputSize(input);
-
-		NeuralData currentPattern = input;
-		Layer current = this.inputLayer;
-		while(current!=null)
-		{
-			// compute this layer
-			currentPattern = current.compute(currentPattern);
-			current = current.getNextLayer();			
-		}
+		return computeInternal(this.inputLayer,input);
 		
-		return currentPattern;
+	}
+	
+	private NeuralData computeInternal(Layer layer, NeuralData input)
+	{
+		NeuralData currentPattern = input;
+		
+		if( layer.getNextLayer()==null )
+			return currentPattern;
+		else
+		{
+			currentPattern = layer.compute(currentPattern);
+			return computeInternal(layer.getNextLayer(),currentPattern);
+		}
+
 	}
 
 	/**
@@ -320,28 +325,7 @@ public class BasicNetwork implements Serializable, Network,
 		return super.hashCode();
 	}
 
-	/**
-	 * Remove a layer, adjust the weight matrixes and back pointers.
-	 * 
-	 * @param layer
-	 *            The layer to remove.
-	 */
-	public void removeLayer(final Layer layer) {
-		final Layer next = layer.getNextTemp().getToLayer();
-		final Collection<Layer> prev = this.getPreviousLayers(layer);
 
-		if( layer==this.inputLayer )
-		{
-			this.inputLayer = layer.getNextTemp().getToLayer();
-		}
-		
-		for(Layer l: prev)
-		{
-			l.addNext(next);
-			if( next==null )
-				this.outputLayer = l;
-		}
-	}
 
 	/**
 	 * Reset the weight matrix and the thresholds.
