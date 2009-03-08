@@ -113,10 +113,10 @@ public class Backpropagation implements Train {
 		this.training = training;
 
 		for (final Layer layer : network.getLayers()) {
-			if (layer.getNext()!=null) {
+			if (layer.getNextTemp()!=null) {
 				final PropagationSynapse bpl = new PropagationSynapse(
-						layer.getNext());
-				this.synapseMap.put(layer.getNext(), bpl);
+						layer.getNextTemp());
+				this.synapseMap.put(layer.getNextTemp(), bpl);
 			}
 
 		}
@@ -144,7 +144,7 @@ public class Backpropagation implements Train {
 		{			
 			
 				if( !network.isOutput(current)) {
-					backDeltas = getPropagationSynapse(current.getNext()).calcError(current.getActivationFunction(),backDeltas, network.isHidden(current));
+					backDeltas = getPropagationSynapse(current.getNextTemp()).calcError(current.getActivationFunction(),backDeltas, network.isHidden(current));
 				}
 			
 			
@@ -210,7 +210,7 @@ public class Backpropagation implements Train {
 		{
 			if( !network.isOutput(current) )
 			{
-				PropagationSynapse bLayer = this.getPropagationSynapse(current.getNext());
+				PropagationSynapse bLayer = this.getPropagationSynapse(current.getNextTemp());
 				bLayer.setLastOutput(currentPattern);
 			}
 			currentPattern = current.compute(currentPattern);			
@@ -241,8 +241,8 @@ public class Backpropagation implements Train {
 	public void learn() {
 
 		for (final Layer layer : this.network.getLayers()) {
-			if (layer.getNext()!=null) {
-				getPropagationSynapse(layer.getNext()).learn(this.learnRate,
+			if (layer.getNextTemp()!=null) {
+				getPropagationSynapse(layer.getNextTemp()).learn(this.learnRate,
 						this.momentum);
 			}
 		}

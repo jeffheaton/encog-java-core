@@ -112,9 +112,9 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 			return result;
 		}
 		
-		if( this.getNext()!=null )
+		if( this.getNextTemp()!=null )
 		{
-			NeuralData result = getNext().compute(pattern);
+			NeuralData result = getNextTemp().compute(pattern);
 			
 			// apply the activation function
 			this.getActivationFunction().activationFunction(result.getData());
@@ -195,7 +195,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 
 
 
-	public Synapse getNext() {
+	public Synapse getNextTemp() {
 		return next;
 	}
 
@@ -215,9 +215,9 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 
 	public Layer getNextLayer() {
 		// get the next layer
-		if( getNext()!=null )
+		if( getNextTemp()!=null )
 		{
-			return getNext().getToLayer();
+			return getNextTemp().getToLayer();
 		}
 		else
 			return null;

@@ -63,8 +63,8 @@ public interface Layer {
 
 	/**
 	 * @return The next layer.
-	 */
-	Synapse getNext();	
+	 */	
+	Synapse getNextTemp();
 	
 	Layer getNextLayer();
 	

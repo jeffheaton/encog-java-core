@@ -118,7 +118,7 @@ public class BasicNetwork implements Serializable, Network,
 	public void addLayer(final Layer baseLayer, final Layer newLayer) {
 		if( baseLayer==this.outputLayer )
 			this.outputLayer = newLayer;
-		newLayer.setNext(baseLayer.getNext());
+		newLayer.setNext(baseLayer.getNextTemp());
 		baseLayer.setNext(newLayer);
 
 	}
@@ -321,7 +321,7 @@ public class BasicNetwork implements Serializable, Network,
 	public int getWeightMatrixSize() {
 		int result = 0;
 		for (final Layer layer : this.getLayers() ) {
-			result += layer.getNext().getMatrixSize();
+			result += layer.getNextTemp().getMatrixSize();
 		}
 		return result;
 	}
@@ -342,12 +342,12 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The layer to remove.
 	 */
 	public void removeLayer(final Layer layer) {
-		final Layer next = layer.getNext().getToLayer();
+		final Layer next = layer.getNextTemp().getToLayer();
 		final Collection<Layer> prev = this.getPreviousLayers(layer);
 
 		if( layer==this.inputLayer )
 		{
-			this.inputLayer = layer.getNext().getToLayer();
+			this.inputLayer = layer.getNextTemp().getToLayer();
 		}
 		
 		for(Layer l: prev)
@@ -435,8 +435,8 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public void prune(final Layer targetLayer, final int neuron) {
 		// delete a row on this matrix
-		if (targetLayer.getNext().getMatrix() != null) {
-			targetLayer.getNext().setMatrix(MatrixMath.deleteRow(targetLayer.getNext().getMatrix(), neuron));
+		if (targetLayer.getNextTemp().getMatrix() != null) {
+			targetLayer.getNextTemp().setMatrix(MatrixMath.deleteRow(targetLayer.getNextTemp().getMatrix(), neuron));
 		}
 
 		// delete a column on the previous
@@ -445,8 +445,8 @@ public class BasicNetwork implements Serializable, Network,
 		for(Layer prevLayer: previous )
 		{
 		if (previous != null) {
-			if (prevLayer.getNext().getMatrix() != null) {
-				prevLayer.getNext().setMatrix(MatrixMath.deleteCol(prevLayer.getNext().getMatrix(),
+			if (prevLayer.getNextTemp().getMatrix() != null) {
+				prevLayer.getNextTemp().setMatrix(MatrixMath.deleteCol(prevLayer.getNextTemp().getMatrix(),
 						neuron));
 			}
 		}
@@ -465,10 +465,10 @@ public class BasicNetwork implements Serializable, Network,
 				map.add(current);
 			}
 			
-			if( current.getNext()!=null )
+			if( current.getNextTemp()!=null )
 			{
-				if( !map.contains(current.getNext()))
-					current = current.getNext().getToLayer();
+				if( !map.contains(current.getNextTemp()))
+					current = current.getNextTemp().getToLayer();
 			}
 			else
 				current = null;
@@ -482,7 +482,7 @@ public class BasicNetwork implements Serializable, Network,
 		Collection<Layer> result = new HashSet<Layer>();
 		for(Layer layer: this.getLayers())
 		{
-			if( layer.getNext()!=null && layer.getNext().getToLayer() == targetLayer )
+			if( layer.getNextTemp()!=null && layer.getNextTemp().getToLayer() == targetLayer )
 			{
 				result.add(layer);
 			}
