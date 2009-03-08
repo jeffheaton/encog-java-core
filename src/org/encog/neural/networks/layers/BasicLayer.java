@@ -26,6 +26,8 @@
 package org.encog.neural.networks.layers;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
@@ -47,7 +49,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	private static final long serialVersionUID = -5682296868750703898L;	
 	
-	private Synapse next;
+	private List<Synapse> next = new ArrayList<Synapse>();
 	
 	private Synapse nextRecurrent;
 	
@@ -166,8 +168,10 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	public void reset() {
 
 		if (this.next != null) {
-			this.next.getMatrix().ramdomize(-1, 1);
-
+			for(Synapse synapse :this.next )
+			{
+				synapse.getMatrix().ramdomize(-1, 1);
+			}
 		}
 		
 		if( this.nextRecurrent!=null )
@@ -196,16 +200,15 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 
 
 	public Synapse getNextTemp() {
-		return next;
+		if( this.next.size()==0 )
+			return null;
+		else
+			return this.next.get(0);
 	}
 
-	public void setNext(Synapse synapse) {
-		this.next = synapse;
-	}
-
-	public void setNext(Layer next) {
+	public void addNext(Layer next) {
 		Synapse synapse = new WeightedSynapse(this,next);
-		this.next = synapse;		
+		this.next.add(synapse);		
 	}
 	
 	public void setNextRecurrant(Layer next) {

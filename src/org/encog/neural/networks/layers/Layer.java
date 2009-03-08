@@ -44,14 +44,6 @@ public interface Layer {
 	NeuralData compute(final NeuralData pattern);
 
 	/**
-	 * Set the next layer.
-	 * @param layer The next layer.
-	 */
-	void setNext(Synapse next);
-	
-	void setNext(Layer next);
-
-	/**
 	 * @return The neuron count.
 	 */
 	int getNeuronCount();
@@ -71,4 +63,6 @@ public interface Layer {
 	ActivationFunction getActivationFunction();
 	
 	Synapse getNextRecurrent();
+	
+	void addNext(Layer next);
 }

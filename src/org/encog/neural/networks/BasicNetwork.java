@@ -101,27 +101,12 @@ public class BasicNetwork implements Serializable, Network,
 			this.outputLayer = this.inputLayer = layer;
 		else
 		{
-			this.outputLayer.setNext(layer);
+			this.outputLayer.addNext(layer);
 			this.outputLayer = layer;
 		}
 		
 	}
 
-	/**
-	 * Add a layer after the base layer.
-	 * 
-	 * @param baseLayer
-	 *            The layer to add after.
-	 * @param newLayer
-	 *            The new layer to add.
-	 */
-	public void addLayer(final Layer baseLayer, final Layer newLayer) {
-		if( baseLayer==this.outputLayer )
-			this.outputLayer = newLayer;
-		newLayer.setNext(baseLayer.getNextTemp());
-		baseLayer.setNext(newLayer);
-
-	}
 
 	/**
 	 * Calculate the error for this neural network. The error is calculated
@@ -352,7 +337,7 @@ public class BasicNetwork implements Serializable, Network,
 		
 		for(Layer l: prev)
 		{
-			l.setNext(next);
+			l.addNext(next);
 			if( next==null )
 				this.outputLayer = l;
 		}
