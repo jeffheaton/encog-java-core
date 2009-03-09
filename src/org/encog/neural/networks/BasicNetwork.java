@@ -171,24 +171,31 @@ public class BasicNetwork implements Serializable, Network,
 	 * @return The results from the output neurons.
 	 */
 	public NeuralData compute(final NeuralData input) {
-
+		Map<Layer,NeuralData> result = new HashMap<Layer,NeuralData>();
 		checkInputSize(input);
-		return computeInternal(this.inputLayer,input);
+		compute(result,this.inputLayer,input);
+		return result.get(this.outputLayer);
 		
 	}
 	
-	private NeuralData computeInternal(Layer layer, NeuralData input)
+	public void compute(Map<Layer,NeuralData> result, Layer layer, NeuralData input)
 	{
 		NeuralData currentPattern = input;
 		
 		if( layer.getNextLayer()==null )
-			return currentPattern;
+		{
+			//result.put(layer, currentPattern);
+			return;
+		}
 		else
 		{
 			currentPattern = layer.compute(currentPattern);
-			return computeInternal(layer.getNextLayer(),currentPattern);
+			for(Layer nextLayer: layer.getNextLayers() )
+			{
+				result.put(nextLayer, currentPattern);
+				compute(result, nextLayer,currentPattern);
+			}
 		}
-
 	}
 
 	/**

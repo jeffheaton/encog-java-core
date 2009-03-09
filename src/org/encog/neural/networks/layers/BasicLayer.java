@@ -27,6 +27,8 @@ package org.encog.neural.networks.layers;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 import org.encog.neural.activation.ActivationFunction;
@@ -245,6 +247,16 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	public void setActivationFunction(final ActivationFunction f) {
 		this.activationFunction = f;
+	}
+	
+	public Collection<Layer> getNextLayers()
+	{
+		Collection<Layer> result = new HashSet<Layer>();
+		for(Synapse synapse: this.next)
+		{
+			result.add(synapse.getToLayer());
+		}
+		return result;
 	}
 
 }
