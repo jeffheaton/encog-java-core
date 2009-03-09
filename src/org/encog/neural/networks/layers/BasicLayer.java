@@ -70,6 +70,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	private String name;
 	
 	private int neuronCount;
+	
 
 	/**
 	 * Construct this layer with a non-default threshold function.
@@ -185,15 +186,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		this.next.add(synapse);		
 	}
 
-	public Layer getNextLayer() {
-		// get the next layer
-		if( getNextTemp()!=null )
-		{
-			return getNextTemp().getToLayer();
-		}
-		else
-			return null;
-	}
 
 	
 	/**
@@ -223,6 +215,20 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 
 	public List<Synapse> getNext() {
 		return next;
+	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[BasicLayer:");
+		result.append("neuronCount=");
+		result.append(this.neuronCount);
+		result.append(']');
+		return result.toString();
+	}
+
+	public void setNeuronCount(int neuronCount) {
+		this.neuronCount = neuronCount;
 	}
 	
 	

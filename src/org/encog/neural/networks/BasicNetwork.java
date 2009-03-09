@@ -261,11 +261,7 @@ public class BasicNetwork implements Serializable, Network,
 	 * @return The hidden layer count.
 	 */
 	public int getHiddenLayerCount() {
-		int result = this.calculateNeuronCount() - 2;
-		if( result<0 )
-			return 0;
-		else
-			return result;
+		return getHiddenLayers().size();
 	}
 
 	/**
@@ -319,8 +315,8 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public int getWeightMatrixSize() {
 		int result = 0;
-		for (final Layer layer : this.getLayers() ) {
-			result += layer.getNextTemp().getMatrixSize();
+		for (final Synapse synapse : this.getSynapses() ) {
+			result += synapse.getMatrixSize();
 		}
 		return result;
 	}
@@ -413,46 +409,61 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public void prune(final Layer targetLayer, final int neuron) {
 		// delete a row on this matrix
-		if (targetLayer.getNextTemp().getMatrix() != null) {
-			targetLayer.getNextTemp().setMatrix(MatrixMath.deleteRow(targetLayer.getNextTemp().getMatrix(), neuron));
+		for(Synapse synapse:targetLayer.getNext())
+		{
+			synapse.setMatrix(MatrixMath.deleteRow(synapse.getMatrix(), neuron));
 		}
-
+		
 		// delete a column on the previous
 		final Collection<Layer> previous = this.getPreviousLayers(targetLayer);
 		
 		for(Layer prevLayer: previous )
 		{
 		if (previous != null) {
-			if (prevLayer.getNextTemp().getMatrix() != null) {
-				prevLayer.getNextTemp().setMatrix(MatrixMath.deleteCol(prevLayer.getNextTemp().getMatrix(),
+			for(Synapse synapse:prevLayer.getNext()) {
+				synapse.setMatrix(MatrixMath.deleteCol(synapse.getMatrix(),
 						neuron));
 			}
 		}
 		}
+		
+		targetLayer.setNeuronCount(targetLayer.getNeuronCount()-1);
 
+	}
+	
+	public Collection<Synapse> getSynapses()
+	{
+		Set<Synapse> result = new HashSet<Synapse>();
+		for(Layer layer: getLayers() )
+		{
+			for(Synapse synapse:layer.getNext() )
+			{
+				result.add(synapse);
+			}
+		}
+		return result;
 	}
 	
 	public Collection<Layer> getLayers()
 	{
-		Set<Layer> map = new HashSet<Layer>();
-		Layer current = this.inputLayer;
-		while(current!=null)
-		{
-			if( current!=null )
-			{
-				map.add(current);
-			}
-			
-			if( current.getNextTemp()!=null )
-			{
-				if( !map.contains(current.getNextTemp()))
-					current = current.getNextTemp().getToLayer();
-			}
-			else
-				current = null;
-		}
+		Set<Layer> result = new HashSet<Layer>();
+		getLayers(result, this.getInputLayer());		
+		return result;
+	}
+	
+	private void getLayers(Set<Layer> result, Layer layer)
+	{
+		result.add(layer);
 		
-		return map;
+		for(Synapse synapse: layer.getNext())
+		{
+			Layer nextLayer = synapse.getToLayer();
+			
+			if( !result.contains(nextLayer) )
+			{
+				getLayers(result,nextLayer);
+			}
+		}
 	}
 	
 	public Collection<Layer> getPreviousLayers(Layer targetLayer)
@@ -460,9 +471,12 @@ public class BasicNetwork implements Serializable, Network,
 		Collection<Layer> result = new HashSet<Layer>();
 		for(Layer layer: this.getLayers())
 		{
-			if( layer.getNextTemp()!=null && layer.getNextTemp().getToLayer() == targetLayer )
+			for(Synapse synapse: layer.getNext() )
 			{
-				result.add(layer);
+				if( synapse.getToLayer()==targetLayer )
+				{
+					result.add(synapse.getFromLayer() );
+				}
 			}
 		}
 		return result;

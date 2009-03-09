@@ -51,7 +51,7 @@ public final class MatrixCODEC {
 	 */
 	public static void arrayToNetwork(final Double[] array,
 			final BasicNetwork network) {
-
+/*
 		// copy data to array
 		int index = 0;
 
@@ -61,7 +61,7 @@ public final class MatrixCODEC {
 			if (layer.getNextTemp() != null) {
 				index = layer.getNextTemp().getMatrix().fromPackedArray(array, index);
 			}
-		}
+		}*/
 	}
 
 	/**
@@ -72,7 +72,7 @@ public final class MatrixCODEC {
 	 * @return The memory of the neuron.
 	 */
 	public static Double[] networkToArray(final BasicNetwork network) {
-		int size = 0;
+/*		int size = 0;
 
 		// first determine size
 		for (final Layer layer : network.getLayers()) {
@@ -99,8 +99,8 @@ public final class MatrixCODEC {
 				}
 			}
 		}
-
-		return result;
+*/
+		return null;
 	}
 
 }

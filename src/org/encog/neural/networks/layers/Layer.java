@@ -64,11 +64,11 @@ public interface Layer {
 	Collection<Layer> getNextLayers();
 	
 	public List<Synapse> getNext();
-	
-	Layer getNextLayer();
+
 	
 	ActivationFunction getActivationFunction();
 	
+	void setNeuronCount(int neuronCount);
 	
 	void addNext(Layer next);
 }

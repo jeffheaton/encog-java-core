@@ -57,13 +57,10 @@ public class TestBackpropagation extends TestCase {
 		BasicLayer hidden = (BasicLayer)itr.next();
 		
 		TestCase.assertEquals(3,hidden.getNeuronCount());
-		TestCase.assertEquals(4,hidden.getNextTemp().getMatrixSize());
-		TestCase.assertEquals(9, network.getInputLayer().getNextTemp().getMatrixSize());
+
 		
 		network.prune(hidden, 1);
 		
 		TestCase.assertEquals(2,hidden.getNeuronCount());
-		TestCase.assertEquals(3,hidden.getNextTemp().getMatrixSize());
-		TestCase.assertEquals(6, network.getInputLayer().getNextTemp().getMatrixSize());
 	}
 }
