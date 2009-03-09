@@ -44,7 +44,7 @@ public interface Layer {
 	 * @param pattern The input pattern.
 	 * @return The output from this layer.
 	 */
-	NeuralData compute(final NeuralData pattern);
+	void compute(final NeuralData pattern);
 
 	/**
 	 * @return The neuron count.
@@ -69,7 +69,6 @@ public interface Layer {
 	
 	ActivationFunction getActivationFunction();
 	
-	Synapse getNextRecurrent();
 	
 	void addNext(Layer next);
 }

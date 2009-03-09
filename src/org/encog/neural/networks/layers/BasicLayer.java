@@ -53,8 +53,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	
 	private List<Synapse> next = new ArrayList<Synapse>();
 	
-	private Synapse nextRecurrent;
-	
 	/**
 	 * Which activation function to use for this layer.
 	 */
@@ -105,31 +103,10 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 *            The input pattern.
 	 * @return The output from this layer.
 	 */
-	public NeuralData compute(final NeuralData pattern) {
+	public void compute(final NeuralData pattern) {
 		
-		// do we have a recurrent connection to ourself?
-		if( this.getNextRecurrent()!=null )
-		{
-			NeuralData result = getNextRecurrent().compute(pattern);
-			// apply the activation function
-			this.getActivationFunction().activationFunction(result.getData());
-			return result;
-		}
-		
-		if( this.getNextTemp()!=null )
-		{
-			NeuralData result = getNextTemp().compute(pattern);
-			
-			// apply the activation function
-			this.getActivationFunction().activationFunction(result.getData());
-	
-			return result;
-		}
-		else
-		{
-			// must be the output layer, so just return it
-			return pattern;
-		}
+		// apply the activation function
+		this.getActivationFunction().activationFunction(pattern.getData());
 	}
 
 	/**
@@ -175,11 +152,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 				synapse.getMatrix().ramdomize(-1, 1);
 			}
 		}
-		
-		if( this.nextRecurrent!=null )
-		{
-			this.nextRecurrent.getMatrix().ramdomize(-1, 1);
-		}
 
 	}
 
@@ -212,11 +184,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		Synapse synapse = new WeightedSynapse(this,next);
 		this.next.add(synapse);		
 	}
-	
-	public void setNextRecurrant(Layer next) {
-		Synapse synapse = new WeightedSynapse(this,next);
-		this.nextRecurrent = synapse;
-	}
 
 	public Layer getNextLayer() {
 		// get the next layer
@@ -226,11 +193,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		}
 		else
 			return null;
-	}
-	
-	public Synapse getNextRecurrent()
-	{
-		return this.nextRecurrent;
 	}
 
 	

@@ -34,14 +34,14 @@ public class TrainHopfield implements Train {
 	}
 
 	public void iteration() {
-		for (final Layer layer : this.network.getLayers()) {
+		/*for (final Layer layer : this.network.getLayers()) {
 			Synapse recurrent = layer.getNextRecurrent();
 			if( recurrent!=null ) {
 				if( recurrent.getFromLayer()==recurrent.getToLayer()) {
 					trainHopfieldSynapse(recurrent);
 				}
 			}
-		}
+		}*/
 	}		
 	
 	

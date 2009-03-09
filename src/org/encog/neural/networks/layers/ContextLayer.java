@@ -13,7 +13,7 @@ public class ContextLayer extends BasicLayer {
 		context = new double[neuronCount];
 	}
 	
-	public NeuralData compute(final NeuralData pattern)
+	public void compute(final NeuralData pattern)
 	{
 		NeuralData result = new BasicNeuralData(getNeuronCount());
 		
@@ -22,7 +22,7 @@ public class ContextLayer extends BasicLayer {
 		// apply the activation function
 		this.getActivationFunction().activationFunction(result.getData());
 
-		return result;
+
 	}
 
 }
