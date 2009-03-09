@@ -32,5 +32,10 @@ public abstract class BasicSynapse implements Synapse {
 	public void setToLayer(Layer toLayer) {
 		this.toLayer = toLayer;
 	}
+	
+	public boolean isSelfConnected()
+	{
+		return this.fromLayer==this.toLayer;
+	}
 
 }

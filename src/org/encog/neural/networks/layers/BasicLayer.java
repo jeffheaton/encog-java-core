@@ -172,15 +172,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		this.name = name;
 	}
 
-
-
-	public Synapse getNextTemp() {
-		if( this.next.size()==0 )
-			return null;
-		else
-			return this.next.get(0);
-	}
-
 	public void addNext(Layer next) {
 		Synapse synapse = new WeightedSynapse(this,next);
 		this.next.add(synapse);		
@@ -231,6 +222,14 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		this.neuronCount = neuronCount;
 	}
 	
-	
+	public boolean isSelfConnected()
+	{
+		for(Synapse synapse: this.next)
+		{
+			if( synapse.isSelfConnected() )
+				return true;
+		}
+		return false;
+	}
 
 }

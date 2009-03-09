@@ -198,8 +198,9 @@ public class Backpropagation implements Train {
 		return this.network;
 	}
 	
-	private void backpropCompute(NeuralData input)
+	private void forwardPass(NeuralData input)
 	{
+		this.outputHolder.getResult().clear();
 		this.fire = network.compute(input,this.outputHolder);
 	}
 
@@ -209,9 +210,9 @@ public class Backpropagation implements Train {
 	public void iteration() {
 
 		for (final NeuralDataPair pair : this.training) {
-			backpropCompute(pair.getInput());
+			forwardPass(pair.getInput());
 			backwardPass(pair.getIdeal());
-		}
+		}		
 		learn();
 
 		this.error = this.network.calculateError(this.training);

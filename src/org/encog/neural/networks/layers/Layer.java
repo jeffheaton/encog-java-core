@@ -55,11 +55,6 @@ public interface Layer {
 	 * Reset the weight matrix to random values.
 	 */
 	void reset();
-
-	/**
-	 * @return The next layer.
-	 */	
-	Synapse getNextTemp();
 	
 	Collection<Layer> getNextLayers();
 	

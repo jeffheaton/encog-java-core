@@ -79,7 +79,6 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	private String name;
 
-
 	/**
 	 * Construct an empty neural network.
 	 */
@@ -94,16 +93,14 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The layer to be added.
 	 */
 	public void addLayer(final Layer layer) {
-		if( this.inputLayer==null)
+		if (this.inputLayer == null)
 			this.outputLayer = this.inputLayer = layer;
-		else
-		{
+		else {
 			this.outputLayer.addNext(layer);
 			this.outputLayer = layer;
 		}
-		
-	}
 
+	}
 
 	/**
 	 * Calculate the error for this neural network. The error is calculated
@@ -118,8 +115,7 @@ public class BasicNetwork implements Serializable, Network,
 
 		for (final NeuralDataPair pair : data) {
 			NeuralData actual = compute(pair.getInput());
-			errorCalculation.updateError(actual, pair
-					.getIdeal());
+			errorCalculation.updateError(actual, pair.getIdeal());
 		}
 		return errorCalculation.calculateRMS();
 	}
@@ -131,9 +127,8 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public int calculateNeuronCount() {
 		int result = 0;
-		for(Layer layer: this.getLayers())
-		{
-			result+=layer.getNeuronCount();
+		for (Layer layer : this.getLayers()) {
+			result += layer.getNeuronCount();
 		}
 		return result;
 	}
@@ -149,18 +144,17 @@ public class BasicNetwork implements Serializable, Network,
 		return null;
 	}
 
-	public void checkInputSize(final NeuralData input)
-	{
+	public void checkInputSize(final NeuralData input) {
 		if (input.size() != this.inputLayer.getNeuronCount()) {
 			throw new NeuralNetworkError(
 					"Size mismatch: Can't compute outputs for input size="
 							+ input.size() + " for input layer size="
 							+ this.inputLayer.getNeuronCount());
-		}		
+		}
 	}
-	public NeuralData compute(final NeuralData input)
-	{
-		return compute(input,null);
+
+	public NeuralData compute(final NeuralData input) {
+		return compute(input, null);
 	}
 
 	/**
@@ -170,38 +164,42 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The input provide to the neural network.
 	 * @return The results from the output neurons.
 	 */
-	public NeuralData compute(final NeuralData input, NeuralOutputHolder useHolder) {
+	public NeuralData compute(final NeuralData input,
+			NeuralOutputHolder useHolder) {
 		NeuralOutputHolder holder;
-		
-		if( useHolder==null )
+
+		if (useHolder == null)
 			holder = new NeuralOutputHolder();
 		else
 			holder = useHolder;
-		
-		checkInputSize(input);
-		compute(holder,this.inputLayer,input);
-		return holder.getOutput();
-		
-	}
-	
-	private void compute(NeuralOutputHolder holder, Layer layer, NeuralData input)
-	{
-		for(Synapse synapse: layer.getNext() )
-		{
-			NeuralData pattern = synapse.compute(input);
-			layer.getActivationFunction().activationFunction(pattern.getData());
-			holder.getResult().put(synapse, input);
-			compute(holder,synapse.getToLayer(),pattern);
-			
-			// Is this the output from the entire network?
-			if( synapse.getToLayer()==this.outputLayer)
-				holder.setOutput(pattern);
-		}
 
+		checkInputSize(input);
+		compute(holder, this.inputLayer, input);
+		return holder.getOutput();
+
+	}
+
+	private void compute(NeuralOutputHolder holder, Layer layer,
+			NeuralData input) {
+		for (Synapse synapse : layer.getNext()) {
+			if (!holder.getResult().containsKey(synapse)) 
+			{
+				NeuralData pattern = synapse.compute(input);
+				layer.getActivationFunction().activationFunction(
+						pattern.getData());
+				holder.getResult().put(synapse, input);
+				compute(holder, synapse.getToLayer(), pattern);
+
+				// Is this the output from the entire network?
+				if (synapse.getToLayer() == this.outputLayer)
+					holder.setOutput(pattern);
+			}
+		}
 	}
 
 	/**
 	 * Create a persistor for this object.
+	 * 
 	 * @return The newly created persistor.
 	 */
 	public Persistor createPersistor() {
@@ -218,32 +216,25 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public boolean equals(final BasicNetwork other) {
 		/*
-		final Iterator<Layer> otherLayers = other.getLayers().iterator();
-
-		for (final Layer layer : getLayers()) {
-			final Layer otherLayer = otherLayers.next();
-
-			if (layer.getNeuronCount() != otherLayer.getNeuronCount()) {
-				return false;
-			}
-
-			// make sure they either both have or do not have
-			// a weight matrix.
-			if (layer.getSynapse().getMatrix() == null && otherLayer.getSynapse().getMatrix() != null) {
-				return false;
-			}
-
-			if (layer.getSynapse().getMatrix() != null && otherLayer.getSynapse().getMatrix() == null) {
-				return false;
-			}
-
-			// if they both have a matrix, then compare the matrices
-			if (layer.getSynapse().getMatrix() != null && otherLayer.getSynapse().getMatrix() != null) {
-				if (!layer.getSynapse().getMatrix().equals(otherLayer.getSynapse().getMatrix())) {
-					return false;
-				}
-			}
-		}*/
+		 * final Iterator<Layer> otherLayers = other.getLayers().iterator();
+		 * 
+		 * for (final Layer layer : getLayers()) { final Layer otherLayer =
+		 * otherLayers.next();
+		 * 
+		 * if (layer.getNeuronCount() != otherLayer.getNeuronCount()) { return
+		 * false; }
+		 *  // make sure they either both have or do not have // a weight
+		 * matrix. if (layer.getSynapse().getMatrix() == null &&
+		 * otherLayer.getSynapse().getMatrix() != null) { return false; }
+		 * 
+		 * if (layer.getSynapse().getMatrix() != null &&
+		 * otherLayer.getSynapse().getMatrix() == null) { return false; }
+		 *  // if they both have a matrix, then compare the matrices if
+		 * (layer.getSynapse().getMatrix() != null &&
+		 * otherLayer.getSynapse().getMatrix() != null) { if
+		 * (!layer.getSynapse().getMatrix().equals(otherLayer.getSynapse().getMatrix())) {
+		 * return false; } } }
+		 */
 
 		return true;
 	}
@@ -271,15 +262,13 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public Collection<Layer> getHiddenLayers() {
 		final Collection<Layer> result = new ArrayList<Layer>();
-		
-		for(Layer layer: getLayers() )
-		{
-			if( isHidden(layer) )
-			{
+
+		for (Layer layer : getLayers()) {
+			if (isHidden(layer)) {
 				result.add(layer);
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -315,7 +304,7 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public int getWeightMatrixSize() {
 		int result = 0;
-		for (final Synapse synapse : this.getSynapses() ) {
+		for (final Synapse synapse : this.getSynapses()) {
 			result += synapse.getMatrixSize();
 		}
 		return result;
@@ -330,8 +319,6 @@ public class BasicNetwork implements Serializable, Network,
 		return super.hashCode();
 	}
 
-
-
 	/**
 	 * Reset the weight matrix and the thresholds.
 	 * 
@@ -345,7 +332,9 @@ public class BasicNetwork implements Serializable, Network,
 
 	/**
 	 * Set the description for this object.
-	 * @param theDescription The description.
+	 * 
+	 * @param theDescription
+	 *            The description.
 	 */
 	public void setDescription(final String theDescription) {
 		this.description = theDescription;
@@ -384,22 +373,19 @@ public class BasicNetwork implements Serializable, Network,
 
 		return win;
 	}
-	
-	public boolean isInput(Layer layer)
-	{
-		return this.inputLayer==layer;
+
+	public boolean isInput(Layer layer) {
+		return this.inputLayer == layer;
 	}
-	
-	public boolean isOutput(Layer layer)
-	{
-		return this.outputLayer==layer;
+
+	public boolean isOutput(Layer layer) {
+		return this.outputLayer == layer;
 	}
-	
-	public boolean isHidden(Layer layer)
-	{
+
+	public boolean isHidden(Layer layer) {
 		return !isInput(layer) && !isOutput(layer);
 	}
-	
+
 	/**
 	 * Prune one of the neurons from this layer. Remove all entries in this
 	 * weight matrix and other layers.
@@ -409,73 +395,62 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public void prune(final Layer targetLayer, final int neuron) {
 		// delete a row on this matrix
-		for(Synapse synapse:targetLayer.getNext())
-		{
-			synapse.setMatrix(MatrixMath.deleteRow(synapse.getMatrix(), neuron));
+		for (Synapse synapse : targetLayer.getNext()) {
+			synapse
+					.setMatrix(MatrixMath
+							.deleteRow(synapse.getMatrix(), neuron));
 		}
-		
+
 		// delete a column on the previous
 		final Collection<Layer> previous = this.getPreviousLayers(targetLayer);
-		
-		for(Layer prevLayer: previous )
-		{
-		if (previous != null) {
-			for(Synapse synapse:prevLayer.getNext()) {
-				synapse.setMatrix(MatrixMath.deleteCol(synapse.getMatrix(),
-						neuron));
+
+		for (Layer prevLayer : previous) {
+			if (previous != null) {
+				for (Synapse synapse : prevLayer.getNext()) {
+					synapse.setMatrix(MatrixMath.deleteCol(synapse.getMatrix(),
+							neuron));
+				}
 			}
 		}
-		}
-		
-		targetLayer.setNeuronCount(targetLayer.getNeuronCount()-1);
+
+		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
 
 	}
-	
-	public Collection<Synapse> getSynapses()
-	{
+
+	public Collection<Synapse> getSynapses() {
 		Set<Synapse> result = new HashSet<Synapse>();
-		for(Layer layer: getLayers() )
-		{
-			for(Synapse synapse:layer.getNext() )
-			{
+		for (Layer layer : getLayers()) {
+			for (Synapse synapse : layer.getNext()) {
 				result.add(synapse);
 			}
 		}
 		return result;
 	}
-	
-	public Collection<Layer> getLayers()
-	{
+
+	public Collection<Layer> getLayers() {
 		Set<Layer> result = new HashSet<Layer>();
-		getLayers(result, this.getInputLayer());		
+		getLayers(result, this.getInputLayer());
 		return result;
 	}
-	
-	private void getLayers(Set<Layer> result, Layer layer)
-	{
+
+	private void getLayers(Set<Layer> result, Layer layer) {
 		result.add(layer);
-		
-		for(Synapse synapse: layer.getNext())
-		{
+
+		for (Synapse synapse : layer.getNext()) {
 			Layer nextLayer = synapse.getToLayer();
-			
-			if( !result.contains(nextLayer) )
-			{
-				getLayers(result,nextLayer);
+
+			if (!result.contains(nextLayer)) {
+				getLayers(result, nextLayer);
 			}
 		}
 	}
-	
-	public Collection<Layer> getPreviousLayers(Layer targetLayer)
-	{
+
+	public Collection<Layer> getPreviousLayers(Layer targetLayer) {
 		Collection<Layer> result = new HashSet<Layer>();
-		for(Layer layer: this.getLayers())
-		{
-			for(Synapse synapse: layer.getNext() )
-			{
-				if( synapse.getToLayer()==targetLayer )
-				{
-					result.add(synapse.getFromLayer() );
+		for (Layer layer : this.getLayers()) {
+			for (Synapse synapse : layer.getNext()) {
+				if (synapse.getToLayer() == targetLayer) {
+					result.add(synapse.getFromLayer());
 				}
 			}
 		}

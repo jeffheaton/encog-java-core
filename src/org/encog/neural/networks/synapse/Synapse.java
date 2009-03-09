@@ -71,4 +71,6 @@ public interface Synapse {
 	
 	NeuralData compute(NeuralData input);
 	
+	boolean isSelfConnected();
+	
 }
