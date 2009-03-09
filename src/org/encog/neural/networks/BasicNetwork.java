@@ -30,19 +30,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.encog.matrix.MatrixCODEC;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.util.ErrorCalculation;
@@ -171,31 +168,27 @@ public class BasicNetwork implements Serializable, Network,
 	 * @return The results from the output neurons.
 	 */
 	public NeuralData compute(final NeuralData input) {
-		Map<Layer,NeuralData> result = new HashMap<Layer,NeuralData>();
+		NeuralOutputHolder holder = new NeuralOutputHolder();
 		checkInputSize(input);
-		compute(result,this.inputLayer,input);
-		return result.get(this.outputLayer);
+		compute(holder,this.inputLayer,input);
+		return holder.getOutput();
 		
 	}
 	
-	public void compute(Map<Layer,NeuralData> result, Layer layer, NeuralData input)
+	public void compute(NeuralOutputHolder holder, Layer layer, NeuralData input)
 	{
-		NeuralData currentPattern = input;
-		
-		if( layer.getNextLayer()==null )
+		for(Synapse synapse: layer.getNext() )
 		{
-			//result.put(layer, currentPattern);
-			return;
+			NeuralData pattern = synapse.compute(input);
+			layer.getActivationFunction().activationFunction(pattern.getData());
+			holder.getResult().put(synapse, pattern);
+			compute(holder,synapse.getToLayer(),pattern);
+			
+			// Is this the output from the entire network?
+			if( synapse.getToLayer()==this.outputLayer)
+				holder.setOutput(pattern);
 		}
-		else
-		{
-			currentPattern = layer.compute(currentPattern);
-			for(Layer nextLayer: layer.getNextLayers() )
-			{
-				result.put(nextLayer, currentPattern);
-				compute(result, nextLayer,currentPattern);
-			}
-		}
+
 	}
 
 	/**

@@ -26,6 +26,7 @@
 package org.encog.neural.networks.layers;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.activation.ActivationFunction;
@@ -61,6 +62,8 @@ public interface Layer {
 	Synapse getNextTemp();
 	
 	Collection<Layer> getNextLayers();
+	
+	public List<Synapse> getNext();
 	
 	Layer getNextLayer();
 	

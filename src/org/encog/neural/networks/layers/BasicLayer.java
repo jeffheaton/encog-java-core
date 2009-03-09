@@ -259,4 +259,10 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		return result;
 	}
 
+	public List<Synapse> getNext() {
+		return next;
+	}
+	
+	
+
 }
