@@ -34,6 +34,7 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.Train;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
@@ -87,6 +88,8 @@ public class Backpropagation implements Train {
 	 */
 	private final Map<Synapse, PropagationSynapse> synapseMap = 
 		new HashMap<Synapse, PropagationSynapse>();
+	
+	private final NeuralOutputHolder outputHolder = new NeuralOutputHolder();
 
 	/**
 	 * The training data to use.
@@ -144,7 +147,9 @@ public class Backpropagation implements Train {
 		{			
 			
 				if( !network.isOutput(current)) {
-					backDeltas = getPropagationSynapse(current.getNextTemp()).calcError(current.getActivationFunction(),backDeltas, network.isHidden(current));
+					
+					NeuralData actual = this.outputHolder.getResult().get(current.getNextTemp());
+					backDeltas = getPropagationSynapse(current.getNextTemp()).calcError(current.getActivationFunction(),actual,backDeltas, network.isHidden(current));
 				}
 			
 			
@@ -202,22 +207,7 @@ public class Backpropagation implements Train {
 	
 	private void backpropCompute(NeuralData input)
 	{
-		this.network.checkInputSize(input);
-
-		NeuralData currentPattern = input;
-		Layer current = this.network.getInputLayer();
-		while(current!=null)
-		{
-			if( !network.isOutput(current) )
-			{
-				PropagationSynapse bLayer = this.getPropagationSynapse(current.getNextTemp());
-				bLayer.setLastOutput(currentPattern);
-			}
-			currentPattern = current.compute(currentPattern);			
-			current = current.getNextLayer();			
-		}
-		
-		this.fire = currentPattern;
+		this.fire = network.compute(input,this.outputHolder);
 	}
 
 	/**

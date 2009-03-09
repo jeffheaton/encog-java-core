@@ -158,7 +158,10 @@ public class BasicNetwork implements Serializable, Network,
 							+ this.inputLayer.getNeuronCount());
 		}		
 	}
-	
+	public NeuralData compute(final NeuralData input)
+	{
+		return compute(input,null);
+	}
 
 	/**
 	 * Compute the output for a given input to the neural network.
@@ -167,21 +170,27 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The input provide to the neural network.
 	 * @return The results from the output neurons.
 	 */
-	public NeuralData compute(final NeuralData input) {
-		NeuralOutputHolder holder = new NeuralOutputHolder();
+	public NeuralData compute(final NeuralData input, NeuralOutputHolder useHolder) {
+		NeuralOutputHolder holder;
+		
+		if( useHolder==null )
+			holder = new NeuralOutputHolder();
+		else
+			holder = useHolder;
+		
 		checkInputSize(input);
 		compute(holder,this.inputLayer,input);
 		return holder.getOutput();
 		
 	}
 	
-	public void compute(NeuralOutputHolder holder, Layer layer, NeuralData input)
+	private void compute(NeuralOutputHolder holder, Layer layer, NeuralData input)
 	{
 		for(Synapse synapse: layer.getNext() )
 		{
 			NeuralData pattern = synapse.compute(input);
 			layer.getActivationFunction().activationFunction(pattern.getData());
-			holder.getResult().put(synapse, pattern);
+			holder.getResult().put(synapse, input);
 			compute(holder,synapse.getToLayer(),pattern);
 			
 			// Is this the output from the entire network?

@@ -63,7 +63,6 @@ public class PropagationSynapse {
 	 */
 	private final Synapse synapse;
 	
-	private NeuralData lastOutput;
 
 	/**
 	 * Construct a BackpropagationLayer object that corresponds to a specific
@@ -114,7 +113,7 @@ public class PropagationSynapse {
 	/**
 	 * Calculate the current error.
 	 */
-	public double []calcError(ActivationFunction activation, double[] lastDeltas, boolean hidden) {
+	public double []calcError(ActivationFunction activation, NeuralData lastOutput, double[] lastDeltas, boolean hidden) {
 		
 		double[] thisDeltas = new double[synapse.getFromNeuronCount()];
 		double[] error = new double[synapse.getFromNeuronCount()];
@@ -122,7 +121,7 @@ public class PropagationSynapse {
 		for (int i = 0; i < synapse.getToNeuronCount(); i++) {
 			for (int j = 0; j < synapse.getFromNeuronCount(); j++) {
 				accumulateMatrixDelta(j, i, lastDeltas[i]
-						* this.lastOutput.getData(j));
+						* lastOutput.getData(j));
 				
 				error[j]+=(synapse.getMatrix().get(j, i)
 						* lastDeltas[i]);
@@ -131,7 +130,7 @@ public class PropagationSynapse {
 		}
 
 		if (hidden) {
-			NeuralData actual = this.lastOutput;
+			NeuralData actual = lastOutput;
 			// hidden layer deltas
 			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
 				thisDeltas[i] = actual.getData(i);
@@ -171,11 +170,4 @@ public class PropagationSynapse {
 			this.accMatrixDelta.clear();*/
 	}
 
-	public NeuralData getLastOutput() {
-		return lastOutput;
-	}
-
-	public void setLastOutput(NeuralData lastOutput) {
-		this.lastOutput = lastOutput;
-	}
 }
