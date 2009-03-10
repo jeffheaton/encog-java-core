@@ -26,7 +26,7 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.Train;
+import org.encog.neural.networks.training.Train;
 import org.encog.solve.genetic.GeneticAlgorithm;
 
 

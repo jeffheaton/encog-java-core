@@ -456,4 +456,16 @@ public class BasicNetwork implements Serializable, Network,
 		}
 		return result;
 	}
+
+	public Collection<Synapse> getPreviousSynapses(Layer targetLayer) {
+		Collection<Synapse> result = new HashSet<Synapse>();
+		for (Layer layer : this.getLayers()) {
+			for (Synapse synapse : layer.getNext()) {
+				if (synapse.getToLayer() == targetLayer) {
+					result.add(synapse);
+				}
+			}
+		}
+		return result;
+	}
 }

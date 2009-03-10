@@ -35,9 +35,9 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
-import org.encog.neural.networks.Train;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.training.Train;
 
 /**
  * Backpropagation: This class implements a backpropagation training algorithm

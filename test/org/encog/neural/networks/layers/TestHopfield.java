@@ -4,7 +4,7 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.Train;
+import org.encog.neural.networks.training.Train;
 
 import junit.framework.TestCase;
 

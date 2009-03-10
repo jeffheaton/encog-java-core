@@ -9,10 +9,10 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Network;
-import org.encog.neural.networks.Train;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.training.Train;
 
 public class TrainHopfield implements Train {
 
