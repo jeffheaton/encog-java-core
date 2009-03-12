@@ -19,8 +19,7 @@ public class GaussianFunction {
 	}
 	
 	public double gaussianDerivative(double x) {
-		// TODO Auto-generated method stub
-		return 0;
+		return ((-x)*Math.pow(this.width, -2))+(this.center*Math.pow(this.width, -2));
 	}
 
 	public double getCenter() {
