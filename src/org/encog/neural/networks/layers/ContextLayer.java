@@ -1,6 +1,7 @@
 package org.encog.neural.networks.layers;
 
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 
@@ -13,6 +14,10 @@ public class ContextLayer extends BasicLayer {
 		context = new double[neuronCount];
 	}
 	
+	public ContextLayer(int neuronCount) {
+		this(new ActivationTANH(), neuronCount);
+	}
+
 	public void compute(final NeuralData pattern)
 	{
 		NeuralData result = new BasicNeuralData(getNeuronCount());
