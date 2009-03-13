@@ -143,22 +143,16 @@ public class Backpropagation implements Train {
 		backwardPass(current,backDeltas);	
 	}
 	
-	private void backwardPass(Layer current, double[] backDeltas)
+	private void backwardPass(final Layer current, final double[] backDeltas)
 	{	
-		for(Layer prevLayer: network.getPreviousLayers(current) )
+		for(Synapse synapse : network.getPreviousSynapses(current))
 		{
-			for(Synapse synapse: prevLayer.getNext())
-			{
-				if( synapse.getToLayer() == current )
-				{
-					if( !network.isOutput(synapse.getFromLayer())) {
-					
-						NeuralData actual = this.outputHolder.getResult().get(synapse);
-						backDeltas = getPropagationSynapse(synapse).calcError(synapse.getFromLayer().getActivationFunction(),actual,backDeltas, network.isHidden(synapse.getFromLayer()));
-					}
-				
-					backwardPass(synapse.getFromLayer(), backDeltas);
-				}
+			double[] nextDeltas = backDeltas;
+			if( !network.isOutput(synapse.getFromLayer())) {
+			
+				NeuralData actual = this.outputHolder.getResult().get(synapse);
+				nextDeltas = getPropagationSynapse(synapse).calcError(synapse.getFromLayer().getActivationFunction(),actual,backDeltas, network.isHidden(synapse.getFromLayer()));
+				backwardPass(synapse.getFromLayer(), nextDeltas);
 			}
 		}
 	}
