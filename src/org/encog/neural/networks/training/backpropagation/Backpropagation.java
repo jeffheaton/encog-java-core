@@ -202,6 +202,10 @@ public class Backpropagation implements Train {
 
 	/**
 	 * Perform one iteration of training.
+	 * 
+	 * Note: if you get a StackOverflowError while training, then you have endless
+	 * recurrant loops.  Try inserting no trainable synapses on one side of the
+	 * loop.
 	 */
 	public void iteration() {
 
