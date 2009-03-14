@@ -73,4 +73,6 @@ public interface Synapse {
 	
 	boolean isSelfConnected();
 	
+	public SynapseType getType();
+	
 }

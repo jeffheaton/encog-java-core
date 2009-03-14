@@ -42,4 +42,9 @@ public class WeightlessSynapse extends BasicSynapse {
 		throw new NeuralNetworkError("Can't set the matrix for a WeightlessSynapse");
 	}
 
+	@Override
+	public SynapseType getType() {
+		return SynapseType.Weighted;
+	}
+
 }

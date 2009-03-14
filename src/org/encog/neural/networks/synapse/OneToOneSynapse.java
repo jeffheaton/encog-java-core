@@ -33,4 +33,9 @@ public class OneToOneSynapse extends BasicSynapse {
 		throw new NeuralNetworkError("Can't set the matrix for a OneToOneSynapse");
 	}
 
+	@Override
+	public SynapseType getType() {
+		return SynapseType.OneToOne;
+	}
+
 }

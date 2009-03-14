@@ -32,6 +32,7 @@ import org.encog.matrix.Matrix;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.synapse.SynapseType;
 
 /**
  * This interface defines all necessary methods for a neural network layer.
@@ -66,4 +67,5 @@ public interface Layer {
 	void setNeuronCount(int neuronCount);
 	
 	void addNext(Layer next);
+	void addNext(Layer next, SynapseType type);
 }
