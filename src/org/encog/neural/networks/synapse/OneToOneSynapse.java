@@ -37,5 +37,10 @@ public class OneToOneSynapse extends BasicSynapse {
 	public SynapseType getType() {
 		return SynapseType.OneToOne;
 	}
+	
+	public boolean isTeachable()
+	{
+		return false;
+	}
 
 }

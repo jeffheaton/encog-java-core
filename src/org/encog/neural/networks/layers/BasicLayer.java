@@ -31,13 +31,16 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.networks.synapse.OneToOneSynapse;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.neural.networks.synapse.WeightlessSynapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 
@@ -148,12 +151,11 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	public void reset() {
 
-		if (this.next != null) {
+
 			for(Synapse synapse :this.next )
 			{
-				synapse.getMatrix().ramdomize(-1, 1);
+				synapse.randomize();
 			}
-		}
 
 	}
 
@@ -172,12 +174,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	public void setName(final String name) {
 		this.name = name;
 	}
-
-	public void addNext(Layer next) {
-		Synapse synapse = new WeightedSynapse(this,next);
-		this.next.add(synapse);		
-	}
-
 
 	
 	/**
@@ -232,11 +228,39 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		}
 		return false;
 	}
+	
+	public void addNext(Layer next) {
+		addNext(next, SynapseType.Weighted);
+	}
 
 	@Override
 	public void addNext(Layer next, SynapseType type) {
-		// TODO Auto-generated method stub
+		Synapse synapse = null;
 		
+		switch(type)
+		{
+			case OneToOne:
+				synapse = new OneToOneSynapse(this,next);
+				break;
+			case Weighted:
+				synapse = new WeightedSynapse(this,next);
+				break;
+			case Weightless:
+				synapse = new WeightlessSynapse(this,next);
+				break;
+		}
+		
+		if( synapse == null )
+		{
+			throw new NeuralNetworkError("Unknown synapse type.");
+		}
+		else
+			this.next.add(synapse);
+	}
+
+	@Override
+	public void recur(NeuralData input) {
+
 	}
 
 }

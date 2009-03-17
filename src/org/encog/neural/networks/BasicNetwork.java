@@ -40,6 +40,7 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.util.ErrorCalculation;
@@ -85,6 +86,16 @@ public class BasicNetwork implements Serializable, Network,
 	public BasicNetwork() {
 	}
 
+	
+	public void addLayer(final Layer layer, final SynapseType type) {
+		if (this.inputLayer == null)
+			this.outputLayer = this.inputLayer = layer;
+		else {
+			this.outputLayer.addNext(layer, type);
+			this.outputLayer = layer;
+		}
+	}
+	
 	/**
 	 * Add a layer to the neural network. The first layer added is the input
 	 * layer, the last layer added is the output layer.
@@ -93,14 +104,9 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The layer to be added.
 	 */
 	public void addLayer(final Layer layer) {
-		if (this.inputLayer == null)
-			this.outputLayer = this.inputLayer = layer;
-		else {
-			this.outputLayer.addNext(layer);
-			this.outputLayer = layer;
-		}
-
+		addLayer(layer,SynapseType.Weighted);
 	}
+	
 
 	/**
 	 * Calculate the error for this neural network. The error is calculated
@@ -143,6 +149,10 @@ public class BasicNetwork implements Serializable, Network,
 	public Object clone() {
 		return null;
 	}
+	
+	public Object cloneStructure() {
+		return null;
+	}
 
 	public void checkInputSize(final NeuralData input) {
 		if (input.size() != this.inputLayer.getNeuronCount()) {
@@ -174,25 +184,38 @@ public class BasicNetwork implements Serializable, Network,
 			holder = useHolder;
 
 		checkInputSize(input);
-		compute(holder, this.inputLayer, input);
+		compute(holder, this.inputLayer, input, null);
 		return holder.getOutput();
 
 	}
 
 	private void compute(NeuralOutputHolder holder, Layer layer,
-			NeuralData input) {
+			NeuralData input, Synapse source) {
+		
+		handleRecurrentInput(layer, input, source);
+		
 		for (Synapse synapse : layer.getNext()) {
 			if (!holder.getResult().containsKey(synapse)) 
 			{
 				NeuralData pattern = synapse.compute(input);
-				layer.getActivationFunction().activationFunction(
-						pattern.getData());
+				layer.compute(pattern);
 				holder.getResult().put(synapse, input);
-				compute(holder, synapse.getToLayer(), pattern);
+				compute(holder, synapse.getToLayer(), pattern, synapse);
 
 				// Is this the output from the entire network?
 				if (synapse.getToLayer() == this.outputLayer)
 					holder.setOutput(pattern);
+			}
+		}
+	}
+	
+	private void handleRecurrentInput(final Layer layer, final NeuralData input, final Synapse source)
+	{
+		for(Synapse synapse: this.getPreviousSynapses(layer) )
+		{
+			if(synapse!=source)
+			{
+				synapse.getFromLayer().recur(input);
 			}
 		}
 	}

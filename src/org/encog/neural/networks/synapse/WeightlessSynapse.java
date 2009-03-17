@@ -46,5 +46,10 @@ public class WeightlessSynapse extends BasicSynapse {
 	public SynapseType getType() {
 		return SynapseType.Weighted;
 	}
+	
+	public boolean isTeachable()
+	{
+		return false;
+	}
 
 }

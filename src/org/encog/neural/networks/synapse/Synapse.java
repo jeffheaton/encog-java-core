@@ -75,4 +75,8 @@ public interface Synapse {
 	
 	public SynapseType getType();
 	
+	public void randomize();
+	
+	public boolean isTeachable();
+	
 }

@@ -68,4 +68,5 @@ public interface Layer {
 	
 	void addNext(Layer next);
 	void addNext(Layer next, SynapseType type);
+	void recur(NeuralData input);
 }

@@ -38,6 +38,7 @@ import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.Train;
+import org.encog.util.ErrorCalculation;
 
 /**
  * Backpropagation: This class implements a backpropagation training algorithm
@@ -117,8 +118,11 @@ public class Backpropagation implements Train {
 
 		for(Synapse synapse: network.getSynapses() )
 		{
+			if( synapse.isTeachable() )
+			{
 			PropagationSynapse ps = new PropagationSynapse(synapse); 
 			this.synapseMap.put(synapse, ps);
+			}
 		}
 		
 	}
@@ -148,7 +152,7 @@ public class Backpropagation implements Train {
 		for(Synapse synapse : network.getPreviousSynapses(current))
 		{
 			double[] nextDeltas = backDeltas;
-			if( !network.isOutput(synapse.getFromLayer())) {
+			if( synapse.isTeachable() && !network.isOutput(synapse.getFromLayer())) {
 			
 				NeuralData actual = this.outputHolder.getResult().get(synapse);
 				nextDeltas = getPropagationSynapse(synapse).calcError(synapse.getFromLayer().getActivationFunction(),actual,backDeltas, network.isHidden(synapse.getFromLayer()));
@@ -194,10 +198,11 @@ public class Backpropagation implements Train {
 		return this.network;
 	}
 	
-	private void forwardPass(NeuralData input)
+	private NeuralData forwardPass(NeuralData input)
 	{
 		this.outputHolder.getResult().clear();
 		this.fire = network.compute(input,this.outputHolder);
+		return this.fire;
 	}
 
 	/**
@@ -208,14 +213,16 @@ public class Backpropagation implements Train {
 	 * loop.
 	 */
 	public void iteration() {
+		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		for (final NeuralDataPair pair : this.training) {
-			forwardPass(pair.getInput());
+			NeuralData actual = forwardPass(pair.getInput());
+			errorCalculation.updateError(actual, pair.getIdeal());
 			backwardPass(pair.getIdeal());
 		}		
 		learn();
 
-		this.error = this.network.calculateError(this.training);
+		this.error = errorCalculation.calculateRMS();
 	}
 
 	/**

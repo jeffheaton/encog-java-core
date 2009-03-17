@@ -20,14 +20,24 @@ public class ContextLayer extends BasicLayer {
 
 	public void compute(final NeuralData pattern)
 	{
-		NeuralData result = new BasicNeuralData(getNeuronCount());
+		for(int i = 0; i<pattern.size();i++)
+		{
+			this.context[i] = pattern.getData(i);
+		}
 		
-		//NeuralData result = getNext().compute(pattern);
-		
+				
 		// apply the activation function
-		this.getActivationFunction().activationFunction(result.getData());
-
-
+		this.getActivationFunction().activationFunction(pattern.getData());
 	}
+	
+	public void recur(NeuralData input) {
+		for(int i=0;i<input.size();i++)
+		{
+			input.setData(i, input.getData(i)+this.context[i]);
+		}
+	}
+	
+	
+	
 
 }

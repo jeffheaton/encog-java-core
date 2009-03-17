@@ -26,9 +26,9 @@
 
 package org.encog.neural.networks.training.anneal;
 
-import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.NetworkCODEC;
 import org.encog.neural.networks.training.Train;
 import org.encog.solve.anneal.SimulatedAnnealing;
 
@@ -96,7 +96,7 @@ extends SimulatedAnnealing<Double> implements Train {
 	 */
 	@Override
 	public Double[] getArray() {
-		return MatrixCODEC.networkToArray(this.network);
+		return NetworkCODEC.networkToArray(this.network);
 	}
 
 	/**
@@ -122,7 +122,7 @@ extends SimulatedAnnealing<Double> implements Train {
 	 */
 	@Override
 	public void putArray(final Double[] array) {
-		MatrixCODEC.arrayToNetwork(array, this.network);
+		NetworkCODEC.arrayToNetwork(array, this.network);
 	}
 
 	/**
@@ -133,7 +133,7 @@ extends SimulatedAnnealing<Double> implements Train {
 	 */
 	@Override
 	public void randomize() {
-		final Double[] array = MatrixCODEC.networkToArray(this.network);
+		final Double[] array = NetworkCODEC.networkToArray(this.network);
 
 		for (int i = 0; i < array.length; i++) {
 			double add = NeuralSimulatedAnnealing.CUT - Math.random();
@@ -142,7 +142,7 @@ extends SimulatedAnnealing<Double> implements Train {
 			array[i] = array[i] + add;
 		}
 
-		MatrixCODEC.arrayToNetwork(array, this.network);
+		NetworkCODEC.arrayToNetwork(array, this.network);
 	}
 
 }

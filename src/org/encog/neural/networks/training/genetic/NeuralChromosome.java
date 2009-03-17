@@ -27,8 +27,8 @@ package org.encog.neural.networks.training.genetic;
 
 import java.util.Arrays;
 
-import org.encog.matrix.MatrixCODEC;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.NetworkCODEC;
 import org.encog.solve.genetic.Chromosome;
 
 /**
@@ -120,14 +120,14 @@ public abstract class NeuralChromosome
 	 * Copy the network to the genes.
 	 */
 	public void updateGenes()  {
-		this.setGenes(MatrixCODEC.networkToArray(this.network));
+		this.setGenes(NetworkCODEC.networkToArray(this.network));
 	}
 
 	/**
 	 * Copy the genes to the network.
 	 */
 	public void updateNetwork() {
-		MatrixCODEC.arrayToNetwork(getGenes(), this.network);
+		NetworkCODEC.arrayToNetwork(getGenes(), this.network);
 	}
 
 }
