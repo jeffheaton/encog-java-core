@@ -15,6 +15,10 @@ public class WeightlessSynapse extends BasicSynapse {
 		this.setToLayer(toLayer);		
 	}
 	
+	public WeightlessSynapse() {
+		// TODO Auto-generated constructor stub
+	}
+
 	public NeuralData compute(NeuralData input) {
 		NeuralData result = new BasicNeuralData(getToNeuronCount());
 		// just sum the input
@@ -50,6 +54,12 @@ public class WeightlessSynapse extends BasicSynapse {
 	public boolean isTeachable()
 	{
 		return false;
+	}
+	
+	public Object clone() {
+		WeightlessSynapse result = new WeightlessSynapse();
+		result.setMatrix(this.getMatrix().clone());
+		return result;
 	}
 
 }

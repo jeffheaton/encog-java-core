@@ -22,6 +22,10 @@ public class WeightedSynapse extends BasicSynapse {
 		this.matrix = new Matrix(getFromNeuronCount() + 1, getToNeuronCount());		
 	}
 	
+	public WeightedSynapse() {
+
+	}
+
 	/**
 	 * Get the weight and threshold matrix.
 	 * 
@@ -94,6 +98,12 @@ public class WeightedSynapse extends BasicSynapse {
 	public boolean isTeachable()
 	{
 		return true;
+	}
+	
+	public Object clone() {
+		WeightedSynapse result = new WeightedSynapse();
+		result.setMatrix(this.getMatrix().clone());
+		return result;
 	}
 
 }

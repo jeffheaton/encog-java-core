@@ -109,9 +109,9 @@ public ParseTemplate getTemplate() {
 }
 
 public void load()  {
-	EncogPersistedCollection encog = new EncogPersistedCollection();
-	encog.loadResource(Parse.RESOURCE_NAME);
-	this.template = (ParseTemplate) encog.find(Parse.RESOURCE_ITEM_NAME);
+	//EncogPersistedCollection encog = new EncogPersistedCollection();
+	//encog.loadResource(Parse.RESOURCE_NAME);
+	//this.template = (ParseTemplate) encog.find(Parse.RESOURCE_ITEM_NAME);
 }
 
 

@@ -27,6 +27,7 @@ package org.encog.matrix;
 
 import java.io.Serializable;
 
+import org.encog.Encog;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 
@@ -42,10 +43,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	private static final long serialVersionUID = -7977897210426471675L;
 
-	/**
-	 * The default level of precision for matrix compares.
-	 */
-	public static final int DEFAULT_PRECISION = 10;
 
 	/**
 	 * Turn an array of doubles into a column matrix.
@@ -190,7 +187,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @return True if the two matrixes are equal.
 	 */
 	public boolean equals(final Matrix matrix) {
-		return equals(matrix, Matrix.DEFAULT_PRECISION);
+		return equals(matrix, Encog.DEFAULT_PRECISION);
 	}
 
 	/**
@@ -214,7 +211,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 					+ " decimal places is not supported.");
 		}
 
-		final int actualPrecision = (int) Math.pow(Matrix.DEFAULT_PRECISION,
+		final int actualPrecision = (int) Math.pow(Encog.DEFAULT_PRECISION,
 				precision);
 
 		for (int r = 0; r < getRows(); r++) {

@@ -27,6 +27,7 @@ package org.encog.neural.persist;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.encog.util.xml.XMLWrite;
 import org.w3c.dom.Element;
 
 /**
@@ -48,7 +49,7 @@ public interface Persistor {
 	/**
 	 * Save the specified object.
 	 * @param object The object to save. 
-	 * @param hd The XML object.
+	 * @param out The XML object.
 	 */
-	void save(EncogPersistedObject object, TransformerHandler hd);
+	void save(EncogPersistedObject object, XMLWrite out);
 }

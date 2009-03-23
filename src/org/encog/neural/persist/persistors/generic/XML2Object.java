@@ -34,7 +34,7 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.util.XMLUtil;
+import org.encog.util.xml.XMLUtil;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 

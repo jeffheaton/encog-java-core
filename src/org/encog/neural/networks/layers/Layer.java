@@ -38,7 +38,7 @@ import org.encog.neural.networks.synapse.SynapseType;
  * This interface defines all necessary methods for a neural network layer.
  * @author jheaton
  */
-public interface Layer {
+public interface Layer extends Cloneable {
 	
 	/**
 	 * Compute the output for this layer.
@@ -69,4 +69,5 @@ public interface Layer {
 	void addNext(Layer next);
 	void addNext(Layer next, SynapseType type);
 	void recur(NeuralData input);
+	Object clone();
 }

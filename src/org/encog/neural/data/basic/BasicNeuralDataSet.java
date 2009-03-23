@@ -35,6 +35,7 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor;
 
 /**
  * Basic implementation of the NeuralDataSet class. This class simply stores the
@@ -196,7 +197,7 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	 * @return A persistor for this object.
 	 */
 	public Persistor createPersistor() {
-		return null;// new BasicNeuralDataSetPersistor();
+		return new BasicNeuralDataSetPersistor();
 	}
 
 	/**

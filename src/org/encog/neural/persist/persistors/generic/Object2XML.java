@@ -41,8 +41,8 @@ public class Object2XML {
 	
 	public void save(EncogPersistedObject object, TransformerHandler hd) {
 
-		try {
-			final AttributesImpl atts = EncogPersistedCollection
+		//try {
+			/*final AttributesImpl atts = EncogPersistedCollection
 					.createAttributes(object);
 			hd.startElement("", "", object.getClass().getSimpleName(), atts);
 			atts.clear();
@@ -77,15 +77,16 @@ public class Object2XML {
 			throw new EncogError(e);
 		} catch (IllegalAccessException e) {
 			throw new EncogError(e);
-		}
+		}*/
+
 	}
 
 	private void saveCollection(TransformerHandler hd, Collection<?> value) {
-
+/*
 			for (Object obj : value) {
 				if (obj instanceof String) {
 					EncogPersistedCollection.addProperty(hd, "S", obj.toString());
 				}
-			}
+			}*/
 	}
 }

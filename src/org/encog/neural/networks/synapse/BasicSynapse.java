@@ -41,5 +41,7 @@ public abstract class BasicSynapse implements Synapse {
 	public void randomize()
 	{
 	}
+	
+	abstract public Object clone();
 
 }

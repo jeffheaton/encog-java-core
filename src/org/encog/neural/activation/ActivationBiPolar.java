@@ -23,4 +23,8 @@ public class ActivationBiPolar implements ActivationFunction {
 		
 	}
 
+	public Object clone()
+	{
+		return new ActivationBiPolar();
+	}
 }

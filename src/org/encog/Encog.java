@@ -37,6 +37,8 @@ import org.encog.util.orm.ORMSession;
  * @author jheaton
  */
 public final class Encog {
+	
+	public static final int DEFAULT_PRECISION = 10;
 
 	/**
 	 * The version of the Encog JAR we are working with. Given in the form

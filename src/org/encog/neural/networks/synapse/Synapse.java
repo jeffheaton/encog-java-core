@@ -30,7 +30,7 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
 
-public interface Synapse {
+public interface Synapse extends Cloneable {
 	
 	
 	/**
@@ -66,17 +66,21 @@ public interface Synapse {
 	public Layer getFromLayer();
 
 	public void setFromLayer(Layer fromLayer);
+	
+	public void setToLayer(Layer toLayer);
 
 	public Layer getToLayer();
 	
-	NeuralData compute(NeuralData input);
+	public NeuralData compute(NeuralData input);
 	
-	boolean isSelfConnected();
+	public boolean isSelfConnected();
 	
 	public SynapseType getType();
 	
 	public void randomize();
 	
 	public boolean isTeachable();
+	
+	public Object clone();
 	
 }

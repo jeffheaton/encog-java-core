@@ -17,6 +17,10 @@ public class OneToOneSynapse extends BasicSynapse {
 		this.setToLayer(toLayer);		
 	}
 	
+	public OneToOneSynapse() {
+
+	}
+
 	public NeuralData compute(NeuralData input) {
 		return input;
 	}
@@ -41,6 +45,13 @@ public class OneToOneSynapse extends BasicSynapse {
 	public boolean isTeachable()
 	{
 		return false;
+	}
+
+	@Override
+	public Object clone() {
+		OneToOneSynapse result = new OneToOneSynapse();
+		result.setMatrix(this.getMatrix().clone());
+		return result;
 	}
 
 }

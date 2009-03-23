@@ -27,5 +27,12 @@ public class ActivationGaussian implements ActivationFunction {
 		}
 		
 	}
+	
+	public Object clone()
+	{
+		return new ActivationGaussian(this.gausian.getCenter(),
+				this.gausian.getPeak(),
+				this.gausian.getWidth());
+	}
 
 }

@@ -30,9 +30,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.Encog;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
@@ -147,11 +149,37 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	@Override
 	public Object clone() {
-		return null;
+		BasicNetwork result = new BasicNetwork();
+		Layer input = cloneLayer(this.inputLayer, result);
+		result.setInputLayer(input);
+		return result;
 	}
 	
-	public Object cloneStructure() {
-		return null;
+	public void setInputLayer(Layer input) {
+		this.inputLayer = input;
+	}
+
+
+	private Layer cloneLayer(Layer layer, BasicNetwork network)
+	{
+		Layer newLayer = (Layer)layer.clone();
+		
+		if( layer == getOutputLayer() )
+			network.setOutputLayer(newLayer);
+		
+		for(Synapse synapse: layer.getNext())
+		{
+			Synapse newSynapse = (Synapse)synapse.clone();
+			newSynapse.setFromLayer(layer);
+			if(synapse.getToLayer()!=null)
+			{
+				Layer to = cloneLayer(synapse.getToLayer(),network);
+				newSynapse.setToLayer(to);
+			}
+			newLayer.getNext().add(newSynapse);
+		
+		}
+		return newLayer;
 	}
 
 	public void checkInputSize(final NeuralData input) {
@@ -238,27 +266,33 @@ public class BasicNetwork implements Serializable, Network,
 	 * @return True if the two networks are equal.
 	 */
 	public boolean equals(final BasicNetwork other) {
-		/*
-		 * final Iterator<Layer> otherLayers = other.getLayers().iterator();
-		 * 
-		 * for (final Layer layer : getLayers()) { final Layer otherLayer =
-		 * otherLayers.next();
-		 * 
-		 * if (layer.getNeuronCount() != otherLayer.getNeuronCount()) { return
-		 * false; }
-		 *  // make sure they either both have or do not have // a weight
-		 * matrix. if (layer.getSynapse().getMatrix() == null &&
-		 * otherLayer.getSynapse().getMatrix() != null) { return false; }
-		 * 
-		 * if (layer.getSynapse().getMatrix() != null &&
-		 * otherLayer.getSynapse().getMatrix() == null) { return false; }
-		 *  // if they both have a matrix, then compare the matrices if
-		 * (layer.getSynapse().getMatrix() != null &&
-		 * otherLayer.getSynapse().getMatrix() != null) { if
-		 * (!layer.getSynapse().getMatrix().equals(otherLayer.getSynapse().getMatrix())) {
-		 * return false; } } }
-		 */
-
+		return compareLayer(this.inputLayer,other.getInputLayer(),Encog.DEFAULT_PRECISION);
+	}
+	
+	public boolean equals(final BasicNetwork other, int precision)
+	{
+		return compareLayer(this.inputLayer,other.getInputLayer(),precision);
+	}
+	
+	public boolean compareLayer(Layer layerThis,Layer layerOther,int precision)
+	{
+		Iterator<Synapse> iteratorOther = layerOther.getNext().iterator();
+		
+		for(Synapse synapseThis: layerThis.getNext() )
+		{
+			if( !iteratorOther.hasNext())
+				return false;
+			Synapse synapseOther = iteratorOther.next();
+			if( !synapseThis.getMatrix().equals(synapseOther.getMatrix(),precision))
+				return false;
+			if( synapseThis.getToLayer()!=null )
+			{
+				if( synapseOther.getToLayer() ==null )
+					return false;
+				if(!compareLayer(synapseThis.getToLayer(),synapseOther.getToLayer(),precision))
+					return false;
+			}
+		}
 		return true;
 	}
 
@@ -491,4 +525,24 @@ public class BasicNetwork implements Serializable, Network,
 		}
 		return result;
 	}
+	
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		builder.append("[BasicNetwork: Layers=");
+		int layers = getLayers().size();
+		builder.append(layers);
+		builder.append("]");
+		return builder.toString();
+	}
+
+
+	/**
+	 * @param outputLayer the outputLayer to set
+	 */
+	public void setOutputLayer(Layer outputLayer) {
+		this.outputLayer = outputLayer;
+	}
+	
+	
 }

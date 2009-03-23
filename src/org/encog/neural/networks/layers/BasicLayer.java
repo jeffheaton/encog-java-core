@@ -262,5 +262,14 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	public void recur(NeuralData input) {
 
 	}
+	
+	public Object clone()
+	{
+		BasicLayer result = new BasicLayer(
+				(ActivationFunction)this.activationFunction.clone(),
+				this.getNeuronCount());
+		return result;
+		
+	}
 
 }

@@ -11,7 +11,7 @@ public class TestGenericPersist extends TestCase {
 	
 	private EncogPersistedObject roundTrip(EncogPersistedObject obj) throws IOException, ClassNotFoundException
 	{
-		ByteArrayOutputStream memory = new ByteArrayOutputStream();
+		/*ByteArrayOutputStream memory = new ByteArrayOutputStream();
 		EncogPersistedCollection encog = new EncogPersistedCollection();
 		encog.add(obj);
 		encog.save(memory);
@@ -21,7 +21,8 @@ public class TestGenericPersist extends TestCase {
 		encog2.load(memoryInput);
 		EncogPersistedObject result = encog2.getList().get(0);
 		memoryInput.close();
-		return result;
+		return result;*/
+		return null;
 	}
 	
 	public void testGenericPersist() throws Exception
