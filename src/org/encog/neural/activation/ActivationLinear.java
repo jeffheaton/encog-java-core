@@ -65,4 +65,9 @@ public class ActivationLinear implements ActivationFunction {
 				"Can't use the linear activation function "
 						+ "where a derivative is required.");
 	}
+	
+	public Object clone()
+	{
+		return new ActivationLinear();
+	}
 }

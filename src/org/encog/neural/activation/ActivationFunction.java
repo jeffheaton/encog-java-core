@@ -47,7 +47,7 @@ import org.encog.neural.persist.EncogPersistedObject;
  * Non-derivable activation functions are perfectly valid, they simply cannot be
  * used with every training algorithm. 
  */
-public interface ActivationFunction extends Serializable {
+public interface ActivationFunction extends Serializable, Cloneable {
 
 	/**
 	 * A activation function for a neural network.
@@ -66,5 +66,7 @@ public interface ActivationFunction extends Serializable {
 	 * @return The output.
 	 */
 	void derivativeFunction(double[] d);
+	
+	Object clone();
 
 }

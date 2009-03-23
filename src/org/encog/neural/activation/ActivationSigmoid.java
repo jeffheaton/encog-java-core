@@ -70,4 +70,9 @@ public class ActivationSigmoid implements ActivationFunction {
 		}
 
 	}
+	
+	public Object clone()
+	{
+		return new ActivationSigmoid();
+	}
 }

@@ -21,5 +21,10 @@ public class ActivationSoftMax implements ActivationFunction {
 				"Can't use the softmax activation function "
 						+ "where a derivative is required.");
 	}
+	
+	public Object clone()
+	{
+		return new ActivationSoftMax();
+	}
 
 }

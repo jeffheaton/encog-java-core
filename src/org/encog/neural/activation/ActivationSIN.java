@@ -17,6 +17,10 @@ public class ActivationSIN implements ActivationFunction {
 		{
 			d[i] = Math.cos(d[i]);
 		}
-
+	}
+	
+	public Object clone()
+	{
+		return new ActivationSIN();
 	}
 }

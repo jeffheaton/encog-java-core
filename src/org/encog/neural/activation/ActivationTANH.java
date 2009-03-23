@@ -76,6 +76,12 @@ public class ActivationTANH implements ActivationFunction {
 		{
 			d[i] = 1.0 - Math.pow(activationFunction(d[i]), 2.0);
 		}
-
 	}
+	
+	public Object clone()
+	{
+		return new ActivationTANH();
+	}
+	
+	
 }

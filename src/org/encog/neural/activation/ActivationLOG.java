@@ -25,5 +25,10 @@ public class ActivationLOG implements ActivationFunction {
 		}
 
 	}
+	
+	public Object clone()
+	{
+		return new ActivationLOG();
+	}
 
 }
