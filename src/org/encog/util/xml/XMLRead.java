@@ -32,13 +32,11 @@ public class XMLRead implements Runnable{
 		private Locator locator;
 
 
-		@Override
 		public void setResult(Result arg0) throws IllegalArgumentException {
 			// TODO Auto-generated method stub
 			
 		}		
 
-		@Override
 		public void characters(char[] ch, int start, int length) 
 				throws SAXException {
 			try {
@@ -49,7 +47,7 @@ public class XMLRead implements Runnable{
 			}
 		}
 
-		@Override
+
 		public void endDocument() throws SAXException {
 			
 			try {
@@ -59,7 +57,6 @@ public class XMLRead implements Runnable{
 			}
 		}
 
-		@Override
 		public void endElement(String uri, String localName, String qName) 
 				throws SAXException {
 			
@@ -71,39 +68,33 @@ public class XMLRead implements Runnable{
 			}
 		}
 
-		@Override
 		public void endPrefixMapping(String prefix) throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void ignorableWhitespace(char[] ch, int start, int length) 
 				throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void processingInstruction(String target, String data)
 				throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void setDocumentLocator(Locator locator) {
 			this.locator = locator;
 			
 		}
 
-		@Override
 		public void skippedEntity(String name) throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void startDocument() throws SAXException {
 			try {
 				queue.put(new XMLElement(XMLElementType.documentBegin));
@@ -113,7 +104,6 @@ public class XMLRead implements Runnable{
 			
 		}
 
-		@Override
 		public void startElement(String uri, String localName, String qName, Attributes atts)  throws SAXException {
 			XMLElement element = new XMLElement(XMLElementType.start,localName);
 			for(int i=0;i<atts.getLength();i++)
@@ -129,65 +119,55 @@ public class XMLRead implements Runnable{
 			}
 		}
 
-		@Override
 		public void startPrefixMapping(String prefix, String uri)
 				throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void comment(char[] ch, int start, int length) 
 				throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void endCDATA() throws SAXException {
 
 			
 		}
 
-		@Override
 		public void endDTD() throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void endEntity(String entity) throws SAXException {
 
 			
 		}
 
-		@Override
 		public void startCDATA() throws SAXException {
 
 			
 		}
 
-		@Override
 		public void startDTD(String arg0, String arg1, String arg2)
 				throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void startEntity(String entity) throws SAXException {
 
 			
 		}
 
-		@Override
 		public void notationDecl(String name, String publicId, String systemId) 
 				throws SAXException {
 			// TODO Auto-generated method stub
 			
 		}
 
-		@Override
 		public void unparsedEntityDecl(String name, String publicId, String systemId, String notationName) 
 			throws SAXException {
 			// TODO Auto-generated method stub			
@@ -214,7 +194,7 @@ public class XMLRead implements Runnable{
 			this.transformer = transformer;
 		}
 
-		@Override
+
 		public void setSystemId(String arg0) {
 			// TODO Auto-generated method stub
 			
@@ -269,7 +249,6 @@ public class XMLRead implements Runnable{
 		}
 	}
 
-	@Override
 	public void run() {
 		try {
 			parser.parse(this.inputSource);

@@ -84,7 +84,6 @@ public class WeightedSynapse extends BasicSynapse {
 		return result;
 	}
 
-	@Override
 	public SynapseType getType() {
 		// TODO Auto-generated method stub
 		return SynapseType.Weighted;

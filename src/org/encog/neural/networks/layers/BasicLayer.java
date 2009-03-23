@@ -233,7 +233,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		addNext(next, SynapseType.Weighted);
 	}
 
-	@Override
 	public void addNext(Layer next, SynapseType type) {
 		Synapse synapse = null;
 		
@@ -258,7 +257,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 			this.next.add(synapse);
 	}
 
-	@Override
+
 	public void recur(NeuralData input) {
 
 	}
