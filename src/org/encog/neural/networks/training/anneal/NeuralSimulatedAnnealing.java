@@ -151,7 +151,6 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	}
 
 
-	@Override
 	public void iteration() {
 		anneal.iteration();
 		setError(anneal.determineError());

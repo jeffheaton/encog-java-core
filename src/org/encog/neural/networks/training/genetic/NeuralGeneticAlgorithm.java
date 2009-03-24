@@ -85,12 +85,10 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		this.genetic = genetic;
 	}
 
-	@Override
 	public BasicNetwork getNetwork() {
 		return getGenetic().getNetwork();
 	}
 
-	@Override
 	public void iteration() {
 		getGenetic().iteration();
 		setError(getGenetic().getError());

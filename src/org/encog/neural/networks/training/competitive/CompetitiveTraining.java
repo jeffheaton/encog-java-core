@@ -103,14 +103,10 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		return neighborhood;
 	}
 
-
-	@Override
 	public double getLearningRate() {
 		return this.learningRate;
 	}
 
-
-	@Override
 	public void setLearningRate(double rate) {
 		this.learningRate = rate;
 	}

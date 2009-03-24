@@ -303,22 +303,18 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 		return result;
 	}
 
-	@Override
 	public double getLearningRate() {
 		return this.learnRate;
 	}
 
-	@Override
 	public void setLearningRate(double rate) {
 		this.learnRate = rate;		
 	}
 
-	@Override
 	public double getMomentum() {
 		return this.momentum;
 	}
 
-	@Override
 	public void setMomentum(double m) {
 		this.momentum = m;		
 	}

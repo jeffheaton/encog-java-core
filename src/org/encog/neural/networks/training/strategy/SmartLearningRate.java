@@ -17,7 +17,6 @@ public class SmartLearningRate implements Strategy {
 	private double lastError;
 	private boolean ready;
 	
-	@Override
 	public void init(Train train) {
 		this.train = train;	
 		this.ready = false;
@@ -40,7 +39,6 @@ public class SmartLearningRate implements Strategy {
 		return result;
 	}
 
-	@Override
 	public void postIteration() {
 		if( this.ready )
 		{
@@ -59,7 +57,6 @@ public class SmartLearningRate implements Strategy {
 		
 	}
 
-	@Override
 	public void preIteration() {
 		this.lastError = this.train.getError();		
 	}

@@ -16,7 +16,6 @@ public abstract class BasicTraining implements Train {
 	
 	private double error;
 	
-	@Override
 	public void addStrategy(Strategy strategy) {
 		strategy.init(this);
 		this.strategies.add(strategy);		

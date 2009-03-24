@@ -16,13 +16,11 @@ public class Greedy implements Strategy {
 	private boolean ready;
 	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
 	
-	@Override
 	public void init(Train train) {
 		this.train = train;
 		this.ready = false;
 	}
 
-	@Override
 	public void postIteration() {
 		if( this.ready )
 		{
@@ -36,7 +34,6 @@ public class Greedy implements Strategy {
 			this.ready = true;
 	}
 
-	@Override
 	public void preIteration() {
 		
 		BasicNetwork network = this.train.getNetwork();	
