@@ -40,11 +40,6 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 		NeuralGeneticAlgorithm {
 
 	/**
-	 * The training set to use.
-	 */
-	private NeuralDataSet training;
-
-	/**
 	 * Construct a training object.
 	 * @param network The network to train.
 	 * @param reset Should each chromosome be reset.
@@ -61,15 +56,16 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 			final double mutationPercent, 
 			final double percentToMate) {
 
-		this.setMutationPercent(mutationPercent);
-		this.setMatingPopulation(percentToMate * 2);
-		this.setPopulationSize(populationSize);
-		this.setPercentToMate(percentToMate);
+		super();
+		this.getGenetic().setMutationPercent(mutationPercent);
+		this.getGenetic().setMatingPopulation(percentToMate * 2);
+		this.getGenetic().setPopulationSize(populationSize);
+		this.getGenetic().setPercentToMate(percentToMate);
 
-		this.training = training;
+		setTraining(training);
 
-		setChromosomes(new TrainingSetNeuralChromosome[getPopulationSize()]);
-		for (int i = 0; i < getChromosomes().length; i++) {
+		getGenetic().setChromosomes(new TrainingSetNeuralChromosome[getGenetic().getPopulationSize()]);
+		for (int i = 0; i < getGenetic().getChromosomes().length; i++) {
 			final BasicNetwork chromosomeNetwork = (BasicNetwork) network
 					.clone();
 			if (reset) {
@@ -80,9 +76,9 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 				new TrainingSetNeuralChromosome(
 					this, chromosomeNetwork);
 			c.updateGenes();
-			setChromosome(i, c);
+			getGenetic().setChromosome(i, c);
 		}
-		sortChromosomes();
+		getGenetic().sortChromosomes();
 	}
 
 	/**
@@ -91,15 +87,9 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 	 * @throws NeuralNetworkException
 	 */
 	public double getError() {
-		final BasicNetwork network = this.getNetwork();
-		return network.calculateError(this.training);
+		final BasicNetwork network = getGenetic().getNetwork();
+		return network.calculateError(getTraining());
 	}
 
-	/**
-	 * @return the training data
-	 */
-	public NeuralDataSet getTraining() {
-		return this.training;
-	}
 
 }

@@ -26,6 +26,8 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.Network;
+import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.Train;
 import org.encog.solve.genetic.GeneticAlgorithm;
 
@@ -43,24 +45,59 @@ import org.encog.solve.genetic.GeneticAlgorithm;
  * implement a subclass of this one that properly calculates
  * the cost.
  */
-public class NeuralGeneticAlgorithm
-		extends GeneticAlgorithm<Double> implements Train {
+public class NeuralGeneticAlgorithm extends BasicTraining {
 
-	/**
-	 * Get the current best neural network.
-	 * @return The current best neural network.
-	 */
+	
+	class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm<Double>
+	{
+		/**
+		 * Get the current best neural network.
+		 * @return The current best neural network.
+		 */
+		public BasicNetwork getNetwork() {
+			final NeuralChromosome c = (NeuralChromosome) getChromosome(0);
+			c.updateNetwork();
+			return c.getNetwork();
+		}
+
+		/**
+		 * @return The error from the last iteration.
+		 */
+		public double getError() {
+			return this.getChromosome(0).getCost();
+		}
+	}
+	
+	private NeuralGeneticAlgorithmHelper genetic;
+	
+	
+	public NeuralGeneticAlgorithm()
+	{
+		this.genetic = new NeuralGeneticAlgorithmHelper();
+	}
+	
+
+	public NeuralGeneticAlgorithmHelper getGenetic() {
+		return genetic;
+	}
+
+	public void setGenetic(NeuralGeneticAlgorithmHelper genetic) {
+		this.genetic = genetic;
+	}
+
+	@Override
 	public BasicNetwork getNetwork() {
-		final NeuralChromosome c = (NeuralChromosome) getChromosome(0);
-		c.updateNetwork();
-		return c.getNetwork();
+		return getGenetic().getNetwork();
 	}
 
-	/**
-	 * @return The error from the last iteration.
-	 */
-	public double getError() {
-		return this.getChromosome(0).getCost();
+	@Override
+	public void iteration() {
+		getGenetic().iteration();
+		setError(getGenetic().getError());
 	}
+	
+	
+	
+
 
 }

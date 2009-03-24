@@ -37,7 +37,12 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.LearningRate;
+import org.encog.neural.networks.training.Momentum;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.strategy.SmartLearningRate;
+import org.encog.neural.networks.training.strategy.SmartMomentum;
 import org.encog.util.ErrorCalculation;
 import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
@@ -61,23 +66,19 @@ import org.slf4j.LoggerFactory;
  * much the previous learning iteration affects the current. To use no momentum
  * at all specify zero.
  */
-public class Backpropagation implements Train {
-	/**
-	 * The error from the last iteration.
-	 */
-	private double error;
+public class Backpropagation extends BasicTraining implements LearningRate, Momentum {
 
 	/**
 	 * The learning rate. This is the degree to which the deltas will affect the
 	 * current network.
 	 */
-	private final double learnRate;
+	private double learnRate;
 
 	/**
 	 * The momentum, this is the degree to which the previous training cycle
 	 * affects the current one.
 	 */
-	private final double momentum;
+	private double momentum;
 
 	/**
 	 * THe network that is being trained.
@@ -101,11 +102,6 @@ public class Backpropagation implements Train {
 	private final NeuralOutputHolder outputHolder = new NeuralOutputHolder();
 
 	/**
-	 * The training data to use.
-	 */
-	private final NeuralDataSet training;
-
-	/**
 	 * Construct a backpropagation trainer.
 	 * @param network The network to train.
 	 * @param training The training data to use.
@@ -122,7 +118,7 @@ public class Backpropagation implements Train {
 		this.network = network;
 		this.learnRate = learnRate;
 		this.momentum = momentum;
-		this.training = training;
+		setTraining(training);
 
 		for(Synapse synapse: network.getSynapses() )
 		{
@@ -133,6 +129,14 @@ public class Backpropagation implements Train {
 			}
 		}
 		
+	}
+	
+	public Backpropagation(final BasicNetwork network,
+			final NeuralDataSet training)
+	{
+		this(network,training,0,0);
+		addStrategy(new SmartLearningRate());
+		addStrategy(new SmartMomentum());
 	}
 
 	/**
@@ -207,15 +211,6 @@ public class Backpropagation implements Train {
 	}
 
 	/**
-	 * Returns the root mean square error for a complete training set.
-	 * 
-	 * @return The current error for the neural network.
-	 */
-	public double getError() {
-		return this.error;
-	}
-
-	/**
 	 * Get the current best neural network.
 	 * 
 	 * @return The current best neural network.
@@ -247,9 +242,11 @@ public class Backpropagation implements Train {
 			logger.info("Beginning backpropagation iteration");
 		}
 		
+		preIteration();
+		
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
-		for (final NeuralDataPair pair : this.training) {
+		for (final NeuralDataPair pair : getTraining() ) {
 			if( logger.isDebugEnabled() ) {
 				logger.debug("Backpropagation training on: input={},ideal={}",pair.getInput(),pair.getIdeal());
 			}
@@ -259,7 +256,9 @@ public class Backpropagation implements Train {
 		}		
 		learn();
 
-		this.error = errorCalculation.calculateRMS();
+		this.setError(errorCalculation.calculateRMS());
+		
+		postIteration();
 	}
 
 	/**
@@ -302,5 +301,25 @@ public class Backpropagation implements Train {
 			logger.trace("Initial deltas: " + DumpMatrix.dumpArray(result));
 		}
 		return result;
+	}
+
+	@Override
+	public double getLearningRate() {
+		return this.learnRate;
+	}
+
+	@Override
+	public void setLearningRate(double rate) {
+		this.learnRate = rate;		
+	}
+
+	@Override
+	public double getMomentum() {
+		return this.momentum;
+	}
+
+	@Override
+	public void setMomentum(double m) {
+		this.momentum = m;		
 	}
 }

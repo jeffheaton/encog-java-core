@@ -70,12 +70,15 @@ public class NetworkCODEC {
 		
 		for(Synapse synapse: layer.getNext())
 		{
-			Double[] temp = synapse.getMatrix().toPackedArray();
-			for(int i=0;i<temp.length;i++)
+			if( synapse.getMatrix()!=null )
 			{
-				array[currentIndex++] = temp[i];
+				Double[] temp = synapse.getMatrix().toPackedArray();
+				for(int i=0;i<temp.length;i++)
+				{
+					array[currentIndex++] = temp[i];
+				}
+				currentIndex = layerToArray(currentIndex,synapse.getToLayer(),array);
 			}
-			currentIndex = layerToArray(currentIndex,synapse.getToLayer(),array);
 		}
 		return currentIndex;
 	}

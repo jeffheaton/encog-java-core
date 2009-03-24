@@ -12,24 +12,21 @@ import org.encog.neural.networks.Network;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.Train;
 
-public class TrainHopfield implements Train {
+public class TrainHopfield extends BasicTraining {
 
 	private BasicNetwork network;
-	private final NeuralDataSet trainingSet;
 	
 	public TrainHopfield(NeuralDataSet trainingSet, BasicNetwork network)
 	{
 		this.network = network;
-		this.trainingSet = trainingSet;
-	}
-	
-	public double getError() {
-		return 0.0;
+		setTraining(trainingSet);
+		setError(0);
 	}
 
-	public Network getNetwork() {
+	public BasicNetwork getNetwork() {
 		return network;
 	}
 
@@ -46,7 +43,7 @@ public class TrainHopfield implements Train {
 	
 	
 	private void trainHopfieldSynapse(Synapse recurrent) {
-		for(NeuralDataPair data: this.trainingSet)
+		for(NeuralDataPair data: this.getTraining())
 		{
 			trainHopfieldSynapse(recurrent,data.getInput());
 		}

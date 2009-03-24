@@ -25,6 +25,10 @@
  */
 package org.encog.neural.networks.training;
 
+import java.util.List;
+
+import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.Network;
 
 
@@ -45,15 +49,24 @@ public interface Train {
 	 * @return The current error.
 	 */
 	double getError();
+	
+	void setError(double error);
 
 	/**
 	 * Get the current best network from the training.
 	 * @return The best network.
 	 */
-	Network getNetwork();
+	BasicNetwork getNetwork();
 
 	/**
 	 * Perform one iteration of training.
 	 */
 	void iteration();
+	
+	void addStrategy(Strategy strategy);
+	
+	NeuralDataSet getTraining();
+	
+	List<Strategy> getStrategies();
+	
 }

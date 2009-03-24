@@ -48,12 +48,15 @@ public class TrainingSetNeuralChromosome extends NeuralChromosome {
 	public TrainingSetNeuralChromosome(
 			final TrainingSetNeuralGeneticAlgorithm genetic,
 			final BasicNetwork network) {
-		setGeneticAlgorithm(genetic);
+		setGeneticAlgorithm(genetic.getGenetic());
+		this.genetic = genetic;
 		setNetwork(network);
 
 		initGenes(network.getWeightMatrixSize());
 		updateGenes();
 	}
+	
+	private TrainingSetNeuralGeneticAlgorithm genetic;
 
 	/**
 	 * Calculate the cost for this chromosome.
@@ -65,16 +68,8 @@ public class TrainingSetNeuralChromosome extends NeuralChromosome {
 
 		// update the cost with the new genes
 		setCost(getNetwork()
-				.calculateError(getGeneticAlgorithm().getTraining()));
+				.calculateError(this.genetic.getTraining()));
 
-	}
-
-	/**
-	 * Get the genetic algorithm in use.
-	 * @return The genetic algorithm in use.
-	 */
-	public TrainingSetNeuralGeneticAlgorithm getGeneticAlgorithm() {
-		return (TrainingSetNeuralGeneticAlgorithm) super.getGeneticAlgorithm();
 	}
 
 	/**

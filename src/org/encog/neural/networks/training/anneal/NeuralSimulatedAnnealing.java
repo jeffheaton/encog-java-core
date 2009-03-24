@@ -29,6 +29,7 @@ package org.encog.neural.networks.training.anneal;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkCODEC;
+import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.Train;
 import org.encog.solve.anneal.SimulatedAnnealing;
 
@@ -38,22 +39,80 @@ import org.encog.solve.anneal.SimulatedAnnealing;
  * generic SimulatedAnnealing class. It is used in the same manner as any other
  * training class that implements the Train interface.
  */
-public class NeuralSimulatedAnnealing 
-extends SimulatedAnnealing<Double> implements Train {
+public class NeuralSimulatedAnnealing extends BasicTraining {
 	/**
 	 * The neural network that is to be trained.
 	 */
 	private BasicNetwork network;
 
-	/**
-	 * The training data.
-	 */
-	private NeuralDataSet training;
+
 	
 	/**
 	 * The cutoff for random data.
 	 */
 	public static final double CUT = 0.5;
+	
+	class SimulatedAnnealingHelper extends SimulatedAnnealing<Double>
+	{
+		/**
+		 * Determine the error of the current weights and thresholds.
+		 * @return The error.
+		 */
+		@Override
+		public double determineError() {
+			return network.calculateError(getTraining());
+		}
+
+		/**
+		 * Get the network as an array of doubles.
+		 * 
+		 * @return The network as an array of doubles.
+		 */
+		@Override
+		public Double[] getArray() {
+			return NetworkCODEC.networkToArray(network);
+		}
+
+		/**
+		 * @return A copy of the annealing array.
+		 */
+		@Override
+		public Double[] getArrayCopy() {
+			return getArray();
+		}
+		
+		/**
+		 * Convert an array of doubles to the current best network.
+		 * @param array An array.
+		 */
+		@Override
+		public void putArray(final Double[] array) {
+			NetworkCODEC.arrayToNetwork(array, network);
+		}
+
+		/**
+		 * Randomize the weights and thresholds. This function does most of the work
+		 * of the class. Each call to this class will randomize the data according
+		 * to the current temperature. The higher the temperature the more
+		 * randomness.
+		 */
+		@Override
+		public void randomize() {
+			final Double[] array = NetworkCODEC.networkToArray(network);
+
+			for (int i = 0; i < array.length; i++) {
+				double add = NeuralSimulatedAnnealing.CUT - Math.random();
+				add /= getStartTemperature();
+				add *= this.getTemperature();
+				array[i] = array[i] + add;
+			}
+
+			NetworkCODEC.arrayToNetwork(array, network);
+		}
+		
+	}
+	
+	private SimulatedAnnealingHelper anneal;
 
 	/**
 	 * Construct a simulated annleaing trainer for a feedforward neural network.
@@ -73,39 +132,14 @@ extends SimulatedAnnealing<Double> implements Train {
 			final NeuralDataSet training, final double startTemp,
 			final double stopTemp, final int cycles) {
 		this.network = network;
-		this.training = training;
-		this.setTemperature(startTemp);
-		setStartTemperature(startTemp);
-		setStopTemperature(stopTemp);
-		setCycles(cycles);
+		setTraining(training);
+		this.anneal = new SimulatedAnnealingHelper();
+		this.anneal.setTemperature(startTemp);
+		this.anneal.setStartTemperature(startTemp);
+		this.anneal.setStopTemperature(stopTemp);
+		this.anneal.setCycles(cycles);
 	}
 
-	/**
-	 * Determine the error of the current weights and thresholds.
-	 * @return The error.
-	 */
-	@Override
-	public double determineError() {
-		return this.network.calculateError(this.training);
-	}
-
-	/**
-	 * Get the network as an array of doubles.
-	 * 
-	 * @return The network as an array of doubles.
-	 */
-	@Override
-	public Double[] getArray() {
-		return NetworkCODEC.networkToArray(this.network);
-	}
-
-	/**
-	 * @return A copy of the annealing array.
-	 */
-	@Override
-	public Double[] getArrayCopy() {
-		return getArray();
-	}
 
 	/**
 	 * Get the best network from the training.
@@ -116,33 +150,10 @@ extends SimulatedAnnealing<Double> implements Train {
 		return this.network;
 	}
 
-	/**
-	 * Convert an array of doubles to the current best network.
-	 * @param array An array.
-	 */
+
 	@Override
-	public void putArray(final Double[] array) {
-		NetworkCODEC.arrayToNetwork(array, this.network);
+	public void iteration() {
+		anneal.iteration();
+		setError(anneal.determineError());
 	}
-
-	/**
-	 * Randomize the weights and thresholds. This function does most of the work
-	 * of the class. Each call to this class will randomize the data according
-	 * to the current temperature. The higher the temperature the more
-	 * randomness.
-	 */
-	@Override
-	public void randomize() {
-		final Double[] array = NetworkCODEC.networkToArray(this.network);
-
-		for (int i = 0; i < array.length; i++) {
-			double add = NeuralSimulatedAnnealing.CUT - Math.random();
-			add /= getStartTemperature();
-			add *= this.getTemperature();
-			array[i] = array[i] + add;
-		}
-
-		NetworkCODEC.arrayToNetwork(array, this.network);
-	}
-
 }
