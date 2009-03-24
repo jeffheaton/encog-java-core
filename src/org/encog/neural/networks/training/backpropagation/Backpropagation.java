@@ -39,6 +39,9 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.Train;
 import org.encog.util.ErrorCalculation;
+import org.encog.util.logging.DumpMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Backpropagation: This class implements a backpropagation training algorithm
@@ -82,6 +85,11 @@ public class Backpropagation implements Train {
 	private final BasicNetwork network;
 	
 	private NeuralData fire;
+	
+	/**
+	 * The logger to use.
+	 */
+	final Logger logger = LoggerFactory.getLogger(BasicNetwork.class);
 
 	/**
 	 * A map between neural network layers and the corresponding
@@ -141,6 +149,10 @@ public class Backpropagation implements Train {
 							+ ideal.size() + " for output layer size="
 							+ this.network.getOutputLayer().getNeuronCount());
 		}
+		
+		if( logger.isDebugEnabled() ) {
+			logger.debug("Backpropagation backward pass");
+		}
 
 		Layer current = this.network.getOutputLayer();
 		double[] backDeltas = this.calculateInitialDelta(this.fire, ideal);
@@ -149,14 +161,28 @@ public class Backpropagation implements Train {
 	
 	private void backwardPass(final Layer current, final double[] backDeltas)
 	{	
+		if( logger.isDebugEnabled() ) {
+			logger.debug("Backpropagation backward pass, layer= {}", current);
+		}
 		for(Synapse synapse : network.getPreviousSynapses(current))
 		{
+			
+			
 			double[] nextDeltas = backDeltas;
 			if( synapse.isTeachable() && !network.isOutput(synapse.getFromLayer())) {
-			
+				
 				NeuralData actual = this.outputHolder.getResult().get(synapse);
+				if( logger.isDebugEnabled() ) {
+					logger.debug("Backpropagation backward pass, synapse= {}, actual= {}", synapse, actual);
+				}
 				nextDeltas = getPropagationSynapse(synapse).calcError(synapse.getFromLayer().getActivationFunction(),actual,backDeltas, network.isHidden(synapse.getFromLayer()));
 				backwardPass(synapse.getFromLayer(), nextDeltas);
+			}
+			else
+			{
+				if( logger.isDebugEnabled() ) {
+					logger.debug("Backpropagation backward pass, skip synapse= {}", synapse);
+				}
 			}
 		}
 	}
@@ -200,6 +226,9 @@ public class Backpropagation implements Train {
 	
 	private NeuralData forwardPass(NeuralData input)
 	{
+		if( logger.isDebugEnabled() ) {
+			logger.debug("Backpropagation forward pass");
+		}
 		this.outputHolder.getResult().clear();
 		this.fire = network.compute(input,this.outputHolder);
 		return this.fire;
@@ -213,9 +242,17 @@ public class Backpropagation implements Train {
 	 * loop.
 	 */
 	public void iteration() {
+		
+		if( logger.isInfoEnabled() ) {
+			logger.info("Beginning backpropagation iteration");
+		}
+		
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		for (final NeuralDataPair pair : this.training) {
+			if( logger.isDebugEnabled() ) {
+				logger.debug("Backpropagation training on: input={},ideal={}",pair.getInput(),pair.getIdeal());
+			}
 			NeuralData actual = forwardPass(pair.getInput());
 			errorCalculation.updateError(actual, pair.getIdeal());
 			backwardPass(pair.getIdeal());
@@ -230,9 +267,12 @@ public class Backpropagation implements Train {
 	 * calcError.
 	 */
 	public void learn() {
-		
+		if( logger.isDebugEnabled() ) {
+			logger.debug("Backpropagation learning pass");
+		}
 		for(PropagationSynapse synapse: this.synapseMap.values() )
 		{
+			logger.debug("Backpropagation, synapse learning: {}",synapse.getSynapse());
 			synapse.learn(this.learnRate, this.momentum);
 		}
 
@@ -256,6 +296,10 @@ public class Backpropagation implements Train {
 		
 		for (int i = 0; i < outputLayer.getNeuronCount(); i++) {
 			result[i]*= ideal.getData(i) - actual.getData(i);
+		}
+		
+		if( logger.isTraceEnabled() ) {
+			logger.trace("Initial deltas: " + DumpMatrix.dumpArray(result));
 		}
 		return result;
 	}

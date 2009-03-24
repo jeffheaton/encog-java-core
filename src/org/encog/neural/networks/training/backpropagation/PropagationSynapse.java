@@ -29,7 +29,11 @@ import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.util.logging.DumpMatrix;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * BackpropagationLayer: The back propagation training algorithm requires
@@ -62,6 +66,9 @@ public class PropagationSynapse {
 	 * The actual layer that this training layer corresponds to.
 	 */
 	private final Synapse synapse;
+	
+	final Logger logger = LoggerFactory.getLogger(PropagationSynapse.class);
+
 	
 
 	/**
@@ -162,12 +169,42 @@ public class PropagationSynapse {
 		this.matrixDelta = MatrixMath.add(this.accMatrixDelta, this.matrixDelta);
 		this.synapse.getMatrix().add(this.matrixDelta);			
 		this.accMatrixDelta.clear();*/
+		
+		if( logger.isTraceEnabled() ) {
+			logger.trace("Backpropagation learning: deltas=\n"+DumpMatrix.dumpMatrix(this.accMatrixDelta));
+		}
 				
 			final Matrix m1 = MatrixMath.multiply(this.accMatrixDelta, learnRate);
 			final Matrix m2 = MatrixMath.multiply(this.matrixDelta, momentum);
 			this.matrixDelta = MatrixMath.add(m1, m2);
+			
+			if( logger.isTraceEnabled() ) {
+				logger.trace("Backpropagation learning: applying delta=\n"+DumpMatrix.dumpMatrix(this.matrixDelta));
+			}
 			this.synapse.getMatrix().add(this.matrixDelta);			
+			if( logger.isTraceEnabled() ) {
+				logger.trace("Backpropagation learning: new weight matrix=\n"+DumpMatrix.dumpMatrix(synapse.getMatrix()));
+			}
+			
 			this.accMatrixDelta.clear();
 	}
+
+	public Matrix getAccMatrixDelta() {
+		return accMatrixDelta;
+	}
+
+	public int getBiasRow() {
+		return biasRow;
+	}
+
+	public Matrix getMatrixDelta() {
+		return matrixDelta;
+	}
+
+	public Synapse getSynapse() {
+		return synapse;
+	}
+	
+	
 
 }

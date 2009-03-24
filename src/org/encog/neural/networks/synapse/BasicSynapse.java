@@ -42,6 +42,20 @@ public abstract class BasicSynapse implements Synapse {
 	{
 	}
 	
+	@Override
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[");
+		result.append(this.getClass().getSimpleName());
+		result.append(": from=");
+		result.append(this.getFromNeuronCount());
+		result.append(",to=");
+		result.append(this.getToNeuronCount());
+		result.append("]");
+		return result.toString();
+	}
+	
 	abstract public Object clone();
 
 }

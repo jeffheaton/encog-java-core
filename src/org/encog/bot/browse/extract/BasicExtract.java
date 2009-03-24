@@ -30,10 +30,14 @@ import java.util.Collection;
 import java.util.List;
 
 import org.encog.bot.browse.WebPage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class BasicExtract implements Extract {
 
 	private Collection<ExtractListener> listeners = new ArrayList<ExtractListener>();
+	
+	final Logger logger = LoggerFactory.getLogger(BasicExtract.class);
 	
 	public void addListener(ExtractListener listener) {
 		this.listeners.add(listener);

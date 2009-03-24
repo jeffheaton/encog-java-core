@@ -4,10 +4,15 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.BasicNetwork;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ContextLayer extends BasicLayer {
 
 	private double[] context;
+	
+	final Logger logger = LoggerFactory.getLogger(ContextLayer.class);
 	
 	public ContextLayer(ActivationFunction thresholdFunction, int neuronCount) {
 		super(thresholdFunction, neuronCount);
@@ -23,6 +28,10 @@ public class ContextLayer extends BasicLayer {
 		for(int i = 0; i<pattern.size();i++)
 		{
 			this.context[i] = pattern.getData(i);
+		}
+		
+		if( logger.isDebugEnabled() ) {
+			logger.debug("Updated ContextLayer to {}", pattern);
 		}
 		
 				

@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.encog.Encog;
+import org.encog.bot.browse.extract.BasicExtract;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
@@ -46,6 +47,8 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.util.ErrorCalculation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * BasicNetwork: This class implements a neural network. This class works in
@@ -81,6 +84,12 @@ public class BasicNetwork implements Serializable, Network,
 	 * The name of this object.
 	 */
 	private String name;
+
+	/**
+	 * The logger to use.
+	 */
+	final Logger logger = LoggerFactory.getLogger(BasicNetwork.class);
+
 
 	/**
 	 * Construct an empty neural network.
@@ -205,6 +214,10 @@ public class BasicNetwork implements Serializable, Network,
 	public NeuralData compute(final NeuralData input,
 			NeuralOutputHolder useHolder) {
 		NeuralOutputHolder holder;
+		
+		if( logger.isDebugEnabled() ) {
+			logger.debug("Pattern {} presented to neural network", input);
+		}
 
 		if (useHolder == null)
 			holder = new NeuralOutputHolder();
@@ -220,11 +233,18 @@ public class BasicNetwork implements Serializable, Network,
 	private void compute(NeuralOutputHolder holder, Layer layer,
 			NeuralData input, Synapse source) {
 		
+		if( logger.isDebugEnabled() ) {
+			logger.debug("Processing layer: {}, input= {}", layer, input);
+		}
+		
 		handleRecurrentInput(layer, input, source);
 		
 		for (Synapse synapse : layer.getNext()) {
 			if (!holder.getResult().containsKey(synapse)) 
 			{
+				if( logger.isDebugEnabled() ) {
+					logger.debug("Processing synapse: {}", synapse);
+				}
 				NeuralData pattern = synapse.compute(input);
 				layer.compute(pattern);
 				holder.getResult().put(synapse, input);
@@ -243,7 +263,13 @@ public class BasicNetwork implements Serializable, Network,
 		{
 			if(synapse!=source)
 			{
+				if( logger.isDebugEnabled() ) {
+					logger.debug("Recurrent layer from: {}", input);
+				}
 				synapse.getFromLayer().recur(input);
+				if( logger.isDebugEnabled() ) {
+					logger.debug("Recurrent layer to: {}", input);
+				}
 			}
 		}
 	}

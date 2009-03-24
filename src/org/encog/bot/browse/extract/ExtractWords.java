@@ -32,10 +32,13 @@ import org.encog.bot.dataunit.DataUnit;
 import org.encog.bot.dataunit.TextDataUnit;
 import org.encog.parse.Parse;
 import org.encog.parse.signal.Signal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ExtractWords extends BasicExtract {
 	
-	Parse parse;
+	private Parse parse;
+	final Logger logger = LoggerFactory.getLogger(ExtractWords.class);
 	
 	public ExtractWords()
 	{

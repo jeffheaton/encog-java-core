@@ -208,8 +208,9 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
-		result.append("[BasicLayer:");
-		result.append("neuronCount=");
+		result.append("[");
+		result.append(this.getClass().getSimpleName());
+		result.append(": neuronCount=");
 		result.append(this.neuronCount);
 		result.append(']');
 		return result.toString();

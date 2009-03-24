@@ -59,18 +59,6 @@ public class WeightedSynapse extends BasicSynapse {
 
 	}
 	
-
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
-		result.append("[Synapse: from=");
-		result.append(this.getFromNeuronCount());
-		result.append(",to=");
-		result.append(this.getToNeuronCount());
-		result.append("]");
-		return result.toString();
-	}
-	
 	public NeuralData compute(NeuralData input)
 	{
 		NeuralData result = new BasicNeuralData(getToNeuronCount());

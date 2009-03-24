@@ -28,9 +28,13 @@ package org.encog.bot.browse.extract;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ListExtractListener implements ExtractListener {
 	
 	private List<Object> list = new ArrayList<Object>();
+	final Logger logger = LoggerFactory.getLogger(ListExtractListener.class);
 	
 	public List<Object> getList()
 	{
