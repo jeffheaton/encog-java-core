@@ -120,7 +120,7 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 		this.momentum = momentum;
 		setTraining(training);
 
-		for(Synapse synapse: network.getSynapses() )
+		for(Synapse synapse: network.getStructure().getSynapses() )
 		{
 			if( synapse.isTeachable() )
 			{
@@ -168,7 +168,7 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 		if( logger.isDebugEnabled() ) {
 			logger.debug("Backpropagation backward pass, layer= {}", current);
 		}
-		for(Synapse synapse : network.getPreviousSynapses(current))
+		for(Synapse synapse : network.getStructure().getPreviousSynapses(current))
 		{
 			
 			

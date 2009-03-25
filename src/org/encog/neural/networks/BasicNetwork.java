@@ -84,6 +84,8 @@ public class BasicNetwork implements Serializable, Network,
 	 * The name of this object.
 	 */
 	private String name;
+	
+	private NeuralStructure structure;
 
 	/**
 	 * The logger to use.
@@ -95,6 +97,7 @@ public class BasicNetwork implements Serializable, Network,
 	 * Construct an empty neural network.
 	 */
 	public BasicNetwork() {
+		this.structure = new NeuralStructure(this);
 	}
 
 	
@@ -144,7 +147,7 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public int calculateNeuronCount() {
 		int result = 0;
-		for (Layer layer : this.getLayers()) {
+		for (Layer layer : this.structure.getLayers()) {
 			result += layer.getNeuronCount();
 		}
 		return result;
@@ -161,6 +164,7 @@ public class BasicNetwork implements Serializable, Network,
 		BasicNetwork result = new BasicNetwork();
 		Layer input = cloneLayer(this.inputLayer, result);
 		result.setInputLayer(input);
+		result.getStructure().finalizeStructure();
 		return result;
 	}
 	
@@ -259,7 +263,7 @@ public class BasicNetwork implements Serializable, Network,
 	
 	private void handleRecurrentInput(final Layer layer, final NeuralData input, final Synapse source)
 	{
-		for(Synapse synapse: this.getPreviousSynapses(layer) )
+		for(Synapse synapse: this.structure.getPreviousSynapses(layer) )
 		{
 			if(synapse!=source)
 			{
@@ -346,7 +350,7 @@ public class BasicNetwork implements Serializable, Network,
 	public Collection<Layer> getHiddenLayers() {
 		final Collection<Layer> result = new ArrayList<Layer>();
 
-		for (Layer layer : getLayers()) {
+		for (Layer layer : this.structure.getLayers()) {
 			if (isHidden(layer)) {
 				result.add(layer);
 			}
@@ -387,7 +391,7 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public int getWeightMatrixSize() {
 		int result = 0;
-		for (final Synapse synapse : this.getSynapses()) {
+		for (final Synapse synapse : this.structure.getSynapses()) {
 			result += synapse.getMatrixSize();
 		}
 		return result;
@@ -408,7 +412,7 @@ public class BasicNetwork implements Serializable, Network,
 	 * @throws MatrixException
 	 */
 	public void reset() {
-		for (final Layer layer : this.getLayers()) {
+		for (final Layer layer : this.structure.getLayers()) {
 			layer.reset();
 		}
 	}
@@ -485,7 +489,7 @@ public class BasicNetwork implements Serializable, Network,
 		}
 
 		// delete a column on the previous
-		final Collection<Layer> previous = this.getPreviousLayers(targetLayer);
+		final Collection<Layer> previous = this.structure.getPreviousLayers(targetLayer);
 
 		for (Layer prevLayer : previous) {
 			if (previous != null) {
@@ -499,64 +503,12 @@ public class BasicNetwork implements Serializable, Network,
 		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
 
 	}
-
-	public Collection<Synapse> getSynapses() {
-		Set<Synapse> result = new HashSet<Synapse>();
-		for (Layer layer : getLayers()) {
-			for (Synapse synapse : layer.getNext()) {
-				result.add(synapse);
-			}
-		}
-		return result;
-	}
-
-	public Collection<Layer> getLayers() {
-		Set<Layer> result = new HashSet<Layer>();
-		getLayers(result, this.getInputLayer());
-		return result;
-	}
-
-	private void getLayers(Set<Layer> result, Layer layer) {
-		result.add(layer);
-
-		for (Synapse synapse : layer.getNext()) {
-			Layer nextLayer = synapse.getToLayer();
-
-			if (!result.contains(nextLayer)) {
-				getLayers(result, nextLayer);
-			}
-		}
-	}
-
-	public Collection<Layer> getPreviousLayers(Layer targetLayer) {
-		Collection<Layer> result = new HashSet<Layer>();
-		for (Layer layer : this.getLayers()) {
-			for (Synapse synapse : layer.getNext()) {
-				if (synapse.getToLayer() == targetLayer) {
-					result.add(synapse.getFromLayer());
-				}
-			}
-		}
-		return result;
-	}
-
-	public Collection<Synapse> getPreviousSynapses(Layer targetLayer) {
-		Collection<Synapse> result = new HashSet<Synapse>();
-		for (Layer layer : this.getLayers()) {
-			for (Synapse synapse : layer.getNext()) {
-				if (synapse.getToLayer() == targetLayer) {
-					result.add(synapse);
-				}
-			}
-		}
-		return result;
-	}
 	
 	public String toString()
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("[BasicNetwork: Layers=");
-		int layers = getLayers().size();
+		int layers = this.structure.getLayers().size();
 		builder.append(layers);
 		builder.append("]");
 		return builder.toString();
@@ -568,6 +520,11 @@ public class BasicNetwork implements Serializable, Network,
 	 */
 	public void setOutputLayer(Layer outputLayer) {
 		this.outputLayer = outputLayer;
+	}
+
+
+	public NeuralStructure getStructure() {
+		return structure;
 	}
 	
 	

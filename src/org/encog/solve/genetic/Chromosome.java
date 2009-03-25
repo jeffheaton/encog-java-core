@@ -28,6 +28,8 @@ package org.encog.solve.genetic;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.encog.matrix.MatrixError;
+
 /**
  * Chromosome: Implements a chromosome to genetic algorithm. This is an abstract
  * class. Other classes are provided in this book that use this base class to
@@ -231,6 +233,15 @@ abstract public class Chromosome<GENE_TYPE>
 	 *            The value to set the specified gene to.
 	 */
 	public void setGene(final int gene, final GENE_TYPE value) {
+		
+		if( value instanceof Double )
+		{
+		double d = ((Double)value).doubleValue();
+		if (Double.isInfinite(d) || Double.isNaN(d)) {
+			throw new MatrixError("Trying to assign invalid number to gene: "
+					+ value);
+		}
+		}
 		this.genes[gene] = value;
 	}
 

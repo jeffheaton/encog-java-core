@@ -34,7 +34,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		this.network = network;
 		this.inputLayer = network.getInputLayer();
 		this.outputLayer = network.getOutputLayer();
-		this.synapses = network.getPreviousSynapses(this.outputLayer);
+		this.synapses = network.getStructure().getPreviousSynapses(this.outputLayer);
 		this.inputNeuronCount = this.inputLayer.getNeuronCount();
 		this.setError(0);
 		this.won = new int[this.outputLayer.getNeuronCount()];

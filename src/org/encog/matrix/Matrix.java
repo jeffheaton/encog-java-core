@@ -408,10 +408,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public void set(final int row, final int col, final double value) {
 		validate(row, col);
-		if (Double.isInfinite(value) || Double.isNaN(value)) {
-			throw new MatrixError("Trying to assign invalud number to matrix: "
-					+ value);
-		}
 		this.matrix[row][col] = value;
 	}
 

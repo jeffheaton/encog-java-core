@@ -81,15 +81,4 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 		getGenetic().sortChromosomes();
 	}
 
-	/**
-	 * Returns the root mean square error for a complet training set.
-	 * @return The current error for the neural network.
-	 * @throws NeuralNetworkException
-	 */
-	public double getError() {
-		final BasicNetwork network = getGenetic().getNetwork();
-		return network.calculateError(getTraining());
-	}
-
-
 }

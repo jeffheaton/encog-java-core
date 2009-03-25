@@ -27,7 +27,7 @@ public class NetworkCODEC {
 
 		// copy all weight and threshold data
 		int currentIndex = 0;
-		Collection<Synapse> synapses = network.getSynapses();
+		Collection<Synapse> synapses = network.getStructure().getSynapses();
 		for (final Synapse synapse : synapses) {
 			if (synapse.getMatrix() != null) {
 
@@ -53,7 +53,7 @@ public class NetworkCODEC {
 		int size = 0;
 
 		// first determine size
-		for (final Synapse synapse : network.getSynapses()) {
+		for (final Synapse synapse : network.getStructure().getSynapses()) {
 			size += synapse.getMatrixSize();
 		}
 
@@ -62,7 +62,7 @@ public class NetworkCODEC {
 
 		// copy all weight and threshold data
 		int currentIndex = 0;
-		Collection<Synapse> synapses = network.getSynapses();
+		Collection<Synapse> synapses = network.getStructure().getSynapses();
 		for (final Synapse synapse : synapses ) {
 			if (synapse.getMatrix() != null) {
 				Double[] temp = synapse.getMatrix().toPackedArray();
