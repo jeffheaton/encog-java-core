@@ -46,6 +46,8 @@ public interface Layer extends Cloneable {
 	 * @return The output from this layer.
 	 */
 	void compute(final NeuralData pattern);
+	
+	void process(final NeuralData pattern);
 
 	/**
 	 * @return The neuron count.
@@ -63,6 +65,6 @@ public interface Layer extends Cloneable {
 	
 	void addNext(Layer next);
 	void addNext(Layer next, SynapseType type);
-	void recur(NeuralData input);
+	NeuralData recur();
 	Object clone();
 }

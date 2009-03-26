@@ -47,6 +47,7 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.util.ErrorCalculation;
+import org.encog.util.randomize.FanInRandomizer;
 import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -244,6 +245,7 @@ public class BasicNetwork implements Serializable, Network,
 				}
 				NeuralData pattern = synapse.compute(input);
 				layer.compute(pattern);
+				synapse.getToLayer().process(pattern);
 				holder.getResult().put(synapse, input);
 				compute(holder, synapse.getToLayer(), pattern, synapse);
 
@@ -261,9 +263,20 @@ public class BasicNetwork implements Serializable, Network,
 				if (logger.isDebugEnabled()) {
 					logger.debug("Recurrent layer from: {}", input);
 				}
-				synapse.getFromLayer().recur(input);
+				NeuralData recurrentInput = synapse.getFromLayer().recur();
+				
+				if( recurrentInput!=null )
+				{
+				NeuralData recurrentOutput = synapse.compute(recurrentInput);
+				
+				for(int i=0;i<input.size();i++)
+				{
+					input.setData(i,input.getData(i)+recurrentOutput.getData(i));
+				}
+				
 				if (logger.isDebugEnabled()) {
 					logger.debug("Recurrent layer to: {}", input);
+				}
 				}
 			}
 		}
@@ -402,7 +415,7 @@ public class BasicNetwork implements Serializable, Network,
 	 * @throws MatrixException
 	 */
 	public void reset() {
-		(new RangeRandomizer(-1, 1)).randomize(this);
+		(new RangeRandomizer(-1,1)).randomize(this);
 	}
 
 	/**

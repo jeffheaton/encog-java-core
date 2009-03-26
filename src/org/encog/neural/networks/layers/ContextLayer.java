@@ -10,40 +10,33 @@ import org.slf4j.LoggerFactory;
 
 public class ContextLayer extends BasicLayer {
 
-	private double[] context;
+	private NeuralData context;
 	
 	final Logger logger = LoggerFactory.getLogger(ContextLayer.class);
 	
 	public ContextLayer(ActivationFunction thresholdFunction, int neuronCount) {
 		super(thresholdFunction, neuronCount);
-		context = new double[neuronCount];
+		context = new BasicNeuralData(neuronCount);
 	}
 	
 	public ContextLayer(int neuronCount) {
 		this(new ActivationTANH(), neuronCount);
 	}
-
-	public void compute(final NeuralData pattern)
-	{
+	
+	public NeuralData recur() {
+		return this.context;
+	}
+	
+	@Override
+	public void process(NeuralData pattern) {
 		for(int i = 0; i<pattern.size();i++)
 		{
-			this.context[i] = pattern.getData(i);
+			this.context.setData(i,pattern.getData(i));
 		}
 		
 		if( logger.isDebugEnabled() ) {
 			logger.debug("Updated ContextLayer to {}", pattern);
-		}
-		
-				
-		// apply the activation function
-		this.getActivationFunction().activationFunction(pattern.getData());
-	}
-	
-	public void recur(NeuralData input) {
-		for(int i=0;i<input.size();i++)
-		{
-			input.setData(i, input.getData(i)+this.context[i]);
-		}
+		}		
 	}
 	
 	
