@@ -7,7 +7,9 @@ public interface Randomizer {
 	
 	public double randomize(double d);
 	public void randomize(double[] d);
+	public void randomize(Double[] d);
 	public void randomize(double[][] d);
+	public void randomize(Double[][] d);
 	public void randomize(Matrix m);
 	public void randomize(BasicNetwork network);
 	

@@ -6,7 +6,13 @@ import org.encog.neural.networks.synapse.Synapse;
 
 public abstract class BasicRandomizer implements Randomizer {
 
-	
+	public void randomize(Double[] d)
+	{
+		for(int i=0;i<d.length;i++)
+		{
+			d[i] = randomize(d[i]);
+		}
+	}
 
 	public void randomize(double[] d) {
 		for(int i=0;i<d.length;i++)
@@ -17,6 +23,15 @@ public abstract class BasicRandomizer implements Randomizer {
 	}
 
 	public void randomize(double[][] d) {
+		for (int r = 0; r < d.length; r++) {
+			for (int c = 0; c < d[0].length; c++) {
+				d[r][c] = randomize(d[r][c]);
+			}
+		}
+		
+	}
+	
+	public void randomize(Double[][] d) {
 		for (int r = 0; r < d.length; r++) {
 			for (int c = 0; c < d[0].length; c++) {
 				d[r][c] = randomize(d[r][c]);

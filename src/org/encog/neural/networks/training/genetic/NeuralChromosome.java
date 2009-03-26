@@ -30,6 +30,8 @@ import java.util.Arrays;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkCODEC;
 import org.encog.solve.genetic.Chromosome;
+import org.encog.util.randomize.Distort;
+import org.encog.util.randomize.Randomizer;
 
 /**
  * NeuralChromosome: Implements a chromosome that allows a feedforward neural
@@ -55,7 +57,7 @@ public abstract class NeuralChromosome
 	/**
 	 * Mutation range.
 	 */
-	private static final double RANGE = 20.0;
+	private Randomizer mutate = new Distort(4.0);
 
 	/**
 	 * The network to train.
@@ -84,13 +86,7 @@ public abstract class NeuralChromosome
 	 */
 	@Override
 	public void mutate() {
-		final int length = getGenes().length;
-		for (int i = 0; i < length; i++) {
-			double d = getGene(i);
-			final double ratio = (int) (RANGE * Math.random() - RANGE);
-			d *= ratio;
-			setGene(i, d);
-		}
+		this.mutate.randomize(this.getGenes());
 	}
 
 	/**
