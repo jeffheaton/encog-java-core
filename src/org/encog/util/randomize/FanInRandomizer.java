@@ -50,7 +50,6 @@ public class FanInRandomizer extends BasicRandomizer {
 		throw new EncogError(FanInRandomizer.ERROR);
 	}
 
-	@Override
 	public double randomize(double d) {		
 		causeError();
 		return 0;

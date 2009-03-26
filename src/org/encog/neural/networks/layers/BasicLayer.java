@@ -259,7 +259,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		
 	}
 
-	@Override
 	public void process(NeuralData pattern) {
 		// TODO Auto-generated method stub
 		
