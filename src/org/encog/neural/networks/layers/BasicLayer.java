@@ -145,19 +145,6 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		return this.neuronCount;
 	}
 
-	/**
-	 * Reset the weight matrix and threshold values to random numbers between -1
-	 * and 1.
-	 */
-	public void reset() {
-
-
-			for(Synapse synapse :this.next )
-			{
-				synapse.randomize();
-			}
-
-	}
 
 	/**
 	 * @param description

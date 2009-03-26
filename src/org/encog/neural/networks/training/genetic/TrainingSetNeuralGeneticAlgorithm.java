@@ -27,6 +27,7 @@ package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.util.randomize.Randomizer;
 
 
 
@@ -50,7 +51,7 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 	 */
 	public TrainingSetNeuralGeneticAlgorithm(
 			final BasicNetwork network,
-			final boolean reset, 
+			final Randomizer randomizer, 
 			final NeuralDataSet training, 
 			final int populationSize,
 			final double mutationPercent, 
@@ -68,9 +69,7 @@ public class TrainingSetNeuralGeneticAlgorithm extends
 		for (int i = 0; i < getGenetic().getChromosomes().length; i++) {
 			final BasicNetwork chromosomeNetwork = (BasicNetwork) network
 					.clone();
-			if (reset) {
-				chromosomeNetwork.reset();
-			}
+			randomizer.randomize(chromosomeNetwork);
 
 			final TrainingSetNeuralChromosome c = 
 				new TrainingSetNeuralChromosome(

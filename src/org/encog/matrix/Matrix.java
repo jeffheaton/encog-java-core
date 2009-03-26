@@ -380,21 +380,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		return true;
 	}
 
-	/**
-	 * Randomize the matrix within the specified range.
-	 * 
-	 * @param min
-	 *            The minimum value to assign.
-	 * @param max
-	 *            The maximum value to assign.
-	 */
-	public void ramdomize(final double min, final double max) {
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				this.matrix[r][c] = Math.random() * (max - min) + min;
-			}
-		}
-	}
 
 	/**
 	 * Set an individual cell in the matrix to the specified value.

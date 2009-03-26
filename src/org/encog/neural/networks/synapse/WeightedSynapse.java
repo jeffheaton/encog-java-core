@@ -77,11 +77,6 @@ public class WeightedSynapse extends BasicSynapse {
 		return SynapseType.Weighted;
 	}
 	
-	public void randomize()
-	{
-		this.matrix.ramdomize(-1, 1);
-	}
-	
 	public boolean isTeachable()
 	{
 		return true;

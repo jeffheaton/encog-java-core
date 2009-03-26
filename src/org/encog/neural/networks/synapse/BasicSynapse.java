@@ -38,10 +38,6 @@ public abstract class BasicSynapse implements Synapse {
 		return this.fromLayer==this.toLayer;
 	}
 	
-	public void randomize()
-	{
-	}
-	
 	@Override
 	public String toString()
 	{

@@ -47,6 +47,7 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.util.ErrorCalculation;
+import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,14 +85,13 @@ public class BasicNetwork implements Serializable, Network,
 	 * The name of this object.
 	 */
 	private String name;
-	
+
 	private NeuralStructure structure;
 
 	/**
 	 * The logger to use.
 	 */
 	final Logger logger = LoggerFactory.getLogger(BasicNetwork.class);
-
 
 	/**
 	 * Construct an empty neural network.
@@ -100,7 +100,6 @@ public class BasicNetwork implements Serializable, Network,
 		this.structure = new NeuralStructure(this);
 	}
 
-	
 	public void addLayer(final Layer layer, final SynapseType type) {
 		if (this.inputLayer == null)
 			this.outputLayer = this.inputLayer = layer;
@@ -109,7 +108,7 @@ public class BasicNetwork implements Serializable, Network,
 			this.outputLayer = layer;
 		}
 	}
-	
+
 	/**
 	 * Add a layer to the neural network. The first layer added is the input
 	 * layer, the last layer added is the output layer.
@@ -118,9 +117,8 @@ public class BasicNetwork implements Serializable, Network,
 	 *            The layer to be added.
 	 */
 	public void addLayer(final Layer layer) {
-		addLayer(layer,SynapseType.Weighted);
+		addLayer(layer, SynapseType.Weighted);
 	}
-	
 
 	/**
 	 * Calculate the error for this neural network. The error is calculated
@@ -167,30 +165,26 @@ public class BasicNetwork implements Serializable, Network,
 		result.getStructure().finalizeStructure();
 		return result;
 	}
-	
+
 	public void setInputLayer(Layer input) {
 		this.inputLayer = input;
 	}
 
+	private Layer cloneLayer(Layer layer, BasicNetwork network) {
+		Layer newLayer = (Layer) layer.clone();
 
-	private Layer cloneLayer(Layer layer, BasicNetwork network)
-	{
-		Layer newLayer = (Layer)layer.clone();
-		
-		if( layer == getOutputLayer() )
+		if (layer == getOutputLayer())
 			network.setOutputLayer(newLayer);
-		
-		for(Synapse synapse: layer.getNext())
-		{
-			Synapse newSynapse = (Synapse)synapse.clone();
+
+		for (Synapse synapse : layer.getNext()) {
+			Synapse newSynapse = (Synapse) synapse.clone();
 			newSynapse.setFromLayer(layer);
-			if(synapse.getToLayer()!=null)
-			{
-				Layer to = cloneLayer(synapse.getToLayer(),network);
+			if (synapse.getToLayer() != null) {
+				Layer to = cloneLayer(synapse.getToLayer(), network);
 				newSynapse.setToLayer(to);
 			}
 			newLayer.getNext().add(newSynapse);
-		
+
 		}
 		return newLayer;
 	}
@@ -218,8 +212,8 @@ public class BasicNetwork implements Serializable, Network,
 	public NeuralData compute(final NeuralData input,
 			NeuralOutputHolder useHolder) {
 		NeuralOutputHolder holder;
-		
-		if( logger.isDebugEnabled() ) {
+
+		if (logger.isDebugEnabled()) {
 			logger.debug("Pattern {} presented to neural network", input);
 		}
 
@@ -236,17 +230,16 @@ public class BasicNetwork implements Serializable, Network,
 
 	private void compute(NeuralOutputHolder holder, Layer layer,
 			NeuralData input, Synapse source) {
-		
-		if( logger.isDebugEnabled() ) {
+
+		if (logger.isDebugEnabled()) {
 			logger.debug("Processing layer: {}, input= {}", layer, input);
 		}
-		
+
 		handleRecurrentInput(layer, input, source);
-		
+
 		for (Synapse synapse : layer.getNext()) {
-			if (!holder.getResult().containsKey(synapse)) 
-			{
-				if( logger.isDebugEnabled() ) {
+			if (!holder.getResult().containsKey(synapse)) {
+				if (logger.isDebugEnabled()) {
 					logger.debug("Processing synapse: {}", synapse);
 				}
 				NeuralData pattern = synapse.compute(input);
@@ -260,18 +253,16 @@ public class BasicNetwork implements Serializable, Network,
 			}
 		}
 	}
-	
-	private void handleRecurrentInput(final Layer layer, final NeuralData input, final Synapse source)
-	{
-		for(Synapse synapse: this.structure.getPreviousSynapses(layer) )
-		{
-			if(synapse!=source)
-			{
-				if( logger.isDebugEnabled() ) {
+
+	private void handleRecurrentInput(final Layer layer,
+			final NeuralData input, final Synapse source) {
+		for (Synapse synapse : this.structure.getPreviousSynapses(layer)) {
+			if (synapse != source) {
+				if (logger.isDebugEnabled()) {
 					logger.debug("Recurrent layer from: {}", input);
 				}
 				synapse.getFromLayer().recur(input);
-				if( logger.isDebugEnabled() ) {
+				if (logger.isDebugEnabled()) {
 					logger.debug("Recurrent layer to: {}", input);
 				}
 			}
@@ -296,30 +287,29 @@ public class BasicNetwork implements Serializable, Network,
 	 * @return True if the two networks are equal.
 	 */
 	public boolean equals(final BasicNetwork other) {
-		return compareLayer(this.inputLayer,other.getInputLayer(),Encog.DEFAULT_PRECISION);
+		return compareLayer(this.inputLayer, other.getInputLayer(),
+				Encog.DEFAULT_PRECISION);
 	}
-	
-	public boolean equals(final BasicNetwork other, int precision)
-	{
-		return compareLayer(this.inputLayer,other.getInputLayer(),precision);
+
+	public boolean equals(final BasicNetwork other, int precision) {
+		return compareLayer(this.inputLayer, other.getInputLayer(), precision);
 	}
-	
-	public boolean compareLayer(Layer layerThis,Layer layerOther,int precision)
-	{
+
+	public boolean compareLayer(Layer layerThis, Layer layerOther, int precision) {
 		Iterator<Synapse> iteratorOther = layerOther.getNext().iterator();
-		
-		for(Synapse synapseThis: layerThis.getNext() )
-		{
-			if( !iteratorOther.hasNext())
+
+		for (Synapse synapseThis : layerThis.getNext()) {
+			if (!iteratorOther.hasNext())
 				return false;
 			Synapse synapseOther = iteratorOther.next();
-			if( !synapseThis.getMatrix().equals(synapseOther.getMatrix(),precision))
+			if (!synapseThis.getMatrix().equals(synapseOther.getMatrix(),
+					precision))
 				return false;
-			if( synapseThis.getToLayer()!=null )
-			{
-				if( synapseOther.getToLayer() ==null )
+			if (synapseThis.getToLayer() != null) {
+				if (synapseOther.getToLayer() == null)
 					return false;
-				if(!compareLayer(synapseThis.getToLayer(),synapseOther.getToLayer(),precision))
+				if (!compareLayer(synapseThis.getToLayer(), synapseOther
+						.getToLayer(), precision))
 					return false;
 			}
 		}
@@ -412,9 +402,7 @@ public class BasicNetwork implements Serializable, Network,
 	 * @throws MatrixException
 	 */
 	public void reset() {
-		for (final Layer layer : this.structure.getLayers()) {
-			layer.reset();
-		}
+		(new RangeRandomizer(-1, 1)).randomize(this);
 	}
 
 	/**
@@ -489,7 +477,8 @@ public class BasicNetwork implements Serializable, Network,
 		}
 
 		// delete a column on the previous
-		final Collection<Layer> previous = this.structure.getPreviousLayers(targetLayer);
+		final Collection<Layer> previous = this.structure
+				.getPreviousLayers(targetLayer);
 
 		for (Layer prevLayer : previous) {
 			if (previous != null) {
@@ -503,9 +492,8 @@ public class BasicNetwork implements Serializable, Network,
 		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
 
 	}
-	
-	public String toString()
-	{
+
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[BasicNetwork: Layers=");
 		int layers = this.structure.getLayers().size();
@@ -514,18 +502,16 @@ public class BasicNetwork implements Serializable, Network,
 		return builder.toString();
 	}
 
-
 	/**
-	 * @param outputLayer the outputLayer to set
+	 * @param outputLayer
+	 *            the outputLayer to set
 	 */
 	public void setOutputLayer(Layer outputLayer) {
 		this.outputLayer = outputLayer;
 	}
 
-
 	public NeuralStructure getStructure() {
 		return structure;
 	}
-	
-	
+
 }

@@ -424,20 +424,6 @@ public class TestMatrix extends TestCase {
 		TestCase.assertEquals(4, matrix.size());
 	}
 	
-	public void testRandomize() throws Throwable
-	{
-		final double MIN = 1.0;
-		final double MAX = 10.0;
-		Matrix matrix = new Matrix(10,10);
-		matrix.ramdomize(MIN,MAX);
-		Double array[] = matrix.toPackedArray();
-		for(int i=0;i<array.length;i++)
-		{
-			if( array[i]<MIN || array[i]>MAX )
-				TestCase.assertFalse(true);
-		}
-	}
-	
 	public void testVectorLength() throws Throwable
 	{
 		double vectorData[] = {1.0,2.0,3.0,4.0};

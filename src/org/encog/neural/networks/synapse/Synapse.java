@@ -77,8 +77,6 @@ public interface Synapse extends Cloneable {
 	
 	public SynapseType getType();
 	
-	public void randomize();
-	
 	public boolean isTeachable();
 	
 	public Object clone();

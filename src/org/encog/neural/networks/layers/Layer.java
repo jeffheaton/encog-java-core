@@ -51,11 +51,6 @@ public interface Layer extends Cloneable {
 	 * @return The neuron count.
 	 */
 	int getNeuronCount();
-
-	/**
-	 * Reset the weight matrix to random values.
-	 */
-	void reset();
 	
 	Collection<Layer> getNextLayers();
 	
