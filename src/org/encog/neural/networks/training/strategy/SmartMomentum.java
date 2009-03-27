@@ -6,23 +6,59 @@ import org.encog.neural.networks.training.Train;
 
 public class SmartMomentum implements Strategy {
 
+	public static final double MIN_IMPROVEMENT = 0.0001;
+	public static final double MAX_MOMENTUM = 4;
+	public static final double START_MOMENTUM = 0.1;
+	public static final double MOMENTUM_INCREASE = 0.01;
+	public static final double MOMENTUM_CYCLES = 10;
+	
 	private Train train;
 	private Momentum setter;
+	private double lastImprovement;
+	private double lastError;
+	private boolean ready;
+	private int lastMomentum;
+	private double currentMomentum;
 	
 	public void init(Train train) {
 		this.train = train;
 		this.setter = (Momentum)train;
-		
-	}
-
-	public void postIteration() {
-		// TODO Auto-generated method stub
+		ready = false;
+		this.setter.setMomentum(0.0);
+		this.currentMomentum = 0;
 		
 	}
 
 	public void preIteration() {
-		// TODO Auto-generated method stub
-		
+		this.lastError = this.train.getError();
+	}
+	
+	public void postIteration() {
+		if(ready )
+		{
+			double currentError = this.train.getError();
+			this.lastImprovement = (currentError-lastError)/lastError;
+			System.out.println("Last improvement:" + this.lastImprovement);
+			if( (this.lastImprovement>0) ||
+				(Math.abs(this.lastImprovement)<SmartMomentum.MIN_IMPROVEMENT) )
+			{
+				this.lastMomentum++;
+				
+				if( this.lastMomentum > 0)
+				{
+					
+				}
+			}
+			else
+			{
+				this.currentMomentum = 0;
+				this.setter.setMomentum(0);
+			}
+		}
+		else
+		{
+			ready = true;
+		}
 	}
 
 }
