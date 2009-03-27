@@ -3,9 +3,13 @@ package org.encog.neural.networks.training.strategy;
 import org.encog.neural.networks.training.Momentum;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SmartMomentum implements Strategy {
 
+	private final Logger logger = LoggerFactory.getLogger(this.getClass().getName());
+	
 	public static final double MIN_IMPROVEMENT = 0.0001;
 	public static final double MAX_MOMENTUM = 4;
 	public static final double START_MOMENTUM = 0.1;
@@ -38,19 +42,38 @@ public class SmartMomentum implements Strategy {
 		{
 			double currentError = this.train.getError();
 			this.lastImprovement = (currentError-lastError)/lastError;
-			System.out.println("Last improvement:" + this.lastImprovement);
+			if( logger.isTraceEnabled() )
+			{
+				logger.trace("Last improvement: {}", this.lastImprovement );
+			}
+			
 			if( (this.lastImprovement>0) ||
 				(Math.abs(this.lastImprovement)<SmartMomentum.MIN_IMPROVEMENT) )
 			{
 				this.lastMomentum++;
 				
-				if( this.lastMomentum > 0)
+				if( this.lastMomentum > SmartMomentum.MOMENTUM_CYCLES )
 				{
-					
+					this.lastMomentum = 0;
+					if( ((int)this.currentMomentum)==0 )
+					{
+						this.currentMomentum = SmartMomentum.START_MOMENTUM;
+					}
+					this.currentMomentum*=(1.0+SmartMomentum.MOMENTUM_INCREASE);
+					this.setter.setMomentum(this.currentMomentum);
+					if( logger.isDebugEnabled() )
+					{
+						logger.trace("Adjusting momentum: {}", this.currentMomentum );
+					}
 				}
 			}
 			else
 			{
+				if( logger.isDebugEnabled() )
+				{
+					logger.trace("Setting momentum back to zero." );
+				}
+
 				this.currentMomentum = 0;
 				this.setter.setMomentum(0);
 			}

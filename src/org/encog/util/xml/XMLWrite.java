@@ -77,6 +77,7 @@ public class XMLWrite {
 		try {
 			this.outputXML.startElement("", "", name, this.attributes);
 			this.tagStack.push(name);
+			this.attributes.clear();
 		} catch (SAXException e) {
 			throw new EncogError(e);
 		}		

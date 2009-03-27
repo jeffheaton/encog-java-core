@@ -26,6 +26,10 @@ public class Greedy implements Strategy {
 		{
 		if( this.train.getError()>this.lastError )
 		{
+			if( logger.isDebugEnabled() )
+			{
+				logger.debug("Greedy strategy dropped last iteration.");
+			}
 			this.train.setError(this.lastError);
 			NetworkCODEC.arrayToNetwork(this.lastNetwork, train.getNetwork());
 		}

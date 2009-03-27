@@ -1,5 +1,6 @@
 package org.encog.util.xml;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Queue;
@@ -212,7 +213,6 @@ public class XMLRead implements Runnable{
 	private BlockingQueue<XMLElement> queue;
 	private AtomicBoolean done = new AtomicBoolean();
 	
-	
 	public XMLRead(InputStream input)
 	{
 			this.input = input;
@@ -259,4 +259,21 @@ public class XMLRead implements Runnable{
 		}
 		
 	}
+
+	public void skipObject(XMLElement element) {
+		XMLElement next;
+		
+		while( (next = get())!=null )
+		{
+			XMLElementType type = next.getType();
+			if( type== XMLElementType.start )
+			{
+				skipObject(next);
+			}
+			else if( type==XMLElementType.end )
+				return;
+		}
+		
+	}
+
 }

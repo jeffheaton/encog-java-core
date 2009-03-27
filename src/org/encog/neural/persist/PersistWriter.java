@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Date;
 
 import org.encog.Encog;
 import org.encog.neural.persist.persistors.PersistorUtil;
@@ -21,18 +22,17 @@ public class PersistWriter {
 			this.fileOutput = new FileOutputStream(filename);
 			this.out = new XMLWrite(this.fileOutput);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+			throw new PersistError(e);
+		}		
 	}
 	
 	public void writeHeader()
 	{
 		this.out.beginTag("Header");
 		this.out.addProperty("platform", "Java");
-		this.out.addProperty("fileVersion", Encog.ENCOG_FILE_VERSION);
-		this.out.addProperty("encogVersion", Encog.ENCOG_VERSION);		
+		this.out.addProperty("fileVersion", Encog.getInstance().getProperties().get(Encog.ENCOG_FILE_VERSION));
+		this.out.addProperty("encogVersion", Encog.getInstance().getProperties().get(Encog.ENCOG_VERSION));
+		this.out.addProperty("modified", (new Date()).toString());
 		this.out.endTag();
 	}
 	

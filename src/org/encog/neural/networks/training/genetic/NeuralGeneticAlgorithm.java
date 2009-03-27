@@ -90,8 +90,10 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	}
 
 	public void iteration() {
+		preIteration();
 		getGenetic().iteration();
 		setError(getGenetic().getError());
+		postIteration();
 	}
 	
 	

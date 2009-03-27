@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class XMLElement {
 	
-	enum XMLElementType {
+	public enum XMLElementType {
 		start,
 		end,
 		statEnd,

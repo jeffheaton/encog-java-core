@@ -16,6 +16,11 @@ public class PersistorUtil {
 	 */
 	public static Persistor createPersistor(final String className) {
 		try {
+			// handle any hard coded ones
+			if( className.equals("TrainingData"))
+				return new BasicNeuralDataSetPersistor();
+			
+			// find using classes
 			String name = className + "Persistor";
 			final Class<?> c = Class
 					.forName("org.encog.neural.persist.persistors." + name);
@@ -46,4 +51,5 @@ public class PersistorUtil {
 		out.addAttribute("description", obj.getDescription());
 		out.beginTag(objectType);
 	}
+	
 }

@@ -26,7 +26,15 @@
 package org.encog.neural.persist;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.List;
+
+import org.encog.EncogError;
+import org.encog.neural.persist.persistors.PersistorUtil;
+import org.encog.util.xml.XMLElement;
 
 /**
  * An EncogPersistedCollection holds a collection of EncogPersistedObjects. This
@@ -41,6 +49,11 @@ public class EncogPersistedCollection {
 	private File filePrimary;
 	private File fileTemp;
 	private PersistWriter writer;
+	
+	public EncogPersistedCollection(String filename)
+	{
+		this(new File(filename));
+	}
 	
 	public EncogPersistedCollection(File file)
 	{
@@ -100,6 +113,7 @@ public class EncogPersistedCollection {
 		writer.endObjects();
 		writer.end();
 		writer.close();
+		mergeTemp();
 	}
 
 	/**
@@ -149,10 +163,22 @@ public class EncogPersistedCollection {
 	 * @return The Encog object with the correct name.
 	 */
 	public EncogPersistedObject find(String name) {
-		return null;
+				
+		PersistReader reader = new PersistReader(this.filePrimary);
+		EncogPersistedObject result = reader.readObject(name);
+		
+
+		
+		return result;
 	}
 
 	public void delete(String name) {
 
+	}
+	
+	public void mergeTemp()
+	{				
+		this.filePrimary.delete();
+		this.fileTemp.renameTo(this.filePrimary);		
 	}
 }

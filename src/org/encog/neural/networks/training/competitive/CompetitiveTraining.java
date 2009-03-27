@@ -56,6 +56,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	public void iteration() {
 		
+		preIteration();
+		
 		for (int i = 0; i < this.won.length; i++) {
 			this.won[i] = 0;
 		}
@@ -88,6 +90,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		}
 		
 		setError(Math.sqrt(error));
+		
+		postIteration();
 	}
 	
 	private double adjustWeight(double startingWeight,double input, int currentNeuron, int bestNeuron) 

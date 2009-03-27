@@ -66,7 +66,8 @@ import org.slf4j.LoggerFactory;
  * much the previous learning iteration affects the current. To use no momentum
  * at all specify zero.
  */
-public class Backpropagation extends BasicTraining implements LearningRate, Momentum {
+public class Backpropagation extends BasicTraining implements LearningRate,
+		Momentum {
 
 	/**
 	 * The learning rate. This is the degree to which the deltas will affect the
@@ -84,9 +85,9 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 	 * THe network that is being trained.
 	 */
 	private final BasicNetwork network;
-	
+
 	private NeuralData fire;
-	
+
 	/**
 	 * The logger to use.
 	 */
@@ -96,15 +97,17 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 	 * A map between neural network layers and the corresponding
 	 * BackpropagationLayer.
 	 */
-	private final Map<Synapse, PropagationSynapse> synapseMap = 
-		new HashMap<Synapse, PropagationSynapse>();
-	
+	private final Map<Synapse, PropagationSynapse> synapseMap = new HashMap<Synapse, PropagationSynapse>();
+
 	private final NeuralOutputHolder outputHolder = new NeuralOutputHolder();
 
 	/**
 	 * Construct a backpropagation trainer.
-	 * @param network The network to train.
-	 * @param training The training data to use.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
 	 * @param learnRate
 	 *            The rate at which the weight matrix will be adjusted based on
 	 *            learning.
@@ -120,21 +123,18 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 		this.momentum = momentum;
 		setTraining(training);
 
-		for(Synapse synapse: network.getStructure().getSynapses() )
-		{
-			if( synapse.isTeachable() )
-			{
-			PropagationSynapse ps = new PropagationSynapse(synapse); 
-			this.synapseMap.put(synapse, ps);
+		for (Synapse synapse : network.getStructure().getSynapses()) {
+			if (synapse.isTeachable()) {
+				PropagationSynapse ps = new PropagationSynapse(synapse);
+				this.synapseMap.put(synapse, ps);
 			}
 		}
-		
+
 	}
-	
+
 	public Backpropagation(final BasicNetwork network,
-			final NeuralDataSet training)
-	{
-		this(network,training,0,0);
+			final NeuralDataSet training) {
+		this(network, training, 0, 0);
 		addStrategy(new SmartLearningRate());
 		addStrategy(new SmartMomentum());
 	}
@@ -153,39 +153,43 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 							+ ideal.size() + " for output layer size="
 							+ this.network.getOutputLayer().getNeuronCount());
 		}
-		
-		if( logger.isDebugEnabled() ) {
+
+		if (logger.isDebugEnabled()) {
 			logger.debug("Backpropagation backward pass");
 		}
 
 		Layer current = this.network.getOutputLayer();
 		double[] backDeltas = this.calculateInitialDelta(this.fire, ideal);
-		backwardPass(current,backDeltas);	
+		backwardPass(current, backDeltas);
 	}
-	
-	private void backwardPass(final Layer current, final double[] backDeltas)
-	{	
-		if( logger.isDebugEnabled() ) {
+
+	private void backwardPass(final Layer current, final double[] backDeltas) {
+		if (logger.isDebugEnabled()) {
 			logger.debug("Backpropagation backward pass, layer= {}", current);
 		}
-		for(Synapse synapse : network.getStructure().getPreviousSynapses(current))
-		{
-			
-			
+		for (Synapse synapse : network.getStructure().getPreviousSynapses(
+				current)) {
+
 			double[] nextDeltas = backDeltas;
-			if( synapse.isTeachable() && !network.isOutput(synapse.getFromLayer())) {
-				
+			if (synapse.isTeachable()
+					&& !network.isOutput(synapse.getFromLayer())) {
+
 				NeuralData actual = this.outputHolder.getResult().get(synapse);
-				if( logger.isDebugEnabled() ) {
-					logger.debug("Backpropagation backward pass, synapse= {}, actual= {}", synapse, actual);
+				if (logger.isDebugEnabled()) {
+					logger
+							.debug(
+									"Backpropagation backward pass, synapse= {}, actual= {}",
+									synapse, actual);
 				}
-				nextDeltas = getPropagationSynapse(synapse).calcError(synapse.getFromLayer().getActivationFunction(),actual,backDeltas, network.isHidden(synapse.getFromLayer()));
+				nextDeltas = getPropagationSynapse(synapse).calcError(
+						synapse.getFromLayer().getActivationFunction(), actual,
+						backDeltas, network.isHidden(synapse.getFromLayer()));
 				backwardPass(synapse.getFromLayer(), nextDeltas);
-			}
-			else
-			{
-				if( logger.isDebugEnabled() ) {
-					logger.debug("Backpropagation backward pass, skip synapse= {}", synapse);
+			} else {
+				if (logger.isDebugEnabled()) {
+					logger.debug(
+							"Backpropagation backward pass, skip synapse= {}",
+							synapse);
 				}
 			}
 		}
@@ -204,7 +208,7 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 		if (result == null) {
 			throw new NeuralNetworkError(
 					"Layer unknown to backpropagation trainer, "
-					+ "was a layer added after training begain?");
+							+ "was a layer added after training begain?");
 		}
 
 		return result;
@@ -218,46 +222,46 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
-	
-	private NeuralData forwardPass(NeuralData input)
-	{
-		if( logger.isDebugEnabled() ) {
+
+	private NeuralData forwardPass(NeuralData input) {
+		if (logger.isDebugEnabled()) {
 			logger.debug("Backpropagation forward pass");
 		}
 		this.outputHolder.getResult().clear();
-		this.fire = network.compute(input,this.outputHolder);
+		this.fire = network.compute(input, this.outputHolder);
 		return this.fire;
 	}
 
 	/**
 	 * Perform one iteration of training.
 	 * 
-	 * Note: if you get a StackOverflowError while training, then you have endless
-	 * recurrant loops.  Try inserting no trainable synapses on one side of the
-	 * loop.
+	 * Note: if you get a StackOverflowError while training, then you have
+	 * endless recurrant loops. Try inserting no trainable synapses on one side
+	 * of the loop.
 	 */
 	public void iteration() {
-		
-		if( logger.isInfoEnabled() ) {
+
+		if (logger.isInfoEnabled()) {
 			logger.info("Beginning backpropagation iteration");
 		}
-		
+
 		preIteration();
-		
+
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
-		for (final NeuralDataPair pair : getTraining() ) {
-			if( logger.isDebugEnabled() ) {
-				logger.debug("Backpropagation training on: input={},ideal={}",pair.getInput(),pair.getIdeal());
+		for (final NeuralDataPair pair : getTraining()) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("Backpropagation training on: input={},ideal={}",
+						pair.getInput(), pair.getIdeal());
 			}
 			NeuralData actual = forwardPass(pair.getInput());
 			errorCalculation.updateError(actual, pair.getIdeal());
 			backwardPass(pair.getIdeal());
-		}		
+		}
 		learn();
 
 		this.setError(errorCalculation.calculateRMS());
-		
+
 		postIteration();
 	}
 
@@ -266,38 +270,39 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 	 * calcError.
 	 */
 	public void learn() {
-		if( logger.isDebugEnabled() ) {
+		if (logger.isDebugEnabled()) {
 			logger.debug("Backpropagation learning pass");
 		}
-		for(PropagationSynapse synapse: this.synapseMap.values() )
-		{
-			logger.debug("Backpropagation, synapse learning: {}",synapse.getSynapse());
+		for (PropagationSynapse synapse : this.synapseMap.values()) {
+			logger.debug("Backpropagation, synapse learning: {}", synapse
+					.getSynapse());
 			synapse.learn(this.learnRate, this.momentum);
 		}
 
 	}
-	
+
 	/**
 	 * Calculate the error for the given ideal values.
 	 * 
 	 * @param ideal
 	 *            Ideal output values.
 	 */
-	public double []calculateInitialDelta(final NeuralData actual, final NeuralData ideal) {
+	public double[] calculateInitialDelta(final NeuralData actual,
+			final NeuralData ideal) {
 		Layer outputLayer = this.network.getOutputLayer();
-		double[] result = new double[outputLayer.getNeuronCount()];	
+		double[] result = new double[outputLayer.getNeuronCount()];
 		// layer errors and deltas for output layer
 		for (int i = 0; i < outputLayer.getNeuronCount(); i++) {
 			result[i] = actual.getData(i);
 		}
-		
+
 		outputLayer.getActivationFunction().derivativeFunction(result);
-		
+
 		for (int i = 0; i < outputLayer.getNeuronCount(); i++) {
-			result[i]*= ideal.getData(i) - actual.getData(i);
+			result[i] *= ideal.getData(i) - actual.getData(i);
 		}
-		
-		if( logger.isTraceEnabled() ) {
+
+		if (logger.isTraceEnabled()) {
 			logger.trace("Initial deltas: " + DumpMatrix.dumpArray(result));
 		}
 		return result;
@@ -308,7 +313,7 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 	}
 
 	public void setLearningRate(double rate) {
-		this.learnRate = rate;		
+		this.learnRate = rate;
 	}
 
 	public double getMomentum() {
@@ -316,6 +321,6 @@ public class Backpropagation extends BasicTraining implements LearningRate, Mome
 	}
 
 	public void setMomentum(double m) {
-		this.momentum = m;		
+		this.momentum = m;
 	}
 }

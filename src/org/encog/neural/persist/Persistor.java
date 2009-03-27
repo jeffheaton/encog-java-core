@@ -27,8 +27,10 @@ package org.encog.neural.persist;
 
 import javax.xml.transform.sax.TransformerHandler;
 
+import org.encog.util.xml.XMLElement;
+import org.encog.util.xml.XMLRead;
 import org.encog.util.xml.XMLWrite;
-import org.w3c.dom.Element;
+
 
 /**
  * Persistor: This interface defines a class that can load and save an
@@ -44,7 +46,7 @@ public interface Persistor {
 	 * @param node The node to load from.
 	 * @return The EncogPersistedObject that was loaded.
 	 */
-	EncogPersistedObject load(Element node);
+	EncogPersistedObject load(XMLElement node,XMLRead in);
 
 	/**
 	 * Save the specified object.

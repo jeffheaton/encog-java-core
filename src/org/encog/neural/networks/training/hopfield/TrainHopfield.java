@@ -31,6 +31,9 @@ public class TrainHopfield extends BasicTraining {
 	}
 
 	public void iteration() {
+		
+		preIteration();
+		
 		for (final Layer layer : this.network.getStructure().getLayers()) {
 			for( Synapse synapse: layer.getNext()) {
 				if( synapse.isSelfConnected() )
@@ -39,6 +42,8 @@ public class TrainHopfield extends BasicTraining {
 				}
 			}
 		}
+		
+		postIteration();
 	}		
 	
 	
