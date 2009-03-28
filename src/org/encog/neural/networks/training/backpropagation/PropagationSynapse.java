@@ -120,7 +120,8 @@ public class PropagationSynapse {
 	/**
 	 * Calculate the current error.
 	 */
-	public double []calcError(ActivationFunction activation, NeuralData lastOutput, double[] lastDeltas, boolean hidden) {
+	public double []calcError(ActivationFunction activation, NeuralData lastOutput, 
+			double[] lastDeltas, boolean hidden) {
 		
 		double[] thisDeltas = new double[synapse.getFromNeuronCount()];
 		double[] error = new double[synapse.getFromNeuronCount()];
@@ -205,6 +206,13 @@ public class PropagationSynapse {
 		return synapse;
 	}
 	
-	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[PropagationSynapse:");
+		result.append(this.synapse.toString());
+		result.append("]");
+		return result.toString();
+	}
 
 }
