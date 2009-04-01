@@ -19,12 +19,16 @@ public class PropagationLevel {
 	private final List<Layer> layers = new ArrayList<Layer>();
 	private final List<PropagationSynapse> outgoing = new ArrayList<PropagationSynapse>();
 	private final double[] deltas;
+	private final double[] thresholdDeltas;
+	private final double[] thresholdMomentum;
 	private final Propagation propagation;
 	
 	public PropagationLevel(Propagation propagation, Layer layer)
 	{
 		this.neuronCount = layer.getNeuronCount();
 		this.deltas = new double[this.neuronCount];
+		this.thresholdDeltas = new double[this.neuronCount];
+		this.thresholdMomentum = new double[this.neuronCount];
 		this.layers.add(layer);		
 		this.propagation = propagation;
 	}
@@ -51,6 +55,8 @@ public class PropagationLevel {
 		this.neuronCount = count;
 		
 		this.deltas = new double[this.neuronCount];
+		this.thresholdDeltas = new double[this.neuronCount];
+		this.thresholdMomentum = new double[this.neuronCount];
 	}
 
 	public int getNeuronCount() {
@@ -86,7 +92,13 @@ public class PropagationLevel {
 		for(Layer layer: this.layers)
 		{
 			Collection<Synapse> synapses = this.propagation.getNetwork().getStructure().getPreviousSynapses(layer);
-			result.addAll(synapses);
+			
+			// add all teachable synapses
+			for(Synapse synapse: synapses)
+			{
+				if(synapse.isTeachable())
+					result.add(synapse);
+			}
 		}
 			
 		return result;
@@ -125,10 +137,27 @@ public class PropagationLevel {
 
 
 	public void learn() {
+		
+		// teach the synapses
 		for(PropagationSynapse synapse: this.outgoing)
 		{
 			synapse.learn(this.propagation.getLearningRate(), this.propagation.getMomentum());
 		}		
+		
+		// teach the threshold
+		for(Layer layer: this.layers)
+		{
+			for(int i=0;i<layer.getNeuronCount();i++)
+			{
+				double delta = this.thresholdDeltas[i]*this.propagation.getLearningRate();
+				delta+=this.thresholdMomentum[i]*propagation.getMomentum();
+				layer.setThreshold(i, layer.getThreshold(i)+delta);
+				this.thresholdMomentum[i] = delta;
+				this.thresholdDeltas[i] = 0.0;
+			}
+			
+		}
+		
 	}
 
 	public void applyDerivative() {
@@ -160,4 +189,37 @@ public class PropagationLevel {
 			}			
 		}
 	}	
+	
+	public double[] getThresholdDeltas()
+	{
+		return this.thresholdDeltas;
+	}
+	
+	public double getThresholdDelta(int index)
+	{
+		return this.thresholdDeltas[index];
+	}
+	
+	public void setThresholdDelta(int index,double d)
+	{
+		this.thresholdDeltas[index] = d;
+	}
+	
+	public void accumulateThresholdDelta(final int index, final double value) {
+		this.thresholdDeltas[index]+= value;
+	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[PropagationLevel(");
+		result.append(this.neuronCount);
+		result.append("):");
+		for(Layer layer: this.layers)
+		{
+			result.append(layer.toString());
+		}
+		result.append("]");
+		return result.toString();
+	}
 }

@@ -67,4 +67,9 @@ public interface Layer extends Cloneable {
 	void addNext(Layer next, SynapseType type);
 	NeuralData recur();
 	Object clone();
+	
+	public double getThreshold(int index);
+	public void setThreshold(int index,double d);
+	public double[] getThreshold();
+	
 }

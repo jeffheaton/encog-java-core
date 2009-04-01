@@ -50,11 +50,6 @@ public class PropagationSynapse {
 	 */
 	private Matrix accMatrixDelta;
 
-	/**
-	 * The bias values are stored in a "virtual row" just beyond the regular
-	 * weight rows. This variable holds the index to that location.
-	 */
-	private int biasRow;
 
 	/**
 	 * Hold the previous matrix deltas so that "momentum" can be implemented.
@@ -86,8 +81,7 @@ public class PropagationSynapse {
 		int toCount = synapse.getToNeuronCount();
 		
 		this.accMatrixDelta = new Matrix(fromCount+1,toCount);
-		this.matrixDelta = new Matrix(fromCount+1,toCount);
-		this.biasRow = fromCount;		
+		this.matrixDelta = new Matrix(fromCount+1,toCount);		
 	}
 
 	/**
@@ -104,56 +98,6 @@ public class PropagationSynapse {
 			final double value) {
 		this.accMatrixDelta.add(i1, i2, value);
 	}
-
-	/**
-	 * Accumulate a threshold delta.
-	 * 
-	 * @param index
-	 *            The threshold index.
-	 * @param value
-	 *            The threshold value.
-	 */
-	public void accumulateThresholdDelta(final int index, final double value) {
-		this.accMatrixDelta.add(this.biasRow, index, value);
-	}
-
-	/**
-	 * Calculate the current error.
-	 */
-	public double []calcError(ActivationFunction activation, NeuralData lastOutput, 
-			double[] lastDeltas, boolean hidden) {
-		
-		double[] thisDeltas = new double[synapse.getFromNeuronCount()];
-		double[] error = new double[synapse.getFromNeuronCount()];
-	
-		for (int i = 0; i < synapse.getToNeuronCount(); i++) {
-			for (int j = 0; j < synapse.getFromNeuronCount(); j++) {
-				accumulateMatrixDelta(j, i, lastDeltas[i]
-						* lastOutput.getData(j));
-				
-				error[j]+=(synapse.getMatrix().get(j, i)
-						* lastDeltas[i]);
-			}
-			accumulateThresholdDelta(i, lastDeltas[i]);
-		}
-
-		if (hidden) {
-			NeuralData actual = lastOutput;
-			// hidden layer deltas
-			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
-				thisDeltas[i] = actual.getData(i);
-			}
-			
-			activation.derivativeFunction(thisDeltas);	
-			
-			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
-				thisDeltas[i] *= error[i];
-			}
-		}
-		return thisDeltas;
-	}
-
-	
 
 	/**
 	 * Learn from the last error calculation.
@@ -192,10 +136,6 @@ public class PropagationSynapse {
 
 	public Matrix getAccMatrixDelta() {
 		return accMatrixDelta;
-	}
-
-	public int getBiasRow() {
-		return biasRow;
 	}
 
 	public Matrix getMatrixDelta() {

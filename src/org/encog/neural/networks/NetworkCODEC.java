@@ -25,7 +25,7 @@ public class NetworkCODEC {
 	public static void arrayToNetwork(final Double[] array,
 			final BasicNetwork network) {
 
-		// copy all weight and threshold data
+		// copy all weight data
 		int currentIndex = 0;
 		Collection<Synapse> synapses = network.getStructure().getSynapses();
 		for (final Synapse synapse : synapses) {
@@ -36,6 +36,14 @@ public class NetworkCODEC {
 				
 			}
 		}
+		
+		// copy all threshold data
+		for( final Layer layer: network.getStructure().getLayers() ) {
+			for(int i=0;i<layer.getNeuronCount();i++) {
+				layer.setThreshold(i, array[currentIndex++]); 
+			}
+		}
+		
 
 	}
 
@@ -52,15 +60,20 @@ public class NetworkCODEC {
 	public static Double[] networkToArray(final BasicNetwork network) {
 		int size = 0;
 
-		// first determine size
+		// first determine size from matrixes
 		for (final Synapse synapse : network.getStructure().getSynapses()) {
 			size += synapse.getMatrixSize();
+		}
+		
+		// determine size from threshold values
+		for( final Layer layer: network.getStructure().getLayers() ) {
+			size+=layer.getNeuronCount();
 		}
 
 		// allocate an array to hold
 		final Double[] result = new Double[size];
 
-		// copy all weight and threshold data
+		// copy all weight data
 		int currentIndex = 0;
 		Collection<Synapse> synapses = network.getStructure().getSynapses();
 		for (final Synapse synapse : synapses ) {
@@ -69,6 +82,13 @@ public class NetworkCODEC {
 				for (int i = 0; i < temp.length; i++) {
 					result[currentIndex++] = temp[i];
 				}
+			}
+		}
+		
+		// copy all threshold data
+		for( final Layer layer: network.getStructure().getLayers() ) {
+			for(int i=0;i<layer.getNeuronCount();i++) {
+				result[currentIndex++] = layer.getThreshold(i); 
 			}
 		}
 

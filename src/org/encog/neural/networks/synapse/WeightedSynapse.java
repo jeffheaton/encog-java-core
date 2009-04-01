@@ -19,7 +19,7 @@ public class WeightedSynapse extends BasicSynapse {
 	{
 		this.setFromLayer(fromLayer);
 		this.setToLayer(toLayer);	
-		this.matrix = new Matrix(getFromNeuronCount() + 1, getToNeuronCount());		
+		this.matrix = new Matrix(getFromNeuronCount(), getToNeuronCount());		
 	}
 	
 	public WeightedSynapse() {

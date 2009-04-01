@@ -75,6 +75,8 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	
 	private int neuronCount;
 	
+	private double[] threshold;
+	
 
 	/**
 	 * Construct this layer with a non-default threshold function.
@@ -88,6 +90,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 			final int neuronCount) {
 		this.neuronCount = neuronCount;
 		this.setActivationFunction( thresholdFunction );
+		this.threshold = new double[neuronCount];
 	}
 
 	/**
@@ -109,6 +112,12 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 * @return The output from this layer.
 	 */
 	public void compute(final NeuralData pattern) {
+		
+		// apply the thresholds
+		for(int i=0;i<this.threshold.length;i++)
+		{
+			pattern.setData(i, pattern.getData(i)+this.threshold[i]);
+		}
 		
 		// apply the activation function
 		this.getActivationFunction().activationFunction(pattern.getData());
@@ -259,9 +268,21 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		
 	}
 
-	public void process(NeuralData pattern) {
-		// TODO Auto-generated method stub
-		
+	public void process(NeuralData pattern) {		
+	}
+	
+	public double getThreshold(int index)
+	{
+		return this.threshold[index];
+	}
+	
+	public void setThreshold(int index,double d)
+	{
+		this.threshold[index] = d;
 	}
 
+	public double[] getThreshold()
+	{
+		return this.threshold;
+	}
 }

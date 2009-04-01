@@ -3,6 +3,7 @@ package org.encog.util.randomize;
 import org.encog.matrix.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.layers.Layer;
 
 public abstract class BasicRandomizer implements Randomizer {
 
@@ -49,10 +50,18 @@ public abstract class BasicRandomizer implements Randomizer {
 	}
 
 	public void randomize(BasicNetwork network) {
+		
+		// randomize the weight matrix
 		for(Synapse synapse: network.getStructure().getSynapses())
 		{
 			if( synapse.getMatrix()!=null )
 				randomize(synapse.getMatrix());
+		}
+		
+		// randomize the thresholds
+		for(Layer layer: network.getStructure().getLayers() )
+		{
+			randomize(layer.getThreshold());
 		}
 	}
 	

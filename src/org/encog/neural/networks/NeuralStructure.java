@@ -70,7 +70,18 @@ public class NeuralStructure {
 	}
 
 	public Collection<Synapse> getPreviousSynapses(Layer targetLayer) {
+		
 		Collection<Synapse> result = new HashSet<Synapse>();
+		
+		for(Synapse synapse: this.synapses)
+		{
+			if( synapse.getToLayer()==targetLayer)
+				result.add(synapse);
+		}
+		
+		return result;
+		
+		/*Collection<Synapse> result = new HashSet<Synapse>();
 		for (Layer layer : this.getLayers()) {
 			for (Synapse synapse : layer.getNext()) {
 				if (synapse.getToLayer() == targetLayer) {
@@ -78,7 +89,7 @@ public class NeuralStructure {
 				}
 			}
 		}
-		return result;
+		return result;*/
 	}
 
 	public List<Layer> getLayers() {

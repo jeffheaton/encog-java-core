@@ -15,18 +15,14 @@ public class BackpropagationMethod implements PropagationMethod {
 			final PropagationLevel fromLevel,
 			final PropagationLevel toLevel,
 			Layer toLayer,
-			int toNeuron,
+			int toNeuronLocal,
 			PropagationSynapse fromSynapse,
-			int fromNeuron)
+			int fromNeuron,
+			int toNeuronGlobal)
 	{
 		NeuralData output = outputHolder.getResult().get(fromSynapse.getSynapse());
-		fromSynapse.accumulateMatrixDelta(fromNeuron, toNeuron, toLevel.getDelta(toNeuron) * output.getData(fromNeuron));		
-		return (fromSynapse.getSynapse().getMatrix().get(fromNeuron, toNeuron) * toLevel.getDelta(toNeuron) );
-	}
-	
-	private void handleThresholdDelta(PropagationSynapse fromSynapse, int toNeuron, PropagationLevel toLevel)
-	{
-		fromSynapse.accumulateThresholdDelta(toNeuron, toLevel.getDelta(toNeuron) );
+		fromSynapse.accumulateMatrixDelta(fromNeuron, toNeuronLocal, toLevel.getDelta(toNeuronGlobal) * output.getData(fromNeuron));		
+		return (fromSynapse.getSynapse().getMatrix().get(fromNeuron, toNeuronLocal) * toLevel.getDelta(toNeuronGlobal) );
 	}
 	
 	@Override
@@ -38,36 +34,42 @@ public class BackpropagationMethod implements PropagationMethod {
 		// used to hold the errors from this level to the next
 		double[] errors = new double[fromLevel.getNeuronCount()];
 		
+		int toNeuronGlobal = 0;		
+		
 		// loop over every element of the weight matrix and determine the deltas
-		// also determine the threshold deltas.
+		// also determine the threshold deltas.		
 		for(Layer toLayer: toLevel.getLayers() )
 		{
 			for(int toNeuron=0;toNeuron<toLayer.getNeuronCount();toNeuron++)
 			{
-				int neuronIndex = 0;
+				int fromNeuronGlobal = 0;
 				
 				for(PropagationSynapse fromSynapse: fromLevel.getOutgoing() )
 				{
 					for(int fromNeuron=0; fromNeuron<fromSynapse.getSynapse().getFromNeuronCount(); fromNeuron++)
 					{
-						errors[neuronIndex++]+=handleMatrixDelta(
+						errors[fromNeuronGlobal++]+=handleMatrixDelta(
 								output,
 								fromLevel,
 								toLevel,
 								toLayer,
 								toNeuron,
 								fromSynapse,
-								fromNeuron);
+								fromNeuron,
+								toNeuronGlobal);
 					}
-					handleThresholdDelta(fromSynapse, toNeuron,toLevel);
-				}				
+					
+				}	
+				
+				toLevel.setThresholdDelta(toNeuronGlobal, toLevel.getThresholdDelta(toNeuronGlobal)+toLevel.getDelta(toNeuronGlobal));
+				toNeuronGlobal++;
 			}				 
 		}
 		
 		for(int i=0;i<fromLevel.getNeuronCount();i++)
 		{
-			double localActual = fromLevel.getActual(i);
-			fromLevel.setDelta(i,localActual);
+			double actual = fromLevel.getActual(i);
+			fromLevel.setDelta(i,actual);
 		}
 		
 		fromLevel.applyDerivative();
