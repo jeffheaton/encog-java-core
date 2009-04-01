@@ -25,7 +25,6 @@ public class BackpropagationMethod implements PropagationMethod {
 		return (fromSynapse.getSynapse().getMatrix().get(fromNeuron, toNeuronLocal) * toLevel.getDelta(toNeuronGlobal) );
 	}
 	
-	@Override
 	public void calculateError(
 			final NeuralOutputHolder output,
 			final PropagationLevel fromLevel,

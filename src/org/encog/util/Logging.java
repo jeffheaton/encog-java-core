@@ -35,4 +35,10 @@ public class Logging {
 	{
 		setConsoleLevel(Level.OFF);
 	}
+
+	public static void allConsoleLogging() {
+		setConsoleLevel(Level.FINEST);
+		getRootLogger().setLevel(Level.FINEST);
+		
+	}
 }
