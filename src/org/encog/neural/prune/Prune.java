@@ -30,7 +30,7 @@ import java.util.Collection;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.training.backpropagation.Backpropagation;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
 
 public class Prune {

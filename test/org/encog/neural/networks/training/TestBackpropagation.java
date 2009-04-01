@@ -9,7 +9,7 @@ import org.encog.neural.networks.CreateNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.training.backpropagation.Backpropagation;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
 import junit.framework.TestCase;
 
