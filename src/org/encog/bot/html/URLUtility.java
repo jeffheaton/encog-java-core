@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -29,6 +29,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * URLUtility: A set of useful utilities for processing URL's.
  */
@@ -49,6 +52,12 @@ public final class URLUtility {
 	 * The name of the usual default document.
 	 */
 	public static final String INDEX_FILE = "index.html";
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a URL from its basic parts.

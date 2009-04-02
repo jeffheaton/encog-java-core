@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -28,6 +28,8 @@ package org.encog.solve.genetic;
 import java.util.concurrent.Callable;
 
 import org.encog.util.concurrency.EncogTask;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MateWorker: This class is used in conjunction with a thread pool. This allows
@@ -55,6 +57,12 @@ public class MateWorker<GENE_TYPE> implements
 	 * The second child.
 	 */
 	private final Chromosome<GENE_TYPE> child2;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 

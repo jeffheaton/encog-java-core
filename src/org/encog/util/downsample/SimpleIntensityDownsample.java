@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -30,6 +30,8 @@ import java.awt.image.PixelGrabber;
 
 import org.encog.EncogError;
 import org.encog.util.ImageSize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Downsample an image using a simple intensity scale. Color information is
@@ -88,6 +90,12 @@ public class SimpleIntensityDownsample implements Downsample {
 	 * The bottom boundary of the downsample.
 	 */
 	private int downSampleBottom;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct the downsample utility for the specified image.

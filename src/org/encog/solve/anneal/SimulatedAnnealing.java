@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -24,6 +24,9 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 package org.encog.solve.anneal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SimulatedAnnealing: Simulated annealing is a common training method. This
@@ -66,6 +69,12 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * The current temperature.
 	 */
 	private double temperature;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Subclasses should provide a method that evaluates the error for the

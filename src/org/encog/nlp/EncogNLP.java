@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -22,8 +22,7 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-package org.encog.nlp;
+ */package org.encog.nlp;
 
 import java.io.IOException;
 
@@ -37,9 +36,16 @@ import org.encog.nlp.reason.EvaluateText;
 import org.encog.parse.Parse;
 import org.encog.parse.units.UnitManager;
 import org.encog.util.orm.ORMSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class EncogNLP {
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private LongTermMemory memory;
 	private EvaluateText evaluate;

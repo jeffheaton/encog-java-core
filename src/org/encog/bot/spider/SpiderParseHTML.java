@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -28,12 +28,12 @@ package org.encog.bot.spider;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import org.encog.bot.html.HTMLTag;
 import org.encog.bot.html.ParseHTML;
 import org.encog.bot.html.URLUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * SpiderParseHTML: This class layers on top of the ParseHTML class and allows
@@ -43,10 +43,10 @@ import org.encog.bot.html.URLUtility;
  */
 public class SpiderParseHTML extends ParseHTML {
 	/**
-	 * The logger.
+	 * The logging object.
 	 */
-	private static Logger logger = Logger
-			.getLogger("com.heatonresearch.httprecipes.spider.SpiderParseHTML");
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The Spider that this page is being parsed for.
@@ -87,6 +87,10 @@ public class SpiderParseHTML extends ParseHTML {
 		try {
 			this.base = new URL(source.getUrl());
 		} catch (MalformedURLException e) {
+			if( logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
 			throw new SpiderError(e);
 		}
 	}
@@ -98,11 +102,9 @@ public class SpiderParseHTML extends ParseHTML {
 	 *            The URL to add.
 	 * @param type
 	 *            What type of link this is.
-	 * @throws IOException
-	 *             Thrown if an I/O error occurs.
 	 */
 	private void addURL(final String u, final SpiderReportable.URLType type)
-			throws IOException {
+			 {
 		if (u == null) {
 			return;
 		}
@@ -115,20 +117,38 @@ public class SpiderParseHTML extends ParseHTML {
 					|| url.getProtocol().equalsIgnoreCase("https")) {
 				if (this.spider.getReport()
 						.spiderFoundURL(url, this.base, type)) {
-					try {
+					
 						this.spider.addURL(url, source);
-					} catch (final SpiderError e) {
-						throw new IOException(e.getMessage());
-					}
+					
 				}
 			}
 		}
 
 		catch (final MalformedURLException e) {
-			logger.log(Level.INFO, "Malformed URL found:" + u);
+			if( logger.isDebugEnabled() )
+			{
+				if( logger.isDebugEnabled())
+				{
+					logger.debug("Malformed URL found",e);
+				}
+				throw new SpiderError(e);
+			}
+			
 		} catch (final SpiderError e) {
-			logger.log(Level.INFO, "Invalid URL found:" + u + ","
-					+ e.getMessage());
+			if( logger.isDebugEnabled() )
+			{
+				if( logger.isDebugEnabled())
+				{
+					logger.debug("Invalid URL found:",e);
+				}
+				throw new SpiderError(e);
+			}
+		} catch (IOException e) {
+			if( logger.isDebugEnabled())
+			{
+				logger.debug("Invalid URL found:",e);
+			}
+			throw new SpiderError(e);
 		}
 	}
 
@@ -146,10 +166,8 @@ public class SpiderParseHTML extends ParseHTML {
 	 * 
 	 * @param ahref
 	 *            The link found.
-	 * @throws IOException
-	 *             I/O error.
 	 */
-	private void handleA(final String ahref) throws IOException {
+	private void handleA(final String ahref)  {
 		String href = ahref;
 
 		if (href != null) {
@@ -174,11 +192,9 @@ public class SpiderParseHTML extends ParseHTML {
 	 * This allows the spider to transparently gather its links.
 	 * 
 	 * @return The character read.
-	 * @throws IOException
-	 *             I/O error.
 	 */
 	@Override
-	public int read() throws IOException {
+	public int read()  {
 		final int result = super.read();
 		if (result == 0) {
 			final HTMLTag tag = getTag();
@@ -196,7 +212,15 @@ public class SpiderParseHTML extends ParseHTML {
 				addURL(href, SpiderReportable.URLType.SCRIPT);
 			} else if (tag.getName().equalsIgnoreCase("base")) {
 				final String href = tag.getAttributeValue("href");
-				this.base = new URL(this.base, href);
+				try {
+					this.base = new URL(this.base, href);
+				} catch (MalformedURLException e) {
+					if( logger.isDebugEnabled())
+					{
+						logger.debug("Invalid URL found:",e);
+					}
+					throw new SpiderError(e);
+				}
 			}
 
 		}
@@ -207,10 +231,8 @@ public class SpiderParseHTML extends ParseHTML {
 	 * Read all characters on the page. This will discard these characters, but
 	 * allow the spider to examine the tags and find links.
 	 * 
-	 * @throws IOException
-	 *             I/O error.
 	 */
-	public void readAll() throws IOException {
+	public void readAll() {
 		int i = 0;
 		do {
 			i = read();

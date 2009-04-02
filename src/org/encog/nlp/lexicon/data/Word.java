@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -38,6 +38,8 @@ import javax.persistence.UniqueConstraint;
 
 import org.encog.util.orm.DataObject;
 import org.hibernate.annotations.Index;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Entity
@@ -45,6 +47,12 @@ import org.hibernate.annotations.Index;
     uniqueConstraints = {@UniqueConstraint(columnNames={"text"})} )
 public class Word extends DataObject {
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Index( name="index_lexicon_word")
 	private String text;
 

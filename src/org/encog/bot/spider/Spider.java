@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -32,6 +32,8 @@ import org.encog.util.concurrency.EncogConcurrency;
 import org.encog.util.orm.ORMSession;
 import org.encog.util.orm.SessionManager;
 import org.hibernate.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Spider {
 
@@ -41,6 +43,12 @@ public class Spider {
 	private int timeout = 1000;
 	private String userAgent = "Mozilla/5.0";
 	private int maxURLSize = 255;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public Spider(SessionManager manager, SpiderReportable report) {
 		this.manager = manager;
@@ -69,6 +77,10 @@ public class Spider {
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
+						if(logger.isDebugEnabled())
+						{
+							logger.debug("Exception",e);
+						}
 					}
 				}
 				else
@@ -133,11 +145,11 @@ public class Spider {
 
 	/**
 	 * Convert the specified String to a URL. If the string is too long or has
-	 * other issues, throw a WorkloadException.
+	 * other issues, throw a BotError.
 	 * 
 	 * @param aurl
 	 *            A String to convert into a URL.
-	 * @return The URL. @ Thrown if, The String could not be converted.
+	 * @return The URL. 
 	 */
 	public URL convertURL(final String aurl) {
 		URL result = null;

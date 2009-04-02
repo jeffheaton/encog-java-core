@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -31,14 +31,23 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.encog.EncogError;
 import org.encog.util.concurrency.EncogTask;
 import org.encog.util.orm.ORMSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SpiderWorker implements EncogTask {
 
 	private Spider owner;
 	private ORMSession session;
 	private WorkloadItem work;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 		
 	public SpiderWorker(Spider owner, WorkloadItem work)
 	{
@@ -83,11 +92,23 @@ public class SpiderWorker implements EncogTask {
 			
 			this.work.setStatus(WorkloadStatus.PROCESSED);
 			
-		} catch (MalformedURLException e) {
-			this.work.setStatus(WorkloadStatus.ERROR);
-		} catch (IOException e) {
+		} 
+		catch(EncogError e)
+		{
+			if( logger.isDebugEnabled())
+			{
+				logger.error("Exception",e);
+			}
 			this.work.setStatus(WorkloadStatus.ERROR);
 		}
+		catch (Throwable e) {
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+
+			this.work.setStatus(WorkloadStatus.ERROR);
+		} 
 		
 		this.session.close();		
 	}

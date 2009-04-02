@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -34,6 +34,8 @@ import org.encog.nlp.memory.Concept;
 import org.encog.nlp.memory.ConstConcept;
 import org.encog.nlp.memory.Relation;
 import org.encog.nlp.memory.VarConcept;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -43,6 +45,12 @@ import org.encog.nlp.memory.VarConcept;
 public class ParseActions {
     
     private EncogNLP context;
+    
+    /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
     
     /** Creates a new instance of ParseActions */
     public ParseActions(EncogNLP context) {

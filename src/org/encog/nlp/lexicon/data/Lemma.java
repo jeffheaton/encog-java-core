@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -36,11 +36,19 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.encog.util.orm.DataObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name = "lexicon_lemma")
 public class Lemma extends DataObject {
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@OneToMany(mappedBy = "lemma" )
 	private Collection<Word> uses = new ArrayList<Word>();
 	

@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -26,12 +26,20 @@
 package org.encog.parse;
 
 import org.encog.EncogError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseError extends EncogError {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2610215232632261403L;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a message exception.

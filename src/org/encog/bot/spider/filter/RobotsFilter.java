@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -35,6 +35,10 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.bot.BotError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 /**
@@ -68,6 +72,12 @@ public class RobotsFilter implements SpiderFilter {
 	 * The user agent string we are to use, null for default.
 	 */
 	private String userAgent;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Add the specified URL to the exclude list.
@@ -121,10 +131,8 @@ public class RobotsFilter implements SpiderFilter {
 	 * 
 	 * @param line
 	 *            The line that was read in.
-	 * @throws MalformedURLException
-	 *             Thrown if a bad URL is found.
 	 */
-	private void loadLine(final String line) throws MalformedURLException {
+	private void loadLine(final String line) {
 		final String str = line.trim();
 		final int i = str.indexOf(':');
 
@@ -148,8 +156,19 @@ public class RobotsFilter implements SpiderFilter {
 		if (this.active) {
 			if (command.equalsIgnoreCase("disallow")) {
 				if (rest.trim().length() > 0) {
-					final URL url = new URL(this.robotURL, rest);
-					add(url.getFile());
+					URL url;
+					try {
+						url = new URL(this.robotURL, rest);
+						add(url.getFile());
+					} catch (MalformedURLException e) {
+						if( logger.isDebugEnabled())
+						{
+							logger.debug("Exception",e);
+						}
+
+						throw new BotError(e);
+					}
+					
 				}
 			}
 		}
@@ -164,11 +183,10 @@ public class RobotsFilter implements SpiderFilter {
 	 * @param userAgent
 	 *            The user agent being used by the spider. Leave null for
 	 *            default.
-	 * @throws IOException
-	 *             Thrown if an I/O error occurs.
 	 */
-	public void newHost(final String host, final String userAgent)
-			throws IOException {
+	public void newHost(final String host, final String userAgent) {
+		try
+		{
 		String str;
 		this.active = false;
 		this.userAgent = userAgent;
@@ -197,4 +215,14 @@ public class RobotsFilter implements SpiderFilter {
 			isr.close();
 		}
 	}
+		catch(IOException e)
+		{
+			if( logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BotError(e);
+		}
+	}
+	
 }

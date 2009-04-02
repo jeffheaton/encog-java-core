@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -25,6 +25,9 @@
  */
 package org.encog.nlp.memory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author  jheaton
@@ -33,6 +36,12 @@ public class VarConcept extends Concept {
     
     private String contents = "";
     private long serialNumber=-1;
+    
+    /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
         
     VarConcept(long serialNumber,String contents)
     {

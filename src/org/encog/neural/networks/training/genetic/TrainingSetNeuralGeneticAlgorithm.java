@@ -28,6 +28,8 @@ package org.encog.neural.networks.training.genetic;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.randomize.Randomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -40,6 +42,12 @@ import org.encog.util.randomize.Randomizer;
 public class TrainingSetNeuralGeneticAlgorithm extends
 		NeuralGeneticAlgorithm {
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	/**
 	 * Construct a training object.
 	 * @param network The network to train.

@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -30,6 +30,8 @@ import java.io.Serializable;
 import org.encog.Encog;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Matrix: This class implements a mathematical matrix. Matrix math is very
@@ -43,6 +45,11 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	private static final long serialVersionUID = -7977897210426471675L;
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Turn an array of doubles into a column matrix.
@@ -202,13 +209,23 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	public boolean equals(final Matrix matrix, final int precision) {
 
 		if (precision < 0) {
-			throw new MatrixError("Precision can't be a negative number.");
+			String str = "Precision can't be a negative number.";
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		final double test = Math.pow(10.0, precision);
 		if (Double.isInfinite(test) || test > Long.MAX_VALUE) {
-			throw new MatrixError("Precision of " + precision
-					+ " decimal places is not supported.");
+			String str = "Precision of " + precision
+				+ " decimal places is not supported.";
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}			
+			throw new MatrixError(str);
 		}
 
 		final int actualPrecision = (int) Math.pow(Encog.DEFAULT_PRECISION,
@@ -269,8 +286,13 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public Matrix getCol(final int col) {
 		if (col > getCols()) {
-			throw new MatrixError("Can't get column #" + col
-					+ " because it does not exist.");
+			String str = "Can't get column #" + col
+				+ " because it does not exist.";
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		final double[][] newMatrix = new double[getRows()][1];
@@ -314,8 +336,13 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public Matrix getRow(final int row) {
 		if (row > getRows()) {
-			throw new MatrixError("Can't get row #" + row
-					+ " because it does not exist.");
+			String str = "Can't get row #" + row
+			+ " because it does not exist.";
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		final double[][] newMatrix = new double[1][getCols()];
@@ -468,13 +495,22 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	private void validate(final int row, final int col) {
 		if (row >= getRows() || row < 0) {
-			throw new MatrixError("The row:" + row + " is out of range:"
-					+ getRows());
+			String str = "The row:" + row + " is out of range:" + getRows();
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		if (col >= getCols() || col < 0) {
-			throw new MatrixError("The col:" + col + " is out of range:"
-					+ getCols());
+			String str = "The col:" + col + " is out of range:"
+			+ getCols();
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 	}
 	

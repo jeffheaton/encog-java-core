@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -32,6 +32,8 @@ import org.encog.neural.networks.NetworkCODEC;
 import org.encog.solve.genetic.Chromosome;
 import org.encog.util.randomize.Distort;
 import org.encog.util.randomize.Randomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * NeuralChromosome: Implements a chromosome that allows a feedforward neural
@@ -63,6 +65,12 @@ public abstract class NeuralChromosome
 	 * The network to train.
 	 */
 	private BasicNetwork network;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * @return the network

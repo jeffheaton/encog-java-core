@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -27,6 +27,8 @@ package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.persist.Persistor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ActivationLinear: The Linear layer is really not an activation function at
@@ -41,6 +43,12 @@ public class ActivationLinear implements ActivationFunction {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * A threshold function for a neural network.

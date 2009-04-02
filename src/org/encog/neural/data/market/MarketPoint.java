@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -23,12 +23,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.encog.neural.data.market;
 
 import java.util.Date;
 
 import org.encog.neural.data.temporal.TemporalPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Hold one market datapoint.  This class is based on the TemporalPoint,
@@ -42,6 +43,12 @@ public class MarketPoint extends TemporalPoint {
 	 * When to hold the data from.
 	 */
 	private Date when;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/** 
 	 * Construct a MarketPoint with the specified date and size.

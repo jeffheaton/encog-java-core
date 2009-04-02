@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -30,6 +30,8 @@ import org.encog.neural.networks.Network;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.Train;
 import org.encog.solve.genetic.GeneticAlgorithm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -47,6 +49,11 @@ import org.encog.solve.genetic.GeneticAlgorithm;
  */
 public class NeuralGeneticAlgorithm extends BasicTraining {
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm<Double>
 	{

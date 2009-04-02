@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -36,6 +36,8 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic implementation of the NeuralDataSet class. This class simply stores the
@@ -47,6 +49,12 @@ import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor;
  */
 public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
 	 * not support removes.
@@ -86,6 +94,10 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 		 * Removes are not supported.
 		 */
 		public void remove() {
+			if(logger.isErrorEnabled())
+			{
+				logger.error("Called remove, unsupported operation.");
+			}
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -166,6 +178,10 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
 		if (!this.iterators.isEmpty()) {
+			if( logger.isErrorEnabled() )
+			{
+				logger.error("Concurrent modification exception");
+			}
 			throw new ConcurrentModificationException();
 		}
 		final NeuralDataPair pair = new BasicNeuralDataPair(inputData,

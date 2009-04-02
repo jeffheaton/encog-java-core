@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -26,9 +26,14 @@
 package org.encog.bot.dataunit;
 
 import org.encog.bot.html.HTMLTag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TagDataUnit extends DataUnit {
 	protected HTMLTag tag;
+	
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public HTMLTag getTag() {
 		return tag;

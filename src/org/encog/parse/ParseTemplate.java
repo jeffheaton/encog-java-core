@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -31,6 +31,8 @@ import java.util.Collection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.parse.recognize.Recognize;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ParseTemplate implements EncogPersistedObject {
 
@@ -41,6 +43,12 @@ public class ParseTemplate implements EncogPersistedObject {
 	private Collection<Recognize> recognizers = new ArrayList<Recognize>();
 	private String name;
 	private String description;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public void addRecognizer(Recognize recognize) {
 		recognizers.add(recognize);

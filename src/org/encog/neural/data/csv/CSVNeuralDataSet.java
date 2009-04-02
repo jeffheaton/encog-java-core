@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -38,6 +38,8 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.util.ReadCSV;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An implementation of the NeuralDataSet interface designed to provide a CSV
@@ -51,7 +53,11 @@ import org.encog.util.ReadCSV;
  * @author jheaton
  */
 public class CSVNeuralDataSet implements NeuralDataSet {
-
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	/**
 	 * An iterator designed to read from CSV files.
 	 * @author jheaton
@@ -72,26 +78,22 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 		 * Default constructor.  Create a new iterator from the parent class.
 		 */
 		public CSVNeuralIterator() {
-			try {
+			
 				this.reader = null;
 				this.reader = new ReadCSV(CSVNeuralDataSet.this.filename,
 						CSVNeuralDataSet.this.headers,
 						CSVNeuralDataSet.this.delimiter);
 				this.dataReady = false;
-			} catch (final IOException e) {
-				throw new NeuralNetworkError(e);
-			}
+			 
 		}
 
 		/**
 		 * Close the iterator, and the underlying CSV file.
 		 */
 		public void close() {
-			try {
+			
 				this.reader.close();
-			} catch (final IOException e) {
-				throw new NeuralDataError("Can't close CSV file.");
-			}
+			
 		}
 
 		/**
@@ -107,16 +109,14 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 				return true;
 			}
 
-			try {
+			
 				if (this.reader.next()) {
 					this.dataReady = true;
 					return true;
 				}
 				this.dataReady = false;
 				return false;
-			} catch (final IOException e) {
-				throw new NeuralNetworkError(e);
-			}
+			
 
 		}
 
@@ -150,7 +150,10 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 		 * Removes are not supported.
 		 */
 		public void remove() {
-
+			if(logger.isErrorEnabled())
+			{
+				logger.error("Called remove, unsupported operation.");
+			}
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -227,6 +230,10 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	 * @param data1 Not used.
 	 */
 	public void add(final NeuralData data1) {
+		if( logger.isErrorEnabled())
+		{
+			logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 
@@ -236,6 +243,10 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	 * @param idealData Not used.
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
+		if( logger.isErrorEnabled())
+		{
+			logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -245,6 +256,10 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	 * @param inputData Not used.
 	 */
 	public void add(final NeuralDataPair inputData) {
+		if( logger.isErrorEnabled())
+		{
+			logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -38,6 +38,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.encog.bot.BotError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The Heaton Research Spider Copyright 2007 by Heaton Research, Inc.
  * 
@@ -71,6 +75,12 @@ public class FormUtility {
 	 * A Java random number generator.
 	 */
 	private static Random random = new Random();
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Encode the specified string. This encodes all special characters.
@@ -174,10 +184,10 @@ public class FormUtility {
 	 *            The field name.
 	 * @param file
 	 *            The file to attach.
-	 * @throws IOException
-	 *             If any error occurs while writing.
 	 */
-	public void add(final String name, final File file) throws IOException {
+	public void add(final String name, final File file) {
+		try
+		{
 		if (this.boundary != null) {
 			boundary();
 			writeName(name);
@@ -204,6 +214,14 @@ public class FormUtility {
 
 			newline();
 		}
+		}
+		catch(IOException e)
+		{
+			if( logger.isDebugEnabled() )
+			{
+				logger.debug("Exception",e);
+			}
+		}
 	}
 
 	/**
@@ -213,10 +231,8 @@ public class FormUtility {
 	 *            The name of the field.
 	 * @param value
 	 *            The value of the field.
-	 * @throws IOException
-	 *             If any error occurs while writing.
 	 */
-	public void add(final String name, final String value) throws IOException {
+	public void add(final String name, final String value)  {
 		if (this.boundary != null) {
 			boundary();
 			writeName(name);
@@ -237,10 +253,8 @@ public class FormUtility {
 	/**
 	 * Generate a multipart form boundary.
 	 * 
-	 * @throws IOException
-	 *             If any error occurs while writing.
 	 */
-	private void boundary() throws IOException {
+	private void boundary()  {
 		write("--");
 		write(this.boundary);
 	}
@@ -248,24 +262,31 @@ public class FormUtility {
 	/**
 	 * Complete the building of the form.
 	 * 
-	 * @throws IOException
-	 *             If any error occurs while writing.
 	 */
-	public void complete() throws IOException {
+	public void complete() {
+		try
+		{
 		if (this.boundary != null) {
 			boundary();
 			writeln("--");
 			this.os.flush();
+		}
+		}
+		catch(IOException e)
+		{
+			if(logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw(new BotError(e));
 		}
 	}
 
 	/**
 	 * Create a new line by displaying a carriage return and linefeed.
 	 * 
-	 * @throws IOException
-	 *             If any error occurs while writing.
 	 */
-	private void newline() throws IOException {
+	private void newline()  {
 		write("\r\n");
 	}
 
@@ -274,11 +295,20 @@ public class FormUtility {
 	 * 
 	 * @param str
 	 *            The String to write.
-	 * @throws IOException
-	 *             If any error occurs while writing.
 	 */
-	private void write(final String str) throws IOException {
+	private void write(final String str)  {
+		try
+		{
 		this.os.write(str.getBytes());
+		}
+		catch(IOException e)
+		{
+			if(logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BotError(e);
+		}
 	}
 
 	/**
@@ -289,7 +319,7 @@ public class FormUtility {
 	 * @throws IOException
 	 *             If any error occurs while writing.
 	 */
-	protected void writeln(final String str) throws IOException {
+	protected void writeln(final String str)  {
 		write(str);
 		newline();
 	}
@@ -302,7 +332,7 @@ public class FormUtility {
 	 * @throws IOException
 	 *             If any error occurs while writing.
 	 */
-	private void writeName(final String name) throws IOException {
+	private void writeName(final String name)  {
 		newline();
 		write("Content-Disposition: form-data; name=\"");
 		write(name);

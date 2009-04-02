@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -28,6 +28,10 @@ package org.encog.bot.html;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.encog.bot.BotError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * PeekableInputStream: This is a special input stream that allows the program
  * to peek one or more characters ahead in the file.
@@ -53,6 +57,12 @@ public class PeekableInputStream extends InputStream {
 	 * How many bytes have been peeked at.
 	 */
 	private int peekLength;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The constructor accepts an InputStream to setup the object.
@@ -70,10 +80,8 @@ public class PeekableInputStream extends InputStream {
 	 * Peek at the next character from the stream.
 	 * 
 	 * @return The next character.
-	 * @throws IOException
-	 *             If an I/O exception occurs.
 	 */
-	public int peek() throws IOException {
+	public int peek() {
 		return peek(0);
 	}
 
@@ -83,10 +91,10 @@ public class PeekableInputStream extends InputStream {
 	 * @param depth
 	 *            The depth to check.
 	 * @return The character peeked at.
-	 * @throws IOException
-	 *             If an I/O exception occurs.
 	 */
-	public int peek(final int depth) throws IOException {
+	public int peek(final int depth) {
+		try
+		{
 		// does the size of the peek buffer need to be extended?
 		if (this.peekBytes.length <= depth) {
 			final byte[] temp = new byte[depth + INITIAL_DEPTH];
@@ -109,16 +117,29 @@ public class PeekableInputStream extends InputStream {
 
 			this.peekLength = depth + 1;
 		}
+		}
+		catch(IOException e)
+		{
+			if(logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BotError(e);
+		}
 
 		return this.peekBytes[depth];
 	}
 
 	/**
-	 * Read a single byte from the stream. @throws IOException If an I/O
-	 * exception occurs. @return The character that was read from the stream.
+	 * Read a single byte from the stream. 
+	 * @return The character that was read from the stream.
 	 */
 	@Override
-	public int read() throws IOException {
+	public int read()  {
+		
+		try
+		{
+		
 		if (this.peekLength == 0) {
 			return this.stream.read();
 		}
@@ -130,6 +151,11 @@ public class PeekableInputStream extends InputStream {
 		}
 
 		return result;
+		}
+		catch(IOException e)
+		{
+			throw new BotError(e);
+		}
 	}
 
 }

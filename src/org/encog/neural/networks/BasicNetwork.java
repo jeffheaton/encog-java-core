@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -90,9 +90,10 @@ public class BasicNetwork implements Serializable, Network,
 	private NeuralStructure structure;
 
 	/**
-	 * The logger to use.
+	 * The logging object.
 	 */
-	final Logger logger = LoggerFactory.getLogger(BasicNetwork.class);
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct an empty neural network.

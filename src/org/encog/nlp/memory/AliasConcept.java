@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -25,6 +25,9 @@
  */
 package org.encog.nlp.memory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * An alias concept is a concept holder. This allows all instances of the
  * Concept to be updated when the value of the alias is changed to a tottally
@@ -33,6 +36,12 @@ package org.encog.nlp.memory;
  */
 public class AliasConcept extends VarConcept {
     private VarConcept targetConcept;
+    
+    /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
     
     /** Creates a new instance of AliasConcept */
     public AliasConcept() {

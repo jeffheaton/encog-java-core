@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -23,13 +23,14 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.encog.neural.data.bipolar;
 
 import java.io.Serializable;
 
 import org.encog.matrix.BiPolarUtil;
 import org.encog.neural.data.NeuralData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A NeuralData implementation designed to work with bipolar data.
@@ -48,6 +49,12 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	 * The data held by this object.
 	 */
 	private boolean[] data;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this object with the specified data.

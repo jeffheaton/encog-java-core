@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -29,37 +29,76 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.encog.bot.BotError;
 import org.encog.bot.browse.range.DocumentRange;
 import org.encog.bot.browse.range.Form;
 import org.encog.bot.browse.range.FormElement;
 import org.encog.bot.browse.range.Input;
 import org.encog.bot.browse.range.Link;
 import org.encog.bot.html.FormUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Browser {
 
 	protected WebPage currentPage;
+	
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void navigate(URL url) throws IOException {
+	public void navigate(URL url)  {
+		try
+		{
 		URLConnection connection = url.openConnection();
 		InputStream is = connection.getInputStream();
 		navigate(url, is);
 		is.close();
+		}
+		catch(IOException e)
+		{
+			if(logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BrowseError(e);
+		}
 	}
 
-	public void navigate(URL url, InputStream is) throws IOException {
-		LoadWebPage load = new LoadWebPage(url);
-		currentPage = load.load(is);
+	public void navigate(URL url, InputStream is) {		
+		try {
+			LoadWebPage load = new LoadWebPage(url);
+			currentPage = load.load(is);
+		} catch (IOException e) {
+			if(logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BrowseError(e);
+		}
 	}
 
-	public void navigate(String url) throws IOException {
+	public void navigate(String url)  {
+		try
+		{
 		navigate(new URL(url));
+		}
+		catch(MalformedURLException e)
+		{
+			if(logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BrowseError(e);
+		}
 	}
 
-	public void navigate(Form form, Input submit) throws IOException {
+	public void navigate(Form form, Input submit)  {
+		
+		try {
 		InputStream is;
 		URLConnection connection = null;
 		OutputStream os;
@@ -68,8 +107,10 @@ public class Browser {
 		if (form.getMethod() == Form.Method.GET) {
 			os = new ByteArrayOutputStream();
 		} else {
-			connection = form.getAction().getUrl().openConnection();
-			os = connection.getOutputStream();
+			
+				connection = form.getAction().getUrl().openConnection();
+				os = connection.getOutputStream();
+						
 		}
 
 		// add the parameters if present
@@ -107,6 +148,9 @@ public class Browser {
 
 		navigate(targetURL, is);
 		is.close();
+		} catch (IOException e) {
+			throw new BrowseError(e);
+		}
 	}
 
 	public WebPage getCurrentPage() {
@@ -117,17 +161,19 @@ public class Browser {
 		this.currentPage = currentPage;
 	}
 
-	public void navigate(Link link) throws IOException {
-		Address address = link.getTarget();
+	public void navigate(Link link)  {
+		
+			Address address = link.getTarget();
+	
+			if (address.getUrl() != null)
+				navigate(address.getUrl());
+			else
+				navigate(address.getOriginal());
 
-		if (address.getUrl() != null)
-			navigate(address.getUrl());
-		else
-			navigate(address.getOriginal());
 
 	}
 
-	public void navigate(Form form) throws IOException {
+	public void navigate(Form form)  {
 		navigate(form, null);
 	}
 

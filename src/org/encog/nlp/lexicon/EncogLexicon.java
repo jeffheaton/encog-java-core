@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -40,6 +40,8 @@ import org.encog.nlp.lexicon.data.WordTypePossibility;
 import org.encog.util.orm.ORMSession;
 import org.hibernate.Query;
 import org.hibernate.ScrollableResults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EncogLexicon {
 
@@ -54,6 +56,12 @@ public class EncogLexicon {
 	private Map<String,Fix> prefixes = new HashMap<String,Fix>();
 	private Map<String,Fix> suffixes = new HashMap<String,Fix>();
 	private Map<String,WordType> wordTypes = new HashMap<String,WordType>();
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public EncogLexicon(ORMSession session)
 	{

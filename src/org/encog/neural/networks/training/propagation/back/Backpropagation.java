@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -71,6 +71,12 @@ import org.slf4j.LoggerFactory;
  */
 public class Backpropagation extends Propagation {
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	public Backpropagation(BasicNetwork network, NeuralDataSet training,
 			double learnRate, double momentum) {
 		super(network, new BackpropagationMethod(), training, learnRate, momentum);	

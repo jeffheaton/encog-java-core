@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -25,6 +25,9 @@
  */
 package org.encog.neural.data;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * NeuralNetworkError: Used by the neural network classes to 
  * indicate an error.
@@ -34,6 +37,12 @@ public class NeuralDataError extends RuntimeException {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 7167228729133120101L;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a message exception.

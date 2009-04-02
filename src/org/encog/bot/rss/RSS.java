@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -41,6 +41,9 @@ import java.util.Set;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.encog.bot.BotError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -53,6 +56,13 @@ import org.xml.sax.SAXException;
  * points to RSS.
  */
 public class RSS {
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	/**
 	 * Simple utility method that obtains the text of an XML node.
 	 * 
@@ -122,15 +132,10 @@ public class RSS {
 	 * 
 	 * @param url
 	 *            URL that contains XML data.
-	 * @throws IOException
-	 *             Thrown if an IO error occurs.
-	 * @throws SAXException
-	 *             Thrown if there is an error while parsing XML.
-	 * @throws ParserConfigurationException
-	 *             Thrown if there is an XML parse config error.
 	 */
-	public void load(final URL url) throws IOException, SAXException,
-			ParserConfigurationException {
+	public void load(final URL url) {
+		try
+		{
 		final URLConnection http = url.openConnection();
 		final InputStream is = http.getInputStream();
 
@@ -152,7 +157,27 @@ public class RSS {
 				loadItem(node);
 			}
 		}
-
+		}
+		catch(IOException e)
+		{
+			if( logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BotError(e);
+		} catch (SAXException e) {
+			if( logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BotError(e);
+		} catch (ParserConfigurationException e) {
+			if( logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BotError(e);
+		}
 	}
 
 	/**

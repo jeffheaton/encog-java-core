@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -30,6 +30,8 @@ import java.text.NumberFormat;
 import org.encog.parse.Parse;
 import org.encog.parse.signal.Signal;
 import org.encog.parse.units.UnitManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Weight extends Signal
@@ -38,6 +40,12 @@ public class Weight extends Signal
     UNIT_MASS = 1,
     UNIT_LENGTH = 2,
     UNIT_TEMPERATURE= 3;
+  
+  /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private double number;
   public void parse()

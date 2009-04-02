@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -27,11 +27,21 @@ package org.encog.neural.data;
 
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TextData implements EncogPersistedObject {
 	private String text;
 	private String name;
 	private String description;
+	
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	public String getText() {
 		return text;
 	}

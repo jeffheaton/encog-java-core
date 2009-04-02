@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -31,6 +31,8 @@ import java.util.Map;
 
 import org.encog.neural.data.market.TickerSymbol;
 import org.encog.neural.data.market.MarketDataType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class contains market data that was loaded for a specific ticker symbol
@@ -54,6 +56,12 @@ public class LoadedMarketData {
 	 * The data that was collection for the sample date.
 	 */
 	private final Map<MarketDataType, Double> data;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct one sample of market data.

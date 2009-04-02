@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -23,7 +23,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.encog.neural.data.sql;
 
 import java.sql.SQLException;
@@ -39,6 +38,8 @@ import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.util.orm.ORMSession;
 import org.encog.util.orm.SessionManager;
 import org.hibernate.ScrollableResults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A dataset based on a SQL query. This is not a memory based dataset, so it can
@@ -48,6 +49,12 @@ import org.hibernate.ScrollableResults;
  * @author jheaton
  */
 public class SQLNeuralDataSet implements NeuralDataSet {
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Iterator used to iterate over SQL results.

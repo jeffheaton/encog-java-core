@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -25,6 +25,9 @@
  */
 package org.encog.matrix;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * BiPolarUtil: This class contains a number of utility methods used to work
  * with bipolar numbers. A bipolar number is another way to represent binary
@@ -32,6 +35,12 @@ package org.encog.matrix;
  * be negative one.
  */
 public final class BiPolarUtil {
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * Private constructor.

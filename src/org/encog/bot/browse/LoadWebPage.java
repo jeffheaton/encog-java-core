@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -42,6 +42,8 @@ import org.encog.bot.dataunit.TagDataUnit;
 import org.encog.bot.dataunit.TextDataUnit;
 import org.encog.bot.html.HTMLTag;
 import org.encog.bot.html.ParseHTML;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class LoadWebPage {
 
@@ -49,19 +51,33 @@ public class LoadWebPage {
 	protected URL base;
 	protected Form lastForm;
 	protected DocumentRange lastHierarchyElement;
+	
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public LoadWebPage(URL base) {
 		this.base = base;
 	}
 
-	public WebPage load(String str) throws IOException {
+	public WebPage load(String str) {
+		try
+		{
 		ByteArrayInputStream bis = new ByteArrayInputStream(str.getBytes());
 		WebPage result = load(bis);
 		bis.close();
 		return result;
+		}
+		catch(IOException e)
+		{
+			if( logger.isDebugEnabled())
+			{
+				logger.debug("Exception",e);
+			}
+			throw new BrowseError(e);
+		}
 	}
 
-	protected void loadDataUnits(InputStream is) throws IOException {
+	protected void loadDataUnits(InputStream is)  {
 		StringBuilder text = new StringBuilder();
 		int ch;
 		ParseHTML parse = new ParseHTML(is);
@@ -96,6 +112,7 @@ public class LoadWebPage {
 		}
 
 		createTextDataUnit(text.toString());
+		
 	}
 
 	protected int findEndTag(int index, HTMLTag tag) {

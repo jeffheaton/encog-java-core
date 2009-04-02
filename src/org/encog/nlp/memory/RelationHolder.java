@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -27,12 +27,21 @@ package org.encog.nlp.memory;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author  jheaton
  */
 public class RelationHolder {
     private List<Relation> relations = new ArrayList<Relation>();
+    
+    /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
     
     /** Creates a new instance of RelationHolder */
     public RelationHolder() {

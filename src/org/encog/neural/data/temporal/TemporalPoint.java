@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -25,6 +25,9 @@
  */
 package org.encog.neural.data.temporal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A temporal point is all of the data captured at one point in time to be used
  * for prediction.  One or more data items might be captured at this point.
@@ -44,6 +47,12 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 	 * The data for this point.
 	 */
 	private double[] data;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a temporal point of the specified size.

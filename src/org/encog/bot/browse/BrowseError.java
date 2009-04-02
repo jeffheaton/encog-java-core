@@ -23,10 +23,42 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.networks.synapse;
+package org.encog.bot.browse;
 
-public enum SynapseType {
-	OneToOne,
-	Weighted,
-	Weightless
+import org.encog.EncogError;
+import org.encog.bot.BotError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class BrowseError extends BotError {
+	/**
+	 * The serial id for this class.
+	 */
+	private static final long serialVersionUID = -7166136514935838114L;
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a message exception.
+	 * 
+	 * @param msg
+	 *            The exception message.
+	 */
+	public BrowseError(final String msg) {
+		super(msg);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public BrowseError(final Throwable t) {
+		super(t);
+	}	
+	
 }

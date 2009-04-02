@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -28,6 +28,8 @@ package org.encog.parse.signal;
 import java.util.*;
 
 import org.encog.parse.ParseError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Signal {
   private char value = 0;
@@ -36,6 +38,12 @@ public class Signal {
   private String name;
   private boolean ignore;
   private boolean delta;
+  
+  /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public Signal()
   {

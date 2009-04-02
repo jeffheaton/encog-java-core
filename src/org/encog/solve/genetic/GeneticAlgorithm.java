@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -33,6 +33,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.encog.util.concurrency.EncogConcurrency;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * GeneticAlgorithm: Implements a genetic algorithm. This is an abstract class.
@@ -85,6 +87,12 @@ abstract public class GeneticAlgorithm<GENE_TYPE> {
 	 * The population.
 	 */
 	private Chromosome<GENE_TYPE>[] chromosomes;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Get a specific chromosome.

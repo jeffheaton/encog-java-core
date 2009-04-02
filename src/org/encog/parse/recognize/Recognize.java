@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.parse.signal.Signal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Recognize {
 	private List<RecognizeElement> pattern = new ArrayList<RecognizeElement>();
@@ -40,6 +42,12 @@ public class Recognize {
 	private boolean ignore = false;
 	@SuppressWarnings("unchecked")
 	private Class signalClass = Signal.class;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public Recognize(String type) {
 		this.type = type;

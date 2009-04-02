@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -37,7 +37,8 @@ public abstract class BasicExtract implements Extract {
 
 	private Collection<ExtractListener> listeners = new ArrayList<ExtractListener>();
 	
-	final Logger logger = LoggerFactory.getLogger(BasicExtract.class);
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public void addListener(ExtractListener listener) {
 		this.listeners.add(listener);

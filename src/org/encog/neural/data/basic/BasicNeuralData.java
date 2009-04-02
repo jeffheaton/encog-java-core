@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -28,6 +28,8 @@ package org.encog.neural.data.basic;
 import java.io.Serializable;
 
 import org.encog.neural.data.NeuralData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic implementation of the NeuralData interface that stores the
@@ -46,6 +48,12 @@ public class BasicNeuralData implements NeuralData, Serializable {
 	 * The data held by this object.
 	 */
 	private double[] data;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this object with the specified data.

@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -26,6 +26,8 @@
 package org.encog.matrix;
 
 import org.encog.neural.data.NeuralData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MatrixMath: This class can perform many different mathematical operations on
@@ -35,6 +37,12 @@ import org.encog.neural.data.NeuralData;
 public final class MatrixMath {
 
 	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final static private Logger logger = LoggerFactory.getLogger(MatrixMath.class);
+	
+	/**
 	 * Add two matrixes.
 	 * @param a The first matrix to add.
 	 * @param b The second matrix to add.
@@ -42,21 +50,32 @@ public final class MatrixMath {
 	 */
 	public static Matrix add(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			throw new MatrixError(
-					"To add the matrices they must have the same number of "
-					+ "rows and columns.  Matrix a has "
-							+ a.getRows()
-							+ " rows and matrix b has "
-							+ b.getRows() + " rows.");
+			String str = "To add the matrices they must have the same number of "
+				+ "rows and columns.  Matrix a has "
+				+ a.getRows()
+				+ " rows and matrix b has "
+				+ b.getRows() + " rows.";
+			
+
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			
+			throw new MatrixError(str);
 		}
 
 		if (a.getCols() != b.getCols()) {
-			throw new MatrixError(
-					"To add the matrices they must have the same number " 
-					+ "of rows and columns.  Matrix a has "
-							+ a.getCols()
-							+ " cols and matrix b has "
-							+ b.getCols() + " cols.");
+			String str = "To add the matrices they must have the same number " 
+				+ "of rows and columns.  Matrix a has "
+				+ a.getCols()
+				+ " cols and matrix b has "
+				+ b.getCols() + " cols.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		final double[][] result = new double[a.getRows()][a.getCols()];
@@ -94,9 +113,14 @@ public final class MatrixMath {
 	 */
 	public static Matrix deleteCol(final Matrix matrix, final int deleted) {
 		if (deleted >= matrix.getCols()) {
-			throw new MatrixError("Can't delete column " + deleted
-					+ " from matrix, it only has " + matrix.getCols()
-					+ " columns.");
+			String str = "Can't delete column " + deleted
+			+ " from matrix, it only has " + matrix.getCols()
+			+ " columns.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 		final double[][] newMatrix = new double[matrix.getRows()][matrix
 				.getCols() - 1];
@@ -124,10 +148,17 @@ public final class MatrixMath {
 	 * @return A new matrix with the specified row deleted.
 	 */
 	public static Matrix deleteRow(final Matrix matrix, final int deleted) {
+		
 		if (deleted >= matrix.getRows()) {
-			throw new MatrixError("Can't delete row " + deleted
-					+ " from matrix, it only has " + matrix.getRows()
-					+ " rows.");
+			String str = "Can't delete row " + deleted
+			+ " from matrix, it only has " + matrix.getRows()
+			+ " rows.";
+			
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 		final double[][] newMatrix = new double[matrix.getRows() - 1][matrix
 				.getCols()];
@@ -168,17 +199,26 @@ public final class MatrixMath {
 	 */
 	public static double dotProduct(final Matrix a, final Matrix b) {
 		if (!a.isVector() || !b.isVector()) {
-			throw new MatrixError(
-					"To take the dot product, both matrices must be vectors.");
+			String str = "To take the dot product, both matrices must be vectors.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
+			
 		}
 
 		final Double[] aArray = a.toPackedArray();
 		final Double[] bArray = b.toPackedArray();
 
 		if (aArray.length != bArray.length) {
-			throw new MatrixError(
-					"To take the dot product, both matrices must be of " 
-					+ "the same length.");
+			String str = "To take the dot product, both matrices must be of " 
+				+ "the same length.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		double result = 0;
@@ -199,8 +239,13 @@ public final class MatrixMath {
 	 */
 	public static Matrix identity(final int size) {
 		if (size < 1) {
-			throw new MatrixError("Identity matrix must be at least of " 
-					+ "size 1.");
+			String str = "Identity matrix must be at least of " 
+				+ "size 1.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		final Matrix result = new Matrix(size, size);
@@ -237,10 +282,14 @@ public final class MatrixMath {
 	 */
 	public static Matrix multiply(final Matrix a, final Matrix b) {
 		if (a.getCols() != b.getRows()) {
-			throw new MatrixError(
-					"To use ordinary matrix multiplication the number of " 
-					+ "columns on the first matrix must mat the number of " 
-					+ "rows on the second.");
+			String str = "To use ordinary matrix multiplication the number of " 
+				+ "columns on the first matrix must mat the number of " 
+				+ "rows on the second.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		final double[][] result = new double[a.getRows()][b.getCols()];
@@ -268,21 +317,29 @@ public final class MatrixMath {
 	 */
 	public static Matrix subtract(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			throw new MatrixError(
-					"To subtract the matrices they must have the same " 
-					+ "number of rows and columns.  Matrix a has "
-							+ a.getRows()
-							+ " rows and matrix b has "
-							+ b.getRows() + " rows.");
+			String str = "To subtract the matrices they must have the same " 
+			+ "number of rows and columns.  Matrix a has "
+					+ a.getRows()
+					+ " rows and matrix b has "
+					+ b.getRows() + " rows.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		if (a.getCols() != b.getCols()) {
-			throw new MatrixError(
-					"To subtract the matrices they must have the same " 
-					+ "number of rows and columns.  Matrix a has "
-							+ a.getCols()
-							+ " cols and matrix b has "
-							+ b.getCols() + " cols.");
+			String str = "To subtract the matrices they must have the same " 
+				+ "number of rows and columns.  Matrix a has "
+				+ a.getCols()
+				+ " cols and matrix b has "
+				+ b.getCols() + " cols.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 
 		final double[][] result = new double[a.getRows()][a.getCols()];
@@ -324,9 +381,14 @@ public final class MatrixMath {
 	 * @return Vector length.
 	 */
 	public static double vectorLength(final Matrix input) {
+		
 		if (!input.isVector()) {
-			throw new MatrixError(
-					"Can only take the vector length of a vector.");
+			String str = "Can only take the vector length of a vector.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new MatrixError(str);
 		}
 		final Double[] v = input.toPackedArray();
 		double rtn = 0.0;

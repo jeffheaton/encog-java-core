@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -23,7 +23,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.encog.neural.data.image;
 
 import org.encog.neural.NeuralNetworkError;
@@ -31,6 +30,8 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.util.downsample.Downsample;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Store a collection of images for training with a neural network. This class
@@ -72,6 +73,12 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 * Should the bounds be found and cropped.
 	 */
 	private final boolean findBounds;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this class with the specified downsampler.

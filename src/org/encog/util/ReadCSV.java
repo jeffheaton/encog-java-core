@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -38,10 +38,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.encog.EncogError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * ReadCSV: Read and parse CSV format files.
  */
 public class ReadCSV {
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The standard date format to be used.
@@ -103,12 +113,9 @@ public class ReadCSV {
 	 *            Are headers present?
 	 * @param delim
 	 *            What is the delimiter.
-	 * @throws IOException
-	 *             An IO error occurred.
 	 */
 	public ReadCSV(final InputStream is, final boolean headers, 
-			final char delim)
-			throws IOException {
+			final char delim) {
 		this.reader = new BufferedReader(new InputStreamReader(is));
 		this.delim = "" + delim;
 		begin(headers);
@@ -123,14 +130,23 @@ public class ReadCSV {
 	 *            The headers.
 	 * @param delim
 	 *            The delimiter.
-	 * @throws IOException
-	 *             An IO exception occured.
 	 */
 	public ReadCSV(final String filename, final boolean headers,
-			final char delim) throws IOException {
+			final char delim) {
+		try
+		{
 		this.reader = new BufferedReader(new FileReader(filename));
 		this.delim = "" + delim;
 		begin(headers);
+		}
+		catch(IOException e)
+		{
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+			throw new EncogError(e);
+		}
 	}
 
 	/**
@@ -138,10 +154,10 @@ public class ReadCSV {
 	 * 
 	 * @param headers
 	 *            Are headers present.
-	 * @throws IOException
-	 *             An IO exception happened.
 	 */
-	private void begin(final boolean headers) throws IOException {
+	private void begin(final boolean headers) {
+		try
+		{
 		// read the column heads
 		if (headers) {
 			final String line = this.reader.readLine();
@@ -154,16 +170,36 @@ public class ReadCSV {
 		}
 
 		this.data = null;
+		}
+		catch(IOException e)
+		{
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+
+			throw new EncogError(e);
+		}
 	}
 
 	/**
 	 * Close the file.
 	 * 
-	 * @throws IOException
-	 *             An exception occured.
 	 */
-	public void close() throws IOException {
-		this.reader.close();
+	public void close() {
+		try
+		{
+			this.reader.close();
+		}
+		catch(IOException e)
+		{
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+
+			throw new EncogError(e);
+		}
 	}
 
 	/**
@@ -212,12 +248,22 @@ public class ReadCSV {
 	 * @param column
 	 *            The column header name.
 	 * @return The column as a date.
-	 * @throws ParseException
-	 *             If an error occured while parsing.
 	 */
-	public Date getDate(final String column) throws ParseException {
-		final String str = get(column);
-		return SDF.parse(str);
+	public Date getDate(final String column) {
+		
+		
+		try {
+			final String str = get(column);
+			return SDF.parse(str);
+		} catch (ParseException e) {
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+
+			throw new EncogError(e);
+		}
+		
 	}
 
 	/**
@@ -283,29 +329,38 @@ public class ReadCSV {
 	 * Read the next line.
 	 * 
 	 * @return True if there are more lines to read.
-	 * @throws IOException
-	 *             An error occured.
 	 */
-	public boolean next() throws IOException {
-		final String line = this.reader.readLine();
-		if (line == null) {
-			return false;
-		}
+	public boolean next() {
 
-		if (this.data == null) {
-			initData(line);
-		}
-
-		final StringTokenizer tok = new StringTokenizer(line, this.delim);
-
-		int i = 0;
-		while (tok.hasMoreTokens()) {
-			final String str = tok.nextToken();
-			if (i < this.data.length) {
-				this.data[i++] = str;
+		try {
+			String line = this.reader.readLine();
+			if (line == null) {
+				return false;
 			}
+
+			if (this.data == null) {
+				initData(line);
+			}
+
+			final StringTokenizer tok = new StringTokenizer(line, this.delim);
+
+			int i = 0;
+			while (tok.hasMoreTokens()) {
+				final String str = tok.nextToken();
+				if (i < this.data.length) {
+					this.data[i++] = str;
+				}
+			}
+			return true;
+		} catch (IOException e) {
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+
+			throw new EncogError(e);
 		}
-		return true;
+		
 	}
 
 }

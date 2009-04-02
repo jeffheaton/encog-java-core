@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -29,6 +29,9 @@ import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.parse.recognize.Recognize;
 import org.encog.parse.signal.Signal;
 import org.encog.parse.units.UnitManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 
@@ -37,6 +40,12 @@ public class Parse {
   private ParseTemplate template;
   public static final String RESOURCE_NAME = "org/encog/data/template.eg";
   public static final String RESOURCE_ITEM_NAME = "parse-native";
+  
+  /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public Signal parseFile(String name)
   {

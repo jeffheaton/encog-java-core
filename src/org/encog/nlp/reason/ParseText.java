@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -35,6 +35,8 @@ import java.util.List;
 import org.encog.nlp.EncogNLP;
 import org.encog.nlp.NLPError;
 import org.encog.parse.signal.Signal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -43,6 +45,12 @@ import org.encog.parse.signal.Signal;
  */
 abstract public class ParseText {   
     private EncogNLP context;
+    
+    /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
     
     /** Creates a new instance of ParseText */
     public ParseText (EncogNLP context) {

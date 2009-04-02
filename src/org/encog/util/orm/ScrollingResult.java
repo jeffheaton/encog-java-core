@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -28,12 +28,20 @@ package org.encog.util.orm;
 
 import org.hibernate.Query;
 import org.hibernate.ScrollableResults;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ScrollingResult {
 	
 	private ScrollableResults scroll;
 	private ORMSession session;
 	private int countDown;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public ScrollingResult(ORMSession session,Query q)
 	{

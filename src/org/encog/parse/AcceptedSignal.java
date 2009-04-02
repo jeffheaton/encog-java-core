@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -25,9 +25,18 @@
  */
 package org.encog.parse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AcceptedSignal {
   private String type;
   private String value;
+  
+  /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   public AcceptedSignal(String type,String value)
   {

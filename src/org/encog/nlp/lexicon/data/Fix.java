@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -32,6 +32,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import org.encog.util.orm.DataObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Entity
 @Table(name="lexicon_fix",
@@ -40,6 +42,12 @@ public class Fix extends DataObject {
 
 	private String text;
 	private boolean pre;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@ManyToOne
 	private WordType wordType;

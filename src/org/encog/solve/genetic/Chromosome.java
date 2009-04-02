@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -29,6 +29,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.encog.matrix.MatrixError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Chromosome: Implements a chromosome to genetic algorithm. This is an abstract
@@ -62,6 +64,12 @@ abstract public class Chromosome<GENE_TYPE>
 	 */
 	private GeneticAlgorithm<GENE_TYPE> geneticAlgorithm;
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	/**
 	 * Called to calculate the cost for this chromosome.
 	 * 

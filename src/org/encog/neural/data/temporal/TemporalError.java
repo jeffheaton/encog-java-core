@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -26,6 +26,8 @@
 package org.encog.neural.data.temporal;
 
 import org.encog.EncogError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Error occured processing temporal data.
@@ -36,6 +38,12 @@ public class TemporalError extends EncogError {
 	 * The serial id for this class.
 	 */
 	private static final long serialVersionUID = -5534812476029464649L;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a message exception.

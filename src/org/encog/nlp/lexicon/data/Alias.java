@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -32,11 +32,19 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import org.encog.util.orm.DataObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
 @Entity(name = "lexicon_alias")
 public class Alias extends DataObject {
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	  
 	  private String alias;
 

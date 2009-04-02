@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -23,7 +23,6 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.encog.neural.data.market.loader;
 
 import java.io.ByteArrayOutputStream;
@@ -42,6 +41,8 @@ import org.encog.bot.html.FormUtility;
 import org.encog.neural.data.market.MarketDataType;
 import org.encog.neural.data.market.TickerSymbol;
 import org.encog.util.ReadCSV;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class loads financial data from Yahoo.  One caution on 
@@ -54,6 +55,12 @@ import org.encog.util.ReadCSV;
  */
 public class YahooFinanceLoader implements MarketLoader {
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	/**
 	 * This method builds a URL to load data from Yahoo Finance for a neural
 	 * network to train with.
@@ -144,8 +151,6 @@ public class YahooFinanceLoader implements MarketLoader {
 			return result;
 		} catch (final IOException e) {
 			throw new LoaderError(e);
-		} catch (final ParseException e) {
-			throw new LoaderError(e);
-		}
+		} 
 	}
 }

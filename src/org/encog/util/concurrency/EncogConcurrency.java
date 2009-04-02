@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -30,12 +30,20 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.encog.EncogError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EncogConcurrency {
 
 	private int maxThreads;
 	private static EncogConcurrency instance;
 	private ExecutorService executor;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public EncogConcurrency() {
 		setMaxThreads(0);

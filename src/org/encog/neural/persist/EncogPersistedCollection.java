@@ -1,9 +1,10 @@
 /*
- * Encog Neural Network and Bot Library for Java v1.x
+ * Encog Artificial Intelligence Framework v2.x
+ * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008, Heaton Research Inc., and individual contributors.
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
@@ -35,6 +36,8 @@ import java.util.List;
 import org.encog.EncogError;
 import org.encog.neural.persist.persistors.PersistorUtil;
 import org.encog.util.xml.XMLElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * An EncogPersistedCollection holds a collection of EncogPersistedObjects. This
@@ -49,6 +52,12 @@ public class EncogPersistedCollection {
 	private File filePrimary;
 	private File fileTemp;
 	private PersistWriter writer;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public EncogPersistedCollection(String filename)
 	{

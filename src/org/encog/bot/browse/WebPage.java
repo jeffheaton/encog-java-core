@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -32,6 +32,8 @@ import org.encog.bot.browse.range.DocumentRange;
 import org.encog.bot.browse.range.Form;
 import org.encog.bot.browse.range.Link;
 import org.encog.bot.dataunit.DataUnit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 
@@ -39,6 +41,9 @@ public class WebPage {
 	protected List<DataUnit> data = new ArrayList<DataUnit>();
 	protected List<DocumentRange> contents = new ArrayList<DocumentRange>();
 	protected DocumentRange title;
+	
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public void addDataUnit(DataUnit unit)
 	{

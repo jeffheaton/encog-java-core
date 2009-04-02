@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -26,6 +26,8 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.persist.Persistor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ActivationSigmoid: The sigmoid activation function takes on a sigmoidal
@@ -39,6 +41,12 @@ public class ActivationSigmoid implements ActivationFunction {
 	private static final long serialVersionUID = 5622349801036468572L;
 
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	/**
 	 * A threshold function for a neural network.
 	 * 

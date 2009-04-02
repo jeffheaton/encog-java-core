@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -31,6 +31,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * CookieUtility: This class allows URLConnection objects to process cookies.
  * The loadCookies method grabs the Set-Cookie headers and loads the cookies
@@ -42,6 +45,9 @@ public class CookieUtility {
 	 * Map that holds all of the cookie values.
 	 */
 	private final Map<String, String> map = new HashMap<String, String>();
+	
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Allows access to the name/value pair list of cookies.

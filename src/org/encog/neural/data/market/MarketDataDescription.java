@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -27,6 +27,8 @@ package org.encog.neural.data.market;
 
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.temporal.TemporalDataDescription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to describe the type of financial data that is needed.
@@ -49,6 +51,12 @@ public class MarketDataDescription extends TemporalDataDescription {
 	 * The type of data to be loaded from the specified ticker symbol.
 	 */
 	private MarketDataType dataType;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a MarketDataDescription item.

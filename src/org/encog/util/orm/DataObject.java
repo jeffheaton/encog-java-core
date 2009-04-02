@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -37,6 +37,9 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Version;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 @MappedSuperclass
 public abstract class DataObject implements Serializable
@@ -45,6 +48,12 @@ public abstract class DataObject implements Serializable
 	 * 
 	 */
 	private static final long serialVersionUID = -7032283205435194035L;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

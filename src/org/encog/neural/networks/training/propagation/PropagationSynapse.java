@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -62,7 +62,11 @@ public class PropagationSynapse {
 	 */
 	private final Synapse synapse;
 	
-	final Logger logger = LoggerFactory.getLogger(PropagationSynapse.class);
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	
 

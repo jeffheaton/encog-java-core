@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -30,6 +30,9 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ParseHTML
 {
 
@@ -49,6 +52,12 @@ public class ParseHTML
    * function returns 0.
    */
   private HTMLTag tag = new HTMLTag();
+  
+  /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private String lockedEndTag;
 
@@ -97,10 +106,8 @@ public class ParseHTML
    *         tag. If zero is returned, then call getTag to
    *         get the next tag.
    * 
-   * @throws IOException
-   *           If an error occurs while reading.
    */
-  public int read() throws IOException
+  public int read() 
   {
     // handle locked end tag
     if (this.lockedEndTag != null)
@@ -139,9 +146,7 @@ public class ParseHTML
    */
   @Override
   public String toString()
-  {
-    try
-    {
+  {    
       StringBuilder result = new StringBuilder();
 
       int ch = 0;
@@ -167,20 +172,15 @@ public class ParseHTML
         result.append("Text:" + text.toString().trim()+"\n");
       }
       return result.toString();
-    } catch (IOException e)
-    {
-      return "[IO Error]";
-    }
+    
   }
 
   /**
    * Parse any special characters(i.e. &nbsp);
    * 
    * @return The character that was parsed.
-   * @throws IOException
-   *           If a read error occurs
    */
-  private char parseSpecialCharacter() throws IOException
+  private char parseSpecialCharacter()
   {
     char result = (char) this.source.read();
     int advanceBy = 0;
@@ -245,9 +245,8 @@ public class ParseHTML
    * Check to see if the ending tag is present.
    * @param name The type of end tag being sought.
    * @return True if the ending tag was found.
-   * @throws IOException Thrown if an IO error occurs.
    */
-  private boolean peekEndTag(String name) throws IOException
+  private boolean peekEndTag(String name) 
   {
     int i = 0;
 
@@ -308,10 +307,8 @@ public class ParseHTML
    * Remove any whitespace characters that are next in the
    * InputStream.
    * 
-   * @throws IOException
-   *           If an I/O exception occurs.
    */
-  protected void eatWhitespace() throws IOException
+  protected void eatWhitespace() 
   {
     while (Character.isWhitespace((char) this.source.peek()))
     {
@@ -322,10 +319,8 @@ public class ParseHTML
   /**
    * Parse an attribute name, if one is present.
    * 
-   * @throws IOException
-   *           If an I/O exception occurs.
    */
-  protected String parseAttributeName() throws IOException
+  protected String parseAttributeName()
   {
     eatWhitespace();
 
@@ -350,10 +345,8 @@ public class ParseHTML
    * Called to parse a double or single quote string.
    * 
    * @return The string parsed.
-   * @throws IOException
-   *           If an I/O exception occurs.
    */
-  protected String parseString() throws IOException
+  protected String parseString() 
   {
     StringBuilder result = new StringBuilder();
     eatWhitespace();
@@ -393,10 +386,8 @@ public class ParseHTML
    * Called when a tag is detected. This method will parse
    * the tag.
    * 
-   * @throws IOException
-   *           If an I/O exception occurs.
    */
-  protected void parseTag() throws IOException
+  protected void parseTag() 
   {
 	this.tag = new HTMLTag();
     StringBuilder tagName = new StringBuilder();

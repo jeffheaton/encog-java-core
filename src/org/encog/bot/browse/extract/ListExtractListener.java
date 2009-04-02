@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -34,7 +34,9 @@ import org.slf4j.LoggerFactory;
 public class ListExtractListener implements ExtractListener {
 	
 	private List<Object> list = new ArrayList<Object>();
-	final Logger logger = LoggerFactory.getLogger(ListExtractListener.class);
+	
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public List<Object> getList()
 	{

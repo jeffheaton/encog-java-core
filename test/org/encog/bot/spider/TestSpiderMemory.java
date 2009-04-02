@@ -51,11 +51,10 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 
 	public void spiderProcessURL(URL url, SpiderParseHTML parse)
 			throws IOException {
-		try {
+		
 			parse.readAll();
-		} catch (IOException e) {
-		}
-		//System.out.println(url);
+		
+
 		this.urlsProcessed++;
 
 	}

@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -43,6 +43,8 @@ import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.networks.synapse.WeightlessSynapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Basic functionality that most of the neural layers require.
@@ -56,6 +58,12 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	private static final long serialVersionUID = -5682296868750703898L;	
 	
 	private List<Synapse> next = new ArrayList<Synapse>();
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * Which activation function to use for this layer.

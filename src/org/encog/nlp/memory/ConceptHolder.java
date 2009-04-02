@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -28,6 +28,9 @@ package org.encog.nlp.memory;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * @author jheaton
@@ -35,6 +38,12 @@ import java.util.List;
 public class ConceptHolder {
 	private final List<VarConcept> concepts = new ArrayList<VarConcept>();
 	private long serialNumber = 1;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/** Creates a new instance of LongConceptHolder */
 	public ConceptHolder() {

@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -26,6 +26,8 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.persist.Persistor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ActivationTANH: The hyperbolic tangent activation function takes the curved
@@ -40,6 +42,11 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * A threshold function for a neural network.

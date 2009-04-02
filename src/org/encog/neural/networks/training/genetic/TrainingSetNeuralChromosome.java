@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -26,6 +26,8 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.networks.BasicNetwork;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TrainingSetNeuralChromosome: Implements a chromosome that allows a
@@ -37,6 +39,12 @@ import org.encog.neural.networks.BasicNetwork;
  */
 public class TrainingSetNeuralChromosome extends NeuralChromosome {
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	/**
 	 * The constructor, takes a list of cities to set the initial "genes" to.
 	 * 

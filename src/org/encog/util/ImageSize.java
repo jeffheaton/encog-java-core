@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -30,6 +30,8 @@ import java.awt.image.ImageObserver;
 import java.util.concurrent.Semaphore;
 
 import org.encog.EncogError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Simple class to determine the size of an image.
@@ -51,6 +53,12 @@ public class ImageSize implements ImageObserver {
 	 * Wait for the values to be set.
 	 */
 	private final Semaphore wait;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Determine the size of an image.

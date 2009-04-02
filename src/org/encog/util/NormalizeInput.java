@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -28,11 +28,19 @@ package org.encog.util;
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * NormalizeInput: Input into a Self Organizing Map must be normalized.
  */
 public class NormalizeInput {
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * This class support two normalization types. Z-AXIS is the most commonly

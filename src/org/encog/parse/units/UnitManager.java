@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -39,6 +39,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import org.encog.parse.Parse;
 import org.encog.parse.recognize.Recognize;
 import org.encog.parse.recognize.RecognizeElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -50,6 +52,12 @@ public class UnitManager {
 
   private Collection<UnitConversion> conversions = new ArrayList<UnitConversion>();
   private Map<String,String> aliases = new HashMap<String,String>();
+  
+  /**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private void loadConvert(Element inputNode)
   {

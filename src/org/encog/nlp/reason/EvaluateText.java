@@ -1,5 +1,5 @@
 /*
- * Encog Artificial Intelligence Framework v1.x
+ * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
@@ -37,6 +37,8 @@ import org.encog.nlp.memory.ConstConcept;
 import org.encog.nlp.memory.Relation;
 import org.encog.nlp.memory.RelationHolder;
 import org.encog.nlp.memory.VarConcept;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -57,6 +59,12 @@ public class EvaluateText extends ParseText {
 	private final List<String> words = new ArrayList<String>();
 	private int currentWord;
 	private boolean ignore = false;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/** Creates a new instance of Parse */
 	public EvaluateText(final EncogNLP context) {
