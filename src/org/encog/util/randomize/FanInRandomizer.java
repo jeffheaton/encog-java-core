@@ -2,6 +2,9 @@ package org.encog.util.randomize;
 
 import org.encog.EncogError;
 import org.encog.matrix.Matrix;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +30,7 @@ public class FanInRandomizer extends BasicRandomizer {
 	private final boolean sqrt;
 
 	public FanInRandomizer() {
-		this(2.4,2.4,false);
+		this(-2.4,2.4,false);
 	}
 
 	public FanInRandomizer(double boundary, boolean sqrt) {
@@ -95,6 +98,25 @@ public class FanInRandomizer extends BasicRandomizer {
 		return (lowerBound / rowValue)
 				+ Math.random()
 				* ((upperBound - lowerBound) / rowValue );
+	}
+	
+	public void randomize(BasicNetwork network) {
+		
+		// randomize the weight matrix
+		for(Synapse synapse: network.getStructure().getSynapses())
+		{
+			if( synapse.getMatrix()!=null )
+				randomize(synapse.getMatrix());
+		}
+		
+		// clear the thresholds
+		for(Layer layer: network.getStructure().getLayers() )
+		{
+			for(int i=0;i<layer.getNeuronCount();i++)
+			{
+				layer.setThreshold(i, 0);
+			}
+		}
 	}
 
 	@Override

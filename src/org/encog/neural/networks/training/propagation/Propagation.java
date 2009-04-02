@@ -183,6 +183,7 @@ Momentum {
 						pair.getInput(), pair.getIdeal());
 			}
 			NeuralData actual = forwardPass(pair.getInput());
+			
 			errorCalculation.updateError(actual, pair.getIdeal());
 			backwardPass(pair.getIdeal());
 		}
