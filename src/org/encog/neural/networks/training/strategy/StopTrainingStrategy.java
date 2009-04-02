@@ -64,14 +64,12 @@ public class StopTrainingStrategy implements Strategy {
 		this.badCycles = 0;
 	}
 	
-	@Override
 	public void init(Train train) {
 		this.train = train;
 		this.shouldStop = false;
 		this.ready = false;
 	}
-
-	@Override
+	
 	public void postIteration() {
 		
 		if( ready )
@@ -94,7 +92,6 @@ public class StopTrainingStrategy implements Strategy {
 		
 	}
 
-	@Override
 	public void preIteration() {	
 	}
 	

@@ -50,17 +50,14 @@ public class ResetStrategy implements Strategy {
 		this.badCycleCount = 0;
 	}
 
-	@Override
 	public void init(Train train) {
 		this.train = train;		
 	}
 
-	@Override
 	public void postIteration() {
 		
 	}
 
-	@Override
 	public void preIteration() {
 		if( this.train.getError()>this.required )
 		{

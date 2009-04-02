@@ -67,12 +67,10 @@ public class HybridStrategy implements Strategy {
 		this.tolerateMinImprovement = tolerateMinImprovement;
 	}
 
-	@Override
 	public void init(Train train) {
 		this.mainTrain = train;		
 	}
 
-	@Override
 	public void postIteration() {
 		if(ready )
 		{
@@ -110,7 +108,6 @@ public class HybridStrategy implements Strategy {
 		}
 	}
 
-	@Override
 	public void preIteration() {
 		this.lastError = this.mainTrain.getError();
 		
