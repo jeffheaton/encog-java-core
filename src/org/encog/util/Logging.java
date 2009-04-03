@@ -32,8 +32,6 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import org.slf4j.LoggerFactory;
-
 public class Logging {
 	
 	

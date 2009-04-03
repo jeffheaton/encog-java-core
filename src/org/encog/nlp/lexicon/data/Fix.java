@@ -26,7 +26,6 @@
 package org.encog.nlp.lexicon.data;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -40,6 +39,10 @@ import org.slf4j.LoggerFactory;
     uniqueConstraints = {@UniqueConstraint(columnNames={"text","pre"})} )
 public class Fix extends DataObject {
 
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -1836858648292387040L;
 	private String text;
 	private boolean pre;
 	

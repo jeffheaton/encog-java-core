@@ -27,7 +27,6 @@ package org.encog.neural.activation;
 
 import java.io.Serializable;
 
-import org.encog.neural.persist.EncogPersistedObject;
 
 /**
  * ActivationFunction: This interface allows various activation functions to be

@@ -32,7 +32,6 @@ import org.encog.nlp.EncogNLP;
 import org.encog.nlp.lexicon.EncogLexicon;
 import org.encog.nlp.lexicon.data.Lemma;
 import org.encog.nlp.lexicon.data.Word;
-import org.encog.nlp.memory.Concept;
 import org.encog.nlp.memory.ConstConcept;
 import org.encog.nlp.memory.Relation;
 import org.encog.nlp.memory.RelationHolder;

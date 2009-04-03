@@ -114,8 +114,16 @@ public class Signal {
 	try {
 		temp = signalClass.newInstance();
 	} catch (InstantiationException e) {
+		if( logger.isErrorEnabled())
+		{
+			logger.error("Exception",e);
+		}
 		throw new ParseError(e);
 	} catch (IllegalAccessException e) {
+		if( logger.isErrorEnabled())
+		{
+			logger.error("Exception",e);
+		}
 		throw new ParseError(e);
 	} 
 	

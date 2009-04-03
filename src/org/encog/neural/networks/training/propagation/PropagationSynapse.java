@@ -26,12 +26,7 @@
 package org.encog.neural.networks.training.propagation;
 
 import org.encog.matrix.Matrix;
-import org.encog.matrix.MatrixMath;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.data.NeuralData;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -84,8 +79,8 @@ public class PropagationSynapse {
 		int fromCount = synapse.getFromNeuronCount();
 		int toCount = synapse.getToNeuronCount();
 		
-		this.accMatrixDelta = new Matrix(fromCount+1,toCount);
-		this.matrixDelta = new Matrix(fromCount+1,toCount);		
+		this.accMatrixDelta = new Matrix(fromCount,toCount);
+		this.matrixDelta = new Matrix(fromCount,toCount);		
 	}
 
 	/**
@@ -103,40 +98,7 @@ public class PropagationSynapse {
 		this.accMatrixDelta.add(i1, i2, value);
 	}
 
-	/**
-	 * Learn from the last error calculation.
-	 * 
-	 * @param learnRate
-	 *            The learning rate.
-	 * @param momentum
-	 *            The momentum.
-	 */
-	public void learn(final double learnRate, final double momentum) {
-		// process the matrix
-		/*this.accMatrixDelta.multiply(learnRate);
-		this.matrixDelta.multiply(momentum);
-		this.matrixDelta = MatrixMath.add(this.accMatrixDelta, this.matrixDelta);
-		this.synapse.getMatrix().add(this.matrixDelta);			
-		this.accMatrixDelta.clear();*/
-		
-		if( logger.isTraceEnabled() ) {
-			logger.trace("Backpropagation learning: deltas=\n"+DumpMatrix.dumpMatrix(this.accMatrixDelta));
-		}
-				
-			final Matrix m1 = MatrixMath.multiply(this.accMatrixDelta, learnRate);
-			final Matrix m2 = MatrixMath.multiply(this.matrixDelta, momentum);
-			this.matrixDelta = MatrixMath.add(m1, m2);
-			
-			if( logger.isTraceEnabled() ) {
-				logger.trace("Backpropagation learning: applying delta=\n"+DumpMatrix.dumpMatrix(this.matrixDelta));
-			}
-			this.synapse.getMatrix().add(this.matrixDelta);			
-			if( logger.isTraceEnabled() ) {
-				logger.trace("Backpropagation learning: new weight matrix=\n"+DumpMatrix.dumpMatrix(synapse.getMatrix()));
-			}
-			
-			this.accMatrixDelta.clear();
-	}
+
 
 	public Matrix getAccMatrixDelta() {
 		return accMatrixDelta;
@@ -150,6 +112,12 @@ public class PropagationSynapse {
 		return synapse;
 	}
 	
+	
+	
+	public void setMatrixDelta(Matrix matrixDelta) {
+		this.matrixDelta = matrixDelta;
+	}
+
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();

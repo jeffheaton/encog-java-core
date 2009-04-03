@@ -25,7 +25,6 @@
  */
 package org.encog.bot.browse;
 
-import org.encog.EncogError;
 import org.encog.bot.BotError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

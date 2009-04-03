@@ -76,6 +76,10 @@ public class EncogConcurrency {
 			try {
 				executor.awaitTermination(timeout, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
+				if( logger.isDebugEnabled())
+				{
+					logger.debug("Exception",e);
+				}
 				throw new EncogError(e);
 			}
 		}

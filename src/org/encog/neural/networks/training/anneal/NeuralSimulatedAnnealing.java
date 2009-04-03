@@ -29,7 +29,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
-import org.encog.neural.networks.training.Train;
 import org.encog.solve.anneal.SimulatedAnnealing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -160,6 +159,10 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 
 
 	public void iteration() {
+		if( logger.isInfoEnabled())
+		{
+			logger.info("Performing Simulated Annealing iteration.");
+		}
 		preIteration();
 		anneal.iteration();
 		setError(anneal.determineError());

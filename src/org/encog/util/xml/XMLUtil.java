@@ -35,6 +35,7 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 
+import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Attr;
@@ -53,7 +54,7 @@ public final class XMLUtil {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	final static private Logger logger = LoggerFactory.getLogger(XMLUtil.class);
 	
 	/**
 	 * Add the specified attribute.
@@ -188,8 +189,10 @@ public final class XMLUtil {
 	private XMLUtil() {
 	}
 
-	public static TransformerHandler saveXML(OutputStream os) throws TransformerConfigurationException
+	public static TransformerHandler saveXML(OutputStream os) 
 	{
+		try
+		{
 		final StreamResult streamResult = new StreamResult(os);
 		final SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory
 				.newInstance();
@@ -201,6 +204,15 @@ public final class XMLUtil {
 		serializer.setOutputProperty(OutputKeys.INDENT, "yes");
 		hd.setResult(streamResult);
 		return hd;
+		}
+		catch(TransformerConfigurationException e)
+		{
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+			throw new EncogError(e);
+		}
 	}
 	
 }

@@ -25,13 +25,10 @@
  */
 package org.encog.util.xml;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.xml.transform.Result;
@@ -66,8 +63,7 @@ public class XMLRead implements Runnable{
 		private Locator locator;
 
 
-		public void setResult(Result arg0) throws IllegalArgumentException {
-			// TODO Auto-generated method stub
+		public void setResult(Result arg0) throws IllegalArgumentException {			
 			
 		}		
 
@@ -78,6 +74,11 @@ public class XMLRead implements Runnable{
 				XMLElement element = new XMLElement(XMLElementType.text,text);
 				queue.put(element);
 			} catch (InterruptedException e) {
+				if( logger.isErrorEnabled())
+				{
+					logger.error("Exception",e);
+				}
+				throw new EncogError(e);
 			}
 		}
 
@@ -88,6 +89,12 @@ public class XMLRead implements Runnable{
 				done.set(true);
 				queue.put(new XMLElement(XMLElementType.documentEnd));
 			} catch (InterruptedException e) {
+				if( logger.isErrorEnabled())
+				{
+					logger.error("Exception",e);
+				}
+				throw new EncogError(e);
+
 			}
 		}
 
@@ -98,6 +105,11 @@ public class XMLRead implements Runnable{
 				XMLElement element = new XMLElement(XMLElementType.end,localName);
 				queue.put(element);
 			} catch (InterruptedException e) {
+				if( logger.isErrorEnabled())
+				{
+					logger.error("Exception",e);
+				}
+				throw new EncogError(e);
 
 			}
 		}
@@ -133,6 +145,11 @@ public class XMLRead implements Runnable{
 			try {
 				queue.put(new XMLElement(XMLElementType.documentBegin));
 			} catch (InterruptedException e) {
+				if( logger.isErrorEnabled())
+				{
+					logger.error("Exception",e);
+				}
+				throw new EncogError(e);
 
 			}
 			
@@ -150,6 +167,12 @@ public class XMLRead implements Runnable{
 			try {
 				queue.put(element);
 			} catch (InterruptedException e) {
+				if( logger.isErrorEnabled())
+				{
+					logger.error("Exception",e);
+				}
+				throw new EncogError(e);
+
 			}
 		}
 
@@ -266,7 +289,11 @@ public class XMLRead implements Runnable{
 		try {
 			this.input.close();
 		} catch (IOException e) {
-			throw(new EncogError(e));
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+			throw new EncogError(e);
 		}
 	}
 	
@@ -286,9 +313,19 @@ public class XMLRead implements Runnable{
 		try {
 			parser.parse(this.inputSource);
 		} catch (SAXException e) {
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
 			throw new EncogError(e);
+
 		} catch (IOException e) {
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
 			throw new EncogError(e);
+
 		}
 		
 	}

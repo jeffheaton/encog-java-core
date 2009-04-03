@@ -121,6 +121,10 @@ public class SimpleIntensityDownsample implements Downsample {
 		try {
 			grabber.grabPixels();
 		} catch (final InterruptedException e) {
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
 			throw new EncogError(e);
 		}
 

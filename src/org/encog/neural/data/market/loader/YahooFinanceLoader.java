@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -150,6 +149,10 @@ public class YahooFinanceLoader implements MarketLoader {
 			is.close();
 			return result;
 		} catch (final IOException e) {
+			if(logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
 			throw new LoaderError(e);
 		} 
 	}

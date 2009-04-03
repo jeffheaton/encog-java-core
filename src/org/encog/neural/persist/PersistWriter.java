@@ -33,7 +33,6 @@ import java.io.OutputStream;
 import java.util.Date;
 
 import org.encog.Encog;
-import org.encog.neural.persist.persistors.PersistorUtil;
 import org.encog.util.xml.XMLWrite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -83,6 +83,10 @@ abstract public class ParseText {
     	}
     	catch(IOException e)
     	{
+    		if( logger.isErrorEnabled())
+    		{
+    			logger.error("Exception",e);
+    		}
     		throw new NLPError(e);
     	}
     }     

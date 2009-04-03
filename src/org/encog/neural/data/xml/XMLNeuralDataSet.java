@@ -38,8 +38,6 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * A data source that reads XML files.  This class is memory based, 
@@ -88,9 +86,9 @@ public class XMLNeuralDataSet extends BasicNeuralDataSet {
 			DocumentBuilder db = null;
 			db = dbf.newDocumentBuilder();
 
-			Document doc = null;
-			doc = db.parse(is);
-			Element node = doc.getDocumentElement();
+			//Document doc = null;
+			//doc = db.parse(is);
+//			Element node = doc.getDocumentElement();
 
 			// read in the data
 
@@ -108,8 +106,6 @@ public class XMLNeuralDataSet extends BasicNeuralDataSet {
 			is.close();
 
 		} catch (javax.xml.parsers.ParserConfigurationException e) {
-			throw new NeuralNetworkError(e);
-		} catch (org.xml.sax.SAXException e) {
 			throw new NeuralNetworkError(e);
 		} catch (java.io.IOException e) {
 			throw new NeuralNetworkError(e);

@@ -30,11 +30,15 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.BasicNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ContextLayer extends BasicLayer {
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -5588659547177460637L;
 
 	private NeuralData context;
 	

@@ -32,6 +32,11 @@ import org.slf4j.LoggerFactory;
 
 public class ActivationGaussian implements ActivationFunction {
 
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -7166136514935838114L;
+
 	private GaussianFunction gausian;
 	
 	/**

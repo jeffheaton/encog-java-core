@@ -25,8 +25,6 @@
  */
 package org.encog.neural.persist;
 
-import javax.xml.transform.sax.TransformerHandler;
-
 import org.encog.util.xml.XMLElement;
 import org.encog.util.xml.XMLRead;
 import org.encog.util.xml.XMLWrite;

@@ -28,14 +28,9 @@ package org.encog.neural.networks;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
 
 import org.encog.Encog;
-import org.encog.bot.browse.extract.BasicExtract;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
@@ -44,10 +39,8 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
-import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.util.ErrorCalculation;
-import org.encog.util.randomize.FanInRandomizer;
 import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,8 +53,8 @@ import org.slf4j.LoggerFactory;
  * The first layer added is the input layer, the final layer added is the output
  * layer. Any layers added between these two layers are the hidden layers.
  */
-public class BasicNetwork implements Serializable, Network,
-		EncogPersistedObject {
+public class BasicNetwork implements Serializable, Network
+		 {
 	/**
 	 * Serial id for this class.
 	 */
@@ -193,10 +186,17 @@ public class BasicNetwork implements Serializable, Network,
 
 	public void checkInputSize(final NeuralData input) {
 		if (input.size() != this.inputLayer.getNeuronCount()) {
-			throw new NeuralNetworkError(
-					"Size mismatch: Can't compute outputs for input size="
-							+ input.size() + " for input layer size="
-							+ this.inputLayer.getNeuronCount());
+			
+			String str = "Size mismatch: Can't compute outputs for input size="
+				+ input.size() + " for input layer size="
+				+ this.inputLayer.getNeuronCount(); 
+			
+			if( logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			
+			throw new NeuralNetworkError(str);
 		}
 	}
 
@@ -413,7 +413,6 @@ public class BasicNetwork implements Serializable, Network,
 	/**
 	 * Reset the weight matrix and the thresholds.
 	 * 
-	 * @throws MatrixException
 	 */
 	public void reset() {
 		(new RangeRandomizer(-1,1)).randomize(this);

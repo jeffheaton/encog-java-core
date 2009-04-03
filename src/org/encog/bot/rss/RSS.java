@@ -136,6 +136,11 @@ public class RSS {
 	public void load(final URL url) {
 		try
 		{
+			if( logger.isInfoEnabled())
+			{
+				logger.info("Loading RSS from:" + url);
+			}
+			
 		final URLConnection http = url.openConnection();
 		final InputStream is = http.getInputStream();
 
@@ -211,6 +216,10 @@ public class RSS {
 		final RSSItem rssItem = new RSSItem();
 		rssItem.load(item);
 		this.items.add(rssItem);
+		if( logger.isDebugEnabled())
+		{
+			logger.debug("Loaded RSS item:" + rssItem);
+		}
 	}
 
 	/**

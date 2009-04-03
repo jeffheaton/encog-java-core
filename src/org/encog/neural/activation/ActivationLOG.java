@@ -32,6 +32,10 @@ import org.slf4j.LoggerFactory;
 public class ActivationLOG implements ActivationFunction {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 7134233791725797522L;
+	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")

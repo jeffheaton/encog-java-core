@@ -39,27 +39,18 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.neural.networks.training.Momentum;
-import org.encog.neural.networks.training.strategy.SmartLearningRate;
-import org.encog.neural.networks.training.strategy.SmartMomentum;
 import org.encog.util.ErrorCalculation;
 import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Propagation  extends BasicTraining implements LearningRate,
-Momentum {
+public class Propagation  extends BasicTraining implements LearningRate {
 	/**
 	 * The learning rate. This is the degree to which the deltas will affect the
 	 * current network.
 	 */
 	private double learnRate;
 
-	/**
-	 * The momentum, this is the degree to which the previous training cycle
-	 * affects the current one.
-	 */
-	private double momentum;
 
 	/**
 	 * THe network that is being trained.
@@ -96,11 +87,9 @@ Momentum {
 	 *            have on the current iteration.
 	 */
 	public Propagation(final BasicNetwork network, final PropagationMethod method,
-			final NeuralDataSet training, final double learnRate,
-			final double momentum) {
+			final NeuralDataSet training, final double learnRate) {
 		this.network = network;
 		this.learnRate = learnRate;
-		this.momentum = momentum;
 		this.method = method;
 		this.method.init(this);
 		setTraining(training);
@@ -119,10 +108,17 @@ Momentum {
 
 		// make sure that the input is of the correct size
 		if (ideal.size() != this.network.getOutputLayer().getNeuronCount()) {
-			throw new NeuralNetworkError(
-					"Size mismatch: Can't calcError for ideal input size="
-							+ ideal.size() + " for output layer size="
-							+ this.network.getOutputLayer().getNeuronCount());
+			
+			String str = "Size mismatch: Can't calcError for ideal input size="
+				+ ideal.size() + " for output layer size="
+				+ this.network.getOutputLayer().getNeuronCount();
+			
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			
+			throw new NeuralNetworkError(str);
 		}
 
 		// log that we are performing a backward pass
@@ -193,13 +189,13 @@ Momentum {
 	 * Perform one iteration of training.
 	 * 
 	 * Note: if you get a StackOverflowError while training, then you have
-	 * endless recurrant loops. Try inserting no trainable synapses on one side
+	 * endless recurrent loops. Try inserting no trainable synapses on one side
 	 * of the loop.
 	 */
 	public void iteration() {
 
 		if (logger.isInfoEnabled()) {
-			logger.info("Beginning backpropagation iteration");
+			logger.info("Beginning propagation iteration");
 		}
 
 		preIteration();
@@ -270,13 +266,7 @@ Momentum {
 		this.learnRate = rate;
 	}
 
-	public double getMomentum() {
-		return this.momentum;
-	}
 
-	public void setMomentum(double m) {
-		this.momentum = m;
-	}
 
 	public NeuralOutputHolder getOutputHolder() {
 		return outputHolder;

@@ -27,18 +27,13 @@ package org.encog.neural.networks.training.hopfield;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.Network;
-import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
-import org.encog.neural.networks.training.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,6 +59,11 @@ public class TrainHopfield extends BasicTraining {
 	}
 
 	public void iteration() {
+		
+		if( logger.isInfoEnabled())
+		{
+			logger.info("Performing Hopfield iteration.");
+		}
 		
 		preIteration();
 		

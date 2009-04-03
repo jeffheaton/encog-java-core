@@ -34,6 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PropertyData implements EncogPersistedObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7940416732740995199L;
 	private String name;
 	private String description;
 	private Map<String,String> data = new HashMap<String,String>();

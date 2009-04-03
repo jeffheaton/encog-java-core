@@ -31,6 +31,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TextData implements EncogPersistedObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6895724776252007263L;
 	private String text;
 	private String name;
 	private String description;

@@ -29,12 +29,14 @@ package org.encog.neural.networks.training.propagation.resilient;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
-import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ResilientPropagation extends Propagation {
-
+	
+	final static double DEFAULT_ZERO_TOLERANCE = 0.001;
+	private final double zeroTolerance;
+	
 	/**
 	 * The logging object.
 	 */
@@ -42,9 +44,23 @@ public class ResilientPropagation extends Propagation {
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public ResilientPropagation(BasicNetwork network, 
-			NeuralDataSet training, double learnRate, double momentum) {
-		super(network, new ResilientPropagationMethod(), training, learnRate, momentum);
-		// TODO Auto-generated constructor stub
+			NeuralDataSet training, double learnRate, double zeroTolerance) {
+		
+		super(network, new ResilientPropagationMethod(), training, learnRate);
+		this.zeroTolerance = zeroTolerance;
 	}
+	
+	public ResilientPropagation(BasicNetwork network, 
+			NeuralDataSet training, double learnRate) {		
+		this(network,training,learnRate,ResilientPropagation.DEFAULT_ZERO_TOLERANCE);
+	}
+	
+	
+
+	public double getZeroTolerance() {
+		return zeroTolerance;
+	}
+	
+	
 
 }

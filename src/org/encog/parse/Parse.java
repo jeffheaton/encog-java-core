@@ -25,14 +25,15 @@
  */
 package org.encog.parse;
 
-import org.encog.neural.persist.EncogPersistedCollection;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 import org.encog.parse.recognize.Recognize;
 import org.encog.parse.signal.Signal;
 import org.encog.parse.units.UnitManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
 
 
 public class Parse {  
@@ -66,7 +67,11 @@ public class Parse {
 	  }
 	  catch(IOException e)
 	  {
-		  throw new ParseError(e);
+		  if( logger.isErrorEnabled())
+	    	{
+	    		logger.error("Exception",e);
+	    	}
+	    	throw new ParseError(e);
 	  }
   }
 

@@ -26,12 +26,15 @@
 
 package org.encog.neural.activation;
 
-import org.encog.neural.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActivationSIN implements ActivationFunction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5301501177778271284L;
 	/**
 	 * The logging object.
 	 */

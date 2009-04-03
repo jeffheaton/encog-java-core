@@ -27,7 +27,6 @@
 package org.encog.neural.networks.training.strategy;
 
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.Network;
 import org.encog.neural.networks.NetworkCODEC;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;

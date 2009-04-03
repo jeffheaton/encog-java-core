@@ -106,8 +106,6 @@ public class YahooSearch {
 	 * @param searchFor
 	 *            What to search for.
 	 * @return The URL's found for the specific search.
-	 * @throws IOException
-	 *             Thrown if an IO exception occurs.
 	 */
 	public Collection<URL> search(final String searchFor) throws IOException {
 		Collection<URL> result = null;

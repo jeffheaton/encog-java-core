@@ -85,6 +85,10 @@ public class LongTermMemory {
 			f = new FileOutputStream(path);
 	        save(f);
 		} catch (FileNotFoundException e) {
+			if( logger.isErrorEnabled() )
+        	{        		
+        		logger.error("Exception",e);
+        	}
 			throw new NLPError(e);
 		}
 
@@ -105,7 +109,12 @@ public class LongTermMemory {
         }
         catch(NumberFormatException e)
         {
-            throw new FormatError("Illegal concept number:"+strNum);
+        	String str = "Illegal concept number:"+strNum;
+        	if( logger.isErrorEnabled() )
+        	{        		
+        		logger.error(str);
+        	}
+            throw new FormatError(str);
         }
         VarConcept lconcept = new VarConcept(serialNumber,s);     
         concepts.load(lconcept);
@@ -125,18 +134,28 @@ public class LongTermMemory {
         }
         catch(NoSuchElementException e)
         {
-            throw new FormatError("Not enough arguments on line: " + line );
+        	String str = "Not enough arguments on line: " + line;
+        	if( logger.isErrorEnabled() )
+        	{        		
+        		logger.error(str);
+        	}
+            throw new FormatError(str );
         }
         
         long sourceNum =0,typeNum =0,targetNum =0;
         
         try
-        {
+        {        	
             sourceNum = Long.parseLong(strSource);
         }
         catch(NumberFormatException e)
         {
-            throw new FormatError("Illegal source on line:" + line);
+        	String str = "Illegal source on line:" + line;
+        	if( logger.isErrorEnabled() )
+        	{        		
+        		logger.error(str);
+        	}
+            throw new FormatError(str);
         }
         
         try
@@ -145,7 +164,12 @@ public class LongTermMemory {
         }
         catch(NumberFormatException e)
         {
-            throw new FormatError("Illegal type on line:" + line);
+        	String str = "Illegal type on line:" + line;
+        	if( logger.isErrorEnabled() )
+        	{        		
+        		logger.error(str);
+        	}
+            throw new FormatError(str);
         }        
         
         try
@@ -154,7 +178,12 @@ public class LongTermMemory {
         }
         catch(NumberFormatException e)
         {
-            throw new FormatError("Illegal target on line:" + line);
+        	String str = "Illegal target on line:" + line;
+        	if( logger.isErrorEnabled() )
+        	{        		
+        		logger.error(str);
+        	}
+            throw new FormatError(str);
         }                
         
         Concept source = concepts.find(sourceNum);
@@ -188,6 +217,10 @@ public class LongTermMemory {
     	}
     	catch(IOException e)
     	{
+    		if( logger.isErrorEnabled() )
+    		{
+    			logger.error("Exception",e);
+    		}
     		throw new EncogError(e);
     	}
     }
@@ -201,6 +234,10 @@ public class LongTermMemory {
     	}
     	catch(IOException e)
     	{
+    		if( logger.isErrorEnabled() )
+    		{
+    			logger.error("Exception",e);
+    		}
     		throw new NLPError(e);
     	}
     }
@@ -224,6 +261,4 @@ public class LongTermMemory {
     {
         relations.add(holder);
     }
-    
-    
 }

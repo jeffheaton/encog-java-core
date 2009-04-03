@@ -44,7 +44,13 @@ public class OneToOneSynapse extends BasicSynapse {
 	{
 		if( fromLayer.getNeuronCount()!=toLayer.getNeuronCount())
 		{
-			throw new NeuralNetworkError("From and to layers must have the same number of neurons.");
+			String str = "From and to layers must have the same number of neurons.";
+			if( logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			
+			throw new NeuralNetworkError(str);
 		}
 		this.setFromLayer(fromLayer);
 		this.setToLayer(toLayer);		

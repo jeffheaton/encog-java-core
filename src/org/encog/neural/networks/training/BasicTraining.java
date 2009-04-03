@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.Network;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

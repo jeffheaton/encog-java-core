@@ -29,14 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.nlp.EncogNLP;
-import org.encog.nlp.lexicon.EncogLexicon;
-import org.encog.nlp.lexicon.data.Lemma;
-import org.encog.nlp.lexicon.data.Word;
 import org.encog.nlp.memory.Concept;
 import org.encog.nlp.memory.ConstConcept;
 import org.encog.nlp.memory.Relation;
 import org.encog.nlp.memory.RelationHolder;
-import org.encog.nlp.memory.VarConcept;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

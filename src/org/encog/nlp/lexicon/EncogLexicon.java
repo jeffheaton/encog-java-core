@@ -39,7 +39,6 @@ import org.encog.nlp.lexicon.data.WordType;
 import org.encog.nlp.lexicon.data.WordTypePossibility;
 import org.encog.util.orm.ORMSession;
 import org.hibernate.Query;
-import org.hibernate.ScrollableResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

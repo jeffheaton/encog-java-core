@@ -24,8 +24,6 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */package org.encog.nlp;
 
-import java.io.IOException;
-
 import org.encog.nlp.lexicon.EncogLexicon;
 import org.encog.nlp.memory.Concept;
 import org.encog.nlp.memory.ConstConcept;

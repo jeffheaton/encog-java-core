@@ -25,12 +25,7 @@
  */
 package org.encog.solve.genetic;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import org.encog.util.concurrency.EncogConcurrency;
 import org.slf4j.Logger;

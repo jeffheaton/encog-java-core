@@ -26,10 +26,8 @@
 package org.encog.nlp.lexicon.data;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.encog.util.orm.DataObject;
 import org.slf4j.Logger;
@@ -39,6 +37,11 @@ import org.slf4j.LoggerFactory;
 @Table(name="lexicon_word_type_poss" )
 public class WordTypePossibility extends DataObject {
 	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 2860281648328064455L;
+
 	/**
 	 * The logging object.
 	 */

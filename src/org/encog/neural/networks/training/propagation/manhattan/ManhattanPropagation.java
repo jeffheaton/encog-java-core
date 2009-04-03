@@ -33,8 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ManhattanPropagation extends Propagation {
-
-	private double delta;
+	
+	final static double DEFAULT_ZERO_TOLERANCE = 0.001;
+	private final double zeroTolerance;
 	
 	/**
 	 * The logging object.
@@ -43,13 +44,21 @@ public class ManhattanPropagation extends Propagation {
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public ManhattanPropagation(BasicNetwork network, 
-			NeuralDataSet training, double delta, double learnRate, double momentum) {
-		super(network, new ManhattanPropagationMethod(), training, learnRate, momentum);
-		this.delta = delta;
+			NeuralDataSet training, double learnRate, double zeroTolerance) {
+		
+		super(network, new ManhattanPropagationMethod(), training, learnRate);
+		this.zeroTolerance = zeroTolerance;
 	}
+	
+	public ManhattanPropagation(BasicNetwork network, 
+			NeuralDataSet training, double learnRate) {		
+		this(network,training,learnRate,ManhattanPropagation.DEFAULT_ZERO_TOLERANCE);
+	}
+	
+	
 
-	public double getDelta() {
-		return delta;
+	public double getZeroTolerance() {
+		return zeroTolerance;
 	}
 	
 	

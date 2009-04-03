@@ -215,6 +215,11 @@ public class PropagationLevel {
 		this.thresholdDeltas[index] = d;
 	}
 	
+	public double getThresholdMomentum(int index)
+	{
+		return this.thresholdMomentum[index];
+	}
+	
 	public void accumulateThresholdDelta(final int index, final double value) {
 		this.thresholdDeltas[index]+= value;
 	}
@@ -232,4 +237,11 @@ public class PropagationLevel {
 		result.append("]");
 		return result.toString();
 	}
+
+	public void setThresholdMomentum(int i, double delta) {
+		this.thresholdMomentum[i] = delta;
+		
+	}
+	
+	
 }

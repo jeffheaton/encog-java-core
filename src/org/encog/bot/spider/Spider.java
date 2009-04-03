@@ -132,6 +132,11 @@ public class Spider {
 	public void process(URL start) {
 		WorkloadItem current = null;
 
+		if( logger.isInfoEnabled())
+		{
+			logger.info("Spider is starting with URL: " + start);
+		}
+		
 		this.session = this.manager.openSession();
 
 		addURL(start, null);
@@ -140,6 +145,11 @@ public class Spider {
 			processWork(current);
 			session.flush();
 			session.clear();
+		}
+		
+		if( logger.isInfoEnabled())
+		{
+			logger.info("Spider has stopped");
 		}
 	}
 
@@ -170,6 +180,10 @@ public class Spider {
 
 	public void addURL(URL url, WorkloadItem source) {
 
+		if(logger.isDebugEnabled())
+		{
+			logger.debug("Adding URL to spider queue: " + url);
+		}
 		
 		// does the URL exist already?
 		Query q = this.session

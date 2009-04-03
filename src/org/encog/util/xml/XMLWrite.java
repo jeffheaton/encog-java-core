@@ -87,6 +87,10 @@ public class XMLWrite {
 			this.tagStack = new Stack<String>();
 
 		} catch (final TransformerConfigurationException e) {
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
 			throw new EncogError(e);
 		} 
 	}

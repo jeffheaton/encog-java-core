@@ -25,9 +25,7 @@
  */
 package org.encog.neural.data.sql;
 
-import java.sql.SQLException;
 import java.util.Iterator;
-import java.util.List;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
@@ -135,6 +133,10 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		 * Removes are not supported.
 		 */
 		public void remove() {
+			if(logger.isErrorEnabled())
+			{
+				logger.error(SQLNeuralDataSet.REMOVE_NOT_SUPPORTED);
+			}
 			throw new NeuralDataError(SQLNeuralDataSet.REMOVE_NOT_SUPPORTED);	
 		}
 	}
@@ -195,6 +197,10 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 * @param data1 Not used.
 	 */
 	public void add(final NeuralData data1) {
+		if(logger.isErrorEnabled())
+		{
+			logger.error(SQLNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new NeuralDataError(SQLNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 
@@ -204,6 +210,10 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 * @param idealData Not used.
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
+		if(logger.isErrorEnabled())
+		{
+			logger.error(SQLNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new NeuralDataError(SQLNeuralDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -213,6 +223,10 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 * @param inputData Not used.
 	 */
 	public void add(final NeuralDataPair inputData) {
+		if(logger.isErrorEnabled())
+		{
+			logger.error(SQLNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new NeuralDataError(SQLNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 

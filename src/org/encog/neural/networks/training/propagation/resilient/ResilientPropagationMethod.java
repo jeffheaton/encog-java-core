@@ -26,26 +26,34 @@
 
 package org.encog.neural.networks.training.propagation.resilient;
 
+import org.encog.matrix.Matrix;
 import org.encog.neural.networks.NeuralOutputHolder;
+import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.training.propagation.CalculatePartialDerivative;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
+import org.encog.neural.networks.training.propagation.PropagationSynapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ResilientPropagationMethod implements PropagationMethod {
 
-	ResilientPropagation propagation;
-	
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	public void calculateError(NeuralOutputHolder output,
-			PropagationLevel fromLevel, PropagationLevel toLevel) {
-		// TODO Auto-generated method stub
+	private ResilientPropagation propagation;
+	private CalculatePartialDerivative pderv = new CalculatePartialDerivative();
+	
+	public void calculateError(
+			final NeuralOutputHolder output,
+			final PropagationLevel fromLevel,
+			final PropagationLevel toLevel) {
+		
+		this.pderv.calculateError(output, fromLevel, toLevel);
 		
 	}
 
@@ -54,9 +62,71 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		
 	}
 
+	/**
+	 * Modify the weight matrix and thresholds based on the last call to
+	 * calcError.
+	 */
 	public void learn() {
-		// TODO Auto-generated method stub
+		if (logger.isDebugEnabled()) {
+			logger.debug("Backpropagation learning pass");
+		}
 		
+		for(PropagationLevel level: this.propagation.getLevels())
+		{
+			learnLevel(level);
+		}
 	}
+	
+	private double determineChange(double value)
+	{
+		if( Math.abs(value)<this.propagation.getZeroTolerance())
+			return 0;
+		else if( value>0)
+			return this.propagation.getLearningRate();
+		else 
+			return -this.propagation.getLearningRate();
+	}
+	
+	private void learnLevel(PropagationLevel level)
+	{
+		// teach the synapses
+		for(PropagationSynapse synapse: level.getOutgoing())
+		{
+			learnSynapse(synapse);
+		}		
+		
+		// teach the threshold
+		for(Layer layer: level.getLayers())
+		{
+			for(int i=0;i<layer.getNeuronCount();i++)
+			{
+				double change = determineChange(level.getThresholdDelta(i)*this.propagation.getLearningRate());
+				layer.setThreshold(i, change);
+			}			
+		}
+	}
+	
+	/**
+	 * Learn from the last error calculation.
+	 * 
+	 * @param learnRate
+	 *            The learning rate.
+	 * @param momentum
+	 *            The momentum.
+	 */
+	private void learnSynapse(PropagationSynapse synapse) {
+
+		Matrix matrix = synapse.getSynapse().getMatrix();
+		
+		for(int row = 0;row<matrix.getRows();row++ )
+		{
+			for(int col = 0;col<matrix.getCols();col++ )
+			{
+				double change = determineChange(synapse.getAccMatrixDelta().get(row, col));
+				matrix.set(row,col,matrix.get(row, col)+change);				
+			}
+		}		
+	}
+
 
 }

@@ -26,7 +26,8 @@
 
 package org.encog.neural.networks.training.propagation.back;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.matrix.Matrix;
+import org.encog.matrix.MatrixMath;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.propagation.CalculatePartialDerivative;
@@ -34,6 +35,7 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.encog.neural.networks.training.propagation.PropagationSynapse;
+import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +80,7 @@ public class BackpropagationMethod implements PropagationMethod {
 		// teach the synapses
 		for(PropagationSynapse synapse: level.getOutgoing())
 		{
-			synapse.learn(this.propagation.getLearningRate(), this.propagation.getMomentum());
+			learnSynapse(synapse);
 		}		
 		
 		// teach the threshold
@@ -86,14 +88,41 @@ public class BackpropagationMethod implements PropagationMethod {
 		{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
-				double delta = thresholdDeltas[i]*this.propagation.getLearningRate();
-				delta+=this.thresholdMomentum[i]*propagation.getMomentum();
+				double delta = level.getThresholdDelta(i)*this.propagation.getLearningRate();
+				delta+=level.getThresholdMomentum(i) *propagation.getMomentum();
 				layer.setThreshold(i, layer.getThreshold(i)+delta);
-				this.thresholdMomentum[i] = delta;
-				this.thresholdDeltas[i] = 0.0;
+				level.setThresholdMomentum(i,delta);
+				level.setThresholdDelta(i, 0.0);				
 			}
 			
 		}
+	}
+	
+	/**
+	 * Learn from the last error calculation.
+	 * 
+	 * @param learnRate
+	 *            The learning rate.
+	 * @param momentum
+	 *            The momentum.
+	 */
+	private void learnSynapse(PropagationSynapse synapse) {
+
+		
+		final Matrix m1 = MatrixMath.multiply(synapse.getAccMatrixDelta(), this.propagation.getLearningRate());
+		final Matrix m2 = MatrixMath.multiply(synapse.getMatrixDelta(), this.propagation.getMomentum());
+		synapse.setMatrixDelta(MatrixMath.add(m1, m2));
+		
+		if( logger.isTraceEnabled() ) {
+			logger.trace("Backpropagation learning: applying delta=\n"+DumpMatrix.dumpMatrix(synapse.getMatrixDelta()));
+		}
+		synapse.getSynapse().getMatrix().add(synapse.getMatrixDelta());			
+		if( logger.isTraceEnabled() ) {
+			logger.trace("Backpropagation learning: new weight matrix=\n"+DumpMatrix.dumpMatrix(synapse.getSynapse().getMatrix()));
+		}
+		
+		synapse.getAccMatrixDelta().clear();
+		
 	}
 
 	public void init(Propagation propagation) {

@@ -96,8 +96,10 @@ public class SessionManager {
 			
             sessionFactory = config.buildSessionFactory();
         } catch (Throwable ex) {
-            // Make sure you log the exception, as it might be swallowed
-            System.err.println("Initial SessionFactory creation failed." + ex);
+            if( logger.isErrorEnabled())
+            {
+            	logger.error("Initial SessionFactory creation failed." + ex);
+            }
             throw new ORMError(ex);
         }	
 	}

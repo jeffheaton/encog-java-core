@@ -26,13 +26,16 @@
 
 package org.encog.neural.activation;
 
-import org.encog.matrix.BiPolarUtil;
 import org.encog.neural.NeuralNetworkError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ActivationBiPolar implements ActivationFunction {
 	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -7166136514935838114L;
 	/**
 	 * The logging object.
 	 */

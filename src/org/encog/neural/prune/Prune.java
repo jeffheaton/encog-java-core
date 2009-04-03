@@ -25,12 +25,6 @@
  */
 package org.encog.neural.prune;
 
-import java.util.Collection;
-
-import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

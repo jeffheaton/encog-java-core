@@ -30,7 +30,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.encog.neural.activation.ActivationUtil;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -167,6 +166,10 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 *            Not used.
 	 */
 	public void add(final NeuralData data) {
+		if(logger.isErrorEnabled())
+		{
+			logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new TemporalError(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 
@@ -180,6 +183,10 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 *            Not used.
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
+		if(logger.isErrorEnabled())
+		{
+			logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new TemporalError(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 
@@ -192,6 +199,10 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 
 	public void add(final NeuralDataPair inputData) {
+		if(logger.isErrorEnabled())
+		{
+			logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
+		}
 		throw new TemporalError(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 
@@ -203,9 +214,13 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	public void addDescription(final TemporalDataDescription desc) {
 		if (this.points.size() > 0) {
-			throw new TemporalError(
-					"Can't add anymore descriptions, there are "
-							+ "already temporal points defined.");
+			String str = "Can't add anymore descriptions, there are "
+				+ "already temporal points defined.";
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new TemporalError(str);
 		}
 
 		final int index = this.descriptions.size();
@@ -413,8 +428,16 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	public BasicNeuralData generateOutputNeuralData(final int index) {
 		if (index + this.predictWindowSize > this.points.size()) {
-			throw new TemporalError("Can't generate prediction temporal data "
-					+ "beyond the end of provided data.");
+			
+			String str = "Can't generate prediction temporal data "
+			+ "beyond the end of provided data.";
+			
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			
+			throw new TemporalError(str);
 		}
 
 		final BasicNeuralData result = new BasicNeuralData(

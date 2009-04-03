@@ -72,6 +72,10 @@ public class ImageSize implements ImageObserver {
 			try {
 				this.wait.acquire();
 			} catch (final InterruptedException e) {
+				if( logger.isErrorEnabled())
+				{
+					logger.error("Exception",e);
+				}
 				throw new EncogError(e);
 			}
 		}

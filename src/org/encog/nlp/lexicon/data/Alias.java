@@ -26,8 +26,6 @@
 package org.encog.nlp.lexicon.data;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
@@ -40,6 +38,11 @@ import org.slf4j.LoggerFactory;
 @Entity(name = "lexicon_alias")
 public class Alias extends DataObject {
 	
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 8288381967394218261L;
+
 	/**
 	 * The logging object.
 	 */

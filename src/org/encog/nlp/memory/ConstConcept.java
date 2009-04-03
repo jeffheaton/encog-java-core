@@ -56,7 +56,7 @@ public class ConstConcept extends Concept {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	final private static Logger logger = LoggerFactory.getLogger(ConstConcept.class);
     
     /** Creates a new instance of ConstConcept */
     private ConstConcept(String key,long serialNumber) {
@@ -90,7 +90,14 @@ public class ConstConcept extends Concept {
         }
         
         if( result==null )
-            throw new ConceptNotFoundError("Can't find concept with serial number: " + id );
+        {
+        	String str = "Can't find concept with serial number: " + id;
+        	if( logger.isErrorEnabled() )
+        	{        		
+        		logger.error(str);
+        	}
+        	throw new ConceptNotFoundError(str );
+        }
         
         return result;
     }

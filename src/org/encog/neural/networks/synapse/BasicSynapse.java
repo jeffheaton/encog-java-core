@@ -25,7 +25,6 @@
  */
 package org.encog.neural.networks.synapse;
 
-import org.encog.matrix.Matrix;
 import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

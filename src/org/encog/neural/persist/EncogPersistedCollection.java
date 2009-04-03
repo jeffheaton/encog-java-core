@@ -27,15 +27,8 @@
 package org.encog.neural.persist;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
-import org.encog.EncogError;
-import org.encog.neural.persist.persistors.PersistorUtil;
-import org.encog.util.xml.XMLElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

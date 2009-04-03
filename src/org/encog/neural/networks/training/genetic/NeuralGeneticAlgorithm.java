@@ -26,9 +26,7 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.Network;
 import org.encog.neural.networks.training.BasicTraining;
-import org.encog.neural.networks.training.Train;
 import org.encog.solve.genetic.GeneticAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +95,11 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	}
 
 	public void iteration() {
+		
+		if( logger.isInfoEnabled())
+		{
+			logger.info("Performing Genetic iteration.");
+		}
 		preIteration();
 		getGenetic().iteration();
 		setError(getGenetic().getError());

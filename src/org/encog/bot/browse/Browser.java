@@ -33,7 +33,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.encog.bot.BotError;
 import org.encog.bot.browse.range.DocumentRange;
 import org.encog.bot.browse.range.Form;
 import org.encog.bot.browse.range.FormElement;
@@ -50,9 +49,18 @@ public class Browser {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * Navigate to a page based on a URL object. This will be an 
+	 * HTTP GET operation.
+	 * @param url The URL to navigate to.
+	 */
 	public void navigate(URL url)  {
 		try
 		{
+			if( logger.isInfoEnabled())
+			{
+				logger.info("Navigating to page:" + url);
+			}
 		URLConnection connection = url.openConnection();
 		InputStream is = connection.getInputStream();
 		navigate(url, is);
@@ -68,8 +76,17 @@ public class Browser {
 		}
 	}
 
+	/**
+	 * Navigate to a page and post the specified data.
+	 * @param url The URL to post the data to.
+	 * @param is The data to post to the page.
+	 */
 	public void navigate(URL url, InputStream is) {		
 		try {
+			if( logger.isInfoEnabled())
+			{
+				logger.info("POSTing to page:" + url);
+			}
 			LoadWebPage load = new LoadWebPage(url);
 			currentPage = load.load(is);
 		} catch (IOException e) {
@@ -81,6 +98,10 @@ public class Browser {
 		}
 	}
 
+	/**
+	 * Navigate based on a string URL.
+	 * @param url The URL to navigate to.
+	 */
 	public void navigate(String url)  {
 		try
 		{
@@ -96,9 +117,20 @@ public class Browser {
 		}
 	}
 
+	/**
+	 * Navigate based on a form.  Complete and post the form.
+	 * @param form The form to be posted.
+	 * @param submit The submit button on the form to simulate clicking.
+	 */
 	public void navigate(Form form, Input submit)  {
 		
 		try {
+			
+			if( logger.isInfoEnabled())
+			{
+				logger.info("Posting a form");
+			}
+			
 		InputStream is;
 		URLConnection connection = null;
 		OutputStream os;

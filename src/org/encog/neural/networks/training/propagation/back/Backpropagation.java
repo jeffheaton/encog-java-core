@@ -25,29 +25,12 @@
  */
 package org.encog.neural.networks.training.propagation.back;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.NeuralOutputHolder;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.training.BasicTraining;
-import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.strategy.SmartLearningRate;
 import org.encog.neural.networks.training.strategy.SmartMomentum;
-import org.encog.util.ErrorCalculation;
-import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,8 +52,15 @@ import org.slf4j.LoggerFactory;
  * much the previous learning iteration affects the current. To use no momentum
  * at all specify zero.
  */
-public class Backpropagation extends Propagation {
+public class Backpropagation extends Propagation implements Momentum {
 
+	/**
+	 * The momentum, this is the degree to which the previous training cycle
+	 * affects the current one.
+	 */
+	private double momentum;
+
+	
 	/**
 	 * The logging object.
 	 */
@@ -79,7 +69,8 @@ public class Backpropagation extends Propagation {
 	
 	public Backpropagation(BasicNetwork network, NeuralDataSet training,
 			double learnRate, double momentum) {
-		super(network, new BackpropagationMethod(), training, learnRate, momentum);	
+		super(network, new BackpropagationMethod(), training, learnRate);
+		this.momentum = momentum;
 	}
 	
 	public Backpropagation(final BasicNetwork network,
@@ -89,6 +80,12 @@ public class Backpropagation extends Propagation {
 		addStrategy(new SmartMomentum());
 	}
 
-	
+	public double getMomentum() {
+		return this.momentum;
+	}
+
+	public void setMomentum(double m) {
+		this.momentum = m;
+	}
 	
 }

@@ -33,6 +33,10 @@ import org.slf4j.LoggerFactory;
 public class ActivationSoftMax implements ActivationFunction {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -960489243250457611L;
+	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")

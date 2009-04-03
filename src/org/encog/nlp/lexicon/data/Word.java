@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -46,6 +45,11 @@ import org.slf4j.LoggerFactory;
 @Table(name="lexicon_word",
     uniqueConstraints = {@UniqueConstraint(columnNames={"text"})} )
 public class Word extends DataObject {
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -628080260948770258L;
 
 	/**
 	 * The logging object.

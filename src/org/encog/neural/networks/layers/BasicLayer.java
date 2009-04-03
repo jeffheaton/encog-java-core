@@ -33,7 +33,6 @@ import java.util.List;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.synapse.OneToOneSynapse;
@@ -256,7 +255,12 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 		
 		if( synapse == null )
 		{
-			throw new NeuralNetworkError("Unknown synapse type.");
+			String str = "Unknown synapse type.";
+			if( logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
 		}
 		else
 			this.next.add(synapse);

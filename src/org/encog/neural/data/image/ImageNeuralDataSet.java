@@ -152,8 +152,16 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 				final ImageNeuralData input = (ImageNeuralData) pair.getInput();
 				input.downsample(downsample, this.findBounds, height, width);
 			} catch (final InstantiationException e) {
+				if(logger.isErrorEnabled())
+				{
+					logger.error("Exception",e);
+				}
 				throw new NeuralNetworkError(e);
 			} catch (final IllegalAccessException e) {
+				if(logger.isErrorEnabled())
+				{
+					logger.error("Exception",e);
+				}
 				throw new NeuralNetworkError(e);
 			}
 

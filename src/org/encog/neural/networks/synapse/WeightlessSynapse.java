@@ -26,7 +26,6 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.matrix.Matrix;
-import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -76,7 +75,12 @@ public class WeightlessSynapse extends BasicSynapse {
 	}
 
 	public void setMatrix(Matrix matrix) {
-		throw new NeuralNetworkError("Can't set the matrix for a WeightlessSynapse");
+		String str = "Can't set the matrix for a WeightlessSynapse";
+		if( logger.isErrorEnabled())
+		{
+			logger.error(str);
+		}
+		throw new NeuralNetworkError(str);
 	}
 
 	public SynapseType getType() {

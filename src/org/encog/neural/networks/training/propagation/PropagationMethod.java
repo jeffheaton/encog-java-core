@@ -26,7 +26,6 @@
 
 package org.encog.neural.networks.training.propagation;
 
-import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralOutputHolder;
 
 public interface PropagationMethod {

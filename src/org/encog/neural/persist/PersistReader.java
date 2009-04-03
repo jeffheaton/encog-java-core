@@ -29,13 +29,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.StringTokenizer;
 
 import org.encog.neural.persist.persistors.PersistorUtil;
 import org.encog.util.xml.XMLElement;
 import org.encog.util.xml.XMLRead;
-import org.encog.util.xml.XMLWrite;
 import org.encog.util.xml.XMLElement.XMLElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

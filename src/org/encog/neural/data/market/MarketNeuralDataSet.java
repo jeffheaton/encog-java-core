@@ -101,9 +101,16 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	 */
 	public void addDescription(final TemporalDataDescription desc) {
 		if (!(desc instanceof MarketDataDescription)) {
-			throw new MarketError(
-					"Only MarketDataDescription objects may be used "
-							+ "with the MarketNeuralDataSet container.");
+			
+			String str = "Only MarketDataDescription objects may be used "
+				+ "with the MarketNeuralDataSet container.";
+			
+			if(logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			
+			throw new MarketError(str);
 		}
 		super.addDescription(desc);
 	}

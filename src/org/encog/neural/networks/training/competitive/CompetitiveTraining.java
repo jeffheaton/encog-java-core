@@ -26,18 +26,15 @@
 package org.encog.neural.networks.training.competitive;
 
 import java.util.Collection;
-import java.util.List;
 import org.encog.matrix.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.Network;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +85,11 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	public void iteration() {
+		
+		if( logger.isInfoEnabled())
+		{
+			logger.info("Performing Competitive Training iteration.");
+		}
 		
 		preIteration();
 		

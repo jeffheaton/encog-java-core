@@ -26,7 +26,6 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

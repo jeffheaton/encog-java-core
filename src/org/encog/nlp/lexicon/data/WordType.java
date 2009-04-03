@@ -39,6 +39,11 @@ import org.slf4j.LoggerFactory;
 public class WordType extends DataObject {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 5670423454306951244L;
+
+	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")

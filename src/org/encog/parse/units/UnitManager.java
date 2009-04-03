@@ -37,6 +37,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.encog.parse.Parse;
+import org.encog.parse.ParseError;
 import org.encog.parse.recognize.Recognize;
 import org.encog.parse.recognize.RecognizeElement;
 import org.slf4j.Logger;
@@ -147,13 +148,25 @@ public class UnitManager {
       }
 
     } catch ( javax.xml.parsers.ParserConfigurationException e ) {
-      System.out.println(e);
+    	if( logger.isErrorEnabled())
+    	{
+    		logger.error("Exception",e);
+    	}
+    	throw new ParseError(e);
 
     } catch ( org.xml.sax.SAXException e ) {
-      System.out.println(e);
+    	if( logger.isErrorEnabled())
+    	{
+    		logger.error("Exception",e);
+    	}
+    	throw new ParseError(e);
 
     } catch ( java.io.IOException e ) {
-      System.out.println(e);
+    	if( logger.isErrorEnabled())
+    	{
+    		logger.error("Exception",e);
+    	}
+    	throw new ParseError(e);
 
     }
   }
@@ -165,9 +178,17 @@ public class UnitManager {
       load(is);
       is.close();
     } catch ( java.io.FileNotFoundException e ) {
-
+    	if( logger.isErrorEnabled())
+    	{
+    		logger.error("Exception",e);
+    	}
+    	throw new ParseError(e);
     } catch ( java.io.IOException e ) {
-
+    	if( logger.isErrorEnabled())
+    	{
+    		logger.error("Exception",e);
+    	}
+    	throw new ParseError(e);
     }
   }
 

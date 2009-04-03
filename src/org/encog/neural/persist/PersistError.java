@@ -35,6 +35,10 @@ import org.slf4j.LoggerFactory;
 public class PersistError extends RuntimeException {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7380539044552943978L;
+	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
