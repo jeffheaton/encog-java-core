@@ -26,24 +26,40 @@
 
 package org.encog.neural.networks.training.propagation.manhattan;
 
+import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralOutputHolder;
+import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.training.propagation.CalculatePartialDerivative;
+import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
+import org.encog.neural.networks.training.propagation.PropagationSynapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ManhattanPropagationMethod implements PropagationMethod {
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private ManhattanPropagation propagation;
+	private CalculatePartialDerivative pderv = new CalculatePartialDerivative();
 	
-	public void calculateError(NeuralOutputHolder output,
-			PropagationLevel fromLevel, PropagationLevel toLevel) {
+	public void calculateError(
+			final NeuralOutputHolder output,
+			final PropagationLevel fromLevel,
+			final PropagationLevel toLevel) {
+		
+		this.pderv.calculateError(output, fromLevel, toLevel);
+		
+	}
+
+	public void init(Propagation propagation) {
+		this.propagation = (ManhattanPropagation)propagation;
+		
+	}
+
+	public void learn() {
 		// TODO Auto-generated method stub
 		
 	}
+
 
 }

@@ -31,9 +31,13 @@ import org.encog.neural.networks.NeuralOutputHolder;
 
 public interface PropagationMethod {
 	
+	public void init(Propagation propagation);
+	
 	public void calculateError(
 			final NeuralOutputHolder output,
 			final PropagationLevel fromLevel,
 			final PropagationLevel toLevel);
+	
+	public void learn();
 	
 }

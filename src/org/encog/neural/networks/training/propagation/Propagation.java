@@ -102,6 +102,7 @@ Momentum {
 		this.learnRate = learnRate;
 		this.momentum = momentum;
 		this.method = method;
+		this.method.init(this);
 		setTraining(training);
 		construct();
 	}
@@ -215,27 +216,15 @@ Momentum {
 			errorCalculation.updateError(actual, pair.getIdeal());
 			backwardPass(pair.getIdeal());
 		}
-		learn();
+		
+		this.method.learn();
 
 		this.setError(errorCalculation.calculateRMS());
 
 		postIteration();
 	}
 
-	/**
-	 * Modify the weight matrix and thresholds based on the last call to
-	 * calcError.
-	 */
-	public void learn() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Backpropagation learning pass");
-		}
-		
-		for(PropagationLevel level: this.levels)
-		{
-			level.learn();
-		}
-	}
+
 	
 
 	/**
@@ -292,4 +281,12 @@ Momentum {
 	public NeuralOutputHolder getOutputHolder() {
 		return outputHolder;
 	}
+
+
+
+	public List<PropagationLevel> getLevels() {
+		return levels;
+	}
+	
+	
 }

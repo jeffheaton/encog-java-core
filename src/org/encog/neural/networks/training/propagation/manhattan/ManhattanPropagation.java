@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 
 public class ManhattanPropagation extends Propagation {
 
+	private double delta;
+	
 	/**
 	 * The logging object.
 	 */
@@ -41,9 +43,15 @@ public class ManhattanPropagation extends Propagation {
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public ManhattanPropagation(BasicNetwork network, 
-			NeuralDataSet training, double learnRate, double momentum) {
+			NeuralDataSet training, double delta, double learnRate, double momentum) {
 		super(network, new ManhattanPropagationMethod(), training, learnRate, momentum);
-		// TODO Auto-generated constructor stub
+		this.delta = delta;
 	}
+
+	public double getDelta() {
+		return delta;
+	}
+	
+	
 
 }

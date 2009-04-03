@@ -27,6 +27,7 @@
 package org.encog.neural.networks.training.propagation.resilient;
 
 import org.encog.neural.networks.NeuralOutputHolder;
+import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.slf4j.Logger;
@@ -34,6 +35,8 @@ import org.slf4j.LoggerFactory;
 
 public class ResilientPropagationMethod implements PropagationMethod {
 
+	ResilientPropagation propagation;
+	
 	/**
 	 * The logging object.
 	 */
@@ -42,6 +45,16 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	
 	public void calculateError(NeuralOutputHolder output,
 			PropagationLevel fromLevel, PropagationLevel toLevel) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void init(Propagation propagation) {
+		this.propagation = (ResilientPropagation)propagation;
+		
+	}
+
+	public void learn() {
 		// TODO Auto-generated method stub
 		
 	}

@@ -170,30 +170,6 @@ public class PropagationLevel {
 	}
 
 
-	public void learn() {
-		
-		// teach the synapses
-		for(PropagationSynapse synapse: this.outgoing)
-		{
-			synapse.learn(this.propagation.getLearningRate(), this.propagation.getMomentum());
-		}		
-		
-		// teach the threshold
-		for(Layer layer: this.layers)
-		{
-			for(int i=0;i<layer.getNeuronCount();i++)
-			{
-				double delta = this.thresholdDeltas[i]*this.propagation.getLearningRate();
-				delta+=this.thresholdMomentum[i]*propagation.getMomentum();
-				layer.setThreshold(i, layer.getThreshold(i)+delta);
-				this.thresholdMomentum[i] = delta;
-				this.thresholdDeltas[i] = 0.0;
-			}
-			
-		}
-		
-	}
-
 	public void applyDerivative() {
 				
 		// performance shortcut
