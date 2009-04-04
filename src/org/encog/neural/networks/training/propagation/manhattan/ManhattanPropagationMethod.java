@@ -122,7 +122,7 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 		{
 			for(int col = 0;col<matrix.getCols();col++ )
 			{
-				double change = determineChange(synapse.getAccMatrixDelta().get(row, col));
+				double change = determineChange(synapse.getAccMatrixGradients().get(row, col));
 				matrix.set(row,col,matrix.get(row, col)+change);				
 			}
 		}		

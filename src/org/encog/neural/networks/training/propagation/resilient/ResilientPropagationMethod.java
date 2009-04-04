@@ -77,14 +77,14 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		}
 	}
 	
-	private double determineChange(double value)
+	private int sign(double value)
 	{
 		if( Math.abs(value)<this.propagation.getZeroTolerance())
 			return 0;
 		else if( value>0)
-			return this.propagation.getLearningRate();
+			return 1;
 		else 
-			return -this.propagation.getLearningRate();
+			return -1;
 	}
 	
 	private void learnLevel(PropagationLevel level)
@@ -100,7 +100,7 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
-				double change = determineChange(level.getThresholdDelta(i)*this.propagation.getLearningRate());
+				double change = sign(level.getThresholdDelta(i)*this.propagation.getLearningRate());
 				layer.setThreshold(i, change);
 			}			
 		}
@@ -122,7 +122,16 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		{
 			for(int col = 0;col<matrix.getCols();col++ )
 			{
-				double change = determineChange(synapse.getAccMatrixDelta().get(row, col));
+				int change = sign(synapse.getAccMatrixGradients().get(row, col)*synapse.getLastMatrixDelta().get(row,col));
+				
+				if( change>0 )
+				{
+					//double delta = Math.min(a, b);
+				}
+				else if( change<0 )
+				{
+					
+				}
 				matrix.set(row,col,matrix.get(row, col)+change);				
 			}
 		}		

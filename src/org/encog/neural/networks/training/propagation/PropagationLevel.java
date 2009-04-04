@@ -48,7 +48,7 @@ public class PropagationLevel {
 	private final List<PropagationSynapse> outgoing = new ArrayList<PropagationSynapse>();
 	private final double[] deltas;
 	private final double[] thresholdDeltas;
-	private final double[] thresholdMomentum;
+	private final double[] lastThresholdDeltas;
 	private final Propagation propagation;
 	
 	/**
@@ -62,7 +62,7 @@ public class PropagationLevel {
 		this.neuronCount = layer.getNeuronCount();
 		this.deltas = new double[this.neuronCount];
 		this.thresholdDeltas = new double[this.neuronCount];
-		this.thresholdMomentum = new double[this.neuronCount];
+		this.lastThresholdDeltas = new double[this.neuronCount];
 		this.layers.add(layer);		
 		this.propagation = propagation;
 	}
@@ -90,7 +90,7 @@ public class PropagationLevel {
 		
 		this.deltas = new double[this.neuronCount];
 		this.thresholdDeltas = new double[this.neuronCount];
-		this.thresholdMomentum = new double[this.neuronCount];
+		this.lastThresholdDeltas = new double[this.neuronCount];
 	}
 
 	public int getNeuronCount() {
@@ -215,9 +215,9 @@ public class PropagationLevel {
 		this.thresholdDeltas[index] = d;
 	}
 	
-	public double getThresholdMomentum(int index)
+	public double getLastThresholdDeltas(int index)
 	{
-		return this.thresholdMomentum[index];
+		return this.lastThresholdDeltas[index];
 	}
 	
 	public void accumulateThresholdDelta(final int index, final double value) {
@@ -238,8 +238,8 @@ public class PropagationLevel {
 		return result.toString();
 	}
 
-	public void setThresholdMomentum(int i, double delta) {
-		this.thresholdMomentum[i] = delta;
+	public void setLastThresholdDeltas(int i, double delta) {
+		this.lastThresholdDeltas[i] = delta;
 		
 	}
 	

@@ -28,14 +28,25 @@ package org.encog.neural.networks.training.propagation.resilient;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.PropagationLevel;
+import org.encog.neural.networks.training.propagation.PropagationSynapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ResilientPropagation extends Propagation {
 	
 	final static double DEFAULT_ZERO_TOLERANCE = 0.001;
+	final static double POSITIVE_ETA = 1.2;
+	final static double NEGATIVE_ETA = 0.5;
+	final static double DEFAULT_INITIAL_UPDATE = 0.1;
+	final static double DEFAULT_MAX_STEP = 50;
 	private final double zeroTolerance;
+	private final double initialUpdate;
+	private final double maxStep;
+
 	
 	/**
 	 * The logging object.
@@ -44,18 +55,51 @@ public class ResilientPropagation extends Propagation {
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public ResilientPropagation(BasicNetwork network, 
-			NeuralDataSet training, double learnRate, double zeroTolerance) {
+			NeuralDataSet training, double zeroTolerance,double initialUpdate, double maxStep) {
 		
-		super(network, new ResilientPropagationMethod(), training, learnRate);
+		super(network, new ResilientPropagationMethod(), training, 0.0);
+		this.initialUpdate = initialUpdate;
+		this.maxStep = maxStep;
 		this.zeroTolerance = zeroTolerance;
+		
+		// set the initialUpdate to all of the threshold and matrix update values.
+		// This is necessary for the first step.  RPROP always builds on the previous
+		// step, and there is no previous step on the first iteration.
+		for(PropagationLevel level: this.getLevels())
+		{
+			for(int i=0;i<level.getNeuronCount();i++)
+			{
+				level.setLastThresholdDeltas(i, this.initialUpdate);
+			}
+			
+			for(PropagationSynapse synapse: level.getOutgoing())
+			{
+				synapse.getLastMatrixDelta().set(this.initialUpdate);
+			}
+		}
 	}
 	
-	public ResilientPropagation(BasicNetwork network, 
-			NeuralDataSet training, double learnRate) {		
-		this(network,training,learnRate,ResilientPropagation.DEFAULT_ZERO_TOLERANCE);
+	public ResilientPropagation(BasicNetwork network, NeuralDataSet training) {		
+		this(network,training,ResilientPropagation.DEFAULT_ZERO_TOLERANCE, 
+				ResilientPropagation.DEFAULT_INITIAL_UPDATE, 
+				ResilientPropagation.DEFAULT_MAX_STEP);
 	}
 	
 	
+
+
+
+	public double getMaxStep() {
+		return maxStep;
+	}
+
+	public double getInitialUpdate() {
+		return initialUpdate;
+	}
+
+	public Logger getLogger() {
+		return logger;
+	}
 
 	public double getZeroTolerance() {
 		return zeroTolerance;

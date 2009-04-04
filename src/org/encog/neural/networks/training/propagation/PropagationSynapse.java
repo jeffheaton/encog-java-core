@@ -43,14 +43,14 @@ public class PropagationSynapse {
 	/**
 	 * Accumulate the error deltas for each weight matrix and bias value.
 	 */
-	private Matrix accMatrixDelta;
+	private Matrix accMatrixGradients;
 
 
 	/**
-	 * Hold the previous matrix deltas so that "momentum" can be implemented.
+	 * Hold the previous matrix deltas so that "momentum" and other methods can be implemented.
 	 * This handles both weights and thresholds.
 	 */
-	private Matrix matrixDelta;
+	private Matrix lastMatrixDelta;
 
 	/**
 	 * The actual layer that this training layer corresponds to.
@@ -79,8 +79,8 @@ public class PropagationSynapse {
 		int fromCount = synapse.getFromNeuronCount();
 		int toCount = synapse.getToNeuronCount();
 		
-		this.accMatrixDelta = new Matrix(fromCount,toCount);
-		this.matrixDelta = new Matrix(fromCount,toCount);		
+		this.accMatrixGradients = new Matrix(fromCount,toCount);
+		this.lastMatrixDelta = new Matrix(fromCount,toCount);		
 	}
 
 	/**
@@ -95,27 +95,23 @@ public class PropagationSynapse {
 	 */
 	public void accumulateMatrixDelta(final int i1, final int i2,
 			final double value) {
-		this.accMatrixDelta.add(i1, i2, value);
+		this.accMatrixGradients.add(i1, i2, value);
 	}
 
-
-
-	public Matrix getAccMatrixDelta() {
-		return accMatrixDelta;
-	}
-
-	public Matrix getMatrixDelta() {
-		return matrixDelta;
+	public Matrix getAccMatrixGradients() {
+		return accMatrixGradients;
 	}
 
 	public Synapse getSynapse() {
 		return synapse;
 	}
 	
-	
-	
-	public void setMatrixDelta(Matrix matrixDelta) {
-		this.matrixDelta = matrixDelta;
+	public Matrix getLastMatrixDelta() {
+		return lastMatrixDelta;
+	}
+
+	public void setLastMatrixDelta(Matrix lastMatrixDelta) {
+		this.lastMatrixDelta = lastMatrixDelta;
 	}
 
 	public String toString()
