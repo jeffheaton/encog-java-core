@@ -100,8 +100,8 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
-				double change = sign(level.getThresholdGradient(i)*this.propagation.getLearningRate());
-				layer.setThreshold(i, change);
+				//double change = sign(level.getThresholdGradient(i)*this.propagation.getLearningRate());
+				//layer.setThreshold(i, 0);
 			}			
 		}
 	}
@@ -122,19 +122,45 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		{
 			for(int col = 0;col<matrix.getCols();col++ )
 			{
+				// multiply the current and previous gradient, and take the sign.  We want to see if the gradient has changed its sign.
 				int change = sign(synapse.getAccMatrixGradients().get(row, col)*synapse.getLastMatrixGradients().get(row,col));
+				double weightChange = 0;
 				
+				// if the gradient has retained its sign, then we increase the delta so that it will converge faster
 				if( change>0 )
 				{
-					//double delta = Math.min(a, b);
+					double delta = synapse.getDeltas().get(row, col) * ResilientPropagation.POSITIVE_ETA;
+					delta = Math.min(delta, this.propagation.getMaxStep());
+					weightChange = sign(synapse.getAccMatrixGradients().get(row, col)) * delta;
+					synapse.getDeltas().set(row,col,delta);
+					synapse.getLastMatrixGradients().set(row,col,synapse.getAccMatrixGradients().get(row, col));
 				}
+				// if change<0, then the sign has changed, and the last delta was too big
 				else if( change<0 )
 				{
-					
+					double delta = synapse.getDeltas().get(row, col) * ResilientPropagation.NEGATIVE_ETA;
+					delta = Math.max(delta, ResilientPropagation.DELTA_MIN);
+					synapse.getDeltas().set(row,col,delta);
+					// set the previous gradent to zero so that there will be no adjustment the next iteration
+					synapse.getLastMatrixGradients().set(row,col,0);	
 				}
-				matrix.set(row,col,matrix.get(row, col)+change);				
+				// if change==0 then there is no change to the delta, th
+				else if( change==0 )
+				{
+					double delta = synapse.getDeltas().get(row, col);
+					weightChange = sign(synapse.getAccMatrixGradients().get(row, col)) * delta;
+					synapse.getLastMatrixGradients().set(row,col,synapse.getAccMatrixGradients().get(row, col));
+				}
+				
+				// apply the weight change, if any
+				matrix.set(row,col,synapse.getSynapse().getMatrix().get(row, col)+weightChange);
+				
+				
 			}
-		}		
+		}	
+		
+		// clear out the gradient accumulator for the next iteration
+		synapse.getAccMatrixGradients().clear();
 	}
 
 

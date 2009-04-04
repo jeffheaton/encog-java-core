@@ -57,6 +57,8 @@ public class PropagationSynapse {
 	 */
 	private final Synapse synapse;
 	
+	private final Matrix deltas;
+	
 	/**
 	 * The logging object.
 	 */
@@ -80,7 +82,8 @@ public class PropagationSynapse {
 		int toCount = synapse.getToNeuronCount();
 		
 		this.accMatrixGradients = new Matrix(fromCount,toCount);
-		this.lastMatrixGradients = new Matrix(fromCount,toCount);		
+		this.lastMatrixGradients = new Matrix(fromCount,toCount);
+		this.deltas = new Matrix(fromCount,toCount);
 	}
 
 	/**
@@ -122,5 +125,11 @@ public class PropagationSynapse {
 		result.append("]");
 		return result.toString();
 	}
+
+	public Matrix getDeltas() {
+		return deltas;
+	}
+	
+	
 
 }

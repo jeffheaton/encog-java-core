@@ -38,9 +38,10 @@ import org.slf4j.LoggerFactory;
 
 public class ResilientPropagation extends Propagation {
 	
-	final static double DEFAULT_ZERO_TOLERANCE = 0.001;
+	final static double DEFAULT_ZERO_TOLERANCE = 0.00000000000000001;
 	final static double POSITIVE_ETA = 1.2;
 	final static double NEGATIVE_ETA = 0.5;
+	final static double DELTA_MIN = 1e-6;
 	final static double DEFAULT_INITIAL_UPDATE = 0.1;
 	final static double DEFAULT_MAX_STEP = 50;
 	private final double zeroTolerance;
@@ -69,12 +70,12 @@ public class ResilientPropagation extends Propagation {
 		{
 			for(int i=0;i<level.getNeuronCount();i++)
 			{
-				level.setLastThresholdGradient(i, this.initialUpdate);
+				level.setDelta(i, this.initialUpdate);
 			}
 			
 			for(PropagationSynapse synapse: level.getOutgoing())
 			{
-				synapse.getLastMatrixGradients().set(this.initialUpdate);
+				synapse.getDeltas().set(this.initialUpdate);
 			}
 		}
 	}
