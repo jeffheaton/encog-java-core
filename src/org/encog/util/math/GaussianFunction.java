@@ -50,11 +50,11 @@ public class GaussianFunction {
 	
 	public double gaussian(double x)
 	{
-		return (this.peak*MathConst.EULERS_NUMBER)*(-(Math.pow(x-this.center, 2.0)/2.0*Math.pow(this.width, 2.0)));
+		return (this.peak*MathConst.EULERS_NUMBER)*(-(BoundMath.pow(x-this.center, 2.0)/2.0*BoundMath.pow(this.width, 2.0)));
 	}
 	
 	public double gaussianDerivative(double x) {
-		return ((-x)*Math.pow(this.width, -2))+(this.center*Math.pow(this.width, -2));
+		return ((-x)*BoundMath.pow(this.width, -2))+(this.center*BoundMath.pow(this.width, -2));
 	}
 
 	public double getCenter() {

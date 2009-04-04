@@ -25,6 +25,7 @@
  */
 package org.encog.neural.activation;
 
+import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,8 +66,8 @@ public class ActivationTANH implements ActivationFunction {
 	
 	private double activationFunction(double d)
 	{
-		return (Math.exp(d * 2.0) - 1.0)
-		/ (Math.exp(d * 2.0) + 1.0);
+		return (BoundMath.exp(d * 2.0) - 1.0)
+		/ (BoundMath.exp(d * 2.0) + 1.0);
 	}
 
 	/**
@@ -80,7 +81,7 @@ public class ActivationTANH implements ActivationFunction {
 		
 		for(int i=0;i<d.length;i++)
 		{
-			d[i] = 1.0 - Math.pow(activationFunction(d[i]), 2.0);
+			d[i] = 1.0 - BoundMath.pow(activationFunction(d[i]), 2.0);
 		}
 	}
 	

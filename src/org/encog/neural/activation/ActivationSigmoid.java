@@ -25,6 +25,7 @@
  */
 package org.encog.neural.activation;
 
+import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +58,7 @@ public class ActivationSigmoid implements ActivationFunction {
 
 		for(int i=0;i<d.length;i++)
 		{
-			d[i] = 1.0 / (1 + Math.exp(-1.0 * d[i]));
+			d[i] = 1.0 / (1 + BoundMath.exp(-1.0 * d[i]));
 		}
 
 	}

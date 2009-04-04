@@ -26,6 +26,7 @@
 
 package org.encog.neural.activation;
 
+import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,9 +47,9 @@ public class ActivationLOG implements ActivationFunction {
 		for(int i=0;i<d.length;i++)
 		{
 	        if (d[i] >= 0)
-	            d[i] = Math.log(1 + d[i]);
+	            d[i] = BoundMath.log(1 + d[i]);
 	        else
-	        	d[i] = -Math.log(1 - d[i]);
+	        	d[i] = -BoundMath.log(1 - d[i]);
 		}
 
 	}

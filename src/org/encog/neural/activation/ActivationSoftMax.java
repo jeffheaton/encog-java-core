@@ -27,6 +27,7 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,7 +47,7 @@ public class ActivationSoftMax implements ActivationFunction {
                 
         double sum = 0;
         for (int i = 0; i < d.length; i++) {
-            d[i] = Math.exp(d[i]);
+            d[i] = BoundMath.exp(d[i]);
             sum += d[i];
         }
         for (int i = 0; i < d.length; i++) {

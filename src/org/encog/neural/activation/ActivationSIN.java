@@ -26,6 +26,7 @@
 
 package org.encog.neural.activation;
 
+import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class ActivationSIN implements ActivationFunction {
 	public void activationFunction(double[] d) {	
 		for(int i=0;i<d.length;i++)
 		{
-			d[i] = Math.sin(d[i]);
+			d[i] = BoundMath.sin(d[i]);
 		}
 	}
 
@@ -52,7 +53,7 @@ public class ActivationSIN implements ActivationFunction {
 		
 		for(int i=0;i<d.length;i++)
 		{
-			d[i] = Math.cos(d[i]);
+			d[i] = BoundMath.cos(d[i]);
 		}
 	}
 	
