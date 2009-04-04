@@ -50,7 +50,7 @@ public class PropagationSynapse {
 	 * Hold the previous matrix deltas so that "momentum" and other methods can be implemented.
 	 * This handles both weights and thresholds.
 	 */
-	private Matrix lastMatrixDelta;
+	private Matrix lastMatrixGradients;
 
 	/**
 	 * The actual layer that this training layer corresponds to.
@@ -80,7 +80,7 @@ public class PropagationSynapse {
 		int toCount = synapse.getToNeuronCount();
 		
 		this.accMatrixGradients = new Matrix(fromCount,toCount);
-		this.lastMatrixDelta = new Matrix(fromCount,toCount);		
+		this.lastMatrixGradients = new Matrix(fromCount,toCount);		
 	}
 
 	/**
@@ -106,12 +106,12 @@ public class PropagationSynapse {
 		return synapse;
 	}
 	
-	public Matrix getLastMatrixDelta() {
-		return lastMatrixDelta;
+	public Matrix getLastMatrixGradients() {
+		return lastMatrixGradients;
 	}
 
-	public void setLastMatrixDelta(Matrix lastMatrixDelta) {
-		this.lastMatrixDelta = lastMatrixDelta;
+	public void setLastMatrixGradients(Matrix d) {
+		this.lastMatrixGradients = d;
 	}
 
 	public String toString()

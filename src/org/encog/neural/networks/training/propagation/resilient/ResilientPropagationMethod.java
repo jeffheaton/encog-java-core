@@ -100,7 +100,7 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
-				double change = sign(level.getThresholdDelta(i)*this.propagation.getLearningRate());
+				double change = sign(level.getThresholdGradient(i)*this.propagation.getLearningRate());
 				layer.setThreshold(i, change);
 			}			
 		}
@@ -122,7 +122,7 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		{
 			for(int col = 0;col<matrix.getCols();col++ )
 			{
-				int change = sign(synapse.getAccMatrixGradients().get(row, col)*synapse.getLastMatrixDelta().get(row,col));
+				int change = sign(synapse.getAccMatrixGradients().get(row, col)*synapse.getLastMatrixGradients().get(row,col));
 				
 				if( change>0 )
 				{

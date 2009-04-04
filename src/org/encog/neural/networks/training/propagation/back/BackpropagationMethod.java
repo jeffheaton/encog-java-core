@@ -88,11 +88,11 @@ public class BackpropagationMethod implements PropagationMethod {
 		{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
-				double delta = level.getThresholdDelta(i)*this.propagation.getLearningRate();
-				delta+=level.getLastThresholdDeltas(i) *propagation.getMomentum();
+				double delta = level.getThresholdGradient(i)*this.propagation.getLearningRate();
+				delta+=level.getLastThresholdGradent(i) *propagation.getMomentum();
 				layer.setThreshold(i, layer.getThreshold(i)+delta);
-				level.setLastThresholdDeltas(i,delta);
-				level.setThresholdDelta(i, 0.0);				
+				level.setLastThresholdGradient(i,delta);
+				level.setThresholdGradient(i, 0.0);				
 			}
 			
 		}
@@ -110,13 +110,13 @@ public class BackpropagationMethod implements PropagationMethod {
 
 		
 		final Matrix m1 = MatrixMath.multiply(synapse.getAccMatrixGradients(), this.propagation.getLearningRate());
-		final Matrix m2 = MatrixMath.multiply(synapse.getLastMatrixDelta(), this.propagation.getMomentum());
-		synapse.setLastMatrixDelta(MatrixMath.add(m1, m2));
+		final Matrix m2 = MatrixMath.multiply(synapse.getLastMatrixGradients(), this.propagation.getMomentum());
+		synapse.setLastMatrixGradients(MatrixMath.add(m1, m2));
 		
 		if( logger.isTraceEnabled() ) {
-			logger.trace("Backpropagation learning: applying delta=\n"+DumpMatrix.dumpMatrix(synapse.getLastMatrixDelta()));
+			logger.trace("Backpropagation learning: applying delta=\n"+DumpMatrix.dumpMatrix(synapse.getLastMatrixGradients()));
 		}
-		synapse.getSynapse().getMatrix().add(synapse.getLastMatrixDelta());			
+		synapse.getSynapse().getMatrix().add(synapse.getLastMatrixGradients());			
 		if( logger.isTraceEnabled() ) {
 			logger.trace("Backpropagation learning: new weight matrix=\n"+DumpMatrix.dumpMatrix(synapse.getSynapse().getMatrix()));
 		}

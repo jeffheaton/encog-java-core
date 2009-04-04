@@ -47,8 +47,8 @@ public class PropagationLevel {
 	private final List<Layer> layers = new ArrayList<Layer>();
 	private final List<PropagationSynapse> outgoing = new ArrayList<PropagationSynapse>();
 	private final double[] deltas;
-	private final double[] thresholdDeltas;
-	private final double[] lastThresholdDeltas;
+	private final double[] thresholdGradients;
+	private final double[] lastThresholdGradients;
 	private final Propagation propagation;
 	
 	/**
@@ -61,8 +61,8 @@ public class PropagationLevel {
 	{
 		this.neuronCount = layer.getNeuronCount();
 		this.deltas = new double[this.neuronCount];
-		this.thresholdDeltas = new double[this.neuronCount];
-		this.lastThresholdDeltas = new double[this.neuronCount];
+		this.thresholdGradients = new double[this.neuronCount];
+		this.lastThresholdGradients = new double[this.neuronCount];
 		this.layers.add(layer);		
 		this.propagation = propagation;
 	}
@@ -89,8 +89,8 @@ public class PropagationLevel {
 		this.neuronCount = count;
 		
 		this.deltas = new double[this.neuronCount];
-		this.thresholdDeltas = new double[this.neuronCount];
-		this.lastThresholdDeltas = new double[this.neuronCount];
+		this.thresholdGradients = new double[this.neuronCount];
+		this.lastThresholdGradients = new double[this.neuronCount];
 	}
 
 	public int getNeuronCount() {
@@ -200,28 +200,28 @@ public class PropagationLevel {
 		}
 	}	
 	
-	public double[] getThresholdDeltas()
+	public double[] getThresholdGradients()
 	{
-		return this.thresholdDeltas;
+		return this.thresholdGradients;
 	}
 	
-	public double getThresholdDelta(int index)
+	public double getThresholdGradient(int index)
 	{
-		return this.thresholdDeltas[index];
+		return this.thresholdGradients[index];
 	}
 	
-	public void setThresholdDelta(int index,double d)
+	public void setThresholdGradient(int index,double d)
 	{
-		this.thresholdDeltas[index] = d;
+		this.thresholdGradients[index] = d;
 	}
 	
-	public double getLastThresholdDeltas(int index)
+	public double getLastThresholdGradent(int index)
 	{
-		return this.lastThresholdDeltas[index];
+		return this.lastThresholdGradients[index];
 	}
 	
-	public void accumulateThresholdDelta(final int index, final double value) {
-		this.thresholdDeltas[index]+= value;
+	public void accumulateThresholdGradient(final int index, final double value) {
+		this.thresholdGradients[index]+= value;
 	}
 	
 	public String toString()
@@ -238,8 +238,8 @@ public class PropagationLevel {
 		return result.toString();
 	}
 
-	public void setLastThresholdDeltas(int i, double delta) {
-		this.lastThresholdDeltas[i] = delta;
+	public void setLastThresholdGradient(int i, double delta) {
+		this.lastThresholdGradients[i] = delta;
 		
 	}
 	

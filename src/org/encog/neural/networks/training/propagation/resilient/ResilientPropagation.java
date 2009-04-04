@@ -69,12 +69,12 @@ public class ResilientPropagation extends Propagation {
 		{
 			for(int i=0;i<level.getNeuronCount();i++)
 			{
-				level.setLastThresholdDeltas(i, this.initialUpdate);
+				level.setLastThresholdGradient(i, this.initialUpdate);
 			}
 			
 			for(PropagationSynapse synapse: level.getOutgoing())
 			{
-				synapse.getLastMatrixDelta().set(this.initialUpdate);
+				synapse.getLastMatrixGradients().set(this.initialUpdate);
 			}
 		}
 	}

@@ -89,7 +89,7 @@ public class CalculatePartialDerivative {
 					
 				}	
 				
-				toLevel.setThresholdDelta(toNeuronGlobal, toLevel.getThresholdDelta(toNeuronGlobal)+toLevel.getDelta(toNeuronGlobal));
+				toLevel.setThresholdGradient(toNeuronGlobal, toLevel.getThresholdGradient(toNeuronGlobal)+toLevel.getDelta(toNeuronGlobal));
 				toNeuronGlobal++;
 			}				 
 		}

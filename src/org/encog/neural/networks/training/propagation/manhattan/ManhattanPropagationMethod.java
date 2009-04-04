@@ -100,7 +100,7 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 		{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
-				double change = determineChange(level.getThresholdDelta(i)*this.propagation.getLearningRate());
+				double change = determineChange(level.getThresholdGradient(i)*this.propagation.getLearningRate());
 				layer.setThreshold(i, change);
 			}			
 		}
