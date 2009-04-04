@@ -2,9 +2,9 @@ package org.encog.util.math;
 
 public class BoundMath {
 	
-	public static double exp(double d)
+	public static double exp(double a)
 	{
-		return BoundNumbers.bound(d);
+		return BoundNumbers.bound(Math.exp(a));
 	}
 
 	public static double pow(double a, double b) {
