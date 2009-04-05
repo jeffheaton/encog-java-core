@@ -44,12 +44,8 @@ import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class Propagation  extends BasicTraining implements LearningRate {
-	/**
-	 * The learning rate. This is the degree to which the deltas will affect the
-	 * current network.
-	 */
-	private double learnRate;
+public class Propagation  extends BasicTraining  {
+
 
 
 	/**
@@ -86,10 +82,8 @@ public class Propagation  extends BasicTraining implements LearningRate {
 	 *            The influence that previous iteration's training deltas will
 	 *            have on the current iteration.
 	 */
-	public Propagation(final BasicNetwork network, final PropagationMethod method,
-			final NeuralDataSet training, final double learnRate) {
+	public Propagation(final BasicNetwork network, final PropagationMethod method,final NeuralDataSet training) {
 		this.network = network;
-		this.learnRate = learnRate;
 		this.method = method;
 		this.method.init(this);
 		setTraining(training);
@@ -257,16 +251,6 @@ public class Propagation  extends BasicTraining implements LearningRate {
 		
 		return level;
 	}
-
-	public double getLearningRate() {
-		return this.learnRate;
-	}
-
-	public void setLearningRate(double rate) {
-		this.learnRate = rate;
-	}
-
-
 
 	public NeuralOutputHolder getOutputHolder() {
 		return outputHolder;

@@ -27,6 +27,7 @@ package org.encog.neural.networks.training.propagation.back;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.strategy.SmartLearningRate;
@@ -52,13 +53,15 @@ import org.slf4j.LoggerFactory;
  * much the previous learning iteration affects the current. To use no momentum
  * at all specify zero.
  */
-public class Backpropagation extends Propagation implements Momentum {
+public class Backpropagation extends Propagation implements Momentum, LearningRate {
 
 	/**
 	 * The momentum, this is the degree to which the previous training cycle
 	 * affects the current one.
 	 */
 	private double momentum;
+	
+	private double learningRate;
 
 	
 	/**
@@ -69,8 +72,9 @@ public class Backpropagation extends Propagation implements Momentum {
 	
 	public Backpropagation(BasicNetwork network, NeuralDataSet training,
 			double learnRate, double momentum) {
-		super(network, new BackpropagationMethod(), training, learnRate);
+		super(network, new BackpropagationMethod(), training);
 		this.momentum = momentum;
+		this.learningRate = learnRate;
 	}
 	
 	public Backpropagation(final BasicNetwork network,
@@ -86,6 +90,14 @@ public class Backpropagation extends Propagation implements Momentum {
 
 	public void setMomentum(double m) {
 		this.momentum = m;
+	}
+
+	public double getLearningRate() {
+		return this.learningRate;
+	}
+
+	public void setLearningRate(double rate) {
+		this.learningRate = rate;
 	}
 	
 }

@@ -28,14 +28,16 @@ package org.encog.neural.networks.training.propagation.manhattan;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ManhattanPropagation extends Propagation {
+public class ManhattanPropagation extends Propagation implements LearningRate {
 	
 	final static double DEFAULT_ZERO_TOLERANCE = 0.001;
 	private final double zeroTolerance;
+	private double learningRate;
 	
 	/**
 	 * The logging object.
@@ -46,8 +48,9 @@ public class ManhattanPropagation extends Propagation {
 	public ManhattanPropagation(BasicNetwork network, 
 			NeuralDataSet training, double learnRate, double zeroTolerance) {
 		
-		super(network, new ManhattanPropagationMethod(), training, learnRate);
+		super(network, new ManhattanPropagationMethod(), training);
 		this.zeroTolerance = zeroTolerance;
+		this.learningRate = learnRate;
 	}
 	
 	public ManhattanPropagation(BasicNetwork network, 
@@ -59,6 +62,14 @@ public class ManhattanPropagation extends Propagation {
 
 	public double getZeroTolerance() {
 		return zeroTolerance;
+	}
+
+	public double getLearningRate() {
+		return this.learningRate;
+	}
+
+	public void setLearningRate(double rate) {
+		this.learningRate = rate;
 	}
 	
 	

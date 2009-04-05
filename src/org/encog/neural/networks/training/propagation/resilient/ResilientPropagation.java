@@ -58,7 +58,7 @@ public class ResilientPropagation extends Propagation {
 	public ResilientPropagation(BasicNetwork network, 
 			NeuralDataSet training, double zeroTolerance,double initialUpdate, double maxStep) {
 		
-		super(network, new ResilientPropagationMethod(), training, 0.0);
+		super(network, new ResilientPropagationMethod(), training);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
 		this.zeroTolerance = zeroTolerance;

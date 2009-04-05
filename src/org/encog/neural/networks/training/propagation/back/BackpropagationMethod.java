@@ -46,7 +46,6 @@ public class BackpropagationMethod implements PropagationMethod {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private CalculatePartialDerivative pderv = new CalculatePartialDerivative();
