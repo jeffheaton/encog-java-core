@@ -49,6 +49,7 @@ public class PropagationLevel {
 	private final double[] deltas;
 	private final double[] thresholdGradients;
 	private final double[] lastThresholdGradients;
+	private final double[] thresholdDeltas;
 	private final Propagation propagation;
 	
 	/**
@@ -65,6 +66,7 @@ public class PropagationLevel {
 		this.lastThresholdGradients = new double[this.neuronCount];
 		this.layers.add(layer);		
 		this.propagation = propagation;
+		this.thresholdDeltas = new double[this.neuronCount];
 	}
 	
 	public PropagationLevel(Propagation propagation, List<Synapse> outgoing)
@@ -91,6 +93,7 @@ public class PropagationLevel {
 		this.deltas = new double[this.neuronCount];
 		this.thresholdGradients = new double[this.neuronCount];
 		this.lastThresholdGradients = new double[this.neuronCount];
+		this.thresholdDeltas = new double[this.neuronCount];
 	}
 
 	public int getNeuronCount() {
@@ -241,6 +244,16 @@ public class PropagationLevel {
 	public void setLastThresholdGradient(int i, double delta) {
 		this.lastThresholdGradients[i] = delta;
 		
+	}
+	
+	public double getThresholdDelta(int i)
+	{
+		return this.thresholdDeltas[i];
+	}
+	
+	public void setThresholdDelta(int i,double d)
+	{
+		this.thresholdDeltas[i] = d;
 	}
 	
 	

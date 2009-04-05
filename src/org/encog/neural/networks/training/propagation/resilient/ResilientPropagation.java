@@ -70,7 +70,7 @@ public class ResilientPropagation extends Propagation {
 		{
 			for(int i=0;i<level.getNeuronCount();i++)
 			{
-				level.setDelta(i, this.initialUpdate);
+				level.setThresholdDelta(i, this.initialUpdate);
 			}
 			
 			for(PropagationSynapse synapse: level.getOutgoing())

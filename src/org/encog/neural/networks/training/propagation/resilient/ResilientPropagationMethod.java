@@ -102,6 +102,39 @@ public class ResilientPropagationMethod implements PropagationMethod {
 			{
 				//double change = sign(level.getThresholdGradient(i)*this.propagation.getLearningRate());
 				//layer.setThreshold(i, 0);
+			
+				// multiply the current and previous gradient, and take the sign.  We want to see if the gradient has changed its sign.
+				int change = sign(level.getThresholdGradient(i)*level.getLastThresholdGradent(i));
+				double weightChange = 0;
+				
+				// if the gradient has retained its sign, then we increase the delta so that it will converge faster
+				if( change>0 )
+				{
+					double delta = level.getThresholdDelta(i) * ResilientPropagation.POSITIVE_ETA;
+					delta = Math.min(delta, this.propagation.getMaxStep());
+					weightChange = sign(level.getThresholdGradient(i)) * delta;
+					level.setThresholdDelta(i, delta);
+					level.setLastThresholdGradient(i, level.getThresholdGradient(i));
+				}
+				// if change<0, then the sign has changed, and the last delta was too big
+				else if( change<0 )
+				{
+					double delta = level.getThresholdDelta(i) * ResilientPropagation.NEGATIVE_ETA;
+					delta = Math.max(delta, ResilientPropagation.DELTA_MIN);
+					level.setThresholdDelta(i, delta);
+					// set the previous gradient to zero so that there will be no adjustment the next iteration
+					level.setLastThresholdGradient(i, 0);	
+				}
+				// if change==0 then there is no change to the delta
+				else if( change==0 )
+				{
+					double delta = level.getThresholdDelta(i);
+					weightChange = sign(level.getThresholdGradient(i)) * delta;
+					level.setLastThresholdGradient(i, level.getThresholdGradient(i));
+				}
+				
+				// apply the weight change, if any
+				layer.setThreshold(i, layer.getThreshold(i)+weightChange);
 			}			
 		}
 	}
