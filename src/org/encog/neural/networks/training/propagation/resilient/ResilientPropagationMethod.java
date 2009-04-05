@@ -135,8 +135,12 @@ public class ResilientPropagationMethod implements PropagationMethod {
 				
 				// apply the weight change, if any
 				layer.setThreshold(i, layer.getThreshold(i)+weightChange);
+				
+				level.setThresholdGradient(i, 0.0);
 			}			
 		}
+		
+			
 	}
 	
 	/**
