@@ -22,4 +22,8 @@ public class BoundMath {
 	public static double cos(double a) {
 		return BoundNumbers.bound(Math.cos(a));
 	}
+
+	public static double sqrt(double a) {
+		return Math.sqrt(a);
+	}
 }

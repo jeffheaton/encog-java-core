@@ -45,9 +45,14 @@ public class RangeRandomizer extends BasicRandomizer {
 		this.min = min;
 	}
 	
-	public double randomize(double d) {
+	public static double randomize(double min,double max)
+	{
 		double range = max-min;
-		return (range*Math.random())+this.min;
+		return (range*Math.random())+min;
+	}
+	
+	public double randomize(double d) {
+		return randomize(min,max);
 	}
 
 }

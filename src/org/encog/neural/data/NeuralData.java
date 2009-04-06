@@ -30,7 +30,7 @@ package org.encog.neural.data;
  * be used either for input data, actual output data or ideal output data.
  * @author jheaton
  */
-public interface NeuralData {
+public interface NeuralData extends Cloneable {
 
 	/**
 	 * Set all of the data as an array of doubles.
@@ -61,5 +61,7 @@ public interface NeuralData {
 	 * @return How many elements are stored in this object.
 	 */
 	int size();
+	
+	NeuralData clone();
 	
 }

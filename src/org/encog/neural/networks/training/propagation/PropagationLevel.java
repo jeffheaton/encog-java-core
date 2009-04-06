@@ -171,37 +171,6 @@ public class PropagationLevel {
 		
 		throw new NeuralNetworkError("Could not find actual value while propagation training.");
 	}
-
-
-	public void applyDerivative() {
-				
-		// performance shortcut
-		if( this.layers.size()==0 )
-		{
-			Layer layer = layers.get(0);
-			layer.getActivationFunction().derivativeFunction(this.deltas);
-		}
-		else
-		{
-			int currentIndex = 0;
-			double[] temp = new double[1];
-			
-			// multiple layers, so maybe multiple activation functions
-			for(Layer layer: this.layers)
-			{
-				// obtain this layer's activation function
-				ActivationFunction function = layer.getActivationFunction();
-				
-				// apply the activation function to all delta's covered by it
-				for(int i=0;i<layer.getNeuronCount();i++)
-				{
-					temp[0] = this.deltas[currentIndex];
-					function.derivativeFunction(temp);
-					this.deltas[currentIndex++] = temp[0];
-				}
-			}			
-		}
-	}	
 	
 	public double[] getThresholdGradients()
 	{

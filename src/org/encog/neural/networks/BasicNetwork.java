@@ -245,7 +245,7 @@ public class BasicNetwork implements Serializable, Network
 					logger.debug("Processing synapse: {}", synapse);
 				}
 				NeuralData pattern = synapse.compute(input);
-				synapse.getToLayer().compute(pattern);
+				pattern = synapse.getToLayer().compute(pattern);
 				synapse.getToLayer().process(pattern);
 				holder.getResult().put(synapse, input);
 				compute(holder, synapse.getToLayer(), pattern, synapse);

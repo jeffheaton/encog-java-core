@@ -27,10 +27,15 @@
 package org.encog.neural.networks.layers;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.util.math.BoundMath;
+import org.encog.util.math.rbf.GaussianFunction;
 import org.encog.util.math.rbf.RadialBasisFunction;
+import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,63 +46,73 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 */
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2779781041654829282L;
 	private RadialBasisFunction[] radialBasisFunction;
-	
+
 	public RadialBasisFunctionLayer(int neuronCount) {
-		super(new ActivationSigmoid(), false, neuronCount);
+		super(new ActivationLinear(), false, neuronCount);
 		this.radialBasisFunction = new RadialBasisFunction[neuronCount];
 	}
-	
-	public RadialBasisFunction getRadialBasisFunction(int index)
-	{
+
+	public RadialBasisFunction getRadialBasisFunction(int index) {
 		return this.radialBasisFunction[index];
 	}
-	
-	public void setRadialBasisFunction(int index,RadialBasisFunction function)
-	{
-		this.radialBasisFunction[index] = function; 
+
+	public void setRadialBasisFunction(int index, RadialBasisFunction function) {
+		this.radialBasisFunction[index] = function;
 	}
 	
-	public void compute(final NeuralData pattern)
+	public void randomizeGaussianCentersAndWidths(double min,double max)
 	{
-        
-            for(int i = 0; i < this.getNeuronCount(); i++) {
-            	
-            	if( this.radialBasisFunction[i]==null)
-            	{
-            		String str = "Error, must define radial functions for each neuron";
-            		if(logger.isErrorEnabled())
-            		{
-            			logger.error(str);
-            		}
-            		throw new NeuralNetworkError(str);
-            	}
-            	
-            	RadialBasisFunction f = this.radialBasisFunction[i];
-            	
-            	double total = 0;
-            	for(int j=0;j<pattern.size();j++)
-            	{            		
-            		total+=f.calculate(pattern.getData(j));
-            	}
-            	
-            	/*
-                // perform Gaussian function on pattern                
-                // Calculate squared Euclidean distance
-                double mySquaredEuclDist = 0;
-                double myTemp;
-                for(int j = 0; j < pattern.size(); j++) {
-                    myTemp = pattern.getData(j) - this.radialBasisFunction[i].calculate(pattern.getData(i));
-                    mySquaredEuclDist += (myTemp * myTemp);
-                }
-                pattern.setData(i, BoundMath.exp(mySquaredEuclDist / 
-                    (-2 * this.radialBasisFunction[i].getWidth() * (-2 * this.radialBasisFunction[i].getWidth()))));
-            	 */
-            }   
+		for(int i=0;i<getNeuronCount();i++)
+		{
+			this.radialBasisFunction[i] = new GaussianFunction(
+					RangeRandomizer.randomize(min,max),
+					RangeRandomizer.randomize(min,max),
+					RangeRandomizer.randomize(min,max));
+		}
+	}
+
+	public NeuralData compute(final NeuralData pattern) {
+
+		NeuralData result = new BasicNeuralData(this.getNeuronCount());
+		
+		for (int i = 0; i < this.getNeuronCount(); i++) {
+
+			if (this.radialBasisFunction[i] == null) {
+				String str = "Error, must define radial functions for each neuron";
+				if (logger.isErrorEnabled()) {
+					logger.error(str);
+				}
+				throw new NeuralNetworkError(str);
+			}
+
+			RadialBasisFunction f = this.radialBasisFunction[i];
+			double total = 0;
+			for(int j=0;j<pattern.size();j++)
+			{
+				double value = f.calculate(pattern.getData(j)); 
+				total+=value*value;
+			}
+			
+			result.setData(i,BoundMath.sqrt(total));
+
+		}
+
+		return result;
+	}
+	
+	public ActivationFunction getActivationFunction()
+	{
+		String str = "Should never call getActivationFunction on RadialBasisFunctionLayer, this layer has a compound activation function setup.";
+		if(logger.isErrorEnabled())
+		{
+			logger.error(str);
+		}
+		throw new NeuralNetworkError(str);
 	}
 }

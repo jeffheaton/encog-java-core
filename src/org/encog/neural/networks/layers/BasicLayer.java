@@ -120,19 +120,23 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 *            The input pattern.
 	 * @return The output from this layer.
 	 */
-	public void compute(final NeuralData pattern) {
+	public NeuralData compute(final NeuralData pattern) {
+		
+		NeuralData result = pattern.clone();
 		
 		if( this.hasThreshold())
 		{
 			// apply the thresholds
 			for(int i=0;i<this.threshold.length;i++)
 			{
-				pattern.setData(i, pattern.getData(i)+this.threshold[i]);
+				pattern.setData(i, result.getData(i)+this.threshold[i]);
 			}
 		}
 		
 		// apply the activation function
-		this.getActivationFunction().activationFunction(pattern.getData());
+		this.getActivationFunction().activationFunction(result.getData());
+		
+		return result;
 	}
 
 	/**

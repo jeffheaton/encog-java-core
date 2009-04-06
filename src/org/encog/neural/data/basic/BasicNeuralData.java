@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  *
  */
-public class BasicNeuralData implements NeuralData, Serializable {
+public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	
 	/**
 	 * The serial id. 
@@ -128,5 +128,13 @@ public class BasicNeuralData implements NeuralData, Serializable {
 		}
 		builder.append("]");
 		return builder.toString();
+	}
+	
+	public NeuralData clone()
+	{
+		NeuralData result = new BasicNeuralData(size());
+		for(int i=0;i<size();i++)
+			result.setData(i,getData(i));
+		return result;
 	}
 }

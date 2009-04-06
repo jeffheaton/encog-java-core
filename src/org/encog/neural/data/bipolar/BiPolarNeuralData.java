@@ -29,6 +29,7 @@ import java.io.Serializable;
 
 import org.encog.matrix.BiPolarUtil;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -133,5 +134,13 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	 */
 	public int size() {
 		return this.data.length;
+	}
+	
+	public NeuralData clone()
+	{
+		NeuralData result = new BasicNeuralData(size());
+		for(int i=0;i<size();i++)
+			result.setData(i,getData(i));
+		return result;
 	}
 }

@@ -44,7 +44,7 @@ public interface Layer extends Cloneable {
 	 * @param pattern The input pattern.
 	 * @return The output from this layer.
 	 */
-	void compute(final NeuralData pattern);
+	NeuralData compute(final NeuralData pattern);
 	
 	void process(final NeuralData pattern);
 
