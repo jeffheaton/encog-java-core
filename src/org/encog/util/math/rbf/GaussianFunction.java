@@ -24,12 +24,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.encog.util.math;
+package org.encog.util.math.rbf;
 
+import org.encog.util.math.BoundMath;
+import org.encog.util.math.MathConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class GaussianFunction {
+public class GaussianFunction implements RadialBasisFunction {
 	
 	private double center;
 	private double peak;
@@ -48,12 +50,12 @@ public class GaussianFunction {
 		this.width = width;
 	}
 	
-	public double gaussian(double x)
+	public double calculate(double x)
 	{
 		return (this.peak*MathConst.EULERS_NUMBER)*(-(BoundMath.pow(x-this.center, 2.0)/2.0*BoundMath.pow(this.width, 2.0)));
 	}
 	
-	public double gaussianDerivative(double x) {
+	public double calculateDerivative(double x) {
 		return ((-x)*BoundMath.pow(this.width, -2))+(this.center*BoundMath.pow(this.width, -2));
 	}
 

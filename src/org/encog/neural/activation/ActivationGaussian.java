@@ -26,7 +26,7 @@
 
 package org.encog.neural.activation;
 
-import org.encog.util.math.GaussianFunction;
+import org.encog.util.math.rbf.GaussianFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +53,7 @@ public class ActivationGaussian implements ActivationFunction {
 	public void activationFunction(double[] d) {
 		for(int i=0;i<d.length;i++)
 		{
-			d[i] = gausian.gaussian(d[i]);
+			d[i] = gausian.calculate(d[i]);
 		}
 			
 		
@@ -62,7 +62,7 @@ public class ActivationGaussian implements ActivationFunction {
 	public void derivativeFunction(double[] d) {
 		for(int i=0;i<d.length;i++)
 		{
-			d[i] = gausian.gaussianDerivative(d[i]);
+			d[i] = gausian.calculateDerivative(d[i]);
 		}
 		
 	}

@@ -98,6 +98,8 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		// teach the threshold
 		for(Layer layer: level.getLayers())
 		{
+			if( layer.hasThreshold())
+			{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
 				//double change = sign(level.getThresholdGradient(i)*this.propagation.getLearningRate());
@@ -137,7 +139,8 @@ public class ResilientPropagationMethod implements PropagationMethod {
 				layer.setThreshold(i, layer.getThreshold(i)+weightChange);
 				
 				level.setThresholdGradient(i, 0.0);
-			}			
+			}
+			}
 		}
 		
 			

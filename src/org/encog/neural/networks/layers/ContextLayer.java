@@ -48,13 +48,13 @@ public class ContextLayer extends BasicLayer {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	public ContextLayer(ActivationFunction thresholdFunction, int neuronCount) {
-		super(thresholdFunction, neuronCount);
+	public ContextLayer(ActivationFunction thresholdFunction, boolean hasThreshold, int neuronCount) {
+		super(thresholdFunction, hasThreshold, neuronCount);
 		context = new BasicNeuralData(neuronCount);
 	}
 	
 	public ContextLayer(int neuronCount) {
-		this(new ActivationTANH(), neuronCount);
+		this(new ActivationTANH(), true, neuronCount);
 	}
 	
 	public NeuralData recur() {

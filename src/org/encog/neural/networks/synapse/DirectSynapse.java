@@ -23,53 +23,66 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.networks.layers;
 
-import java.util.Collection;
-import java.util.List;
+package org.encog.neural.networks.synapse;
 
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.matrix.Matrix;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.neural.networks.layers.Layer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-/**
- * This interface defines all necessary methods for a neural network layer.
- * @author jheaton
- */
-public interface Layer extends Cloneable {
-	
-	/**
-	 * Compute the output for this layer.
-	 * @param pattern The input pattern.
-	 * @return The output from this layer.
-	 */
-	void compute(final NeuralData pattern);
-	
-	void process(final NeuralData pattern);
+public class DirectSynapse  extends BasicSynapse { 
 
 	/**
-	 * @return The neuron count.
+	 * The logging object.
 	 */
-	int getNeuronCount();
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	Collection<Layer> getNextLayers();
+	public DirectSynapse(Layer fromLayer,Layer toLayer)
+	{
+		this.setFromLayer(fromLayer);
+		this.setToLayer(toLayer);		
+	}
 	
-	public List<Synapse> getNext();
+	public DirectSynapse() {
 
+	}
+
+	public NeuralData compute(NeuralData input) {
+		return input;
+	}
+
+	public Matrix getMatrix() {
+		return null;
+	}
+
+	public int getMatrixSize() {
+		return 0;
+	}
+
+	public void setMatrix(Matrix matrix) {
+		throw new NeuralNetworkError("Can't set the matrix for a OneToOneSynapse");
+	}
+
+
+	public SynapseType getType() {
+		return SynapseType.OneToOne;
+	}
 	
-	ActivationFunction getActivationFunction();
-	
-	void setNeuronCount(int neuronCount);
-	
-	void addNext(Layer next);
-	void addNext(Layer next, SynapseType type);
-	NeuralData recur();
-	Object clone();
-	
-	public double getThreshold(int index);
-	public void setThreshold(int index,double d);
-	public double[] getThreshold();
-	public boolean hasThreshold();
+	public boolean isTeachable()
+	{
+		return false;
+	}
+
+	@Override
+	public Object clone() {
+		OneToOneSynapse result = new OneToOneSynapse();
+		result.setMatrix(this.getMatrix().clone());
+		return result;
+	}
+
 	
 }

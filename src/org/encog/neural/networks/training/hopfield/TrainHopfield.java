@@ -133,14 +133,6 @@ public class TrainHopfield extends BasicTraining {
 			{
 				target.getMatrix().set(row,col,delta.get(row, col));
 			}	
-		}
-		
-		// set the threshold to zero, hopfield type nets do not use threshold
-		for(int col = 0; col< delta.getRows(); col++ )
-		{
-			target.getMatrix().set(target.getFromNeuronCount(),col,0);
-		}
-		
+		}		
 	}
-
 }

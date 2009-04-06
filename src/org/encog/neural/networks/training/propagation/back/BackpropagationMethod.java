@@ -85,6 +85,8 @@ public class BackpropagationMethod implements PropagationMethod {
 		// teach the threshold
 		for(Layer layer: level.getLayers())
 		{
+			if( layer.hasThreshold())
+			{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
 				double delta = level.getThresholdGradient(i)*this.propagation.getLearningRate();
@@ -93,7 +95,7 @@ public class BackpropagationMethod implements PropagationMethod {
 				level.setLastThresholdGradient(i,delta);
 				level.setThresholdGradient(i, 0.0);				
 			}
-			
+			}
 		}
 	}
 	

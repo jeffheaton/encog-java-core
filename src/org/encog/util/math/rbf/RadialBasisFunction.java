@@ -23,11 +23,17 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.networks.synapse;
 
-public enum SynapseType {
-	OneToOne,
-	Weighted,
-	Weightless,
-	Direct
+package org.encog.util.math.rbf;
+
+import org.encog.util.math.BoundMath;
+import org.encog.util.math.MathConst;
+
+public interface RadialBasisFunction {
+	
+	public double calculate(double x);	
+	public double calculateDerivative(double x);
+	public double getCenter();
+	public double getPeak();
+	public double getWidth();
 }

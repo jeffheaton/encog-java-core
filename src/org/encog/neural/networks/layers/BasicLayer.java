@@ -35,6 +35,7 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.networks.synapse.DirectSynapse;
 import org.encog.neural.networks.synapse.OneToOneSynapse;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
@@ -94,10 +95,11 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 *            How many neurons in this layer.
 	 */
 	public BasicLayer(final ActivationFunction thresholdFunction,
-			final int neuronCount) {
+			final boolean hasThreshold,final int neuronCount) {
 		this.neuronCount = neuronCount;
 		this.setActivationFunction( thresholdFunction );
-		this.threshold = new double[neuronCount];
+		if( hasThreshold )
+			this.threshold = new double[neuronCount];
 	}
 
 	/**
@@ -107,7 +109,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 *            How many neurons in this layer.
 	 */
 	public BasicLayer(final int neuronCount) {
-		this(new ActivationTANH(), neuronCount);
+		this(new ActivationTANH(), true, neuronCount);
 	}
 
 	/**
@@ -120,10 +122,13 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 */
 	public void compute(final NeuralData pattern) {
 		
-		// apply the thresholds
-		for(int i=0;i<this.threshold.length;i++)
+		if( this.hasThreshold())
 		{
-			pattern.setData(i, pattern.getData(i)+this.threshold[i]);
+			// apply the thresholds
+			for(int i=0;i<this.threshold.length;i++)
+			{
+				pattern.setData(i, pattern.getData(i)+this.threshold[i]);
+			}
 		}
 		
 		// apply the activation function
@@ -251,6 +256,9 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 			case Weightless:
 				synapse = new WeightlessSynapse(this,next);
 				break;
+			case Direct:
+				synapse = new DirectSynapse(this,next);
+				break;
 		}
 		
 		if( synapse == null )
@@ -275,6 +283,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	{
 		BasicLayer result = new BasicLayer(
 				(ActivationFunction)this.activationFunction.clone(),
+				this.hasThreshold(),
 				this.getNeuronCount());
 		return result;
 		
@@ -285,16 +294,39 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	
 	public double getThreshold(int index)
 	{
+		if( !this.hasThreshold() )
+		{
+			String str = "Attempting to access threshold on a thresholdless layer.";
+			if( logger.isErrorEnabled())
+			{				
+				logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
 		return this.threshold[index];
 	}
 	
 	public void setThreshold(int index,double d)
 	{
+		if( !this.hasThreshold() )
+		{
+			String str = "Attempting to set threshold on a thresholdless layer.";
+			if( logger.isErrorEnabled())
+			{				
+				logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
 		this.threshold[index] = d;
 	}
 
 	public double[] getThreshold()
 	{
 		return this.threshold;
+	}
+	
+	public boolean hasThreshold()
+	{
+		return this.threshold!=null;
 	}
 }

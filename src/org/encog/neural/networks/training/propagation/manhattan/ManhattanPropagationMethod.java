@@ -98,11 +98,14 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 		// teach the threshold
 		for(Layer layer: level.getLayers())
 		{
+			if( layer.hasThreshold() )
+			{
 			for(int i=0;i<layer.getNeuronCount();i++)
 			{
 				double change = determineChange(level.getThresholdGradient(i)*this.propagation.getLearningRate());
 				layer.setThreshold(i, layer.getThreshold(i) + change);
-			}			
+			}
+			}
 		}
 	}
 	

@@ -94,7 +94,10 @@ public abstract class BasicRandomizer implements Randomizer {
 		// randomize the thresholds
 		for(Layer layer: network.getStructure().getLayers() )
 		{
-			randomize(layer.getThreshold());
+			if( layer.hasThreshold() )
+			{
+				randomize(layer.getThreshold());
+			}
 		}
 	}
 	
