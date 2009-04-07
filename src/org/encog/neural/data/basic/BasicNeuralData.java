@@ -63,6 +63,11 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 		this(d.length);
 		System.arraycopy(d, 0, this.data, 0, d.length);
 	}
+	
+	public BasicNeuralData(final NeuralData d) {
+		this(d.size());
+		System.arraycopy(d.getData(), 0, this.data, 0, d.size());
+	}
 
 	/**
 	 * Construct this object with blank data and a specified size.

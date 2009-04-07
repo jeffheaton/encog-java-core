@@ -34,11 +34,14 @@ import java.util.StringTokenizer;
 import org.encog.neural.persist.persistors.PersistorUtil;
 import org.encog.util.xml.XMLElement;
 import org.encog.util.xml.XMLRead;
+import org.encog.util.xml.XMLWrite;
 import org.encog.util.xml.XMLElement.XMLElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PersistReader {
+
+	public final static String ATTRIBUTE_NAME = "name";
 
 	private XMLRead in;
 	private InputStream fileInput;
@@ -62,20 +65,40 @@ public class PersistReader {
 		}
 	}
 
-	public XMLElement advance(String name) {
+	/**
+	 * Advance to the objects collection.
+	 */
+	public void advanceObjectsCollection()
+	{
 		XMLElement element;
 
 		while ((element = this.in.get()) != null) {
 			XMLElementType type = element.getType();
 			if (type == XMLElementType.start
 					&& element.getText().equals("Objects")) {
-				return advanceObjects(name);
+				return;
 			}
 		}
-
-		return null;
+		
+	}
+	
+	/**
+	 * Advance to the specified object.
+	 * @param name The name of the object looking for.
+	 * @return The beginning element of the object found.
+	 */
+	public XMLElement advance(String name) {
+		advanceObjectsCollection();
+		return advanceObjects(name);
 	}
 
+	/**
+	 * Once you are in the objects collection, advance
+	 * to a specific object.
+	 * @param name The name of the object to advance to.
+	 * @return The beginning tag of that object if its found,
+	 * null otherwise.
+	 */
 	private XMLElement advanceObjects(String name) {
 		XMLElement element;
 
@@ -93,7 +116,13 @@ public class PersistReader {
 
 		return null;
 	}
-
+	
+	/**
+	 * Read the specific object, search through the objects
+	 * until its found.
+	 * @param name The name of the object you are looking for.
+	 * @return The object found, null if not found.
+	 */
 	public EncogPersistedObject readObject(String name) {
 		XMLElement element = advance(name);
 		// did we find the object?
@@ -162,5 +191,74 @@ public class PersistReader {
 		else
 			return readNextText(element);
 	}
+	
+	/**
+	 * Save all objects to the specified steam, skip the one
+	 * specified by the skip parameter.  Do not attempt to 
+	 * understand the structure, just copy.
+	 * @param out The XML writer to save the objects to.
+	 * @param skip The object to skip.
+	 */
+	public void saveTo(XMLWrite out,String skip)
+	{
+		XMLElement element;
+		advanceObjectsCollection();
+		while ((element = this.in.get()) != null) {
+			XMLElementType type = element.getType();
+			if (type == XMLElementType.start)
+			{
+				String name = element.getAttributes().get(ATTRIBUTE_NAME);
+				if( name.equals(skip))
+				{
+					this.in.skipObject(element);
+				}
+				else
+					copyXML(element,out);
+			}
+		}
+	}
+	
+	private void copyAttributes(XMLElement object,XMLWrite out)
+	{
+		for( String key: object.getAttributes().keySet())
+		{
+			out.addAttribute(key, object.getAttributes().get(key));
+		}
+	}
+	
 
+	private void copyXML(XMLElement object,XMLWrite out) {
+		
+		int depth = 0;
+		copyAttributes(object,out);
+		out.beginTag(object.getText());
+		
+		XMLElement element;
+		while ((element = this.in.get()) != null) {
+			XMLElementType type = element.getType();
+			
+			switch(type)
+			{
+				case start:
+					copyAttributes(element,out);
+					out.beginTag(element.getText());
+					depth++;
+					break;
+				case end:
+					if( !element.getText().equals(object.getText()))
+					{
+						out.endTag();
+					}
+					else if( depth==0)
+							return;
+					depth--;
+					break;
+				case text:
+					out.addText(element.getText());
+					break;
+			}
+		}
+		
+		out.endTag();		
+	}
 }

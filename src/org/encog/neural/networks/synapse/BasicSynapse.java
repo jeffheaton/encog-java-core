@@ -26,6 +26,7 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,5 +86,30 @@ public abstract class BasicSynapse implements Synapse {
 	}
 	
 	abstract public Object clone();
+	
+	public String getName()
+	{
+		return null;
+	}
+	
+	public String getDescription()
+	{
+		return null;
+	}
+	
+	public void setName(String n)
+	{
+		
+	}
+	
+	public void setDescription(String d)
+	{
+		
+	}
+	
+	public Persistor createPersistor()
+	{
+		return null;
+	}
 
 }

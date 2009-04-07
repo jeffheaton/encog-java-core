@@ -31,7 +31,7 @@ import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActivationSoftMax implements ActivationFunction {
+public class ActivationSoftMax extends BasicActivationFunction implements ActivationFunction {
 
 	/**
 	 * The serial id.

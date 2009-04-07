@@ -89,7 +89,6 @@ public class EncogPersistedCollection {
 	
 	public void create()
 	{
-
 			PersistWriter writer = new PersistWriter(this.filePrimary);
 			writer.begin();
 			writer.writeHeader();
@@ -97,7 +96,6 @@ public class EncogPersistedCollection {
 			writer.endObjects();
 			writer.end();
 			writer.close();
-
 	}
 	
 
@@ -112,8 +110,9 @@ public class EncogPersistedCollection {
 		PersistWriter writer = new PersistWriter(this.fileTemp);
 		writer.begin();
 		writer.writeHeader();
-		writer.beginObjects();
+		writer.beginObjects();		
 		writer.writeObject(obj);
+		writer.mergeObjects(this.filePrimary, name);
 		writer.endObjects();
 		writer.end();
 		writer.close();
@@ -170,9 +169,6 @@ public class EncogPersistedCollection {
 				
 		PersistReader reader = new PersistReader(this.filePrimary);
 		EncogPersistedObject result = reader.readObject(name);
-		
-
-		
 		return result;
 	}
 

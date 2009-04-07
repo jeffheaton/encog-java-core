@@ -23,60 +23,41 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.data;
+package org.encog.neural.persist.persistors;
 
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.xml.XMLElement;
+import org.encog.util.xml.XMLRead;
+import org.encog.util.xml.XMLWrite;
 
-public class TextData implements EncogPersistedObject {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6895724776252007263L;
-	private String text;
-	private String name;
-	private String description;
-	
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
+public class WeightedSynapsePersistor implements Persistor {
 
-	public Persistor createPersistor() {		
+	public final static String TAG_WEIGHTED_SYNAPSE = "WeightedSynapse"; 
+	public final static String TAG_FROM_NEURON_COUNT = "fromNeurons";
+	public final static String TAG_TO_NEURON_COUNT = "toNeurons";
+	public final static String TAG_WEIGHTS = "weights";
+	
+	@Override
+	public EncogPersistedObject load(XMLElement node, XMLRead in) {
+		// TODO Auto-generated method stub
 		return null;
 	}
-	
-	public Object clone()
-	{
-		TextData result = new TextData();
-		result.setName(getName());
-		result.setDescription(getDescription());
-		result.setText(getText());
-		return result;
+
+	@Override
+	public void save(EncogPersistedObject obj, XMLWrite out) {
+		PersistorUtil.beginEncogObject(TAG_WEIGHTED_SYNAPSE, out, obj, false);
+		WeightedSynapse synapse = (WeightedSynapse)obj;
+		out.addProperty(TAG_FROM_NEURON_COUNT, synapse.getFromNeuronCount());
+		out.addProperty(TAG_TO_NEURON_COUNT, synapse.getToNeuronCount());
+		
+		out.beginTag(TAG_WEIGHTS);
+		PersistorUtil.saveMatrix(synapse.getMatrix(),out);
+		out.endTag();
+		
+		out.endTag();
 	}
-	
-	
+
 }

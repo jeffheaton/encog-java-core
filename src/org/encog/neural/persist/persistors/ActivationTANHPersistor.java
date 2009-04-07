@@ -23,45 +23,26 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.encog.neural.persist.persistors;
 
-package org.encog.neural.activation;
+import org.encog.neural.persist.EncogPersistedObject;
+import org.encog.neural.persist.Persistor;
+import org.encog.util.xml.XMLElement;
+import org.encog.util.xml.XMLRead;
+import org.encog.util.xml.XMLWrite;
 
-import org.encog.neural.NeuralNetworkError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class ActivationTANHPersistor implements Persistor {
 
-public class ActivationBiPolar extends BasicActivationFunction {
-	
-	/**
-	 * The serial id.
-	 */
-	private static final long serialVersionUID = -7166136514935838114L;
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	public void activationFunction(double[] d) {
-		for(int i=0;i<d.length;i++)
-		{
-			if( d[i]>0 )
-				d[i] = 1;
-			else
-				d[i] = -1;
-		}
-		
+	@Override
+	public EncogPersistedObject load(XMLElement node, XMLRead in) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public void derivativeFunction(double[] d) {
-		throw new NeuralNetworkError(
-				"Can't use the bipolar activation function "
-						+ "where a derivative is required.");
-		
-	}
+	@Override
+	public void save(EncogPersistedObject object, XMLWrite out) {
+		out.beginTag(object.getClass().getSimpleName());
+		out.endTag();
 
-	public Object clone()
-	{
-		return new ActivationBiPolar();
 	}
 }

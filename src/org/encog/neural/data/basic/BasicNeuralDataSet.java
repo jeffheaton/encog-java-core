@@ -318,4 +318,24 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	public void setName(final String name) {
 		this.name = name;
 	}
+	
+	public Object clone()
+	{
+		BasicNeuralDataSet result = new BasicNeuralDataSet();
+		for(NeuralDataPair pair: this)
+		{
+			if( pair.getIdeal()==null )
+			{
+				BasicNeuralData input = new BasicNeuralData(pair.getInput());
+				result.add(new BasicNeuralDataPair(input));
+			}
+			else
+			{
+				BasicNeuralData input = new BasicNeuralData(pair.getInput());
+				BasicNeuralData ideal = new BasicNeuralData(pair.getIdeal());
+				result.add(new BasicNeuralDataPair(ideal));
+			}
+		}
+		return result;
+	}
 }

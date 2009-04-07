@@ -39,6 +39,9 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.encog.EncogError;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.persist.PersistError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -361,6 +364,52 @@ public class ReadCSV {
 			throw new EncogError(e);
 		}
 		
+	}
+	
+	public static void toCommas(StringBuilder result,double[] data)
+	{
+		result.setLength(0);
+		for(int i=0;i<data.length;i++)
+		{
+			if( i!=0 )
+				result.append(',');
+			result.append(data[i]);
+		}
+	}
+	
+	public static double[] fromCommas(String str)
+	{
+		// first count the numbers
+		int count = 0;
+		StringTokenizer tok = new StringTokenizer(str,",");
+		while(tok.hasMoreTokens())
+		{
+			tok.nextToken();
+			count++;
+		}
+		
+		// now allocate an object to hold that many numbers
+		double[] result = new double[count];
+		
+		// and finally parse the numbers
+		int index = 0;
+		StringTokenizer tok2 = new StringTokenizer(str,",");
+		while(tok2.hasMoreTokens())
+		{
+			try
+			{
+				String num = tok2.nextToken();
+				double value = Double.parseDouble(num);
+				result[index++] = value;
+			}
+			catch(NumberFormatException e)
+			{
+				throw new PersistError(e);
+			}
+			
+		}
+		
+		return result;
 	}
 
 }

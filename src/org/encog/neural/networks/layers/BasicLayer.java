@@ -43,6 +43,7 @@ import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.networks.synapse.WeightlessSynapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.BasicLayerPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
+public class BasicLayer implements Layer, Serializable {
 	/**
 	 * The serial id.
 	 */
@@ -144,7 +145,7 @@ public class BasicLayer implements Layer, EncogPersistedObject, Serializable {
 	 * @return The new persistor.
 	 */
 	public Persistor createPersistor() {
-		return null;
+		return new BasicLayerPersistor();
 	}
 
 	/**

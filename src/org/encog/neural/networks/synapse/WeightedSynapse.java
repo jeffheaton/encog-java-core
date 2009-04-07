@@ -30,6 +30,8 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.WeightedSynapsePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -119,6 +121,11 @@ public class WeightedSynapse extends BasicSynapse {
 		WeightedSynapse result = new WeightedSynapse();
 		result.setMatrix(this.getMatrix().clone());
 		return result;
+	}
+	
+	public Persistor createPersistor()
+	{
+		return new WeightedSynapsePersistor();
 	}
 
 }

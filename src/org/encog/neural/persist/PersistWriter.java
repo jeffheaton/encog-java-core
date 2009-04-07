@@ -100,9 +100,24 @@ public class PersistWriter {
 		}
 		
 	}
+	
+	public void mergeObjects(File filename,String skip)
+	{
+		PersistReader reader = new PersistReader(filename);
+		reader.saveTo(this.out,skip);
+	}
 
 	public void writeObject(EncogPersistedObject obj) {
 		Persistor persistor = obj.createPersistor();
+		if( persistor==null )
+		{
+			String str = "Can't find a persistor for object of type " + obj.getClass().getName();
+			if( logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new PersistError(str);
+		}
 		persistor.save(obj, this.out);
 	}
 	

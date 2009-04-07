@@ -30,7 +30,7 @@ import org.encog.util.math.rbf.GaussianFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActivationGaussian implements ActivationFunction {
+public class ActivationGaussian extends BasicActivationFunction {
 
 	/**
 	 * The serial id.

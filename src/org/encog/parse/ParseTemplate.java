@@ -100,4 +100,12 @@ public class ParseTemplate implements EncogPersistedObject {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	
+	public Object clone()
+	{
+		ParseTemplate result = new ParseTemplate();
+		result.setName(this.getName());
+		result.setDescription(this.getDescription());
+		return result;
+	}
 }

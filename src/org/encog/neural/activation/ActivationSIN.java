@@ -30,7 +30,7 @@ import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActivationSIN implements ActivationFunction {
+public class ActivationSIN extends BasicActivationFunction {
 
 	/**
 	 * 

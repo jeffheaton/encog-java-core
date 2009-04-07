@@ -30,7 +30,7 @@ import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ActivationLOG implements ActivationFunction {
+public class ActivationLOG extends BasicActivationFunction {
 
 	/**
 	 * The serial id.

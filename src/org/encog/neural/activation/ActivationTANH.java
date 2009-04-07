@@ -25,6 +25,8 @@
  */
 package org.encog.neural.activation;
 
+import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.ActivationTANHPersistor;
 import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * positive and negative output. Use this activation function if both negative
  * and positive output is desired.
  */
-public class ActivationTANH implements ActivationFunction {
+public class ActivationTANH extends BasicActivationFunction {
 
 	/**
 	 * Serial id for this class.
@@ -90,5 +92,9 @@ public class ActivationTANH implements ActivationFunction {
 		return new ActivationTANH();
 	}
 	
+	@Override
+	public Persistor createPersistor() {
+		return new ActivationTANHPersistor();
+	}
 	
 }

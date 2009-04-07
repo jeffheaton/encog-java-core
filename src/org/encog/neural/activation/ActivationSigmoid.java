@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * shape. Only positive numbers are generated. Do not use this activation
  * function if negative number output is desired.
  */
-public class ActivationSigmoid implements ActivationFunction {
+public class ActivationSigmoid extends BasicActivationFunction {
 	/**
 	 * Serial id for this class.
 	 */

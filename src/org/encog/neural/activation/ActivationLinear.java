@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * Usually an activation function that scales between 0 and 1 or -1 and 1 should
  * be used.
  */
-public class ActivationLinear implements ActivationFunction {
+public class ActivationLinear extends  BasicActivationFunction {
 
 	/**
 	 * Serial id for this class.

@@ -26,6 +26,7 @@
 
 package org.encog.neural.persist.persistors;
 
+import org.encog.matrix.Matrix;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.PersistError;
 import org.encog.neural.persist.Persistor;
@@ -34,6 +35,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PersistorUtil {
+	
+	public static final String ATTRIBUTE_MATRIX_ROWS = "rows";
+	public static final String ATTRIBUTE_MATRIX_COLS = "cols";
+	public static final String ROW = "row";
 	
 	/**
 	 * The logging object.
@@ -73,18 +78,46 @@ public class PersistorUtil {
 	public static void beginEncogObject(
 			String objectType,
 			XMLWrite out,
-			EncogPersistedObject obj)
+			EncogPersistedObject obj,
+			boolean top)
 	{
-		if( obj.getName()==null )
+		if( top)
 		{
-			throw new PersistError("Encog object must have a name to be saved.");
+			if( obj.getName()==null )
+			{
+				throw new PersistError("Encog object must have a name to be saved.");
+			}
+			out.addAttribute("name", obj.getName());			
+			if( obj.getDescription()==null )
+				obj.setDescription("");
+			out.addAttribute("description", obj.getDescription());
 		}
-		out.addAttribute("name", obj.getName());
 		out.addAttribute("native", obj.getClass().getName());
-		if( obj.getDescription()==null )
-			obj.setDescription("");
-		out.addAttribute("description", obj.getDescription());
 		out.beginTag(objectType);
+	}
+	
+	public static void saveMatrix(Matrix matrix,XMLWrite out)
+	{
+		out.addAttribute(ATTRIBUTE_MATRIX_ROWS, ""+matrix.getRows());
+		out.addAttribute(ATTRIBUTE_MATRIX_COLS, ""+matrix.getCols());
+		out.beginTag("Matrix");
+		
+		for(int row=0;row<matrix.getRows();row++)
+		{
+			StringBuilder builder = new StringBuilder();
+			
+			for(int col=0;col<matrix.getCols();col++)
+			{
+				if( col>0 )
+					builder.append(',');
+				builder.append(matrix.get(row, col));
+			}
+			out.beginTag(ROW);
+			out.addText(builder.toString());
+			out.endTag();
+		}
+		
+		out.endTag();
 	}
 	
 }

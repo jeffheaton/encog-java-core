@@ -40,6 +40,7 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.ErrorCalculation;
 import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
@@ -289,7 +290,7 @@ public class BasicNetwork implements Serializable, Network
 	 * @return The newly created persistor.
 	 */
 	public Persistor createPersistor() {
-		return null;
+		return new BasicNetworkPersistor();
 	}
 
 	/**

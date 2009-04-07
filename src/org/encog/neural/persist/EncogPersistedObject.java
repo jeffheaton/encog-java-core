@@ -33,11 +33,12 @@ import java.io.Serializable;
  * @author jheaton
  *
  */
-public interface EncogPersistedObject extends Serializable {
+public interface EncogPersistedObject extends Serializable, Cloneable  {
 	public void setDescription(String theDescription);
 	public String getDescription();
 	
 	public void setName(String theName);
 	public String getName();
 	public Persistor createPersistor();
+	Object clone();
 }

@@ -27,6 +27,8 @@ package org.encog.neural.activation;
 
 import java.io.Serializable;
 
+import org.encog.neural.persist.EncogPersistedObject;
+
 
 /**
  * ActivationFunction: This interface allows various activation functions to be
@@ -46,7 +48,7 @@ import java.io.Serializable;
  * Non-derivable activation functions are perfectly valid, they simply cannot be
  * used with every training algorithm. 
  */
-public interface ActivationFunction extends Serializable, Cloneable {
+public interface ActivationFunction extends EncogPersistedObject {
 
 	/**
 	 * A activation function for a neural network.
@@ -66,6 +68,4 @@ public interface ActivationFunction extends Serializable, Cloneable {
 	 */
 	void derivativeFunction(double[] d);
 	
-	Object clone();
-
 }

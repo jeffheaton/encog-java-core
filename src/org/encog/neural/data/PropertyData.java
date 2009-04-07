@@ -90,4 +90,17 @@ public class PropertyData implements EncogPersistedObject {
 	public void remove(String key) {
 		this.data.remove(key);	
 	}
+	
+	public Object clone()
+	{
+		PropertyData result = new PropertyData();
+		result.setName(getName());
+		result.setDescription(getDescription());
+		
+		for(String key: data.keySet())
+		{
+			result.set(key, this.get(key));
+		}
+		return result;
+	}
 }

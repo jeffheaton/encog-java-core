@@ -179,4 +179,9 @@ public class XMLWrite {
 		addText(value);
 		endTag();
 	}
+
+	public void addProperty(String name, int i) {
+		addProperty(name,""+i);
+		
+	}
 }
