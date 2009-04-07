@@ -42,6 +42,8 @@ import org.slf4j.LoggerFactory;
  */
 public class EncogPersistedCollection {
 
+	public final static String GENERAL_ERROR = "Malformed XML near tag: ";
+	
 	private File filePrimary;
 	private File fileTemp;
 	private PersistWriter writer;
@@ -50,7 +52,7 @@ public class EncogPersistedCollection {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	final private static Logger logger = LoggerFactory.getLogger(EncogPersistedCollection.class);
 	
 	public EncogPersistedCollection(String filename)
 	{
@@ -182,5 +184,15 @@ public class EncogPersistedCollection {
 	{				
 		this.filePrimary.delete();
 		this.fileTemp.renameTo(this.filePrimary);		
+	}
+	
+	public static void throwError(String tag)
+	{
+		String str = GENERAL_ERROR + tag;
+		if( logger.isErrorEnabled() )
+		{
+			logger.error(str);
+		}
+		throw new PersistError(str);
 	}
 }
