@@ -41,13 +41,11 @@ public class BasicLayerPersistor implements Persistor {
 	public static final String PROPERTY_NEURONS = "neurons";
 	public static final String PROPERTY_THRESHOLD = "threshold";
 	
-	@Override
 	public EncogPersistedObject load(XMLElement node, XMLRead in) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void save(EncogPersistedObject obj, XMLWrite out) {
 		PersistorUtil.beginEncogObject(TAG_BASIC_LAYER, out, obj, false);
 		BasicLayer layer = (BasicLayer)obj;

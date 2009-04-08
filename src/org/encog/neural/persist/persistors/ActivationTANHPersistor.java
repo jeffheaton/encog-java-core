@@ -33,13 +33,11 @@ import org.encog.util.xml.XMLWrite;
 
 public class ActivationTANHPersistor implements Persistor {
 
-	@Override
 	public EncogPersistedObject load(XMLElement node, XMLRead in) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void save(EncogPersistedObject object, XMLWrite out) {
 		out.beginTag(object.getClass().getSimpleName());
 		out.endTag();

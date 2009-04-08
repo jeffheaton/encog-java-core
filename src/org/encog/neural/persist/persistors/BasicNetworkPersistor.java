@@ -108,7 +108,7 @@ public class BasicNetworkPersistor implements Persistor {
 		}
 	}
 
-	@Override
+
 	public void save(EncogPersistedObject obj, XMLWrite out) {
 		PersistorUtil.beginEncogObject(TAG_BASIC_NETWORK, out, obj, true);
 		this.currentNetwork = (BasicNetwork)obj;
@@ -127,7 +127,7 @@ public class BasicNetworkPersistor implements Persistor {
 		out.endTag();
 	}
 	
-	@Override
+
 	public EncogPersistedObject load(XMLElement node, XMLRead in) {
 				
 		this.currentNetwork = new BasicNetwork();

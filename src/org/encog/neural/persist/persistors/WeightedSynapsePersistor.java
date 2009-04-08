@@ -40,13 +40,11 @@ public class WeightedSynapsePersistor implements Persistor {
 	public final static String TAG_TO_NEURON_COUNT = "toNeurons";
 	public final static String TAG_WEIGHTS = "weights";
 	
-	@Override
 	public EncogPersistedObject load(XMLElement node, XMLRead in) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void save(EncogPersistedObject obj, XMLWrite out) {
 		PersistorUtil.beginEncogObject(TAG_WEIGHTED_SYNAPSE, out, obj, false);
 		WeightedSynapse synapse = (WeightedSynapse)obj;
