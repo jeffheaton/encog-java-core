@@ -1,6 +1,10 @@
 package org.encog.bot.html;
 
 import java.io.ByteArrayInputStream;
+
+import org.encog.parse.tags.Tag;
+import org.encog.parse.tags.read.ReadHTML;
+
 import junit.framework.TestCase;
 
 public class TestParseHTML extends TestCase {
@@ -8,18 +12,18 @@ public class TestParseHTML extends TestCase {
 	{
 		String html = "12<b>12</b>1";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()=='1');
 		TestCase.assertTrue(parse.read()=='2');
 		TestCase.assertTrue(parse.read()==0);
 		TestCase.assertTrue(parse.getTag().getName().equalsIgnoreCase("b"));
-		TestCase.assertTrue(parse.getTag().getType()==HTMLTag.Type.BEGIN);
+		TestCase.assertTrue(parse.getTag().getType()==Tag.Type.BEGIN);
 		TestCase.assertTrue(parse.read()=='1');
 		TestCase.assertTrue(parse.read()=='2');
 		TestCase.assertTrue(parse.read()==0);
-		HTMLTag tag = parse.getTag();
+		Tag tag = parse.getTag();
 		TestCase.assertTrue(tag.getName().equalsIgnoreCase("b"));
-		TestCase.assertTrue(tag.getType()==HTMLTag.Type.END);
+		TestCase.assertTrue(tag.getType()==Tag.Type.END);
 		TestCase.assertEquals(tag.toString(),"</b>");
 		TestCase.assertTrue(parse.read()=='1');
 	}
@@ -28,9 +32,9 @@ public class TestParseHTML extends TestCase {
 	{
 		String html="<img src=\"picture.gif\" alt=\"A Picture\">";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()==0);
-		HTMLTag tag = parse.getTag();
+		Tag tag = parse.getTag();
 		TestCase.assertNotNull(tag);
 		TestCase.assertTrue(tag.getName().equals("img"));
 		//TestCase.assertTrue(html.equals(tag.toString()));
@@ -42,9 +46,9 @@ public class TestParseHTML extends TestCase {
 	{
 		String html="<img src=picture.gif alt=APicture>";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()==0);
-		HTMLTag tag = parse.getTag();
+		Tag tag = parse.getTag();
 		TestCase.assertNotNull(tag);
 		TestCase.assertTrue(tag.getName().equals("img"));
 		TestCase.assertTrue(tag.getAttributeValue("src").equals("picture.gif"));
@@ -55,11 +59,11 @@ public class TestParseHTML extends TestCase {
 	{
 		String html="<br/>";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()==0);
-		HTMLTag tag = parse.getTag();
+		Tag tag = parse.getTag();
 		TestCase.assertNotNull(tag);
-		TestCase.assertTrue(tag.getType()==HTMLTag.Type.BOTH);
+		TestCase.assertTrue(tag.getType()==Tag.Type.BOTH);
 		TestCase.assertTrue(tag.toString().equals(html));
 	}
 	
@@ -67,7 +71,7 @@ public class TestParseHTML extends TestCase {
 	{
 		String html="<img src=\"picture.gif\" alt=\"A Picture\"/>";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()==0);
 	}
 	
@@ -75,7 +79,7 @@ public class TestParseHTML extends TestCase {
 	{
 		String html="a<!-- Hello -->b";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()=='a');
 		TestCase.assertTrue(parse.read()==0);
 		TestCase.assertTrue(parse.read()=='b');
@@ -85,7 +89,7 @@ public class TestParseHTML extends TestCase {
 	{
 		String html="a<script>12</script>b";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()=='a');
 		TestCase.assertTrue(parse.read()==0);
 		TestCase.assertTrue(parse.read()=='1');
@@ -98,7 +102,7 @@ public class TestParseHTML extends TestCase {
 	{
 		String html="a<script>1<2</script>b<br>";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()=='a');
 		TestCase.assertTrue(parse.read()==0);
 		TestCase.assertTrue(parse.read()=='1');
@@ -116,7 +120,7 @@ public class TestParseHTML extends TestCase {
 		
 		String html="a<img src=\"picture.gif\" alt=\"A Picture\">b";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.toString().indexOf("Text:a")!=-1);
 	}
 	
@@ -132,7 +136,7 @@ public class TestParseHTML extends TestCase {
 	{
 		String html = "&lt;&gt;&#65;";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()=='<');
 		TestCase.assertTrue(parse.read()=='>');
 		TestCase.assertTrue(parse.read()=='A');
@@ -142,9 +146,9 @@ public class TestParseHTML extends TestCase {
 	{
 		String html = "<!DOCTYPE \"test\">";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
+		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()==0);
-		HTMLTag tag = parse.getTag();
+		Tag tag = parse.getTag();
 		TestCase.assertEquals(tag.toString(), html);
 	}
 }

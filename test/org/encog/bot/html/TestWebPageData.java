@@ -6,6 +6,7 @@ import org.encog.bot.browse.range.DocumentRange;
 import org.encog.bot.browse.range.Link;
 import org.encog.bot.dataunit.TagDataUnit;
 import org.encog.bot.dataunit.TextDataUnit;
+import org.encog.parse.tags.Tag;
 
 import junit.framework.TestCase;
 
@@ -27,14 +28,14 @@ public class TestWebPageData extends TestCase {
 		tagDU = (TagDataUnit)page.getDataUnit(1);
 		TestCase.assertEquals("b", tagDU.getTag().getName());
 		TestCase.assertEquals("<b>", tagDU.toString());
-		TestCase.assertEquals(HTMLTag.Type.BEGIN, tagDU.getTag().getType());
+		TestCase.assertEquals(Tag.Type.BEGIN, tagDU.getTag().getType());
 		// Index 2 (text)
 		textDU = (TextDataUnit)page.getDataUnit(2);
 		TestCase.assertEquals("b", textDU.toString());
 		// Index 3 (tag)
 		tagDU = (TagDataUnit)page.getDataUnit(3);
 		TestCase.assertEquals("b", tagDU.getTag().getName());
-		TestCase.assertEquals(HTMLTag.Type.END, tagDU.getTag().getType());
+		TestCase.assertEquals(Tag.Type.END, tagDU.getTag().getType());
 		// Index 4 (text)
 		textDU = (TextDataUnit)page.getDataUnit(4);
 		TestCase.assertEquals("c", textDU.toString());		
