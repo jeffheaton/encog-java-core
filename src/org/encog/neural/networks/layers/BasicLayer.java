@@ -41,6 +41,7 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.networks.synapse.WeightlessSynapse;
+import org.encog.neural.persist.DirectoryEntry;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.BasicLayerPersistor;
@@ -338,4 +339,5 @@ public class BasicLayer implements Layer, Serializable {
 	public void addSynapse(Synapse synapse) {
 		this.next.add(synapse);
 	}
+	
 }

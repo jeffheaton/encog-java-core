@@ -39,6 +39,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.neural.persist.DirectoryEntry;
 import org.encog.neural.persist.Persistor;
 import org.encog.neural.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.ErrorCalculation;
@@ -527,5 +528,6 @@ public class BasicNetwork implements Serializable, Network
 	public NeuralStructure getStructure() {
 		return structure;
 	}
+
 
 }

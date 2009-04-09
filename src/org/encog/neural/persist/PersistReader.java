@@ -30,6 +30,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.encog.neural.persist.persistors.PersistorUtil;
@@ -42,6 +44,7 @@ import org.slf4j.LoggerFactory;
 public class PersistReader {
 
 	public final static String ATTRIBUTE_NAME = "name";
+	public final static String TAG_OBJECTS = "Objects";
 
 	private ReadXML in;
 	private InputStream fileInput;
@@ -86,7 +89,7 @@ public class PersistReader {
 		while (this.in.readToTag()) {
 			Type type = this.in.getTag().getType();
 			if (type == Type.BEGIN
-					&& this.in.getTag().getName().equals("Objects")) {
+					&& this.in.getTag().getName().equals(TAG_OBJECTS)) {
 				return;
 			}
 		}
@@ -280,5 +283,27 @@ public class PersistReader {
 		}
 		
 		out.endTag();		
+	}
+
+	public List<DirectoryEntry> buildDirectory() {
+		List<DirectoryEntry> result = new ArrayList<DirectoryEntry>();
+		this.advanceObjectsCollection();
+		
+		while( this.in.readToTag() )
+		{
+			if(this.in.is(TAG_OBJECTS, false))
+				break;
+			
+			String type = this.in.getTag().getName();
+			String name = this.in.getTag().getAttributeValue("name");
+			String description = this.in.getTag().getAttributeValue("description");
+			
+			DirectoryEntry entry = new DirectoryEntry(type,name,description);
+			result.add(entry);
+			
+			this.skipObject(this.in.getTag().getName());
+		}
+		
+		return result;
 	}
 }

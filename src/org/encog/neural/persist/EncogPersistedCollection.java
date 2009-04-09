@@ -27,6 +27,7 @@
 package org.encog.neural.persist;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -68,6 +69,11 @@ public class EncogPersistedCollection {
 			f = f.substring(0,index);
 		f+=".tmp";
 		this.fileTemp = new File(f);
+		
+		if( this.filePrimary.exists())
+			buildDirectory();
+		else
+			create();
 	}
 	
 	
@@ -80,12 +86,21 @@ public class EncogPersistedCollection {
 	 * The version of the persisted file.
 	 */
 	private int fileVersion;
+	
+	private final List<DirectoryEntry> directory = new ArrayList<DirectoryEntry>();
 
 	/**
 	 * The version of Encog.
 	 */
 	private String encogVersion;
 	
+	public void buildDirectory()
+	{
+		PersistReader reader = new PersistReader(this.filePrimary);
+		List<DirectoryEntry> d = reader.buildDirectory();
+		this.directory.clear();
+		this.directory.addAll(d);
+	}
 	
 	public void create()
 	{
@@ -96,6 +111,8 @@ public class EncogPersistedCollection {
 			writer.endObjects();
 			writer.end();
 			writer.close();
+			
+			this.directory.clear();
 	}
 	
 
@@ -140,12 +157,6 @@ public class EncogPersistedCollection {
 		return this.fileVersion;
 	}
 
-	/**
-	 * @return the list
-	 */
-	public List<EncogPersistedObject> getList() {
-		return null;
-	}
 
 	/**
 	 * @return the platform
@@ -176,6 +187,11 @@ public class EncogPersistedCollection {
 
 	}
 	
+	public void delete(EncogPersistedObject obj)
+	{
+		
+	}
+	
 	public void mergeTemp()
 	{				
 		this.filePrimary.delete();
@@ -191,4 +207,10 @@ public class EncogPersistedCollection {
 		}
 		throw new PersistError(str);
 	}
+
+	public List<DirectoryEntry> getDirectory() {
+		return directory;
+	}
+	
+	
 }
