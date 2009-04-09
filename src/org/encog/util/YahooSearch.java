@@ -33,9 +33,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.encog.EncogError;
-import org.encog.bot.html.FormUtility;
-import org.encog.bot.html.HTMLTag;
-import org.encog.bot.html.ParseHTML;
+import org.encog.parse.tags.Tag;
+import org.encog.parse.tags.read.ReadHTML;
+import org.encog.util.http.FormUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -74,7 +74,7 @@ public class YahooSearch {
 		// submit the search
 
 		final InputStream is = url.openStream();
-		final ParseHTML parse = new ParseHTML(is);
+		final ReadHTML parse = new ReadHTML(is);
 		final StringBuilder buffer = new StringBuilder();
 		boolean capture = false;
 
@@ -82,7 +82,7 @@ public class YahooSearch {
 		int ch;
 		while ((ch = parse.read()) != -1) {
 			if (ch == 0) {
-				final HTMLTag tag = parse.getTag();
+				final Tag tag = parse.getTag();
 				if (tag.getName().equalsIgnoreCase("url")) {
 					buffer.setLength(0);
 					capture = true;
