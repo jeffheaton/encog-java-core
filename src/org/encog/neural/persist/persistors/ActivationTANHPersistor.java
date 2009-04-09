@@ -25,6 +25,7 @@
  */
 package org.encog.neural.persist.persistors;
 
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.parse.tags.read.ReadXML;
@@ -33,8 +34,7 @@ import org.encog.parse.tags.write.WriteXML;
 public class ActivationTANHPersistor implements Persistor {
 
 	public EncogPersistedObject load(ReadXML in) {
-		// TODO Auto-generated method stub
-		return null;
+		return new ActivationTANH();
 	}
 
 	public void save(EncogPersistedObject object, WriteXML out) {

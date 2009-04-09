@@ -334,4 +334,8 @@ public class BasicLayer implements Layer, Serializable {
 	{
 		return this.threshold!=null;
 	}
+
+	public void addSynapse(Synapse synapse) {
+		this.next.add(synapse);
+	}
 }

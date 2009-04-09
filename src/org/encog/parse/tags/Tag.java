@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.parse.ParseError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -167,6 +168,23 @@ public class Tag {
 			result.setAttribute(key, value);
 		}
 		return result;
+	}
+
+	public int getAttributeInt(String attributeId) {
+		try
+		{
+			String str = getAttributeValue(attributeId);
+			return Integer.parseInt(str);
+		}
+		catch(NumberFormatException e)
+		{
+			if(logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+			throw new ParseError(e);
+		}
+		
 	}
 
 }

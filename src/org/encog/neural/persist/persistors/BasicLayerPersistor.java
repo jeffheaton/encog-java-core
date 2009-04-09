@@ -55,6 +55,7 @@ public class BasicLayerPersistor implements Persistor {
 		int neuronCount = 0;
 		String threshold = null;
 		ActivationFunction activation = null;
+		String end = in.getTag().getName();
 		
 		while( in.readToTag() ) 
 		{
@@ -73,6 +74,8 @@ public class BasicLayerPersistor implements Persistor {
 			{
 				threshold = in.readTextToTag();
 			}
+			else if( in.is(end, false))
+				break;
 		}
 		
 		if( neuronCount>0)

@@ -57,6 +57,7 @@ public class BasicNetworkPersistor implements Persistor {
 	
 	private BasicNetwork currentNetwork;
 	private final Map<Layer , Integer> layer2index = new HashMap<Layer , Integer>();
+	private final Map<Integer, Layer> index2layer = new HashMap<Integer, Layer>();
 		
 	private void saveLayers(WriteXML out)
 	{
@@ -140,26 +141,51 @@ public class BasicNetworkPersistor implements Persistor {
 			}
 				
 		}
-		
+		this.currentNetwork.getStructure().finalizeStructure();
 		return this.currentNetwork;
 	}
 	
 	private void handleLayers(ReadXML in)
 	{		
+		String end = in.getTag().getName();
 		while( in.readToTag() )  
 		{
 			if( in.is(TAG_LAYER,true) )
 			{
+				int num = in.getTag().getAttributeInt(ATTRIBUTE_ID);
+				String type = in.getTag().getAttributeValue(ATTRIBUTE_TYPE);
 				in.readToTag();
 				Persistor persistor = PersistorUtil.createPersistor(in.getTag().getName());
 				Layer layer = (Layer) persistor.load(in);
-				System.out.println(layer);
+				this.index2layer.put(num, layer);
+				if( type.equals(ATTRIBUTE_TYPE_INPUT) )
+					this.currentNetwork.setInputLayer(layer);
+				else if( type.equals(ATTRIBUTE_TYPE_OUTPUT) )
+					this.currentNetwork.setOutputLayer(layer);
 			}
+			if( in.is(end, false))
+				break;
 		}
 	}
 	
 	private void handleSynapses(ReadXML in)
 	{
-		
+		String end = in.getTag().getName();
+		while( in.readToTag() )  
+		{
+			if( in.is(TAG_SYNAPSE,true) )
+			{
+				int from = in.getTag().getAttributeInt(ATTRIBUTE_FROM);
+				int to = in.getTag().getAttributeInt(ATTRIBUTE_TO);
+				in.readToTag();
+				Persistor persistor = PersistorUtil.createPersistor(in.getTag().getName());
+				Synapse synapse = (Synapse) persistor.load(in);
+				synapse.setFromLayer(this.index2layer.get(from));
+				synapse.setToLayer(this.index2layer.get(to));
+				synapse.getFromLayer().addSynapse(synapse);
+			}
+			if( in.is(end, false))
+				break;
+		}
 	}
 }

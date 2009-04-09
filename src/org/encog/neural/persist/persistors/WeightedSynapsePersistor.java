@@ -39,8 +39,7 @@ public class WeightedSynapsePersistor implements Persistor {
 	public final static String TAG_WEIGHTS = "weights";
 	
 	public EncogPersistedObject load(ReadXML in) {
-		// TODO Auto-generated method stub
-		return null;
+		return new WeightedSynapse();
 	}
 
 	public void save(EncogPersistedObject obj, WriteXML out) {

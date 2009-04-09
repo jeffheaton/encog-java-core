@@ -72,5 +72,7 @@ public interface Layer extends Cloneable, EncogPersistedObject  {
 	public void setThreshold(int index,double d);
 	public double[] getThreshold();
 	public boolean hasThreshold();
+
+	void addSynapse(Synapse synapse);
 	
 }
