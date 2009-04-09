@@ -26,9 +26,7 @@
 package org.encog.neural.persist.persistors;
 
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.parse.tags.read.ReadXML;
@@ -88,7 +86,12 @@ public class BasicLayerPersistor implements Persistor {
 			}
 			else
 			{
+				double[] t = ReadCSV.fromCommas(threshold);
 				layer = new BasicLayer(activation,true,neuronCount);
+				for(int i=0;i<t.length;i++)
+				{
+					layer.setThreshold(i, t[i]);
+				}
 			}
 			return layer;
 		}

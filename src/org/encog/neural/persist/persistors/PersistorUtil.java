@@ -30,7 +30,9 @@ import org.encog.matrix.Matrix;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.PersistError;
 import org.encog.neural.persist.Persistor;
+import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.util.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,6 +120,33 @@ public class PersistorUtil {
 		}
 		
 		out.endTag();
+	}
+
+	public static Matrix loadMatrix(ReadXML in) {
+		int rows = in.getTag().getAttributeInt(ATTRIBUTE_MATRIX_ROWS);
+		int cols = in.getTag().getAttributeInt(ATTRIBUTE_MATRIX_COLS);
+		Matrix matrix = new Matrix(rows,cols);
+		
+		int row = 0;
+		
+		String end = in.getTag().getName();
+		while(in.readToTag())
+		{
+			if(in.is(end, false))
+				break;
+			if(in.is(ROW, true))
+			{
+				String str = in.readTextToTag();
+				double[] d = ReadCSV.fromCommas(str);
+				for(int col=0;col<d.length;col++)
+				{
+					matrix.set(row,col,d[col]);
+				}
+				row++;
+			}
+		}
+		
+		return matrix;
 	}
 	
 }

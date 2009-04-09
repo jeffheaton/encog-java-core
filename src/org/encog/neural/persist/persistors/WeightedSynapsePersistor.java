@@ -34,19 +34,32 @@ import org.encog.parse.tags.write.WriteXML;
 public class WeightedSynapsePersistor implements Persistor {
 
 	public final static String TAG_WEIGHTED_SYNAPSE = "WeightedSynapse"; 
-	public final static String TAG_FROM_NEURON_COUNT = "fromNeurons";
-	public final static String TAG_TO_NEURON_COUNT = "toNeurons";
 	public final static String TAG_WEIGHTS = "weights";
 	
 	public EncogPersistedObject load(ReadXML in) {
-		return new WeightedSynapse();
+		WeightedSynapse synapse = new WeightedSynapse();
+		
+		String end = in.getTag().getName();
+		
+		
+		while( in.readToTag() )  
+		{
+			
+			if( in.is(TAG_WEIGHTS,true) )
+			{
+				in.readToTag();
+				synapse.setMatrix(PersistorUtil.loadMatrix(in));
+			}
+			if( in.is(end, false))
+				break;
+		}
+		
+		return synapse;
 	}
 
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(TAG_WEIGHTED_SYNAPSE, out, obj, false);
 		WeightedSynapse synapse = (WeightedSynapse)obj;
-		out.addProperty(TAG_FROM_NEURON_COUNT, synapse.getFromNeuronCount());
-		out.addProperty(TAG_TO_NEURON_COUNT, synapse.getToNeuronCount());
 		
 		out.beginTag(TAG_WEIGHTS);
 		PersistorUtil.saveMatrix(synapse.getMatrix(),out);
