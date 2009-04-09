@@ -33,13 +33,13 @@ import java.io.OutputStream;
 import java.util.Date;
 
 import org.encog.Encog;
-import org.encog.util.xml.XMLWrite;
+import org.encog.parse.tags.write.WriteXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PersistWriter {
 	
-	private XMLWrite out;
+	private WriteXML out;
 	private OutputStream fileOutput;
 	
 	/**
@@ -52,7 +52,7 @@ public class PersistWriter {
 	{
 		try {
 			this.fileOutput = new FileOutputStream(filename);
-			this.out = new XMLWrite(this.fileOutput);
+			this.out = new WriteXML(this.fileOutput);
 		} catch (FileNotFoundException e) {
 			throw new PersistError(e);
 		}		
@@ -105,6 +105,7 @@ public class PersistWriter {
 	{
 		PersistReader reader = new PersistReader(filename);
 		reader.saveTo(this.out,skip);
+		reader.close();
 	}
 
 	public void writeObject(EncogPersistedObject obj) {

@@ -25,14 +25,17 @@
  */
 package org.encog.neural.persist.persistors;
 
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
 import org.encog.util.ReadCSV;
-import org.encog.util.xml.XMLElement;
-import org.encog.util.xml.XMLRead;
-import org.encog.util.xml.XMLWrite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class BasicLayerPersistor implements Persistor {
 
@@ -41,12 +44,56 @@ public class BasicLayerPersistor implements Persistor {
 	public static final String PROPERTY_NEURONS = "neurons";
 	public static final String PROPERTY_THRESHOLD = "threshold";
 	
-	public EncogPersistedObject load(XMLElement node, XMLRead in) {
-		// TODO Auto-generated method stub
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	@Override
+	public EncogPersistedObject load(ReadXML in) {
+		
+		int neuronCount = 0;
+		String threshold = null;
+		ActivationFunction activation = null;
+		
+		while( in.readToTag() ) 
+		{
+			if( in.is(TAG_ACTIVATION,true))
+			{
+				in.readToTag();
+				String type = in.getTag().getName();
+				Persistor persistor = PersistorUtil.createPersistor(type);
+				activation = (ActivationFunction) persistor.load(in);				
+			}
+			else if( in.is(PROPERTY_NEURONS,true))
+			{
+				neuronCount = in.readIntToTag();
+			}
+			else if( in.is(PROPERTY_THRESHOLD,true))
+			{
+				threshold = in.readTextToTag();
+			}
+		}
+		
+		if( neuronCount>0)
+		{			
+			BasicLayer layer; 
+			
+			if( threshold==null )
+			{
+				layer = new BasicLayer(activation,false,neuronCount);
+			}
+			else
+			{
+				layer = new BasicLayer(activation,true,neuronCount);
+			}
+			return layer;
+		}
 		return null;
 	}
 
-	public void save(EncogPersistedObject obj, XMLWrite out) {
+	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(TAG_BASIC_LAYER, out, obj, false);
 		BasicLayer layer = (BasicLayer)obj;
 		out.addProperty(PROPERTY_NEURONS, layer.getNeuronCount());

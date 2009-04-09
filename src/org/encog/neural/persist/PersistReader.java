@@ -28,14 +28,14 @@ package org.encog.neural.persist;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.StringTokenizer;
 
 import org.encog.neural.persist.persistors.PersistorUtil;
-import org.encog.util.xml.XMLElement;
-import org.encog.util.xml.XMLRead;
-import org.encog.util.xml.XMLWrite;
-import org.encog.util.xml.XMLElement.XMLElementType;
+import org.encog.parse.tags.Tag.Type;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ public class PersistReader {
 
 	public final static String ATTRIBUTE_NAME = "name";
 
-	private XMLRead in;
+	private ReadXML in;
 	private InputStream fileInput;
 	
 	/**
@@ -59,10 +59,23 @@ public class PersistReader {
 	public PersistReader(File filename) {
 		try {
 			this.fileInput = new FileInputStream(filename);
-			this.in = new XMLRead(this.fileInput);
+			this.in = new ReadXML(this.fileInput);
 		} catch (FileNotFoundException e) {
 			throw new PersistError(e);
 		}
+	}
+	
+	public void close()
+	{
+		try
+		{
+		this.fileInput.close();
+		}
+		catch(IOException e)
+		{
+			throw new PersistError(e);
+		}
+		
 	}
 
 	/**
@@ -70,12 +83,10 @@ public class PersistReader {
 	 */
 	public void advanceObjectsCollection()
 	{
-		XMLElement element;
-
-		while ((element = this.in.get()) != null) {
-			XMLElementType type = element.getType();
-			if (type == XMLElementType.start
-					&& element.getText().equals("Objects")) {
+		while (this.in.readToTag()) {
+			Type type = this.in.getTag().getType();
+			if (type == Type.BEGIN
+					&& this.in.getTag().getName().equals("Objects")) {
 				return;
 			}
 		}
@@ -87,7 +98,7 @@ public class PersistReader {
 	 * @param name The name of the object looking for.
 	 * @return The beginning element of the object found.
 	 */
-	public XMLElement advance(String name) {
+	public boolean advance(String name) {
 		advanceObjectsCollection();
 		return advanceObjects(name);
 	}
@@ -99,22 +110,31 @@ public class PersistReader {
 	 * @return The beginning tag of that object if its found,
 	 * null otherwise.
 	 */
-	private XMLElement advanceObjects(String name) {
-		XMLElement element;
-
-		while ((element = this.in.get()) != null) {
-			XMLElementType type = element.getType();
-			if (type == XMLElementType.start) {
-				String elementName = element.getAttributes().get("name");
+	private boolean advanceObjects(String name) {
+		
+		while (this.in.readToTag() ) {
+			Type type = this.in.getTag().getType();
+			if (type == Type.BEGIN) {
+				String elementName = this.in.getTag().getAttributeValue("name");
 
 				if (elementName != null && elementName.equals(name))
-					return element;
+					return true;
 				else
-					this.in.skipObject(element);
+					skipObject(this.in.getTag().getName());
 			}
 		}
-
-		return null;
+		return false;
+	}
+	
+	private void skipObject(String name)
+	{
+		while (this.in.readToTag() ) {
+			Type type = this.in.getTag().getType();
+			if (type == Type.END) {
+				if( this.in.getTag().getName().equals(name))
+					return;
+			}
+		}
 	}
 	
 	/**
@@ -124,72 +144,53 @@ public class PersistReader {
 	 * @return The object found, null if not found.
 	 */
 	public EncogPersistedObject readObject(String name) {
-		XMLElement element = advance(name);
+		
 		// did we find the object?
-		if (element != null) {
-			String objectType = element.getText();
+		if ( advance(name) ) {
+			String objectType = this.in.getTag().getName();
 			Persistor persistor = PersistorUtil.createPersistor(objectType);
 			if (persistor == null) {
 				throw new PersistError("Do now know how to load: " + objectType);
 			}
-			return persistor.load(element, this.in);
+			return persistor.load(this.in);
 		} else
 			return null;
 	}
 
-	public XMLElement readNextTag(String name) {
-		XMLElement element;
+	public boolean readNextTag(String name) {
+		
 
-		while ((element = this.in.get()) != null) {
-			XMLElementType type = element.getType();
-			if (type == XMLElementType.start) {
-				if( element.getText().equals(name))
+		while (this.in.readToTag() ) {
+			Type type = this.in.getTag().getType();
+			if (type == Type.BEGIN) {
+				if( in.getTag().getName().equals(name))
 				{
-					return element;
+					return true;
 				}
 				else
-					this.in.skipObject(element);
+					skipObject(this.in.getTag().getName());
 			}
 		}
-		return null;
+		return false;
 	}
 	
-	public String readNextText(XMLElement start)
+	public String readNextText(String name)
 	{
 		StringBuilder result = new StringBuilder();
-		XMLElement element;
-
-		while ((element = this.in.get()) != null) {
-			XMLElementType type = element.getType();
-			if (type == XMLElementType.end) {
-				if( element.getText().equals(start.getText()))
-				{
-					break;
-				}
-			}
-			else if( type==XMLElementType.text)
-			{
-				result.append(element.getText());
-			}
-		}
 		return result.toString();
 	}
 
 	public String readValue(String name) {
-		XMLElement element = null;
+
 		StringTokenizer tok = new StringTokenizer(name, ".");
 		while(tok.hasMoreTokens())
 		{
 			String subName = tok.nextToken();
-			element = readNextTag(subName);
-			if( element==null )
+			if( !readNextTag(subName) )
 				return null;
 		}
 		
-		if( element==null )
-			return null;
-		else
-			return readNextText(element);
+		return readNextText(this.in.getTag().getName());
 	}
 	
 	/**
@@ -199,64 +200,83 @@ public class PersistReader {
 	 * @param out The XML writer to save the objects to.
 	 * @param skip The object to skip.
 	 */
-	public void saveTo(XMLWrite out,String skip)
+	public void saveTo(WriteXML out,String skip)
 	{
-		XMLElement element;
 		advanceObjectsCollection();
-		while ((element = this.in.get()) != null) {
-			XMLElementType type = element.getType();
-			if (type == XMLElementType.start)
+
+		while( this.in.readToTag() )
+		{
+			Type type = this.in.getTag().getType();
+			if (type == Type.BEGIN )
 			{
-				String name = element.getAttributes().get(ATTRIBUTE_NAME);
+				String name = in.getTag().getAttributeValue(ATTRIBUTE_NAME);
 				if( name.equals(skip))
 				{
-					this.in.skipObject(element);
+					skipObject(this.in.getTag().getName());
 				}
 				else
-					copyXML(element,out);
+					copyXML(out);
 			}
 		}
 	}
 	
-	private void copyAttributes(XMLElement object,XMLWrite out)
+	private void copyAttributes(WriteXML out)
 	{
-		for( String key: object.getAttributes().keySet())
+		for( String key: this.in.getTag().getAttributes().keySet())
 		{
-			out.addAttribute(key, object.getAttributes().get(key));
-		}
+			out.addAttribute(key, this.in.getTag().getAttributeValue(key));
+		}		
 	}
 	
 
-	private void copyXML(XMLElement object,XMLWrite out) {
-		
+	private void copyXML(WriteXML out) {
+		StringBuilder text = new StringBuilder();
 		int depth = 0;
-		copyAttributes(object,out);
-		out.beginTag(object.getText());
+		int ch;
+		copyAttributes(out);
+		String contain = in.getTag().getName(); 
 		
-		XMLElement element;
-		while ((element = this.in.get()) != null) {
-			XMLElementType type = element.getType();
+		out.beginTag(contain);
+		
+		while( (ch=this.in.read()) !=-1 ) {
+			Type type = in.getTag().getType();
 			
-			switch(type)
+			if( ch==0 )
 			{
-				case start:
-					copyAttributes(element,out);
-					out.beginTag(element.getText());
-					depth++;
-					break;
-				case end:
-					if( !element.getText().equals(object.getText()))
-					{
-						out.endTag();
-					}
-					else if( depth==0)
-							return;
-					depth--;
-					break;
-				case text:
-					out.addText(element.getText());
-					break;
+			if( type==Type.BEGIN)
+			{
+				if( text.length()>0 )
+				{
+					out.addText(text.toString());
+					text.setLength(0);
+				}
+				
+				copyAttributes(out);
+				out.beginTag(in.getTag().getName());
+				depth++;
 			}
+			else if( type==Type.END)
+			{
+				if( text.length()>0 )
+				{
+					out.addText(text.toString());
+					text.setLength(0);
+				}
+				
+				if( !in.getTag().getName().equals(contain))
+				{
+					out.endTag();
+				}
+				else if( depth==0)
+						return;
+				depth--;
+			}
+			}
+			else
+			{
+				text.append((char)ch);
+			}
+			
 		}
 		
 		out.endTag();		

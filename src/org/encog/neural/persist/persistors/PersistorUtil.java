@@ -30,7 +30,7 @@ import org.encog.matrix.Matrix;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.PersistError;
 import org.encog.neural.persist.Persistor;
-import org.encog.util.xml.XMLWrite;
+import org.encog.parse.tags.write.WriteXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -77,7 +77,7 @@ public class PersistorUtil {
 	
 	public static void beginEncogObject(
 			String objectType,
-			XMLWrite out,
+			WriteXML out,
 			EncogPersistedObject obj,
 			boolean top)
 	{
@@ -96,7 +96,7 @@ public class PersistorUtil {
 		out.beginTag(objectType);
 	}
 	
-	public static void saveMatrix(Matrix matrix,XMLWrite out)
+	public static void saveMatrix(Matrix matrix,WriteXML out)
 	{
 		out.addAttribute(ATTRIBUTE_MATRIX_ROWS, ""+matrix.getRows());
 		out.addAttribute(ATTRIBUTE_MATRIX_COLS, ""+matrix.getCols());

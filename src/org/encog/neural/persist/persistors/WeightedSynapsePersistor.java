@@ -25,13 +25,11 @@
  */
 package org.encog.neural.persist.persistors;
 
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.util.xml.XMLElement;
-import org.encog.util.xml.XMLRead;
-import org.encog.util.xml.XMLWrite;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
 
 public class WeightedSynapsePersistor implements Persistor {
 
@@ -40,12 +38,12 @@ public class WeightedSynapsePersistor implements Persistor {
 	public final static String TAG_TO_NEURON_COUNT = "toNeurons";
 	public final static String TAG_WEIGHTS = "weights";
 	
-	public EncogPersistedObject load(XMLElement node, XMLRead in) {
+	public EncogPersistedObject load(ReadXML in) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public void save(EncogPersistedObject obj, XMLWrite out) {
+	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(TAG_WEIGHTED_SYNAPSE, out, obj, false);
 		WeightedSynapse synapse = (WeightedSynapse)obj;
 		out.addProperty(TAG_FROM_NEURON_COUNT, synapse.getFromNeuronCount());

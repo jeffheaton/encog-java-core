@@ -25,9 +25,8 @@
  */
 package org.encog.neural.persist;
 
-import org.encog.util.xml.XMLElement;
-import org.encog.util.xml.XMLRead;
-import org.encog.util.xml.XMLWrite;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
 
 
 /**
@@ -44,12 +43,12 @@ public interface Persistor {
 	 * @param node The node to load from.
 	 * @return The EncogPersistedObject that was loaded.
 	 */
-	EncogPersistedObject load(XMLElement node,XMLRead in);
+	EncogPersistedObject load(ReadXML in);
 
 	/**
 	 * Save the specified object.
 	 * @param object The object to save. 
 	 * @param out The XML object.
 	 */
-	void save(EncogPersistedObject object, XMLWrite out);
+	void save(EncogPersistedObject object, WriteXML out);
 }

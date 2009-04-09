@@ -26,7 +26,7 @@
 
 package org.encog.neural.persist.persistors;
 
-import java.util.StringTokenizer;
+import java.util.Map;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -36,27 +36,16 @@ import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.PersistError;
 import org.encog.neural.persist.Persistor;
+import org.encog.parse.tags.Tag.Type;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
 import org.encog.util.ReadCSV;
-import org.encog.util.xml.XMLElement;
-import org.encog.util.xml.XMLRead;
-import org.encog.util.xml.XMLWrite;
-import org.encog.util.xml.XMLElement.XMLElementType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
 
 public class BasicNeuralDataSetPersistor implements Persistor {
 
-	public enum State
-	{
-		OnTraining,
-		OnItem,
-		OnInput,
-		OnIdeal,
-		Done
-	}
 	
 	public final static String TAG_TRAINING = "TrainingData";
 	public final static String TAG_ITEM = "Item";
@@ -65,9 +54,6 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 	public final static String ATTRIBUTE_NAME = "name";
 	public final static String ATTRIBUTE_DESCRIPTION = "description";
 	
-	private State state;
-	private NeuralData currentInput;
-	private NeuralData currentIdeal;
 	private BasicNeuralDataSet currentDataSet;
 	
 	/**
@@ -77,168 +63,53 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	
-	private void handleStartTag(final XMLElement node)
+	private void handleItem(final ReadXML in)
 	{
-		if( node.getText().equals(TAG_ITEM) )
-		{
-			handleStartItem();
-		}
-		else if( node.getText().equals(TAG_INPUT))
-		{
-			handleStartInput();
-		}
-		else if( node.getText().equals(TAG_IDEAL))
-		{
-			handleStartIdeal();
-		}
-		else
-			EncogPersistedCollection.throwError(node.getText());
-	}
-	
-	private void handleStartItem()
-	{
-		if( this.state!=State.OnTraining)
-			EncogPersistedCollection.throwError(TAG_ITEM);
-		this.state = State.OnItem;
-	}
-	
-	private void handleStartInput()
-	{
-		if( this.state!=State.OnItem)
-			EncogPersistedCollection.throwError(TAG_INPUT);
-		this.state = State.OnInput;
-	}
-	
-	private void handleStartIdeal()
-	{
-		if( this.state!=State.OnItem)
-			EncogPersistedCollection.throwError(TAG_IDEAL);
-		this.state = State.OnIdeal;
-	}
-	
-	private void handleEndTag(final XMLElement node)
-	{
-		if( node.getText().equals(TAG_TRAINING) )
-		{
-			handleEndTraining();
-		}
-		else if( node.getText().equals(TAG_ITEM) )
-		{
-			handleEndItem();
-		}
-		else if( node.getText().equals(TAG_INPUT))
-		{
-			handleEndInput();
-		}
-		else if( node.getText().equals(TAG_IDEAL))
-		{
-			handleEndIdeal();
-		}
-		else
-			EncogPersistedCollection.throwError(node.getText());
-	}
-	
-	private void handleEndTraining()
-	{
-		if( state==State.OnTraining)
-		{
-			this.state = State.Done;
-		}
-		else
-			EncogPersistedCollection.throwError(TAG_TRAINING);
-	}
-	
-	private void handleEndItem()
-	{
-		if( this.state==State.OnItem)
-		{
-			if( this.currentInput !=null )
-			{
-				NeuralDataPair pair;
-				
-				
-				if( this.currentIdeal==null)
-				{
-					// unsupervised
-					pair = new BasicNeuralDataPair(this.currentInput);
-				}
-				else
-				{
-					// supervised
-					pair = new BasicNeuralDataPair(this.currentInput,this.currentIdeal);
-				}
-				this.currentDataSet.add(pair);	
-			}
-			this.state = State.OnTraining;
-			
-			// ready to read the next one
-			this.currentInput = null;
-			this.currentInput = null;
-		}
-		else
-			EncogPersistedCollection.throwError(TAG_ITEM);
-	}
-	
-	public void handleEndInput()
-	{
-		this.state = State.OnItem;
-	}
-	
-	public void handleEndIdeal()
-	{
-		this.state = State.OnItem;
-	}
-	
-	private void handleText(final XMLElement node)
-	{
-		double[] temp;
+		Map<String,String> properties = in.readPropertyBlock();
+		NeuralDataPair pair = null;
+		NeuralData input = new BasicNeuralData(ReadCSV.fromCommas(properties.get(TAG_INPUT)));
 		
-		switch(state)
+		if( properties.containsKey(TAG_IDEAL))
 		{
-			case OnInput:
-				temp = ReadCSV.fromCommas(node.getText());
-				this.currentInput = new BasicNeuralData(temp); 
-				break;
-			case OnIdeal:
-				temp = ReadCSV.fromCommas(node.getText());
-				this.currentIdeal = new BasicNeuralData(temp);
-				break;			
+			// supervised			
+			NeuralData ideal = new BasicNeuralData(ReadCSV.fromCommas(properties.get(TAG_IDEAL)));
+			pair = new BasicNeuralDataPair(input,ideal);
 		}
+		else
+		{
+			// unsupervised
+			pair = new BasicNeuralDataPair(input);			
+		}
+		
+		this.currentDataSet.add(pair);
 	}
-	
-	public EncogPersistedObject load(XMLElement node,XMLRead in) {
+
+	public EncogPersistedObject load(ReadXML in) {
 				
-		String name = node.getAttributes().get(ATTRIBUTE_NAME);
-		String description = node.getAttributes().get(ATTRIBUTE_DESCRIPTION);
+		String name = in.getTag().getAttributes().get(ATTRIBUTE_NAME);
+		String description = in.getTag().getAttributes().get(ATTRIBUTE_DESCRIPTION);
 			
 		this.currentDataSet = new BasicNeuralDataSet();
 		currentDataSet.setName(name);
 		currentDataSet.setDescription(description);
 		
-		this.state = State.OnTraining;
-				
-		XMLElement current;
-		
-		while( ((current = in.get())!=null) && (this.state!=State.Done) )
+		while( in.readToTag() )
 		{
-			switch(current.getType())
+			if( in.is(TAG_ITEM,true) )
 			{
-				case start:
-					handleStartTag(current);
-					break;
-				case end:
-					handleEndTag(current);
-					break;
-				case text:
-					handleText(current);
-					break;
+				handleItem(in);
 			}
+			else if( in.is(TAG_ITEM,false) )
+			{
+				break;
+			}
+			
 		}
 		
 		return this.currentDataSet;
 	}
 		
-	public void save(EncogPersistedObject obj, XMLWrite out) {
+	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(TAG_TRAINING, out, obj, true);
 		NeuralDataSet set = (NeuralDataSet)obj;
 		StringBuilder builder = new StringBuilder();

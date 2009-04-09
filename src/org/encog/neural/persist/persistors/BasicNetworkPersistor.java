@@ -29,18 +29,14 @@ package org.encog.neural.persist.persistors;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor.State;
-import org.encog.util.xml.XMLElement;
-import org.encog.util.xml.XMLRead;
-import org.encog.util.xml.XMLWrite;
-import org.encog.util.xml.XMLElement.XMLElementType;
+import org.encog.parse.tags.Tag.Type;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
 
 public class BasicNetworkPersistor implements Persistor {
 	
@@ -62,7 +58,7 @@ public class BasicNetworkPersistor implements Persistor {
 	private BasicNetwork currentNetwork;
 	private final Map<Layer , Integer> layer2index = new HashMap<Layer , Integer>();
 		
-	private void saveLayers(XMLWrite out)
+	private void saveLayers(WriteXML out)
 	{
 		int current = 1;
 		for(Layer layer: currentNetwork.getStructure().getLayers())
@@ -95,7 +91,7 @@ public class BasicNetworkPersistor implements Persistor {
 		}
 	}
 	
-	private void saveSynapses(XMLWrite out)
+	private void saveSynapses(WriteXML out)
 	{
 		for(Synapse synapse: this.currentNetwork.getStructure().getSynapses())
 		{
@@ -109,7 +105,7 @@ public class BasicNetworkPersistor implements Persistor {
 	}
 
 
-	public void save(EncogPersistedObject obj, XMLWrite out) {
+	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(TAG_BASIC_NETWORK, out, obj, true);
 		this.currentNetwork = (BasicNetwork)obj;
 		
@@ -128,19 +124,17 @@ public class BasicNetworkPersistor implements Persistor {
 	}
 	
 
-	public EncogPersistedObject load(XMLElement node, XMLRead in) {
+	public EncogPersistedObject load(ReadXML in) {
 				
 		this.currentNetwork = new BasicNetwork();
 		
-		XMLElement current;
-		
-		while( (current = in.get()) !=null ) 
+		while( in.readToTag() ) 
 		{
-			if( current.getText().equals(TAG_LAYERS))
+			if( in.is(TAG_LAYERS,true))
 			{
 				handleLayers(in);
 			} 
-			else if( current.getText().equals(TAG_SYNAPSES))
+			else if( in.is(TAG_SYNAPSES,true))
 			{
 				handleSynapses(in);
 			}
@@ -150,25 +144,21 @@ public class BasicNetworkPersistor implements Persistor {
 		return this.currentNetwork;
 	}
 	
-	private void handleLayers(XMLRead in)
-	{
-		XMLElement current;
-		
-		while( (current = in.get()) !=null ) 
+	private void handleLayers(ReadXML in)
+	{		
+		while( in.readToTag() )  
 		{
-			if( current.getType()==XMLElementType.start)
+			if( in.is(TAG_LAYER,true) )
 			{
-				if( current.getText().equals(TAG_LAYER) )
-				{
-					Persistor persistor = PersistorUtil.createPersistor(current.getText());
-					Layer layer = (Layer) persistor.load(current, in);
-					System.out.println(layer);
-				}
+				in.readToTag();
+				Persistor persistor = PersistorUtil.createPersistor(in.getTag().getName());
+				Layer layer = (Layer) persistor.load(in);
+				System.out.println(layer);
 			}
 		}
 	}
 	
-	private void handleSynapses(XMLRead in)
+	private void handleSynapses(ReadXML in)
 	{
 		
 	}
