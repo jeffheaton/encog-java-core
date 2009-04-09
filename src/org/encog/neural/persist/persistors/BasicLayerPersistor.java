@@ -50,7 +50,6 @@ public class BasicLayerPersistor implements Persistor {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Override
 	public EncogPersistedObject load(ReadXML in) {
 		
 		int neuronCount = 0;
