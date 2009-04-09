@@ -38,7 +38,7 @@ import org.encog.bot.browse.range.Form;
 import org.encog.bot.browse.range.FormElement;
 import org.encog.bot.browse.range.Input;
 import org.encog.bot.browse.range.Link;
-import org.encog.bot.html.FormUtility;
+import org.encog.util.http.FormUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

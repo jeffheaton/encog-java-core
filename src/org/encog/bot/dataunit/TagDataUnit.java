@@ -25,21 +25,21 @@
  */
 package org.encog.bot.dataunit;
 
-import org.encog.bot.html.HTMLTag;
+import org.encog.parse.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class TagDataUnit extends DataUnit {
-	protected HTMLTag tag;
+	protected Tag tag;
 	
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	public HTMLTag getTag() {
+	public Tag getTag() {
 		return tag;
 	}
 
-	public void setTag(HTMLTag tag) {
+	public void setTag(Tag tag) {
 		this.tag = tag;
 	}
 	

@@ -40,8 +40,8 @@ import org.encog.bot.dataunit.CodeDataUnit;
 import org.encog.bot.dataunit.DataUnit;
 import org.encog.bot.dataunit.TagDataUnit;
 import org.encog.bot.dataunit.TextDataUnit;
-import org.encog.bot.html.HTMLTag;
-import org.encog.bot.html.ParseHTML;
+import org.encog.parse.tags.Tag;
+import org.encog.parse.tags.read.ReadHTML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,7 @@ public class LoadWebPage {
 	protected void loadDataUnits(InputStream is)  {
 		StringBuilder text = new StringBuilder();
 		int ch;
-		ParseHTML parse = new ParseHTML(is);
+		ReadHTML parse = new ReadHTML(is);
 		boolean style = false;
 		boolean script = false;
 
@@ -115,22 +115,22 @@ public class LoadWebPage {
 		
 	}
 
-	protected int findEndTag(int index, HTMLTag tag) {
+	protected int findEndTag(int index, Tag tag) {
 		int depth = 0;
 
-		if (tag.getType() != HTMLTag.Type.BOTH) {
+		if (tag.getType() != Tag.Type.BOTH) {
 			while (index < page.getDataSize()) {
 				DataUnit du = page.getDataUnit(index);
 
 				if (du instanceof TagDataUnit) {
-					HTMLTag nextTag = ((TagDataUnit) du).getTag();
+					Tag nextTag = ((TagDataUnit) du).getTag();
 					if (tag.getName().equalsIgnoreCase(nextTag.getName())) {
-						if (nextTag.getType() == HTMLTag.Type.END) {
+						if (nextTag.getType() == Tag.Type.END) {
 							if (depth == 0)
 								return index;
 							else
 								depth--;
-						} else if (nextTag.getType() == HTMLTag.Type.BEGIN)
+						} else if (nextTag.getType() == Tag.Type.BEGIN)
 							depth++;
 					}
 				}
@@ -143,7 +143,7 @@ public class LoadWebPage {
 
 	}
 
-	protected void loadLink(int index, HTMLTag tag) {
+	protected void loadLink(int index, Tag tag) {
 		Link link = new Link(this.page);
 		String href = tag.getAttributeValue("href");
 
@@ -155,14 +155,14 @@ public class LoadWebPage {
 		}
 	}
 
-	protected void loadTitle(int index, HTMLTag tag) {
+	protected void loadTitle(int index, Tag tag) {
 		DocumentRange title = new DocumentRange(this.page);
 		title.setBegin(index);
 		title.setEnd(findEndTag(index + 1, tag));
 		this.page.setTitle(title);
 	}
 
-	protected void loadForm(int index, HTMLTag tag) {
+	protected void loadForm(int index, Tag tag) {
 		String method = tag.getAttributeValue("method");
 		String action = tag.getAttributeValue("action");
 
@@ -184,7 +184,7 @@ public class LoadWebPage {
 		this.lastForm = form;
 	}
 
-	protected void loadInput(int index, HTMLTag tag) {
+	protected void loadInput(int index, Tag tag) {
 		String type = tag.getAttributeValue("type");
 		String name = tag.getAttributeValue("name");
 		String value = tag.getAttributeValue("value");
@@ -204,9 +204,9 @@ public class LoadWebPage {
 		for (int index = 0; index < page.getDataSize(); index++) {
 			DataUnit du = page.getDataUnit(index);
 			if (du instanceof TagDataUnit) {
-				HTMLTag tag = ((TagDataUnit) du).getTag();
+				Tag tag = ((TagDataUnit) du).getTag();
 
-				if (tag.getType() != HTMLTag.Type.END) {
+				if (tag.getType() != Tag.Type.END) {
 					if (tag.getName().equalsIgnoreCase("a")) {
 						loadLink(index, tag);
 					} else if (tag.getName().equalsIgnoreCase("title")) {
@@ -219,7 +219,7 @@ public class LoadWebPage {
 
 				}
 
-				if (tag.getType() == HTMLTag.Type.BEGIN) {
+				if (tag.getType() == Tag.Type.BEGIN) {
 					if (tag.getName().equalsIgnoreCase("div")) {
 						loadDiv(index, tag);
 					} else if (tag.getName().equalsIgnoreCase("span")) {
@@ -227,7 +227,7 @@ public class LoadWebPage {
 					}
 				}
 
-				if (tag.getType() == HTMLTag.Type.END) {
+				if (tag.getType() == Tag.Type.END) {
 					if (tag.getName().equalsIgnoreCase("div")) {
 						if (this.lastHierarchyElement != null)
 							this.lastHierarchyElement = this.lastHierarchyElement
@@ -242,7 +242,7 @@ public class LoadWebPage {
 		}
 	}
 
-	private void loadSpan(int index, HTMLTag tag) {
+	private void loadSpan(int index, Tag tag) {
 		Span span = new Span(this.page);
 		String classAttribute = tag.getAttributeValue("class");
 		String idAttribute = tag.getAttributeValue("id");
@@ -254,7 +254,7 @@ public class LoadWebPage {
 		addHierarchyElement(span);
 	}
 
-	private void loadDiv(int index, HTMLTag tag) {
+	private void loadDiv(int index, Tag tag) {
 		Div div = new Div(this.page);
 		String classAttribute = tag.getAttributeValue("class");
 		String idAttribute = tag.getAttributeValue("id");
@@ -300,9 +300,9 @@ public class LoadWebPage {
 		}
 	}
 
-	private void createTagDataUnit(HTMLTag tag) {
+	private void createTagDataUnit(Tag tag) {
 		TagDataUnit d = new TagDataUnit();
-		d.setTag(tag);
+		d.setTag(tag.clone());
 
 		page.addDataUnit(d);
 	}

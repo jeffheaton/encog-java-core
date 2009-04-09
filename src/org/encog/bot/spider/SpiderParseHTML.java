@@ -29,9 +29,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.encog.bot.html.HTMLTag;
-import org.encog.bot.html.ParseHTML;
-import org.encog.bot.html.URLUtility;
+import org.encog.parse.tags.Tag;
+import org.encog.parse.tags.read.ReadHTML;
+import org.encog.util.http.URLUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * can be used just like the ParseHTML class, with the spider gaining its
  * information in the background.
  */
-public class SpiderParseHTML extends ParseHTML {
+public class SpiderParseHTML extends ReadHTML {
 	/**
 	 * The logging object.
 	 */
@@ -197,7 +197,7 @@ public class SpiderParseHTML extends ParseHTML {
 	public int read()  {
 		final int result = super.read();
 		if (result == 0) {
-			final HTMLTag tag = getTag();
+			final Tag tag = getTag();
 			if (tag.getName().equalsIgnoreCase("a")) {
 				final String href = tag.getAttributeValue("href");
 				handleA(href);
