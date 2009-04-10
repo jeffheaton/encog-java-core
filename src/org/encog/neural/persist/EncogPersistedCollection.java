@@ -30,6 +30,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.neural.networks.BasicNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,7 +191,23 @@ public class EncogPersistedCollection {
 	}
 
 	public void delete(String name) {
-
+		PersistWriter writer = new PersistWriter(this.fileTemp);
+		writer.begin();
+		writer.writeHeader();
+		writer.beginObjects();		
+		writer.mergeObjects(this.filePrimary, name);
+		writer.endObjects();
+		writer.end();
+		writer.close();
+		mergeTemp();
+		for(DirectoryEntry d: this.directory)
+		{
+			if(d.getName().equals(name))
+			{
+				this.directory.remove(d);
+				break;
+			}
+		}
 	}
 	
 	public void delete(EncogPersistedObject obj)
@@ -216,6 +233,15 @@ public class EncogPersistedCollection {
 
 	public List<DirectoryEntry> getDirectory() {
 		return directory;
+	}
+
+	public EncogPersistedObject find(DirectoryEntry d) {
+		return find(d.getName());
+	}
+
+	public void delete(DirectoryEntry d) {
+		this.delete(d.getName());
+		
 	}
 	
 	
