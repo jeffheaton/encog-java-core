@@ -46,8 +46,6 @@ import org.slf4j.LoggerFactory;
 
 public class BasicNeuralDataSetPersistor implements Persistor {
 
-	
-	public final static String TAG_TRAINING = "TrainingData";
 	public final static String TAG_ITEM = "Item";
 	public final static String TAG_INPUT = "Input";
 	public final static String TAG_IDEAL = "Ideal";
@@ -110,7 +108,7 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 	}
 		
 	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(TAG_TRAINING, out, obj, true);
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_TRAINING, out, obj, true);
 		NeuralDataSet set = (NeuralDataSet)obj;
 		StringBuilder builder = new StringBuilder();
 		

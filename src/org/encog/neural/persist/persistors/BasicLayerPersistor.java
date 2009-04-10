@@ -27,6 +27,7 @@ package org.encog.neural.persist.persistors;
 
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.parse.tags.read.ReadXML;
@@ -37,7 +38,7 @@ import org.slf4j.LoggerFactory;
 
 public class BasicLayerPersistor implements Persistor {
 
-	public static final String TAG_BASIC_LAYER = "BasicLayer";
+	
 	public static final String TAG_ACTIVATION = "activation";
 	public static final String PROPERTY_NEURONS = "neurons";
 	public static final String PROPERTY_THRESHOLD = "threshold";
@@ -99,7 +100,7 @@ public class BasicLayerPersistor implements Persistor {
 	}
 
 	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(TAG_BASIC_LAYER, out, obj, false);
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_BASIC_LAYER, out, obj, false);
 		BasicLayer layer = (BasicLayer)obj;
 		out.addProperty(PROPERTY_NEURONS, layer.getNeuronCount());
 		if( layer.hasThreshold())

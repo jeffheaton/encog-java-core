@@ -26,6 +26,7 @@
 package org.encog.neural.persist.persistors;
 
 import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.parse.tags.read.ReadXML;
@@ -33,7 +34,6 @@ import org.encog.parse.tags.write.WriteXML;
 
 public class WeightedSynapsePersistor implements Persistor {
 
-	public final static String TAG_WEIGHTED_SYNAPSE = "WeightedSynapse"; 
 	public final static String TAG_WEIGHTS = "weights";
 	
 	public EncogPersistedObject load(ReadXML in) {
@@ -58,7 +58,7 @@ public class WeightedSynapsePersistor implements Persistor {
 	}
 
 	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(TAG_WEIGHTED_SYNAPSE, out, obj, false);
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_WEIGHTED_SYNAPSE, out, obj, false);
 		WeightedSynapse synapse = (WeightedSynapse)obj;
 		
 		out.beginTag(TAG_WEIGHTS);

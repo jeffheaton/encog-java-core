@@ -32,6 +32,7 @@ import java.util.Map;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
 import org.encog.parse.tags.Tag.Type;
@@ -40,8 +41,6 @@ import org.encog.parse.tags.write.WriteXML;
 
 public class BasicNetworkPersistor implements Persistor {
 	
-
-	public static final String TAG_BASIC_NETWORK = "BasicNetwork";
 	public static final String TAG_LAYERS = "layers";
 	public static final String TAG_SYNAPSES = "synapses";
 	public static final String TAG_SYNAPSE = "synapse";
@@ -107,7 +106,7 @@ public class BasicNetworkPersistor implements Persistor {
 
 
 	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(TAG_BASIC_NETWORK, out, obj, true);
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_BASIC_NET, out, obj, true);
 		this.currentNetwork = (BasicNetwork)obj;
 		
 		this.currentNetwork.getStructure().finalizeStructure();

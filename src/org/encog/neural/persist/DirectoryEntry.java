@@ -15,6 +15,10 @@ public class DirectoryEntry {
 		this.description = description;
 	}
 	
+	public DirectoryEntry(EncogPersistedObject obj) {
+		this(obj.getClass().getSimpleName(),obj.getName(),obj.getDescription());
+	}
+
 	public String getName() {
 		return name;
 	}
