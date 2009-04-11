@@ -121,5 +121,14 @@ public class PersistWriter {
 		}
 		persistor.save(obj, this.out);
 	}
+
+	public void modifyObject(File filename, String name, String newName,
+			String newDesc) {
+		
+		PersistReader reader = new PersistReader(filename);
+		reader.saveModified(this.out,name,newName,newDesc);
+		reader.close();
+		
+	}
 	
 }

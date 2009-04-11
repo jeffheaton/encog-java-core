@@ -31,7 +31,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.encog.neural.persist.persistors.PersistorUtil;
@@ -218,25 +220,30 @@ public class PersistReader {
 					skipObject(this.in.getTag().getName());
 				}
 				else
-					copyXML(out);
+					copyXML(out, null);
 			}
 		}
 	}
 	
-	private void copyAttributes(WriteXML out)
+	private void copyAttributes(WriteXML out, Map<String, String> replace)
 	{
 		for( String key: this.in.getTag().getAttributes().keySet())
 		{
-			out.addAttribute(key, this.in.getTag().getAttributeValue(key));
+			String value = this.in.getTag().getAttributeValue(key);
+			if( replace!=null && replace.containsKey(key))
+			{
+				value = replace.get(key);
+			}
+			out.addAttribute(key, value );
 		}		
 	}
 	
 
-	private void copyXML(WriteXML out) {
+	private void copyXML(WriteXML out, Map<String,String> replace) {
 		StringBuilder text = new StringBuilder();
 		int depth = 0;
 		int ch;
-		copyAttributes(out);
+		copyAttributes(out,replace);
 		String contain = in.getTag().getName(); 
 		
 		out.beginTag(contain);
@@ -254,7 +261,7 @@ public class PersistReader {
 					text.setLength(0);
 				}
 				
-				copyAttributes(out);
+				copyAttributes(out, null);
 				out.beginTag(in.getTag().getName());
 				depth++;
 			}
@@ -306,4 +313,35 @@ public class PersistReader {
 		
 		return result;
 	}
+
+	/**
+	 * Modify the properties of this object.
+	 * @param out
+	 * @param targetName
+	 * @param newName
+	 * @param newDesc
+	 */
+	public void saveModified(WriteXML out, String targetName, String newName,
+			String newDesc) {
+		advanceObjectsCollection();
+
+		while( this.in.readToTag() )
+		{
+			Type type = this.in.getTag().getType();
+			if (type == Type.BEGIN )
+			{
+				String name = in.getTag().getAttributeValue(ATTRIBUTE_NAME);
+				if( name.equals(targetName))
+				{
+					Map<String,String> replace = new HashMap<String,String>();
+					replace.put("name", newName);
+					replace.put("description", newDesc);
+					copyXML(out, replace);
+				}
+				else
+					copyXML(out, null);
+			}
+		}
+	}
+	
 }

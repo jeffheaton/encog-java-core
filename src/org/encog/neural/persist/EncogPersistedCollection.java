@@ -212,7 +212,7 @@ public class EncogPersistedCollection {
 	
 	public void delete(EncogPersistedObject obj)
 	{
-		
+		delete(obj.getName());
 	}
 	
 	public void mergeTemp()
@@ -241,6 +241,20 @@ public class EncogPersistedCollection {
 
 	public void delete(DirectoryEntry d) {
 		this.delete(d.getName());
+		
+	}
+
+	public void updateProperties(String name, String newName, String newDesc) {
+		PersistWriter writer = new PersistWriter(this.fileTemp);
+		writer.begin();
+		writer.writeHeader();
+		writer.beginObjects();		
+		writer.modifyObject(this.filePrimary, name, newName, newDesc);
+		writer.endObjects();
+		writer.end();
+		writer.close();
+		mergeTemp();
+		this.buildDirectory();
 		
 	}
 	
