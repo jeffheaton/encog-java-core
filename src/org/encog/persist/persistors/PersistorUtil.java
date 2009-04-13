@@ -65,7 +65,7 @@ public class PersistorUtil {
 			// find using classes
 			String name = className + "Persistor";
 			final Class<?> c = Class
-					.forName("org.encog.neural.persist.persistors." + name);
+					.forName("org.encog.persist.persistors." + name);
 			final Persistor persistor = (Persistor) c.newInstance();
 			return persistor;
 		} catch (final ClassNotFoundException e) {
