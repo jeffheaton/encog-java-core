@@ -26,7 +26,11 @@
 package org.encog.util;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
+import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +40,8 @@ import org.slf4j.LoggerFactory;
  */
 public final class Directory {
 
+	public static final int BUFFER_SIZE = 1024;
+	
 	/**
 	 * The logging object.
 	 */
@@ -65,5 +71,42 @@ public final class Directory {
 			}
 		}
 		return (path.delete());
+	}
+	
+	/**
+	 * Copy the specified file.
+	 * @param source The file to copy.
+	 * @param target The target of the copy.
+	 */
+	public static void copyFile(File source,File target)
+	{
+		try
+		{
+			byte[] buffer = new byte[BUFFER_SIZE];
+			
+			// open the files before the copy
+			FileInputStream in = new FileInputStream(source);
+			FileOutputStream out = new FileOutputStream(target);
+			
+			// perform the copy
+			int packetSize = 0;
+			
+			while(packetSize!=-1)
+			{
+				packetSize = in.read(buffer);
+				if( packetSize!=-1 )
+				{
+					out.write(buffer,0,packetSize);
+				}
+			}
+			
+			// close the files after the copy
+			in.close();
+			out.close();
+		}
+		catch(IOException e)
+		{
+			throw new EncogError(e);
+		}
 	}
 }

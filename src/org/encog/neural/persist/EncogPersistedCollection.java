@@ -46,10 +46,15 @@ public class EncogPersistedCollection {
 
 	public final static String GENERAL_ERROR = "Malformed XML near tag: ";
 	
+	public static final String TYPE_TEXT = "TextData";
+	public static final String TYPE_PROPERTY = "PropertyData";
 	public static final String TYPE_BASIC_NET = "BasicNetwork";
 	public static final String TYPE_BASIC_LAYER = "BasicLayer";
 	public static final String TYPE_TRAINING = "TrainingData";
 	public static final String TYPE_WEIGHTED_SYNAPSE = "WeightedSynapse"; 
+	
+	public final static String ATTRIBUTE_NAME = "name";
+	public final static String ATTRIBUTE_DESCRIPTION = "description";
 	
 	private File filePrimary;
 	private File fileTemp;
@@ -140,7 +145,7 @@ public class EncogPersistedCollection {
 		writer.end();
 		writer.close();
 		mergeTemp();
-		this.directory.add(new DirectoryEntry(obj));
+		this.buildDirectory();
 	}
 
 	/**

@@ -75,4 +75,9 @@ public class ReadXML extends ReadTags {
 		}
 	}
 
+	public String readCDATA() {
+
+		return "";
+	}
+
 }

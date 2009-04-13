@@ -49,8 +49,6 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 	public final static String TAG_ITEM = "Item";
 	public final static String TAG_INPUT = "Input";
 	public final static String TAG_IDEAL = "Ideal";
-	public final static String ATTRIBUTE_NAME = "name";
-	public final static String ATTRIBUTE_DESCRIPTION = "description";
 	
 	private BasicNeuralDataSet currentDataSet;
 	
@@ -84,8 +82,8 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 
 	public EncogPersistedObject load(ReadXML in) {
 				
-		String name = in.getTag().getAttributes().get(ATTRIBUTE_NAME);
-		String description = in.getTag().getAttributes().get(ATTRIBUTE_DESCRIPTION);
+		String name = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_NAME);
+		String description = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
 			
 		this.currentDataSet = new BasicNeuralDataSet();
 		currentDataSet.setName(name);

@@ -27,6 +27,7 @@ package org.encog.neural.data;
 
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.TextDataPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ public class TextData implements EncogPersistedObject {
 	}
 
 	public Persistor createPersistor() {		
-		return null;
+		return new TextDataPersistor();
 	}
 	
 	public Object clone()

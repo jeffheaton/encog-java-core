@@ -30,6 +30,7 @@ import java.util.Map;
 
 import org.encog.neural.persist.EncogPersistedObject;
 import org.encog.neural.persist.Persistor;
+import org.encog.neural.persist.persistors.PropertyDataPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,7 +66,7 @@ public class PropertyData implements EncogPersistedObject {
 	}
 
 	public Persistor createPersistor() {
-		return null;
+		return new PropertyDataPersistor();
 	}
 	
 	public String get(String name)
