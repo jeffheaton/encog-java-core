@@ -52,6 +52,7 @@ public class EncogPersistedCollection {
 	public static final String TYPE_BASIC_LAYER = "BasicLayer";
 	public static final String TYPE_TRAINING = "TrainingData";
 	public static final String TYPE_WEIGHTED_SYNAPSE = "WeightedSynapse"; 
+	public static final String TYPE_PARSE_TEMPLATE = "ParseTemplate";
 	
 	public final static String ATTRIBUTE_NAME = "name";
 	public final static String ATTRIBUTE_DESCRIPTION = "description";
