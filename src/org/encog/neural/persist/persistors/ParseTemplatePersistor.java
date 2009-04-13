@@ -10,7 +10,6 @@ import org.encog.parse.tags.write.WriteXML;
 
 public class ParseTemplatePersistor implements Persistor {
 
-	@Override
 	public EncogPersistedObject load(ReadXML in) {
 		ParseTemplate result = new ParseTemplate();
 		XML2Object xml = new XML2Object();
@@ -18,7 +17,6 @@ public class ParseTemplatePersistor implements Persistor {
 		return null;
 	}
 
-	@Override
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		Object2XML xml = new Object2XML();
 		xml.save(obj, out);
