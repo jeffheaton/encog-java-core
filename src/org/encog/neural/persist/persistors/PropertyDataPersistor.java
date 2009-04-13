@@ -14,15 +14,17 @@ public class PropertyDataPersistor implements Persistor {
 	public final static String ATTRIBUTE_NAME = "name";
 	public final static String ATTRIBUTE_VALUE = "value";
 	
+	private PropertyData propertyData;
+	
 	public EncogPersistedObject load(ReadXML in) {
 		
 		String name = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_NAME);
 		String description = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
 		
-		PropertyData result = new PropertyData();
+		propertyData = new PropertyData();
 		
-		result.setName(name);
-		result.setDescription(description);
+		propertyData.setName(name);
+		propertyData.setDescription(description);
 		
 		while( in.readToTag() )
 		{
@@ -30,20 +32,20 @@ public class PropertyDataPersistor implements Persistor {
 			{
 				handleProperties(in);
 			}
-			else if( in.is(TAG_PROPERTIES,false) )
+			else if( in.is(EncogPersistedCollection.TYPE_PROPERTY,false) )
 			{
 				break;
 			}
 			
 		}
 		
-		return result;
+		return propertyData;
 	}
 
 	private void handleProperties(ReadXML in) {
 		while( in.readToTag() )
 		{
-			if( in.is(TAG_PROPERTIES,true) )
+			if( in.is(TAG_PROPERTY,true) )
 			{
 				handleProperty(in);
 			}
@@ -57,8 +59,9 @@ public class PropertyDataPersistor implements Persistor {
 	}
 
 	private void handleProperty(ReadXML in) {
-		// TODO Auto-generated method stub
-		
+		String name = in.getTag().getAttributeValue(ATTRIBUTE_NAME);
+		String value = in.getTag().getAttributeValue(ATTRIBUTE_VALUE);
+		this.propertyData.set(name, value);
 	}
 
 	public void save(EncogPersistedObject obj, WriteXML out) {
