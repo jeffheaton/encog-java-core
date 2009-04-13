@@ -90,9 +90,11 @@ public class PersistorUtil {
 				throw new PersistError("Encog object must have a name to be saved.");
 			}
 			out.addAttribute("name", obj.getName());			
-			if( obj.getDescription()==null )
-				obj.setDescription("");
-			out.addAttribute("description", obj.getDescription());
+			if( obj.getDescription()!=null )
+				out.addAttribute("description", obj.getDescription());
+			else
+				out.addAttribute("description", "");
+			
 		}
 		out.addAttribute("native", obj.getClass().getName());
 		out.beginTag(objectType);

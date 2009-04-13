@@ -111,6 +111,7 @@ public class EncogPersistedCollection {
 		List<DirectoryEntry> d = reader.buildDirectory();
 		this.directory.clear();
 		this.directory.addAll(d);
+		reader.close();
 	}
 	
 	public void create()
@@ -192,6 +193,7 @@ public class EncogPersistedCollection {
 				
 		PersistReader reader = new PersistReader(this.filePrimary);
 		EncogPersistedObject result = reader.readObject(name);
+		reader.close();
 		return result;
 	}
 
@@ -222,8 +224,27 @@ public class EncogPersistedCollection {
 	
 	public void mergeTemp()
 	{				
-		this.filePrimary.delete();
-		this.fileTemp.renameTo(this.filePrimary);		
+		if( !this.filePrimary.delete() )
+		{
+			String str = "Failure during merge, can't delete:\n"+this.filePrimary;
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new PersistError(str);
+		}
+		
+		if( !this.fileTemp.renameTo(this.filePrimary) )
+		{
+			String str = "Failure during merge, can't rename:\n"+this.fileTemp
+					+ "to: " + filePrimary;
+			
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new PersistError(str);
+		}
 	}
 	
 	public static void throwError(String tag)

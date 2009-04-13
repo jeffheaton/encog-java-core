@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Tag {
 	public enum Type {
-		BEGIN, END, BOTH
+		BEGIN, END, COMMENT, CDATA
 	};
 	
 	/**
@@ -138,9 +138,6 @@ public class Tag {
 
 		}
 
-		if (this.type == Type.BOTH) {
-			buffer.append('/');
-		}
 		buffer.append(">");
 		return buffer.toString();
 	}

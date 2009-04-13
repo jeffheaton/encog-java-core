@@ -13,7 +13,8 @@ public class TextDataPersistor implements Persistor {
 		String name = in.getTag().getAttributeValue("name");
 		String description = in.getTag().getAttributeValue("description");
 		TextData result = new TextData();
-		String text = in.readCDATA();
+		in.readToTag();		
+		String text = in.getTag().getName();
 		result.setName(name);
 		result.setDescription(description);
 		result.setText(text);

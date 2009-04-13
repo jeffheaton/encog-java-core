@@ -129,6 +129,29 @@ public class PeekableInputStream extends InputStream {
 
 		return this.peekBytes[depth];
 	}
+	
+	public boolean peek(String str)
+	{
+		for(int i=0;i<str.length();i++)
+		{
+			if(peek(i)!=str.charAt(i))
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	public long skip(final long count)
+	{
+		long count2 = count;
+		while(count2>0)
+		{
+			this.read();
+			count2--;
+		}
+		return count;
+	}
 
 	/**
 	 * Read a single byte from the stream. 

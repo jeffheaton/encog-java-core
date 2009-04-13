@@ -91,14 +91,7 @@ public class PersistWriter {
 	}
 
 	public void close() {
-		
-		try {
-			this.out.close();
-			this.fileOutput.close();
-		} catch (IOException e) {
-			throw new PersistError(e);
-		}
-		
+		this.out.close();
 	}
 	
 	public void mergeObjects(File filename,String skip)

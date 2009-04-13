@@ -74,10 +74,4 @@ public class ReadXML extends ReadTags {
 			throw new ParseError(e);
 		}
 	}
-
-	public String readCDATA() {
-
-		return "";
-	}
-
 }

@@ -34,28 +34,29 @@ import javax.xml.transform.sax.TransformerHandler;
 import org.encog.EncogError;
 import org.encog.neural.persist.EncogPersistedCollection;
 import org.encog.neural.persist.EncogPersistedObject;
+import org.encog.neural.persist.PersistError;
+import org.encog.neural.persist.persistors.PersistorUtil;
+import org.encog.parse.tags.write.WriteXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 public class Object2XML {
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public void save(EncogPersistedObject object, TransformerHandler hd) {
 
-		//try {
-			/*final AttributesImpl atts = EncogPersistedCollection
-					.createAttributes(object);
-			hd.startElement("", "", object.getClass().getSimpleName(), atts);
-			atts.clear();
+	public void save(EncogPersistedObject obj, WriteXML out) {
 
-			for (Field field : object.getClass().getDeclaredFields()) {
+		try {
+			PersistorUtil.beginEncogObject(obj.getClass().getSimpleName(), out,
+					obj, true);
+
+			for (Field field : obj.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 
 				if (field.getName().equalsIgnoreCase("name")
@@ -65,36 +66,32 @@ public class Object2XML {
 				Class<?> type = field.getType();
 
 				if ((field.getModifiers() & Modifier.FINAL) == 0) {
-					Object value = field.get(object);
+					Object value = field.get(obj);
 					if (value != null) {
 						if (value instanceof Collection) {
-							hd.startElement("", "", field.getName(), atts);
-							saveCollection(hd, (Collection) value);
-							hd.endElement("", "", field.getName());
+							out.beginTag(field.getName());
+							saveCollection(out, (Collection) value);
+							out.endTag();
+						} else {
+							out.addProperty(field.getName(), value.toString());
 						}
-						else
-							EncogPersistedCollection.addProperty(hd, field
-								.getName(), value.toString());
 					}
 				}
 			}
 
-			hd.endElement("", "", object.getClass().getSimpleName());
-
-		} catch (SAXException e) {
-			throw new EncogError(e);
+			out.endTag();
 		} catch (IllegalAccessException e) {
-			throw new EncogError(e);
-		}*/
+			throw new PersistError(e);
+		}
 
 	}
 
-	private void saveCollection(TransformerHandler hd, Collection<?> value) {
-/*
-			for (Object obj : value) {
-				if (obj instanceof String) {
-					EncogPersistedCollection.addProperty(hd, "S", obj.toString());
-				}
-			}*/
+	private void saveCollection(WriteXML out, Collection<?> value) {
+
+		for (Object obj : value) {
+			if (obj instanceof String) {
+				out.addProperty("S", obj.toString());
+			}
+		}
 	}
 }

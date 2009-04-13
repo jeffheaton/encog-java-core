@@ -118,7 +118,7 @@ public class LoadWebPage {
 	protected int findEndTag(int index, Tag tag) {
 		int depth = 0;
 
-		if (tag.getType() != Tag.Type.BOTH) {
+
 			while (index < page.getDataSize()) {
 				DataUnit du = page.getDataUnit(index);
 
@@ -137,9 +137,6 @@ public class LoadWebPage {
 				index++;
 			}
 			return -1;
-		} else {
-			return index;
-		}
 
 	}
 
