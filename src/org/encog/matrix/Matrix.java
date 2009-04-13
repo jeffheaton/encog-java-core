@@ -28,8 +28,8 @@ package org.encog.matrix;
 import java.io.Serializable;
 
 import org.encog.Encog;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

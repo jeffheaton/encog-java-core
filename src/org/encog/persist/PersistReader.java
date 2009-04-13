@@ -23,7 +23,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.persist;
+package org.encog.persist;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -36,10 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import org.encog.neural.persist.persistors.PersistorUtil;
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.persistors.PersistorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

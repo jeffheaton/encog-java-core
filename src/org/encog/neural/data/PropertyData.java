@@ -28,9 +28,9 @@ package org.encog.neural.data;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.PropertyDataPersistor;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.PropertyDataPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

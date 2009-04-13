@@ -26,7 +26,7 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.persist.Persistor;
+import org.encog.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

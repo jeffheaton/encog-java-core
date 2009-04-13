@@ -23,7 +23,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.persist.persistors.generic;
+package org.encog.persist.persistors.generic;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -32,11 +32,11 @@ import java.util.Collection;
 import javax.xml.transform.sax.TransformerHandler;
 
 import org.encog.EncogError;
-import org.encog.neural.persist.EncogPersistedCollection;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.PersistError;
-import org.encog.neural.persist.persistors.PersistorUtil;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.EncogPersistedCollection;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.PersistError;
+import org.encog.persist.persistors.PersistorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;

@@ -33,9 +33,9 @@ import java.util.List;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.BasicNeuralDataSetPersistor;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.BasicNeuralDataSetPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

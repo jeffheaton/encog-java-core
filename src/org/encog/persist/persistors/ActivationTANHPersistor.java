@@ -23,49 +23,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.persist.persistors;
+package org.encog.persist.persistors;
 
-import org.encog.neural.networks.synapse.WeightedSynapse;
-import org.encog.neural.persist.EncogPersistedCollection;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
 
-public class WeightedSynapsePersistor implements Persistor {
+public class ActivationTANHPersistor implements Persistor {
 
-	public final static String TAG_WEIGHTS = "weights";
-	
 	public EncogPersistedObject load(ReadXML in) {
-		WeightedSynapse synapse = new WeightedSynapse();
-		
-		String end = in.getTag().getName();
-		
-		
-		while( in.readToTag() )  
-		{
-			
-			if( in.is(TAG_WEIGHTS,true) )
-			{
-				in.readToTag();
-				synapse.setMatrix(PersistorUtil.loadMatrix(in));
-			}
-			if( in.is(end, false))
-				break;
-		}
-		
-		return synapse;
+		return new ActivationTANH();
 	}
 
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_WEIGHTED_SYNAPSE, out, obj, false);
-		WeightedSynapse synapse = (WeightedSynapse)obj;
-		
-		out.beginTag(TAG_WEIGHTS);
-		PersistorUtil.saveMatrix(synapse.getMatrix(),out);
+	public void save(EncogPersistedObject object, WriteXML out) {
+		out.beginTag(object.getClass().getSimpleName());
 		out.endTag();
-		
-		out.endTag();
-	}
 
+	}
 }

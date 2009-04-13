@@ -31,8 +31,8 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.SynapseType;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
 
 /**
  * Interface that defines a neural network.

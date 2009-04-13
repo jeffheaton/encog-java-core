@@ -28,7 +28,7 @@ package org.encog.neural.networks.synapse;
 import org.encog.matrix.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.persist.EncogPersistedObject;
+import org.encog.persist.EncogPersistedObject;
 
 public interface Synapse extends EncogPersistedObject {
 	

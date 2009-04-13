@@ -23,32 +23,45 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.persist;
+package org.encog.persist;
 
-import org.encog.parse.tags.read.ReadXML;
-import org.encog.parse.tags.write.WriteXML;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * Persistor: This interface defines a class that can load and save an
- * EncogPersistedObject.
- * 
+ * General error class for Encog.
  * @author jheaton
- * 
  */
-public interface Persistor {
+public class PersistError extends RuntimeException {
 
 	/**
-	 * Load from the specified node. 
-	 * @param node The node to load from.
-	 * @return The EncogPersistedObject that was loaded.
+	 * 
 	 */
-	EncogPersistedObject load(ReadXML in);
+	private static final long serialVersionUID = 7380539044552943978L;
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	/**
+	 * Construct a message exception.
+	 * 
+	 * @param msg
+	 *            The exception message.
+	 */
+	public PersistError(final String msg) {
+		super(msg);
+	}
 
 	/**
-	 * Save the specified object.
-	 * @param object The object to save. 
-	 * @param out The XML object.
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
 	 */
-	void save(EncogPersistedObject object, WriteXML out);
+	public PersistError(final Throwable t) {
+		super(t);
+	}	
+	
 }

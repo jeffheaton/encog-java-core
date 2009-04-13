@@ -1,6 +1,6 @@
 package org.encog.neural.activation;
 
-import org.encog.neural.persist.Persistor;
+import org.encog.persist.Persistor;
 
 public abstract class BasicActivationFunction implements ActivationFunction
 {	

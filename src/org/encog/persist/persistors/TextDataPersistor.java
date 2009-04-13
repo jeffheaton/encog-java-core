@@ -1,11 +1,11 @@
-package org.encog.neural.persist.persistors;
+package org.encog.persist.persistors;
 
 import org.encog.neural.data.TextData;
-import org.encog.neural.persist.EncogPersistedCollection;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.EncogPersistedCollection;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
 
 public class TextDataPersistor implements Persistor {
 

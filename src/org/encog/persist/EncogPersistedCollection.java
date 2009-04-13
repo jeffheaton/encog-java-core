@@ -24,7 +24,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.encog.neural.persist;
+package org.encog.persist;
 
 import java.io.File;
 import java.util.ArrayList;

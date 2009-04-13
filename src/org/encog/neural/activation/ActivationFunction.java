@@ -27,7 +27,7 @@ package org.encog.neural.activation;
 
 import java.io.Serializable;
 
-import org.encog.neural.persist.EncogPersistedObject;
+import org.encog.persist.EncogPersistedObject;
 
 
 /**

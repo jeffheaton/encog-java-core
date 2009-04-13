@@ -30,8 +30,8 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.WeightedSynapsePersistor;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.WeightedSynapsePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

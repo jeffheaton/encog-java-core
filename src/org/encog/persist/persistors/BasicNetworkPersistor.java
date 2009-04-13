@@ -24,7 +24,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.encog.neural.persist.persistors;
+package org.encog.persist.persistors;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -32,12 +32,12 @@ import java.util.Map;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.persist.EncogPersistedCollection;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.EncogPersistedCollection;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
 
 public class BasicNetworkPersistor implements Persistor {
 	

@@ -23,61 +23,49 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.data;
+package org.encog.persist.persistors;
 
+import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.TextDataPersistor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-public class TextData implements EncogPersistedObject {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6895724776252007263L;
-	private String text;
-	private String name;
-	private String description;
+public class WeightedSynapsePersistor implements Persistor {
+
+	public final static String TAG_WEIGHTS = "weights";
 	
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
+	public EncogPersistedObject load(ReadXML in) {
+		WeightedSynapse synapse = new WeightedSynapse();
+		
+		String end = in.getTag().getName();
+		
+		
+		while( in.readToTag() )  
+		{
+			
+			if( in.is(TAG_WEIGHTS,true) )
+			{
+				in.readToTag();
+				synapse.setMatrix(PersistorUtil.loadMatrix(in));
+			}
+			if( in.is(end, false))
+				break;
+		}
+		
+		return synapse;
 	}
 
-	public Persistor createPersistor() {		
-		return new TextDataPersistor();
+	public void save(EncogPersistedObject obj, WriteXML out) {
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_WEIGHTED_SYNAPSE, out, obj, false);
+		WeightedSynapse synapse = (WeightedSynapse)obj;
+		
+		out.beginTag(TAG_WEIGHTS);
+		PersistorUtil.saveMatrix(synapse.getMatrix(),out);
+		out.endTag();
+		
+		out.endTag();
 	}
-	
-	public Object clone()
-	{
-		TextData result = new TextData();
-		result.setName(getName());
-		result.setDescription(getDescription());
-		result.setText(getText());
-		return result;
-	}
-	
-	
+
 }

@@ -28,10 +28,10 @@ package org.encog.parse;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.ParseTemplatePersistor;
 import org.encog.parse.recognize.Recognize;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ParseTemplatePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

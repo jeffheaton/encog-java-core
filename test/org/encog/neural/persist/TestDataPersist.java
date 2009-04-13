@@ -7,6 +7,7 @@ import junit.framework.TestCase;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.csv.TestCSVNeuralData;
 import org.encog.neural.networks.XOR;
+import org.encog.persist.EncogPersistedCollection;
 
 public class TestDataPersist extends TestCase {
 	

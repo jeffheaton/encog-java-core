@@ -1,12 +1,12 @@
-package org.encog.neural.persist.persistors;
+package org.encog.persist.persistors;
 
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.generic.Object2XML;
-import org.encog.neural.persist.persistors.generic.XML2Object;
 import org.encog.parse.ParseTemplate;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.generic.Object2XML;
+import org.encog.persist.persistors.generic.XML2Object;
 
 public class ParseTemplatePersistor implements Persistor {
 

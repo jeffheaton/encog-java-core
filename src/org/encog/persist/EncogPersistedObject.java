@@ -23,23 +23,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.persist.persistors;
+package org.encog.persist;
 
-import org.encog.neural.activation.ActivationTANH;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
-import org.encog.parse.tags.read.ReadXML;
-import org.encog.parse.tags.write.WriteXML;
+import java.io.Serializable;
 
-public class ActivationTANHPersistor implements Persistor {
 
-	public EncogPersistedObject load(ReadXML in) {
-		return new ActivationTANH();
-	}
-
-	public void save(EncogPersistedObject object, WriteXML out) {
-		out.beginTag(object.getClass().getSimpleName());
-		out.endTag();
-
-	}
+/**
+ * This interface flags an class as being able to be persisted into an
+ * Encog collection.
+ * @author jheaton
+ *
+ */
+public interface EncogPersistedObject extends Serializable, Cloneable  {
+	public void setDescription(String theDescription);
+	public String getDescription();
+	
+	public void setName(String theName);
+	public String getName();
+	public Persistor createPersistor();
+	Object clone();
 }

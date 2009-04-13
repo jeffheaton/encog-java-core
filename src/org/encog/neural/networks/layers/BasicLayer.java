@@ -41,10 +41,10 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.networks.synapse.WeightlessSynapse;
-import org.encog.neural.persist.DirectoryEntry;
-import org.encog.neural.persist.EncogPersistedObject;
-import org.encog.neural.persist.Persistor;
-import org.encog.neural.persist.persistors.BasicLayerPersistor;
+import org.encog.persist.DirectoryEntry;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.BasicLayerPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

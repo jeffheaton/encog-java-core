@@ -41,7 +41,7 @@ import java.util.StringTokenizer;
 import org.encog.EncogError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.persist.PersistError;
+import org.encog.persist.PersistError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

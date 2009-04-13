@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
+import org.encog.persist.EncogPersistedObject;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

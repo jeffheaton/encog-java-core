@@ -23,22 +23,32 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.neural.persist;
+package org.encog.persist;
 
-import java.io.Serializable;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
+
 
 /**
- * This interface flags an class as being able to be persisted into an
- * Encog collection.
+ * Persistor: This interface defines a class that can load and save an
+ * EncogPersistedObject.
+ * 
  * @author jheaton
- *
+ * 
  */
-public interface EncogPersistedObject extends Serializable, Cloneable  {
-	public void setDescription(String theDescription);
-	public String getDescription();
-	
-	public void setName(String theName);
-	public String getName();
-	public Persistor createPersistor();
-	Object clone();
+public interface Persistor {
+
+	/**
+	 * Load from the specified node. 
+	 * @param node The node to load from.
+	 * @return The EncogPersistedObject that was loaded.
+	 */
+	EncogPersistedObject load(ReadXML in);
+
+	/**
+	 * Save the specified object.
+	 * @param object The object to save. 
+	 * @param out The XML object.
+	 */
+	void save(EncogPersistedObject object, WriteXML out);
 }
