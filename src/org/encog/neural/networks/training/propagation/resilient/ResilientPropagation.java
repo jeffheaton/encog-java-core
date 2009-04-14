@@ -38,12 +38,12 @@ import org.slf4j.LoggerFactory;
 
 public class ResilientPropagation extends Propagation {
 	
-	final static double DEFAULT_ZERO_TOLERANCE = 0.00000000000000001;
-	final static double POSITIVE_ETA = 1.2;
-	final static double NEGATIVE_ETA = 0.5;
-	final static double DELTA_MIN = 1e-6;
-	final static double DEFAULT_INITIAL_UPDATE = 0.1;
-	final static double DEFAULT_MAX_STEP = 50;
+	public final static double DEFAULT_ZERO_TOLERANCE = 0.00000000000000001;
+	public final static double POSITIVE_ETA = 1.2;
+	public final static double NEGATIVE_ETA = 0.5;
+	public final static double DELTA_MIN = 1e-6;
+	public final static double DEFAULT_INITIAL_UPDATE = 0.1;
+	public final static double DEFAULT_MAX_STEP = 50;
 	private final double zeroTolerance;
 	private final double initialUpdate;
 	private final double maxStep;

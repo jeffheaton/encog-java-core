@@ -46,33 +46,28 @@ public interface Layer extends Cloneable, EncogPersistedObject  {
 	 * @return The output from this layer.
 	 */
 	NeuralData compute(final NeuralData pattern);
-	
 	void process(final NeuralData pattern);
 
 	/**
 	 * @return The neuron count.
 	 */
 	int getNeuronCount();
-	
 	Collection<Layer> getNextLayers();
-	
-	public List<Synapse> getNext();
-
-	
+	List<Synapse> getNext();
 	ActivationFunction getActivationFunction();
-	
 	void setNeuronCount(int neuronCount);
-	
 	void addNext(Layer next);
 	void addNext(Layer next, SynapseType type);
 	NeuralData recur();
 	Object clone();
 	
-	public double getThreshold(int index);
-	public void setThreshold(int index,double d);
-	public double[] getThreshold();
-	public boolean hasThreshold();
-
+	double getThreshold(int index);
+	void setThreshold(int index,double d);
+	double[] getThreshold();
+	boolean hasThreshold();
 	void addSynapse(Synapse synapse);
-	
+	int getX();
+	int getY();
+	void setX(int x);
+	void setY(int y);
 }
