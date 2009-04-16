@@ -42,6 +42,8 @@ public class BasicLayerPersistor implements Persistor {
 	public static final String TAG_ACTIVATION = "activation";
 	public static final String PROPERTY_NEURONS = "neurons";
 	public static final String PROPERTY_THRESHOLD = "threshold";
+	public static final String PROPERTY_X = "x";
+	public static final String PROPERTY_Y = "y";
 	
 	/**
 	 * The logging object.
@@ -52,6 +54,8 @@ public class BasicLayerPersistor implements Persistor {
 	public EncogPersistedObject load(ReadXML in) {
 		
 		int neuronCount = 0;
+		int x=0;
+		int y=0;
 		String threshold = null;
 		ActivationFunction activation = null;
 		String end = in.getTag().getName();
@@ -72,6 +76,14 @@ public class BasicLayerPersistor implements Persistor {
 			else if( in.is(PROPERTY_THRESHOLD,true))
 			{
 				threshold = in.readTextToTag();
+			}
+			else if( in.is(PROPERTY_X,true))
+			{
+				x = in.readIntToTag();
+			}
+			else if( in.is(PROPERTY_Y,true))
+			{
+				y = in.readIntToTag();
 			}
 			else if( in.is(end, false))
 				break;
@@ -94,6 +106,8 @@ public class BasicLayerPersistor implements Persistor {
 					layer.setThreshold(i, t[i]);
 				}
 			}
+			layer.setX(x);
+			layer.setY(y);
 			return layer;
 		}
 		return null;
@@ -102,7 +116,11 @@ public class BasicLayerPersistor implements Persistor {
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_BASIC_LAYER, out, obj, false);
 		BasicLayer layer = (BasicLayer)obj;
+		
 		out.addProperty(PROPERTY_NEURONS, layer.getNeuronCount());
+		out.addProperty(PROPERTY_X, layer.getX());
+		out.addProperty(PROPERTY_Y, layer.getY());
+		
 		if( layer.hasThreshold())
 		{
 			StringBuilder result = new StringBuilder();
