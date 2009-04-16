@@ -29,6 +29,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * A data unit that holds text.
+ * @author jheaton
+ */
 public class TextDataUnit extends DataUnit {
 
 	private String text;

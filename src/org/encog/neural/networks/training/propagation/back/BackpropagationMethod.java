@@ -39,6 +39,13 @@ import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class implements the specifics of how the backpropagation algorithm
+ * is used.  Specifically, the partial derivatives are simply applied to the
+ * weight matrix.
+ * @author jheaton
+ *
+ */
 public class BackpropagationMethod implements PropagationMethod {
 
 	private Backpropagation propagation;

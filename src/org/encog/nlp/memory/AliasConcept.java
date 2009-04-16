@@ -32,7 +32,13 @@ import org.slf4j.LoggerFactory;
  * An alias concept is a concept holder. This allows all instances of the
  * Concept to be updated when the value of the alias is changed to a tottally
  * new concept.
- * @author  jheaton
+ * 
+ * Note: This class is part of the Encog Natural Language Processing(NLP)
+ * package.  This package is still under heavy construction, and will not 
+ * be considered stable until Encog 3.0.
+ * 
+ * @author jheaton
+ *
  */
 public class AliasConcept extends VarConcept {
     private VarConcept targetConcept;

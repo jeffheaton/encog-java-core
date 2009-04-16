@@ -32,6 +32,11 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A URL address.  Holds both the URL object, as well as original text.
+ * @author jheaton
+ *
+ */
 public class Address {
 	private String original;
 	private URL url;

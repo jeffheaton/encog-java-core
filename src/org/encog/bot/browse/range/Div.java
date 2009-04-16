@@ -29,6 +29,12 @@ import org.encog.bot.browse.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A document range that represents the beginning and ending DIV tag, as well
+ * as any tages embedded between them.
+ * @author jheaton
+ *
+ */
 public class Div extends DocumentRange {
 	
 	final Logger logger = LoggerFactory.getLogger(this.getClass());

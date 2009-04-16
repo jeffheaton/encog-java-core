@@ -49,7 +49,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Basic functionality that most of the neural layers require.
+ * Basic functionality that most of the neural layers require.  The basic
+ * layer is often used by itself to implement forward or recurrent layers.
+ * Other layer types are based on the basic layer as well.
  * 
  * @author jheaton
  */

@@ -25,6 +25,11 @@
  */
 package org.encog.neural.networks.synapse;
 
+/**
+ * Specifies the type of synapse to be created.
+ * @author jheaton
+ *
+ */
 public enum SynapseType {
 	OneToOne,
 	Weighted,

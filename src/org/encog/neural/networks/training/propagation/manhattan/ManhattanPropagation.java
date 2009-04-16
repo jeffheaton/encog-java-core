@@ -33,6 +33,23 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * One problem that the backpropagation technique has is that the magnitude
+ * of the partial derivative may be calculated too large or too small.  The
+ * Manhattan update algorithm attempts to solve this by using the partial
+ * derivative to only indicate the sign of the update to the weight matrix.
+ * The actual amount added or subtracted from the weight matrix is obtained
+ * from a simple constant.  This constant must be adjusted based on the type 
+ * of neural network being trained.  In general, start with a higher constant
+ * and decrease it as needed.
+ * 
+ * The Manhattan update algorithm can be thought of as a simplified version
+ * of the resilient algorithm.  The resilient algorithm uses more complex
+ * techniques to determine the update value.
+ * 
+ * @author jheaton
+ *
+ */
 public class ManhattanPropagation extends Propagation implements LearningRate {
 	
 	final static double DEFAULT_ZERO_TOLERANCE = 0.001;

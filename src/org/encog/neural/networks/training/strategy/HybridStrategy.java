@@ -31,6 +31,15 @@ import org.encog.neural.networks.training.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A hybrid stragey allows a secondary training algorithm to be used.  Once
+ * the primary algorithm is no longer improving by much, the secondary will
+ * be used.  Using simulated annealing in as a secondary to one of the propagation
+ * methods is often a very efficient combination as it can help the propagation
+ * method escape a local minimum.  This is particularly true with backpropagation.
+ * @author jheaton
+ *
+ */
 public class HybridStrategy implements Strategy {
 	
 	public static final double DEFAULT_MIN_IMPROVEMENT = 0.00001;

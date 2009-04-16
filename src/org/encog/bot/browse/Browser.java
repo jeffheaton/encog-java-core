@@ -42,6 +42,13 @@ import org.encog.util.http.FormUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The main class for web browsing.  This class allows you to navigate to a 
+ * specific URL.  Once you navigate to one URL, you can naviage to any
+ * URL contained on the page.
+ * @author jheaton
+ *
+ */
 public class Browser {
 
 	protected WebPage currentPage;

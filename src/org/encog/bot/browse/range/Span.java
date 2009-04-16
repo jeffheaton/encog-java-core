@@ -29,6 +29,11 @@ import org.encog.bot.browse.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A document range that specifies a span tag, and any embedded tags.
+ * @author jheaton
+ *
+ */
 public class Span extends DocumentRange {
 	
 	@SuppressWarnings("unused")

@@ -26,10 +26,18 @@
 
 package org.encog.neural.activation;
 
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ActivationGaussianPersistor;
+import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.encog.util.math.rbf.GaussianFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An activation function based on the gaussian function.  
+ * @author jheaton
+ *
+ */
 public class ActivationGaussian extends BasicActivationFunction {
 
 	/**
@@ -73,5 +81,15 @@ public class ActivationGaussian extends BasicActivationFunction {
 				this.gausian.getPeak(),
 				this.gausian.getWidth());
 	}
+	
+	public Persistor createPersistor() {
+		return new ActivationGaussianPersistor();
+	}
+
+	public GaussianFunction getGausian() {
+		return gausian;
+	}
+	
+	
 
 }

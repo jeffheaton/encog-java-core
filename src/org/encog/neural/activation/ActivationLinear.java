@@ -26,11 +26,14 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ActivationLinearPersistor;
+import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ActivationLinear: The Linear layer is really not an activation function at
+ * The Linear layer is really not an activation function at
  * all. The input is simply passed on, unmodified, to the output. This
  * activation function is primarily theoretical and of little actual use.
  * Usually an activation function that scales between 0 and 1 or -1 and 1 should
@@ -76,5 +79,9 @@ public class ActivationLinear extends  BasicActivationFunction {
 	public Object clone()
 	{
 		return new ActivationLinear();
+	}
+	
+	public Persistor createPersistor() {
+		return new ActivationLinearPersistor();
 	}
 }

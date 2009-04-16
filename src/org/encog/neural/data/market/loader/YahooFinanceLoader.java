@@ -45,10 +45,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class loads financial data from Yahoo.  One caution on 
- * Yahoo data.  I've noticed that the volume numbers will
- * fluxuate some from one load to the next.  It is generally
- * by a very small percent, but it was enough to force me to
- * adjust the unit tests some.
+ * Yahoo data.  
  * 
  * @author jheaton
  */

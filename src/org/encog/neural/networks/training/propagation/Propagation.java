@@ -44,9 +44,14 @@ import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implements basic functionality that is needed by each of the propagation
+ * methods.  The specifics of each of the propagation methods is implemented
+ * inside of the PropagationMethod interface implementors.
+ * @author jheaton
+ *
+ */
 public class Propagation  extends BasicTraining  {
-
-
 
 	/**
 	 * THe network that is being trained.

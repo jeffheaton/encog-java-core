@@ -26,10 +26,17 @@
 
 package org.encog.neural.activation;
 
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ActivationSINPersistor;
+import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An activation function based on the sin function.
+ * @author jheaton
+ */
 public class ActivationSIN extends BasicActivationFunction {
 
 	/**
@@ -60,5 +67,9 @@ public class ActivationSIN extends BasicActivationFunction {
 	public Object clone()
 	{
 		return new ActivationSIN();
+	}
+	
+	public Persistor createPersistor() {
+		return new ActivationSINPersistor();
 	}
 }

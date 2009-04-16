@@ -29,6 +29,11 @@ import org.encog.bot.BotError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Thrown when any sort of error related to web browsing is encountered.
+ * @author jheaton
+ *
+ */
 public class BrowseError extends BotError {
 	/**
 	 * The serial id for this class.

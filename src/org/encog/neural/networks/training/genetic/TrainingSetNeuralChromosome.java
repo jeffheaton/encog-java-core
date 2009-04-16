@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * TrainingSetNeuralChromosome: Implements a chromosome that allows a
+ * Implements a chromosome that allows a
  * feedforward neural network to be trained using a genetic algorithm. The
  * network is trained using training sets.
  * 

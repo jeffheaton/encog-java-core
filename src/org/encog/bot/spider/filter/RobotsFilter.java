@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * RobotsFilter: This filter causes the spider to skip URL's from a robots.txt
+ * This filter causes the spider to skip URL's from a robots.txt
  * file.
  */
 public class RobotsFilter implements SpiderFilter {

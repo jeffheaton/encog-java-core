@@ -47,6 +47,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 
+/**
+ * Manage the unit types supported by Encog.
+ * @author jheaton
+ *
+ */
 public class UnitManager {
 
   public final static String BASE_WEIGHT = "base-weight";

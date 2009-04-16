@@ -51,7 +51,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * RSS: This is the class that actually parses the RSS and builds a collection
+ * This is the class that actually parses the RSS and builds a collection
  * of RSSItems. To make use of this class call the load method with a URL that
  * points to RSS.
  */

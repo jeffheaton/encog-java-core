@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * NeuralGeneticAlgorithm: Implements a genetic algorithm that 
+ * Implements a genetic algorithm that 
  * allows a feedforward neural network to be trained using a 
  * genetic algorithm.  This algorithm is for a feed forward neural 
  * network.  

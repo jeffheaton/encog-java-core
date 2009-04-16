@@ -31,6 +31,13 @@ import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Class that is used to calculate the partial derivatives for the error
+ * for individual layers of a neural network.  This calculation must be
+ * performed by each of the propagation techniques.
+ * @author jheaton
+ *
+ */
 public class CalculatePartialDerivative {
 	
 	/**

@@ -45,6 +45,12 @@ import org.encog.parse.tags.read.ReadHTML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Called to actually load a web page.  This will read the HTML on a web page
+ * and generate the DocumentRange classes.
+ * @author jheaton
+ *
+ */
 public class LoadWebPage {
 
 	protected WebPage page;

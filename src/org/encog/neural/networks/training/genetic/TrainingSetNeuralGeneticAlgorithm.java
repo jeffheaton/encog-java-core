@@ -34,9 +34,8 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * TrainingSetNeuralGeneticAlgorithm: Implements a genetic algorithm 
- * that allows a feedforward neural network to be trained using a 
- * genetic algorithm.  This algorithm is for a feed forward neural 
+ * Implements a genetic algorithm that allows a neural network 
+ * to be trained using a genetic algorithm.  This algorithm is for a neural 
  * network.  The neural network is trained using training sets.
  */
 public class TrainingSetNeuralGeneticAlgorithm extends

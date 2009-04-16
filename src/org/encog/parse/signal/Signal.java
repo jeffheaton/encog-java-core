@@ -31,6 +31,11 @@ import org.encog.parse.ParseError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Patterns that the parser should recognize are stored in signals.
+ * @author jheaton
+ *
+ */
 public class Signal {
   private char value = 0;
   private List<Signal> data = new ArrayList<Signal>();

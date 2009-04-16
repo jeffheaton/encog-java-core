@@ -40,7 +40,16 @@ import org.hibernate.annotations.Index;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 
+ * 
+ * Note: This class is part of the Encog Natural Language Processing(NLP)
+ * package.  This package is still under heavy construction, and will not 
+ * be considered stable until Encog 3.0.
+ * 
+ * @author jheaton
+ *
+ */
 @Entity
 @Table(name="lexicon_word",
     uniqueConstraints = {@UniqueConstraint(columnNames={"text"})} )

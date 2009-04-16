@@ -30,6 +30,14 @@ import java.util.List;
 
 import org.encog.bot.browse.WebPage;
 
+/**
+ * Provides the basic interface that any extractor must support.  An 
+ * extractor is a class that is capable of extracting certain types of
+ * data from web data.  For example, the ExtractWords extractor is used
+ * to extract all of the words from a web page.
+ * @author jheaton
+ *
+ */
 public interface Extract {
 	public void extract(WebPage page);
 	public List<Object> extractList(WebPage page);

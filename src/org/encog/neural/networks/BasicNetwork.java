@@ -48,7 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * BasicNetwork: This class implements a neural network. This class works in
+ * This class implements a neural network. This class works in
  * conjunction the Layer classes. Layers are added to the BasicNetwork to
  * specify the structure of the neural network.
  * 

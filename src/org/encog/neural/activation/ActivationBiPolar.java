@@ -27,9 +27,19 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ActivationBiPolarPersistor;
+import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * BiPolar activation function.  This will scale the neural data into the
+ * bipolar range.  Greater than zero becomes 1, less than or equal to zero 
+ * becomes -1.
+ * @author jheaton
+ *
+ */
 public class ActivationBiPolar extends BasicActivationFunction {
 	
 	/**
@@ -63,5 +73,9 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	public Object clone()
 	{
 		return new ActivationBiPolar();
+	}
+	
+	public Persistor createPersistor() {
+		return new ActivationBiPolarPersistor();
 	}
 }

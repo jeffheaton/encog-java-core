@@ -30,7 +30,11 @@ import org.encog.bot.browse.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * A document range that represents a hyperlink, and any embedded tags and text.
+ * @author jheaton
+ *
+ */
 public class Link extends DocumentRange {
 	private Address target;
 	

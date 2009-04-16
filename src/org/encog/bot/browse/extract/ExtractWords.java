@@ -35,6 +35,11 @@ import org.encog.parse.signal.Signal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An extractor that is designed to extract all of the words from a web page.
+ * @author jheaton
+ *
+ */
 public class ExtractWords extends BasicExtract {
 	
 	private Parse parse;

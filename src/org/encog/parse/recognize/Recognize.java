@@ -32,6 +32,14 @@ import org.encog.parse.signal.Signal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Holds the template of something that the parser should recognize. This
+ * consists of a collection of RecognizeElement objects that define the
+ * structure of what is to be recognized.
+ * 
+ * @author jheaton
+ *
+ */
 public class Recognize {
 	private List<RecognizeElement> pattern = new ArrayList<RecognizeElement>();
 	private int index = 0;

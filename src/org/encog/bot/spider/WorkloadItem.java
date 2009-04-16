@@ -33,6 +33,12 @@ import org.encog.util.orm.DataObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is a Hibernate persisted class that holds the workload for the spider.
+ * This becomes a table in the database that holds the spider's workload.
+ * @author jheaton
+ *
+ */
 @Entity
 @Table(name="spider_workload",
     uniqueConstraints = {@UniqueConstraint(columnNames={"url"})} )

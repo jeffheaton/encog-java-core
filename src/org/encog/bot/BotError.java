@@ -28,7 +28,7 @@ package org.encog.bot;
 import org.encog.EncogError;
 
 /**
- * A bot related error has occured.
+ * Used to represent any error that occurs in the bot part of Encog.
  * @author jheaton
  *
  */

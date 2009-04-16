@@ -28,6 +28,13 @@ package org.encog.neural.networks.training.propagation;
 
 import org.encog.neural.networks.NeuralOutputHolder;
 
+/**
+ * Defines the specifics to one of the propagation methods.  The individual
+ * ways that each of the propagation methods uses to modify the weight and]
+ * threshold matrix are defined here.
+ * @author jheaton
+ *
+ */
 public interface PropagationMethod {
 	
 	public void init(Propagation propagation);

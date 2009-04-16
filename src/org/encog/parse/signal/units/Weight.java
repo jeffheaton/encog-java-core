@@ -33,7 +33,11 @@ import org.encog.parse.units.UnitManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Allows the parser to recognize a unit type of weight.
+ * @author jheaton
+ *
+ */
 public class Weight extends Signal
 {
   final static int 

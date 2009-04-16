@@ -32,6 +32,9 @@ import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.BasicLayerPersistor;
+import org.encog.persist.persistors.RadialBasisFunctionLayerPersistor;
 import org.encog.util.math.BoundMath;
 import org.encog.util.math.rbf.GaussianFunction;
 import org.encog.util.math.rbf.RadialBasisFunction;
@@ -39,6 +42,15 @@ import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This layer type makes use of several radial basis function to scale the 
+ * output from this layer.  Each RBF can have a different center, peak, 
+ * and width.  Proper selection of these values will greatly impact the
+ * success of the layer.  Currently, Encog provides no automated way of
+ * determining these values. There is one RBF per neuron.
+ * @author jheaton
+ *
+ */
 public class RadialBasisFunctionLayer extends BasicLayer {
 
 	/**
@@ -114,5 +126,13 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 			logger.error(str);
 		}
 		throw new NeuralNetworkError(str);
+	}
+	
+	/**
+	 * Create a persistor for this layer.
+	 * @return The new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new RadialBasisFunctionLayerPersistor();
 	}
 }

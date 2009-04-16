@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SpiderParseHTML: This class layers on top of the ParseHTML class and allows
+ * This class layers on top of the ParseHTML class and allows
  * the spider to extract what link information it needs. A SpiderParseHTML class
  * can be used just like the ParseHTML class, with the spider gaining its
  * information in the background.

@@ -33,6 +33,15 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class will extract the "long term memory" of a neural network, 
+ * that is the weights and threshold values into an array.  This array
+ * can be used to view the neural network as a linear array of doubles.
+ * These values can then be modified and copied back into the neural network.
+ * This is very useful for simulated annealing, as well as genetic algorithms.
+ * @author jheaton
+ *
+ */
 public class NetworkCODEC {
 	
 	/**

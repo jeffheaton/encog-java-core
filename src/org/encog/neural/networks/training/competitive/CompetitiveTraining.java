@@ -39,6 +39,12 @@ import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodF
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class implements competitive training, which would be used in a 
+ * winner-take-all neural network, such as the self organizing map (SOM).
+ * @author jheaton
+ *
+ */
 public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	
 	private NeighborhoodFunction neighborhood;

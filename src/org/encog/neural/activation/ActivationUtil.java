@@ -28,6 +28,13 @@ package org.encog.neural.activation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility classes for activation functions.  Used to convert a single value
+ * to/from an array.  This is necessary because the activation functions are
+ * designed to operate on arrays, rather than single values.
+ * @author jheaton
+ *
+ */
 public class ActivationUtil {
 	
 	/**

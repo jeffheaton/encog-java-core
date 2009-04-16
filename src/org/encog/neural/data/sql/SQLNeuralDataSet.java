@@ -41,8 +41,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A dataset based on a SQL query. This is not a memory based dataset, so it can
- * handle very large datasets without a memory issue. and can handle very large
- * datasets.
+ * handle very large datasets without a memory issue. This class makes use of
+ * Hibernate to query the database.
  * 
  * @author jheaton
  */

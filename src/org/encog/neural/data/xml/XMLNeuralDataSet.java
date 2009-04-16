@@ -40,8 +40,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A data source that reads XML files.  This class is memory based, 
- * so large enough datasets could cause memory issues.
+ * A data source that reads XML files.  This class is not memory based, so
+ * very large XML files can be used, without problem.
  */
 public class XMLNeuralDataSet extends BasicNeuralDataSet {
 

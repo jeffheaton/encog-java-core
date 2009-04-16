@@ -27,10 +27,17 @@
 package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ActivationSoftMaxPersistor;
+import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The softmax activation function.
+ * @author jheaton
+ */
 public class ActivationSoftMax extends BasicActivationFunction implements ActivationFunction {
 
 	/**
@@ -64,6 +71,10 @@ public class ActivationSoftMax extends BasicActivationFunction implements Activa
 	public Object clone()
 	{
 		return new ActivationSoftMax();
+	}
+	
+	public Persistor createPersistor() {
+		return new ActivationSoftMaxPersistor();
 	}
 
 }

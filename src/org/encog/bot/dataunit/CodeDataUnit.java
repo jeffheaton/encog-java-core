@@ -29,6 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+/**
+ * A data unit that holds code.
+ * @author jheaton
+ *
+ */
 public class CodeDataUnit extends DataUnit {
 
 	private String code;

@@ -33,6 +33,12 @@ import org.encog.neural.networks.training.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Attempt to automatically set the learning rate in a learning method
+ * that supports a learning rate.
+ * @author jheaton
+ *
+ */
 public class SmartLearningRate implements Strategy {
 
 	private Train train;

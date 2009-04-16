@@ -31,9 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * BackpropagationLayer: The back propagation training algorithm requires
- * training data to be stored for each of the layers. The Backpropagation class
- * creates a BackpropagationLayer object for each of the layers in the neural
+ * The back propagation training algorithms requires
+ * training data to be stored for each of the synapses. The propagation class
+ * creates a PropagationSynapse object for each of the synapses in the neural
  * network that it is training.
  */
 

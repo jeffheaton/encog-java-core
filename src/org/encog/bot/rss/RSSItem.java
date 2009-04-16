@@ -33,7 +33,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * RSSItem: This is the class that holds individual RSS items, or stories, for
+ * This is the class that holds individual RSS items, or stories, for
  * the RSS class.
  */
 public class RSSItem {

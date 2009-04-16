@@ -36,7 +36,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-
+/**
+ * Holds a web page that was loaded by the Browse class.
+ * @author jheaton
+ *
+ */
 public class WebPage {
 	protected List<DataUnit> data = new ArrayList<DataUnit>();
 	protected List<DocumentRange> contents = new ArrayList<DocumentRange>();

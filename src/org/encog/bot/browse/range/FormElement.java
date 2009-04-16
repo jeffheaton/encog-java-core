@@ -29,6 +29,11 @@ import org.encog.bot.browse.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A document range that represents one individual component to a form.
+ * @author jheaton
+ *
+ */
 abstract public class FormElement extends DocumentRange {
 	private String name;
 	private String value;

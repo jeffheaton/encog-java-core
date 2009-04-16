@@ -33,8 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SpiderInputStream: This class is used by the spider to both parse and save an
- * InputStream.
+ * This class is used by the spider to both parse and save an InputStream.
  */
 public class SpiderInputStream extends InputStream {
 	/**

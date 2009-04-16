@@ -30,6 +30,14 @@ import org.encog.neural.networks.training.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The reset strategy will reset the weights if the neural network fails to
+ * fall below a specified error by a specified number of cycles.  This can
+ * be useful to throw out initially "bad/hard" random initializations of the
+ * weight matrix.
+ * @author jheaton
+ *
+ */
 public class ResetStrategy implements Strategy {
 	
 	/**

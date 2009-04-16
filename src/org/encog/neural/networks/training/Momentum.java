@@ -26,6 +26,14 @@
 
 package org.encog.neural.networks.training;
 
+/**
+ * Specifies that a training algorithm has the concept of a momentum.
+ * This allows it to be used with strategies that automatically adjust the
+ * momentum.
+ * 
+ * @author jheaton
+ *
+ */
 public interface Momentum  {
 	void setMomentum(double m);
 	double getMomentum();

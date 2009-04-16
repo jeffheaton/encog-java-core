@@ -28,6 +28,11 @@ package org.encog.parse.units;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Used to provide unit conversion for the parser.
+ * @author jheaton
+ *
+ */
 public class UnitConversion
 {
 	/**
@@ -42,6 +47,14 @@ public class UnitConversion
   private double addPostRatio;
   private double ratio;
 
+  /**
+   * Used t
+   * @param from
+   * @param to
+   * @param addPreRatio
+   * @param addPostRatio
+   * @param ratio
+   */
   public UnitConversion(String from,String to,double addPreRatio,double addPostRatio,double ratio)
   {
     this.from = from;

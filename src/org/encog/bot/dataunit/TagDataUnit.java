@@ -29,6 +29,11 @@ import org.encog.parse.tags.Tag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A data unit that holds a tag.
+ * @author jheaton
+ *
+ */
 public class TagDataUnit extends DataUnit {
 	protected Tag tag;
 	

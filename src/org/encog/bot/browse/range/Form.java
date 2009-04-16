@@ -33,6 +33,11 @@ import org.encog.bot.browse.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A document range that represents a form, and all embedded tags.
+ * @author jheaton
+ *
+ */
 public class Form extends DocumentRange {
 	public enum Method { POST, GET };
 	protected Address action;

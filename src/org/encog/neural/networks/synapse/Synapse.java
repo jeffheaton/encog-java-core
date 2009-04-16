@@ -30,6 +30,16 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.persist.EncogPersistedObject;
 
+/**
+ * A synapse is the connection between two layers of a neural network.
+ * The various synapse types define how layers will interact with each other.
+ * Some synapses contain a weight matrix, which cause them to be teachable.
+ * Others simply feed the data between layers in various ways, and are not 
+ * teachable.
+ * 
+ * @author jheaton
+ *
+ */
 public interface Synapse extends EncogPersistedObject {
 	
 	

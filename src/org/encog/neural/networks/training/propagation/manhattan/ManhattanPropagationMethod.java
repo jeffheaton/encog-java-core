@@ -37,6 +37,12 @@ import org.encog.neural.networks.training.propagation.PropagationSynapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implements the specifics of the Manhattan propagation algorithm. This
+ * class actually handles the updates to the weight matrix.
+ * @author jheaton
+ *
+ */
 public class ManhattanPropagationMethod implements PropagationMethod {
 
 	/**

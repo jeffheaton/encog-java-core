@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * MatrixMath: This class can perform many different mathematical operations on
+ * This class can perform many different mathematical operations on
  * matrixes.  The matrixes passed in will not be modified, rather a new matrix,
  * with the operation performed, will be returned.
  */

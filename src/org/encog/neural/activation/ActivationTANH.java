@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ActivationTANH: The hyperbolic tangent activation function takes the curved
+ * The hyperbolic tangent activation function takes the curved
  * shape of the hyperbolic tangent. This activation function produces both
  * positive and negative output. Use this activation function if both negative
  * and positive output is desired.
@@ -96,5 +96,6 @@ public class ActivationTANH extends BasicActivationFunction {
 	public Persistor createPersistor() {
 		return new ActivationTANHPersistor();
 	}
+	
 	
 }

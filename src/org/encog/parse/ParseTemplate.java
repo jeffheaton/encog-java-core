@@ -35,6 +35,11 @@ import org.encog.persist.persistors.ParseTemplatePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Allows templates to be specified for the parser.
+ * @author jheaton
+ *
+ */
 public class ParseTemplate implements EncogPersistedObject {
 
 	/**

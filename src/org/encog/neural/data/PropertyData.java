@@ -34,6 +34,13 @@ import org.encog.persist.persistors.PropertyDataPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An Encog data object that can be used to hold property data.  This is
+ * a collection of name-value pairs that can be saved in an Encog 
+ * persisted file.
+ * @author jheaton
+ *
+ */
 public class PropertyData implements EncogPersistedObject {
 	/**
 	 * 

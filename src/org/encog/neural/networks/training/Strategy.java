@@ -26,6 +26,17 @@
 
 package org.encog.neural.networks.training;
 
+/**
+ * Training strategies can be added to training algorithms.  Training 
+ * strategies allow different additional logic to be added to an existing
+ * training algorithm.  There are a number of different training strategies
+ * that can perform various tasks, such as adjusting the learning rate or 
+ * momentum, or terminating training when improvement diminishes.  Other 
+ * strategies are provided as well.
+ * 
+ * @author jheaton
+ *
+ */
 public interface Strategy {
 	public void init(Train train);
 	public void preIteration();

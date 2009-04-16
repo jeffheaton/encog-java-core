@@ -37,6 +37,14 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Holds "cached" information about the structure of the neural network.
+ * This is a very good performance boost since the neural network does not
+ * need to traverse itself each time a complete collection of layers or
+ * synapses is needed.
+ * @author jheaton
+ *
+ */
 public class NeuralStructure {
 	private List<Layer> layers = new ArrayList<Layer>();
 	private List<Synapse> synapses = new ArrayList<Synapse>();

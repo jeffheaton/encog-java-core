@@ -173,10 +173,17 @@ public class WriteXML {
 		
 	}
 	
-	public void addProperty(String name, String value)
+	public void addProperty(String name, double d)
 	{
 		beginTag(name);
-		addText(value);
+		addText(""+d);
+		endTag();
+	}
+	
+	public void addProperty(String name, String avaluelue)
+	{
+		beginTag(name);
+		addText(avaluelue);
 		endTag();
 	}
 

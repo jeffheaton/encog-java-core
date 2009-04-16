@@ -40,7 +40,15 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Holds a level worth of information used by each of the propagation 
+ * methods.  A level is defined as all of the layers that feed a single
+ * next layer.  In a pure feedforward neural network there will be
+ * only one layer per level.  However, recurrent neural networks will
+ * contain multiple layers per level.
+ * @author jheaton
+ *
+ */
 public class PropagationLevel {
 	
 	private final int neuronCount;

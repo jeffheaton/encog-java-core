@@ -31,6 +31,12 @@ import org.encog.persist.persistors.TextDataPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An Encog object that can hold text data.  This object can be stored in
+ * an Encog persisted file.
+ * @author jheaton
+ *
+ */
 public class TextData implements EncogPersistedObject {
 	/**
 	 * 

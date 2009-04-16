@@ -26,6 +26,14 @@
  */
 package org.encog.neural.networks.training;
 
+/**
+ * Specifies that a training algorithm has the concept of a learning rate.
+ * This allows it to be used with strategies that automatically adjust the
+ * learning rate.
+ * 
+ * @author jheaton
+ *
+ */
 public interface LearningRate {
 	public void setLearningRate(double rate);
 	public double getLearningRate();

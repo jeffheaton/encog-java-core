@@ -35,6 +35,15 @@ import org.encog.persist.persistors.WeightedSynapsePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A fully-connected weight based synapse.  Inputs will be multiplied by 
+ * the weight matrix and presented to the layer. 
+ * 
+ * This synapse type is teachable.
+ * 
+ * @author jheaton
+ *
+ */
 public class WeightedSynapse extends BasicSynapse {
 
 

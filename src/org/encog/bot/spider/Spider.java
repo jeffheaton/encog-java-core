@@ -35,6 +35,25 @@ import org.hibernate.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A spider is a special sort of bot that crawls the pages on a web site. It
+ * begins with one entry web page and then finds all of the links visiting those
+ * pages as well.  All data found is reported to the SpiderReportable interface.
+ * 
+ * The queue of pages to access must be stored in a database.  This database
+ * is accessed using the Hibernate ORM.  For shorter spidering tasks an in-memory
+ * database can be used such as HSQL in Java.
+ * 
+ * Spiders must typically wait for the pages that they are accessing to load.
+ * Because if this it is very advantageous to use a spider in a multithreaded
+ * way.   To do this the spider uses the Encog threading framework, which 
+ * in turn makes use of whatever underlying thread pool is provided by either
+ * Java or C#.  For more information about multithreading, refer to the
+ * EncogConcurrency class.
+ * 
+ * @author jheaton
+ *
+ */
 public class Spider {
 
 	private ORMSession session;

@@ -30,6 +30,14 @@ import org.encog.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An abstract class that implements basic functionality that may be needed
+ * by the other synapse classes. Specifically this class handles processing
+ * the from and to layer, as well as providing a name and description for the
+ * EncogPersistedObject.
+ * @author jheaton
+ *
+ */
 public abstract class BasicSynapse implements Synapse {
 	
 	private Layer fromLayer;

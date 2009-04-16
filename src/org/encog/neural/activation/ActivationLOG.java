@@ -26,10 +26,18 @@
 
 package org.encog.neural.activation;
 
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ActivationLOGPersistor;
+import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An activation function based on the logrithm function.
+ * @author jheaton
+ *
+ */
 public class ActivationLOG extends BasicActivationFunction {
 
 	/**
@@ -69,6 +77,10 @@ public class ActivationLOG extends BasicActivationFunction {
 	public Object clone()
 	{
 		return new ActivationLOG();
+	}
+	
+	public Persistor createPersistor() {
+		return new ActivationLOGPersistor();
 	}
 
 }

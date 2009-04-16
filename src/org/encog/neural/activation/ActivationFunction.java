@@ -31,7 +31,7 @@ import org.encog.persist.EncogPersistedObject;
 
 
 /**
- * ActivationFunction: This interface allows various activation functions to be
+ * This interface allows various activation functions to be
  * used with the neural network. Activation functions are applied to
  * the output from each layer of a neural network. Activation functions scale
  * the output into the desired range.

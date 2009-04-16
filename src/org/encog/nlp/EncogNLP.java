@@ -37,7 +37,16 @@ import org.encog.util.orm.ORMSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * 
+ * 
+ * Note: This class is part of the Encog Natural Language Processing(NLP)
+ * package.  This package is still under heavy construction, and will not 
+ * be considered stable until Encog 3.0.
+ * 
+ * @author jheaton
+ *
+ */
 public class EncogNLP {
 	/**
 	 * The logging object.

@@ -29,6 +29,11 @@ import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Indicates an error has occured in one of the parsers.
+ * @author jheaton
+ *
+ */
 public class ParseError extends EncogError {
 	/**
 	 * 

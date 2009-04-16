@@ -29,8 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * NeuralNetworkError: Used by the neural network classes to 
- * indicate an error.
+ * Used by the neural network classes to indicate an error.
  */
 public class NeuralDataError extends RuntimeException {
 	/**

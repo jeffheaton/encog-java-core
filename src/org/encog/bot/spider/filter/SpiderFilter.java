@@ -29,7 +29,7 @@ import java.io.IOException;
 import java.net.URL;
 
 /**
- * SpiderFilter: Filters will cause the spider to skip URL's.
+ * Filters will cause the spider to skip URL's.
  */
 public interface SpiderFilter {
 	/**

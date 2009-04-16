@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * NeuralChromosome: Implements a chromosome that allows a feedforward neural
+ *Implements a chromosome that allows a feedforward neural
  * network to be trained using a genetic algorithm. The chromosome for a feed
  * forward neural network is the weight and threshold matrix.
  * 

@@ -29,6 +29,11 @@ import org.encog.bot.browse.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A form element that represents for input for text.
+ * @author jheaton
+ *
+ */
 public class Input extends FormElement {
 
 	private String type;

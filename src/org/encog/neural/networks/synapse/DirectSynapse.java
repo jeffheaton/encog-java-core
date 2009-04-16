@@ -30,9 +30,22 @@ import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.DirectSynapsePersistor;
+import org.encog.persist.persistors.WeightlessSynapsePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A direct synapse will present the entire input array to each of the directly
+ * connected neurons in the next layer.  This layer type is useful when building
+ * a radial basis neural network.
+ * 
+ * This synapse type is not teachable.
+ * 
+ * @author jheaton
+ *
+ */
 public class DirectSynapse  extends BasicSynapse { 
 
 	/**
@@ -64,7 +77,7 @@ public class DirectSynapse  extends BasicSynapse {
 	}
 
 	public void setMatrix(Matrix matrix) {
-		throw new NeuralNetworkError("Can't set the matrix for a OneToOneSynapse");
+		throw new NeuralNetworkError("Can't set the matrix for a DirectSynapse");
 	}
 
 
@@ -83,6 +96,11 @@ public class DirectSynapse  extends BasicSynapse {
 		result.setMatrix(this.getMatrix().clone());
 		return result;
 	}
-
+	
+	
+	public Persistor createPersistor()
+	{
+		return new DirectSynapsePersistor();
+	}
 	
 }

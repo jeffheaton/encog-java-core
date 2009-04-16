@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Backpropagation: This class implements a backpropagation training algorithm
+ * This class implements a backpropagation training algorithm
  * for feed forward neural networks. It is used in the same manner as any other
  * training class that implements the Train interface.
  * 
@@ -52,6 +52,12 @@ import org.slf4j.LoggerFactory;
  * matrixes will be modified through each iteration. The momentum specifies how
  * much the previous learning iteration affects the current. To use no momentum
  * at all specify zero.
+ * 
+ * One primary problem with backpropagation is that the magnitude of the partial
+ * derivative is often detrimental to the training of the neural network.  The
+ * other propagation methods of Manhatten and Resilient address this issue in different
+ * ways.  In general, it is suggested that you use the resilient propagation technique
+ * for most Encog training tasks over back propagation.
  */
 public class Backpropagation extends Propagation implements Momentum, LearningRate {
 

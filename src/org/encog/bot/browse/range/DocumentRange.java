@@ -34,6 +34,14 @@ import org.encog.bot.dataunit.TextDataUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Base class that represents a document range.  A document range is a collection 
+ * of tags that all apply to one "concept".  For example, a Form, or a Link.  This
+ * allows the form to collect the elements inside the form, or a link to collect
+ * the text along with the link tag.
+ * @author jheaton
+ *
+ */
 public class DocumentRange {
 	private int begin;
 	private int end;

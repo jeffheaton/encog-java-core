@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * BiPolarUtil: This class contains a number of utility methods used to work
+ * This class contains a number of utility methods used to work
  * with bipolar numbers. A bipolar number is another way to represent binary
  * numbers. The value of true is defined to be one, where as false is defined to
  * be negative one.

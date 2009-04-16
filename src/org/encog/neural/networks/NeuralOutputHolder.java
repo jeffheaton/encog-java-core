@@ -34,6 +34,13 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Holds the output from each layer of the neural network.  This is very
+ * useful for the propagation algorithms that need to examine the output
+ * of each individual layer.
+ * @author jheaton
+ *
+ */
 public class NeuralOutputHolder {
 	
 	private Map<Synapse,NeuralData> result;

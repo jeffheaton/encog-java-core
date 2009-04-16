@@ -28,6 +28,11 @@ package org.encog.parse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A signal that has been accepted by the parser.
+ * @author jheaton
+ *
+ */
 public class AcceptedSignal {
   private String type;
   private String value;

@@ -33,6 +33,13 @@ import org.encog.bot.browse.WebPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implements the basic functionality that most extractors will need to implement.
+ * Mostly this involves maintaining a collection of the extraction listeners
+ * that will receive events as the extraction occurs.
+ * @author jheaton
+ *
+ */
 public abstract class BasicExtract implements Extract {
 
 	private Collection<ExtractListener> listeners = new ArrayList<ExtractListener>();

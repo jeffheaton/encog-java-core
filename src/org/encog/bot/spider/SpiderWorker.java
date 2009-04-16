@@ -35,6 +35,12 @@ import org.encog.util.orm.ORMSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The SpiderWorker class implements the EncogTask interface.  This allows
+ * the spider tasks to be multithreaded.
+ * @author jheaton
+ *
+ */
 public class SpiderWorker implements EncogTask {
 
 	private Spider owner;

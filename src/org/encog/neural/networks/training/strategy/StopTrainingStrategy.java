@@ -31,6 +31,14 @@ import org.encog.neural.networks.training.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This strategy will indicate once training is no longer improving
+ * the neural network by a specified amount, over a specified number of 
+ * cycles.  This allows the program to automatically determine when to 
+ * stop training.
+ * @author jheaton
+ *
+ */
 public class StopTrainingStrategy implements Strategy {
 
 	

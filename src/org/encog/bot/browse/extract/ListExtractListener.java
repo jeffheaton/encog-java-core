@@ -31,6 +31,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/**
+ * A simple implementation of the ExtractListener interface that will listen
+ * for words and add them to a list.  This allows you to quickly build a list
+ * of all of the words on a web page.
+ * @author jheaton
+ *
+ */
 public class ListExtractListener implements ExtractListener {
 	
 	private List<Object> list = new ArrayList<Object>();

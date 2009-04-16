@@ -25,6 +25,11 @@
  */
 package org.encog.bot.spider;
 
+/**
+ * The status that an individual workload item is in.  See the WorkloadStatus class.
+ * @author jheaton
+ *
+ */
 public class WorkloadStatus {
 
 	public final static char QUEUED = 'Q';

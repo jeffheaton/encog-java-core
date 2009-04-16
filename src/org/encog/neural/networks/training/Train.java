@@ -33,12 +33,9 @@ import org.encog.neural.networks.BasicNetwork;
 
 
 /**
- * Train: Interface for all feedforward neural network training
- * methods.  There are currently three training methods define:
- * 
- * Backpropagation
- * Genetic Algorithms
- * Simulated Annealing
+ * Interface for all neural network training methods.  This allows the 
+ * training methods to be largely interchangeable.  Though some training
+ * methods require specific types of neural network structure.
  */
 
 public interface Train {

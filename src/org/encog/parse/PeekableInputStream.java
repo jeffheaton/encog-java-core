@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * PeekableInputStream: This is a special input stream that allows the program
+ * This is a special input stream that allows the program
  * to peek one or more characters ahead in the file.
  */
 public class PeekableInputStream extends InputStream {

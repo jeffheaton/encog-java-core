@@ -33,6 +33,12 @@ import org.encog.neural.data.NeuralDataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An abstract class that implements basic training for most training algorithms.
+ * Specifically training strategies can be added to enhance the training.
+ * @author jheaton
+ *
+ */
 public abstract class BasicTraining implements Train {
 
 	private List<Strategy> strategies = new ArrayList<Strategy>();

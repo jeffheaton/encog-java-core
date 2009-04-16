@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * NeuralSimulatedAnnealing: This class implements a simulated annealing
+ * This class implements a simulated annealing
  * training algorithm for feed forward neural networks. It is based on the
  * generic SimulatedAnnealing class. It is used in the same manner as any other
  * training class that implements the Train interface.

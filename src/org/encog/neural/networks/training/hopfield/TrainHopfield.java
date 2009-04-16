@@ -37,6 +37,13 @@ import org.encog.neural.networks.training.BasicTraining;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is used to train a Hopfield neural network.  A hopfield 
+ * neural network can be created by using the basic layer and connecting
+ * it to itself, forming a single layer recurrent neural network.
+ * @author jheaton
+ *
+ */
 public class TrainHopfield extends BasicTraining {
 
 	private BasicNetwork network;

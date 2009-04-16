@@ -34,7 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Matrix: This class implements a mathematical matrix. Matrix math is very
+ * This class implements a mathematical matrix. Matrix math is very
  * important to neural network processing. Many of the neural network classes
  * make use of the matrix classes in this package.
  */

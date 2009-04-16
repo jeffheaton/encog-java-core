@@ -33,6 +33,15 @@ import org.encog.neural.networks.training.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A simple greedy strategy.  If the last iteration did not improve training,
+ * then discard it.  Care must be taken with this strategy, as sometimes a 
+ * training algorithm may need to temporarily decrease the error level before
+ * improving it.
+ * 
+ * @author jheaton
+ *
+ */
 public class Greedy implements Strategy {
 
 	private Train train;

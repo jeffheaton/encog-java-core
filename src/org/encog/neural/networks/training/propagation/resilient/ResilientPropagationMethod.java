@@ -37,6 +37,11 @@ import org.encog.neural.networks.training.propagation.PropagationSynapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implements the specifics of the resilient propagation training algorithm.
+ * @author jheaton
+ *
+ */
 public class ResilientPropagationMethod implements PropagationMethod {
 
 	/**

@@ -30,9 +30,21 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.WeightedSynapsePersistor;
+import org.encog.persist.persistors.WeightlessSynapsePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A fully connected synapse that simply sums all input to each neuron, 
+ * no weights are applied.
+ * 
+ * This synapse type is not teachable.
+ * 
+ * @author jheaton
+ *
+ */
 public class WeightlessSynapse extends BasicSynapse {
 
 	/**
@@ -96,6 +108,11 @@ public class WeightlessSynapse extends BasicSynapse {
 		WeightlessSynapse result = new WeightlessSynapse();
 		result.setMatrix(this.getMatrix().clone());
 		return result;
+	}
+	
+	public Persistor createPersistor()
+	{
+		return new WeightlessSynapsePersistor();
 	}
 
 }

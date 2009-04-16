@@ -35,7 +35,11 @@ import org.encog.parse.units.UnitManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Encog's generic parser, used by the NLP package.
+ * @author jheaton
+ *
+ */
 public class Parse {  
   private static UnitManager unitManager;
   private ParseTemplate template;

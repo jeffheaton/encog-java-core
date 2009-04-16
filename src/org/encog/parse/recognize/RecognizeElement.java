@@ -33,6 +33,12 @@ import org.encog.parse.signal.Signal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * An individual element of what the parser should recognize, these are
+ * helid in the Recognize class.
+ * @author jheaton
+ *
+ */
 public class RecognizeElement {
   public static final int ALLOW_ONE = 1;
   public static final int ALLOW_MULTIPLE = 2;

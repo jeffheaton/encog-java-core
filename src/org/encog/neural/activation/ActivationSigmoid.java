@@ -25,12 +25,15 @@
  */
 package org.encog.neural.activation;
 
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ActivationSigmoidPersistor;
+import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ActivationSigmoid: The sigmoid activation function takes on a sigmoidal
+ * The sigmoid activation function takes on a sigmoidal
  * shape. Only positive numbers are generated. Do not use this activation
  * function if negative number output is desired.
  */
@@ -82,5 +85,9 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	public Object clone()
 	{
 		return new ActivationSigmoid();
+	}
+	
+	public Persistor createPersistor() {
+		return new ActivationSigmoidPersistor();
 	}
 }

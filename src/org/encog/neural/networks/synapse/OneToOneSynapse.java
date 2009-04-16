@@ -29,9 +29,22 @@ import org.encog.matrix.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.OneToOneSynapsePersistor;
+import org.encog.persist.persistors.WeightlessSynapsePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A one-to-one synapse requires that the from and to layers have exactly
+ * the same number of neurons.  A one-to-one synapse can be useful, when used
+ * in conjunction with a ContextLayer.
+ * 
+ * This synapse is not teachable.
+ * 
+ * @author jheaton
+ *
+ */
 public class OneToOneSynapse extends BasicSynapse {
 
 	/**
@@ -91,6 +104,11 @@ public class OneToOneSynapse extends BasicSynapse {
 		OneToOneSynapse result = new OneToOneSynapse();
 		result.setMatrix(this.getMatrix().clone());
 		return result;
+	}
+	
+	public Persistor createPersistor()
+	{
+		return new OneToOneSynapsePersistor();
 	}
 
 }

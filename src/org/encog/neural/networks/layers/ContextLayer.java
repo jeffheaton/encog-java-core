@@ -30,9 +30,22 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.BasicLayerPersistor;
+import org.encog.persist.persistors.ContextLayerPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implements a context layer.  A context layer is used to implement
+ * a simple recurrent neural network, such as an Elman or Jordan neural
+ * network.  The context layer has a short-term memory.  The context layer 
+ * accept input, and provide the same data as output on the next cycle.
+ * This continues, and the context layer's output "one step" out of sync
+ * with the input.
+ * @author jheaton
+ *
+ */
 public class ContextLayer extends BasicLayer {
 
 	/**
@@ -73,7 +86,13 @@ public class ContextLayer extends BasicLayer {
 		}		
 	}
 	
-	
+	/**
+	 * Create a persistor for this layer.
+	 * @return The new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new ContextLayerPersistor();
+	}
 	
 
 }

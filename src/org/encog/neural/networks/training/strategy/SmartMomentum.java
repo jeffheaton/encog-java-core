@@ -32,6 +32,14 @@ import org.encog.neural.networks.training.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Attempt to automatically set a momentum in a training algorithm
+ * that supports momentum.
+ * 
+ * 
+ * @author jheaton
+ *
+ */
 public class SmartMomentum implements Strategy {
 	
 	public static final double MIN_IMPROVEMENT = 0.0001;

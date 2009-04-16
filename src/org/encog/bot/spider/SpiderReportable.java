@@ -30,7 +30,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 /**
- * SpiderReportable: This interface defines a class that the spider can report
+ * This interface defines a class that the spider can report
  * its findings to.
  */
 public interface SpiderReportable {

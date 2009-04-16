@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * MatrixError: Used by the matrix classes to indicate an error.
+ * Used by the matrix classes to indicate an error.
  */
 public class MatrixError extends EncogError {
 

@@ -28,14 +28,48 @@ package org.encog.neural.networks.training.propagation.resilient;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationSynapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+/**
+ * One problem with the backpropagation algorithm is that the magnitude of the
+ * partial derivative is usually too large or too small.  Further, the learning 
+ * rate is a single value for the entire neural network.  The resilient propagation
+ * learning algorithm uses a special update value(similar to the learning rate) for
+ * every neuron connection.  Further these update values are automatically determined,
+ * unlike the larning rate of the backpropagation algorithm.
+ * 
+ * For most training situations, we suggest that the resilient propagation 
+ * algorithm (this class) be used for training.
+ * 
+ * There are a total of three parameters that must be provided to the resilient
+ * training algorithm.  Defaults are provided for each, and in nearly all cases,
+ * these defaults are acceptable.  This makes the resilient propagation algorithm
+ * one of the easiest and most efficient training algorithms available.
+ * 
+ * The optional parameters are: 
+ * 
+ * zeroTolerance - How close to zero can a number be to be considered zero.
+ * The default is 0.00000000000000001.
+ *  
+ * initialUpdate -  What are the initial update values for each matrix value.
+ * The default is 0.1.
+ * 
+ * maxStep - What is the largest amount that the update values can step. The
+ * default is 50.
+ * 
+ * 
+ * Usually you will not need to use these, and you should use the 
+ * constructor that does not require them.
+ * 
+ * 
+ * @author jheaton
+ *
+ */
 public class ResilientPropagation extends Propagation {
 	
 	public final static double DEFAULT_ZERO_TOLERANCE = 0.00000000000000001;

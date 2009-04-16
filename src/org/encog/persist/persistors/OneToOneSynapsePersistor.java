@@ -23,48 +23,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.encog.persist.persistors;
 
-package org.encog.util;
+import org.encog.neural.networks.synapse.DirectSynapse;
+import org.encog.neural.networks.synapse.OneToOneSynapse;
+import org.encog.parse.tags.read.ReadXML;
+import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.EncogPersistedCollection;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
 
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
+public class OneToOneSynapsePersistor implements Persistor {
 
-public class Logging {
-	
-	
-	public static Logger getRootLogger()
-	{
-		Logger logger = LogManager.getLogManager().getLogger("");
-		return logger;
-	}
-	
-	public static Handler getConsoleHandler()
-	{
-		Handler[] handlers = Logging.getRootLogger().getHandlers();
-		for(int i=0;i<handlers.length;i++)
-		{
-			if( handlers[i] instanceof ConsoleHandler )
-				return handlers[i];
-		}
-		return null;
-	}
-	
-	public static void setConsoleLevel(Level level)
-	{
-		getConsoleHandler().setLevel(level);
-	}
-	
-	public static void stopConsoleLogging()
-	{
-		setConsoleLevel(Level.OFF);
-	}
-
-	public static void allConsoleLogging() {
-		setConsoleLevel(Level.FINEST);
-		getRootLogger().setLevel(Level.FINEST);
+	public EncogPersistedObject load(ReadXML in) {
 		
+		OneToOneSynapse synapse = new OneToOneSynapse();		
+		return synapse;
 	}
+
+	public void save(EncogPersistedObject obj, WriteXML out) {
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_ONE2ONE_SYNAPSE, out, obj, false);
+		out.endTag();
+	}
+
 }
