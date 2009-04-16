@@ -40,7 +40,6 @@ public class ActivationGaussianPersistor implements Persistor {
 	public final static String ATTRIBUTE_PEAK = "peak";
 	public final static String ATTRIBUTE_WIDTH = "width";
 	
-	@Override
 	public EncogPersistedObject load(ReadXML in) {
 		Map<String, String> map = in.readPropertyBlock();
 		double center = Double.parseDouble(map.get(ATTRIBUTE_CENTER));
@@ -49,7 +48,6 @@ public class ActivationGaussianPersistor implements Persistor {
 		return new ActivationGaussian(center, peak, width);
 	}
 
-	@Override
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		out.beginTag(obj.getClass().getSimpleName());
 		ActivationGaussian g = (ActivationGaussian)obj;

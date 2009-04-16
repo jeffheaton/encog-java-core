@@ -33,12 +33,10 @@ import org.encog.persist.Persistor;
 
 public class ActivationBiPolarPersistor implements Persistor {
 
-	@Override
 	public EncogPersistedObject load(ReadXML in) {
 		return new ActivationBiPolar();
 	}
 
-	@Override
 	public void save(EncogPersistedObject object, WriteXML out) {
 		out.beginTag(object.getClass().getSimpleName());
 		out.endTag();		

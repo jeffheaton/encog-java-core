@@ -33,12 +33,10 @@ import org.encog.persist.Persistor;
 
 public class ActivationLOGPersistor implements Persistor {
 
-	@Override
 	public EncogPersistedObject load(ReadXML in) {
 		return new ActivationLOG();
 	}
 
-	@Override
 	public void save(EncogPersistedObject object, WriteXML out) {
 		out.beginTag(object.getClass().getSimpleName());
 		out.endTag();		
