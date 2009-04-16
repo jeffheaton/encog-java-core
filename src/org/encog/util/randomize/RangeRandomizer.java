@@ -28,6 +28,13 @@ package org.encog.util.randomize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A randomizer that will create random weight and threshold values that
+ * are between a specified range.
+ * 
+ * @author jheaton
+ *
+ */
 public class RangeRandomizer extends BasicRandomizer {
 
 	final double min;

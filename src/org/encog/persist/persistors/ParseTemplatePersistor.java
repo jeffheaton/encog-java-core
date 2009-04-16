@@ -33,6 +33,11 @@ import org.encog.persist.Persistor;
 import org.encog.persist.persistors.generic.Object2XML;
 import org.encog.persist.persistors.generic.XML2Object;
 
+/**
+ * The Encog persistor used to persist the ParseTemplate class.
+ * 
+ * @author jheaton
+ */
 public class ParseTemplatePersistor implements Persistor {
 
 	public EncogPersistedObject load(ReadXML in) {

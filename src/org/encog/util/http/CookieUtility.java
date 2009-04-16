@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * CookieUtility: This class allows URLConnection objects to process cookies.
+ * This class allows URLConnection objects to process cookies.
  * The loadCookies method grabs the Set-Cookie headers and loads the cookies
  * into the map. The saveCookies method writes out the cookie map to the a
  * URLConnection object as Cookie headers.

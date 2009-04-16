@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ErrorCalculation: An implementation of root mean square (RMS) error
+ * An implementation of root mean square (RMS) error
  * calculation. This class is used by nearly every neural network in this book
  * to calculate error.
  */

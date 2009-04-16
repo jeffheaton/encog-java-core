@@ -40,7 +40,19 @@ import javax.persistence.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
- 
+
+/**
+ * This is the superclass for all Encog Hibernate persisted classes.
+ * It provides basic versioning and object id functions required by
+ * all Encog database persisted classes.  
+ * 
+ * Do not confuse this class with the EncogPersistedCollection class, 
+ * which is used to save neural networks and related files to disk. This
+ * class is exclusively used for database mapped objects.
+ * 
+ * @author jheaton
+ *
+ */
 @MappedSuperclass
 public abstract class DataObject implements Serializable
 {

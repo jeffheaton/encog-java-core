@@ -37,6 +37,11 @@ import org.encog.parse.tags.write.WriteXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility class for writing Encog persisted class files.
+ * @author jheaton
+ *
+ */
 public class PersistWriter {
 	
 	private WriteXML out;

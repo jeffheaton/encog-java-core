@@ -33,6 +33,13 @@ import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class abstracts thread pools, and potentially grids and other types
+ * of concurrency.  It is used by other classes inside of Encog to allow
+ * tasks to be executed efficiently on multicore machines.
+ * @author jheaton
+ *
+ */
 public class EncogConcurrency {
 
 	private int maxThreads;

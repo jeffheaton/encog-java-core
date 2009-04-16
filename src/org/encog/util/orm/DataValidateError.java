@@ -29,6 +29,11 @@ import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Thrown when something attempts to persist and invalid object.
+ * @author jheaton
+ *
+ */
 public class DataValidateError extends EncogError {
 	
 	/**

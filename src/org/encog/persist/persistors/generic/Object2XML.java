@@ -42,6 +42,12 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
+/**
+ * A generic class used to take an object and produce XML for it.
+ * Some of the Encog persistors make use of this class.
+ * @author jheaton
+ *
+ */
 public class Object2XML {
 
 	/**

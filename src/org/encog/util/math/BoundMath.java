@@ -25,6 +25,16 @@
  */
 package org.encog.util.math;
 
+/**
+ * Java will sometimes return Math.NaN or Math.Infinity when numbers get 
+ * to large or too small.  This can have undesirable effects.  This class
+ * provides some basic math functions that may be in danger of returning
+ * such a value.  This class imposes a very large and small ceiling and
+ * floor to keep the numbers within range.
+ * 
+ * @author jheaton
+ *
+ */
 public class BoundMath {
 	
 	public static double exp(double a)

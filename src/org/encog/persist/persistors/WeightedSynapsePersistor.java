@@ -32,6 +32,11 @@ import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 
+/**
+ * The Encog persistor used to persist the ActivationBiPolar class.
+ * 
+ * @author jheaton
+ */
 public class WeightedSynapsePersistor implements Persistor {
 
 	public final static String TAG_WEIGHTS = "weights";

@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SimulatedAnnealing: Simulated annealing is a common training method. This
+ * Simulated annealing is a common training method. This
  * class implements a simulated annealing algorithm that can be used both for
  * neural networks, as well as more general cases. This class is abstract, so a
  * more specialized simulated annealing subclass will need to be created for

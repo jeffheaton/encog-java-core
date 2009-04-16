@@ -44,6 +44,11 @@ import org.encog.util.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The Encog persistor used to persist the ActivationBiPolar class.
+ * 
+ * @author jheaton
+ */
 public class BasicNeuralDataSetPersistor implements Persistor {
 
 	public final static String TAG_ITEM = "Item";

@@ -34,6 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
+ * A randomizer that attempts to create starting weight values that are
+ * conducive to back propagation training.
+ * 
  * From:
  * 
  * Neural Networks - A Comprehensive Foundation, Haykin, chapter 6.7

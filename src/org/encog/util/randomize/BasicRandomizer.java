@@ -32,6 +32,12 @@ import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Provides basic functionality that most randomizers will need.
+ * 
+ * @author jheaton
+ *
+ */
 public abstract class BasicRandomizer implements Randomizer {
 
 	/**

@@ -43,6 +43,11 @@ import org.encog.persist.persistors.PersistorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utility class for reading Encog persited object files.
+ * @author jheaton
+ *
+ */
 public class PersistReader {
 
 	public final static String ATTRIBUTE_NAME = "name";

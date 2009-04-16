@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * MateWorker: This class is used in conjunction with a thread pool. This allows
+ * This class is used in conjunction with a thread pool. This allows
  * the genetic algorithm to offload all of those calculations to a thread pool.
  */
 public class MateWorker<GENE_TYPE> implements

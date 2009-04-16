@@ -46,7 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * ReadCSV: Read and parse CSV format files.
+ * Read and parse CSV format files.
  */
 public class ReadCSV {
 	

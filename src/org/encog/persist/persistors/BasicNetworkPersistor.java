@@ -39,6 +39,11 @@ import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 
+/**
+ * The Encog persistor used to persist the BasicNetwork class.
+ * 
+ * @author jheaton
+ */
 public class BasicNetworkPersistor implements Persistor {
 	
 	public static final String TAG_LAYERS = "layers";

@@ -36,6 +36,12 @@ import org.encog.util.orm.SessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Utilities for using the Hypersonic SQL (HSQL) engine.  Encog uses this
+ * SQL database for in-memory spidering, as well as unit testing.
+ * @author jheaton
+ *
+ */
 public class HSQLUtil {
  	
     public static final String DRIVER = "org.hsqldb.jdbcDriver";

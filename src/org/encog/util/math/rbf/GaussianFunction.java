@@ -31,6 +31,12 @@ import org.encog.util.math.MathConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Implements a radial function based on the gaussian function.
+ * 
+ * @author jheaton
+ *
+ */
 public class GaussianFunction implements RadialBasisFunction {
 	
 	private double center;

@@ -31,6 +31,11 @@ import org.hibernate.ScrollableResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Used to manage large (scrolled) results from Hibernate.
+ * @author jheaton
+ *
+ */
 public class ScrollingResult {
 	
 	private ScrollableResults scroll;

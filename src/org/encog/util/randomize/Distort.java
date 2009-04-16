@@ -28,6 +28,11 @@ package org.encog.util.randomize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A randomizer that distorts what is already present in the neural network.
+ * @author jheaton
+ *
+ */
 public class Distort extends BasicRandomizer {
 
 	private double factor;

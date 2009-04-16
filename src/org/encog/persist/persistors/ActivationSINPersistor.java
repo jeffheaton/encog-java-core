@@ -31,6 +31,11 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 
+/**
+ * The Encog persistor used to persist the ActivationSIN class.
+ * 
+ * @author jheaton
+ */
 public class ActivationSINPersistor implements Persistor {
 
 	public EncogPersistedObject load(ReadXML in) {

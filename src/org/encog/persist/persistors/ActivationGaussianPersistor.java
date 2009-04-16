@@ -34,6 +34,11 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 
+/**
+ * The Encog persistor used to persist the ActivationGaussian class.
+ * 
+ * @author jheaton
+ */
 public class ActivationGaussianPersistor implements Persistor {
 
 	public final static String ATTRIBUTE_CENTER = "center";

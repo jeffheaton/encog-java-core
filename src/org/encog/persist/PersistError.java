@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * General error class for Encog.
+ * General error class for Encog persistance.
  * @author jheaton
  */
 public class PersistError extends RuntimeException {

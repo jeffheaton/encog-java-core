@@ -30,7 +30,7 @@ import org.encog.parse.tags.write.WriteXML;
 
 
 /**
- * Persistor: This interface defines a class that can load and save an
+ * This interface defines a class that can load and save an
  * EncogPersistedObject.
  * 
  * @author jheaton

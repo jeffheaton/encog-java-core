@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * SerializeObject: Load or save an object using Java serialization.
+ * Load or save an object using Java serialization.
  */
 public final class SerializeObject {
 	

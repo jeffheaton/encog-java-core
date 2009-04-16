@@ -32,6 +32,11 @@ import org.encog.matrix.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A utility for writing matrixes to the log.
+ * @author jheaton
+ *
+ */
 public class DumpMatrix {
 	
 	/**

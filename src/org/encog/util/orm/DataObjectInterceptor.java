@@ -33,6 +33,13 @@ import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A simple Hibernate interceptor that ensures that the last update 
+ * field on Encog database persisted objects are updated.
+ * 
+ * @author jheaton
+ *
+ */
 public class DataObjectInterceptor extends EmptyInterceptor {
 
 	/**

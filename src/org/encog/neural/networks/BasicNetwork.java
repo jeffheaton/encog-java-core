@@ -54,6 +54,14 @@ import org.slf4j.LoggerFactory;
  * 
  * The first layer added is the input layer, the final layer added is the output
  * layer. Any layers added between these two layers are the hidden layers.
+ * 
+ * The network structure is stored in the structure member.  It is important
+ * to call:
+ * 
+ * network.getStructure().finalizeStructure();
+ * 
+ * Once the neural network has been completely constructed.
+ * 
  */
 public class BasicNetwork implements Serializable, Network
 		 {
@@ -82,6 +90,10 @@ public class BasicNetwork implements Serializable, Network
 	 */
 	private String name;
 
+	/**
+	 * Holds the structure of the network.  This keeps the network from
+	 * having to constantly lookup layers and synapses.
+	 */
 	private NeuralStructure structure;
 
 	/**
@@ -97,10 +109,22 @@ public class BasicNetwork implements Serializable, Network
 		this.structure = new NeuralStructure(this);
 	}
 
+
+	/**
+	 * Add a layer to the neural network.  If there are no layers added
+	 * this layer will become the input layer.  This function automatically
+	 * updates both the input and output layer references. 
+	 * 
+	 * @param layer The layer to be added to the network.
+	 * @param type What sort of synapse should connect this layer to the last.
+	 */
 	public void addLayer(final Layer layer, final SynapseType type) {
+		
+		// is this the first layer? If so, mark as the input layer.
 		if (this.inputLayer == null)
 			this.outputLayer = this.inputLayer = layer;
 		else {
+		// add the layer to any previous layers
 			this.outputLayer.addNext(layer, type);
 			this.outputLayer = layer;
 		}
@@ -108,7 +132,8 @@ public class BasicNetwork implements Serializable, Network
 
 	/**
 	 * Add a layer to the neural network. The first layer added is the input
-	 * layer, the last layer added is the output layer.
+	 * layer, the last layer added is the output layer.  This layer is added
+	 * with a weighted synapse.
 	 * 
 	 * @param layer
 	 *            The layer to be added.
@@ -163,6 +188,10 @@ public class BasicNetwork implements Serializable, Network
 		return result;
 	}
 
+	/**
+	 * Define the input layer for the network.
+	 * @param input The new input layer.
+	 */
 	public void setInputLayer(Layer input) {
 		this.inputLayer = input;
 	}

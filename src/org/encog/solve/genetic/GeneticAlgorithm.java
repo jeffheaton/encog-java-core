@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * GeneticAlgorithm: Implements a genetic algorithm. This is an abstract class.
+ * Implements a genetic algorithm. This is an abstract class.
  * Other classes are provided in this book that use this base class to train
  * neural networks or provide an answer to the traveling salesman problem.
  * 

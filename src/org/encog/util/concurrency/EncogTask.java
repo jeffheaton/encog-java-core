@@ -25,6 +25,12 @@
  */
 package org.encog.util.concurrency;
 
+/**
+ * An individual task that can be submitted to the EncogCurrency
+ * utility.
+ * @author jheaton
+ *
+ */
 public interface EncogTask extends Runnable {
 
 }

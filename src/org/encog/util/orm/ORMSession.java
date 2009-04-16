@@ -33,6 +33,12 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A Hibernate session.  This class provides access to the Hibernate persisted
+ * database.
+ * @author jheaton
+ *
+ */
 public class ORMSession {
 	
 	/**

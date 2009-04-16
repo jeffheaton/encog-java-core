@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * BoundNumbers: A simple class that prevents numbers from getting either too
+ * A simple class that prevents numbers from getting either too
  * big or too small.
  */
 public final class BoundNumbers {

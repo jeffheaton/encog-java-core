@@ -123,15 +123,6 @@ public class NeuralStructure {
 		
 		return result;
 		
-		/*Collection<Synapse> result = new HashSet<Synapse>();
-		for (Layer layer : this.getLayers()) {
-			for (Synapse synapse : layer.getNext()) {
-				if (synapse.getToLayer() == targetLayer) {
-					result.add(synapse);
-				}
-			}
-		}
-		return result;*/
 	}
 
 	public List<Layer> getLayers() {

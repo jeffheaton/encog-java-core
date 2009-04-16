@@ -12,6 +12,11 @@ import org.encog.util.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The Encog persistor used to persist the RadialBasisFunctionLayer class.
+ * 
+ * @author jheaton
+ */
 public class RadialBasisFunctionLayerPersistor implements Persistor {
 
 	/**

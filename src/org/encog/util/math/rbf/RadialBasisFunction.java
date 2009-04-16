@@ -26,9 +26,13 @@
 
 package org.encog.util.math.rbf;
 
-import org.encog.util.math.BoundMath;
-import org.encog.util.math.MathConst;
-
+/**
+ * Provides a generic interface to a radial basis function (RBF).  Encog uses
+ * RBF's for a variety of purposes.
+ * 
+ * @author jheaton
+ *
+ */
 public interface RadialBasisFunction {
 	
 	public double calculate(double x);	

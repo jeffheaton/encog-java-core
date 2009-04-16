@@ -26,6 +26,11 @@
 
 package org.encog.util.math;
 
+/**
+ * Math constants needed by Encog.
+ * @author jheaton
+ *
+ */
 public class MathConst {
 	public static final double EULERS_NUMBER = 2.718281828;
 }

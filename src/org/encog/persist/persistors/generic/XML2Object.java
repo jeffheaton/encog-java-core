@@ -40,6 +40,12 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
+/**
+ * A generic class used to take an XML segment and produce an object for it.
+ * Some of the Encog persistors make use of this class.
+ * @author jheaton
+ *
+ */
 public class XML2Object {
 	
 	/**

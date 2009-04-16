@@ -32,6 +32,14 @@ import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+/**
+ * Provides simple logging access to the JDK logging system.  Encog uses
+ * slf4j to abstract which log it uses.  However, by default Encog uses
+ * JDK logging.  This class can be used to manage JDK logging.
+ * 
+ * @author jheaton
+ *
+ */
 public class Logging {
 	
 	

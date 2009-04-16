@@ -43,16 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Heaton Research Spider Copyright 2007 by Heaton Research, Inc.
- * 
- * HTTP Programming Recipes for Java ISBN: 0-9773206-6-9
- * http://www.heatonresearch.com/articles/series/16/
- * 
- * FormUtility: This class is used to construct responses to HTML forms. The
+ * This class is used to construct responses to HTML forms. The
  * class supports both standard HTML forms, as well as multipart forms.
- * 
- * This class is released under the: GNU Lesser General Public License (LGPL)
- * http://www.gnu.org/copyleft/lesser.html
  */
 public class FormUtility {
 	/**

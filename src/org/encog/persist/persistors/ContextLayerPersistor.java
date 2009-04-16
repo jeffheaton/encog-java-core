@@ -37,6 +37,11 @@ import org.encog.util.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * The Encog persistor used to persist the ContextLayer class.
+ * 
+ * @author jheaton
+ */
 public class ContextLayerPersistor implements Persistor {
 
 	/**

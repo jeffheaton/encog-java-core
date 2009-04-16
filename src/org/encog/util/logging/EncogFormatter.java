@@ -32,6 +32,12 @@ import java.util.logging.LogRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A simple formatter for logging.
+ * 
+ * @author jheaton
+ *
+ */
 public class EncogFormatter extends Formatter {
 
 	/**

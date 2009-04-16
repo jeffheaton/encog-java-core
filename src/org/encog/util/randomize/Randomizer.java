@@ -28,6 +28,13 @@ package org.encog.util.randomize;
 import org.encog.matrix.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 
+/**
+ * Defines the interface for a class that is capable of randomizing the
+ * weights and thresholds of a neural network.
+ * 
+ * @author jheaton
+ *
+ */
 public interface Randomizer {
 	
 	public double randomize(double d);

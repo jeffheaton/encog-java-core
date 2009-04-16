@@ -32,6 +32,11 @@ import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 
+/**
+ * The Encog persistor used to persist the TextData class.
+ * 
+ * @author jheaton
+ */
 public class TextDataPersistor implements Persistor {
 
 	public EncogPersistedObject load(ReadXML in) {

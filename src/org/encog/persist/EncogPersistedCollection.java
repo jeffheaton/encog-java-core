@@ -39,6 +39,9 @@ import org.slf4j.LoggerFactory;
  * allows the various neural networks and some data sets to be persisted. They
  * are persisted to an XML form.
  * 
+ * The EncogPersistedCollection does not load the object into memory at once.
+ * This allows it to manage large files.  
+ * 
  * @author jheaton
  * 
  */

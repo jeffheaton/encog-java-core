@@ -27,6 +27,14 @@ package org.encog.persist;
 
 import org.encog.neural.activation.ActivationBiPolar;
 
+/**
+ * The idea of the Encog persisted collection is that the entire file
+ * might be quite long and should not be read into memory in its 
+ * entirity. Directory entry classes allow you to list the contents of
+ * a file without loading the entire file.  
+ * @author jheaton
+ *
+ */
 public class DirectoryEntry {
 	
 	private final String type;

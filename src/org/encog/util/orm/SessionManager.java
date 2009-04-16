@@ -32,6 +32,14 @@ import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This is the manager class for Encog database object relation mapping(ORM).  
+ * This is based on Hibernate.  The primary purpose for this class is to 
+ * provide a way for sessions to be created.
+ * 
+ * @author jheaton
+ *
+ */
 public class SessionManager {
 	
 	private SessionFactory sessionFactory;
