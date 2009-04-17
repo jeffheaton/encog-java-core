@@ -39,7 +39,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
-import org.encog.persist.DirectoryEntry;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.ErrorCalculation;

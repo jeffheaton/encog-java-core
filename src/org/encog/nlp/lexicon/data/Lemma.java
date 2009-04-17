@@ -32,6 +32,7 @@ import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.encog.util.orm.DataObject;
 import org.slf4j.Logger;
@@ -60,7 +61,8 @@ public class Lemma extends DataObject {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Transient
+	final transient private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@OneToMany(mappedBy = "lemma")
 	private Collection<Word> uses = new ArrayList<Word>();

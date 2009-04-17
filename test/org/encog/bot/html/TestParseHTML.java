@@ -58,13 +58,19 @@ public class TestParseHTML extends TestCase {
 	public void testBoth() throws Throwable
 	{
 		String html="<br/>";
+		String htmlName = "br";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
 		ReadHTML parse = new ReadHTML(bis);
 		TestCase.assertTrue(parse.read()==0);
 		Tag tag = parse.getTag();
 		TestCase.assertNotNull(tag);
-		//TestCase.assertTrue(tag.getType()==Tag.Type.BOTH);
-		TestCase.assertTrue(tag.toString().equals(html));
+		TestCase.assertTrue(tag.getType()==Tag.Type.BEGIN);
+		TestCase.assertTrue(tag.getName().equals(htmlName));
+		parse.readToTag();
+		tag = parse.getTag();
+		TestCase.assertNotNull(tag);
+		TestCase.assertTrue(tag.getType()==Tag.Type.END);
+		TestCase.assertTrue(tag.getName().equals(htmlName));
 	}
 	
 	public void testBothWithAttributes() throws Throwable

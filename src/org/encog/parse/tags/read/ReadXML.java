@@ -74,4 +74,25 @@ public class ReadXML extends ReadTags {
 			throw new ParseError(e);
 		}
 	}
+
+	public boolean findTag(String name, boolean beginTag) {
+		while( this.readToTag() )
+		{
+			if( beginTag )
+			{
+				if( this.getTag().getName().equals(name) && 
+						this.getTag().getType()==Type.BEGIN)
+					return true;
+			}
+			else
+			{
+				if( this.getTag().getName().equals(name) && 
+						this.getTag().getType()==Type.END)
+					return true;
+			}
+		}
+		
+		return false;
+		
+	}
 }

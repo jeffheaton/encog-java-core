@@ -59,7 +59,7 @@ public class WorkloadItem extends DataObject {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	final transient private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	
 	public String getUrl() {

@@ -33,6 +33,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.encog.util.orm.DataObject;
@@ -64,7 +65,8 @@ public class Word extends DataObject {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Transient
+	final transient private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@Index( name="index_lexicon_word")
 	private String text;

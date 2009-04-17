@@ -28,7 +28,6 @@ package org.encog.neural.activation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationLinearPersistor;
-import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

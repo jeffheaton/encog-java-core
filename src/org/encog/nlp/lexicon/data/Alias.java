@@ -28,6 +28,7 @@ package org.encog.nlp.lexicon.data;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 import org.encog.util.orm.DataObject;
 import org.slf4j.Logger;
@@ -56,7 +57,8 @@ public class Alias extends DataObject {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Transient
+	final transient private Logger logger = LoggerFactory.getLogger(this.getClass());
 	  
 	  private String alias;
 

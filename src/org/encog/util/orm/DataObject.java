@@ -36,6 +36,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 import org.slf4j.Logger;
@@ -65,7 +66,8 @@ public abstract class DataObject implements Serializable
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	@Transient
+	final private transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Id
     @GeneratedValue(strategy = GenerationType.AUTO)

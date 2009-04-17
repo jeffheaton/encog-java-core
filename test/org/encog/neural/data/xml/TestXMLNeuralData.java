@@ -28,7 +28,7 @@ public class TestXMLNeuralData extends TestCase {
 	{
 		generateXML();
 		XMLNeuralDataSet set = new XMLNeuralDataSet(
-				TestXMLNeuralData.FILENAME, 
+				TestXMLNeuralData.FILENAME,2,1,
 				"pair", 
 				"input", 
 				"ideal", 

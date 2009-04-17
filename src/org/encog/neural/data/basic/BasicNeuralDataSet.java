@@ -333,7 +333,7 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 			{
 				BasicNeuralData input = new BasicNeuralData(pair.getInput());
 				BasicNeuralData ideal = new BasicNeuralData(pair.getIdeal());
-				result.add(new BasicNeuralDataPair(ideal));
+				result.add(new BasicNeuralDataPair(input,ideal));
 			}
 		}
 		return result;

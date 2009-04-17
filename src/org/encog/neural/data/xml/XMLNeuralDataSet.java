@@ -25,8 +25,13 @@
  */
 package org.encog.neural.data.xml;
 
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,7 +40,10 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.csv.CSVNeuralDataSet.CSVNeuralIterator;
+import org.encog.parse.tags.read.ReadXML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * A data source that reads XML files.  This class is not memory based, so
  * very large XML files can be used, without problem.
  */
-public class XMLNeuralDataSet extends BasicNeuralDataSet {
+public class XMLNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * The serial id.
@@ -61,6 +69,103 @@ public class XMLNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	public static final String ADD_NOT_SUPPORTED = 
 		"Adds are not supported with this dataset, it is read only.";
+	
+	private final String filename; 
+	private final String pairXML;
+	private final String inputXML;
+	private final String idealXML;
+	private final String valueXML;
+	private final int inputSize;
+	private final int idealSize;
+	/**
+	 * A collection of iterators that have been created.
+	 */
+	private final List<XMLNeuralIterator> iterators = 
+		new ArrayList<XMLNeuralIterator>();
+	
+	/**
+	 * An iterator designed to read from XML files.
+	 * @author jheaton
+	 */
+	public class XMLNeuralIterator implements Iterator<NeuralDataPair> {
+
+		private InputStream file;
+		private ReadXML reader;
+		private NeuralDataPair nextPair;
+		
+		public XMLNeuralIterator()
+		{
+			try
+			{
+				this.file = new FileInputStream(getFilename());
+				this.reader = new ReadXML(this.file);
+			}
+			catch(IOException e)
+			{
+				if( logger.isErrorEnabled() )
+				{
+					logger.error("Exception",e);
+				}
+				throw new NeuralNetworkError(e);
+			}
+		}
+		
+		@Override
+		public boolean hasNext() {
+			
+				return false;
+		}
+		
+		private boolean obtainNext()
+		{
+			if( !this.reader.findTag(getPairXML(),true) )
+				invalidError();
+			//for(int i=0;i<inputCount)
+			if( !this.reader.findTag(getInputXML(),true) )
+				invalidError();
+			if( !this.reader.findTag(getValueXML(),true) )
+				invalidError();
+			if( !this.reader.findTag(getIdealXML(),true) )
+				invalidError();
+			return false;
+			
+		}
+		
+		private void invalidError()
+		{
+			String str = "Could not parse XML, incons;istant tag structure.";
+			if( logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
+
+		@Override
+		public NeuralDataPair next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void remove() {
+			try
+			{
+				this.file.close();
+				iterators.remove(this);
+			}
+			catch(IOException e)
+			{
+				if( logger.isErrorEnabled())
+				{
+					logger.error("Error",e);
+				}
+				throw new NeuralNetworkError(e);
+			}
+			
+		}		
+	}
+	
 
 	/**
 	 * Construct an XML neural data set.
@@ -72,44 +177,19 @@ public class XMLNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	public XMLNeuralDataSet(
 			final String filename, 
+			final int inputSize,
+			final int idealSize,
 			final String pairXML, 
 			final String inputXML,
 			final String idealXML, 
 			final String valueXML) {
-
-		try {
-			InputStream is = new FileInputStream(filename);
-
-			// setup the XML parser stuff
-			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-
-			DocumentBuilder db = null;
-			db = dbf.newDocumentBuilder();
-
-			//Document doc = null;
-			//doc = db.parse(is);
-//			Element node = doc.getDocumentElement();
-
-			// read in the data
-
-			/*BasicNeuralDataSetPersistor persistor = 
-				new BasicNeuralDataSetPersistor();
-
-			persistor.setIdealXML(idealXML);
-			persistor.setInputXML(inputXML);
-			persistor.setPairXML(pairXML);
-			persistor.setValueXML(valueXML);*/
-
-			//BasicNeuralDataSet set = (BasicNeuralDataSet) persistor.load(node);
-			//this.setData(set.getData());
-
-			is.close();
-
-		} catch (javax.xml.parsers.ParserConfigurationException e) {
-			throw new NeuralNetworkError(e);
-		} catch (java.io.IOException e) {
-			throw new NeuralNetworkError(e);
-		}
+		this.filename = filename;
+		this.pairXML = pairXML;
+		this.inputXML = inputXML;
+		this.idealXML = idealXML;
+		this.valueXML = valueXML;
+		this.idealSize = idealSize;
+		this.inputSize = inputSize;
 	}
 
 	/**
@@ -136,4 +216,52 @@ public class XMLNeuralDataSet extends BasicNeuralDataSet {
 	public void add(final NeuralData data1) {
 		throw new NeuralDataError(XMLNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
+
+	public String getFilename() {
+		return filename;
+	}
+
+	public String getPairXML() {
+		return pairXML;
+	}
+
+	public String getInputXML() {
+		return inputXML;
+	}
+
+	public String getIdealXML() {
+		return idealXML;
+	}
+
+	public String getValueXML() {
+		return valueXML;
+	}
+
+	@Override
+	public void close() {
+		for(int i=0;i<this.iterators.size();i++)
+		{
+			XMLNeuralIterator iterator = this.iterators.get(i);
+			iterator.remove();
+		}		
+	}
+
+	@Override
+	public int getIdealSize() {
+		return this.idealSize;
+	}
+
+	@Override
+	public int getInputSize() {
+		return this.inputSize;
+	}
+
+	@Override
+	public Iterator<NeuralDataPair> iterator() {
+		XMLNeuralIterator result = new XMLNeuralIterator();
+		this.iterators.add(result);
+		return result;
+	}
+	
+	
 }

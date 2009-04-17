@@ -28,7 +28,6 @@ package org.encog.neural.activation;
 
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationSINPersistor;
-import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
