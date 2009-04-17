@@ -116,6 +116,14 @@ public class BasicLayer implements Layer, Serializable {
 	public BasicLayer(final int neuronCount) {
 		this(new ActivationTANH(), true, neuronCount);
 	}
+	
+	/**
+	 * Default constructor, mainly so the workbench can easily create a default layer.
+	 */
+	public BasicLayer()
+	{
+		this(1);
+	}
 
 	/**
 	 * Compute the outputs for this layer given the input pattern. The output is

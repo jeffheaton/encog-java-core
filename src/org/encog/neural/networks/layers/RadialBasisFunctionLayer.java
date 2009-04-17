@@ -65,6 +65,14 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	private static final long serialVersionUID = 2779781041654829282L;
 	private RadialBasisFunction[] radialBasisFunction;
 
+	/**
+	 * Default constructor, mainly so the workbench can easily create a default layer.
+	 */
+	public RadialBasisFunctionLayer()
+	{
+		this(1);
+	}
+	
 	public RadialBasisFunctionLayer(int neuronCount) {
 		super(new ActivationLinear(), false, neuronCount);
 		this.radialBasisFunction = new RadialBasisFunction[neuronCount];

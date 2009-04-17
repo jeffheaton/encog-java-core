@@ -131,7 +131,12 @@ public class BasicNetworkPersistor implements Persistor {
 
 	public EncogPersistedObject load(ReadXML in) {
 				
+		String name = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_NAME);
+		String description = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
+		
 		this.currentNetwork = new BasicNetwork();
+		this.currentNetwork.setName(name);
+		this.currentNetwork.setDescription(description);
 		
 		while( in.readToTag() ) 
 		{

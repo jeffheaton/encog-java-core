@@ -70,6 +70,14 @@ public class ContextLayer extends BasicLayer {
 		this(new ActivationTANH(), true, neuronCount);
 	}
 	
+	/**
+	 * Default constructor, mainly so the workbench can easily create a default layer.
+	 */
+	public ContextLayer()
+	{
+		this(1);
+	}
+	
 	public NeuralData recur() {
 		return this.context;
 	}
