@@ -368,5 +368,14 @@ public class BasicLayer implements Layer, Serializable {
 	{
 		this.y = y;
 	}
+
+	public boolean isConnectedTo(Layer layer) {
+		for(Synapse synapse: this.next)
+		{
+			if( synapse.getToLayer() == layer)
+				return true;
+		}
+		return false;
+	}
 	
 }

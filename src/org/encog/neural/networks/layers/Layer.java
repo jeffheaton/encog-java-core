@@ -70,4 +70,5 @@ public interface Layer extends Cloneable, EncogPersistedObject  {
 	int getY();
 	void setX(int x);
 	void setY(int y);
+	boolean isConnectedTo(Layer layer);
 }

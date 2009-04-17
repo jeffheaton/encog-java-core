@@ -110,7 +110,6 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 			}
 		}
 		
-		@Override
 		public boolean hasNext() {
 			
 				return false;
@@ -141,13 +140,11 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 			throw new NeuralNetworkError(str);
 		}
 
-		@Override
 		public NeuralDataPair next() {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		@Override
 		public void remove() {
 			try
 			{
@@ -237,7 +234,6 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 		return valueXML;
 	}
 
-	@Override
 	public void close() {
 		for(int i=0;i<this.iterators.size();i++)
 		{
@@ -246,17 +242,14 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 		}		
 	}
 
-	@Override
 	public int getIdealSize() {
 		return this.idealSize;
 	}
 
-	@Override
 	public int getInputSize() {
 		return this.inputSize;
 	}
 
-	@Override
 	public Iterator<NeuralDataPair> iterator() {
 		XMLNeuralIterator result = new XMLNeuralIterator();
 		this.iterators.add(result);
