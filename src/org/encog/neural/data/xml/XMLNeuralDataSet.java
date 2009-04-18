@@ -41,6 +41,8 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.csv.CSVNeuralDataSet.CSVNeuralIterator;
 import org.encog.parse.tags.read.ReadXML;
@@ -111,23 +113,55 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 		}
 		
 		public boolean hasNext() {
+			if( this.nextPair!=null)
+				return true;
 			
-				return false;
+			return obtainNext();
 		}
 		
 		private boolean obtainNext()
 		{
 			if( !this.reader.findTag(getPairXML(),true) )
-				invalidError();
-			//for(int i=0;i<inputCount)
+				return false;
+			
+			NeuralData input = new BasicNeuralData(inputSize);
+			NeuralData ideal = new BasicNeuralData(idealSize);
+			
 			if( !this.reader.findTag(getInputXML(),true) )
 				invalidError();
-			if( !this.reader.findTag(getValueXML(),true) )
-				invalidError();
-			if( !this.reader.findTag(getIdealXML(),true) )
-				invalidError();
-			return false;
 			
+			for(int i=0;i<inputSize;i++)
+			{
+				if( !this.reader.findTag(getValueXML(),true) )
+					invalidError();
+				String str = this.reader.readTextToTag();
+				input.setData(i,Double.parseDouble(str));
+			}
+			
+			if( idealSize>0 )
+			{
+				if( !this.reader.findTag(getIdealXML(),true) )
+					invalidError();
+				
+				for(int i=0;i<idealSize;i++)
+				{
+					if( !this.reader.findTag(getValueXML(),true) )
+						invalidError();
+					String str = this.reader.readTextToTag();
+					ideal.setData(i,Double.parseDouble(str));
+				}
+			}
+			
+			if( ideal!=null )
+			{
+				this.nextPair = new BasicNeuralDataPair(input,ideal);
+			}
+			else
+			{
+				this.nextPair = new BasicNeuralDataPair(input);
+			}
+			
+			return true;
 		}
 		
 		private void invalidError()
@@ -141,8 +175,17 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 		}
 
 		public NeuralDataPair next() {
-			// TODO Auto-generated method stub
-			return null;
+			NeuralDataPair result = this.nextPair;
+			
+			if( result==null )
+			{
+				if( !obtainNext() )
+					return null;
+				result = this.nextPair;
+			}
+			
+			this.nextPair = null;
+			return result;
 		}
 
 		public void remove() {
