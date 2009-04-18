@@ -70,7 +70,8 @@ public class NeuralStructure {
 	private void finalizeLayers()
 	{
 		Set<Layer> result = new HashSet<Layer>();
-		getLayers(result, this.network.getInputLayer());
+		if( this.network.getInputLayer()!=null)
+			getLayers(result, this.network.getInputLayer());
 		this.layers.clear();
 		this.layers.addAll(result);
 	}
