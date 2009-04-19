@@ -377,5 +377,10 @@ public class BasicLayer implements Layer, Serializable {
 		}
 		return false;
 	}
+
+	public void setThreshold(double[] d) {
+		this.threshold = d;
+		
+	}
 	
 }
