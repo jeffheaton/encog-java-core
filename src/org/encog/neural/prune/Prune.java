@@ -25,8 +25,12 @@
  */
 package org.encog.neural.prune;
 
+import java.util.Collection;
+
+import org.encog.matrix.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -60,7 +64,47 @@ public class Prune {
 	
 	private void increaseNeuronCount(Layer layer,int neuronCount)
 	{
-		//network.prune(targetLayer, neuron)
+		// adjust the threshold
+		double[] newThreshold = new double[neuronCount];
+		for(int i=0;i<layer.getNeuronCount();i++)
+		{
+			newThreshold[i] = layer.getThreshold(i);
+		}
+		
+		layer.setThreshold(newThreshold);
+		
+		// adjust the outbound weight matrixes
+		for(Synapse synapse: layer.getNext())
+		{
+			Matrix newMatrix = new Matrix(neuronCount,synapse.getToNeuronCount());
+			// copy existing matrix to new matrix
+			for(int row = 0;row<layer.getNeuronCount();row++)
+			{
+				for(int col = 0;col<synapse.getToNeuronCount();col++)
+				{
+					newMatrix.set(row,col,synapse.getMatrix().get(row, col));
+				}
+			}
+		}
+			
+		// adjust the inbound weight matrixes
+		Collection<Synapse> inboundSynapses = this.network.getStructure().getPreviousSynapses(layer);
+		
+		for(Synapse synapse: inboundSynapses)
+		{
+			Matrix newMatrix = new Matrix(synapse.getFromNeuronCount(), neuronCount);
+			// copy existing matrix to new matrix
+			for(int row = 0;row<synapse.getFromNeuronCount();row++)
+			{
+				for(int col = 0;col<neuronCount;col++)
+				{
+					newMatrix.set(row,col,synapse.getMatrix().get(row, col));
+				}
+			}
+		}
+		
+		// finally, up the neuron count
+		layer.setNeuronCount(neuronCount);
 	}
 	
 	private void decreaseNeuronCount(Layer layer,int neuronCount)

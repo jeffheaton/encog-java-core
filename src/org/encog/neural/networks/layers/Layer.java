@@ -55,7 +55,14 @@ public interface Layer extends Cloneable, EncogPersistedObject  {
 	Collection<Layer> getNextLayers();
 	List<Synapse> getNext();
 	ActivationFunction getActivationFunction();
+	
+	/**
+	 * Set the neuron count, this will NOT adjust the synapses, or thresholds
+	 * other code must do that.
+	 * @param neuronCount The new neuron count
+	 */
 	void setNeuronCount(int neuronCount);
+	
 	void addNext(Layer next);
 	void addNext(Layer next, SynapseType type);
 	NeuralData recur();
