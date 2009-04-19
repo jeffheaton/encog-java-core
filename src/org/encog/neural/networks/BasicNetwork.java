@@ -556,6 +556,29 @@ public class BasicNetwork implements Serializable, Network
 	public NeuralStructure getStructure() {
 		return structure;
 	}
+	
+	public void inferOutputLayer()
+	{
+		// set the output layer to null, if we can figure it out it will be set to something else
+		this.outputLayer = null;
+		
+		// if we do not know the input layer, then there is no way to infer the output layer
+		if( getInputLayer()==null)
+			return;
+		
+		this.outputLayer = inferOutputLayer(this.inputLayer);
+	}
+	
+	public Layer inferOutputLayer(Layer layer)
+	{
+		for(Synapse synapse: layer.getNext())
+		{
+			if( synapse.isTeachable() && !synapse.isSelfConnected())
+				return inferOutputLayer(synapse.getToLayer());
+		}
+		
+		return layer;
+	}
 
 
 }
