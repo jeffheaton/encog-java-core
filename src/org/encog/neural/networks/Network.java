@@ -203,15 +203,6 @@ public interface Network extends EncogPersistedObject {
 
 	public boolean isHidden(Layer layer);
 
-	/**
-	 * Prune one of the neurons from this layer. Remove all entries in this
-	 * weight matrix and other layers.
-	 * 
-	 * @param neuron
-	 *            The neuron to prune. Zero specifies the first neuron.
-	 */
-	public void prune(final Layer targetLayer, final int neuron);
-
 
 	/**
 	 * @param outputLayer

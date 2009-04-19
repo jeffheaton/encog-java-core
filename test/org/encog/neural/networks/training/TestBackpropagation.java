@@ -58,7 +58,7 @@ public class TestBackpropagation extends TestCase {
 		TestCase.assertEquals(3,hidden.getNeuronCount());
 
 		
-		network.prune(hidden, 1);
+		//network.prune(hidden, 1);
 		
 		TestCase.assertEquals(2,hidden.getNeuronCount());
 	}

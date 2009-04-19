@@ -25,14 +25,59 @@
  */
 package org.encog.neural.prune;
 
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class Prune {
+	
+	private BasicNetwork network;
+	
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	public Prune(BasicNetwork network)
+	{
+		this.network = network;
+	}
+	
+	public void changeNeuronCount(Layer layer, int neuronCount)
+	{
+		// is there anything to do?
+		if( neuronCount==layer.getNeuronCount())
+			return;
+		
+		if( neuronCount>layer.getNeuronCount() )
+			increaseNeuronCount(layer,neuronCount);
+		else
+			decreaseNeuronCount(layer,neuronCount);
+	}
+	
+	private void increaseNeuronCount(Layer layer,int neuronCount)
+	{
+		//network.prune(targetLayer, neuron)
+	}
+	
+	private void decreaseNeuronCount(Layer layer,int neuronCount)
+	{
+		
+	}
+
+	public BasicNetwork getNetwork()
+	{
+		return this.network;
+	}
+	
+	public void determineNeuronSignificance(int neuron)
+	{
+		
+	}
+	
+	
 }
+

@@ -504,38 +504,6 @@ public class BasicNetwork implements Serializable, Network
 		return !isInput(layer) && !isOutput(layer);
 	}
 
-	/**
-	 * Prune one of the neurons from this layer. Remove all entries in this
-	 * weight matrix and other layers.
-	 * 
-	 * @param neuron
-	 *            The neuron to prune. Zero specifies the first neuron.
-	 */
-	public void prune(final Layer targetLayer, final int neuron) {
-		// delete a row on this matrix
-		for (Synapse synapse : targetLayer.getNext()) {
-			synapse
-					.setMatrix(MatrixMath
-							.deleteRow(synapse.getMatrix(), neuron));
-		}
-
-		// delete a column on the previous
-		final Collection<Layer> previous = this.structure
-				.getPreviousLayers(targetLayer);
-
-		for (Layer prevLayer : previous) {
-			if (previous != null) {
-				for (Synapse synapse : prevLayer.getNext()) {
-					synapse.setMatrix(MatrixMath.deleteCol(synapse.getMatrix(),
-							neuron));
-				}
-			}
-		}
-
-		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
-
-	}
-
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("[BasicNetwork: Layers=");
