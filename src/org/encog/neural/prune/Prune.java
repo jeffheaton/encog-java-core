@@ -28,6 +28,7 @@ package org.encog.neural.prune;
 import java.util.Collection;
 
 import org.encog.matrix.Matrix;
+import org.encog.matrix.MatrixMath;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
@@ -109,7 +110,73 @@ public class Prune {
 	
 	private void decreaseNeuronCount(Layer layer,int neuronCount)
 	{
+		// create an array to hold the least significant neurons, which will be removed
+		int lostNeuronCount = layer.getNeuronCount() - neuronCount;
+		double[] lostNeuronSignificance = new double[lostNeuronCount];
+		int[] lostNeuron = new int[lostNeuronCount];
 		
+		// init the potential lost neurons to the first ones, we will find better choices if we can
+		for(int i=0;i<lostNeuronCount;i++)
+		{
+			lostNeuron[i] = i;
+			lostNeuronSignificance[i] = determineNeuronSignificance(layer,i);
+		}
+		
+		// now loop over the remaining neurons and see if any are better ones to remove
+		for(int i=lostNeuronCount;i<layer.getNeuronCount();i++)
+		{
+			double significance = determineNeuronSignificance(layer,i);
+			
+			// is this neuron less significant than one already chosen?
+			for(int j = 0; j < lostNeuronCount; j++)
+			{
+				if( lostNeuronSignificance[j]>significance )
+				{
+					lostNeuron[j] = i;
+					lostNeuronSignificance[j] = significance;
+					break;
+				}
+			}
+		}
+		
+		// finally, actually prune the neurons that the previous steps determined to remove
+		for(int i=0;i<lostNeuronCount;i++)
+		{
+			prune(layer,lostNeuron[i]-i);
+		}
+		
+	}
+	
+	/**
+	 * Prune one of the neurons from this layer. Remove all entries in this
+	 * weight matrix and other layers.
+	 * 
+	 * @param neuron
+	 *            The neuron to prune. Zero specifies the first neuron.
+	 */
+	public void prune(final Layer targetLayer, final int neuron) {
+		// delete a row on this matrix
+		for (Synapse synapse : targetLayer.getNext()) {
+			synapse
+					.setMatrix(MatrixMath
+							.deleteRow(synapse.getMatrix(), neuron));
+		}
+
+		// delete a column on the previous
+		final Collection<Layer> previous = this.network.getStructure()
+				.getPreviousLayers(targetLayer);
+
+		for (Layer prevLayer : previous) {
+			if (previous != null) {
+				for (Synapse synapse : prevLayer.getNext()) {
+					synapse.setMatrix(MatrixMath.deleteCol(synapse.getMatrix(),
+							neuron));
+				}
+			}
+		}
+
+		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
+
 	}
 
 	public BasicNetwork getNetwork()
@@ -117,10 +184,34 @@ public class Prune {
 		return this.network;
 	}
 	
-	public void determineNeuronSignificance(int neuron)
+	public double determineNeuronSignificance(Layer layer, int neuron)
 	{
+		// calculate the threshold significance
+		double result = layer.getThreshold(neuron);
 		
+		// calculate the outbound significance
+		for(Synapse synapse: layer.getNext())
+		{
+			for(int i=0;i<synapse.getToNeuronCount();i++)
+			{
+				result+=synapse.getMatrix().get(neuron, i);
+			}
+		}
+		
+		// calculate the threshold significance
+		Collection<Synapse> inboundSynapses = this.network.getStructure().getPreviousSynapses(layer);
+		
+		for(Synapse synapse: inboundSynapses)
+		{
+			for(int i=0;i<synapse.getFromNeuronCount();i++)
+			{
+				result+=synapse.getMatrix().get(i, neuron);
+			}
+		}
+		
+		return result;
 	}
+	
 	
 	
 }
