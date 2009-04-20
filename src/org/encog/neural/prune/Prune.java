@@ -86,6 +86,7 @@ public class Prune {
 					newMatrix.set(row,col,synapse.getMatrix().get(row, col));
 				}
 			}
+			synapse.setMatrix(newMatrix);
 		}
 			
 		// adjust the inbound weight matrixes
@@ -97,11 +98,12 @@ public class Prune {
 			// copy existing matrix to new matrix
 			for(int row = 0;row<synapse.getFromNeuronCount();row++)
 			{
-				for(int col = 0;col<neuronCount;col++)
+				for(int col = 0;col<synapse.getToNeuronCount();col++)
 				{
 					newMatrix.set(row,col,synapse.getMatrix().get(row, col));
 				}
 			}
+			synapse.setMatrix(newMatrix);
 		}
 		
 		// finally, up the neuron count
