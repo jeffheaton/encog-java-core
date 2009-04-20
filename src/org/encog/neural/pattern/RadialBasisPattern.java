@@ -46,7 +46,6 @@ public class RadialBasisPattern  implements NeuralNetworkPattern {
 	private int outputNeurons = -1;
 	private int hiddenNeurons = -1;
 
-	@Override
 	public void addHiddenLayer(int count) {
 		if( hiddenNeurons!=-1 )
 		{
@@ -57,23 +56,19 @@ public class RadialBasisPattern  implements NeuralNetworkPattern {
 	}
 		
 
-	@Override
 	public void setActivationFunction(ActivationFunction activation) {
 		this.activation = activation;
 		
 	}
 
-	@Override
 	public void setInputNeurons(int count) {
 		this.inputNeurons = count;		
 	}
 
-	@Override
 	public void setOutputNeurons(int count) {
 		this.outputNeurons = count;
 	}
 	
-	@Override
 	public BasicNetwork generate() {
 		RadialBasisFunctionLayer rbfLayer;
 		BasicNetwork network = new BasicNetwork();

@@ -48,30 +48,25 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	@Override
 	public void setActivationFunction(ActivationFunction activation) {
 		this.activation = activation;
 		
 	}
 
-	@Override
 	public void addHiddenLayer(int count) {
 		this.hidden.add(count);		
 	}
 
-	@Override
 	public void setInputNeurons(int count) {
 		this.inputNeurons = count;
 		
 	}
 
-	@Override
 	public void setOutputNeurons(int count) {
 		this.outputNeurons = count;
 		
 	}
 	
-	@Override
 	public BasicNetwork generate() {
 		int y = 0;
 		Layer layer;

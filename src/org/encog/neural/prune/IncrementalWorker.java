@@ -29,7 +29,6 @@ import org.encog.util.concurrency.EncogTask;
 
 public class IncrementalWorker implements EncogTask {
 
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		

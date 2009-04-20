@@ -56,7 +56,6 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		this.hiddenNeurons = -1;
 	}
 
-	@Override
 	public void addHiddenLayer(int count) {
 		if( this.hiddenNeurons != -1 )
 		{
@@ -72,22 +71,18 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		
 	}
 
-	@Override
 	public void setActivationFunction(ActivationFunction activation) {
 		this.activation = activation;		
 	}
 
-	@Override
 	public void setInputNeurons(int count) {
 		this.inputNeurons = count;
 	}
 
-	@Override
 	public void setOutputNeurons(int count) {
 		this.outputNeurons = count;		
 	}
 	
-	@Override
 	public BasicNetwork generate() {
 		Layer hidden;
 		Layer context = new ContextLayer(this.hiddenNeurons);

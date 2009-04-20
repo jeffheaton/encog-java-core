@@ -43,7 +43,6 @@ public class SOMPattern  implements NeuralNetworkPattern {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	@Override
 	public void addHiddenLayer(int count) {
 		String str = "A SOM network does not have hidden layers.";
 		if( logger.isErrorEnabled())
@@ -54,7 +53,6 @@ public class SOMPattern  implements NeuralNetworkPattern {
 		
 	}
 
-	@Override
 	public void setActivationFunction(ActivationFunction activation) {
 		String str = "A SOM network can't define an activation function.";
 		if( logger.isErrorEnabled())
@@ -65,18 +63,15 @@ public class SOMPattern  implements NeuralNetworkPattern {
 		
 	}
 
-	@Override
 	public void setInputNeurons(int count) {
 		this.inputNeurons = count;
 		
 	}
 
-	@Override
 	public void setOutputNeurons(int count) {
 		this.outputNeurons = count;		
 	}
 	
-	@Override
 	public BasicNetwork generate() {
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(new ActivationLinear(),false,this.inputNeurons));

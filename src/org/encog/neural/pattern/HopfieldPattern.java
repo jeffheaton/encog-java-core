@@ -43,7 +43,6 @@ public class HopfieldPattern  implements NeuralNetworkPattern {
 	
 	private int neuronCount = -1;
 
-	@Override
 	public void addHiddenLayer(int count) {
 		String str = "A Hopfield network has no hidden layers.";
 			if( logger.isErrorEnabled())
@@ -55,7 +54,6 @@ public class HopfieldPattern  implements NeuralNetworkPattern {
 		
 	}
 
-	@Override
 	public BasicNetwork generate() {
 		Layer layer;
 		
@@ -67,7 +65,6 @@ public class HopfieldPattern  implements NeuralNetworkPattern {
 		return result;
 	}
 
-	@Override
 	public void setActivationFunction(ActivationFunction activation) {
 		String str = "A Hopfield network will use the BiPolar activation function, no activation function needs to be specified.";
 		if( logger.isErrorEnabled())
@@ -78,13 +75,11 @@ public class HopfieldPattern  implements NeuralNetworkPattern {
 		
 	}
 
-	@Override
 	public void setInputNeurons(int count) {
 		this.neuronCount = count;
 		
 	}
 
-	@Override
 	public void setOutputNeurons(int count) {
 				String str = "A Hopfield network has a single layer, so no need to specify the output count.";
 				if( logger.isErrorEnabled())
