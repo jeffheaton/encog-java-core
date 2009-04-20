@@ -36,7 +36,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class Prune {
+public class PruneSelective {
 	
 	private BasicNetwork network;
 	
@@ -46,7 +46,7 @@ public class Prune {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	public Prune(BasicNetwork network)
+	public PruneSelective(BasicNetwork network)
 	{
 		this.network = network;
 	}

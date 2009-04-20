@@ -94,15 +94,15 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Construct this layer with a non-default threshold function.
 	 * 
-	 * @param thresholdFunction
+	 * @param activationFunction
 	 *            The threshold function to use.
 	 * @param neuronCount
 	 *            How many neurons in this layer.
 	 */
-	public BasicLayer(final ActivationFunction thresholdFunction,
+	public BasicLayer(final ActivationFunction activationFunction,
 			final boolean hasThreshold,final int neuronCount) {
 		this.neuronCount = neuronCount;
-		this.setActivationFunction( thresholdFunction );
+		this.setActivationFunction( activationFunction );
 		if( hasThreshold )
 			this.threshold = new double[neuronCount];
 	}

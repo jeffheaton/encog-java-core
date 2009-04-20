@@ -53,6 +53,8 @@ public class ContextLayerPersistor implements Persistor {
 	public EncogPersistedObject load(ReadXML in) {
 		
 		int neuronCount = 0;
+		int x=0;
+		int y=0;
 		String threshold = null;
 		ActivationFunction activation = null;
 		String end = in.getTag().getName();
@@ -69,6 +71,14 @@ public class ContextLayerPersistor implements Persistor {
 			else if( in.is(BasicLayerPersistor.PROPERTY_NEURONS,true))
 			{
 				neuronCount = in.readIntToTag();
+			}
+			else if( in.is(BasicLayerPersistor.PROPERTY_X,true))
+			{
+				x = in.readIntToTag();
+			}
+			else if( in.is(BasicLayerPersistor.PROPERTY_Y,true))
+			{
+				y = in.readIntToTag();
 			}
 			else if( in.is(BasicLayerPersistor.PROPERTY_THRESHOLD,true))
 			{
@@ -95,6 +105,10 @@ public class ContextLayerPersistor implements Persistor {
 					layer.setThreshold(i, t[i]);
 				}
 			}
+			
+			layer.setX(x);
+			layer.setY(y);
+			
 			return layer;
 		}
 		return null;
@@ -103,7 +117,11 @@ public class ContextLayerPersistor implements Persistor {
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_CONTEXT_LAYER, out, obj, false);
 		BasicLayer layer = (BasicLayer)obj;
+		
 		out.addProperty(BasicLayerPersistor.PROPERTY_NEURONS, layer.getNeuronCount());
+		out.addProperty(BasicLayerPersistor.PROPERTY_X, layer.getX());
+		out.addProperty(BasicLayerPersistor.PROPERTY_Y, layer.getY());
+		
 		if( layer.hasThreshold())
 		{
 			StringBuilder result = new StringBuilder();
