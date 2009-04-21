@@ -60,6 +60,8 @@ public class HopfieldPattern  implements NeuralNetworkPattern {
 		BasicNetwork result = new BasicNetwork();
 		result.addLayer(layer = new BasicLayer(new ActivationBiPolar(),false,this.neuronCount));
 		layer.addNext(layer);
+		layer.setX(50);
+		layer.setY(50);
 		result.getStructure().finalizeStructure();
 		result.reset();
 		return result;

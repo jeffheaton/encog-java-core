@@ -55,6 +55,7 @@ public class BasicNetworkPersistor implements Persistor {
 	public static final String ATTRIBUTE_TYPE_INPUT = "input";
 	public static final String ATTRIBUTE_TYPE_OUTPUT = "output";
 	public static final String ATTRIBUTE_TYPE_HIDDEN = "hidden";
+	public static final String ATTRIBUTE_TYPE_BOTH = "both";
 	public static final String ATTRIBUTE_TYPE_UNKNOWN = "unknown";
 	public static final String ATTRIBUTE_FROM = "from";
 	public static final String ATTRIBUTE_TO = "to";
@@ -70,7 +71,11 @@ public class BasicNetworkPersistor implements Persistor {
 		{
 			String type;
 			
-			if(this.currentNetwork.isInput(layer))
+			if(this.currentNetwork.isInput(layer) && this.currentNetwork.isOutput(layer) )
+			{
+				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_BOTH;
+			}
+			else if(this.currentNetwork.isInput(layer))
 			{
 				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_INPUT;
 			}
@@ -171,6 +176,11 @@ public class BasicNetworkPersistor implements Persistor {
 					this.currentNetwork.setInputLayer(layer);
 				else if( type.equals(ATTRIBUTE_TYPE_OUTPUT) )
 					this.currentNetwork.setOutputLayer(layer);
+				else if( type.equals(ATTRIBUTE_TYPE_BOTH) )
+				{
+					this.currentNetwork.setInputLayer(layer);
+					this.currentNetwork.setOutputLayer(layer);
+				}
 			}
 			if( in.is(end, false))
 				break;
