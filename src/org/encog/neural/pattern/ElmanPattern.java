@@ -84,14 +84,25 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	}
 	
 	public BasicNetwork generate() {
-		Layer hidden;
+		int y = 50;
+		Layer hidden,input,output;
 		Layer context = new ContextLayer(this.hiddenNeurons);
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(this.inputNeurons));
+		network.addLayer(input = new BasicLayer(this.inputNeurons));
+		input.setX(50);
+		input.setY(y);
+		y+=150;
 		network.addLayer(hidden = new BasicLayer(this.hiddenNeurons));
+		hidden.setX(50);
+		hidden.setY(y);
+		context.setX(300);
+		context.setY(y);
+		y+=150;
 		hidden.addNext(context,SynapseType.OneToOne);
 		context.addNext(hidden);
-		network.addLayer(new BasicLayer(this.outputNeurons));
+		network.addLayer(output = new BasicLayer(this.outputNeurons));
+		output.setX(50);
+		output.setY(y);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
