@@ -68,26 +68,26 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	}
 	
 	public BasicNetwork generate() {
-		int y = 0;
+		int y = 50;
 		Layer layer;
 		
 		BasicNetwork result = new BasicNetwork();
 		result.addLayer(layer = new BasicLayer(this.activation,true,this.inputNeurons));
 		
-		layer.setX(10);
+		layer.setX(50);
 		layer.setY(y);
 		y+=120;
 		
 		for(Integer count: this.hidden)
 		{
 			result.addLayer(layer = new BasicLayer(this.activation,true,count));
-			layer.setX(10);
+			layer.setX(50);
 			layer.setY(y);
 			y+=120;
 		}
 		
 		result.addLayer(layer = new BasicLayer(this.activation,true,this.outputNeurons));
-		layer.setX(10);
+		layer.setX(50);
 		layer.setY(y);
 		y+=120;
 		
