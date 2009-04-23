@@ -39,19 +39,16 @@ import org.encog.bot.BotError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 /**
- * This filter causes the spider to skip URL's from a robots.txt
- * file.
+ * This filter causes the spider to skip URL's from a robots.txt file.
  */
 public class RobotsFilter implements SpiderFilter {
-	
+
 	/**
 	 * The maximum length of a line.
 	 */
 	public static final int MAXLINE = 80;
-	
+
 	/**
 	 * The full URL of the robots.txt file.
 	 */
@@ -72,12 +69,12 @@ public class RobotsFilter implements SpiderFilter {
 	 * The user agent string we are to use, null for default.
 	 */
 	private String userAgent;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Add the specified URL to the exclude list.
@@ -136,7 +133,7 @@ public class RobotsFilter implements SpiderFilter {
 		final String str = line.trim();
 		final int i = str.indexOf(':');
 
-		if (str.length() == 0 || str.charAt(0) == '#' || i == -1) {
+		if ((str.length() == 0) || (str.charAt(0) == '#') || (i == -1)) {
 			return;
 		}
 
@@ -147,7 +144,7 @@ public class RobotsFilter implements SpiderFilter {
 			if (rest.equals("*")) {
 				this.active = true;
 			} else {
-				if (this.userAgent != null
+				if ((this.userAgent != null)
 						&& rest.equalsIgnoreCase(this.userAgent)) {
 					this.active = true;
 				}
@@ -160,15 +157,14 @@ public class RobotsFilter implements SpiderFilter {
 					try {
 						url = new URL(this.robotURL, rest);
 						add(url.getFile());
-					} catch (MalformedURLException e) {
-						if( logger.isDebugEnabled())
-						{
-							logger.debug("Exception",e);
+					} catch (final MalformedURLException e) {
+						if (this.logger.isDebugEnabled()) {
+							this.logger.debug("Exception", e);
 						}
 
 						throw new BotError(e);
 					}
-					
+
 				}
 			}
 		}
@@ -185,44 +181,41 @@ public class RobotsFilter implements SpiderFilter {
 	 *            default.
 	 */
 	public void newHost(final String host, final String userAgent) {
-		try
-		{
-		String str;
-		this.active = false;
-		this.userAgent = userAgent;
-
-		this.robotURL = new URL("http", host, MAXLINE, "/robots.txt");
-
-		final URLConnection http = this.robotURL.openConnection();
-
-		if (userAgent != null) {
-			http.setRequestProperty("User-Agent", userAgent);
-		}
-
-		final InputStream is = http.getInputStream();
-		final InputStreamReader isr = new InputStreamReader(is);
-		final BufferedReader r = new BufferedReader(isr);
-
-		this.exclude.clear();
-
 		try {
-			while ((str = r.readLine()) != null) {
+			String str;
+			this.active = false;
+			this.userAgent = userAgent;
 
-				loadLine(str);
+			this.robotURL = new URL("http", host, RobotsFilter.MAXLINE,
+					"/robots.txt");
+
+			final URLConnection http = this.robotURL.openConnection();
+
+			if (userAgent != null) {
+				http.setRequestProperty("User-Agent", userAgent);
 			}
-		} finally {
-			r.close();
-			isr.close();
-		}
-	}
-		catch(IOException e)
-		{
-			if( logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+
+			final InputStream is = http.getInputStream();
+			final InputStreamReader isr = new InputStreamReader(is);
+			final BufferedReader r = new BufferedReader(isr);
+
+			this.exclude.clear();
+
+			try {
+				while ((str = r.readLine()) != null) {
+
+					loadLine(str);
+				}
+			} finally {
+				r.close();
+				isr.close();
+			}
+		} catch (final IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 			throw new BotError(e);
 		}
 	}
-	
+
 }

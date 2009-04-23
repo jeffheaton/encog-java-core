@@ -32,55 +32,63 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Linear layer is really not an activation function at
- * all. The input is simply passed on, unmodified, to the output. This
- * activation function is primarily theoretical and of little actual use.
- * Usually an activation function that scales between 0 and 1 or -1 and 1 should
- * be used.
+ * The Linear layer is really not an activation function at all. The input is
+ * simply passed on, unmodified, to the output. This activation function is
+ * primarily theoretical and of little actual use. Usually an activation
+ * function that scales between 0 and 1 or -1 and 1 should be used.
  */
-public class ActivationLinear extends  BasicActivationFunction {
+public class ActivationLinear extends BasicActivationFunction {
 
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * A threshold function for a neural network.
-	 * 
-	 * @param d
-	 *            The input to the function.
-	 * @return The output from the function.
+	 * Implements the activation function.  The array is modified according
+	 * to the activation function being used.  See the class description
+	 * for more specific information on this type of activation function.
+	 * @param d The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 
 	}
 
 	/**
-	 * Some training methods require the derivative.
-	 * 
-	 * @param d
-	 *            The input.
-	 * @return The output.
+	 * @return The object cloned.
+	 */
+	@Override
+	public Object clone() {
+		return new ActivationLinear();
+	}
+
+	/**
+	 * Create a Persistor for this activation function.
+	 * @return The persistor.
+	 */
+	@Override
+	public Persistor createPersistor() {
+		return new ActivationLinearPersistor();
+	}
+
+	/**
+	 * Implements the activation function derivative.  The array is modified 
+	 * according derivative of the activation function being used.  See the 
+	 * class description for more specific information on this type of 
+	 * activation function. Propagation training requires the derivative. 
+	 * Some activation functions do not support a derivative and will throw
+	 * an error.
+	 * @param d The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 		throw new NeuralNetworkError(
 				"Can't use the linear activation function "
 						+ "where a derivative is required.");
-	}
-	
-	public Object clone()
-	{
-		return new ActivationLinear();
-	}
-	
-	public Persistor createPersistor() {
-		return new ActivationLinearPersistor();
 	}
 }

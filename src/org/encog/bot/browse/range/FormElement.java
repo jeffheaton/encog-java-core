@@ -31,40 +31,91 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A document range that represents one individual component to a form.
+ * 
  * @author jheaton
- *
+ * 
  */
-abstract public class FormElement extends DocumentRange {
+public abstract class FormElement extends DocumentRange {
+	
+	/**
+	 * The name of this form element.
+	 */
 	private String name;
+	
+	/**
+	 * The value held by this form element.
+	 */
 	private String value;
+	
+	/**
+	 * The owner of this form element.
+	 */
 	private Form owner;
-	
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public FormElement(WebPage source)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a form element from the specified web page.
+	 * @param source The page that holds this form element.
+	 */
+	public FormElement(final WebPage source) {
 		super(source);
 	}
-	
-	public Form getOwner() {
-		return owner;
-	}
-	public void setOwner(Form owner) {
-		this.owner = owner;
-	}
+
+	/**
+	 * @return The name of this form.
+	 */
 	public String getName() {
-		return name;
+		return this.name;
 	}
-	public void setName(String name) {
+
+	/**
+	 * @return The owner of this form element.
+	 */
+	public Form getOwner() {
+		return this.owner;
+	}
+
+	/**
+	 * @return The value of this form element.
+	 */
+	public String getValue() {
+		return this.value;
+	}
+
+	/**
+	 * @return True if this is autosend, which means that the type is 
+	 * NOT submit.  This prevents a form that has multiple submit buttons
+	 * from sending ALL of them in a single post.
+	 */
+	public abstract boolean isAutoSend();
+
+	/**
+	 * Set the name of this form element.
+	 * @param name The name of this form element.
+	 */
+	public void setName(final String name) {
 		this.name = name;
 	}
-	public String getValue() {
-		return value;
+
+	/**
+	 * Set the owner of this form element.
+	 * @param owner The owner of this form element.
+	 */
+	public void setOwner(final Form owner) {
+		this.owner = owner;
 	}
-	public void setValue(String value) {
+
+	/**
+	 * Set the value for this form element.
+	 * @param value The value for this form element.
+	 */
+	public void setValue(final String value) {
 		this.value = value;
 	}
-	abstract public boolean isAutoSend();
-	
+
 }

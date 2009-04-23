@@ -32,10 +32,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The hyperbolic tangent activation function takes the curved
- * shape of the hyperbolic tangent. This activation function produces both
- * positive and negative output. Use this activation function if both negative
- * and positive output is desired.
+ * The hyperbolic tangent activation function takes the curved shape of the
+ * hyperbolic tangent. This activation function produces both positive and
+ * negative output. Use this activation function if both negative and positive
+ * output is desired.
  */
 public class ActivationTANH extends BasicActivationFunction {
 
@@ -48,54 +48,62 @@ public class ActivationTANH extends BasicActivationFunction {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * A threshold function for a neural network.
-	 * 
-	 * @param d
-	 *            The input to the function.
-	 * @return The output from the function.
+	 * Internal activation function that performs the TANH.
+	 * @param d The input value.
+	 * @return The output value.
+	 */
+	private double activationFunction(final double d) {
+		return (BoundMath.exp(d * 2.0) - 1.0) / (BoundMath.exp(d * 2.0) + 1.0);
+	}
+
+	/**
+	 * Implements the activation function.  The array is modified according
+	 * to the activation function being used.  See the class description
+	 * for more specific information on this type of activation function.
+	 * @param d The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
-		
-		for(int i=0;i<d.length;i++)
-		{
+
+		for (int i = 0; i < d.length; i++) {
 			d[i] = activationFunction(d[i]);
 		}
 
 	}
-	
-	private double activationFunction(double d)
-	{
-		return (BoundMath.exp(d * 2.0) - 1.0)
-		/ (BoundMath.exp(d * 2.0) + 1.0);
+
+	/**
+	 * @return The object cloned;
+	 */
+	@Override
+	public Object clone() {
+		return new ActivationTANH();
 	}
 
 	/**
-	 * Some training methods require the derivative.
-	 * 
-	 * @param d
-	 *            The input.
-	 * @return The output.
+	 * Create a Persistor for this activation function.
+	 * @return The persistor.
 	 */
-	public void derivativeFunction(final double[] d) {
-		
-		for(int i=0;i<d.length;i++)
-		{
-			d[i] = 1.0 - BoundMath.pow(activationFunction(d[i]), 2.0);
-		}
-	}
-	
-	public Object clone()
-	{
-		return new ActivationTANH();
-	}
-	
 	@Override
 	public Persistor createPersistor() {
 		return new ActivationTANHPersistor();
 	}
-	
-	
+
+	/**
+	 * Implements the activation function derivative.  The array is modified 
+	 * according derivative of the activation function being used.  See the 
+	 * class description for more specific information on this type of 
+	 * activation function. Propagation training requires the derivative. 
+	 * Some activation functions do not support a derivative and will throw
+	 * an error.
+	 * @param d The input array to the activation function.
+	 */
+	public void derivativeFunction(final double[] d) {
+
+		for (int i = 0; i < d.length; i++) {
+			d[i] = 1.0 - BoundMath.pow(activationFunction(d[i]), 2.0);
+		}
+	}
+
 }

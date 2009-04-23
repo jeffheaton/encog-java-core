@@ -29,29 +29,45 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Utility classes for activation functions.  Used to convert a single value
- * to/from an array.  This is necessary because the activation functions are
+ * Utility classes for activation functions. Used to convert a single value
+ * to/from an array. This is necessary because the activation functions are
  * designed to operate on arrays, rather than single values.
+ * 
  * @author jheaton
- *
+ * 
  */
-public class ActivationUtil {
-	
+public final class ActivationUtil {
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public static double[] toArray(double d)
-	{
-		double[] result = new double[1];
-		result[0] = d;
-		return result;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Private constructor.
+	 */
+	private ActivationUtil() {
 	}
 	
-	public static double fromArray(double[] d)
-	{
+	/**
+	 * Get a single value from an array. Return the first element in the 
+	 * array.
+	 * @param d The array.
+	 * @return The first element in the array.
+	 */
+	public static double fromArray(final double[] d) {
 		return d[0];
+	}
+
+	/**
+	 * Take a single value and create an array that holds it.
+	 * @param d The single value.
+	 * @return The array.
+	 */
+	public static double[] toArray(final double d) {
+		final double[] result = new double[1];
+		result[0] = d;
+		return result;
 	}
 }

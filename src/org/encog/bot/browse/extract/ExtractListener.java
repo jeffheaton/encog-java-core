@@ -27,10 +27,16 @@ package org.encog.bot.browse.extract;
 
 /**
  * The ExtractListener interface defines a class that can receive extraction
- * events as an extraction process occurs. 
+ * events as an extraction process occurs.
+ * 
  * @author jheaton
- *
+ * 
  */
 public interface ExtractListener {
-	public void foundData(Object object);
+	
+	/**
+	 * Notify that some data has been extracted.
+	 * @param object The data that was extracted.
+	 */
+	void foundData(Object object);
 }

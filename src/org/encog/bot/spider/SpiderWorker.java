@@ -36,42 +36,61 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The SpiderWorker class implements the EncogTask interface.  This allows
- * the spider tasks to be multithreaded.
+ * The SpiderWorker class implements the EncogTask interface. This allows the
+ * spider tasks to be multithreaded.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class SpiderWorker implements EncogTask {
 
-	private Spider owner;
-	private ORMSession session;
-	private WorkloadItem work;
+	/**
+	 * The spider that owns this worker.
+	 */
+	private final Spider owner;
 	
+	/**
+	 * The ORM session for this worker.
+	 */
+	private ORMSession session;
+	
+	/**
+	 * The workload item that defines what this worker is to do.
+	 */
+	private final WorkloadItem work;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-		
-	public SpiderWorker(Spider owner, WorkloadItem work)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a worker.
+	 * @param owner The owner of this worker.
+	 * @param work The workload item to be processed.
+	 */
+	public SpiderWorker(final Spider owner, final WorkloadItem work) {
 		this.owner = owner;
 		this.work = work;
 	}
-	
+
+	/**
+	 * Perform the actual work.
+	 */
 	public void run() {
-		
+
 		URLConnection connection = null;
 		InputStream is = null;
-		
+
 		this.session = this.owner.getSessionManager().openSession();
-		
+
 		try {
 			// get the URL's contents
-			
-			URL url = new URL(this.work.getUrl());
+
+			final URL url = new URL(this.work.getUrl());
 			connection = url.openConnection();
-			
+
 			connection.setConnectTimeout(this.owner.getTimeout());
 			connection.setReadTimeout(this.owner.getTimeout());
 			if (this.owner.getUserAgent() != null) {
@@ -85,36 +104,29 @@ public class SpiderWorker implements EncogTask {
 			// parse the URL
 			final String contentType = connection.getContentType();
 			if (contentType.toLowerCase().startsWith("text/html")) {
-				final SpiderParseHTML parse = new SpiderParseHTML(
-					this.work, 
-					new SpiderInputStream(is, null), 
-					this.owner);
+				final SpiderParseHTML parse = new SpiderParseHTML(this.work,
+						new SpiderInputStream(is, null), this.owner);
 				this.owner.getReport().spiderProcessURL(url, parse);
 			} else {
 				this.owner.getReport().spiderProcessURL(url, is);
 			}
-			
+
 			this.work.setStatus(WorkloadStatus.PROCESSED);
-			
-		} 
-		catch(EncogError e)
-		{
-			if( logger.isDebugEnabled())
-			{
-				logger.error("Exception",e);
+
+		} catch (final EncogError e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.error("Exception", e);
 			}
 			this.work.setStatus(WorkloadStatus.ERROR);
-		}
-		catch (Throwable e) {
-			if( logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
+		} catch (final Throwable e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
 			}
 
 			this.work.setStatus(WorkloadStatus.ERROR);
-		} 
-		
-		this.session.close();		
+		}
+
+		this.session.close();
 	}
-	
+
 }

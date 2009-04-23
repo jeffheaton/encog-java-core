@@ -50,7 +50,7 @@ public class SpiderInputStream extends InputStream {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct the SpiderInputStream. Whatever is read from the InputStream

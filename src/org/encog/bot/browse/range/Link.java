@@ -32,37 +32,58 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A document range that represents a hyperlink, and any embedded tags and text.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class Link extends DocumentRange {
-	private Address target;
 	
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	/**
+	 * The target address for this link.
+	 */
+	private Address target;
 
-	public Link(WebPage source)
-	{
+	/**
+	 * The logger.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a link from the specified web page.
+	 * @param source The web page this link is from.
+	 */
+	public Link(final WebPage source) {
 		super(source);
 	}
-	
+
+	/**
+	 * @return The target of this link.
+	 */
 	public Address getTarget() {
-		return target;
+		return this.target;
 	}
 
-	public void setTarget(Address target) {
+	/**
+	 * Set the target of this link.
+	 * @param target The link target.
+	 */
+	public void setTarget(final Address target) {
 		this.target = target;
 	}
-	
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
 		result.append("[Link:");
-		result.append(target);
+		result.append(this.target);
 		result.append("|");
-		result.append(this.getTextOnly());
+		result.append(getTextOnly());
 		result.append("]");
 		return result.toString();
 	}
-	
+
 }

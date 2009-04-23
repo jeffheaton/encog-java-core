@@ -42,60 +42,57 @@ import org.slf4j.LoggerFactory;
 /**
  * An implementation of the NeuralDataSet interface designed to provide a CSV
  * file to the neural network. This implementation uses the BasicNeuralData to
- * hold the data being read. This class has no ability to write CSV files.
- * The columns of the CSV file will specify both the input and ideal 
- * columns.  
+ * hold the data being read. This class has no ability to write CSV files. The
+ * columns of the CSV file will specify both the input and ideal columns.
  * 
- * This class is not memory based, so very long files can be used, 
- * without running out of memory.
+ * This class is not memory based, so very long files can be used, without
+ * running out of memory.
+ * 
  * @author jheaton
  */
 public class CSVNeuralDataSet implements NeuralDataSet {
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	/**
 	 * An iterator designed to read from CSV files.
+	 * 
 	 * @author jheaton
 	 */
 	public class CSVNeuralIterator implements Iterator<NeuralDataPair> {
-		
+
 		/**
 		 * A ReadCSV object used to parse the CSV file.
 		 */
 		private ReadCSV reader;
-		
+
 		/**
 		 * Is there data that has been read and is ready?
 		 */
 		private boolean dataReady;
 
 		/**
-		 * Default constructor.  Create a new iterator from the parent class.
+		 * Default constructor. Create a new iterator from the parent class.
 		 */
 		public CSVNeuralIterator() {
-			
-				this.reader = null;
-				this.reader = new ReadCSV(CSVNeuralDataSet.this.filename,
-						CSVNeuralDataSet.this.headers,
-						CSVNeuralDataSet.this.delimiter);
-				this.dataReady = false;
-			 
+
+			this.reader = null;
+			this.reader = new ReadCSV(CSVNeuralDataSet.this.filename,
+					CSVNeuralDataSet.this.headers,
+					CSVNeuralDataSet.this.delimiter);
+			this.dataReady = false;
+
 		}
 
 		/**
 		 * Close the iterator, and the underlying CSV file.
 		 */
 		public void close() {
-			
-				this.reader.close();
-			
+
+			this.reader.close();
+
 		}
 
 		/**
 		 * Determine if there is more data to be read.
+		 * 
 		 * @return True if there is more data to be read.
 		 */
 		public boolean hasNext() {
@@ -107,19 +104,18 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 				return true;
 			}
 
-			
-				if (this.reader.next()) {
-					this.dataReady = true;
-					return true;
-				}
-				this.dataReady = false;
-				return false;
-			
+			if (this.reader.next()) {
+				this.dataReady = true;
+				return true;
+			}
+			this.dataReady = false;
+			return false;
 
 		}
 
 		/**
 		 * Read the next record from the CSV file.
+		 * 
 		 * @return The next data pair read.
 		 */
 		public NeuralDataPair next() {
@@ -148,9 +144,9 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 		 * Removes are not supported.
 		 */
 		public void remove() {
-			if(logger.isErrorEnabled())
-			{
-				logger.error("Called remove, unsupported operation.");
+			if (CSVNeuralDataSet.this.logger.isErrorEnabled()) {
+				CSVNeuralDataSet.this.logger
+						.error("Called remove, unsupported operation.");
 			}
 			throw new UnsupportedOperationException();
 		}
@@ -161,27 +157,33 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	 */
 	public static final String ADD_NOT_SUPPORTED = 
 		"Adds are not supported with this dataset, it is read only.";
-	
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/**
 	 * The CSV filename to read from.
 	 */
 	private final String filename;
-	
+
 	/**
 	 * The number of columns of input data.
 	 */
 	private final int inputSize;
-	
+
 	/**
 	 * The number of columns of ideal data.
-	 */	
+	 */
 	private final int idealSize;
-	
+
 	/**
 	 * The delimiter that separates the columns, defaults to a comma.
 	 */
 	private final char delimiter;
-	
+
 	/**
 	 * Specifies if headers are present on the first row.
 	 */
@@ -193,13 +195,17 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	private final List<CSVNeuralIterator> iterators = 
 		new ArrayList<CSVNeuralIterator>();
 
-	
 	/**
 	 * Construct this data set using a comma as a delimiter.
-	 * @param filename The CSV filename to read.
-	 * @param inputSize The number of columns that make up the input set.	 * 
-	 * @param idealSize The number of columns that make up the ideal set.
-	 * @param headers True if headers are present on the first line.
+	 * 
+	 * @param filename
+	 *            The CSV filename to read.
+	 * @param inputSize
+	 *            The number of columns that make up the input set. *
+	 * @param idealSize
+	 *            The number of columns that make up the ideal set.
+	 * @param headers
+	 *            True if headers are present on the first line.
 	 */
 	public CSVNeuralDataSet(final String filename, final int inputSize,
 			final int idealSize, final boolean headers) {
@@ -208,11 +214,17 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * Construct this data set using a comma as a delimiter.
-	 * @param filename The CSV filename to read.
-	 * @param inputSize The number of columns that make up the input set.	 * 
-	 * @param idealSize The number of columns that make up the ideal set.
-	 * @param headers True if headers are present on the first line.
-	 * @param delimiter The delimiter to use.
+	 * 
+	 * @param filename
+	 *            The CSV filename to read.
+	 * @param inputSize
+	 *            The number of columns that make up the input set. *
+	 * @param idealSize
+	 *            The number of columns that make up the ideal set.
+	 * @param headers
+	 *            True if headers are present on the first line.
+	 * @param delimiter
+	 *            The delimiter to use.
 	 */
 	public CSVNeuralDataSet(final String filename, final int inputSize,
 			final int idealSize, final boolean headers, final char delimiter) {
@@ -225,25 +237,28 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * Adds are not supported.
-	 * @param data1 Not used.
+	 * 
+	 * @param data1
+	 *            Not used.
 	 */
 	public void add(final NeuralData data1) {
-		if( logger.isErrorEnabled())
-		{
-			logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 		}
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
 
 	/**
 	 * Adds are not supported.
-	 * @param inputData Not used.
-	 * @param idealData Not used.
+	 * 
+	 * @param inputData
+	 *            Not used.
+	 * @param idealData
+	 *            Not used.
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
-		if( logger.isErrorEnabled())
-		{
-			logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 		}
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 
@@ -251,12 +266,13 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * Adds are not supported.
-	 * @param inputData Not used.
+	 * 
+	 * @param inputData
+	 *            Not used.
 	 */
 	public void add(final NeuralDataPair inputData) {
-		if( logger.isErrorEnabled())
-		{
-			logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 		}
 		throw new NeuralDataError(CSVNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
@@ -300,6 +316,7 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * Get an iterator to use with the CSV data.
+	 * 
 	 * @return An iterator.
 	 */
 	public Iterator<NeuralDataPair> iterator() {

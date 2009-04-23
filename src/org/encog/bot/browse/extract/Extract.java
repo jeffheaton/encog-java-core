@@ -31,17 +31,43 @@ import java.util.List;
 import org.encog.bot.browse.WebPage;
 
 /**
- * Provides the basic interface that any extractor must support.  An 
- * extractor is a class that is capable of extracting certain types of
- * data from web data.  For example, the ExtractWords extractor is used
- * to extract all of the words from a web page.
+ * Provides the basic interface that any extractor must support. An extractor is
+ * a class that is capable of extracting certain types of data from web data.
+ * For example, the ExtractWords extractor is used to extract all of the words
+ * from a web page.
+ * 
  * @author jheaton
- *
+ * 
  */
 public interface Extract {
-	public void extract(WebPage page);
-	public List<Object> extractList(WebPage page);
-	public void addListener(ExtractListener listener);
-	public void removeListener(ExtractListener listener);
-	public Collection<ExtractListener> getListeners();
+	
+	/**
+	 * Add a listener for the extraction.
+	 * @param listener The listener to add.
+	 */
+	void addListener(ExtractListener listener);
+
+	/**
+	 * Extract data from the web page.
+	 * @param page The page to extract from.
+	 */
+	void extract(WebPage page);
+
+	/**
+	 * Extract from the web page and return the results as a list.
+	 * @param page The web page to extract from.
+	 * @return The results of the extraction as a List.
+	 */
+	List<Object> extractList(WebPage page);
+
+	/**
+	 * @return A list of listeners registered with this object.
+	 */
+	Collection<ExtractListener> getListeners();
+
+	/**
+	 * Remove the specified listener.
+	 * @param listener The listener to rmove.
+	 */
+	void removeListener(ExtractListener listener);
 }

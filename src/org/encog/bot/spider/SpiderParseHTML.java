@@ -36,17 +36,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class layers on top of the ParseHTML class and allows
- * the spider to extract what link information it needs. A SpiderParseHTML class
- * can be used just like the ParseHTML class, with the spider gaining its
- * information in the background.
+ * This class layers on top of the ParseHTML class and allows the spider to
+ * extract what link information it needs. A SpiderParseHTML class can be used
+ * just like the ParseHTML class, with the spider gaining its information in the
+ * background.
  */
 public class SpiderParseHTML extends ReadHTML {
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The Spider that this page is being parsed for.
@@ -57,8 +57,11 @@ public class SpiderParseHTML extends ReadHTML {
 	 * The URL that is being parsed.
 	 */
 	private URL base;
-	
-	private WorkloadItem source;
+
+	/**
+	 * The source of this HTML.
+	 */
+	private final WorkloadItem source;
 
 	/**
 	 * The InputStream that is being parsed.
@@ -69,27 +72,25 @@ public class SpiderParseHTML extends ReadHTML {
 	 * Construct a SpiderParseHTML object. This object allows you to parse HTML,
 	 * while the spider collects link information in the background.
 	 * 
-	 * @param base
+	 * @param source
 	 *            The URL that is being parsed, this is used for relative links.
 	 * @param is
 	 *            The InputStream being parsed.
 	 * @param spider
 	 *            The Spider that is parsing.
 	 */
-	public SpiderParseHTML(WorkloadItem source,
-			final SpiderInputStream is,
-			final Spider spider) {
+	public SpiderParseHTML(final WorkloadItem source,
+			final SpiderInputStream is, final Spider spider) {
 		super(is);
 		this.stream = is;
-		this.spider = spider;		
+		this.spider = spider;
 		this.source = source;
-		
+
 		try {
 			this.base = new URL(source.getUrl());
-		} catch (MalformedURLException e) {
-			if( logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+		} catch (final MalformedURLException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 			throw new SpiderError(e);
 		}
@@ -103,8 +104,7 @@ public class SpiderParseHTML extends ReadHTML {
 	 * @param type
 	 *            What type of link this is.
 	 */
-	private void addURL(final String u, final SpiderReportable.URLType type)
-			 {
+	private void addURL(final String u, final SpiderReportable.URLType type) {
 		if (u == null) {
 			return;
 		}
@@ -117,36 +117,28 @@ public class SpiderParseHTML extends ReadHTML {
 					|| url.getProtocol().equalsIgnoreCase("https")) {
 				if (this.spider.getReport()
 						.spiderFoundURL(url, this.base, type)) {
-					
-						this.spider.addURL(url, source);
-					
-				}
-			}
-		}
 
-		catch (final MalformedURLException e) {
-			if( logger.isDebugEnabled() )
-			{
-				if( logger.isDebugEnabled())
-				{
-					logger.debug("Malformed URL found",e);
+					this.spider.addURL(url, this.source);
+				}
+			}
+		} catch (final MalformedURLException e) {
+			if (this.logger.isDebugEnabled()) {
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("Malformed URL found", e);
 				}
 				throw new SpiderError(e);
 			}
-			
+
 		} catch (final SpiderError e) {
-			if( logger.isDebugEnabled() )
-			{
-				if( logger.isDebugEnabled())
-				{
-					logger.debug("Invalid URL found:",e);
+			if (this.logger.isDebugEnabled()) {
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("Invalid URL found:", e);
 				}
 				throw new SpiderError(e);
 			}
-		} catch (IOException e) {
-			if( logger.isDebugEnabled())
-			{
-				logger.debug("Invalid URL found:",e);
+		} catch (final IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Invalid URL found:", e);
 			}
 			throw new SpiderError(e);
 		}
@@ -167,14 +159,14 @@ public class SpiderParseHTML extends ReadHTML {
 	 * @param ahref
 	 *            The link found.
 	 */
-	private void handleA(final String ahref)  {
+	private void handleA(final String ahref) {
 		String href = ahref;
 
 		if (href != null) {
 			href = href.trim();
 		}
 
-		if (href != null && !URLUtility.containsInvalidURLCharacters(href)) {
+		if ((href != null) && !URLUtility.containsInvalidURLCharacters(href)) {
 			if (!href.toLowerCase().startsWith("javascript:")
 					&& !href.toLowerCase().startsWith("rstp:")
 					&& !href.toLowerCase().startsWith("rtsp:")
@@ -194,7 +186,7 @@ public class SpiderParseHTML extends ReadHTML {
 	 * @return The character read.
 	 */
 	@Override
-	public int read()  {
+	public int read() {
 		final int result = super.read();
 		if (result == 0) {
 			final Tag tag = getTag();
@@ -214,10 +206,9 @@ public class SpiderParseHTML extends ReadHTML {
 				final String href = tag.getAttributeValue("href");
 				try {
 					this.base = new URL(this.base, href);
-				} catch (MalformedURLException e) {
-					if( logger.isDebugEnabled())
-					{
-						logger.debug("Invalid URL found:",e);
+				} catch (final MalformedURLException e) {
+					if (this.logger.isDebugEnabled()) {
+						this.logger.debug("Invalid URL found:", e);
 					}
 					throw new SpiderError(e);
 				}

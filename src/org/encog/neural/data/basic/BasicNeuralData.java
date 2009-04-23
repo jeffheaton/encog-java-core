@@ -53,7 +53,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this object with the specified data.
@@ -64,6 +64,11 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 		System.arraycopy(d, 0, this.data, 0, d.length);
 	}
 	
+	/**
+	 * Construct a new BasicNeuralData object from an existing one.
+	 * This makes a copy of an array.
+	 * @param d The object to be copied.
+	 */
 	public BasicNeuralData(final NeuralData d) {
 		this(d.size());
 		System.arraycopy(d.getData(), 0, this.data, 0, d.size());
@@ -135,11 +140,10 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 		return builder.toString();
 	}
 	
-	public NeuralData clone()
-	{
-		NeuralData result = new BasicNeuralData(size());
-		for(int i=0;i<size();i++)
-			result.setData(i,getData(i));
-		return result;
+	/**
+	 * @return A clone of this object.
+	 */
+	public NeuralData clone() {
+		return new BasicNeuralData(this);
 	}
 }

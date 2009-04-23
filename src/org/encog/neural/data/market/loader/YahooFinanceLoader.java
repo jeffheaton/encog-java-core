@@ -44,8 +44,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class loads financial data from Yahoo.  One caution on 
- * Yahoo data.  
+ * This class loads financial data from Yahoo. One caution on Yahoo data.
  * 
  * @author jheaton
  */
@@ -55,8 +54,8 @@ public class YahooFinanceLoader implements MarketLoader {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/**
 	 * This method builds a URL to load data from Yahoo Finance for a neural
 	 * network to train with.
@@ -130,8 +129,8 @@ public class YahooFinanceLoader implements MarketLoader {
 				final double low = csv.getDouble("low");
 				final double volume = csv.getDouble("volume");
 
-				final LoadedMarketData data = 
-					new LoadedMarketData(date, ticker);
+				final LoadedMarketData data = new 
+				LoadedMarketData(date, ticker);
 				data.setData(MarketDataType.ADJUSTED_CLOSE, adjClose);
 				data.setData(MarketDataType.OPEN, open);
 				data.setData(MarketDataType.CLOSE, close);
@@ -146,11 +145,10 @@ public class YahooFinanceLoader implements MarketLoader {
 			is.close();
 			return result;
 		} catch (final IOException e) {
-			if(logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
 			}
 			throw new LoaderError(e);
-		} 
+		}
 	}
 }

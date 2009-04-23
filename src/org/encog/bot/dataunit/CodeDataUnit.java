@@ -28,33 +28,47 @@ package org.encog.bot.dataunit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * A data unit that holds code.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class CodeDataUnit extends DataUnit {
 
+	/**
+	 * The code for this data unit.
+	 */
 	private String code;
 
+	/**
+	 * The logger for this data unit.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public String toString()
-	{
-		return code;
-	}
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void setCode(String str) {
-		code = str;
-		
-	}
-	
-	public String getCode()
-	{
+	/**
+	 * @return THe code for this data unit.
+	 */
+	public String getCode() {
 		return this.code;
 	}
 
+	/**
+	 * Set the code to the specified string.
+	 * @param str The new code.
+	 */
+	public void setCode(final String str) {
+		this.code = str;
+
+	}
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		return this.code;
+	}
 
 }

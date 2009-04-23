@@ -30,29 +30,40 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A document range that represents the beginning and ending DIV tag, as well
- * as any tages embedded between them.
+ * A document range that represents the beginning and ending DIV tag, as well as
+ * any tages embedded between them.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class Div extends DocumentRange {
-	
-	final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public Div(WebPage source)
-	{
+
+	/**
+	 * The logger.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a range to hold the DIV tag.
+	 * @param source The web page this range was found on.
+	 */
+	public Div(final WebPage source) {
 		super(source);
 	}
-	
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
 		result.append("[Div:class=");
-		result.append(this.getClassAttribute());
+		result.append(getClassAttribute());
 		result.append(",id=");
-		result.append(this.getIdAttribute());
+		result.append(getIdAttribute());
 		result.append(",elements=");
-		result.append(this.getElements().size());
+		result.append(getElements().size());
 		result.append("]");
 		return result.toString();
 	}

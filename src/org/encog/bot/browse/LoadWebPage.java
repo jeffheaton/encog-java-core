@@ -46,168 +46,176 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Called to actually load a web page.  This will read the HTML on a web page
- * and generate the DocumentRange classes.
+ * Called to actually load a web page. This will read the HTML on a web page and
+ * generate the DocumentRange classes.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class LoadWebPage {
 
-	protected WebPage page;
-	protected URL base;
-	protected Form lastForm;
-	protected DocumentRange lastHierarchyElement;
+	/**
+	 * The loaded webpage.
+	 */
+	private WebPage page;
 	
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	/**
+	 * The base URL for the page being loaded.
+	 */
+	private URL base;
+	
+	/**
+	 * The last form that was processed.
+	 */
+	private Form lastForm;
+	
+	/**
+	 * The last hierarchy element that was processed.
+	 */
+	private DocumentRange lastHierarchyElement;
 
-	public LoadWebPage(URL base) {
+	/**
+	 * The logger.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a web page loader with the specified base URL.
+	 * @param base The base URL to use when loading.
+	 */
+	public LoadWebPage(final URL base) {
 		this.base = base;
 	}
 
-	public WebPage load(String str) {
-		try
-		{
-		ByteArrayInputStream bis = new ByteArrayInputStream(str.getBytes());
-		WebPage result = load(bis);
-		bis.close();
-		return result;
+	/**
+	 * Add the specified hierarchy element.
+	 * @param element The hierarchy element to add.
+	 */
+	private void addHierarchyElement(final DocumentRange element) {
+		if (this.lastHierarchyElement == null) {
+			this.page.addContent(element);
+		} else {
+			this.lastHierarchyElement.addElement(element);
 		}
-		catch(IOException e)
-		{
-			if( logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+		this.lastHierarchyElement = element;
+	}
+
+	/**
+	 * Create a dataunit to hode the code HTML tag.
+	 * @param str The code to create the data unit with.
+	 */
+	private void createCodeDataUnit(final String str) {
+		if (str.trim().length() > 0) {
+			final CodeDataUnit d = new CodeDataUnit();
+			d.setCode(str);
+			this.page.addDataUnit(d);
+		}
+	}
+
+	/**
+	 * Create a tag data unit.
+	 * @param tag The tag name to create the data unit for.
+	 */
+	private void createTagDataUnit(final Tag tag) {
+		final TagDataUnit d = new TagDataUnit();
+		d.setTag(tag.clone());
+
+		this.page.addDataUnit(d);
+	}
+
+	/**
+	 * Create a text data unit.
+	 * @param str The text.
+	 */
+	private void createTextDataUnit(final String str) {
+		if (str.trim().length() > 0) {
+			final TextDataUnit d = new TextDataUnit();
+			d.setText(str);
+			this.page.addDataUnit(d);
+		}
+	}
+
+	/**
+	 * Find the end tag that lines up to the beginning tag.
+	 * @param index The index to start the search on. This specifies
+	 * the starting data unit.
+	 * @param tag The beginning tag that we are seeking the end tag 
+	 * for.
+	 * @return The index that the ending tag was found at. Returns -1
+	 * if not found.
+	 */
+	protected int findEndTag(final int index, final Tag tag) {
+		int depth = 0;
+		int count = index;
+
+		while (count < this.page.getDataSize()) {
+			final DataUnit du = this.page.getDataUnit(count);
+
+			if (du instanceof TagDataUnit) {
+				final Tag nextTag = ((TagDataUnit) du).getTag();
+				if (tag.getName().equalsIgnoreCase(nextTag.getName())) {
+					if (nextTag.getType() == Tag.Type.END) {
+						if (depth == 0) {
+							return count;
+						} else {
+							depth--;
+						}
+					} else if (nextTag.getType() == Tag.Type.BEGIN) {
+						depth++;
+					}
+				}
+			}
+			count++;
+		}
+		return -1;
+
+	}
+
+	/**
+	 * Load a web page from the specified stream.
+	 * @param is The input stream to load from.
+	 * @return The loaded web page.
+	 */
+	public WebPage load(final InputStream is) {
+		this.page = new WebPage();
+
+		loadDataUnits(is);
+		loadContents();
+
+		return this.page;
+	}
+
+	/**
+	 * Load the web page from a string that contains HTML.
+	 * @param str A string containing HTML.
+	 * @return The loaded WebPage.
+	 */
+	public WebPage load(final String str) {
+		try {
+			final ByteArrayInputStream bis = new ByteArrayInputStream(str
+					.getBytes());
+			final WebPage result = load(bis);
+			bis.close();
+			return result;
+		} catch (final IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 			throw new BrowseError(e);
 		}
 	}
 
-	protected void loadDataUnits(InputStream is)  {
-		StringBuilder text = new StringBuilder();
-		int ch;
-		ReadHTML parse = new ReadHTML(is);
-		boolean style = false;
-		boolean script = false;
-
-		while ((ch = parse.read()) != -1) {
-			if (ch == 0) {
-				
-				if( style==true )
-					createCodeDataUnit(text.toString());
-				else if( script==true )
-					createCodeDataUnit(text.toString());
-				else
-					createTextDataUnit(text.toString());
-				style = false;
-				script = false;
-				
-				text.setLength(0);
-				createTagDataUnit(parse.getTag());
-				if( parse.getTag().getName().equalsIgnoreCase("style") )
-				{
-					style = true;
-				}
-				else if( parse.getTag().getName().equalsIgnoreCase("script") )
-				{
-					script = true;
-				}
-			} else {
-				text.append((char) ch);
-			}
-		}
-
-		createTextDataUnit(text.toString());
-		
-	}
-
-	protected int findEndTag(int index, Tag tag) {
-		int depth = 0;
-
-
-			while (index < page.getDataSize()) {
-				DataUnit du = page.getDataUnit(index);
-
-				if (du instanceof TagDataUnit) {
-					Tag nextTag = ((TagDataUnit) du).getTag();
-					if (tag.getName().equalsIgnoreCase(nextTag.getName())) {
-						if (nextTag.getType() == Tag.Type.END) {
-							if (depth == 0)
-								return index;
-							else
-								depth--;
-						} else if (nextTag.getType() == Tag.Type.BEGIN)
-							depth++;
-					}
-				}
-				index++;
-			}
-			return -1;
-
-	}
-
-	protected void loadLink(int index, Tag tag) {
-		Link link = new Link(this.page);
-		String href = tag.getAttributeValue("href");
-
-		if (href != null) {
-			link.setTarget(new Address(base, href));
-			link.setBegin(index);
-			link.setEnd(findEndTag(index + 1, tag));
-			page.addContent(link);
-		}
-	}
-
-	protected void loadTitle(int index, Tag tag) {
-		DocumentRange title = new DocumentRange(this.page);
-		title.setBegin(index);
-		title.setEnd(findEndTag(index + 1, tag));
-		this.page.setTitle(title);
-	}
-
-	protected void loadForm(int index, Tag tag) {
-		String method = tag.getAttributeValue("method");
-		String action = tag.getAttributeValue("action");
-
-		Form form = new Form(this.page);
-		form.setBegin(index);
-		form.setEnd(findEndTag(index + 1, tag));
-
-		if (method == null || method.equalsIgnoreCase("GET"))
-			form.setMethod(Form.Method.GET);
-		else
-			form.setMethod(Form.Method.POST);
-
-		if (action == null)
-			form.setAction(new Address(base));
-		else
-			form.setAction(new Address(this.base, action));
-
-		this.page.addContent(form);
-		this.lastForm = form;
-	}
-
-	protected void loadInput(int index, Tag tag) {
-		String type = tag.getAttributeValue("type");
-		String name = tag.getAttributeValue("name");
-		String value = tag.getAttributeValue("value");
-
-		Input input = new Input(this.page);
-		input.setType(type);
-		input.setName(name);
-		input.setValue(value);
-
-		if (lastForm != null)
-			lastForm.addElement(input);
-		else
-			this.page.addContent(input);
-	}
-
+	/**
+	 * Using the data units, which should have already been loaded by this 
+	 * time, load the contents of the web page.  This includes the title,
+	 * any links and forms.  Div tags and spans are also processed.
+	 */
 	protected void loadContents() {
-		for (int index = 0; index < page.getDataSize(); index++) {
-			DataUnit du = page.getDataUnit(index);
+		for (int index = 0; index < this.page.getDataSize(); index++) {
+			final DataUnit du = this.page.getDataUnit(index);
 			if (du instanceof TagDataUnit) {
-				Tag tag = ((TagDataUnit) du).getTag();
+				final Tag tag = ((TagDataUnit) du).getTag();
 
 				if (tag.getType() != Tag.Type.END) {
 					if (tag.getName().equalsIgnoreCase("a")) {
@@ -232,23 +240,159 @@ public class LoadWebPage {
 
 				if (tag.getType() == Tag.Type.END) {
 					if (tag.getName().equalsIgnoreCase("div")) {
-						if (this.lastHierarchyElement != null)
-							this.lastHierarchyElement = this.lastHierarchyElement
-									.getParent();
+						if (this.lastHierarchyElement != null) {
+							this.lastHierarchyElement = 
+								this.lastHierarchyElement.getParent();
+						}
 					} else if (tag.getName().equalsIgnoreCase("span")) {
-						if (this.lastHierarchyElement != null)
-							this.lastHierarchyElement = this.lastHierarchyElement
-									.getParent();
+						if (this.lastHierarchyElement != null) {
+							this.lastHierarchyElement = 
+								this.lastHierarchyElement.getParent();
+						}
 					}
 				}
 			}
 		}
 	}
 
-	private void loadSpan(int index, Tag tag) {
-		Span span = new Span(this.page);
-		String classAttribute = tag.getAttributeValue("class");
-		String idAttribute = tag.getAttributeValue("id");
+	/**
+	 * Load the data units.  Once the lower level data units have been 
+	 * loaded, the contents can be loaded.
+	 * @param is The input stream that the data units are loaded from.
+	 */
+	protected void loadDataUnits(final InputStream is) {
+		final StringBuilder text = new StringBuilder();
+		int ch;
+		final ReadHTML parse = new ReadHTML(is);
+		boolean style = false;
+		boolean script = false;
+
+		while ((ch = parse.read()) != -1) {
+			if (ch == 0) {
+
+				if (style) {
+					createCodeDataUnit(text.toString());
+				} else if (script) {
+					createCodeDataUnit(text.toString());
+				} else {
+					createTextDataUnit(text.toString());
+				}
+				style = false;
+				script = false;
+
+				text.setLength(0);
+				createTagDataUnit(parse.getTag());
+				if (parse.getTag().getName().equalsIgnoreCase("style")) {
+					style = true;
+				} else if (parse.getTag().getName().equalsIgnoreCase(
+						"script")) {
+					script = true;
+				}
+			} else {
+				text.append((char) ch);
+			}
+		}
+
+		createTextDataUnit(text.toString());
+
+	}
+
+	/**
+	 * Called by loadContents to load a div tag.
+	 * @param index The index to begin at.
+	 * @param tag The beginning div tag.
+	 */
+	private void loadDiv(final int index, final Tag tag) {
+		final Div div = new Div(this.page);
+		final String classAttribute = tag.getAttributeValue("class");
+		final String idAttribute = tag.getAttributeValue("id");
+
+		div.setIdAttribute(idAttribute);
+		div.setClassAttribute(classAttribute);
+		div.setBegin(index);
+		div.setEnd(findEndTag(index + 1, tag));
+		addHierarchyElement(div);
+	}
+
+	/**
+	 * Called by loadContents to load a form on the page.
+	 * @param index The index to begin loading at.
+	 * @param tag The beginning tag.
+	 */
+	protected void loadForm(final int index, final Tag tag) {
+		final String method = tag.getAttributeValue("method");
+		final String action = tag.getAttributeValue("action");
+
+		final Form form = new Form(this.page);
+		form.setBegin(index);
+		form.setEnd(findEndTag(index + 1, tag));
+
+		if ((method == null) || method.equalsIgnoreCase("GET")) {
+			form.setMethod(Form.Method.GET);
+		} else {
+			form.setMethod(Form.Method.POST);
+		}
+
+		if (action == null) {
+			form.setAction(new Address(this.base));
+		} else {
+			form.setAction(new Address(this.base, action));
+		}
+
+		this.page.addContent(form);
+		this.lastForm = form;
+	}
+
+	/**
+	 * Called by loadContents to load an input tag on the form.
+	 * @param index The index to begin loading at.
+	 * @param tag The beginning tag.
+	 */
+	protected void loadInput(final int index, final Tag tag) {
+		final String type = tag.getAttributeValue("type");
+		final String name = tag.getAttributeValue("name");
+		final String value = tag.getAttributeValue("value");
+
+		final Input input = new Input(this.page);
+		input.setType(type);
+		input.setName(name);
+		input.setValue(value);
+
+		if (this.lastForm != null) {
+			this.lastForm.addElement(input);
+		} else {
+			this.page.addContent(input);
+		}
+	}
+
+	/**
+	 * Called by loadContents to load a link on the page.
+	 * @param index The index to begin loading at.
+	 * @param tag The beginning tag.
+	 */
+
+	protected void loadLink(final int index, final Tag tag) {
+		final Link link = new Link(this.page);
+		final String href = tag.getAttributeValue("href");
+
+		if (href != null) {
+			link.setTarget(new Address(this.base, href));
+			link.setBegin(index);
+			link.setEnd(findEndTag(index + 1, tag));
+			this.page.addContent(link);
+		}
+	}
+
+	/**
+	 * Called by loadContents to load a span.
+	 * @param index The index to begin loading at.
+	 * @param tag The beginning tag.
+	 */
+
+	private void loadSpan(final int index, final Tag tag) {
+		final Span span = new Span(this.page);
+		final String classAttribute = tag.getAttributeValue("class");
+		final String idAttribute = tag.getAttributeValue("id");
 
 		span.setIdAttribute(idAttribute);
 		span.setClassAttribute(classAttribute);
@@ -257,57 +401,16 @@ public class LoadWebPage {
 		addHierarchyElement(span);
 	}
 
-	private void loadDiv(int index, Tag tag) {
-		Div div = new Div(this.page);
-		String classAttribute = tag.getAttributeValue("class");
-		String idAttribute = tag.getAttributeValue("id");
-
-		div.setIdAttribute(idAttribute);
-		div.setClassAttribute(classAttribute);
-		div.setBegin(index);
-		div.setEnd(findEndTag(index + 1, tag));
-		addHierarchyElement(div);
-	}
-	
-	private void addHierarchyElement(DocumentRange element)
-	{
-		if( this.lastHierarchyElement==null )
-			this.page.addContent(element);
-		else
-			this.lastHierarchyElement.addElement(element);
-		this.lastHierarchyElement = element;
-	}
-
-	public WebPage load(InputStream is) throws IOException {
-		page = new WebPage();
-
-		loadDataUnits(is);
-		loadContents();
-
-		return page;
-	}
-
-	private void createTextDataUnit(String str) {
-		if (str.trim().length() > 0) {
-			TextDataUnit d = new TextDataUnit();
-			d.setText(str);
-			page.addDataUnit(d);
-		}
-	}
-	
-	private void createCodeDataUnit(String str) {
-		if (str.trim().length() > 0) {
-			CodeDataUnit d = new CodeDataUnit();
-			d.setCode(str);
-			page.addDataUnit(d);
-		}
-	}
-
-	private void createTagDataUnit(Tag tag) {
-		TagDataUnit d = new TagDataUnit();
-		d.setTag(tag.clone());
-
-		page.addDataUnit(d);
+	/**
+	 * Called by loadContents to load the title of the page.
+	 * @param index The index to begin loading at.
+	 * @param tag The beginning tag.
+	 */
+	protected void loadTitle(final int index, final Tag tag) {
+		final DocumentRange title = new DocumentRange(this.page);
+		title.setBegin(index);
+		title.setEnd(findEndTag(index + 1, tag));
+		this.page.setTitle(title);
 	}
 
 }

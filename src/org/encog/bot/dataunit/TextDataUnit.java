@@ -28,33 +28,46 @@ package org.encog.bot.dataunit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * A data unit that holds text.
+ * 
  * @author jheaton
  */
 public class TextDataUnit extends DataUnit {
 
+	/**
+	 * The text for this data unit.
+	 */
 	private String text;
-	
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
-	public String toString()
-	{
-		return text;
-	}
-
-	public void setText(String str) {
-		text = str;
-		
-	}
-	
-	public String getText()
-	{
+	/**
+	 * @return The text for this data unit.
+	 */
+	public String getText() {
 		return this.text;
 	}
 
+	/**
+	 * Set the text for this data unit.
+	 * @param str The text.
+	 */
+	public void setText(final String str) {
+		this.text = str;
+
+	}
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		return this.text;
+	}
 
 }

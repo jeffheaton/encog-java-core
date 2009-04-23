@@ -31,28 +31,40 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A document range that specifies a span tag, and any embedded tags.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class Span extends DocumentRange {
-	
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public Span(WebPage source)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a span range from the specified web page.
+	 * 
+	 * @param source
+	 *            The source web page.
+	 */
+	public Span(final WebPage source) {
 		super(source);
 	}
-	
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
+
+	/**
+	 * @return This object as a string. 
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
 		result.append("[Span:class=");
-		result.append(this.getClassAttribute());
+		result.append(getClassAttribute());
 		result.append(",id=");
-		result.append(this.getIdAttribute());
+		result.append(getIdAttribute());
 		result.append(",elements=");
-		result.append(this.getElements().size());
+		result.append(getElements().size());
 		result.append("]");
 		return result.toString();
 	}

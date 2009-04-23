@@ -33,9 +33,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An activation function based on the gaussian function.  
+ * An activation function based on the gaussian function.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ActivationGaussian extends BasicActivationFunction {
 
@@ -44,51 +45,80 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
 
-	private GaussianFunction gausian;
-	
+	/**
+	 * The gaussian function to be used.
+	 */
+	private final GaussianFunction gausian;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public ActivationGaussian(double center,double peak, double width)
-	{
-		this.gausian = new GaussianFunction(center,peak,width);
-	}
-	
-	public void activationFunction(double[] d) {
-		for(int i=0;i<d.length;i++)
-		{
-			d[i] = gausian.calculate(d[i]);
-		}
-			
-		
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Create a gaussian activation function.
+	 * @param center The center of the curve.
+	 * @param peak The peak of the curve.
+	 * @param width The width of the curve.
+	 */
+	public ActivationGaussian(final double center, final double peak,
+			final double width) {
+		this.gausian = new GaussianFunction(center, peak, width);
 	}
 
-	public void derivativeFunction(double[] d) {
-		for(int i=0;i<d.length;i++)
-		{
-			d[i] = gausian.calculateDerivative(d[i]);
+	/**
+	 * Implements the activation function.  The array is modified according
+	 * to the activation function being used.  See the class description
+	 * for more specific information on this type of activation function.
+	 * @param d The input array to the activation function.
+	 */
+	public void activationFunction(final double[] d) {
+		for (int i = 0; i < d.length; i++) {
+			d[i] = this.gausian.calculate(d[i]);
 		}
-		
+
 	}
-	
-	public Object clone()
-	{
-		return new ActivationGaussian(this.gausian.getCenter(),
-				this.gausian.getPeak(),
-				this.gausian.getWidth());
+
+	/**
+	 * @return The object cloned.
+	 */
+	@Override
+	public Object clone() {
+		return new ActivationGaussian(this.gausian.getCenter(), this.gausian
+				.getPeak(), this.gausian.getWidth());
 	}
-	
+
+	/**
+	 * Create a Persistor for this activation function.
+	 * @return The persistor.
+	 */
+	@Override
 	public Persistor createPersistor() {
 		return new ActivationGaussianPersistor();
 	}
 
-	public GaussianFunction getGausian() {
-		return gausian;
+	/**
+	 * Implements the activation function derivative.  The array is modified 
+	 * according derivative of the activation function being used.  See the 
+	 * class description for more specific information on this type of 
+	 * activation function. Propagation training requires the derivative. 
+	 * Some activation functions do not support a derivative and will throw
+	 * an error.
+	 * @param d The input array to the activation function.
+	 */
+	public void derivativeFunction(final double[] d) {
+		for (int i = 0; i < d.length; i++) {
+			d[i] = this.gausian.calculateDerivative(d[i]);
+		}
+
 	}
-	
-	
+
+	/**
+	 * @return The gaussian funcion used.
+	 */
+	public GaussianFunction getGausian() {
+		return this.gausian;
+	}
 
 }

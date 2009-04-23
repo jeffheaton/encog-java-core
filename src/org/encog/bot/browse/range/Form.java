@@ -35,79 +35,127 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A document range that represents a form, and all embedded tags.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class Form extends DocumentRange {
-	public enum Method { POST, GET };
-	protected Address action;
-	protected Method method;
-	protected List<FormElement> elements = new ArrayList<FormElement>();
 	
+	/**
+	 * The method for this form.
+	 * @author jheaton
+	 *
+	 */
+	public enum Method {
+		/**
+		 * This form is to be POSTed.
+		 */
+		POST, 
+		/**
+		 * THis form is to sent using a GET.
+		 */
+		GET
+	};
+
+	/**
+	 * The address that the form will be sent to.
+	 */
+	private Address action;
+	
+	/**
+	 * The means by which the form will be sent.
+	 */
+	private Method method;
+	
+	/**
+	 * The elements of this form.
+	 */
+	private List<FormElement> elements = new ArrayList<FormElement>();
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public Form(WebPage source)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a form on the specified web page.
+	 * @param source The web page that contains this form.
+	 */
+	public Form(final WebPage source) {
 		super(source);
 	}
-	
-	
-	public Address getAction() {
-		return action;
+
+	/**
+	 * Find the form input by type.
+	 * @param type The type of input we want.
+	 * @param index The index to begin searching at.
+	 * @return The Input object that was found.
+	 */
+	public Input findType(final String type, final int index) {
+		int i = index;
+		
+		for (final FormElement element : this.elements) {
+			if (element instanceof Input) {
+				final Input input = (Input) element;
+				if (input.getType().equalsIgnoreCase(type)) {
+					if (i <= 0) {
+						return input;
+					}
+					i--;
+				}
+			}
+		}
+		return null;
 	}
 
+	/**
+	 * @return The URL to send the form to.
+	 */
+	public Address getAction() {
+		return this.action;
+	}
 
+	/**
+	 * @return How the form will be sent.
+	 */
+	public Method getMethod() {
+		return this.method;
+	}
 
-	public void setAction(Address action) {
+	/**
+	 * Set the action for the form. 
+	 * @param action The URL to send the form to.
+	 */
+	public void setAction(final Address action) {
 		this.action = action;
 	}
 
-
-
-	public Method getMethod() {
-		return method;
-	}
-
-
-
-	public void setMethod(Method method) {
+	/**
+	 * Set the method to send the form.
+	 * @param method How to send the form.
+	 */
+	public void setMethod(final Method method) {
 		this.method = method;
 	}
 
-
-
-	public String toString()
-	{
-		StringBuilder builder = new StringBuilder();
+	/**
+	 * @return The object as a string.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
 		builder.append("[Form:");
 		builder.append("method=");
-		builder.append(this.getMethod());
+		builder.append(getMethod());
 		builder.append(",action=");
-		builder.append(this.getAction());
-		for(FormElement element:elements)
-		{
+		builder.append(getAction());
+		for (final FormElement element : this.elements) {
 			builder.append("\n\t");
 			builder.append(element.toString());
 		}
 		builder.append("]");
 		return builder.toString();
-	}
-
-	public Input findType(String type,int index)
-	{
-		for(FormElement element: this.elements) {
-			if( element instanceof Input ) {
-				Input input = (Input)element;
-				if( input.getType().equalsIgnoreCase(type))
-				{
-					if( index<=0)
-						return input;
-					index--;
-				}
-			}
-		}
-		return null;
 	}
 
 }

@@ -26,14 +26,37 @@
 package org.encog.bot.spider;
 
 /**
- * The status that an individual workload item is in.  See the WorkloadStatus class.
+ * The status that an individual workload item is in. 
+ * 
  * @author jheaton
- *
+ * 
  */
-public class WorkloadStatus {
+public final class WorkloadStatus {
 
-	public final static char QUEUED = 'Q';
-	public final static char PROCESSED = 'P';	
-	public final static char ERROR = 'E';
-	public final static char WORKING = 'W';
+	/**
+	 * Private constructor for utility class.
+	 */
+	private WorkloadStatus() {
+		
+	}
+	
+	/**
+	 * The workload item is waiting to be processed.
+	 */
+	public static final char QUEUED = 'Q';
+	
+	/**
+	 * The workload item has been processed successfully.
+	 */
+	public static final char PROCESSED = 'P';
+	
+	/**
+	 * The workload item has been processed, but an error happened.
+	 */
+	public static final char ERROR = 'E';
+	
+	/**
+	 * The workload item is in a processing state.
+	 */
+	public static final char WORKING = 'W';
 }

@@ -31,25 +31,43 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A data unit that holds a tag.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class TagDataUnit extends DataUnit {
-	protected Tag tag;
 	
+	/**
+	 * The tag for this data unit.
+	 */
+	private Tag tag;
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * @return The tag that this data unit is based on.
+	 */
 	public Tag getTag() {
-		return tag;
+		return this.tag;
 	}
 
-	public void setTag(Tag tag) {
+	/**
+	 * Set the tag that this data unit is based on.
+	 * @param tag HTML tag.
+	 */
+	public void setTag(final Tag tag) {
 		this.tag = tag;
 	}
-	
-	public String toString()
-	{
-		return tag.toString();
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		return this.tag.toString();
 	}
 }

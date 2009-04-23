@@ -34,14 +34,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A NeuralData implementation designed to work with bipolar data.
- * Bipolar data contains two values.  True is stored as 1, and false
- * is stored as -1.
+ * A NeuralData implementation designed to work with bipolar data. Bipolar data
+ * contains two values. True is stored as 1, and false is stored as -1.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class BiPolarNeuralData implements NeuralData, Serializable {
-	
+
 	/**
 	 * 
 	 */
@@ -50,16 +50,18 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	 * The data held by this object.
 	 */
 	private boolean[] data;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this object with the specified data.
-	 * @param d The data to create this object with.
+	 * 
+	 * @param d
+	 *            The data to create this object with.
 	 */
 	public BiPolarNeuralData(final boolean[] d) {
 		this.data = new boolean[d.length];
@@ -68,15 +70,31 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Construct a data object with the specified size.
-	 * @param size The size of this data object.
+	 * 
+	 * @param size
+	 *            The size of this data object.
 	 */
 	public BiPolarNeuralData(final int size) {
 		this.data = new boolean[size];
 	}
 
 	/**
+	 * @return A cloned copy of this object.
+	 */
+	@Override
+	public NeuralData clone() {
+		final NeuralData result = new BasicNeuralData(size());
+		for (int i = 0; i < size(); i++) {
+			result.setData(i, getData(i));
+		}
+		return result;
+	}
+
+	/**
 	 * Get the specified data item as a boolean.
-	 * @param i The index to read.
+	 * 
+	 * @param i
+	 *            The index to read.
 	 * @return The specified data item's value.
 	 */
 	public boolean getBoolean(final int i) {
@@ -85,6 +103,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Get the data held by this object as an array of doubles.
+	 * 
 	 * @return The data held by this object.
 	 */
 	public double[] getData() {
@@ -93,8 +112,10 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Get the data held by the index.
-	 * @param index The index to read.
-	 * @return Return the data held at the specified index. 
+	 * 
+	 * @param index
+	 *            The index to read.
+	 * @return Return the data held at the specified index.
 	 */
 	public double getData(final int index) {
 		return BiPolarUtil.bipolar2double(this.data[index]);
@@ -102,27 +123,35 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Store the array.
-	 * @param data The data to store.
+	 * 
+	 * @param data
+	 *            The data to store.
 	 */
 	public void setData(final double[] data) {
 		this.data = BiPolarUtil.double2bipolar(data);
 	}
 
 	/**
-	 * Set the specified index of this object as a boolean.  This
-	 * value will be converted into bipolar.
-	 * @param index The index to set.
-	 * @param value The value to set. 
+	 * Set the specified index of this object as a boolean. This value will be
+	 * converted into bipolar.
+	 * 
+	 * @param index
+	 *            The index to set.
+	 * @param value
+	 *            The value to set.
 	 */
 	public void setData(final int index, final boolean value) {
 		this.data[index] = value;
 	}
 
 	/**
-	 * Set the specified index of this object as a double.  This
-	 * value will be converted into bipolar.
-	 * @param index The index to set.
-	 * @param d The value to set. 
+	 * Set the specified index of this object as a double. This value will be
+	 * converted into bipolar.
+	 * 
+	 * @param index
+	 *            The index to set.
+	 * @param d
+	 *            The value to set.
 	 */
 	public void setData(final int index, final double d) {
 		this.data[index] = BiPolarUtil.double2bipolar(d);
@@ -130,17 +159,10 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Get the size of this data object.
+	 * 
 	 * @return The size of this data object.
 	 */
 	public int size() {
 		return this.data.length;
-	}
-	
-	public NeuralData clone()
-	{
-		NeuralData result = new BasicNeuralData(size());
-		for(int i=0;i<size();i++)
-			result.setData(i,getData(i));
-		return result;
 	}
 }

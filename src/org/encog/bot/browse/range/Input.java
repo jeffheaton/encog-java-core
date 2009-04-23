@@ -30,48 +30,72 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A form element that represents for input for text.
+ * A form element that represents for input for text.  These are of the
+ * form name=value.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class Input extends FormElement {
 
+	/**
+	 * The type of input element that this is.
+	 */
 	private String type;
-	
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
-	
-	public Input(WebPage source)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct this Input element.
+	 * @param source The source for this input element.
+	 */
+	public Input(final WebPage source) {
 		super(source);
 	}
-	
-	public String toString()
-	{
-		StringBuilder builder = new StringBuilder();
+
+	/**
+	 * @return The type of this input.
+	 */
+	public String getType() {
+		return this.type;
+	}
+
+	/**
+	 * @return True if this is autosend, which means that the type is NOT
+	 *         submit. This prevents a form that has multiple submit buttons
+	 *         from sending ALL of them in a single post.
+	 */
+	@Override
+	public boolean isAutoSend() {
+		return !this.type.equalsIgnoreCase("submit");
+	}
+
+	/**
+	 * Set the type of this input element.
+	 * @param type The type of this input element.
+	 */
+	public void setType(final String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
 		builder.append("[Input:");
 		builder.append("type=");
-		builder.append(this.getType());
+		builder.append(getType());
 		builder.append(",name=");
-		builder.append(this.getName());
+		builder.append(getName());
 		builder.append(",value=");
-		builder.append(this.getValue());
+		builder.append(getValue());
 		builder.append("]");
 		return builder.toString();
 	}
-	@Override
-	public boolean isAutoSend() {
-		// TODO Auto-generated method stub
-		return !type.equalsIgnoreCase("submit");
-	}
-	
-	
-	
 }

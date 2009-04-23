@@ -35,9 +35,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * The softmax activation function.
+ * 
  * @author jheaton
  */
-public class ActivationSoftMax extends BasicActivationFunction implements ActivationFunction {
+public class ActivationSoftMax extends BasicActivationFunction implements
+		ActivationFunction {
 
 	/**
 	 * The serial id.
@@ -47,33 +49,56 @@ public class ActivationSoftMax extends BasicActivationFunction implements Activa
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public void activationFunction(double[] d) {
-                
-        double sum = 0;
-        for (int i = 0; i < d.length; i++) {
-            d[i] = BoundMath.exp(d[i]);
-            sum += d[i];
-        }
-        for (int i = 0; i < d.length; i++) {
-            d[i] = d[i] / sum;
-        }
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Implements the activation function.  The array is modified according
+	 * to the activation function being used.  See the class description
+	 * for more specific information on this type of activation function.
+	 * @param d The input array to the activation function.
+	 */
+	public void activationFunction(final double[] d) {
+
+		double sum = 0;
+		for (int i = 0; i < d.length; i++) {
+			d[i] = BoundMath.exp(d[i]);
+			sum += d[i];
+		}
+		for (int i = 0; i < d.length; i++) {
+			d[i] = d[i] / sum;
+		}
 	}
 
-	public void derivativeFunction(double[] d) {
+	/**
+	 * @return The object cloned;
+	 */
+	@Override
+	public Object clone() {
+		return new ActivationSoftMax();
+	}
+
+	/**
+	 * Create a Persistor for this activation function.
+	 * @return The persistor.
+	 */
+	@Override
+	public Persistor createPersistor() {
+		return new ActivationSoftMaxPersistor();
+	}
+
+	/**
+	 * Implements the activation function derivative.  The array is modified 
+	 * according derivative of the activation function being used.  See the 
+	 * class description for more specific information on this type of 
+	 * activation function. Propagation training requires the derivative. 
+	 * Some activation functions do not support a derivative and will throw
+	 * an error.
+	 * @param d The input array to the activation function.
+	 */
+	public void derivativeFunction(final double[] d) {
 		throw new NeuralNetworkError(
 				"Can't use the softmax activation function "
 						+ "where a derivative is required.");
-	}
-	
-	public Object clone()
-	{
-		return new ActivationSoftMax();
-	}
-	
-	public Persistor createPersistor() {
-		return new ActivationSoftMaxPersistor();
 	}
 
 }

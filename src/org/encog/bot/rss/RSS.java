@@ -51,18 +51,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
- * This is the class that actually parses the RSS and builds a collection
- * of RSSItems. To make use of this class call the load method with a URL that
+ * This is the class that actually parses the RSS and builds a collection of
+ * RSSItems. To make use of this class call the load method with a URL that
  * points to RSS.
  */
 public class RSS {
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	/**
 	 * Simple utility method that obtains the text of an XML node.
 	 * 
@@ -101,6 +95,12 @@ public class RSS {
 	}
 
 	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
 	 * All of the attributes for this RSS document.
 	 */
 	private final Map<String, String> attributes = 
@@ -134,52 +134,45 @@ public class RSS {
 	 *            URL that contains XML data.
 	 */
 	public void load(final URL url) {
-		try
-		{
-			if( logger.isInfoEnabled())
-			{
-				logger.info("Loading RSS from:" + url);
+		try {
+			if (this.logger.isInfoEnabled()) {
+				this.logger.info("Loading RSS from:" + url);
 			}
-			
-		final URLConnection http = url.openConnection();
-		final InputStream is = http.getInputStream();
 
-		final DocumentBuilderFactory factory = DocumentBuilderFactory
-				.newInstance();
-		final Document d = factory.newDocumentBuilder().parse(is);
+			final URLConnection http = url.openConnection();
+			final InputStream is = http.getInputStream();
 
-		final Element e = d.getDocumentElement();
-		final NodeList nl = e.getChildNodes();
-		for (int i = 0; i < nl.getLength(); i++) {
-			final Node node = nl.item(i);
-			final String nodename = node.getNodeName();
+			final DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
+			final Document d = factory.newDocumentBuilder().parse(is);
 
-			// RSS 2.0
-			if (nodename.equalsIgnoreCase("channel")) {
-				loadChannel(node);
-				// RSS 1.0
-			} else if (nodename.equalsIgnoreCase("item")) {
-				loadItem(node);
+			final Element e = d.getDocumentElement();
+			final NodeList nl = e.getChildNodes();
+			for (int i = 0; i < nl.getLength(); i++) {
+				final Node node = nl.item(i);
+				final String nodename = node.getNodeName();
+
+				// RSS 2.0
+				if (nodename.equalsIgnoreCase("channel")) {
+					loadChannel(node);
+					// RSS 1.0
+				} else if (nodename.equalsIgnoreCase("item")) {
+					loadItem(node);
+				}
 			}
-		}
-		}
-		catch(IOException e)
-		{
-			if( logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+		} catch (final IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 			throw new BotError(e);
-		} catch (SAXException e) {
-			if( logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+		} catch (final SAXException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 			throw new BotError(e);
-		} catch (ParserConfigurationException e) {
-			if( logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+		} catch (final ParserConfigurationException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 			throw new BotError(e);
 		}
@@ -216,9 +209,8 @@ public class RSS {
 		final RSSItem rssItem = new RSSItem();
 		rssItem.load(item);
 		this.items.add(rssItem);
-		if( logger.isDebugEnabled())
-		{
-			logger.debug("Loaded RSS item:" + rssItem);
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Loaded RSS item:" + rssItem);
 		}
 	}
 
@@ -227,6 +219,7 @@ public class RSS {
 	 * 
 	 * @return The object as a String.
 	 */
+	@Override
 	public String toString() {
 		final StringBuilder str = new StringBuilder();
 		final Set<String> set = this.attributes.keySet();

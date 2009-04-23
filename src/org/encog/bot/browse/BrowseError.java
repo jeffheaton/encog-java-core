@@ -31,8 +31,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Thrown when any sort of error related to web browsing is encountered.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class BrowseError extends BotError {
 	/**
@@ -43,7 +44,7 @@ public class BrowseError extends BotError {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a message exception.
@@ -63,6 +64,6 @@ public class BrowseError extends BotError {
 	 */
 	public BrowseError(final Throwable t) {
 		super(t);
-	}	
-	
+	}
+
 }

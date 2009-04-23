@@ -59,7 +59,7 @@ public class BasicNeuralDataPair implements NeuralDataPair {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct the object with only input. If this constructor is used, then

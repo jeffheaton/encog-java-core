@@ -31,28 +31,39 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * A simple implementation of the ExtractListener interface that will listen
- * for words and add them to a list.  This allows you to quickly build a list
- * of all of the words on a web page.
+ * A simple implementation of the ExtractListener interface that will listen for
+ * words and add them to a list. This allows you to quickly build a list of all
+ * of the words on a web page.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ListExtractListener implements ExtractListener {
-	
-	private List<Object> list = new ArrayList<Object>();
-	
+
+	/**
+	 * The list to extract into.
+	 */
+	private final List<Object> list = new ArrayList<Object>();
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public List<Object> getList()
-	{
-		return this.list;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Called when a word is found, add it to the list.
+	 * @param object The word found.
+	 */
+	public void foundData(final Object object) {
+		this.list.add(object);
 	}
-	
-	public void foundData(Object object)
-	{
-		list.add(object);
+
+	/**
+	 * @return The list of words extracted.
+	 */
+	public List<Object> getList() {
+		return this.list;
 	}
 }

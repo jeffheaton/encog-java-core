@@ -34,9 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements a mathematical matrix. Matrix math is very
- * important to neural network processing. Many of the neural network classes
- * make use of the matrix classes in this package.
+ * This class implements a mathematical matrix. Matrix math is very important to
+ * neural network processing. Many of the neural network classes make use of the
+ * matrix classes in this package.
  */
 public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
@@ -44,12 +44,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -7977897210426471675L;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Turn an array of doubles into a column matrix.
@@ -78,6 +72,12 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		System.arraycopy(input, 0, d[0], 0, input.length);
 		return new Matrix(d);
 	}
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The name of this object.
@@ -157,6 +157,19 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * Add the specified matrix to this matrix.  This will modify the matrix
+	 * to hold the result of the addition.
+	 * @param matrix The matrix to add.
+	 */
+	public void add(final Matrix matrix) {
+		for (int row = 0; row < getRows(); row++) {
+			for (int col = 0; col < getCols(); col++) {
+				this.add(row, col, matrix.get(row, col));
+			}
+		}
+	}
+
+	/**
 	 * Set all rows and columns to zero.
 	 */
 	public void clear() {
@@ -209,22 +222,20 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	public boolean equals(final Matrix matrix, final int precision) {
 
 		if (precision < 0) {
-			String str = "Precision can't be a negative number.";
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
+			final String str = "Precision can't be a negative number.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
 
 		final double test = Math.pow(10.0, precision);
-		if (Double.isInfinite(test) || test > Long.MAX_VALUE) {
-			String str = "Precision of " + precision
-				+ " decimal places is not supported.";
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
-			}			
+		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
+			final String str = "Precision of " + precision
+					+ " decimal places is not supported.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
+			}
 			throw new MatrixError(str);
 		}
 
@@ -286,11 +297,10 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public Matrix getCol(final int col) {
 		if (col > getCols()) {
-			String str = "Can't get column #" + col
-				+ " because it does not exist.";
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
+			final String str = "Can't get column #" + col
+					+ " because it does not exist.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
@@ -336,11 +346,10 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public Matrix getRow(final int row) {
 		if (row > getRows()) {
-			String str = "Can't get row #" + row
-			+ " because it does not exist.";
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
+			final String str = "Can't get row #" + row
+					+ " because it does not exist.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
@@ -368,6 +377,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * 
 	 * @return The hash code.
 	 */
+	@Override
 	public int hashCode() {
 		long result = 0;
 		for (int r = 0; r < getRows(); r++) {
@@ -407,6 +417,31 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		return true;
 	}
 
+	/**
+	 * Multiply every value in the matrix by the specified value.
+	 * @param value The value to multiply the matrix by.
+	 */
+	public void multiply(final double value) {
+
+		for (int row = 0; row < getRows(); row++) {
+			for (int col = 0; col < getCols(); col++) {
+				this.matrix[row][col] *= value;
+			}
+		}
+	}
+
+	/**
+	 * Set every value in the matrix to the specified value.
+	 * @param value The value to set the matrix to.
+	 */
+	public void set(final double value) {
+		for (int row = 0; row < getRows(); row++) {
+			for (int col = 0; col < getCols(); col++) {
+				this.matrix[row][col] = value;
+			}
+		}
+
+	}
 
 	/**
 	 * Set an individual cell in the matrix to the specified value.
@@ -485,6 +520,20 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * @return Convert the matrix to a string.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
+		result.append("[Matrix: rows=");
+		result.append(getRows());
+		result.append(",cols=");
+		result.append(getCols());
+		result.append("]");
+		return result.toString();
+	}
+
+	/**
 	 * Validate that the specified row and column are within the required
 	 * ranges. Otherwise throw a MatrixError exception.
 	 * 
@@ -494,68 +543,23 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            The column to check.
 	 */
 	private void validate(final int row, final int col) {
-		if (row >= getRows() || row < 0) {
-			String str = "The row:" + row + " is out of range:" + getRows();
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
+		if ((row >= getRows()) || (row < 0)) {
+			final String str = "The row:" + row + " is out of range:"
+					+ getRows();
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
 
-		if (col >= getCols() || col < 0) {
-			String str = "The col:" + col + " is out of range:"
-			+ getCols();
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
+		if ((col >= getCols()) || (col < 0)) {
+			final String str = "The col:" + col + " is out of range:"
+					+ getCols();
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
-	}
-	
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
-		result.append("[Matrix: rows=");
-		result.append(getRows());
-		result.append(",cols=");
-		result.append(getCols());
-		result.append("]");
-		return result.toString();
-	}
-
-	public void add(Matrix matrix) {
-		for(int row = 0; row<this.getRows();row ++)
-		{
-			for(int col = 0; col<this.getCols();col ++)
-			{
-				this.add(row,col,matrix.get(row, col));
-			}
-		}
-	}
-	
-	public void multiply(double value) {
-		
-		
-		for(int row = 0; row<this.getRows();row ++)
-		{
-			for(int col = 0; col<this.getCols();col ++)
-			{
-				this.matrix[row][col]*=value;
-			}
-		}
-	}
-
-	public void set(double value) {
-		for(int row = 0; row<this.getRows();row ++)
-		{
-			for(int col = 0; col<this.getCols();col ++)
-			{
-				this.matrix[row][col]=value;
-			}
-		}
-		
 	}
 
 }

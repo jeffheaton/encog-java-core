@@ -37,34 +37,44 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An extractor that is designed to extract all of the words from a web page.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ExtractWords extends BasicExtract {
-	
-	private Parse parse;
-	
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public ExtractWords()
-	{
-		parse = new Parse();
-		parse.load();
-	}
-	
-	public void extract(WebPage page)
-	{
 
-		for(DataUnit unit : page.getData() )
-		{				
-			if( unit instanceof TextDataUnit )
-			{
-				TextDataUnit text = (TextDataUnit)unit;
-				Signal signal = parse.parse(text.getText());
-				Collection<Signal> list = signal.findByType("word");
-				for(Signal word: list)
-				{
+	/**
+	 * Used to parse the text found ont the web page.  This is how the
+	 * text is broken into words.
+	 */
+	private final Parse parse;
+
+	/**
+	 * The logger.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct the extractor for words.
+	 */
+	public ExtractWords() {
+		this.parse = new Parse();
+		this.parse.load();
+	}
+
+	/**
+	 * Extract words from the specified WebPage.
+	 * @param page The page to extract from.
+	 */
+	public void extract(final WebPage page) {
+
+		for (final DataUnit unit : page.getData()) {
+			if (unit instanceof TextDataUnit) {
+				final TextDataUnit text = (TextDataUnit) unit;
+				final Signal signal = this.parse.parse(text.getText());
+				final Collection<Signal> list = signal.findByType("word");
+				for (final Signal word : list) {
 					distribute(word.toString());
 				}
 			}

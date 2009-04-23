@@ -35,113 +35,195 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base class that represents a document range.  A document range is a collection 
- * of tags that all apply to one "concept".  For example, a Form, or a Link.  This
+ * Base class that represents a document range. A document range is a collection
+ * of tags that all apply to one "concept". For example, a Form, or a Link. This
  * allows the form to collect the elements inside the form, or a link to collect
  * the text along with the link tag.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class DocumentRange {
+	
+	/**
+	 * The beginning index for this range.
+	 */
 	private int begin;
+	
+	/**
+	 * The ending index for this range.
+	 */
 	private int end;
+	
+	/**
+	 * The source page for this range.
+	 */
 	private WebPage source;
+	
+	/**
+	 * The id attribute, on the source tag.  Useful for DIV tags.
+	 */
 	private String idAttribute;
+	
+	/**
+	 * The class attribute. on the source tag.  
+	 */
 	private String classAttribute;
+	
+	/**
+	 * Sub elements of this range.
+	 */
 	private List<DocumentRange> elements = new ArrayList<DocumentRange>();
+	
+	/**
+	 * The parent to this range, or null if top.
+	 */
 	private DocumentRange parent;
-	
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public DocumentRange(WebPage source)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a document range from the specified WebPage.
+	 * @param source The web page that this range belongs to.
+	 */
+	public DocumentRange(final WebPage source) {
 		this.source = source;
 	}
-	
-	public int getBegin() {
-		return begin;
-	}
-	public void setBegin(int begin) {
-		this.begin = begin;
-	}
-	public int getEnd() {
-		return end;
-	}
-	public void setEnd(int end) {
-		this.end = end;
-	}
-	public WebPage getSource() {
-		return source;
-	}
-	public void setSource(WebPage source) {
-		this.source = source;
-	}
-	
-	public String getTextOnly()
-	{
-		StringBuilder result = new StringBuilder();
-		
-		for(int i=getBegin();i<getEnd();i++)
-		{
-			DataUnit du = this.source.getData().get(i);
-			if( du instanceof TextDataUnit)
-			{
-				result.append(du.toString());
-				result.append("\n");
-			}
-		}
-		
-		return result.toString();
-	}
-	
-	public String toString()
-	{
-		return getTextOnly();
-	}
-	public List<DocumentRange> getElements() {
-		return elements;
-	}
-	public void setElements(List<DocumentRange> elements) {
-		this.elements = elements;
-	}
-	public DocumentRange getParent() {
-		return parent;
-	}
-	public void setParent(DocumentRange parent) {
-		this.parent = parent;
-	}
-	
-	public void addElement(DocumentRange element)
-	{
+
+	/**
+	 * Add an element.
+	 * @param element The element to add.
+	 */
+	public void addElement(final DocumentRange element) {
 		this.elements.add(element);
 		element.setParent(this);
 	}
-	
+
 	/**
-	 * @return the idAttribute
+	 * @return The beginning index.
 	 */
-	public String getIdAttribute() {
-		return idAttribute;
-	}
-	/**
-	 * @param idAttribute the idAttribute to set
-	 */
-	public void setIdAttribute(String idAttribute) {
-		this.idAttribute = idAttribute;
+	public int getBegin() {
+		return this.begin;
 	}
 
 	/**
 	 * @return the classAttribute
 	 */
 	public String getClassAttribute() {
-		return classAttribute;
+		return this.classAttribute;
 	}
+
 	/**
-	 * @param classAttribute the classAttribute to set
+	 * @return The elements of this document range. 
 	 */
-	public void setClassAttribute(String classAttribute) {
+	public List<DocumentRange> getElements() {
+		return this.elements;
+	}
+
+	/**
+	 * @return The ending index.
+	 */
+	public int getEnd() {
+		return this.end;
+	}
+
+	/**
+	 * @return the idAttribute
+	 */
+	public String getIdAttribute() {
+		return this.idAttribute;
+	}
+
+	/**
+	 * @return The web page that owns this class.
+	 */
+	public DocumentRange getParent() {
+		return this.parent;
+	}
+
+	/**
+	 * @return The web page that this range is owned by.
+	 */
+	public WebPage getSource() {
+		return this.source;
+	}
+
+	/**
+	 * Get the text from this range.
+	 * @return The text from this range.
+	 */
+	public String getTextOnly() {
+		final StringBuilder result = new StringBuilder();
+
+		for (int i = getBegin(); i < getEnd(); i++) {
+			final DataUnit du = this.source.getData().get(i);
+			if (du instanceof TextDataUnit) {
+				result.append(du.toString());
+				result.append("\n");
+			}
+		}
+
+		return result.toString();
+	}
+
+	/**
+	 * Set the beginning index.
+	 * @param begin The beginning index.
+	 */
+	public void setBegin(final int begin) {
+		this.begin = begin;
+	}
+
+	/**
+	 * @param classAttribute
+	 *            the classAttribute to set
+	 */
+	public void setClassAttribute(final String classAttribute) {
 		this.classAttribute = classAttribute;
+	}
+
+	/**
+	 * Set the ending index.
+	 * @param end The ending index.
+	 */
+	public void setEnd(final int end) {
+		this.end = end;
+	}
+
+	/**
+	 * @param idAttribute
+	 *            the idAttribute to set
+	 */
+	public void setIdAttribute(final String idAttribute) {
+		this.idAttribute = idAttribute;
+	}
+
+	/**
+	 * Set the parent.
+	 * @param parent The parent.
+	 */
+	public void setParent(final DocumentRange parent) {
+		this.parent = parent;
+	}
+
+	/**
+	 * Set the source web page.
+	 * @param source The source web page.
+	 */
+	public void setSource(final WebPage source) {
+		this.source = source;
+	}
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		return getTextOnly();
 	}
 
 }

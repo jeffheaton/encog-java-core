@@ -25,7 +25,6 @@
  */
 package org.encog.bot.browse;
 
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -33,51 +32,75 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A URL address.  Holds both the URL object, as well as original text.
+ * A URL address. Holds both the URL object, as well as original text.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class Address {
-	private String original;
+	/**
+	 * The original text from the address.
+	 */
+	private final String original;
+	
+	/**
+	 * The address as a URL.
+	 */
 	private URL url;
-	
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public Address(URL base,String original)
-	{
-		this.original = original;
-		try
-		{
-			url = new URL(base,original);
-		}
-		catch(MalformedURLException e)
-		{
-			// not important, original already set
-		}
-	}
-	
-	public Address(URL u)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct the address from a URL.
+	 * @param u The URL to use.
+	 */
+	public Address(final URL u) {
 		this.url = u;
 		this.original = u.toString();
 	}
-	
+
+	/** 
+	 * Construct a URL using a perhaps relative URL and a base URL.
+	 * @param base The base URL.
+	 * @param original A full URL or a URL relative to the base.
+	 */
+	public Address(final URL base, final String original) {
+		this.original = original;
+		try {
+			this.url = new URL(base, original);
+		} catch (final MalformedURLException e) {
+			logger.debug("Malformed URL", e);
+		}
+	}
+
+	/**
+	 * @return The original text from this URL.
+	 */
 	public String getOriginal() {
-		return original;
+		return this.original;
 	}
-	
+
+	/**
+	 * @return THe URL.
+	 */
 	public URL getUrl() {
-		return url;
+		return this.url;
 	}
-	
-	public String toString()
-	{
-		if( url!=null )
-			return url.toString();
-		else
-			return original;
+
+	/**
+	 * @return The object as a string.
+	 */
+	@Override
+	public String toString() {
+		if (this.url != null) {
+			return this.url.toString();
+		} else {
+			return this.original;
+		}
 	}
-	
-	
+
 }

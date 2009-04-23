@@ -50,12 +50,6 @@ import org.slf4j.LoggerFactory;
 public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
 	 * not support removes.
 	 * 
@@ -94,9 +88,9 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 		 * Removes are not supported.
 		 */
 		public void remove() {
-			if(logger.isErrorEnabled())
-			{
-				logger.error("Called remove, unsupported operation.");
+			if (BasicNeuralDataSet.this.logger.isErrorEnabled()) {
+				BasicNeuralDataSet.this.logger
+						.error("Called remove, unsupported operation.");
 			}
 			throw new UnsupportedOperationException();
 		}
@@ -106,6 +100,12 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -2279722928570071183L;
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The data held by this object.
@@ -150,8 +150,8 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 				this.add(inputData, idealData);
 			}
 		} else {
-			for (int i = 0; i < input.length; i++) {
-				final BasicNeuralData inputData = new BasicNeuralData(input[i]);
+			for (final double[] element : input) {
+				final BasicNeuralData inputData = new BasicNeuralData(element);
 				this.add(inputData);
 			}
 		}
@@ -178,9 +178,8 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
 		if (!this.iterators.isEmpty()) {
-			if( logger.isErrorEnabled() )
-			{
-				logger.error("Concurrent modification exception");
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Concurrent modification exception");
 			}
 			throw new ConcurrentModificationException();
 		}
@@ -201,6 +200,28 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	}
 
 	/**
+	 * @return A cloned copy of this object.
+	 */
+	@Override
+	public Object clone() {
+		final BasicNeuralDataSet result = new BasicNeuralDataSet();
+		for (final NeuralDataPair pair : this) {
+			if (pair.getIdeal() == null) {
+				final BasicNeuralData input = new BasicNeuralData(pair
+						.getInput());
+				result.add(new BasicNeuralDataPair(input));
+			} else {
+				final BasicNeuralData input = new BasicNeuralData(pair
+						.getInput());
+				final BasicNeuralData ideal = new BasicNeuralData(pair
+						.getIdeal());
+				result.add(new BasicNeuralDataPair(input, ideal));
+			}
+		}
+		return result;
+	}
+
+	/**
 	 * Close this data set.
 	 */
 	public void close() {
@@ -210,6 +231,7 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 
 	/**
 	 * Create a persistor for this object.
+	 * 
 	 * @return A persistor for this object.
 	 */
 	public Persistor createPersistor() {
@@ -272,9 +294,10 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	}
 
 	/**
-	 * Determine if this neural data set is supervied.  All of the pairs
-	 * should be either supervised or not, so simply check the first pair.
-	 * If the list is empty then assume unsupervised.
+	 * Determine if this neural data set is supervied. All of the pairs should
+	 * be either supervised or not, so simply check the first pair. If the list
+	 * is empty then assume unsupervised.
+	 * 
 	 * @return True if supervised.
 	 */
 	public boolean isSupervised() {
@@ -317,25 +340,5 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	 */
 	public void setName(final String name) {
 		this.name = name;
-	}
-	
-	public Object clone()
-	{
-		BasicNeuralDataSet result = new BasicNeuralDataSet();
-		for(NeuralDataPair pair: this)
-		{
-			if( pair.getIdeal()==null )
-			{
-				BasicNeuralData input = new BasicNeuralData(pair.getInput());
-				result.add(new BasicNeuralDataPair(input));
-			}
-			else
-			{
-				BasicNeuralData input = new BasicNeuralData(pair.getInput());
-				BasicNeuralData ideal = new BasicNeuralData(pair.getIdeal());
-				result.add(new BasicNeuralDataPair(input,ideal));
-			}
-		}
-		return result;
 	}
 }

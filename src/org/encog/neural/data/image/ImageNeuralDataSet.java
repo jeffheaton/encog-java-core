@@ -58,32 +58,35 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 * The downsampler to use.
 	 */
 	private final Class<Downsample> downsampler;
-	
+
 	/**
 	 * The height to downsample to.
 	 */
 	private int height;
-	
-	/** 
+
+	/**
 	 * The width to downsample to.
 	 */
 	private int width;
-	
+
 	/**
 	 * Should the bounds be found and cropped.
 	 */
 	private final boolean findBounds;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this class with the specified downsampler.
-	 * @param downsampler The downsampler to use.
-	 * @param findBounds Should the bounds be found and clipped.
+	 * 
+	 * @param downsampler
+	 *            The downsampler to use.
+	 * @param findBounds
+	 *            Should the bounds be found and clipped.
 	 */
 	public ImageNeuralDataSet(final Class<Downsample> downsampler,
 			final boolean findBounds) {
@@ -95,8 +98,11 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
 	 * Add the specified data, must be an ImageNeuralData class.
-	 * @param data The data The object to add.
+	 * 
+	 * @param data
+	 *            The data The object to add.
 	 */
+	@Override
 	public void add(final NeuralData data) {
 		if (!(data instanceof ImageNeuralData)) {
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
@@ -106,10 +112,14 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	}
 
 	/**
-	 * Add the specified input and ideal object to the collection. 
-	 * @param inputData The image to train with.
-	 * @param idealData The expected otuput form this image.
+	 * Add the specified input and ideal object to the collection.
+	 * 
+	 * @param inputData
+	 *            The image to train with.
+	 * @param idealData
+	 *            The expected otuput form this image.
 	 */
+	@Override
 	public void add(final NeuralData inputData, final NeuralData idealData) {
 		if (!(inputData instanceof ImageNeuralData)) {
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
@@ -119,9 +129,12 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	}
 
 	/**
-	 * Add input and expected output.  This is used for supervised training.
-	 * @param inputData The input data to train on.
+	 * Add input and expected output. This is used for supervised training.
+	 * 
+	 * @param inputData
+	 *            The input data to train on.
 	 */
+	@Override
 	public void add(final NeuralDataPair inputData) {
 		if (!(inputData.getInput() instanceof ImageNeuralData)) {
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
@@ -132,8 +145,11 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
 	 * Downsample all images and generate training data.
-	 * @param height The height to downsample to.
-	 * @param width the width to downsample to.
+	 * 
+	 * @param height
+	 *            The height to downsample to.
+	 * @param width
+	 *            the width to downsample to.
 	 */
 	public void downsample(final int height, final int width) {
 		this.height = height;
@@ -142,8 +158,8 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 		for (final NeuralDataPair pair : this) {
 			if (pair.getInput() instanceof ImageNeuralData) {
 				throw new NeuralNetworkError(
-				"Invalid class type found in ImageNeuralDataSet, only "
-				+ "ImageNeuralData items are allowed.");
+						"Invalid class type found in ImageNeuralDataSet, only "
+								+ "ImageNeuralData items are allowed.");
 			}
 
 			Downsample downsample;
@@ -152,15 +168,13 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 				final ImageNeuralData input = (ImageNeuralData) pair.getInput();
 				input.downsample(downsample, this.findBounds, height, width);
 			} catch (final InstantiationException e) {
-				if(logger.isErrorEnabled())
-				{
-					logger.error("Exception",e);
+				if (this.logger.isErrorEnabled()) {
+					this.logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			} catch (final IllegalAccessException e) {
-				if(logger.isErrorEnabled())
-				{
-					logger.error("Exception",e);
+				if (this.logger.isErrorEnabled()) {
+					this.logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			}

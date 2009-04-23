@@ -28,37 +28,61 @@ package org.encog.neural.activation;
 import org.encog.persist.Persistor;
 
 /**
- * Holds basic functionality that all activation functions will likely
- * have use of.  Specifically it implements a name and description
- * for the EncogPersistedObject class.
+ * Holds basic functionality that all activation functions will likely have use
+ * of. Specifically it implements a name and description for the
+ * EncogPersistedObject class.
+ * 
  * @author jheaton
- *
+ * 
  */
-public abstract class BasicActivationFunction implements ActivationFunction
-{	
+public abstract class BasicActivationFunction implements ActivationFunction {
+	
+	/**
+	 * @return The object cloned.
+	 */
+	@Override
+	public Object clone() {
+		return null;
+	}
+
+	/**
+	 * Create a Persistor for this activation function.
+	 * @return The persistor.
+	 */
 	public Persistor createPersistor() {
 		return null;
 	}
 
+	/**
+	 * @return Always returns null, descriptions and names are not used
+	 * for activation functions.
+	 */
 	public String getDescription() {
 		return null;
 	}
 
+	/**
+	 * @return Always returns null, descriptions and names are not used
+	 * for activation functions.
+	 */
 	public String getName() {
 		return null;
 	}
 
-	public void setDescription(String theDescription) {
-		
+	/**
+	 * Ignore the description, it is not used for activation functions.
+	 * @param theDescription Ignored.
+	 */
+	public void setDescription(final String theDescription) {
+
 	}
 
-	public void setName(String theName) {
-		
-	}
-	
-	public Object clone()
-	{
-		return null;
+	/**
+	 * Ignore the name, it is not used for activation functions.
+	 * @param theName Ignored.
+	 */
+	public void setName(final String theName) {
+
 	}
 
 }

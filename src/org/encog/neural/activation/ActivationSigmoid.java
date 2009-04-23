@@ -32,9 +32,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The sigmoid activation function takes on a sigmoidal
- * shape. Only positive numbers are generated. Do not use this activation
- * function if negative number output is desired.
+ * The sigmoid activation function takes on a sigmoidal shape. Only positive
+ * numbers are generated. Do not use this activation function if negative number
+ * output is desired.
  */
 public class ActivationSigmoid extends BasicActivationFunction {
 	/**
@@ -42,51 +42,57 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 5622349801036468572L;
 
-
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	/**
-	 * A threshold function for a neural network.
-	 * 
-	 * @param d
-	 *            The input to the function.
-	 * @return The output from the function.
-	 */
-	public void activationFunction(final double d[]) {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-		for(int i=0;i<d.length;i++)
-		{
+	/**
+	 * Implements the activation function.  The array is modified according
+	 * to the activation function being used.  See the class description
+	 * for more specific information on this type of activation function.
+	 * @param d The input array to the activation function.
+	 */
+	public void activationFunction(final double[] d) {
+
+		for (int i = 0; i < d.length; i++) {
 			d[i] = 1.0 / (1 + BoundMath.exp(-1.0 * d[i]));
 		}
 
 	}
 
 	/**
-	 * Some training methods require the derivative.
-	 * 
-	 * @param d
-	 *            The input.
-	 * @return The output.
+	 * @return The object cloned;
 	 */
-	public void derivativeFunction(final double d[]) {
-		
-		for(int i=0;i<d.length;i++)
-		{
+	@Override
+	public Object clone() {
+		return new ActivationSigmoid();
+	}
+
+	/**
+	 * Create a Persistor for this activation function.
+	 * @return The persistor.
+	 */
+	@Override
+	public Persistor createPersistor() {
+		return new ActivationSigmoidPersistor();
+	}
+
+	/**
+	 * Implements the activation function derivative.  The array is modified 
+	 * according derivative of the activation function being used.  See the 
+	 * class description for more specific information on this type of 
+	 * activation function. Propagation training requires the derivative. 
+	 * Some activation functions do not support a derivative and will throw
+	 * an error.
+	 * @param d The input array to the activation function.
+	 */
+	public void derivativeFunction(final double[] d) {
+
+		for (int i = 0; i < d.length; i++) {
 			d[i] = d[i] * (1.0 - d[i]);
 		}
 
-	}
-	
-	public Object clone()
-	{
-		return new ActivationSigmoid();
-	}
-	
-	public Persistor createPersistor() {
-		return new ActivationSigmoidPersistor();
 	}
 }

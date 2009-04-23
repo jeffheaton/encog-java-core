@@ -34,48 +34,73 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements the basic functionality that most extractors will need to implement.
- * Mostly this involves maintaining a collection of the extraction listeners
- * that will receive events as the extraction occurs.
+ * Implements the basic functionality that most extractors will need to
+ * implement. Mostly this involves maintaining a collection of the extraction
+ * listeners that will receive events as the extraction occurs.
+ * 
  * @author jheaton
- *
+ * 
  */
 public abstract class BasicExtract implements Extract {
 
-	private Collection<ExtractListener> listeners = new ArrayList<ExtractListener>();
-	
+	/**
+	 * The classes registered as listeners for the extraction.
+	 */
+	private final Collection<ExtractListener> listeners = 
+		new ArrayList<ExtractListener>();
+
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public void addListener(ExtractListener listener) {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Add a listener for the extraction.
+	 * @param listener The listener to add.
+	 */
+	public void addListener(final ExtractListener listener) {
 		this.listeners.add(listener);
-		
-	}
-	
-	public void removeListener(ExtractListener listener) {
-		this.listeners.remove(listener);
-		
+
 	}
 
-	public Collection<ExtractListener> getListeners() {
-		return this.listeners;
+	/**
+	 * Distribute an object to the listeners.
+	 * @param object The object to be distributed.
+	 */
+	public void distribute(final Object object) {
+		for (final ExtractListener listener : getListeners()) {
+			listener.foundData(object);
+		}
 	}
-	
-	public List<Object> extractList(WebPage page)
-	{
+
+	/**
+	 * Extract from the web page and return the results as a list.
+	 * @param page The web page to extract from.
+	 * @return The results of the extraction as a List.
+	 */
+	public List<Object> extractList(final WebPage page) {
 		getListeners().clear();
-		ListExtractListener listener = new ListExtractListener();
-		this.addListener(listener);
+		final ListExtractListener listener = new ListExtractListener();
+		addListener(listener);
 		extract(page);
 		return listener.getList();
 	}
-	
-	public void distribute(Object object)
-	{
-		for(ExtractListener listener: getListeners())
-		{
-			listener.foundData(object);
-		}
+
+	/**
+	 * @return A list of listeners registered with this object.
+	 */
+	public Collection<ExtractListener> getListeners() {
+		return this.listeners;
+	}
+
+	/**
+	 * Remove the specified listener.
+	 * @param listener The listener to rmove.
+	 */
+	public void removeListener(final ExtractListener listener) {
+		this.listeners.remove(listener);
+
 	}
 
 }
