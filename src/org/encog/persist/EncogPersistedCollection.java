@@ -54,7 +54,7 @@ public class EncogPersistedCollection {
 	public static final String TYPE_BASIC_NET = "BasicNetwork";
 	public static final String TYPE_BASIC_LAYER = "BasicLayer";
 	public static final String TYPE_CONTEXT_LAYER = "ContextLayer";
-	public static final String TYPE_RADIAL_BASIS_LAYER = "RadialBasisLayer";
+	public static final String TYPE_RADIAL_BASIS_LAYER = "RadialBasisFunctionLayer";
 	public static final String TYPE_TRAINING = "TrainingData";
 	public static final String TYPE_WEIGHTED_SYNAPSE = "WeightedSynapse"; 
 	public static final String TYPE_WEIGHTLESS_SYNAPSE = "WeightlessSynapse";

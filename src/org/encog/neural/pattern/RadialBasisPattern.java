@@ -29,6 +29,7 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.slf4j.Logger;
@@ -49,7 +50,12 @@ public class RadialBasisPattern  implements NeuralNetworkPattern {
 	public void addHiddenLayer(int count) {
 		if( hiddenNeurons!=-1 )
 		{
-			
+			String str = "A RBF network usually has a single hidden layer.";
+			if( logger.isErrorEnabled())
+			{
+				logger.error(str);
+			}
+			throw new PatternError(str);	
 		}
 		else
 			this.hiddenNeurons = count;
@@ -71,13 +77,23 @@ public class RadialBasisPattern  implements NeuralNetworkPattern {
 	
 	public BasicNetwork generate() {
 		RadialBasisFunctionLayer rbfLayer;
+		Layer input,output;
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationLinear(),false,this.inputNeurons));
+		network.addLayer(input = new BasicLayer(new ActivationLinear(),false,this.inputNeurons));
 		network.addLayer(rbfLayer = new RadialBasisFunctionLayer(this.hiddenNeurons),SynapseType.Direct);
-		network.addLayer(new BasicLayer(this.outputNeurons));
+		network.addLayer(output = new BasicLayer(this.outputNeurons));
 		network.getStructure().finalizeStructure();
 		network.reset();
 		rbfLayer.randomizeGaussianCentersAndWidths(0, 1);
+		int y = 50;
+		input.setX(50);
+		input.setY(y);
+		y+=120;
+		rbfLayer.setX(50);
+		rbfLayer.setY(y);
+		y+=120;
+		output.setX(50);
+		output.setY(y);
 		return network;
 	}
 }

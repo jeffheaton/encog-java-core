@@ -78,11 +78,6 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 			ReadCSV.toCommas(result, layer.getThreshold());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD,result.toString() );
 		}
-		
-		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
-		Persistor persistor = layer.getActivationFunction().createPersistor();
-		persistor.save(layer.getActivationFunction(), out);
-		out.endTag();
 				
 		out.endTag();		
 	}
