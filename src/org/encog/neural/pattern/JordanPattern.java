@@ -86,14 +86,28 @@ public class JordanPattern implements NeuralNetworkPattern {
 	public BasicNetwork generate() {
 		// construct an Jordan type network
 		Layer hidden,output;
+		Layer input;
 		Layer context = new ContextLayer(this.outputNeurons);
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(this.inputNeurons));
+		network.addLayer(input = new BasicLayer(this.inputNeurons));
 		network.addLayer(hidden = new BasicLayer(this.hiddenNeurons));
 		network.addLayer(output = new BasicLayer(this.outputNeurons));
 		
 		output.addNext(context,SynapseType.OneToOne);
 		context.addNext(hidden);
+		
+		int y = 50;
+		input.setX(50);
+		input.setY(y);
+		y+=150;
+		hidden.setX(50);
+		hidden.setY(y);
+		context.setX(250);
+		context.setY(y);
+		y+=150;
+		output.setX(50);
+		output.setY(y);
+		
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
