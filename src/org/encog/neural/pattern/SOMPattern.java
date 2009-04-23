@@ -29,6 +29,7 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -73,9 +74,16 @@ public class SOMPattern  implements NeuralNetworkPattern {
 	}
 	
 	public BasicNetwork generate() {
+		Layer input,output;
+		int y = 50;
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationLinear(),false,this.inputNeurons));
-		network.addLayer(new BasicLayer(new ActivationLinear(),false,this.outputNeurons));
+		network.addLayer(input = new BasicLayer(new ActivationLinear(),false,this.inputNeurons));
+		network.addLayer(output = new BasicLayer(new ActivationLinear(),false,this.outputNeurons));
+		input.setX(50);
+		output.setX(50);
+		input.setY(y);
+		y+=120;
+		output.setY(y);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
