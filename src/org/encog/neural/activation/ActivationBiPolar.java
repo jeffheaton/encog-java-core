@@ -101,4 +101,11 @@ public class ActivationBiPolar extends BasicActivationFunction {
 						+ "where a derivative is required.");
 
 	}
+	
+	/**
+	 * @return Return false, bipolar has no derivative.
+	 */
+	public boolean hasDerivative() {
+		return false;
+	}
 }

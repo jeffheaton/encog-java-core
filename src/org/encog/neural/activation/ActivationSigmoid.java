@@ -95,4 +95,11 @@ public class ActivationSigmoid extends BasicActivationFunction {
 		}
 
 	}
+	
+	/**
+	 * @return Return true, sigmoid has a derivative.
+	 */
+	public boolean hasDerivative() {
+		return true;
+	}
 }

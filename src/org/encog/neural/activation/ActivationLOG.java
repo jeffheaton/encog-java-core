@@ -105,5 +105,12 @@ public class ActivationLOG extends BasicActivationFunction {
 		}
 
 	}
+	
+	/**
+	 * @return Return true, log has a derivative.
+	 */
+	public boolean hasDerivative() {
+		return true;
+	}
 
 }

@@ -100,5 +100,12 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 				"Can't use the softmax activation function "
 						+ "where a derivative is required.");
 	}
+	
+	/**
+	 * @return Return false, softmax has no derivative.
+	 */
+	public boolean hasDerivative() {
+		return false;
+	}
 
 }

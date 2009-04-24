@@ -91,4 +91,11 @@ public class ActivationLinear extends BasicActivationFunction {
 				"Can't use the linear activation function "
 						+ "where a derivative is required.");
 	}
+	
+	/**
+	 * @return Return false, linear has no derivative.
+	 */
+	public boolean hasDerivative() {
+		return false;
+	}
 }

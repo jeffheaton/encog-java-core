@@ -120,5 +120,12 @@ public class ActivationGaussian extends BasicActivationFunction {
 	public GaussianFunction getGausian() {
 		return this.gausian;
 	}
+	
+	/**
+	 * @return Return true, gaussian has a derivative.
+	 */
+	public boolean hasDerivative() {
+		return true;
+	}
 
 }

@@ -94,4 +94,11 @@ public class ActivationSIN extends BasicActivationFunction {
 			d[i] = BoundMath.cos(d[i]);
 		}
 	}
+	
+	/**
+	 * @return Return true, sin has a derivative.
+	 */
+	public boolean hasDerivative() {
+		return true;
+	}
 }

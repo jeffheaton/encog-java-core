@@ -105,5 +105,12 @@ public class ActivationTANH extends BasicActivationFunction {
 			d[i] = 1.0 - BoundMath.pow(activationFunction(d[i]), 2.0);
 		}
 	}
+	
+	/**
+	 * @return Return true, TANH has a derivative.
+	 */
+	public boolean hasDerivative() {
+		return true;
+	}
 
 }
