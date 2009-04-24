@@ -45,7 +45,6 @@ public class FilePersistence implements PersistenceLocation {
 	/**
 	 * @return A new InputStream for this file.
 	 */
-	@Override
 	public InputStream createInputStream() {
 		try {
 			return new FileInputStream(this.file);
@@ -60,7 +59,6 @@ public class FilePersistence implements PersistenceLocation {
 	/**
 	 * @return A new OutputStream for this file.
 	 */
-	@Override
 	public OutputStream createOutputStream() {
 		try {
 			return new FileOutputStream(this.file);
@@ -75,7 +73,6 @@ public class FilePersistence implements PersistenceLocation {
 	/**
 	 * Attempt to delete the file.
 	 */
-	@Override
 	public void delete() {
 		if (!this.file.delete()) {
 			final String str = "Failed to delete: " + this.file;
@@ -90,7 +87,6 @@ public class FilePersistence implements PersistenceLocation {
 	/**
 	 * @return True if the file exists.
 	 */
-	@Override
 	public boolean exists() {
 		return this.file.exists();
 	}
@@ -108,7 +104,6 @@ public class FilePersistence implements PersistenceLocation {
 	 * @param toLocation
 	 *            What to rename to.
 	 */
-	@Override
 	public void renameTo(final PersistenceLocation toLocation) {
 		if (!(toLocation instanceof FilePersistence)) {
 			final String str = 

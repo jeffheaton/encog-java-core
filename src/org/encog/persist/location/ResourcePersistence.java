@@ -44,7 +44,6 @@ public class ResourcePersistence implements PersistenceLocation {
 	 * 
 	 * @return An input stream.
 	 */
-	@Override
 	public InputStream createInputStream() {
 
 		final ClassLoader loader = this.getClass().getClassLoader();
@@ -65,7 +64,6 @@ public class ResourcePersistence implements PersistenceLocation {
 	 * 
 	 * @return Nothing.
 	 */
-	@Override
 	public OutputStream createOutputStream() {
 		final String str = 
 		"The ResourcePersistence location does not suppor write operations.";
@@ -78,7 +76,6 @@ public class ResourcePersistence implements PersistenceLocation {
 	/**
 	 * Delete operations are not supported for resource persistence.
 	 */
-	@Override
 	public void delete() {
 		final String str = 
 		"The ResourcePersistence location does not suppor delete operations.";
@@ -94,7 +91,6 @@ public class ResourcePersistence implements PersistenceLocation {
 	 * 
 	 * @return Nothing.
 	 */
-	@Override
 	public boolean exists() {
 		final String str = 
 		"The ResourcePersistence location does not suppor exists.";
@@ -110,7 +106,6 @@ public class ResourcePersistence implements PersistenceLocation {
 	 * @param toLocation
 	 *            Not used.
 	 */
-	@Override
 	public void renameTo(final PersistenceLocation toLocation) {
 		final String str = 
 		"The ResourcePersistence location does not suppor rename operations.";
