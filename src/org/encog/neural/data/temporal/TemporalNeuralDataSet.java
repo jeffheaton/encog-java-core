@@ -75,13 +75,15 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	/**
 	 * Error message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = "Direct adds to the temporal dataset are not supported.  "
+	public static final String ADD_NOT_SUPPORTED = 
+		"Direct adds to the temporal dataset are not supported.  "
 			+ "Add TemporalPoint objects and call generate.";
 
 	/**
 	 * Descriptions of the data needed.
 	 */
-	private final List<TemporalDataDescription> descriptions = new ArrayList<TemporalDataDescription>();
+	private final List<TemporalDataDescription> descriptions = 
+		new ArrayList<TemporalDataDescription>();
 
 	/**
 	 * The temporal points at which we have data.
@@ -127,12 +129,12 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 * What is the date for the first temporal point.
 	 */
 	private Date startingPoint;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * What is the granularity of the temporal points? Days, months, years, etc?
@@ -165,10 +167,10 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 * @param data
 	 *            Not used.
 	 */
+	@Override
 	public void add(final NeuralData data) {
-		if(logger.isErrorEnabled())
-		{
-			logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 		}
 		throw new TemporalError(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
@@ -182,10 +184,10 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 * @param idealData
 	 *            Not used.
 	 */
+	@Override
 	public void add(final NeuralData inputData, final NeuralData idealData) {
-		if(logger.isErrorEnabled())
-		{
-			logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 		}
 		throw new TemporalError(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
@@ -198,10 +200,10 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 *            Not used.
 	 */
 
+	@Override
 	public void add(final NeuralDataPair inputData) {
-		if(logger.isErrorEnabled())
-		{
-			logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 		}
 		throw new TemporalError(TemporalNeuralDataSet.ADD_NOT_SUPPORTED);
 	}
@@ -214,11 +216,10 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	public void addDescription(final TemporalDataDescription desc) {
 		if (this.points.size() > 0) {
-			String str = "Can't add anymore descriptions, there are "
-				+ "already temporal points defined.";
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
+			final String str = "Can't add anymore descriptions, there are "
+					+ "already temporal points defined.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new TemporalError(str);
 		}
@@ -346,7 +347,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	private double formatData(final TemporalDataDescription desc,
 			final int index) {
-		double[] result = new double[1];
+		final double[] result = new double[1];
 
 		switch (desc.getType()) {
 		case DELTA_CHANGE:
@@ -428,15 +429,14 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	public BasicNeuralData generateOutputNeuralData(final int index) {
 		if (index + this.predictWindowSize > this.points.size()) {
-			
-			String str = "Can't generate prediction temporal data "
-			+ "beyond the end of provided data.";
-			
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
+
+			final String str = "Can't generate prediction temporal data "
+					+ "beyond the end of provided data.";
+
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
-			
+
 			throw new TemporalError(str);
 		}
 
@@ -623,8 +623,8 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 * @return True if the point is within the range.
 	 */
 	public boolean isPointInRange(final TemporalPoint point) {
-		return point.getSequence() >= getLowSequence()
-				&& point.getSequence() <= getHighSequence();
+		return (point.getSequence() >= getLowSequence())
+				&& (point.getSequence() <= getHighSequence());
 
 	}
 

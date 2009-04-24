@@ -62,6 +62,10 @@ public interface NeuralData extends Cloneable {
 	 */
 	int size();
 	
+	/**
+	 * Clone this object.
+	 * @return A clonned version of this object.
+	 */
 	NeuralData clone();
 	
 }

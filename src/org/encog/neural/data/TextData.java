@@ -32,58 +32,103 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An Encog object that can hold text data.  This object can be stored in
- * an Encog persisted file.
+ * An Encog object that can hold text data. This object can be stored in an
+ * Encog persisted file.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class TextData implements EncogPersistedObject {
 	/**
-	 * 
+	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 6895724776252007263L;
+
+	/**
+	 * The text data that is stored.
+	 */
 	private String text;
+
+	/**
+	 * The name of this object.
+	 */
 	private String name;
+	
+	/**
+	 * The description of this object.
+	 */
 	private String description;
-	
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public String getText() {
-		return text;
-	}
-	public void setText(String text) {
-		this.text = text;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public Persistor createPersistor() {		
-		return new TextDataPersistor();
-	}
-	
-	public Object clone()
-	{
-		TextData result = new TextData();
+	/**
+	 * Clone this object.
+	 * @return A cloned version of this object.
+	 */
+	@Override
+	public Object clone() {
+		final TextData result = new TextData();
 		result.setName(getName());
 		result.setDescription(getDescription());
 		result.setText(getText());
 		return result;
 	}
-	
-	
+
+	/**
+	 * Create a persistor to store this object.
+	 * @return A persistor.
+	 */
+	public Persistor createPersistor() {
+		return new TextDataPersistor();
+	}
+
+	/**
+	 * @return The description of this object.
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+
+	/**
+	 * @return The name of this object.
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @return The text held by this object.
+	 */
+	public String getText() {
+		return this.text;
+	}
+
+	/**
+	 * Set the description of this object.
+	 * @param description The description of this object.
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * Set the name of this object.
+	 * @param name The name of this object.
+	 */
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	/**
+	 * Set the text held by this object.
+	 * @param text The text held by this object.
+	 */
+	public void setText(final String text) {
+		this.text = text;
+	}
+
 }

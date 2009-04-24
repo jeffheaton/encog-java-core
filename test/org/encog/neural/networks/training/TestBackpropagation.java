@@ -10,6 +10,7 @@ import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
+import org.encog.neural.prune.PruneSelective;
 
 import junit.framework.TestCase;
 
@@ -57,8 +58,8 @@ public class TestBackpropagation extends TestCase {
 		
 		TestCase.assertEquals(3,hidden.getNeuronCount());
 
-		
-		//network.prune(hidden, 1);
+		PruneSelective prune = new PruneSelective(network);
+		prune.prune(hidden, 1);
 		
 		TestCase.assertEquals(2,hidden.getNeuronCount());
 	}

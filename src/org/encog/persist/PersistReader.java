@@ -36,9 +36,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.encog.EncogError;
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.location.PersistenceLocation;
 import org.encog.persist.persistors.PersistorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,19 +62,11 @@ public class PersistReader {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public PersistReader(String filename) {
-		this(new File(filename));
-	}
-
-	public PersistReader(File filename) {
-		try {
-			this.fileInput = new FileInputStream(filename);
-			this.in = new ReadXML(this.fileInput);
-		} catch (FileNotFoundException e) {
-			throw new PersistError(e);
-		}
+	public PersistReader(PersistenceLocation location) {
+		this.fileInput = location.createInputStream();
+		this.in = new ReadXML(this.fileInput);
 	}
 	
 	public void close()
@@ -100,6 +94,13 @@ public class PersistReader {
 				return;
 			}
 		}
+		
+		String str = "Can't find objects collection, invalid file.";
+		if( logger.isErrorEnabled() )
+		{
+			logger.error(str);
+		}
+		throw new PersistError(str);
 		
 	}
 	

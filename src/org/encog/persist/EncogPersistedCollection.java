@@ -30,7 +30,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.neural.networks.BasicNetwork;
+import org.encog.persist.location.FilePersistence;
+import org.encog.persist.location.PersistenceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * are persisted to an XML form.
  * 
  * The EncogPersistedCollection does not load the object into memory at once.
- * This allows it to manage large files.  
+ * This allows it to manage large files.
  * 
  * @author jheaton
  * 
@@ -48,7 +49,7 @@ import org.slf4j.LoggerFactory;
 public class EncogPersistedCollection {
 
 	public final static String GENERAL_ERROR = "Malformed XML near tag: ";
-	
+
 	public static final String TYPE_TEXT = "TextData";
 	public static final String TYPE_PROPERTY = "PropertyData";
 	public static final String TYPE_BASIC_NET = "BasicNetwork";
@@ -56,47 +57,36 @@ public class EncogPersistedCollection {
 	public static final String TYPE_CONTEXT_LAYER = "ContextLayer";
 	public static final String TYPE_RADIAL_BASIS_LAYER = "RadialBasisFunctionLayer";
 	public static final String TYPE_TRAINING = "TrainingData";
-	public static final String TYPE_WEIGHTED_SYNAPSE = "WeightedSynapse"; 
+	public static final String TYPE_WEIGHTED_SYNAPSE = "WeightedSynapse";
 	public static final String TYPE_WEIGHTLESS_SYNAPSE = "WeightlessSynapse";
 	public static final String TYPE_DIRECT_SYNAPSE = "DirectSynapse";
 	public static final String TYPE_ONE2ONE_SYNAPSE = "OneToOneSynapse";
 	public static final String TYPE_PARSE_TEMPLATE = "ParseTemplate";
-	
+
 	public final static String ATTRIBUTE_NAME = "name";
 	public final static String ATTRIBUTE_DESCRIPTION = "description";
-	
-	private File filePrimary;
-	private File fileTemp;
-	private PersistWriter writer;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private static Logger logger = LoggerFactory.getLogger(EncogPersistedCollection.class);
-	
-	public EncogPersistedCollection(String filename)
-	{
-		this(new File(filename));
+	final private static Logger logger = LoggerFactory
+			.getLogger(EncogPersistedCollection.class);
+
+	public static void throwError(final String tag) {
+		final String str = EncogPersistedCollection.GENERAL_ERROR + tag;
+		if (EncogPersistedCollection.logger.isErrorEnabled()) {
+			EncogPersistedCollection.logger.error(str);
+		}
+		throw new PersistError(str);
 	}
-	
-	public EncogPersistedCollection(File file)
-	{
-		this.filePrimary = file;
-		String f = file.getAbsolutePath();
-		int index = f.lastIndexOf('.');
-		if( index!=-1)
-			f = f.substring(0,index);
-		f+=".tmp";
-		this.fileTemp = new File(f);
-		
-		if( this.filePrimary.exists())
-			buildDirectory();
-		else
-			create();
-	}
-	
-	
+
+	private final PersistenceLocation filePrimary;
+
+	private PersistenceLocation fileTemp;
+
+	private PersistWriter writer;
+
 	/**
 	 * The platform this collection was created on.
 	 */
@@ -106,36 +96,44 @@ public class EncogPersistedCollection {
 	 * The version of the persisted file.
 	 */
 	private int fileVersion;
-	
+
 	private final List<DirectoryEntry> directory = new ArrayList<DirectoryEntry>();
 
 	/**
 	 * The version of Encog.
 	 */
 	private String encogVersion;
-	
-	public void buildDirectory()
-	{
-		PersistReader reader = new PersistReader(this.filePrimary);
-		List<DirectoryEntry> d = reader.buildDirectory();
-		this.directory.clear();
-		this.directory.addAll(d);
-		reader.close();
+
+	public EncogPersistedCollection(final File file) {
+		this(new FilePersistence(file));
 	}
-	
-	public void create()
-	{
-			PersistWriter writer = new PersistWriter(this.filePrimary);
-			writer.begin();
-			writer.writeHeader();
-			writer.beginObjects();
-			writer.endObjects();
-			writer.end();
-			writer.close();
-			
-			this.directory.clear();
+
+	public EncogPersistedCollection(final PersistenceLocation location) {
+		this.filePrimary = location;
+
+		if (this.filePrimary instanceof FilePersistence) {
+			final File file = ((FilePersistence) this.filePrimary).getFile();
+			String f = file.getAbsolutePath();
+			final int index = f.lastIndexOf('.');
+			if (index != -1) {
+				f = f.substring(0, index);
+			}
+			f += ".tmp";
+			this.fileTemp = new FilePersistence(new File(f));
+
+			if (this.filePrimary.exists()) {
+				buildDirectory();
+			} else {
+				create();
+			}
+		} else {
+			this.fileTemp = null;
+		}
 	}
-	
+
+	public EncogPersistedCollection(final String filename) {
+		this(new File(filename));
+	}
 
 	/**
 	 * Add an EncogPersistedObject to the collection.
@@ -145,17 +143,25 @@ public class EncogPersistedCollection {
 	 */
 	public void add(final String name, final EncogPersistedObject obj) {
 		obj.setName(name);
-		PersistWriter writer = new PersistWriter(this.fileTemp);
+		final PersistWriter writer = new PersistWriter(this.fileTemp);
 		writer.begin();
 		writer.writeHeader();
-		writer.beginObjects();		
+		writer.beginObjects();
 		writer.writeObject(obj);
 		writer.mergeObjects(this.filePrimary, name);
 		writer.endObjects();
 		writer.end();
 		writer.close();
 		mergeTemp();
-		this.buildDirectory();
+		buildDirectory();
+	}
+
+	public void buildDirectory() {
+		final PersistReader reader = new PersistReader(this.filePrimary);
+		final List<DirectoryEntry> d = reader.buildDirectory();
+		this.directory.clear();
+		this.directory.addAll(d);
+		reader.close();
 	}
 
 	/**
@@ -163,6 +169,69 @@ public class EncogPersistedCollection {
 	 */
 	public void clear() {
 
+	}
+
+	public void create() {
+		final PersistWriter writer = new PersistWriter(this.filePrimary);
+		writer.begin();
+		writer.writeHeader();
+		writer.beginObjects();
+		writer.endObjects();
+		writer.end();
+		writer.close();
+
+		this.directory.clear();
+	}
+
+	public void delete(final DirectoryEntry d) {
+		this.delete(d.getName());
+
+	}
+
+	public void delete(final EncogPersistedObject obj) {
+		delete(obj.getName());
+	}
+
+	public void delete(final String name) {
+		final PersistWriter writer = new PersistWriter(this.fileTemp);
+		writer.begin();
+		writer.writeHeader();
+		writer.beginObjects();
+		writer.mergeObjects(this.filePrimary, name);
+		writer.endObjects();
+		writer.end();
+		writer.close();
+		mergeTemp();
+		for (final DirectoryEntry d : this.directory) {
+			if (d.getName().equals(name)) {
+				this.directory.remove(d);
+				break;
+			}
+		}
+	}
+
+	public EncogPersistedObject find(final DirectoryEntry d) {
+		return find(d.getName());
+	}
+
+	/**
+	 * Called to search all Encog objects in this collection for one with a name
+	 * that passes what was passed in.
+	 * 
+	 * @param name
+	 *            The name we are searching for.
+	 * @return The Encog object with the correct name.
+	 */
+	public EncogPersistedObject find(final String name) {
+
+		final PersistReader reader = new PersistReader(this.filePrimary);
+		final EncogPersistedObject result = reader.readObject(name);
+		reader.close();
+		return result;
+	}
+
+	public List<DirectoryEntry> getDirectory() {
+		return this.directory;
 	}
 
 	/**
@@ -179,7 +248,6 @@ public class EncogPersistedCollection {
 		return this.fileVersion;
 	}
 
-
 	/**
 	 * @return the platform
 	 */
@@ -187,111 +255,24 @@ public class EncogPersistedCollection {
 		return this.platform;
 	}
 
-
-
-	
-	/**
-	 * Called to search all Encog objects in this collection for one with a name
-	 * that passes what was passed in.
-	 * 
-	 * @param name
-	 *            The name we are searching for.
-	 * @return The Encog object with the correct name.
-	 */
-	public EncogPersistedObject find(String name) {
-				
-		PersistReader reader = new PersistReader(this.filePrimary);
-		EncogPersistedObject result = reader.readObject(name);
-		reader.close();
-		return result;
+	public void mergeTemp() {
+		this.filePrimary.delete();
+		this.fileTemp.renameTo(this.filePrimary);
 	}
 
-	public void delete(String name) {
-		PersistWriter writer = new PersistWriter(this.fileTemp);
+	public void updateProperties(final String name, final String newName,
+			final String newDesc) {
+		final PersistWriter writer = new PersistWriter(this.fileTemp);
 		writer.begin();
 		writer.writeHeader();
-		writer.beginObjects();		
-		writer.mergeObjects(this.filePrimary, name);
-		writer.endObjects();
-		writer.end();
-		writer.close();
-		mergeTemp();
-		for(DirectoryEntry d: this.directory)
-		{
-			if(d.getName().equals(name))
-			{
-				this.directory.remove(d);
-				break;
-			}
-		}
-	}
-	
-	public void delete(EncogPersistedObject obj)
-	{
-		delete(obj.getName());
-	}
-	
-	public void mergeTemp()
-	{				
-		if( !this.filePrimary.delete() )
-		{
-			String str = "Failure during merge, can't delete:\n"+this.filePrimary;
-			if( logger.isErrorEnabled() )
-			{
-				logger.error(str);
-			}
-			throw new PersistError(str);
-		}
-		
-		if( !this.fileTemp.renameTo(this.filePrimary) )
-		{
-			String str = "Failure during merge, can't rename:\n"+this.fileTemp
-					+ "to: " + filePrimary;
-			
-			if( logger.isErrorEnabled() )
-			{
-				logger.error(str);
-			}
-			throw new PersistError(str);
-		}
-	}
-	
-	public static void throwError(String tag)
-	{
-		String str = GENERAL_ERROR + tag;
-		if( logger.isErrorEnabled() )
-		{
-			logger.error(str);
-		}
-		throw new PersistError(str);
-	}
-
-	public List<DirectoryEntry> getDirectory() {
-		return directory;
-	}
-
-	public EncogPersistedObject find(DirectoryEntry d) {
-		return find(d.getName());
-	}
-
-	public void delete(DirectoryEntry d) {
-		this.delete(d.getName());
-		
-	}
-
-	public void updateProperties(String name, String newName, String newDesc) {
-		PersistWriter writer = new PersistWriter(this.fileTemp);
-		writer.begin();
-		writer.writeHeader();
-		writer.beginObjects();		
+		writer.beginObjects();
 		writer.modifyObject(this.filePrimary, name, newName, newDesc);
 		writer.endObjects();
 		writer.end();
 		writer.close();
 		mergeTemp();
-		this.buildDirectory();
-		
+		buildDirectory();
+
 	}
-	
-	
+
 }

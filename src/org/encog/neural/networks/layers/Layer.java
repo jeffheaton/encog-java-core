@@ -36,47 +36,69 @@ import org.encog.persist.EncogPersistedObject;
 
 /**
  * This interface defines all necessary methods for a neural network layer.
+ * 
  * @author jheaton
  */
-public interface Layer extends Cloneable, EncogPersistedObject  {
-	
+public interface Layer extends Cloneable, EncogPersistedObject {
+
+	void addNext(Layer next);
+
+	void addNext(Layer next, SynapseType type);
+
+	void addSynapse(Synapse synapse);
+
+	Object clone();
+
 	/**
 	 * Compute the output for this layer.
-	 * @param pattern The input pattern.
+	 * 
+	 * @param pattern
+	 *            The input pattern.
 	 * @return The output from this layer.
 	 */
 	NeuralData compute(final NeuralData pattern);
-	void process(final NeuralData pattern);
+
+	ActivationFunction getActivationFunction();
 
 	/**
 	 * @return The neuron count.
 	 */
 	int getNeuronCount();
-	Collection<Layer> getNextLayers();
+
 	List<Synapse> getNext();
-	ActivationFunction getActivationFunction();
-	
+
+	Collection<Layer> getNextLayers();
+
+	double[] getThreshold();
+
+	double getThreshold(int index);
+
+	int getX();
+
+	int getY();
+
+	boolean hasThreshold();
+
+	boolean isConnectedTo(Layer layer);
+
+	void process(final NeuralData pattern);
+
+	NeuralData recur();
+
 	/**
 	 * Set the neuron count, this will NOT adjust the synapses, or thresholds
 	 * other code must do that.
-	 * @param neuronCount The new neuron count
+	 * 
+	 * @param neuronCount
+	 *            The new neuron count
 	 */
 	void setNeuronCount(int neuronCount);
-	
-	void addNext(Layer next);
-	void addNext(Layer next, SynapseType type);
-	NeuralData recur();
-	Object clone();
-	
-	double getThreshold(int index);
-	void setThreshold(int index,double d);
+
 	void setThreshold(double[] d);
-	double[] getThreshold();
-	boolean hasThreshold();
-	void addSynapse(Synapse synapse);
-	int getX();
-	int getY();
+
+	void setThreshold(int index, double d);
+
 	void setX(int x);
+
 	void setY(int y);
-	boolean isConnectedTo(Layer layer);
 }

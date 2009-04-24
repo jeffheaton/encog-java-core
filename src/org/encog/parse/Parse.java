@@ -32,6 +32,8 @@ import java.io.IOException;
 import org.encog.parse.recognize.Recognize;
 import org.encog.parse.signal.Signal;
 import org.encog.parse.units.UnitManager;
+import org.encog.persist.EncogPersistedCollection;
+import org.encog.persist.location.ResourcePersistence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -127,9 +129,10 @@ public ParseTemplate getTemplate() {
 }
 
 public void load()  {
-	//EncogPersistedCollection encog = new EncogPersistedCollection();
-	//encog.loadResource(Parse.RESOURCE_NAME);
-	//this.template = (ParseTemplate) encog.find(Parse.RESOURCE_ITEM_NAME);
+	
+	ResourcePersistence location = new ResourcePersistence(Parse.RESOURCE_NAME);
+	EncogPersistedCollection encog = new EncogPersistedCollection(location);
+	this.template = (ParseTemplate) encog.find(Parse.RESOURCE_ITEM_NAME);
 }
 
 

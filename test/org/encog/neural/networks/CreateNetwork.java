@@ -6,34 +6,19 @@ import org.encog.neural.networks.layers.BasicLayer;
 
 public class CreateNetwork {
 	
+	public static final Double[] RANDOM_NET = {-0.8289675647834567, 0.41428419615431555, -0.6631344291596013, -0.6347844053306126, 0.8725933251770621, 0.20730871363234438, 0.0693984428627592, 0.39495816342847045, 0.2876293823661842, -0.8091007635627903, 0.5170049536924719, -0.8775363794949156, 0.02786434379814584, -0.7373784461103059, 0.7670893161435932};
+	
 	public static BasicNetwork createXORNetworkUntrained()
 	{
 		// random matrix data.  However, it provides a constant starting point 
 		// for the unit tests.
-		double matrixData1[][] = 
-		{
-			{-0.8026145065833352, 0.48730020258365925, -0.29670931365567577 },
-			{0.07689650585681851, -0.513969748944711, 0.11858304184009771},
-			{-0.4485719795825909, 0.15435275595196507, 0.17655902338449336} };
-
-		double matrixData2[][] = 
-		{
-			{0.024694322443027827},
-			{-0.0447166248226063},
-			{0.9000418882323729},
-			{0.38999333206070275} };
 		
-		Matrix matrix1 = new Matrix(matrixData1);
-		Matrix matrix2 = new Matrix(matrixData2);
-		
-		BasicLayer layer1,layer2;
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(layer1 = new BasicLayer(2));
-		network.addLayer(layer2 = new BasicLayer(3));
+		network.addLayer(new BasicLayer(2));
+		network.addLayer(new BasicLayer(3));
 		network.addLayer(new BasicLayer(1));
-		
-		//layer1.setMatrix(matrix1);
-		//layer2.setMatrix(matrix2);
+		network.getStructure().finalizeStructure();
+		NetworkCODEC.arrayToNetwork(RANDOM_NET, network);
 		
 		return network;
 	}

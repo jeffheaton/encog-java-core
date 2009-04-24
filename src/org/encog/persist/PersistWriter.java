@@ -34,6 +34,7 @@ import java.util.Date;
 
 import org.encog.Encog;
 import org.encog.parse.tags.write.WriteXML;
+import org.encog.persist.location.PersistenceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,14 +54,10 @@ public class PersistWriter {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-	public PersistWriter(File filename)
-	{
-		try {
-			this.fileOutput = new FileOutputStream(filename);
+	public PersistWriter(final PersistenceLocation location)
+	{		
+			this.fileOutput = location.createOutputStream();
 			this.out = new WriteXML(this.fileOutput);
-		} catch (FileNotFoundException e) {
-			throw new PersistError(e);
-		}		
 	}
 	
 	public void writeHeader()
@@ -99,9 +96,9 @@ public class PersistWriter {
 		this.out.close();
 	}
 	
-	public void mergeObjects(File filename,String skip)
+	public void mergeObjects(PersistenceLocation location,String skip)
 	{
-		PersistReader reader = new PersistReader(filename);
+		PersistReader reader = new PersistReader(location);
 		reader.saveTo(this.out,skip);
 		reader.close();
 	}
@@ -120,10 +117,10 @@ public class PersistWriter {
 		persistor.save(obj, this.out);
 	}
 
-	public void modifyObject(File filename, String name, String newName,
+	public void modifyObject(PersistenceLocation location, String name, String newName,
 			String newDesc) {
 		
-		PersistReader reader = new PersistReader(filename);
+		PersistReader reader = new PersistReader(location);
 		reader.saveModified(this.out,name,newName,newDesc);
 		reader.close();
 		

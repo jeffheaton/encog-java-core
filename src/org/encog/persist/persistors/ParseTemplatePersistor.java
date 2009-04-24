@@ -26,12 +26,12 @@
 package org.encog.persist.persistors;
 
 import org.encog.parse.ParseTemplate;
+import org.encog.parse.recognize.Recognize;
+import org.encog.parse.recognize.RecognizeElement;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.generic.Object2XML;
-import org.encog.persist.persistors.generic.XML2Object;
 
 /**
  * The Encog persistor used to persist the ParseTemplate class.
@@ -40,16 +40,123 @@ import org.encog.persist.persistors.generic.XML2Object;
  */
 public class ParseTemplatePersistor implements Persistor {
 
-	public EncogPersistedObject load(ReadXML in) {
-		ParseTemplate result = new ParseTemplate();
-		XML2Object xml = new XML2Object();
-		//xml.load(in, result);
-		return null;
+	/**
+	 * The template currently being processed.
+	 */
+	private ParseTemplate template;
+
+	/**
+	 * Load ParseTemplate object.
+	 * @param in The XML to read it from.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
+		this.template = new ParseTemplate();
+
+		final String name = in.getTag().getAttributeValue("name");
+		final String description = in.getTag().getAttributeValue("description");
+
+		this.template.setName(name);
+		this.template.setDescription(description);
+
+		final String end = in.getTag().getName();
+		while (in.readToTag()) {
+			if (in.is("recognize", true)) {
+				loadRecognize(in);
+			} else if (in.is(end, false)) {
+				break;
+			}
+
+		}
+
+		return this.template;
 	}
 
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		Object2XML xml = new Object2XML();
-		xml.save(obj, out);
+	private void loadChar(final RecognizeElement element, final ReadXML in) {
+		final String value = in.getTag().getAttributeValue("value");
+		final String from = in.getTag().getAttributeValue("from");
+		final String to = in.getTag().getAttributeValue("to");
+		if (value!=null) {
+			element.add(value.charAt(0));
+		} else {
+			element.addRange(from.charAt(0), to.charAt(0));
+		}
+	}
+
+	private void loadElement(final Recognize recognize, final ReadXML in) {
+		final String type = in.getTag().getAttributeValue("type");
+		RecognizeElement recognizeElement;
+
+		if (type.equals("ALLOW_ONE")) {
+			recognizeElement = recognize
+					.createElement(RecognizeElement.ALLOW_ONE);
+		} else if (type.equals("ALLOW_MULTIPLE")) {
+			recognizeElement = recognize
+					.createElement(RecognizeElement.ALLOW_MULTIPLE);
+		} else {
+			recognizeElement = null;// ERROR
+		}
+
+		final String end = in.getTag().getName();
+		while (in.readToTag()) {
+			if (in.is("char", true)) {
+				loadChar(recognizeElement, in);
+			} else if (in.is("unit", true)) {
+				loadUnit(recognizeElement, in);
+			} else if (in.is(end, false)) {
+				break;
+			}
+
+		}
+
+	}
+
+	private void loadRecognize(final ReadXML in) {
+		final String id = in.getTag().getAttributeValue("id");
+		final String ignore = in.getTag().getAttributeValue("ignore");
+		final String recognizeClass = in.getTag().getAttributeValue("class");
+
+		final Recognize recognize = new Recognize(id);
+		try {
+			if (recognizeClass != null) {
+				recognize.setSignalClass(Class.forName(recognizeClass));
+			}
+		} catch (final ClassNotFoundException e) {
+		}
+
+		if ("true".equalsIgnoreCase(ignore)) {
+			recognize.setIgnore(true);
+		} else {
+			recognize.setIgnore(false);
+		}
+
+		final String end = in.getTag().getName();
+		while (in.readToTag()) {
+			if (in.is("element", true)) {
+				loadElement(recognize, in);
+			} else if (in.is(end, false)) {
+				break;
+			}
+
+		}
+
+		this.template.addRecognizer(recognize);
+	}
+
+	private void loadUnit(final RecognizeElement element, final ReadXML in) {
+		final String type = in.getTag().getAttributeValue("type");
+		final String value = in.getTag().getAttributeValue("value");
+		element.setType(type);
+		if ((value != null) && !value.equals("")) {
+			element.addAcceptedSignal(type, value);
+		} else {
+			element.addAcceptedSignal(type, null);
+		}
+	}
+
+	public void save(final EncogPersistedObject object, final WriteXML out) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

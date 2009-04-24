@@ -67,12 +67,12 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	 */
 	private final Map<Integer, TemporalPoint> pointIndex = 
 		new HashMap<Integer, TemporalPoint>();
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a market data set object.
@@ -99,17 +99,17 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	 * @param desc
 	 *            The data description.
 	 */
+	@Override
 	public void addDescription(final TemporalDataDescription desc) {
 		if (!(desc instanceof MarketDataDescription)) {
-			
-			String str = "Only MarketDataDescription objects may be used "
-				+ "with the MarketNeuralDataSet container.";
-			
-			if(logger.isErrorEnabled())
-			{
-				logger.error(str);
+
+			final String str = "Only MarketDataDescription objects may be used "
+					+ "with the MarketNeuralDataSet container.";
+
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
-			
+
 			throw new MarketError(str);
 		}
 		super.addDescription(desc);
@@ -122,6 +122,7 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	 *            The date to create the point at.
 	 * @return Returns the TemporalPoint created for the specified date.
 	 */
+	@Override
 	public TemporalPoint createPoint(final Date when) {
 		final int sequence = getSequenceFromDate(when);
 		TemporalPoint result = this.pointIndex.get(sequence);

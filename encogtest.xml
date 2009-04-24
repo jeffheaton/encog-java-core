@@ -4,7 +4,7 @@
 <platform>Java</platform>
 <fileVersion>1</fileVersion>
 <encogVersion>2.0.0</encogVersion>
-<modified>Fri Apr 17 07:38:37 MST 2009</modified>
+<modified>Fri Apr 24 13:03:35 MST 2009</modified>
 </Header>
 <Objects>
 <TrainingData name="data" description="" native="org.encog.neural.data.basic.BasicNeuralDataSet">

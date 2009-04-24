@@ -31,7 +31,6 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.encog.Encog;
-import org.encog.matrix.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -47,23 +46,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements a neural network. This class works in
- * conjunction the Layer classes. Layers are added to the BasicNetwork to
- * specify the structure of the neural network.
+ * This class implements a neural network. This class works in conjunction the
+ * Layer classes. Layers are added to the BasicNetwork to specify the structure
+ * of the neural network.
  * 
  * The first layer added is the input layer, the final layer added is the output
  * layer. Any layers added between these two layers are the hidden layers.
  * 
- * The network structure is stored in the structure member.  It is important
- * to call:
+ * The network structure is stored in the structure member. It is important to
+ * call:
  * 
  * network.getStructure().finalizeStructure();
  * 
  * Once the neural network has been completely constructed.
  * 
  */
-public class BasicNetwork implements Serializable, Network
-		 {
+public class BasicNetwork implements Serializable, Network {
 	/**
 	 * Serial id for this class.
 	 */
@@ -90,16 +88,16 @@ public class BasicNetwork implements Serializable, Network
 	private String name;
 
 	/**
-	 * Holds the structure of the network.  This keeps the network from
-	 * having to constantly lookup layers and synapses.
+	 * Holds the structure of the network. This keeps the network from having to
+	 * constantly lookup layers and synapses.
 	 */
-	private NeuralStructure structure;
+	private final NeuralStructure structure;
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct an empty neural network.
@@ -108,37 +106,39 @@ public class BasicNetwork implements Serializable, Network
 		this.structure = new NeuralStructure(this);
 	}
 
-
-	/**
-	 * Add a layer to the neural network.  If there are no layers added
-	 * this layer will become the input layer.  This function automatically
-	 * updates both the input and output layer references. 
-	 * 
-	 * @param layer The layer to be added to the network.
-	 * @param type What sort of synapse should connect this layer to the last.
-	 */
-	public void addLayer(final Layer layer, final SynapseType type) {
-		
-		// is this the first layer? If so, mark as the input layer.
-		if (this.inputLayer == null)
-			this.outputLayer = this.inputLayer = layer;
-		else {
-		// add the layer to any previous layers
-			this.outputLayer.addNext(layer, type);
-			this.outputLayer = layer;
-		}
-	}
-
 	/**
 	 * Add a layer to the neural network. The first layer added is the input
-	 * layer, the last layer added is the output layer.  This layer is added
-	 * with a weighted synapse.
+	 * layer, the last layer added is the output layer. This layer is added with
+	 * a weighted synapse.
 	 * 
 	 * @param layer
 	 *            The layer to be added.
 	 */
 	public void addLayer(final Layer layer) {
 		addLayer(layer, SynapseType.Weighted);
+	}
+
+	/**
+	 * Add a layer to the neural network. If there are no layers added this
+	 * layer will become the input layer. This function automatically updates
+	 * both the input and output layer references.
+	 * 
+	 * @param layer
+	 *            The layer to be added to the network.
+	 * @param type
+	 *            What sort of synapse should connect this layer to the last.
+	 */
+	public void addLayer(final Layer layer, final SynapseType type) {
+
+		// is this the first layer? If so, mark as the input layer.
+		if (this.inputLayer == null) {
+			this.outputLayer = layer; 
+			this.inputLayer = layer;
+		} else {
+			// add the layer to any previous layers
+			this.outputLayer.addNext(layer, type);
+			this.outputLayer = layer;
+		}
 	}
 
 	/**
@@ -153,7 +153,7 @@ public class BasicNetwork implements Serializable, Network
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		for (final NeuralDataPair pair : data) {
-			NeuralData actual = compute(pair.getInput());
+			final NeuralData actual = compute(pair.getInput());
 			errorCalculation.updateError(actual, pair.getIdeal());
 		}
 		return errorCalculation.calculateRMS();
@@ -166,10 +166,32 @@ public class BasicNetwork implements Serializable, Network
 	 */
 	public int calculateNeuronCount() {
 		int result = 0;
-		for (Layer layer : this.structure.getLayers()) {
+		for (final Layer layer : this.structure.getLayers()) {
 			result += layer.getNeuronCount();
 		}
 		return result;
+	}
+
+	/**
+	 * Check that the input size is acceptable, if it does not match
+	 * the input layer, then throw an error.
+	 * @param input The input data.
+	 */
+	public void checkInputSize(final NeuralData input) {
+		if (input.size() != this.inputLayer.getNeuronCount()) {
+
+			final String str = 
+				"Size mismatch: Can't compute outputs for input size="
+					+ input.size()
+					+ " for input layer size="
+					+ this.inputLayer.getNeuronCount();
+
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
+			}
+
+			throw new NeuralNetworkError(str);
+		}
 	}
 
 	/**
@@ -180,32 +202,31 @@ public class BasicNetwork implements Serializable, Network
 	 */
 	@Override
 	public Object clone() {
-		BasicNetwork result = new BasicNetwork();
-		Layer input = cloneLayer(this.inputLayer, result);
+		final BasicNetwork result = new BasicNetwork();
+		final Layer input = cloneLayer(this.inputLayer, result);
 		result.setInputLayer(input);
 		result.getStructure().finalizeStructure();
 		return result;
 	}
 
 	/**
-	 * Define the input layer for the network.
-	 * @param input The new input layer.
+	 * Clone an individual layer, called internally by clone.
+	 * @param layer The layer to be cloned.
+	 * @param network The new network being created.
+	 * @return The cloned layer.
 	 */
-	public void setInputLayer(Layer input) {
-		this.inputLayer = input;
-	}
+	private Layer cloneLayer(final Layer layer, final BasicNetwork network) {
+		final Layer newLayer = (Layer) layer.clone();
 
-	private Layer cloneLayer(Layer layer, BasicNetwork network) {
-		Layer newLayer = (Layer) layer.clone();
-
-		if (layer == getOutputLayer())
+		if (layer == getOutputLayer()) {
 			network.setOutputLayer(newLayer);
+		}
 
-		for (Synapse synapse : layer.getNext()) {
-			Synapse newSynapse = (Synapse) synapse.clone();
+		for (final Synapse synapse : layer.getNext()) {
+			final Synapse newSynapse = (Synapse) synapse.clone();
 			newSynapse.setFromLayer(layer);
 			if (synapse.getToLayer() != null) {
-				Layer to = cloneLayer(synapse.getToLayer(), network);
+				final Layer to = cloneLayer(synapse.getToLayer(), network);
 				newSynapse.setToLayer(to);
 			}
 			newLayer.getNext().add(newSynapse);
@@ -214,45 +235,73 @@ public class BasicNetwork implements Serializable, Network
 		return newLayer;
 	}
 
-	public void checkInputSize(final NeuralData input) {
-		if (input.size() != this.inputLayer.getNeuronCount()) {
-			
-			String str = "Size mismatch: Can't compute outputs for input size="
-				+ input.size() + " for input layer size="
-				+ this.inputLayer.getNeuronCount(); 
-			
-			if( logger.isErrorEnabled())
-			{
-				logger.error(str);
+	/**
+	 * Used to compare one neural network to another, compare two layers.
+	 * @param layerThis The layer being compared.
+	 * @param layerOther The other layer.
+	 * @param precision The precision to use, how many decimal places.
+	 * @return Returns true if the two layers are the same.
+	 */
+	public boolean compareLayer(final Layer layerThis, final Layer layerOther,
+			final int precision) {
+		final Iterator<Synapse> iteratorOther = layerOther.getNext().iterator();
+
+		for (final Synapse synapseThis : layerThis.getNext()) {
+			if (!iteratorOther.hasNext()) {
+				return false;
 			}
-			
-			throw new NeuralNetworkError(str);
+			final Synapse synapseOther = iteratorOther.next();
+			if (!synapseThis.getMatrix().equals(synapseOther.getMatrix(),
+					precision)) {
+				return false;
+			}
+			if (synapseThis.getToLayer() != null) {
+				if (synapseOther.getToLayer() == null) {
+					return false;
+				}
+				if (!compareLayer(synapseThis.getToLayer(), synapseOther
+						.getToLayer(), precision)) {
+					return false;
+				}
+			}
 		}
+		return true;
 	}
 
+	/**
+	 * Compute the output for a given input to the neural network.
+	 * @param input The input to the neural network.
+	 * @return The output from the neural network.
+	 */
 	public NeuralData compute(final NeuralData input) {
 		return compute(input, null);
 	}
 
 	/**
-	 * Compute the output for a given input to the neural network.
+	 * Compute the output for a given input to the neural network. This method
+	 * provides a parameter to specify an output holder to use.  This holder
+	 * allows propagation training to track the output from each layer.
+	 * If you do not need this holder pass null, or use the other 
+	 * compare method.
 	 * 
-	 * @param input
-	 *            The input provide to the neural network.
+	 * @param input The input provide to the neural network.
+	 * @param useHolder Allows a holder to be specified, this allows
+	 * propagation training to check the output of each layer.  
 	 * @return The results from the output neurons.
 	 */
 	public NeuralData compute(final NeuralData input,
-			NeuralOutputHolder useHolder) {
+			final NeuralOutputHolder useHolder) {
 		NeuralOutputHolder holder;
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Pattern {} presented to neural network", input);
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Pattern {} presented to neural network", input);
 		}
 
-		if (useHolder == null)
+		if (useHolder == null) {
 			holder = new NeuralOutputHolder();
-		else
+		} else {
 			holder = useHolder;
+		}
 
 		checkInputSize(input);
 		compute(holder, this.inputLayer, input, null);
@@ -260,19 +309,27 @@ public class BasicNetwork implements Serializable, Network
 
 	}
 
-	private void compute(NeuralOutputHolder holder, Layer layer,
-			NeuralData input, Synapse source) {
+	/**
+	 * Internal computation method for a single layer.  This is called, 
+	 * as the neural network processes.
+	 * @param holder The output holder.
+	 * @param layer The layer to process.
+	 * @param input The input to this layer.
+	 * @param source The source synapse.
+	 */
+	private void compute(final NeuralOutputHolder holder, final Layer layer,
+			final NeuralData input, final Synapse source) {
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("Processing layer: {}, input= {}", layer, input);
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Processing layer: {}, input= {}", layer, input);
 		}
 
 		handleRecurrentInput(layer, input, source);
 
-		for (Synapse synapse : layer.getNext()) {
+		for (final Synapse synapse : layer.getNext()) {
 			if (!holder.getResult().containsKey(synapse)) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Processing synapse: {}", synapse);
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("Processing synapse: {}", synapse);
 				}
 				NeuralData pattern = synapse.compute(input);
 				pattern = synapse.getToLayer().compute(pattern);
@@ -281,33 +338,8 @@ public class BasicNetwork implements Serializable, Network
 				compute(holder, synapse.getToLayer(), pattern, synapse);
 
 				// Is this the output from the entire network?
-				if (synapse.getToLayer() == this.outputLayer)
+				if (synapse.getToLayer() == this.outputLayer) {
 					holder.setOutput(pattern);
-			}
-		}
-	}
-
-	private void handleRecurrentInput(final Layer layer,
-			final NeuralData input, final Synapse source) {
-		for (Synapse synapse : this.structure.getPreviousSynapses(layer)) {
-			if (synapse != source) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("Recurrent layer from: {}", input);
-				}
-				NeuralData recurrentInput = synapse.getFromLayer().recur();
-				
-				if( recurrentInput!=null )
-				{
-				NeuralData recurrentOutput = synapse.compute(recurrentInput);
-				
-				for(int i=0;i<input.size();i++)
-				{
-					input.setData(i,input.getData(i)+recurrentOutput.getData(i));
-				}
-				
-				if (logger.isDebugEnabled()) {
-					logger.debug("Recurrent layer to: {}", input);
-				}
 				}
 			}
 		}
@@ -335,29 +367,16 @@ public class BasicNetwork implements Serializable, Network
 				Encog.DEFAULT_PRECISION);
 	}
 
-	public boolean equals(final BasicNetwork other, int precision) {
+	/**
+	 * Determine if this neural network is equal to another.  Equal neural
+	 * networks have the same weight matrix and threshold values, within
+	 * a specified precision.
+	 * @param other The other neural network.
+	 * @param precision The number of decimal places to compare to.
+	 * @return True if the two neural networks are equal.
+	 */
+	public boolean equals(final BasicNetwork other, final int precision) {
 		return compareLayer(this.inputLayer, other.getInputLayer(), precision);
-	}
-
-	public boolean compareLayer(Layer layerThis, Layer layerOther, int precision) {
-		Iterator<Synapse> iteratorOther = layerOther.getNext().iterator();
-
-		for (Synapse synapseThis : layerThis.getNext()) {
-			if (!iteratorOther.hasNext())
-				return false;
-			Synapse synapseOther = iteratorOther.next();
-			if (!synapseThis.getMatrix().equals(synapseOther.getMatrix(),
-					precision))
-				return false;
-			if (synapseThis.getToLayer() != null) {
-				if (synapseOther.getToLayer() == null)
-					return false;
-				if (!compareLayer(synapseThis.getToLayer(), synapseOther
-						.getToLayer(), precision))
-					return false;
-			}
-		}
-		return true;
 	}
 
 	/**
@@ -384,7 +403,7 @@ public class BasicNetwork implements Serializable, Network
 	public Collection<Layer> getHiddenLayers() {
 		final Collection<Layer> result = new ArrayList<Layer>();
 
-		for (Layer layer : this.structure.getLayers()) {
+		for (final Layer layer : this.structure.getLayers()) {
 			if (isHidden(layer)) {
 				result.add(layer);
 			}
@@ -419,8 +438,15 @@ public class BasicNetwork implements Serializable, Network
 	}
 
 	/**
-	 * Get the size of the weight and threshold matrix.
-	 * 
+	 * @return Get the structure of the neural network.  The structure 
+	 * allows you to quickly obtain synapses and layers without 
+	 * traversing the network.
+	 */
+	public NeuralStructure getStructure() {
+		return this.structure;
+	}
+
+	/**
 	 * @return The size of the matrix.
 	 */
 	public int getWeightMatrixSize() {
@@ -432,12 +458,111 @@ public class BasicNetwork implements Serializable, Network
 	}
 
 	/**
+	 * Handle recurrent layers.  See if there are any recurrent layers before
+	 * the specified layer that must affect the input.
+	 * @param layer The layer being processed, see if there are any recurrent
+	 * connections to this.
+	 * @param input The input to the layer, will be modified with the result
+	 * from any recurrent layers.
+	 * @param source The source synapse.
+	 */
+	private void handleRecurrentInput(final Layer layer,
+			final NeuralData input, final Synapse source) {
+		for (final Synapse synapse 
+				: this.structure.getPreviousSynapses(layer)) {
+			if (synapse != source) {
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("Recurrent layer from: {}", input);
+				}
+				final NeuralData recurrentInput = synapse.getFromLayer()
+						.recur();
+
+				if (recurrentInput != null) {
+					final NeuralData recurrentOutput = synapse
+							.compute(recurrentInput);
+
+					for (int i = 0; i < input.size(); i++) {
+						input.setData(i, input.getData(i)
+								+ recurrentOutput.getData(i));
+					}
+
+					if (this.logger.isDebugEnabled()) {
+						this.logger.debug("Recurrent layer to: {}", input);
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Generate a hash code.
 	 * 
 	 * @return THe hash code.
 	 */
+	@Override
 	public int hashCode() {
 		return super.hashCode();
+	}
+
+	/**
+	 * Called to cause the network to attempt to infer which layer should be
+	 * the output layer.
+	 */
+	public void inferOutputLayer() {
+		// set the output layer to null, if we can figure it out it will be set
+		// to something else
+		this.outputLayer = null;
+
+		// if we do not know the input layer, then there is no way to infer the
+		// output layer
+		if (getInputLayer() == null) {
+			return;
+		}
+
+		this.outputLayer = inferOutputLayer(this.inputLayer);
+	}
+
+	/**
+	 * Internal method that allows the use of recurrsion to determine
+	 * the output layer.
+	 * @param layer The layer currently being evaluated.
+	 * @return The potential output layer.
+	 */
+	private Layer inferOutputLayer(final Layer layer) {
+		for (final Synapse synapse : layer.getNext()) {
+			if (synapse.isTeachable() && !synapse.isSelfConnected()) {
+				return inferOutputLayer(synapse.getToLayer());
+			}
+		}
+
+		return layer;
+	}
+
+	/**
+	 * Determine if this layer is hidden.
+	 * @param layer The layer to evaluate.
+	 * @return True if this layer is a hidden layer.
+	 */
+	public boolean isHidden(final Layer layer) {
+		return !isInput(layer) && !isOutput(layer);
+	}
+
+	/**
+	 * Determine if this layer is the input layer.
+	 * @param layer The layer to evaluate.
+	 * @return True if this layer is the input layer.
+	 */
+	public boolean isInput(final Layer layer) {
+		return this.inputLayer == layer;
+	}
+
+	/**
+	 * Determine if this layer is the output layer.
+	 * @param layer The layer to evaluate.
+	 * @return True if this layer is the output layer.
+	 */
+	public boolean isOutput(final Layer layer) {
+		return this.outputLayer == layer;
 	}
 
 	/**
@@ -445,7 +570,7 @@ public class BasicNetwork implements Serializable, Network
 	 * 
 	 */
 	public void reset() {
-		(new RangeRandomizer(-1,1)).randomize(this);
+		(new RangeRandomizer(-1, 1)).randomize(this);
 	}
 
 	/**
@@ -459,11 +584,42 @@ public class BasicNetwork implements Serializable, Network
 	}
 
 	/**
+	 * Define the input layer for the network.
+	 * 
+	 * @param input
+	 *            The new input layer.
+	 */
+	public void setInputLayer(final Layer input) {
+		this.inputLayer = input;
+	}
+
+	/**
 	 * @param name
 	 *            the name to set
 	 */
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	/**
+	 * @param outputLayer
+	 *            the outputLayer to set
+	 */
+	public void setOutputLayer(final Layer outputLayer) {
+		this.outputLayer = outputLayer;
+	}
+
+	/**
+	 * @return Convert this object to a string.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder();
+		builder.append("[BasicNetwork: Layers=");
+		final int layers = this.structure.getLayers().size();
+		builder.append(layers);
+		builder.append("]");
+		return builder.toString();
 	}
 
 	/**
@@ -491,62 +647,5 @@ public class BasicNetwork implements Serializable, Network
 
 		return win;
 	}
-
-	public boolean isInput(Layer layer) {
-		return this.inputLayer == layer;
-	}
-
-	public boolean isOutput(Layer layer) {
-		return this.outputLayer == layer;
-	}
-
-	public boolean isHidden(Layer layer) {
-		return !isInput(layer) && !isOutput(layer);
-	}
-
-	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("[BasicNetwork: Layers=");
-		int layers = this.structure.getLayers().size();
-		builder.append(layers);
-		builder.append("]");
-		return builder.toString();
-	}
-
-	/**
-	 * @param outputLayer
-	 *            the outputLayer to set
-	 */
-	public void setOutputLayer(Layer outputLayer) {
-		this.outputLayer = outputLayer;
-	}
-
-	public NeuralStructure getStructure() {
-		return structure;
-	}
-	
-	public void inferOutputLayer()
-	{
-		// set the output layer to null, if we can figure it out it will be set to something else
-		this.outputLayer = null;
-		
-		// if we do not know the input layer, then there is no way to infer the output layer
-		if( getInputLayer()==null)
-			return;
-		
-		this.outputLayer = inferOutputLayer(this.inputLayer);
-	}
-	
-	public Layer inferOutputLayer(Layer layer)
-	{
-		for(Synapse synapse: layer.getNext())
-		{
-			if( synapse.isTeachable() && !synapse.isSelfConnected())
-				return inferOutputLayer(synapse.getToLayer());
-		}
-		
-		return layer;
-	}
-
 
 }

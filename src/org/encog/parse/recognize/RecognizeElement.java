@@ -54,7 +54,7 @@ public class RecognizeElement {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
   
-  RecognizeElement()
+  public RecognizeElement()
   {
   }
 

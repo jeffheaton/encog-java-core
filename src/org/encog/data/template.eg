@@ -5,7 +5,7 @@
 <fileVersion>0</fileVersion>
 <encogVersion>1.0.0</encogVersion>
 </Header>
-<objects>
+<Objects>
 
 <ParseTemplate name="parse-native">
    <recognize id="letter">
@@ -80,45 +80,5 @@
 
 </ParseTemplate>
 
-
-
-<BasicNeuralDataSet native="org.encog.neural.data.basic.BasicNeuralDataSet" name="data-1" description="Training data">
-<NeuralDataPair>
-<input>
-<value>0.0</value>
-<value>0.0</value>
-</input>
-<ideal>
-<value>0.0</value>
-</ideal>
-</NeuralDataPair>
-<NeuralDataPair>
-<input>
-<value>1.0</value>
-<value>0.0</value>
-</input>
-<ideal>
-<value>1.0</value>
-</ideal>
-</NeuralDataPair>
-<NeuralDataPair>
-<input>
-<value>0.0</value>
-<value>1.0</value>
-</input>
-<ideal>
-<value>1.0</value>
-</ideal>
-</NeuralDataPair>
-<NeuralDataPair>
-<input>
-<value>1.0</value>
-<value>1.0</value>
-</input>
-<ideal>
-<value>0.0</value>
-</ideal>
-</NeuralDataPair>
-</BasicNeuralDataSet>
-</objects>
+</Objects>
 </Document>

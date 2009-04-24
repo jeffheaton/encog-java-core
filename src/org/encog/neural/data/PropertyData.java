@@ -35,80 +35,140 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An Encog data object that can be used to hold property data.  This is
- * a collection of name-value pairs that can be saved in an Encog 
- * persisted file.
+ * An Encog data object that can be used to hold property data. This is a
+ * collection of name-value pairs that can be saved in an Encog persisted file.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class PropertyData implements EncogPersistedObject {
+
 	/**
-	 * 
+	 * The serial id.
 	 */
 	private static final long serialVersionUID = -7940416732740995199L;
+
+	/**
+	 * The name.
+	 */
 	private String name;
+
+	/**
+	 * The description.
+	 */
 	private String description;
-	private Map<String,String> data = new HashMap<String,String>();
-	
+
+	/**
+	 * The property data.
+	 */
+	private final Map<String, String> data = new HashMap<String, String>();
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
-	public String getDescription() {
-		return description;
-	}
-	public void setDescription(String description) {
-		this.description = description;
-	}
-	public Map<String, String> getData() {
-		return data;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Clone this object.
+	 * @return A clonned version of this object.
+	 */
+	@Override
+	public Object clone() {
+		final PropertyData result = new PropertyData();
+		result.setName(getName());
+		result.setDescription(getDescription());
+
+		for (final String key : this.data.keySet()) {
+			result.set(key, get(key));
+		}
+		return result;
 	}
 
+	/**
+	 * @return A persistor for the property data.
+	 */
 	public Persistor createPersistor() {
 		return new PropertyDataPersistor();
 	}
-	
-	public String get(String name)
-	{
+
+	/**
+	 * Get the specified property.
+	 * @param name The property name.
+	 * @return The property value.
+	 */
+	public String get(final String name) {
 		return this.data.get(name);
 	}
-	
-	public void set(String name,String value)
-	{
-		data.put(name,value);
-	}
-	
-	public int size() {
-		return this.data.size();
-	}
-	public Map<String, String> getMap() {
+
+	/**
+	 * Get all of the property data as a map.
+	 * @return The property data.
+	 */
+	public Map<String, String> getData() {
 		return this.data;
 	}
-	public boolean isDefined(String key) {
+
+	/**
+	 * @return The description of this object.
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+
+	/**
+	 * @return The name of this object.
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * Determine of the specified property is defined.
+	 * @param key The property to check.
+	 * @return True if this property is defined.
+	 */
+	public boolean isDefined(final String key) {
 		return this.data.containsKey(key);
 	}
-	public void remove(String key) {
-		this.data.remove(key);	
+
+	/**
+	 * Remove the specified property.
+	 * @param key The property to remove.
+	 */
+	public void remove(final String key) {
+		this.data.remove(key);
 	}
-	
-	public Object clone()
-	{
-		PropertyData result = new PropertyData();
-		result.setName(getName());
-		result.setDescription(getDescription());
-		
-		for(String key: data.keySet())
-		{
-			result.set(key, this.get(key));
-		}
-		return result;
+
+	/**
+	 * Set the specified property.
+	 * @param name The name of the property.
+	 * @param value The value to set the property to.
+	 */
+	public void set(final String name, final String value) {
+		this.data.put(name, value);
+	}
+
+	/**
+	 * Set the description for this object.
+	 * @param description The description of this property.
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * Set the name of this property.
+	 * @param name The name of this property.
+	 */
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return The number of properties defined.
+	 */
+	public int size() {
+		return this.data.size();
 	}
 }

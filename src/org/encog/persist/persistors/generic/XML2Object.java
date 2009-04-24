@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -54,23 +55,20 @@ public class XML2Object {
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void load(Element node, EncogPersistedObject target) {
+	public void load(ReadXML in, EncogPersistedObject target) {
 
 		try {
-			target.setName(node.getAttribute("name"));
-			target.setDescription(node.getAttribute("description"));
-			for (Node child = node.getFirstChild(); child != null; child = child
-					.getNextSibling()) {
-				if (!(child instanceof Element)) {
-					continue;
-				}
-				final Element element = (Element) child;
-				// System.out.println(element.getNodeValue());
-
+			target.setName(in.getTag().getAttributeValue("name"));
+			target.setDescription(in.getTag().getAttributeValue("description"));
+			
+			while( in.readToTag() )
+			{			
+				String tagName = in.getTag().getName();
 				Field field = target.getClass().getDeclaredField(
-						element.getNodeName());
+						tagName);
 				field.setAccessible(true);
-				String value = XMLUtil.getElementValue(element);
+				String value =in.readTextToTag();
+				
 				Class<?> type = field.getType();
 				if (type == long.class) {
 					field.setLong(target, Long.parseLong(value));
@@ -81,7 +79,7 @@ public class XML2Object {
 				} else if (type == String.class) {
 					field.set(target, value);
 				} else if (type == List.class) {
-					field.set(target, loadList(element));
+					field.set(target, loadList(in));
 				}
 
 			}
@@ -96,18 +94,15 @@ public class XML2Object {
 		}
 	}
 
-	public List<Object> loadList(Element element) {
+	public List<Object> loadList(ReadXML in) {
 		List<Object> result = new ArrayList<Object>();
 
-		for (Node child = element.getFirstChild(); child != null; child = child
-				.getNextSibling()) {
-			if (!(child instanceof Element)) {
-				continue;
-			}
-			final Element e = (Element) child;
-			String value = XMLUtil.getElementValue(e);
+		while( in.readToTag() )
+		{			
+			String tagName = in.getTag().getName();
+			String value =in.readTextToTag(); 
 
-			if (e.getNodeName().equals("S")) {
+			if (tagName.equals("S")) {
 				result.add(value);
 			}
 		}
@@ -115,16 +110,14 @@ public class XML2Object {
 		return result;
 	}
 
-	public void loadObject(Element element, EncogPersistedObject obj) {
-		for (Node child = element.getFirstChild(); child != null; child = child
-				.getNextSibling()) {
-			if (!(child instanceof Element)) {
-				continue;
-			}
+	public void loadObject(ReadXML in, EncogPersistedObject obj) {
+		while( in.readToTag() )
+		{			
+			String tagName = in.getTag().getName();
 			
-			if( child.getNodeName().equals(obj.getClass().getSimpleName()))
+			if( tagName.equals(obj.getClass().getSimpleName()))
 			{
-				load(element,obj);
+				load(in,obj);
 				return;
 			}
 		}

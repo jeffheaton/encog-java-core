@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 public class ReadTags {
 
 	public final static String COMMENT_BEGIN = "!--";
-	public final static String COMMENT_END = "!--";
+	public final static String COMMENT_END = "-->";
 	public final static String CDATA_BEGIN = "![CDATA[";
 	public final static String CDATA_END = "]]";
 	
@@ -324,8 +324,13 @@ public class ReadTags {
 			this.source.skip(COMMENT_BEGIN.length());
 			while( !this.source.peek(COMMENT_END))
 			{
-				tagName.append((char) this.source.read());
+				int ch = this.source.read();
+				if( ch!=-1 )
+					tagName.append((char)ch );
+				else
+					break;
 			}
+			this.source.skip(COMMENT_END.length());
 			this.tag.setType(Type.COMMENT);
 			this.tag.setName(tagName.toString());
 			return;
@@ -337,8 +342,14 @@ public class ReadTags {
 			this.source.skip(CDATA_BEGIN.length());
 			while( !this.source.peek(CDATA_END))
 			{
-				tagName.append((char) this.source.read());
+				int ch = this.source.read();
+				if( ch!=-1 )
+					tagName.append((char)ch );
+				else
+					break;
+
 			}
+			this.source.skip(this.CDATA_END.length());
 			this.tag.setType(Type.CDATA);
 			this.tag.setName(tagName.toString());
 			return;

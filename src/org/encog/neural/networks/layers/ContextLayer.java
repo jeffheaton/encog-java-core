@@ -31,20 +31,19 @@ import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.BasicLayerPersistor;
 import org.encog.persist.persistors.ContextLayerPersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements a context layer.  A context layer is used to implement
- * a simple recurrent neural network, such as an Elman or Jordan neural
- * network.  The context layer has a short-term memory.  The context layer 
- * accept input, and provide the same data as output on the next cycle.
- * This continues, and the context layer's output "one step" out of sync
- * with the input.
+ * Implements a context layer. A context layer is used to implement a simple
+ * recurrent neural network, such as an Elman or Jordan neural network. The
+ * context layer has a short-term memory. The context layer accept input, and
+ * provide the same data as output on the next cycle. This continues, and the
+ * context layer's output "one step" out of sync with the input.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ContextLayer extends BasicLayer {
 
@@ -53,54 +52,80 @@ public class ContextLayer extends BasicLayer {
 	 */
 	private static final long serialVersionUID = -5588659547177460637L;
 
-	private NeuralData context;
-	
+	/**
+	 * The context data that this layer will store.
+	 */
+	private final NeuralData context;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public ContextLayer(ActivationFunction thresholdFunction, boolean hasThreshold, int neuronCount) {
-		super(thresholdFunction, hasThreshold, neuronCount);
-		context = new BasicNeuralData(neuronCount);
-	}
-	
-	public ContextLayer(int neuronCount) {
-		this(new ActivationTANH(), true, neuronCount);
-	}
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/**
-	 * Default constructor, mainly so the workbench can easily create a default layer.
+	 * Default constructor, mainly so the workbench can easily create a default
+	 * layer.
 	 */
-	public ContextLayer()
-	{
+	public ContextLayer() {
 		this(1);
 	}
-	
-	public NeuralData recur() {
-		return this.context;
+
+	/**
+	 * Construct a context layer with the parameters specified.
+	 * @param thresholdFunction The threshold function to use.
+	 * @param hasThreshold Does this layer have thresholds?
+	 * @param neuronCount The neuron count to use.
+	 */
+	public ContextLayer(final ActivationFunction thresholdFunction,
+			final boolean hasThreshold, final int neuronCount) {
+		super(thresholdFunction, hasThreshold, neuronCount);
+		this.context = new BasicNeuralData(neuronCount);
 	}
-	
-	@Override
-	public void process(NeuralData pattern) {
-		for(int i = 0; i<pattern.size();i++)
-		{
-			this.context.setData(i,pattern.getData(i));
-		}
-		
-		if( logger.isDebugEnabled() ) {
-			logger.debug("Updated ContextLayer to {}", pattern);
-		}		
+
+	/**
+	 * Construct a default context layer that has the TANH activation function
+	 * and the specified number of neurons. Use threshold values.
+	 * @param neuronCount The number of neurons on this layer.
+	 */
+	public ContextLayer(final int neuronCount) {
+		this(new ActivationTANH(), true, neuronCount);
 	}
-	
+
 	/**
 	 * Create a persistor for this layer.
+	 * 
 	 * @return The new persistor.
 	 */
+	@Override
 	public Persistor createPersistor() {
 		return new ContextLayerPersistor();
 	}
-	
+
+	/**
+	 * Called to process input from the previous layer.  Simply store the 
+	 * output in the context.
+	 * @param pattern The pattern to store in the context.
+	 */
+	@Override
+	public void process(final NeuralData pattern) {
+		for (int i = 0; i < pattern.size(); i++) {
+			this.context.setData(i, pattern.getData(i));
+		}
+
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Updated ContextLayer to {}", pattern);
+		}
+	}
+
+	/**
+	 * Called to get the output from this layer when called in a recurrent
+	 * manor.  Simply return the context that was kept from the last iteration.
+	 * @return The recurrent output.
+	 */
+	@Override
+	public NeuralData recur() {
+		return this.context;
+	}
 
 }

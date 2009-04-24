@@ -127,15 +127,17 @@ public class TestParseHTML extends TestCase {
 		String html="a<img src=\"picture.gif\" alt=\"A Picture\">b";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
 		ReadHTML parse = new ReadHTML(bis);
-		TestCase.assertTrue(parse.toString().indexOf("Text:a")!=-1);
+		parse.readToTag();
+		System.out.println(parse.toString());
+		TestCase.assertTrue(parse.toString().indexOf("A Picture")!=-1);
 	}
 	
 	public void testTagToString()
 	{
-		/*String html="<br/>";
+		String html="<br/>";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
-		ParseHTML parse = new ParseHTML(bis);
-		TestCase.assertTrue(parse.read()=='a');	*/
+		ReadHTML parse = new ReadHTML(bis);
+		TestCase.assertTrue(parse.read()==0);	
 	}
 	
 	public void testSpecialCharacter() throws Throwable
