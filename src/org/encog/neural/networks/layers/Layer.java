@@ -101,4 +101,6 @@ public interface Layer extends Cloneable, EncogPersistedObject {
 	void setX(int x);
 
 	void setY(int y);
+
+	void setActivationFunction(ActivationFunction activationFunction);
 }

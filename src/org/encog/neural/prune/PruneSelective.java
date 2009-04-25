@@ -106,6 +106,16 @@ public class PruneSelective {
 			synapse.setMatrix(newMatrix);
 		}
 		
+		// adjust the thresholds
+		double[] newThresholds = new double[neuronCount];
+		
+		for(int i=0;i<layer.getNeuronCount();i++)
+		{
+			newThresholds[i] = layer.getThreshold(i);
+		}
+		
+		layer.setThreshold(newThreshold);
+		
 		// finally, up the neuron count
 		layer.setNeuronCount(neuronCount);
 	}
@@ -176,6 +186,22 @@ public class PruneSelective {
 				}
 			}
 		}
+		
+		// remove the threshold
+		double[] newThreshold = new double[targetLayer.getNeuronCount() - 1];
+		
+		int targetIndex = 0;
+		for(int i=0;i<targetLayer.getNeuronCount();i++)
+		{
+			if( targetIndex!=neuron )
+			{
+				newThreshold[targetIndex++] = targetLayer.getThreshold(i);
+			}
+		}
+		
+		targetLayer.setThreshold(newThreshold);
+		
+		// update the neuron count
 
 		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
 
@@ -211,7 +237,7 @@ public class PruneSelective {
 			}
 		}
 		
-		return result;
+		return Math.abs(result);
 	}
 	
 	
