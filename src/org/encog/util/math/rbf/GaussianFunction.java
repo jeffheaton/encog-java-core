@@ -58,11 +58,11 @@ public class GaussianFunction implements RadialBasisFunction {
 	
 	public double calculate(double x)
 	{
-		return (this.peak*MathConst.EULERS_NUMBER)*(-(BoundMath.pow(x-this.center, 2.0)/2.0*BoundMath.pow(this.width, 2.0)));
+		return this.peak * Math.exp( -Math.pow(x-this.center, 2) / (2.0 * this.width * this.width) );
 	}
 	
 	public double calculateDerivative(double x) {
-		return ((-x)*BoundMath.pow(this.width, -2))+(this.center*BoundMath.pow(this.width, -2));
+		return Math.exp(-0.5*this.width*this.width*x*x)* this.peak*this.width*this.width*(this.width*this.width*x*x-1);
 	}
 
 	public double getCenter() {
