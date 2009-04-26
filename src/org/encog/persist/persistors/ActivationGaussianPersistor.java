@@ -55,10 +55,10 @@ public class ActivationGaussianPersistor implements Persistor {
 
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		ActivationGaussian g = (ActivationGaussian)obj;
+		out.beginTag(obj.getClass().getSimpleName());
 		out.addProperty(ATTRIBUTE_CENTER, g.getGausian().getCenter());
 		out.addProperty(ATTRIBUTE_PEAK, g.getGausian().getPeak());
 		out.addProperty(ATTRIBUTE_WIDTH, g.getGausian().getWidth());
-		out.beginTag(obj.getClass().getSimpleName());
 		out.endTag();		
 	}
 
