@@ -1,4 +1,4 @@
-package org.encog.neural.persist;
+package org.encog.persist;
 
 import java.io.File;
 

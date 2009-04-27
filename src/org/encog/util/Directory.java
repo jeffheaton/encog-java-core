@@ -25,10 +25,14 @@
  */
 package org.encog.util;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 import org.encog.EncogError;
 import org.slf4j.Logger;
@@ -46,7 +50,7 @@ public final class Directory {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	final private static Logger LOGGER = LoggerFactory.getLogger(Directory.class);
 	
 	/**
 	 * Private constructor.
@@ -109,4 +113,51 @@ public final class Directory {
 			throw new EncogError(e);
 		}
 	}
+	
+	public static String readTextFile(String fullPathFilename) {
+		try
+		{
+		StringBuffer sb = new StringBuffer(1024);
+		BufferedReader reader = new BufferedReader(new FileReader(fullPathFilename));
+				
+		char[] chars = new char[1024];
+		int numRead = 0;
+		while( (numRead = reader.read(chars)) > -1){
+			sb.append(new String(chars,0,numRead));	
+		}
+
+		reader.close();
+
+		return sb.toString();
+		}
+		catch(IOException e)
+		{
+			LOGGER.error("Exception",e);
+			throw new EncogError(e);
+		}
+	}
+	
+	public static String readStream(InputStream is) {
+		try
+		{
+		StringBuffer sb = new StringBuffer(1024);
+		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+				
+		char[] chars = new char[1024];
+		int numRead = 0;
+		while( (numRead = reader.read(chars)) > -1){
+			sb.append(new String(chars,0,numRead));	
+		}
+
+		reader.close();
+
+		return sb.toString();
+		}
+		catch(IOException e)
+		{
+			LOGGER.error("Exception",e);
+			throw new EncogError(e);
+		}
+	}
+
 }

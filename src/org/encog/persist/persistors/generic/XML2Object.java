@@ -31,6 +31,7 @@ import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
@@ -63,6 +64,8 @@ public class XML2Object {
 			
 			while( in.readToTag() )
 			{			
+				if( in.getTag().getType()==Type.BEGIN )
+				{
 				String tagName = in.getTag().getName();
 				Field field = target.getClass().getDeclaredField(
 						tagName);
@@ -76,12 +79,16 @@ public class XML2Object {
 					field.setInt(target, Integer.parseInt(value));
 				} else if (type == short.class) {
 					field.setShort(target, Short.parseShort(value));
+				} else if (type == double.class) {
+					field.setDouble(target, Double.parseDouble(value));
+				} else if (type == float.class) {
+					field.setDouble(target, Float.parseFloat(value));
 				} else if (type == String.class) {
 					field.set(target, value);
 				} else if (type == List.class) {
 					field.set(target, loadList(in));
 				}
-
+				}
 			}
 		} catch (NoSuchFieldException e) {
 			throw new EncogError(e);
