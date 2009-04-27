@@ -55,7 +55,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 	 * 
 	 * @return Not used for this simple test.
 	 */
-	@Override
 	public Persistor createPersistor() {
 		return null;
 	}
@@ -63,7 +62,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 	/**
 	 * @return The description.
 	 */
-	@Override
 	public String getDescription() {
 		return this.description;
 	}
@@ -78,7 +76,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 	/**
 	 * @return The name.
 	 */
-	@Override
 	public String getName() {
 		return this.name;
 	}
@@ -103,7 +100,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 	 * @param theDescription
 	 *            The description of this object.
 	 */
-	@Override
 	public void setDescription(final String theDescription) {
 		this.description = theDescription;
 	}
@@ -124,7 +120,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 	 * @param theName
 	 *            The name of this object.
 	 */
-	@Override
 	public void setName(final String theName) {
 		this.name = theName;
 	}
