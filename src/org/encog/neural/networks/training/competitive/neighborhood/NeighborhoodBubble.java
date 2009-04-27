@@ -28,17 +28,65 @@ package org.encog.neural.networks.training.competitive.neighborhood;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A neighborhood function that uses a simple bubble. A width is defined, and
+ * any neuron that is plus or minus that width from the winning neuron will be
+ * updated as a result of training.
+ * 
+ * @author jheaton
+ * 
+ */
 public class NeighborhoodBubble implements NeighborhoodFunction {
+
+	/**
+	 * The width of the bubble.
+	 */
+	private final int width;
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public double function(int currentNeuron, int bestNeuron,double d) {
-		// TODO Auto-generated method stub
-		return 0;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Create a bubble neighborhood function that will return 1.0 (full update)
+	 * for any neuron that is plus or minus the width distance from the winning
+	 * neuron.
+	 * 
+	 * @param width
+	 *            The width of the bubble, this is the distance that the neuron
+	 *            can be from the winning neuron. The true width, across the
+	 *            bubble, is actually two times this parameter.
+	 */
+	public NeighborhoodBubble(final int width) {
+		this.width = width;
+	}
+
+	/**
+	 * Determine how much the current neuron should be affected by training
+	 * based on its proximity to the winning neuron.
+	 * 
+	 * @param currentNeuron
+	 *            THe current neuron being evaluated.
+	 * @param bestNeuron
+	 *            The winning neuron.
+	 * @return The ratio for this neuron's adjustment.
+	 */
+	public double function(final int currentNeuron, final int bestNeuron) {
+		final int distance = Math.abs(bestNeuron - currentNeuron);
+		if (distance <= this.width) {
+			return 1.0;
+		} else {
+			return 0.0;
+		}
+	}
+
+	/**
+	 * @return The width of the bubble.
+	 */
+	public int getWidth() {
+		return this.width;
 	}
 
 }

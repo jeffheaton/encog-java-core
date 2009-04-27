@@ -50,7 +50,8 @@ public class ErrorCalculation {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = 
+		LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Returns the root mean square error for a complete training set.

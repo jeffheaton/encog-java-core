@@ -26,98 +26,154 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.neural.networks.layers.Layer;
-import org.encog.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An abstract class that implements basic functionality that may be needed
- * by the other synapse classes. Specifically this class handles processing
- * the from and to layer, as well as providing a name and description for the
+ * An abstract class that implements basic functionality that may be needed by
+ * the other synapse classes. Specifically this class handles processing the
+ * from and to layer, as well as providing a name and description for the
  * EncogPersistedObject.
+ * 
  * @author jheaton
- *
+ * 
  */
 public abstract class BasicSynapse implements Synapse {
-	
+
+	/**
+	 * The from layer.
+	 */
 	private Layer fromLayer;
+
+	/**
+	 * The to layer.
+	 */
 	private Layer toLayer;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public int getFromNeuronCount() {
-		return this.fromLayer.getNeuronCount();		
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * @return A clone of this object.
+	 */
+	@Override
+	public abstract Object clone();
+
+	/**
+	 * The EncogPersistedObject requires a name and description, however, these
+	 * are not used on synapses.
+	 * 
+	 * @return Not used.
+	 */
+	public String getDescription() {
+		return null;
 	}
-	
+
+	/**
+	 * @return The from layer.
+	 */
+	public Layer getFromLayer() {
+		return this.fromLayer;
+	}
+
+	/**
+	 * @return The neuron count from the "from layer".
+	 */
+	public int getFromNeuronCount() {
+		return this.fromLayer.getNeuronCount();
+	}
+
+	/**
+	 * The EncogPersistedObject requires a name and description, however, these
+	 * are not used on synapses.
+	 * 
+	 * @return Not used.
+	 */
+	public String getName() {
+		return null;
+	}
+
+	/**
+	 * @return The "to layer".
+	 */
+	public Layer getToLayer() {
+		return this.toLayer;
+	}
+
+	/**
+	 * @return The neuron count from the "to layer".
+	 */
 	public int getToNeuronCount() {
 		return this.toLayer.getNeuronCount();
-	}	
-
-
-	public Layer getFromLayer() {
-		return fromLayer;
 	}
 
-	public void setFromLayer(Layer fromLayer) {
+	/**
+	 * @return True if this is a self-connected synapse. That is, the from and
+	 *         to layers are the same.
+	 */
+	public boolean isSelfConnected() {
+		return this.fromLayer == this.toLayer;
+	}
+
+	/**
+	 * The EncogPersistedObject requires a name and description, however, these
+	 * are not used on synapses.
+	 * 
+	 * @param d
+	 *            Not used.
+	 */
+	public void setDescription(final String d) {
+
+	}
+
+	/**
+	 * Set the from layer for this synapse.
+	 * 
+	 * @param fromLayer
+	 *            The from layer for this synapse.
+	 */
+	public void setFromLayer(final Layer fromLayer) {
 		this.fromLayer = fromLayer;
 	}
 
-	public Layer getToLayer() {
-		return toLayer;
+	/**
+	 * The EncogPersistedObject requires a name and description, however, these
+	 * are not used on synapses.
+	 * 
+	 * @param n
+	 *            Not used.
+	 */
+	public void setName(final String n) {
+
 	}
 
-	public void setToLayer(Layer toLayer) {
+	/**
+	 * Set the target layer from this synapse.
+	 * 
+	 * @param toLayer
+	 *            The target layer from this synapse.
+	 */
+	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
 	}
-	
-	public boolean isSelfConnected()
-	{
-		return this.fromLayer==this.toLayer;
-	}
-	
+
+	/**
+	 * @return The synapse as a string.
+	 */
 	@Override
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
 		result.append("[");
 		result.append(this.getClass().getSimpleName());
 		result.append(": from=");
-		result.append(this.getFromNeuronCount());
+		result.append(getFromNeuronCount());
 		result.append(",to=");
-		result.append(this.getToNeuronCount());
+		result.append(getToNeuronCount());
 		result.append("]");
 		return result.toString();
-	}
-	
-	abstract public Object clone();
-	
-	public String getName()
-	{
-		return null;
-	}
-	
-	public String getDescription()
-	{
-		return null;
-	}
-	
-	public void setName(String n)
-	{
-		
-	}
-	
-	public void setDescription(String d)
-	{
-		
-	}
-	
-	public Persistor createPersistor()
-	{
-		return null;
 	}
 
 }

@@ -31,74 +31,57 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.SynapseType;
-import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ElmanPattern implements NeuralNetworkPattern {
-	
-	
+
 	private int inputNeurons;
 	private int outputNeurons;
 	private int hiddenNeurons;
 	private ActivationFunction activation;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public ElmanPattern()
-	{
+
+	public ElmanPattern() {
 		this.inputNeurons = -1;
 		this.outputNeurons = -1;
 		this.hiddenNeurons = -1;
 	}
 
-	public void addHiddenLayer(int count) {
-		if( this.hiddenNeurons != -1 )
-		{
-			String str = "An Elman neural network should have only one hidden layer.";
-			if( logger.isErrorEnabled())
-			{
-				logger.error(str);
+	public void addHiddenLayer(final int count) {
+		if (this.hiddenNeurons != -1) {
+			final String str = "An Elman neural network should have only one hidden layer.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new PatternError(str);
 		}
-		
+
 		this.hiddenNeurons = count;
-		
+
 	}
 
-	public void setActivationFunction(ActivationFunction activation) {
-		this.activation = activation;		
-	}
-
-	public void setInputNeurons(int count) {
-		this.inputNeurons = count;
-	}
-
-	public void setOutputNeurons(int count) {
-		this.outputNeurons = count;		
-	}
-	
 	public BasicNetwork generate() {
 		int y = 50;
-		Layer hidden,input,output;
-		Layer context = new ContextLayer(this.hiddenNeurons);
-		BasicNetwork network = new BasicNetwork();
+		Layer hidden, input, output;
+		final Layer context = new ContextLayer(this.hiddenNeurons);
+		final BasicNetwork network = new BasicNetwork();
 		network.addLayer(input = new BasicLayer(this.inputNeurons));
 		input.setX(50);
 		input.setY(y);
-		y+=150;
+		y += 150;
 		network.addLayer(hidden = new BasicLayer(this.hiddenNeurons));
 		hidden.setX(50);
 		hidden.setY(y);
 		context.setX(300);
 		context.setY(y);
-		y+=150;
-		hidden.addNext(context,SynapseType.OneToOne);
+		y += 150;
+		hidden.addNext(context, SynapseType.OneToOne);
 		context.addNext(hidden);
 		network.addLayer(output = new BasicLayer(this.outputNeurons));
 		output.setX(50);
@@ -106,6 +89,18 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
+	}
+
+	public void setActivationFunction(final ActivationFunction activation) {
+		this.activation = activation;
+	}
+
+	public void setInputNeurons(final int count) {
+		this.inputNeurons = count;
+	}
+
+	public void setOutputNeurons(final int count) {
+		this.outputNeurons = count;
 	}
 
 }

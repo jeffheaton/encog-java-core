@@ -139,7 +139,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	{
         double wt = startingWeight;
         double vw = input;
-        wt += this.neighborhood.function(currentNeuron, bestNeuron, 1.0) * learningRate * (vw - wt);
+        wt += this.neighborhood.function(currentNeuron, bestNeuron) * learningRate * (vw - wt);
         return wt;
 
     }

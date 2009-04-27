@@ -40,124 +40,133 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Directory utilities.
+ * 
  * @author jheaton
  */
 public final class Directory {
 
+	/**
+	 * Default buffer size for read/write operations.
+	 */
 	public static final int BUFFER_SIZE = 1024;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private static Logger LOGGER = LoggerFactory.getLogger(Directory.class);
-	
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(Directory.class);
+
 	/**
-	 * Private constructor.
+	 * Copy the specified file.
+	 * 
+	 * @param source
+	 *            The file to copy.
+	 * @param target
+	 *            The target of the copy.
 	 */
-	private Directory() {		
+	public static void copyFile(final File source, final File target) {
+		try {
+			final byte[] buffer = new byte[Directory.BUFFER_SIZE];
+
+			// open the files before the copy
+			final FileInputStream in = new FileInputStream(source);
+			final FileOutputStream out = new FileOutputStream(target);
+
+			// perform the copy
+			int packetSize = 0;
+
+			while (packetSize != -1) {
+				packetSize = in.read(buffer);
+				if (packetSize != -1) {
+					out.write(buffer, 0, packetSize);
+				}
+			}
+
+			// close the files after the copy
+			in.close();
+			out.close();
+		} catch (final IOException e) {
+			throw new EncogError(e);
+		}
 	}
-	
+
 	/**
 	 * Delete a directory and all children.
-	 * @param path The path to delete.
+	 * 
+	 * @param path
+	 *            The path to delete.
 	 * @return True if successful.
 	 */
 	public static boolean deleteDirectory(final File path) {
 		if (path.exists()) {
-			File[] files = path.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory()) {
-					deleteDirectory(files[i]);
+			final File[] files = path.listFiles();
+			for (final File element : files) {
+				if (element.isDirectory()) {
+					Directory.deleteDirectory(element);
 				} else {
-					files[i].delete();
+					element.delete();
 				}
 			}
 		}
 		return (path.delete());
 	}
-	
+
 	/**
-	 * Copy the specified file.
-	 * @param source The file to copy.
-	 * @param target The target of the copy.
+	 * Read the entire contents of a stream into a string.
+	 * @param is The input stream to read from.
+	 * @return The string that was read in.
 	 */
-	public static void copyFile(File source,File target)
-	{
-		try
-		{
-			byte[] buffer = new byte[BUFFER_SIZE];
-			
-			// open the files before the copy
-			FileInputStream in = new FileInputStream(source);
-			FileOutputStream out = new FileOutputStream(target);
-			
-			// perform the copy
-			int packetSize = 0;
-			
-			while(packetSize!=-1)
-			{
-				packetSize = in.read(buffer);
-				if( packetSize!=-1 )
-				{
-					out.write(buffer,0,packetSize);
-				}
+	public static String readStream(final InputStream is) {
+		try {
+			final StringBuffer sb = new StringBuffer(1024);
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(is));
+
+			final char[] chars = new char[BUFFER_SIZE];
+			int numRead = 0;
+			while ((numRead = reader.read(chars)) > -1) {
+				sb.append(new String(chars, 0, numRead));
 			}
-			
-			// close the files after the copy
-			in.close();
-			out.close();
-		}
-		catch(IOException e)
-		{
+			reader.close();
+
+			return sb.toString();
+		} catch (final IOException e) {
+			Directory.LOGGER.error("Exception", e);
 			throw new EncogError(e);
 		}
 	}
-	
-	public static String readTextFile(String fullPathFilename) {
-		try
-		{
-		StringBuffer sb = new StringBuffer(1024);
-		BufferedReader reader = new BufferedReader(new FileReader(fullPathFilename));
-				
-		char[] chars = new char[1024];
-		int numRead = 0;
-		while( (numRead = reader.read(chars)) > -1){
-			sb.append(new String(chars,0,numRead));	
-		}
 
-		reader.close();
+	/**
+	 * Read the entire contents of a stream into a string.
+	 * @param filename The input stream to read from.
+	 * @return The string that was read in.
+	 */
+	public static String readTextFile(final String filename) {
+		try {
+			final StringBuffer sb = new StringBuffer(1024);
+			final BufferedReader reader = new BufferedReader(new FileReader(
+					filename));
 
-		return sb.toString();
-		}
-		catch(IOException e)
-		{
-			LOGGER.error("Exception",e);
+			final char[] chars = new char[BUFFER_SIZE];
+			int numRead = 0;
+			while ((numRead = reader.read(chars)) > -1) {
+				sb.append(new String(chars, 0, numRead));
+			}
+
+			reader.close();
+
+			return sb.toString();
+		} catch (final IOException e) {
+			Directory.LOGGER.error("Exception", e);
 			throw new EncogError(e);
 		}
 	}
-	
-	public static String readStream(InputStream is) {
-		try
-		{
-		StringBuffer sb = new StringBuffer(1024);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-				
-		char[] chars = new char[1024];
-		int numRead = 0;
-		while( (numRead = reader.read(chars)) > -1){
-			sb.append(new String(chars,0,numRead));	
-		}
 
-		reader.close();
-
-		return sb.toString();
-		}
-		catch(IOException e)
-		{
-			LOGGER.error("Exception",e);
-			throw new EncogError(e);
-		}
+	/**
+	 * Private constructor.
+	 */
+	private Directory() {
 	}
 
 }

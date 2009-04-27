@@ -25,20 +25,52 @@
  */
 package org.encog.neural.networks.training.competitive.neighborhood;
 
+import org.encog.util.math.rbf.RadialBasisFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A neighborhood function based on the Gaussian function.
+ * 
+ * @author jheaton
+ */
 public class NeighborhoodGaussian implements NeighborhoodFunction {
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public double function(int currentNeuron, int bestNeuron,double d) {
-		// TODO Auto-generated method stub
-		return 0;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * The radial basis function (RBF) to use to calculate the training falloff
+	 * from the best neuron.
+	 */
+	private final RadialBasisFunction radial;
+
+	/**
+	 * Construct the neighborhood function with the specified radial function.
+	 * Generally this will be a Gaussian function but any RBF should do.
+	 * 
+	 * @param radial
+	 *            The radial basis function to use.
+	 */
+	public NeighborhoodGaussian(final RadialBasisFunction radial) {
+		this.radial = radial;
+	}
+
+	/**
+	 * Determine how much the current neuron should be affected by training
+	 * based on its proximity to the winning neuron.
+	 * 
+	 * @param currentNeuron
+	 *            THe current neuron being evaluated.
+	 * @param bestNeuron
+	 *            The winning neuron.
+	 * @return The ratio for this neuron's adjustment.
+	 */
+	public double function(final int currentNeuron, final int bestNeuron) {
+		return this.radial.calculate(currentNeuron - bestNeuron);
 	}
 
 }

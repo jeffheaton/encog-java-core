@@ -36,38 +36,86 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A fully-connected weight based synapse.  Inputs will be multiplied by 
- * the weight matrix and presented to the layer. 
+ * A fully-connected weight based synapse. Inputs will be multiplied by the
+ * weight matrix and presented to the layer.
  * 
  * This synapse type is teachable.
  * 
  * @author jheaton
- *
+ * 
  */
 public class WeightedSynapse extends BasicSynapse {
 
-
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -1667026867054695646L;
 
 	/**
 	 * The weight and threshold matrix.
 	 */
 	private Matrix matrix;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public WeightedSynapse(Layer fromLayer,Layer toLayer)
-	{
-		this.setFromLayer(fromLayer);
-		this.setToLayer(toLayer);	
-		this.matrix = new Matrix(getFromNeuronCount(), getToNeuronCount());		
-	}
-	
+	private final Logger logger = 
+		LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Simple default constructor.
+	 */
 	public WeightedSynapse() {
 
+	}
+
+	/**
+	 * Construct a weighted synapse between the two layers.
+	 * @param fromLayer The starting layer.
+	 * @param toLayer The ending layer.
+	 */
+	public WeightedSynapse(final Layer fromLayer, final Layer toLayer) {
+		setFromLayer(fromLayer);
+		setToLayer(toLayer);
+		this.matrix = new Matrix(getFromNeuronCount(), getToNeuronCount());
+	}
+
+	/**
+	 * @return A clone of this object.
+	 */
+	@Override
+	public Object clone() {
+		final WeightedSynapse result = new WeightedSynapse();
+		result.setMatrix(getMatrix().clone());
+		return result;
+	}
+
+	/**
+	 * Compute the weighted output from this synapse. Each neuron
+	 * in the from layer has a weighted connection to each of the
+	 * neurons in the next layer. 
+	 * @param input The input from the synapse.
+	 * @return The output from this synapse.
+	 */
+	public NeuralData compute(final NeuralData input) {
+		final NeuralData result = new BasicNeuralData(getToNeuronCount());
+		final Matrix inputMatrix = MatrixMath.createInputMatrix(input);
+
+		for (int i = 0; i < getToNeuronCount(); i++) {
+			final Matrix col = getMatrix().getCol(i);
+			final double sum = MatrixMath.dotProduct(col, inputMatrix);
+			result.setData(i, sum);
+		}
+		return result;
+	}
+
+	/**
+	 * Return a persistor for this object.
+	 * @return A new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new WeightedSynapsePersistor();
 	}
 
 	/**
@@ -90,7 +138,21 @@ public class WeightedSynapse extends BasicSynapse {
 		}
 		return this.matrix.size();
 	}
-	
+
+	/**
+	 * @return The type of synapse this is.
+	 */
+	public SynapseType getType() {
+		// TODO Auto-generated method stub
+		return SynapseType.Weighted;
+	}
+
+	/**
+	 * @return True, this is a teachable synapse type.
+	 */
+	public boolean isTeachable() {
+		return true;
+	}
 
 	/**
 	 * Assign a new weight and threshold matrix to this layer.
@@ -101,40 +163,6 @@ public class WeightedSynapse extends BasicSynapse {
 	public void setMatrix(final Matrix matrix) {
 		this.matrix = matrix;
 
-	}
-	
-	public NeuralData compute(NeuralData input)
-	{
-		NeuralData result = new BasicNeuralData(getToNeuronCount());
-		final Matrix inputMatrix = MatrixMath.createInputMatrix(input);
-
-		for (int i = 0; i < getToNeuronCount(); i++) {
-			final Matrix col = getMatrix().getCol(i);
-			final double sum = MatrixMath.dotProduct(col, inputMatrix);
-			result.setData(i,sum);
-		}
-		return result;
-	}
-
-	public SynapseType getType() {
-		// TODO Auto-generated method stub
-		return SynapseType.Weighted;
-	}
-	
-	public boolean isTeachable()
-	{
-		return true;
-	}
-	
-	public Object clone() {
-		WeightedSynapse result = new WeightedSynapse();
-		result.setMatrix(this.getMatrix().clone());
-		return result;
-	}
-	
-	public Persistor createPersistor()
-	{
-		return new WeightedSynapsePersistor();
 	}
 
 }

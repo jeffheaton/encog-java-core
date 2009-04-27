@@ -31,88 +31,127 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.WeightedSynapsePersistor;
 import org.encog.persist.persistors.WeightlessSynapsePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A fully connected synapse that simply sums all input to each neuron, 
- * no weights are applied.
+ * A fully connected synapse that simply sums all input to each neuron, no
+ * weights are applied.
  * 
  * This synapse type is not teachable.
  * 
  * @author jheaton
- *
+ * 
  */
 public class WeightlessSynapse extends BasicSynapse {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1899517385166651263L;
+	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public WeightlessSynapse(Layer fromLayer,Layer toLayer)
-	{
-		this.setFromLayer(fromLayer);
-		this.setToLayer(toLayer);		
-	}
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Simple default constructor.
+	 */
 	public WeightlessSynapse() {
-		// TODO Auto-generated constructor stub
 	}
 
-	public NeuralData compute(NeuralData input) {
-		NeuralData result = new BasicNeuralData(getToNeuronCount());
+	/**
+	 * Construct a weighted synapse between the two layers.
+	 * @param fromLayer The starting layer.
+	 * @param toLayer The ending layer.
+	 */
+	public WeightlessSynapse(final Layer fromLayer, final Layer toLayer) {
+		setFromLayer(fromLayer);
+		setToLayer(toLayer);
+	}
+
+	/**
+	 * @return A clone of this object.
+	 */
+	@Override
+	public Object clone() {
+		final WeightlessSynapse result = new WeightlessSynapse();
+		result.setMatrix(getMatrix().clone());
+		return result;
+	}
+
+	/**
+	 * Compute the weightless output from this synapse. Each neuron
+	 * in the from layer has a weightless connection to each of the
+	 * neurons in the next layer. 
+	 * @param input The input from the synapse.
+	 * @return The output from this synapse.
+	 */
+	public NeuralData compute(final NeuralData input) {
+		final NeuralData result = new BasicNeuralData(getToNeuronCount());
 		// just sum the input
-		double sum = 0;	
-		for(int i=0;i<input.size();i++)
-		{
-			sum+=input.getData(i);
+		double sum = 0;
+		for (int i = 0; i < input.size(); i++) {
+			sum += input.getData(i);
 		}
-		
+
 		for (int i = 0; i < getToNeuronCount(); i++) {
-			result.setData(i,sum);
+			result.setData(i, sum);
 		}
 		return result;
 	}
 
+	/**
+	 * Return a persistor for this object.
+	 * @return A new persistor.
+	 */
+	public Persistor createPersistor() {
+		return new WeightlessSynapsePersistor();
+	}
+
+	/**
+	 * @return null, this synapse type has no matrix.
+	 */
 	public Matrix getMatrix() {
 		return null;
 	}
 
+	/**
+	 * @return 0, this synapse type has no matrix.
+	 */
 	public int getMatrixSize() {
 		return 0;
 	}
 
-	public void setMatrix(Matrix matrix) {
-		String str = "Can't set the matrix for a WeightlessSynapse";
-		if( logger.isErrorEnabled())
-		{
-			logger.error(str);
-		}
-		throw new NeuralNetworkError(str);
-	}
-
+	/**
+	 * @return The type of synapse that this is.
+	 */
 	public SynapseType getType() {
 		return SynapseType.Weighted;
 	}
-	
-	public boolean isTeachable()
-	{
+
+	/**
+	 * @return False, because this type of synapse is not teachable.
+	 */
+	public boolean isTeachable() {
 		return false;
 	}
-	
-	public Object clone() {
-		WeightlessSynapse result = new WeightlessSynapse();
-		result.setMatrix(this.getMatrix().clone());
-		return result;
-	}
-	
-	public Persistor createPersistor()
-	{
-		return new WeightlessSynapsePersistor();
+
+	/**
+	 * Attempt to set the matrix for this layer. This will throw an error,
+	 * because this layer type does not have a matrix.
+	 * 
+	 * @param matrix
+	 *            Not used.
+	 */
+	public void setMatrix(final Matrix matrix) {
+		final String str = "Can't set the matrix for a WeightlessSynapse";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new NeuralNetworkError(str);
 	}
 
 }

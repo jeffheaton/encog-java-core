@@ -32,14 +32,16 @@ import org.encog.util.orm.ORMSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Main Encog class, does little more than provide version information.
  * 
  * @author jheaton
  */
 public final class Encog {
-	
+
+	/**
+	 * The default precision to use for compares.
+	 */
 	public static final int DEFAULT_PRECISION = 10;
 
 	/**
@@ -59,14 +61,6 @@ public final class Encog {
 	 * The instance.
 	 */
 	private static Encog instance;
-	
-	private ORMSession session;
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Get the instance to the singleton.
@@ -74,14 +68,26 @@ public final class Encog {
 	 * @return The instance.
 	 */
 	public static Encog getInstance() {
-		if (instance == null) {
-			instance = new Encog();
+		if (Encog.instance == null) {
+			Encog.instance = new Encog();
 		}
-		return instance;
+		return Encog.instance;
 	}
 
 	/**
+	 * The current ORM session.
+	 */
+	private ORMSession session;
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
 	 * Get the properties as a Map.
+	 * 
 	 * @return The requested value.
 	 */
 	private final Map<String, String> properties = 
@@ -102,11 +108,18 @@ public final class Encog {
 		return this.properties;
 	}
 
+	/**
+	 * @return The ORM session that Encog is using.
+	 */
 	public ORMSession getSession() {
-		return session;
+		return this.session;
 	}
 
-	public void setSession(ORMSession session) {
+	/**
+	 * Set the ORM session that Encog is to use.
+	 * @param session An ORM session.
+	 */
+	public void setSession(final ORMSession session) {
 		this.session = session;
 	}
 }

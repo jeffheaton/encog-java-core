@@ -40,7 +40,7 @@ public class NormalizeInput {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * This class support two normalization types. Z-AXIS is the most commonly

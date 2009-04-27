@@ -34,18 +34,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class abstracts thread pools, and potentially grids and other types
- * of concurrency.  It is used by other classes inside of Encog to allow
- * tasks to be executed efficiently on multicore machines.
+ * This class abstracts thread pools, and potentially grids and other types of
+ * concurrency. It is used by other classes inside of Encog to allow tasks to be
+ * executed efficiently on multicore machines.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class EncogConcurrency {
 
-	private int maxThreads;
 	private static EncogConcurrency instance;
+
+	public static EncogConcurrency getInstance() {
+		if (EncogConcurrency.instance == null) {
+			EncogConcurrency.instance = new EncogConcurrency();
+		}
+		return EncogConcurrency.instance;
+	}
+
+	private int maxThreads;
+
 	private ExecutorService executor;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -56,36 +66,30 @@ public class EncogConcurrency {
 		setMaxThreads(0);
 	}
 
-	public static EncogConcurrency getInstance() {
-		if (instance == null)
-			instance = new EncogConcurrency();
-		return instance;
-	}
-
-	public void setMaxThreads(int maxThreads) {
-		this.maxThreads = maxThreads;
-		if (this.maxThreads > 0) {
-			executor = Executors.newFixedThreadPool(maxThreads);
+	public void processTask(final EncogTask task) {
+		if (this.executor == null) {
+			task.run();
 		} else {
-			executor = null;
+			this.executor.execute(task);
 		}
 	}
 
-	public void processTask(EncogTask task) {
-		if (executor == null)
-			task.run();
-		else
-			executor.execute(task);
+	public void setMaxThreads(final int maxThreads) {
+		this.maxThreads = maxThreads;
+		if (this.maxThreads > 0) {
+			this.executor = Executors.newFixedThreadPool(maxThreads);
+		} else {
+			this.executor = null;
+		}
 	}
 
-	public void waitForComplete(long timeout) {
-		if (executor != null) {
+	public void waitForComplete(final long timeout) {
+		if (this.executor != null) {
 			try {
-				executor.awaitTermination(timeout, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
-				if( logger.isDebugEnabled())
-				{
-					logger.debug("Exception",e);
+				this.executor.awaitTermination(timeout, TimeUnit.SECONDS);
+			} catch (final InterruptedException e) {
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("Exception", e);
 				}
 				throw new EncogError(e);
 			}

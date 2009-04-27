@@ -32,75 +32,119 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.DirectSynapsePersistor;
-import org.encog.persist.persistors.WeightlessSynapsePersistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * A direct synapse will present the entire input array to each of the directly
- * connected neurons in the next layer.  This layer type is useful when building
+ * connected neurons in the next layer. This layer type is useful when building
  * a radial basis neural network.
  * 
  * This synapse type is not teachable.
  * 
  * @author jheaton
- *
+ * 
  */
-public class DirectSynapse  extends BasicSynapse { 
+public class DirectSynapse extends BasicSynapse {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3495349786238542641L;
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public DirectSynapse(Layer fromLayer,Layer toLayer)
-	{
-		this.setFromLayer(fromLayer);
-		this.setToLayer(toLayer);		
-	}
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Simple default constructor.
+	 */
 	public DirectSynapse() {
 
 	}
 
-	public NeuralData compute(NeuralData input) {
+	/**
+	 * Construct a direct synapse between the two specified layers.
+	 * 
+	 * @param fromLayer
+	 *            The starting layer.
+	 * @param toLayer
+	 *            The ending layer.
+	 */
+	public DirectSynapse(final Layer fromLayer, final Layer toLayer) {
+		setFromLayer(fromLayer);
+		setToLayer(toLayer);
+	}
+
+	/**
+	 * @return A clone of this object.
+	 */
+	@Override
+	public Object clone() {
+		final DirectSynapse result = new DirectSynapse(getFromLayer(),
+				getToLayer());
+		return result;
+	}
+
+	/**
+	 * Compute the output from this synapse.
+	 * 
+	 * @param input
+	 *            The input to this synapse.
+	 * @return The output is the same as the input.
+	 */
+	public NeuralData compute(final NeuralData input) {
 		return input;
 	}
 
+	/**
+	 * Create a persistor for this type of synapse.
+	 * 
+	 * @return A persistor.
+	 */
+	public Persistor createPersistor() {
+		return new DirectSynapsePersistor();
+	}
+
+	/**
+	 * @return null, this synapse type has no matrix.
+	 */
 	public Matrix getMatrix() {
 		return null;
 	}
 
+	/**
+	 * @return 0, this synapse type has no matrix.
+	 */
 	public int getMatrixSize() {
 		return 0;
 	}
 
-	public void setMatrix(Matrix matrix) {
-		throw new NeuralNetworkError("Can't set the matrix for a DirectSynapse");
-	}
-
-
+	/**
+	 * @return The type of synapse that this is.
+	 */
 	public SynapseType getType() {
 		return SynapseType.OneToOne;
 	}
-	
-	public boolean isTeachable()
-	{
+
+	/**
+	 * @return False, because this type of synapse is not teachable.
+	 */
+	public boolean isTeachable() {
 		return false;
 	}
 
-	@Override
-	public Object clone() {
-		OneToOneSynapse result = new OneToOneSynapse();
-		result.setMatrix(this.getMatrix().clone());
-		return result;
+	/**
+	 * Attempt to set the matrix for this layer. This will throw an error,
+	 * because this layer type does not have a matrix.
+	 * 
+	 * @param matrix
+	 *            Not used.
+	 */
+	public void setMatrix(final Matrix matrix) {
+		throw new NeuralNetworkError(
+				"Can't set the matrix for a DirectSynapse");
 	}
-	
-	
-	public Persistor createPersistor()
-	{
-		return new DirectSynapsePersistor();
-	}
-	
+
 }

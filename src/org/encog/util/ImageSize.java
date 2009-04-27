@@ -35,6 +35,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Simple class to determine the size of an image.
+ * 
  * @author jheaton
  */
 public class ImageSize implements ImageObserver {
@@ -43,38 +44,39 @@ public class ImageSize implements ImageObserver {
 	 * The width of the image.
 	 */
 	private int width;
-	
+
 	/**
 	 * The height of the image.
 	 */
 	private int height;
-	
+
 	/**
 	 * Wait for the values to be set.
 	 */
 	private final Semaphore wait;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Determine the size of an image.
-	 * @param image The image to be sized.
+	 * 
+	 * @param image
+	 *            The image to be sized.
 	 */
 	public ImageSize(final Image image) {
 		this.wait = new Semaphore(0);
 		this.width = image.getWidth(this);
 		this.height = image.getHeight(this);
-		if (this.width == -1 || this.height == -1) {
+		if ((this.width == -1) || (this.height == -1)) {
 			try {
 				this.wait.acquire();
 			} catch (final InterruptedException e) {
-				if( logger.isErrorEnabled())
-				{
-					logger.error("Exception",e);
+				if (this.logger.isErrorEnabled()) {
+					this.logger.error("Exception", e);
 				}
 				throw new EncogError(e);
 			}
@@ -98,12 +100,19 @@ public class ImageSize implements ImageObserver {
 
 	/**
 	 * The image has been updated.
-	 * @param img The image.
-	 * @param infoflags Which data has been loaded.
-	 * @param x Not used.
-	 * @param y Not used.
-	 * @param width The width of the image.
-	 * @param height The height of the image.
+	 * 
+	 * @param img
+	 *            The image.
+	 * @param infoflags
+	 *            Which data has been loaded.
+	 * @param x
+	 *            Not used.
+	 * @param y
+	 *            Not used.
+	 * @param width
+	 *            The width of the image.
+	 * @param height
+	 *            The height of the image.
 	 * @return True if more data is still needed.
 	 */
 	public boolean imageUpdate(final Image img, final int infoflags,

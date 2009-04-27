@@ -39,8 +39,6 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.encog.EncogError;
-import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.PersistError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,12 +47,6 @@ import org.slf4j.LoggerFactory;
  * Read and parse CSV format files.
  */
 public class ReadCSV {
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The standard date format to be used.
@@ -69,7 +61,41 @@ public class ReadCSV {
 	 * @return The formatted date.
 	 */
 	public static String displayDate(final Date date) {
-		return SDF.format(date);
+		return ReadCSV.SDF.format(date);
+	}
+
+	/**
+	 * Get an array of double's from a string of comma separated text.
+	 * @param str The string that contains a list of numbers.
+	 * @return An array of doubles parsed from the string.
+	 */
+	public static double[] fromCommas(final String str) {
+		// first count the numbers
+		int count = 0;
+		final StringTokenizer tok = new StringTokenizer(str, ",");
+		while (tok.hasMoreTokens()) {
+			tok.nextToken();
+			count++;
+		}
+
+		// now allocate an object to hold that many numbers
+		final double[] result = new double[count];
+
+		// and finally parse the numbers
+		int index = 0;
+		final StringTokenizer tok2 = new StringTokenizer(str, ",");
+		while (tok2.hasMoreTokens()) {
+			try {
+				final String num = tok2.nextToken();
+				final double value = Double.parseDouble(num);
+				result[index++] = value;
+			} catch (final NumberFormatException e) {
+				throw new PersistError(e);
+			}
+
+		}
+
+		return result;
 	}
 
 	/**
@@ -81,11 +107,33 @@ public class ReadCSV {
 	 */
 	public static Date parseDate(final String when) {
 		try {
-			return SDF.parse(when);
+			return ReadCSV.SDF.parse(when);
 		} catch (final ParseException e) {
 			return null;
 		}
 	}
+
+	/**
+	 * Convert an array of doubles to a comma separated list.
+	 * @param result This string will have the values appended to it.
+	 * @param data The array of doubles to use.
+	 */
+	public static void toCommas(final StringBuilder result, 
+			final double[] data) {
+		result.setLength(0);
+		for (int i = 0; i < data.length; i++) {
+			if (i != 0) {
+				result.append(',');
+			}
+			result.append(data[i]);
+		}
+	}
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The buffered reader to read the file.
@@ -136,17 +184,13 @@ public class ReadCSV {
 	 */
 	public ReadCSV(final String filename, final boolean headers,
 			final char delim) {
-		try
-		{
-		this.reader = new BufferedReader(new FileReader(filename));
-		this.delim = "" + delim;
-		begin(headers);
-		}
-		catch(IOException e)
-		{
-			if( logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
+		try {
+			this.reader = new BufferedReader(new FileReader(filename));
+			this.delim = "" + delim;
+			begin(headers);
+		} catch (final IOException e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
 			}
 			throw new EncogError(e);
 		}
@@ -159,26 +203,23 @@ public class ReadCSV {
 	 *            Are headers present.
 	 */
 	private void begin(final boolean headers) {
-		try
-		{
-		// read the column heads
-		if (headers) {
-			final String line = this.reader.readLine();
-			final StringTokenizer tok = new StringTokenizer(line, this.delim);
-			int i = 0;
-			while (tok.hasMoreTokens()) {
-				final String header = tok.nextToken();
-				this.columns.put(header.toLowerCase(), i++);
+		try {
+			// read the column heads
+			if (headers) {
+				final String line = this.reader.readLine();
+				final StringTokenizer tok = new StringTokenizer(line,
+						this.delim);
+				int i = 0;
+				while (tok.hasMoreTokens()) {
+					final String header = tok.nextToken();
+					this.columns.put(header.toLowerCase(), i++);
+				}
 			}
-		}
 
-		this.data = null;
-		}
-		catch(IOException e)
-		{
-			if( logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
+			this.data = null;
+		} catch (final IOException e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
 			}
 
 			throw new EncogError(e);
@@ -190,15 +231,11 @@ public class ReadCSV {
 	 * 
 	 */
 	public void close() {
-		try
-		{
+		try {
 			this.reader.close();
-		}
-		catch(IOException e)
-		{
-			if( logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
+		} catch (final IOException e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
 			}
 
 			throw new EncogError(e);
@@ -253,20 +290,18 @@ public class ReadCSV {
 	 * @return The column as a date.
 	 */
 	public Date getDate(final String column) {
-		
-		
+
 		try {
 			final String str = get(column);
-			return SDF.parse(str);
-		} catch (ParseException e) {
-			if( logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
+			return ReadCSV.SDF.parse(str);
+		} catch (final ParseException e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
 			}
 
 			throw new EncogError(e);
 		}
-		
+
 	}
 
 	/**
@@ -336,7 +371,7 @@ public class ReadCSV {
 	public boolean next() {
 
 		try {
-			String line = this.reader.readLine();
+			final String line = this.reader.readLine();
 			if (line == null) {
 				return false;
 			}
@@ -355,61 +390,14 @@ public class ReadCSV {
 				}
 			}
 			return true;
-		} catch (IOException e) {
-			if( logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
+		} catch (final IOException e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
 			}
 
 			throw new EncogError(e);
 		}
-		
-	}
-	
-	public static void toCommas(StringBuilder result,double[] data)
-	{
-		result.setLength(0);
-		for(int i=0;i<data.length;i++)
-		{
-			if( i!=0 )
-				result.append(',');
-			result.append(data[i]);
-		}
-	}
-	
-	public static double[] fromCommas(String str)
-	{
-		// first count the numbers
-		int count = 0;
-		StringTokenizer tok = new StringTokenizer(str,",");
-		while(tok.hasMoreTokens())
-		{
-			tok.nextToken();
-			count++;
-		}
-		
-		// now allocate an object to hold that many numbers
-		double[] result = new double[count];
-		
-		// and finally parse the numbers
-		int index = 0;
-		StringTokenizer tok2 = new StringTokenizer(str,",");
-		while(tok2.hasMoreTokens())
-		{
-			try
-			{
-				String num = tok2.nextToken();
-				double value = Double.parseDouble(num);
-				result[index++] = value;
-			}
-			catch(NumberFormatException e)
-			{
-				throw new PersistError(e);
-			}
-			
-		}
-		
-		return result;
+
 	}
 
 }

@@ -73,9 +73,13 @@ public class ContextLayer extends BasicLayer {
 
 	/**
 	 * Construct a context layer with the parameters specified.
-	 * @param thresholdFunction The threshold function to use.
-	 * @param hasThreshold Does this layer have thresholds?
-	 * @param neuronCount The neuron count to use.
+	 * 
+	 * @param thresholdFunction
+	 *            The threshold function to use.
+	 * @param hasThreshold
+	 *            Does this layer have thresholds?
+	 * @param neuronCount
+	 *            The neuron count to use.
 	 */
 	public ContextLayer(final ActivationFunction thresholdFunction,
 			final boolean hasThreshold, final int neuronCount) {
@@ -86,7 +90,9 @@ public class ContextLayer extends BasicLayer {
 	/**
 	 * Construct a default context layer that has the TANH activation function
 	 * and the specified number of neurons. Use threshold values.
-	 * @param neuronCount The number of neurons on this layer.
+	 * 
+	 * @param neuronCount
+	 *            The number of neurons on this layer.
 	 */
 	public ContextLayer(final int neuronCount) {
 		this(new ActivationTANH(), true, neuronCount);
@@ -103,9 +109,19 @@ public class ContextLayer extends BasicLayer {
 	}
 
 	/**
-	 * Called to process input from the previous layer.  Simply store the 
-	 * output in the context.
-	 * @param pattern The pattern to store in the context.
+	 * @return The context, or memory of this layer. These will be the values
+	 *         that were just output.
+	 */
+	public NeuralData getContext() {
+		return this.context;
+	}
+
+	/**
+	 * Called to process input from the previous layer. Simply store the output
+	 * in the context.
+	 * 
+	 * @param pattern
+	 *            The pattern to store in the context.
 	 */
 	@Override
 	public void process(final NeuralData pattern) {
@@ -120,16 +136,12 @@ public class ContextLayer extends BasicLayer {
 
 	/**
 	 * Called to get the output from this layer when called in a recurrent
-	 * manor.  Simply return the context that was kept from the last iteration.
+	 * manor. Simply return the context that was kept from the last iteration.
+	 * 
 	 * @return The recurrent output.
 	 */
 	@Override
 	public NeuralData recur() {
-		return this.context;
-	}
-	
-	public NeuralData getContext()
-	{
 		return this.context;
 	}
 

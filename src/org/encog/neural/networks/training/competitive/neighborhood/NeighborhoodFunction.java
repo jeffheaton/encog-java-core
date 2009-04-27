@@ -25,7 +25,23 @@
  */
 package org.encog.neural.networks.training.competitive.neighborhood;
 
+/**
+ * Defines how a neighborhood function should work in competitive training.
+ * This is most often used in the training process for a self-organizing map.
+ * This function determines to what degree the training should take place on
+ * a neuron, based on its proximity to the "winning" neuron.
+ * @author jheaton
+ *
+ */
 public interface NeighborhoodFunction {
-	double function(int currentNeuron, int bestNeuron, double d);
+	
+	/**
+	 * Determine how much the current neuron should be affected by 
+	 * training based on its proximity to the winning neuron.
+	 * @param currentNeuron THe current neuron being evaluated.
+	 * @param bestNeuron The winning neuron.
+	 * @return The ratio for this neuron's adjustment.
+	 */
+	double function(int currentNeuron, int bestNeuron);
 
 }
