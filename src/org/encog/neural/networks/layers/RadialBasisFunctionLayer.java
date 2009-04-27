@@ -63,7 +63,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 * 
 	 */
 	private static final long serialVersionUID = 2779781041654829282L;
-	private RadialBasisFunction[] radialBasisFunction;
+	private final RadialBasisFunction[] radialBasisFunction;
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default layer.
@@ -76,14 +76,6 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	public RadialBasisFunctionLayer(int neuronCount) {
 		super(new ActivationLinear(), false, neuronCount);
 		this.radialBasisFunction = new RadialBasisFunction[neuronCount];
-	}
-
-	public RadialBasisFunction getRadialBasisFunction(int index) {
-		return this.radialBasisFunction[index];
-	}
-
-	public void setRadialBasisFunction(int index, RadialBasisFunction function) {
-		this.radialBasisFunction[index] = function;
 	}
 	
 	public void randomizeGaussianCentersAndWidths(double min,double max)
@@ -143,4 +135,10 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	public Persistor createPersistor() {
 		return new RadialBasisFunctionLayerPersistor();
 	}
+
+	public RadialBasisFunction[] getRadialBasisFunction() {
+		return radialBasisFunction;
+	}
+	
+	
 }
