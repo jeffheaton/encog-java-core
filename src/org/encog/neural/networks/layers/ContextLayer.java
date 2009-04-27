@@ -127,5 +127,10 @@ public class ContextLayer extends BasicLayer {
 	public NeuralData recur() {
 		return this.context;
 	}
+	
+	public NeuralData getContext()
+	{
+		return this.context;
+	}
 
 }
