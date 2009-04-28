@@ -43,8 +43,14 @@ import org.slf4j.LoggerFactory;
  */
 public class EncogConcurrency {
 
+	/**
+	 * Singleton instance.
+	 */
 	private static EncogConcurrency instance;
 
+	/**
+	 * @return The instance to the singleton.
+	 */
 	public static EncogConcurrency getInstance() {
 		if (EncogConcurrency.instance == null) {
 			EncogConcurrency.instance = new EncogConcurrency();
@@ -52,20 +58,34 @@ public class EncogConcurrency {
 		return EncogConcurrency.instance;
 	}
 
+	/**
+	 * Maximum number of threads.
+	 */
 	private int maxThreads;
 
+	/**
+	 * The executor service we are using.
+	 */
 	private ExecutorService executor;
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * Construct a concurrency object.
+	 */
 	public EncogConcurrency() {
 		setMaxThreads(0);
 	}
 
+	/**
+	 * Process the specified task.  It will be processed either now,
+	 * or queued to process on the thread pool.
+	 * @param task The task to process.
+	 */
 	public void processTask(final EncogTask task) {
 		if (this.executor == null) {
 			task.run();
@@ -74,6 +94,10 @@ public class EncogConcurrency {
 		}
 	}
 
+	/**
+	 * Set the maximum number of threads to use.
+	 * @param maxThreads Maximum number of threads to use.
+	 */
 	public void setMaxThreads(final int maxThreads) {
 		this.maxThreads = maxThreads;
 		if (this.maxThreads > 0) {
@@ -83,6 +107,10 @@ public class EncogConcurrency {
 		}
 	}
 
+	/**
+	 * Wait for all threads in the pool to complete.
+	 * @param timeout How long to wait for all threads to complete.
+	 */
 	public void waitForComplete(final long timeout) {
 		if (this.executor != null) {
 			try {

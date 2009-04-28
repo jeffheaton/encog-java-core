@@ -26,18 +26,20 @@
 package org.encog.parse.tags.read;
 
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
-import org.encog.parse.PeekableInputStream;
-import org.encog.parse.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+/**
+ * This class is designed to parse HTML documents.  It will parse the
+ * individual tags and text between the tags.
+ * @author jheaton
+ *
+ */
+public class ReadHTML extends ReadTags {
 
-public class ReadHTML extends ReadTags
-{
-
-	public ReadHTML(InputStream is) {
+	/**
+	 * Construct a HTML reader.
+	 * @param is The input stream to read from.
+	 */
+	public ReadHTML(final InputStream is) {
 		super(is);
 	}
 

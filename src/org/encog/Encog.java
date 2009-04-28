@@ -34,6 +34,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Main Encog class, does little more than provide version information.
+ * Also used to hold the ORM session that Encog uses to work with
+ * Hibernate.
  * 
  * @author jheaton
  */

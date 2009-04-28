@@ -38,60 +38,64 @@ import org.slf4j.LoggerFactory;
  * structure of what is to be recognized.
  * 
  * @author jheaton
- *
+ * 
  */
 public class Recognize {
-	private List<RecognizeElement> pattern = new ArrayList<RecognizeElement>();
+	
+	/**
+	 * Recognize elements used by this recognize class. 
+	 */
+	private final List<RecognizeElement> pattern = new ArrayList<RecognizeElement>();
 	private int index = 0;
-	private String type;
+	private final String type;
 	private int startIndex = -1;
 	private int stopIndex;
 	private int currentIndex = 0;
 	private boolean ignore = false;
 	@SuppressWarnings("unchecked")
 	private Class signalClass = Signal.class;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public Recognize(String type) {
-		this.type = type;
-	}
-	
-	public Recognize()
-	{
+	public Recognize() {
 		this.type = "Untitled";
 	}
 
-	public void add(RecognizeElement re) {
-		pattern.add(re);
+	public Recognize(final String type) {
+		this.type = type;
 	}
 
-	public void setIgnore(boolean ignore) {
-		this.ignore = ignore;
+	public void add(final RecognizeElement re) {
+		this.pattern.add(re);
+	}
+
+	public RecognizeElement createElement(final int allow) {
+		final RecognizeElement result = new RecognizeElement(allow);
+		add(result);
+		return result;
 	}
 
 	public boolean getIgnore() {
 		return this.ignore;
 	}
 
-	private void startTracking() {
-		// System.out.println("Start tracking");
-		if (startIndex == -1)
-			startIndex = currentIndex;
-		stopIndex = currentIndex + 1;
+	/**
+	 * @return the pattern
+	 */
+	public List<RecognizeElement> getPattern() {
+		return this.pattern;
 	}
 
-	private void stopTracking() {
-		// System.out.println("Stop tracking");
-		startIndex = -1;
-		index = 0;
+	@SuppressWarnings("unchecked")
+	public Class getSignalClass() {
+		return this.signalClass;
 	}
 
-	public boolean recognize(Signal signal) {
+	public boolean recognize(final Signal signal) {
 
 		boolean found;
 		do {
@@ -101,30 +105,30 @@ public class Recognize {
 
 	}
 
-	protected boolean recognizeIteration(Signal signal) {
-		startIndex = -1;
-		index = 0;
-		currentIndex = 0;
+	protected boolean recognizeIteration(final Signal signal) {
+		this.startIndex = -1;
+		this.index = 0;
+		this.currentIndex = 0;
 
-		Object array[] = signal.getData().toArray();
-		while (currentIndex < array.length) {
+		final Object array[] = signal.getData().toArray();
+		while (this.currentIndex < array.length) {
 
-			RecognizeElement re = pattern.get(index);
-			Signal signalElement = (Signal) array[currentIndex];
+			final RecognizeElement re = this.pattern.get(this.index);
+			final Signal signalElement = (Signal) array[this.currentIndex];
 
 			if (signalElement.getIgnore()) {
-				currentIndex++;
+				this.currentIndex++;
 				continue;
 			}
 
 			// System.out.println("Recognize Element:" + signalElement.dump() );
-			boolean success = re.recognize(signalElement);
+			final boolean success = re.recognize(signalElement);
 
 			switch (re.getAllow()) {
 			case RecognizeElement.ALLOW_ONE:
 				if (success) {
 					startTracking();
-					index++;
+					this.index++;
 				} else {
 					stopTracking();
 				}
@@ -133,57 +137,56 @@ public class Recognize {
 			case RecognizeElement.ALLOW_MULTIPLE:
 				if (success) {
 					startTracking();
-				} else
-					index++;
+				} else {
+					this.index++;
+				}
 
 				break;
 			}
 
-			if (index >= pattern.size()) {
+			if (this.index >= this.pattern.size()) {
 
-				if (startIndex != -1) {
-					Signal temp = signal.pack(startIndex, stopIndex, type,
-							getSignalClass());
+				if (this.startIndex != -1) {
+					final Signal temp = signal.pack(this.startIndex,
+							this.stopIndex, this.type, getSignalClass());
 					temp.setName(re.getName());
-					temp.setIgnore(ignore);
+					temp.setIgnore(this.ignore);
 					return true;
 				}
-				index = 0;
+				this.index = 0;
 			}
-			currentIndex++;
+			this.currentIndex++;
 
 		}
 		return false;
 	}
 
-	public RecognizeElement createElement(int allow) {
-		RecognizeElement result = new RecognizeElement(allow);
-		add(result);
-		return result;
+	public void setIgnore(final boolean ignore) {
+		this.ignore = ignore;
 	}
 
 	@SuppressWarnings("unchecked")
-	public Class getSignalClass() {
-		return signalClass;
-	}
-
-	@SuppressWarnings("unchecked")
-	public void setSignalClass(Class signalClass) {
+	public void setSignalClass(final Class signalClass) {
 		this.signalClass = signalClass;
 	}
-	
-	
-	
-	/**
-	 * @return the pattern
-	 */
-	public List<RecognizeElement> getPattern() {
-		return pattern;
+
+	private void startTracking() {
+		// System.out.println("Start tracking");
+		if (this.startIndex == -1) {
+			this.startIndex = this.currentIndex;
+		}
+		this.stopIndex = this.currentIndex + 1;
 	}
 
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
+	private void stopTracking() {
+		// System.out.println("Stop tracking");
+		this.startIndex = -1;
+		this.index = 0;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
 		result.append("[Recognize:");
 		result.append(this.type);
 		result.append(']');
