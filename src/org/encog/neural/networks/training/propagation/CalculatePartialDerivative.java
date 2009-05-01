@@ -32,90 +32,99 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class that is used to calculate the partial derivatives for the error
- * for individual layers of a neural network.  This calculation must be
- * performed by each of the propagation techniques.
+ * Class that is used to calculate the partial derivatives for the error for
+ * individual layers of a neural network. This calculation must be performed by
+ * each of the propagation techniques.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class CalculatePartialDerivative {
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	private double handleMatrixDelta(
-			final NeuralOutputHolder outputHolder,
-			final PropagationLevel fromLevel,
-			final PropagationLevel toLevel,
-			Layer toLayer,
-			int toNeuronLocal,
-			PropagationSynapse fromSynapse,
-			int fromNeuron,
-			int toNeuronGlobal)
-	{
-		NeuralData output = outputHolder.getResult().get(fromSynapse.getSynapse());
-		fromSynapse.accumulateMatrixDelta(fromNeuron, toNeuronLocal, toLevel.getDelta(toNeuronGlobal) * output.getData(fromNeuron));		
-		return (fromSynapse.getSynapse().getMatrix().get(fromNeuron, toNeuronLocal) * toLevel.getDelta(toNeuronGlobal) );
-	}
-	
-	public void calculateError(
-			final NeuralOutputHolder output,
-			final PropagationLevel fromLevel,
-			final PropagationLevel toLevel) {
-		
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Calculate the partial derivative of the error for a layer.
+	 * @param output A holder that contains the output from all of the layers.
+	 * @param fromLevel The source level.
+	 * @param toLevel The target level.
+	 */
+	public void calculateError(final NeuralOutputHolder output,
+			final PropagationLevel fromLevel, final PropagationLevel toLevel) {
+
 		// used to hold the errors from this level to the next
-		double[] errors = new double[fromLevel.getNeuronCount()];
-		
-		int toNeuronGlobal = 0;		
-		
+		final double[] errors = new double[fromLevel.getNeuronCount()];
+
+		int toNeuronGlobal = 0;
+
 		// loop over every element of the weight matrix and determine the deltas
-		// also determine the threshold deltas.		
-		for(Layer toLayer: toLevel.getLayers() )
-		{
-			for(int toNeuron=0;toNeuron<toLayer.getNeuronCount();toNeuron++)
-			{
+		// also determine the threshold deltas.
+		for (final Layer toLayer : toLevel.getLayers()) {
+			for (int toNeuron = 0; toNeuron < toLayer.getNeuronCount(); 
+			toNeuron++) {
 				int fromNeuronGlobal = 0;
-				
-				for(PropagationSynapse fromSynapse: fromLevel.getOutgoing() )
-				{
-					for(int fromNeuron=0; fromNeuron<fromSynapse.getSynapse().getFromNeuronCount(); fromNeuron++)
-					{
-						errors[fromNeuronGlobal++]+=handleMatrixDelta(
-								output,
-								fromLevel,
-								toLevel,
-								toLayer,
-								toNeuron,
-								fromSynapse,
-								fromNeuron,
-								toNeuronGlobal);
+
+				for (final PropagationSynapse fromSynapse : fromLevel
+						.getOutgoing()) {
+					for (int fromNeuron = 0; fromNeuron < fromSynapse
+							.getSynapse().getFromNeuronCount(); fromNeuron++) {
+						errors[fromNeuronGlobal++] += handleMatrixDelta(output,
+								fromLevel, toLevel, toLayer, toNeuron,
+								fromSynapse, fromNeuron, toNeuronGlobal);
 					}
-					
-				}	
-				
-				toLevel.setThresholdGradient(toNeuronGlobal, toLevel.getThresholdGradient(toNeuronGlobal)+toLevel.getDelta(toNeuronGlobal));
+
+				}
+
+				toLevel.setThresholdGradient(toNeuronGlobal, toLevel
+						.getThresholdGradient(toNeuronGlobal)
+						+ toLevel.getDelta(toNeuronGlobal));
 				toNeuronGlobal++;
-			}				 
+			}
 		}
-		
-		for(int i=0;i<fromLevel.getNeuronCount();i++)
-		{
-			double actual = fromLevel.getActual(i);
-			fromLevel.setDelta(i,actual);
+
+		for (int i = 0; i < fromLevel.getNeuronCount(); i++) {
+			final double actual = fromLevel.getActual(i);
+			fromLevel.setDelta(i, actual);
 		}
-		
+
 		// get an activation function to use
-		Layer l = toLevel.getLayers().get(0);
+		final Layer l = toLevel.getLayers().get(0);
 		l.getActivationFunction().derivativeFunction(fromLevel.getDeltas());
-		
-		
-		for(int i=0;i<fromLevel.getNeuronCount();i++)
-		{
-			fromLevel.setDelta(i, fromLevel.getDelta(i)*errors[i]);
+
+		for (int i = 0; i < fromLevel.getNeuronCount(); i++) {
+			fromLevel.setDelta(i, fromLevel.getDelta(i) * errors[i]);
 		}
-		
+
+	}
+
+	/**
+	 * Calculate the error for an individual weight matrix element.
+	 * @param outputHolder The output from each of the layers of 
+	 * the neural network.
+	 * @param fromLevel The from level.
+	 * @param toLevel The two level.
+	 * @param toLayer The to layer.
+	 * @param toNeuronLocal The neuron, within the layer.
+	 * @param fromSynapse The from synapse.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuronGlobal The global location inside of the level.
+	 * @return The error for this individual connection.
+	 */
+	private double handleMatrixDelta(final NeuralOutputHolder outputHolder,
+			final PropagationLevel fromLevel, final PropagationLevel toLevel,
+			final Layer toLayer, final int toNeuronLocal,
+			final PropagationSynapse fromSynapse, final int fromNeuron,
+			final int toNeuronGlobal) {
+		final NeuralData output = outputHolder.getResult().get(
+				fromSynapse.getSynapse());
+		fromSynapse.accumulateMatrixDelta(fromNeuron, toNeuronLocal, toLevel
+				.getDelta(toNeuronGlobal)
+				* output.getData(fromNeuron));
+		return (fromSynapse.getSynapse().getMatrix().get(fromNeuron,
+				toNeuronLocal) * toLevel.getDelta(toNeuronGlobal));
 	}
 }

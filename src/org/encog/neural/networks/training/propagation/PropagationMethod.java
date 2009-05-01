@@ -29,21 +29,35 @@ package org.encog.neural.networks.training.propagation;
 import org.encog.neural.networks.NeuralOutputHolder;
 
 /**
- * Defines the specifics to one of the propagation methods.  The individual
- * ways that each of the propagation methods uses to modify the weight and]
- * threshold matrix are defined here.
+ * Defines the specifics to one of the propagation methods. The individual ways
+ * that each of the propagation methods uses to modify the weight and] threshold
+ * matrix are defined here.
+ * 
  * @author jheaton
- *
+ * 
  */
 public interface PropagationMethod {
-	
-	public void init(Propagation propagation);
-	
-	public void calculateError(
-			final NeuralOutputHolder output,
-			final PropagationLevel fromLevel,
+
+	/**
+	 * Calculate the error between these two levels.
+	 * @param output The output to the "to level".
+	 * @param fromLevel The from level.
+	 * @param toLevel The target level.
+	 */
+	void calculateError(final NeuralOutputHolder output,
+			final PropagationLevel fromLevel, 
 			final PropagationLevel toLevel);
-	
-	public void learn();
-	
+
+	/**
+	 * Init with the specified propagation object.
+	 * @param propagation The propagation object that this method will
+	 * be used with.
+	 */
+	void init(Propagation propagation);
+
+	/**
+	 * Apply the accumulated deltas and learn.
+	 */
+	void learn();
+
 }

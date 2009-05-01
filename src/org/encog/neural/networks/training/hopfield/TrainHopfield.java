@@ -38,61 +38,96 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is used to train a Hopfield neural network.  A hopfield 
- * neural network can be created by using the basic layer and connecting
- * it to itself, forming a single layer recurrent neural network.
+ * This class is used to train a Hopfield neural network. A hopfield neural
+ * network can be created by using the basic layer and connecting it to itself,
+ * forming a single layer recurrent neural network.
+ * 
+ * This is an unsupervised training algorithm.  Ideal values should not
+ * be specified in the training set.  If ideal values are present, they
+ * will be ignored.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class TrainHopfield extends BasicTraining {
 
-	private BasicNetwork network;
-	
+	/**
+	 * The network being trained.
+	 */
+	private final BasicNetwork network;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public TrainHopfield(NeuralDataSet trainingSet, BasicNetwork network)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a Hopfield training class.
+	 * @param trainingSet The training set to use.
+	 * @param network The network to train.
+	 */
+	public TrainHopfield(final NeuralDataSet trainingSet,
+			final BasicNetwork network) {
 		this.network = network;
 		setTraining(trainingSet);
 		setError(0);
 	}
 
-	public BasicNetwork getNetwork() {
-		return network;
+	/**
+	 * Update the Hopfield weights after training.
+	 * @param target The target synapse.
+	 * @param delta The amoun to change the weights by.
+	 */
+	private void convertHopfieldMatrix(final Synapse target, 
+			final Matrix delta) {
+		// add the new weight matrix to what is there already
+		for (int row = 0; row < delta.getRows(); row++) {
+			for (int col = 0; col < delta.getRows(); col++) {
+				target.getMatrix().set(row, col, delta.get(row, col));
+			}
+		}
 	}
 
+	/**
+	 * @return The network being trained.
+	 */
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	/**
+	 * Perform one training iteration.
+	 */
 	public void iteration() {
-		
-		if( logger.isInfoEnabled())
-		{
-			logger.info("Performing Hopfield iteration.");
+
+		if (this.logger.isInfoEnabled()) {
+			this.logger.info("Performing Hopfield iteration.");
 		}
-		
+
 		preIteration();
-		
+
 		for (final Layer layer : this.network.getStructure().getLayers()) {
-			for( Synapse synapse: layer.getNext()) {
-				if( synapse.isSelfConnected() )
-				{
+			for (final Synapse synapse : layer.getNext()) {
+				if (synapse.isSelfConnected()) {
 					trainHopfieldSynapse(synapse);
 				}
 			}
 		}
-		
+
 		postIteration();
-	}		
-	
-	
-	private void trainHopfieldSynapse(Synapse recurrent) {
-		for(NeuralDataPair data: this.getTraining())
-		{
-			trainHopfieldSynapse(recurrent,data.getInput());
+	}
+
+	/**
+	 * Once the hopfield synapse has been found, this method is called
+	 * to train it.
+	 * @param recurrent The hopfield layer.
+	 */
+	private void trainHopfieldSynapse(final Synapse recurrent) {
+		for (final NeuralDataPair data : getTraining()) {
+			trainHopfieldSynapse(recurrent, data.getInput());
 		}
-		
+
 	}
 
 	/**
@@ -100,18 +135,13 @@ public class TrainHopfield extends BasicTraining {
 	 * can be trained for more than one pattern. To do this simply call the
 	 * train method more than once.
 	 * 
-	 * @param layer
-	 *            The layer to train.
+	 * @param synapse
+	 *            The synapse to train.
 	 * @param pattern
-	 * 		The pattern to train for.
+	 *            The pattern to train for.
 	 */
 	public void trainHopfieldSynapse(final Synapse synapse,
 			final NeuralData pattern) {
-		/*if (pattern.size() != synapse.getMatrix().getRows()) {
-			throw new NeuralNetworkError("Can't train a pattern of size "
-					+ pattern.size() + " on a hopfield network of size "
-					+ synapse.getMatrix().getRows());
-		}*/
 
 		// Create a row matrix from the input, convert boolean to bipolar
 		final Matrix m2 = Matrix.createRowMatrix(pattern.getData());
@@ -127,19 +157,7 @@ public class TrainHopfield extends BasicTraining {
 		final Matrix m4 = MatrixMath.subtract(m3, identity);
 
 		// now add the calculated matrix, for this pattern, to the
-		// existing weight matrix.		
-		convertHopfieldMatrix(synapse,m4);
-	}
-	
-	private void convertHopfieldMatrix(Synapse target, Matrix delta)
-	{
-		// add the new weight matrix to what is there already
-		for(int row = 0; row< delta.getRows(); row++ )
-		{
-			for(int col = 0; col< delta.getRows(); col++ )
-			{
-				target.getMatrix().set(row,col,delta.get(row, col));
-			}	
-		}		
+		// existing weight matrix.
+		convertHopfieldMatrix(synapse, m4);
 	}
 }

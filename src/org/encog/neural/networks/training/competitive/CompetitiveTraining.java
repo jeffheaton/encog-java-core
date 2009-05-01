@@ -40,122 +40,192 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements competitive training, which would be used in a 
+ * This class implements competitive training, which would be used in a
  * winner-take-all neural network, such as the self organizing map (SOM).
+ * This is an unsupervised training method, no ideal data is needed on
+ * the training set.  If ideal data is provided, it will be ignored.
+ * 
+ * A neighborhood function is required to determine the degree to which
+ * neighboring neurons (to the winning neuron) are updated by each 
+ * training iteration.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class CompetitiveTraining extends BasicTraining implements LearningRate {
+
+	/**
+	 * The neighborhood function to use to determine to what degree
+	 * a neuron should be "trained".
+	 */
+	private final NeighborhoodFunction neighborhood;
 	
-	private NeighborhoodFunction neighborhood;
+	/**
+	 * The learning rate.  To what degree should changes be applied.
+	 */
 	private double learningRate;
-	private BasicNetwork network;
-	private Layer inputLayer;
-	private Layer outputLayer;
-	private int[] won;
-	private Collection<Synapse> synapses;
-	private int inputNeuronCount;
 	
+	/**
+	 * The network being trained.
+	 */
+	private final BasicNetwork network;
+	
+	/**
+	 * The input layer.
+	 */
+	private final Layer inputLayer;
+	
+	/**
+	 * The output layer.
+	 */
+	private final Layer outputLayer;
+	
+	/**
+	 * Keep track of which neurons "won".
+	 */
+	private final int[] won;
+	
+	/**
+	 * A collection of the synases being modified.
+	 */
+	private final Collection<Synapse> synapses;
+	
+	/**
+	 * How many neurons in the input layer.
+	 */
+	private final int inputNeuronCount;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public CompetitiveTraining(BasicNetwork network,double learningRate, NeuralDataSet training, NeighborhoodFunction neighborhood)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Create an instance of competitive training.
+	 * @param network The network to train.
+	 * @param learningRate The learning rate, how much to apply per iteration.
+	 * @param training The training set (unsupervised).
+	 * @param neighborhood The neighborhood function to use.
+	 */
+	public CompetitiveTraining(final BasicNetwork network,
+			final double learningRate, final NeuralDataSet training,
+			final NeighborhoodFunction neighborhood) {
 		this.neighborhood = neighborhood;
 		setTraining(training);
 		this.learningRate = learningRate;
 		this.network = network;
 		this.inputLayer = network.getInputLayer();
 		this.outputLayer = network.getOutputLayer();
-		this.synapses = network.getStructure().getPreviousSynapses(this.outputLayer);
+		this.synapses = network.getStructure().getPreviousSynapses(
+				this.outputLayer);
 		this.inputNeuronCount = this.inputLayer.getNeuronCount();
-		this.setError(0);
+		setError(0);
 		this.won = new int[this.outputLayer.getNeuronCount()];
-		
+
 		// set the threshold to zero
-		for(Synapse synapse: synapses)
-		{		
-			Matrix matrix = synapse.getMatrix();
-			for(int col = 0; col< matrix.getCols(); col++ )
-			{
-				matrix.set(matrix.getRows()-1,col,0);
+		for (final Synapse synapse : this.synapses) {
+			final Matrix matrix = synapse.getMatrix();
+			for (int col = 0; col < matrix.getCols(); col++) {
+				matrix.set(matrix.getRows() - 1, col, 0);
 			}
 		}
 	}
 
-	public BasicNetwork getNetwork() {
-		return this.network;
+	/**
+	 * Adjusts the weight for a single neuron during a training iteration.
+	 * @param startingWeight The starting weight.
+	 * @param input The input to this neuron.
+	 * @param currentNeuron The neuron who's weight is being updated.
+	 * @param bestNeuron The neuron that "won".
+	 * @return The new weight value.
+	 */
+	private double adjustWeight(final double startingWeight,
+			final double input, final int currentNeuron, final int bestNeuron) {
+		double wt = startingWeight;
+		final double vw = input;
+		wt += this.neighborhood.function(currentNeuron, bestNeuron)
+				* this.learningRate * (vw - wt);
+		return wt;
+
 	}
 
-	public void iteration() {
-		
-		if( logger.isInfoEnabled())
-		{
-			logger.info("Performing Competitive Training iteration.");
-		}
-		
-		preIteration();
-		
-		for (int i = 0; i < this.won.length; i++) {
-			this.won[i] = 0;
-		}
-		
-		double error = 0;
-		
-		for(NeuralDataPair pair: getTraining() )
-		{
-			final NeuralData input = pair.getInput();
-			final int best = this.network.winner(input);
-			
-			double length = 0.0;			
-
-			this.won[best]++;
-			for(Synapse synapse: this.synapses )
-			{
-				Matrix wptr = synapse.getMatrix().getCol(best);
-			
-				for (int i = 0; i < this.inputNeuronCount; i++) {
-					double diff = input.getData(i) - wptr.get(i, 0);
-					length += diff * diff;
-					double newWeight = adjustWeight(wptr.get(i, 0), input.getData(i),best,i);
-					synapse.getMatrix().set(i,best,newWeight);
-				}	
-			}
-			
-			if (length > error ) {
-				error = length;
-			}			
-		}
-		
-		setError(Math.sqrt(error));
-		
-		postIteration();
-	}
-	
-	private double adjustWeight(double startingWeight,double input, int currentNeuron, int bestNeuron) 
-	{
-        double wt = startingWeight;
-        double vw = input;
-        wt += this.neighborhood.function(currentNeuron, bestNeuron) * learningRate * (vw - wt);
-        return wt;
-
-    }
-	
-	public NeighborhoodFunction getNeighborhood() {
-		return neighborhood;
-	}
-
+	/**
+	 * @return The learning rate.  This was set when the object
+	 * was created.
+	 */
 	public double getLearningRate() {
 		return this.learningRate;
 	}
 
-	public void setLearningRate(double rate) {
+	/**
+	 * @return The network neighborhood function.
+	 * @return
+	 */
+	public NeighborhoodFunction getNeighborhood() {
+		return this.neighborhood;
+	}
+
+	/**
+	 * @return The network being trained.
+	 */
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	/**
+	 * Perform one training iteration.
+	 */
+	public void iteration() {
+
+		if (this.logger.isInfoEnabled()) {
+			this.logger.info("Performing Competitive Training iteration.");
+		}
+
+		preIteration();
+
+		for (int i = 0; i < this.won.length; i++) {
+			this.won[i] = 0;
+		}
+
+		double error = 0;
+
+		for (final NeuralDataPair pair : getTraining()) {
+			final NeuralData input = pair.getInput();
+			final int best = this.network.winner(input);
+
+			double length = 0.0;
+
+			this.won[best]++;
+			for (final Synapse synapse : this.synapses) {
+				final Matrix wptr = synapse.getMatrix().getCol(best);
+
+				for (int i = 0; i < this.inputNeuronCount; i++) {
+					final double diff = input.getData(i) - wptr.get(i, 0);
+					length += diff * diff;
+					final double newWeight = adjustWeight(wptr.get(i, 0), input
+							.getData(i), best, i);
+					synapse.getMatrix().set(i, best, newWeight);
+				}
+			}
+
+			if (length > error) {
+				error = length;
+			}
+		}
+
+		setError(Math.sqrt(error));
+
+		postIteration();
+	}
+
+	/**
+	 * Set the learning rate.  This is the rate at which the weights
+	 * are changed.
+	 * @param rate The learning rate.
+	 */
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
-	
-	
 
 }

@@ -31,32 +31,34 @@ import org.encog.solve.genetic.GeneticAlgorithm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Implements a genetic algorithm that 
- * allows a feedforward neural network to be trained using a 
- * genetic algorithm.  This algorithm is for a feed forward neural 
- * network.  
+ * Implements a genetic algorithm that allows a feedforward neural network to be
+ * trained using a genetic algorithm. This algorithm is for a feed forward
+ * neural network.
  * 
- * This class is abstract.  If you wish to train the neural
- * network using training sets, you should use the 
- * TrainingSetNeuralGeneticAlgorithm class.  If you wish to use 
- * a cost function to train the neural network, then
- * implement a subclass of this one that properly calculates
- * the cost.
+ * This class is somewhat undefined. If you wish to train the neural network 
+ * using training sets, you should use the TrainingSetNeuralGeneticAlgorithm 
+ * class. If you wish to use a cost function to train the neural network, 
+ * then implement a subclass of this one that properly calculates the cost.
  */
 public class NeuralGeneticAlgorithm extends BasicTraining {
 
 	/**
-	 * The logging object.
+	 * Very simple class that implements a genetic algorithm.  
+	 * 
+	 * @author jheaton
 	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm<Double>
-	{
+	class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm<Double> {
+		/**
+		 * @return The error from the last iteration.
+		 */
+		public double getError() {
+			return getChromosome(0).getCost();
+		}
+
 		/**
 		 * Get the current best neural network.
+		 * 
 		 * @return The current best neural network.
 		 */
 		public BasicNetwork getNetwork() {
@@ -64,50 +66,61 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 			c.updateNetwork();
 			return c.getNetwork();
 		}
-
-		/**
-		 * @return The error from the last iteration.
-		 */
-		public double getError() {
-			return this.getChromosome(0).getCost();
-		}
 	}
-	
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Simple helper class that implements the required methods to 
+	 * implement a genetic algorithm.
+	 */
 	private NeuralGeneticAlgorithmHelper genetic;
-	
-	
-	public NeuralGeneticAlgorithm()
-	{
+
+	/**
+	 * Construct the training class.
+	 */
+	public NeuralGeneticAlgorithm() {
 		this.genetic = new NeuralGeneticAlgorithmHelper();
 	}
-	
 
+	/**
+	 * @return The genetic algorithm implementation.
+	 */
 	public NeuralGeneticAlgorithmHelper getGenetic() {
-		return genetic;
+		return this.genetic;
 	}
 
-	public void setGenetic(NeuralGeneticAlgorithmHelper genetic) {
-		this.genetic = genetic;
-	}
-
+	/**
+	 * @return The network that is being trained.
+	 */
 	public BasicNetwork getNetwork() {
 		return getGenetic().getNetwork();
 	}
 
+	/**
+	 * Perform one training iteration.
+	 */
 	public void iteration() {
-		
-		if( logger.isInfoEnabled())
-		{
-			logger.info("Performing Genetic iteration.");
+
+		if (this.logger.isInfoEnabled()) {
+			this.logger.info("Performing Genetic iteration.");
 		}
 		preIteration();
 		getGenetic().iteration();
 		setError(getGenetic().getError());
 		postIteration();
 	}
-	
-	
-	
 
+	/**
+	 * Set the genetic helper class.
+	 * @param genetic The genetic helper class.
+	 */
+	public void setGenetic(final NeuralGeneticAlgorithmHelper genetic) {
+		this.genetic = genetic;
+	}
 
 }

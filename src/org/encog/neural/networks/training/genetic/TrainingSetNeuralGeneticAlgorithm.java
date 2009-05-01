@@ -31,48 +31,51 @@ import org.encog.util.randomize.Randomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
-
 /**
- * Implements a genetic algorithm that allows a neural network 
- * to be trained using a genetic algorithm.  This algorithm is for a neural 
- * network.  The neural network is trained using training sets.
+ * Implements a genetic algorithm that allows a neural network to be trained
+ * using a genetic algorithm. This algorithm is for a neural network. The neural
+ * network is trained using training sets.
  */
-public class TrainingSetNeuralGeneticAlgorithm extends
-		NeuralGeneticAlgorithm {
+public class TrainingSetNeuralGeneticAlgorithm extends NeuralGeneticAlgorithm {
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/**
 	 * Construct a training object.
-	 * @param network The network to train.
-	 * @param reset Should each chromosome be reset.
-	 * @param training The training set.
-	 * @param populationSize The population size.
-	 * @param mutationPercent The mutation percent.
-	 * @param percentToMate The percent to mate.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param randomizer
+	 *            The randomizer to use to create new networks.
+	 * @param training
+	 *            The training set.
+	 * @param populationSize
+	 *            The population size.
+	 * @param mutationPercent
+	 *            The mutation percent.
+	 * @param percentToMate
+	 *            The percent to mate.
 	 */
-	public TrainingSetNeuralGeneticAlgorithm(
-			final BasicNetwork network,
-			final Randomizer randomizer, 
-			final NeuralDataSet training, 
-			final int populationSize,
-			final double mutationPercent, 
+	public TrainingSetNeuralGeneticAlgorithm(final BasicNetwork network,
+			final Randomizer randomizer, final NeuralDataSet training,
+			final int populationSize, final double mutationPercent,
 			final double percentToMate) {
 
 		super();
-		this.getGenetic().setMutationPercent(mutationPercent);
-		this.getGenetic().setMatingPopulation(percentToMate * 2);
-		this.getGenetic().setPopulationSize(populationSize);
-		this.getGenetic().setPercentToMate(percentToMate);
+		getGenetic().setMutationPercent(mutationPercent);
+		getGenetic().setMatingPopulation(percentToMate * 2);
+		getGenetic().setPopulationSize(populationSize);
+		getGenetic().setPercentToMate(percentToMate);
 
 		setTraining(training);
 
-		getGenetic().setChromosomes(new TrainingSetNeuralChromosome[getGenetic().getPopulationSize()]);
+		getGenetic().setChromosomes(
+				new TrainingSetNeuralChromosome[getGenetic()
+						.getPopulationSize()]);
 		for (int i = 0; i < getGenetic().getChromosomes().length; i++) {
 			final BasicNetwork chromosomeNetwork = (BasicNetwork) network
 					.clone();

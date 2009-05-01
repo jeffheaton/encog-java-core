@@ -52,6 +52,11 @@ public abstract class NeuralChromosome
 		extends Chromosome<Double> {
 
 	/**
+	 * The amount of distortion to perform a mutation.
+	 */
+	public static final double DISTORT_FACTOR = 4.0;
+	
+	/**
 	 * Zero.
 	 */
 	private static final Double ZERO = Double.valueOf(0);
@@ -59,7 +64,7 @@ public abstract class NeuralChromosome
 	/**
 	 * Mutation range.
 	 */
-	private Randomizer mutate = new Distort(4.0);
+	private Randomizer mutate = new Distort(DISTORT_FACTOR);
 
 	/**
 	 * The network to train.
@@ -70,7 +75,7 @@ public abstract class NeuralChromosome
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * @return the network

@@ -43,7 +43,7 @@ public class TrainingSetNeuralChromosome extends NeuralChromosome {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * The constructor, takes a list of cities to set the initial "genes" to.
@@ -64,6 +64,9 @@ public class TrainingSetNeuralChromosome extends NeuralChromosome {
 		updateGenes();
 	}
 	
+	/**
+	 * The genetic algorithm being used.
+	 */
 	private TrainingSetNeuralGeneticAlgorithm genetic;
 
 	/**

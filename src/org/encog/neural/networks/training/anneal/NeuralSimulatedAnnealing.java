@@ -34,40 +34,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements a simulated annealing
- * training algorithm for feed forward neural networks. It is based on the
- * generic SimulatedAnnealing class. It is used in the same manner as any other
- * training class that implements the Train interface.
+ * This class implements a simulated annealing training algorithm for feed
+ * forward neural networks. It is based on the generic SimulatedAnnealing class.
+ * It is used in the same manner as any other training class that implements the
+ * Train interface.
  */
 public class NeuralSimulatedAnnealing extends BasicTraining {
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	/**
-	 * The neural network that is to be trained.
-	 */
-	private BasicNetwork network;
 
-
-	
 	/**
-	 * The cutoff for random data.
+	 * Simple inner class used by the neural simulated annealing.  This
+	 * class is a subclass of the basic SimulatedAnnealing class.  The
+	 * It is used by the actual NeuralSimulatedAnnealing class, which
+	 * subclasses BasicTraining.  This class is mostly necessary due
+	 * to the fact that NeuralSimulatedAnnealing can't subclass BOTH
+	 * SimulatedAnnealing and Train, because multiple inheritance is
+	 * not supported.
+	 * @author jheaton
+	 *
 	 */
-	public static final double CUT = 0.5;
-	
-	class SimulatedAnnealingHelper extends SimulatedAnnealing<Double>
-	{
+	class SimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 		/**
 		 * Determine the error of the current weights and thresholds.
+		 * 
 		 * @return The error.
 		 */
 		@Override
 		public double determineError() {
-			return network.calculateError(getTraining());
+			return NeuralSimulatedAnnealing.this.network
+					.calculateError(getTraining());
 		}
 
 		/**
@@ -77,7 +71,8 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 		 */
 		@Override
 		public Double[] getArray() {
-			return NetworkCODEC.networkToArray(network);
+			return NetworkCODEC
+					.networkToArray(NeuralSimulatedAnnealing.this.network);
 		}
 
 		/**
@@ -87,39 +82,63 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 		public Double[] getArrayCopy() {
 			return getArray();
 		}
-		
+
 		/**
 		 * Convert an array of doubles to the current best network.
-		 * @param array An array.
+		 * 
+		 * @param array
+		 *            An array.
 		 */
 		@Override
 		public void putArray(final Double[] array) {
-			NetworkCODEC.arrayToNetwork(array, network);
+			NetworkCODEC.arrayToNetwork(array,
+					NeuralSimulatedAnnealing.this.network);
 		}
 
 		/**
-		 * Randomize the weights and thresholds. This function does most of the work
-		 * of the class. Each call to this class will randomize the data according
-		 * to the current temperature. The higher the temperature the more
-		 * randomness.
+		 * Randomize the weights and thresholds. This function does most of the
+		 * work of the class. Each call to this class will randomize the data
+		 * according to the current temperature. The higher the temperature the
+		 * more randomness.
 		 */
 		@Override
 		public void randomize() {
-			final Double[] array = NetworkCODEC.networkToArray(network);
+			final Double[] array = NetworkCODEC
+					.networkToArray(NeuralSimulatedAnnealing.this.network);
 
 			for (int i = 0; i < array.length; i++) {
 				double add = NeuralSimulatedAnnealing.CUT - Math.random();
 				add /= getStartTemperature();
-				add *= this.getTemperature();
+				add *= getTemperature();
 				array[i] = array[i] + add;
 			}
 
-			NetworkCODEC.arrayToNetwork(array, network);
+			NetworkCODEC.arrayToNetwork(array,
+					NeuralSimulatedAnnealing.this.network);
 		}
-		
+
 	}
-	
-	private SimulatedAnnealingHelper anneal;
+
+	/**
+	 * The cutoff for random data.
+	 */
+	public static final double CUT = 0.5;
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * The neural network that is to be trained.
+	 */
+	private final BasicNetwork network;
+
+	/**
+	 * This class actually performs the training.
+	 */
+	private final SimulatedAnnealingHelper anneal;
 
 	/**
 	 * Construct a simulated annleaing trainer for a feedforward neural network.
@@ -147,7 +166,6 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 		this.anneal.setCycles(cycles);
 	}
 
-
 	/**
 	 * Get the best network from the training.
 	 * 
@@ -157,15 +175,16 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 		return this.network;
 	}
 
-
+	/**
+	 * Perform one iteration of simulated annealing.
+	 */
 	public void iteration() {
-		if( logger.isInfoEnabled())
-		{
-			logger.info("Performing Simulated Annealing iteration.");
+		if (this.logger.isInfoEnabled()) {
+			this.logger.info("Performing Simulated Annealing iteration.");
 		}
 		preIteration();
-		anneal.iteration();
-		setError(anneal.determineError());
+		this.anneal.iteration();
+		setError(this.anneal.determineError());
 		postIteration();
 	}
 }

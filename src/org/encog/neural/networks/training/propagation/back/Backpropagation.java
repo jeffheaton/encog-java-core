@@ -74,8 +74,19 @@ public class Backpropagation extends Propagation implements Momentum, LearningRa
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	/**
+	 * 
+	 * @param network
+	 * @param training
+	 * @param learnRate
+	 *            The rate at which the weight matrix will be adjusted based on
+	 *            learning.
+	 * @param momentum
+	 *            The influence that previous iteration's training deltas will
+	 *            have on the current iteration.
+	 */
 	public Backpropagation(BasicNetwork network, NeuralDataSet training,
 			double learnRate, double momentum) {
 		super(network, new BackpropagationMethod(), training);
@@ -83,6 +94,11 @@ public class Backpropagation extends Propagation implements Momentum, LearningRa
 		this.learningRate = learnRate;
 	}
 	
+	/**
+	 * 
+	 * @param network
+	 * @param training
+	 */
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
 		this(network, training, 0, 0);
