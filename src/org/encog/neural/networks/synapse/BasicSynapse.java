@@ -41,6 +41,11 @@ import org.slf4j.LoggerFactory;
 public abstract class BasicSynapse implements Synapse {
 
 	/**
+	 * The serial ID.
+	 */
+	private static final long serialVersionUID = -2415267745512044497L;
+
+	/**
 	 * The from layer.
 	 */
 	private Layer fromLayer;

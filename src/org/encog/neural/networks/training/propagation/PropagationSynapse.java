@@ -31,24 +31,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The back propagation training algorithms requires
- * training data to be stored for each of the synapses. The propagation class
- * creates a PropagationSynapse object for each of the synapses in the neural
- * network that it is training.
+ * The back propagation training algorithms requires training data to be stored
+ * for each of the synapses. The propagation class creates a PropagationSynapse
+ * object for each of the synapses in the neural network that it is training.
  */
 
 public class PropagationSynapse {
 
-
 	/**
 	 * Accumulate the error deltas for each weight matrix and bias value.
 	 */
-	private Matrix accMatrixGradients;
-
+	private final Matrix accMatrixGradients;
 
 	/**
-	 * Hold the previous matrix deltas so that "momentum" and other methods can be implemented.
-	 * This handles both weights and thresholds.
+	 * Hold the previous matrix deltas so that "momentum" and other methods can
+	 * be implemented. This handles both weights and thresholds.
 	 */
 	private Matrix lastMatrixGradients;
 
@@ -56,34 +53,34 @@ public class PropagationSynapse {
 	 * The actual layer that this training layer corresponds to.
 	 */
 	private final Synapse synapse;
-	
+
+	/**
+	 * The deltas that will be applied to the weight matrix in some propagation
+	 * techniques.
+	 */
 	private final Matrix deltas;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Construct a BackpropagationLayer object that corresponds to a specific
-	 * neuron layer.
+	 * Construct a PropagationSynapse object that corresponds to a specific
+	 * synapse.
 	 * 
-	 * @param backpropagation
+	 * @param synapse
 	 *            The back propagation training object.
-	 * @param layer
-	 *            The layer that this object corresponds to.
 	 */
-	public PropagationSynapse(final Synapse synapse) {		
+	public PropagationSynapse(final Synapse synapse) {
 		this.synapse = synapse;
-		int fromCount = synapse.getFromNeuronCount();
-		int toCount = synapse.getToNeuronCount();
-		
-		this.accMatrixGradients = new Matrix(fromCount,toCount);
-		this.lastMatrixGradients = new Matrix(fromCount,toCount);
-		this.deltas = new Matrix(fromCount,toCount);
+		final int fromCount = synapse.getFromNeuronCount();
+		final int toCount = synapse.getToNeuronCount();
+
+		this.accMatrixGradients = new Matrix(fromCount, toCount);
+		this.lastMatrixGradients = new Matrix(fromCount, toCount);
+		this.deltas = new Matrix(fromCount, toCount);
 	}
 
 	/**
@@ -101,35 +98,53 @@ public class PropagationSynapse {
 		this.accMatrixGradients.add(i1, i2, value);
 	}
 
+	/**
+	 * @return The accumulated matrix gradients.
+	 */
 	public Matrix getAccMatrixGradients() {
-		return accMatrixGradients;
+		return this.accMatrixGradients;
 	}
 
-	public Synapse getSynapse() {
-		return synapse;
+	/**
+	 * @return The matrix deltas, these changes are applied to the matrix
+	 * in some propagation techniques.
+	 */
+	public Matrix getDeltas() {
+		return this.deltas;
 	}
-	
+
+	/**
+	 * @return The matrix gradients from the pervious iteration.
+	 */
 	public Matrix getLastMatrixGradients() {
-		return lastMatrixGradients;
+		return this.lastMatrixGradients;
 	}
 
-	public void setLastMatrixGradients(Matrix d) {
+	/**
+	 * @return Get the synapse that this object is linked with.
+	 */
+	public Synapse getSynapse() {
+		return this.synapse;
+	}
+
+	/**
+	 * Set the matrix gradients.
+	 * @param d The matrix to set.
+	 */
+	public void setLastMatrixGradients(final Matrix d) {
 		this.lastMatrixGradients = d;
 	}
 
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
 		result.append("[PropagationSynapse:");
 		result.append(this.synapse.toString());
 		result.append("]");
 		return result.toString();
 	}
-
-	public Matrix getDeltas() {
-		return deltas;
-	}
-	
-	
 
 }

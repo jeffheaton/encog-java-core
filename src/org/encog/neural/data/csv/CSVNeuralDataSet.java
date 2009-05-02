@@ -161,7 +161,6 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

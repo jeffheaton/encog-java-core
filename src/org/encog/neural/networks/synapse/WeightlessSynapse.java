@@ -50,10 +50,10 @@ public class WeightlessSynapse extends BasicSynapse {
 	 * 
 	 */
 	private static final long serialVersionUID = -1899517385166651263L;
+	
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

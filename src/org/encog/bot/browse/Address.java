@@ -51,7 +51,6 @@ public class Address {
 	/**
 	 * The logger.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

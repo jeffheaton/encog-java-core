@@ -84,7 +84,6 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

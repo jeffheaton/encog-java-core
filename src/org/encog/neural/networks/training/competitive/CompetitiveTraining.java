@@ -98,7 +98,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

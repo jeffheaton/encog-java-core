@@ -59,7 +59,6 @@ public class TrainHopfield extends BasicTraining {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

@@ -62,7 +62,6 @@ public class SpiderWorker implements EncogTask {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

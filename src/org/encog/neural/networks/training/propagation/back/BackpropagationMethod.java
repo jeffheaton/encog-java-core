@@ -40,102 +40,115 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements the specifics of how the backpropagation algorithm
- * is used.  Specifically, the partial derivatives are simply applied to the
- * weight matrix.
+ * This class implements the specifics of how the backpropagation algorithm is
+ * used. Specifically, the partial derivatives are simply applied to the weight
+ * matrix.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class BackpropagationMethod implements PropagationMethod {
 
+	/**
+	 * The backpropagation class that owns this method.
+	 */
 	private Backpropagation propagation;
-	
+
 	/**
 	 * The logging object.
 	 */
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	private CalculatePartialDerivative pderv = new CalculatePartialDerivative();
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
-	public void calculateError(
-			final NeuralOutputHolder output,
-			final PropagationLevel fromLevel,
-			final PropagationLevel toLevel) {
+	/**
+	 * Utility class to calculate the partial derivatives.
+	 */
+	private final CalculatePartialDerivative pderv 
+		= new CalculatePartialDerivative();
+
+	/**
+	 * Calculate the error between these two levels.
+	 * @param output The output to the "to level".
+	 * @param fromLevel The from level.
+	 * @param toLevel The target level.
+	 */
+	public void calculateError(final NeuralOutputHolder output,
+			final PropagationLevel fromLevel, final PropagationLevel toLevel) {
 		this.pderv.calculateError(output, fromLevel, toLevel);
-		
+
 	}
-	
+
+	/**
+	 * Setup this propagation method using the specified propagation class.
+	 * @param propagation The propagation class creating this method.
+	 */
+	public void init(final Propagation propagation) {
+		this.propagation = (Backpropagation) propagation;
+	}
+
 	/**
 	 * Modify the weight matrix and thresholds based on the last call to
 	 * calcError.
 	 */
 	public void learn() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Backpropagation learning pass");
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Backpropagation learning pass");
 		}
-		
-		for(PropagationLevel level: this.propagation.getLevels())
-		{
+
+		for (final PropagationLevel level : this.propagation.getLevels()) {
 			learnLevel(level);
 		}
 	}
-	
-	private void learnLevel(PropagationLevel level)
-	{
-		// teach the synapses
-		for(PropagationSynapse synapse: level.getOutgoing())
-		{
-			learnSynapse(synapse);
-		}		
-		
-		// teach the threshold
-		for(Layer layer: level.getLayers())
-		{
-			if( layer.hasThreshold())
-			{
-			for(int i=0;i<layer.getNeuronCount();i++)
-			{
-				double delta = level.getThresholdGradient(i)*this.propagation.getLearningRate();
-				delta+=level.getLastThresholdGradent(i) *propagation.getMomentum();
-				layer.setThreshold(i, layer.getThreshold(i)+delta);
-				level.setLastThresholdGradient(i,delta);
-				level.setThresholdGradient(i, 0.0);				
-			}
-			}
-		}
-	}
-	
+
 	/**
-	 * Learn from the last error calculation.
-	 * 
-	 * @param learnRate
-	 *            The learning rate.
-	 * @param momentum
-	 *            The momentum.
+	 * Apply learning to this level.
+	 * @param level The level that is to learn.
 	 */
-	private void learnSynapse(PropagationSynapse synapse) {
+	private void learnLevel(final PropagationLevel level) {
+		// teach the synapses
+		for (final PropagationSynapse synapse : level.getOutgoing()) {
+			learnSynapse(synapse);
+		}
 
-		
-		final Matrix m1 = MatrixMath.multiply(synapse.getAccMatrixGradients(), this.propagation.getLearningRate());
-		final Matrix m2 = MatrixMath.multiply(synapse.getLastMatrixGradients(), this.propagation.getMomentum());
+		// teach the threshold
+		for (final Layer layer : level.getLayers()) {
+			if (layer.hasThreshold()) {
+				for (int i = 0; i < layer.getNeuronCount(); i++) {
+					double delta = level.getThresholdGradient(i)
+							* this.propagation.getLearningRate();
+					delta += level.getLastThresholdGradent(i)
+							* this.propagation.getMomentum();
+					layer.setThreshold(i, layer.getThreshold(i) + delta);
+					level.setLastThresholdGradient(i, delta);
+					level.setThresholdGradient(i, 0.0);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Teach this synapse, based on the error that was calculated earlier.
+	 * @param synapse The synapse that is to learn.
+	 */
+	private void learnSynapse(final PropagationSynapse synapse) {
+
+		final Matrix m1 = MatrixMath.multiply(synapse.getAccMatrixGradients(),
+				this.propagation.getLearningRate());
+		final Matrix m2 = MatrixMath.multiply(synapse.getLastMatrixGradients(),
+				this.propagation.getMomentum());
 		synapse.setLastMatrixGradients(MatrixMath.add(m1, m2));
-		
-		if( logger.isTraceEnabled() ) {
-			logger.trace("Backpropagation learning: applying delta=\n"+DumpMatrix.dumpMatrix(synapse.getLastMatrixGradients()));
+
+		if (this.logger.isTraceEnabled()) {
+			this.logger.trace("Backpropagation learning: applying delta=\n"
+					+ DumpMatrix.dumpMatrix(synapse.getLastMatrixGradients()));
 		}
-		synapse.getSynapse().getMatrix().add(synapse.getLastMatrixGradients());			
-		if( logger.isTraceEnabled() ) {
-			logger.trace("Backpropagation learning: new weight matrix=\n"+DumpMatrix.dumpMatrix(synapse.getSynapse().getMatrix()));
+		synapse.getSynapse().getMatrix().add(synapse.getLastMatrixGradients());
+		if (this.logger.isTraceEnabled()) {
+			this.logger.trace("Backpropagation learning: new weight matrix=\n"
+					+ DumpMatrix.dumpMatrix(synapse.getSynapse().getMatrix()));
 		}
-		
+
 		synapse.getAccMatrixGradients().clear();
-		
-	}
 
-	public void init(Propagation propagation) {
-		this.propagation = (Backpropagation)propagation;
 	}
-
 
 }

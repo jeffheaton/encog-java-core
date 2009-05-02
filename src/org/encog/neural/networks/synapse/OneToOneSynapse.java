@@ -50,10 +50,10 @@ public class OneToOneSynapse extends BasicSynapse {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -8098797476221631089L;
+	
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

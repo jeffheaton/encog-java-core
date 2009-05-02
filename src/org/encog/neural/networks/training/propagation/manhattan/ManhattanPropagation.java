@@ -34,61 +34,97 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * One problem that the backpropagation technique has is that the magnitude
- * of the partial derivative may be calculated too large or too small.  The
+ * One problem that the backpropagation technique has is that the magnitude of
+ * the partial derivative may be calculated too large or too small. The
  * Manhattan update algorithm attempts to solve this by using the partial
- * derivative to only indicate the sign of the update to the weight matrix.
- * The actual amount added or subtracted from the weight matrix is obtained
- * from a simple constant.  This constant must be adjusted based on the type 
- * of neural network being trained.  In general, start with a higher constant
- * and decrease it as needed.
+ * derivative to only indicate the sign of the update to the weight matrix. The
+ * actual amount added or subtracted from the weight matrix is obtained from a
+ * simple constant. This constant must be adjusted based on the type of neural
+ * network being trained. In general, start with a higher constant and decrease
+ * it as needed.
  * 
- * The Manhattan update algorithm can be thought of as a simplified version
- * of the resilient algorithm.  The resilient algorithm uses more complex
- * techniques to determine the update value.
+ * The Manhattan update algorithm can be thought of as a simplified version of
+ * the resilient algorithm. The resilient algorithm uses more complex techniques
+ * to determine the update value.
  * 
  * @author jheaton
- *
+ * 
  */
 public class ManhattanPropagation extends Propagation implements LearningRate {
+
+	/**
+	 * The default tolerance to determine of a number is close to zero.
+	 */
+	static final double DEFAULT_ZERO_TOLERANCE = 0.001;
 	
-	final static double DEFAULT_ZERO_TOLERANCE = 0.001;
+	/**
+	 * The zero tolearnce to use.
+	 */
 	private final double zeroTolerance;
-	private double learningRate;
 	
+	/**
+	 * 
+	 */
+	private double learningRate;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public ManhattanPropagation(BasicNetwork network, 
-			NeuralDataSet training, double learnRate, double zeroTolerance) {
-		
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a class to train with Manhattan propagation.  Use default zero 
+	 * tolerance.
+	 * @param network The network that is to be trained.
+	 * @param training The training data to use.
+	 * @param learnRate A fixed learning to the weight matrix for each 
+	 * training iteration.
+	 */
+	public ManhattanPropagation(final BasicNetwork network,
+			final NeuralDataSet training, final double learnRate) {
+		this(network, training, learnRate,
+				ManhattanPropagation.DEFAULT_ZERO_TOLERANCE);
+	}
+
+	/**
+	 * Construct a Manhattan propagation training object.  
+	 * @param network The network to train.
+	 * @param training The training data to use.
+	 * @param learnRate The learning rate.
+	 * @param zeroTolerance The zero tolerance.
+	 */
+	public ManhattanPropagation(final BasicNetwork network,
+			final NeuralDataSet training, final double learnRate,
+			final double zeroTolerance) {
+
 		super(network, new ManhattanPropagationMethod(), training);
 		this.zeroTolerance = zeroTolerance;
 		this.learningRate = learnRate;
 	}
-	
-	public ManhattanPropagation(BasicNetwork network, 
-			NeuralDataSet training, double learnRate) {		
-		this(network,training,learnRate,ManhattanPropagation.DEFAULT_ZERO_TOLERANCE);
-	}
-	
-	
 
-	public double getZeroTolerance() {
-		return zeroTolerance;
-	}
-
+	/**
+	 * @return The learning rate that was specified in the
+	 * constructor.
+	 */
 	public double getLearningRate() {
 		return this.learningRate;
 	}
 
-	public void setLearningRate(double rate) {
+	/**
+	 * @return The zero tolerance that was specified in the
+	 * constructor.
+	 */
+	public double getZeroTolerance() {
+		return this.zeroTolerance;
+	}
+
+	/**
+	 * Set the learning rate.
+	 * @param rate The new learning rate.
+	 */
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
-	
-	
 
 }

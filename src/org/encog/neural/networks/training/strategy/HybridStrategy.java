@@ -57,7 +57,6 @@ public class HybridStrategy implements Strategy {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public HybridStrategy(Train altTrain)

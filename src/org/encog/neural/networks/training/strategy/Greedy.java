@@ -52,7 +52,6 @@ public class Greedy implements Strategy {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	public void init(Train train) {

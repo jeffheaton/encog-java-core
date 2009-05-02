@@ -38,6 +38,11 @@ import org.encog.persist.Persistor;
 public abstract class BasicActivationFunction implements ActivationFunction {
 	
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 672555213449163812L;
+
+	/**
 	 * @return The object cloned.
 	 */
 	@Override

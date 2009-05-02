@@ -60,7 +60,6 @@ public class Browser {
 	/**
 	 * The logger.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

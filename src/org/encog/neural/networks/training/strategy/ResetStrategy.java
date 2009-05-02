@@ -43,7 +43,6 @@ public class ResetStrategy implements Strategy {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	private double required;
