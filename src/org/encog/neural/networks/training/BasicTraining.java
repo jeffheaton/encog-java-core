@@ -34,81 +34,104 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An abstract class that implements basic training for most training algorithms.
- * Specifically training strategies can be added to enhance the training.
+ * An abstract class that implements basic training for most training
+ * algorithms. Specifically training strategies can be added to enhance the
+ * training.
+ * 
  * @author jheaton
- *
+ * 
  */
 public abstract class BasicTraining implements Train {
 
-	private List<Strategy> strategies = new ArrayList<Strategy>();
+	/**
+	 * The training strategies to use.
+	 */
+	private final List<Strategy> strategies = new ArrayList<Strategy>();
+	
 	/**
 	 * The training data.
 	 */
 	private NeuralDataSet training;
-	
+
+	/**
+	 * The current error rate.
+	 */
 	private double error;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public void addStrategy(Strategy strategy) {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Training strategies can be added to improve the training results. There
+	 * are a number to choose from, and several can be used at once.
+	 * 
+	 * @param strategy
+	 *            The strategy to add.
+	 */
+	public void addStrategy(final Strategy strategy) {
 		strategy.init(this);
-		this.strategies.add(strategy);		
+		this.strategies.add(strategy);
 	}
-	
-	
-	
+
+	/**
+	 * Get the current error percent from the training.
+	 * 
+	 * @return The current error.
+	 */
+	public double getError() {
+		return this.error;
+	}
+
+	/**
+	 * @return The strategies to use.
+	 */
 	public List<Strategy> getStrategies() {
-		return strategies;
+		return this.strategies;
 	}
 
+	/**
+	 * @return The training data to use.
+	 */
 	public NeuralDataSet getTraining() {
-		return training;
+		return this.training;
 	}
 
-
-
-	public void setTraining(NeuralDataSet training) {
-		this.training = training;
-	}
-
-
-
-	public void preIteration()
-	{
-		for( Strategy strategy: this.strategies )
-		{
-			strategy.preIteration();
-		}
-	}
-	
-	public void postIteration()
-	{
-		for( Strategy strategy: this.strategies )
-		{
+	/**
+	 * Call the strategies after an iteration.
+	 */
+	public void postIteration() {
+		for (final Strategy strategy : this.strategies) {
 			strategy.postIteration();
 		}
 	}
 
-
-
-	public double getError() {
-		return error;
+	/**
+	 * Call the strategies before an iteration.
+	 */
+	public void preIteration() {
+		for (final Strategy strategy : this.strategies) {
+			strategy.preIteration();
+		}
 	}
 
-
-
-	public void setError(double error) {
+	/**
+	 * @param error
+	 *            Set the current error rate. This is usually used by training
+	 *            strategies.
+	 */
+	public void setError(final double error) {
 		this.error = error;
 	}
-	
-	
-	
-	
-	
+
+	/**
+	 * Set the training object that this strategy is working with.
+	 * @param training The training object.
+	 */
+	public void setTraining(final NeuralDataSet training) {
+		this.training = training;
+	}
 
 }

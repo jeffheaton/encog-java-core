@@ -38,8 +38,21 @@ package org.encog.neural.networks.training;
  *
  */
 public interface Strategy {
-	public void init(Train train);
-	public void preIteration();
-	public void postIteration();
+	
+	/**
+	 * Initialize this strategy.
+	 * @param train The training algorithm.
+	 */
+	void init(Train train);
+	
+	/**
+	 * Called just before a training iteration.
+	 */
+	void preIteration();
+	
+	/**
+	 * Called just after a training iteration.
+	 */
+	void postIteration();
 	
 }

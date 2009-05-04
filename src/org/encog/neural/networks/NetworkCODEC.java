@@ -34,28 +34,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class will extract the "long term memory" of a neural network, 
- * that is the weights and threshold values into an array.  This array
- * can be used to view the neural network as a linear array of doubles.
- * These values can then be modified and copied back into the neural network.
- * This is very useful for simulated annealing, as well as genetic algorithms.
+ * This class will extract the "long term memory" of a neural network, that is
+ * the weights and threshold values into an array. This array can be used to
+ * view the neural network as a linear array of doubles. These values can then
+ * be modified and copied back into the neural network. This is very useful for
+ * simulated annealing, as well as genetic algorithms.
+ * 
  * @author jheaton
- *
+ * 
  */
-public class NetworkCODEC {
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
-	 * Private constructor.
-	 */
-	private NetworkCODEC() {
-
-	}
+public final class NetworkCODEC {
 
 	/**
 	 * Use an array to populate the memory of the neural network.
@@ -70,26 +58,25 @@ public class NetworkCODEC {
 
 		// copy all weight data
 		int currentIndex = 0;
-		Collection<Synapse> synapses = network.getStructure().getSynapses();
+		final Collection<Synapse> synapses = network.getStructure()
+				.getSynapses();
 		for (final Synapse synapse : synapses) {
 			if (synapse.getMatrix() != null) {
 
-					currentIndex = synapse.getMatrix().fromPackedArray(array,
-							currentIndex);
-				
+				currentIndex = synapse.getMatrix().fromPackedArray(array,
+						currentIndex);
+
 			}
 		}
-		
+
 		// copy all threshold data
-		for( final Layer layer: network.getStructure().getLayers() ) {
-			for(int i=0;i<layer.getNeuronCount();i++) {
-				layer.setThreshold(i, array[currentIndex++]); 
+		for (final Layer layer : network.getStructure().getLayers()) {
+			for (int i = 0; i < layer.getNeuronCount(); i++) {
+				layer.setThreshold(i, array[currentIndex++]);
 			}
 		}
-		
 
 	}
-
 
 	/**
 	 * Convert to an array. This is used with some training algorithms that
@@ -107,10 +94,10 @@ public class NetworkCODEC {
 		for (final Synapse synapse : network.getStructure().getSynapses()) {
 			size += synapse.getMatrixSize();
 		}
-		
+
 		// determine size from threshold values
-		for( final Layer layer: network.getStructure().getLayers() ) {
-			size+=layer.getNeuronCount();
+		for (final Layer layer : network.getStructure().getLayers()) {
+			size += layer.getNeuronCount();
 		}
 
 		// allocate an array to hold
@@ -118,25 +105,38 @@ public class NetworkCODEC {
 
 		// copy all weight data
 		int currentIndex = 0;
-		Collection<Synapse> synapses = network.getStructure().getSynapses();
-		for (final Synapse synapse : synapses ) {
+		final Collection<Synapse> synapses = network.getStructure()
+				.getSynapses();
+		for (final Synapse synapse : synapses) {
 			if (synapse.getMatrix() != null) {
-				Double[] temp = synapse.getMatrix().toPackedArray();
-				for (int i = 0; i < temp.length; i++) {
-					result[currentIndex++] = temp[i];
+				final Double[] temp = synapse.getMatrix().toPackedArray();
+				for (final Double element : temp) {
+					result[currentIndex++] = element;
 				}
 			}
 		}
-		
+
 		// copy all threshold data
-		for( final Layer layer: network.getStructure().getLayers() ) {
-			for(int i=0;i<layer.getNeuronCount();i++) {
-				result[currentIndex++] = layer.getThreshold(i); 
+		for (final Layer layer : network.getStructure().getLayers()) {
+			for (int i = 0; i < layer.getNeuronCount(); i++) {
+				result[currentIndex++] = layer.getThreshold(i);
 			}
 		}
 
 		return result;
 	}
 
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Private constructor.
+	 */
+	private NetworkCODEC() {
+
+	}
 
 }

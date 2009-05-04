@@ -31,56 +31,86 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The reset strategy will reset the weights if the neural network fails to
- * fall below a specified error by a specified number of cycles.  This can
- * be useful to throw out initially "bad/hard" random initializations of the
- * weight matrix.
+ * The reset strategy will reset the weights if the neural network fails to fall
+ * below a specified error by a specified number of cycles. This can be useful
+ * to throw out initially "bad/hard" random initializations of the weight
+ * matrix.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ResetStrategy implements Strategy {
-	
+
 	/**
 	 * The logging object.
 	 */
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * The required minimum error.
+	 */
+	private final double required;
 	
-	private double required;
-	private int cycles;
+	/**
+	 * The number of cycles to reach the required minimum error.
+	 */
+	private final int cycles;
+
+	/**
+	 * The training algorithm that is using this strategy.
+	 */
 	private Train train;
-	private int badCycleCount;
 	
-	public ResetStrategy(double required, int cycles)
-	{
+	/**
+	 * How many bad cycles have there been so far.
+	 */
+	private int badCycleCount;
+
+	/**
+	 * Construct a reset strategy.  The error rate must fall
+	 * below the required rate in the specified number of cycles,
+	 * or the neural network will be reset to random weights and
+	 * thresholds.
+	 * @param required The required error rate.
+	 * @param cycles The number of cycles to reach that rate.
+	 */
+	public ResetStrategy(final double required, final int cycles) {
 		this.required = required;
 		this.cycles = cycles;
 		this.badCycleCount = 0;
 	}
 
-	public void init(Train train) {
-		this.train = train;		
+	/**
+	 * Initialize this strategy.
+	 * 
+	 * @param train
+	 *            The training algorithm.
+	 */
+	public void init(final Train train) {
+		this.train = train;
 	}
 
+	/**
+	 * Called just after a training iteration.
+	 */
 	public void postIteration() {
-		
+
 	}
 
+	/**
+	 * Called just before a training iteration.
+	 */
 	public void preIteration() {
-		if( this.train.getError()>this.required )
-		{
-			this.badCycleCount ++;
-			if( badCycleCount>this.cycles )
-			{
-				if( logger.isDebugEnabled() )
-				{
-					logger.debug("Failed to imrove network, resetting.");
+		if (this.train.getError() > this.required) {
+			this.badCycleCount++;
+			if (this.badCycleCount > this.cycles) {
+				if (this.logger.isDebugEnabled()) {
+					this.logger.debug("Failed to imrove network, resetting.");
 				}
 				this.train.getNetwork().reset();
 				this.badCycleCount = 0;
 			}
-		}
-		else
-		{
+		} else {
 			this.badCycleCount = 0;
 		}
 	}

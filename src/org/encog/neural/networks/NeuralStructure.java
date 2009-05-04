@@ -38,61 +38,97 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Holds "cached" information about the structure of the neural network.
- * This is a very good performance boost since the neural network does not
- * need to traverse itself each time a complete collection of layers or
- * synapses is needed.
+ * Holds "cached" information about the structure of the neural network. This is
+ * a very good performance boost since the neural network does not need to
+ * traverse itself each time a complete collection of layers or synapses is
+ * needed.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class NeuralStructure {
-	private List<Layer> layers = new ArrayList<Layer>();
-	private List<Synapse> synapses = new ArrayList<Synapse>();
-	private BasicNetwork network;
 	
+	/**
+	 * The layers in this neural network.
+	 */
+	private final List<Layer> layers = new ArrayList<Layer>();
+	
+	/**
+	 * The synapses in this neural network.
+	 */
+	private final List<Synapse> synapses = new ArrayList<Synapse>();
+	
+	/**
+	 * The neural network this class belongs to.
+	 */
+	private final BasicNetwork network;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public NeuralStructure(BasicNetwork network)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a structure object for the specified network.
+	 * @param network The network to construct a structure for.
+	 */
+	public NeuralStructure(final BasicNetwork network) {
 		this.network = network;
 	}
-	
-	public void finalizeStructure()
-	{
-		finalizeLayers();
-		finalizeSynapses();		
-	}
-	
-	private void finalizeLayers()
-	{
-		Set<Layer> result = new HashSet<Layer>();
-		if( this.network.getInputLayer()!=null)
+
+	/**
+	 * Build the layer structure.
+	 */
+	private void finalizeLayers() {
+		final Set<Layer> result = new HashSet<Layer>();
+		if (this.network.getInputLayer() != null) {
 			getLayers(result, this.network.getInputLayer());
+		}
 		this.layers.clear();
 		this.layers.addAll(result);
 	}
-	
-	private void finalizeSynapses()
-	{
-		Set<Synapse> result = new HashSet<Synapse>();
-		for (Layer layer : getLayers()) {
-			for (Synapse synapse : layer.getNext()) {
+
+	/**
+	 * Build the synapse and layer structure.  This method should be called 
+	 * after you are done adding layers to a network.
+	 */
+	public void finalizeStructure() {
+		finalizeLayers();
+		finalizeSynapses();
+	}
+
+	/**
+	 * Build the synapse structure.
+	 */
+	private void finalizeSynapses() {
+		final Set<Synapse> result = new HashSet<Synapse>();
+		for (final Layer layer : getLayers()) {
+			for (final Synapse synapse : layer.getNext()) {
 				result.add(synapse);
 			}
 		}
 		this.synapses.clear();
 		this.synapses.addAll(result);
 	}
-	
-	private void getLayers(Set<Layer> result, Layer layer) {
+
+	/**
+	 * @return The layers in this neural network.
+	 */
+	public List<Layer> getLayers() {
+		return this.layers;
+	}
+
+	/**
+	 * Called to help build the layer structure.
+	 * @param result The layer list.
+	 * @param layer The current layer being processed.
+	 */
+	private void getLayers(final Set<Layer> result, final Layer layer) {
 		result.add(layer);
 
-		for (Synapse synapse : layer.getNext()) {
-			Layer nextLayer = synapse.getToLayer();
+		for (final Synapse synapse : layer.getNext()) {
+			final Layer nextLayer = synapse.getToLayer();
 
 			if (!result.contains(nextLayer)) {
 				getLayers(result, nextLayer);
@@ -100,10 +136,22 @@ public class NeuralStructure {
 		}
 	}
 
-	public Collection<Layer> getPreviousLayers(Layer targetLayer) {
-		Collection<Layer> result = new HashSet<Layer>();
-		for (Layer layer : this.getLayers()) {
-			for (Synapse synapse : layer.getNext()) {
+	/**
+	 * @return The network this structure belongs to.
+	 */
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	/**
+	 * Get the previous layers from the specified layer.
+	 * @param targetLayer The target layer.
+	 * @return The previous layers.
+	 */
+	public Collection<Layer> getPreviousLayers(final Layer targetLayer) {
+		final Collection<Layer> result = new HashSet<Layer>();
+		for (final Layer layer : this.getLayers()) {
+			for (final Synapse synapse : layer.getNext()) {
 				if (synapse.getToLayer() == targetLayer) {
 					result.add(synapse.getFromLayer());
 				}
@@ -112,29 +160,29 @@ public class NeuralStructure {
 		return result;
 	}
 
-	public Collection<Synapse> getPreviousSynapses(Layer targetLayer) {
-		
-		Collection<Synapse> result = new HashSet<Synapse>();
-		
-		for(Synapse synapse: this.synapses)
-		{
-			if( synapse.getToLayer()==targetLayer)
+	/**
+	 * Get the previous synapses.
+	 * @param targetLayer The layer to get the previous layers from.
+	 * @return A collection of synapses.
+	 */
+	public Collection<Synapse> getPreviousSynapses(final Layer targetLayer) {
+
+		final Collection<Synapse> result = new HashSet<Synapse>();
+
+		for (final Synapse synapse : this.synapses) {
+			if (synapse.getToLayer() == targetLayer) {
 				result.add(synapse);
+			}
 		}
-		
+
 		return result;
-		
+
 	}
 
-	public List<Layer> getLayers() {
-		return layers;
-	}
-
+	/**
+	 * @return All synapses in the neural network.
+	 */
 	public List<Synapse> getSynapses() {
-		return synapses;
-	}
-
-	public BasicNetwork getNetwork() {
-		return network;
+		return this.synapses;
 	}
 }

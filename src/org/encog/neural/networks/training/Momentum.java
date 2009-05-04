@@ -35,6 +35,14 @@ package org.encog.neural.networks.training;
  *
  */
 public interface Momentum  {
+	/**
+	 * Set the momentum.
+	 * @param m The new momentum.
+	 */
 	void setMomentum(double m);
+	
+	/**
+	 * @return The momentum.
+	 */
 	double getMomentum();
 }

@@ -32,92 +32,164 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A hybrid stragey allows a secondary training algorithm to be used.  Once
- * the primary algorithm is no longer improving by much, the secondary will
- * be used.  Using simulated annealing in as a secondary to one of the propagation
- * methods is often a very efficient combination as it can help the propagation
- * method escape a local minimum.  This is particularly true with backpropagation.
+ * A hybrid stragey allows a secondary training algorithm to be used. Once the
+ * primary algorithm is no longer improving by much, the secondary will be used.
+ * Using simulated annealing in as a secondary to one of the propagation methods
+ * is often a very efficient combination as it can help the propagation method
+ * escape a local minimum. This is particularly true with backpropagation.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class HybridStrategy implements Strategy {
-	
+
+	/**
+	 * The default minimum improvement before we switch to the alternate
+	 * training method.
+	 */
 	public static final double DEFAULT_MIN_IMPROVEMENT = 0.00001;
+	
+	/**
+	 * The default number of cycles to tolerate bad improvement for.
+	 */
 	public static final int DEFAULT_TOLERATE_CYCLES = 10;
 	
+	/**
+	 * The default number of cycles to use the alternate training for.
+	 */
+	public static final int DEFAULT_ALTERNATE_CYCLES = 5;
+
+	/**
+	 * The primary training method.
+	 */
 	private Train mainTrain;
-	private Train altTrain;
-	private double lastImprovement;
-	private double lastError;
-	private boolean ready;
-	private int lastHybrid;
-	private double minImprovement;
-	private int tolerateMinImprovement;
 	
+	/**
+	 * The alternate training method.
+	 */
+	private final Train altTrain;
+	
+	/**
+	 * The last improvement.
+	 */
+	private double lastImprovement;
+	
+	/**
+	 * The error rate from the previous iteration.
+	 */
+	private double lastError;
+	
+	/**
+	 * Has one iteration passed, and we are now ready to start 
+	 * evaluation.
+	 */
+	private boolean ready;
+	
+	/**
+	 * The last time the alternate training algorithm was used.
+	 */
+	private int lastHybrid;
+	
+	/**
+	 * The minimum improvement before the alternate training 
+	 * algorithm is considered.
+	 */
+	private final double minImprovement;
+	
+	/**
+	 * The number of minimal improvement to tolerate before the
+	 * alternate training algorithm is used.
+	 */
+	private final int tolerateMinImprovement;
+	
+	/**
+	 * How many cycles to engage the alternate algorithm for.
+	 */
+	private final int alternateCycles;
+
 	/**
 	 * The logging object.
 	 */
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public HybridStrategy(Train altTrain)
-	{
-		this(altTrain,
-				HybridStrategy.DEFAULT_MIN_IMPROVEMENT,
-				HybridStrategy.DEFAULT_TOLERATE_CYCLES);
+	/**
+	 * Construct a hybrid strategy with the default minimum improvement
+	 * and toleration cycles.
+	 * @param altTrain The alternative training strategy.
+	 */
+	public HybridStrategy(final Train altTrain) {
+		this(altTrain, HybridStrategy.DEFAULT_MIN_IMPROVEMENT,
+				HybridStrategy.DEFAULT_TOLERATE_CYCLES,
+				HybridStrategy.DEFAULT_ALTERNATE_CYCLES);
 	}
-	
-	public HybridStrategy(Train altTrain,double minImprovement,int tolerateMinImprovement)
-	{
+
+	/**
+	 * Create a hybrid strategy.
+	 * @param altTrain The alternate training algorithm.
+	 * @param minImprovement The minimum improvement to switch algorithms.
+	 * @param tolerateMinImprovement The number of cycles to tolerate the 
+	 * minimum improvement for.
+	 * @param alternateCycles How many cycles should the alternate 
+	 * training algorithm be used for.
+	 */
+	public HybridStrategy(final Train altTrain, final double minImprovement,
+			final int tolerateMinImprovement, final int alternateCycles) {
 		this.altTrain = altTrain;
 		this.ready = false;
 		this.lastHybrid = 0;
 		this.minImprovement = minImprovement;
 		this.tolerateMinImprovement = tolerateMinImprovement;
+		this.alternateCycles = alternateCycles;
 	}
 
-	public void init(Train train) {
-		this.mainTrain = train;		
+	/**
+	 * Initialize this strategy.
+	 * 
+	 * @param train
+	 *            The training algorithm.
+	 */
+	public void init(final Train train) {
+		this.mainTrain = train;
 	}
 
+	/**
+	 * Called just after a training iteration.
+	 */
 	public void postIteration() {
-		if(ready )
-		{
-			double currentError = this.mainTrain.getError();
-			this.lastImprovement = (currentError-lastError)/lastError;
-			if( logger.isTraceEnabled() )
-			{
-				logger.trace("Last improvement: {}", this.lastImprovement );
+		if (this.ready) {
+			final double currentError = this.mainTrain.getError();
+			this.lastImprovement = (currentError - this.lastError)
+					/ this.lastError;
+			if (this.logger.isTraceEnabled()) {
+				this.logger.trace("Last improvement: {}", this.lastImprovement);
 			}
-			
-			if( (this.lastImprovement>0) ||
-				(Math.abs(this.lastImprovement)<this.minImprovement) )
-			{
+
+			if ((this.lastImprovement > 0)
+					|| (Math.abs(this.lastImprovement) < this.minImprovement)) {
 				this.lastHybrid++;
-				
-				if( this.lastHybrid > this.tolerateMinImprovement )
-				{
+
+				if (this.lastHybrid > this.tolerateMinImprovement) {
 					this.lastHybrid = 0;
 
-					if( logger.isDebugEnabled() )
-					{
-						logger.debug("Performing hybrid cycle" );
+					if (this.logger.isDebugEnabled()) {
+						this.logger.debug("Performing hybrid cycle");
 					}
-					
-					for(int i=0;i<5;i++)
-					{
+
+					for (int i = 0; i < this.alternateCycles; i++) {
 						this.altTrain.iteration();
 					}
 				}
 			}
-		}
-		else
-		{
-			ready = true;
+		} else {
+			this.ready = true;
 		}
 	}
 
+	/**
+	 * Called just before a training iteration.
+	 */
 	public void preIteration() {
 		this.lastError = this.mainTrain.getError();
-		
+
 	}
 }

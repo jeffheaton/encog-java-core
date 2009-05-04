@@ -34,53 +34,78 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A simple greedy strategy.  If the last iteration did not improve training,
- * then discard it.  Care must be taken with this strategy, as sometimes a 
+ * A simple greedy strategy. If the last iteration did not improve training,
+ * then discard it. Care must be taken with this strategy, as sometimes a
  * training algorithm may need to temporarily decrease the error level before
  * improving it.
  * 
  * @author jheaton
- *
+ * 
  */
 public class Greedy implements Strategy {
 
+	/**
+	 * The training algorithm that is using this strategy.
+	 */
 	private Train train;
-	private double lastError;
-	private Double[] lastNetwork;
-	private boolean ready;
 	
+	/**
+	 * The error rate from the previous iteration.
+	 */
+	private double lastError;
+	
+	/**
+	 * The last state of the network, so that we can restore to this
+	 * state if needed.
+	 */
+	private Double[] lastNetwork;
+	
+	/**
+	 * Has one iteration passed, and we are now ready to start 
+	 * evaluation.
+	 */
+	private boolean ready;
+
 	/**
 	 * The logging object.
 	 */
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public void init(Train train) {
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Initialize this strategy.
+	 * @param train The training algorithm.
+	 */
+	public void init(final Train train) {
 		this.train = train;
 		this.ready = false;
 	}
 
+	/**
+	 * Called just after a training iteration.
+	 */
 	public void postIteration() {
-		if( this.ready )
-		{
-		if( this.train.getError()>this.lastError )
-		{
-			if( logger.isDebugEnabled() )
-			{
-				logger.debug("Greedy strategy dropped last iteration.");
+		if (this.ready) {
+			if (this.train.getError() > this.lastError) {
+				if (this.logger.isDebugEnabled()) {
+					this.logger
+							.debug("Greedy strategy dropped last iteration.");
+				}
+				this.train.setError(this.lastError);
+				NetworkCODEC.arrayToNetwork(this.lastNetwork, this.train
+						.getNetwork());
 			}
-			this.train.setError(this.lastError);
-			NetworkCODEC.arrayToNetwork(this.lastNetwork, train.getNetwork());
-		}
-		}
-		else 
+		} else {
 			this.ready = true;
+		}
 	}
 
+	/**
+	 * Called just before a training iteration.
+	 */
 	public void preIteration() {
-		
-		BasicNetwork network = this.train.getNetwork();	
-		if( network!=null )
-		{
+
+		final BasicNetwork network = this.train.getNetwork();
+		if (network != null) {
 			this.lastError = this.train.getError();
 			this.lastNetwork = NetworkCODEC.networkToArray(network);
 			this.train.setError(this.lastError);

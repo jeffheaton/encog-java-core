@@ -35,6 +35,15 @@ package org.encog.neural.networks.training;
  *
  */
 public interface LearningRate {
-	public void setLearningRate(double rate);
-	public double getLearningRate();
+	
+	/**
+	 * Set the learning rate.
+	 * @param rate The new learning rate
+	 */
+	void setLearningRate(double rate);
+	
+	/**
+	 * @return The learning rate.
+	 */
+	double getLearningRate();
 }

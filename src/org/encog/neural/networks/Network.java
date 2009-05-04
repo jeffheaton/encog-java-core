@@ -36,21 +36,33 @@ import org.encog.persist.Persistor;
 
 /**
  * Interface that defines a neural network.
+ * 
  * @author jheaton
- *
+ * 
  */
 public interface Network extends EncogPersistedObject {
-	
-	public void addLayer(final Layer layer, final SynapseType type);
 
 	/**
 	 * Add a layer to the neural network. The first layer added is the input
-	 * layer, the last layer added is the output layer.
+	 * layer, the last layer added is the output layer. This layer is added with
+	 * a weighted synapse.
 	 * 
 	 * @param layer
 	 *            The layer to be added.
 	 */
-	public void addLayer(final Layer layer);
+	void addLayer(final Layer layer);
+
+	/**
+	 * Add a layer to the neural network. If there are no layers added this
+	 * layer will become the input layer. This function automatically updates
+	 * both the input and output layer references.
+	 * 
+	 * @param layer
+	 *            The layer to be added to the network.
+	 * @param type
+	 *            What sort of synapse should connect this layer to the last.
+	 */
+	void addLayer(final Layer layer, final SynapseType type);
 
 	/**
 	 * Calculate the error for this neural network. The error is calculated
@@ -60,15 +72,23 @@ public interface Network extends EncogPersistedObject {
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final NeuralDataSet data);
-
+	double calculateError(final NeuralDataSet data);
 
 	/**
 	 * Calculate the total number of neurons in the network across all layers.
 	 * 
 	 * @return The neuron count.
 	 */
-	public int calculateNeuronCount();
+	int calculateNeuronCount();
+
+	/**
+	 * Check that the input size is acceptable, if it does not match the input
+	 * layer, then throw an error.
+	 * 
+	 * @param input
+	 *            The input data.
+	 */
+	void checkInputSize(final NeuralData input);
 
 	/**
 	 * Return a clone of this neural network. Including structure, weights and
@@ -76,30 +96,53 @@ public interface Network extends EncogPersistedObject {
 	 * 
 	 * @return A cloned copy of the neural network.
 	 */
-	public Object clone();
+	Object clone();
 
-	public void setInputLayer(Layer input);
-
-
-	public NeuralData compute(final NeuralData input);
+	/**
+	 * Used to compare one neural network to another, compare two layers.
+	 * 
+	 * @param layerThis
+	 *            The layer being compared.
+	 * @param layerOther
+	 *            The other layer.
+	 * @param precision
+	 *            The precision to use, how many decimal places.
+	 * @return Returns true if the two layers are the same.
+	 */
+	boolean compareLayer(final Layer layerThis, final Layer layerOther,
+			final int precision);
 
 	/**
 	 * Compute the output for a given input to the neural network.
 	 * 
 	 * @param input
+	 *            The input to the neural network.
+	 * @return The output from the neural network.
+	 */
+	NeuralData compute(final NeuralData input);
+
+	/**
+	 * Compute the output for a given input to the neural network. This method
+	 * provides a parameter to specify an output holder to use. This holder
+	 * allows propagation training to track the output from each layer. If you
+	 * do not need this holder pass null, or use the other compare method.
+	 * 
+	 * @param input
 	 *            The input provide to the neural network.
+	 * @param useHolder
+	 *            Allows a holder to be specified, this allows propagation
+	 *            training to check the output of each layer.
 	 * @return The results from the output neurons.
 	 */
-	public NeuralData compute(final NeuralData input,
-			NeuralOutputHolder useHolder);
-
+	NeuralData compute(final NeuralData input,
+			final NeuralOutputHolder useHolder);
 
 	/**
 	 * Create a persistor for this object.
 	 * 
 	 * @return The newly created persistor.
 	 */
-	public Persistor createPersistor();
+	Persistor createPersistor();
 
 	/**
 	 * Compare the two neural networks. For them to be equal they must be of the
@@ -109,69 +152,117 @@ public interface Network extends EncogPersistedObject {
 	 *            The other neural network.
 	 * @return True if the two networks are equal.
 	 */
-	public boolean equals(final BasicNetwork other);
+	boolean equals(final BasicNetwork other);
 
-	public boolean equals(final BasicNetwork other, int precision);
-
-	public boolean compareLayer(Layer layerThis, Layer layerOther, int precision);
+	/**
+	 * Determine if this neural network is equal to another. Equal neural
+	 * networks have the same weight matrix and threshold values, within a
+	 * specified precision.
+	 * 
+	 * @param other
+	 *            The other neural network.
+	 * @param precision
+	 *            The number of decimal places to compare to.
+	 * @return True if the two neural networks are equal.
+	 */
+	boolean equals(final BasicNetwork other, final int precision);
 
 	/**
 	 * @return The description for this object.
 	 */
-	public String getDescription();
+	String getDescription();
 
 	/**
 	 * Get the count for how many hidden layers are present.
 	 * 
 	 * @return The hidden layer count.
 	 */
-	public int getHiddenLayerCount();
+	int getHiddenLayerCount();
 
 	/**
 	 * Get a collection of the hidden layers in the network.
 	 * 
 	 * @return The hidden layers.
 	 */
-	public Collection<Layer> getHiddenLayers();
+	Collection<Layer> getHiddenLayers();
 
 	/**
 	 * Get the input layer.
 	 * 
 	 * @return The input layer.
 	 */
-	public Layer getInputLayer();
+	Layer getInputLayer();
 
 	/**
 	 * @return the name
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Get the output layer.
 	 * 
 	 * @return The output layer.
 	 */
-	public Layer getOutputLayer();
+	Layer getOutputLayer();
 
 	/**
-	 * Get the size of the weight and threshold matrix.
-	 * 
+	 * @return Get the structure of the neural network. The structure allows you
+	 *         to quickly obtain synapses and layers without traversing the
+	 *         network.
+	 */
+	NeuralStructure getStructure();
+
+	/**
 	 * @return The size of the matrix.
 	 */
-	public int getWeightMatrixSize();
+	int getWeightMatrixSize();
 
 	/**
 	 * Generate a hash code.
 	 * 
 	 * @return THe hash code.
 	 */
-	public int hashCode();
+	@Override
+	int hashCode();
+
+	/**
+	 * Called to cause the network to attempt to infer which layer should be the
+	 * output layer.
+	 */
+	void inferOutputLayer();
+
+	/**
+	 * Determine if this layer is hidden.
+	 * 
+	 * @param layer
+	 *            The layer to evaluate.
+	 * @return True if this layer is a hidden layer.
+	 */
+	boolean isHidden(final Layer layer);
+
+	/**
+	 * Determine if this layer is the input layer.
+	 * 
+	 * @param layer
+	 *            The layer to evaluate.
+	 * @return True if this layer is the input layer.
+	 */
+	boolean isInput(final Layer layer);
+
+	/**
+	 * Determine if this layer is the output layer.
+	 * 
+	 * @param layer
+	 *            The layer to evaluate.
+	 * @return True if this layer is the output layer.
+	 */
+	boolean isOutput(final Layer layer);
 
 	/**
 	 * Reset the weight matrix and the thresholds.
 	 * 
 	 */
-	public void reset();
+	void reset();
 
 	/**
 	 * Set the description for this object.
@@ -179,13 +270,33 @@ public interface Network extends EncogPersistedObject {
 	 * @param theDescription
 	 *            The description.
 	 */
-	public void setDescription(final String theDescription);
+	void setDescription(final String theDescription);
+
+	/**
+	 * Define the input layer for the network.
+	 * 
+	 * @param input
+	 *            The new input layer.
+	 */
+	void setInputLayer(final Layer input);
 
 	/**
 	 * @param name
 	 *            the name to set
 	 */
-	public void setName(final String name);
+	void setName(final String name);
+
+	/**
+	 * @param outputLayer
+	 *            the outputLayer to set
+	 */
+	void setOutputLayer(final Layer outputLayer);
+
+	/**
+	 * @return Convert this object to a string.
+	 */
+	@Override
+	String toString();
 
 	/**
 	 * Determine the winner for the specified input. This is the number of the
@@ -195,20 +306,5 @@ public interface Network extends EncogPersistedObject {
 	 *            The input patter to present to the neural network.
 	 * @return The winning neuron.
 	 */
-	public int winner(final NeuralData input);
-
-	public boolean isInput(Layer layer);
-
-	public boolean isOutput(Layer layer);
-
-	public boolean isHidden(Layer layer);
-
-
-	/**
-	 * @param outputLayer
-	 *            the outputLayer to set
-	 */
-	public void setOutputLayer(Layer outputLayer);
-
-	public NeuralStructure getStructure();
+	int winner(final NeuralData input);
 }

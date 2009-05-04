@@ -38,34 +38,74 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements the specifics of the Manhattan propagation algorithm. This
- * class actually handles the updates to the weight matrix.
+ * Implements the specifics of the Manhattan propagation algorithm. This class
+ * actually handles the updates to the weight matrix.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ManhattanPropagationMethod implements PropagationMethod {
 
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * The Manhattan propagation class that this method is used by.
+	 */
 	private ManhattanPropagation propagation;
-	private CalculatePartialDerivative pderv = new CalculatePartialDerivative();
-	
-	public void calculateError(
-			final NeuralOutputHolder output,
-			final PropagationLevel fromLevel,
-			final PropagationLevel toLevel) {
-		
+
+	/**
+	 * The partial derivative utility class.
+	 */
+	private final CalculatePartialDerivative pderv 
+		= new CalculatePartialDerivative();
+
+	/**
+	 * Calculate the error between these two levels.
+	 * 
+	 * @param output
+	 *            The output to the "to level".
+	 * @param fromLevel
+	 *            The from level.
+	 * @param toLevel
+	 *            The target level.
+	 */
+	public void calculateError(final NeuralOutputHolder output,
+			final PropagationLevel fromLevel, final PropagationLevel toLevel) {
+
 		this.pderv.calculateError(output, fromLevel, toLevel);
-		
+
 	}
 
-	public void init(Propagation propagation) {
-		this.propagation = (ManhattanPropagation)propagation;
-		
+	/**
+	 * Determine the change that should be applied.  If the partial
+	 * derivative was zero(or close enough to zero) then do nothing
+	 * otherwise apply the learning rate with the same sign as the
+	 * partial derivative.
+	 * @param value The partial derivative.
+	 * @return The change to be applied to the weight matrix.
+	 */
+	private double determineChange(final double value) {
+		if (Math.abs(value) < this.propagation.getZeroTolerance()) {
+			return 0;
+		} else if (value > 0) {
+			return this.propagation.getLearningRate();
+		} else {
+			return -this.propagation.getLearningRate();
+		}
+	}
+
+	/**
+	 * Init with the specified propagation object.
+	 * 
+	 * @param propagation
+	 *            The propagation object that this method will be used with.
+	 */
+	public void init(final Propagation propagation) {
+		this.propagation = (ManhattanPropagation) propagation;
+
 	}
 
 	/**
@@ -73,69 +113,55 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 	 * calcError.
 	 */
 	public void learn() {
-		if (logger.isDebugEnabled()) {
-			logger.debug("Backpropagation learning pass");
+		if (this.logger.isDebugEnabled()) {
+			this.logger.debug("Backpropagation learning pass");
 		}
-		
-		for(PropagationLevel level: this.propagation.getLevels())
-		{
+
+		for (final PropagationLevel level : this.propagation.getLevels()) {
 			learnLevel(level);
 		}
 	}
-	
-	private double determineChange(double value)
-	{
-		if( Math.abs(value)<this.propagation.getZeroTolerance())
-			return 0;
-		else if( value>0)
-			return this.propagation.getLearningRate();
-		else 
-			return -this.propagation.getLearningRate();
-	}
-	
-	private void learnLevel(PropagationLevel level)
-	{
+
+	/**
+	 * Apply learning for this level.  This is where the weight matrixes
+	 * are actually changed. This method will call learnSynapse for each
+	 * of the synapses on this level.
+	 * @param level The level that is to learn.
+	 */
+	private void learnLevel(final PropagationLevel level) {
 		// teach the synapses
-		for(PropagationSynapse synapse: level.getOutgoing())
-		{
+		for (final PropagationSynapse synapse : level.getOutgoing()) {
 			learnSynapse(synapse);
-		}		
-		
+		}
+
 		// teach the threshold
-		for(Layer layer: level.getLayers())
-		{
-			if( layer.hasThreshold() )
-			{
-			for(int i=0;i<layer.getNeuronCount();i++)
-			{
-				double change = determineChange(level.getThresholdGradient(i)*this.propagation.getLearningRate());
-				layer.setThreshold(i, layer.getThreshold(i) + change);
-			}
+		for (final Layer layer : level.getLayers()) {
+			if (layer.hasThreshold()) {
+				for (int i = 0; i < layer.getNeuronCount(); i++) {
+					final double change = determineChange(level
+							.getThresholdGradient(i)
+							* this.propagation.getLearningRate());
+					layer.setThreshold(i, layer.getThreshold(i) + change);
+				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Learn from the last error calculation.
-	 * 
-	 * @param learnRate
-	 *            The learning rate.
-	 * @param momentum
-	 *            The momentum.
+	 * @param synapse The synapse that is to learn.
 	 */
-	private void learnSynapse(PropagationSynapse synapse) {
+	private void learnSynapse(final PropagationSynapse synapse) {
 
-		Matrix matrix = synapse.getSynapse().getMatrix();
-		
-		for(int row = 0;row<matrix.getRows();row++ )
-		{
-			for(int col = 0;col<matrix.getCols();col++ )
-			{
-				double change = determineChange(synapse.getAccMatrixGradients().get(row, col));
-				matrix.set(row,col,matrix.get(row, col)+change);				
+		final Matrix matrix = synapse.getSynapse().getMatrix();
+
+		for (int row = 0; row < matrix.getRows(); row++) {
+			for (int col = 0; col < matrix.getCols(); col++) {
+				final double change = determineChange(synapse
+						.getAccMatrixGradients().get(row, col));
+				matrix.set(row, col, matrix.get(row, col) + change);
 			}
-		}		
+		}
 	}
-
 
 }

@@ -30,39 +30,57 @@ import java.util.List;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 
-
-
 /**
- * Interface for all neural network training methods.  This allows the 
- * training methods to be largely interchangeable.  Though some training
- * methods require specific types of neural network structure.
+ * Interface for all neural network training methods. This allows the training
+ * methods to be largely interchangeable. Though some training methods require
+ * specific types of neural network structure.
  */
 
 public interface Train {
 
 	/**
+	 * Training strategies can be added to improve the training results. There
+	 * are a number to choose from, and several can be used at once.
+	 * 
+	 * @param strategy
+	 *            The strategy to add.
+	 */
+	void addStrategy(Strategy strategy);
+
+	/**
 	 * Get the current error percent from the training.
+	 * 
 	 * @return The current error.
 	 */
 	double getError();
-	
-	void setError(double error);
 
 	/**
 	 * Get the current best network from the training.
+	 * 
 	 * @return The best network.
 	 */
 	BasicNetwork getNetwork();
 
 	/**
+	 * @return The strategies to use.
+	 */
+	List<Strategy> getStrategies();
+
+	/**
+	 * @return The training data to use.
+	 */
+	NeuralDataSet getTraining();
+
+	/**
 	 * Perform one iteration of training.
 	 */
 	void iteration();
-	
-	void addStrategy(Strategy strategy);
-	
-	NeuralDataSet getTraining();
-	
-	List<Strategy> getStrategies();
-	
+
+	/**
+	 * @param error
+	 *            Set the current error rate. This is usually used by training
+	 *            strategies.
+	 */
+	void setError(double error);
+
 }
