@@ -3,12 +3,29 @@
         Build the core JAR file for Encog.
     </description>
 	<!-- set global properties for this build -->
-	<property name="src" location="src" />
-	<property name="build" location="bin" />
-	<property name="dist" location="lib" />
-	<property name="doc" location="doc" />
-	<property name="classpath" value="jar/antlr-2.7.6.jar:jar/commons-collections-3.1.jar:jar/dom4j-1.6.1.jar:jar/ejb3-persistence.jar:jar/hibernate3.jar:jar/hibernate-annotations.jar:jar/hibernate-commons-annotations.jar:jar/hibernate-core.jar:jar/javassist-3.4.GA.jar:jar/jta-1.1.jar:jar/slf4j-api-1.5.6.jar:jar/slf4j-jdk14-1.5.6.jar" />
+	<property name="src" location="${basedir}/src" />
+	<property name="test" location="${basedir}/test" />
+	<property name="build" location="${basedir}/build" />
+	<property name="dist" location="${basedir}/dist" />
+	<property name="lib" location="${basedir}/lib" />
+	<property name="stage" location="${basedir}/stage" />
+	<property name="doc" location="${basedir}/doc" />
+	<property name="jar" location="${basedir}/jar" />
+	<property name="jarfile" location="${lib}/encog-core.jar"/>
+	<path id="classpath">
+       <fileset dir="${jar}"/>	   
+   </path>	
 
+	<target name="checkout">
+
+		<exec executable="svn">
+			<arg value="checkout"/>
+			<arg value="http://encog-java.googlecode.com/svn/trunk/encog-core"/>
+			<arg value="${basedir}"/>
+		</exec>
+		
+	</target>
+	
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${build}" />
@@ -16,27 +33,72 @@
 
 	<target name="compile" depends="init" description="compile the source ">
 		<!-- Compile the java code from ${src} into ${build} -->
-		<javac srcdir="${src}" source="1.5" target="1.5" destdir="${build}" classpath="${classpath}" />
+		<javac srcdir="${src}" source="1.5" target="1.5" destdir="${build}" >
+			<classpath refid="classpath"/>
+		</javac>
 	</target>
 
 	<target name="doc" depends="init" description="produce javadoc ">
-		<javadoc sourcepath="${src}" destdir="${doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;" classpath="${classpath}" />
+		<javadoc sourcepath="${src}" destdir="${doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;" >
+			<classpath refid="classpath"/>
+		</javadoc>
 	</target>
 
 	<target name="dist" depends="compile,doc" description="generate the distribution">
 		<!-- Create the distribution directory -->
 		<mkdir dir="${dist}" />
+		<mkdir dir="${stage}" />
+		<mkdir dir="${lib}" />
 
 		<copy todir="${build}/org/encog/data">
 			<fileset dir="src/org/encog/data"/>
-		</copy>
+		</copy>		
+				
+		<jar jarfile="${jarfile}" basedir="${build}" />
+						
+	</target>
+	
+	<target name="cc-build" depends="clean-all,checkout,compile,doc,dist">
 
-		<!-- Put everything in ${build} into the encog-core.jar file -->
-		<jar jarfile="${dist}/encog-core.jar" basedir="${build}" />
+		<copy todir="${stage}" file="${basedir}/copyright.txt"/>
+		<copy todir="${stage}" file="${basedir}/build.xml"/>
+		<copy todir="${stage}" file="${basedir}/.checkstyle"/>
+		<copy todir="${stage}" file="${basedir}/.classpath"/>
+		<copy todir="${stage}" file="${basedir}/.project"/>
+
+	
+		<copy todir="${stage}/src">
+			<fileset dir="${src}"/>	
+		</copy>
+		
+		<copy todir="${stage}/jar">
+			<fileset dir="${jar}"/>	
+		</copy>
+		
+		<copy todir="${stage}/doc">
+			<fileset dir="${doc}"/>	
+		</copy>
+		
+		<copy todir="${stage}/lib" file="${jarfile}"/>
+		
+		
+				
+		<zip destfile="${dist}/encog-code.zip" >
+			<fileset dir="${stage}"/>
+		</zip>	
+	
+	</target>
+	
+	<target name="clean-all" depends="clean" description="Delete the source code">
+		<delete dir="${src}" />
+		<delete dir="${test}" />
 	</target>
 
 	<target name="clean" description="clean up">
 		<!-- Delete the ${build} and ${dist} directory trees -->
+		<delete dir="${stage}" />
+		<delete dir="${jar}" />
+		<delete dir="${lib}" />
 		<delete dir="${build}" />
 		<delete dir="${dist}" />
 		<delete dir="${doc}" />
