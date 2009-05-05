@@ -34,19 +34,49 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is used to generate an Elman style recurrent neural 
+ * network.  This network type consists of three regular layers, 
+ * an input output and hidden layer.  There is also a context layer
+ * which accepts output from the hidden layer and outputs back to the
+ * hidden layer.  This makes it a recurrent neural network.
+ * 
+ * The Elman neural network is useful for temporal input data.  The
+ * specified activation function will be used on all layers. 
+ * @author jheaton
+ *
+ */
 public class ElmanPattern implements NeuralNetworkPattern {
 
+	/**
+	 * The number of input neurons.
+	 */
 	private int inputNeurons;
+	
+	/**
+	 * The number of output neurons.
+	 */
 	private int outputNeurons;
+	
+	/**
+	 * The number of hidden neurons. 
+	 */
 	private int hiddenNeurons;
+	
+	/**
+	 * The activation function.
+	 */
 	private ActivationFunction activation;
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * Create an object to generate Elman neural networks.
+	 */
 	public ElmanPattern() {
 		this.inputNeurons = -1;
 		this.outputNeurons = -1;
@@ -71,11 +101,11 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		Layer hidden, input, output;
 		final Layer context = new ContextLayer(this.hiddenNeurons);
 		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(this.inputNeurons));
+		network.addLayer(input = new BasicLayer(activation, true, this.inputNeurons));
 		input.setX(50);
 		input.setY(y);
 		y += 150;
-		network.addLayer(hidden = new BasicLayer(this.hiddenNeurons));
+		network.addLayer(hidden = new BasicLayer(activation, true, this.hiddenNeurons));
 		hidden.setX(50);
 		hidden.setY(y);
 		context.setX(300);
@@ -83,7 +113,7 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		y += 150;
 		hidden.addNext(context, SynapseType.OneToOne);
 		context.addNext(hidden);
-		network.addLayer(output = new BasicLayer(this.outputNeurons));
+		network.addLayer(output = new BasicLayer(activation, true, this.outputNeurons));
 		output.setX(50);
 		output.setY(y);
 		network.getStructure().finalizeStructure();

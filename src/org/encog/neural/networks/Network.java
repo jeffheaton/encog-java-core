@@ -222,7 +222,6 @@ public interface Network extends EncogPersistedObject {
 	 * 
 	 * @return THe hash code.
 	 */
-	@Override
 	int hashCode();
 
 	/**
@@ -295,7 +294,6 @@ public interface Network extends EncogPersistedObject {
 	/**
 	 * @return Convert this object to a string.
 	 */
-	@Override
 	String toString();
 
 	/**

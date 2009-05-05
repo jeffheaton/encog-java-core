@@ -35,40 +35,58 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Holds the output from each layer of the neural network.  This is very
- * useful for the propagation algorithms that need to examine the output
- * of each individual layer.
+ * Holds the output from each layer of the neural network. This is very useful
+ * for the propagation algorithms that need to examine the output of each
+ * individual layer.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class NeuralOutputHolder {
-	
-	private Map<Synapse,NeuralData> result;
+
+	/**
+	 * The results from each of the synapses.
+	 */
+	private final Map<Synapse, NeuralData> result;
+
+	/**
+	 * The output from the entire neural network.
+	 */
 	private NeuralData output;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public NeuralOutputHolder()
-	{
-		this.result = new HashMap<Synapse,NeuralData>();
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct an empty holder.
+	 */
+	public NeuralOutputHolder() {
+		this.result = new HashMap<Synapse, NeuralData>();
 	}
 
-	public Map<Synapse, NeuralData> getResult() {
-		return result;
-	}
-
+	/**
+	 * @return The output from the neural network.
+	 */
 	public NeuralData getOutput() {
-		return output;
+		return this.output;
 	}
 
-	public void setOutput(NeuralData output) {
+	/**
+	 * @return The result from the synapses in a map.
+	 */
+	public Map<Synapse, NeuralData> getResult() {
+		return this.result;
+	}
+
+	/**
+	 * Set the output.
+	 * @param output The new output.
+	 */
+	public void setOutput(final NeuralData output) {
 		this.output = output;
 	}
-	
-	
-	
+
 }
