@@ -2,6 +2,8 @@ package org.encog.bot.rss;
 
 import java.net.URL;
 
+import org.encog.util.logging.Logging;
+
 import junit.framework.TestCase;
 
 
@@ -10,6 +12,7 @@ public class TestRSS extends TestCase
 {
 	private void test(URL url) throws Exception
 	{
+		Logging.stopConsoleLogging();
 	    RSS rss = new RSS();
 	    rss.load(url);
 	    TestCase.assertTrue(rss.toString().length()>0);
@@ -21,12 +24,14 @@ public class TestRSS extends TestCase
 	
   public void testRSS2() throws Exception
   {
+	  Logging.stopConsoleLogging();
     URL url = new URL("http://www.httprecipes.com/1/12/rss2.xml");
     test(url);
   }
   
   public void testRSS1() throws Exception
   {
+	  Logging.stopConsoleLogging();
 	    URL url = new URL("http://www.httprecipes.com/1/12/rss1.xml");  
 	    test(url);
   }

@@ -107,8 +107,6 @@ public class Tag {
 	/**
 	 * Convert this tag back into string form, with the beginning < and ending >.
 	 * 
-	 * @param id
-	 *            A zero based index that specifies the attribute to retrieve.
 	 * @return The Attribute object that was found.
 	 */
 	@Override

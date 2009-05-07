@@ -40,7 +40,7 @@ public interface Persistor {
 
 	/**
 	 * Load from the specified node. 
-	 * @param node The node to load from.
+	 * @param in The node to load from.
 	 * @return The EncogPersistedObject that was loaded.
 	 */
 	EncogPersistedObject load(ReadXML in);
