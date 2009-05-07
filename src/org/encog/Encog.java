@@ -40,6 +40,16 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  */
 public final class Encog {
+	
+	/**
+	 * The current engog version, this should be read from the properties.
+	 */
+	private static final String VERSION = "2.0.0";
+	
+	/**
+	 * The current engog file version, this should be read from the properties.
+	 */
+	private static final String FILE_VERSION = "1";
 
 	/**
 	 * The default precision to use for compares.
@@ -99,8 +109,8 @@ public final class Encog {
 	 * Private constructor.
 	 */
 	private Encog() {
-		this.properties.put(Encog.ENCOG_VERSION, "2.0.0");
-		this.properties.put(Encog.ENCOG_FILE_VERSION, "1");
+		this.properties.put(Encog.ENCOG_VERSION, Encog.VERSION);
+		this.properties.put(Encog.ENCOG_FILE_VERSION, Encog.FILE_VERSION);
 	}
 
 	/**
