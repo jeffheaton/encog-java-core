@@ -159,7 +159,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	/**
 	 * @return The network neighborhood function.
-	 * @return
 	 */
 	public NeighborhoodFunction getNeighborhood() {
 		return this.neighborhood;
