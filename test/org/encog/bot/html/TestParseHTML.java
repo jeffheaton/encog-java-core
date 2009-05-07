@@ -127,8 +127,7 @@ public class TestParseHTML extends TestCase {
 		String html="a<img src=\"picture.gif\" alt=\"A Picture\">b";
 		ByteArrayInputStream bis = new ByteArrayInputStream(html.getBytes());
 		ReadHTML parse = new ReadHTML(bis);
-		parse.readToTag();
-		System.out.println(parse.toString());
+		parse.readToTag();	
 		TestCase.assertTrue(parse.toString().indexOf("A Picture")!=-1);
 	}
 	

@@ -10,6 +10,7 @@ import org.encog.bot.spider.Spider;
 import org.encog.bot.spider.SpiderParseHTML;
 import org.encog.bot.spider.SpiderReportable;
 import org.encog.util.HSQLUtil;
+import org.encog.util.logging.Logging;
 import org.encog.util.orm.SessionManager;
 
 public class TestSpiderMemory extends TestCase implements SpiderReportable {
@@ -19,6 +20,7 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 	private int urlsProcessed;
 
 	public void testSpider() throws Exception {
+		Logging.stopConsoleLogging();
 		SessionManager manager = HSQLUtil.getSessionManager();
 
 		

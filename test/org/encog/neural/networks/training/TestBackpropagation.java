@@ -31,7 +31,6 @@ public class TestBackpropagation extends TestCase {
 		
 		double improve = (error1-error2)/error1;
 		
-		System.out.println(improve);
 		TestCase.assertTrue("Error too high for backpropagation",improve>0.01);
 
 	}

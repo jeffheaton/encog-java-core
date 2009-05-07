@@ -22,7 +22,6 @@ public class TestParse extends TestCase {
 		int i=0;
 		for(Signal s:list)
 		{
-			System.out.println(s.toString());
 			switch(i)
 			{
 				case 0:TestCase.assertEquals("Hello", s.toString());break;
