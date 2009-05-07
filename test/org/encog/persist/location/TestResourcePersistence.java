@@ -11,7 +11,7 @@ public class TestResourcePersistence {
 	@Test
 	public void testResource() throws Exception
 	{
-		ResourcePersistence location = new ResourcePersistence("org/encog/persist/location/testresource");
+		ResourcePersistence location = new ResourcePersistence("org/encog/data/testresource");
 		InputStream is = location.createInputStream();
 		String str = Directory.readStream(is);
 		Assert.assertEquals("This is a test resource",str);
