@@ -57,7 +57,7 @@ public class TestGenericPersist extends TestCase {
 		Assert.assertEquals(simple.getDescription(), "description");
 		Assert.assertEquals("first",simple.getFirst());
 		Assert.assertEquals("second",simple.getSecond());
-		Assert.assertEquals(10,simple.getNumber());
+		Assert.assertEquals(10,simple.getNumber(),0.01);
 
 	}
 }

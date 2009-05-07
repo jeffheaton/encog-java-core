@@ -82,11 +82,11 @@ public class TestRadialBasisFunctionLayerPersistor {
 		final RadialBasisFunctionLayer layer2 = loadRadialFunctionLayer(store);
 		Assert.assertEquals(layer.getNeuronCount(), layer2.getNeuronCount());
 		Assert.assertEquals(layer.getRadialBasisFunction()[0].getCenter(),
-				layer.getRadialBasisFunction()[0].getCenter());
+				layer.getRadialBasisFunction()[0].getCenter(),0.01);
 		Assert.assertEquals(layer.getRadialBasisFunction()[0].getWidth(), layer
-				.getRadialBasisFunction()[0].getWidth());
+				.getRadialBasisFunction()[0].getWidth(),0.01);
 		Assert.assertEquals(layer.getRadialBasisFunction()[0].getPeak(), layer
-				.getRadialBasisFunction()[0].getPeak());
+				.getRadialBasisFunction()[0].getPeak(),0.01);
 	}
 
 }
