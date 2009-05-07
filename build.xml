@@ -3,17 +3,18 @@
         Build the core JAR file for Encog.
     </description>
 	<!-- set global properties for this build -->
-	<property name="src" location="${basedir}/src" />
-	<property name="test" location="${basedir}/test" />
-	<property name="build" location="${basedir}/build" />
-	<property name="dist" location="${basedir}/dist" />
-	<property name="lib" location="${basedir}/lib" />
-	<property name="stage" location="${basedir}/stage" />
-	<property name="doc" location="${basedir}/doc" />
-	<property name="jar" location="${basedir}/jar" />
-	<property name="jarfile" location="${lib}/encog-core.jar"/>
+	<property name="path.src" location="${basedir}/src" />
+	<property name="path.test.src" location="${basedir}/test" />
+	<property name="path.test.build" location="${basedir}/test-build" />
+	<property name="path.test.results" location="${basedir}/tests" />
+	<property name="path.build" location="${basedir}/build" />
+	<property name="path.dist" location="${basedir}/dist" />
+	<property name="path.lib" location="${basedir}/lib" />
+	<property name="path.stage" location="${basedir}/stage" />
+	<property name="path.doc" location="${basedir}/doc" />
+	<property name="path.jar" location="${basedir}/jar" />
 	<path id="classpath">
-       <fileset dir="${jar}"/>	   
+       <fileset dir="${path.jar}"/>	   
    </path>	
 
 	<target name="checkout" depends="init">
@@ -28,80 +29,141 @@
 	
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
-		<mkdir dir="${build}" />
-		<mkdir dir="${doc}" />
+		<mkdir dir="${path.build}" />
+		<mkdir dir="${path.test.build}" />
+		<mkdir dir="${path.doc}" />		
 	</target>
 
 	<target name="compile" depends="init" description="compile the source ">
-		<!-- Compile the java code from ${src} into ${build} -->
-		<javac srcdir="${src}" source="1.5" target="1.5" destdir="${build}" >
+		
+		<javac srcdir="${path.src}" source="1.5" target="1.5" destdir="${path.build}" >
 			<classpath refid="classpath"/>
 		</javac>
+		
+		<javac srcdir="${path.test.src}" source="1.5" target="1.5" destdir="${path.test.build}" >
+		<classpath>
+             <pathelement location="${path.build}"/>
+             <path refid="classpath"/>
+         </classpath>
+		</javac>
+		
+		<copy todir="${path.test.build}/org/encog/data">
+			<fileset dir="test/org/encog/data"/>
+		</copy>
+
 	</target>
 
 	<target name="doc" depends="init" description="produce javadoc ">
-		<javadoc sourcepath="${src}" destdir="${doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;" >
+		<javadoc sourcepath="${path.src}" destdir="${path.doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;" >
 			<classpath refid="classpath"/>
 		</javadoc>
 	</target>
 
 	<target name="dist" depends="compile,doc" description="generate the distribution">
+	
+			<loadfile srcfile="${path.src}/org/encog/Encog.java" property="build.version">
+			<filterchain>
+				<linecontainsregexp>
+					<regexp pattern='^.*String VERSION = ".*";.*$'/>
+				</linecontainsregexp>
+				<tokenfilter>
+					<replaceregex replace='\1'
+						pattern='^.*String VERSION = "(.*)";.*$'/>
+				</tokenfilter>
+				<striplinebreaks/>
+			</filterchain>
+		</loadfile>
+		
 		<!-- Create the distribution directory -->
-		<mkdir dir="${dist}" />
-		<mkdir dir="${stage}" />
-		<mkdir dir="${lib}" />
+		<mkdir dir="${path.dist}" />
+		<mkdir dir="${path.stage}" />
+		<mkdir dir="${path.lib}" />
+		<mkdir dir="${path.build}/org/encog/data" />
 
-		<copy todir="${build}/org/encog/data">
+		<copy todir="${path.build}/org/encog/data">
 			<fileset dir="src/org/encog/data"/>
-		</copy>		
+		</copy>	
+
+		<manifest file="MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}"/>
+			<attribute name="Implementation-Version" 
+                     value="${version.num}-b${build.version}"/> 
+		</manifest>
+		
+		<property name="jarfile" location="${path.lib}/encog-core-${build.version}.jar" />
 				
-		<jar jarfile="${jarfile}" basedir="${build}" />
+		<jar jarfile="${jarfile}" basedir="${path.build}" manifest="MANIFEST.MF" />
 						
 	</target>
 	
-	<target name="cc-build" depends="clean-all,checkout,compile,doc,dist">
+	<target name="cc-build" depends="clean-all,checkout,compile,doc,test,dist">
 
-		<copy todir="${stage}" file="${basedir}/copyright.txt"/>
-		<copy todir="${stage}" file="${basedir}/build.xml"/>
-		<copy todir="${stage}" file="${basedir}/.checkstyle"/>
-		<copy todir="${stage}" file="${basedir}/.classpath"/>
-		<copy todir="${stage}" file="${basedir}/.project"/>
+		<copy todir="${path.stage}" file="${basedir}/copyright.txt"/>
+		<copy todir="${path.stage}" file="${basedir}/build.xml"/>
+		<copy todir="${path.stage}" file="${basedir}/.checkstyle"/>
+		<copy todir="${path.stage}" file="${basedir}/.classpath"/>
+		<copy todir="${path.stage}" file="${basedir}/.project"/>
 
 	
-		<copy todir="${stage}/src">
-			<fileset dir="${src}"/>	
+		<copy todir="${path.stage}/src">
+			<fileset dir="${path.src}"/>	
 		</copy>
 		
-		<copy todir="${stage}/jar">
-			<fileset dir="${jar}"/>	
+		<copy todir="${path.stage}/jar">
+			<fileset dir="${path.jar}"/>	
 		</copy>
 		
-		<copy todir="${stage}/doc">
-			<fileset dir="${doc}"/>	
+		<copy todir="${path.stage}/doc">
+			<fileset dir="${path.doc}"/>	
 		</copy>
 		
-		<copy todir="${stage}/lib" file="${jarfile}"/>
+		<copy todir="${path.stage}/lib" file="${jarfile}"/>
 		
 		
 				
-		<zip destfile="${dist}/encog-code.zip" >
-			<fileset dir="${stage}"/>
+		<zip destfile="${path.dist}/encog-core-${build.version}.zip" >
+			<fileset dir="${path.stage}"/>
 		</zip>	
 	
 	</target>
 	
 	<target name="clean-all" depends="clean" description="Delete the source code">
-		<delete dir="${src}" />
-		<delete dir="${test}" />
+		<delete dir="${path.src}" />
+		<delete dir="${path.test.src}" />
+	</target>
+	
+	<target name="test" depends="dist">
+	
+		<mkdir dir="${path.test.results}" />
+	
+		<junit printsummary="yes" fork="yes" showoutput="yes" forkMode="perBatch" haltonerror="yes" dir="${path.src}">
+			<formatter type="xml"/>			
+			
+			
+		<classpath>
+             <pathelement location="${path.test.build}"/>
+			 <pathelement location="${path.build}"/>
+             <path refid="classpath"/>
+         </classpath>
+			
+			<batchtest todir="${path.test.results}">
+              <fileset dir="${path.test.src}">
+                 <include name="**/Test*.java"/>
+             </fileset>
+          </batchtest>
+		</junit>
+				
 	</target>
 
 	<target name="clean" description="clean up">
 		<!-- Delete the ${build} and ${dist} directory trees -->
-		<delete dir="${stage}" />
-		<delete dir="${jar}" />
-		<delete dir="${lib}" />
-		<delete dir="${build}" />
-		<delete dir="${dist}" />
-		<delete dir="${doc}" />
+		<delete dir="${path.stage}" />
+		<delete dir="${path.jar}" />
+		<delete dir="${path.lib}" />
+		<delete dir="${path.build}" />
+		<delete dir="${path.test.build}" />
+		<delete dir="${path.test.results}" />
+		<delete dir="${path.dist}" />
+		<delete dir="${path.doc}" />
 	</target>
 </project>
