@@ -16,7 +16,7 @@
        <fileset dir="${jar}"/>	   
    </path>	
 
-	<target name="checkout">
+	<target name="checkout" depends="init">
 
 		<exec executable="svn">
 			<arg value="checkout"/>
@@ -29,6 +29,7 @@
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${build}" />
+		<mkdir dir="${doc}" />
 	</target>
 
 	<target name="compile" depends="init" description="compile the source ">
