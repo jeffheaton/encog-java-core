@@ -33,8 +33,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is a special input stream that allows the program
- * to peek one or more characters ahead in the file.
+ * This is a special input stream that allows the program to peek one or more
+ * characters ahead in the file.
  */
 public class PeekableInputStream extends InputStream {
 
@@ -42,7 +42,7 @@ public class PeekableInputStream extends InputStream {
 	 * The depth to peek.
 	 */
 	public static final int INITIAL_DEPTH = 10;
-	
+
 	/**
 	 * The underlying stream.
 	 */
@@ -57,12 +57,12 @@ public class PeekableInputStream extends InputStream {
 	 * How many bytes have been peeked at.
 	 */
 	private int peekLength;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The constructor accepts an InputStream to setup the object.
@@ -93,92 +93,93 @@ public class PeekableInputStream extends InputStream {
 	 * @return The character peeked at.
 	 */
 	public int peek(final int depth) {
-		try
-		{
-		// does the size of the peek buffer need to be extended?
-		if (this.peekBytes.length <= depth) {
-			final byte[] temp = new byte[depth + INITIAL_DEPTH];
-			for (int i = 0; i < this.peekBytes.length; i++) {
-				temp[i] = this.peekBytes[i];
-			}
-			this.peekBytes = temp;
-		}
-
-		// does more data need to be read?
-		if (depth >= this.peekLength) {
-			final int offset = this.peekLength;
-			final int length = depth - this.peekLength + 1;
-			final int lengthRead = this.stream.read(this.peekBytes, offset,
-					length);
-
-			if (lengthRead == -1) {
-				return -1;
+		try {
+			// does the size of the peek buffer need to be extended?
+			if (this.peekBytes.length <= depth) {
+				final byte[] temp = new byte[depth
+						+ PeekableInputStream.INITIAL_DEPTH];
+				for (int i = 0; i < this.peekBytes.length; i++) {
+					temp[i] = this.peekBytes[i];
+				}
+				this.peekBytes = temp;
 			}
 
-			this.peekLength = depth + 1;
-		}
-		}
-		catch(IOException e)
-		{
-			if(logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+			// does more data need to be read?
+			if (depth >= this.peekLength) {
+				final int offset = this.peekLength;
+				final int length = depth - this.peekLength + 1;
+				final int lengthRead = this.stream.read(this.peekBytes, offset,
+						length);
+
+				if (lengthRead == -1) {
+					return -1;
+				}
+
+				this.peekLength = depth + 1;
+			}
+		} catch (final IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 			throw new BotError(e);
 		}
 
 		return this.peekBytes[depth];
 	}
-	
-	public boolean peek(String str)
-	{
-		for(int i=0;i<str.length();i++)
-		{
-			if(peek(i)!=str.charAt(i))
-			{
+
+	/**
+	 * Peek ahead and see if the specified string is present.
+	 * @param str The string we are looking for.
+	 * @return True if the string was found.
+	 */
+	public boolean peek(final String str) {
+		for (int i = 0; i < str.length(); i++) {
+			if (peek(i) != str.charAt(i)) {
 				return false;
 			}
 		}
 		return true;
 	}
-	
-	public long skip(final long count)
-	{
+
+	/**
+	 * Read a single byte from the stream.
+	 * 
+	 * @return The character that was read from the stream.
+	 */
+	@Override
+	public int read() {
+
+		try {
+
+			if (this.peekLength == 0) {
+				return this.stream.read();
+			}
+
+			final int result = this.peekBytes[0];
+			this.peekLength--;
+			for (int i = 0; i < this.peekLength; i++) {
+				this.peekBytes[i] = this.peekBytes[i + 1];
+			}
+
+			return result;
+		} catch (final IOException e) {
+			throw new BotError(e);
+		}
+	}
+
+	/**
+	 * Skip the specified number of bytes.
+	 * @param count The number of bytes to skip.
+	 * @return The actual number of bytes skipped.
+	 */
+	@Override
+	public long skip(final long count) {
 		long count2 = count;
-		while(count2>0)
-		{
+		while (count2 > 0) {
 			this.read();
 			count2--;
 		}
 		return count;
-	}
-
-	/**
-	 * Read a single byte from the stream. 
-	 * @return The character that was read from the stream.
-	 */
-	@Override
-	public int read()  {
-		
-		try
-		{
-		
-		if (this.peekLength == 0) {
-			return this.stream.read();
-		}
-
-		final int result = this.peekBytes[0];
-		this.peekLength--;
-		for (int i = 0; i < this.peekLength; i++) {
-			this.peekBytes[i] = this.peekBytes[i + 1];
-		}
-
-		return result;
-		}
-		catch(IOException e)
-		{
-			throw new BotError(e);
-		}
 	}
 
 }

@@ -25,10 +25,6 @@
  */
 package org.encog.persist;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Date;
 
@@ -40,90 +36,133 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for writing Encog persisted class files.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class PersistWriter {
+
+	/**
+	 * The XML writer.
+	 */
+	private final WriteXML out;
 	
-	private WriteXML out;
-	private OutputStream fileOutput;
-	
+	/**
+	 * The output stream.
+	 */
+	private final OutputStream fileOutput;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public PersistWriter(final PersistenceLocation location)
-	{		
-			this.fileOutput = location.createOutputStream();
-			this.out = new WriteXML(this.fileOutput);
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Create a writer for the specified location.
+	 * @param location The location.
+	 */
+	public PersistWriter(final PersistenceLocation location) {
+		this.fileOutput = location.createOutputStream();
+		this.out = new WriteXML(this.fileOutput);
 	}
-	
-	public void writeHeader()
-	{
-		this.out.beginTag("Header");
-		this.out.addProperty("platform", "Java");
-		this.out.addProperty("fileVersion", Encog.getInstance().getProperties().get(Encog.ENCOG_FILE_VERSION));
-		this.out.addProperty("encogVersion", Encog.getInstance().getProperties().get(Encog.ENCOG_VERSION));
-		this.out.addProperty("modified", (new Date()).toString());
-		this.out.endTag();
-	}
-	
-	public void begin()
-	{
+
+	/**
+	 * Begin an Encog document.
+	 */
+	public void begin() {
 		this.out.beginDocument();
 		this.out.beginTag("Document");
 	}
-	
-	public void end()
-	{
-		this.out.endTag();
-		this.out.endDocument();
-	}
-	
-	public void beginObjects()
-	{
+
+	/**
+	 * Begin the objects collection.
+	 */
+	public void beginObjects() {
 		this.out.beginTag("Objects");
 	}
-	
-	public void endObjects()
-	{
-		this.out.endTag();
-	}
 
+	/**
+	 * Close the writer.
+	 */
 	public void close() {
 		this.out.close();
 	}
-	
-	public void mergeObjects(PersistenceLocation location,String skip)
-	{
-		PersistReader reader = new PersistReader(location);
-		reader.saveTo(this.out,skip);
+
+	/**
+	 * End the document.
+	 */
+	public void end() {
+		this.out.endTag();
+		this.out.endDocument();
+	}
+
+	/**
+	 * End the objects collection.
+	 */
+	public void endObjects() {
+		this.out.endTag();
+	}
+
+	/**
+	 * Merge the objects from this collection into the new one.
+	 * Skip the specified object.
+	 * @param location The location to merge to.
+	 * @param skip The object to skip.
+	 */
+	public void mergeObjects(final PersistenceLocation location,
+			final String skip) {
+		final PersistReader reader = new PersistReader(location);
+		reader.saveTo(this.out, skip);
 		reader.close();
 	}
 
-	public void writeObject(EncogPersistedObject obj) {
-		Persistor persistor = obj.createPersistor();
-		if( persistor==null )
-		{
-			String str = "Can't find a persistor for object of type " + obj.getClass().getName();
-			if( logger.isErrorEnabled())
-			{
-				logger.error(str);
+	/**
+	 * Modify the specified object, such as changing its name or
+	 * description.
+	 * @param location The location of the object being modified.
+	 * @param name The old name of the object being modified.
+	 * @param newName The new name of the object being modified.
+	 * @param newDesc The new description of the object being modified.
+	 */
+	public void modifyObject(final PersistenceLocation location,
+			final String name, final String newName, final String newDesc) {
+
+		final PersistReader reader = new PersistReader(location);
+		reader.saveModified(this.out, name, newName, newDesc);
+		reader.close();
+
+	}
+
+	/**
+	 * Write the header for the Encog file.
+	 */
+	public void writeHeader() {
+		this.out.beginTag("Header");
+		this.out.addProperty("platform", "Java");
+		this.out.addProperty("fileVersion", Encog.getInstance().getProperties()
+				.get(Encog.ENCOG_FILE_VERSION));
+		this.out.addProperty("encogVersion", Encog.getInstance()
+				.getProperties().get(Encog.ENCOG_VERSION));
+		this.out.addProperty("modified", (new Date()).toString());
+		this.out.endTag();
+	}
+
+	/**
+	 * Write an object.
+	 * @param obj The object to write.
+	 */
+	public void writeObject(final EncogPersistedObject obj) {
+		final Persistor persistor = obj.createPersistor();
+		if (persistor == null) {
+			final String str = "Can't find a persistor for object of type "
+					+ obj.getClass().getName();
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new PersistError(str);
 		}
 		persistor.save(obj, this.out);
 	}
 
-	public void modifyObject(PersistenceLocation location, String name, String newName,
-			String newDesc) {
-		
-		PersistReader reader = new PersistReader(location);
-		reader.saveModified(this.out,name,newName,newDesc);
-		reader.close();
-		
-	}
-	
 }

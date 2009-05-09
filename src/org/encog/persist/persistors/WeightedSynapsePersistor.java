@@ -39,37 +39,56 @@ import org.encog.persist.Persistor;
  */
 public class WeightedSynapsePersistor implements Persistor {
 
-	public final static String TAG_WEIGHTS = "weights";
-	
-	public EncogPersistedObject load(ReadXML in) {
-		WeightedSynapse synapse = new WeightedSynapse();
-		
-		String end = in.getTag().getName();
-		
-		
-		while( in.readToTag() )  
-		{
-			
-			if( in.is(TAG_WEIGHTS,true) )
-			{
+	/**
+	 * The weights tag.
+	 */
+	public static final String TAG_WEIGHTS = "weights";
+
+	/**
+	 * Load the specified Encog object from an XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader to use.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
+		final WeightedSynapse synapse = new WeightedSynapse();
+
+		final String end = in.getTag().getName();
+
+		while (in.readToTag()) {
+
+			if (in.is(WeightedSynapsePersistor.TAG_WEIGHTS, true)) {
 				in.readToTag();
 				synapse.setMatrix(PersistorUtil.loadMatrix(in));
 			}
-			if( in.is(end, false))
+			if (in.is(end, false)) {
 				break;
+			}
 		}
-		
+
 		return synapse;
 	}
 
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_WEIGHTED_SYNAPSE, out, obj, false);
-		WeightedSynapse synapse = (WeightedSynapse)obj;
-		
-		out.beginTag(TAG_WEIGHTS);
-		PersistorUtil.saveMatrix(synapse.getMatrix(),out);
+	/**
+	 * Save the specified Encog object to an XML writer.
+	 * 
+	 * @param obj
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer to save to.
+	 */
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
+		PersistorUtil
+				.beginEncogObject(
+						EncogPersistedCollection.TYPE_WEIGHTED_SYNAPSE, out,
+						obj, false);
+		final WeightedSynapse synapse = (WeightedSynapse) obj;
+
+		out.beginTag(WeightedSynapsePersistor.TAG_WEIGHTS);
+		PersistorUtil.saveMatrix(synapse.getMatrix(), out);
 		out.endTag();
-		
+
 		out.endTag();
 	}
 

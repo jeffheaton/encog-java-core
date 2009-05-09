@@ -38,13 +38,28 @@ import org.encog.persist.Persistor;
  */
 public class ActivationSoftMaxPersistor implements Persistor {
 
-	public EncogPersistedObject load(ReadXML in) {
+	/**
+	 * Load the specified Encog object from an XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader to use.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
 		return new ActivationSoftMax();
 	}
 
-	public void save(EncogPersistedObject object, WriteXML out) {
+	/**
+	 * Save the specified Encog object to an XML writer.
+	 * 
+	 * @param object
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer to save to.
+	 */
+	public void save(final EncogPersistedObject object, final WriteXML out) {
 		out.beginTag(object.getClass().getSimpleName());
-		out.endTag();		
+		out.endTag();
 	}
 
 }

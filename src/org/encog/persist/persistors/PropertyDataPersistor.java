@@ -39,77 +39,115 @@ import org.encog.persist.Persistor;
  */
 public class PropertyDataPersistor implements Persistor {
 
-	public final static String TAG_PROPERTIES = "properties";
-	public final static String TAG_PROPERTY = "Property";
-	public final static String ATTRIBUTE_NAME = "name";
-	public final static String ATTRIBUTE_VALUE = "value";
+	/**
+	 * The properties tag.
+	 */
+	public static final String TAG_PROPERTIES = "properties";
 	
+	/**
+	 * The property tag.
+	 */
+	public static final String TAG_PROPERTY = "Property";
+	
+	/**
+	 * The name attribute.
+	 */
+	public static final String ATTRIBUTE_NAME = "name";
+	
+	/**
+	 * The value attribute.
+	 */
+	public static final String ATTRIBUTE_VALUE = "value";
+
+	/**
+	 * The property data being loaed.
+	 */
 	private PropertyData propertyData;
-	
-	public EncogPersistedObject load(ReadXML in) {
-		
-		String name = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_NAME);
-		String description = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
-		
-		propertyData = new PropertyData();
-		
-		propertyData.setName(name);
-		propertyData.setDescription(description);
-		
-		while( in.readToTag() )
-		{
-			if( in.is(TAG_PROPERTIES,true) )
-			{
-				handleProperties(in);
-			}
-			else if( in.is(EncogPersistedCollection.TYPE_PROPERTY,false) )
-			{
-				break;
-			}
-			
-		}
-		
-		return propertyData;
-	}
 
-	private void handleProperties(ReadXML in) {
-		while( in.readToTag() )
-		{
-			if( in.is(TAG_PROPERTY,true) )
-			{
+	/**
+	 * Handle the properties tag.
+	 * @param in the XML reader.
+	 */
+	private void handleProperties(final ReadXML in) {
+		while (in.readToTag()) {
+			if (in.is(PropertyDataPersistor.TAG_PROPERTY, true)) {
 				handleProperty(in);
-			}
-			else if( in.is(TAG_PROPERTIES,false) )
-			{
+			} else if (in.is(PropertyDataPersistor.TAG_PROPERTIES, false)) {
 				break;
 			}
-			
+
 		}
-		
+
 	}
 
-	private void handleProperty(ReadXML in) {
-		String name = in.getTag().getAttributeValue(ATTRIBUTE_NAME);
-		String value = in.getTag().getAttributeValue(ATTRIBUTE_VALUE);
+	/**
+	 * Handle loading an individual property.
+	 * @param in The XML reader.
+	 */
+	private void handleProperty(final ReadXML in) {
+		final String name = in.getTag().getAttributeValue(
+				PropertyDataPersistor.ATTRIBUTE_NAME);
+		final String value = in.getTag().getAttributeValue(
+				PropertyDataPersistor.ATTRIBUTE_VALUE);
 		this.propertyData.set(name, value);
 	}
 
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		
-		PropertyData pData = (PropertyData)obj;
-		
-		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_PROPERTY, out, obj, true);
-		out.beginTag(TAG_PROPERTIES);
-		for(String key: pData.getData().keySet())
-		{
-			out.addAttribute(ATTRIBUTE_NAME,key);
-			out.addAttribute(ATTRIBUTE_VALUE, pData.get(key));
-			out.beginTag(TAG_PROPERTY);
+	/**
+	 * Load the specified Encog object from an XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader to use.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
+
+		final String name = in.getTag().getAttributes().get(
+				EncogPersistedCollection.ATTRIBUTE_NAME);
+		final String description = in.getTag().getAttributes().get(
+				EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
+
+		this.propertyData = new PropertyData();
+
+		this.propertyData.setName(name);
+		this.propertyData.setDescription(description);
+
+		while (in.readToTag()) {
+			if (in.is(PropertyDataPersistor.TAG_PROPERTIES, true)) {
+				handleProperties(in);
+			} else if (in.is(EncogPersistedCollection.TYPE_PROPERTY, false)) {
+				break;
+			}
+
+		}
+
+		return this.propertyData;
+	}
+
+	/**
+	 * Save the specified Encog object to an XML writer.
+	 * 
+	 * @param obj
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer to save to.
+	 */
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
+
+		final PropertyData pData = (PropertyData) obj;
+
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_PROPERTY,
+				out, obj, true);
+		out.beginTag(PropertyDataPersistor.TAG_PROPERTIES);
+		for (final String key : pData.getData().keySet()) {
+			out.addAttribute(PropertyDataPersistor.ATTRIBUTE_NAME, key);
+			out.addAttribute(PropertyDataPersistor.ATTRIBUTE_VALUE, pData
+					.get(key));
+			out.beginTag(PropertyDataPersistor.TAG_PROPERTY);
 			out.endTag();
 		}
 		out.endTag();
 		out.endTag();
-		
+
 	}
 
 }

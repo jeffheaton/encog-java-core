@@ -25,226 +25,119 @@
  */
 package org.encog.parse.units;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.encog.parse.Parse;
-import org.encog.parse.ParseError;
 import org.encog.parse.recognize.Recognize;
 import org.encog.parse.recognize.RecognizeElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
 
 /**
  * Manage the unit types supported by Encog.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class UnitManager {
 
-  public final static String BASE_WEIGHT = "base-weight";
+	/**
+	 * The base weight.
+	 */
+	public static final String BASE_WEIGHT = "base-weight";
 
-  private Collection<UnitConversion> conversions = new ArrayList<UnitConversion>();
-  private Map<String,String> aliases = new HashMap<String,String>();
-  
-  /**
+	/**
+	 * Supported unit conversions.
+	 */
+	private final Collection<UnitConversion> conversions = 
+		new ArrayList<UnitConversion>();
+
+	/**
+	 * Supported aliases for each supported unit type.
+	 */
+	private final Map<String, String> aliases = new HashMap<String, String>();
+
+	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-  private void loadConvert(Element inputNode)
-  {
-    //   <convert from="lb" to "base-weight" pre="0" post="0" ratio="4536"/>
+	/**
+	 * Convert the specified unit.
+	 * 
+	 * @param from
+	 *            The from unit.
+	 * @param to
+	 *            The to unit.
+	 * @param input
+	 *            The value to convert.
+	 * @return The converted unit.
+	 */
+	public double convert(final String from, final String to, 
+			final double input) {
+		final String resolvedFrom = resolveAlias(from);
+		final String resolvedTo = resolveAlias(to);
 
-    String from = inputNode.getAttribute("from");
-    String to = inputNode.getAttribute("to");
-    String pre = inputNode.getAttribute("pre");
-    String post = inputNode.getAttribute("post");
-    String ratio = inputNode.getAttribute("ratio");
+		for (final UnitConversion convert : this.conversions) {
+			if (convert.getFrom().equals(resolvedFrom)
+					&& convert.getTo().equals(resolvedTo)) {
+				return convert.convert(input);
+			}
+		}
+		return 0;
+	}
 
-    double numPre = Double.parseDouble(pre);
-    double numPost = Double.parseDouble(post);
-    double numRatio = Double.parseDouble(ratio);
+	/**
+	 * Create recongizers for the specified parse object.
+	 * 
+	 * @param parse
+	 *            The parse object to create recognizers for.
+	 */
+	public void createRecognizers(final Parse parse) {
+		final Map<Object, Object> map = new HashMap<Object, Object>();
 
-    UnitConversion convert = new UnitConversion(from,to,numPre,numPost,numRatio);
-    conversions.add(convert);
-  }
+		// put everything in a map to eliminate duplicates
+		// create the recognizers
+		final Recognize weightRecognize = parse.getTemplate().createRecognizer(
+				"weightUnit");
+		final RecognizeElement weightElement = weightRecognize
+				.createElement(RecognizeElement.ALLOW_ONE);
 
-  private void loadAlias(Element inputNode)
-  {
-//System.out.println("load alias");
-    String from = inputNode.getAttribute("from");
-    String to = inputNode.getAttribute("to");
-    aliases.put(from.toLowerCase(),to);
-  }
+		// get all of the units
+		for (final UnitConversion unit : this.conversions) {
+			map.put(unit.getFrom(), null);
+			map.put(unit.getTo(), null);
+		}
 
+		// get all of the aliases
+		for (final Map.Entry<String, String> entry : this.aliases.entrySet()) {
+			map.put(entry.getKey(), null);
+			map.put(entry.getValue(), null);
+		}
 
-  private void loadConversions(Element list)
-  {
-    for ( Node child = list.getFirstChild(); child != null;
-        child = child.getNextSibling() ) {
-      if ( !(child instanceof Element ) )
-        continue;
-      Element node = (Element)child;
+		// now add all of the units to the correct recognizers
+		for (final Map.Entry<String, String> entry : this.aliases.entrySet()) {
+			weightElement.addAcceptedSignal("word", entry.getKey().toString());
+		}
+	}
 
-      if (node.getNodeName().equals("convert") )
-        loadConvert(node);
-    }
-  }
-
-  private void loadAliases(Element list)
-  {
-    for ( Node child = list.getFirstChild(); child != null;
-        child = child.getNextSibling() ) {
-      if ( !(child instanceof Element ) )
-        continue;
-      Element node = (Element)child;
-
-      if (node.getNodeName().equals("alias") )
-        loadAlias(node);
-    }
-  }
-
-
-
-
-  public void load(InputStream in)
-  {
-    try {
-      // setup the XML parser stuff
-      DocumentBuilderFactory dbf =
-      DocumentBuilderFactory.newInstance();
-
-      DocumentBuilder db = null;
-      db = dbf.newDocumentBuilder();
-
-      Document doc = null;
-      doc = db.parse(in);
-      Element memory = doc.getDocumentElement();
-
-
-      // read in the data
-
-      // first count the number of training sets
-
-      for ( Node child = memory.getFirstChild(); child != null;
-          child = child.getNextSibling() ) {
-        if ( !(child instanceof Element ) )
-          continue;
-        Element node = (Element)child;
-
-        if (node.getNodeName().equals("conversions") )
-          loadConversions(node);
-        else if (node.getNodeName().equals("aliases") )
-          loadAliases(node);
-      }
-
-    } catch ( javax.xml.parsers.ParserConfigurationException e ) {
-    	if( logger.isErrorEnabled())
-    	{
-    		logger.error("Exception",e);
-    	}
-    	throw new ParseError(e);
-
-    } catch ( org.xml.sax.SAXException e ) {
-    	if( logger.isErrorEnabled())
-    	{
-    		logger.error("Exception",e);
-    	}
-    	throw new ParseError(e);
-
-    } catch ( java.io.IOException e ) {
-    	if( logger.isErrorEnabled())
-    	{
-    		logger.error("Exception",e);
-    	}
-    	throw new ParseError(e);
-
-    }
-  }
-
-  public void load(String name)
-  {
-    try {
-      InputStream is = new FileInputStream(new File(name));
-      load(is);
-      is.close();
-    } catch ( java.io.FileNotFoundException e ) {
-    	if( logger.isErrorEnabled())
-    	{
-    		logger.error("Exception",e);
-    	}
-    	throw new ParseError(e);
-    } catch ( java.io.IOException e ) {
-    	if( logger.isErrorEnabled())
-    	{
-    		logger.error("Exception",e);
-    	}
-    	throw new ParseError(e);
-    }
-  }
-
-  public String resolveAlias(String in)
-  {
-    String base = aliases.get(in.toLowerCase());
-    if(base==null)
-      return in;
-    else
-      return base;
-  }
-
-  public double convert(String from,String to,double input)
-  {
-    from = resolveAlias(from);
-    to = resolveAlias(to);
-
-    for(UnitConversion convert: this.conversions)
-    {
-      if( convert.getFrom().equals(from) && convert.getTo().equals(to) )
-        return convert.convert(input);
-    }
-    return 0;
-  }
-
-  public void createRecognizers(Parse parse)
-  {
-    Map<Object,Object> map = new HashMap<Object,Object>();// put everything in a map to eliminate duplicates
-
-    // create the recognizers
-    Recognize weightRecognize = parse.getTemplate().createRecognizer("weightUnit");
-    RecognizeElement weightElement = weightRecognize.createElement(RecognizeElement.ALLOW_ONE);
-
-    // get all of the units
-    for(UnitConversion unit: this.conversions)
-    {
-      map.put(unit.getFrom(),null);
-      map.put(unit.getTo(),null);          
-    }
-
-    // get all of the aliases
-    for(Map.Entry<String,String> entry: this.aliases.entrySet())
-    {
-      map.put(entry.getKey(),null);
-      map.put(entry.getValue(),null);  
-    }
-
-    // now add all of the units to the correct recognizers
-    for(Map.Entry<String,String> entry: this.aliases.entrySet())
-    {     
-      weightElement.addAcceptedSignal("word",entry.getKey().toString());      
-    }
-  }
+	/**
+	 * Resolve the specified alias.
+	 * 
+	 * @param in
+	 *            The alias to look up.
+	 * @return The alias resolved.
+	 */
+	public String resolveAlias(final String in) {
+		final String base = this.aliases.get(in.toLowerCase());
+		if (base == null) {
+			return in;
+		} else {
+			return base;
+		}
+	}
 }

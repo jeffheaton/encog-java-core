@@ -25,7 +25,6 @@
  */
 package org.encog.persist.persistors;
 
-import org.encog.neural.networks.synapse.DirectSynapse;
 import org.encog.neural.networks.synapse.OneToOneSynapse;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
@@ -40,14 +39,30 @@ import org.encog.persist.Persistor;
  */
 public class OneToOneSynapsePersistor implements Persistor {
 
-	public EncogPersistedObject load(ReadXML in) {
-		
-		OneToOneSynapse synapse = new OneToOneSynapse();		
+	/**
+	 * Load the specified Encog object from an XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader to use.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
+
+		final OneToOneSynapse synapse = new OneToOneSynapse();
 		return synapse;
 	}
 
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_ONE2ONE_SYNAPSE, out, obj, false);
+	/**
+	 * Save the specified Encog object to an XML writer.
+	 * 
+	 * @param obj
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer to save to.
+	 */
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
+		PersistorUtil.beginEncogObject(
+				EncogPersistedCollection.TYPE_ONE2ONE_SYNAPSE, out, obj, false);
 		out.endTag();
 	}
 

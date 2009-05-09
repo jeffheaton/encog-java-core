@@ -32,7 +32,6 @@ import java.util.Map;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
@@ -45,166 +44,255 @@ import org.encog.persist.Persistor;
  * @author jheaton
  */
 public class BasicNetworkPersistor implements Persistor {
-	
+
+	/**
+	 * The layers tag.
+	 */
 	public static final String TAG_LAYERS = "layers";
-	public static final String TAG_SYNAPSES = "synapses";
-	public static final String TAG_SYNAPSE = "synapse";
-	public static final String TAG_LAYER = "layer";
-	public static final String ATTRIBUTE_ID = "id";
-	public static final String ATTRIBUTE_TYPE = "type";
-	public static final String ATTRIBUTE_TYPE_INPUT = "input";
-	public static final String ATTRIBUTE_TYPE_OUTPUT = "output";
-	public static final String ATTRIBUTE_TYPE_HIDDEN = "hidden";
-	public static final String ATTRIBUTE_TYPE_BOTH = "both";
-	public static final String ATTRIBUTE_TYPE_UNKNOWN = "unknown";
-	public static final String ATTRIBUTE_FROM = "from";
-	public static final String ATTRIBUTE_TO = "to";
 	
+	/**
+	 * The synapses tag.
+	 */
+	public static final String TAG_SYNAPSES = "synapses";
+	
+	/**
+	 * The synapse tag.
+	 */
+	public static final String TAG_SYNAPSE = "synapse";
+	
+	/**
+	 * The layer synapse.
+	 */
+	public static final String TAG_LAYER = "layer";
+	
+	/**
+	 * The id attribute.
+	 */
+	public static final String ATTRIBUTE_ID = "id";
+	
+	/**
+	 * The type attribute.
+	 */
+	public static final String ATTRIBUTE_TYPE = "type";
+	
+	/**
+	 * The input layer type.
+	 */
+	public static final String ATTRIBUTE_TYPE_INPUT = "input";
+	
+	/**
+	 * The output layer type.
+	 */
+	public static final String ATTRIBUTE_TYPE_OUTPUT = "output";
+	
+	/**
+	 * The hidden layer type.
+	 */
+	public static final String ATTRIBUTE_TYPE_HIDDEN = "hidden";
+	
+	/**
+	 * The both layer type.
+	 */
+	public static final String ATTRIBUTE_TYPE_BOTH = "both";
+	
+	/**
+	 * The unknown layer type.
+	 */
+	public static final String ATTRIBUTE_TYPE_UNKNOWN = "unknown";
+	
+	/**
+	 * The from attribute.
+	 */
+	public static final String ATTRIBUTE_FROM = "from";
+	
+	/**
+	 * The to attribute.
+	 */
+	public static final String ATTRIBUTE_TO = "to";
+
+	/**
+	 * The network that is being loaded.
+	 */
 	private BasicNetwork currentNetwork;
-	private final Map<Layer , Integer> layer2index = new HashMap<Layer , Integer>();
-	private final Map<Integer, Layer> index2layer = new HashMap<Integer, Layer>();
-		
-	private void saveLayers(WriteXML out)
-	{
+	
+	/**
+	 * A mapping from layers to index numbers.
+	 */
+	private final Map<Layer, Integer> layer2index 
+		= new HashMap<Layer, Integer>();
+	
+	/**
+	 * A mapping from index numbers to layers.
+	 */
+	private final Map<Integer, Layer> index2layer 
+		= new HashMap<Integer, Layer>();
+
+	/**
+	 * Handle any layers that should be loaded.
+	 * @param in The XML reader.
+	 */
+	private void handleLayers(final ReadXML in) {
+		final String end = in.getTag().getName();
+		while (in.readToTag()) {
+			if (in.is(BasicNetworkPersistor.TAG_LAYER, true)) {
+				final int num = in.getTag().getAttributeInt(
+						BasicNetworkPersistor.ATTRIBUTE_ID);
+				final String type = in.getTag().getAttributeValue(
+						BasicNetworkPersistor.ATTRIBUTE_TYPE);
+				in.readToTag();
+				final Persistor persistor = PersistorUtil.createPersistor(in
+						.getTag().getName());
+				final Layer layer = (Layer) persistor.load(in);
+				this.index2layer.put(num, layer);
+				if (type.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_INPUT)) {
+					this.currentNetwork.setInputLayer(layer);
+				} else if (type
+						.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_OUTPUT)) {
+					this.currentNetwork.setOutputLayer(layer);
+				} else if (type
+						.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_BOTH)) {
+					this.currentNetwork.setInputLayer(layer);
+					this.currentNetwork.setOutputLayer(layer);
+				}
+			}
+			if (in.is(end, false)) {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Process any synapses that should be loaded.
+	 * @param in The XML reader.
+	 */
+	private void handleSynapses(final ReadXML in) {
+		final String end = in.getTag().getName();
+		while (in.readToTag()) {
+			if (in.is(BasicNetworkPersistor.TAG_SYNAPSE, true)) {
+				final int from = in.getTag().getAttributeInt(
+						BasicNetworkPersistor.ATTRIBUTE_FROM);
+				final int to = in.getTag().getAttributeInt(
+						BasicNetworkPersistor.ATTRIBUTE_TO);
+				in.readToTag();
+				final Persistor persistor = PersistorUtil.createPersistor(in
+						.getTag().getName());
+				final Synapse synapse = (Synapse) persistor.load(in);
+				synapse.setFromLayer(this.index2layer.get(from));
+				synapse.setToLayer(this.index2layer.get(to));
+				synapse.getFromLayer().addSynapse(synapse);
+			}
+			if (in.is(end, false)) {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * Load the specified Encog object from an XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader to use.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
+
+		final String name = in.getTag().getAttributes().get(
+				EncogPersistedCollection.ATTRIBUTE_NAME);
+		final String description = in.getTag().getAttributes().get(
+				EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
+
+		this.currentNetwork = new BasicNetwork();
+		this.currentNetwork.setName(name);
+		this.currentNetwork.setDescription(description);
+
+		while (in.readToTag()) {
+			if (in.is(BasicNetworkPersistor.TAG_LAYERS, true)) {
+				handleLayers(in);
+			} else if (in.is(BasicNetworkPersistor.TAG_SYNAPSES, true)) {
+				handleSynapses(in);
+			}
+
+		}
+		this.currentNetwork.getStructure().finalizeStructure();
+		return this.currentNetwork;
+	}
+
+	/**
+	 * Save the specified Encog object to an XML writer.
+	 * 
+	 * @param obj
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer to save to.
+	 */
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_BASIC_NET,
+				out, obj, true);
+		this.currentNetwork = (BasicNetwork) obj;
+
+		this.currentNetwork.getStructure().finalizeStructure();
+
+		// save the layers
+		out.beginTag(BasicNetworkPersistor.TAG_LAYERS);
+		saveLayers(out);
+		out.endTag();
+
+		// save the structure of these layers
+		out.beginTag(BasicNetworkPersistor.TAG_SYNAPSES);
+		saveSynapses(out);
+		out.endTag();
+		out.endTag();
+	}
+
+	/**
+	 * Save the layers to the specified XML writer.
+	 * @param out The XML writer.
+	 */
+	private void saveLayers(final WriteXML out) {
 		int current = 1;
-		for(Layer layer: currentNetwork.getStructure().getLayers())
-		{
+		for (final Layer layer 
+				: this.currentNetwork.getStructure().getLayers()) {
 			String type;
-			
-			if(this.currentNetwork.isInput(layer) && this.currentNetwork.isOutput(layer) )
-			{
+
+			if (this.currentNetwork.isInput(layer)
+					&& this.currentNetwork.isOutput(layer)) {
 				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_BOTH;
-			}
-			else if(this.currentNetwork.isInput(layer))
-			{
+			} else if (this.currentNetwork.isInput(layer)) {
 				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_INPUT;
-			}
-			else if(this.currentNetwork.isOutput(layer))
-			{
+			} else if (this.currentNetwork.isOutput(layer)) {
 				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_OUTPUT;
-			}
-			else if(this.currentNetwork.isHidden(layer))
-			{
+			} else if (this.currentNetwork.isHidden(layer)) {
 				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_HIDDEN;
-			}
-			else
+			} else {
 				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_UNKNOWN;
-			
-			out.addAttribute(ATTRIBUTE_ID, ""+current);
-			out.addAttribute(ATTRIBUTE_TYPE, type);
-			out.beginTag(TAG_LAYER);
-			Persistor persistor = layer.createPersistor();
+			}
+
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_ID, "" + current);
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_TYPE, type);
+			out.beginTag(BasicNetworkPersistor.TAG_LAYER);
+			final Persistor persistor = layer.createPersistor();
 			persistor.save(layer, out);
 			out.endTag();
 			this.layer2index.put(layer, current);
 			current++;
 		}
 	}
-	
-	private void saveSynapses(WriteXML out)
-	{
-		for(Synapse synapse: this.currentNetwork.getStructure().getSynapses())
-		{
-			out.addAttribute(ATTRIBUTE_FROM, ""+this.layer2index.get(synapse.getFromLayer()));
-			out.addAttribute(ATTRIBUTE_TO, ""+this.layer2index.get(synapse.getToLayer()));
-			out.beginTag(TAG_SYNAPSE);
-			Persistor persistor = synapse.createPersistor();
+
+	/**
+	 * Save the synapses to the specified XML writer.
+	 * @param out The XML writer.
+	 */
+	private void saveSynapses(final WriteXML out) {
+		for (final Synapse synapse : this.currentNetwork.getStructure()
+				.getSynapses()) {
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_FROM, ""
+					+ this.layer2index.get(synapse.getFromLayer()));
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_TO, ""
+					+ this.layer2index.get(synapse.getToLayer()));
+			out.beginTag(BasicNetworkPersistor.TAG_SYNAPSE);
+			final Persistor persistor = synapse.createPersistor();
 			persistor.save(synapse, out);
 			out.endTag();
-		}
-	}
-
-
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_BASIC_NET, out, obj, true);
-		this.currentNetwork = (BasicNetwork)obj;
-		
-		this.currentNetwork.getStructure().finalizeStructure();
-		
-		// save the layers
-		out.beginTag(TAG_LAYERS);
-		saveLayers(out);
-		out.endTag();
-		
-		// save the structure of these layers
-		out.beginTag(TAG_SYNAPSES);		
-		saveSynapses(out);
-		out.endTag();
-		out.endTag();
-	}
-	
-
-	public EncogPersistedObject load(ReadXML in) {
-				
-		String name = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_NAME);
-		String description = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
-		
-		this.currentNetwork = new BasicNetwork();
-		this.currentNetwork.setName(name);
-		this.currentNetwork.setDescription(description);
-		
-		while( in.readToTag() ) 
-		{
-			if( in.is(TAG_LAYERS,true))
-			{
-				handleLayers(in);
-			} 
-			else if( in.is(TAG_SYNAPSES,true))
-			{
-				handleSynapses(in);
-			}
-				
-		}
-		this.currentNetwork.getStructure().finalizeStructure();
-		return this.currentNetwork;
-	}
-	
-	private void handleLayers(ReadXML in)
-	{		
-		String end = in.getTag().getName();
-		while( in.readToTag() )  
-		{
-			if( in.is(TAG_LAYER,true) )
-			{
-				int num = in.getTag().getAttributeInt(ATTRIBUTE_ID);
-				String type = in.getTag().getAttributeValue(ATTRIBUTE_TYPE);
-				in.readToTag();
-				Persistor persistor = PersistorUtil.createPersistor(in.getTag().getName());
-				Layer layer = (Layer) persistor.load(in);
-				this.index2layer.put(num, layer);
-				if( type.equals(ATTRIBUTE_TYPE_INPUT) )
-					this.currentNetwork.setInputLayer(layer);
-				else if( type.equals(ATTRIBUTE_TYPE_OUTPUT) )
-					this.currentNetwork.setOutputLayer(layer);
-				else if( type.equals(ATTRIBUTE_TYPE_BOTH) )
-				{
-					this.currentNetwork.setInputLayer(layer);
-					this.currentNetwork.setOutputLayer(layer);
-				}
-			}
-			if( in.is(end, false))
-				break;
-		}
-	}
-	
-	private void handleSynapses(ReadXML in)
-	{
-		String end = in.getTag().getName();
-		while( in.readToTag() )  
-		{
-			if( in.is(TAG_SYNAPSE,true) )
-			{
-				int from = in.getTag().getAttributeInt(ATTRIBUTE_FROM);
-				int to = in.getTag().getAttributeInt(ATTRIBUTE_TO);
-				in.readToTag();
-				Persistor persistor = PersistorUtil.createPersistor(in.getTag().getName());
-				Synapse synapse = (Synapse) persistor.load(in);
-				synapse.setFromLayer(this.index2layer.get(from));
-				synapse.setToLayer(this.index2layer.get(to));
-				synapse.getFromLayer().addSynapse(synapse);
-			}
-			if( in.is(end, false))
-				break;
 		}
 	}
 }

@@ -25,24 +25,51 @@
  */
 package org.encog.neural.prune;
 
+/**
+ * Specifies the minimum and maximum neuron counts for a layer.
+ * 
+ * @author jheaton
+ * 
+ */
 public class HiddenLayerParams {
+
+	/**
+	 * The minimum number of neurons on this layer.
+	 */
 	private final int min;
+
+	/**
+	 * The maximum number of neurons on this layer.
+	 */
 	private final int max;
-	
-	public HiddenLayerParams(int min, int max) {
+
+	/**
+	 * Construct a hidden layer param object with the specified min and max
+	 * values.
+	 * 
+	 * @param min
+	 *            The minimum number of neurons.
+	 * @param max
+	 *            The maximum number of neurons.
+	 */
+	public HiddenLayerParams(final int min, final int max) {
 		super();
 		this.min = min;
 		this.max = max;
 	}
 
-	public int getMin() {
-		return min;
+	/**
+	 * @return The maximum number of neurons.
+	 */
+	public int getMax() {
+		return this.max;
 	}
 
-	public int getMax() {
-		return max;
+	/**
+	 * @return The minimum number of neurons.
+	 */
+	public int getMin() {
+		return this.min;
 	}
-	
-	
-	
+
 }

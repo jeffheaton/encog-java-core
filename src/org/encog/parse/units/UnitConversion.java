@@ -30,96 +30,101 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Used to provide unit conversion for the parser.
+ * 
  * @author jheaton
- *
+ * 
  */
-public class UnitConversion
-{
+public class UnitConversion {
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * The from unit.
+	 */
+	private final String from;
 	
-  private String from;
-  private String to;
-  private double addPreRatio;
-  private double addPostRatio;
-  private double ratio;
+	/**
+	 * The to unit.
+	 */
+	private final String to;
+	
+	/**
+	 * The number to add before the ratio.
+	 */
+	private final double addPreRatio;
+	
+	/**
+	 * The number to add after the ratio.
+	 */
+	private final double addPostRatio;
+	
+	/**
+	 * The conversion ratio.
+	 */
+	private final double ratio;
 
-  /**
-   * Used t
-   * @param from
-   * @param to
-   * @param addPreRatio
-   * @param addPostRatio
-   * @param ratio
-   */
-  public UnitConversion(String from,String to,double addPreRatio,double addPostRatio,double ratio)
-  {
-    this.from = from;
-    this.to = to;
-    this.addPreRatio = addPreRatio;
-    this.addPostRatio = addPostRatio;
-    this.ratio = ratio;
-  }
+	/**
+	 * Used to specify how a unit conversion works.
+	 * @param from The from unit.
+	 * @param to The to unit.
+	 * @param addPreRatio The number to be added before the ratio.
+	 * @param addPostRatio The number to be added after the ratio.
+	 * @param ratio The ratio.
+	 */
+	public UnitConversion(final String from, final String to,
+			final double addPreRatio, final double addPostRatio,
+			final double ratio) {
+		this.from = from;
+		this.to = to;
+		this.addPreRatio = addPreRatio;
+		this.addPostRatio = addPostRatio;
+		this.ratio = ratio;
+	}
 
-  public String getFrom()
-  {
-    return this.from;
-  }
+	/**
+	 * Perform the conversion.
+	 * @param input The number to convert.
+	 * @return The converted value.
+	 */
+	public double convert(final double input) {
+		return (((input + this.addPreRatio) * this.ratio) + this.addPostRatio);
+	}
 
-  public void setFrom(String from)
-  {
-    this.from = from;
-  }
+	/**
+	 * @return The value to add before the ratio is applied.
+	 */
+	public double getAddPostRatio() {
+		return this.addPostRatio;
+	}
 
-  public String getTo()
-  {
-    return this.to;
-  }
+	/**
+	 * @return The value to add after the ratio is applied.
+	 */
+	public double getAddPreRatio() {
+		return this.addPreRatio;
+	}
 
-  public void setTo(String to)
-  {
-    this.to = to;
-  }
+	/**
+	 * @return The conversion ratio.
+	 */
+	public String getFrom() {
+		return this.from;
+	}
 
-  public void setAddPreRatio(double addPreRatio)
-  {
-    this.addPreRatio = addPreRatio;
-  }
+	/**
+	 * @return The conversion ratio.
+	 */
+	public double getRatio() {
+		return this.ratio;
+	}
 
-  public double getAddPreRatio()
-  {
-    return this.addPreRatio;
-  }
-
-
-  public void setAddPostRatio(double addPostRatio)
-  {
-    this.addPostRatio = addPostRatio;
-  }
-
-  public double getAddPostRatio()
-  {
-    return this.addPostRatio;
-  }
-
-  public void setRatio(double ratio)
-  {
-    this.ratio = ratio;
-  }
-
-  public double getRatio()
-  {
-    return this.ratio;
-  }
-
-  public double convert(double input)
-  {
-    return(((input+addPreRatio)*ratio)+addPostRatio);
-  }
-
-
-
+	/**
+	 * @return The to unit.
+	 */
+	public String getTo() {
+		return this.to;
+	}
 }

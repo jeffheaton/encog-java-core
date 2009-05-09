@@ -25,40 +25,21 @@
  */
 package org.encog.parse.tags.write;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Stack;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-
-import org.encog.EncogError;
-import org.encog.neural.NeuralNetworkError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
+/**
+ * Contains specifics to writing XML.
+ * @author jheaton
+ *
+ */
 public class WriteXML extends WriteTags {
 
-	public WriteXML(OutputStream os) {
+	/**
+	 * Construct an object to write an XML file.
+	 * @param os The output stream.
+	 */
+	public WriteXML(final OutputStream os) {
 		super(os);
 	}
-	
 
 }

@@ -25,6 +25,7 @@
  */
 package org.encog.persist.persistors;
 
+import org.encog.parse.ParseError;
 import org.encog.parse.ParseTemplate;
 import org.encog.parse.recognize.Recognize;
 import org.encog.parse.recognize.RecognizeElement;
@@ -47,7 +48,9 @@ public class ParseTemplatePersistor implements Persistor {
 
 	/**
 	 * Load ParseTemplate object.
-	 * @param in The XML to read it from.
+	 * 
+	 * @param in
+	 *            The XML to read it from.
 	 * @return The loaded object.
 	 */
 	public EncogPersistedObject load(final ReadXML in) {
@@ -72,17 +75,27 @@ public class ParseTemplatePersistor implements Persistor {
 		return this.template;
 	}
 
+	/**
+	 * Load the specified char processor.
+	 * @param element The XML recognize element.
+	 * @param in The XML reader.
+	 */
 	private void loadChar(final RecognizeElement element, final ReadXML in) {
 		final String value = in.getTag().getAttributeValue("value");
 		final String from = in.getTag().getAttributeValue("from");
 		final String to = in.getTag().getAttributeValue("to");
-		if (value!=null) {
+		if (value != null) {
 			element.add(value.charAt(0));
 		} else {
 			element.addRange(from.charAt(0), to.charAt(0));
 		}
 	}
 
+	/**
+	 * Load the specified recognize element.
+	 * @param recognize The element to load.
+	 * @param in The XML reader.
+	 */
 	private void loadElement(final Recognize recognize, final ReadXML in) {
 		final String type = in.getTag().getAttributeValue("type");
 		RecognizeElement recognizeElement;
@@ -94,7 +107,7 @@ public class ParseTemplatePersistor implements Persistor {
 			recognizeElement = recognize
 					.createElement(RecognizeElement.ALLOW_MULTIPLE);
 		} else {
-			recognizeElement = null;// ERROR
+			recognizeElement = null; // ERROR
 		}
 
 		final String end = in.getTag().getName();
@@ -111,6 +124,10 @@ public class ParseTemplatePersistor implements Persistor {
 
 	}
 
+	/**
+	 * Load the current recognize object.
+	 * @param in The XML reader.
+	 */
 	private void loadRecognize(final ReadXML in) {
 		final String id = in.getTag().getAttributeValue("id");
 		final String ignore = in.getTag().getAttributeValue("ignore");
@@ -122,6 +139,7 @@ public class ParseTemplatePersistor implements Persistor {
 				recognize.setSignalClass(Class.forName(recognizeClass));
 			}
 		} catch (final ClassNotFoundException e) {
+			throw new ParseError(e);
 		}
 
 		if ("true".equalsIgnoreCase(ignore)) {
@@ -143,6 +161,11 @@ public class ParseTemplatePersistor implements Persistor {
 		this.template.addRecognizer(recognize);
 	}
 
+	/**
+	 * Load the specified unit.
+	 * @param element The recognize element
+	 * @param in The specified XML reader. 
+	 */
 	private void loadUnit(final RecognizeElement element, final ReadXML in) {
 		final String type = in.getTag().getAttributeValue("type");
 		final String value = in.getTag().getAttributeValue("value");
@@ -154,6 +177,11 @@ public class ParseTemplatePersistor implements Persistor {
 		}
 	}
 
+	/**
+	 * Save the parse template.
+	 * @param object The object to save.
+	 * @param out The XML writer.
+	 */
 	public void save(final EncogPersistedObject object, final WriteXML out) {
 		// TODO Auto-generated method stub
 

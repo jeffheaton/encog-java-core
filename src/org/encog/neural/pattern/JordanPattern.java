@@ -31,86 +31,148 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.SynapseType;
-import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This class is used to generate an Jordan style recurrent neural network. This
+ * network type consists of three regular layers, an input output and hidden
+ * layer. There is also a context layer which accepts output from the output
+ * layer and outputs back to the hidden layer. This makes it a recurrent neural
+ * network.
+ * 
+ * The Jordan neural network is useful for temporal input data. The specified
+ * activation function will be used on all layers.  The Jordan neural network
+ * is similar to the Elman neural network.
+ * 
+ * @author jheaton
+ * 
+ */
 public class JordanPattern implements NeuralNetworkPattern {
-	
-	
+
+	/**
+	 * The number of input neurons.
+	 */
 	private int inputNeurons;
+
+	/**
+	 * The number of output neurons.
+	 */
 	private int outputNeurons;
+
+	/**
+	 * The number of hidden neurons.
+	 */
 	private int hiddenNeurons;
+
+	/**
+	 * The activation function.
+	 */
 	private ActivationFunction activation;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public JordanPattern()
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct an object to create a Jordan type neural network.
+	 */
+	public JordanPattern() {
 		this.inputNeurons = -1;
 		this.outputNeurons = -1;
 		this.hiddenNeurons = -1;
 	}
 
-	public void addHiddenLayer(int count) {
-		if( this.hiddenNeurons != -1 )
-		{
-			String str = "A Jordan neural network should have only one hidden layer.";
-			if( logger.isErrorEnabled())
-			{
-				logger.error(str);
+	/**
+	 * Add a hidden layer, there should be only one.
+	 * 
+	 * @param count
+	 *            The number of neurons in this hidden layer.
+	 */
+	public void addHiddenLayer(final int count) {
+		if (this.hiddenNeurons != -1) {
+			final String str = 
+				"A Jordan neural network should have only one hidden "
+					+ "layer.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new PatternError(str);
 		}
-		
+
 		this.hiddenNeurons = count;
-		
+
 	}
 
-	public void setActivationFunction(ActivationFunction activation) {
-		this.activation = activation;		
-	}
-
-	public void setInputNeurons(int count) {
-		this.inputNeurons = count;
-	}
-
-	public void setOutputNeurons(int count) {
-		this.outputNeurons = count;		
-	}
-	
+	/**
+	 * Generate a Jordan neural network.
+	 * 
+	 * @return A Jordan neural network.
+	 */
 	public BasicNetwork generate() {
 		// construct an Jordan type network
-		Layer hidden,output;
-		Layer input;
-		Layer context = new ContextLayer(this.outputNeurons);
-		BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(this.inputNeurons));
-		network.addLayer(hidden = new BasicLayer(this.hiddenNeurons));
-		network.addLayer(output = new BasicLayer(this.outputNeurons));
-		
-		output.addNext(context,SynapseType.OneToOne);
+		final Layer input = new BasicLayer(this.activation, true,
+				this.inputNeurons);
+		final Layer hidden = new BasicLayer(this.activation, true,
+				this.hiddenNeurons);
+		final Layer output = new BasicLayer(this.activation, true,
+				this.outputNeurons);
+		final Layer context = new ContextLayer(this.outputNeurons);
+		final BasicNetwork network = new BasicNetwork();
+		network.addLayer(input);
+		network.addLayer(hidden);
+		network.addLayer(output);
+
+		output.addNext(context, SynapseType.OneToOne);
 		context.addNext(hidden);
-		
-		int y = 50;
-		input.setX(50);
+
+		int y = PatternConst.START_Y;
+		input.setX(PatternConst.START_X);
 		input.setY(y);
-		y+=150;
-		hidden.setX(50);
+		y += PatternConst.INC_Y;
+		hidden.setX(PatternConst.START_X);
 		hidden.setY(y);
-		context.setX(250);
+		context.setX(PatternConst.INDENT_X);
 		context.setY(y);
-		y+=150;
-		output.setX(50);
+		y += PatternConst.INC_Y;
+		output.setX(PatternConst.START_X);
 		output.setY(y);
-		
+
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
+	}
+
+	/**
+	 * Set the activation function to use on each of the layers.
+	 * 
+	 * @param activation
+	 *            The activation function.
+	 */
+	public void setActivationFunction(final ActivationFunction activation) {
+		this.activation = activation;
+	}
+
+	/**
+	 * Set the number of input neurons.
+	 * 
+	 * @param count
+	 *            Neuron count.
+	 */
+	public void setInputNeurons(final int count) {
+		this.inputNeurons = count;
+	}
+
+	/**
+	 * Set the number of output neurons.
+	 * 
+	 * @param count
+	 *            Neuron count.
+	 */
+	public void setOutputNeurons(final int count) {
+		this.outputNeurons = count;
 	}
 
 }

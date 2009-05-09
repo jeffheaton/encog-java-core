@@ -1,6 +1,9 @@
 package org.encog.persist.persistors;
 
-import org.encog.neural.networks.layers.BasicLayer;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
@@ -9,11 +12,6 @@ import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.util.math.rbf.GaussianFunction;
 import org.encog.util.math.rbf.RadialBasisFunction;
-
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,8 +32,19 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 	 */
 	public static final String PROPERTY_RADIAL_FUNCTION = "RadialFunction";
 
+	/**
+	 * The center of the RBF. XML property.
+	 */
 	public static final String PROPERTY_CENTER = "center";
+	
+	/**
+	 * The peak of the RBF. XML property.
+	 */
 	public static final String PROPERTY_PEAK = "peak";
+	
+	/**
+	 * The width of the RBF. XML property.
+	 */
 	public static final String PROPERTY_WIDTH = "width";
 
 	/**
@@ -53,7 +62,8 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 	 */
 	public EncogPersistedObject load(final ReadXML in) {
 
-		final List<RadialBasisFunction> radialFunctions = new ArrayList<RadialBasisFunction>();
+		final List<RadialBasisFunction> radialFunctions = 
+			new ArrayList<RadialBasisFunction>();
 		int neuronCount = 0;
 		int x = 0;
 		int y = 0;
@@ -68,8 +78,8 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 			} else if (in.is(BasicLayerPersistor.PROPERTY_Y, true)) {
 				y = in.readIntToTag();
 			} else if (in
-					.is(
-							RadialBasisFunctionLayerPersistor.PROPERTY_RADIAL_FUNCTIONS,
+				.is(
+				RadialBasisFunctionLayerPersistor.PROPERTY_RADIAL_FUNCTIONS,
 							true)) {
 				loadRadialFunctions(in, radialFunctions);
 			}
@@ -96,6 +106,11 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 		return null;
 	}
 
+	/**
+	 * Load a RBF function.
+	 * @param in The XML reader.
+	 * @return the RBF loaded.
+	 */
 	private RadialBasisFunction loadRadialFunction(final ReadXML in) {
 		final Map<String, String> properties = in.readPropertyBlock();
 		final double center = Double.parseDouble(properties
@@ -107,6 +122,11 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 		return new GaussianFunction(center, peak, width);
 	}
 
+	/**
+	 * Load a list of radial functions.
+	 * @param in THe XML reader.
+	 * @param radialFunctions The radial functions.
+	 */
 	private void loadRadialFunctions(final ReadXML in,
 			final List<RadialBasisFunction> radialFunctions) {
 
@@ -144,15 +164,19 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 				.getNeuronCount());
 		out.addProperty(BasicLayerPersistor.PROPERTY_X, layer.getX());
 		out.addProperty(BasicLayerPersistor.PROPERTY_Y, layer.getY());
-		
-		out.beginTag(PROPERTY_RADIAL_FUNCTIONS);
-		for(int i=0;i<layer.getNeuronCount();i++)
-		{
-			RadialBasisFunction rbf = layer.getRadialBasisFunction()[i];
-			out.beginTag(PROPERTY_RADIAL_FUNCTION);
-			out.addProperty(PROPERTY_CENTER, rbf.getCenter());
-			out.addProperty(PROPERTY_PEAK, rbf.getPeak());
-			out.addProperty(PROPERTY_WIDTH, rbf.getWidth());
+
+		out.beginTag(
+		RadialBasisFunctionLayerPersistor.PROPERTY_RADIAL_FUNCTIONS);
+		for (int i = 0; i < layer.getNeuronCount(); i++) {
+			final RadialBasisFunction rbf = layer.getRadialBasisFunction()[i];
+			out.beginTag(
+			RadialBasisFunctionLayerPersistor.PROPERTY_RADIAL_FUNCTION);
+			out.addProperty(RadialBasisFunctionLayerPersistor.PROPERTY_CENTER,
+					rbf.getCenter());
+			out.addProperty(RadialBasisFunctionLayerPersistor.PROPERTY_PEAK,
+					rbf.getPeak());
+			out.addProperty(RadialBasisFunctionLayerPersistor.PROPERTY_WIDTH,
+					rbf.getWidth());
 			out.endTag();
 		}
 		out.endTag();

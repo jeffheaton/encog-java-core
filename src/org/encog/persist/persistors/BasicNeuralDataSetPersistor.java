@@ -34,7 +34,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
@@ -51,86 +50,117 @@ import org.slf4j.LoggerFactory;
  */
 public class BasicNeuralDataSetPersistor implements Persistor {
 
-	public final static String TAG_ITEM = "Item";
-	public final static String TAG_INPUT = "Input";
-	public final static String TAG_IDEAL = "Ideal";
+	/**
+	 * The item tag.
+	 */
+	public static final String TAG_ITEM = "Item";
 	
+	/**
+	 * The input tag.
+	 */
+	public static final String TAG_INPUT = "Input";
+	
+	/**
+	 * THe ideal tag.
+	 */
+	public static final String TAG_IDEAL = "Ideal";
+
+	/**
+	 * The current data set being loaded.
+	 */
 	private BasicNeuralDataSet currentDataSet;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	
-	private void handleItem(final ReadXML in)
-	{
-		Map<String,String> properties = in.readPropertyBlock();
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Handle reading an item tag.
+	 * @param in The XML reader.
+	 */
+	private void handleItem(final ReadXML in) {
+		final Map<String, String> properties = in.readPropertyBlock();
 		NeuralDataPair pair = null;
-		NeuralData input = new BasicNeuralData(ReadCSV.fromCommas(properties.get(TAG_INPUT)));
-		
-		if( properties.containsKey(TAG_IDEAL))
-		{
-			// supervised			
-			NeuralData ideal = new BasicNeuralData(ReadCSV.fromCommas(properties.get(TAG_IDEAL)));
-			pair = new BasicNeuralDataPair(input,ideal);
-		}
-		else
-		{
+		final NeuralData input = new BasicNeuralData(ReadCSV
+				.fromCommas(properties
+						.get(BasicNeuralDataSetPersistor.TAG_INPUT)));
+
+		if (properties.containsKey(BasicNeuralDataSetPersistor.TAG_IDEAL)) {
+			// supervised
+			final NeuralData ideal = new BasicNeuralData(ReadCSV
+					.fromCommas(properties
+							.get(BasicNeuralDataSetPersistor.TAG_IDEAL)));
+			pair = new BasicNeuralDataPair(input, ideal);
+		} else {
 			// unsupervised
-			pair = new BasicNeuralDataPair(input);			
+			pair = new BasicNeuralDataPair(input);
 		}
-		
+
 		this.currentDataSet.add(pair);
 	}
 
-	public EncogPersistedObject load(ReadXML in) {
-				
-		String name = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_NAME);
-		String description = in.getTag().getAttributes().get(EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
-			
+	/**
+	 * Load the specified Encog object from an XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader to use.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
+
+		final String name = in.getTag().getAttributes().get(
+				EncogPersistedCollection.ATTRIBUTE_NAME);
+		final String description = in.getTag().getAttributes().get(
+				EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
+
 		this.currentDataSet = new BasicNeuralDataSet();
-		currentDataSet.setName(name);
-		currentDataSet.setDescription(description);
-		
-		while( in.readToTag() )
-		{
-			if( in.is(TAG_ITEM,true) )
-			{
+		this.currentDataSet.setName(name);
+		this.currentDataSet.setDescription(description);
+
+		while (in.readToTag()) {
+			if (in.is(BasicNeuralDataSetPersistor.TAG_ITEM, true)) {
 				handleItem(in);
-			}
-			else if( in.is(TAG_ITEM,false) )
-			{
+			} else if (in.is(BasicNeuralDataSetPersistor.TAG_ITEM, false)) {
 				break;
 			}
-			
+
 		}
-		
+
 		return this.currentDataSet;
 	}
-		
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_TRAINING, out, obj, true);
-		NeuralDataSet set = (NeuralDataSet)obj;
-		StringBuilder builder = new StringBuilder();
-		
-		for(NeuralDataPair pair: set)
-		{
-			out.beginTag(TAG_ITEM);
-			
-			ReadCSV.toCommas(builder,pair.getInput().getData());
-			out.addProperty(TAG_INPUT, builder.toString());
-			
-			if( pair.getIdeal()!=null )
-			{
-				ReadCSV.toCommas(builder,pair.getIdeal().getData());
-				out.addProperty(TAG_IDEAL, builder.toString());
+
+	/**
+	 * Save the specified Encog object to an XML writer.
+	 * 
+	 * @param obj
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer to save to.
+	 */
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_TRAINING,
+				out, obj, true);
+		final NeuralDataSet set = (NeuralDataSet) obj;
+		final StringBuilder builder = new StringBuilder();
+
+		for (final NeuralDataPair pair : set) {
+			out.beginTag(BasicNeuralDataSetPersistor.TAG_ITEM);
+
+			ReadCSV.toCommas(builder, pair.getInput().getData());
+			out.addProperty(BasicNeuralDataSetPersistor.TAG_INPUT, builder
+					.toString());
+
+			if (pair.getIdeal() != null) {
+				ReadCSV.toCommas(builder, pair.getIdeal().getData());
+				out.addProperty(BasicNeuralDataSetPersistor.TAG_IDEAL, builder
+						.toString());
 			}
 			out.endTag();
 		}
 		out.endTag();
-		
+
 	}
 
 }

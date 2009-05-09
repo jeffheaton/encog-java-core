@@ -25,44 +25,74 @@
  */
 package org.encog.persist;
 
-import org.encog.neural.activation.ActivationBiPolar;
 
 /**
- * The idea of the Encog persisted collection is that the entire file
- * might be quite long and should not be read into memory in its 
- * entirity. Directory entry classes allow you to list the contents of
- * a file without loading the entire file.  
+ * The idea of the Encog persisted collection is that the entire file might be
+ * quite long and should not be read into memory in its entirity. Directory
+ * entry classes allow you to list the contents of a file without loading the
+ * entire file.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class DirectoryEntry {
-	
+
+	/**
+	 * The type of object that this is.
+	 */
 	private final String type;
-	private final String name;
-	private final String description;
 	
-	public DirectoryEntry(String type, String name,
-			String description) {
+	/**
+	 * The name of this object.
+	 */
+	private final String name;
+	
+	/**
+	 * The description for this object.
+	 */
+	private final String description;
+
+	/**
+	 * Construct a directory entry for the specified object.
+	 * @param obj The Encog object.
+	 */
+	public DirectoryEntry(final EncogPersistedObject obj) {
+		this(obj.getClass().getSimpleName(), obj.getName(), obj
+				.getDescription());
+	}
+
+	/**
+	 * Construct a directory entry from strings.
+	 * @param type The type of object.
+	 * @param name The name of this object.
+	 * @param description The description for this object.
+	 */
+	public DirectoryEntry(final String type, final String name,
+			final String description) {
 		this.type = type;
 		this.name = name;
 		this.description = description;
 	}
-	
-	public DirectoryEntry(EncogPersistedObject obj) {
-		this(obj.getClass().getSimpleName(),obj.getName(),obj.getDescription());
-	}
 
-	public String getName() {
-		return name;
-	}
-
+	/**
+	 * @return The description for this object.
+	 */
 	public String getDescription() {
-		return description;
+		return this.description;
 	}
 
+	/**
+	 * @return The name of this object.
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @return The type of this object.
+	 */
 	public String getType() {
-		return type;
+		return this.type;
 	}
 
-	
 }

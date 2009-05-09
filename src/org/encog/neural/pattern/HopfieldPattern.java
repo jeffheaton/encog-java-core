@@ -33,63 +33,106 @@ import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HopfieldPattern  implements NeuralNetworkPattern {
+/**
+ * Create a Hopfield pattern.  A Hopfield neural network has a single
+ * layer that functions both as the input and output layers.  There
+ * are no hidden layers.  Hopfield networks are used for basic
+ * pattern recognition.  When a Hopfield network recognizes a 
+ * pattern, it "echos" that pattern on the output.
+ * @author jheaton
+ *
+ */
+public class HopfieldPattern implements NeuralNetworkPattern {
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * How many neurons in the Hopfield network. Default to -1, which is
+	 * invalid. Therefore this value must be set.
+	 */
 	private int neuronCount = -1;
 
-	public void addHiddenLayer(int count) {
-		String str = "A Hopfield network has no hidden layers.";
-			if( logger.isErrorEnabled())
-			{
-				logger.error(str);
-			}
-			throw new PatternError(str);
-		
-		
+	/**
+	 * Add a hidden layer.  This will throw an error, because the
+	 * Hopfield neural network has no hidden layers.
+	 * @param count The number of neurons.
+	 */
+	public void addHiddenLayer(final int count) {
+		final String str = "A Hopfield network has no hidden layers.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new PatternError(str);
+
 	}
 
+	/**
+	 * Generate the Hopfield neural network.
+	 * 
+	 * @return The generated network.
+	 */
 	public BasicNetwork generate() {
-		Layer layer;
-		
-		BasicNetwork result = new BasicNetwork();
-		result.addLayer(layer = new BasicLayer(new ActivationBiPolar(),false,this.neuronCount));
+		final Layer layer = new BasicLayer(new ActivationBiPolar(), false,
+				this.neuronCount);
+
+		final BasicNetwork result = new BasicNetwork();
+		result.addLayer(layer);
 		layer.addNext(layer);
-		layer.setX(50);
-		layer.setY(50);
+		layer.setX(PatternConst.START_X);
+		layer.setY(PatternConst.START_Y);
 		result.getStructure().finalizeStructure();
 		result.reset();
 		return result;
 	}
 
-	public void setActivationFunction(ActivationFunction activation) {
-		String str = "A Hopfield network will use the BiPolar activation function, no activation function needs to be specified.";
-		if( logger.isErrorEnabled())
-		{
-			logger.error(str);
+	/**
+	 * Set the activation function to use.  This function will throw
+	 * an error, because the Hopfield network must use the BiPolar
+	 * activation function.
+	 * @param activation The activation function to use.
+	 */
+	public void setActivationFunction(final ActivationFunction activation) {
+		final String str = 
+			"A Hopfield network will use the BiPolar activation " 
+			+ "function, no activation function needs to be specified.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
 		}
 		throw new PatternError(str);
-		
+
 	}
 
-	public void setInputNeurons(int count) {
+	/**
+	 * Set the number of input neurons, this must match the output neurons.
+	 * 
+	 * @param count
+	 *            The number of neurons.
+	 */
+	public void setInputNeurons(final int count) {
 		this.neuronCount = count;
-		
+
 	}
 
-	public void setOutputNeurons(int count) {
-				String str = "A Hopfield network has a single layer, so no need to specify the output count.";
-				if( logger.isErrorEnabled())
-				{
-					logger.error(str);
-				}
-				throw new PatternError(str);
-		
+	/**
+	 * Set the number of output neurons, should not be used with a hopfield
+	 * neural network, because the number of input neurons defines the number of
+	 * output neurons.
+	 * 
+	 * @param count
+	 *            The number of neurons.
+	 */
+	public void setOutputNeurons(final int count) {
+		final String str = "A Hopfield network has a single layer, so no need "
+				+ "to specify the output count.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new PatternError(str);
+
 	}
-	
+
 }

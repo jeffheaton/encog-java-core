@@ -35,11 +35,37 @@ import java.io.Serializable;
  *
  */
 public interface EncogPersistedObject extends Serializable, Cloneable  {
-	public void setDescription(String theDescription);
-	public String getDescription();
 	
-	public void setName(String theName);
-	public String getName();
-	public Persistor createPersistor();
+	/**
+	 * Set the description of this object.
+	 * @param theDescription The description.
+	 */
+	void setDescription(String theDescription);
+	
+	/**
+	 * @return The description of this object.
+	 */
+	String getDescription();
+	
+	/**
+	 * Set the name of this object.
+	 * @param theName The name of this object.
+	 */
+	void setName(String theName);
+	
+	/**
+	 * @return The name of this object.
+	 */
+	String getName();
+	
+	/**
+	 * Create a persistor for this object.
+	 * @return A persistor for this object.
+	 */
+	Persistor createPersistor();
+	
+	/**
+	 * @return A cloned version of this object.
+	 */
 	Object clone();
 }

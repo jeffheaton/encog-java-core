@@ -29,24 +29,19 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 
-import javax.xml.transform.sax.TransformerHandler;
-
-import org.encog.EncogError;
 import org.encog.parse.tags.write.WriteXML;
-import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.persistors.PersistorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
 
 /**
- * A generic class used to take an object and produce XML for it.
- * Some of the Encog persistors make use of this class.
+ * A generic class used to take an object and produce XML for it. Some of the
+ * Encog persistors make use of this class.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class Object2XML {
 
@@ -54,29 +49,33 @@ public class Object2XML {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void save(EncogPersistedObject obj, WriteXML out) {
+	/**
+	 * Save the object to XML.
+	 * @param obj The object to save.
+	 * @param out The XML writer.
+	 */
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
 
 		try {
 			PersistorUtil.beginEncogObject(obj.getClass().getSimpleName(), out,
 					obj, true);
 
-			for (Field field : obj.getClass().getDeclaredFields()) {
+			for (final Field field : obj.getClass().getDeclaredFields()) {
 				field.setAccessible(true);
 
 				if (field.getName().equalsIgnoreCase("name")
-						|| field.getName().equalsIgnoreCase("description"))
+						|| field.getName().equalsIgnoreCase("description")) {
 					continue;
-
-				Class<?> type = field.getType();
+				}
 
 				if ((field.getModifiers() & Modifier.FINAL) == 0) {
-					Object value = field.get(obj);
+					final Object value = field.get(obj);
 					if (value != null) {
 						if (value instanceof Collection) {
 							out.beginTag(field.getName());
-							saveCollection(out, (Collection) value);
+							saveCollection(out, (Collection< ? >) value);
 							out.endTag();
 						} else {
 							out.addProperty(field.getName(), value.toString());
@@ -86,15 +85,21 @@ public class Object2XML {
 			}
 
 			out.endTag();
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			throw new PersistError(e);
 		}
 
 	}
 
-	private void saveCollection(WriteXML out, Collection<?> value) {
+	/**
+	 * Save a collection.
+	 * @param out The XML writer.
+	 * @param value The value to save.
+	 */
+	private void saveCollection(final WriteXML out, 
+			final Collection< ? > value) {
 
-		for (Object obj : value) {
+		for (final Object obj : value) {
 			if (obj instanceof String) {
 				out.addProperty("S", obj.toString());
 			}

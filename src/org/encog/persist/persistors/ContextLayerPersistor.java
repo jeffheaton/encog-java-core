@@ -48,93 +48,96 @@ public class ContextLayerPersistor implements Persistor {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public EncogPersistedObject load(ReadXML in) {
-		
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Load the specified Encog object from an XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader to use.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
+
 		int neuronCount = 0;
-		int x=0;
-		int y=0;
+		int x = 0;
+		int y = 0;
 		String threshold = null;
 		ActivationFunction activation = null;
-		String end = in.getTag().getName();
-		
-		while( in.readToTag() ) 
-		{
-			if( in.is(BasicLayerPersistor.TAG_ACTIVATION,true))
-			{
+		final String end = in.getTag().getName();
+
+		while (in.readToTag()) {
+			if (in.is(BasicLayerPersistor.TAG_ACTIVATION, true)) {
 				in.readToTag();
-				String type = in.getTag().getName();
-				Persistor persistor = PersistorUtil.createPersistor(type);
-				activation = (ActivationFunction) persistor.load(in);				
-			}
-			else if( in.is(BasicLayerPersistor.PROPERTY_NEURONS,true))
-			{
+				final String type = in.getTag().getName();
+				final Persistor persistor = PersistorUtil.createPersistor(type);
+				activation = (ActivationFunction) persistor.load(in);
+			} else if (in.is(BasicLayerPersistor.PROPERTY_NEURONS, true)) {
 				neuronCount = in.readIntToTag();
-			}
-			else if( in.is(BasicLayerPersistor.PROPERTY_X,true))
-			{
+			} else if (in.is(BasicLayerPersistor.PROPERTY_X, true)) {
 				x = in.readIntToTag();
-			}
-			else if( in.is(BasicLayerPersistor.PROPERTY_Y,true))
-			{
+			} else if (in.is(BasicLayerPersistor.PROPERTY_Y, true)) {
 				y = in.readIntToTag();
-			}
-			else if( in.is(BasicLayerPersistor.PROPERTY_THRESHOLD,true))
-			{
+			} else if (in.is(BasicLayerPersistor.PROPERTY_THRESHOLD, true)) {
 				threshold = in.readTextToTag();
-			}
-			else if( in.is(end, false))
+			} else if (in.is(end, false)) {
 				break;
-		}
-		
-		if( neuronCount>0)
-		{			
-			ContextLayer layer; 
-			
-			if( threshold==null )
-			{
-				layer = new ContextLayer(activation,false,neuronCount);
 			}
-			else
-			{
-				double[] t = ReadCSV.fromCommas(threshold);
-				layer = new ContextLayer(activation,true,neuronCount);
-				for(int i=0;i<t.length;i++)
-				{
+		}
+
+		if (neuronCount > 0) {
+			ContextLayer layer;
+
+			if (threshold == null) {
+				layer = new ContextLayer(activation, false, neuronCount);
+			} else {
+				final double[] t = ReadCSV.fromCommas(threshold);
+				layer = new ContextLayer(activation, true, neuronCount);
+				for (int i = 0; i < t.length; i++) {
 					layer.setThreshold(i, t[i]);
 				}
 			}
-			
+
 			layer.setX(x);
 			layer.setY(y);
-			
+
 			return layer;
 		}
 		return null;
 	}
 
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_CONTEXT_LAYER, out, obj, false);
-		BasicLayer layer = (BasicLayer)obj;
-		
-		out.addProperty(BasicLayerPersistor.PROPERTY_NEURONS, layer.getNeuronCount());
+	/**
+	 * Save the specified Encog object to an XML writer.
+	 * 
+	 * @param obj
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer to save to.
+	 */
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
+		PersistorUtil.beginEncogObject(
+				EncogPersistedCollection.TYPE_CONTEXT_LAYER, out, obj, false);
+		final BasicLayer layer = (BasicLayer) obj;
+
+		out.addProperty(BasicLayerPersistor.PROPERTY_NEURONS, layer
+				.getNeuronCount());
 		out.addProperty(BasicLayerPersistor.PROPERTY_X, layer.getX());
 		out.addProperty(BasicLayerPersistor.PROPERTY_Y, layer.getY());
-		
-		if( layer.hasThreshold())
-		{
-			StringBuilder result = new StringBuilder();
+
+		if (layer.hasThreshold()) {
+			final StringBuilder result = new StringBuilder();
 			ReadCSV.toCommas(result, layer.getThreshold());
-			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD,result.toString() );
+			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
+					.toString());
 		}
-		
+
 		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
-		Persistor persistor = layer.getActivationFunction().createPersistor();
+		final Persistor persistor = layer.getActivationFunction()
+				.createPersistor();
 		persistor.save(layer.getActivationFunction(), out);
 		out.endTag();
-				
-		out.endTag();		
+
+		out.endTag();
 	}
 
 }

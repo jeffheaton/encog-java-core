@@ -1,6 +1,19 @@
 package org.encog.parse.tags;
 
-public class TagConst {
+/**
+ * Constants to use while parsing the tags.
+ * @author jheaton
+ *
+ */
+public final class TagConst {
+	
+	/**
+	 * Private constructor.
+	 */
+	private TagConst() {
+		
+	}
+	
 	/**
 	 * The beginning of a comment.
 	 */

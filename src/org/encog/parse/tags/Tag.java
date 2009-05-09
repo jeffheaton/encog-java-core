@@ -39,32 +39,104 @@ import org.slf4j.LoggerFactory;
  * attributes, just as an actual HTML tag does.
  */
 public class Tag {
+
+	/**
+	 * Tag types.
+	 * 
+	 * @author jheaton
+	 */
 	public enum Type {
-		BEGIN, END, COMMENT, CDATA
+		/**
+		 * A beginning tag.
+		 */
+		BEGIN,
+		/**
+		 * An ending tag.
+		 */
+		END,
+		/**
+		 * A comment.
+		 */
+		COMMENT,
+		/**
+		 * A CDATA section.
+		 */
+		CDATA
 	};
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	/*
-	 * The attributes
+	/**
+	 * The attributes.
 	 */
-	private Map<String, String> attributes = new HashMap<String, String>();
+	private final Map<String, String> attributes = 
+			new HashMap<String, String>();
 
 	/**
 	 * The tag name.
 	 */
 	private String name = "";
 
+	/**
+	 * The tag type.
+	 */
 	private Type type;
 
+	/**
+	 * Clear the name, type and attributes.
+	 */
 	public void clear() {
 		this.attributes.clear();
 		this.name = "";
 		this.type = Type.BEGIN;
+	}
+
+	/**
+	 * @return A cloned copy of the object.
+	 */
+	@Override
+	public Tag clone() {
+		final Tag result = new Tag();
+		result.setName(getName());
+		result.setType(getType());
+		for (final String key : this.attributes.keySet()) {
+			final String value = this.attributes.get(key);
+			result.setAttribute(key, value);
+		}
+		return result;
+	}
+
+	/**
+	 * Get the specified attribute as an integer.
+	 * 
+	 * @param attributeId
+	 *            The attribute name.
+	 * @return The attribute value.
+	 */
+	public int getAttributeInt(final String attributeId) {
+		try {
+			final String str = getAttributeValue(attributeId);
+			return Integer.parseInt(str);
+		} catch (final NumberFormatException e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
+			}
+			throw new ParseError(e);
+		}
+
+	}
+
+	/**
+	 * Get a map of all attributes.
+	 * 
+	 * @return The attributes.
+	 */
+	public Map<String, String> getAttributes() {
+		return this.attributes;
 	}
 
 	/**
@@ -74,15 +146,22 @@ public class Tag {
 	 *            The name of an attribute.
 	 * @return The value of the specified attribute.
 	 */
-	public String getAttributeValue(String name) {
+	public String getAttributeValue(final String name) {
 		return this.attributes.get(name.toLowerCase());
 	}
 
 	/**
-	 * Get the tag name.
+	 * @return Get the tag name.
 	 */
 	public String getName() {
 		return this.name;
+	}
+
+	/**
+	 * @return Get the tag type.
+	 */
+	public Type getType() {
+		return this.type;
 	}
 
 	/**
@@ -93,34 +172,47 @@ public class Tag {
 	 * @param value
 	 *            The value of the attribute.
 	 */
-	public void setAttribute(String name, String value) {
+	public void setAttribute(final String name, final String value) {
 		this.attributes.put(name.toLowerCase(), value);
 	}
 
 	/**
 	 * Set the tag name.
+	 * @param s The name.
 	 */
-	public void setName(String s) {
+	public void setName(final String s) {
 		this.name = s;
 	}
 
 	/**
-	 * Convert this tag back into string form, with the beginning < and ending >.
+	 * Set the tag type.
+	 * 
+	 * @param type
+	 *            The tag type.
+	 */
+	public void setType(final Type type) {
+		this.type = type;
+	}
+
+	/**
+	 * Convert this tag back into string form, with the 
+	 * beginning < and ending >.
 	 * 
 	 * @return The Attribute object that was found.
 	 */
 	@Override
 	public String toString() {
-		StringBuilder buffer = new StringBuilder("<");
+		final StringBuilder buffer = new StringBuilder("<");
 
-		if (type == Type.END)
+		if (this.type == Type.END) {
 			buffer.append("/");
+		}
 
 		buffer.append(this.name);
 
-		Set<String> set = this.attributes.keySet();
-		for (String key : set) {
-			String value = this.attributes.get(key);
+		final Set<String> set = this.attributes.keySet();
+		for (final String key : set) {
+			final String value = this.attributes.get(key);
 			buffer.append(' ');
 
 			if (value == null) {
@@ -138,48 +230,6 @@ public class Tag {
 
 		buffer.append(">");
 		return buffer.toString();
-	}
-
-	public Type getType() {
-		return type;
-	}
-
-	public void setType(Type type) {
-		this.type = type;
-	}
-
-	public Map<String, String> getAttributes() {
-		return attributes;
-	}
-	
-	public Tag clone()
-	{
-		Tag result = new Tag();
-		result.setName(getName());
-		result.setType(getType());
-		for(String key: this.attributes.keySet())
-		{
-			String value = this.attributes.get(key);
-			result.setAttribute(key, value);
-		}
-		return result;
-	}
-
-	public int getAttributeInt(String attributeId) {
-		try
-		{
-			String str = getAttributeValue(attributeId);
-			return Integer.parseInt(str);
-		}
-		catch(NumberFormatException e)
-		{
-			if(logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
-			}
-			throw new ParseError(e);
-		}
-		
 	}
 
 }

@@ -35,16 +35,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is used to generate an Elman style recurrent neural 
- * network.  This network type consists of three regular layers, 
- * an input output and hidden layer.  There is also a context layer
- * which accepts output from the hidden layer and outputs back to the
- * hidden layer.  This makes it a recurrent neural network.
+ * This class is used to generate an Elman style recurrent neural network. This
+ * network type consists of three regular layers, an input output and hidden
+ * layer. There is also a context layer which accepts output from the hidden
+ * layer and outputs back to the hidden layer. This makes it a recurrent neural
+ * network.
  * 
- * The Elman neural network is useful for temporal input data.  The
- * specified activation function will be used on all layers. 
+ * The Elman neural network is useful for temporal input data. The specified
+ * activation function will be used on all layers.  The Elman neural 
+ * network is similar to the Jordan neural network.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ElmanPattern implements NeuralNetworkPattern {
 
@@ -52,17 +54,17 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * The number of input neurons.
 	 */
 	private int inputNeurons;
-	
+
 	/**
 	 * The number of output neurons.
 	 */
 	private int outputNeurons;
-	
+
 	/**
-	 * The number of hidden neurons. 
+	 * The number of hidden neurons.
 	 */
 	private int hiddenNeurons;
-	
+
 	/**
 	 * The activation function.
 	 */
@@ -83,9 +85,16 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		this.hiddenNeurons = -1;
 	}
 
+	/**
+	 * Add a hidden layer with the specified number of neurons.
+	 * 
+	 * @param count
+	 *            The number of neurons in this hidden layer.
+	 */
 	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			final String str = "An Elman neural network should have only one hidden layer.";
+			final String str = 
+				"An Elman neural network should have only one hidden layer.";
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
 			}
@@ -96,39 +105,63 @@ public class ElmanPattern implements NeuralNetworkPattern {
 
 	}
 
+	/**
+	 * Generate the Elman neural network.
+	 * 
+	 * @return The Elman neural network.
+	 */
 	public BasicNetwork generate() {
-		int y = 50;
-		Layer hidden, input, output;
+		int y = PatternConst.START_Y;
 		final Layer context = new ContextLayer(this.hiddenNeurons);
 		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(activation, true, this.inputNeurons));
-		input.setX(50);
+
+		final Layer input = new BasicLayer(this.activation, true,
+				this.inputNeurons);
+		network.addLayer(input);
+		input.setX(PatternConst.START_X);
 		input.setY(y);
-		y += 150;
-		network.addLayer(hidden = new BasicLayer(activation, true, this.hiddenNeurons));
-		hidden.setX(50);
+		y += PatternConst.INC_Y;
+
+		final Layer hidden = new BasicLayer(this.activation, true,
+				this.hiddenNeurons);
+		network.addLayer(hidden);
+		hidden.setX(PatternConst.START_X);
 		hidden.setY(y);
-		context.setX(300);
+		context.setX(PatternConst.INDENT_X);
 		context.setY(y);
-		y += 150;
+		y += PatternConst.INC_Y;
 		hidden.addNext(context, SynapseType.OneToOne);
 		context.addNext(hidden);
-		network.addLayer(output = new BasicLayer(activation, true, this.outputNeurons));
-		output.setX(50);
+		final Layer output = new BasicLayer(this.activation, true,
+				this.outputNeurons);
+		network.addLayer(output);
+		output.setX(PatternConst.START_X);
 		output.setY(y);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
 	}
 
+	/**
+	 * Set the activation function to use on each of the layers.
+	 * @param activation The activation function.
+	 */
 	public void setActivationFunction(final ActivationFunction activation) {
 		this.activation = activation;
 	}
 
+	/**
+	 * Set the number of input neurons.
+	 * @param count Neuron count.
+	 */
 	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 	}
 
+	/**
+	 * Set the number of output neurons.
+	 * @param count Neuron count.
+	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}

@@ -35,72 +35,107 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RSOMPattern  implements NeuralNetworkPattern {
-	
+/**
+ * A recurrent self organizing map is a self organizing map that has
+ * a recurrent context connection on the hidden layer.  This type
+ * of neural network is adept at classifying temporal data.
+ * @author jheaton
+ *
+ */
+public class RSOMPattern implements NeuralNetworkPattern {
+
+	/**
+	 * The number of input neurons.
+	 */
 	private int inputNeurons;
-	private int outputNeurons;
 	
+	/**
+	 * The number of output neurons.
+	 */
+	private int outputNeurons;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void addHiddenLayer(int count) {
-		String str = "A SOM network does not have hidden layers.";
-		if( logger.isErrorEnabled())
-		{
-			logger.error(str);
+	/**
+	 * Add a hidden layer.  SOM networks do not have hidden layers, so
+	 * this will throw an error.
+	 * @param count The number of hidden neurons.
+	 */
+	public void addHiddenLayer(final int count) {
+		final String str = "A SOM network does not have hidden layers.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
 		}
 		throw new PatternError(str);
-		
+
 	}
 
-	public void setActivationFunction(ActivationFunction activation) {
-		String str = "A SOM network can't define an activation function.";
-		if( logger.isErrorEnabled())
-		{
-			logger.error(str);
-		}
-		throw new PatternError(str);
-		
-	}
-
-	public void setInputNeurons(int count) {
-		this.inputNeurons = count;
-		
-	}
-
-	public void setOutputNeurons(int count) {
-		this.outputNeurons = count;		
-	}
-	
-
+	/**
+	 * Generate the RSOM network.
+	 * @return The neural network.
+	 */
 	public BasicNetwork generate() {
-		Layer output,input;
-		
-		BasicNetwork network = new BasicNetwork();
-		Layer context = new ContextLayer(this.outputNeurons);
-		network.addLayer(input = new BasicLayer(new ActivationLinear(),false,this.inputNeurons));
-		network.addLayer(output = new BasicLayer(new ActivationLinear(),false,this.outputNeurons));
-		
-		output.addNext(context,SynapseType.OneToOne);
+		Layer output = new BasicLayer(new ActivationLinear(), false,
+				this.outputNeurons);
+		Layer input = new BasicLayer(new ActivationLinear(), false,
+				this.inputNeurons);
+
+		final BasicNetwork network = new BasicNetwork();
+		final Layer context = new ContextLayer(this.outputNeurons);
+		network.addLayer(input);
+		network.addLayer(output);
+
+		output.addNext(context, SynapseType.OneToOne);
 		context.addNext(input);
-		
-		int y = 50;
-		input.setX(50);
+
+		int y = PatternConst.START_Y;
+		input.setX(PatternConst.START_X);
 		input.setY(y);
-	
-		context.setX(250);
+
+		context.setX(PatternConst.INDENT_X);
 		context.setY(y);
-		
-		y+=150;
-		
-		output.setX(50);
+
+		y += PatternConst.INC_Y;
+
+		output.setX(PatternConst.START_X);
 		output.setY(y);
-		
+
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
+	}
+
+	/**
+	 * Set the activation function.  A SOM uses a linear activation
+	 * function, so this method throws an error.
+	 * @param activation The activation function to use.
+	 */
+	public void setActivationFunction(final ActivationFunction activation) {
+		final String str = "A SOM network can't define an activation function.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new PatternError(str);
+
+	}
+
+	/**
+	 * Set the input neuron count.
+	 * @param count The number of neurons.
+	 */
+	public void setInputNeurons(final int count) {
+		this.inputNeurons = count;
+
+	}
+	/**
+	 * Set the output neuron count.
+	 * @param count The number of neurons.
+	 */
+	public void setOutputNeurons(final int count) {
+		this.outputNeurons = count;
 	}
 }

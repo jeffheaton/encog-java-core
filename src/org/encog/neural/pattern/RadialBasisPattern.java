@@ -35,65 +35,116 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class RadialBasisPattern  implements NeuralNetworkPattern {
+/**
+ * A radial basis function (RBF) network uses several radial basis
+ * functions to provide a more dynamic hidden layer activation function
+ * than many other types of neural network.  It consists of a 
+ * input, output and hidden layer.
+ * @author jheaton
+ *
+ */
+public class RadialBasisPattern implements NeuralNetworkPattern {
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	private ActivationFunction activation;
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * The number of input neurons to use. Must be set, default to invalid
+	 * -1 value.
+	 */
 	private int inputNeurons = -1;
+	
+	/**
+	 * The number of hidden neurons to use. Must be set, default to invalid
+	 * -1 value.
+	 */
 	private int outputNeurons = -1;
+	
+	/**
+	 * The number of hidden neurons to use. Must be set, default to invalid
+	 * -1 value.
+	 */
 	private int hiddenNeurons = -1;
 
-	public void addHiddenLayer(int count) {
-		if( hiddenNeurons!=-1 )
-		{
-			String str = "A RBF network usually has a single hidden layer.";
-			if( logger.isErrorEnabled())
-			{
-				logger.error(str);
+	/**
+	 * Add the hidden layer, this should be called once, as a RBF
+	 * has a single hidden layer.
+	 * @param count The number of neurons in the hidden layer.
+	 */
+	public void addHiddenLayer(final int count) {
+		if (this.hiddenNeurons != -1) {
+			final String str = "A RBF network usually has a single " 
+				+ "hidden layer.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
-			throw new PatternError(str);	
-		}
-		else
+			throw new PatternError(str);
+		} else {
 			this.hiddenNeurons = count;
-	}
-		
-
-	public void setActivationFunction(ActivationFunction activation) {
-		this.activation = activation;
-		
+		}
 	}
 
-	public void setInputNeurons(int count) {
-		this.inputNeurons = count;		
-	}
-
-	public void setOutputNeurons(int count) {
-		this.outputNeurons = count;
-	}
-	
+	/**
+	 * Generate the RBF network.
+	 * @return The neural network.
+	 */
 	public BasicNetwork generate() {
-		RadialBasisFunctionLayer rbfLayer;
-		Layer input,output;
-		BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(new ActivationLinear(),false,this.inputNeurons));
-		network.addLayer(rbfLayer = new RadialBasisFunctionLayer(this.hiddenNeurons),SynapseType.Direct);
-		network.addLayer(output = new BasicLayer(this.outputNeurons));
+		
+		Layer input = new BasicLayer(new ActivationLinear(), false,
+				this.inputNeurons);
+		Layer output = new BasicLayer(this.outputNeurons);
+		final BasicNetwork network = new BasicNetwork();
+		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(
+				this.hiddenNeurons);
+		network.addLayer(input);
+		network.addLayer(rbfLayer, SynapseType.Direct);
+		network.addLayer(output);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		rbfLayer.randomizeGaussianCentersAndWidths(0, 1);
-		int y = 50;
-		input.setX(50);
+		int y = PatternConst.START_Y;
+		input.setX(PatternConst.START_X);
 		input.setY(y);
-		y+=120;
-		rbfLayer.setX(50);
+		y += PatternConst.INC_Y;
+		rbfLayer.setX(PatternConst.START_X);
 		rbfLayer.setY(y);
-		y+=120;
-		output.setX(50);
+		y += PatternConst.INC_Y;
+		output.setX(PatternConst.START_X);
 		output.setY(y);
 		return network;
+	}
+
+	/**
+	 * Set the activation function, this is an error. The activation function
+	 * may not be set on a RBF layer.
+	 * 
+	 * @param activation
+	 *            The new activation function.
+	 */
+	public void setActivationFunction(final ActivationFunction activation) {
+		final String str = "Can't set the activation function for "
+				+ "a radial basis function network.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new PatternError(str);
+	}
+
+	/**
+	 * Set the number of input neurons.
+	 * @param count The number of input neurons.
+	 */
+	public void setInputNeurons(final int count) {
+		this.inputNeurons = count;
+	}
+
+	/**
+	 * Set the number of output neurons.
+	 * @param count The number of output neurons.
+	 */
+	public void setOutputNeurons(final int count) {
+		this.outputNeurons = count;
 	}
 }

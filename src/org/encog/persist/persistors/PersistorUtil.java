@@ -37,22 +37,61 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The Encog persistor used to persist the PersistorUtil class.
+ * This class contains some utilities for persisting objects.
  * 
  * @author jheaton
  */
-public class PersistorUtil {
-	
+public final class PersistorUtil {
+
+	/**
+	 * The rows in the matrix.
+	 */
 	public static final String ATTRIBUTE_MATRIX_ROWS = "rows";
+	
+	/**
+	 * The columns in the matrix.
+	 */
 	public static final String ATTRIBUTE_MATRIX_COLS = "cols";
+	
+	/**
+	 * A matrix row.
+	 */
 	public static final String ROW = "row";
 	
 	/**
-	 * The logging object.
+	 * Private constructor.
 	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private PersistorUtil() {		
+	}
+
+	/**
+	 * Write the beginning XML for an Encog object.
+	 * @param objectType The object type to persist.
+	 * @param out The object that is being persisted.
+	 * @param obj The XML writer.
+	 * @param top Is this a top-level object, that needs a name
+	 * and description?
+	 */
+	public static void beginEncogObject(final String objectType,
+			final WriteXML out, final EncogPersistedObject obj,
+			final boolean top) {
+		if (top) {
+			if (obj.getName() == null) {
+				throw new PersistError(
+						"Encog object must have a name to be saved.");
+			}
+			out.addAttribute("name", obj.getName());
+			if (obj.getDescription() != null) {
+				out.addAttribute("description", obj.getDescription());
+			} else {
+				out.addAttribute("description", "");
+			}
+
+		}
+		out.addAttribute("native", obj.getClass().getName());
+		out.beginTag(objectType);
+	}
+
 	/**
 	 * Create a persistor object. These objects know how to persist certain
 	 * types of classes.
@@ -64,13 +103,14 @@ public class PersistorUtil {
 	public static Persistor createPersistor(final String className) {
 		try {
 			// handle any hard coded ones
-			if( className.equals("TrainingData"))
+			if (className.equals("TrainingData")) {
 				return new BasicNeuralDataSetPersistor();
-			
+			}
+
 			// find using classes
-			String name = className + "Persistor";
-			final Class<?> c = Class
-					.forName("org.encog.persist.persistors." + name);
+			final String name = className + "Persistor";
+			final Class< ? > c = Class.forName("org.encog.persist.persistors."
+					+ name);
 			final Persistor persistor = (Persistor) c.newInstance();
 			return persistor;
 		} catch (final ClassNotFoundException e) {
@@ -81,79 +121,72 @@ public class PersistorUtil {
 			return null;
 		}
 	}
-	
-	public static void beginEncogObject(
-			String objectType,
-			WriteXML out,
-			EncogPersistedObject obj,
-			boolean top)
-	{
-		if( top)
-		{
-			if( obj.getName()==null )
-			{
-				throw new PersistError("Encog object must have a name to be saved.");
-			}
-			out.addAttribute("name", obj.getName());			
-			if( obj.getDescription()!=null )
-				out.addAttribute("description", obj.getDescription());
-			else
-				out.addAttribute("description", "");
-			
-		}
-		out.addAttribute("native", obj.getClass().getName());
-		out.beginTag(objectType);
-	}
-	
-	public static void saveMatrix(Matrix matrix,WriteXML out)
-	{
-		out.addAttribute(ATTRIBUTE_MATRIX_ROWS, ""+matrix.getRows());
-		out.addAttribute(ATTRIBUTE_MATRIX_COLS, ""+matrix.getCols());
-		out.beginTag("Matrix");
-		
-		for(int row=0;row<matrix.getRows();row++)
-		{
-			StringBuilder builder = new StringBuilder();
-			
-			for(int col=0;col<matrix.getCols();col++)
-			{
-				if( col>0 )
-					builder.append(',');
-				builder.append(matrix.get(row, col));
-			}
-			out.beginTag(ROW);
-			out.addText(builder.toString());
-			out.endTag();
-		}
-		
-		out.endTag();
-	}
 
-	public static Matrix loadMatrix(ReadXML in) {
-		int rows = in.getTag().getAttributeInt(ATTRIBUTE_MATRIX_ROWS);
-		int cols = in.getTag().getAttributeInt(ATTRIBUTE_MATRIX_COLS);
-		Matrix matrix = new Matrix(rows,cols);
-		
+	/**
+	 * Load a matrix from the reader.
+	 * @param in The XML reader.
+	 * @return The loaded matrix.
+	 */
+	public static Matrix loadMatrix(final ReadXML in) {
+		final int rows = in.getTag().getAttributeInt(
+				PersistorUtil.ATTRIBUTE_MATRIX_ROWS);
+		final int cols = in.getTag().getAttributeInt(
+				PersistorUtil.ATTRIBUTE_MATRIX_COLS);
+		final Matrix matrix = new Matrix(rows, cols);
+
 		int row = 0;
-		
-		String end = in.getTag().getName();
-		while(in.readToTag())
-		{
-			if(in.is(end, false))
+
+		final String end = in.getTag().getName();
+		while (in.readToTag()) {
+			if (in.is(end, false)) {
 				break;
-			if(in.is(ROW, true))
-			{
-				String str = in.readTextToTag();
-				double[] d = ReadCSV.fromCommas(str);
-				for(int col=0;col<d.length;col++)
-				{
-					matrix.set(row,col,d[col]);
+			}
+			if (in.is(PersistorUtil.ROW, true)) {
+				final String str = in.readTextToTag();
+				final double[] d = ReadCSV.fromCommas(str);
+				for (int col = 0; col < d.length; col++) {
+					matrix.set(row, col, d[col]);
 				}
 				row++;
 			}
 		}
-		
+
 		return matrix;
 	}
-	
+
+	/**
+	 * Save the specified matrix.
+	 * @param matrix The matrix to save.
+	 * @param out The XML writer.
+	 */
+	public static void saveMatrix(final Matrix matrix, final WriteXML out) {
+		out.addAttribute(PersistorUtil.ATTRIBUTE_MATRIX_ROWS, ""
+				+ matrix.getRows());
+		out.addAttribute(PersistorUtil.ATTRIBUTE_MATRIX_COLS, ""
+				+ matrix.getCols());
+		out.beginTag("Matrix");
+
+		for (int row = 0; row < matrix.getRows(); row++) {
+			final StringBuilder builder = new StringBuilder();
+
+			for (int col = 0; col < matrix.getCols(); col++) {
+				if (col > 0) {
+					builder.append(',');
+				}
+				builder.append(matrix.get(row, col));
+			}
+			out.beginTag(PersistorUtil.ROW);
+			out.addText(builder.toString());
+			out.endTag();
+		}
+
+		out.endTag();
+	}
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 }

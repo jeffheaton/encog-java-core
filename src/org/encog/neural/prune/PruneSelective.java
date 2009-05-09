@@ -35,140 +35,205 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
+/**
+ * Prune a neural network selectivly. This class allows you to either add or
+ * remove neurons from layers of a neural network. Tools
+ * 
+ * @author jheaton
+ * 
+ */
 public class PruneSelective {
-	
-	private BasicNetwork network;
-	
+
+	/**
+	 * 
+	 */
+	private final BasicNetwork network;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public PruneSelective(BasicNetwork network)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct an object prune the neural network.
+	 * @param network The network to prune.
+	 */
+	public PruneSelective(final BasicNetwork network) {
 		this.network = network;
 	}
-	
-	public void changeNeuronCount(Layer layer, int neuronCount)
-	{
+
+	/**
+	 * Change the neuron count for the network.  If the count is increased
+	 * then a zero-weighted neuron is added, which will not affect the 
+	 * output of the neural network.  If the neuron count is decreased, then
+	 * the weakest neuron will be removed.
+	 * @param layer The layer to adjust.
+	 * @param neuronCount The new neuron count for this layer.
+	 */
+	public void changeNeuronCount(final Layer layer, final int neuronCount) {
 		// is there anything to do?
-		if( neuronCount==layer.getNeuronCount())
+		if (neuronCount == layer.getNeuronCount()) {
 			return;
-		
-		if( neuronCount>layer.getNeuronCount() )
-			increaseNeuronCount(layer,neuronCount);
-		else
-			decreaseNeuronCount(layer,neuronCount);
+		}
+
+		if (neuronCount > layer.getNeuronCount()) {
+			increaseNeuronCount(layer, neuronCount);
+		} else {
+			decreaseNeuronCount(layer, neuronCount);
+		}
 	}
-	
-	private void increaseNeuronCount(Layer layer,int neuronCount)
-	{
-		// adjust the threshold
-		double[] newThreshold = new double[neuronCount];
-		for(int i=0;i<layer.getNeuronCount();i++)
-		{
-			newThreshold[i] = layer.getThreshold(i);
-		}
-		
-		layer.setThreshold(newThreshold);
-		
-		// adjust the outbound weight matrixes
-		for(Synapse synapse: layer.getNext())
-		{
-			Matrix newMatrix = new Matrix(neuronCount,synapse.getToNeuronCount());
-			// copy existing matrix to new matrix
-			for(int row = 0;row<layer.getNeuronCount();row++)
-			{
-				for(int col = 0;col<synapse.getToNeuronCount();col++)
-				{
-					newMatrix.set(row,col,synapse.getMatrix().get(row, col));
-				}
-			}
-			synapse.setMatrix(newMatrix);
-		}
-			
-		// adjust the inbound weight matrixes
-		Collection<Synapse> inboundSynapses = this.network.getStructure().getPreviousSynapses(layer);
-		
-		for(Synapse synapse: inboundSynapses)
-		{
-			Matrix newMatrix = new Matrix(synapse.getFromNeuronCount(), neuronCount);
-			// copy existing matrix to new matrix
-			for(int row = 0;row<synapse.getFromNeuronCount();row++)
-			{
-				for(int col = 0;col<synapse.getToNeuronCount();col++)
-				{
-					newMatrix.set(row,col,synapse.getMatrix().get(row, col));
-				}
-			}
-			synapse.setMatrix(newMatrix);
-		}
-		
-		// adjust the thresholds
-		double[] newThresholds = new double[neuronCount];
-		
-		for(int i=0;i<layer.getNeuronCount();i++)
-		{
-			newThresholds[i] = layer.getThreshold(i);
-		}
-		
-		layer.setThreshold(newThreshold);
-		
-		// finally, up the neuron count
-		layer.setNeuronCount(neuronCount);
-	}
-	
-	private void decreaseNeuronCount(Layer layer,int neuronCount)
-	{
-		// create an array to hold the least significant neurons, which will be removed
-		int lostNeuronCount = layer.getNeuronCount() - neuronCount;
-		double[] lostNeuronSignificance = new double[lostNeuronCount];
-		int[] lostNeuron = new int[lostNeuronCount];
-		
-		// init the potential lost neurons to the first ones, we will find better choices if we can
-		for(int i=0;i<lostNeuronCount;i++)
-		{
+
+	/**
+	 * Internal function to decrease the neuron count of a layer.
+	 * @param layer The layer to affect.
+	 * @param neuronCount The new neuron count.
+	 */
+	private void decreaseNeuronCount(final Layer layer, final int neuronCount) {
+		// create an array to hold the least significant neurons, which will be
+		// removed
+		final int lostNeuronCount = layer.getNeuronCount() - neuronCount;
+		final double[] lostNeuronSignificance = new double[lostNeuronCount];
+		final int[] lostNeuron = new int[lostNeuronCount];
+
+		// init the potential lost neurons to the first ones, we will find
+		// better choices if we can
+		for (int i = 0; i < lostNeuronCount; i++) {
 			lostNeuron[i] = i;
-			lostNeuronSignificance[i] = determineNeuronSignificance(layer,i);
+			lostNeuronSignificance[i] = determineNeuronSignificance(layer, i);
 		}
-		
-		// now loop over the remaining neurons and see if any are better ones to remove
-		for(int i=lostNeuronCount;i<layer.getNeuronCount();i++)
-		{
-			double significance = determineNeuronSignificance(layer,i);
-			
+
+		// now loop over the remaining neurons and see if any are better ones to
+		// remove
+		for (int i = lostNeuronCount; i < layer.getNeuronCount(); i++) {
+			final double significance = determineNeuronSignificance(layer, i);
+
 			// is this neuron less significant than one already chosen?
-			for(int j = 0; j < lostNeuronCount; j++)
-			{
-				if( lostNeuronSignificance[j]>significance )
-				{
+			for (int j = 0; j < lostNeuronCount; j++) {
+				if (lostNeuronSignificance[j] > significance) {
 					lostNeuron[j] = i;
 					lostNeuronSignificance[j] = significance;
 					break;
 				}
 			}
 		}
-		
-		// finally, actually prune the neurons that the previous steps determined to remove
-		for(int i=0;i<lostNeuronCount;i++)
-		{
-			prune(layer,lostNeuron[i]-i);
+
+		// finally, actually prune the neurons that the previous steps
+		// determined to remove
+		for (int i = 0; i < lostNeuronCount; i++) {
+			prune(layer, lostNeuron[i] - i);
 		}
-		
+
 	}
-	
+
+	/**
+	 * Determine the significance of the neuron.  The higher the
+	 * return value, the more significant the neuron is. 
+	 * @param layer The layer to query.
+	 * @param neuron The neuron to query.
+	 * @return How significant is this neuron.
+	 */
+	public double determineNeuronSignificance(final Layer layer,
+			final int neuron) {
+		// calculate the threshold significance
+		double result = layer.getThreshold(neuron);
+
+		// calculate the outbound significance
+		for (final Synapse synapse : layer.getNext()) {
+			for (int i = 0; i < synapse.getToNeuronCount(); i++) {
+				result += synapse.getMatrix().get(neuron, i);
+			}
+		}
+
+		// calculate the threshold significance
+		final Collection<Synapse> inboundSynapses = this.network.getStructure()
+				.getPreviousSynapses(layer);
+
+		for (final Synapse synapse : inboundSynapses) {
+			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
+				result += synapse.getMatrix().get(i, neuron);
+			}
+		}
+
+		return Math.abs(result);
+	}
+
+	/**
+	 * @return The network that is being processed.
+	 */
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	/**
+	 * Internal function to increase the neuron count. This will
+	 * add a zero-weight neuron to this layer.
+	 * @param layer The layer to increase.
+	 * @param neuronCount The new neuron count.
+	 */
+	private void increaseNeuronCount(final Layer layer, final int neuronCount) {
+		// adjust the threshold
+		final double[] newThreshold = new double[neuronCount];
+		for (int i = 0; i < layer.getNeuronCount(); i++) {
+			newThreshold[i] = layer.getThreshold(i);
+		}
+
+		layer.setThreshold(newThreshold);
+
+		// adjust the outbound weight matrixes
+		for (final Synapse synapse : layer.getNext()) {
+			final Matrix newMatrix = new Matrix(neuronCount, synapse
+					.getToNeuronCount());
+			// copy existing matrix to new matrix
+			for (int row = 0; row < layer.getNeuronCount(); row++) {
+				for (int col = 0; col < synapse.getToNeuronCount(); col++) {
+					newMatrix.set(row, col, synapse.getMatrix().get(row, col));
+				}
+			}
+			synapse.setMatrix(newMatrix);
+		}
+
+		// adjust the inbound weight matrixes
+		final Collection<Synapse> inboundSynapses = this.network.getStructure()
+				.getPreviousSynapses(layer);
+
+		for (final Synapse synapse : inboundSynapses) {
+			final Matrix newMatrix = new Matrix(synapse.getFromNeuronCount(),
+					neuronCount);
+			// copy existing matrix to new matrix
+			for (int row = 0; row < synapse.getFromNeuronCount(); row++) {
+				for (int col = 0; col < synapse.getToNeuronCount(); col++) {
+					newMatrix.set(row, col, synapse.getMatrix().get(row, col));
+				}
+			}
+			synapse.setMatrix(newMatrix);
+		}
+
+		// adjust the thresholds
+		final double[] newThresholds = new double[neuronCount];
+
+		for (int i = 0; i < layer.getNeuronCount(); i++) {
+			newThresholds[i] = layer.getThreshold(i);
+		}
+
+		layer.setThreshold(newThreshold);
+
+		// finally, up the neuron count
+		layer.setNeuronCount(neuronCount);
+	}
+
 	/**
 	 * Prune one of the neurons from this layer. Remove all entries in this
 	 * weight matrix and other layers.
 	 * 
-	 * @param neuron
+	 * @param targetLayer
 	 *            The neuron to prune. Zero specifies the first neuron.
+	 * @param neuron
+	 * 		The neuron to prune.           
 	 */
 	public void prune(final Layer targetLayer, final int neuron) {
 		// delete a row on this matrix
-		for (Synapse synapse : targetLayer.getNext()) {
+		for (final Synapse synapse : targetLayer.getNext()) {
 			synapse
 					.setMatrix(MatrixMath
 							.deleteRow(synapse.getMatrix(), neuron));
@@ -178,69 +243,31 @@ public class PruneSelective {
 		final Collection<Layer> previous = this.network.getStructure()
 				.getPreviousLayers(targetLayer);
 
-		for (Layer prevLayer : previous) {
+		for (final Layer prevLayer : previous) {
 			if (previous != null) {
-				for (Synapse synapse : prevLayer.getNext()) {
+				for (final Synapse synapse : prevLayer.getNext()) {
 					synapse.setMatrix(MatrixMath.deleteCol(synapse.getMatrix(),
 							neuron));
 				}
 			}
 		}
-		
+
 		// remove the threshold
-		double[] newThreshold = new double[targetLayer.getNeuronCount() - 1];
-		
+		final double[] newThreshold = 
+			new double[targetLayer.getNeuronCount() - 1];
+
 		int targetIndex = 0;
-		for(int i=0;i<targetLayer.getNeuronCount();i++)
-		{
-			if( targetIndex!=neuron )
-			{
+		for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
+			if (targetIndex != neuron) {
 				newThreshold[targetIndex++] = targetLayer.getThreshold(i);
 			}
 		}
-		
-		targetLayer.setThreshold(newThreshold);
-		
-		// update the neuron count
 
+		targetLayer.setThreshold(newThreshold);
+
+		// update the neuron count
 		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
 
 	}
 
-	public BasicNetwork getNetwork()
-	{
-		return this.network;
-	}
-	
-	public double determineNeuronSignificance(Layer layer, int neuron)
-	{
-		// calculate the threshold significance
-		double result = layer.getThreshold(neuron);
-		
-		// calculate the outbound significance
-		for(Synapse synapse: layer.getNext())
-		{
-			for(int i=0;i<synapse.getToNeuronCount();i++)
-			{
-				result+=synapse.getMatrix().get(neuron, i);
-			}
-		}
-		
-		// calculate the threshold significance
-		Collection<Synapse> inboundSynapses = this.network.getStructure().getPreviousSynapses(layer);
-		
-		for(Synapse synapse: inboundSynapses)
-		{
-			for(int i=0;i<synapse.getFromNeuronCount();i++)
-			{
-				result+=synapse.getMatrix().get(i, neuron);
-			}
-		}
-		
-		return Math.abs(result);
-	}
-	
-	
-	
 }
-

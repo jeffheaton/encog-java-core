@@ -27,11 +27,20 @@ package org.encog.neural.prune;
 
 import org.encog.util.concurrency.EncogTask;
 
+/**
+ * A worker for the incremental pruning process.  This allows the
+ * pruning process to be multithreaded.
+ * @author jheaton
+ *
+ */
 public class IncrementalWorker implements EncogTask {
 
+	/**
+	 * Perform the next task.
+	 */
 	public void run() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

@@ -30,84 +30,86 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
-import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
-import org.encog.persist.Persistor;
-import org.encog.util.xml.XMLUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * A generic class used to take an XML segment and produce an object for it.
  * Some of the Encog persistors make use of this class.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class XML2Object {
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void load(ReadXML in, EncogPersistedObject target) {
+	/**
+	 * Load an object from XML.
+	 * @param in The XML reader.
+	 * @param target The object to load.
+	 */
+	public void load(final ReadXML in, final EncogPersistedObject target) {
 
 		try {
 			target.setName(in.getTag().getAttributeValue("name"));
 			target.setDescription(in.getTag().getAttributeValue("description"));
-			
-			while( in.readToTag() )
-			{			
-				if( in.getTag().getType()==Type.BEGIN )
-				{
-				String tagName = in.getTag().getName();
-				Field field = target.getClass().getDeclaredField(
-						tagName);
-				field.setAccessible(true);
-				String value =in.readTextToTag();
-				
-				Class<?> type = field.getType();
-				if (type == long.class) {
-					field.setLong(target, Long.parseLong(value));
-				} else if (type == int.class) {
-					field.setInt(target, Integer.parseInt(value));
-				} else if (type == short.class) {
-					field.setShort(target, Short.parseShort(value));
-				} else if (type == double.class) {
-					field.setDouble(target, Double.parseDouble(value));
-				} else if (type == float.class) {
-					field.setDouble(target, Float.parseFloat(value));
-				} else if (type == String.class) {
-					field.set(target, value);
-				} else if (type == List.class) {
-					field.set(target, loadList(in));
-				}
+
+			while (in.readToTag()) {
+				if (in.getTag().getType() == Type.BEGIN) {
+					final String tagName = in.getTag().getName();
+					final Field field = target.getClass().getDeclaredField(
+							tagName);
+					field.setAccessible(true);
+					final String value = in.readTextToTag();
+
+					final Class< ? > type = field.getType();
+					if (type == long.class) {
+						field.setLong(target, Long.parseLong(value));
+					} else if (type == int.class) {
+						field.setInt(target, Integer.parseInt(value));
+					} else if (type == short.class) {
+						field.setShort(target, Short.parseShort(value));
+					} else if (type == double.class) {
+						field.setDouble(target, Double.parseDouble(value));
+					} else if (type == float.class) {
+						field.setDouble(target, Float.parseFloat(value));
+					} else if (type == String.class) {
+						field.set(target, value);
+					} else if (type == List.class) {
+						field.set(target, loadList(in));
+					}
 				}
 			}
-		} catch (NoSuchFieldException e) {
+		} catch (final NoSuchFieldException e) {
 			throw new EncogError(e);
-		} catch (NumberFormatException e) {
+		} catch (final NumberFormatException e) {
 			throw new EncogError(e);
-		} catch (IllegalArgumentException e) {
+		} catch (final IllegalArgumentException e) {
 			throw new EncogError(e);
-		} catch (IllegalAccessException e) {
+		} catch (final IllegalAccessException e) {
 			throw new EncogError(e);
 		}
 	}
 
-	public List<Object> loadList(ReadXML in) {
-		List<Object> result = new ArrayList<Object>();
+	/**
+	 * Load a list collection.
+	 * @param in The XML reader.
+	 * @return The loaded list.
+	 */
+	public List<Object> loadList(final ReadXML in) {
+		final List<Object> result = new ArrayList<Object>();
 
-		while( in.readToTag() )
-		{			
-			String tagName = in.getTag().getName();
-			String value =in.readTextToTag(); 
+		while (in.readToTag()) {
+			final String tagName = in.getTag().getName();
+			final String value = in.readTextToTag();
 
 			if (tagName.equals("S")) {
 				result.add(value);
@@ -117,14 +119,17 @@ public class XML2Object {
 		return result;
 	}
 
-	public void loadObject(ReadXML in, EncogPersistedObject obj) {
-		while( in.readToTag() )
-		{			
-			String tagName = in.getTag().getName();
-			
-			if( tagName.equals(obj.getClass().getSimpleName()))
-			{
-				load(in,obj);
+	/**
+	 * Load an object from XML.
+	 * @param in The XML reader.
+	 * @param obj The object to load into.
+	 */
+	public void loadObject(final ReadXML in, final EncogPersistedObject obj) {
+		while (in.readToTag()) {
+			final String tagName = in.getTag().getName();
+
+			if (tagName.equals(obj.getClass().getSimpleName())) {
+				load(in, obj);
 				return;
 			}
 		}

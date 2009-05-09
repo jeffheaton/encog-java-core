@@ -35,66 +35,112 @@ import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Used to create feedforward neural networks.  A feedforward 
+ * network has an input and output layers separated by zero
+ * or more hidden layers.  The feedforward neural network is
+ * one of the most common neural network patterns.
+ * @author jheaton
+ *
+ */
 public class FeedForwardPattern implements NeuralNetworkPattern {
-
-	private ActivationFunction activation;
+	/**
+	 * The number of input neurons.
+	 */
 	private int inputNeurons;
+
+	/**
+	 * The number of output neurons.
+	 */
 	private int outputNeurons;
-	private List<Integer> hidden = new ArrayList<Integer>();
-	
+
+	/**
+	 * The activation function.
+	 */
+	private ActivationFunction activation;
+
+	/**
+	 * The number of hidden neurons.
+	 */
+	private final List<Integer> hidden = new ArrayList<Integer>();
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public void setActivationFunction(ActivationFunction activation) {
-		this.activation = activation;
-		
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Add a hidden layer, with the specified number of neurons.
+	 * @param count The number of neurons to add.
+	 */
+	public void addHiddenLayer(final int count) {
+		this.hidden.add(count);
 	}
 
-	public void addHiddenLayer(int count) {
-		this.hidden.add(count);		
-	}
-
-	public void setInputNeurons(int count) {
-		this.inputNeurons = count;
-		
-	}
-
-	public void setOutputNeurons(int count) {
-		this.outputNeurons = count;
-		
-	}
-	
+	/**
+	 * Generate the Elman neural network.
+	 * 
+	 * @return The Elman neural network.
+	 */
 	public BasicNetwork generate() {
-		int y = 50;
-		Layer layer;
-		
-		BasicNetwork result = new BasicNetwork();
-		result.addLayer(layer = new BasicLayer(this.activation,true,this.inputNeurons));
-		
-		layer.setX(50);
-		layer.setY(y);
-		y+=120;
-		
-		for(Integer count: this.hidden)
-		{
-			result.addLayer(layer = new BasicLayer(this.activation,true,count));
-			layer.setX(50);
-			layer.setY(y);
-			y+=120;
+		int y = PatternConst.START_Y;
+		final Layer input = new BasicLayer(this.activation, true,
+				this.inputNeurons);
+
+		final BasicNetwork result = new BasicNetwork();
+		result.addLayer(input);
+
+		input.setX(PatternConst.START_X);
+		input.setY(y);
+		y += PatternConst.INC_Y;
+
+		for (final Integer count : this.hidden) {
+			
+			final Layer hidden = new BasicLayer(
+					this.activation, true, count);
+					
+			result.addLayer(hidden);
+			hidden.setX(PatternConst.START_X);
+			hidden.setY(y);
+			y += PatternConst.INC_Y;
 		}
-		
-		result.addLayer(layer = new BasicLayer(this.activation,true,this.outputNeurons));
-		layer.setX(50);
-		layer.setY(y);
-		y+=120;
-		
+
+		final Layer output = new BasicLayer(this.activation, true,
+				this.outputNeurons);
+		result.addLayer(output);
+		output.setX(PatternConst.START_X);
+		output.setY(y);
+		y += PatternConst.INC_Y;
+
 		result.getStructure().finalizeStructure();
 		result.reset();
-		
+
 		return result;
+	}
+
+	/**
+	 * Set the activation function to use on each of the layers.
+	 * @param activation The activation function.
+	 */
+	public void setActivationFunction(final ActivationFunction activation) {
+		this.activation = activation;
+	}
+
+	/**
+	 * Set the number of input neurons.
+	 * @param count Neuron count.
+	 */
+	public void setInputNeurons(final int count) {
+		this.inputNeurons = count;
+	}
+
+	/**
+	 * Set the number of output neurons.
+	 * @param count Neuron count.
+	 */
+	public void setOutputNeurons(final int count) {
+		this.outputNeurons = count;
 	}
 
 }

@@ -39,21 +39,37 @@ import org.encog.persist.Persistor;
  */
 public class TextDataPersistor implements Persistor {
 
-	public EncogPersistedObject load(ReadXML in) {
-		String name = in.getTag().getAttributeValue("name");
-		String description = in.getTag().getAttributeValue("description");
-		TextData result = new TextData();
-		in.readToTag();		
-		String text = in.getTag().getName();
+	/**
+	 * Load the specified Encog object from an XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader to use.
+	 * @return The loaded object.
+	 */
+	public EncogPersistedObject load(final ReadXML in) {
+		final String name = in.getTag().getAttributeValue("name");
+		final String description = in.getTag().getAttributeValue("description");
+		final TextData result = new TextData();
+		in.readToTag();
+		final String text = in.getTag().getName();
 		result.setName(name);
 		result.setDescription(description);
 		result.setText(text);
 		return result;
 	}
 
-	public void save(EncogPersistedObject obj, WriteXML out) {
-		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_TEXT, out, obj, true);
-		TextData text = (TextData)obj;
+	/**
+	 * Save the specified Encog object to an XML writer.
+	 * 
+	 * @param obj
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer to save to.
+	 */
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
+		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_TEXT, out,
+				obj, true);
+		final TextData text = (TextData) obj;
 		out.addCDATA(text.getText());
 		out.endTag();
 	}
