@@ -127,7 +127,6 @@ public class EncogPersistedCollection {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EncogPersistedCollection.class);
 

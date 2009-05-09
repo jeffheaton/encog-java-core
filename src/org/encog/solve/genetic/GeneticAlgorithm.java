@@ -38,8 +38,9 @@ import org.slf4j.LoggerFactory;
  * 
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
+ * @param <GENE_TYPE> The datatype of the gene.
  */
-abstract public class GeneticAlgorithm<GENE_TYPE> {
+public abstract class GeneticAlgorithm<GENE_TYPE> {
 
 	/**
 	 * Threadpool timeout.
@@ -87,7 +88,7 @@ abstract public class GeneticAlgorithm<GENE_TYPE> {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Get a specific chromosome.

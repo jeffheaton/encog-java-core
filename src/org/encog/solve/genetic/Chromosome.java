@@ -33,9 +33,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements a chromosome to genetic algorithm. This is an abstract
- * class. Other classes are provided in this book that use this base class to
- * train neural networks or provide an answer to the traveling salesman problem.
+ * Implements a chromosome to genetic algorithm. This is an abstract class.
+ * Other classes are provided in this book that use this base class to train
+ * neural networks or provide an answer to the traveling salesman problem.
  * 
  * Lifeforms in this genetic algorithm consist of one single chromosome each.
  * Therefore, this class represents a virtual lifeform. The chromosome is a
@@ -44,10 +44,13 @@ import org.slf4j.LoggerFactory;
  * 
  * Chromosomes are made up of genes. These are of the generic type GENE_TYPE.
  * For a neural network this type would most likely be double values.
+ * 
+ * @param <GENE_TYPE>
+ *            The datatype for a gene.
  */
 
-abstract public class Chromosome<GENE_TYPE>
-		implements Comparable<Chromosome<GENE_TYPE>> {
+public abstract class Chromosome<GENE_TYPE> implements
+		Comparable<Chromosome<GENE_TYPE>> {
 
 	/**
 	 * The cost for this chromosome. The lower the better.
@@ -68,8 +71,8 @@ abstract public class Chromosome<GENE_TYPE>
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/**
 	 * Called to calculate the cost for this chromosome.
 	 * 
@@ -171,9 +174,8 @@ abstract public class Chromosome<GENE_TYPE>
 		final int geneLength = getGenes().length;
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() 
-				* (geneLength - getGeneticAlgorithm()
-				.getCutLength()));
+		final int cutpoint1 = (int) (Math.random() * (geneLength 
+				- getGeneticAlgorithm().getCutLength()));
 		final int cutpoint2 = cutpoint1 + getGeneticAlgorithm().getCutLength();
 
 		// keep track of which cities have been taken in each of the two
@@ -183,7 +185,7 @@ abstract public class Chromosome<GENE_TYPE>
 
 		// handle cut section
 		for (int i = 0; i < geneLength; i++) {
-			if (!(i < cutpoint1 || i > cutpoint2)) {
+			if (!((i < cutpoint1) || (i > cutpoint2))) {
 				offspring1.setGene(i, father.getGene(i));
 				offspring2.setGene(i, this.getGene(i));
 				taken1.add(offspring1.getGene(i));
@@ -193,7 +195,7 @@ abstract public class Chromosome<GENE_TYPE>
 
 		// handle outer sections
 		for (int i = 0; i < geneLength; i++) {
-			if (i < cutpoint1 || i > cutpoint2) {
+			if ((i < cutpoint1) || (i > cutpoint2)) {
 				if (getGeneticAlgorithm().isPreventRepeat()) {
 					offspring1.setGene(i, getNotTaken(this, taken1));
 					offspring2.setGene(i, getNotTaken(father, taken2));
@@ -241,14 +243,13 @@ abstract public class Chromosome<GENE_TYPE>
 	 *            The value to set the specified gene to.
 	 */
 	public void setGene(final int gene, final GENE_TYPE value) {
-		
-		if( value instanceof Double )
-		{
-		double d = ((Double)value).doubleValue();
-		if (Double.isInfinite(d) || Double.isNaN(d)) {
-			throw new MatrixError("Trying to assign invalid number to gene: "
-					+ value);
-		}
+
+		if (value instanceof Double) {
+			final double d = ((Double) value).doubleValue();
+			if (Double.isInfinite(d) || Double.isNaN(d)) {
+				throw new MatrixError(
+						"Trying to assign invalid number to gene: " + value);
+			}
 		}
 		this.genes[gene] = value;
 	}
@@ -279,8 +280,8 @@ abstract public class Chromosome<GENE_TYPE>
 	 * @param geneticAlgorithm
 	 *            the geneticAlgorithm to set
 	 */
-	public void setGeneticAlgorithm(final 
-			GeneticAlgorithm<GENE_TYPE> geneticAlgorithm) {
+	public void setGeneticAlgorithm(
+			final GeneticAlgorithm<GENE_TYPE> geneticAlgorithm) {
 		this.geneticAlgorithm = geneticAlgorithm;
 	}
 

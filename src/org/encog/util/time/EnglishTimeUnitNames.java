@@ -40,7 +40,7 @@ public class EnglishTimeUnitNames implements TimeUnitNames {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * Get the code for a TimeUnit.

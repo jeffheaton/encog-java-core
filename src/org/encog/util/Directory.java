@@ -53,7 +53,6 @@ public final class Directory {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(Directory.class);
 

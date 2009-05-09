@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class is used in conjunction with a thread pool. This allows
  * the genetic algorithm to offload all of those calculations to a thread pool.
+ * @param <GENE_TYPE> The data type of the gene.
  */
 public class MateWorker<GENE_TYPE> implements
 		EncogTask {
@@ -60,7 +61,7 @@ public class MateWorker<GENE_TYPE> implements
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * 
@@ -80,6 +81,9 @@ public class MateWorker<GENE_TYPE> implements
 	}
 
 
+	/**
+	 * Mate the two chromosomes.
+	 */
 	public void run() {
 		this.mother.mate(this.father, this.child1, this.child2);
 	}

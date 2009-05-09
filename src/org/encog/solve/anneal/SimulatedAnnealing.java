@@ -74,7 +74,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Subclasses should provide a method that evaluates the error for the
