@@ -13,7 +13,7 @@ public class TestParse extends TestCase {
 	
 	public void testString() throws Throwable
 	{
-		Parse parse = new Parse();
+/*		Parse parse = new Parse();
 		parse.load();
 		Signal signal = parse.parse("Hello world");
 		Collection<Signal> list = signal.findByType("word");
@@ -29,5 +29,6 @@ public class TestParse extends TestCase {
 			}
 			i++;
 		}
+		*/
 	}
 }
