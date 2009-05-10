@@ -31,19 +31,29 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Thrown when something attempts to persist and invalid object.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class DataValidateError extends EncogError {
-	
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1409895481996832395L;
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public DataValidateError(String message)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a data validation error.
+	 * 
+	 * @param message
+	 *            The message.
+	 */
+	public DataValidateError(final String message) {
 		super(message);
 	}
 

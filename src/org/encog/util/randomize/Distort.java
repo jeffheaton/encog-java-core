@@ -30,26 +30,41 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A randomizer that distorts what is already present in the neural network.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class Distort extends BasicRandomizer {
 
-	private double factor;
-	
+	/**
+	 * The factor to use to distort the numbers.
+	 */
+	private final double factor;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public Distort(double factor)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a distort randomizer for the specified factor.
+	 * 
+	 * @param factor
+	 *            The randomizer factor.
+	 */
+	public Distort(final double factor) {
 		this.factor = factor;
 	}
-	
-	public double randomize(double d) {
-		return d+ (this.factor-(Math.random()*this.factor*2));
+
+	/**
+	 * Distort the random number by the factor that was specified 
+	 * in the constructor.
+	 * @param d The number to distort.
+	 * @return The result.
+	 */
+	public double randomize(final double d) {
+		return d + (this.factor - (Math.random() * this.factor * 2));
 	}
 
 }

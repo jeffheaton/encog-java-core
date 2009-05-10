@@ -34,29 +34,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A simple Hibernate interceptor that ensures that the last update 
- * field on Encog database persisted objects are updated.
+ * A simple Hibernate interceptor that ensures that the last update field on
+ * Encog database persisted objects are updated.
  * 
  * @author jheaton
- *
+ * 
  */
 public class DataObjectInterceptor extends EmptyInterceptor {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -6610167494842830683L;
+	
+	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Called when a object is flushed.  Used to set the lastUpdate field to
+	 * the current date.
+	 * @param entity The object currently being processed.
+	 * @param id The ID.
+	 * @param currentState The current value of the fields.
+	 * @param previousState The previous values of the fields.
+	 * @param propertyNames The names of the fields.
+	 * @param types The field types.
+	 * @return True if a value changes.
+	 */
 	@Override
-	public boolean onSave(Object entity, Serializable id, Object[] state,
-			String[] propertyNames, Type[] types) {
+	public boolean onFlushDirty(final Object entity, final Serializable id,
+			final Object[] currentState, final Object[] previousState,
+			final String[] propertyNames, final Type[] types) {
 
 		if (entity instanceof DataObject) {
 
 			for (int i = 0; i < propertyNames.length; i++) {
-				if ("created".equals(propertyNames[i])) {
-					state[i] = new Date();
+				if ("lastUpdate".equals(propertyNames[i])) {
+					currentState[i] = new Date();
 					return true;
 				}
 			}
@@ -64,16 +81,26 @@ public class DataObjectInterceptor extends EmptyInterceptor {
 		return false;
 	}
 
+	/**
+	 * Called when an object is saved.  Used to update the create field on 
+	 * initial object creation.
+	 * @param entity The object being saved.
+	 * @param id The id of the object being saved.
+	 * @param state The state of this object.
+	 * @param propertyNames The names of the fields.
+	 * @param types The field types.
+	 * @return True if a change was made.
+	 */
 	@Override
-	public boolean onFlushDirty(Object entity, Serializable id,
-			Object[] currentState, Object[] previousState,
-			String[] propertyNames, Type[] types) {
+	public boolean onSave(final Object entity, final Serializable id,
+			final Object[] state, final String[] propertyNames,
+			final Type[] types) {
 
 		if (entity instanceof DataObject) {
 
 			for (int i = 0; i < propertyNames.length; i++) {
-				if ("lastUpdate".equals(propertyNames[i])) {
-					currentState[i] = new Date();
+				if ("created".equals(propertyNames[i])) {
+					state[i] = new Date();
 					return true;
 				}
 			}

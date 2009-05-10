@@ -27,8 +27,8 @@ package org.encog.util.randomize;
 
 import org.encog.matrix.Matrix;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * Provides basic functionality that most randomizers will need.
  * 
  * @author jheaton
- *
+ * 
  */
 public abstract class BasicRandomizer implements Randomizer {
 
@@ -44,67 +44,107 @@ public abstract class BasicRandomizer implements Randomizer {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public void randomize(Double[] d)
-	{
-		for(int i=0;i<d.length;i++)
-		{
-			d[i] = randomize(d[i]);
-		}
-	}
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	public void randomize(double[] d) {
-		for(int i=0;i<d.length;i++)
-		{
-			d[i] = randomize(d[i]);
-		}
-		
-	}
+	/**
+	 * Randomize the synapses and thresholds in the basic network based on an
+	 * array, modify the array. Previous values may be used, or they may be
+	 * discarded, depending on the randomizer.
+	 * 
+	 * @param network
+	 *            A network to randomize.
+	 */
+	public void randomize(final BasicNetwork network) {
 
-	public void randomize(double[][] d) {
-		for (int r = 0; r < d.length; r++) {
-			for (int c = 0; c < d[0].length; c++) {
-				d[r][c] = randomize(d[r][c]);
-			}
-		}
-		
-	}
-	
-	public void randomize(Double[][] d) {
-		for (int r = 0; r < d.length; r++) {
-			for (int c = 0; c < d[0].length; c++) {
-				d[r][c] = randomize(d[r][c]);
-			}
-		}
-		
-	}
-
-	public void randomize(Matrix m) {
-		for (int r = 0; r < m.getRows(); r++) {
-			for (int c = 0; c < m.getCols(); c++) {
-				m.set(r,c,randomize(m.get(r,c)));
-			}
-		}
-	}
-
-	public void randomize(BasicNetwork network) {
-		
 		// randomize the weight matrix
-		for(Synapse synapse: network.getStructure().getSynapses())
-		{
-			if( synapse.getMatrix()!=null )
+		for (final Synapse synapse : network.getStructure().getSynapses()) {
+			if (synapse.getMatrix() != null) {
 				randomize(synapse.getMatrix());
+			}
 		}
-		
+
 		// randomize the thresholds
-		for(Layer layer: network.getStructure().getLayers() )
-		{
-			if( layer.hasThreshold() )
-			{
+		for (final Layer layer : network.getStructure().getLayers()) {
+			if (layer.hasThreshold()) {
 				randomize(layer.getThreshold());
 			}
 		}
 	}
-	
+
+	/**
+	 * Randomize the array based on an array, modify the array. Previous values
+	 * may be used, or they may be discarded, depending on the randomizer.
+	 * 
+	 * @param d
+	 *            An array to randomize.
+	 */
+	public void randomize(final double[] d) {
+		for (int i = 0; i < d.length; i++) {
+			d[i] = randomize(d[i]);
+		}
+
+	}
+
+	/**
+	 * Randomize the array based on an array, modify the array. Previous values
+	 * may be used, or they may be discarded, depending on the randomizer.
+	 * 
+	 * @param d
+	 *            An array to randomize.
+	 */
+	public void randomize(final Double[] d) {
+		for (int i = 0; i < d.length; i++) {
+			d[i] = randomize(d[i]);
+		}
+	}
+
+	/**
+	 * Randomize the 2d array based on an array, modify the array. Previous 
+	 * values may be used, or they may be discarded, depending on the 
+	 * randomizer.
+	 * 
+	 * @param d
+	 *            An array to randomize.
+	 */
+	public void randomize(final double[][] d) {
+		for (int r = 0; r < d.length; r++) {
+			for (int c = 0; c < d[0].length; c++) {
+				d[r][c] = randomize(d[r][c]);
+			}
+		}
+
+	}
+
+	/**
+	 * Randomize the 2d array based on an array, modify the array. Previous 
+	 * values may be used, or they may be discarded, depending on the 
+	 * randomizer.
+	 * 
+	 * @param d
+	 *            An array to randomize.
+	 */
+	public void randomize(final Double[][] d) {
+		for (int r = 0; r < d.length; r++) {
+			for (int c = 0; c < d[0].length; c++) {
+				d[r][c] = randomize(d[r][c]);
+			}
+		}
+
+	}
+
+	/**
+	 * Randomize the matrix based on an array, modify the array. Previous values
+	 * may be used, or they may be discarded, depending on the randomizer.
+	 * 
+	 * @param m
+	 *            A matrix to randomize.
+	 */
+	public void randomize(final Matrix m) {
+		for (int r = 0; r < m.getRows(); r++) {
+			for (int c = 0; c < m.getCols(); c++) {
+				m.set(r, c, randomize(m.get(r, c)));
+			}
+		}
+	}
+
 }

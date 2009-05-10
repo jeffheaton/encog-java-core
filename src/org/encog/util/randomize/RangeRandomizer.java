@@ -29,37 +29,58 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A randomizer that will create random weight and threshold values that
- * are between a specified range.
+ * A randomizer that will create random weight and threshold values that are
+ * between a specified range.
  * 
  * @author jheaton
- *
+ * 
  */
 public class RangeRandomizer extends BasicRandomizer {
 
-	final double min;
-	final double max;
-	
+	/**
+	 * Generate a random number in the specified range.
+	 * @param min The minimum value.
+	 * @param max The maximum value.
+	 * @return A random number.
+	 */
+	public static double randomize(final double min, final double max) {
+		final double range = max - min;
+		return (range * Math.random()) + min;
+	}
+
+	/**
+	 * The minimum value for the random range.
+	 */
+	private final double min;
+
+	/**
+	 * The maximum value for the random range.
+	 */
+	private final double max;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public RangeRandomizer(final double min, final double max)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a range randomizer.
+	 * @param min The minimum random value.
+	 * @param max The maximum random value.
+	 */
+	public RangeRandomizer(final double min, final double max) {
 		this.max = max;
 		this.min = min;
 	}
-	
-	public static double randomize(double min,double max)
-	{
-		double range = max-min;
-		return (range*Math.random())+min;
-	}
-	
-	public double randomize(double d) {
-		return randomize(min,max);
+
+	/**
+	 * Generate a random number based on the range specified in the constructor.
+	 * @param d The range randomizer ignores this value.
+	 * @return The random number.
+	 */
+	public double randomize(final double d) {
+		return RangeRandomizer.randomize(this.min, this.max);
 	}
 
 }
