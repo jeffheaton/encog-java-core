@@ -1,3 +1,29 @@
+<!-- 
+ Encog Artificial Intelligence Framework v2.x
+ Java Version
+ http://www.heatonresearch.com/encog/
+ http://code.google.com/p/encog-java/
+  
+ Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ See the copyright.txt in the distribution for a full listing of 
+ individual contributors.
+ 
+ This is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as
+ published by the Free Software Foundation; either version 2.1 of
+ the License, or (at your option) any later version.
+ 
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
 <project name="encog-core" default="dist" basedir=".">
 	<description>
         Build the core JAR file for Encog.
@@ -14,66 +40,63 @@
 	<property name="path.doc" location="${basedir}/doc" />
 	<property name="path.jar" location="${basedir}/jar" />
 	<path id="classpath">
-       <fileset dir="${path.jar}"/>	   
-   </path>	
+		<fileset dir="${path.jar}" />
+	</path>
 
 	<target name="checkout" depends="init">
-
 		<exec executable="svn">
-			<arg value="checkout"/>
-			<arg value="http://encog-java.googlecode.com/svn/trunk/encog-core"/>
-			<arg value="${basedir}"/>
+			<arg value="checkout" />
+			<arg value="http://encog-java.googlecode.com/svn/trunk/encog-core" />
+			<arg value="${basedir}" />
 		</exec>
-		
 	</target>
-	
+
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${path.build}" />
 		<mkdir dir="${path.test.build}" />
-		<mkdir dir="${path.doc}" />		
+		<mkdir dir="${path.doc}" />
 	</target>
 
 	<target name="compile" depends="init" description="compile the source ">
-		
-		<javac srcdir="${path.src}" source="1.5" target="1.5" destdir="${path.build}" >
-			<classpath refid="classpath"/>
+
+		<javac srcdir="${path.src}" source="1.5" target="1.5" destdir="${path.build}">
+			<classpath refid="classpath" />
 		</javac>
-		
-		<javac srcdir="${path.test.src}" source="1.5" target="1.5" destdir="${path.test.build}" >
-		<classpath>
-             <pathelement location="${path.build}"/>
-             <path refid="classpath"/>
-         </classpath>
+
+		<javac srcdir="${path.test.src}" source="1.5" target="1.5" destdir="${path.test.build}">
+			<classpath>
+				<pathelement location="${path.build}" />
+				<path refid="classpath" />
+			</classpath>
 		</javac>
-		
+
 		<copy todir="${path.test.build}/org/encog/data">
-			<fileset dir="test/org/encog/data"/>
+			<fileset dir="test/org/encog/data" />
 		</copy>
 
 	</target>
 
 	<target name="doc" depends="init" description="produce javadoc ">
-		<javadoc sourcepath="${path.src}" destdir="${path.doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;" >
-			<classpath refid="classpath"/>
+		<javadoc sourcepath="${path.src}" destdir="${path.doc}" header="&lt;a href='http://www.heatonresearch.com/encog' target='_top'&gt;The Encog Project&lt;/a&gt;">
+			<classpath refid="classpath" />
 		</javadoc>
 	</target>
 
 	<target name="dist" depends="compile,doc" description="generate the distribution">
-	
-			<loadfile srcfile="${path.src}/org/encog/Encog.java" property="build.version">
+
+		<loadfile srcfile="${path.src}/org/encog/Encog.java" property="build.version">
 			<filterchain>
 				<linecontainsregexp>
-					<regexp pattern='^.*String VERSION = ".*";.*$'/>
+					<regexp pattern='^.*String VERSION = ".*";.*$' />
 				</linecontainsregexp>
 				<tokenfilter>
-					<replaceregex replace='\1'
-						pattern='^.*String VERSION = "(.*)";.*$'/>
+					<replaceregex replace='\1' pattern='^.*String VERSION = "(.*)";.*$' />
 				</tokenfilter>
-				<striplinebreaks/>
+				<striplinebreaks />
 			</filterchain>
 		</loadfile>
-		
+
 		<!-- Create the distribution directory -->
 		<mkdir dir="${path.dist}" />
 		<mkdir dir="${path.stage}" />
@@ -81,78 +104,80 @@
 		<mkdir dir="${path.build}/org/encog/data" />
 
 		<copy todir="${path.build}/org/encog/data">
-			<fileset dir="src/org/encog/data"/>
-		</copy>	
+			<fileset dir="src/org/encog/data" />
+		</copy>
 
 		<manifest file="MANIFEST.MF">
-			<attribute name="Built-By" value="${user.name}"/>
-			<attribute name="Implementation-Version" 
-                     value="${version.num}-b${build.version}"/> 
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Implementation-Version" value="${version.num}-b${build.version}" />
 		</manifest>
-		
+
 		<property name="jarfile" location="${path.lib}/encog-core-${build.version}.jar" />
-				
+
 		<jar jarfile="${jarfile}" basedir="${path.build}" manifest="MANIFEST.MF" />
-						
+
 	</target>
-	
+
 	<target name="cc-build" depends="clean-all,checkout,compile,doc,test,dist">
 
-		<copy todir="${path.stage}" file="${basedir}/copyright.txt"/>
-		<copy todir="${path.stage}" file="${basedir}/build.xml"/>
-		<copy todir="${path.stage}" file="${basedir}/.checkstyle"/>
-		<copy todir="${path.stage}" file="${basedir}/.classpath"/>
-		<copy todir="${path.stage}" file="${basedir}/.project"/>
+		<copy todir="${path.stage}" file="${basedir}/copyright.txt" />
+		<copy todir="${path.stage}" file="${basedir}/build.xml" />
+		<copy todir="${path.stage}" file="${basedir}/.checkstyle" />
+		<copy todir="${path.stage}" file="${basedir}/.classpath" />
+		<copy todir="${path.stage}" file="${basedir}/.project" />
 
-	
+
 		<copy todir="${path.stage}/src">
-			<fileset dir="${path.src}"/>	
+			<fileset dir="${path.src}" />
 		</copy>
-		
+
 		<copy todir="${path.stage}/jar">
-			<fileset dir="${path.jar}"/>	
+			<fileset dir="${path.jar}" />
 		</copy>
-		
+
 		<copy todir="${path.stage}/doc">
-			<fileset dir="${path.doc}"/>	
+			<fileset dir="${path.doc}" />
 		</copy>
-		
-		<copy todir="${path.stage}/lib" file="${jarfile}"/>
-		
-		
-				
-		<zip destfile="${path.dist}/encog-core-${build.version}.zip" >
-			<fileset dir="${path.stage}"/>
-		</zip>	
-	
+
+		<copy todir="${path.stage}/lib" file="${jarfile}" />
+
+
+
+		<zip destfile="${path.dist}/encog-core-${build.version}.zip">
+			<fileset dir="${path.stage}" />
+		</zip>
+
 	</target>
-	
+
 	<target name="clean-all" depends="clean" description="Delete the source code">
 		<delete dir="${path.src}" />
 		<delete dir="${path.test.src}" />
+		<delete>
+			<fileset dir="${basedir}" excludes="build.xml" />
+		</delete>
 	</target>
-	
+
 	<target name="test" depends="dist">
-	
+
 		<mkdir dir="${path.test.results}" />
-	
+
 		<junit printsummary="yes" fork="yes" showoutput="yes" forkMode="perBatch" haltonerror="yes" dir="${path.src}">
-			<formatter type="xml"/>			
-			
-			
-		<classpath>
-             <pathelement location="${path.test.build}"/>
-			 <pathelement location="${path.build}"/>
-             <path refid="classpath"/>
-         </classpath>
-			
+			<formatter type="xml" />
+
+
+			<classpath>
+				<pathelement location="${path.test.build}" />
+				<pathelement location="${path.build}" />
+				<path refid="classpath" />
+			</classpath>
+
 			<batchtest todir="${path.test.results}">
-              <fileset dir="${path.test.src}">
-                 <include name="**/Test*.java"/>
-             </fileset>
-          </batchtest>
+				<fileset dir="${path.test.src}">
+					<include name="**/Test*.java" />
+				</fileset>
+			</batchtest>
 		</junit>
-				
+
 	</target>
 
 	<target name="clean" description="clean up">
