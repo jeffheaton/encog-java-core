@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * A simple formatter for logging.
  * 
  * @author jheaton
- *
+ * 
  */
 public class EncogFormatter extends Formatter {
 
@@ -44,10 +44,18 @@ public class EncogFormatter extends Formatter {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public String format(LogRecord record) {
-		StringBuilder result = new StringBuilder();
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Format the log record.
+	 * 
+	 * @param record
+	 *            What to log.
+	 * @return The formatted log record.
+	 */
+	@Override
+	public String format(final LogRecord record) {
+		final StringBuilder result = new StringBuilder();
 		result.append("[");
 		result.append(record.getLevel());
 		result.append("] [");

@@ -46,8 +46,11 @@ public class CookieUtility {
 	 */
 	private final Map<String, String> map = new HashMap<String, String>();
 	
+	/**
+	 * The logger.
+	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Allows access to the name/value pair list of cookies.

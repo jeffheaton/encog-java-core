@@ -27,17 +27,40 @@
 package org.encog.util.math.rbf;
 
 /**
- * Provides a generic interface to a radial basis function (RBF).  Encog uses
+ * Provides a generic interface to a radial basis function (RBF). Encog uses
  * RBF's for a variety of purposes.
  * 
  * @author jheaton
- *
+ * 
  */
 public interface RadialBasisFunction {
-	
-	public double calculate(double x);	
-	public double calculateDerivative(double x);
-	public double getCenter();
-	public double getPeak();
-	public double getWidth();
+
+	/**
+	 * Calculate the RBF result for the specified value.
+	 * @param x The value to be passed into the RBF.
+	 * @return The RBF value.
+	 */
+	double calculate(double x);
+
+	/**
+	 * Calculate the derivative of the RBF function.
+	 * @param x The value to calculate for.
+	 * @return The calculated value.
+	 */
+	double calculateDerivative(double x);
+
+	/**
+	 * @return The center of the RBF.
+	 */
+	double getCenter();
+
+	/**
+	 * @return The peak of the RBF.
+	 */
+	double getPeak();
+
+	/**
+	 * @return The width of the RBF.
+	 */
+	double getWidth();
 }

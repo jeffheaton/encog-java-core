@@ -27,104 +27,141 @@ package org.encog.util.orm;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AnnotationConfiguration;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This is the manager class for Encog database object relation mapping(ORM).  
- * This is based on Hibernate.  The primary purpose for this class is to 
- * provide a way for sessions to be created.
+ * This is the manager class for Encog database object relation mapping(ORM).
+ * This is based on Hibernate. The primary purpose for this class is to provide
+ * a way for sessions to be created.
  * 
  * @author jheaton
- *
+ * 
  */
 public class SessionManager {
-	
+
+	/**
+	 * The session factory to use.
+	 */
 	private SessionFactory sessionFactory;
-	private AnnotationConfiguration config;
 	
+	/**
+	 * The annotation config.
+	 */
+	private AnnotationConfiguration config;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public SessionManager()
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a new session manager.
+	 */
+	public SessionManager() {
 		this(new AnnotationConfiguration().configure());
 	}
-	
-	public SessionManager(String path)
-	{
-		this("org.hsqldb.jdbcDriver",
-			"jdbc:hsqldb:file:"+path+";type=cached;shutdown=true",
-			"sa",
-			"",
-			"org.hibernate.dialect.HSQLDialect");
-	}
-	
-	public SessionManager(String driver,String url,String uid,String pwd,String dialect)
-	{
-		AnnotationConfiguration config = new AnnotationConfiguration();
-		config.setProperty("hibernate.connection.driver_class",driver);
-		config.setProperty("hibernate.connection.url",url);
-		config.setProperty("hibernate.connection.username",uid);
-		config.setProperty("hibernate.connection.password",pwd);
-		config.setProperty("hibernate.dialect",dialect);
-		
-		config.setProperty("hibernate.connection.pool_size","1");
-		config.setProperty("hibernate.current_session_context_class","thread");
-		config.setProperty("hibernate.cache.provider_class","org.hibernate.cache.NoCacheProvider");
-		config.setProperty("hibernate.show_sql","false");
+
+	/**
+	 * Construct a session manager using annotation config.
+	 * @param config The annotation configuration.
+	 */
+	public SessionManager(final AnnotationConfiguration config) {
 		init(config);
 	}
-	
-	public SessionManager(AnnotationConfiguration config)
-	{
-		init(config);	
+
+	/**
+	 * Construct a session manager using the specified HSQL 
+	 * path.
+	 * @param path HSQL path.
+	 */
+	public SessionManager(final String path) {
+		this("org.hsqldb.jdbcDriver", "jdbc:hsqldb:file:" + path
+				+ ";type=cached;shutdown=true", "sa", "",
+				"org.hibernate.dialect.HSQLDialect");
 	}
-	
-	private void init(AnnotationConfiguration config)
-	{
+
+	/**
+	 * Construct a session manager from the specified connect info.
+	 * @param driver The JDBC driver.
+	 * @param url The JDBC URL.
+	 * @param uid The user id.
+	 * @param pwd The password.
+	 * @param dialect The Hibernate dialect to use.
+	 */
+	public SessionManager(final String driver, final String url,
+			final String uid, final String pwd, final String dialect) {
+		final AnnotationConfiguration config = new AnnotationConfiguration();
+		config.setProperty("hibernate.connection.driver_class", driver);
+		config.setProperty("hibernate.connection.url", url);
+		config.setProperty("hibernate.connection.username", uid);
+		config.setProperty("hibernate.connection.password", pwd);
+		config.setProperty("hibernate.dialect", dialect);
+
+		config.setProperty("hibernate.connection.pool_size", "1");
+		config.setProperty("hibernate.current_session_context_class", "thread");
+		config.setProperty("hibernate.cache.provider_class",
+				"org.hibernate.cache.NoCacheProvider");
+		config.setProperty("hibernate.show_sql", "false");
+		init(config);
+	}
+
+	/**
+	 * Export the DDL, this creates the tables needed.
+	 */
+	public void export() {
+		final SchemaExport export = new SchemaExport(this.config);
+		export.create(true, true);
+	}
+
+	/**
+	 * Init the session manager using the specified annotation config.
+	 * @param config The annotation config.
+	 */
+	private void init(final AnnotationConfiguration config) {
 		try {
 			this.config = config;
-			
-			
+
 			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.Fix.class);
-			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.Alias.class);
-			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.Word.class);
-			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.Lemma.class);
+			this.config
+					.addAnnotatedClass(org.encog.nlp.lexicon.data.Alias.class);
+			this.config
+					.addAnnotatedClass(org.encog.nlp.lexicon.data.Word.class);
+			this.config
+					.addAnnotatedClass(org.encog.nlp.lexicon.data.Lemma.class);
 			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.Fix.class);
-			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.WordType.class);
-			this.config.addAnnotatedClass(org.encog.nlp.lexicon.data.WordTypePossibility.class);
-			this.config.addAnnotatedClass(org.encog.bot.spider.WorkloadItem.class);
-			
-			
-            sessionFactory = config.buildSessionFactory();
-        } catch (Throwable ex) {
-            if( logger.isErrorEnabled())
-            {
-            	logger.error("Initial SessionFactory creation failed." + ex);
-            }
-            throw new ORMError(ex);
-        }	
+			this.config
+				.addAnnotatedClass(
+						org.encog.nlp.lexicon.data.WordType.class);
+			this.config
+				.addAnnotatedClass(
+						org.encog.nlp.lexicon.data.WordTypePossibility.class);
+			this.config
+					.addAnnotatedClass(org.encog.bot.spider.WorkloadItem.class);
+
+			this.sessionFactory = config.buildSessionFactory();
+		} catch (final Throwable ex) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Initial SessionFactory creation failed."
+						+ ex);
+			}
+			throw new ORMError(ex);
+		}
 	}
-	
-	public ORMSession openSession()
-	{
-		org.hibernate.Session hibernateSession = sessionFactory.openSession(new DataObjectInterceptor());
-		ORMSession result = new ORMSession(hibernateSession);
-		
+
+	/**
+	 * Open an ORM session.
+	 * @return An ORM session.
+	 */
+	public ORMSession openSession() {
+		final org.hibernate.Session hibernateSession = this.sessionFactory
+				.openSession(new DataObjectInterceptor());
+		final ORMSession result = new ORMSession(hibernateSession);
+
 		return result;
-		
+
 	}
-	
-	public void export()
-	{
-		SchemaExport export = new SchemaExport(this.config);
-		export.create(true,true);
-	}
-	
+
 }

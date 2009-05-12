@@ -33,46 +33,63 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
- * Provides simple logging access to the JDK logging system.  Encog uses
- * slf4j to abstract which log it uses.  However, by default Encog uses
- * JDK logging.  This class can be used to manage JDK logging.
+ * Provides simple logging access to the JDK logging system. Encog uses slf4j to
+ * abstract which log it uses. However, by default Encog uses JDK logging. This
+ * class can be used to manage JDK logging.
  * 
  * @author jheaton
- *
+ * 
  */
-public class Logging {
+public final class Logging {
 	
-	
-	public static Logger getRootLogger()
-	{
-		Logger logger = LogManager.getLogManager().getLogger("");
-		return logger;
+	/**
+	 * Private constructor.
+	 */
+	private Logging() {		
 	}
-	
-	public static Handler getConsoleHandler()
-	{
-		Handler[] handlers = Logging.getRootLogger().getHandlers();
-		for(int i=0;i<handlers.length;i++)
-		{
-			if( handlers[i] instanceof ConsoleHandler )
-				return handlers[i];
+
+	/**
+	 * Log everything to the console.
+	 */
+	public static void allConsoleLogging() {
+		Logging.setConsoleLevel(Level.FINEST);
+		Logging.getRootLogger().setLevel(Level.FINEST);
+
+	}
+
+	/**
+	 * @return The handler for the console logger.
+	 */
+	public static Handler getConsoleHandler() {
+		final Handler[] handlers = Logging.getRootLogger().getHandlers();
+		for (final Handler element : handlers) {
+			if (element instanceof ConsoleHandler) {
+				return element;
+			}
 		}
 		return null;
 	}
-	
-	public static void setConsoleLevel(Level level)
-	{
-		getConsoleHandler().setLevel(level);
-	}
-	
-	public static void stopConsoleLogging()
-	{
-		setConsoleLevel(Level.OFF);
+
+	/**
+	 * @return The root logger.
+	 */
+	public static Logger getRootLogger() {
+		final Logger logger = LogManager.getLogManager().getLogger("");
+		return logger;
 	}
 
-	public static void allConsoleLogging() {
-		setConsoleLevel(Level.FINEST);
-		getRootLogger().setLevel(Level.FINEST);
-		
+	/**
+	 * Set the logging level for console.
+	 * @param level The logging level.
+	 */
+	public static void setConsoleLevel(final Level level) {
+		Logging.getConsoleHandler().setLevel(level);
+	}
+
+	/**
+	 * Stop logging to the console.
+	 */
+	public static void stopConsoleLogging() {
+		Logging.setConsoleLevel(Level.OFF);
 	}
 }

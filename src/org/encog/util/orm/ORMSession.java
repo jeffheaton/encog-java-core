@@ -25,102 +25,140 @@
  */
 package org.encog.util.orm;
 
-import java.sql.SQLException;
-
-import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A Hibernate session.  This class provides access to the Hibernate persisted
+ * A Hibernate session. This class provides access to the Hibernate persisted
  * database.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ORMSession {
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * The Hibernate session.
+	 */
+	private final org.hibernate.Session session;
 	
-	private org.hibernate.Session session;
+	/**
+	 * The Hibernate transaction.
+	 */
 	private org.hibernate.Transaction transaction;
-	
-	public ORMSession(Session session)
-	{
+
+	/**
+	 * Construct an ORMSession based on a Hibernate session.
+	 * @param session The Hibernate session.
+	 */
+	public ORMSession(final Session session) {
 		this.session = session;
 	}
-	
-	public void begin()
-	{
-		transaction = session.beginTransaction();
+
+	/**
+	 * Begin the transaction.
+	 */
+	public void begin() {
+		this.transaction = this.session.beginTransaction();
 	}
-	
-	public void commit()
-	{
-		transaction.commit();		
+
+	/**
+	 * Clear the Hibernate session.
+	 */
+	public void clear() {
+		this.session.clear();
+
 	}
-	
-	public void rollback()
-	{
-		transaction.rollback();
-	}
-	
-	public void save(DataObject obj)
-	{
-		obj.validate();
-		session.save(obj);
-	}
-	
-	public void delete(Object obj)
-	{
-		session.delete(obj);
-	}
-	
-	public Query createQuery(String sql)
-	{
-		return session.createQuery(sql);
-	}
-	
-	public Query createSQLQuery(String sql)
-	{
-		return session.createSQLQuery(sql);
-	}
-		
-	public void close() 
-	{
-		try
-		{
-			session.close();
-		}
-		catch(Exception e)
-		{
+
+	/**
+	 * Close the session.
+	 */
+	public void close() {
+		try {
+			this.session.close();
+		} catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void clear()
-	{
-		session.clear();
 
-	}
-	
-	public void evict(DataObject obj)
-	{
-		session.evict(obj);
-	}
-	
-	public void flush()
-	{
-		session.flush();
+	/**
+	 * Commit the transaction.
+	 */
+	public void commit() {
+		this.transaction.commit();
 	}
 
-	public void executeSQL(String sql) {
+	/**
+	 * Create a HQL query.
+	 * @param sql The HQL query.
+	 * @return A Hibernate query.
+	 */
+	public Query createQuery(final String sql) {
+		return this.session.createQuery(sql);
+	}
+
+	/**
+	 * Create a Hibernate SQL query.
+	 * @param sql The SQL to query on.
+	 * @return A Hibernate query.
+	 */
+	public Query createSQLQuery(final String sql) {
+		return this.session.createSQLQuery(sql);
+	}
+
+	/**
+	 * Delete the specified persisted object.
+	 * @param obj The object to delete.
+	 */
+	public void delete(final Object obj) {
+		this.session.delete(obj);
+	}
+
+	/**
+	 * Evict the specified object from the cache.
+	 * @param obj The object to evict.
+	 */
+	public void evict(final DataObject obj) {
+		this.session.evict(obj);
+	}
+
+	/**
+	 * Execute the specified SQL.
+	 * @param sql The SQL to execute.
+	 */
+	public void executeSQL(final String sql) {
 		createSQLQuery(sql).executeUpdate();
+	}
+
+	/**
+	 * Flush this session.
+	 */
+	public void flush() {
+		this.session.flush();
+	}
+
+	/**
+	 * Rollback this transaction.
+	 */
+	public void rollback() {
+		this.transaction.rollback();
+	}
+
+	/**
+	 * Save the specified object.
+	 * @param obj The persistant object to save.
+	 */
+	public void save(final DataObject obj) {
+		obj.validate();
+		this.session.save(obj);
 	}
 
 }

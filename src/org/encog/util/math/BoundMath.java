@@ -26,39 +26,76 @@
 package org.encog.util.math;
 
 /**
- * Java will sometimes return Math.NaN or Math.Infinity when numbers get 
- * to large or too small.  This can have undesirable effects.  This class
- * provides some basic math functions that may be in danger of returning
- * such a value.  This class imposes a very large and small ceiling and
- * floor to keep the numbers within range.
+ * Java will sometimes return Math.NaN or Math.Infinity when numbers get to
+ * large or too small. This can have undesirable effects. This class provides
+ * some basic math functions that may be in danger of returning such a value.
+ * This class imposes a very large and small ceiling and floor to keep the
+ * numbers within range.
  * 
  * @author jheaton
- *
+ * 
  */
-public class BoundMath {
-	
-	public static double exp(double a)
-	{
-		return BoundNumbers.bound(Math.exp(a));
-	}
+public final class BoundMath {
 
-	public static double pow(double a, double b) {
-		return BoundNumbers.bound(Math.pow(a, b));
-	}
-
-	public static double log(double a) {
-		return BoundNumbers.bound(Math.log(a));
-	}
-
-	public static double sin(double a) {
-		return BoundNumbers.bound(Math.sin(a));
+	/**
+	 * Private constructor.
+	 */
+	private BoundMath() {
+		
 	}
 	
-	public static double cos(double a) {
+	/**
+	 * Calculate the cos.
+	 * @param a The value passed to the function.
+	 * @return The result of the function.
+	 */
+	public static double cos(final double a) {
 		return BoundNumbers.bound(Math.cos(a));
 	}
 
-	public static double sqrt(double a) {
+	/**
+	 * Calculate the exp.
+	 * @param a The value passed to the function.
+	 * @return The result of the function.
+	 */
+	public static double exp(final double a) {
+		return BoundNumbers.bound(Math.exp(a));
+	}
+
+	/**
+	 * Calculate the log.
+	 * @param a The value passed to the function.
+	 * @return The result of the function.
+	 */
+	public static double log(final double a) {
+		return BoundNumbers.bound(Math.log(a));
+	}
+
+	/**
+	 * Calculate the power of a number.
+	 * @param a The base.
+	 * @param b The exponent.
+	 * @return The result of the function.
+	 */
+	public static double pow(final double a, final double b) {
+		return BoundNumbers.bound(Math.pow(a, b));
+	}
+
+	/**
+	 * Calculate the sin.
+	 * @param a The value passed to the function.
+	 * @return The result of the function.
+	 */
+	public static double sin(final double a) {
+		return BoundNumbers.bound(Math.sin(a));
+	}
+
+	/**
+	 * Calculate the square root.
+	 * @param a The value passed to the function.
+	 * @return The result of the function.
+	 */
+	public static double sqrt(final double a) {
 		return Math.sqrt(a);
 	}
 }

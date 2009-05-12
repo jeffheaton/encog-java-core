@@ -40,66 +40,68 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  */
 public class SimpleIntensityDownsample implements Downsample {
-
+	
 	/**
 	 * The image to downsample.
 	 */
 	private Image image;
-	
+
 	/**
 	 * The pixel map from the image.
 	 */
 	private int[] pixelMap;
-	
+
 	/**
 	 * The downsample x-ratio.
 	 */
 	private double ratioX;
-	
+
 	/**
 	 * The downsample y-ratio.
 	 */
 	private double ratioY;
-	
+
 	/**
 	 * The image height.
 	 */
 	private int imageHeight;
-	
+
 	/**
 	 * The image width.
 	 */
 	private int imageWidth;
-	
-	/** 
+
+	/**
 	 * The left boundary of the downsample.
 	 */
 	private int downSampleLeft;
-	
+
 	/**
 	 * The right boundary of the downsample.
 	 */
 	private int downSampleRight;
-	
-	/** 
+
+	/**
 	 * The top boundary of the downsample.
 	 */
 	private int downSampleTop;
-	
+
 	/**
 	 * The bottom boundary of the downsample.
 	 */
 	private int downSampleBottom;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct the downsample utility for the specified image.
-	 * @param image The image to downsample.
+	 * 
+	 * @param image
+	 *            The image to downsample.
 	 */
 	public SimpleIntensityDownsample(final Image image) {
 		processImage(image);
@@ -107,8 +109,11 @@ public class SimpleIntensityDownsample implements Downsample {
 
 	/**
 	 * Called to downsample the image and store it in the down sample component.
-	 * @param height The height to downsample to.
-	 * @param width THe width to downsample to.
+	 * 
+	 * @param height
+	 *            The height to downsample to.
+	 * @param width
+	 *            THe width to downsample to.
 	 * @return The downsampled image.
 	 */
 	public double[] downSample(final int height, final int width) {
@@ -121,9 +126,8 @@ public class SimpleIntensityDownsample implements Downsample {
 		try {
 			grabber.grabPixels();
 		} catch (final InterruptedException e) {
-			if( logger.isErrorEnabled())
-			{
-				logger.error("Exception",e);
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
 			}
 			throw new EncogError(e);
 		}
@@ -312,7 +316,9 @@ public class SimpleIntensityDownsample implements Downsample {
 
 	/**
 	 * Process the image and prepare it to be downsampled.
-	 * @param image The image to downsample.
+	 * 
+	 * @param image
+	 *            The image to downsample.
 	 */
 	public void processImage(final Image image) {
 		this.image = image;

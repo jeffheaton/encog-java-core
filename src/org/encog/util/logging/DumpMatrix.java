@@ -34,34 +34,66 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A utility for writing matrixes to the log.
+ * 
  * @author jheaton
- *
+ * 
  */
-public class DumpMatrix {
+public final class DumpMatrix {
+
+	/**
+	 * Private constructor.
+	 */
+	private DumpMatrix() {
+		
+	}
 	
 	/**
-	 * The logging object.
+	 * Maximum precision.
 	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
+	public static final int MAX_PRECIS = 3;
 	
-	public static String dumpMatrix(Matrix matrix)
-	{
-		NumberFormat format = NumberFormat.getNumberInstance();
-		format.setMaximumFractionDigits(3);
-		format.setMaximumFractionDigits(3);
-		
-		StringBuilder result = new StringBuilder();
+	/**
+	 * Dump an array of numbers to a string.
+	 * @param d The array to dump.
+	 * @return The array as a string.
+	 */
+	public static String dumpArray(final double[] d) {
+		final NumberFormat format = NumberFormat.getNumberInstance();
+		format.setMaximumFractionDigits(MAX_PRECIS);
+		format.setMaximumFractionDigits(MAX_PRECIS);
+
+		final StringBuilder result = new StringBuilder();
+		result.append("[");
+		for (int i = 0; i < d.length; i++) {
+			if (i != 0) {
+				result.append(",");
+			}
+			result.append(format.format(d[i]));
+		}
+		result.append("]");
+		return result.toString();
+	}
+
+	/**
+	 * Dump a matrix to a string.
+	 * @param matrix The matrix.
+	 * @return The matrix as a string.
+	 */
+	public static String dumpMatrix(final Matrix matrix) {
+		final NumberFormat format = NumberFormat.getNumberInstance();
+		format.setMaximumFractionDigits(MAX_PRECIS);
+		format.setMaximumFractionDigits(MAX_PRECIS);
+
+		final StringBuilder result = new StringBuilder();
 		result.append("==");
 		result.append(matrix.toString());
 		result.append("==\n");
-		for(int row = 0; row< matrix.getRows();row++)
-		{
+		for (int row = 0; row < matrix.getRows(); row++) {
 			result.append("  [");
-			for(int col = 0; col<matrix.getCols();col++)
-			{
-				if(col!=0)
+			for (int col = 0; col < matrix.getCols(); col++) {
+				if (col != 0) {
 					result.append(",");
+				}
 				result.append(format.format(matrix.get(row, col)));
 			}
 			result.append("]\n");
@@ -69,20 +101,9 @@ public class DumpMatrix {
 		return result.toString();
 	}
 
-	public static String dumpArray(double[] d) {
-		NumberFormat format = NumberFormat.getNumberInstance();
-		format.setMaximumFractionDigits(3);
-		format.setMaximumFractionDigits(3);
-		
-		StringBuilder result = new StringBuilder();
-		result.append("[");
-		for(int i=0;i<d.length;i++)
-		{
-			if(i!=0)
-				result.append(",");
-			result.append(format.format(d[i]));
-		}
-		result.append("]");
-		return result.toString();
-	}
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 }

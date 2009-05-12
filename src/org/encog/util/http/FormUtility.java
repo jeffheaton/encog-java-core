@@ -43,8 +43,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is used to construct responses to HTML forms. The
- * class supports both standard HTML forms, as well as multipart forms.
+ * This class is used to construct responses to HTML forms. The class supports
+ * both standard HTML forms, as well as multipart forms.
  */
 public class FormUtility {
 	/**
@@ -67,12 +67,6 @@ public class FormUtility {
 	 * A Java random number generator.
 	 */
 	private static Random random = new Random();
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Encode the specified string. This encodes all special characters.
@@ -83,7 +77,7 @@ public class FormUtility {
 	 */
 	private static String encode(final String str) {
 		try {
-			return URLEncoder.encode(str, ENCODE);
+			return URLEncoder.encode(str, FormUtility.ENCODE);
 		} catch (final UnsupportedEncodingException e) {
 			return str;
 		}
@@ -95,8 +89,8 @@ public class FormUtility {
 	 * @return The boundary.
 	 */
 	public static String getBoundary() {
-		return "---------------------------" + randomString() + randomString()
-				+ randomString();
+		return "---------------------------" + FormUtility.randomString()
+				+ FormUtility.randomString() + FormUtility.randomString();
 	}
 
 	/**
@@ -117,12 +111,12 @@ public class FormUtility {
 			}
 			String left = tok2.nextToken();
 			if (!tok2.hasMoreTokens()) {
-				left = encode(left);
+				left = FormUtility.encode(left);
 				result.put(left, null);
 				continue;
 			}
 			String right = tok2.nextToken();
-			right = encode(right);
+			right = FormUtility.encode(right);
 			result.put(left, right);
 		}
 		return result;
@@ -135,8 +129,15 @@ public class FormUtility {
 	 * @return A random string.
 	 */
 	protected static String randomString() {
-		return Long.toString(random.nextLong(), RANDOM_LENGTH);
+		return Long.toString(FormUtility.random.nextLong(),
+				FormUtility.RANDOM_LENGTH);
 	}
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The boundary used for a multipart post. This field is null if this is not
@@ -178,40 +179,36 @@ public class FormUtility {
 	 *            The file to attach.
 	 */
 	public void add(final String name, final File file) {
-		try
-		{
-		if (this.boundary != null) {
-			boundary();
-			writeName(name);
-			write("; filename=\"");
-			write(file.getName());
-			write("\"");
-			newline();
-			write("Content-Type: ");
-			String type = URLConnection
-					.guessContentTypeFromName(file.getName());
-			if (type == null) {
-				type = "application/octet-stream";
+		try {
+			if (this.boundary != null) {
+				boundary();
+				writeName(name);
+				write("; filename=\"");
+				write(file.getName());
+				write("\"");
+				newline();
+				write("Content-Type: ");
+				String type = URLConnection.guessContentTypeFromName(file
+						.getName());
+				if (type == null) {
+					type = "application/octet-stream";
+				}
+				writeln(type);
+				newline();
+
+				final byte[] buf = new byte[FormUtility.BUFFER_SIZE];
+				int nread;
+
+				final InputStream in = new FileInputStream(file);
+				while ((nread = in.read(buf, 0, buf.length)) >= 0) {
+					this.os.write(buf, 0, nread);
+				}
+
+				newline();
 			}
-			writeln(type);
-			newline();
-
-			final byte[] buf = new byte[BUFFER_SIZE];
-			int nread;
-
-			final InputStream in = new FileInputStream(file);
-			while ((nread = in.read(buf, 0, buf.length)) >= 0) {
-				this.os.write(buf, 0, nread);
-			}
-
-			newline();
-		}
-		}
-		catch(IOException e)
-		{
-			if( logger.isDebugEnabled() )
-			{
-				logger.debug("Exception",e);
+		} catch (final IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 		}
 	}
@@ -224,7 +221,7 @@ public class FormUtility {
 	 * @param value
 	 *            The value of the field.
 	 */
-	public void add(final String name, final String value)  {
+	public void add(final String name, final String value) {
 		if (this.boundary != null) {
 			boundary();
 			writeName(name);
@@ -235,9 +232,9 @@ public class FormUtility {
 			if (!this.first) {
 				write("&");
 			}
-			write(encode(name));
+			write(FormUtility.encode(name));
 			write("=");
-			write(encode(value));
+			write(FormUtility.encode(value));
 		}
 		this.first = false;
 	}
@@ -246,7 +243,7 @@ public class FormUtility {
 	 * Generate a multipart form boundary.
 	 * 
 	 */
-	private void boundary()  {
+	private void boundary() {
 		write("--");
 		write(this.boundary);
 	}
@@ -256,21 +253,17 @@ public class FormUtility {
 	 * 
 	 */
 	public void complete() {
-		try
-		{
-		if (this.boundary != null) {
-			boundary();
-			writeln("--");
-			this.os.flush();
-		}
-		}
-		catch(IOException e)
-		{
-			if(logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+		try {
+			if (this.boundary != null) {
+				boundary();
+				writeln("--");
+				this.os.flush();
 			}
-			throw(new BotError(e));
+		} catch (final IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
+			}
+			throw (new BotError(e));
 		}
 	}
 
@@ -278,7 +271,7 @@ public class FormUtility {
 	 * Create a new line by displaying a carriage return and linefeed.
 	 * 
 	 */
-	private void newline()  {
+	private void newline() {
 		write("\r\n");
 	}
 
@@ -288,16 +281,12 @@ public class FormUtility {
 	 * @param str
 	 *            The String to write.
 	 */
-	private void write(final String str)  {
-		try
-		{
-		this.os.write(str.getBytes());
-		}
-		catch(IOException e)
-		{
-			if(logger.isDebugEnabled())
-			{
-				logger.debug("Exception",e);
+	private void write(final String str) {
+		try {
+			this.os.write(str.getBytes());
+		} catch (final IOException e) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Exception", e);
 			}
 			throw new BotError(e);
 		}
@@ -308,10 +297,8 @@ public class FormUtility {
 	 * 
 	 * @param str
 	 *            The string to write.
-	 * @throws IOException
-	 *             If any error occurs while writing.
 	 */
-	protected void writeln(final String str)  {
+	protected void writeln(final String str) {
 		write(str);
 		newline();
 	}
@@ -321,10 +308,8 @@ public class FormUtility {
 	 * 
 	 * @param name
 	 *            The name of the field.
-	 * @throws IOException
-	 *             If any error occurs while writing.
 	 */
-	private void writeName(final String name)  {
+	private void writeName(final String name) {
 		newline();
 		write("Content-Disposition: form-data; name=\"");
 		write(name);

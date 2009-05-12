@@ -31,6 +31,17 @@ package org.encog.util.math;
  * @author jheaton
  *
  */
-public class MathConst {
+public final class MathConst {
+	
+	/**
+	 * Private constructor.
+	 */
+	private MathConst() {
+		
+	}
+	
+	/**
+	 * Euler's number.
+	 */
 	public static final double EULERS_NUMBER = 2.718281828;
 }

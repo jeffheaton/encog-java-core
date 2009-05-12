@@ -25,7 +25,6 @@
  */
 package org.encog.util.orm;
 
-
 import org.hibernate.Query;
 import org.hibernate.ScrollableResults;
 import org.slf4j.Logger;
@@ -33,43 +32,42 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Used to manage large (scrolled) results from Hibernate.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ScrollingResult {
-	
-	private ScrollableResults scroll;
-	private ORMSession session;
-	private int countDown;
+
+	/**
+	 * The Hibernate scrolling results.
+	 */
+	private final ScrollableResults scroll;
+
 	
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	final private Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	public ScrollingResult(ORMSession session,Query q)
-	{
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a scrolling results object.
+	 * @param q The query.
+	 */
+	public ScrollingResult(final Query q) {
 		this.scroll = q.scroll();
-		this.session = session;
-		this.countDown = 0;
 	}
-	
-	public DataObject next(int count)
-	{	
-		if( !scroll.next() )
-		{
-			scroll.close();
+
+	/**
+	 * Fetch the next object.
+	 * @return The next object.
+	 */
+	public DataObject next() {
+		if (!this.scroll.next()) {
+			this.scroll.close();
 			return null;
 		}
-		
-		countDown++;
-		if( countDown>count )
-		{
-			//session.flush();
-			//session.clear();
-		}
-		
-		return (DataObject)scroll.get(0);		
+
+		return (DataObject) this.scroll.get(0);
 	}
 }
