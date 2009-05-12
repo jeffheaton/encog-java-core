@@ -139,11 +139,12 @@
 			<fileset dir="${path.doc}" />
 		</copy>
 
+		<tstamp/>
 		<copy todir="${path.stage}/lib" file="${jarfile}" />
 
 
 
-		<zip destfile="${path.dist}/encog-core-${build.version}.zip">
+		<zip destfile="${path.dist}/encog-core-${build.version}-${DSTAMP}-${TSTAMP}.zip">
 			<fileset dir="${path.stage}" />
 		</zip>
 
