@@ -30,7 +30,6 @@ import org.encog.EncogError;
 /**
  * Used to represent any error that occurs in the bot part of Encog.
  * @author jheaton
- *
  */
 public class BotError extends EncogError {
 	/**
