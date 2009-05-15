@@ -174,5 +174,13 @@ public class JordanPattern implements NeuralNetworkPattern {
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
+	
+	/**
+	 * Clear out any hidden neurons.
+	 */
+	@Override
+	public void clear() {
+		this.hiddenNeurons = 0;		
+	}
 
 }

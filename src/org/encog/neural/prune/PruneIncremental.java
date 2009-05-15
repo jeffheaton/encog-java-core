@@ -29,7 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.pattern.NeuralNetworkPattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to help determine the optimal configuration for the hidden
@@ -44,6 +47,12 @@ import org.encog.neural.pattern.NeuralNetworkPattern;
 public class PruneIncremental {
 
 	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
 	 * The training set to use as different neural networks are evaluated.
 	 */
 	private final NeuralDataSet training;
@@ -56,8 +65,13 @@ public class PruneIncremental {
 	/**
 	 * The ranges for the hidden layers.
 	 */
-	private final List<HiddenLayerParams> hidden 
-		= new ArrayList<HiddenLayerParams>();
+	private final List<HiddenLayerParams> hidden = new ArrayList<HiddenLayerParams>();
+
+	/**
+	 * Keeps track of how many neurons in each hidden layer as training the
+	 * evaluation progresses.
+	 */
+	private int[] hiddenCounts;
 
 	/**
 	 * Construct an object to determine the optimal number of hidden layers and
@@ -75,11 +89,13 @@ public class PruneIncremental {
 	}
 
 	/**
-	 * Add a hidden layer's min and max.  Call this once per
-	 * hidden layer.  Specify a zero min if it is possible 
-	 * to remove this hidden layer.
-	 * @param min The minimum number of neurons for this layer.
-	 * @param max The maximum number of neurons for this layer.
+	 * Add a hidden layer's min and max. Call this once per hidden layer.
+	 * Specify a zero min if it is possible to remove this hidden layer.
+	 * 
+	 * @param min
+	 *            The minimum number of neurons for this layer.
+	 * @param max
+	 *            The maximum number of neurons for this layer.
 	 */
 	public void addHiddenLayer(final int min, final int max) {
 		final HiddenLayerParams param = new HiddenLayerParams(min, max);
@@ -87,25 +103,46 @@ public class PruneIncremental {
 	}
 
 	/**
-	 * @return The training set to use.
+	 * @return The hidden layer max and min.
 	 */
-	public NeuralDataSet getTraining() {
-		return training;
+	public List<HiddenLayerParams> getHidden() {
+		return this.hidden;
 	}
 
 	/**
 	 * @return The network pattern to use.
 	 */
 	public NeuralNetworkPattern getPattern() {
-		return pattern;
+		return this.pattern;
 	}
 
 	/**
-	 * @return The hidden layer max and min.
+	 * @return The training set to use.
 	 */
-	public List<HiddenLayerParams> getHidden() {
-		return hidden;
+	public NeuralDataSet getTraining() {
+		return this.training;
 	}
 	
-	
+	private BasicNetwork constructNetwork()
+	{
+		this.pattern.clear();
+		return null;
+	}
+
+	/**
+	 * Begin the process.
+	 */
+	public void prune() {
+
+		if (this.hidden.size() == 0) {
+			final String str = "To calculate the optimal hidden size, at least "
+					+ "one hidden layer must be defined.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
+			}
+		}
+
+		this.hiddenCounts = new int[this.hidden.size()];
+	}
+
 }

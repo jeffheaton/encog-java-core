@@ -127,4 +127,11 @@ public class SOMPattern implements NeuralNetworkPattern {
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
+	
+	/**
+	 * Clear out any hidden neurons.
+	 */
+	@Override
+	public void clear() {		
+	}
 }

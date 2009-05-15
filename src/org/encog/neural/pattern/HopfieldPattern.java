@@ -134,5 +134,12 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 		throw new PatternError(str);
 
 	}
+	
+	/**
+	 * Nothing to clear.
+	 */
+	@Override
+	public void clear() {		
+	}
 
 }

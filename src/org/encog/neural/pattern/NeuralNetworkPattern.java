@@ -70,4 +70,9 @@ public interface NeuralNetworkPattern {
 	 * @param count The output neuron count.
 	 */
 	void setOutputNeurons(int count);
+	
+	/**
+	 * Clear the hidden layers so that they can be redefined.
+	 */
+	void clear();
 }
