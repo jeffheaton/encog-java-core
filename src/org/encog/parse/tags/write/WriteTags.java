@@ -38,12 +38,13 @@ public class WriteTags {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct an object to write tags.
-	 * @param output THe output stream.
+	 * 
+	 * @param output
+	 *            THe output stream.
 	 */
 	public WriteTags(final OutputStream output) {
 		this.output = output;
@@ -53,17 +54,22 @@ public class WriteTags {
 
 	/**
 	 * Add an attribute to be written with the next tag.
-	 * @param name The name of the attribute.
-	 * @param value The value of the attribute.
+	 * 
+	 * @param name
+	 *            The name of the attribute.
+	 * @param value
+	 *            The value of the attribute.
 	 */
 	public void addAttribute(final String name, final String value) {
 		this.attributes.put(name, value);
 	}
 
 	/**
-	 * Add CDATA to the output stream. XML allows a large block of
-	 * unformatted text to be added as a CDATA tag.
-	 * @param text The text to add.
+	 * Add CDATA to the output stream. XML allows a large block of unformatted
+	 * text to be added as a CDATA tag.
+	 * 
+	 * @param text
+	 *            The text to add.
 	 */
 	public void addCDATA(final String text) {
 		final StringBuilder builder = new StringBuilder();
@@ -80,10 +86,12 @@ public class WriteTags {
 	}
 
 	/**
-	 * Add a property as a double.  A property is a value enclosed
-	 * in two tags.
-	 * @param name The name of the enclosing tags.
-	 * @param d The value to store.
+	 * Add a property as a double. A property is a value enclosed in two tags.
+	 * 
+	 * @param name
+	 *            The name of the enclosing tags.
+	 * @param d
+	 *            The value to store.
 	 */
 	public void addProperty(final String name, final double d) {
 		beginTag(name);
@@ -92,10 +100,12 @@ public class WriteTags {
 	}
 
 	/**
-	 * Add a property as an integer.  A property is a value enclosed
-	 * in two tags.
-	 * @param name The name of the enclosing tags.
-	 * @param i The value to store.
+	 * Add a property as an integer. A property is a value enclosed in two tags.
+	 * 
+	 * @param name
+	 *            The name of the enclosing tags.
+	 * @param i
+	 *            The value to store.
 	 */
 	public void addProperty(final String name, final int i) {
 		addProperty(name, "" + i);
@@ -103,10 +113,12 @@ public class WriteTags {
 	}
 
 	/**
-	 * Add a property as a string.  A property is a value enclosed
-	 * in two tags.
-	 * @param name The name of the enclosing tags.
-	 * @param str The value to store.
+	 * Add a property as a string. A property is a value enclosed in two tags.
+	 * 
+	 * @param name
+	 *            The name of the enclosing tags.
+	 * @param str
+	 *            The value to store.
 	 */
 	public void addProperty(final String name, final String str) {
 		beginTag(name);
@@ -116,7 +128,9 @@ public class WriteTags {
 
 	/**
 	 * Add text.
-	 * @param text The text to add.
+	 * 
+	 * @param text
+	 *            The text to add.
 	 */
 	public void addText(final String text) {
 		try {
@@ -134,7 +148,9 @@ public class WriteTags {
 
 	/**
 	 * Begin a tag with the specified name.
-	 * @param name The tag to begin.
+	 * 
+	 * @param name
+	 *            The tag to begin.
 	 */
 	public void beginTag(final String name) {
 		final StringBuilder builder = new StringBuilder();
@@ -198,6 +214,27 @@ public class WriteTags {
 			this.output.write(builder.toString().getBytes());
 		} catch (final IOException e) {
 			throw new ParseError(e);
+		}
+
+	}
+
+	/**
+	 * End a tag, require that we are ending the specified tag.
+	 * 
+	 * @param name
+	 *            The tag to be ending.
+	 */
+	public void endTag(final String name) {
+		if (!this.tagStack.peek().equals(name)) {
+			final String str = "End tag mismatch, should be ending: "
+					+ this.tagStack.peek() + ", but trying to end: " + name
+					+ ".";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
+			}
+			throw new ParseError(str);
+		} else {
+			endTag();
 		}
 
 	}

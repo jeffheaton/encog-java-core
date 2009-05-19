@@ -31,7 +31,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.TreeSet;
 
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
@@ -145,8 +147,8 @@ public class PersistReader {
 	 * Build a directory entry list for the file.
 	 * @return A list of objects in the file.
 	 */
-	public List<DirectoryEntry> buildDirectory() {
-		final List<DirectoryEntry> result = new ArrayList<DirectoryEntry>();
+	public Set<DirectoryEntry> buildDirectory() {
+		final Set<DirectoryEntry> result = new TreeSet<DirectoryEntry>();
 		advanceObjectsCollection();
 
 		while (this.in.readToTag()) {
@@ -236,9 +238,9 @@ public class PersistReader {
 					}
 
 					if (!this.in.getTag().getName().equals(contain)) {
-						out.endTag();
+						out.endTag(in.getTag().getName());
 					} else if (depth == 0) {
-						return;
+						break;
 					}
 					depth--;
 				}
@@ -248,7 +250,7 @@ public class PersistReader {
 
 		}
 
-		out.endTag();
+		out.endTag(contain);
 	}
 
 	/**

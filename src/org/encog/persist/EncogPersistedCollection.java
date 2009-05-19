@@ -29,6 +29,8 @@ package org.encog.persist;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.encog.persist.location.FilePersistence;
 import org.encog.persist.location.PersistenceLocation;
@@ -171,8 +173,8 @@ public class EncogPersistedCollection {
 	/**
 	 * Directory entries for all of the objects in the current file.
 	 */
-	private final List<DirectoryEntry> directory = 
-			new ArrayList<DirectoryEntry>();
+	private final Set<DirectoryEntry> directory = 
+			new TreeSet<DirectoryEntry>();
 
 	/**
 	 * The version of Encog.
@@ -248,7 +250,7 @@ public class EncogPersistedCollection {
 	 */
 	public void buildDirectory() {
 		final PersistReader reader = new PersistReader(this.filePrimary);
-		final List<DirectoryEntry> d = reader.buildDirectory();
+		final Set<DirectoryEntry> d = reader.buildDirectory();
 		this.directory.clear();
 		this.directory.addAll(d);
 		reader.close();
@@ -343,7 +345,7 @@ public class EncogPersistedCollection {
 	/**
 	 * @return The directory entries for the objects in this file.
 	 */
-	public List<DirectoryEntry> getDirectory() {
+	public Set<DirectoryEntry> getDirectory() {
 		return this.directory;
 	}
 

@@ -146,7 +146,6 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	/**
 	 * Clear out any hidden neurons.
 	 */
-	@Override
 	public void clear() {
 		this.hidden.clear();		
 	}

@@ -138,7 +138,6 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	/**
 	 * Nothing to clear.
 	 */
-	@Override
 	public void clear() {		
 	}
 

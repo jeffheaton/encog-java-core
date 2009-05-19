@@ -131,7 +131,6 @@ public class SOMPattern implements NeuralNetworkPattern {
 	/**
 	 * Clear out any hidden neurons.
 	 */
-	@Override
 	public void clear() {		
 	}
 }
