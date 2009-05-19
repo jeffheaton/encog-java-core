@@ -233,7 +233,7 @@ public class BasicLayer implements Layer, Serializable {
 		if (hasThreshold()) {
 			// apply the thresholds
 			for (int i = 0; i < this.threshold.length; i++) {
-				pattern.setData(i, result.getData(i) + this.threshold[i]);
+				result.setData(i, result.getData(i) + this.threshold[i]);
 			}
 		}
 
