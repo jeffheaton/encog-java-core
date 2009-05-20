@@ -187,6 +187,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		final NeuralData output = this.network.compute(which.getInput());
 		best = BasicNetwork.determineWinner(output);
 
+		
 		dist = Double.MIN_VALUE;
 		int i = this.network.getOutputLayer().getNeuronCount();
 		int whichNeuron = -1;
