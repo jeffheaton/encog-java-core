@@ -26,6 +26,7 @@
 package org.encog.neural.networks.training.competitive;
 
 import java.util.Collection;
+
 import org.encog.matrix.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -201,7 +202,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		// update the weights
 
-		if( whichNeuron!=-1) {
+		if (whichNeuron != -1) {
 			for (final Synapse synapse : this.synapses) {
 				for (int j = 0; j < which.getInput().size(); j++) {
 					synapse.getMatrix().set(whichNeuron, j,
