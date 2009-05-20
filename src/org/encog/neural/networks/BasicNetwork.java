@@ -632,6 +632,15 @@ public class BasicNetwork implements Serializable, Network {
 	public int winner(final NeuralData input) {
 
 		final NeuralData output = compute(input);
+		return determineWinner(output);
+	}
+	
+	/**
+	 * Determine which member of the output is the winning neuron.
+	 * @param output The output from the neural network.
+	 * @return The winning neuron.
+	 */
+	public static int determineWinner(final NeuralData output) {
 
 		int win = 0;
 

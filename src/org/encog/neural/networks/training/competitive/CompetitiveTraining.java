@@ -41,13 +41,13 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class implements competitive training, which would be used in a
- * winner-take-all neural network, such as the self organizing map (SOM).
- * This is an unsupervised training method, no ideal data is needed on
- * the training set.  If ideal data is provided, it will be ignored.
+ * winner-take-all neural network, such as the self organizing map (SOM). This
+ * is an unsupervised training method, no ideal data is needed on the training
+ * set. If ideal data is provided, it will be ignored.
  * 
  * A neighborhood function is required to determine the degree to which
- * neighboring neurons (to the winning neuron) are updated by each 
- * training iteration.
+ * neighboring neurons (to the winning neuron) are updated by each training
+ * iteration.
  * 
  * @author jheaton
  * 
@@ -55,41 +55,41 @@ import org.slf4j.LoggerFactory;
 public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	/**
-	 * The neighborhood function to use to determine to what degree
-	 * a neuron should be "trained".
+	 * The neighborhood function to use to determine to what degree a neuron
+	 * should be "trained".
 	 */
 	private final NeighborhoodFunction neighborhood;
-	
+
 	/**
-	 * The learning rate.  To what degree should changes be applied.
+	 * The learning rate. To what degree should changes be applied.
 	 */
 	private double learningRate;
-	
+
 	/**
 	 * The network being trained.
 	 */
 	private final BasicNetwork network;
-	
+
 	/**
 	 * The input layer.
 	 */
 	private final Layer inputLayer;
-	
+
 	/**
 	 * The output layer.
 	 */
 	private final Layer outputLayer;
-	
+
 	/**
 	 * Keep track of which neurons "won".
 	 */
 	private final int[] won;
-	
+
 	/**
 	 * A collection of the synases being modified.
 	 */
 	private final Collection<Synapse> synapses;
-	
+
 	/**
 	 * How many neurons in the input layer.
 	 */
@@ -102,10 +102,15 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	/**
 	 * Create an instance of competitive training.
-	 * @param network The network to train.
-	 * @param learningRate The learning rate, how much to apply per iteration.
-	 * @param training The training set (unsupervised).
-	 * @param neighborhood The neighborhood function to use.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param learningRate
+	 *            The learning rate, how much to apply per iteration.
+	 * @param training
+	 *            The training set (unsupervised).
+	 * @param neighborhood
+	 *            The neighborhood function to use.
 	 */
 	public CompetitiveTraining(final BasicNetwork network,
 			final double learningRate, final NeuralDataSet training,
@@ -133,10 +138,15 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	/**
 	 * Adjusts the weight for a single neuron during a training iteration.
-	 * @param startingWeight The starting weight.
-	 * @param input The input to this neuron.
-	 * @param currentNeuron The neuron who's weight is being updated.
-	 * @param bestNeuron The neuron that "won".
+	 * 
+	 * @param startingWeight
+	 *            The starting weight.
+	 * @param input
+	 *            The input to this neuron.
+	 * @param currentNeuron
+	 *            The neuron who's weight is being updated.
+	 * @param bestNeuron
+	 *            The neuron that "won".
 	 * @return The new weight value.
 	 */
 	private double adjustWeight(final double startingWeight,
@@ -150,8 +160,60 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * @return The learning rate.  This was set when the object
-	 * was created.
+	 * We would not like to have "unutilized output neurons". If there was an
+	 * output neuron that did not react to anything, then force it to be a
+	 * winner for a training item.
+	 */
+	private void forceWin() {
+		int best;
+		NeuralDataPair which = null;
+
+		// final Matrix outputWeights = this.som.getOutputWeights();
+
+		// Loop over all training sets. Find the training set with
+		// the least output.
+		double dist = Double.MAX_VALUE;
+		for (final NeuralDataPair pair : getTraining()) {
+			final NeuralData output = this.network.compute(pair.getInput());
+			best = BasicNetwork.determineWinner(output);
+
+			if (output.getData(best) < dist) {
+				dist = output.getData(best);
+				which = pair;
+			}
+		}
+
+		final NeuralData output = this.network.compute(which.getInput());
+		best = BasicNetwork.determineWinner(output);
+
+		dist = Double.MIN_VALUE;
+		int i = this.network.getOutputLayer().getNeuronCount();
+		int whichNeuron = -1;
+		while ((i--) > 0) {
+			if (this.won[i] != 0) {
+				continue;
+			}
+			if (output.getData(i) > dist) {
+				dist = output.getData(i);
+				whichNeuron = i;
+			}
+		}
+
+		// update the weights
+
+		if( whichNeuron!=-1) {
+			for (final Synapse synapse : this.synapses) {
+				for (int j = 0; j < which.getInput().size(); j++) {
+					synapse.getMatrix().set(whichNeuron, j,
+							which.getInput().getData(j));
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * @return The learning rate. This was set when the object was created.
 	 */
 	public double getLearningRate() {
 		return this.learningRate;
@@ -187,8 +249,13 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		}
 
 		double error = 0;
+		int trainingSize = 0;
 
+		// Apply competitive training
 		for (final NeuralDataPair pair : getTraining()) {
+
+			trainingSize++;
+
 			final NeuralData input = pair.getInput();
 			final int best = this.network.winner(input);
 
@@ -212,15 +279,32 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 			}
 		}
 
+		// see if there are any neurons that "did not win"
+
+		int winners = 0;
+		for (final int element : this.won) {
+			if (element != 0) {
+				winners++;
+			}
+		}
+
+		if ((winners < getNetwork().getOutputLayer().getNeuronCount())
+				&& (winners < trainingSize)) {
+			forceWin();
+		}
+
+		// update the error
+
 		setError(Math.sqrt(error));
 
 		postIteration();
 	}
 
 	/**
-	 * Set the learning rate.  This is the rate at which the weights
-	 * are changed.
-	 * @param rate The learning rate.
+	 * Set the learning rate. This is the rate at which the weights are changed.
+	 * 
+	 * @param rate
+	 *            The learning rate.
 	 */
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
