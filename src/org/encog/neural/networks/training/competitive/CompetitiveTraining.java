@@ -1,10 +1,9 @@
 /*
- * Encog Artificial Intelligence Framework v2.x
- * Java Version
+ * Encog Neural Network and Bot Library for Java v1.x
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ * Copyright 2008, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
@@ -25,46 +24,129 @@
  */
 package org.encog.neural.networks.training.competitive;
 
-import java.util.Collection;
-
 import org.encog.matrix.Matrix;
+import org.encog.matrix.MatrixMath;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.Network;
+import org.encog.neural.networks.synapse.NormalizeSynapse;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
-import org.encog.neural.networks.training.LearningRate;
-import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.neural.networks.training.Train;
+import org.encog.util.NormalizeInput;
+import org.encog.util.math.BoundNumbers;
 
 /**
- * This class implements competitive training, which would be used in a
- * winner-take-all neural network, such as the self organizing map (SOM). This
- * is an unsupervised training method, no ideal data is needed on the training
- * set. If ideal data is provided, it will be ignored.
- * 
- * A neighborhood function is required to determine the degree to which
- * neighboring neurons (to the winning neuron) are updated by each training
- * iteration.
- * 
- * @author jheaton
- * 
+ * TrainSelfOrganizingMap: Implements an unsupervised training algorithm for use
+ * with a Self Organizing Map.
  */
-public class CompetitiveTraining extends BasicTraining implements LearningRate {
+public class CompetitiveTraining extends BasicTraining {
 
 	/**
-	 * The neighborhood function to use to determine to what degree a neuron
-	 * should be "trained".
+	 * The default reduction to use.
 	 */
-	private final NeighborhoodFunction neighborhood;
+	public static final double DEFAULT_REDUCTION = 0.99;
+	
+	/**
+	 * The minimum learning rate for reduction to be applied.
+	 */
+	public static final double MIN_LEARNRATE_FOR_REDUCTION = 0.01;
+	
+	/**
+	 * The learning method, either additive or subtractive.
+	 * 
+	 * @author jheaton
+	 * 
+	 */
+	public enum LearningMethod {
+		/**
+		 * Additive learning.
+		 */
+		ADDITIVE, 
+		/**
+		 * Subtractive learning.
+		 */
+		SUBTRACTIVE
+	}
 
 	/**
-	 * The learning rate. To what degree should changes be applied.
+	 * The self organizing map synapse to train.
 	 */
-	private double learningRate;
+	private final NormalizeSynapse somSynapse;
+
+	/**
+	 * The learning method.
+	 */
+	private LearningMethod learnMethod;
+
+	/**
+	 * The learning rate.
+	 */
+	private double learnRate;
+
+	/**
+	 * Reduction factor.
+	 */
+	private double reduction = CompetitiveTraining.DEFAULT_REDUCTION;
+
+	/**
+	 * Mean square error of the network for the iteration.
+	 */
+	private double totalError;
+
+	/**
+	 * Mean square of the best error found so far.
+	 */
+	private double globalError;
+
+	/**
+	 * Keep track of how many times each neuron won.
+	 */
+	private int[] won;
+
+	/**
+	 * The training sets.
+	 */
+	private final NeuralDataSet train;
+
+	/**
+	 * How many output neurons.
+	 */
+	private final int outputNeuronCount;
+
+	/**
+	 * How many input neurons.
+	 */
+	private final int inputNeuronCount;
+
+	/**
+	 * The best network found so far.
+	 */
+	private final Matrix bestMatrix;
+
+	/**
+	 * The best error found so far.
+	 */
+	private double bestError;
+
+	/**
+	 * The work matrix, used to calculate corrections.
+	 */
+	private Matrix work;
+
+	/**
+	 * The correction matrix, will be applied to the weight matrix after each
+	 * training iteration.
+	 */
+	private final Matrix correc;
+
+	/**
+	 * The size of the training set.
+	 */
+	private int trainSize;
 
 	/**
 	 * The network being trained.
@@ -72,111 +154,196 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	private final BasicNetwork network;
 
 	/**
-	 * The input layer.
-	 */
-	private final Layer inputLayer;
-
-	/**
-	 * The output layer.
-	 */
-	private final Layer outputLayer;
-
-	/**
-	 * Keep track of which neurons "won".
-	 */
-	private final int[] won;
-
-	/**
-	 * A collection of the synases being modified.
-	 */
-	private final Collection<Synapse> synapses;
-
-	/**
-	 * How many neurons in the input layer.
-	 */
-	private final int inputNeuronCount;
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
-	 * Create an instance of competitive training.
+	 * Construct the trainer for a self organizing map.
 	 * 
 	 * @param network
 	 *            The network to train.
-	 * @param learningRate
-	 *            The learning rate, how much to apply per iteration.
-	 * @param training
-	 *            The training set (unsupervised).
-	 * @param neighborhood
-	 *            The neighborhood function to use.
+	 * @param train
+	 *            The training method.
+	 * @param learnMethod
+	 *            The learning method.
+	 * @param learnRate
+	 *            The learning rate.
 	 */
 	public CompetitiveTraining(final BasicNetwork network,
-			final double learningRate, final NeuralDataSet training,
-			final NeighborhoodFunction neighborhood) {
-		this.neighborhood = neighborhood;
-		setTraining(training);
-		this.learningRate = learningRate;
+			final NeuralDataSet train, final LearningMethod learnMethod,
+			final double learnRate) {
 		this.network = network;
-		this.inputLayer = network.getInputLayer();
-		this.outputLayer = network.getOutputLayer();
-		this.synapses = network.getStructure().getPreviousSynapses(
-				this.outputLayer);
-		this.inputNeuronCount = this.inputLayer.getNeuronCount();
-		setError(0);
-		this.won = new int[this.outputLayer.getNeuronCount()];
+		this.train = train;
+		this.totalError = 1.0;
+		this.learnMethod = learnMethod;
+		this.learnRate = learnRate;
 
-		// set the threshold to zero
-		for (final Synapse synapse : this.synapses) {
-			final Matrix matrix = synapse.getMatrix();
-			for (int col = 0; col < matrix.getCols(); col++) {
-				matrix.set(matrix.getRows() - 1, col, 0);
+		this.somSynapse = findSOMSynapse();
+
+		this.outputNeuronCount = this.somSynapse.getToNeuronCount();
+		this.inputNeuronCount = this.somSynapse.getFromNeuronCount();
+
+		this.totalError = 1.0;
+		this.trainSize = 0;
+
+		for (final NeuralDataPair pair : train) {
+			this.trainSize++;
+			final Matrix dptr = Matrix.createColumnMatrix(pair.getInput()
+					.getData());
+			if (MatrixMath.vectorLength(dptr) < BoundNumbers.TOO_SMALL) {
+				throw new RuntimeException(
+						"Multiplicative normalization has null training case");
+			}
+
+		}
+
+		this.bestMatrix = this.somSynapse.getMatrix().clone();
+
+		this.won = new int[this.outputNeuronCount];
+		this.correc = new Matrix(this.outputNeuronCount,
+				this.inputNeuronCount + 1);
+		if (this.learnMethod == LearningMethod.ADDITIVE) {
+			this.work = new Matrix(1, this.inputNeuronCount + 1);
+		} else {
+			this.work = null;
+		}
+
+		initialize();
+		this.bestError = Double.MAX_VALUE;
+	}
+
+	/**
+	 * Adjust the weights and allow the network to learn.
+	 */
+	protected void adjustWeights() {
+		for (int i = 0; i < this.outputNeuronCount; i++) {
+
+			if (this.won[i] == 0) {
+				continue;
+			}
+
+			double f = 1.0 / this.won[i];
+			if (this.learnMethod == LearningMethod.SUBTRACTIVE) {
+				f *= this.learnRate;
+			}
+
+			double length = 0.0;
+
+			for (int j = 0; j <= this.inputNeuronCount; j++) {
+				final double corr = f * this.correc.get(i, j);
+				this.somSynapse.getMatrix().add(i, j, corr);
+				length += corr * corr;
 			}
 		}
 	}
 
 	/**
-	 * Adjusts the weight for a single neuron during a training iteration.
-	 * 
-	 * @param startingWeight
-	 *            The starting weight.
-	 * @param input
-	 *            The input to this neuron.
-	 * @param currentNeuron
-	 *            The neuron who's weight is being updated.
-	 * @param bestNeuron
-	 *            The neuron that "won".
-	 * @return The new weight value.
+	 * Evaludate the current error level of the network.
 	 */
-	private double adjustWeight(final double startingWeight,
-			final double input, final int currentNeuron, final int bestNeuron) {
-		double wt = startingWeight;
-		final double vw = input;
-		wt += this.neighborhood.function(currentNeuron, bestNeuron)
-				* this.learningRate * (vw - wt);
-		return wt;
+	public void evaluateErrors() {
 
+		this.correc.clear();
+
+		for (int i = 0; i < this.won.length; i++) {
+			this.won[i] = 0;
+		}
+
+		this.globalError = 0.0;
+		// loop through all training sets to determine correction
+		for (final NeuralDataPair pair : this.train) {
+			final NormalizeInput input = new NormalizeInput(pair.getInput(),
+					this.somSynapse.getNormalizationType());
+			final int best = this.network.winner(pair.getInput());
+
+			this.won[best]++;
+			final Matrix wptr = this.somSynapse.getMatrix().getRow(best);
+
+			double length = 0.0;
+			double diff;
+
+			for (int i = 0; i < this.inputNeuronCount; i++) {
+				diff = pair.getInput().getData(i) * input.getNormfac()
+						- wptr.get(0, i);
+				length += diff * diff;
+				if (this.learnMethod == LearningMethod.SUBTRACTIVE) {
+					this.correc.add(best, i, diff);
+				} else {
+					this.work.set(0, i, this.learnRate
+							* pair.getInput().getData(i) * input.getNormfac()
+							+ wptr.get(0, i));
+				}
+			}
+			diff = input.getSynth() - wptr.get(0, this.inputNeuronCount);
+			length += diff * diff;
+			if (this.learnMethod == LearningMethod.SUBTRACTIVE) {
+				this.correc.add(best, this.inputNeuronCount, diff);
+			} else {
+				this.work
+						.set(0, this.inputNeuronCount, this.learnRate
+								* input.getSynth()
+								+ wptr.get(0, this.inputNeuronCount));
+			}
+
+			if (length > this.globalError) {
+				this.globalError = length;
+			}
+
+			if (this.learnMethod == LearningMethod.ADDITIVE) {
+				normalizeWeight(this.work, 0);
+				for (int i = 0; i <= this.inputNeuronCount; i++) {
+					this.correc.add(best, i, this.work.get(0, i)
+							- wptr.get(0, i));
+				}
+			}
+
+		}
+
+		this.globalError = Math.sqrt(this.globalError);
 	}
 
 	/**
-	 * We would not like to have "unutilized output neurons". If there was an
-	 * output neuron that did not react to anything, then force it to be a
-	 * winner for a training item.
+	 * Find the layer that is a SOM.
+	 * 
+	 * @return The SOM layer.
 	 */
-	private void forceWin() {
+	private NormalizeSynapse findSOMSynapse() {
+
+		if (this.network.getStructure().getLayers().size() > 2) {
+			throw new NeuralNetworkError(
+					"Competitive training requires no hidden layers.");
+		}
+
+		if (this.network.getStructure().getLayers().size() == 1) {
+			throw new NeuralNetworkError(
+					"Competitive training requires an input and output layer.");
+		}
+
+		if (this.network.getInputLayer().getNext().size() > 1) {
+			throw new NeuralNetworkError(
+			"Competitive training requires only one layer after the input.");
+		}
+		
+		Synapse synapse = this.network.getInputLayer().getNext().get(0);
+		
+		if( !(synapse instanceof NormalizeSynapse) ) {
+			throw new NeuralNetworkError(
+			"Competitive training requires a NormalizedSynapse.");
+		}
+
+		return (NormalizeSynapse) synapse;
+	}
+
+	/**
+	 * Force a win, if no neuron won.
+	 */
+	protected void forceWin() {
 		int best;
 		NeuralDataPair which = null;
 
-		// final Matrix outputWeights = this.som.getOutputWeights();
+		final Matrix outputWeights = this.somSynapse.getMatrix();
 
 		// Loop over all training sets. Find the training set with
 		// the least output.
 		double dist = Double.MAX_VALUE;
-		for (final NeuralDataPair pair : getTraining()) {
+		for (final NeuralDataPair pair : this.train) {
+			best = this.network.winner(pair.getInput());			
 			final NeuralData output = this.network.compute(pair.getInput());
-			best = BasicNetwork.determineWinner(output);
 
 			if (output.getData(best) < dist) {
 				dist = output.getData(best);
@@ -184,132 +351,135 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 			}
 		}
 
-		final NeuralData output = this.network.compute(which.getInput());
-		best = BasicNetwork.determineWinner(output);
+		if (which != null) {
+			final NormalizeInput input = new NormalizeInput(which.getInput(),
+					this.somSynapse.getNormalizationType());
+			best = this.network.winner(which.getInput());
+			final NeuralData output = this.network.compute(which.getInput());
+			int which2 = 0;
 
-		
-		dist = Double.MIN_VALUE;
-		int i = this.network.getOutputLayer().getNeuronCount();
-		int whichNeuron = -1;
-		while ((i--) > 0) {
-			if (this.won[i] != 0) {
-				continue;
-			}
-			if (output.getData(i) > dist) {
-				dist = output.getData(i);
-				whichNeuron = i;
-			}
-		}
-
-		// update the weights
-
-		if (whichNeuron != -1) {
-			for (final Synapse synapse : this.synapses) {
-				for (int j = 0; j < which.getInput().size(); j++) {
-					synapse.getMatrix().set(whichNeuron, j,
-							which.getInput().getData(j));
+			dist = Double.MIN_VALUE;
+			int i = this.outputNeuronCount;
+			while (i-- > 0) {
+				if (this.won[i] != 0) {
+					continue;
+				}
+				if (output.getData(i) > dist) {
+					dist = output.getData(i);
+					which2 = i;
 				}
 			}
+
+			for (int j = 0; j < input.getInputMatrix().getCols(); j++) {
+				outputWeights.set(which2, j, input.getInputMatrix().get(0, j));
+			}
+
+			normalizeWeight(outputWeights, which2);
 		}
-
 	}
 
 	/**
-	 * @return The learning rate. This was set when the object was created.
+	 * Get the best error so far.
+	 * 
+	 * @return The best error so far.
 	 */
-	public double getLearningRate() {
-		return this.learningRate;
+	public double getBestError() {
+		return this.bestError;
 	}
 
 	/**
-	 * @return The network neighborhood function.
+	 * Get the error for this iteration.
+	 * 
+	 * @return The error for this iteration.
 	 */
-	public NeighborhoodFunction getNeighborhood() {
-		return this.neighborhood;
+	public double getTotalError() {
+		return this.totalError;
 	}
 
 	/**
-	 * @return The network being trained.
+	 * Called to initialize the SOM.
 	 */
-	public BasicNetwork getNetwork() {
-		return this.network;
+	public void initialize() {
+
+		for (int i = 0; i < this.outputNeuronCount; i++) {
+			normalizeWeight(this.somSynapse.getMatrix(), i);
+		}
 	}
 
 	/**
-	 * Perform one training iteration.
+	 * This method is called for each training iteration. Usually this method is
+	 * called from inside a loop until the error level is acceptable.
 	 */
 	public void iteration() {
 
-		if (this.logger.isInfoEnabled()) {
-			this.logger.info("Performing Competitive Training iteration.");
+		evaluateErrors();
+
+		this.totalError = this.globalError;
+
+		if (this.totalError < this.bestError) {
+			this.bestError = this.totalError;
+			MatrixMath.copy(this.somSynapse.getMatrix(), this.bestMatrix);
 		}
-
-		preIteration();
-
-		for (int i = 0; i < this.won.length; i++) {
-			this.won[i] = 0;
-		}
-
-		double error = 0;
-		int trainingSize = 0;
-
-		// Apply competitive training
-		for (final NeuralDataPair pair : getTraining()) {
-
-			trainingSize++;
-
-			final NeuralData input = pair.getInput();
-			final int best = this.network.winner(input);
-
-			double length = 0.0;
-
-			this.won[best]++;
-			for (final Synapse synapse : this.synapses) {
-				final Matrix wptr = synapse.getMatrix().getCol(best);
-
-				for (int i = 0; i < this.inputNeuronCount; i++) {
-					final double diff = input.getData(i) - wptr.get(i, 0);
-					length += diff * diff;
-					final double newWeight = adjustWeight(wptr.get(i, 0), input
-							.getData(i), best, i);
-					synapse.getMatrix().set(i, best, newWeight);
-				}
-			}
-
-			if (length > error) {
-				error = length;
-			}
-		}
-
-		// see if there are any neurons that "did not win"
 
 		int winners = 0;
-		for (final int element : this.won) {
-			if (element != 0) {
+		for (int i = 0; i < this.won.length; i++) {
+			if (this.won[i] != 0) {
 				winners++;
 			}
 		}
 
-		if ((winners < getNetwork().getOutputLayer().getNeuronCount())
-				&& (winners < trainingSize)) {
-			forceWin();
+		if (winners < this.outputNeuronCount && winners < this.trainSize) {
+			//forceWin();
+			return;
 		}
 
-		// update the error
+		adjustWeights();
 
-		setError(Math.sqrt(error));
+		if (this.learnRate  
+		  > CompetitiveTraining.MIN_LEARNRATE_FOR_REDUCTION) {
+			this.learnRate *= this.reduction;
+		}
 
-		postIteration();
+		// done
+
+		MatrixMath.copy(this.somSynapse.getMatrix(), this.bestMatrix);
+
+		for (int i = 0; i < this.outputNeuronCount; i++) {
+			normalizeWeight(this.somSynapse.getMatrix(), i);
+		}
 	}
 
 	/**
-	 * Set the learning rate. This is the rate at which the weights are changed.
+	 * Normalize the specified row in the weight matrix.
 	 * 
-	 * @param rate
-	 *            The learning rate.
+	 * @param matrix
+	 *            The weight matrix.
+	 * @param row
+	 *            The row to normalize.
 	 */
-	public void setLearningRate(final double rate) {
-		this.learningRate = rate;
+	protected void normalizeWeight(final Matrix matrix, final int row) {
+
+		double len = MatrixMath.vectorLength(matrix.getRow(row));
+		len = Math.max(len, BoundNumbers.TOO_SMALL);
+
+		len = 1.0 / len;
+		for (int i = 0; i < this.inputNeuronCount; i++) {
+			matrix.set(row, i, matrix.get(row, i) * len);
+		}
+		matrix.set(row, this.inputNeuronCount, 0);
 	}
 
+	/**
+	 * @return The error from the last iteration.
+	 */
+	public double getError() {
+		return this.bestError;
+	}
+
+	/**
+	 * @return The trained network.
+	 */
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
 }

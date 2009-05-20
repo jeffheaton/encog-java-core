@@ -53,5 +53,11 @@ public enum SynapseType {
 	/**
 	 * Direct - Input is simply passed directly to the next layer.
 	 */
-	Direct
+	Direct,
+	
+	/**
+	 * Normalize - A synapse that normalizes the data.  Used to implement
+	 * a SOM.
+	 */
+	Normalize
 }
