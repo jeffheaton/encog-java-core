@@ -97,6 +97,9 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 */
 	private final int outputNeuronCount;
 
+	/**
+	 * What is the worst BMU distance so far, this becomes the error.
+	 */
 	private double worstDistance;
 
 	/**
@@ -116,8 +119,10 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param neighborhood
 	 *            The neighborhood function to use.
 	 */
-	public CompetitiveTraining(final BasicNetwork network,
-			final double learningRate, final NeuralDataSet training,
+	public CompetitiveTraining(
+			final BasicNetwork network,
+			final double learningRate, 
+			final NeuralDataSet training,
 			final NeighborhoodFunction neighborhood) {
 		this.neighborhood = neighborhood;
 		setTraining(training);
@@ -236,9 +241,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		}
 
 		// update the error
-
-		this.learningRate *= 0.95;
-
 		setError(this.worstDistance);
 
 		postIteration();
