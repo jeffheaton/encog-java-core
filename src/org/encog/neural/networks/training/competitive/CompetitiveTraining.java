@@ -347,19 +347,22 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		// adjust the weight for the BMU and its neighborhood
 		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; 
 			outputNeuron++) {
-			for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
-				inputNeuron++) {
-
-				final double currentWeight = synapse.getMatrix().get(
-						inputNeuron, outputNeuron);
-				final double inputValue = input.getData(inputNeuron);
-
-				final double newWeight = adjustWeight(currentWeight,
-						inputValue, outputNeuron, bmu);
-
-				synapse.getMatrix().set(inputNeuron, outputNeuron, newWeight);
-			}
+			trainPattern(synapse,input,outputNeuron,bmu);
 		}
 	}
+	
+	private void trainPattern(Synapse synapse, final NeuralData input,
+			int current, int best) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
 
+			final double currentWeight = synapse.getMatrix().get(inputNeuron,
+					current);
+			final double inputValue = input.getData(inputNeuron);
+
+			final double newWeight = adjustWeight(currentWeight, inputValue,
+					current, best);
+
+			synapse.getMatrix().set(inputNeuron, current, newWeight);
+		}
+	}
 }
