@@ -97,10 +97,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 */
 	private final int outputNeuronCount;
 
-	/**
-	 * What is the worst BMU distance so far, this becomes the error.
-	 */
-	private double worstDistance;
+	private final BestMatchingUnit bmuUtil;
+	
 
 	/**
 	 * The logging object.
@@ -141,6 +139,9 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 				matrix.set(matrix.getRows() - 1, col, 0);
 			}
 		}
+		
+		// create the BMU class
+		this.bmuUtil = new BestMatchingUnit(this); 
 	}
 
 	/**
@@ -163,62 +164,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 				* this.learningRate * (input - weight);
 
 		return weight + delta;
-	}
-
-	/**
-	 * Calculate the best matching unit (BMU). This is the output neuron that
-	 * has the lowest euclidean distance to the input vector.
-	 * 
-	 * @param synapse
-	 *            The synapse to calculate for.
-	 * @param input
-	 *            The input vector.
-	 * @return The output neuron number that is the BMU.
-	 */
-	private int calculateBMU(final Synapse synapse, final NeuralData input) {
-		int result = 0;
-		double lowestDistance = Double.MAX_VALUE;
-
-		for (int i = 0; i < this.outputNeuronCount; i++) {
-			final double distance = calculateEuclideanDistance(synapse, input,
-					i);
-
-			// Track the lowest distance, this is the BMU.
-			if (distance < lowestDistance) {
-				lowestDistance = distance;
-				result = i;
-			}
-		}
-
-		// Track the worst distance, this is the error for the entire network.
-		if (lowestDistance > this.worstDistance) {
-			this.worstDistance = lowestDistance;
-		}
-
-		return result;
-	}
-
-	/**
-	 * Calculate the euclidean distance for the specified output neuron and the
-	 * input vector.
-	 * 
-	 * @param synapse
-	 *            The synapse to get the weights from.
-	 * @param input
-	 *            The input vector.
-	 * @param outputNeuron
-	 *            The neuron we are calculating the distance for.
-	 * @return The euclidean distance.
-	 */
-	private double calculateEuclideanDistance(final Synapse synapse,
-			final NeuralData input, final int outputNeuron) {
-		double result = 0;
-		for (int i = 0; i < input.size(); i++) {
-			final double diff = input.getData(i)
-					- synapse.getMatrix().get(i, outputNeuron);
-			result += diff * diff;
-		}
-		return BoundMath.sqrt(result);
 	}
 
 	/**
@@ -253,7 +198,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		preIteration();
 
-		this.worstDistance = Double.MIN_VALUE;		
+		this.bmuUtil.reset();		
 		int[] won = new int[this.outputNeuronCount];
 		int overworkedBMU = -1;
 		NeuralDataPair overworkedPair = null;
@@ -264,7 +209,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 				final NeuralData input = pair.getInput();
 
-				final int bmu = calculateBMU(synapse, input);
+				final int bmu = bmuUtil.calculateBMU(synapse, input);
 				won[bmu]++;
 
 				// is the BMU "overworked"?
@@ -286,6 +231,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 			}
 			
+			//this.test(synapse);
+			
 			// force any non-winning neurons to share the burden somewhat\
 			if (overworkedPair != null) {
 				forceWinners(synapse, won, overworkedPair);
@@ -295,7 +242,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		
 
 		// update the error
-		setError(this.worstDistance);
+		setError(this.bmuUtil.getWorstDistance());
 
 		postIteration();
 	}
@@ -315,13 +262,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		for (int outputNeuron = 0; outputNeuron < won.length; outputNeuron++) {
 			if (won[outputNeuron] == 0) {
 				// copy
-				for (int inputNeuron = 0; inputNeuron < overworkedPair
-						.getInput().size(); inputNeuron++) {
-					synapse.getMatrix().set(inputNeuron, 
-							outputNeuron, 
-							overworkedPair.getInput().getData(inputNeuron));
-				}
-				break;
+				NeuralData p = findWeakestTrainingItem(synapse).getInput();
+				this.copyInputPattern(synapse, outputNeuron, p);
 			}
 		}
 	}
@@ -365,4 +307,52 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 			synapse.getMatrix().set(inputNeuron, current, newWeight);
 		}
 	}
+	
+	public NeuralDataPair findWeakestTrainingItem(Synapse synapse)
+	{
+		BestMatchingUnit localBMU = new BestMatchingUnit(this);
+		NeuralDataPair result = null;
+		double weakestDistance = Double.MIN_VALUE;
+		
+		for(NeuralDataPair pair: this.getTraining() )
+		{
+			localBMU.calculateBMU(synapse, pair.getInput());
+			
+			if( localBMU.getLowestDistance()>weakestDistance )
+			{
+				result = pair;
+				weakestDistance = localBMU.getLowestDistance();
+			}
+			
+		}
+		return result;
+	}
+	
+	public void test(Synapse synapse)
+	{
+		int outputNeuron = 0;
+		for(NeuralDataPair pair: this.getTraining() )
+		{
+			copyInputPattern(synapse,outputNeuron,pair.getInput());
+			outputNeuron++;
+		}
+	}
+
+	public int getInputNeuronCount() {
+		return inputNeuronCount;
+	}
+
+	public int getOutputNeuronCount() {
+		return outputNeuronCount;
+	}
+	
+	private void copyInputPattern(Synapse synapse,int outputNeuron, NeuralData input)
+	{
+		for(int inputNeuron = 0;inputNeuron<this.inputNeuronCount;inputNeuron++)
+		{
+			synapse.getMatrix().set(inputNeuron,outputNeuron,input.getData(inputNeuron));
+		}
+	}
+	
+	
 }
