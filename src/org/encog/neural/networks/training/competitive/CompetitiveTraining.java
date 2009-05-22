@@ -36,7 +36,8 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodFunction;
+import org.encog.neural.networks.training.competitive
+	.neighborhood.NeighborhoodFunction;
 import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,10 +120,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param neighborhood
 	 *            The neighborhood function to use.
 	 */
-	public CompetitiveTraining(
-			final BasicNetwork network,
-			final double learningRate, 
-			final NeuralDataSet training,
+	public CompetitiveTraining(final BasicNetwork network,
+			final double learningRate, final NeuralDataSet training,
 			final NeighborhoodFunction neighborhood) {
 		this.neighborhood = neighborhood;
 		setTraining(training);
@@ -145,6 +144,76 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		}
 	}
 
+	/**
+	 * Adjusts the weight for a single neuron during a training iteration.
+	 * 
+	 * @param weight
+	 *            The starting weight.
+	 * @param input
+	 *            The input to this neuron.
+	 * @param currentNeuron
+	 *            The neuron who's weight is being updated.
+	 * @param bmu
+	 *            The neuron that "won", the best matching unit.
+	 * @return The new weight value.
+	 */
+	private double adjustWeight(final double weight, final double input,
+			final int currentNeuron, final int bmu) {
+
+		final double delta = this.neighborhood.function(currentNeuron, bmu)
+				* this.learningRate * (input - weight);
+
+		return weight + delta;
+	}
+
+	/**
+	 * Calculate the best matching unit (BMU).  This is the output neuron 
+	 * that has the lowest euclidean distance to the input vector.
+	 * @param synapse The synapse to calculate for.
+	 * @param input The input vector.
+	 * @return The output neuron number that is the BMU.
+	 */
+	private int calculateBMU(final Synapse synapse, final NeuralData input) {
+		int result = 0;
+		double lowestDistance = Double.MAX_VALUE;
+
+		for (int i = 0; i < this.outputNeuronCount; i++) {
+			final double distance = calculateEuclideanDistance(synapse, input,
+					i);
+
+			// Track the lowest distance, this is the BMU.
+			if (distance < lowestDistance) {
+				lowestDistance = distance;
+				result = i;
+			}
+		}
+
+		// Track the worst distance, this is the error for the entire network.
+		if (lowestDistance > this.worstDistance) {
+			this.worstDistance = lowestDistance;
+		}
+
+		return result;
+	}
+
+	/**
+	 * Calculate the euclidean distance for the specified output neuron and the
+	 * input vector.
+	 * @param synapse The synapse to get the weights from.
+	 * @param input The input vector.
+	 * @param outputNeuron The neuron we are calculating the distance for.
+	 * @return The euclidean distance.
+	 */
+	private double calculateEuclideanDistance(final Synapse synapse,
+			final NeuralData input, final int outputNeuron) {
+		double result = 0;
+		for (int i = 0; i < input.size(); i++) {
+			final double diff = input.getData(i)
+					- synapse.getMatrix().get(i, outputNeuron);
+			result += diff * diff;
+		}
+		return BoundMath.sqrt(result);
+	}
 
 	/**
 	 * @return The learning rate. This was set when the object was created.
@@ -165,38 +234,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 */
 	public BasicNetwork getNetwork() {
 		return this.network;
-	}
-
-	private double calculateEuclideanDistance(Synapse synapse,
-			NeuralData input, int outputNeuron) {
-		double result = 0;
-		for (int i = 0; i < input.size(); i++) {
-			double diff = input.getData(i) - synapse.getMatrix().get(i, outputNeuron);
-			result += diff*diff;
-		}
-		return BoundMath.sqrt(result);
-	}
-
-	private int calculateBMU(Synapse synapse, NeuralData input) {
-		int result = 0;
-		double lowestDistance = Double.MAX_VALUE;
-
-		for (int i = 0; i < this.outputNeuronCount; i++) {
-			double distance = calculateEuclideanDistance(synapse, input, i);
-
-			// Track the lowest distance, this is the BMU.
-			if (distance < lowestDistance) {
-				lowestDistance = distance;
-				result = i;
-			}
-		}
-		
-		// Track the worst distance, this is the error for the entire network.
-		if( lowestDistance> this.worstDistance ) {
-			worstDistance = lowestDistance;
-		}
-		
-		return result;
 	}
 
 	/**
@@ -222,19 +259,20 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 				final int bmu = calculateBMU(synapse, input);
 
 				// adjust the weight for the BMU and its neighborhood
-				for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; outputNeuron++) {
-					for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
-						
-						double currentWeight = synapse.getMatrix().get(inputNeuron, outputNeuron);
-						double inputValue = input.getData(inputNeuron);
-						
-						double newWeight = adjustWeight(
-								currentWeight, 
-								inputValue, 
-								outputNeuron, 
-								bmu);
-						
-						synapse.getMatrix().set(inputNeuron, outputNeuron, newWeight);
+				for (int outputNeuron = 0; outputNeuron 
+					< this.outputNeuronCount; outputNeuron++) {
+					for (int inputNeuron = 0; inputNeuron 
+						< this.inputNeuronCount; inputNeuron++) {
+
+						final double currentWeight = synapse.getMatrix().get(
+								inputNeuron, outputNeuron);
+						final double inputValue = input.getData(inputNeuron);
+
+						final double newWeight = adjustWeight(currentWeight,
+								inputValue, outputNeuron, bmu);
+
+						synapse.getMatrix().set(inputNeuron, outputNeuron,
+								newWeight);
 					}
 				}
 			}
@@ -244,28 +282,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		setError(this.worstDistance);
 
 		postIteration();
-	}
-	
-	/**
-	 * Adjusts the weight for a single neuron during a training iteration.
-	 * 
-	 * @param startingWeight
-	 *            The starting weight.
-	 * @param input
-	 *            The input to this neuron.
-	 * @param currentNeuron
-	 *            The neuron who's weight is being updated.
-	 * @param bestNeuron
-	 *            The neuron that "won".
-	 * @return The new weight value.
-	 */
-	private double adjustWeight(final double weight,
-			final double input, final int currentNeuron, final int bmu) {
-
-		double delta = this.neighborhood.function(currentNeuron, bmu)
-				* this.learningRate * (input - weight);
-		
-		return weight+delta;
 	}
 
 	/**
