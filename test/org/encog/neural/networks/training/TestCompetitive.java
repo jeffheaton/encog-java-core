@@ -60,7 +60,6 @@ public class TestCompetitive {
 
 		for (iteration = 0; iteration <= 100; iteration++) {
 			train.iteration();
-			System.out.println(train.getError());
 		}
 
 		final NeuralData data1 = new BasicNeuralData(
