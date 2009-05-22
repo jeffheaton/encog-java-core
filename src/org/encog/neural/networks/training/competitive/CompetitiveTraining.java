@@ -36,8 +36,7 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.neural.networks.training.competitive
-	.neighborhood.NeighborhoodFunction;
+import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodFunction;
 import org.encog.util.math.BoundMath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,7 +83,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	private final Layer outputLayer;
 
 	/**
-	 * A collection of the synases being modified.
+	 * A collection of the synapses being modified.
 	 */
 	private final Collection<Synapse> synapses;
 
@@ -167,10 +166,13 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * Calculate the best matching unit (BMU).  This is the output neuron 
-	 * that has the lowest euclidean distance to the input vector.
-	 * @param synapse The synapse to calculate for.
-	 * @param input The input vector.
+	 * Calculate the best matching unit (BMU). This is the output neuron that
+	 * has the lowest euclidean distance to the input vector.
+	 * 
+	 * @param synapse
+	 *            The synapse to calculate for.
+	 * @param input
+	 *            The input vector.
 	 * @return The output neuron number that is the BMU.
 	 */
 	private int calculateBMU(final Synapse synapse, final NeuralData input) {
@@ -199,9 +201,13 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Calculate the euclidean distance for the specified output neuron and the
 	 * input vector.
-	 * @param synapse The synapse to get the weights from.
-	 * @param input The input vector.
-	 * @param outputNeuron The neuron we are calculating the distance for.
+	 * 
+	 * @param synapse
+	 *            The synapse to get the weights from.
+	 * @param input
+	 *            The input vector.
+	 * @param outputNeuron
+	 *            The neuron we are calculating the distance for.
 	 * @return The euclidean distance.
 	 */
 	private double calculateEuclideanDistance(final Synapse synapse,
@@ -247,41 +253,77 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		preIteration();
 
-		this.worstDistance = Double.MIN_VALUE;
+		this.worstDistance = Double.MIN_VALUE;		
+		int[] won = new int[this.outputNeuronCount];
+		int overworkedBMU = -1;
+		NeuralDataPair overworkedPair = null;
 
-		// Apply competitive training
-		for (final NeuralDataPair pair : getTraining()) {
+		for (final Synapse synapse : this.synapses) {
+			// Apply competitive training
+			for (final NeuralDataPair pair : getTraining()) {
 
-			final NeuralData input = pair.getInput();
-
-			for (final Synapse synapse : this.synapses) {
+				final NeuralData input = pair.getInput();
 
 				final int bmu = calculateBMU(synapse, input);
+				won[bmu]++;
 
-				// adjust the weight for the BMU and its neighborhood
-				for (int outputNeuron = 0; outputNeuron 
-					< this.outputNeuronCount; outputNeuron++) {
-					for (int inputNeuron = 0; inputNeuron 
-						< this.inputNeuronCount; inputNeuron++) {
-
-						final double currentWeight = synapse.getMatrix().get(
-								inputNeuron, outputNeuron);
-						final double inputValue = input.getData(inputNeuron);
-
-						final double newWeight = adjustWeight(currentWeight,
-								inputValue, outputNeuron, bmu);
-
-						synapse.getMatrix().set(inputNeuron, outputNeuron,
-								newWeight);
+				// is the BMU "overworked"?
+				if (won[bmu] > 1) {
+					// have we found an overworked BMU?
+					if (overworkedBMU != -1) {
+						// is this BMU more overworked than the last?
+						if (won[bmu] > won[overworkedBMU]) {
+							overworkedBMU = bmu;
+							overworkedPair = pair;
+						}
+					} else {
+						overworkedBMU = bmu;
+						overworkedPair = pair;
 					}
 				}
+
+				train(bmu, synapse, input);
+
+			}
+			
+			// force any non-winning neurons to share the burden somewhat\
+			if (overworkedPair != null) {
+				forceWinners(synapse, won, overworkedPair);
 			}
 		}
+		
+		
 
 		// update the error
 		setError(this.worstDistance);
 
 		postIteration();
+	}
+	
+	
+	/**
+	 * Force any neurons that did not win to off-load patterns from
+	 * overworked neurons.
+	 * @param won An array that specifies how many times each output
+	 * neuron has "won".
+	 * @param overworkedPair A training pattern from the most 
+	 * overworked neuron.
+	 * @param synapse The synapse to modify.
+	 */
+	private void forceWinners(final Synapse synapse, final int[] won,
+			final NeuralDataPair overworkedPair) {
+		for (int outputNeuron = 0; outputNeuron < won.length; outputNeuron++) {
+			if (won[outputNeuron] == 0) {
+				// copy
+				for (int inputNeuron = 0; inputNeuron < overworkedPair
+						.getInput().size(); inputNeuron++) {
+					synapse.getMatrix().set(inputNeuron, 
+							outputNeuron, 
+							overworkedPair.getInput().getData(inputNeuron));
+				}
+				break;
+			}
+		}
 	}
 
 	/**
@@ -292,6 +334,32 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 */
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
+	}
+
+	/**
+	 * Train for the specified synapse and BMU.
+	 * @param bmu The best matching unit for this input.
+	 * @param synapse The synapse to train.
+	 * @param input The input to train for.
+	 */
+	private void train(final int bmu, final Synapse synapse,
+			final NeuralData input) {
+		// adjust the weight for the BMU and its neighborhood
+		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; 
+			outputNeuron++) {
+			for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
+				inputNeuron++) {
+
+				final double currentWeight = synapse.getMatrix().get(
+						inputNeuron, outputNeuron);
+				final double inputValue = input.getData(inputNeuron);
+
+				final double newWeight = adjustWeight(currentWeight,
+						inputValue, outputNeuron, bmu);
+
+				synapse.getMatrix().set(inputNeuron, outputNeuron, newWeight);
+			}
+		}
 	}
 
 }
