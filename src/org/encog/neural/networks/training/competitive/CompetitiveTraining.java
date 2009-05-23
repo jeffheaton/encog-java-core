@@ -200,8 +200,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		this.bmuUtil.reset();		
 		int[] won = new int[this.outputNeuronCount];
-		int overworkedBMU = -1;
-		NeuralDataPair overworkedPair = null;
+		double leastRepresentedActivation = Double.MAX_VALUE;
+		NeuralData leastRepresented = null;
 
 		for (final Synapse synapse : this.synapses) {
 			// Apply competitive training
@@ -212,31 +212,20 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 				final int bmu = bmuUtil.calculateBMU(synapse, input);
 				won[bmu]++;
 
-				// is the BMU "overworked"?
-				if (won[bmu] > 1) {
-					// have we found an overworked BMU?
-					if (overworkedBMU != -1) {
-						// is this BMU more overworked than the last?
-						if (won[bmu] > won[overworkedBMU]) {
-							overworkedBMU = bmu;
-							overworkedPair = pair;
-						}
-					} else {
-						overworkedBMU = bmu;
-						overworkedPair = pair;
-					}
+				NeuralData output = this.network.compute(pair.getInput());
+				if (output.getData(bmu) < leastRepresentedActivation) {
+					leastRepresentedActivation = output.getData(bmu);
+					leastRepresented = pair.getInput();
 				}
-
-				train(bmu, synapse, input);
+				
+				//train(bmu, synapse, input);
 
 			}
 			
 			//this.test(synapse);
 			
 			// force any non-winning neurons to share the burden somewhat\
-			if (overworkedPair != null) {
-				forceWinners(synapse, won, overworkedPair);
-			}
+			forceWinners(synapse, won, leastRepresented);
 		}
 		
 		
@@ -258,13 +247,26 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param synapse The synapse to modify.
 	 */
 	private void forceWinners(final Synapse synapse, final int[] won,
-			final NeuralDataPair overworkedPair) {
+			final NeuralData leastRepresented) {
+		
+		double maxActivation = Double.MIN_VALUE;
+		int maxActivationNeuron = -1;
+		
+		NeuralData output = this.network.compute(leastRepresented);
+		
 		for (int outputNeuron = 0; outputNeuron < won.length; outputNeuron++) {
 			if (won[outputNeuron] == 0) {
-				// copy
-				NeuralData p = findWeakestTrainingItem(synapse).getInput();
-				this.copyInputPattern(synapse, outputNeuron, p);
+				if( output.getData(outputNeuron)>maxActivation)
+				{
+					maxActivation = output.getData(outputNeuron);
+					maxActivationNeuron = outputNeuron;
+				}
 			}
+		}
+		
+		if( maxActivationNeuron!=-1 )
+		{
+			this.copyInputPattern(synapse, maxActivationNeuron, leastRepresented);
 		}
 	}
 
@@ -307,27 +309,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 			synapse.getMatrix().set(inputNeuron, current, newWeight);
 		}
 	}
-	
-	public NeuralDataPair findWeakestTrainingItem(Synapse synapse)
-	{
-		BestMatchingUnit localBMU = new BestMatchingUnit(this);
-		NeuralDataPair result = null;
-		double weakestDistance = Double.MIN_VALUE;
 		
-		for(NeuralDataPair pair: this.getTraining() )
-		{
-			localBMU.calculateBMU(synapse, pair.getInput());
-			
-			if( localBMU.getLowestDistance()>weakestDistance )
-			{
-				result = pair;
-				weakestDistance = localBMU.getLowestDistance();
-			}
-			
-		}
-		return result;
-	}
-	
 	public void test(Synapse synapse)
 	{
 		int outputNeuron = 0;
