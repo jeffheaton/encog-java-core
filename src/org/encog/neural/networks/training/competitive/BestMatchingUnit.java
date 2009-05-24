@@ -1,32 +1,71 @@
+/*
+ * Encog Artificial Intelligence Framework v2.x
+ * Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.encog.neural.networks.training.competitive;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.math.BoundMath;
 
+/**
+ * The "Best Matching Unit" or BMU is a very important concept in the training
+ * for a SOM. The BMU is the output neuron that has weight connections to the
+ * input neurons that most closely match the current input vector. This neuron
+ * (and its "neighborhood") are the neurons that will receive training.
+ * 
+ * This class also tracks the worst distance (of all BMU's). This gives some
+ * indication of how well the network is trained, and thus becomes the "error"
+ * of the entire network.
+ * 
+ * @author jeff
+ * 
+ */
 public class BestMatchingUnit {
 
-	private final CompetitiveTraining training;
-	
 	/**
-	 * What is the worst BMU distance so far, this becomes the error.
+	 * The owner of this class.
+	 */
+	private final CompetitiveTraining training;
+
+	/**
+	 * What is the worst BMU distance so far, this becomes the error for the
+	 * entire SOM.
 	 */
 	private double worstDistance;
-	
-	private double lowestDistance;
-	
-	public BestMatchingUnit(CompetitiveTraining training) {
+
+	/**
+	 * Construct a BestMatchingUnit class.  The training class must be provided.
+	 * @param training The parent class.
+	 */
+	public BestMatchingUnit(final CompetitiveTraining training) {
 		this.training = training;
 	}
-	
-	public void reset()
-	{
-		this.worstDistance = Double.MIN_VALUE;
-	}
-	
+
 	/**
 	 * Calculate the best matching unit (BMU). This is the output neuron that
-	 * has the lowest euclidean distance to the input vector.
+	 * has the lowest Euclidean distance to the input vector.
 	 * 
 	 * @param synapse
 	 *            The synapse to calculate for.
@@ -36,30 +75,33 @@ public class BestMatchingUnit {
 	 */
 	public int calculateBMU(final Synapse synapse, final NeuralData input) {
 		int result = 0;
-		this.lowestDistance = Double.MAX_VALUE;
+		
+		// Track the lowest distance so far.
+		double lowestDistance = Double.MAX_VALUE;
 
 		for (int i = 0; i < this.training.getOutputNeuronCount(); i++) {
 			final double distance = calculateEuclideanDistance(synapse, input,
 					i);
 
 			// Track the lowest distance, this is the BMU.
-			if (distance < this.lowestDistance) {
-				this.lowestDistance = distance;
+			if (distance < lowestDistance) {
+				lowestDistance = distance;
 				result = i;
 			}
 		}
 
 		// Track the worst distance, this is the error for the entire network.
-		if (this.lowestDistance > this.worstDistance) {
-			this.worstDistance = this.lowestDistance;
+		if (lowestDistance > this.worstDistance) {
+			this.worstDistance = lowestDistance;
 		}
 
 		return result;
 	}
 
 	/**
-	 * Calculate the euclidean distance for the specified output neuron and the
-	 * input vector.
+	 * Calculate the Euclidean distance for the specified output neuron and the
+	 * input vector.  This is the square root of the squares of the differences
+	 * between the weight and input vectors.
 	 * 
 	 * @param synapse
 	 *            The synapse to get the weights from.
@@ -67,11 +109,13 @@ public class BestMatchingUnit {
 	 *            The input vector.
 	 * @param outputNeuron
 	 *            The neuron we are calculating the distance for.
-	 * @return The euclidean distance.
+	 * @return The Euclidean distance.
 	 */
 	public double calculateEuclideanDistance(final Synapse synapse,
 			final NeuralData input, final int outputNeuron) {
 		double result = 0;
+		
+		// Loop over all input data.
 		for (int i = 0; i < input.size(); i++) {
 			final double diff = input.getData(i)
 					- synapse.getMatrix().get(i, outputNeuron);
@@ -80,15 +124,19 @@ public class BestMatchingUnit {
 		return BoundMath.sqrt(result);
 	}
 
+	/**
+	 * @return What is the worst BMU distance so far, this becomes the error 
+	 * for the entire SOM.
+	 */
 	public double getWorstDistance() {
-		return worstDistance;
+		return this.worstDistance;
 	}
 
-	public double getLowestDistance() {
-		return lowestDistance;
+	/**
+	 * Reset the "worst distance" back to a minimum value.  This should be
+	 * called for each training iteration.
+	 */
+	public void reset() {
+		this.worstDistance = Double.MIN_VALUE;
 	}
-	
-	
-	
-	
 }

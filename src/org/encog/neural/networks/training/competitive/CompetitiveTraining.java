@@ -49,9 +49,26 @@ import org.slf4j.LoggerFactory;
  * is an unsupervised training method, no ideal data is needed on the training
  * set. If ideal data is provided, it will be ignored.
  * 
+ * Training is done by looping over all of the training elements and calculating
+ * a "best matching unit" (BMU). This BMU output neuron is then adjusted to
+ * better "learn" this pattern. Additionally, this training may be applied to
+ * othr "nearby" output neurons. The degree to which nearby neurons are update
+ * is defined by the neighborhood function.
+ * 
  * A neighborhood function is required to determine the degree to which
  * neighboring neurons (to the winning neuron) are updated by each training
  * iteration.
+ * 
+ * Because this is unsupervised training, calculating an error to measure
+ * progress by is difficult. The error is defined to be the "worst", or longest,
+ * Euclidean distance of any of the BMU's. This value should be minimized, as
+ * learning progresses.
+ * 
+ * Because only the BMU neuron and its close neighbors are updated, you can end
+ * up with some output neurons that learn nothing. By default these neurons are
+ * forced to win patterns that are not represented well. This spreads out the
+ * workload among all output neurons. This feature is used by default, but can
+ * be disabled by setting the "forceWinner" property.
  * 
  * @author jheaton
  * 
@@ -99,10 +116,21 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 */
 	private final int outputNeuronCount;
 
+	/**
+	 * Utility class used to determine the BMU.
+	 */
 	private final BestMatchingUnit bmuUtil;
 
-	private final Map<Synapse, Matrix> correctionMatrix = new HashMap<Synapse, Matrix>();
-	
+	/**
+	 * Holds the corrections for any matrix being trained.
+	 */
+	private final Map<Synapse, Matrix> correctionMatrix 
+		= new HashMap<Synapse, Matrix>();
+
+	/**
+	 * True is a winner is to be forced, see class description, or forceWinners
+	 * method. By default, this is true.
+	 */
 	private boolean forceWinner;
 
 	/**
@@ -149,6 +177,10 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		this.bmuUtil = new BestMatchingUnit(this);
 	}
 
+	/**
+	 * Loop over the synapses to be trained and apply any corrections that were
+	 * determined by this training iteration.
+	 */
 	private void applyCorrection() {
 		for (final Entry<Synapse, Matrix> entry : this.correctionMatrix
 				.entrySet()) {
@@ -156,9 +188,22 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		}
 	}
 
+	/**
+	 * Copy the specified input pattern to the weight matrix. This causes an
+	 * output neuron to learn this pattern "exactly". This is useful when a
+	 * winner is to be forced.
+	 * 
+	 * @param synapse
+	 *            The synapse that is the target of the copy.
+	 * @param outputNeuron
+	 *            The output neuron to set.
+	 * @param input
+	 *            The input pattern to copy.
+	 */
 	private void copyInputPattern(final Synapse synapse,
 			final int outputNeuron, final NeuralData input) {
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
+			inputNeuron++) {
 			synapse.getMatrix().set(inputNeuron, outputNeuron,
 					input.getData(inputNeuron));
 		}
@@ -194,10 +239,12 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param won
 	 *            An array that specifies how many times each output neuron has
 	 *            "won".
-	 * @param overworkedPair
-	 *            A training pattern from the most overworked neuron.
+	 * @param leastRepresented
+	 *            The training pattern that is the least represented by this
+	 *            neural network.
 	 * @param synapse
 	 *            The synapse to modify.
+	 * @return True if a winner was forced.
 	 */
 	private boolean forceWinners(final Synapse synapse, final int[] won,
 			final NeuralData leastRepresented) {
@@ -207,7 +254,11 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		final NeuralData output = this.network.compute(leastRepresented);
 
+		// Loop over all of the output neurons. Consider any neurons that were
+		// not the BMU (winner) for any pattern. Track which of these
+		// non-winning neurons had the highest activation.
 		for (int outputNeuron = 0; outputNeuron < won.length; outputNeuron++) {
+			// Only consider neurons that did not "win".
 			if (won[outputNeuron] == 0) {
 				if ((maxActivationNeuron == -1)
 						|| (output.getData(outputNeuron) > maxActivation)) {
@@ -217,6 +268,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 			}
 		}
 
+		// If a neurons was found that did not activate for any patterns, then
+		// force it to "win" the least represented pattern.
 		if (maxActivationNeuron != -1) {
 			copyInputPattern(synapse, maxActivationNeuron, leastRepresented);
 			return true;
@@ -225,6 +278,9 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		}
 	}
 
+	/**
+	 * @return The input neuron count.
+	 */
 	public int getInputNeuronCount() {
 		return this.inputNeuronCount;
 	}
@@ -250,8 +306,19 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		return this.network;
 	}
 
+	/**
+	 * @return The output neuron count.
+	 */
 	public int getOutputNeuronCount() {
 		return this.outputNeuronCount;
+	}
+
+	/**
+	 * @return Is a winner to be forced of neurons that do not learn. See class
+	 *         description for more info.
+	 */
+	public boolean isForceWinner() {
+		return this.forceWinner;
 	}
 
 	/**
@@ -265,28 +332,38 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		preIteration();
 
+		// Reset the BMU and begin this iteration.
 		this.bmuUtil.reset();
 		final int[] won = new int[this.outputNeuronCount];
 		double leastRepresentedActivation = Double.MAX_VALUE;
 		NeuralData leastRepresented = null;
 
+		// The synapses are processed parallel to each other.
 		for (final Synapse synapse : this.synapses) {
 
+			// Reset the correction matrix for this synapse and iteration.
 			final Matrix correction = this.correctionMatrix.get(synapse);
 			correction.clear();
 
-			// Apply competitive training
+			// Determine the BMU for each training element.
 			for (final NeuralDataPair pair : getTraining()) {
 
 				final NeuralData input = pair.getInput();
 
 				final int bmu = this.bmuUtil.calculateBMU(synapse, input);
-				
+
+				// If we are to force a winner each time, then track how many
+				// times each output neuron becomes the BMU (winner).
 				if (this.forceWinner) {
 					won[bmu]++;
 
+					// Get the "output" from the network for this pattern. This
+					// gets the activation level of the BMU.
 					final NeuralData output = this.network.compute(pair
 							.getInput());
+
+					// Track which training entry produces the least BMU. This
+					// pattern is the least represented by the network.
 					if (output.getData(bmu) < leastRepresentedActivation) {
 						leastRepresentedActivation = output.getData(bmu);
 						leastRepresented = pair.getInput();
@@ -314,6 +391,17 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	/**
+	 * Determine if a winner is to be forced. See class description for more
+	 * info.
+	 * 
+	 * @param forceWinner
+	 *            True if a winner is to be forced.
+	 */
+	public void setForceWinner(final boolean forceWinner) {
+		this.forceWinner = forceWinner;
+	}
+
+	/**
 	 * Set the learning rate. This is the rate at which the weights are changed.
 	 * 
 	 * @param rate
@@ -336,37 +424,41 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	private void train(final int bmu, final Synapse synapse,
 			final NeuralData input) {
 		// adjust the weight for the BMU and its neighborhood
-		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; outputNeuron++) {
+		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; 
+			outputNeuron++) {
 			trainPattern(synapse, input, outputNeuron, bmu);
 		}
 	}
 
+	/**
+	 * Train for the specified pattern.
+	 * 
+	 * @param synapse
+	 *            The synapse to train.
+	 * @param input
+	 *            The input pattern to train for.
+	 * @param current
+	 *            The current output neuron being trained.
+	 * @param bmu
+	 *            The best matching unit, or winning output neuron.
+	 */
 	private void trainPattern(final Synapse synapse, final NeuralData input,
-			final int current, final int best) {
+			final int current, final int bmu) {
 
 		final Matrix correction = this.correctionMatrix.get(synapse);
 
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
+			inputNeuron++) {
 
 			final double currentWeight = synapse.getMatrix().get(inputNeuron,
 					current);
 			final double inputValue = input.getData(inputNeuron);
 
 			final double newWeight = determineWeightAdjustment(currentWeight,
-					inputValue, current, best);
+					inputValue, current, bmu);
 
 			correction.add(inputNeuron, current, newWeight);
 		}
 	}
-
-	public boolean isForceWinner() {
-		return forceWinner;
-	}
-
-	public void setForceWinner(boolean forceWinner) {
-		this.forceWinner = forceWinner;
-	}
-	
-	
 
 }
