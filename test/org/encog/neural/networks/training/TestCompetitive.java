@@ -70,7 +70,7 @@ public class TestCompetitive {
 		int result1 = network.winner(data1);
 		int result2 = network.winner(data2);
 		
-		//Assert.assertTrue(result1!=result2);
+		Assert.assertTrue(result1!=result2);
 
 	}
 
