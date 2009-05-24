@@ -36,7 +36,6 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.synapse.DirectSynapse;
-import org.encog.neural.networks.synapse.NormalizeSynapse;
 import org.encog.neural.networks.synapse.OneToOneSynapse;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
@@ -181,9 +180,6 @@ public class BasicLayer implements Layer, Serializable {
 			break;
 		case Direct:
 			synapse = new DirectSynapse(this, next);
-			break;
-		case Normalize:
-			synapse = new NormalizeSynapse(this, next);
 			break;
 		default:
 			throw new NeuralNetworkError("Unknown synapse type");
