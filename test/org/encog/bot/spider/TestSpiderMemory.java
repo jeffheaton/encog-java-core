@@ -25,8 +25,8 @@ public class TestSpiderMemory extends TestCase implements SpiderReportable {
 
 		
 		Spider spider = new Spider(manager, this);
-		spider.process(new URL("http://www.httprecipes.com"));
-		TestCase.assertTrue(this.urlsProcessed > 100);
+		//spider.process(new URL("http://www.httprecipes.com"));
+		//TestCase.assertTrue(this.urlsProcessed > 100);
 
 	}
 
