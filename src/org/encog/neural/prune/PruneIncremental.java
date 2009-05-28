@@ -28,12 +28,12 @@ package org.encog.neural.prune;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.StatusReportable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.training.Train;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.NeuralNetworkPattern;
+import org.encog.util.concurrency.EncogConcurrency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +48,25 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class PruneIncremental {
+
+	/**
+	 * Format the network as a human readable string that lists the 
+	 * hidden layers.
+	 * @param network The network to format.
+	 * @return A human readable string.
+	 */
+	public static String networkToString(final BasicNetwork network) {
+		final StringBuilder result = new StringBuilder();
+		for (final Layer layer : network.getHiddenLayers()) {
+			if (result.length() > 0) {
+				result.append(",");
+			}
+			result.append("Hidden=");
+			result.append(layer.getNeuronCount());
+		}
+
+		return result.toString();
+	}
 
 	/**
 	 * The logging object.
@@ -68,13 +87,39 @@ public class PruneIncremental {
 	/**
 	 * The ranges for the hidden layers.
 	 */
-	private final List<HiddenLayerParams> hidden = new ArrayList<HiddenLayerParams>();
-	
+	private final List<HiddenLayerParams> hidden = 
+		new ArrayList<HiddenLayerParams>();
+
+	/**
+	 * The number if training iterations that should be tried for
+	 * each network.
+	 */
 	private final int iterations;
 	
+	/**
+	 * The best error rate found so far.
+	 */
 	private double bestResult;
+	
+	/**
+	 * The best network found so far.
+	 */
 	private BasicNetwork bestNetwork;
 	
+	/**
+	 * How many tries will be attempted in total.
+	 */
+	private int totalTries;
+
+	/**
+	 * How many networks have been tried so far?
+	 */
+	private int currentTry;
+
+	/**
+	 * The object that status should be reported to.
+	 */
+	private final StatusReportable report;
 
 	/**
 	 * Keeps track of how many neurons in each hidden layer as training the
@@ -90,12 +135,18 @@ public class PruneIncremental {
 	 *            The training data to use.
 	 * @param pattern
 	 *            The network pattern to use to solve this data.
+	 * @param iterations
+	 * 			  How many iterations to try per network.
+	 * @param report
+	 * 			  Object used to report status to.
 	 */
 	public PruneIncremental(final NeuralDataSet training,
-			final NeuralNetworkPattern pattern, int iterations) {
+			final NeuralNetworkPattern pattern, final int iterations,
+			final StatusReportable report) {
 		this.training = training;
 		this.pattern = pattern;
 		this.iterations = iterations;
+		this.report = report;
 	}
 
 	/**
@@ -112,11 +163,49 @@ public class PruneIncremental {
 		this.hidden.add(param);
 	}
 
+
+	/**
+	 * Determine how many networks will be tried.
+	 * @return The number of networks that will be tried.
+	 */
+	public int determineTriesNeeded() {
+		int result = 1;
+
+		for (final HiddenLayerParams param : this.hidden) {
+			result *= param.getMax() - param.getMin();
+		}
+
+		return result;
+	}
+
+	/**
+	 * Generate a network according to the current hidden layer counts.
+	 * @return The network based on current hidden layer counts.
+	 */
+	private BasicNetwork generateNetwork() {
+		this.pattern.clear();
+
+		for (final int element : this.hiddenCounts) {
+			if (element > 0) {
+				this.pattern.addHiddenLayer(element);
+			}
+		}
+
+		return this.pattern.generate();
+	}
+
 	/**
 	 * @return The hidden layer max and min.
 	 */
 	public List<HiddenLayerParams> getHidden() {
 		return this.hidden;
+	}
+
+	/**
+	 * @return The number of training iterations to try for each network.
+	 */
+	public int getIterations() {
+		return this.iterations;
 	}
 
 	/**
@@ -132,15 +221,39 @@ public class PruneIncremental {
 	public NeuralDataSet getTraining() {
 		return this.training;
 	}
-	
-	private BasicNetwork constructNetwork()
-	{
-		this.pattern.clear();
-		return null;
+
+	/**
+	 * Increase the hidden layer counts according to the hidden layer 
+	 * parameters.  Increase the first hidden layer count by one, if
+	 * it is maxed out, then set it to zero and increase the next 
+	 * hidden layer.
+	 * @return False if no more increases can be done, true otherwise.
+	 */
+	private boolean increaseHiddenCounts() {
+		int i = 0;
+		do {
+			final HiddenLayerParams param = this.hidden.get(i);
+			this.hiddenCounts[i]++;
+
+			// is this hidden layer still within the range?
+			if (this.hiddenCounts[i] <= param.getMax()) {
+				return true;
+			}
+
+			// increase the next layer if we've maxed out this one
+			this.hiddenCounts[i] = param.getMin();
+			i++;
+
+		} while (i < this.hiddenCounts.length);
+
+		// can't increase anymore, we're done!
+
+		return false;
 	}
 
 	/**
 	 * Begin the process.
+	 * @return The resulting network.
 	 */
 	public BasicNetwork prune() {
 
@@ -153,98 +266,52 @@ public class PruneIncremental {
 		}
 
 		this.hiddenCounts = new int[this.hidden.size()];
-		
+
 		// set the best network
 		this.bestNetwork = null;
 		this.bestResult = Double.MAX_VALUE;
-		
+
 		// set to minimums
 		int i = 0;
-		for(HiddenLayerParams parm: this.hidden)
-		{
+		for (final HiddenLayerParams parm : this.hidden) {
 			this.hiddenCounts[i++] = parm.getMin();
 		}
-		
-		do
-		{
-			BasicNetwork network = generateNetwork();
-			double result = train(network);
-			if( result<this.bestResult || this.bestNetwork==null ) {
-				if( logger.isDebugEnabled() ) {
-					logger.debug("Prune found new best network: error=" + result
-							+", network=" + network);
-				}
-				this.bestNetwork = network;
-				this.bestResult = result;
-				System.out.println("New best: " + PruneIncremental.networkToString(network));
-			}
-			System.out.println(result);
-		} while(increaseHiddenCounts());
-		
+
+		this.totalTries = determineTriesNeeded();
+		this.currentTry = 0;
+		do {
+			final BasicNetwork network = generateNetwork();
+
+			final IncrementalWorker worker = new IncrementalWorker(this,
+					network);
+			EncogConcurrency.getInstance().processTask(worker);
+		} while (increaseHiddenCounts());
+
+		EncogConcurrency.getInstance().waitForComplete(Long.MAX_VALUE);
+
 		return this.bestNetwork;
 	}
-	
-	private BasicNetwork generateNetwork()
-	{
-		this.pattern.clear();
 
-		for(int i=0;i<this.hiddenCounts.length;i++)
-		{
-			if( this.hiddenCounts[i]>0 )
-				this.pattern.addHiddenLayer(this.hiddenCounts[i]);	
-		}
-		
-		return this.pattern.generate();
-	}
-	
-	private double train(BasicNetwork network)
-	{
-		// train the neural network
-		final Train train = new ResilientPropagation(network, this.training);		
+	/**
+	 * Called by the worker processes to report the completion of a try.
+	 * @param result The final error rate.
+	 * @param network The network that was just trained.
+	 */
+	public synchronized void reportResult(final double result,
+			final BasicNetwork network) {
 
-		for(int i=0;i<this.iterations;i++) {
-			train.iteration();
-		} 
-		
-		return train.getError();
-		
-	}
-	
-	private boolean increaseHiddenCounts()
-	{
-		int i = 0;
-		do
-		{
-			HiddenLayerParams param = this.hidden.get(i);
-			this.hiddenCounts[i]++;
-			
-			// is this hidden layer still within the range?
-			if( this.hiddenCounts[i]<=param.getMax())
-				return true;
-			
-			// increase the next layer if we've maxed out this one
-			this.hiddenCounts[i] = param.getMin();
-			i++;
-			
-		} while(i<this.hiddenCounts.length);
-		
-		// can't increase anymore, we're done!
-		
-		return false;
-	}
-	
-	public static String networkToString(BasicNetwork network)
-	{
-		StringBuilder result = new StringBuilder();
-		for(Layer layer: network.getHiddenLayers() ) {
-			if( result.length()>0 )
-				result.append(",");
-			result.append("Hidden=");
-			result.append(layer.getNeuronCount());
+		if ((result < this.bestResult) || (this.bestNetwork == null)) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Prune found new best network: error="
+						+ result + ", network=" + network);
+			}
+			this.bestNetwork = network;
+			this.bestResult = result;
 		}
-		
-		
-		return result.toString();
+		this.currentTry++;
+
+		this.report.report(this.totalTries, this.currentTry, "Best network: "
+				+ PruneIncremental.networkToString(this.bestNetwork));
 	}
 
 }

@@ -78,7 +78,7 @@ public class EncogConcurrency {
 	 * Construct a concurrency object.
 	 */
 	public EncogConcurrency() {
-		setMaxThreads(0);
+		setMaxThreadsToCoreCount();
 	}
 
 	/**
@@ -105,6 +105,13 @@ public class EncogConcurrency {
 		} else {
 			this.executor = null;
 		}
+	}
+	
+	/**
+	 * Set the max threads to the number of processors.
+	 */
+	public void setMaxThreadsToCoreCount() {
+		setMaxThreads(Runtime.getRuntime().availableProcessors());
 	}
 
 	/**

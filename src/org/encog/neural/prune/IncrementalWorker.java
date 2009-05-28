@@ -25,21 +25,66 @@
  */
 package org.encog.neural.prune;
 
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.
+	resilient.ResilientPropagation;
 import org.encog.util.concurrency.EncogTask;
 
 /**
- * A worker for the incremental pruning process.  This allows the
- * pruning process to be multithreaded.
+ * A worker for the incremental pruning process. This allows the pruning process
+ * to be multithreaded.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class IncrementalWorker implements EncogTask {
+
+	/**
+	 * The owner of this object.
+	 */
+	private final PruneIncremental owner;
+
+	/**
+	 * The network to train.
+	 */
+	private final BasicNetwork network;
+
+	/**
+	 * Construct the worker.
+	 * @param owner The owner of this worker.
+	 * @param network The network to train.
+	 */
+	public IncrementalWorker(final PruneIncremental owner,
+			final BasicNetwork network) {
+		this.owner = owner;
+		this.network = network;
+	}
 
 	/**
 	 * Perform the next task.
 	 */
 	public void run() {
-		// TODO Auto-generated method stub
+		final double result = train(this.network);
+		this.owner.reportResult(result, this.network);
+
+	}
+
+	/**
+	 * Train the network.
+	 * @param network The network to train.
+	 * @return The final error rate.
+	 */
+	private double train(final BasicNetwork network) {
+		// train the neural network
+		final Train train = new ResilientPropagation(network, this.owner
+				.getTraining());
+
+		for (int i = 0; i < this.owner.getIterations(); i++) {
+			train.iteration();
+		}
+
+		return train.getError();
 
 	}
 
