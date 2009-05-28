@@ -30,6 +30,9 @@ import java.util.List;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,6 +69,12 @@ public class PruneIncremental {
 	 * The ranges for the hidden layers.
 	 */
 	private final List<HiddenLayerParams> hidden = new ArrayList<HiddenLayerParams>();
+	
+	private final int iterations;
+	
+	private double bestResult;
+	private BasicNetwork bestNetwork;
+	
 
 	/**
 	 * Keeps track of how many neurons in each hidden layer as training the
@@ -83,9 +92,10 @@ public class PruneIncremental {
 	 *            The network pattern to use to solve this data.
 	 */
 	public PruneIncremental(final NeuralDataSet training,
-			final NeuralNetworkPattern pattern) {
+			final NeuralNetworkPattern pattern, int iterations) {
 		this.training = training;
 		this.pattern = pattern;
+		this.iterations = iterations;
 	}
 
 	/**
@@ -132,7 +142,7 @@ public class PruneIncremental {
 	/**
 	 * Begin the process.
 	 */
-	public void prune() {
+	public BasicNetwork prune() {
 
 		if (this.hidden.size() == 0) {
 			final String str = "To calculate the optimal hidden size, at least "
@@ -143,6 +153,98 @@ public class PruneIncremental {
 		}
 
 		this.hiddenCounts = new int[this.hidden.size()];
+		
+		// set the best network
+		this.bestNetwork = null;
+		this.bestResult = Double.MAX_VALUE;
+		
+		// set to minimums
+		int i = 0;
+		for(HiddenLayerParams parm: this.hidden)
+		{
+			this.hiddenCounts[i++] = parm.getMin();
+		}
+		
+		do
+		{
+			BasicNetwork network = generateNetwork();
+			double result = train(network);
+			if( result<this.bestResult || this.bestNetwork==null ) {
+				if( logger.isDebugEnabled() ) {
+					logger.debug("Prune found new best network: error=" + result
+							+", network=" + network);
+				}
+				this.bestNetwork = network;
+				this.bestResult = result;
+				System.out.println("New best: " + PruneIncremental.networkToString(network));
+			}
+			System.out.println(result);
+		} while(increaseHiddenCounts());
+		
+		return this.bestNetwork;
+	}
+	
+	private BasicNetwork generateNetwork()
+	{
+		this.pattern.clear();
+
+		for(int i=0;i<this.hiddenCounts.length;i++)
+		{
+			if( this.hiddenCounts[i]>0 )
+				this.pattern.addHiddenLayer(this.hiddenCounts[i]);	
+		}
+		
+		return this.pattern.generate();
+	}
+	
+	private double train(BasicNetwork network)
+	{
+		// train the neural network
+		final Train train = new ResilientPropagation(network, this.training);		
+
+		for(int i=0;i<this.iterations;i++) {
+			train.iteration();
+		} 
+		
+		return train.getError();
+		
+	}
+	
+	private boolean increaseHiddenCounts()
+	{
+		int i = 0;
+		do
+		{
+			HiddenLayerParams param = this.hidden.get(i);
+			this.hiddenCounts[i]++;
+			
+			// is this hidden layer still within the range?
+			if( this.hiddenCounts[i]<=param.getMax())
+				return true;
+			
+			// increase the next layer if we've maxed out this one
+			this.hiddenCounts[i] = param.getMin();
+			i++;
+			
+		} while(i<this.hiddenCounts.length);
+		
+		// can't increase anymore, we're done!
+		
+		return false;
+	}
+	
+	public static String networkToString(BasicNetwork network)
+	{
+		StringBuilder result = new StringBuilder();
+		for(Layer layer: network.getHiddenLayers() ) {
+			if( result.length()>0 )
+				result.append(",");
+			result.append("Hidden=");
+			result.append(layer.getNeuronCount());
+		}
+		
+		
+		return result.toString();
 	}
 
 }
