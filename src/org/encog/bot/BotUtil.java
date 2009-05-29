@@ -2,7 +2,7 @@ package org.encog.bot;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL; 
+import java.net.URL;
 
 /*
  * Encog Artificial Intelligence Framework v2.x
@@ -35,18 +35,12 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for bots.
+ * 
  * @author jheaton
- *
+ * 
  */
 public final class BotUtil {
 
-	/**
-	 * Private constructor.
-	 */
-	private BotUtil() {
-		
-	}
-	
 	/**
 	 * How much data to read at once.
 	 */
@@ -59,19 +53,119 @@ public final class BotUtil {
 	private static final Logger LOGGER = LoggerFactory.getLogger(BotUtil.class);
 
 	/**
+	 * This method is very useful for grabbing information from a HTML page.
+	 * 
+	 * @param str
+	 *            The string to search.
+	 * @param token1
+	 *            The text, or tag, that comes before the desired text
+	 * @param token2
+	 *            The text, or tag, that comes after the desired text
+	 * @param index
+	 *            Index in the string to start searching from.
+	 * @param occurence
+	 * 				What occurence.           
+	 * @return The contents of the URL that was downloaded.
+	 */
+	public static String extractFromIndex(final String str, final String token1,
+			final String token2, final int index, final int occurence) {
+		int location1, location2;
+
+		// convert everything to lower case
+		final String searchStr = str.toLowerCase();
+		final String token1Lower = token1.toLowerCase();
+		final String token2Lower = token2.toLowerCase();
+		
+		
+		int count = occurence;
+
+		// now search
+		location1 = location2 = index;
+		do {
+			location1 = searchStr.indexOf(token1Lower, location1 + 1);
+
+			if (location1 == -1) {
+				return null;
+			}
+
+			count--;
+		} while (count > 0);
+		
+		
+
+		// return the result from the original string that has mixed
+		// case
+		location2 = searchStr.indexOf(token2Lower, location1 + 1);
+		if (location2 == -1) {
+			return null;
+		}
+
+		return str.substring(location1 + token1Lower.length(), location2);
+	}
+
+	
+	/**
+	 * This method is very useful for grabbing information from a HTML page.
+	 * 
+	 * @param str
+	 *            The string to search.
+	 * @param token1
+	 *            The text, or tag, that comes before the desired text
+	 * @param token2
+	 *            The text, or tag, that comes after the desired text
+	 * @param index
+	 *            Which occurrence of token1 to use, 1 for the first
+	 * @return The contents of the URL that was downloaded.
+	 */
+	public static String extract(final String str, final String token1,
+			final String token2, final int index) {
+		int location1, location2;
+
+		// convert everything to lower case
+		final String searchStr = str.toLowerCase();
+		final String token1Lower = token1.toLowerCase();
+		final String token2Lower = token2.toLowerCase();
+
+		int count = index;
+
+		// now search
+		location1 = location2 = 0;
+		do {
+			location1 = searchStr.indexOf(token1Lower, location1 + 1);
+
+			if (location1 == -1) {
+				return null;
+			}
+
+			count--;
+		} while (count > 0);
+
+		// return the result from the original string that has mixed
+		// case
+		location2 = searchStr.indexOf(token2Lower, location1 + 1);
+		if (location2 == -1) {
+			return null;
+		}
+
+		return str.substring(location1 + token1Lower.length(), location2);
+	}
+
+	/**
 	 * Load the specified web page into a string.
-	 * @param url The url to load.
+	 * 
+	 * @param url
+	 *            The url to load.
 	 * @return The web page as a string.
 	 */
 	public static String loadPage(final URL url) {
 		try {
-			StringBuilder result = new StringBuilder();
-			byte[] buffer = new byte[BUFFER_SIZE];
+			final StringBuilder result = new StringBuilder();
+			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
 
 			int length;
 
-			InputStream is = url.openStream();
-			
+			final InputStream is = url.openStream();
+
 			do {
 				length = is.read(buffer);
 				if (length >= 0) {
@@ -80,11 +174,18 @@ public final class BotUtil {
 			} while (length >= 0);
 
 			return result.toString();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			if (BotUtil.LOGGER.isErrorEnabled()) {
 				BotUtil.LOGGER.error("Exception", e);
 			}
 			throw new BotError(e);
 		}
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private BotUtil() {
+
 	}
 }
