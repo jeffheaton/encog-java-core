@@ -81,11 +81,13 @@ public class NeuralStructure {
 	 * Build the layer structure.
 	 */
 	private void finalizeLayers() {
-		final Set<Layer> result = new HashSet<Layer>();
+		final List<Layer> result = new ArrayList<Layer>();
+		
+		this.layers.clear();
 		if (this.network.getInputLayer() != null) {
 			getLayers(result, this.network.getInputLayer());
 		}
-		this.layers.clear();
+		
 		this.layers.addAll(result);
 	}
 
@@ -121,11 +123,15 @@ public class NeuralStructure {
 
 	/**
 	 * Called to help build the layer structure.
-	 * @param result The layer list.
+	 * @param result The layer list. 
 	 * @param layer The current layer being processed.
 	 */
-	private void getLayers(final Set<Layer> result, final Layer layer) {
-		result.add(layer);
+	private void getLayers(final List<Layer> result, 
+			final Layer layer) {
+		
+		if (!result.contains(layer)) {
+			result.add(layer);
+		}
 
 		for (final Synapse synapse : layer.getNext()) {
 			final Layer nextLayer = synapse.getToLayer();

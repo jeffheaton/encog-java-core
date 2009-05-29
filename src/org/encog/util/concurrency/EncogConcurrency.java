@@ -118,10 +118,12 @@ public class EncogConcurrency {
 	 * Wait for all threads in the pool to complete.
 	 * @param timeout How long to wait for all threads to complete.
 	 */
-	public void waitForComplete(final long timeout) {
+	public void shutdown(final long timeout) {
 		if (this.executor != null) {
 			try {
+				this.executor.shutdown();
 				this.executor.awaitTermination(timeout, TimeUnit.SECONDS);
+				this.executor = null;
 			} catch (final InterruptedException e) {
 				if (this.logger.isDebugEnabled()) {
 					this.logger.debug("Exception", e);

@@ -198,7 +198,7 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 			offspringIndex += 2;
 		}
 
-		EncogConcurrency.getInstance().waitForComplete(5);
+		EncogConcurrency.getInstance().shutdown(5);
 
 		// sort the next generation
 		sortChromosomes();

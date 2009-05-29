@@ -57,11 +57,14 @@ public class PruneIncremental {
 	 */
 	public static String networkToString(final BasicNetwork network) {
 		final StringBuilder result = new StringBuilder();
+		int num=1;
 		for (final Layer layer : network.getHiddenLayers()) {
 			if (result.length() > 0) {
 				result.append(",");
 			}
-			result.append("Hidden=");
+			result.append("H");
+			result.append(num++);
+			result.append("=");
 			result.append(layer.getNeuronCount());
 		}
 
@@ -172,7 +175,7 @@ public class PruneIncremental {
 		int result = 1;
 
 		for (final HiddenLayerParams param : this.hidden) {
-			result *= param.getMax() - param.getMin();
+			result *= (param.getMax() - param.getMin())+1;
 		}
 
 		return result;
@@ -263,7 +266,7 @@ public class PruneIncremental {
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
 			}
-		}
+		}		
 
 		this.hiddenCounts = new int[this.hidden.size()];
 
@@ -276,6 +279,17 @@ public class PruneIncremental {
 		for (final HiddenLayerParams parm : this.hidden) {
 			this.hiddenCounts[i++] = parm.getMin();
 		}
+		
+		// make sure hidden layer 1 has at least one neuron
+		if (this.hiddenCounts[0] == 0) {
+			final String str = "To calculate the optimal hidden size, at least "
+					+ "one neuron must be the minimum for the first hidden layer.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
+			}
+
+		}
+			
 
 		this.totalTries = determineTriesNeeded();
 		this.currentTry = 0;
@@ -287,7 +301,7 @@ public class PruneIncremental {
 			EncogConcurrency.getInstance().processTask(worker);
 		} while (increaseHiddenCounts());
 
-		EncogConcurrency.getInstance().waitForComplete(Long.MAX_VALUE);
+		EncogConcurrency.getInstance().shutdown(Long.MAX_VALUE);
 
 		return this.bestNetwork;
 	}
@@ -310,7 +324,9 @@ public class PruneIncremental {
 		}
 		this.currentTry++;
 
-		this.report.report(this.totalTries, this.currentTry, "Best network: "
+		this.report.report(this.totalTries, this.currentTry,
+				"Current: " + PruneIncremental.networkToString(network)
+				+ ", Best: "
 				+ PruneIncremental.networkToString(this.bestNetwork));
 	}
 
