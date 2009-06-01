@@ -33,8 +33,10 @@ import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -66,7 +68,9 @@ public class ReadCSV {
 
 	/**
 	 * Get an array of double's from a string of comma separated text.
-	 * @param str The string that contains a list of numbers.
+	 * 
+	 * @param str
+	 *            The string that contains a list of numbers.
 	 * @return An array of doubles parsed from the string.
 	 */
 	public static double[] fromCommas(final String str) {
@@ -115,8 +119,11 @@ public class ReadCSV {
 
 	/**
 	 * Convert an array of doubles to a comma separated list.
-	 * @param result This string will have the values appended to it.
-	 * @param data The array of doubles to use.
+	 * 
+	 * @param result
+	 *            This string will have the values appended to it.
+	 * @param data
+	 *            The array of doubles to use.
 	 */
 	public static void toCommas(final StringBuilder result, 
 			final double[] data) {
@@ -152,7 +159,7 @@ public class ReadCSV {
 	/**
 	 * The delimiter.
 	 */
-	private final String delim;
+	private final char delim;
 
 	/**
 	 * Construct a CSV reader from an input stream.
@@ -165,9 +172,9 @@ public class ReadCSV {
 	 *            What is the delimiter.
 	 */
 	public ReadCSV(final InputStream is, final boolean headers, 
-			final char delim) {
+				final char delim) {
 		this.reader = new BufferedReader(new InputStreamReader(is));
-		this.delim = "" + delim;
+		this.delim = delim;
 		begin(headers);
 	}
 
@@ -185,7 +192,7 @@ public class ReadCSV {
 			final char delim) {
 		try {
 			this.reader = new BufferedReader(new FileReader(filename));
-			this.delim = "" + delim;
+			this.delim = delim;
 			begin(headers);
 		} catch (final IOException e) {
 			if (this.logger.isErrorEnabled()) {
@@ -206,11 +213,10 @@ public class ReadCSV {
 			// read the column heads
 			if (headers) {
 				final String line = this.reader.readLine();
-				final StringTokenizer tok = new StringTokenizer(line,
-						this.delim);
+				final List<String> tok = parse(line);
+
 				int i = 0;
-				while (tok.hasMoreTokens()) {
-					final String header = tok.nextToken();
+				for (final String header : tok) {
 					this.columns.put(header.toLowerCase(), i++);
 				}
 			}
@@ -350,15 +356,8 @@ public class ReadCSV {
 	 *            One line from the file
 	 */
 	private void initData(final String line) {
-		final StringTokenizer tok = new StringTokenizer(line, this.delim);
-
-		int i = 0;
-		while (tok.hasMoreTokens()) {
-			tok.nextToken();
-			i++;
-		}
-
-		this.data = new String[i];
+		final List<String> tok = parse(line);
+		this.data = new String[tok.size()];
 
 	}
 
@@ -379,15 +378,15 @@ public class ReadCSV {
 				initData(line);
 			}
 
-			final StringTokenizer tok = new StringTokenizer(line, this.delim);
+			final List<String> tok = parse(line);
 
 			int i = 0;
-			while (tok.hasMoreTokens()) {
-				final String str = tok.nextToken();
+			for (final String str : tok) {
 				if (i < this.data.length) {
 					this.data[i++] = str;
 				}
 			}
+
 			return true;
 		} catch (final IOException e) {
 			if (this.logger.isErrorEnabled()) {
@@ -397,6 +396,38 @@ public class ReadCSV {
 			throw new EncogError(e);
 		}
 
+	}
+
+	/**
+	 * Parse the line into a list of values.
+	 * @param line The line to parse.
+	 * @return The elements on this line.
+	 */
+	private List<String> parse(final String line) {
+		final StringBuilder item = new StringBuilder();
+		final List<String> result = new ArrayList<String>();
+		boolean quoted = false;
+
+		for (int i = 0; i < line.length(); i++) {
+			final char ch = line.charAt(i);
+			if ((ch == this.delim) && !quoted) {
+				result.add(item.toString());
+				item.setLength(0);
+				quoted = false;
+			} else if ((ch == '\"') && (item.length() == 0)) {
+				quoted = true;
+			} else if ((ch == '\"') && quoted) {
+				quoted = false;
+			} else {
+				item.append(ch);
+			}
+		}
+
+		if (item.length() > 0) {
+			result.add(item.toString());
+		}
+
+		return result;
 	}
 
 }
