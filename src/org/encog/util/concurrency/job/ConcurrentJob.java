@@ -18,7 +18,7 @@ public abstract class ConcurrentJob {
 		this.report = report;
 	}
 	
-	public void start()
+	public void process()
 	{
 		Object task;
 		

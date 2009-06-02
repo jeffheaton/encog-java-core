@@ -32,10 +32,15 @@ import org.encog.StatusReportable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.NeuralNetworkPattern;
 import org.encog.util.concurrency.EncogConcurrency;
+import org.encog.util.concurrency.job.ConcurrentJob;
+import org.encog.util.concurrency.job.JobUnitContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.encog.neural.networks.BasicNetwork;
 
 /**
  * This class is used to help determine the optimal configuration for the hidden
@@ -47,8 +52,10 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class PruneIncremental {
+public class PruneIncremental extends ConcurrentJob {
 
+	private boolean done = false;
+	
 	/**
 	 * Format the network as a human readable string that lists the 
 	 * hidden layers.
@@ -146,6 +153,7 @@ public class PruneIncremental {
 	public PruneIncremental(final NeuralDataSet training,
 			final NeuralNetworkPattern pattern, final int iterations,
 			final StatusReportable report) {
+		super(report);
 		this.training = training;
 		this.pattern = pattern;
 		this.iterations = iterations;
@@ -166,20 +174,6 @@ public class PruneIncremental {
 		this.hidden.add(param);
 	}
 
-
-	/**
-	 * Determine how many networks will be tried.
-	 * @return The number of networks that will be tried.
-	 */
-	public int determineTriesNeeded() {
-		int result = 1;
-
-		for (final HiddenLayerParams param : this.hidden) {
-			result *= (param.getMax() - param.getMin())+1;
-		}
-
-		return result;
-	}
 
 	/**
 	 * Generate a network according to the current hidden layer counts.
@@ -254,11 +248,8 @@ public class PruneIncremental {
 		return false;
 	}
 
-	/**
-	 * Begin the process.
-	 * @return The resulting network.
-	 */
-	public BasicNetwork prune() {
+	
+	public void process() {
 
 		if (this.hidden.size() == 0) {
 			final String str = "To calculate the optimal hidden size, at least "
@@ -290,44 +281,72 @@ public class PruneIncremental {
 
 		}
 			
-
-		this.totalTries = determineTriesNeeded();
-		this.currentTry = 0;
-		do {
-			final BasicNetwork network = generateNetwork();
-
-			final IncrementalWorker worker = new IncrementalWorker(this,
-					network);
-			EncogConcurrency.getInstance().processTask(worker);
-		} while (increaseHiddenCounts());
-
-		EncogConcurrency.getInstance().shutdown(Long.MAX_VALUE);
-
-		return this.bestNetwork;
+		super.process();
 	}
 
-	/**
-	 * Called by the worker processes to report the completion of a try.
-	 * @param result The final error rate.
-	 * @param network The network that was just trained.
-	 */
-	public synchronized void reportResult(final double result,
-			final BasicNetwork network) {
 
-		if ((result < this.bestResult) || (this.bestNetwork == null)) {
+	@Override
+	public int loadWorkload() {
+		int result = 1;
+
+		for (final HiddenLayerParams param : this.hidden) {
+			result *= (param.getMax() - param.getMin())+1;
+		}
+
+		return result;
+	}
+
+	@Override
+	public void performJobUnit(JobUnitContext context) {
+		
+		BasicNetwork network = (BasicNetwork)context.getJobUnit();
+		
+		// train the neural network
+		final Train train = new ResilientPropagation(network, this.training);
+
+		for (int i = 0; i < this.iterations; i++) {
+			train.iteration();
+		}
+
+		double error = train.getError();
+		
+		if ((error < this.bestResult) || (this.bestNetwork == null)) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("Prune found new best network: error="
-						+ result + ", network=" + network);
+						+ error + ", network=" + network);
 			}
 			this.bestNetwork = network;
-			this.bestResult = result;
+			this.bestResult = error;
 		}
 		this.currentTry++;
 
-		this.report.report(this.totalTries, this.currentTry,
+		this.reportStatus(context, 
 				"Current: " + PruneIncremental.networkToString(network)
 				+ ", Best: "
-				+ PruneIncremental.networkToString(this.bestNetwork));
+				+ PruneIncremental.networkToString(this.bestNetwork));			
+		
 	}
+	
+	
+
+	@Override
+	public Object requestNextTask() {
+		if( done ) {
+			return null;
+		}
+		
+		BasicNetwork network = generateNetwork();
+		
+		if( !increaseHiddenCounts() )
+			done = true;
+		
+		return network;
+	}
+
+	public BasicNetwork getBestNetwork() {
+		return bestNetwork;
+	}
+	
+	
 
 }
