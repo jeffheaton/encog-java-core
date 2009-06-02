@@ -53,7 +53,7 @@ public class ReadCSV {
 	/**
 	 * The standard date format to be used.
 	 */
-	private static final DateFormat SDF = new SimpleDateFormat("yyyy-MM-dd");
+	private DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	/**
 	 * Format a date.
@@ -63,7 +63,8 @@ public class ReadCSV {
 	 * @return The formatted date.
 	 */
 	public static String displayDate(final Date date) {
-		return ReadCSV.SDF.format(date);
+		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return sdf.format(date);
 	}
 
 	/**
@@ -111,7 +112,8 @@ public class ReadCSV {
 	 */
 	public static Date parseDate(final String when) {
 		try {
-			return ReadCSV.SDF.parse(when);
+			DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			return sdf.parse(when);
 		} catch (final ParseException e) {
 			return null;
 		}
@@ -298,7 +300,7 @@ public class ReadCSV {
 
 		try {
 			final String str = get(column);
-			return ReadCSV.SDF.parse(str);
+			return sdf.parse(str);
 		} catch (final ParseException e) {
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error("Exception", e);
