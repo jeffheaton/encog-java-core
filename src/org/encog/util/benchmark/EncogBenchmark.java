@@ -114,7 +114,6 @@ public class EncogBenchmark {
 	 * @return The amount of time this benchmark took.
 	 */
 	private double benchmar0Hidden() {
-		System.out.print("Evaluating 0 hidden layer network...");
 		final BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(INPUT_COUNT));
 		network.addLayer(new BasicLayer(OUTPUT_COUNT));
