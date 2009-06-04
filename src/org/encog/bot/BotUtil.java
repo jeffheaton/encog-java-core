@@ -74,15 +74,14 @@ public final class BotUtil {
 		// convert everything to lower case
 		final String searchStr = str.toLowerCase();
 		final String token1Lower = token1.toLowerCase();
-		final String token2Lower = token2.toLowerCase();
-		
+		final String token2Lower = token2.toLowerCase();		
 		
 		int count = occurence;
 
 		// now search
-		location1 = location2 = index;
+		location1 = location2 = index-1;
 		do {
-			location1 = searchStr.indexOf(token1Lower, location1 + 1);
+			location1 = searchStr.indexOf(token1Lower, location1+1 );
 
 			if (location1 == -1) {
 				return null;
@@ -129,7 +128,7 @@ public final class BotUtil {
 		int count = index;
 
 		// now search
-		location1 = location2 = 0;
+		location1 = location2 = -1;
 		do {
 			location1 = searchStr.indexOf(token1Lower, location1 + 1);
 
