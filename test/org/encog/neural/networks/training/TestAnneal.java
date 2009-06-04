@@ -5,11 +5,13 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
+import org.junit.Test;
 
 import junit.framework.TestCase;
 
 public class TestAnneal extends TestCase {
 
+	@Test
 	public void testAnneal() throws Throwable
 	{
 		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);

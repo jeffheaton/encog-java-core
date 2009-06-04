@@ -1,5 +1,7 @@
 package org.encog.neural.networks.training;
 
+import junit.framework.TestCase;
+
 import org.encog.matrix.Matrix;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralData;
@@ -16,7 +18,7 @@ import org.encog.util.logging.Logging;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class TestCompetitive {
+public class TestCompetitive extends TestCase  {
 
 	public static double SOM_INPUT[][] = { { 0.0, 0.0, 1.0, 1.0 },
 			{ 1.0, 1.0, 0.0, 0.0 } };
