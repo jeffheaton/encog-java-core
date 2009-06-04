@@ -65,12 +65,7 @@ public class Form extends DocumentRange {
 	/**
 	 * The means by which the form will be sent.
 	 */
-	private Method method;
-	
-	/**
-	 * The elements of this form.
-	 */
-	private List<FormElement> elements = new ArrayList<FormElement>();
+	private Method method;	
 
 	/**
 	 * The logger.
@@ -95,7 +90,7 @@ public class Form extends DocumentRange {
 	public Input findType(final String type, final int index) {
 		int i = index;
 		
-		for (final FormElement element : this.elements) {
+		for (final DocumentRange element : this.getElements()) {
 			if (element instanceof Input) {
 				final Input input = (Input) element;
 				if (input.getType().equalsIgnoreCase(type)) {
@@ -150,7 +145,7 @@ public class Form extends DocumentRange {
 		builder.append(getMethod());
 		builder.append(",action=");
 		builder.append(getAction());
-		for (final FormElement element : this.elements) {
+		for (final DocumentRange element : this.getElements()) {
 			builder.append("\n\t");
 			builder.append(element.toString());
 		}

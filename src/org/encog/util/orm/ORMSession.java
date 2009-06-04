@@ -142,7 +142,14 @@ public class ORMSession {
 	 * Flush this session.
 	 */
 	public void flush() {
+		try
+		{
 		this.session.flush();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**

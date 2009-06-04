@@ -90,7 +90,7 @@ public class WebPage {
 	 * @param index The index to search from.
 	 * @return The document range that was found.
 	 */
-	public DocumentRange find(final Class<Form> c, final int index) {
+	public DocumentRange find(final Class<?> c, final int index) {
 		int i = index;
 		for (final DocumentRange span : getContents()) {
 			if (span.getClass().getName().equals(c.getName())) {

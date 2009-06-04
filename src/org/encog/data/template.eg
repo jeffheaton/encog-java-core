@@ -68,15 +68,7 @@
          </element>
       </recognize>
 
-      <recognize id="weight" class="Weight">
-          <element type="ALLOW_ONE">
-              <unit type="number"/>
-          </element>
 
-          <element type="ALLOW_ONE">
-              <unit type="weightUnit"/>
-          </element>
-      </recognize>
 
 </ParseTemplate>
 
