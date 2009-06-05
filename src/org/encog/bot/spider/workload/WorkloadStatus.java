@@ -23,7 +23,7 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.bot.spider;
+package org.encog.bot.spider.workload;
 
 /**
  * The status that an individual workload item is in. 

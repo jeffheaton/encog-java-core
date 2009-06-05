@@ -28,6 +28,8 @@ package org.encog.bot.spider;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.encog.bot.spider.workload.SpiderWorkload;
+import org.encog.bot.spider.workload.WorkloadItem;
 import org.encog.util.concurrency.EncogConcurrency;
 import org.encog.util.orm.ORMSession;
 import org.encog.util.orm.SessionManager;
@@ -60,16 +62,6 @@ public class Spider {
 	 * The default timeout.
 	 */
 	public static final int DEFAULT_TIMEOUT = 1000;
-
-	/**
-	 * The ORM session to use for storing the workload.
-	 */
-	private ORMSession session;
-	
-	/**
-	 * The ORM manager to use for storing the workload.
-	 */
-	private final SessionManager manager;
 	
 	/**
 	 * The object that we should report progress to.
@@ -90,6 +82,8 @@ public class Spider {
 	 * The maximum URL size.
 	 */
 	private final int maxURLSize = 255;
+	
+	private final SpiderWorkload workload;
 
 	/**
 	 * The logging object.
@@ -102,41 +96,8 @@ public class Spider {
 	 * @param report The object to report progress to.
 	 */
 	public Spider(final SessionManager manager, final SpiderReportable report) {
-		this.manager = manager;
+		this.workload = new SpiderWorkload(manager);
 		this.report = report;
-	}
-
-	/**
-	 * Add a URL to the spider for processing.
-	 * @param url The URL to add.
-	 * @param source The source the URL came from.
-	 */
-	public void addURL(final URL url, final WorkloadItem source) {
-
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Adding URL to spider queue: " + url);
-		}
-
-		// does the URL exist already?
-		final Query q = this.session
-				.createQuery(
-					"SELECT count(*) FROM WorkloadItem WHERE url = :u");
-		q.setString("u", url.toString());
-		final Long i = (Long) q.uniqueResult();
-		if (i == 0) {
-			// add a new URL
-			final WorkloadItem item = new WorkloadItem();
-			item.setHost(url.getHost());
-			item.setUrl(url.toString());
-			item.setStatus(WorkloadStatus.QUEUED);
-			item.setSource(source);
-			if (source == null) {
-				item.setDepth(0);
-			} else {
-				item.setDepth(source.getDepth() + 1);
-			}
-			this.session.save(item);
-		}
 	}
 
 	/**
@@ -172,13 +133,6 @@ public class Spider {
 	}
 
 	/**
-	 * @return The ORM session manager for this spider.
-	 */
-	public SessionManager getSessionManager() {
-		return this.manager;
-	}
-
-	/**
 	 * The current HTTP timeout.
 	 * @return The timeout value.
 	 */
@@ -194,53 +148,6 @@ public class Spider {
 	}
 
 	/**
-	 * Obtain a workload for the spider.
-	 * @return The workload that was just obtained.
-	 */
-	private WorkloadItem obtainWork() {
-
-		boolean done = false;
-		WorkloadItem result = null;
-
-		while (!done) {
-			final Query q = this.session
-					.createQuery("From WorkloadItem Where status = :s");
-			q.setCharacter("s", WorkloadStatus.QUEUED);
-			q.setMaxResults(1);
-			result = (WorkloadItem) q.uniqueResult();
-
-			if (result == null) {
-				final Query q2 = this.session
-						.createQuery(
-					"SELECT COUNT(*) FROM WorkloadItem Where status = :s");
-				q2.setCharacter("s", WorkloadStatus.WORKING);
-				final Long count = (Long) q2.uniqueResult();
-				if (count > 0) {
-					try {
-						Thread.sleep(DEFAULT_TIMEOUT);
-					} catch (final InterruptedException e) {
-						if (this.logger.isDebugEnabled()) {
-							this.logger.debug("Exception", e);
-						}
-					}
-				} else {
-					done = true;
-				}
-			} else {
-				done = true;
-			}
-		}
-
-		// mark it as working
-		if (result != null) {
-			result.setStatus(WorkloadStatus.WORKING);
-			this.session.flush();
-		}
-
-		return result;
-	}
-
-	/**
 	 * Process the specified URL.
 	 * @param start The starting URL.
 	 */
@@ -251,14 +158,10 @@ public class Spider {
 			this.logger.info("Spider is starting with URL: " + start);
 		}
 
-		this.session = this.manager.openSession();
+		this.workload.addURL(start, null);
 
-		addURL(start, null);
-
-		while ((current = obtainWork()) != null) {
+		while ((current = this.workload.obtainWork()) != null) {
 			processWork(current);
-			this.session.flush();
-			this.session.clear();
 		}
 
 		if (this.logger.isInfoEnabled()) {
@@ -291,5 +194,12 @@ public class Spider {
 	public void setUserAgent(final String userAgent) {
 		this.userAgent = userAgent;
 	}
+
+	public SpiderWorkload getWorkload() {
+		return workload;
+	}
+	
+	
+
 
 }

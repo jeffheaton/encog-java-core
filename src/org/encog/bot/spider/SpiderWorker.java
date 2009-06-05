@@ -30,6 +30,8 @@ import java.net.URL;
 import java.net.URLConnection;
 
 import org.encog.EncogError;
+import org.encog.bot.spider.workload.WorkloadItem;
+import org.encog.bot.spider.workload.WorkloadStatus;
 import org.encog.util.concurrency.EncogTask;
 import org.encog.util.orm.ORMSession;
 import org.slf4j.Logger;
@@ -48,12 +50,7 @@ public class SpiderWorker implements EncogTask {
 	 * The spider that owns this worker.
 	 */
 	private final Spider owner;
-	
-	/**
-	 * The ORM session for this worker.
-	 */
-	private ORMSession session;
-	
+		
 	/**
 	 * The workload item that defines what this worker is to do.
 	 */
@@ -81,8 +78,7 @@ public class SpiderWorker implements EncogTask {
 
 		URLConnection connection = null;
 		InputStream is = null;
-
-		this.session = this.owner.getSessionManager().openSession();
+		char status = WorkloadStatus.ERROR;
 
 		try {
 			// get the URL's contents
@@ -110,22 +106,33 @@ public class SpiderWorker implements EncogTask {
 				this.owner.getReport().spiderProcessURL(url, is);
 			}
 
-			this.work.setStatus(WorkloadStatus.PROCESSED);
+			status = WorkloadStatus.PROCESSED;
 
 		} catch (final EncogError e) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.error("Exception", e);
 			}
-			this.work.setStatus(WorkloadStatus.ERROR);
+
 		} catch (final Throwable e) {
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error("Exception", e);
 			}
-
-			this.work.setStatus(WorkloadStatus.ERROR);
 		}
-
-		this.session.close();
+		finally {
+			try
+			{
+				this.owner.getWorkload().updateStatus(this.work, status);
+			}
+			catch(Throwable t)
+			{
+				if (this.logger.isErrorEnabled()) {
+					this.logger.error("Exception", t);
+				}
+				System.out.println("****************");
+				throw new SpiderError(t);
+			}
+		}
 	}
+	
 
 }

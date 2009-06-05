@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.encog.bot.spider.workload.WorkloadItem;
 import org.encog.parse.tags.Tag;
 import org.encog.parse.tags.read.ReadHTML;
 import org.encog.util.http.URLUtility;
@@ -117,7 +118,7 @@ public class SpiderParseHTML extends ReadHTML {
 				if (this.spider.getReport()
 						.spiderFoundURL(url, this.base, type)) {
 
-					this.spider.addURL(url, this.source);
+					this.spider.getWorkload().addURL(url, this.source);
 				}
 			}
 		} catch (final MalformedURLException e) {

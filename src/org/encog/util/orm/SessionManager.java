@@ -111,7 +111,7 @@ public class SessionManager {
 	/**
 	 * Export the DDL, this creates the tables needed.
 	 */
-	public void export() {
+	public synchronized void export() {
 		final SchemaExport export = new SchemaExport(this.config);
 		export.create(true, true);
 	}
@@ -139,7 +139,7 @@ public class SessionManager {
 				.addAnnotatedClass(
 						org.encog.nlp.lexicon.data.WordTypePossibility.class);
 			this.config
-					.addAnnotatedClass(org.encog.bot.spider.WorkloadItem.class);
+					.addAnnotatedClass(org.encog.bot.spider.workload.WorkloadItem.class);
 
 			this.sessionFactory = config.buildSessionFactory();
 		} catch (final Throwable ex) {
@@ -155,7 +155,7 @@ public class SessionManager {
 	 * Open an ORM session.
 	 * @return An ORM session.
 	 */
-	public ORMSession openSession() {
+	public synchronized ORMSession openSession() {
 		final org.hibernate.Session hibernateSession = this.sessionFactory
 				.openSession(new DataObjectInterceptor());
 		final ORMSession result = new ORMSession(hibernateSession);
