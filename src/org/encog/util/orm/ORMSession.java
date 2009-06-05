@@ -144,11 +144,15 @@ public class ORMSession {
 	public void flush() {
 		try
 		{
-		this.session.flush();
+			this.session.flush();
 		}
 		catch(Exception e)
-		{
-			e.printStackTrace();
+		{						
+			if( logger.isErrorEnabled())
+			{
+				logger.error("Exception",e);
+			}
+			throw new ORMError(e);
 		}
 	}
 
@@ -166,6 +170,11 @@ public class ORMSession {
 	public void save(final DataObject obj) {
 		obj.validate();
 		this.session.save(obj);
+	}
+
+	public DataObject find(Class clazz, Long id) {
+		return (DataObject) this.session.get(clazz,id);
+		
 	}
 
 }
