@@ -1,6 +1,7 @@
 package org.encog.neural.networks;
 
 import org.encog.matrix.Matrix;
+import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 
@@ -14,9 +15,9 @@ public class CreateNetwork {
 		// for the unit tests.
 		
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(2));
-		network.addLayer(new BasicLayer(3));
-		network.addLayer(new BasicLayer(1));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,2));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,1));
 		network.getStructure().finalizeStructure();
 		NetworkCODEC.arrayToNetwork(RANDOM_NET, network);
 		
