@@ -40,7 +40,7 @@ public class SpiderWorkload {
 		return result;
 	}
 	
-	private long countEligibleWorkloadItems()
+	public long countEligibleWorkloadItems()
 	{
 		final ORMSession session = this.manager.openSession();
 		final Query q = session.createQuery(
