@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An activation function based on the logrithm function.
+ * An activation function based on the logarithm function.
  * 
  * @author jheaton
  * 
