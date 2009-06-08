@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A persistance location based on a file.
+ * A persistence location based on a file.
  * 
  * @author jheaton
  * 
