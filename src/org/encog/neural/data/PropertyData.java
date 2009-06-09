@@ -28,6 +28,7 @@ package org.encog.neural.data;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.PropertyDataPersistor;
@@ -170,5 +171,33 @@ public class PropertyData implements EncogPersistedObject {
 	 */
 	public int size() {
 		return this.data.size();
+	}
+
+	/**
+	 * Get a property as an integer.
+	 * @param field The name of the field.
+	 * @return The integer value.
+	 */
+	public int getInteger(String field) {
+		String str = this.get(field);
+		try {
+			return Integer.parseInt(str);
+		} catch (NumberFormatException e) {
+			throw new EncogError(e);
+		}
+	}
+	
+	/**
+	 * Get a property as a double.
+	 * @param field The name of the field.
+	 * @return The integer value.
+	 */
+	public double getDouble(String field) {
+		String str = this.get(field);
+		try {
+			return Double.parseDouble(str);
+		} catch (NumberFormatException e) {
+			throw new EncogError(e);
+		}
 	}
 }
