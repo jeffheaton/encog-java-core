@@ -138,8 +138,7 @@ public class SessionManager {
 			this.config
 				.addAnnotatedClass(
 						org.encog.nlp.lexicon.data.WordTypePossibility.class);
-			this.config
-					.addAnnotatedClass(org.encog.bot.spider.workload.WorkloadItem.class);
+
 
 			this.sessionFactory = config.buildSessionFactory();
 		} catch (final Throwable ex) {
