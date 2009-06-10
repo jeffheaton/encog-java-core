@@ -25,6 +25,10 @@
  */
 package org.encog.neural.data;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -189,14 +193,34 @@ public class PropertyData implements EncogPersistedObject {
 	
 	/**
 	 * Get a property as a double.
-	 * @param field The name of the field.
-	 * @return The integer value.
+	 * 
+	 * @param field
+	 *            The name of the field.
+	 * @return The double value.
 	 */
-	public double getDouble(String field) {
+	public double getDouble(final String field) {
 		String str = this.get(field);
 		try {
 			return Double.parseDouble(str);
 		} catch (NumberFormatException e) {
+			throw new EncogError(e);
+		}
+	}
+
+	/**
+	 * Get a property as a date.
+	 * 
+	 * @param field
+	 *            The name of the field.
+	 * @return The date value.
+	 */
+	public Date getDate(final String field) {
+		try {
+			String str = this.get(field);
+			DateFormat formatter = new SimpleDateFormat("MM/dd/yy");
+			Date date = (Date) formatter.parse(str);
+			return date;
+		} catch (ParseException e) {
 			throw new EncogError(e);
 		}
 	}
