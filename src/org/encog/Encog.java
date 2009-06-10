@@ -28,7 +28,6 @@ package org.encog;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.util.orm.ORMSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,11 +86,6 @@ public final class Encog {
 	}
 
 	/**
-	 * The current ORM session.
-	 */
-	private ORMSession session;
-
-	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
@@ -118,20 +112,5 @@ public final class Encog {
 	 */
 	public Map<String, String> getProperties() {
 		return this.properties;
-	}
-
-	/**
-	 * @return The ORM session that Encog is using.
-	 */
-	public ORMSession getSession() {
-		return this.session;
-	}
-
-	/**
-	 * Set the ORM session that Encog is to use.
-	 * @param session An ORM session.
-	 */
-	public void setSession(final ORMSession session) {
-		this.session = session;
 	}
 }
