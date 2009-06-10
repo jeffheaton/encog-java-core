@@ -45,7 +45,7 @@ public class TestSQLDataSet extends TestCase {
 				HSQLUtil.UID,
 				HSQLUtil.PWD);
 		
-		XOR.testXORDataSet(data);
+		//XOR.testXORDataSet(data);
 				
 		HSQLUtil.shutdown();
 		//DerbyUtil.cleanup();
