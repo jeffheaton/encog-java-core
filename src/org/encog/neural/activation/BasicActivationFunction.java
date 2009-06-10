@@ -46,17 +46,13 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 * @return The object cloned.
 	 */
 	@Override
-	public Object clone() {
-		return null;
-	}
+	public abstract Object clone();
 
 	/**
 	 * Create a Persistor for this activation function.
 	 * @return The persistor.
 	 */
-	public Persistor createPersistor() {
-		return null;
-	}
+	public abstract Persistor createPersistor();
 
 	/**
 	 * @return Always returns null, descriptions and names are not used

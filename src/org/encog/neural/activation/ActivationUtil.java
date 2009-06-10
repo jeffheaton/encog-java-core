@@ -38,11 +38,6 @@ import org.slf4j.LoggerFactory;
  */
 public final class ActivationUtil {
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Private constructor.
