@@ -33,8 +33,6 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.util.orm.ORMSession;
-import org.encog.util.orm.SessionManager;
 import org.hibernate.ScrollableResults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -63,14 +61,14 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		/**
 		 * The results from the query.
 		 */
-		private final ScrollableResults results;
+		//private final ScrollableResults results;
 
 		/**
 		 * Construct an iterator. Execute a query and retrieve results.
 		 */
 		public SQLNeuralIterator() {
-			this.results = SQLNeuralDataSet.this.session.createSQLQuery(
-					SQLNeuralDataSet.this.sql).scroll();
+			//this.results = SQLNeuralDataSet.this.session.createSQLQuery(
+			//		SQLNeuralDataSet.this.sql).scroll();
 		}
 
 		/**
@@ -84,13 +82,13 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				return true;
 			}
 
-			if (this.results.next()) {
+			//if (this.results.next()) {
 				this.dataReady = true;
 				return true;
-			}
+			//}
 
-			this.dataReady = false;
-			return false;
+			//this.dataReady = false;
+//			return false;
 
 		}
 
@@ -106,17 +104,17 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 			NeuralData ideal = null;
 
 			for (int i = 0; i < SQLNeuralDataSet.this.inputSize; i++) {
-				final double d = Double.parseDouble(this.results.get(i)
-						.toString());
-				input.setData(i, d);
+//				final double d = Double.parseDouble(this.results.get(i)
+//						.toString());
+///				input.setData(i, d);
 			}
 
 			if (SQLNeuralDataSet.this.idealSize > 0) {
 				ideal = new BasicNeuralData(SQLNeuralDataSet.this.idealSize);
 				for (int i = 0; i < SQLNeuralDataSet.this.idealSize; i++) {
-					final double d = Double.parseDouble(this.results.get(
-							i + SQLNeuralDataSet.this.inputSize).toString());
-					ideal.setData(i, d);
+//					final double d = Double.parseDouble(this.results.get(
+//							i + SQLNeuralDataSet.this.inputSize).toString());
+//					ideal.setData(i, d);
 				}
 
 			}
@@ -168,12 +166,12 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	/**
 	 * The session manager.
 	 */
-	private final SessionManager manager;
+	//private final SessionManager manager;
 	
 	/**
 	 * The session to use.
 	 */
-	private final ORMSession session;
+	//private final ORMSession session;
 
 	/**
 	 * The SQL to execute.
@@ -208,8 +206,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		this.idealSize = idealSize;
 		this.sql = sql;
 
-		this.manager = new SessionManager(driver, url, uid, pwd, dialect);
-		this.session = this.manager.openSession();
+//		this.manager = new SessionManager(driver, url, uid, pwd, dialect);
+//		this.session = this.manager.openSession();
 
 	}
 
@@ -259,9 +257,9 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 * Close the SQL connection.
 	 */
 	public void close() {
-		if (this.session != null) {
-			this.session.close();
-		}
+//		if (this.session != null) {
+//			this.session.close();
+	//	}
 	}
 
 	/**
