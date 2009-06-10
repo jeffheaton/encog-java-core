@@ -25,8 +25,16 @@
  */
 package org.encog.neural.data.sql;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
@@ -39,7 +47,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A dataset based on a SQL query. This is not a memory based dataset, so it can
  * handle very large datasets without a memory issue. This class makes use of
- * Hibernate to query the database.
+ * JDBC to query the database.
  * 
  * @author jheaton
  */
@@ -53,6 +61,21 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	public class SQLNeuralIterator implements Iterator<NeuralDataPair> {
 
 		/**
+		 * The JDBC connection.
+		 */
+		private final Connection connection;
+		
+		/**
+		 * The JDBC statement.
+		 */
+		private final PreparedStatement statement;
+		
+		/**
+		 * The JDBC result set.
+		 */
+		private final ResultSet results;				
+
+		/**
 		 * Is read and ready?
 		 */
 		private boolean dataReady;
@@ -60,14 +83,32 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		/**
 		 * The results from the query.
 		 */
-		//private final ScrollableResults results;
-
+		// private final ScrollableResults results;
 		/**
 		 * Construct an iterator. Execute a query and retrieve results.
 		 */
 		public SQLNeuralIterator() {
-			//this.results = SQLNeuralDataSet.this.session.createSQLQuery(
-			//		SQLNeuralDataSet.this.sql).scroll();
+			try {
+				// open the connection
+				if (uid != null || pwd != null) {
+					this.connection = DriverManager.getConnection(url);
+				} else {
+					this.connection = DriverManager
+							.getConnection(url, uid, pwd);
+				}
+				
+				// prepare the statement
+				this.statement = this.connection.prepareStatement(sql);
+				
+				// execute the statement
+				this.results = this.statement.executeQuery();
+				
+			} catch (SQLException e) {
+				if (logger.isErrorEnabled()) {
+					logger.error("Exception", e);
+				}
+				throw new NeuralNetworkError(e);
+			}
 		}
 
 		/**
@@ -77,17 +118,24 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		 */
 		public boolean hasNext() {
 
-			if (this.dataReady) {
-				return true;
+			try {
+				if (this.dataReady) {
+					return true;
+				}
+
+				if (this.results.next()) {
+					this.dataReady = true;
+					return true;
+				}
+
+				this.dataReady = false;
+				return false;
+			} catch (SQLException e) {
+				if (logger.isErrorEnabled()) {
+					logger.error("Exception", e);
+				}
+				throw new NeuralNetworkError(e);
 			}
-
-			//if (this.results.next()) {
-				this.dataReady = true;
-				return true;
-			//}
-
-			//this.dataReady = false;
-//			return false;
 
 		}
 
@@ -98,28 +146,33 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		 */
 		public NeuralDataPair next() {
 
-			final NeuralData input = new BasicNeuralData(
-					SQLNeuralDataSet.this.inputSize);
-			NeuralData ideal = null;
+			try {
+				final NeuralData input = new BasicNeuralData(
+						SQLNeuralDataSet.this.inputSize);
+				NeuralData ideal = null;
 
-			for (int i = 0; i < SQLNeuralDataSet.this.inputSize; i++) {
-//				final double d = Double.parseDouble(this.results.get(i)
-//						.toString());
-///				input.setData(i, d);
-			}
-
-			if (SQLNeuralDataSet.this.idealSize > 0) {
-				ideal = new BasicNeuralData(SQLNeuralDataSet.this.idealSize);
-				for (int i = 0; i < SQLNeuralDataSet.this.idealSize; i++) {
-//					final double d = Double.parseDouble(this.results.get(
-//							i + SQLNeuralDataSet.this.inputSize).toString());
-//					ideal.setData(i, d);
+				for (int i = 0; i < SQLNeuralDataSet.this.inputSize; i++) {
+					final double d = this.results.getDouble(i+1);
+					input.setData(i, d);
 				}
 
-			}
+				if (SQLNeuralDataSet.this.idealSize > 0) {
+					ideal = new BasicNeuralData(SQLNeuralDataSet.this.idealSize);
+					for (int i = 0; i < SQLNeuralDataSet.this.idealSize; i++) {
+						final double d = this.results.getDouble(inputSize + i +1);
+						ideal.setData(i, d);
+					}
 
-			this.dataReady = false;
-			return new BasicNeuralDataPair(input, ideal);
+				}
+
+				this.dataReady = false;
+				return new BasicNeuralDataPair(input, ideal);
+			} catch (SQLException e) {
+				if (logger.isErrorEnabled()) {
+					logger.error("Exception", e);
+				}
+				throw new NeuralNetworkError(e);
+			}
 
 		}
 
@@ -133,20 +186,40 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 			}
 			throw new NeuralDataError(SQLNeuralDataSet.REMOVE_NOT_SUPPORTED);
 		}
+		
+		/**
+		 * Close this iterator and release any resources it had.
+		 */
+		public void close()
+		{
+			
+			try {
+				this.results.close();
+				this.statement.close();
+				this.connection.close();
+			} catch (SQLException e) {
+				if (logger.isErrorEnabled()) {
+					logger.error("Exception", e);
+				}
+				throw new NeuralNetworkError(e);
+			}
+			
+		}
 	}
 
 	/**
 	 * Error message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = 
-		"Adds are not supported with this dataset, it is read only.";
+	public static final String ADD_NOT_SUPPORTED = "Adds are not supported with this dataset, it is read only.";
 
 	/**
 	 * Error message: removes are not supported.
 	 */
-	public static final String REMOVE_NOT_SUPPORTED = 
-		"Removes are not supported with this dataset, it is read only.";
+	public static final String REMOVE_NOT_SUPPORTED = "Removes are not supported with this dataset, it is read only.";
 
+	
+	private final List<SQLNeuralDataSet> iterators = new ArrayList<SQLNeuralDataSet>();
+	
 	/**
 	 * The logging object.
 	 */
@@ -163,14 +236,24 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	private final int idealSize;
 
 	/**
-	 * The session manager.
+	 * The JDBC user id to use.
 	 */
-	//private final SessionManager manager;
-	
+	private final String uid;
+
 	/**
-	 * The session to use.
+	 * The JDBC password to use.
 	 */
-	//private final ORMSession session;
+	private final String pwd;
+
+	/**
+	 * The JDBC URL to use(connection string).
+	 */
+	private final String url;
+
+	/**
+	 * The JDBC driver to use.
+	 */
+	private final String driver;
 
 	/**
 	 * The SQL to execute.
@@ -194,19 +277,26 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 *            The database user id.
 	 * @param pwd
 	 *            The database password.
-	 * @param dialect 
-	 * 			The Hibernate dialect to use.
 	 */
 	public SQLNeuralDataSet(final String sql, final int inputSize,
-			final int idealSize, final String driver, final String dialect,
+			final int idealSize, final String driver,
 			final String url, final String uid, final String pwd) {
 
 		this.inputSize = inputSize;
 		this.idealSize = idealSize;
+		this.driver = driver;
+		this.uid = uid;
+		this.pwd = pwd;
+		this.url = url;
 		this.sql = sql;
-
-//		this.manager = new SessionManager(driver, url, uid, pwd, dialect);
-//		this.session = this.manager.openSession();
+		try {
+			Class.forName(this.driver);
+		} catch (ClassNotFoundException e) {
+			if (logger.isErrorEnabled()) {
+				logger.error("Exception" + e);
+			}
+			throw new NeuralNetworkError(e);
+		}
 
 	}
 
@@ -256,9 +346,10 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 * Close the SQL connection.
 	 */
 	public void close() {
-//		if (this.session != null) {
-//			this.session.close();
-	//	}
+		for(SQLNeuralDataSet i: this.iterators)
+		{
+			i.close();
+		}
 	}
 
 	/**
