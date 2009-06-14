@@ -125,7 +125,7 @@ public class DirectSynapse extends BasicSynapse {
 	 * @return The type of synapse that this is.
 	 */
 	public SynapseType getType() {
-		return SynapseType.OneToOne;
+		return SynapseType.Direct;
 	}
 
 	/**

@@ -52,7 +52,7 @@ public class WeightedSynapse extends BasicSynapse {
 	private static final long serialVersionUID = -1667026867054695646L;
 
 	/**
-	 * The weight and threshold matrix.
+	 * The weight matrix.
 	 */
 	private Matrix matrix;
 

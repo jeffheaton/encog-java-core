@@ -106,7 +106,7 @@ public class CalculatePartialDerivative {
 	 * @param outputHolder The output from each of the layers of 
 	 * the neural network.
 	 * @param fromLevel The from level.
-	 * @param toLevel The two level.
+	 * @param toLevel The to level.
 	 * @param toLayer The to layer.
 	 * @param toNeuronLocal The neuron, within the layer.
 	 * @param fromSynapse The from synapse.
