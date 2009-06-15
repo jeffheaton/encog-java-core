@@ -1,5 +1,6 @@
 package org.encog.bot;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -30,6 +31,7 @@ import java.net.URL;
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+import org.encog.parse.tags.read.ReadHTML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -186,5 +188,56 @@ public final class BotUtil {
 	 */
 	private BotUtil() {
 
+	}
+
+	public static int findOccurance(final String search,final String searchFor, final int index)	
+	{
+		int count = index;
+		String lowerSearch = search.toLowerCase();
+		int result = -1;
+		
+		do
+		{
+			result = lowerSearch.indexOf(searchFor, result+1);
+		} while(count-->0);
+		
+		return result;
+	}
+
+	public static String stripTags(String str) {
+		ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
+		StringBuilder result = new StringBuilder();
+		ReadHTML html = new ReadHTML(is);
+		int ch;
+		while( (ch=html.read())!=-1 )
+		{
+			if( ch!=0 )
+				result.append((char)ch);
+		}
+		return result.toString();
+	}
+
+
+	public static String loadPage(InputStream is) {
+		try {
+			final StringBuilder result = new StringBuilder();
+			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
+
+			int length;
+
+			do {
+				length = is.read(buffer);
+				if (length >= 0) {
+					result.append(new String(buffer, 0, length));
+				}
+			} while (length >= 0);
+
+			return result.toString();
+		} catch (final IOException e) {
+			if (BotUtil.LOGGER.isErrorEnabled()) {
+				BotUtil.LOGGER.error("Exception", e);
+			}
+			throw new BotError(e);
+		}
 	}
 }
