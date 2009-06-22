@@ -55,7 +55,7 @@ public class PersistReader {
 	 * The name attribute.
 	 */
 	public static final String ATTRIBUTE_NAME = "name";
-	
+
 	/**
 	 * The objects tag.
 	 */
@@ -65,7 +65,7 @@ public class PersistReader {
 	 * The XML reader.
 	 */
 	private final ReadXML in;
-	
+
 	/**
 	 * The input stream.
 	 */
@@ -78,7 +78,9 @@ public class PersistReader {
 
 	/**
 	 * Construct a persist reader.
-	 * @param location The location to use.
+	 * 
+	 * @param location
+	 *            The location to use.
 	 */
 	public PersistReader(final PersistenceLocation location) {
 		this.fileInput = location.createInputStream();
@@ -95,6 +97,36 @@ public class PersistReader {
 	public boolean advance(final String name) {
 		advanceObjectsCollection();
 		return advanceObjects(name);
+	}
+
+	private boolean advanceToTag(String tag) {
+		while (this.in.readToTag()) {
+			final Type type = this.in.getTag().getType();
+			if (type == Type.BEGIN) {
+
+				if (this.in.getTag().getName().equals(tag)) {
+					return true;
+				} else {
+					skipObject(this.in.getTag().getName());
+				}
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Obtain the Encog header from the file.
+	 * 
+	 * @return Name value pair map of the header attributes.
+	 */
+	public Map<String, String> readHeader() {
+		Map<String, String> headers = null;
+		if (advanceToTag("Document")) {
+			if (advanceToTag("Header")) {
+				headers = this.in.readPropertyBlock();
+			}
+		}
+		return headers;
 	}
 
 	/**
@@ -145,6 +177,7 @@ public class PersistReader {
 
 	/**
 	 * Build a directory entry list for the file.
+	 * 
 	 * @return A list of objects in the file.
 	 */
 	public Set<DirectoryEntry> buildDirectory() {
@@ -185,9 +218,12 @@ public class PersistReader {
 
 	/**
 	 * Copy all of the attributes to the writer.
-	 * @param out The XML writer.
-	 * @param replace A map of attributes to replace.  This allows
-	 * new values to be specified for select attributes.
+	 * 
+	 * @param out
+	 *            The XML writer.
+	 * @param replace
+	 *            A map of attributes to replace. This allows new values to be
+	 *            specified for select attributes.
 	 */
 	private void copyAttributes(final WriteXML out,
 			final Map<String, String> replace) {
@@ -201,15 +237,16 @@ public class PersistReader {
 	}
 
 	/**
-	 * Copy an XML object, no need to know what it contains, just
-	 * copy it.  This way we will not damage unknown objects during
-	 * a merge.
-	 * @param out The XML writer.
-	 * @param replace A map of attributes to replace.  This allows
-	 * new values to be specified for select attributes.
+	 * Copy an XML object, no need to know what it contains, just copy it. This
+	 * way we will not damage unknown objects during a merge.
+	 * 
+	 * @param out
+	 *            The XML writer.
+	 * @param replace
+	 *            A map of attributes to replace. This allows new values to be
+	 *            specified for select attributes.
 	 */
-	private void copyXML(final WriteXML out, 
-			final Map<String, String> replace) {
+	private void copyXML(final WriteXML out, final Map<String, String> replace) {
 		final StringBuilder text = new StringBuilder();
 		int depth = 0;
 		int ch;
@@ -255,7 +292,9 @@ public class PersistReader {
 
 	/**
 	 * Read until the next tag of the specified name.
-	 * @param name The name searched for.
+	 * 
+	 * @param name
+	 *            The name searched for.
 	 * @return True if the tag was found.
 	 */
 	public boolean readNextTag(final String name) {
@@ -275,7 +314,9 @@ public class PersistReader {
 
 	/**
 	 * Read all text until the specified ending tag is found.
-	 * @param name The tag.
+	 * 
+	 * @param name
+	 *            The tag.
 	 * @return The text found.
 	 */
 	public String readNextText(final String name) {
@@ -298,8 +339,7 @@ public class PersistReader {
 			final Persistor persistor = PersistorUtil
 					.createPersistor(objectType);
 			if (persistor == null) {
-				throw new PersistError(
-						"Do not know how to load: " + objectType);
+				throw new PersistError("Do not know how to load: " + objectType);
 			}
 			return persistor.load(this.in);
 		} else {
@@ -310,7 +350,9 @@ public class PersistReader {
 	/**
 	 * Read the value in a period delimited string. For example
 	 * property.name.value.
-	 * @param name The property to read.
+	 * 
+	 * @param name
+	 *            The property to read.
 	 * @return The value found at the specified property.
 	 */
 	public String readValue(final String name) {
@@ -329,10 +371,14 @@ public class PersistReader {
 	/**
 	 * Modify the properties of this object.
 	 * 
-	 * @param out The XML writer.
-	 * @param targetName The name of the object to change.
-	 * @param newName The new name of this object.
-	 * @param newDesc The new description of this object.
+	 * @param out
+	 *            The XML writer.
+	 * @param targetName
+	 *            The name of the object to change.
+	 * @param newName
+	 *            The new name of this object.
+	 * @param newDesc
+	 *            The new description of this object.
 	 */
 	public void saveModified(final WriteXML out, final String targetName,
 			final String newName, final String newDesc) {
@@ -344,8 +390,7 @@ public class PersistReader {
 				final String name = this.in.getTag().getAttributeValue(
 						PersistReader.ATTRIBUTE_NAME);
 				if (name.equals(targetName)) {
-					final Map<String, String> replace = 
-						new HashMap<String, String>();
+					final Map<String, String> replace = new HashMap<String, String>();
 					replace.put("name", newName);
 					replace.put("description", newDesc);
 					copyXML(out, replace);
@@ -384,7 +429,9 @@ public class PersistReader {
 
 	/**
 	 * Skip the specified object.
-	 * @param name The name of the object to skip.
+	 * 
+	 * @param name
+	 *            The name of the object to skip.
 	 */
 	private void skipObject(final String name) {
 		while (this.in.readToTag()) {

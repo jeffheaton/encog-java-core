@@ -29,9 +29,11 @@ package org.encog.persist;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.encog.Encog;
 import org.encog.persist.location.FilePersistence;
 import org.encog.persist.location.PersistenceLocation;
 import org.slf4j.Logger;
@@ -163,12 +165,12 @@ public class EncogPersistedCollection {
 	/**
 	 * The platform this collection was created on.
 	 */
-	private String platform;
+	private String platform = "Java";
 
 	/**
 	 * The version of the persisted file.
 	 */
-	private int fileVersion;
+	private int fileVersion = 1;
 
 	/**
 	 * Directory entries for all of the objects in the current file.
@@ -179,7 +181,8 @@ public class EncogPersistedCollection {
 	/**
 	 * The version of Encog.
 	 */
-	private String encogVersion;
+	private String encogVersion = 
+		Encog.getInstance().getProperties().get(Encog.ENCOG_VERSION);
 
 	/**
 	 * Create a persistance collection for the specified file.
@@ -246,10 +249,17 @@ public class EncogPersistedCollection {
 	}
 
 	/**
-	 * Build a directory of objects.
+	 * Build a directory of objects.  Also load the header information.
 	 */
 	public void buildDirectory() {
 		final PersistReader reader = new PersistReader(this.filePrimary);
+		Map<String,String> header = reader.readHeader();
+		if( header!=null )
+		{
+			this.fileVersion = Integer.parseInt(header.get("fileVersion"));
+			this.encogVersion = header.get("encogVersion");
+			this.platform = header.get("platform");
+		}
 		final Set<DirectoryEntry> d = reader.buildDirectory();
 		this.directory.clear();
 		this.directory.addAll(d);
