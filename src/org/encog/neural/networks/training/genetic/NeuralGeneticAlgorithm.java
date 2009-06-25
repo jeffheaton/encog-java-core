@@ -48,7 +48,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 * 
 	 * @author jheaton
 	 */
-	class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm<Double> {
+	public class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm<Double> {
 		/**
 		 * @return The error from the last iteration.
 		 */
