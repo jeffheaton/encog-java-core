@@ -88,6 +88,7 @@ public class TrainingSetNeuralGeneticAlgorithm extends NeuralGeneticAlgorithm {
 			getGenetic().setChromosome(i, c);
 		}
 		getGenetic().sortChromosomes();
+		getGenetic().defineCutLength();
 	}
 
 }
