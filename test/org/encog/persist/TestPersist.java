@@ -42,7 +42,7 @@ public class TestPersist extends TestCase {
 		encog.add("elman", net2);
 		
 		net1 = (BasicNetwork)encog.find("rbf");
-		net2 = (BasicNetwork)encog.find("rbf");
+		net2 = (BasicNetwork)encog.find("elman");
 		
 		Assert.assertNotNull(net1);
 		Assert.assertNotNull(net2);
