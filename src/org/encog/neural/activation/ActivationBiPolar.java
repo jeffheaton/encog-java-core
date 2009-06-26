@@ -50,7 +50,7 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Implements the activation function.  The array is modified according

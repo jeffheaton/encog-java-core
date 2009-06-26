@@ -84,7 +84,7 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * The logging object.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Which activation function to use for this layer.

@@ -64,7 +64,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	/**
 	 * The logging object.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The radial basis functions to use, there should be one for each neuron.

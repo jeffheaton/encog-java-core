@@ -60,7 +60,7 @@ public class ContextLayer extends BasicLayer {
 	/**
 	 * The logging object.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default

@@ -26,6 +26,7 @@
 
 package org.encog.neural.networks;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -46,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class NeuralStructure {
+public class NeuralStructure implements Serializable {
 	
 	/**
 	 * The layers in this neural network.
@@ -67,7 +68,7 @@ public class NeuralStructure {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a structure object for the specified network.

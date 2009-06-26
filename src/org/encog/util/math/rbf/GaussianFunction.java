@@ -26,6 +26,8 @@
 
 package org.encog.util.math.rbf;
 
+import java.io.Serializable;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class GaussianFunction implements RadialBasisFunction {
+public class GaussianFunction implements RadialBasisFunction, Serializable {
 
 	/**
 	 * The center of the RBF.
@@ -51,12 +53,6 @@ public class GaussianFunction implements RadialBasisFunction {
 	 * The width of the RBF.
 	 */
 	private final double width;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a Gaussian RBF with the specified center, peak and

@@ -48,7 +48,7 @@ public class ActivationSIN extends BasicActivationFunction {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	transient private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Implements the activation function.  The array is modified according

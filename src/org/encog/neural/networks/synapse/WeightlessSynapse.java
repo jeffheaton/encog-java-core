@@ -54,7 +54,7 @@ public class WeightlessSynapse extends BasicSynapse {
 	/**
 	 * The logging object.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Simple default constructor.

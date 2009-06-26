@@ -55,7 +55,7 @@ public class DirectSynapse extends BasicSynapse {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Simple default constructor.

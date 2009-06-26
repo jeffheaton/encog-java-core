@@ -48,7 +48,7 @@ public class ActivationTANH extends BasicActivationFunction {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Internal activation function that performs the TANH.

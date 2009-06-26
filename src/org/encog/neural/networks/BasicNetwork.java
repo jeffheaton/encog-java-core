@@ -96,7 +96,7 @@ public class BasicNetwork implements Serializable, Network {
 	/**
 	 * The logging object.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct an empty neural network.

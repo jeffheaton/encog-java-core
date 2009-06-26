@@ -54,7 +54,7 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Create a gaussian activation function.
