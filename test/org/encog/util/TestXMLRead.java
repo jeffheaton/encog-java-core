@@ -2,6 +2,9 @@ package org.encog.util;
 
 import java.io.ByteArrayInputStream;
 
+import org.encog.parse.tags.read.ReadXML;
+import org.junit.Assert;
+
 import junit.framework.TestCase;
 
 public class TestXMLRead extends TestCase {
@@ -10,38 +13,16 @@ public class TestXMLRead extends TestCase {
 	
 	public void testRead() throws Throwable
 	{
-		/*ByteArrayInputStream bos = new ByteArrayInputStream(TestXMLRead.XML.getBytes());
-		XMLRead read = new XMLRead(bos);
-		XMLElement element = read.get();
-		TestCase.assertEquals(null, element.getText());
-		
-		element = read.get();
-		TestCase.assertEquals("doc", element.getText());
-		
-		element = read.get();
-		TestCase.assertEquals("a", element.getText());
-		
-		element = read.get();
-		TestCase.assertEquals("a", element.getText());
-		
-		element = read.get();
-		TestCase.assertEquals("a", element.getText());
-
-		element = read.get();
-		TestCase.assertEquals("b", element.getText());
-
-		element = read.get();
-		TestCase.assertEquals("b", element.getText());
-
-		element = read.get();
-		TestCase.assertEquals("b", element.getText());
-
-		element = read.get();
-		TestCase.assertEquals("c", element.getText());
-
-		
-		
-		bos.close();*/
+		ByteArrayInputStream bos = new ByteArrayInputStream(TestXMLRead.XML.getBytes());
+		ReadXML read = new ReadXML(bos);
+		Assert.assertEquals(0,read.read());
+		Assert.assertTrue(read.is("doc", true));
+		Assert.assertEquals(0,read.read());
+		Assert.assertTrue(read.is("a", true));
+		Assert.assertEquals('a',read.read());
+		Assert.assertEquals(0,read.read());
+		Assert.assertTrue(read.is("a", false));
+		bos.close();
 	}
 
 }
