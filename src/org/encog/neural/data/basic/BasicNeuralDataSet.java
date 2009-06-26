@@ -25,6 +25,7 @@
  */
 package org.encog.neural.data.basic;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -40,14 +41,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Basic implementation of the NeuralDataSet class. This class simply stores the
  * neural data in an ArrayList. This class is memory based, so large enough
  * datasets could cause memory issues. Many other dataset types extend this
  * class.
  * 
  * @author jheaton
  */
-public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
+public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject , Serializable {
 
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
@@ -104,7 +104,7 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject {
 	/**
 	 * The logging object.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The data held by this object.

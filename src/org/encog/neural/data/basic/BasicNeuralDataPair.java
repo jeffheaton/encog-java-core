@@ -25,6 +25,8 @@
  */
 package org.encog.neural.data.basic;
 
+import java.io.Serializable;
+
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.slf4j.Logger;
@@ -42,7 +44,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class BasicNeuralDataPair implements NeuralDataPair {
+public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 
 	/**
 	 * The the expected output from the neural network, or null for unsupervised
@@ -59,7 +61,7 @@ public class BasicNeuralDataPair implements NeuralDataPair {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct the object with only input. If this constructor is used, then
