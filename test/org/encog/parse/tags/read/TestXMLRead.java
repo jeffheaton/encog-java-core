@@ -1,4 +1,4 @@
-package org.encog.util;
+package org.encog.parse.tags.read;
 
 import java.io.ByteArrayInputStream;
 
