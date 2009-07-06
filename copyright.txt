@@ -21,6 +21,10 @@ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 
 The following people have contributed to this project:
+(email addresses displayed(or not displayed) at request of contributor)
 
-Jeff Heaton (jeffheaton@yahoo.com, http://www.jeffheaton.com)
+Jeff Heaton (http://www.jeffheaton.com)
 Initial versions of all areas of Encog.
+
+Seema Singh (seemasingh8614@yahoo.com)
+Bug fixing for 2.0, initial version of benchmark utility.
