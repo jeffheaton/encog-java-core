@@ -43,7 +43,7 @@ public final class Encog {
 	/**
 	 * The current engog version, this should be read from the properties.
 	 */
-	public static final String VERSION = "2.0.0";
+	public static final String VERSION = "2.1.0";
 	
 	/**
 	 * The current engog file version, this should be read from the properties.
@@ -63,7 +63,7 @@ public final class Encog {
 
 	/**
 	 * The encog file version. This determines of an encog file can be read.
-	 * This is simply an integer, that started with zero and is incramented each
+	 * This is simply an integer, that started with zero and is incremented each
 	 * time the format of the encog data file changes.
 	 */
 	public static final String ENCOG_FILE_VERSION = "encog.file.version";
