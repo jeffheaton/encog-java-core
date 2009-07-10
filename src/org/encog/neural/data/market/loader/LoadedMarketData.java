@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton 
  */
-public class LoadedMarketData {
+public class LoadedMarketData implements Comparable<LoadedMarketData> {
 
 	/**
 	 * When was this data sample taken.
@@ -112,5 +112,14 @@ public class LoadedMarketData {
 	 */
 	public void setData(final MarketDataType type, final double data) {
 		this.data.put(type, data);
+	}
+
+	/**
+	 * Allow market data to be sorted. Sort by date.
+	 * @param The other market data to compare to.
+	 * @return 0 if equal.
+	 */
+	public int compareTo(LoadedMarketData other) {
+		return this.getWhen().compareTo(other.getWhen());
 	}
 }
