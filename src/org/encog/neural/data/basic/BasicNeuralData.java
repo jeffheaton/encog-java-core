@@ -146,4 +146,23 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	public NeuralData clone() {
 		return new BasicNeuralData(this);
 	}
+
+	
+	/**
+	 * Add a value to the specified index.
+	 * @param index The index to add to.
+	 * @param value The value to add.
+	 */
+	public void add(int index, double value) {
+		this.data[index]+=value;		
+	}
+
+	/**
+	 * Set all data to zero.
+	 */
+	public void clear() {
+		for(int i=0;i<this.data.length;i++) {
+			this.data[i] = 0;
+		}		
+	}
 }

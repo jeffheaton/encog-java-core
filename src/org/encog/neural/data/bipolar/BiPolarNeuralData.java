@@ -29,6 +29,7 @@ import java.io.Serializable;
 
 import org.encog.matrix.BiPolarUtil;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -164,5 +165,24 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	 */
 	public int size() {
 		return this.data.length;
+	}
+	
+	/**
+	 * This will throw an error, as "add" is not supported for bipolar.
+	 * @param index Not used.
+	 * @param value Not used.
+	 */
+	public void add(int index, double value) {
+		throw new NeuralDataError("Add is not supported for bipolar data.");	
+	}
+
+	/**
+	 * Set all data to false.
+	 */
+	public void clear() {
+		for(int i=0;i<this.data.length;i++) {
+			this.data[i] = false;
+		}
+		
 	}
 }

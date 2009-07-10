@@ -64,8 +64,20 @@ public interface NeuralData extends Cloneable {
 	
 	/**
 	 * Clone this object.
-	 * @return A clonned version of this object.
+	 * @return A cloned version of this object.
 	 */
 	NeuralData clone();
+	
+	/**
+	 * Add a value to the specified index.
+	 * @param index The index to add to.
+	 * @param value The value to add.
+	 */
+	void add(int index,double value);
+	
+	/**
+	 * Clear any data to zero.
+	 */
+	public void clear();
 	
 }
