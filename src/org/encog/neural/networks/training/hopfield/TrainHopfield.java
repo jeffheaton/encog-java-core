@@ -76,14 +76,14 @@ public class TrainHopfield extends BasicTraining {
 	/**
 	 * Update the Hopfield weights after training.
 	 * @param target The target synapse.
-	 * @param delta The amoun to change the weights by.
+	 * @param delta The amount to change the weights by.
 	 */
 	private void convertHopfieldMatrix(final Synapse target, 
 			final Matrix delta) {
 		// add the new weight matrix to what is there already
 		for (int row = 0; row < delta.getRows(); row++) {
 			for (int col = 0; col < delta.getRows(); col++) {
-				target.getMatrix().set(row, col, delta.get(row, col));
+				target.getMatrix().add(row, col, delta.get(row, col));
 			}
 		}
 	}
