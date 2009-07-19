@@ -174,6 +174,35 @@ public class HopfieldHolder {
 		}
 	}
 	
+	public int runUntilStable(int max)
+	{
+		boolean done = false;
+		String lastStateStr = this.currentState.toString();
+		String currentStateStr = this.currentState.toString();
+		
+		int cycle = 0;
+		do
+		{
+			run();
+			cycle++;
+			
+			lastStateStr = this.currentState.toString();
+			
+			if( !currentStateStr.equals(lastStateStr) )
+			{
+				if( cycle>max )
+					done = true;
+			}
+			else
+				done = true;
+			
+			currentStateStr = lastStateStr;
+			
+		} while( !done );
+		
+		return cycle;
+	}
+	
 	/**
 	 * @return The current state of the network.
 	 */

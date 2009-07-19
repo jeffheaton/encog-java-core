@@ -185,4 +185,24 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 		}
 		
 	}
+	
+	/**
+	 * @return This object as a string.
+	 */
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
+		result.append('[');
+		for (int i = 0; i < this.size(); i++) {
+			if (this.getData(i)>0) {
+				result.append("T");
+			} else {
+				result.append("F");
+			}
+			if (i != this.size() - 1) {
+				result.append(",");
+			}
+		}
+		result.append(']');
+		return (result.toString());
+	}
 }
