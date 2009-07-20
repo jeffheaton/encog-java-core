@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.market.loader.LoadedMarketData;
 import org.encog.neural.data.market.loader.MarketLoader;
 import org.encog.neural.data.temporal.TemporalDataDescription;
@@ -215,6 +216,11 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 
 			loadPointFromMarketData(ticker, point, item);
 		}
+	}
+
+	public NeuralData generateInputForPrediction(Date date) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
