@@ -58,4 +58,17 @@ public class NeuralDataMapping {
 	public void setTo(NeuralData to) {
 		this.to = to;
 	}
+	
+	public static void copy(NeuralDataMapping source, NeuralDataMapping target)
+	{
+		for(int i=0;i<source.getFrom().size();i++)
+		{
+			target.getFrom().setData(i,source.getFrom().getData(i));
+		}
+		
+		for(int i=0;i<source.getTo().size();i++)
+		{
+			target.getTo().setData(i,source.getTo().getData(i));
+		}
+	}
 }
