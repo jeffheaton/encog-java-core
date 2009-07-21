@@ -110,25 +110,34 @@ public class BAMHolder {
 	public BasicNetwork getNetwork() {
 		return network;
 	}
+	
+	private double getWeight(Synapse synapse, NeuralData input, int x,int y)
+	{
+		if( synapse.getFromNeuronCount()!=input.size())
+			return synapse.getMatrix().get(x, y);
+		else
+			return synapse.getMatrix().get(y, x);
+	}
 
-	private boolean propagateLayer(Synapse synapse, NeuralData input, NeuralData output) {
+	private boolean propagateLayer(Synapse synapse, NeuralData input,
+			NeuralData output) {
 		int i, j;
 		int sum, out = 0;
 		boolean stable;
 
 		stable = true;
 
-		for (i = 0; i < synapse.getToNeuronCount(); i++) {
+		for (i = 0; i < output.size(); i++) {
 			sum = 0;
-			for (j = 0; j < synapse.getFromNeuronCount(); j++) {
-				sum += synapse.getMatrix().get(j,i) * input.getData(j);
+			for (j = 0; j < input.size(); j++) {
+				sum += getWeight(synapse,input,i,j) * input.getData(j);
 			}
 			if (sum != 0) {
 				if (sum < 0)
 					out = -1;
 				else
 					out = 1;
-				if (out != (int)output.getData(i)) {
+				if (out != (int) output.getData(i)) {
 					stable = false;
 					output.setData(i, out);
 				}
@@ -136,23 +145,19 @@ public class BAMHolder {
 		}
 		return stable;
 	}
-	
-	private NeuralDataMapping duplicateMapping(NeuralDataMapping mapping)
-	{
-		return new NeuralDataMapping(
-				new BiPolarNeuralData(mapping.getFrom().size()),
-				new BiPolarNeuralData(mapping.getTo().size()));
-	}
 
 	public NeuralDataMapping compute(NeuralDataMapping input) {
-		
-			
-		boolean stable1, stable2;
+
+		boolean stable1 = true, stable2 = true;
 
 		do {
-			stable1 = propagateLayer(this.synapseInputToOutput, input.getFrom(),input.getTo());
-			stable2 = propagateLayer(this.synapseOutputToInput, input.getTo(),input.getFrom());
-			//NeuralDataMapping.copy(output, currentInput);
+			
+				stable1 = propagateLayer(this.synapseInputToOutput,
+						input.getFrom(), input.getTo());
+				stable2 = propagateLayer(this.synapseOutputToInput, input.getTo(),
+						input.getFrom());
+
+			
 		} while (!stable1 && !stable2);
 		return null;
 	}
