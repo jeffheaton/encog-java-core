@@ -52,27 +52,8 @@ import org.encog.neural.networks.synapse.Synapse;
  * a pattern.
  *
  */
-public class HopfieldHolder {
+public class HopfieldHolder extends ThermalNetworkHolder {
 	
-	/**
-	 * The Hopfield neural network.
-	 */
-	private final BasicNetwork network;
-	
-	/**
-	 * The Hopfield layer that is to be used.
-	 */
-	private final BasicLayer hopfieldLayer;
-	
-	/**
-	 * The Hopfield layer's single self-connected synapse.
-	 */
-	private final Synapse hopfieldSynapse;
-	
-	/**
-	 * The current state of the Hopfield network.
-	 */
-	private final BiPolarNeuralData currentState;
 	
 	/**
 	 * Construct a Hopfield network with the specified number of
@@ -81,44 +62,9 @@ public class HopfieldHolder {
 	 */
 	public HopfieldHolder(int neuronCount)
 	{
-		// construct the network
-		this.network = new BasicNetwork();
-		this.network.addLayer(hopfieldLayer = new BasicLayer(new ActivationBiPolar(), false, neuronCount ));
-		this.hopfieldLayer.addNext(this.hopfieldLayer);
-		this.network.getStructure().finalizeStructure();
-				
-		// hold references to parts of the network we will need later
-		this.hopfieldSynapse = this.hopfieldLayer.getNext().get(0);
-		this.currentState = new BiPolarNeuralData(neuronCount);
-		
+		super(neuronCount,false);
 	}
 	
-	/**
-	 * @return Get the neuron count for the network.
-	 */
-	public int getNeuronCount()
-	{
-		return this.hopfieldLayer.getNeuronCount();
-	}
-	
-	/**
-	 * @return Calculate the current energy for the network.  The 
-	 * network will seek to lower this value.
-	 */
-	public double calculateEnergy()
-    {
-        double tempE = 0;
-        int neuronCount = getNeuronCount();
-        
-        for (int i = 0; i < neuronCount; i++)
-            for (int j = 0; j < neuronCount; j++)
-                if (i != j)
-                    tempE += this.hopfieldSynapse.getMatrix().get(i, j) 
-                    * this.currentState.getData(i) 
-                    * this.currentState.getData(j);
-        return -1 * tempE / 2;
-        
-    }
 	
 	/**
 	 * Train the neural network for the specified pattern. The neural network
@@ -156,7 +102,7 @@ public class HopfieldHolder {
 		// add the new weight matrix to what is there already
 		for (int row = 0; row < delta.getRows(); row++) {
 			for (int col = 0; col < delta.getRows(); col++) {
-				this.hopfieldSynapse.getMatrix().add(
+				this.getThermalSynapse().getMatrix().add(
 						row, col, delta.get(row, col));
 			}
 		}
@@ -167,18 +113,18 @@ public class HopfieldHolder {
 	 */
 	public void run()
 	{
-		NeuralData temp = this.network.compute(this.currentState);
+		NeuralData temp = this.getNetwork().compute(this.getCurrentState());
 		for(int i=0;i<temp.size();i++)
 		{
-			this.currentState.setData(i, temp.getData(i)>0 );
+			this.getCurrentState().setData(i, temp.getData(i)>0 );
 		}
 	}
 	
 	public int runUntilStable(int max)
 	{
 		boolean done = false;
-		String lastStateStr = this.currentState.toString();
-		String currentStateStr = this.currentState.toString();
+		String lastStateStr = this.getCurrentState().toString();
+		String currentStateStr = this.getCurrentState().toString();
 		
 		int cycle = 0;
 		do
@@ -186,7 +132,7 @@ public class HopfieldHolder {
 			run();
 			cycle++;
 			
-			lastStateStr = this.currentState.toString();
+			lastStateStr = this.getCurrentState().toString();
 			
 			if( !currentStateStr.equals(lastStateStr) )
 			{
@@ -201,50 +147,5 @@ public class HopfieldHolder {
 		} while( !done );
 		
 		return cycle;
-	}
-	
-	/**
-	 * @return The current state of the network.
-	 */
-	public NeuralData getCurrentState() {
-		return currentState;
-	}
-
-	/**
-	 * Clear any connection weights.
-	 */
-	public void clear()
-	{
-		this.hopfieldSynapse.getMatrix().clear();
-	}
-
-	/**
-	 * @return The Hopfield network.
-	 */
-	public BasicNetwork getNetwork() {
-		return network;
-	}
-
-	/**
-	 * @return The Hopfield layer.
-	 */
-	public BasicLayer getHopfieldLayer() {
-		return hopfieldLayer;
-	}
-
-	/**
-	 * @return The Hopfield synapse.
-	 */
-	public Synapse getHopfieldSynapse() {
-		return hopfieldSynapse;
-	}
-
-	/**
-	 * @param state The current state for the network.
-	 */
-	public void setCurrentState(BiPolarNeuralData state) {
-		for(int i=0;i<state.size();i++) {
-			this.currentState.setData(i, state.getData(i));
-		}
 	}
 }
