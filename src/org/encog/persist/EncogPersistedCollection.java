@@ -210,7 +210,14 @@ public class EncogPersistedCollection {
 			this.fileTemp = new FilePersistence(new File(f));
 
 			if (this.filePrimary.exists()) {
-				buildDirectory();
+				try
+				{
+					buildDirectory();
+				}
+				catch(PersistError e)
+				{
+					create();
+				}
 			} else {
 				create();
 			}
@@ -252,18 +259,27 @@ public class EncogPersistedCollection {
 	 * Build a directory of objects.  Also load the header information.
 	 */
 	public void buildDirectory() {
-		final PersistReader reader = new PersistReader(this.filePrimary);
-		Map<String,String> header = reader.readHeader();
-		if( header!=null )
-		{
-			this.fileVersion = Integer.parseInt(header.get("fileVersion"));
-			this.encogVersion = header.get("encogVersion");
-			this.platform = header.get("platform");
+		PersistReader reader = null;
+		
+		try {
+			reader = new PersistReader(this.filePrimary);
+			Map<String,String> header = reader.readHeader();
+			if( header!=null )
+			{
+				this.fileVersion = Integer.parseInt(header.get("fileVersion"));
+				this.encogVersion = header.get("encogVersion");
+				this.platform = header.get("platform");
+			}
+			final Set<DirectoryEntry> d = reader.buildDirectory();
+			this.directory.clear();
+			this.directory.addAll(d);		
 		}
-		final Set<DirectoryEntry> d = reader.buildDirectory();
-		this.directory.clear();
-		this.directory.addAll(d);
-		reader.close();
+		finally
+		{
+			if( reader!=null ) {
+				reader.close();	
+			}
+		}
 	}
 
 	/**
