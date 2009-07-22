@@ -28,8 +28,6 @@ package org.encog.neural.activation;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationSigmoidPersistor;
 import org.encog.util.math.BoundMath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The sigmoid activation function takes on a sigmoidal shape. Only positive
@@ -41,12 +39,6 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 5622349801036468572L;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Implements the activation function.  The array is modified according

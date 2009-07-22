@@ -28,8 +28,6 @@ package org.encog.neural.activation;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationTANHPersistor;
 import org.encog.util.math.BoundMath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The hyperbolic tangent activation function takes the curved shape of the
@@ -43,12 +41,6 @@ public class ActivationTANH extends BasicActivationFunction {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Internal activation function that performs the TANH.

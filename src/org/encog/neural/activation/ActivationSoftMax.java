@@ -30,8 +30,6 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationSoftMaxPersistor;
 import org.encog.util.math.BoundMath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The softmax activation function.
@@ -45,11 +43,6 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -960489243250457611L;
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Implements the activation function.  The array is modified according

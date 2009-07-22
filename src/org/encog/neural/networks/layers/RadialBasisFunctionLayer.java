@@ -64,7 +64,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	/**
 	 * The logging object.
 	 */
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient final static Logger logger = LoggerFactory.getLogger(RadialBasisFunctionLayer.class);
 
 	/**
 	 * The radial basis functions to use, there should be one for each neuron.
@@ -106,8 +106,8 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 			if (this.radialBasisFunction[i] == null) {
 				final String str =
 			"Error, must define radial functions for each neuron";
-				if (this.logger.isErrorEnabled()) {
-					this.logger.error(str);
+				if (RadialBasisFunctionLayer.logger.isErrorEnabled()) {
+					RadialBasisFunctionLayer.logger.error(str);
 				}
 				throw new NeuralNetworkError(str);
 			}
@@ -147,8 +147,8 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 			"Should never call getActivationFunction on " 
 			+ "RadialBasisFunctionLayer, this layer has a compound " 
 			+ "activation function setup.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
+		if (RadialBasisFunctionLayer.logger.isErrorEnabled()) {
+			RadialBasisFunctionLayer.logger.error(str);
 		}
 		throw new NeuralNetworkError(str);
 	}

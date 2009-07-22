@@ -29,8 +29,6 @@ package org.encog.neural.activation;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationLOGPersistor;
 import org.encog.util.math.BoundMath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An activation function based on the logarithm function.
@@ -44,11 +42,6 @@ public class ActivationLOG extends BasicActivationFunction {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 7134233791725797522L;
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Implements the activation function.  The array is modified according

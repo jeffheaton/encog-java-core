@@ -29,8 +29,6 @@ package org.encog.neural.activation;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationSINPersistor;
 import org.encog.util.math.BoundMath;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An activation function based on the sin function.
@@ -44,12 +42,6 @@ public class ActivationSIN extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 5301501177778271284L;
 	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	transient private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	/**
 	 * Implements the activation function.  The array is modified according
 	 * to the activation function being used.  See the class description

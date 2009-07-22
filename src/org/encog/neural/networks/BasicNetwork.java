@@ -96,7 +96,7 @@ public class BasicNetwork implements Serializable, Network {
 	/**
 	 * The logging object.
 	 */
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient static final Logger logger = LoggerFactory.getLogger(BasicNetwork.class);
 
 	/**
 	 * Construct an empty neural network.
@@ -185,8 +185,8 @@ public class BasicNetwork implements Serializable, Network {
 					+ " for input layer size="
 					+ this.inputLayer.getNeuronCount();
 
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
+			if (BasicNetwork.logger.isErrorEnabled()) {
+				BasicNetwork.logger.error(str);
 			}
 
 			throw new NeuralNetworkError(str);
@@ -292,8 +292,8 @@ public class BasicNetwork implements Serializable, Network {
 			final NeuralOutputHolder useHolder) {
 		NeuralOutputHolder holder;
 
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Pattern {} presented to neural network", input);
+		if (BasicNetwork.logger.isDebugEnabled()) {
+			BasicNetwork.logger.debug("Pattern {} presented to neural network", input);
 		}
 
 		if (useHolder == null) {
@@ -319,16 +319,16 @@ public class BasicNetwork implements Serializable, Network {
 	private void compute(final NeuralOutputHolder holder, final Layer layer,
 			final NeuralData input, final Synapse source) {
 
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Processing layer: {}, input= {}", layer, input);
+		if (BasicNetwork.logger.isDebugEnabled()) {
+			BasicNetwork.logger.debug("Processing layer: {}, input= {}", layer, input);
 		}
 
 		handleRecurrentInput(layer, input, source);
 
 		for (final Synapse synapse : layer.getNext()) {
 			if (!holder.getResult().containsKey(synapse)) {
-				if (this.logger.isDebugEnabled()) {
-					this.logger.debug("Processing synapse: {}", synapse);
+				if (BasicNetwork.logger.isDebugEnabled()) {
+					BasicNetwork.logger.debug("Processing synapse: {}", synapse);
 				}
 				NeuralData pattern = synapse.compute(input);
 				pattern = synapse.getToLayer().compute(pattern);
@@ -470,8 +470,8 @@ public class BasicNetwork implements Serializable, Network {
 		for (final Synapse synapse 
 				: this.structure.getPreviousSynapses(layer)) {
 			if (synapse != source) {
-				if (this.logger.isDebugEnabled()) {
-					this.logger.debug("Recurrent layer from: {}", input);
+				if (BasicNetwork.logger.isDebugEnabled()) {
+					BasicNetwork.logger.debug("Recurrent layer from: {}", input);
 				}
 				final NeuralData recurrentInput = synapse.getFromLayer()
 						.recur();
@@ -485,8 +485,8 @@ public class BasicNetwork implements Serializable, Network {
 								+ recurrentOutput.getData(i));
 					}
 
-					if (this.logger.isDebugEnabled()) {
-						this.logger.debug("Recurrent layer to: {}", input);
+					if (BasicNetwork.logger.isDebugEnabled()) {
+						BasicNetwork.logger.debug("Recurrent layer to: {}", input);
 					}
 				}
 			}

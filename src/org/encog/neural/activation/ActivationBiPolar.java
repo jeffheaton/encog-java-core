@@ -29,8 +29,6 @@ package org.encog.neural.activation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationBiPolarPersistor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * BiPolar activation function. This will scale the neural data into the bipolar
@@ -46,12 +44,6 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
 	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	/**
 	 * Implements the activation function.  The array is modified according
 	 * to the activation function being used.  See the class description

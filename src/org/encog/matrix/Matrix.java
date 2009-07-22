@@ -76,8 +76,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient static final Logger logger = LoggerFactory.getLogger(Matrix.class);
 
 	/**
 	 * The name of this object.
@@ -223,8 +222,8 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 		if (precision < 0) {
 			final String str = "Precision can't be a negative number.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
+			if (Matrix.logger.isErrorEnabled()) {
+				Matrix.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
@@ -233,8 +232,8 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
 			final String str = "Precision of " + precision
 					+ " decimal places is not supported.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
+			if (Matrix.logger.isErrorEnabled()) {
+				Matrix.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
@@ -299,8 +298,8 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		if (col > getCols()) {
 			final String str = "Can't get column #" + col
 					+ " because it does not exist.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
+			if (Matrix.logger.isErrorEnabled()) {
+				Matrix.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
@@ -348,8 +347,8 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		if (row > getRows()) {
 			final String str = "Can't get row #" + row
 					+ " because it does not exist.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
+			if (Matrix.logger.isErrorEnabled()) {
+				Matrix.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
@@ -546,8 +545,8 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		if ((row >= getRows()) || (row < 0)) {
 			final String str = "The row:" + row + " is out of range:"
 					+ getRows();
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
+			if (Matrix.logger.isErrorEnabled()) {
+				Matrix.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}
@@ -555,8 +554,8 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		if ((col >= getCols()) || (col < 0)) {
 			final String str = "The col:" + col + " is out of range:"
 					+ getCols();
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
+			if (Matrix.logger.isErrorEnabled()) {
+				Matrix.logger.error(str);
 			}
 			throw new MatrixError(str);
 		}

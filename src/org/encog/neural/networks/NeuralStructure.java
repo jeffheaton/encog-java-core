@@ -68,7 +68,7 @@ public class NeuralStructure implements Serializable {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient static final Logger logger = LoggerFactory.getLogger(NeuralStructure.class);
 
 	/**
 	 * Construct a structure object for the specified network.

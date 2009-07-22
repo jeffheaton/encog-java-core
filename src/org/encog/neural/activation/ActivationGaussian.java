@@ -29,8 +29,6 @@ package org.encog.neural.activation;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationGaussianPersistor;
 import org.encog.util.math.rbf.GaussianFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An activation function based on the gaussian function.
@@ -49,12 +47,6 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 * The gaussian function to be used.
 	 */
 	private final GaussianFunction gausian;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Create a gaussian activation function.

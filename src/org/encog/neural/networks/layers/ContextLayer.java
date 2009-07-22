@@ -60,7 +60,7 @@ public class ContextLayer extends BasicLayer {
 	/**
 	 * The logging object.
 	 */
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private transient static final Logger logger = LoggerFactory.getLogger(ContextLayer.class);
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default
@@ -128,8 +128,8 @@ public class ContextLayer extends BasicLayer {
 			this.context.setData(i, pattern.getData(i));
 		}
 
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Updated ContextLayer to {}", pattern);
+		if (ContextLayer.logger.isDebugEnabled()) {
+			ContextLayer.logger.debug("Updated ContextLayer to {}", pattern);
 		}
 	}
 
