@@ -27,12 +27,8 @@ package org.encog.util.network;
 
 import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
-import org.encog.neural.activation.ActivationBiPolar;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.synapse.Synapse;
 
 /**
  * This class holds a Hopfield network.  It provides tools to be used with
@@ -63,6 +59,15 @@ public class HopfieldHolder extends ThermalNetworkHolder {
 	public HopfieldHolder(int neuronCount)
 	{
 		super(neuronCount,false);
+	}
+	
+	/**
+	 * Construct the holder from an already existing network.
+	 * @param network The network to use.
+	 */
+	public HopfieldHolder(BasicNetwork network)
+	{
+		super(network);
 	}
 	
 	
@@ -120,6 +125,12 @@ public class HopfieldHolder extends ThermalNetworkHolder {
 		}
 	}
 	
+	/**
+	 * Run the network until it becomes stable and does not change from
+	 * more runs.
+	 * @param max The maximum number of cycles to run before giving up.
+	 * @return The number of cycles that were run.
+	 */
 	public int runUntilStable(int max)
 	{
 		boolean done = false;

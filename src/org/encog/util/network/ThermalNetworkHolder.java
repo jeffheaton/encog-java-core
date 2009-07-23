@@ -4,6 +4,7 @@ import org.encog.neural.activation.ActivationBiPolar;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 
 /*
@@ -41,7 +42,7 @@ public class ThermalNetworkHolder {
 	/**
 	 * The thermal layer that is to be used.
 	 */
-	private final BasicLayer thermalLayer;
+	private final Layer thermalLayer;
 	
 	/**
 	 * The thermal layer's single self-connected synapse.
@@ -64,6 +65,18 @@ public class ThermalNetworkHolder {
 		// hold references to parts of the network we will need later
 		this.thermalSynapse = this.thermalLayer.getNext().get(0);
 		this.currentState = new BiPolarNeuralData(neuronCount);		
+	}
+	
+	/**
+	 * Construct the holder from an already existing network.
+	 * @param network The network to use.
+	 */
+	public ThermalNetworkHolder(BasicNetwork network)
+	{
+		this.network = network;
+		this.currentState = new BiPolarNeuralData(network.getInputLayer().getNeuronCount());
+		this.thermalSynapse = this.thermalLayer.getNext().get(0);
+		this.thermalLayer = this.network.getInputLayer();
 	}
 	
 	/**
@@ -111,18 +124,30 @@ public class ThermalNetworkHolder {
 	}
 
 
+	/**
+	 * @return The network that this holder is using.
+	 */
 	public BasicNetwork getNetwork() {
 		return network;
 	}
 
-	public BasicLayer getThermalLayer() {
+	/**
+	 * @return The main thermal layer.
+	 */
+	public Layer getThermalLayer() {
 		return thermalLayer;
 	}
 
+	/**
+	 * @return The thermal synapse.
+	 */
 	public Synapse getThermalSynapse() {
 		return thermalSynapse;
 	}
 
+	/**
+	 * @return The current state of the network.
+	 */
 	public BiPolarNeuralData getCurrentState() {
 		return currentState;
 	}

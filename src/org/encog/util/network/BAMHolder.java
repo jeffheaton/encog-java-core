@@ -27,10 +27,10 @@ package org.encog.util.network;
 
 import org.encog.neural.activation.ActivationBiPolar;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralDataMapping;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 
@@ -44,12 +44,12 @@ public class BAMHolder {
 	/**
 	 * The input layer.
 	 */
-	private final BasicLayer inputLayer;
+	private final Layer inputLayer;
 
 	/**
 	 * The output layer.
 	 */
-	private final BasicLayer outputLayer;
+	private final Layer outputLayer;
 
 	private final Synapse synapseInputToOutput;
 	private final Synapse synapseOutputToInput;
@@ -70,6 +70,19 @@ public class BAMHolder {
 		this.network.getStructure().finalizeStructure();
 		this.network.setInputLayer(this.inputLayer);
 		this.network.setOutputLayer(this.outputLayer);
+	}
+	
+	/**
+	 * Construct the holder from an already existing network.
+	 * @param network The network to use.
+	 */
+	public BAMHolder(BasicNetwork network)
+	{
+		this.network = network;
+		this.inputLayer = network.getInputLayer();
+		this.outputLayer = network.getOutputLayer();
+		this.synapseInputToOutput = network.getInputLayer().getNext().get(0);
+		this.synapseOutputToInput = network.getOutputLayer().getNext().get(0);
 	}
 
 	public int getInputNeurons() {
