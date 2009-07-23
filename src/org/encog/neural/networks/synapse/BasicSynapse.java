@@ -56,12 +56,6 @@ public abstract class BasicSynapse implements Synapse {
 	private Layer toLayer;
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * @return A clone of this object.
 	 */
 	@Override
