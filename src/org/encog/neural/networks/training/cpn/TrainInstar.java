@@ -1,17 +1,11 @@
 package org.encog.neural.networks.training.cpn;
 
-import java.util.Collection;
-
-import org.encog.neural.activation.ActivationCompetitive;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.neural.networks.training.TrainingError;
 
 public class TrainInstar extends BasicTraining implements LearningRate {
 
@@ -40,8 +34,9 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 		{
 			for(int i=0;i<this.parts.getInstarSynapse().getFromNeuronCount();i++)
 			{
-				this.parts.getInstarSynapse().getMatrix().set(j++,i,pair.getInput().getData(j));
+				this.parts.getInstarSynapse().getMatrix().set(i,j,pair.getInput().getData(j));
 			}
+			j++;
 		}
 		
 		this.mustInit = false;

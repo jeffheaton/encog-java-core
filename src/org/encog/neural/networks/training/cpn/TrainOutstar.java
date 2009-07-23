@@ -37,12 +37,12 @@ public class TrainOutstar  extends BasicTraining implements LearningRate  {
 	
 	private void initWeight()
 	{
-		int i = 0;
-		for(NeuralDataPair pair: this.training)
-		{
-			for (int j=0; j<this.parts.getOutstarSynapse().getFromNeuronCount(); j++) {
-				this.parts.getOutstarSynapse().getMatrix().set(j,i++,pair.getIdeal().getData(j));
-			    }
+		for (int j=0; j<this.parts.getOutstarLayer().getNeuronCount(); j++) {
+			int i = 0;
+			for(NeuralDataPair pair: this.training)
+			{
+				this.parts.getOutstarSynapse().getMatrix().set(i++,j,pair.getIdeal().getData(j));
+			}
 		}
 		this.mustInit = false;
 	}

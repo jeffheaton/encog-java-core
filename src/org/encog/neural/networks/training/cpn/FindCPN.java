@@ -22,8 +22,8 @@ public class FindCPN {
 		
 		this.inputLayer = network.getInputLayer();
 		this.outstarLayer = network.getOutputLayer();
-		
-		this.instarSynapse = this.instarLayer.getNext().iterator().next();
+		this.instarLayer = this.inputLayer.getNext().iterator().next().getToLayer();
+		this.instarSynapse = this.inputLayer.getNext().iterator().next();
 		this.outstarSynapse = this.instarLayer.getNext().iterator().next();
 	}
 
