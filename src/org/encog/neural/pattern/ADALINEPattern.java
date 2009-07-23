@@ -25,34 +25,27 @@
  */
 package org.encog.neural.pattern;
 
-import org.encog.neural.activation.ActivationBiPolar;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Construct a Bidirectional Access Memory (BAM) neural network.  This
- * neural network type learns to associate one pattern with another.  The
- * two patterns do not need to be of the same length.  This network has two 
- * that are connected to each other.  Though they are labeled as input and
- * output layers to Encog, they are both equal, and should simply be thought
- * of as the two layers that make up the net.
- *
+ * Construct an adaline neural network.
  */
-public class BAMPattern implements NeuralNetworkPattern {
+public class ADALINEPattern  implements NeuralNetworkPattern {
 
 	/**
-	 * The number of neurons in the first layer.
+	 * The number of neurons in the input layer.
 	 */
 	private int inputNeurons;
 	
 	/**
-	 * The number of neurons in the second layer.
+	 * The number of neurons in the output layer.
 	 */
 	private int outputNeurons;
 	
@@ -61,45 +54,42 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
-
+	
 	/**
-	 * Unused, a BAM has no hidden layers.
-	 * @param count Not used.
+	 * Not used, the ADALINE has no hidden layers, this will throw an error.
 	 */
 	public void addHiddenLayer(int count) {
-		final String str = "A BAM network has no hidden layers.";
+		final String str = "An ADALINE network has no hidden layers.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
-		throw new PatternError(str);		
-	}
-
-	/**
-	 * Clear any settings on the pattern.
-	 */
-	public void clear() {
-		this.inputNeurons = this.outputNeurons = 0;
+		throw new PatternError(str);	
 		
 	}
 
 	/**
-	 * @return The generated network.
+	 * Clear out any parameters.
+	 */
+	public void clear() {
+		this.inputNeurons = this.outputNeurons = 0;		
+	}
+
+	/**
+	 * Generate the network.
+	 * @param The generated network.
 	 */
 	public BasicNetwork generate() {
 		BasicNetwork network = new BasicNetwork();
-		Layer inputLayer = new BasicLayer(new ActivationBiPolar(), false,
-				inputNeurons);
-		Layer outputLayer = new BasicLayer(new ActivationBiPolar(), false,
-				outputNeurons);
-		Synapse synapseInputToOutput = new WeightedSynapse(inputLayer,
-				outputLayer);
-		Synapse synapseOutputToInput = new WeightedSynapse(outputLayer,
-				inputLayer);
-		inputLayer.addSynapse(synapseInputToOutput);
-		outputLayer.addSynapse(synapseOutputToInput);
+		
+		Layer inputLayer = new BasicLayer(new ActivationLinear(), false, inputNeurons );
+		Layer outputLayer = new BasicLayer(new ActivationLinear(), true, outputNeurons );
+		
+		network.addLayer(inputLayer);
+		network.addLayer(outputLayer);
 		network.getStructure().finalizeStructure();
-		network.setInputLayer(inputLayer);
-		network.setOutputLayer(outputLayer);
+		
+		(new RangeRandomizer(-0.5,0.5)).randomize(network);
+		
 		return network;
 	}
 
@@ -117,20 +107,16 @@ public class BAMPattern implements NeuralNetworkPattern {
 	}
 
 	/**
-	 * Set the input neurons.  The BAM really does not have an input and output
-	 * layer, so this is simply setting the number of neurons that are in the
-	 * first layer.
-	 * @param count The number of neurons in the first layer.
+	 * Set the input neurons.  
+	 * @param count The number of neurons in the input layer.
 	 */
 	public void setInputNeurons(int count) {
 		this.inputNeurons = count;		
 	}
 
 	/**
-	 * Set the output neurons.  The BAM really does not have an input and output
-	 * layer, so this is simply setting the number of neurons that are in the
-	 * second layer.
-	 * @param count The number of neurons in the second layer.
+	 * Set the output neurons.  
+	 * @param count The number of neurons in the output layer.
 	 */
 	public void setOutputNeurons(int count) {
 		this.outputNeurons = count;		
