@@ -93,7 +93,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 		// find the desired number of winners
 		for(int i=0;i<this.maxWinners;i++)
 		{
-			double maxFound = Double.MIN_VALUE;
+			double maxFound = Double.NEGATIVE_INFINITY;
 			int winner = -1;
 			
 			// find one winner

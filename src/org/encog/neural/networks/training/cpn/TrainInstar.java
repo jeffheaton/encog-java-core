@@ -29,14 +29,14 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	
 	private void initWeights()
 	{
-		int j = 0;
+		int i = 0;
 		for(NeuralDataPair pair: this.training )
 		{
-			for(int i=0;i<this.parts.getInstarSynapse().getFromNeuronCount();i++)
+			for(int j=0;j<this.parts.getInputLayer().getNeuronCount();j++)
 			{
-				this.parts.getInstarSynapse().getMatrix().set(i,j,pair.getInput().getData(j));
+				this.parts.getInstarSynapse().getMatrix().set(j,i,pair.getInput().getData(j));
 			}
-			j++;
+			i++;
 		}
 		
 		this.mustInit = false;
