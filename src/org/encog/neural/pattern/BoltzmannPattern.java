@@ -34,15 +34,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Create a Hopfield pattern.  A Hopfield neural network has a single
- * layer that functions both as the input and output layers.  There
- * are no hidden layers.  Hopfield networks are used for basic
- * pattern recognition.  When a Hopfield network recognizes a 
- * pattern, it "echos" that pattern on the output.
- * @author jheaton
+ * Pattern to create a Boltzmann machine.
  *
  */
-public class HopfieldPattern implements NeuralNetworkPattern {
+public class BoltzmannPattern implements NeuralNetworkPattern {
 
 	/**
 	 * The logging object.
@@ -50,28 +45,33 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * How many neurons in the Hopfield network. Default to -1, which is
-	 * invalid. Therefore this value must be set.
+	 * The number of neurons in the Boltzmann network.
 	 */
-	private int neuronCount = -1;
-
+	private int neuronCount;
+	
 	/**
-	 * Add a hidden layer.  This will throw an error, because the
-	 * Hopfield neural network has no hidden layers.
-	 * @param count The number of neurons.
+	 * Not supported, will throw an exception, Boltzmann networks have
+	 * no hidden layers.
+	 * @param count Not used.
 	 */
-	public void addHiddenLayer(final int count) {
-		final String str = "A Hopfield network has no hidden layers.";
+	public void addHiddenLayer(int count) {
+		final String str = "A Boltzmann network has no hidden layers.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
 		throw new PatternError(str);
-
 	}
 
 	/**
-	 * Generate the Hopfield neural network.
-	 * 
+	 * Clear any properties set on this network.
+	 */
+	public void clear() {
+		this.neuronCount = 0;
+		
+	}
+
+	/**
+	 * Generate the network.
 	 * @return The generated network.
 	 */
 	public BasicNetwork generate() {
@@ -88,56 +88,36 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 		return result;
 	}
 
-	/**
-	 * Set the activation function to use.  This function will throw
-	 * an error, because the Hopfield network must use the BiPolar
-	 * activation function.
-	 * @param activation The activation function to use.
-	 */
-	public void setActivationFunction(final ActivationFunction activation) {
+	@Override
+	public void setActivationFunction(ActivationFunction activation) {
 		final String str = 
-			"A Hopfield network will use the BiPolar activation " 
+			"A Boltzmann network will use the BiPolar activation " 
 			+ "function, no activation function needs to be specified.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
 		throw new PatternError(str);
-
+		
 	}
 
 	/**
-	 * Set the number of input neurons, this must match the output neurons.
-	 * 
-	 * @param count
-	 *            The number of neurons.
+	 * Set the number of input neurons.  This is the same as the
+	 * number of output neurons.
+	 * @param count The number of input neurons.
 	 */
-	public void setInputNeurons(final int count) {
+	public void setInputNeurons(int count) {
 		this.neuronCount = count;
-
+		
 	}
 
 	/**
-	 * Set the number of output neurons, should not be used with a hopfield
-	 * neural network, because the number of input neurons defines the number of
-	 * output neurons.
-	 * 
-	 * @param count
-	 *            The number of neurons.
+	 * Set the number of output neurons.  This is the same as the
+	 * number of input neurons.
+	 * @param count The number of output neurons.
 	 */
-	public void setOutputNeurons(final int count) {
-		final String str = "A Hopfield network has a single layer, so no need "
-				+ "to specify the output count.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
-	}
-	
-	/**
-	 * Nothing to clear.
-	 */
-	public void clear() {		
+	public void setOutputNeurons(int count) {
+		this.neuronCount = count;
+		
 	}
 
 }
