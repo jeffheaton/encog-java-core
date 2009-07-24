@@ -88,7 +88,6 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 		return result;
 	}
 
-	@Override
 	public void setActivationFunction(ActivationFunction activation) {
 		final String str = 
 			"A Boltzmann network will use the BiPolar activation " 
