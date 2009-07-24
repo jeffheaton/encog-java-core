@@ -28,6 +28,7 @@ package org.encog.neural.pattern;
 
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -82,8 +83,13 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public BasicNetwork generate() {
-		// TODO Auto-generated method stub
-		return null;
+		BasicNetwork network = new BasicNetwork();
+		network.addLayer(new BasicLayer(this.inputCount));
+		network.addLayer(new BasicLayer(this.instarCount));
+		network.addLayer(new BasicLayer(this.outstarCount));
+		network.getStructure().finalizeStructure();
+		network.reset();
+		return network;
 	}
 
 	/**
