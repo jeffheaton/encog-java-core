@@ -29,6 +29,7 @@ import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.pattern.HopfieldPattern;
 
 /**
  * This class holds a Hopfield network.  It provides tools to be used with
@@ -58,7 +59,10 @@ public class HopfieldHolder extends ThermalNetworkHolder {
 	 */
 	public HopfieldHolder(int neuronCount)
 	{
-		super(neuronCount,false);
+		HopfieldPattern pattern = new HopfieldPattern();
+		pattern.setInputNeurons(neuronCount);
+		setNetwork(pattern.generate());
+		init();
 	}
 	
 	/**
@@ -67,7 +71,7 @@ public class HopfieldHolder extends ThermalNetworkHolder {
 	 */
 	public HopfieldHolder(BasicNetwork network)
 	{
-		super(network);
+		init();
 	}
 	
 	

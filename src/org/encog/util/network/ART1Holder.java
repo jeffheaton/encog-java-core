@@ -7,73 +7,86 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.neural.pattern.ART1Pattern;
 
 public class ART1Holder {
 
-	private final BasicNetwork network;
-	private final Layer layerF1;
-	private final Layer layerF2;
-	private final Synapse synapseF1toF2;
-	private final Synapse synapseF2toF1;
+	private BasicNetwork network;
+	private Layer layerF1;
+	private Layer layerF2;
+	private Synapse synapseF1toF2;
+	private Synapse synapseF2toF1;
 
 	/**
 	 * last winner in F2 layer.
 	 */
-	int winner;
+	private int winner;
 
 	/**
 	 * A parameter for F1 layer.
 	 */
-	double a1;
+	private double a1;
 
 	/**
 	 * B parameter for F1 layer.
 	 */
-	double b1;
+	private double b1;
 
 	/**
 	 * C parameter for F1 layer.
 	 */
-	double c1;
+	private double c1;
 
 	/**
 	 * D parameter for F1 layer.
 	 */
-	double d1;
+	private double d1;
 
 	/**
 	 * L parameter for net.
 	 */
-	double l;
+	private double l;
 
 	/**
 	 * The vigilance parameter.
 	 */
-	double vigilance;
+	private double vigilance;
 
-	boolean[] inhibitF1;
-	boolean[] inhibitF2;
+	private boolean[] inhibitF1;
+	private boolean[] inhibitF2;
 
-	private final int noWinner;
+	private int noWinner;
 
-	private final BiPolarNeuralData outputF1;
-	private final BiPolarNeuralData outputF2;
+	private BiPolarNeuralData outputF1;
+	private BiPolarNeuralData outputF2;
 
 	public ART1Holder(final int input, final int output) {
-		this.network = new BasicNetwork();
-		this.layerF1 = new BasicLayer(new ActivationLinear(), false, input);
-		this.layerF2 = new BasicLayer(new ActivationLinear(), false, output);
-		this.inhibitF1 = new boolean[input];
-		this.inhibitF2 = new boolean[output];
-		this.synapseF1toF2 = new WeightedSynapse(this.layerF1, this.layerF2);
-		this.synapseF2toF1 = new WeightedSynapse(this.layerF2, this.layerF1);
-		this.layerF1.getNext().add(this.synapseF1toF2);
-		this.layerF2.getNext().add(this.synapseF2toF1);
-		this.network.setInputLayer(this.layerF1);
-		this.network.setOutputLayer(this.layerF2);
-
-		this.outputF1 = new BiPolarNeuralData(input);
-		this.outputF2 = new BiPolarNeuralData(output);
+		
+		ART1Pattern pattern = new ART1Pattern();
+		
+		pattern.setInputNeurons(input);
+		pattern.setOutputNeurons(output);
+		
+		this.network = pattern.generate();
+		init();
+	}
+	
+	public ART1Holder(BasicNetwork network)
+	{
+		this.network = network;
+		init();
+	}
+	
+	private void init()
+	{
+		this.layerF1 = this.network.getInputLayer();
+		this.layerF2 = this.network.getOutputLayer();
+		this.inhibitF1 = new boolean[network.getInputLayer().getNeuronCount()];
+		this.inhibitF2 = new boolean[network.getOutputLayer().getNeuronCount()];
+		this.synapseF1toF2 = this.network.getStructure().findSynapse(this.layerF1, this.layerF2,true);
+		this.synapseF2toF1 = this.network.getStructure().findSynapse(this.layerF2, this.layerF1,true);
+		this.outputF1 = new BiPolarNeuralData(network.getInputLayer().getNeuronCount());
+		this.outputF2 = new BiPolarNeuralData(network.getOutputLayer().getNeuronCount());
 
 		this.a1 = 1;
 		this.b1 = 1.5;
@@ -82,17 +95,21 @@ public class ART1Holder {
 		this.l = 3;
 		this.vigilance = 0.9;
 
-		this.noWinner = output;
+		this.noWinner = network.getOutputLayer().getNeuronCount();
+		reset();
 
+	}
+	
+	public void reset()
+	{
 		for (int i = 0; i < this.layerF1.getNeuronCount(); i++) {
 			for (int j = 0; j < this.layerF2.getNeuronCount(); j++) {
 				this.synapseF1toF2.getMatrix().set(i, j,
 						(this.b1 - 1) / this.d1 + 0.2);
 				this.synapseF2toF1.getMatrix().set(j, i,
-						this.l / (this.l - 1 + input) - 0.1);
+						this.l / (this.l - 1 + this.layerF1.getNeuronCount()) - 0.1);
 			}
-		}
-
+		}	
 	}
 
 	public void adjustWeights() {

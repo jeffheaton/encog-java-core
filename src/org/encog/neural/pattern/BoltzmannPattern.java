@@ -75,7 +75,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public BasicNetwork generate() {
-		final Layer layer = new BasicLayer(new ActivationBiPolar(), false,
+		final Layer layer = new BasicLayer(new ActivationBiPolar(), true,
 				this.neuronCount);
 
 		final BasicNetwork result = new BasicNetwork();

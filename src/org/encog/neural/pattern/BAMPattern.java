@@ -100,6 +100,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 		network.getStructure().finalizeStructure();
 		network.setInputLayer(inputLayer);
 		network.setOutputLayer(outputLayer);
+		network.getStructure().finalizeStructure();
 		return network;
 	}
 

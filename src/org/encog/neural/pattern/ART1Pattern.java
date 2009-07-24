@@ -90,6 +90,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 		layerF2.getNext().add(synapseF2toF1);
 		network.setInputLayer(layerF1);
 		network.setOutputLayer(layerF2);
+		network.getStructure().finalizeStructure();
 		return network;
 	}
 

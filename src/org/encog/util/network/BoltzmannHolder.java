@@ -26,6 +26,7 @@
 package org.encog.util.network;
 
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.pattern.BoltzmannPattern;
 import org.encog.util.math.BoundMath;
 import org.encog.util.randomize.RangeRandomizer;
 
@@ -67,12 +68,8 @@ public class BoltzmannHolder extends ThermalNetworkHolder {
 	 */
 	public BoltzmannHolder(BasicNetwork network,int runCycles, int annealCycles)
 	{
-		super(network);
-		this.on = new int[network.getInputLayer().getNeuronCount()];
-		this.off = new int[network.getInputLayer().getNeuronCount()];
-		
-		this.runCycles = runCycles;
-		this.annealCycles = annealCycles;
+		this.setNetwork(network);
+		init(network.getInputLayer().getNeuronCount(),runCycles,annealCycles);
 	}
 	
 	/**
@@ -82,11 +79,19 @@ public class BoltzmannHolder extends ThermalNetworkHolder {
 	 * @param annealCycles The number of cycles to anneal for.
 	 */
 	public BoltzmannHolder(int neuronCount,int runCycles, int annealCycles) {
-		super(neuronCount, true);
-
+		BoltzmannPattern pattern = new BoltzmannPattern();
+		pattern.setInputNeurons(neuronCount);
+		setNetwork(pattern.generate());
+		init(neuronCount,runCycles,annealCycles);
+	}
+	
+	protected void init(int neuronCount,int runCycles, int annealCycles)
+	{
+		super.init();
+		
 		this.temperature = 0;
-		this.on = new int[neuronCount];
-		this.off = new int[neuronCount];
+		this.on = new int[this.getNetwork().getInputLayer().getNeuronCount()];
+		this.off = new int[this.getNetwork().getInputLayer().getNeuronCount()];
 		
 		this.runCycles = runCycles;
 		this.annealCycles = annealCycles;

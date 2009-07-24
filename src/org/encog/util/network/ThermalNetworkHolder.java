@@ -37,48 +37,35 @@ public class ThermalNetworkHolder {
 	/**
 	 * The thermal neural network.
 	 */
-	private final BasicNetwork network;
+	private BasicNetwork network;
 	
 	/**
 	 * The thermal layer that is to be used.
 	 */
-	private final Layer thermalLayer;
+	private Layer thermalLayer;
 	
 	/**
 	 * The thermal layer's single self-connected synapse.
 	 */
-	private final Synapse thermalSynapse;
+	private Synapse thermalSynapse;
 	
 	/**
 	 * The current state of the thermal network.
 	 */
-	private final BiPolarNeuralData currentState;
-	
-	public ThermalNetworkHolder(int neuronCount, boolean threshold)
+	private BiPolarNeuralData currentState;
+		
+	protected void init()
 	{
-		// construct the network
-		this.network = new BasicNetwork();
-		this.network.addLayer(thermalLayer = new BasicLayer(new ActivationBiPolar(), threshold, neuronCount ));
-		this.thermalLayer.addNext(this.thermalLayer);
-		this.network.getStructure().finalizeStructure();
-				
 		// hold references to parts of the network we will need later
-		this.thermalSynapse = this.thermalLayer.getNext().get(0);
-		this.currentState = new BiPolarNeuralData(neuronCount);		
-	}
-	
-	/**
-	 * Construct the holder from an already existing network.
-	 * @param network The network to use.
-	 */
-	public ThermalNetworkHolder(BasicNetwork network)
-	{
-		this.network = network;
-		this.currentState = new BiPolarNeuralData(network.getInputLayer().getNeuronCount());
-		this.thermalSynapse = this.thermalLayer.getNext().get(0);
 		this.thermalLayer = this.network.getInputLayer();
+		this.thermalSynapse = this.network.getStructure().findSynapse(this.thermalLayer, this.thermalLayer, true);
+		this.currentState = new BiPolarNeuralData(this.network.getInputLayer().getNeuronCount());	
 	}
 	
+	public void setNetwork(BasicNetwork network) {
+		this.network = network;
+	}
+
 	/**
 	 * @return Get the neuron count for the network.
 	 */

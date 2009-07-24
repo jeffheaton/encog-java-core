@@ -33,43 +33,35 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.neural.pattern.BAMPattern;
 
 public class BAMHolder {
 
 	/**
 	 * The Hopfield neural network.
 	 */
-	private final BasicNetwork network;
+	private BasicNetwork network;
 
 	/**
 	 * The input layer.
 	 */
-	private final Layer inputLayer;
+	private Layer inputLayer;
 
 	/**
 	 * The output layer.
 	 */
-	private final Layer outputLayer;
+	private Layer outputLayer;
 
-	private final Synapse synapseInputToOutput;
-	private final Synapse synapseOutputToInput;
+	private Synapse synapseInputToOutput;
+	private Synapse synapseOutputToInput;
 
 	public BAMHolder(int inputNeurons, int outputNeurons) {
 		// construct the network
-		this.network = new BasicNetwork();
-		this.inputLayer = new BasicLayer(new ActivationBiPolar(), false,
-				inputNeurons);
-		this.outputLayer = new BasicLayer(new ActivationBiPolar(), false,
-				outputNeurons);
-		this.synapseInputToOutput = new WeightedSynapse(this.inputLayer,
-				this.outputLayer);
-		this.synapseOutputToInput = new WeightedSynapse(this.outputLayer,
-				this.inputLayer);
-		this.inputLayer.addSynapse(this.synapseInputToOutput);
-		this.outputLayer.addSynapse(this.synapseOutputToInput);
-		this.network.getStructure().finalizeStructure();
-		this.network.setInputLayer(this.inputLayer);
-		this.network.setOutputLayer(this.outputLayer);
+		BAMPattern pattern = new BAMPattern();
+		pattern.setInputNeurons(inputNeurons);
+		pattern.setOutputNeurons(outputNeurons);
+		this.network = pattern.generate();		
+		init();
 	}
 	
 	/**
@@ -79,10 +71,15 @@ public class BAMHolder {
 	public BAMHolder(BasicNetwork network)
 	{
 		this.network = network;
+		init();
+	}
+	
+	private void init()
+	{
 		this.inputLayer = network.getInputLayer();
 		this.outputLayer = network.getOutputLayer();
-		this.synapseInputToOutput = network.getInputLayer().getNext().get(0);
-		this.synapseOutputToInput = network.getOutputLayer().getNext().get(0);
+		this.synapseInputToOutput = network.getStructure().findSynapse(this.inputLayer, this.outputLayer, true);
+		this.synapseOutputToInput =  network.getStructure().findSynapse(this.outputLayer, this.inputLayer, true);		
 	}
 
 	public int getInputNeurons() {

@@ -33,6 +33,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
@@ -49,6 +50,11 @@ import org.slf4j.LoggerFactory;
  */
 public class NeuralStructure implements Serializable {
 	
+	/**
+	 * The serial ID
+	 */
+	private static final long serialVersionUID = -2929683885395737817L;
+
 	/**
 	 * The layers in this neural network.
 	 */
@@ -67,7 +73,6 @@ public class NeuralStructure implements Serializable {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private transient static final Logger logger = LoggerFactory.getLogger(NeuralStructure.class);
 
 	/**
@@ -191,5 +196,66 @@ public class NeuralStructure implements Serializable {
 	 */
 	public List<Synapse> getSynapses() {
 		return this.synapses;
+	}
+	
+	public Layer getSingleHiddenLayer()
+	{
+		if( this.layers.size()<3 )
+		{
+			String str = "This operation requires a network with a hidden layer.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
+		else if( this.layers.size()>3 ) {
+			String str = "This operation requires a network with a SINGLE hidden layer.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
+		
+		return this.network.getInputLayer().getNext().get(0).getToLayer();
+	}
+	
+	public String nameLayer(Layer layer)
+	{
+		if( layer==this.network.getInputLayer())
+			return "input";
+		else if( layer==this.network.getOutputLayer())
+			return "output";
+		else 
+			return "hidden";
+	}
+	
+	public Synapse findSynapse(Layer fromLayer,Layer toLayer, boolean required)
+	{
+		Synapse result = null;
+		for(Synapse synapse: this.getSynapses())
+		{
+			if( (synapse.getFromLayer()==fromLayer)
+				&& (synapse.getToLayer()==toLayer) )
+			{
+				result = synapse;
+				break;
+			}
+		}
+		
+		if( required && result==null )
+		{
+			String str = "This operation requires a network with a synapse between the "
+				+nameLayer(fromLayer)+" layer to the "
+				+nameLayer(toLayer)+" layer.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
+		
+		return result;
 	}
 }
