@@ -82,6 +82,9 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 */
 	public BasicNetwork generate() {
 		BasicNetwork network  = new BasicNetwork();
+		
+		int y = PatternConst.START_Y;
+		
 		Layer layerF1 = new BasicLayer(new ActivationLinear(), false, this.inputNeurons);
 		Layer layerF2 = new BasicLayer(new ActivationLinear(), false, this.outputNeurons);
 		Synapse synapseF1toF2 = new WeightedSynapse(layerF1, layerF2);
@@ -91,6 +94,14 @@ public class ART1Pattern implements NeuralNetworkPattern {
 		network.setInputLayer(layerF1);
 		network.setOutputLayer(layerF2);
 		network.getStructure().finalizeStructure();
+		
+		layerF1.setX(PatternConst.START_X);
+		layerF1.setY(y);
+		y += PatternConst.INC_Y;
+		
+		layerF2.setX(PatternConst.START_X);
+		layerF2.setY(y);
+		
 		return network;
 	}
 

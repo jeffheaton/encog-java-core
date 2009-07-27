@@ -81,6 +81,8 @@ public class ADALINEPattern  implements NeuralNetworkPattern {
 	public BasicNetwork generate() {
 		BasicNetwork network = new BasicNetwork();
 		
+		int y = PatternConst.START_Y;
+		
 		Layer inputLayer = new BasicLayer(new ActivationLinear(), false, inputNeurons );
 		Layer outputLayer = new BasicLayer(new ActivationLinear(), true, outputNeurons );
 		
@@ -89,6 +91,13 @@ public class ADALINEPattern  implements NeuralNetworkPattern {
 		network.getStructure().finalizeStructure();
 		
 		(new RangeRandomizer(-0.5,0.5)).randomize(network);
+		
+		inputLayer.setX(PatternConst.START_X);
+		inputLayer.setY(y);
+		y += PatternConst.INC_Y;
+		
+		outputLayer.setX(PatternConst.START_X);
+		outputLayer.setY(y);
 		
 		return network;
 	}

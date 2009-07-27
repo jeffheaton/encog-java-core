@@ -87,6 +87,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 */
 	public BasicNetwork generate() {
 		BasicNetwork network = new BasicNetwork();
+		
 		Layer inputLayer = new BasicLayer(new ActivationBiPolar(), false,
 				inputNeurons);
 		Layer outputLayer = new BasicLayer(new ActivationBiPolar(), false,
@@ -101,6 +102,13 @@ public class BAMPattern implements NeuralNetworkPattern {
 		network.setInputLayer(inputLayer);
 		network.setOutputLayer(outputLayer);
 		network.getStructure().finalizeStructure();
+		
+		inputLayer.setY(PatternConst.START_Y);
+		outputLayer.setY(PatternConst.START_Y);
+		
+		inputLayer.setX(PatternConst.START_X);
+		inputLayer.setX(PatternConst.INDENT_X);
+		
 		return network;
 	}
 
