@@ -30,6 +30,7 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.BoltzmannLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,6 +49,10 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * The number of neurons in the Boltzmann network.
 	 */
 	private int neuronCount;
+	
+	private int annealCycles = 100;
+	private int runCycles = 1000;
+	private double temperature = 0.0;
 	
 	/**
 	 * Not supported, will throw an exception, Boltzmann networks have
@@ -78,7 +83,10 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 		final Layer layer = new BasicLayer(new ActivationBiPolar(), true,
 				this.neuronCount);
 
-		final BasicNetwork result = new BasicNetwork();
+		final BasicNetwork result = new BasicNetwork(new BoltzmannLogic());
+		result.setProperty(BoltzmannLogic.PROPERTY_ANNEAL_CYCLES, this.annealCycles);
+		result.setProperty(BoltzmannLogic.PROPERTY_RUN_CYCLES, this.runCycles);
+		result.setProperty(BoltzmannLogic.PROPERTY_TEMPERATURE, this.temperature);
 		result.addLayer(layer);
 		layer.addNext(layer);
 		layer.setX(PatternConst.START_X);
@@ -116,7 +124,32 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 */
 	public void setOutputNeurons(int count) {
 		this.neuronCount = count;
-		
 	}
+
+	public int getAnnealCycles() {
+		return annealCycles;
+	}
+
+	public void setAnnealCycles(int annealCycles) {
+		this.annealCycles = annealCycles;
+	}
+
+	public int getRunCycles() {
+		return runCycles;
+	}
+
+	public void setRunCycles(int runCycles) {
+		this.runCycles = runCycles;
+	}
+
+	public double getTemperature() {
+		return temperature;
+	}
+
+	public void setTemperature(double temperature) {
+		this.temperature = temperature;
+	}
+	
+	
 
 }

@@ -30,6 +30,8 @@ import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.ART1Logic;
+import org.encog.neural.networks.logic.ARTLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.slf4j.Logger;
@@ -54,6 +56,36 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * The number of output neurons.
 	 */
 	private int outputNeurons;
+	
+	/**
+	 * A parameter for F1 layer.
+	 */
+	private double a1 = 1;
+
+	/**
+	 * B parameter for F1 layer.
+	 */
+	private double b1 = 1.5;
+
+	/**
+	 * C parameter for F1 layer.
+	 */
+	private double c1 = 5;
+
+	/**
+	 * D parameter for F1 layer.
+	 */
+	private double d1 = 0.9;
+
+	/**
+	 * L parameter for net.
+	 */
+	private double l = 3;
+
+	/**
+	 * The vigilance parameter.
+	 */
+	private double vigilance = 0.9;
 	
 	/**
 	 * This will fail, hidden layers are not supported for this type of
@@ -81,7 +113,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @return The generated neural network.
 	 */
 	public BasicNetwork generate() {
-		BasicNetwork network  = new BasicNetwork();
+		BasicNetwork network  = new BasicNetwork(new ART1Logic());
 		
 		int y = PatternConst.START_Y;
 		
@@ -92,8 +124,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 		layerF1.getNext().add(synapseF1toF2);
 		layerF2.getNext().add(synapseF2toF1);
 		network.setInputLayer(layerF1);
-		network.setOutputLayer(layerF2);
-		network.getStructure().finalizeStructure();
+		network.setOutputLayer(layerF2);		
 		
 		layerF1.setX(PatternConst.START_X);
 		layerF1.setY(y);
@@ -102,6 +133,15 @@ public class ART1Pattern implements NeuralNetworkPattern {
 		layerF2.setX(PatternConst.START_X);
 		layerF2.setY(y);
 		
+		network.setProperty(ARTLogic.PROPERTY_A1, this.a1);
+		network.setProperty(ARTLogic.PROPERTY_B1, this.b1);
+		network.setProperty(ARTLogic.PROPERTY_C1, this.c1);
+		network.setProperty(ARTLogic.PROPERTY_D1, this.d1);
+		network.setProperty(ARTLogic.PROPERTY_L, this.l);
+		network.setProperty(ARTLogic.PROPERTY_VIGILANCE, this.vigilance);
+		
+		network.getStructure().finalizeStructure();
+				
 		return network;
 	}
 
@@ -130,5 +170,55 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	public void setOutputNeurons(int count) {
 		this.outputNeurons = count;
 	}
+
+	public double getA1() {
+		return a1;
+	}
+
+	public void setA1(double a1) {
+		this.a1 = a1;
+	}
+
+	public double getB1() {
+		return b1;
+	}
+
+	public void setB1(double b1) {
+		this.b1 = b1;
+	}
+
+	public double getC1() {
+		return c1;
+	}
+
+	public void setC1(double c1) {
+		this.c1 = c1;
+	}
+
+	public double getD1() {
+		return d1;
+	}
+
+	public void setD1(double d1) {
+		this.d1 = d1;
+	}
+
+	public double getL() {
+		return l;
+	}
+
+	public void setL(double l) {
+		this.l = l;
+	}
+
+	public double getVigilance() {
+		return vigilance;
+	}
+
+	public void setVigilance(double vigilance) {
+		this.vigilance = vigilance;
+	}
+	
+	
 
 }

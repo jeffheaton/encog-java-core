@@ -5,10 +5,13 @@ import java.io.Serializable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
+import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.synapse.Synapse;
 
 public interface NeuralLogic extends Serializable {
 	
-	public NeuralData compute(NeuralData input,
+	NeuralData compute(NeuralData input,
 			NeuralOutputHolder useHolder);
-	public void init(BasicNetwork network);
+	void init(BasicNetwork network);
+
 }

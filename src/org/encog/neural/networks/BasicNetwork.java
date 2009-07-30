@@ -28,7 +28,9 @@ package org.encog.neural.networks;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.encog.Encog;
 import org.encog.neural.NeuralNetworkError;
@@ -96,6 +98,8 @@ public class BasicNetwork implements Serializable, Network {
 	private final NeuralStructure structure;
 	
 	private NeuralLogic logic;
+	
+	private final Map<String,Object> properties = new HashMap<String,Object>();
 
 	/**
 	 * The logging object.
@@ -108,6 +112,12 @@ public class BasicNetwork implements Serializable, Network {
 	public BasicNetwork() {
 		this.structure = new NeuralStructure(this);
 		this.logic = new SimpleRecurrentLogic();
+	}
+	
+	public BasicNetwork(NeuralLogic logic)
+	{
+		this.structure = new NeuralStructure(this);
+		this.logic = logic;
 	}
 
 	/**
@@ -583,6 +593,38 @@ public class BasicNetwork implements Serializable, Network {
 		this.logic = logic;
 	}
 	
+	public void setProperty(String name, String value)
+	{
+		this.properties.put(name, value);
+	}
 	
+	public void setProperty(String name, long l)
+	{
+		this.properties.put(name, new Long(l));
+	}
+	
+	public void setProperty(String name, double d)
+	{
+		this.properties.put(name, new Double(d) );
+	}
+
+	public Map<String, Object> getProperties() {
+		return properties;
+	}
+	
+	public String getPropertyString(String name)
+	{
+		return (String)this.properties.get(name);
+	}
+	
+	public long getPropertyLong(String name)
+	{
+		return (Long)this.properties.get(name);
+	}
+	
+	public double getPropertyDouble(String name)
+	{
+		return (Double)this.properties.get(name);
+	}
 
 }

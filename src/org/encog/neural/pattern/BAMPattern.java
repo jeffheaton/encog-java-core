@@ -30,6 +30,7 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.BAMLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.slf4j.Logger;
@@ -86,7 +87,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public BasicNetwork generate() {
-		BasicNetwork network = new BasicNetwork();
+		BasicNetwork network = new BasicNetwork(new BAMLogic());
 		
 		Layer inputLayer = new BasicLayer(new ActivationBiPolar(), false,
 				inputNeurons);
@@ -98,6 +99,10 @@ public class BAMPattern implements NeuralNetworkPattern {
 				inputLayer);
 		inputLayer.addSynapse(synapseInputToOutput);
 		outputLayer.addSynapse(synapseOutputToInput);
+		
+		network.setInputLayer(inputLayer);
+		network.setOutputLayer(outputLayer);
+		
 		network.getStructure().finalizeStructure();
 		network.setInputLayer(inputLayer);
 		network.setOutputLayer(outputLayer);

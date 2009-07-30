@@ -30,6 +30,7 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.HopfieldLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 		final Layer layer = new BasicLayer(new ActivationBiPolar(), false,
 				this.neuronCount);
 
-		final BasicNetwork result = new BasicNetwork();
+		final BasicNetwork result = new BasicNetwork(new HopfieldLogic());
 		result.addLayer(layer);
 		layer.addNext(layer);
 		layer.setX(PatternConst.START_X);
