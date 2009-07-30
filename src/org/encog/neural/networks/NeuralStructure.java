@@ -98,12 +98,14 @@ public class NeuralStructure implements Serializable {
 	}
 
 	/**
-	 * Build the synapse and layer structure.  This method should be called 
-	 * after you are done adding layers to a network.
+	 * Build the synapse and layer structure.  This method should be called
+	 * after you are done adding layers to a network, or change the network's 
+	 * logic property.
 	 */
 	public void finalizeStructure() {
 		finalizeLayers();
 		finalizeSynapses();
+		this.network.getLogic().init(this.network);
 	}
 
 	/**

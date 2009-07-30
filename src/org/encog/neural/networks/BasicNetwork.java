@@ -36,6 +36,8 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.NeuralLogic;
+import org.encog.neural.networks.logic.SimpleRecurrentLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.Persistor;
@@ -92,6 +94,8 @@ public class BasicNetwork implements Serializable, Network {
 	 * constantly lookup layers and synapses.
 	 */
 	private final NeuralStructure structure;
+	
+	private NeuralLogic logic;
 
 	/**
 	 * The logging object.
@@ -103,6 +107,7 @@ public class BasicNetwork implements Serializable, Network {
 	 */
 	public BasicNetwork() {
 		this.structure = new NeuralStructure(this);
+		this.logic = new SimpleRecurrentLogic();
 	}
 
 	/**
@@ -273,7 +278,7 @@ public class BasicNetwork implements Serializable, Network {
 	 * @return The output from the neural network.
 	 */
 	public NeuralData compute(final NeuralData input) {
-		return compute(input, null);
+		return logic.compute(input, null);
 	}
 
 	/**
@@ -290,59 +295,9 @@ public class BasicNetwork implements Serializable, Network {
 	 */
 	public NeuralData compute(final NeuralData input,
 			final NeuralOutputHolder useHolder) {
-		NeuralOutputHolder holder;
-
-		if (BasicNetwork.logger.isDebugEnabled()) {
-			BasicNetwork.logger.debug("Pattern {} presented to neural network", input);
-		}
-
-		if (useHolder == null) {
-			holder = new NeuralOutputHolder();
-		} else {
-			holder = useHolder;
-		}
-
-		checkInputSize(input);
-		compute(holder, this.inputLayer, input, null);
-		return holder.getOutput();
-
+		return logic.compute(input, useHolder);
 	}
 
-	/**
-	 * Internal computation method for a single layer.  This is called, 
-	 * as the neural network processes.
-	 * @param holder The output holder.
-	 * @param layer The layer to process.
-	 * @param input The input to this layer.
-	 * @param source The source synapse.
-	 */
-	private void compute(final NeuralOutputHolder holder, final Layer layer,
-			final NeuralData input, final Synapse source) {
-
-		if (BasicNetwork.logger.isDebugEnabled()) {
-			BasicNetwork.logger.debug("Processing layer: {}, input= {}", layer, input);
-		}
-
-		handleRecurrentInput(layer, input, source);
-
-		for (final Synapse synapse : layer.getNext()) {
-			if (!holder.getResult().containsKey(synapse)) {
-				if (BasicNetwork.logger.isDebugEnabled()) {
-					BasicNetwork.logger.debug("Processing synapse: {}", synapse);
-				}
-				NeuralData pattern = synapse.compute(input);
-				pattern = synapse.getToLayer().compute(pattern);
-				synapse.getToLayer().process(pattern);
-				holder.getResult().put(synapse, input);
-				compute(holder, synapse.getToLayer(), pattern, synapse);
-
-				// Is this the output from the entire network?
-				if (synapse.getToLayer() == this.outputLayer) {
-					holder.setOutput(pattern);
-				}
-			}
-		}
-	}
 
 	/**
 	 * Create a persistor for this object.
@@ -456,42 +411,6 @@ public class BasicNetwork implements Serializable, Network {
 		return result;
 	}
 
-	/**
-	 * Handle recurrent layers.  See if there are any recurrent layers before
-	 * the specified layer that must affect the input.
-	 * @param layer The layer being processed, see if there are any recurrent
-	 * connections to this.
-	 * @param input The input to the layer, will be modified with the result
-	 * from any recurrent layers.
-	 * @param source The source synapse.
-	 */
-	private void handleRecurrentInput(final Layer layer,
-			final NeuralData input, final Synapse source) {
-		for (final Synapse synapse 
-				: this.structure.getPreviousSynapses(layer)) {
-			if (synapse != source) {
-				if (BasicNetwork.logger.isDebugEnabled()) {
-					BasicNetwork.logger.debug("Recurrent layer from: {}", input);
-				}
-				final NeuralData recurrentInput = synapse.getFromLayer()
-						.recur();
-
-				if (recurrentInput != null) {
-					final NeuralData recurrentOutput = synapse
-							.compute(recurrentInput);
-
-					for (int i = 0; i < input.size(); i++) {
-						input.setData(i, input.getData(i)
-								+ recurrentOutput.getData(i));
-					}
-
-					if (BasicNetwork.logger.isDebugEnabled()) {
-						BasicNetwork.logger.debug("Recurrent layer to: {}", input);
-					}
-				}
-			}
-		}
-	}
 
 	/**
 	 * Generate a hash code.
@@ -655,5 +574,15 @@ public class BasicNetwork implements Serializable, Network {
 
 		return win;
 	}
+
+	public NeuralLogic getLogic() {
+		return logic;
+	}
+
+	public void setLogic(NeuralLogic logic) {
+		this.logic = logic;
+	}
+	
+	
 
 }
