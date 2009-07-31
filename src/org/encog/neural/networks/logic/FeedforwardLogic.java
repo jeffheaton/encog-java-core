@@ -1,3 +1,28 @@
+/*
+ * Encog Artificial Intelligence Framework v2.x
+ * Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.encog.neural.networks.logic;
 
 import org.encog.neural.data.NeuralData;
@@ -8,13 +33,25 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Provides the neural logic for an Feedforward type network.  See FeedforwardPattern
+ * for more information on this type of network.
+ */
 public class FeedforwardLogic implements NeuralLogic {
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1779691422598188487L;
 
 	/**
 	 * The logging object.
 	 */
 	private transient static final Logger logger = LoggerFactory.getLogger(FeedforwardLogic.class);
 	
+	/**
+	 * The network to use.
+	 */
 	private BasicNetwork network;
 	
 	/**
@@ -87,17 +124,30 @@ public class FeedforwardLogic implements NeuralLogic {
 	}
 
 
+	/**
+	 * Setup the network logic, read parameters from the network.
+	 * @param network The network that this logic class belongs to.
+	 */
 	public void init(BasicNetwork network) {
 		this.network = network;		
 	}
 
+	/**
+	 * @return The network in use.
+	 */
 	public BasicNetwork getNetwork() {
 		return network;
 	}
 
+	/**
+	 * Can be overridden by subclasses.  Usually used to implement recurrent 
+	 * layers.  
+	 * @param layer The layer to process.
+	 * @param input The input to this layer.
+	 * @param source The source from this layer.
+	 */
 	public void preprocessLayer(Layer layer, NeuralData input, Synapse source) {
-		// nothing to do
-		
+		// nothing to do		
 	}
 	
 	

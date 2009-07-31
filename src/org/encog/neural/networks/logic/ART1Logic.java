@@ -1,18 +1,70 @@
+/*
+ * Encog Artificial Intelligence Framework v2.x
+ * Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
 package org.encog.neural.networks.logic;
 
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.pattern.ART1Pattern;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+/**
+ * Provides the neural logic for an ART1 type network.  See ART1Pattern
+ * for more information on this type of network.
+ */
 public class ART1Logic extends ARTLogic {
 
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -8430698735871301528L;
+	
+	/**
+	 * The first layer, basically, the input layer.
+	 */
 	private Layer layerF1;
+	
+	/**
+	 * The second layer, basically, the output layer.
+	 */
 	private Layer layerF2;
+	
+	/**
+	 * The connection from F1 to F2.
+	 */
 	private Synapse synapseF1toF2;
+	
+	/**
+	 * The connection from F2 to F1.
+	 */
 	private Synapse synapseF2toF1;
 
 	/**
@@ -50,38 +102,34 @@ public class ART1Logic extends ARTLogic {
 	 */
 	private double vigilance = 0.9;
 
-	private boolean[] inhibitF1;
+	/**
+	 * Allows members of the F2 layer to be inhibited.
+	 */
 	private boolean[] inhibitF2;
 
+	/**
+	 * Tracks if there was no winner.
+	 */
 	private int noWinner;
 
+	/**
+	 * The output from the F1 layer.
+	 */
 	private BiPolarNeuralData outputF1;
+	
+	/**
+	 * The output from the F2 layer.
+	 */
 	private BiPolarNeuralData outputF2;
-
 	
-	private void init()
-	{
-		this.layerF1 = this.getNetwork().getInputLayer();
-		this.layerF2 = this.getNetwork().getOutputLayer();
-		this.inhibitF1 = new boolean[getNetwork().getInputLayer().getNeuronCount()];
-		this.inhibitF2 = new boolean[getNetwork().getOutputLayer().getNeuronCount()];
-		this.synapseF1toF2 = this.getNetwork().getStructure().findSynapse(this.layerF1, this.layerF2,true);
-		this.synapseF2toF1 = this.getNetwork().getStructure().findSynapse(this.layerF2, this.layerF1,true);
-		this.outputF1 = new BiPolarNeuralData(getNetwork().getInputLayer().getNeuronCount());
-		this.outputF2 = new BiPolarNeuralData(getNetwork().getOutputLayer().getNeuronCount());
+	/**
+	 * The logging object.
+	 */
+	private static transient final Logger logger = LoggerFactory.getLogger(ART1Logic.class);
 
-		this.a1 = 1;
-		this.b1 = 1.5;
-		this.c1 = 5;
-		this.d1 = 0.9;
-		this.l = 3;
-		this.vigilance = 0.9;
-
-		this.noWinner = getNetwork().getOutputLayer().getNeuronCount();
-		reset();
-
-	}
-	
+	/**
+	 * Reset the weight matrix back to starting values.
+	 */
 	public void reset()
 	{
 		for (int i = 0; i < this.layerF1.getNeuronCount(); i++) {
@@ -94,6 +142,9 @@ public class ART1Logic extends ARTLogic {
 		}	
 	}
 
+	/**
+	 * Adjust the weights for the pattern just presented.
+	 */
 	public void adjustWeights() {
 		double magnitudeInput;
 
@@ -110,6 +161,13 @@ public class ART1Logic extends ARTLogic {
 		}
 	}
 
+	/**
+	 * Compute the output from the ART1 network.  This can be called directly
+	 * or used by the BasicNetwork class.  Both input and output should be
+	 * bipolar numbers.
+	 * @param input The input to the network.
+	 * @param output The output from the network.
+	 */
 	public void compute(final BiPolarNeuralData input,
 			final BiPolarNeuralData output) {
 		int i;
@@ -143,6 +201,10 @@ public class ART1Logic extends ARTLogic {
 		}
 	}
 
+	/**
+	 * Compute the output from the F1 layer.
+	 * @param input The input to the F1 layer.
+	 */
 	private void computeF1(final BiPolarNeuralData input) {
 		double sum, activation;
 
@@ -156,6 +218,9 @@ public class ART1Logic extends ARTLogic {
 		}
 	}
 
+	/**
+	 * Compute the output from the F2 layer. 
+	 */
 	private void computeF2() {
 		int i, j;
 		double Sum, maxOut;
@@ -181,44 +246,77 @@ public class ART1Logic extends ARTLogic {
 		}
 	}
 
+	/**
+	 * @return The A1 parameter.
+	 */
 	public double getA1() {
 		return this.a1;
 	}
 
+	/**
+	 * @return The B1 parameter.
+	 */
 	public double getB1() {
 		return this.b1;
 	}
 
+	/**
+	 * @return The C1 parameter.
+	 */
 	public double getC1() {
 		return this.c1;
 	}
 
+	/**
+	 * @return The D1 parameter.
+	 */
 	public double getD1() {
 		return this.d1;
 	}
 
+	/**
+	 * @return The L parameter.
+	 */
 	public double getL() {
 		return this.l;
 	}
 
+	/**
+	 * Copy the output from the network to another object.
+	 * @param output The target object for the output from the network.
+	 */
 	private void getOutput(final BiPolarNeuralData output) {
 		for (int i = 0; i < this.layerF2.getNeuronCount(); i++) {
 			output.setData(i, this.outputF2.getBoolean(i));
 		}
 	}
 
+	/**
+	 * @return The vigilance parameter.
+	 */
 	public double getVigilance() {
 		return this.vigilance;
 	}
 
+	/**
+	 * @return The winning neuron.
+	 */
 	public int getWinner() {
 		return this.winner;
 	}
 
+	/**
+	 * @return Does this network have a "winner"?
+	 */
 	public boolean hasWinner() {
 		return this.winner != this.noWinner;
 	}
 
+	/**
+	 * Get the magnitude of the specified input.
+	 * @param input The input to calculate the magnitude for.
+	 * @return The magnitude of the specified pattern.
+	 */
 	public double magnitude(final BiPolarNeuralData input) {
 		double result;
 
@@ -229,22 +327,43 @@ public class ART1Logic extends ARTLogic {
 		return result;
 	}
 
+	/**
+	 * Set the A1 parameter.
+	 * @param a1 The new value.
+	 */
 	public void setA1(final double a1) {
 		this.a1 = a1;
 	}
 
+	/**
+	 * Set the B1 parameter.
+	 * @param b1 The new value.
+	 */
 	public void setB1(final double b1) {
 		this.b1 = b1;
 	}
 
+	/**
+	 * Set the C1 parameter.
+	 * @param c1 The new value.
+	 */
 	public void setC1(final double c1) {
 		this.c1 = c1;
 	}
 
+	/**
+	 * Set the D1 parameter.
+	 * @param d1 The new value.
+	 */
 	public void setD1(final double d1) {
 		this.d1 = d1;
 	}
 
+	
+	/**
+	 * Set the input to the neural network.
+	 * @param input The input.
+	 */
 	private void setInput(final BiPolarNeuralData input) {
 		double activation;
 
@@ -255,21 +374,33 @@ public class ART1Logic extends ARTLogic {
 		}
 	}
 
+	/**
+	 * Set the L parameter.
+	 * @param l The new value.
+	 */
 	public void setL(final double l) {
 		this.l = l;
 	}
 
+	/**
+	 * Set the vigilance.
+	 * @param vigilance The new value.
+	 */
 	public void setVigilance(final double vigilance) {
 		this.vigilance = vigilance;
 	}
 	
+	/**
+	 * Setup the network logic, read parameters from the network.
+	 * @param network The network that this logic class belongs to.
+	 */
+	@Override
 	public void init(BasicNetwork network)
 	{
 		super.init(network);
 		
 		this.layerF1 = this.getNetwork().getInputLayer();
 		this.layerF2 = this.getNetwork().getOutputLayer();
-		this.inhibitF1 = new boolean[network.getInputLayer().getNeuronCount()];
 		this.inhibitF2 = new boolean[network.getOutputLayer().getNeuronCount()];
 		this.synapseF1toF2 = this.getNetwork().getStructure().findSynapse(this.layerF1, this.layerF2,true);
 		this.synapseF2toF1 = this.getNetwork().getStructure().findSynapse(this.layerF2, this.layerF1,true);
@@ -287,10 +418,27 @@ public class ART1Logic extends ARTLogic {
 		reset();
 
 	}
-	
+		
+	/**
+	 * Compute the output for the BasicNetwork class.
+	 * @param input The input to the network.
+	 * @param useHolder The NeuralOutputHolder to use.
+	 * @return The output from the network.
+	 */
 	public NeuralData compute(NeuralData input, NeuralOutputHolder useHolder) {
-		// TODO Auto-generated method stub
-		return null;
+		if( !(input instanceof BiPolarNeuralData) )
+		{
+			String str = "Input to ART1 logic network must be BiPolarNeuralData.";
+			if( logger.isErrorEnabled() )
+			{
+				logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
+		
+		BiPolarNeuralData output = new BiPolarNeuralData(this.layerF1.getNeuronCount());
+		compute((BiPolarNeuralData)input,output);
+		return output;
 	}
 
 }
