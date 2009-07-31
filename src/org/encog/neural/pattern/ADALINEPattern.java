@@ -57,6 +57,7 @@ public class ADALINEPattern  implements NeuralNetworkPattern {
 	
 	/**
 	 * Not used, the ADALINE has no hidden layers, this will throw an error.
+	 * @param count The neuron count.
 	 */
 	public void addHiddenLayer(int count) {
 		final String str = "An ADALINE network has no hidden layers.";

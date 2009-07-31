@@ -171,54 +171,93 @@ public class ART1Pattern implements NeuralNetworkPattern {
 		this.outputNeurons = count;
 	}
 
+	/**
+	 * @return The A1 parameter.
+	 */
 	public double getA1() {
 		return a1;
 	}
 
+	/**
+	 * Set the A1 parameter.
+	 * @param a1 The new value.
+	 */
 	public void setA1(double a1) {
 		this.a1 = a1;
 	}
 
+	/**
+	 * @return The B1 parameter.
+	 */
 	public double getB1() {
 		return b1;
 	}
 
+	/**
+	 * Set the B1 parameter.
+	 * @param b1 The new value.
+	 */
 	public void setB1(double b1) {
 		this.b1 = b1;
 	}
 
+	/**
+	 * @return The C1 parameter.
+	 */
 	public double getC1() {
 		return c1;
 	}
 
+	/**
+	 * Set the C1 parameter.
+	 * @param c1 The new value.
+	 */
 	public void setC1(double c1) {
 		this.c1 = c1;
 	}
 
+	/**
+	 * @return The D1 parameter.
+	 */
 	public double getD1() {
 		return d1;
 	}
 
+	/**
+	 * Set the D1 parameter.
+	 * @param d1 The new value.
+	 */
 	public void setD1(double d1) {
 		this.d1 = d1;
 	}
 
+	/**
+	 * @return The L parameter.
+	 */
 	public double getL() {
 		return l;
 	}
 
+	/**
+	 * Set the L parameter.
+	 * @param l The new value.
+	 */
 	public void setL(double l) {
 		this.l = l;
 	}
 
+	/**
+	 * @return The vigilance for the network.
+	 */
 	public double getVigilance() {
 		return vigilance;
 	}
 
+	/**
+	 * Set the vigilance for the network.
+	 * @param vigilance The new value.
+	 */
 	public void setVigilance(double vigilance) {
 		this.vigilance = vigilance;
 	}
-	
-	
-
 }

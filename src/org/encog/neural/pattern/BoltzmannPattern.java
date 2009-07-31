@@ -50,8 +50,19 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 */
 	private int neuronCount;
 	
+	/**
+	 * The number of annealing cycles per run.
+	 */
 	private int annealCycles = 100;
+	
+	/**
+	 * The number of cycles per run.
+	 */
 	private int runCycles = 1000;
+	
+	/**
+	 * The current temperature.
+	 */
 	private double temperature = 0.0;
 	
 	/**
@@ -96,6 +107,10 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 		return result;
 	}
 
+	/**
+	 * Not used, will throw an exception.
+	 * @param activation Not used.
+	 */
 	public void setActivationFunction(ActivationFunction activation) {
 		final String str = 
 			"A Boltzmann network will use the BiPolar activation " 
@@ -126,30 +141,48 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 		this.neuronCount = count;
 	}
 
+	/**
+	 * @return The number of annealing cycles per run.
+	 */
 	public int getAnnealCycles() {
 		return annealCycles;
 	}
 
+	/**
+	 * Set the number of annealing cycles per run.
+	 * @param annealCycles The new value.
+	 */
 	public void setAnnealCycles(int annealCycles) {
 		this.annealCycles = annealCycles;
 	}
 
+	/**
+	 * @return The number of cycles per run.
+	 */
 	public int getRunCycles() {
 		return runCycles;
 	}
 
+	/**
+	 * Set the number of cycles per run. 
+	 * @param runCycles The new value.
+	 */
 	public void setRunCycles(int runCycles) {
 		this.runCycles = runCycles;
 	}
 
+	/**
+	 * @return The temperature.
+	 */
 	public double getTemperature() {
 		return temperature;
 	}
 
+	/**
+	 * Set the temperature.
+	 * @param temperature The new value.
+	 */
 	public void setTemperature(double temperature) {
 		this.temperature = temperature;
 	}
-	
-	
-
 }
