@@ -117,13 +117,11 @@ public class BAMLogic implements NeuralLogic  {
 		return null;
 	}
 
-	@Override
 	public NeuralData compute(NeuralData input, NeuralOutputHolder useHolder) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void init(BasicNetwork network) {
 		this.network = network;
 		this.inputLayer = network.getInputLayer();

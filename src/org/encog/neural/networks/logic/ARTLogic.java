@@ -15,7 +15,6 @@ public abstract class ARTLogic implements NeuralLogic {
 	
 	private BasicNetwork network;
 
-	@Override
 	public void init(BasicNetwork network) {
 		this.network = network;		
 	}

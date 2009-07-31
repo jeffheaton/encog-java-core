@@ -288,8 +288,6 @@ public class ART1Logic extends ARTLogic {
 
 	}
 	
-	
-	@Override
 	public NeuralData compute(NeuralData input, NeuralOutputHolder useHolder) {
 		// TODO Auto-generated method stub
 		return null;

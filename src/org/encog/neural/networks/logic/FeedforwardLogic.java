@@ -85,7 +85,6 @@ public class FeedforwardLogic implements NeuralLogic {
 	}
 
 
-	@Override
 	public void init(BasicNetwork network) {
 		this.network = network;		
 	}
