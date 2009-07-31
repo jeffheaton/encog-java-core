@@ -29,8 +29,16 @@ package org.encog.persist.persistors;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.ART1Logic;
+import org.encog.neural.networks.logic.BAMLogic;
+import org.encog.neural.networks.logic.BoltzmannLogic;
+import org.encog.neural.networks.logic.FeedforwardLogic;
+import org.encog.neural.networks.logic.HopfieldLogic;
+import org.encog.neural.networks.logic.NeuralLogic;
+import org.encog.neural.networks.logic.SimpleRecurrentLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
@@ -61,14 +69,26 @@ public class BasicNetworkPersistor implements Persistor {
 	public static final String TAG_SYNAPSE = "synapse";
 	
 	/**
+	 * The properties tag.
+	 */
+	public static final String TAG_PROPERTIES = "properties";
+	
+	public static final String TAG_LOGIC = "logic";
+	
+	/**
 	 * The layer synapse.
 	 */
 	public static final String TAG_LAYER = "layer";
+	
+	public static final String TAG_PROPERTY = "Property";
 	
 	/**
 	 * The id attribute.
 	 */
 	public static final String ATTRIBUTE_ID = "id";
+	
+	public static final String ATTRIBUTE_NAME = "name";
+	public static final String ATTRIBUTE_VALUE = "value";
 	
 	/**
 	 * The type attribute.
@@ -210,11 +230,81 @@ public class BasicNetworkPersistor implements Persistor {
 				handleLayers(in);
 			} else if (in.is(BasicNetworkPersistor.TAG_SYNAPSES, true)) {
 				handleSynapses(in);
+			} else if( in.is(BasicNetworkPersistor.TAG_PROPERTIES, true)) {
+				handleProperties(in);
+			}
+			else if( in.is(BasicNetworkPersistor.TAG_LOGIC, true)) {
+				handleLogic(in);
 			}
 
 		}
 		this.currentNetwork.getStructure().finalizeStructure();
 		return this.currentNetwork;
+	}
+
+	private void handleLogic(ReadXML in) {
+		String value = in.readTextToTag();
+		if( value.equalsIgnoreCase("ART1Logic") )
+		{
+			this.currentNetwork.setLogic(new ART1Logic());
+		} else if( value.equalsIgnoreCase("BAMLogic") )
+		{
+			this.currentNetwork.setLogic(new BAMLogic());
+		}
+		else if( value.equalsIgnoreCase("BoltzmannLogic") )
+		{
+			this.currentNetwork.setLogic(new BoltzmannLogic());
+		} else if( value.equalsIgnoreCase("FeedforwardLogic") )
+		{
+			this.currentNetwork.setLogic(new FeedforwardLogic());
+		} else if( value.equalsIgnoreCase("HopfieldLogic") )
+		{
+			this.currentNetwork.setLogic(new HopfieldLogic());
+		} else if( value.equalsIgnoreCase("SimpleRecurrentLogic") )
+		{
+			this.currentNetwork.setLogic(new SimpleRecurrentLogic());
+		} else
+		{
+			try {
+				NeuralLogic logic = (NeuralLogic) Class.forName(value).newInstance();
+				this.currentNetwork.setLogic(logic);
+			} catch (ClassNotFoundException e) {
+				throw new EncogError(e);
+			} catch (InstantiationException e) {
+				throw new EncogError(e);
+			} catch (IllegalAccessException e) {
+				throw new EncogError(e);
+			}
+		}
+	}
+
+	private void handleProperties(ReadXML in) {
+		final String end = in.getTag().getName();
+		while (in.readToTag()) {
+			if (in.is(BasicNetworkPersistor.TAG_PROPERTY, true)) {
+				final String name = in.getTag().getAttributeValue(
+						BasicNetworkPersistor.ATTRIBUTE_NAME);
+				final String type = in.getTag().getAttributeValue(
+						BasicNetworkPersistor.ATTRIBUTE_TYPE);
+				
+				String value = in.readTextToTag();
+				
+				if(type.equals("D"))
+				{
+					this.currentNetwork.setProperty(name, Double.parseDouble(value));
+				} else if(type.equals("L"))
+				{
+					this.currentNetwork.setProperty(name, Long.parseLong(value));
+				} else if(type.equals("S"))
+				{
+					this.currentNetwork.setProperty(name, value);
+				}
+			}
+			if (in.is(end, false)) {
+				break;
+			}
+		}
+		
 	}
 
 	/**
@@ -241,6 +331,53 @@ public class BasicNetworkPersistor implements Persistor {
 		out.beginTag(BasicNetworkPersistor.TAG_SYNAPSES);
 		saveSynapses(out);
 		out.endTag();
+		
+		saveProperties(out);
+		saveLogic(out);
+		
+		out.endTag();
+	}
+	
+	private void saveLogic(WriteXML out)
+	{
+		out.beginTag(BasicNetworkPersistor.TAG_LOGIC);
+		NeuralLogic logic = this.currentNetwork.getLogic();
+		if( logic instanceof FeedforwardLogic ||
+			logic instanceof SimpleRecurrentLogic ||
+			logic instanceof BoltzmannLogic ||
+			logic instanceof ART1Logic ||
+			logic instanceof BAMLogic ||
+			logic instanceof HopfieldLogic )
+		{
+			out.addText(logic.getClass().getSimpleName());
+		}
+		else
+			out.addText(logic.getClass().getName());
+		out.endTag();
+	}
+	
+	private void saveProperties(WriteXML out)
+	{
+		// save any properties
+		out.beginTag(BasicNetworkPersistor.TAG_PROPERTIES);
+		for( String key: this.currentNetwork.getProperties().keySet() )
+		{
+			Object value = this.currentNetwork.getProperties().get(key);
+			String type;
+			if( value instanceof Double )
+				type = "D";
+			else if( value instanceof Long )
+				type = "L";
+			else 
+				type = "S";
+			
+			
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_NAME,key);
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_TYPE,type);
+			out.beginTag(BasicNetworkPersistor.TAG_PROPERTY);
+			out.addText(value.toString());
+			out.endTag();
+		}
 		out.endTag();
 	}
 

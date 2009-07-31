@@ -63,6 +63,8 @@ public class FeedforwardLogic implements NeuralLogic {
 			FeedforwardLogic.logger.debug("Processing layer: {}, input= {}", layer, input);
 		}
 
+		// typically used to process any recurrent layers that feed into this
+		// layer.
 		preprocessLayer(layer, input, source);
 
 		for (final Synapse synapse : layer.getNext()) {
