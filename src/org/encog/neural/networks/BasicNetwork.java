@@ -97,9 +97,16 @@ public class BasicNetwork implements Serializable, Network {
 	 */
 	private final NeuralStructure structure;
 	
+	/**
+	 * This class tells the network how to calculate the output for each of the layers.
+	 */
 	private NeuralLogic logic;
 	
-	private final Map<String,Object> properties = new HashMap<String,Object>();
+	/**
+	 * Properties about the neural network.  Some NeuralLogic classes require certian properties 
+	 * to be set.
+	 */
+	private final Map<String,String> properties = new HashMap<String,String>();
 
 	/**
 	 * The logging object.
@@ -600,15 +607,15 @@ public class BasicNetwork implements Serializable, Network {
 	
 	public void setProperty(String name, long l)
 	{
-		this.properties.put(name, new Long(l));
+		this.properties.put(name, ""+l);
 	}
 	
 	public void setProperty(String name, double d)
 	{
-		this.properties.put(name, new Double(d) );
+		this.properties.put(name, ""+d );
 	}
 
-	public Map<String, Object> getProperties() {
+	public Map<String, String> getProperties() {
 		return properties;
 	}
 	
@@ -619,12 +626,12 @@ public class BasicNetwork implements Serializable, Network {
 	
 	public long getPropertyLong(String name)
 	{
-		return (Long)this.properties.get(name);
+		return Long.parseLong(this.properties.get(name));
 	}
 	
 	public double getPropertyDouble(String name)
 	{
-		return (Double)this.properties.get(name);
+		return Double.parseDouble(this.properties.get(name));
 	}
 
 }

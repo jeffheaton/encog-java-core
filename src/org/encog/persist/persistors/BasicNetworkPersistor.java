@@ -284,21 +284,9 @@ public class BasicNetworkPersistor implements Persistor {
 			if (in.is(BasicNetworkPersistor.TAG_PROPERTY, true)) {
 				final String name = in.getTag().getAttributeValue(
 						BasicNetworkPersistor.ATTRIBUTE_NAME);
-				final String type = in.getTag().getAttributeValue(
-						BasicNetworkPersistor.ATTRIBUTE_TYPE);
 				
 				String value = in.readTextToTag();
-				
-				if(type.equals("D"))
-				{
-					this.currentNetwork.setProperty(name, Double.parseDouble(value));
-				} else if(type.equals("L"))
-				{
-					this.currentNetwork.setProperty(name, Long.parseLong(value));
-				} else if(type.equals("S"))
-				{
-					this.currentNetwork.setProperty(name, value);
-				}
+				this.currentNetwork.setProperty(name, value);
 			}
 			if (in.is(end, false)) {
 				break;
@@ -362,18 +350,8 @@ public class BasicNetworkPersistor implements Persistor {
 		out.beginTag(BasicNetworkPersistor.TAG_PROPERTIES);
 		for( String key: this.currentNetwork.getProperties().keySet() )
 		{
-			Object value = this.currentNetwork.getProperties().get(key);
-			String type;
-			if( value instanceof Double )
-				type = "D";
-			else if( value instanceof Long )
-				type = "L";
-			else 
-				type = "S";
-			
-			
+			String value = this.currentNetwork.getProperties().get(key);			
 			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_NAME,key);
-			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_TYPE,type);
 			out.beginTag(BasicNetworkPersistor.TAG_PROPERTY);
 			out.addText(value.toString());
 			out.endTag();
