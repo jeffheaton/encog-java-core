@@ -441,4 +441,14 @@ public class ART1Logic extends ARTLogic {
 		return output;
 	}
 
+	public String getLayerName(Layer layer) {
+		if( layer==this.layerF1 )
+			return "F1";
+		else if( layer==this.layerF2 )
+			return "F2";
+		else
+			return null;
+	}
+
+
 }

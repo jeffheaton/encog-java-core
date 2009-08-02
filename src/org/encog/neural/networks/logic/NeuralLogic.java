@@ -30,6 +30,7 @@ import java.io.Serializable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
+import org.encog.neural.networks.layers.Layer;
 
 /**
  * Neural logic classes implement neural network logic for a variety
@@ -51,5 +52,7 @@ public interface NeuralLogic extends Serializable {
 	 * @param network The network that this logic class belongs to.
 	 */
 	void init(BasicNetwork network);
+	
+	String getLayerName(Layer layer);
 
 }

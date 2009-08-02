@@ -27,6 +27,7 @@ package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
+import org.encog.persist.persistors.ActivationCompetitivePersistor;
 
 /**
  * An activation function that only allows a specified number, usually one,  
@@ -82,8 +83,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	}
 
 	private Persistor ActivationCompetitivePersistor() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ActivationCompetitivePersistor();
 	}
 
 	public void activationFunction(double[] d) {

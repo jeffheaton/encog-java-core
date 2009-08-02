@@ -150,6 +150,15 @@ public class FeedforwardLogic implements NeuralLogic {
 		// nothing to do		
 	}
 	
-	
+	public String getLayerName(Layer layer) {
+		if( layer==this.network.getInputLayer() && layer==this.network.getOutputLayer() )
+			return "Input & Output";
+		else if( layer==this.network.getInputLayer() )
+			return "Input";
+		else if( layer==this.network.getOutputLayer() )
+			return "Output";
+		else
+			return null;
+	}
 
 }

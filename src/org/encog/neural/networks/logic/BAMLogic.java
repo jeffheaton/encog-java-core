@@ -225,4 +225,14 @@ public class BAMLogic implements NeuralLogic  {
 		this.synapseOutputToInput =  network.getStructure().findSynapse(this.outputLayer, this.inputLayer, true);		
 		
 	}
+	
+	public String getLayerName(Layer layer) {
+		if( layer==this.inputLayer )
+			return "F1";
+		else if( layer==this.outputLayer )
+			return "F2";
+		else
+			return null;
+	}
+	
 }
