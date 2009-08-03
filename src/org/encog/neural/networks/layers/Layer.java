@@ -39,7 +39,7 @@ import org.encog.persist.EncogPersistedObject;
  * 
  * @author jheaton
  */
-public interface Layer extends Cloneable, EncogPersistedObject {
+public interface Layer extends EncogPersistedObject {
 
 	/**
 	 * Add a layer to this layer.  The "next" layer being added will
@@ -67,11 +67,6 @@ public interface Layer extends Cloneable, EncogPersistedObject {
 	 * @param synapse The synapse to add.
 	 */
 	void addSynapse(Synapse synapse);
-
-	/**
-	 * @return A clone of this object.
-	 */
-	Object clone();
 
 	/**
 	 * Compute the output for this layer.

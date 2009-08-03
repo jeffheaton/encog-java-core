@@ -206,19 +206,6 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Clone this object. 
-	 * @return A cloned version of this object.
-	 */
-	@Override
-	public Object clone() {
-		final BasicLayer result = new BasicLayer(
-				(ActivationFunction) this.activationFunction.clone(),
-				hasThreshold(), getNeuronCount());
-		return result;
-
-	}
-
-	/**
 	 * Compute the outputs for this layer given the input pattern. The output is
 	 * also stored in the fire instance variable.
 	 * 

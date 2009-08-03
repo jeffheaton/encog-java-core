@@ -34,7 +34,7 @@ import java.io.Serializable;
  * @author jheaton
  *
  */
-public interface EncogPersistedObject extends Serializable, Cloneable  {
+public interface EncogPersistedObject extends Serializable  {
 	
 	/**
 	 * Set the description of this object.
@@ -64,8 +64,4 @@ public interface EncogPersistedObject extends Serializable, Cloneable  {
 	 */
 	Persistor createPersistor();
 	
-	/**
-	 * @return A cloned version of this object.
-	 */
-	Object clone();
 }

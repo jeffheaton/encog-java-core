@@ -37,6 +37,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNeuralDataSetPersistor;
+import org.encog.util.ObjectCloner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,21 +204,7 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject ,
 	 */
 	@Override
 	public Object clone() {
-		final BasicNeuralDataSet result = new BasicNeuralDataSet();
-		for (final NeuralDataPair pair : this) {
-			if (pair.getIdeal() == null) {
-				final BasicNeuralData input = new BasicNeuralData(pair
-						.getInput());
-				result.add(new BasicNeuralDataPair(input));
-			} else {
-				final BasicNeuralData input = new BasicNeuralData(pair
-						.getInput());
-				final BasicNeuralData ideal = new BasicNeuralData(pair
-						.getIdeal());
-				result.add(new BasicNeuralDataPair(input, ideal));
-			}
-		}
-		return result;
+		return ObjectCloner.deepCopy(this);
 	}
 
 	/**
@@ -225,7 +212,6 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject ,
 	 */
 	public void close() {
 		// nothing to close
-
 	}
 
 	/**

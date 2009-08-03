@@ -45,6 +45,7 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.ErrorCalculation;
+import org.encog.util.ObjectCloner;
 import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -223,43 +224,13 @@ public class BasicNetwork implements Serializable, Network {
 
 	/**
 	 * Return a clone of this neural network. Including structure, weights and
-	 * threshold values.
+	 * threshold values. This is a deep copy.
 	 * 
 	 * @return A cloned copy of the neural network.
 	 */
 	@Override
 	public Object clone() {
-		final BasicNetwork result = new BasicNetwork();
-		final Layer input = cloneLayer(this.inputLayer, result);
-		result.setInputLayer(input);
-		result.getStructure().finalizeStructure();
-		return result;
-	}
-
-	/**
-	 * Clone an individual layer, called internally by clone.
-	 * @param layer The layer to be cloned.
-	 * @param network The new network being created.
-	 * @return The cloned layer.
-	 */
-	private Layer cloneLayer(final Layer layer, final BasicNetwork network) {
-		final Layer newLayer = (Layer) layer.clone();
-
-		if (layer == getOutputLayer()) {
-			network.setOutputLayer(newLayer);
-		}
-
-		for (final Synapse synapse : layer.getNext()) {
-			final Synapse newSynapse = (Synapse) synapse.clone();
-			newSynapse.setFromLayer(layer);
-			if (synapse.getToLayer() != null) {
-				final Layer to = cloneLayer(synapse.getToLayer(), network);
-				newSynapse.setToLayer(to);
-			}
-			newLayer.getNext().add(newSynapse);
-
-		}
-		return newLayer;
+		return ObjectCloner.deepCopy(this);
 	}
 
 	/**
