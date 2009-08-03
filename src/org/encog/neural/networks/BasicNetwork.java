@@ -385,40 +385,6 @@ public class BasicNetwork implements Serializable, Network {
 	}
 
 	/**
-	 * Called to cause the network to attempt to infer which layer should be
-	 * the output layer.
-	 */
-	public void inferOutputLayer() {
-		// set the output layer to null, if we can figure it out it will be set
-		// to something else
-		this.outputLayer = null;
-
-		// if we do not know the input layer, then there is no way to infer the
-		// output layer
-		if (getInputLayer() == null) {
-			return;
-		}
-
-		this.outputLayer = inferOutputLayer(this.inputLayer);
-	}
-
-	/**
-	 * Internal method that allows the use of recurrsion to determine
-	 * the output layer.
-	 * @param layer The layer currently being evaluated.
-	 * @return The potential output layer.
-	 */
-	private Layer inferOutputLayer(final Layer layer) {
-		for (final Synapse synapse : layer.getNext()) {
-			if (synapse.isTeachable() && !synapse.isSelfConnected()) {
-				return inferOutputLayer(synapse.getToLayer());
-			}
-		}
-
-		return layer;
-	}
-
-	/**
 	 * Determine if this layer is hidden.
 	 * @param layer The layer to evaluate.
 	 * @return True if this layer is a hidden layer.

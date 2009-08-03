@@ -211,12 +211,6 @@ public interface Network extends EncogPersistedObject {
 	int hashCode();
 
 	/**
-	 * Called to cause the network to attempt to infer which layer should be the
-	 * output layer.
-	 */
-	void inferOutputLayer();
-
-	/**
 	 * Determine if this layer is hidden.
 	 * 
 	 * @param layer
