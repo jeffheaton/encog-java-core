@@ -66,6 +66,10 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class BasicNetwork implements Serializable, Network {
+	
+	public final static String TAG_INPUT = "INPUT";
+	public final static String TAG_OUTPUT = "OUTPUT";
+	
 	/**
 	 * Serial id for this class.
 	 */
@@ -103,10 +107,12 @@ public class BasicNetwork implements Serializable, Network {
 	private NeuralLogic logic;
 	
 	/**
-	 * Properties about the neural network.  Some NeuralLogic classes require certian properties 
+	 * Properties about the neural network.  Some NeuralLogic classes require certain properties 
 	 * to be set.
 	 */
 	private final Map<String,String> properties = new HashMap<String,String>();
+	
+	private final Map<String,Layer> layerTags = new HashMap<String,Layer>();
 
 	/**
 	 * The logging object.
@@ -526,6 +532,7 @@ public class BasicNetwork implements Serializable, Network {
 	 */
 	public void setInputLayer(final Layer input) {
 		this.inputLayer = input;
+		this.tagLayer(BasicNetwork.TAG_INPUT, input);
 	}
 
 	/**
@@ -542,6 +549,7 @@ public class BasicNetwork implements Serializable, Network {
 	 */
 	public void setOutputLayer(final Layer outputLayer) {
 		this.outputLayer = outputLayer;
+		this.tagLayer(BasicNetwork.TAG_OUTPUT, outputLayer);
 	}
 
 	/**
@@ -634,4 +642,23 @@ public class BasicNetwork implements Serializable, Network {
 		return Double.parseDouble(this.properties.get(name));
 	}
 
+	public Map<String, Layer> getLayerTags() {
+		return layerTags;
+	}
+
+	public void tagLayer(String tag, Layer layer)
+	{
+		this.layerTags.put(tag,layer);
+	}
+	
+	public void clearLayerTags()
+	{
+		this.layerTags.clear();
+	}
+	
+	public Layer getLayer(String tag)
+	{
+		return this.layerTags.get(tag);
+	}
+	
 }
