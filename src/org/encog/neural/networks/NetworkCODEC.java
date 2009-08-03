@@ -28,6 +28,9 @@ package org.encog.neural.networks;
 
 import java.util.Collection;
 
+import org.encog.matrix.Matrix;
+import org.encog.matrix.MatrixError;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
@@ -44,6 +47,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class NetworkCODEC {
+
 
 	/**
 	 * Use an array to populate the memory of the neural network.
@@ -125,12 +129,40 @@ public final class NetworkCODEC {
 
 		return result;
 	}
+	
+	public static boolean equals(BasicNetwork network1, BasicNetwork network2, final int precision)
+	{
+		Double[] array1 = networkToArray(network1);
+		Double[] array2 = networkToArray(network2);
+		
+		if( array1.length != array2.length )
+			return false;
+		
+		final double test = Math.pow(10.0, precision);
+		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
+			final String str = "Precision of " + precision
+					+ " decimal places is not supported.";
+			if (NetworkCODEC.logger.isErrorEnabled()) {
+				NetworkCODEC.logger.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
+		
+		for(int i=0;i<array1.length;i++)
+		{
+			long l1 = (long)(array1[i].doubleValue() * test);
+			long l2 = (long)(array1[i].doubleValue() * test);
+			if( l1!=l2 )
+				return false;
+		}
+		
+		return true;
+	}
 
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final static Logger logger = LoggerFactory.getLogger(NetworkCODEC.class);
 
 	/**
 	 * Private constructor.

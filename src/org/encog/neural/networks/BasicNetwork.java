@@ -233,38 +233,6 @@ public class BasicNetwork implements Serializable, Network {
 		return ObjectCloner.deepCopy(this);
 	}
 
-	/**
-	 * Used to compare one neural network to another, compare two layers.
-	 * @param layerThis The layer being compared.
-	 * @param layerOther The other layer.
-	 * @param precision The precision to use, how many decimal places.
-	 * @return Returns true if the two layers are the same.
-	 */
-	public boolean compareLayer(final Layer layerThis, final Layer layerOther,
-			final int precision) {
-		final Iterator<Synapse> iteratorOther = layerOther.getNext().iterator();
-
-		for (final Synapse synapseThis : layerThis.getNext()) {
-			if (!iteratorOther.hasNext()) {
-				return false;
-			}
-			final Synapse synapseOther = iteratorOther.next();
-			if (!synapseThis.getMatrix().equals(synapseOther.getMatrix(),
-					precision)) {
-				return false;
-			}
-			if (synapseThis.getToLayer() != null) {
-				if (synapseOther.getToLayer() == null) {
-					return false;
-				}
-				if (!compareLayer(synapseThis.getToLayer(), synapseOther
-						.getToLayer(), precision)) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
 
 	/**
 	 * Compute the output for a given input to the neural network.
@@ -311,7 +279,7 @@ public class BasicNetwork implements Serializable, Network {
 	 * @return True if the two networks are equal.
 	 */
 	public boolean equals(final BasicNetwork other) {
-		return compareLayer(this.inputLayer, other.getInputLayer(),
+		return equals(other,
 				Encog.DEFAULT_PRECISION);
 	}
 
@@ -324,7 +292,7 @@ public class BasicNetwork implements Serializable, Network {
 	 * @return True if the two neural networks are equal.
 	 */
 	public boolean equals(final BasicNetwork other, final int precision) {
-		return compareLayer(this.inputLayer, other.getInputLayer(), precision);
+		return NetworkCODEC.equals(this, other, precision);
 	}
 
 	/**

@@ -99,20 +99,6 @@ public interface Network extends EncogPersistedObject {
 	Object clone();
 
 	/**
-	 * Used to compare one neural network to another, compare two layers.
-	 * 
-	 * @param layerThis
-	 *            The layer being compared.
-	 * @param layerOther
-	 *            The other layer.
-	 * @param precision
-	 *            The precision to use, how many decimal places.
-	 * @return Returns true if the two layers are the same.
-	 */
-	boolean compareLayer(final Layer layerThis, final Layer layerOther,
-			final int precision);
-
-	/**
 	 * Compute the output for a given input to the neural network.
 	 * 
 	 * @param input
