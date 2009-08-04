@@ -33,7 +33,7 @@ public class TestCompetitive extends TestCase  {
 
 	private Synapse findSynapse(BasicNetwork network)
 	{
-		Layer input = network.getInputLayer();
+		Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
 		return input.getNext().get(0);
 	}
 	

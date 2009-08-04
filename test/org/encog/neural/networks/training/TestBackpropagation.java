@@ -42,15 +42,14 @@ public class TestBackpropagation extends TestCase   {
 	public void testToString() throws Throwable
 	{
 		BasicNetwork network = CreateNetwork.createXORNetworkUntrained();
-		network.getInputLayer().toString();
+		Layer layer = network.getLayer(BasicNetwork.TAG_INPUT);
+		layer.toString();
 	}
 	
 	@Test
 	public void testCounts() throws Throwable
 	{
 		BasicNetwork network = CreateNetwork.createXORNetworkUntrained();
-		network.getInputLayer().toString();
-		Assert.assertEquals(1, network.getHiddenLayerCount());
 		Assert.assertEquals(6, network.calculateNeuronCount());		
 	}
 
@@ -58,14 +57,14 @@ public class TestBackpropagation extends TestCase   {
 	public void testPrune() throws Throwable
 	{
 		BasicNetwork network = CreateNetwork.createXORNetworkUntrained();
-		Iterator<Layer> itr = network.getHiddenLayers().iterator();
-		BasicLayer hidden = (BasicLayer)itr.next();
+		Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		Layer hiddenLayer = inputLayer.getNext().get(0).getToLayer();
 		
-		Assert.assertEquals(3,hidden.getNeuronCount());
+		Assert.assertEquals(3,hiddenLayer.getNeuronCount());
 
 		PruneSelective prune = new PruneSelective(network);
-		prune.prune(hidden, 1);
+		prune.prune(hiddenLayer, 1);
 		
-		Assert.assertEquals(2,hidden.getNeuronCount());
+		Assert.assertEquals(2,hiddenLayer.getNeuronCount());
 	}
 }
