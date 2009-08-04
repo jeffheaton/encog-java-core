@@ -77,16 +77,6 @@ public class BasicNetwork implements Serializable, Network {
 	private static final long serialVersionUID = -136440631687066461L;
 
 	/**
-	 * The input layer.
-	 */
-	private Layer inputLayer;
-
-	/**
-	 * The output layer.
-	 */
-	private Layer outputLayer;
-
-	/**
 	 * The description of this object.
 	 */
 	private String description;
@@ -159,13 +149,14 @@ public class BasicNetwork implements Serializable, Network {
 	public void addLayer(final Layer layer, final SynapseType type) {
 
 		// is this the first layer? If so, mark as the input layer.
-		if (this.inputLayer == null) {
-			this.outputLayer = layer; 
-			this.inputLayer = layer;
+		if ( this.layerTags.size() == 0 ) {
+			this.tagLayer(BasicNetwork.TAG_INPUT, layer);
+			this.tagLayer(BasicNetwork.TAG_OUTPUT, layer);
 		} else {
 			// add the layer to any previous layers
-			this.outputLayer.addNext(layer, type);
-			this.outputLayer = layer;
+			Layer outputLayer = this.getLayer(BasicNetwork.TAG_OUTPUT);
+			outputLayer.addNext(layer, type);
+			this.tagLayer(BasicNetwork.TAG_OUTPUT, layer);
 		}
 	}
 
@@ -206,13 +197,16 @@ public class BasicNetwork implements Serializable, Network {
 	 * @param input The input data.
 	 */
 	public void checkInputSize(final NeuralData input) {
-		if (input.size() != this.inputLayer.getNeuronCount()) {
+		
+		Layer inputLayer = this.getLayer(BasicNetwork.TAG_INPUT);
+		
+		if (input.size() != inputLayer.getNeuronCount()) {
 
 			final String str = 
 				"Size mismatch: Can't compute outputs for input size="
 					+ input.size()
 					+ " for input layer size="
-					+ this.inputLayer.getNeuronCount();
+					+ inputLayer.getNeuronCount();
 
 			if (BasicNetwork.logger.isErrorEnabled()) {
 				BasicNetwork.logger.error(str);
@@ -303,54 +297,10 @@ public class BasicNetwork implements Serializable, Network {
 	}
 
 	/**
-	 * Get the count for how many hidden layers are present.
-	 * 
-	 * @return The hidden layer count.
-	 */
-	public int getHiddenLayerCount() {
-		return getHiddenLayers().size();
-	}
-
-	/**
-	 * Get a collection of the hidden layers in the network.
-	 * 
-	 * @return The hidden layers.
-	 */
-	public Collection<Layer> getHiddenLayers() {
-		final Collection<Layer> result = new ArrayList<Layer>();
-
-		for (final Layer layer : this.structure.getLayers()) {
-			if (isHidden(layer)) {
-				result.add(layer);
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * Get the input layer.
-	 * 
-	 * @return The input layer.
-	 */
-	public Layer getInputLayer() {
-		return this.inputLayer;
-	}
-
-	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return this.name;
-	}
-
-	/**
-	 * Get the output layer.
-	 * 
-	 * @return The output layer.
-	 */
-	public Layer getOutputLayer() {
-		return this.outputLayer;
 	}
 
 	/**
@@ -385,33 +335,6 @@ public class BasicNetwork implements Serializable, Network {
 	}
 
 	/**
-	 * Determine if this layer is hidden.
-	 * @param layer The layer to evaluate.
-	 * @return True if this layer is a hidden layer.
-	 */
-	public boolean isHidden(final Layer layer) {
-		return !isInput(layer) && !isOutput(layer);
-	}
-
-	/**
-	 * Determine if this layer is the input layer.
-	 * @param layer The layer to evaluate.
-	 * @return True if this layer is the input layer.
-	 */
-	public boolean isInput(final Layer layer) {
-		return this.inputLayer == layer;
-	}
-
-	/**
-	 * Determine if this layer is the output layer.
-	 * @param layer The layer to evaluate.
-	 * @return True if this layer is the output layer.
-	 */
-	public boolean isOutput(final Layer layer) {
-		return this.outputLayer == layer;
-	}
-
-	/**
 	 * Reset the weight matrix and the thresholds.
 	 * 
 	 */
@@ -430,31 +353,11 @@ public class BasicNetwork implements Serializable, Network {
 	}
 
 	/**
-	 * Define the input layer for the network.
-	 * 
-	 * @param input
-	 *            The new input layer.
-	 */
-	public void setInputLayer(final Layer input) {
-		this.inputLayer = input;
-		this.tagLayer(BasicNetwork.TAG_INPUT, input);
-	}
-
-	/**
 	 * @param name
 	 *            the name to set
 	 */
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	/**
-	 * @param outputLayer
-	 *            the outputLayer to set
-	 */
-	public void setOutputLayer(final Layer outputLayer) {
-		this.outputLayer = outputLayer;
-		this.tagLayer(BasicNetwork.TAG_OUTPUT, outputLayer);
 	}
 
 	/**

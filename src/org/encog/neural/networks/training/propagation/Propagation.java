@@ -112,14 +112,27 @@ public class Propagation extends BasicTraining {
 	 */
 	public void backwardPass(final NeuralData ideal) {
 
+		// make sure the network has an output layer
+		Layer outputLayer = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
+		
+		if( outputLayer==null )
+		{
+			String str = "To use propagation training, one layer must be tagged OUTPUT.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
+			}
+
+			throw new NeuralNetworkError(str);			
+		}
+		
 		// make sure that the input is of the correct size
-		if (ideal.size() != this.network.getOutputLayer().getNeuronCount()) {
+		if (ideal.size() != outputLayer.getNeuronCount()) {
 
 			final String str = "Size mismatch: Can't calcError for " 
 					+ "ideal input size="
 					+ ideal.size()
 					+ " for output layer size="
-					+ this.network.getOutputLayer().getNeuronCount();
+					+ outputLayer.getNeuronCount();
 
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
@@ -159,7 +172,7 @@ public class Propagation extends BasicTraining {
 			final NeuralData ideal) {
 
 		// get the output layer
-		final Layer outputLayer = this.network.getOutputLayer();
+		Layer outputLayer = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
 
 		// construct the level
 		final PropagationLevel level = this.levels.get(0);
@@ -192,7 +205,7 @@ public class Propagation extends BasicTraining {
 	 */
 	private void construct() {
 		// get the output layer
-		final Layer outputLayer = this.network.getOutputLayer();
+		Layer outputLayer = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
 
 		// construct the level
 		final PropagationLevel level = new PropagationLevel(this, outputLayer);

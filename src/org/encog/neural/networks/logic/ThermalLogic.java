@@ -156,8 +156,8 @@ public class ThermalLogic extends SimpleRecurrentLogic {
 	public void init(BasicNetwork network) {
 		super.init(network);
 		// hold references to parts of the network we will need later
-		this.thermalLayer = this.getNetwork().getInputLayer();
+		this.thermalLayer = this.getNetwork().getLayer(BasicNetwork.TAG_INPUT);
 		this.thermalSynapse = this.getNetwork().getStructure().findSynapse(this.thermalLayer, this.thermalLayer, true);
-		this.currentState = new BiPolarNeuralData(this.getNetwork().getInputLayer().getNeuronCount());		
+		this.currentState = new BiPolarNeuralData(this.thermalLayer.getNeuronCount());		
 	}
 }

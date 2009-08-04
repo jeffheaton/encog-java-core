@@ -47,15 +47,18 @@ import org.slf4j.LoggerFactory;
  */
 public class BAMPattern implements NeuralNetworkPattern {
 
+	public final static String TAG_F1 = "F1";
+	public final static String TAG_F2 = "F2";
+	
 	/**
 	 * The number of neurons in the first layer.
 	 */
-	private int inputNeurons;
+	private int f1Neurons;
 	
 	/**
 	 * The number of neurons in the second layer.
 	 */
-	private int outputNeurons;
+	private int f2Neurons;
 	
 	/**
 	 * The logging object.
@@ -79,7 +82,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * Clear any settings on the pattern.
 	 */
 	public void clear() {
-		this.inputNeurons = this.outputNeurons = 0;
+		this.f1Neurons = this.f2Neurons = 0;
 		
 	}
 
@@ -89,30 +92,28 @@ public class BAMPattern implements NeuralNetworkPattern {
 	public BasicNetwork generate() {
 		BasicNetwork network = new BasicNetwork(new BAMLogic());
 		
-		Layer inputLayer = new BasicLayer(new ActivationBiPolar(), false,
-				inputNeurons);
-		Layer outputLayer = new BasicLayer(new ActivationBiPolar(), false,
-				outputNeurons);
-		Synapse synapseInputToOutput = new WeightedSynapse(inputLayer,
-				outputLayer);
-		Synapse synapseOutputToInput = new WeightedSynapse(outputLayer,
-				inputLayer);
-		inputLayer.addSynapse(synapseInputToOutput);
-		outputLayer.addSynapse(synapseOutputToInput);
+		Layer f1Layer = new BasicLayer(new ActivationBiPolar(), false,
+				f1Neurons);
+		Layer f2Layer = new BasicLayer(new ActivationBiPolar(), false,
+				f2Neurons);
+		Synapse synapseInputToOutput = new WeightedSynapse(f1Layer,
+				f2Layer);
+		Synapse synapseOutputToInput = new WeightedSynapse(f2Layer,
+				f1Layer);
+		f1Layer.addSynapse(synapseInputToOutput);
+		f2Layer.addSynapse(synapseOutputToInput);
 		
-		network.setInputLayer(inputLayer);
-		network.setOutputLayer(outputLayer);
+		network.tagLayer(BAMPattern.TAG_F1, f2Layer);
+		network.tagLayer(BAMPattern.TAG_F1, f2Layer);
 		
 		network.getStructure().finalizeStructure();
-		network.setInputLayer(inputLayer);
-		network.setOutputLayer(outputLayer);
 		network.getStructure().finalizeStructure();
 		
-		inputLayer.setY(PatternConst.START_Y);
-		outputLayer.setY(PatternConst.START_Y);
+		f1Layer.setY(PatternConst.START_Y);
+		f2Layer.setY(PatternConst.START_Y);
 		
-		inputLayer.setX(PatternConst.START_X);
-		inputLayer.setX(PatternConst.INDENT_X);
+		f1Layer.setX(PatternConst.START_X);
+		f2Layer.setX(PatternConst.INDENT_X);
 		
 		return network;
 	}
@@ -131,13 +132,13 @@ public class BAMPattern implements NeuralNetworkPattern {
 	}
 
 	/**
-	 * Set the input neurons.  The BAM really does not have an input and output
+	 * Set the F1 neurons.  The BAM really does not have an input and output
 	 * layer, so this is simply setting the number of neurons that are in the
 	 * first layer.
 	 * @param count The number of neurons in the first layer.
 	 */
-	public void setInputNeurons(int count) {
-		this.inputNeurons = count;		
+	public void setF1Neurons(int count) {
+		this.f1Neurons = count;		
 	}
 
 	/**
@@ -146,8 +147,29 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * second layer.
 	 * @param count The number of neurons in the second layer.
 	 */
+	public void setF2Neurons(int count) {
+		this.f2Neurons = count;		
+	}
+
+	@Override
+	public void setInputNeurons(int count) {
+		final String str = "A BAM network has no input layer, consider setting F1 layer.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new PatternError(str);
+		
+	}
+
+	@Override
 	public void setOutputNeurons(int count) {
-		this.outputNeurons = count;		
+		final String str = "A BAM network has no output layer, consider setting F2 layer.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new PatternError(str);
+
+		
 	}
 
 }

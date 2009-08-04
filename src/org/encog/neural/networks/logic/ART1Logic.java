@@ -33,6 +33,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.pattern.ART1Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -399,13 +400,13 @@ public class ART1Logic extends ARTLogic {
 	{
 		super.init(network);
 		
-		this.layerF1 = this.getNetwork().getInputLayer();
-		this.layerF2 = this.getNetwork().getOutputLayer();
-		this.inhibitF2 = new boolean[network.getOutputLayer().getNeuronCount()];
+		this.layerF1 = this.getNetwork().getLayer(ART1Pattern.TAG_F1);
+		this.layerF2 = this.getNetwork().getLayer(ART1Pattern.TAG_F2);
+		this.inhibitF2 = new boolean[this.layerF2.getNeuronCount()];
 		this.synapseF1toF2 = this.getNetwork().getStructure().findSynapse(this.layerF1, this.layerF2,true);
 		this.synapseF2toF1 = this.getNetwork().getStructure().findSynapse(this.layerF2, this.layerF1,true);
-		this.outputF1 = new BiPolarNeuralData(network.getInputLayer().getNeuronCount());
-		this.outputF2 = new BiPolarNeuralData(network.getOutputLayer().getNeuronCount());
+		this.outputF1 = new BiPolarNeuralData(this.layerF1.getNeuronCount());
+		this.outputF2 = new BiPolarNeuralData(this.layerF2.getNeuronCount());
 
 		this.a1 = this.getNetwork().getPropertyDouble(ARTLogic.PROPERTY_A1);
 		this.b1 = this.getNetwork().getPropertyDouble(ARTLogic.PROPERTY_B1);
@@ -414,7 +415,7 @@ public class ART1Logic extends ARTLogic {
 		this.l = this.getNetwork().getPropertyDouble(ARTLogic.PROPERTY_L);
 		this.vigilance = this.getNetwork().getPropertyDouble(ARTLogic.PROPERTY_VIGILANCE);
 
-		this.noWinner = network.getOutputLayer().getNeuronCount();
+		this.noWinner = this.layerF2.getNeuronCount();
 		reset();
 
 	}
@@ -440,15 +441,4 @@ public class ART1Logic extends ARTLogic {
 		compute((BiPolarNeuralData)input,output);
 		return output;
 	}
-
-	public String getLayerName(Layer layer) {
-		if( layer==this.layerF1 )
-			return "F1";
-		else if( layer==this.layerF2 )
-			return "F2";
-		else
-			return null;
-	}
-
-
 }

@@ -30,6 +30,7 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
@@ -48,8 +49,10 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 			throw new NeuralNetworkError(
 					"An ADALINE network only has two layers.");
 		this.network = network;
+		
+		Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
 
-		this.synapse = network.getInputLayer().getNext().get(0);
+		this.synapse = input.getNext().get(0);
 		this.training = training;
 		this.learningRate = learningRate;
 	}
@@ -61,6 +64,9 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	public void iteration() {
 
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
+		
+		Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
 
 		for (NeuralDataPair pair : this.training) {
 			// calculate the error
@@ -71,7 +77,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 						- output.getData(currentAdaline);
 
 				// weights
-				for (int i = 0; i < this.network.getInputLayer()
+				for (int i = 0; i < inputLayer
 						.getNeuronCount(); i++) {
 					double input = pair.getInput().getData(i);
 					synapse.getMatrix().add(i, currentAdaline,
@@ -79,10 +85,10 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 				}
 
 				// threshold (bias)
-				double t = this.network.getOutputLayer().getThreshold(
+				double t = outputLayer.getThreshold(
 						currentAdaline);
 				t += learningRate * diff;
-				this.network.getOutputLayer().setThreshold(currentAdaline, t);
+				outputLayer.setThreshold(currentAdaline, t);
 			}
 			
 			errorCalculation.updateError(output, pair.getIdeal());

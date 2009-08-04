@@ -32,6 +32,7 @@ import org.encog.neural.networks.NeuralDataMapping;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.pattern.BAMPattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,24 +53,24 @@ public class BAMLogic implements NeuralLogic  {
 	private BasicNetwork network;
 
 	/**
-	 * The input layer.
+	 * The F1 layer.
 	 */
-	private Layer inputLayer;
+	private Layer f1Layer;
 
 	/**
-	 * The output layer.
+	 * The F2 layer.
 	 */
-	private Layer outputLayer;
+	private Layer f2Layer;
 
 	/**
 	 * The connection between the input and output layer.
 	 */
-	private Synapse synapseInputToOutput;
+	private Synapse synapseF1ToF2;
 	
 	/**
 	 * The connection between the output and the input layer.
 	 */
-	private Synapse synapseOutputToInput;
+	private Synapse synapseF2ToF1;
 	
 	/**
 	 * The logging object.
@@ -80,15 +81,15 @@ public class BAMLogic implements NeuralLogic  {
 	/**
 	 * @return The count of input neurons.
 	 */
-	public int getInputNeurons() {
-		return this.inputLayer.getNeuronCount();
+	public int getF1Neurons() {
+		return this.f1Layer.getNeuronCount();
 	}
 
 	/**
 	 * @return The count of output neurons.
 	 */
-	public int getOutputNeurons() {
-		return this.outputLayer.getNeuronCount();
+	public int getF2Neurons() {
+		return this.f2Layer.getNeuronCount();
 	}
 
 	/**
@@ -101,12 +102,12 @@ public class BAMLogic implements NeuralLogic  {
 
 		int weight;
 
-		for (int i = 0; i < getInputNeurons(); i++) {
-			for (int j = 0; j < getOutputNeurons(); j++) {
+		for (int i = 0; i < getF1Neurons(); i++) {
+			for (int j = 0; j < getF2Neurons(); j++) {
 				weight = (int) (inputPattern.getData(i) * outputPattern
 						.getData(j));
-				this.synapseInputToOutput.getMatrix().add(i, j, weight);
-				this.synapseOutputToInput.getMatrix().add(j, i, weight);
+				this.synapseF1ToF2.getMatrix().add(i, j, weight);
+				this.synapseF2ToF1.getMatrix().add(j, i, weight);
 			}
 		}
 
@@ -116,8 +117,8 @@ public class BAMLogic implements NeuralLogic  {
 	 * Clear any connection weights.
 	 */
 	public void clear() {
-		this.synapseInputToOutput.getMatrix().clear();
-		this.synapseOutputToInput.getMatrix().clear();
+		this.synapseF1ToF2.getMatrix().clear();
+		this.synapseF2ToF1.getMatrix().clear();
 	}
 
 	/**
@@ -188,9 +189,9 @@ public class BAMLogic implements NeuralLogic  {
 
 		do {
 			
-				stable1 = propagateLayer(this.synapseInputToOutput,
+				stable1 = propagateLayer(this.synapseF1ToF2,
 						input.getFrom(), input.getTo());
-				stable2 = propagateLayer(this.synapseOutputToInput, input.getTo(),
+				stable2 = propagateLayer(this.synapseF2ToF1, input.getTo(),
 						input.getFrom());
 
 			
@@ -219,20 +220,10 @@ public class BAMLogic implements NeuralLogic  {
 	 */
 	public void init(BasicNetwork network) {
 		this.network = network;
-		this.inputLayer = network.getInputLayer();
-		this.outputLayer = network.getOutputLayer();
-		this.synapseInputToOutput = network.getStructure().findSynapse(this.inputLayer, this.outputLayer, true);
-		this.synapseOutputToInput =  network.getStructure().findSynapse(this.outputLayer, this.inputLayer, true);		
+		this.f1Layer = network.getLayer(BAMPattern.TAG_F1);
+		this.f2Layer = network.getLayer(BAMPattern.TAG_F2);
+		this.synapseF1ToF2 = network.getStructure().findSynapse(this.f1Layer, this.f2Layer, true);
+		this.synapseF2ToF1 =  network.getStructure().findSynapse(this.f2Layer, this.f1Layer, true);		
 		
-	}
-	
-	public String getLayerName(Layer layer) {
-		if( layer==this.inputLayer )
-			return "F1";
-		else if( layer==this.outputLayer )
-			return "F2";
-		else
-			return null;
-	}
-	
+	}	
 }

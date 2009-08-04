@@ -65,15 +65,22 @@ public class PruneIncremental extends ConcurrentJob {
 	public static String networkToString(final BasicNetwork network) {
 		final StringBuilder result = new StringBuilder();
 		int num=1;
-		for (final Layer layer : network.getHiddenLayers()) {
+		
+		Layer layer = network.getLayer(BasicNetwork.TAG_INPUT);
+		
+		// display only hidden layers
+		while( layer.getNext().size()>0 )
+		{
+			layer = layer.getNext().get(0).getToLayer();
+			
 			if (result.length() > 0) {
 				result.append(",");
 			}
 			result.append("H");
 			result.append(num++);
 			result.append("=");
-			result.append(layer.getNeuronCount());
-		}
+			result.append(layer.getNeuronCount());	
+		} 
 
 		return result.toString();
 	}

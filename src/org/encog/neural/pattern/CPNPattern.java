@@ -39,6 +39,9 @@ import org.slf4j.LoggerFactory;
  */
 public class CPNPattern implements NeuralNetworkPattern {
 	
+	public final static String TAG_INSTAR = "INSTAR";
+	public final static String TAG_OUTSTAR = "OUTSTAR";
+	
 	/**
 	 * The number of neurons in the instar layer.
 	 */
@@ -106,6 +109,13 @@ public class CPNPattern implements NeuralNetworkPattern {
 		
 		outstar.setX(PatternConst.START_X);
 		outstar.setY(y);
+		
+		// tag as needed
+		network.tagLayer(BasicNetwork.TAG_INPUT, input);
+		network.tagLayer(BasicNetwork.TAG_OUTPUT, outstar);
+		network.tagLayer(CPNPattern.TAG_INSTAR, instar);
+		network.tagLayer(CPNPattern.TAG_OUTSTAR, outstar);
+		
 		return network;
 	}
 

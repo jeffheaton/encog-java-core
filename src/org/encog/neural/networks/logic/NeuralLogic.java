@@ -52,7 +52,4 @@ public interface NeuralLogic extends Serializable {
 	 * @param network The network that this logic class belongs to.
 	 */
 	void init(BasicNetwork network);
-	
-	String getLayerName(Layer layer);
-
 }

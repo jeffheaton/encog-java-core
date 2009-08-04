@@ -57,74 +57,74 @@ public class BasicNetworkPersistor implements Persistor {
 	 * The layers tag.
 	 */
 	public static final String TAG_LAYERS = "layers";
-	
+
 	/**
 	 * The synapses tag.
 	 */
 	public static final String TAG_SYNAPSES = "synapses";
-	
+
 	/**
 	 * The synapse tag.
 	 */
 	public static final String TAG_SYNAPSE = "synapse";
-	
+
 	/**
 	 * The properties tag.
 	 */
 	public static final String TAG_PROPERTIES = "properties";
-	
+
 	public static final String TAG_LOGIC = "logic";
-	
+
 	/**
 	 * The layer synapse.
 	 */
 	public static final String TAG_LAYER = "layer";
-	
+
 	public static final String TAG_PROPERTY = "Property";
-	
+
 	/**
 	 * The id attribute.
 	 */
 	public static final String ATTRIBUTE_ID = "id";
-	
+
 	public static final String ATTRIBUTE_NAME = "name";
 	public static final String ATTRIBUTE_VALUE = "value";
-	
+
 	/**
 	 * The type attribute.
 	 */
 	public static final String ATTRIBUTE_TYPE = "type";
-	
+
 	/**
 	 * The input layer type.
 	 */
 	public static final String ATTRIBUTE_TYPE_INPUT = "input";
-	
+
 	/**
 	 * The output layer type.
 	 */
 	public static final String ATTRIBUTE_TYPE_OUTPUT = "output";
-	
+
 	/**
 	 * The hidden layer type.
 	 */
 	public static final String ATTRIBUTE_TYPE_HIDDEN = "hidden";
-	
+
 	/**
 	 * The both layer type.
 	 */
 	public static final String ATTRIBUTE_TYPE_BOTH = "both";
-	
+
 	/**
 	 * The unknown layer type.
 	 */
 	public static final String ATTRIBUTE_TYPE_UNKNOWN = "unknown";
-	
+
 	/**
 	 * The from attribute.
 	 */
 	public static final String ATTRIBUTE_FROM = "from";
-	
+
 	/**
 	 * The to attribute.
 	 */
@@ -134,22 +134,22 @@ public class BasicNetworkPersistor implements Persistor {
 	 * The network that is being loaded.
 	 */
 	private BasicNetwork currentNetwork;
-	
+
 	/**
 	 * A mapping from layers to index numbers.
 	 */
-	private final Map<Layer, Integer> layer2index 
-		= new HashMap<Layer, Integer>();
-	
+	private final Map<Layer, Integer> layer2index = new HashMap<Layer, Integer>();
+
 	/**
 	 * A mapping from index numbers to layers.
 	 */
-	private final Map<Integer, Layer> index2layer 
-		= new HashMap<Integer, Layer>();
+	private final Map<Integer, Layer> index2layer = new HashMap<Integer, Layer>();
 
 	/**
 	 * Handle any layers that should be loaded.
-	 * @param in The XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader.
 	 */
 	private void handleLayers(final ReadXML in) {
 		final String end = in.getTag().getName();
@@ -164,16 +164,26 @@ public class BasicNetworkPersistor implements Persistor {
 						.getTag().getName());
 				final Layer layer = (Layer) persistor.load(in);
 				this.index2layer.put(num, layer);
-				if (type.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_INPUT)) {
-					this.currentNetwork.setInputLayer(layer);
-				} else if (type
-						.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_OUTPUT)) {
-					this.currentNetwork.setOutputLayer(layer);
-				} else if (type
-						.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_BOTH)) {
-					this.currentNetwork.setInputLayer(layer);
-					this.currentNetwork.setOutputLayer(layer);
+
+				// the type attribute is actually "legacy", but if its there
+				// then use it!
+				if (type != null) {
+					if (type.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_INPUT)) {
+						this.currentNetwork.tagLayer(BasicNetwork.TAG_INPUT,
+								layer);
+					} else if (type
+							.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_OUTPUT)) {
+						this.currentNetwork.tagLayer(BasicNetwork.TAG_OUTPUT,
+								layer);
+					} else if (type
+							.equals(BasicNetworkPersistor.ATTRIBUTE_TYPE_BOTH)) {
+						this.currentNetwork.tagLayer(BasicNetwork.TAG_INPUT,
+								layer);
+						this.currentNetwork.tagLayer(BasicNetwork.TAG_OUTPUT,
+								layer);
+					}
 				}
+				// end of legacy processing
 			}
 			if (in.is(end, false)) {
 				break;
@@ -183,7 +193,9 @@ public class BasicNetworkPersistor implements Persistor {
 
 	/**
 	 * Process any synapses that should be loaded.
-	 * @param in The XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader.
 	 */
 	private void handleSynapses(final ReadXML in) {
 		final String end = in.getTag().getName();
@@ -230,10 +242,9 @@ public class BasicNetworkPersistor implements Persistor {
 				handleLayers(in);
 			} else if (in.is(BasicNetworkPersistor.TAG_SYNAPSES, true)) {
 				handleSynapses(in);
-			} else if( in.is(BasicNetworkPersistor.TAG_PROPERTIES, true)) {
+			} else if (in.is(BasicNetworkPersistor.TAG_PROPERTIES, true)) {
 				handleProperties(in);
-			}
-			else if( in.is(BasicNetworkPersistor.TAG_LOGIC, true)) {
+			} else if (in.is(BasicNetworkPersistor.TAG_LOGIC, true)) {
 				handleLogic(in);
 			}
 
@@ -244,29 +255,22 @@ public class BasicNetworkPersistor implements Persistor {
 
 	private void handleLogic(ReadXML in) {
 		String value = in.readTextToTag();
-		if( value.equalsIgnoreCase("ART1Logic") )
-		{
+		if (value.equalsIgnoreCase("ART1Logic")) {
 			this.currentNetwork.setLogic(new ART1Logic());
-		} else if( value.equalsIgnoreCase("BAMLogic") )
-		{
+		} else if (value.equalsIgnoreCase("BAMLogic")) {
 			this.currentNetwork.setLogic(new BAMLogic());
-		}
-		else if( value.equalsIgnoreCase("BoltzmannLogic") )
-		{
+		} else if (value.equalsIgnoreCase("BoltzmannLogic")) {
 			this.currentNetwork.setLogic(new BoltzmannLogic());
-		} else if( value.equalsIgnoreCase("FeedforwardLogic") )
-		{
+		} else if (value.equalsIgnoreCase("FeedforwardLogic")) {
 			this.currentNetwork.setLogic(new FeedforwardLogic());
-		} else if( value.equalsIgnoreCase("HopfieldLogic") )
-		{
+		} else if (value.equalsIgnoreCase("HopfieldLogic")) {
 			this.currentNetwork.setLogic(new HopfieldLogic());
-		} else if( value.equalsIgnoreCase("SimpleRecurrentLogic") )
-		{
+		} else if (value.equalsIgnoreCase("SimpleRecurrentLogic")) {
 			this.currentNetwork.setLogic(new SimpleRecurrentLogic());
-		} else
-		{
+		} else {
 			try {
-				NeuralLogic logic = (NeuralLogic) Class.forName(value).newInstance();
+				NeuralLogic logic = (NeuralLogic) Class.forName(value)
+						.newInstance();
 				this.currentNetwork.setLogic(logic);
 			} catch (ClassNotFoundException e) {
 				throw new EncogError(e);
@@ -284,7 +288,7 @@ public class BasicNetworkPersistor implements Persistor {
 			if (in.is(BasicNetworkPersistor.TAG_PROPERTY, true)) {
 				final String name = in.getTag().getAttributeValue(
 						BasicNetworkPersistor.ATTRIBUTE_NAME);
-				
+
 				String value = in.readTextToTag();
 				this.currentNetwork.setProperty(name, value);
 			}
@@ -292,7 +296,7 @@ public class BasicNetworkPersistor implements Persistor {
 				break;
 			}
 		}
-		
+
 	}
 
 	/**
@@ -319,39 +323,33 @@ public class BasicNetworkPersistor implements Persistor {
 		out.beginTag(BasicNetworkPersistor.TAG_SYNAPSES);
 		saveSynapses(out);
 		out.endTag();
-		
+
 		saveProperties(out);
 		saveLogic(out);
-		
+
 		out.endTag();
 	}
-	
-	private void saveLogic(WriteXML out)
-	{
+
+	private void saveLogic(WriteXML out) {
 		out.beginTag(BasicNetworkPersistor.TAG_LOGIC);
 		NeuralLogic logic = this.currentNetwork.getLogic();
-		if( logic instanceof FeedforwardLogic ||
-			logic instanceof SimpleRecurrentLogic ||
-			logic instanceof BoltzmannLogic ||
-			logic instanceof ART1Logic ||
-			logic instanceof BAMLogic ||
-			logic instanceof HopfieldLogic )
-		{
+		if (logic instanceof FeedforwardLogic
+				|| logic instanceof SimpleRecurrentLogic
+				|| logic instanceof BoltzmannLogic
+				|| logic instanceof ART1Logic || logic instanceof BAMLogic
+				|| logic instanceof HopfieldLogic) {
 			out.addText(logic.getClass().getSimpleName());
-		}
-		else
+		} else
 			out.addText(logic.getClass().getName());
 		out.endTag();
 	}
-	
-	private void saveProperties(WriteXML out)
-	{
+
+	private void saveProperties(WriteXML out) {
 		// save any properties
 		out.beginTag(BasicNetworkPersistor.TAG_PROPERTIES);
-		for( String key: this.currentNetwork.getProperties().keySet() )
-		{
-			String value = this.currentNetwork.getProperties().get(key);			
-			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_NAME,key);
+		for (String key : this.currentNetwork.getProperties().keySet()) {
+			String value = this.currentNetwork.getProperties().get(key);
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_NAME, key);
 			out.beginTag(BasicNetworkPersistor.TAG_PROPERTY);
 			out.addText(value.toString());
 			out.endTag();
@@ -361,29 +359,15 @@ public class BasicNetworkPersistor implements Persistor {
 
 	/**
 	 * Save the layers to the specified XML writer.
-	 * @param out The XML writer.
+	 * 
+	 * @param out
+	 *            The XML writer.
 	 */
 	private void saveLayers(final WriteXML out) {
 		int current = 1;
-		for (final Layer layer 
-				: this.currentNetwork.getStructure().getLayers()) {
-			String type;
-
-			if (this.currentNetwork.isInput(layer)
-					&& this.currentNetwork.isOutput(layer)) {
-				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_BOTH;
-			} else if (this.currentNetwork.isInput(layer)) {
-				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_INPUT;
-			} else if (this.currentNetwork.isOutput(layer)) {
-				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_OUTPUT;
-			} else if (this.currentNetwork.isHidden(layer)) {
-				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_HIDDEN;
-			} else {
-				type = BasicNetworkPersistor.ATTRIBUTE_TYPE_UNKNOWN;
-			}
+		for (final Layer layer : this.currentNetwork.getStructure().getLayers()) {
 
 			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_ID, "" + current);
-			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_TYPE, type);
 			out.beginTag(BasicNetworkPersistor.TAG_LAYER);
 			final Persistor persistor = layer.createPersistor();
 			persistor.save(layer, out);
@@ -395,7 +379,9 @@ public class BasicNetworkPersistor implements Persistor {
 
 	/**
 	 * Save the synapses to the specified XML writer.
-	 * @param out The XML writer.
+	 * 
+	 * @param out
+	 *            The XML writer.
 	 */
 	private void saveSynapses(final WriteXML out) {
 		for (final Synapse synapse : this.currentNetwork.getStructure()

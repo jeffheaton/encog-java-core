@@ -159,37 +159,9 @@ public interface Network extends EncogPersistedObject {
 	String getDescription();
 
 	/**
-	 * Get the count for how many hidden layers are present.
-	 * 
-	 * @return The hidden layer count.
-	 */
-	int getHiddenLayerCount();
-
-	/**
-	 * Get a collection of the hidden layers in the network.
-	 * 
-	 * @return The hidden layers.
-	 */
-	Collection<Layer> getHiddenLayers();
-
-	/**
-	 * Get the input layer.
-	 * 
-	 * @return The input layer.
-	 */
-	Layer getInputLayer();
-
-	/**
 	 * @return the name
 	 */
 	String getName();
-
-	/**
-	 * Get the output layer.
-	 * 
-	 * @return The output layer.
-	 */
-	Layer getOutputLayer();
 
 	/**
 	 * @return Get the structure of the neural network. The structure allows you
@@ -211,33 +183,6 @@ public interface Network extends EncogPersistedObject {
 	int hashCode();
 
 	/**
-	 * Determine if this layer is hidden.
-	 * 
-	 * @param layer
-	 *            The layer to evaluate.
-	 * @return True if this layer is a hidden layer.
-	 */
-	boolean isHidden(final Layer layer);
-
-	/**
-	 * Determine if this layer is the input layer.
-	 * 
-	 * @param layer
-	 *            The layer to evaluate.
-	 * @return True if this layer is the input layer.
-	 */
-	boolean isInput(final Layer layer);
-
-	/**
-	 * Determine if this layer is the output layer.
-	 * 
-	 * @param layer
-	 *            The layer to evaluate.
-	 * @return True if this layer is the output layer.
-	 */
-	boolean isOutput(final Layer layer);
-
-	/**
 	 * Reset the weight matrix and the thresholds.
 	 * 
 	 */
@@ -252,24 +197,10 @@ public interface Network extends EncogPersistedObject {
 	void setDescription(final String theDescription);
 
 	/**
-	 * Define the input layer for the network.
-	 * 
-	 * @param input
-	 *            The new input layer.
-	 */
-	void setInputLayer(final Layer input);
-
-	/**
 	 * @param name
 	 *            the name to set
 	 */
 	void setName(final String name);
-
-	/**
-	 * @param outputLayer
-	 *            the outputLayer to set
-	 */
-	void setOutputLayer(final Layer outputLayer);
 
 	/**
 	 * @return Convert this object to a string.

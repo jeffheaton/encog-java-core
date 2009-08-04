@@ -69,6 +69,8 @@ public class FeedforwardLogic implements NeuralLogic {
 	public NeuralData compute(final NeuralData input,
 			final NeuralOutputHolder useHolder) {
 		NeuralOutputHolder holder;
+		
+		Layer inputLayer = this.network.getLayer(BasicNetwork.TAG_INPUT);
 
 		if (FeedforwardLogic.logger.isDebugEnabled()) {
 			FeedforwardLogic.logger.debug("Pattern {} presented to neural network", input);
@@ -81,7 +83,7 @@ public class FeedforwardLogic implements NeuralLogic {
 		}
 
 		this.getNetwork().checkInputSize(input);
-		compute(holder, this.getNetwork().getInputLayer(), input, null);
+		compute(holder, inputLayer, input, null);
 		return holder.getOutput();
 	}
 	
@@ -115,8 +117,10 @@ public class FeedforwardLogic implements NeuralLogic {
 				holder.getResult().put(synapse, input);
 				compute(holder, synapse.getToLayer(), pattern, synapse);
 
+				Layer outputLayer = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
+				
 				// Is this the output from the entire network?
-				if (synapse.getToLayer() == this.getNetwork().getOutputLayer()) {
+				if (synapse.getToLayer() == outputLayer ) {
 					holder.setOutput(pattern);
 				}
 			}
@@ -149,16 +153,5 @@ public class FeedforwardLogic implements NeuralLogic {
 	public void preprocessLayer(Layer layer, NeuralData input, Synapse source) {
 		// nothing to do		
 	}
-	
-	public String getLayerName(Layer layer) {
-		if( layer==this.network.getInputLayer() && layer==this.network.getOutputLayer() )
-			return "Input & Output";
-		else if( layer==this.network.getInputLayer() )
-			return "Input";
-		else if( layer==this.network.getOutputLayer() )
-			return "Output";
-		else
-			return null;
-	}
+}	
 
-}

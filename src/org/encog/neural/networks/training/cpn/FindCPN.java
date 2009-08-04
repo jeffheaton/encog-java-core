@@ -20,8 +20,8 @@ public class FindCPN {
 			throw new TrainingError("A CPN network must have exactly 3 layers");
 		}
 		
-		this.inputLayer = network.getInputLayer();
-		this.outstarLayer = network.getOutputLayer();
+		this.inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		this.outstarLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
 		this.instarLayer = this.inputLayer.getNext().iterator().next().getToLayer();
 		this.instarSynapse = this.inputLayer.getNext().iterator().next();
 		this.outstarSynapse = this.instarLayer.getNext().iterator().next();

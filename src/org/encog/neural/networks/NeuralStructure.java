@@ -32,6 +32,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Map.Entry;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.layers.Layer;
@@ -90,10 +91,12 @@ public class NeuralStructure implements Serializable {
 		final List<Layer> result = new ArrayList<Layer>();
 		
 		this.layers.clear();
-		if (this.network.getInputLayer() != null) {
-			getLayers(result, this.network.getInputLayer());
-		}
 		
+		for(Layer layer :this.network.getLayerTags().values() )
+		{
+			getLayers( result, layer );
+		}
+				
 		this.layers.addAll(result);
 	}
 
@@ -200,37 +203,19 @@ public class NeuralStructure implements Serializable {
 		return this.synapses;
 	}
 	
-	public Layer getSingleHiddenLayer()
+	public Collection<String> nameLayer(Layer layer)
 	{
-		if( this.layers.size()<3 )
+		Collection<String> result = new ArrayList<String>();
+		
+		for( Entry<String,Layer> entry: this.network.getLayerTags().entrySet() )
 		{
-			String str = "This operation requires a network with a hidden layer.";
-			if( logger.isErrorEnabled() )
+			if( entry.getValue()==layer )
 			{
-				logger.error(str);
+				result.add(entry.getKey());
 			}
-			throw new NeuralNetworkError(str);
-		}
-		else if( this.layers.size()>3 ) {
-			String str = "This operation requires a network with a SINGLE hidden layer.";
-			if( logger.isErrorEnabled() )
-			{
-				logger.error(str);
-			}
-			throw new NeuralNetworkError(str);
 		}
 		
-		return this.network.getInputLayer().getNext().get(0).getToLayer();
-	}
-	
-	public String nameLayer(Layer layer)
-	{
-		if( layer==this.network.getInputLayer())
-			return "input";
-		else if( layer==this.network.getOutputLayer())
-			return "output";
-		else 
-			return "hidden";
+		return result;
 	}
 	
 	public Synapse findSynapse(Layer fromLayer,Layer toLayer, boolean required)

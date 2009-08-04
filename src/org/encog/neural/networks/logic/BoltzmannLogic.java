@@ -26,6 +26,7 @@
 package org.encog.neural.networks.logic;
 
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.util.math.BoundMath;
 import org.encog.util.randomize.RangeRandomizer;
 
@@ -173,9 +174,11 @@ public class BoltzmannLogic extends ThermalLogic {
 	public void init(BasicNetwork network)
 	{
 		super.init(network);
+		
+		Layer layer = this.getNetwork().getLayer(BasicNetwork.TAG_INPUT);
 				
-		this.on = new int[this.getNetwork().getInputLayer().getNeuronCount()];
-		this.off = new int[this.getNetwork().getInputLayer().getNeuronCount()];
+		this.on = new int[layer.getNeuronCount()];
+		this.off = new int[layer.getNeuronCount()];
 		
 		this.temperature = this.getNetwork().getPropertyDouble(BoltzmannLogic.PROPERTY_TEMPERATURE);
 		this.runCycles = (int)this.getNetwork().getPropertyLong(BoltzmannLogic.PROPERTY_RUN_CYCLES);

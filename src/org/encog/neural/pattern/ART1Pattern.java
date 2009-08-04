@@ -42,6 +42,9 @@ import org.slf4j.LoggerFactory;
  */
 public class ART1Pattern implements NeuralNetworkPattern {
 
+	public final static String TAG_F1 = "F1";
+	public final static String TAG_F2 = "F2";
+	
 	/**
 	 * The logging object.
 	 */
@@ -123,8 +126,12 @@ public class ART1Pattern implements NeuralNetworkPattern {
 		Synapse synapseF2toF1 = new WeightedSynapse(layerF2, layerF1);
 		layerF1.getNext().add(synapseF1toF2);
 		layerF2.getNext().add(synapseF2toF1);
-		network.setInputLayer(layerF1);
-		network.setOutputLayer(layerF2);		
+
+		// apply tags
+		network.tagLayer(BasicNetwork.TAG_INPUT, layerF1);
+		network.tagLayer(BasicNetwork.TAG_OUTPUT, layerF2);
+		network.tagLayer(ART1Pattern.TAG_F1,layerF1);
+		network.tagLayer(ART1Pattern.TAG_F2,layerF2);
 		
 		layerF1.setX(PatternConst.START_X);
 		layerF1.setY(y);
@@ -141,6 +148,8 @@ public class ART1Pattern implements NeuralNetworkPattern {
 		network.setProperty(ARTLogic.PROPERTY_VIGILANCE, this.vigilance);
 		
 		network.getStructure().finalizeStructure();
+		
+		
 				
 		return network;
 	}
