@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.encog.Encog;
 import org.encog.neural.NeuralNetworkError;
@@ -467,6 +468,26 @@ public class BasicNetwork implements Serializable, Network {
 	public Layer getLayer(String tag)
 	{
 		return this.layerTags.get(tag);
+	}
+	
+	/**
+	 * Get a list of all of the tags on a specific layer.
+	 * @param layer The layer to check.
+	 * @return A collection of the layer tags.
+	 */
+	public Collection<String> getTags(Layer layer)
+	{
+		Collection<String> result = new ArrayList<String>();
+		
+		for( Entry<String,Layer> entry : this.layerTags.entrySet() )
+		{
+			if( entry.getValue() == layer )
+			{
+				result.add(entry.getKey());
+			}
+		}
+		
+		return result;
 	}
 	
 }
