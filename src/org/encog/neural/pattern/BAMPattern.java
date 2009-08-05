@@ -103,8 +103,8 @@ public class BAMPattern implements NeuralNetworkPattern {
 		f1Layer.addSynapse(synapseInputToOutput);
 		f2Layer.addSynapse(synapseOutputToInput);
 		
-		network.tagLayer(BAMPattern.TAG_F1, f2Layer);
-		network.tagLayer(BAMPattern.TAG_F1, f2Layer);
+		network.tagLayer(BAMPattern.TAG_F1, f1Layer);
+		network.tagLayer(BAMPattern.TAG_F2, f2Layer);
 		
 		network.getStructure().finalizeStructure();
 		network.getStructure().finalizeStructure();
