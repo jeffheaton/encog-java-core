@@ -116,7 +116,7 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 
 	/**
 	 * Allow market data to be sorted. Sort by date.
-	 * @param The other market data to compare to.
+	 * @param other The other market data to compare to.
 	 * @return 0 if equal.
 	 */
 	public int compareTo(LoadedMarketData other) {
