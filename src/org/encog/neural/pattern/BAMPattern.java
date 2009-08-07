@@ -151,7 +151,6 @@ public class BAMPattern implements NeuralNetworkPattern {
 		this.f2Neurons = count;		
 	}
 
-	@Override
 	public void setInputNeurons(int count) {
 		final String str = "A BAM network has no input layer, consider setting F1 layer.";
 		if (this.logger.isErrorEnabled()) {
@@ -161,7 +160,6 @@ public class BAMPattern implements NeuralNetworkPattern {
 		
 	}
 
-	@Override
 	public void setOutputNeurons(int count) {
 		final String str = "A BAM network has no output layer, consider setting F2 layer.";
 		if (this.logger.isErrorEnabled()) {
