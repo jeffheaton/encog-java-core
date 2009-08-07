@@ -73,6 +73,19 @@ public class BasicNetworkPersistor implements Persistor {
 	 */
 	public static final String TAG_PROPERTIES = "properties";
 
+	/**
+	 * The tags tag.
+	 */
+	public static final String TAG_TAGS = "tags";
+
+	/**
+	 * The tag tag.
+	 */
+	public static final String TAG_TAG = "tag";
+
+	/**
+	 * The logic tag.
+	 */
 	public static final String TAG_LOGIC = "logic";
 
 	/**
@@ -129,6 +142,11 @@ public class BasicNetworkPersistor implements Persistor {
 	 * The to attribute.
 	 */
 	public static final String ATTRIBUTE_TO = "to";
+
+	/**
+	 * The to attribute.
+	 */
+	public static final String ATTRIBUTE_LAYER = "layer";
 
 	/**
 	 * The network that is being loaded.
@@ -246,6 +264,8 @@ public class BasicNetworkPersistor implements Persistor {
 				handleProperties(in);
 			} else if (in.is(BasicNetworkPersistor.TAG_LOGIC, true)) {
 				handleLogic(in);
+			} else if (in.is(BasicNetworkPersistor.TAG_TAGS, true)) {
+				handleTags(in);
 			}
 
 		}
@@ -298,6 +318,29 @@ public class BasicNetworkPersistor implements Persistor {
 		}
 
 	}
+	
+	private void handleTags(ReadXML in) {
+		final String end = in.getTag().getName();
+		while (in.readToTag()) {
+			if (in.is(BasicNetworkPersistor.TAG_TAG, true)) {
+				final String name = in.getTag().getAttributeValue(
+						BasicNetworkPersistor.ATTRIBUTE_NAME);
+				
+				final String layerStr = in.getTag().getAttributeValue(
+						BasicNetworkPersistor.ATTRIBUTE_LAYER);
+				
+				final int layerInt = Integer.parseInt(layerStr);
+				
+				Layer layer = this.index2layer.get(layerInt);
+				this.currentNetwork.tagLayer(name, layer);
+				in.readToTag();
+			}
+			if (in.is(end, false)) {
+				break;
+			}
+		}
+
+	}
 
 	/**
 	 * Save the specified Encog object to an XML writer.
@@ -325,6 +368,7 @@ public class BasicNetworkPersistor implements Persistor {
 		out.endTag();
 
 		saveProperties(out);
+		saveTags(out);
 		saveLogic(out);
 
 		out.endTag();
@@ -352,6 +396,20 @@ public class BasicNetworkPersistor implements Persistor {
 			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_NAME, key);
 			out.beginTag(BasicNetworkPersistor.TAG_PROPERTY);
 			out.addText(value.toString());
+			out.endTag();
+		}
+		out.endTag();
+	}
+
+	private void saveTags(WriteXML out) {
+		// save any properties
+		out.beginTag(BasicNetworkPersistor.TAG_TAGS);
+		for (String key : this.currentNetwork.getLayerTags().keySet()) {
+			Layer value = this.currentNetwork.getLayerTags().get(key);
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_NAME, key);
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_LAYER, ""
+					+ layer2index.get(value));
+			out.beginTag(BasicNetworkPersistor.TAG_TAG);
 			out.endTag();
 		}
 		out.endTag();
