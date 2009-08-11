@@ -33,7 +33,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Provides the neural logic for an Simple Recurrent Network (SRN) type network.  
- * This class is used for the Elman and Jordan networks.
+ * This class is used for the Elman and Jordan networks.  This class will work
+ * just fine for a feedforward neural network, however it is not efficient.
  */
 public class SimpleRecurrentLogic extends FeedforwardLogic {
 
