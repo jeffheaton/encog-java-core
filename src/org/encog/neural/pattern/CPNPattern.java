@@ -28,6 +28,7 @@ package org.encog.neural.pattern;
 
 import org.encog.neural.activation.ActivationCompetitive;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
@@ -93,9 +94,9 @@ public class CPNPattern implements NeuralNetworkPattern {
 		int y = PatternConst.START_Y;
 		
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(this.inputCount));
-		network.addLayer(instar = new BasicLayer(new ActivationCompetitive(),true,this.instarCount));
-		network.addLayer(outstar = new BasicLayer(this.outstarCount));
+		network.addLayer(input = new BasicLayer(new ActivationLinear(), false, this.inputCount));
+		network.addLayer(instar = new BasicLayer(new ActivationCompetitive(), false,this.instarCount));
+		network.addLayer(outstar = new BasicLayer(new ActivationLinear(), false, this.outstarCount));
 		network.getStructure().finalizeStructure();
 		network.reset();
 		
