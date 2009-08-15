@@ -131,22 +131,6 @@ public class ThermalLogic extends SimpleRecurrentLogic {
 	public BiPolarNeuralData getCurrentState() {
 		return currentState;
 	}
-	
-	/**
-	 * Setup the network logic, read parameters from the network.
-	 * NOT USED, call the run method.
-	 * @param network The network that this logic class belongs to.
-	 */
-	@Override
-	public NeuralData compute(NeuralData input, NeuralOutputHolder useHolder) {
-		String str = "Compute on BasicNetwork cannot be used, rather call" +
-				" the run method on the logic class.";
-		if( logger.isErrorEnabled() )
-		{
-			logger.error(str);
-		}
-		throw new NeuralNetworkError(str);
-	}
 
 	/**
 	 * Setup the network logic, read parameters from the network.

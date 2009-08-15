@@ -25,10 +25,15 @@
  */
 package org.encog.neural.networks.logic;
 
+import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.util.math.BoundMath;
 import org.encog.util.randomize.RangeRandomizer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Provides the neural logic for an Boltzmann type network.  See BoltzmannPattern
@@ -81,6 +86,11 @@ public class BoltzmannLogic extends ThermalLogic {
 	 * The number of cycles to run the network through before annealing.
 	 */
 	private int runCycles;
+	
+	/**
+	 * The logging object.
+	 */
+	private static transient final Logger logger = LoggerFactory.getLogger(BoltzmannLogic.class);
 
 	/**
 	 * Run the network for the specified neuron.
@@ -183,6 +193,22 @@ public class BoltzmannLogic extends ThermalLogic {
 		this.temperature = this.getNetwork().getPropertyDouble(BoltzmannLogic.PROPERTY_TEMPERATURE);
 		this.runCycles = (int)this.getNetwork().getPropertyLong(BoltzmannLogic.PROPERTY_RUN_CYCLES);
 		this.annealCycles = (int)this.getNetwork().getPropertyLong(BoltzmannLogic.PROPERTY_ANNEAL_CYCLES);
+	}
+	
+	/**
+	 * Setup the network logic, read parameters from the network.
+	 * NOT USED, call the run method.
+	 * @param network The network that this logic class belongs to.
+	 */
+	@Override
+	public NeuralData compute(NeuralData input, NeuralOutputHolder useHolder) {
+		String str = "Compute on BasicNetwork cannot be used, rather call" +
+				" the run method on the logic class.";
+		if( logger.isErrorEnabled() )
+		{
+			logger.error(str);
+		}
+		throw new NeuralNetworkError(str);
 	}
 
 }
