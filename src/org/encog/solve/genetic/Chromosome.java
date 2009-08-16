@@ -205,11 +205,8 @@ public abstract class Chromosome<GENE_TYPE> implements
 				}
 			}
 		}
-
-		// copy results
-		offspring1.calculateCost();
-		offspring2.calculateCost();
-
+		
+		// mutate if needed
 		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
 			offspring1.mutate();
 		}
@@ -217,6 +214,9 @@ public abstract class Chromosome<GENE_TYPE> implements
 			offspring2.mutate();
 		}
 
+		// calculate the cost
+		offspring1.calculateCost();
+		offspring2.calculateCost();
 	}
 
 	/**
