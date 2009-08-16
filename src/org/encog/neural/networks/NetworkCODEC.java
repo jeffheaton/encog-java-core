@@ -28,8 +28,6 @@ package org.encog.neural.networks;
 
 import java.util.Collection;
 
-import org.encog.matrix.Matrix;
-import org.encog.matrix.MatrixError;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;

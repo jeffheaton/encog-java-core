@@ -25,15 +25,10 @@
  */
 package org.encog.neural.networks.logic;
 
-import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides the neural logic for thermal networks.  Functions as a base 
@@ -68,13 +63,7 @@ public class ThermalLogic extends SimpleRecurrentLogic {
 	{
 		return this.thermalLayer.getNeuronCount();
 	}
-	
-	/**
-	 * The logging object.
-	 */
-	private static transient final Logger logger = LoggerFactory.getLogger(ThermalLogic.class);
-
-	
+		
 	/**
 	 * @return Calculate the current energy for the network.  The 
 	 * network will seek to lower this value.

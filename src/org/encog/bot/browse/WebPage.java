@@ -29,7 +29,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.bot.browse.range.DocumentRange;
-import org.encog.bot.browse.range.Form;
 import org.encog.bot.browse.range.Link;
 import org.encog.bot.dataunit.DataUnit;
 import org.slf4j.Logger;
@@ -90,7 +89,7 @@ public class WebPage {
 	 * @param index The index to search from.
 	 * @return The document range that was found.
 	 */
-	public DocumentRange find(final Class<?> c, final int index) {
+	public DocumentRange find(final Class< ? > c, final int index) {
 		int i = index;
 		for (final DocumentRange span : getContents()) {
 			if (span.getClass().getName().equals(c.getName())) {

@@ -25,8 +25,6 @@
  */
 package org.encog.neural.networks;
 
-import java.util.Collection;
-
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;

@@ -198,7 +198,8 @@ public class BoltzmannLogic extends ThermalLogic {
 	/**
 	 * Setup the network logic, read parameters from the network.
 	 * NOT USED, call the run method.
-	 * @param network The network that this logic class belongs to.
+	 * @param input NOT USED
+	 * @param useHolder NOT USED
 	 */
 	@Override
 	public NeuralData compute(NeuralData input, NeuralOutputHolder useHolder) {

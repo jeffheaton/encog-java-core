@@ -25,9 +25,6 @@
  */
 package org.encog.bot.browse.range;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.bot.browse.Address;
 import org.encog.bot.browse.WebPage;
 import org.slf4j.Logger;

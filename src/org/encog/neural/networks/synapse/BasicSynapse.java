@@ -26,8 +26,6 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.neural.networks.layers.Layer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An abstract class that implements basic functionality that may be needed by

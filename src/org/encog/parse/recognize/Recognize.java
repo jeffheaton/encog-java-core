@@ -184,6 +184,9 @@ public class Recognize {
 		this.index = 0;
 	}
 
+	/**
+	 * @return The object as a string.
+	 */
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
