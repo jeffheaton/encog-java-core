@@ -26,6 +26,17 @@ package org.encog;
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+/**
+ * This class allows for Encog jobs to report their current status, as 
+ * they run.
+ */
 public interface StatusReportable {
+	
+	/**
+	 * Report on current status.
+	 * @param total The total amount of units to process.
+	 * @param current The current unit being processed.
+	 * @param message The message to currently display.
+	 */
 	void report(int total, int current, String message );
 }

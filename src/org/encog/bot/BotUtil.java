@@ -66,24 +66,25 @@ public final class BotUtil {
 	 * @param index
 	 *            Index in the string to start searching from.
 	 * @param occurence
-	 * 				What occurence.           
+	 *            What occurence.
 	 * @return The contents of the URL that was downloaded.
 	 */
-	public static String extractFromIndex(final String str, final String token1,
-			final String token2, final int index, final int occurence) {
+	public static String extractFromIndex(final String str,
+			final String token1, final String token2, final int index,
+			final int occurence) {
 		int location1, location2;
 
 		// convert everything to lower case
 		final String searchStr = str.toLowerCase();
 		final String token1Lower = token1.toLowerCase();
-		final String token2Lower = token2.toLowerCase();		
-		
+		final String token2Lower = token2.toLowerCase();
+
 		int count = occurence;
 
 		// now search
-		location1 = location2 = index-1;
+		location1 = location2 = index - 1;
 		do {
-			location1 = searchStr.indexOf(token1Lower, location1+1 );
+			location1 = searchStr.indexOf(token1Lower, location1 + 1);
 
 			if (location1 == -1) {
 				return null;
@@ -91,8 +92,6 @@ public final class BotUtil {
 
 			count--;
 		} while (count > 0);
-		
-		
 
 		// return the result from the original string that has mixed
 		// case
@@ -104,7 +103,6 @@ public final class BotUtil {
 		return str.substring(location1 + token1Lower.length(), location2);
 	}
 
-	
 	/**
 	 * This method is very useful for grabbing information from a HTML page.
 	 * 
@@ -190,17 +188,16 @@ public final class BotUtil {
 
 	}
 
-	public static int findOccurance(final String search,final String searchFor, final int index)	
-	{
+	public static int findOccurance(final String search,
+			final String searchFor, final int index) {
 		int count = index;
 		String lowerSearch = search.toLowerCase();
 		int result = -1;
-		
-		do
-		{
-			result = lowerSearch.indexOf(searchFor, result+1);
-		} while(count-->0);
-		
+
+		do {
+			result = lowerSearch.indexOf(searchFor, result + 1);
+		} while (count-- > 0);
+
 		return result;
 	}
 
@@ -209,14 +206,12 @@ public final class BotUtil {
 		StringBuilder result = new StringBuilder();
 		ReadHTML html = new ReadHTML(is);
 		int ch;
-		while( (ch=html.read())!=-1 )
-		{
-			if( ch!=0 )
-				result.append((char)ch);
+		while ((ch = html.read()) != -1) {
+			if (ch != 0)
+				result.append((char) ch);
 		}
 		return result.toString();
 	}
-
 
 	public static String loadPage(InputStream is) {
 		try {
