@@ -202,7 +202,8 @@ public class BAMLogic implements NeuralLogic  {
 	/**
 	 * Setup the network logic, read parameters from the network.
 	 * NOT USED, call compute(NeuralInputData).
-	 * @param network The network that this logic class belongs to.
+	 * @param input NOT USED
+	 * @param useHolder NOT USED
 	 */
 	public NeuralData compute(NeuralData input, NeuralOutputHolder useHolder) {
 		String str = "Compute on BasicNetwork cannot be used, rather call" +

@@ -91,7 +91,6 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 
 	/**
 	 * Set the learning rate.
-	 * @return The new learning rate.
 	 */
 	public void setLearningRate(double rate) {
 		this.learningRate = rate;

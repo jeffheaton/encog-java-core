@@ -66,8 +66,8 @@ public class ActivationCompetitivePersistor  implements Persistor {
 	 * @param out
 	 *            The XML writer to save to.
 	 */
-	public void save(EncogPersistedObject object, WriteXML out) {
-		final ActivationCompetitive c = (ActivationCompetitive) object;
+	public void save(EncogPersistedObject obj, WriteXML out) {
+		final ActivationCompetitive c = (ActivationCompetitive) obj;
 		out.beginTag(c.getClass().getSimpleName());
 		out.addProperty(ActivationCompetitivePersistor.ATTRIBUTE_WINNERS, c
 				.getMaxWinners());

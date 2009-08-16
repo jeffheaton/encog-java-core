@@ -77,7 +77,7 @@ public class ADALINEPattern  implements NeuralNetworkPattern {
 
 	/**
 	 * Generate the network.
-	 * @param The generated network.
+	 * @return The generated network.
 	 */
 	public BasicNetwork generate() {
 		BasicNetwork network = new BasicNetwork();
