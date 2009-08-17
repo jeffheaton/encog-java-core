@@ -32,6 +32,8 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
+import org.encog.util.ErrorCalculation;
+import org.encog.util.math.BoundMath;
 
 /**
  * Used for Instar training of a CPN neural network. A CPN network is a hybrid
@@ -117,19 +119,43 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 		if (this.mustInit) {
 			initWeights();
 		}
-
+		
+		double worstDistance = Double.NEGATIVE_INFINITY;
+		
 		for (NeuralDataPair pair : this.training) {
 			NeuralData out = this.parts.getInstarSynapse().compute(
 					pair.getInput());
-			int i = this.parts.winner(out);
+			
+			// determine winner
+			int winner = this.parts.winner(out);
+			
+			// calculate the distance
+			double distance = 0;
+			for(int i=0;i<pair.getInput().size();i++)
+			{
+				final double diff = pair.getInput().getData(i)
+				- this.parts.getInstarSynapse().getMatrix().get(i, winner);
+				distance+=diff*diff;
+			}
+			distance = BoundMath.sqrt(distance);
+			
+			if( distance>worstDistance )
+				worstDistance = distance;
+			
+			// train			
 			for (int j = 0; j < this.parts.getInstarSynapse()
 					.getFromNeuronCount(); j++) {
 				double delta = this.learningRate
 						* (pair.getInput().getData(j) - this.parts
-								.getInstarSynapse().getMatrix().get(j, i));
-				this.parts.getInstarSynapse().getMatrix().add(j, i, delta);
+								.getInstarSynapse().getMatrix().get(j, winner));
+
+				this.parts.getInstarSynapse().getMatrix().add(j, winner, delta);
+				
+		
 			}
-		}
+		}	
+		
+		this.setError(worstDistance);
 	}
 
 	/**

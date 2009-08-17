@@ -32,6 +32,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
+import org.encog.util.ErrorCalculation;
 
 /**
  * Used for Instar training of a CPN neural network. A CPN network is a hybrid
@@ -123,11 +124,18 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	public void iteration() {
 
 		if (this.mustInit)
-			initWeight();
+		{
+			initWeight();	
+		}
+		
+		ErrorCalculation error = new ErrorCalculation();
 
 		for (NeuralDataPair pair : this.training) {
 			NeuralData out = this.parts.getInstarSynapse().compute(
 					pair.getInput());
+			
+			error.updateError(out.getData(), pair.getIdeal().getData());
+			
 			int j = this.parts.winner(out);
 			for (int i = 0; i < this.parts.getOutstarLayer().getNeuronCount(); i++) {
 				double delta = this.learningRate
@@ -135,6 +143,10 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 								.getOutstarSynapse().getMatrix().get(j, i));
 				this.parts.getOutstarSynapse().getMatrix().add(j, i, delta);
 			}
+			
+			
 		}
+		
+		this.setError(error.calculateRMS());
 	}
 }
