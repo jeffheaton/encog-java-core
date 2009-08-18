@@ -28,9 +28,6 @@ package org.encog.util.math.rbf;
 
 import java.io.Serializable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Implements a radial function based on the gaussian function.
  * 
@@ -40,26 +37,34 @@ import org.slf4j.LoggerFactory;
 public class GaussianFunction implements RadialBasisFunction, Serializable {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 548203092442332198L;
+
+	/**
 	 * The center of the RBF.
 	 */
 	private final double center;
-	
+
 	/**
 	 * The peak of the RBF.
 	 */
 	private final double peak;
-	
+
 	/**
 	 * The width of the RBF.
 	 */
 	private final double width;
 
 	/**
-	 * Construct a Gaussian RBF with the specified center, peak and
-	 * width.
-	 * @param center The center.
-	 * @param peak The peak.
-	 * @param width The width.
+	 * Construct a Gaussian RBF with the specified center, peak and width.
+	 * 
+	 * @param center
+	 *            The center.
+	 * @param peak
+	 *            The peak.
+	 * @param width
+	 *            The width.
 	 */
 	public GaussianFunction(final double center, final double peak,
 			final double width) {
@@ -69,9 +74,10 @@ public class GaussianFunction implements RadialBasisFunction, Serializable {
 	}
 
 	/**
-	 * Calculate the value of the Gaussian function for the specified
-	 * value.
-	 * @param x The value to calculate the Gaussian function for.
+	 * Calculate the value of the Gaussian function for the specified value.
+	 * 
+	 * @param x
+	 *            The value to calculate the Gaussian function for.
 	 * @return The return value for the Gaussian function.
 	 */
 	public double calculate(final double x) {
@@ -81,36 +87,35 @@ public class GaussianFunction implements RadialBasisFunction, Serializable {
 	}
 
 	/**
-	 * Calculate the value of the derivative of the Gaussian function 
-	 * for the specified
-	 * value.
-	 * @param x The value to calculate the derivative Gaussian 
-	 * function for.
-	 * @return The return value for the derivative of the Gaussian 
-	 * function.
+	 * Calculate the value of the derivative of the Gaussian function for the
+	 * specified value.
+	 * 
+	 * @param x
+	 *            The value to calculate the derivative Gaussian function for.
+	 * @return The return value for the derivative of the Gaussian function.
 	 */
 	public double calculateDerivative(final double x) {
 		return Math.exp(-0.5 * this.width * this.width * x * x) * this.peak
 				* this.width * this.width
-				* (this.width * this.width * x * x - 1);	
+				* (this.width * this.width * x * x - 1);
 	}
 
 	/**
-	 * @return The center of the RBF. 
+	 * @return The center of the RBF.
 	 */
 	public double getCenter() {
 		return this.center;
 	}
 
 	/**
-	 * @return The peak of the RBF. 
+	 * @return The peak of the RBF.
 	 */
 	public double getPeak() {
 		return this.peak;
 	}
 
 	/**
-	 * @return The width of the RBF. 
+	 * @return The width of the RBF.
 	 */
 	public double getWidth() {
 		return this.width;
