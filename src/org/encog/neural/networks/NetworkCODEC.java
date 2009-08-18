@@ -46,6 +46,11 @@ import org.slf4j.LoggerFactory;
  */
 public final class NetworkCODEC {
 
+	/**
+	 * The logging object.
+	 */
+	private static final Logger LOGGER = LoggerFactory
+			.getLogger(NetworkCODEC.class);
 
 	/**
 	 * Use an array to populate the memory of the neural network.
@@ -78,6 +83,43 @@ public final class NetworkCODEC {
 			}
 		}
 
+	}
+
+	/**
+	 * Determine if the two neural networks are equal.
+	 * @param network1 The first network.
+	 * @param network2 The second network.
+	 * @param precision How many decimal places to check.
+	 * @return True if the two networks are equal.
+	 */
+	public static boolean equals(final BasicNetwork network1,
+			final BasicNetwork network2, final int precision) {
+		final Double[] array1 = NetworkCODEC.networkToArray(network1);
+		final Double[] array2 = NetworkCODEC.networkToArray(network2);
+
+		if (array1.length != array2.length) {
+			return false;
+		}
+
+		final double test = Math.pow(10.0, precision);
+		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
+			final String str = "Precision of " + precision
+					+ " decimal places is not supported.";
+			if (NetworkCODEC.LOGGER.isErrorEnabled()) {
+				NetworkCODEC.LOGGER.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
+
+		for (final Double element : array1) {
+			final long l1 = (long) (element.doubleValue() * test);
+			final long l2 = (long) (element.doubleValue() * test);
+			if (l1 != l2) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	/**
@@ -127,40 +169,6 @@ public final class NetworkCODEC {
 
 		return result;
 	}
-	
-	public static boolean equals(BasicNetwork network1, BasicNetwork network2, final int precision)
-	{
-		Double[] array1 = networkToArray(network1);
-		Double[] array2 = networkToArray(network2);
-		
-		if( array1.length != array2.length )
-			return false;
-		
-		final double test = Math.pow(10.0, precision);
-		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
-			final String str = "Precision of " + precision
-					+ " decimal places is not supported.";
-			if (NetworkCODEC.logger.isErrorEnabled()) {
-				NetworkCODEC.logger.error(str);
-			}
-			throw new NeuralNetworkError(str);
-		}
-		
-		for(int i=0;i<array1.length;i++)
-		{
-			long l1 = (long)(array1[i].doubleValue() * test);
-			long l2 = (long)(array1[i].doubleValue() * test);
-			if( l1!=l2 )
-				return false;
-		}
-		
-		return true;
-	}
-
-	/**
-	 * The logging object.
-	 */
-	private final static Logger logger = LoggerFactory.getLogger(NetworkCODEC.class);
 
 	/**
 	 * Private constructor.

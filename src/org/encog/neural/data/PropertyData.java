@@ -76,6 +76,7 @@ public class PropertyData implements EncogPersistedObject {
 
 	/**
 	 * Clone this object.
+	 * 
 	 * @return A clonned version of this object.
 	 */
 	@Override
@@ -99,7 +100,9 @@ public class PropertyData implements EncogPersistedObject {
 
 	/**
 	 * Get the specified property.
-	 * @param name The property name.
+	 * 
+	 * @param name
+	 *            The property name.
 	 * @return The property value.
 	 */
 	public String get(final String name) {
@@ -108,103 +111,11 @@ public class PropertyData implements EncogPersistedObject {
 
 	/**
 	 * Get all of the property data as a map.
+	 * 
 	 * @return The property data.
 	 */
 	public Map<String, String> getData() {
 		return this.data;
-	}
-
-	/**
-	 * @return The description of this object.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * @return The name of this object.
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Determine of the specified property is defined.
-	 * @param key The property to check.
-	 * @return True if this property is defined.
-	 */
-	public boolean isDefined(final String key) {
-		return this.data.containsKey(key);
-	}
-
-	/**
-	 * Remove the specified property.
-	 * @param key The property to remove.
-	 */
-	public void remove(final String key) {
-		this.data.remove(key);
-	}
-
-	/**
-	 * Set the specified property.
-	 * @param name The name of the property.
-	 * @param value The value to set the property to.
-	 */
-	public void set(final String name, final String value) {
-		this.data.put(name, value);
-	}
-
-	/**
-	 * Set the description for this object.
-	 * @param description The description of this property.
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * Set the name of this property.
-	 * @param name The name of this property.
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return The number of properties defined.
-	 */
-	public int size() {
-		return this.data.size();
-	}
-
-	/**
-	 * Get a property as an integer.
-	 * @param field The name of the field.
-	 * @return The integer value.
-	 */
-	public int getInteger(String field) {
-		String str = this.get(field);
-		try {
-			return Integer.parseInt(str);
-		} catch (NumberFormatException e) {
-			throw new EncogError(e);
-		}
-	}
-	
-	/**
-	 * Get a property as a double.
-	 * 
-	 * @param field
-	 *            The name of the field.
-	 * @return The double value.
-	 */
-	public double getDouble(final String field) {
-		String str = this.get(field);
-		try {
-			return Double.parseDouble(str);
-		} catch (NumberFormatException e) {
-			throw new EncogError(e);
-		}
 	}
 
 	/**
@@ -216,12 +127,118 @@ public class PropertyData implements EncogPersistedObject {
 	 */
 	public Date getDate(final String field) {
 		try {
-			String str = this.get(field);
-			DateFormat formatter = new SimpleDateFormat("MM/dd/yy");
-			Date date = (Date) formatter.parse(str);
+			final String str = get(field);
+			final DateFormat formatter = new SimpleDateFormat("MM/dd/yy");
+			final Date date = formatter.parse(str);
 			return date;
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			throw new EncogError(e);
 		}
+	}
+
+	/**
+	 * @return The description of this object.
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+
+	/**
+	 * Get a property as a double.
+	 * 
+	 * @param field
+	 *            The name of the field.
+	 * @return The double value.
+	 */
+	public double getDouble(final String field) {
+		final String str = get(field);
+		try {
+			return Double.parseDouble(str);
+		} catch (final NumberFormatException e) {
+			throw new EncogError(e);
+		}
+	}
+
+	/**
+	 * Get a property as an integer.
+	 * 
+	 * @param field
+	 *            The name of the field.
+	 * @return The integer value.
+	 */
+	public int getInteger(final String field) {
+		final String str = get(field);
+		try {
+			return Integer.parseInt(str);
+		} catch (final NumberFormatException e) {
+			throw new EncogError(e);
+		}
+	}
+
+	/**
+	 * @return The name of this object.
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * Determine of the specified property is defined.
+	 * 
+	 * @param key
+	 *            The property to check.
+	 * @return True if this property is defined.
+	 */
+	public boolean isDefined(final String key) {
+		return this.data.containsKey(key);
+	}
+
+	/**
+	 * Remove the specified property.
+	 * 
+	 * @param key
+	 *            The property to remove.
+	 */
+	public void remove(final String key) {
+		this.data.remove(key);
+	}
+
+	/**
+	 * Set the specified property.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param value
+	 *            The value to set the property to.
+	 */
+	public void set(final String name, final String value) {
+		this.data.put(name, value);
+	}
+
+	/**
+	 * Set the description for this object.
+	 * 
+	 * @param description
+	 *            The description of this property.
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	/**
+	 * Set the name of this property.
+	 * 
+	 * @param name
+	 *            The name of this property.
+	 */
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return The number of properties defined.
+	 */
+	public int size() {
+		return this.data.size();
 	}
 }

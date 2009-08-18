@@ -44,18 +44,18 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	/**
 	 * The network to train.
 	 */
-	private BasicNetwork network;
-	
+	private final BasicNetwork network;
+
 	/**
 	 * The synapse to train.
 	 */
-	private Synapse synapse;
-	
+	private final Synapse synapse;
+
 	/**
 	 * The training data to use.
 	 */
-	private NeuralDataSet training;
-	
+	private final NeuralDataSet training;
+
 	/**
 	 * The learning rate.
 	 */
@@ -63,22 +63,34 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 
 	/**
 	 * Construct an ADALINE trainer.
-	 * @param network The network to train.
-	 * @param training The training data.
-	 * @param learningRate The learning rate.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data.
+	 * @param learningRate
+	 *            The learning rate.
 	 */
-	public TrainAdaline(BasicNetwork network, NeuralDataSet training,
-			double learningRate) {
-		if (network.getStructure().getLayers().size() > 2)
+	public TrainAdaline(final BasicNetwork network,
+			final NeuralDataSet training, final double learningRate) {
+		if (network.getStructure().getLayers().size() > 2) {
 			throw new NeuralNetworkError(
 					"An ADALINE network only has two layers.");
+		}
 		this.network = network;
 
-		Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
+		final Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
 
 		this.synapse = input.getNext().get(0);
 		this.training = training;
 		this.learningRate = learningRate;
+	}
+
+	/**
+	 * @return The learning rate.
+	 */
+	public double getLearningRate() {
+		return this.learningRate;
 	}
 
 	/**
@@ -95,27 +107,29 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
-		Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
+		final Layer inputLayer = this.network.getLayer(BasicNetwork.TAG_INPUT);
+		final Layer outputLayer = this.network
+				.getLayer(BasicNetwork.TAG_OUTPUT);
 
-		for (NeuralDataPair pair : this.training) {
+		for (final NeuralDataPair pair : this.training) {
 			// calculate the error
-			NeuralData output = this.network.compute(pair.getInput());
+			final NeuralData output = this.network.compute(pair.getInput());
 
-			for (int currentAdaline = 0; currentAdaline < output.size(); currentAdaline++) {
-				double diff = pair.getIdeal().getData(currentAdaline)
+			for (int currentAdaline = 0; currentAdaline < output.size(); 
+				currentAdaline++) {
+				final double diff = pair.getIdeal().getData(currentAdaline)
 						- output.getData(currentAdaline);
 
 				// weights
 				for (int i = 0; i < inputLayer.getNeuronCount(); i++) {
-					double input = pair.getInput().getData(i);
-					synapse.getMatrix().add(i, currentAdaline,
-							learningRate * diff * input);
+					final double input = pair.getInput().getData(i);
+					this.synapse.getMatrix().add(i, currentAdaline,
+							this.learningRate * diff * input);
 				}
 
 				// threshold (bias)
 				double t = outputLayer.getThreshold(currentAdaline);
-				t += learningRate * diff;
+				t += this.learningRate * diff;
 				outputLayer.setThreshold(currentAdaline, t);
 			}
 
@@ -123,21 +137,16 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 		}
 
 		// set the global error
-		this.setError(errorCalculation.calculateRMS());
-	}
-
-	/**
-	 * @return The learning rate.
-	 */
-	public double getLearningRate() {
-		return this.learningRate;
+		setError(errorCalculation.calculateRMS());
 	}
 
 	/**
 	 * Set the learning rate.
-	 * @param rate The new learning rate.
+	 * 
+	 * @param rate
+	 *            The new learning rate.
 	 */
-	public void setLearningRate(double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 

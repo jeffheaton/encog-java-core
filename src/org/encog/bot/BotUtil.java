@@ -64,14 +64,11 @@ public final class BotUtil {
 	 * @param token2
 	 *            The text, or tag, that comes after the desired text
 	 * @param index
-	 *            Index in the string to start searching from.
-	 * @param occurence
-	 *            What occurence.
+	 *            Which occurrence of token1 to use, 1 for the first
 	 * @return The contents of the URL that was downloaded.
 	 */
-	public static String extractFromIndex(final String str,
-			final String token1, final String token2, final int index,
-			final int occurence) {
+	public static String extract(final String str, final String token1,
+			final String token2, final int index) {
 		int location1, location2;
 
 		// convert everything to lower case
@@ -79,10 +76,11 @@ public final class BotUtil {
 		final String token1Lower = token1.toLowerCase();
 		final String token2Lower = token2.toLowerCase();
 
-		int count = occurence;
+		int count = index;
 
 		// now search
-		location1 = location2 = index - 1;
+		location1 = -1;
+		location2 = -1;
 		do {
 			location1 = searchStr.indexOf(token1Lower, location1 + 1);
 
@@ -113,11 +111,14 @@ public final class BotUtil {
 	 * @param token2
 	 *            The text, or tag, that comes after the desired text
 	 * @param index
-	 *            Which occurrence of token1 to use, 1 for the first
+	 *            Index in the string to start searching from.
+	 * @param occurence
+	 *            What occurrence.
 	 * @return The contents of the URL that was downloaded.
 	 */
-	public static String extract(final String str, final String token1,
-			final String token2, final int index) {
+	public static String extractFromIndex(final String str,
+			final String token1, final String token2, final int index,
+			final int occurence) {
 		int location1, location2;
 
 		// convert everything to lower case
@@ -125,10 +126,11 @@ public final class BotUtil {
 		final String token1Lower = token1.toLowerCase();
 		final String token2Lower = token2.toLowerCase();
 
-		int count = index;
+		int count = occurence;
 
 		// now search
-		location1 = location2 = -1;
+		location1 = index - 1;
+		location2 = location1;
 		do {
 			location1 = searchStr.indexOf(token1Lower, location1 + 1);
 
@@ -147,6 +149,58 @@ public final class BotUtil {
 		}
 
 		return str.substring(location1 + token1Lower.length(), location2);
+	}
+
+	/**
+	 * Find the specified occurrence of one string in another string.
+	 * 
+	 * @param search
+	 *            The string to search.
+	 * @param searchFor
+	 *            What we are searching for.
+	 * @param index
+	 *            The occurrence to find.
+	 * @return The index of the specified string, or -1 if not found.
+	 */
+	public static int findOccurance(final String search,
+			final String searchFor, final int index) {
+		int count = index;
+		final String lowerSearch = search.toLowerCase();
+		int result = -1;
+
+		do {
+			result = lowerSearch.indexOf(searchFor, result + 1);
+		} while (count-- > 0);
+
+		return result;
+	}
+
+	/**
+	 * Load load from the specified input stream.
+	 * @param is The input stream to load from.
+	 * @return The data loaded from the specified input stream.
+	 */
+	public static String loadPage(final InputStream is) {
+		try {
+			final StringBuilder result = new StringBuilder();
+			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
+
+			int length;
+
+			do {
+				length = is.read(buffer);
+				if (length >= 0) {
+					result.append(new String(buffer, 0, length));
+				}
+			} while (length >= 0);
+
+			return result.toString();
+		} catch (final IOException e) {
+			if (BotUtil.LOGGER.isErrorEnabled()) {
+				BotUtil.LOGGER.error("Exception", e);
+			}
+			throw new BotError(e);
+		}
 	}
 
 	/**
@@ -182,57 +236,30 @@ public final class BotUtil {
 	}
 
 	/**
-	 * Private constructor.
+	 * Strip any HTML or XML tags from the specified string.
+	 * 
+	 * @param str
+	 *            The string to process.
+	 * @return The string without tags.
 	 */
-	private BotUtil() {
-
-	}
-
-	public static int findOccurance(final String search,
-			final String searchFor, final int index) {
-		int count = index;
-		String lowerSearch = search.toLowerCase();
-		int result = -1;
-
-		do {
-			result = lowerSearch.indexOf(searchFor, result + 1);
-		} while (count-- > 0);
-
-		return result;
-	}
-
-	public static String stripTags(String str) {
-		ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
-		StringBuilder result = new StringBuilder();
-		ReadHTML html = new ReadHTML(is);
+	public static String stripTags(final String str) {
+		final ByteArrayInputStream is = 
+			new ByteArrayInputStream(str.getBytes());
+		final StringBuilder result = new StringBuilder();
+		final ReadHTML html = new ReadHTML(is);
 		int ch;
 		while ((ch = html.read()) != -1) {
-			if (ch != 0)
+			if (ch != 0) {
 				result.append((char) ch);
+			}
 		}
 		return result.toString();
 	}
 
-	public static String loadPage(InputStream is) {
-		try {
-			final StringBuilder result = new StringBuilder();
-			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
+	/**
+	 * Private constructor.
+	 */
+	private BotUtil() {
 
-			int length;
-
-			do {
-				length = is.read(buffer);
-				if (length >= 0) {
-					result.append(new String(buffer, 0, length));
-				}
-			} while (length >= 0);
-
-			return result.toString();
-		} catch (final IOException e) {
-			if (BotUtil.LOGGER.isErrorEnabled()) {
-				BotUtil.LOGGER.error("Exception", e);
-			}
-			throw new BotError(e);
-		}
 	}
 }

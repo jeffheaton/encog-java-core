@@ -43,27 +43,27 @@ public class FindCPN {
 	/**
 	 * The input layer.
 	 */
-	private Layer inputLayer;
+	private final Layer inputLayer;
 
 	/**
 	 * The instar layer.
 	 */
-	private Layer instarLayer;
+	private final Layer instarLayer;
 
 	/**
 	 * The outstar layer.
 	 */
-	private Layer outstarLayer;
+	private final Layer outstarLayer;
 
 	/**
 	 * The synapse from the input to instar layer.
 	 */
-	private Synapse instarSynapse;
+	private final Synapse instarSynapse;
 
 	/**
 	 * The synapse from the instar to the outstar layer.
 	 */
-	private Synapse outstarSynapse;
+	private final Synapse outstarSynapse;
 
 	/**
 	 * The logging object.
@@ -76,11 +76,11 @@ public class FindCPN {
 	 * @param network
 	 *            The network to train.
 	 */
-	public FindCPN(BasicNetwork network) {
+	public FindCPN(final BasicNetwork network) {
 		if (network.getStructure().getLayers().size() != 3) {
-			String str = "A CPN network must have exactly 3 layers";
-			if (logger.isErrorEnabled()) {
-				logger.error(str);
+			final String str = "A CPN network must have exactly 3 layers";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new TrainingError(str);
 		}
@@ -90,17 +90,17 @@ public class FindCPN {
 		this.instarLayer = network.getLayer(CPNPattern.TAG_INSTAR);
 
 		if (this.outstarLayer == null) {
-			String str = "Can't find an OUTSTAR layer, this is required.";
-			if (logger.isErrorEnabled()) {
-				logger.error(str);
+			final String str = "Can't find an OUTSTAR layer, this is required.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new TrainingError(str);
 		}
 
 		if (this.instarLayer == null) {
-			String str = "Can't find an OUTSTAR layer, this is required.";
-			if (logger.isErrorEnabled()) {
-				logger.error(str);
+			final String str = "Can't find an OUTSTAR layer, this is required.";
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error(str);
 			}
 			throw new TrainingError(str);
 		}
@@ -113,48 +113,50 @@ public class FindCPN {
 	 * @return The input layer.
 	 */
 	public Layer getInputLayer() {
-		return inputLayer;
+		return this.inputLayer;
 	}
 
 	/**
 	 * @return The instar layer.
 	 */
 	public Layer getInstarLayer() {
-		return instarLayer;
-	}
-
-	/**
-	 * @return The outstar layer.
-	 */
-	public Layer getOutstarLayer() {
-		return outstarLayer;
+		return this.instarLayer;
 	}
 
 	/**
 	 * @return The instar synapse.
 	 */
 	public Synapse getInstarSynapse() {
-		return instarSynapse;
+		return this.instarSynapse;
+	}
+
+	/**
+	 * @return The outstar layer.
+	 */
+	public Layer getOutstarLayer() {
+		return this.outstarLayer;
 	}
 
 	/**
 	 * @return The outstar synapse.
 	 */
 	public Synapse getOutstarSynapse() {
-		return outstarSynapse;
+		return this.outstarSynapse;
 	}
 
 	/**
-	 * Calculate the winning neuron from the data, this is the neuron
-	 * that has the highest output.
-	 * @param data The data to use to determine the winning neuron.
+	 * Calculate the winning neuron from the data, this is the neuron that has
+	 * the highest output.
+	 * 
+	 * @param data
+	 *            The data to use to determine the winning neuron.
 	 * @return The winning neuron index, or -1 if no winner.
 	 */
-	public int winner(NeuralData data) {
+	public int winner(final NeuralData data) {
 		int winner = -1;
 
 		for (int i = 0; i < data.size(); i++) {
-			if (winner == -1 || data.getData(i) > data.getData(winner)) {
+			if ((winner == -1) || (data.getData(i) > data.getData(winner))) {
 				winner = i;
 			}
 		}

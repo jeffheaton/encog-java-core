@@ -30,14 +30,13 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 
 /**
- * Provides the neural logic for an Hopfield type network.  See HopfieldPattern
+ * Provides the neural logic for an Hopfield type network. See HopfieldPattern
  * for more information on this type of network.
  */
 public class HopfieldLogic extends ThermalLogic {
-	
-	
+
 	/**
-	 *  The serial ID.
+	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 6522005686471473074L;
 
@@ -68,65 +67,65 @@ public class HopfieldLogic extends ThermalLogic {
 		// existing weight matrix.
 		convertHopfieldMatrix(m4);
 	}
-	
+
 	/**
 	 * Update the Hopfield weights after training.
-	 * @param delta The amount to change the weights by.
+	 * 
+	 * @param delta
+	 *            The amount to change the weights by.
 	 */
 	private void convertHopfieldMatrix(final Matrix delta) {
 		// add the new weight matrix to what is there already
 		for (int row = 0; row < delta.getRows(); row++) {
 			for (int col = 0; col < delta.getRows(); col++) {
-				this.getThermalSynapse().getMatrix().add(
-						row, col, delta.get(row, col));
+				getThermalSynapse().getMatrix().add(row, col,
+						delta.get(row, col));
 			}
 		}
 	}
-	
+
 	/**
 	 * Perform one Hopfield iteration.
 	 */
-	public void run()
-	{
-		NeuralData temp = this.compute(this.getCurrentState(),null);
-		for(int i=0;i<temp.size();i++)
-		{
-			this.getCurrentState().setData(i, temp.getData(i)>0 );
+	public void run() {
+		final NeuralData temp = this.compute(getCurrentState(), null);
+		for (int i = 0; i < temp.size(); i++) {
+			getCurrentState().setData(i, temp.getData(i) > 0);
 		}
 	}
-	
+
 	/**
-	 * Run the network until it becomes stable and does not change from
-	 * more runs.
-	 * @param max The maximum number of cycles to run before giving up.
+	 * Run the network until it becomes stable and does not change from more
+	 * runs.
+	 * 
+	 * @param max
+	 *            The maximum number of cycles to run before giving up.
 	 * @return The number of cycles that were run.
 	 */
-	public int runUntilStable(int max)
-	{
+	public int runUntilStable(final int max) {
 		boolean done = false;
-		String lastStateStr = this.getCurrentState().toString();
-		String currentStateStr = this.getCurrentState().toString();
-		
+		String lastStateStr = getCurrentState().toString();
+		String currentStateStr = getCurrentState().toString();
+
 		int cycle = 0;
-		do
-		{
+		do {
 			run();
 			cycle++;
-			
-			lastStateStr = this.getCurrentState().toString();
-			
-			if( !currentStateStr.equals(lastStateStr) )
-			{
-				if( cycle>max )
+
+			lastStateStr = getCurrentState().toString();
+
+			if (!currentStateStr.equals(lastStateStr)) {
+				if (cycle > max) {
 					done = true;
-			}
-			else
+				}
+			} else {
 				done = true;
-			
+			}
+
 			currentStateStr = lastStateStr;
-			
-		} while( !done );
-		
+
+		} while (!done);
+
 		return cycle;
 	}
 }

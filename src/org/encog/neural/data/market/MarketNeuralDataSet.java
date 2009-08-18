@@ -136,6 +136,18 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	}
 
 	/**
+	 * To be implemented later.
+	 * 
+	 * @param date
+	 *            NOT USED
+	 * @return NOT USED
+	 */
+	public NeuralData generateInputForPrediction(final Date date) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/**
 	 * @return The loader that is being used for this set.
 	 */
 	public MarketLoader getLoader() {
@@ -216,11 +228,6 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 
 			loadPointFromMarketData(ticker, point, item);
 		}
-	}
-
-	public NeuralData generateInputForPrediction(Date date) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

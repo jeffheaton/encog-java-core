@@ -80,6 +80,28 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	}
 
 	/**
+	 * This will throw an error, as "add" is not supported for bipolar.
+	 * 
+	 * @param index
+	 *            Not used.
+	 * @param value
+	 *            Not used.
+	 */
+	public void add(final int index, final double value) {
+		throw new NeuralDataError("Add is not supported for bipolar data.");
+	}
+
+	/**
+	 * Set all data to false.
+	 */
+	public void clear() {
+		for (int i = 0; i < this.data.length; i++) {
+			this.data[i] = false;
+		}
+
+	}
+
+	/**
 	 * @return A cloned copy of this object.
 	 */
 	@Override
@@ -166,39 +188,21 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	public int size() {
 		return this.data.length;
 	}
-	
-	/**
-	 * This will throw an error, as "add" is not supported for bipolar.
-	 * @param index Not used.
-	 * @param value Not used.
-	 */
-	public void add(int index, double value) {
-		throw new NeuralDataError("Add is not supported for bipolar data.");	
-	}
 
-	/**
-	 * Set all data to false.
-	 */
-	public void clear() {
-		for(int i=0;i<this.data.length;i++) {
-			this.data[i] = false;
-		}
-		
-	}
-	
 	/**
 	 * @return This object as a string.
 	 */
+	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append('[');
-		for (int i = 0; i < this.size(); i++) {
-			if (this.getData(i)>0) {
+		for (int i = 0; i < size(); i++) {
+			if (this.getData(i) > 0) {
 				result.append("T");
 			} else {
 				result.append("F");
 			}
-			if (i != this.size() - 1) {
+			if (i != size() - 1) {
 				result.append(",");
 			}
 		}

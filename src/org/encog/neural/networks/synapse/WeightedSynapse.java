@@ -60,7 +60,7 @@ public class WeightedSynapse extends BasicSynapse {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private transient final Logger logger = 
+	private final transient Logger logger = 
 		LoggerFactory.getLogger(this.getClass());
 
 	/**

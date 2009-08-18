@@ -90,10 +90,10 @@ public class Propagation extends BasicTraining {
 	 * @param network
 	 *            The network to train.
 	 * @param method
-	 * 			  The propagation method to use.
+	 *            The propagation method to use.
 	 * @param training
 	 *            The training data to use.
-
+	 * 
 	 */
 	public Propagation(final BasicNetwork network,
 			final PropagationMethod method, final NeuralDataSet training) {
@@ -113,26 +113,25 @@ public class Propagation extends BasicTraining {
 	public void backwardPass(final NeuralData ideal) {
 
 		// make sure the network has an output layer
-		Layer outputLayer = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
-		
-		if( outputLayer==null )
-		{
-			String str = "To use propagation training, one layer must be tagged OUTPUT.";
+		final Layer outputLayer = this.network
+				.getLayer(BasicNetwork.TAG_OUTPUT);
+
+		if (outputLayer == null) {
+			final String str = 
+				"To use propagation training, one layer must be tagged OUTPUT.";
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
 			}
 
-			throw new NeuralNetworkError(str);			
+			throw new NeuralNetworkError(str);
 		}
-		
+
 		// make sure that the input is of the correct size
 		if (ideal.size() != outputLayer.getNeuronCount()) {
 
-			final String str = "Size mismatch: Can't calcError for " 
-					+ "ideal input size="
-					+ ideal.size()
-					+ " for output layer size="
-					+ outputLayer.getNeuronCount();
+			final String str = "Size mismatch: Can't calcError for "
+					+ "ideal input size=" + ideal.size()
+					+ " for output layer size=" + outputLayer.getNeuronCount();
 
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
@@ -163,16 +162,15 @@ public class Propagation extends BasicTraining {
 	 * @param ideal
 	 *            Ideal output values.
 	 * @param actual
-	 * 			The actual output from this level
-	 * @return
-	 * Return the initial propagation level.
+	 *            The actual output from this level
+	 * @return Return the initial propagation level.
 	 */
-	private PropagationLevel calculateInitialDeltas(
-			final NeuralData actual,
+	private PropagationLevel calculateInitialDeltas(final NeuralData actual,
 			final NeuralData ideal) {
 
 		// get the output layer
-		Layer outputLayer = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
+		final Layer outputLayer = this.network
+				.getLayer(BasicNetwork.TAG_OUTPUT);
 
 		// construct the level
 		final PropagationLevel level = this.levels.get(0);
@@ -205,7 +203,8 @@ public class Propagation extends BasicTraining {
 	 */
 	private void construct() {
 		// get the output layer
-		Layer outputLayer = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
+		final Layer outputLayer = this.network
+				.getLayer(BasicNetwork.TAG_OUTPUT);
 
 		// construct the level
 		final PropagationLevel level = new PropagationLevel(this, outputLayer);
@@ -217,7 +216,9 @@ public class Propagation extends BasicTraining {
 
 	/**
 	 * Construct one propagation level.
-	 * @param current The current level being constructed.
+	 * 
+	 * @param current
+	 *            The current level being constructed.
 	 */
 	private void construct(final PropagationLevel current) {
 		final List<Synapse> previousSynapses = current
@@ -236,7 +237,9 @@ public class Propagation extends BasicTraining {
 
 	/**
 	 * Perform the forward pass and determine each layer's output.
-	 * @param input The input to the neural network.
+	 * 
+	 * @param input
+	 *            The input to the neural network.
 	 * @return The output from the neural network.
 	 */
 	private NeuralData forwardPass(final NeuralData input) {

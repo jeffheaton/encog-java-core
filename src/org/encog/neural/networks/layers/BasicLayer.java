@@ -84,7 +84,8 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * The logging object.
 	 */
-	private static transient final Logger logger = LoggerFactory.getLogger(BasicLayer.class);
+	private static final transient Logger LOGGER = 
+		LoggerFactory.getLogger(BasicLayer.class);
 
 	/**
 	 * Which activation function to use for this layer.
@@ -187,8 +188,8 @@ public class BasicLayer implements Layer, Serializable {
 
 		if (synapse == null) {
 			final String str = "Unknown synapse type.";
-			if (BasicLayer.logger.isErrorEnabled()) {
-				BasicLayer.logger.error(str);
+			if (BasicLayer.LOGGER.isErrorEnabled()) {
+				BasicLayer.LOGGER.error(str);
 			}
 			throw new NeuralNetworkError(str);
 		} else {
@@ -303,8 +304,8 @@ public class BasicLayer implements Layer, Serializable {
 		if (!hasThreshold()) {
 			final String str = 
 				"Attempting to access threshold on a thresholdless layer.";
-			if (BasicLayer.logger.isErrorEnabled()) {
-				BasicLayer.logger.error(str);
+			if (BasicLayer.LOGGER.isErrorEnabled()) {
+				BasicLayer.LOGGER.error(str);
 			}
 			throw new NeuralNetworkError(str);
 		}
@@ -432,8 +433,8 @@ public class BasicLayer implements Layer, Serializable {
 		if (!hasThreshold()) {
 			final String str = 
 				"Attempting to set threshold on a thresholdless layer.";
-			if (BasicLayer.logger.isErrorEnabled()) {
-				BasicLayer.logger.error(str);
+			if (BasicLayer.LOGGER.isErrorEnabled()) {
+				BasicLayer.LOGGER.error(str);
 			}
 			throw new NeuralNetworkError(str);
 		}

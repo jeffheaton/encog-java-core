@@ -32,13 +32,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements a genetic algorithm. This is an abstract class.
- * Other classes are provided in this book that use this base class to train
- * neural networks or provide an answer to the traveling salesman problem.
+ * Implements a genetic algorithm. This is an abstract class. Other classes are
+ * provided in this book that use this base class to train neural networks or
+ * provide an answer to the traveling salesman problem.
  * 
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
- * @param <GENE_TYPE> The datatype of the gene.
+ * 
+ * @param <GENE_TYPE>
+ *            The datatype of the gene.
  */
 public abstract class GeneticAlgorithm<GENE_TYPE> {
 
@@ -46,7 +48,7 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 * Threadpool timeout.
 	 */
 	public static final int TIMEOUT = 120;
-	
+
 	/**
 	 * How many chromosomes should be created.
 	 */
@@ -83,12 +85,24 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 * The population.
 	 */
 	private Chromosome<GENE_TYPE>[] chromosomes;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Define the cut length to be 1/3 the length of a chromosome. This is a
+	 * good default value for it. If there are no chromosomes yet this call will
+	 * set the cut length to 0.
+	 */
+	public void defineCutLength() {
+		if (this.chromosomes.length > 0) {
+			final int size = this.chromosomes[0].getGenes().length;
+			setCutLength(size / 3);
+		}
+	}
 
 	/**
 	 * Get a specific chromosome.
@@ -172,29 +186,24 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 */
 	public void iteration() {
 
-		final int countToMate = (int) (getPopulationSize() 
-				* getPercentToMate());
+		final int countToMate = (int) (getPopulationSize() * getPercentToMate());
 		final int offspringCount = countToMate * 2;
 		int offspringIndex = getPopulationSize() - offspringCount;
-		final int matingPopulationSize = (int) (getPopulationSize() 
-				* getMatingPopulation());
+		final int matingPopulationSize = (int) (getPopulationSize() * getMatingPopulation());
 
 		// mate and form the next generation
 		for (int i = 0; i < countToMate; i++) {
 			final Chromosome<GENE_TYPE> mother = this.chromosomes[i];
 			final int fatherInt = (int) (Math.random() * matingPopulationSize);
 			final Chromosome<GENE_TYPE> father = this.chromosomes[fatherInt];
-			final Chromosome<GENE_TYPE> child1 = 
-				this.chromosomes[offspringIndex];
-			final Chromosome<GENE_TYPE> child2 = 
-				this.chromosomes[offspringIndex + 1];
+			final Chromosome<GENE_TYPE> child1 = this.chromosomes[offspringIndex];
+			final Chromosome<GENE_TYPE> child2 = this.chromosomes[offspringIndex + 1];
 
-			final MateWorker<GENE_TYPE> worker 
-			  = new MateWorker<GENE_TYPE>(
+			final MateWorker<GENE_TYPE> worker = new MateWorker<GENE_TYPE>(
 					mother, father, child1, child2);
 
-			  EncogConcurrency.getInstance().processTask(worker);
-			
+			EncogConcurrency.getInstance().processTask(worker);
+
 			offspringIndex += 2;
 		}
 
@@ -212,8 +221,7 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 * @param value
 	 *            The value for the specified chromosome.
 	 */
-	public void setChromosome(final int i, 
-			final Chromosome<GENE_TYPE> value) {
+	public void setChromosome(final int i, final Chromosome<GENE_TYPE> value) {
 		this.chromosomes[i] = value;
 	}
 
@@ -223,8 +231,7 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 * @param chromosomes
 	 *            the chromosomes to set
 	 */
-	public void setChromosomes(final 
-			Chromosome<GENE_TYPE>[] chromosomes) {
+	public void setChromosomes(final Chromosome<GENE_TYPE>[] chromosomes) {
 		this.chromosomes = chromosomes;
 	}
 
@@ -251,7 +258,8 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	/**
 	 * Set the mutation percent.
 	 * 
-	 * @param mutationPercent The percent to mutate.
+	 * @param mutationPercent
+	 *            The percent to mutate.
 	 */
 	public void setMutationPercent(final double mutationPercent) {
 		this.mutationPercent = mutationPercent;
@@ -260,7 +268,8 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	/**
 	 * Set the percent to mate.
 	 * 
-	 * @param percentToMate The percent to mate.
+	 * @param percentToMate
+	 *            The percent to mate.
 	 */
 	public void setPercentToMate(final double percentToMate) {
 		this.percentToMate = percentToMate;
@@ -279,7 +288,8 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	/**
 	 * Set the gene.
 	 * 
-	 * @param preventRepeat Should repeats be prevented.
+	 * @param preventRepeat
+	 *            Should repeats be prevented.
 	 */
 	public void setPreventRepeat(final boolean preventRepeat) {
 		this.preventRepeat = preventRepeat;
@@ -290,18 +300,6 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 */
 	public void sortChromosomes() {
 		Arrays.sort(this.chromosomes);
-	}
-	
-	/**
-	 * Define the cut length to be 1/3 the length of a chromosome.  This
-	 * is a good default value for it.  If there are no chromosomes yet
-	 * this call will set the cut length to 0.
-	 */
-	public void defineCutLength() {
-		if( this.chromosomes.length> 0) {
-			int size = this.chromosomes[0].getGenes().length;
-			setCutLength(size/3);
-		}
 	}
 
 }

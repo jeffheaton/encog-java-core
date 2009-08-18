@@ -47,6 +47,11 @@ import org.slf4j.LoggerFactory;
 public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 
 	/**
+	 * The serial ID.
+	 */
+	private static final long serialVersionUID = -9068229682273861359L;
+
+	/**
 	 * The the expected output from the neural network, or null for unsupervised
 	 * training.
 	 */
@@ -61,7 +66,8 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private transient final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger logger = 
+		LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct the object with only input. If this constructor is used, then

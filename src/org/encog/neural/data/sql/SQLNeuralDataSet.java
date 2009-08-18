@@ -64,16 +64,16 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		 * The JDBC connection.
 		 */
 		private final Connection connection;
-		
+
 		/**
 		 * The JDBC statement.
 		 */
 		private final PreparedStatement statement;
-		
+
 		/**
 		 * The JDBC result set.
 		 */
-		private final ResultSet results;				
+		private final ResultSet results;
 
 		/**
 		 * Is read and ready?
@@ -90,25 +90,48 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		public SQLNeuralIterator() {
 			try {
 				// open the connection
-				if (uid != null || pwd != null) {
-					this.connection = DriverManager.getConnection(url);
-				} else {
+				if ((SQLNeuralDataSet.this.uid != null)
+						|| (SQLNeuralDataSet.this.pwd != null)) {
 					this.connection = DriverManager
-							.getConnection(url, uid, pwd);
+							.getConnection(SQLNeuralDataSet.this.url);
+				} else {
+					this.connection = DriverManager.getConnection(
+							SQLNeuralDataSet.this.url,
+							SQLNeuralDataSet.this.uid,
+							SQLNeuralDataSet.this.pwd);
 				}
-				
+
 				// prepare the statement
-				this.statement = this.connection.prepareStatement(sql);
-				
+				this.statement = this.connection
+						.prepareStatement(SQLNeuralDataSet.this.sql);
+
 				// execute the statement
 				this.results = this.statement.executeQuery();
-				
-			} catch (SQLException e) {
-				if (logger.isErrorEnabled()) {
-					logger.error("Exception", e);
+
+			} catch (final SQLException e) {
+				if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
+					SQLNeuralDataSet.this.logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			}
+		}
+
+		/**
+		 * Close this iterator and release any resources it had.
+		 */
+		public void close() {
+
+			try {
+				this.results.close();
+				this.statement.close();
+				this.connection.close();
+			} catch (final SQLException e) {
+				if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
+					SQLNeuralDataSet.this.logger.error("Exception", e);
+				}
+				throw new NeuralNetworkError(e);
+			}
+
 		}
 
 		/**
@@ -130,9 +153,9 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 
 				this.dataReady = false;
 				return false;
-			} catch (SQLException e) {
-				if (logger.isErrorEnabled()) {
-					logger.error("Exception", e);
+			} catch (final SQLException e) {
+				if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
+					SQLNeuralDataSet.this.logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			}
@@ -152,14 +175,17 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				NeuralData ideal = null;
 
 				for (int i = 0; i < SQLNeuralDataSet.this.inputSize; i++) {
-					final double d = this.results.getDouble(i+1);
+					final double d = this.results.getDouble(i + 1);
 					input.setData(i, d);
 				}
 
 				if (SQLNeuralDataSet.this.idealSize > 0) {
-					ideal = new BasicNeuralData(SQLNeuralDataSet.this.idealSize);
+					ideal = new BasicNeuralData(
+							SQLNeuralDataSet.this.idealSize);
 					for (int i = 0; i < SQLNeuralDataSet.this.idealSize; i++) {
-						final double d = this.results.getDouble(inputSize + i +1);
+						final double d = this.results
+								.getDouble(SQLNeuralDataSet.this.inputSize + i
+										+ 1);
 						ideal.setData(i, d);
 					}
 
@@ -167,9 +193,9 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 
 				this.dataReady = false;
 				return new BasicNeuralDataPair(input, ideal);
-			} catch (SQLException e) {
-				if (logger.isErrorEnabled()) {
-					logger.error("Exception", e);
+			} catch (final SQLException e) {
+				if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
+					SQLNeuralDataSet.this.logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			}
@@ -186,40 +212,26 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 			}
 			throw new NeuralDataError(SQLNeuralDataSet.REMOVE_NOT_SUPPORTED);
 		}
-		
-		/**
-		 * Close this iterator and release any resources it had.
-		 */
-		public void close()
-		{
-			
-			try {
-				this.results.close();
-				this.statement.close();
-				this.connection.close();
-			} catch (SQLException e) {
-				if (logger.isErrorEnabled()) {
-					logger.error("Exception", e);
-				}
-				throw new NeuralNetworkError(e);
-			}
-			
-		}
 	}
 
 	/**
 	 * Error message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = "Adds are not supported with this dataset, it is read only.";
+	public static final String ADD_NOT_SUPPORTED = 
+		"Adds are not supported with this dataset, it is read only.";
 
 	/**
 	 * Error message: removes are not supported.
 	 */
-	public static final String REMOVE_NOT_SUPPORTED = "Removes are not supported with this dataset, it is read only.";
+	public static final String REMOVE_NOT_SUPPORTED = 
+		"Removes are not supported with this dataset, it is read only.";
 
-	
-	private final List<SQLNeuralDataSet> iterators = new ArrayList<SQLNeuralDataSet>();
-	
+	/**
+	 * A collection of iterations currently in use.
+	 */
+	private final List<SQLNeuralDataSet> iterators = 
+		new ArrayList<SQLNeuralDataSet>();
+
 	/**
 	 * The logging object.
 	 */
@@ -279,8 +291,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 *            The database password.
 	 */
 	public SQLNeuralDataSet(final String sql, final int inputSize,
-			final int idealSize, final String driver,
-			final String url, final String uid, final String pwd) {
+			final int idealSize, final String driver, final String url,
+			final String uid, final String pwd) {
 
 		this.inputSize = inputSize;
 		this.idealSize = idealSize;
@@ -291,9 +303,9 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		this.sql = sql;
 		try {
 			Class.forName(this.driver);
-		} catch (ClassNotFoundException e) {
-			if (logger.isErrorEnabled()) {
-				logger.error("Exception" + e);
+		} catch (final ClassNotFoundException e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception" + e);
 			}
 			throw new NeuralNetworkError(e);
 		}
@@ -346,8 +358,7 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	 * Close the SQL connection.
 	 */
 	public void close() {
-		for(SQLNeuralDataSet i: this.iterators)
-		{
+		for (final SQLNeuralDataSet i : this.iterators) {
 			i.close();
 		}
 	}

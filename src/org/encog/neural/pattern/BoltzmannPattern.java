@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Pattern to create a Boltzmann machine.
- *
+ * 
  */
 public class BoltzmannPattern implements NeuralNetworkPattern {
 
@@ -49,28 +49,30 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * The number of neurons in the Boltzmann network.
 	 */
 	private int neuronCount;
-	
+
 	/**
 	 * The number of annealing cycles per run.
 	 */
 	private int annealCycles = 100;
-	
+
 	/**
 	 * The number of cycles per run.
 	 */
 	private int runCycles = 1000;
-	
+
 	/**
 	 * The current temperature.
 	 */
 	private double temperature = 0.0;
-	
+
 	/**
-	 * Not supported, will throw an exception, Boltzmann networks have
-	 * no hidden layers.
-	 * @param count Not used.
+	 * Not supported, will throw an exception, Boltzmann networks have no hidden
+	 * layers.
+	 * 
+	 * @param count
+	 *            Not used.
 	 */
-	public void addHiddenLayer(int count) {
+	public void addHiddenLayer(final int count) {
 		final String str = "A Boltzmann network has no hidden layers.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
@@ -83,11 +85,12 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 */
 	public void clear() {
 		this.neuronCount = 0;
-		
+
 	}
 
 	/**
 	 * Generate the network.
+	 * 
 	 * @return The generated network.
 	 */
 	public BasicNetwork generate() {
@@ -95,9 +98,11 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 				this.neuronCount);
 
 		final BasicNetwork result = new BasicNetwork(new BoltzmannLogic());
-		result.setProperty(BoltzmannLogic.PROPERTY_ANNEAL_CYCLES, this.annealCycles);
+		result.setProperty(BoltzmannLogic.PROPERTY_ANNEAL_CYCLES,
+				this.annealCycles);
 		result.setProperty(BoltzmannLogic.PROPERTY_RUN_CYCLES, this.runCycles);
-		result.setProperty(BoltzmannLogic.PROPERTY_TEMPERATURE, this.temperature);
+		result.setProperty(BoltzmannLogic.PROPERTY_TEMPERATURE,
+				this.temperature);
 		result.addLayer(layer);
 		layer.addNext(layer);
 		layer.setX(PatternConst.START_X);
@@ -108,81 +113,93 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	}
 
 	/**
-	 * Not used, will throw an exception.
-	 * @param activation Not used.
-	 */
-	public void setActivationFunction(ActivationFunction activation) {
-		final String str = 
-			"A Boltzmann network will use the BiPolar activation " 
-			+ "function, no activation function needs to be specified.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-		
-	}
-
-	/**
-	 * Set the number of input neurons.  This is the same as the
-	 * number of output neurons.
-	 * @param count The number of input neurons.
-	 */
-	public void setInputNeurons(int count) {
-		this.neuronCount = count;
-		
-	}
-
-	/**
-	 * Set the number of output neurons.  This is the same as the
-	 * number of input neurons.
-	 * @param count The number of output neurons.
-	 */
-	public void setOutputNeurons(int count) {
-		this.neuronCount = count;
-	}
-
-	/**
 	 * @return The number of annealing cycles per run.
 	 */
 	public int getAnnealCycles() {
-		return annealCycles;
-	}
-
-	/**
-	 * Set the number of annealing cycles per run.
-	 * @param annealCycles The new value.
-	 */
-	public void setAnnealCycles(int annealCycles) {
-		this.annealCycles = annealCycles;
+		return this.annealCycles;
 	}
 
 	/**
 	 * @return The number of cycles per run.
 	 */
 	public int getRunCycles() {
-		return runCycles;
-	}
-
-	/**
-	 * Set the number of cycles per run. 
-	 * @param runCycles The new value.
-	 */
-	public void setRunCycles(int runCycles) {
-		this.runCycles = runCycles;
+		return this.runCycles;
 	}
 
 	/**
 	 * @return The temperature.
 	 */
 	public double getTemperature() {
-		return temperature;
+		return this.temperature;
+	}
+
+	/**
+	 * Not used, will throw an exception.
+	 * 
+	 * @param activation
+	 *            Not used.
+	 */
+	public void setActivationFunction(final ActivationFunction activation) {
+		final String str = 
+			"A Boltzmann network will use the BiPolar activation "
+				+ "function, no activation function needs to be specified.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new PatternError(str);
+
+	}
+
+	/**
+	 * Set the number of annealing cycles per run.
+	 * 
+	 * @param annealCycles
+	 *            The new value.
+	 */
+	public void setAnnealCycles(final int annealCycles) {
+		this.annealCycles = annealCycles;
+	}
+
+	/**
+	 * Set the number of input neurons. This is the same as the number of output
+	 * neurons.
+	 * 
+	 * @param count
+	 *            The number of input neurons.
+	 */
+	public void setInputNeurons(final int count) {
+		this.neuronCount = count;
+
+	}
+
+	/**
+	 * Set the number of output neurons. This is the same as the number of input
+	 * neurons.
+	 * 
+	 * @param count
+	 *            The number of output neurons.
+	 */
+	public void setOutputNeurons(final int count) {
+		this.neuronCount = count;
+	}
+
+	/**
+	 * Set the number of cycles per run.
+	 * 
+	 * @param runCycles
+	 *            The new value.
+	 */
+	public void setRunCycles(final int runCycles) {
+		this.runCycles = runCycles;
 	}
 
 	/**
 	 * Set the temperature.
-	 * @param temperature The new value.
+	 * 
+	 * @param temperature
+	 *            The new value.
 	 */
-	public void setTemperature(double temperature) {
+	public void setTemperature(final double temperature) {
 		this.temperature = temperature;
 	}
 }

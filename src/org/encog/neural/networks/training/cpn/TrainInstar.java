@@ -32,7 +32,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.util.ErrorCalculation;
 import org.encog.util.math.BoundMath;
 
 /**
@@ -46,13 +45,13 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	/**
 	 * The network being trained.
 	 */
-	private BasicNetwork network;
+	private final BasicNetwork network;
 
 	/**
 	 * The training data. This is unsupervised training, so only the input
 	 * portion of the training data will be used.
 	 */
-	private NeuralDataSet training;
+	private final NeuralDataSet training;
 
 	/**
 	 * The learning rate.
@@ -68,7 +67,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	/**
 	 * Used to find the parts of the CPN network.
 	 */
-	private FindCPN parts;
+	private final FindCPN parts;
 
 	/**
 	 * Construct the instar training object.
@@ -80,12 +79,19 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * @param learningRate
 	 *            The learning rate.
 	 */
-	public TrainInstar(BasicNetwork network, NeuralDataSet training,
-			double learningRate) {
+	public TrainInstar(final BasicNetwork network,
+			final NeuralDataSet training, final double learningRate) {
 		this.network = network;
 		this.training = training;
 		this.learningRate = learningRate;
 		this.parts = new FindCPN(network);
+	}
+
+	/**
+	 * @return The learning rate.
+	 */
+	public double getLearningRate() {
+		return this.learningRate;
 	}
 
 	/**
@@ -100,8 +106,9 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 */
 	private void initWeights() {
 		int i = 0;
-		for (NeuralDataPair pair : this.training) {
-			for (int j = 0; j < this.parts.getInputLayer().getNeuronCount(); j++) {
+		for (final NeuralDataPair pair : this.training) {
+			for (int j = 0; j 
+			< this.parts.getInputLayer().getNeuronCount(); j++) {
 				this.parts.getInstarSynapse().getMatrix().set(j, i,
 						pair.getInput().getData(j));
 			}
@@ -119,57 +126,52 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 		if (this.mustInit) {
 			initWeights();
 		}
-		
+
 		double worstDistance = Double.NEGATIVE_INFINITY;
-		
-		for (NeuralDataPair pair : this.training) {
-			NeuralData out = this.parts.getInstarSynapse().compute(
+
+		for (final NeuralDataPair pair : this.training) {
+			final NeuralData out = this.parts.getInstarSynapse().compute(
 					pair.getInput());
-			
+
 			// determine winner
-			int winner = this.parts.winner(out);
-			
+			final int winner = this.parts.winner(out);
+
 			// calculate the distance
 			double distance = 0;
-			for(int i=0;i<pair.getInput().size();i++)
-			{
+			for (int i = 0; i < pair.getInput().size(); i++) {
 				final double diff = pair.getInput().getData(i)
-				- this.parts.getInstarSynapse().getMatrix().get(i, winner);
-				distance+=diff*diff;
+						- this.parts.getInstarSynapse().getMatrix().get(i,
+								winner);
+				distance += diff * diff;
 			}
 			distance = BoundMath.sqrt(distance);
-			
-			if( distance>worstDistance )
+
+			if (distance > worstDistance) {
 				worstDistance = distance;
-			
-			// train			
+			}
+
+			// train
 			for (int j = 0; j < this.parts.getInstarSynapse()
 					.getFromNeuronCount(); j++) {
-				double delta = this.learningRate
+				final double delta = this.learningRate
 						* (pair.getInput().getData(j) - this.parts
 								.getInstarSynapse().getMatrix().get(j, winner));
 
 				this.parts.getInstarSynapse().getMatrix().add(j, winner, delta);
-				
-		
-			}
-		}	
-		
-		this.setError(worstDistance);
-	}
 
-	/**
-	 * @return The learning rate.
-	 */
-	public double getLearningRate() {
-		return this.learningRate;
+			}
+		}
+
+		setError(worstDistance);
 	}
 
 	/**
 	 * Set the learning rate.
-	 * @param rate The new learning rate.
+	 * 
+	 * @param rate
+	 *            The new learning rate.
 	 */
-	public void setLearningRate(double rate) {
+	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 

@@ -2,6 +2,10 @@ package org.encog.neural.networks.training;
 
 import org.encog.neural.NeuralNetworkError;
 
+/**
+ * Thrown when a training error occurs.
+ *
+ */
 public class TrainingError extends NeuralNetworkError {
 
 	/**

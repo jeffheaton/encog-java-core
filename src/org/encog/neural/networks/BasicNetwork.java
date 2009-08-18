@@ -67,14 +67,50 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class BasicNetwork implements Serializable, Network {
-	
-	public final static String TAG_INPUT = "INPUT";
-	public final static String TAG_OUTPUT = "OUTPUT";
-	
+
+	/**
+	 * Tag used for the input layer.
+	 */
+	public static final String TAG_INPUT = "INPUT";
+
+	/**
+	 * Tag used for the output layer.
+	 */
+	public static final String TAG_OUTPUT = "OUTPUT";
+
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -136440631687066461L;
+
+	/**
+	 * The logging object.
+	 */
+	private static final transient Logger LOGGER = LoggerFactory
+			.getLogger(BasicNetwork.class);
+
+	/**
+	 * Determine which member of the output is the winning neuron.
+	 * 
+	 * @param output
+	 *            The output from the neural network.
+	 * @return The winning neuron.
+	 */
+	public static int determineWinner(final NeuralData output) {
+
+		int win = 0;
+
+		double biggest = Double.MIN_VALUE;
+		for (int i = 0; i < output.size(); i++) {
+
+			if (output.getData(i) > biggest) {
+				biggest = output.getData(i);
+				win = i;
+			}
+		}
+
+		return win;
+	}
 
 	/**
 	 * The description of this object.
@@ -91,24 +127,24 @@ public class BasicNetwork implements Serializable, Network {
 	 * constantly lookup layers and synapses.
 	 */
 	private final NeuralStructure structure;
-	
-	/**
-	 * This class tells the network how to calculate the output for each of the layers.
-	 */
-	private NeuralLogic logic;
-	
-	/**
-	 * Properties about the neural network.  Some NeuralLogic classes require certain properties 
-	 * to be set.
-	 */
-	private final Map<String,String> properties = new HashMap<String,String>();
-	
-	private final Map<String,Layer> layerTags = new HashMap<String,Layer>();
 
 	/**
-	 * The logging object.
+	 * This class tells the network how to calculate the output for each of the
+	 * layers.
 	 */
-	private transient static final Logger logger = LoggerFactory.getLogger(BasicNetwork.class);
+	private NeuralLogic logic;
+
+	/**
+	 * Properties about the neural network. Some NeuralLogic classes require
+	 * certain properties to be set.
+	 */
+	private final Map<String, String> properties = 
+		new HashMap<String, String>();
+
+	/**
+	 * The tags for the layers.
+	 */
+	private final Map<String, Layer> layerTags = new HashMap<String, Layer>();
 
 	/**
 	 * Construct an empty neural network.
@@ -117,9 +153,12 @@ public class BasicNetwork implements Serializable, Network {
 		this.structure = new NeuralStructure(this);
 		this.logic = new SimpleRecurrentLogic();
 	}
-	
-	public BasicNetwork(NeuralLogic logic)
-	{
+
+	/**
+	 * Construct a basic network using the specified logic.
+	 * @param logic The logic to use with the neural network.
+	 */
+	public BasicNetwork(final NeuralLogic logic) {
 		this.structure = new NeuralStructure(this);
 		this.logic = logic;
 	}
@@ -149,14 +188,14 @@ public class BasicNetwork implements Serializable, Network {
 	public void addLayer(final Layer layer, final SynapseType type) {
 
 		// is this the first layer? If so, mark as the input layer.
-		if ( this.layerTags.size() == 0 ) {
-			this.tagLayer(BasicNetwork.TAG_INPUT, layer);
-			this.tagLayer(BasicNetwork.TAG_OUTPUT, layer);
+		if (this.layerTags.size() == 0) {
+			tagLayer(BasicNetwork.TAG_INPUT, layer);
+			tagLayer(BasicNetwork.TAG_OUTPUT, layer);
 		} else {
 			// add the layer to any previous layers
-			Layer outputLayer = this.getLayer(BasicNetwork.TAG_OUTPUT);
+			final Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
 			outputLayer.addNext(layer, type);
-			this.tagLayer(BasicNetwork.TAG_OUTPUT, layer);
+			tagLayer(BasicNetwork.TAG_OUTPUT, layer);
 		}
 	}
 
@@ -192,14 +231,16 @@ public class BasicNetwork implements Serializable, Network {
 	}
 
 	/**
-	 * Check that the input size is acceptable, if it does not match
-	 * the input layer, then throw an error.
-	 * @param input The input data.
+	 * Check that the input size is acceptable, if it does not match the input
+	 * layer, then throw an error.
+	 * 
+	 * @param input
+	 *            The input data.
 	 */
 	public void checkInputSize(final NeuralData input) {
-		
-		Layer inputLayer = this.getLayer(BasicNetwork.TAG_INPUT);
-		
+
+		final Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
+
 		if (input.size() != inputLayer.getNeuronCount()) {
 
 			final String str = 
@@ -208,12 +249,19 @@ public class BasicNetwork implements Serializable, Network {
 					+ " for input layer size="
 					+ inputLayer.getNeuronCount();
 
-			if (BasicNetwork.logger.isErrorEnabled()) {
-				BasicNetwork.logger.error(str);
+			if (BasicNetwork.LOGGER.isErrorEnabled()) {
+				BasicNetwork.LOGGER.error(str);
 			}
 
 			throw new NeuralNetworkError(str);
 		}
+	}
+
+	/**
+	 * Remove all layer tags.
+	 */
+	public void clearLayerTags() {
+		this.layerTags.clear();
 	}
 
 	/**
@@ -227,33 +275,34 @@ public class BasicNetwork implements Serializable, Network {
 		return ObjectCloner.deepCopy(this);
 	}
 
-
 	/**
 	 * Compute the output for a given input to the neural network.
-	 * @param input The input to the neural network.
+	 * 
+	 * @param input
+	 *            The input to the neural network.
 	 * @return The output from the neural network.
 	 */
 	public NeuralData compute(final NeuralData input) {
-		return logic.compute(input, null);
+		return this.logic.compute(input, null);
 	}
 
 	/**
 	 * Compute the output for a given input to the neural network. This method
-	 * provides a parameter to specify an output holder to use.  This holder
-	 * allows propagation training to track the output from each layer.
-	 * If you do not need this holder pass null, or use the other 
-	 * compare method.
+	 * provides a parameter to specify an output holder to use. This holder
+	 * allows propagation training to track the output from each layer. If you
+	 * do not need this holder pass null, or use the other compare method.
 	 * 
-	 * @param input The input provide to the neural network.
-	 * @param useHolder Allows a holder to be specified, this allows
-	 * propagation training to check the output of each layer.  
+	 * @param input
+	 *            The input provide to the neural network.
+	 * @param useHolder
+	 *            Allows a holder to be specified, this allows propagation
+	 *            training to check the output of each layer.
 	 * @return The results from the output neurons.
 	 */
 	public NeuralData compute(final NeuralData input,
 			final NeuralOutputHolder useHolder) {
-		return logic.compute(input, useHolder);
+		return this.logic.compute(input, useHolder);
 	}
-
 
 	/**
 	 * Create a persistor for this object.
@@ -273,16 +322,18 @@ public class BasicNetwork implements Serializable, Network {
 	 * @return True if the two networks are equal.
 	 */
 	public boolean equals(final BasicNetwork other) {
-		return equals(other,
-				Encog.DEFAULT_PRECISION);
+		return equals(other, Encog.DEFAULT_PRECISION);
 	}
 
 	/**
-	 * Determine if this neural network is equal to another.  Equal neural
-	 * networks have the same weight matrix and threshold values, within
-	 * a specified precision.
-	 * @param other The other neural network.
-	 * @param precision The number of decimal places to compare to.
+	 * Determine if this neural network is equal to another. Equal neural
+	 * networks have the same weight matrix and threshold values, within a
+	 * specified precision.
+	 * 
+	 * @param other
+	 *            The other neural network.
+	 * @param precision
+	 *            The number of decimal places to compare to.
 	 * @return True if the two neural networks are equal.
 	 */
 	public boolean equals(final BasicNetwork other, final int precision) {
@@ -297,6 +348,29 @@ public class BasicNetwork implements Serializable, Network {
 	}
 
 	/**
+	 * Get the layer specified by the tag.
+	 * @param tag The tag.
+	 * @return The layer associated with that tag.
+	 */
+	public Layer getLayer(final String tag) {
+		return this.layerTags.get(tag);
+	}
+
+	/**
+	 * @return The map of all layer tags.
+	 */
+	public Map<String, Layer> getLayerTags() {
+		return this.layerTags;
+	}
+
+	/**
+	 * @return The logic used by this network.
+	 */
+	public NeuralLogic getLogic() {
+		return this.logic;
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
@@ -304,12 +378,65 @@ public class BasicNetwork implements Serializable, Network {
 	}
 
 	/**
-	 * @return Get the structure of the neural network.  The structure 
-	 * allows you to quickly obtain synapses and layers without 
-	 * traversing the network.
+	 * @return A map of all properties.
+	 */
+	public Map<String, String> getProperties() {
+		return this.properties;
+	}
+
+	/**
+	 * Get the specified property as a double.
+	 * @param name The name of the property.
+	 * @return The property as a double.
+	 */
+	public double getPropertyDouble(final String name) {
+		return Double.parseDouble(this.properties.get(name));
+	}
+
+	/**
+	 * Get the specified property as a long.
+	 * @param name The name of the specified property.
+	 * @return The value of the specified property.
+	 */
+	public long getPropertyLong(final String name) {
+		return Long.parseLong(this.properties.get(name));
+	}
+
+	/**
+	 * Get the specified property as a string.
+	 * @param name The name of the property.
+	 * @return The value of the property.
+	 */
+	public String getPropertyString(final String name) {
+		return this.properties.get(name);
+	}
+
+	/**
+	 * @return Get the structure of the neural network. The structure allows you
+	 *         to quickly obtain synapses and layers without traversing the
+	 *         network.
 	 */
 	public NeuralStructure getStructure() {
 		return this.structure;
+	}
+
+	/**
+	 * Get a list of all of the tags on a specific layer.
+	 * 
+	 * @param layer
+	 *            The layer to check.
+	 * @return A collection of the layer tags.
+	 */
+	public Collection<String> getTags(final Layer layer) {
+		final Collection<String> result = new ArrayList<String>();
+
+		for (final Entry<String, Layer> entry : this.layerTags.entrySet()) {
+			if (entry.getValue() == layer) {
+				result.add(entry.getKey());
+			}
+		}
+
+		return result;
 	}
 
 	/**
@@ -322,7 +449,6 @@ public class BasicNetwork implements Serializable, Network {
 		}
 		return result;
 	}
-
 
 	/**
 	 * Generate a hash code.
@@ -353,11 +479,55 @@ public class BasicNetwork implements Serializable, Network {
 	}
 
 	/**
+	 * Set the type of logic this network should use.
+	 * @param logic The logic used by the network.
+	 */
+	public void setLogic(final NeuralLogic logic) {
+		this.logic = logic;
+	}
+
+	/**
 	 * @param name
 	 *            the name to set
 	 */
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	/**
+	 * Set a property as a double.
+	 * @param name The name of the property.
+	 * @param d The value of the property.
+	 */
+	public void setProperty(final String name, final double d) {
+		this.properties.put(name, "" + d);
+	}
+
+	/**
+	 * Set a property as a long.
+	 * @param name The name of the property.
+	 * @param l The value of the property.
+	 */
+	public void setProperty(final String name, final long l) {
+		this.properties.put(name, "" + l);
+	}
+
+	/**
+	 * Set a property as a double.
+	 * @param name The name of the property.
+	 * @param value The value of the property.
+	 */
+	public void setProperty(final String name, final String value) {
+		this.properties.put(name, value);
+	}
+
+	/**
+	 * Tag a layer.
+	 * @param tag The tag name.
+	 * @param layer THe layer to tag.
+	 */
+	public void tagLayer(final String tag, final Layer layer) {
+		this.layerTags.put(tag, layer);
 	}
 
 	/**
@@ -384,109 +554,7 @@ public class BasicNetwork implements Serializable, Network {
 	public int winner(final NeuralData input) {
 
 		final NeuralData output = compute(input);
-		return determineWinner(output);
-	}
-	
-	/**
-	 * Determine which member of the output is the winning neuron.
-	 * @param output The output from the neural network.
-	 * @return The winning neuron.
-	 */
-	public static int determineWinner(final NeuralData output) {
-
-		int win = 0;
-
-		double biggest = Double.MIN_VALUE;
-		for (int i = 0; i < output.size(); i++) {
-
-			if (output.getData(i) > biggest) {
-				biggest = output.getData(i);
-				win = i;
-			}
-		}
-
-		return win;
+		return BasicNetwork.determineWinner(output);
 	}
 
-	public NeuralLogic getLogic() {
-		return logic;
-	}
-
-	public void setLogic(NeuralLogic logic) {
-		this.logic = logic;
-	}
-	
-	public void setProperty(String name, String value)
-	{
-		this.properties.put(name, value);
-	}
-	
-	public void setProperty(String name, long l)
-	{
-		this.properties.put(name, ""+l);
-	}
-	
-	public void setProperty(String name, double d)
-	{
-		this.properties.put(name, ""+d );
-	}
-
-	public Map<String, String> getProperties() {
-		return properties;
-	}
-	
-	public String getPropertyString(String name)
-	{
-		return (String)this.properties.get(name);
-	}
-	
-	public long getPropertyLong(String name)
-	{
-		return Long.parseLong(this.properties.get(name));
-	}
-	
-	public double getPropertyDouble(String name)
-	{
-		return Double.parseDouble(this.properties.get(name));
-	}
-
-	public Map<String, Layer> getLayerTags() {
-		return layerTags;
-	}
-
-	public void tagLayer(String tag, Layer layer)
-	{
-		this.layerTags.put(tag,layer);
-	}
-	
-	public void clearLayerTags()
-	{
-		this.layerTags.clear();
-	}
-	
-	public Layer getLayer(String tag)
-	{
-		return this.layerTags.get(tag);
-	}
-	
-	/**
-	 * Get a list of all of the tags on a specific layer.
-	 * @param layer The layer to check.
-	 * @return A collection of the layer tags.
-	 */
-	public Collection<String> getTags(Layer layer)
-	{
-		Collection<String> result = new ArrayList<String>();
-		
-		for( Entry<String,Layer> entry : this.layerTags.entrySet() )
-		{
-			if( entry.getValue() == layer )
-			{
-				result.add(entry.getKey());
-			}
-		}
-		
-		return result;
-	}
-	
 }

@@ -25,8 +25,6 @@
  */
 package org.encog.neural.activation;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Utility classes for activation functions. Used to convert a single value

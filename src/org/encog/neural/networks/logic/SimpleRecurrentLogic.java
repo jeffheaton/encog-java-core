@@ -32,39 +32,45 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides the neural logic for an Simple Recurrent Network (SRN) type network.  
- * This class is used for the Elman and Jordan networks.  This class will work
+ * Provides the neural logic for an Simple Recurrent Network (SRN) type network.
+ * This class is used for the Elman and Jordan networks. This class will work
  * just fine for a feedforward neural network, however it is not efficient.
  */
 public class SimpleRecurrentLogic extends FeedforwardLogic {
 
 	/**
-	 * The serial ID. 
+	 * The serial ID.
 	 */
 	private static final long serialVersionUID = -7477229575064477961L;
-	
-	
+
 	/**
 	 * The logging object.
 	 */
-	private transient static final Logger logger = LoggerFactory.getLogger(SimpleRecurrentLogic.class);
-		
+	private static final transient Logger LOGGER = LoggerFactory
+			.getLogger(SimpleRecurrentLogic.class);
+
 	/**
-	 * Handle recurrent layers.  See if there are any recurrent layers before
-	 * the specified layer that must affect the input.
-	 * @param layer The layer being processed, see if there are any recurrent
-	 * connections to this.
-	 * @param input The input to the layer, will be modified with the result
-	 * from any recurrent layers.
-	 * @param source The source synapse.
+	 * Handle recurrent layers. See if there are any recurrent layers before the
+	 * specified layer that must affect the input.
+	 * 
+	 * @param layer
+	 *            The layer being processed, see if there are any recurrent
+	 *            connections to this.
+	 * @param input
+	 *            The input to the layer, will be modified with the result from
+	 *            any recurrent layers.
+	 * @param source
+	 *            The source synapse.
 	 */
-	public void preprocessLayer(final Layer layer,
-			final NeuralData input, final Synapse source) {
-		for (final Synapse synapse 
-				: this.getNetwork().getStructure().getPreviousSynapses(layer)) {
+	@Override
+	public void preprocessLayer(final Layer layer, final NeuralData input,
+			final Synapse source) {
+		for (final Synapse synapse : getNetwork().getStructure()
+				.getPreviousSynapses(layer)) {
 			if (synapse != source) {
-				if (SimpleRecurrentLogic.logger.isDebugEnabled()) {
-					SimpleRecurrentLogic.logger.debug("Recurrent layer from: {}", input);
+				if (SimpleRecurrentLogic.LOGGER.isDebugEnabled()) {
+					SimpleRecurrentLogic.LOGGER.debug(
+							"Recurrent layer from: {}", input);
 				}
 				final NeuralData recurrentInput = synapse.getFromLayer()
 						.recur();
@@ -78,8 +84,9 @@ public class SimpleRecurrentLogic extends FeedforwardLogic {
 								+ recurrentOutput.getData(i));
 					}
 
-					if (SimpleRecurrentLogic.logger.isDebugEnabled()) {
-						SimpleRecurrentLogic.logger.debug("Recurrent layer to: {}", input);
+					if (SimpleRecurrentLogic.LOGGER.isDebugEnabled()) {
+						SimpleRecurrentLogic.LOGGER.debug(
+								"Recurrent layer to: {}", input);
 					}
 				}
 			}

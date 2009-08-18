@@ -50,35 +50,38 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class NeuralStructure implements Serializable {
-	
+
 	/**
-	 * The serial ID
+	 * The serial ID.
 	 */
 	private static final long serialVersionUID = -2929683885395737817L;
+
+	/**
+	 * The logging object.
+	 */
+	private static final transient Logger LOGGER = LoggerFactory
+			.getLogger(NeuralStructure.class);
 
 	/**
 	 * The layers in this neural network.
 	 */
 	private final List<Layer> layers = new ArrayList<Layer>();
-	
+
 	/**
 	 * The synapses in this neural network.
 	 */
 	private final List<Synapse> synapses = new ArrayList<Synapse>();
-	
+
 	/**
 	 * The neural network this class belongs to.
 	 */
 	private final BasicNetwork network;
 
 	/**
-	 * The logging object.
-	 */
-	private transient static final Logger logger = LoggerFactory.getLogger(NeuralStructure.class);
-
-	/**
 	 * Construct a structure object for the specified network.
-	 * @param network The network to construct a structure for.
+	 * 
+	 * @param network
+	 *            The network to construct a structure for.
 	 */
 	public NeuralStructure(final BasicNetwork network) {
 		this.network = network;
@@ -89,21 +92,20 @@ public class NeuralStructure implements Serializable {
 	 */
 	private void finalizeLayers() {
 		final List<Layer> result = new ArrayList<Layer>();
-		
+
 		this.layers.clear();
-		
-		for(Layer layer :this.network.getLayerTags().values() )
-		{
-			getLayers( result, layer );
+
+		for (final Layer layer : this.network.getLayerTags().values()) {
+			getLayers(result, layer);
 		}
-				
+
 		this.layers.addAll(result);
 	}
 
 	/**
-	 * Build the synapse and layer structure.  This method should be called
-	 * after you are done adding layers to a network, or change the network's 
-	 * logic property.
+	 * Build the synapse and layer structure. This method should be called after
+	 * you are done adding layers to a network, or change the network's logic
+	 * property.
 	 */
 	public void finalizeStructure() {
 		finalizeLayers();
@@ -126,6 +128,39 @@ public class NeuralStructure implements Serializable {
 	}
 
 	/**
+	 * Find the specified synapse, throw an error if it is required.
+	 * @param fromLayer The from layer.
+	 * @param toLayer The to layer.
+	 * @param required Is this required?
+	 * @return The synapse, if it exists, otherwise null.
+	 */
+	public Synapse findSynapse(final Layer fromLayer, final Layer toLayer,
+			final boolean required) {
+		Synapse result = null;
+		for (final Synapse synapse : getSynapses()) {
+			if ((synapse.getFromLayer() == fromLayer)
+					&& (synapse.getToLayer() == toLayer)) {
+				result = synapse;
+				break;
+			}
+		}
+
+		if (required && (result == null)) {
+			final String str = 
+				"This operation requires a network with a synapse between the "
+					+ nameLayer(fromLayer)
+					+ " layer to the "
+					+ nameLayer(toLayer) + " layer.";
+			if (NeuralStructure.LOGGER.isErrorEnabled()) {
+				NeuralStructure.LOGGER.error(str);
+			}
+			throw new NeuralNetworkError(str);
+		}
+
+		return result;
+	}
+
+	/**
 	 * @return The layers in this neural network.
 	 */
 	public List<Layer> getLayers() {
@@ -134,12 +169,14 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Called to help build the layer structure.
-	 * @param result The layer list. 
-	 * @param layer The current layer being processed.
+	 * 
+	 * @param result
+	 *            The layer list.
+	 * @param layer
+	 *            The current layer being processed.
 	 */
-	private void getLayers(final List<Layer> result, 
-			final Layer layer) {
-		
+	private void getLayers(final List<Layer> result, final Layer layer) {
+
 		if (!result.contains(layer)) {
 			result.add(layer);
 		}
@@ -162,7 +199,9 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Get the previous layers from the specified layer.
-	 * @param targetLayer The target layer.
+	 * 
+	 * @param targetLayer
+	 *            The target layer.
 	 * @return The previous layers.
 	 */
 	public Collection<Layer> getPreviousLayers(final Layer targetLayer) {
@@ -179,7 +218,9 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Get the previous synapses.
-	 * @param targetLayer The layer to get the previous layers from.
+	 * 
+	 * @param targetLayer
+	 *            The layer to get the previous layers from.
 	 * @return A collection of synapses.
 	 */
 	public Collection<Synapse> getPreviousSynapses(final Layer targetLayer) {
@@ -202,47 +243,22 @@ public class NeuralStructure implements Serializable {
 	public List<Synapse> getSynapses() {
 		return this.synapses;
 	}
-	
-	public Collection<String> nameLayer(Layer layer)
-	{
-		Collection<String> result = new ArrayList<String>();
-		
-		for( Entry<String,Layer> entry: this.network.getLayerTags().entrySet() )
-		{
-			if( entry.getValue()==layer )
-			{
+
+	/**
+	 * Obtain a name for the specified layer.
+	 * @param layer The layer to name.
+	 * @return The name of this layer.
+	 */
+	public Collection<String> nameLayer(final Layer layer) {
+		final Collection<String> result = new ArrayList<String>();
+
+		for (final Entry<String, Layer> entry : this.network.getLayerTags()
+				.entrySet()) {
+			if (entry.getValue() == layer) {
 				result.add(entry.getKey());
 			}
 		}
-		
-		return result;
-	}
-	
-	public Synapse findSynapse(Layer fromLayer,Layer toLayer, boolean required)
-	{
-		Synapse result = null;
-		for(Synapse synapse: this.getSynapses())
-		{
-			if( (synapse.getFromLayer()==fromLayer)
-				&& (synapse.getToLayer()==toLayer) )
-			{
-				result = synapse;
-				break;
-			}
-		}
-		
-		if( required && result==null )
-		{
-			String str = "This operation requires a network with a synapse between the "
-				+nameLayer(fromLayer)+" layer to the "
-				+nameLayer(toLayer)+" layer.";
-			if( logger.isErrorEnabled() )
-			{
-				logger.error(str);
-			}
-			throw new NeuralNetworkError(str);
-		}
-		
+
 		return result;
 	}
 }
