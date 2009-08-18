@@ -141,7 +141,8 @@ public class BoltzmannLogic extends ThermalLogic {
 			run((int) RangeRandomizer.randomize(0, count - 1));
 		}
 		for (n = 0; n < this.annealCycles * count; n++) {
-			run((int) RangeRandomizer.randomize(0, count - 1));
+			i = (int) RangeRandomizer.randomize(0, count - 1);
+			run(i);
 			if (getCurrentState().getBoolean(i)) {
 				this.on[i]++;
 			} else {
