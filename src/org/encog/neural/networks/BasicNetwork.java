@@ -66,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * Once the neural network has been completely constructed.
  * 
  */
-public class BasicNetwork implements Serializable, Network {
+public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Tag used for the input layer.
@@ -555,6 +555,18 @@ public class BasicNetwork implements Serializable, Network {
 
 		final NeuralData output = compute(input);
 		return BasicNetwork.determineWinner(output);
+	}
+
+	/**
+	 * Clear any data from any context layers.
+	 */
+	public void clearContext() {
+		for(Layer layer: this.structure.getLayers() ) {
+			if( layer instanceof ContextClearable ) {
+				((ContextClearable)layer).clearContext();
+			}
+		}
+		
 	}
 
 }

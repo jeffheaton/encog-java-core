@@ -30,6 +30,7 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.ContextClearable;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ContextLayerPersistor;
 import org.slf4j.Logger;
@@ -45,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class ContextLayer extends BasicLayer {
+public class ContextLayer extends BasicLayer implements ContextClearable {
 
 	/**
 	 * The serial id.
@@ -143,6 +144,16 @@ public class ContextLayer extends BasicLayer {
 	@Override
 	public NeuralData recur() {
 		return this.context;
+	}
+
+	/**
+	 * Reset the context values back to zero.
+	 */
+	public void clearContext() {
+		for(int i =0;i<this.context.size();i++ ) {
+			this.context.setData(i, 0);
+		}
+		
 	}
 
 }
