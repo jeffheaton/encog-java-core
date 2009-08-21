@@ -6,6 +6,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.location.PersistenceLocation;
 import org.encog.persist.location.ResourcePersistence;
+import org.junit.Assert;
 
 import junit.framework.TestCase;
 
@@ -41,7 +42,7 @@ public class TestContext  extends TestCase {
 		EncogPersistedCollection encog = new EncogPersistedCollection(location);
 		BasicNetwork network = (BasicNetwork)encog.find("elman");
 		NeuralDataSet data = generate(100);
-		System.out.println(network.calculateError(data));
-		System.out.println(network.calculateError(data));
+		int rate = (int)(network.calculateError(data)*100);
+		Assert.assertTrue(rate<35);
 	}
 }

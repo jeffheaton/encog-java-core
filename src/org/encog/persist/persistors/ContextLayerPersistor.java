@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ContextLayerPersistor implements Persistor {
 
+	public final static String PROPERTY_CONTEXT = "context";
+	
 	/**
 	 * The logging object.
 	 */
@@ -63,6 +65,7 @@ public class ContextLayerPersistor implements Persistor {
 		int x = 0;
 		int y = 0;
 		String threshold = null;
+		String context = null;
 		ActivationFunction activation = null;
 		final String end = in.getTag().getName();
 
@@ -80,6 +83,8 @@ public class ContextLayerPersistor implements Persistor {
 				y = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_THRESHOLD, true)) {
 				threshold = in.readTextToTag();
+			} else if (in.is(ContextLayerPersistor.PROPERTY_CONTEXT, true)) {
+				context = in.readTextToTag();
 			} else if (in.is(end, false)) {
 				break;
 			}
@@ -95,6 +100,14 @@ public class ContextLayerPersistor implements Persistor {
 				layer = new ContextLayer(activation, true, neuronCount);
 				for (int i = 0; i < t.length; i++) {
 					layer.setThreshold(i, t[i]);
+				}
+			}
+			
+			if( context!=null ) {
+				final double[] t = ReadCSV.fromCommas(context);
+
+				for (int i = 0; i < t.length; i++) {
+					layer.getContext().setData(i, t[i]);
 				}
 			}
 
@@ -117,7 +130,7 @@ public class ContextLayerPersistor implements Persistor {
 	public void save(final EncogPersistedObject obj, final WriteXML out) {
 		PersistorUtil.beginEncogObject(
 				EncogPersistedCollection.TYPE_CONTEXT_LAYER, out, obj, false);
-		final BasicLayer layer = (BasicLayer) obj;
+		final ContextLayer layer = (ContextLayer) obj;
 
 		out.addProperty(BasicLayerPersistor.PROPERTY_NEURONS, layer
 				.getNeuronCount());
@@ -130,6 +143,13 @@ public class ContextLayerPersistor implements Persistor {
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
 		}
+		
+		
+		final StringBuilder result = new StringBuilder();
+		ReadCSV.toCommas(result, layer.getContext().getData());
+		out.addProperty(ContextLayerPersistor.PROPERTY_CONTEXT, result
+				.toString());
+		
 
 		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
 		final Persistor persistor = layer.getActivationFunction()
