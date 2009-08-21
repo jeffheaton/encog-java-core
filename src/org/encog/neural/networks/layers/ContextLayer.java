@@ -126,10 +126,11 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	 */
 	@Override
 	public void process(final NeuralData pattern) {
-		for (int i = 0; i < pattern.size(); i++) {
-			this.context.setData(i, pattern.getData(i));
-		}
-
+		double[] s = pattern.getData();
+		double[] t = this.context.getData();
+		
+		System.arraycopy(s, 0, t, 0, s.length);		
+		
 		if (ContextLayer.LOGGER.isDebugEnabled()) {
 			ContextLayer.LOGGER.debug("Updated ContextLayer to {}", pattern);
 		}
