@@ -561,5 +561,10 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 			throw new MatrixError(str);
 		}
 	}
+	
+	public double[][] getData()
+	{
+		return this.matrix;
+	}
 
 }

@@ -316,7 +316,7 @@ public final class MatrixMath {
 	 * @return The result of the multiplication.
 	 */
 	public static Matrix multiply(final Matrix a, final Matrix b) {
-		if (a.getCols() != b.getRows()) {
+		/*if (a.getCols() != b.getRows()) {
 			final String str = 
 			"To use ordinary matrix multiplication the number of "
 					+ "columns on the first matrix must mat the number of "
@@ -328,20 +328,54 @@ public final class MatrixMath {
 		}
 
 		final double[][] result = new double[a.getRows()][b.getCols()];
+		final double[][] aData = a.getData();
+		final double[][] bData = b.getData();
 
 		for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
 			for (int resultCol = 0; resultCol < b.getCols(); resultCol++) {
-				double value = 0;
-
 				for (int i = 0; i < a.getCols(); i++) {
-
-					value += a.get(resultRow, i) * b.get(i, resultCol);
+					result[resultRow][resultCol] += aData[resultRow][i] * bData[i][resultCol];
 				}
-				result[resultRow][resultCol] = value;
 			}
 		}
 
-		return new Matrix(result);
+		return new Matrix(result);*/
+		
+		
+		
+		if (b.getRows() != a.getCols()) {
+			final String str = 
+				"To use ordinary matrix multiplication the number of "
+						+ "columns on the first matrix must mat the number of "
+						+ "rows on the second.";
+				if (MatrixMath.LOGGER.isErrorEnabled()) {
+					MatrixMath.LOGGER.error(str);
+				}
+				throw new MatrixError(str);
+	      }
+		
+		final double[][] aData = a.getData();
+		final double[][] bData = b.getData();
+		
+	      Matrix X = new Matrix(a.getRows(),b.getCols());
+	      double[][] C = X.getData();
+	      double[] Bcolj = new double[a.getCols()];
+	      for (int j = 0; j < b.getCols(); j++) {
+	         for (int k = 0; k < a.getCols(); k++) {
+	            Bcolj[k] = bData[k][j];
+	         }
+	         for (int i = 0; i < a.getRows(); i++) {
+	            double[] Arowi = aData[i];
+	            double s = 0;
+	            for (int k = 0; k < a.getCols(); k++) {
+	               s += Arowi[k]*Bcolj[k];
+	            }
+	            C[i][j] = s;
+	         }
+	      }
+	      return X;
+		
+		
 	}
 
 	/**
