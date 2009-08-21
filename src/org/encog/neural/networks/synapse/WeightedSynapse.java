@@ -100,12 +100,19 @@ public class WeightedSynapse extends BasicSynapse {
 	 */
 	public NeuralData compute(final NeuralData input) {
 		final NeuralData result = new BasicNeuralData(getToNeuronCount());
-		final Matrix inputMatrix = MatrixMath.createInputMatrix(input);
+		
+		double[] inputArray = input.getData();
+		double[][] matrixArray = getMatrix().getData();
+		double[] resultArray = result.getData();
 
 		for (int i = 0; i < getToNeuronCount(); i++) {
-			final Matrix col = getMatrix().getCol(i);
-			final double sum = MatrixMath.dotProduct(col, inputMatrix);
-			result.setData(i, sum);
+			
+			double sum = 0;
+			for(int j = 0;j<inputArray.length;j++ )
+			{
+				sum+=inputArray[j]*matrixArray[j][i];
+			}
+			resultArray[i] = sum;
 		}
 		return result;
 	}
