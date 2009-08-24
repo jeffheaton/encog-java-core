@@ -84,7 +84,6 @@ public class TrainingSetNeuralGeneticAlgorithm extends NeuralGeneticAlgorithm {
 			final TrainingSetNeuralChromosome c = 
 				new TrainingSetNeuralChromosome(
 					this, chromosomeNetwork);
-			c.updateGenes();
 			getGenetic().setChromosome(i, c);
 		}
 		getGenetic().sortChromosomes();
