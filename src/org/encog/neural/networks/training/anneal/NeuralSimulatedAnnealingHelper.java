@@ -1,0 +1,69 @@
+package org.encog.neural.networks.training.anneal;
+
+import org.encog.solve.anneal.SimulatedAnnealing;
+
+/**
+ * Simple class used by the neural simulated annealing.  This
+ * class is a subclass of the basic SimulatedAnnealing class.  The
+ * It is used by the actual NeuralSimulatedAnnealing class, which
+ * subclasses BasicTraining.  This class is mostly necessary due
+ * to the fact that NeuralSimulatedAnnealing can't subclass BOTH
+ * SimulatedAnnealing and Train, because multiple inheritance is
+ * not supported.
+ * @author jheaton
+ *
+ */
+public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
+
+	/**
+	 * The class that this class should report to.
+	 */
+	private NeuralSimulatedAnnealing owner;
+		
+	/**
+	 * Constructs this object.
+	 * @param owner The owner of this class, that recieves all messages.
+	 */
+	public NeuralSimulatedAnnealingHelper(NeuralSimulatedAnnealing owner)
+	{
+		this.owner = owner;
+	}
+	
+	/**
+	 * Used to pass the determineError call on to the parent object.
+	 * @return The error returned by the owner.
+	 */
+	public double determineError() {
+		return owner.determineError();
+	}
+
+	/**
+	 * Used to pass the getArray call on to the parent object.
+	 * @return The array returned by the owner.
+	 */
+	public Double[] getArray() {
+		return owner.getArray();
+	}
+
+	/**
+	 * Used to pass the getArrayCopy call on to the parent object.
+	 * @return The array copy created by the owner.
+	 */
+	public Double[] getArrayCopy() {
+		return owner.getArrayCopy();
+	}
+
+	/**
+	 * Used to pass the putArray call on to the parent object.
+	 */
+	public void putArray(Double[] array) {
+		owner.putArray(array);		
+	}
+
+	/**
+	 */
+	public void randomize() {
+		owner.randomize();
+	}
+
+}
