@@ -43,6 +43,7 @@ public class Normalization {
 	private NormalizationTarget target;
 	private StatusReportable report;
 	private int recordCount;
+	private int currentIndex;
 
 	public NormalizationTarget getTarget() {
 		return target;
@@ -94,10 +95,23 @@ public class Normalization {
 	private boolean next() {
 		boolean status = true;
 
+		this.currentIndex++;
+		
+		// see if any of the CSV readers want to stop
 		for (ReadCSV csv : this.readCSV) {
 			if (!csv.next())
 				status = false;
 		}
+		
+		// see if any of the arrays want to stop
+		for( InputField field: this.inputFields ) {
+			if( field instanceof InputFieldArray1D )
+			{
+				InputFieldArray1D arrayField = (InputFieldArray1D)field;
+				if( this.currentIndex>=arrayField.length() )
+					status = false;
+			}
+		}			
 
 		return status;
 	}
@@ -107,7 +121,8 @@ public class Normalization {
 	 */
 	private void firstPass() {
 		openCSV();
-
+		
+		this.currentIndex = -1;
 		this.recordCount = 0;
 
 		this.report.report(0, 0, "Analyzing file");
@@ -136,6 +151,7 @@ public class Normalization {
 				else
 				{
 					double value = field.getValue(index);
+					field.applyMinMax(value);
 				}
 			}
 			index++;
@@ -145,6 +161,7 @@ public class Normalization {
 	private void secondPass() {
 		// move any CSV files back to the beginning.
 		openCSV();
+		this.currentIndex = -1;
 
 		// process the records
 		double[] output = new double[this.outputFields.size()];
@@ -158,12 +175,12 @@ public class Normalization {
 					InputFieldCSV fieldCSV = (InputFieldCSV) field;
 					ReadCSV csv = this.csvMap.get(field);
 					double value = csv.getDouble(fieldCSV.getOffset());
-					field.applyMinMax(value);
 					field.setCurrentValue(value);
 				}
 				else
 				{
 					double value = field.getValue(i);
+					field.setCurrentValue(value);
 				}
 			}
 

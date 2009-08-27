@@ -49,7 +49,7 @@ public class NormalizationTargetArray1D implements NormalizationTarget {
 
 	@Override
 	public void write(double[] data, int inputCount) {
-		this.array[this.currentIndex] = data[0];		
+		this.array[this.currentIndex++] = data[0];		
 	}
 
 }

@@ -37,4 +37,9 @@ public class InputFieldArray1D extends BasicInputField {
 	public double getValue(int i) {
 		return this.array[i];
 	}
+
+	
+	public int length() {
+		return this.array.length;
+	}
 }

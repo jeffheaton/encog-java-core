@@ -26,7 +26,7 @@
 
 package org.encog.normalize;
 
-public class BasicInputField implements InputField {
+public abstract class BasicInputField implements InputField {
 
 	
 	private double min = Double.POSITIVE_INFINITY;
@@ -68,9 +68,5 @@ public class BasicInputField implements InputField {
 	public double getValue(int i) {
 		throw new NormalizationError("Can't call getValue on " + this.getClass().getSimpleName());
 	}
-
-	
-	
-	
 
 }

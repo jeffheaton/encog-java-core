@@ -304,9 +304,9 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	}
 
 	/**
-	 * Create a temporal point from a time. Using the grandularity each date is
+	 * Create a temporal point from a time. Using the granularity each date is
 	 * given a unique sequence number. No two dates that fall in the same
-	 * grandularity should be specified.
+	 * granularity should be specified.
 	 * 
 	 * @param when
 	 *            The time that this point should be created at.
