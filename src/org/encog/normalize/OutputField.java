@@ -27,5 +27,7 @@
 package org.encog.normalize;
 
 public interface OutputField {
+	
+	double calculate();
 
 }

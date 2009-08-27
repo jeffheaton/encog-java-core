@@ -1,13 +1,49 @@
 package org.encog.normalize;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import org.encog.util.ReadCSV;
 
 public class NormalizationTargetCSV implements NormalizationTarget {
 	
-	private File output;
+	private File outputFile;
+	private PrintWriter output;
 	
-	public NormalizationTargetCSV(File output)
+	public NormalizationTargetCSV(File file)
 	{
-		this.output = output;
+
+			this.outputFile = file;
+
+		
 	}
+
+	@Override
+	public void write(double[] data, int inputCount) {
+		StringBuilder result = new StringBuilder();
+		ReadCSV.toCommas(result, data);
+		this.output.println(result.toString());		
+	}
+
+	@Override
+	public void close() {
+		this.output.close();		
+	}
+
+	@Override
+	public void open() {
+		try
+		{
+		FileWriter outFile = new FileWriter(this.outputFile);
+		output = new PrintWriter(outFile);
+		}
+		catch(IOException e)
+		{
+			throw( new NormalizationError(e));
+		}
+	}
+	
+	
 }

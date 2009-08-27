@@ -82,6 +82,11 @@ public class Normalization {
 	
 	private void openCSV()
 	{
+		// clear out any CSV files already there
+		this.csvMap.clear();
+		this.readCSV.clear();
+		
+		// only add each CSV once
 		Map<File,ReadCSV> uniqueFiles = new HashMap<File,ReadCSV>();
 		
 		// find the unique files
@@ -155,11 +160,39 @@ public class Normalization {
 	
 	private void secondPass()
 	{
+		// move any CSV files back to the beginning.
+		openCSV();
+		
+		// process the records
+		double[] output = new double[this.outputFields.size()];
+		
+		this.target.open();
 		for(int i=0;i<this.recordCount;i++)
 		{
+			next();
+			// read the value
+			for(InputField field: this.inputFields)
+			{
+				InputFieldCSV fieldCSV = (InputFieldCSV)field;
+				ReadCSV csv = this.csvMap.get(field);
+				double value = csv.getDouble(fieldCSV.getOffset());
+				field.applyMinMax(value);
+				field.setCurrentValue(value);
+			}
+			
+			// write the value
+			int outputIndex = 0;
+			for(OutputField ofield: this.outputFields)
+			{
+				output[outputIndex++] = ofield.calculate();
+			}
+			
+			this.target.write(output, 0);
+			
+			// report status
 			this.report.report(this.recordCount, i, "Normalizing data");
 		}
-		
+		this.target.close();
 		
 	}
 

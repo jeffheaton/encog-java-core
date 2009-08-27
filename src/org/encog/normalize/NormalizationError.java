@@ -23,38 +23,42 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 package org.encog.normalize;
 
-public class OutputFieldRangeMapped implements OutputField {
+import org.encog.EncogError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	private final InputField field; 
-	private final double low; 
-	private final double high;
-	
-	public OutputFieldRangeMapped(InputField field, double low, double high) {
-		this.field = field;
-		this.low = low;
-		this.high = high;
+public class NormalizationError extends EncogError {
+		
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1454192534753095149L;
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Construct a message exception.
+	 * 
+	 * @param msg
+	 *            The exception message.
+	 */
+	public NormalizationError(final String msg) {
+		super(msg);
 	}
 
-	public InputField getField() {
-		return field;
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public NormalizationError(final Throwable t) {
+		super(t);
 	}
-
-	public double getLow() {
-		return low;
-	}
-
-	public double getHigh() {
-		return high;
-	}
-
-	@Override
-	public double calculate() {
-		return ((field.getCurrentValue()-field.getMin()) / (field.getMax()-field.getMin())) * (this.high-this.low) + this.low;
-	}
-	
-	
 
 }

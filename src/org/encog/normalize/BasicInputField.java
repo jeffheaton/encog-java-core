@@ -5,6 +5,7 @@ public class BasicInputField implements InputField {
 	
 	private double min = Double.POSITIVE_INFINITY;
 	private double max = Double.NEGATIVE_INFINITY;
+	private double currentValue;
 	
 	@Override
 	public void applyMinMax(double d) {
@@ -28,6 +29,16 @@ public class BasicInputField implements InputField {
 	public void setMax(double max) {
 		this.max = max;
 	}
+
+	public double getCurrentValue() {
+		return currentValue;
+	}
+
+	public void setCurrentValue(double currentValue) {
+		this.currentValue = currentValue;
+	}
+
+	
 	
 	
 

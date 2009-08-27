@@ -20,6 +20,10 @@ public class Test implements StatusReportable {
 		norm.addInputField(a = new InputFieldCSV(inFile,0));
 		norm.addInputField(b = new InputFieldCSV(inFile,1));
 		norm.addInputField(c = new InputFieldCSV(inFile,2));
+		norm.addOutputField(new OutputFieldRangeMapped(a,0.1,0.9));
+		norm.addOutputField(new OutputFieldRangeMapped(b,0.1,0.9));
+		norm.addOutputField(new OutputFieldRangeMapped(c,0.1,0.9));
+		norm.setTarget(new NormalizationTargetCSV(outFile));
 		norm.process();
 		System.out.println( a.getMin() + "-" + a.getMax() );
 		System.out.println( b.getMin() + "-" + b.getMax() );

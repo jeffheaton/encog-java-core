@@ -31,4 +31,6 @@ public interface InputField {
 	 void setMin(double min);
 	 double getMax();
 	 void setMax(double max);
+	 void setCurrentValue(double d);
+	 double getCurrentValue();
 }
