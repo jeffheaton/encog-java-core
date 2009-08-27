@@ -26,51 +26,15 @@
 
 package org.encog.normalize;
 
-public class BasicInputField implements InputField {
-
+public class InputFieldArray1D extends BasicInputField {
+	private double[] array;
 	
-	private double min = Double.POSITIVE_INFINITY;
-	private double max = Double.NEGATIVE_INFINITY;
-	private double currentValue;
+	public InputFieldArray1D(double[] array)
+	{
+		this.array = array;
+	}
 	
-	@Override
-	public void applyMinMax(double d) {
-		this.min = Math.min(this.min, d);
-		this.max = Math.max(this.max, d);
-		
-	}
-
-	public double getMin() {
-		return min;
-	}
-
-	public void setMin(double min) {
-		this.min = min;
-	}
-
-	public double getMax() {
-		return max;
-	}
-
-	public void setMax(double max) {
-		this.max = max;
-	}
-
-	public double getCurrentValue() {
-		return currentValue;
-	}
-
-	public void setCurrentValue(double currentValue) {
-		this.currentValue = currentValue;
-	}
-
-	@Override
 	public double getValue(int i) {
-		throw new NormalizationError("Can't call getValue on " + this.getClass().getSimpleName());
+		return this.array[i];
 	}
-
-	
-	
-	
-
 }

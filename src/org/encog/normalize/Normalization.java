@@ -35,183 +35,164 @@ import org.encog.StatusReportable;
 import org.encog.util.ReadCSV;
 
 public class Normalization {
-	
+
 	private final Collection<InputField> inputFields = new ArrayList<InputField>();
 	private final Collection<OutputField> outputFields = new ArrayList<OutputField>();
 	private final Collection<ReadCSV> readCSV = new ArrayList<ReadCSV>();
-	private final Map<InputField,ReadCSV> csvMap = new HashMap<InputField,ReadCSV>();
+	private final Map<InputField, ReadCSV> csvMap = new HashMap<InputField, ReadCSV>();
 	private NormalizationTarget target;
 	private StatusReportable report;
 	private int recordCount;
-	
-	
-	
+
 	public NormalizationTarget getTarget() {
 		return target;
 	}
-
-
 
 	public void setTarget(NormalizationTarget target) {
 		this.target = target;
 	}
 
-
-
 	public StatusReportable getReport() {
 		return report;
 	}
-
-
 
 	public void setReport(StatusReportable report) {
 		this.report = report;
 	}
 
-
-
 	public Collection<InputField> getInputFields() {
 		return inputFields;
 	}
 
-
-
 	public Collection<OutputField> getOutputFields() {
 		return outputFields;
 	}
-	
-	private void openCSV()
-	{
+
+	private void openCSV() {
 		// clear out any CSV files already there
 		this.csvMap.clear();
 		this.readCSV.clear();
-		
+
 		// only add each CSV once
-		Map<File,ReadCSV> uniqueFiles = new HashMap<File,ReadCSV>();
-		
+		Map<File, ReadCSV> uniqueFiles = new HashMap<File, ReadCSV>();
+
 		// find the unique files
-		for(InputField field: this.inputFields)
-		{
-			if( field instanceof InputFieldCSV )
-			{
-				InputFieldCSV csvField = (InputFieldCSV)field;
+		for (InputField field : this.inputFields) {
+			if (field instanceof InputFieldCSV) {
+				InputFieldCSV csvField = (InputFieldCSV) field;
 				File file = csvField.getFile();
-				if( !uniqueFiles.containsKey(file) )
-				{					
-					ReadCSV csv = new ReadCSV(file.toString(),false,',');
-					uniqueFiles.put(file,csv);
-					this.readCSV.add(csv); 					
+				if (!uniqueFiles.containsKey(file)) {
+					ReadCSV csv = new ReadCSV(file.toString(), false, ',');
+					uniqueFiles.put(file, csv);
+					this.readCSV.add(csv);
 				}
-				this.csvMap.put(csvField,uniqueFiles.get(file));
+				this.csvMap.put(csvField, uniqueFiles.get(file));
 			}
 		}
 	}
-	
-	private boolean next()
-	{
+
+	private boolean next() {
 		boolean status = true;
-		
-		for(ReadCSV csv: this.readCSV)
-		{
-			if( !csv.next() )
+
+		for (ReadCSV csv : this.readCSV) {
+			if (!csv.next())
 				status = false;
 		}
-		
+
 		return status;
 	}
 
 	/**
 	 * First pass, count everything, establish min/max.
 	 */
-	private void firstPass()
-	{		
+	private void firstPass() {
 		openCSV();
-		
+
 		this.recordCount = 0;
-		
+
 		this.report.report(0, 0, "Analyzing file");
 		int report = 0;
-		
+		int index = 0;
+
 		// loop over all of the records
-		while(next())
-		{
+		while (next()) {
 			// count the records, report status
 			this.recordCount++;
 			report++;
-			if( report>=10000){
-				this.report.report(0, 0, "Analyzing file, found " + this.recordCount + " records.");
+			if (report >= 10000) {
+				this.report.report(0, 0, "Analyzing file, found "
+						+ this.recordCount + " records.");
 				report = 0;
 			}
-			
+
 			// manage the min/max for each field
-			for(InputField field: this.inputFields)
-			{
-				InputFieldCSV fieldCSV = (InputFieldCSV)field;
-				ReadCSV csv = this.csvMap.get(field);
-				double value = csv.getDouble(fieldCSV.getOffset());
-				field.applyMinMax(value);
+			for (InputField field : this.inputFields) {
+				if (field instanceof InputFieldCSV) {
+					InputFieldCSV fieldCSV = (InputFieldCSV) field;
+					ReadCSV csv = this.csvMap.get(field);
+					double value = csv.getDouble(fieldCSV.getOffset());
+					field.applyMinMax(value);
+				}
+				else
+				{
+					double value = field.getValue(index);
+				}
 			}
-			
-		} 
-		
-		
-		
+			index++;
+		}
 	}
-	
-	private void secondPass()
-	{
+
+	private void secondPass() {
 		// move any CSV files back to the beginning.
 		openCSV();
-		
+
 		// process the records
 		double[] output = new double[this.outputFields.size()];
-		
+
 		this.target.open();
-		for(int i=0;i<this.recordCount;i++)
-		{
+		for (int i = 0; i < this.recordCount; i++) {
 			next();
 			// read the value
-			for(InputField field: this.inputFields)
-			{
-				InputFieldCSV fieldCSV = (InputFieldCSV)field;
-				ReadCSV csv = this.csvMap.get(field);
-				double value = csv.getDouble(fieldCSV.getOffset());
-				field.applyMinMax(value);
-				field.setCurrentValue(value);
+			for (InputField field : this.inputFields) {
+				if (field instanceof InputFieldCSV) {
+					InputFieldCSV fieldCSV = (InputFieldCSV) field;
+					ReadCSV csv = this.csvMap.get(field);
+					double value = csv.getDouble(fieldCSV.getOffset());
+					field.applyMinMax(value);
+					field.setCurrentValue(value);
+				}
+				else
+				{
+					double value = field.getValue(i);
+				}
 			}
-			
+
 			// write the value
 			int outputIndex = 0;
-			for(OutputField ofield: this.outputFields)
-			{
+			for (OutputField ofield : this.outputFields) {
 				output[outputIndex++] = ofield.calculate();
 			}
-			
+
 			this.target.write(output, 0);
-			
+
 			// report status
 			this.report.report(this.recordCount, i, "Normalizing data");
 		}
 		this.target.close();
-		
+
 	}
 
-
-	public void process()
-	{
+	public void process() {
 		firstPass();
 		secondPass();
 	}
 
-
-
-	public void addInputField(InputField f ) {
-		this.inputFields.add(f);		
+	public void addInputField(InputField f) {
+		this.inputFields.add(f);
 	}
 
 	public void addOutputField(OutputField outputField) {
-		this.outputFields.add(outputField);		
+		this.outputFields.add(outputField);
 	}
-	
-	
+
 }
