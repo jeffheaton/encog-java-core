@@ -140,9 +140,10 @@ public abstract class BasicRandomizer implements Randomizer {
 	 *            A matrix to randomize.
 	 */
 	public void randomize(final Matrix m) {
+		double[][] d = m.getData();
 		for (int r = 0; r < m.getRows(); r++) {
 			for (int c = 0; c < m.getCols(); c++) {
-				m.set(r, c, randomize(m.get(r, c)));
+				d[r][c] = randomize(d[r][c]);
 			}
 		}
 	}

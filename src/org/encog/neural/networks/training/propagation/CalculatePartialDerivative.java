@@ -121,10 +121,10 @@ public class CalculatePartialDerivative {
 			final int toNeuronGlobal) {
 		final NeuralData output = outputHolder.getResult().get(
 				fromSynapse.getSynapse());
-		fromSynapse.accumulateMatrixDelta(fromNeuron, toNeuronLocal, toLevel
+		fromSynapse.getAccMatrixGradients().getData()[fromNeuron][toNeuronLocal]+= toLevel
 				.getDelta(toNeuronGlobal)
-				* output.getData(fromNeuron));
-		return (fromSynapse.getSynapse().getMatrix().get(fromNeuron,
-				toNeuronLocal) * toLevel.getDelta(toNeuronGlobal));
+				* output.getData(fromNeuron);
+		return (fromSynapse.getSynapse().getMatrix().getData()[fromNeuron]
+				[toNeuronLocal] * toLevel.getDelta(toNeuronGlobal));
 	}
 }

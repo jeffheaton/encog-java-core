@@ -83,20 +83,6 @@ public class PropagationSynapse {
 		this.deltas = new Matrix(fromCount, toCount);
 	}
 
-	/**
-	 * Accumulate a matrix delta.
-	 * 
-	 * @param i1
-	 *            The matrix row.
-	 * @param i2
-	 *            The matrix column.
-	 * @param value
-	 *            The delta value.
-	 */
-	public void accumulateMatrixDelta(final int i1, final int i2,
-			final double value) {
-		this.accMatrixGradients.add(i1, i2, value);
-	}
 
 	/**
 	 * @return The accumulated matrix gradients.
