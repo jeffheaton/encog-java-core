@@ -152,7 +152,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public void add(final int row, final int col, final double value) {
 		validate(row, col);
-		final double newValue = get(row, col) + value;
+		final double newValue = this.matrix[row][col] + value;
 		set(row, col, newValue);
 	}
 
@@ -162,9 +162,11 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param matrix The matrix to add.
 	 */
 	public void add(final Matrix matrix) {
+		double[][] source = matrix.getData();
+		
 		for (int row = 0; row < getRows(); row++) {
 			for (int col = 0; col < getCols(); col++) {
-				this.add(row, col, matrix.get(row, col));
+				this.matrix[row][col]+=source[row][col];
 			}
 		}
 	}
@@ -175,7 +177,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	public void clear() {
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				set(r, c, 0);
+				this.matrix[r][c] = 0;
 			}
 		}
 	}
@@ -242,10 +244,12 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		final int actualPrecision = (int) Math.pow(Encog.DEFAULT_PRECISION,
 				precision);
 
+		double[][] data = matrix.getData();
+		
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				if ((long) (get(r, c) * actualPrecision) != (long) (matrix.get(
-						r, c) * actualPrecision)) {
+				if ((long) (this.matrix[r][c] * actualPrecision) != (long) (data[r][c] * 
+						actualPrecision)) {
 					return false;
 				}
 			}
@@ -382,7 +386,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		long result = 0;
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				result += get(r, c);
+				result += this.matrix[r][c];
 			}
 		}
 		return (int) (result % Integer.MAX_VALUE);

@@ -25,7 +25,6 @@
  */
 package org.encog.matrix;
 
-import org.encog.neural.data.NeuralData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,12 +78,14 @@ public final class MatrixMath {
 			throw new MatrixError(str);
 		}
 
+		final double[][] aa = a.getData();
+		final double[][] bb = b.getData();
 		final double[][] result = new double[a.getRows()][a.getCols()];
 
 		for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
 			for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
-				result[resultRow][resultCol] = a.get(resultRow, resultCol)
-						+ b.get(resultRow, resultCol);
+				result[resultRow][resultCol] = aa[resultRow][resultCol]
+						+ bb[resultRow][resultCol];
 			}
 		}
 
@@ -100,26 +101,15 @@ public final class MatrixMath {
 	 *            The target matrix for the copy.
 	 */
 	public static void copy(final Matrix source, final Matrix target) {
+		double[][] s = source.getData();
+		double[][] t = target.getData();
+		
 		for (int row = 0; row < source.getRows(); row++) {
 			for (int col = 0; col < source.getCols(); col++) {
-				target.set(row, col, source.get(row, col));
+				t[row][col] = s[row][col];
 			}
 		}
 
-	}
-
-	/**
-	 * Create an input matrix for a neural network.
-	 * @param pattern The pattern to create the matrix for.
-	 * @return The newly created matrix.
-	 */
-	public static Matrix createInputMatrix(final NeuralData pattern) {
-		final Matrix result = new Matrix(1, pattern.size());
-		for (int i = 0; i < pattern.size(); i++) {
-			result.set(0, i, pattern.getData(i));
-		}
-
-		return result;
 	}
 
 	/**
@@ -145,12 +135,14 @@ public final class MatrixMath {
 		final double[][] newMatrix = new double[matrix.getRows()][matrix
 				.getCols() - 1];
 
+		double[][] d = matrix.getData();
+		
 		for (int row = 0; row < matrix.getRows(); row++) {
 			int targetCol = 0;
 
 			for (int col = 0; col < matrix.getCols(); col++) {
 				if (col != deleted) {
-					newMatrix[row][targetCol] = matrix.get(row, col);
+					newMatrix[row][targetCol] = d[row][col];
 					targetCol++;
 				}
 
@@ -184,11 +176,13 @@ public final class MatrixMath {
 		}
 		final double[][] newMatrix = new double[matrix.getRows() - 1][matrix
 				.getCols()];
+		double[][] d = matrix.getData();
+		
 		int targetRow = 0;
 		for (int row = 0; row < matrix.getRows(); row++) {
 			if (row != deleted) {
 				for (int col = 0; col < matrix.getCols(); col++) {
-					newMatrix[targetRow][col] = matrix.get(row, col);
+					newMatrix[targetRow][col] = d[row][col];
 				}
 				targetRow++;
 			}
@@ -207,9 +201,10 @@ public final class MatrixMath {
 	 */
 	public static Matrix divide(final Matrix a, final double b) {
 		final double[][] result = new double[a.getRows()][a.getCols()];
+		double[][] d = a.getData();
 		for (int row = 0; row < a.getRows(); row++) {
 			for (int col = 0; col < a.getCols(); col++) {
-				result[row][col] = a.get(row, col) / b;
+				result[row][col] = d[row][col] / b;
 			}
 		}
 		return new Matrix(result);
@@ -278,9 +273,10 @@ public final class MatrixMath {
 		}
 
 		final Matrix result = new Matrix(size, size);
+		double[][] d = result.getData();
 
 		for (int i = 0; i < size; i++) {
-			result.set(i, i, 1);
+			d[i][i] = 1;
 		}
 
 		return result;
@@ -298,9 +294,11 @@ public final class MatrixMath {
 	 */
 	public static Matrix multiply(final Matrix a, final double b) {
 		final double[][] result = new double[a.getRows()][a.getCols()];
+		double[][] d = a.getData();
+		
 		for (int row = 0; row < a.getRows(); row++) {
 			for (int col = 0; col < a.getCols(); col++) {
-				result[row][col] = a.get(row, col) * b;
+				result[row][col] = d[row][col] * b;
 			}
 		}
 		return new Matrix(result);
@@ -316,33 +314,7 @@ public final class MatrixMath {
 	 * @return The result of the multiplication.
 	 */
 	public static Matrix multiply(final Matrix a, final Matrix b) {
-		/*if (a.getCols() != b.getRows()) {
-			final String str = 
-			"To use ordinary matrix multiplication the number of "
-					+ "columns on the first matrix must mat the number of "
-					+ "rows on the second.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
 
-		final double[][] result = new double[a.getRows()][b.getCols()];
-		final double[][] aData = a.getData();
-		final double[][] bData = b.getData();
-
-		for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
-			for (int resultCol = 0; resultCol < b.getCols(); resultCol++) {
-				for (int i = 0; i < a.getCols(); i++) {
-					result[resultRow][resultCol] += aData[resultRow][i] * bData[i][resultCol];
-				}
-			}
-		}
-
-		return new Matrix(result);*/
-		
-		
-		
 		if (b.getRows() != a.getCols()) {
 			final String str = 
 				"To use ordinary matrix multiplication the number of "
@@ -417,11 +389,13 @@ public final class MatrixMath {
 		}
 
 		final double[][] result = new double[a.getRows()][a.getCols()];
+		double[][] aa = a.getData();
+		double[][] bb = b.getData();
 
 		for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
 			for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
-				result[resultRow][resultCol] = a.get(resultRow, resultCol)
-						- b.get(resultRow, resultCol);
+				result[resultRow][resultCol] = aa[resultRow][resultCol]
+						- bb[resultRow][resultCol];
 			}
 		}
 
@@ -439,9 +413,11 @@ public final class MatrixMath {
 		final double[][] inverseMatrix = new double[input.getCols()][input
 				.getRows()];
 
+		double[][] d = input.getData();
+		
 		for (int r = 0; r < input.getRows(); r++) {
 			for (int c = 0; c < input.getCols(); c++) {
-				inverseMatrix[c][r] = input.get(r, c);
+				inverseMatrix[c][r] = d[r][c];
 			}
 		}
 
