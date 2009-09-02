@@ -139,6 +139,7 @@ public class RSS {
 			}
 
 			final URLConnection http = url.openConnection();
+			http.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Win64; x64; Trident/4.0)");
 			final InputStream is = http.getInputStream();
 
 			final DocumentBuilderFactory factory = DocumentBuilderFactory
