@@ -34,6 +34,10 @@ import org.encog.util.math.BoundMath;
  * hyperbolic tangent. This activation function produces both positive and
  * negative output. Use this activation function if both negative and positive
  * output is desired.
+ * 
+ * This implementation does an approximation of the TANH function, using only a
+ * single base e exponent.  This has a considerable effect on performance, adds
+ * only minimal change to the output compared to a standard TANH calculation.
  */
 public class ActivationTANH extends BasicActivationFunction {
 
@@ -48,7 +52,7 @@ public class ActivationTANH extends BasicActivationFunction {
 	 * @return The output value.
 	 */
 	private double activationFunction(final double d) {
-		return (BoundMath.exp(d * 2.0) - 1.0) / (BoundMath.exp(d * 2.0) + 1.0);
+		return -1 + (2/ (1+BoundMath.exp(-2* d ) ) );
 	}
 
 	/**
