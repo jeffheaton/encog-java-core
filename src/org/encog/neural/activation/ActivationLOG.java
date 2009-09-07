@@ -33,6 +33,12 @@ import org.encog.util.math.BoundMath;
 /**
  * An activation function based on the logarithm function.
  * 
+ * This type of activation function can be useful to prevent saturation.
+ * A hidden node of a neural network is said to be saturated on a given 
+ * set of inputs when its output is approximately 1 or -1 "most of the time". 
+ * If this phenomena occurs during training then the learning of the network 
+ * can be slowed significantly since the error surface is very at in this instance.
+ * 
  * @author jheaton
  * 
  */
