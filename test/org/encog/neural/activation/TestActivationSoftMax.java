@@ -14,7 +14,7 @@ public class TestActivationSoftMax extends TestCase {
 	public void testSoftMax() throws Throwable
 	{
 		ActivationSoftMax activation = new ActivationSoftMax();
-		Assert.assertFalse(activation.hasDerivative());
+		Assert.assertTrue(activation.hasDerivative());
 		
 		ActivationSoftMax clone = (ActivationSoftMax)activation.clone();
 		Assert.assertNotNull(clone);
