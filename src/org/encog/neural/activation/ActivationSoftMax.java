@@ -89,16 +89,14 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	 * @param d The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
-		throw new NeuralNetworkError(
-				"Can't use the softmax activation function "
-						+ "where a derivative is required.");
+
 	}
 	
 	/**
 	 * @return Return false, softmax has no derivative.
 	 */
 	public boolean hasDerivative() {
-		return false;
+		return true;
 	}
 
 }
