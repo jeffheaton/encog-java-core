@@ -29,16 +29,8 @@ public class TestActivationSoftMax extends TestCase {
 		// this will throw an error if it does not work
 		ActivationSoftMaxPersistor p = (ActivationSoftMaxPersistor)activation.createPersistor();
 		
-		// test derivative, should throw an error
-		try
-		{
-			activation.derivativeFunction(input);
-			Assert.assertTrue(false);// mark an error
-		}
-		catch(EncogError e)
-		{
-			// good, this should happen
-		}
+		// test derivative
+		activation.derivativeFunction(input);
 		
 		// test name and description
 		// names and descriptions are not stored for these
