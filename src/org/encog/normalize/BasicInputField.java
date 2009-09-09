@@ -33,7 +33,6 @@ public abstract class BasicInputField implements InputField {
 	private double max = Double.NEGATIVE_INFINITY;
 	private double currentValue;
 	
-	@Override
 	public void applyMinMax(double d) {
 		this.min = Math.min(this.min, d);
 		this.max = Math.max(this.max, d);
@@ -64,7 +63,6 @@ public abstract class BasicInputField implements InputField {
 		this.currentValue = currentValue;
 	}
 
-	@Override
 	public double getValue(int i) {
 		throw new NormalizationError("Can't call getValue on " + this.getClass().getSimpleName());
 	}

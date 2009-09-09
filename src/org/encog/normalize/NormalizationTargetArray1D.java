@@ -37,17 +37,14 @@ public class NormalizationTargetArray1D implements NormalizationTarget {
 		this.currentIndex = 0;
 	}
 	
-	@Override
 	public void close() {
 		
 	}
 
-	@Override
 	public void open() {
 		
 	}
 
-	@Override
 	public void write(double[] data, int inputCount) {
 		this.array[this.currentIndex++] = data[0];		
 	}

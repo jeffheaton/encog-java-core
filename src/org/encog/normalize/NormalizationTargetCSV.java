@@ -20,19 +20,16 @@ public class NormalizationTargetCSV implements NormalizationTarget {
 		
 	}
 
-	@Override
 	public void write(double[] data, int inputCount) {
 		StringBuilder result = new StringBuilder();
 		ReadCSV.toCommas(result, data);
 		this.output.println(result.toString());		
 	}
 
-	@Override
 	public void close() {
 		this.output.close();		
 	}
 
-	@Override
 	public void open() {
 		try
 		{

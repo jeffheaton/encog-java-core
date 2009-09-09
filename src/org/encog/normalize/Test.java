@@ -35,7 +35,6 @@ public class Test implements StatusReportable {
 		test.run();
 	}
 
-	@Override
 	public void report(int total, int current, String message) {
 		System.out.println( current + " " + message );
 		

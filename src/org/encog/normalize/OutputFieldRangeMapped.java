@@ -50,7 +50,6 @@ public class OutputFieldRangeMapped implements OutputField {
 		return high;
 	}
 
-	@Override
 	public double calculate() {
 		return ((field.getCurrentValue()-field.getMin()) / (field.getMax()-field.getMin())) * (this.high-this.low) + this.low;
 	}
