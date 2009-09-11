@@ -83,6 +83,20 @@ public class Propagation extends BasicTraining {
 	 * The output holder to use during training.
 	 */
 	private final NeuralOutputHolder outputHolder = new NeuralOutputHolder();
+	
+	/**
+	 * The batch size.  Defaults to the max size of an integer, which means update
+	 * once per iteration.
+	 *  
+	 * The batch size is the frequency with which the weights are updated per 
+	 * iteration. Setting it to the size of the training set means one update 
+	 * per iteration.  Setting this to a lower number may improve training 
+	 * efficiency at the cost of processing time.
+	 * 
+	 * If you do not want to use batch training, specify a value of 1, then
+	 * the weights will be updated on each iteration, which is online training.
+	 */
+	private int batchSize = Integer.MAX_VALUE;
 
 	/**
 	 * Construct a propagation trainer.
@@ -291,6 +305,8 @@ public class Propagation extends BasicTraining {
 
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
+		int processedCount = 0;
+		
 		for (final NeuralDataPair pair : getTraining()) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug(
@@ -301,13 +317,38 @@ public class Propagation extends BasicTraining {
 
 			errorCalculation.updateError(actual, pair.getIdeal());
 			backwardPass(pair.getIdeal());
+			
+			processedCount++;
+			if( processedCount>=this.batchSize )
+			{
+				processedCount = 0;
+				this.method.learn();
+			}
 		}
 
-		this.method.learn();
+		if( processedCount!=0 ) {
+			this.method.learn();
+		}
 
 		setError(errorCalculation.calculateRMS());
 
 		postIteration();
 	}
+
+	/**
+	 * Get the batch size.  See batchSize property for a complete description.
+	 */
+	public int getBatchSize() {
+		return batchSize;
+	}
+
+	/**
+	 * Set the batch size.  See batchSize property for a complete description.
+	 */
+	public void setBatchSize(int batchSize) {
+		this.batchSize = batchSize;
+	}
+	
+	
 
 }
