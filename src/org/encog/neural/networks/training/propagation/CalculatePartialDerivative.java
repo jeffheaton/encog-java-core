@@ -85,13 +85,13 @@ public class CalculatePartialDerivative {
 				toNeuronGlobal++;
 			}
 		}
+		
+		double[] deltas = fromLevel.getDeltas();
 
 		for (int i = 0; i < fromLevel.getNeuronCount(); i++) {
-			final double actual = fromLevel.getActual(i);
-			fromLevel.setDelta(i, actual);
+			deltas[i] = fromLevel.getActual(i);
 		}
-
-		double[] deltas = fromLevel.getDeltas();
+		
 		// get an activation function to use
 		final Layer l = toLevel.getLayers().get(0);
 		l.getActivationFunction().derivativeFunction(deltas);
