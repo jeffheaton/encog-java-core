@@ -92,7 +92,7 @@ public class ResourcePersistence implements PersistenceLocation {
 	 */
 	public OutputStream createOutputStream() {
 		final String str = 
-		"The ResourcePersistence location does not suppor write operations.";
+		"The ResourcePersistence location does not support write operations.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -104,7 +104,7 @@ public class ResourcePersistence implements PersistenceLocation {
 	 */
 	public void delete() {
 		final String str = 
-		"The ResourcePersistence location does not suppor delete operations.";
+		"The ResourcePersistence location does not support delete operations.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -119,7 +119,7 @@ public class ResourcePersistence implements PersistenceLocation {
 	 */
 	public boolean exists() {
 		final String str = 
-		"The ResourcePersistence location does not suppor exists.";
+		"The ResourcePersistence location does not support exists.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -134,7 +134,7 @@ public class ResourcePersistence implements PersistenceLocation {
 	 */
 	public void renameTo(final PersistenceLocation toLocation) {
 		final String str = 
-		"The ResourcePersistence location does not suppor rename operations.";
+		"The ResourcePersistence location does not support rename operations.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
