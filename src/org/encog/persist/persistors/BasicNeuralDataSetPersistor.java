@@ -122,7 +122,7 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		while (in.readToTag()) {
 			if (in.is(BasicNeuralDataSetPersistor.TAG_ITEM, true)) {
 				handleItem(in);
-			} else if (in.is(BasicNeuralDataSetPersistor.TAG_ITEM, false)) {
+			} else if (in.is(EncogPersistedCollection.TYPE_TRAINING, false)) {
 				break;
 			}
 
