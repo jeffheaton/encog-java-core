@@ -1,10 +1,11 @@
-package org.encog.normalize;
+package org.encog.normalize.target;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.encog.normalize.NormalizationError;
 import org.encog.util.ReadCSV;
 
 public class NormalizationTargetCSV implements NormalizationTarget {

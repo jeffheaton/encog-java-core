@@ -24,29 +24,49 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+package org.encog.normalize.input;
 
-package org.encog.normalize;
+import org.encog.normalize.NormalizationError;
 
-import java.io.File;
+public abstract class BasicInputField implements InputField {
 
-public class InputFieldCSV extends BasicInputField {
 	
-	private final File file;
-	private final int offset;
+	private double min = Double.POSITIVE_INFINITY;
+	private double max = Double.NEGATIVE_INFINITY;
+	private double currentValue;
 	
-	public InputFieldCSV(File file,int offset)
-	{
-		this.file = file;		
-		this.offset = offset;
+	public void applyMinMax(double d) {
+		this.min = Math.min(this.min, d);
+		this.max = Math.max(this.max, d);
+		
 	}
 
-	public File getFile() {
-		return file;
+	public double getMin() {
+		return min;
 	}
 
-	public int getOffset() {
-		return offset;
+	public void setMin(double min) {
+		this.min = min;
 	}
-	
-	
+
+	public double getMax() {
+		return max;
+	}
+
+	public void setMax(double max) {
+		this.max = max;
+	}
+
+	public double getCurrentValue() {
+		return currentValue;
+	}
+
+	public void setCurrentValue(double currentValue) {
+		this.currentValue = currentValue;
+	}
+
+	public double getValue(int i) {
+		throw new NormalizationError("Can't call getValue on " + this.getClass().getSimpleName());
+	}
+
 }

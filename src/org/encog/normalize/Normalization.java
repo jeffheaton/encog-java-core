@@ -32,6 +32,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.StatusReportable;
+import org.encog.normalize.input.InputField;
+import org.encog.normalize.input.InputFieldArray1D;
+import org.encog.normalize.input.InputFieldCSV;
+import org.encog.normalize.output.OutputField;
+import org.encog.normalize.target.NormalizationTarget;
 import org.encog.util.ReadCSV;
 
 public class Normalization {

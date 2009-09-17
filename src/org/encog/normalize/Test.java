@@ -3,6 +3,10 @@ package org.encog.normalize;
 import java.io.File;
 
 import org.encog.StatusReportable;
+import org.encog.normalize.input.InputField;
+import org.encog.normalize.input.InputFieldCSV;
+import org.encog.normalize.output.OutputFieldRangeMapped;
+import org.encog.normalize.target.NormalizationTargetCSV;
 
 public class Test implements StatusReportable {
 	

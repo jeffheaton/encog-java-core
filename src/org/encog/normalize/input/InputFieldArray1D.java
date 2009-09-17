@@ -1,5 +1,3 @@
-package org.encog.normalize;
-
 /**
  * Encog Artificial Intelligence Framework v2.x
  * Java Version
@@ -25,28 +23,23 @@ package org.encog.normalize;
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-public class NormalizationTargetArray1D implements NormalizationTarget {
 
+package org.encog.normalize.input;
+
+public class InputFieldArray1D extends BasicInputField {
 	private double[] array;
-	private int currentIndex;
 	
-	
-	public NormalizationTargetArray1D(double[] array)
+	public InputFieldArray1D(double[] array)
 	{
 		this.array = array;
-		this.currentIndex = 0;
 	}
 	
-	public void close() {
-		
+	public double getValue(int i) {
+		return this.array[i];
 	}
 
-	public void open() {
-		
+	
+	public int length() {
+		return this.array.length;
 	}
-
-	public void write(double[] data, int inputCount) {
-		this.array[this.currentIndex++] = data[0];		
-	}
-
 }

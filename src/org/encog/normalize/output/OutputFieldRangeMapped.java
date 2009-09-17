@@ -24,10 +24,38 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.encog.normalize;
+package org.encog.normalize.output;
 
-public interface OutputField {
+import org.encog.normalize.input.InputField;
+
+public class OutputFieldRangeMapped implements OutputField {
+
+	private final InputField field; 
+	private final double low; 
+	private final double high;
 	
-	double calculate();
+	public OutputFieldRangeMapped(InputField field, double low, double high) {
+		this.field = field;
+		this.low = low;
+		this.high = high;
+	}
+
+	public InputField getField() {
+		return field;
+	}
+
+	public double getLow() {
+		return low;
+	}
+
+	public double getHigh() {
+		return high;
+	}
+
+	public double calculate() {
+		return ((field.getCurrentValue()-field.getMin()) / (field.getMax()-field.getMin())) * (this.high-this.low) + this.low;
+	}
+	
+	
 
 }

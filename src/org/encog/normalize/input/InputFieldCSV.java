@@ -24,8 +24,29 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.encog.normalize;
 
-public class InputFieldNeuralDataSet {
+package org.encog.normalize.input;
 
+import java.io.File;
+
+public class InputFieldCSV extends BasicInputField {
+	
+	private final File file;
+	private final int offset;
+	
+	public InputFieldCSV(File file,int offset)
+	{
+		this.file = file;		
+		this.offset = offset;
+	}
+
+	public File getFile() {
+		return file;
+	}
+
+	public int getOffset() {
+		return offset;
+	}
+	
+	
 }

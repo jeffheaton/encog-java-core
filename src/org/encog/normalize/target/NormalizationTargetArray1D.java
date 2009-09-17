@@ -1,3 +1,5 @@
+package org.encog.normalize.target;
+
 /**
  * Encog Artificial Intelligence Framework v2.x
  * Java Version
@@ -23,48 +25,28 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+public class NormalizationTargetArray1D implements NormalizationTarget {
 
-package org.encog.normalize;
-
-public abstract class BasicInputField implements InputField {
-
+	private double[] array;
+	private int currentIndex;
 	
-	private double min = Double.POSITIVE_INFINITY;
-	private double max = Double.NEGATIVE_INFINITY;
-	private double currentValue;
 	
-	public void applyMinMax(double d) {
-		this.min = Math.min(this.min, d);
-		this.max = Math.max(this.max, d);
+	public NormalizationTargetArray1D(double[] array)
+	{
+		this.array = array;
+		this.currentIndex = 0;
+	}
+	
+	public void close() {
 		
 	}
 
-	public double getMin() {
-		return min;
+	public void open() {
+		
 	}
 
-	public void setMin(double min) {
-		this.min = min;
-	}
-
-	public double getMax() {
-		return max;
-	}
-
-	public void setMax(double max) {
-		this.max = max;
-	}
-
-	public double getCurrentValue() {
-		return currentValue;
-	}
-
-	public void setCurrentValue(double currentValue) {
-		this.currentValue = currentValue;
-	}
-
-	public double getValue(int i) {
-		throw new NormalizationError("Can't call getValue on " + this.getClass().getSimpleName());
+	public void write(double[] data, int inputCount) {
+		this.array[this.currentIndex++] = data[0];		
 	}
 
 }

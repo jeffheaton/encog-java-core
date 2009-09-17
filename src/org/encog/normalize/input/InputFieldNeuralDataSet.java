@@ -24,22 +24,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.encog.normalize;
+package org.encog.normalize.input;
 
-public class InputFieldArray1D extends BasicInputField {
-	private double[] array;
-	
-	public InputFieldArray1D(double[] array)
-	{
-		this.array = array;
-	}
-	
-	public double getValue(int i) {
-		return this.array[i];
-	}
+public class InputFieldNeuralDataSet {
 
-	
-	public int length() {
-		return this.array.length;
-	}
 }

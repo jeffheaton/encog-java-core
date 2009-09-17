@@ -23,15 +23,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.encog.normalize;
 
-public interface InputField {
-	void applyMinMax(double d);
-	 double getMin();
-	 void setMin(double min);
-	 double getMax();
-	 void setMax(double max);
-	 void setCurrentValue(double d);
-	 double getCurrentValue();
-	double getValue(int i);
+package org.encog.normalize.output;
+
+public interface OutputField {
+	
+	double calculate();
+
 }

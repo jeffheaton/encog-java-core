@@ -23,37 +23,15 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.encog.normalize.input;
 
-package org.encog.normalize;
-
-public class OutputFieldRangeMapped implements OutputField {
-
-	private final InputField field; 
-	private final double low; 
-	private final double high;
-	
-	public OutputFieldRangeMapped(InputField field, double low, double high) {
-		this.field = field;
-		this.low = low;
-		this.high = high;
-	}
-
-	public InputField getField() {
-		return field;
-	}
-
-	public double getLow() {
-		return low;
-	}
-
-	public double getHigh() {
-		return high;
-	}
-
-	public double calculate() {
-		return ((field.getCurrentValue()-field.getMin()) / (field.getMax()-field.getMin())) * (this.high-this.low) + this.low;
-	}
-	
-	
-
+public interface InputField {
+	void applyMinMax(double d);
+	 double getMin();
+	 void setMin(double min);
+	 double getMax();
+	 void setMax(double max);
+	 void setCurrentValue(double d);
+	 double getCurrentValue();
+	double getValue(int i);
 }
