@@ -441,5 +441,13 @@ public class PersistReader {
 			}
 		}
 	}
+	
+	/**	 
+	 * @return The ReadXML object being used by this object.
+	 */
+	public ReadXML getXMLInput()
+	{
+		return this.in;
+	}
 
 }
