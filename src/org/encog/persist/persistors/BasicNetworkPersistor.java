@@ -266,7 +266,10 @@ public class BasicNetworkPersistor implements Persistor {
 				handleLogic(in);
 			} else if (in.is(BasicNetworkPersistor.TAG_TAGS, true)) {
 				handleTags(in);
+			} else if (in.is(EncogPersistedCollection.TYPE_BASIC_NET, false)) {
+				break;
 			}
+				
 
 		}
 		this.currentNetwork.getStructure().finalizeStructure();
