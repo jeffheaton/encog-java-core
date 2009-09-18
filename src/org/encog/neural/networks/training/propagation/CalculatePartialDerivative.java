@@ -49,9 +49,13 @@ public class CalculatePartialDerivative {
 
 	/**
 	 * Calculate the partial derivative of the error for a layer.
-	 * @param output A holder that contains the output from all of the layers.
-	 * @param fromLevel The source level.
-	 * @param toLevel The target level.
+	 * 
+	 * @param output
+	 *            A holder that contains the output from all of the layers.
+	 * @param fromLevel
+	 *            The source level.
+	 * @param toLevel
+	 *            The target level.
 	 */
 	public void calculateError(final NeuralOutputHolder output,
 			final PropagationLevel fromLevel, final PropagationLevel toLevel) {
@@ -64,8 +68,7 @@ public class CalculatePartialDerivative {
 		// loop over every element of the weight matrix and determine the deltas
 		// also determine the threshold deltas.
 		for (final Layer toLayer : toLevel.getLayers()) {
-			for (int toNeuron = 0; toNeuron < toLayer.getNeuronCount(); 
-			toNeuron++) {
+			for (int toNeuron = 0; toNeuron < toLayer.getNeuronCount(); toNeuron++) {
 				int fromNeuronGlobal = 0;
 
 				for (final PropagationSynapse fromSynapse : fromLevel
@@ -104,15 +107,23 @@ public class CalculatePartialDerivative {
 
 	/**
 	 * Calculate the error for an individual weight matrix element.
-	 * @param outputHolder The output from each of the layers of 
-	 * the neural network.
-	 * @param fromLevel The from level.
-	 * @param toLevel The to level.
-	 * @param toLayer The to layer.
-	 * @param toNeuronLocal The neuron, within the layer.
-	 * @param fromSynapse The from synapse.
-	 * @param fromNeuron The from neuron.
-	 * @param toNeuronGlobal The global location inside of the level.
+	 * 
+	 * @param outputHolder
+	 *            The output from each of the layers of the neural network.
+	 * @param fromLevel
+	 *            The from level.
+	 * @param toLevel
+	 *            The to level.
+	 * @param toLayer
+	 *            The to layer.
+	 * @param toNeuronLocal
+	 *            The neuron, within the layer.
+	 * @param fromSynapse
+	 *            The from synapse.
+	 * @param fromNeuron
+	 *            The from neuron.
+	 * @param toNeuronGlobal
+	 *            The global location inside of the level.
 	 * @return The error for this individual connection.
 	 */
 	private double handleMatrixDelta(final NeuralOutputHolder outputHolder,
@@ -122,10 +133,12 @@ public class CalculatePartialDerivative {
 			final int toNeuronGlobal) {
 		final NeuralData output = outputHolder.getResult().get(
 				fromSynapse.getSynapse());
-		fromSynapse.getAccMatrixGradients().getData()[fromNeuron][toNeuronLocal]+= toLevel
+		fromSynapse.getAccMatrixGradients().getData()
+			[fromNeuron][toNeuronLocal] += toLevel
 				.getDelta(toNeuronGlobal)
 				* output.getData(fromNeuron);
-		return (fromSynapse.getSynapse().getMatrix().getData()[fromNeuron]
-				[toNeuronLocal] * toLevel.getDelta(toNeuronGlobal));
+		return (fromSynapse.getSynapse().getMatrix().getData()
+				[fromNeuron][toNeuronLocal] * toLevel
+				.getDelta(toNeuronGlobal));
 	}
 }
