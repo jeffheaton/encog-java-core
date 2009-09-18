@@ -76,8 +76,8 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	/**
 	 * The logging object.
 	 */
-	private static final transient Logger LOGGER = 
-		LoggerFactory.getLogger(Matrix.class);
+	private static final transient Logger LOGGER = LoggerFactory
+			.getLogger(Matrix.class);
 
 	/**
 	 * The name of this object.
@@ -157,16 +157,18 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
-	 * Add the specified matrix to this matrix.  This will modify the matrix
-	 * to hold the result of the addition.
-	 * @param matrix The matrix to add.
+	 * Add the specified matrix to this matrix. This will modify the matrix to
+	 * hold the result of the addition.
+	 * 
+	 * @param matrix
+	 *            The matrix to add.
 	 */
 	public void add(final Matrix matrix) {
-		double[][] source = matrix.getData();
-		
+		final double[][] source = matrix.getData();
+
 		for (int row = 0; row < getRows(); row++) {
 			for (int col = 0; col < getCols(); col++) {
-				this.matrix[row][col]+=source[row][col];
+				this.matrix[row][col] += source[row][col];
 			}
 		}
 	}
@@ -245,11 +247,12 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 				precision);
 
 		double[][] data = matrix.getData();
-		
+
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				if ((long) (this.matrix[r][c] * actualPrecision) != (long) (data[r][c] * 
-						actualPrecision)) {
+				if ((long) (this.matrix[r][c]  
+						* actualPrecision) != (long) (data[r][c] 
+						* actualPrecision)) {
 					return false;
 				}
 			}
@@ -423,7 +426,9 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Multiply every value in the matrix by the specified value.
-	 * @param value The value to multiply the matrix by.
+	 * 
+	 * @param value
+	 *            The value to multiply the matrix by.
 	 */
 	public void multiply(final double value) {
 
@@ -436,7 +441,9 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set every value in the matrix to the specified value.
-	 * @param value The value to set the matrix to.
+	 * 
+	 * @param value
+	 *            The value to set the matrix to.
 	 */
 	public void set(final double value) {
 		for (int row = 0; row < getRows(); row++) {
@@ -565,9 +572,11 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 			throw new MatrixError(str);
 		}
 	}
-	
-	public double[][] getData()
-	{
+
+	/**
+	 * @return Get the 2D matrix array.
+	 */
+	public double[][] getData() {
 		return this.matrix;
 	}
 

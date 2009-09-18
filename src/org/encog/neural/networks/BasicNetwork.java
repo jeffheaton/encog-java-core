@@ -156,7 +156,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Construct a basic network using the specified logic.
-	 * @param logic The logic to use with the neural network.
+	 * 
+	 * @param logic
+	 *            The logic to use with the neural network.
 	 */
 	public BasicNetwork(final NeuralLogic logic) {
 		this.structure = new NeuralStructure(this);
@@ -349,7 +351,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get the layer specified by the tag.
-	 * @param tag The tag.
+	 * 
+	 * @param tag
+	 *            The tag.
 	 * @return The layer associated with that tag.
 	 */
 	public Layer getLayer(final String tag) {
@@ -386,7 +390,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get the specified property as a double.
-	 * @param name The name of the property.
+	 * 
+	 * @param name
+	 *            The name of the property.
 	 * @return The property as a double.
 	 */
 	public double getPropertyDouble(final String name) {
@@ -395,7 +401,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get the specified property as a long.
-	 * @param name The name of the specified property.
+	 * 
+	 * @param name
+	 *            The name of the specified property.
 	 * @return The value of the specified property.
 	 */
 	public long getPropertyLong(final String name) {
@@ -404,7 +412,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get the specified property as a string.
-	 * @param name The name of the property.
+	 * 
+	 * @param name
+	 *            The name of the property.
 	 * @return The value of the property.
 	 */
 	public String getPropertyString(final String name) {
@@ -480,7 +490,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set the type of logic this network should use.
-	 * @param logic The logic used by the network.
+	 * 
+	 * @param logic
+	 *            The logic used by the network.
 	 */
 	public void setLogic(final NeuralLogic logic) {
 		this.logic = logic;
@@ -496,8 +508,11 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set a property as a double.
-	 * @param name The name of the property.
-	 * @param d The value of the property.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param d
+	 *            The value of the property.
 	 */
 	public void setProperty(final String name, final double d) {
 		this.properties.put(name, "" + d);
@@ -505,8 +520,11 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set a property as a long.
-	 * @param name The name of the property.
-	 * @param l The value of the property.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param l
+	 *            The value of the property.
 	 */
 	public void setProperty(final String name, final long l) {
 		this.properties.put(name, "" + l);
@@ -514,8 +532,11 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set a property as a double.
-	 * @param name The name of the property.
-	 * @param value The value of the property.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param value
+	 *            The value of the property.
 	 */
 	public void setProperty(final String name, final String value) {
 		this.properties.put(name, value);
@@ -523,8 +544,11 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Tag a layer.
-	 * @param tag The tag name.
-	 * @param layer THe layer to tag.
+	 * 
+	 * @param tag
+	 *            The tag name.
+	 * @param layer
+	 *            THe layer to tag.
 	 */
 	public void tagLayer(final String tag, final Layer layer) {
 		this.layerTags.put(tag, layer);
@@ -561,12 +585,12 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * Clear any data from any context layers.
 	 */
 	public void clearContext() {
-		for(Layer layer: this.structure.getLayers() ) {
-			if( layer instanceof ContextClearable ) {
-				((ContextClearable)layer).clearContext();
+		for (Layer layer : this.structure.getLayers()) {
+			if (layer instanceof ContextClearable) {
+				((ContextClearable) layer).clearContext();
 			}
 		}
-		
+
 	}
 
 }

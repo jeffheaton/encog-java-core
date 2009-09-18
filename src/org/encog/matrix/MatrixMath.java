@@ -103,7 +103,7 @@ public final class MatrixMath {
 	public static void copy(final Matrix source, final Matrix target) {
 		double[][] s = source.getData();
 		double[][] t = target.getData();
-		
+
 		for (int row = 0; row < source.getRows(); row++) {
 			for (int col = 0; col < source.getCols(); col++) {
 				t[row][col] = s[row][col];
@@ -136,7 +136,7 @@ public final class MatrixMath {
 				.getCols() - 1];
 
 		double[][] d = matrix.getData();
-		
+
 		for (int row = 0; row < matrix.getRows(); row++) {
 			int targetCol = 0;
 
@@ -177,7 +177,7 @@ public final class MatrixMath {
 		final double[][] newMatrix = new double[matrix.getRows() - 1][matrix
 				.getCols()];
 		double[][] d = matrix.getData();
-		
+
 		int targetRow = 0;
 		for (int row = 0; row < matrix.getRows(); row++) {
 			if (row != deleted) {
@@ -223,7 +223,7 @@ public final class MatrixMath {
 	public static double dotProduct(final Matrix a, final Matrix b) {
 		if (!a.isVector() || !b.isVector()) {
 			final String str = 
-			"To take the dot product, both matrices must be vectors.";
+				"To take the dot product, both matrices must be vectors.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
 				MatrixMath.LOGGER.error(str);
 			}
@@ -236,7 +236,7 @@ public final class MatrixMath {
 
 		if (aArray.length != bArray.length) {
 			final String str = 
-			"To take the dot product, both matrices must be of "
+				"To take the dot product, both matrices must be of "
 					+ "the same length.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
 				MatrixMath.LOGGER.error(str);
@@ -295,7 +295,7 @@ public final class MatrixMath {
 	public static Matrix multiply(final Matrix a, final double b) {
 		final double[][] result = new double[a.getRows()][a.getCols()];
 		double[][] d = a.getData();
-		
+
 		for (int row = 0; row < a.getRows(); row++) {
 			for (int col = 0; col < a.getCols(); col++) {
 				result[row][col] = d[row][col] * b;
@@ -318,36 +318,35 @@ public final class MatrixMath {
 		if (b.getRows() != a.getCols()) {
 			final String str = 
 				"To use ordinary matrix multiplication the number of "
-						+ "columns on the first matrix must mat the number of "
-						+ "rows on the second.";
-				if (MatrixMath.LOGGER.isErrorEnabled()) {
-					MatrixMath.LOGGER.error(str);
-				}
-				throw new MatrixError(str);
-	      }
-		
+					+ "columns on the first matrix must mat the number of "
+					+ "rows on the second.";
+			if (MatrixMath.LOGGER.isErrorEnabled()) {
+				MatrixMath.LOGGER.error(str);
+			}
+			throw new MatrixError(str);
+		}
+
 		final double[][] aData = a.getData();
 		final double[][] bData = b.getData();
-		
-	      Matrix X = new Matrix(a.getRows(),b.getCols());
-	      double[][] C = X.getData();
-	      double[] Bcolj = new double[a.getCols()];
-	      for (int j = 0; j < b.getCols(); j++) {
-	         for (int k = 0; k < a.getCols(); k++) {
-	            Bcolj[k] = bData[k][j];
-	         }
-	         for (int i = 0; i < a.getRows(); i++) {
-	            double[] Arowi = aData[i];
-	            double s = 0;
-	            for (int k = 0; k < a.getCols(); k++) {
-	               s += Arowi[k]*Bcolj[k];
-	            }
-	            C[i][j] = s;
-	         }
-	      }
-	      return X;
-		
-		
+
+		final Matrix x = new Matrix(a.getRows(), b.getCols());
+		final double[][] c = x.getData();
+		final double[] bcolj = new double[a.getCols()];
+		for (int j = 0; j < b.getCols(); j++) {
+			for (int k = 0; k < a.getCols(); k++) {
+				bcolj[k] = bData[k][j];
+			}
+			for (int i = 0; i < a.getRows(); i++) {
+				final double[] arowi = aData[i];
+				double s = 0;
+				for (int k = 0; k < a.getCols(); k++) {
+					s += arowi[k] * bcolj[k];
+				}
+				c[i][j] = s;
+			}
+		}
+		return x;
+
 	}
 
 	/**
@@ -414,7 +413,7 @@ public final class MatrixMath {
 				.getRows()];
 
 		double[][] d = input.getData();
-		
+
 		for (int r = 0; r < input.getRows(); r++) {
 			for (int c = 0; c < input.getCols(); c++) {
 				inverseMatrix[c][r] = d[r][c];

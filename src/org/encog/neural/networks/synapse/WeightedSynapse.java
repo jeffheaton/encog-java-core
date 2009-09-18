@@ -26,7 +26,6 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.matrix.Matrix;
-import org.encog.matrix.MatrixMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
@@ -60,8 +59,8 @@ public class WeightedSynapse extends BasicSynapse {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final transient Logger logger = 
-		LoggerFactory.getLogger(this.getClass());
+	private final transient Logger logger = LoggerFactory.getLogger(this
+			.getClass());
 
 	/**
 	 * Simple default constructor.
@@ -72,8 +71,11 @@ public class WeightedSynapse extends BasicSynapse {
 
 	/**
 	 * Construct a weighted synapse between the two layers.
-	 * @param fromLayer The starting layer.
-	 * @param toLayer The ending layer.
+	 * 
+	 * @param fromLayer
+	 *            The starting layer.
+	 * @param toLayer
+	 *            The ending layer.
 	 */
 	public WeightedSynapse(final Layer fromLayer, final Layer toLayer) {
 		setFromLayer(fromLayer);
@@ -92,25 +94,25 @@ public class WeightedSynapse extends BasicSynapse {
 	}
 
 	/**
-	 * Compute the weighted output from this synapse. Each neuron
-	 * in the from layer has a weighted connection to each of the
-	 * neurons in the next layer. 
-	 * @param input The input from the synapse.
+	 * Compute the weighted output from this synapse. Each neuron in the from
+	 * layer has a weighted connection to each of the neurons in the next layer.
+	 * 
+	 * @param input
+	 *            The input from the synapse.
 	 * @return The output from this synapse.
 	 */
 	public NeuralData compute(final NeuralData input) {
 		final NeuralData result = new BasicNeuralData(getToNeuronCount());
-		
+
 		double[] inputArray = input.getData();
 		double[][] matrixArray = getMatrix().getData();
 		double[] resultArray = result.getData();
 
 		for (int i = 0; i < getToNeuronCount(); i++) {
-			
+
 			double sum = 0;
-			for(int j = 0;j<inputArray.length;j++ )
-			{
-				sum+=inputArray[j]*matrixArray[j][i];
+			for (int j = 0; j < inputArray.length; j++) {
+				sum += inputArray[j] * matrixArray[j][i];
 			}
 			resultArray[i] = sum;
 		}
@@ -119,6 +121,7 @@ public class WeightedSynapse extends BasicSynapse {
 
 	/**
 	 * Return a persistor for this object.
+	 * 
 	 * @return A new persistor.
 	 */
 	public Persistor createPersistor() {

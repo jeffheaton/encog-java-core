@@ -61,8 +61,8 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	/**
 	 * The logging object.
 	 */
-	private static final transient Logger LOGGER = 
-		LoggerFactory.getLogger(ContextLayer.class);
+	private static final transient Logger LOGGER = LoggerFactory
+			.getLogger(ContextLayer.class);
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default
@@ -128,9 +128,9 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	public void process(final NeuralData pattern) {
 		double[] s = pattern.getData();
 		double[] t = this.context.getData();
-		
-		System.arraycopy(s, 0, t, 0, s.length);		
-		
+
+		System.arraycopy(s, 0, t, 0, s.length);
+
 		if (ContextLayer.LOGGER.isDebugEnabled()) {
 			ContextLayer.LOGGER.debug("Updated ContextLayer to {}", pattern);
 		}
@@ -151,10 +151,10 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	 * Reset the context values back to zero.
 	 */
 	public void clearContext() {
-		for(int i =0;i<this.context.size();i++ ) {
+		for (int i = 0; i < this.context.size(); i++) {
 			this.context.setData(i, 0);
 		}
-		
+
 	}
 
 }
