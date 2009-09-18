@@ -41,7 +41,7 @@ import org.encog.EncogError;
  * Original by Dave Miller here:
  * http://www.javaworld.com/javaworld/javatips/jw-javatip76.html?page=2
  */
-public class ObjectCloner {
+public final class ObjectCloner {
 
 	/**
 	 * Private constructor.
@@ -56,7 +56,7 @@ public class ObjectCloner {
 	 *            The old object.
 	 * @return The new object.
 	 */
-	static public Object deepCopy(Object oldObj) {
+	public static Object deepCopy(final Object oldObj) {
 		ObjectOutputStream oos = null;
 		ObjectInputStream ois = null;
 		try {

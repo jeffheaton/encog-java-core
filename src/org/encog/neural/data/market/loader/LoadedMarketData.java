@@ -119,7 +119,7 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 	 * @param other The other market data to compare to.
 	 * @return 0 if equal.
 	 */
-	public int compareTo(LoadedMarketData other) {
+	public int compareTo(final LoadedMarketData other) {
 		return this.getWhen().compareTo(other.getWhen());
 	}
 }

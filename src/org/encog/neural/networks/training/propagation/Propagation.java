@@ -344,8 +344,9 @@ public class Propagation extends BasicTraining {
 
 	/**
 	 * Set the batch size. See batchSize property for a complete description.
+	 * @param batchSize The batch training size.
 	 */
-	public void setBatchSize(int batchSize) {
+	public void setBatchSize(final int batchSize) {
 		this.batchSize = batchSize;
 	}
 

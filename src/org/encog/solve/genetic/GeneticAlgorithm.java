@@ -186,18 +186,22 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 */
 	public void iteration() {
 
-		final int countToMate = (int) (getPopulationSize() * getPercentToMate());
+		final int countToMate = (int) (getPopulationSize() 
+				* getPercentToMate());
 		final int offspringCount = countToMate * 2;
 		int offspringIndex = getPopulationSize() - offspringCount;
-		final int matingPopulationSize = (int) (getPopulationSize() * getMatingPopulation());
+		final int matingPopulationSize = (int) (getPopulationSize() 
+				* getMatingPopulation());
 
 		// mate and form the next generation
 		for (int i = 0; i < countToMate; i++) {
 			final Chromosome<GENE_TYPE> mother = this.chromosomes[i];
 			final int fatherInt = (int) (Math.random() * matingPopulationSize);
 			final Chromosome<GENE_TYPE> father = this.chromosomes[fatherInt];
-			final Chromosome<GENE_TYPE> child1 = this.chromosomes[offspringIndex];
-			final Chromosome<GENE_TYPE> child2 = this.chromosomes[offspringIndex + 1];
+			final Chromosome<GENE_TYPE> child1 
+			= this.chromosomes[offspringIndex];
+			final Chromosome<GENE_TYPE> child2 
+			= this.chromosomes[offspringIndex + 1];
 
 			final MateWorker<GENE_TYPE> worker = new MateWorker<GENE_TYPE>(
 					mother, father, child1, child2);
