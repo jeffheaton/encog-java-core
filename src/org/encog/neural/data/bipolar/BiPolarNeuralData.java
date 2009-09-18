@@ -106,7 +106,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	 */
 	@Override
 	public NeuralData clone() {
-		final NeuralData result = new BasicNeuralData(size());
+		final BiPolarNeuralData result = new BiPolarNeuralData(size());
 		for (int i = 0; i < size(); i++) {
 			result.setData(i, getData(i));
 		}
