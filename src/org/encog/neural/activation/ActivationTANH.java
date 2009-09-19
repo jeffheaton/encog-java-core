@@ -98,7 +98,7 @@ public class ActivationTANH extends BasicActivationFunction {
 	public void derivativeFunction(final double[] d) {
 
 		for (int i = 0; i < d.length; i++) {
-			d[i] = 1.0 - BoundMath.pow(activationFunction(d[i]), 2.0);
+			d[i] = (1+d[i])*(1-d[i]);
 		}
 	}
 	
