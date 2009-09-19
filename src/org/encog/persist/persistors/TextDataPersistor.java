@@ -55,6 +55,7 @@ public class TextDataPersistor implements Persistor {
 		result.setName(name);
 		result.setDescription(description);
 		result.setText(text);
+		in.readToTag();
 		return result;
 	}
 
