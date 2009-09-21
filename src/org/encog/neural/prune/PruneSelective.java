@@ -57,19 +57,24 @@ public class PruneSelective {
 
 	/**
 	 * Construct an object prune the neural network.
-	 * @param network The network to prune.
+	 * 
+	 * @param network
+	 *            The network to prune.
 	 */
 	public PruneSelective(final BasicNetwork network) {
 		this.network = network;
 	}
 
 	/**
-	 * Change the neuron count for the network.  If the count is increased
-	 * then a zero-weighted neuron is added, which will not affect the 
-	 * output of the neural network.  If the neuron count is decreased, then
-	 * the weakest neuron will be removed.
-	 * @param layer The layer to adjust.
-	 * @param neuronCount The new neuron count for this layer.
+	 * Change the neuron count for the network. If the count is increased then a
+	 * zero-weighted neuron is added, which will not affect the output of the
+	 * neural network. If the neuron count is decreased, then the weakest neuron
+	 * will be removed.
+	 * 
+	 * @param layer
+	 *            The layer to adjust.
+	 * @param neuronCount
+	 *            The new neuron count for this layer.
 	 */
 	public void changeNeuronCount(final Layer layer, final int neuronCount) {
 		// is there anything to do?
@@ -86,8 +91,11 @@ public class PruneSelective {
 
 	/**
 	 * Internal function to decrease the neuron count of a layer.
-	 * @param layer The layer to affect.
-	 * @param neuronCount The new neuron count.
+	 * 
+	 * @param layer
+	 *            The layer to affect.
+	 * @param neuronCount
+	 *            The new neuron count.
 	 */
 	private void decreaseNeuronCount(final Layer layer, final int neuronCount) {
 		// create an array to hold the least significant neurons, which will be
@@ -127,10 +135,13 @@ public class PruneSelective {
 	}
 
 	/**
-	 * Determine the significance of the neuron.  The higher the
-	 * return value, the more significant the neuron is. 
-	 * @param layer The layer to query.
-	 * @param neuron The neuron to query.
+	 * Determine the significance of the neuron. The higher the return value,
+	 * the more significant the neuron is.
+	 * 
+	 * @param layer
+	 *            The layer to query.
+	 * @param neuron
+	 *            The neuron to query.
 	 * @return How significant is this neuron.
 	 */
 	public double determineNeuronSignificance(final Layer layer,
@@ -166,19 +177,24 @@ public class PruneSelective {
 	}
 
 	/**
-	 * Internal function to increase the neuron count. This will
-	 * add a zero-weight neuron to this layer.
-	 * @param layer The layer to increase.
-	 * @param neuronCount The new neuron count.
+	 * Internal function to increase the neuron count. This will add a
+	 * zero-weight neuron to this layer.
+	 * 
+	 * @param layer
+	 *            The layer to increase.
+	 * @param neuronCount
+	 *            The new neuron count.
 	 */
 	private void increaseNeuronCount(final Layer layer, final int neuronCount) {
 		// adjust the threshold
 		final double[] newThreshold = new double[neuronCount];
-		for (int i = 0; i < layer.getNeuronCount(); i++) {
-			newThreshold[i] = layer.getThreshold(i);
-		}
+		if (layer.hasThreshold()) {
+			for (int i = 0; i < layer.getNeuronCount(); i++) {
+				newThreshold[i] = layer.getThreshold(i);
+			}
 
-		layer.setThreshold(newThreshold);
+			layer.setThreshold(newThreshold);
+		}
 
 		// adjust the outbound weight matrixes
 		for (final Synapse synapse : layer.getNext()) {
@@ -210,13 +226,14 @@ public class PruneSelective {
 		}
 
 		// adjust the thresholds
-		final double[] newThresholds = new double[neuronCount];
+		if (layer.hasThreshold()) {
+			final double[] newThresholds = new double[neuronCount];
 
-		for (int i = 0; i < layer.getNeuronCount(); i++) {
-			newThresholds[i] = layer.getThreshold(i);
+			for (int i = 0; i < layer.getNeuronCount(); i++) {
+				newThresholds[i] = layer.getThreshold(i);
+			}
+			layer.setThreshold(newThreshold);
 		}
-
-		layer.setThreshold(newThreshold);
 
 		// finally, up the neuron count
 		layer.setNeuronCount(neuronCount);
@@ -229,7 +246,7 @@ public class PruneSelective {
 	 * @param targetLayer
 	 *            The neuron to prune. Zero specifies the first neuron.
 	 * @param neuron
-	 * 		The neuron to prune.           
+	 *            The neuron to prune.
 	 */
 	public void prune(final Layer targetLayer, final int neuron) {
 		// delete a row on this matrix
@@ -253,17 +270,19 @@ public class PruneSelective {
 		}
 
 		// remove the threshold
-		final double[] newThreshold = 
-			new double[targetLayer.getNeuronCount() - 1];
+		if (targetLayer.hasThreshold()) {
+			final double[] newThreshold = new double[targetLayer
+					.getNeuronCount() - 1];
 
-		int targetIndex = 0;
-		for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
-			if (targetIndex != neuron) {
-				newThreshold[targetIndex++] = targetLayer.getThreshold(i);
+			int targetIndex = 0;
+			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
+				if (targetIndex != neuron) {
+					newThreshold[targetIndex++] = targetLayer.getThreshold(i);
+				}
 			}
-		}
 
-		targetLayer.setThreshold(newThreshold);
+			targetLayer.setThreshold(newThreshold);
+		}
 
 		// update the neuron count
 		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
