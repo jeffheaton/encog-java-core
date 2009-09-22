@@ -55,7 +55,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * The the expected output from the neural network, or null for unsupervised
 	 * training.
 	 */
-	private NeuralData ideal;
+	private final NeuralData ideal;
 
 	/**
 	 * The training input to the neural network.
@@ -78,6 +78,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 */
 	public BasicNeuralDataPair(final NeuralData input) {
 		this.input = input;
+		this.ideal = null;
 	}
 
 	/**

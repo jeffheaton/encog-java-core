@@ -31,7 +31,10 @@ import org.encog.matrix.Matrix;
 import org.encog.matrix.MatrixMath;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.util.math.rbf.GaussianFunction;
+import org.encog.util.math.rbf.RadialBasisFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +150,11 @@ public class PruneSelective {
 	public double determineNeuronSignificance(final Layer layer,
 			final int neuron) {
 		// calculate the threshold significance
-		double result = layer.getThreshold(neuron);
+		double result = 0;
+		
+		if( layer.hasThreshold() ) {
+			result+= layer.getThreshold(neuron);
+		}
 
 		// calculate the outbound significance
 		for (final Synapse synapse : layer.getNext()) {
@@ -234,6 +241,25 @@ public class PruneSelective {
 			}
 			layer.setThreshold(newThreshold);
 		}
+		
+		// adjust RBF
+		if( layer instanceof RadialBasisFunctionLayer )
+		{
+			RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer)layer;
+			RadialBasisFunction[] newRBF = new RadialBasisFunction[neuronCount];
+			for(int i=0;i<rbf.getRadialBasisFunction().length;i++)
+			{
+				newRBF[i]=rbf.getRadialBasisFunction()[i];
+			}
+			
+			for(int i=rbf.getRadialBasisFunction().length;i<neuronCount;i++)
+			{
+				newRBF[i] = new GaussianFunction(Math.random()-0.5,Math.random(),Math.random()-0.5);
+			}
+			
+			rbf.setRadialBasisFunction(newRBF);
+			
+		}
 
 		// finally, up the neuron count
 		layer.setNeuronCount(neuronCount);
@@ -276,12 +302,28 @@ public class PruneSelective {
 
 			int targetIndex = 0;
 			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
-				if (targetIndex != neuron) {
+				if (i != neuron) {
 					newThreshold[targetIndex++] = targetLayer.getThreshold(i);
 				}
 			}
 
 			targetLayer.setThreshold(newThreshold);
+		}
+		
+		// adjust RBF
+		if( targetLayer instanceof RadialBasisFunctionLayer )
+		{
+			RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer)targetLayer;
+			RadialBasisFunction[] newRBF = new GaussianFunction[targetLayer.getNeuronCount() - 1];
+			
+			int targetIndex = 0;
+			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
+				if (i != neuron) {
+					newRBF[targetIndex++] = rbf.getRadialBasisFunction()[i];
+				}
+			}
+			rbf.setRadialBasisFunction(newRBF);
+			
 		}
 
 		// update the neuron count

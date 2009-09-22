@@ -70,7 +70,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	/**
 	 * The radial basis functions to use, there should be one for each neuron.
 	 */
-	private final RadialBasisFunction[] radialBasisFunction;
+	private RadialBasisFunction[] radialBasisFunction;
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default
@@ -173,6 +173,11 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 					.randomize(min, max), RangeRandomizer.randomize(min, max),
 					RangeRandomizer.randomize(min, max));
 		}
+	}
+
+	public void setRadialBasisFunction(RadialBasisFunction[] newRBF) {
+		this.radialBasisFunction = newRBF;
+		
 	}
 
 }
