@@ -39,6 +39,7 @@
 	<property name="path.stage" location="${basedir}/stage" />
 	<property name="path.doc" location="${basedir}/doc" />
 	<property name="path.jar" location="${basedir}/jar" />
+	<property name="path.test" location="${basedir}/test" />
 	<path id="classpath">
 		<fileset dir="${path.jar}" />
 	</path>
@@ -138,6 +139,10 @@
 		<copy todir="${path.stage}/doc">
 			<fileset dir="${path.doc}" />
 		</copy>
+		
+		<copy todir="${path.stage}/test">
+					<fileset dir="${path.test}" />
+				</copy>
 
 		<tstamp/>
 		<copy todir="${path.stage}/lib" file="${jarfile}" />
