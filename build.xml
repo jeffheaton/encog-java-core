@@ -24,10 +24,12 @@
  02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<project name="encog-core" default="dist" basedir=".">
+<project name="encog-core" default="build" basedir=".">
 	<description>
         Build the core JAR file for Encog.
     </description>
+	<!-- load the properties file -->
+	<property file="encog.properties"/>
 	<!-- set global properties for this build -->
 	<property name="path.src" location="${basedir}/src" />
 	<property name="path.test.src" location="${basedir}/test" />
@@ -50,6 +52,7 @@
 			<arg value="http://encog-java.googlecode.com/svn/trunk/encog-core" />
 			<arg value="${basedir}" />
 		</exec>
+		<property file="encog.properties"/>
 	</target>
 
 	<target name="init">
@@ -84,19 +87,7 @@
 		</javadoc>
 	</target>
 
-	<target name="dist" depends="compile,doc" description="generate the distribution">
-
-		<loadfile srcfile="${path.src}/org/encog/Encog.java" property="build.version">
-			<filterchain>
-				<linecontainsregexp>
-					<regexp pattern='^.*String VERSION = ".*";.*$' />
-				</linecontainsregexp>
-				<tokenfilter>
-					<replaceregex replace='\1' pattern='^.*String VERSION = "(.*)";.*$' />
-				</tokenfilter>
-				<striplinebreaks />
-			</filterchain>
-		</loadfile>
+	<target name="build" depends="compile,doc" description="generate the distribution">
 
 		<!-- Create the distribution directory -->
 		<mkdir dir="${path.dist}" />
@@ -110,46 +101,48 @@
 
 		<manifest file="MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
-			<attribute name="Implementation-Version" value="${version.num}-b${build.version}" />
+			<attribute name="Implementation-Version" value="${version.num}-b${encog.version}" />
 		</manifest>
 
-		<property name="jarfile" location="${path.lib}/encog-core-${build.version}.jar" />
+		<property name="jarfile" location="${path.lib}/encog-core-${encog.version}.jar" />
 
 		<jar jarfile="${jarfile}" basedir="${path.build}" manifest="MANIFEST.MF" />
 
 	</target>
 
-	<target name="cc-build" depends="clean-all,checkout,compile,doc,test,dist">
+	<target name="cc-build" depends="clean-all,checkout,compile,doc,test,build">
 
-		<copy todir="${path.stage}" file="${basedir}/copyright.txt" />
-		<copy todir="${path.stage}" file="${basedir}/build.xml" />
-		<copy todir="${path.stage}" file="${basedir}/.checkstyle" />
-		<copy todir="${path.stage}" file="${basedir}/.classpath" />
-		<copy todir="${path.stage}" file="${basedir}/.project" />
+		<property name="path.stage.sub" value="${path.stage}/encog-java-core-${encog.version}"/>
+		<copy todir="${path.stage.sub}" file="${basedir}/copyright.txt" />
+		<copy todir="${path.stage.sub}" file="${basedir}/build.xml" />
+		<copy todir="${path.stage.sub}" file="${basedir}/.checkstyle" />
+		<copy todir="${path.stage.sub}" file="${basedir}/.classpath" />
+		<copy todir="${path.stage.sub}" file="${basedir}/encog.properties" />
+		<copy todir="${path.stage.sub}" file="${basedir}/.project" />
 
 
-		<copy todir="${path.stage}/src">
+		<copy todir="${path.stage.sub}/src">
 			<fileset dir="${path.src}" />
 		</copy>
 
-		<copy todir="${path.stage}/jar">
+		<copy todir="${path.stage.sub}/jar">
 			<fileset dir="${path.jar}" />
 		</copy>
 
-		<copy todir="${path.stage}/doc">
+		<copy todir="${path.stage.sub}/doc">
 			<fileset dir="${path.doc}" />
 		</copy>
 		
-		<copy todir="${path.stage}/test">
+		<copy todir="${path.stage.sub}/test">
 					<fileset dir="${path.test}" />
 				</copy>
 
 		<tstamp/>
-		<copy todir="${path.stage}/lib" file="${jarfile}" />
+		<copy todir="${path.stage.sub}/lib" file="${jarfile}" />
 
 
 
-		<zip destfile="${path.dist}/encog-core-${build.version}-${DSTAMP}-${TSTAMP}.zip">
+		<zip destfile="${path.dist}/encog-core-${encog.version}-${DSTAMP}-${TSTAMP}.zip">
 			<fileset dir="${path.stage}" />
 		</zip>
 
@@ -163,7 +156,7 @@
 		</delete>
 	</target>
 
-	<target name="test" depends="dist">
+	<target name="test" depends="build">
 
 		<mkdir dir="${path.test.results}" />
 
