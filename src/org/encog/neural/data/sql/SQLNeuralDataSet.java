@@ -90,27 +90,27 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		public SQLNeuralIterator() {
 			try {
 				// open the connection
-				if ((SQLNeuralDataSet.this.uid != null)
-						|| (SQLNeuralDataSet.this.pwd != null)) {
+				if ((uid == null)
+						|| (pwd == null)) {
 					this.connection = DriverManager
-							.getConnection(SQLNeuralDataSet.this.url);
+							.getConnection(url);
 				} else {
 					this.connection = DriverManager.getConnection(
-							SQLNeuralDataSet.this.url,
-							SQLNeuralDataSet.this.uid,
-							SQLNeuralDataSet.this.pwd);
+							url,
+							uid,
+							pwd);
 				}
 
 				// prepare the statement
 				this.statement = this.connection
-						.prepareStatement(SQLNeuralDataSet.this.sql);
+						.prepareStatement(sql);
 
 				// execute the statement
 				this.results = this.statement.executeQuery();
 
 			} catch (final SQLException e) {
-				if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
-					SQLNeuralDataSet.this.logger.error("Exception", e);
+				if (logger.isErrorEnabled()) {
+					logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			}
@@ -126,8 +126,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				this.statement.close();
 				this.connection.close();
 			} catch (final SQLException e) {
-				if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
-					SQLNeuralDataSet.this.logger.error("Exception", e);
+				if (logger.isErrorEnabled()) {
+					logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			}
@@ -154,8 +154,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				this.dataReady = false;
 				return false;
 			} catch (final SQLException e) {
-				if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
-					SQLNeuralDataSet.this.logger.error("Exception", e);
+				if (logger.isErrorEnabled()) {
+					logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			}
@@ -171,20 +171,20 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 
 			try {
 				final NeuralData input = new BasicNeuralData(
-						SQLNeuralDataSet.this.inputSize);
+						inputSize);
 				NeuralData ideal = null;
 
-				for (int i = 0; i < SQLNeuralDataSet.this.inputSize; i++) {
+				for (int i = 0; i < inputSize; i++) {
 					final double d = this.results.getDouble(i + 1);
 					input.setData(i, d);
 				}
 
-				if (SQLNeuralDataSet.this.idealSize > 0) {
+				if (idealSize > 0) {
 					ideal = new BasicNeuralData(
-							SQLNeuralDataSet.this.idealSize);
-					for (int i = 0; i < SQLNeuralDataSet.this.idealSize; i++) {
+							idealSize);
+					for (int i = 0; i < idealSize; i++) {
 						final double d = this.results
-								.getDouble(SQLNeuralDataSet.this.inputSize + i
+								.getDouble(inputSize + i
 										+ 1);
 						ideal.setData(i, d);
 					}
@@ -194,8 +194,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				this.dataReady = false;
 				return new BasicNeuralDataPair(input, ideal);
 			} catch (final SQLException e) {
-				if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
-					SQLNeuralDataSet.this.logger.error("Exception", e);
+				if (logger.isErrorEnabled()) {
+					logger.error("Exception", e);
 				}
 				throw new NeuralNetworkError(e);
 			}
@@ -206,8 +206,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		 * Removes are not supported.
 		 */
 		public void remove() {
-			if (SQLNeuralDataSet.this.logger.isErrorEnabled()) {
-				SQLNeuralDataSet.this.logger
+			if (logger.isErrorEnabled()) {
+				logger
 						.error(SQLNeuralDataSet.REMOVE_NOT_SUPPORTED);
 			}
 			throw new NeuralDataError(SQLNeuralDataSet.REMOVE_NOT_SUPPORTED);
