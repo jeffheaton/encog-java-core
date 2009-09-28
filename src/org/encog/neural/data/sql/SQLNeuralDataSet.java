@@ -48,27 +48,36 @@ import org.slf4j.LoggerFactory;
  * A dataset based on a SQL query. This is not a memory based dataset, so it can
  * handle very large datasets without a memory issue. This class makes use of
  * JDBC to query the database.
+ *
+ * If you are running into "out of memory" issues with this class try setting a lower
+ * "fetch size".  This can be done with:
  * 
- * @author jheaton
+ * sqlDataSet.getStatement().setFetchSize(1000);
+ * 
  */
 public class SQLNeuralDataSet implements NeuralDataSet {
 
+	/**
+	 * The JDBC connection.
+	 */
+	private Connection connection;
+
+	/**
+	 * The JDBC statement.
+	 */
+	private PreparedStatement statement;
+	
+	/**
+	 * Should the connection be closed on a call to close.
+	 */
+	private boolean closeConnection;
+	
 	/**
 	 * Iterator used to iterate over SQL results.
 	 * 
 	 * @author jheaton
 	 */
 	public class SQLNeuralIterator implements Iterator<NeuralDataPair> {
-
-		/**
-		 * The JDBC connection.
-		 */
-		private final Connection connection;
-
-		/**
-		 * The JDBC statement.
-		 */
-		private final PreparedStatement statement;
 
 		/**
 		 * The JDBC result set.
@@ -89,30 +98,11 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		 */
 		public SQLNeuralIterator() {
 			try {
-				// open the connection
-				if ((uid == null)
-						|| (pwd == null)) {
-					this.connection = DriverManager
-							.getConnection(url);
-				} else {
-					this.connection = DriverManager.getConnection(
-							url,
-							uid,
-							pwd);
-				}
-
-				// prepare the statement
-				this.statement = this.connection
-						.prepareStatement(sql);
-
 				// execute the statement
-				this.results = this.statement.executeQuery();
-
+				this.results = statement.executeQuery();
 			} catch (final SQLException e) {
-				if (logger.isErrorEnabled()) {
-					logger.error("Exception", e);
-				}
-				throw new NeuralNetworkError(e);
+				logger.error("Exception",e);
+				throw new NeuralDataError(e);
 			}
 		}
 
@@ -123,13 +113,9 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 
 			try {
 				this.results.close();
-				this.statement.close();
-				this.connection.close();
 			} catch (final SQLException e) {
-				if (logger.isErrorEnabled()) {
-					logger.error("Exception", e);
-				}
-				throw new NeuralNetworkError(e);
+				logger.error("Exception",e);
+				throw new NeuralDataError(e);
 			}
 
 		}
@@ -154,10 +140,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				this.dataReady = false;
 				return false;
 			} catch (final SQLException e) {
-				if (logger.isErrorEnabled()) {
-					logger.error("Exception", e);
-				}
-				throw new NeuralNetworkError(e);
+				logger.error("Exception",e);
+				throw new NeuralDataError(e);
 			}
 
 		}
@@ -194,10 +178,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				this.dataReady = false;
 				return new BasicNeuralDataPair(input, ideal);
 			} catch (final SQLException e) {
-				if (logger.isErrorEnabled()) {
-					logger.error("Exception", e);
-				}
-				throw new NeuralNetworkError(e);
+				logger.error("Exception",e);
+				throw new NeuralDataError(e);
 			}
 
 		}
@@ -248,32 +230,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	private final int idealSize;
 
 	/**
-	 * The JDBC user id to use.
-	 */
-	private final String uid;
-
-	/**
-	 * The JDBC password to use.
-	 */
-	private final String pwd;
-
-	/**
-	 * The JDBC URL to use(connection string).
-	 */
-	private final String url;
-
-	/**
-	 * The JDBC driver to use.
-	 */
-	private final String driver;
-
-	/**
-	 * The SQL to execute.
-	 */
-	private final String sql;
-
-	/**
-	 * Construct a SQL dataset.
+	 * Construct a SQL dataset.  A connection will be opened, this
+	 * connection will be closed when the close method is called.
 	 * 
 	 * @param sql
 	 *            The SQL command to execute.
@@ -296,20 +254,62 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 
 		this.inputSize = inputSize;
 		this.idealSize = idealSize;
-		this.driver = driver;
-		this.uid = uid;
-		this.pwd = pwd;
-		this.url = url;
-		this.sql = sql;
-		try {
-			Class.forName(this.driver);
-		} catch (final ClassNotFoundException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception" + e);
-			}
-			throw new NeuralNetworkError(e);
-		}
+		this.closeConnection = true;
 
+		try {			
+			Class.forName(driver);
+			
+			if ((uid == null)
+					|| (pwd == null)) {
+				this.connection = DriverManager
+						.getConnection(url);
+			} else {
+				this.connection = DriverManager.getConnection(
+						url,
+						uid,
+						pwd);
+			}
+
+			// prepare the statement
+			this.statement = this.connection
+					.prepareStatement(sql);
+			
+		} catch (final ClassNotFoundException e) {
+			logger.error("Exception",e);
+			throw new NeuralDataError(e);
+		} catch (SQLException e) {
+			logger.error("Exception",e);
+			throw new NeuralDataError(e);
+		}
+	}
+	
+	/**
+	 * Create a SQLNeuralDataSet based on the specified connection.
+	 * This connection WILL NOT be closed when the close method is called.
+	 * @param connection The connection to use. 
+	 * @param sql
+	 *            The SQL command to execute.
+	 * @param inputSize
+	 *            The size of the input data.
+	 * @param idealSize
+	 *            The size of the ideal data.
+	 */
+	public SQLNeuralDataSet(final Connection connection, final String sql, 
+			final int inputSize, final int idealSize) {
+
+		this.inputSize = inputSize;
+		this.idealSize = idealSize;
+		this.connection = connection;
+		this.closeConnection = false;
+
+		try {			
+			// prepare the statement
+			this.statement = this.connection
+					.prepareStatement(sql);
+		} catch (SQLException e) {
+			logger.error("Exception",e);
+			throw new NeuralDataError(e);
+		}
 	}
 
 	/**
@@ -361,6 +361,15 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		for (final SQLNeuralDataSet i : this.iterators) {
 			i.close();
 		}
+		
+		try {
+			this.statement.close();
+			if( this.closeConnection)
+				this.connection.close();
+		} catch (SQLException e) {
+			logger.error("Exception",e);
+			throw new NeuralDataError(e);
+		}		
 	}
 
 	/**
@@ -385,5 +394,40 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	public Iterator<NeuralDataPair> iterator() {
 		return new SQLNeuralIterator();
 	}
+
+	/**
+	 * @return True if the connection should be closed when
+	 * the close method is called.
+	 */
+	public boolean isCloseConnection() {
+		return closeConnection;
+	}
+
+	/**
+	 * Allows you to determine if the connection should be closed.
+	 * See the two constructors for how this is set by default.
+	 * You can override this default behavior using this method.
+	 * @param closeConnection True if the connection should be closed.
+	 */
+	public void setCloseConnection(boolean closeConnection) {
+		this.closeConnection = closeConnection;
+	}
+
+	/**
+	 * @return The JDBC connection being used.
+	 */
+	public Connection getConnection() {
+		return connection;
+	}
+
+	/**
+	 * @return The JDBC PreparedStatement being used.
+	 */
+	public PreparedStatement getStatement() {
+		return statement;
+	}
+	
+	
+	
 
 }
