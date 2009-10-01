@@ -29,13 +29,17 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.encog.StatusReportable;
 import org.encog.normalize.input.InputField;
 import org.encog.normalize.input.InputFieldArray1D;
 import org.encog.normalize.input.InputFieldCSV;
 import org.encog.normalize.output.OutputField;
+import org.encog.normalize.output.OutputFieldGroup;
+import org.encog.normalize.output.OutputFieldGrouped;
 import org.encog.normalize.target.NormalizationTarget;
 import org.encog.util.ReadCSV;
 
@@ -45,6 +49,7 @@ public class Normalization {
 	private final Collection<OutputField> outputFields = new ArrayList<OutputField>();
 	private final Collection<ReadCSV> readCSV = new ArrayList<ReadCSV>();
 	private final Map<InputField, ReadCSV> csvMap = new HashMap<InputField, ReadCSV>();
+	private final Set<OutputFieldGroup> groups = new HashSet<OutputFieldGroup>();
 	private NormalizationTarget target;
 	private StatusReportable report;
 	private int recordCount;
@@ -188,6 +193,9 @@ public class Normalization {
 					field.setCurrentValue(value);
 				}
 			}
+			
+			// handle groups
+			initGroups();
 
 			// write the value
 			int outputIndex = 0;
@@ -203,6 +211,14 @@ public class Normalization {
 		this.target.close();
 
 	}
+	
+	private void initGroups()
+	{
+		for(OutputFieldGroup group: this.groups)
+		{
+			group.rowInit();
+		}
+	}
 
 	public void process() {
 		firstPass();
@@ -215,6 +231,17 @@ public class Normalization {
 
 	public void addOutputField(OutputField outputField) {
 		this.outputFields.add(outputField);
+		if( outputField instanceof OutputFieldGrouped )
+		{
+			OutputFieldGrouped ofg = (OutputFieldGrouped)outputField;
+			this.groups.add(ofg.getGroup());
+		}
 	}
+
+	public Set<OutputFieldGroup> getGroups() {
+		return groups;
+	}
+	
+	
 
 }
