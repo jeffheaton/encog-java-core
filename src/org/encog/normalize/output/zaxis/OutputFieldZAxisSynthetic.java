@@ -16,7 +16,11 @@ public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 		double l = ((ZAxisGroup)this.getGroup()).getLength();
 		double f = ((ZAxisGroup)this.getGroup()).getMultiplier();
 		double n = this.getGroup().getGroupedFields().size();
-		return f*Math.sqrt(n-(l*l));
+		double result = f*Math.sqrt(n-(l*l));
+		if( Double.isInfinite(result) || Double.isNaN(result))
+			return 0;
+		else
+			return result;
 	}
 
 }

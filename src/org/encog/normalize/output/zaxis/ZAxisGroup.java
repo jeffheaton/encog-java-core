@@ -13,7 +13,14 @@ public class ZAxisGroup extends BasicOutputFieldGroup {
 		
 		for(OutputFieldGrouped field: this.getGroupedFields())
 		{
-			value+=field.getSourceField().getCurrentValue();
+			if( !(field instanceof OutputFieldZAxisSynthetic) )
+			{
+				if( field.getSourceField()!=null )
+				{
+					value+=(field.getSourceField().getCurrentValue()*
+							field.getSourceField().getCurrentValue());
+				}
+			}
 		}
 		this.length = Math.sqrt(value);
 		this.multiplier = 1.0 / Math.sqrt((double)this.getGroupedFields().size());

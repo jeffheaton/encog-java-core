@@ -1,10 +1,11 @@
 package org.encog.normalize.output;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public abstract class BasicOutputFieldGroup implements OutputFieldGroup {
 	
-	private Collection<OutputFieldGrouped> fields;
+	private final Collection<OutputFieldGrouped> fields = new ArrayList<OutputFieldGrouped>();
 	
 	public void addField(OutputFieldGrouped field)
 	{

@@ -11,6 +11,7 @@ public abstract class OutputFieldGrouped implements OutputField {
 	{
 		this.group = group;
 		this.sourceField = sourceField;
+		this.group.getGroupedFields().add(this);
 	}
 
 	public OutputFieldGroup getGroup() {

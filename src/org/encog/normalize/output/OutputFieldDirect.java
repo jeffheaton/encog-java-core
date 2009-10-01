@@ -1,0 +1,19 @@
+package org.encog.normalize.output;
+
+import org.encog.normalize.input.InputField;
+
+public class OutputFieldDirect implements OutputField {
+
+	private final InputField sourceField;
+	
+	public OutputFieldDirect(InputField sourceField)
+	{
+		this.sourceField = sourceField;
+	}
+	
+	@Override
+	public double calculate() {
+		return this.sourceField.getCurrentValue();
+	}
+
+}

@@ -12,7 +12,8 @@ public class MultiplicativeGroup extends BasicOutputFieldGroup {
 		
 		for(OutputFieldGrouped field: this.getGroupedFields())
 		{
-			value+=field.getSourceField().getCurrentValue();
+			value+=(field.getSourceField().getCurrentValue()*
+					field.getSourceField().getCurrentValue());
 		}
 		this.length = Math.sqrt(value);
 	}

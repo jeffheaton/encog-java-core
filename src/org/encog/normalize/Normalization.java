@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.encog.StatusReportable;
+import org.encog.normalize.input.HasFixedLength;
 import org.encog.normalize.input.InputField;
 import org.encog.normalize.input.InputFieldArray1D;
 import org.encog.normalize.input.InputFieldCSV;
@@ -115,10 +116,10 @@ public class Normalization {
 		
 		// see if any of the arrays want to stop
 		for( InputField field: this.inputFields ) {
-			if( field instanceof InputFieldArray1D )
+			if( field instanceof HasFixedLength )
 			{
-				InputFieldArray1D arrayField = (InputFieldArray1D)field;
-				if( this.currentIndex>=arrayField.length() )
+				HasFixedLength fixed = (HasFixedLength)field;
+				if( this.currentIndex>=fixed.length() )
 					status = false;
 			}
 		}			
