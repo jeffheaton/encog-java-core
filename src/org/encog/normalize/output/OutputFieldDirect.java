@@ -11,7 +11,6 @@ public class OutputFieldDirect implements OutputField {
 		this.sourceField = sourceField;
 	}
 	
-	@Override
 	public double calculate() {
 		return this.sourceField.getCurrentValue();
 	}

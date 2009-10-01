@@ -16,19 +16,16 @@ public class NormalizationTargetNeuralDataSet implements NormalizationTarget {
 		this.dataset = new BasicNeuralDataSet();
 	}
 	
-	@Override
 	public void close() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void open() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void write(double[] data, int inputCount) {
 		
 		if( this.idealCount==0 )
