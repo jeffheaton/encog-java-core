@@ -15,8 +15,7 @@ public class OutputFieldZAxis extends OutputFieldGrouped {
 	}
 
 	public double calculate() {
-		// TODO Auto-generated method stub
-		return 0;
+		return(this.getSourceField().getCurrentValue()*((ZAxisGroup)this.getGroup()).getMultiplier());
 	}
 
 }

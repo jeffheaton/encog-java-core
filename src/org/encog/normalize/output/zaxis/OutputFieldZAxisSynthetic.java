@@ -13,8 +13,10 @@ public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 	}
 
 	public double calculate() {
-		// TODO Auto-generated method stub
-		return 0;
+		double l = ((ZAxisGroup)this.getGroup()).getLength();
+		double f = ((ZAxisGroup)this.getGroup()).getMultiplier();
+		double n = this.getGroup().getGroupedFields().size();
+		return f*Math.sqrt(n-(l*l));
 	}
 
 }
