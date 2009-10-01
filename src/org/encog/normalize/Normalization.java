@@ -30,14 +30,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.encog.StatusReportable;
+import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.normalize.input.HasFixedLength;
 import org.encog.normalize.input.InputField;
 import org.encog.normalize.input.InputFieldArray1D;
 import org.encog.normalize.input.InputFieldCSV;
+import org.encog.normalize.input.InputFieldNeuralDataSet;
+import org.encog.normalize.input.NeuralDataFieldHolder;
 import org.encog.normalize.output.OutputField;
 import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
@@ -50,6 +55,9 @@ public class Normalization {
 	private final Collection<OutputField> outputFields = new ArrayList<OutputField>();
 	private final Collection<ReadCSV> readCSV = new ArrayList<ReadCSV>();
 	private final Map<InputField, ReadCSV> csvMap = new HashMap<InputField, ReadCSV>();
+	private final Collection<Iterator<NeuralDataPair>> readDataSet = new ArrayList<Iterator<NeuralDataPair>>();
+	private final Map<InputField,NeuralDataFieldHolder> dataSetFieldMap = new HashMap<InputField,NeuralDataFieldHolder>();
+	private final Map<Iterator<NeuralDataPair>,NeuralDataFieldHolder> dataSetIteratorMap = new HashMap<Iterator<NeuralDataPair>,NeuralDataFieldHolder>();
 	private final Set<OutputFieldGroup> groups = new HashSet<OutputFieldGroup>();
 	private NormalizationTarget target;
 	private StatusReportable report;
@@ -102,16 +110,51 @@ public class Normalization {
 			}
 		}
 	}
+	
+	private void openDataSet() {
+		// clear out any data sets already there
+		this.readDataSet.clear();
+		this.dataSetFieldMap.clear();
+		this.dataSetIteratorMap.clear();
+
+		// only add each iterator once
+		Map<NeuralDataSet,Iterator<NeuralDataPair>> uniqueSets = new HashMap<NeuralDataSet,Iterator<NeuralDataPair>>();
+
+		// find the unique files
+		for (InputField field : this.inputFields) {
+			if (field instanceof InputFieldNeuralDataSet ) {
+				InputFieldNeuralDataSet dataSetField = (InputFieldNeuralDataSet) field;
+				NeuralDataSet dataSet = dataSetField.getNeuralDataSet();
+				if (!uniqueSets.containsKey(dataSet)) {
+					Iterator<NeuralDataPair> iterator = dataSet.iterator();
+					uniqueSets.put(dataSet,iterator);
+					this.readDataSet.add(iterator);
+				}
+				
+				Iterator<NeuralDataPair> iterator = uniqueSets.get(dataSet);
+				NeuralDataFieldHolder holder = new NeuralDataFieldHolder(iterator, dataSetField);
+				this.dataSetFieldMap.put(dataSetField, holder);
+				this.dataSetIteratorMap.put(iterator, holder);
+			}
+		}
+	}
 
 	private boolean next() {
-		boolean status = true;
-
-		this.currentIndex++;
 		
 		// see if any of the CSV readers want to stop
 		for (ReadCSV csv : this.readCSV) {
 			if (!csv.next())
-				status = false;
+				return false;
+		}
+		
+		// see if any of the data sets want to stop
+		for(Iterator<NeuralDataPair> iterator: this.readDataSet)
+		{
+			if( !iterator.hasNext())
+				return false;
+			NeuralDataFieldHolder holder = this.dataSetIteratorMap.get(iterator);
+			NeuralDataPair pair = iterator.next();
+			holder.setPair(pair);
 		}
 		
 		// see if any of the arrays want to stop
@@ -119,12 +162,14 @@ public class Normalization {
 			if( field instanceof HasFixedLength )
 			{
 				HasFixedLength fixed = (HasFixedLength)field;
-				if( this.currentIndex>=fixed.length() )
-					status = false;
+				if( (this.currentIndex+1)>=fixed.length() )
+					return false;
 			}
-		}			
+		}
+		
+		this.currentIndex++;
 
-		return status;
+		return true;
 	}
 
 	/**
@@ -132,6 +177,7 @@ public class Normalization {
 	 */
 	private void firstPass() {
 		openCSV();
+		openDataSet();
 		
 		this.currentIndex = -1;
 		this.recordCount = 0;
@@ -157,6 +203,24 @@ public class Normalization {
 					InputFieldCSV fieldCSV = (InputFieldCSV) field;
 					ReadCSV csv = this.csvMap.get(field);
 					double value = csv.getDouble(fieldCSV.getOffset());
+					field.applyMinMax(value);
+				}
+				else if(field instanceof InputFieldNeuralDataSet)
+				{
+					InputFieldNeuralDataSet neuralField = (InputFieldNeuralDataSet)field;
+					NeuralDataFieldHolder holder = this.dataSetFieldMap.get(field);
+					NeuralDataPair pair = holder.getPair();					
+					int offset = neuralField.getOffset();
+					double value;
+					if( offset<pair.getInput().size())
+					{
+						 value = pair.getInput().getData(offset);
+					}
+					else
+					{
+						offset-=pair.getInput().size();
+						value = pair.getIdeal().getData(offset);
+					}
 					field.applyMinMax(value);
 				}
 				else
@@ -186,6 +250,24 @@ public class Normalization {
 					InputFieldCSV fieldCSV = (InputFieldCSV) field;
 					ReadCSV csv = this.csvMap.get(field);
 					double value = csv.getDouble(fieldCSV.getOffset());
+					field.setCurrentValue(value);
+				}
+				else if(field instanceof InputFieldNeuralDataSet)
+				{
+					InputFieldNeuralDataSet neuralField = (InputFieldNeuralDataSet)field;
+					NeuralDataFieldHolder holder = this.dataSetFieldMap.get(field);
+					NeuralDataPair pair = holder.getPair();					
+					int offset = neuralField.getOffset();
+					double value;
+					if( offset<pair.getInput().size())
+					{
+						 value = pair.getInput().getData(offset);
+					}
+					else
+					{
+						offset-=pair.getInput().size();
+						value = pair.getIdeal().getData(offset);
+					}
 					field.setCurrentValue(value);
 				}
 				else
