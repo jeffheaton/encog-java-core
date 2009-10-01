@@ -118,7 +118,7 @@ public class Normalization {
 		this.dataSetIteratorMap.clear();
 
 		// only add each iterator once
-		Map<NeuralDataSet,Iterator<NeuralDataPair>> uniqueSets = new HashMap<NeuralDataSet,Iterator<NeuralDataPair>>();
+		Map<NeuralDataSet,NeuralDataFieldHolder> uniqueSets = new HashMap<NeuralDataSet,NeuralDataFieldHolder>();
 
 		// find the unique files
 		for (InputField field : this.inputFields) {
@@ -127,14 +127,15 @@ public class Normalization {
 				NeuralDataSet dataSet = dataSetField.getNeuralDataSet();
 				if (!uniqueSets.containsKey(dataSet)) {
 					Iterator<NeuralDataPair> iterator = dataSet.iterator();
-					uniqueSets.put(dataSet,iterator);
+					NeuralDataFieldHolder holder = new NeuralDataFieldHolder(iterator, dataSetField);
+					uniqueSets.put(dataSet,holder);
 					this.readDataSet.add(iterator);
 				}
 				
-				Iterator<NeuralDataPair> iterator = uniqueSets.get(dataSet);
-				NeuralDataFieldHolder holder = new NeuralDataFieldHolder(iterator, dataSetField);
+				NeuralDataFieldHolder holder = uniqueSets.get(dataSet);
+				
 				this.dataSetFieldMap.put(dataSetField, holder);
-				this.dataSetIteratorMap.put(iterator, holder);
+				this.dataSetIteratorMap.put(holder.getIterator(), holder);
 			}
 		}
 	}
@@ -234,8 +235,10 @@ public class Normalization {
 	}
 
 	private void secondPass() {
-		// move any CSV files back to the beginning.
+		// move any CSV and datasets files back to the beginning.
 		openCSV();
+		openDataSet();
+		
 		this.currentIndex = -1;
 
 		// process the records
