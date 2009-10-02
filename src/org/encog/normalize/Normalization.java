@@ -46,6 +46,7 @@ import org.encog.normalize.input.NeuralDataFieldHolder;
 import org.encog.normalize.output.OutputField;
 import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
+import org.encog.normalize.segregate.Segregator;
 import org.encog.normalize.target.NormalizationTarget;
 import org.encog.util.ReadCSV;
 
@@ -59,6 +60,7 @@ public class Normalization {
 	private final Map<InputField,NeuralDataFieldHolder> dataSetFieldMap = new HashMap<InputField,NeuralDataFieldHolder>();
 	private final Map<Iterator<NeuralDataPair>,NeuralDataFieldHolder> dataSetIteratorMap = new HashMap<Iterator<NeuralDataPair>,NeuralDataFieldHolder>();
 	private final Set<OutputFieldGroup> groups = new HashSet<OutputFieldGroup>();
+	private final Collection<Segregator> segregators = new ArrayList<Segregator>();
 	private NormalizationTarget target;
 	private StatusReportable report;
 	private int recordCount;
@@ -86,6 +88,11 @@ public class Normalization {
 
 	public Collection<OutputField> getOutputFields() {
 		return outputFields;
+	}
+	
+	public void addSegregator(Segregator segregator)
+	{
+		this.segregators.add(segregator);
 	}
 
 	private void openCSV() {
@@ -326,6 +333,14 @@ public class Normalization {
 
 	public Set<OutputFieldGroup> getGroups() {
 		return groups;
+	}
+
+	public Collection<Segregator> getSegregators() {
+		return segregators;
+	}
+
+	public int getRecordCount() {
+		return recordCount;
 	}
 	
 	
