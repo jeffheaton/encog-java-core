@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.encog.normalize.NormalizationError;
-import org.encog.util.ReadCSV;
+import org.encog.util.csv.ReadCSV;
 
 public class NormalizationTargetCSV implements NormalizationTarget {
 	

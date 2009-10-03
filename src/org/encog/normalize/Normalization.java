@@ -48,7 +48,7 @@ import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 import org.encog.normalize.segregate.Segregator;
 import org.encog.normalize.target.NormalizationTarget;
-import org.encog.util.ReadCSV;
+import org.encog.util.csv.ReadCSV;
 
 public class Normalization {
 

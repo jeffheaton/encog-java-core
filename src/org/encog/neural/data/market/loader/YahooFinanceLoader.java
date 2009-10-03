@@ -38,7 +38,7 @@ import java.util.Set;
 
 import org.encog.neural.data.market.MarketDataType;
 import org.encog.neural.data.market.TickerSymbol;
-import org.encog.util.ReadCSV;
+import org.encog.util.csv.ReadCSV;
 import org.encog.util.http.FormUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
