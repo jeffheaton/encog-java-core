@@ -39,6 +39,7 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
+import org.encog.util.csv.CommaList;
 import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,13 +84,13 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 	private void handleItem(final ReadXML in) {
 		final Map<String, String> properties = in.readPropertyBlock();
 		NeuralDataPair pair = null;
-		final NeuralData input = new BasicNeuralData(ReadCSV
+		final NeuralData input = new BasicNeuralData(CommaList
 				.fromCommas(properties
 						.get(BasicNeuralDataSetPersistor.TAG_INPUT)));
 
 		if (properties.containsKey(BasicNeuralDataSetPersistor.TAG_IDEAL)) {
 			// supervised
-			final NeuralData ideal = new BasicNeuralData(ReadCSV
+			final NeuralData ideal = new BasicNeuralData(CommaList
 					.fromCommas(properties
 							.get(BasicNeuralDataSetPersistor.TAG_IDEAL)));
 			pair = new BasicNeuralDataPair(input, ideal);
@@ -148,12 +149,12 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		for (final NeuralDataPair pair : set) {
 			out.beginTag(BasicNeuralDataSetPersistor.TAG_ITEM);
 
-			ReadCSV.toCommas(builder, pair.getInput().getData());
+			CommaList.toCommas(builder, pair.getInput().getData());
 			out.addProperty(BasicNeuralDataSetPersistor.TAG_INPUT, builder
 					.toString());
 
 			if (pair.getIdeal() != null) {
-				ReadCSV.toCommas(builder, pair.getIdeal().getData());
+				CommaList.toCommas(builder, pair.getIdeal().getData());
 				out.addProperty(BasicNeuralDataSetPersistor.TAG_IDEAL, builder
 						.toString());
 			}

@@ -48,6 +48,7 @@ import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 import org.encog.normalize.segregate.Segregator;
 import org.encog.normalize.target.NormalizationTarget;
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 public class Normalization {
@@ -109,7 +110,7 @@ public class Normalization {
 				InputFieldCSV csvField = (InputFieldCSV) field;
 				File file = csvField.getFile();
 				if (!uniqueFiles.containsKey(file)) {
-					ReadCSV csv = new ReadCSV(file.toString(), false, ',');
+					ReadCSV csv = new ReadCSV(file.toString(), false, CSVFormat.ENGLISH);
 					uniqueFiles.put(file, csv);
 					this.readCSV.add(csv);
 				}

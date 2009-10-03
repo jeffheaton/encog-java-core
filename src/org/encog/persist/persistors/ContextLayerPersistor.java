@@ -33,6 +33,7 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
+import org.encog.util.csv.CommaList;
 import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -96,7 +97,7 @@ public class ContextLayerPersistor implements Persistor {
 			if (threshold == null) {
 				layer = new ContextLayer(activation, false, neuronCount);
 			} else {
-				final double[] t = ReadCSV.fromCommas(threshold);
+				final double[] t = CommaList.fromCommas(threshold);
 				layer = new ContextLayer(activation, true, neuronCount);
 				for (int i = 0; i < t.length; i++) {
 					layer.setThreshold(i, t[i]);
@@ -104,7 +105,7 @@ public class ContextLayerPersistor implements Persistor {
 			}
 			
 			if( context!=null ) {
-				final double[] t = ReadCSV.fromCommas(context);
+				final double[] t = CommaList.fromCommas(context);
 
 				for (int i = 0; i < t.length; i++) {
 					layer.getContext().setData(i, t[i]);
@@ -139,14 +140,14 @@ public class ContextLayerPersistor implements Persistor {
 
 		if (layer.hasThreshold()) {
 			final StringBuilder result = new StringBuilder();
-			ReadCSV.toCommas(result, layer.getThreshold());
+			CommaList.toCommas(result, layer.getThreshold());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
 		}
 		
 		
 		final StringBuilder result = new StringBuilder();
-		ReadCSV.toCommas(result, layer.getContext().getData());
+		CommaList.toCommas(result, layer.getContext().getData());
 		out.addProperty(ContextLayerPersistor.PROPERTY_CONTEXT, result
 				.toString());
 		

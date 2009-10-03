@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import org.encog.normalize.NormalizationError;
+import org.encog.util.csv.CommaList;
 import org.encog.util.csv.ReadCSV;
 
 public class NormalizationTargetCSV implements NormalizationTarget {
@@ -23,7 +24,7 @@ public class NormalizationTargetCSV implements NormalizationTarget {
 
 	public void write(double[] data, int inputCount) {
 		StringBuilder result = new StringBuilder();
-		ReadCSV.toCommas(result, data);
+		CommaList.toCommas(result, data);
 		this.output.println(result.toString());		
 	}
 

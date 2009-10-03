@@ -54,6 +54,8 @@ public class ReadCSV {
 	 * The standard date format to be used.
 	 */
 	private DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	
+	private CSVFormat format;
 
 	/**
 	 * Format a date.
@@ -65,42 +67,6 @@ public class ReadCSV {
 	public static String displayDate(final Date date) {
 		DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return sdf.format(date);
-	}
-
-	/**
-	 * Get an array of double's from a string of comma separated text.
-	 * 
-	 * @param str
-	 *            The string that contains a list of numbers.
-	 * @return An array of doubles parsed from the string.
-	 */
-	public static double[] fromCommas(final String str) {
-		// first count the numbers
-		int count = 0;
-		final StringTokenizer tok = new StringTokenizer(str, ",");
-		while (tok.hasMoreTokens()) {
-			tok.nextToken();
-			count++;
-		}
-
-		// now allocate an object to hold that many numbers
-		final double[] result = new double[count];
-
-		// and finally parse the numbers
-		int index = 0;
-		final StringTokenizer tok2 = new StringTokenizer(str, ",");
-		while (tok2.hasMoreTokens()) {
-			try {
-				final String num = tok2.nextToken();
-				final double value = Double.parseDouble(num);
-				result[index++] = value;
-			} catch (final NumberFormatException e) {
-				throw new PersistError(e);
-			}
-
-		}
-
-		return result;
 	}
 
 	/**
@@ -119,24 +85,6 @@ public class ReadCSV {
 		}
 	}
 
-	/**
-	 * Convert an array of doubles to a comma separated list.
-	 * 
-	 * @param result
-	 *            This string will have the values appended to it.
-	 * @param data
-	 *            The array of doubles to use.
-	 */
-	public static void toCommas(final StringBuilder result, 
-			final double[] data) {
-		result.setLength(0);
-		for (int i = 0; i < data.length; i++) {
-			if (i != 0) {
-				result.append(',');
-			}
-			result.append(data[i]);
-		}
-	}
 
 	/**
 	 * The logging object.
@@ -158,10 +106,6 @@ public class ReadCSV {
 	 */
 	private String[] data;
 
-	/**
-	 * The delimiter.
-	 */
-	private final char delim;
 
 	/**
 	 * Construct a CSV reader from an input stream.
@@ -174,10 +118,9 @@ public class ReadCSV {
 	 *            What is the delimiter.
 	 */
 	public ReadCSV(final InputStream is, final boolean headers, 
-				final char delim) {
+				final CSVFormat format) {
 		this.reader = new BufferedReader(new InputStreamReader(is));
-		this.delim = delim;
-		begin(headers);
+		begin(headers,format);
 	}
 
 	/**
@@ -191,11 +134,10 @@ public class ReadCSV {
 	 *            The delimiter.
 	 */
 	public ReadCSV(final String filename, final boolean headers,
-			final char delim) {
+			final CSVFormat format) {
 		try {
 			this.reader = new BufferedReader(new FileReader(filename));
-			this.delim = delim;
-			begin(headers);
+			begin(headers,format);
 		} catch (final IOException e) {
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error("Exception", e);
@@ -210,8 +152,9 @@ public class ReadCSV {
 	 * @param headers
 	 *            Are headers present.
 	 */
-	private void begin(final boolean headers) {
+	private void begin(final boolean headers,final CSVFormat format) {
 		try {
+			this.format = format;
 			// read the column heads
 			if (headers) {
 				final String line = this.reader.readLine();
@@ -412,7 +355,7 @@ public class ReadCSV {
 
 		for (int i = 0; i < line.length(); i++) {
 			final char ch = line.charAt(i);
-			if ((ch == this.delim) && !quoted) {
+			if ((ch == this.format.getSeparator()) && !quoted) {
 				result.add(item.toString());
 				item.setLength(0);
 				quoted = false;

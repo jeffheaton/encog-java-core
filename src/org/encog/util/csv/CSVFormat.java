@@ -3,7 +3,9 @@ package org.encog.util.csv;
 public class CSVFormat {
 	
 	public static final CSVFormat SIMPLE_DECIMAL_POINT = new CSVFormat('.',(char)0,',',(char)0);
+	public static final CSVFormat STRING_DECIMAL_POINT = new CSVFormat('.',(char)0,',','\"');
 	public static final CSVFormat SIMPLE_DECIMAL_COMMA = new CSVFormat(',',(char)0,';',(char)0);
+	public static final CSVFormat STRING_DECIMAL_COMMA = new CSVFormat(',',(char)0,';','\"');
 	public static final CSVFormat ENGLISH = SIMPLE_DECIMAL_POINT;
 	
 	private final char decimal;

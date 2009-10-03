@@ -36,6 +36,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.util.csv.ReadCSV;
+import org.encog.util.csv.CSVFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,7 +77,7 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 			this.reader = null;
 			this.reader = new ReadCSV(CSVNeuralDataSet.this.filename,
 					CSVNeuralDataSet.this.headers,
-					CSVNeuralDataSet.this.delimiter);
+					CSVNeuralDataSet.this.format);
 			this.dataReady = false;
 
 		}
@@ -177,11 +178,11 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	 * The number of columns of ideal data.
 	 */
 	private final int idealSize;
-
+	
 	/**
-	 * The delimiter that separates the columns, defaults to a comma.
+	 * The format of this CSV file.
 	 */
-	private final char delimiter;
+	private CSVFormat format;
 
 	/**
 	 * Specifies if headers are present on the first row.
@@ -208,7 +209,7 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	 */
 	public CSVNeuralDataSet(final String filename, final int inputSize,
 			final int idealSize, final boolean headers) {
-		this(filename, inputSize, idealSize, headers, ',');
+		this(filename, inputSize, idealSize, headers, CSVFormat.ENGLISH);
 	}
 
 	/**
@@ -222,15 +223,15 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	 *            The number of columns that make up the ideal set.
 	 * @param headers
 	 *            True if headers are present on the first line.
-	 * @param delimiter
-	 *            The delimiter to use.
+	 * @param format
+	 *            What CSV format to use.
 	 */
 	public CSVNeuralDataSet(final String filename, final int inputSize,
-			final int idealSize, final boolean headers, final char delimiter) {
+			final int idealSize, final boolean headers, final CSVFormat format) {
 		this.filename = filename;
 		this.inputSize = inputSize;
 		this.idealSize = idealSize;
-		this.delimiter = delimiter;
+		this.format = format;
 		this.headers = headers;
 	}
 
@@ -288,8 +289,8 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	/**
 	 * @return the delimiter
 	 */
-	public char getDelimiter() {
-		return this.delimiter;
+	public CSVFormat getFormat() {
+		return this.format;
 	}
 
 	/**

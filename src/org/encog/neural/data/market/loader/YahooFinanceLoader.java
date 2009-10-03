@@ -38,6 +38,7 @@ import java.util.Set;
 
 import org.encog.neural.data.market.MarketDataType;
 import org.encog.neural.data.market.TickerSymbol;
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.http.FormUtility;
 import org.slf4j.Logger;
@@ -118,7 +119,7 @@ public class YahooFinanceLoader implements MarketLoader {
 				new ArrayList<LoadedMarketData>();
 			final URL url = buildURL(ticker, from, to);
 			final InputStream is = url.openStream();
-			final ReadCSV csv = new ReadCSV(is, true, ',');
+			final ReadCSV csv = new ReadCSV(is, true, CSVFormat.ENGLISH);
 
 			while (csv.next()) {
 				final Date date = csv.getDate("date");
