@@ -66,6 +66,7 @@ public class Normalization {
 	private StatusReportable report;
 	private int recordCount;
 	private int currentIndex;
+	private CSVFormat csvFormat = CSVFormat.ENGLISH;
 
 	public NormalizationTarget getTarget() {
 		return target;
@@ -110,7 +111,7 @@ public class Normalization {
 				InputFieldCSV csvField = (InputFieldCSV) field;
 				File file = csvField.getFile();
 				if (!uniqueFiles.containsKey(file)) {
-					ReadCSV csv = new ReadCSV(file.toString(), false, CSVFormat.ENGLISH);
+					ReadCSV csv = new ReadCSV(file.toString(), false, this.csvFormat);
 					uniqueFiles.put(file, csv);
 					this.readCSV.add(csv);
 				}
@@ -342,6 +343,14 @@ public class Normalization {
 
 	public int getRecordCount() {
 		return recordCount;
+	}
+
+	public CSVFormat getCSVFormat() {
+		return csvFormat;
+	}
+
+	public void setCSVFormat(CSVFormat csvFormat) {
+		this.csvFormat = csvFormat;
 	}
 	
 	

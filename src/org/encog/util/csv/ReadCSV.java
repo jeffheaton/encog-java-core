@@ -31,12 +31,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -56,6 +58,8 @@ public class ReadCSV {
 	private DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private CSVFormat format;
+	
+	private NumberFormat numberFormatter;
 
 	/**
 	 * Format a date.
@@ -154,6 +158,20 @@ public class ReadCSV {
 	 */
 	private void begin(final boolean headers,final CSVFormat format) {
 		try {
+			
+			if( format.getDecimal()=='.' )
+			{
+				this.numberFormatter = NumberFormat.getInstance(Locale.US);
+			}
+			else if( format.getDecimal()==',' )
+			{
+				this.numberFormatter = NumberFormat.getInstance(Locale.FRANCE);
+			}
+			else
+			{
+				this.numberFormatter = NumberFormat.getInstance();
+			}
+			
 			this.format = format;
 			// read the column heads
 			if (headers) {
@@ -263,7 +281,11 @@ public class ReadCSV {
 	 */
 	public double getDouble(final int index) {
 		final String str = get(index);
-		return Double.parseDouble(str);
+		try {
+			return this.numberFormatter.parse(str).doubleValue();
+		} catch (ParseException e) {
+			throw new CSVError(e);
+		}
 	}
 
 	/**
@@ -275,7 +297,11 @@ public class ReadCSV {
 	 */
 	public double getDouble(final String column) {
 		final String str = get(column);
-		return Double.parseDouble(str);
+		try {
+			return this.numberFormatter.parse(str).doubleValue();
+		} catch (ParseException e) {
+			throw new CSVError(e);
+		}
 	}
 
 	/**
@@ -288,9 +314,9 @@ public class ReadCSV {
 	public int getInt(final String col) {
 		final String str = get(col);
 		try {
-			return Integer.parseInt(str);
-		} catch (final NumberFormatException e) {
-			return 0;
+			return this.numberFormatter.parse(str).intValue();
+		} catch (ParseException e) {
+			throw new CSVError(e);
 		}
 	}
 
