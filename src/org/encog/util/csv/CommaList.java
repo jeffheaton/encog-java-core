@@ -18,7 +18,7 @@ public class CommaList {
 			if (i != 0) {
 				result.append(format.getSeparator());
 			}
-			result.append(format.format(data[i]));
+			result.append(format.format(data[i],20));
 		}
 	}
 	
