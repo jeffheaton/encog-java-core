@@ -22,8 +22,8 @@ public class RangeSegregator implements Segregator {
 		double value = sourceField.getCurrentValue();
 		for(SegregationRange range: ranges)
 		{
-			if(!range.shouldInclude(value))
-				return false;
+			if(range.inRange(value))
+				return range.isIncluded();
 		}
 		return this.include;
 	}

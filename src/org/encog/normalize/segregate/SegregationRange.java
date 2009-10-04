@@ -20,16 +20,12 @@ public class SegregationRange {
 		return high;
 	}
 
-	public boolean isInclude() {
+	public boolean isIncluded() {
 		return include;
 	}
-	
-	public boolean shouldInclude(double value)
-	{
-		if( value>=low && value>=high )
-			return include;
-		else
-			return !include;
+
+	public boolean inRange(double value) {
+		return( value>=low && value<=high );
 	}
 	
 }

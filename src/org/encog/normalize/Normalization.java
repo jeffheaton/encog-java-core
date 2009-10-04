@@ -58,8 +58,8 @@ public class Normalization {
 	private final Collection<ReadCSV> readCSV = new ArrayList<ReadCSV>();
 	private final Map<InputField, ReadCSV> csvMap = new HashMap<InputField, ReadCSV>();
 	private final Collection<Iterator<NeuralDataPair>> readDataSet = new ArrayList<Iterator<NeuralDataPair>>();
-	private final Map<InputField,NeuralDataFieldHolder> dataSetFieldMap = new HashMap<InputField,NeuralDataFieldHolder>();
-	private final Map<Iterator<NeuralDataPair>,NeuralDataFieldHolder> dataSetIteratorMap = new HashMap<Iterator<NeuralDataPair>,NeuralDataFieldHolder>();
+	private final Map<InputField, NeuralDataFieldHolder> dataSetFieldMap = new HashMap<InputField, NeuralDataFieldHolder>();
+	private final Map<Iterator<NeuralDataPair>, NeuralDataFieldHolder> dataSetIteratorMap = new HashMap<Iterator<NeuralDataPair>, NeuralDataFieldHolder>();
 	private final Set<OutputFieldGroup> groups = new HashSet<OutputFieldGroup>();
 	private final Collection<Segregator> segregators = new ArrayList<Segregator>();
 	private NormalizationTarget target;
@@ -67,6 +67,7 @@ public class Normalization {
 	private int recordCount;
 	private int currentIndex;
 	private CSVFormat csvFormat = CSVFormat.ENGLISH;
+	private int lastReport;
 
 	public NormalizationTarget getTarget() {
 		return target;
@@ -91,9 +92,8 @@ public class Normalization {
 	public Collection<OutputField> getOutputFields() {
 		return outputFields;
 	}
-	
-	public void addSegregator(Segregator segregator)
-	{
+
+	public void addSegregator(Segregator segregator) {
 		this.segregators.add(segregator);
 	}
 
@@ -111,7 +111,8 @@ public class Normalization {
 				InputFieldCSV csvField = (InputFieldCSV) field;
 				File file = csvField.getFile();
 				if (!uniqueFiles.containsKey(file)) {
-					ReadCSV csv = new ReadCSV(file.toString(), false, this.csvFormat);
+					ReadCSV csv = new ReadCSV(file.toString(), false,
+							this.csvFormat);
 					uniqueFiles.put(file, csv);
 					this.readCSV.add(csv);
 				}
@@ -119,7 +120,7 @@ public class Normalization {
 			}
 		}
 	}
-	
+
 	private void openDataSet() {
 		// clear out any data sets already there
 		this.readDataSet.clear();
@@ -127,22 +128,23 @@ public class Normalization {
 		this.dataSetIteratorMap.clear();
 
 		// only add each iterator once
-		Map<NeuralDataSet,NeuralDataFieldHolder> uniqueSets = new HashMap<NeuralDataSet,NeuralDataFieldHolder>();
+		Map<NeuralDataSet, NeuralDataFieldHolder> uniqueSets = new HashMap<NeuralDataSet, NeuralDataFieldHolder>();
 
 		// find the unique files
 		for (InputField field : this.inputFields) {
-			if (field instanceof InputFieldNeuralDataSet ) {
+			if (field instanceof InputFieldNeuralDataSet) {
 				InputFieldNeuralDataSet dataSetField = (InputFieldNeuralDataSet) field;
 				NeuralDataSet dataSet = dataSetField.getNeuralDataSet();
 				if (!uniqueSets.containsKey(dataSet)) {
 					Iterator<NeuralDataPair> iterator = dataSet.iterator();
-					NeuralDataFieldHolder holder = new NeuralDataFieldHolder(iterator, dataSetField);
-					uniqueSets.put(dataSet,holder);
+					NeuralDataFieldHolder holder = new NeuralDataFieldHolder(
+							iterator, dataSetField);
+					uniqueSets.put(dataSet, holder);
 					this.readDataSet.add(iterator);
 				}
-				
+
 				NeuralDataFieldHolder holder = uniqueSets.get(dataSet);
-				
+
 				this.dataSetFieldMap.put(dataSetField, holder);
 				this.dataSetIteratorMap.put(holder.getIterator(), holder);
 			}
@@ -150,36 +152,85 @@ public class Normalization {
 	}
 
 	private boolean next() {
-		
+
 		// see if any of the CSV readers want to stop
 		for (ReadCSV csv : this.readCSV) {
 			if (!csv.next())
 				return false;
 		}
-		
+
 		// see if any of the data sets want to stop
-		for(Iterator<NeuralDataPair> iterator: this.readDataSet)
-		{
-			if( !iterator.hasNext())
+		for (Iterator<NeuralDataPair> iterator : this.readDataSet) {
+			if (!iterator.hasNext())
 				return false;
-			NeuralDataFieldHolder holder = this.dataSetIteratorMap.get(iterator);
+			NeuralDataFieldHolder holder = this.dataSetIteratorMap
+					.get(iterator);
 			NeuralDataPair pair = iterator.next();
 			holder.setPair(pair);
 		}
-		
+
 		// see if any of the arrays want to stop
-		for( InputField field: this.inputFields ) {
-			if( field instanceof HasFixedLength )
-			{
-				HasFixedLength fixed = (HasFixedLength)field;
-				if( (this.currentIndex+1)>=fixed.length() )
+		for (InputField field : this.inputFields) {
+			if (field instanceof HasFixedLength) {
+				HasFixedLength fixed = (HasFixedLength) field;
+				if ((this.currentIndex + 1) >= fixed.length())
 					return false;
 			}
 		}
-		
+
 		this.currentIndex++;
 
 		return true;
+	}
+
+	private void reportResult(String message, int total, int current) {
+		// count the records, report status
+		this.lastReport++;
+		if (lastReport >= 10000) {
+			this.report.report(total, current, message);
+			this.lastReport = 0;
+		}
+	}
+
+	private double determineInputFieldValue(InputField field, int index) {
+		double result = 0;
+
+		if (field instanceof InputFieldCSV) {
+			InputFieldCSV fieldCSV = (InputFieldCSV) field;
+			ReadCSV csv = this.csvMap.get(field);
+			result = csv.getDouble(fieldCSV.getOffset());
+		} else if (field instanceof InputFieldNeuralDataSet) {
+			InputFieldNeuralDataSet neuralField = (InputFieldNeuralDataSet) field;
+			NeuralDataFieldHolder holder = this.dataSetFieldMap.get(field);
+			NeuralDataPair pair = holder.getPair();
+			int offset = neuralField.getOffset();
+			if (offset < pair.getInput().size()) {
+				result = pair.getInput().getData(offset);
+			} else {
+				offset -= pair.getInput().size();
+				result = pair.getIdeal().getData(offset);
+			}
+		} else {
+			result = field.getValue(index);
+		}
+
+		field.setCurrentValue(result);
+		return result;
+	}
+	
+	private void determineInputFieldValues(int index)
+	{
+		for (InputField field : this.inputFields) {
+			this.determineInputFieldValue(field, index);
+		}
+	}
+	
+	private void applyMinMax()
+	{
+		for (InputField field : this.inputFields) {
+			double value = field.getCurrentValue();
+			field.applyMinMax(value);
+		}
 	}
 
 	/**
@@ -188,129 +239,81 @@ public class Normalization {
 	private void firstPass() {
 		openCSV();
 		openDataSet();
-		
+
 		this.currentIndex = -1;
 		this.recordCount = 0;
 
 		this.report.report(0, 0, "Analyzing file");
-		int report = 0;
+		this.lastReport = 0;
 		int index = 0;
 
 		// loop over all of the records
 		while (next()) {
-			// count the records, report status
-			this.recordCount++;
-			report++;
-			if (report >= 10000) {
-				this.report.report(0, 0, "Analyzing file, found "
-						+ this.recordCount + " records.");
-				report = 0;
-			}
+			
+			this.determineInputFieldValues(index);
 
-			// manage the min/max for each field
-			for (InputField field : this.inputFields) {
-				if (field instanceof InputFieldCSV) {
-					InputFieldCSV fieldCSV = (InputFieldCSV) field;
-					ReadCSV csv = this.csvMap.get(field);
-					double value = csv.getDouble(fieldCSV.getOffset());
-					field.applyMinMax(value);
-				}
-				else if(field instanceof InputFieldNeuralDataSet)
-				{
-					InputFieldNeuralDataSet neuralField = (InputFieldNeuralDataSet)field;
-					NeuralDataFieldHolder holder = this.dataSetFieldMap.get(field);
-					NeuralDataPair pair = holder.getPair();					
-					int offset = neuralField.getOffset();
-					double value;
-					if( offset<pair.getInput().size())
-					{
-						 value = pair.getInput().getData(offset);
-					}
-					else
-					{
-						offset-=pair.getInput().size();
-						value = pair.getIdeal().getData(offset);
-					}
-					field.applyMinMax(value);
-				}
-				else
-				{
-					double value = field.getValue(index);
-					field.applyMinMax(value);
-				}
+			if (this.shouldInclude()) {
+				applyMinMax();
+				this.recordCount++;
+				this.reportResult("First pass, analyzing file", 0,
+						this.recordCount);
 			}
 			index++;
 		}
+	}
+
+	private boolean shouldInclude() {
+		for (Segregator segregator : this.segregators) {
+			if (!segregator.shouldInclude()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private void secondPass() {
 		// move any CSV and datasets files back to the beginning.
 		openCSV();
 		openDataSet();
-		
+
 		this.currentIndex = -1;
 
 		// process the records
 		double[] output = new double[this.outputFields.size()];
 
 		this.target.open();
-		for (int i = 0; i < this.recordCount; i++) {
-			next();
+		this.lastReport = 0;
+		int index = 0;
+		int current = 0;
+		while (next()) {
 			// read the value
 			for (InputField field : this.inputFields) {
-				if (field instanceof InputFieldCSV) {
-					InputFieldCSV fieldCSV = (InputFieldCSV) field;
-					ReadCSV csv = this.csvMap.get(field);
-					double value = csv.getDouble(fieldCSV.getOffset());
-					field.setCurrentValue(value);
-				}
-				else if(field instanceof InputFieldNeuralDataSet)
-				{
-					InputFieldNeuralDataSet neuralField = (InputFieldNeuralDataSet)field;
-					NeuralDataFieldHolder holder = this.dataSetFieldMap.get(field);
-					NeuralDataPair pair = holder.getPair();					
-					int offset = neuralField.getOffset();
-					double value;
-					if( offset<pair.getInput().size())
-					{
-						 value = pair.getInput().getData(offset);
-					}
-					else
-					{
-						offset-=pair.getInput().size();
-						value = pair.getIdeal().getData(offset);
-					}
-					field.setCurrentValue(value);
-				}
-				else
-				{
-					double value = field.getValue(i);
-					field.setCurrentValue(value);
-				}
-			}
-			
-			// handle groups
-			initGroups();
-
-			// write the value
-			int outputIndex = 0;
-			for (OutputField ofield : this.outputFields) {
-				output[outputIndex++] = ofield.calculate();
+				this.determineInputFieldValue(field, index);
 			}
 
-			this.target.write(output, 0);
+			if (shouldInclude()) {
+				// handle groups
+				initGroups();
 
-			// report status
-			this.report.report(this.recordCount, i, "Normalizing data");
+				// write the value
+				int outputIndex = 0;
+				for (OutputField ofield : this.outputFields) {
+					output[outputIndex++] = ofield.calculate();
+				}
+
+				this.reportResult("Second pass, normalizing data",
+						this.recordCount, ++current);
+				this.target.write(output, 0);
+			}
+
+			index++;
 		}
 		this.target.close();
 
 	}
-	
-	private void initGroups()
-	{
-		for(OutputFieldGroup group: this.groups)
-		{
+
+	private void initGroups() {
+		for (OutputFieldGroup group : this.groups) {
 			group.rowInit();
 		}
 	}
@@ -326,9 +329,8 @@ public class Normalization {
 
 	public void addOutputField(OutputField outputField) {
 		this.outputFields.add(outputField);
-		if( outputField instanceof OutputFieldGrouped )
-		{
-			OutputFieldGrouped ofg = (OutputFieldGrouped)outputField;
+		if (outputField instanceof OutputFieldGrouped) {
+			OutputFieldGrouped ofg = (OutputFieldGrouped) outputField;
 			this.groups.add(ofg.getGroup());
 		}
 	}
@@ -352,7 +354,5 @@ public class Normalization {
 	public void setCSVFormat(CSVFormat csvFormat) {
 		this.csvFormat = csvFormat;
 	}
-	
-	
 
 }
