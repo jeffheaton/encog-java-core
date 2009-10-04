@@ -2,8 +2,6 @@ package org.encog.util.csv;
 
 import java.util.StringTokenizer;
 
-import org.encog.persist.PersistError;
-
 public class CommaList {
 	/**
 	 * Convert an array of doubles to a comma separated list.
@@ -13,14 +11,14 @@ public class CommaList {
 	 * @param data
 	 *            The array of doubles to use.
 	 */
-	public static void toCommas(final StringBuilder result, 
+	public static void toCommas(CSVFormat format, final StringBuilder result, 
 			final double[] data) {
 		result.setLength(0);
 		for (int i = 0; i < data.length; i++) {
 			if (i != 0) {
-				result.append(',');
+				result.append(format.getSeparator());
 			}
-			result.append(data[i]);
+			result.append(format.format(data[i]));
 		}
 	}
 	
@@ -31,10 +29,10 @@ public class CommaList {
 	 *            The string that contains a list of numbers.
 	 * @return An array of doubles parsed from the string.
 	 */
-	public static double[] fromCommas(final String str) {
+	public static double[] fromCommas(CSVFormat format, final String str) {
 		// first count the numbers
 		int count = 0;
-		final StringTokenizer tok = new StringTokenizer(str, ",");
+		final StringTokenizer tok = new StringTokenizer(str, ""+format.getSeparator());
 		while (tok.hasMoreTokens()) {
 			tok.nextToken();
 			count++;
@@ -45,16 +43,11 @@ public class CommaList {
 
 		// and finally parse the numbers
 		int index = 0;
-		final StringTokenizer tok2 = new StringTokenizer(str, ",");
+		final StringTokenizer tok2 = new StringTokenizer(str, ""+format.getSeparator());
 		while (tok2.hasMoreTokens()) {
-			try {
 				final String num = tok2.nextToken();
-				final double value = Double.parseDouble(num);
+				final double value = format.parse(num);
 				result[index++] = value;
-			} catch (final NumberFormatException e) {
-				throw new PersistError(e);
-			}
-
 		}
 
 		return result;

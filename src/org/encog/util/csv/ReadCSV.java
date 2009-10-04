@@ -58,8 +58,6 @@ public class ReadCSV {
 	private DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
 	private CSVFormat format;
-	
-	private NumberFormat numberFormatter;
 
 	/**
 	 * Format a date.
@@ -110,9 +108,11 @@ public class ReadCSV {
 	 */
 	private String[] data;
 
-
 	/**
 	 * Construct a CSV reader from an input stream.
+	 * Allows a delimiter character to be specified.
+	 * Numbers will be parsed using the current
+	 * locale.
 	 * 
 	 * @param is
 	 *            The InputStream to read from.
@@ -122,6 +122,26 @@ public class ReadCSV {
 	 *            What is the delimiter.
 	 */
 	public ReadCSV(final InputStream is, final boolean headers, 
+				final char delim) {
+		CSVFormat format = new CSVFormat(CSVFormat.getDecimalCharacter(),delim);
+		this.reader = new BufferedReader(new InputStreamReader(is));
+		begin(headers,format);
+	}
+
+	/**
+	 * Construct a CSV reader from an input stream.
+	 * The format parameter specifies the separator 
+	 * character to use, as well as the number
+	 * format.
+	 * 
+	 * @param is
+	 *            The InputStream to read from.
+	 * @param headers
+	 *            Are headers present?
+	 * @param format
+	 *            What is the CSV format.
+	 */
+	public ReadCSV(final InputStream is, final boolean headers, 
 				final CSVFormat format) {
 		this.reader = new BufferedReader(new InputStreamReader(is));
 		begin(headers,format);
@@ -129,6 +149,9 @@ public class ReadCSV {
 
 	/**
 	 * Construct a CSV reader from a filename.
+	 * Allows a delimiter character to be specified.
+	 * Numbers will be parsed using the current
+	 * locale.
 	 * 
 	 * @param filename
 	 *            The filename.
@@ -149,6 +172,33 @@ public class ReadCSV {
 			throw new EncogError(e);
 		}
 	}
+	
+	/**
+	 * Construct a CSV reader from a filename.
+	 * The format parameter specifies the separator 
+	 * character to use, as well as the number
+	 * format.
+	 * 
+	 * @param filename
+	 *            The filename.
+	 * @param headers
+	 *            The headers.
+	 * @param delim
+	 *            The delimiter.
+	 */
+	public ReadCSV(final String filename, final boolean headers,
+			final char delim) {
+		try {
+			CSVFormat format = new CSVFormat(CSVFormat.getDecimalCharacter(),delim);
+			this.reader = new BufferedReader(new FileReader(filename));
+			begin(headers,format);
+		} catch (final IOException e) {
+			if (this.logger.isErrorEnabled()) {
+				this.logger.error("Exception", e);
+			}
+			throw new EncogError(e);
+		}
+	}
 
 	/**
 	 * Reader the headers.
@@ -157,21 +207,7 @@ public class ReadCSV {
 	 *            Are headers present.
 	 */
 	private void begin(final boolean headers,final CSVFormat format) {
-		try {
-			
-			if( format.getDecimal()=='.' )
-			{
-				this.numberFormatter = NumberFormat.getInstance(Locale.US);
-			}
-			else if( format.getDecimal()==',' )
-			{
-				this.numberFormatter = NumberFormat.getInstance(Locale.FRANCE);
-			}
-			else
-			{
-				this.numberFormatter = NumberFormat.getInstance();
-			}
-			
+		try {			
 			this.format = format;
 			// read the column heads
 			if (headers) {
@@ -281,11 +317,7 @@ public class ReadCSV {
 	 */
 	public double getDouble(final int index) {
 		final String str = get(index);
-		try {
-			return this.numberFormatter.parse(str).doubleValue();
-		} catch (ParseException e) {
-			throw new CSVError(e);
-		}
+		return this.format.parse(str);
 	}
 
 	/**
@@ -297,11 +329,7 @@ public class ReadCSV {
 	 */
 	public double getDouble(final String column) {
 		final String str = get(column);
-		try {
-			return this.numberFormatter.parse(str).doubleValue();
-		} catch (ParseException e) {
-			throw new CSVError(e);
-		}
+		return this.format.parse(str);
 	}
 
 	/**
@@ -314,7 +342,7 @@ public class ReadCSV {
 	public int getInt(final String col) {
 		final String str = get(col);
 		try {
-			return this.numberFormatter.parse(str).intValue();
+			return this.format.getNumberFormatter().parse(str).intValue();
 		} catch (ParseException e) {
 			throw new CSVError(e);
 		}

@@ -32,6 +32,7 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.Persistor;
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.CommaList;
 import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
@@ -144,7 +145,7 @@ public final class PersistorUtil {
 			}
 			if (in.is(PersistorUtil.ROW, true)) {
 				final String str = in.readTextToTag();
-				final double[] d = CommaList.fromCommas(str);
+				final double[] d = CommaList.fromCommas(CSVFormat.EG_FORMAT,str);
 				for (int col = 0; col < d.length; col++) {
 					matrix.set(row, col, d[col]);
 				}

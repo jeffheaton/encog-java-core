@@ -32,6 +32,7 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.CommaList;
 import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
@@ -117,7 +118,7 @@ public class BasicLayerPersistor implements Persistor {
 			if (threshold == null) {
 				layer = new BasicLayer(activation, false, neuronCount);
 			} else {
-				final double[] t = CommaList.fromCommas(threshold);
+				final double[] t = CommaList.fromCommas(CSVFormat.EG_FORMAT,threshold);
 				layer = new BasicLayer(activation, true, neuronCount);
 				for (int i = 0; i < t.length; i++) {
 					layer.setThreshold(i, t[i]);
@@ -150,7 +151,7 @@ public class BasicLayerPersistor implements Persistor {
 
 		if (layer.hasThreshold()) {
 			final StringBuilder result = new StringBuilder();
-			CommaList.toCommas(result, layer.getThreshold());
+			CommaList.toCommas(CSVFormat.EG_FORMAT,result, layer.getThreshold());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
 		}
