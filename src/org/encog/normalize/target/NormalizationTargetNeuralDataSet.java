@@ -1,5 +1,6 @@
 package org.encog.normalize.target;
 
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
@@ -7,7 +8,7 @@ public class NormalizationTargetNeuralDataSet implements NormalizationTarget {
 
 	private int inputCount;
 	private int idealCount;
-	private BasicNeuralDataSet dataset;
+	private NeuralDataSet dataset;
 	
 	public NormalizationTargetNeuralDataSet(int inputCount,int idealCount )
 	{
@@ -16,14 +17,17 @@ public class NormalizationTargetNeuralDataSet implements NormalizationTarget {
 		this.dataset = new BasicNeuralDataSet();
 	}
 	
+	public NormalizationTargetNeuralDataSet(NeuralDataSet dataset)
+	{
+		this.dataset = dataset;
+		this.inputCount = this.dataset.getInputSize();
+		this.idealCount = this.dataset.getIdealSize();
+	}
+	
 	public void close() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void open() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public void write(double[] data, int inputCount) {
