@@ -49,6 +49,10 @@ import org.slf4j.LoggerFactory;
  * This class is not memory based, so very long files can be used, without
  * running out of memory.
  * 
+ * This class can be slow, as it can take awhile to parse all of the numbers in
+ * a really long CSV file.  Because of this it is best not to use this set 
+ * directly with a training algorithm.  Rather use it to load a BufferedNeuralDataSet.
+ * 
  * @author jheaton
  */
 public class CSVNeuralDataSet implements NeuralDataSet {
