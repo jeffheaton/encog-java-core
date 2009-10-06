@@ -39,7 +39,6 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.normalize.input.HasFixedLength;
 import org.encog.normalize.input.InputField;
-import org.encog.normalize.input.InputFieldArray1D;
 import org.encog.normalize.input.InputFieldCSV;
 import org.encog.normalize.input.InputFieldNeuralDataSet;
 import org.encog.normalize.input.NeuralDataFieldHolder;

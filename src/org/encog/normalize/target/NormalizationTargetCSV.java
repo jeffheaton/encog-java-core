@@ -8,7 +8,6 @@ import java.io.PrintWriter;
 import org.encog.normalize.NormalizationError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.CommaList;
-import org.encog.util.csv.ReadCSV;
 
 public class NormalizationTargetCSV implements NormalizationTarget {
 	
