@@ -84,8 +84,9 @@ public class ErrorCalculation {
 		for (int i = 0; i < actual.length; i++) {
 			final double delta = ideal[i] - actual[i];
 			this.globalError += delta * delta;
-			this.setSize += ideal.length;
 		}
+		
+		this.setSize += ideal.length;
 	}
 
 	/**
