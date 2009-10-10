@@ -40,7 +40,7 @@ import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.CommaList;
+import org.encog.util.csv.NumberList;
 import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -85,13 +85,13 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 	private void handleItem(final ReadXML in) {
 		final Map<String, String> properties = in.readPropertyBlock();
 		NeuralDataPair pair = null;
-		final NeuralData input = new BasicNeuralData(CommaList
+		final NeuralData input = new BasicNeuralData(NumberList
 				.fromCommas(CSVFormat.EG_FORMAT,properties
 						.get(BasicNeuralDataSetPersistor.TAG_INPUT)));
 
 		if (properties.containsKey(BasicNeuralDataSetPersistor.TAG_IDEAL)) {
 			// supervised
-			final NeuralData ideal = new BasicNeuralData(CommaList
+			final NeuralData ideal = new BasicNeuralData(NumberList
 					.fromCommas(CSVFormat.EG_FORMAT,properties
 							.get(BasicNeuralDataSetPersistor.TAG_IDEAL)));
 			pair = new BasicNeuralDataPair(input, ideal);
@@ -150,12 +150,12 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		for (final NeuralDataPair pair : set) {
 			out.beginTag(BasicNeuralDataSetPersistor.TAG_ITEM);
 
-			CommaList.toCommas(CSVFormat.EG_FORMAT,builder, pair.getInput().getData());
+			NumberList.toCommas(CSVFormat.EG_FORMAT,builder, pair.getInput().getData());
 			out.addProperty(BasicNeuralDataSetPersistor.TAG_INPUT, builder
 					.toString());
 
 			if (pair.getIdeal() != null) {
-				CommaList.toCommas(CSVFormat.EG_FORMAT,builder, pair.getIdeal().getData());
+				NumberList.toCommas(CSVFormat.EG_FORMAT,builder, pair.getIdeal().getData());
 				out.addProperty(BasicNeuralDataSetPersistor.TAG_IDEAL, builder
 						.toString());
 			}

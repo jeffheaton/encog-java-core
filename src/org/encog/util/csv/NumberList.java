@@ -2,7 +2,7 @@ package org.encog.util.csv;
 
 import java.util.StringTokenizer;
 
-public class CommaList {
+public class NumberList {
 	/**
 	 * Convert an array of doubles to a comma separated list.
 	 * 
