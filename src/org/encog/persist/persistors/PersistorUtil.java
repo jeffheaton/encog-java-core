@@ -145,7 +145,7 @@ public final class PersistorUtil {
 			}
 			if (in.is(PersistorUtil.ROW, true)) {
 				final String str = in.readTextToTag();
-				final double[] d = NumberList.fromCommas(CSVFormat.EG_FORMAT,str);
+				final double[] d = NumberList.fromList(CSVFormat.EG_FORMAT,str);
 				for (int col = 0; col < d.length; col++) {
 					matrix.set(row, col, d[col]);
 				}

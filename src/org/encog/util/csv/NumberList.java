@@ -11,7 +11,7 @@ public class NumberList {
 	 * @param data
 	 *            The array of doubles to use.
 	 */
-	public static void toCommas(CSVFormat format, final StringBuilder result, 
+	public static void toList(CSVFormat format, final StringBuilder result, 
 			final double[] data) {
 		result.setLength(0);
 		for (int i = 0; i < data.length; i++) {
@@ -29,7 +29,7 @@ public class NumberList {
 	 *            The string that contains a list of numbers.
 	 * @return An array of doubles parsed from the string.
 	 */
-	public static double[] fromCommas(CSVFormat format, final String str) {
+	public static double[] fromList(CSVFormat format, final String str) {
 		// first count the numbers
 		int count = 0;
 		final StringTokenizer tok = new StringTokenizer(str, ""+format.getSeparator());

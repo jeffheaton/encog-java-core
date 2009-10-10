@@ -29,7 +29,7 @@ public class NormalizationTargetCSV implements NormalizationTarget {
 
 	public void write(double[] data, int inputCount) {
 		StringBuilder result = new StringBuilder();
-		NumberList.toCommas(format, result, data);
+		NumberList.toList(format, result, data);
 		this.output.println(result.toString());		
 	}
 
