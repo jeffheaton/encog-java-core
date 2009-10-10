@@ -3,6 +3,7 @@ package org.encog.normalize.segregate;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.encog.normalize.Normalization;
 import org.encog.normalize.input.InputField;
 
 public class RangeSegregator implements Segregator {
@@ -10,6 +11,7 @@ public class RangeSegregator implements Segregator {
 	private final InputField sourceField;
 	private final boolean include;
 	private final Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
+	private Normalization normalization;
 	
 	public RangeSegregator(InputField sourceField, boolean include)
 	{
@@ -42,6 +44,16 @@ public class RangeSegregator implements Segregator {
 
 	public InputField getSourceField() {
 		return sourceField;
+	}
+
+
+	public Normalization getNormalization() {
+		return this.normalization;
+	}
+
+
+	public void init(Normalization normalization) {
+		this.normalization = normalization;
 	}
 	
 	

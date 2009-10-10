@@ -94,6 +94,7 @@ public class Normalization {
 
 	public void addSegregator(Segregator segregator) {
 		this.segregators.add(segregator);
+		segregator.init(this);
 	}
 
 	private void openCSV() {
