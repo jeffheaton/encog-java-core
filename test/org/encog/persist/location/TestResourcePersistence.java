@@ -2,7 +2,7 @@ package org.encog.persist.location;
 
 import java.io.InputStream;
 
-import org.encog.util.Directory;
+import org.encog.util.file.Directory;
 import org.junit.Assert;
 import org.junit.Test;
 
