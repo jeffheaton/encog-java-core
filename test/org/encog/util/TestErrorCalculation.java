@@ -38,7 +38,7 @@ public class TestErrorCalculation extends TestCase {
 		{
 			error.updateError(actual_bad[i], ideal[i]);
 		}
-		TestCase.assertEquals(125,(int)(error.calculateRMS()*1000));
+		TestCase.assertEquals(250,(int)(error.calculateRMS()*1000));
 		
 	}
 }
