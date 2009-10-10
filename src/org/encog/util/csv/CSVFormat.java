@@ -56,6 +56,7 @@ public class CSVFormat {
 	
 	public String format(double d, int digits)
 	{
+		this.numberFormatter.setGroupingUsed(false);
 		this.numberFormatter.setMaximumFractionDigits(digits);
 		return this.numberFormatter.format(d);
 	}
