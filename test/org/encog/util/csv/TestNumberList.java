@@ -22,6 +22,11 @@ public class TestNumberList extends TestCase {
 		Assert.assertEquals(1, d[0], 0.1);
 		Assert.assertEquals(2.5, d[1], 0.1);
 		Assert.assertEquals(3000, d[2], 0.1);
+		double[] d2 = NumberList.fromList(CSVFormat.DECIMAL_COMMA, "1;2,5;3000");
+		Assert.assertEquals(3, d2.length);
+		Assert.assertEquals(1, d2[0], 0.1);
+		Assert.assertEquals(2.5, d2[1], 0.1);
+		Assert.assertEquals(3000, d2[2], 0.1);
 	}
 	
 }
