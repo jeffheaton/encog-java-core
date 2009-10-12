@@ -69,7 +69,9 @@ public class ActivationCompetitive extends BasicActivationFunction {
 
 	/**
 	 * Perform the activation function.
-	 * @param d The data to be given to the activation function.
+	 * 
+	 * @param d
+	 *            The data to be given to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 		final boolean[] winners = new boolean[d.length];

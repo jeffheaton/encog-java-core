@@ -57,6 +57,9 @@ public class ReadCSV {
 	 */
 	private DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	
+	/**
+	 * The CSV format to use.
+	 */
 	private CSVFormat format;
 
 	/**

@@ -34,7 +34,6 @@ import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
-import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,22 +49,22 @@ public class BasicLayerPersistor implements Persistor {
 	 * The activation function tag.
 	 */
 	public static final String TAG_ACTIVATION = "activation";
-	
+
 	/**
 	 * The neurons property.
 	 */
 	public static final String PROPERTY_NEURONS = "neurons";
-	
+
 	/**
 	 * The threshold property.
 	 */
 	public static final String PROPERTY_THRESHOLD = "threshold";
-	
+
 	/**
 	 * The x-coordinate to place this object at.
 	 */
 	public static final String PROPERTY_X = "x";
-	
+
 	/**
 	 * The y-coordinate to place this object at.
 	 */
@@ -118,7 +117,8 @@ public class BasicLayerPersistor implements Persistor {
 			if (threshold == null) {
 				layer = new BasicLayer(activation, false, neuronCount);
 			} else {
-				final double[] t = NumberList.fromList(CSVFormat.EG_FORMAT,threshold);
+				final double[] t = NumberList.fromList(CSVFormat.EG_FORMAT,
+						threshold);
 				layer = new BasicLayer(activation, true, neuronCount);
 				for (int i = 0; i < t.length; i++) {
 					layer.setThreshold(i, t[i]);
@@ -151,7 +151,8 @@ public class BasicLayerPersistor implements Persistor {
 
 		if (layer.hasThreshold()) {
 			final StringBuilder result = new StringBuilder();
-			NumberList.toList(CSVFormat.EG_FORMAT,result, layer.getThreshold());
+			NumberList
+					.toList(CSVFormat.EG_FORMAT, result, layer.getThreshold());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
 		}

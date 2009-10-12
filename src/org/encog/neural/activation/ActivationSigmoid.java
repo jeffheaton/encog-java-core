@@ -41,10 +41,12 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	private static final long serialVersionUID = 5622349801036468572L;
 
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 
@@ -64,6 +66,7 @@ public class ActivationSigmoid extends BasicActivationFunction {
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	@Override
@@ -72,13 +75,14 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 
@@ -87,7 +91,7 @@ public class ActivationSigmoid extends BasicActivationFunction {
 		}
 
 	}
-	
+
 	/**
 	 * @return Return true, sigmoid has a derivative.
 	 */

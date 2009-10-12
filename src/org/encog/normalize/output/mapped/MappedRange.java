@@ -5,33 +5,31 @@ public class MappedRange {
 	private final double low;
 	private final double high;
 	private final double value;
-	
-	public MappedRange(double low, double high, double value) {
+
+	public MappedRange(final double low, final double high, final double value) {
 		super();
 		this.low = low;
 		this.high = high;
 		this.value = value;
 	}
 
-	public double getLow() {
-		return low;
+	public double getHigh() {
+		return this.high;
 	}
 
-	public double getHigh() {
-		return high;
+	public double getLow() {
+		return this.low;
 	}
 
 	public double getValue() {
-		return value;
+		return this.value;
 	}
-	
-	public boolean inRange(double d)
-	{
-		if( d>=this.low && d<=this.high) {
+
+	public boolean inRange(final double d) {
+		if ((d >= this.low) && (d <= this.high)) {
 			return true;
 		}
 		return false;
 	}
-	
-	
+
 }

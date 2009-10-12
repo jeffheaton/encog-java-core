@@ -174,8 +174,8 @@ public abstract class Chromosome<GENE_TYPE> implements
 		final int geneLength = getGenes().length;
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() * (geneLength 
-				- getGeneticAlgorithm().getCutLength()));
+		final int cutpoint1 = (int) (Math.random() * (geneLength - getGeneticAlgorithm()
+				.getCutLength()));
 		final int cutpoint2 = cutpoint1 + getGeneticAlgorithm().getCutLength();
 
 		// keep track of which cities have been taken in each of the two
@@ -205,7 +205,7 @@ public abstract class Chromosome<GENE_TYPE> implements
 				}
 			}
 		}
-		
+
 		// mutate if needed
 		if (Math.random() < this.geneticAlgorithm.getMutationPercent()) {
 			offspring1.mutate();

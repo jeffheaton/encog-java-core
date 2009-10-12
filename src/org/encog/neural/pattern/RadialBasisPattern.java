@@ -36,12 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A radial basis function (RBF) network uses several radial basis
- * functions to provide a more dynamic hidden layer activation function
- * than many other types of neural network.  It consists of a 
- * input, output and hidden layer.
+ * A radial basis function (RBF) network uses several radial basis functions to
+ * provide a more dynamic hidden layer activation function than many other types
+ * of neural network. It consists of a input, output and hidden layer.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class RadialBasisPattern implements NeuralNetworkPattern {
 	/**
@@ -51,32 +51,34 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * The number of input neurons to use. Must be set, default to invalid
-	 * -1 value.
+	 * The number of input neurons to use. Must be set, default to invalid -1
+	 * value.
 	 */
 	private int inputNeurons = -1;
-	
+
 	/**
-	 * The number of hidden neurons to use. Must be set, default to invalid
-	 * -1 value.
+	 * The number of hidden neurons to use. Must be set, default to invalid -1
+	 * value.
 	 */
 	private int outputNeurons = -1;
-	
+
 	/**
-	 * The number of hidden neurons to use. Must be set, default to invalid
-	 * -1 value.
+	 * The number of hidden neurons to use. Must be set, default to invalid -1
+	 * value.
 	 */
 	private int hiddenNeurons = -1;
 
 	/**
-	 * Add the hidden layer, this should be called once, as a RBF
-	 * has a single hidden layer.
-	 * @param count The number of neurons in the hidden layer.
+	 * Add the hidden layer, this should be called once, as a RBF has a single
+	 * hidden layer.
+	 * 
+	 * @param count
+	 *            The number of neurons in the hidden layer.
 	 */
 	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			final String str = "A RBF network usually has a single " 
-				+ "hidden layer.";
+			final String str = "A RBF network usually has a single "
+					+ "hidden layer.";
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
 			}
@@ -87,14 +89,22 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	}
 
 	/**
+	 * Clear out any hidden neurons.
+	 */
+	public void clear() {
+		this.hiddenNeurons = 0;
+	}
+
+	/**
 	 * Generate the RBF network.
+	 * 
 	 * @return The neural network.
 	 */
 	public BasicNetwork generate() {
-		
-		Layer input = new BasicLayer(new ActivationLinear(), false,
+
+		final Layer input = new BasicLayer(new ActivationLinear(), false,
 				this.inputNeurons);
-		Layer output = new BasicLayer(this.outputNeurons);
+		final Layer output = new BasicLayer(this.outputNeurons);
 		final BasicNetwork network = new BasicNetwork();
 		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(
 				this.hiddenNeurons);
@@ -134,7 +144,9 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of input neurons.
-	 * @param count The number of input neurons.
+	 * 
+	 * @param count
+	 *            The number of input neurons.
 	 */
 	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
@@ -142,16 +154,11 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of output neurons.
-	 * @param count The number of output neurons.
+	 * 
+	 * @param count
+	 *            The number of output neurons.
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
-	}
-	
-	/**
-	 * Clear out any hidden neurons.
-	 */
-	public void clear() {
-		this.hiddenNeurons = 0;		
 	}
 }

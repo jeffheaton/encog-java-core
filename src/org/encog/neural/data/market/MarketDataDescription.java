@@ -45,13 +45,13 @@ public class MarketDataDescription extends TemporalDataDescription {
 	/**
 	 * The ticker symbol to be loaded.
 	 */
-	private TickerSymbol ticker;
+	private final TickerSymbol ticker;
 
 	/**
 	 * The type of data to be loaded from the specified ticker symbol.
 	 */
-	private MarketDataType dataType;
-	
+	private final MarketDataType dataType;
+
 	/**
 	 * The logging object.
 	 */
@@ -100,17 +100,17 @@ public class MarketDataDescription extends TemporalDataDescription {
 	}
 
 	/**
-	 * @return the ticker
-	 */
-	public TickerSymbol getTicker() {
-		return ticker;
-	}
-
-	/**
 	 * @return the dataType
 	 */
 	public MarketDataType getDataType() {
-		return dataType;
+		return this.dataType;
+	}
+
+	/**
+	 * @return the ticker
+	 */
+	public TickerSymbol getTicker() {
+		return this.ticker;
 	}
 
 }

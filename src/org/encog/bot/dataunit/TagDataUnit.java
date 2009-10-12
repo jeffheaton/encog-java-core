@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class TagDataUnit extends DataUnit {
-	
+
 	/**
 	 * The tag for this data unit.
 	 */
@@ -57,7 +57,9 @@ public class TagDataUnit extends DataUnit {
 
 	/**
 	 * Set the tag that this data unit is based on.
-	 * @param tag HTML tag.
+	 * 
+	 * @param tag
+	 *            HTML tag.
 	 */
 	public void setTag(final Tag tag) {
 		this.tag = tag;

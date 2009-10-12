@@ -29,18 +29,20 @@ import java.io.OutputStream;
 
 /**
  * Contains specifics to writing XML.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class WriteXML extends WriteTags {
 
 	/**
 	 * Construct an object to write an XML file.
-	 * @param os The output stream.
+	 * 
+	 * @param os
+	 *            The output stream.
 	 */
 	public WriteXML(final OutputStream os) {
 		super(os);
 	}
-
 
 }

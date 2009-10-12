@@ -7,14 +7,17 @@ import org.encog.normalize.output.OutputFieldGrouped;
 
 public class OutputFieldZAxis extends OutputFieldGrouped {
 
-	public OutputFieldZAxis(OutputFieldGroup group, final InputField field) {
-		super(group,field);
-		if( !(group instanceof ZAxisGroup ) )
-			throw new NormalizationError("Must use ZAxisGroup with OutputFieldZAxis.");
+	public OutputFieldZAxis(final OutputFieldGroup group, final InputField field) {
+		super(group, field);
+		if (!(group instanceof ZAxisGroup)) {
+			throw new NormalizationError(
+					"Must use ZAxisGroup with OutputFieldZAxis.");
+		}
 	}
 
 	public double calculate() {
-		return(this.getSourceField().getCurrentValue()*((ZAxisGroup)this.getGroup()).getMultiplier());
+		return (getSourceField().getCurrentValue() * ((ZAxisGroup) getGroup())
+				.getMultiplier());
 	}
 
 }

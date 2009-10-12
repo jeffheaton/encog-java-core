@@ -25,7 +25,6 @@
  */
 package org.encog.neural.activation;
 
-
 /**
  * Utility classes for activation functions. Used to convert a single value
  * to/from an array. This is necessary because the activation functions are
@@ -36,17 +35,11 @@ package org.encog.neural.activation;
  */
 public final class ActivationUtil {
 
-
 	/**
-	 * Private constructor.
-	 */
-	private ActivationUtil() {
-	}
-	
-	/**
-	 * Get a single value from an array. Return the first element in the 
-	 * array.
-	 * @param d The array.
+	 * Get a single value from an array. Return the first element in the array.
+	 * 
+	 * @param d
+	 *            The array.
 	 * @return The first element in the array.
 	 */
 	public static double fromArray(final double[] d) {
@@ -55,12 +48,20 @@ public final class ActivationUtil {
 
 	/**
 	 * Take a single value and create an array that holds it.
-	 * @param d The single value.
+	 * 
+	 * @param d
+	 *            The single value.
 	 * @return The array.
 	 */
 	public static double[] toArray(final double d) {
 		final double[] result = new double[1];
 		result[0] = d;
 		return result;
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private ActivationUtil() {
 	}
 }

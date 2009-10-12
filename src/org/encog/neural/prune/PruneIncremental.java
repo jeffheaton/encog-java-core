@@ -106,8 +106,7 @@ public class PruneIncremental extends ConcurrentJob {
 	/**
 	 * The ranges for the hidden layers.
 	 */
-	private final List<HiddenLayerParams> hidden = 
-		new ArrayList<HiddenLayerParams>();
+	private final List<HiddenLayerParams> hidden = new ArrayList<HiddenLayerParams>();
 
 	/**
 	 * The number if training iterations that should be tried for each network.
@@ -123,7 +122,6 @@ public class PruneIncremental extends ConcurrentJob {
 	 * The best network found so far.
 	 */
 	private BasicNetwork bestNetwork;
-
 
 	/**
 	 * How many networks have been tried so far?
@@ -260,8 +258,9 @@ public class PruneIncremental extends ConcurrentJob {
 	}
 
 	/**
-	 * Get the next workload.  This is the number of hidden neurons.
-	 * This is the total amount of work to be processed.
+	 * Get the next workload. This is the number of hidden neurons. This is the
+	 * total amount of work to be processed.
+	 * 
 	 * @return The amount of work to be processed by this.
 	 */
 	@Override
@@ -276,9 +275,11 @@ public class PruneIncremental extends ConcurrentJob {
 	}
 
 	/**
-	 * Perform an individual job unit, which is a single network
-	 * to train and evaluate.
-	 * @param context Contains information about the job unit.
+	 * Perform an individual job unit, which is a single network to train and
+	 * evaluate.
+	 * 
+	 * @param context
+	 *            Contains information about the job unit.
 	 */
 	@Override
 	public void performJobUnit(final JobUnitContext context) {
@@ -350,8 +351,8 @@ public class PruneIncremental extends ConcurrentJob {
 	}
 
 	/**
-	 * Request the next task.  This is the next network to attempt
-	 * to train.
+	 * Request the next task. This is the next network to attempt to train.
+	 * 
 	 * @return The next network to train.
 	 */
 	@Override

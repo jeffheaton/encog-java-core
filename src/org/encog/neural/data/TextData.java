@@ -53,7 +53,7 @@ public class TextData implements EncogPersistedObject {
 	 * The name of this object.
 	 */
 	private String name;
-	
+
 	/**
 	 * The description of this object.
 	 */
@@ -67,6 +67,7 @@ public class TextData implements EncogPersistedObject {
 
 	/**
 	 * Clone this object.
+	 * 
 	 * @return A cloned version of this object.
 	 */
 	@Override
@@ -80,6 +81,7 @@ public class TextData implements EncogPersistedObject {
 
 	/**
 	 * Create a persistor to store this object.
+	 * 
 	 * @return A persistor.
 	 */
 	public Persistor createPersistor() {
@@ -109,7 +111,9 @@ public class TextData implements EncogPersistedObject {
 
 	/**
 	 * Set the description of this object.
-	 * @param description The description of this object.
+	 * 
+	 * @param description
+	 *            The description of this object.
 	 */
 	public void setDescription(final String description) {
 		this.description = description;
@@ -117,7 +121,9 @@ public class TextData implements EncogPersistedObject {
 
 	/**
 	 * Set the name of this object.
-	 * @param name The name of this object.
+	 * 
+	 * @param name
+	 *            The name of this object.
 	 */
 	public void setName(final String name) {
 		this.name = name;
@@ -125,7 +131,9 @@ public class TextData implements EncogPersistedObject {
 
 	/**
 	 * Set the text held by this object.
-	 * @param text The text held by this object.
+	 * 
+	 * @param text
+	 *            The text held by this object.
 	 */
 	public void setText(final String text) {
 		this.text = text;

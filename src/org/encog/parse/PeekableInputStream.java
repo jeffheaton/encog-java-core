@@ -129,7 +129,9 @@ public class PeekableInputStream extends InputStream {
 
 	/**
 	 * Peek ahead and see if the specified string is present.
-	 * @param str The string we are looking for.
+	 * 
+	 * @param str
+	 *            The string we are looking for.
 	 * @return True if the string was found.
 	 */
 	public boolean peek(final String str) {
@@ -169,7 +171,9 @@ public class PeekableInputStream extends InputStream {
 
 	/**
 	 * Skip the specified number of bytes.
-	 * @param count The number of bytes to skip.
+	 * 
+	 * @param count
+	 *            The number of bytes to skip.
 	 * @return The actual number of bytes skipped.
 	 */
 	@Override

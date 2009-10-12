@@ -46,7 +46,7 @@ public class PersistWriter {
 	 * The XML writer.
 	 */
 	private final WriteXML out;
-	
+
 	/**
 	 * The output stream.
 	 */
@@ -59,7 +59,9 @@ public class PersistWriter {
 
 	/**
 	 * Create a writer for the specified location.
-	 * @param location The location.
+	 * 
+	 * @param location
+	 *            The location.
 	 */
 	public PersistWriter(final PersistenceLocation location) {
 		this.fileOutput = location.createOutputStream();
@@ -104,10 +106,13 @@ public class PersistWriter {
 	}
 
 	/**
-	 * Merge the objects from this collection into the new one.
-	 * Skip the specified object.
-	 * @param location The location to merge to.
-	 * @param skip The object to skip.
+	 * Merge the objects from this collection into the new one. Skip the
+	 * specified object.
+	 * 
+	 * @param location
+	 *            The location to merge to.
+	 * @param skip
+	 *            The object to skip.
 	 */
 	public void mergeObjects(final PersistenceLocation location,
 			final String skip) {
@@ -117,12 +122,16 @@ public class PersistWriter {
 	}
 
 	/**
-	 * Modify the specified object, such as changing its name or
-	 * description.
-	 * @param location The location of the object being modified.
-	 * @param name The old name of the object being modified.
-	 * @param newName The new name of the object being modified.
-	 * @param newDesc The new description of the object being modified.
+	 * Modify the specified object, such as changing its name or description.
+	 * 
+	 * @param location
+	 *            The location of the object being modified.
+	 * @param name
+	 *            The old name of the object being modified.
+	 * @param newName
+	 *            The new name of the object being modified.
+	 * @param newDesc
+	 *            The new description of the object being modified.
 	 */
 	public void modifyObject(final PersistenceLocation location,
 			final String name, final String newName, final String newDesc) {
@@ -149,7 +158,9 @@ public class PersistWriter {
 
 	/**
 	 * Write an object.
-	 * @param obj The object to write.
+	 * 
+	 * @param obj
+	 *            The object to write.
 	 */
 	public void writeObject(final EncogPersistedObject obj) {
 		final Persistor persistor = obj.createPersistor();

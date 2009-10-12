@@ -47,24 +47,27 @@ import org.encog.persist.EncogPersistedObject;
 public interface ActivationFunction extends EncogPersistedObject {
 
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	void activationFunction(double[] d);
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	void derivativeFunction(double[] d);
-	
+
 	/**
 	 * @return Return true if this function has a derivative.
 	 */

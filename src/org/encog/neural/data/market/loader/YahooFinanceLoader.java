@@ -112,11 +112,9 @@ public class YahooFinanceLoader implements MarketLoader {
 	 *         loaded.
 	 */
 	public Collection<LoadedMarketData> load(final TickerSymbol ticker,
-			final Set<MarketDataType> dataNeeded, final Date from, 
-			final Date to) {
+			final Set<MarketDataType> dataNeeded, final Date from, final Date to) {
 		try {
-			final Collection<LoadedMarketData> result = 
-				new ArrayList<LoadedMarketData>();
+			final Collection<LoadedMarketData> result = new ArrayList<LoadedMarketData>();
 			final URL url = buildURL(ticker, from, to);
 			final InputStream is = url.openStream();
 			final ReadCSV csv = new ReadCSV(is, true, CSVFormat.ENGLISH);
@@ -130,8 +128,7 @@ public class YahooFinanceLoader implements MarketLoader {
 				final double low = csv.getDouble("low");
 				final double volume = csv.getDouble("volume");
 
-				final LoadedMarketData data = new 
-				LoadedMarketData(date, ticker);
+				final LoadedMarketData data = new LoadedMarketData(date, ticker);
 				data.setData(MarketDataType.ADJUSTED_CLOSE, adjClose);
 				data.setData(MarketDataType.OPEN, open);
 				data.setData(MarketDataType.CLOSE, close);

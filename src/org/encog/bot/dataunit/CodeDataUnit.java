@@ -56,7 +56,9 @@ public class CodeDataUnit extends DataUnit {
 
 	/**
 	 * Set the code to the specified string.
-	 * @param str The new code.
+	 * 
+	 * @param str
+	 *            The new code.
 	 */
 	public void setCode(final String str) {
 		this.code = str;

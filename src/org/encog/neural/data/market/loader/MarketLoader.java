@@ -43,10 +43,15 @@ public interface MarketLoader {
 
 	/**
 	 * Load the specified ticker symbol for the specified date.
-	 * @param ticker The ticker symbol to load.
-	 * @param dataNeeded Which data is actually needed.
-	 * @param from Beginning date for load.
-	 * @param to Ending date for load.
+	 * 
+	 * @param ticker
+	 *            The ticker symbol to load.
+	 * @param dataNeeded
+	 *            Which data is actually needed.
+	 * @param from
+	 *            Beginning date for load.
+	 * @param to
+	 *            Ending date for load.
 	 * @return A collection of LoadedMarketData objects that was loaded.
 	 */
 	Collection<LoadedMarketData> load(TickerSymbol ticker,

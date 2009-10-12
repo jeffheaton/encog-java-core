@@ -38,15 +38,10 @@ package org.encog.util.math;
 public final class BoundMath {
 
 	/**
-	 * Private constructor.
-	 */
-	private BoundMath() {
-		
-	}
-	
-	/**
 	 * Calculate the cos.
-	 * @param a The value passed to the function.
+	 * 
+	 * @param a
+	 *            The value passed to the function.
 	 * @return The result of the function.
 	 */
 	public static double cos(final double a) {
@@ -55,7 +50,9 @@ public final class BoundMath {
 
 	/**
 	 * Calculate the exp.
-	 * @param a The value passed to the function.
+	 * 
+	 * @param a
+	 *            The value passed to the function.
 	 * @return The result of the function.
 	 */
 	public static double exp(final double a) {
@@ -64,7 +61,9 @@ public final class BoundMath {
 
 	/**
 	 * Calculate the log.
-	 * @param a The value passed to the function.
+	 * 
+	 * @param a
+	 *            The value passed to the function.
 	 * @return The result of the function.
 	 */
 	public static double log(final double a) {
@@ -73,8 +72,11 @@ public final class BoundMath {
 
 	/**
 	 * Calculate the power of a number.
-	 * @param a The base.
-	 * @param b The exponent.
+	 * 
+	 * @param a
+	 *            The base.
+	 * @param b
+	 *            The exponent.
 	 * @return The result of the function.
 	 */
 	public static double pow(final double a, final double b) {
@@ -83,7 +85,9 @@ public final class BoundMath {
 
 	/**
 	 * Calculate the sin.
-	 * @param a The value passed to the function.
+	 * 
+	 * @param a
+	 *            The value passed to the function.
 	 * @return The result of the function.
 	 */
 	public static double sin(final double a) {
@@ -92,10 +96,19 @@ public final class BoundMath {
 
 	/**
 	 * Calculate the square root.
-	 * @param a The value passed to the function.
+	 * 
+	 * @param a
+	 *            The value passed to the function.
 	 * @return The result of the function.
 	 */
 	public static double sqrt(final double a) {
 		return Math.sqrt(a);
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private BoundMath() {
+
 	}
 }

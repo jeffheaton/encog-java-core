@@ -30,32 +30,33 @@ import org.encog.normalize.input.InputField;
 
 public class OutputFieldRangeMapped implements OutputField {
 
-	private final InputField field; 
-	private final double low; 
+	private final InputField field;
+	private final double low;
 	private final double high;
-	
-	public OutputFieldRangeMapped(InputField field, double low, double high) {
+
+	public OutputFieldRangeMapped(final InputField field, final double low,
+			final double high) {
 		this.field = field;
 		this.low = low;
 		this.high = high;
 	}
 
-	public InputField getField() {
-		return field;
+	public double calculate() {
+		return ((this.field.getCurrentValue() - this.field.getMin()) / (this.field
+				.getMax() - this.field.getMin()))
+				* (this.high - this.low) + this.low;
 	}
 
-	public double getLow() {
-		return low;
+	public InputField getField() {
+		return this.field;
 	}
 
 	public double getHigh() {
-		return high;
+		return this.high;
 	}
 
-	public double calculate() {
-		return ((field.getCurrentValue()-field.getMin()) / (field.getMax()-field.getMin())) * (this.high-this.low) + this.low;
+	public double getLow() {
+		return this.low;
 	}
-	
-	
 
 }

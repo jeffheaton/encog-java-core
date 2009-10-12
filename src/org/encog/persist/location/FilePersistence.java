@@ -132,8 +132,7 @@ public class FilePersistence implements PersistenceLocation {
 	 */
 	public void renameTo(final PersistenceLocation toLocation) {
 		if (!(toLocation instanceof FilePersistence)) {
-			final String str = 
-				"Can only rename from one FilePersistence location to another";
+			final String str = "Can only rename from one FilePersistence location to another";
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
 			}

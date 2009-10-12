@@ -37,7 +37,7 @@ public class NeuralNetworkError extends EncogError {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 7167228729133120101L;
-	
+
 	/**
 	 * The logging object.
 	 */

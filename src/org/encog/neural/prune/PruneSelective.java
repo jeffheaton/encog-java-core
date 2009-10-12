@@ -39,7 +39,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Prune a neural network selectivly. This class allows you to either add or
+ * Prune a neural network selectively. This class allows you to either add or
  * remove neurons from layers of a neural network. Tools
  * 
  * @author jheaton
@@ -151,9 +151,9 @@ public class PruneSelective {
 			final int neuron) {
 		// calculate the threshold significance
 		double result = 0;
-		
-		if( layer.hasThreshold() ) {
-			result+= layer.getThreshold(neuron);
+
+		if (layer.hasThreshold()) {
+			result += layer.getThreshold(neuron);
 		}
 
 		// calculate the outbound significance
@@ -241,24 +241,22 @@ public class PruneSelective {
 			}
 			layer.setThreshold(newThreshold);
 		}
-		
+
 		// adjust RBF
-		if( layer instanceof RadialBasisFunctionLayer )
-		{
-			RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer)layer;
-			RadialBasisFunction[] newRBF = new RadialBasisFunction[neuronCount];
-			for(int i=0;i<rbf.getRadialBasisFunction().length;i++)
-			{
-				newRBF[i]=rbf.getRadialBasisFunction()[i];
+		if (layer instanceof RadialBasisFunctionLayer) {
+			final RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer) layer;
+			final RadialBasisFunction[] newRBF = new RadialBasisFunction[neuronCount];
+			for (int i = 0; i < rbf.getRadialBasisFunction().length; i++) {
+				newRBF[i] = rbf.getRadialBasisFunction()[i];
 			}
-			
-			for(int i=rbf.getRadialBasisFunction().length;i<neuronCount;i++)
-			{
-				newRBF[i] = new GaussianFunction(Math.random()-0.5,Math.random(),Math.random()-0.5);
+
+			for (int i = rbf.getRadialBasisFunction().length; i < neuronCount; i++) {
+				newRBF[i] = new GaussianFunction(Math.random() - 0.5, Math
+						.random(), Math.random() - 0.5);
 			}
-			
+
 			rbf.setRadialBasisFunction(newRBF);
-			
+
 		}
 
 		// finally, up the neuron count
@@ -309,13 +307,13 @@ public class PruneSelective {
 
 			targetLayer.setThreshold(newThreshold);
 		}
-		
+
 		// adjust RBF
-		if( targetLayer instanceof RadialBasisFunctionLayer )
-		{
-			RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer)targetLayer;
-			RadialBasisFunction[] newRBF = new GaussianFunction[targetLayer.getNeuronCount() - 1];
-			
+		if (targetLayer instanceof RadialBasisFunctionLayer) {
+			final RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer) targetLayer;
+			final RadialBasisFunction[] newRBF = new GaussianFunction[targetLayer
+					.getNeuronCount() - 1];
+
 			int targetIndex = 0;
 			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
 				if (i != neuron) {
@@ -323,7 +321,7 @@ public class PruneSelective {
 				}
 			}
 			rbf.setRadialBasisFunction(newRBF);
-			
+
 		}
 
 		// update the neuron count

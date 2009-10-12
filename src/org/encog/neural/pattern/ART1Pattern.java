@@ -46,7 +46,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * The tag for the F1 layer.
 	 */
 	public static final String TAG_F1 = "F1";
-	
+
 	/**
 	 * The tag for the F2 layer.
 	 */
@@ -218,7 +218,9 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	/**
 	 * This method will throw an error, you can't set the activation function
 	 * for an ART1. type network.
-	 * @param activation The activation function.
+	 * 
+	 * @param activation
+	 *            The activation function.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
 		final String str = "Can't set the activation function for an ART1.";
@@ -260,7 +262,9 @@ public class ART1Pattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the input neuron (F1 layer) count.
-	 * @param count The input neuron count.
+	 * 
+	 * @param count
+	 *            The input neuron count.
 	 */
 	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
@@ -278,7 +282,9 @@ public class ART1Pattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the output neuron (F2 layer) count.
-	 * @param count The output neuron count.
+	 * 
+	 * @param count
+	 *            The output neuron count.
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;

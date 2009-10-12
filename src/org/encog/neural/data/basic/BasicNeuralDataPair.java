@@ -61,13 +61,13 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * The training input to the neural network.
 	 */
 	private final NeuralData input;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final transient Logger logger = 
-		LoggerFactory.getLogger(this.getClass());
+	private final transient Logger logger = LoggerFactory.getLogger(this
+			.getClass());
 
 	/**
 	 * Construct the object with only input. If this constructor is used, then
@@ -127,6 +127,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * 
 	 * @return The object as a string.
 	 */
+	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder("[NeuralDataPair:");
 		builder.append("Input:");

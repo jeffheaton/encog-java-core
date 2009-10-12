@@ -30,13 +30,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is thrown when an error occurs while using one of the
- * neural network pattern classes.
+ * This class is thrown when an error occurs while using one of the neural
+ * network pattern classes.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class PatternError extends NeuralNetworkError {
-	
+
 	/**
 	 * The serial id for this class.
 	 */
@@ -65,5 +66,5 @@ public class PatternError extends NeuralNetworkError {
 	 */
 	public PatternError(final Throwable t) {
 		super(t);
-	}	
+	}
 }

@@ -29,8 +29,9 @@ package org.encog.util.concurrency.job;
 /**
  * The job unit context contains context information to be passed to a job unit.
  * This tells the thread what to work on.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class JobUnitContext {
 
@@ -38,12 +39,12 @@ public class JobUnitContext {
 	 * Data that defines what job unit should be done.
 	 */
 	private Object jobUnit;
-	
+
 	/**
 	 * The concurrent job owner.
 	 */
 	private ConcurrentJob owner;
-	
+
 	/**
 	 * The task number for this job.
 	 */
@@ -72,7 +73,9 @@ public class JobUnitContext {
 
 	/**
 	 * Set the job unit.
-	 * @param jobUnit The job unit.
+	 * 
+	 * @param jobUnit
+	 *            The job unit.
 	 */
 	public void setJobUnit(final Object jobUnit) {
 		this.jobUnit = jobUnit;
@@ -80,7 +83,9 @@ public class JobUnitContext {
 
 	/**
 	 * Set the job owner.
-	 * @param owner The job owner.
+	 * 
+	 * @param owner
+	 *            The job owner.
 	 */
 	public void setOwner(final ConcurrentJob owner) {
 		this.owner = owner;
@@ -88,7 +93,9 @@ public class JobUnitContext {
 
 	/**
 	 * Set the task number.
-	 * @param taskNumber The task number.
+	 * 
+	 * @param taskNumber
+	 *            The task number.
 	 */
 	public void setTaskNumber(final int taskNumber) {
 		this.taskNumber = taskNumber;

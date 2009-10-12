@@ -87,9 +87,13 @@ public final class NetworkCODEC {
 
 	/**
 	 * Determine if the two neural networks are equal.
-	 * @param network1 The first network.
-	 * @param network2 The second network.
-	 * @param precision How many decimal places to check.
+	 * 
+	 * @param network1
+	 *            The first network.
+	 * @param network2
+	 *            The second network.
+	 * @param precision
+	 *            How many decimal places to check.
 	 * @return True if the two networks are equal.
 	 */
 	public static boolean equals(final BasicNetwork network1,

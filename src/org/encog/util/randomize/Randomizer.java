@@ -38,11 +38,22 @@ import org.encog.neural.networks.BasicNetwork;
 public interface Randomizer {
 
 	/**
+	 * Randomize the synapses and thresholds in the basic network based on an
+	 * array, modify the array. Previous values may be used, or they may be
+	 * discarded, depending on the randomizer.
+	 * 
+	 * @param network
+	 *            A network to randomize.
+	 */
+	void randomize(BasicNetwork network);
+
+	/**
 	 * Starting with the specified number, randomize it to the degree specified
 	 * by this randomizer. This could be a totally new random number, or it
 	 * could be based on the specified number.
 	 * 
-	 * @param d The number to randomize.
+	 * @param d
+	 *            The number to randomize.
 	 * @return A randomized number.
 	 */
 	double randomize(double d);
@@ -93,15 +104,5 @@ public interface Randomizer {
 	 *            A matrix to randomize.
 	 */
 	void randomize(Matrix m);
-
-	/**
-	 * Randomize the synapses and thresholds in the basic network based on an
-	 * array, modify the array. Previous values may be used, or they may be
-	 * discarded, depending on the randomizer.
-	 * 
-	 * @param network
-	 *            A network to randomize.
-	 */
-	void randomize(BasicNetwork network);
 
 }

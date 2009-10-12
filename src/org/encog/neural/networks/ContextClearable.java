@@ -17,12 +17,12 @@
 package org.encog.neural.networks;
 
 /**
- * Allows the clearContext method to be called.  If the layer has a context
- * that can be cleared, it should support this interface.
- *
+ * Allows the clearContext method to be called. If the layer has a context that
+ * can be cleared, it should support this interface.
+ * 
  */
 public interface ContextClearable {
-	
+
 	/**
 	 * Clear the context for this layer.
 	 */

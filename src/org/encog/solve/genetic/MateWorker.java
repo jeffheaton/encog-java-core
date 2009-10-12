@@ -30,33 +30,34 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class is used in conjunction with a thread pool. This allows
- * the genetic algorithm to offload all of those calculations to a thread pool.
- * @param <GENE_TYPE> The data type of the gene.
+ * This class is used in conjunction with a thread pool. This allows the genetic
+ * algorithm to offload all of those calculations to a thread pool.
+ * 
+ * @param <GENE_TYPE>
+ *            The data type of the gene.
  */
-public class MateWorker<GENE_TYPE> implements
-		EncogTask {
-	
+public class MateWorker<GENE_TYPE> implements EncogTask {
+
 	/**
 	 * The mother.
 	 */
 	private final Chromosome<GENE_TYPE> mother;
-	
+
 	/**
 	 * The father.
 	 */
 	private final Chromosome<GENE_TYPE> father;
-	
+
 	/**
 	 * The first child.
 	 */
 	private final Chromosome<GENE_TYPE> child1;
-	
+
 	/**
 	 * The second child.
 	 */
 	private final Chromosome<GENE_TYPE> child2;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -65,21 +66,24 @@ public class MateWorker<GENE_TYPE> implements
 
 	/**
 	 * 
-	 * @param mother The mother.
-	 * @param father The father.
-	 * @param child1 The first child.
-	 * @param child2 The second child.
+	 * @param mother
+	 *            The mother.
+	 * @param father
+	 *            The father.
+	 * @param child1
+	 *            The first child.
+	 * @param child2
+	 *            The second child.
 	 */
-	public MateWorker(final Chromosome<GENE_TYPE> mother, 
+	public MateWorker(final Chromosome<GENE_TYPE> mother,
 			final Chromosome<GENE_TYPE> father,
-			final Chromosome<GENE_TYPE> child1, 
+			final Chromosome<GENE_TYPE> child1,
 			final Chromosome<GENE_TYPE> child2) {
 		this.mother = mother;
 		this.father = father;
 		this.child1 = child1;
 		this.child2 = child2;
 	}
-
 
 	/**
 	 * Mate the two chromosomes.

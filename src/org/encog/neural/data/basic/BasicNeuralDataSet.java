@@ -48,8 +48,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class BasicNeuralDataSet 
-	implements NeuralDataSet, EncogPersistedObject , Serializable {
+public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject,
+		Serializable {
 
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
@@ -106,8 +106,8 @@ public class BasicNeuralDataSet
 	/**
 	 * The logging object.
 	 */
-	private final transient Logger logger = 
-		LoggerFactory.getLogger(this.getClass());
+	private final transient Logger logger = LoggerFactory.getLogger(this
+			.getClass());
 
 	/**
 	 * The data held by this object.
@@ -117,8 +117,7 @@ public class BasicNeuralDataSet
 	/**
 	 * The iterators that are currently open to this object.
 	 */
-	private final List<BasicNeuralIterator> iterators = 
-		new ArrayList<BasicNeuralIterator>();
+	private final List<BasicNeuralIterator> iterators = new ArrayList<BasicNeuralIterator>();
 
 	/**
 	 * The description for this object.

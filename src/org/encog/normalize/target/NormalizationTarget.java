@@ -25,9 +25,10 @@
  */
 package org.encog.normalize.target;
 
-
 public interface NormalizationTarget {
-	void write(double data[],int inputCount);
-	void open();
 	void close();
+
+	void open();
+
+	void write(double data[], int inputCount);
 }

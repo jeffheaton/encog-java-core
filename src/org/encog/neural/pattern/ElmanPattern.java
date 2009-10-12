@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
  * network.
  * 
  * The Elman neural network is useful for temporal input data. The specified
- * activation function will be used on all layers.  The Elman neural 
- * network is similar to the Jordan neural network.
+ * activation function will be used on all layers. The Elman neural network is
+ * similar to the Jordan neural network.
  * 
  * @author jheaton
  * 
@@ -93,8 +93,7 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 */
 	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			final String str = 
-				"An Elman neural network should have only one hidden layer.";
+			final String str = "An Elman neural network should have only one hidden layer.";
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
 			}
@@ -103,6 +102,13 @@ public class ElmanPattern implements NeuralNetworkPattern {
 
 		this.hiddenNeurons = count;
 
+	}
+
+	/**
+	 * Clear out any hidden neurons.
+	 */
+	public void clear() {
+		this.hiddenNeurons = 0;
 	}
 
 	/**
@@ -144,7 +150,9 @@ public class ElmanPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the activation function to use on each of the layers.
-	 * @param activation The activation function.
+	 * 
+	 * @param activation
+	 *            The activation function.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
 		this.activation = activation;
@@ -152,7 +160,9 @@ public class ElmanPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of input neurons.
-	 * @param count Neuron count.
+	 * 
+	 * @param count
+	 *            Neuron count.
 	 */
 	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
@@ -160,17 +170,12 @@ public class ElmanPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of output neurons.
-	 * @param count Neuron count.
+	 * 
+	 * @param count
+	 *            Neuron count.
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
-	}
-
-	/**
-	 * Clear out any hidden neurons.
-	 */
-	public void clear() {
-		this.hiddenNeurons = 0;		
 	}
 
 }

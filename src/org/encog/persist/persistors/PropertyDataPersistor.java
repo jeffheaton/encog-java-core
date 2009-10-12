@@ -43,17 +43,17 @@ public class PropertyDataPersistor implements Persistor {
 	 * The properties tag.
 	 */
 	public static final String TAG_PROPERTIES = "properties";
-	
+
 	/**
 	 * The property tag.
 	 */
 	public static final String TAG_PROPERTY = "Property";
-	
+
 	/**
 	 * The name attribute.
 	 */
 	public static final String ATTRIBUTE_NAME = "name";
-	
+
 	/**
 	 * The value attribute.
 	 */
@@ -66,7 +66,9 @@ public class PropertyDataPersistor implements Persistor {
 
 	/**
 	 * Handle the properties tag.
-	 * @param in the XML reader.
+	 * 
+	 * @param in
+	 *            the XML reader.
 	 */
 	private void handleProperties(final ReadXML in) {
 		while (in.readToTag()) {
@@ -82,7 +84,9 @@ public class PropertyDataPersistor implements Persistor {
 
 	/**
 	 * Handle loading an individual property.
-	 * @param in The XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader.
 	 */
 	private void handleProperty(final ReadXML in) {
 		final String name = in.getTag().getAttributeValue(

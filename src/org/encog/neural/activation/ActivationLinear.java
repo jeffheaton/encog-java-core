@@ -43,10 +43,12 @@ public class ActivationLinear extends BasicActivationFunction {
 	private static final long serialVersionUID = -5356580554235104944L;
 
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 
@@ -62,6 +64,7 @@ public class ActivationLinear extends BasicActivationFunction {
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	@Override
@@ -70,20 +73,21 @@ public class ActivationLinear extends BasicActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 		throw new NeuralNetworkError(
 				"Can't use the linear activation function "
 						+ "where a derivative is required.");
 	}
-	
+
 	/**
 	 * @return Return false, linear has no derivative.
 	 */

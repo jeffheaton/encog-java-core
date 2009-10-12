@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
  * network.
  * 
  * The Jordan neural network is useful for temporal input data. The specified
- * activation function will be used on all layers.  The Jordan neural network
- * is similar to the Elman neural network.
+ * activation function will be used on all layers. The Jordan neural network is
+ * similar to the Elman neural network.
  * 
  * @author jheaton
  * 
@@ -93,8 +93,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 */
 	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			final String str = 
-				"A Jordan neural network should have only one hidden "
+			final String str = "A Jordan neural network should have only one hidden "
 					+ "layer.";
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
@@ -104,6 +103,13 @@ public class JordanPattern implements NeuralNetworkPattern {
 
 		this.hiddenNeurons = count;
 
+	}
+
+	/**
+	 * Clear out any hidden neurons.
+	 */
+	public void clear() {
+		this.hiddenNeurons = 0;
 	}
 
 	/**
@@ -173,13 +179,6 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
-	}
-	
-	/**
-	 * Clear out any hidden neurons.
-	 */
-	public void clear() {
-		this.hiddenNeurons = 0;		
 	}
 
 }

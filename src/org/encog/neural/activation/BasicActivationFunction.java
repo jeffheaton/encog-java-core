@@ -36,7 +36,7 @@ import org.encog.persist.Persistor;
  * 
  */
 public abstract class BasicActivationFunction implements ActivationFunction {
-	
+
 	/**
 	 * The serial id.
 	 */
@@ -50,21 +50,22 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	public abstract Persistor createPersistor();
 
 	/**
-	 * @return Always returns null, descriptions and names are not used
-	 * for activation functions.
+	 * @return Always returns null, descriptions and names are not used for
+	 *         activation functions.
 	 */
 	public String getDescription() {
 		return null;
 	}
 
 	/**
-	 * @return Always returns null, descriptions and names are not used
-	 * for activation functions.
+	 * @return Always returns null, descriptions and names are not used for
+	 *         activation functions.
 	 */
 	public String getName() {
 		return null;
@@ -72,7 +73,9 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 
 	/**
 	 * Ignore the description, it is not used for activation functions.
-	 * @param theDescription Ignored.
+	 * 
+	 * @param theDescription
+	 *            Ignored.
 	 */
 	public void setDescription(final String theDescription) {
 
@@ -80,7 +83,9 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 
 	/**
 	 * Ignore the name, it is not used for activation functions.
-	 * @param theName Ignored.
+	 * 
+	 * @param theName
+	 *            Ignored.
 	 */
 	public void setName(final String theName) {
 

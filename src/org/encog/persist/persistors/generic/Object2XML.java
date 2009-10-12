@@ -53,8 +53,11 @@ public class Object2XML {
 
 	/**
 	 * Save the object to XML.
-	 * @param obj The object to save.
-	 * @param out The XML writer.
+	 * 
+	 * @param obj
+	 *            The object to save.
+	 * @param out
+	 *            The XML writer.
 	 */
 	public void save(final EncogPersistedObject obj, final WriteXML out) {
 
@@ -75,7 +78,7 @@ public class Object2XML {
 					if (value != null) {
 						if (value instanceof Collection) {
 							out.beginTag(field.getName());
-							saveCollection(out, (Collection< ? >) value);
+							saveCollection(out, (Collection<?>) value);
 							out.endTag();
 						} else {
 							out.addProperty(field.getName(), value.toString());
@@ -93,11 +96,13 @@ public class Object2XML {
 
 	/**
 	 * Save a collection.
-	 * @param out The XML writer.
-	 * @param value The value to save.
+	 * 
+	 * @param out
+	 *            The XML writer.
+	 * @param value
+	 *            The value to save.
 	 */
-	private void saveCollection(final WriteXML out, 
-			final Collection< ? > value) {
+	private void saveCollection(final WriteXML out, final Collection<?> value) {
 
 		for (final Object obj : value) {
 			if (obj instanceof String) {

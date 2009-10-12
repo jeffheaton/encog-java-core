@@ -46,8 +46,7 @@ public abstract class BasicExtract implements Extract {
 	/**
 	 * The classes registered as listeners for the extraction.
 	 */
-	private final Collection<ExtractListener> listeners = 
-		new ArrayList<ExtractListener>();
+	private final Collection<ExtractListener> listeners = new ArrayList<ExtractListener>();
 
 	/**
 	 * The logger.
@@ -57,7 +56,9 @@ public abstract class BasicExtract implements Extract {
 
 	/**
 	 * Add a listener for the extraction.
-	 * @param listener The listener to add.
+	 * 
+	 * @param listener
+	 *            The listener to add.
 	 */
 	public void addListener(final ExtractListener listener) {
 		this.listeners.add(listener);
@@ -66,7 +67,9 @@ public abstract class BasicExtract implements Extract {
 
 	/**
 	 * Distribute an object to the listeners.
-	 * @param object The object to be distributed.
+	 * 
+	 * @param object
+	 *            The object to be distributed.
 	 */
 	public void distribute(final Object object) {
 		for (final ExtractListener listener : getListeners()) {
@@ -76,7 +79,9 @@ public abstract class BasicExtract implements Extract {
 
 	/**
 	 * Extract from the web page and return the results as a list.
-	 * @param page The web page to extract from.
+	 * 
+	 * @param page
+	 *            The web page to extract from.
 	 * @return The results of the extraction as a List.
 	 */
 	public List<Object> extractList(final WebPage page) {
@@ -96,7 +101,9 @@ public abstract class BasicExtract implements Extract {
 
 	/**
 	 * Remove the specified listener.
-	 * @param listener The listener to rmove.
+	 * 
+	 * @param listener
+	 *            The listener to rmove.
 	 */
 	public void removeListener(final ExtractListener listener) {
 		this.listeners.remove(listener);

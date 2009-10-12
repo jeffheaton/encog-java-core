@@ -27,11 +27,18 @@ package org.encog.normalize.input;
 
 public interface InputField {
 	void applyMinMax(double d);
-	 double getMin();
-	 void setMin(double min);
-	 double getMax();
-	 void setMax(double max);
-	 void setCurrentValue(double d);
-	 double getCurrentValue();
+
+	double getCurrentValue();
+
+	double getMax();
+
+	double getMin();
+
 	double getValue(int i);
+
+	void setCurrentValue(double d);
+
+	void setMax(double max);
+
+	void setMin(double min);
 }

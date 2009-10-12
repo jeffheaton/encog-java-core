@@ -71,7 +71,9 @@ public class Browser {
 
 	/**
 	 * Navigate to the specified form by performing a submit of that form.
-	 * @param form The form to be submitted.
+	 * 
+	 * @param form
+	 *            The form to be submitted.
 	 */
 	public void navigate(final Form form) {
 		navigate(form, null);
@@ -149,7 +151,9 @@ public class Browser {
 
 	/**
 	 * Navigate to a new page based on a link.
-	 * @param link The link to navigate to.
+	 * 
+	 * @param link
+	 *            The link to navigate to.
 	 */
 	public void navigate(final Link link) {
 
@@ -212,7 +216,7 @@ public class Browser {
 	 * @param is
 	 *            The data to post to the page.
 	 */
-	public void navigate(final URL url, final InputStream is) {		
+	public void navigate(final URL url, final InputStream is) {
 		if (this.logger.isInfoEnabled()) {
 			this.logger.info("POSTing to page:" + url);
 		}
@@ -222,7 +226,9 @@ public class Browser {
 
 	/**
 	 * Set the current page.
-	 * @param currentPage The current page.
+	 * 
+	 * @param currentPage
+	 *            The current page.
 	 */
 	public void setCurrentPage(final WebPage currentPage) {
 		this.currentPage = currentPage;

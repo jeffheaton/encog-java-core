@@ -34,7 +34,6 @@ import org.encog.persist.PersistError;
 import org.encog.persist.Persistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
-import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,30 +48,28 @@ public final class PersistorUtil {
 	 * The rows in the matrix.
 	 */
 	public static final String ATTRIBUTE_MATRIX_ROWS = "rows";
-	
+
 	/**
 	 * The columns in the matrix.
 	 */
 	public static final String ATTRIBUTE_MATRIX_COLS = "cols";
-	
+
 	/**
 	 * A matrix row.
 	 */
 	public static final String ROW = "row";
-	
-	/**
-	 * Private constructor.
-	 */
-	private PersistorUtil() {		
-	}
 
 	/**
 	 * Write the beginning XML for an Encog object.
-	 * @param objectType The object type to persist.
-	 * @param out The object that is being persisted.
-	 * @param obj The XML writer.
-	 * @param top Is this a top-level object, that needs a name
-	 * and description?
+	 * 
+	 * @param objectType
+	 *            The object type to persist.
+	 * @param out
+	 *            The object that is being persisted.
+	 * @param obj
+	 *            The XML writer.
+	 * @param top
+	 *            Is this a top-level object, that needs a name and description?
 	 */
 	public static void beginEncogObject(final String objectType,
 			final WriteXML out, final EncogPersistedObject obj,
@@ -111,7 +108,7 @@ public final class PersistorUtil {
 
 			// find using classes
 			final String name = className + "Persistor";
-			final Class< ? > c = Class.forName("org.encog.persist.persistors."
+			final Class<?> c = Class.forName("org.encog.persist.persistors."
 					+ name);
 			final Persistor persistor = (Persistor) c.newInstance();
 			return persistor;
@@ -126,7 +123,9 @@ public final class PersistorUtil {
 
 	/**
 	 * Load a matrix from the reader.
-	 * @param in The XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader.
 	 * @return The loaded matrix.
 	 */
 	public static Matrix loadMatrix(final ReadXML in) {
@@ -145,7 +144,8 @@ public final class PersistorUtil {
 			}
 			if (in.is(PersistorUtil.ROW, true)) {
 				final String str = in.readTextToTag();
-				final double[] d = NumberList.fromList(CSVFormat.EG_FORMAT,str);
+				final double[] d = NumberList
+						.fromList(CSVFormat.EG_FORMAT, str);
 				for (int col = 0; col < d.length; col++) {
 					matrix.set(row, col, d[col]);
 				}
@@ -158,8 +158,11 @@ public final class PersistorUtil {
 
 	/**
 	 * Save the specified matrix.
-	 * @param matrix The matrix to save.
-	 * @param out The XML writer.
+	 * 
+	 * @param matrix
+	 *            The matrix to save.
+	 * @param out
+	 *            The XML writer.
 	 */
 	public static void saveMatrix(final Matrix matrix, final WriteXML out) {
 		out.addAttribute(PersistorUtil.ATTRIBUTE_MATRIX_ROWS, ""
@@ -190,5 +193,11 @@ public final class PersistorUtil {
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Private constructor.
+	 */
+	private PersistorUtil() {
+	}
 
 }

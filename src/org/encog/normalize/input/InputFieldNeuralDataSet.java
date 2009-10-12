@@ -29,24 +29,21 @@ package org.encog.normalize.input;
 import org.encog.neural.data.NeuralDataSet;
 
 public class InputFieldNeuralDataSet extends BasicInputField {
-	
-	private NeuralDataSet data;
+
+	private final NeuralDataSet data;
 	private final int offset;
-	
-	public InputFieldNeuralDataSet(NeuralDataSet data, int offset)
-	{
+
+	public InputFieldNeuralDataSet(final NeuralDataSet data, final int offset) {
 		this.data = data;
 		this.offset = offset;
 	}
-	
-	public int getOffset()
-	{
-		return this.offset;
-	}
-	
-	public NeuralDataSet getNeuralDataSet()
-	{
+
+	public NeuralDataSet getNeuralDataSet() {
 		return this.data;
+	}
+
+	public int getOffset() {
+		return this.offset;
 	}
 
 }

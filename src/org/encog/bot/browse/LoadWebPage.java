@@ -58,17 +58,17 @@ public class LoadWebPage {
 	 * The loaded webpage.
 	 */
 	private WebPage page;
-	
+
 	/**
 	 * The base URL for the page being loaded.
 	 */
-	private URL base;
-	
+	private final URL base;
+
 	/**
 	 * The last form that was processed.
 	 */
 	private Form lastForm;
-	
+
 	/**
 	 * The last hierarchy element that was processed.
 	 */
@@ -81,7 +81,9 @@ public class LoadWebPage {
 
 	/**
 	 * Construct a web page loader with the specified base URL.
-	 * @param base The base URL to use when loading.
+	 * 
+	 * @param base
+	 *            The base URL to use when loading.
 	 */
 	public LoadWebPage(final URL base) {
 		this.base = base;
@@ -89,7 +91,9 @@ public class LoadWebPage {
 
 	/**
 	 * Add the specified hierarchy element.
-	 * @param element The hierarchy element to add.
+	 * 
+	 * @param element
+	 *            The hierarchy element to add.
 	 */
 	private void addHierarchyElement(final DocumentRange element) {
 		if (this.lastHierarchyElement == null) {
@@ -102,7 +106,9 @@ public class LoadWebPage {
 
 	/**
 	 * Create a dataunit to hode the code HTML tag.
-	 * @param str The code to create the data unit with.
+	 * 
+	 * @param str
+	 *            The code to create the data unit with.
 	 */
 	private void createCodeDataUnit(final String str) {
 		if (str.trim().length() > 0) {
@@ -114,7 +120,9 @@ public class LoadWebPage {
 
 	/**
 	 * Create a tag data unit.
-	 * @param tag The tag name to create the data unit for.
+	 * 
+	 * @param tag
+	 *            The tag name to create the data unit for.
 	 */
 	private void createTagDataUnit(final Tag tag) {
 		final TagDataUnit d = new TagDataUnit();
@@ -125,7 +133,9 @@ public class LoadWebPage {
 
 	/**
 	 * Create a text data unit.
-	 * @param str The text.
+	 * 
+	 * @param str
+	 *            The text.
 	 */
 	private void createTextDataUnit(final String str) {
 		if (str.trim().length() > 0) {
@@ -137,12 +147,14 @@ public class LoadWebPage {
 
 	/**
 	 * Find the end tag that lines up to the beginning tag.
-	 * @param index The index to start the search on. This specifies
-	 * the starting data unit.
-	 * @param tag The beginning tag that we are seeking the end tag 
-	 * for.
-	 * @return The index that the ending tag was found at. Returns -1
-	 * if not found.
+	 * 
+	 * @param index
+	 *            The index to start the search on. This specifies the starting
+	 *            data unit.
+	 * @param tag
+	 *            The beginning tag that we are seeking the end tag for.
+	 * @return The index that the ending tag was found at. Returns -1 if not
+	 *         found.
 	 */
 	protected int findEndTag(final int index, final Tag tag) {
 		int depth = 0;
@@ -173,7 +185,9 @@ public class LoadWebPage {
 
 	/**
 	 * Load a web page from the specified stream.
-	 * @param is The input stream to load from.
+	 * 
+	 * @param is
+	 *            The input stream to load from.
 	 * @return The loaded web page.
 	 */
 	public WebPage load(final InputStream is) {
@@ -187,7 +201,9 @@ public class LoadWebPage {
 
 	/**
 	 * Load the web page from a string that contains HTML.
-	 * @param str A string containing HTML.
+	 * 
+	 * @param str
+	 *            A string containing HTML.
 	 * @return The loaded WebPage.
 	 */
 	public WebPage load(final String str) {
@@ -206,9 +222,9 @@ public class LoadWebPage {
 	}
 
 	/**
-	 * Using the data units, which should have already been loaded by this 
-	 * time, load the contents of the web page.  This includes the title,
-	 * any links and forms.  Div tags and spans are also processed.
+	 * Using the data units, which should have already been loaded by this time,
+	 * load the contents of the web page. This includes the title, any links and
+	 * forms. Div tags and spans are also processed.
 	 */
 	protected void loadContents() {
 		for (int index = 0; index < this.page.getDataSize(); index++) {
@@ -240,13 +256,13 @@ public class LoadWebPage {
 				if (tag.getType() == Tag.Type.END) {
 					if (tag.getName().equalsIgnoreCase("div")) {
 						if (this.lastHierarchyElement != null) {
-							this.lastHierarchyElement = 
-								this.lastHierarchyElement.getParent();
+							this.lastHierarchyElement = this.lastHierarchyElement
+									.getParent();
 						}
 					} else if (tag.getName().equalsIgnoreCase("span")) {
 						if (this.lastHierarchyElement != null) {
-							this.lastHierarchyElement = 
-								this.lastHierarchyElement.getParent();
+							this.lastHierarchyElement = this.lastHierarchyElement
+									.getParent();
 						}
 					}
 				}
@@ -255,9 +271,11 @@ public class LoadWebPage {
 	}
 
 	/**
-	 * Load the data units.  Once the lower level data units have been 
-	 * loaded, the contents can be loaded.
-	 * @param is The input stream that the data units are loaded from.
+	 * Load the data units. Once the lower level data units have been loaded,
+	 * the contents can be loaded.
+	 * 
+	 * @param is
+	 *            The input stream that the data units are loaded from.
 	 */
 	protected void loadDataUnits(final InputStream is) {
 		final StringBuilder text = new StringBuilder();
@@ -283,8 +301,7 @@ public class LoadWebPage {
 				createTagDataUnit(parse.getTag());
 				if (parse.getTag().getName().equalsIgnoreCase("style")) {
 					style = true;
-				} else if (parse.getTag().getName().equalsIgnoreCase(
-						"script")) {
+				} else if (parse.getTag().getName().equalsIgnoreCase("script")) {
 					script = true;
 				}
 			} else {
@@ -298,8 +315,11 @@ public class LoadWebPage {
 
 	/**
 	 * Called by loadContents to load a div tag.
-	 * @param index The index to begin at.
-	 * @param tag The beginning div tag.
+	 * 
+	 * @param index
+	 *            The index to begin at.
+	 * @param tag
+	 *            The beginning div tag.
 	 */
 	private void loadDiv(final int index, final Tag tag) {
 		final Div div = new Div(this.page);
@@ -315,8 +335,11 @@ public class LoadWebPage {
 
 	/**
 	 * Called by loadContents to load a form on the page.
-	 * @param index The index to begin loading at.
-	 * @param tag The beginning tag.
+	 * 
+	 * @param index
+	 *            The index to begin loading at.
+	 * @param tag
+	 *            The beginning tag.
 	 */
 	protected void loadForm(final int index, final Tag tag) {
 		final String method = tag.getAttributeValue("method");
@@ -344,8 +367,11 @@ public class LoadWebPage {
 
 	/**
 	 * Called by loadContents to load an input tag on the form.
-	 * @param index The index to begin loading at.
-	 * @param tag The beginning tag.
+	 * 
+	 * @param index
+	 *            The index to begin loading at.
+	 * @param tag
+	 *            The beginning tag.
 	 */
 	protected void loadInput(final int index, final Tag tag) {
 		final String type = tag.getAttributeValue("type");
@@ -366,8 +392,11 @@ public class LoadWebPage {
 
 	/**
 	 * Called by loadContents to load a link on the page.
-	 * @param index The index to begin loading at.
-	 * @param tag The beginning tag.
+	 * 
+	 * @param index
+	 *            The index to begin loading at.
+	 * @param tag
+	 *            The beginning tag.
 	 */
 
 	protected void loadLink(final int index, final Tag tag) {
@@ -384,8 +413,11 @@ public class LoadWebPage {
 
 	/**
 	 * Called by loadContents to load a span.
-	 * @param index The index to begin loading at.
-	 * @param tag The beginning tag.
+	 * 
+	 * @param index
+	 *            The index to begin loading at.
+	 * @param tag
+	 *            The beginning tag.
 	 */
 
 	private void loadSpan(final int index, final Tag tag) {
@@ -402,8 +434,11 @@ public class LoadWebPage {
 
 	/**
 	 * Called by loadContents to load the title of the page.
-	 * @param index The index to begin loading at.
-	 * @param tag The beginning tag.
+	 * 
+	 * @param index
+	 *            The index to begin loading at.
+	 * @param tag
+	 *            The beginning tag.
 	 */
 	protected void loadTitle(final int index, final Tag tag) {
 		final DocumentRange title = new DocumentRange(this.page);

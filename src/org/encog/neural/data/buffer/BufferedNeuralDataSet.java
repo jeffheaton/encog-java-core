@@ -2,7 +2,6 @@ package org.encog.neural.data.buffer;
 
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -22,15 +21,6 @@ import org.encog.neural.data.basic.BasicNeuralDataPair;
  */
 public class BufferedNeuralDataSet implements NeuralDataSet {
 
-	private File bufferFile;
-	private long inputSize;
-	private long idealSize;
-	private Collection<BufferedNeuralDataSetIterator> iterators = new ArrayList<BufferedNeuralDataSetIterator>();
-	private RandomAccessFile output;
-
-	public static final String ERROR_ADD = "Add can only be used after calling beginLoad.";
-	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
-
 	public class BufferedNeuralDataSetIterator implements
 			Iterator<NeuralDataPair> {
 		private RandomAccessFile input;
@@ -41,7 +31,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 
 		public BufferedNeuralDataSetIterator() {
 			try {
-				this.input = new RandomAccessFile(bufferFile, "r");
+				this.input = new RandomAccessFile(
+						BufferedNeuralDataSet.this.bufferFile, "r");
 				this.input.readLong();
 				this.input.readLong();
 				this.eof = false;
@@ -50,7 +41,15 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 				this.current = createPair();
 
 				readNext();
-			} catch (IOException e) {
+			} catch (final IOException e) {
+				throw new NeuralDataError(e);
+			}
+		}
+
+		public void close() {
+			try {
+				this.input.close();
+			} catch (final IOException e) {
 				throw new NeuralDataError(e);
 			}
 		}
@@ -58,12 +57,14 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 		private NeuralDataPair createPair() {
 			NeuralDataPair result;
 
-			if (idealSize > 0) {
+			if (BufferedNeuralDataSet.this.idealSize > 0) {
 				result = new BasicNeuralDataPair(new BasicNeuralData(
-						(int) inputSize), new BasicNeuralData((int) idealSize));
+						(int) BufferedNeuralDataSet.this.inputSize),
+						new BasicNeuralData(
+								(int) BufferedNeuralDataSet.this.idealSize));
 			} else {
 				result = new BasicNeuralDataPair(new BasicNeuralData(
-						(int) inputSize));
+						(int) BufferedNeuralDataSet.this.inputSize));
 			}
 
 			return result;
@@ -76,26 +77,18 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 			return this.dataReady;
 		}
 
-		private void readDoubleArray(NeuralData data) throws EOFException,
-				IOException {
-			double[] d = data.getData();
-			for (int i = 0; i < data.size(); i++) {
-				d[i] = this.input.readDouble();
-			}
-		}
-
 		public NeuralDataPair next() {
 
-			if (!dataReady) {
+			if (!this.dataReady) {
 				readNext();
 			}
 
-			if (!dataReady) {
+			if (!this.dataReady) {
 				return null;
 			}
 
 			// swap
-			NeuralDataPair temp = this.current;
+			final NeuralDataPair temp = this.current;
 			this.current = this.next;
 			this.next = temp;
 			readNext();
@@ -103,20 +96,28 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 			return this.current;
 		}
 
+		private void readDoubleArray(final NeuralData data)
+				throws EOFException, IOException {
+			final double[] d = data.getData();
+			for (int i = 0; i < data.size(); i++) {
+				d[i] = this.input.readDouble();
+			}
+		}
+
 		private void readNext() {
 			try {
-				if (idealSize > 0) {
-					readDoubleArray(next.getInput());
-					readDoubleArray(next.getIdeal());
+				if (BufferedNeuralDataSet.this.idealSize > 0) {
+					readDoubleArray(this.next.getInput());
+					readDoubleArray(this.next.getIdeal());
 				} else {
-					readDoubleArray(next.getInput());
+					readDoubleArray(this.next.getInput());
 				}
 
 				this.dataReady = true;
-			} catch (EOFException e) {
+			} catch (final EOFException e) {
 				this.eof = true;
 				this.dataReady = false;
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				throw new NeuralDataError(e);
 			}
 		}
@@ -125,32 +126,60 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_REMOVE);
 		}
 
-		public void close() {
-			try {
-				this.input.close();
-			} catch (IOException e) {
-				throw new NeuralDataError(e);
-			}
-		}
-
 	}
 
-	public BufferedNeuralDataSet(File bufferFile) {
+	public static final String ERROR_ADD = "Add can only be used after calling beginLoad.";
+	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
+	private final File bufferFile;
+	private long inputSize;
+
+	private long idealSize;
+	private final Collection<BufferedNeuralDataSetIterator> iterators = new ArrayList<BufferedNeuralDataSetIterator>();
+
+	private RandomAccessFile output;
+
+	public BufferedNeuralDataSet(final File bufferFile) {
 		this.bufferFile = bufferFile;
 		try {
 			if (bufferFile.exists()) {
-				RandomAccessFile out = new RandomAccessFile(this.bufferFile,
-						"rw");
+				final RandomAccessFile out = new RandomAccessFile(
+						this.bufferFile, "rw");
 				this.inputSize = out.readLong();
 				this.idealSize = out.readLong();
 				out.close();
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new NeuralDataError(e);
 		}
 	}
 
-	public void beginLoad(int inputSize, int idealSize) {
+	public void add(final NeuralData data1) {
+		if (this.output == null) {
+			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
+		}
+		writeDoubleArray(data1);
+
+	}
+
+	public void add(final NeuralData inputData, final NeuralData idealData) {
+		if (this.output == null) {
+			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
+		}
+		writeDoubleArray(inputData);
+		writeDoubleArray(idealData);
+	}
+
+	public void add(final NeuralDataPair inputData) {
+		if (this.output == null) {
+			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
+		}
+		writeDoubleArray(inputData.getInput());
+		if (inputData.getIdeal() != null) {
+			writeDoubleArray(inputData.getIdeal());
+		}
+	}
+
+	public void beginLoad(final int inputSize, final int idealSize) {
 		try {
 			this.inputSize = inputSize;
 			this.idealSize = idealSize;
@@ -160,8 +189,15 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 			// write the header
 			this.output.writeLong(this.inputSize);
 			this.output.writeLong(this.idealSize);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new NeuralDataError(e);
+		}
+
+	}
+
+	public void close() {
+		for (final BufferedNeuralDataSetIterator iterator : this.iterators) {
+			iterator.close();
 		}
 
 	}
@@ -170,67 +206,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 		try {
 			this.output.close();
 			this.output = null;
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new NeuralDataError(e);
 		}
-	}
-
-	public void load(NeuralDataSet source) {
-		beginLoad(source.getInputSize(), source.getIdealSize());
-
-		// write the data
-		for (NeuralDataPair pair : source) {
-			if (pair.getInput() != null) {
-				writeDoubleArray(pair.getInput());
-			}
-			if (pair.getIdeal() != null) {
-				writeDoubleArray(pair.getIdeal());
-			}
-		}
-
-		endLoad();
-	}
-
-	private void writeDoubleArray(NeuralData data) {
-		try {
-			for (int i = 0; i < data.size(); i++) {
-				output.writeDouble(data.getData(i));
-			}
-		} catch (IOException e) {
-			throw new NeuralDataError(e);
-		}
-	}
-
-	public void add(NeuralData data1) {
-		if (output == null) {
-			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
-		}
-		writeDoubleArray(data1);
-
-	}
-
-	public void add(NeuralData inputData, NeuralData idealData) {
-		if (output == null) {
-			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
-		}
-		writeDoubleArray(inputData);
-		writeDoubleArray(idealData);
-	}
-
-	public void add(NeuralDataPair inputData) {
-		if (output == null) {
-			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
-		}
-		writeDoubleArray(inputData.getInput());
-		if (inputData.getIdeal() != null)
-			writeDoubleArray(inputData.getIdeal());
-	}
-
-	public void close() {
-		for (BufferedNeuralDataSetIterator iterator : this.iterators) {
-			iterator.close();
-		}
-
 	}
 
 	public int getIdealSize() {
@@ -246,9 +224,35 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 			throw new NeuralDataError(
 					"Can't create iterator while loading, call endLoad first.");
 		}
-		BufferedNeuralDataSetIterator result = new BufferedNeuralDataSetIterator();
+		final BufferedNeuralDataSetIterator result = new BufferedNeuralDataSetIterator();
 		this.iterators.add(result);
 		return result;
+	}
+
+	public void load(final NeuralDataSet source) {
+		beginLoad(source.getInputSize(), source.getIdealSize());
+
+		// write the data
+		for (final NeuralDataPair pair : source) {
+			if (pair.getInput() != null) {
+				writeDoubleArray(pair.getInput());
+			}
+			if (pair.getIdeal() != null) {
+				writeDoubleArray(pair.getIdeal());
+			}
+		}
+
+		endLoad();
+	}
+
+	private void writeDoubleArray(final NeuralData data) {
+		try {
+			for (int i = 0; i < data.size(); i++) {
+				this.output.writeDouble(data.getData(i));
+			}
+		} catch (final IOException e) {
+			throw new NeuralDataError(e);
+		}
 	}
 
 }

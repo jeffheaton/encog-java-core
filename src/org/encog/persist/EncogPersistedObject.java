@@ -27,41 +27,46 @@ package org.encog.persist;
 
 import java.io.Serializable;
 
-
 /**
- * This interface flags an class as being able to be persisted into an
- * Encog collection.
+ * This interface flags an class as being able to be persisted into an Encog
+ * collection.
+ * 
  * @author jheaton
- *
+ * 
  */
-public interface EncogPersistedObject extends Serializable  {
-	
+public interface EncogPersistedObject extends Serializable {
+
 	/**
-	 * Set the description of this object.
-	 * @param theDescription The description.
+	 * Create a persistor for this object.
+	 * 
+	 * @return A persistor for this object.
 	 */
-	void setDescription(String theDescription);
-	
+	Persistor createPersistor();
+
 	/**
 	 * @return The description of this object.
 	 */
 	String getDescription();
-	
-	/**
-	 * Set the name of this object.
-	 * @param theName The name of this object.
-	 */
-	void setName(String theName);
-	
+
 	/**
 	 * @return The name of this object.
 	 */
 	String getName();
-	
+
 	/**
-	 * Create a persistor for this object.
-	 * @return A persistor for this object.
+	 * Set the description of this object.
+	 * 
+	 * @param theDescription
+	 *            The description.
 	 */
-	Persistor createPersistor();
-	
+	void setDescription(String theDescription);
+
+	/**
+	 * Set the name of this object.
+	 * 
+	 * @param theName
+	 *            The name of this object.
+	 */
+	void setName(String theName);
+
 }

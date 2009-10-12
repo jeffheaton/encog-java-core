@@ -30,7 +30,6 @@ import java.io.Serializable;
 import org.encog.matrix.BiPolarUtil;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

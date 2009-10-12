@@ -47,27 +47,14 @@ import org.slf4j.LoggerFactory;
  * A data source that reads XML files. This class is not memory based, so very
  * large XML files can be used, without problem.
  * 
- * The XML data is assumed to look something like below.  The names of the tags
+ * The XML data is assumed to look something like below. The names of the tags
  * can be configured using the various properties on this object.
  * 
- * <DataSet>
- * <pair>
- *   <input><value>0</value><value>0</value></input>
- *   <ideal><value>0</value></ideal>
- * </pair>
- * <pair>
- *   <input><value>1</value><value>0</value></input>
- *   <ideal><value>1</value></ideal>
- * </pair>
- * <pair>
- *   <input><value>0</value><value>1</value></input>
- *   <ideal><value>1</value></ideal>
- * </pair>
- * <pair>
- *   <input><value>1</value><value>1</value></input>
- *   <ideal><value>0</value></ideal>
- * </pair>
- * </DataSet>
+ * <DataSet> <pair> <input><value>0</value><value>0</value></input> <ideal><value>0</value></ideal>
+ * </pair> <pair> <input><value>1</value><value>0</value></input> <ideal><value>1</value></ideal>
+ * </pair> <pair> <input><value>0</value><value>1</value></input> <ideal><value>1</value></ideal>
+ * </pair> <pair> <input><value>1</value><value>1</value></input> <ideal><value>0</value></ideal>
+ * </pair> </DataSet>
  */
 public class XMLNeuralDataSet implements NeuralDataSet {
 
@@ -82,12 +69,12 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 		 * The XML file being read.
 		 */
 		private InputStream file;
-		
+
 		/**
 		 * A reader for the XML file.
 		 */
 		private ReadXML reader;
-		
+
 		/**
 		 * The data pair just read.
 		 */
@@ -110,6 +97,7 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 
 		/**
 		 * Is there any more data to read?
+		 * 
 		 * @return True if there is more data to read.
 		 */
 		public boolean hasNext() {
@@ -125,8 +113,8 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 		 * that indicates that the XML is not valid.
 		 */
 		private void invalidError() {
-			final String str = "Could not parse XML, " 
-				+ "inconsistant tag structure.";
+			final String str = "Could not parse XML, "
+					+ "inconsistant tag structure.";
 			if (XMLNeuralDataSet.this.logger.isErrorEnabled()) {
 				XMLNeuralDataSet.this.logger.error(str);
 			}
@@ -135,6 +123,7 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 
 		/**
 		 * Read the next training set item.
+		 * 
 		 * @return The next training set item.
 		 */
 		public NeuralDataPair next() {
@@ -153,6 +142,7 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 
 		/**
 		 * Internal function to obtain the next training set item.
+		 * 
 		 * @return True if one was found.
 		 */
 		private boolean obtainNext() {
@@ -225,44 +215,43 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 	/**
 	 * Error Message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = 
-		"Adds are not supported with this dataset, it is read only.";
+	public static final String ADD_NOT_SUPPORTED = "Adds are not supported with this dataset, it is read only.";
 
 	/**
 	 * The logging object.
 	 */
-	private final  Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	/**
 	 * The file name to read.
 	 */
 	private final String filename;
-	
+
 	/**
 	 * The XML that indicates that a pair is about to start.
 	 */
 	private final String pairXML;
-	
+
 	/**
 	 * The XML that indicates that input data is about to start.
 	 */
 	private final String inputXML;
-	
+
 	/**
 	 * XMl that indicates that ideal data is about to start.
 	 */
 	private final String idealXML;
-	
+
 	/**
 	 * XML that indicates that a numeric value is about to start.
 	 */
 	private final String valueXML;
-	
+
 	/**
 	 * The input data size.
 	 */
 	private final int inputSize;
-	
+
 	/**
 	 * The ideal data size.
 	 */
@@ -271,18 +260,25 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 	/**
 	 * A collection of iterators that have been created.
 	 */
-	private final List<XMLNeuralIterator> iterators = 
-		new ArrayList<XMLNeuralIterator>();
+	private final List<XMLNeuralIterator> iterators = new ArrayList<XMLNeuralIterator>();
 
 	/**
 	 * Construct an XML neural data set.
-	 * @param filename The filename to read.
-	 * @param inputSize The input size.
-	 * @param idealSize The ideal size. Zero for unsupervised.
-	 * @param pairXML The XML that starts a pair.
-	 * @param inputXML The XML that starts input.
-	 * @param idealXML The XML that starts ideal.
-	 * @param valueXML The XML that starts values.
+	 * 
+	 * @param filename
+	 *            The filename to read.
+	 * @param inputSize
+	 *            The input size.
+	 * @param idealSize
+	 *            The ideal size. Zero for unsupervised.
+	 * @param pairXML
+	 *            The XML that starts a pair.
+	 * @param inputXML
+	 *            The XML that starts input.
+	 * @param idealXML
+	 *            The XML that starts ideal.
+	 * @param valueXML
+	 *            The XML that starts values.
 	 */
 	public XMLNeuralDataSet(final String filename, final int inputSize,
 			final int idealSize, final String pairXML, final String inputXML,

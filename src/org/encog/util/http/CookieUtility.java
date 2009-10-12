@@ -35,17 +35,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class allows URLConnection objects to process cookies.
- * The loadCookies method grabs the Set-Cookie headers and loads the cookies
- * into the map. The saveCookies method writes out the cookie map to the a
- * URLConnection object as Cookie headers.
+ * This class allows URLConnection objects to process cookies. The loadCookies
+ * method grabs the Set-Cookie headers and loads the cookies into the map. The
+ * saveCookies method writes out the cookie map to the a URLConnection object as
+ * Cookie headers.
  */
 public class CookieUtility {
 	/**
 	 * Map that holds all of the cookie values.
 	 */
 	private final Map<String, String> map = new HashMap<String, String>();
-	
+
 	/**
 	 * The logger.
 	 */
@@ -75,7 +75,7 @@ public class CookieUtility {
 
 		do {
 			str = http.getHeaderFieldKey(n);
-			if (str != null && str.equalsIgnoreCase("Set-Cookie")) {
+			if ((str != null) && str.equalsIgnoreCase("Set-Cookie")) {
 				str = http.getHeaderField(n);
 				final StringTokenizer tok = new StringTokenizer(str, "=");
 				final String name = tok.nextToken();

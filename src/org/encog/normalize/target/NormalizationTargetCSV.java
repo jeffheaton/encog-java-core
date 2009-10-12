@@ -10,44 +10,38 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
 public class NormalizationTargetCSV implements NormalizationTarget {
-	
-	private File outputFile;
+
+	private final File outputFile;
 	private PrintWriter output;
-	private CSVFormat format;
-	
-	public NormalizationTargetCSV(CSVFormat format, File file)
-	{
+	private final CSVFormat format;
+
+	public NormalizationTargetCSV(final CSVFormat format, final File file) {
 		this.format = format;
 		this.outputFile = file;
 	}
-	
-	public NormalizationTargetCSV(File file)
-	{
+
+	public NormalizationTargetCSV(final File file) {
 		this.format = CSVFormat.ENGLISH;
 		this.outputFile = file;
 	}
 
-	public void write(double[] data, int inputCount) {
-		StringBuilder result = new StringBuilder();
-		NumberList.toList(format, result, data);
-		this.output.println(result.toString());		
-	}
-
 	public void close() {
-		this.output.close();		
+		this.output.close();
 	}
 
 	public void open() {
-		try
-		{
-		FileWriter outFile = new FileWriter(this.outputFile);
-		output = new PrintWriter(outFile);
-		}
-		catch(IOException e)
-		{
-			throw( new NormalizationError(e));
+		try {
+			final FileWriter outFile = new FileWriter(this.outputFile);
+			this.output = new PrintWriter(outFile);
+		} catch (final IOException e) {
+			throw (new NormalizationError(e));
 		}
 	}
-	
-	
+
+	public void write(final double[] data, final int inputCount) {
+		final StringBuilder result = new StringBuilder();
+		NumberList.toList(this.format, result, data);
+		this.output.println(result.toString());
+	}
+
 }

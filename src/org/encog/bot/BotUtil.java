@@ -32,29 +32,27 @@ import java.io.InputStream;
 import java.net.URL;
 
 /*
- * Encog Artificial Intelligence Framework v2.x
- * Java Version
- * http://www.heatonresearch.com/encog/
- * http://code.google.com/p/encog-java/
+ * Encog Artificial Intelligence Framework v2.x Java Version
+ * http://www.heatonresearch.com/encog/ http://code.google.com/p/encog-java/
  * 
- * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
- * See the copyright.txt in the distribution for a full listing of 
- * individual contributors.
- *
- * This is free software; you can redistribute it and/or modify it
- * under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation; either version 2.1 of
- * the License, or (at your option) any later version.
- *
- * This software is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this software; if not, write to the Free
- * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
- * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors. See
+ * the copyright.txt in the distribution for a full listing of individual
+ * contributors.
+ * 
+ * This is free software; you can redistribute it and/or modify it under the
+ * terms of the GNU Lesser General Public License as published by the Free
+ * Software Foundation; either version 2.1 of the License, or (at your option)
+ * any later version.
+ * 
+ * This software is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
+ * details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this software; if not, write to the Free Software Foundation,
+ * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
+ * site: http://www.fsf.org.
  */
 
 import org.encog.parse.tags.read.ReadHTML;
@@ -203,7 +201,9 @@ public final class BotUtil {
 
 	/**
 	 * Load load from the specified input stream.
-	 * @param is The input stream to load from.
+	 * 
+	 * @param is
+	 *            The input stream to load from.
 	 * @return The data loaded from the specified input stream.
 	 */
 	public static String loadPage(final InputStream is) {
@@ -269,8 +269,7 @@ public final class BotUtil {
 	 * @return The string without tags.
 	 */
 	public static String stripTags(final String str) {
-		final ByteArrayInputStream is = 
-			new ByteArrayInputStream(str.getBytes());
+		final ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
 		final StringBuilder result = new StringBuilder();
 		final ReadHTML html = new ReadHTML(is);
 		int ch;

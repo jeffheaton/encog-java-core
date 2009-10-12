@@ -39,8 +39,11 @@ public class RangeRandomizer extends BasicRandomizer {
 
 	/**
 	 * Generate a random number in the specified range.
-	 * @param min The minimum value.
-	 * @param max The maximum value.
+	 * 
+	 * @param min
+	 *            The minimum value.
+	 * @param max
+	 *            The maximum value.
 	 * @return A random number.
 	 */
 	public static double randomize(final double min, final double max) {
@@ -66,8 +69,11 @@ public class RangeRandomizer extends BasicRandomizer {
 
 	/**
 	 * Construct a range randomizer.
-	 * @param min The minimum random value.
-	 * @param max The maximum random value.
+	 * 
+	 * @param min
+	 *            The minimum random value.
+	 * @param max
+	 *            The maximum random value.
 	 */
 	public RangeRandomizer(final double min, final double max) {
 		this.max = max;
@@ -76,7 +82,9 @@ public class RangeRandomizer extends BasicRandomizer {
 
 	/**
 	 * Generate a random number based on the range specified in the constructor.
-	 * @param d The range randomizer ignores this value.
+	 * 
+	 * @param d
+	 *            The range randomizer ignores this value.
 	 * @return The random number.
 	 */
 	public double randomize(final double d) {

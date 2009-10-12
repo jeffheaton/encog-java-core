@@ -30,43 +30,43 @@ import org.encog.normalize.NormalizationError;
 
 public abstract class BasicInputField implements InputField {
 
-	
 	private double min = Double.POSITIVE_INFINITY;
 	private double max = Double.NEGATIVE_INFINITY;
 	private double currentValue;
-	
-	public void applyMinMax(double d) {
+
+	public void applyMinMax(final double d) {
 		this.min = Math.min(this.min, d);
 		this.max = Math.max(this.max, d);
-		
-	}
 
-	public double getMin() {
-		return min;
-	}
-
-	public void setMin(double min) {
-		this.min = min;
-	}
-
-	public double getMax() {
-		return max;
-	}
-
-	public void setMax(double max) {
-		this.max = max;
 	}
 
 	public double getCurrentValue() {
-		return currentValue;
+		return this.currentValue;
 	}
 
-	public void setCurrentValue(double currentValue) {
+	public double getMax() {
+		return this.max;
+	}
+
+	public double getMin() {
+		return this.min;
+	}
+
+	public double getValue(final int i) {
+		throw new NormalizationError("Can't call getValue on "
+				+ this.getClass().getSimpleName());
+	}
+
+	public void setCurrentValue(final double currentValue) {
 		this.currentValue = currentValue;
 	}
 
-	public double getValue(int i) {
-		throw new NormalizationError("Can't call getValue on " + this.getClass().getSimpleName());
+	public void setMax(final double max) {
+		this.max = max;
+	}
+
+	public void setMin(final double min) {
+		this.min = min;
 	}
 
 }

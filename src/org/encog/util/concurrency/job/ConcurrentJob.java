@@ -46,7 +46,9 @@ public abstract class ConcurrentJob {
 
 	/**
 	 * Construct a concurrent job.
-	 * @param report The object to report status to.
+	 * 
+	 * @param report
+	 *            The object to report status to.
 	 */
 	public ConcurrentJob(final StatusReportable report) {
 		this.report = report;
@@ -92,11 +94,13 @@ public abstract class ConcurrentJob {
 
 	/**
 	 * Report the status for this job.
-	 * @param context The job context.
-	 * @param status The status to report.
+	 * 
+	 * @param context
+	 *            The job context.
+	 * @param status
+	 *            The status to report.
 	 */
-	public void reportStatus(final JobUnitContext context, 
-			final String status) {
+	public void reportStatus(final JobUnitContext context, final String status) {
 		this.report.report(this.totalTasks, context.getTaskNumber(), status);
 	}
 

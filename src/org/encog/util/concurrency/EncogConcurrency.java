@@ -82,9 +82,11 @@ public class EncogConcurrency {
 	}
 
 	/**
-	 * Process the specified task.  It will be processed either now,
-	 * or queued to process on the thread pool.
-	 * @param task The task to process.
+	 * Process the specified task. It will be processed either now, or queued to
+	 * process on the thread pool.
+	 * 
+	 * @param task
+	 *            The task to process.
 	 */
 	public void processTask(final EncogTask task) {
 		if (this.executor == null) {
@@ -96,7 +98,9 @@ public class EncogConcurrency {
 
 	/**
 	 * Set the maximum number of threads to use.
-	 * @param maxThreads Maximum number of threads to use.
+	 * 
+	 * @param maxThreads
+	 *            Maximum number of threads to use.
 	 */
 	public void setMaxThreads(final int maxThreads) {
 		this.maxThreads = maxThreads;
@@ -106,7 +110,7 @@ public class EncogConcurrency {
 			this.executor = null;
 		}
 	}
-	
+
 	/**
 	 * Set the max threads to the number of processors.
 	 */
@@ -116,7 +120,9 @@ public class EncogConcurrency {
 
 	/**
 	 * Wait for all threads in the pool to complete.
-	 * @param timeout How long to wait for all threads to complete.
+	 * 
+	 * @param timeout
+	 *            How long to wait for all threads to complete.
 	 */
 	public void shutdown(final long timeout) {
 		if (this.executor != null) {

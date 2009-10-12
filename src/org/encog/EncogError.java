@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * General error class for Encog.
+ * 
  * @author jheaton
  */
 public class EncogError extends RuntimeException {
@@ -38,7 +39,7 @@ public class EncogError extends RuntimeException {
 	 * 
 	 */
 	private static final long serialVersionUID = -5909341149180956178L;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -63,6 +64,6 @@ public class EncogError extends RuntimeException {
 	 */
 	public EncogError(final Throwable t) {
 		super(t);
-	}	
-	
+	}
+
 }

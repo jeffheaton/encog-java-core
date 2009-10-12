@@ -27,34 +27,35 @@ package org.encog.neural.data.market;
 
 /**
  * The types of market data that can be used.
+ * 
  * @author jheaton
  */
 public enum MarketDataType {
 	/**
 	 * The market open for the day.
 	 */
-	OPEN, 
-	
+	OPEN,
+
 	/**
 	 * The market close for the day.
 	 */
 	CLOSE,
-	
+
 	/**
 	 * The volume for the day.
 	 */
-	VOLUME, 
-	
+	VOLUME,
+
 	/**
-	 * The adjusted close.  Adjusted for splits and dividends.
+	 * The adjusted close. Adjusted for splits and dividends.
 	 */
 	ADJUSTED_CLOSE,
-	
+
 	/**
 	 * The high for the day.
 	 */
-	HIGH, 
-	
+	HIGH,
+
 	/**
 	 * The low for the day.
 	 */

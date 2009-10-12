@@ -34,26 +34,21 @@ import org.slf4j.LoggerFactory;
  * network. Data can be both an input and output. Inputs are used to attempt
  * predict the output.
  * 
- * @author jheaton 
+ * @author jheaton
  */
 public class TemporalDataDescription {
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The type of data requested.
+	 * 
 	 * @author jheaton
-	 *
+	 * 
 	 */
 	public enum Type {
 		/**
 		 * Data in its raw, unmodified form.
 		 */
-		RAW, 
+		RAW,
 		/**
 		 * The percent change.
 		 */
@@ -65,35 +60,41 @@ public class TemporalDataDescription {
 	}
 
 	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
 	 * The lowest allowed number.
 	 */
 	private final double low;
-	
+
 	/**
 	 * The highest allowed number.
 	 */
 	private final double high;
-	
+
 	/**
 	 * Is this data item used for input to prediction?
 	 */
 	private final boolean input;
-	
+
 	/**
 	 * Should this data item be predicted?
 	 */
 	private final boolean predict;
-	
+
 	/**
 	 * What type of data is requested?
 	 */
 	private final Type type;
-	
+
 	/**
 	 * What is the index of this data item in relation to the others.
 	 */
 	private int index;
-	
+
 	/**
 	 * Should an activation function be used?
 	 */
@@ -129,10 +130,15 @@ public class TemporalDataDescription {
 
 	/**
 	 * Construct a data description with an activation function, but no range.
-	 * @param activationFunction The activation function.
-	 * @param type The type of data.
-	 * @param input Used for input?
-	 * @param predict Used for prediction?
+	 * 
+	 * @param activationFunction
+	 *            The activation function.
+	 * @param type
+	 *            The type of data.
+	 * @param input
+	 *            Used for input?
+	 * @param predict
+	 *            Used for prediction?
 	 */
 	public TemporalDataDescription(final ActivationFunction activationFunction,
 			final Type type, final boolean input, final boolean predict) {
@@ -141,9 +147,13 @@ public class TemporalDataDescription {
 
 	/**
 	 * Construct a data description with no activation function or range.
-	 * @param type The type of data.
-	 * @param input Used for input?
-	 * @param predict Used for prediction?
+	 * 
+	 * @param type
+	 *            The type of data.
+	 * @param input
+	 *            Used for input?
+	 * @param predict
+	 *            Used for prediction?
 	 */
 	public TemporalDataDescription(final Type type, final boolean input,
 			final boolean predict) {

@@ -68,141 +68,43 @@ public class Normalization {
 	private CSVFormat csvFormat = CSVFormat.ENGLISH;
 	private int lastReport;
 
-	public NormalizationTarget getTarget() {
-		return target;
+	public void addInputField(final InputField f) {
+		this.inputFields.add(f);
 	}
 
-	public void setTarget(NormalizationTarget target) {
-		this.target = target;
+	public void addOutputField(final OutputField outputField) {
+		this.outputFields.add(outputField);
+		if (outputField instanceof OutputFieldGrouped) {
+			final OutputFieldGrouped ofg = (OutputFieldGrouped) outputField;
+			this.groups.add(ofg.getGroup());
+		}
 	}
 
-	public StatusReportable getReport() {
-		return report;
-	}
-
-	public void setReport(StatusReportable report) {
-		this.report = report;
-	}
-
-	public Collection<InputField> getInputFields() {
-		return inputFields;
-	}
-
-	public Collection<OutputField> getOutputFields() {
-		return outputFields;
-	}
-
-	public void addSegregator(Segregator segregator) {
+	public void addSegregator(final Segregator segregator) {
 		this.segregators.add(segregator);
 		segregator.init(this);
 	}
 
-	private void openCSV() {
-		// clear out any CSV files already there
-		this.csvMap.clear();
-		this.readCSV.clear();
-
-		// only add each CSV once
-		Map<File, ReadCSV> uniqueFiles = new HashMap<File, ReadCSV>();
-
-		// find the unique files
-		for (InputField field : this.inputFields) {
-			if (field instanceof InputFieldCSV) {
-				InputFieldCSV csvField = (InputFieldCSV) field;
-				File file = csvField.getFile();
-				if (!uniqueFiles.containsKey(file)) {
-					ReadCSV csv = new ReadCSV(file.toString(), false,
-							this.csvFormat);
-					uniqueFiles.put(file, csv);
-					this.readCSV.add(csv);
-				}
-				this.csvMap.put(csvField, uniqueFiles.get(file));
-			}
+	private void applyMinMax() {
+		for (final InputField field : this.inputFields) {
+			final double value = field.getCurrentValue();
+			field.applyMinMax(value);
 		}
 	}
 
-	private void openDataSet() {
-		// clear out any data sets already there
-		this.readDataSet.clear();
-		this.dataSetFieldMap.clear();
-		this.dataSetIteratorMap.clear();
-
-		// only add each iterator once
-		Map<NeuralDataSet, NeuralDataFieldHolder> uniqueSets = new HashMap<NeuralDataSet, NeuralDataFieldHolder>();
-
-		// find the unique files
-		for (InputField field : this.inputFields) {
-			if (field instanceof InputFieldNeuralDataSet) {
-				InputFieldNeuralDataSet dataSetField = (InputFieldNeuralDataSet) field;
-				NeuralDataSet dataSet = dataSetField.getNeuralDataSet();
-				if (!uniqueSets.containsKey(dataSet)) {
-					Iterator<NeuralDataPair> iterator = dataSet.iterator();
-					NeuralDataFieldHolder holder = new NeuralDataFieldHolder(
-							iterator, dataSetField);
-					uniqueSets.put(dataSet, holder);
-					this.readDataSet.add(iterator);
-				}
-
-				NeuralDataFieldHolder holder = uniqueSets.get(dataSet);
-
-				this.dataSetFieldMap.put(dataSetField, holder);
-				this.dataSetIteratorMap.put(holder.getIterator(), holder);
-			}
-		}
-	}
-
-	private boolean next() {
-
-		// see if any of the CSV readers want to stop
-		for (ReadCSV csv : this.readCSV) {
-			if (!csv.next())
-				return false;
-		}
-
-		// see if any of the data sets want to stop
-		for (Iterator<NeuralDataPair> iterator : this.readDataSet) {
-			if (!iterator.hasNext())
-				return false;
-			NeuralDataFieldHolder holder = this.dataSetIteratorMap
-					.get(iterator);
-			NeuralDataPair pair = iterator.next();
-			holder.setPair(pair);
-		}
-
-		// see if any of the arrays want to stop
-		for (InputField field : this.inputFields) {
-			if (field instanceof HasFixedLength) {
-				HasFixedLength fixed = (HasFixedLength) field;
-				if ((this.currentIndex + 1) >= fixed.length())
-					return false;
-			}
-		}
-
-		this.currentIndex++;
-
-		return true;
-	}
-
-	private void reportResult(String message, int total, int current) {
-		// count the records, report status
-		this.lastReport++;
-		if (lastReport >= 10000) {
-			this.report.report(total, current, message);
-			this.lastReport = 0;
-		}
-	}
-
-	private double determineInputFieldValue(InputField field, int index) {
+	private double determineInputFieldValue(final InputField field,
+			final int index) {
 		double result = 0;
 
 		if (field instanceof InputFieldCSV) {
-			InputFieldCSV fieldCSV = (InputFieldCSV) field;
-			ReadCSV csv = this.csvMap.get(field);
+			final InputFieldCSV fieldCSV = (InputFieldCSV) field;
+			final ReadCSV csv = this.csvMap.get(field);
 			result = csv.getDouble(fieldCSV.getOffset());
 		} else if (field instanceof InputFieldNeuralDataSet) {
-			InputFieldNeuralDataSet neuralField = (InputFieldNeuralDataSet) field;
-			NeuralDataFieldHolder holder = this.dataSetFieldMap.get(field);
-			NeuralDataPair pair = holder.getPair();
+			final InputFieldNeuralDataSet neuralField = (InputFieldNeuralDataSet) field;
+			final NeuralDataFieldHolder holder = this.dataSetFieldMap
+					.get(field);
+			final NeuralDataPair pair = holder.getPair();
 			int offset = neuralField.getOffset();
 			if (offset < pair.getInput().size()) {
 				result = pair.getInput().getData(offset);
@@ -217,19 +119,10 @@ public class Normalization {
 		field.setCurrentValue(result);
 		return result;
 	}
-	
-	private void determineInputFieldValues(int index)
-	{
-		for (InputField field : this.inputFields) {
-			this.determineInputFieldValue(field, index);
-		}
-	}
-	
-	private void applyMinMax()
-	{
-		for (InputField field : this.inputFields) {
-			double value = field.getCurrentValue();
-			field.applyMinMax(value);
+
+	private void determineInputFieldValues(final int index) {
+		for (final InputField field : this.inputFields) {
+			determineInputFieldValue(field, index);
 		}
 	}
 
@@ -249,26 +142,159 @@ public class Normalization {
 
 		// loop over all of the records
 		while (next()) {
-			
-			this.determineInputFieldValues(index);
 
-			if (this.shouldInclude()) {
+			determineInputFieldValues(index);
+
+			if (shouldInclude()) {
 				applyMinMax();
 				this.recordCount++;
-				this.reportResult("First pass, analyzing file", 0,
-						this.recordCount);
+				reportResult("First pass, analyzing file", 0, this.recordCount);
 			}
 			index++;
 		}
 	}
 
-	private boolean shouldInclude() {
-		for (Segregator segregator : this.segregators) {
-			if (!segregator.shouldInclude()) {
+	public CSVFormat getCSVFormat() {
+		return this.csvFormat;
+	}
+
+	public Set<OutputFieldGroup> getGroups() {
+		return this.groups;
+	}
+
+	public Collection<InputField> getInputFields() {
+		return this.inputFields;
+	}
+
+	public Collection<OutputField> getOutputFields() {
+		return this.outputFields;
+	}
+
+	public int getRecordCount() {
+		return this.recordCount;
+	}
+
+	public StatusReportable getReport() {
+		return this.report;
+	}
+
+	public Collection<Segregator> getSegregators() {
+		return this.segregators;
+	}
+
+	public NormalizationTarget getTarget() {
+		return this.target;
+	}
+
+	private void initGroups() {
+		for (final OutputFieldGroup group : this.groups) {
+			group.rowInit();
+		}
+	}
+
+	private boolean next() {
+
+		// see if any of the CSV readers want to stop
+		for (final ReadCSV csv : this.readCSV) {
+			if (!csv.next()) {
 				return false;
 			}
 		}
+
+		// see if any of the data sets want to stop
+		for (final Iterator<NeuralDataPair> iterator : this.readDataSet) {
+			if (!iterator.hasNext()) {
+				return false;
+			}
+			final NeuralDataFieldHolder holder = this.dataSetIteratorMap
+					.get(iterator);
+			final NeuralDataPair pair = iterator.next();
+			holder.setPair(pair);
+		}
+
+		// see if any of the arrays want to stop
+		for (final InputField field : this.inputFields) {
+			if (field instanceof HasFixedLength) {
+				final HasFixedLength fixed = (HasFixedLength) field;
+				if ((this.currentIndex + 1) >= fixed.length()) {
+					return false;
+				}
+			}
+		}
+
+		this.currentIndex++;
+
 		return true;
+	}
+
+	private void openCSV() {
+		// clear out any CSV files already there
+		this.csvMap.clear();
+		this.readCSV.clear();
+
+		// only add each CSV once
+		final Map<File, ReadCSV> uniqueFiles = new HashMap<File, ReadCSV>();
+
+		// find the unique files
+		for (final InputField field : this.inputFields) {
+			if (field instanceof InputFieldCSV) {
+				final InputFieldCSV csvField = (InputFieldCSV) field;
+				final File file = csvField.getFile();
+				if (!uniqueFiles.containsKey(file)) {
+					final ReadCSV csv = new ReadCSV(file.toString(), false,
+							this.csvFormat);
+					uniqueFiles.put(file, csv);
+					this.readCSV.add(csv);
+				}
+				this.csvMap.put(csvField, uniqueFiles.get(file));
+			}
+		}
+	}
+
+	private void openDataSet() {
+		// clear out any data sets already there
+		this.readDataSet.clear();
+		this.dataSetFieldMap.clear();
+		this.dataSetIteratorMap.clear();
+
+		// only add each iterator once
+		final Map<NeuralDataSet, NeuralDataFieldHolder> uniqueSets = new HashMap<NeuralDataSet, NeuralDataFieldHolder>();
+
+		// find the unique files
+		for (final InputField field : this.inputFields) {
+			if (field instanceof InputFieldNeuralDataSet) {
+				final InputFieldNeuralDataSet dataSetField = (InputFieldNeuralDataSet) field;
+				final NeuralDataSet dataSet = dataSetField.getNeuralDataSet();
+				if (!uniqueSets.containsKey(dataSet)) {
+					final Iterator<NeuralDataPair> iterator = dataSet
+							.iterator();
+					final NeuralDataFieldHolder holder = new NeuralDataFieldHolder(
+							iterator, dataSetField);
+					uniqueSets.put(dataSet, holder);
+					this.readDataSet.add(iterator);
+				}
+
+				final NeuralDataFieldHolder holder = uniqueSets.get(dataSet);
+
+				this.dataSetFieldMap.put(dataSetField, holder);
+				this.dataSetIteratorMap.put(holder.getIterator(), holder);
+			}
+		}
+	}
+
+	public void process() {
+		firstPass();
+		secondPass();
+	}
+
+	private void reportResult(final String message, final int total,
+			final int current) {
+		// count the records, report status
+		this.lastReport++;
+		if (this.lastReport >= 10000) {
+			this.report.report(total, current, message);
+			this.lastReport = 0;
+		}
 	}
 
 	private void secondPass() {
@@ -279,7 +305,7 @@ public class Normalization {
 		this.currentIndex = -1;
 
 		// process the records
-		double[] output = new double[this.outputFields.size()];
+		final double[] output = new double[this.outputFields.size()];
 
 		this.target.open();
 		this.lastReport = 0;
@@ -287,8 +313,8 @@ public class Normalization {
 		int current = 0;
 		while (next()) {
 			// read the value
-			for (InputField field : this.inputFields) {
-				this.determineInputFieldValue(field, index);
+			for (final InputField field : this.inputFields) {
+				determineInputFieldValue(field, index);
 			}
 
 			if (shouldInclude()) {
@@ -297,12 +323,12 @@ public class Normalization {
 
 				// write the value
 				int outputIndex = 0;
-				for (OutputField ofield : this.outputFields) {
+				for (final OutputField ofield : this.outputFields) {
 					output[outputIndex++] = ofield.calculate();
 				}
 
-				this.reportResult("Second pass, normalizing data",
-						this.recordCount, ++current);
+				reportResult("Second pass, normalizing data", this.recordCount,
+						++current);
 				this.target.write(output, 0);
 			}
 
@@ -312,47 +338,25 @@ public class Normalization {
 
 	}
 
-	private void initGroups() {
-		for (OutputFieldGroup group : this.groups) {
-			group.rowInit();
-		}
-	}
-
-	public void process() {
-		firstPass();
-		secondPass();
-	}
-
-	public void addInputField(InputField f) {
-		this.inputFields.add(f);
-	}
-
-	public void addOutputField(OutputField outputField) {
-		this.outputFields.add(outputField);
-		if (outputField instanceof OutputFieldGrouped) {
-			OutputFieldGrouped ofg = (OutputFieldGrouped) outputField;
-			this.groups.add(ofg.getGroup());
-		}
-	}
-
-	public Set<OutputFieldGroup> getGroups() {
-		return groups;
-	}
-
-	public Collection<Segregator> getSegregators() {
-		return segregators;
-	}
-
-	public int getRecordCount() {
-		return recordCount;
-	}
-
-	public CSVFormat getCSVFormat() {
-		return csvFormat;
-	}
-
-	public void setCSVFormat(CSVFormat csvFormat) {
+	public void setCSVFormat(final CSVFormat csvFormat) {
 		this.csvFormat = csvFormat;
+	}
+
+	public void setReport(final StatusReportable report) {
+		this.report = report;
+	}
+
+	public void setTarget(final NormalizationTarget target) {
+		this.target = target;
+	}
+
+	private boolean shouldInclude() {
+		for (final Segregator segregator : this.segregators) {
+			if (!segregator.shouldInclude()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

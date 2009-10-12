@@ -54,7 +54,7 @@ public class Span extends DocumentRange {
 	}
 
 	/**
-	 * @return This object as a string. 
+	 * @return This object as a string.
 	 */
 	@Override
 	public String toString() {

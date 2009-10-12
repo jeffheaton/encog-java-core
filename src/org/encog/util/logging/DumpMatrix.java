@@ -41,26 +41,21 @@ import org.slf4j.LoggerFactory;
 public final class DumpMatrix {
 
 	/**
-	 * Private constructor.
-	 */
-	private DumpMatrix() {
-		
-	}
-	
-	/**
 	 * Maximum precision.
 	 */
 	public static final int MAX_PRECIS = 3;
-	
+
 	/**
 	 * Dump an array of numbers to a string.
-	 * @param d The array to dump.
+	 * 
+	 * @param d
+	 *            The array to dump.
 	 * @return The array as a string.
 	 */
 	public static String dumpArray(final double[] d) {
 		final NumberFormat format = NumberFormat.getNumberInstance();
-		format.setMaximumFractionDigits(MAX_PRECIS);
-		format.setMaximumFractionDigits(MAX_PRECIS);
+		format.setMaximumFractionDigits(DumpMatrix.MAX_PRECIS);
+		format.setMaximumFractionDigits(DumpMatrix.MAX_PRECIS);
 
 		final StringBuilder result = new StringBuilder();
 		result.append("[");
@@ -76,13 +71,15 @@ public final class DumpMatrix {
 
 	/**
 	 * Dump a matrix to a string.
-	 * @param matrix The matrix.
+	 * 
+	 * @param matrix
+	 *            The matrix.
 	 * @return The matrix as a string.
 	 */
 	public static String dumpMatrix(final Matrix matrix) {
 		final NumberFormat format = NumberFormat.getNumberInstance();
-		format.setMaximumFractionDigits(MAX_PRECIS);
-		format.setMaximumFractionDigits(MAX_PRECIS);
+		format.setMaximumFractionDigits(DumpMatrix.MAX_PRECIS);
+		format.setMaximumFractionDigits(DumpMatrix.MAX_PRECIS);
 
 		final StringBuilder result = new StringBuilder();
 		result.append("==");
@@ -106,4 +103,11 @@ public final class DumpMatrix {
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Private constructor.
+	 */
+	private DumpMatrix() {
+
+	}
 }

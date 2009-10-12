@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Thrown when an error occurs processing market data.
+ * 
  * @author jheaton
  */
 public class MarketError extends TemporalError {
@@ -38,7 +39,7 @@ public class MarketError extends TemporalError {
 	 * The serial id for this class.
 	 */
 	private static final long serialVersionUID = 9199552396430520659L;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -63,6 +64,6 @@ public class MarketError extends TemporalError {
 	 */
 	public MarketError(final Throwable t) {
 		super(t);
-	}	
+	}
 
 }

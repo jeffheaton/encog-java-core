@@ -26,7 +26,6 @@
 
 package org.encog.neural.activation;
 
-import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationSoftMaxPersistor;
 import org.encog.util.math.BoundMath;
@@ -45,10 +44,12 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	private static final long serialVersionUID = -960489243250457611L;
 
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 
@@ -72,6 +73,7 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	@Override
@@ -80,18 +82,19 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	}
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 
 	}
-	
+
 	/**
 	 * @return Return false, softmax has no derivative.
 	 */

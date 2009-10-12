@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * General error class for Encog persistence.
+ * 
  * @author jheaton
  */
 public class PersistError extends RuntimeException {
@@ -43,7 +44,7 @@ public class PersistError extends RuntimeException {
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	/**
 	 * Construct a message exception.
 	 * 
@@ -62,6 +63,6 @@ public class PersistError extends RuntimeException {
 	 */
 	public PersistError(final Throwable t) {
 		super(t);
-	}	
-	
+	}
+
 }

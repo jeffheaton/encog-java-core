@@ -34,7 +34,7 @@ package org.encog.persist;
  * @author jheaton
  * 
  */
-public class DirectoryEntry implements Comparable {
+public class DirectoryEntry implements Comparable<DirectoryEntry> {
 
 	/**
 	 * The type of object that this is.
@@ -81,38 +81,34 @@ public class DirectoryEntry implements Comparable {
 
 	/**
 	 * Compare the two objects.
-	 * @param other The other object.
+	 * 
+	 * @param other
+	 *            The other object.
 	 * @return 0 if equal.
 	 */
-	public int compareTo(final Object other) {
-		if (other instanceof DirectoryEntry) {
-			final DirectoryEntry other2 = (DirectoryEntry) other;
-			if (other2.getType().equals(other2.getType())) {
-				String c = getName()==null?"":getName();
-				return c.compareTo(other2.getName());
-			} else {
-				return compareTo(other2.getType());
-			}
+	public int compareTo(final DirectoryEntry other) {
+		if (other.getType().equals(other.getType())) {
+			final String c = getName() == null ? "" : getName();
+			return c.compareTo(other.getName());
 		} else {
-			return 1;
+			return getType().compareTo(other.getType());
 		}
 	}
 
 	/**
 	 * Returns true if the two objects are equal.
-	 * @param other The other object.
+	 * 
+	 * @param other
+	 *            The other object.
 	 * @return True if equal.
 	 */
 	@Override
 	public boolean equals(final Object other) {
-		return compareTo(other) == 0;
-	}
-	
-	/**
-	 * @return A simple hash code for this object.
-	 */
-	public int hashCode() {
-		return this.name.hashCode() + this.type.hashCode();
+		if (!(other instanceof DirectoryEntry)) {
+			return false;
+		} else {
+			return compareTo((DirectoryEntry) other) == 0;
+		}
 	}
 
 	/**
@@ -135,16 +131,25 @@ public class DirectoryEntry implements Comparable {
 	public String getType() {
 		return this.type;
 	}
-	
+
+	/**
+	 * @return A simple hash code for this object.
+	 */
+	@Override
+	public int hashCode() {
+		return this.name.hashCode() + this.type.hashCode();
+	}
+
 	/**
 	 * @return This object as a string.
 	 */
+	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append("[DirectoryEntry:type=");
-		result.append(this.getType());
+		result.append(getType());
 		result.append(",name=");
-		result.append(this.getName());
+		result.append(getName());
 		result.append("]");
 		return result.toString();
 	}

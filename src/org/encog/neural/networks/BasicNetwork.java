@@ -138,8 +138,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * Properties about the neural network. Some NeuralLogic classes require
 	 * certain properties to be set.
 	 */
-	private final Map<String, String> properties = 
-		new HashMap<String, String>();
+	private final Map<String, String> properties = new HashMap<String, String>();
 
 	/**
 	 * The tags for the layers.
@@ -245,8 +244,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 		if (input.size() != inputLayer.getNeuronCount()) {
 
-			final String str = 
-				"Size mismatch: Can't compute outputs for input size="
+			final String str = "Size mismatch: Can't compute outputs for input size="
 					+ input.size()
 					+ " for input layer size="
 					+ inputLayer.getNeuronCount();
@@ -257,6 +255,18 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 			throw new NeuralNetworkError(str);
 		}
+	}
+
+	/**
+	 * Clear any data from any context layers.
+	 */
+	public void clearContext() {
+		for (final Layer layer : this.structure.getLayers()) {
+			if (layer instanceof ContextClearable) {
+				((ContextClearable) layer).clearContext();
+			}
+		}
+
 	}
 
 	/**
@@ -579,18 +589,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 		final NeuralData output = compute(input);
 		return BasicNetwork.determineWinner(output);
-	}
-
-	/**
-	 * Clear any data from any context layers.
-	 */
-	public void clearContext() {
-		for (Layer layer : this.structure.getLayers()) {
-			if (layer instanceof ContextClearable) {
-				((ContextClearable) layer).clearContext();
-			}
-		}
-
 	}
 
 }

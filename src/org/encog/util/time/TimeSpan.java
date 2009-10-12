@@ -43,48 +43,48 @@ public class TimeSpan {
 	 * Years in a century.
 	 */
 	public static final int YEARS_CENTURY = 100;
-	
+
 	/**
 	 * Hours in a day.
 	 */
 	public static final int HOURS_DAY = 24;
-	
+
 	/**
 	 * Minutes in an hour.
 	 */
 	public static final int MINUTES_HOUR = 60;
-	
+
 	/**
 	 * Seconds in a minute.
 	 */
 	public static final int SECONDS_MINUTE = 60;
-	
+
 	/**
 	 * Months in a year.
 	 */
 	public static final int MONTHS_YEAR = 12;
-	
+
 	/**
 	 * Days in a week.
 	 */
 	public static final int DAYS_WEEK = 7;
-	
+
 	/**
 	 * Years in a mil.
 	 */
 	public static final int YEARS_MIL = 1000;
-	
+
 	/**
 	 * Years in a score.
 	 */
 	public static final int YEARS_SCORE = 20;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
 	/**
 	 * The from date.
 	 */
@@ -158,7 +158,7 @@ public class TimeSpan {
 	 * @return The time span.
 	 */
 	private long getSpanCenturies() {
-		return getSpanYears() / YEARS_CENTURY;
+		return getSpanYears() / TimeSpan.YEARS_CENTURY;
 	}
 
 	/**
@@ -167,7 +167,7 @@ public class TimeSpan {
 	 * @return The time span.
 	 */
 	private long getSpanDays() {
-		return getSpanHours() / HOURS_DAY;
+		return getSpanHours() / TimeSpan.HOURS_DAY;
 	}
 
 	/**
@@ -186,7 +186,7 @@ public class TimeSpan {
 	 * @return The time span.
 	 */
 	private long getSpanHours() {
-		return getSpanMinutes() / MINUTES_HOUR;
+		return getSpanMinutes() / TimeSpan.MINUTES_HOUR;
 	}
 
 	/**
@@ -196,7 +196,7 @@ public class TimeSpan {
 	 */
 
 	private long getSpanMillennia() {
-		return getSpanYears() / YEARS_MIL;
+		return getSpanYears() / TimeSpan.YEARS_MIL;
 	}
 
 	/**
@@ -206,7 +206,7 @@ public class TimeSpan {
 	 */
 
 	private long getSpanMinutes() {
-		return getSpanSeconds() / SECONDS_MINUTE;
+		return getSpanSeconds() / TimeSpan.SECONDS_MINUTE;
 	}
 
 	/**
@@ -224,7 +224,7 @@ public class TimeSpan {
 
 		return endCal.get(Calendar.MONTH) - startCal.get(Calendar.MONTH)
 				+ (endCal.get(Calendar.YEAR) - startCal.get(Calendar.YEAR))
-				* MONTHS_YEAR;
+				* TimeSpan.MONTHS_YEAR;
 	}
 
 	/**
@@ -233,7 +233,7 @@ public class TimeSpan {
 	 * @return The time span.
 	 */
 	private long getSpanScores() {
-		return getSpanYears() / YEARS_SCORE;
+		return getSpanYears() / TimeSpan.YEARS_SCORE;
 	}
 
 	/**
@@ -246,8 +246,8 @@ public class TimeSpan {
 		final Calendar toCalendar = Calendar.getInstance();
 		fromCalendar.setTime(this.from);
 		toCalendar.setTime(this.to);
-		return (toCalendar.getTimeInMillis() 
-				- fromCalendar.getTimeInMillis()) / YEARS_MIL;
+		return (toCalendar.getTimeInMillis() - fromCalendar.getTimeInMillis())
+				/ TimeSpan.YEARS_MIL;
 
 	}
 
@@ -257,7 +257,7 @@ public class TimeSpan {
 	 * @return The time span.
 	 */
 	private long getSpanWeeks() {
-		return getSpanDays() / DAYS_WEEK;
+		return getSpanDays() / TimeSpan.DAYS_WEEK;
 	}
 
 	/**
@@ -266,7 +266,7 @@ public class TimeSpan {
 	 * @return The time span.
 	 */
 	private long getSpanYears() {
-		return getSpanMonths() / MONTHS_YEAR;
+		return getSpanMonths() / TimeSpan.MONTHS_YEAR;
 	}
 
 	/**

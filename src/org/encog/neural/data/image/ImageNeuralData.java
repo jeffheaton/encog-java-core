@@ -54,7 +54,7 @@ public class ImageNeuralData extends BasicNeuralData {
 	 * The image associated with this class.
 	 */
 	private Image image;
-	
+
 	/**
 	 * The logging object.
 	 */

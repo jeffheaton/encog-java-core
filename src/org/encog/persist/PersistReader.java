@@ -97,36 +97,6 @@ public class PersistReader {
 		return advanceObjects(name);
 	}
 
-	private boolean advanceToTag(String tag) {
-		while (this.in.readToTag()) {
-			final Type type = this.in.getTag().getType();
-			if (type == Type.BEGIN) {
-
-				if (this.in.getTag().getName().equals(tag)) {
-					return true;
-				} else {
-					skipObject(this.in.getTag().getName());
-				}
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Obtain the Encog header from the file.
-	 * 
-	 * @return Name value pair map of the header attributes.
-	 */
-	public Map<String, String> readHeader() {
-		Map<String, String> headers = null;
-		if (advanceToTag("Document")) {
-			if (advanceToTag("Header")) {
-				headers = this.in.readPropertyBlock();
-			}
-		}
-		return headers;
-	}
-
 	/**
 	 * Once you are in the objects collection, advance to a specific object.
 	 * 
@@ -171,6 +141,21 @@ public class PersistReader {
 		}
 		throw new PersistError(str);
 
+	}
+
+	private boolean advanceToTag(final String tag) {
+		while (this.in.readToTag()) {
+			final Type type = this.in.getTag().getType();
+			if (type == Type.BEGIN) {
+
+				if (this.in.getTag().getName().equals(tag)) {
+					return true;
+				} else {
+					skipObject(this.in.getTag().getName());
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -273,7 +258,7 @@ public class PersistReader {
 					}
 
 					if (!this.in.getTag().getName().equals(contain)) {
-						out.endTag(in.getTag().getName());
+						out.endTag(this.in.getTag().getName());
 					} else if (depth == 0) {
 						break;
 					}
@@ -286,6 +271,28 @@ public class PersistReader {
 		}
 
 		out.endTag(contain);
+	}
+
+	/**
+	 * @return The ReadXML object being used by this object.
+	 */
+	public ReadXML getXMLInput() {
+		return this.in;
+	}
+
+	/**
+	 * Obtain the Encog header from the file.
+	 * 
+	 * @return Name value pair map of the header attributes.
+	 */
+	public Map<String, String> readHeader() {
+		Map<String, String> headers = null;
+		if (advanceToTag("Document")) {
+			if (advanceToTag("Header")) {
+				headers = this.in.readPropertyBlock();
+			}
+		}
+		return headers;
 	}
 
 	/**
@@ -440,14 +447,6 @@ public class PersistReader {
 				}
 			}
 		}
-	}
-	
-	/**	 
-	 * @return The ReadXML object being used by this object.
-	 */
-	public ReadXML getXMLInput()
-	{
-		return this.in;
 	}
 
 }

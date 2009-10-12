@@ -35,26 +35,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Holds a web page that was loaded by the Browse class. Web pages are made
- * up of DataUnits and contents, which are ranges of data units.  The data
- * units are basically tags and blocks of text.  The contents collection uses
- * DocumentRange objects to assign meatning to the lower level DataObjects.
+ * Holds a web page that was loaded by the Browse class. Web pages are made up
+ * of DataUnits and contents, which are ranges of data units. The data units are
+ * basically tags and blocks of text. The contents collection uses DocumentRange
+ * objects to assign meatning to the lower level DataObjects.
  * 
  * @author jheaton
  * 
  */
 public class WebPage {
-	
+
 	/**
 	 * The data units that make up this page.
 	 */
-	private List<DataUnit> data = new ArrayList<DataUnit>();
-	
+	private final List<DataUnit> data = new ArrayList<DataUnit>();
+
 	/**
 	 * The contents of this page, builds upon the list of DataUnits.
 	 */
-	private List<DocumentRange> contents = new ArrayList<DocumentRange>();
-	
+	private final List<DocumentRange> contents = new ArrayList<DocumentRange>();
+
 	/**
 	 * The title of this HTML page.
 	 */
@@ -68,16 +68,20 @@ public class WebPage {
 
 	/**
 	 * Add to the content collection.
-	 * @param span The range to add to the collection.
+	 * 
+	 * @param span
+	 *            The range to add to the collection.
 	 */
 	public void addContent(final DocumentRange span) {
 		span.setSource(this);
 		this.contents.add(span);
 	}
 
-	/** 
+	/**
 	 * Add a data unit to the collection.
-	 * @param unit The data unit to load.
+	 * 
+	 * @param unit
+	 *            The data unit to load.
 	 */
 	public void addDataUnit(final DataUnit unit) {
 		this.data.add(unit);
@@ -85,11 +89,14 @@ public class WebPage {
 
 	/**
 	 * Find the specified DocumentRange subclass in the contents list.
-	 * @param c The class type to search for.
-	 * @param index The index to search from.
+	 * 
+	 * @param c
+	 *            The class type to search for.
+	 * @param index
+	 *            The index to search from.
 	 * @return The document range that was found.
 	 */
-	public DocumentRange find(final Class< ? > c, final int index) {
+	public DocumentRange find(final Class<?> c, final int index) {
 		int i = index;
 		for (final DocumentRange span : getContents()) {
 			if (span.getClass().getName().equals(c.getName())) {
@@ -105,7 +112,9 @@ public class WebPage {
 
 	/**
 	 * Find the link that contains the specified string.
-	 * @param str The string to search for.
+	 * 
+	 * @param str
+	 *            The string to search for.
 	 * @return The link that contains the specified string.
 	 */
 	public Link findLink(final String str) {
@@ -120,7 +129,7 @@ public class WebPage {
 		return null;
 	}
 
-	/**	 
+	/**
 	 * @return The contents in a list collection.
 	 */
 
@@ -128,7 +137,7 @@ public class WebPage {
 		return this.contents;
 	}
 
-	/**	 
+	/**
 	 * @return The data units in a list collection.
 	 */
 	public List<DataUnit> getData() {
@@ -137,6 +146,7 @@ public class WebPage {
 
 	/**
 	 * Get the number of data items in this collection.
+	 * 
 	 * @return The size of the data unit.
 	 */
 	public int getDataSize() {
@@ -145,7 +155,9 @@ public class WebPage {
 
 	/**
 	 * Get the DataUnit unit at the specified index.
-	 * @param i The index to use.
+	 * 
+	 * @param i
+	 *            The index to use.
 	 * @return The DataUnit found at the specified index.
 	 */
 	public DataUnit getDataUnit(final int i) {
@@ -154,6 +166,7 @@ public class WebPage {
 
 	/**
 	 * Get the title for this document.
+	 * 
 	 * @return The DocumentRange that specifies the title of this document.
 	 */
 	public DocumentRange getTitle() {
@@ -162,7 +175,9 @@ public class WebPage {
 
 	/**
 	 * Set the title of this document.
-	 * @param title The DocumentRange that specifies the title.
+	 * 
+	 * @param title
+	 *            The DocumentRange that specifies the title.
 	 */
 	public void setTitle(final DocumentRange title) {
 		this.title = title;

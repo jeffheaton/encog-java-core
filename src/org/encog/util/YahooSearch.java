@@ -45,20 +45,20 @@ import org.slf4j.LoggerFactory;
 public class YahooSearch {
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	/**
 	 * How many retries.
 	 */
 	private static final int MAX_TRIES = 5;
-	
+
 	/**
 	 * How long to sleep between retry.
 	 */
 	private static final long RETRY_SLEEP = 5000;
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Do a search using the Yahoo search engine. Called internally.
@@ -106,7 +106,8 @@ public class YahooSearch {
 	 * @param searchFor
 	 *            What to search for.
 	 * @return The URL's found for the specific search.
-	 * @throws IOException Error connecting to Yahoo.
+	 * @throws IOException
+	 *             Error connecting to Yahoo.
 	 */
 	public Collection<URL> search(final String searchFor) throws IOException {
 		Collection<URL> result = null;

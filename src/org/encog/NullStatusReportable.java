@@ -40,8 +40,7 @@ public class NullStatusReportable implements StatusReportable {
 	 * @param message
 	 *            Not used.
 	 */
-	public void report(final int total, final int current,
-			final String message) {
+	public void report(final int total, final int current, final String message) {
 
 	}
 

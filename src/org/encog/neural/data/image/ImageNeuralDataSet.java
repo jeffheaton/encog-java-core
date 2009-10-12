@@ -51,8 +51,7 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 * Error message to inform the caller that only ImageNeuralData objects can
 	 * be used with this collection.
 	 */
-	public static final String MUST_USE_IMAGE = 
-		"This data set only supports ImageNeuralData or Image objects.";
+	public static final String MUST_USE_IMAGE = "This data set only supports ImageNeuralData or Image objects.";
 
 	/**
 	 * The downsampler to use.

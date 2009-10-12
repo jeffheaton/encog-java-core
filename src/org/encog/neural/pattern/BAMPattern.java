@@ -90,7 +90,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * Clear any settings on the pattern.
 	 */
 	public void clear() {
-		this.f1Neurons = 0; 
+		this.f1Neurons = 0;
 		this.f2Neurons = 0;
 
 	}
@@ -134,8 +134,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = 
-			"A BAM network can't specify a custom activation function.";
+		final String str = "A BAM network can't specify a custom activation function.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -169,11 +168,12 @@ public class BAMPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of input neurons.
-	 * @param count The number of input neurons.
+	 * 
+	 * @param count
+	 *            The number of input neurons.
 	 */
 	public void setInputNeurons(final int count) {
-		final String str = 
-			"A BAM network has no input layer, consider setting F1 layer.";
+		final String str = "A BAM network has no input layer, consider setting F1 layer.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -183,11 +183,12 @@ public class BAMPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of output neurons.
-	 * @param count The output neuron count.
+	 * 
+	 * @param count
+	 *            The output neuron count.
 	 */
 	public void setOutputNeurons(final int count) {
-		final String str = 
-			"A BAM network has no output layer, consider setting F2 layer.";
+		final String str = "A BAM network has no output layer, consider setting F2 layer.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}

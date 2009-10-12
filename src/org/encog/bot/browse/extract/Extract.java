@@ -40,22 +40,28 @@ import org.encog.bot.browse.WebPage;
  * 
  */
 public interface Extract {
-	
+
 	/**
 	 * Add a listener for the extraction.
-	 * @param listener The listener to add.
+	 * 
+	 * @param listener
+	 *            The listener to add.
 	 */
 	void addListener(ExtractListener listener);
 
 	/**
 	 * Extract data from the web page.
-	 * @param page The page to extract from.
+	 * 
+	 * @param page
+	 *            The page to extract from.
 	 */
 	void extract(WebPage page);
 
 	/**
 	 * Extract from the web page and return the results as a list.
-	 * @param page The web page to extract from.
+	 * 
+	 * @param page
+	 *            The web page to extract from.
 	 * @return The results of the extraction as a List.
 	 */
 	List<Object> extractList(WebPage page);
@@ -67,7 +73,9 @@ public interface Extract {
 
 	/**
 	 * Remove the specified listener.
-	 * @param listener The listener to rmove.
+	 * 
+	 * @param listener
+	 *            The listener to rmove.
 	 */
 	void removeListener(ExtractListener listener);
 }

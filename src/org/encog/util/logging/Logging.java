@@ -41,12 +41,6 @@ import java.util.logging.Logger;
  * 
  */
 public final class Logging {
-	
-	/**
-	 * Private constructor.
-	 */
-	private Logging() {		
-	}
 
 	/**
 	 * Log everything to the console.
@@ -80,7 +74,9 @@ public final class Logging {
 
 	/**
 	 * Set the logging level for console.
-	 * @param level The logging level.
+	 * 
+	 * @param level
+	 *            The logging level.
 	 */
 	public static void setConsoleLevel(final Level level) {
 		Logging.getConsoleHandler().setLevel(level);
@@ -91,5 +87,11 @@ public final class Logging {
 	 */
 	public static void stopConsoleLogging() {
 		Logging.setConsoleLevel(Level.OFF);
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private Logging() {
 	}
 }

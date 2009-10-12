@@ -41,12 +41,14 @@ public class ActivationSIN extends BasicActivationFunction {
 	 * 
 	 */
 	private static final long serialVersionUID = 5301501177778271284L;
-	
+
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 		for (int i = 0; i < d.length; i++) {
@@ -64,6 +66,7 @@ public class ActivationSIN extends BasicActivationFunction {
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	@Override
@@ -72,13 +75,14 @@ public class ActivationSIN extends BasicActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 
@@ -86,7 +90,7 @@ public class ActivationSIN extends BasicActivationFunction {
 			d[i] = BoundMath.cos(d[i]);
 		}
 	}
-	
+
 	/**
 	 * @return Return true, sin has a derivative.
 	 */

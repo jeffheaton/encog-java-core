@@ -33,11 +33,11 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- * This is the class that holds individual RSS items, or stories, for
- * the RSS class.
+ * This is the class that holds individual RSS items, or stories, for the RSS
+ * class.
  */
 public class RSSItem {
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -173,6 +173,7 @@ public class RSSItem {
 	 * 
 	 * @return The object as a String.
 	 */
+	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append('[');

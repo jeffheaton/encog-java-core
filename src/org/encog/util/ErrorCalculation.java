@@ -30,9 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An implementation of root mean square (RMS) error
- * calculation. This class is used by nearly every neural network in this book
- * to calculate error.
+ * An implementation of root mean square (RMS) error calculation. This class is
+ * used by nearly every neural network in this book to calculate error.
  */
 public class ErrorCalculation {
 
@@ -45,13 +44,12 @@ public class ErrorCalculation {
 	 * The size of a set.
 	 */
 	private int setSize;
-	
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = 
-		LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Returns the root mean square error for a complete training set.
@@ -85,7 +83,7 @@ public class ErrorCalculation {
 			final double delta = ideal[i] - actual[i];
 			this.globalError += delta * delta;
 		}
-		
+
 		this.setSize += ideal.length;
 	}
 

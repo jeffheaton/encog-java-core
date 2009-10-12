@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * This class contains market data that was loaded for a specific ticker symbol
  * and a specific date. This data is usually loaded from external sources.
  * 
- * @author jheaton 
+ * @author jheaton
  */
 public class LoadedMarketData implements Comparable<LoadedMarketData> {
 
@@ -56,7 +56,7 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 	 * The data that was collection for the sample date.
 	 */
 	private final Map<MarketDataType, Double> data;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -75,6 +75,17 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 		this.when = when;
 		this.ticker = ticker;
 		this.data = new HashMap<MarketDataType, Double>();
+	}
+
+	/**
+	 * Allow market data to be sorted. Sort by date.
+	 * 
+	 * @param other
+	 *            The other market data to compare to.
+	 * @return 0 if equal.
+	 */
+	public int compareTo(final LoadedMarketData other) {
+		return getWhen().compareTo(other.getWhen());
 	}
 
 	/**
@@ -112,14 +123,5 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 	 */
 	public void setData(final MarketDataType type, final double data) {
 		this.data.put(type, data);
-	}
-
-	/**
-	 * Allow market data to be sorted. Sort by date.
-	 * @param other The other market data to compare to.
-	 * @return 0 if equal.
-	 */
-	public int compareTo(final LoadedMarketData other) {
-		return this.getWhen().compareTo(other.getWhen());
 	}
 }

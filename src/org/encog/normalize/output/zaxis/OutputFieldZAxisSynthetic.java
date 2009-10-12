@@ -6,21 +6,24 @@ import org.encog.normalize.output.OutputFieldGrouped;
 
 public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 
-	public OutputFieldZAxisSynthetic(OutputFieldGroup group) {
-		super(group,null);
-		if( !(group instanceof ZAxisGroup ) )
-			throw new NormalizationError("Must use ZAxisGroup with OutputFieldZAxisSynthetic.");
+	public OutputFieldZAxisSynthetic(final OutputFieldGroup group) {
+		super(group, null);
+		if (!(group instanceof ZAxisGroup)) {
+			throw new NormalizationError(
+					"Must use ZAxisGroup with OutputFieldZAxisSynthetic.");
+		}
 	}
 
 	public double calculate() {
-		double l = ((ZAxisGroup)this.getGroup()).getLength();
-		double f = ((ZAxisGroup)this.getGroup()).getMultiplier();
-		double n = this.getGroup().getGroupedFields().size();
-		double result = f*Math.sqrt(n-(l*l));
-		if( Double.isInfinite(result) || Double.isNaN(result))
+		final double l = ((ZAxisGroup) getGroup()).getLength();
+		final double f = ((ZAxisGroup) getGroup()).getMultiplier();
+		final double n = getGroup().getGroupedFields().size();
+		final double result = f * Math.sqrt(n - (l * l));
+		if (Double.isInfinite(result) || Double.isNaN(result)) {
 			return 0;
-		else
+		} else {
 			return result;
+		}
 	}
 
 }

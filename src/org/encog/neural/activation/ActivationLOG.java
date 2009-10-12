@@ -33,11 +33,11 @@ import org.encog.util.math.BoundMath;
 /**
  * An activation function based on the logarithm function.
  * 
- * This type of activation function can be useful to prevent saturation.
- * A hidden node of a neural network is said to be saturated on a given 
- * set of inputs when its output is approximately 1 or -1 "most of the time". 
- * If this phenomena occurs during training then the learning of the network 
- * can be slowed significantly since the error surface is very at in this instance.
+ * This type of activation function can be useful to prevent saturation. A
+ * hidden node of a neural network is said to be saturated on a given set of
+ * inputs when its output is approximately 1 or -1 "most of the time". If this
+ * phenomena occurs during training then the learning of the network can be
+ * slowed significantly since the error surface is very at in this instance.
  * 
  * @author jheaton
  * 
@@ -50,10 +50,12 @@ public class ActivationLOG extends BasicActivationFunction {
 	private static final long serialVersionUID = 7134233791725797522L;
 
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 
@@ -77,6 +79,7 @@ public class ActivationLOG extends BasicActivationFunction {
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	@Override
@@ -85,13 +88,14 @@ public class ActivationLOG extends BasicActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 
@@ -104,7 +108,7 @@ public class ActivationLOG extends BasicActivationFunction {
 		}
 
 	}
-	
+
 	/**
 	 * @return Return true, log has a derivative.
 	 */

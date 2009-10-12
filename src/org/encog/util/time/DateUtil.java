@@ -38,12 +38,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class DateUtil {
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Create a Date object with the specified date.
@@ -56,8 +50,7 @@ public final class DateUtil {
 	 *            The year.
 	 * @return The newly created Date.
 	 */
-	public static Date createDate(final int month, 
-			final int day, final int year) {
+	public static Date createDate(final int month, final int day, final int year) {
 		final Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.MONTH, month - 1);
 		cal.set(Calendar.DAY_OF_MONTH, day);
@@ -69,6 +62,12 @@ public final class DateUtil {
 		cal.set(Calendar.AM_PM, Calendar.AM);
 		return cal.getTime();
 	}
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Private constructor.

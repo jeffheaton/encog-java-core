@@ -34,12 +34,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A self organizing map is a neural network pattern with an input
- * and output layer.  There is no hidden layer.  The winning neuron,
- * which is that neuron with the higest output is the winner, this
- * winning neuron is often used to classify the input into a group.
+ * A self organizing map is a neural network pattern with an input and output
+ * layer. There is no hidden layer. The winning neuron, which is that neuron
+ * with the higest output is the winner, this winning neuron is often used to
+ * classify the input into a group.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class SOMPattern implements NeuralNetworkPattern {
 
@@ -76,13 +77,20 @@ public class SOMPattern implements NeuralNetworkPattern {
 	}
 
 	/**
+	 * Clear out any hidden neurons.
+	 */
+	public void clear() {
+	}
+
+	/**
 	 * Generate the RSOM network.
+	 * 
 	 * @return The neural network.
 	 */
 	public BasicNetwork generate() {
-		Layer input = new BasicLayer(new ActivationLinear(), false,
+		final Layer input = new BasicLayer(new ActivationLinear(), false,
 				this.inputNeurons);
-		Layer output = new BasicLayer(new ActivationLinear(), false,
+		final Layer output = new BasicLayer(new ActivationLinear(), false,
 				this.outputNeurons);
 		int y = PatternConst.START_Y;
 		final BasicNetwork network = new BasicNetwork();
@@ -99,9 +107,11 @@ public class SOMPattern implements NeuralNetworkPattern {
 	}
 
 	/**
-	 * Set the activation function.  A SOM uses a linear activation
-	 * function, so this method throws an error.
-	 * @param activation The activation function to use.
+	 * Set the activation function. A SOM uses a linear activation function, so
+	 * this method throws an error.
+	 * 
+	 * @param activation
+	 *            The activation function to use.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
 		final String str = "A SOM network can't define an activation function.";
@@ -114,23 +124,22 @@ public class SOMPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the input neuron count.
-	 * @param count The number of neurons.
+	 * 
+	 * @param count
+	 *            The number of neurons.
 	 */
 	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 
 	}
+
 	/**
 	 * Set the output neuron count.
-	 * @param count The number of neurons.
+	 * 
+	 * @param count
+	 *            The number of neurons.
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
-	}
-	
-	/**
-	 * Clear out any hidden neurons.
-	 */
-	public void clear() {		
 	}
 }

@@ -28,16 +28,19 @@ package org.encog.parse.tags.read;
 import java.io.InputStream;
 
 /**
- * This class is designed to parse HTML documents.  It will parse the
- * individual tags and text between the tags.
+ * This class is designed to parse HTML documents. It will parse the individual
+ * tags and text between the tags.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ReadHTML extends ReadTags {
 
 	/**
 	 * Construct a HTML reader.
-	 * @param is The input stream to read from.
+	 * 
+	 * @param is
+	 *            The input stream to read from.
 	 */
 	public ReadHTML(final InputStream is) {
 		super(is);

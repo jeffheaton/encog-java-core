@@ -129,9 +129,13 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Find the specified synapse, throw an error if it is required.
-	 * @param fromLayer The from layer.
-	 * @param toLayer The to layer.
-	 * @param required Is this required?
+	 * 
+	 * @param fromLayer
+	 *            The from layer.
+	 * @param toLayer
+	 *            The to layer.
+	 * @param required
+	 *            Is this required?
 	 * @return The synapse, if it exists, otherwise null.
 	 */
 	public Synapse findSynapse(final Layer fromLayer, final Layer toLayer,
@@ -146,8 +150,7 @@ public class NeuralStructure implements Serializable {
 		}
 
 		if (required && (result == null)) {
-			final String str = 
-				"This operation requires a network with a synapse between the "
+			final String str = "This operation requires a network with a synapse between the "
 					+ nameLayer(fromLayer)
 					+ " layer to the "
 					+ nameLayer(toLayer) + " layer.";
@@ -246,7 +249,9 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Obtain a name for the specified layer.
-	 * @param layer The layer to name.
+	 * 
+	 * @param layer
+	 *            The layer to name.
 	 * @return The name of this layer.
 	 */
 	public Collection<String> nameLayer(final Layer layer) {

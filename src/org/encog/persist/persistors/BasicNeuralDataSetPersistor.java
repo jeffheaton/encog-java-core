@@ -41,7 +41,6 @@ import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
-import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -56,12 +55,12 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 	 * The item tag.
 	 */
 	public static final String TAG_ITEM = "Item";
-	
+
 	/**
 	 * The input tag.
 	 */
 	public static final String TAG_INPUT = "Input";
-	
+
 	/**
 	 * THe ideal tag.
 	 */
@@ -80,19 +79,21 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 
 	/**
 	 * Handle reading an item tag.
-	 * @param in The XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader.
 	 */
 	private void handleItem(final ReadXML in) {
 		final Map<String, String> properties = in.readPropertyBlock();
 		NeuralDataPair pair = null;
-		final NeuralData input = new BasicNeuralData(NumberList
-				.fromList(CSVFormat.EG_FORMAT,properties
+		final NeuralData input = new BasicNeuralData(NumberList.fromList(
+				CSVFormat.EG_FORMAT, properties
 						.get(BasicNeuralDataSetPersistor.TAG_INPUT)));
 
 		if (properties.containsKey(BasicNeuralDataSetPersistor.TAG_IDEAL)) {
 			// supervised
-			final NeuralData ideal = new BasicNeuralData(NumberList
-					.fromList(CSVFormat.EG_FORMAT,properties
+			final NeuralData ideal = new BasicNeuralData(NumberList.fromList(
+					CSVFormat.EG_FORMAT, properties
 							.get(BasicNeuralDataSetPersistor.TAG_IDEAL)));
 			pair = new BasicNeuralDataPair(input, ideal);
 		} else {
@@ -150,12 +151,14 @@ public class BasicNeuralDataSetPersistor implements Persistor {
 		for (final NeuralDataPair pair : set) {
 			out.beginTag(BasicNeuralDataSetPersistor.TAG_ITEM);
 
-			NumberList.toList(CSVFormat.EG_FORMAT,builder, pair.getInput().getData());
+			NumberList.toList(CSVFormat.EG_FORMAT, builder, pair.getInput()
+					.getData());
 			out.addProperty(BasicNeuralDataSetPersistor.TAG_INPUT, builder
 					.toString());
 
 			if (pair.getIdeal() != null) {
-				NumberList.toList(CSVFormat.EG_FORMAT,builder, pair.getIdeal().getData());
+				NumberList.toList(CSVFormat.EG_FORMAT, builder, pair.getIdeal()
+						.getData());
 				out.addProperty(BasicNeuralDataSetPersistor.TAG_IDEAL, builder
 						.toString());
 			}

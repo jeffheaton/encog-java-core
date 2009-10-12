@@ -29,13 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Simulated annealing is a common training method. This
- * class implements a simulated annealing algorithm that can be used both for
- * neural networks, as well as more general cases. This class is abstract, so a
- * more specialized simulated annealing subclass will need to be created for
- * each intended use. This book demonstrates how to use the simulated annealing
- * algorithm to train feedforward neural networks, as well as find a solution to
- * the traveling salesman problem.
+ * Simulated annealing is a common training method. This class implements a
+ * simulated annealing algorithm that can be used both for neural networks, as
+ * well as more general cases. This class is abstract, so a more specialized
+ * simulated annealing subclass will need to be created for each intended use.
+ * This book demonstrates how to use the simulated annealing algorithm to train
+ * feedforward neural networks, as well as find a solution to the traveling
+ * salesman problem.
  * 
  * The name and inspiration come from annealing in metallurgy, a technique
  * involving heating and controlled cooling of a material to increase the size
@@ -44,7 +44,9 @@ import org.slf4j.LoggerFactory;
  * and wander randomly through states of higher energy; the slow cooling gives
  * them more chances of finding configurations with lower internal energy than
  * the initial one.
- * @param <UNIT_TYPE> What type of data makes up the solution.
+ * 
+ * @param <UNIT_TYPE>
+ *            What type of data makes up the solution.
  */
 public abstract class SimulatedAnnealing<UNIT_TYPE> {
 
@@ -69,7 +71,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * The current temperature.
 	 */
 	private double temperature;
-	
+
 	/**
 	 * The logging object.
 	 */

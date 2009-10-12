@@ -66,8 +66,7 @@ public class MarketNeuralDataSet extends TemporalNeuralDataSet {
 	/**
 	 * A map between the data points and actual data.
 	 */
-	private final Map<Integer, TemporalPoint> pointIndex = 
-		new HashMap<Integer, TemporalPoint>();
+	private final Map<Integer, TemporalPoint> pointIndex = new HashMap<Integer, TemporalPoint>();
 
 	/**
 	 * The logging object.

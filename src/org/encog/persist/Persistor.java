@@ -28,7 +28,6 @@ package org.encog.persist;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 
-
 /**
  * This interface defines a class that can load and save an
  * EncogPersistedObject.
@@ -39,16 +38,21 @@ import org.encog.parse.tags.write.WriteXML;
 public interface Persistor {
 
 	/**
-	 * Load from the specified node. 
-	 * @param in The node to load from.
+	 * Load from the specified node.
+	 * 
+	 * @param in
+	 *            The node to load from.
 	 * @return The EncogPersistedObject that was loaded.
 	 */
 	EncogPersistedObject load(ReadXML in);
 
 	/**
 	 * Save the specified object.
-	 * @param object The object to save. 
-	 * @param out The XML object.
+	 * 
+	 * @param object
+	 *            The object to save.
+	 * @param out
+	 *            The XML object.
 	 */
 	void save(EncogPersistedObject object, WriteXML out);
 }

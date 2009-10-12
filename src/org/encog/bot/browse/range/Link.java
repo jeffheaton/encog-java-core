@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class Link extends DocumentRange {
-	
+
 	/**
 	 * The target address for this link.
 	 */
@@ -51,7 +51,9 @@ public class Link extends DocumentRange {
 
 	/**
 	 * Construct a link from the specified web page.
-	 * @param source The web page this link is from.
+	 * 
+	 * @param source
+	 *            The web page this link is from.
 	 */
 	public Link(final WebPage source) {
 		super(source);
@@ -66,7 +68,9 @@ public class Link extends DocumentRange {
 
 	/**
 	 * Set the target of this link.
-	 * @param target The link target.
+	 * 
+	 * @param target
+	 *            The link target.
 	 */
 	public void setTarget(final Address target) {
 		this.target = target;

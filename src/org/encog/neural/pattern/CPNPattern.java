@@ -44,7 +44,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * The tag for the INSTAR layer.
 	 */
 	public static final String TAG_INSTAR = "INSTAR";
-	
+
 	/**
 	 * The tag for the OUTSTAR layer.
 	 */
@@ -73,11 +73,12 @@ public class CPNPattern implements NeuralNetworkPattern {
 	/**
 	 * Not used, will throw an error. CPN networks already have a predefined
 	 * hidden layer called the instar layer.
-	 * @param count NOT USED
+	 * 
+	 * @param count
+	 *            NOT USED
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = 
-			"A CPN already has a predefined hidden layer.  No additiona"
+		final String str = "A CPN already has a predefined hidden layer.  No additiona"
 				+ "specification is needed.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
@@ -105,7 +106,8 @@ public class CPNPattern implements NeuralNetworkPattern {
 		int y = PatternConst.START_Y;
 
 		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(new ActivationLinear(), false, this.inputCount));
+		network.addLayer(input = new BasicLayer(new ActivationLinear(), false,
+				this.inputCount));
 		network.addLayer(instar = new BasicLayer(new ActivationCompetitive(),
 				false, this.instarCount));
 		network.addLayer(outstar = new BasicLayer(new ActivationLinear(),
@@ -136,11 +138,12 @@ public class CPNPattern implements NeuralNetworkPattern {
 	/**
 	 * This method will throw an error. The CPN network uses predefined
 	 * activation functions.
-	 * @param activation NOT USED
+	 * 
+	 * @param activation
+	 *            NOT USED
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = 
-			"A CPN network will use the BiPolar & competitive activation "
+		final String str = "A CPN network will use the BiPolar & competitive activation "
 				+ "functions, no activation function needs to be specified.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
@@ -151,7 +154,9 @@ public class CPNPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of input neurons.
-	 * @param count The input neuron count.
+	 * 
+	 * @param count
+	 *            The input neuron count.
 	 */
 	public void setInputNeurons(final int count) {
 		this.inputCount = count;
@@ -162,7 +167,8 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * Set the number of neurons in the instar layer. This level is essentially
 	 * a hidden layer.
 	 * 
-	 * @param instarCount The instar count.
+	 * @param instarCount
+	 *            The instar count.
 	 */
 	public void setInstarCount(final int instarCount) {
 		this.instarCount = instarCount;
@@ -171,7 +177,9 @@ public class CPNPattern implements NeuralNetworkPattern {
 	/**
 	 * Set the number of output neurons. Calling this method maps to setting the
 	 * number of neurons in the outstar layer.
-	 * @param count The count.
+	 * 
+	 * @param count
+	 *            The count.
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outstarCount = count;
@@ -182,7 +190,8 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * Set the number of neurons in the outstar level, this level is mapped to
 	 * the "output" level.
 	 * 
-	 * @param outstarCount The outstar count.
+	 * @param outstarCount
+	 *            The outstar count.
 	 */
 	public void setOutstarCount(final int outstarCount) {
 		this.outstarCount = outstarCount;

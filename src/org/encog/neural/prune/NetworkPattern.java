@@ -29,20 +29,20 @@ package org.encog.neural.prune;
  * Specify which network pattern to use.
  * 
  * @author jheaton
- *
+ * 
  */
 public enum NetworkPattern {
-	
+
 	/**
 	 * Multilayer feedforward.
 	 */
 	MultiLayerFeedforward,
-	
+
 	/**
 	 * Elman.
 	 */
 	Elman,
-	
+
 	/**
 	 * Jordan.
 	 */

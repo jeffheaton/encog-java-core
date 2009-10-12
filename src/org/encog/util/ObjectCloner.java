@@ -44,12 +44,6 @@ import org.encog.EncogError;
 public final class ObjectCloner {
 
 	/**
-	 * Private constructor.
-	 */
-	private ObjectCloner() {
-	}
-
-	/**
 	 * Perform a deep copy.
 	 * 
 	 * @param oldObj
@@ -60,26 +54,32 @@ public final class ObjectCloner {
 		ObjectOutputStream oos = null;
 		ObjectInputStream ois = null;
 		try {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream(); // A
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream(); // A
 			oos = new ObjectOutputStream(bos); // B
 			// serialize and pass the object
 			oos.writeObject(oldObj); // C
 			oos.flush(); // D
-			ByteArrayInputStream bin = new ByteArrayInputStream(bos
+			final ByteArrayInputStream bin = new ByteArrayInputStream(bos
 					.toByteArray()); // E
 			ois = new ObjectInputStream(bin); // F
 			// return the new object
 			return ois.readObject(); // G
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new EncogError(e);
 		} finally {
 			try {
 				oos.close();
 				ois.close();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				throw new EncogError(e);
 			}
 		}
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private ObjectCloner() {
 	}
 
 }

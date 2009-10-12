@@ -4,28 +4,29 @@ public class SegregationRange {
 	private final double low;
 	private final double high;
 	private final boolean include;
-	
-	public SegregationRange(double low, double high, boolean include) {
+
+	public SegregationRange(final double low, final double high,
+			final boolean include) {
 		super();
 		this.low = low;
 		this.high = high;
 		this.include = include;
 	}
 
-	public double getLow() {
-		return low;
+	public double getHigh() {
+		return this.high;
 	}
 
-	public double getHigh() {
-		return high;
+	public double getLow() {
+		return this.low;
+	}
+
+	public boolean inRange(final double value) {
+		return ((value >= this.low) && (value <= this.high));
 	}
 
 	public boolean isIncluded() {
-		return include;
+		return this.include;
 	}
 
-	public boolean inRange(double value) {
-		return( value>=low && value<=high );
-	}
-	
 }

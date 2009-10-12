@@ -43,12 +43,14 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
-	
+
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 		for (int i = 0; i < d.length; i++) {
@@ -71,6 +73,7 @@ public class ActivationBiPolar extends BasicActivationFunction {
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	@Override
@@ -79,13 +82,14 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 		throw new NeuralNetworkError(
@@ -93,7 +97,7 @@ public class ActivationBiPolar extends BasicActivationFunction {
 						+ "where a derivative is required.");
 
 	}
-	
+
 	/**
 	 * @return Return false, bipolar has no derivative.
 	 */

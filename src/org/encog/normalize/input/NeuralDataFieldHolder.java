@@ -8,32 +8,31 @@ public class NeuralDataFieldHolder {
 	private NeuralDataPair pair;
 	private final Iterator<NeuralDataPair> iterator;
 	private final InputFieldNeuralDataSet field;
-	
-	public NeuralDataFieldHolder(Iterator<NeuralDataPair> iterator,
-			InputFieldNeuralDataSet field) {
+
+	public NeuralDataFieldHolder(final Iterator<NeuralDataPair> iterator,
+			final InputFieldNeuralDataSet field) {
 		super();
 		this.iterator = iterator;
 		this.field = field;
 	}
 
-	public Iterator<NeuralDataPair> getIterator() {
-		return iterator;
+	public InputFieldNeuralDataSet getField() {
+		return this.field;
 	}
 
-	public InputFieldNeuralDataSet getField() {
-		return field;
+	public Iterator<NeuralDataPair> getIterator() {
+		return this.iterator;
 	}
 
 	public NeuralDataPair getPair() {
-		return pair;
+		return this.pair;
 	}
 
-	public void setPair(NeuralDataPair pair) {
-		this.pair = pair;
-	}
-	
-	public void obtainPair()
-	{
+	public void obtainPair() {
 		this.pair = this.iterator.next();
+	}
+
+	public void setPair(final NeuralDataPair pair) {
+		this.pair = pair;
 	}
 }

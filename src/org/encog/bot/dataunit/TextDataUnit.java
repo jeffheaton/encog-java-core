@@ -55,7 +55,9 @@ public class TextDataUnit extends DataUnit {
 
 	/**
 	 * Set the text for this data unit.
-	 * @param str The text.
+	 * 
+	 * @param str
+	 *            The text.
 	 */
 	public void setText(final String str) {
 		this.text = str;

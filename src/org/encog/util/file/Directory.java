@@ -113,7 +113,9 @@ public final class Directory {
 
 	/**
 	 * Read the entire contents of a stream into a string.
-	 * @param is The input stream to read from.
+	 * 
+	 * @param is
+	 *            The input stream to read from.
 	 * @return The string that was read in.
 	 */
 	public static String readStream(final InputStream is) {
@@ -122,7 +124,7 @@ public final class Directory {
 			final BufferedReader reader = new BufferedReader(
 					new InputStreamReader(is));
 
-			final char[] chars = new char[BUFFER_SIZE];
+			final char[] chars = new char[Directory.BUFFER_SIZE];
 			int numRead = 0;
 			while ((numRead = reader.read(chars)) > -1) {
 				sb.append(new String(chars, 0, numRead));
@@ -138,7 +140,9 @@ public final class Directory {
 
 	/**
 	 * Read the entire contents of a stream into a string.
-	 * @param filename The input stream to read from.
+	 * 
+	 * @param filename
+	 *            The input stream to read from.
 	 * @return The string that was read in.
 	 */
 	public static String readTextFile(final String filename) {
@@ -147,7 +151,7 @@ public final class Directory {
 			final BufferedReader reader = new BufferedReader(new FileReader(
 					filename));
 
-			final char[] chars = new char[BUFFER_SIZE];
+			final char[] chars = new char[Directory.BUFFER_SIZE];
 			int numRead = 0;
 			while ((numRead = reader.read(chars)) > -1) {
 				sb.append(new String(chars, 0, numRead));

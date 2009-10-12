@@ -87,7 +87,7 @@ public interface NeuralDataSet extends Iterable<NeuralDataPair> {
 	int getIdealSize();
 
 	/**
-	 * @return The size of the input data. 
+	 * @return The size of the input data.
 	 */
 	int getInputSize();
 }

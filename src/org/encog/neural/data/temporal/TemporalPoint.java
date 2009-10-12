@@ -30,9 +30,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A temporal point is all of the data captured at one point in time to be used
- * for prediction.  One or more data items might be captured at this point.
- * The TemporalDataDescription class is used to describe each of these data
- * items captured at each point.
+ * for prediction. One or more data items might be captured at this point. The
+ * TemporalDataDescription class is used to describe each of these data items
+ * captured at each point.
  * 
  * @author jheaton
  */
@@ -47,7 +47,7 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 	 * The data for this point.
 	 */
 	private double[] data;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -65,25 +65,46 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 	}
 
 	/**
-	 * @return The sequence for this point.
+	 * Compare two temporal points.
+	 * 
+	 * @param that
+	 *            The other temporal point to compare.
+	 * @return Returns 0 if they are equal, less than 0 if this point is less,
+	 *         greater than zero if this point is greater.
 	 */
-	public int getSequence() {
-		return sequence;
-	}
-
-	/**
-	 * @param sequence
-	 *            the sequence to set
-	 */
-	public void setSequence(final int sequence) {
-		this.sequence = sequence;
+	public int compareTo(final TemporalPoint that) {
+		if (getSequence() == that.getSequence()) {
+			return 0;
+		} else if (getSequence() < that.getSequence()) {
+			return -1;
+		} else {
+			return 1;
+		}
 	}
 
 	/**
 	 * @return the data
 	 */
 	public double[] getData() {
-		return data;
+		return this.data;
+	}
+
+	/**
+	 * Get the data at the specified index.
+	 * 
+	 * @param index
+	 *            The index to get the data at.
+	 * @return The data at the specified index.
+	 */
+	public double getData(final int index) {
+		return this.data[index];
+	}
+
+	/**
+	 * @return The sequence for this point.
+	 */
+	public int getSequence() {
+		return this.sequence;
 	}
 
 	/**
@@ -95,47 +116,33 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 	}
 
 	/**
-	 * Compare two temporal points.
-	 * 
-	 * @param that
-	 *            The other temporal point to compare.
-	 * @return Returns 0 if they are equal, less than 0 if this point is less,
-	 *         greater than zero if this point is greater.
-	 */
-	public int compareTo(final TemporalPoint that) {
-		if (this.getSequence() == that.getSequence()) {
-			return 0;
-		} else if (this.getSequence() < that.getSequence()) {
-			return -1;
-		} else {
-			return 1;
-		}
-	}
-
-	/**
 	 * Set the data at the specified index.
-	 * @param index The index to set the data at.
-	 * @param d The data to set.
+	 * 
+	 * @param index
+	 *            The index to set the data at.
+	 * @param d
+	 *            The data to set.
 	 */
 	public void setData(final int index, final double d) {
 		this.data[index] = d;
 	}
 
 	/**
-	 * Get the data at the specified index.
-	 * @param index The index to get the data at.
-	 * @return The data at the specified index.
+	 * @param sequence
+	 *            the sequence to set
 	 */
-	public double getData(final int index) {
-		return this.data[index];
+	public void setSequence(final int sequence) {
+		this.sequence = sequence;
 	}
 
 	/**
 	 * Convert this point to string form.
+	 * 
 	 * @return This point as a string.
 	 */
+	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder("[TemporalPoint:");
+		final StringBuilder builder = new StringBuilder("[TemporalPoint:");
 		builder.append("Seq:");
 		builder.append(this.sequence);
 		builder.append(",Data:");

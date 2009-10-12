@@ -75,15 +75,13 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	/**
 	 * Error message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = 
-		"Direct adds to the temporal dataset are not supported.  "
+	public static final String ADD_NOT_SUPPORTED = "Direct adds to the temporal dataset are not supported.  "
 			+ "Add TemporalPoint objects and call generate.";
 
 	/**
 	 * Descriptions of the data needed.
 	 */
-	private final List<TemporalDataDescription> descriptions = 
-		new ArrayList<TemporalDataDescription>();
+	private final List<TemporalDataDescription> descriptions = new ArrayList<TemporalDataDescription>();
 
 	/**
 	 * The temporal points at which we have data.

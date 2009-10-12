@@ -99,8 +99,8 @@ public abstract class BasicRandomizer implements Randomizer {
 	}
 
 	/**
-	 * Randomize the 2d array based on an array, modify the array. Previous 
-	 * values may be used, or they may be discarded, depending on the 
+	 * Randomize the 2d array based on an array, modify the array. Previous
+	 * values may be used, or they may be discarded, depending on the
 	 * randomizer.
 	 * 
 	 * @param d
@@ -116,8 +116,8 @@ public abstract class BasicRandomizer implements Randomizer {
 	}
 
 	/**
-	 * Randomize the 2d array based on an array, modify the array. Previous 
-	 * values may be used, or they may be discarded, depending on the 
+	 * Randomize the 2d array based on an array, modify the array. Previous
+	 * values may be used, or they may be discarded, depending on the
 	 * randomizer.
 	 * 
 	 * @param d
@@ -140,7 +140,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 *            A matrix to randomize.
 	 */
 	public void randomize(final Matrix m) {
-		double[][] d = m.getData();
+		final double[][] d = m.getData();
 		for (int r = 0; r < m.getRows(); r++) {
 			for (int c = 0; c < m.getCols(); c++) {
 				d[r][c] = randomize(d[r][c]);

@@ -36,12 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Used to create feedforward neural networks.  A feedforward 
- * network has an input and output layers separated by zero
- * or more hidden layers.  The feedforward neural network is
- * one of the most common neural network patterns.
+ * Used to create feedforward neural networks. A feedforward network has an
+ * input and output layers separated by zero or more hidden layers. The
+ * feedforward neural network is one of the most common neural network patterns.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class FeedForwardPattern implements NeuralNetworkPattern {
 	/**
@@ -72,10 +72,19 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Add a hidden layer, with the specified number of neurons.
-	 * @param count The number of neurons to add.
+	 * 
+	 * @param count
+	 *            The number of neurons to add.
 	 */
 	public void addHiddenLayer(final int count) {
 		this.hidden.add(count);
+	}
+
+	/**
+	 * Clear out any hidden neurons.
+	 */
+	public void clear() {
+		this.hidden.clear();
 	}
 
 	/**
@@ -96,10 +105,9 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 		y += PatternConst.INC_Y;
 
 		for (final Integer count : this.hidden) {
-			
-			final Layer hidden = new BasicLayer(
-					this.activation, true, count);
-					
+
+			final Layer hidden = new BasicLayer(this.activation, true, count);
+
 			result.addLayer(hidden);
 			hidden.setX(PatternConst.START_X);
 			hidden.setY(y);
@@ -121,7 +129,9 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the activation function to use on each of the layers.
-	 * @param activation The activation function.
+	 * 
+	 * @param activation
+	 *            The activation function.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
 		this.activation = activation;
@@ -129,7 +139,9 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of input neurons.
-	 * @param count Neuron count.
+	 * 
+	 * @param count
+	 *            Neuron count.
 	 */
 	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
@@ -137,17 +149,12 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the number of output neurons.
-	 * @param count Neuron count.
+	 * 
+	 * @param count
+	 *            Neuron count.
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
-	}
-	
-	/**
-	 * Clear out any hidden neurons.
-	 */
-	public void clear() {
-		this.hidden.clear();		
 	}
 
 }

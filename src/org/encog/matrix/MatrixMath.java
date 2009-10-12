@@ -53,8 +53,7 @@ public final class MatrixMath {
 	 */
 	public static Matrix add(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			final String str = 
-				"To add the matrices they must have the same number of "
+			final String str = "To add the matrices they must have the same number of "
 					+ "rows and columns.  Matrix a has "
 					+ a.getRows()
 					+ " rows and matrix b has " + b.getRows() + " rows.";
@@ -67,8 +66,7 @@ public final class MatrixMath {
 		}
 
 		if (a.getCols() != b.getCols()) {
-			final String str = 
-				"To add the matrices they must have the same number "
+			final String str = "To add the matrices they must have the same number "
 					+ "of rows and columns.  Matrix a has "
 					+ a.getCols()
 					+ " cols and matrix b has " + b.getCols() + " cols.";
@@ -101,8 +99,8 @@ public final class MatrixMath {
 	 *            The target matrix for the copy.
 	 */
 	public static void copy(final Matrix source, final Matrix target) {
-		double[][] s = source.getData();
-		double[][] t = target.getData();
+		final double[][] s = source.getData();
+		final double[][] t = target.getData();
 
 		for (int row = 0; row < source.getRows(); row++) {
 			for (int col = 0; col < source.getCols(); col++) {
@@ -135,7 +133,7 @@ public final class MatrixMath {
 		final double[][] newMatrix = new double[matrix.getRows()][matrix
 				.getCols() - 1];
 
-		double[][] d = matrix.getData();
+		final double[][] d = matrix.getData();
 
 		for (int row = 0; row < matrix.getRows(); row++) {
 			int targetCol = 0;
@@ -176,7 +174,7 @@ public final class MatrixMath {
 		}
 		final double[][] newMatrix = new double[matrix.getRows() - 1][matrix
 				.getCols()];
-		double[][] d = matrix.getData();
+		final double[][] d = matrix.getData();
 
 		int targetRow = 0;
 		for (int row = 0; row < matrix.getRows(); row++) {
@@ -201,7 +199,7 @@ public final class MatrixMath {
 	 */
 	public static Matrix divide(final Matrix a, final double b) {
 		final double[][] result = new double[a.getRows()][a.getCols()];
-		double[][] d = a.getData();
+		final double[][] d = a.getData();
 		for (int row = 0; row < a.getRows(); row++) {
 			for (int col = 0; col < a.getCols(); col++) {
 				result[row][col] = d[row][col] / b;
@@ -222,8 +220,7 @@ public final class MatrixMath {
 	 */
 	public static double dotProduct(final Matrix a, final Matrix b) {
 		if (!a.isVector() || !b.isVector()) {
-			final String str = 
-				"To take the dot product, both matrices must be vectors.";
+			final String str = "To take the dot product, both matrices must be vectors.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
 				MatrixMath.LOGGER.error(str);
 			}
@@ -235,8 +232,7 @@ public final class MatrixMath {
 		final Double[] bArray = b.toPackedArray();
 
 		if (aArray.length != bArray.length) {
-			final String str = 
-				"To take the dot product, both matrices must be of "
+			final String str = "To take the dot product, both matrices must be of "
 					+ "the same length.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
 				MatrixMath.LOGGER.error(str);
@@ -273,7 +269,7 @@ public final class MatrixMath {
 		}
 
 		final Matrix result = new Matrix(size, size);
-		double[][] d = result.getData();
+		final double[][] d = result.getData();
 
 		for (int i = 0; i < size; i++) {
 			d[i][i] = 1;
@@ -294,7 +290,7 @@ public final class MatrixMath {
 	 */
 	public static Matrix multiply(final Matrix a, final double b) {
 		final double[][] result = new double[a.getRows()][a.getCols()];
-		double[][] d = a.getData();
+		final double[][] d = a.getData();
 
 		for (int row = 0; row < a.getRows(); row++) {
 			for (int col = 0; col < a.getCols(); col++) {
@@ -316,8 +312,7 @@ public final class MatrixMath {
 	public static Matrix multiply(final Matrix a, final Matrix b) {
 
 		if (b.getRows() != a.getCols()) {
-			final String str = 
-				"To use ordinary matrix multiplication the number of "
+			final String str = "To use ordinary matrix multiplication the number of "
 					+ "columns on the first matrix must mat the number of "
 					+ "rows on the second.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
@@ -360,8 +355,7 @@ public final class MatrixMath {
 	 */
 	public static Matrix subtract(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			final String str = 
-			"To subtract the matrices they must have the same "
+			final String str = "To subtract the matrices they must have the same "
 					+ "number of rows and columns.  Matrix a has "
 					+ a.getRows()
 					+ " rows and matrix b has "
@@ -374,8 +368,7 @@ public final class MatrixMath {
 		}
 
 		if (a.getCols() != b.getCols()) {
-			final String str = 
-			"To subtract the matrices they must have the same "
+			final String str = "To subtract the matrices they must have the same "
 					+ "number of rows and columns.  Matrix a has "
 					+ a.getCols()
 					+ " cols and matrix b has "
@@ -388,8 +381,8 @@ public final class MatrixMath {
 		}
 
 		final double[][] result = new double[a.getRows()][a.getCols()];
-		double[][] aa = a.getData();
-		double[][] bb = b.getData();
+		final double[][] aa = a.getData();
+		final double[][] bb = b.getData();
 
 		for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
 			for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
@@ -412,7 +405,7 @@ public final class MatrixMath {
 		final double[][] inverseMatrix = new double[input.getCols()][input
 				.getRows()];
 
-		double[][] d = input.getData();
+		final double[][] d = input.getData();
 
 		for (int r = 0; r < input.getRows(); r++) {
 			for (int c = 0; c < input.getCols(); c++) {

@@ -31,15 +31,16 @@ import org.slf4j.LoggerFactory;
 
 /**
  * An error that occurs when financial data is being loaded.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class LoaderError extends MarketError {
 	/**
 	 * The serial version for this class.
 	 */
 	private static final long serialVersionUID = 4525043656696667974L;
-	
+
 	/**
 	 * The logging object.
 	 */

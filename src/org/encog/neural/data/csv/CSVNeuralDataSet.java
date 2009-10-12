@@ -50,8 +50,9 @@ import org.slf4j.LoggerFactory;
  * running out of memory.
  * 
  * This class can be slow, as it can take awhile to parse all of the numbers in
- * a really long CSV file.  Because of this it is best not to use this set 
- * directly with a training algorithm.  Rather use it to load a BufferedNeuralDataSet.
+ * a really long CSV file. Because of this it is best not to use this set
+ * directly with a training algorithm. Rather use it to load a
+ * BufferedNeuralDataSet.
  * 
  * @author jheaton
  */
@@ -80,8 +81,7 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 
 			this.reader = null;
 			this.reader = new ReadCSV(CSVNeuralDataSet.this.filename,
-					CSVNeuralDataSet.this.headers,
-					CSVNeuralDataSet.this.format);
+					CSVNeuralDataSet.this.headers, CSVNeuralDataSet.this.format);
 			this.dataReady = false;
 
 		}
@@ -160,8 +160,7 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	/**
 	 * Error message indicating that adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = 
-		"Adds are not supported with this dataset, it is read only.";
+	public static final String ADD_NOT_SUPPORTED = "Adds are not supported with this dataset, it is read only.";
 
 	/**
 	 * The logging object.
@@ -182,11 +181,11 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	 * The number of columns of ideal data.
 	 */
 	private final int idealSize;
-	
+
 	/**
 	 * The format of this CSV file.
 	 */
-	private CSVFormat format;
+	private final CSVFormat format;
 
 	/**
 	 * Specifies if headers are present on the first row.
@@ -196,8 +195,7 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	/**
 	 * A collection of iterators that have been created.
 	 */
-	private final List<CSVNeuralIterator> iterators = 
-		new ArrayList<CSVNeuralIterator>();
+	private final List<CSVNeuralIterator> iterators = new ArrayList<CSVNeuralIterator>();
 
 	/**
 	 * Construct this data set using a comma as a delimiter.
@@ -291,17 +289,17 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	}
 
 	/**
-	 * @return the delimiter
-	 */
-	public CSVFormat getFormat() {
-		return this.format;
-	}
-
-	/**
 	 * @return the filename
 	 */
 	public String getFilename() {
 		return this.filename;
+	}
+
+	/**
+	 * @return the delimiter
+	 */
+	public CSVFormat getFormat() {
+		return this.format;
 	}
 
 	/**

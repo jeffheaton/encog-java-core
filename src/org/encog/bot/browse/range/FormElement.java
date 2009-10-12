@@ -36,17 +36,17 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public abstract class FormElement extends DocumentRange {
-	
+
 	/**
 	 * The name of this form element.
 	 */
 	private String name;
-	
+
 	/**
 	 * The value held by this form element.
 	 */
 	private String value;
-	
+
 	/**
 	 * The owner of this form element.
 	 */
@@ -60,7 +60,9 @@ public abstract class FormElement extends DocumentRange {
 
 	/**
 	 * Construct a form element from the specified web page.
-	 * @param source The page that holds this form element.
+	 * 
+	 * @param source
+	 *            The page that holds this form element.
 	 */
 	public FormElement(final WebPage source) {
 		super(source);
@@ -88,15 +90,17 @@ public abstract class FormElement extends DocumentRange {
 	}
 
 	/**
-	 * @return True if this is autosend, which means that the type is 
-	 * NOT submit.  This prevents a form that has multiple submit buttons
-	 * from sending ALL of them in a single post.
+	 * @return True if this is autosend, which means that the type is NOT
+	 *         submit. This prevents a form that has multiple submit buttons
+	 *         from sending ALL of them in a single post.
 	 */
 	public abstract boolean isAutoSend();
 
 	/**
 	 * Set the name of this form element.
-	 * @param name The name of this form element.
+	 * 
+	 * @param name
+	 *            The name of this form element.
 	 */
 	public void setName(final String name) {
 		this.name = name;
@@ -104,7 +108,9 @@ public abstract class FormElement extends DocumentRange {
 
 	/**
 	 * Set the owner of this form element.
-	 * @param owner The owner of this form element.
+	 * 
+	 * @param owner
+	 *            The owner of this form element.
 	 */
 	public void setOwner(final Form owner) {
 		this.owner = owner;
@@ -112,7 +118,9 @@ public abstract class FormElement extends DocumentRange {
 
 	/**
 	 * Set the value for this form element.
-	 * @param value The value for this form element.
+	 * 
+	 * @param value
+	 *            The value for this form element.
 	 */
 	public void setValue(final String value) {
 		this.value = value;

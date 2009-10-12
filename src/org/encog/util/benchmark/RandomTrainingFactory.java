@@ -1,5 +1,3 @@
-package org.encog.util.benchmark;
-
 /*
  * Encog Artificial Intelligence Framework v2.x
  * Java Version
@@ -25,6 +23,7 @@ package org.encog.util.benchmark;
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+package org.encog.util.benchmark;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
@@ -35,29 +34,28 @@ import org.encog.util.randomize.RangeRandomizer;
 
 /**
  * Class used to generate random training sets.
+ * 
  * @author jheaton
- *
+ * 
  */
 public final class RandomTrainingFactory {
-	
-	/**
-	 * Private constructor.
-	 */
-	private RandomTrainingFactory() {
-		
-	}
-	
+
 	/**
 	 * Generate a random training set.
-	 * @param count How many training items to generate.
-	 * @param inputCount How many input numbers.
-	 * @param idealCount How many ideal numbers.
-	 * @param min The minimum random number.
-	 * @param max The maximum random number.
+	 * 
+	 * @param count
+	 *            How many training items to generate.
+	 * @param inputCount
+	 *            How many input numbers.
+	 * @param idealCount
+	 *            How many ideal numbers.
+	 * @param min
+	 *            The minimum random number.
+	 * @param max
+	 *            The maximum random number.
 	 * @return The random training set.
 	 */
-	public static NeuralDataSet generate(final int count, 
-			final int inputCount,
+	public static NeuralDataSet generate(final int count, final int inputCount,
 			final int idealCount, final double min, final double max) {
 		final NeuralDataSet result = new BasicNeuralDataSet();
 		for (int i = 0; i < count; i++) {
@@ -79,5 +77,12 @@ public final class RandomTrainingFactory {
 
 		}
 		return result;
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private RandomTrainingFactory() {
+
 	}
 }

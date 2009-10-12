@@ -26,8 +26,6 @@
 package org.encog.persist;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -60,58 +58,57 @@ public class EncogPersistedCollection {
 	 * The type is TextData.
 	 */
 	public static final String TYPE_TEXT = "TextData";
-	
+
 	/**
 	 * The type is PropertyData.
 	 */
 	public static final String TYPE_PROPERTY = "PropertyData";
-	
+
 	/**
 	 * The type is BasicNetwork.
 	 */
 	public static final String TYPE_BASIC_NET = "BasicNetwork";
-	
+
 	/**
 	 * The type is BasicLayer.
 	 */
 	public static final String TYPE_BASIC_LAYER = "BasicLayer";
-	
+
 	/**
 	 * The type is ContextLayer.
 	 */
 	public static final String TYPE_CONTEXT_LAYER = "ContextLayer";
-	
+
 	/**
 	 * The type is RadialBasisFunctionLayer.
 	 */
-	public static final String TYPE_RADIAL_BASIS_LAYER = 
-		"RadialBasisFunctionLayer";
-	
+	public static final String TYPE_RADIAL_BASIS_LAYER = "RadialBasisFunctionLayer";
+
 	/**
 	 * The type is TrainingData.
 	 */
 	public static final String TYPE_TRAINING = "TrainingData";
-	
+
 	/**
 	 * The type is WeightedSynapse.
 	 */
 	public static final String TYPE_WEIGHTED_SYNAPSE = "WeightedSynapse";
-	
+
 	/**
 	 * The type is WeightlessSynapse.
 	 */
 	public static final String TYPE_WEIGHTLESS_SYNAPSE = "WeightlessSynapse";
-	
+
 	/**
 	 * The type is DirectSynapse.
 	 */
 	public static final String TYPE_DIRECT_SYNAPSE = "DirectSynapse";
-	
+
 	/**
 	 * The type is OneToOneSynapse.
 	 */
 	public static final String TYPE_ONE2ONE_SYNAPSE = "OneToOneSynapse";
-	
+
 	/**
 	 * The type is ParseTemplate.
 	 */
@@ -121,7 +118,7 @@ public class EncogPersistedCollection {
 	 * The name attribute.
 	 */
 	public static final String ATTRIBUTE_NAME = "name";
-	
+
 	/**
 	 * The description attribute.
 	 */
@@ -135,7 +132,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Throw and log an error.
-	 * @param tag The tag this error is for.
+	 * 
+	 * @param tag
+	 *            The tag this error is for.
 	 */
 	public static void throwError(final String tag) {
 		final String str = EncogPersistedCollection.GENERAL_ERROR + tag;
@@ -174,18 +173,19 @@ public class EncogPersistedCollection {
 	/**
 	 * Directory entries for all of the objects in the current file.
 	 */
-	private final Set<DirectoryEntry> directory = 
-			new TreeSet<DirectoryEntry>();
+	private final Set<DirectoryEntry> directory = new TreeSet<DirectoryEntry>();
 
 	/**
 	 * The version of Encog.
 	 */
-	private String encogVersion = 
-		Encog.getInstance().getProperties().get(Encog.ENCOG_VERSION);
+	private String encogVersion = Encog.getInstance().getProperties().get(
+			Encog.ENCOG_VERSION);
 
 	/**
 	 * Create a persistance collection for the specified file.
-	 * @param file The file to load/save.
+	 * 
+	 * @param file
+	 *            The file to load/save.
 	 */
 	public EncogPersistedCollection(final File file) {
 		this(new FilePersistence(file));
@@ -193,7 +193,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Create an object based on the specified location.
-	 * @param location The location to load/save from.
+	 * 
+	 * @param location
+	 *            The location to load/save from.
 	 */
 	public EncogPersistedCollection(final PersistenceLocation location) {
 		this.filePrimary = location;
@@ -209,12 +211,9 @@ public class EncogPersistedCollection {
 			this.fileTemp = new FilePersistence(new File(f));
 
 			if (this.filePrimary.exists()) {
-				try
-				{
+				try {
 					buildDirectory();
-				}
-				catch(PersistError e)
-				{
+				} catch (final PersistError e) {
 					create();
 				}
 			} else {
@@ -227,7 +226,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Construct an object with the specified filename.
-	 * @param filename The filename to load/save from.
+	 * 
+	 * @param filename
+	 *            The filename to load/save from.
 	 */
 	public EncogPersistedCollection(final String filename) {
 		this(new File(filename));
@@ -235,7 +236,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Add an EncogPersistedObject to the collection.
-	 * @param name The name of the object to load.
+	 * 
+	 * @param name
+	 *            The name of the object to load.
 	 * @param obj
 	 *            The object to add.
 	 */
@@ -255,28 +258,25 @@ public class EncogPersistedCollection {
 	}
 
 	/**
-	 * Build a directory of objects.  Also load the header information.
+	 * Build a directory of objects. Also load the header information.
 	 */
 	public void buildDirectory() {
 		PersistReader reader = null;
-		
+
 		try {
 			reader = new PersistReader(this.filePrimary);
-			Map<String,String> header = reader.readHeader();
-			if( header!=null )
-			{
+			final Map<String, String> header = reader.readHeader();
+			if (header != null) {
 				this.fileVersion = Integer.parseInt(header.get("fileVersion"));
 				this.encogVersion = header.get("encogVersion");
 				this.platform = header.get("platform");
 			}
 			final Set<DirectoryEntry> d = reader.buildDirectory();
 			this.directory.clear();
-			this.directory.addAll(d);		
-		}
-		finally
-		{
-			if( reader!=null ) {
-				reader.close();	
+			this.directory.addAll(d);
+		} finally {
+			if (reader != null) {
+				reader.close();
 			}
 		}
 	}
@@ -305,7 +305,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Delete the specified object, use a directory entry.
-	 * @param d The object to delete.
+	 * 
+	 * @param d
+	 *            The object to delete.
 	 */
 	public void delete(final DirectoryEntry d) {
 		this.delete(d.getName());
@@ -314,7 +316,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Delete the specified object.
-	 * @param obj The object to delete.
+	 * 
+	 * @param obj
+	 *            The object to delete.
 	 */
 	public void delete(final EncogPersistedObject obj) {
 		delete(obj.getName());
@@ -322,7 +326,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Delete the specified object.
-	 * @param name the object name.
+	 * 
+	 * @param name
+	 *            the object name.
 	 */
 	public void delete(final String name) {
 		final PersistWriter writer = new PersistWriter(this.fileTemp);
@@ -344,7 +350,9 @@ public class EncogPersistedCollection {
 
 	/**
 	 * Find the specified object, using a DirectoryEntry.
-	 * @param d The directory entry to find.
+	 * 
+	 * @param d
+	 *            The directory entry to find.
 	 * @return The loaded object.
 	 */
 	public EncogPersistedObject find(final DirectoryEntry d) {
@@ -396,8 +404,8 @@ public class EncogPersistedCollection {
 	}
 
 	/**
-	 * Merge the temp file with the main one, call this to make any
-	 * changes permanent.
+	 * Merge the temp file with the main one, call this to make any changes
+	 * permanent.
 	 */
 	public void mergeTemp() {
 		this.filePrimary.delete();
@@ -405,11 +413,14 @@ public class EncogPersistedCollection {
 	}
 
 	/**
-	 * Update any header properties for an Encog object, for example,
-	 * a rename.
-	 * @param name The name of the object to change. 
-	 * @param newName The new name of this object.
-	 * @param newDesc The description for this object.
+	 * Update any header properties for an Encog object, for example, a rename.
+	 * 
+	 * @param name
+	 *            The name of the object to change.
+	 * @param newName
+	 *            The new name of this object.
+	 * @param newDesc
+	 *            The description for this object.
 	 */
 	public void updateProperties(final String name, final String newName,
 			final String newDesc) {

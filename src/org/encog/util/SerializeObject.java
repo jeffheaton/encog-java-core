@@ -39,19 +39,7 @@ import org.slf4j.LoggerFactory;
  * Load or save an object using Java serialization.
  */
 public final class SerializeObject {
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	/**
-	 * Private constructor.
-	 */
-	private SerializeObject() {
-	}
-	
+
 	/**
 	 * Load an object.
 	 * 
@@ -77,9 +65,13 @@ public final class SerializeObject {
 
 	/**
 	 * Save the specified object.
-	 * @param filename The filename to save.
-	 * @param object The object to save.
-	 * @throws IOException An IO error occurred.
+	 * 
+	 * @param filename
+	 *            The filename to save.
+	 * @param object
+	 *            The object to save.
+	 * @throws IOException
+	 *             An IO error occurred.
 	 */
 	public static void save(final String filename, final Serializable object)
 			throws IOException {
@@ -90,6 +82,18 @@ public final class SerializeObject {
 		out = new ObjectOutputStream(fos);
 		out.writeObject(object);
 		out.close();
+	}
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Private constructor.
+	 */
+	private SerializeObject() {
 	}
 
 }

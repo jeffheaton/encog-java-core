@@ -44,12 +44,12 @@ public class ActivationGaussianPersistor implements Persistor {
 	 * THe center attribute.
 	 */
 	public static final String ATTRIBUTE_CENTER = "center";
-	
+
 	/**
 	 * The peak attribute.
 	 */
 	public static final String ATTRIBUTE_PEAK = "peak";
-	
+
 	/**
 	 * The width attribute.
 	 */

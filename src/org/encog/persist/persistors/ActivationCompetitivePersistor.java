@@ -36,13 +36,13 @@ import org.encog.persist.Persistor;
 /**
  * The Encog persistor used to persist the ActivationCompetitivePersistor class.
  */
-public class ActivationCompetitivePersistor  implements Persistor {
+public class ActivationCompetitivePersistor implements Persistor {
 
 	/**
 	 * The winners attribute.
 	 */
-	public static final String ATTRIBUTE_WINNERS = "winners";	
-	
+	public static final String ATTRIBUTE_WINNERS = "winners";
+
 	/**
 	 * Load the specified Encog object from an XML reader.
 	 * 
@@ -50,8 +50,8 @@ public class ActivationCompetitivePersistor  implements Persistor {
 	 *            The XML reader to use.
 	 * @return The loaded object.
 	 */
-	public EncogPersistedObject load(ReadXML in) {
-		
+	public EncogPersistedObject load(final ReadXML in) {
+
 		final Map<String, String> map = in.readPropertyBlock();
 		final int winners = Integer.parseInt(map
 				.get(ActivationCompetitivePersistor.ATTRIBUTE_WINNERS));
@@ -66,13 +66,13 @@ public class ActivationCompetitivePersistor  implements Persistor {
 	 * @param out
 	 *            The XML writer to save to.
 	 */
-	public void save(EncogPersistedObject obj, WriteXML out) {
+	public void save(final EncogPersistedObject obj, final WriteXML out) {
 		final ActivationCompetitive c = (ActivationCompetitive) obj;
 		out.beginTag(c.getClass().getSimpleName());
 		out.addProperty(ActivationCompetitivePersistor.ATTRIBUTE_WINNERS, c
 				.getMaxWinners());
 		out.endTag();
-		
+
 	}
 
 }

@@ -32,42 +32,43 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Hold one market datapoint.  This class is based on the TemporalPoint,
- * however it is designed to take its sequence number from a date.
+ * Hold one market datapoint. This class is based on the TemporalPoint, however
+ * it is designed to take its sequence number from a date.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class MarketPoint extends TemporalPoint {
 
 	/**
 	 * When to hold the data from.
 	 */
-	private Date when;
-	
+	private final Date when;
+
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	/** 
+	/**
 	 * Construct a MarketPoint with the specified date and size.
-	 * @param when When is this data from.
-	 * @param size What is the size of the data.
+	 * 
+	 * @param when
+	 *            When is this data from.
+	 * @param size
+	 *            What is the size of the data.
 	 */
 	public MarketPoint(final Date when, final int size) {
 		super(size);
 		this.when = when;
 	}
 
-
 	/**
 	 * @return the when
 	 */
 	public Date getWhen() {
-		return when;
+		return this.when;
 	}
-	
-	
-	
+
 }

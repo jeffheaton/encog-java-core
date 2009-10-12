@@ -35,13 +35,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Create a Hopfield pattern.  A Hopfield neural network has a single
- * layer that functions both as the input and output layers.  There
- * are no hidden layers.  Hopfield networks are used for basic
- * pattern recognition.  When a Hopfield network recognizes a 
- * pattern, it "echos" that pattern on the output.
+ * Create a Hopfield pattern. A Hopfield neural network has a single layer that
+ * functions both as the input and output layers. There are no hidden layers.
+ * Hopfield networks are used for basic pattern recognition. When a Hopfield
+ * network recognizes a pattern, it "echos" that pattern on the output.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class HopfieldPattern implements NeuralNetworkPattern {
 
@@ -57,9 +57,11 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	private int neuronCount = -1;
 
 	/**
-	 * Add a hidden layer.  This will throw an error, because the
-	 * Hopfield neural network has no hidden layers.
-	 * @param count The number of neurons.
+	 * Add a hidden layer. This will throw an error, because the Hopfield neural
+	 * network has no hidden layers.
+	 * 
+	 * @param count
+	 *            The number of neurons.
 	 */
 	public void addHiddenLayer(final int count) {
 		final String str = "A Hopfield network has no hidden layers.";
@@ -68,6 +70,12 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 		}
 		throw new PatternError(str);
 
+	}
+
+	/**
+	 * Nothing to clear.
+	 */
+	public void clear() {
 	}
 
 	/**
@@ -90,15 +98,15 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	}
 
 	/**
-	 * Set the activation function to use.  This function will throw
-	 * an error, because the Hopfield network must use the BiPolar
-	 * activation function.
-	 * @param activation The activation function to use.
+	 * Set the activation function to use. This function will throw an error,
+	 * because the Hopfield network must use the BiPolar activation function.
+	 * 
+	 * @param activation
+	 *            The activation function to use.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = 
-			"A Hopfield network will use the BiPolar activation " 
-			+ "function, no activation function needs to be specified.";
+		final String str = "A Hopfield network will use the BiPolar activation "
+				+ "function, no activation function needs to be specified.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -133,12 +141,6 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 		}
 		throw new PatternError(str);
 
-	}
-	
-	/**
-	 * Nothing to clear.
-	 */
-	public void clear() {		
 	}
 
 }

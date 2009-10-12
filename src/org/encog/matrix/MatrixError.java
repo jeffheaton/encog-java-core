@@ -29,7 +29,6 @@ import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Used by the matrix classes to indicate an error.
  */
@@ -39,7 +38,7 @@ public class MatrixError extends EncogError {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -8961386981267748942L;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -48,7 +47,9 @@ public class MatrixError extends EncogError {
 
 	/**
 	 * Construct this exception with a message.
-	 * @param message The message for this exception.
+	 * 
+	 * @param message
+	 *            The message for this exception.
 	 */
 	public MatrixError(final String message) {
 		super(message);
@@ -56,7 +57,9 @@ public class MatrixError extends EncogError {
 
 	/**
 	 * Construct this exception with another exception.
-	 * @param t The other exception.
+	 * 
+	 * @param t
+	 *            The other exception.
 	 */
 	public MatrixError(final Throwable t) {
 		super(t);

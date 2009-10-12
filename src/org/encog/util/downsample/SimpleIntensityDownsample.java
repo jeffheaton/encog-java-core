@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  */
 public class SimpleIntensityDownsample implements Downsample {
-	
+
 	/**
 	 * The image to downsample.
 	 */

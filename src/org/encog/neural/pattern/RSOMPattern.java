@@ -36,11 +36,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A recurrent self organizing map is a self organizing map that has
- * a recurrent context connection on the hidden layer.  This type
- * of neural network is adept at classifying temporal data.
+ * A recurrent self organizing map is a self organizing map that has a recurrent
+ * context connection on the hidden layer. This type of neural network is adept
+ * at classifying temporal data.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class RSOMPattern implements NeuralNetworkPattern {
 
@@ -48,7 +49,7 @@ public class RSOMPattern implements NeuralNetworkPattern {
 	 * The number of input neurons.
 	 */
 	private int inputNeurons;
-	
+
 	/**
 	 * The number of output neurons.
 	 */
@@ -61,9 +62,11 @@ public class RSOMPattern implements NeuralNetworkPattern {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Add a hidden layer.  SOM networks do not have hidden layers, so
-	 * this will throw an error.
-	 * @param count The number of hidden neurons.
+	 * Add a hidden layer. SOM networks do not have hidden layers, so this will
+	 * throw an error.
+	 * 
+	 * @param count
+	 *            The number of hidden neurons.
 	 */
 	public void addHiddenLayer(final int count) {
 		final String str = "A SOM network does not have hidden layers.";
@@ -75,13 +78,20 @@ public class RSOMPattern implements NeuralNetworkPattern {
 	}
 
 	/**
+	 * Clear out any hidden neurons.
+	 */
+	public void clear() {
+	}
+
+	/**
 	 * Generate the RSOM network.
+	 * 
 	 * @return The neural network.
 	 */
 	public BasicNetwork generate() {
-		Layer output = new BasicLayer(new ActivationLinear(), false,
+		final Layer output = new BasicLayer(new ActivationLinear(), false,
 				this.outputNeurons);
-		Layer input = new BasicLayer(new ActivationLinear(), false,
+		final Layer input = new BasicLayer(new ActivationLinear(), false,
 				this.inputNeurons);
 
 		final BasicNetwork network = new BasicNetwork();
@@ -110,9 +120,11 @@ public class RSOMPattern implements NeuralNetworkPattern {
 	}
 
 	/**
-	 * Set the activation function.  A SOM uses a linear activation
-	 * function, so this method throws an error.
-	 * @param activation The activation function to use.
+	 * Set the activation function. A SOM uses a linear activation function, so
+	 * this method throws an error.
+	 * 
+	 * @param activation
+	 *            The activation function to use.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
 		final String str = "A SOM network can't define an activation function.";
@@ -125,23 +137,22 @@ public class RSOMPattern implements NeuralNetworkPattern {
 
 	/**
 	 * Set the input neuron count.
-	 * @param count The number of neurons.
+	 * 
+	 * @param count
+	 *            The number of neurons.
 	 */
 	public void setInputNeurons(final int count) {
 		this.inputNeurons = count;
 
 	}
+
 	/**
 	 * Set the output neuron count.
-	 * @param count The number of neurons.
+	 * 
+	 * @param count
+	 *            The number of neurons.
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
-	}
-	
-	/**
-	 * Clear out any hidden neurons.
-	 */
-	public void clear() {		
 	}
 }

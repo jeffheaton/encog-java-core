@@ -33,10 +33,12 @@ package org.encog.bot.browse.extract;
  * 
  */
 public interface ExtractListener {
-	
+
 	/**
 	 * Notify that some data has been extracted.
-	 * @param object The data that was extracted.
+	 * 
+	 * @param object
+	 *            The data that was extracted.
 	 */
 	void foundData(Object object);
 }

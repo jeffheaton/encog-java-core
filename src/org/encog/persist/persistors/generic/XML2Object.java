@@ -53,8 +53,11 @@ public class XML2Object {
 
 	/**
 	 * Load an object from XML.
-	 * @param in The XML reader.
-	 * @param target The object to load.
+	 * 
+	 * @param in
+	 *            The XML reader.
+	 * @param target
+	 *            The object to load.
 	 */
 	public void load(final ReadXML in, final EncogPersistedObject target) {
 
@@ -70,7 +73,7 @@ public class XML2Object {
 					field.setAccessible(true);
 					final String value = in.readTextToTag();
 
-					final Class< ? > type = field.getType();
+					final Class<?> type = field.getType();
 					if (type == long.class) {
 						field.setLong(target, Long.parseLong(value));
 					} else if (type == int.class) {
@@ -101,7 +104,9 @@ public class XML2Object {
 
 	/**
 	 * Load a list collection.
-	 * @param in The XML reader.
+	 * 
+	 * @param in
+	 *            The XML reader.
 	 * @return The loaded list.
 	 */
 	public List<Object> loadList(final ReadXML in) {
@@ -121,8 +126,11 @@ public class XML2Object {
 
 	/**
 	 * Load an object from XML.
-	 * @param in The XML reader.
-	 * @param obj The object to load into.
+	 * 
+	 * @param in
+	 *            The XML reader.
+	 * @param obj
+	 *            The object to load into.
 	 */
 	public void loadObject(final ReadXML in, final EncogPersistedObject obj) {
 		while (in.readToTag()) {

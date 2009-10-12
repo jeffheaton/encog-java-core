@@ -12,10 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Base class used to read tags.  This base class is used by both the
- * XML and HTML parsing.
+ * Base class used to read tags. This base class is used by both the XML and
+ * HTML parsing.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ReadTags {
 
@@ -23,12 +24,12 @@ public class ReadTags {
 	 * The bullet character.
 	 */
 	public static final int CHAR_BULLET = 149;
-	
+
 	/**
 	 * The bullet character.
 	 */
 	public static final int CHAR_TRADEMARK = 129;
-	
+
 	/**
 	 * Maximum length string to read.
 	 */
@@ -58,14 +59,13 @@ public class ReadTags {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Are we locked, looking for an end tag?  Such as the end of a
-	 * comment?
+	 * Are we locked, looking for an end tag? Such as the end of a comment?
 	 */
 	private String lockedEndTag;
 
 	/**
-	 * Does a "fake" end-tag need to be added, because of a compound
-	 * tag (i.e. <br/>)?  If so, this will hold a string for that tag.
+	 * Does a "fake" end-tag need to be added, because of a compound tag (i.e.
+	 * <br/>)? If so, this will hold a string for that tag.
 	 */
 	private String insertEndTag = null;
 
@@ -85,8 +85,8 @@ public class ReadTags {
 			ReadTags.charMap.put("gt", '>');
 			ReadTags.charMap.put("amp", '&');
 			ReadTags.charMap.put("quot", '\"');
-			ReadTags.charMap.put("bull", (char) CHAR_BULLET);
-			ReadTags.charMap.put("trade", (char) CHAR_TRADEMARK);
+			ReadTags.charMap.put("bull", (char) ReadTags.CHAR_BULLET);
+			ReadTags.charMap.put("trade", (char) ReadTags.CHAR_TRADEMARK);
 		}
 	}
 
@@ -112,8 +112,11 @@ public class ReadTags {
 
 	/**
 	 * Checks to see if the next tag is the tag specified.
-	 * @param name The name of the tag desired.
-	 * @param start True if a starting tag is desired.
+	 * 
+	 * @param name
+	 *            The name of the tag desired.
+	 * @param start
+	 *            True if a starting tag is desired.
 	 * @return True if the next tag matches these criteria.
 	 */
 	public boolean is(final String name, final boolean start) {
@@ -130,6 +133,7 @@ public class ReadTags {
 
 	/**
 	 * Parse an attribute name, if one is present.
+	 * 
 	 * @return Return the attribute name, or null if none present.
 	 */
 	private String parseAttributeName() {
@@ -213,9 +217,8 @@ public class ReadTags {
 		eatWhitespace();
 		if ("\"\'".indexOf(this.source.peek()) != -1) {
 			final int delim = this.source.read();
-			while ((this.source.peek() != delim) 
-					&& (this.source.peek() != -1)) {
-				if (result.length() > MAX_LENGTH) {
+			while ((this.source.peek() != delim) && (this.source.peek() != -1)) {
+				if (result.length() > ReadTags.MAX_LENGTH) {
 					break;
 				}
 				final int ch = parseSpecialCharacter();
@@ -421,8 +424,8 @@ public class ReadTags {
 		if (this.source.peek() == '<') {
 			parseTag();
 			if ((this.tag.getType() == Tag.Type.BEGIN)
-				&& (this.tag.getName().equalsIgnoreCase("script") 
-				|| this.tag.getName().equalsIgnoreCase("style"))) {
+					&& (this.tag.getName().equalsIgnoreCase("script") || this.tag
+							.getName().equalsIgnoreCase("style"))) {
 				this.lockedEndTag = this.tag.getName().toLowerCase();
 			}
 			return 0;

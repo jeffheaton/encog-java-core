@@ -36,17 +36,17 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class TickerSymbol {
-	
+
 	/**
 	 * The ticker symbol.
 	 */
 	private final String symbol;
-	
+
 	/**
 	 * The exchange.
 	 */
 	private final String exchange;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -55,7 +55,9 @@ public class TickerSymbol {
 
 	/**
 	 * Construct a ticker symbol with no exchange.
-	 * @param symbol The ticker symbol.
+	 * 
+	 * @param symbol
+	 *            The ticker symbol.
 	 */
 	public TickerSymbol(final String symbol) {
 		this.symbol = symbol;
@@ -64,8 +66,11 @@ public class TickerSymbol {
 
 	/**
 	 * Construct a ticker symbol with exchange.
-	 * @param symbol The ticker symbol.
-	 * @param exchange The exchange.
+	 * 
+	 * @param symbol
+	 *            The ticker symbol.
+	 * @param exchange
+	 *            The exchange.
 	 */
 	public TickerSymbol(final String symbol, final String exchange) {
 		this.symbol = symbol;
@@ -74,7 +79,9 @@ public class TickerSymbol {
 
 	/**
 	 * Determine if two ticker symbols equal each other.
-	 * @param other The other ticker symbol.
+	 * 
+	 * @param other
+	 *            The other ticker symbol.
 	 * @return True if the two symbols equal.
 	 */
 	public boolean equals(final TickerSymbol other) {
@@ -84,11 +91,11 @@ public class TickerSymbol {
 		}
 
 		// if the symbols match then we need to compare the exchanges
-		if (other.getExchange() == null && other.getExchange() == null) {
+		if ((other.getExchange() == null) && (other.getExchange() == null)) {
 			return true;
 		}
 
-		if (other.getExchange() == null || other.getExchange() == null) {
+		if ((other.getExchange() == null) || (other.getExchange() == null)) {
 			return false;
 		}
 
@@ -111,8 +118,10 @@ public class TickerSymbol {
 
 	/**
 	 * Generate a valid hash code.
+	 * 
 	 * @return The hash code.
 	 */
+	@Override
 	public int hashCode() {
 		final StringBuilder str = new StringBuilder(getSymbol());
 		if (this.exchange != null) {

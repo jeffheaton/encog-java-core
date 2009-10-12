@@ -42,7 +42,7 @@ public class Address {
 	 * The original text from the address.
 	 */
 	private final String original;
-	
+
 	/**
 	 * The address as a URL.
 	 */
@@ -55,24 +55,29 @@ public class Address {
 
 	/**
 	 * Construct the address from a URL.
-	 * @param u The URL to use.
+	 * 
+	 * @param u
+	 *            The URL to use.
 	 */
 	public Address(final URL u) {
 		this.url = u;
 		this.original = u.toString();
 	}
 
-	/** 
+	/**
 	 * Construct a URL using a perhaps relative URL and a base URL.
-	 * @param base The base URL.
-	 * @param original A full URL or a URL relative to the base.
+	 * 
+	 * @param base
+	 *            The base URL.
+	 * @param original
+	 *            A full URL or a URL relative to the base.
 	 */
 	public Address(final URL base, final String original) {
 		this.original = original;
 		try {
 			this.url = new URL(base, original);
 		} catch (final MalformedURLException e) {
-			logger.debug("Malformed URL", e);
+			this.logger.debug("Malformed URL", e);
 		}
 	}
 

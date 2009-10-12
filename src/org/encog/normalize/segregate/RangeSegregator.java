@@ -12,50 +12,42 @@ public class RangeSegregator implements Segregator {
 	private final boolean include;
 	private final Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
 	private Normalization normalization;
-	
-	public RangeSegregator(InputField sourceField, boolean include)
-	{
+
+	public RangeSegregator(final InputField sourceField, final boolean include) {
 		this.sourceField = sourceField;
 		this.include = include;
 	}
-	
-	
-	public boolean shouldInclude() {
-		double value = sourceField.getCurrentValue();
-		for(SegregationRange range: ranges)
-		{
-			if(range.inRange(value))
-				return range.isIncluded();
-		}
-		return this.include;
-	}
-	
-	public void addRange(SegregationRange range)
-	{
-		this.ranges.add(range);
-	}
-	
-	public void addRange(double low,double high,boolean include)
-	{
-		SegregationRange range = new SegregationRange(low,high,include);
+
+	public void addRange(final double low, final double high,
+			final boolean include) {
+		final SegregationRange range = new SegregationRange(low, high, include);
 		addRange(range);
 	}
 
-
-	public InputField getSourceField() {
-		return sourceField;
+	public void addRange(final SegregationRange range) {
+		this.ranges.add(range);
 	}
-
 
 	public Normalization getNormalization() {
 		return this.normalization;
 	}
 
+	public InputField getSourceField() {
+		return this.sourceField;
+	}
 
-	public void init(Normalization normalization) {
+	public void init(final Normalization normalization) {
 		this.normalization = normalization;
 	}
-	
-	
+
+	public boolean shouldInclude() {
+		final double value = this.sourceField.getCurrentValue();
+		for (final SegregationRange range : this.ranges) {
+			if (range.inRange(value)) {
+				return range.isIncluded();
+			}
+		}
+		return this.include;
+	}
 
 }

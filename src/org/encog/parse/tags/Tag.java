@@ -73,8 +73,7 @@ public class Tag {
 	/**
 	 * The attributes.
 	 */
-	private final Map<String, String> attributes = 
-			new HashMap<String, String>();
+	private final Map<String, String> attributes = new HashMap<String, String>();
 
 	/**
 	 * The tag name.
@@ -178,7 +177,9 @@ public class Tag {
 
 	/**
 	 * Set the tag name.
-	 * @param s The name.
+	 * 
+	 * @param s
+	 *            The name.
 	 */
 	public void setName(final String s) {
 		this.name = s;
@@ -195,8 +196,7 @@ public class Tag {
 	}
 
 	/**
-	 * Convert this tag back into string form, with the 
-	 * beginning < and ending >.
+	 * Convert this tag back into string form, with the beginning < and ending >.
 	 * 
 	 * @return The Attribute object that was found.
 	 */

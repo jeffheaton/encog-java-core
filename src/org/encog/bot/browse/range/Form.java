@@ -37,17 +37,18 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class Form extends DocumentRange {
-	
+
 	/**
 	 * The method for this form.
+	 * 
 	 * @author jheaton
-	 *
+	 * 
 	 */
 	public enum Method {
 		/**
 		 * This form is to be POSTed.
 		 */
-		POST, 
+		POST,
 		/**
 		 * THis form is to sent using a GET.
 		 */
@@ -58,11 +59,11 @@ public class Form extends DocumentRange {
 	 * The address that the form will be sent to.
 	 */
 	private Address action;
-	
+
 	/**
 	 * The means by which the form will be sent.
 	 */
-	private Method method;	
+	private Method method;
 
 	/**
 	 * The logger.
@@ -72,7 +73,9 @@ public class Form extends DocumentRange {
 
 	/**
 	 * Construct a form on the specified web page.
-	 * @param source The web page that contains this form.
+	 * 
+	 * @param source
+	 *            The web page that contains this form.
 	 */
 	public Form(final WebPage source) {
 		super(source);
@@ -80,14 +83,17 @@ public class Form extends DocumentRange {
 
 	/**
 	 * Find the form input by type.
-	 * @param type The type of input we want.
-	 * @param index The index to begin searching at.
+	 * 
+	 * @param type
+	 *            The type of input we want.
+	 * @param index
+	 *            The index to begin searching at.
 	 * @return The Input object that was found.
 	 */
 	public Input findType(final String type, final int index) {
 		int i = index;
-		
-		for (final DocumentRange element : this.getElements()) {
+
+		for (final DocumentRange element : getElements()) {
 			if (element instanceof Input) {
 				final Input input = (Input) element;
 				if (input.getType().equalsIgnoreCase(type)) {
@@ -116,8 +122,10 @@ public class Form extends DocumentRange {
 	}
 
 	/**
-	 * Set the action for the form. 
-	 * @param action The URL to send the form to.
+	 * Set the action for the form.
+	 * 
+	 * @param action
+	 *            The URL to send the form to.
 	 */
 	public void setAction(final Address action) {
 		this.action = action;
@@ -125,7 +133,9 @@ public class Form extends DocumentRange {
 
 	/**
 	 * Set the method to send the form.
-	 * @param method How to send the form.
+	 * 
+	 * @param method
+	 *            How to send the form.
 	 */
 	public void setMethod(final Method method) {
 		this.method = method;
@@ -142,7 +152,7 @@ public class Form extends DocumentRange {
 		builder.append(getMethod());
 		builder.append(",action=");
 		builder.append(getAction());
-		for (final DocumentRange element : this.getElements()) {
+		for (final DocumentRange element : getElements()) {
 			builder.append("\n\t");
 			builder.append(element.toString());
 		}

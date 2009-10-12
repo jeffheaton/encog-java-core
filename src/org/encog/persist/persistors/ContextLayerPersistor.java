@@ -26,7 +26,6 @@
 package org.encog.persist.persistors;
 
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
@@ -35,7 +34,6 @@ import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
-import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +45,7 @@ import org.slf4j.LoggerFactory;
 public class ContextLayerPersistor implements Persistor {
 
 	public final static String PROPERTY_CONTEXT = "context";
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -98,15 +96,17 @@ public class ContextLayerPersistor implements Persistor {
 			if (threshold == null) {
 				layer = new ContextLayer(activation, false, neuronCount);
 			} else {
-				final double[] t = NumberList.fromList(CSVFormat.EG_FORMAT,threshold);
+				final double[] t = NumberList.fromList(CSVFormat.EG_FORMAT,
+						threshold);
 				layer = new ContextLayer(activation, true, neuronCount);
 				for (int i = 0; i < t.length; i++) {
 					layer.setThreshold(i, t[i]);
 				}
 			}
-			
-			if( context!=null ) {
-				final double[] t = NumberList.fromList(CSVFormat.EG_FORMAT,context);
+
+			if (context != null) {
+				final double[] t = NumberList.fromList(CSVFormat.EG_FORMAT,
+						context);
 
 				for (int i = 0; i < t.length; i++) {
 					layer.getContext().setData(i, t[i]);
@@ -141,17 +141,17 @@ public class ContextLayerPersistor implements Persistor {
 
 		if (layer.hasThreshold()) {
 			final StringBuilder result = new StringBuilder();
-			NumberList.toList(CSVFormat.EG_FORMAT,result, layer.getThreshold());
+			NumberList
+					.toList(CSVFormat.EG_FORMAT, result, layer.getThreshold());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
 		}
-		
-		
+
 		final StringBuilder result = new StringBuilder();
-		NumberList.toList(CSVFormat.EG_FORMAT,result, layer.getContext().getData());
+		NumberList.toList(CSVFormat.EG_FORMAT, result, layer.getContext()
+				.getData());
 		out.addProperty(ContextLayerPersistor.PROPERTY_CONTEXT, result
 				.toString());
-		
 
 		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
 		final Persistor persistor = layer.getActivationFunction()

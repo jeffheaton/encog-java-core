@@ -29,16 +29,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A randomizer that will create always set the random number to a const
- * value, used mainly for testing.
+ * A randomizer that will create always set the random number to a const value,
+ * used mainly for testing.
  * 
  */
 public class ConstRandomizer extends BasicRandomizer {
 
 	/**
 	 * Generate a random number in the specified range.
-	 * @param min The minimum value.
-	 * @param max The maximum value.
+	 * 
+	 * @param min
+	 *            The minimum value.
+	 * @param max
+	 *            The maximum value.
 	 * @return A random number.
 	 */
 	public static double randomize(final double min, final double max) {
@@ -59,7 +62,9 @@ public class ConstRandomizer extends BasicRandomizer {
 
 	/**
 	 * Construct a range randomizer.
-	 * @param value The constant value.
+	 * 
+	 * @param value
+	 *            The constant value.
 	 */
 	public ConstRandomizer(final double value) {
 		this.value = value;
@@ -67,7 +72,9 @@ public class ConstRandomizer extends BasicRandomizer {
 
 	/**
 	 * Generate a random number based on the range specified in the constructor.
-	 * @param d The range randomizer ignores this value.
+	 * 
+	 * @param d
+	 *            The range randomizer ignores this value.
 	 * @return The random number.
 	 */
 	public double randomize(final double d) {

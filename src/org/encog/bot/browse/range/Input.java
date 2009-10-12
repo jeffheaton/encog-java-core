@@ -30,8 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A form element that represents for input for text.  These are of the
- * form name=value.
+ * A form element that represents for input for text. These are of the form
+ * name=value.
  * 
  * @author jheaton
  * 
@@ -51,7 +51,9 @@ public class Input extends FormElement {
 
 	/**
 	 * Construct this Input element.
-	 * @param source The source for this input element.
+	 * 
+	 * @param source
+	 *            The source for this input element.
 	 */
 	public Input(final WebPage source) {
 		super(source);
@@ -76,7 +78,9 @@ public class Input extends FormElement {
 
 	/**
 	 * Set the type of this input element.
-	 * @param type The type of this input element.
+	 * 
+	 * @param type
+	 *            The type of this input element.
 	 */
 	public void setType(final String type) {
 		this.type = type;

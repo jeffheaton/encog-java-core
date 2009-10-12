@@ -83,7 +83,9 @@ public class NeuralOutputHolder {
 
 	/**
 	 * Set the output.
-	 * @param output The new output.
+	 * 
+	 * @param output
+	 *            The new output.
 	 */
 	public void setOutput(final NeuralData output) {
 		this.output = output;

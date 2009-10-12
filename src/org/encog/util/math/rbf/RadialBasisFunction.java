@@ -37,14 +37,18 @@ public interface RadialBasisFunction {
 
 	/**
 	 * Calculate the RBF result for the specified value.
-	 * @param x The value to be passed into the RBF.
+	 * 
+	 * @param x
+	 *            The value to be passed into the RBF.
 	 * @return The RBF value.
 	 */
 	double calculate(double x);
 
 	/**
 	 * Calculate the derivative of the RBF function.
-	 * @param x The value to calculate for.
+	 * 
+	 * @param x
+	 *            The value to calculate for.
 	 * @return The calculated value.
 	 */
 	double calculateDerivative(double x);

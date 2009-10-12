@@ -32,19 +32,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Main Encog class, does little more than provide version information.
- * Also used to hold the ORM session that Encog uses to work with
- * Hibernate.
+ * Main Encog class, does little more than provide version information. Also
+ * used to hold the ORM session that Encog uses to work with Hibernate.
  * 
  * @author jheaton
  */
 public final class Encog {
-	
+
 	/**
 	 * The current engog version, this should be read from the properties.
 	 */
 	public static final String VERSION = "2.2.0";
-	
+
 	/**
 	 * The current engog file version, this should be read from the properties.
 	 */
@@ -96,8 +95,7 @@ public final class Encog {
 	 * 
 	 * @return The requested value.
 	 */
-	private final Map<String, String> properties = 
-		new HashMap<String, String>();
+	private final Map<String, String> properties = new HashMap<String, String>();
 
 	/**
 	 * Private constructor.

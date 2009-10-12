@@ -50,9 +50,13 @@ public class ActivationGaussian extends BasicActivationFunction {
 
 	/**
 	 * Create a gaussian activation function.
-	 * @param center The center of the curve.
-	 * @param peak The peak of the curve.
-	 * @param width The width of the curve.
+	 * 
+	 * @param center
+	 *            The center of the curve.
+	 * @param peak
+	 *            The peak of the curve.
+	 * @param width
+	 *            The width of the curve.
 	 */
 	public ActivationGaussian(final double center, final double peak,
 			final double width) {
@@ -60,10 +64,12 @@ public class ActivationGaussian extends BasicActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 		for (int i = 0; i < d.length; i++) {
@@ -83,6 +89,7 @@ public class ActivationGaussian extends BasicActivationFunction {
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	@Override
@@ -91,13 +98,14 @@ public class ActivationGaussian extends BasicActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 		for (int i = 0; i < d.length; i++) {
@@ -112,7 +120,7 @@ public class ActivationGaussian extends BasicActivationFunction {
 	public GaussianFunction getGausian() {
 		return this.gausian;
 	}
-	
+
 	/**
 	 * @return Return true, gaussian has a derivative.
 	 */

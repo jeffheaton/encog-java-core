@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Error occured processing temporal data.
+ * 
  * @author jheaton
  */
 public class TemporalError extends EncogError {
@@ -38,7 +39,7 @@ public class TemporalError extends EncogError {
 	 * The serial id for this class.
 	 */
 	private static final long serialVersionUID = -5534812476029464649L;
-	
+
 	/**
 	 * The logging object.
 	 */

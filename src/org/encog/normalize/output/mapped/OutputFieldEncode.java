@@ -11,40 +11,36 @@ public class OutputFieldEncode implements OutputField {
 	private final InputField sourceField;
 	private double catchAll;
 	private final List<MappedRange> ranges = new ArrayList<MappedRange>();
-	
-	public OutputFieldEncode(InputField sourceField)
-	{
+
+	public OutputFieldEncode(final InputField sourceField) {
 		this.sourceField = sourceField;
 	}
-	
-	public void addRange(double low, double high,double value)
-	{
-		MappedRange range = new MappedRange(low,high,value);
+
+	public void addRange(final double low, final double high, final double value) {
+		final MappedRange range = new MappedRange(low, high, value);
 		this.ranges.add(range);
 	}
-	
+
 	public double calculate() {
-		for(MappedRange range: ranges) {
-			if( range.inRange(this.sourceField.getCurrentValue())) {
+		for (final MappedRange range : this.ranges) {
+			if (range.inRange(this.sourceField.getCurrentValue())) {
 				return range.getValue();
 			}
 		}
-		
+
 		return this.catchAll;
 	}
 
 	public double getCatchAll() {
-		return catchAll;
-	}
-
-	public void setCatchAll(double catchAll) {
-		this.catchAll = catchAll;
+		return this.catchAll;
 	}
 
 	public InputField getSourceField() {
-		return sourceField;
+		return this.sourceField;
 	}
-	
-	
+
+	public void setCatchAll(final double catchAll) {
+		this.catchAll = catchAll;
+	}
 
 }

@@ -54,7 +54,9 @@ public class ListExtractListener implements ExtractListener {
 
 	/**
 	 * Called when a word is found, add it to the list.
-	 * @param object The word found.
+	 * 
+	 * @param object
+	 *            The word found.
 	 */
 	public void foundData(final Object object) {
 		this.list.add(object);

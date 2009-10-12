@@ -44,37 +44,37 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class DocumentRange {
-	
+
 	/**
 	 * The beginning index for this range.
 	 */
 	private int begin;
-	
+
 	/**
 	 * The ending index for this range.
 	 */
 	private int end;
-	
+
 	/**
 	 * The source page for this range.
 	 */
 	private WebPage source;
-	
+
 	/**
-	 * The id attribute, on the source tag.  Useful for DIV tags.
+	 * The id attribute, on the source tag. Useful for DIV tags.
 	 */
 	private String idAttribute;
-	
+
 	/**
-	 * The class attribute. on the source tag.  
+	 * The class attribute. on the source tag.
 	 */
 	private String classAttribute;
-	
+
 	/**
 	 * Sub elements of this range.
 	 */
-	private List<DocumentRange> elements = new ArrayList<DocumentRange>();
-	
+	private final List<DocumentRange> elements = new ArrayList<DocumentRange>();
+
 	/**
 	 * The parent to this range, or null if top.
 	 */
@@ -88,7 +88,9 @@ public class DocumentRange {
 
 	/**
 	 * Construct a document range from the specified WebPage.
-	 * @param source The web page that this range belongs to.
+	 * 
+	 * @param source
+	 *            The web page that this range belongs to.
 	 */
 	public DocumentRange(final WebPage source) {
 		this.source = source;
@@ -96,7 +98,9 @@ public class DocumentRange {
 
 	/**
 	 * Add an element.
-	 * @param element The element to add.
+	 * 
+	 * @param element
+	 *            The element to add.
 	 */
 	public void addElement(final DocumentRange element) {
 		this.elements.add(element);
@@ -118,7 +122,7 @@ public class DocumentRange {
 	}
 
 	/**
-	 * @return The elements of this document range. 
+	 * @return The elements of this document range.
 	 */
 	public List<DocumentRange> getElements() {
 		return this.elements;
@@ -154,6 +158,7 @@ public class DocumentRange {
 
 	/**
 	 * Get the text from this range.
+	 * 
 	 * @return The text from this range.
 	 */
 	public String getTextOnly() {
@@ -172,7 +177,9 @@ public class DocumentRange {
 
 	/**
 	 * Set the beginning index.
-	 * @param begin The beginning index.
+	 * 
+	 * @param begin
+	 *            The beginning index.
 	 */
 	public void setBegin(final int begin) {
 		this.begin = begin;
@@ -188,7 +195,9 @@ public class DocumentRange {
 
 	/**
 	 * Set the ending index.
-	 * @param end The ending index.
+	 * 
+	 * @param end
+	 *            The ending index.
 	 */
 	public void setEnd(final int end) {
 		this.end = end;
@@ -204,7 +213,9 @@ public class DocumentRange {
 
 	/**
 	 * Set the parent.
-	 * @param parent The parent.
+	 * 
+	 * @param parent
+	 *            The parent.
 	 */
 	public void setParent(final DocumentRange parent) {
 		this.parent = parent;
@@ -212,7 +223,9 @@ public class DocumentRange {
 
 	/**
 	 * Set the source web page.
-	 * @param source The source web page.
+	 * 
+	 * @param source
+	 *            The source web page.
 	 */
 	public void setSource(final WebPage source) {
 		this.source = source;

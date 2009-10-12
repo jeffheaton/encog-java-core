@@ -52,16 +52,16 @@ public class FanInRandomizer extends BasicRandomizer {
 	static final String ERROR = "To use FanInRandomizer you must "
 			+ "present a Matrix or 2D array type value.";
 
+	/**
+	 * The default boundary.
+	 */
+	private static final double DEFAULT_BOUNDARY = 2.4;
+
 	/** The lower bound. */
 	private final double lowerBound;
 
 	/** The upper bound. */
 	private final double upperBound;
-	
-	/**
-	 * The default boundary.
-	 */
-	private static final double DEFAULT_BOUNDARY = 2.4;
 
 	/**
 	 * Should the square root of the number of rows be used?
@@ -77,7 +77,8 @@ public class FanInRandomizer extends BasicRandomizer {
 	 * Create a fan-in randomizer with default values.
 	 */
 	public FanInRandomizer() {
-		this(-DEFAULT_BOUNDARY, DEFAULT_BOUNDARY, false);
+		this(-FanInRandomizer.DEFAULT_BOUNDARY,
+				FanInRandomizer.DEFAULT_BOUNDARY, false);
 	}
 
 	/**
@@ -115,7 +116,9 @@ public class FanInRandomizer extends BasicRandomizer {
 
 	/**
 	 * Calculate the fan-in value.
-	 * @param rows The number of rows.
+	 * 
+	 * @param rows
+	 *            The number of rows.
 	 * @return The fan-in value.
 	 */
 	private double calculateValue(final int rows) {
@@ -132,7 +135,7 @@ public class FanInRandomizer extends BasicRandomizer {
 	}
 
 	/**
-	 * Throw an error if this class is used improperly. 
+	 * Throw an error if this class is used improperly.
 	 */
 	private void causeError() {
 		if (this.logger.isErrorEnabled()) {
@@ -172,7 +175,8 @@ public class FanInRandomizer extends BasicRandomizer {
 	 * by this randomizer. This could be a totally new random number, or it
 	 * could be based on the specified number.
 	 * 
-	 * @param d The number to randomize.
+	 * @param d
+	 *            The number to randomize.
 	 * @return A randomized number.
 	 */
 	public double randomize(final double d) {
@@ -205,9 +209,9 @@ public class FanInRandomizer extends BasicRandomizer {
 	}
 
 	/**
-	 * Randomize the 2d array based on an array, modify the array. Previous 
-	 * values may be used, or they may be discarded, depending on 
-	 * the randomizer.
+	 * Randomize the 2d array based on an array, modify the array. Previous
+	 * values may be used, or they may be discarded, depending on the
+	 * randomizer.
 	 * 
 	 * @param d
 	 *            An array to randomize.
@@ -222,9 +226,9 @@ public class FanInRandomizer extends BasicRandomizer {
 	}
 
 	/**
-	 * Randomize the 2d array based on an array, modify the array. Previous 
-	 * values may be used, or they may be discarded, depending on 
-	 * the randomizer.
+	 * Randomize the 2d array based on an array, modify the array. Previous
+	 * values may be used, or they may be discarded, depending on the
+	 * randomizer.
 	 * 
 	 * @param d
 	 *            An array to randomize.

@@ -38,8 +38,9 @@ import org.slf4j.LoggerFactory;
  * A location that allows Encog objects to be read from a resource. This
  * location only supports read operations, so the Encog resource is usually
  * created first as a file and then embedded in the application as a resource.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class ResourcePersistence implements PersistenceLocation {
 
@@ -91,8 +92,7 @@ public class ResourcePersistence implements PersistenceLocation {
 	 * @return Nothing.
 	 */
 	public OutputStream createOutputStream() {
-		final String str = 
-		"The ResourcePersistence location does not support write operations.";
+		final String str = "The ResourcePersistence location does not support write operations.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -103,8 +103,7 @@ public class ResourcePersistence implements PersistenceLocation {
 	 * Delete operations are not supported for resource persistence.
 	 */
 	public void delete() {
-		final String str = 
-		"The ResourcePersistence location does not support delete operations.";
+		final String str = "The ResourcePersistence location does not support delete operations.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -118,8 +117,7 @@ public class ResourcePersistence implements PersistenceLocation {
 	 * @return Nothing.
 	 */
 	public boolean exists() {
-		final String str = 
-		"The ResourcePersistence location does not support exists.";
+		final String str = "The ResourcePersistence location does not support exists.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -133,8 +131,7 @@ public class ResourcePersistence implements PersistenceLocation {
 	 *            Not used.
 	 */
 	public void renameTo(final PersistenceLocation toLocation) {
-		final String str = 
-		"The ResourcePersistence location does not support rename operations.";
+		final String str = "The ResourcePersistence location does not support rename operations.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}

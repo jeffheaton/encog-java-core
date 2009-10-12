@@ -26,19 +26,19 @@
 
 package org.encog.normalize.input;
 
-public class InputFieldArray1D extends BasicInputField implements HasFixedLength {
-	private double[] array;
-	
-	public InputFieldArray1D(double[] array)
-	{
+public class InputFieldArray1D extends BasicInputField implements
+		HasFixedLength {
+	private final double[] array;
+
+	public InputFieldArray1D(final double[] array) {
 		this.array = array;
 	}
-	
-	public double getValue(int i) {
+
+	@Override
+	public double getValue(final int i) {
 		return this.array[i];
 	}
 
-	
 	public int length() {
 		return this.array.length;
 	}

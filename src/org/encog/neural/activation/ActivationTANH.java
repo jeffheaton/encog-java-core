@@ -36,7 +36,7 @@ import org.encog.util.math.BoundMath;
  * output is desired.
  * 
  * This implementation does an approximation of the TANH function, using only a
- * single base e exponent.  This has a considerable effect on performance, adds
+ * single base e exponent. This has a considerable effect on performance, adds
  * only minimal change to the output compared to a standard TANH calculation.
  */
 public class ActivationTANH extends BasicActivationFunction {
@@ -48,18 +48,22 @@ public class ActivationTANH extends BasicActivationFunction {
 
 	/**
 	 * Internal activation function that performs the TANH.
-	 * @param d The input value.
+	 * 
+	 * @param d
+	 *            The input value.
 	 * @return The output value.
 	 */
 	private double activationFunction(final double d) {
-		return -1 + (2/ (1+BoundMath.exp(-2* d ) ) );
+		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
 	}
 
 	/**
-	 * Implements the activation function.  The array is modified according
-	 * to the activation function being used.  See the class description
-	 * for more specific information on this type of activation function.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
 
@@ -79,6 +83,7 @@ public class ActivationTANH extends BasicActivationFunction {
 
 	/**
 	 * Create a Persistor for this activation function.
+	 * 
 	 * @return The persistor.
 	 */
 	@Override
@@ -87,21 +92,22 @@ public class ActivationTANH extends BasicActivationFunction {
 	}
 
 	/**
-	 * Implements the activation function derivative.  The array is modified 
-	 * according derivative of the activation function being used.  See the 
-	 * class description for more specific information on this type of 
-	 * activation function. Propagation training requires the derivative. 
-	 * Some activation functions do not support a derivative and will throw
-	 * an error.
-	 * @param d The input array to the activation function.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
 
 		for (int i = 0; i < d.length; i++) {
-			d[i] = (1+d[i])*(1-d[i]);
+			d[i] = (1 + d[i]) * (1 - d[i]);
 		}
 	}
-	
+
 	/**
 	 * @return Return true, TANH has a derivative.
 	 */

@@ -46,6 +46,12 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	private static final long serialVersionUID = -7977897210426471675L;
 
 	/**
+	 * The logging object.
+	 */
+	private static final transient Logger LOGGER = LoggerFactory
+			.getLogger(Matrix.class);
+
+	/**
 	 * Turn an array of doubles into a column matrix.
 	 * 
 	 * @param input
@@ -72,12 +78,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		System.arraycopy(input, 0, d[0], 0, input.length);
 		return new Matrix(d);
 	}
-
-	/**
-	 * The logging object.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(Matrix.class);
 
 	/**
 	 * The name of this object.
@@ -246,13 +246,11 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		final int actualPrecision = (int) Math.pow(Encog.DEFAULT_PRECISION,
 				precision);
 
-		double[][] data = matrix.getData();
+		final double[][] data = matrix.getData();
 
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				if ((long) (this.matrix[r][c]  
-						* actualPrecision) != (long) (data[r][c] 
-						* actualPrecision)) {
+				if ((long) (this.matrix[r][c] * actualPrecision) != (long) (data[r][c] * actualPrecision)) {
 					return false;
 				}
 			}
@@ -328,6 +326,13 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public int getCols() {
 		return this.matrix[0].length;
+	}
+
+	/**
+	 * @return Get the 2D matrix array.
+	 */
+	public double[][] getData() {
+		return this.matrix;
 	}
 
 	/**
@@ -571,13 +576,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 			}
 			throw new MatrixError(str);
 		}
-	}
-
-	/**
-	 * @return Get the 2D matrix array.
-	 */
-	public double[][] getData() {
-		return this.matrix;
 	}
 
 }

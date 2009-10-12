@@ -29,24 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A simple class that prevents numbers from getting either too
- * big or too small.
+ * A simple class that prevents numbers from getting either too big or too
+ * small.
  */
 public final class BoundNumbers {
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
-	/**
-	 * Private constructor.
-	 */
-	private BoundNumbers() {
-		
-	}
-	
 	/**
 	 * Too small of a number.
 	 */
@@ -65,12 +52,25 @@ public final class BoundNumbers {
 	 * @return The new number. Only changed if it was too big or too small.
 	 */
 	public static double bound(final double d) {
-		if (d < TOO_SMALL) {
-			return TOO_SMALL;
-		} else if (d > TOO_BIG) {
-			return TOO_BIG;
+		if (d < BoundNumbers.TOO_SMALL) {
+			return BoundNumbers.TOO_SMALL;
+		} else if (d > BoundNumbers.TOO_BIG) {
+			return BoundNumbers.TOO_BIG;
 		} else {
 			return d;
 		}
+	}
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Private constructor.
+	 */
+	private BoundNumbers() {
+
 	}
 }

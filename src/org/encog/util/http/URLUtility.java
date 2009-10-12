@@ -38,12 +38,6 @@ import org.slf4j.LoggerFactory;
 public final class URLUtility {
 
 	/**
-	 * Private constructor.
-	 */
-	private URLUtility() {
-	}
-
-	/**
 	 * Beyond this number are special chars.
 	 */
 	public static final int SPECIAL_CHAR_LIMIT = 255;
@@ -52,12 +46,6 @@ public final class URLUtility {
 	 * The name of the usual default document.
 	 */
 	public static final String INDEX_FILE = "index.html";
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a URL from its basic parts.
@@ -90,7 +78,7 @@ public final class URLUtility {
 		}
 
 		file = sb.toString();
-		if (ref != null && !stripRef) {
+		if ((ref != null) && !stripRef) {
 			result = new URL(protocol, host, port, file + "#" + ref);
 		} else {
 			result = new URL(protocol, host, port, file);
@@ -194,5 +182,17 @@ public final class URLUtility {
 		result.append(filename.replace('?', '_'));
 
 		return result.toString();
+	}
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Private constructor.
+	 */
+	private URLUtility() {
 	}
 }

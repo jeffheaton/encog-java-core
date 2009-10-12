@@ -58,9 +58,11 @@ public class Distort extends BasicRandomizer {
 	}
 
 	/**
-	 * Distort the random number by the factor that was specified 
-	 * in the constructor.
-	 * @param d The number to distort.
+	 * Distort the random number by the factor that was specified in the
+	 * constructor.
+	 * 
+	 * @param d
+	 *            The number to distort.
 	 * @return The result.
 	 */
 	public double randomize(final double d) {

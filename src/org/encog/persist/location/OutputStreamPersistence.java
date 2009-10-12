@@ -34,9 +34,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class allows Encog persistence to use a location that is based on
- * an OutputStream.
- *
+ * This class allows Encog persistence to use a location that is based on an
+ * OutputStream.
+ * 
  */
 public class OutputStreamPersistence implements PersistenceLocation {
 
@@ -45,27 +45,29 @@ public class OutputStreamPersistence implements PersistenceLocation {
 	 */
 	private final Logger logger = LoggerFactory
 			.getLogger(OutputStreamPersistence.class);
-	
+
 	/**
 	 * The output stream.
 	 */
-	private OutputStream ostream;
-	
+	private final OutputStream ostream;
+
 	/**
 	 * Construct the output stream location.
-	 * @param ostream The OutputStream to base this on.
+	 * 
+	 * @param ostream
+	 *            The OutputStream to base this on.
 	 */
-	public OutputStreamPersistence(OutputStream ostream)
-	{
+	public OutputStreamPersistence(final OutputStream ostream) {
 		this.ostream = ostream;
 	}
-	
+
 	/**
 	 * Can't create an InputStream for this object type, throw an error.
+	 * 
 	 * @return Not used.
 	 */
 	public InputStream createInputStream() {
-		String str = "The InputStreamPersistence location does not support output streams.";
+		final String str = "The InputStreamPersistence location does not support output streams.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -74,6 +76,7 @@ public class OutputStreamPersistence implements PersistenceLocation {
 
 	/**
 	 * Provide the output stream to use.
+	 * 
 	 * @return The output stream.
 	 */
 	public OutputStream createOutputStream() {
@@ -84,8 +87,7 @@ public class OutputStreamPersistence implements PersistenceLocation {
 	 * Delete operations are not supported for resource persistence.
 	 */
 	public void delete() {
-		final String str = 
-		"The OutputStreamPersistence location does not support delete operations.";
+		final String str = "The OutputStreamPersistence location does not support delete operations.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
@@ -102,15 +104,16 @@ public class OutputStreamPersistence implements PersistenceLocation {
 
 	/**
 	 * Renames are not allowed on this type of location.
-	 * @param toLocation Not used.
+	 * 
+	 * @param toLocation
+	 *            Not used.
 	 */
-	public void renameTo(PersistenceLocation toLocation) {
-		final String str = 
-			"The OutputStreamPersistence location does not support rename operations.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
-			}
-			throw new PersistError(str);		
+	public void renameTo(final PersistenceLocation toLocation) {
+		final String str = "The OutputStreamPersistence location does not support rename operations.";
+		if (this.logger.isErrorEnabled()) {
+			this.logger.error(str);
+		}
+		throw new PersistError(str);
 	}
 
 }

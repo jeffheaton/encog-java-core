@@ -140,8 +140,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = 
-			"A Boltzmann network will use the BiPolar activation "
+		final String str = "A Boltzmann network will use the BiPolar activation "
 				+ "function, no activation function needs to be specified.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
