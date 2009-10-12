@@ -53,7 +53,7 @@ public interface PropagationMethod {
 	 * @param propagation The propagation object that this method will
 	 * be used with.
 	 */
-	void init(Propagation propagation);
+	void init(PropagationUtil propagationUtil);
 
 	/**
 	 * Apply the accumulated deltas and learn.

@@ -330,9 +330,9 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject,
 	}
 
 	@Override
-	public void getRecord(int index, NeuralDataPair pair) {
+	public void getRecord(long index, NeuralDataPair pair) {
 		
-		NeuralDataPair source = this.data.get(index);
+		NeuralDataPair source = this.data.get((int)index);
 		pair.getInput().setData(source.getInput().getData());
 		if( pair.getIdeal()!=null ) {
 			pair.getIdeal().setData(source.getIdeal().getData());

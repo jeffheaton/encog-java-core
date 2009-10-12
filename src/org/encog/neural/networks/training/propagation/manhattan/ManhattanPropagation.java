@@ -98,7 +98,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 			final NeuralDataSet training, final double learnRate,
 			final double zeroTolerance) {
 
-		super(network, new ManhattanPropagationMethod(), training);
+		super(network, new ManhattanPropagationMethod(zeroTolerance,learnRate), training);
 		this.zeroTolerance = zeroTolerance;
 		this.learningRate = learnRate;
 	}

@@ -34,6 +34,7 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.encog.neural.networks.training.propagation.PropagationSynapse;
+import org.encog.neural.networks.training.propagation.PropagationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,13 +54,22 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	/**
 	 * The propagation class that this method is used with.
 	 */
-	private ResilientPropagation propagation;
+	private PropagationUtil propagationUtil;
 	
 	/**
 	 * Utility class to calculate the partial derivative.
 	 */
 	private final CalculatePartialDerivative pderv 
 		= new CalculatePartialDerivative();
+	
+	private double zeroTolerance;
+	private double maxStep;
+	
+	public ResilientPropagationMethod(double zeroTolerance, double maxStep)
+	{
+		this.zeroTolerance = zeroTolerance;
+		this.maxStep = maxStep;
+	}
 
 	/**
 	 * Calculate the error between these two levels.
@@ -84,8 +94,8 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	 * @param propagation
 	 *            The propagation object that this method will be used with.
 	 */
-	public void init(final Propagation propagation) {
-		this.propagation = (ResilientPropagation) propagation;
+	public void init(final PropagationUtil propagation) {
+		this.propagationUtil = (PropagationUtil) propagation;
 
 	}
 
@@ -97,8 +107,8 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		if (this.logger.isDebugEnabled()) {
 			this.logger.debug("Backpropagation learning pass");
 		}
-
-		for (final PropagationLevel level : this.propagation.getLevels()) {
+		
+		for (final PropagationLevel level : this.propagationUtil.getLevels()) {
 			learnLevel(level);
 		}
 	}
@@ -130,7 +140,7 @@ public class ResilientPropagationMethod implements PropagationMethod {
 					if (change > 0) {
 						double delta = level.getThresholdDelta(i)
 								* ResilientPropagation.POSITIVE_ETA;
-						delta = Math.min(delta, this.propagation.getMaxStep());
+						delta = Math.min(delta, this.maxStep);
 						weightChange = sign(level.getThresholdGradient(i))
 								* delta;
 						level.setThresholdDelta(i, delta);
@@ -191,7 +201,7 @@ public class ResilientPropagationMethod implements PropagationMethod {
 				if (change > 0) {
 					double delta = deltas[row][col]
 							* ResilientPropagation.POSITIVE_ETA;
-					delta = Math.min(delta, this.propagation.getMaxStep());
+					delta = Math.min(delta, this.maxStep);
 					weightChange = sign(accData[row][col])
 							* delta;
 					deltas[row][col] = delta;
@@ -230,7 +240,7 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
 	 */
 	private int sign(final double value) {
-		if (Math.abs(value) < this.propagation.getZeroTolerance()) {
+		if (Math.abs(value) < this.zeroTolerance) {
 			return 0;
 		} else if (value > 0) {
 			return 1;

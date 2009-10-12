@@ -449,7 +449,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	}
 
 	
-	public void getRecord(int index, NeuralDataPair pair) {
+	public void getRecord(long index, NeuralDataPair pair) {
 		try
 		{
 			openInputFile();			

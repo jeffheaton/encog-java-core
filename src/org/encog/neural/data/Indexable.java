@@ -1,6 +1,6 @@
 package org.encog.neural.data;
 
-public interface Indexable {
+public interface Indexable extends NeuralDataSet {
 	long getRecordCount();
-	void getRecord(int index, NeuralDataPair pair);
+	void getRecord(long index, NeuralDataPair pair);
 }

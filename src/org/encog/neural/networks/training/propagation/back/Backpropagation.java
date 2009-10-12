@@ -109,7 +109,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
 			final double momentum) {
-		super(network, new BackpropagationMethod(), training);
+		super(network, new BackpropagationMethod(learnRate,momentum), training);
 		this.momentum = momentum;
 		this.learningRate = learnRate;
 	}

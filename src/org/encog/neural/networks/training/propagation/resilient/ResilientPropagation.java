@@ -160,7 +160,7 @@ public class ResilientPropagation extends Propagation {
 			final NeuralDataSet training, final double zeroTolerance,
 			final double initialUpdate, final double maxStep) {
 
-		super(network, new ResilientPropagationMethod(), training);
+		super(network, new ResilientPropagationMethod(zeroTolerance,maxStep), training);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
 		this.zeroTolerance = zeroTolerance;
@@ -170,7 +170,7 @@ public class ResilientPropagation extends Propagation {
 		// This is necessary for the first step. RPROP always builds on the
 		// previous
 		// step, and there is no previous step on the first iteration.
-		for (final PropagationLevel level : getLevels()) {
+		for (final PropagationLevel level : this.getPropagationUtil().getLevels()) {
 			for (int i = 0; i < level.getNeuronCount(); i++) {
 				level.setThresholdDelta(i, this.initialUpdate);
 			}

@@ -35,6 +35,7 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.encog.neural.networks.training.propagation.PropagationSynapse;
+import org.encog.neural.networks.training.propagation.PropagationUtil;
 import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,10 @@ public class BackpropagationMethod implements PropagationMethod {
 	/**
 	 * The backpropagation class that owns this method.
 	 */
-	private Backpropagation propagation;
+	private PropagationUtil propagationUtil;
+	
+	private double learningRate;
+	private double momentum;
 
 	/**
 	 * The logging object.
@@ -64,6 +68,12 @@ public class BackpropagationMethod implements PropagationMethod {
 	 */
 	private final CalculatePartialDerivative pderv 
 		= new CalculatePartialDerivative();
+	
+	public BackpropagationMethod(double learningRate, double momentum)	
+	{
+		this.learningRate = learningRate;
+		this.momentum = momentum;
+	}
 
 	/**
 	 * Calculate the error between these two levels.
@@ -81,8 +91,8 @@ public class BackpropagationMethod implements PropagationMethod {
 	 * Setup this propagation method using the specified propagation class.
 	 * @param propagation The propagation class creating this method.
 	 */
-	public void init(final Propagation propagation) {
-		this.propagation = (Backpropagation) propagation;
+	public void init(final PropagationUtil propagationUtil) {
+		this.propagationUtil = propagationUtil;
 	}
 
 	/**
@@ -94,7 +104,7 @@ public class BackpropagationMethod implements PropagationMethod {
 			this.logger.debug("Backpropagation learning pass");
 		}
 
-		for (final PropagationLevel level : this.propagation.getLevels()) {
+		for (final PropagationLevel level : this.propagationUtil.getLevels()) {
 			learnLevel(level);
 		}
 	}
@@ -114,9 +124,9 @@ public class BackpropagationMethod implements PropagationMethod {
 			if (layer.hasThreshold()) {
 				for (int i = 0; i < layer.getNeuronCount(); i++) {
 					double delta = level.getThresholdGradient(i)
-							* this.propagation.getLearningRate();
+							* this.learningRate;
 					delta += level.getLastThresholdGradent(i)
-							* this.propagation.getMomentum();
+							* this.momentum;
 					layer.setThreshold(i, layer.getThreshold(i) + delta);
 					level.setLastThresholdGradient(i, delta);
 					level.setThresholdGradient(i, 0.0);
@@ -132,9 +142,9 @@ public class BackpropagationMethod implements PropagationMethod {
 	private void learnSynapse(final PropagationSynapse synapse) {
 
 		final Matrix m1 = MatrixMath.multiply(synapse.getAccMatrixGradients(),
-				this.propagation.getLearningRate());
+				this.learningRate);
 		final Matrix m2 = MatrixMath.multiply(synapse.getLastMatrixGradients(),
-				this.propagation.getMomentum());
+				this.momentum);
 		synapse.setLastMatrixGradients(MatrixMath.add(m1, m2));
 
 		if (this.logger.isTraceEnabled()) {

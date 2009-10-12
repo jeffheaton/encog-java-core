@@ -34,6 +34,7 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.encog.neural.networks.training.propagation.PropagationSynapse;
+import org.encog.neural.networks.training.propagation.PropagationUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,13 +55,22 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 	/**
 	 * The Manhattan propagation class that this method is used by.
 	 */
-	private ManhattanPropagation propagation;
+	private PropagationUtil propagationUtil;
 
 	/**
 	 * The partial derivative utility class.
 	 */
 	private final CalculatePartialDerivative pderv 
 		= new CalculatePartialDerivative();
+	
+	double zeroTolerance;
+	double learningRate;
+	
+	public ManhattanPropagationMethod(double zeroTolerance, double learningRate)
+	{
+		this.zeroTolerance = zeroTolerance;
+		this.learningRate = learningRate;
+	}
 
 	/**
 	 * Calculate the error between these two levels.
@@ -88,12 +98,12 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 	 * @return The change to be applied to the weight matrix.
 	 */
 	private double determineChange(final double value) {
-		if (Math.abs(value) < this.propagation.getZeroTolerance()) {
+		if (Math.abs(value) < this.zeroTolerance) {
 			return 0;
 		} else if (value > 0) {
-			return this.propagation.getLearningRate();
+			return this.learningRate;
 		} else {
-			return -this.propagation.getLearningRate();
+			return -this.learningRate;
 		}
 	}
 
@@ -103,8 +113,8 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 	 * @param propagation
 	 *            The propagation object that this method will be used with.
 	 */
-	public void init(final Propagation propagation) {
-		this.propagation = (ManhattanPropagation) propagation;
+	public void init(final PropagationUtil propagationUtil) {
+		this.propagationUtil = propagationUtil;
 
 	}
 
@@ -117,7 +127,7 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 			this.logger.debug("Backpropagation learning pass");
 		}
 
-		for (final PropagationLevel level : this.propagation.getLevels()) {
+		for (final PropagationLevel level : this.propagationUtil.getLevels()) {
 			learnLevel(level);
 		}
 	}
@@ -140,7 +150,7 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 				for (int i = 0; i < layer.getNeuronCount(); i++) {
 					final double change = determineChange(level
 							.getThresholdGradient(i)
-							* this.propagation.getLearningRate());
+							* this.learningRate);
 					layer.setThreshold(i, layer.getThreshold(i) + change);
 				}
 			}

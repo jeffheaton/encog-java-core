@@ -90,7 +90,7 @@ public class PropagationLevel {
 	/**
 	 * The propagation class that this level belongs to.
 	 */
-	private final Propagation propagation;
+	private final PropagationUtil propagationUtil;
 
 	/**
 	 * The logging object.
@@ -103,13 +103,13 @@ public class PropagationLevel {
 	 * @param propagation The propagation object that created this.
 	 * @param layer The initial layer, others can be added later.
 	 */
-	public PropagationLevel(final Propagation propagation, final Layer layer) {
+	public PropagationLevel(final PropagationUtil propagation, final Layer layer) {
 		this.neuronCount = layer.getNeuronCount();
 		this.deltas = new double[this.neuronCount];
 		this.thresholdGradients = new double[this.neuronCount];
 		this.lastThresholdGradients = new double[this.neuronCount];
 		this.layers.add(layer);
-		this.propagation = propagation;
+		this.propagationUtil = propagation;
 		this.thresholdDeltas = new double[this.neuronCount];
 	}
 
@@ -118,11 +118,11 @@ public class PropagationLevel {
 	 * @param propagation The propagation object that created this.
 	 * @param outgoing The outgoing synapses.
 	 */
-	public PropagationLevel(final Propagation propagation,
+	public PropagationLevel(final PropagationUtil propagationUtil,
 			final List<Synapse> outgoing) {
 		int count = 0;
 
-		this.propagation = propagation;
+		this.propagationUtil = propagationUtil;
 		this.outgoing.clear();
 
 		final Set<Layer> layerSet = new HashSet<Layer>();
@@ -164,7 +164,7 @@ public class PropagationLevel {
 		final List<Synapse> result = new ArrayList<Synapse>();
 
 		for (final Layer layer : this.layers) {
-			final Collection<Synapse> synapses = this.propagation.getNetwork()
+			final Collection<Synapse> synapses = this.propagationUtil.getNetwork()
 					.getStructure().getPreviousSynapses(layer);
 
 			// add all teachable synapses
@@ -191,7 +191,7 @@ public class PropagationLevel {
 		// from
 		// the entire network.
 		if (this.outgoing.size() == 0) {
-			final NeuralData actual = this.propagation.getOutputHolder()
+			final NeuralData actual = this.propagationUtil.getOutputHolder()
 					.getOutput();
 			return actual.getData(index);
 		}
@@ -202,7 +202,7 @@ public class PropagationLevel {
 			final int count = synapse.getSynapse().getFromNeuronCount();
 
 			if (currentIndex < count) {
-				final NeuralData actual = this.propagation.getOutputHolder()
+				final NeuralData actual = this.propagationUtil.getOutputHolder()
 						.getResult().get(synapse.getSynapse());
 				return actual.getData(currentIndex);
 			}
