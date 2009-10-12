@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject,
+public class BasicNeuralDataSet implements EncogPersistedObject,
 		Serializable, Indexable {
 
 	/**
