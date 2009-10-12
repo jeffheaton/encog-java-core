@@ -31,6 +31,7 @@ import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
+import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -49,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  */
 public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject,
-		Serializable {
+		Serializable, Indexable {
 
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
@@ -326,5 +327,22 @@ public class BasicNeuralDataSet implements NeuralDataSet, EncogPersistedObject,
 	 */
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	@Override
+	public void getRecord(int index, NeuralDataPair pair) {
+		
+		NeuralDataPair source = this.data.get(index);
+		pair.getInput().setData(source.getInput().getData());
+		if( pair.getIdeal()!=null ) {
+			pair.getIdeal().setData(source.getIdeal().getData());
+		}
+		
+		
+	}
+
+	@Override
+	public long getRecordCount() {
+		return this.data.size();
 	}
 }

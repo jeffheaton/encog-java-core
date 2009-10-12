@@ -27,12 +27,14 @@ package org.encog.neural.data.buffer;
 
 import java.io.EOFException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
@@ -42,49 +44,49 @@ import org.encog.neural.data.basic.BasicNeuralDataPair;
 
 /**
  * This class is not memory based, so very long files can be used, without
- * running out of memory.  This dataset uses a binary file as a buffer.
- * When used with a slower access dataset, such as CSV, XML or SQL, where
- * parsing must occur, this dataset can be used to load from the slower
- * dataset and train at much higher speeds.
+ * running out of memory. This dataset uses a binary file as a buffer. When used
+ * with a slower access dataset, such as CSV, XML or SQL, where parsing must
+ * occur, this dataset can be used to load from the slower dataset and train at
+ * much higher speeds.
  * 
- * If you are going to create a binary file, by using the add methods,
- * you must call beginLoad to cause Encog to open an output file.  Once
- * the data has been loaded, call endLoad.
+ * If you are going to create a binary file, by using the add methods, you must
+ * call beginLoad to cause Encog to open an output file. Once the data has been
+ * loaded, call endLoad.
  * 
  * The floating point numbers stored to the binary file may not be cross
  * platform.
  */
-public class BufferedNeuralDataSet implements NeuralDataSet {
+public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 
 	/**
 	 * An iterator to move through the buffered data set.
 	 */
 	public class BufferedNeuralDataSetIterator implements
 			Iterator<NeuralDataPair> {
-		
+
 		/**
 		 * The file to read from.
 		 */
 		private RandomAccessFile input;
-		
+
 		/**
 		 * The next data pair to read.
 		 */
 		private NeuralDataPair next;
-		
+
 		/**
 		 * The data pair that was just read.
 		 */
 		private NeuralDataPair current;
-		
+
 		/**
 		 * Is there data ready to return.
 		 */
 		private boolean dataReady;
 
 		/**
-		 * Construct the buffered iterator.  This is where the file is
-		 * actually opened.
+		 * Construct the buffered iterator. This is where the file is actually
+		 * opened.
 		 */
 		public BufferedNeuralDataSetIterator() {
 			try {
@@ -162,21 +164,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 			readNext();
 
 			return this.current;
-		}
-
-		/**
-		 * Read an array of doubles from the file.
-		 * @param data The neural data to read this array into.
-		 * @throws EOFException End of file reached.
-		 * @throws IOException Error reading data.
-		 */
-		private void readDoubleArray(final NeuralData data)
-				throws EOFException, IOException {
-			final double[] d = data.getData();
-			for (int i = 0; i < data.size(); i++) {
-				d[i] = this.input.readDouble();
-			}
-		}
+		}		
 
 		/**
 		 * Read the next pair.
@@ -211,17 +199,17 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 	 * Error message for ADD.
 	 */
 	public static final String ERROR_ADD = "Add can only be used after calling beginLoad.";
-	
+
 	/**
 	 * Error message for REMOVE.
 	 */
 	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
-	
+
 	/**
 	 * The buffer file to use.
 	 */
 	private final File bufferFile;
-	
+
 	/**
 	 * The size of the input data.
 	 */
@@ -233,6 +221,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 	private long idealSize;
 	
 	/**
+	 * The size(in bytes) of a record.
+	 */
+	private int recordSize;
+
+	/**
 	 * The iterators.
 	 */
 	private final Collection<BufferedNeuralDataSetIterator> iterators = new ArrayList<BufferedNeuralDataSetIterator>();
@@ -242,9 +235,13 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 	 */
 	private RandomAccessFile output;
 
+	private RandomAccessFile input;
+
 	/**
 	 * Construct a buffered dataset using the specified file.
-	 * @param bufferFile The file to read/write binary data to/from.
+	 * 
+	 * @param bufferFile
+	 *            The file to read/write binary data to/from.
 	 */
 	public BufferedNeuralDataSet(final File bufferFile) {
 		this.bufferFile = bufferFile;
@@ -254,6 +251,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 						this.bufferFile, "rw");
 				this.inputSize = out.readLong();
 				this.idealSize = out.readLong();
+				this.recordSize = (this.getInputSize() * 8) + (this.getIdealSize() * 8);
 				out.close();
 			}
 		} catch (final IOException e) {
@@ -263,7 +261,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * Add only input data, for an unsupervised dataset.
-	 * @param data1 The data to be added.
+	 * 
+	 * @param data1
+	 *            The data to be added.
 	 */
 	public void add(final NeuralData data1) {
 		if (this.output == null) {
@@ -275,8 +275,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * Add both the input and ideal data.
-	 * @param inputData The input data.
-	 * @param idealData The ideal data.
+	 * 
+	 * @param inputData
+	 *            The input data.
+	 * @param idealData
+	 *            The ideal data.
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
 		if (this.output == null) {
@@ -288,7 +291,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * Add a data pair of both input and ideal data.
-	 * @param inputData The pair to add.
+	 * 
+	 * @param inputData
+	 *            The pair to add.
 	 */
 	public void add(final NeuralDataPair inputData) {
 		if (this.output == null) {
@@ -301,16 +306,19 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 	}
 
 	/**
-	 * Begin loading to the binary file.  After calling this method
-	 * the add methods may be called.
-	 * @param inputSize The input size.
-	 * @param idealSize The ideal size.
+	 * Begin loading to the binary file. After calling this method the add
+	 * methods may be called.
+	 * 
+	 * @param inputSize
+	 *            The input size.
+	 * @param idealSize
+	 *            The ideal size.
 	 */
 	public void beginLoad(final int inputSize, final int idealSize) {
 		try {
 			this.inputSize = inputSize;
 			this.idealSize = idealSize;
-
+			this.recordSize = (this.getInputSize() * 8) + (this.getIdealSize() * 8);
 			this.bufferFile.delete();
 			this.output = new RandomAccessFile(this.bufferFile, "rw");
 			// write the header
@@ -333,8 +341,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 	}
 
 	/**
-	 * This method should be called once all the data has been loaded.
-	 * The underlying file will be closed.
+	 * This method should be called once all the data has been loaded. The
+	 * underlying file will be closed.
 	 */
 	public void endLoad() {
 		try {
@@ -373,10 +381,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 	}
 
 	/**
-	 * Load from the specified data source into the binary file.
-	 * Do not call beginLoad before calling this method, as this is handled
-	 * internally.
-	 * @param source The source. 
+	 * Load from the specified data source into the binary file. Do not call
+	 * beginLoad before calling this method, as this is handled internally.
+	 * 
+	 * @param source
+	 *            The source.
 	 */
 	public void load(final NeuralDataSet source) {
 		beginLoad(source.getInputSize(), source.getIdealSize());
@@ -396,7 +405,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 
 	/**
 	 * Write a double array from the specified data to the file.
-	 * @param data The data that holds the array.
+	 * 
+	 * @param data
+	 *            The data that holds the array.
 	 */
 	private void writeDoubleArray(final NeuralData data) {
 		try {
@@ -406,6 +417,60 @@ public class BufferedNeuralDataSet implements NeuralDataSet {
 		} catch (final IOException e) {
 			throw new NeuralDataError(e);
 		}
+	}
+
+	private void openInputFile() {
+
+		try {
+			if (this.input == null) {
+				this.input = new RandomAccessFile(bufferFile, "r");
+			}
+		} catch (IOException e) {
+			throw new NeuralDataError(e);
+		}
+	}
+	
+	/**
+	 * Read an array of doubles from the file.
+	 * 
+	 * @param data
+	 *            The neural data to read this array into.
+	 * @throws EOFException
+	 *             End of file reached.
+	 * @throws IOException
+	 *             Error reading data.
+	 */
+	private void readDoubleArray(final NeuralData data)
+			throws EOFException, IOException {
+		final double[] d = data.getData();
+		for (int i = 0; i < data.size(); i++) {
+			d[i] = this.input.readDouble();
+		}
+	}
+
+	
+	public void getRecord(int index, NeuralDataPair pair) {
+		try
+		{
+			openInputFile();			
+			this.input.seek(index*this.recordSize);
+			if (BufferedNeuralDataSet.this.idealSize > 0) {
+				readDoubleArray(pair.getInput());
+				readDoubleArray(pair.getIdeal());
+			} else {
+				readDoubleArray(pair.getInput());
+			}
+		}
+		catch(IOException e)
+		{
+			throw new NeuralDataError(e); 
+		}
+	}
+
+	
+	public long getRecordCount() {
+		openInputFile();
+		return this.bufferFile.length() / this.recordSize;
 	}
 
 }
