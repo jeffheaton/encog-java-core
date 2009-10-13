@@ -15,6 +15,10 @@ public class OutputOneOf implements OutputField {
 		this.items.add(item);
 	}
 	
+	public void addItem(final InputField inputField, final double value, double trueValue,double falseValue) {
+		addItem(inputField,value-0.5,value+0.5,trueValue,falseValue);
+	}
+	
 	public void addItemBiPolar(InputField inputField, final double low, final double high)
 	{
 		addItem(inputField,low,high,1,-1);

@@ -10,7 +10,7 @@ public class NominalItem {
 	private final double falseValue;
 	
 	public NominalItem(InputField inputField, double high, double low,double trueValue,double falseValue) {
-		super();
+		super();		
 		this.high = high;
 		this.low = low;
 		this.trueValue = trueValue;
@@ -53,7 +53,7 @@ public class NominalItem {
 	public double calculate()
 	{
 		double currentValue = this.inputField.getCurrentValue();
-		if( currentValue>=this.low || currentValue<=this.high )
+		if( currentValue>=this.low && currentValue<=this.high )
 		{
 			return this.trueValue;
 		}
