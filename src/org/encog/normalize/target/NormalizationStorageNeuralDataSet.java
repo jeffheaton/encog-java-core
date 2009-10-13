@@ -29,20 +29,20 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
-public class NormalizationTargetNeuralDataSet implements NormalizationTarget {
+public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 
 	private final int inputCount;
 	private final int idealCount;
 	private final NeuralDataSet dataset;
 
-	public NormalizationTargetNeuralDataSet(final int inputCount,
+	public NormalizationStorageNeuralDataSet(final int inputCount,
 			final int idealCount) {
 		this.inputCount = inputCount;
 		this.idealCount = idealCount;
 		this.dataset = new BasicNeuralDataSet();
 	}
 
-	public NormalizationTargetNeuralDataSet(final NeuralDataSet dataset) {
+	public NormalizationStorageNeuralDataSet(final NeuralDataSet dataset) {
 		this.dataset = dataset;
 		this.inputCount = this.dataset.getInputSize();
 		this.idealCount = this.dataset.getIdealSize();

@@ -1,4 +1,4 @@
-/**
+/*
  * Encog Artificial Intelligence Framework v2.x
  * Java Version
  * http://www.heatonresearch.com/encog/
@@ -25,10 +25,29 @@
  */
 package org.encog.normalize.target;
 
-public interface NormalizationTarget {
-	void close();
+public class NormalizationStorageArray2D implements NormalizationStorage {
 
-	void open();
+	private final double[][] array;
+	private int currentIndex;
 
-	void write(double data[], int inputCount);
+	public NormalizationStorageArray2D(final double[][] array) {
+		this.array = array;
+		this.currentIndex = 0;
+	}
+
+	public void close() {
+
+	}
+
+	public void open() {
+
+	}
+
+	public void write(final double[] data, final int inputCount) {
+		for (int i = 0; i < data.length; i++) {
+			this.array[this.currentIndex][i] = data[i];
+		}
+		this.currentIndex++;
+	}
+
 }

@@ -46,7 +46,7 @@ import org.encog.normalize.output.OutputField;
 import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 import org.encog.normalize.segregate.Segregator;
-import org.encog.normalize.target.NormalizationTarget;
+import org.encog.normalize.target.NormalizationStorage;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -61,7 +61,7 @@ public class Normalization {
 	private final Map<Iterator<NeuralDataPair>, NeuralDataFieldHolder> dataSetIteratorMap = new HashMap<Iterator<NeuralDataPair>, NeuralDataFieldHolder>();
 	private final Set<OutputFieldGroup> groups = new HashSet<OutputFieldGroup>();
 	private final Collection<Segregator> segregators = new ArrayList<Segregator>();
-	private NormalizationTarget target;
+	private NormalizationStorage storage;
 	private StatusReportable report;
 	private int recordCount;
 	private int currentIndex;
@@ -182,8 +182,8 @@ public class Normalization {
 		return this.segregators;
 	}
 
-	public NormalizationTarget getTarget() {
-		return this.target;
+	public NormalizationStorage getStorage() {
+		return this.storage;
 	}
 
 	private void initForOutput() {
@@ -315,7 +315,7 @@ public class Normalization {
 		int size = getOutputFieldCount();
 		final double[] output = new double[size];
 
-		this.target.open();
+		this.storage.open();
 		this.lastReport = 0;
 		int index = 0;
 		int current = 0;
@@ -339,12 +339,12 @@ public class Normalization {
 
 				reportResult("Second pass, normalizing data", this.recordCount,
 						++current);
-				this.target.write(output, 0);
+				this.storage.write(output, 0);
 			}
 
 			index++;
 		}
-		this.target.close();
+		this.storage.close();
 
 	}
 
@@ -356,8 +356,8 @@ public class Normalization {
 		this.report = report;
 	}
 
-	public void setTarget(final NormalizationTarget target) {
-		this.target = target;
+	public void setTarget(final NormalizationStorage target) {
+		this.storage = target;
 	}
 
 	private boolean shouldInclude() {

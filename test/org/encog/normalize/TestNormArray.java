@@ -8,9 +8,8 @@ import org.encog.normalize.input.InputFieldArray1D;
 import org.encog.normalize.input.InputFieldArray2D;
 import org.encog.normalize.input.InputFieldCSV;
 import org.encog.normalize.output.OutputFieldRangeMapped;
-import org.encog.normalize.target.NormalizationTargetArray1D;
-import org.encog.normalize.target.NormalizationTargetArray2D;
-import org.encog.normalize.target.NormalizationTargetCSV;
+import org.encog.normalize.target.NormalizationStorageArray1D;
+import org.encog.normalize.target.NormalizationStorageArray2D;
 import org.junit.Assert;
 
 import junit.framework.TestCase;
@@ -26,7 +25,7 @@ public class TestNormArray extends TestCase {
 		InputField a;
 		double[] arrayOutput = new double[5];
 		
-		NormalizationTargetArray1D target = new NormalizationTargetArray1D(arrayOutput);
+		NormalizationStorageArray1D target = new NormalizationStorageArray1D(arrayOutput);
 		
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());
@@ -46,7 +45,7 @@ public class TestNormArray extends TestCase {
 		InputField a,b;
 		double[][] arrayOutput = new double[2][2];
 		
-		NormalizationTargetArray2D target = new NormalizationTargetArray2D(arrayOutput);
+		NormalizationStorageArray2D target = new NormalizationStorageArray2D(arrayOutput);
 		
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());

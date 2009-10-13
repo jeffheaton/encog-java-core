@@ -8,7 +8,7 @@ import org.encog.normalize.input.InputField;
 import org.encog.normalize.input.InputFieldArray2D;
 import org.encog.normalize.input.InputFieldNeuralDataSet;
 import org.encog.normalize.output.OutputFieldRangeMapped;
-import org.encog.normalize.target.NormalizationTargetArray2D;
+import org.encog.normalize.target.NormalizationStorageArray2D;
 import org.junit.Assert;
 
 public class TestNormDataSet extends TestCase {
@@ -24,7 +24,7 @@ public class TestNormDataSet extends TestCase {
 		
 		BasicNeuralDataSet dataset = new BasicNeuralDataSet(ARRAY_2D,null);
 		
-		NormalizationTargetArray2D target = new NormalizationTargetArray2D(arrayOutput);
+		NormalizationStorageArray2D target = new NormalizationStorageArray2D(arrayOutput);
 		
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());

@@ -10,8 +10,8 @@ import org.encog.normalize.input.InputFieldArray2D;
 import org.encog.normalize.input.InputFieldCSV;
 import org.encog.normalize.output.OutputFieldDirect;
 import org.encog.normalize.output.OutputFieldRangeMapped;
-import org.encog.normalize.target.NormalizationTargetArray2D;
-import org.encog.normalize.target.NormalizationTargetCSV;
+import org.encog.normalize.target.NormalizationStorageArray2D;
+import org.encog.normalize.target.NormalizationStorageCSV;
 import org.junit.Assert;
 
 public class TestNormCSV extends TestCase {
@@ -31,7 +31,7 @@ public class TestNormCSV extends TestCase {
 		
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());
-		norm.setTarget(new NormalizationTargetCSV(FILENAME));
+		norm.setTarget(new NormalizationStorageCSV(FILENAME));
 		norm.addInputField(a = new InputFieldArray2D(ARRAY_2D,0));
 		norm.addInputField(b = new InputFieldArray2D(ARRAY_2D,1));
 		norm.addInputField(c = new InputFieldArray2D(ARRAY_2D,2));
@@ -42,7 +42,7 @@ public class TestNormCSV extends TestCase {
 		norm.addOutputField(new OutputFieldDirect(c));
 		norm.addOutputField(new OutputFieldDirect(d));
 		norm.addOutputField(new OutputFieldDirect(e));
-		norm.setTarget(new NormalizationTargetCSV(FILENAME));
+		norm.setTarget(new NormalizationStorageCSV(FILENAME));
 		norm.process();
 	}
 	
@@ -59,7 +59,7 @@ public class TestNormCSV extends TestCase {
 		
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());
-		norm.setTarget(new NormalizationTargetCSV(FILENAME));
+		norm.setTarget(new NormalizationStorageCSV(FILENAME));
 		norm.addInputField(a = new InputFieldCSV(FILENAME,0));
 		norm.addInputField(b = new InputFieldCSV(FILENAME,1));
 		norm.addInputField(c = new InputFieldCSV(FILENAME,2));
@@ -70,7 +70,7 @@ public class TestNormCSV extends TestCase {
 		norm.addOutputField(new OutputFieldRangeMapped(c,0.1,0.9));
 		norm.addOutputField(new OutputFieldRangeMapped(d,0.1,0.9));
 		norm.addOutputField(new OutputFieldRangeMapped(e,0.1,0.9));
-		norm.setTarget(new NormalizationTargetArray2D(outputArray));
+		norm.setTarget(new NormalizationStorageArray2D(outputArray));
 		norm.process();
 		Assert.assertEquals(1.0,a.getMin(),0.1);
 		Assert.assertEquals(6.0,a.getMax(),0.1);

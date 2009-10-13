@@ -34,18 +34,18 @@ import org.encog.normalize.NormalizationError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
-public class NormalizationTargetCSV implements NormalizationTarget {
+public class NormalizationStorageCSV implements NormalizationStorage {
 
 	private final File outputFile;
 	private PrintWriter output;
 	private final CSVFormat format;
 
-	public NormalizationTargetCSV(final CSVFormat format, final File file) {
+	public NormalizationStorageCSV(final CSVFormat format, final File file) {
 		this.format = format;
 		this.outputFile = file;
 	}
 
-	public NormalizationTargetCSV(final File file) {
+	public NormalizationStorageCSV(final File file) {
 		this.format = CSVFormat.ENGLISH;
 		this.outputFile = file;
 	}

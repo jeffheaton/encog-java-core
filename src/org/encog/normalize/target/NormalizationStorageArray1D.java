@@ -26,12 +26,12 @@
 
 package org.encog.normalize.target;
 
-public class NormalizationTargetArray1D implements NormalizationTarget {
+public class NormalizationStorageArray1D implements NormalizationStorage {
 
 	private final double[] array;
 	private int currentIndex;
 
-	public NormalizationTargetArray1D(final double[] array) {
+	public NormalizationStorageArray1D(final double[] array) {
 		this.array = array;
 		this.currentIndex = 0;
 	}

@@ -8,7 +8,7 @@ import org.encog.normalize.output.multiplicative.OutputFieldMultiplicative;
 import org.encog.normalize.output.zaxis.OutputFieldZAxis;
 import org.encog.normalize.output.zaxis.OutputFieldZAxisSynthetic;
 import org.encog.normalize.output.zaxis.ZAxisGroup;
-import org.encog.normalize.target.NormalizationTargetArray2D;
+import org.encog.normalize.target.NormalizationStorageArray2D;
 import org.junit.Assert;
 
 import junit.framework.TestCase;
@@ -23,7 +23,7 @@ public class TestZAxis extends TestCase {
 		InputField c;
 		double[][] arrayOutput = new double[2][4];
 		
-		NormalizationTargetArray2D target = new NormalizationTargetArray2D(arrayOutput);
+		NormalizationStorageArray2D target = new NormalizationStorageArray2D(arrayOutput);
 		ZAxisGroup group = new ZAxisGroup();
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());

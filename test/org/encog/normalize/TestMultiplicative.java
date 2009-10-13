@@ -7,8 +7,7 @@ import org.encog.normalize.input.InputFieldArray2D;
 import org.encog.normalize.output.OutputFieldRangeMapped;
 import org.encog.normalize.output.multiplicative.MultiplicativeGroup;
 import org.encog.normalize.output.multiplicative.OutputFieldMultiplicative;
-import org.encog.normalize.target.NormalizationTargetArray1D;
-import org.encog.normalize.target.NormalizationTargetArray2D;
+import org.encog.normalize.target.NormalizationStorageArray2D;
 import org.junit.Assert;
 
 import junit.framework.TestCase;
@@ -23,7 +22,7 @@ public class TestMultiplicative extends TestCase {
 		InputField c;
 		double[][] arrayOutput = new double[2][3];
 		
-		NormalizationTargetArray2D target = new NormalizationTargetArray2D(arrayOutput);
+		NormalizationStorageArray2D target = new NormalizationStorageArray2D(arrayOutput);
 		MultiplicativeGroup group = new MultiplicativeGroup();
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());
