@@ -41,7 +41,7 @@ public class OutputFieldRangeMapped implements OutputField {
 		this.high = high;
 	}
 
-	public double calculate() {
+	public double calculate(int subfield) {
 		return ((this.field.getCurrentValue() - this.field.getMin()) / (this.field
 				.getMax() - this.field.getMin()))
 				* (this.high - this.low) + this.low;
@@ -57,6 +57,11 @@ public class OutputFieldRangeMapped implements OutputField {
 
 	public double getLow() {
 		return this.low;
+	}
+	
+	public int getSubfieldCount()
+	{
+		return 1;
 	}
 
 }

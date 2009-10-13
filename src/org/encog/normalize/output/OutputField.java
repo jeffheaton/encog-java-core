@@ -27,7 +27,7 @@
 package org.encog.normalize.output;
 
 public interface OutputField {
-
-	double calculate();
+	int getSubfieldCount();
+	double calculate(int subfield);
 
 }

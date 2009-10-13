@@ -296,6 +296,16 @@ public class Normalization {
 			this.lastReport = 0;
 		}
 	}
+	
+	private int calculateOutputSize()
+	{
+		int result = 0;
+		for(OutputField field: this.outputFields)
+		{
+			result+=field.getSubfieldCount();
+		}
+		return result;
+	}
 
 	private void secondPass() {
 		// move any CSV and datasets files back to the beginning.
@@ -305,7 +315,8 @@ public class Normalization {
 		this.currentIndex = -1;
 
 		// process the records
-		final double[] output = new double[this.outputFields.size()];
+		int size = this.calculateOutputSize();
+		final double[] output = new double[size];
 
 		this.target.open();
 		this.lastReport = 0;
@@ -324,7 +335,9 @@ public class Normalization {
 				// write the value
 				int outputIndex = 0;
 				for (final OutputField ofield : this.outputFields) {
-					output[outputIndex++] = ofield.calculate();
+					for(int sub=0;sub<ofield.getSubfieldCount();sub++) {
+						output[outputIndex++] = ofield.calculate(sub);
+					}
 				}
 
 				reportResult("Second pass, normalizing data", this.recordCount,

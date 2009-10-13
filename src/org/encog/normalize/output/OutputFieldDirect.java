@@ -35,8 +35,13 @@ public class OutputFieldDirect implements OutputField {
 		this.sourceField = sourceField;
 	}
 
-	public double calculate() {
+	public double calculate(int subfield) {
 		return this.sourceField.getCurrentValue();
+	}
+	
+	public int getSubfieldCount()
+	{
+		return 1;
 	}
 
 }

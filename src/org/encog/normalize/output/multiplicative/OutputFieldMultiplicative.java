@@ -41,9 +41,14 @@ public class OutputFieldMultiplicative extends OutputFieldGrouped {
 		}
 	}
 
-	public double calculate() {
+	public double calculate(int subfield) {
 		return getSourceField().getCurrentValue()
 				/ ((MultiplicativeGroup) getGroup()).getLength();
+	}
+	
+	public int getSubfieldCount()
+	{
+		return 1;
 	}
 
 }

@@ -46,7 +46,7 @@ public class OutputFieldEncode implements OutputField {
 		this.ranges.add(range);
 	}
 
-	public double calculate() {
+	public double calculate(int subfield) {
 		for (final MappedRange range : this.ranges) {
 			if (range.inRange(this.sourceField.getCurrentValue())) {
 				return range.getValue();
@@ -54,6 +54,11 @@ public class OutputFieldEncode implements OutputField {
 		}
 
 		return this.catchAll;
+	}
+	
+	public int getSubfieldCount()
+	{
+		return 1;
 	}
 
 	public double getCatchAll() {

@@ -172,10 +172,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		private void readNext() {
 			try {
 				if (BufferedNeuralDataSet.this.idealSize > 0) {
-					readDoubleArray(this.next.getInput());
-					readDoubleArray(this.next.getIdeal());
+					readDoubleArray(this.input,this.next.getInput());
+					readDoubleArray(this.input,this.next.getIdeal());
 				} else {
-					readDoubleArray(this.next.getInput());
+					readDoubleArray(this.input,this.next.getInput());
 				}
 
 				this.dataReady = true;
@@ -440,11 +440,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 * @throws IOException
 	 *             Error reading data.
 	 */
-	private void readDoubleArray(final NeuralData data)
+	private void readDoubleArray(RandomAccessFile raf, final NeuralData data)
 			throws EOFException, IOException {
 		final double[] d = data.getData();
 		for (int i = 0; i < data.size(); i++) {
-			d[i] = this.input.readDouble();
+			d[i] = raf.readDouble();
 		}
 	}
 
@@ -455,10 +455,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 			openInputFile();			
 			this.input.seek(index*this.recordSize);
 			if (BufferedNeuralDataSet.this.idealSize > 0) {
-				readDoubleArray(pair.getInput());
-				readDoubleArray(pair.getIdeal());
+				readDoubleArray(this.input,pair.getInput());
+				readDoubleArray(this.input,pair.getIdeal());
 			} else {
-				readDoubleArray(pair.getInput());
+				readDoubleArray(this.input,pair.getInput());
 			}
 		}
 		catch(IOException e)

@@ -39,7 +39,7 @@ public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 		}
 	}
 
-	public double calculate() {
+	public double calculate(int subfield) {
 		final double l = ((ZAxisGroup) getGroup()).getLength();
 		final double f = ((ZAxisGroup) getGroup()).getMultiplier();
 		final double n = getGroup().getGroupedFields().size();
@@ -49,6 +49,11 @@ public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 		} else {
 			return result;
 		}
+	}
+	
+	public int getSubfieldCount()
+	{
+		return 1;
 	}
 
 }

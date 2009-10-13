@@ -40,9 +40,14 @@ public class OutputFieldZAxis extends OutputFieldGrouped {
 		}
 	}
 
-	public double calculate() {
+	public double calculate(int subfield) {
 		return (getSourceField().getCurrentValue() * ((ZAxisGroup) getGroup())
 				.getMultiplier());
+	}
+	
+	public int getSubfieldCount()
+	{
+		return 1;
 	}
 
 }
