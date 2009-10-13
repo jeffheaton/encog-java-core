@@ -186,9 +186,16 @@ public class Normalization {
 		return this.target;
 	}
 
-	private void initGroups() {
+	private void initForOutput() {
+		
+		// init groups
 		for (final OutputFieldGroup group : this.groups) {
 			group.rowInit();
+		}
+		
+		// init output fields
+		for( final OutputField field: this.outputFields ) {
+			field.rowInit();
 		}
 	}
 
@@ -296,16 +303,6 @@ public class Normalization {
 			this.lastReport = 0;
 		}
 	}
-	
-	private int calculateOutputSize()
-	{
-		int result = 0;
-		for(OutputField field: this.outputFields)
-		{
-			result+=field.getSubfieldCount();
-		}
-		return result;
-	}
 
 	private void secondPass() {
 		// move any CSV and datasets files back to the beginning.
@@ -315,7 +312,7 @@ public class Normalization {
 		this.currentIndex = -1;
 
 		// process the records
-		int size = this.calculateOutputSize();
+		int size = getOutputFieldCount();
 		final double[] output = new double[size];
 
 		this.target.open();
@@ -330,7 +327,7 @@ public class Normalization {
 
 			if (shouldInclude()) {
 				// handle groups
-				initGroups();
+				initForOutput();
 
 				// write the value
 				int outputIndex = 0;
@@ -370,6 +367,15 @@ public class Normalization {
 			}
 		}
 		return true;
+	}
+
+	public int getOutputFieldCount() {
+		int result = 0;
+		for(OutputField field: this.outputFields)
+		{
+			result+=field.getSubfieldCount();
+		}
+		return result;
 	}
 
 }

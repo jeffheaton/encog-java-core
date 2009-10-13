@@ -53,7 +53,7 @@ public class OutputFieldZAxis extends OutputFieldGrouped {
 	/**
 	 * Not needed for this sort of output field.
 	 */
-	public void beginRow()
+	public void rowInit()
 	{		
 	}
 

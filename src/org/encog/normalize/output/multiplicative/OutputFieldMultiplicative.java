@@ -54,7 +54,7 @@ public class OutputFieldMultiplicative extends OutputFieldGrouped {
 	/**
 	 * Not needed for this sort of output field.
 	 */
-	public void beginRow()
+	public void rowInit()
 	{		
 	}
 

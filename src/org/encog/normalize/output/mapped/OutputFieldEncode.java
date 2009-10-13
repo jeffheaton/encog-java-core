@@ -76,7 +76,7 @@ public class OutputFieldEncode implements OutputField {
 	/**
 	 * Not needed for this sort of output field.
 	 */
-	public void beginRow()
+	public void rowInit()
 	{		
 	}
 

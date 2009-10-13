@@ -5,16 +5,12 @@ import org.encog.normalize.input.InputField;
 public class NominalItem {
 	private final double low;
 	private final double high;
-	private final InputField inputField;
-	private final double trueValue;
-	private final double falseValue;
+	private final InputField inputField;	
 	
-	public NominalItem(InputField inputField, double high, double low,double trueValue,double falseValue) {
+	public NominalItem(InputField inputField, double high, double low) {
 		super();		
 		this.high = high;
 		this.low = low;
-		this.trueValue = trueValue;
-		this.falseValue = falseValue;
 		this.inputField = inputField;
 	}
 	/**
@@ -35,35 +31,13 @@ public class NominalItem {
 	public InputField getInputField() {
 		return inputField;
 	}
-	
-	
-	
-	/**
-	 * @return the trueValue
-	 */
-	public double getTrueValue() {
-		return trueValue;
-	}
-	/**
-	 * @return the falseValue
-	 */
-	public double getFalseValue() {
-		return falseValue;
-	}
-	public double calculate()
+		
+	public boolean isInRange()
 	{
 		double currentValue = this.inputField.getCurrentValue();
-		if( currentValue>=this.low && currentValue<=this.high )
-		{
-			return this.trueValue;
-		}
-		else
-		{
-			return this.falseValue;
-		}
-	
+		return( currentValue>=this.low && currentValue<=this.high );
 	}
-	
+		
 	/**
 	 * 
 	 */

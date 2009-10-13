@@ -9,29 +9,26 @@ import org.encog.normalize.output.OutputField;
 public class OutputOneOf implements OutputField {
 
 	private final List<NominalItem> items = new ArrayList<NominalItem>();
+	private final double trueValue;
+	private final double falseValue;
 
-	public void addItem(final InputField inputField, final double low, final double high, double trueValue,double falseValue) {
-		final NominalItem item = new NominalItem(inputField, low, high, trueValue, falseValue );
+	public OutputOneOf(double trueValue, double falseValue) {
+		this.trueValue = trueValue;
+		this.falseValue = falseValue;
+	}
+
+	public void addItem(final InputField inputField, final double low, final double high) {
+		final NominalItem item = new NominalItem(inputField, low, high );
 		this.items.add(item);
 	}
 	
-	public void addItem(final InputField inputField, final double value, double trueValue,double falseValue) {
-		addItem(inputField,value-0.5,value+0.5,trueValue,falseValue);
-	}
-	
-	public void addItemBiPolar(InputField inputField, final double low, final double high)
-	{
-		addItem(inputField,low,high,1,-1);
-	}
-	
-	public void addItemTF(InputField inputField, final double low, final double high)
-	{
-		addItem(inputField,low,high,1,0);
+	public void addItem(final InputField inputField, final double value) {
+		addItem(inputField,value-0.5,value+0.5);
 	}
 
 	public double calculate(int subfield) {
 		NominalItem item = this.items.get(subfield);
-		return item.calculate();
+		return item.isInRange()?this.trueValue:this.falseValue;
 	}
 	
 	public int getSubfieldCount()
@@ -42,9 +39,19 @@ public class OutputOneOf implements OutputField {
 	/**
 	 * Not needed for this sort of output field.
 	 */
-	public void beginRow()
+	public void rowInit()
 	{		
 	}
+
+	public double getTrueValue() {
+		return trueValue;
+	}
+
+	public double getFalseValue() {
+		return falseValue;
+	}
+	
+	
 
 
 }
