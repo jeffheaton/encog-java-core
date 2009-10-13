@@ -30,4 +30,6 @@ public interface OutputField {
 	int getSubfieldCount();
 	double calculate(int subfield);
 	void rowInit();
+	boolean isIdeal();
+	void setIdeal(boolean ideal);
 }

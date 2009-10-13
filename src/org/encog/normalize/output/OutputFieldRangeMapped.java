@@ -28,7 +28,7 @@ package org.encog.normalize.output;
 
 import org.encog.normalize.input.InputField;
 
-public class OutputFieldRangeMapped implements OutputField {
+public class OutputFieldRangeMapped extends BasicOutputField {
 
 	private final InputField field;
 	private final double low;

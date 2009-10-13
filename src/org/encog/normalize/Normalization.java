@@ -72,12 +72,17 @@ public class Normalization {
 		this.inputFields.add(f);
 	}
 
-	public void addOutputField(final OutputField outputField) {
+	public void addOutputField(final OutputField outputField, boolean ideal) {
 		this.outputFields.add(outputField);
+		outputField.setIdeal(ideal);
 		if (outputField instanceof OutputFieldGrouped) {
 			final OutputFieldGrouped ofg = (OutputFieldGrouped) outputField;
 			this.groups.add(ofg.getGroup());
 		}
+	}
+	
+	public void addOutputField(final OutputField outputField) {
+		addOutputField(outputField,false);
 	}
 
 	public void addSegregator(final Segregator segregator) {
@@ -374,6 +379,28 @@ public class Normalization {
 		for(OutputField field: this.outputFields)
 		{
 			result+=field.getSubfieldCount();
+		}
+		return result;
+	}
+	
+	public int getNetworkInputLayerSize()
+	{
+		int result = 0;
+		for(OutputField field: this.outputFields)
+		{
+			if( !field.isIdeal() )
+				result+=field.getSubfieldCount();
+		}
+		return result;
+	}
+	
+	public int getNetworkOutputLayerSize()
+	{
+		int result = 0;
+		for(OutputField field: this.outputFields)
+		{
+			if( field.isIdeal() )
+				result+=field.getSubfieldCount();
 		}
 		return result;
 	}

@@ -29,9 +29,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.normalize.input.InputField;
+import org.encog.normalize.output.BasicOutputField;
 import org.encog.normalize.output.OutputField;
 
-public class OutputFieldEncode implements OutputField {
+public class OutputFieldEncode extends BasicOutputField {
 
 	private final InputField sourceField;
 	private double catchAll;

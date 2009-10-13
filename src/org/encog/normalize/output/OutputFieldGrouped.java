@@ -27,7 +27,7 @@ package org.encog.normalize.output;
 
 import org.encog.normalize.input.InputField;
 
-public abstract class OutputFieldGrouped implements OutputField {
+public abstract class OutputFieldGrouped extends BasicOutputField {
 
 	private final OutputFieldGroup group;
 	private final InputField sourceField;

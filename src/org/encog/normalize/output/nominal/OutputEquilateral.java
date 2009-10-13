@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.normalize.input.InputField;
+import org.encog.normalize.output.BasicOutputField;
 import org.encog.normalize.output.OutputField;
 import org.encog.util.math.Equilateral;
 
@@ -11,7 +12,7 @@ import org.encog.util.math.Equilateral;
  * 
  * Guiver and Klimasauskas (1991)
  */
-public class OutputEquilateral implements OutputField {
+public class OutputEquilateral extends BasicOutputField {
 	private final List<NominalItem> items = new ArrayList<NominalItem>();
 	private double[][] matrix;
 	private int currentValue;

@@ -27,7 +27,7 @@ package org.encog.normalize.output;
 
 import org.encog.normalize.input.InputField;
 
-public class OutputFieldDirect implements OutputField {
+public class OutputFieldDirect extends BasicOutputField {
 
 	private final InputField sourceField;
 

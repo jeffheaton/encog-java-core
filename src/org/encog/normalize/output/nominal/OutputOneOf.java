@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.normalize.input.InputField;
+import org.encog.normalize.output.BasicOutputField;
 import org.encog.normalize.output.OutputField;
 
-public class OutputOneOf implements OutputField {
+public class OutputOneOf extends BasicOutputField {
 
 	private final List<NominalItem> items = new ArrayList<NominalItem>();
 	private final double trueValue;
