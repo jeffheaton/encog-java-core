@@ -43,5 +43,13 @@ public class OutputFieldDirect implements OutputField {
 	{
 		return 1;
 	}
+	
+	/**
+	 * Not needed for this sort of output field.
+	 */
+	public void beginRow()
+	{		
+	}
+
 
 }

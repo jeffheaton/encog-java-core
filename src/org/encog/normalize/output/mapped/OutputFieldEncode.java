@@ -73,4 +73,12 @@ public class OutputFieldEncode implements OutputField {
 		this.catchAll = catchAll;
 	}
 
+	/**
+	 * Not needed for this sort of output field.
+	 */
+	public void beginRow()
+	{		
+	}
+
+	
 }

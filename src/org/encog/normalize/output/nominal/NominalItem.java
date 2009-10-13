@@ -64,4 +64,12 @@ public class NominalItem {
 	
 	}
 	
+	/**
+	 * 
+	 */
+	public void beginRow()
+	{		
+	}
+
+	
 }

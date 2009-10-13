@@ -38,5 +38,13 @@ public class OutputOneOf implements OutputField {
 	{
 		return this.items.size();
 	}
+	
+	/**
+	 * Not needed for this sort of output field.
+	 */
+	public void beginRow()
+	{		
+	}
+
 
 }

@@ -50,5 +50,13 @@ public class OutputFieldMultiplicative extends OutputFieldGrouped {
 	{
 		return 1;
 	}
+	
+	/**
+	 * Not needed for this sort of output field.
+	 */
+	public void beginRow()
+	{		
+	}
+
 
 }
