@@ -329,7 +329,6 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 		this.name = name;
 	}
 
-	@Override
 	public void getRecord(long index, NeuralDataPair pair) {
 		
 		NeuralDataPair source = this.data.get((int)index);
@@ -341,7 +340,6 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 		
 	}
 
-	@Override
 	public long getRecordCount() {
 		return this.data.size();
 	}
