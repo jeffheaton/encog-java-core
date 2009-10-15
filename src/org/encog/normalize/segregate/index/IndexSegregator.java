@@ -27,10 +27,13 @@ package org.encog.normalize.segregate.index;
 
 import org.encog.normalize.Normalization;
 import org.encog.normalize.segregate.Segregator;
+import org.encog.persist.annotations.EGIgnore;
 
 public abstract class IndexSegregator implements Segregator {
 
 	private int currentIndex = 0;
+	
+	@EGIgnore
 	private Normalization normalization;
 
 	public int getCurrentIndex() {

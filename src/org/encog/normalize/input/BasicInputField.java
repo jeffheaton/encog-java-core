@@ -27,11 +27,16 @@
 package org.encog.normalize.input;
 
 import org.encog.normalize.NormalizationError;
+import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.annotations.EGIgnore;
 
 public abstract class BasicInputField implements InputField {
 
+	@EGAttribute
 	private double min = Double.POSITIVE_INFINITY;
+	@EGAttribute
 	private double max = Double.NEGATIVE_INFINITY;
+	@EGIgnore
 	private double currentValue;
 
 	public void applyMinMax(final double d) {

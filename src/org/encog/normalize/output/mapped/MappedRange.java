@@ -25,10 +25,15 @@
  */
 package org.encog.normalize.output.mapped;
 
+import org.encog.persist.annotations.EGAttribute;
+
 public class MappedRange {
 
+	@EGAttribute
 	private final double low;
+	@EGAttribute
 	private final double high;
+	@EGAttribute
 	private final double value;
 
 	public MappedRange(final double low, final double high, final double value) {

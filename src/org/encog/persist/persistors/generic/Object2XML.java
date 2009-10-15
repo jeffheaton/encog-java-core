@@ -33,9 +33,11 @@ import java.util.Collection;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
+import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGBackPointer;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.persistors.PersistorUtil;
+import org.encog.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,8 +72,7 @@ public class Object2XML {
 			PersistorUtil.beginEncogObject(encogObject.getClass()
 					.getSimpleName(), out, encogObject, true);
 
-			for (final Field childField : encogObject.getClass()
-					.getDeclaredFields()) {
+			for (final Field childField : ReflectionUtil.getAllFields(encogObject.getClass())) {
 				if (this.shouldAccessField(childField, true)) {
 					childField.setAccessible(true);
 					Object childValue = childField.get(encogObject);
@@ -90,11 +91,23 @@ public class Object2XML {
 
 	private void saveObject(Object parentObject)
 			throws IllegalArgumentException, IllegalAccessException {
-		out.beginTag(parentObject.getClass().getSimpleName());
-		for (final Field childField : parentObject.getClass()
-				.getDeclaredFields()) {
+		
+		Collection<Field> allFields = ReflectionUtil.getAllFields(parentObject.getClass());
+		// handle attributes
+		for (final Field childField : allFields) {
 			childField.setAccessible(true);
-			if (shouldAccessField(childField, false)) {
+			if (shouldAccessField(childField, false) &&
+					childField.getAnnotation(EGAttribute.class)!=null) {
+				Object childValue = childField.get(parentObject);
+				out.addAttribute(childField.getName(), childValue.toString());
+			}
+		}
+		// handle actual fields
+		out.beginTag(parentObject.getClass().getSimpleName());
+		for (final Field childField : allFields) {
+			childField.setAccessible(true);
+			if (shouldAccessField(childField, false)&&
+					childField.getAnnotation(EGAttribute.class)==null) {
 				Object childValue = childField.get(parentObject);
 				out.beginTag(childField.getName());
 				saveField(childValue);

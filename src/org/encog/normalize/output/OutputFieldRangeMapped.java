@@ -27,11 +27,15 @@
 package org.encog.normalize.output;
 
 import org.encog.normalize.input.InputField;
+import org.encog.persist.annotations.EGAttribute;
 
 public class OutputFieldRangeMapped extends BasicOutputField {
 
 	private final InputField field;
+	
+	@EGAttribute
 	private final double low;
+	@EGAttribute
 	private final double high;
 
 	public OutputFieldRangeMapped(final InputField field, final double low,
