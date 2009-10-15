@@ -47,42 +47,70 @@ import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 import org.encog.normalize.segregate.Segregator;
 import org.encog.normalize.target.NormalizationStorage;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
+import org.encog.persist.annotations.EGIgnore;
+import org.encog.persist.persistors.NormalizationPersistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
-public class Normalization {
+public class Normalization implements EncogPersistedObject {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4387885013771660300L;
+	
 	private final Collection<InputField> inputFields = new ArrayList<InputField>();
 	private final Collection<OutputField> outputFields = new ArrayList<OutputField>();
+	
+	@EGIgnore
 	private final Collection<ReadCSV> readCSV = new ArrayList<ReadCSV>();
+	
+	@EGIgnore
 	private final Map<InputField, ReadCSV> csvMap = new HashMap<InputField, ReadCSV>();
+
 	private final Collection<Iterator<NeuralDataPair>> readDataSet = new ArrayList<Iterator<NeuralDataPair>>();
+	
+	@EGIgnore
 	private final Map<InputField, NeuralDataFieldHolder> dataSetFieldMap = new HashMap<InputField, NeuralDataFieldHolder>();
+	
+	@EGIgnore
 	private final Map<Iterator<NeuralDataPair>, NeuralDataFieldHolder> dataSetIteratorMap = new HashMap<Iterator<NeuralDataPair>, NeuralDataFieldHolder>();
 	private final Set<OutputFieldGroup> groups = new HashSet<OutputFieldGroup>();
 	private final Collection<Segregator> segregators = new ArrayList<Segregator>();
+	
+	@EGIgnore
 	private NormalizationStorage storage;
+	
+	@EGIgnore
 	private StatusReportable report;
+	
 	private int recordCount;
 	private int currentIndex;
+	
+	@EGIgnore
 	private CSVFormat csvFormat = CSVFormat.ENGLISH;
 	private int lastReport;
+	private String name;
+	private String description;
 
 	public void addInputField(final InputField f) {
 		this.inputFields.add(f);
 	}
 
-	public void addOutputField(final OutputField outputField, boolean ideal) {
+	public void addOutputField(final OutputField outputField) {
+		addOutputField(outputField, false);
+	}
+
+	public void addOutputField(final OutputField outputField,
+			final boolean ideal) {
 		this.outputFields.add(outputField);
 		outputField.setIdeal(ideal);
 		if (outputField instanceof OutputFieldGrouped) {
 			final OutputFieldGrouped ofg = (OutputFieldGrouped) outputField;
 			this.groups.add(ofg.getGroup());
 		}
-	}
-	
-	public void addOutputField(final OutputField outputField) {
-		addOutputField(outputField,false);
 	}
 
 	public void addSegregator(final Segregator segregator) {
@@ -95,6 +123,10 @@ public class Normalization {
 			final double value = field.getCurrentValue();
 			field.applyMinMax(value);
 		}
+	}
+
+	public Persistor createPersistor() {
+		return new NormalizationPersistor();
 	}
 
 	private double determineInputFieldValue(final InputField field,
@@ -163,12 +195,48 @@ public class Normalization {
 		return this.csvFormat;
 	}
 
+	public String getDescription() {
+		return this.description;
+	}
+
 	public Set<OutputFieldGroup> getGroups() {
 		return this.groups;
 	}
 
 	public Collection<InputField> getInputFields() {
 		return this.inputFields;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public int getNetworkInputLayerSize() {
+		int result = 0;
+		for (final OutputField field : this.outputFields) {
+			if (!field.isIdeal()) {
+				result += field.getSubfieldCount();
+			}
+		}
+		return result;
+	}
+
+	public int getNetworkOutputLayerSize() {
+		int result = 0;
+		for (final OutputField field : this.outputFields) {
+			if (field.isIdeal()) {
+				result += field.getSubfieldCount();
+			}
+		}
+		return result;
+	}
+
+	public int getOutputFieldCount() {
+		int result = 0;
+		for (final OutputField field : this.outputFields) {
+			result += field.getSubfieldCount();
+		}
+		return result;
 	}
 
 	public Collection<OutputField> getOutputFields() {
@@ -192,14 +260,14 @@ public class Normalization {
 	}
 
 	private void initForOutput() {
-		
+
 		// init groups
 		for (final OutputFieldGroup group : this.groups) {
 			group.rowInit();
 		}
-		
+
 		// init output fields
-		for( final OutputField field: this.outputFields ) {
+		for (final OutputField field : this.outputFields) {
 			field.rowInit();
 		}
 	}
@@ -317,7 +385,7 @@ public class Normalization {
 		this.currentIndex = -1;
 
 		// process the records
-		int size = getOutputFieldCount();
+		final int size = getOutputFieldCount();
 		final double[] output = new double[size];
 
 		this.storage.open();
@@ -337,7 +405,7 @@ public class Normalization {
 				// write the value
 				int outputIndex = 0;
 				for (final OutputField ofield : this.outputFields) {
-					for(int sub=0;sub<ofield.getSubfieldCount();sub++) {
+					for (int sub = 0; sub < ofield.getSubfieldCount(); sub++) {
 						output[outputIndex++] = ofield.calculate(sub);
 					}
 				}
@@ -357,6 +425,14 @@ public class Normalization {
 		this.csvFormat = csvFormat;
 	}
 
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
 	public void setReport(final StatusReportable report) {
 		this.report = report;
 	}
@@ -372,37 +448,6 @@ public class Normalization {
 			}
 		}
 		return true;
-	}
-
-	public int getOutputFieldCount() {
-		int result = 0;
-		for(OutputField field: this.outputFields)
-		{
-			result+=field.getSubfieldCount();
-		}
-		return result;
-	}
-	
-	public int getNetworkInputLayerSize()
-	{
-		int result = 0;
-		for(OutputField field: this.outputFields)
-		{
-			if( !field.isIdeal() )
-				result+=field.getSubfieldCount();
-		}
-		return result;
-	}
-	
-	public int getNetworkOutputLayerSize()
-	{
-		int result = 0;
-		for(OutputField field: this.outputFields)
-		{
-			if( field.isIdeal() )
-				result+=field.getSubfieldCount();
-		}
-		return result;
 	}
 
 }

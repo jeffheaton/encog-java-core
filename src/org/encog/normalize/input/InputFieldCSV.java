@@ -30,8 +30,8 @@ import java.io.File;
 
 public class InputFieldCSV extends BasicInputField {
 
-	private final File file;
-	private final int offset;
+	private File file;
+	private int offset;
 
 	public InputFieldCSV(final File file, final int offset) {
 		this.file = file;

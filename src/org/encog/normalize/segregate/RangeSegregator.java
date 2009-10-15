@@ -30,12 +30,15 @@ import java.util.Collection;
 
 import org.encog.normalize.Normalization;
 import org.encog.normalize.input.InputField;
+import org.encog.persist.annotations.EGBackPointer;
 
 public class RangeSegregator implements Segregator {
 
 	private final InputField sourceField;
 	private final boolean include;
 	private final Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
+	
+	@EGBackPointer
 	private Normalization normalization;
 
 	public RangeSegregator(final InputField sourceField, final boolean include) {

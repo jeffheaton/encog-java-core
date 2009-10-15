@@ -31,9 +31,9 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 
-	private final int inputCount;
-	private final int idealCount;
-	private final NeuralDataSet dataset;
+	private int inputCount;
+	private int idealCount;
+	private NeuralDataSet dataset;
 
 	public NormalizationStorageNeuralDataSet(final int inputCount,
 			final int idealCount) {

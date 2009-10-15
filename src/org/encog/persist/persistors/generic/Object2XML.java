@@ -25,6 +25,7 @@
  */
 package org.encog.persist.persistors.generic;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
@@ -32,6 +33,8 @@ import java.util.Collection;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
+import org.encog.persist.annotations.EGBackPointer;
+import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.persistors.PersistorUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +54,8 @@ public class Object2XML {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	private WriteXML out;
+
 	/**
 	 * Save the object to XML.
 	 * 
@@ -59,31 +64,20 @@ public class Object2XML {
 	 * @param out
 	 *            The XML writer.
 	 */
-	public void save(final EncogPersistedObject obj, final WriteXML out) {
-
+	public void save(final EncogPersistedObject encogObject, final WriteXML out) {
+		this.out = out;
 		try {
-			PersistorUtil.beginEncogObject(obj.getClass().getSimpleName(), out,
-					obj, true);
+			PersistorUtil.beginEncogObject(encogObject.getClass()
+					.getSimpleName(), out, encogObject, true);
 
-			for (final Field field : obj.getClass().getDeclaredFields()) {
-				field.setAccessible(true);
-
-				if (field.getName().equalsIgnoreCase("name")
-						|| field.getName().equalsIgnoreCase("description")) {
-					continue;
-				}
-
-				if ((field.getModifiers() & Modifier.FINAL) == 0) {
-					final Object value = field.get(obj);
-					if (value != null) {
-						if (value instanceof Collection) {
-							out.beginTag(field.getName());
-							saveCollection(out, (Collection<?>) value);
-							out.endTag();
-						} else {
-							out.addProperty(field.getName(), value.toString());
-						}
-					}
+			for (final Field childField : encogObject.getClass()
+					.getDeclaredFields()) {
+				if (this.shouldAccessField(childField, true)) {
+					childField.setAccessible(true);
+					Object childValue = childField.get(encogObject);
+					out.beginTag(childField.getName());
+					saveField(childValue);
+					out.endTag();
 				}
 			}
 
@@ -94,6 +88,68 @@ public class Object2XML {
 
 	}
 
+	private void saveObject(Object parentObject)
+			throws IllegalArgumentException, IllegalAccessException {
+		out.beginTag(parentObject.getClass().getSimpleName());
+		for (final Field childField : parentObject.getClass()
+				.getDeclaredFields()) {
+			childField.setAccessible(true);
+			if (shouldAccessField(childField, false)) {
+				Object childValue = childField.get(parentObject);
+				out.beginTag(childField.getName());
+				saveField(childValue);
+				out.endTag();
+			}
+		}
+		out.endTag();
+	}
+
+	private void saveField(Object fieldObject) throws IllegalArgumentException,
+			IllegalAccessException {
+		if (fieldObject != null) {
+			if (fieldObject instanceof Collection) {
+
+				saveCollection(out, (Collection<?>) fieldObject);
+
+			} else if (isPrimitive(fieldObject) || isSimple(fieldObject) ) {
+				out.addText(fieldObject.toString());
+			} else if (fieldObject instanceof String) {
+
+			} else {
+				saveObject(fieldObject);
+			}
+		}
+	}
+
+	private boolean isPrimitive(Object obj) {
+		return (obj instanceof Character) || (obj instanceof Integer)
+				|| (obj instanceof Short) || (obj instanceof Float)
+				|| (obj instanceof Double) || (obj instanceof Boolean);
+	}
+	
+	private boolean isSimple(Object obj)
+	{
+		return (obj instanceof File) || (obj instanceof String);
+	}
+
+	private boolean shouldAccessField(Field field, boolean base) {
+		if (field.getAnnotation(EGIgnore.class) != null)			
+			return false;
+		
+		if (field.getAnnotation(EGBackPointer.class) != null)
+			return false;
+
+		if ((field.getModifiers() & Modifier.STATIC) == 0) {
+			if (base) {
+				if (field.getName().equalsIgnoreCase("name")
+						|| field.getName().equalsIgnoreCase("description"))
+					return false;
+			}
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Save a collection.
 	 * 
@@ -101,13 +157,14 @@ public class Object2XML {
 	 *            The XML writer.
 	 * @param value
 	 *            The value to save.
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
 	 */
-	private void saveCollection(final WriteXML out, final Collection<?> value) {
+	private void saveCollection(final WriteXML out, final Collection<?> value)
+			throws IllegalArgumentException, IllegalAccessException {
 
 		for (final Object obj : value) {
-			if (obj instanceof String) {
-				out.addProperty("S", obj.toString());
-			}
+			this.saveObject(obj);
 		}
 	}
 }
