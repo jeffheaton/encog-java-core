@@ -30,7 +30,7 @@ import java.util.Collection;
 
 import org.encog.normalize.Normalization;
 import org.encog.normalize.input.InputField;
-import org.encog.persist.annotations.EGBackPointer;
+import org.encog.persist.annotations.EGReference;
 
 public class RangeSegregator implements Segregator {
 
@@ -38,7 +38,7 @@ public class RangeSegregator implements Segregator {
 	private final boolean include;
 	private final Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
 	
-	@EGBackPointer
+	@EGReference
 	private Normalization normalization;
 
 	public RangeSegregator(final InputField sourceField, final boolean include) {

@@ -28,6 +28,8 @@ package org.encog.util.csv;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.encog.persist.annotations.EGIgnore;
+
 /**
  * Specifies a CSV format.  This allows you to determine if a decimal
  * point or decimal comma is uses.  It also specifies the character
@@ -94,10 +96,11 @@ public class CSVFormat {
 	/** 
 	 * The number formatter to use for this format.
 	 */
+	@EGIgnore
 	private final NumberFormat numberFormatter;
 
 	/**
-	 * Construct a CSV format witht he specified decimal and separator
+	 * Construct a CSV format with he specified decimal and separator
 	 * characters.
 	 * @param decimal The decimal character.
 	 * @param separator The separator character.

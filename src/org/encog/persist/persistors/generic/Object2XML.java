@@ -25,17 +25,14 @@
  */
 package org.encog.persist.persistors.generic;
 
-import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Collection;
 
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.annotations.EGAttribute;
-import org.encog.persist.annotations.EGBackPointer;
-import org.encog.persist.annotations.EGIgnore;
+import org.encog.persist.annotations.EGReference;
 import org.encog.persist.persistors.PersistorUtil;
 import org.encog.util.ReflectionUtil;
 import org.slf4j.Logger;
@@ -57,6 +54,7 @@ public class Object2XML {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	private WriteXML out;
+	private ObjectTagger tagger = new ObjectTagger();
 
 	/**
 	 * Save the object to XML.
@@ -71,9 +69,11 @@ public class Object2XML {
 		try {
 			PersistorUtil.beginEncogObject(encogObject.getClass()
 					.getSimpleName(), out, encogObject, true);
+			
+			tagger.analyze(encogObject);
 
 			for (final Field childField : ReflectionUtil.getAllFields(encogObject.getClass())) {
-				if (this.shouldAccessField(childField, true)) {
+				if (ReflectionUtil.shouldAccessField(childField, true)) {
 					childField.setAccessible(true);
 					Object childValue = childField.get(encogObject);
 					out.beginTag(childField.getName());
@@ -91,29 +91,54 @@ public class Object2XML {
 
 	private void saveObject(Object parentObject)
 			throws IllegalArgumentException, IllegalAccessException {
+		// does this object have an ID?
 		
+		if( tagger.hasReference(parentObject) )
+		{
+			int id = tagger.getReference(parentObject);
+			out.addAttribute("id", ""+id);
+		}
+		
+		// get all fields
 		Collection<Field> allFields = ReflectionUtil.getAllFields(parentObject.getClass());
 		// handle attributes
 		for (final Field childField : allFields) {
 			childField.setAccessible(true);
-			if (shouldAccessField(childField, false) &&
+			if (ReflectionUtil.shouldAccessField(childField, false) &&
 					childField.getAnnotation(EGAttribute.class)!=null) {
 				Object childValue = childField.get(parentObject);
 				out.addAttribute(childField.getName(), childValue.toString());
 			}
 		}
-		// handle actual fields
+		// handle actual fields		
 		out.beginTag(parentObject.getClass().getSimpleName());
 		for (final Field childField : allFields) {
-			childField.setAccessible(true);
-			if (shouldAccessField(childField, false)&&
+			childField.setAccessible(true);			
+			if (ReflectionUtil.shouldAccessField(childField, false)&&
 					childField.getAnnotation(EGAttribute.class)==null) {
+				
 				Object childValue = childField.get(parentObject);
+				
 				out.beginTag(childField.getName());
-				saveField(childValue);
+				if( childField.getAnnotation(EGReference.class)!=null)
+				{
+					saveFieldReference(childValue);
+				}
+				else
+				{					
+					saveField(childValue);
+					
+				}	
 				out.endTag();
 			}
 		}
+		out.endTag();
+	}
+	
+	private void saveFieldReference(Object fieldObject)
+	{
+		out.addAttribute("ref", ""+this.tagger.getReference(fieldObject));
+		out.beginTag(fieldObject.getClass().getSimpleName());
 		out.endTag();
 	}
 
@@ -124,45 +149,16 @@ public class Object2XML {
 
 				saveCollection(out, (Collection<?>) fieldObject);
 
-			} else if (isPrimitive(fieldObject) || isSimple(fieldObject) ) {
+			} else if (ReflectionUtil.isPrimitive(fieldObject) || ReflectionUtil.isSimple(fieldObject) ) {
 				out.addText(fieldObject.toString());
 			} else if (fieldObject instanceof String) {
-
+				out.addText(fieldObject.toString());
 			} else {
 				saveObject(fieldObject);
 			}
 		}
 	}
-
-	private boolean isPrimitive(Object obj) {
-		return (obj instanceof Character) || (obj instanceof Integer)
-				|| (obj instanceof Short) || (obj instanceof Float)
-				|| (obj instanceof Double) || (obj instanceof Boolean);
-	}
 	
-	private boolean isSimple(Object obj)
-	{
-		return (obj instanceof File) || (obj instanceof String);
-	}
-
-	private boolean shouldAccessField(Field field, boolean base) {
-		if (field.getAnnotation(EGIgnore.class) != null)			
-			return false;
-		
-		if (field.getAnnotation(EGBackPointer.class) != null)
-			return false;
-
-		if ((field.getModifiers() & Modifier.STATIC) == 0) {
-			if (base) {
-				if (field.getName().equalsIgnoreCase("name")
-						|| field.getName().equalsIgnoreCase("description"))
-					return false;
-			}
-			return true;
-		}
-		return false;
-	}
-
 	/**
 	 * Save a collection.
 	 * 

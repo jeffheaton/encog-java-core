@@ -50,10 +50,12 @@ import org.encog.normalize.target.NormalizationStorage;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGIgnore;
+import org.encog.persist.annotations.EGReferenceable;
 import org.encog.persist.persistors.NormalizationPersistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
+@EGReferenceable
 public class Normalization implements EncogPersistedObject {
 
 	/**
@@ -89,7 +91,6 @@ public class Normalization implements EncogPersistedObject {
 	private int recordCount;
 	private int currentIndex;
 	
-	@EGIgnore
 	private CSVFormat csvFormat = CSVFormat.ENGLISH;
 	private int lastReport;
 	private String name;
