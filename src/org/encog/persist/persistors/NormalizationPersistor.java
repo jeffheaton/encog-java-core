@@ -8,6 +8,7 @@ import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.generic.Object2XML;
+import org.encog.persist.persistors.generic.XML2Object;
 
 public class NormalizationPersistor implements Persistor {
 
@@ -16,16 +17,11 @@ public class NormalizationPersistor implements Persistor {
 	
 	public EncogPersistedObject load(ReadXML in) {
 		this.currentNormalization = new Normalization();
+		XML2Object conv = new XML2Object();
+		conv.load(in, currentNormalization);
 		return this.currentNormalization;
 	}
 
-	private void saveInputFields()
-	{
-		for(InputField field: this.currentNormalization.getInputFields())
-		{
-			
-		}
-	}
 	
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		this.currentNormalization = (Normalization)obj;		

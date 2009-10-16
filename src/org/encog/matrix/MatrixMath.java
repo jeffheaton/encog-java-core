@@ -402,18 +402,18 @@ public final class MatrixMath {
 	 * @return The matrix transposed.
 	 */
 	public static Matrix transpose(final Matrix input) {
-		final double[][] inverseMatrix = new double[input.getCols()][input
+		final double[][] transposeMatrix = new double[input.getCols()][input
 				.getRows()];
 
 		final double[][] d = input.getData();
 
 		for (int r = 0; r < input.getRows(); r++) {
 			for (int c = 0; c < input.getCols(); c++) {
-				inverseMatrix[c][r] = d[r][c];
+				transposeMatrix[c][r] = d[r][c];
 			}
 		}
 
-		return new Matrix(inverseMatrix);
+		return new Matrix(transposeMatrix);
 	}
 
 	/**
