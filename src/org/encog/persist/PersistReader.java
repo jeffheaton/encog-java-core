@@ -257,7 +257,7 @@ public class PersistReader {
 						text.setLength(0);
 					}
 
-					if (!this.in.getTag().getName().equals(contain)) {
+					if (!this.in.getTag().getName().equals(contain) ) {
 						out.endTag(this.in.getTag().getName());
 					} else if (depth == 0) {
 						break;

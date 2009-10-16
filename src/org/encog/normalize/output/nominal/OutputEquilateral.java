@@ -6,6 +6,7 @@ import java.util.List;
 import org.encog.normalize.input.InputField;
 import org.encog.normalize.output.BasicOutputField;
 import org.encog.normalize.output.OutputField;
+import org.encog.persist.annotations.EGIgnore;
 import org.encog.util.math.Equilateral;
 
 /**
@@ -14,6 +15,8 @@ import org.encog.util.math.Equilateral;
  */
 public class OutputEquilateral extends BasicOutputField {
 	private final List<NominalItem> items = new ArrayList<NominalItem>();
+	
+	@EGIgnore
 	private double[][] matrix;
 	private int currentValue;
 	private final double high;
