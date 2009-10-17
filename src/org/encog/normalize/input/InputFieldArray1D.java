@@ -26,6 +26,9 @@
 
 package org.encog.normalize.input;
 
+import org.encog.persist.annotations.EGUnsupported;
+
+@EGUnsupported
 public class InputFieldArray1D extends BasicInputField implements
 		HasFixedLength {
 	private final double[] array;

@@ -28,6 +28,7 @@ package org.encog.util.csv;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGIgnore;
 
 /**
@@ -86,11 +87,13 @@ public class CSVFormat {
 	/**
 	 * The decimal character.
 	 */
+	@EGAttribute
 	private final char decimal;
 	
 	/**
 	 * The separator character.
 	 */
+	@EGAttribute
 	private final char separator;
 
 	/** 

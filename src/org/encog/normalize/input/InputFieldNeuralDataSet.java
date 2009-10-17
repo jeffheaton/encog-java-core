@@ -27,7 +27,9 @@
 package org.encog.normalize.input;
 
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.persist.annotations.EGUnsupported;
 
+@EGUnsupported
 public class InputFieldNeuralDataSet extends BasicInputField {
 
 	private final NeuralDataSet data;

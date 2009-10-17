@@ -25,10 +25,14 @@
  */
 package org.encog.normalize.segregate.index;
 
+import org.encog.persist.annotations.EGAttribute;
+
 public class IndexRangeSegregator extends IndexSegregator {
 
+	@EGAttribute
 	private final int startingIndex;
 
+	@EGAttribute
 	private final int endingIndex;
 
 	public IndexRangeSegregator(final int startingIndex, final int endingIndex) {

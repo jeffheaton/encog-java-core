@@ -34,6 +34,7 @@ import org.encog.persist.annotations.EGReference;
 
 public class RangeSegregator implements Segregator {
 
+	@EGReference
 	private final InputField sourceField;
 	private final boolean include;
 	private final Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();

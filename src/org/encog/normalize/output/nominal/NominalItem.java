@@ -1,10 +1,18 @@
 package org.encog.normalize.output.nominal;
 
 import org.encog.normalize.input.InputField;
+import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.annotations.EGReference;
 
 public class NominalItem {
+	
+	@EGAttribute
 	private final double low;
+	
+	@EGAttribute
 	private final double high;
+	
+	@EGReference
 	private final InputField inputField;	
 	
 	public NominalItem(InputField inputField, double high, double low) {

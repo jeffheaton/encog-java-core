@@ -29,7 +29,9 @@ package org.encog.normalize.input;
 import org.encog.normalize.NormalizationError;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGIgnore;
+import org.encog.persist.annotations.EGReferenceable;
 
+@EGReferenceable
 public abstract class BasicInputField implements InputField {
 
 	@EGAttribute

@@ -29,7 +29,9 @@ package org.encog.normalize.input;
 import java.io.File;
 
 import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.annotations.EGReferenceable;
 
+@EGReferenceable
 public class InputFieldCSV extends BasicInputField {
 
 	private File file;

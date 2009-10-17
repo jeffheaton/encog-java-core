@@ -25,9 +25,17 @@
  */
 package org.encog.normalize.segregate;
 
+import org.encog.persist.annotations.EGAttribute;
+
 public class SegregationRange {
+	
+	@EGAttribute
 	private final double low;
+	
+	@EGAttribute
 	private final double high;
+	
+	@EGAttribute
 	private final boolean include;
 
 	public SegregationRange(final double low, final double high,
