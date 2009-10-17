@@ -40,6 +40,11 @@ public class OutputFieldMultiplicative extends OutputFieldGrouped {
 					"Must use MultiplicativeGroup with OutputFieldMultiplicative.");
 		}
 	}
+	
+	public OutputFieldMultiplicative()
+	{
+		
+	}
 
 	public double calculate(int subfield) {
 		return getSourceField().getCurrentValue()

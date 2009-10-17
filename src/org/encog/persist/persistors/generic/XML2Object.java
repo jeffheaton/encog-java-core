@@ -99,8 +99,9 @@ public class XML2Object {
 		while (in.readToTag()) {
 			if (in.getTag().getType() == Type.BEGIN) {
 				final String tagName = in.getTag().getName();
-				final Field field = target.getClass().getDeclaredField(
-						tagName);
+				final Field field = ReflectionUtil.findField(target.getClass(), tagName);
+				if( field==null )
+					continue;
 				field.setAccessible(true);					
 				Object currentValue = field.get(target);
 				
@@ -108,7 +109,8 @@ public class XML2Object {
 				{
 					loadCollection(in,(Collection<Object>)currentValue);
 				}
-
+				else
+				{
 				final String value = in.readTextToTag();
 				final Class<?> type = field.getType();
 				if (type == long.class) {
@@ -123,8 +125,7 @@ public class XML2Object {
 					field.setDouble(target, Float.parseFloat(value));
 				} else if (type == String.class) {
 					field.set(target, value);
-				} else if (type == Collection.class) {
-					field.set(target, loadList(in));
+				}
 				}
 			}
 			else if (in.getTag().getType() == Type.END) {
@@ -132,8 +133,6 @@ public class XML2Object {
 					return;
 			}
 		}
-	} catch (final NoSuchFieldException e) {
-		throw new EncogError(e);
 	} catch (final NumberFormatException e) {
 		throw new EncogError(e);
 	} catch (final IllegalArgumentException e) {
@@ -144,27 +143,5 @@ public class XML2Object {
 		
 	}
 
-	/**
-	 * Load a list collection.
-	 * 
-	 * @param in
-	 *            The XML reader.
-	 * @return The loaded list.
-	 */
-	public List<Object> loadList(final ReadXML in) {
-		final List<Object> result = new ArrayList<Object>();
 
-		while (in.readToTag()) {
-			final String tagName = in.getTag().getName();
-			final String value = in.readTextToTag();
-
-			if (tagName.equals("S")) {
-				result.add(value);
-			}
-		}
-
-		return result;
-	}
-
-	
 }

@@ -19,12 +19,17 @@ public class OutputEquilateral extends BasicOutputField {
 	@EGIgnore
 	private double[][] matrix;
 	private int currentValue;
-	private final double high;
-	private final double low;
+	private double high;
+	private double low;
 
 	public OutputEquilateral(double high, double low) {
 		this.high = high;
 		this.low = low;
+	}
+	
+	public OutputEquilateral()
+	{
+		
 	}
 
 	public void addItem(final InputField inputField, final double low, final double high) {

@@ -33,18 +33,23 @@ import org.encog.persist.annotations.EGReference;
 public class OutputFieldRangeMapped extends BasicOutputField {
 
 	@EGReference
-	private final InputField field;
+	private InputField field;
 	
 	@EGAttribute
-	private final double low;
+	private double low;
 	@EGAttribute
-	private final double high;
+	private double high;
 
 	public OutputFieldRangeMapped(final InputField field, final double low,
 			final double high) {
 		this.field = field;
 		this.low = low;
 		this.high = high;
+	}
+	
+	public OutputFieldRangeMapped()
+	{
+		
 	}
 
 	public double calculate(int subfield) {

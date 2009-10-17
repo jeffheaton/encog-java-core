@@ -30,19 +30,24 @@ import org.encog.persist.annotations.EGAttribute;
 public class IndexSampleSegregator extends IndexSegregator {
 
 	@EGAttribute
-	private final int startingIndex;
+	private int startingIndex;
 	
 	@EGAttribute
-	private final int endingIndex;
+	private int endingIndex;
 	
 	@EGAttribute
-	private final int sampleSize;
+	private int sampleSize;
 
 	public IndexSampleSegregator(final int startingIndex,
 			final int endingIndex, final int sampleSize) {
 		this.sampleSize = sampleSize;
 		this.startingIndex = startingIndex;
 		this.endingIndex = endingIndex;
+	}
+	
+	public IndexSampleSegregator()
+	{
+		
 	}
 
 	public int getEndingIndex() {

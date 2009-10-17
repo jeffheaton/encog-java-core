@@ -31,16 +31,20 @@ import org.encog.persist.annotations.EGReference;
 public abstract class OutputFieldGrouped extends BasicOutputField {
 
 	@EGReference
-	private final OutputFieldGroup group;
+	private OutputFieldGroup group;
 	
 	@EGReference
-	private final InputField sourceField;
+	private InputField sourceField;
 
 	public OutputFieldGrouped(final OutputFieldGroup group,
 			final InputField sourceField) {
 		this.group = group;
 		this.sourceField = sourceField;
 		this.group.getGroupedFields().add(this);
+	}
+	
+	public OutputFieldGrouped()
+	{
 	}
 
 	public OutputFieldGroup getGroup() {

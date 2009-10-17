@@ -35,9 +35,9 @@ import org.encog.persist.annotations.EGReference;
 public class RangeSegregator implements Segregator {
 
 	@EGReference
-	private final InputField sourceField;
-	private final boolean include;
-	private final Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
+	private InputField sourceField;
+	private boolean include;
+	private Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
 	
 	@EGReference
 	private Normalization normalization;
@@ -45,6 +45,10 @@ public class RangeSegregator implements Segregator {
 	public RangeSegregator(final InputField sourceField, final boolean include) {
 		this.sourceField = sourceField;
 		this.include = include;
+	}
+	
+	public RangeSegregator()
+	{
 	}
 
 	public void addRange(final double low, final double high,

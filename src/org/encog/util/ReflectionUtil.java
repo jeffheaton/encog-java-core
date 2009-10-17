@@ -88,5 +88,16 @@ public class ReflectionUtil {
 				|| (obj instanceof Short) || (obj instanceof Float)
 				|| (obj instanceof Double) || (obj instanceof Boolean);
 	}
+	
+	public static Field findField(Class<?> c, String name)
+	{
+		Collection<Field> list = getAllFields(c);
+		for(Field field:list)
+		{
+			if( field.getName().equals(name))
+				return field;
+		}
+		return null;
+	}
 
 }

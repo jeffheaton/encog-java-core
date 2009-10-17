@@ -7,13 +7,13 @@ import org.encog.persist.annotations.EGReference;
 public class NominalItem {
 	
 	@EGAttribute
-	private final double low;
+	private double low;
 	
 	@EGAttribute
-	private final double high;
+	private double high;
 	
 	@EGReference
-	private final InputField inputField;	
+	private InputField inputField;	
 	
 	public NominalItem(InputField inputField, double high, double low) {
 		super();		
@@ -21,6 +21,12 @@ public class NominalItem {
 		this.low = low;
 		this.inputField = inputField;
 	}
+	
+	public NominalItem()
+	{
+		
+	}
+	
 	/**
 	 * @return the low
 	 */

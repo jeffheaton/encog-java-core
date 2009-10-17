@@ -30,13 +30,13 @@ import org.encog.persist.annotations.EGAttribute;
 public class SegregationRange {
 	
 	@EGAttribute
-	private final double low;
+	private double low;
 	
 	@EGAttribute
-	private final double high;
+	private double high;
 	
 	@EGAttribute
-	private final boolean include;
+	private boolean include;
 
 	public SegregationRange(final double low, final double high,
 			final boolean include) {
@@ -44,6 +44,11 @@ public class SegregationRange {
 		this.low = low;
 		this.high = high;
 		this.include = include;
+	}
+	
+	public SegregationRange()
+	{
+		
 	}
 
 	public double getHigh() {

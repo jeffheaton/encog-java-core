@@ -9,13 +9,18 @@ import org.encog.normalize.output.OutputField;
 
 public class OutputOneOf extends BasicOutputField {
 
-	private final List<NominalItem> items = new ArrayList<NominalItem>();
-	private final double trueValue;
-	private final double falseValue;
+	private List<NominalItem> items = new ArrayList<NominalItem>();
+	private double trueValue;
+	private double falseValue;
 
 	public OutputOneOf(double trueValue, double falseValue) {
 		this.trueValue = trueValue;
 		this.falseValue = falseValue;
+	}
+	
+	public OutputOneOf()
+	{
+		
 	}
 
 	public void addItem(final InputField inputField, final double low, final double high) {
