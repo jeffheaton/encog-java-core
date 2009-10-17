@@ -26,10 +26,14 @@
 package org.encog.normalize.output;
 
 import org.encog.normalize.input.InputField;
+import org.encog.persist.annotations.EGReference;
 
 public abstract class OutputFieldGrouped extends BasicOutputField {
 
+	@EGReference
 	private final OutputFieldGroup group;
+	
+	@EGReference
 	private final InputField sourceField;
 
 	public OutputFieldGrouped(final OutputFieldGroup group,

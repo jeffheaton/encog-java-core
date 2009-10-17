@@ -100,6 +100,8 @@ public class ObjectTagger {
 	}
 
 	public int getReference(Object obj) {
+		if( obj==null )
+			return -1;
 		return this.map.get(obj);
 	}
 

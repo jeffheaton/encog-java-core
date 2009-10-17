@@ -28,8 +28,11 @@ package org.encog.normalize.output;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.encog.persist.annotations.EGReference;
+
 public abstract class BasicOutputFieldGroup implements OutputFieldGroup {
 
+	@EGReference
 	private final Collection<OutputFieldGrouped> fields = new ArrayList<OutputFieldGrouped>();
 
 	public void addField(final OutputFieldGrouped field) {

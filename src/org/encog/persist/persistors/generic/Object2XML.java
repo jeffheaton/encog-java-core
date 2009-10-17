@@ -137,7 +137,11 @@ public class Object2XML {
 	
 	private void saveFieldReference(Object fieldObject)
 	{
-		out.addAttribute("ref", ""+this.tagger.getReference(fieldObject));
+		if( this.tagger.hasReference(fieldObject))
+			out.addAttribute("ref", ""+this.tagger.getReference(fieldObject));
+		else
+			out.addAttribute("ref", "");
+		
 		out.beginTag(fieldObject.getClass().getSimpleName());
 		out.endTag();
 	}

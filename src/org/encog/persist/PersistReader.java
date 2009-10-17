@@ -115,7 +115,7 @@ public class PersistReader {
 				if ((elementName != null) && elementName.equals(name)) {
 					return true;
 				} else {
-					skipObject(this.in.getTag().getName());
+					skipObject();
 				}
 			}
 		}
@@ -151,7 +151,7 @@ public class PersistReader {
 				if (this.in.getTag().getName().equals(tag)) {
 					return true;
 				} else {
-					skipObject(this.in.getTag().getName());
+					skipObject();
 				}
 			}
 		}
@@ -181,7 +181,7 @@ public class PersistReader {
 					description);
 			result.add(entry);
 
-			skipObject(this.in.getTag().getName());
+			skipObject();
 		}
 
 		return result;
@@ -311,7 +311,7 @@ public class PersistReader {
 				if (this.in.getTag().getName().equals(name)) {
 					return true;
 				} else {
-					skipObject(this.in.getTag().getName());
+					skipObject();
 				}
 			}
 		}
@@ -425,7 +425,7 @@ public class PersistReader {
 				final String name = this.in.getTag().getAttributeValue(
 						PersistReader.ATTRIBUTE_NAME);
 				if (name.equals(skip)) {
-					skipObject(this.in.getTag().getName());
+					skipObject();
 				} else {
 					copyXML(out, null);
 				}
@@ -434,18 +434,23 @@ public class PersistReader {
 	}
 
 	/**
-	 * Skip the specified object.
-	 * 
-	 * @param name
-	 *            The name of the object to skip.
+	 * Skip the current specified object.
 	 */
-	private void skipObject(final String name) {
+	private void skipObject() {
+		int depth = 0;
 		while (this.in.readToTag()) {
 			final Type type = this.in.getTag().getType();
-			if (type == Type.END) {
-				if (this.in.getTag().getName().equals(name)) {
-					return;
-				}
+			
+			switch(type)
+			{
+				case END:
+					if( depth==0)
+						return;
+					depth--;
+					break;
+				case BEGIN:
+					depth++;
+					break;
 			}
 		}
 	}

@@ -26,9 +26,11 @@
 package org.encog.normalize.output;
 
 import org.encog.normalize.input.InputField;
+import org.encog.persist.annotations.EGReference;
 
 public class OutputFieldDirect extends BasicOutputField {
 
+	@EGReference
 	private final InputField sourceField;
 
 	public OutputFieldDirect(final InputField sourceField) {
