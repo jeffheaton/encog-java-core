@@ -38,6 +38,7 @@ import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.location.PersistenceLocation;
 import org.encog.persist.persistors.PersistorUtil;
+import org.encog.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -342,8 +343,21 @@ public class PersistReader {
 		// did we find the object?
 		if (advance(name)) {
 			final String objectType = this.in.getTag().getName();
-			final Persistor persistor = PersistorUtil
+			Persistor persistor = PersistorUtil
 					.createPersistor(objectType);
+			if( persistor==null)
+			{
+				Class<?> clazz = ReflectionUtil.resolveEncogClass(objectType);
+				EncogPersistedObject temp;
+				try {
+					temp = (EncogPersistedObject) clazz.newInstance();
+				} catch (InstantiationException e) {
+					throw new PersistError(e);
+				} catch (IllegalAccessException e) {
+					throw new PersistError(e);
+				}
+				persistor = temp.createPersistor();
+			}
 			if (persistor == null) {
 				throw new PersistError("Do not know how to load: " + objectType);
 			}

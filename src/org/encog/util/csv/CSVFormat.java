@@ -42,17 +42,17 @@ public class CSVFormat {
 	/**
 	 * Use a decimal point, and a comma to separate numbers.
 	 */
-	public static final CSVFormat DECIMAL_POINT = new CSVFormat('.', ',');
+	public static CSVFormat DECIMAL_POINT = new CSVFormat('.', ',');
 	
 	/**
 	 * Use a decimal comma, and a semicolon to separate numbers.
 	 */
-	public static final CSVFormat DECIMAL_COMMA = new CSVFormat(',', ';');
+	public static CSVFormat DECIMAL_COMMA = new CSVFormat(',', ';');
 	
 	/**
 	 * Decimal point is typically used in English speaking counties.
 	 */
-	public static final CSVFormat ENGLISH = CSVFormat.DECIMAL_POINT;
+	public static CSVFormat ENGLISH = CSVFormat.DECIMAL_POINT;
 	
 	/**
 	 * EG files, internally use a decimal point and comma separator.
@@ -102,6 +102,11 @@ public class CSVFormat {
 	@EGIgnore
 	private final NumberFormat numberFormatter;
 
+	public CSVFormat()
+	{
+		this('.',',');
+	}
+	
 	/**
 	 * Construct a CSV format with he specified decimal and separator
 	 * characters.

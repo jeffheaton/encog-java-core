@@ -51,7 +51,7 @@ import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReferenceable;
-import org.encog.persist.persistors.NormalizationPersistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -127,7 +127,7 @@ public class Normalization implements EncogPersistedObject {
 	}
 
 	public Persistor createPersistor() {
-		return new NormalizationPersistor();
+		return new GenericPersistor(Normalization.class);
 	}
 
 	private double determineInputFieldValue(final InputField field,

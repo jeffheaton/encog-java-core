@@ -88,6 +88,7 @@ public final class PersistorUtil {
 
 		}
 		out.addAttribute("native", obj.getClass().getName());
+		out.addAttribute("id", "1");
 		out.beginTag(objectType);
 	}
 

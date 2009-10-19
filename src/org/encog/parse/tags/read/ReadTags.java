@@ -136,7 +136,7 @@ public class ReadTags {
 	 * 
 	 * @return Return the attribute name, or null if none present.
 	 */
-	private String parseAttributeName() {
+	protected String parseAttributeName() {
 		eatWhitespace();
 
 		if ("\"\'".indexOf(this.source.peek()) == -1) {

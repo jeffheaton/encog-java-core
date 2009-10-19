@@ -95,7 +95,10 @@ public class ReflectionUtil {
 		for(Field field:list)
 		{
 			if( field.getName().equals(name))
+			{
+				field.setAccessible(true);
 				return field;
+			}
 		}
 		return null;
 	}

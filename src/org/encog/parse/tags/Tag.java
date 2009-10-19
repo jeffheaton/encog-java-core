@@ -146,7 +146,7 @@ public class Tag {
 	 * @return The value of the specified attribute.
 	 */
 	public String getAttributeValue(final String name) {
-		return this.attributes.get(name.toLowerCase());
+		return this.attributes.get(name);
 	}
 
 	/**
@@ -172,7 +172,7 @@ public class Tag {
 	 *            The value of the attribute.
 	 */
 	public void setAttribute(final String name, final String value) {
-		this.attributes.put(name.toLowerCase(), value);
+		this.attributes.put(name, value);
 	}
 
 	/**
