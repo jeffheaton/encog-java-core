@@ -44,9 +44,10 @@ public class InputFieldCSV extends BasicInputField {
 		
 	}
 	
-	public InputFieldCSV(final File file, final int offset) {
+	public InputFieldCSV(final boolean usedForNetworkInput, final File file, final int offset) {
 		this.file = file;
 		this.offset = offset;
+		setUsedForNetworkInput(usedForNetworkInput);
 	}
 
 	public File getFile() {
@@ -56,5 +57,4 @@ public class InputFieldCSV extends BasicInputField {
 	public int getOffset() {
 		return this.offset;
 	}
-
 }

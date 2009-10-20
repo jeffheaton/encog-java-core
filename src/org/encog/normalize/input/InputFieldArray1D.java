@@ -33,8 +33,9 @@ public class InputFieldArray1D extends BasicInputField implements
 		HasFixedLength {
 	private final double[] array;
 
-	public InputFieldArray1D(final double[] array) {
+	public InputFieldArray1D(final boolean usedForNetworkInput, final double[] array) {
 		this.array = array;
+		setUsedForNetworkInput(usedForNetworkInput);
 	}
 
 	@Override
@@ -45,4 +46,6 @@ public class InputFieldArray1D extends BasicInputField implements
 	public int length() {
 		return this.array.length;
 	}
+
+	
 }

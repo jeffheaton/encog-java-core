@@ -33,9 +33,10 @@ public class InputFieldArray2D extends BasicInputField implements
 	private final double[][] array;
 	private final int index2;
 
-	public InputFieldArray2D(final double[][] array, final int index2) {
+	public InputFieldArray2D(final boolean usedForNetworkInput, final double[][] array, final int index2) {
 		this.array = array;
 		this.index2 = index2;
+		setUsedForNetworkInput(usedForNetworkInput);
 	}
 
 	@Override
@@ -46,5 +47,4 @@ public class InputFieldArray2D extends BasicInputField implements
 	public int length() {
 		return this.array.length;
 	}
-
 }

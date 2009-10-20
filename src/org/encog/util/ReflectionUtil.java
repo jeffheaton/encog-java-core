@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.normalize.output.OutputField;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.location.ResourcePersistence;
 
@@ -101,6 +102,26 @@ public class ReflectionUtil {
 			}
 		}
 		return null;
+	}
+
+	public static boolean isInstanceOf(Class<?> class1,
+			Class<?> class2) {
+		
+		// same class?
+		if( class1.equals(class2) )
+			return true;
+
+		// implements interface
+		for( Class<?> clazz: class1.getInterfaces() )
+		{
+			if( clazz.equals(class1))
+				return true;
+		}
+		
+		if( class1.getSuperclass()==null )
+			return false;
+		else
+			return isInstanceOf(class1.getSuperclass(),class2);
 	}
 
 }

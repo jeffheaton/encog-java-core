@@ -40,6 +40,9 @@ public abstract class BasicInputField implements InputField {
 	private double max = Double.NEGATIVE_INFINITY;
 	@EGIgnore
 	private double currentValue;
+	
+	@EGAttribute
+	private boolean usedForNetworkInput;
 
 	public void applyMinMax(final double d) {
 		this.min = Math.min(this.min, d);
@@ -75,5 +78,14 @@ public abstract class BasicInputField implements InputField {
 	public void setMin(final double min) {
 		this.min = min;
 	}
+
+	public boolean getUsedForNetworkInput() {
+		return this.usedForNetworkInput;
+	}
+	public void setUsedForNetworkInput(boolean usedForNetworkInput) {
+		this.usedForNetworkInput = usedForNetworkInput;
+	}
+	
+	
 
 }

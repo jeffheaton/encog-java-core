@@ -1,7 +1,47 @@
 package org.encog.util.math;
 
 public class Equilateral {
-	public static double[][] equilat(int n,double high,double low)
+	
+	private double[][] matrix;
+	
+	public Equilateral(int count, double high, double low)
+	{
+		this.matrix = equilat(count,high,low);
+	}
+	
+	public double[] encode(int set)
+	{
+		return matrix[set];
+	}
+	
+	public int decode(double[] activations)
+	{
+		double minValue = Double.POSITIVE_INFINITY;
+		int minSet = -1;
+		
+		for(int i=0;i<matrix.length;i++)
+		{
+			double dist = getDistance(activations,i);
+			if( dist<minValue)
+			{
+				minValue = dist;
+				minSet = i;
+			}
+		}
+		return minSet;
+	}
+	
+	public double getDistance(double[] data,int set)
+	{
+		double result = 0;
+		for(int i=0;i<data.length;i++)
+		{
+			result+=Math.pow(data[i]-this.matrix[set][i], 2);
+		}
+		return Math.sqrt(result);
+	}
+	
+	private double[][] equilat(int n,double high,double low)
 	{
 		double r, f;
 		double[][] result = new double[n][n-1];
@@ -45,17 +85,5 @@ public class Equilateral {
 		}
 		
 		return result;
-	}
-	
-	public static void main(String args[])
-	{
-		double[][] matrix = equilat(4,0,1);
-		for(int i=0;i<matrix.length;i++)
-		{
-			for(int j=0;j<matrix[0].length;j++)
-			{
-				System.out.println(i + "," + j + ":" + matrix[i][j]);
-			}
-		}
 	}
 }

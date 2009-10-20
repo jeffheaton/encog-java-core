@@ -35,8 +35,10 @@ import java.util.Map;
 import java.util.Set;
 
 import org.encog.StatusReportable;
+import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.normalize.input.HasFixedLength;
 import org.encog.normalize.input.InputField;
 import org.encog.normalize.input.InputFieldCSV;
@@ -52,6 +54,7 @@ import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReferenceable;
 import org.encog.persist.persistors.generic.GenericPersistor;
+import org.encog.util.ReflectionUtil;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -62,35 +65,35 @@ public class Normalization implements EncogPersistedObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 4387885013771660300L;
-	
+
 	private final Collection<InputField> inputFields = new ArrayList<InputField>();
 	private final Collection<OutputField> outputFields = new ArrayList<OutputField>();
-	
+
 	@EGIgnore
 	private final Collection<ReadCSV> readCSV = new ArrayList<ReadCSV>();
-	
+
 	@EGIgnore
 	private final Map<InputField, ReadCSV> csvMap = new HashMap<InputField, ReadCSV>();
 
 	private final Collection<Iterator<NeuralDataPair>> readDataSet = new ArrayList<Iterator<NeuralDataPair>>();
-	
+
 	@EGIgnore
 	private final Map<InputField, NeuralDataFieldHolder> dataSetFieldMap = new HashMap<InputField, NeuralDataFieldHolder>();
-	
+
 	@EGIgnore
 	private final Map<Iterator<NeuralDataPair>, NeuralDataFieldHolder> dataSetIteratorMap = new HashMap<Iterator<NeuralDataPair>, NeuralDataFieldHolder>();
 	private final Set<OutputFieldGroup> groups = new HashSet<OutputFieldGroup>();
 	private final Collection<Segregator> segregators = new ArrayList<Segregator>();
-	
+
 	@EGIgnore
 	private NormalizationStorage storage;
-	
+
 	@EGIgnore
 	private StatusReportable report;
-	
+
 	private int recordCount;
 	private int currentIndex;
-	
+
 	private CSVFormat csvFormat = CSVFormat.ENGLISH;
 	private int lastReport;
 	private String name;
@@ -260,7 +263,7 @@ public class Normalization implements EncogPersistedObject {
 		return this.storage;
 	}
 
-	private void initForOutput() {
+	public void initForOutput() {
 
 		// init groups
 		for (final OutputFieldGroup group : this.groups) {
@@ -451,4 +454,79 @@ public class Normalization implements EncogPersistedObject {
 		return true;
 	}
 
+	public NeuralData buildForNetworkInput(double[] data) {
+
+		// feed the input fields
+		int index = 0;
+		for (InputField field : this.inputFields) {
+			if (field.getUsedForNetworkInput()) {
+				if (index >= data.length) {
+					throw new NormalizationError(
+							"Can't build data, input fields used for neural input, must match provided data("
+									+ data.length + ").");
+				}
+				field.setCurrentValue(data[index++]);
+			}
+		}
+		
+		// count the output fields
+		int outputCount = 0;
+		for (final OutputField ofield : this.outputFields) {
+			if (!ofield.isIdeal()) {
+				for (int sub = 0; sub < ofield.getSubfieldCount(); sub++) {
+					outputCount++;
+				}
+			}
+		}
+
+		// process the output fields
+
+		initForOutput();
+		
+		NeuralData result = new BasicNeuralData(outputCount);
+
+		// write the value
+		int outputIndex = 0;
+		for (final OutputField ofield : this.outputFields) {
+			if (!ofield.isIdeal()) {
+				for (int sub = 0; sub < ofield.getSubfieldCount(); sub++) {
+					result.setData(outputIndex++, ofield.calculate(sub));
+				}
+			}
+		}
+
+		return result;
+	}
+	
+	public OutputField findOutputField(Class<?> clazz, int count)
+	{
+		int i = 0;
+		for(OutputField field: this.outputFields)
+		{
+			if( ReflectionUtil.isInstanceOf(field.getClass(),clazz) )
+			{
+				if(i==count)
+					return field;
+				i++;
+			}
+		}
+		
+		return null;
+	}
+
+	public InputField findInputField(Class<?> clazz, int count)
+	{
+		int i = 0;
+		for(InputField field: this.inputFields)
+		{
+			if( ReflectionUtil.isInstanceOf(field.getClass(),clazz) )
+			{
+				if(i==count)
+					return field;
+				i++;
+			}
+		}
+		
+		return null;
+	}
 }

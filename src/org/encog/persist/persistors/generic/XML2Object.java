@@ -113,6 +113,8 @@ public class XML2Object {
 			field.setDouble(target, Float.parseFloat(value));
 		} else if (type == String.class) {
 			field.set(target, value);
+		} else if (type == boolean.class) {
+			field.setBoolean(target, value.equalsIgnoreCase("true")?Boolean.TRUE:Boolean.FALSE);
 		}
 		}
 		catch(IllegalAccessException e)

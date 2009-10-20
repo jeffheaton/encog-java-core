@@ -17,7 +17,7 @@ public class OutputEquilateral extends BasicOutputField {
 	private final List<NominalItem> items = new ArrayList<NominalItem>();
 	
 	@EGIgnore
-	private double[][] matrix;
+	private Equilateral equilateral;
 	private int currentValue;
 	private double high;
 	private double low;
@@ -44,7 +44,7 @@ public class OutputEquilateral extends BasicOutputField {
 
 
 	public double calculate(int subfield) {
-		return this.matrix[this.currentValue][subfield];
+		return this.equilateral.encode(this.currentValue)[subfield];
 	}
 	
 	
@@ -68,9 +68,9 @@ public class OutputEquilateral extends BasicOutputField {
 			}
 		}
 		
-		if(this.matrix==null)
+		if(this.equilateral==null)
 		{
-			this.matrix = Equilateral.equilat(this.items.size(), this.high, this.low);
+			this.equilateral = new Equilateral(this.items.size(), this.high, this.low);
 		}
 	}
 
@@ -81,7 +81,8 @@ public class OutputEquilateral extends BasicOutputField {
 	public double getLow() {
 		return low;
 	}
-	
-	
 
+	public Equilateral getEquilateral() {
+		return equilateral;
+	}
 }
