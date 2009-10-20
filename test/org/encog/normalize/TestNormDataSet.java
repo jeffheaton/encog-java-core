@@ -29,8 +29,8 @@ public class TestNormDataSet extends TestCase {
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
-		norm.addInputField(a = new InputFieldNeuralDataSet(dataset,0));
-		norm.addInputField(b = new InputFieldNeuralDataSet(dataset,1));
+		norm.addInputField(a = new InputFieldNeuralDataSet(false,dataset,0));
+		norm.addInputField(b = new InputFieldNeuralDataSet(false,dataset,1));
 		norm.addOutputField(new OutputFieldRangeMapped(a,0.1,0.9));
 		norm.addOutputField(new OutputFieldRangeMapped(b,0.1,0.9));
 		norm.process();

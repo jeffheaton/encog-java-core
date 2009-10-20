@@ -30,7 +30,7 @@ public class TestNormArray extends TestCase {
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
-		norm.addInputField(a = new InputFieldArray1D(ARRAY_1D));
+		norm.addInputField(a = new InputFieldArray1D(false,ARRAY_1D));
 		norm.addOutputField(new OutputFieldRangeMapped(a,0.1,0.9));		
 		norm.process();
 		Assert.assertEquals(arrayOutput[0],0.1,0.1);
@@ -50,8 +50,8 @@ public class TestNormArray extends TestCase {
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
-		norm.addInputField(a = new InputFieldArray2D(ARRAY_2D,0));
-		norm.addInputField(b = new InputFieldArray2D(ARRAY_2D,1));
+		norm.addInputField(a = new InputFieldArray2D(false,ARRAY_2D,0));
+		norm.addInputField(b = new InputFieldArray2D(false,ARRAY_2D,1));
 		norm.addOutputField(new OutputFieldRangeMapped(a,0.1,0.9));
 		norm.addOutputField(new OutputFieldRangeMapped(b,0.1,0.9));
 		norm.process();

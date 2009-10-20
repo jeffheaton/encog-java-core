@@ -28,9 +28,9 @@ public class TestZAxis extends TestCase {
 		Normalization norm = new Normalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
-		norm.addInputField(a = new InputFieldArray2D(SAMPLE1,0));
-		norm.addInputField(b = new InputFieldArray2D(SAMPLE1,1));
-		norm.addInputField(c = new InputFieldArray2D(SAMPLE1,2));
+		norm.addInputField(a = new InputFieldArray2D(false,SAMPLE1,0));
+		norm.addInputField(b = new InputFieldArray2D(false,SAMPLE1,1));
+		norm.addInputField(c = new InputFieldArray2D(false,SAMPLE1,2));
 		norm.addOutputField(new OutputFieldZAxis(group,a));
 		norm.addOutputField(new OutputFieldZAxis(group,b));
 		norm.addOutputField(new OutputFieldZAxis(group,c));
