@@ -86,4 +86,15 @@ public class Equilateral {
 		
 		return result;
 	}
+	
+	public static void main(String args[])
+	{
+		Equilateral eq = new Equilateral(5,0.9,0.1);
+		double[] d = eq.encode(2);
+		System.out.println(eq.getDistance(d, 0));
+		System.out.println(eq.getDistance(d, 1));
+		System.out.println(eq.getDistance(d, 2));
+		System.out.println(eq.getDistance(d, 3));
+		System.out.println(eq.getDistance(d, 4));
+	}
 }

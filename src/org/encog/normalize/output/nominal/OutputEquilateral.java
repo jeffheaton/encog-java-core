@@ -38,7 +38,7 @@ public class OutputEquilateral extends BasicOutputField {
 	}
 	
 	public void addItem(final InputField inputField, final double value) {
-		addItem(inputField,value-0.5,value+0.5);
+		addItem(inputField,value+0.1,value-0.1);
 	}
 	
 
