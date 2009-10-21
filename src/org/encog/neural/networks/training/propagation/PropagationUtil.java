@@ -54,8 +54,9 @@ public class PropagationUtil {
 		super();
 		this.network = network;
 		this.method = method;
-		this.method.init(this);
 		construct();
+		this.method.init(this);
+		
 	}
 
 	/**
