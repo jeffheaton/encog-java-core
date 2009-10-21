@@ -64,11 +64,13 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	
 	private double zeroTolerance;
 	private double maxStep;
+	private double initialUpdate;
 	
-	public ResilientPropagationMethod(double zeroTolerance, double maxStep)
+	public ResilientPropagationMethod(double zeroTolerance, double maxStep, double initialUpdate)
 	{
 		this.zeroTolerance = zeroTolerance;
 		this.maxStep = maxStep;
+		this.initialUpdate = initialUpdate;
 	}
 
 	/**
@@ -96,6 +98,21 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	 */
 	public void init(final PropagationUtil propagation) {
 		this.propagationUtil = (PropagationUtil) propagation;
+		
+		// set the initialUpdate to all of the threshold and matrix update
+		// values.
+		// This is necessary for the first step. RPROP always builds on the
+		// previous
+		// step, and there is no previous step on the first iteration.
+		for (final PropagationLevel level : this.propagationUtil.getLevels()) {
+			for (int i = 0; i < level.getNeuronCount(); i++) {
+				level.setThresholdDelta(i, this.initialUpdate);
+			}
+
+			for (final PropagationSynapse synapse : level.getOutgoing()) {
+				synapse.getDeltas().set(this.initialUpdate);
+			}
+		}
 
 	}
 
