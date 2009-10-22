@@ -1,11 +1,13 @@
 package org.encog.neural.networks.training.propagation.multi;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
@@ -20,8 +22,9 @@ public class MultiPropagation extends BasicTraining {
 	private BasicNetwork network;
 	private boolean threadsStarted;
 	private ResilientPropagation fallback;
-	private Object getPairSync = new Object();
-	private Object updateSync = new Object();
+	private Object getPairLock = new Object();
+	private Object updateLock = new Object();
+	private CountDownLatch shutDownLatch;
 
 	public MultiPropagation(BasicNetwork network, NeuralDataSet training,
 			int threadCount) {
@@ -110,7 +113,7 @@ public class MultiPropagation extends BasicTraining {
 	}
 
 	public void getPair(long l, NeuralDataPair pair) {
-		synchronized (this.getPairSync) {
+		synchronized (this.getPairLock) {
 			this.training.getRecord(l, pair);
 		}
 	}
@@ -133,7 +136,7 @@ public class MultiPropagation extends BasicTraining {
 	}
 
 	public void updateNetwork(MPROPWorker worker) {
-		synchronized (this.updateSync) {
+		synchronized (this.updateLock) {
 			Double[] workerNet = NetworkCODEC.networkToArray(worker
 					.getNetwork());
 			Double[] masterNet = NetworkCODEC.networkToArray(this.network);
@@ -159,10 +162,20 @@ public class MultiPropagation extends BasicTraining {
 	 */
 	public void finishTraining()
 	{
+		this.shutDownLatch = new CountDownLatch(this.workers.length);
 		for(MPROPWorker worker: this.workers)
 		{
 			worker.requestShutdown();
 		}
+		try {
+			this.shutDownLatch.await();
+		} catch (InterruptedException e) {
+		}
+	}
+	
+	public void notifyShutdown()
+	{
+		this.shutDownLatch.countDown();
 	}
 
 }

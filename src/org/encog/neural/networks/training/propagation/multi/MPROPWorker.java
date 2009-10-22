@@ -1,8 +1,13 @@
 package org.encog.neural.networks.training.propagation.multi;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.PropagationUtil;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagationMethod;
@@ -18,7 +23,8 @@ public class MPROPWorker extends Thread {
 	private PropagationUtil propagationUtil;
 	private final ErrorCalculation errorCalculation = new ErrorCalculation();
 	private double error;
-	private boolean done;
+	private AtomicBoolean done = new AtomicBoolean(false);
+	private Object iterationLock = new Object();
 	
 	public MPROPWorker(BasicNetwork network, MultiPropagation owner, long low,long high)
 	{
@@ -45,16 +51,18 @@ public class MPROPWorker extends Thread {
 		this.setError(errorCalculation.calculateRMS());
 		this.propagationUtil.getMethod().learn();
 		this.owner.updateNetwork(this);
+		this.iterationLock.notifyAll();
 		System.out.println("Iteration " + this.getId());
 	}
 	
 	public void run() {
 		
-		this.done = false;
+		this.done.set(false);
 		
-		while(!done) {
+		while(!this.done.get()) {
 			iteration();
-		}				
+		}	
+		this.owner.notifyShutdown();
 	}
 
 	public synchronized double getError() {
@@ -70,7 +78,16 @@ public class MPROPWorker extends Thread {
 	}
 
 	public void requestShutdown() {
-		this.done = true;
+		this.done.set(true);
+	}
+	
+	public void waitForIteration()
+	{
+		try {
+			this.iterationLock.wait();
+		} catch (InterruptedException e) {
+			throw new TrainingError(e);
+		}
 	}
 	
 }
