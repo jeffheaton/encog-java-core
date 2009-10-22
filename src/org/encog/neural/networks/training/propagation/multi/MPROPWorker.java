@@ -18,6 +18,7 @@ public class MPROPWorker extends Thread {
 	private PropagationUtil propagationUtil;
 	private final ErrorCalculation errorCalculation = new ErrorCalculation();
 	private double error;
+	private boolean done;
 	
 	public MPROPWorker(BasicNetwork network, MultiPropagation owner, long low,long high)
 	{
@@ -29,8 +30,6 @@ public class MPROPWorker extends Thread {
 		this.propagationUtil = new PropagationUtil(network, method);
 		this.errorCalculation.reset();
 	}
-	
-	
 	
 	public void iteration()
 	{	
@@ -50,32 +49,28 @@ public class MPROPWorker extends Thread {
 	}
 	
 	public void run() {
-		for(;;) {
-			iteration();
-		}
 		
+		this.done = false;
+		
+		while(!done) {
+			iteration();
+		}				
 	}
-
-
 
 	public synchronized double getError() {
 		return error;
 	}
 
-
-
 	public synchronized void setError(double error) {
 		this.error = error;
 	}
 
-
-
 	public BasicNetwork getNetwork() {
 		return network;
 	}
-	
-	
-	
-	
 
+	public void requestShutdown() {
+		this.done = true;
+	}
+	
 }

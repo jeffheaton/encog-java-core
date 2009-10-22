@@ -133,5 +133,14 @@ public abstract class BasicTraining implements Train {
 	public void setTraining(final NeuralDataSet training) {
 		this.training = training;
 	}
+	
+	/**
+	 * Should be called after training has completed and the iteration method
+	 * will not be called any further.
+	 */
+	public void finishTraining()
+	{
+		
+	}
 
 }

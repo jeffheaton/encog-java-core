@@ -148,5 +148,21 @@ public class MultiPropagation extends BasicTraining {
 			NetworkCODEC.arrayToNetwork(masterNet, this.network);
 		}
 	}
+	
+	/**
+	 * Should be called after training has completed and the iteration method
+	 * will not be called any further.
+	 * 
+	 * MPROP makes use of multithreading.  It is VERY important that this method
+	 * be called once training is finished.  This method will wait for all 
+	 * threads to shut down before exiting.
+	 */
+	public void finishTraining()
+	{
+		for(MPROPWorker worker: this.workers)
+		{
+			worker.requestShutdown();
+		}
+	}
 
 }

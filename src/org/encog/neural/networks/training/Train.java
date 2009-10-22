@@ -82,5 +82,15 @@ public interface Train {
 	 *            strategies.
 	 */
 	void setError(double error);
+	
+	/**
+	 * Should be called once training is complete and no more iterations are needed.
+	 * Calling iteration again will simply begin the training again, and require
+	 * finishTraining to be called once the new training session is complete.
+	 * 
+	 * It is particularly important to call finishTraining for multithreaded
+	 * training techniques.
+	 */
+	void finishTraining();
 
 }
