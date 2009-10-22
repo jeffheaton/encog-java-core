@@ -35,14 +35,13 @@ public class IndexRangeSegregator extends IndexSegregator {
 	@EGAttribute
 	private int endingIndex;
 
+	public IndexRangeSegregator() {
+
+	}
+
 	public IndexRangeSegregator(final int startingIndex, final int endingIndex) {
 		this.startingIndex = startingIndex;
 		this.endingIndex = endingIndex;
-	}
-	
-	public IndexRangeSegregator()
-	{
-		
 	}
 
 	public int getEndingIndex() {

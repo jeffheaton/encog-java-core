@@ -31,23 +31,22 @@ public class IndexSampleSegregator extends IndexSegregator {
 
 	@EGAttribute
 	private int startingIndex;
-	
+
 	@EGAttribute
 	private int endingIndex;
-	
+
 	@EGAttribute
 	private int sampleSize;
+
+	public IndexSampleSegregator() {
+
+	}
 
 	public IndexSampleSegregator(final int startingIndex,
 			final int endingIndex, final int sampleSize) {
 		this.sampleSize = sampleSize;
 		this.startingIndex = startingIndex;
 		this.endingIndex = endingIndex;
-	}
-	
-	public IndexSampleSegregator()
-	{
-		
 	}
 
 	public int getEndingIndex() {

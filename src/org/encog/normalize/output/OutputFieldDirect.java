@@ -37,21 +37,18 @@ public class OutputFieldDirect extends BasicOutputField {
 		this.sourceField = sourceField;
 	}
 
-	public double calculate(int subfield) {
+	public double calculate(final int subfield) {
 		return this.sourceField.getCurrentValue();
 	}
-	
-	public int getSubfieldCount()
-	{
+
+	public int getSubfieldCount() {
 		return 1;
 	}
-	
+
 	/**
 	 * Not needed for this sort of output field.
 	 */
-	public void rowInit()
-	{		
+	public void rowInit() {
 	}
-
 
 }

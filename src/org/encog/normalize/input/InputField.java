@@ -34,6 +34,8 @@ public interface InputField {
 
 	double getMin();
 
+	boolean getUsedForNetworkInput();
+
 	double getValue(int i);
 
 	void setCurrentValue(double d);
@@ -41,6 +43,4 @@ public interface InputField {
 	void setMax(double max);
 
 	void setMin(double min);
-	
-	boolean getUsedForNetworkInput();
 }

@@ -27,9 +27,13 @@
 package org.encog.normalize.output;
 
 public interface OutputField {
-	int getSubfieldCount();
 	double calculate(int subfield);
-	void rowInit();
+
+	int getSubfieldCount();
+
 	boolean isIdeal();
+
+	void rowInit();
+
 	void setIdeal(boolean ideal);
 }

@@ -34,11 +34,15 @@ public class OutputFieldRangeMapped extends BasicOutputField {
 
 	@EGReference
 	private InputField field;
-	
+
 	@EGAttribute
 	private double low;
 	@EGAttribute
 	private double high;
+
+	public OutputFieldRangeMapped() {
+
+	}
 
 	public OutputFieldRangeMapped(final InputField field, final double low,
 			final double high) {
@@ -46,13 +50,8 @@ public class OutputFieldRangeMapped extends BasicOutputField {
 		this.low = low;
 		this.high = high;
 	}
-	
-	public OutputFieldRangeMapped()
-	{
-		
-	}
 
-	public double calculate(int subfield) {
+	public double calculate(final int subfield) {
 		return ((this.field.getCurrentValue() - this.field.getMin()) / (this.field
 				.getMax() - this.field.getMin()))
 				* (this.high - this.low) + this.low;
@@ -69,17 +68,15 @@ public class OutputFieldRangeMapped extends BasicOutputField {
 	public double getLow() {
 		return this.low;
 	}
-	
-	public int getSubfieldCount()
-	{
+
+	public int getSubfieldCount() {
 		return 1;
 	}
-	
+
 	/**
 	 * Not needed for this sort of output field.
 	 */
-	public void rowInit()
-	{		
+	public void rowInit() {
 	}
 
 }

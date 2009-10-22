@@ -30,7 +30,6 @@ import java.util.List;
 
 import org.encog.normalize.input.InputField;
 import org.encog.normalize.output.BasicOutputField;
-import org.encog.normalize.output.OutputField;
 
 public class OutputFieldEncode extends BasicOutputField {
 
@@ -47,7 +46,7 @@ public class OutputFieldEncode extends BasicOutputField {
 		this.ranges.add(range);
 	}
 
-	public double calculate(int subfield) {
+	public double calculate(final int subfield) {
 		for (final MappedRange range : this.ranges) {
 			if (range.inRange(this.sourceField.getCurrentValue())) {
 				return range.getValue();
@@ -55,11 +54,6 @@ public class OutputFieldEncode extends BasicOutputField {
 		}
 
 		return this.catchAll;
-	}
-	
-	public int getSubfieldCount()
-	{
-		return 1;
 	}
 
 	public double getCatchAll() {
@@ -70,16 +64,18 @@ public class OutputFieldEncode extends BasicOutputField {
 		return this.sourceField;
 	}
 
-	public void setCatchAll(final double catchAll) {
-		this.catchAll = catchAll;
+	public int getSubfieldCount() {
+		return 1;
 	}
 
 	/**
 	 * Not needed for this sort of output field.
 	 */
-	public void rowInit()
-	{		
+	public void rowInit() {
 	}
 
-	
+	public void setCatchAll(final double catchAll) {
+		this.catchAll = catchAll;
+	}
+
 }

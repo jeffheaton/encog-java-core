@@ -35,7 +35,8 @@ public class InputFieldNeuralDataSet extends BasicInputField {
 	private final NeuralDataSet data;
 	private final int offset;
 
-	public InputFieldNeuralDataSet(final boolean usedForNetworkInput, final NeuralDataSet data, final int offset) {
+	public InputFieldNeuralDataSet(final boolean usedForNetworkInput,
+			final NeuralDataSet data, final int offset) {
 		this.data = data;
 		this.offset = offset;
 		setUsedForNetworkInput(usedForNetworkInput);
@@ -48,6 +49,5 @@ public class InputFieldNeuralDataSet extends BasicInputField {
 	public int getOffset() {
 		return this.offset;
 	}
-	
 
 }

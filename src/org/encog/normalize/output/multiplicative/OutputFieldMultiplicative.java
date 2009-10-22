@@ -32,6 +32,10 @@ import org.encog.normalize.output.OutputFieldGrouped;
 
 public class OutputFieldMultiplicative extends OutputFieldGrouped {
 
+	public OutputFieldMultiplicative() {
+
+	}
+
 	public OutputFieldMultiplicative(final OutputFieldGroup group,
 			final InputField field) {
 		super(group, field);
@@ -40,28 +44,20 @@ public class OutputFieldMultiplicative extends OutputFieldGrouped {
 					"Must use MultiplicativeGroup with OutputFieldMultiplicative.");
 		}
 	}
-	
-	public OutputFieldMultiplicative()
-	{
-		
-	}
 
-	public double calculate(int subfield) {
+	public double calculate(final int subfield) {
 		return getSourceField().getCurrentValue()
 				/ ((MultiplicativeGroup) getGroup()).getLength();
 	}
-	
-	public int getSubfieldCount()
-	{
+
+	public int getSubfieldCount() {
 		return 1;
 	}
-	
+
 	/**
 	 * Not needed for this sort of output field.
 	 */
-	public void rowInit()
-	{		
+	public void rowInit() {
 	}
-
 
 }

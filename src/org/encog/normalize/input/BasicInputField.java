@@ -40,7 +40,7 @@ public abstract class BasicInputField implements InputField {
 	private double max = Double.NEGATIVE_INFINITY;
 	@EGIgnore
 	private double currentValue;
-	
+
 	@EGAttribute
 	private boolean usedForNetworkInput;
 
@@ -62,6 +62,10 @@ public abstract class BasicInputField implements InputField {
 		return this.min;
 	}
 
+	public boolean getUsedForNetworkInput() {
+		return this.usedForNetworkInput;
+	}
+
 	public double getValue(final int i) {
 		throw new NormalizationError("Can't call getValue on "
 				+ this.getClass().getSimpleName());
@@ -79,13 +83,8 @@ public abstract class BasicInputField implements InputField {
 		this.min = min;
 	}
 
-	public boolean getUsedForNetworkInput() {
-		return this.usedForNetworkInput;
-	}
-	public void setUsedForNetworkInput(boolean usedForNetworkInput) {
+	public void setUsedForNetworkInput(final boolean usedForNetworkInput) {
 		this.usedForNetworkInput = usedForNetworkInput;
 	}
-	
-	
 
 }

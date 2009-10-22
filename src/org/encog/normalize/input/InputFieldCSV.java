@@ -35,16 +35,16 @@ import org.encog.persist.annotations.EGReferenceable;
 public class InputFieldCSV extends BasicInputField {
 
 	private File file;
-	
+
 	@EGAttribute
 	private int offset;
 
-	public InputFieldCSV()
-	{
-		
+	public InputFieldCSV() {
+
 	}
-	
-	public InputFieldCSV(final boolean usedForNetworkInput, final File file, final int offset) {
+
+	public InputFieldCSV(final boolean usedForNetworkInput, final File file,
+			final int offset) {
 		this.file = file;
 		this.offset = offset;
 		setUsedForNetworkInput(usedForNetworkInput);
