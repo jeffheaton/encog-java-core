@@ -27,15 +27,32 @@ package org.encog.normalize.output;
 
 import org.encog.persist.annotations.EGAttribute;
 
+/**
+ * Provides very basic functionality for output fields.  Primarily provides
+ * the ideal instance variable.
+ */
 public abstract class BasicOutputField implements OutputField {
 
+	/**
+	 * Is this field part of the ideal data uses to train the
+	 * neural network.
+	 */
 	@EGAttribute
 	private boolean ideal;
 
+	/**
+	 * @return Is this field part of the ideal data uses to train the
+	 * neural network.
+	 */
 	public boolean isIdeal() {
 		return this.ideal;
 	}
 
+	/**
+	 * Set if this is an ideal field.
+	 * @param ideal Is this field part of the ideal data uses to train the
+	 * neural network.
+	 */
 	public void setIdeal(final boolean ideal) {
 		this.ideal = ideal;
 	}

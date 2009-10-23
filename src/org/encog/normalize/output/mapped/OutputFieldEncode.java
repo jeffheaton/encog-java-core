@@ -31,21 +31,52 @@ import java.util.List;
 import org.encog.normalize.input.InputField;
 import org.encog.normalize.output.BasicOutputField;
 
+/**
+ * An encoded output field.  This allows ranges of output values to be
+ * mapped to specific values.
+ */
 public class OutputFieldEncode extends BasicOutputField {
 
+	/**
+	 * The source field.
+	 */
 	private final InputField sourceField;
+	
+	/**
+	 * The catch all value, if nothing matches, then use this value.
+	 */
 	private double catchAll;
+	
+	/**
+	 * The ranges.
+	 */
 	private final List<MappedRange> ranges = new ArrayList<MappedRange>();
 
+	/**
+	 * Construct an encoded field.
+	 * @param sourceField The field that this is based on.
+	 */
 	public OutputFieldEncode(final InputField sourceField) {
 		this.sourceField = sourceField;
 	}
 
+	/**
+	 * Add a ranged mapped to a value.
+	 * @param low The low value for the range.
+	 * @param high The high value for the range.
+	 * @param value The value that the field should produce for this range.
+	 */
 	public void addRange(final double low, final double high, final double value) {
 		final MappedRange range = new MappedRange(low, high, value);
 		this.ranges.add(range);
 	}
 
+	/**
+	 * Calculate the value for this field.
+	 * @param subfield Not used.
+	 * @return Return the value for the range the input falls within, or return
+	 * the catchall if nothing matches.
+	 */
 	public double calculate(final int subfield) {
 		for (final MappedRange range : this.ranges) {
 			if (range.inRange(this.sourceField.getCurrentValue())) {
@@ -56,14 +87,23 @@ public class OutputFieldEncode extends BasicOutputField {
 		return this.catchAll;
 	}
 
+	/**
+	 * @return The catch all value that will be retruned if nothing matches.
+	 */
 	public double getCatchAll() {
 		return this.catchAll;
 	}
 
+	/**
+	 * @return The source field.
+	 */
 	public InputField getSourceField() {
 		return this.sourceField;
 	}
 
+	/**
+	 * @return Return 1, no subfield supported.
+	 */
 	public int getSubfieldCount() {
 		return 1;
 	}
@@ -74,6 +114,11 @@ public class OutputFieldEncode extends BasicOutputField {
 	public void rowInit() {
 	}
 
+	/**
+	 * Set the catch all vaule.
+	 * @param catchAll The catch all value that is to be returned if none
+	 * of the ranges match.
+	 */
 	public void setCatchAll(final double catchAll) {
 		this.catchAll = catchAll;
 	}

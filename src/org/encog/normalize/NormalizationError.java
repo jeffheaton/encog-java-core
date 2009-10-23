@@ -29,10 +29,16 @@ import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Used for normalization errors.
+ * 
+ * @author jheaton
+ * 
+ */
 public class NormalizationError extends EncogError {
 
 	/**
-	 * 
+	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1454192534753095149L;
 	/**

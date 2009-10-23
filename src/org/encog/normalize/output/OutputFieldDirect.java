@@ -28,19 +28,38 @@ package org.encog.normalize.output;
 import org.encog.normalize.input.InputField;
 import org.encog.persist.annotations.EGReference;
 
+/**
+ * A direct output field, will simply pass the input value to the output.
+ */
 public class OutputFieldDirect extends BasicOutputField {
 
+	/**
+	 * The source field.
+	 */
 	@EGReference
 	private final InputField sourceField;
 
+	/**
+	 * Construct a direct output field.
+	 * @param sourceField The source field to pass directly on.
+	 */
 	public OutputFieldDirect(final InputField sourceField) {
 		this.sourceField = sourceField;
 	}
 
+	/**
+	 * Calculate the value for this field. This will simply be the
+	 * value from the input field. 
+	 * @param subfield Not used, as this output field type does not
+	 * support subfields.
+	 */
 	public double calculate(final int subfield) {
 		return this.sourceField.getCurrentValue();
 	}
 
+	/**
+	 * @return Always returns 1, as subfields are not used.
+	 */
 	public int getSubfieldCount() {
 		return 1;
 	}

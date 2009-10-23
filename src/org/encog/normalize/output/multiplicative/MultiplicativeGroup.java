@@ -28,14 +28,29 @@ package org.encog.normalize.output.multiplicative;
 import org.encog.normalize.output.BasicOutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 
+/**
+ * Used to group multiplicative fields together.
+ */
 public class MultiplicativeGroup extends BasicOutputFieldGroup {
 
+	/**
+	 * The "length" of this field.
+	 */
 	private double length;
 
+	/**
+	 * @return The length of this field.  This is the sum of the squares of
+	 * all of the groupped fields.  The square root of this sum is the 
+	 * length. 
+	 */
 	public double getLength() {
 		return this.length;
 	}
 
+	/**
+	 * Called to init this group for a new field.  This recalculates the
+	 * "length".
+	 */
 	public void rowInit() {
 		double value = 0;
 

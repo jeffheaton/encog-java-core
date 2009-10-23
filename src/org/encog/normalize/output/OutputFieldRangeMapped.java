@@ -30,20 +30,43 @@ import org.encog.normalize.input.InputField;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReference;
 
+/**
+ * A ranged mapped output field.  This will scale the input so that it
+ * is between the high and low value.
+ */
 public class OutputFieldRangeMapped extends BasicOutputField {
 
+	/**
+	 * The input field to scale.
+	 */
 	@EGReference
 	private InputField field;
 
+	/**
+	 * The low value of the field.
+	 */
 	@EGAttribute
 	private double low;
+	
+	/**
+	 * The high value of the field.
+	 */
 	@EGAttribute
 	private double high;
 
+	/**
+	 * Default constructor, used mainly for reflection.
+	 */
 	public OutputFieldRangeMapped() {
 
 	}
 
+	/**
+	 * Construct a range mapped output field.
+	 * @param field The input field to base this on.
+	 * @param low The low value.
+	 * @param high The high value.
+	 */
 	public OutputFieldRangeMapped(final InputField field, final double low,
 			final double high) {
 		this.field = field;
@@ -51,24 +74,40 @@ public class OutputFieldRangeMapped extends BasicOutputField {
 		this.high = high;
 	}
 
+	/**
+	 * Calculate this output field.
+	 * @param subfield Not used.
+	 */
 	public double calculate(final int subfield) {
 		return ((this.field.getCurrentValue() - this.field.getMin()) / (this.field
 				.getMax() - this.field.getMin()))
 				* (this.high - this.low) + this.low;
 	}
 
+	/**
+	 * @return The field that this output is based on.
+	 */
 	public InputField getField() {
 		return this.field;
 	}
 
+	/**
+	 * @return The high value of the range to map into.
+	 */
 	public double getHigh() {
 		return this.high;
 	}
 
+	/**
+	 * @return The low value of the range to map into.
+	 */
 	public double getLow() {
 		return this.low;
 	}
 
+	/**
+	 * @return This field only produces one value, so this will return 1.
+	 */
 	public int getSubfieldCount() {
 		return 1;
 	}

@@ -28,17 +28,37 @@ package org.encog.normalize.output;
 import org.encog.normalize.input.InputField;
 import org.encog.persist.annotations.EGReference;
 
+/**
+ * Defines an output field that can be grouped.  Groupable classes
+ * will extend this class.
+ *
+ */
 public abstract class OutputFieldGrouped extends BasicOutputField {
 
+	/**
+	 * The group that this field is a member of.
+	 */
 	@EGReference
 	private OutputFieldGroup group;
 
+	/**
+	 * The source field, this is the input field that provides data
+	 * for this output field.
+	 */
 	@EGReference
 	private InputField sourceField;
 
+	/**
+	 * Default constructor, used mainly for reflection.
+	 */
 	public OutputFieldGrouped() {
 	}
 
+	/**
+	 * Construct a grouped output field.
+	 * @param group The group that this field belongs to.
+	 * @param sourceField The source field for this output field.
+	 */
 	public OutputFieldGrouped(final OutputFieldGroup group,
 			final InputField sourceField) {
 		this.group = group;
@@ -46,10 +66,16 @@ public abstract class OutputFieldGrouped extends BasicOutputField {
 		this.group.getGroupedFields().add(this);
 	}
 
+	/**
+	 * @return The group that this field belongs to.
+	 */
 	public OutputFieldGroup getGroup() {
 		return this.group;
 	}
 
+	/**
+	 * @return The source field for this output field.
+	 */
 	public InputField getSourceField() {
 		return this.sourceField;
 	}

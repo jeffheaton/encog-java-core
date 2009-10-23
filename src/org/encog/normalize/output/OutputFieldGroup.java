@@ -27,10 +27,26 @@ package org.encog.normalize.output;
 
 import java.util.Collection;
 
+/**
+ * Output fields can be grouped together if they are calcualted together.
+ * This interface defines how a field group works.
+ *
+ */
 public interface OutputFieldGroup {
+	
+	/**
+	 * Add an output field to the group.
+	 * @param field The field to add.
+	 */
 	public void addField(OutputFieldGrouped field);
 
+	/**
+	 * @return All of the output fields in this group.
+	 */
 	public Collection<OutputFieldGrouped> getGroupedFields();
 
+	/**
+	 * Init the group for a new row.
+	 */
 	public void rowInit();
 }

@@ -31,18 +31,38 @@ import java.io.File;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReferenceable;
 
+/**
+ * An input field based on a CSV file.
+ */
 @EGReferenceable
 public class InputFieldCSV extends BasicInputField {
 
+	/**
+	 * The file to read.
+	 */
 	private File file;
 
+	/**
+	 * The CSV column represented by this field.
+	 */
 	@EGAttribute
 	private int offset;
 
+	/**
+	 * Construct an InputFieldCSV with the default constructor.  This is mainly
+	 * used for reflection.
+	 */
 	public InputFieldCSV() {
 
 	}
 
+	/**
+	 * Construct a input field for a CSV file.
+	 * @param usedForNetworkInput True if this field is used for actual input
+	 * to the neural network, as opposed to segregation only.
+	 * @param file The tile to read.
+	 * @param offset The CSV file column to read.
+	 */
 	public InputFieldCSV(final boolean usedForNetworkInput, final File file,
 			final int offset) {
 		this.file = file;
@@ -50,10 +70,16 @@ public class InputFieldCSV extends BasicInputField {
 		setUsedForNetworkInput(usedForNetworkInput);
 	}
 
+	/**
+	 * @return The file being read.
+	 */
 	public File getFile() {
 		return this.file;
 	}
 
+	/**
+	 * @return The column in this CSV file to read.
+	 */
 	public int getOffset() {
 		return this.offset;
 	}

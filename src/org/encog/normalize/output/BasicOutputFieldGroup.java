@@ -30,15 +30,30 @@ import java.util.Collection;
 
 import org.encog.persist.annotations.EGReference;
 
+/**
+ * Provides very basic functionality that other output field groups
+ * will use.  Mainly provides the list of fields that are grouped.
+ *
+ */
 public abstract class BasicOutputFieldGroup implements OutputFieldGroup {
 
+	/**
+	 * The fields in this group.
+	 */
 	@EGReference
 	private final Collection<OutputFieldGrouped> fields = new ArrayList<OutputFieldGrouped>();
 
+	/**
+	 * Add a field to this group.
+	 * @param field The field to add to the group.
+	 */
 	public void addField(final OutputFieldGrouped field) {
 		this.fields.add(field);
 	}
 
+	/**
+	 * @return The list of grouped fields.
+	 */
 	public Collection<OutputFieldGrouped> getGroupedFields() {
 		return this.fields;
 	}

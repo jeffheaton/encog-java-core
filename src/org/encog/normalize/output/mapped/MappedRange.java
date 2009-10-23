@@ -27,15 +27,35 @@ package org.encog.normalize.output.mapped;
 
 import org.encog.persist.annotations.EGAttribute;
 
+/**
+ * Simple class that is used internally to hold a range mapping.
+ */
 public class MappedRange {
 
+	/**
+	 * The low value for the range.
+	 */
 	@EGAttribute
 	private final double low;
+	
+	/**
+	 * The high value for the range.
+	 */
 	@EGAttribute
 	private final double high;
+	
+	/**
+	 * The value that should be returned for this range.
+	 */
 	@EGAttribute
 	private final double value;
 
+	/**
+	 * Construct the range mapping.
+	 * @param low The low value for the range.
+	 * @param high The high value for the range.
+	 * @param value The value that this range represents.
+	 */
 	public MappedRange(final double low, final double high, final double value) {
 		super();
 		this.low = low;
@@ -47,14 +67,25 @@ public class MappedRange {
 		return this.high;
 	}
 
+	/**
+	 * @return The low value for this range.
+	 */
 	public double getLow() {
 		return this.low;
 	}
 
+	/**
+	 * @return The value that this range represents.
+	 */
 	public double getValue() {
 		return this.value;
 	}
 
+	/**
+	 * Determine if the specified value is in the range.
+	 * @param d The value to check.
+	 * @return True if this value is within the range.
+	 */
 	public boolean inRange(final double d) {
 		if ((d >= this.low) && (d <= this.high)) {
 			return true;

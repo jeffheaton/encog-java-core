@@ -25,6 +25,19 @@
  */
 package org.encog.normalize.input;
 
+/**
+ * Is this input field of a fixed length, such as an array?  Or is it
+ * read "iterator style" where we call "next" until there is no more 
+ * data.  If the length can be "known" ahead of time, then the input 
+ * field should support this interface.
+ * @author jheaton
+ *
+ */
 public interface HasFixedLength {
+	
+	/**
+	 * @return The number of records in this input field.
+	 * @return
+	 */
 	public int length();
 }

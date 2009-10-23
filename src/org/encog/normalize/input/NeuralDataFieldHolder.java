@@ -29,11 +29,36 @@ import java.util.Iterator;
 
 import org.encog.neural.data.NeuralDataPair;
 
+/**
+ * Simple holder class used internally for Encog.
+ * Used as a holder for a:
+ * 
+ *  NeuralDataPair
+ *  Iterator
+ *  InputFieldNeuralDataSet
+ */
 public class NeuralDataFieldHolder {
+	
+	/**
+	 * A neural data pair.
+	 */
 	private NeuralDataPair pair;
+	
+	/**
+	 * An iterator.
+	 */
 	private final Iterator<NeuralDataPair> iterator;
+	
+	/**
+	 * A field.
+	 */
 	private final InputFieldNeuralDataSet field;
 
+	/**
+	 * Construct the class.
+	 * @param iterator An iterator.
+	 * @param field A field.
+	 */
 	public NeuralDataFieldHolder(final Iterator<NeuralDataPair> iterator,
 			final InputFieldNeuralDataSet field) {
 		super();
@@ -41,22 +66,38 @@ public class NeuralDataFieldHolder {
 		this.field = field;
 	}
 
+	/**
+	 * @return The field.
+	 */
 	public InputFieldNeuralDataSet getField() {
 		return this.field;
 	}
 
+	/**
+	 * @return The iterator.
+	 */
 	public Iterator<NeuralDataPair> getIterator() {
 		return this.iterator;
 	}
 
+	/**
+	 * @return The pair.
+	 */
 	public NeuralDataPair getPair() {
 		return this.pair;
 	}
 
+	/**
+	 * Obtain the next pair.
+	 */
 	public void obtainPair() {
 		this.pair = this.iterator.next();
 	}
 
+	/**
+	 * Set the pair.
+	 * @param pair The pair.
+	 */
 	public void setPair(final NeuralDataPair pair) {
 		this.pair = pair;
 	}

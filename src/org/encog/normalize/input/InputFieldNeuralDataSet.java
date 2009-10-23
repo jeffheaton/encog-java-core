@@ -29,12 +29,31 @@ package org.encog.normalize.input;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.persist.annotations.EGUnsupported;
 
+/**
+ * An input field based on an Encog NeuralDataSet.
+ *
+ */
 @EGUnsupported
 public class InputFieldNeuralDataSet extends BasicInputField {
 
+	/**
+	 * The data set.
+	 */
 	private final NeuralDataSet data;
+	
+	/**
+	 * The input or ideal index.  This treats the input and ideal as one
+	 * long array, concatenated together.
+	 */
 	private final int offset;
 
+	/**
+	 * Construct a input field based on a NeuralDataSet.
+	 * @param usedForNetworkInput 
+	 * @param data The data set to use.
+	 * @param offset The input or ideal index to use. This treats the input 
+	 * and ideal as one long array, concatenated together.
+	 */
 	public InputFieldNeuralDataSet(final boolean usedForNetworkInput,
 			final NeuralDataSet data, final int offset) {
 		this.data = data;
@@ -42,10 +61,17 @@ public class InputFieldNeuralDataSet extends BasicInputField {
 		setUsedForNetworkInput(usedForNetworkInput);
 	}
 
+	/**
+	 * @return The neural data set to read.
+	 */
 	public NeuralDataSet getNeuralDataSet() {
 		return this.data;
 	}
 
+	/**
+	 * @return The field to be accessed. This treats the input and 
+	 * ideal as one long array, concatenated together.
+	 */
 	public int getOffset() {
 		return this.offset;
 	}
