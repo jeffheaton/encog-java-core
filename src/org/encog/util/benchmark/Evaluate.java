@@ -28,6 +28,7 @@ package org.encog.util.benchmark;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.multi.MultiPropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
 /**
@@ -96,6 +97,24 @@ public final class Evaluate {
 		for (int i = 1; i < Evaluate.TRYS; i++) {
 			final long start = System.currentTimeMillis();
 			train.iteration();
+			final long time = System.currentTimeMillis() - start;
+			if (time < result) {
+				result = time;
+			}
+		}
+		return result / Evaluate.MILIS;
+	}
+	
+	public static double evaluateMPROP(final BasicNetwork network,
+			final NeuralDataSet training) {
+		// train the neural network
+		final Train train = new ResilientPropagation(network, training);
+		long result = Long.MAX_VALUE;
+
+		for (int i = 1; i < Evaluate.TRYS; i++) {
+			final long start = System.currentTimeMillis();
+			train.iteration();
+			System.out.println(train.getError());
 			final long time = System.currentTimeMillis() - start;
 			if (time < result) {
 				result = time;

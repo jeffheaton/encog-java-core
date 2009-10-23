@@ -30,13 +30,12 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.util.randomize.RangeRandomizer;
+import org.encog.util.math.LinearCongruentialGenerator;
 
 /**
- * Class used to generate random training sets.
- * 
- * @author jheaton
- * 
+ * Class used to generate random training sets.  This will always generate
+ * the same number outputs, as it always uses the same seed values.  This
+ * allows for the consistent results needed by the benchmark.
  */
 public final class RandomTrainingFactory {
 
@@ -57,18 +56,21 @@ public final class RandomTrainingFactory {
 	 */
 	public static NeuralDataSet generate(final int count, final int inputCount,
 			final int idealCount, final double min, final double max) {
+		
+		LinearCongruentialGenerator rand = new LinearCongruentialGenerator(1000);
+		
 		final NeuralDataSet result = new BasicNeuralDataSet();
 		for (int i = 0; i < count; i++) {
 			final NeuralData inputData = new BasicNeuralData(inputCount);
 
 			for (int j = 0; j < inputCount; j++) {
-				inputData.setData(j, RangeRandomizer.randomize(min, max));
+				inputData.setData(j, rand.range(min, max));
 			}
 
 			final NeuralData idealData = new BasicNeuralData(inputCount);
 
 			for (int j = 0; j < idealCount; j++) {
-				idealData.setData(j, RangeRandomizer.randomize(min, max));
+				idealData.setData(j, rand.range(min, max));
 			}
 
 			final BasicNeuralDataPair pair = new BasicNeuralDataPair(inputData,
