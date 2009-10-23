@@ -67,7 +67,7 @@ public final class RandomTrainingFactory {
 				inputData.setData(j, rand.range(min, max));
 			}
 
-			final NeuralData idealData = new BasicNeuralData(inputCount);
+			final NeuralData idealData = new BasicNeuralData(idealCount);
 
 			for (int j = 0; j < idealCount; j++) {
 				idealData.setData(j, rand.range(min, max));

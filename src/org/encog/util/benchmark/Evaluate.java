@@ -106,21 +106,21 @@ public final class Evaluate {
 	}
 	
 	public static double evaluateMPROP(final BasicNetwork network,
-			final NeuralDataSet training) {
+			final NeuralDataSet training, final double error) {
 		// train the neural network
+		//final Train train = new MultiPropagation(network, training);
 		final Train train = new ResilientPropagation(network, training);
-		long result = Long.MAX_VALUE;
 
-		for (int i = 1; i < Evaluate.TRYS; i++) {
-			final long start = System.currentTimeMillis();
+		final long start = System.currentTimeMillis();
+		do {
 			train.iteration();
 			System.out.println(train.getError());
-			final long time = System.currentTimeMillis() - start;
-			if (time < result) {
-				result = time;
-			}
-		}
-		return result / Evaluate.MILIS;
+		} while( train.getError()>error );
+		
+		train.finishTraining();
+		
+		final long time = System.currentTimeMillis() - start;
+		return time / Evaluate.MILIS;
 	}
 
 	/**

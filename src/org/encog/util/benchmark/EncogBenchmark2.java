@@ -91,7 +91,7 @@ public class EncogBenchmark2 {
 	/**
 	 * The number of output neurons.
 	 */
-	private static final int OUTPUT_COUNT = 20;
+	private static final int OUTPUT_COUNT = 40;
 
 	/**
 	 * The number of hidden neurons.
@@ -126,7 +126,7 @@ public class EncogBenchmark2 {
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 
 		final NeuralDataSet training = RandomTrainingFactory.generate(10000,
-				20, 20, -1, 1);
+				EncogBenchmark2.INPUT_COUNT, EncogBenchmark2.OUTPUT_COUNT, -1, 1);
 
 		final double result = Evaluate.evaluateNetwork(network, training);
 		this.report.report(EncogBenchmark2.STEPS, EncogBenchmark2.STEP2,
@@ -148,7 +148,7 @@ public class EncogBenchmark2 {
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 
 		final NeuralDataSet training = RandomTrainingFactory.generate(10000,
-				20, 20, -1, 1);
+				EncogBenchmark2.INPUT_COUNT, EncogBenchmark2.OUTPUT_COUNT, -1, 1);
 
 		final double result = Evaluate.evaluateNetwork(network, training);
 		this.report.report(EncogBenchmark2.STEPS, EncogBenchmark2.STEP3,
@@ -171,7 +171,7 @@ public class EncogBenchmark2 {
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 
 		final NeuralDataSet training = RandomTrainingFactory.generate(10000,
-				20, 20, -1, 1);
+				EncogBenchmark2.INPUT_COUNT, EncogBenchmark2.OUTPUT_COUNT, -1, 1);
 
 		final double result = Evaluate.evaluateNetwork(network, training);
 		this.report.report(EncogBenchmark2.STEPS, EncogBenchmark2.STEP4,
@@ -212,9 +212,9 @@ public class EncogBenchmark2 {
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 
 		final NeuralDataSet training = RandomTrainingFactory.generate(10000,
-				20, 20, -1, 1);
+				EncogBenchmark2.INPUT_COUNT, EncogBenchmark2.OUTPUT_COUNT, -1, 1);
 
-		final double result = Evaluate.evaluateTrain(network, training);
+		final double result = Evaluate.evaluateMPROP(network, training, 0.58);
 		this.report.report(EncogBenchmark2.STEPS, EncogBenchmark2.STEP5,
 				"Train 0 hidden layer result: " + result);
 		return result;
@@ -234,9 +234,9 @@ public class EncogBenchmark2 {
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 
 		final NeuralDataSet training = RandomTrainingFactory.generate(10000,
-				20, 20, -1, 1);
+				EncogBenchmark2.INPUT_COUNT, EncogBenchmark2.OUTPUT_COUNT, -1, 1);
 
-		final double result = Evaluate.evaluateMPROP(network, training);
+		final double result = Evaluate.evaluateMPROP(network, training,0.58);
 		this.report.report(EncogBenchmark2.STEPS, EncogBenchmark2.STEP6,
 				"Train 1 hidden layer result: " + result);
 		return result;
@@ -257,9 +257,9 @@ public class EncogBenchmark2 {
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 
 		final NeuralDataSet training = RandomTrainingFactory.generate(10000,
-				20, 20, -1, 1);
+				EncogBenchmark2.INPUT_COUNT, EncogBenchmark2.OUTPUT_COUNT, -1, 1);
 
-		final double result = Evaluate.evaluateMPROP(network, training);
+		final double result = Evaluate.evaluateMPROP(network, training,0.58);
 		this.report.report(EncogBenchmark2.STEPS, EncogBenchmark2.STEP7,
 				"Train 2 hidden layer result: " + result);
 		return result;
@@ -285,10 +285,10 @@ public class EncogBenchmark2 {
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 
 		final NeuralDataSet training = RandomTrainingFactory.generate(10000,
-				20, 20, -1, 1);
+				EncogBenchmark2.INPUT_COUNT, EncogBenchmark2.OUTPUT_COUNT, -1, 1);
 
-		final double result = Evaluate.evaluateMPROP(network, training);
-		this.report.report(EncogBenchmark2.STEPS, EncogBenchmark2.STEP1,
+		final double result = Evaluate.evaluateMPROP(network, training,0.58);
+		this.report.report(EncogBenchmark2.STEPS, EncogBenchmark2.STEP6,
 				"Training Elman result: " + result);
 		return result;
 	}
