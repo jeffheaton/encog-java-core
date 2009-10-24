@@ -473,4 +473,12 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		return this.bufferFile.length() / this.recordSize;
 	}
 
+	/**
+	 * Open a second buffered data set, useful for multithreading.
+	 * @return The additional buffered data set.
+	 */
+	public Indexable openAdditional() {
+		return new BufferedNeuralDataSet(this.bufferFile);
+	}
+
 }

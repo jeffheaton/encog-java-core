@@ -158,6 +158,16 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 			}
 		}
 	}
+	
+	/**
+	 * Construct a data set from an already created list.  Mostly used to
+	 * duplicate this class.
+	 * @param data The data to use.
+	 */
+	public BasicNeuralDataSet(final List<NeuralDataPair> data)
+	{
+		this.data = data;
+	}
 
 	/**
 	 * Add input to the training set with no expected output. This is used for
@@ -342,5 +352,13 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 
 	public long getRecordCount() {
 		return this.data.size();
+	}
+
+	/**
+	 * Create an additional data set.  It will use the same list.
+	 * @return The additional data set.
+	 */
+	public Indexable openAdditional() {
+		return new BasicNeuralDataSet(this.data);
 	}
 }

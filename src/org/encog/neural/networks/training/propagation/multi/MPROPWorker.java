@@ -2,6 +2,7 @@ package org.encog.neural.networks.training.propagation.multi;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
@@ -74,6 +75,11 @@ public class MPROPWorker implements Runnable {
 	 * synchronize with the workers.
 	 */
 	private Object iterationLock = new Object();
+	
+	/**
+	 * The training set that should be used for this worker.
+	 */
+	private Indexable training;
 
 	/**
 	 * Construct a MPROP worker.
@@ -83,9 +89,10 @@ public class MPROPWorker implements Runnable {
 	 * @param low The low training index.
 	 * @param high The high training index.
 	 */
-	public MPROPWorker(BasicNetwork network, MultiPropagation owner, long low,
+	public MPROPWorker(BasicNetwork network, Indexable training, MultiPropagation owner, long low,
 			long high) {
 		this.network = network;
+		this.training = training;
 		this.owner = owner;
 		this.low = low;
 		this.high = high;
@@ -105,7 +112,7 @@ public class MPROPWorker implements Runnable {
 		errorCalculation.reset();
 		NeuralDataPair pair = owner.createPair();
 		for (long l = this.low; l <= this.high; l++) {
-			owner.getPair(l, pair);
+			this.training.getRecord(l, pair);
 			NeuralData actual = this.propagationUtil.forwardPass(pair
 					.getInput());
 			this.propagationUtil.backwardPass(pair.getIdeal());

@@ -56,10 +56,6 @@ public class MultiPropagation extends BasicTraining {
 	 */
 	private ResilientPropagation fallback;
 
-	/**
-	 * Lock used to guarantee exclusive access to the getPair method.
-	 */
-	private Object getPairLock = new Object();
 
 	/**
 	 * Lock used to make sure that only one worker is updating the master neural
@@ -119,7 +115,8 @@ public class MultiPropagation extends BasicTraining {
 				high = ((i + 1) * sizePerThread) - 1;
 
 			BasicNetwork networkClone = (BasicNetwork) this.network.clone();
-			this.workers[i] = new MPROPWorker(networkClone, this, low, high);
+			Indexable trainingClone = this.training.openAdditional();
+			this.workers[i] = new MPROPWorker(networkClone, trainingClone, this, low, high);
 		}
 	}
 
@@ -191,20 +188,6 @@ public class MultiPropagation extends BasicTraining {
 		total /= this.workers.length;
 		this.setError(total);
 
-	}
-
-	/**
-	 * Get one item of training data.  This method will not allocate a new
-	 * NeuralDataPair, rather one should be provided that this method will
-	 * copy into.  To obtain a new NeuralDataPair object of the correct size
-	 * you should call the "createPair" method.
-	 * @param l The desired index.
-	 * @param pair The training data will be copied to this object.
-	 */
-	public void getPair(long l, NeuralDataPair pair) {
-		synchronized (this.getPairLock) {
-			this.training.getRecord(l, pair);
-		}
 	}
 
 	/**
