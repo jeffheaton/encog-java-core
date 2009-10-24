@@ -40,7 +40,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A generic class used to take an object and produce XML for it. Some of the
- * Encog persistors make use of this class.
+ * Encog persistors make use of this class. The Encog generic persistor makes
+ * use of this class.
  * 
  * @author jheaton
  * 
@@ -53,8 +54,15 @@ public class Object2XML {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * The XML writer used.
+	 */
 	private WriteXML out;
-	private ObjectTagger tagger = new ObjectTagger();
+	
+	/**
+	 * The object tagger, allows the objects to be tagged with references.
+	 */
+	private final ObjectTagger tagger = new ObjectTagger();
 
 	/**
 	 * Save the object to XML.
@@ -69,13 +77,14 @@ public class Object2XML {
 		try {
 			PersistorUtil.beginEncogObject(encogObject.getClass()
 					.getSimpleName(), out, encogObject, true);
-			
-			tagger.analyze(encogObject);
 
-			for (final Field childField : ReflectionUtil.getAllFields(encogObject.getClass())) {
+			this.tagger.analyze(encogObject);
+
+			for (final Field childField : ReflectionUtil
+					.getAllFields(encogObject.getClass())) {
 				if (ReflectionUtil.shouldAccessField(childField, true)) {
 					childField.setAccessible(true);
-					Object childValue = childField.get(encogObject);
+					final Object childValue = childField.get(encogObject);
 					out.beginTag(childField.getName());
 					saveField(childValue);
 					out.endTag();
@@ -89,80 +98,6 @@ public class Object2XML {
 
 	}
 
-	private void saveObject(Object parentObject)
-			throws IllegalArgumentException, IllegalAccessException {
-		// does this object have an ID?
-		
-		if( tagger.hasReference(parentObject) )
-		{
-			int id = tagger.getReference(parentObject);
-			out.addAttribute("id", ""+id);
-		}
-		
-		// get all fields
-		Collection<Field> allFields = ReflectionUtil.getAllFields(parentObject.getClass());
-		// handle attributes
-		for (final Field childField : allFields) {
-			childField.setAccessible(true);
-			if (ReflectionUtil.shouldAccessField(childField, false) &&
-					childField.getAnnotation(EGAttribute.class)!=null) {
-				Object childValue = childField.get(parentObject);
-				out.addAttribute(childField.getName(), childValue.toString());
-			}
-		}
-		// handle actual fields		
-		out.beginTag(parentObject.getClass().getSimpleName());
-		for (final Field childField : allFields) {
-			childField.setAccessible(true);			
-			if (ReflectionUtil.shouldAccessField(childField, false)&&
-					childField.getAnnotation(EGAttribute.class)==null) {
-				
-				Object childValue = childField.get(parentObject);
-				
-				out.beginTag(childField.getName());
-				if( childField.getAnnotation(EGReference.class)!=null)
-				{
-					saveFieldReference(childValue);
-				}
-				else
-				{					
-					saveField(childValue);
-					
-				}	
-				out.endTag();
-			}
-		}
-		out.endTag();
-	}
-	
-	private void saveFieldReference(Object fieldObject)
-	{
-		if( this.tagger.hasReference(fieldObject))
-			out.addAttribute("ref", ""+this.tagger.getReference(fieldObject));
-		else
-			out.addAttribute("ref", "");
-		
-		out.beginTag(fieldObject.getClass().getSimpleName());
-		out.endTag();
-	}
-
-	private void saveField(Object fieldObject) throws IllegalArgumentException,
-			IllegalAccessException {
-		if (fieldObject != null) {
-			if (fieldObject instanceof Collection) {
-
-				saveCollection(out, (Collection<?>) fieldObject);
-
-			} else if (ReflectionUtil.isPrimitive(fieldObject) || ReflectionUtil.isSimple(fieldObject) ) {
-				out.addText(fieldObject.toString());
-			} else if (fieldObject instanceof String) {
-				out.addText(fieldObject.toString());
-			} else {
-				saveObject(fieldObject);
-			}
-		}
-	}
-	
 	/**
 	 * Save a collection.
 	 * 
@@ -173,11 +108,101 @@ public class Object2XML {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 */
-	private void saveCollection(final WriteXML out, final Collection<?> value)
+	private void saveCollection(final Collection<?> value)
 			throws IllegalArgumentException, IllegalAccessException {
 
 		for (final Object obj : value) {
-			this.saveObject(obj);
+			saveObject(obj);
 		}
+	}
+
+	/**
+	 * Save a field.
+	 * @param fieldObject The field to save.
+	 * @throws IllegalArgumentException An error.
+	 * @throws IllegalAccessException An error.
+	 */
+	private void saveField(final Object fieldObject)
+			throws IllegalArgumentException, IllegalAccessException {
+		if (fieldObject != null) {
+			if (fieldObject instanceof Collection) {
+
+				saveCollection((Collection<?>) fieldObject);
+
+			} else if (ReflectionUtil.isPrimitive(fieldObject)
+					|| ReflectionUtil.isSimple(fieldObject)) {
+				this.out.addText(fieldObject.toString());
+			} else if (fieldObject instanceof String) {
+				this.out.addText(fieldObject.toString());
+			} else {
+				saveObject(fieldObject);
+			}
+		}
+	}
+
+	/**
+	 * Save a field by reference.
+	 * @param fieldObject The field to save.
+	 */
+	private void saveFieldReference(final Object fieldObject) {
+		if (this.tagger.hasReference(fieldObject)) {
+			this.out.addAttribute("ref", ""
+					+ this.tagger.getReference(fieldObject));
+		} else {
+			this.out.addAttribute("ref", "");
+		}
+
+		this.out.beginTag(fieldObject.getClass().getSimpleName());
+		this.out.endTag();
+	}
+
+	/**
+	 * Save an object.
+	 * @param obj The object.
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	private void saveObject(final Object obj)
+			throws IllegalArgumentException, IllegalAccessException {
+		// does this object have an ID?
+
+		if (this.tagger.hasReference(obj)) {
+			final int id = this.tagger.getReference(obj);
+			this.out.addAttribute("id", "" + id);
+		}
+
+		// get all fields
+		final Collection<Field> allFields = ReflectionUtil
+				.getAllFields(obj.getClass());
+		// handle attributes
+		for (final Field childField : allFields) {
+			childField.setAccessible(true);
+			if (ReflectionUtil.shouldAccessField(childField, false)
+					&& (childField.getAnnotation(EGAttribute.class) != null)) {
+				final Object childValue = childField.get(obj);
+				this.out.addAttribute(childField.getName(), childValue
+						.toString());
+			}
+		}
+		// handle actual fields
+		this.out.beginTag(obj.getClass().getSimpleName());
+		for (final Field childField : allFields) {
+			childField.setAccessible(true);
+			if (ReflectionUtil.shouldAccessField(childField, false)
+					&& (childField.getAnnotation(EGAttribute.class) == null)) {
+
+				final Object childValue = childField.get(obj);
+
+				this.out.beginTag(childField.getName());
+				if (childField.getAnnotation(EGReference.class) != null) {
+					saveFieldReference(childValue);
+				} else {
+					saveField(childValue);
+
+				}
+				this.out.endTag();
+			}
+		}
+		this.out.endTag();
 	}
 }

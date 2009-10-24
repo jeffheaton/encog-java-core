@@ -1,68 +1,104 @@
+/*
+ * Encog Artificial Intelligence Framework v2.x
+ * Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ * See the copyright.txt in the distribution for a full listing of 
+ * individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 package org.encog.util;
 
 import java.io.File;
 
+/**
+ * Utility to automatically generate the Encog class list file. The Encog
+ * classlist file is embedded in the JAR or DLL and provides a quick lookup from
+ * the short class name to the fully qualified class name.
+ * 
+ * This file is needed because reflection can't scan a package for contained
+ * classes. So this utility scans source directories and the resulting file is
+ * embedded in Encog.
+ */
 public class GenerateClasslist {
-	
+
 	private String base;
-	
-	public void beginScan(File dir)
-	{
+
+	/**
+	 * Scan a directory.
+	 * @param dir The directory to scan.
+	 */
+	public void beginScan(File dir) {
 		base = dir.getAbsolutePath();
 		scan(dir);
 	}
-	
-	private void processJAVA(File file)
-	{
+
+	/**
+	 * Process a Java file.
+	 * @param file The file to process.
+	 */
+	private void processJAVA(File file) {
 		String name = file.getName();
-		
+
 		// strip off the .java
 		int idx = name.indexOf('.');
-		name = name.substring(0,idx);
-		
+		name = name.substring(0, idx);
+
 		// strip the name for the directory
 		String path = file.getAbsolutePath();
 		idx = path.lastIndexOf(File.separatorChar);
-		path = path.substring(0,idx);
-		
+		path = path.substring(0, idx);
+
 		// strip off base
-		path = path.substring(base.length()+1);
-		
+		path = path.substring(base.length() + 1);
+
 		// insert .'s
 		StringBuilder temp = new StringBuilder(path);
-		for(int i=0;i<temp.length();i++)
-		{
-			if( temp.charAt(i)==File.separatorChar)
-			{
+		for (int i = 0; i < temp.length(); i++) {
+			if (temp.charAt(i) == File.separatorChar) {
 				temp.setCharAt(i, '.');
 			}
 		}
-		
-		System.out.println(temp+"."+name);
-		
+
+		System.out.println(temp + "." + name);
+
 	}
-	
-	public void scan(File dir)
-	{
+
+	public void scan(File dir) {
 		File[] files = dir.listFiles();
-		for(File file: files)
-		{
-			if( file.isFile())
-			{
+		for (File file : files) {
+			if (file.isFile()) {
 				String strFile = file.toString();
-				if( strFile.endsWith(".java"))
+				if (strFile.endsWith(".java"))
 					processJAVA(file);
-			}
-			else if( file.isDirectory())
-			{
+			} else if (file.isDirectory()) {
 				scan(file);
 			}
 		}
 	}
-	
-	public static void main(String args[])
-	{
+
+	/**
+	 * Run the utility.
+	 * @param args The directory to scan, i.e. C:\\shared\\encog-workspace\\encog-core\\src.
+	 */
+	public static void main(String args[]) {
 		GenerateClasslist gen = new GenerateClasslist();
-		gen.beginScan(new File("C:\\shared\\encog-workspace\\encog-core\\src"));
+		gen.beginScan(new File(args[0]));
 	}
 }

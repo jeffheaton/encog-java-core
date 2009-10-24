@@ -25,12 +25,12 @@ public class ObjectTagger {
 	{
 		try {
 			depth = 0;
-			tagObject(encogObject);
+			assignObjectTag(encogObject);
 			for (final Field childField : ReflectionUtil.getAllFields(encogObject.getClass())) {
 				if (ReflectionUtil.shouldAccessField(childField, true)) {
 					childField.setAccessible(true);
 					Object childValue = childField.get(encogObject);
-					saveField(childValue);
+					tagField(childValue);
 				}
 			}
 		} catch (final IllegalAccessException e) {
@@ -38,7 +38,7 @@ public class ObjectTagger {
 		}		
 	}
 
-	private void saveField(Object fieldObject) throws IllegalArgumentException,
+	private void tagField(Object fieldObject) throws IllegalArgumentException,
 			IllegalAccessException {
 		depth++;
 		
@@ -46,29 +46,29 @@ public class ObjectTagger {
 			return;
 		if (fieldObject != null) {
 			if (fieldObject instanceof Collection) {
-				saveCollection((Collection<?>) fieldObject);
+				tagCollection((Collection<?>) fieldObject);
 			} else {
-				saveObject(fieldObject);
+				tagObject(fieldObject);
 			}
 		}		
 		depth--;
 	}
 
-	private void saveCollection(final Collection<?> value)
+	private void tagCollection(final Collection<?> value)
 			throws IllegalArgumentException, IllegalAccessException {
 
 		for (final Object obj : value) {
-			saveObject(obj);
+			tagObject(obj);
 		}
 	}
 
-	private void saveObject(Object parentObject)
+	private void tagObject(Object parentObject)
 			throws IllegalArgumentException, IllegalAccessException {
 
 		Collection<Field> allFields = ReflectionUtil.getAllFields(parentObject
 				.getClass());
 		
-		tagObject(parentObject);
+		assignObjectTag(parentObject);
 
 		// handle actual fields
 		for (final Field childField : allFields) {
@@ -86,13 +86,13 @@ public class ObjectTagger {
 					}
 					
 					if (!this.map.containsKey(childValue))
-						saveField(childValue);
+						tagField(childValue);
 				}
 			}
 		}
 	}
 	
-	private void tagObject(Object obj) {
+	private void assignObjectTag(Object obj) {
 		if( obj.getClass().getAnnotation(EGReferenceable.class)!=null) {
 			this.map.put(obj, this.currentID);
 			this.currentID++;
