@@ -5,8 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) // Make this annotation accessible at runtime via reflection.
-@Target({ElementType.TYPE})       // This annotation can only be applied to classes.
+/**
+ * This annotation is used with Encog generic persistence. It specifies that
+ * Encog persistence is not supported for this object type.
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target( { ElementType.TYPE })
 public @interface EGUnsupported {
 
 }

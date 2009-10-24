@@ -5,8 +5,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Retention(RetentionPolicy.RUNTIME) // Make this annotation accessible at runtime via reflection.
-@Target({ElementType.FIELD})       // This annotation can only be applied to class methods.
+/**
+ * This annotation is used with Encog generic persistence. It allows a field to
+ * be flagged as something that should be persisted as a reference.
+ * 
+ */
+@Retention(RetentionPolicy.RUNTIME)
+@Target( { ElementType.FIELD })
 public @interface EGReference {
 
 }
