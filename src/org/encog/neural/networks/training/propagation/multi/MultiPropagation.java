@@ -103,6 +103,7 @@ public class MultiPropagation extends BasicTraining {
 			return;
 		}
 
+		// create the workers
 		for (int i = 0; i < this.threadCount; i++) {
 			long low = i * sizePerThread;
 			long high;
@@ -118,6 +119,13 @@ public class MultiPropagation extends BasicTraining {
 			Indexable trainingClone = this.training.openAdditional();
 			this.workers[i] = new MPROPWorker(networkClone, trainingClone, this, low, high);
 		}
+		
+		// link the workers in a ring
+		for(int i=0;i<this.threadCount-1;i++)
+		{
+			this.workers[i].setNext(this.workers[i+1]);
+		}
+		this.workers[this.threadCount-1].setNext(this.workers[0]);
 	}
 
 	/**

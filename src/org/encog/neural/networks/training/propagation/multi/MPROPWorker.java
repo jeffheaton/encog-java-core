@@ -13,11 +13,11 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 import org.encog.util.ErrorCalculation;
 
 /**
- * Worker process for MPROP training.  Each worker is given a segment of the
- * training data.  The workers then train individual neural networks based on
- * this training set.  Results are merged back with the main neural network 
- * each iteration.
- *
+ * Worker process for MPROP training. Each worker is given a segment of the
+ * training data. The workers then train individual neural networks based on
+ * this training set. Results are merged back with the main neural network each
+ * iteration.
+ * 
  */
 public class MPROPWorker implements Runnable {
 
@@ -25,72 +25,83 @@ public class MPROPWorker implements Runnable {
 	 * The object that owns this worker.
 	 */
 	private MultiPropagation owner;
-	
+
 	/**
 	 * The local thread network that is being trained.
 	 */
 	private BasicNetwork network;
-	
+
 	/**
 	 * The high index point in the training data to be used by this individual
 	 * worker.
 	 */
 	private long high;
-	
+
 	/**
 	 * The low index point in the training data to be used by this individual
 	 * worker.
 	 */
 	private long low;
-	
+
 	/**
 	 * The RPROP method being used by this worker.
 	 */
 	private ResilientPropagationMethod method;
-	
+
 	/**
 	 * The propagation utility being used by this worker.
 	 */
 	private PropagationUtil propagationUtil;
-	
+
 	/**
 	 * The error calculation object used for this thread.
 	 */
 	private final ErrorCalculation errorCalculation = new ErrorCalculation();
-	
+
 	/**
 	 * The calculated error for the last iteration of this worker.
 	 */
 	private double error;
-	
+
 	/**
-	 * Are we done?  If this is true, then this worker should shut down
-	 * at the end of this iteration.
+	 * Are we done? If this is true, then this worker should shut down at the
+	 * end of this iteration.
 	 */
 	private AtomicBoolean done = new AtomicBoolean(false);
-	
+
 	/**
-	 * A lock that is released at the end of each training iteration.
-	 * This allows the iteration in the MultiPropagation object to 
-	 * synchronize with the workers.
+	 * A lock that is released at the end of each training iteration. This
+	 * allows the iteration in the MultiPropagation object to synchronize with
+	 * the workers.
 	 */
 	private Object iterationLock = new Object();
-	
+
 	/**
 	 * The training set that should be used for this worker.
 	 */
 	private Indexable training;
 
 	/**
-	 * Construct a MPROP worker.
-	 * @param network The individual network for this worker, this is cloned
-	 * from the master.
-	 * @param owner The MultiPropagation object that this worker belongs to.
-	 * @param low The low training index.
-	 * @param high The high training index.
+	 * THe next worker, useful for SRN networks where context layers must be
+	 * linked. These form a ring, with the last worker linking to the first.
 	 */
-	public MPROPWorker(BasicNetwork network, Indexable training, MultiPropagation owner, long low,
-			long high) {
+	private MPROPWorker next;
+
+	/**
+	 * Construct a MPROP worker.
+	 * 
+	 * @param network
+	 *            The individual network for this worker, this is cloned from
+	 *            the master.
+	 * @param owner
+	 *            The MultiPropagation object that this worker belongs to.
+	 * @param low
+	 *            The low training index.
+	 * @param high
+	 *            The high training index.
+	 */
+	public MPROPWorker(BasicNetwork network, Indexable training,
+			MultiPropagation owner, long low, long high) {
 		this.network = network;
 		this.training = training;
 		this.owner = owner;
@@ -105,8 +116,7 @@ public class MPROPWorker implements Runnable {
 	}
 
 	/**
-	 * Perform one training iteration for this worker.  Called internally
-	 * only.
+	 * Perform one training iteration for this worker. Called internally only.
 	 */
 	private void iteration() {
 		errorCalculation.reset();
@@ -121,15 +131,15 @@ public class MPROPWorker implements Runnable {
 		this.setError(errorCalculation.calculateRMS());
 		this.propagationUtil.getMethod().learn();
 		this.owner.updateNetwork(this);
-		
-		synchronized(this.iterationLock) {
+
+		synchronized (this.iterationLock) {
 			this.iterationLock.notifyAll();
 		}
 	}
 
 	/**
-	 * The thread entry point.  This will execute iterations until
-	 * a shutdown is requested.
+	 * The thread entry point. This will execute iterations until a shutdown is
+	 * requested.
 	 */
 	public void run() {
 
@@ -150,7 +160,9 @@ public class MPROPWorker implements Runnable {
 
 	/**
 	 * Set the error for this worker.
-	 * @param error The error.
+	 * 
+	 * @param error
+	 *            The error.
 	 */
 	public synchronized void setError(double error) {
 		this.error = error;
@@ -164,17 +176,17 @@ public class MPROPWorker implements Runnable {
 	}
 
 	/**
-	 * Called to request that this worker shut down.  This set's the 
-	 * done instance variable to true.
+	 * Called to request that this worker shut down. This set's the done
+	 * instance variable to true.
 	 */
 	public void requestShutdown() {
 		this.done.set(true);
 	}
 
 	/**
-	 * Wait for one training iteration to complete in this worker.  This
-	 * allows the main MultiPropagation object to wait for one iteration
-	 * to pass in each of the workers.
+	 * Wait for one training iteration to complete in this worker. This allows
+	 * the main MultiPropagation object to wait for one iteration to pass in
+	 * each of the workers.
 	 */
 	public void waitForIteration() {
 		synchronized (this.iterationLock) {
@@ -185,5 +197,21 @@ public class MPROPWorker implements Runnable {
 			}
 		}
 	}
+
+	/**
+	 * @return The next worker in the ring.
+	 */
+	public MPROPWorker getNext() {
+		return next;
+	}
+
+	/**
+	 * @param next The previous worker in the ring.
+	 */
+	public void setNext(MPROPWorker next) {
+		this.next = next;
+	}
+	
+	
 
 }
