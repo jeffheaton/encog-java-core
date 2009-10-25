@@ -1,5 +1,7 @@
 package org.encog.neural.networks.training.propagation.multi;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.encog.neural.data.Indexable;
@@ -9,9 +11,14 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkCODEC;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
+import org.encog.neural.networks.training.propagation.PropagationLevel;
+import org.encog.neural.networks.training.propagation.PropagationSynapse;
+import org.encog.neural.networks.training.propagation.PropagationUtil;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagationMethod;
 
 /**
  * MPROP - Multipropagation Training.  This is a training technique being
@@ -63,10 +70,19 @@ public class MultiPropagation extends BasicTraining {
 	 */
 	private Object updateLock = new Object();
 
+
 	/**
-	 * Latch to track all of the threads as they shut down.
+	 * The RPROP method being used by the master network.
 	 */
-	private CountDownLatch shutDownLatch;
+	private ResilientPropagationMethod method;
+
+	/**
+	 * The propagation utility being used by the master network.
+	 */
+	private PropagationUtil propagationUtil;
+	
+	private GradientMap map;
+	
 
 	/**
 	 * Construct a MPROP trainer using the specified number of threads. You can
@@ -87,11 +103,23 @@ public class MultiPropagation extends BasicTraining {
 					"Must use a training set that implements Indexable for multipropagation.");
 		}
 
+		
+		// store params
 		this.threadCount = threadCount;
 		this.training = (Indexable) training;
 		this.network = network;
 		this.threadsStarted = false;
 
+		// create the master RPROP method and util
+		
+		this.method = new ResilientPropagationMethod(
+				ResilientPropagation.DEFAULT_ZERO_TOLERANCE,
+				ResilientPropagation.DEFAULT_MAX_STEP,
+				ResilientPropagation.DEFAULT_INITIAL_UPDATE);
+		this.propagationUtil = new PropagationUtil(network, method);
+		
+		
+		// setup the workers
 		this.workers = new MPROPWorker[threadCount];
 
 		long size = this.training.getRecordCount();
@@ -126,6 +154,9 @@ public class MultiPropagation extends BasicTraining {
 			this.workers[i].setNext(this.workers[i+1]);
 		}
 		this.workers[this.threadCount-1].setNext(this.workers[0]);
+		
+		// build the gradient map
+		this.map = new GradientMap(this.propagationUtil,this);
 	}
 
 	/**
@@ -144,16 +175,6 @@ public class MultiPropagation extends BasicTraining {
 						.getRuntime().availableProcessors() + 1);
 	}
 
-	/**
-	 * Called internally to start the worker threads.
-	 */
-	private void startThreads() {
-		this.threadsStarted = true;
-		for (int i = 0; i < this.workers.length; i++) {
-			Thread t = new Thread(this.workers[i]);
-			t.start();
-		}
-	}
 
 	/**
 	 * @return The trained neural network. Make sure you call "finishTraining"
@@ -176,26 +197,78 @@ public class MultiPropagation extends BasicTraining {
 	 * about their own iterations.  
 	 */
 	public void iteration() {
-
-		if (this.fallback != null) {
+		
+		if( this.fallback!=null )
+		{
 			this.fallback.iteration();
 			this.setError(this.fallback.getError());
 			return;
 		}
+		
+		Thread[] threadList = new Thread[this.workers.length];
+		
+		// start the threads
+		this.threadsStarted = true;
+		for (int i = 0; i < threadList.length; i++) {
+			threadList[i] = new Thread(this.workers[i]);
+			threadList[i].start();
+		}
+		
+		// wait for the threads to die
+		double totalError = 0;
+		for (int i = 0; i < threadList.length; i++) {
+			try {
+				threadList[i].join();
+			} catch (InterruptedException e) {
+			}
+			totalError+=workers[i].getError();
+		}
+		
+		totalError/=workers.length;
+		setError(totalError);
+		
+		this.map.collect();
+		this.propagationUtil.getMethod().learn();
+		
+	}
+	
+	public void collectGradients()
+	{
+		for(MPROPWorker worker: this.workers)
+		{
+			for (final PropagationLevel level : this.propagationUtil.getLevels()) {
+				collectLevel(level);
+			}
+		}
+	}
+	
+	
 
-		if (!this.threadsStarted) {
-			this.startThreads();
+	private void collectLevel(PropagationLevel level) {
+		// teach the synapses
+		for (final PropagationSynapse synapse : level.getOutgoing()) {
+			collectSynapse(synapse);
 		}
 
-		double total = 0;
-		// get an average error
-		for (MPROPWorker worker : this.workers) {
-			worker.waitForIteration();
-			total += worker.getError();
+		// teach the threshold
+		for (final Layer layer : level.getLayers()) {
+			if (layer.hasThreshold()) {
+				collectThreshold(layer);
+			}
 		}
-		total /= this.workers.length;
-		this.setError(total);
+		
+	}
+	
+	
 
+	private void collectThreshold(Layer layer) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void collectSynapse(PropagationSynapse synapse) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	/**
@@ -222,60 +295,10 @@ public class MultiPropagation extends BasicTraining {
 		return result;
 	}
 
-	/**
-	 * The workers are all training different segments of the training data.
-	 * Each worker has its own neural network that is separate from the
-	 * master neural network stored here.  Calling updateNetwork will "merge"
-	 * the worker's neural network with the master neural network stored here.
-	 * At the end of this process, the master and the worker with both hold
-	 * identical networks that are the result of this merge.
-	 * @param worker The worker to update the master network.
-	 */
-	public void updateNetwork(MPROPWorker worker) {
-		synchronized (this.updateLock) {
-			Double[] workerNet = NetworkCODEC.networkToArray(worker
-					.getNetwork());
-			Double[] masterNet = NetworkCODEC.networkToArray(this.network);
-
-			for (int i = 0; i < masterNet.length; i++) {
-				double diff = workerNet[i] - masterNet[i];
-				diff /= 2;
-				masterNet[i] += diff;
-			}
-
-			NetworkCODEC.arrayToNetwork(masterNet, worker.getNetwork());
-			NetworkCODEC.arrayToNetwork(masterNet, this.network);
-		}
+	public MPROPWorker[] getWorkers() {
+		return workers;
 	}
-
-	/**
-	 * Should be called after training has completed and the iteration method
-	 * will not be called any further.
-	 * 
-	 * MPROP makes use of multithreading. It is VERY important that this method
-	 * be called once training is finished. This method will wait for all
-	 * threads to shut down before exiting.
-	 */
-	public void finishTraining() {
-		// create a latch and wait for workers to shut down
-		this.shutDownLatch = new CountDownLatch(this.workers.length);
-		for (MPROPWorker worker : this.workers) {
-			worker.requestShutdown();
-		}
-		try {
-			this.shutDownLatch.await();
-		} catch (InterruptedException e) {
-		}
-		// restore the training object to a point that training could be
-		// restarted
-		this.threadsStarted = false;
-	}
-
-	/**
-	 * Called by workers to notify that that worker has shut down.
-	 */
-	public void notifyShutdown() {
-		this.shutDownLatch.countDown();
-	}
+	
+	
 
 }

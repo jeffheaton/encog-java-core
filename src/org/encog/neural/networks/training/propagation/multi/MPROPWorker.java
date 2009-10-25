@@ -1,12 +1,10 @@
 package org.encog.neural.networks.training.propagation.multi;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.TrainingError;
+import org.encog.neural.networks.NetworkCODEC;
 import org.encog.neural.networks.training.propagation.PropagationUtil;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagationMethod;
@@ -64,19 +62,6 @@ public class MPROPWorker implements Runnable {
 	private double error;
 
 	/**
-	 * Are we done? If this is true, then this worker should shut down at the
-	 * end of this iteration.
-	 */
-	private AtomicBoolean done = new AtomicBoolean(false);
-
-	/**
-	 * A lock that is released at the end of each training iteration. This
-	 * allows the iteration in the MultiPropagation object to synchronize with
-	 * the workers.
-	 */
-	private Object iterationLock = new Object();
-
-	/**
 	 * The training set that should be used for this worker.
 	 */
 	private Indexable training;
@@ -87,6 +72,7 @@ public class MPROPWorker implements Runnable {
 	 */
 	private MPROPWorker next;
 
+	
 	/**
 	 * Construct a MPROP worker.
 	 * 
@@ -115,10 +101,17 @@ public class MPROPWorker implements Runnable {
 		this.errorCalculation.reset();
 	}
 
+
 	/**
-	 * Perform one training iteration for this worker. Called internally only.
+	 * The thread entry point. This will execute iterations until a shutdown is
+	 * requested.
 	 */
-	private void iteration() {
+	public void run() {
+
+		Double[] masterWeights = NetworkCODEC.networkToArray( this.owner.getNetwork() );
+		NetworkCODEC.arrayToNetwork(masterWeights, this.network);
+		
+		// perform the training for this iteration
 		errorCalculation.reset();
 		NeuralDataPair pair = owner.createPair();
 		for (long l = this.low; l <= this.high; l++) {
@@ -128,27 +121,8 @@ public class MPROPWorker implements Runnable {
 			this.propagationUtil.backwardPass(pair.getIdeal());
 			errorCalculation.updateError(actual, pair.getIdeal());
 		}
-		this.setError(errorCalculation.calculateRMS());
-		this.propagationUtil.getMethod().learn();
-		this.owner.updateNetwork(this);
+		this.setError(errorCalculation.calculateRMS());		
 
-		synchronized (this.iterationLock) {
-			this.iterationLock.notifyAll();
-		}
-	}
-
-	/**
-	 * The thread entry point. This will execute iterations until a shutdown is
-	 * requested.
-	 */
-	public void run() {
-
-		this.done.set(false);
-
-		while (!this.done.get()) {
-			iteration();
-		}
-		this.owner.notifyShutdown();
 	}
 
 	/**
@@ -169,36 +143,6 @@ public class MPROPWorker implements Runnable {
 	}
 
 	/**
-	 * @return This worker's local network.
-	 */
-	public BasicNetwork getNetwork() {
-		return network;
-	}
-
-	/**
-	 * Called to request that this worker shut down. This set's the done
-	 * instance variable to true.
-	 */
-	public void requestShutdown() {
-		this.done.set(true);
-	}
-
-	/**
-	 * Wait for one training iteration to complete in this worker. This allows
-	 * the main MultiPropagation object to wait for one iteration to pass in
-	 * each of the workers.
-	 */
-	public void waitForIteration() {
-		synchronized (this.iterationLock) {
-			try {
-				this.iterationLock.wait();
-			} catch (InterruptedException e) {
-				throw new TrainingError(e);
-			}
-		}
-	}
-
-	/**
 	 * @return The next worker in the ring.
 	 */
 	public MPROPWorker getNext() {
@@ -211,7 +155,11 @@ public class MPROPWorker implements Runnable {
 	public void setNext(MPROPWorker next) {
 		this.next = next;
 	}
-	
-	
 
+
+	public PropagationUtil getPropagationUtil() {
+		return propagationUtil;
+	}
+	
+	
 }
