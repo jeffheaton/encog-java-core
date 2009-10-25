@@ -53,21 +53,10 @@ public class MultiPropagation extends BasicTraining {
 	private BasicNetwork network;
 
 	/**
-	 * Keep track of if the threads have been started or not.
-	 */
-	private boolean threadsStarted;
-
-	/**
 	 * If it is not worthwhile to do MPROP, then we will fall back to using
 	 * RPROP.
 	 */
 	private ResilientPropagation fallback;
-
-	/**
-	 * Lock used to make sure that only one worker is updating the master neural
-	 * network at a time.
-	 */
-	private Object updateLock = new Object();
 
 	/**
 	 * The RPROP method being used by the master network.
@@ -75,11 +64,21 @@ public class MultiPropagation extends BasicTraining {
 	private ResilientPropagationMethod method;
 
 	/**
-	 * The propagation utility being used by the master network.
+	 * The propagation utility being used by the master network. This is the
+	 * master training data.
 	 */
 	private PropagationUtil propagationUtil;
 
+	/**
+	 * A map that allows gradients from the worker threads to be quickly copied
+	 * to the master.
+	 */
 	private GradientMap map;
+
+	public MultiPropagation(BasicNetwork network, NeuralDataSet training,
+			int threadCount) {
+		init(network, training, threadCount);
+	}
 
 	/**
 	 * Construct a MPROP trainer using the specified number of threads. You can
@@ -93,7 +92,7 @@ public class MultiPropagation extends BasicTraining {
 	 * @param threadCount
 	 *            The number of threads to use, must be 1 or higher.
 	 */
-	public MultiPropagation(BasicNetwork network, NeuralDataSet training,
+	private void init(BasicNetwork network, NeuralDataSet training,
 			int threadCount) {
 
 		// must be using indexable training set
@@ -106,7 +105,6 @@ public class MultiPropagation extends BasicTraining {
 		this.threadCount = threadCount;
 		this.training = (Indexable) training;
 		this.network = network;
-		this.threadsStarted = false;
 
 		// create the master RPROP method and util
 
@@ -171,6 +169,13 @@ public class MultiPropagation extends BasicTraining {
 	 */
 	public MultiPropagation(BasicNetwork network, NeuralDataSet training) {
 
+		// must be using indexable training set
+		if (!(training instanceof Indexable)) {
+			throw new TrainingError(
+					"Must use a training set that implements Indexable for multipropagation.");
+		}
+		this.training = (Indexable) training;
+
 		int threads = Runtime.getRuntime().availableProcessors();
 
 		// if there is more than one processor, use processor count +1
@@ -187,8 +192,10 @@ public class MultiPropagation extends BasicTraining {
 		long workPerThread = recordCount / threads;
 
 		if (workPerThread < 100) {
-			threads = (int) (recordCount / 100);
+			threads = Math.max(1, (int) (recordCount / 100));
 		}
+
+		init(network, training, threads);
 
 	}
 
@@ -223,7 +230,6 @@ public class MultiPropagation extends BasicTraining {
 		Thread[] threadList = new Thread[this.workers.length];
 
 		// start the threads
-		this.threadsStarted = true;
 		for (int i = 0; i < threadList.length; i++) {
 			threadList[i] = new Thread(this.workers[i]);
 			threadList[i].start();

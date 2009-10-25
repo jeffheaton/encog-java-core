@@ -52,11 +52,11 @@ public class GradientMap {
 	private void linkSynapses(PropagationLevel masterLevel,
 			List<PropagationLevel> workerLevels) {
 		
-		List<Iterator<PropagationSynapse>> workerSynapseIterator = new ArrayList<Iterator<PropagationSynapse>>();
+		List<Iterator<PropagationSynapse>> workerSynapseIteratorList = new ArrayList<Iterator<PropagationSynapse>>();
 		
 		for(PropagationLevel workerLevel: workerLevels)
 		{
-			workerSynapseIterator.add(workerLevel.getOutgoing().iterator());
+			workerSynapseIteratorList.add(workerLevel.getOutgoing().iterator());
 		}
 		
 		for(PropagationSynapse masterSynapse: masterLevel.getOutgoing() )
@@ -65,15 +65,15 @@ public class GradientMap {
 			this.synapses.add(masterSynapse);
 			
 			// build a list of worker synapses
-			List<PropagationSynapse> workerSynapse = new ArrayList<PropagationSynapse>();
+			List<PropagationSynapse> workerSynapses = new ArrayList<PropagationSynapse>();
 			
-			for(Iterator<PropagationSynapse> iterator: workerSynapseIterator )
+			for(Iterator<PropagationSynapse> iterator: workerSynapseIteratorList )
 			{
-				PropagationSynapse workerLevel = iterator.next();
-				workerSynapse.add(workerLevel);
+				PropagationSynapse workerSynapse = iterator.next();
+				workerSynapses.add(workerSynapse);
 			}
 			
-			this.synapseMap.put(masterSynapse, workerSynapse);
+			this.synapseMap.put(masterSynapse, workerSynapses);
 		}
 	}
 	
