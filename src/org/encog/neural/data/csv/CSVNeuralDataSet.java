@@ -81,7 +81,7 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 
 			this.reader = null;
 			this.reader = new ReadCSV(CSVNeuralDataSet.this.filename,
-					CSVNeuralDataSet.this.headers, CSVNeuralDataSet.this.format);
+CSVNeuralDataSet.this.headers, CSVNeuralDataSet.this.format);
 			this.dataReady = false;
 
 		}

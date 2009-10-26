@@ -26,20 +26,12 @@
 
 package org.encog.neural.networks.training.propagation;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.NeuralOutputHolder;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.util.ErrorCalculation;
-import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +44,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class Propagation extends BasicTraining {
-
 
 	/**
 	 * The logging object.
@@ -72,8 +63,11 @@ public class Propagation extends BasicTraining {
 	 * weights will be updated on each iteration, which is online training.
 	 */
 	private int batchSize = Integer.MAX_VALUE;
-	
-	private PropagationUtil propagationUtil;
+
+	/**
+	 * The propagation utility to use.
+	 */
+	private final PropagationUtil propagationUtil;
 
 	/**
 	 * Construct a propagation trainer.
@@ -88,13 +82,32 @@ public class Propagation extends BasicTraining {
 	 */
 	public Propagation(final BasicNetwork network,
 			final PropagationMethod method, final NeuralDataSet training) {
-		
-		this.propagationUtil = new PropagationUtil(network, method);				
+
+		this.propagationUtil = new PropagationUtil(network, method);
 		setTraining(training);
 	}
 
+	/**
+	 * @return Get the batch size. See batchSize property for a complete
+	 *         description.
+	 */
+	public int getBatchSize() {
+		return this.batchSize;
+	}
 
+	/**
+	 * @return THe network being trained.
+	 */
+	public BasicNetwork getNetwork() {
+		return this.propagationUtil.getNetwork();
+	}
 
+	/**
+	 * @return The propagation utility to use.
+	 */
+	public PropagationUtil getPropagationUtil() {
+		return this.propagationUtil;
+	}
 
 	/**
 	 * Perform one iteration of training.
@@ -121,7 +134,8 @@ public class Propagation extends BasicTraining {
 						"Backpropagation training on: input={},ideal={}", pair
 								.getInput(), pair.getIdeal());
 			}
-			final NeuralData actual = this.propagationUtil.forwardPass(pair.getInput());
+			final NeuralData actual = this.propagationUtil.forwardPass(pair
+					.getInput());
 
 			errorCalculation.updateError(actual, pair.getIdeal());
 			this.propagationUtil.backwardPass(pair.getIdeal());
@@ -143,26 +157,12 @@ public class Propagation extends BasicTraining {
 	}
 
 	/**
-	 * @return Get the batch size. See batchSize property for a complete 
-	 * description.
-	 */
-	public int getBatchSize() {
-		return batchSize;
-	}
-
-	/**
 	 * Set the batch size. See batchSize property for a complete description.
-	 * @param batchSize The batch training size.
+	 * 
+	 * @param batchSize
+	 *            The batch training size.
 	 */
 	public void setBatchSize(final int batchSize) {
 		this.batchSize = batchSize;
 	}
-
-	public BasicNetwork getNetwork() {
-		return this.propagationUtil.getNetwork();
-	}
-
-	public PropagationUtil getPropagationUtil() {
-		return propagationUtil;
-	}	
 }

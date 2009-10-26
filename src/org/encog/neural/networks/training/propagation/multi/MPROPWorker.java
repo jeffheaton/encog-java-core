@@ -47,34 +47,34 @@ public class MPROPWorker implements Runnable {
 	/**
 	 * The object that owns this worker.
 	 */
-	private MultiPropagation owner;
+	private final MultiPropagation owner;
 
 	/**
 	 * The local thread network that is being trained.
 	 */
-	private BasicNetwork network;
+	private final BasicNetwork network;
 
 	/**
 	 * The high index point in the training data to be used by this individual
 	 * worker.
 	 */
-	private long high;
+	private final long high;
 
 	/**
 	 * The low index point in the training data to be used by this individual
 	 * worker.
 	 */
-	private long low;
+	private final long low;
 
 	/**
 	 * The RPROP method being used by this worker.
 	 */
-	private ResilientPropagationMethod method;
+	private final ResilientPropagationMethod method;
 
 	/**
 	 * The propagation utility being used by this worker.
 	 */
-	private PropagationUtil propagationUtil;
+	private final PropagationUtil propagationUtil;
 
 	/**
 	 * The error calculation object used for this thread.
@@ -89,7 +89,7 @@ public class MPROPWorker implements Runnable {
 	/**
 	 * The training set that should be used for this worker.
 	 */
-	private Indexable training;
+	private final Indexable training;
 
 	/**
 	 * THe next worker, useful for SRN networks where context layers must be
@@ -97,13 +97,14 @@ public class MPROPWorker implements Runnable {
 	 */
 	private MPROPWorker next;
 
-	
 	/**
 	 * Construct a MPROP worker.
 	 * 
 	 * @param network
 	 *            The individual network for this worker, this is cloned from
 	 *            the master.
+	 * @param training
+	 *            The training set to use.
 	 * @param owner
 	 *            The MultiPropagation object that this worker belongs to.
 	 * @param low
@@ -111,8 +112,8 @@ public class MPROPWorker implements Runnable {
 	 * @param high
 	 *            The high training index.
 	 */
-	public MPROPWorker(BasicNetwork network, Indexable training,
-			MultiPropagation owner, long low, long high) {
+	public MPROPWorker(final BasicNetwork network, final Indexable training,
+			final MultiPropagation owner, final long low, final long high) {
 		this.network = network;
 		this.training = training;
 		this.owner = owner;
@@ -122,10 +123,30 @@ public class MPROPWorker implements Runnable {
 				ResilientPropagation.DEFAULT_ZERO_TOLERANCE,
 				ResilientPropagation.DEFAULT_MAX_STEP,
 				ResilientPropagation.DEFAULT_INITIAL_UPDATE);
-		this.propagationUtil = new PropagationUtil(network, method);
+		this.propagationUtil = new PropagationUtil(network, this.method);
 		this.errorCalculation.reset();
 	}
 
+	/**
+	 * @return The error for this worker's last iteration.
+	 */
+	public synchronized double getError() {
+		return this.error;
+	}
+
+	/**
+	 * @return The next worker in the ring.
+	 */
+	public MPROPWorker getNext() {
+		return this.next;
+	}
+
+	/**
+	 * @return The propagation utility used.
+	 */
+	public PropagationUtil getPropagationUtil() {
+		return this.propagationUtil;
+	}
 
 	/**
 	 * The thread entry point. This will execute iterations until a shutdown is
@@ -133,28 +154,22 @@ public class MPROPWorker implements Runnable {
 	 */
 	public void run() {
 
-		Double[] masterWeights = NetworkCODEC.networkToArray( this.owner.getNetwork() );
+		final Double[] masterWeights = NetworkCODEC.networkToArray(this.owner
+				.getNetwork());
 		NetworkCODEC.arrayToNetwork(masterWeights, this.network);
-		
+
 		// perform the training for this iteration
-		errorCalculation.reset();
-		NeuralDataPair pair = owner.createPair();
+		this.errorCalculation.reset();
+		final NeuralDataPair pair = this.owner.createPair();
 		for (long l = this.low; l <= this.high; l++) {
 			this.training.getRecord(l, pair);
-			NeuralData actual = this.propagationUtil.forwardPass(pair
+			final NeuralData actual = this.propagationUtil.forwardPass(pair
 					.getInput());
 			this.propagationUtil.backwardPass(pair.getIdeal());
-			errorCalculation.updateError(actual, pair.getIdeal());
+			this.errorCalculation.updateError(actual, pair.getIdeal());
 		}
-		this.setError(errorCalculation.calculateRMS());		
+		setError(this.errorCalculation.calculateRMS());
 
-	}
-
-	/**
-	 * @return The error for this worker's last iteration.
-	 */
-	public synchronized double getError() {
-		return error;
 	}
 
 	/**
@@ -163,28 +178,16 @@ public class MPROPWorker implements Runnable {
 	 * @param error
 	 *            The error.
 	 */
-	public synchronized void setError(double error) {
+	public synchronized void setError(final double error) {
 		this.error = error;
 	}
 
 	/**
-	 * @return The next worker in the ring.
+	 * @param next
+	 *            The previous worker in the ring.
 	 */
-	public MPROPWorker getNext() {
-		return next;
-	}
-
-	/**
-	 * @param next The previous worker in the ring.
-	 */
-	public void setNext(MPROPWorker next) {
+	public void setNext(final MPROPWorker next) {
 		this.next = next;
 	}
 
-
-	public PropagationUtil getPropagationUtil() {
-		return propagationUtil;
-	}
-	
-	
 }

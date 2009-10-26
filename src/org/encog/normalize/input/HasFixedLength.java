@@ -38,5 +38,5 @@ public interface HasFixedLength {
 	/**
 	 * @return The number of records in this input field.
 	 */
-	public int length();
+	int length();
 }

@@ -31,7 +31,6 @@ import org.encog.matrix.MatrixMath;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.propagation.CalculatePartialDerivative;
-import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.encog.neural.networks.training.propagation.PropagationSynapse;
@@ -54,9 +53,16 @@ public class BackpropagationMethod implements PropagationMethod {
 	 * The backpropagation class that owns this method.
 	 */
 	private PropagationUtil propagationUtil;
+
+	/**
+	 * The learning rate.
+	 */
+	private final double learningRate;
 	
-	private double learningRate;
-	private double momentum;
+	/**
+	 * The momentum.
+	 */
+	private final double momentum;
 
 	/**
 	 * The logging object.
@@ -66,20 +72,28 @@ public class BackpropagationMethod implements PropagationMethod {
 	/**
 	 * Utility class to calculate the partial derivatives.
 	 */
-	private final CalculatePartialDerivative pderv 
-		= new CalculatePartialDerivative();
-	
-	public BackpropagationMethod(double learningRate, double momentum)	
-	{
+	private final CalculatePartialDerivative pderv = new CalculatePartialDerivative();
+
+	/**
+	 * Construct a back propagation method.
+	 * @param learningRate The learning rate to use.
+	 * @param momentum The momentum to use.
+	 */
+	public BackpropagationMethod(final double learningRate,
+			final double momentum) {
 		this.learningRate = learningRate;
 		this.momentum = momentum;
 	}
 
 	/**
 	 * Calculate the error between these two levels.
-	 * @param output The output to the "to level".
-	 * @param fromLevel The from level.
-	 * @param toLevel The target level.
+	 * 
+	 * @param output
+	 *            The output to the "to level".
+	 * @param fromLevel
+	 *            The from level.
+	 * @param toLevel
+	 *            The target level.
 	 */
 	public void calculateError(final NeuralOutputHolder output,
 			final PropagationLevel fromLevel, final PropagationLevel toLevel) {
@@ -89,7 +103,9 @@ public class BackpropagationMethod implements PropagationMethod {
 
 	/**
 	 * Setup this propagation method using the specified propagation class.
-	 * @param propagationUtil The propagation class creating this method.
+	 * 
+	 * @param propagationUtil
+	 *            The propagation class creating this method.
 	 */
 	public void init(final PropagationUtil propagationUtil) {
 		this.propagationUtil = propagationUtil;
@@ -111,7 +127,9 @@ public class BackpropagationMethod implements PropagationMethod {
 
 	/**
 	 * Apply learning to this level.
-	 * @param level The level that is to learn.
+	 * 
+	 * @param level
+	 *            The level that is to learn.
 	 */
 	private void learnLevel(final PropagationLevel level) {
 		// teach the synapses
@@ -125,8 +143,7 @@ public class BackpropagationMethod implements PropagationMethod {
 				for (int i = 0; i < layer.getNeuronCount(); i++) {
 					double delta = level.getThresholdGradient(i)
 							* this.learningRate;
-					delta += level.getLastThresholdGradent(i)
-							* this.momentum;
+					delta += level.getLastThresholdGradent(i) * this.momentum;
 					layer.setThreshold(i, layer.getThreshold(i) + delta);
 					level.setLastThresholdGradient(i, delta);
 					level.setThresholdGradient(i, 0.0);
@@ -137,7 +154,9 @@ public class BackpropagationMethod implements PropagationMethod {
 
 	/**
 	 * Teach this synapse, based on the error that was calculated earlier.
-	 * @param synapse The synapse that is to learn.
+	 * 
+	 * @param synapse
+	 *            The synapse that is to learn.
 	 */
 	private void learnSynapse(final PropagationSynapse synapse) {
 

@@ -73,7 +73,8 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 * Clear out any parameters.
 	 */
 	public void clear() {
-		this.inputNeurons = this.outputNeurons = 0;
+		this.inputNeurons = 0; 
+		this.outputNeurons = 0;
 	}
 
 	/**

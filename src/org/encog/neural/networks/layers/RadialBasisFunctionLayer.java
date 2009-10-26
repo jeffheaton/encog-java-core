@@ -175,7 +175,11 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 		}
 	}
 
-	public void setRadialBasisFunction(RadialBasisFunction[] newRBF) {
+	/**
+	 * Set the RBF array used by this layer.
+	 * @param newRBF The new RBF array.
+	 */
+	public void setRadialBasisFunction(final RadialBasisFunction[] newRBF) {
 		this.radialBasisFunction = newRBF;
 		
 	}

@@ -131,6 +131,7 @@ public class PruneIncremental extends ConcurrentJob {
 	/**
 	 * The object that status should be reported to.
 	 */
+	@SuppressWarnings("unused")
 	private final StatusReportable report;
 
 	/**

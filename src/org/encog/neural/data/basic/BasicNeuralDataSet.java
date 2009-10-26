@@ -34,7 +34,6 @@ import java.util.List;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNeuralDataSetPersistor;
@@ -49,8 +48,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class BasicNeuralDataSet implements EncogPersistedObject,
-		Serializable, Indexable {
+public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
+		Indexable {
 
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
@@ -118,7 +117,8 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 	/**
 	 * The iterators that are currently open to this object.
 	 */
-	private final List<BasicNeuralIterator> iterators = new ArrayList<BasicNeuralIterator>();
+	private final List<BasicNeuralIterator> iterators 
+		= new ArrayList<BasicNeuralIterator>();
 
 	/**
 	 * The description for this object.
@@ -158,14 +158,15 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 			}
 		}
 	}
-	
+
 	/**
-	 * Construct a data set from an already created list.  Mostly used to
+	 * Construct a data set from an already created list. Mostly used to
 	 * duplicate this class.
-	 * @param data The data to use.
+	 * 
+	 * @param data
+	 *            The data to use.
 	 */
-	public BasicNeuralDataSet(final List<NeuralDataPair> data)
-	{
+	public BasicNeuralDataSet(final List<NeuralDataPair> data) {
 		this.data = data;
 	}
 
@@ -291,6 +292,28 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 	}
 
 	/**
+	 * Get a record by index into the specified pair.
+	 * @param index The index to read.
+	 * @param pair The pair to hold the data.
+	 */
+	public void getRecord(final long index, final NeuralDataPair pair) {
+
+		final NeuralDataPair source = this.data.get((int) index);
+		pair.getInput().setData(source.getInput().getData());
+		if (pair.getIdeal() != null) {
+			pair.getIdeal().setData(source.getIdeal().getData());
+		}
+
+	}
+
+	/**
+	 * @return The total number of records in the file.
+	 */
+	public long getRecordCount() {
+		return this.data.size();
+	}
+
+	/**
 	 * Determine if this neural data set is supervied. All of the pairs should
 	 * be either supervised or not, so simply check the first pair. If the list
 	 * is empty then assume unsupervised.
@@ -316,6 +339,15 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 	}
 
 	/**
+	 * Create an additional data set. It will use the same list.
+	 * 
+	 * @return The additional data set.
+	 */
+	public Indexable openAdditional() {
+		return new BasicNeuralDataSet(this.data);
+	}
+
+	/**
 	 * @param data
 	 *            the data to set
 	 */
@@ -337,28 +369,5 @@ public class BasicNeuralDataSet implements EncogPersistedObject,
 	 */
 	public void setName(final String name) {
 		this.name = name;
-	}
-
-	public void getRecord(long index, NeuralDataPair pair) {
-		
-		NeuralDataPair source = this.data.get((int)index);
-		pair.getInput().setData(source.getInput().getData());
-		if( pair.getIdeal()!=null ) {
-			pair.getIdeal().setData(source.getIdeal().getData());
-		}
-		
-		
-	}
-
-	public long getRecordCount() {
-		return this.data.size();
-	}
-
-	/**
-	 * Create an additional data set.  It will use the same list.
-	 * @return The additional data set.
-	 */
-	public Indexable openAdditional() {
-		return new BasicNeuralDataSet(this.data);
 	}
 }

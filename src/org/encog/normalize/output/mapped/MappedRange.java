@@ -63,6 +63,9 @@ public class MappedRange {
 		this.value = value;
 	}
 
+	/**
+	 * @return The high value for this range.
+	 */	
 	public double getHigh() {
 		return this.high;
 	}

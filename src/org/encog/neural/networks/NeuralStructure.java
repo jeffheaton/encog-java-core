@@ -273,16 +273,13 @@ public class NeuralStructure implements Serializable {
 	 * @param type The layer type we are looking for.
 	 * @return True if this layer type is present.
 	 */
-	public boolean containsLayerType(Class<?> type)
-	{
-		for(Layer layer: this.layers)
-		{
-			if( ReflectionUtil.isInstanceOf(layer.getClass(), type) )
-			{
+	public boolean containsLayerType(final Class< ? > type) {
+		for (Layer layer : this.layers) {
+			if (ReflectionUtil.isInstanceOf(layer.getClass(), type)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 }

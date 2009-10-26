@@ -250,7 +250,8 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				if ((long) (this.matrix[r][c] * actualPrecision) != (long) (data[r][c] * actualPrecision)) {
+				if ((long) (this.matrix[r][c] * actualPrecision) 
+						!= (long) (data[r][c] * actualPrecision)) {
 					return false;
 				}
 			}

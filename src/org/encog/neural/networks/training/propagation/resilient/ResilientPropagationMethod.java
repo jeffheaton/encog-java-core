@@ -30,7 +30,6 @@ import org.encog.matrix.Matrix;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.propagation.CalculatePartialDerivative;
-import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.encog.neural.networks.training.propagation.PropagationSynapse;
@@ -55,19 +54,35 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	 * The propagation class that this method is used with.
 	 */
 	private PropagationUtil propagationUtil;
-	
+
 	/**
 	 * Utility class to calculate the partial derivative.
 	 */
-	private final CalculatePartialDerivative pderv 
-		= new CalculatePartialDerivative();
+	private final CalculatePartialDerivative pderv = new CalculatePartialDerivative();
+
+	/**
+	 * The zero tolerance.
+	 */
+	private final double zeroTolerance;
 	
-	private double zeroTolerance;
-	private double maxStep;
-	private double initialUpdate;
+	/**
+	 * The maximum step a delta can take.
+	 */
+	private final double maxStep;
 	
-	public ResilientPropagationMethod(double zeroTolerance, double maxStep, double initialUpdate)
-	{
+	/** 
+	 * The intial values for the deltas.
+	 */
+	private final double initialUpdate;
+
+	/**
+	 * Construct a resilient propagation method.
+	 * @param zeroTolerance The zero tolerance.
+	 * @param maxStep The max step.
+	 * @param initialUpdate The initial update.
+	 */
+	public ResilientPropagationMethod(final double zeroTolerance,
+			final double maxStep, final double initialUpdate) {
 		this.zeroTolerance = zeroTolerance;
 		this.maxStep = maxStep;
 		this.initialUpdate = initialUpdate;
@@ -97,8 +112,8 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	 *            The propagation object that this method will be used with.
 	 */
 	public void init(final PropagationUtil propagation) {
-		this.propagationUtil = (PropagationUtil) propagation;
-		
+		this.propagationUtil = propagation;
+
 		// set the initialUpdate to all of the threshold and matrix update
 		// values.
 		// This is necessary for the first step. RPROP always builds on the
@@ -124,7 +139,7 @@ public class ResilientPropagationMethod implements PropagationMethod {
 		if (this.logger.isDebugEnabled()) {
 			this.logger.debug("Backpropagation learning pass");
 		}
-		
+
 		for (final PropagationLevel level : this.propagationUtil.getLevels()) {
 			learnLevel(level);
 		}
@@ -132,7 +147,9 @@ public class ResilientPropagationMethod implements PropagationMethod {
 
 	/**
 	 * Apply the learning to the specified level.
-	 * @param level The level that is to learn.
+	 * 
+	 * @param level
+	 *            The level that is to learn.
 	 */
 	private void learnLevel(final PropagationLevel level) {
 		// teach the synapses
@@ -194,23 +211,23 @@ public class ResilientPropagationMethod implements PropagationMethod {
 
 	/**
 	 * Learn from the last error calculation.
-	 *
-	 * @param synapse The synapse to teach.
+	 * 
+	 * @param synapse
+	 *            The synapse to teach.
 	 */
 	private void learnSynapse(final PropagationSynapse synapse) {
 
 		final Matrix matrix = synapse.getSynapse().getMatrix();
-		double[][] accData = synapse.getAccMatrixGradients().getData();
-		double[][] lastData = synapse.getLastMatrixGradients().getData();
-		double[][] deltas = synapse.getDeltas().getData();
-		double[][] weights = synapse.getSynapse().getMatrix().getData();
-		
+		final double[][] accData = synapse.getAccMatrixGradients().getData();
+		final double[][] lastData = synapse.getLastMatrixGradients().getData();
+		final double[][] deltas = synapse.getDeltas().getData();
+		final double[][] weights = synapse.getSynapse().getMatrix().getData();
+
 		for (int row = 0; row < matrix.getRows(); row++) {
 			for (int col = 0; col < matrix.getCols(); col++) {
 				// multiply the current and previous gradient, and take the
 				// sign. We want to see if the gradient has changed its sign.
-				final int change = sign(accData[row] [col]
-						* lastData[row][col]);
+				final int change = sign(accData[row][col] * lastData[row][col]);
 				double weightChange = 0;
 
 				// if the gradient has retained its sign, then we increase the
@@ -219,12 +236,11 @@ public class ResilientPropagationMethod implements PropagationMethod {
 					double delta = deltas[row][col]
 							* ResilientPropagation.POSITIVE_ETA;
 					delta = Math.min(delta, this.maxStep);
-					weightChange = sign(accData[row][col])
-							* delta;
+					weightChange = sign(accData[row][col]) * delta;
 					deltas[row][col] = delta;
 					lastData[row][col] = accData[row][col];
 				} else if (change < 0) {
-					// if change<0, then the sign has changed, and the last 
+					// if change<0, then the sign has changed, and the last
 					// delta was too big
 					double delta = deltas[row][col]
 							* ResilientPropagation.NEGATIVE_ETA;
@@ -236,9 +252,8 @@ public class ResilientPropagationMethod implements PropagationMethod {
 				} else if (change == 0) {
 					// if change==0 then there is no change to the delta
 					final double delta = deltas[row][col];
-					weightChange = sign(accData[row][col])
-							* delta;
-					lastData[row][col] = accData[row][col]; 
+					weightChange = sign(accData[row][col]) * delta;
+					lastData[row][col] = accData[row][col];
 				}
 
 				// apply the weight change, if any
@@ -252,8 +267,10 @@ public class ResilientPropagationMethod implements PropagationMethod {
 	}
 
 	/**
-	 * Determine the sign of the value.  
-	 * @param value The value to check.
+	 * Determine the sign of the value.
+	 * 
+	 * @param value
+	 *            The value to check.
 	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
 	 */
 	private int sign(final double value) {

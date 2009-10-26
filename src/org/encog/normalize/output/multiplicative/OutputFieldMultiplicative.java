@@ -62,6 +62,7 @@ public class OutputFieldMultiplicative extends OutputFieldGrouped {
 	/**
 	 * Calculate the value for this output field.
 	 * @param subfield The subfield is not used.
+	 * @return The value for this field.
 	 */
 	public double calculate(final int subfield) {
 		return getSourceField().getCurrentValue()

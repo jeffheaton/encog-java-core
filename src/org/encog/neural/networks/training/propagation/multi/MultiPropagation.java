@@ -43,10 +43,9 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
  * developed by Jeff Heaton. It is meant to be especially optimal for running on
  * multicore and eventually grid computing systems.
  * 
- * MPROP does not currently suppor recurrent networks, this will be addressed
- * in a later release.
- * 
- * - Jeff Heaton
+ * MPROP does not currently suppor recurrent networks, this will be addressed in
+ * a later release.
+ *  - Jeff Heaton
  */
 public class MultiPropagation extends BasicTraining {
 
@@ -140,6 +139,12 @@ public class MultiPropagation extends BasicTraining {
 
 	}
 
+	/**
+	 * Construct a multi propagation trainer.
+	 * @param network The network to use.
+	 * @param training The training set to use.
+	 * @param threadCount The thread count to use.
+	 */
 	public MultiPropagation(final BasicNetwork network,
 			final NeuralDataSet training, final int threadCount) {
 		init(network, training, threadCount);
@@ -182,6 +187,9 @@ public class MultiPropagation extends BasicTraining {
 		}
 	}
 
+	/**
+	 * @return The thread workers.
+	 */
 	public MPROPWorker[] getWorkers() {
 		return this.workers;
 	}
@@ -206,10 +214,10 @@ public class MultiPropagation extends BasicTraining {
 			throw new TrainingError(
 					"Must use a training set that implements Indexable for multipropagation.");
 		}
-		
-		if( network.getStructure().containsLayerType(ContextLayer.class) )
-		{
-			throw new TrainingError("Recurrent networks are not yet supported by MPROP.");
+
+		if (network.getStructure().containsLayerType(ContextLayer.class)) {
+			throw new TrainingError(
+					"Recurrent networks are not yet supported by MPROP.");
 		}
 
 		// store params

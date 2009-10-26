@@ -55,7 +55,7 @@ public class InputFieldArray2D extends BasicInputField implements
 
 	/**
 	 * Construct a 2D array input field.
-	 * @param usedForNetworkInput
+	 * @param usedForNetworkInput Is this field used for neural network input?
 	 * @param array The array to use.
 	 * @param index2 The secondary index to read the field from.
 	 */

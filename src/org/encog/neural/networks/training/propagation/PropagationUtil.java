@@ -13,8 +13,11 @@ import org.encog.util.logging.DumpMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Provides basic functionality for all of the propagation types.
+ */
 public class PropagationUtil {
-	
+
 	/**
 	 * THe network that is being trained.
 	 */
@@ -33,30 +36,34 @@ public class PropagationUtil {
 	/**
 	 * All of the levels used in training. The layers are grouped into levels.
 	 */
-	private final List<PropagationLevel> levels = 
-		new ArrayList<PropagationLevel>();
-	
+	private final List<PropagationLevel> levels = new ArrayList<PropagationLevel>();
+
 	/**
 	 * The output holder to use during training.
 	 */
 	private final NeuralOutputHolder outputHolder = new NeuralOutputHolder();
 
-	
 	/**
 	 * The logging object.
 	 */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
-	
-	
-	public PropagationUtil(BasicNetwork network, PropagationMethod method) {
+	/**
+	 * Construct a propagation utility.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param method
+	 *            The method to use.
+	 */
+	public PropagationUtil(final BasicNetwork network,
+			final PropagationMethod method) {
 		super();
 		this.network = network;
 		this.method = method;
 		construct();
 		this.method.init(this);
-		
+
 	}
 
 	/**
@@ -72,8 +79,7 @@ public class PropagationUtil {
 				.getLayer(BasicNetwork.TAG_OUTPUT);
 
 		if (outputLayer == null) {
-			final String str = 
-		"To use propagation training, one layer must be tagged OUTPUT.";
+			final String str = "To use propagation training, one layer must be tagged OUTPUT.";
 			if (this.logger.isErrorEnabled()) {
 				this.logger.error(str);
 			}
@@ -152,7 +158,7 @@ public class PropagationUtil {
 
 		return level;
 	}
-	
+
 	/**
 	 * Begin constructing the level from the layers.
 	 */
@@ -214,6 +220,13 @@ public class PropagationUtil {
 	}
 
 	/**
+	 * @return The propagation method in use.
+	 */
+	public PropagationMethod getMethod() {
+		return this.method;
+	}
+
+	/**
 	 * Get the current best neural network.
 	 * 
 	 * @return The current best neural network.
@@ -228,11 +241,5 @@ public class PropagationUtil {
 	public NeuralOutputHolder getOutputHolder() {
 		return this.outputHolder;
 	}
-
-	public PropagationMethod getMethod() {
-		return method;
-	}
-
-	
 
 }

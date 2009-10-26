@@ -69,9 +69,12 @@ public interface InputField {
 	boolean getUsedForNetworkInput();
 
 	/**
-	 * Called for input field types that require an index to get the current value.
-	 * This is used by the InputFieldArray1D and InputFieldArray2D classes.
-	 * @param i The index to read.
+	 * Called for input field types that require an index to get the current
+	 * value. This is used by the InputFieldArray1D and InputFieldArray2D
+	 * classes.
+	 * 
+	 * @param i
+	 *            The index to read.
 	 * @return The value read.
 	 */
 	double getValue(int i);

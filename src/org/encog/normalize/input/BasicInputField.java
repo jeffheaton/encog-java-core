@@ -113,6 +113,7 @@ public abstract class BasicInputField implements InputField {
 	 * Not supported for this sort of class, may be implemented in subclasses.
 	 * Will throw an exception.
 	 * @param i The index.  Not used.
+	 * @return The value at the specified index.
 	 */
 	public double getValue(final int i) {
 		throw new NormalizationError("Can't call getValue on "

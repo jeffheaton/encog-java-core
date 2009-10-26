@@ -47,7 +47,7 @@ public abstract class BasicTraining implements Train {
 	 * The training strategies to use.
 	 */
 	private final List<Strategy> strategies = new ArrayList<Strategy>();
-	
+
 	/**
 	 * The training data.
 	 */
@@ -74,6 +74,14 @@ public abstract class BasicTraining implements Train {
 	public void addStrategy(final Strategy strategy) {
 		strategy.init(this);
 		this.strategies.add(strategy);
+	}
+
+	/**
+	 * Should be called after training has completed and the iteration method
+	 * will not be called any further.
+	 */
+	public void finishTraining() {
+
 	}
 
 	/**
@@ -128,19 +136,12 @@ public abstract class BasicTraining implements Train {
 
 	/**
 	 * Set the training object that this strategy is working with.
-	 * @param training The training object.
+	 * 
+	 * @param training
+	 *            The training object.
 	 */
 	public void setTraining(final NeuralDataSet training) {
 		this.training = training;
-	}
-	
-	/**
-	 * Should be called after training has completed and the iteration method
-	 * will not be called any further.
-	 */
-	public void finishTraining()
-	{
-		
 	}
 
 }

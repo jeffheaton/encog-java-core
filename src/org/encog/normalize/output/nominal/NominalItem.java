@@ -29,60 +29,83 @@ import org.encog.normalize.input.InputField;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReference;
 
+/**
+ * A nominal item.
+ */
 public class NominalItem {
-	
+
+	/**
+	 * The low value for the range.
+	 */
 	@EGAttribute
 	private double low;
-	
+
+	/**
+	 * The high value for the range.
+	 */
 	@EGAttribute
 	private double high;
-	
+
+	/**
+	 * The input field used to verify against the range.
+	 */
 	@EGReference
-	private InputField inputField;	
-	
-	public NominalItem(InputField inputField, double high, double low) {
-		super();		
+	private InputField inputField;
+
+	/**
+	 * Construct a empty range item.  Used mainly for reflection.
+	 */
+	public NominalItem() {
+
+	}
+
+	/**
+	 * Create a nominal item.
+	 * @param inputField The field that this item is based on.
+	 * @param high The high value.
+	 * @param low The low value.
+	 */
+	public NominalItem(final InputField inputField, final double high,
+			final double low) {
+		super();
 		this.high = high;
 		this.low = low;
 		this.inputField = inputField;
 	}
-	
-	public NominalItem()
-	{
-		
-	}
-	
+
 	/**
-	 * @return the low
+	 * Begin a row.
 	 */
-	public double getLow() {
-		return low;
+	public void beginRow() {
 	}
+
 	/**
 	 * @return the high
 	 */
 	public double getHigh() {
-		return high;
+		return this.high;
 	}
+
 	/**
 	 * @return the inputField
 	 */
 	public InputField getInputField() {
-		return inputField;
-	}
-		
-	public boolean isInRange()
-	{
-		double currentValue = this.inputField.getCurrentValue();
-		return( currentValue>=this.low && currentValue<=this.high );
-	}
-		
-	/**
-	 * 
-	 */
-	public void beginRow()
-	{		
+		return this.inputField;
 	}
 
-	
+	/**
+	 * @return the low
+	 */
+	public double getLow() {
+		return this.low;
+	}
+
+	/**
+	 * @return True if this item is within range.
+	 */
+	public boolean isInRange() {
+		final double currentValue = this.inputField.getCurrentValue();
+		return ((currentValue >= this.low) && (currentValue <= this.high));
+	}
+
 }

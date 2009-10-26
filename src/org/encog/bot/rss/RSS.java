@@ -102,7 +102,8 @@ public class RSS {
 	/**
 	 * All of the attributes for this RSS document.
 	 */
-	private final Map<String, String> attributes = new HashMap<String, String>();
+	private final Map<String, String> attributes 
+		= new HashMap<String, String>();
 
 	/**
 	 * All RSS items, or stories, found.
@@ -138,9 +139,8 @@ public class RSS {
 			}
 
 			final URLConnection http = url.openConnection();
-			http
-					.setRequestProperty("User-Agent",
-							"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Win64; x64; Trident/4.0)");
+			http.setRequestProperty("User-Agent",
+"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Win64; x64; Trident/4.0)");
 			final InputStream is = http.getInputStream();
 
 			final DocumentBuilderFactory factory = DocumentBuilderFactory

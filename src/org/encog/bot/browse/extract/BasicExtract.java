@@ -46,7 +46,8 @@ public abstract class BasicExtract implements Extract {
 	/**
 	 * The classes registered as listeners for the extraction.
 	 */
-	private final Collection<ExtractListener> listeners = new ArrayList<ExtractListener>();
+	private final Collection<ExtractListener> listeners 
+		= new ArrayList<ExtractListener>();
 
 	/**
 	 * The logger.

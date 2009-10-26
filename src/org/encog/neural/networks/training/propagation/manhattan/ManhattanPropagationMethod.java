@@ -30,7 +30,6 @@ import org.encog.matrix.Matrix;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.propagation.CalculatePartialDerivative;
-import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.PropagationLevel;
 import org.encog.neural.networks.training.propagation.PropagationMethod;
 import org.encog.neural.networks.training.propagation.PropagationSynapse;
@@ -60,14 +59,29 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 	/**
 	 * The partial derivative utility class.
 	 */
-	private final CalculatePartialDerivative pderv 
-		= new CalculatePartialDerivative();
-	
-	double zeroTolerance;
-	double learningRate;
-	
-	public ManhattanPropagationMethod(double zeroTolerance, double learningRate)
-	{
+	private final CalculatePartialDerivative pderv = new CalculatePartialDerivative();
+
+	/**
+	 * The zero tolerance to use.
+	 */
+	private double zeroTolerance;
+
+	/**
+	 * The learning rate to use. This is the Manhattan update constant.
+	 */
+	private double learningRate;
+
+	/**
+	 * Construct a Manhattan update trainer.
+	 * 
+	 * @param zeroTolerance
+	 *            The zero tolerance to use.
+	 * @param learningRate
+	 *            The learning rate to use, this is the Manhattan update
+	 *            constant.
+	 */
+	public ManhattanPropagationMethod(final double zeroTolerance,
+			final double learningRate) {
 		this.zeroTolerance = zeroTolerance;
 		this.learningRate = learningRate;
 	}
@@ -90,11 +104,12 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 	}
 
 	/**
-	 * Determine the change that should be applied.  If the partial
-	 * derivative was zero(or close enough to zero) then do nothing
-	 * otherwise apply the learning rate with the same sign as the
-	 * partial derivative.
-	 * @param value The partial derivative.
+	 * Determine the change that should be applied. If the partial derivative
+	 * was zero(or close enough to zero) then do nothing otherwise apply the
+	 * learning rate with the same sign as the partial derivative.
+	 * 
+	 * @param value
+	 *            The partial derivative.
 	 * @return The change to be applied to the weight matrix.
 	 */
 	private double determineChange(final double value) {
@@ -133,10 +148,12 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 	}
 
 	/**
-	 * Apply learning for this level.  This is where the weight matrixes
-	 * are actually changed. This method will call learnSynapse for each
-	 * of the synapses on this level.
-	 * @param level The level that is to learn.
+	 * Apply learning for this level. This is where the weight matrixes are
+	 * actually changed. This method will call learnSynapse for each of the
+	 * synapses on this level.
+	 * 
+	 * @param level
+	 *            The level that is to learn.
 	 */
 	private void learnLevel(final PropagationLevel level) {
 		// teach the synapses
@@ -159,7 +176,9 @@ public class ManhattanPropagationMethod implements PropagationMethod {
 
 	/**
 	 * Learn from the last error calculation.
-	 * @param synapse The synapse that is to learn.
+	 * 
+	 * @param synapse
+	 *            The synapse that is to learn.
 	 */
 	private void learnSynapse(final PropagationSynapse synapse) {
 

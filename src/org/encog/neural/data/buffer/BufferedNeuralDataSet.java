@@ -27,7 +27,6 @@ package org.encog.neural.data.buffer;
 
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
@@ -116,7 +115,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		}
 
 		/**
-		 * Create a neural data pair of the correct size.
+		 * @return Create a neural data pair of the correct size.
 		 */
 		private NeuralDataPair createPair() {
 			NeuralDataPair result;
@@ -138,14 +137,14 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		 * @return True if there is more data to read.
 		 */
 		public boolean hasNext() {
-			if (this.dataReady == false) {
+			if (!this.dataReady) {
 				readNext();
 			}
 			return this.dataReady;
 		}
 
 		/**
-		 * Read the next pair.
+		 * @return Read the next pair.
 		 */
 		public NeuralDataPair next() {
 
@@ -164,7 +163,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 			readNext();
 
 			return this.current;
-		}		
+		}
 
 		/**
 		 * Read the next pair.
@@ -172,10 +171,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		private void readNext() {
 			try {
 				if (BufferedNeuralDataSet.this.idealSize > 0) {
-					readDoubleArray(this.input,this.next.getInput());
-					readDoubleArray(this.input,this.next.getIdeal());
+					readDoubleArray(this.input, this.next.getInput());
+					readDoubleArray(this.input, this.next.getIdeal());
 				} else {
-					readDoubleArray(this.input,this.next.getInput());
+					readDoubleArray(this.input, this.next.getInput());
 				}
 
 				this.dataReady = true;
@@ -219,7 +218,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 * The size of the ideal data.
 	 */
 	private long idealSize;
-	
+
 	/**
 	 * The size(in bytes) of a record.
 	 */
@@ -235,6 +234,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 */
 	private RandomAccessFile output;
 
+	/**
+	 * The current input file.
+	 */
 	private RandomAccessFile input;
 
 	/**
@@ -251,7 +253,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 						this.bufferFile, "rw");
 				this.inputSize = out.readLong();
 				this.idealSize = out.readLong();
-				this.recordSize = (this.getInputSize() * 8) + (this.getIdealSize() * 8);
+				this.recordSize = (getInputSize() * 8) + (getIdealSize() * 8);
 				out.close();
 			}
 		} catch (final IOException e) {
@@ -318,7 +320,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		try {
 			this.inputSize = inputSize;
 			this.idealSize = idealSize;
-			this.recordSize = (this.getInputSize() * 8) + (this.getIdealSize() * 8);
+			this.recordSize = (getInputSize() * 8) + (getIdealSize() * 8);
 			this.bufferFile.delete();
 			this.output = new RandomAccessFile(this.bufferFile, "rw");
 			// write the header
@@ -368,7 +370,35 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	}
 
 	/**
-	 * Create an iterator.
+	 * Get a record by index and copy it into the specified pair.
+	 * @param index The index to load.
+	 * @param pair THe pair to copy into.
+	 */
+	public void getRecord(final long index, final NeuralDataPair pair) {
+		try {
+			openInputFile();
+			this.input.seek(index * this.recordSize);
+			if (BufferedNeuralDataSet.this.idealSize > 0) {
+				readDoubleArray(this.input, pair.getInput());
+				readDoubleArray(this.input, pair.getIdeal());
+			} else {
+				readDoubleArray(this.input, pair.getInput());
+			}
+		} catch (final IOException e) {
+			throw new NeuralDataError(e);
+		}
+	}
+
+	/**
+	 * @return The number of records in the set.
+	 */
+	public long getRecordCount() {
+		openInputFile();
+		return this.bufferFile.length() / this.recordSize;
+	}
+
+	/**
+	 * @return Create an iterator.
 	 */
 	public BufferedNeuralDataSetIterator iterator() {
 		if (this.output != null) {
@@ -404,6 +434,45 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	}
 
 	/**
+	 * Open a second buffered data set, useful for multithreading.
+	 * 
+	 * @return The additional buffered data set.
+	 */
+	public Indexable openAdditional() {
+		return new BufferedNeuralDataSet(this.bufferFile);
+	}
+
+	/**
+	 * Open an input file to allow records to be read randomly.
+	 */
+	private void openInputFile() {
+
+		try {
+			if (this.input == null) {
+				this.input = new RandomAccessFile(this.bufferFile, "r");
+			}
+		} catch (final IOException e) {
+			throw new NeuralDataError(e);
+		}
+	}
+
+	/**
+	 * Read an array of doubles from the file.
+	 * @param raf The random access file to read from.
+	 * @param data
+	 *            The neural data to read this array into.
+	 * @throws IOException
+	 *             Error reading data.
+	 */
+	private void readDoubleArray(final RandomAccessFile raf,
+			final NeuralData data) throws IOException {
+		final double[] d = data.getData();
+		for (int i = 0; i < data.size(); i++) {
+			d[i] = raf.readDouble();
+		}
+	}
+
+	/**
 	 * Write a double array from the specified data to the file.
 	 * 
 	 * @param data
@@ -417,68 +486,6 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		} catch (final IOException e) {
 			throw new NeuralDataError(e);
 		}
-	}
-
-	private void openInputFile() {
-
-		try {
-			if (this.input == null) {
-				this.input = new RandomAccessFile(bufferFile, "r");
-			}
-		} catch (IOException e) {
-			throw new NeuralDataError(e);
-		}
-	}
-	
-	/**
-	 * Read an array of doubles from the file.
-	 * 
-	 * @param data
-	 *            The neural data to read this array into.
-	 * @throws EOFException
-	 *             End of file reached.
-	 * @throws IOException
-	 *             Error reading data.
-	 */
-	private void readDoubleArray(RandomAccessFile raf, final NeuralData data)
-			throws EOFException, IOException {
-		final double[] d = data.getData();
-		for (int i = 0; i < data.size(); i++) {
-			d[i] = raf.readDouble();
-		}
-	}
-
-	
-	public void getRecord(long index, NeuralDataPair pair) {
-		try
-		{
-			openInputFile();			
-			this.input.seek(index*this.recordSize);
-			if (BufferedNeuralDataSet.this.idealSize > 0) {
-				readDoubleArray(this.input,pair.getInput());
-				readDoubleArray(this.input,pair.getIdeal());
-			} else {
-				readDoubleArray(this.input,pair.getInput());
-			}
-		}
-		catch(IOException e)
-		{
-			throw new NeuralDataError(e); 
-		}
-	}
-
-	
-	public long getRecordCount() {
-		openInputFile();
-		return this.bufferFile.length() / this.recordSize;
-	}
-
-	/**
-	 * Open a second buffered data set, useful for multithreading.
-	 * @return The additional buffered data set.
-	 */
-	public Indexable openAdditional() {
-		return new BufferedNeuralDataSet(this.bufferFile);
 	}
 
 }

@@ -49,7 +49,7 @@ public class InputFieldNeuralDataSet extends BasicInputField {
 
 	/**
 	 * Construct a input field based on a NeuralDataSet.
-	 * @param usedForNetworkInput 
+	 * @param usedForNetworkInput Is this field used for neural input.
 	 * @param data The data set to use.
 	 * @param offset The input or ideal index to use. This treats the input 
 	 * and ideal as one long array, concatenated together.

@@ -83,8 +83,11 @@ public class Backpropagation extends Propagation implements Momentum,
 
 	/**
 	 * Create a class to train using backpropagation.
-	 * @param network The network that is to be trained.
-	 * @param training The training data to be used for backpropagation.
+	 * 
+	 * @param network
+	 *            The network that is to be trained.
+	 * @param training
+	 *            The training data to be used for backpropagation.
 	 */
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
@@ -109,7 +112,8 @@ public class Backpropagation extends Propagation implements Momentum,
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
 			final double momentum) {
-		super(network, new BackpropagationMethod(learnRate,momentum), training);
+		super(network, new BackpropagationMethod(learnRate, 
+					momentum), training);
 		this.momentum = momentum;
 		this.learningRate = learnRate;
 	}
@@ -124,9 +128,9 @@ public class Backpropagation extends Propagation implements Momentum,
 	}
 
 	/**
-	 * @return The momentum for training.  This is the degree to which changes
-	 * from which the previous training iteration will affect this training
-	 * iteration.  This can be useful to overcome local minima.
+	 * @return The momentum for training. This is the degree to which changes
+	 *         from which the previous training iteration will affect this
+	 *         training iteration. This can be useful to overcome local minima.
 	 */
 	public double getMomentum() {
 		return this.momentum;
@@ -136,17 +140,21 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * Set the learning rate, this is value is essentially a percent. It is the
 	 * degree to which the gradients are applied to the weight matrix to allow
 	 * learning.
-	 * @param rate The learning rate.
+	 * 
+	 * @param rate
+	 *            The learning rate.
 	 */
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
 	/**
-	 * Set the momentum for training.  This is the degree to which changes
-	 * from which the previous training iteration will affect this training
-	 * iteration.  This can be useful to overcome local minima.
-	 * @param m The momentum.
+	 * Set the momentum for training. This is the degree to which changes from
+	 * which the previous training iteration will affect this training
+	 * iteration. This can be useful to overcome local minima.
+	 * 
+	 * @param m
+	 *            The momentum.
 	 */
 	public void setMomentum(final double m) {
 		this.momentum = m;

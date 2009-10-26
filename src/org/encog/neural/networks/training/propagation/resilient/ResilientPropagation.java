@@ -29,8 +29,6 @@ package org.encog.neural.networks.training.propagation.resilient;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
-import org.encog.neural.networks.training.propagation.PropagationLevel;
-import org.encog.neural.networks.training.propagation.PropagationSynapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,48 +74,46 @@ public class ResilientPropagation extends Propagation {
 	 * The default zero tolerance.
 	 */
 	public static final double DEFAULT_ZERO_TOLERANCE = 0.00000000000000001;
-	
-	/** 
-	 * The POSITIVE ETA value.  This is specified by the resilient 
-	 * propagation algorithm.  This is the percentage by which 
-	 * the deltas are increased by if the partial derivative is
-	 * greater than zero.
+
+	/**
+	 * The POSITIVE ETA value. This is specified by the resilient propagation
+	 * algorithm. This is the percentage by which the deltas are increased by if
+	 * the partial derivative is greater than zero.
 	 */
 	public static final double POSITIVE_ETA = 1.2;
-	
-	/** 
-	 * The NEGATIVE ETA value.  This is specified by the resilient 
-	 * propagation algorithm.  This is the percentage by which 
-	 * the deltas are increased by if the partial derivative is
-	 * less than zero.
+
+	/**
+	 * The NEGATIVE ETA value. This is specified by the resilient propagation
+	 * algorithm. This is the percentage by which the deltas are increased by if
+	 * the partial derivative is less than zero.
 	 */
 	public static final double NEGATIVE_ETA = 0.5;
-	
+
 	/**
 	 * The minimum delta value for a weight matrix value.
 	 */
 	public static final double DELTA_MIN = 1e-6;
-	
+
 	/**
 	 * The starting update for a delta.
 	 */
 	public static final double DEFAULT_INITIAL_UPDATE = 0.1;
-	
+
 	/**
 	 * The maximum amount a delta can reach.
 	 */
 	public static final double DEFAULT_MAX_STEP = 50;
-	
+
 	/**
 	 * The zero tolerance.
 	 */
 	private final double zeroTolerance;
-	
+
 	/**
 	 * The initial update value.
 	 */
 	private final double initialUpdate;
-	
+
 	/**
 	 * The maximum delta amount.
 	 */
@@ -130,12 +126,15 @@ public class ResilientPropagation extends Propagation {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Construct a resilient training object.  Use the defaults for all
-	 * training parameters.  Usually this is the constructor to use as
-	 * the resilient training algorithm is designed for the default 
-	 * parameters to be acceptable for nearly all problems.
-	 * @param network The network to train.
-	 * @param training The training set to use.
+	 * Construct a resilient training object. Use the defaults for all training
+	 * parameters. Usually this is the constructor to use as the resilient
+	 * training algorithm is designed for the default parameters to be
+	 * acceptable for nearly all problems.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training set to use.
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
@@ -145,22 +144,29 @@ public class ResilientPropagation extends Propagation {
 	}
 
 	/**
-	 * Construct a resilient training object, allow the training parameters
-	 * to be specified.  Usually the default parameters are acceptable for
-	 * the resilient training algorithm.  Therefore you should usually
-	 * use the other constructor, that makes use of the default values.
-	 * @param network The network to train.
-	 * @param training The training set to use.
-	 * @param zeroTolerance The zero tolerance.
-	 * @param initialUpdate The initial update values, this is the amount 
-	 * that the deltas are all initially set to.
-	 * @param maxStep The maximum that a delta can reach.
+	 * Construct a resilient training object, allow the training parameters to
+	 * be specified. Usually the default parameters are acceptable for the
+	 * resilient training algorithm. Therefore you should usually use the other
+	 * constructor, that makes use of the default values.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training set to use.
+	 * @param zeroTolerance
+	 *            The zero tolerance.
+	 * @param initialUpdate
+	 *            The initial update values, this is the amount that the deltas
+	 *            are all initially set to.
+	 * @param maxStep
+	 *            The maximum that a delta can reach.
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double zeroTolerance,
 			final double initialUpdate, final double maxStep) {
 
-		super(network, new ResilientPropagationMethod(zeroTolerance,maxStep,initialUpdate), training);
+		super(network, new ResilientPropagationMethod(zeroTolerance, maxStep,
+				initialUpdate), training);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
 		this.zeroTolerance = zeroTolerance;
