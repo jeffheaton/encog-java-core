@@ -25,10 +25,28 @@
  */
 package org.encog.normalize.target;
 
+/**
+ * Defines a means by which normalized data can be stored.
+ */
 public interface NormalizationStorage {
+
+	/**
+	 * Open the storage.
+	 */
 	void close();
 
+	/**
+	 * Close the storage.
+	 */
 	void open();
 
-	void write(double data[], int inputCount);
+	/**
+	 * Write an array.
+	 * 
+	 * @param data
+	 *            The data to write.
+	 * @param inputCount
+	 *            How much of the data is input.
+	 */
+	void write(double[] data, int inputCount);
 }

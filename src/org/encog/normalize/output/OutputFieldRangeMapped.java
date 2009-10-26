@@ -77,6 +77,7 @@ public class OutputFieldRangeMapped extends BasicOutputField {
 	/**
 	 * Calculate this output field.
 	 * @param subfield Not used.
+	 * @return The calculated value.
 	 */
 	public double calculate(final int subfield) {
 		return ((this.field.getCurrentValue() - this.field.getMin()) / (this.field

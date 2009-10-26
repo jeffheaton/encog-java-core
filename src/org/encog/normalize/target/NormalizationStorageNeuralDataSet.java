@@ -29,12 +29,32 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
+/**
+ * Store the normalized data to a neural data set.
+ */
 public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 
+	/**
+	 * The input count.
+	 */
 	private int inputCount;
+
+	/**
+	 * The ideal count.
+	 */
 	private int idealCount;
+
+	/**
+	 * The data set to add to.
+	 */
 	private NeuralDataSet dataset;
 
+	/**
+	 * Construct a new NeuralDataSet based on the parameters specified.
+	 * 
+	 * @param inputCount The input count.
+ 	 * @param idealCount The output count.
+	 */
 	public NormalizationStorageNeuralDataSet(final int inputCount,
 			final int idealCount) {
 		this.inputCount = inputCount;
@@ -42,18 +62,38 @@ public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 		this.dataset = new BasicNeuralDataSet();
 	}
 
+	/**
+	 * Construct a normalized neural storage class to hold data.
+	 * 
+	 * @param dataset
+	 *            The data set to store to. This uses an existing data set.
+	 */
 	public NormalizationStorageNeuralDataSet(final NeuralDataSet dataset) {
 		this.dataset = dataset;
 		this.inputCount = this.dataset.getInputSize();
 		this.idealCount = this.dataset.getIdealSize();
 	}
 
+	/**
+	 * Not needed for this storage type.
+	 */
 	public void close() {
 	}
 
+	/**
+	 * Not needed for this storage type.
+	 */
 	public void open() {
 	}
 
+	/**
+	 * Write an array.
+	 * 
+	 * @param data
+	 *            The data to write.
+	 * @param inputCount
+	 *            How much of the data is input.
+	 */
 	public void write(final double[] data, final int inputCount) {
 
 		if (this.idealCount == 0) {

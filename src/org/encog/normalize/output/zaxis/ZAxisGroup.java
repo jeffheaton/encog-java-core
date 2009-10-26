@@ -28,19 +28,41 @@ package org.encog.normalize.output.zaxis;
 import org.encog.normalize.output.BasicOutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 
+/**
+ * Used to group Z-Axis fields together. Both OutputFieldZAxis and
+ * OutputFieldZAxisSynthetic fields may belong to this group.
+ * 
+ */
 public class ZAxisGroup extends BasicOutputFieldGroup {
 
+	/**
+	 * The calculated length.
+	 */
 	private double length;
+
+	/**
+	 * The multiplier, which is the value that all other values will be
+	 * multiplied to become normalized.
+	 */
 	private double multiplier;
 
+	/**
+	 * @return The vector length.
+	 */
 	public double getLength() {
 		return this.length;
 	}
 
+	/**
+	 * @return The value to multiply the other values by to normalize them.
+	 */
 	public double getMultiplier() {
 		return this.multiplier;
 	}
 
+	/**
+	 * Initialize this group for a new row.
+	 */
 	public void rowInit() {
 		double value = 0;
 

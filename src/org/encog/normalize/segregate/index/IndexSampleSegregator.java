@@ -27,21 +27,52 @@ package org.encog.normalize.segregate.index;
 
 import org.encog.persist.annotations.EGAttribute;
 
+/**
+ * An index segregator is used to segregate the data according to its index.
+ * Nothing about the data is actually compared. This makes the index range
+ * segregator very useful for breaking the data into training and validation
+ * sets. For example, you could very easily determine that 70% of the data is
+ * for training, and 30% for validation.
+ * 
+ * This segregator takes a starting and ending index, as well as a smple size.
+ * Everything that is between these two indexes will be used.  The sample 
+ * repeats over and over.  For example, if you choose a sample size of 10, 
+ * and a beginning index of 0 and an ending index of 5, you would get
+ * half of the first 10 element, then half of the next ten, and so on.
+ * 
+ */
 public class IndexSampleSegregator extends IndexSegregator {
 
+	/**
+	 * The starting index (within a sample).
+	 */
 	@EGAttribute
 	private int startingIndex;
 
+	/**
+	 * The ending index (within a sample).
+	 */
 	@EGAttribute
 	private int endingIndex;
 
+	/**
+	 * The sample size.
+	 */
 	@EGAttribute
 	private int sampleSize;
 
+	/**
+	 * The default constructor, for reflection.
+	 */
 	public IndexSampleSegregator() {
-
 	}
 
+	/**
+	 * Construct an index sample segregator.
+	 * @param startingIndex The starting index.
+	 * @param endingIndex The ending index.
+	 * @param sampleSize The sample size.
+	 */
 	public IndexSampleSegregator(final int startingIndex,
 			final int endingIndex, final int sampleSize) {
 		this.sampleSize = sampleSize;
@@ -49,18 +80,31 @@ public class IndexSampleSegregator extends IndexSegregator {
 		this.endingIndex = endingIndex;
 	}
 
+	/**
+	 * @return The ending index.
+	 */
 	public int getEndingIndex() {
 		return this.endingIndex;
 	}
 
+	/**
+	 * @return The sample size.
+	 */
 	public int getSampleSize() {
 		return this.sampleSize;
 	}
 
+	/**
+	 * @return The starting index.
+	 */
 	public int getStartingIndex() {
 		return this.startingIndex;
 	}
 
+	/**
+	 * Should this row be included.
+	 * @return True if this row should be included.
+	 */
 	public boolean shouldInclude() {
 		final int sampleIndex = getCurrentIndex() % this.sampleSize;
 		rollIndex();

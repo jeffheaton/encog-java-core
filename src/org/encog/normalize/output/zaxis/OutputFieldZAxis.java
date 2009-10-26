@@ -30,9 +30,19 @@ import org.encog.normalize.input.InputField;
 import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 
+/**
+ * An output field that is based on the Z-Axis method of normalization. This is
+ * a groupped field.
+ */
 public class OutputFieldZAxis extends OutputFieldGrouped {
 
-	public OutputFieldZAxis(final OutputFieldGroup group, final InputField field) {
+	/**
+	 * Construct a ZAxis output field.
+	 * @param group The group this field belongs to.
+	 * @param field The input field this is based on.
+	 */
+	public OutputFieldZAxis(final OutputFieldGroup group, 
+			final InputField field) {
 		super(group, field);
 		if (!(group instanceof ZAxisGroup)) {
 			throw new NormalizationError(
@@ -40,11 +50,22 @@ public class OutputFieldZAxis extends OutputFieldGrouped {
 		}
 	}
 
+	/**
+	 * Calculate the current value for this field.
+	 * 
+	 * @param subfield
+	 *            Ignored, this field type does not have subfields.
+	 * @return The current value for this field.
+	 */
 	public double calculate(final int subfield) {
 		return (getSourceField().getCurrentValue() * ((ZAxisGroup) getGroup())
 				.getMultiplier());
 	}
 
+	/**
+	 * @return The subfield count, which is one, as this field type does not
+	 *         have subfields.
+	 */
 	public int getSubfieldCount() {
 		return 1;
 	}

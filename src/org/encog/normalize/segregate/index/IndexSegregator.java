@@ -30,26 +30,53 @@ import org.encog.normalize.segregate.Segregator;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReference;
 
+/**
+ * The index segregator. An abstract class to build index based segregators off
+ * of. An index segregator is used to segregate the data according to its index.
+ * Nothing about the data is actually compared. This makes the index range
+ * segregator very useful for breaking the data into training and validation
+ * sets. For example, you could very easily determine that 70% of the data is
+ * for training, and 30% for validation.
+ */
 public abstract class IndexSegregator implements Segregator {
 
+	/**
+	 * The current index.  Updated rows are processed.
+	 */
 	@EGIgnore
 	private int currentIndex = 0;
-	
+
+	/**
+	 * THe normalization object this belongs to.
+	 */
 	@EGReference
 	private Normalization normalization;
 
+	/**
+	 * @return The current index.
+	 */
 	public int getCurrentIndex() {
 		return this.currentIndex;
 	}
 
+	/**
+	 * @return The normalization object this object will use.
+	 */
 	public Normalization getNormalization() {
 		return this.normalization;
 	}
 
+	/**
+	 * Setup this class with the specified normalization object.
+	 * @param normalization Normalization object.
+	 */
 	public void init(final Normalization normalization) {
 		this.normalization = normalization;
 	}
 
+	/**
+	 * Used to increase the current index as data is processed.
+	 */
 	public void rollIndex() {
 		this.currentIndex++;
 	}

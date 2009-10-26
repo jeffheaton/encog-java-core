@@ -399,7 +399,7 @@ public class Normalization implements EncogPersistedObject {
 	 * @param count The instance of the input field needed, 0 for the first.
 	 * @return The input field if found, otherwise null.
 	 */
-	public InputField findInputField(final Class<?> clazz, final int count) {
+	public InputField findInputField(final Class< ? > clazz, final int count) {
 		int i = 0;
 		for (final InputField field : this.inputFields) {
 			if (ReflectionUtil.isInstanceOf(field.getClass(), clazz)) {
@@ -419,7 +419,7 @@ public class Normalization implements EncogPersistedObject {
 	 * @param count The instance of the output field needed, 0 for the first.
 	 * @return The output field if found, otherwise null.
 	 */
-	public OutputField findOutputField(final Class<?> clazz, final int count) {
+	public OutputField findOutputField(final Class< ? > clazz, final int count) {
 		int i = 0;
 		for (final OutputField field : this.outputFields) {
 			if (ReflectionUtil.isInstanceOf(field.getClass(), clazz)) {

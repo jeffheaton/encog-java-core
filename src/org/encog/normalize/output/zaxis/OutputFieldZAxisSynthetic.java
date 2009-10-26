@@ -29,8 +29,16 @@ import org.encog.normalize.NormalizationError;
 import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 
+/**
+ * This field represents the syntehtic value used in Z-Axis normalization.
+ *
+ */
 public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 
+	/**
+	 * Construct a synthetic output field for Z-Axis. 
+	 * @param group The Z-Axis group that this belongs to.
+	 */
 	public OutputFieldZAxisSynthetic(final OutputFieldGroup group) {
 		super(group, null);
 		if (!(group instanceof ZAxisGroup)) {
@@ -39,6 +47,11 @@ public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 		}
 	}
 
+	/**
+	 * Calculate the synthetic value for this Z-Axis normalization.
+	 * @param subfield Not used.
+	 * @return The calculated value.
+	 */
 	public double calculate(final int subfield) {
 		final double l = ((ZAxisGroup) getGroup()).getLength();
 		final double f = ((ZAxisGroup) getGroup()).getMultiplier();
@@ -51,6 +64,10 @@ public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 		}
 	}
 
+	/**
+	 * @return The subfield count, which is one, as this field type does not
+	 *         have subfields.
+	 */
 	public int getSubfieldCount() {
 		return 1;
 	}

@@ -27,17 +27,46 @@ package org.encog.normalize.segregate;
 
 import org.encog.persist.annotations.EGAttribute;
 
+/**
+ * Specifies a range that might be included or excluded.
+ */
 public class SegregationRange {
-	
+
+	/**
+	 * The low end of this range.
+	 */
 	@EGAttribute
 	private double low;
-	
+
+	/**
+	 * The high end of this range.
+	 */
 	@EGAttribute
 	private double high;
-	
+
+	/**
+	 * Should this range be included.
+	 */
 	@EGAttribute
 	private boolean include;
 
+	/**
+	 * Default constructor for reflection.
+	 */
+	public SegregationRange() {
+
+	}
+
+	/**
+	 * Construct a segregation range.
+	 * 
+	 * @param low
+	 *            The low end of the range.
+	 * @param high
+	 *            The high end of the range.
+	 * @param include
+	 *            Specifies if the range should be included.
+	 */
 	public SegregationRange(final double low, final double high,
 			final boolean include) {
 		super();
@@ -45,24 +74,33 @@ public class SegregationRange {
 		this.high = high;
 		this.include = include;
 	}
-	
-	public SegregationRange()
-	{
-		
-	}
 
+	/**
+	 * @return The high end of the range.
+	 */
 	public double getHigh() {
 		return this.high;
 	}
 
+	/**
+	 * @return The low end of the range.
+	 */
 	public double getLow() {
 		return this.low;
 	}
 
+	/**
+	 * Is this value within the range.
+	 * @param value The value to check.
+	 * @return True if the value is within the range.
+	 */
 	public boolean inRange(final double value) {
 		return ((value >= this.low) && (value <= this.high));
 	}
 
+	/**
+	 * @return True if this range should be included.
+	 */
 	public boolean isIncluded() {
 		return this.include;
 	}

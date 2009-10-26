@@ -38,15 +38,15 @@ public interface OutputFieldGroup {
 	 * Add an output field to the group.
 	 * @param field The field to add.
 	 */
-	public void addField(OutputFieldGrouped field);
+	void addField(OutputFieldGrouped field);
 
 	/**
 	 * @return All of the output fields in this group.
 	 */
-	public Collection<OutputFieldGrouped> getGroupedFields();
+	Collection<OutputFieldGrouped> getGroupedFields();
 
 	/**
 	 * Init the group for a new row.
 	 */
-	public void rowInit();
+	void rowInit();
 }

@@ -25,24 +25,52 @@
  */
 package org.encog.normalize.target;
 
+/**
+ * Output the normalized data to a 2D array.
+ */
 public class NormalizationStorageArray2D implements NormalizationStorage {
 
+	/**
+	 * The array to output to.
+	 */
 	private final double[][] array;
+	
+	/**
+	 * The current data.
+	 */
 	private int currentIndex;
 
+	/**
+	 * Construct an object to store to a 2D array.
+	 * @param array The array to store to.
+	 */
 	public NormalizationStorageArray2D(final double[][] array) {
 		this.array = array;
 		this.currentIndex = 0;
 	}
 
+	/**
+	 * Not needed for this storage type.
+	 */
 	public void close() {
 
 	}
 
+	/**
+	 * Not needed for this storage type.
+	 */
 	public void open() {
 
 	}
 
+	/**
+	 * Write an array.
+	 * 
+	 * @param data
+	 *            The data to write.
+	 * @param inputCount
+	 *            How much of the data is input.
+	 */
 	public void write(final double[] data, final int inputCount) {
 		for (int i = 0; i < data.length; i++) {
 			this.array[this.currentIndex][i] = data[i];

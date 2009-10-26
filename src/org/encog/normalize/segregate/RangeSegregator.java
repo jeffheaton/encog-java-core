@@ -32,47 +32,106 @@ import org.encog.normalize.Normalization;
 import org.encog.normalize.input.InputField;
 import org.encog.persist.annotations.EGReference;
 
+/**
+ * Range segregators are used to segregate data and include or exclude if it is
+ * within a certain range.
+ */
 public class RangeSegregator implements Segregator {
 
+	/**
+	 * The source field that this is based on.
+	 */
 	@EGReference
 	private InputField sourceField;
+
+	/**
+	 * If none of the ranges match, should this data be included.
+	 */
 	private boolean include;
-	private Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
-	
+
+	/**
+	 * The ranges.
+	 */
+	private final Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
+
+	/**
+	 * The normalization object.
+	 */
 	@EGReference
 	private Normalization normalization;
 
+	/**
+	 * Default constructor for reflection.
+	 */
+	public RangeSegregator() {
+	}
+
+	/**
+	 * Construct a range segregator.
+	 * 
+	 * @param sourceField
+	 *            The source field.
+	 * @param include
+	 *            Default action, if the data is not in any of the ranges,
+	 *            should it be included.
+	 */
 	public RangeSegregator(final InputField sourceField, final boolean include) {
 		this.sourceField = sourceField;
 		this.include = include;
 	}
-	
-	public RangeSegregator()
-	{
-	}
 
+	/**
+	 * Add a range.
+	 * 
+	 * @param low
+	 *            The low end of the range.
+	 * @param high
+	 *            The high end of the range.
+	 * @param include
+	 *            Should this range be included.
+	 */
 	public void addRange(final double low, final double high,
 			final boolean include) {
 		final SegregationRange range = new SegregationRange(low, high, include);
 		addRange(range);
 	}
 
+	/**
+	 * Add a range.
+	 * 
+	 * @param range
+	 *            The range to add.
+	 */
 	public void addRange(final SegregationRange range) {
 		this.ranges.add(range);
 	}
 
+	/**
+	 * @return The normalization object used by this object.
+	 */
 	public Normalization getNormalization() {
 		return this.normalization;
 	}
 
+	/**
+	 * @return The source field that the ranges are compared against.
+	 */
 	public InputField getSourceField() {
 		return this.sourceField;
 	}
 
+	/**
+	 * Init the object.
+	 * @param normalization The normalization object that owns this range.
+	 */
 	public void init(final Normalization normalization) {
 		this.normalization = normalization;
 	}
 
+	/**
+	 * @return True if the current row should be included according to this
+	 *         segregator.
+	 */
 	public boolean shouldInclude() {
 		final double value = this.sourceField.getCurrentValue();
 		for (final SegregationRange range : this.ranges) {

@@ -34,26 +34,55 @@ import org.encog.normalize.NormalizationError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
+/**
+ * Store normalized data to a CSV file.
+ */
 public class NormalizationStorageCSV implements NormalizationStorage {
 
+	/**
+	 * The output file.
+	 */
 	private final File outputFile;
+	
+	/**
+	 * The output writer.
+	 */
 	private PrintWriter output;
+	
+	/**
+	 * The CSV format to use.
+	 */
 	private final CSVFormat format;
 
+	/**
+	 * Construct a CSV storage object from the specified file.
+	 * @param format The format to use.
+	 * @param file The file to write the CSV to.
+	 */
 	public NormalizationStorageCSV(final CSVFormat format, final File file) {
 		this.format = format;
 		this.outputFile = file;
 	}
 
+	/**
+	 * Construct a CSV storage object from the specified file.
+	 * @param file The file to write the CSV to.
+	 */
 	public NormalizationStorageCSV(final File file) {
 		this.format = CSVFormat.ENGLISH;
 		this.outputFile = file;
 	}
 
+	/**
+	 * Close the CSV file.
+	 */
 	public void close() {
 		this.output.close();
 	}
 
+	/**
+	 * Open the CSV file.
+	 */
 	public void open() {
 		try {
 			final FileWriter outFile = new FileWriter(this.outputFile);
@@ -63,6 +92,14 @@ public class NormalizationStorageCSV implements NormalizationStorage {
 		}
 	}
 
+	/**
+	 * Write an array.
+	 * 
+	 * @param data
+	 *            The data to write.
+	 * @param inputCount
+	 *            How much of the data is input.
+	 */
 	public void write(final double[] data, final int inputCount) {
 		final StringBuilder result = new StringBuilder();
 		NumberList.toList(this.format, result, data);

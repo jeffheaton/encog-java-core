@@ -27,10 +27,27 @@ package org.encog.normalize.segregate;
 
 import org.encog.normalize.Normalization;
 
+/**
+ * Segregators are used to exclude certian rows. You may want to exclude rows to
+ * create training and validation sets. You may also simply wish to exclude some
+ * rows because they do not apply to what you are currently training for.
+ */
 public interface Segregator {
+	
+	/**
+	 * @return The normalization object that is being used with this segregator.
+	 */
 	Normalization getNormalization();
 
+	/**
+	 * Setup this object to use the specified normalization object.
+	 * @param normalization THe normalization object to use.
+	 */
 	void init(Normalization normalization);
 
+	/**
+	 * Should this row be included, according to this segregator.
+	 * @return True if this row should be included.
+	 */
 	boolean shouldInclude();
 }
