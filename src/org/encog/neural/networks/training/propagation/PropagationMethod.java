@@ -50,7 +50,7 @@ public interface PropagationMethod {
 
 	/**
 	 * Init with the specified propagation object.
-	 * @param propagation The propagation object that this method will
+	 * @param propagationUtil The propagation object that this method will
 	 * be used with.
 	 */
 	void init(PropagationUtil propagationUtil);

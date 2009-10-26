@@ -90,8 +90,8 @@ public interface InputField {
 	void setMax(double max);
 
 	/**
-	 * Set the current max value.
-	 * @param max The maximum value encountered on this field so far.
+	 * Set the current min value.
+	 * @param min The minimum value encountered on this field so far.
 	 */
 	void setMin(double min);
 }

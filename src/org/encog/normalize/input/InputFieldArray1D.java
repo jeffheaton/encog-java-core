@@ -59,9 +59,8 @@ public class InputFieldArray1D extends BasicInputField implements
 
 	/**
 	 * Get the value from the specified index.
-	 * @param The index to retrieve.
+	 * @param The i to retrieve.
 	 */
-	@Override
 	public double getValue(final int i) {
 		return this.array[i];
 	}

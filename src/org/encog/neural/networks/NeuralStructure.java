@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -265,5 +266,23 @@ public class NeuralStructure implements Serializable {
 		}
 
 		return result;
+	}
+	
+	/**
+	 * Determine if the network contains a layer of the specified type.
+	 * @param type The layer type we are looking for.
+	 * @return True if this layer type is present.
+	 */
+	public boolean containsLayerType(Class<?> type)
+	{
+		for(Layer layer: this.layers)
+		{
+			if( ReflectionUtil.isInstanceOf(layer.getClass(), type) )
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

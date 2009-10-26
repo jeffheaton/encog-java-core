@@ -115,7 +115,7 @@ public class PropagationLevel {
 
 	/**
 	 * Construct a propagation level with a list of outgoing synapses.
-	 * @param propagation The propagation object that created this.
+	 * @param propagationUtil The propagation util object to use.
 	 * @param outgoing The outgoing synapses.
 	 */
 	public PropagationLevel(final PropagationUtil propagationUtil,

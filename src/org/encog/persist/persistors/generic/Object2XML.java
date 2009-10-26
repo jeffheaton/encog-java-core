@@ -67,7 +67,7 @@ public class Object2XML {
 	/**
 	 * Save the object to XML.
 	 * 
-	 * @param obj
+	 * @param encogObject
 	 *            The object to save.
 	 * @param out
 	 *            The XML writer.

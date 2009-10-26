@@ -89,7 +89,7 @@ public class BackpropagationMethod implements PropagationMethod {
 
 	/**
 	 * Setup this propagation method using the specified propagation class.
-	 * @param propagation The propagation class creating this method.
+	 * @param propagationUtil The propagation class creating this method.
 	 */
 	public void init(final PropagationUtil propagationUtil) {
 		this.propagationUtil = propagationUtil;

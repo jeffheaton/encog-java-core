@@ -54,7 +54,7 @@ public class GenericPersistor implements Persistor {
 	/**
 	 * Save the specified object.
 	 * 
-	 * @param object
+	 * @param obj
 	 *            The object to save.
 	 * @param out
 	 *            The XML object.

@@ -122,7 +122,7 @@ public abstract class BasicInputField implements InputField {
 	/**
 	 * Set the current value of this field.  This value is only valid while
 	 * the normalization is occurring.
-	 * @param d The current value of this field.
+	 * @param currentValue The current value of this field.
 	 */
 	public void setCurrentValue(final double currentValue) {
 		this.currentValue = currentValue;
@@ -138,8 +138,8 @@ public abstract class BasicInputField implements InputField {
 	}
 
 	/**
-	 * Set the current max value.
-	 * @param max The maximum value encountered on this field so far.
+	 * Set the current min value.
+	 * @param min The minimum value encountered on this field so far.
 	 */
 	public void setMin(final double min) {
 		this.min = min;
