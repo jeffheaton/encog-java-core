@@ -20,11 +20,8 @@ import org.encog.persist.location.ResourcePersistence;
 /**
  * This class includes some utilities to be used with reflection. This are
  * mostly used by the Encog generic persistence classes.
- * 
- * @author jeff
- * 
  */
-public class ReflectionUtil {
+public final class ReflectionUtil {
 
 	/**
 	 * A map between short class names and the full path names.
@@ -167,7 +164,9 @@ public class ReflectionUtil {
 
 	/**
 	 * Resolve an encog class using its simple name.
-	 * @param name The simple name of the class.
+	 * 
+	 * @param name
+	 *            The simple name of the class.
 	 * @return The class requested.
 	 */
 	public static Class<?> resolveEncogClass(final String name) {
@@ -179,8 +178,11 @@ public class ReflectionUtil {
 
 	/**
 	 * Determine if Encog persistence should access the specified field.
-	 * @param field The field to check.
-	 * @param base True if this is the actual Encog persisted class(top level)
+	 * 
+	 * @param field
+	 *            The field to check.
+	 * @param base
+	 *            True if this is the actual Encog persisted class(top level)
 	 * @return True if the class should be accessed.
 	 */
 	public static boolean shouldAccessField(final Field field,
@@ -199,6 +201,13 @@ public class ReflectionUtil {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private ReflectionUtil() {
+
 	}
 
 }

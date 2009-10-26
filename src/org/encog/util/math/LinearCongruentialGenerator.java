@@ -28,7 +28,7 @@ package org.encog.util.math;
 /**
  * A predictable random number generator. This is useful for unit tests and
  * benchmarks where we want random numbers, but we want them to be the same each
- * time. This class exists on both Java and C# so it can even provide consistant
+ * time. This class exists on both Java and C# so it can even provide consistent
  * random numbers over the two platforms.
  * 
  * Random numbers are created using a LCG.

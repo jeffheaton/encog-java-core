@@ -4,9 +4,16 @@ import org.encog.util.math.LinearCongruentialGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * A randomizer that takes a seed and will always produce consistent results.
+ */
 public class ConsistentRandomizer extends BasicRandomizer {
 
-	private LinearCongruentialGenerator rand = new LinearCongruentialGenerator(1000);
+	/**
+	 * The generator.
+	 */
+	private LinearCongruentialGenerator rand 
+		= new LinearCongruentialGenerator(1000);
 	
 	/**
 	 * Generate a random number in the specified range.

@@ -105,24 +105,6 @@ public final class Evaluate {
 		return result / Evaluate.MILIS;
 	}
 	
-	public static double evaluateMPROP(final BasicNetwork network,
-			final NeuralDataSet training, final double error) {
-		// train the neural network
-		//final Train train = new MultiPropagation(network, training);
-		final Train train = new ResilientPropagation(network, training);
-
-		final long start = System.currentTimeMillis();
-		do {
-			train.iteration();
-			System.out.println(train.getError());
-		} while( train.getError()>error );
-		
-		train.finishTraining();
-		
-		final long time = System.currentTimeMillis() - start;
-		return time / Evaluate.MILIS;
-	}
-
 	/**
 	 * Private constructor.
 	 */

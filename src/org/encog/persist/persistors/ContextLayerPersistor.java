@@ -44,7 +44,10 @@ import org.slf4j.LoggerFactory;
  */
 public class ContextLayerPersistor implements Persistor {
 
-	public final static String PROPERTY_CONTEXT = "context";
+	/**
+	 * Context tag.
+	 */
+	public static final String PROPERTY_CONTEXT = "context";
 
 	/**
 	 * The logging object.

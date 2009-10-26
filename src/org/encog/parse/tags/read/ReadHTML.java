@@ -45,9 +45,13 @@ public class ReadHTML extends ReadTags {
 	public ReadHTML(final InputStream is) {
 		super(is);
 	}
-	
-	protected String parseAttributeName()
-	{
+
+	/**
+	 * Parse the attribute name.
+	 * 
+	 * @return The attribute name.
+	 */
+	protected String parseAttributeName() {
 		String result = super.parseAttributeName();
 		return result.toLowerCase();
 	}

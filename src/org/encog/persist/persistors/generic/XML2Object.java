@@ -84,8 +84,7 @@ public class XML2Object {
 	 * 
 	 * @param objectField
 	 *            The object's field.
-	 * @param in
-	 * @param target
+	 * @param target The object that will get the value.
 	 */
 	@SuppressWarnings("unchecked")
 	private void loadActualObject(final Field objectField, final Object target) {

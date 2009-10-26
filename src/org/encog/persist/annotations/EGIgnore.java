@@ -10,7 +10,7 @@ import java.lang.annotation.ElementType;
  * be flagged as something that should be ignored.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.FIELD })
+@Target({ElementType.FIELD })
 public @interface EGIgnore {
 
 }

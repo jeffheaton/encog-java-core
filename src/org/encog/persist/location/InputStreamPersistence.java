@@ -97,6 +97,7 @@ public class InputStreamPersistence implements PersistenceLocation {
 
 	/**
 	 * Because this is based on a stream, it always exists, so return true.
+	 * @return True.
 	 */
 	public boolean exists() {
 		return true;

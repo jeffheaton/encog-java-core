@@ -32,28 +32,28 @@ import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGIgnore;
 
 /**
- * Specifies a CSV format.  This allows you to determine if a decimal
- * point or decimal comma is uses.  It also specifies the character
- * that should be used to separate numbers.
- *
+ * Specifies a CSV format. This allows you to determine if a decimal point or
+ * decimal comma is uses. It also specifies the character that should be used to
+ * separate numbers.
+ * 
  */
 public class CSVFormat {
 
 	/**
 	 * Use a decimal point, and a comma to separate numbers.
 	 */
-	public static CSVFormat DECIMAL_POINT = new CSVFormat('.', ',');
-	
+	public static final CSVFormat DECIMAL_POINT = new CSVFormat('.', ',');
+
 	/**
 	 * Use a decimal comma, and a semicolon to separate numbers.
 	 */
-	public static CSVFormat DECIMAL_COMMA = new CSVFormat(',', ';');
-	
+	public static final CSVFormat DECIMAL_COMMA = new CSVFormat(',', ';');
+
 	/**
 	 * Decimal point is typically used in English speaking counties.
 	 */
-	public static CSVFormat ENGLISH = CSVFormat.DECIMAL_POINT;
-	
+	public static final CSVFormat ENGLISH = CSVFormat.DECIMAL_POINT;
+
 	/**
 	 * EG files, internally use a decimal point and comma separator.
 	 */
@@ -62,6 +62,7 @@ public class CSVFormat {
 	/**
 	 * Get the decimal character currently in use by the computer's default
 	 * location.
+	 * 
 	 * @return The decimal character used.
 	 */
 	public static char getDecimalCharacter() {
@@ -89,29 +90,34 @@ public class CSVFormat {
 	 */
 	@EGAttribute
 	private final char decimal;
-	
+
 	/**
 	 * The separator character.
 	 */
 	@EGAttribute
 	private final char separator;
 
-	/** 
+	/**
 	 * The number formatter to use for this format.
 	 */
 	@EGIgnore
 	private final NumberFormat numberFormatter;
 
-	public CSVFormat()
-	{
-		this('.',',');
+	/**
+	 * By default use USA conventions.
+	 */
+	public CSVFormat() {
+		this('.', ',');
 	}
-	
+
 	/**
 	 * Construct a CSV format with he specified decimal and separator
 	 * characters.
-	 * @param decimal The decimal character.
-	 * @param separator The separator character.
+	 * 
+	 * @param decimal
+	 *            The decimal character.
+	 * @param separator
+	 *            The separator character.
 	 */
 	public CSVFormat(final char decimal, final char separator) {
 		super();
@@ -128,10 +134,13 @@ public class CSVFormat {
 	}
 
 	/**
-	 * Format the specified number to a string with the specified number
-	 * of fractional digits.
-	 * @param d The number to format.
-	 * @param digits The number of fractional digits.
+	 * Format the specified number to a string with the specified number of
+	 * fractional digits.
+	 * 
+	 * @param d
+	 *            The number to format.
+	 * @param digits
+	 *            The number of fractional digits.
 	 * @return The number formatted as a string.
 	 */
 	public String format(final double d, final int digits) {
@@ -163,7 +172,9 @@ public class CSVFormat {
 
 	/**
 	 * Parse the specified string to a double.
-	 * @param str The string to parse.
+	 * 
+	 * @param str
+	 *            The string to parse.
 	 * @return The parsed number.
 	 */
 	public double parse(final String str) {

@@ -38,22 +38,41 @@ import java.io.File;
  */
 public class GenerateClasslist {
 
+	/**
+	 * Run the utility.
+	 * 
+	 * @param args
+	 *            The directory to scan, i.e.
+	 *            C:\\shared\\encog-workspace\\encog-core\\src.
+	 */
+	public static void main(final String[] args) {
+		final GenerateClasslist gen = new GenerateClasslist();
+		gen.beginScan(new File(args[0]));
+	}
+
+	/**
+	 * The base path.
+	 */
 	private String base;
 
 	/**
 	 * Scan a directory.
-	 * @param dir The directory to scan.
+	 * 
+	 * @param dir
+	 *            The directory to scan.
 	 */
-	public void beginScan(File dir) {
-		base = dir.getAbsolutePath();
+	public void beginScan(final File dir) {
+		this.base = dir.getAbsolutePath();
 		scan(dir);
 	}
 
 	/**
 	 * Process a Java file.
-	 * @param file The file to process.
+	 * 
+	 * @param file
+	 *            The file to process.
 	 */
-	private void processJAVA(File file) {
+	private void processJAVA(final File file) {
 		String name = file.getName();
 
 		// strip off the .java
@@ -66,10 +85,10 @@ public class GenerateClasslist {
 		path = path.substring(0, idx);
 
 		// strip off base
-		path = path.substring(base.length() + 1);
+		path = path.substring(this.base.length() + 1);
 
 		// insert .'s
-		StringBuilder temp = new StringBuilder(path);
+		final StringBuilder temp = new StringBuilder(path);
 		for (int i = 0; i < temp.length(); i++) {
 			if (temp.charAt(i) == File.separatorChar) {
 				temp.setCharAt(i, '.');
@@ -80,25 +99,21 @@ public class GenerateClasslist {
 
 	}
 
-	public void scan(File dir) {
-		File[] files = dir.listFiles();
-		for (File file : files) {
+	/**
+	 * Scan the specified directory.
+	 * @param dir The directory to scan.
+	 */
+	public void scan(final File dir) {
+		final File[] files = dir.listFiles();
+		for (final File file : files) {
 			if (file.isFile()) {
-				String strFile = file.toString();
-				if (strFile.endsWith(".java"))
+				final String strFile = file.toString();
+				if (strFile.endsWith(".java")) {
 					processJAVA(file);
+				}
 			} else if (file.isDirectory()) {
 				scan(file);
 			}
 		}
-	}
-
-	/**
-	 * Run the utility.
-	 * @param args The directory to scan, i.e. C:\\shared\\encog-workspace\\encog-core\\src.
-	 */
-	public static void main(String args[]) {
-		GenerateClasslist gen = new GenerateClasslist();
-		gen.beginScan(new File(args[0]));
 	}
 }

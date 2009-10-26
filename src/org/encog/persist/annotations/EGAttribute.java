@@ -11,7 +11,7 @@ import java.lang.annotation.ElementType;
  * 
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.FIELD })
+@Target({ElementType.FIELD })
 public @interface EGAttribute {
 
 }

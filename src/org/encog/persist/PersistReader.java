@@ -144,6 +144,13 @@ public class PersistReader {
 
 	}
 
+	/**
+	 * Advance to the specified tag.
+	 * 
+	 * @param tag
+	 *            The tag to search for.
+	 * @return True if the tag was found.
+	 */
 	private boolean advanceToTag(final String tag) {
 		while (this.in.readToTag()) {
 			final Type type = this.in.getTag().getType();
@@ -260,9 +267,9 @@ public class PersistReader {
 
 					if (depth == 0) {
 						break;
-					}
-					else
+					} else {
 						out.endTag(this.in.getTag().getName());
+					}
 
 					depth--;
 				}
@@ -343,17 +350,16 @@ public class PersistReader {
 		// did we find the object?
 		if (advance(name)) {
 			final String objectType = this.in.getTag().getName();
-			Persistor persistor = PersistorUtil
-					.createPersistor(objectType);
-			if( persistor==null)
-			{
-				Class<?> clazz = ReflectionUtil.resolveEncogClass(objectType);
+			Persistor persistor = PersistorUtil.createPersistor(objectType);
+			if (persistor == null) {
+				final Class<?> clazz = ReflectionUtil
+						.resolveEncogClass(objectType);
 				EncogPersistedObject temp;
 				try {
 					temp = (EncogPersistedObject) clazz.newInstance();
-				} catch (InstantiationException e) {
+				} catch (final InstantiationException e) {
 					throw new PersistError(e);
-				} catch (IllegalAccessException e) {
+				} catch (final IllegalAccessException e) {
 					throw new PersistError(e);
 				}
 				persistor = temp.createPersistor();
@@ -454,17 +460,17 @@ public class PersistReader {
 		int depth = 0;
 		while (this.in.readToTag()) {
 			final Type type = this.in.getTag().getType();
-			
-			switch(type)
-			{
-				case END:
-					if( depth==0)
-						return;
-					depth--;
-					break;
-				case BEGIN:
-					depth++;
-					break;
+
+			switch (type) {
+			case END:
+				if (depth == 0) {
+					return;
+				}
+				depth--;
+				break;
+			case BEGIN:
+				depth++;
+				break;
 			}
 		}
 	}

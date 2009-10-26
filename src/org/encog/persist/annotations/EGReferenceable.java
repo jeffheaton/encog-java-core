@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * be flagged as something that should be persisted as a reference.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ElementType.TYPE })
 public @interface EGReferenceable {
 
 }

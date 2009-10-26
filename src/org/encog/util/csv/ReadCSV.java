@@ -196,6 +196,7 @@ public class ReadCSV {
 	 * 
 	 * @param headers
 	 *            Are headers present.
+	 * @param format The format to use.
 	 */
 	private void begin(final boolean headers, final CSVFormat format) {
 		try {

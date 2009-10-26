@@ -96,7 +96,7 @@ public class OutputStreamPersistence implements PersistenceLocation {
 	}
 
 	/**
-	 * Because this is based on a stream, it always exists, so return true.
+	 * @return Because this is based on a stream, it always exists, so return true.
 	 */
 	public boolean exists() {
 		return true;

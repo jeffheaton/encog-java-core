@@ -101,15 +101,12 @@ public class Object2XML {
 	/**
 	 * Save a collection.
 	 * 
-	 * @param out
-	 *            The XML writer.
 	 * @param value
-	 *            The value to save.
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
+	 *            The collection to save
+	 * @throws IllegalAccessException An error.
 	 */
-	private void saveCollection(final Collection<?> value)
-			throws IllegalArgumentException, IllegalAccessException {
+	private void saveCollection(final Collection< ? > value)
+			throws IllegalAccessException {
 
 		for (final Object obj : value) {
 			saveObject(obj);
@@ -119,15 +116,14 @@ public class Object2XML {
 	/**
 	 * Save a field.
 	 * @param fieldObject The field to save.
-	 * @throws IllegalArgumentException An error.
 	 * @throws IllegalAccessException An error.
 	 */
 	private void saveField(final Object fieldObject)
-			throws IllegalArgumentException, IllegalAccessException {
+			throws IllegalAccessException {
 		if (fieldObject != null) {
 			if (fieldObject instanceof Collection) {
 
-				saveCollection((Collection<?>) fieldObject);
+				saveCollection((Collection< ? >) fieldObject);
 
 			} else if (ReflectionUtil.isPrimitive(fieldObject)
 					|| ReflectionUtil.isSimple(fieldObject)) {
@@ -159,11 +155,10 @@ public class Object2XML {
 	/**
 	 * Save an object.
 	 * @param obj The object.
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
+	 * @throws IllegalAccessException An error.
 	 */
 	private void saveObject(final Object obj)
-			throws IllegalArgumentException, IllegalAccessException {
+			throws IllegalAccessException {
 		// does this object have an ID?
 
 		if (this.tagger.hasReference(obj)) {

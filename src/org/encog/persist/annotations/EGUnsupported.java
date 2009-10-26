@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * Encog persistence is not supported for this object type.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ElementType.TYPE })
 public @interface EGUnsupported {
 
 }

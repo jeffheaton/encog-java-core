@@ -787,12 +787,16 @@ public class Normalization implements EncogPersistedObject {
 
 	/**
 	 * Set the object that this one is reporting to.
-	 * @param report
+	 * @param report The object that progress reports should be sent to.
 	 */
 	public void setReport(final StatusReportable report) {
 		this.report = report;
 	}
 
+	/**
+	 * Determines where the normalized data will be sent.
+	 * @param target The target.
+	 */
 	public void setTarget(final NormalizationStorage target) {
 		this.storage = target;
 	}
