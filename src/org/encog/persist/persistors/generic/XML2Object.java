@@ -52,6 +52,9 @@ public class XML2Object {
 	 */
 	private final ObjectMapper mapper = new ObjectMapper();
 
+	/**
+	 * Used to read the XML.
+	 */
 	private ReadXML in;
 
 	/**

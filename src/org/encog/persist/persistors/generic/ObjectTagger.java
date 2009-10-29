@@ -156,7 +156,7 @@ public class ObjectTagger {
 	}
 
 	/**
-	 * Tan an object.
+	 * Tag an object.
 	 * @param parentObject The object to tag.
 	 * @throws IllegalAccessException An error.
 	 */

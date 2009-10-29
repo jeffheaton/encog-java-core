@@ -35,7 +35,7 @@ import org.encog.EncogError;
 
 /**
  * Used to map objects to reference numbers. This is where reference numbers are
- * resolved. This class is used by Encog generic persistance.
+ * resolved. This class is used by Encog generic persistence.
  */
 public class ObjectMapper {
 

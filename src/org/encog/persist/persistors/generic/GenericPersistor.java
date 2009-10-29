@@ -33,7 +33,7 @@ import org.encog.persist.Persistor;
 
 /**
  * An Encog perisistor that can be used with any object that supports the Encog
- * generic persistance. Simply provide the class to the constructor, and return
+ * generic persistence. Simply provide the class to the constructor, and return
  * an instance of this object in the getPersistor call.
  * 
  * When loading an object, Encog will attempt to use this class if no other
