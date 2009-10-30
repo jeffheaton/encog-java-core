@@ -31,8 +31,8 @@ import org.encog.persist.persistors.ActivationCompetitivePersistor;
 
 /**
  * An activation function that only allows a specified number, usually one, of
- * the out-bound connection to win. These connections will share in the sim of
- * the output, whereas the other neurons will recieve zero.
+ * the out-bound connection to win. These connections will share in the sum of
+ * the output, whereas the other neurons will receive zero.
  * 
  * This activation function can be useful for "winner take all" layers.
  * 
