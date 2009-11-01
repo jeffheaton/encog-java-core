@@ -28,7 +28,7 @@ package org.encog.normalize.output;
 import java.util.Collection;
 
 /**
- * Output fields can be grouped together if they are calcualted together.
+ * Output fields can be grouped together if they are calculated together.
  * This interface defines how a field group works.
  *
  */

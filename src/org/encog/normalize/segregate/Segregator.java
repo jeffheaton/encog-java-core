@@ -28,7 +28,7 @@ package org.encog.normalize.segregate;
 import org.encog.normalize.Normalization;
 
 /**
- * Segregators are used to exclude certian rows. You may want to exclude rows to
+ * Segregators are used to exclude certain rows. You may want to exclude rows to
  * create training and validation sets. You may also simply wish to exclude some
  * rows because they do not apply to what you are currently training for.
  */
