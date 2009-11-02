@@ -115,7 +115,7 @@ public class OutputFieldEncode extends BasicOutputField {
 	}
 
 	/**
-	 * Set the catch all vaule.
+	 * Set the catch all value.
 	 * @param catchAll The catch all value that is to be returned if none
 	 * of the ranges match.
 	 */

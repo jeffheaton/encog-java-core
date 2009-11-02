@@ -42,7 +42,7 @@ import org.encog.util.math.Equilateral;
 public class OutputEquilateral extends BasicOutputField {
 
 	/**
-	 * THe nomal items.
+	 * THe nominal items.
 	 */
 	private final List<NominalItem> items = new ArrayList<NominalItem>();
 
