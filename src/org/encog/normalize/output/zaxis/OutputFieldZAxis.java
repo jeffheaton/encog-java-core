@@ -31,8 +31,27 @@ import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 
 /**
- * An output field that is based on the Z-Axis method of normalization. This is
- * a groupped field.
+ * Both the multiplicative and z-axis normalization types allow a group of 
+ * outputs to be adjusted so that the "vector length" is 1.  Both go about it
+ * in different ways.  Certain types of neural networks require a vector length 
+ * of 1.
+ * 
+ * Z-Axis normalization is usually a better choice than multiplicative.    
+ * However, multiplicative can perform better than Z-Axis when all of the 
+ * values are near zero most of the time.  This can cause the "synthetic value"
+ * that z-axis uses to dominate and skew the answer.
+ * 
+ *  Z-Axis gets its name from 3D computer graphics, where there is a Z-Axis
+ *  extending from the plane created by the X and Y axes.  It has nothing to 
+ *  do with z-scores or the z-transform of signal theory.
+ *  
+ *  To implement Z-Axis normalization a scaling factor must be created to multiply
+ *  each of the inputs against.  Additionally, a synthetic field must be added.
+ *  It is very important that this synthetic field be added to any z-axis
+ *  group that you might use.  The synthetic field is represented by the
+ *  OutputFieldZAxisSynthetic class.
+ *  
+ * @author jheaton
  */
 public class OutputFieldZAxis extends OutputFieldGrouped {
 

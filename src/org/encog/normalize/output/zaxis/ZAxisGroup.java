@@ -30,7 +30,8 @@ import org.encog.normalize.output.OutputFieldGrouped;
 
 /**
  * Used to group Z-Axis fields together. Both OutputFieldZAxis and
- * OutputFieldZAxisSynthetic fields may belong to this group.
+ * OutputFieldZAxisSynthetic fields may belong to this group. For
+ * more information see the OutputFieldZAxis class.
  * 
  */
 public class ZAxisGroup extends BasicOutputFieldGroup {

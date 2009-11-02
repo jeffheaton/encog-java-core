@@ -30,8 +30,8 @@ import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 
 /**
- * This field represents the syntehtic value used in Z-Axis normalization.
- *
+ * This field represents the synthetic value used in Z-Axis normalization.
+ * For more information see the OutputFieldZAxis class.
  */
 public class OutputFieldZAxisSynthetic extends OutputFieldGrouped {
 

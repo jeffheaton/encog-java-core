@@ -31,10 +31,24 @@ import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
 
 /**
- * The multiplicative normalization allows a group of output fields to be 
- * specified.  They will be normalized so that their length sums to 1. 
+ * Both the multiplicative and z-axis normalization types allow a group of 
+ * outputs to be adjusted so that the "vector length" is 1.  Both go about it
+ * in different ways.  Certain types of neural networks require a vector length 
+ * of 1.
+ * 
+ * The multiplicative normalization is more simple than Z-Axis normalization.  
+ * Almost always Z=Axis normalization is a better choice.  However, 
+ * multiplicative can perform better than Z-Axis when all of the values
+ * are near zero most of the time.  This can cause the "synthetic value"
+ * that z-axis uses to dominate and skew the answer.
+ * 
+ *  Multiplicative normalization works by calculating the vector length of
+ *  the input fields and dividing each by that value.  This also presents 
+ *  a problem, as the magnitude of the original fields is not used.  For 
+ *  example, multiplicative normalization would not distinguish between
+ *  (-2,1,3) and (-10,5,15).  Both would result in the same output.  
+ *  
  * @author jheaton
- *
  */
 public class OutputFieldMultiplicative extends OutputFieldGrouped {
 
