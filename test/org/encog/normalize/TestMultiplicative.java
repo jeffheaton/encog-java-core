@@ -24,7 +24,7 @@ public class TestMultiplicative extends TestCase {
 		
 		NormalizationStorageArray2D target = new NormalizationStorageArray2D(arrayOutput);
 		MultiplicativeGroup group = new MultiplicativeGroup();
-		Normalization norm = new Normalization();
+		DataNormalization norm = new DataNormalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
 		norm.addInputField(a = new InputFieldArray2D(false,SAMPLE1,0));

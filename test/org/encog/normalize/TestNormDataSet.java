@@ -26,7 +26,7 @@ public class TestNormDataSet extends TestCase {
 		
 		NormalizationStorageArray2D target = new NormalizationStorageArray2D(arrayOutput);
 		
-		Normalization norm = new Normalization();
+		DataNormalization norm = new DataNormalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
 		norm.addInputField(a = new InputFieldNeuralDataSet(false,dataset,0));

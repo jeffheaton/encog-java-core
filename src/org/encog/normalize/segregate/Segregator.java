@@ -25,7 +25,7 @@
  */
 package org.encog.normalize.segregate;
 
-import org.encog.normalize.Normalization;
+import org.encog.normalize.DataNormalization;
 
 /**
  * Segregators are used to exclude certain rows. You may want to exclude rows to
@@ -37,13 +37,13 @@ public interface Segregator {
 	/**
 	 * @return The normalization object that is being used with this segregator.
 	 */
-	Normalization getNormalization();
+	DataNormalization getNormalization();
 
 	/**
 	 * Setup this object to use the specified normalization object.
 	 * @param normalization THe normalization object to use.
 	 */
-	void init(Normalization normalization);
+	void init(DataNormalization normalization);
 
 	/**
 	 * Should this row be included, according to this segregator.

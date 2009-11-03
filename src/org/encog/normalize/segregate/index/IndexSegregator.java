@@ -25,7 +25,7 @@
  */
 package org.encog.normalize.segregate.index;
 
-import org.encog.normalize.Normalization;
+import org.encog.normalize.DataNormalization;
 import org.encog.normalize.segregate.Segregator;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReference;
@@ -50,7 +50,7 @@ public abstract class IndexSegregator implements Segregator {
 	 * THe normalization object this belongs to.
 	 */
 	@EGReference
-	private Normalization normalization;
+	private DataNormalization normalization;
 
 	/**
 	 * @return The current index.
@@ -62,7 +62,7 @@ public abstract class IndexSegregator implements Segregator {
 	/**
 	 * @return The normalization object this object will use.
 	 */
-	public Normalization getNormalization() {
+	public DataNormalization getNormalization() {
 		return this.normalization;
 	}
 
@@ -70,7 +70,7 @@ public abstract class IndexSegregator implements Segregator {
 	 * Setup this class with the specified normalization object.
 	 * @param normalization Normalization object.
 	 */
-	public void init(final Normalization normalization) {
+	public void init(final DataNormalization normalization) {
 		this.normalization = normalization;
 	}
 

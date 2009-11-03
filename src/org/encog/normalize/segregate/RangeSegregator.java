@@ -28,7 +28,7 @@ package org.encog.normalize.segregate;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.encog.normalize.Normalization;
+import org.encog.normalize.DataNormalization;
 import org.encog.normalize.input.InputField;
 import org.encog.persist.annotations.EGReference;
 
@@ -58,7 +58,7 @@ public class RangeSegregator implements Segregator {
 	 * The normalization object.
 	 */
 	@EGReference
-	private Normalization normalization;
+	private DataNormalization normalization;
 
 	/**
 	 * Default constructor for reflection.
@@ -109,7 +109,7 @@ public class RangeSegregator implements Segregator {
 	/**
 	 * @return The normalization object used by this object.
 	 */
-	public Normalization getNormalization() {
+	public DataNormalization getNormalization() {
 		return this.normalization;
 	}
 
@@ -124,7 +124,7 @@ public class RangeSegregator implements Segregator {
 	 * Init the object.
 	 * @param normalization The normalization object that owns this range.
 	 */
-	public void init(final Normalization normalization) {
+	public void init(final DataNormalization normalization) {
 		this.normalization = normalization;
 	}
 

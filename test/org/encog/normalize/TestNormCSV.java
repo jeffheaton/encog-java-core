@@ -29,7 +29,7 @@ public class TestNormCSV extends TestCase {
 		InputField d;
 		InputField e;
 		
-		Normalization norm = new Normalization();
+		DataNormalization norm = new DataNormalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(new NormalizationStorageCSV(FILENAME));
 		norm.addInputField(a = new InputFieldArray2D(false,ARRAY_2D,0));
@@ -57,7 +57,7 @@ public class TestNormCSV extends TestCase {
 		InputField d;
 		InputField e;
 		
-		Normalization norm = new Normalization();
+		DataNormalization norm = new DataNormalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(new NormalizationStorageCSV(FILENAME));
 		norm.addInputField(a = new InputFieldCSV(false,FILENAME,0));

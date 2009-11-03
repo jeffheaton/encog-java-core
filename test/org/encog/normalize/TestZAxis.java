@@ -25,7 +25,7 @@ public class TestZAxis extends TestCase {
 		
 		NormalizationStorageArray2D target = new NormalizationStorageArray2D(arrayOutput);
 		ZAxisGroup group = new ZAxisGroup();
-		Normalization norm = new Normalization();
+		DataNormalization norm = new DataNormalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
 		norm.addInputField(a = new InputFieldArray2D(false,SAMPLE1,0));

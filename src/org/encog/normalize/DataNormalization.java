@@ -122,7 +122,7 @@ import org.encog.util.csv.ReadCSV;
  * 
  */
 @EGReferenceable
-public class Normalization implements EncogPersistedObject {
+public class DataNormalization implements EncogPersistedObject {
 
 	/**
 	 * The serial ID.
@@ -345,7 +345,7 @@ public class Normalization implements EncogPersistedObject {
 	 * @return A persistor to persist this Normalization object. 
 	 */
 	public Persistor createPersistor() {
-		return new GenericPersistor(Normalization.class);
+		return new GenericPersistor(DataNormalization.class);
 	}
 
 	

@@ -27,7 +27,7 @@ public class TestNormArray extends TestCase {
 		
 		NormalizationStorageArray1D target = new NormalizationStorageArray1D(arrayOutput);
 		
-		Normalization norm = new Normalization();
+		DataNormalization norm = new DataNormalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
 		norm.addInputField(a = new InputFieldArray1D(false,ARRAY_1D));
@@ -47,7 +47,7 @@ public class TestNormArray extends TestCase {
 		
 		NormalizationStorageArray2D target = new NormalizationStorageArray2D(arrayOutput);
 		
-		Normalization norm = new Normalization();
+		DataNormalization norm = new DataNormalization();
 		norm.setReport(new NullStatusReportable());
 		norm.setTarget(target);
 		norm.addInputField(a = new InputFieldArray2D(false,ARRAY_2D,0));
