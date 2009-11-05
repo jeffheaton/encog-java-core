@@ -171,7 +171,7 @@ org.encog.normalize.input.InputFieldArray2D
 org.encog.normalize.input.InputFieldCSV
 org.encog.normalize.input.InputFieldNeuralDataSet
 org.encog.normalize.input.NeuralDataFieldHolder
-org.encog.normalize.Normalization
+org.encog.normalize.DataNormalization
 org.encog.normalize.NormalizationError
 org.encog.normalize.output.BasicOutputField
 org.encog.normalize.output.BasicOutputFieldGroup
@@ -248,7 +248,6 @@ org.encog.util.csv.ReadCSV
 org.encog.util.downsample.Downsample
 org.encog.util.downsample.SimpleIntensityDownsample
 org.encog.util.ErrorCalculation
-org.encog.util.file.BinaryFile
 org.encog.util.file.Directory
 org.encog.util.GenerateClasslist
 org.encog.util.http.CookieUtility
