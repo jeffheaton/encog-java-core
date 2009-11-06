@@ -50,4 +50,6 @@ public interface Segregator {
 	 * @return True if this row should be included.
 	 */
 	boolean shouldInclude();
+	
+	void passInit();
 }

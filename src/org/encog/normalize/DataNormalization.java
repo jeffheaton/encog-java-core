@@ -446,6 +446,8 @@ public class DataNormalization implements EncogPersistedObject {
 		this.report.report(0, 0, "Analyzing file");
 		this.lastReport = 0;
 		int index = 0;
+		
+		initForPass();
 
 		// loop over all of the records
 		while (next()) {
@@ -588,6 +590,17 @@ public class DataNormalization implements EncogPersistedObject {
 			field.rowInit();
 		}
 	}
+	
+	/**
+	 * Setup the row for output.
+	 */
+	public void initForPass() {
+
+		// init segregators
+		for (Segregator segregator : this.segregators) {
+			segregator.passInit();
+		}
+	}
 
 	/**
 	 * Called internally to advance to the next row.
@@ -721,6 +734,7 @@ public class DataNormalization implements EncogPersistedObject {
 		// move any CSV and datasets files back to the beginning.
 		openCSV();
 		openDataSet();
+		initForPass();
 
 		this.currentIndex = -1;
 

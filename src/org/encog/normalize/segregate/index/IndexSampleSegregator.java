@@ -110,5 +110,11 @@ public class IndexSampleSegregator extends IndexSegregator {
 		rollIndex();
 		return ((sampleIndex >= this.startingIndex) && (sampleIndex <= this.endingIndex));
 	}
+	
+	/**
+	 * Nothing needs to be done to setup for a pass.
+	 */
+	public void passInit() {		
+	}
 
 }

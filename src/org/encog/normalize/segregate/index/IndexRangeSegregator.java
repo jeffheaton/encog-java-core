@@ -92,5 +92,11 @@ public class IndexRangeSegregator extends IndexSegregator {
 		rollIndex();
 		return result;
 	}
+	
+	/**
+	 * Nothing needs to be done to setup for a pass.
+	 */
+	public void passInit() {		
+	}
 
 }

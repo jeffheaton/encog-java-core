@@ -33,6 +33,7 @@ import org.encog.EncogError;
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.PersistError;
 import org.encog.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -203,6 +204,9 @@ public class XML2Object {
 		} else {
 			final Class<?> c = ReflectionUtil.resolveEncogClass(this.in
 					.getTag().getName());
+			if( c==null ) {
+				throw new PersistError("Can't create class: " + this.in.getTag().getName());
+			}
 			final Object obj = c.newInstance();
 			loadActualObject(objectField, obj);
 			return obj;

@@ -142,4 +142,10 @@ public class RangeSegregator implements Segregator {
 		return this.include;
 	}
 
+	/**
+	 * Nothing needs to be done to setup for a pass.
+	 */
+	public void passInit() {		
+	}
+
 }

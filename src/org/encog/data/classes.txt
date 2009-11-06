@@ -194,6 +194,7 @@ org.encog.normalize.output.zaxis.ZAxisGroup
 org.encog.normalize.segregate.index.IndexRangeSegregator
 org.encog.normalize.segregate.index.IndexSampleSegregator
 org.encog.normalize.segregate.index.IndexSegregator
+org.encog.normalize.segregate.IntegerBalanceSegregator
 org.encog.normalize.segregate.RangeSegregator
 org.encog.normalize.segregate.SegregationRange
 org.encog.normalize.segregate.Segregator
