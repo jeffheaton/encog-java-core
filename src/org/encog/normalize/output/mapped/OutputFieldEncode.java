@@ -88,7 +88,7 @@ public class OutputFieldEncode extends BasicOutputField {
 	}
 
 	/**
-	 * @return The catch all value that will be retruned if nothing matches.
+	 * @return The catch all value that will be returned if nothing matches.
 	 */
 	public double getCatchAll() {
 		return this.catchAll;

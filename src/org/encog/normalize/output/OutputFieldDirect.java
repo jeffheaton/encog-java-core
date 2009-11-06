@@ -37,7 +37,7 @@ public class OutputFieldDirect extends BasicOutputField {
 	 * The source field.
 	 */
 	@EGReference
-	private final InputField sourceField;
+	private InputField sourceField;
 
 	/**
 	 * Construct a direct output field.
@@ -45,6 +45,13 @@ public class OutputFieldDirect extends BasicOutputField {
 	 */
 	public OutputFieldDirect(final InputField sourceField) {
 		this.sourceField = sourceField;
+	}
+	
+	/**
+	 * Default constructor, used for reflection.
+	 */
+	public OutputFieldDirect() {
+		
 	}
 
 	/**
