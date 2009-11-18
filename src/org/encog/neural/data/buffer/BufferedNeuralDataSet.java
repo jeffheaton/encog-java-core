@@ -377,7 +377,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	public void getRecord(final long index, final NeuralDataPair pair) {
 		try {
 			openInputFile();
-			this.input.seek(index * this.recordSize);
+			long header = 16;
+			this.input.seek((index * this.recordSize)+header);
 			if (BufferedNeuralDataSet.this.idealSize > 0) {
 				readDoubleArray(this.input, pair.getInput());
 				readDoubleArray(this.input, pair.getIdeal());
