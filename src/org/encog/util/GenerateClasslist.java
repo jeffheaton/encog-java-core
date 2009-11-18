@@ -96,7 +96,40 @@ public class GenerateClasslist {
 		}
 
 		System.out.println(temp + "." + name);
+	}
+	
+	/**
+	 * Process a C# file.
+	 * 
+	 * @param file
+	 *            The file to process.
+	 */
+	private void processCS(final File file) {
+		String name = file.getName();
 
+		// strip off the .cs
+		int idx = name.indexOf('.');
+		name = name.substring(0, idx);
+
+		// strip the name for the directory
+		String path = file.getAbsolutePath();
+		idx = path.lastIndexOf(File.separatorChar);
+		path = path.substring(0, idx);
+
+		// strip off base
+		if( path.length()>this.base.length()) {
+			path = path.substring(this.base.length() + 1);
+		}
+		
+		// insert .'s
+		final StringBuilder temp = new StringBuilder(path);
+		for (int i = 0; i < temp.length(); i++) {
+			if (temp.charAt(i) == File.separatorChar) {
+				temp.setCharAt(i, '.');
+			}
+		}
+
+		System.out.println( "Encog." + temp + "." + name);
 	}
 
 	/**
@@ -110,6 +143,9 @@ public class GenerateClasslist {
 				final String strFile = file.toString();
 				if (strFile.endsWith(".java")) {
 					processJAVA(file);
+				}
+				else if(strFile.endsWith(".cs")) {
+					processCS(file);
 				}
 			} else if (file.isDirectory()) {
 				scan(file);

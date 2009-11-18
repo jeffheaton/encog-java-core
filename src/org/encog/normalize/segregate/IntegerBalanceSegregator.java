@@ -9,6 +9,12 @@ import org.encog.normalize.input.InputField;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReference;
 
+/**
+ * Balance based on an input value. This allows you to make sure that one input
+ * class does not saturate the training data. To do this, you specify the input
+ * value to check and the number of occurrences of each integer value of this
+ * field to allow.
+ */
 public class IntegerBalanceSegregator implements Segregator {
 
 	/**
