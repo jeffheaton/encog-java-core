@@ -14,6 +14,11 @@ public class Format {
 		NumberFormat f = NumberFormat.getIntegerInstance();
 		return f.format(i);
 	}
+	
+	public static String formatPercentWhole(double e) {
+		NumberFormat f = NumberFormat.getPercentInstance();
+		return f.format(e);
+	}
 
 	public static String formatPercent(double e) {
 		NumberFormat f = NumberFormat.getPercentInstance();

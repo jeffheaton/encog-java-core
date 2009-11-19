@@ -34,7 +34,7 @@ import org.encog.persist.annotations.EGReference;
  * A ranged mapped output field.  This will scale the input so that it
  * is between the high and low value.
  */
-public class OutputFieldRangeMapped extends BasicOutputField {
+public class OutputFieldRangeMapped extends BasicOutputField implements RequireTwoPass {
 
 	/**
 	 * The input field to scale.

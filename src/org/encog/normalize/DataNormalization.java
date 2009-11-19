@@ -47,6 +47,7 @@ import org.encog.normalize.input.NeuralDataFieldHolder;
 import org.encog.normalize.output.OutputField;
 import org.encog.normalize.output.OutputFieldGroup;
 import org.encog.normalize.output.OutputFieldGrouped;
+import org.encog.normalize.output.RequireTwoPass;
 import org.encog.normalize.segregate.Segregator;
 import org.encog.normalize.target.NormalizationStorage;
 import org.encog.persist.EncogPersistedObject;
@@ -707,7 +708,12 @@ public class DataNormalization implements EncogPersistedObject {
 	 * updates will be sent to the class specified in the constructor.
 	 */
 	public void process() {
-		firstPass();
+		
+		if( this.twoPassesNeeded() )
+		{
+			firstPass();
+		}
+		
 		secondPass();
 	}
 
@@ -730,7 +736,10 @@ public class DataNormalization implements EncogPersistedObject {
 	/**
 	 * The second pass actually writes the data to the output files.
 	 */
-	private void secondPass() {		
+	private void secondPass() {	
+		
+		boolean twopass = this.twoPassesNeeded();
+		
 		// move any CSV and datasets files back to the beginning.
 		openCSV();
 		openDataSet();
@@ -764,8 +773,11 @@ public class DataNormalization implements EncogPersistedObject {
 					}
 				}
 
-				reportResult("Second pass, normalizing data", this.recordCount,
-						++current);
+				if( twopass )
+					reportResult("Second pass, normalizing data", this.recordCount, ++current);
+				else
+					reportResult("Processing data (single pass)", this.recordCount, ++current);
+				
 				this.storage.write(output, 0);
 			}
 
@@ -826,5 +838,16 @@ public class DataNormalization implements EncogPersistedObject {
 			}
 		}
 		return true;
+	}
+	
+	public boolean twoPassesNeeded()
+	{
+		for(OutputField field: this.outputFields )
+		{
+			if( field instanceof RequireTwoPass )
+				return true;
+		}
+		
+		return false;
 	}
 }
