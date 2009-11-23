@@ -38,8 +38,8 @@ import org.slf4j.LoggerFactory;
  * 
  * This class is somewhat undefined. If you wish to train the neural network 
  * using training sets, you should use the TrainingSetNeuralGeneticAlgorithm 
- * class. If you wish to use a cost function to train the neural network, 
- * then implement a subclass of this one that properly calculates the cost.
+ * class. If you wish to use a score function to train the neural network, 
+ * then implement a subclass of this one that properly calculates the score.
  */
 public class NeuralGeneticAlgorithm extends BasicTraining {
 
@@ -53,7 +53,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		 * @return The error from the last iteration.
 		 */
 		public double getError() {
-			return getChromosome(0).getCost();
+			return getChromosome(0).getScore();
 		}
 
 		/**

@@ -36,7 +36,7 @@ import org.encog.persist.annotations.EGReferenceable;
  * for other input fields.
  */
 @EGReferenceable
-public abstract class BasicInputField implements InputField {
+public class BasicInputField implements InputField {
 
 	/**
 	 * The maximum value encountered so far for this field.
@@ -61,7 +61,7 @@ public abstract class BasicInputField implements InputField {
 	 * the neural network.
 	 */
 	@EGAttribute
-	private boolean usedForNetworkInput;
+	private boolean usedForNetworkInput = true;
 
 	/**
 	 * Given the current value, apply to the min and max values.

@@ -53,9 +53,9 @@ public abstract class Chromosome<GENE_TYPE> implements
 		Comparable<Chromosome<GENE_TYPE>> {
 
 	/**
-	 * The cost for this chromosome. The lower the better.
+	 * The score for this chromosome. The lower the better.
 	 */
-	private double cost;
+	private double score;
 
 	/**
 	 * The individual elements of this chromosome.
@@ -74,34 +74,46 @@ public abstract class Chromosome<GENE_TYPE> implements
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Called to calculate the cost for this chromosome.
+	 * Called to calculate the score for this chromosome.
 	 * 
 	 */
-	public abstract void calculateCost();
+	public abstract void calculateScore();
 
 	/**
-	 * Used to compare two chromosomes. Used to sort by cost.
+	 * Used to compare two chromosomes. Used to sort by score.
 	 * 
 	 * @param other
 	 *            The other chromosome to compare.
 	 * @return The value 0 if the argument is a chromosome that has an equal
-	 *         cost to this chromosome; a value less than 0 if the argument is a
-	 *         chromosome with a cost greater than this chromosome; and a value
-	 *         greater than 0 if the argument is a chromosome what a cost less
+	 *         score to this chromosome; a value less than 0 if the argument is a
+	 *         chromosome with a score greater than this chromosome; and a value
+	 *         greater than 0 if the argument is a chromosome what a score less
 	 *         than this chromosome.
 	 */
 	public int compareTo(final Chromosome<GENE_TYPE> other) {
-		if (getCost() > other.getCost()) {
-			return 1;
+		
+		if( this.getGeneticAlgorithm().isShouldMinimize() )
+		{		
+			if (getScore() > other.getScore()) {
+				return 1;
+			}
+			return -1;
 		}
-		return -1;
+		else
+		{
+			if (getScore() > other.getScore()) {
+				return -1;
+			}
+			return 1;
+			
+		}
 	}
 
 	/**
-	 * @return the cost
+	 * @return the score
 	 */
-	public double getCost() {
-		return this.cost;
+	public double getScore() {
+		return this.score;
 	}
 
 	/**
@@ -214,9 +226,9 @@ public abstract class Chromosome<GENE_TYPE> implements
 			offspring2.mutate();
 		}
 
-		// calculate the cost
-		offspring1.calculateCost();
-		offspring2.calculateCost();
+		// calculate the score
+		offspring1.calculateScore();
+		offspring2.calculateScore();
 	}
 
 	/**
@@ -225,13 +237,13 @@ public abstract class Chromosome<GENE_TYPE> implements
 	public abstract void mutate();
 
 	/**
-	 * Set the cost for this chromosome.
+	 * Set the score for this chromosome.
 	 * 
-	 * @param cost
-	 *            the cost to set
+	 * @param score
+	 *            the score to set
 	 */
-	public void setCost(final double cost) {
-		this.cost = cost;
+	public void setScore(final double score) {
+		this.score = score;
 	}
 
 	/**
@@ -302,8 +314,8 @@ public abstract class Chromosome<GENE_TYPE> implements
 	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		builder.append("[Chromosome: cost=");
-		builder.append(getCost());
+		builder.append("[Chromosome: score=");
+		builder.append(getScore());
 		return builder.toString();
 	}
 

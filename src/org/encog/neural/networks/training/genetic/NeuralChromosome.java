@@ -42,8 +42,8 @@ import org.slf4j.LoggerFactory;
  * 
  * This class is abstract. If you wish to train the neural network using
  * training sets, you should use the TrainingSetNeuralChromosome class. If you
- * wish to use a cost function to train the neural network, then implement a
- * subclass of this one that properly calculates the cost.
+ * wish to use a score function to train the neural network, then implement a
+ * subclass of this one that properly calculates the score.
  * 
  * The generic type GA_TYPE specifies the GeneticAlgorithm derived class that
  * implements the genetic algorithm that this class is to be used with.
@@ -114,7 +114,7 @@ public abstract class NeuralChromosome
 		// copy the new genes
 		super.setGenes(list);
 
-		calculateCost();
+		calculateScore();
 	}
 
 	/**

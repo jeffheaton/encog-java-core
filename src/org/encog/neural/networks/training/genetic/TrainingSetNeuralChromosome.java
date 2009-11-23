@@ -70,15 +70,15 @@ public class TrainingSetNeuralChromosome extends NeuralChromosome {
 	private TrainingSetNeuralGeneticAlgorithm genetic;
 
 	/**
-	 * Calculate the cost for this chromosome.
+	 * Calculate the score for this chromosome.
 	 */
 	@Override
-	public void calculateCost() {
+	public void calculateScore() {
 		// update the network with the new gene values
 		updateNetwork();
 
 		// update the cost with the new genes
-		setCost(getNetwork()
+		setScore(getNetwork()
 				.calculateError(this.genetic.getTraining()));
 
 	}
@@ -96,7 +96,7 @@ public class TrainingSetNeuralChromosome extends NeuralChromosome {
 		// copy the new genes
 		super.setGenes(list);
 
-		calculateCost();
+		calculateScore();
 
 	}
 }
