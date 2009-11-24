@@ -80,16 +80,16 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 * How much genetic material should be cut when mating.
 	 */
 	private int cutLength;
-	
-	/**
-	 * Should the GA attempt to minimize the "score".
-	 */
-	private boolean shouldMinimize = true;
 
 	/**
 	 * The population.
 	 */
 	private Chromosome<GENE_TYPE>[] chromosomes;
+	
+	/**
+	 * Should the "score" be minimized?
+	 */
+	private boolean shouldMinimize;
 
 	/**
 	 * The logging object.
@@ -311,7 +311,7 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 		Arrays.sort(this.chromosomes);
 	}
 
-	public boolean isShouldMinimize() {
+	public boolean getShouldMinimize() {
 		return shouldMinimize;
 	}
 
@@ -320,5 +320,4 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	}
 	
 	
-
 }

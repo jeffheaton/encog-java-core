@@ -27,7 +27,9 @@ package org.encog.neural.networks.training.genetic;
 
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.CalculateScore;
 import org.encog.solve.genetic.GeneticAlgorithm;
+import org.encog.util.randomize.Randomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,13 +80,43 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 * implement a genetic algorithm.
 	 */
 	private NeuralGeneticAlgorithmHelper genetic;
+	
+	private CalculateScore calculateScore;
 
-	/**
-	 * Construct the training class.
-	 */
-	public NeuralGeneticAlgorithm() {
+	public NeuralGeneticAlgorithm(final BasicNetwork network,
+			final Randomizer randomizer,
+			final CalculateScore calculateScore,
+			final int populationSize, final double mutationPercent,
+			final double percentToMate) {
+
 		this.genetic = new NeuralGeneticAlgorithmHelper();
+		this.genetic.setShouldMinimize(calculateScore.shouldMinimize());
+		this.calculateScore = calculateScore;
+		getGenetic().setMutationPercent(mutationPercent);
+		getGenetic().setMatingPopulation(percentToMate * 2);
+		getGenetic().setPopulationSize(populationSize);
+		getGenetic().setPercentToMate(percentToMate);
+		
+		getGenetic().setChromosomes(
+				new NeuralChromosome[getGenetic()
+						.getPopulationSize()]);
+		for (int i = 0; i < getGenetic().getChromosomes().length; i++) {
+			final BasicNetwork chromosomeNetwork = (BasicNetwork) network
+					.clone();
+			randomizer.randomize(chromosomeNetwork);
+
+			final NeuralChromosome c = 
+				new NeuralChromosome(
+					this, chromosomeNetwork);
+			getGenetic().setChromosome(i, c);
+		}
+		getGenetic().sortChromosomes();
+		getGenetic().defineCutLength();
 	}
+
+	
+	
+	
 
 	/**
 	 * @return The genetic algorithm implementation.
@@ -122,4 +154,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		this.genetic = genetic;
 	}
 
+	public CalculateScore getCalculateScore() {
+		return calculateScore;
+	}
 }

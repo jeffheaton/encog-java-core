@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * The generic type GA_TYPE specifies the GeneticAlgorithm derived class that
  * implements the genetic algorithm that this class is to be used with.
  */
-public abstract class NeuralChromosome
+public class NeuralChromosome
 		extends Chromosome<Double> {
 
 	/**
@@ -77,6 +77,20 @@ public abstract class NeuralChromosome
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	private NeuralGeneticAlgorithm genetic;
+	
+	public NeuralChromosome(
+			final NeuralGeneticAlgorithm genetic,
+			final BasicNetwork network) {
+		setGeneticAlgorithm(genetic.getGenetic());
+		this.genetic = genetic;
+		setNetwork(network);
+
+		initGenes(network.getWeightMatrixSize());
+		updateGenes();
+	}
+	
+	
 	/**
 	 * @return the network
 	 */
@@ -139,4 +153,10 @@ public abstract class NeuralChromosome
 		NetworkCODEC.arrayToNetwork(getGenes(), this.network);
 	}
 
+	@Override
+	public void calculateScore() {
+		this.updateNetwork();
+		double score = this.genetic.getCalculateScore().calculateScore(this.getNetwork());
+		setScore(score);		
+	}
 }

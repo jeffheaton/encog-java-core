@@ -92,7 +92,7 @@ public abstract class Chromosome<GENE_TYPE> implements
 	 */
 	public int compareTo(final Chromosome<GENE_TYPE> other) {
 		
-		if( this.getGeneticAlgorithm().isShouldMinimize() )
+		if( this.getGeneticAlgorithm().getShouldMinimize() )
 		{		
 			if (getScore() > other.getScore()) {
 				return 1;

@@ -37,8 +37,8 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 * @return The error returned by the owner.
 	 */
 	@Override
-	public double determineError() {
-		return owner.determineError();
+	public double calculateScore() {
+		return owner.getCalculateScore().calculateScore(this.owner.getNetwork());
 	}
 
 	/**

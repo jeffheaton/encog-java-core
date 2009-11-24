@@ -28,6 +28,7 @@ package org.encog.neural.networks.training.anneal;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.CalculateScore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,7 @@ import org.slf4j.LoggerFactory;
  * determineError method.  If you want to train with a training set, use
  * the NeuralTrainingSetSimulatedAnnealing class.
  */
-public abstract class NeuralSimulatedAnnealing extends BasicTraining {
+public class NeuralSimulatedAnnealing extends BasicTraining {
 
 	/**
 	 * The cutoff for random data.
@@ -61,6 +62,11 @@ public abstract class NeuralSimulatedAnnealing extends BasicTraining {
 	 * This class actually performs the training.
 	 */
 	private final NeuralSimulatedAnnealingHelper anneal;
+	
+	/**
+	 * Used to calculate the score.
+	 */
+	private final CalculateScore calculateScore;
 
 	/**
 	 * Construct a simulated annleaing trainer for a feedforward neural network.
@@ -75,10 +81,12 @@ public abstract class NeuralSimulatedAnnealing extends BasicTraining {
 	 *            The number of cycles in a training iteration.
 	 */
 	public NeuralSimulatedAnnealing(final BasicNetwork network,
+			final CalculateScore calculateScore,
 			final double startTemp,
 			final double stopTemp, 
 			final int cycles) {
 		this.network = network;
+		this.calculateScore = calculateScore;
 		this.anneal = new NeuralSimulatedAnnealingHelper(this);
 		this.anneal.setTemperature(startTemp);
 		this.anneal.setStartTemperature(startTemp);
@@ -104,17 +112,10 @@ public abstract class NeuralSimulatedAnnealing extends BasicTraining {
 		}
 		preIteration();
 		this.anneal.iteration();
-		setError(this.anneal.determineError());
+		setError(this.anneal.calculateScore());
 		postIteration();
 	}
 	
-	/**
-	 * Determine the error of the current weights and thresholds.
-	 * 
-	 * @return The error.
-	 */
-	public abstract double determineError();
-
 	/**
 	 * Get the network as an array of doubles.
 	 * 
@@ -163,5 +164,11 @@ public abstract class NeuralSimulatedAnnealing extends BasicTraining {
 		NetworkCODEC.arrayToNetwork(array,
 				NeuralSimulatedAnnealing.this.network);
 	}
+
+	public CalculateScore getCalculateScore() {
+		return calculateScore;
+	}
+	
+	
 
 }

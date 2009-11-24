@@ -5,7 +5,6 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
-import org.encog.neural.networks.training.anneal.NeuralTrainingSetSimulatedAnnealing;
 import org.junit.Test;
 
 import junit.framework.TestCase;
@@ -17,7 +16,8 @@ public class TestAnneal extends TestCase {
 	{
 		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		BasicNetwork network = XOR.createThreeLayerNet();
-		NeuralTrainingSetSimulatedAnnealing train = new NeuralTrainingSetSimulatedAnnealing(network,trainingData,10,2,100);	
+		CalculateScore score = new TrainingSetScore(trainingData);
+		NeuralSimulatedAnnealing train = new NeuralSimulatedAnnealing(network,score,10,2,100);	
 
 		train.iteration();
 		double error1 = train.getError();

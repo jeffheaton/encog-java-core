@@ -63,14 +63,16 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 */
 	private int cycles;
 	/**
-	 * The current error.
+	 * The current score.
 	 */
-	private double error;
+	private double score;
 
 	/**
 	 * The current temperature.
 	 */
 	private double temperature;
+	
+	private boolean shouldMinimize = true;
 
 	/**
 	 * The logging object.
@@ -79,12 +81,12 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Subclasses should provide a method that evaluates the error for the
-	 * current solution. Those solutions with a lower error are better.
+	 * Subclasses should provide a method that evaluates the score for the
+	 * current solution. Those solutions with a lower score are better.
 	 * 
-	 * @return Return the error, as a percent.
+	 * @return Return the score.
 	 */
-	public abstract double determineError();
+	public abstract double calculateScore();
 
 	/**
 	 * Subclasses must provide access to an array that makes up the solution.
@@ -108,10 +110,10 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	}
 
 	/**
-	 * @return the globalError
+	 * @return the globalScore
 	 */
-	public double getError() {
-		return this.error;
+	public double getScore() {
+		return this.score;
 	}
 
 	/**
@@ -141,18 +143,27 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	public void iteration() {
 		UNIT_TYPE[] bestArray;
 
-		setError(determineError());
+		setScore(calculateScore());
 		bestArray = this.getArrayCopy();
 
 		this.temperature = this.getStartTemperature();
 
 		for (int i = 0; i < this.cycles; i++) {
-			double curError;
+			double curScore;
 			randomize();
-			curError = determineError();
-			if (curError < getError()) {
-				bestArray = this.getArrayCopy();
-				setError(curError);
+			curScore = calculateScore();
+			
+			if (this.shouldMinimize) {
+				if (curScore < getScore()) {
+					bestArray = this.getArrayCopy();
+					setScore(curScore);
+				}
+			}
+			else {
+				if (curScore > getScore()) {
+					bestArray = this.getArrayCopy();
+					setScore(curScore);
+				}
 			}
 
 			this.putArray(bestArray);
@@ -185,13 +196,13 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	}
 
 	/**
-	 * Set the error.
+	 * Set the score.
 	 * 
-	 * @param error
-	 *            The globalError to set.
+	 * @param score
+	 *            The score to set.
 	 */
-	public void setError(final double error) {
-		this.error = error;
+	public void setScore(final double score) {
+		this.score = score;
 	}
 
 	/**
@@ -217,5 +228,15 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	public void setTemperature(final double temperature) {
 		this.temperature = temperature;
 	}
+
+	public boolean isShouldMinimize() {
+		return shouldMinimize;
+	}
+
+	public void setShouldMinimize(boolean shouldMinimize) {
+		this.shouldMinimize = shouldMinimize;
+	}
+	
+	
 
 }
