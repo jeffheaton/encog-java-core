@@ -102,8 +102,8 @@ org.encog.neural.networks.synapse.WeightedSynapse
 org.encog.neural.networks.synapse.WeightlessSynapse
 org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing
 org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealingHelper
-org.encog.neural.networks.training.anneal.NeuralTrainingSetSimulatedAnnealing
 org.encog.neural.networks.training.BasicTraining
+org.encog.neural.networks.training.CalculateScore
 org.encog.neural.networks.training.competitive.BestMatchingUnit
 org.encog.neural.networks.training.competitive.CompetitiveTraining
 org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodBubble
@@ -115,8 +115,6 @@ org.encog.neural.networks.training.cpn.TrainInstar
 org.encog.neural.networks.training.cpn.TrainOutstar
 org.encog.neural.networks.training.genetic.NeuralChromosome
 org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm
-org.encog.neural.networks.training.genetic.TrainingSetNeuralChromosome
-org.encog.neural.networks.training.genetic.TrainingSetNeuralGeneticAlgorithm
 org.encog.neural.networks.training.LearningRate
 org.encog.neural.networks.training.Momentum
 org.encog.neural.networks.training.propagation.back.Backpropagation
@@ -144,6 +142,7 @@ org.encog.neural.networks.training.strategy.StopTrainingStrategy
 org.encog.neural.networks.training.Strategy
 org.encog.neural.networks.training.Train
 org.encog.neural.networks.training.TrainingError
+org.encog.neural.networks.training.TrainingSetScore
 org.encog.neural.NeuralNetworkError
 org.encog.neural.pattern.ADALINEPattern
 org.encog.neural.pattern.ART1Pattern
@@ -188,6 +187,7 @@ org.encog.normalize.output.OutputFieldDirect
 org.encog.normalize.output.OutputFieldGroup
 org.encog.normalize.output.OutputFieldGrouped
 org.encog.normalize.output.OutputFieldRangeMapped
+org.encog.normalize.output.RequireTwoPass
 org.encog.normalize.output.zaxis.OutputFieldZAxis
 org.encog.normalize.output.zaxis.OutputFieldZAxisSynthetic
 org.encog.normalize.output.zaxis.ZAxisGroup
@@ -279,6 +279,7 @@ org.encog.util.downsample.Downsample
 org.encog.util.downsample.SimpleIntensityDownsample
 org.encog.util.ErrorCalculation
 org.encog.util.file.Directory
+org.encog.util.Format
 org.encog.util.GenerateClasslist
 org.encog.util.http.CookieUtility
 org.encog.util.http.FormUtility
@@ -305,6 +306,8 @@ org.encog.util.randomize.Randomizer
 org.encog.util.randomize.RangeRandomizer
 org.encog.util.ReflectionUtil
 org.encog.util.SerializeObject
+org.encog.util.simple.EncogUtility
+org.encog.util.simple.TrainingDialog
 org.encog.util.time.DateUtil
 org.encog.util.time.EnglishTimeUnitNames
 org.encog.util.time.TimeSpan
