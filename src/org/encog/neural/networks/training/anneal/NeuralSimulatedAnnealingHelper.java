@@ -29,6 +29,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	public NeuralSimulatedAnnealingHelper(
 			final NeuralSimulatedAnnealing owner) {
 		this.owner = owner;
+		this.setShouldMinimize(this.owner.getCalculateScore().shouldMinimize());
 	}
 
 	/**

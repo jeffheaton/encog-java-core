@@ -153,7 +153,7 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 			randomize();
 			curScore = calculateScore();
 			
-			if (!this.shouldMinimize) {
+			if (this.shouldMinimize) {
 				if (curScore < getScore()) {
 					bestArray = this.getArrayCopy();
 					setScore(curScore);
