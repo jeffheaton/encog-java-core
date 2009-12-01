@@ -18,7 +18,7 @@ public class EncogUtility {
 	public static void convertCSV2Binary(File csvFile,File binFile,int inputCount,int outputCount,boolean headers)
 	{
 		binFile.delete();
-		CSVNeuralDataSet csv = new CSVNeuralDataSet(csvFile.toString(),50,6,false);
+		CSVNeuralDataSet csv = new CSVNeuralDataSet(csvFile.toString(),inputCount,outputCount,false);
 		BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(binFile);
 		buffer.beginLoad(50, 6);
 		for(NeuralDataPair pair: csv)
