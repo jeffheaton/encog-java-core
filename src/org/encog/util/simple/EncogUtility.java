@@ -47,11 +47,14 @@ public class EncogUtility {
 		network.reset();
 		return network;
 	}
-
 	public static void trainConsole(BasicNetwork network,
 			BufferedNeuralDataSet trainingSet, int minutes) {
 		final Train train = new MultiPropagation(network, trainingSet );
-
+	}
+	
+	public static void trainConsole(Train train, BasicNetwork network,
+			BufferedNeuralDataSet trainingSet, int minutes) {
+	
 		int epoch = 1;
 		long remaining;
 
@@ -76,7 +79,12 @@ public class EncogUtility {
 	public static void trainDialog(BasicNetwork network,
 			BufferedNeuralDataSet trainingSet) {
 		final Train train = new MultiPropagation(network, trainingSet );
-
+		trainDialog(train, network,trainingSet);
+	}
+	
+	
+	public static void trainDialog(Train train, BasicNetwork network,
+			BufferedNeuralDataSet trainingSet) {
 		
 		int epoch = 1;
 		TrainingDialog dialog = new TrainingDialog();
