@@ -50,6 +50,7 @@ public class EncogUtility {
 	public static void trainConsole(BasicNetwork network,
 			BufferedNeuralDataSet trainingSet, int minutes) {
 		final Train train = new MultiPropagation(network, trainingSet );
+		trainConsole(train,network,trainingSet,minutes);
 	}
 	
 	public static void trainConsole(Train train, BasicNetwork network,
