@@ -29,6 +29,7 @@ package org.encog.neural.networks;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -111,6 +112,8 @@ public class NeuralStructure implements Serializable {
 	public void finalizeStructure() {
 		finalizeLayers();
 		finalizeSynapses();
+		Collections.sort(this.layers);
+		assignID();
 		this.network.getLogic().init(this.network);
 	}
 
@@ -281,5 +284,26 @@ public class NeuralStructure implements Serializable {
 		}
 
 		return false;
+	}
+	
+	public int getNextID()
+	{
+		int result = 1;
+		
+		for(Layer layer: this.layers) {
+			if( layer.getID()>=result )
+				result = layer.getID()+1;
+		}
+		
+		return result;
+	}
+	
+	public void assignID()
+	{
+		for(Layer layer: this.layers )
+		{
+			if( layer.getID()==-1 )
+				layer.setID(getNextID());
+		}
 	}
 }

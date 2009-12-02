@@ -215,10 +215,10 @@ public class MultiPropagation extends BasicTraining {
 					"Must use a training set that implements Indexable for multipropagation.");
 		}
 
-		if (network.getStructure().containsLayerType(ContextLayer.class)) {
+		/*if (network.getStructure().containsLayerType(ContextLayer.class)) {
 			throw new TrainingError(
 					"Recurrent networks are not yet supported by MPROP.");
-		}
+		}*/
 
 		// store params
 		this.threadCount = threadCount;

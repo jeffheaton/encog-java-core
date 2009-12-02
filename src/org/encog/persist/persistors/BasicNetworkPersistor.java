@@ -182,6 +182,7 @@ public class BasicNetworkPersistor implements Persistor {
 						.getTag().getName());
 				final Layer layer = (Layer) persistor.load(in);
 				this.index2layer.put(num, layer);
+				layer.setID(num);
 
 				// the type attribute is actually "legacy", but if its there
 				// then use it!
@@ -383,16 +384,15 @@ public class BasicNetworkPersistor implements Persistor {
 	 *            The XML writer.
 	 */
 	private void saveLayers(final WriteXML out) {
-		int current = 1;
+
 		for (final Layer layer : this.currentNetwork.getStructure().getLayers()) {
 
-			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_ID, "" + current);
+			out.addAttribute(BasicNetworkPersistor.ATTRIBUTE_ID, ""+layer.getID());
 			out.beginTag(BasicNetworkPersistor.TAG_LAYER);
 			final Persistor persistor = layer.createPersistor();
 			persistor.save(layer, out);
 			out.endTag();
-			this.layer2index.put(layer, current);
-			current++;
+			this.layer2index.put(layer, layer.getID());
 		}
 	}
 

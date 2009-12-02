@@ -80,6 +80,8 @@ public class BasicLayer implements Layer, Serializable {
 	 * The y-coordinate of this layer, used for GUI rendering.
 	 */
 	private int y;
+	
+	private int id;
 
 	/**
 	 * The logging object.
@@ -133,6 +135,7 @@ public class BasicLayer implements Layer, Serializable {
 	public BasicLayer(final ActivationFunction activationFunction,
 			final boolean hasThreshold, final int neuronCount) {
 		this.neuronCount = neuronCount;
+		this.id = -1;
 		setActivationFunction(activationFunction);
 		if (hasThreshold) {
 			this.threshold = new double[neuronCount];
@@ -471,6 +474,26 @@ public class BasicLayer implements Layer, Serializable {
 		result.append(this.neuronCount);
 		result.append(']');
 		return result.toString();
+	}
+
+	@Override
+	public int getID() {
+		return this.id;
+	}
+
+	@Override
+	public void setID(int id) {
+		this.id = id;		
+	}
+
+	@Override
+	public int compareTo(Layer other) {
+		if( other.getID()==this.getID() )
+			return 0;
+		else if( other.getID()>this.getID() )
+			return 1;
+		else
+			return -1;
 	}
 
 }

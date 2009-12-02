@@ -39,7 +39,7 @@ import org.encog.persist.EncogPersistedObject;
  * 
  * @author jheaton
  */
-public interface Layer extends EncogPersistedObject {
+public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 
 	/**
 	 * Add a layer to this layer.  The "next" layer being added will
@@ -194,4 +194,8 @@ public interface Layer extends EncogPersistedObject {
 	 * @param activationFunction The new activation function.
 	 */
 	void setActivationFunction(ActivationFunction activationFunction);
+	
+	public void setID(int id);
+	
+	public int getID();
 }
