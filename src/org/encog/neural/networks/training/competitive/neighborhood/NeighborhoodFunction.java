@@ -43,5 +43,9 @@ public interface NeighborhoodFunction {
 	 * @return The ratio for this neuron's adjustment.
 	 */
 	double function(int currentNeuron, int bestNeuron);
+	
+	void setRadius(double radius);
+	
+	double getRadius();
 
 }

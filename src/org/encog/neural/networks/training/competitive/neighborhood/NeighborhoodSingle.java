@@ -62,4 +62,13 @@ public class NeighborhoodSingle implements NeighborhoodFunction {
 		}
 	}
 
+	public double getRadius() {
+		return 1;
+	}
+
+	public void setRadius(double radius) {
+		// no effect on this type
+		
+	}
+
 }

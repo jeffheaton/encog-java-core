@@ -100,4 +100,12 @@ public class NeighborhoodGaussianMulti implements NeighborhoodFunction {
 		return this.rbf;
 	}
 
+	public double getRadius() {
+		return this.rbf.getWidth(0);
+	}
+
+	public void setRadius(double radius) {
+		this.rbf.setWidth(radius);
+	}
+
 }

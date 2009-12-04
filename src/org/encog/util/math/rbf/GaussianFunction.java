@@ -54,7 +54,7 @@ public class GaussianFunction implements RadialBasisFunction, Serializable {
 	/**
 	 * The width of the RBF.
 	 */
-	private final double width;
+	private double width;
 
 	/**
 	 * Construct a Gaussian RBF with the specified center, peak and width.
@@ -119,6 +119,10 @@ public class GaussianFunction implements RadialBasisFunction, Serializable {
 	 */
 	public double getWidth() {
 		return this.width;
+	}
+
+	public void setWidth(double radius) {
+		this.width = radius;
 	}
 
 }

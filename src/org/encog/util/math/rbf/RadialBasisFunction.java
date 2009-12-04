@@ -67,4 +67,6 @@ public interface RadialBasisFunction {
 	 * @return The width of the RBF.
 	 */
 	double getWidth();
+
+	void setWidth(double radius);
 }

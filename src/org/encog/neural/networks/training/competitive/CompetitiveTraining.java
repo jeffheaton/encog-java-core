@@ -67,8 +67,8 @@ import org.slf4j.LoggerFactory;
  * Because only the BMU neuron and its close neighbors are updated, you can end
  * up with some output neurons that learn nothing. By default these neurons are
  * forced to win patterns that are not represented well. This spreads out the
- * workload among all output neurons. This feature is used by default, but can
- * be disabled by setting the "forceWinner" property.
+ * workload among all output neurons. This feature is not used by default, but can
+ * be enabled by setting the "forceWinner" property.
  * 
  * @author jheaton
  * 
@@ -131,11 +131,20 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * method. By default, this is true.
 	 */
 	private boolean forceWinner;
+	
+	private double startRate;
+	private double endRate;
+	private double startRadius;
+	private double endRadius;
+	private double autoDecayRate;
+	private double autoDecayRadius;
 
 	/**
 	 * The logging object.
 	 */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	private double radius;
 
 	/**
 	 * Create an instance of competitive training.
@@ -162,7 +171,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 				this.outputLayer);
 		this.inputNeuronCount = this.inputLayer.getNeuronCount();
 		this.outputNeuronCount = this.outputLayer.getNeuronCount();
-		this.forceWinner = true;
+		this.forceWinner = false;
 		setError(0);
 
 		// setup the correction matrix
@@ -463,6 +472,55 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		}
 		applyCorrection();
 
+	}
+	
+	public void setParams(double rate,double radius)
+	{
+		this.radius = radius;
+		this.learningRate = rate;
+		this.getNeighborhood().setRadius(radius);
+	}
+	
+	public void decay(double d)
+	{
+		this.radius*=(1.0-d);
+		this.learningRate*=(1.0-d);
+	}
+	
+	public void decay(double decayRate,double decayRadius)
+	{
+		this.radius*=(1.0-decayRadius);
+		this.learningRate*=(1.0-decayRate);
+		this.getNeighborhood().setRadius(radius);
+	}
+	
+	public void setAutoDecay(int plannedIterations, double startRate,double endRate,double startRadius,double endRadius)
+	{
+		this.startRate = startRate;
+		this.endRate = endRate;
+		this.startRadius = startRadius;
+		this.endRadius = endRadius;
+		this.autoDecayRadius = (endRadius - startRadius) / plannedIterations;
+		this.autoDecayRate = (endRate - startRate) / plannedIterations;
+		this.setParams(this.startRate, this.startRadius);
+	}
+	
+	public void autoDecay()
+	{
+		if( this.radius>endRadius) {
+			this.radius-=this.autoDecayRadius;
+		}
+		
+		if( this.learningRate>this.endRate) {
+			this.learningRate-=this.autoDecayRate;
+		}
+		this.getNeighborhood().setRadius(radius);
+	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		return result.toString();
 	}
 
 }

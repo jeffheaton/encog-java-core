@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A neighborhood function that uses a simple bubble. A width is defined, and
+ * A neighborhood function that uses a simple bubble. A radius is defined, and
  * any neuron that is plus or minus that width from the winning neuron will be
  * updated as a result of training.
  * 
@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 public class NeighborhoodBubble implements NeighborhoodFunction {
 
 	/**
-	 * The width of the bubble.
+	 * The radius of the bubble.
 	 */
-	private final int width;
+	private double radius;
 
 	/**
 	 * The logging object.
@@ -54,13 +54,13 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 	 * for any neuron that is plus or minus the width distance from the winning
 	 * neuron.
 	 * 
-	 * @param width
+	 * @param radius
 	 *            The width of the bubble, this is the distance that the neuron
 	 *            can be from the winning neuron. The true width, across the
 	 *            bubble, is actually two times this parameter.
 	 */
-	public NeighborhoodBubble(final int width) {
-		this.width = width;
+	public NeighborhoodBubble(final int radius) {
+		this.radius = radius;
 	}
 
 	/**
@@ -75,18 +75,20 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 	 */
 	public double function(final int currentNeuron, final int bestNeuron) {
 		final int distance = Math.abs(bestNeuron - currentNeuron);
-		if (distance <= this.width) {
+		if (distance <= this.radius) {
 			return 1.0;
 		} else {
 			return 0.0;
 		}
 	}
 
-	/**
-	 * @return The width of the bubble.
-	 */
-	public int getWidth() {
-		return this.width;
+	public double getRadius() {
+		return this.radius;
 	}
+
+	public void setRadius(double radius) {
+		this.radius = radius;
+	}
+
 
 }
