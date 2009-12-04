@@ -476,17 +476,14 @@ public class BasicLayer implements Layer, Serializable {
 		return result.toString();
 	}
 
-	@Override
 	public int getID() {
 		return this.id;
 	}
 
-	@Override
 	public void setID(int id) {
 		this.id = id;		
 	}
 
-	@Override
 	public int compareTo(Layer other) {
 		if( other.getID()==this.getID() )
 			return 0;

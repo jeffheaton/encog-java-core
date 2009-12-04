@@ -36,8 +36,6 @@ public class GaussianFunctionMulti implements RadialBasisFunctionMulti {
 		}
 	}
 	
-	
-	@Override
 	public double calculate(double[] x) {
 		double value = 0;
 		
@@ -45,27 +43,30 @@ public class GaussianFunctionMulti implements RadialBasisFunctionMulti {
 			value+=Math.pow(x[i] - this.center[i], 2)
 			/ (2.0 * this.width[i] * this.width[i]);
 		}		
-		return this.peak * Math.exp(value);
+		return this.peak * Math.exp(-value);
 	}
 
-	@Override
 	public double getCenter(int dimension) {
 		return this.center[dimension];
 	}
 
-	@Override
 	public int getDimensions() {
 		return this.center.length;
 	}
 
-	@Override
 	public double getPeak() {
 		return this.peak;
 	}
 
-	@Override
 	public double getWidth(int dimension) {
 		return this.width[dimension];
+	}
+
+	public void setWidth(double w) {
+		for(int i=0;i<width.length;i++) {
+			this.width[i] = w;
+		}
+		
 	}
 
 }

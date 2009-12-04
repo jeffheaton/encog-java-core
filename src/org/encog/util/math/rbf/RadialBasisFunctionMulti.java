@@ -37,5 +37,7 @@ public interface RadialBasisFunctionMulti {
 	/**
 	 * @return The dimensions in this RBF.
 	 */
-	int getDimensions();	
+	int getDimensions();
+
+	void setWidth(double radius);	
 }

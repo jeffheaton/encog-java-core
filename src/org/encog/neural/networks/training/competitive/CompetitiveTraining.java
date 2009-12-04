@@ -124,8 +124,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Holds the corrections for any matrix being trained.
 	 */
-	private final Map<Synapse, Matrix> correctionMatrix 
-		= new HashMap<Synapse, Matrix>();
+	private final Map<Synapse, Matrix> correctionMatrix = new HashMap<Synapse, Matrix>();
 
 	/**
 	 * True is a winner is to be forced, see class description, or forceWinners
@@ -184,7 +183,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	private void applyCorrection() {
 		for (final Entry<Synapse, Matrix> entry : this.correctionMatrix
 				.entrySet()) {
-			entry.getKey().getMatrix().add(entry.getValue());
+			entry.getKey().getMatrix().set(entry.getValue());
 		}
 	}
 
@@ -202,8 +201,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 */
 	private void copyInputPattern(final Synapse synapse,
 			final int outputNeuron, final NeuralData input) {
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
-			inputNeuron++) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
 			synapse.getMatrix().set(inputNeuron, outputNeuron,
 					input.getData(inputNeuron));
 		}
@@ -228,7 +226,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		final double delta = this.neighborhood.function(currentNeuron, bmu)
 				* this.learningRate * (input - weight);
-
 		return delta;
 	}
 
@@ -347,7 +344,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 			// Determine the BMU for each training element.
 			for (final NeuralDataPair pair : getTraining()) {
-
 				final NeuralData input = pair.getInput();
 
 				final int bmu = this.bmuUtil.calculateBMU(synapse, input);
@@ -424,8 +420,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	private void train(final int bmu, final Synapse synapse,
 			final NeuralData input) {
 		// adjust the weight for the BMU and its neighborhood
-		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; 
-			outputNeuron++) {
+		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; outputNeuron++) {
 			trainPattern(synapse, input, outputNeuron, bmu);
 		}
 	}
@@ -447,8 +442,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		final Matrix correction = this.correctionMatrix.get(synapse);
 
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
-			inputNeuron++) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
 
 			final double currentWeight = synapse.getMatrix().get(inputNeuron,
 					current);
@@ -459,6 +453,16 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 			correction.add(inputNeuron, current, newWeight);
 		}
+	}
+
+	public void trainPattern(NeuralData pattern) {
+		for (final Synapse synapse : this.synapses) {
+			final NeuralData input = pattern;
+			final int bmu = this.bmuUtil.calculateBMU(synapse, input);
+			train(bmu, synapse, input);
+		}
+		applyCorrection();
+
 	}
 
 }

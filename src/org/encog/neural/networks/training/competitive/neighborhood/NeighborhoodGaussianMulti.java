@@ -16,7 +16,7 @@ public class NeighborhoodGaussianMulti implements NeighborhoodFunction {
 		calculateDisplacement();
 	}
 	
-	NeighborhoodGaussianMulti(int x,int y,double peak,double width,double center)
+	public NeighborhoodGaussianMulti(int x,int y,double peak,double width,double center)
 	{
 		int[] size = new int[2];
 		size[0] = x;
@@ -67,9 +67,16 @@ public class NeighborhoodGaussianMulti implements NeighborhoodFunction {
 		int[] result = new int[displacement.length];
 		int countingIndex = index;
 		
-		for(int i=result.length-1;i>=0;i++)
+		for(int i=displacement.length-1;i>=0;i--)
 		{
-			int value = countingIndex/displacement[i];
+			int value;
+			if( displacement[i]>0 )
+				value = countingIndex/displacement[i];
+			else
+				value = countingIndex;
+			
+			countingIndex-=displacement[i]*value;
+			result[i] = value;
 			
 		}
 		
@@ -77,7 +84,6 @@ public class NeighborhoodGaussianMulti implements NeighborhoodFunction {
 	}
 	
 	
-	@Override
 	public double function(int currentNeuron, int bestNeuron) {
 		double[] vector = new double[this.displacement.length]; 
 		int[] vectorCurrent = translateCoordinates(currentNeuron);
@@ -87,6 +93,11 @@ public class NeighborhoodGaussianMulti implements NeighborhoodFunction {
 		}
 		return rbf.calculate(vector);
 		
+	}
+	
+	public RadialBasisFunctionMulti getRBF()
+	{
+		return this.rbf;
 	}
 
 }

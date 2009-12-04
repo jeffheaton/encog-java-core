@@ -12,7 +12,6 @@ public class TrainingSetScore implements CalculateScore {
 		this.training = training;
 	}
 	
-	@Override
 	public double calculateScore(BasicNetwork network) {
 		return network.calculateError(this.training);
 	}
