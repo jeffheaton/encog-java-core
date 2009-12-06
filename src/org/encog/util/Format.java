@@ -58,4 +58,10 @@ public class Format {
 		
 		return result.toString();
 	}
+
+	public static Object formatDouble(double d, int i) {
+		NumberFormat f = NumberFormat.getNumberInstance();
+		f.setMinimumFractionDigits(i);
+		return f.format(d);	
+	}
 }

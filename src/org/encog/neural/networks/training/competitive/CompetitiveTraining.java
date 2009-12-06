@@ -40,6 +40,7 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodFunction;
+import org.encog.util.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -230,12 +231,12 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 *            The neuron that "won", the best matching unit.
 	 * @return The new weight value.
 	 */
-	private double determineWeightAdjustment(final double weight,
+	private double determineNewWeight(final double weight,
 			final double input, final int currentNeuron, final int bmu) {
 
-		final double delta = this.neighborhood.function(currentNeuron, bmu)
-				* this.learningRate * (input - weight);
-		return delta;
+		final double newWeight = weight + (this.neighborhood.function(currentNeuron, bmu)
+				* this.learningRate * (input - weight));
+		return newWeight;
 	}
 
 	/**
@@ -457,10 +458,10 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 					current);
 			final double inputValue = input.getData(inputNeuron);
 
-			final double newWeight = determineWeightAdjustment(currentWeight,
+			final double newWeight = determineNewWeight(currentWeight,
 					inputValue, current, bmu);
 
-			correction.add(inputNeuron, current, newWeight);
+			correction.set(inputNeuron, current, newWeight);
 		}
 	}
 
@@ -508,11 +509,11 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	public void autoDecay()
 	{
 		if( this.radius>endRadius) {
-			this.radius-=this.autoDecayRadius;
+			this.radius+=this.autoDecayRadius;
 		}
 		
 		if( this.learningRate>this.endRate) {
-			this.learningRate-=this.autoDecayRate;
+			this.learningRate+=this.autoDecayRate;
 		}
 		this.getNeighborhood().setRadius(radius);
 	}
@@ -520,6 +521,10 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
+		result.append("Rate=");
+		result.append(Format.formatPercent(this.learningRate));
+		result.append(", Radius=");
+		result.append(Format.formatDouble(this.radius,2));
 		return result.toString();
 	}
 
