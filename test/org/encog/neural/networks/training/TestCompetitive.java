@@ -57,7 +57,7 @@ public class TestCompetitive extends TestCase  {
 
 		final CompetitiveTraining train = new CompetitiveTraining(network, 0.4,
 				training, new NeighborhoodSingle());
-
+		train.setForceWinner(true);
 		int iteration = 0;
 
 		for (iteration = 0; iteration <= 100; iteration++) {
