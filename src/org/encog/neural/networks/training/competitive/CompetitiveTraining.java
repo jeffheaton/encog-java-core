@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
  * 
  * Because only the BMU neuron and its close neighbors are updated, you can end
  * up with some output neurons that learn nothing. By default these neurons are
- * forced to win patterns that are not represented well. This spreads out the
+ * not forced to win patterns that are not represented well. This spreads out the
  * workload among all output neurons. This feature is not used by default, but can
  * be enabled by setting the "forceWinner" property.
  * 

@@ -16,21 +16,21 @@ public class NeighborhoodGaussianMulti implements NeighborhoodFunction {
 		calculateDisplacement();
 	}
 	
-	public NeighborhoodGaussianMulti(int x,int y,double peak,double width,double center)
+	public NeighborhoodGaussianMulti(int x,int y)
 	{
 		int[] size = new int[2];
 		size[0] = x;
 		size[1] = y;
 		
 		double[] centerArray = new double[2];
-		centerArray[0] = center;
-		centerArray[1] = center;
+		centerArray[0] = 0;
+		centerArray[1] = 0;
 		
 		double[] widthArray = new double[2];
-		widthArray[0] = width;
-		widthArray[1] = width;
+		widthArray[0] = 1;
+		widthArray[1] = 1;
 		
-		RadialBasisFunctionMulti rbf = new GaussianFunctionMulti(peak, centerArray, widthArray);
+		RadialBasisFunctionMulti rbf = new GaussianFunctionMulti(1, centerArray, widthArray);
 		
 		this.rbf = rbf;
 		this.size = size;
