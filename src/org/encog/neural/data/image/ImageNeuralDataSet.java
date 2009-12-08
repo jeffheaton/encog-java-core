@@ -56,7 +56,7 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	/**
 	 * The downsampler to use.
 	 */
-	private final Class<Downsample> downsampler;
+	private final Downsample downsampler;
 
 	/**
 	 * The height to downsample to.
@@ -72,6 +72,9 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 * Should the bounds be found and cropped.
 	 */
 	private final boolean findBounds;
+	
+	private final double hi;
+	private final double lo;
 
 	/**
 	 * The logging object.
@@ -86,12 +89,14 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 * @param findBounds
 	 *            Should the bounds be found and clipped.
 	 */
-	public ImageNeuralDataSet(final Class<Downsample> downsampler,
-			final boolean findBounds) {
+	public ImageNeuralDataSet( Downsample downsampler,
+			final boolean findBounds,double hi,double lo) {
 		this.downsampler = downsampler;
 		this.findBounds = findBounds;
 		this.height = -1;
 		this.width = -1;
+		this.hi = hi;
+		this.lo = lo;
 	}
 
 	/**
@@ -154,29 +159,17 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 		this.width = width;
 
 		for (final NeuralDataPair pair : this) {
-			if (pair.getInput() instanceof ImageNeuralData) {
+			if (!(pair.getInput() instanceof ImageNeuralData) ) {
 				throw new NeuralNetworkError(
 						"Invalid class type found in ImageNeuralDataSet, only "
 								+ "ImageNeuralData items are allowed.");
 			}
 
-			Downsample downsample;
-			try {
-				downsample = this.downsampler.newInstance();
+			
+			
 				final ImageNeuralData input = (ImageNeuralData) pair.getInput();
-				input.downsample(downsample, this.findBounds, height, width);
-			} catch (final InstantiationException e) {
-				if (this.logger.isErrorEnabled()) {
-					this.logger.error("Exception", e);
-				}
-				throw new NeuralNetworkError(e);
-			} catch (final IllegalAccessException e) {
-				if (this.logger.isErrorEnabled()) {
-					this.logger.error("Exception", e);
-				}
-				throw new NeuralNetworkError(e);
-			}
-
+				input.downsample(downsampler, this.findBounds, height, width, this.hi, this.lo);
+			
 		}
 	}
 

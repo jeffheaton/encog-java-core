@@ -5,6 +5,7 @@ import java.io.File;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.data.csv.CSVNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -48,13 +49,13 @@ public class EncogUtility {
 		return network;
 	}
 	public static void trainConsole(BasicNetwork network,
-			BufferedNeuralDataSet trainingSet, int minutes) {
+			NeuralDataSet trainingSet, int minutes) {
 		final Train train = new MultiPropagation(network, trainingSet );
 		trainConsole(train,network,trainingSet,minutes);
 	}
 	
 	public static void trainConsole(Train train, BasicNetwork network,
-			BufferedNeuralDataSet trainingSet, int minutes) {
+			NeuralDataSet trainingSet, int minutes) {
 	
 		int epoch = 1;
 		long remaining;

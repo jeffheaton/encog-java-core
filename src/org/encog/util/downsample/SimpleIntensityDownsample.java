@@ -42,11 +42,6 @@ import org.slf4j.LoggerFactory;
 public class SimpleIntensityDownsample implements Downsample {
 
 	/**
-	 * The image to downsample.
-	 */
-	private Image image;
-
-	/**
 	 * The pixel map from the image.
 	 */
 	private int[] pixelMap;
@@ -97,15 +92,6 @@ public class SimpleIntensityDownsample implements Downsample {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	/**
-	 * Construct the downsample utility for the specified image.
-	 * 
-	 * @param image
-	 *            The image to downsample.
-	 */
-	public SimpleIntensityDownsample(final Image image) {
-		processImage(image);
-	}
 
 	/**
 	 * Called to downsample the image and store it in the down sample component.
@@ -116,11 +102,13 @@ public class SimpleIntensityDownsample implements Downsample {
 	 *            THe width to downsample to.
 	 * @return The downsampled image.
 	 */
-	public double[] downSample(final int height, final int width) {
+	public double[] downSample(Image image, final int height, final int width) {
 
+		processImage(image);
+		
 		final double[] result = new double[height * width];
 
-		final PixelGrabber grabber = new PixelGrabber(this.image, 0, 0,
+		final PixelGrabber grabber = new PixelGrabber(image, 0, 0,
 				this.imageWidth, this.imageWidth, true);
 
 		try {
@@ -163,8 +151,11 @@ public class SimpleIntensityDownsample implements Downsample {
 	private double downSampleRegion(final int x, final int y) {
 		final int startX = (int) (this.downSampleLeft + x * this.ratioX);
 		final int startY = (int) (this.downSampleTop + y * this.ratioY);
-		final int endX = (int) (startX + this.ratioX);
-		final int endY = (int) (startY + this.ratioY);
+		int endX = (int) (startX + this.ratioX);
+		int endY = (int) (startY + this.ratioY);
+		
+		endX = Math.min(this.imageWidth, endX);
+		endY = Math.min(this.imageHeight,endY);
 
 		int redTotal = 0;
 		int greenTotal = 0;
@@ -172,8 +163,8 @@ public class SimpleIntensityDownsample implements Downsample {
 
 		int total = 0;
 
-		for (int yy = startY; yy <= endY; yy++) {
-			for (int xx = startX; xx <= endX; xx++) {
+		for (int yy = startY; yy < endY; yy++) {
+			for (int xx = startX; xx < endX; xx++) {
 				final int loc = xx + yy * this.imageWidth;
 				final int pixel = this.pixelMap[loc];
 				final int red = pixel >> 16 & 0xff;
@@ -256,13 +247,6 @@ public class SimpleIntensityDownsample implements Downsample {
 	}
 
 	/**
-	 * @return the image
-	 */
-	public Image getImage() {
-		return this.image;
-	}
-
-	/**
 	 * @return the imageHeight
 	 */
 	public int getImageHeight() {
@@ -321,7 +305,6 @@ public class SimpleIntensityDownsample implements Downsample {
 	 *            The image to downsample.
 	 */
 	public void processImage(final Image image) {
-		this.image = image;
 		final ImageSize size = new ImageSize(image);
 		this.imageHeight = size.getHeight();
 		this.imageWidth = size.getWidth();

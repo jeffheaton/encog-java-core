@@ -44,7 +44,7 @@ public interface Downsample {
 	 *            The width to downsample to.
 	 * @return The downsampled image.
 	 */
-	double[] downSample(int height, int width);
+	double[] downSample(Image image, int height, int width);
 
 	/**
 	 * Find the bounds around the image to exclude whitespace.
@@ -71,10 +71,6 @@ public interface Downsample {
 	 */
 	int getDownSampleTop();
 
-	/**
-	 * @return The image to be downsampled.
-	 */
-	Image getImage();
 
 	/**
 	 * @return The height of the image.

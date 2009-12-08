@@ -84,6 +84,12 @@ public class OutputFieldRangeMapped extends BasicOutputField implements RequireT
 				.getMax() - this.field.getMin()))
 				* (this.high - this.low) + this.low;
 	}
+	
+	public static double calculate( double value, double min, double max, double hi, double lo)
+	{
+		return ((value - min) / (max - min))
+				* (hi - lo) + lo;
+	}
 
 	/**
 	 * @return The field that this output is based on.

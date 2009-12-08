@@ -28,6 +28,7 @@ package org.encog.neural.data.image;
 import java.awt.Image;
 
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.normalize.output.OutputFieldRangeMapped;
 import org.encog.util.downsample.Downsample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,11 +88,19 @@ public class ImageNeuralData extends BasicNeuralData {
 	 *            The width to downsample to.
 	 */
 	public void downsample(final Downsample downsampler,
-			final boolean findBounds, final int height, final int width) {
+			final boolean findBounds, final int height, final int width,
+			double hi,double lo) {
 		if (findBounds) {
 			downsampler.findBounds();
 		}
-		final double[] sample = downsampler.downSample(height, width);
+		final double[] sample = downsampler.downSample(this.image, 
+				height, width);
+		
+		for(int i=0;i<sample.length;i++) {
+			sample[i] = OutputFieldRangeMapped.calculate(
+					sample[i], 0, 255, hi, lo);
+		}
+		
 		this.setData(sample);
 	}
 
@@ -108,6 +117,24 @@ public class ImageNeuralData extends BasicNeuralData {
 	 */
 	public void setImage(final Image image) {
 		this.image = image;
+	}
+	
+	/**
+	 * Return a string representation of this object.
+	 * 
+	 * @return The string form of this object.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder builder = new StringBuilder("[ImageNeuralData:");
+		for (int i = 0; i < this.getData().length; i++) {
+			if (i != 0) {
+				builder.append(',');
+			}
+			builder.append(this.getData(i));
+		}
+		builder.append("]");
+		return builder.toString();
 	}
 
 }

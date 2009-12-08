@@ -230,12 +230,13 @@ public class NeuralStructure implements Serializable {
 	 *            The layer to get the previous layers from.
 	 * @return A collection of synapses.
 	 */
-	public Collection<Synapse> getPreviousSynapses(final Layer targetLayer) {
+	public List<Synapse> getPreviousSynapses(final Layer targetLayer) {
 
-		final Collection<Synapse> result = new HashSet<Synapse>();
+		final List<Synapse> result = new ArrayList<Synapse>();
 
 		for (final Synapse synapse : this.synapses) {
 			if (synapse.getToLayer() == targetLayer) {
+				if( !result.contains(synapse))
 				result.add(synapse);
 			}
 		}
@@ -258,8 +259,8 @@ public class NeuralStructure implements Serializable {
 	 *            The layer to name.
 	 * @return The name of this layer.
 	 */
-	public Collection<String> nameLayer(final Layer layer) {
-		final Collection<String> result = new ArrayList<String>();
+	public List<String> nameLayer(final Layer layer) {
+		final List<String> result = new ArrayList<String>();
 
 		for (final Entry<String, Layer> entry : this.network.getLayerTags()
 				.entrySet()) {
