@@ -33,6 +33,7 @@ import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.PropagationUtil;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
@@ -317,6 +318,13 @@ public class MultiPropagation extends BasicTraining {
 		
 		postIteration();
 
+	}
+	
+	public void addStrategy(Strategy strategy) {
+		if( this.fallback!=null )
+			this.fallback.addStrategy(strategy);
+		else
+			this.addStrategy(strategy);
 	}
 
 }
