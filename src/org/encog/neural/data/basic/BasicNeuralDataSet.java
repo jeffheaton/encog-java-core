@@ -190,12 +190,7 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	 *            The ideal data to use for training.
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
-		if (!this.iterators.isEmpty()) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Concurrent modification exception");
-			}
-			throw new ConcurrentModificationException();
-		}
+
 		final NeuralDataPair pair = new BasicNeuralDataPair(inputData,
 				idealData);
 		this.data.add(pair);
