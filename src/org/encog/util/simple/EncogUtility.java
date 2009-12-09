@@ -79,14 +79,14 @@ public class EncogUtility {
 	}
 	
 	public static void trainDialog(BasicNetwork network,
-			BufferedNeuralDataSet trainingSet) {
+			NeuralDataSet trainingSet) {
 		final Train train = new MultiPropagation(network, trainingSet );
 		trainDialog(train, network,trainingSet);
 	}
 	
 	
 	public static void trainDialog(Train train, BasicNetwork network,
-			BufferedNeuralDataSet trainingSet) {
+			NeuralDataSet trainingSet) {
 		
 		int epoch = 1;
 		TrainingDialog dialog = new TrainingDialog();
