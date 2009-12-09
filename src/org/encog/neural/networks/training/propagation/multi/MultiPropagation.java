@@ -288,6 +288,8 @@ public class MultiPropagation extends BasicTraining {
 			setError(this.fallback.getError());
 			return;
 		}
+		
+		preIteration();
 
 		final Thread[] threadList = new Thread[this.workers.length];
 
@@ -312,6 +314,8 @@ public class MultiPropagation extends BasicTraining {
 
 		this.map.collect();
 		this.propagationUtil.getMethod().learn();
+		
+		postIteration();
 
 	}
 
