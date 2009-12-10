@@ -26,7 +26,7 @@
 package org.encog.neural.networks.training.anneal;
 
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.NetworkCODEC;
+import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
 import org.slf4j.Logger;

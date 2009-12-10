@@ -24,7 +24,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.encog.neural.networks;
+package org.encog.neural.networks.structure;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.ReflectionUtil;

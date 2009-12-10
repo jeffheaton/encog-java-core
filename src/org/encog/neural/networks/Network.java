@@ -28,6 +28,7 @@ package org.encog.neural.networks;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.structure.NeuralStructure;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;

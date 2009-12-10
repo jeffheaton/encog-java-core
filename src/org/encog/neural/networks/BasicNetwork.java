@@ -40,6 +40,8 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.NeuralLogic;
 import org.encog.neural.networks.logic.SimpleRecurrentLogic;
+import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.neural.networks.structure.NeuralStructure;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.Persistor;

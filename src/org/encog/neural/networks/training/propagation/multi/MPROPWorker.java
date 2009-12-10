@@ -29,7 +29,7 @@ import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.NetworkCODEC;
+import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.propagation.PropagationUtil;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagationMethod;

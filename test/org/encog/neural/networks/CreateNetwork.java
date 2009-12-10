@@ -4,6 +4,7 @@ import org.encog.matrix.Matrix;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.structure.NetworkCODEC;
 
 public class CreateNetwork {
 	
