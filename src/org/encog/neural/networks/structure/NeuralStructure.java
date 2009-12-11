@@ -79,6 +79,8 @@ public class NeuralStructure implements Serializable {
 	 * The neural network this class belongs to.
 	 */
 	private final BasicNetwork network;
+	
+	private int nextID = 1;
 
 	/**
 	 * Construct a structure object for the specified network.
@@ -103,6 +105,15 @@ public class NeuralStructure implements Serializable {
 		}
 
 		this.layers.addAll(result);
+		
+		// make sure that the current ID is not going to cause a repeat
+		for( Layer layer: this.layers ) {
+			if( layer.getID()>= this.nextID ) {
+			this.nextID = layer.getID()+1;	
+			}
+		}
+		
+		sort();
 	}
 
 	/**
@@ -290,22 +301,27 @@ public class NeuralStructure implements Serializable {
 	
 	public int getNextID()
 	{
-		int result = 1;
-		
-		for(Layer layer: this.layers) {
-			if( layer.getID()>=result )
-				result = layer.getID()+1;
-		}
-		
-		return result;
+		return nextID++;
+	}
+	
+	public void assignID(Layer layer)
+	{
+		if( layer.getID()==-1 )
+			layer.setID(getNextID());
 	}
 	
 	public void assignID()
 	{
 		for(Layer layer: this.layers )
 		{
-			if( layer.getID()==-1 )
-				layer.setID(getNextID());
+			assignID(layer);
 		}
+		sort();
+	}
+	
+	public void sort()
+	{
+		Collections.sort(this.layers,new LayerComparator(this));
+		Collections.sort(this.synapses,new SynapseComparator(this));
 	}
 }

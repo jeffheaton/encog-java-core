@@ -30,6 +30,7 @@ import java.util.List;
 
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.EncogPersistedObject;
@@ -198,4 +199,7 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	public void setID(int id);
 	
 	public int getID();
+	
+	public void setNetwork(BasicNetwork network);
+	public BasicNetwork getNetwork();
 }

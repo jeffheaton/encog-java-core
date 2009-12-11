@@ -35,6 +35,7 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.DirectSynapse;
 import org.encog.neural.networks.synapse.OneToOneSynapse;
 import org.encog.neural.networks.synapse.Synapse;
@@ -113,6 +114,9 @@ public class BasicLayer implements Layer, Serializable {
 	 * The threshold values for this layer.
 	 */
 	private double[] threshold;
+	
+	private BasicNetwork network;
+	
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default
@@ -159,7 +163,7 @@ public class BasicLayer implements Layer, Serializable {
 	 * @param next
 	 *            THe next layer.
 	 */
-	public void addNext(final Layer next) {
+	public void addNext(final Layer next) {				
 		addNext(next, SynapseType.Weighted);
 	}
 
@@ -171,6 +175,14 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public void addNext(final Layer next, final SynapseType type) {
 		Synapse synapse = null;
+		
+		if( this.network == null )
+		{
+			throw new NeuralNetworkError("Can't add to this layer, it is not yet part of a network itself.");
+		}
+		
+		next.setNetwork(this.network);
+		this.network.getStructure().assignID(next);
 
 		switch (type) {
 		case OneToOne:
@@ -470,6 +482,9 @@ public class BasicLayer implements Layer, Serializable {
 		final StringBuilder result = new StringBuilder();
 		result.append("[");
 		result.append(this.getClass().getSimpleName());
+		result.append("(");
+		result.append(this.getID());
+		result.append(")");
 		result.append(": neuronCount=");
 		result.append(this.neuronCount);
 		result.append(']');
@@ -491,6 +506,14 @@ public class BasicLayer implements Layer, Serializable {
 			return 1;
 		else
 			return -1;
+	}
+
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	public void setNetwork(BasicNetwork network) {
+		this.network = network;		
 	}
 
 }

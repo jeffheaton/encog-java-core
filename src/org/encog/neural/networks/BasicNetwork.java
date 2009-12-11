@@ -175,6 +175,8 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 *            The layer to be added.
 	 */
 	public void addLayer(final Layer layer) {
+		layer.setNetwork(this);
+		this.structure.assignID(layer);
 		addLayer(layer, SynapseType.Weighted);
 	}
 
@@ -563,6 +565,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 *            THe layer to tag.
 	 */
 	public void tagLayer(final String tag, final Layer layer) {
+		layer.setNetwork(this);
 		this.layerTags.put(tag, layer);
 	}
 
