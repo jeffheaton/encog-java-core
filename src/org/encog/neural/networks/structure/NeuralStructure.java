@@ -319,6 +319,22 @@ public class NeuralStructure implements Serializable {
 		sort();
 	}
 	
+	public int calculateSize()
+	{
+		int size = 0;
+		
+		// first determine size from matrixes
+		for (final Synapse synapse : network.getStructure().getSynapses()) {
+			size += synapse.getMatrixSize();
+		}
+
+		// determine size from threshold values
+		for (final Layer layer : network.getStructure().getLayers()) {
+			size += layer.getNeuronCount();
+		}
+		return size;
+	}
+	
 	public void sort()
 	{
 		Collections.sort(this.layers,new LayerComparator(this));

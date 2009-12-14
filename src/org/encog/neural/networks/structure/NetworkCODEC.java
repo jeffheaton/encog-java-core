@@ -137,17 +137,7 @@ public final class NetworkCODEC {
 	 * @return The memory of the neuron.
 	 */
 	public static Double[] networkToArray(final BasicNetwork network) {
-		int size = 0;
-
-		// first determine size from matrixes
-		for (final Synapse synapse : network.getStructure().getSynapses()) {
-			size += synapse.getMatrixSize();
-		}
-
-		// determine size from threshold values
-		for (final Layer layer : network.getStructure().getLayers()) {
-			size += layer.getNeuronCount();
-		}
+		int size = network.getStructure().calculateSize();
 
 		// allocate an array to hold
 		final Double[] result = new Double[size];
