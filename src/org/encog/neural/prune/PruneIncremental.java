@@ -70,13 +70,15 @@ public class PruneIncremental extends ConcurrentJob {
 		while (layer.getNext().size() > 0) {
 			layer = layer.getNext().get(0).getToLayer();
 
-			if (result.length() > 0) {
-				result.append(",");
+			if (layer.getNext().size() > 0) {
+				if (result.length() > 0) {
+					result.append(",");
+				}
+				result.append("H");
+				result.append(num++);
+				result.append("=");
+				result.append(layer.getNeuronCount());
 			}
-			result.append("H");
-			result.append(num++);
-			result.append("=");
-			result.append(layer.getNeuronCount());
 		}
 
 		return result.toString();
@@ -307,7 +309,7 @@ public class PruneIncremental extends ConcurrentJob {
 		this.currentTry++;
 
 		reportStatus(context, "Current: "
-				+ PruneIncremental.networkToString(network) + ", Best: "
+				+ PruneIncremental.networkToString(network) + "; Best: "
 				+ PruneIncremental.networkToString(this.bestNetwork));
 
 	}
