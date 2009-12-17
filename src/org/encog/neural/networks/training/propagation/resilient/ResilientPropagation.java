@@ -28,6 +28,9 @@ package org.encog.neural.networks.training.propagation.resilient;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.propagation.PropagateErrors;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,7 +71,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class ResilientPropagation extends Propagation {
+public class ResilientPropagation extends BasicTraining {
 
 	/**
 	 * The default zero tolerance.
@@ -118,6 +121,12 @@ public class ResilientPropagation extends Propagation {
 	 * The maximum delta amount.
 	 */
 	private final double maxStep;
+	
+	private BasicNetwork network;
+	private NeuralDataSet training;
+	private double[] updateValues;
+	private double[] lastGradient;
+	private double[] gradients;
 
 	/**
 	 * The logging object.
@@ -165,11 +174,18 @@ public class ResilientPropagation extends Propagation {
 			final NeuralDataSet training, final double zeroTolerance,
 			final double initialUpdate, final double maxStep) {
 
-		super(network, new ResilientPropagationMethod(zeroTolerance, maxStep,
-				initialUpdate), training);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
 		this.zeroTolerance = zeroTolerance;
+		this.network = network;
+		this.training = training;
+		
+		this.updateValues = new double[network.getStructure().calculateSize()];
+		this.lastGradient = new double[network.getStructure().calculateSize()];
+		
+		for(int i = 0;i< this.updateValues.length;i++) {
+			this.updateValues[i] = this.initialUpdate;
+		}
 
 	}
 
@@ -194,4 +210,79 @@ public class ResilientPropagation extends Propagation {
 		return this.zeroTolerance;
 	}
 
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	@Override
+	public void iteration() {
+		PropagateErrors prop = new PropagateErrors(this.network);
+		
+		double[] weights = NetworkCODEC.networkToArray(network);		
+		prop.calculate(this.training,weights);
+		
+		this.gradients = prop.getErrors();
+		
+		for(int i=0;i<this.gradients.length;i++) {
+			weights[i]+=updateWeight(i);
+		}
+		NetworkCODEC.arrayToNetwork(weights, this.network);
+		
+		this.setError(prop.getError());
+		
+	}
+	
+	/**
+	 * Determine the sign of the value.
+	 * 
+	 * @param value
+	 *            The value to check.
+	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
+	 */
+	private int sign(final double value) {
+		if (Math.abs(value) < this.zeroTolerance) {
+			return 0;
+		} else if (value > 0) {
+			return 1;
+		} else {
+			return -1;
+		}
+	}
+	
+	private double updateWeight(int index)
+	{
+		// multiply the current and previous gradient, and take the
+		// sign. We want to see if the gradient has changed its sign.
+		final int change = sign(this.gradients[index] * this.lastGradient[index]);
+		double weightChange = 0;
+
+		// if the gradient has retained its sign, then we increase the
+		// delta so that it will converge faster
+		if (change > 0) {
+			double delta = this.updateValues[index]
+					* ResilientPropagation.POSITIVE_ETA;
+			delta = Math.min(delta, this.maxStep);
+			weightChange = sign(this.gradients[index]) * delta;
+			this.updateValues[index] = delta;
+			this.lastGradient[index] = this.gradients[index];
+		} else if (change < 0) {
+			// if change<0, then the sign has changed, and the last
+			// delta was too big
+			double delta = this.updateValues[index]
+					* ResilientPropagation.NEGATIVE_ETA;
+			delta = Math.max(delta, ResilientPropagation.DELTA_MIN);
+			 this.updateValues[index] = delta;
+			// set the previous gradent to zero so that there will be no
+			// adjustment the next iteration
+			this.lastGradient[index] = 0;
+		} else if (change == 0) {
+			// if change==0 then there is no change to the delta
+			final double delta = this.lastGradient[index];
+			weightChange = sign(this.gradients[index]) * delta;
+			this.lastGradient[index] = this.gradients[index];
+		}
+
+		// apply the weight change, if any
+		return weightChange;
+	}
 }

@@ -61,29 +61,30 @@ public final class NetworkCODEC {
 	 * @param network
 	 *            The network to encode.
 	 */
-	public static void arrayToNetwork(final Double[] array,
+	public static void arrayToNetwork(final double[] array,
 			final BasicNetwork network) {
 
-		// copy all weight data
-		int currentIndex = 0;
-		final Collection<Synapse> synapses = network.getStructure()
-				.getSynapses();
-		for (final Synapse synapse : synapses) {
-			if (synapse.getMatrix() != null) {
-
-				currentIndex = synapse.getMatrix().fromPackedArray(array,
-						currentIndex);
-
+		int index = 0;
+		
+		for(Layer layer: network.getStructure().getLayers() )
+		{
+			if( layer.hasThreshold() ) {
+				// process layer thresholds
+				for(int i=0;i<layer.getNeuronCount();i++)
+					layer.setThreshold(i,array[index++]);
+			}
+			
+			// process synapses
+			for(Synapse synapse: network.getStructure().getPreviousSynapses(layer))
+			{
+				// process each weight matrix
+				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+						synapse.getMatrix().set(y,x, array[index++] );
+					}
+				}
 			}
 		}
-
-		// copy all threshold data
-		for (final Layer layer : network.getStructure().getLayers()) {
-			for (int i = 0; i < layer.getNeuronCount(); i++) {
-				layer.setThreshold(i, array[currentIndex++]);
-			}
-		}
-
 	}
 
 	/**
@@ -99,8 +100,8 @@ public final class NetworkCODEC {
 	 */
 	public static boolean equals(final BasicNetwork network1,
 			final BasicNetwork network2, final int precision) {
-		final Double[] array1 = NetworkCODEC.networkToArray(network1);
-		final Double[] array2 = NetworkCODEC.networkToArray(network2);
+		final double[] array1 = NetworkCODEC.networkToArray(network1);
+		final double[] array2 = NetworkCODEC.networkToArray(network2);
 
 		if (array1.length != array2.length) {
 			return false;
@@ -136,32 +137,34 @@ public final class NetworkCODEC {
 	 *            The network to encode.
 	 * @return The memory of the neuron.
 	 */
-	public static Double[] networkToArray(final BasicNetwork network) {
+	public static double[] networkToArray(final BasicNetwork network) {
 		int size = network.getStructure().calculateSize();
 
 		// allocate an array to hold
-		final Double[] result = new Double[size];
-
-		// copy all weight data
-		int currentIndex = 0;
-		final Collection<Synapse> synapses = network.getStructure()
-				.getSynapses();
-		for (final Synapse synapse : synapses) {
-			if (synapse.getMatrix() != null) {
-				final Double[] temp = synapse.getMatrix().toPackedArray();
-				for (final Double element : temp) {
-					result[currentIndex++] = element;
+		final double[] result = new double[size];
+		
+		int index = 0;
+		
+		for(Layer layer: network.getStructure().getLayers() )
+		{
+			// process layer thresholds
+			if( layer.hasThreshold() ) {
+				for(int i=0;i<layer.getNeuronCount();i++)
+					result[index++] = layer.getThreshold(i);
+			}
+			
+			// process synapses
+			for(Synapse synapse: network.getStructure().getPreviousSynapses(layer))
+			{
+				// process each weight matrix
+				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+						result[index++] = synapse.getMatrix().get(y,x);
+					}
 				}
 			}
 		}
-
-		// copy all threshold data
-		for (final Layer layer : network.getStructure().getLayers()) {
-			for (int i = 0; i < layer.getNeuronCount(); i++) {
-				result[currentIndex++] = layer.getThreshold(i);
-			}
-		}
-
+		
 		return result;
 	}
 

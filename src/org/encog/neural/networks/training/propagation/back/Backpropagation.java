@@ -25,10 +25,14 @@
  */
 package org.encog.neural.networks.training.propagation.back;
 
+import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
+import org.encog.neural.networks.training.propagation.PropagateErrors;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.strategy.SmartLearningRate;
 import org.encog.neural.networks.training.strategy.SmartMomentum;
@@ -59,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * different ways. In general, it is suggested that you use the resilient
  * propagation technique for most Encog training tasks over back propagation.
  */
-public class Backpropagation extends Propagation implements Momentum,
+public class Backpropagation extends BasicTraining implements Momentum,
 		LearningRate {
 
 	/**
@@ -74,6 +78,10 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * learning.
 	 */
 	private double learningRate;
+	
+	private BasicNetwork network;
+	private NeuralDataSet training;
+	private double[] lastDelta;
 
 	/**
 	 * The logging object.
@@ -112,10 +120,12 @@ public class Backpropagation extends Propagation implements Momentum,
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
 			final double momentum) {
-		super(network, new BackpropagationMethod(learnRate, 
-					momentum), training);
+		
 		this.momentum = momentum;
 		this.learningRate = learnRate;
+		this.network = network;
+		this.training = training;
+		this.lastDelta = new double[network.getStructure().calculateSize()];
 	}
 
 	/**
@@ -158,6 +168,33 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	public void setMomentum(final double m) {
 		this.momentum = m;
+	}
+
+	@Override
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	@Override
+	public void iteration() {
+		PropagateErrors prop = new PropagateErrors(this.network);
+		
+		double[] weights = NetworkCODEC.networkToArray(network);		
+		
+		
+		prop.calculate(this.training,weights);
+		double[] errors = prop.getErrors();
+		
+		for(int i=0;i<errors.length;i++) {
+			double last = lastDelta[i]; 
+			lastDelta[i] = (errors[i]*this.learningRate)+(last*this.momentum);
+			weights[i]+=lastDelta[i];
+		}
+		NetworkCODEC.arrayToNetwork(weights, this.network);
+		
+		this.setError(prop.getError());
+		
+		
 	}
 
 }

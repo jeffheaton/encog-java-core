@@ -28,7 +28,10 @@ package org.encog.neural.networks.training.propagation.manhattan;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
+import org.encog.neural.networks.training.propagation.PropagateErrors;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class ManhattanPropagation extends Propagation implements LearningRate {
+public class ManhattanPropagation extends BasicTraining implements LearningRate {
 
 	/**
 	 * The default tolerance to determine of a number is close to zero.
@@ -66,6 +69,10 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * 
 	 */
 	private double learningRate;
+	
+	private BasicNetwork network;
+	private NeuralDataSet training;
+	private double[] gradients;
 
 	/**
 	 * The logging object.
@@ -98,9 +105,11 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 			final NeuralDataSet training, final double learnRate,
 			final double zeroTolerance) {
 
-		super(network, new ManhattanPropagationMethod(zeroTolerance,learnRate), training);
 		this.zeroTolerance = zeroTolerance;
 		this.learningRate = learnRate;
+		this.network = network;
+		this.training = training;
+		this.gradients = new double[network.getStructure().calculateSize()];
 	}
 
 	/**
@@ -125,6 +134,38 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 */
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
+	}
+
+	@Override
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	@Override
+	public void iteration() {
+		PropagateErrors prop = new PropagateErrors(this.network);
+		
+		double[] weights = NetworkCODEC.networkToArray(network);		
+		prop.calculate(this.training,weights);
+		
+		this.gradients = prop.getErrors();
+		
+		for(int i=0;i<this.gradients.length;i++) {
+			weights[i]+=updateWeight(i);
+		}
+		NetworkCODEC.arrayToNetwork(weights, this.network);
+		
+		this.setError(prop.getError());
+	}
+	
+	private double updateWeight(int index) {
+		if (Math.abs(this.gradients[index]) < this.zeroTolerance) {
+			return 0;
+		} else if (this.gradients[index] > 0) {
+			return this.learningRate;
+		} else {
+			return -this.learningRate;
+		}
 	}
 
 }

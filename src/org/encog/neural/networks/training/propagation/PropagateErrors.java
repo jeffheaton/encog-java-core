@@ -1,10 +1,13 @@
 package org.encog.neural.networks.training.propagation;
 
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.util.ErrorCalculation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +17,9 @@ public class PropagateErrors {
 	private BasicNetwork network;
 	private Map<Layer, Object> layerDeltas = new HashMap<Layer, Object>();
 	private double[] errors;
+	private double[] weights;
 	private NeuralOutputHolder holder;
+	private ErrorCalculation error = new ErrorCalculation();
 
 	public PropagateErrors(BasicNetwork network) {
 		this.network = network;
@@ -47,12 +52,23 @@ public class PropagateErrors {
 			}
 		}
 	}
+	
+	public void calculate(NeuralDataSet training, double[] weights) {
+		reset(weights);
+		for(NeuralDataPair pair: training) {
+			calculate(pair.getInput(), pair.getIdeal());
+		}				
+	}
 
 	public void calculate(NeuralData input, NeuralData ideal) {
 		clearDeltas();
 		
+		this.holder = new NeuralOutputHolder();
 		Layer output = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
 		NeuralData actual = this.network.compute(input, this.holder);
+		
+		this.error.updateError(actual.getData(), ideal.getData());
+		
 		double deltas[] = getLayerDeltas(output);
 
 		for (int i = 0; i < deltas.length; i++) {
@@ -68,16 +84,19 @@ public class PropagateErrors {
 		}
 
 		int index = 0;
-		Layer lastLayer = null;
-		
-		// calculate for each synapse
-		for (Synapse synapse : this.network.getStructure().getSynapses()) {
-			if( synapse.getToLayer()!=lastLayer ) {
-				lastLayer = synapse.getToLayer();
-				index+=synapse.getToNeuronCount();
+		for(Layer layer: this.network.getStructure().getLayers()) {
+			double layerDeltas[] = getLayerDeltas(layer);
+			
+			if( layer.hasThreshold() ) {
+				for(int i=0;i<layerDeltas.length;i++) {
+					this.errors[index++] += layerDeltas[i]; 
+				}	
 			}
-			index = calculate(synapse,index);
-		}
+			
+			for(Synapse synapse: this.network.getStructure().getPreviousSynapses(layer)) {
+				index = calculate(synapse,index);
+			}			
+		}		
 	}
 
 	private int calculate(Synapse synapse, int index) {
@@ -89,16 +108,40 @@ public class PropagateErrors {
 		
 		for (int x = 0; x < synapse.getToNeuronCount(); x++) {
 			for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-				errors[index++] = actual.getData(y)*toDeltas[x];
+				double value = actual.getData(y)*toDeltas[x];
+				errors[index] += value;
+				fromDeltas[y] +=  this.weights[index]*toDeltas[x];
+				index++;
 			}
 		}
 		
+		double[] temp = new double[fromDeltas.length];
+
+		for (int i = 0; i < fromDeltas.length; i++) {
+			temp[i] = actual.getData(i);
+		}
+
+		// get an activation function to use
+		synapse.getToLayer().getActivationFunction().derivativeFunction(temp);
+
+		for (int i = 0; i < temp.length; i++) {
+			fromDeltas[i] *= temp[i];
+		}
+				
 		return index;
 	}
 
-	public void clear() {
+	public void reset(double[] weights) {
+		this.error.reset();
+		this.weights = weights;
+		this.layerDeltas.clear();
+		
 		for (int i = 0; i < this.errors.length; i++)
 			this.errors[i] = 0;
+	}
+
+	public double getError() {
+		return this.error.calculateRMS();
 	}
 
 }

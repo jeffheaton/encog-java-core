@@ -330,6 +330,7 @@ public class NeuralStructure implements Serializable {
 
 		// determine size from threshold values
 		for (final Layer layer : network.getStructure().getLayers()) {
+			if( layer.hasThreshold() )
 			size += layer.getNeuronCount();
 		}
 		return size;

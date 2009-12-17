@@ -30,6 +30,7 @@ import java.util.Arrays;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.solve.genetic.Chromosome;
+import org.encog.util.EncogArray;
 import org.encog.util.randomize.Distort;
 import org.encog.util.randomize.Randomizer;
 import org.slf4j.Logger;
@@ -143,14 +144,16 @@ public class NeuralChromosome
 	 * Copy the network to the genes.
 	 */
 	public void updateGenes()  {
-		this.setGenes(NetworkCODEC.networkToArray(this.network));
+		double[] net = NetworkCODEC.networkToArray(this.network); 
+		this.setGenes(EncogArray.doubleToObject(net));
 	}
 
 	/**
 	 * Copy the genes to the network.
 	 */
 	public void updateNetwork() {
-		NetworkCODEC.arrayToNetwork(getGenes(), this.network);
+		double[] net = EncogArray.objectToDouble(getGenes());
+		NetworkCODEC.arrayToNetwork(net, this.network);
 	}
 
 	@Override

@@ -154,7 +154,7 @@ public class MPROPWorker implements Runnable {
 	 */
 	public void run() {
 
-		final Double[] masterWeights = NetworkCODEC.networkToArray(this.owner
+		final double[] masterWeights = NetworkCODEC.networkToArray(this.owner
 				.getNetwork());
 		NetworkCODEC.arrayToNetwork(masterWeights, this.network);
 

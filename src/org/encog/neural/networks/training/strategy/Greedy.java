@@ -58,7 +58,7 @@ public class Greedy implements Strategy {
 	 * The last state of the network, so that we can restore to this
 	 * state if needed.
 	 */
-	private Double[] lastNetwork;
+	private double[] lastNetwork;
 	
 	/**
 	 * Has one iteration passed, and we are now ready to start 

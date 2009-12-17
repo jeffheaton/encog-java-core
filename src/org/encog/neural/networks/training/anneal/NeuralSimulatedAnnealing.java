@@ -121,7 +121,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * 
 	 * @return The network as an array of doubles.
 	 */
-	public Double[] getArray() {
+	public double[] getArray() {
 		return NetworkCODEC
 				.networkToArray(NeuralSimulatedAnnealing.this.network);
 	}
@@ -129,7 +129,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	/**
 	 * @return A copy of the annealing array.
 	 */
-	public Double[] getArrayCopy() {
+	public double[] getArrayCopy() {
 		return getArray();
 	}
 
@@ -139,7 +139,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * @param array
 	 *            An array.
 	 */
-	public void putArray(final Double[] array) {
+	public void putArray(final double[] array) {
 		NetworkCODEC.arrayToNetwork(array,
 				NeuralSimulatedAnnealing.this.network);
 	}
@@ -151,7 +151,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * more randomness.
 	 */
 	public void randomize() {
-		final Double[] array = NetworkCODEC
+		final double[] array = NetworkCODEC
 				.networkToArray(NeuralSimulatedAnnealing.this.network);
 
 		for (int i = 0; i < array.length; i++) {
