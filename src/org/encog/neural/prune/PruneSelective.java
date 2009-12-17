@@ -328,5 +328,9 @@ public class PruneSelective {
 		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
 
 	}
+	
+	public void stimulateWeakNeurons(Layer layer, int count, double percent) {
+		
+	}
 
 }
