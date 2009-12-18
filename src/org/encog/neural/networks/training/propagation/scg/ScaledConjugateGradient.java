@@ -6,7 +6,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
-import org.encog.neural.networks.training.propagation.PropagateErrors;
+import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.util.EncogArray;
 import org.encog.util.math.BoundNumbers;
 
@@ -84,12 +84,8 @@ public class ScaledConjugateGradient extends BasicTraining {
 		Layer output = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
 		int outCount = output.getNeuronCount();
 
-		PropagateErrors prop = new PropagateErrors(this.network);
-		prop.reset(weights);
-		for (NeuralDataPair pair : this.training) {
-			prop.calculate(pair.getInput(), pair.getIdeal());
-			count++;
-		}
+		CalculateGradient prop = new CalculateGradient(this.network);
+		prop.calculate(training, weights);
 
 		// normalize
 		double[] d = prop.getErrors();

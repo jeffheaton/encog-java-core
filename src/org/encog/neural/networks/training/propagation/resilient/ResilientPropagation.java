@@ -30,8 +30,8 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
-import org.encog.neural.networks.training.propagation.PropagateErrors;
 import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -216,7 +216,7 @@ public class ResilientPropagation extends BasicTraining {
 
 	@Override
 	public void iteration() {
-		PropagateErrors prop = new PropagateErrors(this.network);
+		CalculateGradient prop = new CalculateGradient(this.network);
 		
 		double[] weights = NetworkCODEC.networkToArray(network);		
 		prop.calculate(this.training,weights);

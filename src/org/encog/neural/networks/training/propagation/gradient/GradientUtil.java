@@ -1,6 +1,9 @@
-package org.encog.neural.networks.training.propagation;
+package org.encog.neural.networks.training.propagation.gradient;
 
-import org.encog.neural.activation.ActivationLinear;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -10,19 +13,15 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.ErrorCalculation;
 
-import java.util.HashMap;
-import java.util.Map;
-
-public class PropagateErrors {
-
+public class GradientUtil {
 	private BasicNetwork network;
 	private Map<Layer, Object> layerDeltas = new HashMap<Layer, Object>();
 	private double[] errors;
 	private double[] weights;
 	private NeuralOutputHolder holder;
 	private ErrorCalculation error = new ErrorCalculation();
-
-	public PropagateErrors(BasicNetwork network) {
+	
+	public GradientUtil(BasicNetwork network) {
 		this.network = network;
 		int size = network.getStructure().calculateSize();
 		this.errors = new double[size];
@@ -151,5 +150,6 @@ public class PropagateErrors {
 	public double getError() {
 		return this.error.calculateRMS();
 	}
+	
 
 }

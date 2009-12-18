@@ -32,8 +32,8 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
-import org.encog.neural.networks.training.propagation.PropagateErrors;
 import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.neural.networks.training.strategy.SmartLearningRate;
 import org.encog.neural.networks.training.strategy.SmartMomentum;
 import org.slf4j.Logger;
@@ -177,7 +177,7 @@ public class Backpropagation extends BasicTraining implements Momentum,
 
 	@Override
 	public void iteration() {
-		PropagateErrors prop = new PropagateErrors(this.network);
+		CalculateGradient prop = new CalculateGradient(this.network);
 		
 		double[] weights = NetworkCODEC.networkToArray(network);		
 		
