@@ -1,5 +1,6 @@
 package org.encog.neural.networks.training.propagation;
 
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -71,16 +72,23 @@ public class PropagateErrors {
 		
 		double deltas[] = getLayerDeltas(output);
 
-		for (int i = 0; i < deltas.length; i++) {
-			deltas[i] = actual.getData(i);
+		if ( output.getActivationFunction().hasDerivative() ) {
+			for (int i = 0; i < deltas.length; i++) {
+				deltas[i] = actual.getData(i);
+			}
+
+			// take the derivative of these outputs
+			output.getActivationFunction().derivativeFunction(deltas);
+
+			// multiply by the difference between the actual and idea
+			for (int i = 0; i < output.getNeuronCount(); i++) {
+				deltas[i] = deltas[i] * (ideal.getData(i) - actual.getData(i));
+			}
 		}
-
-		// take the derivative of these outputs
-		output.getActivationFunction().derivativeFunction(deltas);
-
-		// multiply by the difference between the actual and idea
-		for (int i = 0; i < output.getNeuronCount(); i++) {
-			deltas[i] = deltas[i] * (ideal.getData(i) - actual.getData(i));
+		else
+		{
+			for (int i = 0; i < output.getNeuronCount(); i++) 
+				deltas[i] = (ideal.getData(i) - actual.getData(i));
 		}
 
 		int index = 0;
@@ -122,7 +130,7 @@ public class PropagateErrors {
 		}
 
 		// get an activation function to use
-		synapse.getToLayer().getActivationFunction().derivativeFunction(temp);
+		synapse.getFromLayer().getActivationFunction().derivativeFunction(temp);
 
 		for (int i = 0; i < temp.length; i++) {
 			fromDeltas[i] *= temp[i];
