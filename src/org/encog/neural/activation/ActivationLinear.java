@@ -83,9 +83,9 @@ public class ActivationLinear extends BasicActivationFunction {
 	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
-		throw new NeuralNetworkError(
-				"Can't use the linear activation function "
-						+ "where a derivative is required.");
+		for(int i=0;i<d.length;i++) {
+			d[i] = 1.0;
+		}
 	}
 
 	/**
