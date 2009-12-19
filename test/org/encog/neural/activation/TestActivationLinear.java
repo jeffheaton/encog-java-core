@@ -13,7 +13,7 @@ public class TestActivationLinear extends TestCase {
 	public void testLinear() throws Throwable
 	{
 		ActivationLinear activation = new ActivationLinear();
-		Assert.assertFalse(activation.hasDerivative());
+		Assert.assertTrue(activation.hasDerivative());
 		
 		ActivationLinear clone = (ActivationLinear)activation.clone();
 		Assert.assertNotNull(clone);
