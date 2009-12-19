@@ -137,22 +137,6 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 		return new RadialBasisFunctionLayerPersistor();
 	}
 
-	/**
-	 * @return The activation function for this layer, in this case
-	 * it produces an error because RBF layers do not have an
-	 * activation function.
-	 */
-	@Override
-	public ActivationFunction getActivationFunction() {
-		final String str = 
-			"Should never call getActivationFunction on " 
-			+ "RadialBasisFunctionLayer, this layer has a compound " 
-			+ "activation function setup.";
-		if (RadialBasisFunctionLayer.LOGGER.isErrorEnabled()) {
-			RadialBasisFunctionLayer.LOGGER.error(str);
-		}
-		throw new NeuralNetworkError(str);
-	}
 
 	/**
 	 * @return An array of radial basis functions.

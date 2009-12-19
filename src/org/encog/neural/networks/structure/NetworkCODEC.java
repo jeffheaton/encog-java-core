@@ -65,22 +65,23 @@ public final class NetworkCODEC {
 			final BasicNetwork network) {
 
 		int index = 0;
-		
-		for(Layer layer: network.getStructure().getLayers() )
-		{
-			if( layer.hasThreshold() ) {
+
+		for (Layer layer : network.getStructure().getLayers()) {
+			if (layer.hasThreshold()) {
 				// process layer thresholds
-				for(int i=0;i<layer.getNeuronCount();i++)
-					layer.setThreshold(i,array[index++]);
+				for (int i = 0; i < layer.getNeuronCount(); i++)
+					layer.setThreshold(i, array[index++]);
 			}
-			
+
 			// process synapses
-			for(Synapse synapse: network.getStructure().getPreviousSynapses(layer))
-			{
-				// process each weight matrix
-				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
-					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-						synapse.getMatrix().set(y,x, array[index++] );
+			for (Synapse synapse : network.getStructure().getPreviousSynapses(
+					layer)) {
+				if (synapse.getMatrix() != null) {
+					// process each weight matrix
+					for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+						for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+							synapse.getMatrix().set(y, x, array[index++]);
+						}
 					}
 				}
 			}
@@ -142,29 +143,30 @@ public final class NetworkCODEC {
 
 		// allocate an array to hold
 		final double[] result = new double[size];
-		
+
 		int index = 0;
-		
-		for(Layer layer: network.getStructure().getLayers() )
-		{
+
+		for (Layer layer : network.getStructure().getLayers()) {
 			// process layer thresholds
-			if( layer.hasThreshold() ) {
-				for(int i=0;i<layer.getNeuronCount();i++)
+			if (layer.hasThreshold()) {
+				for (int i = 0; i < layer.getNeuronCount(); i++)
 					result[index++] = layer.getThreshold(i);
 			}
-			
+
 			// process synapses
-			for(Synapse synapse: network.getStructure().getPreviousSynapses(layer))
-			{
-				// process each weight matrix
-				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
-					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-						result[index++] = synapse.getMatrix().get(y,x);
+			for (Synapse synapse : network.getStructure().getPreviousSynapses(
+					layer)) {
+				if (synapse.getMatrix() != null) {
+					// process each weight matrix
+					for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+						for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+							result[index++] = synapse.getMatrix().get(y, x);
+						}
 					}
 				}
 			}
 		}
-		
+
 		return result;
 	}
 

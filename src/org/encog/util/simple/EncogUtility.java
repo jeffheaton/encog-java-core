@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
+import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
@@ -53,6 +54,12 @@ public class EncogUtility {
 		final Train train = new MultiPropagation(network, trainingSet );
 		trainConsole(train,network,trainingSet,minutes);
 	}
+
+	public static void trainToError(BasicNetwork network,
+			NeuralDataSet trainingSet, double error) {
+		final Train train = new MultiPropagation(network, trainingSet );
+		trainToError(train,network,trainingSet,error);
+	}
 	
 	public static void trainConsole(Train train, BasicNetwork network,
 			NeuralDataSet trainingSet, int minutes) {
@@ -76,6 +83,24 @@ public class EncogUtility {
 							+ " time left = " + Format.formatTimeSpan((int)remaining*60));
 			epoch++;
 		} while(remaining>0);	
+	}
+	
+	public static void trainToError(Train train, BasicNetwork network,
+			NeuralDataSet trainingSet, double error) {
+	
+		int epoch = 1;
+
+		System.out.println("Beginning training...");
+
+		do {
+			train.iteration();
+			
+			System.out
+					.println("Iteration #" + Format.formatInteger(epoch) 
+							+ " Error:" + Format.formatPercent(train.getError()) 
+							+ " Target Error: " + Format.formatPercent(error));
+			epoch++;
+		} while(train.getError()>error);	
 	}
 	
 	public static void trainDialog(BasicNetwork network,
@@ -104,5 +129,26 @@ public class EncogUtility {
 			epoch++;
 		} while(!dialog.shouldStop());	
 		dialog.dispose();
+	}
+	
+	private static String formatNeuralData(NeuralData data)
+	{
+		StringBuilder result = new StringBuilder();
+		for(int i=0;i<data.size();i++) {
+			if( i!=0 )
+				result.append(',');
+			result.append(Format.formatDouble(data.getData(i), 4));
+		}
+		return result.toString();
+	}
+	
+	public static void evaluate(BasicNetwork network, NeuralDataSet training) {
+		for (final NeuralDataPair pair : training) {
+			final NeuralData output = network.compute(pair.getInput());
+			System.out.println("Input=" + formatNeuralData(pair.getInput()) 
+					+", Actual=" + formatNeuralData(output) 
+					+", Ideal=" + formatNeuralData(pair.getIdeal()));
+					
+		}
 	}
 }

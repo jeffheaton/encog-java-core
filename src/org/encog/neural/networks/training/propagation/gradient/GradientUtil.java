@@ -101,7 +101,8 @@ public class GradientUtil {
 			}
 			
 			for(Synapse synapse: this.network.getStructure().getPreviousSynapses(layer)) {
-				index = calculate(synapse,index);
+				if( synapse.getMatrix()!=null )
+					index = calculate(synapse,index);
 			}			
 		}		
 	}

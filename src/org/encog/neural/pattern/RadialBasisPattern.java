@@ -44,6 +44,8 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class RadialBasisPattern implements NeuralNetworkPattern {
+	public static final String RBF_LAYER = "RBF";
+
 	/**
 	 * The logging object.
 	 */
@@ -104,7 +106,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 
 		final Layer input = new BasicLayer(new ActivationLinear(), false,
 				this.inputNeurons);
-		final Layer output = new BasicLayer(this.outputNeurons);
+		final Layer output = new BasicLayer(new ActivationLinear(), true, this.outputNeurons);
 		final BasicNetwork network = new BasicNetwork();
 		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(
 				this.hiddenNeurons);
@@ -113,6 +115,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 		network.addLayer(output);
 		network.getStructure().finalizeStructure();
 		network.reset();
+		network.tagLayer(RBF_LAYER, rbfLayer);
 		rbfLayer.randomizeGaussianCentersAndWidths(0, 1);
 		int y = PatternConst.START_Y;
 		input.setX(PatternConst.START_X);
