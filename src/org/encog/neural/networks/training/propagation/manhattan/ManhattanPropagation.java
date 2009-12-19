@@ -136,12 +136,10 @@ public class ManhattanPropagation extends BasicTraining implements LearningRate 
 		this.learningRate = rate;
 	}
 
-	@Override
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 
-	@Override
 	public void iteration() {
 		CalculateGradient prop = new CalculateGradient(this.network);
 		

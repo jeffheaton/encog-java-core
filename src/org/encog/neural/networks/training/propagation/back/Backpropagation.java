@@ -170,12 +170,10 @@ public class Backpropagation extends BasicTraining implements Momentum,
 		this.momentum = m;
 	}
 
-	@Override
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 
-	@Override
 	public void iteration() {
 		CalculateGradient prop = new CalculateGradient(this.network);
 		

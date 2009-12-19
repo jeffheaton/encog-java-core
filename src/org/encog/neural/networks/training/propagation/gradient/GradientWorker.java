@@ -23,7 +23,6 @@ public class GradientWorker implements Runnable {
 		this.low = low;
 	}
 	
-	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		

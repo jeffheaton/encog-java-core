@@ -13,7 +13,6 @@ public class SynapseComparator implements Comparator<Synapse> {
 		this.layerCompare = new LayerComparator(structure);
 	}
 
-	@Override
 	public int compare(Synapse synapse1, Synapse synapse2) {
 		
 		if (synapse1 == synapse2)

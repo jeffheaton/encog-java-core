@@ -214,7 +214,6 @@ public class ResilientPropagation extends BasicTraining {
 		return this.network;
 	}
 
-	@Override
 	public void iteration() {
 		CalculateGradient prop = new CalculateGradient(this.network);
 		
