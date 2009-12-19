@@ -89,9 +89,9 @@ public class ActivationLinear extends BasicActivationFunction {
 	}
 
 	/**
-	 * @return Return false, linear has no derivative.
+	 * @return Return true, linear has a 1 derivative.
 	 */
 	public boolean hasDerivative() {
-		return false;
+		return true;
 	}
 }
