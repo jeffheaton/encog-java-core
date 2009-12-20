@@ -30,15 +30,7 @@ public class TestActivationLinear extends TestCase {
 		ActivationLinearPersistor p = (ActivationLinearPersistor)activation.createPersistor();
 		
 		// test derivative, should throw an error
-		try
-		{
-			activation.derivativeFunction(input);
-			Assert.assertTrue(false);// mark an error
-		}
-		catch(EncogError e)
-		{
-			// good, this should happen
-		}
+		activation.derivativeFunction(input);
 		
 		// test name and description
 		// names and descriptions are not stored for these
