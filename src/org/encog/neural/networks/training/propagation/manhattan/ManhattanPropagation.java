@@ -53,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class ManhattanPropagation extends BasicTraining implements LearningRate {
+public class ManhattanPropagation extends Propagation implements LearningRate {
 
 	/**
 	 * The default tolerance to determine of a number is close to zero.
@@ -141,7 +141,7 @@ public class ManhattanPropagation extends BasicTraining implements LearningRate 
 	}
 
 	public void iteration() {
-		CalculateGradient prop = new CalculateGradient(this.network);
+		CalculateGradient prop = new CalculateGradient(this.network, this.getNumThreads());
 		
 		double[] weights = NetworkCODEC.networkToArray(network);		
 		prop.calculate(this.training,weights);

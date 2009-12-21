@@ -20,6 +20,7 @@ public class GradientUtil {
 	private double[] weights;
 	private NeuralOutputHolder holder;
 	private ErrorCalculation error = new ErrorCalculation();
+	private int count;
 	
 	public GradientUtil(BasicNetwork network) {
 		this.network = network;
@@ -62,7 +63,7 @@ public class GradientUtil {
 
 	public void calculate(NeuralData input, NeuralData ideal) {
 		clearDeltas();
-		
+		this.count++;
 		this.holder = new NeuralOutputHolder();
 		Layer output = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
 		NeuralData actual = this.network.compute(input, this.holder);
@@ -143,6 +144,7 @@ public class GradientUtil {
 		this.error.reset();
 		this.weights = weights;
 		this.layerDeltas.clear();
+		this.count = 0;
 		
 		for (int i = 0; i < this.errors.length; i++)
 			this.errors[i] = 0;
@@ -150,6 +152,10 @@ public class GradientUtil {
 
 	public double getError() {
 		return this.error.calculateRMS();
+	}
+	
+	public int getCount() {
+		return this.count;
 	}
 	
 

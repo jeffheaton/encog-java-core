@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
  * different ways. In general, it is suggested that you use the resilient
  * propagation technique for most Encog training tasks over back propagation.
  */
-public class Backpropagation extends BasicTraining implements Momentum,
+public class Backpropagation extends Propagation implements Momentum,
 		LearningRate {
 
 	/**
@@ -175,7 +175,7 @@ public class Backpropagation extends BasicTraining implements Momentum,
 	}
 
 	public void iteration() {
-		CalculateGradient prop = new CalculateGradient(this.network);
+		CalculateGradient prop = new CalculateGradient(this.network, this.getNumThreads());
 		
 		double[] weights = NetworkCODEC.networkToArray(network);		
 		

@@ -11,7 +11,8 @@ import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.data.csv.CSVNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;
-import org.encog.neural.networks.training.propagation.multi.MultiPropagation;
+import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradient;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.util.Format;
 
@@ -51,13 +52,15 @@ public class EncogUtility {
 	}
 	public static void trainConsole(BasicNetwork network,
 			NeuralDataSet trainingSet, int minutes) {
-		final Train train = new MultiPropagation(network, trainingSet );
+		final Propagation train = new ScaledConjugateGradient(network, trainingSet );
+		train.setNumThreads(0);
 		trainConsole(train,network,trainingSet,minutes);
 	}
 
 	public static void trainToError(BasicNetwork network,
 			NeuralDataSet trainingSet, double error) {
-		final Train train = new MultiPropagation(network, trainingSet );
+		final Propagation train = new ScaledConjugateGradient(network, trainingSet );
+		train.setNumThreads(0);
 		trainToError(train,network,trainingSet,error);
 	}
 	
@@ -105,7 +108,8 @@ public class EncogUtility {
 	
 	public static void trainDialog(BasicNetwork network,
 			NeuralDataSet trainingSet) {
-		final Train train = new MultiPropagation(network, trainingSet );
+		final Propagation train = new ScaledConjugateGradient(network, trainingSet );
+		train.setNumThreads(0);
 		trainDialog(train, network,trainingSet);
 	}
 	

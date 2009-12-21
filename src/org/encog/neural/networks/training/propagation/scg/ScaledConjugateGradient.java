@@ -6,11 +6,12 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.util.EncogArray;
 import org.encog.util.math.BoundNumbers;
 
-public class ScaledConjugateGradient extends BasicTraining {
+public class ScaledConjugateGradient extends Propagation {
 
 	protected static final double FIRST_SIGMA = 1.E-4D;
 	protected static final double FIRST_LAMBDA = 1.E-6D;
@@ -79,18 +80,17 @@ public class ScaledConjugateGradient extends BasicTraining {
 	}
 
 	private double[] calcGradients(double[] weights) {
-		int count = 0;
 
 		Layer output = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
 		int outCount = output.getNeuronCount();
 
-		CalculateGradient prop = new CalculateGradient(this.network);
+		CalculateGradient prop = new CalculateGradient(this.network, this.getNumThreads());
 		prop.calculate(training, weights);
 
 		// normalize
 		double[] d = prop.getErrors();
 
-		double factor = -2D / count / outCount;
+		double factor = -2D / prop.getCount() / outCount;
 
 		for (int i = 0; i < d.length; i++)
 			d[i] *= factor;

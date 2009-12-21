@@ -71,7 +71,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class ResilientPropagation extends BasicTraining {
+public class ResilientPropagation extends Propagation {
 
 	/**
 	 * The default zero tolerance.
@@ -215,7 +215,7 @@ public class ResilientPropagation extends BasicTraining {
 	}
 
 	public void iteration() {
-		CalculateGradient prop = new CalculateGradient(this.network);
+		CalculateGradient prop = new CalculateGradient(this.network, this.getNumThreads());
 		
 		double[] weights = NetworkCODEC.networkToArray(network);		
 		prop.calculate(this.training,weights);
