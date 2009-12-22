@@ -113,7 +113,7 @@ public class ScaledConjugateGradient extends Propagation {
 		return prop.getGradients();
 	}
 
-	public void performIteration(CalculateGradient prop, double[] weights) {
+	public void iteration() {
 				
 		int numWeights = weights.length;
 		// Storage space for previous iteration values.
@@ -238,5 +238,14 @@ public class ScaledConjugateGradient extends Propagation {
 		++k;
 
 		NetworkCODEC.arrayToNetwork(weights, getNetwork());		
+	}
+
+	/**
+	 * Not used.
+	 * @param prop Not used.
+	 * @param weights Not used.
+	 */
+	@Override
+	public void performIteration(CalculateGradient prop, double[] weights) {		
 	}
 }

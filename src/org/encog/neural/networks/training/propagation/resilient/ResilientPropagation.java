@@ -211,7 +211,7 @@ public class ResilientPropagation extends Propagation {
 
 	public void performIteration(CalculateGradient prop, double[] weights) {		
 	
-		double[] gradients = prop.getGradients();
+		this.gradients = prop.getGradients();
 		
 		for(int i=0;i<this.gradients.length;i++) {
 			weights[i]+=updateWeight(gradients,i);
