@@ -30,7 +30,9 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,6 +108,9 @@ public class ResilientPropagation extends Propagation {
 	 * The maximum amount a delta can reach.
 	 */
 	public static final double DEFAULT_MAX_STEP = 50;
+	
+	public static final String LAST_GRADIENTS = "LAST_GRADIENTS";
+	public static final String UPDATE_VALUES = "UPDATE_VALUES";
 
 	/**
 	 * The zero tolerance.
@@ -270,5 +275,24 @@ public class ResilientPropagation extends Propagation {
 
 		// apply the weight change, if any
 		return weightChange;
+	}
+	
+	public TrainingContinuation pause()
+	{
+		TrainingContinuation result = new TrainingContinuation();
+		result.set(LAST_GRADIENTS, this.lastGradient);
+		result.set(UPDATE_VALUES, this.updateValues);
+		return result;
+	}
+	
+	public void resume(TrainingContinuation state)
+	{
+		this.lastGradient = (double[])state.get(LAST_GRADIENTS);
+		this.updateValues = (double[])state.get(UPDATE_VALUES);
+	}
+	
+	public boolean canContinue()
+	{
+		return false;
 	}
 }

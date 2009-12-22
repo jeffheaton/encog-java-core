@@ -32,6 +32,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.util.ErrorCalculation;
 import org.slf4j.Logger;
@@ -93,7 +94,20 @@ public abstract class Propagation extends BasicTraining {
 		return training;
 	}
 	
+	public TrainingContinuation pause()
+	{
+		throw new TrainingError("This training type does not support pause.");
+	}
 	
+	public void resume(TrainingContinuation state)
+	{
+		throw new TrainingError("This training type does not support resume.");
+	}
+	
+	public boolean canContinue()
+	{
+		return false;
+	}
 	
 
 }

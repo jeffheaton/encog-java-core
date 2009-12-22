@@ -130,6 +130,8 @@ public class EncogPersistedCollection {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(EncogPersistedCollection.class);
 
+	public static final String TYPE_TRAINING_CONTINUATION = "TrainingContinuation";
+
 	/**
 	 * Throw and log an error.
 	 * 
