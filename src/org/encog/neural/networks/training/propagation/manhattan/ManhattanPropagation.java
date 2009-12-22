@@ -68,10 +68,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	/**
 	 * 
 	 */
-	private double learningRate;
-	
-	private BasicNetwork network;
-	private NeuralDataSet training;
+	private double learningRate;	
 	private double[] gradients;
 
 	/**
@@ -104,11 +101,9 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	public ManhattanPropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
 			final double zeroTolerance) {
-
+		super(network,training);
 		this.zeroTolerance = zeroTolerance;
 		this.learningRate = learnRate;
-		this.network = network;
-		this.training = training;
 		this.gradients = new double[network.getStructure().calculateSize()];
 	}
 
@@ -136,22 +131,19 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 		this.learningRate = rate;
 	}
 
-	public BasicNetwork getNetwork() {
-		return this.network;
-	}
 
-	public void iteration() {
-		CalculateGradient prop = new CalculateGradient(this.network,this.training, this.getNumThreads());
+	public void performIteration() {
+		CalculateGradient prop = new CalculateGradient(getNetwork(),getTraining(), this.getNumThreads());
 		
-		double[] weights = NetworkCODEC.networkToArray(network);		
-		prop.calculate(this.training,weights);
+		double[] weights = NetworkCODEC.networkToArray(getNetwork());		
+		prop.calculate(weights);
 		
 		this.gradients = prop.getErrors();
 		
 		for(int i=0;i<this.gradients.length;i++) {
 			weights[i]+=updateWeight(i);
 		}
-		NetworkCODEC.arrayToNetwork(weights, this.network);
+		NetworkCODEC.arrayToNetwork(weights, getNetwork());
 		
 		this.setError(prop.getError());
 	}

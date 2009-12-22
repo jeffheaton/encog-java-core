@@ -79,8 +79,6 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	private double learningRate;
 	
-	private BasicNetwork network;
-	private NeuralDataSet training;
 	private double[] lastDelta;
 
 	/**
@@ -120,11 +118,9 @@ public class Backpropagation extends Propagation implements Momentum,
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
 			final double momentum) {
-		
+		super(network,training);
 		this.momentum = momentum;
 		this.learningRate = learnRate;
-		this.network = network;
-		this.training = training;
 		this.lastDelta = new double[network.getStructure().calculateSize()];
 	}
 
@@ -170,17 +166,15 @@ public class Backpropagation extends Propagation implements Momentum,
 		this.momentum = m;
 	}
 
-	public BasicNetwork getNetwork() {
-		return this.network;
-	}
 
-	public void iteration() {
-		CalculateGradient prop = new CalculateGradient(this.network, this.training, this.getNumThreads());
+	public void performIteration() {
+		CalculateGradient prop = new CalculateGradient(
+				getNetwork(), this.getTraining(), this.getNumThreads());
 		
-		double[] weights = NetworkCODEC.networkToArray(network);		
+		double[] weights = NetworkCODEC.networkToArray(getNetwork());		
 		
 		
-		prop.calculate(this.training,weights);
+		prop.calculate(weights);
 		double[] errors = prop.getErrors();
 		
 		for(int i=0;i<errors.length;i++) {
@@ -188,7 +182,7 @@ public class Backpropagation extends Propagation implements Momentum,
 			lastDelta[i] = (errors[i]*this.learningRate)+(last*this.momentum);
 			weights[i]+=lastDelta[i];
 		}
-		NetworkCODEC.arrayToNetwork(weights, this.network);
+		NetworkCODEC.arrayToNetwork(weights, getNetwork());
 		
 		this.setError(prop.getError());
 		

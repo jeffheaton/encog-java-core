@@ -44,8 +44,20 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public abstract class Propagation extends BasicTraining {
-	
+
 	private int numThreads = 0;
+	private final BasicNetwork network;
+	private final NeuralDataSet training;
+	
+	
+	
+	public Propagation(BasicNetwork network, NeuralDataSet training) {
+		super();
+		this.network = network;
+		this.training = training;
+	}
+
+	public abstract void performIteration();
 
 	public int getNumThreads() {
 		return numThreads;
@@ -54,6 +66,22 @@ public abstract class Propagation extends BasicTraining {
 	public void setNumThreads(int numThreads) {
 		this.numThreads = numThreads;
 	}
+	
+	public void iteration()
+	{
+		preIteration();
+		performIteration();
+		postIteration();
+	}
+
+	public BasicNetwork getNetwork() {
+		return network;
+	}
+
+	public NeuralDataSet getTraining() {
+		return training;
+	}
+	
 	
 	
 

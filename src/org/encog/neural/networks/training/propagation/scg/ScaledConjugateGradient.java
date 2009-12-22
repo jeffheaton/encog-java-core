@@ -39,8 +39,6 @@ public class ScaledConjugateGradient extends Propagation {
 	protected static final double FIRST_SIGMA = 1.E-4D;
 	protected static final double FIRST_LAMBDA = 1.E-6D;
 
-	private BasicNetwork network;
-	private NeuralDataSet training;
 	private boolean restart;
 	private double lambda2;
 	private double lambda;
@@ -65,8 +63,7 @@ public class ScaledConjugateGradient extends Propagation {
 	private double[] oldGradient;
 
 	public ScaledConjugateGradient(BasicNetwork network, NeuralDataSet training) {
-		this.network = network;
-		this.training = training;
+		super(network,training);
 
 		this.success = true;
 		this.delta = 0;
@@ -76,7 +73,7 @@ public class ScaledConjugateGradient extends Propagation {
 		this.magP = 0;
 		this.restart = false;
 
-		this.weights = NetworkCODEC.networkToArray(this.network);
+		this.weights = NetworkCODEC.networkToArray(getNetwork());
 		int numWeights = weights.length;
 
 		this.gradient = new double[numWeights];
@@ -96,17 +93,13 @@ public class ScaledConjugateGradient extends Propagation {
 
 	}
 
-	public BasicNetwork getNetwork() {
-		return this.network;
-	}
-
 	private double[] calcGradients(double[] weights) {
 
-		Layer output = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
+		Layer output = getNetwork().getLayer(BasicNetwork.TAG_OUTPUT);
 		int outCount = output.getNeuronCount();
 
-		CalculateGradient prop = new CalculateGradient(this.network, this.training, this.getNumThreads());
-		prop.calculate(training, weights);
+		CalculateGradient prop = new CalculateGradient(getNetwork(), getTraining(),getNumThreads());
+		prop.calculate(weights);
 
 		// normalize
 		double[] d = prop.getErrors();
@@ -120,7 +113,8 @@ public class ScaledConjugateGradient extends Propagation {
 		return prop.getErrors();
 	}
 
-	public void iteration() {
+	public void performIteration() {
+				
 		int numWeights = weights.length;
 		// Storage space for previous iteration values.
 
@@ -151,7 +145,7 @@ public class ScaledConjugateGradient extends Propagation {
 			for (int i = 0; i < numWeights; ++i)
 				weights[i] += sigma * p[i];
 
-			NetworkCODEC.arrayToNetwork(weights, this.network);
+			NetworkCODEC.arrayToNetwork(weights, getNetwork());
 
 			// And compute the new gradient.
 			gradient = calcGradients(weights);
@@ -186,7 +180,7 @@ public class ScaledConjugateGradient extends Propagation {
 		for (int i = 0; i < numWeights; ++i)
 			weights[i] = oldWeights[i] + alpha * p[i];
 
-		NetworkCODEC.arrayToNetwork(weights, this.network);
+		NetworkCODEC.arrayToNetwork(weights, getNetwork());
 
 		gradient = calcGradients(weights);
 
@@ -243,6 +237,6 @@ public class ScaledConjugateGradient extends Propagation {
 
 		++k;
 
-		NetworkCODEC.arrayToNetwork(weights, this.network);
+		NetworkCODEC.arrayToNetwork(weights, getNetwork());		
 	}
 }

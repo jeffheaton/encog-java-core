@@ -102,9 +102,8 @@ public class CalculateGradient {
 		}
 	}
 	
-	public void calculate(NeuralDataSet training, double[] weights)
+	public void calculate(double[] weights)
 	{
-		this.training = training;
 		this.weights = weights;
 		this.errors = new double[this.weights.length];
 		

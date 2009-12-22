@@ -122,8 +122,7 @@ public class ResilientPropagation extends Propagation {
 	 */
 	private final double maxStep;
 	
-	private BasicNetwork network;
-	private NeuralDataSet training;
+
 	private double[] updateValues;
 	private double[] lastGradient;
 	private double[] gradients;
@@ -174,11 +173,11 @@ public class ResilientPropagation extends Propagation {
 			final NeuralDataSet training, final double zeroTolerance,
 			final double initialUpdate, final double maxStep) {
 
+		super(network,training);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
 		this.zeroTolerance = zeroTolerance;
-		this.network = network;
-		this.training = training;
+
 		
 		this.updateValues = new double[network.getStructure().calculateSize()];
 		this.lastGradient = new double[network.getStructure().calculateSize()];
@@ -210,25 +209,19 @@ public class ResilientPropagation extends Propagation {
 		return this.zeroTolerance;
 	}
 
-	public BasicNetwork getNetwork() {
-		return this.network;
-	}
-
-	public void iteration() {
-		CalculateGradient prop = new CalculateGradient(this.network, this.training, this.getNumThreads());
+	public void performIteration() {
 		
-		double[] weights = NetworkCODEC.networkToArray(network);		
-		prop.calculate(this.training,weights);
-		
+		CalculateGradient prop = new CalculateGradient(getNetwork(), getTraining(), this.getNumThreads());		
+		double[] weights = NetworkCODEC.networkToArray(getNetwork());		
+		prop.calculate(weights);
 		this.gradients = prop.getErrors();
 		
 		for(int i=0;i<this.gradients.length;i++) {
 			weights[i]+=updateWeight(i);
 		}
-		NetworkCODEC.arrayToNetwork(weights, this.network);
+		NetworkCODEC.arrayToNetwork(weights, getNetwork());
 		
 		this.setError(prop.getError());
-		
 	}
 	
 	/**
