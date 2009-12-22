@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class Propagation extends BasicTraining {
 	
-	private int numThreads = 1;
+	private int numThreads = 0;
 
 	public int getNumThreads() {
 		return numThreads;
