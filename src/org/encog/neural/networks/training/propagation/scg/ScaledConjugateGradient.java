@@ -105,7 +105,7 @@ public class ScaledConjugateGradient extends Propagation {
 		Layer output = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
 		int outCount = output.getNeuronCount();
 
-		CalculateGradient prop = new CalculateGradient(this.network, this.getNumThreads());
+		CalculateGradient prop = new CalculateGradient(this.network, this.training, this.getNumThreads());
 		prop.calculate(training, weights);
 
 		// normalize

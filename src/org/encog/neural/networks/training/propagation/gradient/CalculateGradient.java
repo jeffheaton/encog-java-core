@@ -65,17 +65,20 @@ public class CalculateGradient {
 	private double error;
 	private int count;
 	
-	public CalculateGradient(BasicNetwork network) {
-		this(network,1);
+	public CalculateGradient(BasicNetwork network, final NeuralDataSet training) {
+		this(network,training,1);
 	}
 	
-	public CalculateGradient(final BasicNetwork network, final int threads) {				
+	public CalculateGradient(final BasicNetwork network, final NeuralDataSet training, final int threads) {				
+		this.training = training;
+		this.network = network;
 		
-		if( threads!=0 ) {
+		if( threads!=0 || !(this.training instanceof Indexable) ) {
 			this.network = network;	
 			this.threadCount = threads;			
 		}
 		else {
+			this.indexed = (Indexable)this.training;
 			int num = Runtime.getRuntime().availableProcessors();
 
 			// if there is more than one processor, use processor count +1
@@ -89,7 +92,7 @@ public class CalculateGradient {
 			// This method will likely be further "tuned" in future versions.
 
 			final long recordCount = this.indexed.getRecordCount();
-			final long workPerThread = recordCount / threads;
+			final long workPerThread = recordCount / num;
 
 			if (workPerThread < 100) {
 				num = Math.max(1, (int) (recordCount / 100));
