@@ -102,7 +102,7 @@ public class ScaledConjugateGradient extends Propagation {
 		prop.calculate(weights);
 
 		// normalize
-		double[] d = prop.getErrors();
+		double[] d = prop.getGradients();
 
 		double factor = -2D / prop.getCount() / outCount;
 
@@ -110,10 +110,10 @@ public class ScaledConjugateGradient extends Propagation {
 			d[i] *= factor;
 
 		this.setError(prop.getError());
-		return prop.getErrors();
+		return prop.getGradients();
 	}
 
-	public void performIteration() {
+	public void performIteration(CalculateGradient prop, double[] weights) {
 				
 		int numWeights = weights.length;
 		// Storage space for previous iteration values.

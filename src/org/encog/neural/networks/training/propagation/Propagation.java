@@ -30,7 +30,9 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.util.ErrorCalculation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +59,7 @@ public abstract class Propagation extends BasicTraining {
 		this.training = training;
 	}
 
-	public abstract void performIteration();
+	public abstract void performIteration(CalculateGradient prop,double[] weights);
 
 	public int getNumThreads() {
 		return numThreads;
@@ -70,7 +72,16 @@ public abstract class Propagation extends BasicTraining {
 	public void iteration()
 	{
 		preIteration();
-		performIteration();
+		
+		CalculateGradient prop = new CalculateGradient(getNetwork(), getTraining(), this.getNumThreads());		
+		double[] weights = NetworkCODEC.networkToArray(getNetwork());		
+		prop.calculate(weights);
+		
+		performIteration(prop,weights);
+		
+		NetworkCODEC.arrayToNetwork(weights, getNetwork());		
+		this.setError(prop.getError());
+		
 		postIteration();
 	}
 

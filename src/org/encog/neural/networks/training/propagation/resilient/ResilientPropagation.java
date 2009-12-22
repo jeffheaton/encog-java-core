@@ -209,19 +209,13 @@ public class ResilientPropagation extends Propagation {
 		return this.zeroTolerance;
 	}
 
-	public void performIteration() {
-		
-		CalculateGradient prop = new CalculateGradient(getNetwork(), getTraining(), this.getNumThreads());		
-		double[] weights = NetworkCODEC.networkToArray(getNetwork());		
-		prop.calculate(weights);
-		this.gradients = prop.getErrors();
+	public void performIteration(CalculateGradient prop, double[] weights) {		
+	
+		double[] gradients = prop.getGradients();
 		
 		for(int i=0;i<this.gradients.length;i++) {
-			weights[i]+=updateWeight(i);
+			weights[i]+=updateWeight(gradients,i);
 		}
-		NetworkCODEC.arrayToNetwork(weights, getNetwork());
-		
-		this.setError(prop.getError());
 	}
 	
 	/**
@@ -241,8 +235,8 @@ public class ResilientPropagation extends Propagation {
 		}
 	}
 	
-	private double updateWeight(int index)
-	{
+	private double updateWeight(double[] gradients, int index)
+	{		
 		// multiply the current and previous gradient, and take the
 		// sign. We want to see if the gradient has changed its sign.
 		final int change = sign(this.gradients[index] * this.lastGradient[index]);

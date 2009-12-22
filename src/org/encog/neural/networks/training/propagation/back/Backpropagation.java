@@ -167,19 +167,13 @@ public class Backpropagation extends Propagation implements Momentum,
 	}
 
 
-	public void performIteration() {
-		CalculateGradient prop = new CalculateGradient(
-				getNetwork(), this.getTraining(), this.getNumThreads());
+	public void performIteration(CalculateGradient prop, double[] weights) {
+
+		double[] gradients = prop.getGradients();
 		
-		double[] weights = NetworkCODEC.networkToArray(getNetwork());		
-		
-		
-		prop.calculate(weights);
-		double[] errors = prop.getErrors();
-		
-		for(int i=0;i<errors.length;i++) {
+		for(int i=0;i<gradients.length;i++) {
 			double last = lastDelta[i]; 
-			lastDelta[i] = (errors[i]*this.learningRate)+(last*this.momentum);
+			lastDelta[i] = (gradients[i]*this.learningRate)+(last*this.momentum);
 			weights[i]+=lastDelta[i];
 		}
 		NetworkCODEC.arrayToNetwork(weights, getNetwork());

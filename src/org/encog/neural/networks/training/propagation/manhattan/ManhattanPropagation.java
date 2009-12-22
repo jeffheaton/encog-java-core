@@ -132,20 +132,14 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	}
 
 
-	public void performIteration() {
-		CalculateGradient prop = new CalculateGradient(getNetwork(),getTraining(), this.getNumThreads());
+	public void performIteration(CalculateGradient prop, double[] weights) {
 		
-		double[] weights = NetworkCODEC.networkToArray(getNetwork());		
-		prop.calculate(weights);
-		
-		this.gradients = prop.getErrors();
+		this.gradients = prop.getGradients();
 		
 		for(int i=0;i<this.gradients.length;i++) {
 			weights[i]+=updateWeight(i);
 		}
-		NetworkCODEC.arrayToNetwork(weights, getNetwork());
-		
-		this.setError(prop.getError());
+
 	}
 	
 	private double updateWeight(int index) {

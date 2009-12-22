@@ -61,7 +61,7 @@ public class CalculateGradient {
 	private BasicNetwork network;
 	
 	private double[] weights;	
-	private double[] errors;
+	private double[] gradients;
 	private double error;
 	private int count;
 	
@@ -105,7 +105,7 @@ public class CalculateGradient {
 	public void calculate(double[] weights)
 	{
 		this.weights = weights;
-		this.errors = new double[this.weights.length];
+		this.gradients = new double[this.weights.length];
 		
 		if( this.threadCount==1 ) {
 			createWorkersSingleThreaded(training);
@@ -186,10 +186,10 @@ public class CalculateGradient {
 	
 	private void aggregate()
 	{
-		for(int i=0;i<this.errors.length;i++) {
-			this.errors[i] = 0;
+		for(int i=0;i<this.gradients.length;i++) {
+			this.gradients[i] = 0;
 			for(int j=0;j<this.threadCount;j++) {
-				this.errors[i]+=this.workers[j].getErrors()[i];
+				this.gradients[i]+=this.workers[j].getErrors()[i];
 			}
 		}
 		
@@ -208,8 +208,8 @@ public class CalculateGradient {
 	}
 	
 
-	public double[] getErrors() {
-		return this.errors;
+	public double[] getGradients() {
+		return this.gradients;
 	}
 
 	public double getError() {
