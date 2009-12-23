@@ -25,13 +25,19 @@
  */
 package org.encog.neural.networks.training.propagation.gradient;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.ContextLayer;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.TrainingError;
+import org.encog.util.EncogArray;
 
 public class CalculateGradient {
 	
@@ -48,6 +54,8 @@ public class CalculateGradient {
 	private Indexable indexed;
 	
 	private NeuralDataSet training;
+	
+	private boolean hasContext;
 	
 	
 
@@ -100,16 +108,12 @@ public class CalculateGradient {
 			
 			this.threadCount = num;
 		}
-	}
-	
-	public void calculate(double[] weights)
-	{
-		this.weights = weights;
-		this.gradients = new double[this.weights.length];
+		
+		// setup workers
+		this.gradients = new double[network.getStructure().calculateSize()];
 		
 		if( this.threadCount==1 ) {
 			createWorkersSingleThreaded(training);
-			runWorkersSingleThreaded();
 		}
 		else {
 			if( !(training instanceof Indexable) ) {
@@ -117,11 +121,28 @@ public class CalculateGradient {
 			}
 			
 			createWorkersMultiThreaded((Indexable)training);
+		}
+		
+		this.hasContext = this.network.getStructure().containsLayerType(ContextLayer.class);
+	}
+	
+	public void calculate(double[] weights)
+	{
+		this.weights = weights;
+		
+		if( this.threadCount==1 ) {
+			runWorkersSingleThreaded();
+		}
+		else {
 			runWorkersMultiThreaded();
 		}
 				
 		aggregate();
 		determineError();
+		
+		if( this.hasContext ) {
+			linkContext();
+		}
 		
 	}
 	
@@ -205,6 +226,46 @@ public class CalculateGradient {
 			totalError+=this.workers[i].getError();
 		}
 		this.error = (totalError/this.threadCount);
+	}
+	
+	private void linkContext()
+	{
+		Map<ContextLayer,Object> workload = new HashMap<ContextLayer,Object>();
+		
+		// first loop through and build a map of where every context should be copied to
+		for(int indexThisWorker=0;indexThisWorker<this.workers.length;indexThisWorker++) {
+			GradientWorker thisWorker = this.workers[indexThisWorker];
+			int indexNextWorker = indexThisWorker+1;
+			if(indexNextWorker==this.workers.length)
+				indexNextWorker = 0;
+			GradientWorker nextWorker = this.workers[indexNextWorker];
+			
+			Object[] thisLayers = thisWorker.getNetwork().getStructure().getLayers().toArray();
+			Object[] nextLayers = nextWorker.getNetwork().getStructure().getLayers().toArray();
+			
+			for(int i=0;i<thisLayers.length;i++) {
+				Layer thisLayer = (Layer)thisLayers[i];
+				Layer nextLayer = (Layer)nextLayers[i];
+				
+				if( thisLayer instanceof ContextLayer )
+				{
+					ContextLayer thisContext = (ContextLayer)thisLayer;
+					ContextLayer nextContext = (ContextLayer)nextLayer;
+					
+					double[] source = thisContext.getContext().getData();
+					double[] target = new double[source.length];
+					EncogArray.arrayCopy(source, target);
+					workload.put(nextContext, target);
+				}
+			}
+		}
+		
+		// now actually copy it
+		for(ContextLayer layer: workload.keySet()) {
+			double[] source = (double[]) workload.get(layer);
+			double[] target = layer.getContext().getData();
+			EncogArray.arrayCopy(source, target);
+		}
 	}
 	
 

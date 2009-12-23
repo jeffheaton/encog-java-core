@@ -18,7 +18,6 @@ public class TrainingContinuationPersistor implements Persistor {
 	
 	private TrainingContinuation current;
 	
-	@Override
 	public EncogPersistedObject load(ReadXML in) {
 		this.current = new TrainingContinuation();
 		
@@ -73,7 +72,6 @@ public class TrainingContinuationPersistor implements Persistor {
 		}
 	}
 
-	@Override
 	public void save(EncogPersistedObject obj, WriteXML out) {
 
 		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_TRAINING_CONTINUATION,

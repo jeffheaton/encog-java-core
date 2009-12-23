@@ -17,28 +17,23 @@ public class TrainingContinuation implements EncogPersistedObject {
 	private String description;
 	private Map<String,Object> contents = new HashMap<String,Object>();
 	
-	@Override
 	public Persistor createPersistor() {
 		return new TrainingContinuationPersistor();
 	}
 
-	@Override
 	public String getDescription() {
 		return this.description;
 	}
 
-	@Override
 	public String getName() {
 		return this.name;
 	}
 
-	@Override
 	public void setDescription(String description) {
 		this.description = description;
 		
 	}
 
-	@Override
 	public void setName(String name) {
 		this.name = name;		
 	}

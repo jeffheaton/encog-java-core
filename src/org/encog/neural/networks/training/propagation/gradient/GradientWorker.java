@@ -89,4 +89,10 @@ public class GradientWorker implements Runnable {
 	{
 		return this.gradient.getError();
 	}
+
+	public BasicNetwork getNetwork() {
+		return network;
+	}
+	
+	
 }
