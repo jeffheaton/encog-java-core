@@ -293,6 +293,6 @@ public class ResilientPropagation extends Propagation {
 	
 	public boolean canContinue()
 	{
-		return false;
+		return true;
 	}
 }
