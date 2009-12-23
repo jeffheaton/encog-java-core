@@ -7,7 +7,7 @@ import junit.framework.Assert;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.CreateNetwork;
+import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
 import org.junit.Test;
 
@@ -35,9 +35,9 @@ public class TestSort {
 		BasicNeuralDataSet data3 = 
 			new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
-		BasicNetwork network1 = CreateNetwork.createXORNetworkUntrained();
-		BasicNetwork network2 = CreateNetwork.createXORNetworkUntrained();	
-		BasicNetwork network3 = CreateNetwork.createXORNetworkUntrained();
+		BasicNetwork network1 = NetworkUtil.createXORNetworkUntrained();
+		BasicNetwork network2 = NetworkUtil.createXORNetworkUntrained();	
+		BasicNetwork network3 = NetworkUtil.createXORNetworkUntrained();
 		
 		encog.add(NAME_NETWORK3, network3);
 		encog.add(NAME_NETWORK1, network1);

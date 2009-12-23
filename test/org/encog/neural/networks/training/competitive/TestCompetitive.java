@@ -1,4 +1,4 @@
-package org.encog.neural.networks.training;
+package org.encog.neural.networks.training.competitive;
 
 import junit.framework.TestCase;
 
@@ -14,6 +14,7 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.competitive.CompetitiveTraining;
 import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodSingle;
+import org.encog.neural.pattern.SOMPattern;
 import org.encog.util.logging.Logging;
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,11 +47,10 @@ public class TestCompetitive extends TestCase  {
 				TestCompetitive.SOM_INPUT, null);
 
 		// Create the neural network.
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationLinear(), false, 4));
-		network.addLayer(new BasicLayer(new ActivationLinear(), false, 2));
-		network.getStructure().finalizeStructure();
-		network.reset();
+		SOMPattern pattern = new SOMPattern();
+		pattern.setInputNeurons(4);
+		pattern.setOutputNeurons(2);
+		BasicNetwork network = pattern.generate();
 		
 		Synapse synapse = findSynapse(network);
 		synapse.setMatrix(new Matrix(MATRIX_ARRAY));
