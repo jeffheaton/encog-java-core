@@ -109,5 +109,10 @@ public abstract class Propagation extends BasicTraining {
 		return false;
 	}
 	
+	public boolean isValidResume(TrainingContinuation state)
+	{
+		return false;		
+	}
+	
 
 }

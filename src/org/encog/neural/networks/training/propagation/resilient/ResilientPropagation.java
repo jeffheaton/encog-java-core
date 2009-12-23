@@ -287,8 +287,22 @@ public class ResilientPropagation extends Propagation {
 	
 	public void resume(TrainingContinuation state)
 	{
+		if( !isValidResume(state))
+		{
+			throw new TrainingError("Invalid training resume data length");
+		}
 		this.lastGradient = (double[])state.get(LAST_GRADIENTS);
 		this.updateValues = (double[])state.get(UPDATE_VALUES);
+	}
+	
+	public boolean isValidResume(TrainingContinuation state)
+	{
+		if( !state.getContents().containsKey(LAST_GRADIENTS) || 
+			!state.getContents().containsKey(UPDATE_VALUES) )
+			return false;
+		
+		double[] d = (double[])state.get(LAST_GRADIENTS);
+		return d.length == this.getNetwork().getStructure().calculateSize();		
 	}
 	
 	public boolean canContinue()
