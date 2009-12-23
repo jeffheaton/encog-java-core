@@ -31,6 +31,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.SOMLogic;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +95,7 @@ public class RSOMPattern implements NeuralNetworkPattern {
 		final Layer input = new BasicLayer(new ActivationLinear(), false,
 				this.inputNeurons);
 
-		final BasicNetwork network = new BasicNetwork();
+		final BasicNetwork network = new BasicNetwork(new SOMLogic());
 		final Layer context = new ContextLayer(this.outputNeurons);
 		network.addLayer(input);
 		network.addLayer(output);
