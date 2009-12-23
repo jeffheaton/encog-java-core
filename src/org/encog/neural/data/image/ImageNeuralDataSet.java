@@ -30,8 +30,6 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.util.downsample.Downsample;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Store a collection of images for training with a neural network. This class
@@ -51,7 +49,8 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 * Error message to inform the caller that only ImageNeuralData objects can
 	 * be used with this collection.
 	 */
-	public static final String MUST_USE_IMAGE = "This data set only supports ImageNeuralData or Image objects.";
+	public static final String MUST_USE_IMAGE = 
+		"This data set only supports ImageNeuralData or Image objects.";
 
 	/**
 	 * The downsampler to use.
@@ -72,14 +71,16 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 * Should the bounds be found and cropped.
 	 */
 	private final boolean findBounds;
-	
-	private final double hi;
-	private final double lo;
 
 	/**
-	 * The logging object.
+	 * The high value to normalize to.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final double hi;
+
+	/**
+	 * The low value to normalize to.
+	 */
+	private final double lo;
 
 	/**
 	 * Construct this class with the specified downsampler.
@@ -88,9 +89,13 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 *            The downsampler to use.
 	 * @param findBounds
 	 *            Should the bounds be found and clipped.
+	 * @param hi
+	 *            The high value to normalize to.
+	 * @param lo
+	 *            The low value to normalize to.
 	 */
-	public ImageNeuralDataSet( Downsample downsampler,
-			final boolean findBounds,double hi,double lo) {
+	public ImageNeuralDataSet(final Downsample downsampler,
+			final boolean findBounds, final double hi, final double lo) {
 		this.downsampler = downsampler;
 		this.findBounds = findBounds;
 		this.height = -1;
@@ -159,17 +164,16 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 		this.width = width;
 
 		for (final NeuralDataPair pair : this) {
-			if (!(pair.getInput() instanceof ImageNeuralData) ) {
+			if (!(pair.getInput() instanceof ImageNeuralData)) {
 				throw new NeuralNetworkError(
 						"Invalid class type found in ImageNeuralDataSet, only "
 								+ "ImageNeuralData items are allowed.");
 			}
 
-			
-			
-				final ImageNeuralData input = (ImageNeuralData) pair.getInput();
-				input.downsample(downsampler, this.findBounds, height, width, this.hi, this.lo);
-			
+			final ImageNeuralData input = (ImageNeuralData) pair.getInput();
+			input.downsample(this.downsampler, this.findBounds, height, width,
+					this.hi, this.lo);
+
 		}
 	}
 

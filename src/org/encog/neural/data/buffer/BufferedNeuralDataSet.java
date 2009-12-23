@@ -197,12 +197,14 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	/**
 	 * Error message for ADD.
 	 */
-	public static final String ERROR_ADD = "Add can only be used after calling beginLoad.";
+	public static final String ERROR_ADD = 
+		"Add can only be used after calling beginLoad.";
 
 	/**
 	 * Error message for REMOVE.
 	 */
-	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
+	public static final String ERROR_REMOVE = 
+		"Remove is not supported for BufferedNeuralDataSet.";
 
 	/**
 	 * The buffer file to use.
@@ -227,7 +229,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	/**
 	 * The iterators.
 	 */
-	private final Collection<BufferedNeuralDataSetIterator> iterators = new ArrayList<BufferedNeuralDataSetIterator>();
+	private final Collection<BufferedNeuralDataSetIterator> iterators = 
+		new ArrayList<BufferedNeuralDataSetIterator>();
 
 	/**
 	 * A random access file to use for output.
@@ -253,7 +256,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 						this.bufferFile, "rw");
 				this.inputSize = out.readLong();
 				this.idealSize = out.readLong();
-				this.recordSize = (getInputSize() * 8) + (getIdealSize() * 8);
+				this.recordSize = (getInputSize() * 8) + 
+				(getIdealSize() * 8);
 				out.close();
 			}
 		} catch (final IOException e) {
@@ -371,14 +375,17 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 
 	/**
 	 * Get a record by index and copy it into the specified pair.
-	 * @param index The index to load.
-	 * @param pair THe pair to copy into.
+	 * 
+	 * @param index
+	 *            The index to load.
+	 * @param pair
+	 *            THe pair to copy into.
 	 */
 	public void getRecord(final long index, final NeuralDataPair pair) {
 		try {
 			openInputFile();
-			long header = 16;
-			this.input.seek((index * this.recordSize)+header);
+			final long header = 16;
+			this.input.seek((index * this.recordSize) + header);
 			if (BufferedNeuralDataSet.this.idealSize > 0) {
 				readDoubleArray(this.input, pair.getInput());
 				readDoubleArray(this.input, pair.getIdeal());
@@ -406,7 +413,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 			throw new NeuralDataError(
 					"Can't create iterator while loading, call endLoad first.");
 		}
-		final BufferedNeuralDataSetIterator result = new BufferedNeuralDataSetIterator();
+		final BufferedNeuralDataSetIterator result = 
+			new BufferedNeuralDataSetIterator();
 		this.iterators.add(result);
 		return result;
 	}
@@ -459,7 +467,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 
 	/**
 	 * Read an array of doubles from the file.
-	 * @param raf The random access file to read from.
+	 * 
+	 * @param raf
+	 *            The random access file to read from.
 	 * @param data
 	 *            The neural data to read this array into.
 	 * @throws IOException

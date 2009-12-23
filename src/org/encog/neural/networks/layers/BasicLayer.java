@@ -52,12 +52,12 @@ import org.slf4j.LoggerFactory;
  * is often used by itself to implement forward or recurrent layers. Other layer
  * types are based on the basic layer as well.
  * 
- * The layer will either have thresholds are not.  Thresholds are values that
- * correspond to each of the neurons.  The threshold values will be added to
- * the output calculated for each neuron.  Together with the weight matrix
- * the threshold values make up the memory of the neural network.  When the
- * neural network is trained, these threshold values (along with the weight
- * matrix values) will be modified.
+ * The layer will either have thresholds are not. Thresholds are values that
+ * correspond to each of the neurons. The threshold values will be added to the
+ * output calculated for each neuron. Together with the weight matrix the
+ * threshold values make up the memory of the neural network. When the neural
+ * network is trained, these threshold values (along with the weight matrix
+ * values) will be modified.
  * 
  * @author jheaton
  */
@@ -66,6 +66,12 @@ public class BasicLayer implements Layer, Serializable {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -5682296868750703898L;
+
+	/**
+	 * The logging object.
+	 */
+	private static final transient Logger LOGGER = LoggerFactory
+			.getLogger(BasicLayer.class);
 
 	/**
 	 * The outbound synapse connections from this layer.
@@ -81,14 +87,11 @@ public class BasicLayer implements Layer, Serializable {
 	 * The y-coordinate of this layer, used for GUI rendering.
 	 */
 	private int y;
-	
-	private int id;
 
 	/**
-	 * The logging object.
+	 * The id of this level.
 	 */
-	private static final transient Logger LOGGER = 
-		LoggerFactory.getLogger(BasicLayer.class);
+	private int id;
 
 	/**
 	 * Which activation function to use for this layer.
@@ -114,9 +117,11 @@ public class BasicLayer implements Layer, Serializable {
 	 * The threshold values for this layer.
 	 */
 	private double[] threshold;
-	
+
+	/**
+	 * The network that this layer belongs to.
+	 */
 	private BasicNetwork network;
-	
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default
@@ -163,7 +168,7 @@ public class BasicLayer implements Layer, Serializable {
 	 * @param next
 	 *            THe next layer.
 	 */
-	public void addNext(final Layer next) {				
+	public void addNext(final Layer next) {
 		addNext(next, SynapseType.Weighted);
 	}
 
@@ -175,12 +180,12 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public void addNext(final Layer next, final SynapseType type) {
 		Synapse synapse = null;
-		
-		if( this.network == null )
-		{
-			throw new NeuralNetworkError("Can't add to this layer, it is not yet part of a network itself.");
+
+		if (this.network == null) {
+			throw new NeuralNetworkError(
+		"Can't add to this layer, it is not yet part of a network itself.");
 		}
-		
+
 		next.setNetwork(this.network);
 		this.network.getStructure().assignID(next);
 
@@ -213,12 +218,32 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Add a synapse to the list of outbound synapses.  Usually you should 
-	 * simply call the addLayer method to add to the outbound list.
-	 * @param synapse The synapse to add.
+	 * Add a synapse to the list of outbound synapses. Usually you should simply
+	 * call the addLayer method to add to the outbound list.
+	 * 
+	 * @param synapse
+	 *            The synapse to add.
 	 */
 	public void addSynapse(final Synapse synapse) {
 		this.next.add(synapse);
+	}
+
+	/**
+	 * Compare this layer to another.
+	 * @return    The value 0 if the argument layer is equal to this layer; a
+	 *            value less than 0 if this layer is less
+	 *            than the argument; and a value greater than 0 if this
+	 *            layer is greater than the layer argument.
+	 * @param other The other layer to compare.
+	 */
+	public int compareTo(final Layer other) {
+		if (other.getID() == getID()) {
+			return 0;
+		} else if (other.getID() > getID()) {
+			return 1;
+		} else {
+			return -1;
+		}
 	}
 
 	/**
@@ -270,10 +295,24 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
+	 * @return The id of this layer.
+	 */
+	public int getID() {
+		return this.id;
+	}
+
+	/**
 	 * @return the name
 	 */
 	public String getName() {
 		return this.name;
+	}
+
+	/**
+	 * @return The network that owns this layer.
+	 */
+	public BasicNetwork getNetwork() {
+		return this.network;
 	}
 
 	/**
@@ -312,7 +351,9 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Get an individual threshold value.
-	 * @param index The threshold value to get.
+	 * 
+	 * @param index
+	 *            The threshold value to get.
 	 * @return The threshold value.
 	 */
 	public double getThreshold(final int index) {
@@ -350,7 +391,9 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Determine if this layer is connected to another layer.
-	 * @param layer A layer to check and see if this layer is connected to.
+	 * 
+	 * @param layer
+	 *            A layer to check and see if this layer is connected to.
 	 * @return True if the two layers are connected.
 	 */
 	public boolean isConnectedTo(final Layer layer) {
@@ -375,17 +418,20 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Process the input pattern.  For the basic layer, nothing is done.
-	 * This is how the context layer gets a chance to record the input. 
-	 * Other similar functions, where access is needed to the input.
-	 * @param pattern The input to this layer.
+	 * Process the input pattern. For the basic layer, nothing is done. This is
+	 * how the context layer gets a chance to record the input. Other similar
+	 * functions, where access is needed to the input.
+	 * 
+	 * @param pattern
+	 *            The input to this layer.
 	 */
 	public void process(final NeuralData pattern) {
 	}
 
 	/**
-	 * Get the output from this layer when called in a recurrent manor.
-	 * For the BaiscLayer, this is not implemented.
+	 * Get the output from this layer when called in a recurrent manor. For the
+	 * BaiscLayer, this is not implemented.
+	 * 
 	 * @return The output when called in a recurrent way.
 	 */
 	public NeuralData recur() {
@@ -411,6 +457,14 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
+	 * Set the id for this layer.
+	 * @param id The id for this layer.
+	 */
+	public void setID(final int id) {
+		this.id = id;
+	}
+
+	/**
 	 * @param name
 	 *            the name to set
 	 */
@@ -419,21 +473,32 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Set the neuron count.  This just sets it, it does not make any
-	 * adjustments to the class.  To automatically change the neuron count
-	 * refer to the pruning classes.
-	 * @param neuronCount The new neuron count.
+	 * Set the network for this layer.
+	 * @param network The network for this layer.
+	 */
+	public void setNetwork(final BasicNetwork network) {
+		this.network = network;
+	}
+
+	/**
+	 * Set the neuron count. This just sets it, it does not make any adjustments
+	 * to the class. To automatically change the neuron count refer to the
+	 * pruning classes.
+	 * 
+	 * @param neuronCount
+	 *            The new neuron count.
 	 */
 	public void setNeuronCount(final int neuronCount) {
 		this.neuronCount = neuronCount;
 	}
 
 	/**
-	 * Set the threshold array.  This does not modify any of the other values
-	 * in the network, it just sets the threshold array.  If you want to 
-	 * change the structure of the neural network you should use the pruning 
-	 * classes.
-	 * @param d The new threshold array.
+	 * Set the threshold array. This does not modify any of the other values in
+	 * the network, it just sets the threshold array. If you want to change the
+	 * structure of the neural network you should use the pruning classes.
+	 * 
+	 * @param d
+	 *            The new threshold array.
 	 */
 	public void setThreshold(final double[] d) {
 		this.threshold = d;
@@ -441,8 +506,11 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Set the specified threshold value.
-	 * @param index The threshold value to set.
-	 * @param d The value to set the threshold to.
+	 * 
+	 * @param index
+	 *            The threshold value to set.
+	 * @param d
+	 *            The value to set the threshold to.
 	 */
 	public void setThreshold(final int index, final double d) {
 		if (!hasThreshold()) {
@@ -457,18 +525,22 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Set the x coordinate for this layer. The coordinates are used when
-	 * the layer must be displayed in a GUI situation.
-	 * @param x The x-coordinate.
+	 * Set the x coordinate for this layer. The coordinates are used when the
+	 * layer must be displayed in a GUI situation.
+	 * 
+	 * @param x
+	 *            The x-coordinate.
 	 */
 	public void setX(final int x) {
 		this.x = x;
 	}
 
 	/**
-	 * Set the y coordinate for this layer. The coordinates are used when
-	 * the layer must be displayed in a GUI situation.
-	 * @param y The y-coordinate.
+	 * Set the y coordinate for this layer. The coordinates are used when the
+	 * layer must be displayed in a GUI situation.
+	 * 
+	 * @param y
+	 *            The y-coordinate.
 	 */
 	public void setY(final int y) {
 		this.y = y;
@@ -483,37 +555,12 @@ public class BasicLayer implements Layer, Serializable {
 		result.append("[");
 		result.append(this.getClass().getSimpleName());
 		result.append("(");
-		result.append(this.getID());
+		result.append(getID());
 		result.append(")");
 		result.append(": neuronCount=");
 		result.append(this.neuronCount);
 		result.append(']');
 		return result.toString();
-	}
-
-	public int getID() {
-		return this.id;
-	}
-
-	public void setID(int id) {
-		this.id = id;		
-	}
-
-	public int compareTo(Layer other) {
-		if( other.getID()==this.getID() )
-			return 0;
-		else if( other.getID()>this.getID() )
-			return 1;
-		else
-			return -1;
-	}
-
-	public BasicNetwork getNetwork() {
-		return this.network;
-	}
-
-	public void setNetwork(BasicNetwork network) {
-		this.network = network;		
 	}
 
 }

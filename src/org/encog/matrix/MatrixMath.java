@@ -53,7 +53,8 @@ public final class MatrixMath {
 	 */
 	public static Matrix add(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			final String str = "To add the matrices they must have the same number of "
+			final String str = 
+				"To add the matrices they must have the same number of "
 					+ "rows and columns.  Matrix a has "
 					+ a.getRows()
 					+ " rows and matrix b has " + b.getRows() + " rows.";
@@ -66,7 +67,8 @@ public final class MatrixMath {
 		}
 
 		if (a.getCols() != b.getCols()) {
-			final String str = "To add the matrices they must have the same number "
+			final String str = 
+				"To add the matrices they must have the same number "
 					+ "of rows and columns.  Matrix a has "
 					+ a.getCols()
 					+ " cols and matrix b has " + b.getCols() + " cols.";
@@ -220,7 +222,8 @@ public final class MatrixMath {
 	 */
 	public static double dotProduct(final Matrix a, final Matrix b) {
 		if (!a.isVector() || !b.isVector()) {
-			final String str = "To take the dot product, both matrices must be vectors.";
+			final String str = 
+				"To take the dot product, both matrices must be vectors.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
 				MatrixMath.LOGGER.error(str);
 			}
@@ -232,7 +235,8 @@ public final class MatrixMath {
 		final Double[] bArray = b.toPackedArray();
 
 		if (aArray.length != bArray.length) {
-			final String str = "To take the dot product, both matrices must be of "
+			final String str = 
+				"To take the dot product, both matrices must be of "
 					+ "the same length.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
 				MatrixMath.LOGGER.error(str);
@@ -312,7 +316,8 @@ public final class MatrixMath {
 	public static Matrix multiply(final Matrix a, final Matrix b) {
 
 		if (b.getRows() != a.getCols()) {
-			final String str = "To use ordinary matrix multiplication the number of "
+			final String str = 
+				"To use ordinary matrix multiplication the number of "
 					+ "columns on the first matrix must mat the number of "
 					+ "rows on the second.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
@@ -355,7 +360,8 @@ public final class MatrixMath {
 	 */
 	public static Matrix subtract(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			final String str = "To subtract the matrices they must have the same "
+			final String str = 
+				"To subtract the matrices they must have the same "
 					+ "number of rows and columns.  Matrix a has "
 					+ a.getRows()
 					+ " rows and matrix b has "
@@ -368,7 +374,8 @@ public final class MatrixMath {
 		}
 
 		if (a.getCols() != b.getCols()) {
-			final String str = "To subtract the matrices they must have the same "
+			final String str = 
+				"To subtract the matrices they must have the same "
 					+ "number of rows and columns.  Matrix a has "
 					+ a.getCols()
 					+ " cols and matrix b has "

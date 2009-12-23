@@ -27,7 +27,6 @@ package org.encog.neural.data.basic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
 
@@ -117,8 +116,8 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	/**
 	 * The iterators that are currently open to this object.
 	 */
-	private final List<BasicNeuralIterator> iterators 
-		= new ArrayList<BasicNeuralIterator>();
+	private final List<BasicNeuralIterator> iterators =
+		new ArrayList<BasicNeuralIterator>();
 
 	/**
 	 * The description for this object.
@@ -288,8 +287,11 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 
 	/**
 	 * Get a record by index into the specified pair.
-	 * @param index The index to read.
-	 * @param pair The pair to hold the data.
+	 * 
+	 * @param index
+	 *            The index to read.
+	 * @param pair
+	 *            The pair to hold the data.
 	 */
 	public void getRecord(final long index, final NeuralDataPair pair) {
 

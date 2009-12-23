@@ -148,7 +148,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 				}
 
 				if (SQLNeuralDataSet.this.idealSize > 0) {
-					ideal = new BasicNeuralData(SQLNeuralDataSet.this.idealSize);
+					ideal = new BasicNeuralData(
+							SQLNeuralDataSet.this.idealSize);
 					for (int i = 0; i < SQLNeuralDataSet.this.idealSize; i++) {
 						final double d = this.results
 								.getDouble(SQLNeuralDataSet.this.inputSize + i
@@ -182,12 +183,14 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	/**
 	 * Error message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = "Adds are not supported with this dataset, it is read only.";
+	public static final String ADD_NOT_SUPPORTED = 
+		"Adds are not supported with this dataset, it is read only.";
 
 	/**
 	 * Error message: removes are not supported.
 	 */
-	public static final String REMOVE_NOT_SUPPORTED = "Removes are not supported with this dataset, it is read only.";
+	public static final String REMOVE_NOT_SUPPORTED = 
+		"Removes are not supported with this dataset, it is read only.";
 
 	/**
 	 * The JDBC connection.
@@ -207,7 +210,8 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	/**
 	 * A collection of iterations currently in use.
 	 */
-	private final List<SQLNeuralDataSet> iterators = new ArrayList<SQLNeuralDataSet>();
+	private final List<SQLNeuralDataSet> iterators = 
+		new ArrayList<SQLNeuralDataSet>();
 
 	/**
 	 * The logging object.

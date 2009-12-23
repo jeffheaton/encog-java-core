@@ -43,29 +43,34 @@ import org.encog.persist.EncogPersistedObject;
 public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 
 	/**
-	 * Add a layer to this layer.  The "next" layer being added will
-	 * receive input from this layer.  You can also add a layer to
-	 * itself, this will create a self-connected layer.  This method
-	 * will create a weighted synapse connection between this layer
-	 * and the next.
-	 * @param next The layer that is to be added.
+	 * Add a layer to this layer. The "next" layer being added will receive
+	 * input from this layer. You can also add a layer to itself, this will
+	 * create a self-connected layer. This method will create a weighted synapse
+	 * connection between this layer and the next.
+	 * 
+	 * @param next
+	 *            The layer that is to be added.
 	 */
 	void addNext(Layer next);
 
 	/**
-	 * Add a layer to this layer.  The "next" layer being added will
-	 * receive input from this layer.  You can also add a layer to
-	 * itself, this will create a self-connected layer.
-	 * @param next The layer that is to be added.
-	 * @param type The type of synapse to add.
+	 * Add a layer to this layer. The "next" layer being added will receive
+	 * input from this layer. You can also add a layer to itself, this will
+	 * create a self-connected layer.
+	 * 
+	 * @param next
+	 *            The layer that is to be added.
+	 * @param type
+	 *            The type of synapse to add.
 	 */
 	void addNext(Layer next, SynapseType type);
 
 	/**
-	 * This method adds a synapse to the neural network.  Usually
-	 * you will want to use the addNext method rather than directly
-	 * adding synapses.
-	 * @param synapse The synapse to add.
+	 * This method adds a synapse to the neural network. Usually you will want
+	 * to use the addNext method rather than directly adding synapses.
+	 * 
+	 * @param synapse
+	 *            The synapse to add.
 	 */
 	void addSynapse(Synapse synapse);
 
@@ -84,13 +89,23 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	ActivationFunction getActivationFunction();
 
 	/**
+	 * @return The id for this layer.
+	 */
+	int getID();
+
+	/**
+	 * @return The network that this layer is attached to.
+	 */
+	BasicNetwork getNetwork();
+
+	/**
 	 * @return The neuron count.
 	 */
 	int getNeuronCount();
 
 	/**
-	 * Get a list of all of the outbound synapse connections from this
-	 * layer.
+	 * Get a list of all of the outbound synapse connections from this layer.
+	 * 
 	 * @return The outbound connections.
 	 */
 	List<Synapse> getNext();
@@ -101,27 +116,27 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	Collection<Layer> getNextLayers();
 
 	/**
-	 * @return This layer's threshold values, if present, otherwise
-	 * this function returns null.
+	 * @return This layer's threshold values, if present, otherwise this
+	 *         function returns null.
 	 */
 	double[] getThreshold();
 
 	/**
 	 * Get an idividual threshold value.
-	 * @param index The threshold value to get.
+	 * 
+	 * @param index
+	 *            The threshold value to get.
 	 * @return The threshold value.
 	 */
 	double getThreshold(int index);
 
 	/**
-	 * @return The x-coordinate that this layer should be displayed
-	 * at in a GUI.
+	 * @return The x-coordinate that this layer should be displayed at in a GUI.
 	 */
 	int getX();
 
 	/**
-	 * @return The y-coordinate that this layer should be displayed
-	 * at in a GUI.
+	 * @return The y-coordinate that this layer should be displayed at in a GUI.
 	 */
 	int getY();
 
@@ -132,27 +147,53 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 
 	/**
 	 * Determine if this layer is connected to another.
-	 * @param layer The second layer, checked to see if it is connected
-	 * to this layer.
+	 * 
+	 * @param layer
+	 *            The second layer, checked to see if it is connected to this
+	 *            layer.
 	 * @return True if the two layers are connected.
 	 */
 	boolean isConnectedTo(Layer layer);
 
 	/**
-	 * Process the data before it is modified by this layer. This 
-	 * method is useful for the context layer to remember the pattern
-	 * it was presented with.
-	 * @param pattern The pattern.
+	 * Process the data before it is modified by this layer. This method is
+	 * useful for the context layer to remember the pattern it was presented
+	 * with.
+	 * 
+	 * @param pattern
+	 *            The pattern.
 	 */
 	void process(final NeuralData pattern);
 
 	/**
-	 * Called on recurrent layers to provide recurrent output.  This
-	 * is where the context layer will return the patter that it 
-	 * previously remembered.
+	 * Called on recurrent layers to provide recurrent output. This is where the
+	 * context layer will return the patter that it previously remembered.
+	 * 
 	 * @return The recurrent output.
 	 */
 	NeuralData recur();
+
+	/**
+	 * Set a new activation function for this layer.
+	 * 
+	 * @param activationFunction
+	 *            The new activation function.
+	 */
+	void setActivationFunction(ActivationFunction activationFunction);
+
+	/**
+	 * Set the id for this layer.
+	 * 
+	 * @param id
+	 *            The id for this layer.
+	 */
+	void setID(int id);
+
+	/**
+	 * Set the network that this layer belongs to.
+	 * @param network The network.
+	 */
+	void setNetwork(BasicNetwork network);
 
 	/**
 	 * Set the neuron count, this will NOT adjust the synapses, or thresholds
@@ -165,41 +206,37 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 
 	/**
 	 * Set the threshold array for this layer.
-	 * @param d The new threshold array.
+	 * 
+	 * @param d
+	 *            The new threshold array.
 	 */
 	void setThreshold(double[] d);
 
 	/**
 	 * Set an individual threshold value.
-	 * @param index The index of the threshold value.
-	 * @param d The new threshold value.
+	 * 
+	 * @param index
+	 *            The index of the threshold value.
+	 * @param d
+	 *            The new threshold value.
 	 */
 	void setThreshold(int index, double d);
 
 	/**
-	 * Set the x coordinate. The x&y coordinates are used to display
-	 * the level on a GUI.
-	 * @param x The x-coordinate.
+	 * Set the x coordinate. The x&y coordinates are used to display the level
+	 * on a GUI.
+	 * 
+	 * @param x
+	 *            The x-coordinate.
 	 */
 	void setX(int x);
 
 	/**
-	 * Set the y coordinate. The x&y coordinates are used to display
-	 * the level on a GUI.
-	 * @param y The y-coordinate.
+	 * Set the y coordinate. The x&y coordinates are used to display the level
+	 * on a GUI.
+	 * 
+	 * @param y
+	 *            The y-coordinate.
 	 */
 	void setY(int y);
-
-	/**
-	 * Set a new activation function for this layer.
-	 * @param activationFunction The new activation function.
-	 */
-	void setActivationFunction(ActivationFunction activationFunction);
-	
-	public void setID(int id);
-	
-	public int getID();
-	
-	public void setNetwork(BasicNetwork network);
-	public BasicNetwork getNetwork();
 }

@@ -7,54 +7,78 @@ import java.util.Map;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 
+/**
+ * Utility class to calculate the depth that a layer is from the output layer.
+ * If there are multiple ways to get to the specified layer, then the longest
+ * depth is returned.  This class is used by propagation training to ensure
+ * that the layers are always returned on a consistent order.
+ */
 public class CalculateDepth {
 
-	private Map<Layer,Integer> depths = new HashMap<Layer,Integer>();
-	private BasicNetwork network;
-	private Layer inputLayer;
-	private Layer outputLayer;
+	/**
+	 * The depth so far at each layer.
+	 */
+	private final Map<Layer, Integer> depths = new HashMap<Layer, Integer>();
 	
-	public CalculateDepth(BasicNetwork network)
-	{
-		this.network = network;
-		this.inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		this.outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
-		this.calculate(0, this.outputLayer);
-	}
+	/**
+	 * The network.
+	 */
+	private final BasicNetwork network;
 	
+	/**
+	 * The output layer.
+	 */
+	private final Layer outputLayer;
 
-	private void calculate(int currentDepth, Layer layer) {
-		
+	/**
+	 * Construct the depth calculation object.
+	 * @param network The network that we are calculating for.
+	 */
+	public CalculateDepth(final BasicNetwork network) {
+		this.network = network;
+		this.outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
+		calculate(0, this.outputLayer);
+	}
+
+	/**
+	 * Called internally to calculate a depth.
+	 * @param currentDepth The current depth.
+	 * @param layer The layer we are on.
+	 */
+	private void calculate(final int currentDepth, final Layer layer) {
+
 		// record this layer
-		if( this.depths.containsKey(layer) )
-		{
-			int oldDepth = this.depths.get(layer);
-			if( currentDepth>oldDepth )
-			{
+		if (this.depths.containsKey(layer)) {
+			final int oldDepth = this.depths.get(layer);
+			if (currentDepth > oldDepth) {
 				this.depths.put(layer, currentDepth);
 			}
-		}
-		else
-		{
+		} else {
 			this.depths.put(layer, currentDepth);
 		}
-		
+
 		// traverse all of the ways to get to that layer
-		Collection<Layer> prev = this.network.getStructure()
+		final Collection<Layer> prev = this.network.getStructure()
 				.getPreviousLayers(this.outputLayer);
-		
-		for (Layer nextLayer : prev) {
-			if( !this.depths.containsKey(nextLayer))
-				calculate(currentDepth+1, nextLayer);
+
+		for (final Layer nextLayer : prev) {
+			if (!this.depths.containsKey(nextLayer)) {
+				calculate(currentDepth + 1, nextLayer);
+			}
 		}
 	}
-	
-	public int getDepth(Layer layer) {
-		if( !this.depths.containsKey(layer) ) {
+
+	/**
+	 * Get the depth for a specific layer.
+	 * @param layer The layer to get the depth for.
+	 * @return The depth of the specified layer.
+	 */
+	public int getDepth(final Layer layer) {
+		if (!this.depths.containsKey(layer)) {
 			return -1;
-		}
-		else
+		} else {
 			return this.depths.get(layer);
+		}
 	}
 
 }

@@ -476,6 +476,22 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * Set this matrix's values to that of another matrix.
+	 * 
+	 * @param matrix
+	 *            The other matrix.
+	 */
+	public void set(final Matrix matrix) {
+		final double[][] source = matrix.getData();
+
+		for (int row = 0; row < getRows(); row++) {
+			for (int col = 0; col < getCols(); col++) {
+				this.matrix[row][col] = source[row][col];
+			}
+		}
+	}
+
+	/**
 	 * Set the description for this object.
 	 * 
 	 * @param description
@@ -576,16 +592,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 				Matrix.LOGGER.error(str);
 			}
 			throw new MatrixError(str);
-		}
-	}
-
-	public void set(Matrix matrix) {
-		final double[][] source = matrix.getData();
-
-		for (int row = 0; row < getRows(); row++) {
-			for (int col = 0; col < getCols(); col++) {
-				this.matrix[row][col] = source[row][col];
-			}
 		}
 	}
 

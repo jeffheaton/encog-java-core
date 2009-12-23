@@ -269,7 +269,8 @@ public final class BotUtil {
 	 * @return The string without tags.
 	 */
 	public static String stripTags(final String str) {
-		final ByteArrayInputStream is = new ByteArrayInputStream(str.getBytes());
+		final ByteArrayInputStream is = 
+			new ByteArrayInputStream(str.getBytes());
 		final StringBuilder result = new StringBuilder();
 		final ReadHTML html = new ReadHTML(is);
 		int ch;

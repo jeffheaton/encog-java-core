@@ -215,7 +215,8 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 	/**
 	 * Error Message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = "Adds are not supported with this dataset, it is read only.";
+	public static final String ADD_NOT_SUPPORTED = 
+		"Adds are not supported with this dataset, it is read only.";
 
 	/**
 	 * The logging object.
@@ -260,7 +261,8 @@ public class XMLNeuralDataSet implements NeuralDataSet {
 	/**
 	 * A collection of iterators that have been created.
 	 */
-	private final List<XMLNeuralIterator> iterators = new ArrayList<XMLNeuralIterator>();
+	private final List<XMLNeuralIterator> iterators = 
+		new ArrayList<XMLNeuralIterator>();
 
 	/**
 	 * Construct an XML neural data set.

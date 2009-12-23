@@ -26,8 +26,6 @@
 
 package org.encog.neural.networks.structure;
 
-import java.util.Collection;
-
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;

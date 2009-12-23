@@ -86,21 +86,25 @@ public class ImageNeuralData extends BasicNeuralData {
 	 *            The height to downsample to.
 	 * @param width
 	 *            The width to downsample to.
+	 * @param hi
+	 *            The high value to normalize to.
+	 * @param lo
+	 *            The low value to normalize to.
 	 */
 	public void downsample(final Downsample downsampler,
 			final boolean findBounds, final int height, final int width,
-			double hi,double lo) {
+			final double hi, final double lo) {
 		if (findBounds) {
 			downsampler.findBounds();
 		}
-		final double[] sample = downsampler.downSample(this.image, 
-				height, width);
-		
-		for(int i=0;i<sample.length;i++) {
-			sample[i] = OutputFieldRangeMapped.calculate(
-					sample[i], 0, 255, hi, lo);
+		final double[] sample = downsampler.downSample(this.image, height,
+				width);
+
+		for (int i = 0; i < sample.length; i++) {
+			sample[i] = OutputFieldRangeMapped.calculate(sample[i], 0, 
+					255, hi,lo);
 		}
-		
+
 		this.setData(sample);
 	}
 
@@ -118,7 +122,7 @@ public class ImageNeuralData extends BasicNeuralData {
 	public void setImage(final Image image) {
 		this.image = image;
 	}
-	
+
 	/**
 	 * Return a string representation of this object.
 	 * 

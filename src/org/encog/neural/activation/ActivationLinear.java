@@ -25,7 +25,6 @@
  */
 package org.encog.neural.activation;
 
-import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationLinearPersistor;
 
@@ -83,7 +82,7 @@ public class ActivationLinear extends BasicActivationFunction {
 	 *            The input array to the activation function.
 	 */
 	public void derivativeFunction(final double[] d) {
-		for(int i=0;i<d.length;i++) {
+		for (int i = 0; i < d.length; i++) {
 			d[i] = 1.0;
 		}
 	}

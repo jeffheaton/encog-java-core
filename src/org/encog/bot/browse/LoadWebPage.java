@@ -256,12 +256,14 @@ public class LoadWebPage {
 				if (tag.getType() == Tag.Type.END) {
 					if (tag.getName().equalsIgnoreCase("div")) {
 						if (this.lastHierarchyElement != null) {
-							this.lastHierarchyElement = this.lastHierarchyElement
+							this.lastHierarchyElement = 
+								this.lastHierarchyElement
 									.getParent();
 						}
 					} else if (tag.getName().equalsIgnoreCase("span")) {
 						if (this.lastHierarchyElement != null) {
-							this.lastHierarchyElement = this.lastHierarchyElement
+							this.lastHierarchyElement = 
+								this.lastHierarchyElement
 									.getParent();
 						}
 					}
@@ -301,7 +303,8 @@ public class LoadWebPage {
 				createTagDataUnit(parse.getTag());
 				if (parse.getTag().getName().equalsIgnoreCase("style")) {
 					style = true;
-				} else if (parse.getTag().getName().equalsIgnoreCase("script")) {
+				} else if (parse.getTag().getName().equalsIgnoreCase(
+						"script")) {
 					script = true;
 				}
 			} else {

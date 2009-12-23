@@ -121,12 +121,14 @@ public class UnionNeuralDataSet implements NeuralDataSet {
 	/**
 	 * The error to report when the user attempts an ADD.
 	 */
-	private final static String ADD_ERROR = "Add is not supported in UnionNeuralDataSet";
+	private static final String ADD_ERROR = 
+		"Add is not supported in UnionNeuralDataSet";
 
 	/**
 	 * The error to report when the user attempts a remove.
 	 */
-	private final static String REMOVE_ERROR = "Remove is not supported in UnionNeuralDataSet";
+	private static final String REMOVE_ERROR = 
+		"Remove is not supported in UnionNeuralDataSet";
 
 	/**
 	 * The logging object.
@@ -151,7 +153,9 @@ public class UnionNeuralDataSet implements NeuralDataSet {
 	/**
 	 * The iterators that have been created so far for this data set.
 	 */
-	private final Collection<UnionIterator> iterators = new ArrayList<UnionIterator>();
+	private final Collection<UnionIterator> iterators = 
+		new ArrayList<UnionIterator>();
+	
 
 	/**
 	 * Construct the union data set. All subsets must have input and ideal sizes

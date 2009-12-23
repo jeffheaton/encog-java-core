@@ -27,7 +27,6 @@
 package org.encog.neural.networks.layers;
 
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;

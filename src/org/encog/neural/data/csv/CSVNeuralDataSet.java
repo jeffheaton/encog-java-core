@@ -81,7 +81,8 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 
 			this.reader = null;
 			this.reader = new ReadCSV(CSVNeuralDataSet.this.filename,
-CSVNeuralDataSet.this.headers, CSVNeuralDataSet.this.format);
+					CSVNeuralDataSet.this.headers, 
+					CSVNeuralDataSet.this.format);
 			this.dataReady = false;
 
 		}
@@ -160,7 +161,8 @@ CSVNeuralDataSet.this.headers, CSVNeuralDataSet.this.format);
 	/**
 	 * Error message indicating that adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = "Adds are not supported with this dataset, it is read only.";
+	public static final String ADD_NOT_SUPPORTED = 
+		"Adds are not supported with this dataset, it is read only.";
 
 	/**
 	 * The logging object.
@@ -195,7 +197,8 @@ CSVNeuralDataSet.this.headers, CSVNeuralDataSet.this.format);
 	/**
 	 * A collection of iterators that have been created.
 	 */
-	private final List<CSVNeuralIterator> iterators = new ArrayList<CSVNeuralIterator>();
+	private final List<CSVNeuralIterator> iterators = 
+		new ArrayList<CSVNeuralIterator>();
 
 	/**
 	 * Construct this data set using a comma as a delimiter.
@@ -229,7 +232,8 @@ CSVNeuralDataSet.this.headers, CSVNeuralDataSet.this.format);
 	 *            What CSV format to use.
 	 */
 	public CSVNeuralDataSet(final String filename, final int inputSize,
-			final int idealSize, final boolean headers, final CSVFormat format) {
+			final int idealSize, final boolean headers,
+			final CSVFormat format) {
 		this.filename = filename;
 		this.inputSize = inputSize;
 		this.idealSize = idealSize;
