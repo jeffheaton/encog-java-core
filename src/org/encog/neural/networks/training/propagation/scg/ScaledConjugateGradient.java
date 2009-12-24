@@ -34,47 +34,114 @@ import org.encog.neural.networks.training.propagation.gradient.CalculateGradient
 import org.encog.util.EncogArray;
 import org.encog.util.math.BoundNumbers;
 
+/**
+ * This is a training class that makes use of scaled conjugate 
+ * gradient methods.  It is a very fast and efficient training
+ * algorithm.
+ *
+ */
 public class ScaledConjugateGradient extends Propagation {
 
+	/**
+	 * The starting value for sigma.
+	 */
 	protected static final double FIRST_SIGMA = 1.E-4D;
+	
+	/**
+	 * The starting value for lambda.
+	 */
 	protected static final double FIRST_LAMBDA = 1.E-6D;
 
+	/**
+	 * Should we restart?
+	 */
 	private boolean restart;
+	
+	/**
+	 * The second lambda value.
+	 */
 	private double lambda2;
+	
+	/**
+	 * The first lambda value.
+	 */
 	private double lambda;
+	
+	/**
+	 * The number of iterations.  The network will reset when this value
+	 * increases over the number of weights in the network.
+	 */
 	private int k;
+	
+	/**
+	 * Tracks if the latest training cycle was successful.
+	 */
 	private boolean success = true;
+	
+	/**
+	 * The magnitude of p.
+	 */
 	private double magP;
-	
-	/**
-	 * Step direction vector.
-	 */
-	private double[] p;
-	
-	/**
-	 * Step direction vector.
-	 */
-	private double[] r;
-	private double[] weights;
-	private double[] gradient;
-	private double delta;
-	private double oldError;
-	private double[] oldWeights;
-	private double[] oldGradient;
 
-	public ScaledConjugateGradient(BasicNetwork network, NeuralDataSet training) {
-		super(network,training);
+	/**
+	 * Step direction vector.
+	 */
+	private final double[] p;
+
+	/**
+	 * Step direction vector.
+	 */
+	private final double[] r;
+	
+	/**
+	 * The neural network weights.
+	 */
+	private final double[] weights;
+	
+	/**
+	 * The gradients after the training cycles.
+	 */
+	private double[] gradient;
+	
+	/**
+	 * The current delta.
+	 */
+	private double delta;
+	
+	/**
+	 * The old error value, used to make sure an improvement happened.
+	 */
+	private double oldError;
+	
+	/**
+	 * The old weight values, used to restore the neural network.
+	 */
+	private final double[] oldWeights;
+	
+	/**
+	 * The old gradients, used to compare.
+	 */
+	private final double[] oldGradient;
+
+	/**
+	 * Construct a training class.
+	 * @param network The network to train.
+	 * @param training The training data.
+	 */
+	public ScaledConjugateGradient(final BasicNetwork network,
+			final NeuralDataSet training) {
+		super(network, training);
 
 		this.success = true;
 		this.delta = 0;
 		this.lambda2 = 0;
-		this.lambda = FIRST_LAMBDA;
+		this.lambda = ScaledConjugateGradient.FIRST_LAMBDA;
 		this.oldError = 0;
 		this.magP = 0;
 		this.restart = false;
 
 		this.weights = NetworkCODEC.networkToArray(getNetwork());
-		int numWeights = weights.length;
+		final int numWeights = this.weights.length;
 
 		this.gradient = new double[numWeights];
 		this.oldWeights = new double[numWeights];
@@ -84,107 +151,124 @@ public class ScaledConjugateGradient extends Propagation {
 		this.r = new double[numWeights];
 
 		// Calculate the starting set of gradients.
-		this.gradient = calcGradients(weights);
+		this.gradient = calcGradients(this.weights);
 
 		this.k = 1;
 
-		for (int i = 0; i < numWeights; ++i)
-			p[i] = r[i] = -gradient[i];
+		for (int i = 0; i < numWeights; ++i) {
+			this.p[i] = this.r[i] = -this.gradient[i];
+		}
 
 	}
 
-	private double[] calcGradients(double[] weights) {
+	/**
+	 * Calculate the gradients.  They are normalized as well.
+	 * @param weights The weights.
+	 * @return The gradients.
+	 */
+	private double[] calcGradients(final double[] weights) {
 
-		Layer output = getNetwork().getLayer(BasicNetwork.TAG_OUTPUT);
-		int outCount = output.getNeuronCount();
+		final Layer output = getNetwork().getLayer(BasicNetwork.TAG_OUTPUT);
+		final int outCount = output.getNeuronCount();
 
-		CalculateGradient prop = new CalculateGradient(getNetwork(), getTraining(),getNumThreads());
+		final CalculateGradient prop = new CalculateGradient(getNetwork(),
+				getTraining(), getNumThreads());
 		prop.calculate(weights);
 
 		// normalize
-		double[] d = prop.getGradients();
+		final double[] d = prop.getGradients();
 
-		double factor = -2D / prop.getCount() / outCount;
+		final double factor = -2D / prop.getCount() / outCount;
 
-		for (int i = 0; i < d.length; i++)
+		for (int i = 0; i < d.length; i++) {
 			d[i] *= factor;
+		}
 
-		this.setError(prop.getError());
+		setError(prop.getError());
 		return prop.getGradients();
 	}
 
+	/**
+	 * Perform one iteration.
+	 */
+	@Override
 	public void iteration() {
-				
-		int numWeights = weights.length;
+
+		final int numWeights = this.weights.length;
 		// Storage space for previous iteration values.
 
-		if (restart) {
+		if (this.restart) {
 			// First time through, set initial values for SCG parameters.
-			lambda = FIRST_LAMBDA;
-			lambda2 = 0;
-			k = 1;
-			success = true;
-			restart = false;
+			this.lambda = ScaledConjugateGradient.FIRST_LAMBDA;
+			this.lambda2 = 0;
+			this.k = 1;
+			this.success = true;
+			this.restart = false;
 		}
 
 		// If an error reduction is possible, calculate 2nd order info.
-		if (success) {
+		if (this.success) {
 
 			// If the search direction is small, stop.
-			magP = EncogArray.vectorProduct(p, p);
+			this.magP = EncogArray.vectorProduct(this.p, this.p);
 
-			double sigma = FIRST_SIGMA / (double) Math.sqrt(magP);
+			final double sigma = ScaledConjugateGradient.FIRST_SIGMA
+					/ Math.sqrt(this.magP);
 
 			// In order to compute the new step, we need a new gradient.
 			// First, save off the old data.
-			EncogArray.arrayCopy(gradient, oldGradient);
-			EncogArray.arrayCopy(weights, oldWeights);
-			oldError = getError();
+			EncogArray.arrayCopy(this.gradient, this.oldGradient);
+			EncogArray.arrayCopy(this.weights, this.oldWeights);
+			this.oldError = getError();
 
 			// Now we move to the new point in weight space.
-			for (int i = 0; i < numWeights; ++i)
-				weights[i] += sigma * p[i];
+			for (int i = 0; i < numWeights; ++i) {
+				this.weights[i] += sigma * this.p[i];
+			}
 
-			NetworkCODEC.arrayToNetwork(weights, getNetwork());
+			NetworkCODEC.arrayToNetwork(this.weights, getNetwork());
 
 			// And compute the new gradient.
-			gradient = calcGradients(weights);
+			this.gradient = calcGradients(this.weights);
 
 			// Now we have the new gradient, and we continue the step
 			// computation.
-			delta = 0;
+			this.delta = 0;
 			for (int i = 0; i < numWeights; ++i) {
-				double step = (gradient[i] - oldGradient[i]) / sigma;
-				delta += p[i] * step;
+				final double step = (this.gradient[i] - this.oldGradient[i])
+						/ sigma;
+				this.delta += this.p[i] * step;
 			}
 		}
 
 		// Scale delta.
-		delta += (lambda - lambda2) * magP;
+		this.delta += (this.lambda - this.lambda2) * this.magP;
 
 		// If delta <= 0, make Hessian positive definite.
-		if (delta <= 0) {
-			lambda2 = 2 * (lambda - delta / magP);
-			delta = lambda * magP - delta;
-			lambda = lambda2;
+		if (this.delta <= 0) {
+			this.lambda2 = 2 * (this.lambda - this.delta / this.magP);
+			this.delta = this.lambda * this.magP - this.delta;
+			this.lambda = this.lambda2;
 		}
 
 		// Calculate step size.
-		double mu = EncogArray.vectorProduct(p, r);
-		double alpha = mu / delta;
+		final double mu = EncogArray.vectorProduct(this.p, this.r);
+		final double alpha = mu / this.delta;
 
 		// Calculate the comparison parameter.
 		// We must compute a new gradient, but this time we do not
 		// want to keep the old values. They were useful only for
 		// approximating the Hessian.
-		for (int i = 0; i < numWeights; ++i)
-			weights[i] = oldWeights[i] + alpha * p[i];
+		for (int i = 0; i < numWeights; ++i) {
+			this.weights[i] = this.oldWeights[i] + alpha * this.p[i];
+		}
 
-		NetworkCODEC.arrayToNetwork(weights, getNetwork());
+		NetworkCODEC.arrayToNetwork(this.weights, getNetwork());
 
-		gradient = calcGradients(weights);
+		this.gradient = calcGradients(this.weights);
 
-		double gdelta = 2 * delta * (oldError - getError()) / (mu * mu);
+		final double gdelta = 2 * this.delta * (this.oldError - getError())
+				/ (mu * mu);
 
 		// If gdelta >= 0, a successful reduction in error is possible.
 		if (gdelta >= 0) {
@@ -193,59 +277,67 @@ public class ScaledConjugateGradient extends Propagation {
 
 			// Now r = r(k+1).
 			for (int i = 0; i < numWeights; ++i) {
-				double tmp = -gradient[i];
-				rsum += tmp * r[i];
-				r[i] = tmp;
+				final double tmp = -this.gradient[i];
+				rsum += tmp * this.r[i];
+				this.r[i] = tmp;
 			}
-			lambda2 = 0;
-			success = true;
+			this.lambda2 = 0;
+			this.success = true;
 
 			// Do we need to restart?
-			if (k >= numWeights) {
-				restart = true;
-				EncogArray.arrayCopy(r, p);
+			if (this.k >= numWeights) {
+				this.restart = true;
+				EncogArray.arrayCopy(this.r, this.p);
 
 			} else {
 				// Compute new conjugate direction.
-				double beta = (EncogArray.vectorProduct(r, r) - rsum) / mu;
+				final double beta = (EncogArray.vectorProduct(this.r, this.r) 
+						- rsum)/ mu;
 
 				// Update direction vector.
-				for (int i = 0; i < numWeights; ++i)
-					p[i] = r[i] + beta * p[i];
+				for (int i = 0; i < numWeights; ++i) {
+					this.p[i] = this.r[i] + beta * this.p[i];
+				}
 
-				restart = false;
+				this.restart = false;
 			}
 
-			if (gdelta >= 0.75D)
-				lambda *= 0.25D; // lambda = lambda/4.0
+			if (gdelta >= 0.75D) {
+				this.lambda *= 0.25D; 
+			}
 
 		} else {
 			// A reduction in error was not possible.
 			// under_tolerance = false;
 
 			// Go back to w(k) since w(k) + alpha*p(k) is not better.
-			EncogArray.arrayCopy(oldWeights, weights);
-			setError(oldError);
-			lambda2 = lambda;
-			success = false;
+			EncogArray.arrayCopy(this.oldWeights, this.weights);
+			setError(this.oldError);
+			this.lambda2 = this.lambda;
+			this.success = false;
 		}
 
-		if (gdelta < 0.25D)
-			lambda += delta * (1 - gdelta) / magP;
-		
-		lambda = BoundNumbers.bound(lambda);
+		if (gdelta < 0.25D) {
+			this.lambda += this.delta * (1 - gdelta) / this.magP;
+		}
 
-		++k;
+		this.lambda = BoundNumbers.bound(this.lambda);
 
-		NetworkCODEC.arrayToNetwork(weights, getNetwork());		
+		++this.k;
+
+		NetworkCODEC.arrayToNetwork(this.weights, getNetwork());
 	}
 
 	/**
 	 * Not used.
-	 * @param prop Not used.
-	 * @param weights Not used.
+	 * 
+	 * @param prop
+	 *            Not used.
+	 * @param weights
+	 *            Not used.
 	 */
 	@Override
-	public void performIteration(CalculateGradient prop, double[] weights) {		
+	public void performIteration(final CalculateGradient prop,
+			final double[] weights) {
 	}
 }

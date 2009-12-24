@@ -34,14 +34,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements a genetic algorithm that allows a feedforward neural network to be
- * trained using a genetic algorithm. This algorithm is for a feed forward
- * neural network.
+ * Implements a genetic algorithm that allows a feedforward or simple
+ * recurrent neural network to be trained using a genetic algorithm. 
  * 
- * This class is somewhat undefined. If you wish to train the neural network 
- * using training sets, you should use the TrainingSetNeuralGeneticAlgorithm 
- * class. If you wish to use a score function to train the neural network, 
- * then implement a subclass of this one that properly calculates the score.
+ * There are essentially two ways you can make use of this
+ * class.
+ * 
+ * Either way, you will need a score object.  The score object tells the
+ * genetic algorithm how well suited a neural network is.
+ * 
+ * If you would like to use genetic algorithms with a training set you 
+ * should make use TrainingSetScore class.  This score object uses a training
+ * set to score your neural network.
+ * 
+ * If you would like to be more abstract, and not use a training set, you
+ * can create your own implementation of the CalculateScore method.  This
+ * class can then score the networks any way that you like.
  */
 public class NeuralGeneticAlgorithm extends BasicTraining {
 
@@ -81,8 +89,20 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 */
 	private NeuralGeneticAlgorithmHelper genetic;
 	
+	/**
+	 * The score calculation object.
+	 */
 	private CalculateScore calculateScore;
 
+	/**
+	 * Construct a neural genetic algorithm.  
+	 * @param network The network to base this on.
+	 * @param randomizer The randomizer used to create this initial population.
+	 * @param calculateScore The score calculation object.
+	 * @param populationSize The population size.
+	 * @param mutationPercent The percent of offspring to mutate.
+	 * @param percentToMate The percent of the population allowed to mate.
+	 */
 	public NeuralGeneticAlgorithm(final BasicNetwork network,
 			final Randomizer randomizer,
 			final CalculateScore calculateScore,
@@ -154,6 +174,9 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		this.genetic = genetic;
 	}
 
+	/**
+	 * @return The score calculation object.
+	 */
 	public CalculateScore getCalculateScore() {
 		return calculateScore;
 	}

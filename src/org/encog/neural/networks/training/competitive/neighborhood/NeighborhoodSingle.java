@@ -29,10 +29,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A very simple neighborhood function that will return 1.0 (full effect)
- * for the winning neuron, and 0.0 (no change) for everything else.
+ * A very simple neighborhood function that will return 1.0 (full effect) for
+ * the winning neuron, and 0.0 (no change) for everything else.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class NeighborhoodSingle implements NeighborhoodFunction {
 
@@ -40,8 +41,7 @@ public class NeighborhoodSingle implements NeighborhoodFunction {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = 
-		LoggerFactory.getLogger(this.getClass());
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Determine how much the current neuron should be affected by training
@@ -53,8 +53,7 @@ public class NeighborhoodSingle implements NeighborhoodFunction {
 	 *            The winning neuron.
 	 * @return The ratio for this neuron's adjustment.
 	 */
-	public double function(final int currentNeuron, 
-			final int bestNeuron) {
+	public double function(final int currentNeuron, final int bestNeuron) {
 		if (currentNeuron == bestNeuron) {
 			return 1.0;
 		} else {
@@ -62,13 +61,22 @@ public class NeighborhoodSingle implements NeighborhoodFunction {
 		}
 	}
 
+	/**
+	 * The radius for this neighborhood function is always 1.
+	 * @return The radius.
+	 */
 	public double getRadius() {
 		return 1;
 	}
 
-	public void setRadius(double radius) {
+	/**
+	 * Set the radius.  This type does not use a radius, so this has no effect.
+	 * 
+	 * @param radius
+	 *            The radius.
+	 */
+	public void setRadius(final double radius) {
 		// no effect on this type
-		
 	}
 
 }

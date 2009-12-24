@@ -79,7 +79,10 @@ public class NeuralStructure implements Serializable {
 	 * The neural network this class belongs to.
 	 */
 	private final BasicNetwork network;
-	
+
+	/**
+	 * The next ID to be assigned to a layer.
+	 */
 	private int nextID = 1;
 
 	/**
@@ -90,6 +93,66 @@ public class NeuralStructure implements Serializable {
 	 */
 	public NeuralStructure(final BasicNetwork network) {
 		this.network = network;
+	}
+
+	/**
+	 * Assign an ID to every layer that does not already have one.
+	 */
+	public void assignID() {
+		for (final Layer layer : this.layers) {
+			assignID(layer);
+		}
+		sort();
+	}
+
+	/**
+	 * Assign an ID to the specified layer.
+	 * @param layer The layer to get an ID assigned.
+	 */
+	public void assignID(final Layer layer) {
+		if (layer.getID() == -1) {
+			layer.setID(getNextID());
+		}
+	}
+
+	/**
+	 * Calculate the size that an array should be to hold all of the weights
+	 * and threshold values.
+	 * @return The size of the calculated array.
+	 */
+	public int calculateSize() {
+		int size = 0;
+
+		// first determine size from matrixes
+		for (final Synapse synapse 
+				: this.network.getStructure().getSynapses()) {
+			size += synapse.getMatrixSize();
+		}
+
+		// determine size from threshold values
+		for (final Layer layer : this.network.getStructure().getLayers()) {
+			if (layer.hasThreshold()) {
+				size += layer.getNeuronCount();
+			}
+		}
+		return size;
+	}
+
+	/**
+	 * Determine if the network contains a layer of the specified type.
+	 * 
+	 * @param type
+	 *            The layer type we are looking for.
+	 * @return True if this layer type is present.
+	 */
+	public boolean containsLayerType(final Class< ? > type) {
+		for (final Layer layer : this.layers) {
+			if (ReflectionUtil.isInstanceOf(layer.getClass(), type)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -105,14 +168,14 @@ public class NeuralStructure implements Serializable {
 		}
 
 		this.layers.addAll(result);
-		
+
 		// make sure that the current ID is not going to cause a repeat
-		for( Layer layer: this.layers ) {
-			if( layer.getID()>= this.nextID ) {
-			this.nextID = layer.getID()+1;	
+		for (final Layer layer : this.layers) {
+			if (layer.getID() >= this.nextID) {
+				this.nextID = layer.getID() + 1;
 			}
 		}
-		
+
 		sort();
 	}
 
@@ -166,7 +229,8 @@ public class NeuralStructure implements Serializable {
 		}
 
 		if (required && (result == null)) {
-			final String str = "This operation requires a network with a synapse between the "
+			final String str = 
+			"This operation requires a network with a synapse between the "
 					+ nameLayer(fromLayer)
 					+ " layer to the "
 					+ nameLayer(toLayer) + " layer.";
@@ -217,6 +281,14 @@ public class NeuralStructure implements Serializable {
 	}
 
 	/**
+	 * Get the next layer id.
+	 * @return The next layer id.
+	 */
+	public int getNextID() {
+		return this.nextID++;
+	}
+
+	/**
 	 * Get the previous layers from the specified layer.
 	 * 
 	 * @param targetLayer
@@ -248,8 +320,9 @@ public class NeuralStructure implements Serializable {
 
 		for (final Synapse synapse : this.synapses) {
 			if (synapse.getToLayer() == targetLayer) {
-				if( !result.contains(synapse))
-				result.add(synapse);
+				if (!result.contains(synapse)) {
+					result.add(synapse);
+				}
 			}
 		}
 
@@ -283,62 +356,12 @@ public class NeuralStructure implements Serializable {
 
 		return result;
 	}
-	
+
 	/**
-	 * Determine if the network contains a layer of the specified type.
-	 * @param type The layer type we are looking for.
-	 * @return True if this layer type is present.
+	 * Sort the layers and synapses.
 	 */
-	public boolean containsLayerType(final Class< ? > type) {
-		for (Layer layer : this.layers) {
-			if (ReflectionUtil.isInstanceOf(layer.getClass(), type)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-	
-	public int getNextID()
-	{
-		return nextID++;
-	}
-	
-	public void assignID(Layer layer)
-	{
-		if( layer.getID()==-1 )
-			layer.setID(getNextID());
-	}
-	
-	public void assignID()
-	{
-		for(Layer layer: this.layers )
-		{
-			assignID(layer);
-		}
-		sort();
-	}
-	
-	public int calculateSize()
-	{
-		int size = 0;
-		
-		// first determine size from matrixes
-		for (final Synapse synapse : network.getStructure().getSynapses()) {
-			size += synapse.getMatrixSize();
-		}
-
-		// determine size from threshold values
-		for (final Layer layer : network.getStructure().getLayers()) {
-			if( layer.hasThreshold() )
-			size += layer.getNeuronCount();
-		}
-		return size;
-	}
-	
-	public void sort()
-	{
-		Collections.sort(this.layers,new LayerComparator(this));
-		Collections.sort(this.synapses,new SynapseComparator(this));
+	public void sort() {
+		Collections.sort(this.layers, new LayerComparator(this));
+		Collections.sort(this.synapses, new SynapseComparator(this));
 	}
 }

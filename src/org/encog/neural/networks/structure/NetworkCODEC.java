@@ -64,16 +64,17 @@ public final class NetworkCODEC {
 
 		int index = 0;
 
-		for (Layer layer : network.getStructure().getLayers()) {
+		for (final Layer layer : network.getStructure().getLayers()) {
 			if (layer.hasThreshold()) {
 				// process layer thresholds
-				for (int i = 0; i < layer.getNeuronCount(); i++)
+				for (int i = 0; i < layer.getNeuronCount(); i++) {
 					layer.setThreshold(i, array[index++]);
+				}
 			}
 
 			// process synapses
-			for (Synapse synapse : network.getStructure().getPreviousSynapses(
-					layer)) {
+			for (final Synapse synapse : network.getStructure()
+					.getPreviousSynapses(layer)) {
 				if (synapse.getMatrix() != null) {
 					// process each weight matrix
 					for (int x = 0; x < synapse.getToNeuronCount(); x++) {
@@ -137,23 +138,24 @@ public final class NetworkCODEC {
 	 * @return The memory of the neuron.
 	 */
 	public static double[] networkToArray(final BasicNetwork network) {
-		int size = network.getStructure().calculateSize();
+		final int size = network.getStructure().calculateSize();
 
 		// allocate an array to hold
 		final double[] result = new double[size];
 
 		int index = 0;
 
-		for (Layer layer : network.getStructure().getLayers()) {
+		for (final Layer layer : network.getStructure().getLayers()) {
 			// process layer thresholds
 			if (layer.hasThreshold()) {
-				for (int i = 0; i < layer.getNeuronCount(); i++)
+				for (int i = 0; i < layer.getNeuronCount(); i++) {
 					result[index++] = layer.getThreshold(i);
+				}
 			}
 
 			// process synapses
-			for (Synapse synapse : network.getStructure().getPreviousSynapses(
-					layer)) {
+			for (final Synapse synapse : network.getStructure()
+					.getPreviousSynapses(layer)) {
 				if (synapse.getMatrix() != null) {
 					// process each weight matrix
 					for (int x = 0; x < synapse.getToNeuronCount(); x++) {

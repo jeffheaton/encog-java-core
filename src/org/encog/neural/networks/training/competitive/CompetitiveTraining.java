@@ -67,9 +67,9 @@ import org.slf4j.LoggerFactory;
  * 
  * Because only the BMU neuron and its close neighbors are updated, you can end
  * up with some output neurons that learn nothing. By default these neurons are
- * not forced to win patterns that are not represented well. This spreads out the
- * workload among all output neurons. This feature is not used by default, but can
- * be enabled by setting the "forceWinner" property.
+ * not forced to win patterns that are not represented well. This spreads out
+ * the workload among all output neurons. This feature is not used by default,
+ * but can be enabled by setting the "forceWinner" property.
  * 
  * @author jheaton
  * 
@@ -125,26 +125,53 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Holds the corrections for any matrix being trained.
 	 */
-	private final Map<Synapse, Matrix> correctionMatrix = new HashMap<Synapse, Matrix>();
+	private final Map<Synapse, Matrix> correctionMatrix = 
+		new HashMap<Synapse, Matrix>();
 
 	/**
 	 * True is a winner is to be forced, see class description, or forceWinners
 	 * method. By default, this is true.
 	 */
 	private boolean forceWinner;
-	
+
+	/**
+	 * When used with autodecay, this is the starting learning rate.
+	 */
 	private double startRate;
+	
+	/**
+	 * When used with autodecay, this is the ending learning rate.
+	 */
 	private double endRate;
+	
+	/**
+	 * When used with autodecay, this is the starting radius.
+	 */
 	private double startRadius;
+	
+	/**
+	 * When used with autodecay, this is the ending radius.
+	 */
 	private double endRadius;
+	
+	/**
+	 * This is the current autodecay learning rate.
+	 */
 	private double autoDecayRate;
+	
+	/**
+	 * This is the current autodecay radius.
+	 */
 	private double autoDecayRadius;
 
 	/**
 	 * The logging object.
 	 */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-	
+
+	/**
+	 * The current radius.
+	 */
 	private double radius;
 
 	/**
@@ -198,6 +225,20 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	/**
+	 * Should be called each iteration if autodecay is desired.
+	 */
+	public void autoDecay() {
+		if (this.radius > this.endRadius) {
+			this.radius += this.autoDecayRadius;
+		}
+
+		if (this.learningRate > this.endRate) {
+			this.learningRate += this.autoDecayRate;
+		}
+		getNeighborhood().setRadius(this.radius);
+	}
+
+	/**
 	 * Copy the specified input pattern to the weight matrix. This causes an
 	 * output neuron to learn this pattern "exactly". This is useful when a
 	 * winner is to be forced.
@@ -211,10 +252,31 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 */
 	private void copyInputPattern(final Synapse synapse,
 			final int outputNeuron, final NeuralData input) {
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
+			inputNeuron++) {
 			synapse.getMatrix().set(inputNeuron, outputNeuron,
 					input.getData(inputNeuron));
 		}
+	}
+
+	/**
+	 * Called to decay the learning rate and radius by the specified amount.  
+	 * @param d The percent to decay by.
+	 */
+	public void decay(final double d) {
+		this.radius *= (1.0 - d);
+		this.learningRate *= (1.0 - d);
+	}
+
+	/**
+	 * Decay the learning rate and radius by the specified amount.
+	 * @param decayRate The percent to decay the learning rate by.
+	 * @param decayRadius The percent to decay the radius by.
+	 */
+	public void decay(final double decayRate, final double decayRadius) {
+		this.radius *= (1.0 - decayRadius);
+		this.learningRate *= (1.0 - decayRate);
+		getNeighborhood().setRadius(this.radius);
 	}
 
 	/**
@@ -231,11 +293,12 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 *            The neuron that "won", the best matching unit.
 	 * @return The new weight value.
 	 */
-	private double determineNewWeight(final double weight,
-			final double input, final int currentNeuron, final int bmu) {
+	private double determineNewWeight(final double weight, final double input,
+			final int currentNeuron, final int bmu) {
 
-		final double newWeight = weight + (this.neighborhood.function(currentNeuron, bmu)
-				* this.learningRate * (input - weight));
+		final double newWeight = weight
+				+ (this.neighborhood.function(currentNeuron, bmu)
+						* this.learningRate * (input - weight));
 		return newWeight;
 	}
 
@@ -397,6 +460,28 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	/**
+	 * Setup autodecay.  This will decrease the radius and learning rate from
+	 * the start values to the end values.
+	 * @param plannedIterations The number of iterations that are planned.
+	 * This allows the decay rate to be determined.
+	 * @param startRate The starting learning rate.
+	 * @param endRate The ending learning rate.
+	 * @param startRadius The starting radius.
+	 * @param endRadius The ending radius.
+	 */
+	public void setAutoDecay(final int plannedIterations,
+			final double startRate, final double endRate,
+			final double startRadius, final double endRadius) {
+		this.startRate = startRate;
+		this.endRate = endRate;
+		this.startRadius = startRadius;
+		this.endRadius = endRadius;
+		this.autoDecayRadius = (endRadius - startRadius) / plannedIterations;
+		this.autoDecayRate = (endRate - startRate) / plannedIterations;
+		setParams(this.startRate, this.startRadius);
+	}
+
+	/**
 	 * Determine if a winner is to be forced. See class description for more
 	 * info.
 	 * 
@@ -418,6 +503,30 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	/**
+	 * Set the learning rate and radius.
+	 * @param rate The new learning rate.
+	 * @param radius The new radius.
+	 */
+	public void setParams(final double rate, final double radius) {
+		this.radius = radius;
+		this.learningRate = rate;
+		getNeighborhood().setRadius(radius);
+	}
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
+		result.append("Rate=");
+		result.append(Format.formatPercent(this.learningRate));
+		result.append(", Radius=");
+		result.append(Format.formatDouble(this.radius, 2));
+		return result.toString();
+	}
+
+	/**
 	 * Train for the specified synapse and BMU.
 	 * 
 	 * @param bmu
@@ -430,9 +539,25 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	private void train(final int bmu, final Synapse synapse,
 			final NeuralData input) {
 		// adjust the weight for the BMU and its neighborhood
-		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; outputNeuron++) {
+		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; 
+			outputNeuron++) {
 			trainPattern(synapse, input, outputNeuron, bmu);
 		}
+	}
+
+	/**
+	 * Train the specified pattern.  Find a winning neuron and adjust all
+	 * neurons according to the neighborhood function.
+	 * @param pattern The pattern to train.
+	 */
+	public void trainPattern(final NeuralData pattern) {
+		for (final Synapse synapse : this.synapses) {
+			final NeuralData input = pattern;
+			final int bmu = this.bmuUtil.calculateBMU(synapse, input);
+			train(bmu, synapse, input);
+		}
+		applyCorrection();
+
 	}
 
 	/**
@@ -452,7 +577,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		final Matrix correction = this.correctionMatrix.get(synapse);
 
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; inputNeuron++) {
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
+			inputNeuron++) {
 
 			final double currentWeight = synapse.getMatrix().get(inputNeuron,
 					current);
@@ -463,69 +589,6 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 			correction.set(inputNeuron, current, newWeight);
 		}
-	}
-
-	public void trainPattern(NeuralData pattern) {
-		for (final Synapse synapse : this.synapses) {
-			final NeuralData input = pattern;
-			final int bmu = this.bmuUtil.calculateBMU(synapse, input);
-			train(bmu, synapse, input);
-		}
-		applyCorrection();
-
-	}
-	
-	public void setParams(double rate,double radius)
-	{
-		this.radius = radius;
-		this.learningRate = rate;
-		this.getNeighborhood().setRadius(radius);
-	}
-	
-	public void decay(double d)
-	{
-		this.radius*=(1.0-d);
-		this.learningRate*=(1.0-d);
-	}
-	
-	public void decay(double decayRate,double decayRadius)
-	{
-		this.radius*=(1.0-decayRadius);
-		this.learningRate*=(1.0-decayRate);
-		this.getNeighborhood().setRadius(radius);
-	}
-	
-	public void setAutoDecay(int plannedIterations, double startRate,double endRate,double startRadius,double endRadius)
-	{
-		this.startRate = startRate;
-		this.endRate = endRate;
-		this.startRadius = startRadius;
-		this.endRadius = endRadius;
-		this.autoDecayRadius = (endRadius - startRadius) / plannedIterations;
-		this.autoDecayRate = (endRate - startRate) / plannedIterations;
-		this.setParams(this.startRate, this.startRadius);
-	}
-	
-	public void autoDecay()
-	{
-		if( this.radius>endRadius) {
-			this.radius+=this.autoDecayRadius;
-		}
-		
-		if( this.learningRate>this.endRate) {
-			this.learningRate+=this.autoDecayRate;
-		}
-		this.getNeighborhood().setRadius(radius);
-	}
-	
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
-		result.append("Rate=");
-		result.append(Format.formatPercent(this.learningRate));
-		result.append(", Radius=");
-		result.append(Format.formatDouble(this.radius,2));
-		return result.toString();
 	}
 
 }

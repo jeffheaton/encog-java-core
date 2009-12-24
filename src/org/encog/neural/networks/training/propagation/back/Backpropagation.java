@@ -25,11 +25,9 @@
  */
 package org.encog.neural.networks.training.propagation.back;
 
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
 import org.encog.neural.networks.training.propagation.Propagation;
@@ -78,8 +76,11 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * learning.
 	 */
 	private double learningRate;
-	
-	private double[] lastDelta;
+
+	/**
+	 * The last delta values, used for momentum.
+	 */
+	private final double[] lastDelta;
 
 	/**
 	 * The logging object.
@@ -118,7 +119,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
 			final double momentum) {
-		super(network,training);
+		super(network, training);
 		this.momentum = momentum;
 		this.learningRate = learnRate;
 		this.lastDelta = new double[network.getStructure().calculateSize()];
@@ -143,6 +144,30 @@ public class Backpropagation extends Propagation implements Momentum,
 	}
 
 	/**
+	 * Perform a training iteration.  This is where the actual backprop
+	 * specific training takes place.
+	 * @param prop The gradients.
+	 * @param weights The network weights.
+	 */
+	@Override
+	public void performIteration(final CalculateGradient prop,
+			final double[] weights) {
+
+		final double[] gradients = prop.getGradients();
+
+		for (int i = 0; i < gradients.length; i++) {
+			final double last = this.lastDelta[i];
+			this.lastDelta[i] = (gradients[i] * this.learningRate)
+					+ (last * this.momentum);
+			weights[i] += this.lastDelta[i];
+		}
+		NetworkCODEC.arrayToNetwork(weights, getNetwork());
+
+		setError(prop.getError());
+
+	}
+
+	/**
 	 * Set the learning rate, this is value is essentially a percent. It is the
 	 * degree to which the gradients are applied to the weight matrix to allow
 	 * learning.
@@ -164,23 +189,6 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	public void setMomentum(final double m) {
 		this.momentum = m;
-	}
-
-
-	public void performIteration(CalculateGradient prop, double[] weights) {
-
-		double[] gradients = prop.getGradients();
-		
-		for(int i=0;i<gradients.length;i++) {
-			double last = lastDelta[i]; 
-			lastDelta[i] = (gradients[i]*this.learningRate)+(last*this.momentum);
-			weights[i]+=lastDelta[i];
-		}
-		NetworkCODEC.arrayToNetwork(weights, getNetwork());
-		
-		this.setError(prop.getError());
-		
-		
 	}
 
 }

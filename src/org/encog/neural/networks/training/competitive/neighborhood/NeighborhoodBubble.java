@@ -82,13 +82,21 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 		}
 	}
 
+	/**
+	 * @return The radius.
+	 */
 	public double getRadius() {
 		return this.radius;
 	}
 
-	public void setRadius(double radius) {
+	/**
+	 * Set the radius.
+	 * 
+	 * @param radius
+	 *            The new radius.
+	 */
+	public void setRadius(final double radius) {
 		this.radius = radius;
 	}
-
 
 }

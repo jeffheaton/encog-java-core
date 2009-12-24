@@ -25,6 +25,9 @@
  */
 package org.encog;
 
+/**
+ * A simple status report that goes to the console.
+ */
 public class ConsoleStatusReportable implements StatusReportable {
 	/**
 	 * Simply display any status reports.
@@ -38,10 +41,11 @@ public class ConsoleStatusReportable implements StatusReportable {
 	 */
 	public void report(final int total, final int current, 
 			final String message) {
-		if( total == 0)
-			System.out.println( current +" : " + message);
-		else
-			System.out.println( current + "/" + total +" : " + message);
+		if (total == 0) {
+			System.out.println(current + " : " + message);
+		} else {
+			System.out.println(current + "/" + total + " : " + message);
+		}
 
 	}
 }

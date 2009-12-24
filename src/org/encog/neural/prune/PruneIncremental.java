@@ -32,7 +32,6 @@ import org.encog.StatusReportable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.NeuralNetworkPattern;
@@ -109,7 +108,8 @@ public class PruneIncremental extends ConcurrentJob {
 	/**
 	 * The ranges for the hidden layers.
 	 */
-	private final List<HiddenLayerParams> hidden = new ArrayList<HiddenLayerParams>();
+	private final List<HiddenLayerParams> hidden = 
+		new ArrayList<HiddenLayerParams>();
 
 	/**
 	 * The number if training iterations that should be tried for each network.
@@ -291,7 +291,8 @@ public class PruneIncremental extends ConcurrentJob {
 		final BasicNetwork network = (BasicNetwork) context.getJobUnit();
 
 		// train the neural network
-		final Propagation train = new ResilientPropagation(network, this.training);
+		final Propagation train = 
+			new ResilientPropagation(network, this.training);
 		train.setNumThreads(1);// force single thread mode
 
 		for (int i = 0; i < this.iterations; i++) {

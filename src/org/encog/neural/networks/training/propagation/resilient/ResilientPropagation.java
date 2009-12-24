@@ -214,6 +214,12 @@ public class ResilientPropagation extends Propagation {
 		return this.zeroTolerance;
 	}
 
+	/**
+	 * Perform a training iteration.  This is where the actual RPROP
+	 * specific training takes place.
+	 * @param prop The gradients.
+	 * @param weights The network weights.
+	 */
 	public void performIteration(CalculateGradient prop, double[] weights) {		
 	
 		this.gradients = prop.getGradients();

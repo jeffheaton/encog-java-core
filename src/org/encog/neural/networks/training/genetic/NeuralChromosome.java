@@ -78,8 +78,16 @@ public class NeuralChromosome
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * The genetic algorithm that uses this chromosome.
+	 */
 	private NeuralGeneticAlgorithm genetic;
 	
+	/**
+	 * Construct a neural chromosome.
+	 * @param genetic The genetic algorithm that uses this chromosome.
+	 * @param network The network that this chromosome is based on.
+	 */
 	public NeuralChromosome(
 			final NeuralGeneticAlgorithm genetic,
 			final BasicNetwork network) {
@@ -156,10 +164,14 @@ public class NeuralChromosome
 		NetworkCODEC.arrayToNetwork(net, this.network);
 	}
 
+	/**
+	 * Calculate the score for this chromosome.
+	 */
 	@Override
 	public void calculateScore() {
 		this.updateNetwork();
-		double score = this.genetic.getCalculateScore().calculateScore(this.getNetwork());
+		double score = this.genetic.getCalculateScore().calculateScore(
+				this.getNetwork());
 		setScore(score);		
 	}
 }

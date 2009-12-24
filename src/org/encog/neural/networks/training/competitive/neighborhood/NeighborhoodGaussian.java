@@ -73,11 +73,18 @@ public class NeighborhoodGaussian implements NeighborhoodFunction {
 		return this.radial.calculate(currentNeuron - bestNeuron);
 	}
 
+	/**
+	 * @return The radius.
+	 */
 	public double getRadius() {
 		return this.radial.getWidth();
 	}
 
-	public void setRadius(double radius) {
+	/**
+	 * Set the radius.
+	 * @param radius The new radius.
+	 */
+	public void setRadius(final double radius) {
 		this.radial.setWidth(radius);
 	}
 

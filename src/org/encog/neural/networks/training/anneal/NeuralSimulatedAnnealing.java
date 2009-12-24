@@ -36,10 +36,20 @@ import org.slf4j.LoggerFactory;
  * This class implements a simulated annealing training algorithm for 
  * neural networks. It is based on the generic SimulatedAnnealing class.
  * It is used in the same manner as any other training class that implements the
- * Train interface.  This class is abstract, to create your own version
- * of simulated annealing, you must provide an implementation of the
- * determineError method.  If you want to train with a training set, use
- * the NeuralTrainingSetSimulatedAnnealing class.
+ * Train interface.  There are essentially two ways you can make use of this
+ * class.
+ * 
+ * Either way, you will need a score object.  The score object tells the
+ * simulated annealing algorithm how well suited a neural network is.
+ * 
+ * If you would like to use simulated annealing with a training set you 
+ * should make use TrainingSetScore class.  This score object uses a training
+ * set to score your neural network.
+ * 
+ * If you would like to be more abstract, and not use a training set, you
+ * can create your own implementation of the CalculateScore method.  This
+ * class can then score the networks any way that you like.  
+ * 
  */
 public class NeuralSimulatedAnnealing extends BasicTraining {
 
@@ -73,6 +83,8 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * 
 	 * @param network
 	 *            The neural network to be trained.
+	 * @param calculateScore
+	 * 			  Used to calculate the score for a neural network.
 	 * @param startTemp
 	 *            The starting temperature.
 	 * @param stopTemp
@@ -165,6 +177,9 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 				NeuralSimulatedAnnealing.this.network);
 	}
 
+	/**
+	 * @return The object used to calculate the score.
+	 */
 	public CalculateScore getCalculateScore() {
 		return calculateScore;
 	}

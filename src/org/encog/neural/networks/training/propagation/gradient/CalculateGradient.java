@@ -210,7 +210,7 @@ public class CalculateGradient {
 		for(int i=0;i<this.gradients.length;i++) {
 			this.gradients[i] = 0;
 			for(int j=0;j<this.threadCount;j++) {
-				this.gradients[i]+=this.workers[j].getErrors()[i];
+				this.gradients[i]+=this.workers[j].getGradients()[i];
 			}
 		}
 		

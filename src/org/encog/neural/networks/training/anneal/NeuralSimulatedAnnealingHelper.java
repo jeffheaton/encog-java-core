@@ -40,7 +40,8 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 */
 	@Override
 	public double calculateScore() {
-		return owner.getCalculateScore().calculateScore(this.owner.getNetwork());
+		return owner.getCalculateScore().calculateScore(
+				this.owner.getNetwork());
 	}
 
 	/**

@@ -28,8 +28,6 @@ package org.encog.neural.networks.training.propagation.manhattan;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
@@ -59,16 +57,16 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * The default tolerance to determine of a number is close to zero.
 	 */
 	static final double DEFAULT_ZERO_TOLERANCE = 0.001;
-	
+
 	/**
 	 * The zero tolearnce to use.
 	 */
 	private final double zeroTolerance;
-	
+
 	/**
 	 * 
 	 */
-	private double learningRate;	
+	private double learningRate;
 	private double[] gradients;
 
 	/**
@@ -78,12 +76,16 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Construct a class to train with Manhattan propagation.  Use default zero 
+	 * Construct a class to train with Manhattan propagation. Use default zero
 	 * tolerance.
-	 * @param network The network that is to be trained.
-	 * @param training The training data to use.
-	 * @param learnRate A fixed learning to the weight matrix for each 
-	 * training iteration.
+	 * 
+	 * @param network
+	 *            The network that is to be trained.
+	 * @param training
+	 *            The training data to use.
+	 * @param learnRate
+	 *            A fixed learning to the weight matrix for each training
+	 *            iteration.
 	 */
 	public ManhattanPropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate) {
@@ -92,57 +94,72 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	}
 
 	/**
-	 * Construct a Manhattan propagation training object.  
-	 * @param network The network to train.
-	 * @param training The training data to use.
-	 * @param learnRate The learning rate.
-	 * @param zeroTolerance The zero tolerance.
+	 * Construct a Manhattan propagation training object.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
+	 * @param learnRate
+	 *            The learning rate.
+	 * @param zeroTolerance
+	 *            The zero tolerance.
 	 */
 	public ManhattanPropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
 			final double zeroTolerance) {
-		super(network,training);
+		super(network, training);
 		this.zeroTolerance = zeroTolerance;
 		this.learningRate = learnRate;
 		this.gradients = new double[network.getStructure().calculateSize()];
 	}
 
 	/**
-	 * @return The learning rate that was specified in the
-	 * constructor.
+	 * @return The learning rate that was specified in the constructor.
 	 */
 	public double getLearningRate() {
 		return this.learningRate;
 	}
 
 	/**
-	 * @return The zero tolerance that was specified in the
-	 * constructor.
+	 * @return The zero tolerance that was specified in the constructor.
 	 */
 	public double getZeroTolerance() {
 		return this.zeroTolerance;
 	}
 
 	/**
+	 * Perform a training iteration. This is where the actual Manhattan 
+	 * specific training takes place.
+	 * 
+	 * @param prop
+	 *            The gradients.
+	 * @param weights
+	 *            The network weights.
+	 */
+	@Override
+	public void performIteration(final CalculateGradient prop,
+			final double[] weights) {
+
+		this.gradients = prop.getGradients();
+
+		for (int i = 0; i < this.gradients.length; i++) {
+			weights[i] += updateWeight(i);
+		}
+
+	}
+
+	/**
 	 * Set the learning rate.
-	 * @param rate The new learning rate.
+	 * 
+	 * @param rate
+	 *            The new learning rate.
 	 */
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
 
-
-	public void performIteration(CalculateGradient prop, double[] weights) {
-		
-		this.gradients = prop.getGradients();
-		
-		for(int i=0;i<this.gradients.length;i++) {
-			weights[i]+=updateWeight(i);
-		}
-
-	}
-	
-	private double updateWeight(int index) {
+	private double updateWeight(final int index) {
 		if (Math.abs(this.gradients[index]) < this.zeroTolerance) {
 			return 0;
 		} else if (this.gradients[index] > 0) {

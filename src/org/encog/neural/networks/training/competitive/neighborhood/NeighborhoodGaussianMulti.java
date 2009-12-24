@@ -3,109 +3,155 @@ package org.encog.neural.networks.training.competitive.neighborhood;
 import org.encog.util.math.rbf.GaussianFunctionMulti;
 import org.encog.util.math.rbf.RadialBasisFunctionMulti;
 
+/**
+ * Implements a multi-dimensional gaussian neighborhood function.  DO not
+ * use this for a 1D gaussian, just use the NeighborhoodGaussian for that.
+ *
+ */
 public class NeighborhoodGaussianMulti implements NeighborhoodFunction {
 
-	private RadialBasisFunctionMulti rbf;
-	private int[] size;
+	/**
+	 * The radial basis function to use.
+	 */
+	private final RadialBasisFunctionMulti rbf;
+	
+	/**
+	 * The size of each dimension.
+	 */
+	private final int[] size;
+	
+	/**
+	 * The displacement of each dimension, when mapping the dimensions
+	 * to a 1d array.
+	 */
 	private int[] displacement;
-	
-	NeighborhoodGaussianMulti(int[] size, RadialBasisFunctionMulti rbf)
-	{
-		this.rbf = rbf;
-		this.size = size;
-		calculateDisplacement();
-	}
-	
-	public NeighborhoodGaussianMulti(int x,int y)
-	{
-		int[] size = new int[2];
+
+	/**
+	 * Construct a 2d neighborhood function based on the sizes for the
+	 * x and y dimensions.
+	 * @param x The size of the x-dimension.
+	 * @param y The size of the y-dimension.
+	 */
+	public NeighborhoodGaussianMulti(final int x, final int y) {
+		final int[] size = new int[2];
 		size[0] = x;
 		size[1] = y;
-		
-		double[] centerArray = new double[2];
+
+		final double[] centerArray = new double[2];
 		centerArray[0] = 0;
 		centerArray[1] = 0;
-		
-		double[] widthArray = new double[2];
+
+		final double[] widthArray = new double[2];
 		widthArray[0] = 1;
 		widthArray[1] = 1;
-		
-		RadialBasisFunctionMulti rbf = new GaussianFunctionMulti(1, centerArray, widthArray);
-		
+
+		final RadialBasisFunctionMulti rbf = new GaussianFunctionMulti(1,
+				centerArray, widthArray);
+
 		this.rbf = rbf;
 		this.size = size;
-		
+
 		calculateDisplacement();
 	}
-	
-	private void calculateDisplacement()
-	{
+
+	/**
+	 * Construct a multi-dimensional neighborhood function.
+	 * @param size The sizes of each dimension.
+	 * @param rbf The multi-dimensional RBF to use.
+	 */
+	NeighborhoodGaussianMulti(final int[] size,
+			final RadialBasisFunctionMulti rbf) {
+		this.rbf = rbf;
+		this.size = size;
+		calculateDisplacement();
+	}
+
+	/**
+	 * Calculate all of the displacement values.
+	 */
+	private void calculateDisplacement() {
 		this.displacement = new int[this.size.length];
-		for( int i=0;i<this.size.length;i++)
-		{
+		for (int i = 0; i < this.size.length; i++) {
 			int value;
-			
-			if( i==0 )
-			{
+
+			if (i == 0) {
 				value = 0;
-			}
-			else if (i==1)
-			{
+			} else if (i == 1) {
 				value = this.size[0];
+			} else {
+				value = this.displacement[i - 1] * this.size[i - 1];
 			}
-			else
-			{
-				value = this.displacement[i-1] * this.size[i-1];
-			}
-			
+
 			this.displacement[i] = value;
 		}
 	}
-	
-	private int[] translateCoordinates(int index)
-	{
-		int[] result = new int[displacement.length];
-		int countingIndex = index;
-		
-		for(int i=displacement.length-1;i>=0;i--)
-		{
-			int value;
-			if( displacement[i]>0 )
-				value = countingIndex/displacement[i];
-			else
-				value = countingIndex;
-			
-			countingIndex-=displacement[i]*value;
-			result[i] = value;
-			
+
+	/**
+	 * Calculate the value for the multi RBF function.
+	 * @param currentNeuron The current neuron.
+	 * @param bestNeuron The best neuron.
+	 * @return A percent that determines the amount of training the current
+	 * neuron should get.  Usually 100% when it is the bestNeuron.
+	 */
+	public double function(final int currentNeuron, final int bestNeuron) {
+		final double[] vector = new double[this.displacement.length];
+		final int[] vectorCurrent = translateCoordinates(currentNeuron);
+		final int[] vectorBest = translateCoordinates(bestNeuron);
+		for (int i = 0; i < vectorCurrent.length; i++) {
+			vector[i] = vectorCurrent[i] - vectorBest[i];
 		}
-		
-		return result;
-	}
-	
-	
-	public double function(int currentNeuron, int bestNeuron) {
-		double[] vector = new double[this.displacement.length]; 
-		int[] vectorCurrent = translateCoordinates(currentNeuron);
-		int[] vectorBest = translateCoordinates(bestNeuron);
-		for(int i=0;i<vectorCurrent.length;i++) {
-			vector[i] = vectorCurrent[i]-vectorBest[i];
-		}
-		return rbf.calculate(vector);
-		
-	}
-	
-	public RadialBasisFunctionMulti getRBF()
-	{
-		return this.rbf;
+		return this.rbf.calculate(vector);
+
 	}
 
+	/**
+	 * @return The radius.
+	 */
 	public double getRadius() {
 		return this.rbf.getWidth(0);
 	}
 
-	public void setRadius(double radius) {
+	/**
+	 * @return The RBF to use.
+	 */
+	public RadialBasisFunctionMulti getRBF() {
+		return this.rbf;
+	}
+
+	/**
+	 * Set the radius.
+	 * @param radius The radius.
+	 */
+	public void setRadius(final double radius) {
 		this.rbf.setWidth(radius);
+	}
+
+	/**
+	 * Translate the specified index into a set of multi-dimensional
+	 * coordinates that represent the same index.  This is how the
+	 * multi-dimensional coordinates are translated into a one dimensional
+	 * index for the input neurons.
+	 * @param index The index to translate.
+	 * @return The multi-dimensional coordinates.
+	 */
+	private int[] translateCoordinates(final int index) {
+		final int[] result = new int[this.displacement.length];
+		int countingIndex = index;
+
+		for (int i = this.displacement.length - 1; i >= 0; i--) {
+			int value;
+			if (this.displacement[i] > 0) {
+				value = countingIndex / this.displacement[i];
+			} else {
+				value = countingIndex;
+			}
+
+			countingIndex -= this.displacement[i] * value;
+			result[i] = value;
+
+		}
+
+		return result;
 	}
 
 }
