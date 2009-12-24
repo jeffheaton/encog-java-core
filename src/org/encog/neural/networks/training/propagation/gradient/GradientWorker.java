@@ -77,8 +77,8 @@ public class GradientWorker implements Runnable {
 			gradient.calculate(training, weights);
 	}
 	
-	public double[] getErrors() {
-		return this.gradient.getErrors();
+	public double[] getGradients() {
+		return this.gradient.getGradients();
 	}
 	
 	public int getCount() {
