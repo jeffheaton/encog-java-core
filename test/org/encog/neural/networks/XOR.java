@@ -6,6 +6,7 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 
@@ -34,6 +35,11 @@ public class XOR {
 			}
 			
 			return true;
+		}
+		
+		public static NeuralDataSet createXORDataSet()
+		{
+			return new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		}
 		
 		public static void testXORDataSet(NeuralDataSet set)
