@@ -37,68 +37,68 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.ErrorCalculation;
 
+/**
+ * Single threaded class that actually calculates the gradients. This is used by
+ * the individual gradient worker classes.
+ */
 public class GradientUtil {
-	private BasicNetwork network;
-	private Map<Layer, Object> layerDeltas = new HashMap<Layer, Object>();
-	private double[] errors;
-	private double[] weights;
-	private NeuralOutputHolder holder;
-	private ErrorCalculation error = new ErrorCalculation();
-	private int count;
 	
-	public GradientUtil(BasicNetwork network) {
+	/**
+	 * The network we are calculating for.
+	 */
+	private final BasicNetwork network;
+	
+	/**
+	 * The error deltas for each layer.
+	 */
+	private final Map<Layer, Object> layerDeltas = new HashMap<Layer, Object>();
+	
+	/**
+	 * The gradients.
+	 */
+	private final double[] errors;
+	
+	/**
+	 * The weights.
+	 */
+	private double[] weights;
+	
+	/**
+	 * The output from the last iteration of the network.
+	 */
+	private NeuralOutputHolder holder;
+	
+	/**
+	 * The RMS error.
+	 */
+	private final ErrorCalculation error = new ErrorCalculation();
+	
+	/**
+	 * The number of training patterns.
+	 */
+	private int count;
+
+	public GradientUtil(final BasicNetwork network) {
 		this.network = network;
-		int size = network.getStructure().calculateSize();
+		final int size = network.getStructure().calculateSize();
 		this.errors = new double[size];
 		this.holder = new NeuralOutputHolder();
 	}
 
-	public double[] getErrors() {
-		return this.errors;
-	}
-
-	private double[] getLayerDeltas(Layer layer) {
-		if (this.layerDeltas.containsKey(layer)) {
-			return (double[]) this.layerDeltas.get(layer);
-		}
-
-		double[] result = new double[layer.getNeuronCount()];
-		this.layerDeltas.put(layer, result);
-		return result;
-	}
-	
-	private void clearDeltas()
-	{
-		for(Object obj: this.layerDeltas.values())
-		{
-			double[] d = (double[])obj;
-			for(int i=0;i<d.length;i++) {
-				d[i] = 0;
-			}
-		}
-	}
-	
-	public void calculate(NeuralDataSet training, double[] weights) {
-		reset(weights);
-		for(NeuralDataPair pair: training) {
-			calculate(pair.getInput(), pair.getIdeal());
-		}				
-	}
-
-	public void calculate(NeuralData input, NeuralData ideal) {
+	public void calculate(final NeuralData input, final NeuralData ideal) {
 		clearDeltas();
 		this.count++;
 		this.holder = new NeuralOutputHolder();
-		Layer output = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
-		NeuralData actual = this.network.compute(input, this.holder);
-		
-		this.error.updateError(actual.getData(), ideal.getData());
-		
-		double deltas[] = getLayerDeltas(output);
-		double idealData[] = ideal.getData();
-		double actualData[] = actual.getData();
+		final Layer output = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
+		final NeuralData actual = this.network.compute(input, this.holder);
 
-		if ( output.getActivationFunction().hasDerivative() ) {
+		this.error.updateError(actual.getData(), ideal.getData());
+
+		final double[] deltas = getLayerDeltas(output);
+		final double[] idealData = ideal.getData();
+		final double[] actualData = actual.getData();
+
+		if (output.getActivationFunction().hasDerivative()) {
 			for (int i = 0; i < deltas.length; i++) {
 				deltas[i] = actual.getData(i);
 			}
@@ -110,48 +110,56 @@ public class GradientUtil {
 			for (int i = 0; i < output.getNeuronCount(); i++) {
 				deltas[i] = deltas[i] * (idealData[i] - actualData[i]);
 			}
-		}
-		else
-		{
-			for (int i = 0; i < output.getNeuronCount(); i++) 
+		} else {
+			for (int i = 0; i < output.getNeuronCount(); i++) {
 				deltas[i] = (idealData[i] - actualData[i]);
+			}
 		}
 
 		int index = 0;
-		for(Layer layer: this.network.getStructure().getLayers()) {
-			double layerDeltas[] = getLayerDeltas(layer);
-			
-			if( layer.hasThreshold() ) {
-				for(int i=0;i<layerDeltas.length;i++) {
-					this.errors[index++] += layerDeltas[i]; 
-				}	
+		for (final Layer layer : this.network.getStructure().getLayers()) {
+			final double layerDeltas[] = getLayerDeltas(layer);
+
+			if (layer.hasThreshold()) {
+				for (final double layerDelta : layerDeltas) {
+					this.errors[index++] += layerDelta;
+				}
 			}
-			
-			for(Synapse synapse: this.network.getStructure().getPreviousSynapses(layer)) {
-				if( synapse.getMatrix()!=null )
-					index = calculate(synapse,index);
-			}			
-		}		
+
+			for (final Synapse synapse : this.network.getStructure()
+					.getPreviousSynapses(layer)) {
+				if (synapse.getMatrix() != null) {
+					index = calculate(synapse, index);
+				}
+			}
+		}
 	}
 
-	private int calculate(Synapse synapse, int index) {
-		
-		double toDeltas[] = getLayerDeltas(synapse.getToLayer());
-		double fromDeltas[] = getLayerDeltas(synapse.getFromLayer());
-		
-		NeuralData actual = this.holder.getResult().get(synapse);
-		double[] actualData = actual.getData();
-		
+	public void calculate(final NeuralDataSet training, final double[] weights) {
+		reset(weights);
+		for (final NeuralDataPair pair : training) {
+			calculate(pair.getInput(), pair.getIdeal());
+		}
+	}
+
+	private int calculate(final Synapse synapse, int index) {
+
+		final double toDeltas[] = getLayerDeltas(synapse.getToLayer());
+		final double fromDeltas[] = getLayerDeltas(synapse.getFromLayer());
+
+		final NeuralData actual = this.holder.getResult().get(synapse);
+		final double[] actualData = actual.getData();
+
 		for (int x = 0; x < synapse.getToNeuronCount(); x++) {
 			for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-				double value = actualData[y]*toDeltas[x];
-				errors[index] += value;
-				fromDeltas[y] +=  this.weights[index]*toDeltas[x];
+				final double value = actualData[y] * toDeltas[x];
+				this.errors[index] += value;
+				fromDeltas[y] += this.weights[index] * toDeltas[x];
 				index++;
 			}
 		}
-		
-		double[] temp = new double[fromDeltas.length];
+
+		final double[] temp = new double[fromDeltas.length];
 
 		for (int i = 0; i < fromDeltas.length; i++) {
 			temp[i] = actualData[i];
@@ -163,27 +171,50 @@ public class GradientUtil {
 		for (int i = 0; i < temp.length; i++) {
 			fromDeltas[i] *= temp[i];
 		}
-				
+
 		return index;
 	}
 
-	public void reset(double[] weights) {
-		this.error.reset();
-		this.weights = weights;
-		this.layerDeltas.clear();
-		this.count = 0;
-		
-		for (int i = 0; i < this.errors.length; i++)
-			this.errors[i] = 0;
+	private void clearDeltas() {
+		for (final Object obj : this.layerDeltas.values()) {
+			final double[] d = (double[]) obj;
+			for (int i = 0; i < d.length; i++) {
+				d[i] = 0;
+			}
+		}
+	}
+
+	public int getCount() {
+		return this.count;
 	}
 
 	public double getError() {
 		return this.error.calculateRMS();
 	}
-	
-	public int getCount() {
-		return this.count;
+
+	public double[] getErrors() {
+		return this.errors;
 	}
-	
+
+	private double[] getLayerDeltas(final Layer layer) {
+		if (this.layerDeltas.containsKey(layer)) {
+			return (double[]) this.layerDeltas.get(layer);
+		}
+
+		final double[] result = new double[layer.getNeuronCount()];
+		this.layerDeltas.put(layer, result);
+		return result;
+	}
+
+	public void reset(final double[] weights) {
+		this.error.reset();
+		this.weights = weights;
+		this.layerDeltas.clear();
+		this.count = 0;
+
+		for (int i = 0; i < this.errors.length; i++) {
+			this.errors[i] = 0;
+		}
+	}
 
 }

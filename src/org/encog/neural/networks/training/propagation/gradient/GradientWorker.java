@@ -43,56 +43,53 @@ public class GradientWorker implements Runnable {
 	 * worker.
 	 */
 	private final int low;
-	
+
 	private final CalculateGradient owner;
-	
+
 	private final BasicNetwork network;
-	private NeuralDataSet training;
-	private GradientUtil gradient;
-	
-	public GradientWorker(CalculateGradient owner, NeuralDataSet training,int low, int high) 
-	{
+	private final NeuralDataSet training;
+	private final GradientUtil gradient;
+
+	public GradientWorker(final CalculateGradient owner,
+			final NeuralDataSet training, final int low, final int high) {
 		this.owner = owner;
 		this.high = high;
 		this.low = low;
-		this.network = (BasicNetwork)owner.getNetwork().clone();
+		this.network = (BasicNetwork) owner.getNetwork().clone();
 		this.training = training;
-		this.gradient = new GradientUtil(network);
+		this.gradient = new GradientUtil(this.network);
 	}
-	
-	public void run() {
-		double[] weights = this.owner.getWeights();
-		NeuralDataPair pair = owner.createPair();
-		
-		if( training instanceof Indexable && this.high!=this.low )
-		{
-			Indexable t2 = (Indexable) training;
-			gradient.reset(weights);
-			for(int i=low;i<=high;i++) {	
-				t2.getRecord(i, pair);
-				gradient.calculate(pair.getInput(), pair.getIdeal());
-			}
-		}
-		else
-			gradient.calculate(training, weights);
-	}
-	
-	public double[] getErrors() {
-		return this.gradient.getErrors();
-	}
-	
+
 	public int getCount() {
 		return this.gradient.getCount();
 	}
-	
-	public double getError()
-	{
+
+	public double getError() {
 		return this.gradient.getError();
 	}
 
-	public BasicNetwork getNetwork() {
-		return network;
+	public double[] getErrors() {
+		return this.gradient.getErrors();
 	}
-	
-	
+
+	public BasicNetwork getNetwork() {
+		return this.network;
+	}
+
+	public void run() {
+		final double[] weights = this.owner.getWeights();
+		final NeuralDataPair pair = this.owner.createPair();
+
+		if ((this.training instanceof Indexable) && (this.high != this.low)) {
+			final Indexable t2 = (Indexable) this.training;
+			this.gradient.reset(weights);
+			for (int i = this.low; i <= this.high; i++) {
+				t2.getRecord(i, pair);
+				this.gradient.calculate(pair.getInput(), pair.getIdeal());
+			}
+		} else {
+			this.gradient.calculate(this.training, weights);
+		}
+	}
+
 }
