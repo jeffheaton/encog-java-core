@@ -4,7 +4,7 @@
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ * Copyright 2008-2010, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
@@ -91,27 +91,49 @@ public class CalculateGradient {
 	 * The weights and thresholds being trained.
 	 */
 	private double[] weights;
-	
+
 	/**
 	 * The gradients calculated for every weight and threshold.
 	 */
 	private final double[] gradients;
-	
+
 	/**
 	 * The overall error.
 	 */
 	private double error;
-	
+
 	/**
 	 * The number of training patterns.
 	 */
 	private int count;
 
+	/**
+	 * Construct the object using a network and training set. This constructor
+	 * will use only a single thread.
+	 * 
+	 * @param network
+	 *            The network to be used to calculate.
+	 * @param training
+	 *            The training set to use.
+	 */
 	public CalculateGradient(final BasicNetwork network,
 			final NeuralDataSet training) {
 		this(network, training, 1);
 	}
 
+	/**
+	 * Construct the object for multithreaded use. The number of threads can be
+	 * specified.
+	 * 
+	 * @param network
+	 *            The network to use.
+	 * @param training
+	 *            The training set to use.
+	 * @param threads
+	 *            The number of threads. Specify one for single threaded.
+	 *            Specify zero to allow Encog to determine the best number of
+	 *            threads to use, based on how many processors this machine has.
+	 */
 	public CalculateGradient(final BasicNetwork network,
 			final NeuralDataSet training, final int threads) {
 		this.training = training;
@@ -181,7 +203,9 @@ public class CalculateGradient {
 
 	/**
 	 * Calculate the gradients based on the specified weights.
-	 * @param weights The weights to use.
+	 * 
+	 * @param weights
+	 *            The weights to use.
 	 */
 	public void calculate(final double[] weights) {
 		this.weights = weights;
@@ -224,6 +248,12 @@ public class CalculateGradient {
 		return result;
 	}
 
+	/**
+	 * Create the worker threads for use in multithreaded training.
+	 * 
+	 * @param training
+	 *            The training set to use.
+	 */
 	private void createWorkersMultiThreaded(final Indexable training) {
 		this.indexed = training;
 		// setup the workers
@@ -252,6 +282,12 @@ public class CalculateGradient {
 		}
 	}
 
+	/**
+	 * Create a single worker to handle the single threaded mode.
+	 * 
+	 * @param training
+	 *            The training set to use.
+	 */
 	private void createWorkersSingleThreaded(final NeuralDataSet training) {
 		// setup the workers
 		this.workers = new GradientWorker[this.threadCount];
@@ -266,26 +302,47 @@ public class CalculateGradient {
 		this.error = (totalError / this.threadCount);
 	}
 
+	/**
+	 * @return The training set count.
+	 */
 	public int getCount() {
 		return this.count;
 	}
 
+	/**
+	 * @return The current overall error.
+	 */
 	public double getError() {
 		return this.error;
 	}
 
+	/**
+	 * @return The gradients.
+	 */
 	public double[] getGradients() {
 		return this.gradients;
 	}
 
+	/**
+	 * @return The network that is being trained.
+	 */
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 
+	/**
+	 * @return The weights and thresholds from the network that is being
+	 *         trained.
+	 */
 	public double[] getWeights() {
 		return this.weights;
 	}
 
+	/**
+	 * Link the context layers. This ensures that the workers pass on the state
+	 * of their context layer to the next worker. Without this multithreaded
+	 * training could not be used on recurrent neural networks.
+	 */
 	private void linkContext() {
 		final Map<ContextLayer, Object> workload = new HashMap<ContextLayer, Object>();
 
@@ -328,6 +385,10 @@ public class CalculateGradient {
 		}
 	}
 
+	/**
+	 * Run all of the workers in a multithreaded way. This function will block
+	 * until all threads are done.
+	 */
 	private void runWorkersMultiThreaded() {
 		// start the workers
 		for (int i = 0; i < this.threadCount; i++) {
@@ -343,6 +404,9 @@ public class CalculateGradient {
 		}
 	}
 
+	/**
+	 * Run the single worker for the single threaded mode.
+	 */
 	private void runWorkersSingleThreaded() {
 		this.workers[0].run();
 	}

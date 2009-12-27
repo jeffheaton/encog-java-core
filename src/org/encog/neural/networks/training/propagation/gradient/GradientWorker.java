@@ -4,7 +4,7 @@
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ * Copyright 2008-2010, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
@@ -30,6 +30,12 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 
+/**
+ * A worker handles one thread. Used to allow the gradient calculation process
+ * to run multithreaded. Even if running in single threaded mode, a single
+ * worker is created and run by the main thread.
+ * 
+ */
 public class GradientWorker implements Runnable {
 
 	/**
@@ -44,12 +50,33 @@ public class GradientWorker implements Runnable {
 	 */
 	private final int low;
 
+	/**
+	 * The owner of this worker.
+	 */
 	private final CalculateGradient owner;
 
+	/**
+	 * The network being used by this worker.
+	 */
 	private final BasicNetwork network;
+	
+	/**
+	 * The training set used by this worker.
+	 */
 	private final NeuralDataSet training;
+	
+	/**
+	 * The gradient util used by this worker.
+	 */
 	private final GradientUtil gradient;
 
+	/**
+	 * Construct a worker.
+	 * @param owner The owner of this worker.
+	 * @param training The training set that this worker is to use.
+	 * @param low The low element in the training set.
+	 * @param high The high element in the training set.
+	 */
 	public GradientWorker(final CalculateGradient owner,
 			final NeuralDataSet training, final int low, final int high) {
 		this.owner = owner;
@@ -60,22 +87,37 @@ public class GradientWorker implements Runnable {
 		this.gradient = new GradientUtil(this.network);
 	}
 
+	/**
+	 * @return The number of training elements ot be processed by this worker.
+	 */
 	public int getCount() {
 		return this.gradient.getCount();
 	}
 
+	/**
+	 * @return The overall error for this worker.
+	 */
 	public double getError() {
 		return this.gradient.getError();
 	}
 
+	/**
+	 * @return The gradients calculated for this worker.
+	 */
 	public double[] getErrors() {
 		return this.gradient.getErrors();
 	}
 
+	/**
+	 * @return The network to calculate gradients for.
+	 */
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 
+	/**
+	 * The main loop for this thread.
+	 */
 	public void run() {
 		final double[] weights = this.owner.getWeights();
 		final NeuralDataPair pair = this.owner.createPair();

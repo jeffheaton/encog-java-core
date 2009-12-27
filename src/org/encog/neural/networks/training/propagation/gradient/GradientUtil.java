@@ -4,7 +4,7 @@
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
- * Copyright 2008-2009, Heaton Research Inc., and individual contributors.
+ * Copyright 2008-2010, Heaton Research Inc., and individual contributors.
  * See the copyright.txt in the distribution for a full listing of 
  * individual contributors.
  *
@@ -78,6 +78,10 @@ public class GradientUtil {
 	 */
 	private int count;
 
+	/**
+	 * Construct the gradient utility.
+	 * @param network The network to calculate gradients for.
+	 */
 	public GradientUtil(final BasicNetwork network) {
 		this.network = network;
 		final int size = network.getStructure().calculateSize();
@@ -85,6 +89,11 @@ public class GradientUtil {
 		this.holder = new NeuralOutputHolder();
 	}
 
+	/**
+	 * Calculate the gradents between the input and ideal data.
+	 * @param input The input data.
+	 * @param ideal The desired output data.
+	 */
 	public void calculate(final NeuralData input, final NeuralData ideal) {
 		clearDeltas();
 		this.count++;
@@ -135,6 +144,11 @@ public class GradientUtil {
 		}
 	}
 
+	/**
+	 * Calculate for an entire training set.
+	 * @param training The training set to use.
+	 * @param weights The weights to use.
+	 */
 	public void calculate(final NeuralDataSet training, final double[] weights) {
 		reset(weights);
 		for (final NeuralDataPair pair : training) {
@@ -142,6 +156,12 @@ public class GradientUtil {
 		}
 	}
 
+	/**
+	 * Calculate for an individual synapse.  
+	 * @param synapse The synapse to calculate for.
+	 * @param index The current index in the weight array.
+	 * @return The new index value.
+	 */
 	private int calculate(final Synapse synapse, int index) {
 
 		final double toDeltas[] = getLayerDeltas(synapse.getToLayer());
@@ -175,6 +195,9 @@ public class GradientUtil {
 		return index;
 	}
 
+	/**
+	 * Clear any deltas.
+	 */
 	private void clearDeltas() {
 		for (final Object obj : this.layerDeltas.values()) {
 			final double[] d = (double[]) obj;
@@ -184,18 +207,32 @@ public class GradientUtil {
 		}
 	}
 
+	/**
+	 * @return The training set count.
+	 */
 	public int getCount() {
 		return this.count;
 	}
 
+	/**
+	 * @return The currenht error
+	 */
 	public double getError() {
 		return this.error.calculateRMS();
 	}
 
+	/**
+	 * @return The gradients.
+	 */
 	public double[] getErrors() {
 		return this.errors;
 	}
 
+	/**
+	 * Get the deltas for a layer.  The deltas are the difference between actual and ideal.
+	 * @param layer The layer.
+	 * @return The deltas as an array.
+	 */
 	private double[] getLayerDeltas(final Layer layer) {
 		if (this.layerDeltas.containsKey(layer)) {
 			return (double[]) this.layerDeltas.get(layer);
@@ -206,6 +243,10 @@ public class GradientUtil {
 		return result;
 	}
 
+	/**
+	 * Reset for an iteration.
+	 * @param weights The weights.
+	 */
 	public void reset(final double[] weights) {
 		this.error.reset();
 		this.weights = weights;
