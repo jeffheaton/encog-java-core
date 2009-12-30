@@ -66,7 +66,8 @@ public class OutputFieldEncode extends BasicOutputField {
 	 * @param high The high value for the range.
 	 * @param value The value that the field should produce for this range.
 	 */
-	public void addRange(final double low, final double high, final double value) {
+	public void addRange(final double low, final double high, 
+			final double value) {
 		final MappedRange range = new MappedRange(low, high, value);
 		this.ranges.add(range);
 	}

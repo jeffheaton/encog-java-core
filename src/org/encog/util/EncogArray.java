@@ -25,8 +25,11 @@
  */
 package org.encog.util;
 
-public class EncogArray {
-	
+/**
+ * Some array functions used by Encog.
+ */
+public final class EncogArray {
+
 	/**
 	 * Completely copy one array into another.
 	 * 
@@ -35,10 +38,36 @@ public class EncogArray {
 	 * @param dst
 	 *            Destination array.
 	 */
-	public static final void arrayCopy(double[] src, double[] dst) {
+	public static void arrayCopy(final double[] src, final double[] dst) {
 		System.arraycopy(src, 0, dst, 0, src.length);
 	}
-	
+
+	/**
+	 * Convert an array of double primitives to Double objects.
+	 * @param array The primitive array.
+	 * @return The object array.
+	 */
+	public static Double[] doubleToObject(final double[] array) {
+		final Double[] result = new Double[array.length];
+		for (int i = 0; i < array.length; i++) {
+			result[i] = new Double(array[i]);
+		}
+		return result;
+	}
+
+	/**
+	 * Convert an array of Double objects to double primitives.
+	 * @param array An array of Double objects.
+	 * @return An array of double primitives.
+	 */
+	public static double[] objectToDouble(final Double[] array) {
+		final double[] result = new double[array.length];
+		for (int i = 0; i < array.length; i++) {
+			result[i] = new Double(array[i]);
+		}
+		return result;
+	}
+
 	/**
 	 * Calculate the product of two vectors (a scalar value).
 	 * 
@@ -48,30 +77,22 @@ public class EncogArray {
 	 *            Second vector to multiply.
 	 * @return The product of the two vectors (a scalar value).
 	 */
-	public static final double vectorProduct(double[] a, double[] b) {
-		int length = a.length;
+	public static double vectorProduct(final double[] a, 
+			final double[] b) {
+		final int length = a.length;
 		double value = 0;
 
-		for (int i = 0; i < length; ++i)
+		for (int i = 0; i < length; ++i) {
 			value += a[i] * b[i];
+		}
 
 		return value;
 	}
 
-	
-	public static Double[] doubleToObject(double[] array) {
-		Double[] result = new Double[array.length];
-		for(int i=0;i<array.length;i++) {
-			result[i] = new Double(array[i]);
-		}
-		return result;
-	}
-	
-	public static double[] objectToDouble(Double[] array) {
-		double[] result = new double[array.length];
-		for(int i=0;i<array.length;i++) {
-			result[i] = new Double(array[i]);
-		}		
-		return result;		
+	/**
+	 * Private constructor.
+	 */
+	private EncogArray() {
+
 	}
 }

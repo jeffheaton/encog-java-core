@@ -29,7 +29,6 @@ import java.awt.Image;
 import java.awt.image.PixelGrabber;
 
 import org.encog.EncogError;
-import org.encog.util.ImageSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,26 +40,28 @@ import org.slf4j.LoggerFactory;
  */
 public class SimpleIntensityDownsample extends RGBDownsample {
 
-	
 	/**
 	 * The logging object.
 	 */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	
 	/**
 	 * Called to downsample the image and store it in the down sample component.
 	 * 
+	 * @param image
+	 *            The image to downsample.
 	 * @param height
 	 *            The height to downsample to.
 	 * @param width
 	 *            THe width to downsample to.
 	 * @return The downsampled image.
 	 */
-	public double[] downSample(Image image, final int height, final int width) {
+	@Override
+	public double[] downSample(final Image image, final int height,
+			final int width) {
 
 		processImage(image);
-		
+
 		final double[] result = new double[height * width * 3];
 
 		final PixelGrabber grabber = new PixelGrabber(image, 0, 0,
@@ -75,7 +76,7 @@ public class SimpleIntensityDownsample extends RGBDownsample {
 			throw new EncogError(e);
 		}
 
-		this.setPixelMap( (int[]) grabber.getPixels() );
+		setPixelMap((int[]) grabber.getPixels());
 
 		// now downsample
 
@@ -83,12 +84,12 @@ public class SimpleIntensityDownsample extends RGBDownsample {
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
 				downSampleRegion(x, y);
-				result[index++] = ( getCurrentRed() + getCurrentBlue() + getCurrentGreen() )/3;
+				result[index++] = (getCurrentRed() + getCurrentBlue() 
+						+ getCurrentGreen()) / 3;
 			}
 		}
 
 		return result;
 	}
-
 
 }

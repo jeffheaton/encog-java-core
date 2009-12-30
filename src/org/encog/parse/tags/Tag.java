@@ -67,13 +67,13 @@ public class Tag {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The attributes.
 	 */
-	private final Map<String, String> attributes = new HashMap<String, String>();
+	private final Map<String, String> attributes = 
+		new HashMap<String, String>();
 
 	/**
 	 * The tag name.
@@ -196,7 +196,8 @@ public class Tag {
 	}
 
 	/**
-	 * Convert this tag back into string form, with the beginning < and ending >.
+	 * Convert this tag back into string form, with the beginning < and ending
+	 * >.
 	 * 
 	 * @return The Attribute object that was found.
 	 */

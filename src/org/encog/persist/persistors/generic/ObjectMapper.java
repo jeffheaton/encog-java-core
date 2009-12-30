@@ -42,7 +42,8 @@ public class ObjectMapper {
 	/**
 	 * A map from reference numbers to objects.
 	 */
-	private final Map<Integer, Object> objectMap = new HashMap<Integer, Object>();
+	private final Map<Integer, Object> objectMap = 
+		new HashMap<Integer, Object>();
 
 	/**
 	 * A list of all of the field mappings.

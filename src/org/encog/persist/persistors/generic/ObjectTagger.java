@@ -146,7 +146,7 @@ public class ObjectTagger {
 			return;
 		}
 		if (fieldObject != null) {
-			if (fieldObject instanceof Collection) {
+			if (fieldObject instanceof Collection < ? >) {
 				tagCollection((Collection< ? >) fieldObject);
 			} else {
 				tagObject(fieldObject);

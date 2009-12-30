@@ -53,7 +53,8 @@ public class RangeSegregator implements Segregator {
 	/**
 	 * The ranges.
 	 */
-	private final Collection<SegregationRange> ranges = new ArrayList<SegregationRange>();
+	private final Collection<SegregationRange> ranges = 
+		new ArrayList<SegregationRange>();
 
 	/**
 	 * The normalization object.
@@ -76,7 +77,8 @@ public class RangeSegregator implements Segregator {
 	 *            Default action, if the data is not in any of the ranges,
 	 *            should it be included.
 	 */
-	public RangeSegregator(final InputField sourceField, final boolean include) {
+	public RangeSegregator(final InputField sourceField, 
+			final boolean include) {
 		this.sourceField = sourceField;
 		this.include = include;
 	}

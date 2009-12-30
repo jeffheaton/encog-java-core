@@ -72,6 +72,9 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 */
 	private double temperature;
 	
+	/**
+	 * Should the score be minimized.
+	 */
 	private boolean shouldMinimize = true;
 
 	/**
@@ -152,14 +155,13 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 			double curScore;
 			randomize();
 			curScore = calculateScore();
-			
+
 			if (this.shouldMinimize) {
 				if (curScore < getScore()) {
 					bestArray = this.getArrayCopy();
 					setScore(curScore);
 				}
-			}
-			else {
+			} else {
 				if (curScore > getScore()) {
 					bestArray = this.getArrayCopy();
 					setScore(curScore);
@@ -229,14 +231,19 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 		this.temperature = temperature;
 	}
 
+	/**
+	 * @return True if the score should be minimized.
+	 */
 	public boolean isShouldMinimize() {
 		return shouldMinimize;
 	}
 
+	/**
+	 * Should the score be minimized.
+	 * @param shouldMinimize True if the score should be minimized.
+	 */
 	public void setShouldMinimize(boolean shouldMinimize) {
 		this.shouldMinimize = shouldMinimize;
 	}
-	
-	
 
 }

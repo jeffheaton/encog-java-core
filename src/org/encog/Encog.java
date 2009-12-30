@@ -95,7 +95,8 @@ public final class Encog {
 	 * 
 	 * @return The requested value.
 	 */
-	private final Map<String, String> properties = new HashMap<String, String>();
+	private final Map<String, String> properties = 
+		new HashMap<String, String>();
 
 	/**
 	 * Private constructor.

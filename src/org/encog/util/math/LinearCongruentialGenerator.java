@@ -63,6 +63,10 @@ public class LinearCongruentialGenerator {
 	 */
 	public static final long MAX_RAND = 4294967295L;
 
+	/**
+	 * Construct the default LCG.  You need only specify a seed.
+	 * @param seed
+	 */
 	public LinearCongruentialGenerator(final long seed) {
 		this((long) Math.pow(2L, 32L), 1103515245L, 12345L, seed);
 	}
@@ -157,7 +161,7 @@ public class LinearCongruentialGenerator {
 	 * Set the seed value. Setting a seed to a specific value will always result
 	 * in the same sequence of numbers, whether on Java or DotNet.
 	 * 
-	 * @param seed
+	 * @param seed The seed value.
 	 */
 	public void setSeed(final long seed) {
 		this.seed = seed;

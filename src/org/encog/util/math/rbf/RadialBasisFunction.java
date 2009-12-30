@@ -67,5 +67,9 @@ public interface RadialBasisFunction {
 	 */
 	double getWidth();
 
+	/**
+	 * Set the width.
+	 * @param radius The width.
+	 */
 	void setWidth(double radius);
 }

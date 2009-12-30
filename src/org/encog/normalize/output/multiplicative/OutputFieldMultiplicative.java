@@ -69,7 +69,7 @@ public class OutputFieldMultiplicative extends OutputFieldGrouped {
 		super(group, field);
 		if (!(group instanceof MultiplicativeGroup)) {
 			throw new NormalizationError(
-					"Must use MultiplicativeGroup with OutputFieldMultiplicative.");
+				"Must use MultiplicativeGroup with OutputFieldMultiplicative.");
 		}
 	}
 

@@ -108,7 +108,7 @@ public final class PersistorUtil {
 
 			// find using classes
 			final String name = className + "Persistor";
-			final Class<?> c = Class.forName("org.encog.persist.persistors."
+			final Class< ? > c = Class.forName("org.encog.persist.persistors."
 					+ name);
 			final Persistor persistor = (Persistor) c.newInstance();
 			return persistor;

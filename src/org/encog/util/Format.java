@@ -28,66 +28,111 @@ package org.encog.util;
 
 import java.text.NumberFormat;
 
-public class Format {
+/**
+ * Provides the ability for Encog to format numbers and times.
+ */
+public final class Format {
 
+	/**
+	 * Seconds in a minute.
+	 */
 	public static final int SECONDS_INA_MINUTE = 60;
-	public static final int SECONDS_INA_HOUR = SECONDS_INA_MINUTE * 60;
-	public static final int SECONDS_INA_DAY = SECONDS_INA_HOUR * 24;
-	
-	
-	public static String formatInteger(int i)
-	{
-		NumberFormat f = NumberFormat.getIntegerInstance();
+
+	/**
+	 * Seconds in an hour.
+	 */
+	public static final int SECONDS_INA_HOUR = Format.SECONDS_INA_MINUTE * 60;
+
+	/**
+	 * Seconds in a day.
+	 */
+	public static final int SECONDS_INA_DAY = Format.SECONDS_INA_HOUR * 24;
+
+	/**
+	 * Format a double.
+	 * @param d The double value to format.
+	 * @param i The number of decimal places.
+	 * @return The double as a string.
+	 */
+	public static Object formatDouble(final double d, final int i) {
+		final NumberFormat f = NumberFormat.getNumberInstance();
+		f.setMinimumFractionDigits(i);
+		return f.format(d);
+	}
+
+	/**
+	 * Format an integer.
+	 * 
+	 * @param i
+	 *            The integer to format.
+	 * @return The integer as a string.
+	 */
+	public static String formatInteger(final int i) {
+		final NumberFormat f = NumberFormat.getIntegerInstance();
 		return f.format(i);
 	}
-	
-	public static String formatPercentWhole(double e) {
-		NumberFormat f = NumberFormat.getPercentInstance();
-		return f.format(e);
-	}
 
-	public static String formatPercent(double e) {
-		NumberFormat f = NumberFormat.getPercentInstance();
+	/**
+	 * Format a percent.  Using 6 decimal places.
+	 * @param e The percent to format.
+	 * @return The formatted percent.
+	 */
+	public static String formatPercent(final double e) {
+		final NumberFormat f = NumberFormat.getPercentInstance();
 		f.setMinimumFractionDigits(6);
 		return f.format(e);
 	}
-	
-	public static String formatTimeSpan(int seconds)
-	{
+
+	/**
+	 * Format a percent with no decimal places.
+	 * @param e The format to percent.
+	 * @return The formatted percent.
+	 */
+	public static String formatPercentWhole(final double e) {
+		final NumberFormat f = NumberFormat.getPercentInstance();
+		return f.format(e);
+	}
+
+	/**
+	 * Format a time span as seconds, minutes, hours and days.
+	 * @param seconds The number of seconds in the timespan.
+	 * @return The formatted timespan.
+	 */
+	public static String formatTimeSpan(final int seconds) {
 		int secondsCount = seconds;
-		int days = seconds / Format.SECONDS_INA_DAY;
-		secondsCount-=days * Format.SECONDS_INA_DAY;
-		int hours = secondsCount / Format.SECONDS_INA_HOUR;
-		secondsCount-=hours * Format.SECONDS_INA_HOUR;
-		int minutes = secondsCount / Format.SECONDS_INA_MINUTE;
-		secondsCount-= minutes * Format.SECONDS_INA_MINUTE;
-		
-		NumberFormat f = NumberFormat.getIntegerInstance();
+		final int days = seconds / Format.SECONDS_INA_DAY;
+		secondsCount -= days * Format.SECONDS_INA_DAY;
+		final int hours = secondsCount / Format.SECONDS_INA_HOUR;
+		secondsCount -= hours * Format.SECONDS_INA_HOUR;
+		final int minutes = secondsCount / Format.SECONDS_INA_MINUTE;
+		secondsCount -= minutes * Format.SECONDS_INA_MINUTE;
+
+		final NumberFormat f = NumberFormat.getIntegerInstance();
 		f.setMinimumIntegerDigits(2);
 		f.setMaximumIntegerDigits(2);
-		StringBuilder result = new StringBuilder();
-		
-		if( days>0 )
-		{
+		final StringBuilder result = new StringBuilder();
+
+		if (days > 0) {
 			result.append(days);
-			if( days>1)
+			if (days > 1) {
 				result.append(" days ");
-			else
+			} else {
 				result.append(" day ");
+			}
 		}
-		
+
 		result.append(f.format(hours));
 		result.append(':');
 		result.append(f.format(minutes));
 		result.append(':');
 		result.append(f.format(secondsCount));
-		
+
 		return result.toString();
 	}
 
-	public static Object formatDouble(double d, int i) {
-		NumberFormat f = NumberFormat.getNumberInstance();
-		f.setMinimumFractionDigits(i);
-		return f.format(d);	
+	/**
+	 * Private constructor.
+	 */
+	private Format() {
 	}
 }

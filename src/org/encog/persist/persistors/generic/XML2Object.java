@@ -166,7 +166,7 @@ public class XML2Object {
 			while (this.in.readToTag()) {
 				if (this.in.getTag().getType() == Type.BEGIN) {
 					final String tagName = this.in.getTag().getName();
-					final Class<?> c = ReflectionUtil
+					final Class< ? > c = ReflectionUtil
 							.resolveEncogClass(tagName);
 					final Object target = c.newInstance();
 					loadActualObject(null, target);
@@ -202,10 +202,11 @@ public class XML2Object {
 			this.in.readToTag();
 			return null;
 		} else {
-			final Class<?> c = ReflectionUtil.resolveEncogClass(this.in
+			final Class< ? > c = ReflectionUtil.resolveEncogClass(this.in
 					.getTag().getName());
-			if( c==null ) {
-				throw new PersistError("Can't create class: " + this.in.getTag().getName());
+			if (c == null) {
+				throw new PersistError("Can't create class: "
+						+ this.in.getTag().getName());
 			}
 			final Object obj = c.newInstance();
 			loadActualObject(objectField, obj);
@@ -223,7 +224,7 @@ public class XML2Object {
 			final String value) {
 		try {
 
-			final Class<?> type = field.getType();
+			final Class< ? > type = field.getType();
 			if (type == long.class) {
 				field.setLong(target, Long.parseLong(value));
 			} else if (type == int.class) {

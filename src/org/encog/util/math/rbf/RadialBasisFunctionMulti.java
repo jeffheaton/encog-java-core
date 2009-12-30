@@ -40,21 +40,20 @@ public interface RadialBasisFunctionMulti {
 
 	/**
 	 * Get the center of this RBD.
-	 * @param The dimension to get the center for.
+	 * @param dimension The dimension to get the center for.
 	 * @return The center of the RBF.
 	 */
 	double getCenter(int dimension);
 
 	/**
 	 * Get the center of this RBD.
-	 * @param The dimension to get the center for.
 	 * @return The center of the RBF.
 	 */
 	double getPeak();
 
 	/**
 	 * Get the center of this RBD.
-	 * @param The dimension to get the center for.
+	 * @param dimension The dimension to get the center for.
 	 * @return The center of the RBF.
 	 */
 	double getWidth(int dimension);
@@ -64,5 +63,9 @@ public interface RadialBasisFunctionMulti {
 	 */
 	int getDimensions();
 
+	/**
+	 * Set the width.
+	 * @param radius The width.
+	 */
 	void setWidth(double radius);	
 }

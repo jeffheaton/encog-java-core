@@ -63,9 +63,13 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	private final double zeroTolerance;
 
 	/**
-	 * 
+	 * The learning rate.
 	 */
 	private double learningRate;
+	
+	/**
+	 * The gradients.
+	 */
 	private double[] gradients;
 
 	/**
@@ -158,6 +162,11 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 		this.learningRate = rate;
 	}
 
+	/**
+	 * Determine the amount to update a weight by.
+	 * @param index The index of the weight to update.
+	 * @return The amount the weight should be updated by.
+	 */
 	private double updateWeight(final int index) {
 		if (Math.abs(this.gradients[index]) < this.zeroTolerance) {
 			return 0;

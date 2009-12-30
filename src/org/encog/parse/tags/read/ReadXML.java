@@ -46,7 +46,6 @@ public class ReadXML extends ReadTags {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**

@@ -237,7 +237,8 @@ public class PersistReader {
 	 *            A map of attributes to replace. This allows new values to be
 	 *            specified for select attributes.
 	 */
-	private void copyXML(final WriteXML out, final Map<String, String> replace) {
+	private void copyXML(final WriteXML out, 
+			final Map<String, String> replace) {
 		final StringBuilder text = new StringBuilder();
 		int depth = 0;
 		int ch;
@@ -352,7 +353,7 @@ public class PersistReader {
 			final String objectType = this.in.getTag().getName();
 			Persistor persistor = PersistorUtil.createPersistor(objectType);
 			if (persistor == null) {
-				final Class<?> clazz = ReflectionUtil
+				final Class< ? > clazz = ReflectionUtil
 						.resolveEncogClass(objectType);
 				EncogPersistedObject temp;
 				try {
@@ -365,7 +366,8 @@ public class PersistReader {
 				persistor = temp.createPersistor();
 			}
 			if (persistor == null) {
-				throw new PersistError("Do not know how to load: " + objectType);
+				throw new PersistError("Do not know how to load: " 
+						+ objectType);
 			}
 			return persistor.load(this.in);
 		} else {
@@ -416,7 +418,8 @@ public class PersistReader {
 				final String name = this.in.getTag().getAttributeValue(
 						PersistReader.ATTRIBUTE_NAME);
 				if (name.equals(targetName)) {
-					final Map<String, String> replace = new HashMap<String, String>();
+					final Map<String, String> replace = 
+						new HashMap<String, String>();
 					replace.put("name", newName);
 					replace.put("description", newDesc);
 					copyXML(out, replace);

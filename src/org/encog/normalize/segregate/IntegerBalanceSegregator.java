@@ -63,13 +63,22 @@ public class IntegerBalanceSegregator implements Segregator {
 	 * The running totals.
 	 */
 	@EGIgnore
-	private final Map<Integer, Integer> runningCounts = new HashMap<Integer, Integer>();
+	private final Map<Integer, Integer> runningCounts = 
+		new HashMap<Integer, Integer>();
 
+	/**
+	 * Construct an integer balance segregator.
+	 * @param target The input field to use.
+	 * @param count The number of each unique integer to allow.
+	 */
 	public IntegerBalanceSegregator(final InputField target, final int count) {
 		this.target = target;
 		this.count = count;
 	}
 
+	/**
+	 * Default constructor. 
+	 */
 	public IntegerBalanceSegregator() {
 
 	}
@@ -90,18 +99,30 @@ public class IntegerBalanceSegregator implements Segregator {
 		return result.toString();
 	}
 
+	/**
+	 * @return The amout of data allowed by this segregator.
+	 */
 	public int getCount() {
 		return this.count;
 	}
 
+	/**
+	 * @return The normalization object used with this segregator.
+	 */
 	public DataNormalization getNormalization() {
 		return this.normalization;
 	}
 
+	/**
+	 * @return The current count for each group.
+	 */
 	public Map<Integer, Integer> getRunningCounts() {
 		return this.runningCounts;
 	}
 
+	/**
+	 * @return The input field being used.
+	 */
 	public InputField getTarget() {
 		return this.target;
 	}

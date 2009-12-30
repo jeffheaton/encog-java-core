@@ -59,6 +59,7 @@ public class OutputFieldDirect extends BasicOutputField {
 	 * value from the input field. 
 	 * @param subfield Not used, as this output field type does not
 	 * support subfields.
+	 * @return The calculated value for this field.
 	 */
 	public double calculate(final int subfield) {
 		return this.sourceField.getCurrentValue();

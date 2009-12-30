@@ -74,7 +74,6 @@ public final class BotUtil {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory.getLogger(BotUtil.class);
 
 	/**

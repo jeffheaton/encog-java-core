@@ -108,7 +108,8 @@ public class IndexSampleSegregator extends IndexSegregator {
 	public boolean shouldInclude() {
 		final int sampleIndex = getCurrentIndex() % this.sampleSize;
 		rollIndex();
-		return ((sampleIndex >= this.startingIndex) && (sampleIndex <= this.endingIndex));
+		return ((sampleIndex >= this.startingIndex) 
+				&& (sampleIndex <= this.endingIndex));
 	}
 	
 	/**

@@ -132,12 +132,14 @@ public class DataNormalization implements EncogPersistedObject {
 	/**
 	 * The input fields.
 	 */
-	private final Collection<InputField> inputFields = new ArrayList<InputField>();
+	private final Collection<InputField> inputFields = 
+		new ArrayList<InputField>();
 
 	/**
 	 * The output fields.
 	 */
-	private final Collection<OutputField> outputFields = new ArrayList<OutputField>();
+	private final Collection<OutputField> outputFields = 
+		new ArrayList<OutputField>();
 
 	/**
 	 * Keep a collection of all of the ReadCSV classes to support all of the
@@ -153,7 +155,8 @@ public class DataNormalization implements EncogPersistedObject {
 	 * file.
 	 */
 	@EGIgnore
-	private final Map<InputField, ReadCSV> csvMap = new HashMap<InputField, ReadCSV>();
+	private final Map<InputField, ReadCSV> csvMap = 
+		new HashMap<InputField, ReadCSV>();
 
 	/**
 	 * For each InputFieldNeuralDataSet input field an Iterator must be kept to
@@ -161,7 +164,8 @@ public class DataNormalization implements EncogPersistedObject {
 	 * actually used.
 	 */
 	@EGIgnore
-	private final Collection<Iterator<NeuralDataPair>> readDataSet = new ArrayList<Iterator<NeuralDataPair>>();
+	private final Collection<Iterator<NeuralDataPair>> readDataSet = 
+		new ArrayList<Iterator<NeuralDataPair>>();
 
 	/**
 	 * Map each of the input fields to an internally-build NeuralDataFieldHolder
@@ -169,7 +173,8 @@ public class DataNormalization implements EncogPersistedObject {
 	 * and last NeuralDataPair object loaded.
 	 */
 	@EGIgnore
-	private final Map<InputField, NeuralDataFieldHolder> dataSetFieldMap = new HashMap<InputField, NeuralDataFieldHolder>();
+	private final Map<InputField, NeuralDataFieldHolder> dataSetFieldMap = 
+		new HashMap<InputField, NeuralDataFieldHolder>();
 
 	/**
 	 * Map each of the NeuralDataSet Iterators to an internally-build
@@ -177,19 +182,23 @@ public class DataNormalization implements EncogPersistedObject {
 	 * Iterator, InputField and last NeuralDataPair object loaded.
 	 */
 	@EGIgnore
-	private final Map<Iterator<NeuralDataPair>, NeuralDataFieldHolder> dataSetIteratorMap = new HashMap<Iterator<NeuralDataPair>, NeuralDataFieldHolder>();
+	private final Map<Iterator<NeuralDataPair>, 
+		NeuralDataFieldHolder> dataSetIteratorMap = 
+		new HashMap<Iterator<NeuralDataPair>, NeuralDataFieldHolder>();
 
 	/**
 	 * Output fields can be grouped together, if the value of one output field
 	 * might affect all of the others. This collection holds a list of all of
 	 * the output field groups.
 	 */
-	private final Set<OutputFieldGroup> groups = new HashSet<OutputFieldGroup>();
+	private final Set<OutputFieldGroup> groups = 
+		new HashSet<OutputFieldGroup>();
 
 	/**
 	 * A list of the segregators.
 	 */
-	private final Collection<Segregator> segregators = new ArrayList<Segregator>();
+	private final Collection<Segregator> segregators = 
+		new ArrayList<Segregator>();
 
 	/**
 	 * Where the final output from the normalization is sent.
@@ -376,7 +385,8 @@ public class DataNormalization implements EncogPersistedObject {
 			final ReadCSV csv = this.csvMap.get(field);
 			result = csv.getDouble(fieldCSV.getOffset());
 		} else if (field instanceof InputFieldNeuralDataSet) {
-			final InputFieldNeuralDataSet neuralField = (InputFieldNeuralDataSet) field;
+			final InputFieldNeuralDataSet neuralField = 
+				(InputFieldNeuralDataSet) field;
 			final NeuralDataFieldHolder holder = this.dataSetFieldMap
 					.get(field);
 			final NeuralDataPair pair = holder.getPair();
@@ -416,7 +426,7 @@ public class DataNormalization implements EncogPersistedObject {
 	 *            The instance of the input field needed, 0 for the first.
 	 * @return The input field if found, otherwise null.
 	 */
-	public InputField findInputField(final Class<?> clazz, final int count) {
+	public InputField findInputField(final Class< ? > clazz, final int count) {
 		int i = 0;
 		for (final InputField field : this.inputFields) {
 			if (ReflectionUtil.isInstanceOf(field.getClass(), clazz)) {
@@ -439,7 +449,8 @@ public class DataNormalization implements EncogPersistedObject {
 	 *            The instance of the output field needed, 0 for the first.
 	 * @return The output field if found, otherwise null.
 	 */
-	public OutputField findOutputField(final Class<?> clazz, final int count) {
+	public OutputField findOutputField(final Class< ? > clazz, 
+			final int count) {
 		int i = 0;
 		for (final OutputField field : this.outputFields) {
 			if (ReflectionUtil.isInstanceOf(field.getClass(), clazz)) {
@@ -699,17 +710,20 @@ public class DataNormalization implements EncogPersistedObject {
 		this.dataSetIteratorMap.clear();
 
 		// only add each iterator once
-		final Map<NeuralDataSet, NeuralDataFieldHolder> uniqueSets = new HashMap<NeuralDataSet, NeuralDataFieldHolder>();
+		final Map<NeuralDataSet, NeuralDataFieldHolder> uniqueSets = 
+			new HashMap<NeuralDataSet, NeuralDataFieldHolder>();
 
 		// find the unique files
 		for (final InputField field : this.inputFields) {
 			if (field instanceof InputFieldNeuralDataSet) {
-				final InputFieldNeuralDataSet dataSetField = (InputFieldNeuralDataSet) field;
+				final InputFieldNeuralDataSet dataSetField = 
+					(InputFieldNeuralDataSet) field;
 				final NeuralDataSet dataSet = dataSetField.getNeuralDataSet();
 				if (!uniqueSets.containsKey(dataSet)) {
 					final Iterator<NeuralDataPair> iterator = dataSet
 							.iterator();
-					final NeuralDataFieldHolder holder = new NeuralDataFieldHolder(
+					final NeuralDataFieldHolder holder = 
+						new NeuralDataFieldHolder(
 							iterator, dataSetField);
 					uniqueSets.put(dataSet, holder);
 					this.readDataSet.add(iterator);
@@ -877,6 +891,9 @@ public class DataNormalization implements EncogPersistedObject {
 		return true;
 	}
 
+	/**
+	 * @return True, if two passes are needed.
+	 */
 	public boolean twoPassesNeeded() {
 		for (final OutputField field : this.outputFields) {
 			if (field instanceof RequireTwoPass) {

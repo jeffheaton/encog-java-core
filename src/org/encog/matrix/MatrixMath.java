@@ -38,7 +38,6 @@ public final class MatrixMath {
 	/**
 	 * The logging object.
 	 */
-	@SuppressWarnings("unused")
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(MatrixMath.class);
 

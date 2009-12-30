@@ -117,7 +117,8 @@ public class ReadCSV {
 	 * @param delim
 	 *            What is the delimiter.
 	 */
-	public ReadCSV(final InputStream is, final boolean headers, final char delim) {
+	public ReadCSV(final InputStream is, final boolean headers, 
+			final char delim) {
 		final CSVFormat format = new CSVFormat(CSVFormat.getDecimalCharacter(),
 				delim);
 		this.reader = new BufferedReader(new InputStreamReader(is));

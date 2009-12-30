@@ -311,11 +311,18 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 		Arrays.sort(this.chromosomes);
 	}
 
+	/**
+	 * @return True if the score should be minimized.
+	 */
 	public boolean getShouldMinimize() {
 		return shouldMinimize;
 	}
 
-	public void setShouldMinimize(boolean shouldMinimize) {
+	/**
+	 * Determine if the score should be minimized. 
+	 * @param shouldMinimize True if the score should be minimized.
+	 */
+	public void setShouldMinimize(final boolean shouldMinimize) {
 		this.shouldMinimize = shouldMinimize;
 	}
 	

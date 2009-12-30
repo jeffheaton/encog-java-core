@@ -56,7 +56,8 @@ public class MappedRange {
 	 * @param high The high value for the range.
 	 * @param value The value that this range represents.
 	 */
-	public MappedRange(final double low, final double high, final double value) {
+	public MappedRange(final double low, final double high, 
+			final double value) {
 		super();
 		this.low = low;
 		this.high = high;

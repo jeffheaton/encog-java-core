@@ -147,11 +147,11 @@ public class BasicInputField implements InputField {
 
 
 	/**
-	 * param usedForNetworkInput True, if this field is used for network input.  
-	 * This is needed so that the buildForNetworkInput method of the 
-	 * normalization class knows how many input fields to expect.  For instance, 
-	 * fields used only to segregate data are not used for the actual network 
+	 * This is needed so that the buildForNetworkInput method of the
+	 * normalization class knows how many input fields to expect. For instance,
+	 * fields used only to segregate data are not used for the actual network
 	 * input and may not be provided when the network is actually being queried.
+	 * @param usedForNetworkInput True, if this field is used for network input.
 	 */
 	public void setUsedForNetworkInput(final boolean usedForNetworkInput) {
 		this.usedForNetworkInput = usedForNetworkInput;

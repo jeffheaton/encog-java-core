@@ -37,7 +37,8 @@ public interface Downsample {
 
 	/**
 	 * Downsample the image to the specified height and width.
-	 * 
+	 * @param image
+	 * 			The image to downsample.
 	 * @param height
 	 *            The height to downsample to.
 	 * @param width

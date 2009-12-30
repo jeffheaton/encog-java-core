@@ -28,8 +28,6 @@ package org.encog.neural.networks.training.propagation.resilient;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -108,8 +106,15 @@ public class ResilientPropagation extends Propagation {
 	 * The maximum amount a delta can reach.
 	 */
 	public static final double DEFAULT_MAX_STEP = 50;
-	
+
+	/**
+	 * Continuation tag for the last gradients.
+	 */
 	public static final String LAST_GRADIENTS = "LAST_GRADIENTS";
+
+	/**
+	 * Continuation tag for the last values.
+	 */
 	public static final String UPDATE_VALUES = "UPDATE_VALUES";
 
 	/**
@@ -126,10 +131,20 @@ public class ResilientPropagation extends Propagation {
 	 * The maximum delta amount.
 	 */
 	private final double maxStep;
-	
 
+	/**
+	 * The update value.
+	 */
 	private double[] updateValues;
+
+	/**
+	 * The last gradients.
+	 */
 	private double[] lastGradient;
+
+	/**
+	 * The current gradients.
+	 */
 	private double[] gradients;
 
 	/**
@@ -178,19 +193,25 @@ public class ResilientPropagation extends Propagation {
 			final NeuralDataSet training, final double zeroTolerance,
 			final double initialUpdate, final double maxStep) {
 
-		super(network,training);
+		super(network, training);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
 		this.zeroTolerance = zeroTolerance;
 
-		
 		this.updateValues = new double[network.getStructure().calculateSize()];
 		this.lastGradient = new double[network.getStructure().calculateSize()];
-		
-		for(int i = 0;i< this.updateValues.length;i++) {
+
+		for (int i = 0; i < this.updateValues.length; i++) {
 			this.updateValues[i] = this.initialUpdate;
 		}
 
+	}
+
+	/**
+	 * @return True, as RPROP can continue.
+	 */
+	public boolean canContinue() {
+		return true;
 	}
 
 	/**
@@ -215,20 +236,69 @@ public class ResilientPropagation extends Propagation {
 	}
 
 	/**
-	 * Perform a training iteration.  This is where the actual RPROP
-	 * specific training takes place.
-	 * @param prop The gradients.
-	 * @param weights The network weights.
+	 * Determine if the specified continuation object is valid to resume with.
+	 * @param state The continuation object to check.
+	 * @return True if the specified continuation object is valid for this
+	 * training method and network.
 	 */
-	public void performIteration(CalculateGradient prop, double[] weights) {		
-	
+	public boolean isValidResume(final TrainingContinuation state) {
+		if (!state.getContents().containsKey(
+				ResilientPropagation.LAST_GRADIENTS)
+				|| !state.getContents().containsKey(
+						ResilientPropagation.UPDATE_VALUES)) {
+			return false;
+		}
+
+		final double[] d = (double[]) state
+				.get(ResilientPropagation.LAST_GRADIENTS);
+		return d.length == getNetwork().getStructure().calculateSize();
+	}
+
+	/**
+	 * Pause the training.
+	 * @return A training continuation object to continue with.
+	 */
+	public TrainingContinuation pause() {
+		final TrainingContinuation result = new TrainingContinuation();
+		result.set(ResilientPropagation.LAST_GRADIENTS, this.lastGradient);
+		result.set(ResilientPropagation.UPDATE_VALUES, this.updateValues);
+		return result;
+	}
+
+	/**
+	 * Perform a training iteration. This is where the actual RPROP specific
+	 * training takes place.
+	 * 
+	 * @param prop
+	 *            The gradients.
+	 * @param weights
+	 *            The network weights.
+	 */
+	@Override
+	public void performIteration(final CalculateGradient prop,
+			final double[] weights) {
+
 		this.gradients = prop.getGradients();
-		
-		for(int i=0;i<this.gradients.length;i++) {
-			weights[i]+=updateWeight(gradients,i);
+
+		for (int i = 0; i < this.gradients.length; i++) {
+			weights[i] += updateWeight(this.gradients, i);
 		}
 	}
-	
+
+	/**
+	 * Resume training.
+	 * @param state The training state to return to.
+	 */
+	public void resume(final TrainingContinuation state) {
+		if (!isValidResume(state)) {
+			throw new TrainingError("Invalid training resume data length");
+		}
+		this.lastGradient = (double[]) state
+				.get(ResilientPropagation.LAST_GRADIENTS);
+		this.updateValues = (double[]) state
+				.get(ResilientPropagation.UPDATE_VALUES);
+	}
+
 	/**
 	 * Determine the sign of the value.
 	 * 
@@ -245,12 +315,18 @@ public class ResilientPropagation extends Propagation {
 			return -1;
 		}
 	}
-	
-	private double updateWeight(double[] gradients, int index)
-	{		
+
+	/**
+	 * Determine the amount to change a weight by.
+	 * @param gradients The gradients.
+	 * @param index The weight to adjust.
+	 * @return The amount to change this weight by.
+	 */
+	private double updateWeight(final double[] gradients, final int index) {
 		// multiply the current and previous gradient, and take the
 		// sign. We want to see if the gradient has changed its sign.
-		final int change = sign(this.gradients[index] * this.lastGradient[index]);
+		final int change = sign(this.gradients[index]
+				* this.lastGradient[index]);
 		double weightChange = 0;
 
 		// if the gradient has retained its sign, then we increase the
@@ -268,7 +344,7 @@ public class ResilientPropagation extends Propagation {
 			double delta = this.updateValues[index]
 					* ResilientPropagation.NEGATIVE_ETA;
 			delta = Math.max(delta, ResilientPropagation.DELTA_MIN);
-			 this.updateValues[index] = delta;
+			this.updateValues[index] = delta;
 			// set the previous gradent to zero so that there will be no
 			// adjustment the next iteration
 			this.lastGradient[index] = 0;
@@ -281,38 +357,5 @@ public class ResilientPropagation extends Propagation {
 
 		// apply the weight change, if any
 		return weightChange;
-	}
-	
-	public TrainingContinuation pause()
-	{
-		TrainingContinuation result = new TrainingContinuation();
-		result.set(LAST_GRADIENTS, this.lastGradient);
-		result.set(UPDATE_VALUES, this.updateValues);
-		return result;
-	}
-	
-	public void resume(TrainingContinuation state)
-	{
-		if( !isValidResume(state))
-		{
-			throw new TrainingError("Invalid training resume data length");
-		}
-		this.lastGradient = (double[])state.get(LAST_GRADIENTS);
-		this.updateValues = (double[])state.get(UPDATE_VALUES);
-	}
-	
-	public boolean isValidResume(TrainingContinuation state)
-	{
-		if( !state.getContents().containsKey(LAST_GRADIENTS) || 
-			!state.getContents().containsKey(UPDATE_VALUES) )
-			return false;
-		
-		double[] d = (double[])state.get(LAST_GRADIENTS);
-		return d.length == this.getNetwork().getStructure().calculateSize();		
-	}
-	
-	public boolean canContinue()
-	{
-		return true;
 	}
 }

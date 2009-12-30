@@ -51,5 +51,8 @@ public interface Segregator {
 	 */
 	boolean shouldInclude();
 	
+	/**
+	 * Init for a pass.
+	 */
 	void passInit();
 }

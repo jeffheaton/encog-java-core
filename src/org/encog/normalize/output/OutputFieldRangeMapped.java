@@ -30,10 +30,25 @@ import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReference;
 
 /**
- * A ranged mapped output field.  This will scale the input so that it
- * is between the high and low value.
+ * A ranged mapped output field. This will scale the input so that it is between
+ * the high and low value.
  */
-public class OutputFieldRangeMapped extends BasicOutputField implements RequireTwoPass {
+public class OutputFieldRangeMapped extends BasicOutputField implements
+		RequireTwoPass {
+
+	/**
+	 * Calculate a ranged mapped value. 
+	 * @param value The to map.
+	 * @param min The minimum that the value param can be.
+	 * @param max The maximum that the value param can be.
+	 * @param hi The high value to map into.
+	 * @param lo The low value to map into.
+	 * @return The mapped value.
+	 */
+	public static double calculate(final double value, final double min,
+			final double max, final double hi, final double lo) {
+		return ((value - min) / (max - min)) * (hi - lo) + lo;
+	}
 
 	/**
 	 * The input field to scale.
@@ -46,7 +61,7 @@ public class OutputFieldRangeMapped extends BasicOutputField implements RequireT
 	 */
 	@EGAttribute
 	private double low;
-	
+
 	/**
 	 * The high value of the field.
 	 */
@@ -62,9 +77,13 @@ public class OutputFieldRangeMapped extends BasicOutputField implements RequireT
 
 	/**
 	 * Construct a range mapped output field.
-	 * @param field The input field to base this on.
-	 * @param low The low value.
-	 * @param high The high value.
+	 * 
+	 * @param field
+	 *            The input field to base this on.
+	 * @param low
+	 *            The low value.
+	 * @param high
+	 *            The high value.
 	 */
 	public OutputFieldRangeMapped(final InputField field, final double low,
 			final double high) {
@@ -75,19 +94,16 @@ public class OutputFieldRangeMapped extends BasicOutputField implements RequireT
 
 	/**
 	 * Calculate this output field.
-	 * @param subfield Not used.
+	 * 
+	 * @param subfield
+	 *            Not used.
 	 * @return The calculated value.
 	 */
 	public double calculate(final int subfield) {
-		return ((this.field.getCurrentValue() - this.field.getMin()) / (this.field
+		return ((this.field.getCurrentValue() - this.field.getMin()) 
+				/ (this.field
 				.getMax() - this.field.getMin()))
 				* (this.high - this.low) + this.low;
-	}
-	
-	public static double calculate( double value, double min, double max, double hi, double lo)
-	{
-		return ((value - min) / (max - min))
-				* (hi - lo) + lo;
 	}
 
 	/**

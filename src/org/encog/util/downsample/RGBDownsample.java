@@ -34,6 +34,10 @@ import org.encog.util.ImageSize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Downsample an image keeping the RGB colors.
+ * 
+ */
 public class RGBDownsample implements Downsample {
 	/**
 	 * The pixel map from the image.
@@ -79,9 +83,20 @@ public class RGBDownsample implements Downsample {
 	 * The bottom boundary of the downsample.
 	 */
 	private int downSampleBottom;
-	
+
+	/**
+	 * The current red average.
+	 */
 	private int currentRed;
+
+	/**
+	 * The current blue average.
+	 */
 	private int currentBlue;
+
+	/**
+	 * The current green average.
+	 */
 	private int currentGreen;
 
 	/**
@@ -89,20 +104,22 @@ public class RGBDownsample implements Downsample {
 	 */
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-
 	/**
 	 * Called to downsample the image and store it in the down sample component.
 	 * 
+	 * @param image
+	 *            The image to downsample.
 	 * @param height
 	 *            The height to downsample to.
 	 * @param width
 	 *            THe width to downsample to.
 	 * @return The downsampled image.
 	 */
-	public double[] downSample(Image image, final int height, final int width) {
+	public double[] downSample(final Image image, final int height,
+			final int width) {
 
 		processImage(image);
-		
+
 		final double[] result = new double[height * width * 3];
 
 		final PixelGrabber grabber = new PixelGrabber(image, 0, 0,
@@ -140,22 +157,21 @@ public class RGBDownsample implements Downsample {
 	}
 
 	/**
-	 * Called to downsample a quadrant of the image.
+	 * Called to downsample a region of the image.
 	 * 
 	 * @param x
 	 *            The x coordinate of the resulting downsample.
 	 * @param y
 	 *            The y coordinate of the resulting downsample.
-	 * @return Returns true if there were ANY pixels in the specified quadrant.
 	 */
 	public void downSampleRegion(final int x, final int y) {
 		final int startX = (int) (this.downSampleLeft + x * this.ratioX);
 		final int startY = (int) (this.downSampleTop + y * this.ratioY);
 		int endX = (int) (startX + this.ratioX);
 		int endY = (int) (startY + this.ratioY);
-		
+
 		endX = Math.min(this.imageWidth, endX);
-		endY = Math.min(this.imageHeight,endY);
+		endY = Math.min(this.imageHeight, endY);
 
 		int redTotal = 0;
 		int greenTotal = 0;
@@ -177,10 +193,10 @@ public class RGBDownsample implements Downsample {
 				total++;
 			}
 		}
-		
-		this.currentRed = redTotal/total;
-		this.currentGreen = greenTotal/total;
-		this.currentBlue = blueTotal/total;
+
+		this.currentRed = redTotal / total;
+		this.currentGreen = greenTotal / total;
+		this.currentBlue = blueTotal / total;
 	}
 
 	/**
@@ -218,6 +234,18 @@ public class RGBDownsample implements Downsample {
 				break;
 			}
 		}
+	}
+
+	public int getCurrentBlue() {
+		return this.currentBlue;
+	}
+
+	public int getCurrentGreen() {
+		return this.currentGreen;
+	}
+
+	public int getCurrentRed() {
+		return this.currentRed;
 	}
 
 	/**
@@ -314,11 +342,43 @@ public class RGBDownsample implements Downsample {
 		this.downSampleTop = 0;
 		this.downSampleRight = this.imageWidth;
 		this.downSampleBottom = this.imageHeight;
-		
+
 		this.ratioX = (double) (this.downSampleRight - this.downSampleLeft)
-		/ (double) this.getImageWidth();
+				/ (double) getImageWidth();
 		this.ratioY = (double) (this.downSampleBottom - this.downSampleTop)
-		/ (double) this.getImageHeight();
+				/ (double) getImageHeight();
+	}
+
+	/**
+	 * Set the current blue average.
+	 * @param currentBlue The current blue average.
+	 */
+	public void setCurrentBlue(final int currentBlue) {
+		this.currentBlue = currentBlue;
+	}
+	
+	/**
+	 * Set the current green average.
+	 * @param currentGreen The current green average.
+	 */
+	public void setCurrentGreen(final int currentGreen) {
+		this.currentGreen = currentGreen;
+	}
+
+	/**
+	 * Set the current red average.
+	 * @param currentRed The current red average.
+	 */
+	public void setCurrentRed(final int currentRed) {
+		this.currentRed = currentRed;
+	}
+
+	/**
+	 * Set the pixel map.
+	 * @param pixelMap The pixel map.
+	 */
+	public void setPixelMap(final int[] pixelMap) {
+		this.pixelMap = pixelMap;
 	}
 
 	/**
@@ -336,35 +396,5 @@ public class RGBDownsample implements Downsample {
 		}
 		return true;
 	}
-
-	public void setPixelMap(int[] pixelMap) {
-		this.pixelMap = pixelMap;
-	}
-
-	public int getCurrentRed() {
-		return currentRed;
-	}
-
-	public void setCurrentRed(int currentRed) {
-		this.currentRed = currentRed;
-	}
-
-	public int getCurrentBlue() {
-		return currentBlue;
-	}
-
-	public void setCurrentBlue(int currentBlue) {
-		this.currentBlue = currentBlue;
-	}
-
-	public int getCurrentGreen() {
-		return currentGreen;
-	}
-
-	public void setCurrentGreen(int currentGreen) {
-		this.currentGreen = currentGreen;
-	}
-	
-	
 
 }

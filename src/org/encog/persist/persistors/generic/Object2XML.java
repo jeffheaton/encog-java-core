@@ -72,7 +72,8 @@ public class Object2XML {
 	 * @param out
 	 *            The XML writer.
 	 */
-	public void save(final EncogPersistedObject encogObject, final WriteXML out) {
+	public void save(final EncogPersistedObject encogObject, 
+			final WriteXML out) {
 		this.out = out;
 		try {
 			PersistorUtil.beginEncogObject(encogObject.getClass()
@@ -121,7 +122,7 @@ public class Object2XML {
 	private void saveField(final Object fieldObject)
 			throws IllegalAccessException {
 		if (fieldObject != null) {
-			if (fieldObject instanceof Collection) {
+			if (fieldObject instanceof Collection< ? >) {
 
 				saveCollection((Collection< ? >) fieldObject);
 

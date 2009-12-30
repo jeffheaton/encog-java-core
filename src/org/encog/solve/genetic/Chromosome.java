@@ -85,27 +85,24 @@ public abstract class Chromosome<GENE_TYPE> implements
 	 * @param other
 	 *            The other chromosome to compare.
 	 * @return The value 0 if the argument is a chromosome that has an equal
-	 *         score to this chromosome; a value less than 0 if the argument is a
-	 *         chromosome with a score greater than this chromosome; and a value
-	 *         greater than 0 if the argument is a chromosome what a score less
-	 *         than this chromosome.
+	 *         score to this chromosome; a value less than 0 if the argument is
+	 *         a chromosome with a score greater than this chromosome; and a
+	 *         value greater than 0 if the argument is a chromosome what a score
+	 *         less than this chromosome.
 	 */
 	public int compareTo(final Chromosome<GENE_TYPE> other) {
-		
-		if( this.getGeneticAlgorithm().getShouldMinimize() )
-		{		
+
+		if (this.getGeneticAlgorithm().getShouldMinimize()) {
 			if (getScore() > other.getScore()) {
 				return 1;
 			}
 			return -1;
-		}
-		else
-		{
+		} else {
 			if (getScore() > other.getScore()) {
 				return -1;
 			}
 			return 1;
-			
+
 		}
 	}
 
@@ -186,7 +183,8 @@ public abstract class Chromosome<GENE_TYPE> implements
 		final int geneLength = getGenes().length;
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() * (geneLength - getGeneticAlgorithm()
+		final int cutpoint1 = (int) (Math.random() 
+				* (geneLength - getGeneticAlgorithm()
 				.getCutLength()));
 		final int cutpoint2 = cutpoint1 + getGeneticAlgorithm().getCutLength();
 

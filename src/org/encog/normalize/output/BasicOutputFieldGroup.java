@@ -41,7 +41,8 @@ public abstract class BasicOutputFieldGroup implements OutputFieldGroup {
 	 * The fields in this group.
 	 */
 	@EGReference
-	private final Collection<OutputFieldGrouped> fields = new ArrayList<OutputFieldGrouped>();
+	private final Collection<OutputFieldGrouped> fields = 
+		new ArrayList<OutputFieldGrouped>();
 
 	/**
 	 * Add a field to this group.

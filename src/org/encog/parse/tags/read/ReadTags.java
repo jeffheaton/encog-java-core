@@ -242,7 +242,8 @@ public class ReadTags {
 		eatWhitespace();
 		if ("\"\'".indexOf(this.source.peek()) != -1) {
 			final int delim = this.source.read();
-			while ((this.source.peek() != delim) && (this.source.peek() != -1)) {
+			while ((this.source.peek() != delim) 
+					&& (this.source.peek() != -1)) {
 				if (result.length() > ReadTags.MAX_LENGTH) {
 					break;
 				}
@@ -449,7 +450,8 @@ public class ReadTags {
 		if (this.source.peek() == '<') {
 			parseTag();
 			if ((this.tag.getType() == Tag.Type.BEGIN)
-					&& (this.tag.getName().equalsIgnoreCase("script") || this.tag
+					&& (this.tag.getName().equalsIgnoreCase("script") 
+							|| this.tag
 							.getName().equalsIgnoreCase("style"))) {
 				this.lockedEndTag = this.tag.getName().toLowerCase();
 			}
