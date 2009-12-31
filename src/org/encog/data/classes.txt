@@ -3,10 +3,6 @@ org.encog.bot.BotUtil
 org.encog.bot.browse.Address
 org.encog.bot.browse.BrowseError
 org.encog.bot.browse.Browser
-org.encog.bot.browse.extract.BasicExtract
-org.encog.bot.browse.extract.Extract
-org.encog.bot.browse.extract.ExtractListener
-org.encog.bot.browse.extract.ListExtractListener
 org.encog.bot.browse.LoadWebPage
 org.encog.bot.browse.range.Div
 org.encog.bot.browse.range.DocumentRange
