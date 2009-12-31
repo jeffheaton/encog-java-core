@@ -2,9 +2,16 @@ package org.encog.neural.prune;
 
 import junit.framework.Assert;
 
+import org.encog.NullStatusReportable;
+import org.encog.StatusReportable;
+import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
+import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.pattern.FeedForwardPattern;
+import org.encog.util.StatusCounter;
 import org.junit.Test;
 
 public class TestPrune {
@@ -36,5 +43,21 @@ public class TestPrune {
 		prune.prune(hiddenLayer, 1);
 		
 		Assert.assertEquals(2,hiddenLayer.getNeuronCount());
+	}
+	
+	@Test
+	public void testIncPrune()
+	{
+		StatusCounter counter = new StatusCounter();
+		FeedForwardPattern pattern = new FeedForwardPattern();
+		pattern.setInputNeurons(2);
+		pattern.setOutputNeurons(1);
+		pattern.setActivationFunction(new ActivationSigmoid());
+		NeuralDataSet training = XOR.createXORDataSet();
+		PruneIncremental inc = new PruneIncremental(training,pattern,10,counter);
+		inc.addHiddenLayer(1, 4);
+		inc.addHiddenLayer(0, 4);
+		inc.process();
+		Assert.assertEquals(20, counter.getCount());
 	}
 }
