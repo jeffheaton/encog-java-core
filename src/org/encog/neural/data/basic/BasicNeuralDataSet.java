@@ -114,12 +114,6 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	private List<NeuralDataPair> data = new ArrayList<NeuralDataPair>();
 
 	/**
-	 * The iterators that are currently open to this object.
-	 */
-	private final List<BasicNeuralIterator> iterators =
-		new ArrayList<BasicNeuralIterator>();
-
-	/**
 	 * The description for this object.
 	 */
 	private String description;
@@ -331,7 +325,6 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	 */
 	public Iterator<NeuralDataPair> iterator() {
 		final BasicNeuralIterator result = new BasicNeuralIterator();
-		this.iterators.add(result);
 		return result;
 	}
 
