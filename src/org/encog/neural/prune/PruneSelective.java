@@ -35,6 +35,7 @@ import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.math.rbf.GaussianFunction;
 import org.encog.util.math.rbf.RadialBasisFunction;
+import org.encog.util.randomize.Distort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -104,37 +105,13 @@ public class PruneSelective {
 		// create an array to hold the least significant neurons, which will be
 		// removed
 		final int lostNeuronCount = layer.getNeuronCount() - neuronCount;
-		final double[] lostNeuronSignificance = new double[lostNeuronCount];
-		final int[] lostNeuron = new int[lostNeuronCount];
-
-		// init the potential lost neurons to the first ones, we will find
-		// better choices if we can
-		for (int i = 0; i < lostNeuronCount; i++) {
-			lostNeuron[i] = i;
-			lostNeuronSignificance[i] = determineNeuronSignificance(layer, i);
-		}
-
-		// now loop over the remaining neurons and see if any are better ones to
-		// remove
-		for (int i = lostNeuronCount; i < layer.getNeuronCount(); i++) {
-			final double significance = determineNeuronSignificance(layer, i);
-
-			// is this neuron less significant than one already chosen?
-			for (int j = 0; j < lostNeuronCount; j++) {
-				if (lostNeuronSignificance[j] > significance) {
-					lostNeuron[j] = i;
-					lostNeuronSignificance[j] = significance;
-					break;
-				}
-			}
-		}
+		final int[] lostNeuron = findWeakestNeurons(layer, neuronCount);
 
 		// finally, actually prune the neurons that the previous steps
 		// determined to remove
 		for (int i = 0; i < lostNeuronCount; i++) {
 			prune(layer, lostNeuron[i] - i);
 		}
-
 	}
 
 	/**
@@ -174,6 +151,37 @@ public class PruneSelective {
 		}
 
 		return Math.abs(result);
+	}
+
+	private int[] findWeakestNeurons(final Layer layer, final int count) {
+		// create an array to hold the least significant neurons, which will be
+		// returned
+		final double[] lostNeuronSignificance = new double[count];
+		final int[] lostNeuron = new int[count];
+
+		// init the potential lost neurons to the first ones, we will find
+		// better choices if we can
+		for (int i = 0; i < count; i++) {
+			lostNeuron[i] = i;
+			lostNeuronSignificance[i] = determineNeuronSignificance(layer, i);
+		}
+
+		// now loop over the remaining neurons and see if any are better ones to
+		// remove
+		for (int i = count; i < layer.getNeuronCount(); i++) {
+			final double significance = determineNeuronSignificance(layer, i);
+
+			// is this neuron less significant than one already chosen?
+			for (int j = 0; j < count; j++) {
+				if (lostNeuronSignificance[j] > significance) {
+					lostNeuron[j] = i;
+					lostNeuronSignificance[j] = significance;
+					break;
+				}
+			}
+		}
+
+		return lostNeuron;
 	}
 
 	/**
@@ -328,9 +336,61 @@ public class PruneSelective {
 		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
 
 	}
-	
-	public void stimulateWeakNeurons(Layer layer, int count, double percent) {
-		
+
+	/**
+	 * Stimulate the specified neuron by the specified percent. This is used to
+	 * randomize the weights and thresholds for weak neurons.
+	 * 
+	 * @param percent
+	 *            The percent to randomize by.
+	 * @param layer
+	 *            The layer that the neuron is on.
+	 * @param neuron
+	 *            The neuron to randomize.
+	 */
+	public void stimulateNeuron(final double percent, final Layer layer,
+			final int neuron) {
+		final Distort d = new Distort(percent);
+
+		if (layer.hasThreshold()) {
+			layer.setThreshold(neuron, d.randomize(layer.getThreshold(neuron)));
+		}
+
+		// calculate the outbound significance
+		for (final Synapse synapse : layer.getNext()) {
+			for (int i = 0; i < synapse.getToNeuronCount(); i++) {
+				final double v = synapse.getMatrix().get(neuron, i);
+				synapse.getMatrix().set(neuron, i, d.randomize(v));
+			}
+		}
+
+		final Collection<Synapse> inboundSynapses = this.network.getStructure()
+				.getPreviousSynapses(layer);
+
+		for (final Synapse synapse : inboundSynapses) {
+			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
+				final double v = synapse.getMatrix().get(i, neuron);
+				synapse.getMatrix().set(i, neuron, d.randomize(v));
+			}
+		}
 	}
 
+	/**
+	 * Stimulate weaker neurons on a layer. Find the weakest neurons and then
+	 * randomize them by the specified percent.
+	 * 
+	 * @param layer
+	 *            The layer to stimulate.
+	 * @param count
+	 *            The number of weak neurons to stimulate.
+	 * @param percent
+	 *            The percent to stimulate by.
+	 */
+	public void stimulateWeakNeurons(final Layer layer, final int count,
+			final double percent) {
+		final int[] weak = findWeakestNeurons(layer, count);
+		for (final int element : weak) {
+			stimulateNeuron(percent, layer, element);
+		}
+	}
 }
