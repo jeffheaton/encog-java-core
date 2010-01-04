@@ -32,52 +32,102 @@ import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.TrainingContinuationPersistor;
 
+/**
+ * Allows training to be continued.
+ * 
+ */
 public class TrainingContinuation implements EncogPersistedObject {
 
 	/**
-	 * 
+	 * The serial ID.
 	 */
 	private static final long serialVersionUID = -3649790586015301015L;
-	private String name;
-	private String description;
-	private Map<String,Object> contents = new HashMap<String,Object>();
 	
+	/**
+	 * The name of this object.
+	 */
+	private String name;
+	
+	/**
+	 * The description of this object.
+	 */
+	private String description;
+	
+	/**
+	 * The contents of this object.
+	 */
+	private final Map<String, Object> contents = new HashMap<String, Object>();
+
+	/**
+	 * @return A persistor for this object.
+	 */
 	public Persistor createPersistor() {
 		return new TrainingContinuationPersistor();
 	}
 
+	/**
+	 * Get an object by name.
+	 * @param name The name of the object.
+	 * @return The object requested.
+	 */
+	public Object get(final String name) {
+		return this.contents.get(name);
+	}
+
+	/**
+	 * @return The contents.
+	 */
+	public Map<String, Object> getContents() {
+		return this.contents;
+	}
+
+	/**
+	 * @return The description.
+	 */
 	public String getDescription() {
 		return this.description;
 	}
 
+	/**
+	 * @return The name of this object.
+	 */
 	public String getName() {
 		return this.name;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
-		
+	/**
+	 * Save a list of doubles.
+	 * @param key The key to save them under.
+	 * @param list The list of doubles.
+	 */
+	public void put(final String key, final double[] list) {
+		this.contents.put(key, list);
 	}
 
-	public void setName(String name) {
-		this.name = name;		
-	}
-	
-	public Map<String,Object> getContents()
-	{
-		return this.contents;
-	}
-	
-	public void set(String name, Object value) {
+	/**
+	 * Set a value to a string.
+	 * @param name The value to set.
+	 * @param value The value.
+	 */
+	public void set(final String name, final Object value) {
 		this.contents.put(name, value);
 	}
-	
-	public Object get(String name) {
-		return this.contents.get(name);
+
+	/**
+	 * Set the description.
+	 * @param description The description.
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+
 	}
 
-	public void put(String key, double[] list) {
-		this.contents.put(key,list);		
+	/**
+	 * Set the name of this object.
+	 * @param name The name.
+	 */
+	public void setName(final String name) {
+		this.name = name;
 	}
 
 }

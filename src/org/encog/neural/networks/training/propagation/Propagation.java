@@ -53,11 +53,6 @@ public abstract class Propagation extends BasicTraining {
 	private final BasicNetwork network;
 
 	/**
-	 * The training set.
-	 */
-	private final NeuralDataSet training;
-
-	/**
 	 * Construct a propagation object.
 	 * 
 	 * @param network
@@ -69,7 +64,7 @@ public abstract class Propagation extends BasicTraining {
 			final NeuralDataSet training) {
 		super();
 		this.network = network;
-		this.training = training;
+		setTraining( training );
 	}
 
 	/**
@@ -91,13 +86,6 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public int getNumThreads() {
 		return this.numThreads;
-	}
-
-	/**
-	 * @return The training set.
-	 */
-	public NeuralDataSet getTraining() {
-		return this.training;
 	}
 
 	/**
