@@ -2,7 +2,7 @@ Encog Neural Network and Bot Library for Java
 http://www.heatonresearch.com/encog/
 http://code.google.com/p/encog-java/
  
-Copyright 2009, Heaton Research Inc., and individual contributors.
+Copyright 2008-2010, Heaton Research Inc., and individual contributors.
 Later in this file a full listing of individual contributors.
 
 This is free software; you can redistribute it and/or modify it
