@@ -6,7 +6,6 @@ public class StatusCounter implements StatusReportable {
 
 	private int count;
 	
-	@Override
 	public void report(int total, int current, String message) {
 		count++;
 	}
