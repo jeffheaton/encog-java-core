@@ -63,4 +63,16 @@ public class NeuralNetworkError extends EncogError {
 	public NeuralNetworkError(final Throwable t) {
 		super(t);
 	}
+	
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param msg
+	 *            A message.
+	 * @param t
+	 * 			The other exception.
+	 */
+	public NeuralNetworkError(final String msg, final Throwable t) {
+		super(msg,t);
+	}
 }
