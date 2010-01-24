@@ -31,6 +31,8 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
+import org.encog.util.EncogValidate;
+
 
 /**
  * Implements basic functionality that is needed by each of the propagation
@@ -104,19 +106,23 @@ public abstract class Propagation extends BasicTraining {
 	 * Perform one training iteration.
 	 */
 	public void iteration() {
-		preIteration();
+		try {
+			preIteration();
 
-		final CalculateGradient prop = new CalculateGradient(getNetwork(),
-				getTraining(), getNumThreads());
-		final double[] weights = NetworkCODEC.networkToArray(getNetwork());
-		prop.calculate(weights);
+			CalculateGradient prop = new CalculateGradient(getNetwork(),
+					getTraining(), this.getNumThreads());
+			double[] weights = NetworkCODEC.networkToArray(getNetwork());
+			prop.calculate(weights);
 
-		performIteration(prop, weights);
+			performIteration(prop, weights);
 
-		NetworkCODEC.arrayToNetwork(weights, getNetwork());
-		setError(prop.getError());
+			NetworkCODEC.arrayToNetwork(weights, getNetwork());
+			this.setError(prop.getError());
 
-		postIteration();
+			postIteration();
+		} catch (ArrayIndexOutOfBoundsException ex) {
+			EncogValidate.validateNetworkForTraining(network, getTraining());
+		}
 	}
 
 	/**
