@@ -81,15 +81,6 @@ public interface Network extends EncogPersistedObject {
 	int calculateNeuronCount();
 
 	/**
-	 * Check that the input size is acceptable, if it does not match the input
-	 * layer, then throw an error.
-	 * 
-	 * @param input
-	 *            The input data.
-	 */
-	void checkInputSize(final NeuralData input);
-
-	/**
 	 * Return a clone of this neural network. Including structure, weights and
 	 * threshold values.
 	 * 
