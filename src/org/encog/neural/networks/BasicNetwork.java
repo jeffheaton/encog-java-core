@@ -237,33 +237,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	}
 
 	/**
-	 * Check that the input size is acceptable, if it does not match the input
-	 * layer, then throw an error.
-	 * 
-	 * @param input
-	 *            The input data.
-	 */
-	public void checkInputSize(final NeuralData input) {
-
-		final Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
-
-		if (input.size() != inputLayer.getNeuronCount()) {
-
-			final String str = 
-				"Size mismatch: Can't compute outputs for input size="
-					+ input.size()
-					+ " for input layer size="
-					+ inputLayer.getNeuronCount();
-
-			if (BasicNetwork.LOGGER.isErrorEnabled()) {
-				BasicNetwork.LOGGER.error(str);
-			}
-
-			throw new NeuralNetworkError(str);
-		}
-	}
-
-	/**
 	 * Clear any data from any context layers.
 	 */
 	public void clearContext() {
@@ -301,7 +274,15 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * @return The output from the neural network.
 	 */
 	public NeuralData compute(final NeuralData input) {
-		return this.logic.compute(input, null);
+		try
+		{
+			return this.logic.compute(input, null);
+		}
+		catch(ArrayIndexOutOfBoundsException ex) {
+			throw new NeuralNetworkError(
+					"Index exception: there was likely a mismatch between layer sizes, or the size of the input presented to the network.", 
+					ex);
+		}
 	}
 
 	/**
