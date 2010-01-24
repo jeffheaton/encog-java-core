@@ -25,6 +25,7 @@
  */
 package org.encog.neural.networks.logic;
 
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
@@ -85,7 +86,6 @@ public class FeedforwardLogic implements NeuralLogic {
 			holder = useHolder;
 		}
 
-		getNetwork().checkInputSize(input);
 		compute(holder, inputLayer, input, null);
 		return holder.getOutput();
 	}
@@ -106,35 +106,40 @@ public class FeedforwardLogic implements NeuralLogic {
 	private void compute(final NeuralOutputHolder holder, final Layer layer,
 			final NeuralData input, final Synapse source) {
 
-		if (FeedforwardLogic.LOGGER.isDebugEnabled()) {
-			FeedforwardLogic.LOGGER.debug("Processing layer: {}, input= {}",
-					layer, input);
-		}
+		try {
+			if (FeedforwardLogic.LOGGER.isDebugEnabled()) {
+				FeedforwardLogic.LOGGER.debug(
+						"Processing layer: {}, input= {}", layer, input);
+			}
 
-		// typically used to process any recurrent layers that feed into this
-		// layer.
-		preprocessLayer(layer, input, source);
+			// typically used to process any recurrent layers that feed into
+			// this
+			// layer.
+			preprocessLayer(layer, input, source);
 
-		for (final Synapse synapse : layer.getNext()) {
-			if (!holder.getResult().containsKey(synapse)) {
-				if (FeedforwardLogic.LOGGER.isDebugEnabled()) {
-					FeedforwardLogic.LOGGER.debug("Processing synapse: {}",
-							synapse);
-				}
-				NeuralData pattern = synapse.compute(input);
-				pattern = synapse.getToLayer().compute(pattern);
-				synapse.getToLayer().process(pattern);
-				holder.getResult().put(synapse, input);
-				compute(holder, synapse.getToLayer(), pattern, synapse);
+			for (final Synapse synapse : layer.getNext()) {
+				if (!holder.getResult().containsKey(synapse)) {
+					if (FeedforwardLogic.LOGGER.isDebugEnabled()) {
+						FeedforwardLogic.LOGGER.debug("Processing synapse: {}",
+								synapse);
+					}
+					NeuralData pattern = synapse.compute(input);
+					pattern = synapse.getToLayer().compute(pattern);
+					synapse.getToLayer().process(pattern);
+					holder.getResult().put(synapse, input);
+					compute(holder, synapse.getToLayer(), pattern, synapse);
 
-				final Layer outputLayer = this.network
-						.getLayer(BasicNetwork.TAG_OUTPUT);
+					final Layer outputLayer = this.network
+							.getLayer(BasicNetwork.TAG_OUTPUT);
 
-				// Is this the output from the entire network?
-				if (synapse.getToLayer() == outputLayer) {
-					holder.setOutput(pattern);
+					// Is this the output from the entire network?
+					if (synapse.getToLayer() == outputLayer) {
+						holder.setOutput(pattern);
+					}
 				}
 			}
+		} catch (ArrayIndexOutOfBoundsException ex) {
+			throw new NeuralNetworkError("Size mismatch on input of size " + input.size() + " and layer: ", ex);
 		}
 	}
 
