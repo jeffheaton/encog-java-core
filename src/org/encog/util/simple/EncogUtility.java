@@ -38,7 +38,7 @@ import org.encog.neural.data.csv.CSVNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.Propagation;
-import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradient;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.util.Format;
 
@@ -168,7 +168,7 @@ public final class EncogUtility {
 	 */
 	public static void trainConsole(final BasicNetwork network,
 			final NeuralDataSet trainingSet, final int minutes) {
-		final Propagation train = new ScaledConjugateGradient(network,
+		final Propagation train = new ResilientPropagation(network,
 				trainingSet);
 		train.setNumThreads(0);
 		EncogUtility.trainConsole(train, network, trainingSet, minutes);
@@ -219,7 +219,7 @@ public final class EncogUtility {
 	 */
 	public static void trainDialog(final BasicNetwork network,
 			final NeuralDataSet trainingSet) {
-		final Propagation train = new ScaledConjugateGradient(network,
+		final Propagation train = new ResilientPropagation(network,
 				trainingSet);
 		train.setNumThreads(0);
 		EncogUtility.trainDialog(train, network, trainingSet);
@@ -265,7 +265,7 @@ public final class EncogUtility {
 	 */
 	public static void trainToError(final BasicNetwork network,
 			final NeuralDataSet trainingSet, final double error) {
-		final Propagation train = new ScaledConjugateGradient(network,
+		final Propagation train = new ResilientPropagation(network,
 				trainingSet);
 		train.setNumThreads(0);
 		EncogUtility.trainToError(train, network, trainingSet, error);
