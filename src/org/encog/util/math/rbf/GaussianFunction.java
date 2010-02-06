@@ -33,6 +33,8 @@ package org.encog.util.math.rbf;
 
 import java.io.Serializable;
 
+import org.encog.util.math.BoundMath;
+
 /**
  * Implements a radial function based on the gaussian function.
  * 
@@ -87,7 +89,7 @@ public class GaussianFunction implements RadialBasisFunction, Serializable {
 	 */
 	public double calculate(final double x) {
 		return this.peak
-				* Math.exp(-Math.pow(x - this.center, 2)
+				* BoundMath.exp(-Math.pow(x - this.center, 2)
 						/ (2.0 * this.width * this.width));
 	}
 
