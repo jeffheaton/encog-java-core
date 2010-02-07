@@ -53,7 +53,7 @@ public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 	/**
 	 * The data set to add to.
 	 */
-	private NeuralDataSet dataset;
+	private final NeuralDataSet dataset;
 
 	/**
 	 * Construct a new NeuralDataSet based on the parameters specified.
@@ -124,5 +124,14 @@ public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 		}
 
 	}
+
+	/**
+	 * @return The dataset used.
+	 */
+	public NeuralDataSet getDataset() {
+		return dataset;
+	}
+	
+	
 
 }

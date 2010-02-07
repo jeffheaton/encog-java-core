@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.NullStatusReportable;
 import org.encog.StatusReportable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -216,7 +217,7 @@ public class DataNormalization implements EncogPersistedObject {
 	 * The object to report the progress of the normalization to.
 	 */
 	@EGIgnore
-	private StatusReportable report;
+	private StatusReportable report = new NullStatusReportable();
 
 	/**
 	 * The number of records that were found in the first pass.

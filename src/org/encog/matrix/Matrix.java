@@ -216,8 +216,12 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            The other matrix to compare.
 	 * @return True if the two matrixes are equal.
 	 */
-	public boolean equals(final Matrix matrix) {
-		return equals(matrix, Encog.DEFAULT_PRECISION);
+	@Override
+	public boolean equals(final Object other) {
+		if( other instanceof Matrix )
+			return equals((Matrix)other, Encog.DEFAULT_PRECISION);
+		else
+			return false;
 	}
 
 	/**
