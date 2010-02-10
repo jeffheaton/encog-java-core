@@ -151,32 +151,6 @@ public class FanInRandomizer extends BasicRandomizer {
 	}
 
 	/**
-	 * Randomize the synapses and thresholds in the basic network based on an
-	 * array, modify the array. Previous values may be used, or they may be
-	 * discarded, depending on the randomizer.
-	 * 
-	 * @param network
-	 *            A network to randomize.
-	 */
-	@Override
-	public void randomize(final BasicNetwork network) {
-
-		// randomize the weight matrix
-		for (final Synapse synapse : network.getStructure().getSynapses()) {
-			if (synapse.getMatrix() != null) {
-				randomize(synapse.getMatrix());
-			}
-		}
-
-		// clear the thresholds
-		for (final Layer layer : network.getStructure().getLayers()) {
-			for (int i = 0; i < layer.getNeuronCount(); i++) {
-				layer.setThreshold(i, 0);
-			}
-		}
-	}
-
-	/**
 	 * Starting with the specified number, randomize it to the degree specified
 	 * by this randomizer. This could be a totally new random number, or it
 	 * could be based on the specified number.
