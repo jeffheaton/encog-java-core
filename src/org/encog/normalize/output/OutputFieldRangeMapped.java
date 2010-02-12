@@ -146,4 +146,16 @@ public class OutputFieldRangeMapped extends BasicOutputField implements
 	public void rowInit() {
 	}
 
+	/**
+	 * Convert a number back after its been normalized.
+	 * @param data The number to convert back.
+	 * @return The result.
+	 */
+	public double convertBack(final double data) {
+		double result = ((field.getMin() - field.getMax()) * data - high
+				* field.getMin() + field.getMax() * low)
+				/ (low - high);
+		return result;
+	}
+
 }
