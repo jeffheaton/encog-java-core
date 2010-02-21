@@ -33,13 +33,13 @@ package org.encog.neural.networks;
 
 import junit.framework.Assert;
 
-import org.encog.matrix.Matrix;
+import org.encog.math.matrices.Matrix;
+import org.encog.math.randomize.ConsistentRandomizer;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.Train;
-import org.encog.util.randomize.ConsistentRandomizer;
 
 public class NetworkUtil {
 	

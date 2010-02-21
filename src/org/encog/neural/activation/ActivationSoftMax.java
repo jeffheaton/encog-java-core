@@ -31,9 +31,9 @@
 
 package org.encog.neural.activation;
 
+import org.encog.math.BoundMath;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationSoftMaxPersistor;
-import org.encog.util.math.BoundMath;
 
 /**
  * The softmax activation function.

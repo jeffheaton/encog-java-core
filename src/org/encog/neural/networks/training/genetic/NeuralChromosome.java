@@ -33,12 +33,12 @@ package org.encog.neural.networks.training.genetic;
 
 import java.util.Arrays;
 
+import org.encog.math.randomize.Distort;
+import org.encog.math.randomize.Randomizer;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.solve.genetic.Chromosome;
 import org.encog.util.EncogArray;
-import org.encog.util.randomize.Distort;
-import org.encog.util.randomize.Randomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

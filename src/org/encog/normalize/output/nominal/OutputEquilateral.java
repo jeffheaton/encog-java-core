@@ -34,10 +34,10 @@ package org.encog.normalize.output.nominal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.math.Equilateral;
 import org.encog.normalize.input.InputField;
 import org.encog.normalize.output.BasicOutputField;
 import org.encog.persist.annotations.EGIgnore;
-import org.encog.util.math.Equilateral;
 
 /**
  * Allows nominal items to be encoded using the equilateral method. This maps

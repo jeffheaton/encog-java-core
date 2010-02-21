@@ -31,9 +31,9 @@
 
 package org.encog.neural.activation;
 
+import org.encog.math.rbf.GaussianFunction;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationGaussianPersistor;
-import org.encog.util.math.rbf.GaussianFunction;
 
 /**
  * An activation function based on the gaussian function.

@@ -31,12 +31,12 @@
 
 package org.encog.util.benchmark;
 
+import org.encog.math.LinearCongruentialGenerator;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.util.math.LinearCongruentialGenerator;
 
 /**
  * Class used to generate random training sets.  This will always generate

@@ -31,6 +31,9 @@
 
 package org.encog.matrix;
 
+import org.encog.math.matrices.BiPolarUtil;
+import org.encog.math.matrices.Matrix;
+
 import junit.framework.TestCase;
 
 public class TestBiPolarUtil extends TestCase {

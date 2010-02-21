@@ -31,13 +31,13 @@
 
 package org.encog.neural.networks.training.cpn;
 
+import org.encog.math.BoundMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.util.math.BoundMath;
 
 /**
  * Used for Instar training of a CPN neural network. A CPN network is a hybrid

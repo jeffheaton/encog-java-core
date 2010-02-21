@@ -31,13 +31,13 @@
 
 package org.encog.neural.networks.logic;
 
+import org.encog.math.BoundMath;
+import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.util.math.BoundMath;
-import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -31,7 +31,7 @@
 
 package org.encog.neural.networks.training.competitive.neighborhood;
 
-import org.encog.util.math.rbf.RadialBasisFunction;
+import org.encog.math.rbf.RadialBasisFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

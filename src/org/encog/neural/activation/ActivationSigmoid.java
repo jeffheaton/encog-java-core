@@ -31,9 +31,9 @@
 
 package org.encog.neural.activation;
 
+import org.encog.math.BoundMath;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ActivationSigmoidPersistor;
-import org.encog.util.math.BoundMath;
 
 /**
  * The sigmoid activation function takes on a sigmoidal shape. Only positive

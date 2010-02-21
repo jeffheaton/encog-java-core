@@ -31,16 +31,16 @@
 
 package org.encog.neural.networks.layers;
 
+import org.encog.math.BoundMath;
+import org.encog.math.randomize.RangeRandomizer;
+import org.encog.math.rbf.GaussianFunction;
+import org.encog.math.rbf.RadialBasisFunction;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.RadialBasisFunctionLayerPersistor;
-import org.encog.util.math.BoundMath;
-import org.encog.util.math.rbf.GaussianFunction;
-import org.encog.util.math.rbf.RadialBasisFunction;
-import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

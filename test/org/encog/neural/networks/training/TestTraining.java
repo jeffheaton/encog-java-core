@@ -36,6 +36,7 @@ import java.util.Iterator;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -52,7 +53,6 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradient;
 import org.encog.neural.prune.PruneSelective;
 import org.encog.util.logging.Logging;
-import org.encog.util.randomize.RangeRandomizer;
 import org.junit.Test;
 
 public class TestTraining extends TestCase   {

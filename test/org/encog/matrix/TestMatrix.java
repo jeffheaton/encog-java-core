@@ -31,6 +31,10 @@
 
 package org.encog.matrix;
 
+import org.encog.math.matrices.Matrix;
+import org.encog.math.matrices.MatrixError;
+import org.encog.math.matrices.MatrixMath;
+
 import junit.framework.TestCase;
 
 public class TestMatrix extends TestCase {

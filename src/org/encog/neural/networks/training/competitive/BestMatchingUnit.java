@@ -31,9 +31,9 @@
 
 package org.encog.neural.networks.training.competitive;
 
+import org.encog.math.BoundMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.util.math.BoundMath;
 
 /**
  * The "Best Matching Unit" or BMU is a very important concept in the training

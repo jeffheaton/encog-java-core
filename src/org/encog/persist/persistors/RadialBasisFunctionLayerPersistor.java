@@ -35,14 +35,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.math.rbf.GaussianFunction;
+import org.encog.math.rbf.RadialBasisFunction;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
-import org.encog.util.math.rbf.GaussianFunction;
-import org.encog.util.math.rbf.RadialBasisFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

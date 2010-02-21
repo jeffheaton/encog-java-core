@@ -31,12 +31,12 @@
 
 package org.encog.neural.pattern;
 
+import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.util.randomize.RangeRandomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

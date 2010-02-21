@@ -31,11 +31,11 @@
 
 package org.encog.neural.networks.training.genetic;
 
+import org.encog.math.randomize.Randomizer;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.solve.genetic.GeneticAlgorithm;
-import org.encog.util.randomize.Randomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

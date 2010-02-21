@@ -31,7 +31,7 @@
 
 package org.encog.neural.networks.synapse;
 
-import org.encog.matrix.Matrix;
+import org.encog.math.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;

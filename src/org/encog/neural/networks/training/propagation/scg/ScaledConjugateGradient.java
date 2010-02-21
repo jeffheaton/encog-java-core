@@ -31,6 +31,7 @@
 
 package org.encog.neural.networks.training.propagation.scg;
 
+import org.encog.math.BoundNumbers;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
@@ -38,7 +39,6 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.util.EncogArray;
-import org.encog.util.math.BoundNumbers;
 
 /**
  * This is a training class that makes use of scaled conjugate 
