@@ -31,6 +31,8 @@
 
 package org.encog.util;
 
+import org.encog.math.error.ErrorCalculation;
+
 import junit.framework.TestCase;
 
 public class TestErrorCalculation extends TestCase {

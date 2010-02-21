@@ -31,6 +31,7 @@
 
 package org.encog.neural.networks.training.simple;
 
+import org.encog.math.error.ErrorCalculation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -40,7 +41,6 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.util.ErrorCalculation;
 
 /**
  * Train an ADALINE neural network.

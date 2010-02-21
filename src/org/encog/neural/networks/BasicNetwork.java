@@ -39,6 +39,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.encog.Encog;
+import org.encog.math.error.ErrorCalculation;
 import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
@@ -53,7 +54,6 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNetworkPersistor;
-import org.encog.util.ErrorCalculation;
 import org.encog.util.ObjectCloner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

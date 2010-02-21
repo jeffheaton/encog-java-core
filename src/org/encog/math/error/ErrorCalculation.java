@@ -29,7 +29,7 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.util;
+package org.encog.math.error;
 
 import org.encog.neural.data.NeuralData;
 import org.slf4j.Logger;

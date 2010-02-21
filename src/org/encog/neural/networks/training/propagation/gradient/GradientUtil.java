@@ -34,6 +34,7 @@ package org.encog.neural.networks.training.propagation.gradient;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.math.error.ErrorCalculation;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -41,7 +42,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.util.ErrorCalculation;
 
 /**
  * Single threaded class that actually calculates the gradients. This is used by

@@ -31,6 +31,7 @@
 package org.encog.math.matrices.decomposition;
 
 import org.encog.math.matrices.Matrix;
+import org.encog.math.matrices.MatrixError;
 
 /**
  * LU Decomposition.
@@ -312,5 +313,50 @@ public class LUDecomposition implements java.io.Serializable {
 			}
 		}
 		return Xmat;
+	}
+	
+	public double[] Solve(double[] value) {
+		if (value == null) {
+			throw new MatrixError("value");
+		}
+
+		if (value.length != this.LU.length) {
+			throw new MatrixError("Invalid matrix dimensions.");
+		}
+
+		if (!this.isNonsingular()) {
+			throw new MatrixError("Matrix is singular");
+		}
+
+		// Copy right hand side with pivoting
+		int count = value.length;
+		double[] b = new double[count];
+		for (int i = 0; i < b.length; i++) {
+			b[i] = value[piv[i]];
+		}
+
+		int rows = LU[0].length;
+		int columns = LU[0].length;
+		double[][] lu = LU;
+
+
+		// Solve L*Y = B
+		double[] X = new double[count];
+		for (int i = 0; i < rows; i++) {
+			X[i] = b[i];
+			for (int j = 0; j < i; j++) {
+				X[i] -= lu[i][j] * X[j];
+			}
+		}
+
+		// Solve U*X = Y;
+		for (int i = rows - 1; i >= 0; i--) {
+			// double sum = 0.0;
+			for (int j = columns - 1; j > i; j--) {
+				X[i] -= lu[i][j] * X[j];
+			}
+			X[i] /= lu[i][i];
+		}
+		return X;
 	}
 }
