@@ -1,9 +1,5 @@
 package org.encog.neural.networks.training.lma;
 
-import java.util.List;
-
-
-
 /**
  * Calculate the Jacobian using the chain rule.
  */
