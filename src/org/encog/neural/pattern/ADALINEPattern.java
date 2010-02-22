@@ -121,7 +121,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "A BAM network can't specify a custom activation function.";
+		final String str = "A ADALINE network can't specify a custom activation function.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
 		}
