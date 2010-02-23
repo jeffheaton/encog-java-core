@@ -77,6 +77,10 @@ public final class ReflectionUtil {
 				return field;
 			}
 		}
+		
+		if( c.getSuperclass()!=null )
+			return findField(c.getSuperclass(),name);
+		
 		return null;
 	}
 

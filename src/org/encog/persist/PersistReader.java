@@ -358,19 +358,7 @@ public class PersistReader {
 		if (advance(name)) {
 			final String objectType = this.in.getTag().getName();
 			Persistor persistor = PersistorUtil.createPersistor(objectType);
-			if (persistor == null) {
-				final Class< ? > clazz = ReflectionUtil
-						.resolveEncogClass(objectType);
-				EncogPersistedObject temp;
-				try {
-					temp = (EncogPersistedObject) clazz.newInstance();
-				} catch (final InstantiationException e) {
-					throw new PersistError(e);
-				} catch (final IllegalAccessException e) {
-					throw new PersistError(e);
-				}
-				persistor = temp.createPersistor();
-			}
+			
 			if (persistor == null) {
 				throw new PersistError("Do not know how to load: " 
 						+ objectType);

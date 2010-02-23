@@ -37,6 +37,7 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.Persistor;
+import org.encog.util.ReflectionUtil;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.slf4j.Logger;
@@ -105,6 +106,8 @@ public final class PersistorUtil {
 	 * @return The persistor for the specified class.
 	 */
 	public static Persistor createPersistor(final String className) {
+		Persistor persistor;
+		
 		try {
 			// handle any hard coded ones
 			if (className.equals("TrainingData")) {
@@ -115,15 +118,33 @@ public final class PersistorUtil {
 			final String name = className + "Persistor";
 			final Class< ? > c = Class.forName("org.encog.persist.persistors."
 					+ name);
-			final Persistor persistor = (Persistor) c.newInstance();
+			persistor = (Persistor) c.newInstance();
+			
 			return persistor;
 		} catch (final ClassNotFoundException e) {
-			return null;
+			persistor = null;
 		} catch (final InstantiationException e) {
-			return null;
+			persistor = null;
 		} catch (final IllegalAccessException e) {
-			return null;
+			persistor = null;
 		}
+		
+		// try another way
+		if (persistor == null) {
+			final Class< ? > clazz = ReflectionUtil
+					.resolveEncogClass(className);
+			EncogPersistedObject temp;
+			try {
+				temp = (EncogPersistedObject) clazz.newInstance();
+			} catch (final InstantiationException e) {
+				throw new PersistError(e);
+			} catch (final IllegalAccessException e) {
+				throw new PersistError(e);
+			}
+			persistor = temp.createPersistor();
+		}
+		
+		return persistor;
 	}
 
 	/**

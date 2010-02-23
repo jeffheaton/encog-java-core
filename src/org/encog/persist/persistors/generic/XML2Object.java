@@ -116,8 +116,10 @@ public class XML2Object {
 
 				final Field field = ReflectionUtil.findField(target.getClass(),
 						key);
-				final String value = this.in.getTag().getAttributeValue(key);
-				setFieldValue(field, target, value);
+				if( field!=null ) {
+					final String value = this.in.getTag().getAttributeValue(key);
+					setFieldValue(field, target, value);
+				}
 			}
 
 			// handle properties
