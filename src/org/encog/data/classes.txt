@@ -59,6 +59,7 @@ org.encog.neural.activation.ActivationLOG
 org.encog.neural.activation.ActivationSigmoid
 org.encog.neural.activation.ActivationSIN
 org.encog.neural.activation.ActivationSoftMax
+org.encog.neural.activation.ActivationStep
 org.encog.neural.activation.ActivationTANH
 org.encog.neural.activation.ActivationUtil
 org.encog.neural.activation.BasicActivationFunction
@@ -143,6 +144,7 @@ org.encog.neural.networks.training.genetic.NeuralChromosome
 org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm
 org.encog.neural.networks.training.LearningRate
 org.encog.neural.networks.training.lma.ComputeJacobian
+org.encog.neural.networks.training.lma.JacobianChainRule
 org.encog.neural.networks.training.lma.LevenbergMarquardtTraining
 org.encog.neural.networks.training.Momentum
 org.encog.neural.networks.training.propagation.back.Backpropagation
@@ -251,15 +253,7 @@ org.encog.persist.location.PersistenceLocation
 org.encog.persist.location.ResourcePersistence
 org.encog.persist.PersistError
 org.encog.persist.Persistor
-org.encog.persist.persistors.ActivationBiPolarPersistor
-org.encog.persist.persistors.ActivationCompetitivePersistor
 org.encog.persist.persistors.ActivationGaussianPersistor
-org.encog.persist.persistors.ActivationLinearPersistor
-org.encog.persist.persistors.ActivationLOGPersistor
-org.encog.persist.persistors.ActivationSigmoidPersistor
-org.encog.persist.persistors.ActivationSINPersistor
-org.encog.persist.persistors.ActivationSoftMaxPersistor
-org.encog.persist.persistors.ActivationTANHPersistor
 org.encog.persist.persistors.BasicLayerPersistor
 org.encog.persist.persistors.BasicNetworkPersistor
 org.encog.persist.persistors.BasicNeuralDataSetPersistor
