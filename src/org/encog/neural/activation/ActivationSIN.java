@@ -33,7 +33,6 @@ package org.encog.neural.activation;
 
 import org.encog.math.BoundMath;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.ActivationSINPersistor;
 
 /**
  * An activation function based on the sin function.
@@ -69,15 +68,6 @@ public class ActivationSIN extends BasicActivationFunction {
 		return new ActivationSIN();
 	}
 
-	/**
-	 * Create a Persistor for this activation function.
-	 * 
-	 * @return The persistor.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return new ActivationSINPersistor();
-	}
 
 	/**
 	 * Implements the activation function derivative. The array is modified

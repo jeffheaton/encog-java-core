@@ -33,9 +33,6 @@ package org.encog.neural.activation;
 
 import junit.framework.TestCase;
 
-import org.encog.EncogError;
-import org.encog.persist.persistors.ActivationBiPolarPersistor;
-import org.encog.persist.persistors.ActivationGaussianPersistor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -55,9 +52,7 @@ public class TestActivationGaussian extends TestCase {
 		activation.activationFunction(input);
 		
 		Assert.assertEquals(0.5,input[0],0.1);
-		
-		// this will throw an error if it does not work
-		ActivationGaussianPersistor p = (ActivationGaussianPersistor)activation.createPersistor();
+	
 		
 		// test derivative, should throw an error
 		

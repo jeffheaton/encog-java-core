@@ -32,7 +32,7 @@
 package org.encog.neural.activation;
 
 import org.encog.EncogError;
-import org.encog.persist.persistors.ActivationBiPolarPersistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -56,8 +56,6 @@ public class TestActivationBiPolar extends TestCase {
 		Assert.assertEquals(1.0,input[0],0.1);
 		Assert.assertEquals(-1.0,input[1],0.1);
 		
-		// this will throw an error if it does not work
-		ActivationBiPolarPersistor p = (ActivationBiPolarPersistor)activation.createPersistor();
 		
 		// test derivative, should throw an error
 		try

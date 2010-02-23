@@ -34,8 +34,7 @@ package org.encog.neural.activation;
 import junit.framework.TestCase;
 
 import org.encog.EncogError;
-import org.encog.persist.persistors.ActivationBiPolarPersistor;
-import org.encog.persist.persistors.ActivationSoftMaxPersistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -56,9 +55,6 @@ public class TestActivationSoftMax extends TestCase {
 		
 		Assert.assertEquals(0.25,input[0],0.1);
 		Assert.assertEquals(0.25,input[1],0.1);
-		
-		// this will throw an error if it does not work
-		ActivationSoftMaxPersistor p = (ActivationSoftMaxPersistor)activation.createPersistor();
 		
 		// test derivative
 		activation.derivativeFunction(input);

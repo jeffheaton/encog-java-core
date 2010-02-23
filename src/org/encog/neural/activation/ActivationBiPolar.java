@@ -33,7 +33,7 @@ package org.encog.neural.activation;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.ActivationBiPolarPersistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 
 /**
  * BiPolar activation function. This will scale the neural data into the bipolar
@@ -74,16 +74,6 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	@Override
 	public Object clone() {
 		return new ActivationBiPolar();
-	}
-
-	/**
-	 * Create a Persistor for this activation function.
-	 * 
-	 * @return The persistor.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return new ActivationBiPolarPersistor();
 	}
 
 	/**

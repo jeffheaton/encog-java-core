@@ -33,8 +33,7 @@ package org.encog.neural.activation;
 
 import junit.framework.TestCase;
 
-import org.encog.persist.persistors.ActivationSigmoidPersistor;
-import org.encog.persist.persistors.ActivationTANHPersistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -52,10 +51,6 @@ public class TestActivationTANH extends TestCase {
 		activation.activationFunction(input);
 
 		Assert.assertEquals(0.0, input[0], 0.1);		
-
-		// this will throw an error if it does not work
-		ActivationTANHPersistor p = (ActivationTANHPersistor) activation
-				.createPersistor();
 
 		// test derivative, should throw an error
 		activation.derivativeFunction(input);

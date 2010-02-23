@@ -33,8 +33,7 @@ package org.encog.neural.activation;
 
 import junit.framework.TestCase;
 
-import org.encog.persist.persistors.ActivationSINPersistor;
-import org.encog.persist.persistors.ActivationSigmoidPersistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -53,10 +52,6 @@ public class TestActivationSIN extends TestCase {
 		activation.activationFunction(input);
 
 		Assert.assertEquals(0.0, input[0], 0.1);		
-
-		// this will throw an error if it does not work
-		ActivationSINPersistor p = (ActivationSINPersistor) activation
-				.createPersistor();
 
 		// test derivative, should throw an error
 		activation.derivativeFunction(input);

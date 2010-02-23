@@ -33,7 +33,6 @@ package org.encog.neural.activation;
 
 import org.encog.math.BoundMath;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.ActivationLOGPersistor;
 
 /**
  * An activation function based on the logarithm function.
@@ -82,15 +81,6 @@ public class ActivationLOG extends BasicActivationFunction {
 		return new ActivationLOG();
 	}
 
-	/**
-	 * Create a Persistor for this activation function.
-	 * 
-	 * @return The persistor.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return new ActivationLOGPersistor();
-	}
 
 	/**
 	 * Implements the activation function derivative. The array is modified

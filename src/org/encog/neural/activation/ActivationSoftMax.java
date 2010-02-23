@@ -33,7 +33,6 @@ package org.encog.neural.activation;
 
 import org.encog.math.BoundMath;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.ActivationSoftMaxPersistor;
 
 /**
  * The softmax activation function.
@@ -74,16 +73,6 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	@Override
 	public Object clone() {
 		return new ActivationSoftMax();
-	}
-
-	/**
-	 * Create a Persistor for this activation function.
-	 * 
-	 * @return The persistor.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return new ActivationSoftMaxPersistor();
 	}
 
 	/**

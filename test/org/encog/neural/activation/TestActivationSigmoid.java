@@ -31,8 +31,7 @@
 
 package org.encog.neural.activation;
 
-import org.encog.persist.persistors.ActivationLOGPersistor;
-import org.encog.persist.persistors.ActivationSigmoidPersistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -53,9 +52,6 @@ public class TestActivationSigmoid extends TestCase {
 
 		Assert.assertEquals(0.5, input[0], 0.1);		
 
-		// this will throw an error if it does not work
-		ActivationSigmoidPersistor p = (ActivationSigmoidPersistor) activation
-				.createPersistor();
 
 		// test derivative, should throw an error
 		activation.derivativeFunction(input);

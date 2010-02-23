@@ -32,7 +32,6 @@
 package org.encog.neural.activation;
 
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.ActivationLinearPersistor;
 
 /**
  * The Linear layer is really not an activation function at all. The input is
@@ -65,16 +64,6 @@ public class ActivationLinear extends BasicActivationFunction {
 	@Override
 	public Object clone() {
 		return new ActivationLinear();
-	}
-
-	/**
-	 * Create a Persistor for this activation function.
-	 * 
-	 * @return The persistor.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return new ActivationLinearPersistor();
 	}
 
 	/**

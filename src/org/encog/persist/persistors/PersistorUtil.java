@@ -80,11 +80,10 @@ public final class PersistorUtil {
 			final WriteXML out, final EncogPersistedObject obj,
 			final boolean top) {
 		if (top) {
-			if (obj.getName() == null) {
-				throw new PersistError(
-						"Encog object must have a name to be saved.");
+			if (obj.getName() != null) {
+				out.addAttribute("name", obj.getName());
 			}
-			out.addAttribute("name", obj.getName());
+			
 			if (obj.getDescription() != null) {
 				out.addAttribute("description", obj.getDescription());
 			} else {

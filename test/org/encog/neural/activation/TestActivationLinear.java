@@ -34,8 +34,7 @@ package org.encog.neural.activation;
 import junit.framework.TestCase;
 
 import org.encog.EncogError;
-import org.encog.persist.persistors.ActivationBiPolarPersistor;
-import org.encog.persist.persistors.ActivationLinearPersistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -57,8 +56,6 @@ public class TestActivationLinear extends TestCase {
 		Assert.assertEquals(2.0,input[1],0.1);
 		Assert.assertEquals(3.0,input[2],0.1);
 		
-		// this will throw an error if it does not work
-		ActivationLinearPersistor p = (ActivationLinearPersistor)activation.createPersistor();
 		
 		// test derivative, should throw an error
 		activation.derivativeFunction(input);

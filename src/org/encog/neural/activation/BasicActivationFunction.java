@@ -32,6 +32,7 @@
 package org.encog.neural.activation;
 
 import org.encog.persist.Persistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 
 /**
  * Holds basic functionality that all activation functions will likely have use
@@ -53,13 +54,6 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 */
 	@Override
 	public abstract Object clone();
-
-	/**
-	 * Create a Persistor for this activation function.
-	 * 
-	 * @return The persistor.
-	 */
-	public abstract Persistor createPersistor();
 
 	/**
 	 * @return Always returns null, descriptions and names are not used for
@@ -95,6 +89,15 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 */
 	public void setName(final String theName) {
 
+	}
+	
+	/**
+	 * Create a Persistor for this activation function.
+	 * 
+	 * @return The persistor.
+	 */
+	public Persistor createPersistor() {
+		return new GenericPersistor(this.getClass());
 	}
 
 }
