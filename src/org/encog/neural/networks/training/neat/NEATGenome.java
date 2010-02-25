@@ -541,4 +541,15 @@ public class NEATGenome {
 		this.speciesID = species;
 	}
 
+	public double getSplitY(int nd) {
+		return this.neurons.get(nd).getSplitY();
+	}
+
+	/**
+	 * @param networkDepth the networkDepth to set
+	 */
+	public void setNetworkDepth(int networkDepth) {
+		this.networkDepth = networkDepth;
+	}
+
 }

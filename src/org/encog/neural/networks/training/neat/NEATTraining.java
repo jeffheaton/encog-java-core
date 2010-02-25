@@ -44,6 +44,58 @@ public class NEATTraining implements Train {
 		this.splits = split(null, 0, 1, 0);
 	}
 	
+	public List<BasicNetwork> createNetworks()
+	{
+		List<BasicNetwork> result = new ArrayList<BasicNetwork>();
+
+		for(NEATGenome genome: this.population)
+		{
+			calculateNetDepth(genome);
+			BasicNetwork net = genome.createNetwork();
+
+	    result.add(net);
+		}
+
+		return result;
+	}
+	
+	private void calculateNetDepth(NEATGenome genome)
+	{
+	  int maxSoFar = 0;
+
+	  for (int nd=0; nd<genome.getNeurons().size(); ++nd)
+	  {
+		  for(SplitDepth split: this.splits)
+	    {
+	     
+	      if ((genome.getSplitY(nd) == split.getValue() ) &&
+	          (split.getDepth() > maxSoFar))
+	      {
+	        maxSoFar = split.getDepth();
+	      }
+	    }
+	  }
+
+	  genome.setNetworkDepth(maxSoFar+2);
+	}
+	
+	public void addNeuronID( int nodeID, List<Integer> vec)
+	{
+		for (int i=0; i<vec.size(); i++)
+		{
+			if (vec.get(i) == nodeID)
+			{
+				return;
+			}
+		}
+
+		vec.add(nodeID);
+
+		return;
+	}
+	
+	
+	
 	public int assignGenomeID()
 	{
 		return(this.currentGenomeID++);
