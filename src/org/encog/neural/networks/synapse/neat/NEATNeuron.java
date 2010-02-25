@@ -8,7 +8,7 @@ public class NEATNeuron {
 	  private final List<NEATLink> inboundLinks = new ArrayList<NEATLink>();
 	  private final List<NEATLink> outputboundLinks = new ArrayList<NEATLink>();
 	  private final double sumActivation;
-	  private final double output;
+	  private double output;
 	  private final NEATNeuronType neuronType;
 	  private final int neuronID;
 	  private final double activationResponse;
@@ -65,6 +65,10 @@ public class NEATNeuron {
 	}
 	public double getSplitX() {
 		return splitX;
+	}
+	public void setOutput(double output) {
+		this.output = output;
+		
 	}
 	
 	  

@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.math.matrices.Matrix;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
@@ -13,13 +15,14 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
 
 public class NEATSynapse implements Synapse {
-	
+
 	private Layer fromLayer;
 	private Layer toLayer;
 	private List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 	private int networkDepth;
-	
-	
+	private boolean snapshot;
+	private ActivationFunction activationFunction;
+
 	public NEATSynapse(BasicLayer fromLayer, BasicLayer toLayer,
 			List<NEATNeuron> neurons, int networkDepth) {
 		this.fromLayer = fromLayer;
@@ -31,35 +34,95 @@ public class NEATSynapse implements Synapse {
 	/**
 	 * @return A clone of this object.
 	 */
-	public Object clone()
-	{
+	public Object clone() {
 		return null;
+	}
+
+	double sigmoid(double netinput, double response) {
+		return (1 / (1 + Math.exp(-netinput / response)));
 	}
 
 	/**
 	 * Compute the output from this synapse.
-	 * @param input The input to this synapse.
+	 * 
+	 * @param input
+	 *            The input to this synapse.
 	 * @return The output from this synapse.
 	 */
-	public NeuralData compute(NeuralData input)
-	{
-		return null;
+	public NeuralData compute(NeuralData input) {
+		NeuralData result = new BasicNeuralData(this.getToNeuronCount());
+
+		int flushCount = 1;
+
+		if (this.snapshot) {
+			flushCount = this.networkDepth;
+		}
+
+		// iterate through the network FlushCount times
+		for (int i = 0; i < flushCount; ++i) {
+			int outputIndex = 0;
+			int currentNeuron = 0;
+
+			result.clear();
+
+			while (this.neurons.get(currentNeuron).getNeuronType() == NEATNeuronType.Input) {
+				this.neurons.get(currentNeuron).setOutput(
+						input.getData(currentNeuron));
+
+				currentNeuron++;
+			}
+
+			this.neurons.get(currentNeuron++).setOutput(1);
+
+			while (currentNeuron < this.neurons.size()) {
+				double sum = 0;
+
+				for (int lnk = 0; lnk < this.neurons.get(currentNeuron)
+						.getInboundLinks().size(); ++lnk) {
+					double weight = this.neurons.get(currentNeuron)
+							.getInboundLinks().get(lnk).getWeight();
+					double neuronOutput = this.neurons.get(currentNeuron)
+							.getInboundLinks().get(lnk).getFromNeuron()
+							.getOutput();
+
+					sum += weight * neuronOutput;
+				}
+
+				double value = sigmoid(sum, this.neurons.get(currentNeuron)
+						.getActivationResponse());
+
+				this.neurons.get(currentNeuron).setOutput(value);
+
+				if (this.neurons.get(currentNeuron).getNeuronType() == NEATNeuronType.Output) {
+					result.setData(outputIndex++, this.neurons.get(
+							currentNeuron).getOutput());
+				}
+
+				currentNeuron++;
+			}
+
+		}
+
+		if (snapshot) {
+			for (NEATNeuron neuron : this.neurons) {
+				neuron.setOutput(0);
+			}
+		}
+
+		return result;
 	}
 
-	
 	/**
 	 * @return The from layer.
 	 */
-	public Layer getFromLayer()
-	{
+	public Layer getFromLayer() {
 		return this.fromLayer;
 	}
 
 	/**
 	 * @return The neuron count from the "from layer".
 	 */
-	public int getFromNeuronCount()
-	{
+	public int getFromNeuronCount() {
 		return this.fromLayer.getNeuronCount();
 	}
 
@@ -68,8 +131,7 @@ public class NEATSynapse implements Synapse {
 	 * 
 	 * @return The weight and threshold matrix.
 	 */
-	public Matrix getMatrix()
-	{
+	public Matrix getMatrix() {
 		return null;
 	}
 
@@ -78,58 +140,53 @@ public class NEATSynapse implements Synapse {
 	 * 
 	 * @return The size of the matrix.
 	 */
-	public int getMatrixSize()
-	{
+	public int getMatrixSize() {
 		return 0;
 	}
 
 	/**
 	 * @return The "to layer".
 	 */
-	public Layer getToLayer()
-	{
+	public Layer getToLayer() {
 		return this.toLayer;
 	}
 
 	/**
 	 * @return The neuron count from the "to layer".
 	 */
-	public int getToNeuronCount()
-	{
+	public int getToNeuronCount() {
 		return this.toLayer.getNeuronCount();
 	}
 
 	/**
 	 * @return The type of synapse that this is.
 	 */
-	public SynapseType getType()
-	{
+	public SynapseType getType() {
 		return null;
 	}
 
 	/**
-	 * @return True if this is a self-connected synapse.  That is,
-	 * the from and to layers are the same.
+	 * @return True if this is a self-connected synapse. That is, the from and
+	 *         to layers are the same.
 	 */
-	public boolean isSelfConnected()
-	{
+	public boolean isSelfConnected() {
 		return false;
 	}
 
 	/**
 	 * @return True if the weights for this synapse can be modified.
 	 */
-	public boolean isTeachable()
-	{
+	public boolean isTeachable() {
 		return false;
 	}
 
 	/**
 	 * Set the from layer for this synapse.
-	 * @param fromLayer The from layer for this synapse.
+	 * 
+	 * @param fromLayer
+	 *            The from layer for this synapse.
 	 */
-	public void setFromLayer(Layer fromLayer)
-	{
+	public void setFromLayer(Layer fromLayer) {
 		this.fromLayer = fromLayer;
 	}
 
@@ -139,43 +196,40 @@ public class NEATSynapse implements Synapse {
 	 * @param matrix
 	 *            The new matrix.
 	 */
-	public void setMatrix(final Matrix matrix)
-	{
-		throw new NeuralNetworkError("Neat synapse cannot have a simple matrix.");
+	public void setMatrix(final Matrix matrix) {
+		throw new NeuralNetworkError(
+				"Neat synapse cannot have a simple matrix.");
 	}
 
 	/**
 	 * Set the target layer from this synapse.
-	 * @param toLayer The target layer from this synapse.
+	 * 
+	 * @param toLayer
+	 *            The target layer from this synapse.
 	 */
-	public void setToLayer(Layer toLayer)
-	{
+	public void setToLayer(Layer toLayer) {
 		this.toLayer = toLayer;
 	}
 
-	public String getDescription()
-	{
+	public String getDescription() {
 		return null;
 	}
-	
-	public String getName()
-	{
+
+	public String getName() {
 		return null;
 	}
-	
-	public void setName(String name)
-	{
-	
+
+	public void setName(String name) {
+
 	}
-	
-	public void setDescription(String description)
-	{
-		
+
+	public void setDescription(String description) {
+
 	}
 
 	public Persistor createPersistor() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 }
