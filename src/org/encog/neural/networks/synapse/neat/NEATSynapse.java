@@ -173,7 +173,6 @@ public class NEATSynapse implements Synapse {
 		
 	}
 
-	@Override
 	public Persistor createPersistor() {
 		// TODO Auto-generated method stub
 		return null;

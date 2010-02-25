@@ -102,4 +102,8 @@ public class NEATInnovationDB {
 		return this.nextInnovationID++;
 	}
 
+	public int getNeuronID(int id) {
+		return this.innovations.get(id).getNeuronID();
+	}
+
 }

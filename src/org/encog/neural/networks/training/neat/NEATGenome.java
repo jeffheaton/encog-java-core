@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.math.randomize.RangeRandomizer;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.synapse.neat.NEATLink;
@@ -12,6 +13,10 @@ import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
 
 public class NEATGenome {
+
+	public static final double TWEAK_DISJOINT = 1;
+	public static final double TWEAK_EXCESS = 1;
+	public static final double TWEAK_MATCHED = 0.4;
 
 	private final int genomeID;
 	private List<NEATNeuronGene> neurons = new ArrayList<NEATNeuronGene>();
@@ -238,31 +243,251 @@ public class NEATGenome {
 			this.training.getInnovations().createNewInnovation(neuron1ID,
 					neuron2ID, NEATInnovationType.NewLink);
 
-
 			int id2 = this.training.getInnovations().assignInnovationNumber();
 
 			NEATLinkGene linkGene = new NEATLinkGene(neuron1ID, neuron2ID,
 					true, id2, RangeRandomizer.randomize(-1, 1), recurrent);
 			this.links.add(linkGene);
-		}
-		else {
+		} else {
 			NEATLinkGene linkGene = new NEATLinkGene(neuron1ID, neuron2ID,
 					true, id, RangeRandomizer.randomize(-1, 1), recurrent);
 			this.links.add(linkGene);
 		}
 	}
-	
-	public boolean alreadyHaveThisNeuronID( int id)
-	{
-		for( NEATNeuronGene neuronGene: this.neurons )
-		{
-			if( neuronGene.getId()== id )
-				return true;
-		}		
 
-	  return false;
+	void addNeuron(double mutationRate, NEATInnovation innovations,
+			int numTrysToFindOldLink) {
+		if (Math.random() > mutationRate)
+			return;
+
+		boolean done = false;
+
+		int ChosenLink = 0;
+
+		final int sizeThreshold = this.inputCount + this.outputCount + 10;
+
+		if (this.links.size() < sizeThreshold) {
+			while ((numTrysToFindOldLink--) > 0) {
+				int chosenLink = (int) RangeRandomizer.randomize(0,
+						getNumGenes() - 1 - (int) Math.sqrt(getNumGenes()));
+
+				int FromNeuron = this.links.get(chosenLink).getFromNeuronID();
+
+				if ((this.links.get(ChosenLink).isEnabled())
+						&& (!this.links.get(ChosenLink).isRecurrent())
+						&& (this.neurons.get(getElementPos(FromNeuron))
+								.getNeuronType() != NEATNeuronType.Bias)) {
+					done = true;
+
+					numTrysToFindOldLink = 0;
+				}
+			}
+
+			if (!done) {
+				return;
+			}
+		}
+
+		else {
+			while (!done) {
+				int chosenLink = (int) RangeRandomizer.randomize(0,
+						getNumGenes() - 1);
+
+				int FromNeuron = this.links.get(ChosenLink).getFromNeuronID();
+
+				if ((links.get(ChosenLink).isEnabled())
+						&& (!this.links.get(chosenLink).isRecurrent())
+						&& (this.neurons.get(getElementPos(FromNeuron))
+								.getNeuronType() != NEATNeuronType.Bias)) {
+					done = true;
+				}
+			}
+		}
+
+		this.links.get(ChosenLink).setEnabled(false);
+
+		double originalWeight = this.links.get(ChosenLink).getWeight();
+
+		int from = this.links.get(ChosenLink).getFromNeuronID();
+		int to = this.links.get(ChosenLink).getToNeuronID();
+
+		double newDepth = (this.neurons.get(getElementPos(from)).getSplitY() + this.neurons
+				.get(getElementPos(to)).getSplitY()) / 2;
+
+		double newWidth = (this.neurons.get(getElementPos(from)).getSplitX() + this.neurons
+				.get(getElementPos(to)).getSplitX()) / 2;
+
+		int id = this.training.getInnovations().checkInnovation(from, to,
+				NEATInnovationType.NewNeuron);
+
+		if (id >= 0) {
+			int neuronID = this.training.getInnovations().getNeuronID(id);
+
+			if (alreadyHaveThisNeuronID(neuronID)) {
+				id = -1;
+			}
+		}
+
+		if (id < 0) {
+			int newNeuronID = this.training.getInnovations()
+					.createNewInnovation(from, to,
+							NEATInnovationType.NewNeuron,
+							NEATNeuronType.Hidden, newWidth, newDepth);
+
+			this.neurons.add(new NEATNeuronGene(NEATNeuronType.Hidden,
+					newNeuronID, newDepth, newWidth));
+
+			int idLink1 = this.training.getInnovations()
+					.assignInnovationNumber();
+
+			this.training.getInnovations().createNewInnovation(from,
+					newNeuronID, NEATInnovationType.NewLink);
+
+			NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID, true,
+					idLink1, 1.0, false);
+
+			this.links.add(link1);
+
+			int idLink2 = this.training.getInnovations()
+					.assignInnovationNumber();
+
+			this.training.getInnovations().createNewInnovation(newNeuronID, to,
+					NEATInnovationType.NewLink);
+
+			NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
+					idLink2, originalWeight, false);
+
+			this.links.add(link2);
+		}
+
+		else {
+			int NewNeuronID = this.training.getInnovations().getNeuronID(id);
+
+			int idLink1 = this.training.getInnovations().checkInnovation(from,
+					NewNeuronID, NEATInnovationType.NewLink);
+			int idLink2 = this.training.getInnovations().checkInnovation(
+					NewNeuronID, to, NEATInnovationType.NewLink);
+
+			if ((idLink1 < 0) || (idLink2 < 0)) {
+				throw new NeuralNetworkError("NEAT Error");
+			}
+
+			NEATLinkGene link1 = new NEATLinkGene(from, NewNeuronID, true,
+					idLink1, 1.0, false);
+			NEATLinkGene link2 = new NEATLinkGene(NewNeuronID, to, true,
+					idLink2, originalWeight, false);
+
+			this.links.add(link1);
+			this.links.add(link2);
+
+			NEATNeuronGene newNeuron = new NEATNeuronGene(
+					NEATNeuronType.Hidden, NewNeuronID, newDepth, newWidth);
+
+			this.neurons.add(newNeuron);
+		}
+
+		return;
 	}
 
+	public boolean alreadyHaveThisNeuronID(int id) {
+		for (NEATNeuronGene neuronGene : this.neurons) {
+			if (neuronGene.getId() == id)
+				return true;
+		}
+
+		return false;
+	}
+
+	void mutateWeights(double mutateRate, double probNewMutate,
+			double maxPertubation) {
+		for (NEATLinkGene linkGene : this.links) {
+			if (Math.random() < mutateRate) {
+				if (Math.random() < probNewMutate) {
+					linkGene.setWeight(RangeRandomizer.randomize(-1, 1));
+				} else {
+					linkGene.setWeight(RangeRandomizer.randomize(-1, 1)
+							* maxPertubation);
+				}
+			}
+		}
+	}
+
+	void mutateActivationResponse(double mutateRate, double maxPertubation) {
+		for (NEATNeuronGene neuronGene : this.neurons) {
+			if (Math.random() < mutateRate) {
+				neuronGene.setActivationResponse(neuronGene
+						.getActivationResponse()
+						+ RangeRandomizer.randomize(-1, 1) * maxPertubation);
+			}
+		}
+	}
+
+	double getCompatibilityScore(NEATGenome genome) {
+		double numDisjoint = 0;
+		double numExcess = 0;
+		double numMatched = 0;
+		double weightDifference = 0;
+
+		int g1 = 0;
+		int g2 = 0;
+
+		while ((g1 < this.links.size() - 1) || (g2 < this.links.size() - 1)) {
+
+			if (g1 == this.links.size() - 1) {
+				g2++;
+				numExcess++;
+
+				continue;
+			}
+
+			// and vice versa
+			if (g2 == this.links.size() - 1) {
+				g1++;
+				numExcess++;
+
+				continue;
+			}
+
+			// get innovation numbers for each gene at this point
+			int id1 = this.links.get(g1).getInnovationID();
+			int id2 = genome.getLinks().get(g2).getInnovationID();
+
+			// innovation numbers are identical so increase the matched score
+			if (id1 == id2) {
+				g1++;
+				g2++;
+				numMatched++;
+
+				// get the weight difference between these two genes
+				weightDifference += Math.abs(this.links.get(g1).getWeight()
+						- genome.getLinks().get(g2).getWeight());
+			}
+
+			// innovation numbers are different so increment the disjoint score
+			if (id1 < id2) {
+				numDisjoint++;
+				g1++;
+			}
+
+			if (id1 > id2) {
+				++numDisjoint;
+				++g2;
+			}
+
+		}
+
+		int longest = genome.getNumGenes();
+
+		if (getNumGenes() > longest) {
+			longest = getNumGenes();
+		}
+
+		double score = (NEATGenome.TWEAK_EXCESS * numExcess / (double) longest)
+				+ (NEATGenome.TWEAK_DISJOINT * numDisjoint / (double) longest)
+				+ (NEATGenome.TWEAK_MATCHED * weightDifference / numMatched);
+
+		return score;
+	}
 
 	private int getNumGenes() {
 		return this.links.size();

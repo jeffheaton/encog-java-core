@@ -7,6 +7,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.neat.NEATInnovationDB;
 
 public class NEATTraining implements Train {
 
@@ -60,43 +61,36 @@ public class NEATTraining implements Train {
 		return outputCount;
 	}
 
-	@Override
 	public void addStrategy(Strategy strategy) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void finishTraining() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public double getError() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
-	@Override
 	public BasicNetwork getNetwork() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public List<Strategy> getStrategies() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
 	public void iteration() {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void setError(double error) {
 		// TODO Auto-generated method stub
 		
