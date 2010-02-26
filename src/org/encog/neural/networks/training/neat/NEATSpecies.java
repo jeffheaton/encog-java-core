@@ -3,31 +3,51 @@ package org.encog.neural.networks.training.neat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.math.randomize.RangeRandomizer;
+
 public class NEATSpecies {
 
-	  private NEATGenome leader;	 
-	  private final List<NEATGenome> members = new ArrayList<NEATGenome>();	 
-	  private int speciesID;	
-	  private double bestFitness;
-	  private int gensNoImprovement;
-	  private int age;
-	  private double spawnsRequired;
-	  
-	  public NEATSpecies(
-        NEATGenome first,
-        int speciesID)
-	  {
-		  this.speciesID = speciesID;
-		  this.bestFitness = first.getFitness();
-		  this.gensNoImprovement = 0;
-		  this.age = 0;
-		  this.leader = first;
-		  this.spawnsRequired = 0;
-		  this.members.add(first);
-	  }
-	
-	  public void adjustFitness() {
-		// TODO Auto-generated method stub		
+	private NEATGenome leader;
+	private final List<NEATGenome> members = new ArrayList<NEATGenome>();
+	private int speciesID;
+	private double bestFitness;
+	private int gensNoImprovement;
+	private int age;
+	private double spawnsRequired;
+	private final NEATTraining training;
+
+	public NEATSpecies(NEATTraining training, NEATGenome first, int speciesID) {
+		this.training = training;
+		this.speciesID = speciesID;
+		this.bestFitness = first.getFitness();
+		this.gensNoImprovement = 0;
+		this.age = 0;
+		this.leader = first;
+		this.spawnsRequired = 0;
+		this.members.add(first);
+	}
+
+	public void adjustFitness() {
+		double total = 0;
+
+		for (NEATGenome member : this.members) {
+			double fitness = member.getFitness();
+
+			if (this.age < training.getParamYoungBonusAgeThreshhold()) {
+				fitness *= training.getParamYoungFitnessBonus();
+			}
+
+			if (this.age > this.training.getParamOldAgeThreshold()) {
+				fitness *= this.training.getParamOldAgePenalty();
+			}
+
+			total += fitness;
+
+			double adjustedFitness = fitness / this.members.size();
+
+			member.setAdjustedFitness(adjustedFitness);
+
+		}
 	}
 
 	public NEATGenome getLeader() {
@@ -79,18 +99,35 @@ public class NEATSpecies {
 	}
 
 	public void addMember(NEATGenome genome) {
-		// TODO Auto-generated method stub
-		
+
+		if (genome.getFitness() > this.bestFitness) {
+			this.bestFitness = genome.getFitness();
+
+			this.gensNoImprovement = 0;
+
+			this.leader = genome;
+		}
+
+		this.members.add(genome);
+
 	}
 
 	public void calculateSpawnAmount() {
-		// TODO Auto-generated method stub
-		
+		for (NEATGenome genome : this.members) {
+			this.spawnsRequired += genome.getAmountToSpawn();
+		}
+
 	}
 
 	public void purge() {
-		// TODO Auto-generated method stub
-		
+		this.members.clear();
+
+		this.age++;
+
+		this.gensNoImprovement++;
+
+		this.spawnsRequired = 0;
+
 	}
 
 	public int getNumToSpawn() {
@@ -99,8 +136,20 @@ public class NEATSpecies {
 	}
 
 	public NEATGenome spawn() {
-		// TODO Auto-generated method stub
-		return null;
+		NEATGenome baby;
+
+		if (this.members.size() == 1) {
+			baby = members.get(0);
+		}
+
+		else {
+			int maxIndexSize = (int) (this.training.getParamSurvivalRate() * this.members
+					.size()) + 1;
+			int theOne = (int) RangeRandomizer.randomize(0, maxIndexSize);
+			baby = this.members.get(theOne);
+		}
+
+		return baby;
 	}
-	  
+
 }

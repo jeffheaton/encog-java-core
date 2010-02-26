@@ -50,8 +50,14 @@ public class NEATTraining implements Train {
     private double paramProbabilityWeightReplaced;
     private double paramMaxWeightPerturbation;
 
-private double paramActivationMutationRate;
-private double paramMaxActivationPerturbation;
+    private double paramActivationMutationRate;
+    private double paramMaxActivationPerturbation;
+
+    private int paramYoungBonusAgeThreshhold;
+    private double paramYoungFitnessBonus;
+    private int paramOldAgeThreshold;
+    private double paramOldAgePenalty;
+    private double paramSurvivalRate;
 
 	public NEATTraining(CalculateScore calculateScore, int inputCount,
 			int outputCount, int populationSize) {
@@ -360,7 +366,7 @@ private double paramMaxActivationPerturbation;
 			}
 
 			if (!added) {
-				this.species.add(new NEATSpecies(genome, assignSpeciesID()));
+				this.species.add(new NEATSpecies(this,genome, assignSpeciesID()));
 			}
 
 			added = false;
@@ -573,5 +579,186 @@ private double paramMaxActivationPerturbation;
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public int getParamNumBestGenomes() {
+		return paramNumBestGenomes;
+	}
+
+	public void setParamNumBestGenomes(int paramNumBestGenomes) {
+		this.paramNumBestGenomes = paramNumBestGenomes;
+	}
+
+	public double getParamCompatibilityThreshold() {
+		return paramCompatibilityThreshold;
+	}
+
+	public void setParamCompatibilityThreshold(double paramCompatibilityThreshold) {
+		this.paramCompatibilityThreshold = paramCompatibilityThreshold;
+	}
+
+	public int getParamMaxNumberOfSpecies() {
+		return paramMaxNumberOfSpecies;
+	}
+
+	public void setParamMaxNumberOfSpecies(int paramMaxNumberOfSpecies) {
+		this.paramMaxNumberOfSpecies = paramMaxNumberOfSpecies;
+	}
+
+	public int getParamNumGensAllowedNoImprovement() {
+		return paramNumGensAllowedNoImprovement;
+	}
+
+	public void setParamNumGensAllowedNoImprovement(
+			int paramNumGensAllowedNoImprovement) {
+		this.paramNumGensAllowedNoImprovement = paramNumGensAllowedNoImprovement;
+	}
+
+	public double getParamCrossoverRate() {
+		return paramCrossoverRate;
+	}
+
+	public void setParamCrossoverRate(double paramCrossoverRate) {
+		this.paramCrossoverRate = paramCrossoverRate;
+	}
+
+	public double getParamMaxPermittedNeurons() {
+		return paramMaxPermittedNeurons;
+	}
+
+	public void setParamMaxPermittedNeurons(double paramMaxPermittedNeurons) {
+		this.paramMaxPermittedNeurons = paramMaxPermittedNeurons;
+	}
+
+	public double getParamChanceAddNode() {
+		return paramChanceAddNode;
+	}
+
+	public void setParamChanceAddNode(double paramChanceAddNode) {
+		this.paramChanceAddNode = paramChanceAddNode;
+	}
+
+	public int getParamNumTrysToFindOldLink() {
+		return paramNumTrysToFindOldLink;
+	}
+
+	public void setParamNumTrysToFindOldLink(int paramNumTrysToFindOldLink) {
+		this.paramNumTrysToFindOldLink = paramNumTrysToFindOldLink;
+	}
+
+	public double getParamChanceAddLink() {
+		return paramChanceAddLink;
+	}
+
+	public void setParamChanceAddLink(double paramChanceAddLink) {
+		this.paramChanceAddLink = paramChanceAddLink;
+	}
+
+	public double getParamChanceAddRecurrentLink() {
+		return paramChanceAddRecurrentLink;
+	}
+
+	public void setParamChanceAddRecurrentLink(double paramChanceAddRecurrentLink) {
+		this.paramChanceAddRecurrentLink = paramChanceAddRecurrentLink;
+	}
+
+	public int getParamNumTrysToFindLoopedLink() {
+		return paramNumTrysToFindLoopedLink;
+	}
+
+	public void setParamNumTrysToFindLoopedLink(int paramNumTrysToFindLoopedLink) {
+		this.paramNumTrysToFindLoopedLink = paramNumTrysToFindLoopedLink;
+	}
+
+	public int getParamNumAddLinkAttempts() {
+		return paramNumAddLinkAttempts;
+	}
+
+	public void setParamNumAddLinkAttempts(int paramNumAddLinkAttempts) {
+		this.paramNumAddLinkAttempts = paramNumAddLinkAttempts;
+	}
+
+	public double getParamMutationRate() {
+		return paramMutationRate;
+	}
+
+	public void setParamMutationRate(double paramMutationRate) {
+		this.paramMutationRate = paramMutationRate;
+	}
+
+	public double getParamProbabilityWeightReplaced() {
+		return paramProbabilityWeightReplaced;
+	}
+
+	public void setParamProbabilityWeightReplaced(
+			double paramProbabilityWeightReplaced) {
+		this.paramProbabilityWeightReplaced = paramProbabilityWeightReplaced;
+	}
+
+	public double getParamMaxWeightPerturbation() {
+		return paramMaxWeightPerturbation;
+	}
+
+	public void setParamMaxWeightPerturbation(double paramMaxWeightPerturbation) {
+		this.paramMaxWeightPerturbation = paramMaxWeightPerturbation;
+	}
+
+	public double getParamActivationMutationRate() {
+		return paramActivationMutationRate;
+	}
+
+	public void setParamActivationMutationRate(double paramActivationMutationRate) {
+		this.paramActivationMutationRate = paramActivationMutationRate;
+	}
+
+	public double getParamMaxActivationPerturbation() {
+		return paramMaxActivationPerturbation;
+	}
+
+	public void setParamMaxActivationPerturbation(
+			double paramMaxActivationPerturbation) {
+		this.paramMaxActivationPerturbation = paramMaxActivationPerturbation;
+	}
+
+	public int getParamYoungBonusAgeThreshhold() {
+		return paramYoungBonusAgeThreshhold;
+	}
+
+	public void setParamYoungBonusAgeThreshhold(int paramYoungBonusAgeThreshhold) {
+		this.paramYoungBonusAgeThreshhold = paramYoungBonusAgeThreshhold;
+	}
+
+	public double getParamYoungFitnessBonus() {
+		return paramYoungFitnessBonus;
+	}
+
+	public void setParamYoungFitnessBonus(double paramYoungFitnessBonus) {
+		this.paramYoungFitnessBonus = paramYoungFitnessBonus;
+	}
+
+	public int getParamOldAgeThreshold() {
+		return paramOldAgeThreshold;
+	}
+
+	public void setParamOldAgeThreshold(int paramOldAgeThreshold) {
+		this.paramOldAgeThreshold = paramOldAgeThreshold;
+	}
+
+	public double getParamOldAgePenalty() {
+		return paramOldAgePenalty;
+	}
+
+	public void setParamOldAgePenalty(double paramOldAgePenalty) {
+		this.paramOldAgePenalty = paramOldAgePenalty;
+	}
+
+	public double getParamSurvivalRate() {
+		return paramSurvivalRate;
+	}
+
+	public void setParamSurvivalRate(double paramSurvivalRate) {
+		this.paramSurvivalRate = paramSurvivalRate;
+	}
+	
+	
 
 }

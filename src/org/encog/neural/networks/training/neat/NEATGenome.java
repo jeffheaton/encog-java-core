@@ -582,4 +582,9 @@ public class NEATGenome implements Comparable {
 		
 	}
 
+	public void setAdjustedFitness(double adjustedFitness) {
+		this.adjustedFitness = adjustedFitness;
+		
+	}
+
 }
