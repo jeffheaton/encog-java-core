@@ -12,7 +12,7 @@ import org.encog.neural.networks.training.neat.NEATInnovationDB;
 
 public class NEATTraining implements Train {
 
-	private final NeuralDataSet training; 
+	private final NeuralDataSet training;
 	private final int inputCount;
 	private final int outputCount;
 	private final List<NEATGenome> population = new ArrayList<NEATGenome>();
@@ -23,77 +23,65 @@ public class NEATTraining implements Train {
 	private double bestEverFitness;
 	private double totalFitAdjustment;
 	private double averageFitAdjustment;
-	
+
 	private int currentGenomeID = 1;
-	
+
 	private int paramNumBestGenomes = 4;
 	private double paramCompatibilityThreshold = 0;
 	private int paramMaxNumberOfSpecies = 0;
-	
-	public NEATTraining(
-			NeuralDataSet training, 
-			int inputCount, 
-			int outputCount,
-			int populationSize)
-	{
+
+	public NEATTraining(NeuralDataSet training, int inputCount,
+			int outputCount, int populationSize) {
 		this.training = training;
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
-		
+
 		// create the initial population
-		for (int i=0; i<populationSize; i++)
-		{
-			population.add(new NEATGenome(assignGenomeID(), inputCount, outputCount));
+		for (int i = 0; i < populationSize; i++) {
+			population.add(new NEATGenome(assignGenomeID(), inputCount,
+					outputCount));
 		}
-		
+
 		NEATGenome genome = new NEATGenome(1, inputCount, outputCount);
-		
-		this.innovations = new NEATInnovationDB(genome.getLinks(),genome.getNeurons());
-		
+
+		this.innovations = new NEATInnovationDB(genome.getLinks(), genome
+				.getNeurons());
+
 		this.splits = split(null, 0, 1, 0);
 	}
-	
-	public List<BasicNetwork> createNetworks()
-	{
+
+	public List<BasicNetwork> createNetworks() {
 		List<BasicNetwork> result = new ArrayList<BasicNetwork>();
 
-		for(NEATGenome genome: this.population)
-		{
+		for (NEATGenome genome : this.population) {
 			calculateNetDepth(genome);
 			BasicNetwork net = genome.createNetwork();
 
-	    result.add(net);
+			result.add(net);
 		}
 
 		return result;
 	}
-	
-	private void calculateNetDepth(NEATGenome genome)
-	{
-	  int maxSoFar = 0;
 
-	  for (int nd=0; nd<genome.getNeurons().size(); ++nd)
-	  {
-		  for(SplitDepth split: this.splits)
-	    {
-	     
-	      if ((genome.getSplitY(nd) == split.getValue() ) &&
-	          (split.getDepth() > maxSoFar))
-	      {
-	        maxSoFar = split.getDepth();
-	      }
-	    }
-	  }
+	private void calculateNetDepth(NEATGenome genome) {
+		int maxSoFar = 0;
 
-	  genome.setNetworkDepth(maxSoFar+2);
+		for (int nd = 0; nd < genome.getNeurons().size(); ++nd) {
+			for (SplitDepth split : this.splits) {
+
+				if ((genome.getSplitY(nd) == split.getValue())
+						&& (split.getDepth() > maxSoFar)) {
+					maxSoFar = split.getDepth();
+				}
+			}
+		}
+
+		genome.setNetworkDepth(maxSoFar + 2);
 	}
-	
-	public void addNeuronID( int nodeID, List<Integer> vec)
-	{
-		for (int i=0; i<vec.size(); i++)
-		{
-			if (vec.get(i) == nodeID)
-			{
+
+	public void addNeuronID(int nodeID, List<Integer> vec) {
+		for (int i = 0; i < vec.size(); i++) {
+			if (vec.get(i) == nodeID) {
 				return;
 			}
 		}
@@ -102,12 +90,9 @@ public class NEATTraining implements Train {
 
 		return;
 	}
-	
-	
-	
-	public int assignGenomeID()
-	{
-		return(this.currentGenomeID++);
+
+	public int assignGenomeID() {
+		return (this.currentGenomeID++);
 	}
 
 	public NeuralDataSet getTraining() {
@@ -124,12 +109,12 @@ public class NEATTraining implements Train {
 
 	public void addStrategy(Strategy strategy) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void finishTraining() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public double getError() {
@@ -149,159 +134,136 @@ public class NEATTraining implements Train {
 
 	public void iteration() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public void setError(double error) {
 		// TODO Auto-generated method stub
-		
+
 	}
-	
-	private List<SplitDepth> split(List<SplitDepth> result, double low, double high, int depth)
-	{
-		if( result==null )
+
+	private List<SplitDepth> split(List<SplitDepth> result, double low,
+			double high, int depth) {
+		if (result == null)
 			result = new ArrayList<SplitDepth>();
 
-	  double span = high-low;
+		double span = high - low;
 
-	  result.add(new SplitDepth(low + span/2, depth+1));
+		result.add(new SplitDepth(low + span / 2, depth + 1));
 
-	  if (depth > 6)
-	  {
-	    return result;
-	  }
+		if (depth > 6) {
+			return result;
+		}
 
-	  else
-	  {
-		  split(result, low, low+span/2, depth+1);
-		  split(result, low+span/2, high, depth+1);
+		else {
+			split(result, low, low + span / 2, depth + 1);
+			split(result, low + span / 2, high, depth + 1);
 
-	    return result;
-	  }
+			return result;
+		}
 	}
 
 	public NEATInnovationDB getInnovations() {
 		return this.innovations;
 	}
-	
-	public void sortAndRecord()
-	{
+
+	public void sortAndRecord() {
 		Collections.sort(this.population);
 
-	  //is the best genome this generation the best ever?
-	  if (this.population.get(0).getFitness() > this.bestEverFitness)
-	  {
-		  this.bestEverFitness = this.population.get(0).getFitness();
-	  }
+		if (this.population.get(0).getFitness() > this.bestEverFitness) {
+			this.bestEverFitness = this.population.get(0).getFitness();
+		}
 
-	  //keep a record of the n best genomes
-	  storeBestGenomes();
-	}
-	
-	public void storeBestGenomes()
-	{
-	  //clear old record
-	  this.bestGenomes.clear();
-
-	  for (int i=0; i<this.paramNumBestGenomes; ++i)
-	  {
-	    this.bestGenomes.add(this.population.get(i));
-	  }
-	}
-	
-	public List<BasicNetwork> getBestNetworksFromLastGeneration()
-	{
-	  List<BasicNetwork> result = new ArrayList<BasicNetwork>();
-
-	  for( NEATGenome genome: this.population )
-	  {
-		  calculateNetDepth(genome);
-		  result.add(genome.createNetwork());
-	  }
-
-	  return result;
+		storeBestGenomes();
 	}
 
-	public void adjustSpeciesFitnesses()
-	{
-		for(NEATSpecies s: this.species)
-		{
+	public void storeBestGenomes() {
+		// clear old record
+		this.bestGenomes.clear();
+
+		for (int i = 0; i < this.paramNumBestGenomes; ++i) {
+			this.bestGenomes.add(this.population.get(i));
+		}
+	}
+
+	public List<BasicNetwork> getBestNetworksFromLastGeneration() {
+		List<BasicNetwork> result = new ArrayList<BasicNetwork>();
+
+		for (NEATGenome genome : this.population) {
+			calculateNetDepth(genome);
+			result.add(genome.createNetwork());
+		}
+
+		return result;
+	}
+
+	public void adjustSpeciesFitnesses() {
+		for (NEATSpecies s : this.species) {
 			s.adjustFitness();
 		}
 	}
-	
-	public void speciateAndCalculateSpawnLevels()
-	{
-	  boolean added = false;
 
-	  adjustCompatibilityThreshold();
-	    
-	  for( NEATGenome genome: this.population )
-	  {
-	    for( NEATSpecies s : this.species)
-	    {
-	      double compatibility = genome.getCompatibilityScore(s.getLeader());
+	public void speciateAndCalculateSpawnLevels() {
+		boolean added = false;
 
-	      if (compatibility <= this.paramCompatibilityThreshold)
-	      {
-	        s.addMember(genome);
-	        genome.setSpeciesID(s.getSpeciesID());
-	        added = true;
-	        break;
-	      }
-	    }
-	    
-	    if (!added)
-	    {
-	      this.species.add(
-	    		  new NEATSpecies(genome, assignSpeciesID()));
-	    }
+		adjustCompatibilityThreshold();
 
-	    added = false;
-	  }
+		for (NEATGenome genome : this.population) {
+			for (NEATSpecies s : this.species) {
+				double compatibility = genome.getCompatibilityScore(s
+						.getLeader());
 
-	  adjustSpeciesFitnesses();
-	  
-	  for( NEATGenome genome: this.population )
-	  {
-		  this.totalFitAdjustment+=genome.getAdjustedFitness();	     
-	  }
+				if (compatibility <= this.paramCompatibilityThreshold) {
+					s.addMember(genome);
+					genome.setSpeciesID(s.getSpeciesID());
+					added = true;
+					break;
+				}
+			}
 
-	  this.averageFitAdjustment = this.totalFitAdjustment/this.population.size();
+			if (!added) {
+				this.species.add(new NEATSpecies(genome, assignSpeciesID()));
+			}
 
-	  
-	  for( NEATGenome genome: this.population )
-	  {
-	     double toSpawn = genome.getAdjustedFitness() / this.averageFitAdjustment;
-	     genome.setAmountToSpan(toSpawn);
-	  }
+			added = false;
+		}
 
-	  for(NEATSpecies species: this.species)
-	  {	  
-	    species.calculateSpawnAmount();
-	  }
-	}
-	
-	public void adjustCompatibilityThreshold()
-	{
-	  //if iMaxNumberOfSpecies < 1 then the user has effectively
-	  //switched this feature off.
-	  if (this.paramMaxNumberOfSpecies < 1) return;
-	  
-	  double thresholdIncrement = 0.01;
+		adjustSpeciesFitnesses();
 
-	  if (this.species.size() > this.paramMaxNumberOfSpecies )
-	  {
-	    this.paramCompatibilityThreshold += thresholdIncrement;
-	  }
+		for (NEATGenome genome : this.population) {
+			this.totalFitAdjustment += genome.getAdjustedFitness();
+		}
 
-	  else if (this.species.size() < 2)
-	  {
-	    this.paramCompatibilityThreshold -= thresholdIncrement;
-	  }
+		this.averageFitAdjustment = this.totalFitAdjustment
+				/ this.population.size();
 
+		for (NEATGenome genome : this.population) {
+			double toSpawn = genome.getAdjustedFitness()
+					/ this.averageFitAdjustment;
+			genome.setAmountToSpan(toSpawn);
+		}
+
+		for (NEATSpecies species : this.species) {
+			species.calculateSpawnAmount();
+		}
 	}
 
+	public void adjustCompatibilityThreshold() {
+
+		if (this.paramMaxNumberOfSpecies < 1)
+			return;
+
+		double thresholdIncrement = 0.01;
+
+		if (this.species.size() > this.paramMaxNumberOfSpecies) {
+			this.paramCompatibilityThreshold += thresholdIncrement;
+		}
+
+		else if (this.species.size() < 2) {
+			this.paramCompatibilityThreshold -= thresholdIncrement;
+		}
+
+	}
 
 	private int assignSpeciesID() {
 		// TODO Auto-generated method stub
