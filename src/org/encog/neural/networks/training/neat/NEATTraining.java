@@ -31,33 +31,33 @@ public class NEATTraining implements Train {
 	private int currentSpeciesID = 1;
 
 	private int paramNumBestGenomes = 4;
-	private double paramCompatibilityThreshold = 0;
+	private double paramCompatibilityThreshold = 0.26;
 	private int paramMaxNumberOfSpecies = 0;
-	private int paramNumGensAllowedNoImprovement = 0;
-	private double paramCrossoverRate = 0;
-	private double paramMaxPermittedNeurons = 0;
+	private int paramNumGensAllowedNoImprovement = 15;
+	private double paramCrossoverRate = 0.7;
+	private double paramMaxPermittedNeurons = 100;
 	
-	private double paramChanceAddNode;
-    private int paramNumTrysToFindOldLink;
+	private double paramChanceAddNode = 0.04;
+    private int paramNumTrysToFindOldLink = 5;
     
     
-    private double paramChanceAddLink;
-    private double paramChanceAddRecurrentLink;
-    private int paramNumTrysToFindLoopedLink;
-    private int paramNumAddLinkAttempts;
+    private double paramChanceAddLink = 0.07;
+    private double paramChanceAddRecurrentLink = 0.05;
+    private int paramNumTrysToFindLoopedLink = 5;
+    private int paramNumAddLinkAttempts = 5;
 
-    private double paramMutationRate;
-    private double paramProbabilityWeightReplaced;
-    private double paramMaxWeightPerturbation;
+    private double paramMutationRate = 0.2;
+    private double paramProbabilityWeightReplaced = 0.1;
+    private double paramMaxWeightPerturbation = 0.5;
 
-    private double paramActivationMutationRate;
-    private double paramMaxActivationPerturbation;
+    private double paramActivationMutationRate = 0.1;
+    private double paramMaxActivationPerturbation = 0.1;
 
-    private int paramYoungBonusAgeThreshhold;
-    private double paramYoungFitnessBonus;
-    private int paramOldAgeThreshold;
-    private double paramOldAgePenalty;
-    private double paramSurvivalRate;
+    private int paramYoungBonusAgeThreshhold = 10;
+    private double paramYoungFitnessBonus = 1.3;
+    private int paramOldAgeThreshold = 50;
+    private double paramOldAgePenalty = 0.7;
+    private double paramSurvivalRate = 0.2;
 
 	public NEATTraining(CalculateScore calculateScore, int inputCount,
 			int outputCount, int populationSize) {
