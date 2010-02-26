@@ -12,7 +12,7 @@ import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
 
-public class NEATGenome {
+public class NEATGenome implements Comparable {
 
 	public static final double TWEAK_DISJOINT = 1;
 	public static final double TWEAK_EXCESS = 1;
@@ -550,6 +550,18 @@ public class NEATGenome {
 	 */
 	public void setNetworkDepth(int networkDepth) {
 		this.networkDepth = networkDepth;
+	}
+
+	public int compareTo(Object other) {
+		if( !(other instanceof NEATGenome) )
+			throw new NeuralNetworkError("Can only compare with another NEATGenome");
+		
+		return( (int)(this.getFitness() - ((NEATGenome)other).getFitness()) );
+	}
+
+	public void setAmountToSpan(double toSpawn) {
+		this.amountToSpawn = toSpawn;
+		
 	}
 
 }
