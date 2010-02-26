@@ -18,7 +18,7 @@ public class NEATGenome implements Comparable {
 	public static final double TWEAK_EXCESS = 1;
 	public static final double TWEAK_MATCHED = 0.4;
 
-	private final int genomeID;
+	private int genomeID;
 	private List<NEATNeuronGene> neurons = new ArrayList<NEATNeuronGene>();
 	private List<NEATLinkGene> links = new ArrayList<NEATLinkGene>();
 	private BasicNetwork network;
@@ -179,7 +179,7 @@ public class NEATGenome implements Comparable {
 	}
 
 	void addLink(double mutationRate, double chanceOfLooped,
-			NEATInnovation innovation, int numTrysToFindLoop,
+			int numTrysToFindLoop,
 			int numTrysToAddLink) {
 
 		if (Math.random() > mutationRate)
@@ -255,7 +255,7 @@ public class NEATGenome implements Comparable {
 		}
 	}
 
-	void addNeuron(double mutationRate, NEATInnovation innovations,
+	void addNeuron(double mutationRate,
 			int numTrysToFindOldLink) {
 		if (Math.random() > mutationRate)
 			return;
@@ -489,7 +489,7 @@ public class NEATGenome implements Comparable {
 		return score;
 	}
 
-	private int getNumGenes() {
+	public int getNumGenes() {
 		return this.links.size();
 	}
 
@@ -561,6 +561,24 @@ public class NEATGenome implements Comparable {
 
 	public void setAmountToSpan(double toSpawn) {
 		this.amountToSpawn = toSpawn;
+		
+	}
+
+	public void deleteNetwork() {
+		this.network = null;
+	}
+
+	public void setFitness(double score) {
+		this.fitness = score;
+		
+	}
+
+	public void setGenomeID(int id) {
+		this.genomeID = id;
+		
+	}
+
+	public void sortGenes() {
 		
 	}
 

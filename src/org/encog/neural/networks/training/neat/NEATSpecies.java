@@ -87,5 +87,20 @@ public class NEATSpecies {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void purge() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public int getNumToSpawn() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	public NEATGenome spawn() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	  
 }
