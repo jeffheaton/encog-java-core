@@ -7,6 +7,7 @@ import java.util.List;
 import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
+import org.encog.neural.activation.ActivationStep;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.synapse.neat.NEATLink;
@@ -177,7 +178,7 @@ public class NEATGenome implements Cloneable {
 		}
 
 		BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),false,this.inputCount);
-		BasicLayer outputLayer = new BasicLayer(new ActivationLinear(),false,this.outputCount);
+		BasicLayer outputLayer = new BasicLayer(this.training.getOutputActivationFunction(),false,this.outputCount);
 		NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer, neurons,
 				this.networkDepth);
 		inputLayer.addSynapse(synapse);

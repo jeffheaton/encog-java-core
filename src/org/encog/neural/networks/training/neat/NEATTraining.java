@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.math.randomize.RangeRandomizer;
+import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
@@ -27,6 +29,7 @@ public class NEATTraining implements Train {
 	private double bestEverFitness;
 	private double totalFitAdjustment;
 	private double averageFitAdjustment;
+	private ActivationFunction outputActivationFunction = new ActivationLinear();
 
 	private int currentGenomeID = 1;
 	private int currentSpeciesID = 1;
@@ -773,4 +776,14 @@ public class NEATTraining implements Train {
 		return comparator;
 	}
 
+	public ActivationFunction getOutputActivationFunction() {
+		return outputActivationFunction;
+	}
+
+	public void setOutputActivationFunction(
+			ActivationFunction outputActivationFunction) {
+		this.outputActivationFunction = outputActivationFunction;
+	}
+
+	
 }
