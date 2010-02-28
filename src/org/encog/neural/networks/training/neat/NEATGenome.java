@@ -409,7 +409,8 @@ public class NEATGenome {
 				if (Math.random() < probNewMutate) {
 					linkGene.setWeight(RangeRandomizer.randomize(-1, 1));
 				} else {
-					linkGene.setWeight(RangeRandomizer.randomize(-1, 1)
+					linkGene.setWeight( linkGene.getWeight() +
+							RangeRandomizer.randomize(-1, 1)
 							* maxPertubation);
 				}
 			}

@@ -20,7 +20,7 @@ public class NEATSynapse implements Synapse {
 	private Layer toLayer;
 	private List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 	private int networkDepth;
-	private boolean snapshot;
+	private boolean snapshot = false;
 	private ActivationFunction activationFunction;
 
 	public NEATSynapse(BasicLayer fromLayer, BasicLayer toLayer,
@@ -61,46 +61,42 @@ public class NEATSynapse implements Synapse {
 		// iterate through the network FlushCount times
 		for (int i = 0; i < flushCount; ++i) {
 			int outputIndex = 0;
-			int currentNeuron = 0;
+			int index = 0;
 
 			result.clear();
 
-			while (this.neurons.get(currentNeuron).getNeuronType() == NEATNeuronType.Input) {
-				this.neurons.get(currentNeuron).setOutput(
-						input.getData(currentNeuron));
+			// populate the input neurons
+			while (this.neurons.get(index).getNeuronType() == NEATNeuronType.Input) {
+				this.neurons.get(index).setOutput(
+						input.getData(index));
 
-				currentNeuron++;
+				index++;
 			}
 
-			this.neurons.get(currentNeuron++).setOutput(1);
+			// set the bias neuron
+			this.neurons.get(index++).setOutput(1);
 
-			while (currentNeuron < this.neurons.size()) {
+			while (index < this.neurons.size()) {
+				
+				NEATNeuron currentNeuron = this.neurons.get(index);
+				
 				double sum = 0;
 
-				for (int lnk = 0; lnk < this.neurons.get(currentNeuron)
-						.getInboundLinks().size(); ++lnk) {
-					double weight = this.neurons.get(currentNeuron)
-							.getInboundLinks().get(lnk).getWeight();
-					double neuronOutput = this.neurons.get(currentNeuron)
-							.getInboundLinks().get(lnk).getFromNeuron()
-							.getOutput();
-
+				for(NEATLink link: currentNeuron.getInboundLinks()) {
+					double weight = link.getWeight();
+					double neuronOutput = link.getFromNeuron().getOutput();
 					sum += weight * neuronOutput;
 				}
 
-				double value = sigmoid(sum, this.neurons.get(currentNeuron)
-						.getActivationResponse());
+				double value = sigmoid(sum, currentNeuron.getActivationResponse());
 
-				this.neurons.get(currentNeuron).setOutput(value);
+				this.neurons.get(index).setOutput(value);
 
-				if (this.neurons.get(currentNeuron).getNeuronType() == NEATNeuronType.Output) {
-					result.setData(outputIndex++, this.neurons.get(
-							currentNeuron).getOutput());
+				if (currentNeuron.getNeuronType() == NEATNeuronType.Output) {
+					result.setData(outputIndex++, currentNeuron.getOutput());
 				}
-
-				currentNeuron++;
+				index++;
 			}
-
 		}
 
 		if (snapshot) {

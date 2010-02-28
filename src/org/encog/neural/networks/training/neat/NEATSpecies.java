@@ -97,11 +97,9 @@ public class NEATSpecies {
 
 	public void addMember(NEATGenome genome) {
 
-		if (genome.getFitness() > this.bestFitness) {
+		if( this.training.getComparator().isBetterThan(genome.getFitness(), this.bestFitness)) {
 			this.bestFitness = genome.getFitness();
-
 			this.gensNoImprovement = 0;
-
 			this.leader = genome;
 		}
 

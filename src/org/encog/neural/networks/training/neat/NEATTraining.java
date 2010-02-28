@@ -245,6 +245,7 @@ public class NEATTraining implements Train {
 						baby.mutateActivationResponse(
 								this.paramActivationMutationRate,
 								this.paramMaxActivationPerturbation);
+						
 					}
 
 					// sort the baby's genes by their innovation numbers
@@ -543,7 +544,7 @@ public class NEATTraining implements Train {
 			s.purge();
 
 			if ((s.getGensNoImprovement() > this.paramNumGensAllowedNoImprovement)
-					&& (s.getBestFitness() < this.bestEverFitness)) {
+					&& this.comparator.isBetterThan(this.bestEverFitness,s.getBestFitness()) ) {
 				this.species.remove(s);
 			}
 

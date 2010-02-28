@@ -71,5 +71,30 @@ public class NEATNeuron {
 		
 	}
 	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[NEATNeuron:id=");
+		result.append(this.neuronID);
+		result.append(",type=");
+		switch(this.neuronType)
+		{
+			case Input:
+				result.append("I");
+				break;
+			case Output:
+				result.append("O");
+				break;
+			case Bias:
+				result.append("B");
+				break;
+			case Hidden:
+				result.append("H");
+				break;
+		}
+		result.append("]");
+		return result.toString();
+	
+	}
 	  
 }
