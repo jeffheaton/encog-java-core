@@ -143,13 +143,11 @@ public class NEATTraining implements Train {
 	}
 
 	public double getError() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.population.get(0).getFitness();
 	}
 
 	public BasicNetwork getNetwork() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.population.get(0).createNetwork();
 	}
 
 	public List<Strategy> getStrategies() {
