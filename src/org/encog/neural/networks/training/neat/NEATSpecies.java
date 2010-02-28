@@ -28,20 +28,17 @@ public class NEATSpecies {
 	}
 
 	public void adjustFitness() {
-		double total = 0;
 
 		for (NEATGenome member : this.members) {
 			double fitness = member.getFitness();
 
 			if (this.age < training.getParamYoungBonusAgeThreshhold()) {
-				fitness *= training.getParamYoungFitnessBonus();
+				fitness = training.getComparator().applyBonus(fitness,training.getParamYoungFitnessBonus());
 			}
 
 			if (this.age > this.training.getParamOldAgeThreshold()) {
-				fitness *= this.training.getParamOldAgePenalty();
+				fitness = this.training.getComparator().applyPenalty(fitness, this.training.getParamOldAgePenalty());
 			}
-
-			total += fitness;
 
 			double adjustedFitness = fitness / this.members.size();
 
@@ -130,9 +127,8 @@ public class NEATSpecies {
 
 	}
 
-	public int getNumToSpawn() {
-		// TODO Auto-generated method stub
-		return 0;
+	public double getNumToSpawn() {
+		return this.spawnsRequired;
 	}
 
 	public NEATGenome spawn() {

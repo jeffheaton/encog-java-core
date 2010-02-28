@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.synapse.neat.NEATLink;
@@ -13,7 +14,7 @@ import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
 
-public class NEATGenome implements Comparable<NEATGenome> {
+public class NEATGenome {
 
 	public static final double TWEAK_DISJOINT = 1;
 	public static final double TWEAK_EXCESS = 1;
@@ -30,9 +31,9 @@ public class NEATGenome implements Comparable<NEATGenome> {
 	private final int inputCount;
 	private final int outputCount;
 	private int speciesID;
-	private NEATTraining training;
+	private final NEATTraining training;
 
-	public NEATGenome(int id, int inputCount, int outputCount) {
+	public NEATGenome(NEATTraining training, int id, int inputCount, int outputCount) {
 		this.network = null;
 		this.genomeID = id;
 		this.fitness = 0;
@@ -41,7 +42,8 @@ public class NEATGenome implements Comparable<NEATGenome> {
 		this.outputCount = outputCount;
 		this.amountToSpawn = 0;
 		this.speciesID = 0;
-
+		this.training = training;
+		
 		double inputRowSlice = 0.8 / (double) (inputCount);
 
 		for (int i = 0; i < inputCount; i++) {
@@ -70,7 +72,7 @@ public class NEATGenome implements Comparable<NEATGenome> {
 
 	}
 
-	public NEATGenome(int genomeID, List<NEATNeuronGene> neurons,
+	public NEATGenome(NEATTraining training,int genomeID, List<NEATNeuronGene> neurons,
 			List<NEATLinkGene> links, int inputCount, int outputCount) {
 		this.genomeID = genomeID;
 		this.network = null;
@@ -81,9 +83,10 @@ public class NEATGenome implements Comparable<NEATGenome> {
 		this.adjustedFitness = 0;
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
+		this.training = training;
 	}
 
-	public NEATGenome(final NEATGenome other) {
+	public NEATGenome(NEATTraining training,final NEATGenome other) {
 		this.genomeID = other.genomeID;
 		this.neurons = other.neurons;
 		this.links = other.links;
@@ -93,6 +96,7 @@ public class NEATGenome implements Comparable<NEATGenome> {
 		this.inputCount = other.inputCount;
 		this.outputCount = other.outputCount;
 		this.amountToSpawn = other.amountToSpawn;
+		this.training = training;
 	}
 
 	void randomize() {
@@ -131,8 +135,8 @@ public class NEATGenome implements Comparable<NEATGenome> {
 			}
 		}
 
-		BasicLayer inputLayer = new BasicLayer(this.inputCount);
-		BasicLayer outputLayer = new BasicLayer(this.outputCount);
+		BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),false,this.inputCount);
+		BasicLayer outputLayer = new BasicLayer(new ActivationLinear(),false,this.outputCount);
 		NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer, neurons,
 				this.networkDepth);
 		inputLayer.addSynapse(synapse);
@@ -291,15 +295,14 @@ public class NEATGenome implements Comparable<NEATGenome> {
 
 		else {
 			while (!done) {
-				int chosenLink = (int) RangeRandomizer.randomize(0,
-						getNumGenes() - 1);
+				int index = (int) RangeRandomizer.randomize(0, getNumGenes() - 1);
+				NEATLinkGene link = this.links.get(index);
+				int neuronIndex = link.getFromNeuronID();
+				NEATNeuronGene fromNeuron = this.neurons.get( getElementPos(neuronIndex) );
 
-				int FromNeuron = this.links.get(ChosenLink).getFromNeuronID();
-
-				if ((links.get(ChosenLink).isEnabled())
-						&& (!this.links.get(chosenLink).isRecurrent())
-						&& (this.neurons.get(getElementPos(FromNeuron))
-								.getNeuronType() != NEATNeuronType.Bias)) {
+				if ((link.isEnabled())
+						&& (!link.isRecurrent())
+						&& (fromNeuron.getNeuronType() != NEATNeuronType.Bias)) {
 					done = true;
 				}
 			}
@@ -441,8 +444,7 @@ public class NEATGenome implements Comparable<NEATGenome> {
 				continue;
 			}
 
-			// and vice versa
-			if (g2 == this.links.size() - 1) {
+			if (g2 == genome.getLinks().size() - 1) {
 				g1++;
 				numExcess++;
 
@@ -551,10 +553,6 @@ public class NEATGenome implements Comparable<NEATGenome> {
 	 */
 	public void setNetworkDepth(int networkDepth) {
 		this.networkDepth = networkDepth;
-	}
-
-	public int compareTo(NEATGenome other) {
-		return Double.compare(this.getFitness(), other.getFitness());
 	}
 
 	public void setAmountToSpan(double toSpawn) {
