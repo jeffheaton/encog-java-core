@@ -1,6 +1,7 @@
 package org.encog.neural.networks.training.neat;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.encog.math.randomize.RangeRandomizer;
@@ -12,7 +13,7 @@ import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
 
-public class NEATGenome implements Comparable {
+public class NEATGenome implements Comparable<NEATGenome> {
 
 	public static final double TWEAK_DISJOINT = 1;
 	public static final double TWEAK_EXCESS = 1;
@@ -552,11 +553,8 @@ public class NEATGenome implements Comparable {
 		this.networkDepth = networkDepth;
 	}
 
-	public int compareTo(Object other) {
-		if( !(other instanceof NEATGenome) )
-			throw new NeuralNetworkError("Can only compare with another NEATGenome");
-		
-		return( (int)(this.getFitness() - ((NEATGenome)other).getFitness()) );
+	public int compareTo(NEATGenome other) {
+		return Double.compare(this.getFitness(), other.getFitness());
 	}
 
 	public void setAmountToSpan(double toSpawn) {
@@ -579,12 +577,23 @@ public class NEATGenome implements Comparable {
 	}
 
 	public void sortGenes() {
-		
+		Collections.sort(this.links);
 	}
 
 	public void setAdjustedFitness(double adjustedFitness) {
 		this.adjustedFitness = adjustedFitness;
 		
+	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[NEATGenome:");
+		result.append(this.genomeID);
+		result.append(",fitness=");
+		result.append(this.fitness);
+		result.append(")");
+		return result.toString();
 	}
 
 }

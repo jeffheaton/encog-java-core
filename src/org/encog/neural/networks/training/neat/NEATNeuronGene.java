@@ -85,8 +85,4 @@ public class NEATNeuronGene {
 		this.recurrent = recurrent;
 	}
 	
-	
-	  
-	  
-	
 }

@@ -1,6 +1,6 @@
 package org.encog.neural.networks.training.neat;
 
-public class NEATLinkGene {
+public class NEATLinkGene implements Comparable<NEATLinkGene> {
 		
 	private final int fromNeuronID;
 	private final int toNeuronID;
@@ -55,6 +55,10 @@ public class NEATLinkGene {
 
 	public int getInnovationID() {
 		return innovationID;
+	}
+
+	public int compareTo(NEATLinkGene other) {
+		return( (int)(this.getInnovationID() - other.getInnovationID()) );
 	}
 	
 	
