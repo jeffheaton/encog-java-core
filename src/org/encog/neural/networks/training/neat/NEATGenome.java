@@ -14,7 +14,7 @@ import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
 
-public class NEATGenome {
+public class NEATGenome implements Cloneable {
 
 	public static final double TWEAK_DISJOINT = 1;
 	public static final double TWEAK_EXCESS = 1;
@@ -98,6 +98,47 @@ public class NEATGenome {
 		this.amountToSpawn = other.amountToSpawn;
 		this.training = training;
 	}
+	
+	public NEATGenome(NEATGenome other) {
+
+		this.genomeID = other.genomeID;
+		this.network = other.network;
+		this.networkDepth = other.networkDepth;
+		this.fitness=other.fitness;
+		this.adjustedFitness=other.adjustedFitness;
+		this.amountToSpawn=other.amountToSpawn;
+		this.inputCount=other.inputCount;
+		this.outputCount=other.outputCount;
+		this.speciesID=other.speciesID;
+		this.training=other.training;
+		
+		// copy neurons
+		for(NEATNeuronGene gene: other.neurons)
+		{
+			NEATNeuronGene newGene = new NEATNeuronGene(
+				gene.getNeuronType(),
+		        gene.getId(),
+		        gene.getSplitX(),
+		        gene.getSplitY(),
+		        gene.isRecurrent(),
+		        gene.getActivationResponse());
+			this.getNeurons().add(newGene);
+		}
+		
+		// copy links
+		for(NEATLinkGene gene: other.links )
+		{
+			NEATLinkGene newGene = new NEATLinkGene( 
+				gene.getFromNeuronID(), 
+				gene.getToNeuronID(), 
+				gene.isEnabled(), 
+				gene.getInnovationID(), 
+				gene.getWeight(),
+				gene.isRecurrent());
+			this.getLinks().add(newGene);
+		}
+		
+	}
 
 	void randomize() {
 		for (NEATLinkGene link : this.links) {
@@ -148,7 +189,7 @@ public class NEATGenome {
 		return this.network;
 	}
 
-	int getElementPos(int neuronID) {
+	private int getElementPos(int neuronID) {
 		for (int i = 0; i < this.neurons.size(); i++) {
 			NEATNeuronGene neuronGene = this.neurons.get(i);
 			if (neuronGene.getId() == neuronID)
@@ -176,8 +217,8 @@ public class NEATGenome {
 		else
 			start = this.inputCount + 1;
 
-		int neuronPos = (int) RangeRandomizer.randomize(start, this.neurons
-				.size() - 1);
+		int neuronPos = (int) RangeRandomizer.randomInt(start, this.neurons
+				.size()-1);
 		NEATNeuronGene neuronGene = this.neurons.get(neuronPos);
 		return neuronGene;
 
@@ -187,18 +228,24 @@ public class NEATGenome {
 			int numTrysToFindLoop,
 			int numTrysToAddLink) {
 
+		// should we even add the link
 		if (Math.random() > mutationRate)
 			return;
 
+		// the link will be between these two neurons
 		int neuron1ID = -1;
 		int neuron2ID = -1;
 
 		boolean recurrent = false;
 
+		// a self-connected loop?
 		if (Math.random() < chanceOfLooped) {
+			
+			// try to find(randomly) a neuron to add a self-connected link to
 			while ((numTrysToFindLoop--) > 0) {
 				NEATNeuronGene neuronGene = chooseRandomNeuron(false);
 
+				// no self-links on input or bias neurons
 				if (!neuronGene.isRecurrent()
 						&& (neuronGene.getNeuronType() != NEATNeuronType.Bias)
 						&& (neuronGene.getNeuronType() != NEATNeuronType.Input)) {
@@ -211,40 +258,40 @@ public class NEATGenome {
 				}
 			}
 		} else {
+			// try to add a regular link
 			while ((numTrysToAddLink--) > 0) {
-				neuron1ID = chooseRandomNeuron(true).getId();
-				neuron2ID = chooseRandomNeuron(false).getId();
+				NEATNeuronGene neuron1 = chooseRandomNeuron(true); 
+				NEATNeuronGene neuron2 = chooseRandomNeuron(false);
 
-				if (neuron2ID == 2) {
-					continue;
-				}
-
-				if (this.isDuplicateLink(neuron1ID, neuron2ID)
-						|| (neuron1ID == neuron2ID)) {
+				if ( !this.isDuplicateLink(neuron1ID, neuron2ID)
+					&& (neuron1.getId() != neuron2.getId())
+					&& neuron2.getNeuronType()!=NEATNeuronType.Bias) {
 
 					neuron1ID = -1;
 					neuron2ID = -1;
-				}
-
-				else {
-					numTrysToAddLink = 0;
+					break;
 				}
 			}
 		}
 
+		// did we fail to find a link
 		if ((neuron1ID < 0) || (neuron2ID < 0)) {
 			return;
 		}
 
-		int id = this.training.getInnovations().checkInnovation(neuron1ID,
+		// check to see if this innovation has already been tried
+		NEATInnovation innovation = this.training.getInnovations().checkInnovation(neuron1ID,
 				neuron1ID, NEATInnovationType.NewLink);
 
+		// see if this is a recurrent(backwards) link
 		if (neurons.get(getElementPos(neuron1ID)).getSplitY() > neurons.get(
 				getElementPos(neuron2ID)).getSplitY()) {
 			recurrent = true;
 		}
 
-		if (id < 0) {
+		// is this a new innovation?
+		if (innovation==null) {
+			// new innovation
 			this.training.getInnovations().createNewInnovation(neuron1ID,
 					neuron2ID, NEATInnovationType.NewLink);
 
@@ -254,66 +301,60 @@ public class NEATGenome {
 					true, id2, RangeRandomizer.randomize(-1, 1), recurrent);
 			this.links.add(linkGene);
 		} else {
+			// existing innovation
 			NEATLinkGene linkGene = new NEATLinkGene(neuron1ID, neuron2ID,
-					true, id, RangeRandomizer.randomize(-1, 1), recurrent);
+					true, innovation.getInnovationID(), RangeRandomizer.randomize(-1, 1), recurrent);
 			this.links.add(linkGene);
 		}
 	}
 
 	void addNeuron(double mutationRate,
 			int numTrysToFindOldLink) {
+		
+		// should we add a neuron?
 		if (Math.random() > mutationRate)
 			return;
 
-		boolean done = false;
+		// the link to split
+		NEATLinkGene splitLink = null;
 
-		int ChosenLink = 0;
-
-		final int sizeThreshold = this.inputCount + this.outputCount + 10;
-
-		if (this.links.size() < sizeThreshold) {
-			while ((numTrysToFindOldLink--) > 0) {
-				int chosenLink = (int) RangeRandomizer.randomize(0,
-						getNumGenes() - 1 - (int) Math.sqrt(getNumGenes()));
-
-				int FromNeuron = this.links.get(chosenLink).getFromNeuronID();
-
-				if ((this.links.get(ChosenLink).isEnabled())
-						&& (!this.links.get(ChosenLink).isRecurrent())
-						&& (this.neurons.get(getElementPos(FromNeuron))
-								.getNeuronType() != NEATNeuronType.Bias)) {
-					done = true;
-
-					numTrysToFindOldLink = 0;
-				}
-			}
-
-			if (!done) {
-				return;
-			}
+		int sizeThreshold = this.inputCount + this.outputCount + 10;
+		
+		// if there are not at least 
+		int upperLimit;
+		if (this.links.size()<sizeThreshold) {
+			upperLimit = getNumGenes() - 1 - (int) Math.sqrt(getNumGenes());
 		}
-
 		else {
-			while (!done) {
-				int index = (int) RangeRandomizer.randomize(0, getNumGenes() - 1);
-				NEATLinkGene link = this.links.get(index);
-				int neuronIndex = link.getFromNeuronID();
-				NEATNeuronGene fromNeuron = this.neurons.get( getElementPos(neuronIndex) );
+			upperLimit = getNumGenes()-1;
+		}
+					
+		while ((numTrysToFindOldLink--) > 0) {
+			// choose a link, use the square root to prefer the older links
+			int i = (int) RangeRandomizer.randomInt(0, upperLimit);
+			NEATLinkGene link = this.links.get(i);
 
-				if ((link.isEnabled())
-						&& (!link.isRecurrent())
-						&& (fromNeuron.getNeuronType() != NEATNeuronType.Bias)) {
-					done = true;
-				}
+			// get the from neuron
+			int fromNeuron = link.getFromNeuronID();
+
+			if ((link.isEnabled())
+					&& (!link.isRecurrent())
+					&& (this.neurons.get(getElementPos(fromNeuron))
+							.getNeuronType() != NEATNeuronType.Bias)) {
+				splitLink = link;
+				break;
 			}
 		}
 
-		this.links.get(ChosenLink).setEnabled(false);
+		if( splitLink==null)
+			return;
+		
+		splitLink.setEnabled(false);
 
-		double originalWeight = this.links.get(ChosenLink).getWeight();
+		double originalWeight = splitLink.getWeight();
 
-		int from = this.links.get(ChosenLink).getFromNeuronID();
-		int to = this.links.get(ChosenLink).getToNeuronID();
+		int from = splitLink.getFromNeuronID();
+		int to = splitLink.getToNeuronID();
 
 		double newDepth = (this.neurons.get(getElementPos(from)).getSplitY() + this.neurons
 				.get(getElementPos(to)).getSplitY()) / 2;
@@ -321,18 +362,22 @@ public class NEATGenome {
 		double newWidth = (this.neurons.get(getElementPos(from)).getSplitX() + this.neurons
 				.get(getElementPos(to)).getSplitX()) / 2;
 
-		int id = this.training.getInnovations().checkInnovation(from, to,
+		// has this innovation already been tried?
+		NEATInnovation innovation = this.training.getInnovations().checkInnovation(from, to,
 				NEATInnovationType.NewNeuron);
 
-		if (id >= 0) {
-			int neuronID = this.training.getInnovations().getNeuronID(id);
+		// prevent chaining
+		if (innovation!=null) {
+			int neuronID = innovation.getNeuronID();
 
 			if (alreadyHaveThisNeuronID(neuronID)) {
-				id = -1;
+				innovation = null;
 			}
 		}
-
-		if (id < 0) {
+		
+		
+		if (innovation==null) {
+			// this innovation has not been tried, create it
 			int newNeuronID = this.training.getInnovations()
 					.createNewInnovation(from, to,
 							NEATInnovationType.NewNeuron,
@@ -341,51 +386,54 @@ public class NEATGenome {
 			this.neurons.add(new NEATNeuronGene(NEATNeuronType.Hidden,
 					newNeuronID, newDepth, newWidth));
 
-			int idLink1 = this.training.getInnovations()
+			// add the first link
+			int link1ID = this.training.getInnovations()
 					.assignInnovationNumber();
 
 			this.training.getInnovations().createNewInnovation(from,
 					newNeuronID, NEATInnovationType.NewLink);
 
 			NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID, true,
-					idLink1, 1.0, false);
+					link1ID, 1.0, false);
 
 			this.links.add(link1);
 
-			int idLink2 = this.training.getInnovations()
+			// add the second link
+			int link2ID = this.training.getInnovations()
 					.assignInnovationNumber();
 
 			this.training.getInnovations().createNewInnovation(newNeuronID, to,
 					NEATInnovationType.NewLink);
 
 			NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
-					idLink2, originalWeight, false);
+					link2ID, originalWeight, false);
 
 			this.links.add(link2);
 		}
 
 		else {
-			int NewNeuronID = this.training.getInnovations().getNeuronID(id);
+			// existing innovation
+			int newNeuronID = innovation.getNeuronID();
 
-			int idLink1 = this.training.getInnovations().checkInnovation(from,
-					NewNeuronID, NEATInnovationType.NewLink);
-			int idLink2 = this.training.getInnovations().checkInnovation(
-					NewNeuronID, to, NEATInnovationType.NewLink);
+			NEATInnovation innovationLink1 = this.training.getInnovations().checkInnovation(from,
+					newNeuronID, NEATInnovationType.NewLink);
+			NEATInnovation innovationLink2 = this.training.getInnovations().checkInnovation(
+					newNeuronID, to, NEATInnovationType.NewLink);
 
-			if ((idLink1 < 0) || (idLink2 < 0)) {
+			if ((innovationLink1==null) || (innovationLink2==null)) {
 				throw new NeuralNetworkError("NEAT Error");
 			}
 
-			NEATLinkGene link1 = new NEATLinkGene(from, NewNeuronID, true,
-					idLink1, 1.0, false);
-			NEATLinkGene link2 = new NEATLinkGene(NewNeuronID, to, true,
-					idLink2, originalWeight, false);
+			NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID, true,
+					innovationLink1.getInnovationID(), 1.0, false);
+			NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
+					innovationLink2.getInnovationID(), originalWeight, false);
 
 			this.links.add(link1);
 			this.links.add(link2);
 
 			NEATNeuronGene newNeuron = new NEATNeuronGene(
-					NEATNeuronType.Hidden, NewNeuronID, newDepth, newWidth);
+					NEATNeuronType.Hidden, newNeuronID, newDepth, newWidth);
 
 			this.neurons.add(newNeuron);
 		}
@@ -594,5 +642,7 @@ public class NEATGenome {
 		result.append(")");
 		return result.toString();
 	}
+
+	
 
 }

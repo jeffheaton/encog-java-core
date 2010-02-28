@@ -37,20 +37,20 @@ public class NEATInnovationDB {
 		return this.nextInnovationID++;
 	}
 
-	public int checkInnovation(int in, int out, NEATInnovationType type) {
+	public NEATInnovation checkInnovation(int in, int out, NEATInnovationType type) {
 		for (NEATInnovation innovation : this.innovations) {
 
 			if ((innovation.getFromNeuronID() == in)
 					&& (innovation.getToNeuronID() == out)
 					&& (innovation.getInnovationType() == type)) {
-				return innovation.getInnovationID();
+				return innovation;
 			}
 		}
 
-		return -1;
+		return null;
 	}
 
-	public int createNewInnovation(int in, int out, NEATInnovationType type) {
+	public void createNewInnovation(int in, int out, NEATInnovationType type) {
 		NEATInnovation newInnovation = new NEATInnovation(in, out, type,
 				assignInnovationID());
 
@@ -59,8 +59,6 @@ public class NEATInnovationDB {
 		}
 
 		this.innovations.add(newInnovation);
-
-		return (this.nextNeuronID - 1); // ??????? should it be innov?
 	}
 
 	public int createNewInnovation(int from, int to,

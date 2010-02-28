@@ -61,7 +61,20 @@ public class NEATLinkGene implements Comparable<NEATLinkGene> {
 		return( (int)(this.getInnovationID() - other.getInnovationID()) );
 	}
 	
-	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[NEATLinkGene:innov=");
+		result.append(this.innovationID);
+		result.append(",enabled=");
+		result.append(this.enabled);
+		result.append(",from=");
+		result.append(this.fromNeuronID);
+		result.append(",to=");
+		result.append(this.toNeuronID);
+		result.append("]");
+		return result.toString();
+	}
 	
 	
 }

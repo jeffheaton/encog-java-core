@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.encog.EncogError;
 import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -179,17 +180,17 @@ public class NEATTraining implements Train {
 
 		int numSpawnedSoFar = 0;
 
-		NEATGenome baby = null;
-
 		for (NEATSpecies s : this.species) {
 			if (numSpawnedSoFar < this.population.size()) {
-				int numToSpawn = (int)Math.round(s.getNumToSpawn());
+				int numToSpawn = (int) Math.round(s.getNumToSpawn());
 
 				boolean bChosenBestYet = false;
 
 				while ((numToSpawn--) > 0) {
+					NEATGenome baby = null;
+
 					if (!bChosenBestYet) {
-						baby = s.getLeader();
+						baby = new NEATGenome(s.getLeader());
 
 						bChosenBestYet = true;
 					}
@@ -200,7 +201,7 @@ public class NEATTraining implements Train {
 						// then we can only perform mutation
 						if (s.getMembers().size() == 1) {
 							// spawn a child
-							baby = s.spawn();
+							baby = new NEATGenome(s.spawn());
 						} else {
 							NEATGenome g1 = s.spawn();
 
@@ -220,44 +221,50 @@ public class NEATTraining implements Train {
 							}
 
 							else {
-								baby = g1;
+								baby = new NEATGenome(g1);
 							}
 						}
 
-						baby.setGenomeID(this.assignGenomeID());
+						if (baby != null) {
+							baby.setGenomeID(this.assignGenomeID());
 
-						if (baby.getNeurons().size() < this.paramMaxPermittedNeurons) {
-							baby.addNeuron(this.paramChanceAddNode,
-									this.paramNumTrysToFindOldLink);
+							if (baby.getNeurons().size() < this.paramMaxPermittedNeurons) {
+								baby.addNeuron(this.paramChanceAddNode,
+										this.paramNumTrysToFindOldLink);
+							}
+
+							// now there's the chance a link may be added
+							baby.addLink(this.paramChanceAddLink,
+									this.paramChanceAddRecurrentLink,
+									this.paramNumTrysToFindLoopedLink,
+									this.paramNumAddLinkAttempts);
+
+							// mutate the weights
+							baby.mutateWeights(this.paramMutationRate,
+									this.paramProbabilityWeightReplaced,
+									this.paramMaxWeightPerturbation);
+
+							baby.mutateActivationResponse(
+									this.paramActivationMutationRate,
+									this.paramMaxActivationPerturbation);
+
 						}
-
-						// now there's the chance a link may be added
-						baby.addLink(this.paramChanceAddLink,
-								this.paramChanceAddRecurrentLink,
-								this.paramNumTrysToFindLoopedLink,
-								this.paramNumAddLinkAttempts);
-
-						// mutate the weights
-						baby.mutateWeights(this.paramMutationRate,
-								this.paramProbabilityWeightReplaced,
-								this.paramMaxWeightPerturbation);
-
-						baby.mutateActivationResponse(
-								this.paramActivationMutationRate,
-								this.paramMaxActivationPerturbation);
-						
 					}
 
-					// sort the baby's genes by their innovation numbers
-					baby.sortGenes();
+					if (baby != null) {
+						// sort the baby's genes by their innovation numbers
+						baby.sortGenes();
 
-					// add to new pop
-					newPop.add(baby);
+						// add to new pop
+						if (newPop.contains(baby))
+							throw new EncogError("readd");
+						newPop.add(baby);
 
-					++numSpawnedSoFar;
+						++numSpawnedSoFar;
 
-					if (numSpawnedSoFar == this.population.size()) {
-						numToSpawn = 0;
+						if (numSpawnedSoFar == this.population.size()) {
+							numToSpawn = 0;
+						}
 					}
 				}
 			}
@@ -387,6 +394,7 @@ public class NEATTraining implements Train {
 
 	public void adjustCompatibilityThreshold() {
 
+		// has this been disabled (unlimited species)
 		if (this.paramMaxNumberOfSpecies < 1)
 			return;
 
@@ -424,6 +432,7 @@ public class NEATTraining implements Train {
 	public NEATGenome crossover(NEATGenome mom, NEATGenome dad) {
 		NEATParent best;
 
+		// first determine who is more fit, the mother or the father?
 		if (mom.getFitness() == dad.getFitness()) {
 			if (mom.getNumGenes() == dad.getNumGenes()) {
 				if (Math.random() > 0)
@@ -444,7 +453,8 @@ public class NEATTraining implements Train {
 		}
 
 		else {
-			if ( this.comparator.isBetterThan( mom.getFitness(), dad.getFitness() ) ) {
+			if (this.comparator
+					.isBetterThan(mom.getFitness(), dad.getFitness())) {
 				best = NEATParent.Mom;
 			}
 
@@ -458,37 +468,46 @@ public class NEATTraining implements Train {
 
 		List<Integer> vecNeurons = new ArrayList<Integer>();
 
-		Iterator<NEATLinkGene> momIterator = mom.getLinks().iterator();
-		Iterator<NEATLinkGene> dadIterator = dad.getLinks().iterator();
+		int curMom = 0;
+		int curDad = 0;
+
+		NEATLinkGene momGene;
+		NEATLinkGene dadGene;
 
 		NEATLinkGene selectedGene = null;
 
-		while (momIterator.hasNext() || dadIterator.hasNext()) {
-			NEATLinkGene momGene = null;
-			NEATLinkGene dadGene = null;
+		while (curMom < mom.getNumGenes() || curDad < dad.getNumGenes()) {
 
-			if (momIterator.hasNext())
-				momGene = momIterator.next();
+			if (curMom < mom.getNumGenes())
+				momGene = mom.getLinks().get(curMom);
+			else
+				momGene = null;
 
-			if (dadIterator.hasNext())
-				dadGene = dadIterator.next();
+			if (curDad < dad.getNumGenes())
+				dadGene = dad.getLinks().get(curDad);
+			else
+				dadGene = null;
 
 			if (momGene == null && dadGene != null) {
 				if (best == NEATParent.Dad) {
 					selectedGene = dadGene;
 				}
+				curDad++;
 			} else if (dadGene == null && momGene != null) {
 				if (best == NEATParent.Mom) {
 					selectedGene = momGene;
 				}
+				curMom++;
 			} else if (momGene.getInnovationID() < dadGene.getInnovationID()) {
 				if (best == NEATParent.Mom) {
 					selectedGene = momGene;
 				}
+				curMom++;
 			} else if (dadGene.getInnovationID() < momGene.getInnovationID()) {
 				if (best == NEATParent.Dad) {
 					selectedGene = dadGene;
 				}
+				curDad++;
 			} else if (dadGene.getInnovationID() == momGene.getInnovationID()) {
 				if (Math.random() < 0.5f) {
 					selectedGene = momGene;
@@ -497,6 +516,8 @@ public class NEATTraining implements Train {
 				else {
 					selectedGene = dadGene;
 				}
+				curMom++;
+				curDad++;
 
 			}
 
@@ -527,8 +548,9 @@ public class NEATTraining implements Train {
 		}
 
 		// finally, create the genome
-		NEATGenome babyGenome = new NEATGenome(this, assignGenomeID(), babyNeurons,
-				babyGenes, mom.getInputCount(), mom.getOutputCount());
+		NEATGenome babyGenome = new NEATGenome(this, assignGenomeID(),
+				babyNeurons, babyGenes, mom.getInputCount(), mom
+						.getOutputCount());
 
 		return babyGenome;
 	}
@@ -544,7 +566,8 @@ public class NEATTraining implements Train {
 			s.purge();
 
 			if ((s.getGensNoImprovement() > this.paramNumGensAllowedNoImprovement)
-					&& this.comparator.isBetterThan(this.bestEverFitness,s.getBestFitness()) ) {
+					&& this.comparator.isBetterThan(this.bestEverFitness, s
+							.getBestFitness())) {
 				this.species.remove(s);
 			}
 

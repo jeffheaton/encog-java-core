@@ -97,4 +97,8 @@ public class RangeRandomizer extends BasicRandomizer {
 		return RangeRandomizer.randomize(this.min, this.max);
 	}
 
+	public static int randomInt(int min, int max) {
+		return (int)randomize(min,max+1);
+	}
+
 }

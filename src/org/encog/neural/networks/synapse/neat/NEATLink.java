@@ -30,7 +30,4 @@ public class NEATLink {
 	public boolean isRecurrent() {
 		return recurrent;
 	}
-	
-	
-
 }
