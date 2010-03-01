@@ -24,11 +24,12 @@ public class NEATSynapse implements Synapse {
 	private ActivationFunction activationFunction;
 
 	public NEATSynapse(BasicLayer fromLayer, BasicLayer toLayer,
-			List<NEATNeuron> neurons, int networkDepth) {
+			List<NEATNeuron> neurons, ActivationFunction activationFunction, int networkDepth) {
 		this.fromLayer = fromLayer;
 		this.toLayer = toLayer;
 		this.neurons.addAll(neurons);
 		this.networkDepth = networkDepth;
+		this.activationFunction = activationFunction;
 	}
 
 	/**
@@ -36,10 +37,6 @@ public class NEATSynapse implements Synapse {
 	 */
 	public Object clone() {
 		return null;
-	}
-
-	double sigmoid(double netinput, double response) {
-		return (1 / (1 + Math.exp(-netinput / response)));
 	}
 
 	/**
@@ -88,9 +85,11 @@ public class NEATSynapse implements Synapse {
 					sum += weight * neuronOutput;
 				}
 
-				double value = sigmoid(sum, currentNeuron.getActivationResponse());
+				double[] d = new double[1];
+				d[0] = sum/currentNeuron.getActivationResponse();
+				activationFunction.activationFunction(d);
 
-				this.neurons.get(index).setOutput(value);
+				this.neurons.get(index).setOutput(d[0]);
 
 				if (currentNeuron.getNeuronType() == NEATNeuronType.Output) {
 					result.setData(outputIndex++, currentNeuron.getOutput());
@@ -227,5 +226,31 @@ public class NEATSynapse implements Synapse {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	public boolean isSnapshot() {
+		return snapshot;
+	}
+
+	public void setSnapshot(boolean snapshot) {
+		this.snapshot = snapshot;
+	}
+
+	public ActivationFunction getActivationFunction() {
+		return activationFunction;
+	}
+
+	public void setActivationFunction(ActivationFunction activationFunction) {
+		this.activationFunction = activationFunction;
+	}
+
+	public List<NEATNeuron> getNeurons() {
+		return neurons;
+	}
+
+	public int getNetworkDepth() {
+		return networkDepth;
+	}
+	
+	
 
 }

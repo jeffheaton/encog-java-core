@@ -9,6 +9,7 @@ import org.encog.EncogError;
 import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationLinear;
+import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
@@ -30,6 +31,7 @@ public class NEATTraining implements Train {
 	private double totalFitAdjustment;
 	private double averageFitAdjustment;
 	private ActivationFunction outputActivationFunction = new ActivationLinear();
+	private ActivationFunction neatActivationFunction = new ActivationSigmoid();
 
 	private int currentGenomeID = 1;
 	private int currentSpeciesID = 1;
@@ -579,6 +581,16 @@ public class NEATTraining implements Train {
 		for (NEATGenome genome : this.population) {
 			genome.deleteNetwork();
 		}
+	}
+	
+	
+
+	public ActivationFunction getNeatActivationFunction() {
+		return neatActivationFunction;
+	}
+
+	public void setNeatActivationFunction(ActivationFunction neatActivationFunction) {
+		this.neatActivationFunction = neatActivationFunction;
 	}
 
 	private int assignSpeciesID() {

@@ -179,7 +179,7 @@ public class NEATGenome implements Cloneable {
 
 		BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),false,this.inputCount);
 		BasicLayer outputLayer = new BasicLayer(this.training.getOutputActivationFunction(),false,this.outputCount);
-		NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer, neurons,
+		NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer, neurons,this.training.getNeatActivationFunction(),
 				this.networkDepth);
 		inputLayer.addSynapse(synapse);
 		this.network = new BasicNetwork();
