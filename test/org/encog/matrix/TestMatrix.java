@@ -31,9 +31,9 @@
 
 package org.encog.matrix;
 
-import org.encog.math.matrices.Matrix;
-import org.encog.math.matrices.MatrixError;
-import org.encog.math.matrices.MatrixMath;
+import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.MatrixError;
+import org.encog.mathutil.matrices.MatrixMath;
 
 import junit.framework.TestCase;
 

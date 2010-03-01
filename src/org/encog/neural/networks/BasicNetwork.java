@@ -39,8 +39,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.encog.Encog;
-import org.encog.math.error.ErrorCalculation;
-import org.encog.math.randomize.RangeRandomizer;
+import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;

@@ -31,7 +31,7 @@
 
 package org.encog.neural.activation;
 
-import org.encog.math.BoundMath;
+import org.encog.mathutil.BoundMath;
 import org.encog.persist.Persistor;
 
 /**

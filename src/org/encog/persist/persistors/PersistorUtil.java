@@ -31,7 +31,7 @@
 
 package org.encog.persist.persistors;
 
-import org.encog.math.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;

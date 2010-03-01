@@ -33,11 +33,11 @@ package org.encog.neural.prune;
 
 import java.util.Collection;
 
-import org.encog.math.matrices.Matrix;
-import org.encog.math.matrices.MatrixMath;
-import org.encog.math.randomize.Distort;
-import org.encog.math.rbf.GaussianFunction;
-import org.encog.math.rbf.RadialBasisFunction;
+import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.MatrixMath;
+import org.encog.mathutil.randomize.Distort;
+import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;

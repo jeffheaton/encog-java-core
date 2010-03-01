@@ -31,8 +31,8 @@
 
 package org.encog.neural.networks.training.competitive.neighborhood;
 
-import org.encog.math.rbf.GaussianFunction;
-import org.encog.math.rbf.RadialBasisFunction;
+import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.junit.Assert;
 
 import junit.framework.TestCase;

@@ -3,7 +3,7 @@ package org.encog.neural.networks.synapse.neat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.math.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;

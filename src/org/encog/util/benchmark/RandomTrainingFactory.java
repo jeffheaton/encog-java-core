@@ -31,7 +31,7 @@
 
 package org.encog.util.benchmark;
 
-import org.encog.math.LinearCongruentialGenerator;
+import org.encog.mathutil.LinearCongruentialGenerator;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;

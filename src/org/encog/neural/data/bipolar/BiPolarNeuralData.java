@@ -33,7 +33,7 @@ package org.encog.neural.data.bipolar;
 
 import java.io.Serializable;
 
-import org.encog.math.matrices.BiPolarUtil;
+import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.slf4j.Logger;

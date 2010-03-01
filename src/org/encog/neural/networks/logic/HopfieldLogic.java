@@ -31,8 +31,8 @@
 
 package org.encog.neural.networks.logic;
 
-import org.encog.math.matrices.Matrix;
-import org.encog.math.matrices.MatrixMath;
+import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.neural.data.NeuralData;
 
 /**

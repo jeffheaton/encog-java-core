@@ -31,7 +31,7 @@
 
 package org.encog.neural.networks.training.genetic;
 
-import org.encog.math.randomize.Randomizer;
+import org.encog.mathutil.randomize.Randomizer;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;

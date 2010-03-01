@@ -36,7 +36,7 @@ import java.util.Iterator;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.math.randomize.RangeRandomizer;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;

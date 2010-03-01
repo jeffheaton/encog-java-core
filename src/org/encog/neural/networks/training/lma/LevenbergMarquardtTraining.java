@@ -1,7 +1,7 @@
 package org.encog.neural.networks.training.lma;
 
-import org.encog.math.matrices.Matrix;
-import org.encog.math.matrices.decomposition.LUDecomposition;
+import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;

@@ -31,10 +31,10 @@
 
 package org.encog.neural.networks.layers;
 
-import org.encog.math.BoundMath;
-import org.encog.math.randomize.RangeRandomizer;
-import org.encog.math.rbf.GaussianFunction;
-import org.encog.math.rbf.RadialBasisFunction;
+import org.encog.mathutil.BoundMath;
+import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralData;

@@ -31,7 +31,7 @@
 
 package org.encog.neural.networks.training.cpn;
 
-import org.encog.math.error.ErrorCalculation;
+import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;

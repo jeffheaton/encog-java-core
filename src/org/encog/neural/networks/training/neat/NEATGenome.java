@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.encog.math.randomize.RangeRandomizer;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationStep;

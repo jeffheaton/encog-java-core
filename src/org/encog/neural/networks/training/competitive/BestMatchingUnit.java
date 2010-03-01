@@ -31,7 +31,7 @@
 
 package org.encog.neural.networks.training.competitive;
 
-import org.encog.math.BoundMath;
+import org.encog.mathutil.BoundMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.synapse.Synapse;
 

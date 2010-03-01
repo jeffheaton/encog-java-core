@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.math.randomize.RangeRandomizer;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;

@@ -35,7 +35,7 @@ import junit.framework.TestCase;
 
 import org.encog.bot.BotError;
 import org.encog.bot.browse.BrowseError;
-import org.encog.math.matrices.MatrixError;
+import org.encog.mathutil.matrices.MatrixError;
 import org.encog.neural.NeuralNetworkError;
 
 public class TestException extends TestCase {

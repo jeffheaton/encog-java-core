@@ -31,8 +31,8 @@
 
 package org.encog.matrix;
 
-import org.encog.math.matrices.BiPolarUtil;
-import org.encog.math.matrices.Matrix;
+import org.encog.mathutil.matrices.BiPolarUtil;
+import org.encog.mathutil.matrices.Matrix;
 
 import junit.framework.TestCase;
 

@@ -3,7 +3,7 @@ package org.encog.neural.networks.training.neat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.math.randomize.RangeRandomizer;
+import org.encog.mathutil.randomize.RangeRandomizer;
 
 public class NEATSpecies {
 

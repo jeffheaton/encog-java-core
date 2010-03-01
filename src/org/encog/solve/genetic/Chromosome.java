@@ -34,7 +34,7 @@ package org.encog.solve.genetic;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.encog.math.matrices.MatrixError;
+import org.encog.mathutil.matrices.MatrixError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

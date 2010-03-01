@@ -31,7 +31,7 @@
 
 package org.encog.neural.networks.training.propagation.scg;
 
-import org.encog.math.BoundNumbers;
+import org.encog.mathutil.BoundNumbers;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;

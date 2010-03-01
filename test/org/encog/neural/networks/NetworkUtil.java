@@ -33,8 +33,8 @@ package org.encog.neural.networks;
 
 import junit.framework.Assert;
 
-import org.encog.math.matrices.Matrix;
-import org.encog.math.randomize.ConsistentRandomizer;
+import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;

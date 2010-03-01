@@ -33,7 +33,7 @@ package org.encog.util.logging;
 
 import java.text.NumberFormat;
 
-import org.encog.math.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
