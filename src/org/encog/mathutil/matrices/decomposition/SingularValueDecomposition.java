@@ -49,38 +49,22 @@ import org.encog.mathutil.matrices.Matrix;
  * This file based on a class from the public domain JAMA package.
  * http://math.nist.gov/javanumerics/jama/
  */
-public class SingularValueDecomposition implements java.io.Serializable {
-
-	/*
-	 * ------------------------ Class variables ------------------------
-	 */
+public class SingularValueDecomposition {
 
 	/**
 	 * Arrays for internal storage of U and V.
-	 * 
-	 * @serial internal storage of U.
-	 * @serial internal storage of V.
 	 */
 	private double[][] U, V;
 
 	/**
 	 * Array for internal storage of singular values.
-	 * 
-	 * @serial internal storage of singular values.
 	 */
 	private double[] s;
 
 	/**
 	 * Row and column dimensions.
-	 * 
-	 * @serial row dimension.
-	 * @serial column dimension.
 	 */
 	private int m, n;
-
-	/*
-	 * ------------------------ Constructor ------------------------
-	 */
 
 	/**
 	 * Construct the singular value decomposition

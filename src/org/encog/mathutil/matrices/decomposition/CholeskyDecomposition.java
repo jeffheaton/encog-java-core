@@ -47,12 +47,8 @@ import org.encog.mathutil.matrices.MatrixError;
  * This file based on a class from the public domain JAMA package.
  * http://math.nist.gov/javanumerics/jama/
  */
-public class CholeskyDecomposition implements java.io.Serializable {
+public class CholeskyDecomposition {
 
-	/**
-	 * Serial ID.
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Array for internal storage of decomposition.
@@ -61,15 +57,11 @@ public class CholeskyDecomposition implements java.io.Serializable {
 
 	/**
 	 * Row and column dimension (square matrix).
-	 * 
-	 * @serial matrix dimension.
 	 */
 	private int n;
 
 	/**
 	 * Symmetric and positive definite flag.
-	 * 
-	 * @serial is symmetric and positive definite flag.
 	 */
 	private boolean isspd;
 

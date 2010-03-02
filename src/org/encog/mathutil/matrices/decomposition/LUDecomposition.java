@@ -50,38 +50,23 @@ import org.encog.mathutil.matrices.MatrixError;
  * http://math.nist.gov/javanumerics/jama/
  */
 
-public class LUDecomposition implements java.io.Serializable {
-
-	/*
-	 * ------------------------ Class variables ------------------------
-	 */
+public class LUDecomposition {
 
 	/**
 	 * Array for internal storage of decomposition.
-	 * 
-	 * @serial internal array storage.
 	 */
 	private double[][] LU;
 
 	/**
 	 * Row and column dimensions, and pivot sign.
-	 * 
-	 * @serial column dimension.
-	 * @serial row dimension.
-	 * @serial pivot sign.
 	 */
 	private int m, n, pivsign;
 
 	/**
 	 * Internal storage of pivot vector.
-	 * 
-	 * @serial pivot vector.
 	 */
 	private int[] piv;
 
-	/*
-	 * ------------------------ Constructor ------------------------
-	 */
 
 	/**
 	 * LU Decomposition

@@ -48,37 +48,22 @@ import org.encog.mathutil.matrices.Matrix;
  * http://math.nist.gov/javanumerics/jama/
  */
 
-public class QRDecomposition implements java.io.Serializable {
-
-	/*
-	 * ------------------------ Class variables ------------------------
-	 */
+public class QRDecomposition {
 
 	/**
 	 * Array for internal storage of decomposition.
-	 * 
-	 * @serial internal array storage.
 	 */
 	private double[][] QR;
 
 	/**
 	 * Row and column dimensions.
-	 * 
-	 * @serial column dimension.
-	 * @serial row dimension.
 	 */
 	private int m, n;
 
 	/**
 	 * Array for internal storage of diagonal of R.
-	 * 
-	 * @serial diagonal of R.
 	 */
 	private double[] Rdiag;
-
-	/*
-	 * ------------------------ Constructor ------------------------
-	 */
 
 	/**
 	 * QR Decomposition, computed by Householder reflections.
@@ -87,7 +72,6 @@ public class QRDecomposition implements java.io.Serializable {
 	 *            Rectangular matrix
 	 * @return Structure to access R and the Householder vectors and compute Q.
 	 */
-
 	public QRDecomposition(Matrix A) {
 		// Initialize.
 		QR = A.getArrayCopy();
@@ -129,16 +113,11 @@ public class QRDecomposition implements java.io.Serializable {
 		}
 	}
 
-	/*
-	 * ------------------------ Public Methods ------------------------
-	 */
-
 	/**
 	 * Is the matrix full rank?
 	 * 
 	 * @return true if R, and hence A, has full rank.
 	 */
-
 	public boolean isFullRank() {
 		for (int j = 0; j < n; j++) {
 			if (Rdiag[j] == 0)

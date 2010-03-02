@@ -52,12 +52,7 @@ import org.encog.mathutil.matrices.Matrix;
  * http://math.nist.gov/javanumerics/jama/
  */
 
-public class EigenvalueDecomposition implements java.io.Serializable {
-
-	/**
-	 * Serial id.
-	 */
-	private static final long serialVersionUID = 1L;
+public class EigenvalueDecomposition {
 
 	/**
 	 * Row and column dimension (square matrix).
@@ -78,6 +73,16 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 	 * Array for internal storage of eigenvectors.
 	 */
 	private double[][] v;
+	
+	/**
+	 * Complex scalar division.
+	 */
+	private double cdivr;
+
+	/**
+	 * Complex scalar division.
+	 */
+	private double cdivi;
 
 	/**
 	 * Array for internal storage of nonsymmetric Hessenberg form.
@@ -421,16 +426,6 @@ public class EigenvalueDecomposition implements java.io.Serializable {
 			}
 		}
 	}
-
-	/**
-	 * Complex scalar division.
-	 */
-	private transient double cdivr;
-
-	/**
-	 * Complex scalar division.
-	 */
-	private transient double cdivi;
 
 	private void cdiv(double xr, double xi, double yr, double yi) {
 		double r, d;
