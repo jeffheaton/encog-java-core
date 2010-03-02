@@ -1,6 +1,5 @@
 /*
- * Encog(tm) Artificial Intelligence Framework v2.3
- * Java Version, Unit Tests
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 

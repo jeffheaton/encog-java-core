@@ -1,6 +1,5 @@
 /*
- * Encog(tm) Artificial Intelligence Framework v2.3
- * Java Version
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -28,6 +27,7 @@
  * 
  * http://www.heatonresearch.com/copyright.html
  */
+
 package org.encog.mathutil.matrices.decomposition;
 
 import org.encog.mathutil.matrices.Matrix;
