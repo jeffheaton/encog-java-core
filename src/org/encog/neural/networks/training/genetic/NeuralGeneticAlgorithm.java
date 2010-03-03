@@ -35,6 +35,11 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.solve.genetic.GeneticAlgorithm;
+import org.encog.solve.genetic.Genome;
+import org.encog.solve.genetic.crossover.Splice;
+import org.encog.solve.genetic.mutate.MutatePerturb;
+import org.encog.solve.genetic.population.BasicPopulation;
+import org.encog.solve.genetic.population.Population;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,12 +68,13 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 * 
 	 * @author jheaton
 	 */
-	public class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm<Double> {
+	public class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm {
 		/**
 		 * @return The error from the last iteration.
 		 */
 		public double getError() {
-			return getChromosome(0).getScore();
+			final Genome genome = this.getPopulation().getBest();
+			return genome.getScore();			
 		}
 
 		/**
@@ -77,10 +83,10 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		 * @return The current best neural network.
 		 */
 		public BasicNetwork getNetwork() {
-			final NeuralChromosome c = (NeuralChromosome) getChromosome(0);
-			c.updateNetwork();
-			return c.getNetwork();
+			final Genome genome = this.getPopulation().getBest();
+			return (BasicNetwork)genome.getOrganism();
 		}
+		
 	}
 
 	/**
@@ -117,26 +123,23 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		this.genetic = new NeuralGeneticAlgorithmHelper();
 		this.genetic.setShouldMinimize(calculateScore.shouldMinimize());
 		this.calculateScore = calculateScore;
+		Population population = new BasicPopulation(populationSize);
 		getGenetic().setMutationPercent(mutationPercent);
 		getGenetic().setMatingPopulation(percentToMate * 2);
-		getGenetic().setPopulationSize(populationSize);
 		getGenetic().setPercentToMate(percentToMate);
-		
-		getGenetic().setChromosomes(
-				new NeuralChromosome[getGenetic()
-						.getPopulationSize()]);
-		for (int i = 0; i < getGenetic().getChromosomes().length; i++) {
+		getGenetic().setCrossover(new Splice(network.getStructure().calculateSize()/3));
+		getGenetic().setMutate(new MutatePerturb(4.0));
+		getGenetic().setPopulation(population);
+		for (int i = 0; i < population.getPopulationSize(); i++) {
 			final BasicNetwork chromosomeNetwork = (BasicNetwork) network
 					.clone();
 			randomizer.randomize(chromosomeNetwork);
 
-			final NeuralChromosome c = 
-				new NeuralChromosome(
-					this, chromosomeNetwork);
-			getGenetic().setChromosome(i, c);
+			final NeuralGenome genome = 
+				new NeuralGenome(this, chromosomeNetwork);
+			getGenetic().getPopulation().add(genome);
 		}
-		getGenetic().sortChromosomes();
-		getGenetic().defineCutLength();
+		population.sort();
 	}
 
 	
@@ -185,4 +188,6 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	public CalculateScore getCalculateScore() {
 		return calculateScore;
 	}
+	
+	
 }

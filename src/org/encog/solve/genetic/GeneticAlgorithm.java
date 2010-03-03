@@ -30,8 +30,13 @@
 
 package org.encog.solve.genetic;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import org.encog.solve.genetic.crossover.Crossover;
+import org.encog.solve.genetic.mutate.Mutate;
+import org.encog.solve.genetic.population.Population;
 import org.encog.util.concurrency.EncogConcurrency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,17 +52,14 @@ import org.slf4j.LoggerFactory;
  * @param <GENE_TYPE>
  *            The datatype of the gene.
  */
-public abstract class GeneticAlgorithm<GENE_TYPE> {
+public abstract class GeneticAlgorithm {
 
 	/**
 	 * Threadpool timeout.
 	 */
 	public static final int TIMEOUT = 120;
 
-	/**
-	 * How many chromosomes should be created.
-	 */
-	private int populationSize;
+
 
 	/**
 	 * The percent that should mutate.
@@ -76,25 +78,18 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 */
 	private double matingPopulation;
 
-	/**
-	 * Should the same gene be prevented from repeating.
-	 */
-	private boolean preventRepeat;
 
-	/**
-	 * How much genetic material should be cut when mating.
-	 */
-	private int cutLength;
 
-	/**
-	 * The population.
-	 */
-	private Chromosome<GENE_TYPE>[] chromosomes;
-	
 	/**
 	 * Should the "score" be minimized?
 	 */
-	private boolean shouldMinimize;
+	private boolean shouldMinimize = true;
+	
+	private Crossover crossover;
+	
+	private Mutate mutate;
+	
+	private Population population;
 
 	/**
 	 * The logging object.
@@ -102,46 +97,6 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	/**
-	 * Define the cut length to be 1/3 the length of a chromosome. This is a
-	 * good default value for it. If there are no chromosomes yet this call will
-	 * set the cut length to 0.
-	 */
-	public void defineCutLength() {
-		if (this.chromosomes.length > 0) {
-			final int size = this.chromosomes[0].getGenes().length;
-			setCutLength(size / 3);
-		}
-	}
-
-	/**
-	 * Get a specific chromosome.
-	 * 
-	 * @param i
-	 *            The chromosome to return, 0 for the first one.
-	 * @return A chromosome.
-	 */
-	public Chromosome<GENE_TYPE> getChromosome(final int i) {
-		return this.chromosomes[i];
-	}
-
-	/**
-	 * Return the entire population.
-	 * 
-	 * @return the chromosomes
-	 */
-	public Chromosome<GENE_TYPE>[] getChromosomes() {
-		return this.chromosomes;
-	}
-
-	/**
-	 * Get the cut length.
-	 * 
-	 * @return The cut length.
-	 */
-	public int getCutLength() {
-		return this.cutLength;
-	}
 
 	/**
 	 * Get the mating population.
@@ -171,24 +126,6 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	}
 
 	/**
-	 * Get the population size.
-	 * 
-	 * @return The population size.
-	 */
-	public int getPopulationSize() {
-		return this.populationSize;
-	}
-
-	/**
-	 * Should repeating genes be prevented.
-	 * 
-	 * @return True if repeating genes should be prevented.
-	 */
-	public boolean isPreventRepeat() {
-		return this.preventRepeat;
-	}
-
-	/**
 	 * Modify the weight matrix and thresholds based on the last call to
 	 * calcError.
 	 * 
@@ -196,24 +133,24 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	 */
 	public void iteration() {
 
-		final int countToMate = (int) (getPopulationSize() 
+		final int countToMate = (int) (population.getPopulationSize() 
 				* getPercentToMate());
 		final int offspringCount = countToMate * 2;
-		int offspringIndex = getPopulationSize() - offspringCount;
-		final int matingPopulationSize = (int) (getPopulationSize() 
+		int offspringIndex = population.getPopulationSize() - offspringCount;
+		final int matingPopulationSize = (int) (population.getPopulationSize() 
 				* getMatingPopulation());
 
 		// mate and form the next generation
 		for (int i = 0; i < countToMate; i++) {
-			final Chromosome<GENE_TYPE> mother = this.chromosomes[i];
+			final Genome mother = this.population.getGenomes().get(i);
 			final int fatherInt = (int) (Math.random() * matingPopulationSize);
-			final Chromosome<GENE_TYPE> father = this.chromosomes[fatherInt];
-			final Chromosome<GENE_TYPE> child1 
-			= this.chromosomes[offspringIndex];
-			final Chromosome<GENE_TYPE> child2 
-			= this.chromosomes[offspringIndex + 1];
+			final Genome father = this.population.getGenomes().get(fatherInt);
+			final Genome child1 
+			= this.population.getGenomes().get(offspringIndex);
+			final Genome child2 
+			= this.population.getGenomes().get(offspringIndex + 1);
 
-			final MateWorker<GENE_TYPE> worker = new MateWorker<GENE_TYPE>(
+			final MateWorker worker = new MateWorker(
 					mother, father, child1, child2);
 
 			EncogConcurrency.getInstance().processTask(worker);
@@ -224,40 +161,10 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 		EncogConcurrency.getInstance().shutdown(5);
 
 		// sort the next generation
-		sortChromosomes();
+		population.sort();
 	}
 
-	/**
-	 * Set the specified chromosome.
-	 * 
-	 * @param i
-	 *            The chromosome to set.
-	 * @param value
-	 *            The value for the specified chromosome.
-	 */
-	public void setChromosome(final int i, final Chromosome<GENE_TYPE> value) {
-		this.chromosomes[i] = value;
-	}
 
-	/**
-	 * Set the entire population.
-	 * 
-	 * @param chromosomes
-	 *            the chromosomes to set
-	 */
-	public void setChromosomes(final Chromosome<GENE_TYPE>[] chromosomes) {
-		this.chromosomes = chromosomes;
-	}
-
-	/**
-	 * Set the cut length.
-	 * 
-	 * @param cutLength
-	 *            The cut length.
-	 */
-	public void setCutLength(final int cutLength) {
-		this.cutLength = cutLength;
-	}
 
 	/**
 	 * Set the mating population percent.
@@ -289,32 +196,6 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 		this.percentToMate = percentToMate;
 	}
 
-	/**
-	 * Set the population size.
-	 * 
-	 * @param populationSize
-	 *            The population size.
-	 */
-	public void setPopulationSize(final int populationSize) {
-		this.populationSize = populationSize;
-	}
-
-	/**
-	 * Set the gene.
-	 * 
-	 * @param preventRepeat
-	 *            Should repeats be prevented.
-	 */
-	public void setPreventRepeat(final boolean preventRepeat) {
-		this.preventRepeat = preventRepeat;
-	}
-
-	/**
-	 * Sort the chromosomes.
-	 */
-	public void sortChromosomes() {
-		Arrays.sort(this.chromosomes);
-	}
 
 	/**
 	 * @return True if the score should be minimized.
@@ -330,6 +211,34 @@ public abstract class GeneticAlgorithm<GENE_TYPE> {
 	public void setShouldMinimize(final boolean shouldMinimize) {
 		this.shouldMinimize = shouldMinimize;
 	}
+
+	public Crossover getCrossover() {
+		return crossover;
+	}
+
+	public void setCrossover(Crossover crossover) {
+		this.crossover = crossover;
+	}
+
+	public Mutate getMutate() {
+		return mutate;
+	}
+
+	public void setMutate(Mutate mutate) {
+		this.mutate = mutate;
+	}
+
+	public Population getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(Population population) {
+		this.population = population;
+	}
+	
+	
+	
+	
 	
 	
 }

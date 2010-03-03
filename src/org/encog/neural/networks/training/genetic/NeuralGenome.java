@@ -36,7 +36,11 @@ import org.encog.mathutil.randomize.Distort;
 import org.encog.mathutil.randomize.Randomizer;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.solve.genetic.BasicGenome;
 import org.encog.solve.genetic.Chromosome;
+import org.encog.solve.genetic.GeneticAlgorithm;
+import org.encog.solve.genetic.genes.DoubleGene;
+import org.encog.solve.genetic.genes.Gene;
 import org.encog.util.EncogArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,8 +58,30 @@ import org.slf4j.LoggerFactory;
  * The generic type GA_TYPE specifies the GeneticAlgorithm derived class that
  * implements the genetic algorithm that this class is to be used with.
  */
-public class NeuralChromosome
-		extends Chromosome<Double> {
+public class NeuralGenome extends BasicGenome {
+	
+	private Chromosome networkChromosome;
+
+	public NeuralGenome(NeuralGeneticAlgorithm nga, final BasicNetwork network) {
+		super(nga.getGenetic());
+		this.neuralGenetic = nga;
+		
+		setOrganism(network);
+		
+		this.networkChromosome = new Chromosome();
+		
+		// create an array of "double genes"
+		int size = network.getStructure().calculateSize();
+		for(int i=0;i<size;i++)
+		{
+			Gene gene = new DoubleGene();
+			this.networkChromosome.getGenes().add(gene);
+		}
+		
+		this.getChromosomes().add(this.networkChromosome);
+		
+		encode();
+	}
 
 	/**
 	 * The amount of distortion to perform a mutation.
@@ -71,11 +97,6 @@ public class NeuralChromosome
 	 * Mutation range.
 	 */
 	private Randomizer mutate = new Distort(DISTORT_FACTOR);
-
-	/**
-	 * The network to train.
-	 */
-	private BasicNetwork network;
 	
 	/**
 	 * The logging object.
@@ -86,97 +107,52 @@ public class NeuralChromosome
 	/**
 	 * The genetic algorithm that uses this chromosome.
 	 */
-	private NeuralGeneticAlgorithm genetic;
-	
-	/**
-	 * Construct a neural chromosome.
-	 * @param genetic The genetic algorithm that uses this chromosome.
-	 * @param network The network that this chromosome is based on.
-	 */
-	public NeuralChromosome(
-			final NeuralGeneticAlgorithm genetic,
-			final BasicNetwork network) {
-		setGeneticAlgorithm(genetic.getGenetic());
-		this.genetic = genetic;
-		setNetwork(network);
-
-		initGenes(network.getWeightMatrixSize());
-		updateGenes();
-	}
-	
-	
-	/**
-	 * @return the network
-	 */
-	public BasicNetwork getNetwork() {
-		return this.network;
-	}
-
-	/**
-	 * Init the genes array.
-	 * @param length The length to create.
-	 */
-	public void initGenes(final int length) {
-		final Double[] result = new Double[length];
-		Arrays.fill(result, ZERO);
-		setGenesDirect(result);
-	}
+	private NeuralGeneticAlgorithm neuralGenetic;
+		
 
 	/**
 	 * Mutate this chromosome randomly.
 	 */
-	@Override
 	public void mutate() {
-		this.mutate.randomize(this.getGenes());
+		for(Gene gene: networkChromosome.getGenes())
+		{
+			double d = this.mutate.randomize(((DoubleGene)gene).getValue());
+			((DoubleGene)gene).setValue(d);
+		}
 	}
 
-	/**
-	 * Set all genes.
-	 * 
-	 * @param list
-	 *            A list of genes.
-	 */
-	@Override
-	public void setGenes(final Double[] list) {
-
-		// copy the new genes
-		super.setGenes(list);
-
-		calculateScore();
-	}
-
-	/**
-	 * @param network
-	 *            the network to set
-	 */
-	public void setNetwork(final BasicNetwork network) {
-		this.network = network;
-	}
-
-	/**
-	 * Copy the network to the genes.
-	 */
-	public void updateGenes()  {
-		double[] net = NetworkCODEC.networkToArray(this.network); 
-		this.setGenes(EncogArray.doubleToObject(net));
-	}
-
-	/**
-	 * Copy the genes to the network.
-	 */
-	public void updateNetwork() {
-		double[] net = EncogArray.objectToDouble(getGenes());
-		NetworkCODEC.arrayToNetwork(net, this.network);
-	}
 
 	/**
 	 * Calculate the score for this chromosome.
 	 */
-	@Override
 	public void calculateScore() {
-		this.updateNetwork();
-		double score = this.genetic.getCalculateScore().calculateScore(
-				this.getNetwork());
-		setScore(score);		
+		double score = this.neuralGenetic.getCalculateScore().calculateScore(
+				(BasicNetwork)this.getOrganism());
+		setScore(score);	
+	}
+
+	@Override
+	public void decode() {
+		double[] net = new double[networkChromosome.getGenes().size()];
+		for(int i=0;i<net.length;i++)
+		{
+			DoubleGene gene = (DoubleGene)networkChromosome.getGenes().get(i);
+			net[i] = gene.getValue();
+			
+		}
+		NetworkCODEC.arrayToNetwork(net, (BasicNetwork)getOrganism());
+		
+	}
+
+	@Override
+	public void encode() {
+		double[] net = NetworkCODEC.networkToArray((BasicNetwork)getOrganism());
+		
+		for(int i=0;i<net.length;i++)
+		{
+			((DoubleGene)networkChromosome.getGene(i)).setValue(net[i]);
+		}
+		calculateScore();
+		
 	}
 }

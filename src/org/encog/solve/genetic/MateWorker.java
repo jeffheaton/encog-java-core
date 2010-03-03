@@ -41,27 +41,27 @@ import org.slf4j.LoggerFactory;
  * @param <GENE_TYPE>
  *            The data type of the gene.
  */
-public class MateWorker<GENE_TYPE> implements EncogTask {
+public class MateWorker implements EncogTask {
 
 	/**
 	 * The mother.
 	 */
-	private final Chromosome<GENE_TYPE> mother;
+	private final Genome mother;
 
 	/**
 	 * The father.
 	 */
-	private final Chromosome<GENE_TYPE> father;
+	private final Genome father;
 
 	/**
 	 * The first child.
 	 */
-	private final Chromosome<GENE_TYPE> child1;
+	private final Genome child1;
 
 	/**
 	 * The second child.
 	 */
-	private final Chromosome<GENE_TYPE> child2;
+	private final Genome child2;
 
 	/**
 	 * The logging object.
@@ -80,10 +80,10 @@ public class MateWorker<GENE_TYPE> implements EncogTask {
 	 * @param child2
 	 *            The second child.
 	 */
-	public MateWorker(final Chromosome<GENE_TYPE> mother,
-			final Chromosome<GENE_TYPE> father,
-			final Chromosome<GENE_TYPE> child1,
-			final Chromosome<GENE_TYPE> child2) {
+	public MateWorker(final Genome mother,
+			final Genome father,
+			final Genome child1,
+			final Genome child2) {
 		this.mother = mother;
 		this.father = father;
 		this.child1 = child1;
