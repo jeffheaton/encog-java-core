@@ -31,8 +31,9 @@
 package org.encog.neural.networks.training.neat;
 
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
+import org.encog.solve.genetic.genes.Gene;
 
-public class NEATNeuronGene {
+public class NEATNeuronGene implements Gene {
 
 	  private int id;
 	  private NEATNeuronType neuronType;
@@ -113,6 +114,18 @@ public class NEATNeuronGene {
 
 	public void setRecurrent(boolean recurrent) {
 		this.recurrent = recurrent;
+	}
+
+	@Override
+	public void copy(Gene gene) {
+		NEATNeuronGene other = (NEATNeuronGene)gene;
+		this.activationResponse = other.activationResponse;
+		this.id = other.id;
+		this.neuronType = other.neuronType;
+		this.recurrent = other.recurrent;
+		this.splitX = other.splitX;
+		this.splitY = other.splitY;
+		
 	}
 	
 }

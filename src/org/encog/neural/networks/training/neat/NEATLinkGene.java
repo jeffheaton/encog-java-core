@@ -30,14 +30,16 @@
 
 package org.encog.neural.networks.training.neat;
 
-public class NEATLinkGene implements Comparable<NEATLinkGene> {
+import org.encog.solve.genetic.genes.Gene;
+
+public class NEATLinkGene implements Gene,Comparable<NEATLinkGene> {
 		
-	private final int fromNeuronID;
-	private final int toNeuronID;
+	private int fromNeuronID;
+	private int toNeuronID;
 	private double weight;
 	private boolean enabled;
-	private final boolean recurrent;
-	private final int innovationID;
+	private boolean recurrent;
+	private int innovationID;
 	
 
 	public NEATLinkGene(
@@ -104,6 +106,17 @@ public class NEATLinkGene implements Comparable<NEATLinkGene> {
 		result.append(this.toNeuronID);
 		result.append("]");
 		return result.toString();
+	}
+
+	@Override
+	public void copy(Gene gene) {
+		NEATLinkGene other = (NEATLinkGene)gene;
+		this.enabled = other.enabled;
+		this.fromNeuronID = other.fromNeuronID;
+		this.toNeuronID = other.toNeuronID;
+		this.innovationID = other.innovationID;
+		this.recurrent = other.recurrent;
+		this.weight = other.weight;		
 	}
 	
 	
