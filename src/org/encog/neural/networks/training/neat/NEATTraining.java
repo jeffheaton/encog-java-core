@@ -46,8 +46,9 @@ import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.neat.NEATInnovationDB;
+import org.encog.solve.genetic.GeneticAlgorithm;
 
-public class NEATTraining implements Train {
+public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	private final int inputCount;
 	private final int outputCount;

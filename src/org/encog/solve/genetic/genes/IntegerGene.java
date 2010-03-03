@@ -1,6 +1,5 @@
-package org.encog.solve.genetic;
+package org.encog.solve.genetic.genes;
 
-import org.encog.solve.genetic.genes.Gene;
 
 public class IntegerGene implements Gene {
 	private int value;

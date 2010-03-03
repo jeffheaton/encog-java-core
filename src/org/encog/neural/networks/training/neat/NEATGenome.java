@@ -44,8 +44,9 @@ import org.encog.neural.networks.synapse.neat.NEATLink;
 import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
+import org.encog.solve.genetic.BasicGenome;
 
-public class NEATGenome implements Cloneable {
+public class NEATGenome extends BasicGenome implements Cloneable {
 
 	public static final double TWEAK_DISJOINT = 1;
 	public static final double TWEAK_EXCESS = 1;
@@ -65,6 +66,7 @@ public class NEATGenome implements Cloneable {
 	private final NEATTraining training;
 
 	public NEATGenome(NEATTraining training, int id, int inputCount, int outputCount) {
+		super(training);
 		this.network = null;
 		this.genomeID = id;
 		this.fitness = 0;
@@ -105,6 +107,7 @@ public class NEATGenome implements Cloneable {
 
 	public NEATGenome(NEATTraining training,int genomeID, List<NEATNeuronGene> neurons,
 			List<NEATLinkGene> links, int inputCount, int outputCount) {
+		super(training);
 		this.genomeID = genomeID;
 		this.network = null;
 		this.links = links;
@@ -118,6 +121,7 @@ public class NEATGenome implements Cloneable {
 	}
 
 	public NEATGenome(NEATTraining training,final NEATGenome other) {
+		super(training);
 		this.genomeID = other.genomeID;
 		this.neurons = other.neurons;
 		this.links = other.links;
@@ -131,7 +135,7 @@ public class NEATGenome implements Cloneable {
 	}
 	
 	public NEATGenome(NEATGenome other) {
-
+		super(other.training);
 		this.genomeID = other.genomeID;
 		this.network = other.network;
 		this.networkDepth = other.networkDepth;
@@ -672,6 +676,24 @@ public class NEATGenome implements Cloneable {
 		result.append(this.fitness);
 		result.append(")");
 		return result.toString();
+	}
+
+	@Override
+	public void calculateScore() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void decode() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void encode() {
+		// TODO Auto-generated method stub
+		
 	}
 
 	
