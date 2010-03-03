@@ -186,7 +186,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	public double getError() {
-		return this.population.get(0).getFitness();
+		return this.population.get(0).getScore();
 	}
 
 	public BasicNetwork getNetwork() {
@@ -203,7 +203,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		for (NEATGenome genome : this.population) {
 			BasicNetwork network = genome.createNetwork();
 			double score = this.calculateScore.calculateScore(network);
-			genome.setFitness(score);
+			genome.setScore(score);
 		}
 
 		resetAndKill();
@@ -442,10 +442,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			int ThisTry = (int) RangeRandomizer.randomize(0, this.population
 					.size() - 1);
 
-			if (this.population.get(ThisTry).getFitness() > bestFitnessSoFar) {
+			if (this.population.get(ThisTry).getScore() > bestFitnessSoFar) {
 				ChosenOne = ThisTry;
 
-				bestFitnessSoFar = this.population.get(ThisTry).getFitness();
+				bestFitnessSoFar = this.population.get(ThisTry).getScore();
 			}
 		}
 
@@ -456,7 +456,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		NEATParent best;
 
 		// first determine who is more fit, the mother or the father?
-		if (mom.getFitness() == dad.getFitness()) {
+		if (mom.getScore() == dad.getScore()) {
 			if (mom.getNumGenes() == dad.getNumGenes()) {
 				if (Math.random() > 0)
 					best = NEATParent.Mom;
@@ -477,7 +477,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		else {
 			if (this.comparator
-					.isBetterThan(mom.getFitness(), dad.getFitness())) {
+					.isBetterThan(mom.getScore(), dad.getScore())) {
 				best = NEATParent.Mom;
 			}
 

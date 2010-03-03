@@ -45,9 +45,9 @@ public class NEATGenomeComparator implements Comparator<NEATGenome> {
 	
 	public int compare(NEATGenome g1, NEATGenome g2) {
 		if( this.calculateScore.shouldMinimize() )
-			return Double.compare(g1.getFitness(), g2.getFitness());
+			return Double.compare(g1.getScore(), g2.getScore());
 		else
-			return Double.compare(g2.getFitness(), g1.getFitness());
+			return Double.compare(g2.getScore(), g1.getScore());
 	}
 	
 	public double bestScore(double d1, double d2)

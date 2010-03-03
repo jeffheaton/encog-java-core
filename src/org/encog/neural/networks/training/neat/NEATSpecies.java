@@ -49,7 +49,7 @@ public class NEATSpecies {
 	public NEATSpecies(NEATTraining training, NEATGenome first, int speciesID) {
 		this.training = training;
 		this.speciesID = speciesID;
-		this.bestFitness = first.getFitness();
+		this.bestFitness = first.getScore();
 		this.gensNoImprovement = 0;
 		this.age = 0;
 		this.leader = first;
@@ -60,7 +60,7 @@ public class NEATSpecies {
 	public void adjustFitness() {
 
 		for (NEATGenome member : this.members) {
-			double fitness = member.getFitness();
+			double fitness = member.getScore();
 
 			if (this.age < training.getParamYoungBonusAgeThreshhold()) {
 				fitness = training.getComparator().applyBonus(fitness,training.getParamYoungFitnessBonus());
@@ -127,8 +127,8 @@ public class NEATSpecies {
 
 	public void addMember(NEATGenome genome) {
 
-		if( this.training.getComparator().isBetterThan(genome.getFitness(), this.bestFitness)) {
-			this.bestFitness = genome.getFitness();
+		if( this.training.getComparator().isBetterThan(genome.getScore(), this.bestFitness)) {
+			this.bestFitness = genome.getScore();
 			this.gensNoImprovement = 0;
 			this.leader = genome;
 		}

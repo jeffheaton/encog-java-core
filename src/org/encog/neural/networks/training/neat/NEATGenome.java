@@ -57,8 +57,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	private List<NEATLinkGene> links = new ArrayList<NEATLinkGene>();
 	private BasicNetwork network;
 	private int networkDepth;
-	private double fitness;
-	private double adjustedFitness;
+	private double adjustedScore;
 	private double amountToSpawn;
 	private final int inputCount;
 	private final int outputCount;
@@ -69,8 +68,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		super(training);
 		this.network = null;
 		this.genomeID = id;
-		this.fitness = 0;
-		this.adjustedFitness = 0;
+		this.adjustedScore = 0;
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 		this.amountToSpawn = 0;
@@ -113,24 +111,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.links = links;
 		this.neurons = neurons;
 		this.amountToSpawn = 0;
-		this.fitness = 0;
-		this.adjustedFitness = 0;
+		this.adjustedScore = 0;
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
-		this.training = training;
-	}
-
-	public NEATGenome(NEATTraining training,final NEATGenome other) {
-		super(training);
-		this.genomeID = other.genomeID;
-		this.neurons = other.neurons;
-		this.links = other.links;
-		this.network = null; // no need to perform a deep copy
-		this.fitness = other.fitness;
-		this.adjustedFitness = other.adjustedFitness;
-		this.inputCount = other.inputCount;
-		this.outputCount = other.outputCount;
-		this.amountToSpawn = other.amountToSpawn;
 		this.training = training;
 	}
 	
@@ -139,8 +122,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.genomeID = other.genomeID;
 		this.network = other.network;
 		this.networkDepth = other.networkDepth;
-		this.fitness=other.fitness;
-		this.adjustedFitness=other.adjustedFitness;
+		this.setScore(other.getScore());
+		this.adjustedScore=other.adjustedScore;
 		this.amountToSpawn=other.amountToSpawn;
 		this.inputCount=other.inputCount;
 		this.outputCount=other.outputCount;
@@ -600,12 +583,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		return networkDepth;
 	}
 
-	public double getFitness() {
-		return fitness;
-	}
-
 	public double getAdjustedFitness() {
-		return adjustedFitness;
+		return adjustedScore;
 	}
 
 	public double getAmountToSpawn() {
@@ -648,11 +627,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.network = null;
 	}
 
-	public void setFitness(double score) {
-		this.fitness = score;
-		
-	}
-
 	public void setGenomeID(int id) {
 		this.genomeID = id;
 		
@@ -663,7 +637,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	}
 
 	public void setAdjustedFitness(double adjustedFitness) {
-		this.adjustedFitness = adjustedFitness;
+		this.adjustedScore = adjustedFitness;
 		
 	}
 	
@@ -673,7 +647,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		result.append("[NEATGenome:");
 		result.append(this.genomeID);
 		result.append(",fitness=");
-		result.append(this.fitness);
+		result.append(this.getScore());
 		result.append(")");
 		return result.toString();
 	}
