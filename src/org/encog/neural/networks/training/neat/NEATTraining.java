@@ -52,7 +52,6 @@ public class NEATTraining implements Train {
 	private final int inputCount;
 	private final int outputCount;
 	private final List<NEATGenome> population = new ArrayList<NEATGenome>();
-	private final List<NEATGenome> bestGenomes = new ArrayList<NEATGenome>();
 	private final NEATInnovationDB innovations;
 	private final List<SplitDepth> splits;
 	private final List<NEATSpecies> species = new ArrayList<NEATSpecies>();
@@ -66,7 +65,6 @@ public class NEATTraining implements Train {
 	private int currentGenomeID = 1;
 	private int currentSpeciesID = 1;
 
-	private int paramNumBestGenomes = 4;
 	private double paramCompatibilityThreshold = 0.26;
 	private int paramMaxNumberOfSpecies = 0;
 	private int paramNumGensAllowedNoImprovement = 15;
@@ -347,17 +345,6 @@ public class NEATTraining implements Train {
 
 		this.bestEverFitness = this.comparator.bestScore(getError(),
 				this.bestEverFitness);
-
-		storeBestGenomes();
-	}
-
-	public void storeBestGenomes() {
-		// clear old record
-		this.bestGenomes.clear();
-
-		for (int i = 0; i < this.paramNumBestGenomes; ++i) {
-			this.bestGenomes.add(this.population.get(i));
-		}
 	}
 
 	public List<BasicNetwork> getBestNetworksFromLastGeneration() {
@@ -630,14 +617,6 @@ public class NEATTraining implements Train {
 	public NeuralDataSet getTraining() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	public int getParamNumBestGenomes() {
-		return paramNumBestGenomes;
-	}
-
-	public void setParamNumBestGenomes(int paramNumBestGenomes) {
-		this.paramNumBestGenomes = paramNumBestGenomes;
 	}
 
 	public double getParamCompatibilityThreshold() {
