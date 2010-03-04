@@ -1,7 +1,7 @@
 package org.encog.solve.genetic.genes;
 
 
-public class DoubleGene implements Gene {
+public class DoubleGene extends BasicGene {
 	private double value;
 
 	public double getValue() {
@@ -21,9 +21,4 @@ public class DoubleGene implements Gene {
 	{
 		return ""+value;
 	}
-
-	public int compareTo(Gene arg0) {
-		return 0;
-	}
-	
 }

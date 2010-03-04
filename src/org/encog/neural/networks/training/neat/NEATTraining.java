@@ -524,17 +524,17 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 					selectedGene = momGene;
 				}
 				curMom++;
-			} else if (momGene.getInnovationID() < dadGene.getInnovationID()) {
+			} else if (momGene.getInnovationId() < dadGene.getInnovationId()) {
 				if (best == NEATParent.Mom) {
 					selectedGene = momGene;
 				}
 				curMom++;
-			} else if (dadGene.getInnovationID() < momGene.getInnovationID()) {
+			} else if (dadGene.getInnovationId() < momGene.getInnovationId()) {
 				if (best == NEATParent.Dad) {
 					selectedGene = dadGene;
 				}
 				curDad++;
-			} else if (dadGene.getInnovationID() == momGene.getInnovationID()) {
+			} else if (dadGene.getInnovationId() == momGene.getInnovationId()) {
 				if (Math.random() < 0.5f) {
 					selectedGene = momGene;
 				}
@@ -552,8 +552,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			}
 
 			else {
-				if (((NEATLinkGene)babyGenes.get(babyGenes.size() - 1)).getInnovationID() != selectedGene
-						.getInnovationID()) {
+				if (((NEATLinkGene)babyGenes.get(babyGenes.size() - 1)).getInnovationId() != selectedGene
+						.getInnovationId()) {
 					babyGenes.add(selectedGene);
 				}
 			}

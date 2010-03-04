@@ -31,9 +31,10 @@
 package org.encog.neural.networks.training.neat;
 
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
+import org.encog.solve.genetic.genes.BasicGene;
 import org.encog.solve.genetic.genes.Gene;
 
-public class NEATNeuronGene implements Gene {
+public class NEATNeuronGene extends BasicGene {
 
 	  private int id;
 	  private NEATNeuronType neuronType;

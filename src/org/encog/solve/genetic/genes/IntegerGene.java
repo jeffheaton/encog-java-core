@@ -1,7 +1,7 @@
 package org.encog.solve.genetic.genes;
 
 
-public class IntegerGene implements Gene {
+public class IntegerGene extends BasicGene {
 	private int value;
 
 	public int getValue() {
@@ -30,10 +30,6 @@ public class IntegerGene implements Gene {
 	public String toString()
 	{
 		return ""+value;
-	}
-
-	public int compareTo(Gene o) {
-		return 0;
 	}
 	
 }

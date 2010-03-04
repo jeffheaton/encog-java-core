@@ -30,16 +30,15 @@
 
 package org.encog.neural.networks.training.neat;
 
+import org.encog.solve.genetic.genes.BasicGene;
 import org.encog.solve.genetic.genes.Gene;
 
-public class NEATLinkGene implements Gene {
+public class NEATLinkGene extends BasicGene {
 		
 	private int fromNeuronID;
 	private int toNeuronID;
 	private double weight;
-	private boolean enabled;
 	private boolean recurrent;
-	private int innovationID;
 	
 
 	public NEATLinkGene(
@@ -51,8 +50,8 @@ public class NEATLinkGene implements Gene {
 			boolean recurrent) {
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
-		this.enabled = enabled;
-		this.innovationID = innovationID;
+		this.setEnabled(enabled);
+		this.setInnovationId(innovationID);
 		this.weight = weight;
 		this.recurrent = recurrent;
 	}
@@ -63,14 +62,6 @@ public class NEATLinkGene implements Gene {
 
 	public void setWeight(double weight) {
 		this.weight = weight;
-	}
-
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
 	}
 
 	public int getFromNeuronID() {
@@ -84,23 +75,14 @@ public class NEATLinkGene implements Gene {
 	public boolean isRecurrent() {
 		return recurrent;
 	}
-
-	public int getInnovationID() {
-		return innovationID;
-	}
-
-	public int compareTo(Gene o) {
-		NEATLinkGene other = (NEATLinkGene)o;
-		return( (int)(this.getInnovationID() - other.getInnovationID()) );
-	}
 	
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
 		result.append("[NEATLinkGene:innov=");
-		result.append(this.innovationID);
+		result.append(this.getInnovationId());
 		result.append(",enabled=");
-		result.append(this.enabled);
+		result.append(this.isEnabled());
 		result.append(",from=");
 		result.append(this.fromNeuronID);
 		result.append(",to=");
@@ -112,10 +94,10 @@ public class NEATLinkGene implements Gene {
 	@Override
 	public void copy(Gene gene) {
 		NEATLinkGene other = (NEATLinkGene)gene;
-		this.enabled = other.enabled;
+		this.setEnabled(other.isEnabled());
 		this.fromNeuronID = other.fromNeuronID;
 		this.toNeuronID = other.toNeuronID;
-		this.innovationID = other.innovationID;
+		this.setInnovationId(other.getInnovationId());
 		this.recurrent = other.recurrent;
 		this.weight = other.weight;		
 	}
