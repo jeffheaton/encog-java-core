@@ -297,12 +297,13 @@ org.encog.solve.genetic.Chromosome
 org.encog.solve.genetic.crossover.Crossover
 org.encog.solve.genetic.crossover.Splice
 org.encog.solve.genetic.crossover.SpliceNoRepeat
+org.encog.solve.genetic.genes.BasicGene
 org.encog.solve.genetic.genes.DoubleGene
 org.encog.solve.genetic.genes.Gene
+org.encog.solve.genetic.genes.IntegerGene
 org.encog.solve.genetic.GeneticAlgorithm
 org.encog.solve.genetic.GeneticError
 org.encog.solve.genetic.Genome
-org.encog.solve.genetic.IntegerGene
 org.encog.solve.genetic.MateWorker
 org.encog.solve.genetic.mutate.Mutate
 org.encog.solve.genetic.mutate.MutatePerturb
@@ -335,6 +336,8 @@ org.encog.util.GenerateClasslist
 org.encog.util.http.CookieUtility
 org.encog.util.http.FormUtility
 org.encog.util.http.URLUtility
+org.encog.util.identity.BasicGenerateID
+org.encog.util.identity.GenerateID
 org.encog.util.ImageSize
 org.encog.util.logging.DumpMatrix
 org.encog.util.logging.EncogFormatter
