@@ -46,7 +46,7 @@ import org.encog.neural.networks.training.TrainingError;
 
 /**
  * Trains a neural network using a Levenberg Marquardt algorithm (LMA). This
- * training technique is based on the mathematical technique of the same name. ï¿½
+ * training technique is based on the mathematical technique of the same name. ì
  * 
  * http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
  * 
@@ -61,6 +61,10 @@ import org.encog.neural.networks.training.TrainingError;
  * 
  * However, despite these limitations, the LMA training technique can be a very
  * effective training method.
+ * 
+ * References: 
+ * - http://www-alg.ist.hokudai.ac.jp/~jan/alpha.pdf
+ * - http://www.inference.phy.cam.ac.uk/mackay/Bayes_FAQ.html
  * 
  */
 public class LevenbergMarquardtTraining extends BasicTraining {
@@ -116,12 +120,12 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 * The alpha is multiplied by sum squared of weights. This scales the effect
 	 * that the sum squared of the weights has.
 	 */
-	private final double alpha;
+	private double alpha;
 
 	/**
 	 * The beta is multiplied by the sum squared of the errors.
 	 */
-	private final double beta;
+	private double beta;
 
 	/**
 	 * The lambda, or damping factor. This is increased until a desirable
@@ -143,11 +147,18 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 * The amount to change the weights by.
 	 */
 	private double[] deltas;
+	
+	private double gamma;
 
 	/**
 	 * The training elements.
 	 */
 	private final NeuralDataPair pair;
+	
+	/**
+	 * Should we use Bayesian regularization.
+	 */
+	private boolean useBayesianRegularization;
 
 	/**
 	 * Construct the LMA object.
@@ -252,12 +263,30 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
+	
+    /**
+     * Return the sum of the diagonal.
+     * @param m The matrix to sum.
+     * @return The trace of the matrix.
+     */
+    public static double trace(double[][] m)
+    {
+        double result = 0.0;
+        for (int i = 0; i < m.length; i++)
+        {
+            result += m[i][i];
+        }
+        return result;
+    }
 
 	/**
 	 * Perform one iteration.
 	 */
 	public void iteration() {
 
+		LUDecomposition decomposition = null;
+		double trace = 0;
+		
 		preIteration();
 
 		this.weights = NetworkCODEC.networkToArray(this.network);
@@ -293,7 +322,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			}
 
 			// Decompose to solve the linear system
-			final LUDecomposition decomposition = new LUDecomposition(
+			decomposition = new LUDecomposition(
 					this.hessianMatrix);
 
 			// Check if the Jacobian has become non-invertible
@@ -330,6 +359,17 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		// If this iteration caused a error drop, then next iteration
 		// will use a smaller damping factor.
 		this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;
+		
+        if (useBayesianRegularization && decomposition!=null)
+        {
+            // Compute the trace for the inverse Hessian
+            trace = trace(decomposition.inverse());
+
+            // Poland update's formula:
+            gamma = this.parametersLength - (alpha * trace);
+            alpha = this.parametersLength / (2.0 * sumOfSquaredWeights + trace);
+            beta = Math.abs((this.trainingLength - gamma) / (2.0 * sumOfSquaredErrors));
+        }
 
 		setError(sumOfSquaredErrors);
 
