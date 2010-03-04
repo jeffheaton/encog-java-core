@@ -344,4 +344,59 @@ public class LUDecomposition {
 		}
 		return X;
 	}
+	
+    /**
+     * Solves a set of equation systems of type <c>A * X = B</c>.
+     * @return Matrix <c>X</c> so that <c>L * U * X = B</c>.
+     */
+    public double[][] inverse()
+    {
+        if (!this.isNonsingular())
+        {
+            throw new MatrixError("Matrix is singular");
+        }
+
+        int rows = this.LU.length;
+        int columns = LU[0].length;
+        int count = rows;
+        double[][] lu = LU;
+
+        double[][] X = new double[rows][columns];
+        for (int i = 0; i < rows; i++)
+        {
+            int k = this.piv[i];
+            X[i][k] = 1.0; 
+        }
+
+        // Solve L*Y = B(piv,:)
+        for (int k = 0; k < columns; k++)
+        {
+            for (int i = k + 1; i < columns; i++)
+            {
+                for (int j = 0; j < count; j++)
+                {
+                    X[i][j] -= X[k][j] * lu[i][k];
+                }
+            }
+        }
+
+        // Solve U*X = Y;
+        for (int k = columns - 1; k >= 0; k--)
+        {
+            for (int j = 0; j < count; j++)
+            {
+                X[k][j] /= lu[k][k];
+            }
+
+            for (int i = 0; i < k; i++)
+            {
+                for (int j = 0; j < count; j++)
+                {
+                    X[i][j] -= X[k][j] * lu[i][k];
+                }
+            }
+        }
+
+        return X;
+    }
 }
