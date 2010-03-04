@@ -48,12 +48,15 @@ import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.neat.NEATInnovationDB;
 import org.encog.solve.genetic.Chromosome;
 import org.encog.solve.genetic.GeneticAlgorithm;
+import org.encog.solve.genetic.Genome;
+import org.encog.solve.genetic.population.BasicPopulation;
+import org.encog.solve.genetic.population.Population;
 
 public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	private final int inputCount;
 	private final int outputCount;
-	private final List<NEATGenome> population = new ArrayList<NEATGenome>();
+	private Population population;
 	private final NEATInnovationDB innovations;
 	private final List<SplitDepth> splits;
 	private final List<NEATSpecies> species = new ArrayList<NEATSpecies>();
@@ -103,6 +106,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		this.outputCount = outputCount;
 
 		this.comparator = new NEATGenomeComparator(calculateScore);
+		this.population = new BasicPopulation(populationSize);
 
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
@@ -120,14 +124,23 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			this.bestEverFitness = Double.MAX_VALUE;
 		else
 			this.bestEverFitness = Double.MIN_VALUE;
+		
+		for (Genome genome2 : this.population.getGenomes()) {
+			genome2.calculateScore();
+		}
+
+		
+		resetAndKill();
+		sortAndRecord();
+		speciateAndCalculateSpawnLevels();
 	}
 
 	public List<BasicNetwork> createNetworks() {
 		List<BasicNetwork> result = new ArrayList<BasicNetwork>();
 
-		for (NEATGenome genome : this.population) {
-			calculateNetDepth(genome);
-			BasicNetwork net = genome.createNetwork();
+		for (Genome genome : this.population.getGenomes()) {
+			calculateNetDepth((NEATGenome)genome);
+			BasicNetwork net = (BasicNetwork)genome.getOrganism();
 
 			result.add(net);
 		}
@@ -186,11 +199,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	public double getError() {
-		return this.population.get(0).getScore();
+		return this.population.getBest().getScore();
 	}
 
 	public BasicNetwork getNetwork() {
-		return this.population.get(0).createNetwork();
+		return (BasicNetwork)this.population.getBest().getOrganism();
 	}
 
 	public List<Strategy> getStrategies() {
@@ -199,16 +212,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	public void iteration() {
-
-		for (NEATGenome genome : this.population) {
-			BasicNetwork network = genome.createNetwork();
-			double score = this.calculateScore.calculateScore(network);
-			genome.setScore(score);
-		}
-
-		resetAndKill();
-		sortAndRecord();
-		speciateAndCalculateSpawnLevels();
 
 		List<NEATGenome> newPop = new ArrayList<NEATGenome>();
 
@@ -310,6 +313,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		this.population.clear();
 		this.population.addAll(newPop);
+		
+		for (Genome genome2 : this.population.getGenomes()) {
+			genome2.calculateScore();
+		}
+		
+		resetAndKill();
+		sortAndRecord();
+		speciateAndCalculateSpawnLevels();
 	}
 
 	public void setError(double error) {
@@ -342,22 +353,12 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	public void sortAndRecord() {
-		Collections.sort(this.population, this.comparator);
+		this.population.sort();
 
 		this.bestEverFitness = this.comparator.bestScore(getError(),
 				this.bestEverFitness);
 	}
 
-	public List<BasicNetwork> getBestNetworksFromLastGeneration() {
-		List<BasicNetwork> result = new ArrayList<BasicNetwork>();
-
-		for (NEATGenome genome : this.population) {
-			calculateNetDepth(genome);
-			result.add(genome.createNetwork());
-		}
-
-		return result;
-	}
 
 	public void adjustSpeciesFitnesses() {
 		for (NEATSpecies s : this.species) {
@@ -371,8 +372,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		adjustCompatibilityThreshold();
 
 		// assign genomes to species (if any exist)
-		for (NEATGenome genome : this.population) {
-
+		for (Genome g : this.population.getGenomes()) {
+			NEATGenome genome = (NEATGenome)g;
 			boolean added = false;
 
 			for (NEATSpecies s : this.species) {
@@ -397,14 +398,16 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		adjustSpeciesFitnesses();
 
-		for (NEATGenome genome : this.population) {
+		for (Genome g : this.population.getGenomes()) {
+			NEATGenome genome = (NEATGenome)g;
 			this.totalFitAdjustment += genome.getAdjustedFitness();
 		}
 
 		this.averageFitAdjustment = this.totalFitAdjustment
 				/ this.population.size();
 
-		for (NEATGenome genome : this.population) {
+		for (Genome g : this.population.getGenomes()) {
+			NEATGenome genome = (NEATGenome)g;
 			double toSpawn = genome.getAdjustedFitness()
 					/ this.averageFitAdjustment;
 			genome.setAmountToSpan(toSpawn);
@@ -449,7 +452,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			}
 		}
 
-		return this.population.get(ChosenOne);
+		return (NEATGenome)this.population.get(ChosenOne);
 	}
 
 	public NEATGenome crossover(NEATGenome mom, NEATGenome dad) {
@@ -598,9 +601,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		}
 
-		for (NEATGenome genome : this.population) {
-			genome.deleteNetwork();
-		}
 	}
 	
 	
@@ -807,6 +807,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public void setOutputActivationFunction(
 			ActivationFunction outputActivationFunction) {
 		this.outputActivationFunction = outputActivationFunction;
+	}
+
+	public CalculateScore getCalculateScore() {
+		return calculateScore;
 	}
 
 	

@@ -92,4 +92,25 @@ public class BasicPopulation implements Population {
 	public long assignSpeciesID() {
 		return this.assignSpeciesID();
 	}
+
+	@Override
+	public int size() {
+		return this.genomes.size();
+	}
+
+	@Override
+	public void addAll(List<? extends Genome> newPop) {
+		this.genomes.addAll(newPop);
+	}
+
+	@Override
+	public void clear() {
+		this.genomes.clear();
+		
+	}
+
+	@Override
+	public Genome get(int i) {
+		return this.genomes.get(i);
+	}
 }

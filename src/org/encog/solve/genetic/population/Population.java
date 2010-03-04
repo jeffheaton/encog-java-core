@@ -2,6 +2,7 @@ package org.encog.solve.genetic.population;
 
 import java.util.List;
 
+import org.encog.neural.networks.training.neat.NEATGenome;
 import org.encog.solve.genetic.Genome;
 
 public interface Population {
@@ -15,4 +16,8 @@ public interface Population {
 	long assignSpeciesID();
 	long assignInnovationID();
 	long assignGeneID();
+	int size();
+	void clear();
+	void addAll(List<? extends Genome> newPop);
+	Genome get(int i);
 }

@@ -57,7 +57,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	private int genomeID;
 	private Chromosome neuronsChromosome;
 	private Chromosome linksChromosome;
-	private BasicNetwork network;
 	private int networkDepth;
 	private double adjustedScore;
 	private double amountToSpawn;
@@ -68,7 +67,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	public NEATGenome(NEATTraining training, int id, int inputCount, int outputCount) {
 		super(training);
-		this.network = null;
 		this.genomeID = id;
 		this.adjustedScore = 0;
 		this.inputCount = inputCount;
@@ -110,7 +108,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			Chromosome links, int inputCount, int outputCount) {
 		super(training);
 		this.genomeID = genomeID;
-		this.network = null;
 		this.linksChromosome = links;
 		this.neuronsChromosome = neurons;
 		this.amountToSpawn = 0;
@@ -127,7 +124,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.linksChromosome = new Chromosome();
 		
 		this.genomeID = other.genomeID;
-		this.network = other.network;
 		this.networkDepth = other.networkDepth;
 		this.setScore(other.getScore());
 		this.adjustedScore=other.adjustedScore;
@@ -173,53 +169,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		}
 	}
 
-	public BasicNetwork createNetwork() {
-
-		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
-
-		for (Gene gene : this.getNeurons().getGenes()) {
-			NEATNeuronGene neuronGene = (NEATNeuronGene)gene;
-			NEATNeuron neuron = new NEATNeuron(
-					neuronGene.getNeuronType(),
-					neuronGene.getId(), 
-					neuronGene.getSplitY(), 
-					neuronGene.getSplitX(), 
-					neuronGene.getActivationResponse());
-
-			neurons.add(neuron);
-		}
-
-		// now to create the links.
-		for (Gene gene : this.getLinks().getGenes()) {
-			NEATLinkGene linkGene = (NEATLinkGene)gene;
-			if (linkGene.isEnabled()) {
-				int element = getElementPos(linkGene.getFromNeuronID());
-				NEATNeuron fromNeuron = neurons.get(element);
-
-				element = getElementPos(linkGene.getToNeuronID());
-				NEATNeuron toNeuron = neurons.get(element);
-
-				NEATLink link = new NEATLink(linkGene.getWeight(), fromNeuron,
-						toNeuron, linkGene.isRecurrent());
-
-				fromNeuron.getOutputboundLinks().add(link);
-				toNeuron.getInboundLinks().add(link);
-
-			}
-		}
-
-		BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),false,this.inputCount);
-		BasicLayer outputLayer = new BasicLayer(this.training.getOutputActivationFunction(),false,this.outputCount);
-		NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer, neurons,this.training.getNeatActivationFunction(),
-				this.networkDepth);
-		inputLayer.addSynapse(synapse);
-		this.network = new BasicNetwork();
-		this.network.tagLayer(BasicNetwork.TAG_INPUT, inputLayer);
-		this.network.tagLayer(BasicNetwork.TAG_OUTPUT, outputLayer);
-		this.network.getStructure().finalizeStructure();
-
-		return this.network;
-	}
 
 	private int getElementPos(int neuronID) {
 
@@ -597,10 +546,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		return this.linksChromosome;
 	}
 
-	public BasicNetwork getNetwork() {
-		return network;
-	}
-
 	public int getNetworkDepth() {
 		return networkDepth;
 	}
@@ -645,10 +590,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		
 	}
 
-	public void deleteNetwork() {
-		this.network = null;
-	}
-
 	public void setGenomeID(int id) {
 		this.genomeID = id;
 		
@@ -676,13 +617,57 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	@Override
 	public void calculateScore() {
-		// TODO Auto-generated method stub
-		
+		if( getOrganism()==null )
+			decode();
+		BasicNetwork network = (BasicNetwork)getOrganism();
+		this.setScore(this.training.getCalculateScore().calculateScore(network));
 	}
 
 	@Override
 	public void decode() {
-		// TODO Auto-generated method stub
+		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
+
+		for (Gene gene : this.getNeurons().getGenes()) {
+			NEATNeuronGene neuronGene = (NEATNeuronGene)gene;
+			NEATNeuron neuron = new NEATNeuron(
+					neuronGene.getNeuronType(),
+					neuronGene.getId(), 
+					neuronGene.getSplitY(), 
+					neuronGene.getSplitX(), 
+					neuronGene.getActivationResponse());
+
+			neurons.add(neuron);
+		}
+
+		// now to create the links.
+		for (Gene gene : this.getLinks().getGenes()) {
+			NEATLinkGene linkGene = (NEATLinkGene)gene;
+			if (linkGene.isEnabled()) {
+				int element = getElementPos(linkGene.getFromNeuronID());
+				NEATNeuron fromNeuron = neurons.get(element);
+
+				element = getElementPos(linkGene.getToNeuronID());
+				NEATNeuron toNeuron = neurons.get(element);
+
+				NEATLink link = new NEATLink(linkGene.getWeight(), fromNeuron,
+						toNeuron, linkGene.isRecurrent());
+
+				fromNeuron.getOutputboundLinks().add(link);
+				toNeuron.getInboundLinks().add(link);
+
+			}
+		}
+
+		BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),false,this.inputCount);
+		BasicLayer outputLayer = new BasicLayer(this.training.getOutputActivationFunction(),false,this.outputCount);
+		NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer, neurons,this.training.getNeatActivationFunction(),
+				this.networkDepth);
+		inputLayer.addSynapse(synapse);
+		BasicNetwork network = new BasicNetwork();
+		network.tagLayer(BasicNetwork.TAG_INPUT, inputLayer);
+		network.tagLayer(BasicNetwork.TAG_OUTPUT, outputLayer);
+		network.getStructure().finalizeStructure();
+		setOrganism(network);
 		
 	}
 
