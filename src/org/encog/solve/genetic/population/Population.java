@@ -11,4 +11,8 @@ public interface Population {
 	List<Genome> getGenomes();
 	Genome getBest();
 	void add(Genome genome);
+	long assignGenomeID();
+	long assignSpeciesID();
+	long assignInnovationID();
+	long assignGeneID();
 }

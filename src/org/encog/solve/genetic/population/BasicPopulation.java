@@ -6,12 +6,19 @@ import java.util.List;
 
 import org.encog.neural.networks.training.genetic.NeuralGenome;
 import org.encog.solve.genetic.Genome;
+import org.encog.util.identity.BasicGenerateID;
+import org.encog.util.identity.GenerateID;
 
 public class BasicPopulation implements Population {
 	/**
 	 * How many genomes should be created.
 	 */
 	private int populationSize;
+	
+	private final GenerateID genomeIDGenerate = new BasicGenerateID();
+	private final GenerateID speciesIDGenerate = new BasicGenerateID();
+	private final GenerateID geneIDGenerate = new BasicGenerateID();
+	private final GenerateID innovationIDGenerate = new BasicGenerateID();
 	
 	/**
 	 * The population.
@@ -64,5 +71,25 @@ public class BasicPopulation implements Population {
 	public void add(Genome genome) {
 		this.genomes.add(genome);
 		
+	}
+
+	@Override
+	public long assignGeneID() {
+		return this.assignGeneID();
+	}
+
+	@Override
+	public long assignGenomeID() {
+		return this.assignGenomeID();
+	}
+
+	@Override
+	public long assignInnovationID() {
+		return this.assignInnovationID();
+	}
+
+	@Override
+	public long assignSpeciesID() {
+		return this.assignSpeciesID();
 	}
 }
