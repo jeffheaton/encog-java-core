@@ -45,6 +45,8 @@ import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
 import org.encog.solve.genetic.BasicGenome;
+import org.encog.solve.genetic.Chromosome;
+import org.encog.solve.genetic.genes.Gene;
 
 public class NEATGenome extends BasicGenome implements Cloneable {
 
@@ -53,8 +55,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	public static final double TWEAK_MATCHED = 0.4;
 
 	private int genomeID;
-	private List<NEATNeuronGene> neurons = new ArrayList<NEATNeuronGene>();
-	private List<NEATLinkGene> links = new ArrayList<NEATLinkGene>();
+	private Chromosome neuronsChromosome;
+	private Chromosome linksChromosome;
 	private BasicNetwork network;
 	private int networkDepth;
 	private double adjustedScore;
@@ -76,26 +78,27 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.training = training;
 		
 		double inputRowSlice = 0.8 / (double) (inputCount);
-
+		this.neuronsChromosome = new Chromosome();
+		this.linksChromosome = new Chromosome();
+		
 		for (int i = 0; i < inputCount; i++) {
-			neurons.add(new NEATNeuronGene(NEATNeuronType.Input, i, 0, 0.1 + i
+			neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Input, i, 0, 0.1 + i
 					* inputRowSlice));
 		}
 
-		neurons
-				.add(new NEATNeuronGene(NEATNeuronType.Bias, inputCount, 0, 0.9));
+		neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Bias, inputCount, 0, 0.9));
 
 		double outputRowSlice = 1 / (double) (outputCount + 1);
 
 		for (int i = 0; i < outputCount; i++) {
-			neurons.add(new NEATNeuronGene(NEATNeuronType.Output, i
+			neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Output, i
 					+ inputCount + 1, 1, (i + 1) * outputRowSlice));
 		}
 
 		for (int i = 0; i < inputCount + 1; i++) {
 			for (int j = 0; j < outputCount; j++) {
-				this.links.add(new NEATLinkGene(this.neurons.get(i).getId(),
-						this.getNeurons().get(inputCount + j + 1).getId(),
+				this.linksChromosome.add(new NEATLinkGene(((NEATNeuronGene)this.neuronsChromosome.get(i)).getId(),
+						((NEATNeuronGene)this.getNeurons().get(inputCount + j + 1)).getId(),
 						true, inputCount + outputCount + 1 + getNumGenes(),
 						RangeRandomizer.randomize(-1, 1), false));
 			}
@@ -103,13 +106,13 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	}
 
-	public NEATGenome(NEATTraining training,int genomeID, List<NEATNeuronGene> neurons,
-			List<NEATLinkGene> links, int inputCount, int outputCount) {
+	public NEATGenome(NEATTraining training,int genomeID, Chromosome neurons,
+			Chromosome links, int inputCount, int outputCount) {
 		super(training);
 		this.genomeID = genomeID;
 		this.network = null;
-		this.links = links;
-		this.neurons = neurons;
+		this.linksChromosome = links;
+		this.neuronsChromosome = neurons;
 		this.amountToSpawn = 0;
 		this.adjustedScore = 0;
 		this.inputCount = inputCount;
@@ -119,6 +122,10 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	
 	public NEATGenome(NEATGenome other) {
 		super(other.training);
+		
+		this.neuronsChromosome = new Chromosome();
+		this.linksChromosome = new Chromosome();
+		
 		this.genomeID = other.genomeID;
 		this.network = other.network;
 		this.networkDepth = other.networkDepth;
@@ -131,36 +138,38 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.training=other.training;
 		
 		// copy neurons
-		for(NEATNeuronGene gene: other.neurons)
+		for(Gene gene: other.getNeurons().getGenes())
 		{
+			NEATNeuronGene oldGene = (NEATNeuronGene)gene;
 			NEATNeuronGene newGene = new NEATNeuronGene(
-				gene.getNeuronType(),
-		        gene.getId(),
-		        gene.getSplitX(),
-		        gene.getSplitY(),
-		        gene.isRecurrent(),
-		        gene.getActivationResponse());
+				oldGene.getNeuronType(),
+				oldGene.getId(),
+				oldGene.getSplitX(),
+				oldGene.getSplitY(),
+				oldGene.isRecurrent(),
+		        oldGene.getActivationResponse());
 			this.getNeurons().add(newGene);
 		}
 		
 		// copy links
-		for(NEATLinkGene gene: other.links )
+		for(Gene gene: other.getLinks().getGenes() )
 		{
+			NEATLinkGene oldGene = (NEATLinkGene)gene;
 			NEATLinkGene newGene = new NEATLinkGene( 
-				gene.getFromNeuronID(), 
-				gene.getToNeuronID(), 
-				gene.isEnabled(), 
-				gene.getInnovationID(), 
-				gene.getWeight(),
-				gene.isRecurrent());
+				oldGene.getFromNeuronID(), 
+				oldGene.getToNeuronID(), 
+				oldGene.isEnabled(), 
+				oldGene.getInnovationID(), 
+				oldGene.getWeight(),
+				oldGene.isRecurrent());
 			this.getLinks().add(newGene);
 		}
 		
 	}
 
 	void randomize() {
-		for (NEATLinkGene link : this.links) {
-			link.setWeight(RangeRandomizer.randomize(-1, 1));
+		for (Gene link : this.getLinks().getGenes()) {
+			((NEATLinkGene)link).setWeight(RangeRandomizer.randomize(-1, 1));
 		}
 	}
 
@@ -168,16 +177,21 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 
-		for (NEATNeuronGene neuronGene : this.neurons) {
-			NEATNeuron neuron = new NEATNeuron(neuronGene.getNeuronType(),
-					neuronGene.getId(), neuronGene.getSplitY(), neuronGene
-							.getSplitX(), neuronGene.getActivationResponse());
+		for (Gene gene : this.getNeurons().getGenes()) {
+			NEATNeuronGene neuronGene = (NEATNeuronGene)gene;
+			NEATNeuron neuron = new NEATNeuron(
+					neuronGene.getNeuronType(),
+					neuronGene.getId(), 
+					neuronGene.getSplitY(), 
+					neuronGene.getSplitX(), 
+					neuronGene.getActivationResponse());
 
 			neurons.add(neuron);
 		}
 
 		// now to create the links.
-		for (NEATLinkGene linkGene : this.links) {
+		for (Gene gene : this.getLinks().getGenes()) {
+			NEATLinkGene linkGene = (NEATLinkGene)gene;
 			if (linkGene.isEnabled()) {
 				int element = getElementPos(linkGene.getFromNeuronID());
 				NEATNeuron fromNeuron = neurons.get(element);
@@ -208,8 +222,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	}
 
 	private int getElementPos(int neuronID) {
-		for (int i = 0; i < this.neurons.size(); i++) {
-			NEATNeuronGene neuronGene = this.neurons.get(i);
+
+		for (int i = 0; i < this.getNeurons().size(); i++) {
+			NEATNeuronGene neuronGene = (NEATNeuronGene)this.neuronsChromosome.getGene(i);
 			if (neuronGene.getId() == neuronID)
 				return i;
 		}
@@ -218,7 +233,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	}
 
 	public boolean isDuplicateLink(int fromNeuronID, int toNeuronID) {
-		for (NEATLinkGene linkGene : this.links) {
+		for (Gene gene : this.getLinks().getGenes()) {
+			NEATLinkGene linkGene = (NEATLinkGene)gene;
 			if ((linkGene.getFromNeuronID() == fromNeuronID)
 					&& (linkGene.getToNeuronID() == toNeuronID))
 				return true;
@@ -235,9 +251,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		else
 			start = this.inputCount + 1;
 
-		int neuronPos = (int) RangeRandomizer.randomInt(start, this.neurons
+		int neuronPos = (int) RangeRandomizer.randomInt(start, this.getNeurons()
 				.size()-1);
-		NEATNeuronGene neuronGene = this.neurons.get(neuronPos);
+		NEATNeuronGene neuronGene = (NEATNeuronGene)this.neuronsChromosome.get(neuronPos);
 		return neuronGene;
 
 	}
@@ -302,8 +318,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 				neuron1ID, NEATInnovationType.NewLink);
 
 		// see if this is a recurrent(backwards) link
-		if (neurons.get(getElementPos(neuron1ID)).getSplitY() > neurons.get(
-				getElementPos(neuron2ID)).getSplitY()) {
+		NEATNeuronGene neuronGene = (NEATNeuronGene)neuronsChromosome.get(getElementPos(neuron1ID));
+		if (neuronGene.getSplitY() > neuronGene.getSplitY()) {
 			recurrent = true;
 		}
 
@@ -317,12 +333,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 			NEATLinkGene linkGene = new NEATLinkGene(neuron1ID, neuron2ID,
 					true, id2, RangeRandomizer.randomize(-1, 1), recurrent);
-			this.links.add(linkGene);
+			this.linksChromosome.add(linkGene);
 		} else {
 			// existing innovation
 			NEATLinkGene linkGene = new NEATLinkGene(neuron1ID, neuron2ID,
 					true, innovation.getInnovationID(), RangeRandomizer.randomize(-1, 1), recurrent);
-			this.links.add(linkGene);
+			this.linksChromosome.add(linkGene);
 		}
 	}
 
@@ -340,7 +356,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		
 		// if there are not at least 
 		int upperLimit;
-		if (this.links.size()<sizeThreshold) {
+		if (this.linksChromosome.size()<sizeThreshold) {
 			upperLimit = getNumGenes() - 1 - (int) Math.sqrt(getNumGenes());
 		}
 		else {
@@ -350,14 +366,14 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		while ((numTrysToFindOldLink--) > 0) {
 			// choose a link, use the square root to prefer the older links
 			int i = (int) RangeRandomizer.randomInt(0, upperLimit);
-			NEATLinkGene link = this.links.get(i);
+			NEATLinkGene link = (NEATLinkGene)this.linksChromosome.get(i);
 
 			// get the from neuron
 			int fromNeuron = link.getFromNeuronID();
 
 			if ((link.isEnabled())
 					&& (!link.isRecurrent())
-					&& (this.neurons.get(getElementPos(fromNeuron))
+					&& (((NEATNeuronGene)this.getNeurons().get(getElementPos(fromNeuron)))
 							.getNeuronType() != NEATNeuronType.Bias)) {
 				splitLink = link;
 				break;
@@ -373,12 +389,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 		int from = splitLink.getFromNeuronID();
 		int to = splitLink.getToNeuronID();
+		
+		NEATNeuronGene fromGene = (NEATNeuronGene)this.getNeurons().get(getElementPos(from));
+		NEATNeuronGene toGene = (NEATNeuronGene)this.getNeurons().get(getElementPos(to));
 
-		double newDepth = (this.neurons.get(getElementPos(from)).getSplitY() + this.neurons
-				.get(getElementPos(to)).getSplitY()) / 2;
-
-		double newWidth = (this.neurons.get(getElementPos(from)).getSplitX() + this.neurons
-				.get(getElementPos(to)).getSplitX()) / 2;
+		double newDepth = (fromGene.getSplitY() + toGene.getSplitY()) / 2;
+		double newWidth = (fromGene.getSplitX() + toGene.getSplitX()) / 2;
 
 		// has this innovation already been tried?
 		NEATInnovation innovation = this.training.getInnovations().checkInnovation(from, to,
@@ -401,7 +417,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 							NEATInnovationType.NewNeuron,
 							NEATNeuronType.Hidden, newWidth, newDepth);
 
-			this.neurons.add(new NEATNeuronGene(NEATNeuronType.Hidden,
+			this.neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Hidden,
 					newNeuronID, newDepth, newWidth));
 
 			// add the first link
@@ -414,7 +430,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID, true,
 					link1ID, 1.0, false);
 
-			this.links.add(link1);
+			this.linksChromosome.add(link1);
 
 			// add the second link
 			int link2ID = this.training.getInnovations()
@@ -426,7 +442,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
 					link2ID, originalWeight, false);
 
-			this.links.add(link2);
+			this.linksChromosome.add(link2);
 		}
 
 		else {
@@ -447,20 +463,23 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
 					innovationLink2.getInnovationID(), originalWeight, false);
 
-			this.links.add(link1);
-			this.links.add(link2);
+			this.linksChromosome.add(link1);
+			this.linksChromosome.add(link2);
 
 			NEATNeuronGene newNeuron = new NEATNeuronGene(
 					NEATNeuronType.Hidden, newNeuronID, newDepth, newWidth);
 
-			this.neurons.add(newNeuron);
+			this.neuronsChromosome.add(newNeuron);
 		}
 
 		return;
 	}
 
 	public boolean alreadyHaveThisNeuronID(int id) {
-		for (NEATNeuronGene neuronGene : this.neurons) {
+		for (Gene gene : this.neuronsChromosome.getGenes()) {
+			
+			NEATNeuronGene neuronGene = (NEATNeuronGene)gene;
+			
 			if (neuronGene.getId() == id)
 				return true;
 		}
@@ -470,7 +489,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	void mutateWeights(double mutateRate, double probNewMutate,
 			double maxPertubation) {
-		for (NEATLinkGene linkGene : this.links) {
+		for (Gene gene : this.linksChromosome.getGenes()) {
+			NEATLinkGene linkGene = (NEATLinkGene)gene;
 			if (Math.random() < mutateRate) {
 				if (Math.random() < probNewMutate) {
 					linkGene.setWeight(RangeRandomizer.randomize(-1, 1));
@@ -484,8 +504,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	}
 
 	void mutateActivationResponse(double mutateRate, double maxPertubation) {
-		for (NEATNeuronGene neuronGene : this.neurons) {
+		for (Gene gene : this.neuronsChromosome.getGenes()) {
 			if (Math.random() < mutateRate) {
+				NEATNeuronGene neuronGene = (NEATNeuronGene)gene;
 				neuronGene.setActivationResponse(neuronGene
 						.getActivationResponse()
 						+ RangeRandomizer.randomize(-1, 1) * maxPertubation);
@@ -502,9 +523,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		int g1 = 0;
 		int g2 = 0;
 
-		while ((g1 < this.links.size() - 1) || (g2 < this.links.size() - 1)) {
+		while ((g1 < this.linksChromosome.size() - 1) || (g2 < this.linksChromosome.size() - 1)) {
 
-			if (g1 == this.links.size() - 1) {
+			if (g1 == this.linksChromosome.size() - 1) {
 				g2++;
 				numExcess++;
 
@@ -519,8 +540,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			}
 
 			// get innovation numbers for each gene at this point
-			int id1 = this.links.get(g1).getInnovationID();
-			int id2 = genome.getLinks().get(g2).getInnovationID();
+			int id1 = ((NEATLinkGene)this.linksChromosome.get(g1)).getInnovationID();
+			int id2 = ((NEATLinkGene)genome.getLinks().get(g2)).getInnovationID();
 
 			// innovation numbers are identical so increase the matched score
 			if (id1 == id2) {
@@ -529,8 +550,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 				numMatched++;
 
 				// get the weight difference between these two genes
-				weightDifference += Math.abs(this.links.get(g1).getWeight()
-						- genome.getLinks().get(g2).getWeight());
+				weightDifference += Math.abs(
+						((NEATLinkGene)this.linksChromosome.get(g1)).getWeight()
+						- ((NEATLinkGene)genome.getLinks().get(g2)).getWeight());
 			}
 
 			// innovation numbers are different so increment the disjoint score
@@ -560,19 +582,19 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	}
 
 	public int getNumGenes() {
-		return this.links.size();
+		return this.linksChromosome.size();
 	}
 
 	public int getGenomeID() {
 		return genomeID;
 	}
 
-	public List<NEATNeuronGene> getNeurons() {
-		return neurons;
+	public Chromosome getNeurons() {
+		return this.neuronsChromosome;
 	}
 
-	public List<NEATLinkGene> getLinks() {
-		return links;
+	public Chromosome getLinks() {
+		return this.linksChromosome;
 	}
 
 	public BasicNetwork getNetwork() {
@@ -608,7 +630,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	}
 
 	public double getSplitY(int nd) {
-		return this.neurons.get(nd).getSplitY();
+		return ((NEATNeuronGene)this.neuronsChromosome.get(nd)).getSplitY();
 	}
 
 	/**
@@ -633,7 +655,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	}
 
 	public void sortGenes() {
-		Collections.sort(this.links);
+		Collections.sort(this.linksChromosome.getGenes());
 	}
 
 	public void setAdjustedFitness(double adjustedFitness) {

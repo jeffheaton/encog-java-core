@@ -46,6 +46,7 @@ import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.neat.NEATInnovationDB;
+import org.encog.solve.genetic.Chromosome;
 import org.encog.solve.genetic.GeneticAlgorithm;
 
 public class NEATTraining extends GeneticAlgorithm implements Train {
@@ -111,8 +112,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		NEATGenome genome = new NEATGenome(this, 1, inputCount, outputCount);
 
-		this.innovations = new NEATInnovationDB(genome.getLinks(), genome
-				.getNeurons());
+		this.innovations = new NEATInnovationDB(genome.getLinks(), genome.getNeurons());
 
 		this.splits = split(null, 0, 1, 0);
 
@@ -486,8 +486,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			}
 		}
 
-		List<NEATNeuronGene> babyNeurons = new ArrayList<NEATNeuronGene>();
-		List<NEATLinkGene> babyGenes = new ArrayList<NEATLinkGene>();
+		Chromosome babyNeurons = new Chromosome();
+		Chromosome babyGenes = new Chromosome();
 
 		List<Integer> vecNeurons = new ArrayList<Integer>();
 
@@ -502,12 +502,12 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		while (curMom < mom.getNumGenes() || curDad < dad.getNumGenes()) {
 
 			if (curMom < mom.getNumGenes())
-				momGene = mom.getLinks().get(curMom);
+				momGene = (NEATLinkGene)mom.getLinks().get(curMom);
 			else
 				momGene = null;
 
 			if (curDad < dad.getNumGenes())
-				dadGene = dad.getLinks().get(curDad);
+				dadGene = (NEATLinkGene)dad.getLinks().get(curDad);
 			else
 				dadGene = null;
 
@@ -549,7 +549,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			}
 
 			else {
-				if (babyGenes.get(babyGenes.size() - 1).getInnovationID() != selectedGene
+				if (((NEATLinkGene)babyGenes.get(babyGenes.size() - 1)).getInnovationID() != selectedGene
 						.getInnovationID()) {
 					babyGenes.add(selectedGene);
 				}
@@ -571,9 +571,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 
 		// finally, create the genome
-		NEATGenome babyGenome = new NEATGenome(this, assignGenomeID(),
-				babyNeurons, babyGenes, mom.getInputCount(), mom
-						.getOutputCount());
+		NEATGenome babyGenome = new NEATGenome(
+				this, assignGenomeID(),
+				babyNeurons, babyGenes, 
+				mom.getInputCount(), 
+				mom.getOutputCount());
 
 		return babyGenome;
 	}

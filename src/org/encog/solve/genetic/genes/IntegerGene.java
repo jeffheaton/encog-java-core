@@ -31,5 +31,9 @@ public class IntegerGene implements Gene {
 	{
 		return ""+value;
 	}
+
+	public int compareTo(Gene o) {
+		return 0;
+	}
 	
 }

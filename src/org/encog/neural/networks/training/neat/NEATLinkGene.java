@@ -32,7 +32,7 @@ package org.encog.neural.networks.training.neat;
 
 import org.encog.solve.genetic.genes.Gene;
 
-public class NEATLinkGene implements Gene,Comparable<NEATLinkGene> {
+public class NEATLinkGene implements Gene {
 		
 	private int fromNeuronID;
 	private int toNeuronID;
@@ -89,7 +89,8 @@ public class NEATLinkGene implements Gene,Comparable<NEATLinkGene> {
 		return innovationID;
 	}
 
-	public int compareTo(NEATLinkGene other) {
+	public int compareTo(Gene o) {
+		NEATLinkGene other = (NEATLinkGene)o;
 		return( (int)(this.getInnovationID() - other.getInnovationID()) );
 	}
 	

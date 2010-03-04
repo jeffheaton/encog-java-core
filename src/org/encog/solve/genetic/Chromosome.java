@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.encog.mathutil.matrices.MatrixError;
+import org.encog.neural.networks.training.neat.NEATNeuronGene;
 import org.encog.solve.genetic.genes.Gene;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,6 +84,19 @@ public class Chromosome  {
 	 */
 	public List<Gene> getGenes() {
 		return this.genes;
+	}
+
+	public void add(Gene neuronGene) {
+		this.genes.add(neuronGene);
+		
+	}
+
+	public Gene get(int i) {
+		return this.genes.get(i);
+	}
+
+	public int size() {
+		return this.genes.size();
 	}
 
 

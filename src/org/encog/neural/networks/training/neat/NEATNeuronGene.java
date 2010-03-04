@@ -127,5 +127,9 @@ public class NEATNeuronGene implements Gene {
 		this.splitY = other.splitY;
 		
 	}
+
+	public int compareTo(Gene o) {
+		return 0;
+	}
 	
 }

@@ -21,5 +21,9 @@ public class DoubleGene implements Gene {
 	{
 		return ""+value;
 	}
+
+	public int compareTo(Gene arg0) {
+		return 0;
+	}
 	
 }

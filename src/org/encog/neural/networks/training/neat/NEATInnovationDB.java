@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
+import org.encog.solve.genetic.Chromosome;
+import org.encog.solve.genetic.genes.Gene;
 
 public class NEATInnovationDB {
 
@@ -41,16 +43,19 @@ public class NEATInnovationDB {
 	private int nextNeuronID = 0;
 	private int nextInnovationID = 0;
 
-	public NEATInnovationDB(List<NEATLinkGene> links,
-			List<NEATNeuronGene> neurons) {
+	public NEATInnovationDB(Chromosome links,
+			Chromosome neurons) {
 
-		for (NEATNeuronGene neuronGene : neurons) {
+		for (Gene gene : neurons.getGenes()) {
+			NEATNeuronGene neuronGene = (NEATNeuronGene)gene;
+			
 			NEATInnovation innovation = new NEATInnovation(neuronGene,
 					assignInnovationID(), assignNeuronID());
 			this.innovations.add(innovation);
 		}
 
-		for (NEATLinkGene linkGene : links) {
+		for (Gene gene : links.getGenes()) {
+			NEATLinkGene linkGene = (NEATLinkGene)gene;
 			NEATInnovation innovation = new NEATInnovation(linkGene
 					.getFromNeuronID(), linkGene.getToNeuronID(),
 					NEATInnovationType.NewLink, assignInnovationID());
