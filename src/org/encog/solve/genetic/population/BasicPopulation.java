@@ -59,7 +59,6 @@ public class BasicPopulation implements Population {
 		return genomes;
 	}
 
-	@Override
 	public Genome getBest() {
 		if( this.genomes.size()==0)
 			return null;
@@ -67,49 +66,40 @@ public class BasicPopulation implements Population {
 			return this.genomes.get(0);
 	}
 
-	@Override
 	public void add(Genome genome) {
 		this.genomes.add(genome);
 		
 	}
 
-	@Override
 	public long assignGeneID() {
 		return this.assignGeneID();
 	}
 
-	@Override
 	public long assignGenomeID() {
 		return this.assignGenomeID();
 	}
 
-	@Override
 	public long assignInnovationID() {
 		return this.assignInnovationID();
 	}
 
-	@Override
 	public long assignSpeciesID() {
 		return this.assignSpeciesID();
 	}
 
-	@Override
 	public int size() {
 		return this.genomes.size();
 	}
 
-	@Override
 	public void addAll(List<? extends Genome> newPop) {
 		this.genomes.addAll(newPop);
 	}
 
-	@Override
 	public void clear() {
 		this.genomes.clear();
 		
 	}
 
-	@Override
 	public Genome get(int i) {
 		return this.genomes.get(i);
 	}

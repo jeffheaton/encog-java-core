@@ -131,7 +131,6 @@ public class NeuralGenome extends BasicGenome {
 		setScore(score);	
 	}
 
-	@Override
 	public void decode() {
 		double[] net = new double[networkChromosome.getGenes().size()];
 		for(int i=0;i<net.length;i++)
@@ -144,7 +143,6 @@ public class NeuralGenome extends BasicGenome {
 		
 	}
 
-	@Override
 	public void encode() {
 		double[] net = NetworkCODEC.networkToArray((BasicNetwork)getOrganism());
 		

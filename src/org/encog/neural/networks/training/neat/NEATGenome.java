@@ -615,7 +615,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		return result.toString();
 	}
 
-	@Override
 	public void calculateScore() {
 		if( getOrganism()==null )
 			decode();
@@ -623,7 +622,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.setScore(this.training.getCalculateScore().calculateScore(network));
 	}
 
-	@Override
 	public void decode() {
 		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 
@@ -671,7 +669,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		
 	}
 
-	@Override
 	public void encode() {
 		// TODO Auto-generated method stub
 		

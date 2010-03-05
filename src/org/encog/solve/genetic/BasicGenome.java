@@ -61,7 +61,6 @@ public abstract class BasicGenome implements Genome {
 		return this.score;
 	}
 
-	@Override
 	public void mate(Genome father, Genome child1, Genome child2) {
 		int motherChromosomes = this.getChromosomes().size();
 		int fatherChromosomes = father.getChromosomes().size();

@@ -6,7 +6,6 @@ import org.encog.solve.genetic.genes.IntegerGene;
 
 public class MutateShuffle implements Mutate {
 
-	@Override
 	public void performMutation(Chromosome chromosome) {
 		final int length = chromosome.getGenes().size();
 		int iswap1 = (int) (Math.random() * length);

@@ -117,7 +117,6 @@ public class NEATNeuronGene extends BasicGene {
 		this.recurrent = recurrent;
 	}
 
-	@Override
 	public void copy(Gene gene) {
 		NEATNeuronGene other = (NEATNeuronGene)gene;
 		this.activationResponse = other.activationResponse;

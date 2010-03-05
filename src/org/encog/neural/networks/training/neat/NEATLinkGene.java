@@ -91,7 +91,6 @@ public class NEATLinkGene extends BasicGene {
 		return result.toString();
 	}
 
-	@Override
 	public void copy(Gene gene) {
 		NEATLinkGene other = (NEATLinkGene)gene;
 		this.setEnabled(other.isEnabled());
