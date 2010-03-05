@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.neural.networks.training.genetic.NeuralGenome;
-import org.encog.solve.genetic.Genome;
+import org.encog.solve.genetic.genome.Genome;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 

@@ -30,6 +30,7 @@
 
 package org.encog.solve.genetic;
 
+import org.encog.solve.genetic.genome.Genome;
 import org.encog.util.concurrency.EncogTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

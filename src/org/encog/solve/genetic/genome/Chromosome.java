@@ -28,7 +28,7 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.solve.genetic;
+package org.encog.solve.genetic.genome;
 
 import java.util.ArrayList;
 import java.util.HashSet;

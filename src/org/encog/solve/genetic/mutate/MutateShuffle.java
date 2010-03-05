@@ -1,8 +1,8 @@
 package org.encog.solve.genetic.mutate;
 
-import org.encog.solve.genetic.Chromosome;
 import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genes.IntegerGene;
+import org.encog.solve.genetic.genome.Chromosome;
 
 public class MutateShuffle implements Mutate {
 

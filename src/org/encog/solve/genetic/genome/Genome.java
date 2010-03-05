@@ -1,6 +1,7 @@
-package org.encog.solve.genetic;
+package org.encog.solve.genetic.genome;
 
 import java.util.List;
+
 
 public interface Genome extends Comparable<Genome> {
 	List<Chromosome> getChromosomes();

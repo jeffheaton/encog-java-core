@@ -1,6 +1,6 @@
 package org.encog.solve.genetic.crossover;
 
-import org.encog.solve.genetic.Chromosome;
+import org.encog.solve.genetic.genome.Chromosome;
 
 public interface Crossover {
 	public void mate(

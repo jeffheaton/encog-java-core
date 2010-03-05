@@ -46,9 +46,9 @@ import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.neat.NEATInnovationDB;
-import org.encog.solve.genetic.Chromosome;
 import org.encog.solve.genetic.GeneticAlgorithm;
-import org.encog.solve.genetic.Genome;
+import org.encog.solve.genetic.genome.Chromosome;
+import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.population.BasicPopulation;
 import org.encog.solve.genetic.population.Population;
 

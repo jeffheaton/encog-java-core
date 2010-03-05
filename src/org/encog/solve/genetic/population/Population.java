@@ -3,7 +3,7 @@ package org.encog.solve.genetic.population;
 import java.util.List;
 
 import org.encog.neural.networks.training.neat.NEATGenome;
-import org.encog.solve.genetic.Genome;
+import org.encog.solve.genetic.genome.Genome;
 
 public interface Population {
 	int getPopulationSize();

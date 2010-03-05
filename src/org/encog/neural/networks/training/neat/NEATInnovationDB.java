@@ -34,8 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
-import org.encog.solve.genetic.Chromosome;
 import org.encog.solve.genetic.genes.Gene;
+import org.encog.solve.genetic.genome.Chromosome;
 
 public class NEATInnovationDB {
 

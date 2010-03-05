@@ -44,9 +44,9 @@ import org.encog.neural.networks.synapse.neat.NEATLink;
 import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
-import org.encog.solve.genetic.BasicGenome;
-import org.encog.solve.genetic.Chromosome;
 import org.encog.solve.genetic.genes.Gene;
+import org.encog.solve.genetic.genome.BasicGenome;
+import org.encog.solve.genetic.genome.Chromosome;
 
 public class NEATGenome extends BasicGenome implements Cloneable {
 

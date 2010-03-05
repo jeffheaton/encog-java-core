@@ -1,7 +1,10 @@
-package org.encog.solve.genetic;
+package org.encog.solve.genetic.genome;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.encog.solve.genetic.GeneticAlgorithm;
+import org.encog.solve.genetic.GeneticError;
 
 public abstract class BasicGenome implements Genome {
 	

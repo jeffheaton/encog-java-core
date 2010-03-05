@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.solve.genetic.crossover.Crossover;
+import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.mutate.Mutate;
 import org.encog.solve.genetic.population.Population;
 import org.encog.util.concurrency.EncogConcurrency;

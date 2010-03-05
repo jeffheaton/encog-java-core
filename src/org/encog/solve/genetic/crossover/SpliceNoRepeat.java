@@ -3,8 +3,8 @@ package org.encog.solve.genetic.crossover;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.encog.solve.genetic.Chromosome;
 import org.encog.solve.genetic.genes.Gene;
+import org.encog.solve.genetic.genome.Chromosome;
 
 public class SpliceNoRepeat implements Crossover {
 	
