@@ -292,8 +292,6 @@ org.encog.persist.persistors.WeightlessSynapsePersistor
 org.encog.persist.PersistReader
 org.encog.persist.PersistWriter
 org.encog.solve.anneal.SimulatedAnnealing
-org.encog.solve.genetic.BasicGenome
-org.encog.solve.genetic.Chromosome
 org.encog.solve.genetic.crossover.Crossover
 org.encog.solve.genetic.crossover.Splice
 org.encog.solve.genetic.crossover.SpliceNoRepeat
@@ -303,7 +301,9 @@ org.encog.solve.genetic.genes.Gene
 org.encog.solve.genetic.genes.IntegerGene
 org.encog.solve.genetic.GeneticAlgorithm
 org.encog.solve.genetic.GeneticError
-org.encog.solve.genetic.Genome
+org.encog.solve.genetic.genome.BasicGenome
+org.encog.solve.genetic.genome.Chromosome
+org.encog.solve.genetic.genome.Genome
 org.encog.solve.genetic.MateWorker
 org.encog.solve.genetic.mutate.Mutate
 org.encog.solve.genetic.mutate.MutatePerturb
