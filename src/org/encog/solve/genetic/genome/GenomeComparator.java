@@ -57,7 +57,6 @@ public class GenomeComparator implements Comparator<Genome> {
 			return d2>d1;
 	}
 
-	@Override
 	public int compare(Genome genome1, Genome genome2) {
 		return Double.compare(genome1.getScore(), genome2.getScore());
 	}
