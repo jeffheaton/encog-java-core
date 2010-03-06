@@ -145,6 +145,7 @@ org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodSingle
 org.encog.neural.networks.training.cpn.FindCPN
 org.encog.neural.networks.training.cpn.TrainInstar
 org.encog.neural.networks.training.cpn.TrainOutstar
+org.encog.neural.networks.training.genetic.GeneticScoreAdapter
 org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm
 org.encog.neural.networks.training.genetic.NeuralGenome
 org.encog.neural.networks.training.LearningRate
@@ -153,7 +154,6 @@ org.encog.neural.networks.training.lma.JacobianChainRule
 org.encog.neural.networks.training.lma.LevenbergMarquardtTraining
 org.encog.neural.networks.training.Momentum
 org.encog.neural.networks.training.neat.NEATGenome
-org.encog.neural.networks.training.neat.NEATGenomeComparator
 org.encog.neural.networks.training.neat.NEATInnovation
 org.encog.neural.networks.training.neat.NEATInnovationDB
 org.encog.neural.networks.training.neat.NEATInnovationType
@@ -302,8 +302,10 @@ org.encog.solve.genetic.genes.IntegerGene
 org.encog.solve.genetic.GeneticAlgorithm
 org.encog.solve.genetic.GeneticError
 org.encog.solve.genetic.genome.BasicGenome
+org.encog.solve.genetic.genome.CalculateGenomeScore
 org.encog.solve.genetic.genome.Chromosome
 org.encog.solve.genetic.genome.Genome
+org.encog.solve.genetic.genome.GenomeComparator
 org.encog.solve.genetic.MateWorker
 org.encog.solve.genetic.mutate.Mutate
 org.encog.solve.genetic.mutate.MutatePerturb
