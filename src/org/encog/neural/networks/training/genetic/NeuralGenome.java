@@ -121,16 +121,6 @@ public class NeuralGenome extends BasicGenome {
 		}
 	}
 
-
-	/**
-	 * Calculate the score for this chromosome.
-	 */
-	public void calculateScore() {
-		double score = this.neuralGenetic.getCalculateScore().calculateScore(
-				(BasicNetwork)this.getOrganism());
-		setScore(score);	
-	}
-
 	public void decode() {
 		double[] net = new double[networkChromosome.getGenes().size()];
 		for(int i=0;i<net.length;i++)
@@ -149,8 +139,6 @@ public class NeuralGenome extends BasicGenome {
 		for(int i=0;i<net.length;i++)
 		{
 			((DoubleGene)networkChromosome.getGene(i)).setValue(net[i]);
-		}
-		calculateScore();
-		
+		}		
 	}
 }

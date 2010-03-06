@@ -99,11 +99,6 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 * implement a genetic algorithm.
 	 */
 	private NeuralGeneticAlgorithmHelper genetic;
-	
-	/**
-	 * The score calculation object.
-	 */
-	private CalculateScore calculateScore;
 
 	/**
 	 * Construct a neural genetic algorithm.  
@@ -121,8 +116,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 			final double percentToMate) {
 
 		this.genetic = new NeuralGeneticAlgorithmHelper();
-		this.genetic.setShouldMinimize(calculateScore.shouldMinimize());
-		this.calculateScore = calculateScore;
+		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		Population population = new BasicPopulation(populationSize);
 		getGenetic().setMutationPercent(mutationPercent);
 		getGenetic().setMatingPopulation(percentToMate * 2);
@@ -137,6 +131,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 
 			final NeuralGenome genome = 
 				new NeuralGenome(this, chromosomeNetwork);
+			getGenetic().calculateScore(genome);
 			getGenetic().getPopulation().add(genome);
 		}
 		population.sort();
@@ -180,14 +175,5 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 */
 	public void setGenetic(final NeuralGeneticAlgorithmHelper genetic) {
 		this.genetic = genetic;
-	}
-
-	/**
-	 * @return The score calculation object.
-	 */
-	public CalculateScore getCalculateScore() {
-		return calculateScore;
-	}
-	
-	
+	}	
 }

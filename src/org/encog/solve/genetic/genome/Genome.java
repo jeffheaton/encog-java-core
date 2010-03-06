@@ -8,8 +8,8 @@ public interface Genome extends Comparable<Genome> {
 	int calculateGeneCount();
 	void mate(Genome father, Genome child1, Genome child2);
 	double getScore();
+	void setScore(double score);
 	Object getOrganism();
-	void calculateScore();
 	void encode();
 	void decode();
 }

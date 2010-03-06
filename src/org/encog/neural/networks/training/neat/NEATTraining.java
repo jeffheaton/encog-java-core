@@ -45,10 +45,12 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
 import org.encog.neural.networks.training.neat.NEATInnovationDB;
 import org.encog.solve.genetic.GeneticAlgorithm;
 import org.encog.solve.genetic.genome.Chromosome;
 import org.encog.solve.genetic.genome.Genome;
+import org.encog.solve.genetic.genome.GenomeComparator;
 import org.encog.solve.genetic.population.BasicPopulation;
 import org.encog.solve.genetic.population.Population;
 
@@ -60,7 +62,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	private final NEATInnovationDB innovations;
 	private final List<SplitDepth> splits;
 	private final List<NEATSpecies> species = new ArrayList<NEATSpecies>();
-	private final CalculateScore calculateScore;
 	private double bestEverFitness;
 	private double totalFitAdjustment;
 	private double averageFitAdjustment;
@@ -97,15 +98,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	private double paramOldAgePenalty = 0.3;
 	private double paramSurvivalRate = 0.2;
 
-	private final NEATGenomeComparator comparator;
-
 	public NEATTraining(CalculateScore calculateScore, int inputCount,
 			int outputCount, int populationSize) {
-		this.calculateScore = calculateScore;
+		
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 
-		this.comparator = new NEATGenomeComparator(calculateScore);
+		this.setCalculateScore(new GeneticScoreAdapter(calculateScore));
+		this.setComparator(new GenomeComparator(this.getCalculateScore()));
 		this.population = new BasicPopulation(populationSize);
 
 		// create the initial population
@@ -120,13 +120,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		this.splits = split(null, 0, 1, 0);
 
-		if (this.calculateScore.shouldMinimize())
+		if (this.getCalculateScore().shouldMinimize())
 			this.bestEverFitness = Double.MAX_VALUE;
 		else
 			this.bestEverFitness = Double.MIN_VALUE;
 		
 		for (Genome genome2 : this.population.getGenomes()) {
-			genome2.calculateScore();
+			genome2.decode();
+			calculateScore(genome2);
 		}
 
 		
@@ -315,7 +316,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		this.population.addAll(newPop);
 		
 		for (Genome genome2 : this.population.getGenomes()) {
-			genome2.calculateScore();
+			if( genome2.getOrganism()==null) {
+				genome2.decode();
+				calculateScore(genome2);
+			}
 		}
 		
 		resetAndKill();
@@ -355,7 +359,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public void sortAndRecord() {
 		this.population.sort();
 
-		this.bestEverFitness = this.comparator.bestScore(getError(),
+		this.bestEverFitness = this.getComparator().bestScore(getError(),
 				this.bestEverFitness);
 	}
 
@@ -479,7 +483,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 
 		else {
-			if (this.comparator
+			if (this.getComparator()
 					.isBetterThan(mom.getScore(), dad.getScore())) {
 				best = NEATParent.Mom;
 			}
@@ -594,7 +598,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			s.purge();
 
 			if ((s.getGensNoImprovement() > this.paramNumGensAllowedNoImprovement)
-					&& this.comparator.isBetterThan(this.bestEverFitness, s
+					&& this.getComparator().isBetterThan(this.bestEverFitness, s
 							.getBestFitness())) {
 				this.species.remove(s);
 			}
@@ -796,10 +800,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		this.paramSurvivalRate = paramSurvivalRate;
 	}
 
-	public NEATGenomeComparator getComparator() {
-		return comparator;
-	}
-
 	public ActivationFunction getOutputActivationFunction() {
 		return outputActivationFunction;
 	}
@@ -807,11 +807,5 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public void setOutputActivationFunction(
 			ActivationFunction outputActivationFunction) {
 		this.outputActivationFunction = outputActivationFunction;
-	}
-
-	public CalculateScore getCalculateScore() {
-		return calculateScore;
-	}
-
-	
+	}	
 }

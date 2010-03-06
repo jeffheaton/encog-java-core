@@ -36,7 +36,7 @@ public abstract class BasicGenome implements Genome {
 	 */
 	public int compareTo(final Genome other) {
 
-		if (this.geneticAlgorithm.getShouldMinimize()) {
+		if (this.geneticAlgorithm.getCalculateScore().shouldMinimize()) {
 			if (getScore() > other.getScore()) {
 				return 1;
 			}
@@ -99,8 +99,8 @@ public abstract class BasicGenome implements Genome {
 		
 		child1.decode();
 		child2.decode();
-		child1.calculateScore();
-		child2.calculateScore();
+		this.geneticAlgorithm.calculateScore(child1);
+		this.geneticAlgorithm.calculateScore(child2);
 	}
 	
 	public void setScore(double score)

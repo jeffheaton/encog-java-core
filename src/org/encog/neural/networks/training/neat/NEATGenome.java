@@ -615,13 +615,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		return result.toString();
 	}
 
-	public void calculateScore() {
-		if( getOrganism()==null )
-			decode();
-		BasicNetwork network = (BasicNetwork)getOrganism();
-		this.setScore(this.training.getCalculateScore().calculateScore(network));
-	}
-
 	public void decode() {
 		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 

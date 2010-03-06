@@ -35,7 +35,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.solve.genetic.crossover.Crossover;
+import org.encog.solve.genetic.genome.CalculateGenomeScore;
 import org.encog.solve.genetic.genome.Genome;
+import org.encog.solve.genetic.genome.GenomeComparator;
 import org.encog.solve.genetic.mutate.Mutate;
 import org.encog.solve.genetic.population.Population;
 import org.encog.util.concurrency.EncogConcurrency;
@@ -53,7 +55,7 @@ import org.slf4j.LoggerFactory;
  * @param <GENE_TYPE>
  *            The datatype of the gene.
  */
-public abstract class GeneticAlgorithm {
+public class GeneticAlgorithm {
 
 	/**
 	 * Threadpool timeout.
@@ -78,19 +80,16 @@ public abstract class GeneticAlgorithm {
 	 * from.
 	 */
 	private double matingPopulation;
-
-
-
-	/**
-	 * Should the "score" be minimized?
-	 */
-	private boolean shouldMinimize = true;
 	
 	private Crossover crossover;
 	
 	private Mutate mutate;
 	
 	private Population population;
+	
+	private CalculateGenomeScore calculateScore;
+	
+	private GenomeComparator comparator;
 
 	/**
 	 * The logging object.
@@ -197,22 +196,6 @@ public abstract class GeneticAlgorithm {
 		this.percentToMate = percentToMate;
 	}
 
-
-	/**
-	 * @return True if the score should be minimized.
-	 */
-	public boolean getShouldMinimize() {
-		return shouldMinimize;
-	}
-
-	/**
-	 * Determine if the score should be minimized. 
-	 * @param shouldMinimize True if the score should be minimized.
-	 */
-	public void setShouldMinimize(final boolean shouldMinimize) {
-		this.shouldMinimize = shouldMinimize;
-	}
-
 	public Crossover getCrossover() {
 		return crossover;
 	}
@@ -236,10 +219,25 @@ public abstract class GeneticAlgorithm {
 	public void setPopulation(Population population) {
 		this.population = population;
 	}
-	
-	
-	
-	
-	
-	
+
+	public CalculateGenomeScore getCalculateScore() {
+		return calculateScore;
+	}
+
+	public void setCalculateScore(CalculateGenomeScore calculateScore) {
+		this.calculateScore = calculateScore;
+	}
+
+	public GenomeComparator getComparator() {
+		return comparator;
+	}
+
+	public void setComparator(GenomeComparator comparator) {
+		this.comparator = comparator;
+	}
+
+	public void calculateScore(Genome g) {
+		double score = this.calculateScore.calculateScore(g);
+		g.setScore(score);		
+	}	
 }
