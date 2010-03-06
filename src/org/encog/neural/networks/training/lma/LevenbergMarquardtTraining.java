@@ -395,4 +395,14 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		return result / 2.0;
 	}
 
+	public boolean isUseBayesianRegularization() {
+		return useBayesianRegularization;
+	}
+
+	public void setUseBayesianRegularization(boolean useBayesianRegularization) {
+		this.useBayesianRegularization = useBayesianRegularization;
+	}
+	
+	
+
 }
