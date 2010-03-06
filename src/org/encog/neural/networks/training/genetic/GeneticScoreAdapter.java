@@ -14,13 +14,10 @@ public class GeneticScoreAdapter implements CalculateGenomeScore {
 		this.calculateScore = calculateScore;
 	}
 	
-	@Override
 	public double calculateScore(Genome genome) {
 		BasicNetwork network = (BasicNetwork)genome.getOrganism();
 		return this.calculateScore.calculateScore(network);
 	}
-
-	@Override
 	public boolean shouldMinimize() {
 		return this.calculateScore.shouldMinimize();
 	}
