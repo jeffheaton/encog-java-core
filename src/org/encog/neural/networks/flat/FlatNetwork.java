@@ -12,9 +12,10 @@ public class FlatNetwork {
 	private final int outputCount;
 	private final int[] layerCounts;
 	private final int[] weightIndex;
+	private final int[] layerIndex;
 	private final boolean tanh;
 	private double[] weights;
-	private Object[] output;
+	private double[] layerOutput;
 	
 	public FlatNetwork(BasicNetwork network)
 	{
@@ -29,26 +30,33 @@ public class FlatNetwork {
 		
 		this.layerCounts = new int[layerCount];
 		this.weightIndex = new int[layerCount];
-		this.output = new Object[layerCount];
+		this.layerIndex = new int[layerCount];
 		
 		int index = 0;
+		int neuronCount = 0;
 
 		for(Layer layer: network.getStructure().getLayers() )
 		{
-			this.output[index] = new double[layer.getNeuronCount()];
 			this.layerCounts[index] = layer.getNeuronCount();
+			neuronCount+=layer.getNeuronCount();
 			
-			if( index==0 )
+			if( index==0 ) {
 				this.weightIndex[index] = 0;
-			else
+				this.layerIndex[index] = 0;
+			}
+			else {
 				this.weightIndex[index] = this.weightIndex[index-1]+
 				(this.layerCounts[index-1]
 				+(this.layerCounts[index]*this.layerCounts[index-1]));
+				this.layerIndex[index] = this.layerIndex[index-1] + 
+				this.layerCounts[index-1];
+			}
 			
 			index++;
 		}
 		
 		this.weights = NetworkCODEC.networkToArray(network);
+		this.layerOutput = new double[neuronCount];
 		
 		if( input.getActivationFunction() instanceof ActivationSigmoid )
 			this.tanh = false;
@@ -61,43 +69,48 @@ public class FlatNetwork {
 		return 1.0 / (1 + BoundMath.exp(-1.0 * d));	
 	}
 	
-	public double[] calculate(double[] input)
+	public void calculate(double[] input, double[] output)
 	{
-		int layerIndex = this.output.length - 1;
+		int sourceIndex = this.layerOutput.length - this.inputCount;
 		
-		System.arraycopy(input, 0, output[layerIndex], 0, this.layerCounts[layerIndex]);
+		System.arraycopy(input, 0, this.layerOutput, sourceIndex, this.inputCount);
 		
-		for(int i=layerIndex;i>0;i--)
+		for(int i=this.layerIndex.length-1;i>0;i--)
 		{
 			calculateLayer(i);
 		}
 		
-		return (double[])output[0];
+		System.arraycopy(layerOutput, 0, output, 0, this.outputCount);
 	}
 	
-	private void calculateLayer(int layerIndex)
+	private void calculateLayer(int currentLayer)
 	{
-		double[] inputData = (double[])output[layerIndex];
-		double[] outputData = (double[])output[layerIndex-1];
+		//double[] inputData = (double[])output[layerIndex];
+		//double[] outputData = (double[])output[layerIndex-1];
 		
-		int index = this.weightIndex[layerIndex-1];
+		int inputIndex = this.layerIndex[currentLayer];
+		int outputIndex = this.layerIndex[currentLayer-1];
+		int inputSize = this.layerCounts[currentLayer];
+		int outputSize = this.layerCounts[currentLayer-1];
+		
+		int index = this.weightIndex[currentLayer-1];
 		
 		// threshold values
-		for(int i=0;i<outputData.length;i++)
+		for(int i=0;i<outputSize;i++)
 		{
-			outputData[i] = this.weights[index++];
+			this.layerOutput[i+outputIndex] = this.weights[index++];
 		}
 		
 		// weight values
-		for(int x=0;x<outputData.length;x++)
+		for(int x=0;x<outputSize;x++)
 		{
 			double sum = 0;
-			for(int y=0;y<inputData.length;y++)
+			for(int y=0;y<inputSize;y++)
 			{
-				sum+=this.weights[index++]*inputData[y];
+				sum+=this.weights[index++]*layerOutput[inputIndex+y];
 			}
-			outputData[x] += sum;
-			outputData[x] = sigmoid(outputData[x]);
+			layerOutput[outputIndex+x] += sum;
+			layerOutput[outputIndex+x] = sigmoid(layerOutput[outputIndex+x]);
 		}
 		
 
@@ -133,8 +146,12 @@ public class FlatNetwork {
 		return weights;
 	}
 
-	public Object[] getOutput() {
-		return output;
+	public double[] getLayerOutput() {
+		return this.layerOutput;
+	}
+
+	public int[] getLayerIndex() {
+		return layerIndex;
 	}
 	
 	
