@@ -72,31 +72,33 @@ public class TrainFlatNetwork {
 	
 	private void processLevel(int currentLevel)
 	{
+		int fromLayerIndex = this.network.getLayerIndex()[currentLevel+1];
+		int toLayerIndex = this.network.getLayerIndex()[currentLevel];
+		int fromLayerSize = this.network.getLayerCounts()[currentLevel+1];
+		int toLayerSize = this.network.getLayerCounts()[currentLevel];
+		
 		double[] fromDeltas = (double[])layerDelta[currentLevel+1];
 		double[] toDeltas = (double[])layerDelta[currentLevel];
 		
 		// clear the to-deltas
-		for(int i=0;i<fromDeltas.length;i++)
+		for(int i=0;i<fromLayerSize;i++)
 		{
 			fromDeltas[i] = 0;
 		}
 		
 		int index = this.network.getWeightIndex()[currentLevel]+toDeltas.length;
-		int layerIndex = this.network.getLayerIndex()[currentLevel+1];
-		int layerSize = this.network.getLayerCounts()[currentLevel+1];
 
-		for (int x = 0; x < toDeltas.length; x++) {
-			for (int y = 0; y < fromDeltas.length; y++) {
-				final double value = network.getLayerOutput()[layerIndex+y] * toDeltas[x];
+		for (int x = 0; x < toLayerSize; x++) {
+			for (int y = 0; y < fromLayerSize; y++) {
+				final double value = network.getLayerOutput()[fromLayerIndex+y] * toDeltas[x];
 				this.gradients[index] += value;
 				fromDeltas[y] +=  this.network.getWeights()[index] * toDeltas[x];
 				index++;
 			}
 		}
 
-		for (int i = 0; i < layerSize
-		; i++) {
-			fromDeltas[i]*= this.derivativeFunction(this.network.getLayerOutput()[layerIndex+i]);
+		for (int i = 0; i < fromLayerSize; i++) {
+			fromDeltas[i]*= this.derivativeFunction(this.network.getLayerOutput()[fromLayerIndex+i]);
 		}
 	}
 	
