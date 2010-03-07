@@ -14,6 +14,11 @@ public class TrainFlatNetwork {
 	private double[] lastGradient;
 	private ErrorCalculation errorCalculation = new ErrorCalculation();
 	private double[] updateValues;
+	private double[] weights;
+	private int[] layerCounts;
+	private int[] layerIndex;
+	private int[] weightIndex;
+	private double[] layerOutput;
 	
 	public TrainFlatNetwork(FlatNetwork network, NeuralDataSet training)
 	{
@@ -24,6 +29,12 @@ public class TrainFlatNetwork {
 		this.gradients = new double[network.getWeights().length];
 		this.updateValues = new double[network.getWeights().length];
 		this.lastGradient = new double[network.getWeights().length];
+		
+		this.weights = network.getWeights();
+		this.layerIndex = network.getLayerIndex();
+		this.layerCounts = network.getLayerCounts();
+		this.weightIndex = network.getWeightIndex();
+		this.layerOutput = network.getLayerOutput();
 		
 		for(int i=0;i<this.updateValues.length;i++)
 		{
@@ -37,13 +48,13 @@ public class TrainFlatNetwork {
 	
 	public void iteration()
 	{
+		double[] actual = new double[network.getOutputCount()];
 		errorCalculation.reset();
 		
 		for(NeuralDataPair pair: this.training)
 		{
 			double[] input = pair.getInput().getData();
 			double[] ideal = pair.getIdeal().getData();
-			double[] actual = new double[network.getOutputCount()];
 			
 			this.network.calculate(input,actual);
 			
@@ -54,7 +65,7 @@ public class TrainFlatNetwork {
 				this.layerDelta[i] = derivativeFunction(actual[i])*(ideal[i]-actual[i]);
 			}
 			
-			for(int i=0;i<this.network.getLayerCounts().length-1;i++)
+			for(int i=0;i<this.layerCounts.length-1;i++)
 			{
 				processLevel(i);
 			}
@@ -65,10 +76,10 @@ public class TrainFlatNetwork {
 	
 	private void processLevel(int currentLevel)
 	{
-		int fromLayerIndex = this.network.getLayerIndex()[currentLevel+1];
-		int toLayerIndex = this.network.getLayerIndex()[currentLevel];
-		int fromLayerSize = this.network.getLayerCounts()[currentLevel+1];
-		int toLayerSize = this.network.getLayerCounts()[currentLevel];
+		int fromLayerIndex = this.layerIndex[currentLevel+1];
+		int toLayerIndex = this.layerIndex[currentLevel];
+		int fromLayerSize = this.layerCounts[currentLevel+1];
+		int toLayerSize = this.layerCounts[currentLevel];
 		
 		// clear the to-deltas
 		for(int i=0;i<fromLayerSize;i++)
@@ -76,26 +87,26 @@ public class TrainFlatNetwork {
 			this.layerDelta[fromLayerIndex+i] = 0;
 		}
 		
-		int index = this.network.getWeightIndex()[currentLevel]+toLayerSize;
+		int index = this.weightIndex[currentLevel]+toLayerSize;
 
 		for (int x = 0; x < toLayerSize; x++) {
 			for (int y = 0; y < fromLayerSize; y++) {
-				final double value = network.getLayerOutput()[fromLayerIndex+y] * layerDelta[toLayerIndex+x];
+				final double value = this.layerOutput[fromLayerIndex+y] * layerDelta[toLayerIndex+x];
 				this.gradients[index] += value;
-				layerDelta[fromLayerIndex+y] +=  this.network.getWeights()[index] * layerDelta[toLayerIndex+x];
+				layerDelta[fromLayerIndex+y] +=  this.weights[index] * layerDelta[toLayerIndex+x];
 				index++;
 			}
 		}
 
 		for (int i = 0; i < fromLayerSize; i++) {
-			layerDelta[fromLayerIndex+i]*= this.derivativeFunction(this.network.getLayerOutput()[fromLayerIndex+i]);
+			layerDelta[fromLayerIndex+i]*= this.derivativeFunction(this.layerOutput[fromLayerIndex+i]);
 		}
 	}
 	
 	private void learn()
 	{
 		for (int i = 0; i < this.gradients.length; i++) {
-			this.network.getWeights()[i]+=updateWeight(this.gradients, i);
+			this.weights[i]+=updateWeight(this.gradients, i);
 			this.gradients[i] = 0;
 		}
 	}
