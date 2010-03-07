@@ -42,8 +42,12 @@ public class TrainFlatNetwork {
 		}
 	}
 	
-	public double derivativeFunction(final double d) {
+	public double derivativeSigmoid(final double d) {
 		return d * (1.0 - d);
+	}
+	
+	public double derivativeTANH(final double d) {
+		return( (1 + d) * (1 - d) );
 	}
 	
 	public void iteration()
@@ -62,7 +66,10 @@ public class TrainFlatNetwork {
 			
 			for(int i=0;i<actual.length;i++)
 			{
-				this.layerDelta[i] = derivativeFunction(actual[i])*(ideal[i]-actual[i]);
+				if( this.network.isTanh() )
+					this.layerDelta[i] = derivativeTANH(actual[i])*(ideal[i]-actual[i]);
+				else
+					this.layerDelta[i] = derivativeSigmoid(actual[i])*(ideal[i]-actual[i]);
 			}
 			
 			for(int i=0;i<this.layerCounts.length-1;i++)
@@ -99,7 +106,10 @@ public class TrainFlatNetwork {
 		}
 
 		for (int i = 0; i < fromLayerSize; i++) {
-			layerDelta[fromLayerIndex+i]*= this.derivativeFunction(this.layerOutput[fromLayerIndex+i]);
+			if( this.network.isTanh() )
+				layerDelta[fromLayerIndex+i]*= this.derivativeTANH(this.layerOutput[fromLayerIndex+i]);
+			else
+				layerDelta[fromLayerIndex+i]*= this.derivativeSigmoid(this.layerOutput[fromLayerIndex+i]);
 		}
 	}
 	

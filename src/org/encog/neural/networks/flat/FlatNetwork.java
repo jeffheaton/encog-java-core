@@ -19,7 +19,8 @@ public class FlatNetwork {
 	
 	public FlatNetwork(BasicNetwork network)
 	{
-		validate(network);
+		ValidateForFlat.validateNetwork(network);
+		
 		Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
 		Layer output = network.getLayer(BasicNetwork.TAG_OUTPUT);
 		
@@ -69,6 +70,10 @@ public class FlatNetwork {
 		return 1.0 / (1 + BoundMath.exp(-1.0 * d));	
 	}
 	
+	private double tanh(double d) {
+		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
+	}
+	
 	public void calculate(double[] input, double[] output)
 	{
 		int sourceIndex = this.layerOutput.length - this.inputCount;
@@ -110,16 +115,12 @@ public class FlatNetwork {
 				sum+=this.weights[index++]*layerOutput[inputIndex+y];
 			}
 			layerOutput[outputIndex+x] += sum;
-			layerOutput[outputIndex+x] = sigmoid(layerOutput[outputIndex+x]);
-		}
-		
-
-		
-	}
-	
-	public void validate(BasicNetwork network)
-	{
-		
+			
+			if( this.tanh )
+				layerOutput[outputIndex+x] = tanh(layerOutput[outputIndex+x]);
+			else
+				layerOutput[outputIndex+x] = sigmoid(layerOutput[outputIndex+x]);
+		}	
 	}
 
 	public int getInputCount() {
