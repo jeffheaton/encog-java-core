@@ -1,5 +1,11 @@
 package org.encog.util.concurrency;
 
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+import org.encog.EncogError;
+
 /**
  * A task group is a group of tasks that you would like to execute at once. You
  * can wait for all tasks in a task group to exit before your program continues.
@@ -24,7 +30,9 @@ public class TaskGroup {
 	/**
 	 * The event used to sync waiting for tasks to stop.
 	 */
-	private Object completeEvent = new Object();
+	private Lock accessLock = new ReentrantLock();
+	
+	private Condition mightBeDone = accessLock.newCondition();
 
 	/**
 	 * Create a task group with the specified id.
@@ -48,8 +56,12 @@ public class TaskGroup {
 	 * Notify that a task is starting.
 	 */
 	public void taskStarting() {
-		synchronized (this) {
+		this.accessLock.lock();
+		try {
 			this.totalTasks++;
+		}
+		finally {
+			this.accessLock.unlock();
 		}
 	}
 
@@ -57,9 +69,14 @@ public class TaskGroup {
 	 * Notify that a task is stopping.
 	 */
 	public void taskStopping() {
-		synchronized (this) {
+		this.accessLock.lock();
+		try {
 			this.completedTasks++;
-			this.completeEvent.notifyAll();
+			if( this.completedTasks>=this.totalTasks)
+				this.mightBeDone.signal();
+		}
+		finally {
+			this.accessLock.unlock();
 		}
 	}
 
@@ -67,8 +84,12 @@ public class TaskGroup {
 	 * @return Returns true if there are no more tasks.
 	 */
 	public boolean getNoTasks() {
-		synchronized (this) {
+		this.accessLock.lock();
+		try {
 			return this.totalTasks == this.completedTasks;
+		}
+		finally {
+			this.accessLock.unlock();
 		}
 	}
 
@@ -77,10 +98,15 @@ public class TaskGroup {
 	 */
 	public void waitForComplete() {
 		while (!getNoTasks()) {
+			this.accessLock.lock();
 			try {
-				this.completeEvent.wait();
-			} catch (InterruptedException e) {
-				// does not matter
+				try {
+					this.mightBeDone.await();
+				} catch (InterruptedException e) {
+					throw new EncogError(e);
+				}
+			} finally {
+				this.accessLock.unlock();
 			}
 		}
 	}
