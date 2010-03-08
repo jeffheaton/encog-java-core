@@ -53,6 +53,8 @@ public class EncogConcurrency {
 	 */
 	private static EncogConcurrency instance;
 
+	private int currentTaskGroup;
+	
 	/**
 	 * @return The instance to the singleton.
 	 */
@@ -92,12 +94,19 @@ public class EncogConcurrency {
 	 * @param task
 	 *            The task to process.
 	 */
-	public void processTask(final EncogTask task) {
+	public void processTask(final EncogTask task, final TaskGroup group) {
 		if (this.executor == null) {
 			task.run();
 		} else {
-			this.executor.execute(task);
+			PoolItem item = new PoolItem(task, group);
+			if( group!=null )
+				group.taskStarting();
+			this.executor.execute(item);
 		}
+	}
+	
+	public void processTask(final EncogTask task) {
+		processTask(task,null);
 	}
 
 	/**
@@ -128,7 +137,7 @@ public class EncogConcurrency {
 	 * @param timeout
 	 *            How long to wait for all threads to complete.
 	 */
-	public void shutdown(final long timeout) {
+	/*public void shutdown(final long timeout) {
 		if (this.executor != null) {
 			try {
 				this.executor.shutdown();
@@ -141,6 +150,21 @@ public class EncogConcurrency {
 				throw new EncogError(e);
 			}
 		}
-
-	}
+	}*/
+	
+    /// <summary>
+    /// Create a new task group.
+    /// </summary>
+    /// <returns>The new task group.</returns>
+    public TaskGroup createTaskGroup()
+    {
+        TaskGroup result = null;
+        synchronized (this)
+        {
+            this.currentTaskGroup++;
+            result = new TaskGroup(this.currentTaskGroup);
+            
+        }
+        return result;
+    }
 }

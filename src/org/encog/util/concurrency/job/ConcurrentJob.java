@@ -32,6 +32,7 @@ package org.encog.util.concurrency.job;
 
 import org.encog.StatusReportable;
 import org.encog.util.concurrency.EncogConcurrency;
+import org.encog.util.concurrency.TaskGroup;
 
 /**
  * This class forms the basis for a job that can be run concurrently.
@@ -81,6 +82,7 @@ public abstract class ConcurrentJob {
 
 		this.totalTasks = loadWorkload();
 		int currentTask = 0;
+		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
 
 		while ((task = requestNextTask()) != null) {
 			currentTask++;
@@ -90,10 +92,12 @@ public abstract class ConcurrentJob {
 			context.setTaskNumber(currentTask);
 
 			final JobUnitWorker worker = new JobUnitWorker(context);
-			EncogConcurrency.getInstance().processTask(worker);
+			EncogConcurrency.getInstance().processTask(worker, group);
 		}
 
-		EncogConcurrency.getInstance().shutdown(Long.MAX_VALUE);
+		group.waitForComplete();
+		
+		//EncogConcurrency.getInstance().shutdown(Long.MAX_VALUE);
 	}
 
 	/**

@@ -36,6 +36,6 @@ package org.encog.util.concurrency;
  * @author jheaton
  * 
  */
-public interface EncogTask extends Runnable {
-
+public interface EncogTask  {
+	void run();
 }

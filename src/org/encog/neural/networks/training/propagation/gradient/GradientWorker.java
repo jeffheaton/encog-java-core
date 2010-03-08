@@ -34,6 +34,7 @@ import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.util.concurrency.EncogTask;
 
 /**
  * A worker handles one thread. Used to allow the gradient calculation process
@@ -41,7 +42,7 @@ import org.encog.neural.networks.BasicNetwork;
  * worker is created and run by the main thread.
  * 
  */
-public class GradientWorker implements Runnable {
+public class GradientWorker implements EncogTask {
 
 	/**
 	 * The high index point in the training data to be used by this individual

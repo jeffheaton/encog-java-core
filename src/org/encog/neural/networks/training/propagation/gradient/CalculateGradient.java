@@ -43,6 +43,8 @@ import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogArray;
+import org.encog.util.concurrency.EncogConcurrency;
+import org.encog.util.concurrency.TaskGroup;
 
 /**
  * This class is used to calculate the gradients for each of the weights and
@@ -81,11 +83,6 @@ public class CalculateGradient {
 	 * The workers to be used, one for each thread.
 	 */
 	private GradientWorker[] workers;
-
-	/**
-	 * The threads used.
-	 */
-	private Thread[] threads;
 
 	/**
 	 * The network being trained.
@@ -263,7 +260,6 @@ public class CalculateGradient {
 		this.indexed = training;
 		// setup the workers
 		this.workers = new GradientWorker[this.threadCount];
-		this.threads = new Thread[this.threadCount];
 
 		final int size = (int) this.indexed.getRecordCount();
 		final int sizePerThread = size / this.threadCount;
@@ -283,7 +279,6 @@ public class CalculateGradient {
 
 			final Indexable trainingClone = this.indexed.openAdditional();
 			this.workers[i] = new GradientWorker(this, trainingClone, low, high);
-			this.threads[i] = new Thread(this.workers[i]);
 		}
 	}
 
@@ -395,18 +390,15 @@ public class CalculateGradient {
 	 * until all threads are done.
 	 */
 	private void runWorkersMultiThreaded() {
+		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
+		
 		// start the workers
 		for (int i = 0; i < this.threadCount; i++) {
-			this.threads[i].start();
+			EncogConcurrency.getInstance().processTask(this.workers[i], group);
 		}
 
 		// wait for all workers to finish
-		for (int i = 0; i < this.threadCount; i++) {
-			try {
-				this.threads[i].join();
-			} catch (final InterruptedException e) {
-			}
-		}
+		group.waitForComplete();
 	}
 
 	/**

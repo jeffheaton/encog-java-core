@@ -41,6 +41,7 @@ import org.encog.solve.genetic.genome.GenomeComparator;
 import org.encog.solve.genetic.mutate.Mutate;
 import org.encog.solve.genetic.population.Population;
 import org.encog.util.concurrency.EncogConcurrency;
+import org.encog.util.concurrency.TaskGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -139,6 +140,8 @@ public class GeneticAlgorithm {
 		int offspringIndex = population.getPopulationSize() - offspringCount;
 		final int matingPopulationSize = (int) (population.getPopulationSize() 
 				* getMatingPopulation());
+		
+		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
 
 		// mate and form the next generation
 		for (int i = 0; i < countToMate; i++) {
@@ -158,7 +161,7 @@ public class GeneticAlgorithm {
 			offspringIndex += 2;
 		}
 
-		EncogConcurrency.getInstance().shutdown(5);
+		group.waitForComplete();
 
 		// sort the next generation
 		population.sort();
