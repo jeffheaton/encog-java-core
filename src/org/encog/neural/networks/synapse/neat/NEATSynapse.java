@@ -50,6 +50,19 @@ import org.encog.persist.persistors.generic.GenericPersistor;
  * Implements a NEAT network as a synapse between two layers. In Encog, a NEAT
  * network is created by using a NEATSynapse between an input and output layer.
  * 
+ * NEAT networks only have an input and an output layer. There are no actual
+ * hidden layers. Rather this synapse will evolve many hidden neurons that have
+ * connections that are not easily defined by layers. Connections can be
+ * feedforward, recurrent, or self-connected.
+ * 
+ * NEAT networks relieve the programmer of the need to define the hidden layer
+ * structure of the neural network.
+ * 
+ * The output from the neural network can be calculated normally or using a snapshot.
+ * The snapshot mode is slower, but it can be more accurate.  The snapshot handles 
+ * recurrent layers better, as it takes the time to loop through the network multiple
+ * times to "flush out" the recurrent links.
+ * 
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
@@ -60,21 +73,47 @@ import org.encog.persist.persistors.generic.GenericPersistor;
 public class NEATSynapse implements Synapse {
 
 	/**
-	 * 
+	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 3660295468309926508L;
 
 	private ActivationFunction activationFunction;
 
+	/**
+	 * The from layer.
+	 */
 	@EGIgnore
 	private Layer fromLayer;
 
+	/**
+	 * The depth of the network.
+	 */
 	private final int networkDepth;
+
+	/**
+	 * The neurons that make up this network.
+	 */
 	private final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
+
+	/**
+	 * Should snapshot be used to calculate the output of the neural network.
+	 */
 	private boolean snapshot = false;
+	
+	/**
+	 * The target layer.
+	 */
 	@EGIgnore
 	private Layer toLayer;
 
+	/**
+	 * Construct a NEAT synapse.
+	 * @param fromLayer The input layer.
+	 * @param toLayer The output layer.
+	 * @param neurons The neurons in this synapse.
+	 * @param activationFunction The activation function to use.
+	 * @param networkDepth The depth of the network.
+	 */
 	public NEATSynapse(final BasicLayer fromLayer, final BasicLayer toLayer,
 			final List<NEATNeuron> neurons,
 			final ActivationFunction activationFunction, final int networkDepth) {
@@ -161,14 +200,23 @@ public class NEATSynapse implements Synapse {
 		return result;
 	}
 
+	/**
+	 * @return A persistor to load/save this type of synapse.
+	 */
 	public Persistor createPersistor() {
 		return new GenericPersistor(NEATSynapse.class);
 	}
 
+	/**
+	 * @return The activation function.
+	 */
 	public ActivationFunction getActivationFunction() {
 		return activationFunction;
 	}
 
+	/**
+	 * @return null, this is not used.
+	 */
 	public String getDescription() {
 		return null;
 	}
@@ -205,14 +253,23 @@ public class NEATSynapse implements Synapse {
 		return 0;
 	}
 
+	/**
+	 * @return null, this is not used.
+	 */
 	public String getName() {
 		return null;
 	}
 
+	/**
+	 * @return The network depth.
+	 */
 	public int getNetworkDepth() {
 		return networkDepth;
 	}
 
+	/**
+	 * @return The NEAT neurons.
+	 */
 	public List<NEATNeuron> getNeurons() {
 		return neurons;
 	}
@@ -246,6 +303,9 @@ public class NEATSynapse implements Synapse {
 		return false;
 	}
 
+	/**
+	 * @return True if snapshot is being used.
+	 */
 	public boolean isSnapshot() {
 		return snapshot;
 	}
@@ -262,6 +322,10 @@ public class NEATSynapse implements Synapse {
 		this.activationFunction = activationFunction;
 	}
 
+	/**
+	 * Not used.
+	 * @param description Not used.
+	 */
 	public void setDescription(final String description) {
 
 	}
@@ -287,10 +351,18 @@ public class NEATSynapse implements Synapse {
 				"Neat synapse cannot have a simple matrix.");
 	}
 
+	/**
+	 * Not used
+	 * @param name not used.
+	 */
 	public void setName(final String name) {
 
 	}
 
+	/**
+	 * Sets if snapshot is used. 
+	 * @param snapshot True if snapshot is used.
+	 */
 	public void setSnapshot(final boolean snapshot) {
 		this.snapshot = snapshot;
 	}

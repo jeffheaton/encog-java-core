@@ -37,7 +37,9 @@ import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReferenceable;
 
 /**
- * Implements a NEAT neuron.
+ * Implements a NEAT neuron.  Neat neurons are of a specific type, defined by the
+ * NEATNeuronType enum.  Usually NEAT uses a sigmoid activation function.  The
+ * activation response is used to allow the slope of the sigmoid to be evolved.
  * 
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
@@ -49,23 +51,75 @@ import org.encog.persist.annotations.EGReferenceable;
 @EGReferenceable
 public class NEATNeuron {
 
+	/**
+	 * The activation response. This is evolved to allow NEAT to scale the slope
+	 * of the activation function.
+	 */
 	private final double activationResponse;
+	
+	/**
+	 * Inbound links to this neuron.
+	 */
 	private final List<NEATLink> inboundLinks = new ArrayList<NEATLink>();
+	
+	/**
+	 * The neuron id.
+	 */
 	@EGAttribute
 	private final int neuronID;
+	
+	/**
+	 * The type of neuron this is.
+	 */
 	private final NEATNeuronType neuronType;
+	
+	/**
+	 * The output from the neuron.
+	 */
 	private double output;
+	
+	/**
+	 * The outbound links for this neuron.
+	 */
 	private final List<NEATLink> outputboundLinks = new ArrayList<NEATLink>();
+	
+	/**
+	 * The x-position of this neuron.  Used to split links, as well as display.
+	 */
 	@EGAttribute
 	private final int posX;
+	
+	/**
+	 * The y-position of this neuron.  Used to split links, as well as display.
+	 */
 	@EGAttribute
 	private final int posY;
+	
+	/**
+	 * The split value for X.  Used to track splits.
+	 */
 	@EGAttribute
 	private final double splitX;
+	
+	/**
+	 * The split value for Y.  Used to track splits.
+	 */
 	@EGAttribute
 	private final double splitY;
+	
+	/**
+	 * The sum activation.
+	 */
 	private final double sumActivation;
 
+	/**
+	 * Construct a NEAT neuron.
+	 * @param neuronType The type of neuron.
+	 * @param neuronID The id of the neuron.
+	 * @param splitY The split for y.
+	 * @param splitX THe split for x.
+	 * @param activationResponse The activation response.
+	 */
 	public NEATNeuron(final NEATNeuronType neuronType, final int neuronID,
 			final double splitY, final double splitX,
 			final double activationResponse) {
@@ -80,55 +134,95 @@ public class NEATNeuron {
 		sumActivation = 0;
 	}
 
+	/**
+	 * @return the activation response.
+	 */
 	public double getActivationResponse() {
 		return activationResponse;
 	}
 
+	/**
+	 * @return the inbound links.
+	 */
 	public List<NEATLink> getInboundLinks() {
 		return inboundLinks;
 	}
 
+	/**
+	 * @return The neuron id.
+	 */
 	public int getNeuronID() {
 		return neuronID;
 	}
 
+	/**
+	 * return the neuron type.
+	 */
 	public NEATNeuronType getNeuronType() {
 		return neuronType;
 	}
 
+	/**
+	 * @return The output from this neuron.
+	 */
 	public double getOutput() {
 		return output;
 	}
 
+	/**
+	 * @return The outbound links.
+	 */
 	public List<NEATLink> getOutputboundLinks() {
 		return outputboundLinks;
 	}
 
+	/**
+	 * @return The x position.
+	 */
 	public int getPosX() {
 		return posX;
 	}
 
+	/**
+	 * @return The y position.
+	 */
 	public int getPosY() {
 		return posY;
 	}
 
+	/**
+	 * @return The split x.
+	 */
 	public double getSplitX() {
 		return splitX;
 	}
 
+	/**
+	 * @return The split y.
+	 */
 	public double getSplitY() {
 		return splitY;
 	}
 
+	/**
+	 * @return The sum activation.
+	 */
 	public double getSumActivation() {
 		return sumActivation;
 	}
 
+	/**
+	 * Set the output.
+	 * @param output The output of the neuron.
+	 */
 	public void setOutput(final double output) {
 		this.output = output;
 
 	}
 
+	/**
+	 * @return A string representation of the neuron.
+	 */
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
@@ -151,7 +245,5 @@ public class NEATNeuron {
 		}
 		result.append("]");
 		return result.toString();
-
 	}
-
 }

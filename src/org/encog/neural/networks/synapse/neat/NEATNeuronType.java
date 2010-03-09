@@ -41,6 +41,31 @@ package org.encog.neural.networks.synapse.neat;
  * 
  */
 public enum NEATNeuronType {
-	Bias, Hidden, Input, None, Output
+	/**
+	 * Each NEAT network has one bias neuron.
+	 */
+	Bias,
+
+	/**
+	 * Hidden neurons are between the input and output.
+	 */
+	Hidden,
+
+	/**
+	 * Input neurons receive input, they are never altered during evolution.
+	 */
+	Input,
+
+	/**
+	 * Not really a neuron type, as you will never see one of these in the
+	 * network. However, it is used to mark an innovation as not affecting a
+	 * neuron type, but rather a link.
+	 */
+	None,
+
+	/**
+	 * Output neurons provide output, they are never altered during evolution.
+	 */
+	Output
 
 }

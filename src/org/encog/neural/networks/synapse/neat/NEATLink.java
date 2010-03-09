@@ -44,15 +44,35 @@ import org.encog.persist.annotations.EGReference;
  */
 public class NEATLink {
 
+	/**
+	 * The source neuron.
+	 */
 	@EGReference
 	private final NEATNeuron fromNeuron;
 
+	/**
+	 * Is this link recurrent.
+	 */
 	private final boolean recurrent;
 
+	/**
+	 * The target neuron.
+	 */
 	@EGReference
 	private final NEATNeuron toNeuron;
+	
+	/**
+	 * The weight between the two neurons.
+	 */
 	private final double weight;
 
+	/**
+	 * Construct a NEAT link.
+	 * @param weight The weight between the two neurons.
+	 * @param fromNeuron The source neuron.
+	 * @param toNeuron The target neuron.
+	 * @param recurrent Is this a recurrent link.
+	 */
 	public NEATLink(final double weight, final NEATNeuron fromNeuron,
 			final NEATNeuron toNeuron, final boolean recurrent) {
 		this.weight = weight;
@@ -61,18 +81,30 @@ public class NEATLink {
 		this.recurrent = recurrent;
 	}
 
+	/**
+	 * @return The source neuron.
+	 */
 	public NEATNeuron getFromNeuron() {
 		return fromNeuron;
 	}
 
+	/**
+	 * @return The target neuron.
+	 */
 	public NEATNeuron getToNeuron() {
 		return toNeuron;
 	}
 
+	/**
+	 * @return The weight of the link.
+	 */
 	public double getWeight() {
 		return weight;
 	}
 
+	/**
+	 * @return True if this is a recurrent link.
+	 */
 	public boolean isRecurrent() {
 		return recurrent;
 	}
