@@ -12,6 +12,9 @@ public abstract class BasicGenome implements Genome {
 	private double score;
 	private final GeneticAlgorithm geneticAlgorithm;
 	private Object organism;
+	private long genomeID;
+	private double adjustedScore;
+	private double amountToSpawn;
 	
 	public BasicGenome(GeneticAlgorithm geneticAlgorithm)
 	{
@@ -131,6 +134,30 @@ public abstract class BasicGenome implements Genome {
 
 	public GeneticAlgorithm getGeneticAlgorithm() {
 		return geneticAlgorithm;
+	}
+
+	public long getGenomeID() {
+		return genomeID;
+	}
+
+	public void setGenomeID(long genomeID) {
+		this.genomeID = genomeID;
+	}
+
+	public double getAdjustedScore() {
+		return adjustedScore;
+	}
+
+	public void setAdjustedScore(double adjustedScore) {
+		this.adjustedScore = adjustedScore;
+	}
+
+	public double getAmountToSpawn() {
+		return amountToSpawn;
+	}
+
+	public void setAmountToSpawn(double amountToSpawn) {
+		this.amountToSpawn = amountToSpawn;
 	}
 
 	

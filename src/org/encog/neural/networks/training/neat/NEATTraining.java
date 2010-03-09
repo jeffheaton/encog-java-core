@@ -68,9 +68,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	private ActivationFunction outputActivationFunction = new ActivationLinear();
 	private ActivationFunction neatActivationFunction = new ActivationSigmoid();
 
-	private int currentGenomeID = 1;
-	private int currentSpeciesID = 1;
-
 	private double paramCompatibilityThreshold = 0.26;
 	private int paramMaxNumberOfSpecies = 0;
 	private int paramNumGensAllowedNoImprovement = 15;
@@ -110,7 +107,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
-			population.add(new NEATGenome(this, assignGenomeID(), inputCount,
+			population.add(new NEATGenome(this, population.assignGenomeID(), inputCount,
 					outputCount));
 		}
 
@@ -177,10 +174,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		return;
 	}
 
-	public int assignGenomeID() {
-		return (this.currentGenomeID++);
-	}
-
 	public int getInputCount() {
 		return inputCount;
 	}
@@ -228,7 +221,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 					NEATGenome baby = null;
 
 					if (!bChosenBestYet) {
-						baby = new NEATGenome(s.getLeader());
+						baby = new NEATGenome((NEATGenome)s.getLeader());
 
 						bChosenBestYet = true;
 					}
@@ -239,18 +232,18 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						// then we can only perform mutation
 						if (s.getMembers().size() == 1) {
 							// spawn a child
-							baby = new NEATGenome(s.spawn());
+							baby = new NEATGenome((NEATGenome)s.spawn());
 						} else {
-							NEATGenome g1 = s.spawn();
+							NEATGenome g1 = (NEATGenome)s.spawn();
 
 							if (Math.random() < this.paramCrossoverRate) {
-								NEATGenome g2 = s.spawn();
+								NEATGenome g2 = (NEATGenome)s.spawn();
 
 								int NumAttempts = 5;
 
 								while ((g1.getGenomeID() == g2.getGenomeID())
 										&& ((NumAttempts--) > 0)) {
-									g2 = s.spawn();
+									g2 = (NEATGenome)s.spawn();
 								}
 
 								if (g1.getGenomeID() != g2.getGenomeID()) {
@@ -264,7 +257,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						}
 
 						if (baby != null) {
-							baby.setGenomeID(this.assignGenomeID());
+							baby.setGenomeID(this.population.assignGenomeID());
 
 							if (baby.getNeurons().size() < this.paramMaxPermittedNeurons) {
 								baby.addNeuron(this.paramChanceAddNode,
@@ -381,8 +374,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			boolean added = false;
 
 			for (NEATSpecies s : this.species) {
-				double compatibility = genome.getCompatibilityScore(s
-						.getLeader());
+				double compatibility = genome.getCompatibilityScore(
+					(NEATGenome)s.getLeader());
 
 				if (compatibility <= this.paramCompatibilityThreshold) {
 					s.addMember(genome);
@@ -396,7 +389,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			// new species
 			if (!added) {
 				this.species.add(new NEATSpecies(this, genome,
-						assignSpeciesID()));
+						population.assignSpeciesID()));
 			}
 		}
 
@@ -404,7 +397,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		for (Genome g : this.population.getGenomes()) {
 			NEATGenome genome = (NEATGenome)g;
-			this.totalFitAdjustment += genome.getAdjustedFitness();
+			this.totalFitAdjustment += genome.getAdjustedScore();
 		}
 
 		this.averageFitAdjustment = this.totalFitAdjustment
@@ -412,9 +405,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		for (Genome g : this.population.getGenomes()) {
 			NEATGenome genome = (NEATGenome)g;
-			double toSpawn = genome.getAdjustedFitness()
+			double toSpawn = genome.getAdjustedScore()
 					/ this.averageFitAdjustment;
-			genome.setAmountToSpan(toSpawn);
+			genome.setAmountToSpawn(toSpawn);
 		}
 
 		for (NEATSpecies species : this.species) {
@@ -579,7 +572,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		// finally, create the genome
 		NEATGenome babyGenome = new NEATGenome(
-				this, assignGenomeID(),
+				this, this.population.assignGenomeID(),
 				babyNeurons, babyGenes, 
 				mom.getInputCount(), 
 				mom.getOutputCount());
@@ -615,10 +608,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	public void setNeatActivationFunction(ActivationFunction neatActivationFunction) {
 		this.neatActivationFunction = neatActivationFunction;
-	}
-
-	private int assignSpeciesID() {
-		return this.currentSpeciesID++;
 	}
 
 	public NeuralDataSet getTraining() {

@@ -72,19 +72,19 @@ public class BasicPopulation implements Population {
 	}
 
 	public long assignGeneID() {
-		return this.assignGeneID();
+		return this.geneIDGenerate.generate();
 	}
 
 	public long assignGenomeID() {
-		return this.assignGenomeID();
+		return this.genomeIDGenerate.generate();
 	}
 
 	public long assignInnovationID() {
-		return this.assignInnovationID();
+		return this.innovationIDGenerate.generate();
 	}
 
 	public long assignSpeciesID() {
-		return this.assignSpeciesID();
+		return this.speciesIDGenerate.generate();
 	}
 
 	public int size() {

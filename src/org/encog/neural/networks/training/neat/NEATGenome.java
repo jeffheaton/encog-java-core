@@ -54,24 +54,21 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	public static final double TWEAK_EXCESS = 1;
 	public static final double TWEAK_MATCHED = 0.4;
 
-	private int genomeID;
 	private Chromosome neuronsChromosome;
 	private Chromosome linksChromosome;
 	private int networkDepth;
-	private double adjustedScore;
-	private double amountToSpawn;
 	private final int inputCount;
 	private final int outputCount;
-	private int speciesID;
+	private long speciesID;
 	private final NEATTraining training;
 
-	public NEATGenome(NEATTraining training, int id, int inputCount, int outputCount) {
+	public NEATGenome(NEATTraining training, long id, int inputCount, int outputCount) {
 		super(training);
-		this.genomeID = id;
-		this.adjustedScore = 0;
+		this.setGenomeID(id);
+		this.setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
-		this.amountToSpawn = 0;
+		this.setAmountToSpawn(0);
 		this.speciesID = 0;
 		this.training = training;
 		
@@ -104,14 +101,14 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	}
 
-	public NEATGenome(NEATTraining training,int genomeID, Chromosome neurons,
+	public NEATGenome(NEATTraining training,long genomeID, Chromosome neurons,
 			Chromosome links, int inputCount, int outputCount) {
 		super(training);
-		this.genomeID = genomeID;
+		this.setGenomeID(genomeID);
 		this.linksChromosome = links;
 		this.neuronsChromosome = neurons;
-		this.amountToSpawn = 0;
-		this.adjustedScore = 0;
+		this.setAmountToSpawn(0);
+		this.setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 		this.training = training;
@@ -123,11 +120,11 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.neuronsChromosome = new Chromosome();
 		this.linksChromosome = new Chromosome();
 		
-		this.genomeID = other.genomeID;
+		this.setGenomeID(other.getGenomeID());
 		this.networkDepth = other.networkDepth;
 		this.setScore(other.getScore());
-		this.adjustedScore=other.adjustedScore;
-		this.amountToSpawn=other.amountToSpawn;
+		this.setAdjustedScore(other.getAdjustedScore());
+		this.setAmountToSpawn(other.getAmountToSpawn());
 		this.inputCount=other.inputCount;
 		this.outputCount=other.outputCount;
 		this.speciesID=other.speciesID;
@@ -534,10 +531,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		return this.linksChromosome.size();
 	}
 
-	public int getGenomeID() {
-		return genomeID;
-	}
-
 	public Chromosome getNeurons() {
 		return this.neuronsChromosome;
 	}
@@ -550,15 +543,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		return networkDepth;
 	}
 
-	public double getAdjustedFitness() {
-		return adjustedScore;
-	}
-
-	public double getAmountToSpawn() {
-		return amountToSpawn;
-	}
-
-	public int getSpeciesID() {
+	public long getSpeciesID() {
 		return speciesID;
 	}
 
@@ -570,7 +555,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		return outputCount;
 	}
 
-	public void setSpeciesID(int species) {
+	public void setSpeciesID(long species) {
 		this.speciesID = species;
 	}
 
@@ -585,30 +570,15 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.networkDepth = networkDepth;
 	}
 
-	public void setAmountToSpan(double toSpawn) {
-		this.amountToSpawn = toSpawn;
-		
-	}
-
-	public void setGenomeID(int id) {
-		this.genomeID = id;
-		
-	}
-
 	public void sortGenes() {
 		Collections.sort(this.linksChromosome.getGenes());
-	}
-
-	public void setAdjustedFitness(double adjustedFitness) {
-		this.adjustedScore = adjustedFitness;
-		
 	}
 	
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
 		result.append("[NEATGenome:");
-		result.append(this.genomeID);
+		result.append(this.getGenomeID());
 		result.append(",fitness=");
 		result.append(this.getScore());
 		result.append(")");

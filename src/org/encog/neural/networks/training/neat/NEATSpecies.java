@@ -34,19 +34,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.solve.genetic.genome.Genome;
 
 public class NEATSpecies {
 
-	private NEATGenome leader;
-	private final List<NEATGenome> members = new ArrayList<NEATGenome>();
-	private int speciesID;
+	private Genome leader;
+	private final List<Genome> members = new ArrayList<Genome>();
+	private long speciesID;
 	private double bestFitness;
 	private int gensNoImprovement;
 	private int age;
 	private double spawnsRequired;
 	private final NEATTraining training;
 
-	public NEATSpecies(NEATTraining training, NEATGenome first, int speciesID) {
+	public NEATSpecies(NEATTraining training, NEATGenome first, long speciesID) {
 		this.training = training;
 		this.speciesID = speciesID;
 		this.bestFitness = first.getScore();
@@ -59,7 +60,7 @@ public class NEATSpecies {
 
 	public void adjustFitness() {
 
-		for (NEATGenome member : this.members) {
+		for (Genome member : this.members) {
 			double fitness = member.getScore();
 
 			if (this.age < training.getParamYoungBonusAgeThreshhold()) {
@@ -70,14 +71,14 @@ public class NEATSpecies {
 				fitness = this.training.getComparator().applyPenalty(fitness, this.training.getParamOldAgePenalty());
 			}
 
-			double adjustedFitness = fitness / this.members.size();
+			double adjustedScore = fitness / this.members.size();
 
-			member.setAdjustedFitness(adjustedFitness);
+			member.setAdjustedScore(adjustedScore);
 
 		}
 	}
 
-	public NEATGenome getLeader() {
+	public Genome getLeader() {
 		return leader;
 	}
 
@@ -117,11 +118,11 @@ public class NEATSpecies {
 		this.spawnsRequired = spawnsRequired;
 	}
 
-	public List<NEATGenome> getMembers() {
+	public List<Genome> getMembers() {
 		return members;
 	}
 
-	public int getSpeciesID() {
+	public long getSpeciesID() {
 		return speciesID;
 	}
 
@@ -138,7 +139,7 @@ public class NEATSpecies {
 	}
 
 	public void calculateSpawnAmount() {
-		for (NEATGenome genome : this.members) {
+		for (Genome genome : this.members) {
 			this.spawnsRequired += genome.getAmountToSpawn();
 		}
 
@@ -159,8 +160,8 @@ public class NEATSpecies {
 		return this.spawnsRequired;
 	}
 
-	public NEATGenome spawn() {
-		NEATGenome baby;
+	public Genome spawn() {
+		Genome baby;
 
 		if (this.members.size() == 1) {
 			baby = members.get(0);
