@@ -31,40 +31,35 @@
 package org.encog.solve.genetic.genome;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import org.encog.mathutil.matrices.MatrixError;
-import org.encog.neural.networks.training.neat.NEATNeuronGene;
 import org.encog.solve.genetic.genes.Gene;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implements a chromosome to genetic algorithm. This is an abstract class.
  * Other classes are provided in this book that use this base class to train
- * neural networks or provide an answer to the traveling salesman problem.
+ * neural networks or provide an answer to the traveling salesman problem. 
+ * Chromosomes are made up of genes. 
  * 
- * Lifeforms in this genetic algorithm consist of one single chromosome each.
- * Therefore, this class represents a virtual lifeform. The chromosome is a
- * string of objects that represent one solution. For a neural network, this
- * string of objects usually represents the weight and threshold matrix.
+ * Genomes in this genetic algorithm consist of one or more chromosomes. 
  * 
- * Chromosomes are made up of genes. These are of the generic type GENE_TYPE.
- * For a neural network this type would most likely be double values.
- * 
- * @param <GENE_TYPE>
- *            The datatype for a gene.
  */
 
-public class Chromosome  {
-
+public class Chromosome {
 
 	/**
 	 * The individual elements of this chromosome.
 	 */
 	private final List<Gene> genes = new ArrayList<Gene>();
+
+	public void add(final Gene neuronGene) {
+		genes.add(neuronGene);
+
+	}
+
+	public Gene get(final int i) {
+		return genes.get(i);
+	}
 
 	/**
 	 * Get the specified gene.
@@ -74,7 +69,7 @@ public class Chromosome  {
 	 * @return The gene specified.
 	 */
 	public Gene getGene(final int gene) {
-		return this.genes.get(gene);
+		return genes.get(gene);
 	}
 
 	/**
@@ -83,21 +78,11 @@ public class Chromosome  {
 	 * @return the genes
 	 */
 	public List<Gene> getGenes() {
-		return this.genes;
-	}
-
-	public void add(Gene neuronGene) {
-		this.genes.add(neuronGene);
-		
-	}
-
-	public Gene get(int i) {
-		return this.genes.get(i);
+		return genes;
 	}
 
 	public int size() {
-		return this.genes.size();
+		return genes.size();
 	}
-
 
 }

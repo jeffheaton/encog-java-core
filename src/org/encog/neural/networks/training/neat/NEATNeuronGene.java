@@ -34,41 +34,62 @@ import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.solve.genetic.genes.BasicGene;
 import org.encog.solve.genetic.genes.Gene;
 
+/**
+ * Implements a NEAT neuron gene.  
+ * 
+ * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
+ * generation of evolving artificial neural networks. It was developed by Ken
+ * Stanley while at The University of Texas at Austin.
+ * 
+ * http://www.cs.ucf.edu/~kstanley/
+ * 
+ */
 public class NEATNeuronGene extends BasicGene {
 
-	  private int id;
-	  private NEATNeuronType neuronType;
-	  private boolean recurrent;
-	  private double activationResponse;
-	  private double splitY; 
-	  private double splitX;
-	  	
-	public NEATNeuronGene(
-			NEATNeuronType type,
-            int id,
-            double splitY,
-            double splitX,
-            boolean recurrent,
-            double act)
-	{
-		this.neuronType = type;
+	private double activationResponse;
+	private int id;
+	private NEATNeuronType neuronType;
+	private boolean recurrent;
+	private double splitX;
+	private double splitY;
+
+	public NEATNeuronGene(final NEATNeuronType type, final int id,
+			final double splitY, final double splitX) {
+		this(type, id, splitY, splitX, false, 1.0);
+	}
+
+	public NEATNeuronGene(final NEATNeuronType type, final int id,
+			final double splitY, final double splitX, final boolean recurrent,
+			final double act) {
+		neuronType = type;
 		this.id = id;
 		this.splitX = splitX;
 		this.splitY = splitY;
 		this.recurrent = recurrent;
-		this.activationResponse = act;
+		activationResponse = act;
 	}
 
-	public NEATNeuronGene(NEATNeuronType type,
-            int         id,
-            double      splitY,
-            double      splitX)
-	{
-		this(type,id,splitY,splitX,false,1.0);
+	@Override
+	public int compareTo(final Gene o) {
+		return 0;
 	}
-  
-	
 
+	public void copy(final Gene gene) {
+		final NEATNeuronGene other = (NEATNeuronGene) gene;
+		activationResponse = other.activationResponse;
+		id = other.id;
+		neuronType = other.neuronType;
+		recurrent = other.recurrent;
+		splitX = other.splitX;
+		splitY = other.splitY;
+
+	}
+
+	public double getActivationResponse() {
+		return activationResponse;
+	}
+
+	@Override
 	public int getId() {
 		return id;
 	}
@@ -77,59 +98,41 @@ public class NEATNeuronGene extends BasicGene {
 		return neuronType;
 	}
 
-	public boolean isRecurrent() {
-		return recurrent;
-	}
-
-	public double getActivationResponse() {
-		return activationResponse;
+	public double getSplitX() {
+		return splitX;
 	}
 
 	public double getSplitY() {
 		return splitY;
 	}
 
-	public double getSplitX() {
-		return splitX;
+	public boolean isRecurrent() {
+		return recurrent;
 	}
 
-	public void setNeuronType(NEATNeuronType neuronType) {
-		this.neuronType = neuronType;
-	}
-
-	public void setActivationResponse(double activationResponse) {
+	public void setActivationResponse(final double activationResponse) {
 		this.activationResponse = activationResponse;
 	}
 
-	public void setSplitY(double splitY) {
-		this.splitY = splitY;
-	}
-
-	public void setSplitX(double splitX) {
-		this.splitX = splitX;
-	}
-
-	public void setId(int id) {
+	@Override
+	public void setId(final int id) {
 		this.id = id;
 	}
 
-	public void setRecurrent(boolean recurrent) {
+	public void setNeuronType(final NEATNeuronType neuronType) {
+		this.neuronType = neuronType;
+	}
+
+	public void setRecurrent(final boolean recurrent) {
 		this.recurrent = recurrent;
 	}
 
-	public void copy(Gene gene) {
-		NEATNeuronGene other = (NEATNeuronGene)gene;
-		this.activationResponse = other.activationResponse;
-		this.id = other.id;
-		this.neuronType = other.neuronType;
-		this.recurrent = other.recurrent;
-		this.splitX = other.splitX;
-		this.splitY = other.splitY;
-		
+	public void setSplitX(final double splitX) {
+		this.splitX = splitX;
 	}
 
-	public int compareTo(Gene o) {
-		return 0;
+	public void setSplitY(final double splitY) {
+		this.splitY = splitY;
 	}
-	
+
 }

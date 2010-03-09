@@ -33,35 +33,43 @@ package org.encog.neural.networks.training.neat;
 import org.encog.solve.genetic.genes.BasicGene;
 import org.encog.solve.genetic.genes.Gene;
 
+/**
+ * Implements a NEAT link gene. This describes a way in which two neurons
+ * are linked. 
+ * 
+ * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
+ * generation of evolving artificial neural networks. It was developed by Ken
+ * Stanley while at The University of Texas at Austin.
+ * 
+ * http://www.cs.ucf.edu/~kstanley/
+ * 
+ */
 public class NEATLinkGene extends BasicGene {
-		
+
 	private int fromNeuronID;
+	private boolean recurrent;
 	private int toNeuronID;
 	private double weight;
-	private boolean recurrent;
-	
 
-	public NEATLinkGene(
-			int fromNeuronID, 
-			int toNeuronID, 
-			boolean enabled, 
-			long innovationID, 
-			double weight,
-			boolean recurrent) {
+	public NEATLinkGene(final int fromNeuronID, final int toNeuronID,
+			final boolean enabled, final long innovationID,
+			final double weight, final boolean recurrent) {
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
-		this.setEnabled(enabled);
-		this.setInnovationId(innovationID);
+		setEnabled(enabled);
+		setInnovationId(innovationID);
 		this.weight = weight;
 		this.recurrent = recurrent;
 	}
 
-	public double getWeight() {
-		return weight;
-	}
-
-	public void setWeight(double weight) {
-		this.weight = weight;
+	public void copy(final Gene gene) {
+		final NEATLinkGene other = (NEATLinkGene) gene;
+		setEnabled(other.isEnabled());
+		fromNeuronID = other.fromNeuronID;
+		toNeuronID = other.toNeuronID;
+		setInnovationId(other.getInnovationId());
+		recurrent = other.recurrent;
+		weight = other.weight;
 	}
 
 	public int getFromNeuronID() {
@@ -72,34 +80,31 @@ public class NEATLinkGene extends BasicGene {
 		return toNeuronID;
 	}
 
+	public double getWeight() {
+		return weight;
+	}
+
 	public boolean isRecurrent() {
 		return recurrent;
 	}
-	
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
+
+	public void setWeight(final double weight) {
+		this.weight = weight;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
 		result.append("[NEATLinkGene:innov=");
-		result.append(this.getInnovationId());
+		result.append(getInnovationId());
 		result.append(",enabled=");
-		result.append(this.isEnabled());
+		result.append(isEnabled());
 		result.append(",from=");
-		result.append(this.fromNeuronID);
+		result.append(fromNeuronID);
 		result.append(",to=");
-		result.append(this.toNeuronID);
+		result.append(toNeuronID);
 		result.append("]");
 		return result.toString();
 	}
 
-	public void copy(Gene gene) {
-		NEATLinkGene other = (NEATLinkGene)gene;
-		this.setEnabled(other.isEnabled());
-		this.fromNeuronID = other.fromNeuronID;
-		this.toNeuronID = other.toNeuronID;
-		this.setInnovationId(other.getInnovationId());
-		this.recurrent = other.recurrent;
-		this.weight = other.weight;		
-	}
-	
-	
 }

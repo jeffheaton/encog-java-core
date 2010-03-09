@@ -30,23 +30,35 @@
 
 package org.encog.neural.networks.synapse.neat;
 
+import org.encog.persist.annotations.EGReference;
+
+/**
+ * Implements a link between two NEAT neurons.
+ * 
+ * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
+ * generation of evolving artificial neural networks. It was developed by Ken
+ * Stanley while at The University of Texas at Austin.
+ * 
+ * http://www.cs.ucf.edu/~kstanley/
+ * 
+ */
 public class NEATLink {
 
-	private final double weight; 
-	private final NEATNeuron fromNeuron; 
-	private final NEATNeuron toNeuron;
+	@EGReference
+	private final NEATNeuron fromNeuron;
+
 	private final boolean recurrent;
-	
-	public NEATLink(double weight, NEATNeuron fromNeuron, NEATNeuron toNeuron,
-			boolean recurrent) {
+
+	@EGReference
+	private final NEATNeuron toNeuron;
+	private final double weight;
+
+	public NEATLink(final double weight, final NEATNeuron fromNeuron,
+			final NEATNeuron toNeuron, final boolean recurrent) {
 		this.weight = weight;
 		this.fromNeuron = fromNeuron;
 		this.toNeuron = toNeuron;
 		this.recurrent = recurrent;
-	}
-
-	public double getWeight() {
-		return weight;
 	}
 
 	public NEATNeuron getFromNeuron() {
@@ -55,6 +67,10 @@ public class NEATLink {
 
 	public NEATNeuron getToNeuron() {
 		return toNeuron;
+	}
+
+	public double getWeight() {
+		return weight;
 	}
 
 	public boolean isRecurrent() {

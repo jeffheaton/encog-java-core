@@ -30,34 +30,40 @@
 
 package org.encog.neural.networks.training.neat;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genome.Chromosome;
 import org.encog.solve.genetic.innovation.BasicInnovationList;
 import org.encog.solve.genetic.innovation.Innovation;
 
+/**
+ * Implements a NEAT innovation list.
+ * 
+ * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
+ * generation of evolving artificial neural networks. It was developed by Ken
+ * Stanley while at The University of Texas at Austin.
+ * 
+ * http://www.cs.ucf.edu/~kstanley/
+ * 
+ */
 public class NEATInnovationList extends BasicInnovationList {
 
-	private int nextNeuronID = 0;
 	private int nextInnovationID = 0;
+	private int nextNeuronID = 0;
 
-	public NEATInnovationList(Chromosome links,
-			Chromosome neurons) {
+	public NEATInnovationList(final Chromosome links, final Chromosome neurons) {
 
-		for (Gene gene : neurons.getGenes()) {
-			NEATNeuronGene neuronGene = (NEATNeuronGene)gene;
-			
-			NEATInnovation innovation = new NEATInnovation(neuronGene,
+		for (final Gene gene : neurons.getGenes()) {
+			final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
+
+			final NEATInnovation innovation = new NEATInnovation(neuronGene,
 					assignInnovationID(), assignNeuronID());
 			add(innovation);
 		}
 
-		for (Gene gene : links.getGenes()) {
-			NEATLinkGene linkGene = (NEATLinkGene)gene;
-			NEATInnovation innovation = new NEATInnovation(linkGene
+		for (final Gene gene : links.getGenes()) {
+			final NEATLinkGene linkGene = (NEATLinkGene) gene;
+			final NEATInnovation innovation = new NEATInnovation(linkGene
 					.getFromNeuronID(), linkGene.getToNeuronID(),
 					NEATInnovationType.NewLink, assignInnovationID());
 			add(innovation);
@@ -65,17 +71,22 @@ public class NEATInnovationList extends BasicInnovationList {
 		}
 	}
 
-	private int assignNeuronID() {
-		return this.nextNeuronID++;
-	}
-
 	private int assignInnovationID() {
-		return this.nextInnovationID++;
+		return nextInnovationID++;
 	}
 
-	public NEATInnovation checkInnovation(int in, int out, NEATInnovationType type) {
-		for (Innovation i : this.getInnovations()) {
-			NEATInnovation innovation = (NEATInnovation)i;
+	public int assignInnovationNumber() {
+		return nextInnovationID++;
+	}
+
+	private int assignNeuronID() {
+		return nextNeuronID++;
+	}
+
+	public NEATInnovation checkInnovation(final int in, final int out,
+			final NEATInnovationType type) {
+		for (final Innovation i : getInnovations()) {
+			final NEATInnovation innovation = (NEATInnovation) i;
 			if ((innovation.getFromNeuronID() == in)
 					&& (innovation.getToNeuronID() == out)
 					&& (innovation.getInnovationType() == type)) {
@@ -86,54 +97,49 @@ public class NEATInnovationList extends BasicInnovationList {
 		return null;
 	}
 
-	public void createNewInnovation(int in, int out, NEATInnovationType type) {
-		NEATInnovation newInnovation = new NEATInnovation(in, out, type,
+	public NEATNeuronGene createNeuronFromID(final int neuronID) {
+		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden,
+				0, 0, 0);
+
+		for (final Innovation i : getInnovations()) {
+			final NEATInnovation innovation = (NEATInnovation) i;
+			if (innovation.getNeuronID() == neuronID) {
+				result.setNeuronType(innovation.getNeuronType());
+				result.setId(innovation.getNeuronID());
+				result.setSplitY(innovation.getSplitY());
+				result.setSplitX(innovation.getSplitX());
+
+				return result;
+			}
+		}
+
+		return result;
+	}
+
+	public void createNewInnovation(final int in, final int out,
+			final NEATInnovationType type) {
+		final NEATInnovation newInnovation = new NEATInnovation(in, out, type,
 				assignInnovationID());
 
 		if (type == NEATInnovationType.NewNeuron) {
-			newInnovation.setNeuronID(this.assignNeuronID());
+			newInnovation.setNeuronID(assignNeuronID());
 		}
 
 		add(newInnovation);
 	}
 
-	public int createNewInnovation(int from, int to,
-			NEATInnovationType innovationType, NEATNeuronType neuronType,
-			double x, double y) {
-		NEATInnovation newInnovation = new NEATInnovation(from, to,
+	public int createNewInnovation(final int from, final int to,
+			final NEATInnovationType innovationType,
+			final NEATNeuronType neuronType, final double x, final double y) {
+		final NEATInnovation newInnovation = new NEATInnovation(from, to,
 				innovationType, assignInnovationID(), neuronType, x, y);
 
 		if (innovationType == NEATInnovationType.NewNeuron) {
-			newInnovation.setNeuronID(this.assignNeuronID());
+			newInnovation.setNeuronID(assignNeuronID());
 		}
 
 		add(newInnovation);
 
-		return (this.nextNeuronID - 1); // ??????? should it be innov?
-	}
-	
-	public NEATNeuronGene createNeuronFromID(int neuronID)
-	{
-		NEATNeuronGene result = new  NEATNeuronGene(NEATNeuronType.Hidden,0,0,0);
-
-		for(Innovation i: this.getInnovations())
-		{
-			NEATInnovation innovation = (NEATInnovation)i;
-	    if (innovation.getNeuronID() == neuronID)
-	    {
-	    	result.setNeuronType(innovation.getNeuronType());
-	    	result.setId(innovation.getNeuronID());
-	    	result.setSplitY(innovation.getSplitY());
-	    	result.setSplitX(innovation.getSplitX());
-
-	      return result;
-	    }
-	  }
-
-	  return result;
-	}
-
-	public int assignInnovationNumber() {
-		return this.nextInnovationID++;
+		return (nextNeuronID - 1); // ??????? should it be innov?
 	}
 }

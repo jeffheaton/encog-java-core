@@ -30,21 +30,31 @@
 
 package org.encog.neural.networks.training.neat;
 
+/**
+ * Tracks the split depth of NEAT links.
+ * 
+ * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
+ * generation of evolving artificial neural networks. It was developed by Ken
+ * Stanley while at The University of Texas at Austin.
+ * 
+ * http://www.cs.ucf.edu/~kstanley/
+ * 
+ */
 public class SplitDepth {
 
-	private final double value;
 	private final int depth;
+	private final double value;
 
-	public SplitDepth(double value, int depth) {
+	public SplitDepth(final double value, final int depth) {
 		this.value = value;
 		this.depth = depth;
 	}
 
-	public double getValue() {
-		return value;
-	}
-
 	public int getDepth() {
 		return depth;
+	}
+
+	public double getValue() {
+		return value;
 	}
 }

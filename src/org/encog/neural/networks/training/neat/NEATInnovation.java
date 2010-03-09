@@ -33,76 +33,83 @@ package org.encog.neural.networks.training.neat;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.solve.genetic.innovation.BasicInnovation;
 
+/**
+ * Implements a NEAT innovation.  This lets NEAT track what changes it has previously
+ * tried with a neural network.
+ * 
+ * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
+ * generation of evolving artificial neural networks. It was developed by Ken
+ * Stanley while at The University of Texas at Austin.
+ * 
+ * http://www.cs.ucf.edu/~kstanley/
+ * 
+ */
 public class NEATInnovation extends BasicInnovation {
 
-	private final NEATInnovationType innovationType;
-	private final NEATNeuronType neuronType;
 	private final int fromNeuronID;
-	private final int toNeuronID;
+	private final NEATInnovationType innovationType;
 	private int neuronID;
+	private final NEATNeuronType neuronType;
 	private final double splitX;
 	private final double splitY;
+	private final int toNeuronID;
 
-	public NEATInnovation(int fromNeuronID, int toNeuronID,
-			NEATInnovationType innovationType, int innovationID) {
+	public NEATInnovation(final int fromNeuronID, final int toNeuronID,
+			final NEATInnovationType innovationType, final int innovationID) {
 
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
 		this.innovationType = innovationType;
-		this.setInnovationID(innovationID);
+		setInnovationID(innovationID);
 
-		this.neuronID = -1;
-		this.splitX = 0;
-		this.splitY = 0;
-		this.neuronType = NEATNeuronType.None;
+		neuronID = -1;
+		splitX = 0;
+		splitY = 0;
+		neuronType = NEATNeuronType.None;
 	}
 
-	public NEATInnovation(NEATNeuronGene neuronGene, int innovationID,
-			int neuronID) {
+	public NEATInnovation(final int fromNeuronID, final int toNeuronID,
+			final NEATInnovationType innovationType, final int innovationID,
+			final NEATNeuronType neuronType, final double x, final double y) {
+		this.fromNeuronID = fromNeuronID;
+		this.toNeuronID = toNeuronID;
+		this.innovationType = innovationType;
+		setInnovationID(innovationID);
+		this.neuronType = neuronType;
+		splitX = x;
+		splitY = y;
+
+		neuronID = 0;
+	}
+
+	public NEATInnovation(final NEATNeuronGene neuronGene,
+			final int innovationID, final int neuronID) {
 
 		this.neuronID = neuronID;
-		this.setInnovationID( innovationID );
-		this.splitX = neuronGene.getSplitX();
-		this.splitY = neuronGene.getSplitY();
+		setInnovationID(innovationID);
+		splitX = neuronGene.getSplitX();
+		splitY = neuronGene.getSplitY();
 
-		this.neuronType = neuronGene.getNeuronType();
-		this.innovationType = NEATInnovationType.NewNeuron;
-		this.fromNeuronID = -1;
-		this.toNeuronID = -1;
-	}
-
-	public NEATInnovation(int fromNeuronID, int toNeuronID,
-			NEATInnovationType innovationType, int innovationID,
-			NEATNeuronType neuronType, double x, double y) {
-		this.fromNeuronID = fromNeuronID;
-		this.toNeuronID = toNeuronID;
-		this.innovationType = innovationType;
-		this.setInnovationID( innovationID );
-		this.neuronType = neuronType;
-		this.splitX = x;
-		this.splitY = y;
-
-		this.neuronID = 0;
-	}
-
-	public NEATInnovationType getInnovationType() {
-		return innovationType;
-	}
-
-	public NEATNeuronType getNeuronType() {
-		return neuronType;
+		neuronType = neuronGene.getNeuronType();
+		innovationType = NEATInnovationType.NewNeuron;
+		fromNeuronID = -1;
+		toNeuronID = -1;
 	}
 
 	public int getFromNeuronID() {
 		return fromNeuronID;
 	}
 
-	public int getToNeuronID() {
-		return toNeuronID;
+	public NEATInnovationType getInnovationType() {
+		return innovationType;
 	}
 
 	public int getNeuronID() {
 		return neuronID;
+	}
+
+	public NEATNeuronType getNeuronType() {
+		return neuronType;
 	}
 
 	public double getSplitX() {
@@ -113,7 +120,11 @@ public class NEATInnovation extends BasicInnovation {
 		return splitY;
 	}
 
-	public void setNeuronID(int neuronID) {
+	public int getToNeuronID() {
+		return toNeuronID;
+	}
+
+	public void setNeuronID(final int neuronID) {
 		this.neuronID = neuronID;
 	}
 

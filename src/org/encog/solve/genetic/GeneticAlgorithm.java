@@ -30,10 +30,6 @@
 
 package org.encog.solve.genetic;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import org.encog.solve.genetic.crossover.Crossover;
 import org.encog.solve.genetic.genome.CalculateGenomeScore;
 import org.encog.solve.genetic.genome.Genome;
@@ -52,9 +48,6 @@ import org.slf4j.LoggerFactory;
  * 
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
- * 
- * @param <GENE_TYPE>
- *            The datatype of the gene.
  */
 public class GeneticAlgorithm {
 
@@ -63,7 +56,25 @@ public class GeneticAlgorithm {
 	 */
 	public static final int TIMEOUT = 120;
 
+	private CalculateGenomeScore calculateScore;
 
+	private GenomeComparator comparator;
+
+	private Crossover crossover;
+
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Percent of the population that the mating population chooses partners.
+	 * from.
+	 */
+	private double matingPopulation;
+
+	private Mutate mutate;
 
 	/**
 	 * The percent that should mutate.
@@ -76,28 +87,24 @@ public class GeneticAlgorithm {
 	 */
 	private double percentToMate;
 
-	/**
-	 * Percent of the population that the mating population chooses partners.
-	 * from.
-	 */
-	private double matingPopulation;
-	
-	private Crossover crossover;
-	
-	private Mutate mutate;
-	
 	private Population population;
-	
-	private CalculateGenomeScore calculateScore;
-	
-	private GenomeComparator comparator;
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	public void calculateScore(final Genome g) {
+		final double score = calculateScore.calculateScore(g);
+		g.setScore(score);
+	}
 
+	public CalculateGenomeScore getCalculateScore() {
+		return calculateScore;
+	}
+
+	public GenomeComparator getComparator() {
+		return comparator;
+	}
+
+	public Crossover getCrossover() {
+		return crossover;
+	}
 
 	/**
 	 * Get the mating population.
@@ -105,7 +112,11 @@ public class GeneticAlgorithm {
 	 * @return The mating population percent.
 	 */
 	public double getMatingPopulation() {
-		return this.matingPopulation;
+		return matingPopulation;
+	}
+
+	public Mutate getMutate() {
+		return mutate;
 	}
 
 	/**
@@ -114,7 +125,7 @@ public class GeneticAlgorithm {
 	 * @return The mutation percent.
 	 */
 	public double getMutationPercent() {
-		return this.mutationPercent;
+		return mutationPercent;
 	}
 
 	/**
@@ -123,7 +134,11 @@ public class GeneticAlgorithm {
 	 * @return The percent to mate.
 	 */
 	public double getPercentToMate() {
-		return this.percentToMate;
+		return percentToMate;
+	}
+
+	public Population getPopulation() {
+		return population;
 	}
 
 	/**
@@ -134,27 +149,25 @@ public class GeneticAlgorithm {
 	 */
 	public void iteration() {
 
-		final int countToMate = (int) (population.getPopulationSize() 
-				* getPercentToMate());
+		final int countToMate = (int) (population.getPopulationSize() * getPercentToMate());
 		final int offspringCount = countToMate * 2;
 		int offspringIndex = population.getPopulationSize() - offspringCount;
-		final int matingPopulationSize = (int) (population.getPopulationSize() 
-				* getMatingPopulation());
-		
-		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
+		final int matingPopulationSize = (int) (population.getPopulationSize() * getMatingPopulation());
+
+		final TaskGroup group = EncogConcurrency.getInstance()
+				.createTaskGroup();
 
 		// mate and form the next generation
 		for (int i = 0; i < countToMate; i++) {
-			final Genome mother = this.population.getGenomes().get(i);
+			final Genome mother = population.getGenomes().get(i);
 			final int fatherInt = (int) (Math.random() * matingPopulationSize);
-			final Genome father = this.population.getGenomes().get(fatherInt);
-			final Genome child1 
-			= this.population.getGenomes().get(offspringIndex);
-			final Genome child2 
-			= this.population.getGenomes().get(offspringIndex + 1);
+			final Genome father = population.getGenomes().get(fatherInt);
+			final Genome child1 = population.getGenomes().get(offspringIndex);
+			final Genome child2 = population.getGenomes().get(
+					offspringIndex + 1);
 
-			final MateWorker worker = new MateWorker(
-					mother, father, child1, child2);
+			final MateWorker worker = new MateWorker(mother, father, child1,
+					child2);
 
 			EncogConcurrency.getInstance().processTask(worker);
 
@@ -167,7 +180,17 @@ public class GeneticAlgorithm {
 		population.sort();
 	}
 
+	public void setCalculateScore(final CalculateGenomeScore calculateScore) {
+		this.calculateScore = calculateScore;
+	}
 
+	public void setComparator(final GenomeComparator comparator) {
+		this.comparator = comparator;
+	}
+
+	public void setCrossover(final Crossover crossover) {
+		this.crossover = crossover;
+	}
 
 	/**
 	 * Set the mating population percent.
@@ -177,6 +200,10 @@ public class GeneticAlgorithm {
 	 */
 	public void setMatingPopulation(final double matingPopulation) {
 		this.matingPopulation = matingPopulation;
+	}
+
+	public void setMutate(final Mutate mutate) {
+		this.mutate = mutate;
 	}
 
 	/**
@@ -199,48 +226,7 @@ public class GeneticAlgorithm {
 		this.percentToMate = percentToMate;
 	}
 
-	public Crossover getCrossover() {
-		return crossover;
-	}
-
-	public void setCrossover(Crossover crossover) {
-		this.crossover = crossover;
-	}
-
-	public Mutate getMutate() {
-		return mutate;
-	}
-
-	public void setMutate(Mutate mutate) {
-		this.mutate = mutate;
-	}
-
-	public Population getPopulation() {
-		return population;
-	}
-
-	public void setPopulation(Population population) {
+	public void setPopulation(final Population population) {
 		this.population = population;
 	}
-
-	public CalculateGenomeScore getCalculateScore() {
-		return calculateScore;
-	}
-
-	public void setCalculateScore(CalculateGenomeScore calculateScore) {
-		this.calculateScore = calculateScore;
-	}
-
-	public GenomeComparator getComparator() {
-		return comparator;
-	}
-
-	public void setComparator(GenomeComparator comparator) {
-		this.comparator = comparator;
-	}
-
-	public void calculateScore(Genome g) {
-		double score = this.calculateScore.calculateScore(g);
-		g.setScore(score);		
-	}	
 }

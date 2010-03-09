@@ -30,11 +30,17 @@
 
 package org.encog.neural.networks.synapse.neat;
 
+/**
+ * The types of neurons supported by NEAT.
+ * 
+ * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
+ * generation of evolving artificial neural networks. It was developed by Ken
+ * Stanley while at The University of Texas at Austin.
+ * 
+ * http://www.cs.ucf.edu/~kstanley/
+ * 
+ */
 public enum NEATNeuronType {
-	Input,
-	Output,
-	Hidden,
-	Bias,
-	None
+	Bias, Hidden, Input, None, Output
 
 }

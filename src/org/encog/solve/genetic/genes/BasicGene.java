@@ -1,42 +1,69 @@
+/*
+ * Encog(tm) Core v2.4
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2010 by Heaton Research Inc.
+ * 
+ * Released under the LGPL.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * 
+ * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
+ * For information on Heaton Research trademarks, visit:
+ * 
+ * http://www.heatonresearch.com/copyright.html
+ */
 package org.encog.solve.genetic.genes;
 
-import org.encog.neural.networks.training.neat.NEATLinkGene;
-
+/**
+ * Implements the basic functionality for a gene. This is an abstract class.
+ */
 public abstract class BasicGene implements Gene {
 
+	private boolean enabled = true;
 	private int id = -1;
 	private long innovationId = -1;
-	private boolean enabled = true;
-	
+
+	public int compareTo(final Gene o) {
+		return ((int) (getInnovationId() - o.getInnovationId()));
+	}
+
 	public int getId() {
-		return this.id ;
+		return id;
 	}
 
 	public long getInnovationId() {
-		return this.innovationId;
+		return innovationId;
 	}
 
 	public boolean isEnabled() {
-		return this.enabled;
+		return enabled;
 	}
 
-	public void setEnabled(boolean e) {
-		this.enabled = e;		
+	public void setEnabled(final boolean e) {
+		enabled = e;
 	}
 
-	public int compareTo(Gene o) {
-		return( (int)(this.getInnovationId() - o.getInnovationId()) );
-	}
-
-
-	public void setId(int id) {
+	public void setId(final int id) {
 		this.id = id;
 	}
 
-	public void setInnovationId(long innovationID) {
-		this.innovationId = innovationID;
+	public void setInnovationId(final long innovationID) {
+		innovationId = innovationID;
 	}
-	
-	
 
 }

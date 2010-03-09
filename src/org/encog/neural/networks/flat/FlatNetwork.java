@@ -1,3 +1,32 @@
+/*
+ * Encog(tm) Core v2.4
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2010 by Heaton Research Inc.
+ * 
+ * Released under the LGPL.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * 
+ * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
+ * For information on Heaton Research trademarks, visit:
+ * 
+ * http://www.heatonresearch.com/copyright.html
+ */
 package org.encog.neural.networks.flat;
 
 import org.encog.mathutil.BoundMath;
@@ -27,20 +56,9 @@ public class FlatNetwork {
 	private final int inputCount;
 
 	/**
-	 * The number of output neurons in this network.
-	 */
-	private final int outputCount;
-
-	/**
 	 * The number of neurons in each of the layers.
 	 */
 	private final int[] layerCounts;
-
-	/**
-	 * The index to where the weights and thresholds are stored at for a given
-	 * layer.
-	 */
-	private final int[] weightIndex;
 
 	/**
 	 * An index to where each layer begins (based on the number of neurons in
@@ -49,128 +67,124 @@ public class FlatNetwork {
 	private final int[] layerIndex;
 
 	/**
+	 * The outputs from each of the neurons.
+	 */
+	private final double[] layerOutput;
+
+	/**
+	 * The number of output neurons in this network.
+	 */
+	private final int outputCount;
+
+	/**
 	 * Are we using the TANH function? If not, then the sigmoid.
 	 */
 	private final boolean tanh;
 
 	/**
-	 * The weights and thresholds for a neural network.
+	 * The index to where the weights and thresholds are stored at for a given
+	 * layer.
 	 */
-	private double[] weights;
+	private final int[] weightIndex;
 
 	/**
-	 * The outputs from each of the neurons.
+	 * The weights and thresholds for a neural network.
 	 */
-	private double[] layerOutput;
+	private final double[] weights;
 
 	/**
 	 * Construct a flat network.
-	 * @param network The network to construct the flat network from.
+	 * 
+	 * @param network
+	 *            The network to construct the flat network from.
 	 */
-	public FlatNetwork(BasicNetwork network) {
+	public FlatNetwork(final BasicNetwork network) {
 		ValidateForFlat.validateNetwork(network);
 
-		Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
-		Layer output = network.getLayer(BasicNetwork.TAG_OUTPUT);
+		final Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
+		final Layer output = network.getLayer(BasicNetwork.TAG_OUTPUT);
 
-		this.inputCount = input.getNeuronCount();
-		this.outputCount = output.getNeuronCount();
+		inputCount = input.getNeuronCount();
+		outputCount = output.getNeuronCount();
 
-		int layerCount = network.getStructure().getLayers().size();
+		final int layerCount = network.getStructure().getLayers().size();
 
-		this.layerCounts = new int[layerCount];
-		this.weightIndex = new int[layerCount];
-		this.layerIndex = new int[layerCount];
+		layerCounts = new int[layerCount];
+		weightIndex = new int[layerCount];
+		layerIndex = new int[layerCount];
 
 		int index = 0;
 		int neuronCount = 0;
 
-		for (Layer layer : network.getStructure().getLayers()) {
-			this.layerCounts[index] = layer.getNeuronCount();
+		for (final Layer layer : network.getStructure().getLayers()) {
+			layerCounts[index] = layer.getNeuronCount();
 			neuronCount += layer.getNeuronCount();
 
 			if (index == 0) {
-				this.weightIndex[index] = 0;
-				this.layerIndex[index] = 0;
+				weightIndex[index] = 0;
+				layerIndex[index] = 0;
 			} else {
-				this.weightIndex[index] = this.weightIndex[index - 1]
-						+ (this.layerCounts[index - 1] + (this.layerCounts[index] * this.layerCounts[index - 1]));
-				this.layerIndex[index] = this.layerIndex[index - 1]
-						+ this.layerCounts[index - 1];
+				weightIndex[index] = weightIndex[index - 1]
+						+ (layerCounts[index - 1] + (layerCounts[index] * layerCounts[index - 1]));
+				layerIndex[index] = layerIndex[index - 1]
+						+ layerCounts[index - 1];
 			}
 
 			index++;
 		}
 
-		this.weights = NetworkCODEC.networkToArray(network);
-		this.layerOutput = new double[neuronCount];
+		weights = NetworkCODEC.networkToArray(network);
+		layerOutput = new double[neuronCount];
 
-		if (input.getActivationFunction() instanceof ActivationSigmoid)
-			this.tanh = false;
-		else
-			this.tanh = true;
+		if (input.getActivationFunction() instanceof ActivationSigmoid) {
+			tanh = false;
+		} else {
+			tanh = true;
+		}
 	}
 
-	/**
-	 * Implements a sigmoid activation function.
-	 * @param d The value to take the sigmoid of.
-	 * @return The result.
-	 */
-	private double sigmoid(double d) {
-		return 1.0 / (1 + BoundMath.exp(-1.0 * d));
-	}
+	public void calculate(final double[] input, final double[] output) {
+		final int sourceIndex = layerOutput.length - inputCount;
 
-	/**
-	 * Implements a hyperbolic tangent function.
-	 * @param d The value to take the htan of.
-	 * @return The htan of the specified value.
-	 */
-	private double tanh(double d) {
-		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
-	}
+		System.arraycopy(input, 0, layerOutput, sourceIndex, inputCount);
 
-	public void calculate(double[] input, double[] output) {
-		int sourceIndex = this.layerOutput.length - this.inputCount;
-
-		System.arraycopy(input, 0, this.layerOutput, sourceIndex,
-				this.inputCount);
-
-		for (int i = this.layerIndex.length - 1; i > 0; i--) {
+		for (int i = layerIndex.length - 1; i > 0; i--) {
 			calculateLayer(i);
 		}
 
-		System.arraycopy(layerOutput, 0, output, 0, this.outputCount);
+		System.arraycopy(layerOutput, 0, output, 0, outputCount);
 	}
 
-	private void calculateLayer(int currentLayer) {
+	private void calculateLayer(final int currentLayer) {
 		// double[] inputData = (double[])output[layerIndex];
 		// double[] outputData = (double[])output[layerIndex-1];
 
-		int inputIndex = this.layerIndex[currentLayer];
-		int outputIndex = this.layerIndex[currentLayer - 1];
-		int inputSize = this.layerCounts[currentLayer];
-		int outputSize = this.layerCounts[currentLayer - 1];
+		final int inputIndex = layerIndex[currentLayer];
+		final int outputIndex = layerIndex[currentLayer - 1];
+		final int inputSize = layerCounts[currentLayer];
+		final int outputSize = layerCounts[currentLayer - 1];
 
-		int index = this.weightIndex[currentLayer - 1];
+		int index = weightIndex[currentLayer - 1];
 
 		// threshold values
 		for (int i = 0; i < outputSize; i++) {
-			this.layerOutput[i + outputIndex] = this.weights[index++];
+			layerOutput[i + outputIndex] = weights[index++];
 		}
 
 		// weight values
 		for (int x = 0; x < outputSize; x++) {
 			double sum = 0;
 			for (int y = 0; y < inputSize; y++) {
-				sum += this.weights[index++] * layerOutput[inputIndex + y];
+				sum += weights[index++] * layerOutput[inputIndex + y];
 			}
 			layerOutput[outputIndex + x] += sum;
 
-			if (this.tanh)
+			if (tanh) {
 				layerOutput[outputIndex + x] = tanh(layerOutput[outputIndex + x]);
-			else
+			} else {
 				layerOutput[outputIndex + x] = sigmoid(layerOutput[outputIndex
 						+ x]);
+			}
 		}
 	}
 
@@ -178,32 +192,54 @@ public class FlatNetwork {
 		return inputCount;
 	}
 
-	public int getOutputCount() {
-		return outputCount;
-	}
-
 	public int[] getLayerCounts() {
 		return layerCounts;
+	}
+
+	public int[] getLayerIndex() {
+		return layerIndex;
+	}
+
+	public double[] getLayerOutput() {
+		return layerOutput;
+	}
+
+	public int getOutputCount() {
+		return outputCount;
 	}
 
 	public int[] getWeightIndex() {
 		return weightIndex;
 	}
 
-	public boolean isTanh() {
-		return tanh;
-	}
-
 	public double[] getWeights() {
 		return weights;
 	}
 
-	public double[] getLayerOutput() {
-		return this.layerOutput;
+	public boolean isTanh() {
+		return tanh;
 	}
 
-	public int[] getLayerIndex() {
-		return layerIndex;
+	/**
+	 * Implements a sigmoid activation function.
+	 * 
+	 * @param d
+	 *            The value to take the sigmoid of.
+	 * @return The result.
+	 */
+	private double sigmoid(final double d) {
+		return 1.0 / (1 + BoundMath.exp(-1.0 * d));
+	}
+
+	/**
+	 * Implements a hyperbolic tangent function.
+	 * 
+	 * @param d
+	 *            The value to take the htan of.
+	 * @return The htan of the specified value.
+	 */
+	private double tanh(final double d) {
+		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
 	}
 
 }

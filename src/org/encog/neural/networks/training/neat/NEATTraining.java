@@ -53,112 +53,106 @@ import org.encog.solve.genetic.population.BasicPopulation;
 import org.encog.solve.genetic.species.BasicSpecies;
 import org.encog.solve.genetic.species.Species;
 
-
+/**
+ * The two parents.
+ */
 enum NEATParent {
-	Mom,
-	Dad
+	/**
+	 * The father.
+	 */
+	Dad, 
+	
+	/**
+	 * The mother.
+	 */
+	Mom
 };
 
+/**
+ * Implements NEAT genetic training.
+ * 
+ * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
+ * generation of evolving artificial neural networks. It was developed by Ken
+ * Stanley while at The University of Texas at Austin.
+ * 
+ * http://www.cs.ucf.edu/~kstanley/
+ * 
+ */
 public class NEATTraining extends GeneticAlgorithm implements Train {
 
-	private final int inputCount;
-	private final int outputCount;
-	private final List<SplitDepth> splits;
-	private double bestEverFitness;
-	private double totalFitAdjustment;
 	private double averageFitAdjustment;
-	private ActivationFunction outputActivationFunction = new ActivationLinear();
+	private double bestEverFitness;
+	private final int inputCount;
 	private ActivationFunction neatActivationFunction = new ActivationSigmoid();
-
-	private double paramCompatibilityThreshold = 0.26;
-	private int paramMaxNumberOfSpecies = 0;
-	private int paramNumGensAllowedNoImprovement = 15;
-	private double paramCrossoverRate = 0.7;
-	private double paramMaxPermittedNeurons = 100;
+	private ActivationFunction outputActivationFunction = new ActivationLinear();
+	private final int outputCount;
+	private double paramActivationMutationRate = 0.1;
+	private double paramChanceAddLink = 0.07;
 
 	private double paramChanceAddNode = 0.04;
-	private int paramNumTrysToFindOldLink = 5;
-
-	private double paramChanceAddLink = 0.07;
 	private double paramChanceAddRecurrentLink = 0.05;
-	private int paramNumTrysToFindLoopedLink = 5;
-	private int paramNumAddLinkAttempts = 5;
-
-	private double paramMutationRate = 0.2;
-	private double paramProbabilityWeightReplaced = 0.1;
-	private double paramMaxWeightPerturbation = 0.5;
-
-	private double paramActivationMutationRate = 0.1;
+	private double paramCompatibilityThreshold = 0.26;
+	private double paramCrossoverRate = 0.7;
 	private double paramMaxActivationPerturbation = 0.1;
 
-	public NEATTraining(CalculateScore calculateScore, int inputCount,
-			int outputCount, int populationSize) {
-		
+	private int paramMaxNumberOfSpecies = 0;
+	private double paramMaxPermittedNeurons = 100;
+
+	private double paramMaxWeightPerturbation = 0.5;
+	private double paramMutationRate = 0.2;
+	private int paramNumAddLinkAttempts = 5;
+	private int paramNumGensAllowedNoImprovement = 15;
+
+	private int paramNumTrysToFindLoopedLink = 5;
+	private int paramNumTrysToFindOldLink = 5;
+	private double paramProbabilityWeightReplaced = 0.1;
+
+	private final List<SplitDepth> splits;
+	private double totalFitAdjustment;
+
+	public NEATTraining(final CalculateScore calculateScore,
+			final int inputCount, final int outputCount,
+			final int populationSize) {
+
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 
-		this.setCalculateScore(new GeneticScoreAdapter(calculateScore));
-		this.setComparator(new GenomeComparator(this.getCalculateScore()));
-		this.setPopulation(new BasicPopulation(populationSize));
+		setCalculateScore(new GeneticScoreAdapter(calculateScore));
+		setComparator(new GenomeComparator(getCalculateScore()));
+		setPopulation(new BasicPopulation(populationSize));
 
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
-			getPopulation().add(new NEATGenome(this, this.getPopulation().assignGenomeID(), inputCount,
-					outputCount));
+			getPopulation().add(
+					new NEATGenome(this, getPopulation().assignGenomeID(),
+							inputCount, outputCount));
 		}
 
-		NEATGenome genome = new NEATGenome(this, 1, inputCount, outputCount);
+		final NEATGenome genome = new NEATGenome(this, 1, inputCount,
+				outputCount);
 
-		this.getPopulation().setInnovations( new NEATInnovationList(genome.getLinks(), genome.getNeurons()));
+		getPopulation().setInnovations(
+				new NEATInnovationList(genome.getLinks(), genome.getNeurons()));
 
-		this.splits = split(null, 0, 1, 0);
+		splits = split(null, 0, 1, 0);
 
-		if (this.getCalculateScore().shouldMinimize())
-			this.bestEverFitness = Double.MAX_VALUE;
-		else
-			this.bestEverFitness = Double.MIN_VALUE;
-		
-		for (Genome genome2 : this.getPopulation().getGenomes()) {
+		if (getCalculateScore().shouldMinimize()) {
+			bestEverFitness = Double.MAX_VALUE;
+		} else {
+			bestEverFitness = Double.MIN_VALUE;
+		}
+
+		for (final Genome genome2 : getPopulation().getGenomes()) {
 			genome2.decode();
 			calculateScore(genome2);
 		}
 
-		
 		resetAndKill();
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
 	}
 
-	public List<BasicNetwork> createNetworks() {
-		List<BasicNetwork> result = new ArrayList<BasicNetwork>();
-
-		for (Genome genome : this.getPopulation().getGenomes()) {
-			calculateNetDepth((NEATGenome)genome);
-			BasicNetwork net = (BasicNetwork)genome.getOrganism();
-
-			result.add(net);
-		}
-
-		return result;
-	}
-
-	private void calculateNetDepth(NEATGenome genome) {
-		int maxSoFar = 0;
-
-		for (int nd = 0; nd < genome.getNeurons().size(); ++nd) {
-			for (SplitDepth split : this.splits) {
-
-				if ((genome.getSplitY(nd) == split.getValue())
-						&& (split.getDepth() > maxSoFar)) {
-					maxSoFar = split.getDepth();
-				}
-			}
-		}
-
-		genome.setNetworkDepth(maxSoFar + 2);
-	}
-
-	public void addNeuronID(int nodeID, List<Integer> vec) {
+	public void addNeuronID(final int nodeID, final List<Integer> vec) {
 		for (int i = 0; i < vec.size(); i++) {
 			if (vec.get(i) == nodeID) {
 				return;
@@ -170,294 +164,76 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		return;
 	}
 
-	public int getInputCount() {
-		return inputCount;
-	}
-
-	public int getOutputCount() {
-		return outputCount;
-	}
-
-	public void addStrategy(Strategy strategy) {
+	public void addStrategy(final Strategy strategy) {
 		// TODO Auto-generated method stub
 
-	}
-
-	public void finishTraining() {
-		// TODO Auto-generated method stub
-
-	}
-
-	public double getError() {
-		return this.getPopulation().getBest().getScore();
-	}
-
-	public BasicNetwork getNetwork() {
-		return (BasicNetwork)this.getPopulation().getBest().getOrganism();
-	}
-
-	public List<Strategy> getStrategies() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public void iteration() {
-
-		List<NEATGenome> newPop = new ArrayList<NEATGenome>();
-
-		int numSpawnedSoFar = 0;
-
-		for (Species s : this.getPopulation().getSpecies()) {
-			if (numSpawnedSoFar < this.getPopulation().size()) {
-				int numToSpawn = (int) Math.round(s.getNumToSpawn());
-
-				boolean bChosenBestYet = false;
-
-				while ((numToSpawn--) > 0) {
-					NEATGenome baby = null;
-
-					if (!bChosenBestYet) {
-						baby = new NEATGenome((NEATGenome)s.getLeader());
-
-						bChosenBestYet = true;
-					}
-
-					else {
-						// if the number of individuals in this species is only
-						// one
-						// then we can only perform mutation
-						if (s.getMembers().size() == 1) {
-							// spawn a child
-							baby = new NEATGenome((NEATGenome)s.chooseParent());
-						} else {
-							NEATGenome g1 = (NEATGenome)s.chooseParent();
-
-							if (Math.random() < this.paramCrossoverRate) {
-								NEATGenome g2 = (NEATGenome)s.chooseParent();
-
-								int NumAttempts = 5;
-
-								while ((g1.getGenomeID() == g2.getGenomeID())
-										&& ((NumAttempts--) > 0)) {
-									g2 = (NEATGenome)s.chooseParent();
-								}
-
-								if (g1.getGenomeID() != g2.getGenomeID()) {
-									baby = crossover(g1, g2);
-								}
-							}
-
-							else {
-								baby = new NEATGenome(g1);
-							}
-						}
-
-						if (baby != null) {
-							baby.setGenomeID(this.getPopulation().assignGenomeID());
-
-							if (baby.getNeurons().size() < this.paramMaxPermittedNeurons) {
-								baby.addNeuron(this.paramChanceAddNode,
-										this.paramNumTrysToFindOldLink);
-							}
-
-							// now there's the chance a link may be added
-							baby.addLink(this.paramChanceAddLink,
-									this.paramChanceAddRecurrentLink,
-									this.paramNumTrysToFindLoopedLink,
-									this.paramNumAddLinkAttempts);
-
-							// mutate the weights
-							baby.mutateWeights(this.paramMutationRate,
-									this.paramProbabilityWeightReplaced,
-									this.paramMaxWeightPerturbation);
-
-							baby.mutateActivationResponse(
-									this.paramActivationMutationRate,
-									this.paramMaxActivationPerturbation);
-
-						}
-					}
-
-					if (baby != null) {
-						// sort the baby's genes by their innovation numbers
-						baby.sortGenes();
-
-						// add to new pop
-						if (newPop.contains(baby))
-							throw new EncogError("readd");
-						newPop.add(baby);
-
-						++numSpawnedSoFar;
-
-						if (numSpawnedSoFar == this.getPopulation().size()) {
-							numToSpawn = 0;
-						}
-					}
-				}
-			}
-		}
-
-		while (newPop.size() < this.getPopulation().size()) {
-			newPop.add(tournamentSelection(this.getPopulation().size() / 5));
-		}
-
-		this.getPopulation().clear();
-		this.getPopulation().addAll(newPop);
-		
-		for (Genome genome2 : this.getPopulation().getGenomes()) {
-			if( genome2.getOrganism()==null) {
-				genome2.decode();
-				calculateScore(genome2);
-			}
-		}
-		
-		resetAndKill();
-		sortAndRecord();
-		speciateAndCalculateSpawnLevels();
-	}
-
-	public void setError(double error) {
-		// TODO Auto-generated method stub
-
-	}
-
-	private List<SplitDepth> split(List<SplitDepth> result, double low,
-			double high, int depth) {
-		if (result == null)
-			result = new ArrayList<SplitDepth>();
-
-		double span = high - low;
-
-		result.add(new SplitDepth(low + span / 2, depth + 1));
-
-		if (depth > 6) {
-			return result;
-		}
-
-		else {
-			split(result, low, low + span / 2, depth + 1);
-			split(result, low + span / 2, high, depth + 1);
-			return result;
-		}
-	}
-
-	public NEATInnovationList getInnovations() {
-		return (NEATInnovationList)this.getPopulation().getInnovations();
-	}
-
-	public void sortAndRecord() {
-		this.getPopulation().sort();
-
-		this.bestEverFitness = this.getComparator().bestScore(getError(),
-				this.bestEverFitness);
-	}
-
-
-	public void adjustSpeciesFitnesses() {
-		for (Species s : this.getPopulation().getSpecies() ) {
-			s.adjustFitness();
-		}
-	}
-
-	public void speciateAndCalculateSpawnLevels() {
-
-		// calculate compatibility between genomes and species
-		adjustCompatibilityThreshold();
-
-		// assign genomes to species (if any exist)
-		for (Genome g : this.getPopulation().getGenomes()) {
-			NEATGenome genome = (NEATGenome)g;
-			boolean added = false;
-
-			for (Species s : this.getPopulation().getSpecies()) {
-				double compatibility = genome.getCompatibilityScore(
-					(NEATGenome)s.getLeader());
-
-				if (compatibility <= this.paramCompatibilityThreshold) {
-					s.addMember(genome);
-					genome.setSpeciesID(s.getSpeciesID());
-					added = true;
-					break;
-				}
-			}
-
-			// if this genome did not fall into any existing species, create a
-			// new species
-			if (!added) {
-				this.getPopulation().getSpecies().add(new BasicSpecies(this, genome,
-						getPopulation().assignSpeciesID()));
-			}
-		}
-
-		adjustSpeciesFitnesses();
-
-		for (Genome g : this.getPopulation().getGenomes()) {
-			NEATGenome genome = (NEATGenome)g;
-			this.totalFitAdjustment += genome.getAdjustedScore();
-		}
-
-		this.averageFitAdjustment = this.totalFitAdjustment
-				/ this.getPopulation().size();
-
-		for (Genome g : this.getPopulation().getGenomes()) {
-			NEATGenome genome = (NEATGenome)g;
-			double toSpawn = genome.getAdjustedScore()
-					/ this.averageFitAdjustment;
-			genome.setAmountToSpawn(toSpawn);
-		}
-
-		for (Species species : this.getPopulation().getSpecies()) {
-			species.calculateSpawnAmount();
-		}
 	}
 
 	public void adjustCompatibilityThreshold() {
 
 		// has this been disabled (unlimited species)
-		if (this.paramMaxNumberOfSpecies < 1)
+		if (paramMaxNumberOfSpecies < 1) {
 			return;
-
-		double thresholdIncrement = 0.01;
-
-		if (this.getPopulation().getSpecies().size() > this.paramMaxNumberOfSpecies) {
-			this.paramCompatibilityThreshold += thresholdIncrement;
 		}
 
-		else if (this.getPopulation().getSpecies().size() < 2) {
-			this.paramCompatibilityThreshold -= thresholdIncrement;
+		final double thresholdIncrement = 0.01;
+
+		if (getPopulation().getSpecies().size() > paramMaxNumberOfSpecies) {
+			paramCompatibilityThreshold += thresholdIncrement;
+		}
+
+		else if (getPopulation().getSpecies().size() < 2) {
+			paramCompatibilityThreshold -= thresholdIncrement;
 		}
 
 	}
 
-	public NEATGenome tournamentSelection(int numComparisons) {
-		double bestFitnessSoFar = 0;
+	public void adjustSpeciesFitnesses() {
+		for (final Species s : getPopulation().getSpecies()) {
+			s.adjustFitness();
+		}
+	}
 
-		int ChosenOne = 0;
+	private void calculateNetDepth(final NEATGenome genome) {
+		int maxSoFar = 0;
 
-		for (int i = 0; i < numComparisons; ++i) {
-			int ThisTry = (int) RangeRandomizer.randomize(0, this.getPopulation()
-					.size() - 1);
+		for (int nd = 0; nd < genome.getNeurons().size(); ++nd) {
+			for (final SplitDepth split : splits) {
 
-			if (this.getPopulation().get(ThisTry).getScore() > bestFitnessSoFar) {
-				ChosenOne = ThisTry;
-
-				bestFitnessSoFar = this.getPopulation().get(ThisTry).getScore();
+				if ((genome.getSplitY(nd) == split.getValue())
+						&& (split.getDepth() > maxSoFar)) {
+					maxSoFar = split.getDepth();
+				}
 			}
 		}
 
-		return (NEATGenome)this.getPopulation().get(ChosenOne);
+		genome.setNetworkDepth(maxSoFar + 2);
 	}
 
-	public NEATGenome crossover(NEATGenome mom, NEATGenome dad) {
+	public List<BasicNetwork> createNetworks() {
+		final List<BasicNetwork> result = new ArrayList<BasicNetwork>();
+
+		for (final Genome genome : getPopulation().getGenomes()) {
+			calculateNetDepth((NEATGenome) genome);
+			final BasicNetwork net = (BasicNetwork) genome.getOrganism();
+
+			result.add(net);
+		}
+
+		return result;
+	}
+
+	public NEATGenome crossover(final NEATGenome mom, final NEATGenome dad) {
 		NEATParent best;
 
 		// first determine who is more fit, the mother or the father?
 		if (mom.getScore() == dad.getScore()) {
 			if (mom.getNumGenes() == dad.getNumGenes()) {
-				if (Math.random() > 0)
+				if (Math.random() > 0) {
 					best = NEATParent.Mom;
-				else
+				} else {
 					best = NEATParent.Dad;
+				}
 			}
 
 			else {
@@ -472,8 +248,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 
 		else {
-			if (this.getComparator()
-					.isBetterThan(mom.getScore(), dad.getScore())) {
+			if (getComparator().isBetterThan(mom.getScore(), dad.getScore())) {
 				best = NEATParent.Mom;
 			}
 
@@ -482,10 +257,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			}
 		}
 
-		Chromosome babyNeurons = new Chromosome();
-		Chromosome babyGenes = new Chromosome();
+		final Chromosome babyNeurons = new Chromosome();
+		final Chromosome babyGenes = new Chromosome();
 
-		List<Integer> vecNeurons = new ArrayList<Integer>();
+		final List<Integer> vecNeurons = new ArrayList<Integer>();
 
 		int curMom = 0;
 		int curDad = 0;
@@ -495,24 +270,26 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		NEATLinkGene selectedGene = null;
 
-		while (curMom < mom.getNumGenes() || curDad < dad.getNumGenes()) {
+		while ((curMom < mom.getNumGenes()) || (curDad < dad.getNumGenes())) {
 
-			if (curMom < mom.getNumGenes())
-				momGene = (NEATLinkGene)mom.getLinks().get(curMom);
-			else
+			if (curMom < mom.getNumGenes()) {
+				momGene = (NEATLinkGene) mom.getLinks().get(curMom);
+			} else {
 				momGene = null;
+			}
 
-			if (curDad < dad.getNumGenes())
-				dadGene = (NEATLinkGene)dad.getLinks().get(curDad);
-			else
+			if (curDad < dad.getNumGenes()) {
+				dadGene = (NEATLinkGene) dad.getLinks().get(curDad);
+			} else {
 				dadGene = null;
+			}
 
-			if (momGene == null && dadGene != null) {
+			if ((momGene == null) && (dadGene != null)) {
 				if (best == NEATParent.Dad) {
 					selectedGene = dadGene;
 				}
 				curDad++;
-			} else if (dadGene == null && momGene != null) {
+			} else if ((dadGene == null) && (momGene != null)) {
 				if (best == NEATParent.Mom) {
 					selectedGene = momGene;
 				}
@@ -545,8 +322,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			}
 
 			else {
-				if (((NEATLinkGene)babyGenes.get(babyGenes.size() - 1)).getInnovationId() != selectedGene
-						.getInnovationId()) {
+				if (((NEATLinkGene) babyGenes.get(babyGenes.size() - 1))
+						.getInnovationId() != selectedGene.getInnovationId()) {
 					babyGenes.add(selectedGene);
 				}
 			}
@@ -562,45 +339,118 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		Collections.sort(vecNeurons);
 
 		for (int i = 0; i < vecNeurons.size(); i++) {
-			babyNeurons.add(this.getInnovations().createNeuronFromID(vecNeurons
-					.get(i)));
+			babyNeurons.add(getInnovations().createNeuronFromID(
+					vecNeurons.get(i)));
 		}
 
 		// finally, create the genome
-		NEATGenome babyGenome = new NEATGenome(
-				this, this.getPopulation().assignGenomeID(),
-				babyNeurons, babyGenes, 
-				mom.getInputCount(), 
+		final NEATGenome babyGenome = new NEATGenome(this, getPopulation()
+				.assignGenomeID(), babyNeurons, babyGenes, mom.getInputCount(),
 				mom.getOutputCount());
 
 		return babyGenome;
 	}
 
-	public void resetAndKill() {
-		this.totalFitAdjustment = 0;
-		this.averageFitAdjustment = 0;
+	public void finishTraining() {
+		// TODO Auto-generated method stub
 
-		Object[] speciesArray = this.getPopulation().getSpecies().toArray();
-
-		for (int i = 0; i < speciesArray.length; i++) {
-			Species s = (Species) speciesArray[i];
-			s.purge();
-
-			if ((s.getGensNoImprovement() > this.paramNumGensAllowedNoImprovement)
-					&& this.getComparator().isBetterThan(this.bestEverFitness, s
-							.getBestFitness())) {
-				this.getPopulation().getSpecies().remove(s);
-			}
-		}
 	}
-	
+
+	public double getError() {
+		return getPopulation().getBest().getScore();
+	}
+
+	public NEATInnovationList getInnovations() {
+		return (NEATInnovationList) getPopulation().getInnovations();
+	}
+
+	public int getInputCount() {
+		return inputCount;
+	}
 
 	public ActivationFunction getNeatActivationFunction() {
 		return neatActivationFunction;
 	}
 
-	public void setNeatActivationFunction(ActivationFunction neatActivationFunction) {
-		this.neatActivationFunction = neatActivationFunction;
+	public BasicNetwork getNetwork() {
+		return (BasicNetwork) getPopulation().getBest().getOrganism();
+	}
+
+	public ActivationFunction getOutputActivationFunction() {
+		return outputActivationFunction;
+	}
+
+	public int getOutputCount() {
+		return outputCount;
+	}
+
+	public double getParamActivationMutationRate() {
+		return paramActivationMutationRate;
+	}
+
+	public double getParamChanceAddLink() {
+		return paramChanceAddLink;
+	}
+
+	public double getParamChanceAddNode() {
+		return paramChanceAddNode;
+	}
+
+	public double getParamChanceAddRecurrentLink() {
+		return paramChanceAddRecurrentLink;
+	}
+
+	public double getParamCompatibilityThreshold() {
+		return paramCompatibilityThreshold;
+	}
+
+	public double getParamCrossoverRate() {
+		return paramCrossoverRate;
+	}
+
+	public double getParamMaxActivationPerturbation() {
+		return paramMaxActivationPerturbation;
+	}
+
+	public int getParamMaxNumberOfSpecies() {
+		return paramMaxNumberOfSpecies;
+	}
+
+	public double getParamMaxPermittedNeurons() {
+		return paramMaxPermittedNeurons;
+	}
+
+	public double getParamMaxWeightPerturbation() {
+		return paramMaxWeightPerturbation;
+	}
+
+	public double getParamMutationRate() {
+		return paramMutationRate;
+	}
+
+	public int getParamNumAddLinkAttempts() {
+		return paramNumAddLinkAttempts;
+	}
+
+	public int getParamNumGensAllowedNoImprovement() {
+		return paramNumGensAllowedNoImprovement;
+	}
+
+	public int getParamNumTrysToFindLoopedLink() {
+		return paramNumTrysToFindLoopedLink;
+	}
+
+	public int getParamNumTrysToFindOldLink() {
+		return paramNumTrysToFindOldLink;
+	}
+
+	public double getParamProbabilityWeightReplaced() {
+		return paramProbabilityWeightReplaced;
+	}
+
+	public List<Strategy> getStrategies() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	public NeuralDataSet getTraining() {
@@ -608,146 +458,325 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		return null;
 	}
 
-	public double getParamCompatibilityThreshold() {
-		return paramCompatibilityThreshold;
+	@Override
+	public void iteration() {
+
+		final List<NEATGenome> newPop = new ArrayList<NEATGenome>();
+
+		int numSpawnedSoFar = 0;
+
+		for (final Species s : getPopulation().getSpecies()) {
+			if (numSpawnedSoFar < getPopulation().size()) {
+				int numToSpawn = (int) Math.round(s.getNumToSpawn());
+
+				boolean bChosenBestYet = false;
+
+				while ((numToSpawn--) > 0) {
+					NEATGenome baby = null;
+
+					if (!bChosenBestYet) {
+						baby = new NEATGenome((NEATGenome) s.getLeader());
+
+						bChosenBestYet = true;
+					}
+
+					else {
+						// if the number of individuals in this species is only
+						// one
+						// then we can only perform mutation
+						if (s.getMembers().size() == 1) {
+							// spawn a child
+							baby = new NEATGenome((NEATGenome) s.chooseParent());
+						} else {
+							final NEATGenome g1 = (NEATGenome) s.chooseParent();
+
+							if (Math.random() < paramCrossoverRate) {
+								NEATGenome g2 = (NEATGenome) s.chooseParent();
+
+								int NumAttempts = 5;
+
+								while ((g1.getGenomeID() == g2.getGenomeID())
+										&& ((NumAttempts--) > 0)) {
+									g2 = (NEATGenome) s.chooseParent();
+								}
+
+								if (g1.getGenomeID() != g2.getGenomeID()) {
+									baby = crossover(g1, g2);
+								}
+							}
+
+							else {
+								baby = new NEATGenome(g1);
+							}
+						}
+
+						if (baby != null) {
+							baby.setGenomeID(getPopulation().assignGenomeID());
+
+							if (baby.getNeurons().size() < paramMaxPermittedNeurons) {
+								baby.addNeuron(paramChanceAddNode,
+										paramNumTrysToFindOldLink);
+							}
+
+							// now there's the chance a link may be added
+							baby.addLink(paramChanceAddLink,
+									paramChanceAddRecurrentLink,
+									paramNumTrysToFindLoopedLink,
+									paramNumAddLinkAttempts);
+
+							// mutate the weights
+							baby.mutateWeights(paramMutationRate,
+									paramProbabilityWeightReplaced,
+									paramMaxWeightPerturbation);
+
+							baby.mutateActivationResponse(
+									paramActivationMutationRate,
+									paramMaxActivationPerturbation);
+
+						}
+					}
+
+					if (baby != null) {
+						// sort the baby's genes by their innovation numbers
+						baby.sortGenes();
+
+						// add to new pop
+						if (newPop.contains(baby)) {
+							throw new EncogError("readd");
+						}
+						newPop.add(baby);
+
+						++numSpawnedSoFar;
+
+						if (numSpawnedSoFar == getPopulation().size()) {
+							numToSpawn = 0;
+						}
+					}
+				}
+			}
+		}
+
+		while (newPop.size() < getPopulation().size()) {
+			newPop.add(tournamentSelection(getPopulation().size() / 5));
+		}
+
+		getPopulation().clear();
+		getPopulation().addAll(newPop);
+
+		for (final Genome genome2 : getPopulation().getGenomes()) {
+			if (genome2.getOrganism() == null) {
+				genome2.decode();
+				calculateScore(genome2);
+			}
+		}
+
+		resetAndKill();
+		sortAndRecord();
+		speciateAndCalculateSpawnLevels();
 	}
 
-	public void setParamCompatibilityThreshold(
-			double paramCompatibilityThreshold) {
-		this.paramCompatibilityThreshold = paramCompatibilityThreshold;
+	public void resetAndKill() {
+		totalFitAdjustment = 0;
+		averageFitAdjustment = 0;
+
+		final Object[] speciesArray = getPopulation().getSpecies().toArray();
+
+		for (int i = 0; i < speciesArray.length; i++) {
+			final Species s = (Species) speciesArray[i];
+			s.purge();
+
+			if ((s.getGensNoImprovement() > paramNumGensAllowedNoImprovement)
+					&& getComparator().isBetterThan(bestEverFitness,
+							s.getBestFitness())) {
+				getPopulation().getSpecies().remove(s);
+			}
+		}
 	}
 
-	public int getParamMaxNumberOfSpecies() {
-		return paramMaxNumberOfSpecies;
+	public void setError(final double error) {
+		// TODO Auto-generated method stub
+
 	}
 
-	public void setParamMaxNumberOfSpecies(int paramMaxNumberOfSpecies) {
-		this.paramMaxNumberOfSpecies = paramMaxNumberOfSpecies;
-	}
-
-	public int getParamNumGensAllowedNoImprovement() {
-		return paramNumGensAllowedNoImprovement;
-	}
-
-	public void setParamNumGensAllowedNoImprovement(
-			int paramNumGensAllowedNoImprovement) {
-		this.paramNumGensAllowedNoImprovement = paramNumGensAllowedNoImprovement;
-	}
-
-	public double getParamCrossoverRate() {
-		return paramCrossoverRate;
-	}
-
-	public void setParamCrossoverRate(double paramCrossoverRate) {
-		this.paramCrossoverRate = paramCrossoverRate;
-	}
-
-	public double getParamMaxPermittedNeurons() {
-		return paramMaxPermittedNeurons;
-	}
-
-	public void setParamMaxPermittedNeurons(double paramMaxPermittedNeurons) {
-		this.paramMaxPermittedNeurons = paramMaxPermittedNeurons;
-	}
-
-	public double getParamChanceAddNode() {
-		return paramChanceAddNode;
-	}
-
-	public void setParamChanceAddNode(double paramChanceAddNode) {
-		this.paramChanceAddNode = paramChanceAddNode;
-	}
-
-	public int getParamNumTrysToFindOldLink() {
-		return paramNumTrysToFindOldLink;
-	}
-
-	public void setParamNumTrysToFindOldLink(int paramNumTrysToFindOldLink) {
-		this.paramNumTrysToFindOldLink = paramNumTrysToFindOldLink;
-	}
-
-	public double getParamChanceAddLink() {
-		return paramChanceAddLink;
-	}
-
-	public void setParamChanceAddLink(double paramChanceAddLink) {
-		this.paramChanceAddLink = paramChanceAddLink;
-	}
-
-	public double getParamChanceAddRecurrentLink() {
-		return paramChanceAddRecurrentLink;
-	}
-
-	public void setParamChanceAddRecurrentLink(
-			double paramChanceAddRecurrentLink) {
-		this.paramChanceAddRecurrentLink = paramChanceAddRecurrentLink;
-	}
-
-	public int getParamNumTrysToFindLoopedLink() {
-		return paramNumTrysToFindLoopedLink;
-	}
-
-	public void setParamNumTrysToFindLoopedLink(int paramNumTrysToFindLoopedLink) {
-		this.paramNumTrysToFindLoopedLink = paramNumTrysToFindLoopedLink;
-	}
-
-	public int getParamNumAddLinkAttempts() {
-		return paramNumAddLinkAttempts;
-	}
-
-	public void setParamNumAddLinkAttempts(int paramNumAddLinkAttempts) {
-		this.paramNumAddLinkAttempts = paramNumAddLinkAttempts;
-	}
-
-	public double getParamMutationRate() {
-		return paramMutationRate;
-	}
-
-	public void setParamMutationRate(double paramMutationRate) {
-		this.paramMutationRate = paramMutationRate;
-	}
-
-	public double getParamProbabilityWeightReplaced() {
-		return paramProbabilityWeightReplaced;
-	}
-
-	public void setParamProbabilityWeightReplaced(
-			double paramProbabilityWeightReplaced) {
-		this.paramProbabilityWeightReplaced = paramProbabilityWeightReplaced;
-	}
-
-	public double getParamMaxWeightPerturbation() {
-		return paramMaxWeightPerturbation;
-	}
-
-	public void setParamMaxWeightPerturbation(double paramMaxWeightPerturbation) {
-		this.paramMaxWeightPerturbation = paramMaxWeightPerturbation;
-	}
-
-	public double getParamActivationMutationRate() {
-		return paramActivationMutationRate;
-	}
-
-	public void setParamActivationMutationRate(
-			double paramActivationMutationRate) {
-		this.paramActivationMutationRate = paramActivationMutationRate;
-	}
-
-	public double getParamMaxActivationPerturbation() {
-		return paramMaxActivationPerturbation;
-	}
-
-	public void setParamMaxActivationPerturbation(
-			double paramMaxActivationPerturbation) {
-		this.paramMaxActivationPerturbation = paramMaxActivationPerturbation;
-	}
-
-	public ActivationFunction getOutputActivationFunction() {
-		return outputActivationFunction;
+	public void setNeatActivationFunction(
+			final ActivationFunction neatActivationFunction) {
+		this.neatActivationFunction = neatActivationFunction;
 	}
 
 	public void setOutputActivationFunction(
-			ActivationFunction outputActivationFunction) {
+			final ActivationFunction outputActivationFunction) {
 		this.outputActivationFunction = outputActivationFunction;
-	}	
+	}
+
+	public void setParamActivationMutationRate(
+			final double paramActivationMutationRate) {
+		this.paramActivationMutationRate = paramActivationMutationRate;
+	}
+
+	public void setParamChanceAddLink(final double paramChanceAddLink) {
+		this.paramChanceAddLink = paramChanceAddLink;
+	}
+
+	public void setParamChanceAddNode(final double paramChanceAddNode) {
+		this.paramChanceAddNode = paramChanceAddNode;
+	}
+
+	public void setParamChanceAddRecurrentLink(
+			final double paramChanceAddRecurrentLink) {
+		this.paramChanceAddRecurrentLink = paramChanceAddRecurrentLink;
+	}
+
+	public void setParamCompatibilityThreshold(
+			final double paramCompatibilityThreshold) {
+		this.paramCompatibilityThreshold = paramCompatibilityThreshold;
+	}
+
+	public void setParamCrossoverRate(final double paramCrossoverRate) {
+		this.paramCrossoverRate = paramCrossoverRate;
+	}
+
+	public void setParamMaxActivationPerturbation(
+			final double paramMaxActivationPerturbation) {
+		this.paramMaxActivationPerturbation = paramMaxActivationPerturbation;
+	}
+
+	public void setParamMaxNumberOfSpecies(final int paramMaxNumberOfSpecies) {
+		this.paramMaxNumberOfSpecies = paramMaxNumberOfSpecies;
+	}
+
+	public void setParamMaxPermittedNeurons(
+			final double paramMaxPermittedNeurons) {
+		this.paramMaxPermittedNeurons = paramMaxPermittedNeurons;
+	}
+
+	public void setParamMaxWeightPerturbation(
+			final double paramMaxWeightPerturbation) {
+		this.paramMaxWeightPerturbation = paramMaxWeightPerturbation;
+	}
+
+	public void setParamMutationRate(final double paramMutationRate) {
+		this.paramMutationRate = paramMutationRate;
+	}
+
+	public void setParamNumAddLinkAttempts(final int paramNumAddLinkAttempts) {
+		this.paramNumAddLinkAttempts = paramNumAddLinkAttempts;
+	}
+
+	public void setParamNumGensAllowedNoImprovement(
+			final int paramNumGensAllowedNoImprovement) {
+		this.paramNumGensAllowedNoImprovement = paramNumGensAllowedNoImprovement;
+	}
+
+	public void setParamNumTrysToFindLoopedLink(
+			final int paramNumTrysToFindLoopedLink) {
+		this.paramNumTrysToFindLoopedLink = paramNumTrysToFindLoopedLink;
+	}
+
+	public void setParamNumTrysToFindOldLink(final int paramNumTrysToFindOldLink) {
+		this.paramNumTrysToFindOldLink = paramNumTrysToFindOldLink;
+	}
+
+	public void setParamProbabilityWeightReplaced(
+			final double paramProbabilityWeightReplaced) {
+		this.paramProbabilityWeightReplaced = paramProbabilityWeightReplaced;
+	}
+
+	public void sortAndRecord() {
+		getPopulation().sort();
+
+		bestEverFitness = getComparator()
+				.bestScore(getError(), bestEverFitness);
+	}
+
+	public void speciateAndCalculateSpawnLevels() {
+
+		// calculate compatibility between genomes and species
+		adjustCompatibilityThreshold();
+
+		// assign genomes to species (if any exist)
+		for (final Genome g : getPopulation().getGenomes()) {
+			final NEATGenome genome = (NEATGenome) g;
+			boolean added = false;
+
+			for (final Species s : getPopulation().getSpecies()) {
+				final double compatibility = genome
+						.getCompatibilityScore((NEATGenome) s.getLeader());
+
+				if (compatibility <= paramCompatibilityThreshold) {
+					s.addMember(genome);
+					genome.setSpeciesID(s.getSpeciesID());
+					added = true;
+					break;
+				}
+			}
+
+			// if this genome did not fall into any existing species, create a
+			// new species
+			if (!added) {
+				getPopulation().getSpecies().add(
+						new BasicSpecies(this, genome, getPopulation()
+								.assignSpeciesID()));
+			}
+		}
+
+		adjustSpeciesFitnesses();
+
+		for (final Genome g : getPopulation().getGenomes()) {
+			final NEATGenome genome = (NEATGenome) g;
+			totalFitAdjustment += genome.getAdjustedScore();
+		}
+
+		averageFitAdjustment = totalFitAdjustment / getPopulation().size();
+
+		for (final Genome g : getPopulation().getGenomes()) {
+			final NEATGenome genome = (NEATGenome) g;
+			final double toSpawn = genome.getAdjustedScore()
+					/ averageFitAdjustment;
+			genome.setAmountToSpawn(toSpawn);
+		}
+
+		for (final Species species : getPopulation().getSpecies()) {
+			species.calculateSpawnAmount();
+		}
+	}
+
+	private List<SplitDepth> split(List<SplitDepth> result, final double low,
+			final double high, final int depth) {
+		if (result == null) {
+			result = new ArrayList<SplitDepth>();
+		}
+
+		final double span = high - low;
+
+		result.add(new SplitDepth(low + span / 2, depth + 1));
+
+		if (depth > 6) {
+			return result;
+		}
+
+		else {
+			split(result, low, low + span / 2, depth + 1);
+			split(result, low + span / 2, high, depth + 1);
+			return result;
+		}
+	}
+
+	public NEATGenome tournamentSelection(final int numComparisons) {
+		double bestFitnessSoFar = 0;
+
+		int ChosenOne = 0;
+
+		for (int i = 0; i < numComparisons; ++i) {
+			final int ThisTry = (int) RangeRandomizer.randomize(0,
+					getPopulation().size() - 1);
+
+			if (getPopulation().get(ThisTry).getScore() > bestFitnessSoFar) {
+				ChosenOne = ThisTry;
+
+				bestFitnessSoFar = getPopulation().get(ThisTry).getScore();
+			}
+		}
+
+		return (NEATGenome) getPopulation().get(ChosenOne);
+	}
 }
