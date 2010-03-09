@@ -32,7 +32,9 @@ package org.encog.neural.networks.training.propagation.gradient;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
 
+import org.encog.mathutil.IntRange;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -43,6 +45,7 @@ import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogArray;
+import org.encog.util.concurrency.DetermineWorkload;
 import org.encog.util.concurrency.EncogConcurrency;
 import org.encog.util.concurrency.TaskGroup;
 
@@ -98,6 +101,8 @@ public class CalculateGradient {
 	 * The gradients calculated for every weight and threshold.
 	 */
 	private final double[] gradients;
+	
+	private DetermineWorkload determine;
 
 	/**
 	 * The overall error.
@@ -146,26 +151,8 @@ public class CalculateGradient {
 			this.threadCount = threads;
 		} else {
 			this.indexed = (Indexable) this.training;
-			int num = Runtime.getRuntime().availableProcessors();
-
-			// if there is more than one processor, use processor count +1
-			if (num != 1) {
-				num++;
-			}
-			// if there is a single processor, just use one thread
-
-			// Now see how big the training sets are going to be.
-			// We want at least 100 training elements in each.
-			// This method will likely be further "tuned" in future versions.
-
-			final long recordCount = this.indexed.getRecordCount();
-			final long workPerThread = recordCount / num;
-
-			if (workPerThread < 100) {
-				num = Math.max(1, (int) (recordCount / 100));
-			}
-
-			this.threadCount = num;
+			this.determine = new DetermineWorkload(threads,(int)this.indexed.getRecordCount());
+			this.threadCount = this.determine.getThreadCount();
 		}
 
 		// setup workers
@@ -262,25 +249,13 @@ public class CalculateGradient {
 		this.indexed = training;
 		// setup the workers
 		this.workers = new GradientWorker[this.threadCount];
+		List<IntRange> workloadRange = this.determine.calculateWorkers();
 
-		final int size = (int) this.indexed.getRecordCount();
-		final int sizePerThread = size / this.threadCount;
-
-		// create the workers
-		for (int i = 0; i < this.threadCount; i++) {
-			final int low = i * sizePerThread;
-			int high;
-
-			// if this is the last record, then high to be the last item
-			// in the training set.
-			if (i == (this.threadCount - 1)) {
-				high = size - 1;
-			} else {
-				high = ((i + 1) * sizePerThread) - 1;
-			}
-
+		int i = 0;
+		for(IntRange range: workloadRange )
+		{
 			final Indexable trainingClone = this.indexed.openAdditional();
-			this.workers[i] = new GradientWorker(this, trainingClone, low, high);
+			this.workers[i++] = new GradientWorker(this, trainingClone, range.getLow(), range.getHigh());
 		}
 	}
 
