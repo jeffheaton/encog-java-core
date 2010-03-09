@@ -53,15 +53,21 @@ import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.genome.GenomeComparator;
 import org.encog.solve.genetic.population.BasicPopulation;
 import org.encog.solve.genetic.population.Population;
+import org.encog.solve.genetic.species.BasicSpecies;
+import org.encog.solve.genetic.species.Species;
+
+
+enum NEATParent {
+	Mom,
+	Dad
+};
 
 public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	private final int inputCount;
 	private final int outputCount;
-	private Population population;
 	private final NEATInnovationDB innovations;
 	private final List<SplitDepth> splits;
-	private final List<NEATSpecies> species = new ArrayList<NEATSpecies>();
 	private double bestEverFitness;
 	private double totalFitAdjustment;
 	private double averageFitAdjustment;
@@ -89,12 +95,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	private double paramActivationMutationRate = 0.1;
 	private double paramMaxActivationPerturbation = 0.1;
 
-	private int paramYoungBonusAgeThreshhold = 10;
-	private double paramYoungFitnessBonus = 0.3;
-	private int paramOldAgeThreshold = 50;
-	private double paramOldAgePenalty = 0.3;
-	private double paramSurvivalRate = 0.2;
-
 	public NEATTraining(CalculateScore calculateScore, int inputCount,
 			int outputCount, int populationSize) {
 		
@@ -103,11 +103,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		this.setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		this.setComparator(new GenomeComparator(this.getCalculateScore()));
-		this.population = new BasicPopulation(populationSize);
+		this.setPopulation(new BasicPopulation(populationSize));
 
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
-			population.add(new NEATGenome(this, population.assignGenomeID(), inputCount,
+			getPopulation().add(new NEATGenome(this, this.getPopulation().assignGenomeID(), inputCount,
 					outputCount));
 		}
 
@@ -122,7 +122,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		else
 			this.bestEverFitness = Double.MIN_VALUE;
 		
-		for (Genome genome2 : this.population.getGenomes()) {
+		for (Genome genome2 : this.getPopulation().getGenomes()) {
 			genome2.decode();
 			calculateScore(genome2);
 		}
@@ -136,7 +136,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public List<BasicNetwork> createNetworks() {
 		List<BasicNetwork> result = new ArrayList<BasicNetwork>();
 
-		for (Genome genome : this.population.getGenomes()) {
+		for (Genome genome : this.getPopulation().getGenomes()) {
 			calculateNetDepth((NEATGenome)genome);
 			BasicNetwork net = (BasicNetwork)genome.getOrganism();
 
@@ -193,11 +193,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	public double getError() {
-		return this.population.getBest().getScore();
+		return this.getPopulation().getBest().getScore();
 	}
 
 	public BasicNetwork getNetwork() {
-		return (BasicNetwork)this.population.getBest().getOrganism();
+		return (BasicNetwork)this.getPopulation().getBest().getOrganism();
 	}
 
 	public List<Strategy> getStrategies() {
@@ -211,8 +211,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		int numSpawnedSoFar = 0;
 
-		for (NEATSpecies s : this.species) {
-			if (numSpawnedSoFar < this.population.size()) {
+		for (Species s : this.getPopulation().getSpecies()) {
+			if (numSpawnedSoFar < this.getPopulation().size()) {
 				int numToSpawn = (int) Math.round(s.getNumToSpawn());
 
 				boolean bChosenBestYet = false;
@@ -232,18 +232,18 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						// then we can only perform mutation
 						if (s.getMembers().size() == 1) {
 							// spawn a child
-							baby = new NEATGenome((NEATGenome)s.spawn());
+							baby = new NEATGenome((NEATGenome)s.chooseParent());
 						} else {
-							NEATGenome g1 = (NEATGenome)s.spawn();
+							NEATGenome g1 = (NEATGenome)s.chooseParent();
 
 							if (Math.random() < this.paramCrossoverRate) {
-								NEATGenome g2 = (NEATGenome)s.spawn();
+								NEATGenome g2 = (NEATGenome)s.chooseParent();
 
 								int NumAttempts = 5;
 
 								while ((g1.getGenomeID() == g2.getGenomeID())
 										&& ((NumAttempts--) > 0)) {
-									g2 = (NEATGenome)s.spawn();
+									g2 = (NEATGenome)s.chooseParent();
 								}
 
 								if (g1.getGenomeID() != g2.getGenomeID()) {
@@ -257,7 +257,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						}
 
 						if (baby != null) {
-							baby.setGenomeID(this.population.assignGenomeID());
+							baby.setGenomeID(this.getPopulation().assignGenomeID());
 
 							if (baby.getNeurons().size() < this.paramMaxPermittedNeurons) {
 								baby.addNeuron(this.paramChanceAddNode,
@@ -293,7 +293,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 						++numSpawnedSoFar;
 
-						if (numSpawnedSoFar == this.population.size()) {
+						if (numSpawnedSoFar == this.getPopulation().size()) {
 							numToSpawn = 0;
 						}
 					}
@@ -301,14 +301,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			}
 		}
 
-		while (newPop.size() < this.population.size()) {
-			newPop.add(tournamentSelection(this.population.size() / 5));
+		while (newPop.size() < this.getPopulation().size()) {
+			newPop.add(tournamentSelection(this.getPopulation().size() / 5));
 		}
 
-		this.population.clear();
-		this.population.addAll(newPop);
+		this.getPopulation().clear();
+		this.getPopulation().addAll(newPop);
 		
-		for (Genome genome2 : this.population.getGenomes()) {
+		for (Genome genome2 : this.getPopulation().getGenomes()) {
 			if( genome2.getOrganism()==null) {
 				genome2.decode();
 				calculateScore(genome2);
@@ -350,7 +350,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	public void sortAndRecord() {
-		this.population.sort();
+		this.getPopulation().sort();
 
 		this.bestEverFitness = this.getComparator().bestScore(getError(),
 				this.bestEverFitness);
@@ -358,7 +358,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 
 	public void adjustSpeciesFitnesses() {
-		for (NEATSpecies s : this.species) {
+		for (Species s : this.getPopulation().getSpecies() ) {
 			s.adjustFitness();
 		}
 	}
@@ -369,11 +369,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		adjustCompatibilityThreshold();
 
 		// assign genomes to species (if any exist)
-		for (Genome g : this.population.getGenomes()) {
+		for (Genome g : this.getPopulation().getGenomes()) {
 			NEATGenome genome = (NEATGenome)g;
 			boolean added = false;
 
-			for (NEATSpecies s : this.species) {
+			for (Species s : this.getPopulation().getSpecies()) {
 				double compatibility = genome.getCompatibilityScore(
 					(NEATGenome)s.getLeader());
 
@@ -388,29 +388,29 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			// if this genome did not fall into any existing species, create a
 			// new species
 			if (!added) {
-				this.species.add(new NEATSpecies(this, genome,
-						population.assignSpeciesID()));
+				this.getPopulation().getSpecies().add(new BasicSpecies(this, genome,
+						getPopulation().assignSpeciesID()));
 			}
 		}
 
 		adjustSpeciesFitnesses();
 
-		for (Genome g : this.population.getGenomes()) {
+		for (Genome g : this.getPopulation().getGenomes()) {
 			NEATGenome genome = (NEATGenome)g;
 			this.totalFitAdjustment += genome.getAdjustedScore();
 		}
 
 		this.averageFitAdjustment = this.totalFitAdjustment
-				/ this.population.size();
+				/ this.getPopulation().size();
 
-		for (Genome g : this.population.getGenomes()) {
+		for (Genome g : this.getPopulation().getGenomes()) {
 			NEATGenome genome = (NEATGenome)g;
 			double toSpawn = genome.getAdjustedScore()
 					/ this.averageFitAdjustment;
 			genome.setAmountToSpawn(toSpawn);
 		}
 
-		for (NEATSpecies species : this.species) {
+		for (Species species : this.getPopulation().getSpecies()) {
 			species.calculateSpawnAmount();
 		}
 	}
@@ -423,11 +423,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		double thresholdIncrement = 0.01;
 
-		if (this.species.size() > this.paramMaxNumberOfSpecies) {
+		if (this.getPopulation().getSpecies().size() > this.paramMaxNumberOfSpecies) {
 			this.paramCompatibilityThreshold += thresholdIncrement;
 		}
 
-		else if (this.species.size() < 2) {
+		else if (this.getPopulation().getSpecies().size() < 2) {
 			this.paramCompatibilityThreshold -= thresholdIncrement;
 		}
 
@@ -439,17 +439,17 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		int ChosenOne = 0;
 
 		for (int i = 0; i < numComparisons; ++i) {
-			int ThisTry = (int) RangeRandomizer.randomize(0, this.population
+			int ThisTry = (int) RangeRandomizer.randomize(0, this.getPopulation()
 					.size() - 1);
 
-			if (this.population.get(ThisTry).getScore() > bestFitnessSoFar) {
+			if (this.getPopulation().get(ThisTry).getScore() > bestFitnessSoFar) {
 				ChosenOne = ThisTry;
 
-				bestFitnessSoFar = this.population.get(ThisTry).getScore();
+				bestFitnessSoFar = this.getPopulation().get(ThisTry).getScore();
 			}
 		}
 
-		return (NEATGenome)this.population.get(ChosenOne);
+		return (NEATGenome)this.getPopulation().get(ChosenOne);
 	}
 
 	public NEATGenome crossover(NEATGenome mom, NEATGenome dad) {
@@ -572,7 +572,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		// finally, create the genome
 		NEATGenome babyGenome = new NEATGenome(
-				this, this.population.assignGenomeID(),
+				this, this.getPopulation().assignGenomeID(),
 				babyNeurons, babyGenes, 
 				mom.getInputCount(), 
 				mom.getOutputCount());
@@ -584,22 +584,19 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		this.totalFitAdjustment = 0;
 		this.averageFitAdjustment = 0;
 
-		Object[] speciesArray = this.species.toArray();
+		Object[] speciesArray = this.getPopulation().getSpecies().toArray();
 
 		for (int i = 0; i < speciesArray.length; i++) {
-			NEATSpecies s = (NEATSpecies) speciesArray[i];
+			Species s = (Species) speciesArray[i];
 			s.purge();
 
 			if ((s.getGensNoImprovement() > this.paramNumGensAllowedNoImprovement)
 					&& this.getComparator().isBetterThan(this.bestEverFitness, s
 							.getBestFitness())) {
-				this.species.remove(s);
+				this.getPopulation().getSpecies().remove(s);
 			}
-
 		}
-
 	}
-	
 	
 
 	public ActivationFunction getNeatActivationFunction() {
@@ -747,46 +744,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public void setParamMaxActivationPerturbation(
 			double paramMaxActivationPerturbation) {
 		this.paramMaxActivationPerturbation = paramMaxActivationPerturbation;
-	}
-
-	public int getParamYoungBonusAgeThreshhold() {
-		return paramYoungBonusAgeThreshhold;
-	}
-
-	public void setParamYoungBonusAgeThreshhold(int paramYoungBonusAgeThreshhold) {
-		this.paramYoungBonusAgeThreshhold = paramYoungBonusAgeThreshhold;
-	}
-
-	public double getParamYoungFitnessBonus() {
-		return paramYoungFitnessBonus;
-	}
-
-	public void setParamYoungFitnessBonus(double paramYoungFitnessBonus) {
-		this.paramYoungFitnessBonus = paramYoungFitnessBonus;
-	}
-
-	public int getParamOldAgeThreshold() {
-		return paramOldAgeThreshold;
-	}
-
-	public void setParamOldAgeThreshold(int paramOldAgeThreshold) {
-		this.paramOldAgeThreshold = paramOldAgeThreshold;
-	}
-
-	public double getParamOldAgePenalty() {
-		return paramOldAgePenalty;
-	}
-
-	public void setParamOldAgePenalty(double paramOldAgePenalty) {
-		this.paramOldAgePenalty = paramOldAgePenalty;
-	}
-
-	public double getParamSurvivalRate() {
-		return paramSurvivalRate;
-	}
-
-	public void setParamSurvivalRate(double paramSurvivalRate) {
-		this.paramSurvivalRate = paramSurvivalRate;
 	}
 
 	public ActivationFunction getOutputActivationFunction() {

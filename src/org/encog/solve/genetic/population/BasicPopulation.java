@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.encog.neural.networks.training.genetic.NeuralGenome;
 import org.encog.solve.genetic.genome.Genome;
+import org.encog.solve.genetic.species.Species;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 
@@ -19,6 +20,13 @@ public class BasicPopulation implements Population {
 	private final GenerateID speciesIDGenerate = new BasicGenerateID();
 	private final GenerateID geneIDGenerate = new BasicGenerateID();
 	private final GenerateID innovationIDGenerate = new BasicGenerateID();
+	
+	private int youngBonusAgeThreshhold = 10;
+	private double youngFitnessBonus = 0.3;
+	private int oldAgeThreshold = 50;
+	private double oldAgePenalty = 0.3;
+	private double survivalRate = 0.2;
+	private final List<Species> species = new ArrayList<Species>();
 	
 	/**
 	 * The population.
@@ -102,5 +110,49 @@ public class BasicPopulation implements Population {
 
 	public Genome get(int i) {
 		return this.genomes.get(i);
+	}
+
+	public int getYoungBonusAgeThreshhold() {
+		return youngBonusAgeThreshhold;
+	}
+
+	public void setYoungBonusAgeThreshhold(int youngBonusAgeThreshhold) {
+		this.youngBonusAgeThreshhold = youngBonusAgeThreshhold;
+	}
+
+	public double getYoungFitnessBonus() {
+		return youngFitnessBonus;
+	}
+
+	public void setYoungFitnessBonus(double youngFitnessBonus) {
+		this.youngFitnessBonus = youngFitnessBonus;
+	}
+
+	public int getOldAgeThreshold() {
+		return oldAgeThreshold;
+	}
+
+	public void setOldAgeThreshold(int oldAgeThreshold) {
+		this.oldAgeThreshold = oldAgeThreshold;
+	}
+
+	public double getOldAgePenalty() {
+		return oldAgePenalty;
+	}
+
+	public void setOldAgePenalty(double oldAgePenalty) {
+		this.oldAgePenalty = oldAgePenalty;
+	}
+
+	public double getSurvivalRate() {
+		return survivalRate;
+	}
+
+	public void setSurvivalRate(double survivalRate) {
+		this.survivalRate = survivalRate;
+	}
+
+	public List<Species> getSpecies() {
+		return species;
 	}
 }

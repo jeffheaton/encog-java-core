@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.encog.neural.networks.training.neat.NEATGenome;
 import org.encog.solve.genetic.genome.Genome;
+import org.encog.solve.genetic.species.Species;
 
 public interface Population {
 	int getPopulationSize();
@@ -20,4 +21,15 @@ public interface Population {
 	void clear();
 	void addAll(List<? extends Genome> newPop);
 	Genome get(int i);
+	int getYoungBonusAgeThreshhold();
+	void setYoungBonusAgeThreshhold(int youngBonusAgeThreshhold);
+	double getYoungFitnessBonus();
+	void setYoungFitnessBonus(double youngFitnessBonus);
+	int getOldAgeThreshold();
+	void setOldAgeThreshold(int oldAgeThreshold);
+	double getOldAgePenalty();
+	void setOldAgePenalty(double oldAgePenalty);
+	double getSurvivalRate();
+	void setSurvivalRate(double survivalRate);
+	public List<Species> getSpecies();
 }
