@@ -124,7 +124,7 @@ public class GradientWorker implements EncogTask {
 	/**
 	 * The main loop for this thread.
 	 */
-	public void run() {
+	public void run() {		
 		final double[] weights = this.owner.getWeights();
 		final NeuralDataPair pair = this.owner.createPair();
 
