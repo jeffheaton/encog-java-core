@@ -458,6 +458,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 				.getOutputActivationFunction(), false, outputCount);
 		final NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer,
 				neurons, training.getNeatActivationFunction(), networkDepth);
+		synapse.setSnapshot(this.training.isSnapshot());
 		inputLayer.addSynapse(synapse);
 		final BasicNetwork network = new BasicNetwork();
 		network.tagLayer(BasicNetwork.TAG_INPUT, inputLayer);

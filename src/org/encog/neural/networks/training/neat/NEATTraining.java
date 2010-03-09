@@ -44,12 +44,14 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
 import org.encog.solve.genetic.GeneticAlgorithm;
 import org.encog.solve.genetic.genome.Chromosome;
 import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.genome.GenomeComparator;
 import org.encog.solve.genetic.population.BasicPopulation;
+import org.encog.solve.genetic.population.Population;
 import org.encog.solve.genetic.species.BasicSpecies;
 import org.encog.solve.genetic.species.Species;
 
@@ -107,9 +109,26 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	private int paramNumTrysToFindOldLink = 5;
 	private double paramProbabilityWeightReplaced = 0.1;
 
-	private final List<SplitDepth> splits;
+	private List<SplitDepth> splits;
 	private double totalFitAdjustment;
+	private boolean snapshot;
 
+	public NEATTraining(final CalculateScore calculateScore,final Population population)
+	{
+		if( population.size()<1 )
+		{
+			throw new TrainingError("Population can not be empty.");
+		}
+
+		NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
+		this.setCalculateScore(new GeneticScoreAdapter(calculateScore));
+		this.setPopulation(population);
+		this.inputCount = genome.getInputCount();
+		this.outputCount = genome.getOutputCount();
+
+		init();
+	}
+	
 	public NEATTraining(final CalculateScore calculateScore,
 			final int inputCount, final int outputCount,
 			final int populationSize) {
@@ -128,9 +147,13 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 							inputCount, outputCount));
 		}
 
-		final NEATGenome genome = new NEATGenome(this, 1, inputCount,
-				outputCount);
-
+		init();
+	}
+	
+	private void init()
+	{
+		NEATGenome genome = (NEATGenome) getPopulation().getGenomes().get(0);
+		
 		getPopulation().setInnovations(
 				new NEATInnovationList(genome.getLinks(), genome.getNeurons()));
 
@@ -779,4 +802,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
 	}
+
+	public boolean isSnapshot() {
+		return snapshot;
+	}
+
+	public void setSnapshot(boolean snapshot) {
+		this.snapshot = snapshot;
+	}
+	
+	
 }
