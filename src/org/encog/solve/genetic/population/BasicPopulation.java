@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.encog.neural.networks.training.genetic.NeuralGenome;
 import org.encog.solve.genetic.genome.Genome;
+import org.encog.solve.genetic.innovation.InnovationList;
 import org.encog.solve.genetic.species.Species;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
@@ -27,6 +28,7 @@ public class BasicPopulation implements Population {
 	private double oldAgePenalty = 0.3;
 	private double survivalRate = 0.2;
 	private final List<Species> species = new ArrayList<Species>();
+	private InnovationList innovations;
 	
 	/**
 	 * The population.
@@ -155,4 +157,14 @@ public class BasicPopulation implements Population {
 	public List<Species> getSpecies() {
 		return species;
 	}
+
+	public InnovationList getInnovations() {
+		return innovations;
+	}
+
+	public void setInnovations(InnovationList innovations) {
+		this.innovations = innovations;
+	}
+	
+	
 }

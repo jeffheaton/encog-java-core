@@ -486,8 +486,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			}
 
 			// get innovation numbers for each gene at this point
-			int id1 = ((NEATLinkGene)this.linksChromosome.get(g1)).getInnovationId();
-			int id2 = ((NEATLinkGene)genome.getLinks().get(g2)).getInnovationId();
+			long id1 = ((NEATLinkGene)this.linksChromosome.get(g1)).getInnovationId();
+			long id2 = ((NEATLinkGene)genome.getLinks().get(g2)).getInnovationId();
 
 			// innovation numbers are identical so increase the matched score
 			if (id1 == id2) {

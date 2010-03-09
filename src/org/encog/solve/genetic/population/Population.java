@@ -2,8 +2,8 @@ package org.encog.solve.genetic.population;
 
 import java.util.List;
 
-import org.encog.neural.networks.training.neat.NEATGenome;
 import org.encog.solve.genetic.genome.Genome;
+import org.encog.solve.genetic.innovation.InnovationList;
 import org.encog.solve.genetic.species.Species;
 
 public interface Population {
@@ -32,4 +32,7 @@ public interface Population {
 	double getSurvivalRate();
 	void setSurvivalRate(double survivalRate);
 	public List<Species> getSpecies();
+	public InnovationList getInnovations();
+	public void setInnovations(InnovationList innovations);
+	
 }

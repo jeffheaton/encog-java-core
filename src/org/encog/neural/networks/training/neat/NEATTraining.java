@@ -32,7 +32,6 @@ package org.encog.neural.networks.training.neat;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.encog.EncogError;
@@ -46,13 +45,11 @@ import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
-import org.encog.neural.networks.training.neat.NEATInnovationDB;
 import org.encog.solve.genetic.GeneticAlgorithm;
 import org.encog.solve.genetic.genome.Chromosome;
 import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.genome.GenomeComparator;
 import org.encog.solve.genetic.population.BasicPopulation;
-import org.encog.solve.genetic.population.Population;
 import org.encog.solve.genetic.species.BasicSpecies;
 import org.encog.solve.genetic.species.Species;
 
@@ -66,7 +63,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	private final int inputCount;
 	private final int outputCount;
-	private final NEATInnovationDB innovations;
 	private final List<SplitDepth> splits;
 	private double bestEverFitness;
 	private double totalFitAdjustment;
@@ -113,7 +109,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		NEATGenome genome = new NEATGenome(this, 1, inputCount, outputCount);
 
-		this.innovations = new NEATInnovationDB(genome.getLinks(), genome.getNeurons());
+		this.getPopulation().setInnovations( new NEATInnovationList(genome.getLinks(), genome.getNeurons()));
 
 		this.splits = split(null, 0, 1, 0);
 
@@ -345,8 +341,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 	}
 
-	public NEATInnovationDB getInnovations() {
-		return this.innovations;
+	public NEATInnovationList getInnovations() {
+		return (NEATInnovationList)this.getPopulation().getInnovations();
 	}
 
 	public void sortAndRecord() {
@@ -566,7 +562,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		Collections.sort(vecNeurons);
 
 		for (int i = 0; i < vecNeurons.size(); i++) {
-			babyNeurons.add(this.innovations.createNeuronFromID(vecNeurons
+			babyNeurons.add(this.getInnovations().createNeuronFromID(vecNeurons
 					.get(i)));
 		}
 

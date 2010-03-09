@@ -45,7 +45,7 @@ public class NEATLinkGene extends BasicGene {
 			int fromNeuronID, 
 			int toNeuronID, 
 			boolean enabled, 
-			int innovationID, 
+			long innovationID, 
 			double weight,
 			boolean recurrent) {
 		this.fromNeuronID = fromNeuronID;

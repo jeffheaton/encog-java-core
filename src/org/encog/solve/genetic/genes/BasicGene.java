@@ -5,14 +5,14 @@ import org.encog.neural.networks.training.neat.NEATLinkGene;
 public abstract class BasicGene implements Gene {
 
 	private int id = -1;
-	private int innovationId = -1;
+	private long innovationId = -1;
 	private boolean enabled = true;
 	
 	public int getId() {
 		return this.id ;
 	}
 
-	public int getInnovationId() {
+	public long getInnovationId() {
 		return this.innovationId;
 	}
 
@@ -33,7 +33,7 @@ public abstract class BasicGene implements Gene {
 		this.id = id;
 	}
 
-	public void setInnovationId(int innovationID) {
+	public void setInnovationId(long innovationID) {
 		this.innovationId = innovationID;
 	}
 	
