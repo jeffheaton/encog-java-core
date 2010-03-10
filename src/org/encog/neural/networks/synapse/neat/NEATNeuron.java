@@ -66,7 +66,7 @@ public class NEATNeuron {
 	 * The neuron id.
 	 */
 	@EGAttribute
-	private final int neuronID;
+	private final long neuronID;
 	
 	/**
 	 * The type of neuron this is.
@@ -120,7 +120,7 @@ public class NEATNeuron {
 	 * @param splitX THe split for x.
 	 * @param activationResponse The activation response.
 	 */
-	public NEATNeuron(final NEATNeuronType neuronType, final int neuronID,
+	public NEATNeuron(final NEATNeuronType neuronType, final long neuronID,
 			final double splitY, final double splitX,
 			final double activationResponse) {
 		this.neuronType = neuronType;
@@ -151,7 +151,7 @@ public class NEATNeuron {
 	/**
 	 * @return The neuron id.
 	 */
-	public int getNeuronID() {
+	public long getNeuronID() {
 		return neuronID;
 	}
 

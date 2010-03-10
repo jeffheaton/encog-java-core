@@ -47,18 +47,18 @@ import org.encog.solve.genetic.genes.Gene;
 public class NEATNeuronGene extends BasicGene {
 
 	private double activationResponse;
-	private int id;
+	private long id;
 	private NEATNeuronType neuronType;
 	private boolean recurrent;
 	private double splitX;
 	private double splitY;
 
-	public NEATNeuronGene(final NEATNeuronType type, final int id,
+	public NEATNeuronGene(final NEATNeuronType type, final long id,
 			final double splitY, final double splitX) {
 		this(type, id, splitY, splitX, false, 1.0);
 	}
 
-	public NEATNeuronGene(final NEATNeuronType type, final int id,
+	public NEATNeuronGene(final NEATNeuronType type, final long id,
 			final double splitY, final double splitX, final boolean recurrent,
 			final double act) {
 		neuronType = type;
@@ -90,7 +90,7 @@ public class NEATNeuronGene extends BasicGene {
 	}
 
 	@Override
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -115,7 +115,7 @@ public class NEATNeuronGene extends BasicGene {
 	}
 
 	@Override
-	public void setId(final int id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 

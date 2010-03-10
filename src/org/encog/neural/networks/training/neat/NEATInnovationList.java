@@ -35,6 +35,7 @@ import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genome.Chromosome;
 import org.encog.solve.genetic.innovation.BasicInnovationList;
 import org.encog.solve.genetic.innovation.Innovation;
+import org.encog.solve.genetic.population.Population;
 
 /**
  * Implements a NEAT innovation list.
@@ -48,16 +49,18 @@ import org.encog.solve.genetic.innovation.Innovation;
  */
 public class NEATInnovationList extends BasicInnovationList {
 
-	private int nextInnovationID = 0;
-	private int nextNeuronID = 0;
+	private long nextNeuronID = 0;
 
-	public NEATInnovationList(final Chromosome links, final Chromosome neurons) {
+	private Population population;
+	
+	public NEATInnovationList(Population population, final Chromosome links, final Chromosome neurons) {
 
+		this.population = population;
 		for (final Gene gene : neurons.getGenes()) {
 			final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
 
 			final NEATInnovation innovation = new NEATInnovation(neuronGene,
-					assignInnovationID(), assignNeuronID());
+					population.assignInnovationID(), assignNeuronID());
 			add(innovation);
 		}
 
@@ -65,25 +68,17 @@ public class NEATInnovationList extends BasicInnovationList {
 			final NEATLinkGene linkGene = (NEATLinkGene) gene;
 			final NEATInnovation innovation = new NEATInnovation(linkGene
 					.getFromNeuronID(), linkGene.getToNeuronID(),
-					NEATInnovationType.NewLink, assignInnovationID());
+					NEATInnovationType.NewLink, this.population.assignInnovationID());
 			add(innovation);
 
 		}
 	}
 
-	private int assignInnovationID() {
-		return nextInnovationID++;
-	}
-
-	public int assignInnovationNumber() {
-		return nextInnovationID++;
-	}
-
-	private int assignNeuronID() {
+	private long assignNeuronID() {
 		return nextNeuronID++;
 	}
 
-	public NEATInnovation checkInnovation(final int in, final int out,
+	public NEATInnovation checkInnovation(final long in, final long out,
 			final NEATInnovationType type) {
 		for (final Innovation i : getInnovations()) {
 			final NEATInnovation innovation = (NEATInnovation) i;
@@ -97,7 +92,7 @@ public class NEATInnovationList extends BasicInnovationList {
 		return null;
 	}
 
-	public NEATNeuronGene createNeuronFromID(final int neuronID) {
+	public NEATNeuronGene createNeuronFromID(final long neuronID) {
 		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden,
 				0, 0, 0);
 
@@ -116,10 +111,10 @@ public class NEATInnovationList extends BasicInnovationList {
 		return result;
 	}
 
-	public void createNewInnovation(final int in, final int out,
+	public void createNewInnovation(final long in, final long out,
 			final NEATInnovationType type) {
 		final NEATInnovation newInnovation = new NEATInnovation(in, out, type,
-				assignInnovationID());
+				this.population.assignInnovationID());
 
 		if (type == NEATInnovationType.NewNeuron) {
 			newInnovation.setNeuronID(assignNeuronID());
@@ -128,11 +123,11 @@ public class NEATInnovationList extends BasicInnovationList {
 		add(newInnovation);
 	}
 
-	public int createNewInnovation(final int from, final int to,
+	public long createNewInnovation(final long from, final long to,
 			final NEATInnovationType innovationType,
 			final NEATNeuronType neuronType, final double x, final double y) {
 		final NEATInnovation newInnovation = new NEATInnovation(from, to,
-				innovationType, assignInnovationID(), neuronType, x, y);
+				innovationType, population.assignInnovationID(), neuronType, x, y);
 
 		if (innovationType == NEATInnovationType.NewNeuron) {
 			newInnovation.setNeuronID(assignNeuronID());
@@ -140,6 +135,6 @@ public class NEATInnovationList extends BasicInnovationList {
 
 		add(newInnovation);
 
-		return (nextNeuronID - 1); // ??????? should it be innov?
+		return (this.nextNeuronID - 1); // ??????? should it be innov?
 	}
 }

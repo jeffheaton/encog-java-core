@@ -42,7 +42,7 @@ public abstract class BasicGene implements Gene {
 	/**
 	 * ID of this gene, -1 for unassigned.
 	 */
-	private int id = -1;
+	private long id = -1;
 	
 	/**
 	 * Innovation ID, -1 for unassigned.
@@ -59,7 +59,7 @@ public abstract class BasicGene implements Gene {
 	/**
 	 * @return The id of this gene.
 	 */
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
@@ -88,7 +88,7 @@ public abstract class BasicGene implements Gene {
 	 * Set the id for this gene.
 	 * @param id The id for this gene.
 	 */
-	public void setId(final int id) {
+	public void setId(final long id) {
 		this.id = id;
 	}
 

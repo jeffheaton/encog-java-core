@@ -46,12 +46,12 @@ import org.encog.solve.genetic.genes.Gene;
  */
 public class NEATLinkGene extends BasicGene {
 
-	private int fromNeuronID;
+	private long fromNeuronID;
 	private boolean recurrent;
-	private int toNeuronID;
+	private long toNeuronID;
 	private double weight;
 
-	public NEATLinkGene(final int fromNeuronID, final int toNeuronID,
+	public NEATLinkGene(final long fromNeuronID, final long toNeuronID,
 			final boolean enabled, final long innovationID,
 			final double weight, final boolean recurrent) {
 		this.fromNeuronID = fromNeuronID;
@@ -72,11 +72,11 @@ public class NEATLinkGene extends BasicGene {
 		weight = other.weight;
 	}
 
-	public int getFromNeuronID() {
+	public long getFromNeuronID() {
 		return fromNeuronID;
 	}
 
-	public int getToNeuronID() {
+	public long getToNeuronID() {
 		return toNeuronID;
 	}
 

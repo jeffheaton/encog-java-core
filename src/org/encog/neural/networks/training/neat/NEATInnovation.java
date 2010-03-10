@@ -46,16 +46,50 @@ import org.encog.solve.genetic.innovation.BasicInnovation;
  */
 public class NEATInnovation extends BasicInnovation {
 
-	private final int fromNeuronID;
+	/**
+	 * The from neuron id.
+	 */
+	private final long fromNeuronID;
+	
+	/**
+	 * The type of innovation.
+	 */
 	private final NEATInnovationType innovationType;
-	private int neuronID;
+	
+	/**
+	 * The neuron id.
+	 */
+	private long neuronID;
+	
+	/**
+	 * The type of neuron, or none, if this is a link innovation.
+	 */
 	private final NEATNeuronType neuronType;
+	
+	/**
+	 * The split x property.
+	 */
 	private final double splitX;
+	
+	/**
+	 * The split y property.
+	 */
 	private final double splitY;
-	private final int toNeuronID;
+	
+	/**
+	 * The to neuron's id.
+	 */
+	private final long toNeuronID;
 
-	public NEATInnovation(final int fromNeuronID, final int toNeuronID,
-			final NEATInnovationType innovationType, final int innovationID) {
+	/**
+	 * Construct an innovation.
+	 * @param fromNeuronID The from neuron.
+	 * @param toNeuronID The two neuron.
+	 * @param innovationType The innovation type.
+	 * @param innovationID The innovation id.
+	 */
+	public NEATInnovation(final long fromNeuronID, final long toNeuronID,
+			final NEATInnovationType innovationType, final long innovationID) {
 
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
@@ -68,8 +102,18 @@ public class NEATInnovation extends BasicInnovation {
 		neuronType = NEATNeuronType.None;
 	}
 
-	public NEATInnovation(final int fromNeuronID, final int toNeuronID,
-			final NEATInnovationType innovationType, final int innovationID,
+	/**
+	 * Construct an innovation.
+	 * @param fromNeuronID The from neuron.
+	 * @param toNeuronID The to neuron.
+	 * @param innovationType The innovation type.
+	 * @param innovationID The innovation id.
+	 * @param neuronType The neuron type.
+	 * @param x The x coordinate.
+	 * @param y THe y coordinate.
+	 */
+	public NEATInnovation(final long fromNeuronID, final long toNeuronID,
+			final NEATInnovationType innovationType, final long innovationID,
 			final NEATNeuronType neuronType, final double x, final double y) {
 		this.fromNeuronID = fromNeuronID;
 		this.toNeuronID = toNeuronID;
@@ -82,8 +126,14 @@ public class NEATInnovation extends BasicInnovation {
 		neuronID = 0;
 	}
 
+	/**
+	 * Construct an innovation.
+	 * @param neuronGene The neuron gene.
+	 * @param innovationID The innovation id.
+	 * @param neuronID The neuron id.
+	 */
 	public NEATInnovation(final NEATNeuronGene neuronGene,
-			final int innovationID, final int neuronID) {
+			final long innovationID, final long neuronID) {
 
 		this.neuronID = neuronID;
 		setInnovationID(innovationID);
@@ -96,35 +146,60 @@ public class NEATInnovation extends BasicInnovation {
 		toNeuronID = -1;
 	}
 
-	public int getFromNeuronID() {
+	/**
+	 * @return The from neuron id.
+	 */
+	public long getFromNeuronID() {
 		return fromNeuronID;
 	}
 
+	/**
+	 * @return The innovation type.
+	 */
 	public NEATInnovationType getInnovationType() {
 		return innovationType;
 	}
 
-	public int getNeuronID() {
+	/**
+	 * @return The neuron ID.
+	 */
+	public long getNeuronID() {
 		return neuronID;
 	}
 
+	/**
+	 * @return The neuron type.
+	 */
 	public NEATNeuronType getNeuronType() {
 		return neuronType;
 	}
 
+	/**
+	 * @return The split x.
+	 */
 	public double getSplitX() {
 		return splitX;
 	}
 
+	/**
+	 * @return The split y.
+	 */
 	public double getSplitY() {
 		return splitY;
 	}
 
-	public int getToNeuronID() {
+	/**
+	 * @return The to neuron id.
+	 */
+	public long getToNeuronID() {
 		return toNeuronID;
 	}
 
-	public void setNeuronID(final int neuronID) {
+	/**
+	 * Set the neuron id.
+	 * @param neuronID The neuron id.
+	 */
+	public void setNeuronID(final long neuronID) {
 		this.neuronID = neuronID;
 	}
 

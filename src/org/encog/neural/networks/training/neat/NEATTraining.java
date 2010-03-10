@@ -155,7 +155,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		NEATGenome genome = (NEATGenome) getPopulation().getGenomes().get(0);
 		
 		getPopulation().setInnovations(
-				new NEATInnovationList(genome.getLinks(), genome.getNeurons()));
+				new NEATInnovationList(getPopulation(), genome.getLinks(), genome.getNeurons()));
 
 		splits = split(null, 0, 1, 0);
 
@@ -175,7 +175,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		speciateAndCalculateSpawnLevels();
 	}
 
-	public void addNeuronID(final int nodeID, final List<Integer> vec) {
+	public void addNeuronID(final long nodeID, final List<Long> vec) {
 		for (int i = 0; i < vec.size(); i++) {
 			if (vec.get(i) == nodeID) {
 				return;
@@ -213,7 +213,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	public void adjustSpeciesFitnesses() {
 		for (final Species s : getPopulation().getSpecies()) {
-			s.adjustFitness();
+			s.adjustScore();
 		}
 	}
 
@@ -283,7 +283,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		final Chromosome babyNeurons = new Chromosome();
 		final Chromosome babyGenes = new Chromosome();
 
-		final List<Integer> vecNeurons = new ArrayList<Integer>();
+		final List<Long> vecNeurons = new ArrayList<Long>();
 
 		int curMom = 0;
 		int curDad = 0;
@@ -610,7 +610,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 			if ((s.getGensNoImprovement() > paramNumGensAllowedNoImprovement)
 					&& getComparator().isBetterThan(bestEverFitness,
-							s.getBestFitness())) {
+							s.getBestScore())) {
 				getPopulation().getSpecies().remove(s);
 			}
 		}

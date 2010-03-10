@@ -44,7 +44,7 @@ public interface Gene extends Comparable<Gene> {
 	 * Get the ID of this gene, -1 for undefined.
 	 * @return The ID of this gene.
 	 */
-	public int getId();
+	public long getId();
 
 	/**
 	 * @return The innovation ID of this gene.
