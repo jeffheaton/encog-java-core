@@ -217,29 +217,6 @@ public class CalculateGradient {
 	}
 
 	/**
-	 * Create a new neural data pair object of the correct size for the neural
-	 * network that is being trained. This object will be passed to the getPair
-	 * method to allow the neural data pair objects to be copied to it.
-	 * 
-	 * @return A new neural data pair object.
-	 */
-	public NeuralDataPair createPair() {
-		NeuralDataPair result;
-
-		final int idealSize = this.training.getIdealSize();
-		final int inputSize = this.training.getInputSize();
-
-		if (idealSize > 0) {
-			result = new BasicNeuralDataPair(new BasicNeuralData(inputSize),
-					new BasicNeuralData(idealSize));
-		} else {
-			result = new BasicNeuralDataPair(new BasicNeuralData(inputSize));
-		}
-
-		return result;
-	}
-
-	/**
 	 * Create the worker threads for use in multithreaded training.
 	 * 
 	 * @param training

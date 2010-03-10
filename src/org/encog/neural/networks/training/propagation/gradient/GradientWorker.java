@@ -33,6 +33,7 @@ package org.encog.neural.networks.training.propagation.gradient;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.concurrency.EncogTask;
 
@@ -126,7 +127,9 @@ public class GradientWorker implements EncogTask {
 	 */
 	public void run() {		
 		final double[] weights = this.owner.getWeights();
-		final NeuralDataPair pair = this.owner.createPair();
+		final NeuralDataPair pair = BasicNeuralDataPair.createPair(
+				this.training.getInputSize(), 
+				this.training.getIdealSize());
 
 		if ((this.training instanceof Indexable) && (this.high != this.low)) {
 			final Indexable t2 = (Indexable) this.training;

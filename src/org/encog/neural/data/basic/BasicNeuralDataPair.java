@@ -142,5 +142,26 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 		builder.append("]");
 		return builder.toString();
 	}
+	
+	/**
+	 * Create a new neural data pair object of the correct size for the neural
+	 * network that is being trained. This object will be passed to the getPair
+	 * method to allow the neural data pair objects to be copied to it.
+	 * @param inputSize The size of the input data.
+	 * @param idealSize The size of the ideal data.
+	 * @return A new neural data pair object.
+	 */
+	public static NeuralDataPair createPair(final int inputSize, final int idealSize) {
+		NeuralDataPair result;
+
+		if (idealSize > 0) {
+			result = new BasicNeuralDataPair(new BasicNeuralData(inputSize),
+					new BasicNeuralData(idealSize));
+		} else {
+			result = new BasicNeuralDataPair(new BasicNeuralData(inputSize));
+		}
+
+		return result;
+	}
 
 }
