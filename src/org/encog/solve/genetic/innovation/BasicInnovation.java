@@ -34,12 +34,22 @@ package org.encog.solve.genetic.innovation;
  */
 public class BasicInnovation implements Innovation {
 
+	/**
+	 * The innovation id.
+	 */
 	private long innovationID;
 
+	/**
+	 * @return The innovation ID.
+	 */
 	public long getInnovationID() {
 		return innovationID;
 	}
 
+	/**
+	 * Set the innovation id.
+	 * @param innovationID The innovation id.
+	 */
 	public void setInnovationID(final long innovationID) {
 		this.innovationID = innovationID;
 	}

@@ -33,13 +33,25 @@ package org.encog.solve.genetic.genes;
  * A gene that contains an integer value.
  */
 public class IntegerGene extends BasicGene {
+	
+	/**
+	 * The value of this gene.
+	 */
 	private int value;
 
+	/**
+	 * Copy another gene to this one.
+	 * @param gene The other gene to copy.
+	 */
 	public void copy(final Gene gene) {
 		value = ((IntegerGene) gene).getValue();
 
 	}
 
+	/**
+	 * Determine if this gene has the same values as another.
+	 * @param obj The other gene.
+	 */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof IntegerGene) {
@@ -49,14 +61,24 @@ public class IntegerGene extends BasicGene {
 		}
 	}
 
+	/**
+	 * @return The value of this gene.
+	 */
 	public int getValue() {
 		return value;
 	}
 
+	/**
+	 * Set the value of this gene.
+	 * @param value The value of this gene.
+	 */
 	public void setValue(final int value) {
 		this.value = value;
 	}
 
+	/**
+	 * @return The gene as a string.
+	 */
 	@Override
 	public String toString() {
 		return "" + value;

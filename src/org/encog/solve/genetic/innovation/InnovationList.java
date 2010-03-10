@@ -36,9 +36,22 @@ import java.util.List;
  */
 public interface InnovationList {
 
+	/**
+	 * Add an innovation.
+	 * @param innovation The innovation added.
+	 */
 	void add(Innovation innovation);
 
+	/**
+	 * Get the innovation specified by index.
+	 * @param id The index.
+	 * @return The innovation.
+	 */
 	Innovation get(int id);
 
+	/**
+	 * @return A list of innovations.
+	 * @return The innovation list.
+	 */
 	List<Innovation> getInnovations();
 }

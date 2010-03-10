@@ -52,11 +52,20 @@ public class Chromosome {
 	 */
 	private final List<Gene> genes = new ArrayList<Gene>();
 
-	public void add(final Gene neuronGene) {
-		genes.add(neuronGene);
+	/**
+	 * Add a gene.
+	 * @param gene The gene to add.
+	 */
+	public void add(final Gene gene) {
+		genes.add(gene);
 
 	}
 
+	/**
+	 * Get an individual gene.
+	 * @param i
+	 * @return
+	 */
 	public Gene get(final int i) {
 		return genes.get(i);
 	}
@@ -81,6 +90,9 @@ public class Chromosome {
 		return genes;
 	}
 
+	/**
+	 * @return The number of genes in this chromosome.
+	 */
 	public int size() {
 		return genes.size();
 	}

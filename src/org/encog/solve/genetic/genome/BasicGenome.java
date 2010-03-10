@@ -52,6 +52,9 @@ public abstract class BasicGenome implements Genome {
 		this.geneticAlgorithm = geneticAlgorithm;
 	}
 
+	/**
+	 * @return The number of genes in this genome.
+	 */
 	public int calculateGeneCount() {
 		double result = 0;
 

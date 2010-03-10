@@ -34,13 +34,31 @@ package org.encog.solve.genetic.genes;
  */
 public interface Gene extends Comparable<Gene> {
 	
+	/**
+	 * Copy another gene to this one.
+	 * @param gene The other gene to copy.
+	 */
 	public void copy(Gene gene);
 
+	/**
+	 * Get the ID of this gene, -1 for undefined.
+	 * @return The ID of this gene.
+	 */
 	public int getId();
 
+	/**
+	 * @return The innovation ID of this gene.
+	 */
 	public long getInnovationId();
 
+	/**
+	 * @return True, if this gene is enabled.
+	 */
 	public boolean isEnabled();
 
+	/**
+	 * Determine if this gene is enabled.
+	 * @param e True if this gene is enabled.
+	 */
 	public void setEnabled(boolean e);
 }

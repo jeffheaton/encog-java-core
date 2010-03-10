@@ -35,6 +35,19 @@ import org.encog.solve.genetic.genome.Chromosome;
  * Specifies how "crossover" or mating happens.
  */
 public interface Crossover {
+
+	/**
+	 * Mate two chromosomes.
+	 * 
+	 * @param mother
+	 *            The mother.
+	 * @param father
+	 *            The father.
+	 * @param offspring1
+	 *            The first offspring.
+	 * @param offspring2
+	 *            The second offspring.
+	 */
 	public void mate(final Chromosome mother, final Chromosome father,
 			final Chromosome offspring1, final Chromosome offspring2);
 }

@@ -52,14 +52,18 @@ import org.slf4j.LoggerFactory;
 public class GeneticAlgorithm {
 
 	/**
-	 * Threadpool timeout.
+	 * The score calculation object.
 	 */
-	public static final int TIMEOUT = 120;
-
 	private CalculateGenomeScore calculateScore;
 
+	/**
+	 * The genome comparator.
+	 */
 	private GenomeComparator comparator;
 
+	/**
+	 * The crossover object.
+	 */
 	private Crossover crossover;
 
 	/**
@@ -74,6 +78,9 @@ public class GeneticAlgorithm {
 	 */
 	private double matingPopulation;
 
+	/**
+	 * The mutation object to use.
+	 */
 	private Mutate mutate;
 
 	/**
@@ -87,21 +94,37 @@ public class GeneticAlgorithm {
 	 */
 	private double percentToMate;
 
+	/**
+	 * The population.
+	 */
 	private Population population;
 
+	/**
+	 * Calculate the score for this genome.  The genome's score will be set.
+	 * @param g The genome to calculate for.
+	 */
 	public void calculateScore(final Genome g) {
 		final double score = calculateScore.calculateScore(g);
 		g.setScore(score);
 	}
 
+	/**
+	 * @return The score calculation object.
+	 */
 	public CalculateGenomeScore getCalculateScore() {
 		return calculateScore;
 	}
 
+	/**
+	 * @return The comparator.
+	 */
 	public GenomeComparator getComparator() {
 		return comparator;
 	}
 
+	/**
+	 * @return The crossover object.
+	 */
 	public Crossover getCrossover() {
 		return crossover;
 	}
@@ -115,6 +138,9 @@ public class GeneticAlgorithm {
 		return matingPopulation;
 	}
 
+	/**
+	 * @return The mutate object.
+	 */
 	public Mutate getMutate() {
 		return mutate;
 	}
@@ -137,6 +163,9 @@ public class GeneticAlgorithm {
 		return percentToMate;
 	}
 
+	/**
+	 * @return The population.
+	 */
 	public Population getPopulation() {
 		return population;
 	}
@@ -180,14 +209,26 @@ public class GeneticAlgorithm {
 		population.sort();
 	}
 
+	/**
+	 * Set the score calculation object.
+	 * @param calculateScore The score calculation object.
+	 */
 	public void setCalculateScore(final CalculateGenomeScore calculateScore) {
 		this.calculateScore = calculateScore;
 	}
 
+	/**
+	 * Set the comparator.
+	 * @param comparator The comparator.
+	 */
 	public void setComparator(final GenomeComparator comparator) {
 		this.comparator = comparator;
 	}
 
+	/**
+	 * Set the crossover object.
+	 * @param crossover The crossover object.
+	 */
 	public void setCrossover(final Crossover crossover) {
 		this.crossover = crossover;
 	}
@@ -202,6 +243,10 @@ public class GeneticAlgorithm {
 		this.matingPopulation = matingPopulation;
 	}
 
+	/**
+	 * Set the mutate object.
+	 * @param mutate The mutate object.
+	 */
 	public void setMutate(final Mutate mutate) {
 		this.mutate = mutate;
 	}
@@ -226,6 +271,10 @@ public class GeneticAlgorithm {
 		this.percentToMate = percentToMate;
 	}
 
+	/**
+	 * Set the population.
+	 * @param population The population.
+	 */
 	public void setPopulation(final Population population) {
 		this.population = population;
 	}

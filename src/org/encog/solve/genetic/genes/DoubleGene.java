@@ -35,19 +35,33 @@ package org.encog.solve.genetic.genes;
 public class DoubleGene extends BasicGene {
 	private double value;
 
+	/**
+	 * Copy another gene to this one.
+	 * @param gene The other gene to copy.
+	 */
 	public void copy(final Gene gene) {
 		value = ((DoubleGene) gene).getValue();
 
 	}
 
+	/**
+	 * @return The gene value.
+	 */
 	public double getValue() {
 		return value;
 	}
 
+	/**
+	 * Set the value of the gene.
+	 * @param value The gene's value.
+	 */
 	public void setValue(final double value) {
 		this.value = value;
 	}
 
+	/**
+	 * @return The gene as a string.
+	 */
 	@Override
 	public String toString() {
 		return "" + value;

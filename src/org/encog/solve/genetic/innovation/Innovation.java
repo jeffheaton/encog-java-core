@@ -36,8 +36,15 @@ package org.encog.solve.genetic.innovation;
  */
 public interface Innovation {
 
+	/**
+	 * @return The innovation id.
+	 */
 	long getInnovationID();
 
+	/**
+	 * Set the innovation id.
+	 * @param innovationID The innovation id.
+	 */
 	void setInnovationID(long innovationID);
 
 }

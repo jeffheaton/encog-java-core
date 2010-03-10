@@ -34,15 +34,31 @@ import java.util.Comparator;
 import org.encog.neural.networks.training.neat.NEATGenome;
 
 /**
- * Used to comapre two genomes.
+ * Used to compare two genomes, a score object is used.
  */
 public class GenomeComparator implements Comparator<Genome> {
 	private final CalculateGenomeScore calculateScore;
 
+	/**
+	 * Construct the genome comparator.
+	 * 
+	 * @param calculateScore
+	 *            The score calculation object to use.
+	 */
 	public GenomeComparator(final CalculateGenomeScore calculateScore) {
 		this.calculateScore = calculateScore;
 	}
 
+	/**
+	 * Apply a bonus, this is a simple percent that is applied in the direction
+	 * specified by the "should minimize" property of the score function.
+	 * 
+	 * @param value
+	 *            The current value.
+	 * @param bonus
+	 *            The bonus.
+	 * @return The resulting value.
+	 */
 	public double applyBonus(final double value, final double bonus) {
 		final double amount = value * bonus;
 		if (calculateScore.shouldMinimize()) {
@@ -52,6 +68,17 @@ public class GenomeComparator implements Comparator<Genome> {
 		}
 	}
 
+	/**
+	 * Apply a penalty, this is a simple percent that is applied in the
+	 * direction specified by the "should minimize" property of the score
+	 * function.
+	 * 
+	 * @param value
+	 *            The current value.
+	 * @param bonus
+	 *            The penalty.
+	 * @return The resulting value.
+	 */
 	public double applyPenalty(final double value, final double bonus) {
 		final double amount = value * bonus;
 		if (calculateScore.shouldMinimize()) {
@@ -61,6 +88,14 @@ public class GenomeComparator implements Comparator<Genome> {
 		}
 	}
 
+	/**
+	 * Determine the best score from two scores, uses the "should minimize"
+	 * property of the score function.
+	 * 
+	 * @param d1 The first score.
+	 * @param d2 The second score.
+	 * @return The best score.
+	 */
 	public double bestScore(final double d1, final double d2) {
 		if (calculateScore.shouldMinimize()) {
 			return Math.min(d1, d2);
@@ -69,22 +104,29 @@ public class GenomeComparator implements Comparator<Genome> {
 		}
 	}
 
+	/**
+	 * Compare two genomes.
+	 * @param genome1 The first genome.
+	 * @param genome2 The second genome.
+	 * @return Zero if equal, or less than or greater than zero to indicate order.
+	 */
 	public int compare(final Genome genome1, final Genome genome2) {
 		return Double.compare(genome1.getScore(), genome2.getScore());
 	}
 
-	public int compare(final NEATGenome g1, final NEATGenome g2) {
-		if (calculateScore.shouldMinimize()) {
-			return Double.compare(g1.getScore(), g2.getScore());
-		} else {
-			return Double.compare(g2.getScore(), g1.getScore());
-		}
-	}
-
+	/**
+	 * @return The score calculation object.
+	 */
 	public CalculateGenomeScore getCalculateScore() {
 		return calculateScore;
 	}
 
+	/**
+	 * Determine if one score is better than the other.
+	 * @param d1 The first score to compare.
+	 * @param d2 The second score to compare.
+	 * @return True if d1 is better than d2.
+	 */
 	public boolean isBetterThan(final double d1, final double d2) {
 		if (calculateScore.shouldMinimize()) {
 			return d1 < d2;

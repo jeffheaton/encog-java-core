@@ -34,34 +34,68 @@ package org.encog.solve.genetic.genes;
  */
 public abstract class BasicGene implements Gene {
 
+	/**
+	 * Is this gene enabled?
+	 */
 	private boolean enabled = true;
+	
+	/**
+	 * ID of this gene, -1 for unassigned.
+	 */
 	private int id = -1;
+	
+	/**
+	 * Innovation ID, -1 for unassigned.
+	 */
 	private long innovationId = -1;
 
+	/**
+	 * Compare to another gene, sort by innovation id's.
+	 */
 	public int compareTo(final Gene o) {
 		return ((int) (getInnovationId() - o.getInnovationId()));
 	}
 
+	/**
+	 * @return The id of this gene.
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * @return The innovation id of this gene.
+	 */
 	public long getInnovationId() {
 		return innovationId;
 	}
 
+	/**
+	 * @return True, if this gene is enabled.
+	 */
 	public boolean isEnabled() {
 		return enabled;
 	}
 
+	/**
+	 * @param e True, if this gene is enabled.
+	 */
 	public void setEnabled(final boolean e) {
 		enabled = e;
 	}
 
+	/**
+	 * Set the id for this gene.
+	 * @param id The id for this gene.
+	 */
 	public void setId(final int id) {
 		this.id = id;
 	}
 
+	/**
+	 * Set the innovation id for this gene.
+	 * @param innovationID The innovation id for this gene.
+	 */
 	public void setInnovationId(final long innovationID) {
 		innovationId = innovationID;
 	}

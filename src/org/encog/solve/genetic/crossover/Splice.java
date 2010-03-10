@@ -41,6 +41,9 @@ import org.encog.solve.genetic.genome.Chromosome;
  */
 public class Splice implements Crossover {
 
+	/**
+	 * The cut length.
+	 */
 	private final int cutLength;
 
 	public Splice(final int cutLength) {

@@ -37,16 +37,30 @@ import java.util.List;
  */
 public class BasicInnovationList implements InnovationList {
 
+	/**
+	 * The list of innovations.
+	 */
 	private final List<Innovation> list = new ArrayList<Innovation>();
 
+	/**
+	 * Add an innovation.
+	 */
 	public void add(final Innovation innovation) {
 		list.add(innovation);
 	}
 
+	/**
+	 * Get a specific innovation, by index.
+	 * @param id The innovation index id.
+	 * @return The innovation.
+	 */
 	public Innovation get(final int id) {
 		return list.get(id);
 	}
 
+	/**
+	 * @return A list of innovations.
+	 */
 	public List<Innovation> getInnovations() {
 		return list;
 	}

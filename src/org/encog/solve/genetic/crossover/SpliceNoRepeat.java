@@ -40,6 +40,11 @@ import org.encog.solve.genetic.genome.Chromosome;
  * Genes are not allowed to repeat.
  */
 public class SpliceNoRepeat implements Crossover {
+	
+	/**
+	 * The cut length.
+	 */
+	private final int cutLength;
 
 	/**
 	 * Get a list of the genes that have not been taken before. This is useful
@@ -74,9 +79,12 @@ public class SpliceNoRepeat implements Crossover {
 
 		return null;
 	}
+	
 
-	private final int cutLength;
-
+	/**
+	 * Construct a splice crossover.
+	 * @param cutLength The cut length.
+	 */
 	public SpliceNoRepeat(final int cutLength) {
 		this.cutLength = cutLength;
 	}

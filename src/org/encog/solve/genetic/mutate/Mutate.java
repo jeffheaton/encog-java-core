@@ -36,6 +36,10 @@ import org.encog.solve.genetic.genome.Chromosome;
  */
 public interface Mutate {
 
+	/**
+	 * Perform a mutation on the specified chromosome.
+	 * @param chromosome The chromosome to mutate.
+	 */
 	void performMutation(Chromosome chromosome);
 
 }
