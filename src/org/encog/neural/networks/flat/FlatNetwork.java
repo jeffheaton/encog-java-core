@@ -30,8 +30,11 @@
 package org.encog.neural.networks.flat;
 
 import org.encog.mathutil.BoundMath;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 
@@ -142,6 +145,28 @@ public class FlatNetwork {
 			tanh = true;
 		}
 	}
+	
+	public BasicNetwork unflatten()
+	{
+		ActivationFunction activation;
+		BasicNetwork result = new BasicNetwork();
+		
+		if( this.tanh )
+			activation = new ActivationTANH();
+		else
+			activation = new ActivationSigmoid();
+		
+		for(int i=this.layerCounts.length-1;i>=0;i--)
+		{
+			Layer layer = new BasicLayer(activation,true,this.layerCounts[i]);
+			result.addLayer(layer);
+		}
+		result.getStructure().finalizeStructure();
+		
+		NetworkCODEC.arrayToNetwork(this.weights, result);
+		
+		return result;
+	}
 
 	public void calculate(final double[] input, final double[] output) {
 		final int sourceIndex = layerOutput.length - inputCount;
@@ -240,6 +265,12 @@ public class FlatNetwork {
 	 */
 	private double tanh(final double d) {
 		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
+	}
+	
+	public FlatNetwork clone()
+	{
+		BasicNetwork temp = this.unflatten();
+		return new FlatNetwork(temp);
 	}
 
 }

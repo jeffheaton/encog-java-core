@@ -36,17 +36,64 @@ import org.encog.neural.networks.training.propagation.resilient.ResilientPropaga
 
 public class TrainFlatNetwork {
 
+	/**
+	 * The error calculation method.
+	 */
 	private final ErrorCalculation errorCalculation = new ErrorCalculation();
+	
+	/**
+	 * The gradients
+	 */
 	private final double[] gradients;
+	
+	/**
+	 * The last gradients, from the last training iteration.
+	 */
 	private final double[] lastGradient;
+	
+	/**
+	 * The neuron counts, per layer.
+	 */
 	private final int[] layerCounts;
+	
+	/**
+	 * The deltas for each layer
+	 */
 	private final double[] layerDelta;
+	
+	/**
+	 * The layer indexes
+	 */
 	private final int[] layerIndex;
+	
+	/**
+	 * The output from each layer
+	 */
 	private final double[] layerOutput;
+	
+	/**
+	 * The network to train.
+	 */
 	private final FlatNetwork network;
+	
+	/**
+	 * The training data.
+	 */
 	private final NeuralDataSet training;
+	
+	/**
+	 * The update values, for the weights and thresholds.
+	 */
 	private final double[] updateValues;
+	
+	/**
+	 * The index to each layer's weights and thresholds.
+	 */
 	private final int[] weightIndex;
+	
+	/**
+	 * The weights and thresholds.
+	 */
 	private final double[] weights;
 
 	public TrainFlatNetwork(final FlatNetwork network,
