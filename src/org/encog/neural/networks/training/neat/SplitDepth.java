@@ -42,18 +42,36 @@ package org.encog.neural.networks.training.neat;
  */
 public class SplitDepth {
 
+	/**
+	 * The depth.
+	 */
 	private final int depth;
+	
+	/**
+	 * The value.
+	 */
 	private final double value;
 
+	/**
+	 * Construct a split depth.
+	 * @param value The value.
+	 * @param depth The depth.
+	 */
 	public SplitDepth(final double value, final int depth) {
 		this.value = value;
 		this.depth = depth;
 	}
 
+	/**
+	 * @return The depth.
+	 */
 	public int getDepth() {
 		return depth;
 	}
 
+	/**
+	 * @return The value.
+	 */
 	public double getValue() {
 		return value;
 	}

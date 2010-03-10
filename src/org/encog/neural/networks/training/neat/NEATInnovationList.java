@@ -49,10 +49,22 @@ import org.encog.solve.genetic.population.Population;
  */
 public class NEATInnovationList extends BasicInnovationList {
 
+	/**
+	 * The next neuron id.
+	 */
 	private long nextNeuronID = 0;
 
+	/**
+	 * The population.
+	 */
 	private Population population;
-	
+
+	/**
+	 * Construct an innovation list.
+	 * @param population The population.
+	 * @param links The links.
+	 * @param neurons THe neurons.
+	 */
 	public NEATInnovationList(Population population, final Chromosome links, final Chromosome neurons) {
 
 		this.population = population;
@@ -74,10 +86,21 @@ public class NEATInnovationList extends BasicInnovationList {
 		}
 	}
 
+	/**
+	 * Assign a neuron ID.
+	 * @return The neuron id.
+	 */
 	private long assignNeuronID() {
 		return nextNeuronID++;
 	}
 
+	/**
+	 * Check to see if we already have an innovation.
+	 * @param in The input neuron.
+	 * @param out THe output neuron.
+	 * @param type The type.
+	 * @return The innovation, either new or existing if found.
+	 */
 	public NEATInnovation checkInnovation(final long in, final long out,
 			final NEATInnovationType type) {
 		for (final Innovation i : getInnovations()) {
@@ -92,6 +115,11 @@ public class NEATInnovationList extends BasicInnovationList {
 		return null;
 	}
 
+	/**
+	 * Create a new neuron gene from an id.
+	 * @param neuronID The neuron id.
+	 * @return The neuron gene.
+	 */
 	public NEATNeuronGene createNeuronFromID(final long neuronID) {
 		final NEATNeuronGene result = new NEATNeuronGene(NEATNeuronType.Hidden,
 				0, 0, 0);
@@ -111,6 +139,12 @@ public class NEATInnovationList extends BasicInnovationList {
 		return result;
 	}
 
+	/**
+	 * Create a new innovation.
+	 * @param in The input neuron.
+	 * @param out The output neuron.
+	 * @param type The type.
+	 */
 	public void createNewInnovation(final long in, final long out,
 			final NEATInnovationType type) {
 		final NEATInnovation newInnovation = new NEATInnovation(in, out, type,
@@ -123,6 +157,16 @@ public class NEATInnovationList extends BasicInnovationList {
 		add(newInnovation);
 	}
 
+	/**
+	 * Create a new innovation.
+	 * @param from The from neuron.
+	 * @param to The to neuron.
+	 * @param innovationType THe innovation type.
+	 * @param neuronType The neuron type.
+	 * @param x The x-coordinate.
+	 * @param y The y-coordinate.
+	 * @return The new innovation.
+	 */
 	public long createNewInnovation(final long from, final long to,
 			final NEATInnovationType innovationType,
 			final NEATNeuronType neuronType, final double x, final double y) {

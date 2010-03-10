@@ -41,5 +41,12 @@ package org.encog.neural.networks.training.neat;
  * 
  */
 public enum NEATInnovationType {
-	NewLink, NewNeuron
+	/**
+	 * A new link.
+	 */
+	NewLink, 
+	/**
+	 * A new neuron.
+	 */
+	NewNeuron
 }

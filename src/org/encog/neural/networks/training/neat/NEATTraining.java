@@ -62,8 +62,8 @@ enum NEATParent {
 	/**
 	 * The father.
 	 */
-	Dad, 
-	
+	Dad,
+
 	/**
 	 * The mother.
 	 */
@@ -82,41 +82,142 @@ enum NEATParent {
  */
 public class NEATTraining extends GeneticAlgorithm implements Train {
 
+	/**
+	 * The average fit adjustment.
+	 */
 	private double averageFitAdjustment;
-	private double bestEverFitness;
+
+	/**
+	 * THe best ever score.
+	 */
+	private double bestEverScore;
+
+	/**
+	 * The number of inputs.
+	 */
 	private final int inputCount;
+
+	/**
+	 * The activation function for neat to use.
+	 */
 	private ActivationFunction neatActivationFunction = new ActivationSigmoid();
+
+	/**
+	 * The activation function to use on the output layer of Encog.
+	 */
 	private ActivationFunction outputActivationFunction = new ActivationLinear();
+
+	/**
+	 * The number of output neurons.
+	 */
 	private final int outputCount;
+
+	/**
+	 * The activation mutation rate.
+	 */
 	private double paramActivationMutationRate = 0.1;
+
+	/**
+	 * The likelyhood of adding a link.
+	 */
 	private double paramChanceAddLink = 0.07;
 
+	/**
+	 * The likelyhood of adding a node.
+	 */
 	private double paramChanceAddNode = 0.04;
+
+	/**
+	 * THe likelyhood of adding a recurrent link.
+	 */
 	private double paramChanceAddRecurrentLink = 0.05;
+
+	/**
+	 * The compatibility threshold for a species.
+	 */
 	private double paramCompatibilityThreshold = 0.26;
+
+	/**
+	 * The crossover rate.
+	 */
 	private double paramCrossoverRate = 0.7;
+
+	/**
+	 * The max activation perturbation.
+	 */
 	private double paramMaxActivationPerturbation = 0.1;
 
+	/**
+	 * The maximum number of species.
+	 */
 	private int paramMaxNumberOfSpecies = 0;
+
+	/**
+	 * The maximum number of neurons.
+	 */
 	private double paramMaxPermittedNeurons = 100;
 
+	/**
+	 * The maximum weight perturbation.
+	 */
 	private double paramMaxWeightPerturbation = 0.5;
+
+	/**
+	 * The mutation rate.
+	 */
 	private double paramMutationRate = 0.2;
+
+	/**
+	 * The number of link add attempts.
+	 */
 	private int paramNumAddLinkAttempts = 5;
+
+	/**
+	 * The number of generations allowed with no improvement.
+	 */
 	private int paramNumGensAllowedNoImprovement = 15;
 
+	/**
+	 * The number of tries to find a looped link.
+	 */
 	private int paramNumTrysToFindLoopedLink = 5;
+
+	/**
+	 * The number of tries to find an old link.
+	 */
 	private int paramNumTrysToFindOldLink = 5;
+
+	/**
+	 * The probability that the weight will be totally replaced.
+	 */
 	private double paramProbabilityWeightReplaced = 0.1;
 
+	/**
+	 * The splits.
+	 */
 	private List<SplitDepth> splits;
+
+	/**
+	 * The total fit adjustment.
+	 */
 	private double totalFitAdjustment;
+
+	/**
+	 * Determines if we are using snapshot mode.
+	 */
 	private boolean snapshot;
 
-	public NEATTraining(final CalculateScore calculateScore,final Population population)
-	{
-		if( population.size()<1 )
-		{
+	/**
+	 * Construct neat training with a predefined population.
+	 * 
+	 * @param calculateScore
+	 *            The score object to use.
+	 * @param population
+	 *            The population to use.
+	 */
+	public NEATTraining(final CalculateScore calculateScore,
+			final Population population) {
+		if (population.size() < 1) {
 			throw new TrainingError("Population can not be empty.");
 		}
 
@@ -128,7 +229,19 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		init();
 	}
-	
+
+	/**
+	 * Construct a neat trainer with a new population.
+	 * 
+	 * @param calculateScore
+	 *            The score calculation object.
+	 * @param inputCount
+	 *            The input neuron count.
+	 * @param outputCount
+	 *            The output neuron count.
+	 * @param populationSize
+	 *            The population size.
+	 */
 	public NEATTraining(final CalculateScore calculateScore,
 			final int inputCount, final int outputCount,
 			final int populationSize) {
@@ -149,20 +262,23 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		init();
 	}
-	
-	private void init()
-	{
+
+	/**
+	 * setup for training.
+	 */
+	private void init() {
 		NEATGenome genome = (NEATGenome) getPopulation().getGenomes().get(0);
-		
+
 		getPopulation().setInnovations(
-				new NEATInnovationList(getPopulation(), genome.getLinks(), genome.getNeurons()));
+				new NEATInnovationList(getPopulation(), genome.getLinks(),
+						genome.getNeurons()));
 
 		splits = split(null, 0, 1, 0);
 
 		if (getCalculateScore().shouldMinimize()) {
-			bestEverFitness = Double.MAX_VALUE;
+			bestEverScore = Double.MAX_VALUE;
 		} else {
-			bestEverFitness = Double.MIN_VALUE;
+			bestEverScore = Double.MIN_VALUE;
 		}
 
 		for (final Genome genome2 : getPopulation().getGenomes()) {
@@ -175,6 +291,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		speciateAndCalculateSpawnLevels();
 	}
 
+	/**
+	 * Add a neuron.
+	 * 
+	 * @param nodeID
+	 *            The neuron id.
+	 * @param vec
+	 *            THe list of id's used.
+	 */
 	public void addNeuronID(final long nodeID, final List<Long> vec) {
 		for (int i = 0; i < vec.size(); i++) {
 			if (vec.get(i) == nodeID) {
@@ -187,11 +311,21 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		return;
 	}
 
+	/**
+	 * Not supported, will throw an error.
+	 * 
+	 * @param strategy
+	 *            Not used.
+	 */
 	public void addStrategy(final Strategy strategy) {
-		// TODO Auto-generated method stub
-
+		throw new TrainingError(
+				"Strategies are not supported by this training method.");
 	}
 
+	/**
+	 * Adjust the species compatibility threshold. This prevents us from having
+	 * too many species.
+	 */
 	public void adjustCompatibilityThreshold() {
 
 		// has this been disabled (unlimited species)
@@ -211,12 +345,21 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	}
 
-	public void adjustSpeciesFitnesses() {
+	/**
+	 * Adjust each species score.
+	 */
+	public void adjustSpeciesScore() {
 		for (final Species s : getPopulation().getSpecies()) {
 			s.adjustScore();
 		}
 	}
 
+	/**
+	 * Calculate the network depth for the specified genome.
+	 * 
+	 * @param genome
+	 *            The genome to calculate.
+	 */
 	private void calculateNetDepth(final NEATGenome genome) {
 		int maxSoFar = 0;
 
@@ -233,19 +376,15 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		genome.setNetworkDepth(maxSoFar + 2);
 	}
 
-	public List<BasicNetwork> createNetworks() {
-		final List<BasicNetwork> result = new ArrayList<BasicNetwork>();
-
-		for (final Genome genome : getPopulation().getGenomes()) {
-			calculateNetDepth((NEATGenome) genome);
-			final BasicNetwork net = (BasicNetwork) genome.getOrganism();
-
-			result.add(net);
-		}
-
-		return result;
-	}
-
+	/**
+	 * Perform the crossover.
+	 * 
+	 * @param mom
+	 *            The mother.
+	 * @param dad
+	 *            The father.
+	 * @return The child.
+	 */
 	public NEATGenome crossover(final NEATGenome mom, final NEATGenome dad) {
 		NEATParent best;
 
@@ -374,113 +513,194 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		return babyGenome;
 	}
 
+	/**
+	 * Called when training is done.
+	 */
 	public void finishTraining() {
-		// TODO Auto-generated method stub
 
 	}
 
+	/**
+	 * @param The
+	 *            error for the best genome.
+	 */
 	public double getError() {
 		return getPopulation().getBest().getScore();
 	}
 
+	/**
+	 * @return The innovations.
+	 */
 	public NEATInnovationList getInnovations() {
 		return (NEATInnovationList) getPopulation().getInnovations();
 	}
 
+	/**
+	 * @return The input count.
+	 */
 	public int getInputCount() {
 		return inputCount;
 	}
 
+	/**
+	 * @return The activation function to use with NEAT.
+	 */
 	public ActivationFunction getNeatActivationFunction() {
 		return neatActivationFunction;
 	}
 
+	/**
+	 * @return A network created for the best genome.
+	 */
 	public BasicNetwork getNetwork() {
 		return (BasicNetwork) getPopulation().getBest().getOrganism();
 	}
 
+	/**
+	 * @return The activation function to use with the Encog output layer.
+	 */
 	public ActivationFunction getOutputActivationFunction() {
 		return outputActivationFunction;
 	}
 
+	/**
+	 * @return The number of output neurons.
+	 */
 	public int getOutputCount() {
 		return outputCount;
 	}
 
+	/**
+	 * @return The mutation rate.
+	 */
 	public double getParamActivationMutationRate() {
 		return paramActivationMutationRate;
 	}
 
+	/**
+	 * @return The chance that we will add a link.
+	 */
 	public double getParamChanceAddLink() {
 		return paramChanceAddLink;
 	}
 
+	/**
+	 * @return The chance that we will add a node.
+	 */
 	public double getParamChanceAddNode() {
 		return paramChanceAddNode;
 	}
 
+	/**
+	 * @return The chance we will add a recurrent link.
+	 */
 	public double getParamChanceAddRecurrentLink() {
 		return paramChanceAddRecurrentLink;
 	}
 
+	/**
+	 * @return The compatibility threshold for a species.
+	 */
 	public double getParamCompatibilityThreshold() {
 		return paramCompatibilityThreshold;
 	}
 
+	/**
+	 * @return The crossover rate.
+	 */
 	public double getParamCrossoverRate() {
 		return paramCrossoverRate;
 	}
 
+	/**
+	 * @return THe maximum activation perturbation.
+	 */
 	public double getParamMaxActivationPerturbation() {
 		return paramMaxActivationPerturbation;
 	}
 
+	/**
+	 * @return The maximum number of species.
+	 */
 	public int getParamMaxNumberOfSpecies() {
 		return paramMaxNumberOfSpecies;
 	}
 
+	/**
+	 * @return THe maximum neurons.
+	 */
 	public double getParamMaxPermittedNeurons() {
 		return paramMaxPermittedNeurons;
 	}
 
+	/**
+	 * @return THe max weight perturbation.
+	 */
 	public double getParamMaxWeightPerturbation() {
 		return paramMaxWeightPerturbation;
 	}
 
+	/**
+	 * @return The mutation rate.
+	 */
 	public double getParamMutationRate() {
 		return paramMutationRate;
 	}
 
+	/**
+	 * @return The number of attempts to add a link.
+	 */
 	public int getParamNumAddLinkAttempts() {
 		return paramNumAddLinkAttempts;
 	}
 
+	/**
+	 * @return The number of generations allowed with no improvement.
+	 */
 	public int getParamNumGensAllowedNoImprovement() {
 		return paramNumGensAllowedNoImprovement;
 	}
 
+	/**
+	 * @return The number of tries to find a looped link.
+	 */
 	public int getParamNumTrysToFindLoopedLink() {
 		return paramNumTrysToFindLoopedLink;
 	}
 
+	/**
+	 * @return The number of tries to find an old link.
+	 */
 	public int getParamNumTrysToFindOldLink() {
 		return paramNumTrysToFindOldLink;
 	}
 
+	/**
+	 * @return THe propbability that a weight will be replaced.
+	 */
 	public double getParamProbabilityWeightReplaced() {
 		return paramProbabilityWeightReplaced;
 	}
 
+	/**
+	 * Returns an empty list, strategies are not supported.
+	 * @return The strategies in use(none).
+	 */
 	public List<Strategy> getStrategies() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ArrayList<Strategy>();
 	}
 
+	/**
+	 * Returns null, does not use a training set, rather uses a score function.
+	 * @return null, not used.
+	 */
 	public NeuralDataSet getTraining() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * Perform one training iteration.
+	 */
 	@Override
 	public void iteration() {
 
@@ -598,6 +818,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		speciateAndCalculateSpawnLevels();
 	}
 
+	/**
+	 * Reset for an iteration.
+	 */
 	public void resetAndKill() {
 		totalFitAdjustment = 0;
 		averageFitAdjustment = 0;
@@ -609,16 +832,18 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			s.purge();
 
 			if ((s.getGensNoImprovement() > paramNumGensAllowedNoImprovement)
-					&& getComparator().isBetterThan(bestEverFitness,
+					&& getComparator().isBetterThan(bestEverScore,
 							s.getBestScore())) {
 				getPopulation().getSpecies().remove(s);
 			}
 		}
 	}
 
+	/**
+	 * Not used.
+	 * @param error Not used.
+	 */
 	public void setError(final double error) {
-		// TODO Auto-generated method stub
-
 	}
 
 	public void setNeatActivationFunction(
@@ -707,8 +932,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public void sortAndRecord() {
 		getPopulation().sort();
 
-		bestEverFitness = getComparator()
-				.bestScore(getError(), bestEverFitness);
+		bestEverScore = getComparator().bestScore(getError(), bestEverScore);
 	}
 
 	public void speciateAndCalculateSpawnLevels() {
@@ -742,7 +966,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			}
 		}
 
-		adjustSpeciesFitnesses();
+		adjustSpeciesScore();
 
 		for (final Genome g : getPopulation().getGenomes()) {
 			final NEATGenome genome = (NEATGenome) g;
@@ -785,7 +1009,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	public NEATGenome tournamentSelection(final int numComparisons) {
-		double bestFitnessSoFar = 0;
+		double bestScoreSoFar = 0;
 
 		int ChosenOne = 0;
 
@@ -793,23 +1017,31 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			final int ThisTry = (int) RangeRandomizer.randomize(0,
 					getPopulation().size() - 1);
 
-			if (getPopulation().get(ThisTry).getScore() > bestFitnessSoFar) {
+			if (getPopulation().get(ThisTry).getScore() > bestScoreSoFar) {
 				ChosenOne = ThisTry;
 
-				bestFitnessSoFar = getPopulation().get(ThisTry).getScore();
+				bestScoreSoFar = getPopulation().get(ThisTry).getScore();
 			}
 		}
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
 	}
 
+	/**
+	 * @return Are we using snapshot mode.
+	 */
 	public boolean isSnapshot() {
 		return snapshot;
 	}
 
+	/**
+	 * Set if we are using snapshot mode.
+	 * 
+	 * @param snapshot
+	 *            True if we are using snapshot mode.
+	 */
 	public void setSnapshot(boolean snapshot) {
 		this.snapshot = snapshot;
 	}
-	
-	
+
 }

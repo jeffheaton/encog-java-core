@@ -46,8 +46,19 @@ import org.encog.solve.genetic.genes.Gene;
  */
 public class NEATLinkGene extends BasicGene {
 
+	/**
+	 * The from neuron id.
+	 */
 	private long fromNeuronID;
+	
+	/**
+	 * Is this a recurrent connection.
+	 */
 	private boolean recurrent;
+	
+	/**
+	 * The to neuron id.
+	 */
 	private long toNeuronID;
 	private double weight;
 
@@ -62,6 +73,10 @@ public class NEATLinkGene extends BasicGene {
 		this.recurrent = recurrent;
 	}
 
+	/**
+	 * Copy from another gene.
+	 * @param gene The other gene.
+	 */
 	public void copy(final Gene gene) {
 		final NEATLinkGene other = (NEATLinkGene) gene;
 		setEnabled(other.isEnabled());
@@ -72,26 +87,45 @@ public class NEATLinkGene extends BasicGene {
 		weight = other.weight;
 	}
 
+	/**
+	 * @return The from neuron id.
+	 */
 	public long getFromNeuronID() {
 		return fromNeuronID;
 	}
 
+	/**
+	 * @return The to neuron id.
+	 */
 	public long getToNeuronID() {
 		return toNeuronID;
 	}
 
+	/**
+	 * @return The weight of this connection.
+	 */
 	public double getWeight() {
 		return weight;
 	}
 
+	/**
+	 * @return True if this is a recurrent link.
+	 */
 	public boolean isRecurrent() {
 		return recurrent;
 	}
 
+	/**
+	 * Set the weight of this connection.
+	 * @param weight The connection weight.
+	 */
 	public void setWeight(final double weight) {
 		this.weight = weight;
 	}
 
+	/**
+	 * @return This link as a string.
+	 */
 	@Override
 	public String toString() {
 		final StringBuilder result = new StringBuilder();
