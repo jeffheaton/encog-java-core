@@ -1,17 +1,55 @@
+/*
+ * Encog(tm) Core v2.4
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2010 by Heaton Research Inc.
+ * 
+ * Released under the LGPL.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * 
+ * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
+ * For information on Heaton Research trademarks, visit:
+ * 
+ * http://www.heatonresearch.com/copyright.html
+ */
 package org.encog.neural.networks.flat;
 
 import java.util.List;
 
 import org.encog.mathutil.IntRange;
-import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.neural.data.Indexable;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.concurrency.DetermineWorkload;
 import org.encog.util.concurrency.EncogConcurrency;
 import org.encog.util.concurrency.TaskGroup;
 
+/**
+ * Train a flat network using multithreading, and eventually with GPU support.
+ * 
+ * The training data must be indexable, it will be broken into groups for each
+ * thread to process.
+ * 
+ * At the end of each iteration the training from each thread is aggregated
+ * back to the neural network.
+ *
+ */
 public class TrainFlatNetworkMulti {
 	
 	/**
@@ -23,27 +61,7 @@ public class TrainFlatNetworkMulti {
 	 * The last gradients, from the last training iteration.
 	 */
 	private final double[] lastGradient;
-	
-	/**
-	 * The neuron counts, per layer.
-	 */
-	private final int[] layerCounts;
-	
-	/**
-	 * The deltas for each layer
-	 */
-	private final double[] layerDelta;
-	
-	/**
-	 * The layer indexes
-	 */
-	private final int[] layerIndex;
-	
-	/**
-	 * The output from each layer
-	 */
-	private final double[] layerOutput;
-	
+		
 	/**
 	 * The network to train.
 	 */
@@ -60,10 +78,8 @@ public class TrainFlatNetworkMulti {
 	private final double[] updateValues;
 	
 	/**
-	 * The index to each layer's weights and thresholds.
+	 * The network in indexable form.
 	 */
-	private final int[] weightIndex;
-	
 	private Indexable indexable;
 	
 	/**
@@ -71,30 +87,42 @@ public class TrainFlatNetworkMulti {
 	 */
 	private final double[] weights;
 	
+	/**
+	 * The workers.
+	 */
 	private GradientWorker[] workers;
 	
+	/**
+	 * The total error.  Used to take the average of.
+	 */
 	private double totalError;
 	
+	/**
+	 * The current error is the average error over all of the threads.
+	 */
 	private double currentError;
 
+	/**
+	 * Train a flat network multithreaded.
+	 * @param network The network to train.
+	 * @param training The training data to use.
+	 */
 	public TrainFlatNetworkMulti(final FlatNetwork network,
 			final NeuralDataSet training) {
+		
+		if( !(training instanceof Indexable) )
+			throw new TrainingError("Training data must be Indexable for this training type.");
 		
 		this.training = training;
 		this.network = network;
 
 		this.indexable = (Indexable)training;
 		
-		layerDelta = new double[network.getLayerOutput().length];
 		gradients = new double[network.getWeights().length];
 		updateValues = new double[network.getWeights().length];
 		lastGradient = new double[network.getWeights().length];
 
 		weights = network.getWeights();
-		layerIndex = network.getLayerIndex();
-		layerCounts = network.getLayerCounts();
-		weightIndex = network.getWeightIndex();
-		layerOutput = network.getLayerOutput();
 
 		for (int i = 0; i < updateValues.length; i++) {
 			updateValues[i] = ResilientPropagation.DEFAULT_INITIAL_UPDATE;
@@ -110,7 +138,12 @@ public class TrainFlatNetworkMulti {
 			this.workers[index++] = new GradientWorker(network.clone(), this, indexable, r.getLow(), r.getHigh());
 		}
 	}
-	
+
+	/**
+	 * Called by the worker threads to report the progress at each step.
+	 * @param gradients The gradients from that worker.
+	 * @param error The error for that worker.
+	 */
 	public void report(double[] gradients, double error)
 	{
 		synchronized(this)
@@ -123,18 +156,16 @@ public class TrainFlatNetworkMulti {
 		}
 	}
 
-	public double derivativeSigmoid(final double d) {
-		return d * (1.0 - d);
-	}
-
-	public double derivativeTANH(final double d) {
-		return ((1 + d) * (1 - d));
-	}
-
+	/**
+	 * @return The error from the neural network.
+	 */
 	public double getError() {
 		return this.currentError;
 	}
 
+	/**
+	 * Perform one training iteration.
+	 */
 	public void iteration() {
 		
 		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
@@ -156,6 +187,9 @@ public class TrainFlatNetworkMulti {
 		}
 	}
 
+	/**
+	 * Apply and learn.
+	 */
 	private void learn() {
 		for (int i = 0; i < gradients.length; i++) {
 			weights[i] += updateWeight(gradients, i);
@@ -226,4 +260,19 @@ public class TrainFlatNetworkMulti {
 		return weightChange;
 	}
 
+	/**
+	 * @return The trained neural network.
+	 */
+	public FlatNetwork getNetwork() {
+		return network;
+	}
+
+	/**
+	 * @return The data we are training with.
+	 */
+	public NeuralDataSet getTraining() {
+		return training;
+	}
+
+	
 }

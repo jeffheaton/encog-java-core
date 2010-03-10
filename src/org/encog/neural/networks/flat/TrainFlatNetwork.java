@@ -34,68 +34,80 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
+/**
+ * Train a flat network single-threaded. This class is left in mainly for testing
+ * purposes. Usually, you will use TrainFlatNetworkMulti.
+ * 
+ * @author jheaton
+ * 
+ */
 public class TrainFlatNetwork {
 
 	/**
 	 * The error calculation method.
 	 */
 	private final ErrorCalculation errorCalculation = new ErrorCalculation();
-	
+
 	/**
 	 * The gradients
 	 */
 	private final double[] gradients;
-	
+
 	/**
 	 * The last gradients, from the last training iteration.
 	 */
 	private final double[] lastGradient;
-	
+
 	/**
 	 * The neuron counts, per layer.
 	 */
 	private final int[] layerCounts;
-	
+
 	/**
 	 * The deltas for each layer
 	 */
 	private final double[] layerDelta;
-	
+
 	/**
 	 * The layer indexes
 	 */
 	private final int[] layerIndex;
-	
+
 	/**
 	 * The output from each layer
 	 */
 	private final double[] layerOutput;
-	
+
 	/**
 	 * The network to train.
 	 */
 	private final FlatNetwork network;
-	
+
 	/**
 	 * The training data.
 	 */
 	private final NeuralDataSet training;
-	
+
 	/**
 	 * The update values, for the weights and thresholds.
 	 */
 	private final double[] updateValues;
-	
+
 	/**
 	 * The index to each layer's weights and thresholds.
 	 */
 	private final int[] weightIndex;
-	
+
 	/**
 	 * The weights and thresholds.
 	 */
 	private final double[] weights;
 
+	/**
+	 * Construct a training class.
+	 * @param network The network to train.
+	 * @param training
+	 */
 	public TrainFlatNetwork(final FlatNetwork network,
 			final NeuralDataSet training) {
 		this.training = training;
@@ -117,18 +129,35 @@ public class TrainFlatNetwork {
 		}
 	}
 
-	public double derivativeSigmoid(final double d) {
+	
+	/**
+	 * Calculate the derivative of the sigmoid function.
+	 * @param d The value to calculate for.
+	 * @return The derivative.
+	 */
+	public static double derivativeSigmoid(final double d) {
 		return d * (1.0 - d);
 	}
 
-	public double derivativeTANH(final double d) {
+	/**
+	 * Calculate the derivative of the TANH function.
+	 * @param d The value to calculate for.
+	 * @return The derivative.
+	 */
+	public static double derivativeTANH(final double d) {
 		return ((1 + d) * (1 - d));
 	}
 
+	/**
+	 * @return The overall error.
+	 */
 	public double getError() {
 		return errorCalculation.calculateRMS();
 	}
 
+	/**
+	 * Perform a training iteration.
+	 */
 	public void iteration() {
 		final double[] actual = new double[network.getOutputCount()];
 		errorCalculation.reset();
@@ -159,6 +188,9 @@ public class TrainFlatNetwork {
 		learn();
 	}
 
+	/**
+	 * Update the neural network weights.
+	 */
 	private void learn() {
 		for (int i = 0; i < gradients.length; i++) {
 			weights[i] += updateWeight(gradients, i);
@@ -166,6 +198,10 @@ public class TrainFlatNetwork {
 		}
 	}
 
+	/**
+	 * Process a level.
+	 * @param currentLevel The level to process.
+	 */
 	private void processLevel(final int currentLevel) {
 		final int fromLayerIndex = layerIndex[currentLevel + 1];
 		final int toLayerIndex = layerIndex[currentLevel];

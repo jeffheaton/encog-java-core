@@ -45,7 +45,12 @@ import org.encog.neural.networks.structure.NetworkCODEC;
  * reuse, object oriented programming are all secondary in consideration.
  * 
  * Currently, the flat networks only support feedforward networks with either a
- * sigmoid or tanh activation function.
+ * sigmoid or tanh activation function.  Specifically, a flat network must:
+ * 
+ * 1. Feedforward only, no self-connections or recurrent links
+ * 2. Sigmoid or TANH activation only
+ * 3. All layers the same activation function
+ * 4. Must have threshold values
  * 
  * Vector based neural networks are also very good for GPU processing. The flat
  * network classes will make use of the GPU if you have enabled GPU processing.
@@ -146,6 +151,10 @@ public class FlatNetwork {
 		}
 	}
 	
+	/**
+	 * Generate a regular Encog neural network from this flat network.
+	 * @return A regular Encog neural network.
+	 */
 	public BasicNetwork unflatten()
 	{
 		ActivationFunction activation;
@@ -168,6 +177,11 @@ public class FlatNetwork {
 		return result;
 	}
 
+	/**
+	 * Calculate the output for the given input.
+	 * @param input The input.
+	 * @param output Output will be placed here.
+	 */
 	public void calculate(final double[] input, final double[] output) {
 		final int sourceIndex = layerOutput.length - inputCount;
 
@@ -180,9 +194,11 @@ public class FlatNetwork {
 		System.arraycopy(layerOutput, 0, output, 0, outputCount);
 	}
 
+	/**
+	 * Calculate a layer.
+	 * @param currentLayer The layer to calculate.
+	 */
 	private void calculateLayer(final int currentLayer) {
-		// double[] inputData = (double[])output[layerIndex];
-		// double[] outputData = (double[])output[layerIndex-1];
 
 		final int inputIndex = layerIndex[currentLayer];
 		final int outputIndex = layerIndex[currentLayer - 1];
@@ -213,34 +229,58 @@ public class FlatNetwork {
 		}
 	}
 
+	/**
+	 * @return The number of input neurons.
+	 */
 	public int getInputCount() {
 		return inputCount;
 	}
 
+	/**
+	 * @return The number of neurons in each layer.
+	 */
 	public int[] getLayerCounts() {
 		return layerCounts;
 	}
 
+	/**
+	 * @return Indexes into the weights for the start of each layer.
+	 */
 	public int[] getLayerIndex() {
 		return layerIndex;
 	}
 
+	/**
+	 * @return The output for each layer.
+	 */
 	public double[] getLayerOutput() {
 		return layerOutput;
 	}
 
+	/**
+	 * @return The number of output neurons.
+	 */
 	public int getOutputCount() {
 		return outputCount;
 	}
 
+	/**
+	 * @return The index of each layer in the weight and threshold array.
+	 */
 	public int[] getWeightIndex() {
 		return weightIndex;
 	}
 
+	/**
+	 * @return The weight and threshold array.
+	 */
 	public double[] getWeights() {
 		return weights;
 	}
 
+	/**
+	 * @return True if this is a TANH activation function.
+	 */
 	public boolean isTanh() {
 		return tanh;
 	}

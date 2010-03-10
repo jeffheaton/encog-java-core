@@ -36,7 +36,21 @@ import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 
+/**
+ * Only certain types of networks can be converted to a flat network.
+ * This class validates this.  Specifically the network must be:
+ * 
+ * 1. Feedforward only, no self-connections or recurrent links
+ * 2. Sigmoid or TANH activation only
+ * 3. All layers the same activation function
+ * 4. Must have threshold values
+ */
 public class ValidateForFlat {
+	
+	/**
+	 * Validate the specified network.
+	 * @param network The network to validate.
+	 */
 	public static void validateNetwork(final BasicNetwork network) {
 		ActivationFunction lastActivation = null;
 
