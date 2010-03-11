@@ -846,95 +846,173 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public void setError(final double error) {
 	}
 
+	/**
+	 * Set the NEAT activation, used by the NEAT neurons.
+	 * @param neatActivationFunction The activation function.
+	 */
 	public void setNeatActivationFunction(
 			final ActivationFunction neatActivationFunction) {
 		this.neatActivationFunction = neatActivationFunction;
 	}
 
+	/**
+	 * Set the activatoin function for the Encog output layer.
+	 * @param outputActivationFunction The activation function.
+	 */
 	public void setOutputActivationFunction(
 			final ActivationFunction outputActivationFunction) {
 		this.outputActivationFunction = outputActivationFunction;
 	}
 
+	/**
+	 * Set the activation mutation rate.
+	 * @param paramActivationMutationRate The mutation rate.
+	 */
 	public void setParamActivationMutationRate(
 			final double paramActivationMutationRate) {
 		this.paramActivationMutationRate = paramActivationMutationRate;
 	}
 
+	/**
+	 * Set the chance to add a link.
+	 * @param paramChanceAddLink The chance to add a link.
+	 */
 	public void setParamChanceAddLink(final double paramChanceAddLink) {
 		this.paramChanceAddLink = paramChanceAddLink;
 	}
 
+	/**
+	 * Set the chance to add a node.
+	 * @param paramChanceAddNode The chance to add a node.
+	 */
 	public void setParamChanceAddNode(final double paramChanceAddNode) {
 		this.paramChanceAddNode = paramChanceAddNode;
 	}
 
+	/**
+	 * Set the chance to add a recurrent link.
+	 * @param paramChanceAddRecurrentLink The chance to add a recurrent link.
+	 */
 	public void setParamChanceAddRecurrentLink(
 			final double paramChanceAddRecurrentLink) {
 		this.paramChanceAddRecurrentLink = paramChanceAddRecurrentLink;
 	}
 
+	/**
+	 * Set the compatibility threshold for species.
+	 * @param paramCompatibilityThreshold The threshold.
+	 */
 	public void setParamCompatibilityThreshold(
 			final double paramCompatibilityThreshold) {
 		this.paramCompatibilityThreshold = paramCompatibilityThreshold;
 	}
 
+	/**
+	 * Set the cross over rate.
+	 * @param paramCrossoverRate The crossover rate.
+	 */
 	public void setParamCrossoverRate(final double paramCrossoverRate) {
 		this.paramCrossoverRate = paramCrossoverRate;
 	}
 
+	/**
+	 * Set the max activation perturbation.
+	 * @param paramMaxActivationPerturbation The max perturbation.
+	 */
 	public void setParamMaxActivationPerturbation(
 			final double paramMaxActivationPerturbation) {
 		this.paramMaxActivationPerturbation = paramMaxActivationPerturbation;
 	}
 
+	/**
+	 * Set the maximum number of species.
+	 * @param paramMaxNumberOfSpecies The max number of species.
+	 */
 	public void setParamMaxNumberOfSpecies(final int paramMaxNumberOfSpecies) {
 		this.paramMaxNumberOfSpecies = paramMaxNumberOfSpecies;
 	}
 
+	/**
+	 * Set the max permitted neurons.
+	 * @param paramMaxPermittedNeurons The max permitted neurons.
+	 */
 	public void setParamMaxPermittedNeurons(
 			final double paramMaxPermittedNeurons) {
 		this.paramMaxPermittedNeurons = paramMaxPermittedNeurons;
 	}
 
+	/**
+	 * Set the max weight perturbation.
+	 * @param paramMaxWeightPerturbation The max weight perturbation.
+	 */
 	public void setParamMaxWeightPerturbation(
 			final double paramMaxWeightPerturbation) {
 		this.paramMaxWeightPerturbation = paramMaxWeightPerturbation;
 	}
 
+	/**
+	 * Set the mutation rate.
+	 * @param paramMutationRate The mutation rate.
+	 */
 	public void setParamMutationRate(final double paramMutationRate) {
 		this.paramMutationRate = paramMutationRate;
 	}
 
+	/**
+	 * Set the number of attempts to add a link.
+	 * @param paramNumAddLinkAttempts The number of attempts to add a link.
+	 */
 	public void setParamNumAddLinkAttempts(final int paramNumAddLinkAttempts) {
 		this.paramNumAddLinkAttempts = paramNumAddLinkAttempts;
 	}
 
+	/**
+	 * Set the number of no-improvement generations allowed.
+	 * @param paramNumGensAllowedNoImprovement The number of generations.
+	 */
 	public void setParamNumGensAllowedNoImprovement(
 			final int paramNumGensAllowedNoImprovement) {
 		this.paramNumGensAllowedNoImprovement = paramNumGensAllowedNoImprovement;
 	}
 
+	/**
+	 * Set the number of tries to create a looped link.
+	 * @param paramNumTrysToFindLoopedLink Number of tries.
+	 */
 	public void setParamNumTrysToFindLoopedLink(
 			final int paramNumTrysToFindLoopedLink) {
 		this.paramNumTrysToFindLoopedLink = paramNumTrysToFindLoopedLink;
 	}
 
+	/**
+	 * Set the number of tries to try an old link.
+	 * @param paramNumTrysToFindOldLink Number of tries.
+	 */
 	public void setParamNumTrysToFindOldLink(final int paramNumTrysToFindOldLink) {
 		this.paramNumTrysToFindOldLink = paramNumTrysToFindOldLink;
 	}
 
+	/**
+	 * Set the probability to replace a weight.
+	 * @param paramProbabilityWeightReplaced The probability.
+	 */
 	public void setParamProbabilityWeightReplaced(
 			final double paramProbabilityWeightReplaced) {
 		this.paramProbabilityWeightReplaced = paramProbabilityWeightReplaced;
 	}
 
+	/**
+	 * Sort the genomes.
+	 */
 	public void sortAndRecord() {
 		getPopulation().sort();
 
 		bestEverScore = getComparator().bestScore(getError(), bestEverScore);
 	}
 
+	/**
+	 * Determine the species.
+	 */
 	public void speciateAndCalculateSpawnLevels() {
 
 		// calculate compatibility between genomes and species
@@ -987,6 +1065,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 	}
 
+	/**
+	 * Calculate splits.
+	 * @param result The resulting list, used for recursive calls.
+	 * @param low The high to check.
+	 * @param high The low to check.
+	 * @param depth The depth.
+	 * @return A list of split depths.
+	 */
 	private List<SplitDepth> split(List<SplitDepth> result, final double low,
 			final double high, final int depth) {
 		if (result == null) {
@@ -1008,6 +1094,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 	}
 
+	/**
+	 * Select a gene using a tournament.
+	 * @param numComparisons The number of compares to do.
+	 * @return The chosen genome.
+	 */
 	public NEATGenome tournamentSelection(final int numComparisons) {
 		double bestScoreSoFar = 0;
 

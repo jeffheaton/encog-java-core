@@ -132,7 +132,6 @@ public class GradientWorker implements EncogTask {
 	/**
 	 * Perform the gradient calculation for the specified index range.
 	 */
-	@Override
 	public void run() {
 		this.errorCalculation.reset();
 		for(int i = this.low; i<high; i++)

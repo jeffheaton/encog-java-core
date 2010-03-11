@@ -54,7 +54,9 @@ public class PoolItem implements Runnable {
 		this.group = group;
 	}
 
-	@Override
+	/**
+	 * Run the task.
+	 */
 	public void run() {
 		try {
 			this.task.run();
