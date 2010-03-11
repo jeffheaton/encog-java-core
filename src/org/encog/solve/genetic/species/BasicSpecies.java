@@ -125,7 +125,7 @@ public class BasicSpecies implements Species {
 		for (final Genome member : members) {
 			double score = member.getScore();
 
-			if (age < training.getPopulation().getYoungBonusAgeThreshhold()) {
+			if (age < training.getPopulation().getYoungBonusAgeThreshold()) {
 				score = training.getComparator().applyBonus(score,
 						training.getPopulation().getYoungScoreBonus());
 			}

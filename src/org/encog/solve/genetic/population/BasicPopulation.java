@@ -102,7 +102,7 @@ public class BasicPopulation implements Population {
 	/**
 	 * The young threshold.
 	 */
-	private int youngBonusAgeThreshhold = 10;
+	private int youngBonusAgeThreshold = 10;
 
 	/**
 	 * The young score bonus.
@@ -241,8 +241,8 @@ public class BasicPopulation implements Population {
 	/**
 	 * @return The age at which a genome is considered "young".
 	 */
-	public int getYoungBonusAgeThreshhold() {
-		return youngBonusAgeThreshhold;
+	public int getYoungBonusAgeThreshold() {
+		return youngBonusAgeThreshold;
 	}
 
 	/**
@@ -254,7 +254,7 @@ public class BasicPopulation implements Population {
 
 	/**
 	 * Set the innovation list.
-	 * @param The innovations, or null to disable. 
+	 * @param innovations The innovations, or null to disable. 
 	 */
 	public void setInnovations(final InnovationList innovations) {
 		this.innovations = innovations;
@@ -262,7 +262,7 @@ public class BasicPopulation implements Population {
 
 	/**
 	 * Set the old age penalty.
-	 * @param penalty The percent the score is affected by.
+	 * @param oldAgePenalty The percent the score is affected by.
 	 */
 	public void setOldAgePenalty(final double oldAgePenalty) {
 		this.oldAgePenalty = oldAgePenalty;
@@ -298,8 +298,8 @@ public class BasicPopulation implements Population {
 	 * Set the young bonus age threshold.
 	 * @param youngBonusAgeThreshold The age.
 	 */
-	public void setYoungBonusAgeThreshhold(final int youngBonusAgeThreshhold) {
-		this.youngBonusAgeThreshhold = youngBonusAgeThreshhold;
+	public void setYoungBonusAgeThreshhold(final int youngBonusAgeThreshold) {
+		this.youngBonusAgeThreshold = youngBonusAgeThreshold;
 	}
 
 	/**

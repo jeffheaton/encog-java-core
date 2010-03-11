@@ -127,7 +127,7 @@ public interface Population {
 	/**
 	 * @return The age, below which, a genome is considered "young".
 	 */
-	int getYoungBonusAgeThreshhold();
+	int getYoungBonusAgeThreshold();
 
 	/**
 	 * @return The bonus given to "young" genomes.

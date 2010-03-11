@@ -63,8 +63,8 @@ public class Chromosome {
 
 	/**
 	 * Get an individual gene.
-	 * @param i
-	 * @return
+	 * @param i The index of the gene.
+	 * @return The gene.
 	 */
 	public Gene get(final int i) {
 		return genes.get(i);

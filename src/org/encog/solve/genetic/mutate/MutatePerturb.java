@@ -50,7 +50,7 @@ public class MutatePerturb implements Mutate {
 
 	/**
 	 * Perform a perturb mutation on the specified chromosome.
-	 * @param The chromosome to mutate.
+	 * @param chromosome The chromosome to mutate.
 	 */
 	public void performMutation(final Chromosome chromosome) {
 		for (final Gene gene : chromosome.getGenes()) {

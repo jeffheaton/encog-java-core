@@ -70,10 +70,9 @@ public class LUDecomposition {
 
 	/**
 	 * LU Decomposition
-	 * 
+	 * Structure to access L, U and piv.
 	 * @param A
 	 *            Rectangular matrix
-	 * @return Structure to access L, U and piv.
 	 */
 
 	public LUDecomposition(Matrix A) {

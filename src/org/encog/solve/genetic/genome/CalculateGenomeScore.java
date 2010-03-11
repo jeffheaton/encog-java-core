@@ -36,8 +36,8 @@ public interface CalculateGenomeScore {
 	/**
 	 * Calculate this genome's score.
 	 * 
-	 * @param network
-	 *            The network.
+	 * @param genome
+	 *            The genome.
 	 * @return The score.
 	 */
 	double calculateScore(Genome genome);

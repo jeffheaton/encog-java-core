@@ -32,7 +32,9 @@ package org.encog.util.concurrency;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
+import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,7 +137,7 @@ public class EncogConcurrency {
 	 * @param timeout
 	 *            How long to wait for all threads to complete.
 	 */
-	/*public void shutdown(final long timeout) {
+	public void shutdown(final long timeout) {
 		if (this.executor != null) {
 			try {
 				this.executor.shutdown();
@@ -148,12 +150,12 @@ public class EncogConcurrency {
 				throw new EncogError(e);
 			}
 		}
-	}*/
+	}
 	
-    /// <summary>
-    /// Create a new task group.
-    /// </summary>
-    /// <returns>The new task group.</returns>
+    /**
+     * Create a new task group.
+     * @return The new task group.
+     */
     public TaskGroup createTaskGroup()
     {
         TaskGroup result = null;

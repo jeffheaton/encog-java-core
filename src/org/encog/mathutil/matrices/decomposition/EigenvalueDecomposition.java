@@ -893,10 +893,9 @@ public class EigenvalueDecomposition {
 
 	/**
 	 * Check for symmetry, then construct the eigenvalue decomposition
-	 * 
+	 * Structure to access D and V.
 	 * @param matrix
 	 *            Square matrix
-	 * @return Structure to access D and V.
 	 */
 	public EigenvalueDecomposition(Matrix matrix) {
 		double[][] a = matrix.getData();

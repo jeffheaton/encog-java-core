@@ -521,8 +521,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	/**
-	 * @param The
-	 *            error for the best genome.
+	 * return The error for the best genome.
 	 */
 	public double getError() {
 		return getPopulation().getBest().getScore();

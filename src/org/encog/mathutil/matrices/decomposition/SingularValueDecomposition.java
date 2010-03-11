@@ -98,12 +98,10 @@ public class SingularValueDecomposition {
 
 	/**
 	 * Construct the singular value decomposition
-	 * 
+	 * Structure to access U, S and V.
 	 * @param A
 	 *            Rectangular matrix
-	 * @return Structure to access U, S and V.
 	 */
-
 	public SingularValueDecomposition(Matrix Arg) {
 
 		// Derived from LINPACK code.
