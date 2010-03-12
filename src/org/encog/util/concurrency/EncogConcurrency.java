@@ -84,7 +84,7 @@ public class EncogConcurrency {
 	 * Construct a concurrency object.
 	 */
 	public EncogConcurrency() {
-		setMaxThreadsToCoreCount();
+		this.executor = Executors.newFixedThreadPool(100);
 	}
 
 	/**
@@ -110,28 +110,6 @@ public class EncogConcurrency {
 	}
 
 	/**
-	 * Set the maximum number of threads to use.
-	 * 
-	 * @param maxThreads
-	 *            Maximum number of threads to use.
-	 */
-	public void setMaxThreads(final int maxThreads) {
-		this.maxThreads = maxThreads;
-		if (this.maxThreads > 0) {
-			this.executor = Executors.newFixedThreadPool(maxThreads);
-		} else {
-			this.executor = null;
-		}
-	}
-
-	/**
-	 * Set the max threads to the number of processors.
-	 */
-	public void setMaxThreadsToCoreCount() {
-		setMaxThreads(Runtime.getRuntime().availableProcessors());
-	}
-
-	/**
 	 * Wait for all threads in the pool to complete.
 	 * 
 	 * @param timeout
@@ -152,10 +130,10 @@ public class EncogConcurrency {
 		}
 	}
 	
-    /**
-     * Create a new task group.
-     * @return The new task group.
-     */
+    /// <summary>
+    /// Create a new task group.
+    /// </summary>
+    /// <returns>The new task group.</returns>
     public TaskGroup createTaskGroup()
     {
         TaskGroup result = null;

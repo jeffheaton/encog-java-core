@@ -160,9 +160,7 @@ public class CalculateGradient {
 
 		if (this.threadCount == 1) {
 			createWorkersSingleThreaded(training);
-		} else {
-			EncogConcurrency.getInstance().setMaxThreads(this.threadCount);
-			
+		} else {			
 			if (!(training instanceof Indexable)) {
 				throw new TrainingError(
 						"Must use indexable training set for multithreaded.");
