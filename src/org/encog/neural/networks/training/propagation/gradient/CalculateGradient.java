@@ -102,6 +102,9 @@ public class CalculateGradient {
 	 */
 	private final double[] gradients;
 	
+	/**
+	 * Determine the thread counts and workloads.
+	 */
 	private DetermineWorkload determine;
 
 	/**
