@@ -31,7 +31,7 @@
 package org.encog.neural.networks.training.lma;
 
 /**
- * Calculate the Jacobian using the chain rule.
+ * Calculate the Jacobian.
  */
 public interface ComputeJacobian {
 	
