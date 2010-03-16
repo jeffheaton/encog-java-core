@@ -69,18 +69,11 @@ public class Splice implements Crossover {
 		final int cutpoint1 = (int) (Math.random() * (geneLength - cutLength));
 		final int cutpoint2 = cutpoint1 + cutLength;
 
-		// keep track of which cities have been taken in each of the two
-		// offspring, defaults to false.
-		final Set<Gene> taken1 = new HashSet<Gene>();
-		final Set<Gene> taken2 = new HashSet<Gene>();
-
 		// handle cut section
 		for (int i = 0; i < geneLength; i++) {
 			if (!((i < cutpoint1) || (i > cutpoint2))) {
 				offspring1.getGene(i).copy(father.getGene(i));
 				offspring2.getGene(i).copy(mother.getGene(i));
-				taken1.add(offspring1.getGene(i));
-				taken2.add(offspring2.getGene(i));
 			}
 		}
 

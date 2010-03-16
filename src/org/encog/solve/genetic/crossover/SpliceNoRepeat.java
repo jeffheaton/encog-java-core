@@ -108,7 +108,7 @@ public class SpliceNoRepeat implements Crossover {
 		final int cutpoint1 = (int) (Math.random() * (geneLength - cutLength));
 		final int cutpoint2 = cutpoint1 + cutLength;
 
-		// keep track of which cities have been taken in each of the two
+		// keep track of which genes have been taken in each of the two
 		// offspring, defaults to false.
 		final Set<Gene> taken1 = new HashSet<Gene>();
 		final Set<Gene> taken2 = new HashSet<Gene>();
