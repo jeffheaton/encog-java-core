@@ -104,7 +104,7 @@ public class BasicSpecies implements Species {
 	 * Add a genome.
 	 * @param genome The genome to add.
 	 */
-	public void addMember(final NEATGenome genome) {
+	public void addMember(final Genome genome) {
 
 		if (training.getComparator().isBetterThan(genome.getScore(),
 				bestScore)) {

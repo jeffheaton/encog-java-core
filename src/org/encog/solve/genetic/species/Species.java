@@ -45,7 +45,7 @@ public interface Species {
 	 * @param genome
 	 *            The genome to add.
 	 */
-	void addMember(NEATGenome genome);
+	void addMember(Genome genome);
 
 	/**
 	 * Adjust the score of this species. This is where old age and youth
