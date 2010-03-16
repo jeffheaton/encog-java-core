@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.neural.networks.training.neat.NEATGenome;
 import org.encog.solve.genetic.GeneticAlgorithm;
 import org.encog.solve.genetic.genome.Genome;
 
@@ -89,7 +88,7 @@ public class BasicSpecies implements Species {
 	 * @param speciesID
 	 */
 	public BasicSpecies(final GeneticAlgorithm training,
-			final NEATGenome first, final long speciesID) {
+			final Genome first, final long speciesID) {
 		this.training = training;
 		this.speciesID = speciesID;
 		bestScore = first.getScore();
@@ -272,7 +271,7 @@ public class BasicSpecies implements Species {
 	 * Set the leader.
 	 * @param leader The new leader.
 	 */
-	public void setLeader(final NEATGenome leader) {
+	public void setLeader(final Genome leader) {
 		this.leader = leader;
 	}
 

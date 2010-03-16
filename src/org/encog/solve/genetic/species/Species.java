@@ -31,7 +31,6 @@ package org.encog.solve.genetic.species;
 
 import java.util.List;
 
-import org.encog.neural.networks.training.neat.NEATGenome;
 import org.encog.solve.genetic.genome.Genome;
 
 /**
@@ -135,7 +134,7 @@ public interface Species {
 	 * Set the leader of this species.
 	 * @param leader The leader of this species.
 	 */
-	void setLeader(NEATGenome leader);
+	void setLeader(Genome leader);
 
 	/**
 	 * Set the number of spawns required.

@@ -73,7 +73,7 @@ public class MutateShuffle implements Mutate {
 		chromosome.getGenes().remove(gene1);
 		chromosome.getGenes().remove(gene2);
 
-		// insert them back in, opposit order
+		// insert them back in, reverse order
 		chromosome.getGenes().add(iswap1, gene2);
 		chromosome.getGenes().add(iswap2, gene1);
 	}

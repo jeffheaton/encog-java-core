@@ -46,17 +46,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- *Implements a chromosome that allows a feedforward neural
+ * Implements a genome that allows a feedforward neural
  * network to be trained using a genetic algorithm. The chromosome for a feed
  * forward neural network is the weight and threshold matrix.
- * 
- * This class is abstract. If you wish to train the neural network using
- * training sets, you should use the TrainingSetNeuralChromosome class. If you
- * wish to use a score function to train the neural network, then implement a
- * subclass of this one that properly calculates the score.
- * 
- * The generic type GA_TYPE specifies the GeneticAlgorithm derived class that
- * implements the genetic algorithm that this class is to be used with.
  */
 public class NeuralGenome extends BasicGenome {
 	
@@ -64,7 +56,6 @@ public class NeuralGenome extends BasicGenome {
 
 	public NeuralGenome(NeuralGeneticAlgorithm nga, final BasicNetwork network) {
 		super(nga.getGenetic());
-		this.neuralGenetic = nga;
 		
 		setOrganism(network);
 		
@@ -83,43 +74,12 @@ public class NeuralGenome extends BasicGenome {
 		encode();
 	}
 
-	/**
-	 * The amount of distortion to perform a mutation.
-	 */
-	public static final double DISTORT_FACTOR = 4.0;
-	
-	/**
-	 * Zero.
-	 */
-	private static final Double ZERO = Double.valueOf(0);
-
-	/**
-	 * Mutation range.
-	 */
-	private Randomizer mutate = new Distort(DISTORT_FACTOR);
 	
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
-	 * The genetic algorithm that uses this chromosome.
-	 */
-	private NeuralGeneticAlgorithm neuralGenetic;
-		
-
-	/**
-	 * Mutate this chromosome randomly.
-	 */
-	public void mutate() {
-		for(Gene gene: networkChromosome.getGenes())
-		{
-			double d = this.mutate.randomize(((DoubleGene)gene).getValue());
-			((DoubleGene)gene).setValue(d);
-		}
-	}
 
 	public void decode() {
 		double[] net = new double[networkChromosome.getGenes().size()];
