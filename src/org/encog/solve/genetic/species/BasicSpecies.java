@@ -118,17 +118,21 @@ public class BasicSpecies implements Species {
 
 	/**
 	 * Adjust the score.  This is to give bonus or penalty.
+	 * The adjustment goes into the adjusted score.
 	 */
 	public void adjustScore() {
 
+		// loop over all genomes and adjust scores as needed
 		for (final Genome member : members) {
 			double score = member.getScore();
 
+			// apply a youth bonus
 			if (age < training.getPopulation().getYoungBonusAgeThreshold()) {
 				score = training.getComparator().applyBonus(score,
 						training.getPopulation().getYoungScoreBonus());
 			}
 
+			// apply an old age penalty
 			if (age > training.getPopulation().getOldAgeThreshold()) {
 				score = training.getComparator().applyPenalty(score,
 						training.getPopulation().getOldAgePenalty());
@@ -153,17 +157,22 @@ public class BasicSpecies implements Species {
 	}
 
 	/**
-	 * Choose a parent to mate.
+	 * Choose a parent to mate. Choose from the population,
+	 * determined by the survival rate.  From this pool, a random
+	 * parent is chosen.
 	 * @return The parent.
 	 */
 	public Genome chooseParent() {
 		Genome baby;
 
+		// If there is a single member, then choose that one.
 		if (members.size() == 1) {
 			baby = members.get(0);
 		}
 
 		else {
+			// If there are many, then choose the population based on survival rate
+			// and select a random genome.
 			final int maxIndexSize = (int) (training.getPopulation()
 					.getSurvivalRate() * members.size()) + 1;
 			final int theOne = (int) RangeRandomizer.randomize(0, maxIndexSize);
@@ -230,15 +239,13 @@ public class BasicSpecies implements Species {
 	}
 
 	/**
-	 * Purge all members.
+	 * Purge all members, increase age by one and count the number of generations
+	 * with no improvement.
 	 */
 	public void purge() {
 		members.clear();
-
 		age++;
-
 		gensNoImprovement++;
-
 		spawnsRequired = 0;
 
 	}
