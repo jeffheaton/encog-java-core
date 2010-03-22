@@ -32,12 +32,12 @@ package org.encog.neural.networks;
 
 import junit.framework.Assert;
 
-import org.encog.mathutil.matrices.Matrix;
-import org.encog.mathutil.randomize.ConsistentRandomizer;
+import org.encog.math.randomize.BasicRandomizer;
+import org.encog.math.randomize.ConsistentRandomizer;
+import org.encog.math.randomize.NguyenWidrowRandomizer;
+import org.encog.math.randomize.RangeRandomizer;
 import org.encog.neural.activation.ActivationSigmoid;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.Train;
 
 public class NetworkUtil {
@@ -50,12 +50,45 @@ public class NetworkUtil {
 		BasicNetwork network = new BasicNetwork();
 		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,2));
 		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
 		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,1));
 		network.getStructure().finalizeStructure();
+		
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 		
 		return network;
 	}
+	public static BasicNetwork createXORNetworkRangeRandomizedUntrained()
+    {
+        // random matrix data.  However, it provides a constant starting point 
+        // for the unit tests.
+        
+        BasicNetwork network = new BasicNetwork();
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,2));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,1));
+        network.getStructure().finalizeStructure();
+        (new RangeRandomizer(-1,1)).randomize( network);
+        
+        return network;
+    }
+	
+	public static BasicNetwork createXORNetworknNguyenWidrowUntrained()
+    {
+        // random matrix data.  However, it provides a constant starting point 
+        // for the unit tests.
+        
+        BasicNetwork network = new BasicNetwork();
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,2));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,1));
+        network.getStructure().finalizeStructure();
+        (new NguyenWidrowRandomizer(-1,1)).randomize( network );
+        
+        return network;
+    }
 	
 	public static void testTraining(Train train, double requiredImprove)
 	{
