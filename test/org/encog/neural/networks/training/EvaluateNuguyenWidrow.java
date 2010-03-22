@@ -1,4 +1,4 @@
-package org.encog.neural.networks.training.propagation.back;
+package org.encog.neural.networks.training;
 
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;

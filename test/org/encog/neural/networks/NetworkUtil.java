@@ -32,10 +32,9 @@ package org.encog.neural.networks;
 
 import junit.framework.Assert;
 
-import org.encog.math.randomize.BasicRandomizer;
-import org.encog.math.randomize.ConsistentRandomizer;
-import org.encog.math.randomize.NguyenWidrowRandomizer;
-import org.encog.math.randomize.RangeRandomizer;
+import org.encog.mathutil.randomize.ConsistentRandomizer;
+import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.training.Train;
