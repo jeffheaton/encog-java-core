@@ -41,7 +41,7 @@ import org.encog.neural.networks.synapse.Synapse;
  * 
  * 
  * 
- * @author Stéphan Corriveau
+ * @author StŽphan Corriveau
  * 
  */
 public class NguyenWidrowRandomizer extends RangeRandomizer implements Randomizer {
@@ -89,6 +89,7 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements Randomize
                         for (int row = 0; row < matrix.getRows(); row++) {
                             data[row][col] = beta * ( data[row][col]/normOfWeight[col] );
                         }
+                        synapse.getToLayer().getThreshold()[col]= beta * (synapse.getToLayer().getThreshold()[col]/normOfWeight[col]);
                     }
                   }    
               }
@@ -125,7 +126,7 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements Randomize
                 for ( int row = 0; row < synarray[j].getMatrix().getRows(); row++ ) {
                     normOfWeight += Math.pow( synarray[j].getMatrix().getData()[row][col], 2 );  
                 }  
-                normsOfWeight[col] = normOfWeight;
+                normsOfWeight[col] = Math.sqrt(normOfWeight);
             }
         }
         
