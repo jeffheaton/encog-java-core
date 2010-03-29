@@ -36,6 +36,7 @@ import java.util.List;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.BasicLayer;
@@ -122,6 +123,13 @@ public class NEATSynapse implements Synapse {
 		this.neurons.addAll(neurons);
 		this.networkDepth = networkDepth;
 		this.activationFunction = activationFunction;
+	}
+
+	public NEATSynapse(Layer fromLayer, Layer toLayer) {
+		this.fromLayer = fromLayer;
+		this.toLayer = toLayer;
+		this.networkDepth = 0;
+		this.activationFunction = new ActivationSigmoid();
 	}
 
 	/**

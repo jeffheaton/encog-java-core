@@ -29,6 +29,8 @@
  */
 package org.encog.solve.genetic.genes;
 
+import org.encog.persist.annotations.EGAttribute;
+
 /**
  * Implements the basic functionality for a gene. This is an abstract class.
  */
@@ -37,16 +39,19 @@ public abstract class BasicGene implements Gene {
 	/**
 	 * Is this gene enabled?
 	 */
+	@EGAttribute
 	private boolean enabled = true;
 	
 	/**
 	 * ID of this gene, -1 for unassigned.
 	 */
+	@EGAttribute
 	private long id = -1;
 	
 	/**
 	 * Innovation ID, -1 for unassigned.
 	 */
+	@EGAttribute
 	private long innovationId = -1;
 
 	/**

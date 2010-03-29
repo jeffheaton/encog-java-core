@@ -31,6 +31,7 @@
 package org.encog.neural.networks.training.neat;
 
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
+import org.encog.persist.annotations.EGAttribute;
 import org.encog.solve.genetic.genes.BasicGene;
 import org.encog.solve.genetic.genes.Gene;
 
@@ -49,31 +50,32 @@ public class NEATNeuronGene extends BasicGene {
 	/**
 	 * The activation response, the slope of the activation function.
 	 */
+	@EGAttribute
 	private double activationResponse;
 	
-	/**
-	 * The neuron id.
-	 */
-	private long id;
 	
 	/**
 	 * The neuron type.
 	 */
+	@EGAttribute
 	private NEATNeuronType neuronType;
 	
 	/**
 	 * True if this is recurrent.
 	 */
+	@EGAttribute
 	private boolean recurrent;
 	
 	/**
 	 * The x-split.
 	 */
+	@EGAttribute
 	private double splitX;
 	
 	/**
 	 * The y-split.
 	 */
+	@EGAttribute
 	private double splitY;
 
 	/**
@@ -86,6 +88,11 @@ public class NEATNeuronGene extends BasicGene {
 	public NEATNeuronGene(final NEATNeuronType type, final long id,
 			final double splitY, final double splitX) {
 		this(type, id, splitY, splitX, false, 1.0);
+	}
+	
+	public NEATNeuronGene()
+	{
+		
 	}
 
 	/**
@@ -101,7 +108,7 @@ public class NEATNeuronGene extends BasicGene {
 			final double splitY, final double splitX, final boolean recurrent,
 			final double act) {
 		neuronType = type;
-		this.id = id;
+		this.setId(id);
 		this.splitX = splitX;
 		this.splitY = splitY;
 		this.recurrent = recurrent;
@@ -115,7 +122,7 @@ public class NEATNeuronGene extends BasicGene {
 	public void copy(final Gene gene) {
 		final NEATNeuronGene other = (NEATNeuronGene) gene;
 		activationResponse = other.activationResponse;
-		id = other.id;
+		setId(other.getId());
 		neuronType = other.neuronType;
 		recurrent = other.recurrent;
 		splitX = other.splitX;
@@ -128,14 +135,6 @@ public class NEATNeuronGene extends BasicGene {
 	 */
 	public double getActivationResponse() {
 		return activationResponse;
-	}
-
-	/**
-	 * @return The id for this neuron gene.
-	 */
-	@Override
-	public long getId() {
-		return id;
 	}
 
 	/**
@@ -172,15 +171,6 @@ public class NEATNeuronGene extends BasicGene {
 	 */
 	public void setActivationResponse(final double activationResponse) {
 		this.activationResponse = activationResponse;
-	}
-
-	/**
-	 * Set the gene id.
-	 * @param id the id.
-	 */
-	@Override
-	public void setId(final long id) {
-		this.id = id;
 	}
 
 	/**

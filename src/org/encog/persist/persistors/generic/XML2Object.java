@@ -132,8 +132,13 @@ public class XML2Object {
 					}
 					field.setAccessible(true);
 					final Object currentValue = field.get(target);
+					Class<?> type = field.getType();
 
-					if (ReflectionUtil.isPrimitive(currentValue)) {
+					if( type.isEnum() ) {
+						final String value = this.in.readTextToTag();
+						setFieldValue(field, target, value);
+					}
+					else if (ReflectionUtil.isPrimitive(currentValue)) {
 						final String value = this.in.readTextToTag();
 						setFieldValue(field, target, value);
 					} else if (currentValue instanceof Collection) {
@@ -144,8 +149,10 @@ public class XML2Object {
 						field.set(target, file);
 					} else {
 						this.in.readToTag();
-						final Object nextObject = loadObject(field, target);
-						field.set(target, nextObject);
+						if( this.in.getTag().getType()!=Type.END) {
+							final Object nextObject = loadObject(field, target);
+							field.set(target, nextObject);
+						}
 					}
 				} else if (this.in.getTag().getType() == Type.END) {
 					if (this.in.getTag().getName().equals(
@@ -232,7 +239,10 @@ public class XML2Object {
 		try {
 
 			final Class< ? > type = field.getType();
-			if (type == long.class) {
+			if( type.isEnum() ) {
+				field.set(target, ReflectionUtil.resolveEnum(field, value));
+			}
+			else if (type == long.class) {
 				field.setLong(target, Long.parseLong(value));
 			} else if (type == int.class) {
 				field.setInt(target, Integer.parseInt(value));

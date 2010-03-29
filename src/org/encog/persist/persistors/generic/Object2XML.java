@@ -31,6 +31,7 @@
 package org.encog.persist.persistors.generic;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.encog.parse.tags.write.WriteXML;
@@ -131,6 +132,8 @@ public class Object2XML {
 
 				saveCollection((Collection< ? >) fieldObject);
 
+			} else if( fieldObject.getClass().isEnum() ) {
+				this.out.addText(fieldObject.toString());
 			} else if (ReflectionUtil.isPrimitive(fieldObject)
 					|| ReflectionUtil.isSimple(fieldObject)) {
 				this.out.addText(fieldObject.toString());
@@ -165,8 +168,7 @@ public class Object2XML {
 	 */
 	private void saveObject(final Object obj)
 			throws IllegalAccessException {
-		// does this object have an ID?
-
+		// does this object have an ID?		
 		if (this.tagger.hasReference(obj)) {
 			final int id = this.tagger.getReference(obj);
 			this.out.addAttribute("id", "" + id);

@@ -43,10 +43,12 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.DirectSynapse;
 import org.encog.neural.networks.synapse.OneToOneSynapse;
+import org.encog.neural.networks.synapse.PartialSynapse;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.networks.synapse.WeightlessSynapse;
+import org.encog.neural.networks.synapse.neat.NEATSynapse;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicLayerPersistor;
 import org.slf4j.Logger;
@@ -206,6 +208,12 @@ public class BasicLayer implements Layer, Serializable {
 			break;
 		case Direct:
 			synapse = new DirectSynapse(this, next);
+			break;
+		case NEAT:
+			synapse = new NEATSynapse(this,next);
+			break;
+		case Partial:
+			synapse = new PartialSynapse(this,next);
 			break;
 		default:
 			throw new NeuralNetworkError("Unknown synapse type");

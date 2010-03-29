@@ -58,7 +58,7 @@ public final class Format {
 	 * @param i The number of decimal places.
 	 * @return The double as a string.
 	 */
-	public static Object formatDouble(final double d, final int i) {
+	public static String formatDouble(final double d, final int i) {
 		final NumberFormat f = NumberFormat.getNumberInstance();
 		f.setMinimumFractionDigits(i);
 		return f.format(d);

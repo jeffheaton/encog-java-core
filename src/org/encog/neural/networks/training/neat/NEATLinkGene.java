@@ -30,6 +30,7 @@
 
 package org.encog.neural.networks.training.neat;
 
+import org.encog.persist.annotations.EGAttribute;
 import org.encog.solve.genetic.genes.BasicGene;
 import org.encog.solve.genetic.genes.Gene;
 
@@ -49,17 +50,22 @@ public class NEATLinkGene extends BasicGene {
 	/**
 	 * The from neuron id.
 	 */
+	@EGAttribute
 	private long fromNeuronID;
 	
 	/**
 	 * Is this a recurrent connection.
 	 */
+	@EGAttribute
 	private boolean recurrent;
 	
 	/**
 	 * The to neuron id.
 	 */
+	@EGAttribute
 	private long toNeuronID;
+	
+	@EGAttribute
 	private double weight;
 
 	public NEATLinkGene(final long fromNeuronID, final long toNeuronID,
@@ -71,6 +77,11 @@ public class NEATLinkGene extends BasicGene {
 		setInnovationId(innovationID);
 		this.weight = weight;
 		this.recurrent = recurrent;
+	}
+	
+	public NEATLinkGene()
+	{
+		
 	}
 
 	/**

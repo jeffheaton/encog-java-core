@@ -33,6 +33,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.generic.GenericPersistor;
 import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.innovation.InnovationList;
 import org.encog.solve.genetic.species.Species;
@@ -42,7 +45,7 @@ import org.encog.util.identity.GenerateID;
 /**
  * Defines the basic functionality for a population of genomes.
  */
-public class BasicPopulation implements Population {
+public class BasicPopulation implements Population, EncogPersistedObject {
 	
 	/**
 	 * Generate gene id's.
@@ -108,6 +111,16 @@ public class BasicPopulation implements Population {
 	 * The young score bonus.
 	 */
 	private double youngScoreBonus = 0.3;
+	
+	/**
+	 * The object name.
+	 */
+	private String name;
+	
+	/**
+	 * The object description.
+	 */
+	private String description;
 
 	/**
 	 * Construct a population.
@@ -115,6 +128,13 @@ public class BasicPopulation implements Population {
 	 */
 	public BasicPopulation(final int populationSize) {
 		this.populationSize = populationSize;
+	}
+	
+	/**
+	 * Construct an empty population.
+	 */
+	public BasicPopulation() {
+		this.populationSize = 0;
 	}
 
 	/**
@@ -322,6 +342,28 @@ public class BasicPopulation implements Population {
 	 */
 	public void sort() {
 		Collections.sort(genomes);
+	}
+
+	public Persistor createPersistor() {
+		return new GenericPersistor(BasicPopulation.class);
+	}
+
+	public String getDescription() {
+		return this.description;
+	}
+
+	public String getName() {
+		return this.name;
+	}
+
+	public void setDescription(String theDescription) {
+		this.description = theDescription;
+		
+	}
+
+	public void setName(String theName) {
+		this.name = theName;
+		
 	}
 
 }

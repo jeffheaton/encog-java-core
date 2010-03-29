@@ -77,12 +77,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	/**
 	 * The number of inputs.
 	 */
-	private final int inputCount;
+	private int inputCount;
 	
 	/**
 	 * The chromsome that holds the links.
 	 */
-	private final Chromosome linksChromosome;
+	private Chromosome linksChromosome;
 	
 	/**
 	 * THe network depth.
@@ -92,12 +92,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	/**
 	 * The chromosome that holds the neurons.
 	 */
-	private final Chromosome neuronsChromosome;
+	private Chromosome neuronsChromosome;
 	
 	/**
 	 * The number of outputs.
 	 */
-	private final int outputCount;
+	private int outputCount;
 	
 	/**
 	 * The species id.
@@ -107,8 +107,14 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	/**
 	 * The owner object.
 	 */
-	private final NEATTraining training;
+	private NEATTraining training;
 
+	public NEATGenome()
+	{
+		super(null);
+	}
+	
+	
 	/**
 	 * Construct a genome by copying another.
 	 * @param other The other genome.

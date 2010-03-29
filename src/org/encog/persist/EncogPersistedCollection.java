@@ -140,6 +140,8 @@ public class EncogPersistedCollection {
 	 */
 	public static final String TYPE_TRAINING_CONTINUATION = "TrainingContinuation";
 
+	public static final String TYPE_POPULATION = "BasicPopulation";
+
 	/**
 	 * Throw and log an error.
 	 * 

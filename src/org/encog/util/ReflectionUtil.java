@@ -157,7 +157,8 @@ public final class ReflectionUtil {
 	public static boolean isPrimitive(final Object obj) {
 		return (obj instanceof Character) || (obj instanceof Integer)
 				|| (obj instanceof Short) || (obj instanceof Float)
-				|| (obj instanceof Double) || (obj instanceof Boolean);
+				|| (obj instanceof Double) || (obj instanceof Boolean)
+				|| (obj instanceof Long);
 	}
 
 	/**
@@ -243,6 +244,17 @@ public final class ReflectionUtil {
 	 */
 	private ReflectionUtil() {
 
+	}
+
+	public static Object resolveEnum(Field field, String value) {
+		Class<?> type = field.getType();
+		Object[] objs = type.getEnumConstants();
+		for( Object obj: objs)
+		{
+			if( obj.toString().equals(value))
+				return obj;
+		}
+		return null;
 	}
 
 }
