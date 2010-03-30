@@ -45,6 +45,10 @@ import org.slf4j.LoggerFactory;
  * 
  * This synapse type is teachable.
  * 
+ * This is a "fully connected" synapse between two layers. If you would like
+ * only some neurons to be connected to others, you should use the
+ * PartialSynapse.
+ * 
  * @author jheaton
  * 
  */

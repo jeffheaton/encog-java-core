@@ -30,6 +30,7 @@
 
 package org.encog.persist.persistors;
 
+import org.encog.neural.networks.synapse.PartialSynapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
@@ -42,12 +43,14 @@ import org.encog.persist.Persistor;
  * 
  * @author jheaton
  */
-public class WeightedSynapsePersistor implements Persistor {
+public class PartialSynapsePersistor implements Persistor {
 
 	/**
 	 * The weights tag.
 	 */
 	public static final String TAG_WEIGHTS = "weights";
+	
+	public static final String TAG_WEIGHT = "Weight";
 
 	/**
 	 * Load the specified Encog object from an XML reader.
@@ -63,7 +66,7 @@ public class WeightedSynapsePersistor implements Persistor {
 
 		while (in.readToTag()) {
 
-			if (in.is(WeightedSynapsePersistor.TAG_WEIGHTS, true)) {
+			if (in.is(PartialSynapsePersistor.TAG_WEIGHTS, true)) {
 				in.readToTag();
 				synapse.setMatrix(PersistorUtil.loadMatrix(in));
 			}
@@ -86,12 +89,29 @@ public class WeightedSynapsePersistor implements Persistor {
 	public void save(final EncogPersistedObject obj, final WriteXML out) {
 		PersistorUtil
 				.beginEncogObject(
-						EncogPersistedCollection.TYPE_WEIGHTED_SYNAPSE, out,
+						EncogPersistedCollection.TYPE_PARTIAL_SYNAPSE, out,
 						obj, false);
-		final WeightedSynapse synapse = (WeightedSynapse) obj;
+		final PartialSynapse synapse = (PartialSynapse) obj;
 
-		out.beginTag(WeightedSynapsePersistor.TAG_WEIGHTS);
-		PersistorUtil.saveMatrix(synapse.getMatrix(), out);
+		out.beginTag(PartialSynapsePersistor.TAG_WEIGHTS);
+		
+		boolean[][] enabled = synapse.getEnabled();
+		double[][]matrix = synapse.getMatrix().getData();
+		
+		for(int row = 0;row<synapse.getMatrix().getRows();row++)
+		{
+			for(int col = 0;col<synapse.getMatrix().getRows();row++)
+			{
+				if( enabled[row][col] )
+				{
+					out.beginTag(PartialSynapsePersistor.TAG_WEIGHT);
+					out.addAttribute("from", ""+row);
+					out.addAttribute("to", ""+row);
+					out.addAttribute("weight", ""+matrix[row][col]);
+					out.endTag();
+				}
+			}
+		}		
 		out.endTag();
 
 		out.endTag();
