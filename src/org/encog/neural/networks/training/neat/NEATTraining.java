@@ -41,6 +41,7 @@ import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
@@ -261,6 +262,17 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 
 		init();
+	}
+
+	public NEATTraining(CalculateScore score, BasicNetwork network,
+			Population population) {
+		Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
+		setCalculateScore(new GeneticScoreAdapter(score));
+		setComparator(new GenomeComparator(getCalculateScore()));
+		this.inputCount = inputLayer.getNeuronCount();
+		this.outputCount = outputLayer.getNeuronCount();
+		this.setPopulation(population);
 	}
 
 	/**

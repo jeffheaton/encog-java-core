@@ -89,7 +89,7 @@ public class NEATSynapse implements Synapse {
 	/**
 	 * The depth of the network.
 	 */
-	private final int networkDepth;
+	private int networkDepth;
 
 	/**
 	 * The neurons that make up this network.
@@ -130,6 +130,14 @@ public class NEATSynapse implements Synapse {
 		this.toLayer = toLayer;
 		this.networkDepth = 0;
 		this.activationFunction = new ActivationSigmoid();
+	}
+	
+	/**
+	 * Default constructor.
+	 */
+	public NEATSynapse()
+	{
+		
 	}
 
 	/**

@@ -49,9 +49,7 @@ public class GaussianRandomizer extends BasicRandomizer {
 	
 	@Override
 	public double randomize(double d) {
-		double result = boxMuller(this.mean,this.standardDeviation); 
-		System.out.println(result);
-		return result;
+		return boxMuller(this.mean,this.standardDeviation);
 	}
 
 }
