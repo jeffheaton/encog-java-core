@@ -451,4 +451,13 @@ public class EncogPersistedCollection {
 
 	}
 
+	public boolean exists(String result) {
+		for( DirectoryEntry dir: this.directory )
+		{
+			if( dir.getName().equals(result))
+				return true;
+		}
+		return false;
+	}
+
 }
