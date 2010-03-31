@@ -104,10 +104,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 */
 	private long speciesID;
 	
-	/**
-	 * The owner object.
-	 */
-	private NEATTraining training;
 
 	public NEATGenome()
 	{
@@ -120,7 +116,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 * @param other The other genome.
 	 */
 	public NEATGenome(final NEATGenome other) {
-		super(other.training);
+		super(other.getGeneticAlgorithm());
 
 		neuronsChromosome = new Chromosome();
 		linksChromosome = new Chromosome();
@@ -133,7 +129,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		inputCount = other.inputCount;
 		outputCount = other.outputCount;
 		speciesID = other.speciesID;
-		training = other.training;
 
 		// copy neurons
 		for (final Gene gene : other.getNeurons().getGenes()) {
@@ -177,7 +172,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
-		this.training = training;
 	}
 
 	/**
@@ -196,7 +190,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		this.outputCount = outputCount;
 		setAmountToSpawn(0);
 		speciesID = 0;
-		this.training = training;
 
 		final double inputRowSlice = 0.8 / (inputCount);
 		neuronsChromosome = new Chromosome();
@@ -293,9 +286,10 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		}
 
 		// check to see if this innovation has already been tried
-		final NEATInnovation innovation = training.getInnovations()
-				.checkInnovation(neuron1ID, neuron1ID,
-						NEATInnovationType.NewLink);
+		final NEATInnovation innovation = ((NEATTraining)getGeneticAlgorithm())
+			.getInnovations()
+			.checkInnovation(neuron1ID, neuron1ID,
+				NEATInnovationType.NewLink);
 
 		// see if this is a recurrent(backwards) link
 		final NEATNeuronGene neuronGene = (NEATNeuronGene) neuronsChromosome
@@ -307,10 +301,10 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		// is this a new innovation?
 		if (innovation == null) {
 			// new innovation
-			training.getInnovations().createNewInnovation(neuron1ID, neuron2ID,
+			((NEATTraining)getGeneticAlgorithm()).getInnovations().createNewInnovation(neuron1ID, neuron2ID,
 					NEATInnovationType.NewLink);
 
-			final long id2 = training.getPopulation().assignInnovationID();
+			final long id2 = ((NEATTraining)getGeneticAlgorithm()).getPopulation().assignInnovationID();
 
 			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
 					neuron2ID, true, id2, RangeRandomizer.randomize(-1, 1),
@@ -388,7 +382,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		final double newWidth = (fromGene.getSplitX() + toGene.getSplitX()) / 2;
 
 		// has this innovation already been tried?
-		NEATInnovation innovation = training.getInnovations().checkInnovation(
+		NEATInnovation innovation = ((NEATTraining)getGeneticAlgorithm()).getInnovations().checkInnovation(
 				from, to, NEATInnovationType.NewNeuron);
 
 		// prevent chaining
@@ -402,7 +396,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 		if (innovation == null) {
 			// this innovation has not been tried, create it
-			final long newNeuronID = training.getInnovations()
+			final long newNeuronID = ((NEATTraining)getGeneticAlgorithm()).getInnovations()
 					.createNewInnovation(from, to,
 							NEATInnovationType.NewNeuron,
 							NEATNeuronType.Hidden, newWidth, newDepth);
@@ -411,9 +405,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 					newNeuronID, newDepth, newWidth));
 
 			// add the first link
-			final long link1ID = training.getPopulation().assignInnovationID();
+			final long link1ID = ((NEATTraining)getGeneticAlgorithm()).getPopulation().assignInnovationID();
 
-			training.getInnovations().createNewInnovation(from, newNeuronID,
+			((NEATTraining)getGeneticAlgorithm()).getInnovations().createNewInnovation(from, newNeuronID,
 					NEATInnovationType.NewLink);
 
 			final NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID,
@@ -422,9 +416,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			linksChromosome.add(link1);
 
 			// add the second link
-			final long link2ID = training.getPopulation().assignInnovationID();
+			final long link2ID = ((NEATTraining)getGeneticAlgorithm()).getPopulation().assignInnovationID();
 
-			training.getInnovations().createNewInnovation(newNeuronID, to,
+			((NEATTraining)getGeneticAlgorithm()).getInnovations().createNewInnovation(newNeuronID, to,
 					NEATInnovationType.NewLink);
 
 			final NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
@@ -437,10 +431,10 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			// existing innovation
 			final long newNeuronID = innovation.getNeuronID();
 
-			final NEATInnovation innovationLink1 = training.getInnovations()
+			final NEATInnovation innovationLink1 = ((NEATTraining)getGeneticAlgorithm()).getInnovations()
 					.checkInnovation(from, newNeuronID,
 							NEATInnovationType.NewLink);
-			final NEATInnovation innovationLink2 = training.getInnovations()
+			final NEATInnovation innovationLink2 = ((NEATTraining)getGeneticAlgorithm()).getInnovations()
 					.checkInnovation(newNeuronID, to,
 							NEATInnovationType.NewLink);
 
@@ -542,11 +536,11 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 		final BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),
 				false, inputCount);
-		final BasicLayer outputLayer = new BasicLayer(training
+		final BasicLayer outputLayer = new BasicLayer(((NEATTraining)getGeneticAlgorithm())
 				.getOutputActivationFunction(), false, outputCount);
 		final NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer,
-				neurons, training.getNeatActivationFunction(), networkDepth);
-		synapse.setSnapshot(this.training.isSnapshot());
+				neurons, ((NEATTraining)getGeneticAlgorithm()).getNeatActivationFunction(), networkDepth);
+		synapse.setSnapshot(((NEATTraining)getGeneticAlgorithm()).isSnapshot());
 		inputLayer.addSynapse(synapse);
 		final BasicNetwork network = new BasicNetwork();
 		network.tagLayer(BasicNetwork.TAG_INPUT, inputLayer);
@@ -808,12 +802,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		result.append(getScore());
 		result.append(")");
 		return result.toString();
-	}
-
-
-	public void setTraining(NEATTraining training) {
-		this.training = training;
-		
 	}
 
 }

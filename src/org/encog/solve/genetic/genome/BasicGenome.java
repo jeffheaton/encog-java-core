@@ -60,7 +60,7 @@ public abstract class BasicGenome implements Genome {
 	/**
 	 * The genetic algorithm for this gene.
 	 */
-	private final GeneticAlgorithm geneticAlgorithm;
+	private GeneticAlgorithm geneticAlgorithm;
 	
 	/**
 	 * The genome id.
@@ -149,6 +149,10 @@ public abstract class BasicGenome implements Genome {
 	 */
 	public GeneticAlgorithm getGeneticAlgorithm() {
 		return geneticAlgorithm;
+	}
+	
+	public void setGeneticAlgorithm(GeneticAlgorithm ga) {
+		this.geneticAlgorithm = ga;
 	}
 
 	/**
@@ -257,6 +261,8 @@ public abstract class BasicGenome implements Genome {
 	public void setScore(final double score) {
 		this.score = score;
 	}
+	
+	
 
 	/**
 	 * Convert the chromosome to a string.

@@ -231,7 +231,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		for(Genome obj: population.getGenomes() )
 		{
 			NEATGenome neat = (NEATGenome)obj;
-			neat.setTraining(this);
+			neat.setGeneticAlgorithm(this);
 		}
 
 		init();
@@ -283,8 +283,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		for(Genome obj: population.getGenomes() )
 		{
 			NEATGenome neat = (NEATGenome)obj;
-			neat.setTraining(this);
+			neat.setGeneticAlgorithm(this);
 		}
+		
+		init();
 	}
 
 	/**
