@@ -227,6 +227,12 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		this.setPopulation(population);
 		this.inputCount = genome.getInputCount();
 		this.outputCount = genome.getOutputCount();
+		
+		for(Genome obj: population.getGenomes() )
+		{
+			NEATGenome neat = (NEATGenome)obj;
+			neat.setTraining(this);
+		}
 
 		init();
 	}
@@ -273,6 +279,12 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		this.inputCount = inputLayer.getNeuronCount();
 		this.outputCount = outputLayer.getNeuronCount();
 		this.setPopulation(population);
+		
+		for(Genome obj: population.getGenomes() )
+		{
+			NEATGenome neat = (NEATGenome)obj;
+			neat.setTraining(this);
+		}
 	}
 
 	/**

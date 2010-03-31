@@ -60,6 +60,9 @@ public class Object2XML {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	public static final String REFF_ID = "idx";
+	
+	
 	/**
 	 * The XML writer used.
 	 */
@@ -171,7 +174,7 @@ public class Object2XML {
 		// does this object have an ID?		
 		if (this.tagger.hasReference(obj)) {
 			final int id = this.tagger.getReference(obj);
-			this.out.addAttribute("id", "" + id);
+			this.out.addAttribute(REFF_ID, "" + id);
 		}
 
 		// get all fields

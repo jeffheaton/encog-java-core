@@ -106,9 +106,9 @@ public class XML2Object {
 				}
 
 				// see if there is an id
-				if (key.equals("id")) {
+				if (key.equals(Object2XML.REFF_ID)) {
 					final int ref = Integer.parseInt(this.in.getTag()
-							.getAttributeValue("id"));
+							.getAttributeValue(Object2XML.REFF_ID));
 					this.mapper.addObjectMapping(ref, target);
 					continue;
 				}

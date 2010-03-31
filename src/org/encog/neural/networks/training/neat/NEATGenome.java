@@ -810,4 +810,10 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		return result.toString();
 	}
 
+
+	public void setTraining(NEATTraining training) {
+		this.training = training;
+		
+	}
+
 }
