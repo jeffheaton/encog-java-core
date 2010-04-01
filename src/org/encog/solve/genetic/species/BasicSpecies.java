@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.persist.annotations.EGIgnore;
 import org.encog.solve.genetic.GeneticAlgorithm;
 import org.encog.solve.genetic.genome.Genome;
 
@@ -64,7 +65,7 @@ public class BasicSpecies implements Species {
 	/**
 	 * The list of genomes.
 	 */
-	private final List<Genome> members = new ArrayList<Genome>();
+	private List<Genome> members = new ArrayList<Genome>();
 	
 	/**
 	 * The number of spawns required.
@@ -74,12 +75,13 @@ public class BasicSpecies implements Species {
 	/**
 	 * The species id.
 	 */
-	private final long speciesID;
+	private long speciesID;
 	
 	/**
 	 * The owner class.
 	 */
-	private final GeneticAlgorithm training;
+	@EGIgnore
+	private transient GeneticAlgorithm training;
 
 	/**
 	 * Construct a species.
@@ -97,6 +99,11 @@ public class BasicSpecies implements Species {
 		leader = first;
 		spawnsRequired = 0;
 		members.add(first);
+	}
+	
+	public BasicSpecies()
+	{
+		
 	}
 
 	/**

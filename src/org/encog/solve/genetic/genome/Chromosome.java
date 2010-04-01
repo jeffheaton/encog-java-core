@@ -33,6 +33,7 @@ package org.encog.solve.genetic.genome;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.persist.annotations.EGReferenceable;
 import org.encog.solve.genetic.genes.Gene;
 
 /**
@@ -44,7 +45,7 @@ import org.encog.solve.genetic.genes.Gene;
  * Genomes in this genetic algorithm consist of one or more chromosomes. 
  * 
  */
-
+@EGReferenceable
 public class Chromosome {
 
 	/**

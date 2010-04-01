@@ -49,12 +49,12 @@ public class NEATInnovation extends BasicInnovation {
 	/**
 	 * The from neuron id.
 	 */
-	private final long fromNeuronID;
+	private long fromNeuronID;
 	
 	/**
 	 * The type of innovation.
 	 */
-	private final NEATInnovationType innovationType;
+	private NEATInnovationType innovationType;
 	
 	/**
 	 * The neuron id.
@@ -64,22 +64,22 @@ public class NEATInnovation extends BasicInnovation {
 	/**
 	 * The type of neuron, or none, if this is a link innovation.
 	 */
-	private final NEATNeuronType neuronType;
+	private NEATNeuronType neuronType;
 	
 	/**
 	 * The split x property.
 	 */
-	private final double splitX;
+	private double splitX;
 	
 	/**
 	 * The split y property.
 	 */
-	private final double splitY;
+	private double splitY;
 	
 	/**
 	 * The to neuron's id.
 	 */
-	private final long toNeuronID;
+	private long toNeuronID;
 
 	/**
 	 * Construct an innovation.
@@ -100,6 +100,11 @@ public class NEATInnovation extends BasicInnovation {
 		splitX = 0;
 		splitY = 0;
 		neuronType = NEATNeuronType.None;
+	}
+	
+	public NEATInnovation()
+	{
+		
 	}
 
 	/**
@@ -201,6 +206,31 @@ public class NEATInnovation extends BasicInnovation {
 	 */
 	public void setNeuronID(final long neuronID) {
 		this.neuronID = neuronID;
+	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[NeatInnovation:type=");
+		switch(this.innovationType)
+		{
+			case NewLink: 
+				result.append("link");
+				break;
+			case NewNeuron: 
+				result.append("link");
+				break;
+		}
+		result.append(",from=");
+		result.append(this.fromNeuronID);
+		result.append(",to=");
+		result.append(this.toNeuronID);
+		result.append(",splitX=");
+		result.append(this.splitX);
+		result.append(",splitY=");
+		result.append(this.splitY);
+		result.append("]");
+		return result.toString();
 	}
 
 }

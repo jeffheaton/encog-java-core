@@ -31,6 +31,7 @@
 package org.encog.neural.networks.training.neat;
 
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
+import org.encog.persist.annotations.EGReference;
 import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genome.Chromosome;
 import org.encog.solve.genetic.innovation.BasicInnovationList;
@@ -57,6 +58,7 @@ public class NEATInnovationList extends BasicInnovationList {
 	/**
 	 * The population.
 	 */
+	@EGReference
 	private Population population;
 
 	/**
@@ -84,6 +86,11 @@ public class NEATInnovationList extends BasicInnovationList {
 			add(innovation);
 
 		}
+	}
+	
+	public NEATInnovationList()
+	{
+		
 	}
 
 	/**
