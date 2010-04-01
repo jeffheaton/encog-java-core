@@ -48,24 +48,30 @@ public class NEATLink {
 	 * The source neuron.
 	 */
 	@EGReference
-	private final NEATNeuron fromNeuron;
+	private NEATNeuron fromNeuron;
 
 	/**
 	 * Is this link recurrent.
 	 */
-	private final boolean recurrent;
+	private boolean recurrent;
 
 	/**
 	 * The target neuron.
 	 */
 	@EGReference
-	private final NEATNeuron toNeuron;
+	private NEATNeuron toNeuron;
 	
 	/**
 	 * The weight between the two neurons.
 	 */
-	private final double weight;
+	private double weight;
 
+	public NEATLink()
+	{
+		
+	}
+	
+	
 	/**
 	 * Construct a NEAT link.
 	 * @param weight The weight between the two neurons.

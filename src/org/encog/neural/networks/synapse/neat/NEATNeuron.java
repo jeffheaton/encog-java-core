@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReferenceable;
 
 /**
@@ -55,7 +56,7 @@ public class NEATNeuron {
 	 * The activation response. This is evolved to allow NEAT to scale the slope
 	 * of the activation function.
 	 */
-	private final double activationResponse;
+	private double activationResponse;
 	
 	/**
 	 * Inbound links to this neuron.
@@ -66,12 +67,12 @@ public class NEATNeuron {
 	 * The neuron id.
 	 */
 	@EGAttribute
-	private final long neuronID;
+	private long neuronID;
 	
 	/**
 	 * The type of neuron this is.
 	 */
-	private final NEATNeuronType neuronType;
+	private NEATNeuronType neuronType;
 	
 	/**
 	 * The output from the neuron.
@@ -81,37 +82,43 @@ public class NEATNeuron {
 	/**
 	 * The outbound links for this neuron.
 	 */
-	private final List<NEATLink> outputboundLinks = new ArrayList<NEATLink>();
+	private List<NEATLink> outputboundLinks = new ArrayList<NEATLink>();
 	
 	/**
 	 * The x-position of this neuron.  Used to split links, as well as display.
 	 */
 	@EGAttribute
-	private final int posX;
+	private int posX;
 	
 	/**
 	 * The y-position of this neuron.  Used to split links, as well as display.
 	 */
 	@EGAttribute
-	private final int posY;
+	private int posY;
 	
 	/**
 	 * The split value for X.  Used to track splits.
 	 */
 	@EGAttribute
-	private final double splitX;
+	private double splitX;
 	
 	/**
 	 * The split value for Y.  Used to track splits.
 	 */
 	@EGAttribute
-	private final double splitY;
+	private double splitY;
 	
 	/**
 	 * The sum activation.
 	 */
-	private final double sumActivation;
+	@EGIgnore
+	private double sumActivation;
 
+	public NEATNeuron()
+	{
+		
+	}
+	
 	/**
 	 * Construct a NEAT neuron.
 	 * @param neuronType The type of neuron.
