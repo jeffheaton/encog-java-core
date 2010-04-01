@@ -218,7 +218,7 @@ public class NEATInnovation extends BasicInnovation {
 				result.append("link");
 				break;
 			case NewNeuron: 
-				result.append("link");
+				result.append("neuron");
 				break;
 		}
 		result.append(",from=");
