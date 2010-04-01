@@ -47,7 +47,6 @@ public class GaussianRandomizer extends BasicRandomizer {
 		this.standardDeviation = standardDeviation;
 	}
 	
-	@Override
 	public double randomize(double d) {
 		return boxMuller(this.mean,this.standardDeviation);
 	}
