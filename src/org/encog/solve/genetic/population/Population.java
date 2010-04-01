@@ -31,6 +31,7 @@ package org.encog.solve.genetic.population;
 
 import java.util.List;
 
+import org.encog.persist.EncogPersistedObject;
 import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.innovation.InnovationList;
 import org.encog.solve.genetic.species.Species;
@@ -38,7 +39,7 @@ import org.encog.solve.genetic.species.Species;
 /**
  * Defines a population of genomes.
  */
-public interface Population {
+public interface Population extends EncogPersistedObject {
 	
 	/**
 	 * Add a genome to the population.

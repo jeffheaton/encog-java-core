@@ -60,6 +60,7 @@ public abstract class BasicGenome implements Genome {
 	/**
 	 * The genetic algorithm for this gene.
 	 */
+	@EGIgnore
 	private GeneticAlgorithm geneticAlgorithm;
 	
 	/**
