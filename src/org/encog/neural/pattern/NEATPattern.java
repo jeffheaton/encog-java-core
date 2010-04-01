@@ -1,6 +1,7 @@
 package org.encog.neural.pattern;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
@@ -26,6 +27,10 @@ public class NEATPattern implements NeuralNetworkPattern {
 	private ActivationFunction neatActivation;
 	
 	private ActivationFunction outputActivation;
+	
+	private boolean snapshot;
+	
+	private final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 
 
 	/**
@@ -62,8 +67,8 @@ public class NEATPattern implements NeuralNetworkPattern {
 		outputLayer.setX(PatternConst.START_X);
 		outputLayer.setY(y);
 		final NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer,
-				new ArrayList<NEATNeuron>(), this.neatActivation, 0);
-		synapse.setSnapshot(false);
+				this.neurons, this.neatActivation, 0);
+		synapse.setSnapshot(this.snapshot);
 		inputLayer.addSynapse(synapse);
 		final BasicNetwork network = new BasicNetwork();
 		network.tagLayer(BasicNetwork.TAG_INPUT, inputLayer);
@@ -113,4 +118,20 @@ public class NEATPattern implements NeuralNetworkPattern {
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
+
+	public boolean isSnapshot() {
+		return snapshot;
+	}
+
+	public void setSnapshot(boolean snapshot) {
+		this.snapshot = snapshot;
+	}
+
+	public List<NEATNeuron> getNeurons() {
+		return neurons;
+	}
+	
+	
+	
+	
 }

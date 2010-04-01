@@ -43,6 +43,7 @@ import org.encog.neural.networks.synapse.neat.NEATLink;
 import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
+import org.encog.neural.pattern.NEATPattern;
 import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genome.BasicGenome;
 import org.encog.solve.genetic.genome.Chromosome;
@@ -503,7 +504,10 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 * Convert the genes to an actual network.
 	 */
 	public void decode() {
-		final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
+		
+		NEATPattern pattern = new NEATPattern();
+		
+		final List<NEATNeuron> neurons = pattern.getNeurons();
 
 		for (final Gene gene : getNeurons().getGenes()) {
 			final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
@@ -534,19 +538,13 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			}
 		}
 
-		final BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),
-				false, inputCount);
-		final BasicLayer outputLayer = new BasicLayer(((NEATTraining)getGeneticAlgorithm())
-				.getOutputActivationFunction(), false, outputCount);
-		final NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer,
-				neurons, ((NEATTraining)getGeneticAlgorithm()).getNeatActivationFunction(), networkDepth);
-		synapse.setSnapshot(((NEATTraining)getGeneticAlgorithm()).isSnapshot());
-		inputLayer.addSynapse(synapse);
-		final BasicNetwork network = new BasicNetwork();
-		network.tagLayer(BasicNetwork.TAG_INPUT, inputLayer);
-		network.tagLayer(BasicNetwork.TAG_OUTPUT, outputLayer);
-		network.getStructure().finalizeStructure();
-		setOrganism(network);
+		pattern.setNEATActivationFunction(((NEATTraining)getGeneticAlgorithm()).getNeatActivationFunction());
+		pattern.setActivationFunction(((NEATTraining)getGeneticAlgorithm()).getOutputActivationFunction());
+		pattern.setInputNeurons(inputCount);
+		pattern.setOutputNeurons(outputCount);
+		pattern.setSnapshot(((NEATTraining)getGeneticAlgorithm()).isSnapshot());
+	
+		setOrganism(pattern.generate());
 
 	}
 

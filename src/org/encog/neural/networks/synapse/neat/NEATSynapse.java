@@ -157,6 +157,11 @@ public class NEATSynapse implements Synapse {
 	 */
 	public NeuralData compute(final NeuralData input) {
 		final NeuralData result = new BasicNeuralData(getToNeuronCount());
+		
+		if( this.neurons.size()==0 )
+		{
+			throw new NeuralNetworkError("This network has not been evolved yet, it has no neurons in the NEAT synapse.");
+		}
 
 		int flushCount = 1;
 
@@ -392,5 +397,7 @@ public class NEATSynapse implements Synapse {
 	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
 	}
+	
+	
 
 }
