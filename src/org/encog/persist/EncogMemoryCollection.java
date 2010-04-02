@@ -30,11 +30,17 @@
 
 package org.encog.persist;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.location.PersistenceLocation;
 import org.encog.persist.persistors.PersistorUtil;
+import org.encog.solve.genetic.population.Population;
 
 /**
  * A memory based collection of Encog objects. Does not use the more complex
@@ -62,6 +68,9 @@ public class EncogMemoryCollection {
 	 * Populated during a load, the platform that this was loaded to.
 	 */
 	private String platform;
+	
+	
+	private List<DirectoryEntry> directory = new ArrayList<DirectoryEntry>();
 
 	/**
 	 * @return The objects that were loaded from this file.
@@ -128,6 +137,7 @@ public class EncogMemoryCollection {
 				this.contents.put(name, obj);
 			}
 		} finally {
+			this.buildDirectory();
 			if (reader != null) {
 				reader.close();
 			}
@@ -154,8 +164,64 @@ public class EncogMemoryCollection {
 			}
 			writer.endObjects();
 		} finally {
+			this.buildDirectory();
 			writer.end();
 			writer.close();
 		}
+	}
+
+	public List<DirectoryEntry> getDirectory() {
+
+		return this.directory;
+	}
+
+	public EncogPersistedObject find(String key) {		
+		return contents.get(key);
+	}
+
+	public void add(String name, EncogPersistedObject obj) {
+		this.contents.put(name, obj);
+		this.buildDirectory();
+	}
+
+	public void delete(String key) {
+		this.contents.remove(key);
+		this.buildDirectory();
+	}
+	
+	public void clear()
+	{
+		this.contents.clear();
+		this.buildDirectory();
+	}
+
+	public void updateProperties(String name, String newName, String desc) {
+		EncogPersistedObject obj = this.contents.get(name);
+		obj.setName(newName);
+		obj.setDescription(desc);
+		this.contents.remove(name);
+		this.contents.put(newName, obj);		
+	}
+
+	public EncogPersistedObject find(DirectoryEntry entry) {
+		return contents.get(entry.getName());
+	}
+
+	public boolean exists(String result) {
+		return this.contents.containsKey(result);
+	}
+
+	public void delete(DirectoryEntry object) {
+		this.contents.remove(object.getName());
+		this.buildDirectory();
+	}
+
+	public void buildDirectory() {
+		this.directory.clear();
+		for( EncogPersistedObject obj: this.contents.values() )
+		{
+			DirectoryEntry entry = new DirectoryEntry(obj);
+			this.directory.add(entry);
+		}		
 	}
 }
