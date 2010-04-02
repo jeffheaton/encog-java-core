@@ -181,6 +181,7 @@ public class EncogMemoryCollection {
 
 	public void add(String name, EncogPersistedObject obj) {
 		this.contents.put(name, obj);
+		obj.setName(name);
 		this.buildDirectory();
 	}
 
