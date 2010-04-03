@@ -307,11 +307,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			bestEverScore = Double.MIN_VALUE;
 		}
 
-		for (final Genome genome2 : getPopulation().getGenomes()) {
-			genome2.decode();
-			calculateScore(genome2);
-		}
-
 		resetAndKill();
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
@@ -830,15 +825,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		getPopulation().clear();
 		getPopulation().addAll(newPop);
-
-		for (final Genome genome2 : getPopulation().getGenomes()) {
-			if (genome2.getOrganism() == null) {
-				genome2.decode();
-				calculateScore(genome2);
-			}
-		}
-
-		resetAndKill();
+		
+		resetAndKill();		
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
 	}
@@ -1030,6 +1018,13 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * Sort the genomes.
 	 */
 	public void sortAndRecord() {
+		
+		for( Genome genome: this.getPopulation().getGenomes() )
+		{
+			genome.decode();
+			calculateScore(genome);
+		}
+		
 		getPopulation().sort();
 
 		bestEverScore = getComparator().bestScore(getError(), bestEverScore);

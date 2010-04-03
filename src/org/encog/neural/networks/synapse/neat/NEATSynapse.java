@@ -39,6 +39,7 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.ContextClearable;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
@@ -71,7 +72,7 @@ import org.encog.persist.persistors.generic.GenericPersistor;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATSynapse implements Synapse {
+public class NEATSynapse implements Synapse, ContextClearable {
 
 	/**
 	 * The serial ID.
@@ -209,12 +210,6 @@ public class NEATSynapse implements Synapse {
 					result.setData(outputIndex++, currentNeuron.getOutput());
 				}
 				index++;
-			}
-		}
-
-		if (snapshot) {
-			for (final NEATNeuron neuron : neurons) {
-				neuron.setOutput(0);
 			}
 		}
 
@@ -396,6 +391,12 @@ public class NEATSynapse implements Synapse {
 	 */
 	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
+	}
+
+	public void clearContext() {
+		for (final NEATNeuron neuron : neurons) {
+			neuron.setOutput(0);
+		}
 	}
 	
 	

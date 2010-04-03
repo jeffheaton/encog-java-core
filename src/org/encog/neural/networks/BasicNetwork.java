@@ -250,6 +250,12 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 				((ContextClearable) layer).clearContext();
 			}
 		}
+		
+		for (final Synapse synapse : this.structure.getSynapses()) {
+			if (synapse instanceof ContextClearable) {
+				((ContextClearable) synapse).clearContext();
+			}
+		}
 
 	}
 

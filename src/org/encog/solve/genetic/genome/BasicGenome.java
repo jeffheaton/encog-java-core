@@ -78,7 +78,7 @@ public abstract class BasicGenome implements Genome {
 	/**
 	 * The score of this genome.
 	 */
-	private double score;
+	private double score=-1;
 
 	public BasicGenome(final GeneticAlgorithm geneticAlgorithm) {
 		this.geneticAlgorithm = geneticAlgorithm;
