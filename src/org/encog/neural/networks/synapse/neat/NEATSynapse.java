@@ -45,6 +45,7 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.Persistor;
+import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.persistors.generic.GenericPersistor;
 
@@ -90,6 +91,7 @@ public class NEATSynapse implements Synapse, ContextClearable {
 	/**
 	 * The depth of the network.
 	 */
+	@EGAttribute
 	private int networkDepth;
 
 	/**
@@ -100,6 +102,7 @@ public class NEATSynapse implements Synapse, ContextClearable {
 	/**
 	 * Should snapshot be used to calculate the output of the neural network.
 	 */
+	@EGAttribute
 	private boolean snapshot = false;
 	
 	/**

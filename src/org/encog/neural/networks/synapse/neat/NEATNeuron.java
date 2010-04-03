@@ -56,6 +56,7 @@ public class NEATNeuron {
 	 * The activation response. This is evolved to allow NEAT to scale the slope
 	 * of the activation function.
 	 */
+	@EGAttribute
 	private double activationResponse;
 	
 	/**
@@ -72,11 +73,13 @@ public class NEATNeuron {
 	/**
 	 * The type of neuron this is.
 	 */
+	@EGAttribute
 	private NEATNeuronType neuronType;
 	
 	/**
 	 * The output from the neuron.
 	 */
+	@EGAttribute
 	private double output;
 	
 	/**

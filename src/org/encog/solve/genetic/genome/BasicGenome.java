@@ -45,11 +45,13 @@ public abstract class BasicGenome implements Genome {
 	/**
 	 * The adjusted score.
 	 */
+	@EGAttribute
 	private double adjustedScore;
 	
 	/**
 	 * The amount to spawn.
 	 */
+	@EGAttribute
 	private double amountToSpawn;
 	
 	/**
@@ -78,7 +80,8 @@ public abstract class BasicGenome implements Genome {
 	/**
 	 * The score of this genome.
 	 */
-	private double score=-1;
+	@EGAttribute
+	private double score=0;
 
 	public BasicGenome(final GeneticAlgorithm geneticAlgorithm) {
 		this.geneticAlgorithm = geneticAlgorithm;

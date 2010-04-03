@@ -29,6 +29,8 @@
  */
 package org.encog.solve.genetic.innovation;
 
+import org.encog.persist.annotations.EGAttribute;
+
 /**
  * Provides basic functionality for an innovation.
  */
@@ -37,6 +39,7 @@ public class BasicInnovation implements Innovation {
 	/**
 	 * The innovation id.
 	 */
+	@EGAttribute
 	private long innovationID;
 
 	/**

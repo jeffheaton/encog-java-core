@@ -44,6 +44,8 @@ import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
 import org.encog.neural.pattern.NEATPattern;
+import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.annotations.EGReference;
 import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genome.BasicGenome;
 import org.encog.solve.genetic.genome.Chromosome;
@@ -78,31 +80,37 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	/**
 	 * The number of inputs.
 	 */
+	@EGAttribute
 	private int inputCount;
 	
 	/**
 	 * The chromsome that holds the links.
 	 */
+	@EGReference
 	private Chromosome linksChromosome;
 	
 	/**
 	 * THe network depth.
 	 */
+	@EGAttribute
 	private int networkDepth;
 	
 	/**
 	 * The chromosome that holds the neurons.
 	 */
+	@EGReference
 	private Chromosome neuronsChromosome;
 	
 	/**
 	 * The number of outputs.
 	 */
+	@EGAttribute
 	private int outputCount;
 	
 	/**
 	 * The species id.
 	 */
+	@EGAttribute
 	private long speciesID;
 	
 
@@ -121,6 +129,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 		neuronsChromosome = new Chromosome();
 		linksChromosome = new Chromosome();
+		
+		getChromosomes().add(neuronsChromosome);
+		getChromosomes().add(linksChromosome);
 
 		setGenomeID(other.getGenomeID());
 		networkDepth = other.networkDepth;
