@@ -15,8 +15,16 @@ import org.encog.neural.networks.layers.Layer;
  */
 public class PartialSynapse extends WeightedSynapse {
 
+	/**
+	 * A map of which connections are enabled.
+	 */
 	private boolean[][] enabledMap;
 	
+	/**
+	 * Construct a partial synapse.
+	 * @param inputLayer The input layer.
+	 * @param outputLayer The output layer.
+	 */
 	public PartialSynapse(Layer inputLayer, Layer outputLayer) {
 		super(inputLayer,outputLayer);
 		
@@ -32,6 +40,12 @@ public class PartialSynapse extends WeightedSynapse {
 		}
 	}
 	
+	/**
+	 * Enable or disable a connection.
+	 * @param fromNeuron The from neuron.
+	 * @param toNeuron The to neuron.
+	 * @param enabled True to enable, false to disable.
+	 */
 	public void enableConnection(int fromNeuron, int toNeuron, boolean enabled)
 	{
 		enabledMap[fromNeuron][toNeuron] = enabled;		
@@ -75,11 +89,18 @@ public class PartialSynapse extends WeightedSynapse {
 		return SynapseType.Partial;
 	}
 	
+	/**
+	 * @return Get the enabled matrix.
+	 */
 	public boolean[][] getEnabled()
 	{
 		return this.enabledMap;
 	}
 	
+	/**
+	 * Set the enabled matrix.
+	 * @param e The enabled matrix.
+	 */
 	public void setEnabled(boolean[][] e)
 	{
 		this.enabledMap = e;

@@ -40,7 +40,7 @@ import org.encog.neural.NeuralNetworkError;
  * 
  * The center, low and high properties allow you to define how this activation
  * function works. If the input is equal to center or higher the high property
- * value will be returned, otherwise the low property will be returned. � This
+ * value will be returned, otherwise the low property will be returned. This
  * activation function does not have a derivative, and can not be used with
  * propagation training, or any other training that requires a derivative.
  * 

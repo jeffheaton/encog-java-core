@@ -46,12 +46,22 @@ public class EncogMath {
 	      }
 	      return r;
 	   }
-	   
+
+	   /**
+	    * Convert degrees to radians.
+	    * @param deg Degrees.
+	    * @return Radians.
+	    */
 	   public static double deg2rad(double deg)
 	   {
 		   return deg * (Math.PI/180.0);
 	   }
 	   
+	   /**
+	    * Convert radians to degrees.
+	    * @param rad Radians
+	    * @return Degrees.
+	    */
 	   public static double rad2deg(double rad)
 	   {
 		   return rad * (180.0/Math.PI);

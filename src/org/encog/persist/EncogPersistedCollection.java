@@ -451,10 +451,15 @@ public class EncogPersistedCollection {
 
 	}
 
-	public boolean exists(String result) {
+	/**
+	 * Determine if the specified resource exists.
+	 * @param name The name of the resource to check.
+	 * @return True if it exists.
+	 */
+	public boolean exists(String name) {
 		for( DirectoryEntry dir: this.directory )
 		{
-			if( dir.getName().equals(result))
+			if( dir.getName().equals(name))
 				return true;
 		}
 		return false;

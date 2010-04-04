@@ -246,6 +246,12 @@ public final class ReflectionUtil {
 
 	}
 
+	/**
+	 * Resolve an enumeration.
+	 * @param field The field to resolve.
+	 * @param value The value to get the enum for.
+	 * @return The enum that was resolved.
+	 */
 	public static Object resolveEnum(Field field, String value) {
 		Class<?> type = field.getType();
 		Object[] objs = type.getEnumConstants();
