@@ -282,7 +282,17 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		
 		for(Genome obj: population.getGenomes() )
 		{
+			if( !(obj instanceof NEATGenome) ) {
+				throw new TrainingError("Population can only contain objects of NEATGenome.");
+			}
+			
 			NEATGenome neat = (NEATGenome)obj;
+			
+			if( neat.getInputCount()!=inputCount ||
+				neat.getOutputCount()!=outputCount )
+			{
+				throw new TrainingError("All NEATGenome's must have the same input and output sizes as the base network.");
+			}
 			neat.setGeneticAlgorithm(this);
 		}
 		
