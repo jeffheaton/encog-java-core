@@ -260,9 +260,9 @@ public class XML2Object {
 								: Boolean.FALSE);
 			}
 		} catch (final IllegalAccessException e) {
-			throw new EncogError(e);
+			throw new PersistError("Error parsing field:" + field.getName(),e);
 		} catch (final NumberFormatException e) {
-			throw new EncogError(e);
+			throw new PersistError("Error on field:" + field.getName(),e);
 		}
 	}
 

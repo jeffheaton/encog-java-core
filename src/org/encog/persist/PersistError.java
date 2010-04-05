@@ -30,6 +30,7 @@
 
 package org.encog.persist;
 
+import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class PersistError extends RuntimeException {
+public class PersistError extends EncogError {
 
 	/**
 	 * 
@@ -68,6 +69,16 @@ public class PersistError extends RuntimeException {
 	 */
 	public PersistError(final Throwable t) {
 		super(t);
+	}
+	
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
+	 * @param t
+	 *            The other exception.
+	 */
+	public PersistError(String msg, final Throwable t) {
+		super(msg,t);
 	}
 
 }
