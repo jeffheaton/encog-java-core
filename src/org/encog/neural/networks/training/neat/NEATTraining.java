@@ -381,7 +381,27 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 */
 	public void adjustSpeciesScore() {
 		for (final Species s : getPopulation().getSpecies()) {
-			s.adjustScore();
+			// loop over all genomes and adjust scores as needed
+			for (final Genome member : s.getMembers()) {
+				double score = member.getScore();
+
+				// apply a youth bonus
+				if (s.getAge() < this.getPopulation().getYoungBonusAgeThreshold()) {
+					score = this.getComparator().applyBonus(score,
+							this.getPopulation().getYoungScoreBonus());
+				}
+
+				// apply an old age penalty
+				if (s.getAge() > this.getPopulation().getOldAgeThreshold()) {
+					score = this.getComparator().applyPenalty(score,
+							this.getPopulation().getOldAgePenalty());
+				}
+
+				final double adjustedScore = score / s.getMembers().size();
+
+				member.setAdjustedScore(adjustedScore);
+
+			}
 		}
 	}
 
@@ -1058,7 +1078,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						.getCompatibilityScore((NEATGenome) s.getLeader());
 
 				if (compatibility <= paramCompatibilityThreshold) {
-					s.addMember(genome);
+					addSpeciesMember(s,genome);
 					genome.setSpeciesID(s.getSpeciesID());
 					added = true;
 					break;
@@ -1069,7 +1089,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			// new species
 			if (!added) {
 				getPopulation().getSpecies().add(
-						new BasicSpecies(this, genome, getPopulation()
+						new BasicSpecies(this.getPopulation(), genome, getPopulation()
 								.assignSpeciesID()));
 			}
 		}

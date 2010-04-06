@@ -37,6 +37,7 @@ import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.genome.GenomeComparator;
 import org.encog.solve.genetic.mutate.Mutate;
 import org.encog.solve.genetic.population.Population;
+import org.encog.solve.genetic.species.Species;
 import org.encog.util.concurrency.EncogConcurrency;
 import org.encog.util.concurrency.TaskGroup;
 import org.slf4j.Logger;
@@ -279,5 +280,22 @@ public class GeneticAlgorithm {
 	 */
 	public void setPopulation(final Population population) {
 		this.population = population;
+	}
+	
+	/**
+	 * Add a genome.
+	 * @param genome The genome to add.
+	 */
+	public void addSpeciesMember(final Species species, final Genome genome) {
+
+		if (this.getComparator().isBetterThan(genome.getScore(),
+				species.getBestScore())) {
+			species.setBestScore( genome.getScore() );
+			species.setGensNoImprovement(0);
+			species.setLeader(genome);
+		}
+
+		species.getMembers().add(genome);
+
 	}
 }

@@ -34,8 +34,10 @@ import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.persist.annotations.EGIgnore;
+import org.encog.persist.annotations.EGReference;
 import org.encog.solve.genetic.GeneticAlgorithm;
 import org.encog.solve.genetic.genome.Genome;
+import org.encog.solve.genetic.population.Population;
 
 /**
  * Provides basic functionality for a species.
@@ -80,8 +82,8 @@ public class BasicSpecies implements Species {
 	/**
 	 * The owner class.
 	 */
-	@EGIgnore
-	private transient GeneticAlgorithm training;
+	@EGReference
+	private Population population;
 
 	/**
 	 * Construct a species.
@@ -89,9 +91,9 @@ public class BasicSpecies implements Species {
 	 * @param first
 	 * @param speciesID
 	 */
-	public BasicSpecies(final GeneticAlgorithm training,
+	public BasicSpecies(final Population population,
 			final Genome first, final long speciesID) {
-		this.training = training;
+		this.population = population;
 		this.speciesID = speciesID;
 		bestScore = first.getScore();
 		gensNoImprovement = 0;
@@ -104,52 +106,6 @@ public class BasicSpecies implements Species {
 	public BasicSpecies()
 	{
 		
-	}
-
-	/**
-	 * Add a genome.
-	 * @param genome The genome to add.
-	 */
-	public void addMember(final Genome genome) {
-
-		if (training.getComparator().isBetterThan(genome.getScore(),
-				bestScore)) {
-			bestScore = genome.getScore();
-			gensNoImprovement = 0;
-			leader = genome;
-		}
-
-		members.add(genome);
-
-	}
-
-	/**
-	 * Adjust the score.  This is to give bonus or penalty.
-	 * The adjustment goes into the adjusted score.
-	 */
-	public void adjustScore() {
-
-		// loop over all genomes and adjust scores as needed
-		for (final Genome member : members) {
-			double score = member.getScore();
-
-			// apply a youth bonus
-			if (age < training.getPopulation().getYoungBonusAgeThreshold()) {
-				score = training.getComparator().applyBonus(score,
-						training.getPopulation().getYoungScoreBonus());
-			}
-
-			// apply an old age penalty
-			if (age > training.getPopulation().getOldAgeThreshold()) {
-				score = training.getComparator().applyPenalty(score,
-						training.getPopulation().getOldAgePenalty());
-			}
-
-			final double adjustedScore = score / members.size();
-
-			member.setAdjustedScore(adjustedScore);
-
-		}
 	}
 
 	/**
@@ -180,7 +136,7 @@ public class BasicSpecies implements Species {
 		else {
 			// If there are many, then choose the population based on survival rate
 			// and select a random genome.
-			final int maxIndexSize = (int) (training.getPopulation()
+			final int maxIndexSize = (int) (population
 					.getSurvivalRate() * members.size()) + 1;
 			final int theOne = (int) RangeRandomizer.randomize(0, maxIndexSize);
 			baby = members.get(theOne);
@@ -296,4 +252,10 @@ public class BasicSpecies implements Species {
 	public void setSpawnsRequired(final double spawnsRequired) {
 		this.spawnsRequired = spawnsRequired;
 	}
+
+	public Population getPopulation() {
+		return population;
+	}
+	
+	
 }

@@ -38,19 +38,6 @@ import org.encog.solve.genetic.genome.Genome;
  */
 public interface Species {
 
-	/**
-	 * Add a genome to this species.
-	 * 
-	 * @param genome
-	 *            The genome to add.
-	 */
-	void addMember(Genome genome);
-
-	/**
-	 * Adjust the score of this species. This is where old age and youth
-	 * bonus/penalties happen.
-	 */
-	void adjustScore();
 
 	/**
 	 * Calculate the amount that a species will spawn.
