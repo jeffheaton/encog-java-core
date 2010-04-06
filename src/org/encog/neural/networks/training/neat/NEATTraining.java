@@ -748,7 +748,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 					NEATGenome baby = null;
 
 					if (!bChosenBestYet) {
-						baby = new NEATGenome((NEATGenome) s.getLeader());
+						baby = (NEATGenome)s.getLeader();
 
 						bChosenBestYet = true;
 					}
