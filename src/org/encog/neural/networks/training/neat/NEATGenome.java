@@ -184,6 +184,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
+		
+		getChromosomes().add(neuronsChromosome);
+		getChromosomes().add(linksChromosome);
 	}
 
 	/**
@@ -206,6 +209,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		final double inputRowSlice = 0.8 / (inputCount);
 		neuronsChromosome = new Chromosome();
 		linksChromosome = new Chromosome();
+		
+		getChromosomes().add(neuronsChromosome);
+		getChromosomes().add(linksChromosome);
 
 		for (int i = 0; i < inputCount; i++) {
 			neuronsChromosome.add(new NEATNeuronGene(NEATNeuronType.Input, i,
