@@ -16,10 +16,11 @@ public class CloudRequest {
 
 	private Map<String, String> headerProperties = new HashMap<String, String>();
 	private Map<String, String> sessionProperties = new HashMap<String, String>();
-
+	private Map<String, String> responseProperties = new HashMap<String, String>();
+	
 	public void post(String service, Map<String, String> args) {
 		try {
-			URL url = new URL("http://cloud.encog.com/" + service);
+			URL url = new URL(service);
 			URLConnection u = url.openConnection();
 			u.setDoOutput(true);
 			OutputStream os = u.getOutputStream();
@@ -60,8 +61,11 @@ public class CloudRequest {
 				if (xml.getTag().getName().equalsIgnoreCase("Header")) {
 					this.headerProperties = xml.readPropertyBlock();
 				}
-				if (xml.getTag().getName().equalsIgnoreCase("Session")) {
+				else if (xml.getTag().getName().equalsIgnoreCase("Session")) {
 					this.sessionProperties = xml.readPropertyBlock();
+				}
+				else if (xml.getTag().getName().equalsIgnoreCase("Response")) {
+					this.responseProperties = xml.readPropertyBlock();
 				}
 			}
 		}
@@ -82,11 +86,27 @@ public class CloudRequest {
 	public String getSession() {
 		return this.sessionProperties.get("url");
 	}
+	
+	public String getResponseProperty(String key)
+	{
+		return this.responseProperties.get(key);
+	}
 
 	public void processSessionGET(String session, String service) {
 		try {
 			URL url = new URL(session + service);
 			URLConnection u = url.openConnection();
+			String contents = BotUtil.loadPage(u.getInputStream());
+			handleResponse(contents);
+		} catch (IOException e) {
+			throw new EncogCloudError(e);
+		}
+	}
+
+	public void get(String url) {
+		try {
+			URL url2 = new URL(url);
+			URLConnection u = url2.openConnection();
 			String contents = BotUtil.loadPage(u.getInputStream());
 			handleResponse(contents);
 		} catch (IOException e) {

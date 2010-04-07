@@ -32,6 +32,7 @@ package org.encog.neural.networks.training;
 
 import java.util.List;
 
+import org.encog.cloud.EncogCloud;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 
@@ -99,4 +100,8 @@ public interface Train {
 	 */
 	void setError(double error);
 
+	void setCloud(EncogCloud cloud);
+	
+	EncogCloud getCloud();
+	
 }

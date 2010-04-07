@@ -33,6 +33,7 @@ package org.encog.neural.networks.training;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.cloud.EncogCloud;
 import org.encog.neural.data.NeuralDataSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,10 @@ public abstract class BasicTraining implements Train {
 	 * The training data.
 	 */
 	private NeuralDataSet training;
+	
+	private EncogCloud cloud;
+	
+	private TrainingStatusUtility statusUtil;
 
 	/**
 	 * The current error rate.
@@ -85,7 +90,10 @@ public abstract class BasicTraining implements Train {
 	 * will not be called any further.
 	 */
 	public void finishTraining() {
-
+		if( this.statusUtil!=null) {			
+			this.statusUtil.finish();
+			this.statusUtil = null;
+		}
 	}
 
 	/**
@@ -124,6 +132,19 @@ public abstract class BasicTraining implements Train {
 	 * Call the strategies before an iteration.
 	 */
 	public void preIteration() {
+		
+		if( this.statusUtil!=null ) {
+			this.statusUtil.update();
+		}
+		else
+		{
+			if( this.cloud!=null )
+			{
+				this.statusUtil = new TrainingStatusUtility(this.cloud,this);
+				this.statusUtil.update();
+			}
+		}
+		
 		for (final Strategy strategy : this.strategies) {
 			strategy.preIteration();
 		}
@@ -146,6 +167,16 @@ public abstract class BasicTraining implements Train {
 	 */
 	public void setTraining(final NeuralDataSet training) {
 		this.training = training;
+	}
+	
+	public void setCloud(EncogCloud cloud)
+	{
+		this.cloud = cloud;
+	}
+	
+	public EncogCloud getCloud()
+	{
+		return this.cloud;
 	}
 
 }

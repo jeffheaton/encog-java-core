@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.EncogError;
+import org.encog.cloud.EncogCloud;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationLinear;
@@ -207,6 +208,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * Determines if we are using snapshot mode.
 	 */
 	private boolean snapshot;
+	
+	private EncogCloud cloud;
 
 	/**
 	 * Construct neat training with a predefined population.
@@ -1183,6 +1186,16 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 */
 	public void setSnapshot(boolean snapshot) {
 		this.snapshot = snapshot;
+	}
+
+	@Override
+	public EncogCloud getCloud() {
+		return this.cloud;
+	}
+
+	@Override
+	public void setCloud(EncogCloud cloud) {
+		this.cloud = cloud;		
 	}
 
 }
