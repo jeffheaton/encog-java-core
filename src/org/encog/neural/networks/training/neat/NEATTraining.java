@@ -1188,12 +1188,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		this.snapshot = snapshot;
 	}
 
-	@Override
 	public EncogCloud getCloud() {
 		return this.cloud;
 	}
 
-	@Override
 	public void setCloud(EncogCloud cloud) {
 		this.cloud = cloud;		
 	}
