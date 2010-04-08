@@ -51,6 +51,11 @@ public class CloudRequest {
 				}
 			}
 		}
+		
+		if( getStatus().equals("failed") )
+		{
+			throw new EncogCloudError(getMessage());
+		}
 	}
 
 	private void processCloud(ReadXML xml) {
