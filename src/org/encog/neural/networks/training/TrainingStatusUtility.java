@@ -39,13 +39,20 @@ public class TrainingStatusUtility {
 			status.append("Iteration #");
 			status.append(Format.formatInteger(this.iteration));
 			status.append(" - Error: ");
-			status.append(Format.formatDouble(train.getError(), 4));
+			status.append(Format.formatPercent(train.getError()));
 			this.task.setStatus(status.toString());
 		}
 	}
 	
 	public void finish()
 	{
+		StringBuilder status = new StringBuilder();
+		status.append("Done at iteration #");
+		status.append(Format.formatInteger(this.iteration));
+		status.append(" - Error: ");
+		status.append(Format.formatPercent(train.getError()));
+		this.task.setStatus(status.toString());
+		
 		this.task.stop();
 		this.task = null;
 	}
