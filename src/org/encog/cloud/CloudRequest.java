@@ -52,7 +52,7 @@ public class CloudRequest {
 			}
 		}
 		
-		if( getStatus().equals("failed") )
+		if( getStatus()==null || getStatus().equals("failed") )
 		{
 			throw new EncogCloudError(getMessage());
 		}
