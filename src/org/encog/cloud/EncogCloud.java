@@ -26,7 +26,7 @@ public class EncogCloud {
 		Map<String,String> args = new HashMap<String,String>();
 		args.put("uid", uid);
 		args.put("pwd", pwd);
-		request.post(constructService("login"), args);
+		request.performURLPOST(false, constructService("login"), args);
 		if( !"success".equals(request.getStatus()))
 		{
 			throw new EncogCloudError(request.getMessage());
@@ -37,7 +37,7 @@ public class EncogCloud {
 	public void logout()
 	{
 		CloudRequest request = new CloudRequest();
-		request.processSessionGET(this.session,"logout");
+		request.performURLGET(false, this.session + "logout");
 		validateSession();
 		if( isConnected() )
 		{
@@ -47,10 +47,14 @@ public class EncogCloud {
 	
 	public void validateSession()
 	{
-		CloudRequest request = new CloudRequest();
-		request.processSessionGET(this.session,"");
-		if( !request.getStatus().equals("success"))
-			this.session = null;
+		for(int i=0;i<5;i++) {
+			CloudRequest request = new CloudRequest();
+			request.performURLGET(false, this.session);
+			if( "success".equals(request.getStatus()))
+				return;
+		}
+		
+		throw new EncogCloudError("Connection lost");
 	}
 	
 	public boolean isConnected()
@@ -61,17 +65,5 @@ public class EncogCloud {
 	public String getSession()
 	{
 		return session;
-	}
-	
-	public static void main(String[] args)
-	{
-		EncogCloud cloud = new EncogCloud();
-		cloud.connect("test", "test");
-		cloud.validateSession();
-		CloudTask task = cloud.beginTask("Train RPROP");
-		task.setStatus("new status");
-		task.stop();
-		cloud.logout();
-		System.out.println(cloud.getSession());
 	}
 }

@@ -31,7 +31,7 @@ public class CloudTask {
 		
 		Map<String,String> args = new HashMap<String,String>();
 		args.put("status", status);	
-		request.post(url, args);		
+		request.performURLPOST(true, url, args);		
 		
 		
 	}
@@ -45,7 +45,7 @@ public class CloudTask {
 		
 		String url = this.taskURL + "stop";
 		CloudRequest request = new CloudRequest();
-		request.get(url);
+		request.performURLGET(false, url);
 	}
 
 	public void init(String name) {
@@ -61,7 +61,7 @@ public class CloudTask {
 		Map<String,String> args = new HashMap<String,String>();
 		args.put("name", name);
 		args.put("status", "Starting...");	
-		request.post(url, args);		
+		request.performURLPOST(false, url, args);		
 		this.taskURL = cloud.getSession() +  "task/" +
 			request.getResponseProperty("id") + "/";
 		
