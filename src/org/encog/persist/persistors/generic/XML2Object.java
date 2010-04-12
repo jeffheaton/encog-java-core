@@ -138,7 +138,7 @@ public class XML2Object {
 						final String value = this.in.readTextToTag();
 						setFieldValue(field, target, value);
 					}
-					else if (ReflectionUtil.isPrimitive(currentValue)) {
+					else if( (type == String.class) || type.isPrimitive() ) {
 						final String value = this.in.readTextToTag();
 						setFieldValue(field, target, value);
 					} else if (currentValue instanceof Collection) {
