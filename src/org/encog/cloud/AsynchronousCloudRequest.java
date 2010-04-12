@@ -33,7 +33,6 @@ public class AsynchronousCloudRequest implements Runnable {
 		return params;
 	}
 
-	@Override
 	public void run() {
 
 		try {
