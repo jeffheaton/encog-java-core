@@ -70,9 +70,21 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 *            The maximum random value.
 	 */
 	public ConsistentRandomizer(final double min, final double max) {
+		this(max,min,1000);
+	}
+	
+	/**
+	 * Construct a range randomizer.
+	 * 
+	 * @param min
+	 *            The minimum random value.
+	 * @param max
+	 *            The maximum random value.
+	 */
+	public ConsistentRandomizer(final double min, final double max, int seed) {
 		this.max = max;
 		this.min = min;
-		this.rand = new LinearCongruentialGenerator(1000);
+		this.rand = new LinearCongruentialGenerator(seed);
 	}
 	
 	/**

@@ -41,20 +41,6 @@ import org.slf4j.LoggerFactory;
 public class ConstRandomizer extends BasicRandomizer {
 
 	/**
-	 * Generate a random number in the specified range.
-	 * 
-	 * @param min
-	 *            The minimum value.
-	 * @param max
-	 *            The maximum value.
-	 * @return A random number.
-	 */
-	public static double randomize(final double min, final double max) {
-		final double range = max - min;
-		return (range * Math.random()) + min;
-	}
-
-	/**
 	 * The constant value.
 	 */
 	private final double value;
