@@ -70,6 +70,8 @@ public class MarketDataDescription extends TemporalDataDescription {
 	 *            The ticker symbol to use.
 	 * @param dataType
 	 *            The data type needed.
+	 * @param type
+	 * 			  The normalization type.
 	 * @param activationFunction
 	 *            The activation function to apply to this data, can be null.
 	 * @param input
@@ -78,14 +80,34 @@ public class MarketDataDescription extends TemporalDataDescription {
 	 *            Is this field used for prediction?
 	 */
 	public MarketDataDescription(final TickerSymbol ticker,
-			final MarketDataType dataType,
+			final MarketDataType dataType, final Type type,
 			final ActivationFunction activationFunction, final boolean input,
 			final boolean predict) {
-		super(activationFunction, Type.PERCENT_CHANGE, input, predict);
+		super(activationFunction, type, input, predict);
 		this.ticker = ticker;
 		this.dataType = dataType;
 	}
 
+	/**
+	 * Construct a MarketDataDescription item.
+	 * 
+	 * @param ticker
+	 *            The ticker symbol to use.
+	 * @param dataType
+	 *            The data type needed.
+	 * @param type
+	 * 			  The normalization type.
+	 * @param input
+	 *            Is this field used for input?
+	 * @param predict
+	 *            Is this field used for prediction?
+	 */
+	public MarketDataDescription(final TickerSymbol ticker,
+			final MarketDataType dataType, final Type type, final boolean input,
+			final boolean predict) {
+		this(ticker, dataType, type, null, input, predict);
+	}
+	
 	/**
 	 * Construct a MarketDataDescription item.
 	 * 
@@ -101,7 +123,7 @@ public class MarketDataDescription extends TemporalDataDescription {
 	public MarketDataDescription(final TickerSymbol ticker,
 			final MarketDataType dataType, final boolean input,
 			final boolean predict) {
-		this(ticker, dataType, null, input, predict);
+		this(ticker, dataType, Type.PERCENT_CHANGE, null, input, predict);
 	}
 
 	/**
