@@ -38,23 +38,29 @@ public class EncogCloud {
 	{
 		CloudRequest request = new CloudRequest();
 		request.performURLGET(false, this.session + "logout");
-		validateSession();
-		if( isConnected() )
-		{
-			throw new EncogCloudError("Logout failed.");
-		}
+		this.session = null;
 	}
 	
-	public void validateSession()
+	public void validateSession(boolean failOnError)
 	{
-		for(int i=0;i<5;i++) {
+		int max;
+		
+		if( failOnError )
+			max = 1;
+		else
+			max = 5;
+		
+		for(int i=0;i<max;i++) {
 			CloudRequest request = new CloudRequest();
 			request.performURLGET(false, this.session);
 			if( "success".equals(request.getStatus()))
 				return;
 		}
 		
-		throw new EncogCloudError("Connection lost");
+		if( failOnError )
+		{
+			throw new EncogCloudError("Connection lost");
+		}
 	}
 	
 	public boolean isConnected()
