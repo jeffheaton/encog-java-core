@@ -220,6 +220,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 */
 	public double calculateError(final NeuralDataSet data) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
+		this.clearContext();
 
 		for (final NeuralDataPair pair : data) {
 			final NeuralData actual = compute(pair.getInput());
