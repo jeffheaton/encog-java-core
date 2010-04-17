@@ -37,6 +37,7 @@ import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.mathutil.randomize.Distort;
 import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.mathutil.rbf.RadialBasisFunction;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
@@ -86,6 +87,10 @@ public class PruneSelective {
 	 *            The new neuron count for this layer.
 	 */
 	public void changeNeuronCount(final Layer layer, final int neuronCount) {
+		
+		if( neuronCount==0 )
+			throw new NeuralNetworkError("Can't decrease to zero neurons.");
+		
 		// is there anything to do?
 		if (neuronCount == layer.getNeuronCount()) {
 			return;
@@ -109,8 +114,9 @@ public class PruneSelective {
 	private void decreaseNeuronCount(final Layer layer, final int neuronCount) {
 		// create an array to hold the least significant neurons, which will be
 		// removed
+
 		final int lostNeuronCount = layer.getNeuronCount() - neuronCount;
-		final int[] lostNeuron = findWeakestNeurons(layer, neuronCount);
+		final int[] lostNeuron = findWeakestNeurons(layer, lostNeuronCount);
 
 		// finally, actually prune the neurons that the previous steps
 		// determined to remove
