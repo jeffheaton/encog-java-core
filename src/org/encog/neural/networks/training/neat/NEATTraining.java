@@ -90,9 +90,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	private double averageFitAdjustment;
 
 	/**
-	 * THe best ever score.
+	 * The best ever score.
 	 */
 	private double bestEverScore;
+	
+	/**
+	 * The best ever network.
+	 */
+	private BasicNetwork bestEverNetwork;
 
 	/**
 	 * The number of inputs.
@@ -578,7 +583,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * return The error for the best genome.
 	 */
 	public double getError() {
-		return getPopulation().getBest().getScore();
+		return this.bestEverScore;
 	}
 
 	/**
@@ -606,7 +611,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * @return A network created for the best genome.
 	 */
 	public BasicNetwork getNetwork() {
-		return (BasicNetwork) getPopulation().getBest().getOrganism();
+		return this.bestEverNetwork;
 	}
 
 	/**
@@ -1060,6 +1065,15 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		
 		getPopulation().sort();
 
+		Genome genome = getPopulation().getBest();
+		double currentBest = genome.getScore();
+		
+		if( getComparator().isBetterThan(currentBest, bestEverScore) )
+		{
+			bestEverScore = currentBest;
+			this.bestEverNetwork = ((BasicNetwork)genome.getOrganism());
+		}
+		
 		bestEverScore = getComparator().bestScore(getError(), bestEverScore);
 	}
 
