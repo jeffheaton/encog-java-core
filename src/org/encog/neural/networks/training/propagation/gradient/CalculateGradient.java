@@ -149,7 +149,7 @@ public class CalculateGradient {
 		this.training = training;
 		this.network = network;
 
-		if ((threads != 0) || !(this.training instanceof Indexable)) {
+		if (!(this.training instanceof Indexable)) {
 			this.network = network;
 			this.threadCount = threads;
 		} else {

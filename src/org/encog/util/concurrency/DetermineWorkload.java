@@ -87,8 +87,12 @@ public class DetermineWorkload {
 			}
 
 			this.threadCount = num;
-		} else
-			this.threadCount = threads;
+		} else {
+			if( threads<workloadSize )
+				this.threadCount = threads;
+			else
+				this.threadCount = workloadSize;
+		}
 	}
 
 	/**
