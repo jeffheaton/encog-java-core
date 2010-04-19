@@ -66,11 +66,6 @@ public enum SynapseType {
 	NEAT,
 	
 	/**
-	 * Partial - Not all neurons may be connected.
-	 */
-	Partial,
-	
-	/**
 	 * Normalize - A synapse that normalizes the data.  Used to implement
 	 * a SOM.
 	 */
