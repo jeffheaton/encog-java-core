@@ -76,19 +76,51 @@ public final class NetworkCODEC {
 				}
 			}
 
-			// process synapses
-			for (final Synapse synapse : network.getStructure()
-					.getPreviousSynapses(layer)) {
-				if (synapse.getMatrix() != null) {
-					// process each weight matrix
-					for (int x = 0; x < synapse.getToNeuronCount(); x++) {
-						for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-							synapse.getMatrix().set(y, x, array[index++]);
-						}
+			if( network.getStructure().isConnectionLimited() )
+				index = processSynapseLimited(network,layer,array,index);
+			else
+				index = processSynapseFull(network,layer,array,index);
+		}
+	}
+	
+	private static int processSynapseFull(BasicNetwork network, Layer layer, double[] array, int index)
+	{
+		// process synapses
+		for (final Synapse synapse : network.getStructure()
+				.getPreviousSynapses(layer)) {
+			if (synapse.getMatrix() != null) {
+				// process each weight matrix
+				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+						synapse.getMatrix().set(y, x, array[index++]);
 					}
 				}
 			}
 		}
+		
+		return index;
+	}
+	
+	private static int processSynapseLimited(BasicNetwork network, Layer layer, double[] array, int index)
+	{
+		// process synapses
+		for (final Synapse synapse : network.getStructure()
+				.getPreviousSynapses(layer)) {
+			if (synapse.getMatrix() != null) {
+				// process each weight matrix
+				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+						double oldValue = synapse.getMatrix().get(y,x);
+						double value = array[index++];
+						if( Math.abs(oldValue)<network.getStructure().getConnectionLimit())
+							value = 0;
+						synapse.getMatrix().set(y, x, value);
+					}
+				}
+			}
+		}
+		
+		return index;
 	}
 
 	/**

@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
@@ -83,6 +84,16 @@ public class NeuralStructure implements Serializable {
 	 * The neural network this class belongs to.
 	 */
 	private final BasicNetwork network;
+	
+	/**
+	 * The limit, below which a connection is treated as zero.
+	 */
+	private double connectionLimit;
+	
+	/**
+	 * Are connections limited?
+	 */
+	private boolean connectionLimited;
 
 	/**
 	 * The next ID to be assigned to a layer.
@@ -191,9 +202,38 @@ public class NeuralStructure implements Serializable {
 	public void finalizeStructure() {
 		finalizeLayers();
 		finalizeSynapses();
+		finalizeLimit();
 		Collections.sort(this.layers);
 		assignID();
 		this.network.getLogic().init(this.network);
+		enforceLimit();
+	}
+	
+	private void finalizeLimit()
+	{
+		// see if there is a connection limit imposed
+		String limit = this.network.getPropertyString(BasicNetwork.TAG_LIMIT);
+		if( limit!=null )
+		{
+			try
+			{
+				this.connectionLimited = true;
+				this.connectionLimit = Double.parseDouble(limit);
+			}
+			catch(NumberFormatException e)
+			{
+				throw new NeuralNetworkError(
+						"Invalid property(" 
+						+ BasicNetwork.TAG_LIMIT 
+						+ "):" 
+						+ limit);
+			}
+		}
+		else
+		{
+			this.connectionLimited = false;
+			this.connectionLimit = 0;
+		}
 	}
 
 	/**
@@ -368,4 +408,39 @@ public class NeuralStructure implements Serializable {
 		Collections.sort(this.layers, new LayerComparator(this));
 		Collections.sort(this.synapses, new SynapseComparator(this));
 	}
+
+	public double getConnectionLimit() {
+		return connectionLimit;
+	}
+
+	public boolean isConnectionLimited() {
+		return connectionLimited;
+	}
+	
+	public void enforceLimit()
+	{
+		if( !this.connectionLimited )
+			return;
+		
+		for(Synapse synapse : this.synapses )
+		{
+			Matrix matrix = synapse.getMatrix();
+			if( matrix!=null )
+			{
+				for(int row=0;row<matrix.getRows();row++)
+				{
+					for(int col=0;col<matrix.getCols();col++)
+					{
+						double value = matrix.get(row, col);
+						if( Math.abs(value)<this.connectionLimit )
+						{
+							matrix.set(row,col,0);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	
 }

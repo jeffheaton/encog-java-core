@@ -84,6 +84,13 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * Tag used for the output layer.
 	 */
 	public static final String TAG_OUTPUT = "OUTPUT";
+	
+	/**
+	 * Tag used for the connection limit.
+	 */
+	public static final String TAG_LIMIT = "CONNECTION_LIMIT";
+	
+	public static final String DEFAULT_CONNECTION_LIMIT = "0.0000000001";
 
 	/**
 	 * Serial id for this class.
@@ -590,5 +597,41 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 		final NeuralData output = compute(input);
 		return BasicNetwork.determineWinner(output);
 	}
-
+	
+	public boolean isConnected(Synapse synapse, int fromNeuron, int toNeuron )
+	{
+		if( !this.structure.isConnectionLimited() )
+			return false;
+		double value = synapse.getMatrix().get(fromNeuron, toNeuron );
+		
+		return( Math.abs(value)>this.structure.getConnectionLimit() );
+	}
+	
+	public void enableConnection(Synapse synapse, int fromNeuron, int toNeuron, boolean enable )
+	{
+		if( synapse.getMatrix()==null)
+		{
+			throw new NeuralNetworkError("Can't enable/disable connection on a synapse that does not have a weight matrix.");
+		}
+		
+		double value = synapse.getMatrix().get(fromNeuron, toNeuron);
+		
+		if( enable )
+		{
+			if( !this.structure.isConnectionLimited() )
+				return;
+			
+			if( Math.abs(value)<this.structure.getConnectionLimit() )
+				synapse.getMatrix().set(fromNeuron, toNeuron, RangeRandomizer.randomize(-1, 1));
+		}
+		else
+		{
+			if( !this.structure.isConnectionLimited() )
+			{
+				this.properties.put(BasicNetwork.TAG_LIMIT, BasicNetwork.DEFAULT_CONNECTION_LIMIT);
+				this.structure.finalizeStructure();
+			}
+			synapse.getMatrix().set(fromNeuron, toNeuron, 0);
+		}
+	}
 }
