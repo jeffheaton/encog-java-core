@@ -77,7 +77,7 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements Randomize
                 
           while ( !previousLayer.equals( network.getLayer( BasicNetwork.TAG_OUTPUT ) )&& iterator.hasNext() ) {
               final Layer     current         = iterator.next();
-              final double    beta            =  0.7d * Math.pow( current.getNeuronCount() , ( 1/numOfInputNeurons ) );
+              final double    beta            =  0.7d * Math.pow( (double)current.getNeuronCount() , (double)( 1.0/numOfInputNeurons ) );
               final double    normOfWeight[]  = getNormOfWeight(  previousLayer.getNext() );
               
               for (final Synapse synapse : previousLayer.getNext()) {
