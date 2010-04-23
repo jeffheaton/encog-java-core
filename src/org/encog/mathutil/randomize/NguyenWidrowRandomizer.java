@@ -121,7 +121,8 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements Randomize
             // Rescale the weights using beta and the norm
             for (int k = 0; k < synapse.getFromNeuronCount(); k++)
             {
-                synapse.getMatrix().set(k,j, beta * synapse.getMatrix().get(k,j) / norm);
+            	value = synapse.getMatrix().get(k,j);
+                synapse.getMatrix().set(k,j, beta * value / norm);
             }
             
             value = synapse.getToLayer().getThreshold(j);
