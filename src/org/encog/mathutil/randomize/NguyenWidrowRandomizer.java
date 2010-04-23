@@ -31,6 +31,7 @@ package org.encog.mathutil.randomize;
 import java.util.Iterator;
 import java.util.List;
 
+import org.encog.EncogError;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
@@ -79,7 +80,16 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements Randomize
           Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
           Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
           
+          if( inputLayer==null )
+        	  throw new EncogError("Must have an input layer for Nguyen-Widrow.");
+          
+          if( outputLayer==null )
+        	  throw new EncogError("Must have an output layer for Nguyen-Widrow.");
+          
           int hiddenNeurons = neuronCount-inputLayer.getNeuronCount()-outputLayer.getNeuronCount();
+          
+          if( hiddenNeurons<1 )
+        	  throw new EncogError("Must have hidden neurons for Nguyen-Widrow.");
           
           double beta = 0.7 * Math.pow(hiddenNeurons, 1.0 / inputLayer.getNeuronCount());
           
