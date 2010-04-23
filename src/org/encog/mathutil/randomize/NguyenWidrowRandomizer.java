@@ -67,70 +67,55 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements Randomize
     @Override
     public final void randomize( BasicNetwork network ) {
         
-          super.randomize( network );   
+          super.randomize( network ); 
           
-          Layer previousLayer                       = network.getLayer( BasicNetwork.TAG_INPUT );  
-          final long            numOfInputNeurons   = previousLayer.getNeuronCount();
-          final Iterator<Layer> iterator            = previousLayer.getNextLayers().iterator();
-                        
-                
-                
-          while ( !previousLayer.equals( network.getLayer( BasicNetwork.TAG_OUTPUT ) )&& iterator.hasNext() ) {
-              final Layer     current         = iterator.next();
-              final double    beta            =  0.7d * Math.pow( (double)current.getNeuronCount() , (double)( 1.0/numOfInputNeurons ) );
-              final double    normOfWeight[]  = getNormOfWeight(  previousLayer.getNext() );
-              
-              for (final Synapse synapse : previousLayer.getNext()) {
-                  if ( synapse.getMatrix() != null ) {
-                    final Matrix      matrix          = synapse.getMatrix();
-                    final double[][]  data            = matrix.getData();
-                    
-                    for (int col = 0; col < matrix.getCols(); col++) {
-                        for (int row = 0; row < matrix.getRows(); row++) {
-                            data[row][col] = beta * ( data[row][col]/normOfWeight[col] );
-                        }
-                        synapse.getToLayer().getThreshold()[col]= beta * (synapse.getToLayer().getThreshold()[col]/normOfWeight[col]);
-                    }
-                  }    
-              }
-              
-              previousLayer = current;
-              
+          int neuronCount = 0;
+          
+          for(Layer layer: network.getStructure().getLayers() )
+          {
+        	  neuronCount+=layer.getNeuronCount();
           }
+          
+          Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+          Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
+          
+          int hiddenNeurons = neuronCount-inputLayer.getNeuronCount()-outputLayer.getNeuronCount();
+          
+          double beta = 0.7 * Math.pow(hiddenNeurons, 1.0 / inputLayer.getNeuronCount());
+          
+          for(Synapse synapse: network.getStructure().getSynapses() )
+          {
+        	  randomize(beta,synapse);
+          }
+          
        
     }
+    
+    private void randomize(double beta, Synapse synapse)
+    {
+    	for (int j = 0; j < synapse.getToNeuronCount(); j++)
+        {
+            double norm = 0.0;
 
-     
-   /**
-    * Matrix' cols corresponds to next neuron count
-    * Matrix' rows corresponds to from neuron count.
-    * 
-    * Normalization of weights correspond the sum of 
-    * neuron's weights squared   
-    * 
-    * @param structure
-    * @return
-    */
-    public double[] getNormOfWeight( List<Synapse>  synapses ){
-        
-        double[]  normsOfWeight; 
-        final Synapse[] synarray =  synapses.toArray( new Synapse[]{} );
-        
-        /* Synapse matrix should be all the same dimension */
-        int cols = synarray[0].getMatrix().getCols();
-        normsOfWeight = new double[cols];
-        
-        for ( int j = 0; j < synarray.length; j++ ) {
-            for ( int col = 0; col < cols; col++ ) { 
-                double normOfWeight =  0;
-                for ( int row = 0; row < synarray[j].getMatrix().getRows(); row++ ) {
-                    normOfWeight += Math.pow( synarray[j].getMatrix().getData()[row][col], 2 );  
-                }  
-                normsOfWeight[col] = Math.sqrt(normOfWeight);
+            // Calculate the Euclidean Norm for the weights
+            for (int k = 0; k < synapse.getFromNeuronCount(); k++)
+            {
+            	double value = synapse.getMatrix().get(k,j);
+                norm +=   value*value;
             }
-        }
-        
-        return normsOfWeight;
+            
+            double value = synapse.getToLayer().getThreshold(j);
+            norm += value*value;
+            norm = Math.sqrt(norm);
+
+            // Rescale the weights using beta and the norm
+            for (int k = 0; k < synapse.getFromNeuronCount(); k++)
+            {
+                synapse.getMatrix().set(k,j, beta * synapse.getMatrix().get(k,j) / norm);
+            }
+            
+            value = synapse.getToLayer().getThreshold(j);
+            synapse.getToLayer().setThreshold(j, beta * value / norm);
+        }	
     }
- 
 }
