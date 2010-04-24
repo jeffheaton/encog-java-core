@@ -41,6 +41,7 @@ import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.training.propagation.gradient.GradientUtil;
 
 /**
  * Calculate the Jacobian using the chain rule.
@@ -132,6 +133,23 @@ public class JacobianChainRule implements ComputeJacobian {
 	private double calcDerivative(final ActivationFunction a, final double d) {
 		final double[] temp = new double[1];
 		temp[0] = d;
+		//a.activationFunction(temp);
+		a.derivativeFunction(temp);
+		return temp[0];
+	}
+	
+	/**
+	 * Calculate the derivative.
+	 * 
+	 * @param a
+	 *            The activation function.
+	 * @param d
+	 *            The value to calculate for.
+	 * @return The derivative.
+	 */
+	private double calcDerivative2(final ActivationFunction a, final double d) {
+		final double[] temp = new double[1];
+		temp[0] = d;
 		a.activationFunction(temp);
 		a.derivativeFunction(temp);
 		return temp[0];
@@ -152,7 +170,7 @@ public class JacobianChainRule implements ComputeJacobian {
 			this.jacobianCol = 0;
 
 			this.indexableTraining.getRecord(i, this.pair);
-
+			
 			final double e = calculateDerivatives(this.pair);
 			this.rowErrors[i] = e;
 			result += e * e;
@@ -178,6 +196,7 @@ public class JacobianChainRule implements ComputeJacobian {
 				BasicNetwork.TAG_INPUT).getActivationFunction();
 
 		final NeuralOutputHolder holder = new NeuralOutputHolder();
+		
 		this.network.compute(pair.getInput(), holder);
 
 		final List<Synapse> synapses = this.network.getStructure()
@@ -198,16 +217,19 @@ public class JacobianChainRule implements ComputeJacobian {
 					.getData(i);
 
 			this.jacobian[this.jacobianRow][this.jacobianCol++] = calcDerivative(
-					function, lastOutput)
+					function, output)
 					* lastOutput;
 		}
+		
+		Synapse lastSynapse;
 
 		while (synapseNumber < synapses.size()) {
+			lastSynapse = synapse;
 			synapse = synapses.get(synapseNumber++);
-			final NeuralData outputData = holder.getResult().get(synapse);
+			final NeuralData outputData = holder.getResult().get(lastSynapse);
 
 			// for each neuron in the input layer
-			for (int neuron = 0; neuron < synapse.getFromNeuronCount(); neuron++) {
+			for (int neuron = 0; neuron < synapse.getToNeuronCount(); neuron++) {
 				output = outputData.getData(neuron);
 
 				final int thresholdCol = this.jacobianCol++;
@@ -216,18 +238,28 @@ public class JacobianChainRule implements ComputeJacobian {
 				for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
 					sum = 0.0;
 					// for each neuron in the next layer
-					for (int j = 0; j < synapse.getToNeuronCount(); j++) {
+					for (int j = 0; j < lastSynapse.getToNeuronCount(); j++) {
 						// for each weight of the next neuron
-						for (int k = 0; k < synapse.getFromNeuronCount(); k++) {
-							sum += synapse.getMatrix().get(k, j)
-									* outputData.getData(k);
+						for (int k = 0; k < lastSynapse.getFromNeuronCount(); k++) {
+							double x = lastSynapse.getMatrix().get(k, j);
+							double y = output;
+							sum += lastSynapse.getMatrix().get(k, j)
+									* output;
 						}
-						sum += synapse.getToLayer().getThreshold(j);
+						sum += lastSynapse.getToLayer().getThreshold(j);
 					}
+					
+					double x1 = calcDerivative(function, output);
+					double x2 = calcDerivative2(function, sum);
+					double x3 = holder.getResult().get(synapse).getData(i);
 
-					final double w = synapse.getMatrix().get(neuron, i);
+					final double w = lastSynapse.getMatrix().get(neuron, 0);
 					final double val = calcDerivative(function, output)
-							* calcDerivative(function, sum) * w;
+							* calcDerivative2(function, sum) * w;
+					
+					double z1 = val
+					* holder.getResult().get(synapse).getData(i);
+					double z2 = val;
 
 					this.jacobian[this.jacobianRow][this.jacobianCol++] = val
 							* holder.getResult().get(synapse).getData(i);
