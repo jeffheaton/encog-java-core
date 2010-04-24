@@ -99,7 +99,7 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 */
 	public BasicNetwork generate() {
 		int y = PatternConst.START_Y;
-		final Layer input = new BasicLayer(this.activation, true,
+		final Layer input = new BasicLayer(this.activation, false,
 				this.inputNeurons);
 
 		final BasicNetwork result = new BasicNetwork();
