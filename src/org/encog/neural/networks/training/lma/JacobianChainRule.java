@@ -227,12 +227,13 @@ public class JacobianChainRule implements ComputeJacobian {
 			lastSynapse = synapse;
 			synapse = synapses.get(synapseNumber++);
 			final NeuralData outputData = holder.getResult().get(lastSynapse);
+			
+			final int thresholdCol = this.jacobianCol;
+			this.jacobianCol+=synapse.getToLayer().getNeuronCount();
 
 			// for each neuron in the input layer
 			for (int neuron = 0; neuron < synapse.getToNeuronCount(); neuron++) {
 				output = outputData.getData(neuron);
-
-				final int thresholdCol = this.jacobianCol++;
 
 				// for each weight of the input neuron
 				for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
@@ -263,7 +264,7 @@ public class JacobianChainRule implements ComputeJacobian {
 
 					this.jacobian[this.jacobianRow][this.jacobianCol++] = val
 							* holder.getResult().get(synapse).getData(i);
-					this.jacobian[this.jacobianRow][thresholdCol] = val;
+					this.jacobian[this.jacobianRow][thresholdCol+neuron] = val;
 				}
 			}
 		}
