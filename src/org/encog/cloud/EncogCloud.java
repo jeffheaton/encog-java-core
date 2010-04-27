@@ -5,11 +5,20 @@ import java.util.Map;
 
 public class EncogCloud {
 	
+	public final String DEFAULT_SERVER = "http://cloud.encog.com/";
 	private String session;
+	private String server;
 	
 	public String constructService(String service)
 	{
-		return "http://cloud.encog.com/" + service;
+		return this.server + service;
+	}
+	
+	public EncogCloud(String server)
+	{
+		this.server = server;
+		if( !this.server.endsWith("/"))
+			this.server+='/';		
 	}
 	
 	public CloudTask beginTask(String name)
