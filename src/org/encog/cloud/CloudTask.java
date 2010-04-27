@@ -36,15 +36,25 @@ public class CloudTask {
 		
 	}
 	
-	public void stop()
+	public void stop(String finalStatus)
 	{
 		if( this.taskURL==null )
 		{
 			throw new EncogCloudError("Can't stop inactive task.");
 		}
 		
-		String url = this.taskURL + "stop";
+		// send final status
 		CloudRequest request = new CloudRequest();
+		String url = this.taskURL + "update";
+		
+		Map<String,String> args = new HashMap<String,String>();
+		args.put("status", finalStatus);	
+		request.performURLPOST(false, url, args);		
+
+		
+		// stop		
+		url = this.taskURL + "stop";
+		request = new CloudRequest();
 		request.performURLGET(false, url);
 	}
 
@@ -63,8 +73,6 @@ public class CloudTask {
 		args.put("status", "Starting...");	
 		request.performURLPOST(false, url, args);		
 		this.taskURL = cloud.getSession() +  "task/" +
-			request.getResponseProperty("id") + "/";
-		
-	}
-	
+			request.getResponseProperty("id") + "/";	
+	}	
 }
