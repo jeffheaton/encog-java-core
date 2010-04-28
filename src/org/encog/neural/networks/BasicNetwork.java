@@ -601,7 +601,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	public boolean isConnected(Synapse synapse, int fromNeuron, int toNeuron )
 	{
 		if( !this.structure.isConnectionLimited() )
-			return false;
+			return true;
 		double value = synapse.getMatrix().get(fromNeuron, toNeuron );
 		
 		return( Math.abs(value)>this.structure.getConnectionLimit() );
