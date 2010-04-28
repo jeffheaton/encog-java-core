@@ -1,3 +1,32 @@
+/*
+ * Encog(tm) Core v2.4
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2010 by Heaton Research Inc.
+ * 
+ * Released under the LGPL.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * 
+ * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
+ * For information on Heaton Research trademarks, visit:
+ * 
+ * http://www.heatonresearch.com/copyright.html
+ */
 package org.encog.cloud;
 
 import java.io.ByteArrayInputStream;
@@ -12,15 +41,72 @@ import org.encog.bot.BotUtil;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.util.http.FormUtility;
 
+/**
+ * An Encog cloud request.  Sends a request to the Encog cloud and handles the response.
+ *
+ */
 public class CloudRequest {
 
+	/**
+	 * The header properties.
+	 */
 	private Map<String, String> headerProperties = new HashMap<String, String>();
+	
+	/**
+	 * The session properties.
+	 */
 	private Map<String, String> sessionProperties = new HashMap<String, String>();
+	
+	/**
+	 * The response properties.
+	 */
 	private Map<String, String> responseProperties = new HashMap<String, String>();
 
-	private void handleResponse(String contents) {
-		ByteArrayInputStream is = new ByteArrayInputStream(contents.getBytes());
-		ReadXML xml = new ReadXML(is);
+	/**
+	 * @return The message returned from the cloud.
+	 */
+	public String getMessage() {
+		return this.headerProperties.get("message");
+	}
+
+	/**
+	 * Get a response property.
+	 * @param key The key.
+	 * @return The property.
+	 */
+	public String getResponseProperty(final String key) {
+		return this.responseProperties.get(key);
+	}
+
+	/**
+	 * @return The service.
+	 */
+	public String getService() {
+		return this.headerProperties.get("service");
+	}
+
+	/**
+	 * @return The url.
+	 */
+	public String getSession() {
+		return this.sessionProperties.get("url");
+	}
+
+	/**
+	 * @return The status.
+	 */
+	public String getStatus() {
+		return this.headerProperties.get("status");
+	}
+
+	/**
+	 * Handle the cloud response.
+	 * @param contents The contents.
+	 */
+	private void handleResponse(final String contents) {
+		final ByteArrayInputStream is = new ByteArrayInputStream(contents
+				.getBytes());
+		final ReadXML xml = new ReadXML(is);
 		int ch;
 
 		while ((ch = xml.read()) != -1) {
@@ -31,12 +117,76 @@ public class CloudRequest {
 			}
 		}
 
-		if (getStatus() == null || getStatus().equals("failed")) {
+		if ((getStatus() == null) || getStatus().equals("failed")) {
 			throw new EncogCloudError(getMessage());
 		}
 	}
 
-	private void processCloud(ReadXML xml) {
+	/**
+	 * Perform a GET request.
+	 * @param async True if this request should be asynchronous.
+	 * @param url The URL.
+	 */
+	public void performURLGET(final boolean async, final String url) {
+		try {
+			if (async) {
+				final AsynchronousCloudRequest request = new AsynchronousCloudRequest(
+						new URL(url));
+				final Thread t = new Thread(request);
+				t.setDaemon(true);
+				t.start();
+			} else {
+				final URL url2 = new URL(url);
+				final URLConnection u = url2.openConnection();
+				final String contents = BotUtil.loadPage(u.getInputStream());
+				handleResponse(contents);
+			}
+		} catch (final IOException e) {
+			throw new EncogCloudError(e);
+		}
+	}
+
+	/**
+	 * Perform a POST to the cloud.
+	 * @param async True if this request should be asynchronous.
+	 * @param service The service.
+	 * @param args The POST arguments.
+	 */
+	public void performURLPOST(final boolean async, final String service,
+			final Map<String, String> args) {
+		try {
+			if (async) {
+				final AsynchronousCloudRequest request = new AsynchronousCloudRequest(
+						new URL(service), args);
+				final Thread t = new Thread(request);
+				t.setDaemon(true);
+				t.start();
+			} else {
+				final URL url = new URL(service);
+				final URLConnection u = url.openConnection();
+				u.setDoOutput(true);
+				final OutputStream os = u.getOutputStream();
+
+				final FormUtility form = new FormUtility(os, null);
+
+				for (final String key : args.keySet()) {
+					form.add(key, args.get(key));
+				}
+				form.complete();
+
+				final String contents = BotUtil.loadPage(u.getInputStream());
+				handleResponse(contents);
+			}
+		} catch (final IOException e) {
+			throw new EncogCloudError(e);
+		}
+	}
+
+	/**
+	 * Process the cloud request.
+	 * @param xml The XML to parse.
+	 */
+	private void processCloud(final ReadXML xml) {
 		int ch;
 
 		while ((ch = xml.read()) != -1) {
@@ -49,75 +199,6 @@ public class CloudRequest {
 					this.responseProperties = xml.readPropertyBlock();
 				}
 			}
-		}
-	}
-
-	public String getStatus() {
-		return this.headerProperties.get("status");
-	}
-
-	public String getMessage() {
-		return this.headerProperties.get("message");
-	}
-
-	public String getService() {
-		return this.headerProperties.get("service");
-	}
-
-	public String getSession() {
-		return this.sessionProperties.get("url");
-	}
-
-	public String getResponseProperty(String key) {
-		return this.responseProperties.get(key);
-	}
-
-	public void performURLGET(boolean async, String url) {
-		try {
-			if (async) {
-				AsynchronousCloudRequest request = new AsynchronousCloudRequest(
-						new URL(url));
-				Thread t = new Thread(request);
-				t.setDaemon(true);
-				t.start();
-			} else {
-				URL url2 = new URL(url);
-				URLConnection u = url2.openConnection();
-				String contents = BotUtil.loadPage(u.getInputStream());
-				handleResponse(contents);
-			}
-		} catch (IOException e) {
-			throw new EncogCloudError(e);
-		}
-	}
-
-	public void performURLPOST(boolean async, String service,
-			Map<String, String> args) {
-		try {
-			if (async) {
-				AsynchronousCloudRequest request = new AsynchronousCloudRequest(
-						new URL(service), args);
-				Thread t = new Thread(request);
-				t.setDaemon(true);
-				t.start();
-			} else {
-				URL url = new URL(service);
-				URLConnection u = url.openConnection();
-				u.setDoOutput(true);
-				OutputStream os = u.getOutputStream();
-
-				FormUtility form = new FormUtility(os, null);
-
-				for (String key : args.keySet()) {
-					form.add(key, args.get(key));
-				}
-				form.complete();
-
-				String contents = BotUtil.loadPage(u.getInputStream());
-				handleResponse(contents);
-			}
-		} catch (IOException e) {
-			throw new EncogCloudError(e);
 		}
 	}
 
