@@ -40,7 +40,10 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A randomizer that attempts to create starting weight values that are
- * conducive to back propagation training.
+ * conducive to propagation training.
+ * 
+ * This is one of the best randomizers offered in Encog, however, the Nguyen
+ * Widrow method generally performs better.
  * 
  * From:
  * 
@@ -172,7 +175,9 @@ public class FanInRandomizer extends BasicRandomizer {
 	 */
 	@Override
 	public void randomize(final double[] d) {
-		causeError();
+		for (int i = 0; i < d.length; i++) {
+			d[i] = calculateValue(1);
+		}
 	}
 
 	/**
@@ -184,7 +189,9 @@ public class FanInRandomizer extends BasicRandomizer {
 	 */
 	@Override
 	public void randomize(final Double[] d) {
-		causeError();
+		for (int i = 0; i < d.length; i++) {
+			d[i] = calculateValue(1);
+		}
 	}
 
 	/**
