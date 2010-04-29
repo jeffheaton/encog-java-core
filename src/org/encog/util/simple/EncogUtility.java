@@ -258,6 +258,7 @@ public final class EncogUtility {
 			dialog.setTime((int) elapsed);
 			epoch++;
 		} while (!dialog.shouldStop());
+		train.finishTraining();
 		dialog.dispose();
 	}
 
@@ -304,5 +305,6 @@ public final class EncogUtility {
 					+ " Target Error: " + Format.formatPercent(error));
 			epoch++;
 		} while (train.getError() > error);
+		train.finishTraining();
 	}
 }
