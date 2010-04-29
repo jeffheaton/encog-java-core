@@ -20,11 +20,32 @@ package org.encog.mathutil.randomize;
  */
 public class GaussianRandomizer extends BasicRandomizer {
 
-	private static double y2;
-	private static boolean useLast = false;
+	/**
+	 * The y2 value.
+	 */
+	private double y2;
+	
+	/**
+	 * Should we use the last value.
+	 */
+	private boolean useLast = false;
+	
+	/**
+	 * The mean.
+	 */
 	private double mean;
+	
+	/**
+	 * The standard deviation.
+	 */
 	private double standardDeviation;
 
+	/**
+	 * Compute a Gaussian random number.
+	 * @param m The mean.
+	 * @param s The standard deviation.
+	 * @return The random number.
+	 */
 	public double boxMuller(double m, double s) {
 		double x1, x2, w, y1;
 
@@ -48,11 +69,21 @@ public class GaussianRandomizer extends BasicRandomizer {
 		return (m + y1 * s);
 	}
 
+	/**
+	 * Construct a Gaussian randomizer.  The mean, the standard deviation.
+	 * @param mean The mean.
+	 * @param standardDeviation The standard deviation.
+	 */
 	public GaussianRandomizer(double mean, double standardDeviation) {
 		this.mean = mean;
 		this.standardDeviation = standardDeviation;
 	}
 
+	/**
+	 * Generate a random number.
+	 * @param d The input value, not used.
+	 * @return The random number.
+	 */
 	public double randomize(double d) {
 		return boxMuller(this.mean, this.standardDeviation);
 	}

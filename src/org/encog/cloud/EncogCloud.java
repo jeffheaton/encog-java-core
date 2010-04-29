@@ -40,7 +40,7 @@ public class EncogCloud {
 	/**
 	 * The default cloud server.
 	 */
-	public final String DEFAULT_SERVER = "http://cloud.encog.com/";
+	public final static String DEFAULT_SERVER = "http://cloud.encog.com/";
 
 	/**
 	 * The session.
@@ -64,6 +64,11 @@ public class EncogCloud {
 		if (!this.server.endsWith("/")) {
 			this.server += '/';
 		}
+	}
+	
+	public EncogCloud()
+	{
+		this(EncogCloud.DEFAULT_SERVER);
 	}
 
 	/**

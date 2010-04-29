@@ -49,6 +49,11 @@ import org.encog.neural.networks.synapse.Synapse;
 public class NguyenWidrowRandomizer extends RangeRandomizer implements
 		Randomizer {
 
+	/**
+	 * Construct a Nguyen-Widrow randomizer.
+	 * @param min The min of the range.
+	 * @param max The max of the range.
+	 */
 	public NguyenWidrowRandomizer(double min, double max) {
 		super(min, max);
 	}
@@ -103,6 +108,11 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 
 	}
 
+	/**
+	 * Randomize the specified synapse.
+	 * @param beta The beta value.
+	 * @param synapse The synapse to modify.
+	 */
 	private void randomize(double beta, Synapse synapse) {
 		for (int j = 0; j < synapse.getToNeuronCount(); j++) {
 			double norm = 0.0;
