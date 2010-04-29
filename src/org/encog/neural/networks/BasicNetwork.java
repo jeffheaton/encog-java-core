@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -486,11 +487,19 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Reset the weight matrix and the thresholds. This will use a Nguyen-Widrow
-	 * randomizer with a range between -1 and 1.
+	 * randomizer with a range between -1 and 1. If the network does not have an
+	 * input, output or hidden layers, then Nguyen-Widrow cannot be used and a
+	 * simple range randomize between -1 and 1 will be used.
 	 * 
 	 */
 	public void reset() {
-		(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
+		Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
+		Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
+
+		if( inputLayer==null || outputLayer==null )
+			(new RangeRandomizer(-1, 1)).randomize(this);
+		else
+			(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
 	}
 
 	/**

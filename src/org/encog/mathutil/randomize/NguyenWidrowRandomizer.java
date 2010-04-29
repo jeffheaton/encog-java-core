@@ -96,8 +96,9 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 		int hiddenNeurons = neuronCount - inputLayer.getNeuronCount()
 				- outputLayer.getNeuronCount();
 
+		// can't really do much, use regular randomization
 		if (hiddenNeurons < 1)
-			throw new EncogError("Must have hidden neurons for Nguyen-Widrow.");
+			return;
 
 		double beta = 0.7 * Math.pow(hiddenNeurons, 1.0 / inputLayer
 				.getNeuronCount());
@@ -117,24 +118,31 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 		for (int j = 0; j < synapse.getToNeuronCount(); j++) {
 			double norm = 0.0;
 
+			if( synapse.getMatrix()==null )
+				continue;
+			
 			// Calculate the Euclidean Norm for the weights
 			for (int k = 0; k < synapse.getFromNeuronCount(); k++) {
 				double value = synapse.getMatrix().get(k, j);
 				norm += value * value;
 			}
 
-			double value = synapse.getToLayer().getThreshold(j);
-			norm += value * value;
-			norm = Math.sqrt(norm);
+			if( synapse.getToLayer().hasThreshold() ) {
+				double value = synapse.getToLayer().getThreshold(j);
+				norm += value * value;
+				norm = Math.sqrt(norm);
+			}
 
 			// Rescale the weights using beta and the norm
 			for (int k = 0; k < synapse.getFromNeuronCount(); k++) {
-				value = synapse.getMatrix().get(k, j);
+				double value = synapse.getMatrix().get(k, j);
 				synapse.getMatrix().set(k, j, beta * value / norm);
 			}
 
-			value = synapse.getToLayer().getThreshold(j);
-			synapse.getToLayer().setThreshold(j, beta * value / norm);
+			if( synapse.getToLayer().hasThreshold() ) {
+				double value = synapse.getToLayer().getThreshold(j);
+				synapse.getToLayer().setThreshold(j, beta * value / norm);
+			}
 		}
 	}
 }
