@@ -80,5 +80,23 @@ public class AnalyzeNetwork {
 		result.append("\n");
 		return result.toString();
 	}
+
+	public NumericRange getWeights() {
+		return weights;
+	}
+
+	public NumericRange getThresholds() {
+		return thresholds;
+	}
+
+	public NumericRange getWeightsAndThresholds() {
+		return weightsAndThresholds;
+	}
+
+	public int getDisabledConnections() {
+		return disabledConnections;
+	}
+	
+	
 	
 }
