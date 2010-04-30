@@ -64,7 +64,7 @@ public abstract class BasicRandomizer implements Randomizer {
 		// randomize the weight matrix
 		for (final Synapse synapse : network.getStructure().getSynapses()) {
 			if (synapse.getMatrix() != null) {
-				randomize(synapse.getMatrix());
+				randomize(network, synapse);
 			}
 		}
 
@@ -150,6 +150,25 @@ public abstract class BasicRandomizer implements Randomizer {
 			for (int c = 0; c < m.getCols(); c++) {
 				d[r][c] = randomize(d[r][c]);
 			}
+		}
+	}
+	
+	/**
+	 * Randomize a synapse, only randomize those connections that are actually connected.
+	 * @param network The network the synapse belongs to.
+	 * @param synapse The synapse to randomize.
+	 */
+	public void randomize(final BasicNetwork network,final Synapse synapse) {
+		if( synapse.getMatrix()!=null ) {
+			boolean limited = network.getStructure().isConnectionLimited();
+			final double[][] d = synapse.getMatrix().getData();
+			for (int fromNeuron = 0; fromNeuron < synapse.getMatrix().getRows(); fromNeuron++) {
+				for (int toNeuron = 0; toNeuron < synapse.getMatrix().getCols(); toNeuron++) {
+					if( !limited || network.isConnected(synapse, fromNeuron, toNeuron))
+						d[fromNeuron][toNeuron] = randomize(d[fromNeuron][toNeuron]);
+				}
+			}
+			
 		}
 	}
 
