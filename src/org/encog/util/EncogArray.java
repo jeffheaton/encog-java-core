@@ -30,6 +30,8 @@
 
 package org.encog.util;
 
+import java.util.Collection;
+
 /**
  * Some array functions used by Encog.
  */
@@ -70,6 +72,18 @@ public final class EncogArray {
 		for (int i = 0; i < array.length; i++) {
 			result[i] = new Double(array[i]);
 		}
+		return result;
+	}
+	
+	public static double[] listToDouble(final Collection<?> list)
+	{
+		double[] result = new double[list.size()];
+		int index = 0;
+		for(Object obj: list)
+		{
+			result[index++] = (Double)obj;
+		}
+		
 		return result;
 	}
 

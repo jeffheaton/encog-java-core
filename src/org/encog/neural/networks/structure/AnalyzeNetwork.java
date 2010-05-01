@@ -7,6 +7,7 @@ import org.encog.mathutil.NumericRange;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.util.EncogArray;
 import org.encog.util.Format;
 
 public class AnalyzeNetwork {
@@ -15,21 +16,26 @@ public class AnalyzeNetwork {
 	private final NumericRange thresholds;
 	private final NumericRange weightsAndThresholds;
 	private final int disabledConnections;
+	private final int totalConnections;
+	private double[] allValues;
+	private double[] weightValues;
+	private double[] thresholdValues;
 	
 	public AnalyzeNetwork(BasicNetwork network)
 	{
 		int assignDisabled = 0;
-		List<Double> thresholdValues = new ArrayList<Double>();
-		List<Double> weightValues = new ArrayList<Double>();
-		List<Double> allValues = new ArrayList<Double>();	
+		int assignedTotal = 0;
+		List<Double> thresholdList = new ArrayList<Double>();
+		List<Double> weightList = new ArrayList<Double>();
+		List<Double> allList = new ArrayList<Double>();	
 		
 		for(Layer layer: network.getStructure().getLayers() )
 		{
 			if( layer.hasThreshold() )
 			{
 				for(int i=0;i<layer.getNeuronCount();i++) {
-					thresholdValues.add(layer.getThreshold(i));
-					allValues.add(layer.getThreshold(i));
+					thresholdList.add(layer.getThreshold(i));
+					allList.add(layer.getThreshold(i));
 				}
 			}
 		}
@@ -45,22 +51,27 @@ public class AnalyzeNetwork {
 						if( network.isConnected(synapse, from, to))
 						{
 							double d = synapse.getMatrix().get(from, to);
-							weightValues.add(d);
-							allValues.add(d);
+							weightList.add(d);
+							allList.add(d);
 						}
 						else
 						{
 							assignDisabled++;
 						}
+						assignedTotal++;
 					}	
 				}
 			}
 		}
 		
 		this.disabledConnections = assignDisabled;
-		this.weights = new NumericRange(weightValues);
-		this.thresholds = new NumericRange(thresholdValues);
-		this.weightsAndThresholds = new NumericRange(allValues);		
+		this.totalConnections = assignedTotal;
+		this.weights = new NumericRange(weightList);
+		this.thresholds = new NumericRange(thresholdList);
+		this.weightsAndThresholds = new NumericRange(allList);	
+		this.weightValues = EncogArray.listToDouble(weightList);
+		this.allValues = EncogArray.listToDouble(allList);
+		this.thresholdValues = EncogArray.listToDouble(thresholdList);
 	}
 	
 	public String toString()
@@ -96,6 +107,23 @@ public class AnalyzeNetwork {
 	public int getDisabledConnections() {
 		return disabledConnections;
 	}
+
+	public int getTotalConnections() {
+		return totalConnections;
+	}
+
+	public double[] getAllValues() {
+		return allValues;
+	}
+
+	public double[] getWeightValues() {
+		return weightValues;
+	}
+
+	public double[] getThresholdValues() {
+		return thresholdValues;
+	}
+	
 	
 	
 	
