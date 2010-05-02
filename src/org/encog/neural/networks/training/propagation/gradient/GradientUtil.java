@@ -191,7 +191,7 @@ public class GradientUtil {
 		}
 
 		// get an activation function to use
-		synapse.getFromLayer().getActivationFunction().derivativeFunction(temp);
+		synapse.getToLayer().getActivationFunction().derivativeFunction(temp);
 
 		for (int i = 0; i < temp.length; i++) {
 			fromDeltas[i] *= temp[i];
