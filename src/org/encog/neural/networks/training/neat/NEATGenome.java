@@ -146,8 +146,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		for (final Gene gene : other.getNeurons().getGenes()) {
 			final NEATNeuronGene oldGene = (NEATNeuronGene) gene;
 			final NEATNeuronGene newGene = new NEATNeuronGene(oldGene
-					.getNeuronType(), oldGene.getId(), oldGene.getSplitX(),
-					oldGene.getSplitY(), oldGene.isRecurrent(), oldGene
+					.getNeuronType(), oldGene.getId(), oldGene.getSplitY(),
+					oldGene.getSplitX(), oldGene.isRecurrent(), oldGene
 							.getActivationResponse());
 			getNeurons().add(newGene);
 		}
@@ -291,8 +291,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 						&& (neuron1.getId() != neuron2.getId())
 						&& (neuron2.getNeuronType() != NEATNeuronType.Bias)) {
 
-					neuron1ID = -1;
-					neuron2ID = -1;
+					neuron1ID = neuron1.getId();
+					neuron2ID = neuron2.getId();
 					break;
 				}
 			}
