@@ -30,6 +30,7 @@
 
 package org.encog.neural.networks.synapse.neat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ import org.encog.persist.annotations.EGReferenceable;
  * 
  */
 @EGReferenceable
-public class NEATNeuron {
+public class NEATNeuron implements Serializable {
 
 	/**
 	 * The activation response. This is evolved to allow NEAT to scale the slope

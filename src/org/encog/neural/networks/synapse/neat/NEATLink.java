@@ -30,6 +30,8 @@
 
 package org.encog.neural.networks.synapse.neat;
 
+import java.io.Serializable;
+
 import org.encog.persist.annotations.EGReference;
 
 /**
@@ -42,7 +44,7 @@ import org.encog.persist.annotations.EGReference;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATLink {
+public class NEATLink implements Serializable  {
 
 	/**
 	 * The source neuron.

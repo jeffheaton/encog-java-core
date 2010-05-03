@@ -30,6 +30,7 @@
 
 package org.encog.neural.networks.synapse.neat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,7 +74,7 @@ import org.encog.persist.persistors.generic.GenericPersistor;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATSynapse implements Synapse, ContextClearable {
+public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * The serial ID.
