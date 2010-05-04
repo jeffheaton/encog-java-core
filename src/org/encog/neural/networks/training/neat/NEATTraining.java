@@ -199,10 +199,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 */
 	private double paramProbabilityWeightReplaced = 0.1;
 
-	/**
-	 * The splits.
-	 */
-	private List<SplitDepth> splits;
 
 	/**
 	 * The total fit adjustment.
@@ -317,8 +313,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 				new NEATInnovationList(getPopulation(), genome.getLinks(),
 						genome.getNeurons()));
 
-		splits = split(null, 0, 1, 0);
-
 		if (getCalculateScore().shouldMinimize()) {
 			bestEverScore = Double.MAX_VALUE;
 		} else {
@@ -411,28 +405,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 			}
 		}
-	}
-
-	/**
-	 * Calculate the network depth for the specified genome.
-	 * 
-	 * @param genome
-	 *            The genome to calculate.
-	 */
-	private void calculateNetDepth(final NEATGenome genome) {
-		int maxSoFar = 0;
-
-		for (int nd = 0; nd < genome.getNeurons().size(); ++nd) {
-			for (final SplitDepth split : splits) {
-
-				if ((genome.getSplitY(nd) == split.getValue())
-						&& (split.getDepth() > maxSoFar)) {
-					maxSoFar = split.getDepth();
-				}
-			}
-		}
-
-		genome.setNetworkDepth(maxSoFar + 2);
 	}
 
 	/**
@@ -1132,34 +1104,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 	}
 
-	/**
-	 * Calculate splits.
-	 * @param result The resulting list, used for recursive calls.
-	 * @param low The high to check.
-	 * @param high The low to check.
-	 * @param depth The depth.
-	 * @return A list of split depths.
-	 */
-	private List<SplitDepth> split(List<SplitDepth> result, final double low,
-			final double high, final int depth) {
-		if (result == null) {
-			result = new ArrayList<SplitDepth>();
-		}
-
-		final double span = high - low;
-
-		result.add(new SplitDepth(low + span / 2, depth + 1));
-
-		if (depth > 6) {
-			return result;
-		}
-
-		else {
-			split(result, low, low + span / 2, depth + 1);
-			split(result, low + span / 2, high, depth + 1);
-			return result;
-		}
-	}
 
 	/**
 	 * Select a gene using a tournament.
