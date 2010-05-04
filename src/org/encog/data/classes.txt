@@ -45,6 +45,7 @@ org.encog.mathutil.matrices.decomposition.SingularValueDecomposition
 org.encog.mathutil.matrices.Matrix
 org.encog.mathutil.matrices.MatrixError
 org.encog.mathutil.matrices.MatrixMath
+org.encog.mathutil.NumericRange
 org.encog.mathutil.randomize.BasicRandomizer
 org.encog.mathutil.randomize.ConsistentRandomizer
 org.encog.mathutil.randomize.ConstRandomizer
@@ -127,6 +128,7 @@ org.encog.neural.networks.logic.ThermalLogic
 org.encog.neural.networks.Network
 org.encog.neural.networks.NeuralDataMapping
 org.encog.neural.networks.NeuralOutputHolder
+org.encog.neural.networks.structure.AnalyzeNetwork
 org.encog.neural.networks.structure.CalculateDepth
 org.encog.neural.networks.structure.LayerComparator
 org.encog.neural.networks.structure.NetworkCODEC
@@ -172,7 +174,6 @@ org.encog.neural.networks.training.neat.NEATInnovationType
 org.encog.neural.networks.training.neat.NEATLinkGene
 org.encog.neural.networks.training.neat.NEATNeuronGene
 org.encog.neural.networks.training.neat.NEATTraining
-org.encog.neural.networks.training.neat.SplitDepth
 org.encog.neural.networks.training.propagation.back.Backpropagation
 org.encog.neural.networks.training.propagation.gradient.CalculateGradient
 org.encog.neural.networks.training.propagation.gradient.GradientUtil
