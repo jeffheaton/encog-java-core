@@ -309,9 +309,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	private void init() {
 		NEATGenome genome = (NEATGenome) getPopulation().getGenomes().get(0);
 
-		getPopulation().setInnovations(
-				new NEATInnovationList(getPopulation(), genome.getLinks(),
-						genome.getNeurons()));
+		if (this.getInnovations() == null) {
+			getPopulation().setInnovations(
+					new NEATInnovationList(getPopulation(), genome.getLinks(),
+							genome.getNeurons()));
+		}
 
 		if (getCalculateScore().shouldMinimize()) {
 			bestEverScore = Double.MAX_VALUE;
