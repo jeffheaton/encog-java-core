@@ -106,7 +106,8 @@ public class GeneticAlgorithm {
 	 * @param g The genome to calculate for.
 	 */
 	public void calculateScore(final Genome g) {
-		((ContextClearable)g.getOrganism()).clearContext();
+		if( g.getOrganism() instanceof ContextClearable )
+			((ContextClearable)g.getOrganism()).clearContext();
 		final double score = calculateScore.calculateScore(g);
 		g.setScore(score);
 	}
