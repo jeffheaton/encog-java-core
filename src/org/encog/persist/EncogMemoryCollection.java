@@ -201,7 +201,8 @@ public class EncogMemoryCollection {
 		obj.setName(newName);
 		obj.setDescription(desc);
 		this.contents.remove(name);
-		this.contents.put(newName, obj);		
+		this.contents.put(newName, obj);	
+		buildDirectory();
 	}
 
 	public EncogPersistedObject find(DirectoryEntry entry) {
