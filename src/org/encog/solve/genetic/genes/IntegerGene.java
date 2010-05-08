@@ -45,7 +45,11 @@ public class IntegerGene extends BasicGene {
 	 */
 	public void copy(final Gene gene) {
 		value = ((IntegerGene) gene).getValue();
-
+	}
+	
+	public int hashCode()
+	{
+		return value;
 	}
 
 	/**
