@@ -816,9 +816,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						baby.sortGenes();
 
 						// add to new pop
-						if (newPop.contains(baby)) {
-							throw new EncogError("readd");
-						}
+						//if (newPop.contains(baby)) {
+						//	throw new EncogError("readd");
+						//}
 						newPop.add(baby);
 
 						++numSpawnedSoFar;
