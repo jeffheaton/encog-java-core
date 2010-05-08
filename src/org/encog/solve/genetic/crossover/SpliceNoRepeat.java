@@ -59,19 +59,9 @@ public class SpliceNoRepeat implements Crossover {
 	 */
 	private static Gene getNotTaken(final Chromosome source,
 			final Set<Gene> taken) {
-		final int geneLength = source.getGenes().size();
 
-		for (int i = 0; i < geneLength; i++) {
-			final Gene trial = source.getGene(i);
-
-			boolean found = false;
-			for (final Gene current : taken) {
-				if (current.equals(trial)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found) {
+		for (Gene trial: source.getGenes() ) {
+			if( !taken.contains(trial) ) {
 				taken.add(trial);
 				return trial;
 			}
@@ -118,8 +108,8 @@ public class SpliceNoRepeat implements Crossover {
 			if (!((i < cutpoint1) || (i > cutpoint2))) {
 				offspring1.getGene(i).copy(father.getGene(i));
 				offspring2.getGene(i).copy(mother.getGene(i));
-				taken1.add(offspring1.getGene(i));
-				taken2.add(offspring2.getGene(i));
+				taken1.add(father.getGene(i));
+				taken2.add(mother.getGene(i));
 			}
 		}
 
