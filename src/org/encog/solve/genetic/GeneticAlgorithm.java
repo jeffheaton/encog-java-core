@@ -202,7 +202,7 @@ public class GeneticAlgorithm {
 			final MateWorker worker = new MateWorker(mother, father, child1,
 					child2);
 
-			EncogConcurrency.getInstance().processTask(worker);
+			EncogConcurrency.getInstance().processTask(worker, group);
 
 			offspringIndex += 2;
 		}
