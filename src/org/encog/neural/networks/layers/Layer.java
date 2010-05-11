@@ -127,7 +127,7 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	double[] getThreshold();
 
 	/**
-	 * Get an idividual threshold value.
+	 * Get an individual threshold value.
 	 * 
 	 * @param index
 	 *            The threshold value to get.
