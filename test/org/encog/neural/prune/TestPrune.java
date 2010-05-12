@@ -84,7 +84,7 @@ public class TestPrune {
 		pattern.setOutputNeurons(1);
 		pattern.setActivationFunction(new ActivationSigmoid());
 		NeuralDataSet training = XOR.createXORDataSet();
-		PruneIncremental inc = new PruneIncremental(training,pattern,10,counter);
+		PruneIncremental inc = new PruneIncremental(training,pattern,10,1,counter);
 		inc.addHiddenLayer(1, 4);
 		inc.addHiddenLayer(0, 4);
 		inc.process();

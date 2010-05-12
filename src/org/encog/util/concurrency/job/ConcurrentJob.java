@@ -48,6 +48,16 @@ public abstract class ConcurrentJob {
 	 * The number of tasks in this job.
 	 */
 	private int totalTasks;
+	
+	/**
+	 * The current task.
+	 */
+	private int current;
+	
+	/**
+	 * Flag to note that the job should stop.
+	 */
+	private boolean shouldStop = false;
 
 	/**
 	 * Construct a concurrent job.
@@ -57,6 +67,7 @@ public abstract class ConcurrentJob {
 	 */
 	public ConcurrentJob(final StatusReportable report) {
 		this.report = report;
+		this.current = 1;
 	}
 
 	/**
@@ -84,7 +95,7 @@ public abstract class ConcurrentJob {
 		int currentTask = 0;
 		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
 
-		while ((task = requestNextTask()) != null) {
+		while( ((task = requestNextTask()) != null) && !shouldStop ) {
 			currentTask++;
 			final JobUnitContext context = new JobUnitContext();
 			context.setJobUnit(task);
@@ -109,7 +120,7 @@ public abstract class ConcurrentJob {
 	 *            The status to report.
 	 */
 	public void reportStatus(final JobUnitContext context, final String status) {
-		this.report.report(this.totalTasks, context.getTaskNumber(), status);
+		this.report.report(this.totalTasks, current++, status);
 	}
 
 	/**
@@ -118,4 +129,14 @@ public abstract class ConcurrentJob {
 	 * @return The next task to be processed.
 	 */
 	public abstract Object requestNextTask();
+	
+	public boolean getShouldStop()
+	{
+		return this.shouldStop;
+	}
+	
+	public void stop()
+	{
+		this.shouldStop = true;
+	}
 }
