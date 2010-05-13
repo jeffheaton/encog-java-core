@@ -76,7 +76,7 @@ public class ContextLayerPersistor implements Persistor {
 		String context = null;
 		ActivationFunction activation = null;
 		final String end = in.getTag().getName();
-		double biasActivation = 0;
+		double biasActivation = 1;
 
 		while (in.readToTag()) {
 			if (in.is(BasicLayerPersistor.TAG_ACTIVATION, true)) {

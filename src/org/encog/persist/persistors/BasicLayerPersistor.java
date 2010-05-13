@@ -94,7 +94,7 @@ public class BasicLayerPersistor implements Persistor {
 	 * @return The loaded object.
 	 */
 	public EncogPersistedObject load(final ReadXML in) {
-		double biasActivation = 0;
+		double biasActivation = 1;
 		int neuronCount = 0;
 		int x = 0;
 		int y = 0;
