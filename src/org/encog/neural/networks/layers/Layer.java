@@ -53,6 +53,12 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	 * create a self-connected layer. This method will create a weighted synapse
 	 * connection between this layer and the next.
 	 * 
+	 * Layers can also have bias values attached. This makes up sort of "virtual
+	 * layer" that connects to this layer. This allows you to specify a bias
+	 * activation connected via bias weights to the neurons of this level. The
+	 * bias weights and bias activations are set by the biasWeights and
+	 * biasActivation properties.
+	 * 
 	 * @param next
 	 *            The layer that is to be added.
 	 */
@@ -129,7 +135,7 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	double[] getBiasWeights();
 
 	/**
-	 * Get an bias weight value. See the Layer interface documentation for more 
+	 * Get an bias weight value. See the Layer interface documentation for more
 	 * information on how Encog handles bias values.
 	 * 
 	 * @param index
@@ -199,7 +205,9 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 
 	/**
 	 * Set the network that this layer belongs to.
-	 * @param network The network.
+	 * 
+	 * @param network
+	 *            The network.
 	 */
 	void setNetwork(BasicNetwork network);
 
@@ -247,4 +255,25 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	 *            The y-coordinate.
 	 */
 	void setY(int y);
+
+	/**
+	 * Most layer types will default this value to one. However, it is possible
+	 * to use other values. This is the activation that will be passed over the
+	 * bias weights to the inputs of this layer. See the Layer interface
+	 * documentation for more information on how Encog handles bias values.
+	 * 
+	 * @param activation
+	 *            The activation for the bias weights.
+	 */
+	void setBiasActivation(double activation);
+
+	/**
+	 * Most layer types will default this value to one. However, it is possible
+	 * to use other values. This is the activation that will be passed over the
+	 * bias weights to the inputs of this layer. See the Layer interface
+	 * documentation for more information on how Encog handles bias values.
+	 * 
+	 * @return The bias activation for this layer.
+	 */
+	double getBiasActivation();
 }

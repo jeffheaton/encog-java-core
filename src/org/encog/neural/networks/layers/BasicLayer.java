@@ -58,6 +58,36 @@ import org.slf4j.LoggerFactory;
  * is often used by itself to implement forward or recurrent layers. Other layer
  * types are based on the basic layer as well.
  * 
+ * The following summarizes how basic layers calculate the output for a neural
+ * network.
+ * 
+ * Example of a simple XOR network.
+ * 
+ * Input: BasicLayer: 2 Neurons, null biasWeights, null biasActivation
+ * 
+ * Hidden: BasicLayer: 2 Neurons, 2 biasWeights, 1 biasActivation
+ * 
+ * Output: BasicLayer: 1 Neuron, 1 biasWeights, 1 biasActivation
+ * 
+ * Input1Output and Input2Output are both provided.
+ * 
+ * Synapse 1: Input to Hidden Hidden1Activation = (Input1Output *
+ * Input1->Hidden1Weight) + (Input2Output * Input2->Hidden1Weight) +
+ * (HiddenBiasActivation * Hidden1BiasWeight)
+ * 
+ * Hidden1Output = calculate(Hidden1Activation, HiddenActivationFunction)
+ * 
+ * Hidden2Activation = (Input1Output * Input1->Hidden2Weight) + (Input2Output *
+ * Input2->Hidden2Weight) + (HiddenBiasActivation * Hidden2BiasWeight)
+ * 
+ * Hidden2Output = calculate(Hidden2Activation, HiddenActivationFunction)
+ * 
+ * Synapse 2: Hidden to Output
+ * 
+ * Output1Activation = (Hidden1Output * Hidden1->Output1Weight) + (Hidden2Output *
+ * Hidden2->Output1Weight) + (OutputBiasActivation * Output1BiasWeight)
+ * 
+ * Output1Output = calculate(Output1Activation, OutputActivationFunction)
  * 
  * @author jheaton
  */
@@ -124,6 +154,11 @@ public class BasicLayer implements Layer, Serializable {
 	private BasicNetwork network;
 
 	/**
+	 * The bias activation for this layer, normally 1.
+	 */
+	private double biasActivation;
+
+	/**
 	 * Default constructor, mainly so the workbench can easily create a default
 	 * layer.
 	 */
@@ -132,8 +167,8 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Construct this layer with a non-default activation function,
-	 * also determine if a bias is desired or not.
+	 * Construct this layer with a non-default activation function, also
+	 * determine if a bias is desired or not.
 	 * 
 	 * @param activationFunction
 	 *            The activation function to use.
@@ -146,6 +181,7 @@ public class BasicLayer implements Layer, Serializable {
 			final boolean hasBias, final int neuronCount) {
 		this.neuronCount = neuronCount;
 		this.id = -1;
+		this.biasActivation = 1;
 		setActivationFunction(activationFunction);
 		if (hasBias) {
 			this.biasWeights = new double[neuronCount];
@@ -184,7 +220,7 @@ public class BasicLayer implements Layer, Serializable {
 
 		if (this.network == null) {
 			throw new NeuralNetworkError(
-		"Can't add to this layer, it is not yet part of a network itself.");
+					"Can't add to this layer, it is not yet part of a network itself.");
 		}
 
 		next.setNetwork(this.network);
@@ -204,7 +240,7 @@ public class BasicLayer implements Layer, Serializable {
 			synapse = new DirectSynapse(this, next);
 			break;
 		case NEAT:
-			synapse = new NEATSynapse(this,next);
+			synapse = new NEATSynapse(this, next);
 			break;
 		default:
 			throw new NeuralNetworkError("Unknown synapse type");
@@ -234,11 +270,12 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Compare this layer to another.
-	 * @return    The value 0 if the argument layer is equal to this layer; a
-	 *            value less than 0 if this layer is less
-	 *            than the argument; and a value greater than 0 if this
-	 *            layer is greater than the layer argument.
-	 * @param other The other layer to compare.
+	 * 
+	 * @return The value 0 if the argument layer is equal to this layer; a value
+	 *         less than 0 if this layer is less than the argument; and a value
+	 *         greater than 0 if this layer is greater than the layer argument.
+	 * @param other
+	 *            The other layer to compare.
 	 */
 	public int compareTo(final Layer other) {
 		if (other.getID() == getID()) {
@@ -265,7 +302,8 @@ public class BasicLayer implements Layer, Serializable {
 		if (hasBias()) {
 			// apply the bias
 			for (int i = 0; i < this.biasWeights.length; i++) {
-				result.setData(i, result.getData(i) + this.biasWeights[i]);
+				result.setData(i, result.getData(i)
+						+ (this.biasWeights[i] * this.biasActivation));
 			}
 		}
 
@@ -354,7 +392,7 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Get an bias weight value. See the Layer interface documentation for more 
+	 * Get an bias weight value. See the Layer interface documentation for more
 	 * information on how Encog handles bias values.
 	 * 
 	 * @param index
@@ -363,8 +401,7 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public double getBiasWeight(final int index) {
 		if (!hasBias()) {
-			final String str = 
-				"Attempting to access bias on a layer that has no bias.";
+			final String str = "Attempting to access bias on a layer that has no bias.";
 			if (BasicLayer.LOGGER.isErrorEnabled()) {
 				BasicLayer.LOGGER.error(str);
 			}
@@ -463,7 +500,9 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Set the id for this layer.
-	 * @param id The id for this layer.
+	 * 
+	 * @param id
+	 *            The id for this layer.
 	 */
 	public void setID(final int id) {
 		this.id = id;
@@ -479,7 +518,9 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Set the network for this layer.
-	 * @param network The network for this layer.
+	 * 
+	 * @param network
+	 *            The network for this layer.
 	 */
 	public void setNetwork(final BasicNetwork network) {
 		this.network = network;
@@ -498,8 +539,8 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Set the bias array. This does not modify any of the other values in
-	 * the network, it just sets the bias weight array. If you want to change the
+	 * Set the bias array. This does not modify any of the other values in the
+	 * network, it just sets the bias weight array. If you want to change the
 	 * structure of the neural network you should use the pruning classes.
 	 * 
 	 * @param d
@@ -519,8 +560,7 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public void setBiasWeight(final int index, final double d) {
 		if (!hasBias()) {
-			final String str = 
-				"Attempting to set a bias weight on a layer that does not use bias.";
+			final String str = "Attempting to set a bias weight on a layer that does not use bias.";
 			if (BasicLayer.LOGGER.isErrorEnabled()) {
 				BasicLayer.LOGGER.error(str);
 			}
@@ -568,4 +608,11 @@ public class BasicLayer implements Layer, Serializable {
 		return result.toString();
 	}
 
+	public double getBiasActivation() {
+		return this.biasActivation;
+	}
+
+	public void setBiasActivation(double activation) {
+		this.biasActivation = activation;
+	}
 }

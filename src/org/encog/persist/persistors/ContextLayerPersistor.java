@@ -76,6 +76,7 @@ public class ContextLayerPersistor implements Persistor {
 		String context = null;
 		ActivationFunction activation = null;
 		final String end = in.getTag().getName();
+		double biasActivation = 0;
 
 		while (in.readToTag()) {
 			if (in.is(BasicLayerPersistor.TAG_ACTIVATION, true)) {
@@ -93,6 +94,8 @@ public class ContextLayerPersistor implements Persistor {
 				threshold = in.readTextToTag();
 			} else if (in.is(ContextLayerPersistor.PROPERTY_CONTEXT, true)) {
 				context = in.readTextToTag();
+			} else if (in.is(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, true)) {
+				biasActivation = Double.parseDouble(in.readTextToTag());
 			} else if (in.is(end, false)) {
 				break;
 			}
@@ -110,6 +113,7 @@ public class ContextLayerPersistor implements Persistor {
 				for (int i = 0; i < t.length; i++) {
 					layer.setBiasWeight(i, t[i]);
 				}
+				layer.setBiasActivation(biasActivation);
 			}
 
 			if (context != null) {
@@ -123,6 +127,7 @@ public class ContextLayerPersistor implements Persistor {
 
 			layer.setX(x);
 			layer.setY(y);
+			
 
 			return layer;
 		}
@@ -153,6 +158,7 @@ public class ContextLayerPersistor implements Persistor {
 					.toList(CSVFormat.EG_FORMAT, result, layer.getBiasWeights());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
+			out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
 		}
 
 		final StringBuilder result = new StringBuilder();

@@ -66,6 +66,11 @@ public class BasicLayerPersistor implements Persistor {
 	public static final String PROPERTY_THRESHOLD = "threshold";
 
 	/**
+	 * The bias activation.
+	 */
+	public static final String PROPERTY_BIAS_ACTIVATION = "biasActivation";
+
+	/**
 	 * The x-coordinate to place this object at.
 	 */
 	public static final String PROPERTY_X = "x";
@@ -89,7 +94,7 @@ public class BasicLayerPersistor implements Persistor {
 	 * @return The loaded object.
 	 */
 	public EncogPersistedObject load(final ReadXML in) {
-
+		double biasActivation = 0;
 		int neuronCount = 0;
 		int x = 0;
 		int y = 0;
@@ -111,6 +116,8 @@ public class BasicLayerPersistor implements Persistor {
 				x = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_Y, true)) {
 				y = in.readIntToTag();
+			} else if (in.is(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, true)) {
+				biasActivation = Double.parseDouble(in.readTextToTag());
 			} else if (in.is(end, false)) {
 				break;
 			}
@@ -128,6 +135,7 @@ public class BasicLayerPersistor implements Persistor {
 				for (int i = 0; i < t.length; i++) {
 					layer.setBiasWeight(i, t[i]);
 				}
+				layer.setBiasActivation(biasActivation);
 			}
 			layer.setX(x);
 			layer.setY(y);
@@ -160,6 +168,7 @@ public class BasicLayerPersistor implements Persistor {
 					.toList(CSVFormat.EG_FORMAT, result, layer.getBiasWeights());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
+			out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
 		}
 
 		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
