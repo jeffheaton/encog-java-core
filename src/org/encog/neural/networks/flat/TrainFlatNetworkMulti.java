@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 package org.encog.neural.networks.flat;
@@ -42,61 +42,61 @@ import org.encog.util.concurrency.TaskGroup;
 
 /**
  * Train a flat network using multithreading, and eventually with GPU support.
- * 
+ *
  * The training data must be indexable, it will be broken into groups for each
  * thread to process.
- * 
+ *
  * At the end of each iteration the training from each thread is aggregated
  * back to the neural network.
  *
  */
 public class TrainFlatNetworkMulti {
-	
+
 	/**
 	 * The gradients
 	 */
 	private final double[] gradients;
-	
+
 	/**
 	 * The last gradients, from the last training iteration.
 	 */
 	private final double[] lastGradient;
-		
+
 	/**
 	 * The network to train.
 	 */
 	private final FlatNetwork network;
-	
+
 	/**
 	 * The training data.
 	 */
 	private final NeuralDataSet training;
-	
+
 	/**
-	 * The update values, for the weights and thresholds.
+	 * The update values, for the weights and bias values.
 	 */
 	private final double[] updateValues;
-	
+
 	/**
 	 * The network in indexable form.
 	 */
 	private Indexable indexable;
-	
+
 	/**
-	 * The weights and thresholds.
+	 * The weights and bias values.
 	 */
 	private final double[] weights;
-	
+
 	/**
 	 * The workers.
 	 */
 	private GradientWorker[] workers;
-	
+
 	/**
 	 * The total error.  Used to take the average of.
 	 */
 	private double totalError;
-	
+
 	/**
 	 * The current error is the average error over all of the threads.
 	 */
@@ -109,15 +109,15 @@ public class TrainFlatNetworkMulti {
 	 */
 	public TrainFlatNetworkMulti(final FlatNetwork network,
 			final NeuralDataSet training) {
-		
+
 		if( !(training instanceof Indexable) )
 			throw new TrainingError("Training data must be Indexable for this training type.");
-		
+
 		this.training = training;
 		this.network = network;
 
 		this.indexable = (Indexable)training;
-		
+
 		gradients = new double[network.getWeights().length];
 		updateValues = new double[network.getWeights().length];
 		lastGradient = new double[network.getWeights().length];
@@ -127,11 +127,11 @@ public class TrainFlatNetworkMulti {
 		for (int i = 0; i < updateValues.length; i++) {
 			updateValues[i] = ResilientPropagation.DEFAULT_INITIAL_UPDATE;
 		}
-		
+
 		DetermineWorkload determine = new DetermineWorkload(0,(int)this.indexable.getRecordCount());
 		this.workers = new GradientWorker[ determine.getThreadCount() ];
 		List<IntRange> range = determine.calculateWorkers();
-		
+
 		int index = 0;
 		for(IntRange r : range)
 		{
@@ -167,20 +167,20 @@ public class TrainFlatNetworkMulti {
 	 * Perform one training iteration.
 	 */
 	public void iteration() {
-		
+
 		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
 		this.totalError = 0;
-		
+
 		for(GradientWorker worker: this.workers)
 		{
 			EncogConcurrency.getInstance().processTask(worker,group);
 		}
-		
+
 		group.waitForComplete();
-		
+
 		learn();
 		this.currentError = this.totalError/this.workers.length;
-		
+
 		for(GradientWorker worker: this.workers)
 		{
 			System.arraycopy(this.weights, 0, worker.getWeights(), 0, this.weights.length);
@@ -200,7 +200,7 @@ public class TrainFlatNetworkMulti {
 
 	/**
 	 * Determine the sign of the value.
-	 * 
+	 *
 	 * @param value
 	 *            The value to check.
 	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
@@ -217,7 +217,7 @@ public class TrainFlatNetworkMulti {
 
 	/**
 	 * Determine the amount to change a weight by.
-	 * 
+	 *
 	 * @param gradients
 	 *            The gradients.
 	 * @param index
@@ -274,5 +274,5 @@ public class TrainFlatNetworkMulti {
 		return training;
 	}
 
-	
+
 }

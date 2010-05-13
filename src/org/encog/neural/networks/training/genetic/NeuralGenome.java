@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -48,19 +48,19 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements a genome that allows a feedforward neural
  * network to be trained using a genetic algorithm. The chromosome for a feed
- * forward neural network is the weight and threshold matrix.
+ * forward neural network is the weight and bias matrix.
  */
 public class NeuralGenome extends BasicGenome {
-	
+
 	private Chromosome networkChromosome;
 
 	public NeuralGenome(NeuralGeneticAlgorithm nga, final BasicNetwork network) {
 		super(nga.getGenetic());
-		
+
 		setOrganism(network);
-		
+
 		this.networkChromosome = new Chromosome();
-		
+
 		// create an array of "double genes"
 		int size = network.getStructure().calculateSize();
 		for(int i=0;i<size;i++)
@@ -68,13 +68,13 @@ public class NeuralGenome extends BasicGenome {
 			Gene gene = new DoubleGene();
 			this.networkChromosome.getGenes().add(gene);
 		}
-		
+
 		this.getChromosomes().add(this.networkChromosome);
-		
+
 		encode();
 	}
 
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -87,18 +87,18 @@ public class NeuralGenome extends BasicGenome {
 		{
 			DoubleGene gene = (DoubleGene)networkChromosome.getGenes().get(i);
 			net[i] = gene.getValue();
-			
+
 		}
 		NetworkCODEC.arrayToNetwork(net, (BasicNetwork)getOrganism());
-		
+
 	}
 
 	public void encode() {
 		double[] net = NetworkCODEC.networkToArray((BasicNetwork)getOrganism());
-		
+
 		for(int i=0;i<net.length;i++)
 		{
 			((DoubleGene)networkChromosome.getGene(i)).setValue(net[i]);
-		}		
+		}
 	}
 }

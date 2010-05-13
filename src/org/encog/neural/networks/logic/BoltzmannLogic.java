@@ -217,7 +217,7 @@ public class BoltzmannLogic extends ThermalLogic {
 			sum += getThermalSynapse().getMatrix().get(i, j)
 					* (getCurrentState().getBoolean(j) ? 1 : 0);
 		}
-		sum -= getThermalLayer().getThreshold(i);
+		sum -= getThermalLayer().getBiasWeight(i);
 		probability = 1 / (1 + BoundMath.exp(-sum / this.temperature));
 		if (RangeRandomizer.randomize(0, 1) <= probability) {
 			getCurrentState().setData(i, true);

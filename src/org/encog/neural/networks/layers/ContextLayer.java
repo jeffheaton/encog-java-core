@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -46,9 +46,9 @@ import org.slf4j.LoggerFactory;
  * context layer has a short-term memory. The context layer accept input, and
  * provide the same data as output on the next cycle. This continues, and the
  * context layer's output "one step" out of sync with the input.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class ContextLayer extends BasicLayer implements ContextClearable {
 
@@ -78,24 +78,24 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 
 	/**
 	 * Construct a context layer with the parameters specified.
-	 * 
-	 * @param thresholdFunction
-	 *            The threshold function to use.
-	 * @param hasThreshold
-	 *            Does this layer have thresholds?
+	 *
+	 * @param activationFunction
+	 *            The activation function to use.
+	 * @param hasBias
+	 *            Does this layer have bias values?
 	 * @param neuronCount
 	 *            The neuron count to use.
 	 */
-	public ContextLayer(final ActivationFunction thresholdFunction,
-			final boolean hasThreshold, final int neuronCount) {
-		super(thresholdFunction, hasThreshold, neuronCount);
+	public ContextLayer(final ActivationFunction activationFunction,
+			final boolean hasBias, final int neuronCount) {
+		super(activationFunction, hasBias, neuronCount);
 		this.context = new BasicNeuralData(neuronCount);
 	}
 
 	/**
 	 * Construct a default context layer that has the TANH activation function
-	 * and the specified number of neurons. Use threshold values.
-	 * 
+	 * and the specified number of neurons. Use bias values.
+	 *
 	 * @param neuronCount
 	 *            The number of neurons on this layer.
 	 */
@@ -105,7 +105,7 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 
 	/**
 	 * Create a persistor for this layer.
-	 * 
+	 *
 	 * @return The new persistor.
 	 */
 	@Override
@@ -124,7 +124,7 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	/**
 	 * Called to process input from the previous layer. Simply store the output
 	 * in the context.
-	 * 
+	 *
 	 * @param pattern
 	 *            The pattern to store in the context.
 	 */
@@ -143,7 +143,7 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	/**
 	 * Called to get the output from this layer when called in a recurrent
 	 * manor. Simply return the context that was kept from the last iteration.
-	 * 
+	 *
 	 * @return The recurrent output.
 	 */
 	@Override

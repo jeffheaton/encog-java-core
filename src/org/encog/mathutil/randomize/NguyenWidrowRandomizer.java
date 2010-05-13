@@ -127,8 +127,8 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 				norm += value * value;
 			}
 
-			if( synapse.getToLayer().hasThreshold() ) {
-				double value = synapse.getToLayer().getThreshold(j);
+			if( synapse.getToLayer().hasBias() ) {
+				double value = synapse.getToLayer().getBiasWeight(j);
 				norm += value * value;
 				norm = Math.sqrt(norm);
 			}
@@ -139,9 +139,9 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 				synapse.getMatrix().set(k, j, beta * value / norm);
 			}
 
-			if( synapse.getToLayer().hasThreshold() ) {
-				double value = synapse.getToLayer().getThreshold(j);
-				synapse.getToLayer().setThreshold(j, beta * value / norm);
+			if( synapse.getToLayer().hasBias() ) {
+				double value = synapse.getToLayer().getBiasWeight(j);
+				synapse.getToLayer().setBiasWeight(j, beta * value / norm);
 			}
 		}
 	}

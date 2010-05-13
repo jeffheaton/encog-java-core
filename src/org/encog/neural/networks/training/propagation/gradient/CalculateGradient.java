@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -51,12 +51,12 @@ import org.encog.util.concurrency.TaskGroup;
 
 /**
  * This class is used to calculate the gradients for each of the weights and
- * thresholds values in a neural network. It is used by the propagation training
+ * bias values in a neural network. It is used by the propagation training
  * methods. This class must visit every training set element. Multithreading is
  * used to process every training set element, however it requires an indexable
  * training set to run in multithreaded mode. Multithreaded mode allows the
  * training method to run much faster on a multicore machine.
- * 
+ *
  */
 public class CalculateGradient {
 
@@ -93,15 +93,15 @@ public class CalculateGradient {
 	private BasicNetwork network;
 
 	/**
-	 * The weights and thresholds being trained.
+	 * The weights and bias values being trained.
 	 */
 	private double[] weights;
 
 	/**
-	 * The gradients calculated for every weight and threshold.
+	 * The gradients calculated for every weight and bias value.
 	 */
 	private final double[] gradients;
-	
+
 	/**
 	 * Determine the thread counts and workloads.
 	 */
@@ -120,7 +120,7 @@ public class CalculateGradient {
 	/**
 	 * Construct the object using a network and training set. This constructor
 	 * will use only a single thread.
-	 * 
+	 *
 	 * @param network
 	 *            The network to be used to calculate.
 	 * @param training
@@ -134,7 +134,7 @@ public class CalculateGradient {
 	/**
 	 * Construct the object for multithreaded use. The number of threads can be
 	 * specified.
-	 * 
+	 *
 	 * @param network
 	 *            The network to use.
 	 * @param training
@@ -163,7 +163,7 @@ public class CalculateGradient {
 
 		if (this.threadCount == 1) {
 			createWorkersSingleThreaded(training);
-		} else {			
+		} else {
 			if (!(training instanceof Indexable)) {
 				throw new TrainingError(
 						"Must use indexable training set for multithreaded.");
@@ -195,7 +195,7 @@ public class CalculateGradient {
 
 	/**
 	 * Calculate the gradients based on the specified weights.
-	 * 
+	 *
 	 * @param weights
 	 *            The weights to use.
 	 */
@@ -219,7 +219,7 @@ public class CalculateGradient {
 
 	/**
 	 * Create the worker threads for use in multithreaded training.
-	 * 
+	 *
 	 * @param training
 	 *            The training set to use.
 	 */
@@ -239,7 +239,7 @@ public class CalculateGradient {
 
 	/**
 	 * Create a single worker to handle the single threaded mode.
-	 * 
+	 *
 	 * @param training
 	 *            The training set to use.
 	 */
@@ -286,7 +286,7 @@ public class CalculateGradient {
 	}
 
 	/**
-	 * @return The weights and thresholds from the network that is being
+	 * @return The weights and bias values from the network that is being
 	 *         trained.
 	 */
 	public double[] getWeights() {
@@ -346,7 +346,7 @@ public class CalculateGradient {
 	 */
 	private void runWorkersMultiThreaded() {
 		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
-		
+
 		// start the workers
 		for (int i = 0; i < this.threadCount; i++) {
 			EncogConcurrency.getInstance().processTask(this.workers[i], group);

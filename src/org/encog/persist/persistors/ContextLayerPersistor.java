@@ -108,7 +108,7 @@ public class ContextLayerPersistor implements Persistor {
 						threshold);
 				layer = new ContextLayer(activation, true, neuronCount);
 				for (int i = 0; i < t.length; i++) {
-					layer.setThreshold(i, t[i]);
+					layer.setBiasWeight(i, t[i]);
 				}
 			}
 
@@ -147,10 +147,10 @@ public class ContextLayerPersistor implements Persistor {
 		out.addProperty(BasicLayerPersistor.PROPERTY_X, layer.getX());
 		out.addProperty(BasicLayerPersistor.PROPERTY_Y, layer.getY());
 
-		if (layer.hasThreshold()) {
+		if (layer.hasBias()) {
 			final StringBuilder result = new StringBuilder();
 			NumberList
-					.toList(CSVFormat.EG_FORMAT, result, layer.getThreshold());
+					.toList(CSVFormat.EG_FORMAT, result, layer.getBiasWeights());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
 		}

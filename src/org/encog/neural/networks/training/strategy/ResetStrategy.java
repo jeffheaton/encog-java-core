@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -40,9 +40,9 @@ import org.slf4j.LoggerFactory;
  * below a specified error by a specified number of cycles. This can be useful
  * to throw out initially "bad/hard" random initializations of the weight
  * matrix.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class ResetStrategy implements Strategy {
 
@@ -55,7 +55,7 @@ public class ResetStrategy implements Strategy {
 	 * The required minimum error.
 	 */
 	private final double required;
-	
+
 	/**
 	 * The number of cycles to reach the required minimum error.
 	 */
@@ -65,7 +65,7 @@ public class ResetStrategy implements Strategy {
 	 * The training algorithm that is using this strategy.
 	 */
 	private Train train;
-	
+
 	/**
 	 * How many bad cycles have there been so far.
 	 */
@@ -75,7 +75,7 @@ public class ResetStrategy implements Strategy {
 	 * Construct a reset strategy.  The error rate must fall
 	 * below the required rate in the specified number of cycles,
 	 * or the neural network will be reset to random weights and
-	 * thresholds.
+	 * bias values.
 	 * @param required The required error rate.
 	 * @param cycles The number of cycles to reach that rate.
 	 */
@@ -87,7 +87,7 @@ public class ResetStrategy implements Strategy {
 
 	/**
 	 * Initialize this strategy.
-	 * 
+	 *
 	 * @param train
 	 *            The training algorithm.
 	 */

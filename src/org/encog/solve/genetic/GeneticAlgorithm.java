@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -47,7 +47,7 @@ import org.slf4j.LoggerFactory;
  * Implements a genetic algorithm. This is an abstract class. Other classes are
  * provided in this book that use this base class to train neural networks or
  * provide an answer to the traveling salesman problem.
- * 
+ *
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
  */
@@ -135,7 +135,7 @@ public class GeneticAlgorithm {
 
 	/**
 	 * Get the mating population.
-	 * 
+	 *
 	 * @return The mating population percent.
 	 */
 	public double getMatingPopulation() {
@@ -151,7 +151,7 @@ public class GeneticAlgorithm {
 
 	/**
 	 * Get the mutation percent.
-	 * 
+	 *
 	 * @return The mutation percent.
 	 */
 	public double getMutationPercent() {
@@ -160,7 +160,7 @@ public class GeneticAlgorithm {
 
 	/**
 	 * Get the percent to mate.
-	 * 
+	 *
 	 * @return The percent to mate.
 	 */
 	public double getPercentToMate() {
@@ -175,9 +175,9 @@ public class GeneticAlgorithm {
 	}
 
 	/**
-	 * Modify the weight matrix and thresholds based on the last call to
+	 * Modify the weight matrix and bias values based on the last call to
 	 * calcError.
-	 * 
+	 *
 	 * @throws NeuralNetworkException
 	 */
 	public void iteration() {
@@ -239,7 +239,7 @@ public class GeneticAlgorithm {
 
 	/**
 	 * Set the mating population percent.
-	 * 
+	 *
 	 * @param matingPopulation
 	 *            The mating population percent.
 	 */
@@ -257,7 +257,7 @@ public class GeneticAlgorithm {
 
 	/**
 	 * Set the mutation percent.
-	 * 
+	 *
 	 * @param mutationPercent
 	 *            The percent to mutate.
 	 */
@@ -267,7 +267,7 @@ public class GeneticAlgorithm {
 
 	/**
 	 * Set the percent to mate.
-	 * 
+	 *
 	 * @param percentToMate
 	 *            The percent to mate.
 	 */
@@ -282,7 +282,7 @@ public class GeneticAlgorithm {
 	public void setPopulation(final Population population) {
 		this.population = population;
 	}
-	
+
 	/**
 	 * Add a genome.
 	 * @param genome The genome to add.

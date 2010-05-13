@@ -52,7 +52,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Randomize the synapses and thresholds in the basic network based on an
+	 * Randomize the synapses and biases in the basic network based on an
 	 * array, modify the array. Previous values may be used, or they may be
 	 * discarded, depending on the randomizer.
 	 * 
@@ -68,10 +68,10 @@ public abstract class BasicRandomizer implements Randomizer {
 			}
 		}
 
-		// randomize the thresholds
+		// randomize the bias
 		for (final Layer layer : network.getStructure().getLayers()) {
-			if (layer.hasThreshold()) {
-				randomize(layer.getThreshold());
+			if (layer.hasBias()) {
+				randomize(layer.getBiasWeights());
 			}
 		}
 	}

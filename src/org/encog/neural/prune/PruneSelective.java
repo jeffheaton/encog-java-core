@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -48,14 +48,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Prune a neural network selectively. This class allows you to either add or
  * remove neurons from layers of a neural network. Tools
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class PruneSelective {
 
 	/**
-	 * 
+	 *
 	 */
 	private final BasicNetwork network;
 
@@ -67,7 +67,7 @@ public class PruneSelective {
 
 	/**
 	 * Construct an object prune the neural network.
-	 * 
+	 *
 	 * @param network
 	 *            The network to prune.
 	 */
@@ -80,17 +80,17 @@ public class PruneSelective {
 	 * zero-weighted neuron is added, which will not affect the output of the
 	 * neural network. If the neuron count is decreased, then the weakest neuron
 	 * will be removed.
-	 * 
+	 *
 	 * @param layer
 	 *            The layer to adjust.
 	 * @param neuronCount
 	 *            The new neuron count for this layer.
 	 */
 	public void changeNeuronCount(final Layer layer, final int neuronCount) {
-		
+
 		if( neuronCount==0 )
 			throw new NeuralNetworkError("Can't decrease to zero neurons.");
-		
+
 		// is there anything to do?
 		if (neuronCount == layer.getNeuronCount()) {
 			return;
@@ -105,7 +105,7 @@ public class PruneSelective {
 
 	/**
 	 * Internal function to decrease the neuron count of a layer.
-	 * 
+	 *
 	 * @param layer
 	 *            The layer to affect.
 	 * @param neuronCount
@@ -128,7 +128,7 @@ public class PruneSelective {
 	/**
 	 * Determine the significance of the neuron. The higher the return value,
 	 * the more significant the neuron is.
-	 * 
+	 *
 	 * @param layer
 	 *            The layer to query.
 	 * @param neuron
@@ -137,11 +137,11 @@ public class PruneSelective {
 	 */
 	public double determineNeuronSignificance(final Layer layer,
 			final int neuron) {
-		// calculate the threshold significance
+		// calculate the bias significance
 		double result = 0;
 
-		if (layer.hasThreshold()) {
-			result += layer.getThreshold(neuron);
+		if (layer.hasBias()) {
+			result += layer.getBiasWeight(neuron);
 		}
 
 		// calculate the outbound significance
@@ -151,7 +151,7 @@ public class PruneSelective {
 			}
 		}
 
-		// calculate the threshold significance
+		// calculate the bias significance
 		final Collection<Synapse> inboundSynapses = this.network.getStructure()
 				.getPreviousSynapses(layer);
 
@@ -205,21 +205,21 @@ public class PruneSelective {
 	/**
 	 * Internal function to increase the neuron count. This will add a
 	 * zero-weight neuron to this layer.
-	 * 
+	 *
 	 * @param layer
 	 *            The layer to increase.
 	 * @param neuronCount
 	 *            The new neuron count.
 	 */
 	private void increaseNeuronCount(final Layer layer, final int neuronCount) {
-		// adjust the threshold
-		final double[] newThreshold = new double[neuronCount];
-		if (layer.hasThreshold()) {
+		// adjust the bias
+		final double[] newBias = new double[neuronCount];
+		if (layer.hasBias()) {
 			for (int i = 0; i < layer.getNeuronCount(); i++) {
-				newThreshold[i] = layer.getThreshold(i);
+				newBias[i] = layer.getBiasWeight(i);
 			}
 
-			layer.setThreshold(newThreshold);
+			layer.setBiasWeights(newBias);
 		}
 
 		// adjust the outbound weight matrixes
@@ -251,14 +251,14 @@ public class PruneSelective {
 			synapse.setMatrix(newMatrix);
 		}
 
-		// adjust the thresholds
-		if (layer.hasThreshold()) {
-			final double[] newThresholds = new double[neuronCount];
+		// adjust the bias
+		if (layer.hasBias()) {
+			final double[] newBias2 = new double[neuronCount];
 
 			for (int i = 0; i < layer.getNeuronCount(); i++) {
-				newThresholds[i] = layer.getThreshold(i);
+				newBias2[i] = layer.getBiasWeight(i);
 			}
-			layer.setThreshold(newThreshold);
+			layer.setBiasWeights(newBias2);
 		}
 
 		// adjust RBF
@@ -285,7 +285,7 @@ public class PruneSelective {
 	/**
 	 * Prune one of the neurons from this layer. Remove all entries in this
 	 * weight matrix and other layers.
-	 * 
+	 *
 	 * @param targetLayer
 	 *            The neuron to prune. Zero specifies the first neuron.
 	 * @param neuron
@@ -312,19 +312,19 @@ public class PruneSelective {
 			}
 		}
 
-		// remove the threshold
-		if (targetLayer.hasThreshold()) {
-			final double[] newThreshold = new double[targetLayer
+		// remove the bias
+		if (targetLayer.hasBias()) {
+			final double[] newBias = new double[targetLayer
 					.getNeuronCount() - 1];
 
 			int targetIndex = 0;
 			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
 				if (i != neuron) {
-					newThreshold[targetIndex++] = targetLayer.getThreshold(i);
+					newBias[targetIndex++] = targetLayer.getBiasWeight(i);
 				}
 			}
 
-			targetLayer.setThreshold(newThreshold);
+			targetLayer.setBiasWeights(newBias);
 		}
 
 		// adjust RBF
@@ -350,8 +350,8 @@ public class PruneSelective {
 
 	/**
 	 * Stimulate the specified neuron by the specified percent. This is used to
-	 * randomize the weights and thresholds for weak neurons.
-	 * 
+	 * randomize the weights and bias values for weak neurons.
+	 *
 	 * @param percent
 	 *            The percent to randomize by.
 	 * @param layer
@@ -363,8 +363,8 @@ public class PruneSelective {
 			final int neuron) {
 		final Distort d = new Distort(percent);
 
-		if (layer.hasThreshold()) {
-			layer.setThreshold(neuron, d.randomize(layer.getThreshold(neuron)));
+		if (layer.hasBias()) {
+			layer.setBiasWeight(neuron, d.randomize(layer.getBiasWeight(neuron)));
 		}
 
 		// calculate the outbound significance
@@ -389,7 +389,7 @@ public class PruneSelective {
 	/**
 	 * Stimulate weaker neurons on a layer. Find the weakest neurons and then
 	 * randomize them by the specified percent.
-	 * 
+	 *
 	 * @param layer
 	 *            The layer to stimulate.
 	 * @param count

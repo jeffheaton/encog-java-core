@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -52,13 +52,13 @@ import org.encog.solve.genetic.genome.Chromosome;
 
 /**
  * Implements a NEAT genome.  This is a "blueprint" for creating a neural network.
- * 
+ *
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
- * 
+ *
  * http://www.cs.ucf.edu/~kstanley/
- * 
+ *
  */
 public class NEATGenome extends BasicGenome implements Cloneable {
 
@@ -66,12 +66,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 * The adjustment factor for disjoint genes.
 	 */
 	public static final double TWEAK_DISJOINT = 1;
-	
+
 	/**
 	 * The adjustment factor for excess genes.
 	 */
 	public static final double TWEAK_EXCESS = 1;
-	
+
 	/**
 	 * The adjustment factor for matched genes.
 	 */
@@ -82,44 +82,44 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 */
 	@EGAttribute
 	private int inputCount;
-	
+
 	/**
 	 * The chromsome that holds the links.
 	 */
 	@EGReference
 	private Chromosome linksChromosome;
-	
+
 	/**
 	 * THe network depth.
 	 */
 	@EGAttribute
 	private int networkDepth;
-	
+
 	/**
 	 * The chromosome that holds the neurons.
 	 */
 	@EGReference
 	private Chromosome neuronsChromosome;
-	
+
 	/**
 	 * The number of outputs.
 	 */
 	@EGAttribute
 	private int outputCount;
-	
+
 	/**
 	 * The species id.
 	 */
 	@EGAttribute
 	private long speciesID;
-	
+
 
 	public NEATGenome()
 	{
 		super(null);
 	}
-	
-	
+
+
 	/**
 	 * Construct a genome by copying another.
 	 * @param other The other genome.
@@ -129,7 +129,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 		neuronsChromosome = new Chromosome();
 		linksChromosome = new Chromosome();
-		
+
 		getChromosomes().add(neuronsChromosome);
 		getChromosomes().add(linksChromosome);
 
@@ -184,7 +184,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
-		
+
 		getChromosomes().add(neuronsChromosome);
 		getChromosomes().add(linksChromosome);
 	}
@@ -209,7 +209,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		final double inputRowSlice = 0.8 / (inputCount);
 		neuronsChromosome = new Chromosome();
 		linksChromosome = new Chromosome();
-		
+
 		getChromosomes().add(neuronsChromosome);
 		getChromosomes().add(linksChromosome);
 
@@ -337,7 +337,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		}
 	}
 
-	
+
 	/**
 	 * Mutate the genome by adding a neuron.
 	 * @param mutationRate The mutation rate.
@@ -353,11 +353,11 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		// the link to split
 		NEATLinkGene splitLink = null;
 
-		final int sizeThreshold = inputCount + outputCount + 10;
+		final int sizeBias = inputCount + outputCount + 10;
 
 		// if there are not at least
 		int upperLimit;
-		if (linksChromosome.size() < sizeThreshold) {
+		if (linksChromosome.size() < sizeBias) {
 			upperLimit = getNumGenes() - 1 - (int) Math.sqrt(getNumGenes());
 		} else {
 			upperLimit = getNumGenes() - 1;
@@ -521,9 +521,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 * Convert the genes to an actual network.
 	 */
 	public void decode() {
-		
+
 		NEATPattern pattern = new NEATPattern();
-		
+
 		final List<NEATNeuron> neurons = pattern.getNeurons();
 
 		for (final Gene gene : getNeurons().getGenes()) {
@@ -560,7 +560,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		pattern.setInputNeurons(inputCount);
 		pattern.setOutputNeurons(outputCount);
 		pattern.setSnapshot(((NEATTraining)getGeneticAlgorithm()).isSnapshot());
-	
+
 		setOrganism(pattern.generate());
 
 	}
@@ -568,7 +568,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	/**
 	 * Convert the network to genes.  Not currently supported.
 	 */
-	public void encode() {		
+	public void encode() {
 
 	}
 

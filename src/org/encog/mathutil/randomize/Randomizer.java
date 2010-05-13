@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -35,18 +35,18 @@ import org.encog.neural.networks.BasicNetwork;
 
 /**
  * Defines the interface for a class that is capable of randomizing the weights
- * and thresholds of a neural network.
- * 
+ * and bias values of a neural network.
+ *
  * @author jheaton
- * 
+ *
  */
 public interface Randomizer {
 
 	/**
-	 * Randomize the synapses and thresholds in the basic network based on an
+	 * Randomize the synapses and bias values in the basic network based on an
 	 * array, modify the array. Previous values may be used, or they may be
 	 * discarded, depending on the randomizer.
-	 * 
+	 *
 	 * @param network
 	 *            A network to randomize.
 	 */
@@ -56,7 +56,7 @@ public interface Randomizer {
 	 * Starting with the specified number, randomize it to the degree specified
 	 * by this randomizer. This could be a totally new random number, or it
 	 * could be based on the specified number.
-	 * 
+	 *
 	 * @param d
 	 *            The number to randomize.
 	 * @return A randomized number.
@@ -66,7 +66,7 @@ public interface Randomizer {
 	/**
 	 * Randomize the array based on an array, modify the array. Previous values
 	 * may be used, or they may be discarded, depending on the randomizer.
-	 * 
+	 *
 	 * @param d
 	 *            An array to randomize.
 	 */
@@ -75,7 +75,7 @@ public interface Randomizer {
 	/**
 	 * Randomize the array based on an array, modify the array. Previous values
 	 * may be used, or they may be discarded, depending on the randomizer.
-	 * 
+	 *
 	 * @param d
 	 *            An array to randomize.
 	 */
@@ -85,7 +85,7 @@ public interface Randomizer {
 	 * Randomize the 2d array based on an array, modify the array. Previous
 	 * values may be used, or they may be discarded, depending on the
 	 * randomizer.
-	 * 
+	 *
 	 * @param d
 	 *            An array to randomize.
 	 */
@@ -95,7 +95,7 @@ public interface Randomizer {
 	 * Randomize the 2d array based on an array, modify the array. Previous
 	 * values may be used, or they may be discarded, depending on the
 	 * randomizer.
-	 * 
+	 *
 	 * @param d
 	 *            An array to randomize.
 	 */
@@ -104,7 +104,7 @@ public interface Randomizer {
 	/**
 	 * Randomize the matrix based on an array, modify the array. Previous values
 	 * may be used, or they may be discarded, depending on the randomizer.
-	 * 
+	 *
 	 * @param m
 	 *            A matrix to randomize.
 	 */

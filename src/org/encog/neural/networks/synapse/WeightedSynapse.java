@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -42,15 +42,15 @@ import org.slf4j.LoggerFactory;
 /**
  * A fully-connected weight based synapse. Inputs will be multiplied by the
  * weight matrix and presented to the layer.
- * 
+ *
  * This synapse type is teachable.
- * 
+ *
  * This is a "fully connected" synapse between two layers. If you would like
  * only some neurons to be connected to others, you should use the
  * PartialSynapse.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class WeightedSynapse extends BasicSynapse {
 
@@ -80,7 +80,7 @@ public class WeightedSynapse extends BasicSynapse {
 
 	/**
 	 * Construct a weighted synapse between the two layers.
-	 * 
+	 *
 	 * @param fromLayer
 	 *            The starting layer.
 	 * @param toLayer
@@ -105,7 +105,7 @@ public class WeightedSynapse extends BasicSynapse {
 	/**
 	 * Compute the weighted output from this synapse. Each neuron in the from
 	 * layer has a weighted connection to each of the neurons in the next layer.
-	 * 
+	 *
 	 * @param input
 	 *            The input from the synapse.
 	 * @return The output from this synapse.
@@ -130,7 +130,7 @@ public class WeightedSynapse extends BasicSynapse {
 
 	/**
 	 * Return a persistor for this object.
-	 * 
+	 *
 	 * @return A new persistor.
 	 */
 	public Persistor createPersistor() {
@@ -138,9 +138,9 @@ public class WeightedSynapse extends BasicSynapse {
 	}
 
 	/**
-	 * Get the weight and threshold matrix.
-	 * 
-	 * @return The weight and threshold matrix.
+	 * Get the weight matrix.
+	 *
+	 * @return The weight matrix.
 	 */
 	public Matrix getMatrix() {
 		return this.matrix;
@@ -148,7 +148,7 @@ public class WeightedSynapse extends BasicSynapse {
 
 	/**
 	 * Get the size of the matrix, or zero if one is not defined.
-	 * 
+	 *
 	 * @return The size of the matrix.
 	 */
 	public int getMatrixSize() {
@@ -174,8 +174,8 @@ public class WeightedSynapse extends BasicSynapse {
 	}
 
 	/**
-	 * Assign a new weight and threshold matrix to this layer.
-	 * 
+	 * Assign a new weight matrix to this layer.
+	 *
 	 * @param matrix
 	 *            The new matrix.
 	 */

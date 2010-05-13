@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 package org.encog.neural.networks.flat;
@@ -39,14 +39,14 @@ import org.encog.neural.networks.layers.Layer;
 /**
  * Only certain types of networks can be converted to a flat network.
  * This class validates this.  Specifically the network must be:
- * 
+ *
  * 1. Feedforward only, no self-connections or recurrent links
  * 2. Sigmoid or TANH activation only
  * 3. All layers the same activation function
- * 4. Must have threshold values
+ * 4. Must have bias values
  */
 public class ValidateForFlat {
-	
+
 	/**
 	 * Validate the specified network.
 	 * @param network The network to validate.
@@ -75,9 +75,9 @@ public class ValidateForFlat {
 				}
 			}
 
-			if (!layer.hasThreshold() && (lastActivation != null)) {
+			if (!layer.hasBias() && (lastActivation != null)) {
 				throw new NeuralNetworkError(
-						"To convert to flat, all non-input layers must have threshold values.");
+						"To convert to flat, all non-input layers must have bias values.");
 			}
 
 			lastActivation = layer.getActivationFunction();

@@ -63,7 +63,7 @@ public class JacobianChainRule implements ComputeJacobian {
 	private final int inputLength;
 
 	/**
-	 * The number of weights and thresholds in the neural network.
+	 * The number of weights and bias values in the neural network.
 	 */
 	private final int parameterSize;
 
@@ -228,7 +228,7 @@ public class JacobianChainRule implements ComputeJacobian {
 			synapse = synapses.get(synapseNumber++);
 			final NeuralData outputData = holder.getResult().get(lastSynapse);
 			
-			final int thresholdCol = this.jacobianCol;
+			final int biasCol = this.jacobianCol;
 			this.jacobianCol+=synapse.getToLayer().getNeuronCount();
 
 			// for each neuron in the input layer
@@ -247,7 +247,7 @@ public class JacobianChainRule implements ComputeJacobian {
 							sum += lastSynapse.getMatrix().get(k, j)
 									* output;
 						}
-						sum += lastSynapse.getToLayer().getThreshold(j);
+						sum += lastSynapse.getToLayer().getBiasWeight(j);
 					}
 					
 					double x1 = calcDerivative(function, output);
@@ -264,7 +264,7 @@ public class JacobianChainRule implements ComputeJacobian {
 
 					this.jacobian[this.jacobianRow][this.jacobianCol++] = val
 							* holder.getResult().get(synapse).getData(i);
-					this.jacobian[this.jacobianRow][thresholdCol+neuron] = val;
+					this.jacobian[this.jacobianRow][biasCol+neuron] = val;
 				}
 			}
 		}

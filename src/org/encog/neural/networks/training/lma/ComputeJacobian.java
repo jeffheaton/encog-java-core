@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -34,14 +34,14 @@ package org.encog.neural.networks.training.lma;
  * Calculate the Jacobian.
  */
 public interface ComputeJacobian {
-	
+
 	/**
 	 * Calculate the Jacobian.
-	 * @param weights The neural network weights and thresholds.
+	 * @param weights The neural network weights and bias values.
 	 * @return The sum of squared errors.
 	 */
 	double calculate(double[] weights);
-	
+
 	/**
 	 * @return The Jacobian matrix after it is calculated.
 	 */

@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -44,8 +44,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Provides basic functions that many of the persistors will need.
- * 
- * 
+ *
+ *
  * @author jheaton
  */
 public class BasicLayerPersistor implements Persistor {
@@ -61,7 +61,7 @@ public class BasicLayerPersistor implements Persistor {
 	public static final String PROPERTY_NEURONS = "neurons";
 
 	/**
-	 * The threshold property.
+	 * The bias property, stores the bias weights.
 	 */
 	public static final String PROPERTY_THRESHOLD = "threshold";
 
@@ -83,7 +83,7 @@ public class BasicLayerPersistor implements Persistor {
 
 	/**
 	 * Load the specified Encog object from an XML reader.
-	 * 
+	 *
 	 * @param in
 	 *            The XML reader to use.
 	 * @return The loaded object.
@@ -126,7 +126,7 @@ public class BasicLayerPersistor implements Persistor {
 						threshold);
 				layer = new BasicLayer(activation, true, neuronCount);
 				for (int i = 0; i < t.length; i++) {
-					layer.setThreshold(i, t[i]);
+					layer.setBiasWeight(i, t[i]);
 				}
 			}
 			layer.setX(x);
@@ -138,7 +138,7 @@ public class BasicLayerPersistor implements Persistor {
 
 	/**
 	 * Save the specified Encog object to an XML writer.
-	 * 
+	 *
 	 * @param obj
 	 *            The object to save.
 	 * @param out
@@ -154,10 +154,10 @@ public class BasicLayerPersistor implements Persistor {
 		out.addProperty(BasicLayerPersistor.PROPERTY_X, layer.getX());
 		out.addProperty(BasicLayerPersistor.PROPERTY_Y, layer.getY());
 
-		if (layer.hasThreshold()) {
+		if (layer.hasBias()) {
 			final StringBuilder result = new StringBuilder();
 			NumberList
-					.toList(CSVFormat.EG_FORMAT, result, layer.getThreshold());
+					.toList(CSVFormat.EG_FORMAT, result, layer.getBiasWeights());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
 		}

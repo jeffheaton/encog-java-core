@@ -132,10 +132,10 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 							this.learningRate * diff * input);
 				}
 
-				// threshold (bias)
-				double t = outputLayer.getThreshold(currentAdaline);
+				// bias
+				double t = outputLayer.getBiasWeight(currentAdaline);
 				t += this.learningRate * diff;
-				outputLayer.setThreshold(currentAdaline, t);
+				outputLayer.setBiasWeight(currentAdaline, t);
 			}
 
 			errorCalculation.updateError(output, pair.getIdeal());

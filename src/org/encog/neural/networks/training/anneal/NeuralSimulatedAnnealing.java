@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -38,23 +38,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class implements a simulated annealing training algorithm for 
+ * This class implements a simulated annealing training algorithm for
  * neural networks. It is based on the generic SimulatedAnnealing class.
  * It is used in the same manner as any other training class that implements the
  * Train interface.  There are essentially two ways you can make use of this
  * class.
- * 
+ *
  * Either way, you will need a score object.  The score object tells the
  * simulated annealing algorithm how well suited a neural network is.
- * 
- * If you would like to use simulated annealing with a training set you 
+ *
+ * If you would like to use simulated annealing with a training set you
  * should make use TrainingSetScore class.  This score object uses a training
  * set to score your neural network.
- * 
+ *
  * If you would like to be more abstract, and not use a training set, you
  * can create your own implementation of the CalculateScore method.  This
- * class can then score the networks any way that you like.  
- * 
+ * class can then score the networks any way that you like.
+ *
  */
 public class NeuralSimulatedAnnealing extends BasicTraining {
 
@@ -77,7 +77,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * This class actually performs the training.
 	 */
 	private final NeuralSimulatedAnnealingHelper anneal;
-	
+
 	/**
 	 * Used to calculate the score.
 	 */
@@ -85,7 +85,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 
 	/**
 	 * Construct a simulated annleaing trainer for a feedforward neural network.
-	 * 
+	 *
 	 * @param network
 	 *            The neural network to be trained.
 	 * @param calculateScore
@@ -100,7 +100,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	public NeuralSimulatedAnnealing(final BasicNetwork network,
 			final CalculateScore calculateScore,
 			final double startTemp,
-			final double stopTemp, 
+			final double stopTemp,
 			final int cycles) {
 		this.network = network;
 		this.calculateScore = calculateScore;
@@ -113,7 +113,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 
 	/**
 	 * Get the best network from the training.
-	 * 
+	 *
 	 * @return The best network.
 	 */
 	public BasicNetwork getNetwork() {
@@ -132,10 +132,10 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 		setError(this.anneal.calculateScore());
 		postIteration();
 	}
-	
+
 	/**
 	 * Get the network as an array of doubles.
-	 * 
+	 *
 	 * @return The network as an array of doubles.
 	 */
 	public double[] getArray() {
@@ -152,7 +152,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 
 	/**
 	 * Convert an array of doubles to the current best network.
-	 * 
+	 *
 	 * @param array
 	 *            An array.
 	 */
@@ -162,7 +162,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	}
 
 	/**
-	 * Randomize the weights and thresholds. This function does most of the
+	 * Randomize the weights and bias values. This function does most of the
 	 * work of the class. Each call to this class will randomize the data
 	 * according to the current temperature. The higher the temperature the
 	 * more randomness.
@@ -188,7 +188,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	public CalculateScore getCalculateScore() {
 		return calculateScore;
 	}
-	
-	
+
+
 
 }

@@ -58,12 +58,6 @@ import org.slf4j.LoggerFactory;
  * is often used by itself to implement forward or recurrent layers. Other layer
  * types are based on the basic layer as well.
  * 
- * The layer will either have thresholds are not. Thresholds are values that
- * correspond to each of the neurons. The threshold values will be added to the
- * output calculated for each neuron. Together with the weight matrix the
- * threshold values make up the memory of the neural network. When the neural
- * network is trained, these threshold values (along with the weight matrix
- * values) will be modified.
  * 
  * @author jheaton
  */
@@ -120,9 +114,9 @@ public class BasicLayer implements Layer, Serializable {
 	private int neuronCount;
 
 	/**
-	 * The threshold values for this layer.
+	 * The bias weights values for this layer.
 	 */
-	private double[] threshold;
+	private double[] biasWeights;
 
 	/**
 	 * The network that this layer belongs to.
@@ -138,27 +132,28 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Construct this layer with a non-default threshold function.
+	 * Construct this layer with a non-default activation function,
+	 * also determine if a bias is desired or not.
 	 * 
 	 * @param activationFunction
-	 *            The threshold function to use.
+	 *            The activation function to use.
 	 * @param neuronCount
 	 *            How many neurons in this layer.
-	 * @param hasThreshold
-	 *            True if this layer has threshold values.
+	 * @param hasBias
+	 *            True if this layer has a bias.
 	 */
 	public BasicLayer(final ActivationFunction activationFunction,
-			final boolean hasThreshold, final int neuronCount) {
+			final boolean hasBias, final int neuronCount) {
 		this.neuronCount = neuronCount;
 		this.id = -1;
 		setActivationFunction(activationFunction);
-		if (hasThreshold) {
-			this.threshold = new double[neuronCount];
+		if (hasBias) {
+			this.biasWeights = new double[neuronCount];
 		}
 	}
 
 	/**
-	 * Construct this layer with a sigmoid threshold function.
+	 * Construct this layer with a sigmoid activation function.
 	 * 
 	 * @param neuronCount
 	 *            How many neurons in this layer.
@@ -267,10 +262,10 @@ public class BasicLayer implements Layer, Serializable {
 
 		final NeuralData result = pattern.clone();
 
-		if (hasThreshold()) {
-			// apply the thresholds
-			for (int i = 0; i < this.threshold.length; i++) {
-				result.setData(i, result.getData(i) + this.threshold[i]);
+		if (hasBias()) {
+			// apply the bias
+			for (int i = 0; i < this.biasWeights.length; i++) {
+				result.setData(i, result.getData(i) + this.biasWeights[i]);
 			}
 		}
 
@@ -352,29 +347,30 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * @return The threshold values.
+	 * @return The bias weight values.
 	 */
-	public double[] getThreshold() {
-		return this.threshold;
+	public double[] getBiasWeights() {
+		return this.biasWeights;
 	}
 
 	/**
-	 * Get an individual threshold value.
+	 * Get an bias weight value. See the Layer interface documentation for more 
+	 * information on how Encog handles bias values.
 	 * 
 	 * @param index
-	 *            The threshold value to get.
-	 * @return The threshold value.
+	 *            The bias value to get.
+	 * @return The bias value.
 	 */
-	public double getThreshold(final int index) {
-		if (!hasThreshold()) {
+	public double getBiasWeight(final int index) {
+		if (!hasBias()) {
 			final String str = 
-				"Attempting to access threshold on a thresholdless layer.";
+				"Attempting to access bias on a layer that has no bias.";
 			if (BasicLayer.LOGGER.isErrorEnabled()) {
 				BasicLayer.LOGGER.error(str);
 			}
 			throw new NeuralNetworkError(str);
 		}
-		return this.threshold[index];
+		return this.biasWeights[index];
 	}
 
 	/**
@@ -392,10 +388,10 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * @return True if threshold values are present.
+	 * @return True if a bias is present.
 	 */
-	public boolean hasThreshold() {
-		return this.threshold != null;
+	public boolean hasBias() {
+		return this.biasWeights != null;
 	}
 
 	/**
@@ -502,35 +498,35 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Set the threshold array. This does not modify any of the other values in
-	 * the network, it just sets the threshold array. If you want to change the
+	 * Set the bias array. This does not modify any of the other values in
+	 * the network, it just sets the bias weight array. If you want to change the
 	 * structure of the neural network you should use the pruning classes.
 	 * 
 	 * @param d
-	 *            The new threshold array.
+	 *            The new bias weight array.
 	 */
-	public void setThreshold(final double[] d) {
-		this.threshold = d;
+	public void setBiasWeights(final double[] d) {
+		this.biasWeights = d;
 	}
 
 	/**
-	 * Set the specified threshold value.
+	 * Set an individual bias weight value.
 	 * 
 	 * @param index
-	 *            The threshold value to set.
+	 *            The index of the bias weight value.
 	 * @param d
-	 *            The value to set the threshold to.
+	 *            The new bias weight value.
 	 */
-	public void setThreshold(final int index, final double d) {
-		if (!hasThreshold()) {
+	public void setBiasWeight(final int index, final double d) {
+		if (!hasBias()) {
 			final String str = 
-				"Attempting to set threshold on a thresholdless layer.";
+				"Attempting to set a bias weight on a layer that does not use bias.";
 			if (BasicLayer.LOGGER.isErrorEnabled()) {
 				BasicLayer.LOGGER.error(str);
 			}
 			throw new NeuralNetworkError(str);
 		}
-		this.threshold[index] = d;
+		this.biasWeights[index] = d;
 	}
 
 	/**

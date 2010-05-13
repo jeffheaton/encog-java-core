@@ -121,19 +121,22 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	Collection<Layer> getNextLayers();
 
 	/**
-	 * @return This layer's threshold values, if present, otherwise this
-	 *         function returns null.
+	 * @return The weights between this layer an an optional preceding bias
+	 *         layer. Returns null, if there is no bias. See the Layer interface
+	 *         documentation for more information on how Encog handles bias
+	 *         values.
 	 */
-	double[] getThreshold();
+	double[] getBiasWeights();
 
 	/**
-	 * Get an individual threshold value.
+	 * Get an bias weight value. See the Layer interface documentation for more 
+	 * information on how Encog handles bias values.
 	 * 
 	 * @param index
-	 *            The threshold value to get.
-	 * @return The threshold value.
+	 *            The bias value to get.
+	 * @return The bias value.
 	 */
-	double getThreshold(int index);
+	double getBiasWeight(int index);
 
 	/**
 	 * @return The x-coordinate that this layer should be displayed at in a GUI.
@@ -146,9 +149,9 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	int getY();
 
 	/**
-	 * @return True if this layer has threshold values.
+	 * @return True if this layer has a bias.
 	 */
-	boolean hasThreshold();
+	boolean hasBias();
 
 	/**
 	 * Determine if this layer is connected to another.
@@ -201,7 +204,7 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	void setNetwork(BasicNetwork network);
 
 	/**
-	 * Set the neuron count, this will NOT adjust the synapses, or thresholds
+	 * Set the neuron count, this will NOT adjust the synapses or bias weights
 	 * other code must do that.
 	 * 
 	 * @param neuronCount
@@ -210,22 +213,22 @@ public interface Layer extends EncogPersistedObject, Comparable<Layer> {
 	void setNeuronCount(int neuronCount);
 
 	/**
-	 * Set the threshold array for this layer.
+	 * Set the bias weight array for this layer.
 	 * 
 	 * @param d
-	 *            The new threshold array.
+	 *            The new bias weight array.
 	 */
-	void setThreshold(double[] d);
+	void setBiasWeights(double[] d);
 
 	/**
-	 * Set an individual threshold value.
+	 * Set an individual bias weight value.
 	 * 
 	 * @param index
-	 *            The index of the threshold value.
+	 *            The index of the bias weight value.
 	 * @param d
-	 *            The new threshold value.
+	 *            The new bias weight value.
 	 */
-	void setThreshold(int index, double d);
+	void setBiasWeight(int index, double d);
 
 	/**
 	 * Set the x coordinate. The x&y coordinates are used to display the level

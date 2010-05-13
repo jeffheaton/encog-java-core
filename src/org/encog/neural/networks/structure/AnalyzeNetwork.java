@@ -13,29 +13,29 @@ import org.encog.util.Format;
 public class AnalyzeNetwork {
 	
 	private final NumericRange weights;
-	private final NumericRange thresholds;
-	private final NumericRange weightsAndThresholds;
+	private final NumericRange bias;
+	private final NumericRange weightsAndBias;
 	private final int disabledConnections;
 	private final int totalConnections;
 	private double[] allValues;
 	private double[] weightValues;
-	private double[] thresholdValues;
+	private double[] biasValues;
 	
 	public AnalyzeNetwork(BasicNetwork network)
 	{
 		int assignDisabled = 0;
 		int assignedTotal = 0;
-		List<Double> thresholdList = new ArrayList<Double>();
+		List<Double> biasList = new ArrayList<Double>();
 		List<Double> weightList = new ArrayList<Double>();
 		List<Double> allList = new ArrayList<Double>();	
 		
 		for(Layer layer: network.getStructure().getLayers() )
 		{
-			if( layer.hasThreshold() )
+			if( layer.hasBias() )
 			{
 				for(int i=0;i<layer.getNeuronCount();i++) {
-					thresholdList.add(layer.getThreshold(i));
-					allList.add(layer.getThreshold(i));
+					biasList.add(layer.getBiasWeight(i));
+					allList.add(layer.getBiasWeight(i));
 				}
 			}
 		}
@@ -67,21 +67,21 @@ public class AnalyzeNetwork {
 		this.disabledConnections = assignDisabled;
 		this.totalConnections = assignedTotal;
 		this.weights = new NumericRange(weightList);
-		this.thresholds = new NumericRange(thresholdList);
-		this.weightsAndThresholds = new NumericRange(allList);	
+		this.bias = new NumericRange(biasList);
+		this.weightsAndBias = new NumericRange(allList);	
 		this.weightValues = EncogArray.listToDouble(weightList);
 		this.allValues = EncogArray.listToDouble(allList);
-		this.thresholdValues = EncogArray.listToDouble(thresholdList);
+		this.biasValues = EncogArray.listToDouble(biasList);
 	}
 	
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
 		result.append("All Values : ");
-		result.append(this.weightsAndThresholds.toString());
+		result.append(this.weightsAndBias.toString());
 		result.append("\n");
-		result.append("Thresholds : ");
-		result.append(this.thresholds.toString());
+		result.append("Bias : ");
+		result.append(this.bias.toString());
 		result.append("\n");
 		result.append("Weights    : ");
 		result.append(this.weights.toString());
@@ -96,12 +96,12 @@ public class AnalyzeNetwork {
 		return weights;
 	}
 
-	public NumericRange getThresholds() {
-		return thresholds;
+	public NumericRange getBias() {
+		return bias;
 	}
 
-	public NumericRange getWeightsAndThresholds() {
-		return weightsAndThresholds;
+	public NumericRange getWeightsAndBias() {
+		return weightsAndBias;
 	}
 
 	public int getDisabledConnections() {
@@ -120,8 +120,8 @@ public class AnalyzeNetwork {
 		return weightValues;
 	}
 
-	public double[] getThresholdValues() {
-		return thresholdValues;
+	public double[] getBiasValues() {
+		return biasValues;
 	}
 	
 	

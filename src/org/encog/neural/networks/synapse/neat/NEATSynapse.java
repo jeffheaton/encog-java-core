@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -53,26 +53,26 @@ import org.encog.persist.persistors.generic.GenericPersistor;
 /**
  * Implements a NEAT network as a synapse between two layers. In Encog, a NEAT
  * network is created by using a NEATSynapse between an input and output layer.
- * 
+ *
  * NEAT networks only have an input and an output layer. There are no actual
  * hidden layers. Rather this synapse will evolve many hidden neurons that have
  * connections that are not easily defined by layers. Connections can be
  * feedforward, recurrent, or self-connected.
- * 
+ *
  * NEAT networks relieve the programmer of the need to define the hidden layer
  * structure of the neural network.
- * 
+ *
  * The output from the neural network can be calculated normally or using a snapshot.
- * The snapshot mode is slower, but it can be more accurate.  The snapshot handles 
+ * The snapshot mode is slower, but it can be more accurate.  The snapshot handles
  * recurrent layers better, as it takes the time to loop through the network multiple
  * times to "flush out" the recurrent links.
- * 
+ *
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
- * 
+ *
  * http://www.cs.ucf.edu/~kstanley/
- * 
+ *
  */
 public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
@@ -105,7 +105,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	 */
 	@EGAttribute
 	private boolean snapshot = false;
-	
+
 	/**
 	 * The target layer.
 	 */
@@ -136,13 +136,13 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 		this.networkDepth = 0;
 		this.activationFunction = new ActivationSigmoid();
 	}
-	
+
 	/**
 	 * Default constructor.
 	 */
 	public NEATSynapse()
 	{
-		
+
 	}
 
 	/**
@@ -155,14 +155,14 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Compute the output from this synapse.
-	 * 
+	 *
 	 * @param input
 	 *            The input to this synapse.
 	 * @return The output from this synapse.
 	 */
 	public NeuralData compute(final NeuralData input) {
 		final NeuralData result = new BasicNeuralData(getToNeuronCount());
-		
+
 		if( this.neurons.size()==0 )
 		{
 			throw new NeuralNetworkError("This network has not been evolved yet, it has no neurons in the NEAT synapse.");
@@ -256,9 +256,9 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	}
 
 	/**
-	 * Get the weight and threshold matrix.
-	 * 
-	 * @return The weight and threshold matrix.
+	 * Get the weight matrix.  Not used for a NEAT synapse.
+	 *
+	 * @return The weight matrix.
 	 */
 	public Matrix getMatrix() {
 		return null;
@@ -266,7 +266,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Get the size of the matrix, or zero if one is not defined.
-	 * 
+	 *
 	 * @return The size of the matrix.
 	 */
 	public int getMatrixSize() {
@@ -352,7 +352,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Set the from layer for this synapse.
-	 * 
+	 *
 	 * @param fromLayer
 	 *            The from layer for this synapse.
 	 */
@@ -361,8 +361,8 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	}
 
 	/**
-	 * Assign a new weight and threshold matrix to this layer.
-	 * 
+	 * Assign a new weight matrix to this layer.  Not used by a NEAT network.
+	 *
 	 * @param matrix
 	 *            The new matrix.
 	 */
@@ -380,7 +380,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	}
 
 	/**
-	 * Sets if snapshot is used. 
+	 * Sets if snapshot is used.
 	 * @param snapshot True if snapshot is used.
 	 */
 	public void setSnapshot(final boolean snapshot) {
@@ -389,7 +389,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Set the target layer from this synapse.
-	 * 
+	 *
 	 * @param toLayer
 	 *            The target layer from this synapse.
 	 */
@@ -402,7 +402,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 			neuron.setOutput(0);
 		}
 	}
-	
-	
+
+
 
 }

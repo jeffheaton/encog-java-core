@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class will extract the "long term memory" of a neural network, that is
- * the weights and threshold values into an array. This array can be used to
+ * the weights and bias values into an array. This array can be used to
  * view the neural network as a linear array of doubles. These values can then
  * be modified and copied back into the neural network. This is very useful for
  * simulated annealing, as well as genetic algorithms.
@@ -69,10 +69,10 @@ public final class NetworkCODEC {
 		int index = 0;
 
 		for (final Layer layer : network.getStructure().getLayers()) {
-			if (layer.hasThreshold()) {
-				// process layer thresholds
+			if (layer.hasBias()) {
+				// process layer bias
 				for (int i = 0; i < layer.getNeuronCount(); i++) {
-					layer.setThreshold(i, array[index++]);
+					layer.setBiasWeight(i, array[index++]);
 				}
 			}
 
@@ -166,7 +166,7 @@ public final class NetworkCODEC {
 
 	/**
 	 * Convert to an array. This is used with some training algorithms that
-	 * require that the "memory" of the neuron(the weight and threshold values)
+	 * require that the "memory" of the neuron(the weight and bias values)
 	 * be expressed as a linear array.
 	 * 
 	 * @param network
@@ -182,10 +182,10 @@ public final class NetworkCODEC {
 		int index = 0;
 
 		for (final Layer layer : network.getStructure().getLayers()) {
-			// process layer thresholds
-			if (layer.hasThreshold()) {
+			// process layer bias
+			if (layer.hasBias()) {
 				for (int i = 0; i < layer.getNeuronCount(); i++) {
-					result[index++] = layer.getThreshold(i);
+					result[index++] = layer.getBiasWeight(i);
 				}
 			}
 

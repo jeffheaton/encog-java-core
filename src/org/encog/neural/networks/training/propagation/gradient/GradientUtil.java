@@ -134,7 +134,7 @@ public class GradientUtil {
 		for (final Layer layer : this.network.getStructure().getLayers()) {
 			final double layerDeltas[] = getLayerDeltas(layer);
 
-			if (layer.hasThreshold()) {
+			if (layer.hasBias()) {
 				for (final double layerDelta : layerDeltas) {
 					this.errors[index++] += layerDelta;
 				}

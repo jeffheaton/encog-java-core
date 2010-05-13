@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -49,13 +49,13 @@ import org.slf4j.LoggerFactory;
  * width. Proper selection of these values will greatly impact the success of
  * the layer. Currently, Encog provides no automated way of determining these
  * values. There is one RBF per neuron.
- * 
- * Radial basis function layers have neither thresholds nor a regular activation
+ *
+ * Radial basis function layers have neither bias nor a regular activation
  * function. Calling any methods that deal with the activation function or
- * thresholds will result in an error.
- * 
+ * bias values will result in an error.
+ *
  * @author jheaton
- * 
+ *
  */
 public class RadialBasisFunctionLayer extends BasicLayer {
 
@@ -67,7 +67,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	/**
 	 * The logging object.
 	 */
-	private static final transient Logger LOGGER = 
+	private static final transient Logger LOGGER =
 		LoggerFactory.getLogger(RadialBasisFunctionLayer.class);
 
 	/**
@@ -85,7 +85,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 
 	/**
 	 * Construct a radial basis function layer.
-	 * 
+	 *
 	 * @param neuronCount
 	 *            The neuron count.
 	 */
@@ -132,7 +132,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 
 	/**
 	 * Create a persistor for this layer.
-	 * 
+	 *
 	 * @return The new persistor.
 	 */
 	@Override
@@ -168,7 +168,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 */
 	public void setRadialBasisFunction(final RadialBasisFunction[] newRBF) {
 		this.radialBasisFunction = newRBF;
-		
+
 	}
 
 }

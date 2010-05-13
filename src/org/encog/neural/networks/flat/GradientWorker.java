@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 package org.encog.neural.networks.flat;
@@ -46,59 +46,59 @@ public class GradientWorker implements EncogTask {
 	 * The network to train.
 	 */
 	private final FlatNetwork network;
-	
+
 	/**
 	 * The error calculation method.
 	 */
 	private final ErrorCalculation errorCalculation = new ErrorCalculation();
-	
+
 	/**
 	 * The actual values from the neural network.
 	 */
 	private double[] actual;
-	
+
 	/**
 	 * The deltas for each layer
 	 */
 	private final double[] layerDelta;
-	
+
 	/**
 	 * The neuron counts, per layer.
 	 */
 	private final int[] layerCounts;
-	
+
 	/**
 	 * The layer indexes
 	 */
 	private final int[] layerIndex;
-	
+
 	/**
-	 * The index to each layer's weights and thresholds.
+	 * The index to each layer's weights and bias values.
 	 */
 	private final int[] weightIndex;
-	
+
 	/**
 	 * The output from each layer
 	 */
 	private final double[] layerOutput;
-	
+
 	/**
 	 * The gradients
 	 */
 	private final double[] gradients;
-	
+
 	/**
-	 * The weights and thresholds.
+	 * The weights and bias values.
 	 */
 	private final double[] weights;
-	
+
 	private NeuralDataPair pair;
-	
+
 	private Indexable training;
 	private int low;
 	private int high;
 	private TrainFlatNetworkMulti owner;
-	
+
 	/**
 	 * Construct a gradient worker.
 	 * @param network The network to train.
@@ -114,7 +114,7 @@ public class GradientWorker implements EncogTask {
 		this.low = low;
 		this.high = high;
 		this.owner = owner;
-		
+
 		layerDelta = new double[network.getLayerOutput().length];
 		gradients = new double[network.getWeights().length];
 		this.actual = new double[network.getOutputCount()];
@@ -124,11 +124,11 @@ public class GradientWorker implements EncogTask {
 		layerCounts = network.getLayerCounts();
 		weightIndex = network.getWeightIndex();
 		layerOutput = network.getLayerOutput();
-		
+
 		this.pair = BasicNeuralDataPair.createPair(network.getInputCount(), network.getOutputCount());
 	}
-	
-	
+
+
 	/**
 	 * Perform the gradient calculation for the specified index range.
 	 */
@@ -142,7 +142,7 @@ public class GradientWorker implements EncogTask {
 		this.owner.report(this.gradients, this.errorCalculation.calculateRMS());
 		Arrays.fill(this.gradients, 0);
 	}
-	
+
 	/**
 	 * Process one training set element.
 	 * @param input The network input.
@@ -168,7 +168,7 @@ public class GradientWorker implements EncogTask {
 			processLevel(i);
 		}
 	}
-	
+
 	/**
 	 * Process one level.
 	 * @param currentLevel The level.
@@ -215,7 +215,7 @@ public class GradientWorker implements EncogTask {
 	public double[] getWeights() {
 		return weights;
 	}
-	
-	
+
+
 
 }

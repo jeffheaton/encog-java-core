@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -34,17 +34,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A randomizer that will create random weight and threshold values that are
+ * A randomizer that will create random weight and bias values that are
  * between a specified range.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class RangeRandomizer extends BasicRandomizer {
 
 	/**
 	 * Generate a random number in the specified range.
-	 * 
+	 *
 	 * @param min
 	 *            The minimum value.
 	 * @param max
@@ -74,7 +74,7 @@ public class RangeRandomizer extends BasicRandomizer {
 
 	/**
 	 * Construct a range randomizer.
-	 * 
+	 *
 	 * @param min
 	 *            The minimum random value.
 	 * @param max
@@ -87,7 +87,7 @@ public class RangeRandomizer extends BasicRandomizer {
 
 	/**
 	 * Generate a random number based on the range specified in the constructor.
-	 * 
+	 *
 	 * @param d
 	 *            The range randomizer ignores this value.
 	 * @return The random number.

@@ -132,7 +132,7 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Calculate the size that an array should be to hold all of the weights
-	 * and threshold values.
+	 * and bias values.
 	 * @return The size of the calculated array.
 	 */
 	public int calculateSize() {
@@ -144,9 +144,9 @@ public class NeuralStructure implements Serializable {
 			size += synapse.getMatrixSize();
 		}
 
-		// determine size from threshold values
+		// determine size from bias values
 		for (final Layer layer : this.network.getStructure().getLayers()) {
-			if (layer.hasThreshold()) {
+			if (layer.hasBias()) {
 				size += layer.getNeuronCount();
 			}
 		}

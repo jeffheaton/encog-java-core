@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -40,9 +40,9 @@ import org.encog.persist.EncogPersistedObject;
  * various synapse types define how layers will interact with each other. Some
  * synapses contain a weight matrix, which cause them to be teachable. Others
  * simply feed the data between layers in various ways, and are not teachable.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public interface Synapse extends EncogPersistedObject {
 
@@ -58,7 +58,7 @@ public interface Synapse extends EncogPersistedObject {
 	 */
 	NeuralData compute(NeuralData input);
 
-	
+
 	/**
 	 * @return The from layer.
 	 */
@@ -70,15 +70,15 @@ public interface Synapse extends EncogPersistedObject {
 	int getFromNeuronCount();
 
 	/**
-	 * Get the weight and threshold matrix.
-	 * 
-	 * @return The weight and threshold matrix.
+	 * Get the weight matrix.
+	 *
+	 * @return The weight matrix.
 	 */
 	Matrix getMatrix();
 
 	/**
 	 * Get the size of the matrix, or zero if one is not defined.
-	 * 
+	 *
 	 * @return The size of the matrix.
 	 */
 	int getMatrixSize();
@@ -116,8 +116,8 @@ public interface Synapse extends EncogPersistedObject {
 	void setFromLayer(Layer fromLayer);
 
 	/**
-	 * Assign a new weight and threshold matrix to this layer.
-	 * 
+	 * Assign a new weight matrix to this layer.
+	 *
 	 * @param matrix
 	 *            The new matrix.
 	 */

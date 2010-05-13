@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 package org.encog.neural.networks.flat;
@@ -43,15 +43,15 @@ import org.encog.neural.networks.structure.NetworkCODEC;
  * a very highly efficient feedforward neural network. It uses a minimum of
  * objects and is designed with one principal in mind-- SPEED. Readability, code
  * reuse, object oriented programming are all secondary in consideration.
- * 
+ *
  * Currently, the flat networks only support feedforward networks with either a
  * sigmoid or tanh activation function.  Specifically, a flat network must:
- * 
+ *
  * 1. Feedforward only, no self-connections or recurrent links
  * 2. Sigmoid or TANH activation only
  * 3. All layers the same activation function
- * 4. Must have threshold values
- * 
+ * 4. Must have bias values
+ *
  * Vector based neural networks are also very good for GPU processing. The flat
  * network classes will make use of the GPU if you have enabled GPU processing.
  * See the Encog class for more info.
@@ -90,19 +90,19 @@ public class FlatNetwork {
 	private final boolean tanh;
 
 	/**
-	 * The index to where the weights and thresholds are stored at for a given
+	 * The index to where the weights and bias values are stored at for a given
 	 * layer.
 	 */
 	private final int[] weightIndex;
 
 	/**
-	 * The weights and thresholds for a neural network.
+	 * The weights and bias values for a neural network.
 	 */
 	private final double[] weights;
 
 	/**
 	 * Construct a flat network.
-	 * 
+	 *
 	 * @param network
 	 *            The network to construct the flat network from.
 	 */
@@ -150,7 +150,7 @@ public class FlatNetwork {
 			tanh = true;
 		}
 	}
-	
+
 	/**
 	 * Generate a regular Encog neural network from this flat network.
 	 * @return A regular Encog neural network.
@@ -159,21 +159,21 @@ public class FlatNetwork {
 	{
 		ActivationFunction activation;
 		BasicNetwork result = new BasicNetwork();
-		
+
 		if( this.tanh )
 			activation = new ActivationTANH();
 		else
 			activation = new ActivationSigmoid();
-		
+
 		for(int i=this.layerCounts.length-1;i>=0;i--)
 		{
 			Layer layer = new BasicLayer(activation,true,this.layerCounts[i]);
 			result.addLayer(layer);
 		}
 		result.getStructure().finalizeStructure();
-		
+
 		NetworkCODEC.arrayToNetwork(this.weights, result);
-		
+
 		return result;
 	}
 
@@ -207,7 +207,7 @@ public class FlatNetwork {
 
 		int index = weightIndex[currentLayer - 1];
 
-		// threshold values
+		// bias values
 		for (int i = 0; i < outputSize; i++) {
 			layerOutput[i + outputIndex] = weights[index++];
 		}
@@ -265,14 +265,14 @@ public class FlatNetwork {
 	}
 
 	/**
-	 * @return The index of each layer in the weight and threshold array.
+	 * @return The index of each layer in the weight and bias value array.
 	 */
 	public int[] getWeightIndex() {
 		return weightIndex;
 	}
 
 	/**
-	 * @return The weight and threshold array.
+	 * @return The weight and bias array.
 	 */
 	public double[] getWeights() {
 		return weights;
@@ -287,7 +287,7 @@ public class FlatNetwork {
 
 	/**
 	 * Implements a sigmoid activation function.
-	 * 
+	 *
 	 * @param d
 	 *            The value to take the sigmoid of.
 	 * @return The result.
@@ -298,7 +298,7 @@ public class FlatNetwork {
 
 	/**
 	 * Implements a hyperbolic tangent function.
-	 * 
+	 *
 	 * @param d
 	 *            The value to take the htan of.
 	 * @return The htan of the specified value.
@@ -306,7 +306,7 @@ public class FlatNetwork {
 	private double tanh(final double d) {
 		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
 	}
-	
+
 	public FlatNetwork clone()
 	{
 		BasicNetwork temp = this.unflatten();
