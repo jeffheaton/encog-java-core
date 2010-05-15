@@ -157,8 +157,7 @@ public class ContextLayerPersistor implements Persistor {
 			NumberList
 					.toList(CSVFormat.EG_FORMAT, result, layer.getBiasWeights());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
-					.toString());
-			out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
+					.toString());			
 		}
 
 		final StringBuilder result = new StringBuilder();
@@ -167,6 +166,7 @@ public class ContextLayerPersistor implements Persistor {
 		out.addProperty(ContextLayerPersistor.PROPERTY_CONTEXT, result
 				.toString());
 
+		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
 		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
 		final Persistor persistor = layer.getActivationFunction()
 				.createPersistor();

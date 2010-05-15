@@ -608,10 +608,17 @@ public class BasicLayer implements Layer, Serializable {
 		return result.toString();
 	}
 
+	/**
+	 * @return The bias activation, usually 1.  See Layer for more info.
+	 */
 	public double getBiasActivation() {
 		return this.biasActivation;
 	}
 
+	/**
+	 * Set the bias activation.  Generally 1, see Layer for more info.
+	 * @param activation The activation.
+	 */
 	public void setBiasActivation(double activation) {
 		this.biasActivation = activation;
 	}

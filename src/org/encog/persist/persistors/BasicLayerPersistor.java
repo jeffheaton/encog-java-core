@@ -168,9 +168,9 @@ public class BasicLayerPersistor implements Persistor {
 					.toList(CSVFormat.EG_FORMAT, result, layer.getBiasWeights());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
-			out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
 		}
 
+		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
 		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
 		final Persistor persistor = layer.getActivationFunction()
 				.createPersistor();
