@@ -497,7 +497,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 		Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
 		Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
 
-		if (inputLayer == null || outputLayer == null)
+		if ( this.structure.getLayers().size()<3 || 
+				inputLayer == null 
+				|| outputLayer == null)
 			(new RangeRandomizer(-1, 1)).randomize(this);
 		else
 			(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
