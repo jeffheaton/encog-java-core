@@ -75,6 +75,11 @@ public final class EncogArray {
 		return result;
 	}
 	
+	/**
+	 * Convert the collection to an array list of doubles.
+	 * @param list The list to convert.
+	 * @return The array of doubles.
+	 */
 	public static double[] listToDouble(final Collection<?> list)
 	{
 		double[] result = new double[list.size()];

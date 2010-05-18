@@ -10,17 +10,55 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.EncogArray;
 import org.encog.util.Format;
 
+/**
+ * Allows the weights and bias values of the neural network to be analyzed.
+ */
 public class AnalyzeNetwork {
 	
+	/**
+	 * The ranges of the weights.
+	 */
 	private final NumericRange weights;
+	
+	/**
+	 * The ranges of the bias values.
+	 */
 	private final NumericRange bias;
+	
+	/**
+	 * The ranges of both the weights and biases.
+	 */
 	private final NumericRange weightsAndBias;
+	
+	/**
+	 * The number of disabled connections.
+	 */
 	private final int disabledConnections;
+	
+	/**
+	 * The total number of connections.
+	 */
 	private final int totalConnections;
+	
+	/**
+	 * All of the values in the neural network.
+	 */
 	private double[] allValues;
+	
+	/**
+	 * The weight values in the neural network.
+	 */
 	private double[] weightValues;
+	
+	/**
+	 * The bias values in the neural network.
+	 */
 	private double[] biasValues;
 	
+	/**
+	 * Construct a network analyze class.  Analyze the specified network.
+	 * @param network The network to analyze.
+	 */
 	public AnalyzeNetwork(BasicNetwork network)
 	{
 		int assignDisabled = 0;
@@ -74,6 +112,9 @@ public class AnalyzeNetwork {
 		this.biasValues = EncogArray.listToDouble(biasList);
 	}
 	
+	/**
+	 * @return The network analysis as a string.
+	 */
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
@@ -92,34 +133,59 @@ public class AnalyzeNetwork {
 		return result.toString();
 	}
 
+	/**
+	 * @return The numeric range of the weights values.
+	 */
 	public NumericRange getWeights() {
 		return weights;
 	}
 
+
+	/**
+	 * @return The numeric range of the bias values.
+	 */
 	public NumericRange getBias() {
 		return bias;
 	}
 
+	/**
+	 * @return The numeric range of the weights and bias values.
+	 */
 	public NumericRange getWeightsAndBias() {
 		return weightsAndBias;
 	}
 
+	/**
+	 * @return The number of disabled connections in the network.
+	 */
 	public int getDisabledConnections() {
 		return disabledConnections;
 	}
 
+	/**
+	 * @return The total number of connections in the network.
+	 */
 	public int getTotalConnections() {
 		return totalConnections;
 	}
 
+	/**
+	 * @return All of the values in the neural network.
+	 */
 	public double[] getAllValues() {
 		return allValues;
 	}
 
+	/**
+	 * @return The weight values in the neural network.
+	 */
 	public double[] getWeightValues() {
 		return weightValues;
 	}
 
+	/**
+	 * @return The bias values in the neural network.
+	 */
 	public double[] getBiasValues() {
 		return biasValues;
 	}
