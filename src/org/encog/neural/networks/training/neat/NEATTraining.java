@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.encog.EncogError;
 import org.encog.cloud.EncogCloud;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.activation.ActivationFunction;

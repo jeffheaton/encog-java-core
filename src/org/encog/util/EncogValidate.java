@@ -36,37 +36,47 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 
 public class EncogValidate {
-	
-	public static void validateNetworkForTraining(BasicNetwork network, NeuralDataSet training)
-	{
-		Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
-		
-		if( inputLayer==null )
-		{
-			throw new NeuralNetworkError("This operation requires that the neural network have an input layer."); 
+
+	/**
+	 * Validate a network for training.
+	 * 
+	 * @param network
+	 *            The network to validate.
+	 * @param training
+	 *            The training set to validate.
+	 */
+	public static void validateNetworkForTraining(final BasicNetwork network,
+			final NeuralDataSet training) {
+		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
+
+		if (inputLayer == null) {
+			throw new NeuralNetworkError(
+					"This operation requires that the neural network have an input layer.");
 		}
-		
-		if( outputLayer==null )
-		{
-			throw new NeuralNetworkError("This operation requires that the neural network have an output layer."); 
+
+		if (outputLayer == null) {
+			throw new NeuralNetworkError(
+					"This operation requires that the neural network have an output layer.");
 		}
-		
-		if( inputLayer.getNeuronCount()!=training.getInputSize())
-		{
-			throw new NeuralNetworkError("The input layer size of " 
-					+ inputLayer.getNeuronCount() 
-					+ " must match the training input size of " 
+
+		if (inputLayer.getNeuronCount() != training.getInputSize()) {
+			throw new NeuralNetworkError("The input layer size of "
+					+ inputLayer.getNeuronCount()
+					+ " must match the training input size of "
 					+ training.getInputSize() + ".");
 		}
-		
-		if( training.getIdealSize()>0 &&
-			outputLayer.getNeuronCount()!=training.getIdealSize())
-		{
-			throw new NeuralNetworkError("The output layer size of " 
-					+ inputLayer.getNeuronCount() 
-					+ " must match the training input size of " 
+
+		if ((training.getIdealSize() > 0)
+				&& (outputLayer.getNeuronCount() != training.getIdealSize())) {
+			throw new NeuralNetworkError("The output layer size of "
+					+ inputLayer.getNeuronCount()
+					+ " must match the training input size of "
 					+ training.getIdealSize() + ".");
 		}
+	}
+
+	private EncogValidate() {
+
 	}
 }

@@ -30,19 +30,14 @@
 
 package org.encog.neural.networks.training.neat;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationLinear;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.synapse.neat.NEATLink;
 import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
-import org.encog.neural.networks.synapse.neat.NEATSynapse;
 import org.encog.neural.pattern.NEATPattern;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReference;
@@ -51,14 +46,15 @@ import org.encog.solve.genetic.genome.BasicGenome;
 import org.encog.solve.genetic.genome.Chromosome;
 
 /**
- * Implements a NEAT genome.  This is a "blueprint" for creating a neural network.
- *
+ * Implements a NEAT genome. This is a "blueprint" for creating a neural
+ * network.
+ * 
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
- *
+ * 
  * http://www.cs.ucf.edu/~kstanley/
- *
+ * 
  */
 public class NEATGenome extends BasicGenome implements Cloneable {
 
@@ -113,16 +109,15 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	@EGAttribute
 	private long speciesID;
 
-
-	public NEATGenome()
-	{
+	public NEATGenome() {
 		super(null);
 	}
 
-
 	/**
 	 * Construct a genome by copying another.
-	 * @param other The other genome.
+	 * 
+	 * @param other
+	 *            The other genome.
 	 */
 	public NEATGenome(final NEATGenome other) {
 		super(other.getGeneticAlgorithm());
@@ -166,12 +161,19 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Create a NEAT gnome.
-	 * @param training The owner object.
-	 * @param genomeID The genome id.
-	 * @param neurons The neurons.
-	 * @param links The links.
-	 * @param inputCount The input count.
-	 * @param outputCount The output count.
+	 * 
+	 * @param training
+	 *            The owner object.
+	 * @param genomeID
+	 *            The genome id.
+	 * @param neurons
+	 *            The neurons.
+	 * @param links
+	 *            The links.
+	 * @param inputCount
+	 *            The input count.
+	 * @param outputCount
+	 *            The output count.
 	 */
 	public NEATGenome(final NEATTraining training, final long genomeID,
 			final Chromosome neurons, final Chromosome links,
@@ -191,10 +193,15 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Construct a genome, do not provide links and neurons.
-	 * @param training The owner object.
-	 * @param id The genome id.
-	 * @param inputCount The input count.
-	 * @param outputCount The output count.
+	 * 
+	 * @param training
+	 *            The owner object.
+	 * @param id
+	 *            The genome id.
+	 * @param inputCount
+	 *            The input count.
+	 * @param outputCount
+	 *            The output count.
 	 */
 	public NEATGenome(final NEATTraining training, final long id,
 			final int inputCount, final int outputCount) {
@@ -243,10 +250,15 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Mutate the genome by adding a link to this genome.
-	 * @param mutationRate The mutation rate.
-	 * @param chanceOfLooped The chance of a self-connected neuron.
-	 * @param numTrysToFindLoop The number of tries to find a loop.
-	 * @param numTrysToAddLink The number of tries to add a link.
+	 * 
+	 * @param mutationRate
+	 *            The mutation rate.
+	 * @param chanceOfLooped
+	 *            The chance of a self-connected neuron.
+	 * @param numTrysToFindLoop
+	 *            The number of tries to find a loop.
+	 * @param numTrysToAddLink
+	 *            The number of tries to add a link.
 	 */
 	void addLink(final double mutationRate, final double chanceOfLooped,
 			int numTrysToFindLoop, int numTrysToAddLink) {
@@ -304,10 +316,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		}
 
 		// check to see if this innovation has already been tried
-		final NEATInnovation innovation = ((NEATTraining)getGeneticAlgorithm())
-			.getInnovations()
-			.checkInnovation(neuron1ID, neuron1ID,
-				NEATInnovationType.NewLink);
+		final NEATInnovation innovation = ((NEATTraining) getGeneticAlgorithm())
+				.getInnovations().checkInnovation(neuron1ID, neuron1ID,
+						NEATInnovationType.NewLink);
 
 		// see if this is a recurrent(backwards) link
 		final NEATNeuronGene neuronGene = (NEATNeuronGene) neuronsChromosome
@@ -319,10 +330,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		// is this a new innovation?
 		if (innovation == null) {
 			// new innovation
-			((NEATTraining)getGeneticAlgorithm()).getInnovations().createNewInnovation(neuron1ID, neuron2ID,
-					NEATInnovationType.NewLink);
+			((NEATTraining) getGeneticAlgorithm()).getInnovations()
+					.createNewInnovation(neuron1ID, neuron2ID,
+							NEATInnovationType.NewLink);
 
-			final long id2 = ((NEATTraining)getGeneticAlgorithm()).getPopulation().assignInnovationID();
+			final long id2 = ((NEATTraining) getGeneticAlgorithm())
+					.getPopulation().assignInnovationID();
 
 			final NEATLinkGene linkGene = new NEATLinkGene(neuron1ID,
 					neuron2ID, true, id2, RangeRandomizer.randomize(-1, 1),
@@ -337,11 +350,13 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		}
 	}
 
-
 	/**
 	 * Mutate the genome by adding a neuron.
-	 * @param mutationRate The mutation rate.
-	 * @param numTrysToFindOldLink The number of tries to find a link to split.
+	 * 
+	 * @param mutationRate
+	 *            The mutation rate.
+	 * @param numTrysToFindOldLink
+	 *            The number of tries to find a link to split.
 	 */
 	void addNeuron(final double mutationRate, int numTrysToFindOldLink) {
 
@@ -400,8 +415,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		final double newWidth = (fromGene.getSplitX() + toGene.getSplitX()) / 2;
 
 		// has this innovation already been tried?
-		NEATInnovation innovation = ((NEATTraining)getGeneticAlgorithm()).getInnovations().checkInnovation(
-				from, to, NEATInnovationType.NewNeuron);
+		NEATInnovation innovation = ((NEATTraining) getGeneticAlgorithm())
+				.getInnovations().checkInnovation(from, to,
+						NEATInnovationType.NewNeuron);
 
 		// prevent chaining
 		if (innovation != null) {
@@ -414,8 +430,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 		if (innovation == null) {
 			// this innovation has not been tried, create it
-			final long newNeuronID = ((NEATTraining)getGeneticAlgorithm()).getInnovations()
-					.createNewInnovation(from, to,
+			final long newNeuronID = ((NEATTraining) getGeneticAlgorithm())
+					.getInnovations().createNewInnovation(from, to,
 							NEATInnovationType.NewNeuron,
 							NEATNeuronType.Hidden, newWidth, newDepth);
 
@@ -423,10 +439,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 					newNeuronID, newDepth, newWidth));
 
 			// add the first link
-			final long link1ID = ((NEATTraining)getGeneticAlgorithm()).getPopulation().assignInnovationID();
+			final long link1ID = ((NEATTraining) getGeneticAlgorithm())
+					.getPopulation().assignInnovationID();
 
-			((NEATTraining)getGeneticAlgorithm()).getInnovations().createNewInnovation(from, newNeuronID,
-					NEATInnovationType.NewLink);
+			((NEATTraining) getGeneticAlgorithm()).getInnovations()
+					.createNewInnovation(from, newNeuronID,
+							NEATInnovationType.NewLink);
 
 			final NEATLinkGene link1 = new NEATLinkGene(from, newNeuronID,
 					true, link1ID, 1.0, false);
@@ -434,10 +452,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			linksChromosome.add(link1);
 
 			// add the second link
-			final long link2ID = ((NEATTraining)getGeneticAlgorithm()).getPopulation().assignInnovationID();
+			final long link2ID = ((NEATTraining) getGeneticAlgorithm())
+					.getPopulation().assignInnovationID();
 
-			((NEATTraining)getGeneticAlgorithm()).getInnovations().createNewInnovation(newNeuronID, to,
-					NEATInnovationType.NewLink);
+			((NEATTraining) getGeneticAlgorithm()).getInnovations()
+					.createNewInnovation(newNeuronID, to,
+							NEATInnovationType.NewLink);
 
 			final NEATLinkGene link2 = new NEATLinkGene(newNeuronID, to, true,
 					link2ID, originalWeight, false);
@@ -449,11 +469,11 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			// existing innovation
 			final long newNeuronID = innovation.getNeuronID();
 
-			final NEATInnovation innovationLink1 = ((NEATTraining)getGeneticAlgorithm()).getInnovations()
-					.checkInnovation(from, newNeuronID,
+			final NEATInnovation innovationLink1 = ((NEATTraining) getGeneticAlgorithm())
+					.getInnovations().checkInnovation(from, newNeuronID,
 							NEATInnovationType.NewLink);
-			final NEATInnovation innovationLink2 = ((NEATTraining)getGeneticAlgorithm()).getInnovations()
-					.checkInnovation(newNeuronID, to,
+			final NEATInnovation innovationLink2 = ((NEATTraining) getGeneticAlgorithm())
+					.getInnovations().checkInnovation(newNeuronID, to,
 							NEATInnovationType.NewLink);
 
 			if ((innovationLink1 == null) || (innovationLink2 == null)) {
@@ -479,7 +499,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Do we already have this neuron id?
-	 * @param id The id to check for.
+	 * 
+	 * @param id
+	 *            The id to check for.
 	 * @return True if we already have this neuron id.
 	 */
 	public boolean alreadyHaveThisNeuronID(final long id) {
@@ -497,7 +519,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Choose a random neuron.
-	 * @param includeInput Should the input neurons be included.
+	 * 
+	 * @param includeInput
+	 *            Should the input neurons be included.
 	 * @return The random neuron.
 	 */
 	private NEATNeuronGene chooseRandomNeuron(final boolean includeInput) {
@@ -555,26 +579,34 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			}
 		}
 
-		pattern.setNEATActivationFunction(((NEATTraining)getGeneticAlgorithm()).getNeatActivationFunction());
-		pattern.setActivationFunction(((NEATTraining)getGeneticAlgorithm()).getOutputActivationFunction());
+		pattern
+				.setNEATActivationFunction(((NEATTraining) getGeneticAlgorithm())
+						.getNeatActivationFunction());
+		pattern.setActivationFunction(((NEATTraining) getGeneticAlgorithm())
+				.getOutputActivationFunction());
 		pattern.setInputNeurons(inputCount);
 		pattern.setOutputNeurons(outputCount);
-		pattern.setSnapshot(((NEATTraining)getGeneticAlgorithm()).isSnapshot());
+		pattern
+				.setSnapshot(((NEATTraining) getGeneticAlgorithm())
+						.isSnapshot());
 
 		setOrganism(pattern.generate());
 
 	}
 
 	/**
-	 * Convert the network to genes.  Not currently supported.
+	 * Convert the network to genes. Not currently supported.
 	 */
 	public void encode() {
 
 	}
 
 	/**
-	 * Get the compatibility score with another genome.  Used to determine species.
-	 * @param genome The other genome.
+	 * Get the compatibility score with another genome. Used to determine
+	 * species.
+	 * 
+	 * @param genome
+	 *            The other genome.
 	 * @return The score.
 	 */
 	public double getCompatibilityScore(final NEATGenome genome) {
@@ -650,7 +682,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Get the specified neuron's index.
-	 * @param neuronID The neuron id to check for.
+	 * 
+	 * @param neuronID
+	 *            The neuron id to check for.
 	 * @return The index.
 	 */
 	private int getElementPos(final long neuronID) {
@@ -717,7 +751,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Get the specified split y.
-	 * @param nd The neuron.
+	 * 
+	 * @param nd
+	 *            The neuron.
 	 * @return The split y.
 	 */
 	public double getSplitY(final int nd) {
@@ -726,11 +762,15 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Determine if this is a duplicate link.
-	 * @param fromNeuronID The from neuron id.
-	 * @param toNeuronID The to neuron id.
+	 * 
+	 * @param fromNeuronID
+	 *            The from neuron id.
+	 * @param toNeuronID
+	 *            The to neuron id.
 	 * @return True if this is a duplicate link.
 	 */
-	public boolean isDuplicateLink(final long fromNeuronID, final long toNeuronID) {
+	public boolean isDuplicateLink(final long fromNeuronID,
+			final long toNeuronID) {
 		for (final Gene gene : getLinks().getGenes()) {
 			final NEATLinkGene linkGene = (NEATLinkGene) gene;
 			if ((linkGene.getFromNeuronID() == fromNeuronID)
@@ -744,8 +784,11 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Mutate the activation response.
-	 * @param mutateRate The mutation rate.
-	 * @param maxPertubation The maximum to perturb it by.
+	 * 
+	 * @param mutateRate
+	 *            The mutation rate.
+	 * @param maxPertubation
+	 *            The maximum to perturb it by.
 	 */
 	public void mutateActivationResponse(final double mutateRate,
 			final double maxPertubation) {
@@ -761,12 +804,16 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Mutate the weights.
-	 * @param mutateRate The mutation rate.
-	 * @param probNewMutate The probability of a whole new weight.
-	 * @param maxPertubation The max perturbation.
+	 * 
+	 * @param mutateRate
+	 *            The mutation rate.
+	 * @param probNewMutate
+	 *            The probability of a whole new weight.
+	 * @param maxPertubation
+	 *            The max perturbation.
 	 */
-	public void mutateWeights(final double mutateRate, final double probNewMutate,
-			final double maxPertubation) {
+	public void mutateWeights(final double mutateRate,
+			final double probNewMutate, final double maxPertubation) {
 		for (final Gene gene : linksChromosome.getGenes()) {
 			final NEATLinkGene linkGene = (NEATLinkGene) gene;
 			if (Math.random() < mutateRate) {
@@ -792,7 +839,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Set the species id.
-	 * @param species The species id.
+	 * 
+	 * @param species
+	 *            The species id.
 	 */
 	public void setSpeciesID(final long species) {
 		speciesID = species;

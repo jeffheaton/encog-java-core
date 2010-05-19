@@ -30,18 +30,12 @@
 
 package org.encog.neural.networks.training.genetic;
 
-import java.util.Arrays;
-
-import org.encog.mathutil.randomize.Distort;
-import org.encog.mathutil.randomize.Randomizer;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.solve.genetic.GeneticAlgorithm;
 import org.encog.solve.genetic.genes.DoubleGene;
 import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genome.BasicGenome;
 import org.encog.solve.genetic.genome.Chromosome;
-import org.encog.util.EncogArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

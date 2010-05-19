@@ -35,7 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Error occured processing temporal data.
+ * Error occurred processing temporal data.
  * 
  * @author jheaton
  */
