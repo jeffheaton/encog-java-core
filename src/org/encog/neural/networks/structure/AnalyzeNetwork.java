@@ -44,110 +44,159 @@ import org.encog.util.Format;
  * Allows the weights and bias values of the neural network to be analyzed.
  */
 public class AnalyzeNetwork {
-	
+
 	/**
 	 * The ranges of the weights.
 	 */
 	private final NumericRange weights;
-	
+
 	/**
 	 * The ranges of the bias values.
 	 */
 	private final NumericRange bias;
-	
+
 	/**
 	 * The ranges of both the weights and biases.
 	 */
 	private final NumericRange weightsAndBias;
-	
+
 	/**
 	 * The number of disabled connections.
 	 */
 	private final int disabledConnections;
-	
+
 	/**
 	 * The total number of connections.
 	 */
 	private final int totalConnections;
-	
+
 	/**
 	 * All of the values in the neural network.
 	 */
-	private double[] allValues;
-	
+	private final double[] allValues;
+
 	/**
 	 * The weight values in the neural network.
 	 */
-	private double[] weightValues;
-	
+	private final double[] weightValues;
+
 	/**
 	 * The bias values in the neural network.
 	 */
-	private double[] biasValues;
-	
+	private final double[] biasValues;
+
 	/**
-	 * Construct a network analyze class.  Analyze the specified network.
-	 * @param network The network to analyze.
+	 * Construct a network analyze class. Analyze the specified network.
+	 * 
+	 * @param network
+	 *            The network to analyze.
 	 */
-	public AnalyzeNetwork(BasicNetwork network)
-	{
+	public AnalyzeNetwork(final BasicNetwork network) {
 		int assignDisabled = 0;
 		int assignedTotal = 0;
-		List<Double> biasList = new ArrayList<Double>();
-		List<Double> weightList = new ArrayList<Double>();
-		List<Double> allList = new ArrayList<Double>();	
-		
-		for(Layer layer: network.getStructure().getLayers() )
-		{
-			if( layer.hasBias() )
-			{
-				for(int i=0;i<layer.getNeuronCount();i++) {
+		final List<Double> biasList = new ArrayList<Double>();
+		final List<Double> weightList = new ArrayList<Double>();
+		final List<Double> allList = new ArrayList<Double>();
+
+		for (final Layer layer : network.getStructure().getLayers()) {
+			if (layer.hasBias()) {
+				for (int i = 0; i < layer.getNeuronCount(); i++) {
 					biasList.add(layer.getBiasWeight(i));
 					allList.add(layer.getBiasWeight(i));
 				}
 			}
 		}
-		
-		for(Synapse synapse: network.getStructure().getSynapses() )
-		{
-			if( synapse.getMatrixSize()>0 )
-			{
-				for(int from = 0;from<synapse.getFromNeuronCount();from++)
-				{
-					for(int to = 0;to<synapse.getToNeuronCount();to++)
-					{
-						if( network.isConnected(synapse, from, to))
-						{
-							double d = synapse.getMatrix().get(from, to);
+
+		for (final Synapse synapse : network.getStructure().getSynapses()) {
+			if (synapse.getMatrixSize() > 0) {
+				for (int from = 0; from 
+				< synapse.getFromNeuronCount(); from++) {
+					for (int to = 0; to < synapse.getToNeuronCount(); to++) {
+						if (network.isConnected(synapse, from, to)) {
+							final double d = synapse.getMatrix().get(from, to);
 							weightList.add(d);
 							allList.add(d);
-						}
-						else
-						{
+						} else {
 							assignDisabled++;
 						}
 						assignedTotal++;
-					}	
+					}
 				}
 			}
 		}
-		
+
 		this.disabledConnections = assignDisabled;
 		this.totalConnections = assignedTotal;
 		this.weights = new NumericRange(weightList);
 		this.bias = new NumericRange(biasList);
-		this.weightsAndBias = new NumericRange(allList);	
+		this.weightsAndBias = new NumericRange(allList);
 		this.weightValues = EncogArray.listToDouble(weightList);
 		this.allValues = EncogArray.listToDouble(allList);
 		this.biasValues = EncogArray.listToDouble(biasList);
 	}
-	
+
+	/**
+	 * @return All of the values in the neural network.
+	 */
+	public double[] getAllValues() {
+		return this.allValues;
+	}
+
+	/**
+	 * @return The numeric range of the bias values.
+	 */
+	public NumericRange getBias() {
+		return this.bias;
+	}
+
+	/**
+	 * @return The bias values in the neural network.
+	 */
+	public double[] getBiasValues() {
+		return this.biasValues;
+	}
+
+	/**
+	 * @return The number of disabled connections in the network.
+	 */
+	public int getDisabledConnections() {
+		return this.disabledConnections;
+	}
+
+	/**
+	 * @return The total number of connections in the network.
+	 */
+	public int getTotalConnections() {
+		return this.totalConnections;
+	}
+
+	/**
+	 * @return The numeric range of the weights values.
+	 */
+	public NumericRange getWeights() {
+		return this.weights;
+	}
+
+	/**
+	 * @return The numeric range of the weights and bias values.
+	 */
+	public NumericRange getWeightsAndBias() {
+		return this.weightsAndBias;
+	}
+
+	/**
+	 * @return The weight values in the neural network.
+	 */
+	public double[] getWeightValues() {
+		return this.weightValues;
+	}
+
 	/**
 	 * @return The network analysis as a string.
 	 */
-	public String toString()
-	{
-		StringBuilder result = new StringBuilder();
+	@Override
+	public String toString() {
+		final StringBuilder result = new StringBuilder();
 		result.append("All Values : ");
 		result.append(this.weightsAndBias.toString());
 		result.append("\n");
@@ -163,64 +212,4 @@ public class AnalyzeNetwork {
 		return result.toString();
 	}
 
-	/**
-	 * @return The numeric range of the weights values.
-	 */
-	public NumericRange getWeights() {
-		return weights;
-	}
-
-
-	/**
-	 * @return The numeric range of the bias values.
-	 */
-	public NumericRange getBias() {
-		return bias;
-	}
-
-	/**
-	 * @return The numeric range of the weights and bias values.
-	 */
-	public NumericRange getWeightsAndBias() {
-		return weightsAndBias;
-	}
-
-	/**
-	 * @return The number of disabled connections in the network.
-	 */
-	public int getDisabledConnections() {
-		return disabledConnections;
-	}
-
-	/**
-	 * @return The total number of connections in the network.
-	 */
-	public int getTotalConnections() {
-		return totalConnections;
-	}
-
-	/**
-	 * @return All of the values in the neural network.
-	 */
-	public double[] getAllValues() {
-		return allValues;
-	}
-
-	/**
-	 * @return The weight values in the neural network.
-	 */
-	public double[] getWeightValues() {
-		return weightValues;
-	}
-
-	/**
-	 * @return The bias values in the neural network.
-	 */
-	public double[] getBiasValues() {
-		return biasValues;
-	}
-	
-	
-	
-	
 }

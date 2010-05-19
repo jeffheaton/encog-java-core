@@ -39,8 +39,8 @@ import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReferenceable;
 
 /**
- * Implements a NEAT neuron.  Neat neurons are of a specific type, defined by the
- * NEATNeuronType enum.  Usually NEAT uses a sigmoid activation function.  The
+ * Implements a NEAT neuron. Neat neurons are of a specific type, defined by the
+ * NEATNeuronType enum. Usually NEAT uses a sigmoid activation function. The
  * activation response is used to allow the slope of the sigmoid to be evolved.
  * 
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
@@ -54,82 +54,95 @@ import org.encog.persist.annotations.EGReferenceable;
 public class NEATNeuron implements Serializable {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -2815145950124389743L;
+
+	/**
 	 * The activation response. This is evolved to allow NEAT to scale the slope
 	 * of the activation function.
 	 */
 	@EGAttribute
 	private double activationResponse;
-	
+
 	/**
 	 * Inbound links to this neuron.
 	 */
 	private final List<NEATLink> inboundLinks = new ArrayList<NEATLink>();
-	
+
 	/**
 	 * The neuron id.
 	 */
 	@EGAttribute
 	private long neuronID;
-	
+
 	/**
 	 * The type of neuron this is.
 	 */
 	@EGAttribute
 	private NEATNeuronType neuronType;
-	
+
 	/**
 	 * The output from the neuron.
 	 */
 	@EGAttribute
 	private double output;
-	
+
 	/**
 	 * The outbound links for this neuron.
 	 */
 	private List<NEATLink> outputboundLinks = new ArrayList<NEATLink>();
-	
+
 	/**
-	 * The x-position of this neuron.  Used to split links, as well as display.
+	 * The x-position of this neuron. Used to split links, as well as display.
 	 */
 	@EGAttribute
 	private int posX;
-	
+
 	/**
-	 * The y-position of this neuron.  Used to split links, as well as display.
+	 * The y-position of this neuron. Used to split links, as well as display.
 	 */
 	@EGAttribute
 	private int posY;
-	
+
 	/**
-	 * The split value for X.  Used to track splits.
+	 * The split value for X. Used to track splits.
 	 */
 	@EGAttribute
 	private double splitX;
-	
+
 	/**
-	 * The split value for Y.  Used to track splits.
+	 * The split value for Y. Used to track splits.
 	 */
 	@EGAttribute
 	private double splitY;
-	
+
 	/**
 	 * The sum activation.
 	 */
 	@EGIgnore
 	private double sumActivation;
 
-	public NEATNeuron()
-	{
-		
+	/**
+	 * Default constructor, used for persistance.
+	 */
+	public NEATNeuron() {
+
 	}
-	
+
 	/**
 	 * Construct a NEAT neuron.
-	 * @param neuronType The type of neuron.
-	 * @param neuronID The id of the neuron.
-	 * @param splitY The split for y.
-	 * @param splitX THe split for x.
-	 * @param activationResponse The activation response.
+	 * 
+	 * @param neuronType
+	 *            The type of neuron.
+	 * @param neuronID
+	 *            The id of the neuron.
+	 * @param splitY
+	 *            The split for y.
+	 * @param splitX
+	 *            THe split for x.
+	 * @param activationResponse
+	 *            The activation response.
 	 */
 	public NEATNeuron(final NEATNeuronType neuronType, final long neuronID,
 			final double splitY, final double splitX,
@@ -167,7 +180,7 @@ public class NEATNeuron implements Serializable {
 	}
 
 	/**
-	 * return the neuron type.
+	 * @return the neuron type.
 	 */
 	public NEATNeuronType getNeuronType() {
 		return neuronType;
@@ -224,7 +237,9 @@ public class NEATNeuron implements Serializable {
 
 	/**
 	 * Set the output.
-	 * @param output The output of the neuron.
+	 * 
+	 * @param output
+	 *            The output of the neuron.
 	 */
 	public void setOutput(final double output) {
 		this.output = output;
@@ -253,6 +268,8 @@ public class NEATNeuron implements Serializable {
 		case Hidden:
 			result.append("H");
 			break;
+		default:
+			result.append("Unknown");
 		}
 		result.append("]");
 		return result.toString();

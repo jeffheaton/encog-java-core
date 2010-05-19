@@ -31,15 +31,12 @@
 package org.encog.neural.networks.training.propagation.gradient;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 import org.encog.mathutil.IntRange;
 import org.encog.neural.data.Indexable;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
@@ -56,7 +53,7 @@ import org.encog.util.concurrency.TaskGroup;
  * used to process every training set element, however it requires an indexable
  * training set to run in multithreaded mode. Multithreaded mode allows the
  * training method to run much faster on a multicore machine.
- *
+ * 
  */
 public class CalculateGradient {
 
@@ -120,7 +117,7 @@ public class CalculateGradient {
 	/**
 	 * Construct the object using a network and training set. This constructor
 	 * will use only a single thread.
-	 *
+	 * 
 	 * @param network
 	 *            The network to be used to calculate.
 	 * @param training
@@ -134,7 +131,7 @@ public class CalculateGradient {
 	/**
 	 * Construct the object for multithreaded use. The number of threads can be
 	 * specified.
-	 *
+	 * 
 	 * @param network
 	 *            The network to use.
 	 * @param training
@@ -154,7 +151,8 @@ public class CalculateGradient {
 			this.threadCount = threads;
 		} else {
 			this.indexed = (Indexable) this.training;
-			this.determine = new DetermineWorkload(threads,(int)this.indexed.getRecordCount());
+			this.determine = new DetermineWorkload(threads, (int) this.indexed
+					.getRecordCount());
 			this.threadCount = this.determine.getThreadCount();
 		}
 
@@ -195,7 +193,7 @@ public class CalculateGradient {
 
 	/**
 	 * Calculate the gradients based on the specified weights.
-	 *
+	 * 
 	 * @param weights
 	 *            The weights to use.
 	 */
@@ -219,7 +217,7 @@ public class CalculateGradient {
 
 	/**
 	 * Create the worker threads for use in multithreaded training.
-	 *
+	 * 
 	 * @param training
 	 *            The training set to use.
 	 */
@@ -227,19 +225,19 @@ public class CalculateGradient {
 		this.indexed = training;
 		// setup the workers
 		this.workers = new GradientWorker[this.threadCount];
-		List<IntRange> workloadRange = this.determine.calculateWorkers();
+		final List<IntRange> workloadRange = this.determine.calculateWorkers();
 
 		int i = 0;
-		for(IntRange range: workloadRange )
-		{
+		for (final IntRange range : workloadRange) {
 			final Indexable trainingClone = this.indexed.openAdditional();
-			this.workers[i++] = new GradientWorker(this, trainingClone, range.getLow(), range.getHigh());
+			this.workers[i++] = new GradientWorker(this, trainingClone, range
+					.getLow(), range.getHigh());
 		}
 	}
 
 	/**
 	 * Create a single worker to handle the single threaded mode.
-	 *
+	 * 
 	 * @param training
 	 *            The training set to use.
 	 */
@@ -249,6 +247,9 @@ public class CalculateGradient {
 		this.workers[0] = new GradientWorker(this, training, 0, 0);
 	}
 
+	/**
+	 * Determine the current error.
+	 */
 	private void determineError() {
 		double totalError = 0;
 		for (int i = 0; i < this.threadCount; i++) {
@@ -345,7 +346,8 @@ public class CalculateGradient {
 	 * until all threads are done.
 	 */
 	private void runWorkersMultiThreaded() {
-		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
+		final TaskGroup group = EncogConcurrency.getInstance()
+				.createTaskGroup();
 
 		// start the workers
 		for (int i = 0; i < this.threadCount; i++) {

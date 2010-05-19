@@ -84,12 +84,12 @@ public class NeuralStructure implements Serializable {
 	 * The neural network this class belongs to.
 	 */
 	private final BasicNetwork network;
-	
+
 	/**
 	 * The limit, below which a connection is treated as zero.
 	 */
 	private double connectionLimit;
-	
+
 	/**
 	 * Are connections limited?
 	 */
@@ -122,7 +122,9 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Assign an ID to the specified layer.
-	 * @param layer The layer to get an ID assigned.
+	 * 
+	 * @param layer
+	 *            The layer to get an ID assigned.
 	 */
 	public void assignID(final Layer layer) {
 		if (layer.getID() == -1) {
@@ -131,8 +133,9 @@ public class NeuralStructure implements Serializable {
 	}
 
 	/**
-	 * Calculate the size that an array should be to hold all of the weights
-	 * and bias values.
+	 * Calculate the size that an array should be to hold all of the weights and
+	 * bias values.
+	 * 
 	 * @return The size of the calculated array.
 	 */
 	public int calculateSize() {
@@ -171,6 +174,30 @@ public class NeuralStructure implements Serializable {
 	}
 
 	/**
+	 * Enforce that all connections are above the connection limit. Any
+	 * connections below this limit will be severed.
+	 */
+	public void enforceLimit() {
+		if (!this.connectionLimited) {
+			return;
+		}
+
+		for (final Synapse synapse : this.synapses) {
+			final Matrix matrix = synapse.getMatrix();
+			if (matrix != null) {
+				for (int row = 0; row < matrix.getRows(); row++) {
+					for (int col = 0; col < matrix.getCols(); col++) {
+						final double value = matrix.get(row, col);
+						if (Math.abs(value) < this.connectionLimit) {
+							matrix.set(row, col, 0);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	/**
 	 * Build the layer structure.
 	 */
 	private void finalizeLayers() {
@@ -195,6 +222,27 @@ public class NeuralStructure implements Serializable {
 	}
 
 	/**
+	 * Parse/finalize the limit value for connections.
+	 */
+	private void finalizeLimit() {
+		// see if there is a connection limit imposed
+		final String limit = this.network
+				.getPropertyString(BasicNetwork.TAG_LIMIT);
+		if (limit != null) {
+			try {
+				this.connectionLimited = true;
+				this.connectionLimit = Double.parseDouble(limit);
+			} catch (final NumberFormatException e) {
+				throw new NeuralNetworkError("Invalid property("
+						+ BasicNetwork.TAG_LIMIT + "):" + limit);
+			}
+		} else {
+			this.connectionLimited = false;
+			this.connectionLimit = 0;
+		}
+	}
+
+	/**
 	 * Build the synapse and layer structure. This method should be called after
 	 * you are done adding layers to a network, or change the network's logic
 	 * property.
@@ -207,33 +255,6 @@ public class NeuralStructure implements Serializable {
 		assignID();
 		this.network.getLogic().init(this.network);
 		enforceLimit();
-	}
-	
-	private void finalizeLimit()
-	{
-		// see if there is a connection limit imposed
-		String limit = this.network.getPropertyString(BasicNetwork.TAG_LIMIT);
-		if( limit!=null )
-		{
-			try
-			{
-				this.connectionLimited = true;
-				this.connectionLimit = Double.parseDouble(limit);
-			}
-			catch(NumberFormatException e)
-			{
-				throw new NeuralNetworkError(
-						"Invalid property(" 
-						+ BasicNetwork.TAG_LIMIT 
-						+ "):" 
-						+ limit);
-			}
-		}
-		else
-		{
-			this.connectionLimited = false;
-			this.connectionLimit = 0;
-		}
 	}
 
 	/**
@@ -274,7 +295,7 @@ public class NeuralStructure implements Serializable {
 
 		if (required && (result == null)) {
 			final String str = 
-			"This operation requires a network with a synapse between the "
+				"This operation requires a network with a synapse between the "
 					+ nameLayer(fromLayer)
 					+ " layer to the "
 					+ nameLayer(toLayer) + " layer.";
@@ -285,6 +306,13 @@ public class NeuralStructure implements Serializable {
 		}
 
 		return result;
+	}
+
+	/**
+	 * @return The connection limit.
+	 */
+	public double getConnectionLimit() {
+		return this.connectionLimit;
 	}
 
 	/**
@@ -326,6 +354,7 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Get the next layer id.
+	 * 
 	 * @return The next layer id.
 	 */
 	public int getNextID() {
@@ -382,6 +411,13 @@ public class NeuralStructure implements Serializable {
 	}
 
 	/**
+	 * @return True if this is not a fully connected feedforward network.
+	 */
+	public boolean isConnectionLimited() {
+		return this.connectionLimited;
+	}
+
+	/**
 	 * Obtain a name for the specified layer.
 	 * 
 	 * @param layer
@@ -409,38 +445,4 @@ public class NeuralStructure implements Serializable {
 		Collections.sort(this.synapses, new SynapseComparator(this));
 	}
 
-	public double getConnectionLimit() {
-		return connectionLimit;
-	}
-
-	public boolean isConnectionLimited() {
-		return connectionLimited;
-	}
-	
-	public void enforceLimit()
-	{
-		if( !this.connectionLimited )
-			return;
-		
-		for(Synapse synapse : this.synapses )
-		{
-			Matrix matrix = synapse.getMatrix();
-			if( matrix!=null )
-			{
-				for(int row=0;row<matrix.getRows();row++)
-				{
-					for(int col=0;col<matrix.getCols();col++)
-					{
-						double value = matrix.get(row, col);
-						if( Math.abs(value)<this.connectionLimit )
-						{
-							matrix.set(row,col,0);
-						}
-					}
-				}
-			}
-		}
-	}
-	
-	
 }

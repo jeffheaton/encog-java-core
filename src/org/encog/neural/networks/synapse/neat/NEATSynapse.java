@@ -53,34 +53,37 @@ import org.encog.persist.persistors.generic.GenericPersistor;
 /**
  * Implements a NEAT network as a synapse between two layers. In Encog, a NEAT
  * network is created by using a NEATSynapse between an input and output layer.
- *
+ * 
  * NEAT networks only have an input and an output layer. There are no actual
  * hidden layers. Rather this synapse will evolve many hidden neurons that have
  * connections that are not easily defined by layers. Connections can be
  * feedforward, recurrent, or self-connected.
- *
+ * 
  * NEAT networks relieve the programmer of the need to define the hidden layer
  * structure of the neural network.
- *
- * The output from the neural network can be calculated normally or using a snapshot.
- * The snapshot mode is slower, but it can be more accurate.  The snapshot handles
- * recurrent layers better, as it takes the time to loop through the network multiple
- * times to "flush out" the recurrent links.
- *
+ * 
+ * The output from the neural network can be calculated normally or using a
+ * snapshot. The snapshot mode is slower, but it can be more accurate. The
+ * snapshot handles recurrent layers better, as it takes the time to loop
+ * through the network multiple times to "flush out" the recurrent links.
+ * 
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
- *
+ * 
  * http://www.cs.ucf.edu/~kstanley/
- *
+ * 
  */
-public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
+public class NEATSynapse implements Synapse, ContextClearable, Serializable {
 
 	/**
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 3660295468309926508L;
 
+	/**
+	 * The activation function.
+	 */
 	private ActivationFunction activationFunction;
 
 	/**
@@ -113,16 +116,31 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	private Layer toLayer;
 
 	/**
-	 * Construct a NEAT synapse.
-	 * @param fromLayer The input layer.
-	 * @param toLayer The output layer.
-	 * @param neurons The neurons in this synapse.
-	 * @param activationFunction The activation function to use.
-	 * @param networkDepth The depth of the network.
+	 * Default constructor.
 	 */
-	public NEATSynapse(final BasicLayer fromLayer, final BasicLayer toLayer,
+	public NEATSynapse() {
+
+	}
+
+	/**
+	 * Construct a NEAT synapse.
+	 * 
+	 * @param fromLayer
+	 *            The input layer.
+	 * @param toLayer
+	 *            The output layer.
+	 * @param neurons
+	 *            The neurons in this synapse.
+	 * @param activationFunction
+	 *            The activation function to use.
+	 * @param networkDepth
+	 *            The depth of the network.
+	 */
+	public NEATSynapse(final BasicLayer fromLayer, 
+			final BasicLayer toLayer,
 			final List<NEATNeuron> neurons,
-			final ActivationFunction activationFunction, final int networkDepth) {
+			final ActivationFunction activationFunction, 
+			final int networkDepth) {
 		this.fromLayer = fromLayer;
 		this.toLayer = toLayer;
 		this.neurons.addAll(neurons);
@@ -130,7 +148,15 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 		this.activationFunction = activationFunction;
 	}
 
-	public NEATSynapse(Layer fromLayer, Layer toLayer) {
+	/**
+	 * Construct a NEAT synapse.
+	 * 
+	 * @param fromLayer
+	 *            The input layer.
+	 * @param toLayer
+	 *            The output layer.
+	 */
+	public NEATSynapse(final Layer fromLayer, final Layer toLayer) {
 		this.fromLayer = fromLayer;
 		this.toLayer = toLayer;
 		this.networkDepth = 0;
@@ -138,11 +164,13 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	}
 
 	/**
-	 * Default constructor.
+	 * Clear any context from previous runs. This sets the activation of all
+	 * neurons to zero.
 	 */
-	public NEATSynapse()
-	{
-
+	public void clearContext() {
+		for (final NEATNeuron neuron : this.neurons) {
+			neuron.setOutput(0);
+		}
 	}
 
 	/**
@@ -155,7 +183,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Compute the output from this synapse.
-	 *
+	 * 
 	 * @param input
 	 *            The input to this synapse.
 	 * @return The output from this synapse.
@@ -163,15 +191,15 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	public NeuralData compute(final NeuralData input) {
 		final NeuralData result = new BasicNeuralData(getToNeuronCount());
 
-		if( this.neurons.size()==0 )
-		{
-			throw new NeuralNetworkError("This network has not been evolved yet, it has no neurons in the NEAT synapse.");
+		if (this.neurons.size() == 0) {
+			throw new NeuralNetworkError(
+"This network has not been evolved yet, it has no neurons in the NEAT synapse.");
 		}
 
 		int flushCount = 1;
 
-		if (snapshot) {
-			flushCount = networkDepth;
+		if (this.snapshot) {
+			flushCount = this.networkDepth;
 		}
 
 		// iterate through the network FlushCount times
@@ -182,18 +210,19 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 			result.clear();
 
 			// populate the input neurons
-			while (neurons.get(index).getNeuronType() == NEATNeuronType.Input) {
-				neurons.get(index).setOutput(input.getData(index));
+			while (this.neurons.get(index).getNeuronType() 
+					== NEATNeuronType.Input) {
+				this.neurons.get(index).setOutput(input.getData(index));
 
 				index++;
 			}
 
 			// set the bias neuron
-			neurons.get(index++).setOutput(1);
+			this.neurons.get(index++).setOutput(1);
 
-			while (index < neurons.size()) {
+			while (index < this.neurons.size()) {
 
-				final NEATNeuron currentNeuron = neurons.get(index);
+				final NEATNeuron currentNeuron = this.neurons.get(index);
 
 				double sum = 0;
 
@@ -206,9 +235,9 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 				final double[] d = new double[1];
 				d[0] = sum / currentNeuron.getActivationResponse();
-				activationFunction.activationFunction(d);
+				this.activationFunction.activationFunction(d);
 
-				neurons.get(index).setOutput(d[0]);
+				this.neurons.get(index).setOutput(d[0]);
 
 				if (currentNeuron.getNeuronType() == NEATNeuronType.Output) {
 					result.setData(outputIndex++, currentNeuron.getOutput());
@@ -231,7 +260,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	 * @return The activation function.
 	 */
 	public ActivationFunction getActivationFunction() {
-		return activationFunction;
+		return this.activationFunction;
 	}
 
 	/**
@@ -245,19 +274,19 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	 * @return The from layer.
 	 */
 	public Layer getFromLayer() {
-		return fromLayer;
+		return this.fromLayer;
 	}
 
 	/**
 	 * @return The neuron count from the "from layer".
 	 */
 	public int getFromNeuronCount() {
-		return fromLayer.getNeuronCount();
+		return this.fromLayer.getNeuronCount();
 	}
 
 	/**
-	 * Get the weight matrix.  Not used for a NEAT synapse.
-	 *
+	 * Get the weight matrix. Not used for a NEAT synapse.
+	 * 
 	 * @return The weight matrix.
 	 */
 	public Matrix getMatrix() {
@@ -266,7 +295,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Get the size of the matrix, or zero if one is not defined.
-	 *
+	 * 
 	 * @return The size of the matrix.
 	 */
 	public int getMatrixSize() {
@@ -284,28 +313,28 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	 * @return The network depth.
 	 */
 	public int getNetworkDepth() {
-		return networkDepth;
+		return this.networkDepth;
 	}
 
 	/**
 	 * @return The NEAT neurons.
 	 */
 	public List<NEATNeuron> getNeurons() {
-		return neurons;
+		return this.neurons;
 	}
 
 	/**
 	 * @return The "to layer".
 	 */
 	public Layer getToLayer() {
-		return toLayer;
+		return this.toLayer;
 	}
 
 	/**
 	 * @return The neuron count from the "to layer".
 	 */
 	public int getToNeuronCount() {
-		return toLayer.getNeuronCount();
+		return this.toLayer.getNeuronCount();
 	}
 
 	/**
@@ -327,7 +356,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	 * @return True if snapshot is being used.
 	 */
 	public boolean isSnapshot() {
-		return snapshot;
+		return this.snapshot;
 	}
 
 	/**
@@ -337,6 +366,10 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 		return false;
 	}
 
+	/**
+	 * Set the activation function.
+	 * @param activationFunction The activation function.
+	 */
 	public void setActivationFunction(
 			final ActivationFunction activationFunction) {
 		this.activationFunction = activationFunction;
@@ -344,7 +377,9 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Not used.
-	 * @param description Not used.
+	 * 
+	 * @param description
+	 *            Not used.
 	 */
 	public void setDescription(final String description) {
 
@@ -352,7 +387,7 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Set the from layer for this synapse.
-	 *
+	 * 
 	 * @param fromLayer
 	 *            The from layer for this synapse.
 	 */
@@ -361,8 +396,8 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	}
 
 	/**
-	 * Assign a new weight matrix to this layer.  Not used by a NEAT network.
-	 *
+	 * Assign a new weight matrix to this layer. Not used by a NEAT network.
+	 * 
 	 * @param matrix
 	 *            The new matrix.
 	 */
@@ -372,8 +407,10 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 	}
 
 	/**
-	 * Not used
-	 * @param name not used.
+	 * Not used.
+	 * 
+	 * @param name
+	 *            not used.
 	 */
 	public void setName(final String name) {
 
@@ -381,7 +418,9 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Sets if snapshot is used.
-	 * @param snapshot True if snapshot is used.
+	 * 
+	 * @param snapshot
+	 *            True if snapshot is used.
 	 */
 	public void setSnapshot(final boolean snapshot) {
 		this.snapshot = snapshot;
@@ -389,20 +428,12 @@ public class NEATSynapse implements Synapse, ContextClearable,  Serializable {
 
 	/**
 	 * Set the target layer from this synapse.
-	 *
+	 * 
 	 * @param toLayer
 	 *            The target layer from this synapse.
 	 */
 	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
 	}
-
-	public void clearContext() {
-		for (final NEATNeuron neuron : neurons) {
-			neuron.setOutput(0);
-		}
-	}
-
-
 
 }

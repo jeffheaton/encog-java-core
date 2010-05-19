@@ -84,7 +84,8 @@ import org.slf4j.LoggerFactory;
  * 
  * Synapse 2: Hidden to Output
  * 
- * Output1Activation = (Hidden1Output * Hidden1->Output1Weight) + (Hidden2Output *
+ * Output1Activation = (Hidden1Output * Hidden1->Output1Weight) 
+ * + (Hidden2Output *
  * Hidden2->Output1Weight) + (OutputBiasActivation * Output1BiasWeight)
  * 
  * Output1Output = calculate(Output1Activation, OutputActivationFunction)
@@ -220,7 +221,7 @@ public class BasicLayer implements Layer, Serializable {
 
 		if (this.network == null) {
 			throw new NeuralNetworkError(
-					"Can't add to this layer, it is not yet part of a network itself.");
+"Can't add to this layer, it is not yet part of a network itself.");
 		}
 
 		next.setNetwork(this.network);
@@ -401,7 +402,8 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public double getBiasWeight(final int index) {
 		if (!hasBias()) {
-			final String str = "Attempting to access bias on a layer that has no bias.";
+			final String str = 
+			"Attempting to access bias on a layer that has no bias.";
 			if (BasicLayer.LOGGER.isErrorEnabled()) {
 				BasicLayer.LOGGER.error(str);
 			}
@@ -560,7 +562,8 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public void setBiasWeight(final int index, final double d) {
 		if (!hasBias()) {
-			final String str = "Attempting to set a bias weight on a layer that does not use bias.";
+			final String str = 
+"Attempting to set a bias weight on a layer that does not use bias.";
 			if (BasicLayer.LOGGER.isErrorEnabled()) {
 				BasicLayer.LOGGER.error(str);
 			}
@@ -619,7 +622,7 @@ public class BasicLayer implements Layer, Serializable {
 	 * Set the bias activation.  Generally 1, see Layer for more info.
 	 * @param activation The activation.
 	 */
-	public void setBiasActivation(double activation) {
+	public void setBiasActivation(final double activation) {
 		this.biasActivation = activation;
 	}
 }

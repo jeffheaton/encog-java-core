@@ -35,8 +35,8 @@ import org.encog.solve.genetic.genes.BasicGene;
 import org.encog.solve.genetic.genes.Gene;
 
 /**
- * Implements a NEAT link gene. This describes a way in which two neurons
- * are linked. 
+ * Implements a NEAT link gene. This describes a way in which two neurons are
+ * linked.
  * 
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
@@ -52,22 +52,41 @@ public class NEATLinkGene extends BasicGene {
 	 */
 	@EGAttribute
 	private long fromNeuronID;
-	
+
 	/**
 	 * Is this a recurrent connection.
 	 */
 	@EGAttribute
 	private boolean recurrent;
-	
+
 	/**
 	 * The to neuron id.
 	 */
 	@EGAttribute
 	private long toNeuronID;
-	
+
+	/**
+	 * The weight of this link.
+	 */
 	@EGAttribute
 	private double weight;
 
+	/**
+	 * Default constructor, used mainly for persistence.
+	 */
+	public NEATLinkGene() {
+
+	}
+
+	/**
+	 * Construct a NEAT link gene.
+	 * @param fromNeuronID The source neuron.
+	 * @param toNeuronID The target neuron.
+	 * @param enabled Is this link enabled.
+	 * @param innovationID The innovation id.
+	 * @param weight The weight.
+	 * @param recurrent Is this a recurrent link?
+	 */
 	public NEATLinkGene(final long fromNeuronID, final long toNeuronID,
 			final boolean enabled, final long innovationID,
 			final double weight, final boolean recurrent) {
@@ -78,57 +97,56 @@ public class NEATLinkGene extends BasicGene {
 		this.weight = weight;
 		this.recurrent = recurrent;
 	}
-	
-	public NEATLinkGene()
-	{
-		
-	}
 
 	/**
 	 * Copy from another gene.
-	 * @param gene The other gene.
+	 * 
+	 * @param gene
+	 *            The other gene.
 	 */
 	public void copy(final Gene gene) {
 		final NEATLinkGene other = (NEATLinkGene) gene;
 		setEnabled(other.isEnabled());
-		fromNeuronID = other.fromNeuronID;
-		toNeuronID = other.toNeuronID;
+		this.fromNeuronID = other.fromNeuronID;
+		this.toNeuronID = other.toNeuronID;
 		setInnovationId(other.getInnovationId());
-		recurrent = other.recurrent;
-		weight = other.weight;
+		this.recurrent = other.recurrent;
+		this.weight = other.weight;
 	}
 
 	/**
 	 * @return The from neuron id.
 	 */
 	public long getFromNeuronID() {
-		return fromNeuronID;
+		return this.fromNeuronID;
 	}
 
 	/**
 	 * @return The to neuron id.
 	 */
 	public long getToNeuronID() {
-		return toNeuronID;
+		return this.toNeuronID;
 	}
 
 	/**
 	 * @return The weight of this connection.
 	 */
 	public double getWeight() {
-		return weight;
+		return this.weight;
 	}
 
 	/**
 	 * @return True if this is a recurrent link.
 	 */
 	public boolean isRecurrent() {
-		return recurrent;
+		return this.recurrent;
 	}
 
 	/**
 	 * Set the weight of this connection.
-	 * @param weight The connection weight.
+	 * 
+	 * @param weight
+	 *            The connection weight.
 	 */
 	public void setWeight(final double weight) {
 		this.weight = weight;
@@ -145,9 +163,9 @@ public class NEATLinkGene extends BasicGene {
 		result.append(",enabled=");
 		result.append(isEnabled());
 		result.append(",from=");
-		result.append(fromNeuronID);
+		result.append(this.fromNeuronID);
 		result.append(",to=");
-		result.append(toNeuronID);
+		result.append(this.toNeuronID);
 		result.append("]");
 		return result.toString();
 	}

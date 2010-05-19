@@ -35,19 +35,38 @@ import org.encog.neural.networks.training.CalculateScore;
 import org.encog.solve.genetic.genome.CalculateGenomeScore;
 import org.encog.solve.genetic.genome.Genome;
 
+/**
+ * This adapter allows a CalculateScore object to be used to calculate a
+ * Genome's score, where a CalculateGenomeScore object would be called for.
+ */
 public class GeneticScoreAdapter implements CalculateGenomeScore {
 
+	/**
+	 * The calculate score object to use.
+	 */
 	private final CalculateScore calculateScore;
-	
-	public GeneticScoreAdapter(CalculateScore calculateScore)
-	{
+
+	/**
+	 * Construct the adapter.
+	 * @param calculateScore The CalculateScore object to use.
+	 */
+	public GeneticScoreAdapter(final CalculateScore calculateScore) {
 		this.calculateScore = calculateScore;
 	}
-	
-	public double calculateScore(Genome genome) {
-		BasicNetwork network = (BasicNetwork)genome.getOrganism();
+
+	/**
+	 * Calculate the genome's score.
+	 * @param genome The genome to calculate for.
+	 * @return The calculated score.
+	 */
+	public double calculateScore(final Genome genome) {
+		final BasicNetwork network = (BasicNetwork) genome.getOrganism();
 		return this.calculateScore.calculateScore(network);
 	}
+
+	/**
+	 * @return True, if the score should be minimized.
+	 */
 	public boolean shouldMinimize() {
 		return this.calculateScore.shouldMinimize();
 	}

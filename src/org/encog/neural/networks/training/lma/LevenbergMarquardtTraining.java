@@ -47,37 +47,51 @@ import org.encog.neural.networks.training.TrainingError;
 /**
  * Trains a neural network using a Levenberg Marquardt algorithm (LMA). This
  * training technique is based on the mathematical technique of the same name. ì
- *
+ * 
  * http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
- *
+ * 
  * The LMA training technique has some important limitations that you should be
  * aware of, before using it.
- *
+ * 
  * Only neural networks that have a single output neuron can be used with this
  * training technique.
- *
+ * 
  * The entire training set must be loaded into memory. Because of this an
  * Indexable training set must be used.
- *
+ * 
  * However, despite these limitations, the LMA training technique can be a very
  * effective training method.
- *
- * References:
- * - http://www-alg.ist.hokudai.ac.jp/~jan/alpha.pdf
- * - http://www.inference.phy.cam.ac.uk/mackay/Bayes_FAQ.html
- *
+ * 
+ * References: - http://www-alg.ist.hokudai.ac.jp/~jan/alpha.pdf -
+ * http://www.inference.phy.cam.ac.uk/mackay/Bayes_FAQ.html
+ * 
  */
 public class LevenbergMarquardtTraining extends BasicTraining {
 
 	/**
 	 * The amount to scale the lambda by.
 	 */
-	public final static double SCALE_LAMBDA = 10.0;
+	public static final double SCALE_LAMBDA = 10.0;
 
 	/**
 	 * The max amount for the LAMBDA.
 	 */
-	public final static double LAMBDA_MAX = 1e25;
+	public static final double LAMBDA_MAX = 1e25;
+
+	/**
+	 * Return the sum of the diagonal.
+	 * 
+	 * @param m
+	 *            The matrix to sum.
+	 * @return The trace of the matrix.
+	 */
+	public static double trace(final double[][] m) {
+		double result = 0.0;
+		for (int i = 0; i < m.length; i++) {
+			result += m[i][i];
+		}
+		return result;
+	}
 
 	/**
 	 * The network that is to be trained.
@@ -148,6 +162,9 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 */
 	private double[] deltas;
 
+	/**
+	 * Gamma, used for Bayesian regularization.
+	 */
 	private double gamma;
 
 	/**
@@ -162,7 +179,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 	/**
 	 * Construct the LMA object.
-	 *
+	 * 
 	 * @param network
 	 *            The network to train. Must have a single output neuron.
 	 * @param training
@@ -211,7 +228,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 	/**
 	 * Calculate the Hessian matrix.
-	 *
+	 * 
 	 * @param jacobian
 	 *            The Jacobian matrix.
 	 * @param errors
@@ -244,7 +261,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 	/**
 	 * Calculate the sum squared of the weights.
-	 *
+	 * 
 	 * @return The sum squared of the weights.
 	 */
 	private double calculateSumOfSquaredWeights() {
@@ -264,20 +281,12 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		return this.network;
 	}
 
-    /**
-     * Return the sum of the diagonal.
-     * @param m The matrix to sum.
-     * @return The trace of the matrix.
-     */
-    public static double trace(double[][] m)
-    {
-        double result = 0.0;
-        for (int i = 0; i < m.length; i++)
-        {
-            result += m[i][i];
-        }
-        return result;
-    }
+	/**
+	 * @return True, if Bayesian regularization is used.
+	 */
+	public boolean isUseBayesianRegularization() {
+		return this.useBayesianRegularization;
+	}
 
 	/**
 	 * Perform one iteration.
@@ -322,8 +331,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			}
 
 			// Decompose to solve the linear system
-			decomposition = new LUDecomposition(
-					this.hessianMatrix);
+			decomposition = new LUDecomposition(this.hessianMatrix);
 
 			// Check if the Jacobian has become non-invertible
 			if (!decomposition.isNonsingular()) {
@@ -360,16 +368,17 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		// will use a smaller damping factor.
 		this.lambda /= LevenbergMarquardtTraining.SCALE_LAMBDA;
 
-        if (useBayesianRegularization && decomposition!=null)
-        {
-            // Compute the trace for the inverse Hessian
-            trace = trace(decomposition.inverse());
+		if (this.useBayesianRegularization && (decomposition != null)) {
+			// Compute the trace for the inverse Hessian
+			trace = LevenbergMarquardtTraining.trace(decomposition.inverse());
 
-            // Poland update's formula:
-            gamma = this.parametersLength - (alpha * trace);
-            alpha = this.parametersLength / (2.0 * sumOfSquaredWeights + trace);
-            beta = Math.abs((this.trainingLength - gamma) / (2.0 * sumOfSquaredErrors));
-        }
+			// Poland update's formula:
+			this.gamma = this.parametersLength - (this.alpha * trace);
+			this.alpha = this.parametersLength
+					/ (2.0 * sumOfSquaredWeights + trace);
+			this.beta = Math.abs((this.trainingLength - this.gamma)
+					/ (2.0 * sumOfSquaredErrors));
+		}
 
 		setError(sumOfSquaredErrors);
 
@@ -377,8 +386,17 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	}
 
 	/**
+	 * Set if Bayesian regularization should be used.
+	 * @param useBayesianRegularization True to use Bayesian regularization.
+	 */
+	public void setUseBayesianRegularization(
+			final boolean useBayesianRegularization) {
+		this.useBayesianRegularization = useBayesianRegularization;
+	}
+
+	/**
 	 * Update the weights.
-	 *
+	 * 
 	 * @return The sum squared of the weights.
 	 */
 	public double updateWeights() {
@@ -394,15 +412,5 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 		return result / 2.0;
 	}
-
-	public boolean isUseBayesianRegularization() {
-		return useBayesianRegularization;
-	}
-
-	public void setUseBayesianRegularization(boolean useBayesianRegularization) {
-		this.useBayesianRegularization = useBayesianRegularization;
-	}
-
-
 
 }

@@ -211,22 +211,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
-	 * Check to see if this matrix equals another, using default precision.
-	 * 
-	 * @param other
-	 *            The other matrix to compare.
-	 * @return True if the two matrixes are equal.
-	 */
-	@Override
-	public boolean equals(final Object other) {
-		if (other instanceof Matrix) {
-			return equals((Matrix) other, Encog.DEFAULT_PRECISION);
-		} else {
-			return false;
-		}
-	}
-
-	/**
 	 * Compare to matrixes with the specified level of precision.
 	 * 
 	 * @param matrix
@@ -262,14 +246,30 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				if ((long) (this.matrix[r][c] 
-				* actualPrecision) != (long) (data[r][c] * actualPrecision)) {
+				if ((long) (this.matrix[r][c] * actualPrecision) 
+						!= (long) (data[r][c] * actualPrecision)) {
 					return false;
 				}
 			}
 		}
 
 		return true;
+	}
+
+	/**
+	 * Check to see if this matrix equals another, using default precision.
+	 * 
+	 * @param other
+	 *            The other matrix to compare.
+	 * @return True if the two matrixes are equal.
+	 */
+	@Override
+	public boolean equals(final Object other) {
+		if (other instanceof Matrix) {
+			return equals((Matrix) other, Encog.DEFAULT_PRECISION);
+		} else {
+			return false;
+		}
 	}
 
 	/**
@@ -304,6 +304,19 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	public double get(final int row, final int col) {
 		validate(row, col);
 		return this.matrix[row][col];
+	}
+
+	/**
+	 * @return A COPY of this matrix as a 2d array.
+	 */
+	public double[][] getArrayCopy() {
+		final double[][] result = new double[getRows()][getCols()];
+		for (int i = 0; i < getRows(); i++) {
+			for (int j = 0; j < getCols(); j++) {
+				result[i][j] = this.matrix[i][j];
+			}
+		}
+		return result;
 	}
 
 	/**
@@ -353,6 +366,112 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public String getDescription() {
 		return this.description;
+	}
+
+	/**
+	 * Get a submatrix.
+	 * 
+	 * @param i0
+	 *            Initial row index.
+	 * @param i1
+	 *            Final row index.
+	 * @param j0
+	 *            Initial column index.
+	 * @param j1
+	 *            Final column index.
+	 * @return The specified submatrix.
+	 */
+	public Matrix getMatrix(final int i0, final int i1, final int j0,
+			final int j1) {
+
+		final Matrix result = new Matrix(i1 - i0 + 1, j1 - j0 + 1);
+		final double[][] b = result.getData();
+		try {
+			for (int i = i0; i <= i1; i++) {
+				for (int j = j0; j <= j1; j++) {
+					b[i - i0][j - j0] = this.matrix[i][j];
+				}
+			}
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			throw new MatrixError("Submatrix indices");
+		}
+		return result;
+	}
+
+	/**
+	 * Get a submatrix.
+	 * 
+	 * @param i0
+	 *            Initial row index.
+	 * @param i1
+	 *            Final row index.
+	 * @param c
+	 *            Array of column indices.
+	 * @return The specified submatrix.
+	 */
+	public Matrix getMatrix(final int i0, final int i1, final int[] c) {
+		final Matrix result = new Matrix(i1 - i0 + 1, c.length);
+		final double[][] b = result.getData();
+		try {
+			for (int i = i0; i <= i1; i++) {
+				for (int j = 0; j < c.length; j++) {
+					b[i - i0][j] = this.matrix[i][c[j]];
+				}
+			}
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			throw new MatrixError("Submatrix indices");
+		}
+		return result;
+	}
+
+	/**
+	 * Get a submatrix.
+	 * 
+	 * @param r
+	 *            Array of row indices.
+	 * @param j0
+	 *            Initial column index
+	 * @param j1
+	 *            Final column index
+	 * @return The specified submatrix.
+	 */
+	public Matrix getMatrix(final int[] r, final int j0, final int j1) {
+		final Matrix result = new Matrix(r.length, j1 - j0 + 1);
+		final double[][] b = result.getData();
+		try {
+			for (int i = 0; i < r.length; i++) {
+				for (int j = j0; j <= j1; j++) {
+					b[i][j - j0] = this.matrix[r[i]][j];
+				}
+			}
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
+		}
+		return result;
+	}
+
+	/**
+	 * Get a submatrix.
+	 * 
+	 * @param r
+	 *            Array of row indices.
+	 * @param c
+	 *            Array of column indices.
+	 * @return The specified submatrix.
+	 */
+	public Matrix getMatrix(final int[] r, final int[] c) {
+		final Matrix result = new Matrix(r.length, c.length);
+		final double[][] b = result.getData();
+		try {
+			for (int i = 0; i < r.length; i++) {
+				for (int j = 0; j < c.length; j++) {
+					b[i][j] = this.matrix[r[i]][c[j]];
+				}
+			}
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			throw new MatrixError("Submatrix indices");
+		}
+		return result;
 	}
 
 	/**
@@ -414,6 +533,13 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * @return The matrix inverted.
+	 */
+	public Matrix inverse() {
+		return solve(MatrixMath.identity(getRows()));
+	}
+
+	/**
 	 * Determine if the matrix is a vector. A vector is has either a single
 	 * number of rows or columns.
 	 * 
@@ -453,6 +579,23 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		for (int row = 0; row < getRows(); row++) {
 			for (int col = 0; col < getCols(); col++) {
 				this.matrix[row][col] *= value;
+			}
+		}
+	}
+
+	/**
+	 * Multiply every row by the specified vector.
+	 * 
+	 * @param vector
+	 *            The vector to multiply by.
+	 * @param result
+	 *            The result to hold the values.
+	 */
+	public void multiply(final double[] vector, final double[] result) {
+		for (int i = 0; i < getRows(); i++) {
+			result[i] = 0;
+			for (int j = 0; j < getCols(); j++) {
+				result[i] += this.matrix[i][j] * vector[j];
 			}
 		}
 	}
@@ -514,6 +657,108 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
+	 * Set a submatrix.
+	 * 
+	 * @param i0
+	 *            Initial row index
+	 * @param i1
+	 *            Final row index
+	 * @param j0
+	 *            Initial column index
+	 * @param j1
+	 *            Final column index
+	 * @param x
+	 *            A(i0:i1,j0:j1)
+	 * 
+	 */
+	public void setMatrix(final int i0, final int i1, final int j0,
+			final int j1, final Matrix x) {
+		try {
+			for (int i = i0; i <= i1; i++) {
+				for (int j = j0; j <= j1; j++) {
+					this.matrix[i][j] = x.get(i - i0, j - j0);
+				}
+			}
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			throw new MatrixError("Submatrix indices");
+		}
+	}
+
+	/**
+	 * Set a submatrix.
+	 * 
+	 * @param i0
+	 *            Initial row index
+	 * @param i1
+	 *            Final row index
+	 * @param c
+	 *            Array of column indices.
+	 * @param x
+	 *            The submatrix.
+	 */
+
+	public void setMatrix(final int i0, final int i1, final int[] c,
+			final Matrix x) {
+		try {
+			for (int i = i0; i <= i1; i++) {
+				for (int j = 0; j < c.length; j++) {
+					this.matrix[i][c[j]] = x.get(i - i0, j);
+				}
+			}
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
+		}
+	}
+
+	/**
+	 * Set a submatrix.
+	 * 
+	 * @param r
+	 *            Array of row indices.
+	 * @param j0
+	 *            Initial column index
+	 * @param j1
+	 *            Final column index
+	 * @param x
+	 *            A(r(:),j0:j1)
+	 */
+
+	public void setMatrix(final int[] r, final int j0, final int j1,
+			final Matrix x) {
+		try {
+			for (int i = 0; i < r.length; i++) {
+				for (int j = j0; j <= j1; j++) {
+					this.matrix[r[i]][j] = x.get(i, j - j0);
+				}
+			}
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
+		}
+	}
+
+	/**
+	 * Set a submatrix.
+	 * 
+	 * @param r
+	 *            Array of row indices.
+	 * @param c
+	 *            Array of column indices.
+	 * @param x
+	 *            The matrix to set.
+	 */
+	public void setMatrix(final int[] r, final int[] c, final Matrix x) {
+		try {
+			for (int i = 0; i < r.length; i++) {
+				for (int j = 0; j < c.length; j++) {
+					this.matrix[r[i]][c[j]] = x.get(i, j);
+				}
+			}
+		} catch (final ArrayIndexOutOfBoundsException e) {
+			throw new MatrixError("Submatrix indices");
+		}
+	}
+
+	/**
 	 * @param name
 	 *            the name to set
 	 */
@@ -529,6 +774,21 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public int size() {
 		return this.matrix[0].length * this.matrix.length;
+	}
+
+	/**
+	 * Solve A*X = B.
+	 * 
+	 * @param b
+	 *            right hand side.
+	 * @return Solution if A is square, least squares solution otherwise.
+	 */
+	public Matrix solve(final Matrix b) {
+		if (getRows() == getCols()) {
+			return (new LUDecomposition(this)).solve(b);
+		} else {
+			return (new QRDecomposition(this)).solve(b);
+		}
 	}
 
 	/**
@@ -604,272 +864,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 				Matrix.LOGGER.error(str);
 			}
 			throw new MatrixError(str);
-		}
-	}
-
-	/**
-	 * @return A COPY of this matrix as a 2d array.
-	 */
-	public double[][] getArrayCopy() {
-		double[][] result = new double[getRows()][getCols()];
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				result[i][j] = this.matrix[i][j];
-			}
-		}
-		return result;
-	}
-
-	
-	/**
-	 * Get a submatrix.
-	 * @param i0 Initial row index.
-	 * @param i1 Final row index.
-	 * @param j0 Initial column index.
-	 * @param j1 Final column index.
-	 * @return The specified submatrix.
-	 */
-	public Matrix getMatrix(
-		final int i0, 
-		final int i1, 
-		final int j0, 
-		final int j1) {
-		
-		Matrix result = new Matrix(i1 - i0 + 1, j1 - j0 + 1);
-		double[][] b = result.getData();
-		try {
-			for (int i = i0; i <= i1; i++) {
-				for (int j = j0; j <= j1; j++) {
-					b[i - i0][j - j0] = matrix[i][j];
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-		return result;
-	}
-	
-	/**
-	 * Get a submatrix.
-	 * @param r Array of row indices.
-	 * @param c Array of column indices.
-	 * @return The specified submatrix.
-	 */
-	public Matrix getMatrix(final int[] r, final int[] c) {
-		Matrix result = new Matrix(r.length, c.length);
-		double[][] b = result.getData();
-		try {
-			for (int i = 0; i < r.length; i++) {
-				for (int j = 0; j < c.length; j++) {
-					b[i][j] = matrix[r[i]][c[j]];
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-		return result;
-	}
-
-	/**
-	 * Get a submatrix.
-	 * @param i0 Initial row index.
-	 * @param i1 Final row index.
-	 * @param c Array of column indices.
-	 * @return The specified submatrix.
-	 */
-	public Matrix getMatrix(
-			final int i0, 
-			final int i1, 
-			final int[] c) {
-		Matrix result = new Matrix(i1 - i0 + 1, c.length);
-		double[][] b = result.getData();
-		try {
-			for (int i = i0; i <= i1; i++) {
-				for (int j = 0; j < c.length; j++) {
-					b[i - i0][j] = matrix[i][c[j]];
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-		return result;
-	}
-
-	
-	/**
-	 * Get a submatrix.
-	 * @param r Array of row indices.
-	 * @param j0 Initial column index
-	 * @param j1 Final column index
-	 * @return The specified submatrix.
-	 */
-	public Matrix getMatrix(
-			final int[] r, 
-			final int j0, 
-			final int j1) {
-		Matrix result = new Matrix(r.length, j1 - j0 + 1);
-		double[][] b = result.getData();
-		try {
-			for (int i = 0; i < r.length; i++) {
-				for (int j = j0; j <= j1; j++) {
-					b[i][j - j0] = matrix[r[i]][j];
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
-		}
-		return result;
-	}
-
-
-	/**
-	 * Multiply every row by the specified vector.
-	 * @param vector The vector to multiply by.
-	 * @param result The result to hold the values.
-	 */
-	public void multiply(final double[] vector, final double[] result) {
-		for (int i = 0; i < this.getRows(); i++) {
-			result[i] = 0;
-			for (int j = 0; j < this.getCols(); j++) {
-				result[i] += matrix[i][j] * vector[j];
-			}
-		}
-	}
-
-	/**
-	 * @return The matrix inverted.
-	 */
-	public Matrix inverse() {
-		return solve(MatrixMath.identity(getRows()));
-	}
-
-	/**
-	 * Solve A*X = B.
-	 * 
-	 * @param b
-	 *            right hand side.
-	 * @return Solution if A is square, least squares solution otherwise.
-	 */
-	public Matrix solve(final Matrix b) {
-		if (getRows() == getCols()) {
-			return (new LUDecomposition(this)).solve(b);
-		} else {
-			return (new QRDecomposition(this)).solve(b);
-		}
-	}
-
-	/**
-	 * Set a submatrix.
-	 * 
-	 * @param i0
-	 *            Initial row index
-	 * @param i1
-	 *            Final row index
-	 * @param j0
-	 *            Initial column index
-	 * @param j1
-	 *            Final column index
-	 * @param x
-	 *            A(i0:i1,j0:j1)
-
-	 */
-	public void setMatrix(
-			final int i0, 
-			final int i1, 
-			final int j0, 
-			final int j1, 
-			Matrix x) {
-		try {
-			for (int i = i0; i <= i1; i++) {
-				for (int j = j0; j <= j1; j++) {
-					matrix[i][j] = x.get(i - i0, j - j0);
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-	}
-
-	/**
-	 * Set a submatrix.
-	 * 
-	 * @param r
-	 *            Array of row indices.
-	 * @param c
-	 *            Array of column indices.
-	 * @param x
-	 *            The matrix to set.
-	 */
-	public void setMatrix(
-			final int[] r, 
-			final int[] c, 
-			final Matrix x) {
-		try {
-			for (int i = 0; i < r.length; i++) {
-				for (int j = 0; j < c.length; j++) {
-					matrix[r[i]][c[j]] = x.get(i, j);
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-	}
-
-	/**
-	 * Set a submatrix.
-	 * 
-	 * @param r
-	 *            Array of row indices.
-	 * @param j0
-	 *            Initial column index
-	 * @param j1
-	 *            Final column index
-	 * @param x
-	 *            A(r(:),j0:j1)
-	 */
-
-	public void setMatrix(
-			final int[] r, 
-			final int j0, 
-			final int j1, 
-			final Matrix x) {
-		try {
-			for (int i = 0; i < r.length; i++) {
-				for (int j = j0; j <= j1; j++) {
-					matrix[r[i]][j] = x.get(i, j - j0);
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
-		}
-	}
-
-	/**
-	 * Set a submatrix.
-	 * 
-	 * @param i0
-	 *            Initial row index
-	 * @param i1
-	 *            Final row index
-	 * @param c
-	 *            Array of column indices.
-	 * @param x
-	 *            The submatrix.
-	 */
-
-	public void setMatrix(
-			final int i0, 
-			final int i1, 
-			final int[] c, 
-			final Matrix x) {
-		try {
-			for (int i = i0; i <= i1; i++) {
-				for (int j = 0; j < c.length; j++) {
-					matrix[i][c[j]] = x.get(i - i0, j);
-				}
-			}
-		} catch (ArrayIndexOutOfBoundsException e) {
-			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
 		}
 	}
 

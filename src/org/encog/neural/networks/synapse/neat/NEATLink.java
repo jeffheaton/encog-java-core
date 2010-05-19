@@ -44,7 +44,12 @@ import org.encog.persist.annotations.EGReference;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATLink implements Serializable  {
+public class NEATLink implements Serializable {
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = -4117045705080951946L;
 
 	/**
 	 * The source neuron.
@@ -62,24 +67,30 @@ public class NEATLink implements Serializable  {
 	 */
 	@EGReference
 	private NEATNeuron toNeuron;
-	
+
 	/**
 	 * The weight between the two neurons.
 	 */
 	private double weight;
 
-	public NEATLink()
-	{
-		
+	/**
+	 * Default constructor, used mainly for persistance.
+	 */
+	public NEATLink() {
+
 	}
-	
-	
+
 	/**
 	 * Construct a NEAT link.
-	 * @param weight The weight between the two neurons.
-	 * @param fromNeuron The source neuron.
-	 * @param toNeuron The target neuron.
-	 * @param recurrent Is this a recurrent link.
+	 * 
+	 * @param weight
+	 *            The weight between the two neurons.
+	 * @param fromNeuron
+	 *            The source neuron.
+	 * @param toNeuron
+	 *            The target neuron.
+	 * @param recurrent
+	 *            Is this a recurrent link.
 	 */
 	public NEATLink(final double weight, final NEATNeuron fromNeuron,
 			final NEATNeuron toNeuron, final boolean recurrent) {
@@ -93,27 +104,27 @@ public class NEATLink implements Serializable  {
 	 * @return The source neuron.
 	 */
 	public NEATNeuron getFromNeuron() {
-		return fromNeuron;
+		return this.fromNeuron;
 	}
 
 	/**
 	 * @return The target neuron.
 	 */
 	public NEATNeuron getToNeuron() {
-		return toNeuron;
+		return this.toNeuron;
 	}
 
 	/**
 	 * @return The weight of the link.
 	 */
 	public double getWeight() {
-		return weight;
+		return this.weight;
 	}
 
 	/**
 	 * @return True if this is a recurrent link.
 	 */
 	public boolean isRecurrent() {
-		return recurrent;
+		return this.recurrent;
 	}
 }

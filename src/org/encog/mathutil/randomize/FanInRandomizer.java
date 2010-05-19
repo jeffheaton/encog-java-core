@@ -33,7 +33,6 @@ package org.encog.mathutil.randomize;
 import org.encog.EncogError;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,6 +152,36 @@ public class FanInRandomizer extends BasicRandomizer {
 	}
 
 	/**
+	 * Randomize a synapse, only randomize those connections that are actually
+	 * connected.
+	 * 
+	 * @param network
+	 *            The network the synapse belongs to.
+	 * @param synapse
+	 *            The synapse to randomize.
+	 */
+	@Override
+	public void randomize(final BasicNetwork network, final Synapse synapse) {
+		if (synapse.getMatrix() != null) {
+			boolean limited = network.getStructure().isConnectionLimited();
+			final double[][] d = synapse.getMatrix().getData();
+			for (int fromNeuron = 0; fromNeuron 
+				< synapse.getMatrix().getRows(); fromNeuron++) {
+				for (int toNeuron = 0; toNeuron 
+					< synapse.getMatrix().getCols(); toNeuron++) {
+					if (!limited
+							|| network.isConnected(synapse, fromNeuron,
+									toNeuron)) {
+						d[fromNeuron][toNeuron] = calculateValue(synapse
+								.getMatrix().getRows());
+					}
+				}
+			}
+
+		}
+	}
+
+	/**
 	 * Starting with the specified number, randomize it to the degree specified
 	 * by this randomizer. This could be a totally new random number, or it
 	 * could be based on the specified number.
@@ -241,25 +270,6 @@ public class FanInRandomizer extends BasicRandomizer {
 			for (int col = 0; col < m.getCols(); col++) {
 				m.set(row, col, calculateValue(m.getRows()));
 			}
-		}
-	}
-	
-	/**
-	 * Randomize a synapse, only randomize those connections that are actually connected.
-	 * @param network The network the synapse belongs to.
-	 * @param synapse The synapse to randomize.
-	 */
-	public void randomize(final BasicNetwork network,final Synapse synapse) {
-		if( synapse.getMatrix()!=null ) {
-			boolean limited = network.getStructure().isConnectionLimited();
-			final double[][] d = synapse.getMatrix().getData();
-			for (int fromNeuron = 0; fromNeuron < synapse.getMatrix().getRows(); fromNeuron++) {
-				for (int toNeuron = 0; toNeuron < synapse.getMatrix().getCols(); toNeuron++) {
-					if( !limited || network.isConnected(synapse, fromNeuron, toNeuron))
-						d[fromNeuron][toNeuron] = calculateValue(synapse.getMatrix().getRows());
-				}
-			}
-			
 		}
 	}
 

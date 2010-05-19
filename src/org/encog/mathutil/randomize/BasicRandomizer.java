@@ -52,9 +52,9 @@ public abstract class BasicRandomizer implements Randomizer {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Randomize the synapses and biases in the basic network based on an
-	 * array, modify the array. Previous values may be used, or they may be
-	 * discarded, depending on the randomizer.
+	 * Randomize the synapses and biases in the basic network based on an array,
+	 * modify the array. Previous values may be used, or they may be discarded,
+	 * depending on the randomizer.
 	 * 
 	 * @param network
 	 *            A network to randomize.
@@ -73,6 +73,35 @@ public abstract class BasicRandomizer implements Randomizer {
 			if (layer.hasBias()) {
 				randomize(layer.getBiasWeights());
 			}
+		}
+	}
+
+	/**
+	 * Randomize a synapse, only randomize those connections that are actually
+	 * connected.
+	 * 
+	 * @param network
+	 *            The network the synapse belongs to.
+	 * @param synapse
+	 *            The synapse to randomize.
+	 */
+	public void randomize(final BasicNetwork network, final Synapse synapse) {
+		if (synapse.getMatrix() != null) {
+			boolean limited = network.getStructure().isConnectionLimited();
+			final double[][] d = synapse.getMatrix().getData();
+			for (int fromNeuron = 0; fromNeuron 
+				< synapse.getMatrix().getRows(); fromNeuron++) {
+				for (int toNeuron = 0; toNeuron 
+					< synapse.getMatrix().getCols(); toNeuron++) {
+					if (!limited
+							|| network.isConnected(synapse, fromNeuron,
+									toNeuron)) {
+						d[fromNeuron][toNeuron] = 
+							randomize(d[fromNeuron][toNeuron]);
+					}
+				}
+			}
+
 		}
 	}
 
@@ -150,25 +179,6 @@ public abstract class BasicRandomizer implements Randomizer {
 			for (int c = 0; c < m.getCols(); c++) {
 				d[r][c] = randomize(d[r][c]);
 			}
-		}
-	}
-	
-	/**
-	 * Randomize a synapse, only randomize those connections that are actually connected.
-	 * @param network The network the synapse belongs to.
-	 * @param synapse The synapse to randomize.
-	 */
-	public void randomize(final BasicNetwork network,final Synapse synapse) {
-		if( synapse.getMatrix()!=null ) {
-			boolean limited = network.getStructure().isConnectionLimited();
-			final double[][] d = synapse.getMatrix().getData();
-			for (int fromNeuron = 0; fromNeuron < synapse.getMatrix().getRows(); fromNeuron++) {
-				for (int toNeuron = 0; toNeuron < synapse.getMatrix().getCols(); toNeuron++) {
-					if( !limited || network.isConnected(synapse, fromNeuron, toNeuron))
-						d[fromNeuron][toNeuron] = randomize(d[fromNeuron][toNeuron]);
-				}
-			}
-			
 		}
 	}
 

@@ -29,62 +29,67 @@
  */
 package org.encog.mathutil;
 
-
 /**
  * A range of integers.
  */
 public class IntRange {
-	
+
 	/**
 	 * The low end of the range.
 	 */
 	private int high;
-	
+
 	/**
 	 * The high end of the range.
 	 */
 	private int low;
 
 	/**
-	 * @return The high end of the range.
-	 */
-	public int getHigh() {
-		return high;
-	}
-		
-	/**
 	 * Construct an integer range.
-	 * @param high The high  end of the range.
-	 * @param low The low end of the range.
+	 * 
+	 * @param high
+	 *            The high end of the range.
+	 * @param low
+	 *            The low end of the range.
 	 */
-	public IntRange(int high, int low) {
+	public IntRange(final int high, final int low) {
 		super();
 		this.high = high;
 		this.low = low;
 	}
 
 	/**
-	 * Set the high end of the range.
-	 * @param high The high end of the range.
+	 * @return The high end of the range.
 	 */
-	public void setHigh(int high) {
-		this.high = high;
+	public int getHigh() {
+		return this.high;
 	}
-	
+
 	/**
-	 * @return The low end of the range. 
+	 * @return The low end of the range.
 	 */
 	public int getLow() {
-		return low;
+		return this.low;
 	}
-	
+
+	/**
+	 * Set the high end of the range.
+	 * 
+	 * @param high
+	 *            The high end of the range.
+	 */
+	public void setHigh(final int high) {
+		this.high = high;
+	}
+
 	/**
 	 * Set the low end of the range.
-	 * @param low The low end of the range.
+	 * 
+	 * @param low
+	 *            The low end of the range.
 	 */
-	public void setLow(int low) {
+	public void setLow(final int low) {
 		this.low = low;
 	}
-	
-	
+
 }

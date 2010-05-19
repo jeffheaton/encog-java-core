@@ -127,7 +127,13 @@ public class GaussianFunction implements RadialBasisFunction, Serializable {
 		return this.width;
 	}
 
-	public void setWidth(double radius) {
+	/**
+	 * Set the width of the function.
+	 * 
+	 * @param radius
+	 *            The width.
+	 */
+	public void setWidth(final double radius) {
 		this.width = radius;
 	}
 

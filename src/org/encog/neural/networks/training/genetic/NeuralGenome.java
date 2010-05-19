@@ -40,34 +40,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implements a genome that allows a feedforward neural
- * network to be trained using a genetic algorithm. The chromosome for a feed
- * forward neural network is the weight and bias matrix.
+ * Implements a genome that allows a feedforward neural network to be trained
+ * using a genetic algorithm. The chromosome for a feed forward neural network
+ * is the weight and bias matrix.
  */
 public class NeuralGenome extends BasicGenome {
 
-	private Chromosome networkChromosome;
-
-	public NeuralGenome(NeuralGeneticAlgorithm nga, final BasicNetwork network) {
-		super(nga.getGenetic());
-
-		setOrganism(network);
-
-		this.networkChromosome = new Chromosome();
-
-		// create an array of "double genes"
-		int size = network.getStructure().calculateSize();
-		for(int i=0;i<size;i++)
-		{
-			Gene gene = new DoubleGene();
-			this.networkChromosome.getGenes().add(gene);
-		}
-
-		this.getChromosomes().add(this.networkChromosome);
-
-		encode();
-	}
-
+	/**
+	 * The chromosome.
+	 */
+	private final Chromosome networkChromosome;
 
 	/**
 	 * The logging object.
@@ -75,24 +57,56 @@ public class NeuralGenome extends BasicGenome {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	/**
+	 * Construct a neural genome.
+	 * @param nga The NeuralGeneticAlgorithm class to use.
+	 * @param network The network to use.
+	 */
+	public NeuralGenome(final NeuralGeneticAlgorithm nga,
+			final BasicNetwork network) {
+		super(nga.getGenetic());
+
+		setOrganism(network);
+
+		this.networkChromosome = new Chromosome();
+
+		// create an array of "double genes"
+		final int size = network.getStructure().calculateSize();
+		for (int i = 0; i < size; i++) {
+			final Gene gene = new DoubleGene();
+			this.networkChromosome.getGenes().add(gene);
+		}
+
+		getChromosomes().add(this.networkChromosome);
+
+		encode();
+	}
+
+	/**
+	 * Decode the genomes into a neural network.
+	 */
 	public void decode() {
-		double[] net = new double[networkChromosome.getGenes().size()];
-		for(int i=0;i<net.length;i++)
-		{
-			DoubleGene gene = (DoubleGene)networkChromosome.getGenes().get(i);
+		final double[] net = new double[this.networkChromosome.getGenes()
+				.size()];
+		for (int i = 0; i < net.length; i++) {
+			final DoubleGene gene = (DoubleGene) this.networkChromosome
+					.getGenes().get(i);
 			net[i] = gene.getValue();
 
 		}
-		NetworkCODEC.arrayToNetwork(net, (BasicNetwork)getOrganism());
+		NetworkCODEC.arrayToNetwork(net, (BasicNetwork) getOrganism());
 
 	}
 
+	/**
+	 * Encode the neural network into genes.
+	 */
 	public void encode() {
-		double[] net = NetworkCODEC.networkToArray((BasicNetwork)getOrganism());
+		final double[] net = NetworkCODEC
+				.networkToArray((BasicNetwork) getOrganism());
 
-		for(int i=0;i<net.length;i++)
-		{
-			((DoubleGene)networkChromosome.getGene(i)).setValue(net[i]);
+		for (int i = 0; i < net.length; i++) {
+			((DoubleGene) this.networkChromosome.getGene(i)).setValue(net[i]);
 		}
 	}
 }

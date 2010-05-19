@@ -62,12 +62,24 @@ public class NEATInnovationList extends BasicInnovationList {
 	private Population population;
 
 	/**
-	 * Construct an innovation list.
-	 * @param population The population.
-	 * @param links The links.
-	 * @param neurons THe neurons.
+	 * The default constructor, used mainly for persistance.
 	 */
-	public NEATInnovationList(Population population, final Chromosome links, final Chromosome neurons) {
+	public NEATInnovationList() {
+
+	}
+
+	/**
+	 * Construct an innovation list.
+	 * 
+	 * @param population
+	 *            The population.
+	 * @param links
+	 *            The links.
+	 * @param neurons
+	 *            THe neurons.
+	 */
+	public NEATInnovationList(final Population population,
+			final Chromosome links, final Chromosome neurons) {
 
 		this.population = population;
 		for (final Gene gene : neurons.getGenes()) {
@@ -82,30 +94,31 @@ public class NEATInnovationList extends BasicInnovationList {
 			final NEATLinkGene linkGene = (NEATLinkGene) gene;
 			final NEATInnovation innovation = new NEATInnovation(linkGene
 					.getFromNeuronID(), linkGene.getToNeuronID(),
-					NEATInnovationType.NewLink, this.population.assignInnovationID());
+					NEATInnovationType.NewLink, this.population
+							.assignInnovationID());
 			add(innovation);
 
 		}
 	}
-	
-	public NEATInnovationList()
-	{
-		
-	}
 
 	/**
 	 * Assign a neuron ID.
+	 * 
 	 * @return The neuron id.
 	 */
 	private long assignNeuronID() {
-		return nextNeuronID++;
+		return this.nextNeuronID++;
 	}
 
 	/**
 	 * Check to see if we already have an innovation.
-	 * @param in The input neuron.
-	 * @param out THe output neuron.
-	 * @param type The type.
+	 * 
+	 * @param in
+	 *            The input neuron.
+	 * @param out
+	 *            THe output neuron.
+	 * @param type
+	 *            The type.
 	 * @return The innovation, either new or existing if found.
 	 */
 	public NEATInnovation checkInnovation(final long in, final long out,
@@ -124,7 +137,9 @@ public class NEATInnovationList extends BasicInnovationList {
 
 	/**
 	 * Create a new neuron gene from an id.
-	 * @param neuronID The neuron id.
+	 * 
+	 * @param neuronID
+	 *            The neuron id.
 	 * @return The neuron gene.
 	 */
 	public NEATNeuronGene createNeuronFromID(final long neuronID) {
@@ -148,9 +163,13 @@ public class NEATInnovationList extends BasicInnovationList {
 
 	/**
 	 * Create a new innovation.
-	 * @param in The input neuron.
-	 * @param out The output neuron.
-	 * @param type The type.
+	 * 
+	 * @param in
+	 *            The input neuron.
+	 * @param out
+	 *            The output neuron.
+	 * @param type
+	 *            The type.
 	 */
 	public void createNewInnovation(final long in, final long out,
 			final NEATInnovationType type) {
@@ -166,19 +185,27 @@ public class NEATInnovationList extends BasicInnovationList {
 
 	/**
 	 * Create a new innovation.
-	 * @param from The from neuron.
-	 * @param to The to neuron.
-	 * @param innovationType THe innovation type.
-	 * @param neuronType The neuron type.
-	 * @param x The x-coordinate.
-	 * @param y The y-coordinate.
+	 * 
+	 * @param from
+	 *            The from neuron.
+	 * @param to
+	 *            The to neuron.
+	 * @param innovationType
+	 *            THe innovation type.
+	 * @param neuronType
+	 *            The neuron type.
+	 * @param x
+	 *            The x-coordinate.
+	 * @param y
+	 *            The y-coordinate.
 	 * @return The new innovation.
 	 */
 	public long createNewInnovation(final long from, final long to,
 			final NEATInnovationType innovationType,
 			final NEATNeuronType neuronType, final double x, final double y) {
 		final NEATInnovation newInnovation = new NEATInnovation(from, to,
-				innovationType, population.assignInnovationID(), neuronType, x, y);
+				innovationType, this.population.assignInnovationID(),
+				neuronType, x, y);
 
 		if (innovationType == NEATInnovationType.NewNeuron) {
 			newInnovation.setNeuronID(assignNeuronID());

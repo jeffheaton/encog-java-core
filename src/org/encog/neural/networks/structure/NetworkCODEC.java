@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class will extract the "long term memory" of a neural network, that is
- * the weights and bias values into an array. This array can be used to
- * view the neural network as a linear array of doubles. These values can then
- * be modified and copied back into the neural network. This is very useful for
+ * the weights and bias values into an array. This array can be used to view the
+ * neural network as a linear array of doubles. These values can then be
+ * modified and copied back into the neural network. This is very useful for
  * simulated annealing, as well as genetic algorithms.
  * 
  * @author jheaton
@@ -76,51 +76,14 @@ public final class NetworkCODEC {
 				}
 			}
 
-			if( network.getStructure().isConnectionLimited() )
-				index = processSynapseLimited(network,layer,array,index);
-			else
-				index = processSynapseFull(network,layer,array,index);
-		}
-	}
-	
-	private static int processSynapseFull(BasicNetwork network, Layer layer, double[] array, int index)
-	{
-		// process synapses
-		for (final Synapse synapse : network.getStructure()
-				.getPreviousSynapses(layer)) {
-			if (synapse.getMatrix() != null) {
-				// process each weight matrix
-				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
-					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-						synapse.getMatrix().set(y, x, array[index++]);
-					}
-				}
+			if (network.getStructure().isConnectionLimited()) {
+				index = NetworkCODEC.processSynapseLimited(network, layer,
+						array, index);
+			} else {
+				index = NetworkCODEC.processSynapseFull(network, layer, array,
+						index);
 			}
 		}
-		
-		return index;
-	}
-	
-	private static int processSynapseLimited(BasicNetwork network, Layer layer, double[] array, int index)
-	{
-		// process synapses
-		for (final Synapse synapse : network.getStructure()
-				.getPreviousSynapses(layer)) {
-			if (synapse.getMatrix() != null) {
-				// process each weight matrix
-				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
-					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-						double oldValue = synapse.getMatrix().get(y,x);
-						double value = array[index++];
-						if( Math.abs(oldValue)<network.getStructure().getConnectionLimit())
-							value = 0;
-						synapse.getMatrix().set(y, x, value);
-					}
-				}
-			}
-		}
-		
-		return index;
 	}
 
 	/**
@@ -166,8 +129,8 @@ public final class NetworkCODEC {
 
 	/**
 	 * Convert to an array. This is used with some training algorithms that
-	 * require that the "memory" of the neuron(the weight and bias values)
-	 * be expressed as a linear array.
+	 * require that the "memory" of the neuron(the weight and bias values) be
+	 * expressed as a linear array.
 	 * 
 	 * @param network
 	 *            The network to encode.
@@ -198,6 +161,66 @@ public final class NetworkCODEC {
 						for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
 							result[index++] = synapse.getMatrix().get(y, x);
 						}
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Process a fully connected synapse.
+	 * @param network The network to process.
+	 * @param layer The layer to process.
+	 * @param array The array to process.
+	 * @param index The current index.
+	 * @return The index after this synapse has been read.
+	 */
+	private static int processSynapseFull(final BasicNetwork network,
+			final Layer layer, final double[] array, final int index) {
+		int result = index;
+		// process synapses
+		for (final Synapse synapse : network.getStructure()
+				.getPreviousSynapses(layer)) {
+			if (synapse.getMatrix() != null) {
+				// process each weight matrix
+				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+						synapse.getMatrix().set(y, x, array[result++]);
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Process a partially connected synapse.
+	 * @param network The network to process.
+	 * @param layer The layer to process.
+	 * @param array The array to process.
+	 * @param index The current index.
+	 * @return The index after this synapse has been read.
+	 */
+	private static int processSynapseLimited(final BasicNetwork network,
+			final Layer layer, final double[] array, final int index) {
+		int result = index;
+		// process synapses
+		for (final Synapse synapse : network.getStructure()
+				.getPreviousSynapses(layer)) {
+			if (synapse.getMatrix() != null) {
+				// process each weight matrix
+				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+						final double oldValue = synapse.getMatrix().get(y, x);
+						double value = array[result++];
+						if (Math.abs(oldValue) < network.getStructure()
+								.getConnectionLimit()) {
+							value = 0;
+						}
+						synapse.getMatrix().set(y, x, value);
 					}
 				}
 			}

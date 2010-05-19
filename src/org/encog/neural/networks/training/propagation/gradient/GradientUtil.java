@@ -47,37 +47,37 @@ import org.encog.neural.networks.synapse.Synapse;
  * the individual gradient worker classes.
  */
 public class GradientUtil {
-	
+
 	/**
 	 * The network we are calculating for.
 	 */
 	private final BasicNetwork network;
-	
+
 	/**
 	 * The error deltas for each layer.
 	 */
 	private final Map<Layer, Object> layerDeltas = new HashMap<Layer, Object>();
-	
+
 	/**
 	 * The gradients.
 	 */
 	private final double[] errors;
-	
+
 	/**
 	 * The weights.
 	 */
 	private double[] weights;
-	
+
 	/**
 	 * The output from the last iteration of the network.
 	 */
 	private NeuralOutputHolder holder;
-	
+
 	/**
 	 * The RMS error.
 	 */
 	private final ErrorCalculation error = new ErrorCalculation();
-	
+
 	/**
 	 * The number of training patterns.
 	 */
@@ -85,7 +85,9 @@ public class GradientUtil {
 
 	/**
 	 * Construct the gradient utility.
-	 * @param network The network to calculate gradients for.
+	 * 
+	 * @param network
+	 *            The network to calculate gradients for.
 	 */
 	public GradientUtil(final BasicNetwork network) {
 		this.network = network;
@@ -96,8 +98,11 @@ public class GradientUtil {
 
 	/**
 	 * Calculate the gradents between the input and ideal data.
-	 * @param input The input data.
-	 * @param ideal The desired output data.
+	 * 
+	 * @param input
+	 *            The input data.
+	 * @param ideal
+	 *            The desired output data.
 	 */
 	public void calculate(final NeuralData input, final NeuralData ideal) {
 		clearDeltas();
@@ -151,8 +156,11 @@ public class GradientUtil {
 
 	/**
 	 * Calculate for an entire training set.
-	 * @param training The training set to use.
-	 * @param weights The weights to use.
+	 * 
+	 * @param training
+	 *            The training set to use.
+	 * @param weights
+	 *            The weights to use.
 	 */
 	public void calculate(final NeuralDataSet training, final double[] weights) {
 		reset(weights);
@@ -162,9 +170,12 @@ public class GradientUtil {
 	}
 
 	/**
-	 * Calculate for an individual synapse.  
-	 * @param synapse The synapse to calculate for.
-	 * @param index The current index in the weight array.
+	 * Calculate for an individual synapse.
+	 * 
+	 * @param synapse
+	 *            The synapse to calculate for.
+	 * @param index
+	 *            The current index in the weight array.
 	 * @return The new index value.
 	 */
 	private int calculate(final Synapse synapse, int index) {
@@ -234,8 +245,11 @@ public class GradientUtil {
 	}
 
 	/**
-	 * Get the deltas for a layer.  The deltas are the difference between actual and ideal.
-	 * @param layer The layer.
+	 * Get the deltas for a layer. The deltas are the difference between actual
+	 * and ideal.
+	 * 
+	 * @param layer
+	 *            The layer.
 	 * @return The deltas as an array.
 	 */
 	private double[] getLayerDeltas(final Layer layer) {
@@ -250,7 +264,9 @@ public class GradientUtil {
 
 	/**
 	 * Reset for an iteration.
-	 * @param weights The weights.
+	 * 
+	 * @param weights
+	 *            The weights.
 	 */
 	public void reset(final double[] weights) {
 		this.error.reset();

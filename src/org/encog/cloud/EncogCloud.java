@@ -40,7 +40,7 @@ public class EncogCloud {
 	/**
 	 * The default cloud server.
 	 */
-	public final static String DEFAULT_SERVER = "http://cloud.encog.com/";
+	public static final String DEFAULT_SERVER = "http://cloud.encog.com/";
 
 	/**
 	 * The session.
@@ -51,6 +51,14 @@ public class EncogCloud {
 	 * The server.
 	 */
 	private String server;
+
+	/**
+	 * Construct an Encog cloud connection to the default server at:
+	 * http://cloud.encog.com/ url.
+	 */
+	public EncogCloud() {
+		this(EncogCloud.DEFAULT_SERVER);
+	}
 
 	/**
 	 * Construct an Encog cloud connection. The connection will not be
@@ -65,15 +73,12 @@ public class EncogCloud {
 			this.server += '/';
 		}
 	}
-	
-	public EncogCloud()
-	{
-		this(EncogCloud.DEFAULT_SERVER);
-	}
 
 	/**
 	 * Begin a task with the specified name.
-	 * @param name The name of the task to begin.
+	 * 
+	 * @param name
+	 *            The name of the task to begin.
 	 * @return The new task.
 	 */
 	public CloudTask beginTask(final String name) {
@@ -85,8 +90,11 @@ public class EncogCloud {
 
 	/**
 	 * Connect to the Encog cloud.
-	 * @param uid The user id.
-	 * @param pwd The password.
+	 * 
+	 * @param uid
+	 *            The user id.
+	 * @param pwd
+	 *            The password.
 	 */
 	public void connect(final String uid, final String pwd) {
 		final CloudRequest request = new CloudRequest();
@@ -102,7 +110,9 @@ public class EncogCloud {
 
 	/**
 	 * Construct a string that connects to the specified service.
-	 * @param service The service to connect to.
+	 * 
+	 * @param service
+	 *            The service to connect to.
 	 * @return The complete URL.
 	 */
 	public String constructService(final String service) {
@@ -134,7 +144,9 @@ public class EncogCloud {
 
 	/**
 	 * Validate the session.
-	 * @param failOnError True if an exception should be thrown on error.
+	 * 
+	 * @param failOnError
+	 *            True if an exception should be thrown on error.
 	 */
 	public void validateSession(final boolean failOnError) {
 		int max;

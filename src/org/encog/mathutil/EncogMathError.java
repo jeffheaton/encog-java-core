@@ -34,7 +34,14 @@ import org.encog.EncogError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Thrown when a math error happens.
+ */
 public class EncogMathError extends EncogError {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6219065927838486625L;
 	/**
 	 * The logging object.
 	 */
@@ -54,22 +61,22 @@ public class EncogMathError extends EncogError {
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
+	 * @param msg
+	 *            A message.
+	 * @param t
+	 *            The other exception.
+	 */
+	public EncogMathError(final String msg, final Throwable t) {
+		super(msg, t);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
 	 * @param t
 	 *            The other exception.
 	 */
 	public EncogMathError(final Throwable t) {
 		super(t);
-	}
-	
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param msg
-	 *            A message.
-	 * @param t
-	 * 			The other exception.
-	 */
-	public EncogMathError( final String msg, final Throwable t) {
-		super(msg,t);
 	}
 }

@@ -44,27 +44,27 @@ public class NumericRange {
 	 * The high number in the range.
 	 */
 	private final double high;
-	
+
 	/**
 	 * The low number in the range.
 	 */
 	private final double low;
-	
+
 	/**
 	 * The mean value.
 	 */
 	private final double mean;
-	
+
 	/**
 	 * The root mean square of the range.
 	 */
 	private final double rms;
-	
+
 	/**
 	 * The standard deviation of the range.
 	 */
 	private final double standardDeviation;
-	
+
 	/**
 	 * The number of values in this range.
 	 */
@@ -72,9 +72,11 @@ public class NumericRange {
 
 	/**
 	 * Create a numeric range from a list of values.
-	 * @param values The values to calculate for.
+	 * 
+	 * @param values
+	 *            The values to calculate for.
 	 */
-	public NumericRange(List<Double> values) {
+	public NumericRange(final List<Double> values) {
 
 		double assignedHigh = 0;
 		double assignedLow = 0;
@@ -83,7 +85,7 @@ public class NumericRange {
 
 		// get the mean and other 1-pass values.
 
-		for (double d : values) {
+		for (final double d : values) {
 			assignedHigh = Math.max(assignedHigh, d);
 			assignedLow = Math.min(assignedLow, d);
 			total += d;
@@ -99,7 +101,7 @@ public class NumericRange {
 		// now get the standard deviation
 		double devTotal = 0;
 
-		for (double d : values) {
+		for (final double d : values) {
 			devTotal += Math.pow(d - this.mean, 2);
 		}
 		this.standardDeviation = Math.sqrt(devTotal / this.samples);
@@ -109,49 +111,50 @@ public class NumericRange {
 	 * @return The high number in the range.
 	 */
 	public double getHigh() {
-		return high;
+		return this.high;
 	}
 
 	/**
 	 * @return The low number in the range.
 	 */
 	public double getLow() {
-		return low;
+		return this.low;
 	}
 
 	/**
 	 * @return The mean in the range.
 	 */
 	public double getMean() {
-		return mean;
+		return this.mean;
 	}
 
 	/**
 	 * @return The root mean square of the range.
 	 */
 	public double getRms() {
-		return rms;
-	}
-
-	/**
-	 * @return The standard deviation of the range.
-	 */
-	public double getStandardDeviation() {
-		return standardDeviation;
+		return this.rms;
 	}
 
 	/**
 	 * @return The number of samples in the range.
 	 */
 	public int getSamples() {
-		return samples;
+		return this.samples;
+	}
+
+	/**
+	 * @return The standard deviation of the range.
+	 */
+	public double getStandardDeviation() {
+		return this.standardDeviation;
 	}
 
 	/**
 	 * @return The range as a string.
 	 */
+	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append("Range: ");
 		result.append(Format.formatDouble(this.low, 5));
 		result.append(" to ");

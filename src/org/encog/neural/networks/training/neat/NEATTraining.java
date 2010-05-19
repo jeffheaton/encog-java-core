@@ -92,7 +92,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * The best ever score.
 	 */
 	private double bestEverScore;
-	
+
 	/**
 	 * The best ever network.
 	 */
@@ -111,7 +111,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	/**
 	 * The activation function to use on the output layer of Encog.
 	 */
-	private ActivationFunction outputActivationFunction = new ActivationLinear();
+	private ActivationFunction outputActivationFunction 
+		= new ActivationLinear();
 
 	/**
 	 * The number of output neurons.
@@ -198,7 +199,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 */
 	private double paramProbabilityWeightReplaced = 0.1;
 
-
 	/**
 	 * The total fit adjustment.
 	 */
@@ -208,32 +208,41 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * Determines if we are using snapshot mode.
 	 */
 	private boolean snapshot;
-	
+
+	/**
+	 * The Encog cloud.
+	 */
 	private EncogCloud cloud;
 
 	/**
-	 * Construct neat training with a predefined population.
-	 * 
-	 * @param calculateScore
-	 *            The score object to use.
-	 * @param population
-	 *            The population to use.
+	 * Construct a NEAT training object.
+	 * @param score The score to calculate from.
+	 * @param network The network to use as a model.
+	 * @param population The population to train.
 	 */
-	public NEATTraining(final CalculateScore calculateScore,
+	public NEATTraining(final CalculateScore score, final BasicNetwork network,
 			final Population population) {
-		if (population.size() < 1) {
-			throw new TrainingError("Population can not be empty.");
-		}
+		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
+		setCalculateScore(new GeneticScoreAdapter(score));
+		setComparator(new GenomeComparator(getCalculateScore()));
+		this.inputCount = inputLayer.getNeuronCount();
+		this.outputCount = outputLayer.getNeuronCount();
+		setPopulation(population);
 
-		NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
-		this.setCalculateScore(new GeneticScoreAdapter(calculateScore));
-		this.setPopulation(population);
-		this.inputCount = genome.getInputCount();
-		this.outputCount = genome.getOutputCount();
-		
-		for(Genome obj: population.getGenomes() )
-		{
-			NEATGenome neat = (NEATGenome)obj;
+		for (final Genome obj : population.getGenomes()) {
+			if (!(obj instanceof NEATGenome)) {
+				throw new TrainingError(
+						"Population can only contain objects of NEATGenome.");
+			}
+
+			final NEATGenome neat = (NEATGenome) obj;
+
+			if ((neat.getInputCount() != this.inputCount)
+					|| (neat.getOutputCount() != this.outputCount)) {
+				throw new TrainingError(
+						"All NEATGenome's must have the same input and output sizes as the base network.");
+			}
 			neat.setGeneticAlgorithm(this);
 		}
 
@@ -273,56 +282,32 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		init();
 	}
 
-	public NEATTraining(CalculateScore score, BasicNetwork network,
-			Population population) {
-		Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
-		setCalculateScore(new GeneticScoreAdapter(score));
-		setComparator(new GenomeComparator(getCalculateScore()));
-		this.inputCount = inputLayer.getNeuronCount();
-		this.outputCount = outputLayer.getNeuronCount();
-		this.setPopulation(population);
-		
-		for(Genome obj: population.getGenomes() )
-		{
-			if( !(obj instanceof NEATGenome) ) {
-				throw new TrainingError("Population can only contain objects of NEATGenome.");
-			}
-			
-			NEATGenome neat = (NEATGenome)obj;
-			
-			if( neat.getInputCount()!=inputCount ||
-				neat.getOutputCount()!=outputCount )
-			{
-				throw new TrainingError("All NEATGenome's must have the same input and output sizes as the base network.");
-			}
+	/**
+	 * Construct neat training with a predefined population.
+	 * 
+	 * @param calculateScore
+	 *            The score object to use.
+	 * @param population
+	 *            The population to use.
+	 */
+	public NEATTraining(final CalculateScore calculateScore,
+			final Population population) {
+		if (population.size() < 1) {
+			throw new TrainingError("Population can not be empty.");
+		}
+
+		final NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
+		setCalculateScore(new GeneticScoreAdapter(calculateScore));
+		setPopulation(population);
+		this.inputCount = genome.getInputCount();
+		this.outputCount = genome.getOutputCount();
+
+		for (final Genome obj : population.getGenomes()) {
+			final NEATGenome neat = (NEATGenome) obj;
 			neat.setGeneticAlgorithm(this);
 		}
-		
+
 		init();
-	}
-
-	/**
-	 * setup for training.
-	 */
-	private void init() {
-		NEATGenome genome = (NEATGenome) getPopulation().getGenomes().get(0);
-
-		if (this.getInnovations() == null) {
-			getPopulation().setInnovations(
-					new NEATInnovationList(getPopulation(), genome.getLinks(),
-							genome.getNeurons()));
-		}
-
-		if (getCalculateScore().shouldMinimize()) {
-			bestEverScore = Double.MAX_VALUE;
-		} else {
-			bestEverScore = Double.MIN_VALUE;
-		}
-
-		resetAndKill();
-		sortAndRecord();
-		speciateAndCalculateSpawnLevels();
 	}
 
 	/**
@@ -363,18 +348,18 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public void adjustCompatibilityThreshold() {
 
 		// has this been disabled (unlimited species)
-		if (paramMaxNumberOfSpecies < 1) {
+		if (this.paramMaxNumberOfSpecies < 1) {
 			return;
 		}
 
 		final double thresholdIncrement = 0.01;
 
-		if (getPopulation().getSpecies().size() > paramMaxNumberOfSpecies) {
-			paramCompatibilityThreshold += thresholdIncrement;
+		if (getPopulation().getSpecies().size() > this.paramMaxNumberOfSpecies) {
+			this.paramCompatibilityThreshold += thresholdIncrement;
 		}
 
 		else if (getPopulation().getSpecies().size() < 2) {
-			paramCompatibilityThreshold -= thresholdIncrement;
+			this.paramCompatibilityThreshold -= thresholdIncrement;
 		}
 
 	}
@@ -389,15 +374,15 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 				double score = member.getScore();
 
 				// apply a youth bonus
-				if (s.getAge() < this.getPopulation().getYoungBonusAgeThreshold()) {
-					score = this.getComparator().applyBonus(score,
-							this.getPopulation().getYoungScoreBonus());
+				if (s.getAge() < getPopulation().getYoungBonusAgeThreshold()) {
+					score = getComparator().applyBonus(score,
+							getPopulation().getYoungScoreBonus());
 				}
 
 				// apply an old age penalty
-				if (s.getAge() > this.getPopulation().getOldAgeThreshold()) {
-					score = this.getComparator().applyPenalty(score,
-							this.getPopulation().getOldAgePenalty());
+				if (s.getAge() > getPopulation().getOldAgeThreshold()) {
+					score = getComparator().applyPenalty(score,
+							getPopulation().getOldAgePenalty());
 				}
 
 				final double adjustedScore = score / s.getMembers().size();
@@ -433,15 +418,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			else {
 				if (mom.getNumGenes() < dad.getNumGenes()) {
 					best = NEATParent.Mom;
-				}
-
-				else {
+				} else {
 					best = NEATParent.Dad;
 				}
 			}
-		}
-
-		else {
+		} else {
 			if (getComparator().isBetterThan(mom.getScore(), dad.getScore())) {
 				best = NEATParent.Mom;
 			}
@@ -553,6 +534,13 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	/**
+	 * @return The Encog cloud in use. 
+	 */
+	public EncogCloud getCloud() {
+		return this.cloud;
+	}
+
+	/**
 	 * return The error for the best genome.
 	 */
 	public double getError() {
@@ -570,14 +558,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * @return The input count.
 	 */
 	public int getInputCount() {
-		return inputCount;
+		return this.inputCount;
 	}
 
 	/**
 	 * @return The activation function to use with NEAT.
 	 */
 	public ActivationFunction getNeatActivationFunction() {
-		return neatActivationFunction;
+		return this.neatActivationFunction;
 	}
 
 	/**
@@ -591,130 +579,131 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * @return The activation function to use with the Encog output layer.
 	 */
 	public ActivationFunction getOutputActivationFunction() {
-		return outputActivationFunction;
+		return this.outputActivationFunction;
 	}
 
 	/**
 	 * @return The number of output neurons.
 	 */
 	public int getOutputCount() {
-		return outputCount;
+		return this.outputCount;
 	}
 
 	/**
 	 * @return The mutation rate.
 	 */
 	public double getParamActivationMutationRate() {
-		return paramActivationMutationRate;
+		return this.paramActivationMutationRate;
 	}
 
 	/**
 	 * @return The chance that we will add a link.
 	 */
 	public double getParamChanceAddLink() {
-		return paramChanceAddLink;
+		return this.paramChanceAddLink;
 	}
 
 	/**
 	 * @return The chance that we will add a node.
 	 */
 	public double getParamChanceAddNode() {
-		return paramChanceAddNode;
+		return this.paramChanceAddNode;
 	}
 
 	/**
 	 * @return The chance we will add a recurrent link.
 	 */
 	public double getParamChanceAddRecurrentLink() {
-		return paramChanceAddRecurrentLink;
+		return this.paramChanceAddRecurrentLink;
 	}
 
 	/**
 	 * @return The compatibility threshold for a species.
 	 */
 	public double getParamCompatibilityThreshold() {
-		return paramCompatibilityThreshold;
+		return this.paramCompatibilityThreshold;
 	}
 
 	/**
 	 * @return The crossover rate.
 	 */
 	public double getParamCrossoverRate() {
-		return paramCrossoverRate;
+		return this.paramCrossoverRate;
 	}
 
 	/**
 	 * @return THe maximum activation perturbation.
 	 */
 	public double getParamMaxActivationPerturbation() {
-		return paramMaxActivationPerturbation;
+		return this.paramMaxActivationPerturbation;
 	}
 
 	/**
 	 * @return The maximum number of species.
 	 */
 	public int getParamMaxNumberOfSpecies() {
-		return paramMaxNumberOfSpecies;
+		return this.paramMaxNumberOfSpecies;
 	}
 
 	/**
 	 * @return THe maximum neurons.
 	 */
 	public double getParamMaxPermittedNeurons() {
-		return paramMaxPermittedNeurons;
+		return this.paramMaxPermittedNeurons;
 	}
 
 	/**
 	 * @return THe max weight perturbation.
 	 */
 	public double getParamMaxWeightPerturbation() {
-		return paramMaxWeightPerturbation;
+		return this.paramMaxWeightPerturbation;
 	}
 
 	/**
 	 * @return The mutation rate.
 	 */
 	public double getParamMutationRate() {
-		return paramMutationRate;
+		return this.paramMutationRate;
 	}
 
 	/**
 	 * @return The number of attempts to add a link.
 	 */
 	public int getParamNumAddLinkAttempts() {
-		return paramNumAddLinkAttempts;
+		return this.paramNumAddLinkAttempts;
 	}
 
 	/**
 	 * @return The number of generations allowed with no improvement.
 	 */
 	public int getParamNumGensAllowedNoImprovement() {
-		return paramNumGensAllowedNoImprovement;
+		return this.paramNumGensAllowedNoImprovement;
 	}
 
 	/**
 	 * @return The number of tries to find a looped link.
 	 */
 	public int getParamNumTrysToFindLoopedLink() {
-		return paramNumTrysToFindLoopedLink;
+		return this.paramNumTrysToFindLoopedLink;
 	}
 
 	/**
 	 * @return The number of tries to find an old link.
 	 */
 	public int getParamNumTrysToFindOldLink() {
-		return paramNumTrysToFindOldLink;
+		return this.paramNumTrysToFindOldLink;
 	}
 
 	/**
 	 * @return THe propbability that a weight will be replaced.
 	 */
 	public double getParamProbabilityWeightReplaced() {
-		return paramProbabilityWeightReplaced;
+		return this.paramProbabilityWeightReplaced;
 	}
 
 	/**
 	 * Returns an empty list, strategies are not supported.
+	 * 
 	 * @return The strategies in use(none).
 	 */
 	public List<Strategy> getStrategies() {
@@ -723,10 +712,42 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Returns null, does not use a training set, rather uses a score function.
+	 * 
 	 * @return null, not used.
 	 */
 	public NeuralDataSet getTraining() {
 		return null;
+	}
+
+	/**
+	 * setup for training.
+	 */
+	private void init() {
+		final NEATGenome genome = (NEATGenome) getPopulation().getGenomes()
+				.get(0);
+
+		if (getInnovations() == null) {
+			getPopulation().setInnovations(
+					new NEATInnovationList(getPopulation(), genome.getLinks(),
+							genome.getNeurons()));
+		}
+
+		if (getCalculateScore().shouldMinimize()) {
+			this.bestEverScore = Double.MAX_VALUE;
+		} else {
+			this.bestEverScore = Double.MIN_VALUE;
+		}
+
+		resetAndKill();
+		sortAndRecord();
+		speciateAndCalculateSpawnLevels();
+	}
+
+	/**
+	 * @return Are we using snapshot mode.
+	 */
+	public boolean isSnapshot() {
+		return this.snapshot;
 	}
 
 	/**
@@ -749,7 +770,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 					NEATGenome baby = null;
 
 					if (!bChosenBestYet) {
-						baby = (NEATGenome)s.getLeader();
+						baby = (NEATGenome) s.getLeader();
 
 						bChosenBestYet = true;
 					}
@@ -764,13 +785,13 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						} else {
 							final NEATGenome g1 = (NEATGenome) s.chooseParent();
 
-							if (Math.random() < paramCrossoverRate) {
+							if (Math.random() < this.paramCrossoverRate) {
 								NEATGenome g2 = (NEATGenome) s.chooseParent();
 
-								int NumAttempts = 5;
+								int numAttempts = 5;
 
 								while ((g1.getGenomeID() == g2.getGenomeID())
-										&& ((NumAttempts--) > 0)) {
+										&& ((numAttempts--) > 0)) {
 									g2 = (NEATGenome) s.chooseParent();
 								}
 
@@ -787,25 +808,25 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						if (baby != null) {
 							baby.setGenomeID(getPopulation().assignGenomeID());
 
-							if (baby.getNeurons().size() < paramMaxPermittedNeurons) {
-								baby.addNeuron(paramChanceAddNode,
-										paramNumTrysToFindOldLink);
+							if (baby.getNeurons().size() < this.paramMaxPermittedNeurons) {
+								baby.addNeuron(this.paramChanceAddNode,
+										this.paramNumTrysToFindOldLink);
 							}
 
 							// now there's the chance a link may be added
-							baby.addLink(paramChanceAddLink,
-									paramChanceAddRecurrentLink,
-									paramNumTrysToFindLoopedLink,
-									paramNumAddLinkAttempts);
+							baby.addLink(this.paramChanceAddLink,
+									this.paramChanceAddRecurrentLink,
+									this.paramNumTrysToFindLoopedLink,
+									this.paramNumAddLinkAttempts);
 
 							// mutate the weights
-							baby.mutateWeights(paramMutationRate,
-									paramProbabilityWeightReplaced,
-									paramMaxWeightPerturbation);
+							baby.mutateWeights(this.paramMutationRate,
+									this.paramProbabilityWeightReplaced,
+									this.paramMaxWeightPerturbation);
 
 							baby.mutateActivationResponse(
-									paramActivationMutationRate,
-									paramMaxActivationPerturbation);
+									this.paramActivationMutationRate,
+									this.paramMaxActivationPerturbation);
 
 						}
 					}
@@ -815,9 +836,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 						baby.sortGenes();
 
 						// add to new pop
-						//if (newPop.contains(baby)) {
-						//	throw new EncogError("readd");
-						//}
+						// if (newPop.contains(baby)) {
+						// throw new EncogError("readd");
+						// }
 						newPop.add(baby);
 
 						++numSpawnedSoFar;
@@ -836,8 +857,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		getPopulation().clear();
 		getPopulation().addAll(newPop);
-		
-		resetAndKill();		
+
+		resetAndKill();
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
 	}
@@ -846,17 +867,17 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * Reset for an iteration.
 	 */
 	public void resetAndKill() {
-		totalFitAdjustment = 0;
-		averageFitAdjustment = 0;
+		this.totalFitAdjustment = 0;
+		this.averageFitAdjustment = 0;
 
 		final Object[] speciesArray = getPopulation().getSpecies().toArray();
 
-		for (int i = 0; i < speciesArray.length; i++) {
-			final Species s = (Species) speciesArray[i];
+		for (final Object element : speciesArray) {
+			final Species s = (Species) element;
 			s.purge();
 
-			if ((s.getGensNoImprovement() > paramNumGensAllowedNoImprovement)
-					&& getComparator().isBetterThan(bestEverScore,
+			if ((s.getGensNoImprovement() > this.paramNumGensAllowedNoImprovement)
+					&& getComparator().isBetterThan(this.bestEverScore,
 							s.getBestScore())) {
 				getPopulation().getSpecies().remove(s);
 			}
@@ -864,15 +885,27 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	/**
+	 * Set the Encog cloud to use.
+	 * @param cloud The Encog cloud to use.
+	 */
+	public void setCloud(final EncogCloud cloud) {
+		this.cloud = cloud;
+	}
+
+	/**
 	 * Not used.
-	 * @param error Not used.
+	 * 
+	 * @param error
+	 *            Not used.
 	 */
 	public void setError(final double error) {
 	}
 
 	/**
 	 * Set the NEAT activation, used by the NEAT neurons.
-	 * @param neatActivationFunction The activation function.
+	 * 
+	 * @param neatActivationFunction
+	 *            The activation function.
 	 */
 	public void setNeatActivationFunction(
 			final ActivationFunction neatActivationFunction) {
@@ -881,7 +914,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the activatoin function for the Encog output layer.
-	 * @param outputActivationFunction The activation function.
+	 * 
+	 * @param outputActivationFunction
+	 *            The activation function.
 	 */
 	public void setOutputActivationFunction(
 			final ActivationFunction outputActivationFunction) {
@@ -890,7 +925,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the activation mutation rate.
-	 * @param paramActivationMutationRate The mutation rate.
+	 * 
+	 * @param paramActivationMutationRate
+	 *            The mutation rate.
 	 */
 	public void setParamActivationMutationRate(
 			final double paramActivationMutationRate) {
@@ -899,7 +936,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the chance to add a link.
-	 * @param paramChanceAddLink The chance to add a link.
+	 * 
+	 * @param paramChanceAddLink
+	 *            The chance to add a link.
 	 */
 	public void setParamChanceAddLink(final double paramChanceAddLink) {
 		this.paramChanceAddLink = paramChanceAddLink;
@@ -907,7 +946,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the chance to add a node.
-	 * @param paramChanceAddNode The chance to add a node.
+	 * 
+	 * @param paramChanceAddNode
+	 *            The chance to add a node.
 	 */
 	public void setParamChanceAddNode(final double paramChanceAddNode) {
 		this.paramChanceAddNode = paramChanceAddNode;
@@ -915,7 +956,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the chance to add a recurrent link.
-	 * @param paramChanceAddRecurrentLink The chance to add a recurrent link.
+	 * 
+	 * @param paramChanceAddRecurrentLink
+	 *            The chance to add a recurrent link.
 	 */
 	public void setParamChanceAddRecurrentLink(
 			final double paramChanceAddRecurrentLink) {
@@ -924,7 +967,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the compatibility threshold for species.
-	 * @param paramCompatibilityThreshold The threshold.
+	 * 
+	 * @param paramCompatibilityThreshold
+	 *            The threshold.
 	 */
 	public void setParamCompatibilityThreshold(
 			final double paramCompatibilityThreshold) {
@@ -933,7 +978,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the cross over rate.
-	 * @param paramCrossoverRate The crossover rate.
+	 * 
+	 * @param paramCrossoverRate
+	 *            The crossover rate.
 	 */
 	public void setParamCrossoverRate(final double paramCrossoverRate) {
 		this.paramCrossoverRate = paramCrossoverRate;
@@ -941,7 +988,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the max activation perturbation.
-	 * @param paramMaxActivationPerturbation The max perturbation.
+	 * 
+	 * @param paramMaxActivationPerturbation
+	 *            The max perturbation.
 	 */
 	public void setParamMaxActivationPerturbation(
 			final double paramMaxActivationPerturbation) {
@@ -950,7 +999,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the maximum number of species.
-	 * @param paramMaxNumberOfSpecies The max number of species.
+	 * 
+	 * @param paramMaxNumberOfSpecies
+	 *            The max number of species.
 	 */
 	public void setParamMaxNumberOfSpecies(final int paramMaxNumberOfSpecies) {
 		this.paramMaxNumberOfSpecies = paramMaxNumberOfSpecies;
@@ -958,7 +1009,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the max permitted neurons.
-	 * @param paramMaxPermittedNeurons The max permitted neurons.
+	 * 
+	 * @param paramMaxPermittedNeurons
+	 *            The max permitted neurons.
 	 */
 	public void setParamMaxPermittedNeurons(
 			final double paramMaxPermittedNeurons) {
@@ -967,7 +1020,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the max weight perturbation.
-	 * @param paramMaxWeightPerturbation The max weight perturbation.
+	 * 
+	 * @param paramMaxWeightPerturbation
+	 *            The max weight perturbation.
 	 */
 	public void setParamMaxWeightPerturbation(
 			final double paramMaxWeightPerturbation) {
@@ -976,7 +1031,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the mutation rate.
-	 * @param paramMutationRate The mutation rate.
+	 * 
+	 * @param paramMutationRate
+	 *            The mutation rate.
 	 */
 	public void setParamMutationRate(final double paramMutationRate) {
 		this.paramMutationRate = paramMutationRate;
@@ -984,7 +1041,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the number of attempts to add a link.
-	 * @param paramNumAddLinkAttempts The number of attempts to add a link.
+	 * 
+	 * @param paramNumAddLinkAttempts
+	 *            The number of attempts to add a link.
 	 */
 	public void setParamNumAddLinkAttempts(final int paramNumAddLinkAttempts) {
 		this.paramNumAddLinkAttempts = paramNumAddLinkAttempts;
@@ -992,7 +1051,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the number of no-improvement generations allowed.
-	 * @param paramNumGensAllowedNoImprovement The number of generations.
+	 * 
+	 * @param paramNumGensAllowedNoImprovement
+	 *            The number of generations.
 	 */
 	public void setParamNumGensAllowedNoImprovement(
 			final int paramNumGensAllowedNoImprovement) {
@@ -1001,7 +1062,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the number of tries to create a looped link.
-	 * @param paramNumTrysToFindLoopedLink Number of tries.
+	 * 
+	 * @param paramNumTrysToFindLoopedLink
+	 *            Number of tries.
 	 */
 	public void setParamNumTrysToFindLoopedLink(
 			final int paramNumTrysToFindLoopedLink) {
@@ -1010,7 +1073,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the number of tries to try an old link.
-	 * @param paramNumTrysToFindOldLink Number of tries.
+	 * 
+	 * @param paramNumTrysToFindOldLink
+	 *            Number of tries.
 	 */
 	public void setParamNumTrysToFindOldLink(final int paramNumTrysToFindOldLink) {
 		this.paramNumTrysToFindOldLink = paramNumTrysToFindOldLink;
@@ -1018,7 +1083,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 	/**
 	 * Set the probability to replace a weight.
-	 * @param paramProbabilityWeightReplaced The probability.
+	 * 
+	 * @param paramProbabilityWeightReplaced
+	 *            The probability.
 	 */
 	public void setParamProbabilityWeightReplaced(
 			final double paramProbabilityWeightReplaced) {
@@ -1026,28 +1093,37 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	/**
+	 * Set if we are using snapshot mode.
+	 * 
+	 * @param snapshot
+	 *            True if we are using snapshot mode.
+	 */
+	public void setSnapshot(final boolean snapshot) {
+		this.snapshot = snapshot;
+	}
+
+	/**
 	 * Sort the genomes.
 	 */
 	public void sortAndRecord() {
-		
-		for( Genome genome: this.getPopulation().getGenomes() )
-		{
+
+		for (final Genome genome : getPopulation().getGenomes()) {
 			genome.decode();
 			calculateScore(genome);
 		}
-		
+
 		getPopulation().sort();
 
-		Genome genome = getPopulation().getBest();
-		double currentBest = genome.getScore();
-		
-		if( getComparator().isBetterThan(currentBest, bestEverScore) )
-		{
-			bestEverScore = currentBest;
-			this.bestEverNetwork = ((BasicNetwork)genome.getOrganism());
+		final Genome genome = getPopulation().getBest();
+		final double currentBest = genome.getScore();
+
+		if (getComparator().isBetterThan(currentBest, this.bestEverScore)) {
+			this.bestEverScore = currentBest;
+			this.bestEverNetwork = ((BasicNetwork) genome.getOrganism());
 		}
-		
-		bestEverScore = getComparator().bestScore(getError(), bestEverScore);
+
+		this.bestEverScore = getComparator().bestScore(getError(),
+				this.bestEverScore);
 	}
 
 	/**
@@ -1067,8 +1143,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 				final double compatibility = genome
 						.getCompatibilityScore((NEATGenome) s.getLeader());
 
-				if (compatibility <= paramCompatibilityThreshold) {
-					addSpeciesMember(s,genome);
+				if (compatibility <= this.paramCompatibilityThreshold) {
+					addSpeciesMember(s, genome);
 					genome.setSpeciesID(s.getSpeciesID());
 					added = true;
 					break;
@@ -1079,8 +1155,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 			// new species
 			if (!added) {
 				getPopulation().getSpecies().add(
-						new BasicSpecies(this.getPopulation(), genome, getPopulation()
-								.assignSpeciesID()));
+						new BasicSpecies(getPopulation(), genome,
+								getPopulation().assignSpeciesID()));
 			}
 		}
 
@@ -1088,15 +1164,16 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		for (final Genome g : getPopulation().getGenomes()) {
 			final NEATGenome genome = (NEATGenome) g;
-			totalFitAdjustment += genome.getAdjustedScore();
+			this.totalFitAdjustment += genome.getAdjustedScore();
 		}
 
-		averageFitAdjustment = totalFitAdjustment / getPopulation().size();
+		this.averageFitAdjustment = this.totalFitAdjustment
+				/ getPopulation().size();
 
 		for (final Genome g : getPopulation().getGenomes()) {
 			final NEATGenome genome = (NEATGenome) g;
 			final double toSpawn = genome.getAdjustedScore()
-					/ averageFitAdjustment;
+					/ this.averageFitAdjustment;
 			genome.setAmountToSpawn(toSpawn);
 		}
 
@@ -1105,10 +1182,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 	}
 
-
 	/**
 	 * Select a gene using a tournament.
-	 * @param numComparisons The number of compares to do.
+	 * 
+	 * @param numComparisons
+	 *            The number of compares to do.
 	 * @return The chosen genome.
 	 */
 	public NEATGenome tournamentSelection(final int numComparisons) {
@@ -1128,31 +1206,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
-	}
-
-	/**
-	 * @return Are we using snapshot mode.
-	 */
-	public boolean isSnapshot() {
-		return snapshot;
-	}
-
-	/**
-	 * Set if we are using snapshot mode.
-	 * 
-	 * @param snapshot
-	 *            True if we are using snapshot mode.
-	 */
-	public void setSnapshot(boolean snapshot) {
-		this.snapshot = snapshot;
-	}
-
-	public EncogCloud getCloud() {
-		return this.cloud;
-	}
-
-	public void setCloud(EncogCloud cloud) {
-		this.cloud = cloud;		
 	}
 
 }

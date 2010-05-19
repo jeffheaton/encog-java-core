@@ -42,25 +42,29 @@ import org.encog.parse.tags.read.ReadXML;
 import org.encog.util.http.FormUtility;
 
 /**
- * An Encog cloud request.  Sends a request to the Encog cloud and handles the response.
- *
+ * An Encog cloud request. Sends a request to the Encog cloud and handles the
+ * response.
+ * 
  */
 public class CloudRequest {
 
 	/**
 	 * The header properties.
 	 */
-	private Map<String, String> headerProperties = new HashMap<String, String>();
-	
+	private Map<String, String> headerProperties = 
+		new HashMap<String, String>();
+
 	/**
 	 * The session properties.
 	 */
-	private Map<String, String> sessionProperties = new HashMap<String, String>();
-	
+	private Map<String, String> sessionProperties = 
+		new HashMap<String, String>();
+
 	/**
 	 * The response properties.
 	 */
-	private Map<String, String> responseProperties = new HashMap<String, String>();
+	private Map<String, String> responseProperties = 
+		new HashMap<String, String>();
 
 	/**
 	 * @return The message returned from the cloud.
@@ -71,7 +75,9 @@ public class CloudRequest {
 
 	/**
 	 * Get a response property.
-	 * @param key The key.
+	 * 
+	 * @param key
+	 *            The key.
 	 * @return The property.
 	 */
 	public String getResponseProperty(final String key) {
@@ -101,7 +107,9 @@ public class CloudRequest {
 
 	/**
 	 * Handle the cloud response.
-	 * @param contents The contents.
+	 * 
+	 * @param contents
+	 *            The contents.
 	 */
 	private void handleResponse(final String contents) {
 		final ByteArrayInputStream is = new ByteArrayInputStream(contents
@@ -124,13 +132,17 @@ public class CloudRequest {
 
 	/**
 	 * Perform a GET request.
-	 * @param async True if this request should be asynchronous.
-	 * @param url The URL.
+	 * 
+	 * @param async
+	 *            True if this request should be asynchronous.
+	 * @param url
+	 *            The URL.
 	 */
 	public void performURLGET(final boolean async, final String url) {
 		try {
 			if (async) {
-				final AsynchronousCloudRequest request = new AsynchronousCloudRequest(
+				final AsynchronousCloudRequest request = 
+					new AsynchronousCloudRequest(
 						new URL(url));
 				final Thread t = new Thread(request);
 				t.setDaemon(true);
@@ -148,15 +160,20 @@ public class CloudRequest {
 
 	/**
 	 * Perform a POST to the cloud.
-	 * @param async True if this request should be asynchronous.
-	 * @param service The service.
-	 * @param args The POST arguments.
+	 * 
+	 * @param async
+	 *            True if this request should be asynchronous.
+	 * @param service
+	 *            The service.
+	 * @param args
+	 *            The POST arguments.
 	 */
 	public void performURLPOST(final boolean async, final String service,
 			final Map<String, String> args) {
 		try {
 			if (async) {
-				final AsynchronousCloudRequest request = new AsynchronousCloudRequest(
+				final AsynchronousCloudRequest request = 
+					new AsynchronousCloudRequest(
 						new URL(service), args);
 				final Thread t = new Thread(request);
 				t.setDaemon(true);
@@ -184,7 +201,9 @@ public class CloudRequest {
 
 	/**
 	 * Process the cloud request.
-	 * @param xml The XML to parse.
+	 * 
+	 * @param xml
+	 *            The XML to parse.
 	 */
 	private void processCloud(final ReadXML xml) {
 		int ch;
@@ -195,7 +214,8 @@ public class CloudRequest {
 					this.headerProperties = xml.readPropertyBlock();
 				} else if (xml.getTag().getName().equalsIgnoreCase("Session")) {
 					this.sessionProperties = xml.readPropertyBlock();
-				} else if (xml.getTag().getName().equalsIgnoreCase("Response")) {
+				} else if (xml.getTag().getName().equalsIgnoreCase(
+						"Response")) {
 					this.responseProperties = xml.readPropertyBlock();
 				}
 			}
