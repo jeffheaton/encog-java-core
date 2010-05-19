@@ -30,35 +30,41 @@
 package org.encog.solve.genetic.genes;
 
 /**
- * Describes a gene.  A gene is the smallest piece of genetic information in Encog.
+ * Describes a gene. A gene is the smallest piece of genetic information in
+ * Encog.
  */
 public interface Gene extends Comparable<Gene> {
-	
+
 	/**
 	 * Copy another gene to this one.
-	 * @param gene The other gene to copy.
+	 * 
+	 * @param gene
+	 *            The other gene to copy.
 	 */
-	public void copy(Gene gene);
+	void copy(Gene gene);
 
 	/**
 	 * Get the ID of this gene, -1 for undefined.
+	 * 
 	 * @return The ID of this gene.
 	 */
-	public long getId();
+	long getId();
 
 	/**
 	 * @return The innovation ID of this gene.
 	 */
-	public long getInnovationId();
+	long getInnovationId();
 
 	/**
 	 * @return True, if this gene is enabled.
 	 */
-	public boolean isEnabled();
+	boolean isEnabled();
 
 	/**
 	 * Determine if this gene is enabled.
-	 * @param e True if this gene is enabled.
+	 * 
+	 * @param e
+	 *            True if this gene is enabled.
 	 */
-	public void setEnabled(boolean e);
+	void setEnabled(boolean e);
 }

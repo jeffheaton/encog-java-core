@@ -30,25 +30,45 @@
 
 package org.encog.solve.genetic.genes;
 
+/**
+ * A gene that holds a single character.
+ */
 public class CharGene extends BasicGene {
 
+	/**
+	 * The character value of the gene.
+	 */
 	private char value;
-	
+
+	/**
+	 * Copy another gene to this gene.
+	 * @param gene The source gene.
+	 */
 	@Override
-	public void copy(Gene gene) {
-		this.value = ((CharGene)gene).getValue();
-	}
-	
-	public String toString()
-	{
-		return ""+value;
+	public void copy(final Gene gene) {
+		this.value = ((CharGene) gene).getValue();
 	}
 
+	/**
+	 * @return The value of this gene.
+	 */
 	public char getValue() {
-		return value;
+		return this.value;
 	}
 
-	public void setValue(char value) {
+	/**
+	 * Set the value of this gene.
+	 * @param value The new value of this gene.
+	 */
+	public void setValue(final char value) {
 		this.value = value;
+	}
+
+	/**
+	 * @return This object as a string.
+	 */
+	@Override
+	public String toString() {
+		return "" + this.value;
 	}
 }

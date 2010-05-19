@@ -67,6 +67,38 @@ import org.slf4j.LoggerFactory;
 public class PruneIncremental extends ConcurrentJob {
 
 	/**
+	 * Format the network as a human readable string that lists the hidden
+	 * layers.
+	 * 
+	 * @param network
+	 *            The network to format.
+	 * @return A human readable string.
+	 */
+	public static String networkToString(final BasicNetwork network) {
+		final StringBuilder result = new StringBuilder();
+		int num = 1;
+
+		Layer layer = network.getLayer(BasicNetwork.TAG_INPUT);
+
+		// display only hidden layers
+		while (layer.getNext().size() > 0) {
+			layer = layer.getNext().get(0).getToLayer();
+
+			if (layer.getNext().size() > 0) {
+				if (result.length() > 0) {
+					result.append(",");
+				}
+				result.append("H");
+				result.append(num++);
+				result.append("=");
+				result.append(layer.getNeuronCount());
+			}
+		}
+
+		return result.toString();
+	}
+
+	/**
 	 * Are we done?
 	 */
 	private boolean done = false;
@@ -157,39 +189,7 @@ public class PruneIncremental extends ConcurrentJob {
 	/**
 	 * The number of tries with random weights.
 	 */
-	private int weightTries;
-
-	/**
-	 * Format the network as a human readable string that lists the hidden
-	 * layers.
-	 * 
-	 * @param network
-	 *            The network to format.
-	 * @return A human readable string.
-	 */
-	public static String networkToString(final BasicNetwork network) {
-		final StringBuilder result = new StringBuilder();
-		int num = 1;
-
-		Layer layer = network.getLayer(BasicNetwork.TAG_INPUT);
-
-		// display only hidden layers
-		while (layer.getNext().size() > 0) {
-			layer = layer.getNext().get(0).getToLayer();
-
-			if (layer.getNext().size() > 0) {
-				if (result.length() > 0) {
-					result.append(",");
-				}
-				result.append("H");
-				result.append(num++);
-				result.append("=");
-				result.append(layer.getNeuronCount());
-			}
-		}
-
-		return result.toString();
-	}
+	private final int weightTries;
 
 	/**
 	 * Construct an object to determine the optimal number of hidden layers and
@@ -269,6 +269,27 @@ public class PruneIncremental extends ConcurrentJob {
 	}
 
 	/**
+	 * @return The size of the first hidden layer.
+	 */
+	public int getHidden1Size() {
+		return this.hidden1Size;
+	}
+
+	/**
+	 * @return The size of the second hidden layer.
+	 */
+	public int getHidden2Size() {
+		return this.hidden2Size;
+	}
+
+	/**
+	 * @return The higest error so far.
+	 */
+	public double getHigh() {
+		return this.high;
+	}
+
+	/**
 	 * @return The number of training iterations to try for each network.
 	 */
 	public int getIterations() {
@@ -276,10 +297,38 @@ public class PruneIncremental extends ConcurrentJob {
 	}
 
 	/**
+	 * @return The lowest error so far.
+	 */
+	public double getLow() {
+		return this.low;
+	}
+
+	/**
 	 * @return The network pattern to use.
 	 */
 	public NeuralNetworkPattern getPattern() {
 		return this.pattern;
+	}
+
+	/**
+	 * @return The error results.
+	 */
+	public double[][] getResults() {
+		return this.results;
+	}
+
+	/**
+	 * @return the topErrors
+	 */
+	public double[] getTopErrors() {
+		return this.topErrors;
+	}
+
+	/**
+	 * @return the topNetworks
+	 */
+	public BasicNetwork[] getTopNetworks() {
+		return this.topNetworks;
 	}
 
 	/**
@@ -319,6 +368,36 @@ public class PruneIncremental extends ConcurrentJob {
 	}
 
 	/**
+	 * Init for prune.
+	 */
+	public void init() {
+		// handle display for one layer
+		if (this.hidden.size() == 1) {
+			this.hidden1Size = (this.hidden.get(0).getMax() - this.hidden
+					.get(0).getMin()) + 1;
+			this.hidden2Size = 0;
+			this.results = new double[this.hidden1Size][1];
+		} else if (this.hidden.size() == 2) {
+			// handle display for two layers
+			this.hidden1Size = (this.hidden.get(0).getMax() - this.hidden
+					.get(0).getMin()) + 1;
+			this.hidden2Size = (this.hidden.get(1).getMax() - this.hidden
+					.get(1).getMin()) + 1;
+			this.results = new double[this.hidden1Size][this.hidden2Size];
+		} else {
+			// we don't handle displays for more than two layers
+			this.hidden1Size = 0;
+			this.hidden2Size = 0;
+			this.results = null;
+		}
+
+		// reset min and max
+		this.high = Double.NEGATIVE_INFINITY;
+		this.low = Double.POSITIVE_INFINITY;
+
+	}
+
+	/**
 	 * Get the next workload. This is the number of hidden neurons. This is the
 	 * total amount of work to be processed.
 	 * 
@@ -335,35 +414,6 @@ public class PruneIncremental extends ConcurrentJob {
 		init();
 
 		return result;
-	}
-
-	public void init() {
-		// handle display for one layer
-		if (this.hidden.size() == 1) {
-			this.hidden1Size = (this.hidden.get(0).getMax() - this.hidden
-					.get(0).getMin()) + 1;
-			this.hidden2Size = 0;
-			this.results = new double[this.hidden1Size][1];
-		}
-		// handle display for two layers
-		else if (this.hidden.size() == 2) {
-			this.hidden1Size = (this.hidden.get(0).getMax() - this.hidden
-					.get(0).getMin()) + 1;
-			this.hidden2Size = (this.hidden.get(1).getMax() - this.hidden
-					.get(1).getMin()) + 1;
-			this.results = new double[this.hidden1Size][this.hidden2Size];
-		}
-		// we don't handle displays for more than two layers
-		else {
-			this.hidden1Size = 0;
-			this.hidden2Size = 0;
-			this.results = null;
-		}
-
-		// reset min and max
-		this.high = Double.NEGATIVE_INFINITY;
-		this.low = Double.POSITIVE_INFINITY;
-
 	}
 
 	/**
@@ -385,12 +435,13 @@ public class PruneIncremental extends ConcurrentJob {
 			network.reset();
 			final Propagation train = new ResilientPropagation(network,
 					this.training);
-			StopTrainingStrategy strat = new StopTrainingStrategy(0.001, 5);
+			final StopTrainingStrategy strat = new StopTrainingStrategy(0.001,
+					5);
 
 			train.addStrategy(strat);
-			train.setNumThreads(1);// force single thread mode
+			train.setNumThreads(1); // force single thread mode
 
-			for (int i = 0; i < this.iterations && !this.getShouldStop()
+			for (int i = 0; (i < this.iterations) && !getShouldStop()
 					&& !strat.shouldStop(); i++) {
 				train.iteration();
 			}
@@ -398,7 +449,7 @@ public class PruneIncremental extends ConcurrentJob {
 			error = Math.min(error, train.getError());
 		}
 
-		if (!this.getShouldStop()) {
+		if (!getShouldStop()) {
 			// update min and max
 
 			this.high = Math.max(this.high, error);
@@ -439,60 +490,6 @@ public class PruneIncremental extends ConcurrentJob {
 			reportStatus(context, "Current: "
 					+ PruneIncremental.networkToString(network) + "; Best: "
 					+ PruneIncremental.networkToString(this.bestNetwork));
-		}
-
-	}
-
-	private synchronized void updateBest(BasicNetwork network, double error) {
-		this.high = Math.max(this.high, error);
-		this.low = Math.min(this.low, error);
-
-		int selectedIndex = -1;
-
-		// find a place for this in the top networks, if it is a top network
-		for (int i = 0; i < this.topNetworks.length; i++) {
-			if (this.topNetworks[i] == null) {
-				selectedIndex = i;
-				break;
-			} else if (this.topErrors[i] > error) {
-				// this network might be worth replacing, see if the one
-				// already selected is a better option.
-				if (selectedIndex == -1
-						|| this.topErrors[selectedIndex] < this.topErrors[i])
-					selectedIndex = i;
-			}
-		}
-
-		// replace the selected index
-		if (selectedIndex != -1) {
-			this.topErrors[selectedIndex] = error;
-			this.topNetworks[selectedIndex] = network;
-		}
-
-		// now select the best network, which is the most simple of the
-		// top networks.
-
-		BasicNetwork choice = null;
-
-		for (BasicNetwork n : this.topNetworks) {
-			if (n == null)
-				continue;
-
-			if (choice == null) {
-				choice = n;
-			} else {
-				if (n.getStructure().calculateSize() < choice.getStructure()
-						.calculateSize())
-					choice = n;
-			}
-		}
-
-		if (choice != this.bestNetwork) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Prune found new best network: error="
-						+ error + ", network=" + network);
-			}
-			this.bestNetwork = network;
 		}
 
 	}
@@ -542,7 +539,7 @@ public class PruneIncremental extends ConcurrentJob {
 	 */
 	@Override
 	public Object requestNextTask() {
-		if (this.done || this.getShouldStop()) {
+		if (this.done || getShouldStop()) {
 			return null;
 		}
 
@@ -556,51 +553,65 @@ public class PruneIncremental extends ConcurrentJob {
 	}
 
 	/**
-	 * @return The higest error so far.
+	 * Update the best network.
+	 * @param network The network to consider.
+	 * @param error The error for this network.
 	 */
-	public double getHigh() {
-		return high;
-	}
+	private synchronized void updateBest(final BasicNetwork network,
+			final double error) {
+		this.high = Math.max(this.high, error);
+		this.low = Math.min(this.low, error);
 
-	/**
-	 * @return The lowest error so far.
-	 */
-	public double getLow() {
-		return low;
-	}
+		int selectedIndex = -1;
 
-	/**
-	 * @return The error results.
-	 */
-	public double[][] getResults() {
-		return results;
-	}
+		// find a place for this in the top networks, if it is a top network
+		for (int i = 0; i < this.topNetworks.length; i++) {
+			if (this.topNetworks[i] == null) {
+				selectedIndex = i;
+				break;
+			} else if (this.topErrors[i] > error) {
+				// this network might be worth replacing, see if the one
+				// already selected is a better option.
+				if ((selectedIndex == -1)
+						|| (this.topErrors[selectedIndex] < this.topErrors[i])) {
+					selectedIndex = i;
+				}
+			}
+		}
 
-	/**
-	 * @return The size of the first hidden layer.
-	 */
-	public int getHidden1Size() {
-		return hidden1Size;
-	}
+		// replace the selected index
+		if (selectedIndex != -1) {
+			this.topErrors[selectedIndex] = error;
+			this.topNetworks[selectedIndex] = network;
+		}
 
-	/**
-	 * @return The size of the second hidden layer.
-	 */
-	public int getHidden2Size() {
-		return hidden2Size;
-	}
+		// now select the best network, which is the most simple of the
+		// top networks.
 
-	/**
-	 * @return the topNetworks
-	 */
-	public BasicNetwork[] getTopNetworks() {
-		return topNetworks;
-	}
+		BasicNetwork choice = null;
 
-	/**
-	 * @return the topErrors
-	 */
-	public double[] getTopErrors() {
-		return topErrors;
+		for (final BasicNetwork n : this.topNetworks) {
+			if (n == null) {
+				continue;
+			}
+
+			if (choice == null) {
+				choice = n;
+			} else {
+				if (n.getStructure().calculateSize() < choice.getStructure()
+						.calculateSize()) {
+					choice = n;
+				}
+			}
+		}
+
+		if (choice != this.bestNetwork) {
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Prune found new best network: error="
+						+ error + ", network=" + network);
+			}
+			this.bestNetwork = network;
+		}
+
 	}
 }

@@ -63,12 +63,13 @@ public class DirectoryEntry implements Comparable<DirectoryEntry> {
 	 *            The Encog object.
 	 */
 	public DirectoryEntry(final EncogPersistedObject obj) {
-		
+
 		String type = obj.getClass().getSimpleName();
-		
-		if( type.equalsIgnoreCase("BasicNeuralDataSet"))
+
+		if (type.equalsIgnoreCase("BasicNeuralDataSet")) {
 			type = EncogPersistedCollection.TYPE_TRAINING;
-		
+		}
+
 		this.type = type;
 		this.description = obj.getDescription();
 		this.name = obj.getName();

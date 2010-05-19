@@ -44,6 +44,7 @@ public class BasicInnovationList implements InnovationList {
 
 	/**
 	 * Add an innovation.
+	 * @param innovation The innovation to add.
 	 */
 	public void add(final Innovation innovation) {
 		list.add(innovation);

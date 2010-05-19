@@ -100,8 +100,15 @@ public interface Train {
 	 */
 	void setError(double error);
 
+	/**
+	 * Set the cloud use to track the training.
+	 * @param cloud The cloud used to track the training.
+	 */
 	void setCloud(EncogCloud cloud);
 	
+	/**
+	 * @return The cloud used to track the training.
+	 */
 	EncogCloud getCloud();
 	
 }

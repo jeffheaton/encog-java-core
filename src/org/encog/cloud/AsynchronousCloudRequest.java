@@ -40,7 +40,7 @@ import org.encog.util.http.FormUtility;
 
 /**
  * An asynchronous cloud request is set to the cloud, but we do not require a
- * reply. This allows status updates to be executed in a separate therad without
+ * reply. This allows status updates to be executed in a separate thread without
  * the need to wait.
  * 
  */

@@ -48,7 +48,12 @@ import org.encog.util.identity.GenerateID;
  */
 @EGReferenceable
 public class BasicPopulation implements Population, EncogPersistedObject {
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4097921208348173582L;
+
 	/**
 	 * Generate gene id's.
 	 */
@@ -58,17 +63,17 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 	 * Generate genome id's.
 	 */
 	private final GenerateID genomeIDGenerate = new BasicGenerateID();
-	
+
 	/**
 	 * The population.
 	 */
 	private final List<Genome> genomes = new ArrayList<Genome>();
-	
+
 	/**
 	 * Generate innovation id's.
 	 */
 	private final GenerateID innovationIDGenerate = new BasicGenerateID();
-	
+
 	/**
 	 * A list of innovations, or null if this feature is not being used.
 	 */
@@ -78,32 +83,32 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 	 * The old age penalty.
 	 */
 	private double oldAgePenalty = 0.3;
-	
+
 	/**
 	 * The old age threshold.
 	 */
 	private int oldAgeThreshold = 50;
-	
+
 	/**
 	 * How many genomes should be created.
 	 */
 	private int populationSize;
-	
+
 	/**
 	 * The species in this population.
 	 */
 	private final List<Species> species = new ArrayList<Species>();
-	
+
 	/**
 	 * Generate species id's.
 	 */
 	private final GenerateID speciesIDGenerate = new BasicGenerateID();
-	
+
 	/**
 	 * The survival rate.
 	 */
 	private double survivalRate = 0.2;
-	
+
 	/**
 	 * The young threshold.
 	 */
@@ -113,25 +118,17 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 	 * The young score bonus.
 	 */
 	private double youngScoreBonus = 0.3;
-	
+
 	/**
 	 * The object name.
 	 */
 	private String name;
-	
+
 	/**
 	 * The object description.
 	 */
 	private String description;
 
-	/**
-	 * Construct a population.
-	 * @param populationSize The population size.
-	 */
-	public BasicPopulation(final int populationSize) {
-		this.populationSize = populationSize;
-	}
-	
 	/**
 	 * Construct an empty population.
 	 */
@@ -140,101 +137,141 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 	}
 
 	/**
+	 * Construct a population.
+	 * 
+	 * @param populationSize
+	 *            The population size.
+	 */
+	public BasicPopulation(final int populationSize) {
+		this.populationSize = populationSize;
+	}
+
+	/**
 	 * Add a genome to the population.
-	 * @param genome The genome to add.
+	 * 
+	 * @param genome
+	 *            The genome to add.
 	 */
 	public void add(final Genome genome) {
-		genomes.add(genome);
+		this.genomes.add(genome);
 
 	}
 
 	/**
 	 * Add all of the specified members to this population.
-	 * @param newPop A list of new genomes to add.
+	 * 
+	 * @param newPop
+	 *            A list of new genomes to add.
 	 */
 	public void addAll(final List<? extends Genome> newPop) {
-		genomes.addAll(newPop);
+		this.genomes.addAll(newPop);
 	}
 
-	
 	/**
 	 * @return Assign a gene id.
 	 */
 	public long assignGeneID() {
-		return geneIDGenerate.generate();
+		return this.geneIDGenerate.generate();
 	}
 
 	/**
 	 * @return Assign a genome id.
 	 */
 	public long assignGenomeID() {
-		return genomeIDGenerate.generate();
+		return this.genomeIDGenerate.generate();
 	}
 
 	/**
 	 * @return Assign an innovation id.
 	 */
 	public long assignInnovationID() {
-		return innovationIDGenerate.generate();
+		return this.innovationIDGenerate.generate();
 	}
 
 	/**
 	 * @return Assign a species id.
 	 */
 	public long assignSpeciesID() {
-		return speciesIDGenerate.generate();
+		return this.speciesIDGenerate.generate();
 	}
 
 	/**
 	 * Clear all genomes from this population.
 	 */
 	public void clear() {
-		genomes.clear();
+		this.genomes.clear();
 
 	}
 
 	/**
-	 * Get a genome by index.  Index 0 is the best genome.
-	 * @param i The genome to get.
+	 * @return A persistor for this object.
+	 */
+	public Persistor createPersistor() {
+		return new GenericPersistor(BasicPopulation.class);
+	}
+
+	/**
+	 * Get a genome by index. Index 0 is the best genome.
+	 * 
+	 * @param i
+	 *            The genome to get.
+	 * @return The genome found at the specified index.
 	 */
 	public Genome get(final int i) {
-		return genomes.get(i);
+		return this.genomes.get(i);
 	}
 
 	/**
 	 * @return The best genome in the population.
 	 */
 	public Genome getBest() {
-		if (genomes.size() == 0) {
+		if (this.genomes.size() == 0) {
 			return null;
 		} else {
-			return genomes.get(0);
+			return this.genomes.get(0);
 		}
+	}
+
+	/**
+	 * @return This object's description.
+	 */
+	public String getDescription() {
+		return this.description;
 	}
 
 	/**
 	 * @return The genomes in the population.
 	 */
 	public List<Genome> getGenomes() {
-		return genomes;
+		return this.genomes;
 	}
 
 	/**
 	 * @return A list of innovations in this population.
 	 */
 	public InnovationList getInnovations() {
-		return innovations;
+		return this.innovations;
+	}
+
+	/**
+	 * @return The name.
+	 */
+	public String getName() {
+		return this.name;
 	}
 
 	/**
 	 * @return The old age penalty, or zero for none.
 	 */
 	public double getOldAgePenalty() {
-		return oldAgePenalty;
+		return this.oldAgePenalty;
 	}
 
+	/**
+	 * @return The old age threshold.
+	 */
 	public int getOldAgeThreshold() {
-		return oldAgeThreshold;
+		return this.oldAgeThreshold;
 	}
 
 	/**
@@ -243,48 +280,70 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 	 * @return The population size.
 	 */
 	public int getPopulationSize() {
-		return populationSize;
+		return this.populationSize;
 	}
 
 	/**
 	 * @return The species in this population.
 	 */
 	public List<Species> getSpecies() {
-		return species;
+		return this.species;
 	}
 
 	/**
 	 * @return The survival rate.
 	 */
 	public double getSurvivalRate() {
-		return survivalRate;
+		return this.survivalRate;
 	}
 
 	/**
 	 * @return The age at which a genome is considered "young".
 	 */
 	public int getYoungBonusAgeThreshold() {
-		return youngBonusAgeThreshold;
+		return this.youngBonusAgeThreshold;
 	}
 
 	/**
 	 * @return The bonus applied to young genomes.
 	 */
 	public double getYoungScoreBonus() {
-		return youngScoreBonus;
+		return this.youngScoreBonus;
+	}
+
+	/**
+	 * Set the description.
+	 * @param theDescription The description.
+	 */
+	public void setDescription(final String theDescription) {
+		this.description = theDescription;
+
 	}
 
 	/**
 	 * Set the innovation list.
-	 * @param innovations The innovations, or null to disable. 
+	 * 
+	 * @param innovations
+	 *            The innovations, or null to disable.
 	 */
 	public void setInnovations(final InnovationList innovations) {
 		this.innovations = innovations;
 	}
 
 	/**
+	 * Set the name.
+	 * @param theName The new name.
+	 */
+	public void setName(final String theName) {
+		this.name = theName;
+
+	}
+
+	/**
 	 * Set the old age penalty.
-	 * @param oldAgePenalty The percent the score is affected by.
+	 * 
+	 * @param oldAgePenalty
+	 *            The percent the score is affected by.
 	 */
 	public void setOldAgePenalty(final double oldAgePenalty) {
 		this.oldAgePenalty = oldAgePenalty;
@@ -292,7 +351,9 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 
 	/**
 	 * Set the threshold at which a genome is considered "old".
-	 * @param oldAgeThreshold The age.
+	 * 
+	 * @param oldAgeThreshold
+	 *            The age.
 	 */
 	public void setOldAgeThreshold(final int oldAgeThreshold) {
 		this.oldAgeThreshold = oldAgeThreshold;
@@ -310,7 +371,9 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 
 	/**
 	 * Set the survival rate.
-	 * @param survivalRate The survival rate.
+	 * 
+	 * @param survivalRate
+	 *            The survival rate.
 	 */
 	public void setSurvivalRate(final double survivalRate) {
 		this.survivalRate = survivalRate;
@@ -318,7 +381,9 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 
 	/**
 	 * Set the young bonus age threshold.
-	 * @param youngBonusAgeThreshold The age.
+	 * 
+	 * @param youngBonusAgeThreshold
+	 *            The age.
 	 */
 	public void setYoungBonusAgeThreshhold(final int youngBonusAgeThreshold) {
 		this.youngBonusAgeThreshold = youngBonusAgeThreshold;
@@ -326,7 +391,9 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 
 	/**
 	 * Set the young genome bonus.
-	 * @param youngScoreBonus The score bonus.
+	 * 
+	 * @param youngScoreBonus
+	 *            The score bonus.
 	 */
 	public void setYoungScoreBonus(final double youngScoreBonus) {
 		this.youngScoreBonus = youngScoreBonus;
@@ -336,36 +403,14 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 	 * @return The max size of the population.
 	 */
 	public int size() {
-		return genomes.size();
+		return this.genomes.size();
 	}
 
 	/**
 	 * Sort the population.
 	 */
 	public void sort() {
-		Collections.sort(genomes);
-	}
-
-	public Persistor createPersistor() {
-		return new GenericPersistor(BasicPopulation.class);
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setDescription(String theDescription) {
-		this.description = theDescription;
-		
-	}
-
-	public void setName(String theName) {
-		this.name = theName;
-		
+		Collections.sort(this.genomes);
 	}
 
 }

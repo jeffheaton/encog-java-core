@@ -82,6 +82,7 @@ public interface Population extends EncogPersistedObject {
 	/**
 	 * Get a genome by index.  Index 0 is the best genome.
 	 * @param i The genome to get.
+	 * @return The genome at the specified index.
 	 */
 	Genome get(int i);
 		
@@ -149,7 +150,7 @@ public interface Population extends EncogPersistedObject {
 
 	/**
 	 * Set the age at which a genome is considered "old".
-	 * @param oldAgeThreshold
+	 * @param oldAgeThreshold The old age threshold.
 	 */
 	void setOldAgeThreshold(int oldAgeThreshold);
 

@@ -33,6 +33,10 @@ package org.encog.solve.genetic.genes;
  * A gene that contains a floating point value.
  */
 public class DoubleGene extends BasicGene {
+	
+	/**
+	 * The value of this gene.
+	 */
 	private double value;
 
 	/**

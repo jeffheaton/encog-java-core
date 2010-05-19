@@ -48,14 +48,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Prune a neural network selectively. This class allows you to either add or
  * remove neurons from layers of a neural network. Tools
- *
+ * 
  * @author jheaton
- *
+ * 
  */
 public class PruneSelective {
 
 	/**
-	 *
+	 * 
 	 */
 	private final BasicNetwork network;
 
@@ -67,7 +67,7 @@ public class PruneSelective {
 
 	/**
 	 * Construct an object prune the neural network.
-	 *
+	 * 
 	 * @param network
 	 *            The network to prune.
 	 */
@@ -80,7 +80,7 @@ public class PruneSelective {
 	 * zero-weighted neuron is added, which will not affect the output of the
 	 * neural network. If the neuron count is decreased, then the weakest neuron
 	 * will be removed.
-	 *
+	 * 
 	 * @param layer
 	 *            The layer to adjust.
 	 * @param neuronCount
@@ -88,8 +88,9 @@ public class PruneSelective {
 	 */
 	public void changeNeuronCount(final Layer layer, final int neuronCount) {
 
-		if( neuronCount==0 )
+		if (neuronCount == 0) {
 			throw new NeuralNetworkError("Can't decrease to zero neurons.");
+		}
 
 		// is there anything to do?
 		if (neuronCount == layer.getNeuronCount()) {
@@ -105,7 +106,7 @@ public class PruneSelective {
 
 	/**
 	 * Internal function to decrease the neuron count of a layer.
-	 *
+	 * 
 	 * @param layer
 	 *            The layer to affect.
 	 * @param neuronCount
@@ -128,7 +129,7 @@ public class PruneSelective {
 	/**
 	 * Determine the significance of the neuron. The higher the return value,
 	 * the more significant the neuron is.
-	 *
+	 * 
 	 * @param layer
 	 *            The layer to query.
 	 * @param neuron
@@ -164,6 +165,12 @@ public class PruneSelective {
 		return Math.abs(result);
 	}
 
+	/**
+	 * Find the weakest neurons on a layer.  Considers both weight and bias.
+	 * @param layer The layer to search.
+	 * @param count The number of neurons to find.
+	 * @return An array of the indexes of the weakest neurons.
+	 */
 	private int[] findWeakestNeurons(final Layer layer, final int count) {
 		// create an array to hold the least significant neurons, which will be
 		// returned
@@ -205,7 +212,7 @@ public class PruneSelective {
 	/**
 	 * Internal function to increase the neuron count. This will add a
 	 * zero-weight neuron to this layer.
-	 *
+	 * 
 	 * @param layer
 	 *            The layer to increase.
 	 * @param neuronCount
@@ -263,13 +270,17 @@ public class PruneSelective {
 
 		// adjust RBF
 		if (layer instanceof RadialBasisFunctionLayer) {
-			final RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer) layer;
-			final RadialBasisFunction[] newRBF = new RadialBasisFunction[neuronCount];
+			final RadialBasisFunctionLayer rbf 
+				= (RadialBasisFunctionLayer) layer;
+			final RadialBasisFunction[] newRBF 
+				= new RadialBasisFunction[neuronCount];
+			
 			for (int i = 0; i < rbf.getRadialBasisFunction().length; i++) {
 				newRBF[i] = rbf.getRadialBasisFunction()[i];
 			}
 
-			for (int i = rbf.getRadialBasisFunction().length; i < neuronCount; i++) {
+			for (int i = rbf.getRadialBasisFunction().length; 
+				i < neuronCount; i++) {
 				newRBF[i] = new GaussianFunction(Math.random() - 0.5, Math
 						.random(), Math.random() - 0.5);
 			}
@@ -285,7 +296,7 @@ public class PruneSelective {
 	/**
 	 * Prune one of the neurons from this layer. Remove all entries in this
 	 * weight matrix and other layers.
-	 *
+	 * 
 	 * @param targetLayer
 	 *            The neuron to prune. Zero specifies the first neuron.
 	 * @param neuron
@@ -314,8 +325,8 @@ public class PruneSelective {
 
 		// remove the bias
 		if (targetLayer.hasBias()) {
-			final double[] newBias = new double[targetLayer
-					.getNeuronCount() - 1];
+			final double[] newBias 
+				= new double[targetLayer.getNeuronCount() - 1];
 
 			int targetIndex = 0;
 			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
@@ -351,7 +362,7 @@ public class PruneSelective {
 	/**
 	 * Stimulate the specified neuron by the specified percent. This is used to
 	 * randomize the weights and bias values for weak neurons.
-	 *
+	 * 
 	 * @param percent
 	 *            The percent to randomize by.
 	 * @param layer
@@ -364,7 +375,8 @@ public class PruneSelective {
 		final Distort d = new Distort(percent);
 
 		if (layer.hasBias()) {
-			layer.setBiasWeight(neuron, d.randomize(layer.getBiasWeight(neuron)));
+			layer.setBiasWeight(neuron, d
+					.randomize(layer.getBiasWeight(neuron)));
 		}
 
 		// calculate the outbound significance
@@ -389,7 +401,7 @@ public class PruneSelective {
 	/**
 	 * Stimulate weaker neurons on a layer. Find the weakest neurons and then
 	 * randomize them by the specified percent.
-	 *
+	 * 
 	 * @param layer
 	 *            The layer to stimulate.
 	 * @param count

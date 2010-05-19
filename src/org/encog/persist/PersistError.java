@@ -63,22 +63,22 @@ public class PersistError extends EncogError {
 
 	/**
 	 * Construct an exception that holds another exception.
-	 * 
+	 * @param msg The message.
 	 * @param t
 	 *            The other exception.
 	 */
-	public PersistError(final Throwable t) {
-		super(t);
+	public PersistError(final String msg, final Throwable t) {
+		super(msg, t);
 	}
-	
+
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
 	 * @param t
 	 *            The other exception.
 	 */
-	public PersistError(String msg, final Throwable t) {
-		super(msg,t);
+	public PersistError(final Throwable t) {
+		super(t);
 	}
 
 }

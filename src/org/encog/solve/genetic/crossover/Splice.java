@@ -29,15 +29,11 @@
  */
 package org.encog.solve.genetic.crossover;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genome.Chromosome;
 
 /**
- * A simple cross over where genes are simply "spliced".
- * Genes are allowed to repeat.
+ * A simple cross over where genes are simply "spliced". Genes are allowed to
+ * repeat.
  */
 public class Splice implements Crossover {
 
@@ -46,6 +42,10 @@ public class Splice implements Crossover {
 	 */
 	private final int cutLength;
 
+	/**
+	 * Create a slice crossover with the specified cut length.
+	 * @param cutLength The cut length.
+	 */
 	public Splice(final int cutLength) {
 		this.cutLength = cutLength;
 	}
@@ -66,8 +66,8 @@ public class Splice implements Crossover {
 		final int geneLength = mother.getGenes().size();
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() * (geneLength - cutLength));
-		final int cutpoint2 = cutpoint1 + cutLength;
+		final int cutpoint1 = (int) (Math.random() * (geneLength - this.cutLength));
+		final int cutpoint2 = cutpoint1 + this.cutLength;
 
 		// handle cut section
 		for (int i = 0; i < geneLength; i++) {

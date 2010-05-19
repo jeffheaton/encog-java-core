@@ -38,6 +38,9 @@ import org.encog.solve.genetic.genome.Chromosome;
  */
 public class MutatePerturb implements Mutate {
 
+	/**
+	 * The amount to perturb by.
+	 */
 	private final double perturbAmount;
 
 	/**

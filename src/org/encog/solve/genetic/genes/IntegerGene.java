@@ -33,7 +33,7 @@ package org.encog.solve.genetic.genes;
  * A gene that contains an integer value.
  */
 public class IntegerGene extends BasicGene {
-	
+
 	/**
 	 * The value of this gene.
 	 */
@@ -41,25 +41,25 @@ public class IntegerGene extends BasicGene {
 
 	/**
 	 * Copy another gene to this one.
-	 * @param gene The other gene to copy.
+	 * 
+	 * @param gene
+	 *            The other gene to copy.
 	 */
 	public void copy(final Gene gene) {
-		value = ((IntegerGene) gene).getValue();
-	}
-	
-	public int hashCode()
-	{
-		return value;
+		this.value = ((IntegerGene) gene).getValue();
 	}
 
 	/**
 	 * Determine if this gene has the same values as another.
-	 * @param obj The other gene.
+	 * 
+	 * @param obj
+	 *            The other gene.
+	 * @return True, if the two objects are equal.
 	 */
 	@Override
 	public boolean equals(final Object obj) {
 		if (obj instanceof IntegerGene) {
-			return (((IntegerGene) obj).getValue() == value);
+			return (((IntegerGene) obj).getValue() == this.value);
 		} else {
 			return false;
 		}
@@ -69,12 +69,22 @@ public class IntegerGene extends BasicGene {
 	 * @return The value of this gene.
 	 */
 	public int getValue() {
-		return value;
+		return this.value;
+	}
+
+	/**
+	 * @return a hash code.
+	 */
+	@Override
+	public int hashCode() {
+		return this.value;
 	}
 
 	/**
 	 * Set the value of this gene.
-	 * @param value The value of this gene.
+	 * 
+	 * @param value
+	 *            The value of this gene.
 	 */
 	public void setValue(final int value) {
 		this.value = value;
@@ -85,7 +95,7 @@ public class IntegerGene extends BasicGene {
 	 */
 	@Override
 	public String toString() {
-		return "" + value;
+		return "" + this.value;
 	}
 
 }

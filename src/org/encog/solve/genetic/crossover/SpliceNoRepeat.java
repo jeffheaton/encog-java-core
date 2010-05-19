@@ -36,15 +36,10 @@ import org.encog.solve.genetic.genes.Gene;
 import org.encog.solve.genetic.genome.Chromosome;
 
 /**
- * A simple cross over where genes are simply "spliced".
- * Genes are not allowed to repeat.
+ * A simple cross over where genes are simply "spliced". Genes are not allowed
+ * to repeat.
  */
 public class SpliceNoRepeat implements Crossover {
-	
-	/**
-	 * The cut length.
-	 */
-	private final int cutLength;
 
 	/**
 	 * Get a list of the genes that have not been taken before. This is useful
@@ -60,8 +55,8 @@ public class SpliceNoRepeat implements Crossover {
 	private static Gene getNotTaken(final Chromosome source,
 			final Set<Gene> taken) {
 
-		for (Gene trial: source.getGenes() ) {
-			if( !taken.contains(trial) ) {
+		for (final Gene trial : source.getGenes()) {
+			if (!taken.contains(trial)) {
 				taken.add(trial);
 				return trial;
 			}
@@ -69,11 +64,17 @@ public class SpliceNoRepeat implements Crossover {
 
 		return null;
 	}
-	
+
+	/**
+	 * The cut length.
+	 */
+	private final int cutLength;
 
 	/**
 	 * Construct a splice crossover.
-	 * @param cutLength The cut length.
+	 * 
+	 * @param cutLength
+	 *            The cut length.
 	 */
 	public SpliceNoRepeat(final int cutLength) {
 		this.cutLength = cutLength;
@@ -95,8 +96,8 @@ public class SpliceNoRepeat implements Crossover {
 		final int geneLength = father.getGenes().size();
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() * (geneLength - cutLength));
-		final int cutpoint2 = cutpoint1 + cutLength;
+		final int cutpoint1 = (int) (Math.random() * (geneLength - this.cutLength));
+		final int cutpoint2 = cutpoint1 + this.cutLength;
 
 		// keep track of which genes have been taken in each of the two
 		// offspring, defaults to false.

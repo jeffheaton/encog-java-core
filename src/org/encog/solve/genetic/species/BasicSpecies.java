@@ -33,9 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReference;
-import org.encog.solve.genetic.GeneticAlgorithm;
 import org.encog.solve.genetic.genome.Genome;
 import org.encog.solve.genetic.population.Population;
 
@@ -43,42 +41,42 @@ import org.encog.solve.genetic.population.Population;
  * Provides basic functionality for a species.
  */
 public class BasicSpecies implements Species {
-	
+
 	/**
 	 * The age of this species.
 	 */
 	private int age;
-	
+
 	/**
 	 * The best score.
 	 */
 	private double bestScore;
-	
+
 	/**
 	 * The number of generations with no improvement.
 	 */
 	private int gensNoImprovement;
-	
+
 	/**
 	 * The leader.
 	 */
 	private Genome leader;
-	
+
 	/**
 	 * The list of genomes.
 	 */
-	private List<Genome> members = new ArrayList<Genome>();
-	
+	private final List<Genome> members = new ArrayList<Genome>();
+
 	/**
 	 * The number of spawns required.
 	 */
 	private double spawnsRequired;
-	
+
 	/**
 	 * The species id.
 	 */
 	private long speciesID;
-	
+
 	/**
 	 * The owner class.
 	 */
@@ -86,26 +84,28 @@ public class BasicSpecies implements Species {
 	private Population population;
 
 	/**
-	 * Construct a species.
-	 * @param training
-	 * @param first
-	 * @param speciesID
+	 * Default constructor, used mainly for persistence.
 	 */
-	public BasicSpecies(final Population population,
-			final Genome first, final long speciesID) {
+	public BasicSpecies() {
+
+	}
+
+	/**
+	 * Construct a species.
+	 * @param population The population the species belongs to.
+	 * @param first The first genome in the species.
+	 * @param speciesID The species id.
+	 */
+	public BasicSpecies(final Population population, final Genome first,
+			final long speciesID) {
 		this.population = population;
 		this.speciesID = speciesID;
-		bestScore = first.getScore();
-		gensNoImprovement = 0;
-		age = 0;
-		leader = first;
-		spawnsRequired = 0;
-		members.add(first);
-	}
-	
-	public BasicSpecies()
-	{
-		
+		this.bestScore = first.getScore();
+		this.gensNoImprovement = 0;
+		this.age = 0;
+		this.leader = first;
+		this.spawnsRequired = 0;
+		this.members.add(first);
 	}
 
 	/**
@@ -113,33 +113,32 @@ public class BasicSpecies implements Species {
 	 */
 	public void calculateSpawnAmount() {
 		this.spawnsRequired = 0;
-		for (final Genome genome : members) {
-			spawnsRequired += genome.getAmountToSpawn();
+		for (final Genome genome : this.members) {
+			this.spawnsRequired += genome.getAmountToSpawn();
 		}
 
 	}
 
 	/**
-	 * Choose a parent to mate. Choose from the population,
-	 * determined by the survival rate.  From this pool, a random
-	 * parent is chosen.
+	 * Choose a parent to mate. Choose from the population, determined by the
+	 * survival rate. From this pool, a random parent is chosen.
+	 * 
 	 * @return The parent.
 	 */
 	public Genome chooseParent() {
 		Genome baby;
 
 		// If there is a single member, then choose that one.
-		if (members.size() == 1) {
-			baby = members.get(0);
-		}
-
-		else {
-			// If there are many, then choose the population based on survival rate
+		if (this.members.size() == 1) {
+			baby = this.members.get(0);
+		} else {
+			// If there are many, then choose the population based on survival
+			// rate
 			// and select a random genome.
-			final int maxIndexSize = (int) (population
-					.getSurvivalRate() * members.size()) + 1;
+			final int maxIndexSize = (int) (this.population.getSurvivalRate() * this.members
+					.size()) + 1;
 			final int theOne = (int) RangeRandomizer.randomize(0, maxIndexSize);
-			baby = members.get(theOne);
+			baby = this.members.get(theOne);
 		}
 
 		return baby;
@@ -149,73 +148,82 @@ public class BasicSpecies implements Species {
 	 * @return The age of this species.
 	 */
 	public int getAge() {
-		return age;
+		return this.age;
 	}
 
 	/**
 	 * @return The best score for this species.
 	 */
 	public double getBestScore() {
-		return bestScore;
+		return this.bestScore;
 	}
 
 	/**
 	 * @return The number of generations with no improvement.
 	 */
 	public int getGensNoImprovement() {
-		return gensNoImprovement;
+		return this.gensNoImprovement;
 	}
 
 	/**
 	 * @return THe leader of this species.
 	 */
 	public Genome getLeader() {
-		return leader;
+		return this.leader;
 	}
 
 	/**
 	 * @return The members of this species.
 	 */
 	public List<Genome> getMembers() {
-		return members;
+		return this.members;
 	}
 
 	/**
 	 * @return The number to spawn.
 	 */
 	public double getNumToSpawn() {
-		return spawnsRequired;
+		return this.spawnsRequired;
+	}
+
+	/**
+	 * @return The population that this species belongs to.
+	 */
+	public Population getPopulation() {
+		return this.population;
 	}
 
 	/**
 	 * @return The spawns required.
 	 */
 	public double getSpawnsRequired() {
-		return spawnsRequired;
+		return this.spawnsRequired;
 	}
 
 	/**
-	 * The species ID.
+	 * @return The species ID.
 	 */
 	public long getSpeciesID() {
-		return speciesID;
+		return this.speciesID;
 	}
 
 	/**
-	 * Purge all members, increase age by one and count the number of generations
-	 * with no improvement.
+	 * Purge all members, increase age by one and count the number of
+	 * generations with no improvement.
 	 */
 	public void purge() {
-		members.clear();
-		age++;
-		gensNoImprovement++;
-		spawnsRequired = 0;
+		this.members.clear();
+		this.age++;
+		this.gensNoImprovement++;
+		this.spawnsRequired = 0;
 
 	}
 
 	/**
 	 * Set the age of this species.
-	 * @param age The age of this species.
+	 * 
+	 * @param age
+	 *            The age of this species.
 	 */
 	public void setAge(final int age) {
 		this.age = age;
@@ -223,7 +231,9 @@ public class BasicSpecies implements Species {
 
 	/**
 	 * Set the best score.
-	 * @param bestScore The best score.
+	 * 
+	 * @param bestScore
+	 *            The best score.
 	 */
 	public void setBestScore(final double bestScore) {
 		this.bestScore = bestScore;
@@ -231,7 +241,9 @@ public class BasicSpecies implements Species {
 
 	/**
 	 * Set the number of generations with no improvement.
-	 * @param gensNoImprovement The number of generations.
+	 * 
+	 * @param gensNoImprovement
+	 *            The number of generations.
 	 */
 	public void setGensNoImprovement(final int gensNoImprovement) {
 		this.gensNoImprovement = gensNoImprovement;
@@ -239,7 +251,9 @@ public class BasicSpecies implements Species {
 
 	/**
 	 * Set the leader.
-	 * @param leader The new leader.
+	 * 
+	 * @param leader
+	 *            The new leader.
 	 */
 	public void setLeader(final Genome leader) {
 		this.leader = leader;
@@ -247,15 +261,12 @@ public class BasicSpecies implements Species {
 
 	/**
 	 * Set the number of spawns required.
-	 * @param spawnsRequired The number of spawns required.
+	 * 
+	 * @param spawnsRequired
+	 *            The number of spawns required.
 	 */
 	public void setSpawnsRequired(final double spawnsRequired) {
 		this.spawnsRequired = spawnsRequired;
 	}
 
-	public Population getPopulation() {
-		return population;
-	}
-	
-	
 }

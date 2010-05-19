@@ -51,7 +51,6 @@ public interface InnovationList {
 
 	/**
 	 * @return A list of innovations.
-	 * @return The innovation list.
 	 */
 	List<Innovation> getInnovations();
 }

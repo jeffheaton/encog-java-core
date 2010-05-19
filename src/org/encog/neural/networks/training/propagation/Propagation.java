@@ -38,7 +38,6 @@ import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.util.EncogValidate;
 
-
 /**
  * Implements basic functionality that is needed by each of the propagation
  * methods. The specifics of each of the propagation methods is implemented
@@ -71,7 +70,7 @@ public abstract class Propagation extends BasicTraining {
 			final NeuralDataSet training) {
 		super();
 		this.network = network;
-		setTraining( training );
+		setTraining(training);
 	}
 
 	/**
@@ -114,24 +113,26 @@ public abstract class Propagation extends BasicTraining {
 		try {
 			preIteration();
 
-			CalculateGradient prop = new CalculateGradient(getNetwork(),
-					getTraining(), this.getNumThreads());
-			double[] weights = NetworkCODEC.networkToArray(getNetwork());
+			final CalculateGradient prop = new CalculateGradient(getNetwork(),
+					getTraining(), getNumThreads());
+			final double[] weights = NetworkCODEC.networkToArray(getNetwork());
 			prop.calculate(weights);
 
 			performIteration(prop, weights);
 
 			NetworkCODEC.arrayToNetwork(weights, getNetwork());
-			this.setError(prop.getError());
+			setError(prop.getError());
 
 			postIteration();
-		} catch (ArrayIndexOutOfBoundsException ex) {
-			EncogValidate.validateNetworkForTraining(network, getTraining());
+		} catch (final ArrayIndexOutOfBoundsException ex) {
+			EncogValidate.validateNetworkForTraining(this.network,
+					getTraining());
 		}
 	}
 
 	/**
 	 * Pause the training to continue later.
+	 * 
 	 * @return A training continuation object.
 	 */
 	public TrainingContinuation pause() {
@@ -152,7 +153,9 @@ public abstract class Propagation extends BasicTraining {
 
 	/**
 	 * Resume training.
-	 * @param state The training continuation object to use to continue.
+	 * 
+	 * @param state
+	 *            The training continuation object to use to continue.
 	 */
 	public void resume(final TrainingContinuation state) {
 		throw new TrainingError("This training type does not support resume.");
@@ -160,7 +163,9 @@ public abstract class Propagation extends BasicTraining {
 
 	/**
 	 * Set the number of threads.
-	 * @param numThreads The number of threads.
+	 * 
+	 * @param numThreads
+	 *            The number of threads.
 	 */
 	public void setNumThreads(final int numThreads) {
 		this.numThreads = numThreads;
