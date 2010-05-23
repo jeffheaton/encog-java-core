@@ -116,11 +116,11 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	 * @param synapse The synapse to modify.
 	 */
 	private void randomize(double beta, Synapse synapse) {
+		if( synapse.getMatrix()==null )
+			return;
+		
 		for (int j = 0; j < synapse.getToNeuronCount(); j++) {
 			double norm = 0.0;
-
-			if( synapse.getMatrix()==null )
-				continue;
 			
 			// Calculate the Euclidean Norm for the weights
 			for (int k = 0; k < synapse.getFromNeuronCount(); k++) {
