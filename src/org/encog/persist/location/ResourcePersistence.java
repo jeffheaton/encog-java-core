@@ -30,9 +30,13 @@
 
 package org.encog.persist.location;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 
+import org.encog.EncogError;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.PersistError;
 import org.slf4j.Logger;
@@ -139,6 +143,35 @@ public class ResourcePersistence implements PersistenceLocation {
 			this.logger.error(str);
 		}
 		throw new PersistError(str);
+	}
+
+	/**
+	 * Load the resource as a string.
+	 * 
+	 * @return The resource as a string.
+	 */
+	public String loadString() {
+		InputStream is = null;
+		try {
+			is = createInputStream();
+			StringBuilder result = new StringBuilder();
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			String line;
+			while ((line = br.readLine()) != null) {
+				result.append(line);
+				result.append("\r\n");
+			}
+			return result.toString();
+		} catch (IOException e) {
+			throw new PersistError(e);
+		} finally {
+			try {
+				if (is != null)
+					is.close();
+			} catch (IOException e) {
+				throw new EncogError(e);
+			}
+		}
 	}
 
 }
