@@ -65,6 +65,9 @@ public class EncogCL {
 				this.devices.add(device);
 			}
 		}
+		
+		
+		CL.setExceptionsEnabled(true);
 	}
 
 	/**

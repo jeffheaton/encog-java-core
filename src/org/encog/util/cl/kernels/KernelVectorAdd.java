@@ -1,5 +1,7 @@
 package org.encog.util.cl.kernels;
 
+import static org.jocl.CL.clSetKernelArg;
+
 import org.encog.util.cl.EncogCLDevice;
 import org.jocl.CL;
 import org.jocl.Pointer;
@@ -20,7 +22,7 @@ public class KernelVectorAdd extends EncogKernel {
 	 *            The context to use.
 	 */
 	public KernelVectorAdd(final cl_context context) {
-		super(context, "Encog.Resources.KernelVectorAdd.txt", "VectorAdd");
+		super(context, "org/encog/data/KernelVectorAdd.txt", "VectorAdd");
 	}
 
 	/**
@@ -58,6 +60,14 @@ public class KernelVectorAdd extends EncogKernel {
 				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * n, srcB, null);
 		memObjects[2] = CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_WRITE,
 				Sizeof.cl_float * n, null, null);
+		
+        // Set the arguments for the kernel
+        clSetKernelArg(getKernel(), 0, 
+            Sizeof.cl_mem, Pointer.to(memObjects[0]));
+        clSetKernelArg(getKernel(), 1, 
+            Sizeof.cl_mem, Pointer.to(memObjects[1]));
+        clSetKernelArg(getKernel(), 2, 
+            Sizeof.cl_mem, Pointer.to(memObjects[2]));
 
 		// Set the work-item dimensions
 		final long[] global_work_size = new long[] { n };

@@ -1,5 +1,8 @@
 package org.encog.util.cl;
 
+import static org.jocl.CL.CL_CONTEXT_DEVICES;
+import static org.jocl.CL.clGetContextInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,19 +66,22 @@ public class EncogCLPlatform extends EncogCLItem {
 		// this.Name = platform.Name;
 		// this.Vender = platform.Vendor;
 		// this.Enabled = true;
+		
+		clGetContextInfo(context, CL_CONTEXT_DEVICES, 0, null, numBytes);
 
 		final int numDevices = (int) numBytes[0] / Sizeof.cl_device_id;
 		final cl_device_id[] devicesList = new cl_device_id[numDevices];
-		CL.clGetContextInfo(this.context, CL.CL_CONTEXT_DEVICES, numBytes[0],
-				Pointer.to(devicesList), null);
+		
+		clGetContextInfo(context, CL_CONTEXT_DEVICES, numBytes[0],  
+	            Pointer.to(devicesList), null);
 
 		for (final cl_device_id deviceID : devicesList) {
 			final EncogCLDevice adapter = new EncogCLDevice(this, deviceID);
 			this.devices.add(adapter);
 		}
 
-		// this.kerVectorAdd = new KernelVectorAdd(this.context);
-		// this.kerNetworkTrain = new KernelNetworkTrain(this.context);
+		this.kerVectorAdd = new KernelVectorAdd(this.context);
+		this.kerNetworkTrain = new KernelNetworkTrain(this.context);
 	}
 
 	/**
