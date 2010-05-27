@@ -59,6 +59,11 @@ public final class Encog {
 	 * The default precision to use for compares.
 	 */
 	public static final int DEFAULT_PRECISION = 10;
+	
+    /**
+     * Default point at which two doubles are equal.
+     */
+    public static final double DEFAULT_DOUBLE_EQUAL = 0.0000001;
 
 	/**
 	 * The version of the Encog JAR we are working with. Given in the form
