@@ -153,7 +153,7 @@ public class CalculateGradient {
 			this.indexed = (Indexable) this.training;
 			this.determine = new DetermineWorkload(threads, (int) this.indexed
 					.getRecordCount());
-			this.threadCount = this.determine.getThreadCount();
+			this.threadCount = this.determine.getTotalWorkerCount();
 		}
 
 		// setup workers
@@ -225,7 +225,8 @@ public class CalculateGradient {
 		this.indexed = training;
 		// setup the workers
 		this.workers = new GradientWorker[this.threadCount];
-		final List<IntRange> workloadRange = this.determine.calculateWorkers();
+		this.determine.calculateWorkers();
+		final List<IntRange> workloadRange = determine.getCPURanges(); 
 
 		int i = 0;
 		for (final IntRange range : workloadRange) {

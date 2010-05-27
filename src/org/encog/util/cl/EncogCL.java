@@ -102,7 +102,7 @@ public class EncogCL {
 	 * with the CPU serving as both a "regular CPU training task" and as an
 	 * "OpenCL training task".
 	 */
-	public void DisableAllCPUs() {
+	public void disableAllCPUs() {
 		for (final EncogCLDevice device : this.devices) {
 			if (device.isCPU()) {
 				device.setEnabled(false);
@@ -175,14 +175,14 @@ public class EncogCL {
 	/**
 	 * @return the clThreads
 	 */
-	public int getClThreads() {
+	public int getCLThreads() {
 		return clThreads;
 	}
 
 	/**
 	 * @return the clWorkloadSize
 	 */
-	public int getClWorkloadSize() {
+	public int getCLWorkloadSize() {
 		return clWorkloadSize;
 	}
 	

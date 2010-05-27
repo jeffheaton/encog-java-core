@@ -29,14 +29,23 @@
  */
 package org.encog.neural.networks.flat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.encog.mathutil.BoundMath;
+import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
+import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.util.EncogArray;
 
 /**
  * Implements a flat (vector based) neural network in Encog. This is meant to be
@@ -60,6 +69,61 @@ import org.encog.neural.networks.structure.NetworkCODEC;
  * See the Encog class for more info.
  */
 public class FlatNetwork {
+
+	/**
+	 * A linear activation function.
+	 */
+	public static final int ACTIVATION_LINEAR = 0;
+
+	/**
+	 * A TANH activation function.
+	 */
+	public static final int ACTIVATION_TANH = 1;
+
+	/**
+	 * A sigmoid activation function.
+	 */
+	public static final int ACTIVATION_SIGMOID = 2;
+
+
+	/**
+	 * Calculate an activation.
+	 * @param type The type of activation.
+	 * @param x The value to calculate the activation for.
+	 * @return The resulting value.
+	 */
+	public static double calculateActivation(final int type, final double x) {
+		switch (type) {
+		case FlatNetwork.ACTIVATION_LINEAR:
+			return x;
+		case FlatNetwork.ACTIVATION_TANH:
+			return -1.0 + (2.0 / (1.0 + BoundMath.exp(-2.0 * x)));
+		case FlatNetwork.ACTIVATION_SIGMOID:
+			return 1.0 / (1.0 + BoundMath.exp(-1.0 * x));
+		default:
+			throw new NeuralNetworkError("Unknown activation type: " + type);
+		}
+	}
+
+	/**
+	 * Calculate the derivative of the activation.
+	 * @param type The type of activation.
+	 * @param x The value to calculate for.
+	 * @return The result.
+	 */
+	public static double calculateActivationDerivative(final int type,
+			final double x) {
+		switch (type) {
+		case FlatNetwork.ACTIVATION_LINEAR:
+			return 1;
+		case FlatNetwork.ACTIVATION_TANH:
+			return (1.0 + x) * (1.0 - x);
+		case FlatNetwork.ACTIVATION_SIGMOID:
+			return x * (1.0 - x);
+		default:
+			throw new NeuralNetworkError("Unknown activation type: " + type);
+		}
+	}
 
 	/**
 	 * The number of input neurons in this network.
@@ -88,26 +152,33 @@ public class FlatNetwork {
 	private final int outputCount;
 
 	/**
-	 * Are we using the TANH function? If not, then the sigmoid.
-	 */
-	private final boolean tanh;
-
-	/**
-	 * The index to where the weights and bias values are stored at for a given
+	 * The index to where the weights and thresholds are stored at for a given
 	 * layer.
 	 */
 	private final int[] weightIndex;
 
 	/**
-	 * The weights and bias values for a neural network.
+	 * The weights and thresholds for a neural network.
 	 */
 	private final double[] weights;
 
 	/**
+	 * The activation types.
+	 */
+	private final int[] activationType;
+
+	/**
+	 * Bias values on the input layer serve no value. But some networks are
+	 * constructed in this way, because they use the default BasicLayer
+	 * constructor. We need to remember that there was an input bias, so that
+	 * the network is unflattened this way.
+	 */
+	private boolean hasInputBias;
+	
+	/**
 	 * Construct a flat network.
-	 * 
-	 * @param network
-	 *            The network to construct the flat network from.
+	 * @param network The network to construct the flat network
+	 * from.
 	 */
 	public FlatNetwork(final BasicNetwork network) {
 		ValidateForFlat.validateNetwork(network);
@@ -118,17 +189,29 @@ public class FlatNetwork {
 		this.inputCount = input.getNeuronCount();
 		this.outputCount = output.getNeuronCount();
 
+		this.hasInputBias = input.hasBias();
+
 		final int layerCount = network.getStructure().getLayers().size();
 
 		this.layerCounts = new int[layerCount];
 		this.weightIndex = new int[layerCount];
 		this.layerIndex = new int[layerCount];
+		this.activationType = new int[layerCount];
 
 		int index = 0;
 		int neuronCount = 0;
 
 		for (final Layer layer : network.getStructure().getLayers()) {
 			this.layerCounts[index] = layer.getNeuronCount();
+
+			if (layer.getActivationFunction() instanceof ActivationLinear) {
+				this.activationType[index] = FlatNetwork.ACTIVATION_LINEAR;
+			} else if (layer.getActivationFunction() instanceof ActivationTANH) {
+				this.activationType[index] = FlatNetwork.ACTIVATION_TANH;
+			} else if (layer.getActivationFunction() instanceof ActivationSigmoid) {
+				this.activationType[index] = FlatNetwork.ACTIVATION_SIGMOID;
+			}
+
 			neuronCount += layer.getNeuronCount();
 
 			if (index == 0) {
@@ -136,9 +219,7 @@ public class FlatNetwork {
 				this.layerIndex[index] = 0;
 			} else {
 				this.weightIndex[index] = this.weightIndex[index - 1]
-						+ (this.layerCounts[index - 1] 
-						+ (this.layerCounts[index] 
-						* this.layerCounts[index - 1]));
+						+ (this.layerCounts[index - 1] + (this.layerCounts[index] * this.layerCounts[index - 1]));
 				this.layerIndex[index] = this.layerIndex[index - 1]
 						+ this.layerCounts[index - 1];
 			}
@@ -149,41 +230,60 @@ public class FlatNetwork {
 		this.weights = NetworkCODEC.networkToArray(network);
 		this.layerOutput = new double[neuronCount];
 
-		if (input.getActivationFunction() instanceof ActivationSigmoid) {
-			this.tanh = false;
-		} else {
-			this.tanh = true;
-		}
 	}
 
 	/**
-	 * Calculate the output for the given input.
-	 * 
-	 * @param input
-	 *            The input.
-	 * @param output
-	 *            Output will be placed here.
+	 * Calculate the error for this neural network. The error is calculated
+	 * using root-mean-square(RMS).
+	 * @param data The training set.
+	 * @return The error percentage.
 	 */
-	public void calculate(final double[] input, final double[] output) {
+	public double calculateError(final NeuralDataSet data) {
+		final ErrorCalculation errorCalculation = new ErrorCalculation();
+
+		final double[] actual = new double[this.outputCount];
+
+		for (final NeuralDataPair pair : data) {
+			compute(pair.getInput().getData(), actual);
+			errorCalculation.updateError(actual, pair.getIdeal().getData());
+		}
+		return errorCalculation.calculateRMS();
+	}
+
+	
+	/**
+	 * Clone the network.
+	 * @return A clone of the network.
+	 */
+	public FlatNetwork clone() {
+		final BasicNetwork temp = unflatten();
+		return new FlatNetwork(temp);
+	}
+
+
+	/**
+	 * Calculate the output for the given input.
+	 * @param input The input.
+	 * @param output Output will be placed here.
+	 */
+	public void compute(final double[] input, final double[] output) {
 		final int sourceIndex = this.layerOutput.length - this.inputCount;
 
-		System.arraycopy(input, 0, this.layerOutput, sourceIndex,
+		EncogArray.arrayCopy(input, 0, this.layerOutput, sourceIndex,
 				this.inputCount);
 
 		for (int i = this.layerIndex.length - 1; i > 0; i--) {
-			calculateLayer(i);
+			computeLayer(i);
 		}
 
-		System.arraycopy(this.layerOutput, 0, output, 0, this.outputCount);
+		EncogArray.arrayCopy(this.layerOutput, 0, output, 0, this.outputCount);
 	}
 
 	/**
 	 * Calculate a layer.
-	 * 
-	 * @param currentLayer
-	 *            The layer to calculate.
+	 * @param currentLayer The layer to calculate.
 	 */
-	private void calculateLayer(final int currentLayer) {
+	private void computeLayer(final int currentLayer) {
 
 		final int inputIndex = this.layerIndex[currentLayer];
 		final int outputIndex = this.layerIndex[currentLayer - 1];
@@ -192,7 +292,7 @@ public class FlatNetwork {
 
 		int index = this.weightIndex[currentLayer - 1];
 
-		// bias values
+		// threshold values
 		for (int i = 0; i < outputSize; i++) {
 			this.layerOutput[i + outputIndex] = this.weights[index++];
 		}
@@ -205,22 +305,17 @@ public class FlatNetwork {
 			}
 			this.layerOutput[outputIndex + x] += sum;
 
-			if (this.tanh) {
-				this.layerOutput[outputIndex + x] 
-				       = tanh(this.layerOutput[outputIndex
-						+ x]);
-			} else {
-				this.layerOutput[outputIndex + x] 
-				            = sigmoid(this.layerOutput[outputIndex
-						+ x]);
-			}
+			this.layerOutput[outputIndex + x] = FlatNetwork
+					.calculateActivation(this.activationType[0],
+							this.layerOutput[outputIndex + x]);
 		}
 	}
 
-	@Override
-	public FlatNetwork clone() {
-		final BasicNetwork temp = unflatten();
-		return new FlatNetwork(temp);
+	/**
+	 * @return The activation types for each of the layers.
+	 */
+	public int[] getActivationType() {
+		return this.activationType;
 	}
 
 	/**
@@ -252,6 +347,17 @@ public class FlatNetwork {
 	}
 
 	/**
+	 * @return The neuron count.
+	 */
+	public int getNeuronCount() {
+		int result = 0;
+		for (final int element : this.layerCounts) {
+			result += element;
+		}
+		return result;
+	}
+
+	/**
 	 * @return The number of output neurons.
 	 */
 	public int getOutputCount() {
@@ -259,66 +365,73 @@ public class FlatNetwork {
 	}
 
 	/**
-	 * @return The index of each layer in the weight and bias value array.
+	 * @return The index of each layer in the weight and threshold array.
 	 */
 	public int[] getWeightIndex() {
 		return this.weightIndex;
 	}
 
 	/**
-	 * @return The weight and bias array.
+	 * @return The index of each layer in the weight and threshold array.
 	 */
 	public double[] getWeights() {
 		return this.weights;
 	}
-
+	
 	/**
-	 * @return True if this is a TANH activation function.
+	 * Neural networks with only one type of activation function offer certain
+	 * optimization options. This method determines if only a single
+	 * activation
+	 * function is used.
+	 * @return The number of the single activation function, or -1 if there
+	 * are no activation functions or more than one type of activation
+	 * function.
 	 */
-	public boolean isTanh() {
-		return this.tanh;
-	}
+	public int hasSameActivationFunction() {
+		final List<Integer> map = new ArrayList<Integer>();
 
-	/**
-	 * Implements a sigmoid activation function.
-	 * 
-	 * @param d
-	 *            The value to take the sigmoid of.
-	 * @return The result.
-	 */
-	private double sigmoid(final double d) {
-		return 1.0 / (1 + BoundMath.exp(-1.0 * d));
-	}
+		for (final int activation : this.activationType) {
+			if (!map.contains(activation)) {
+				map.add(activation);
+			}
+		}
 
-	/**
-	 * Implements a hyperbolic tangent function.
-	 * 
-	 * @param d
-	 *            The value to take the htan of.
-	 * @return The htan of the specified value.
-	 */
-	private double tanh(final double d) {
-		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
+		if (map.size() != 1) {
+			return -1;
+		} else {
+			return map.get(0);
+		}
 	}
 
 	/**
 	 * Generate a regular Encog neural network from this flat network.
-	 * 
 	 * @return A regular Encog neural network.
 	 */
 	public BasicNetwork unflatten() {
-		ActivationFunction activation;
 		final BasicNetwork result = new BasicNetwork();
-
-		if (this.tanh) {
-			activation = new ActivationTANH();
-		} else {
-			activation = new ActivationSigmoid();
-		}
+		boolean useBias = this.hasInputBias;
 
 		for (int i = this.layerCounts.length - 1; i >= 0; i--) {
-			final Layer layer = new BasicLayer(activation, true,
+			ActivationFunction activation;
+
+			switch (this.activationType[i]) {
+			case FlatNetwork.ACTIVATION_LINEAR:
+				activation = new ActivationLinear();
+				break;
+			case FlatNetwork.ACTIVATION_SIGMOID:
+				activation = new ActivationSigmoid();
+				break;
+			case FlatNetwork.ACTIVATION_TANH:
+				activation = new ActivationTANH();
+				break;
+			default:
+				activation = null;
+				break;
+			}
+
+			final Layer layer = new BasicLayer(activation, useBias,
 					this.layerCounts[i]);
+			useBias = true;
 			result.addLayer(layer);
 		}
 		result.getStructure().finalizeStructure();

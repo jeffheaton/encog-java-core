@@ -30,6 +30,7 @@
 
 package org.encog.util;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -118,5 +119,24 @@ public final class EncogArray {
 	 */
 	private EncogArray() {
 
+	}
+
+	/**
+	 * Copy an array of doubles.
+	 * @param source The source.
+	 * @param sourcePos The source index.
+	 * @param target The target.
+	 * @param targetPos The target index.
+	 * @param length The length.
+	 */
+	public static void arrayCopy(double[] source, int sourcePos, double[] target,
+			int targetPos, int length) {
+		System.arraycopy(source, sourcePos, target, targetPos, length);
+		
+	}
+
+	public static void fill(double[] array, double value) {
+		Arrays.fill(array,value);
+		
 	}
 }

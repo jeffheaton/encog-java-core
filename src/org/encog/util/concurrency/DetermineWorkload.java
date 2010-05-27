@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.mathutil.IntRange;
+import org.encog.neural.NeuralNetworkError;
 
 /**
  * Used by several Encog training methods to break up a workload. Can also be
@@ -44,29 +45,86 @@ import org.encog.mathutil.IntRange;
 public class DetermineWorkload {
 
 	/**
-	 * What is the minimum number of workload entries for a thread to be worthwhile.
+	 * What is the minimum number of workload entries for a thread to be
+	 * worthwhile.
 	 */
 	public static final int MIN_WORTHWHILE = 100;
-	
+
 	/**
 	 * How many threads to use.
 	 */
-	private int threadCount;
-	
+	private int cpuWorkerCount;
+
 	/**
 	 * What is the total workload size?
 	 */
-	private int workloadSize;
+	private final int totalWorkloadSize;
 
 	/**
+	 * CL worker count.
+	 */
+	private int clWorkerCount;
+
+	/**
+	 * The total task count.
+	 */
+	private int totalWorkerCount;
+
+	/**
+	 * Workloads for CPU workers.
+	 */
+	private final List<IntRange> cpuRanges = new ArrayList<IntRange>();
+
+	/**
+	 * Workloads for OpenCL workers.
+	 */
+	private List<IntRange> clRanges = new ArrayList<IntRange>();
+
+	/**
+	 * The ratio to hand out work between CL and CPU workers. Values
+	 * above 1 give more work to the CPU, values below 0 give more to
+	 * the GPU. For example, to have the GPU's do twice as much as the
+	 * CPU set this to 1.5. Sometimes CPU's may be faster than GPU's.
+	 * Often GPU is faster. This allows the work to be better balanced.
+	 */
+	private double clRatio;
+
+	// / <summary>
+	// / 
+	// / </summary>
+	// / <param name="threads"></param>
+	// / <param name="workloadSize"></param>
+
+	
+	/**
 	 * Determine the workload.
-	 * @param threads Threads to use, or zero to allow Encog to pick.
+	 * @param threads Threads to use, or zero to allow Encog to
+	 * pick.
 	 * @param workloadSize Total workload size.
 	 */
-	public DetermineWorkload(int threads, int workloadSize) {
+	public DetermineWorkload(final int threads, final int workloadSize) {
+		this(threads, 0, workloadSize);
+	}
 
-		this.workloadSize = workloadSize;
-		if (threads == 0) {
+	/**
+	 * Determine the workload, consider CL count. If worker count is zero,
+	 * Encog picks using
+	 * processor count. If worker count is -1 then no CPU threads will be
+	 * used.
+	 * @param cpuWorkerCount Threads to use, or zero to allow Encog to
+	 * pick.
+	 * @param clWorkerCount The number of CL workers.
+	 * @param workloadSize Total workload size.
+	 */
+	public DetermineWorkload(int cpuWorkerCount, final int clWorkerCount,
+			final int workloadSize) {
+		this.clRatio = 1;
+		this.cpuWorkerCount = cpuWorkerCount;
+		this.clWorkerCount = clWorkerCount;
+		this.totalWorkerCount = clWorkerCount + cpuWorkerCount;
+		this.totalWorkloadSize = workloadSize;
+
+		if (cpuWorkerCount == 0) {
 			int num = Runtime.getRuntime().availableProcessors();
 
 			// if there is more than one processor, use processor count +1
@@ -79,50 +137,153 @@ public class DetermineWorkload {
 			// We want at least 100 training elements in each.
 			// This method will likely be further "tuned" in future versions.
 
-			final long recordCount = this.workloadSize;
+			final long recordCount = this.totalWorkloadSize;
 			final long workPerThread = recordCount / num;
 
-			if (workPerThread < 100) {
-				num = Math.max(1, (int) (recordCount / 100));
+			if (workPerThread < DetermineWorkload.MIN_WORTHWHILE) {
+				// if we need to reduce, then cut the CL workers to zero
+				num = Math.max(1,
+						(int) (recordCount / DetermineWorkload.MIN_WORTHWHILE));
+				this.clWorkerCount = 0;
 			}
 
-			this.threadCount = num;
+			this.cpuWorkerCount = num;
+			this.totalWorkerCount = this.clWorkerCount + this.cpuWorkerCount;
 		} else {
-			this.threadCount = Math.min(threads, workloadSize);
+			if (cpuWorkerCount == -1) {
+				cpuWorkerCount = 0;
+			}
+
+			this.totalWorkerCount = clWorkerCount + cpuWorkerCount;
+			if (this.totalWorkerCount > workloadSize) {
+				this.clWorkerCount = 0;
+			}
+			this.totalWorkerCount = clWorkerCount + cpuWorkerCount;
+			this.totalWorkerCount = Math.min(this.totalWorkerCount,
+					workloadSize);
 		}
 	}
 
 	/**
 	 * Calculate the high and low ranges for each worker.
-	 * @return A list of IntRange objects.
 	 */
-	public List<IntRange> calculateWorkers() {
-		final List<IntRange> result = new ArrayList<IntRange>();
-		final int sizePerThread = this.workloadSize / this.threadCount;
+	public void calculateWorkers() {
+		this.cpuRanges.clear();
+		this.clRanges.clear();
 
-		// create the workers
-		for (int i = 0; i < this.threadCount; i++) {
-			final int low = i * sizePerThread;
+		if (this.totalWorkerCount == 0) {
+			throw new NeuralNetworkError("Can't train with zero workers.");
+		}
+
+		final int baseSizePerThread = this.totalWorkloadSize
+				/ this.totalWorkerCount;
+		final int clSizePerThread = (int) (baseSizePerThread * this.clRatio);
+		final int cpuWorkloadSize = Math.max(this.totalWorkloadSize
+				- (clSizePerThread * this.clWorkerCount), 0);
+		final int cpuSizePerThread = Math.max(cpuWorkloadSize
+				/ this.cpuWorkerCount, 0);
+
+		int index = 0;
+
+		// create the CL workers
+		for (int i = 0; i < this.clWorkerCount; i++) {
+			final int low = index;
+			final int high = (low + clSizePerThread) - 1;
+			this.clRanges.add(new IntRange(high, low));
+			index += clSizePerThread;
+		}
+
+		// create the CPU workers
+		for (int i = 0; i < this.cpuWorkerCount; i++) {
+			final int low = index;
 			int high;
 
 			// if this is the last record, then high to be the last item
 			// in the training set.
-			if (i == (this.threadCount - 1)) {
-				high = this.workloadSize - 1;
+			if (i == (this.cpuWorkerCount - 1)) {
+				high = this.totalWorkloadSize - 1;
 			} else {
-				high = ((i + 1) * sizePerThread) - 1;
+				high = (low + cpuSizePerThread) - 1;
 			}
 
-			result.add(new IntRange(high, low));
+			this.cpuRanges.add(new IntRange(high, low));
+			index += cpuSizePerThread;
 		}
 
-		return result;
+	}
+
+	/**
+	 * @return the clRanges
+	 */
+	public List<IntRange> getClRanges() {
+		return this.clRanges;
+	}
+
+	/**
+	 * @return Workload ranges for CL workers.
+	 */
+	public List<IntRange> getCLRanges() {
+		return this.clRanges;
+	}
+
+	/**
+	 * @return The CL thread count.
+	 */
+	public int getCLWorkerCount() {
+		return this.clWorkerCount;
+	}
+
+	/**
+	 * @return Workload ranges for CPU workers.
+	 */
+	public List<IntRange> getCPURanges() {
+		return this.cpuRanges;
 	}
 
 	/**
 	 * @return The thread count.
 	 */
-	public int getThreadCount() {
-		return this.threadCount;
+	public int getCPUWorkerCount() {
+		return this.cpuWorkerCount;
 	}
+
+	/**
+	 * @return The thread count.
+	 */
+	public int getTotalWorkerCount() {
+		return this.totalWorkerCount;
+
+	}
+
+	/**
+	 * @return What is the total workload size?
+	 */
+	public int getTotalWorkloadSize() {
+		return this.totalWorkloadSize;
+	}
+
+	/**
+	 * @param clRanges
+	 *            the clRanges to set
+	 */
+	public void setClRanges(final List<IntRange> clRanges) {
+		this.clRanges = clRanges;
+	}
+
+	/**
+	 * @return the clRatio
+	 */
+	public double getCLRatio() {
+		return clRatio;
+	}
+
+	/**
+	 * @param clRatio the clRatio to set
+	 */
+	public void setCLRatio(double clRatio) {
+		this.clRatio = clRatio;
+	}
+	
+	
+
 }

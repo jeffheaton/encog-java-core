@@ -35,11 +35,11 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
 /**
- * Train a flat network single-threaded. This class is left in mainly for testing
- * purposes. Usually, you will use TrainFlatNetworkMulti.
- *
+ * Train a flat network single-threaded. This class is left in mainly for
+ * testing purposes. Usually, you will use TrainFlatNetworkMulti.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class TrainFlatNetwork {
 
@@ -49,7 +49,7 @@ public class TrainFlatNetwork {
 	private final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 	/**
-	 * The gradients
+	 * The gradients.
 	 */
 	private final double[] gradients;
 
@@ -64,17 +64,17 @@ public class TrainFlatNetwork {
 	private final int[] layerCounts;
 
 	/**
-	 * The deltas for each layer
+	 * The deltas for each layer.
 	 */
 	private final double[] layerDelta;
 
 	/**
-	 * The layer indexes
+	 * The layer indexes.
 	 */
 	private final int[] layerIndex;
 
 	/**
-	 * The output from each layer
+	 * The output from each layer.
 	 */
 	private final double[] layerOutput;
 
@@ -89,98 +89,78 @@ public class TrainFlatNetwork {
 	private final NeuralDataSet training;
 
 	/**
-	 * The update values, for the weights and bias values.
+	 * The update values, for the weights and thresholds.
 	 */
 	private final double[] updateValues;
 
 	/**
-	 * The index to each layer's weights and bias values.
+	 * The index to each layer's weights and thresholds.
 	 */
 	private final int[] weightIndex;
 
 	/**
-	 * The weights and bias values.
+	 * The weights and thresholds.
 	 */
 	private final double[] weights;
 
 	/**
 	 * Construct a training class.
-	 * @param network The network to train.
+	 * 
+	 * @param network
+	 *            The network to train.
 	 * @param training
+	 *            The training data.
 	 */
 	public TrainFlatNetwork(final FlatNetwork network,
 			final NeuralDataSet training) {
 		this.training = training;
 		this.network = network;
 
-		layerDelta = new double[network.getLayerOutput().length];
-		gradients = new double[network.getWeights().length];
-		updateValues = new double[network.getWeights().length];
-		lastGradient = new double[network.getWeights().length];
+		this.layerDelta = new double[network.getLayerOutput().length];
+		this.gradients = new double[network.getWeights().length];
+		this.updateValues = new double[network.getWeights().length];
+		this.lastGradient = new double[network.getWeights().length];
 
-		weights = network.getWeights();
-		layerIndex = network.getLayerIndex();
-		layerCounts = network.getLayerCounts();
-		weightIndex = network.getWeightIndex();
-		layerOutput = network.getLayerOutput();
+		this.weights = network.getWeights();
+		this.layerIndex = network.getLayerIndex();
+		this.layerCounts = network.getLayerCounts();
+		this.weightIndex = network.getWeightIndex();
+		this.layerOutput = network.getLayerOutput();
 
-		for (int i = 0; i < updateValues.length; i++) {
-			updateValues[i] = ResilientPropagation.DEFAULT_INITIAL_UPDATE;
+		for (int i = 0; i < this.updateValues.length; i++) {
+			this.updateValues[i] = ResilientPropagation.DEFAULT_INITIAL_UPDATE;
 		}
-	}
-
-
-	/**
-	 * Calculate the derivative of the sigmoid function.
-	 * @param d The value to calculate for.
-	 * @return The derivative.
-	 */
-	public static double derivativeSigmoid(final double d) {
-		return d * (1.0 - d);
-	}
-
-	/**
-	 * Calculate the derivative of the TANH function.
-	 * @param d The value to calculate for.
-	 * @return The derivative.
-	 */
-	public static double derivativeTANH(final double d) {
-		return ((1 + d) * (1 - d));
 	}
 
 	/**
 	 * @return The overall error.
 	 */
 	public double getError() {
-		return errorCalculation.calculateRMS();
+		return this.errorCalculation.calculateRMS();
 	}
 
 	/**
 	 * Perform a training iteration.
 	 */
 	public void iteration() {
-		final double[] actual = new double[network.getOutputCount()];
-		errorCalculation.reset();
+		final double[] actual = new double[this.network.getOutputCount()];
+		this.errorCalculation.reset();
 
-		for (final NeuralDataPair pair : training) {
+		for (final NeuralDataPair pair : this.training) {
 			final double[] input = pair.getInput().getData();
 			final double[] ideal = pair.getIdeal().getData();
 
-			network.calculate(input, actual);
+			this.network.compute(input, actual);
 
-			errorCalculation.updateError(actual, ideal);
+			this.errorCalculation.updateError(actual, ideal);
 
 			for (int i = 0; i < actual.length; i++) {
-				if (network.isTanh()) {
-					layerDelta[i] = derivativeTANH(actual[i])
-							* (ideal[i] - actual[i]);
-				} else {
-					layerDelta[i] = derivativeSigmoid(actual[i])
-							* (ideal[i] - actual[i]);
-				}
+				this.layerDelta[i] = FlatNetwork.calculateActivationDerivative(
+						this.network.getActivationType()[0], actual[i])
+						* (ideal[i] - actual[i]);
 			}
 
-			for (int i = 0; i < layerCounts.length - 1; i++) {
+			for (int i = 0; i < this.layerCounts.length - 1; i++) {
 				processLevel(i);
 			}
 		}
@@ -192,54 +172,53 @@ public class TrainFlatNetwork {
 	 * Update the neural network weights.
 	 */
 	private void learn() {
-		for (int i = 0; i < gradients.length; i++) {
-			weights[i] += updateWeight(gradients, i);
-			gradients[i] = 0;
+		for (int i = 0; i < this.gradients.length; i++) {
+			this.weights[i] += updateWeight(this.gradients, i);
+			this.gradients[i] = 0;
 		}
 	}
 
 	/**
 	 * Process a level.
-	 * @param currentLevel The level to process.
+	 * 
+	 * @param currentLevel
+	 *            The level to process.
 	 */
 	private void processLevel(final int currentLevel) {
-		final int fromLayerIndex = layerIndex[currentLevel + 1];
-		final int toLayerIndex = layerIndex[currentLevel];
-		final int fromLayerSize = layerCounts[currentLevel + 1];
-		final int toLayerSize = layerCounts[currentLevel];
+		final int fromLayerIndex = this.layerIndex[currentLevel + 1];
+		final int toLayerIndex = this.layerIndex[currentLevel];
+		final int fromLayerSize = this.layerCounts[currentLevel + 1];
+		final int toLayerSize = this.layerCounts[currentLevel];
 
 		// clear the to-deltas
 		for (int i = 0; i < fromLayerSize; i++) {
-			layerDelta[fromLayerIndex + i] = 0;
+			this.layerDelta[fromLayerIndex + i] = 0;
 		}
 
-		int index = weightIndex[currentLevel] + toLayerSize;
+		int index = this.weightIndex[currentLevel] + toLayerSize;
 
 		for (int x = 0; x < toLayerSize; x++) {
 			for (int y = 0; y < fromLayerSize; y++) {
-				final double value = layerOutput[fromLayerIndex + y]
-						* layerDelta[toLayerIndex + x];
-				gradients[index] += value;
-				layerDelta[fromLayerIndex + y] += weights[index]
-						* layerDelta[toLayerIndex + x];
+				final double value = this.layerOutput[fromLayerIndex + y]
+						* this.layerDelta[toLayerIndex + x];
+				this.gradients[index] += value;
+				this.layerDelta[fromLayerIndex + y] += this.weights[index]
+						* this.layerDelta[toLayerIndex + x];
 				index++;
 			}
 		}
 
 		for (int i = 0; i < fromLayerSize; i++) {
-			if (network.isTanh()) {
-				layerDelta[fromLayerIndex + i] *= derivativeTANH(layerOutput[fromLayerIndex
-						+ i]);
-			} else {
-				layerDelta[fromLayerIndex + i] *= derivativeSigmoid(layerOutput[fromLayerIndex
-						+ i]);
-			}
+			this.layerDelta[fromLayerIndex + i] *= FlatNetwork
+					.calculateActivationDerivative(this.network
+							.getActivationType()[currentLevel],
+							this.layerOutput[fromLayerIndex + i]);
 		}
 	}
 
 	/**
 	 * Determine the sign of the value.
-	 *
+	 * 
 	 * @param value
 	 *            The value to check.
 	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
@@ -256,7 +235,7 @@ public class TrainFlatNetwork {
 
 	/**
 	 * Determine the amount to change a weight by.
-	 *
+	 * 
 	 * @param gradients
 	 *            The gradients.
 	 * @param index
@@ -266,33 +245,34 @@ public class TrainFlatNetwork {
 	private double updateWeight(final double[] gradients, final int index) {
 		// multiply the current and previous gradient, and take the
 		// sign. We want to see if the gradient has changed its sign.
-		final int change = sign(this.gradients[index] * lastGradient[index]);
+		final int change = sign(this.gradients[index]
+				* this.lastGradient[index]);
 		double weightChange = 0;
 
 		// if the gradient has retained its sign, then we increase the
 		// delta so that it will converge faster
 		if (change > 0) {
-			double delta = updateValues[index]
+			double delta = this.updateValues[index]
 					* ResilientPropagation.POSITIVE_ETA;
 			delta = Math.min(delta, ResilientPropagation.DEFAULT_MAX_STEP);
 			weightChange = sign(this.gradients[index]) * delta;
-			updateValues[index] = delta;
-			lastGradient[index] = this.gradients[index];
+			this.updateValues[index] = delta;
+			this.lastGradient[index] = this.gradients[index];
 		} else if (change < 0) {
 			// if change<0, then the sign has changed, and the last
 			// delta was too big
-			double delta = updateValues[index]
+			double delta = this.updateValues[index]
 					* ResilientPropagation.NEGATIVE_ETA;
 			delta = Math.max(delta, ResilientPropagation.DELTA_MIN);
-			updateValues[index] = delta;
+			this.updateValues[index] = delta;
 			// set the previous gradent to zero so that there will be no
 			// adjustment the next iteration
-			lastGradient[index] = 0;
+			this.lastGradient[index] = 0;
 		} else if (change == 0) {
 			// if change==0 then there is no change to the delta
-			final double delta = lastGradient[index];
+			final double delta = this.lastGradient[index];
 			weightChange = sign(this.gradients[index]) * delta;
-			lastGradient[index] = this.gradients[index];
+			this.lastGradient[index] = this.gradients[index];
 		}
 
 		// apply the weight change, if any

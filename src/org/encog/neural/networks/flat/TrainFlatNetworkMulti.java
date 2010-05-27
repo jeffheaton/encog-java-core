@@ -29,38 +29,48 @@
  */
 package org.encog.neural.networks.flat;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.encog.Encog;
 import org.encog.mathutil.IntRange;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.TrainingError;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.util.EncogArray;
+import org.encog.util.cl.EncogCLDevice;
+import org.encog.util.cl.EncogCLPlatform;
 import org.encog.util.concurrency.DetermineWorkload;
 import org.encog.util.concurrency.EncogConcurrency;
 import org.encog.util.concurrency.TaskGroup;
 
 /**
  * Train a flat network using multithreading, and eventually with GPU support.
- *
+ * 
  * The training data must be indexable, it will be broken into groups for each
  * thread to process.
- *
- * At the end of each iteration the training from each thread is aggregated
- * back to the neural network.
- *
+ * 
+ * At the end of each iteration the training from each thread is aggregated back
+ * to the neural network.
+ * 
  */
-public class TrainFlatNetworkMulti {
+public abstract class TrainFlatNetworkMulti {
 
 	/**
-	 * The gradients
+	 * The number of threads to use.
 	 */
-	private final double[] gradients;
+	private final int numThreads;
+
+	/**
+	 * The gradients.
+	 */
+	private double[] gradients;
 
 	/**
 	 * The last gradients, from the last training iteration.
 	 */
-	private final double[] lastGradient;
+	private double[] lastGradient;
 
 	/**
 	 * The network to train.
@@ -73,27 +83,22 @@ public class TrainFlatNetworkMulti {
 	private final NeuralDataSet training;
 
 	/**
-	 * The update values, for the weights and bias values.
-	 */
-	private final double[] updateValues;
-
-	/**
 	 * The network in indexable form.
 	 */
-	private Indexable indexable;
+	private final Indexable indexable;
 
 	/**
-	 * The weights and bias values.
+	 * The weights and thresholds.
 	 */
-	private final double[] weights;
+	private double[] weights;
 
 	/**
 	 * The workers.
 	 */
-	private GradientWorker[] workers;
+	private FlatGradientWorker[] workers;
 
 	/**
-	 * The total error.  Used to take the average of.
+	 * The total error. Used to take the average of.
 	 */
 	private double totalError;
 
@@ -103,57 +108,96 @@ public class TrainFlatNetworkMulti {
 	private double currentError;
 
 	/**
+	 * The average number of ticks that each CL worker took.
+	 */
+	private long clTimePerIteration;
+
+	/**
+	 * The average number of ticks that each CPU worker took.
+	 */
+	private long cpuTimePerIteration;
+
+	/**
+	 * The performance ratio between CPU and CL. Positive number means CL
+	 * workers are faster than CPU ones.
+	 */
+	private double calculatedCLRatio;
+
+	/**
 	 * Train a flat network multithreaded.
-	 * @param network The network to train.
-	 * @param training The training data to use.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
 	 */
 	public TrainFlatNetworkMulti(final FlatNetwork network,
 			final NeuralDataSet training) {
 
-		if( !(training instanceof Indexable) )
-			throw new TrainingError("Training data must be Indexable for this training type.");
+		if (!(training instanceof Indexable)) {
+			throw new TrainingError(
+					"Training data must be Indexable for this training type.");
+		}
 
 		this.training = training;
 		this.network = network;
 
-		this.indexable = (Indexable)training;
+		this.indexable = (Indexable) training;
+		this.numThreads = 0;
 
-		gradients = new double[network.getWeights().length];
-		updateValues = new double[network.getWeights().length];
-		lastGradient = new double[network.getWeights().length];
-
-		weights = network.getWeights();
-
-		for (int i = 0; i < updateValues.length; i++) {
-			updateValues[i] = ResilientPropagation.DEFAULT_INITIAL_UPDATE;
-		}
-
-		DetermineWorkload determine = new DetermineWorkload(0,(int)this.indexable.getRecordCount());
-		this.workers = new GradientWorker[ determine.getThreadCount() ];
-		List<IntRange> range = determine.calculateWorkers();
-
-		int index = 0;
-		for(IntRange r : range)
-		{
-			this.workers[index++] = new GradientWorker(network.clone(), this, indexable, r.getLow(), r.getHigh());
-		}
 	}
 
 	/**
-	 * Called by the worker threads to report the progress at each step.
-	 * @param gradients The gradients from that worker.
-	 * @param error The error for that worker.
+	 * Calculate the GPU vs CPU performance.
 	 */
-	public void report(double[] gradients, double error)
-	{
-		synchronized(this)
-		{
-			for(int i=0;i<gradients.length;i++)
-			{
-				this.gradients[i]+=gradients[i];
+	private void calculatePerformance() {
+		long totalCPU = 0;
+		long countCPU = 0;
+		long totalCL = 0;
+		long countCL = 0;
+
+		for (final FlatGradientWorker worker : this.workers) {
+			if (worker instanceof GradientWorkerCPU) {
+				countCPU++;
+				totalCPU += worker.getElapsedTime();
+			} else if (worker instanceof GradientWorkerCL) {
+				countCL++;
+				totalCL += worker.getElapsedTime();
 			}
-			this.totalError+=error;
 		}
+
+		if (countCPU > 0) {
+			this.cpuTimePerIteration = totalCPU / countCPU;
+		}
+
+		if (countCL > 0) {
+			this.clTimePerIteration = totalCL / countCL;
+		}
+
+		this.calculatedCLRatio = ((double) this.cpuTimePerIteration)
+				/ ((double) this.clTimePerIteration);
+	}
+
+	/**
+	 * @return The performance ratio between CPU and CL. Positive number means
+	 *         CL workers are faster than CPU ones.
+	 */
+	public double getCalculatedCLRatio() {
+		return this.calculatedCLRatio;
+	}
+
+	/**
+	 * @return The average number of miliseconds that each CL worker took.
+	 */
+	public long getCLTimePerIteration() {
+		return this.clTimePerIteration;
+	}
+
+	/**
+	 * @return The average number of milliseconds that each CPU worker took.
+	 */
+	public long getCPUTimePerIteration() {
+		return this.cpuTimePerIteration;
 	}
 
 	/**
@@ -164,115 +208,171 @@ public class TrainFlatNetworkMulti {
 	}
 
 	/**
-	 * Perform one training iteration.
-	 */
-	public void iteration() {
-
-		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
-		this.totalError = 0;
-
-		for(GradientWorker worker: this.workers)
-		{
-			EncogConcurrency.getInstance().processTask(worker,group);
-		}
-
-		group.waitForComplete();
-
-		learn();
-		this.currentError = this.totalError/this.workers.length;
-
-		for(GradientWorker worker: this.workers)
-		{
-			System.arraycopy(this.weights, 0, worker.getWeights(), 0, this.weights.length);
-		}
-	}
-
-	/**
-	 * Apply and learn.
-	 */
-	private void learn() {
-		for (int i = 0; i < gradients.length; i++) {
-			weights[i] += updateWeight(gradients, i);
-			gradients[i] = 0;
-		}
-	}
-
-
-	/**
-	 * Determine the sign of the value.
-	 *
-	 * @param value
-	 *            The value to check.
-	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
-	 */
-	private int sign(final double value) {
-		if (Math.abs(value) < ResilientPropagation.DEFAULT_ZERO_TOLERANCE) {
-			return 0;
-		} else if (value > 0) {
-			return 1;
-		} else {
-			return -1;
-		}
-	}
-
-	/**
-	 * Determine the amount to change a weight by.
-	 *
-	 * @param gradients
-	 *            The gradients.
-	 * @param index
-	 *            The weight to adjust.
-	 * @return The amount to change this weight by.
-	 */
-	private double updateWeight(final double[] gradients, final int index) {
-		// multiply the current and previous gradient, and take the
-		// sign. We want to see if the gradient has changed its sign.
-		final int change = sign(this.gradients[index] * lastGradient[index]);
-		double weightChange = 0;
-
-		// if the gradient has retained its sign, then we increase the
-		// delta so that it will converge faster
-		if (change > 0) {
-			double delta = updateValues[index]
-					* ResilientPropagation.POSITIVE_ETA;
-			delta = Math.min(delta, ResilientPropagation.DEFAULT_MAX_STEP);
-			weightChange = sign(this.gradients[index]) * delta;
-			updateValues[index] = delta;
-			lastGradient[index] = this.gradients[index];
-		} else if (change < 0) {
-			// if change<0, then the sign has changed, and the last
-			// delta was too big
-			double delta = updateValues[index]
-					* ResilientPropagation.NEGATIVE_ETA;
-			delta = Math.max(delta, ResilientPropagation.DELTA_MIN);
-			updateValues[index] = delta;
-			// set the previous gradent to zero so that there will be no
-			// adjustment the next iteration
-			lastGradient[index] = 0;
-		} else if (change == 0) {
-			// if change==0 then there is no change to the delta
-			final double delta = lastGradient[index];
-			weightChange = sign(this.gradients[index]) * delta;
-			lastGradient[index] = this.gradients[index];
-		}
-
-		// apply the weight change, if any
-		return weightChange;
-	}
-
-	/**
 	 * @return The trained neural network.
 	 */
 	public FlatNetwork getNetwork() {
-		return network;
+		return this.network;
 	}
 
 	/**
 	 * @return The data we are training with.
 	 */
 	public NeuralDataSet getTraining() {
-		return training;
+		return this.training;
 	}
 
+	/**
+	 * Init the process.
+	 */
+	private void init() {
+		this.gradients = new double[this.network.getWeights().length];
+		this.lastGradient = new double[this.network.getWeights().length];
+
+		this.weights = this.network.getWeights();
+
+		List<EncogCLDevice> clDevices = null;
+
+		DetermineWorkload determine;
+
+		// consider CL, if enabled
+		if (Encog.getInstance().getCL() != null) {
+			// if we are already using CPU devices, then do not reuse them as CL
+			// devices.
+			// They would be pulling "double duity" and have bad performance.
+			if (this.numThreads != -1) {
+				Encog.getInstance().getCL().disableAllCPUs();
+			} else {
+				Encog.getInstance().getCL().enableAllCPUs();
+			}
+
+			clDevices = Encog.getInstance().getCL().getEnabledDevices();
+			determine = new DetermineWorkload(this.numThreads,
+					clDevices.size(), (int) this.indexable.getRecordCount());
+			determine.setCLRatio(Encog.getInstance().getCL()
+					.getEnforcedCLRatio());
+		} else {
+			determine = new DetermineWorkload(this.numThreads,
+					(int) this.indexable.getRecordCount());
+		}
+
+		this.workers = new FlatGradientWorker[determine.getTotalWorkerCount()];
+
+		determine.calculateWorkers();
+		int index = 0;
+
+		// if we are using CL, then we need to compile the kernels for this
+		// network
+		if (Encog.getInstance().getCL() != null) {
+			final Map<String, String> options = new HashMap<String, String>();
+			options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
+			options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
+
+			// is there only one activation function? If so, there are some
+			// optimizations we can use.
+			final int act = this.network.hasSameActivationFunction();
+
+			if (act == FlatNetwork.ACTIVATION_SIGMOID) {
+				options.put("USE_SIGMOID", "1");
+			} else if (act == FlatNetwork.ACTIVATION_TANH) {
+				options.put("USE_TANH", "1");
+			}
+
+			for (final EncogCLPlatform platform : Encog.getInstance().getCL()
+					.getPlatforms()) {
+				platform.getNetworkTrain().compile(options);
+				platform.getNetworkTrain().init(this.network);
+			}
+		}
+
+		// handle CL
+		int idx = 0;
+		for (final IntRange r : determine.getCLRanges()) {
+			this.workers[index++] = new GradientWorkerCL(clDevices.get(idx++),
+					this.network.clone(), this,
+					this.indexable.openAdditional(), r.getLow(), r.getHigh());
+		}
+
+		// handle CPU
+		for (final IntRange r : determine.getCPURanges()) {
+			this.workers[index++] = new GradientWorkerCPU(this.network.clone(),
+					this, this.indexable.openAdditional(), r.getLow(), r
+							.getHigh());
+		}
+	}
+
+	/**
+	 * Perform one training iteration.
+	 */
+	public void iteration() {
+		if (this.workers == null) {
+			init();
+		}
+
+		final TaskGroup group = EncogConcurrency.getInstance()
+				.createTaskGroup();
+		this.totalError = 0;
+
+		for (final FlatGradientWorker worker : this.workers) {
+			EncogConcurrency.getInstance().processTask(worker, group);
+		}
+
+		group.waitForComplete();
+
+		learn();
+		this.currentError = this.totalError / this.workers.length;
+
+		for (final FlatGradientWorker worker : this.workers) {
+			EncogArray.arrayCopy(this.weights, 0, worker.getWeights(), 0,
+					this.weights.length);
+		}
+
+		EncogArray.arrayCopy(this.weights, 0, this.network.getWeights(), 0,
+				this.weights.length);
+
+		calculatePerformance();
+	}
+
+	/**
+	 * Apply and learn.
+	 */
+	private void learn() {
+		for (int i = 0; i < this.gradients.length; i++) {
+			this.weights[i] += updateWeight(this.gradients, this.lastGradient,
+					i);
+			this.gradients[i] = 0;
+		}
+	}
+
+	/**
+	 * Called by the worker threads to report the progress at each step.
+	 * 
+	 * @param gradients
+	 *            The gradients from that worker.
+	 * @param error
+	 *            The error for that worker.
+	 */
+	public void report(final double[] gradients, final double error) {
+		synchronized (this) {
+			for (int i = 0; i < gradients.length; i++) {
+				this.gradients[i] += gradients[i];
+			}
+			this.totalError += error;
+		}
+	}
+
+	/**
+	 * Update a weight, the means by which weights are updated vary depending on
+	 * the training.
+	 * 
+	 * @param gradients
+	 *            The gradients.
+	 * @param lastGradient
+	 *            The last gradients.
+	 * @param index
+	 *            The index.
+	 * @return The update value.
+	 */
+	public abstract double updateWeight(double[] gradients,
+			double[] lastGradient, int index);
 
 }

@@ -106,8 +106,10 @@ org.encog.neural.data.union.UnionNeuralDataSet
 org.encog.neural.data.xml.XMLNeuralDataSet
 org.encog.neural.networks.BasicNetwork
 org.encog.neural.networks.ContextClearable
+org.encog.neural.networks.flat.FlatGradientWorker
 org.encog.neural.networks.flat.FlatNetwork
-org.encog.neural.networks.flat.GradientWorker
+org.encog.neural.networks.flat.GradientWorkerCL
+org.encog.neural.networks.flat.GradientWorkerCPU
 org.encog.neural.networks.flat.TrainFlatNetwork
 org.encog.neural.networks.flat.TrainFlatNetworkMulti
 org.encog.neural.networks.flat.ValidateForFlat
@@ -309,6 +311,7 @@ org.encog.solve.genetic.crossover.Crossover
 org.encog.solve.genetic.crossover.Splice
 org.encog.solve.genetic.crossover.SpliceNoRepeat
 org.encog.solve.genetic.genes.BasicGene
+org.encog.solve.genetic.genes.CharGene
 org.encog.solve.genetic.genes.DoubleGene
 org.encog.solve.genetic.genes.Gene
 org.encog.solve.genetic.genes.IntegerGene
@@ -337,6 +340,14 @@ org.encog.StatusReportable
 org.encog.util.benchmark.EncogBenchmark
 org.encog.util.benchmark.Evaluate
 org.encog.util.benchmark.RandomTrainingFactory
+org.encog.util.cl.EncogCL
+org.encog.util.cl.EncogCLDevice
+org.encog.util.cl.EncogCLItem
+org.encog.util.cl.EncogCLPlatform
+org.encog.util.cl.kernels.EncogKernel
+org.encog.util.cl.kernels.KernelNetworkTrain
+org.encog.util.cl.kernels.KernelVectorAdd
+org.encog.util.cl.kernels.TrainingWorkload
 org.encog.util.concurrency.DetermineWorkload
 org.encog.util.concurrency.EncogConcurrency
 org.encog.util.concurrency.EncogTask
@@ -371,6 +382,7 @@ org.encog.util.ReflectionUtil
 org.encog.util.SerializeObject
 org.encog.util.simple.EncogUtility
 org.encog.util.simple.TrainingDialog
+org.encog.util.Stopwatch
 org.encog.util.time.DateUtil
 org.encog.util.time.EnglishTimeUnitNames
 org.encog.util.time.TimeSpan

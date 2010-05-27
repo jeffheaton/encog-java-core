@@ -42,6 +42,7 @@ import java.util.Map.Entry;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.ReflectionUtil;
@@ -443,6 +444,18 @@ public class NeuralStructure implements Serializable {
 	public void sort() {
 		Collections.sort(this.layers, new LayerComparator(this));
 		Collections.sort(this.synapses, new SynapseComparator(this));
+	}
+
+	/**
+	 * @return Are there any context layers.
+	 */
+	public boolean isRecurrent() {
+		for (Layer layer : this.getLayers()) {
+			if (layer instanceof ContextLayer) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

@@ -30,57 +30,82 @@
 package org.encog.neural.networks.flat;
 
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 
 /**
- * Only certain types of networks can be converted to a flat network.
- * This class validates this.  Specifically the network must be:
- *
- * 1. Feedforward only, no self-connections or recurrent links
- * 2. Sigmoid or TANH activation only
- * 3. All layers the same activation function
- * 4. Must have bias values
+ * Only certain types of networks can be converted to a flat network. This class
+ * validates this. Specifically the network must be:
+ * 
+ * 1. Feedforward only, no self-connections or recurrent links 2. Sigmoid, TANH
+ * or linear activation only 3. Must have bias weight values
  */
-public class ValidateForFlat {
+public final class ValidateForFlat {
 
 	/**
-	 * Validate the specified network.
-	 * @param network The network to validate.
+	 * Determine if the specified neural network can be flat. If it can a null
+	 * is returned, otherwise, an error is returned to show why the network
+	 * cannot be flattened.
+	 * 
+	 * @param network
+	 *            The network to check.
+	 * @return Null, if the net can not be flattened, an error message
+	 *         otherwise.
 	 */
-	public static void validateNetwork(final BasicNetwork network) {
-		ActivationFunction lastActivation = null;
+	public static String canBeFlat(final BasicNetwork network) {
+		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+
+		if (inputLayer == null) {
+			return "To convert to a flat network, there must be an input layer.";
+		}
+
+		if (outputLayer == null) {
+			return "To convert to a flat network, there must be an output layer.";
+		}
+
+		if (network.getStructure().isRecurrent()) {
+			return "To convert to a flat network there cannot be context layers.";
+		}
 
 		for (final Layer layer : network.getStructure().getLayers()) {
 			// only feedforward
 			if (layer.getNext().size() > 1) {
-				throw new NeuralNetworkError(
-						"To convert to flat a network must be feedforward only.");
+				return "To convert to flat a network must be feedforward only.";
 			}
 
 			if (!(layer.getActivationFunction() instanceof ActivationSigmoid)
 					&& !(layer.getActivationFunction() instanceof ActivationTANH)) {
-				throw new NeuralNetworkError(
-						"To convert to flat a network must only use sigmoid and tanh activation.");
+				return "To convert to flat a network must only use sigmoid, linear or tanh activation.";
 			}
 
-			if (lastActivation != null) {
-				if (layer.getActivationFunction().getClass() != lastActivation
-						.getClass()) {
-					throw new NeuralNetworkError(
-							"To convert to flat, a network must use the same activation function on each layer.");
-				}
+			if (!layer.hasBias() && (layer != inputLayer)) {
+				return "To convert to flat, all non-input layers must have bias weight values.";
 			}
+		}
+		return null;
+	}
 
-			if (!layer.hasBias() && (lastActivation != null)) {
-				throw new NeuralNetworkError(
-						"To convert to flat, all non-input layers must have bias values.");
-			}
-
-			lastActivation = layer.getActivationFunction();
+	/**
+	 * Validate the specified network.
+	 * 
+	 * @param network
+	 *            The network to validate.
+	 */
+	public static void validateNetwork(final BasicNetwork network) {
+		final String str = ValidateForFlat.canBeFlat(network);
+		if (str != null) {
+			throw new NeuralNetworkError(str);
 		}
 	}
+
+	/**
+	 * Private constructor.
+	 */
+	private ValidateForFlat() {
+
+	}
+
 }
