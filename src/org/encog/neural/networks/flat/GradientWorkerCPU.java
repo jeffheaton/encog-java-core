@@ -71,40 +71,45 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 * The training data.
 	 */
 	private final Indexable training;
-	
+
 	/**
 	 * The high end of the training data.
 	 */
 	private final int low;
-	
+
 	/**
 	 * The low end of the training.
 	 */
 	private final int high;
-	
+
 	/**
 	 * The owner.
 	 */
 	private final TrainFlatNetworkMulti owner;
-	
+
 	/**
 	 * The elapsed time.
 	 */
 	private long elapsedTime;
-	
+
 	/**
 	 * The stopwatch, to evaluate performance.
 	 */
 	private final Stopwatch stopwatch;
 
-
 	/**
 	 * Construct a gradient worker.
-	 * @param network The network to train.
-	 * @param owner The owner that is doing the training.
-	 * @param training The training data.
-	 * @param low The low index to use in the training data.
-	 * @param high The high index to use in the training data.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param owner
+	 *            The owner that is doing the training.
+	 * @param training
+	 *            The training data.
+	 * @param low
+	 *            The low index to use in the training data.
+	 * @param high
+	 *            The high index to use in the training data.
 	 */
 	public GradientWorkerCPU(final FlatNetwork network,
 			final TrainFlatNetworkMulti owner, final Indexable training,
@@ -144,11 +149,14 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	public double[] getWeights() {
 		return this.weights;
 	}
-	
+
 	/**
 	 * Process one training set element.
-	 * @param input The network input.
-	 * @param ideal The ideal values.
+	 * 
+	 * @param input
+	 *            The network input.
+	 * @param ideal
+	 *            The ideal values.
 	 */
 	private void process(final double[] input, final double[] ideal) {
 		this.network.compute(input, this.actual);
@@ -167,10 +175,11 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		}
 	}
 
-
 	/**
 	 * Process one level.
-	 * @param currentLevel The level.
+	 * 
+	 * @param currentLevel
+	 *            The level.
 	 */
 	private void processLevel(final int currentLevel) {
 		final int fromLayerIndex = this.layerIndex[currentLevel + 1];
@@ -214,19 +223,23 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 * Perform the gradient calculation for the specified index range.
 	 */
 	public void run() {
-		this.stopwatch.reset();
-		this.stopwatch.start();
-		this.errorCalculation.reset();
-		for (int i = this.low; i <= this.high; i++) {
-			this.training.getRecord(i, this.pair);
-			process(this.pair.getInput().getData(), this.pair.getIdeal()
-					.getData());
+		try {
+			this.stopwatch.reset();
+			this.stopwatch.start();
+			this.errorCalculation.reset();
+			for (int i = this.low; i <= this.high; i++) {
+				this.training.getRecord(i, this.pair);
+				process(this.pair.getInput().getData(), this.pair.getIdeal()
+						.getData());
+			}
+			final double error = this.errorCalculation.calculateRMS();
+			this.owner.report(this.gradients, error, null);
+			EncogArray.fill(this.gradients, 0);
+			this.stopwatch.stop();
+			this.elapsedTime = this.stopwatch.getElapsedTicks();
+		} catch (Throwable ex) {
+			this.owner.report(null, 0, ex);
 		}
-		final double error = this.errorCalculation.calculateRMS();
-		this.owner.report(this.gradients, error);
-		EncogArray.fill(this.gradients, 0);
-		this.stopwatch.stop();
-		this.elapsedTime = this.stopwatch.getElapsedTicks();
 	}
 
 }

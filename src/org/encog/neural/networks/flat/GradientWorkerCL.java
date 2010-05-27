@@ -167,36 +167,40 @@ public class GradientWorkerCL implements FlatGradientWorker {
 	 * Perform the gradient calculation for the specified index range.
 	 */
 	public void run() {
-		this.stopwatch.reset();
-		this.stopwatch.start();
+		try {
+			this.stopwatch.reset();
+			this.stopwatch.start();
 
-		final KernelNetworkTrain k = this.device.getPlatform()
-				.getNetworkTrain();
+			final KernelNetworkTrain k = this.device.getPlatform()
+					.getNetworkTrain();
 
-		k.calculate(this.workload);
-
-		for (int j = 0; j < this.gradients.length; j++) {
-			this.gradients[j] = 0;
-		}
-
-		double e = 0;
-		int index = 0;
-		int errorIndex = 0;
-
-		for (int i = 0; i < this.workload.getMaxUnits(); i++) {
-			e += this.workload.getErrors()[errorIndex++];
+			k.calculate(this.workload);
 
 			for (int j = 0; j < this.gradients.length; j++) {
-				this.gradients[j] += this.workload.getGradients()[index++];
+				this.gradients[j] = 0;
 			}
+
+			double e = 0;
+			int index = 0;
+			int errorIndex = 0;
+
+			for (int i = 0; i < this.workload.getMaxUnits(); i++) {
+				e += this.workload.getErrors()[errorIndex++];
+
+				for (int j = 0; j < this.gradients.length; j++) {
+					this.gradients[j] += this.workload.getGradients()[index++];
+				}
+			}
+
+			final int count = (this.high - this.low) + 1;
+			final double error = Math.sqrt(e
+					/ (count * this.training.getIdealSize()));
+			this.owner.report(this.gradients, error,null);
+
+			this.stopwatch.stop();
+			this.elapsedTime = this.stopwatch.getElapsedTicks();
+		} catch (Throwable ex) {
+			this.owner.report(null, 0, ex);
 		}
-
-		final int count = (this.high - this.low) + 1;
-		final double error = Math.sqrt(e
-				/ (count * this.training.getIdealSize()));
-		this.owner.report(this.gradients, error);
-
-		this.stopwatch.stop();
-		this.elapsedTime = this.stopwatch.getElapsedTicks();
 	}
 }

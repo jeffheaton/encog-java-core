@@ -122,6 +122,11 @@ public abstract class TrainFlatNetworkMulti {
 	 * workers are faster than CPU ones.
 	 */
 	private double calculatedCLRatio;
+	
+	/**
+	 * Reported exception from the threads.
+	 */
+	private Throwable reportedException;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -144,7 +149,7 @@ public abstract class TrainFlatNetworkMulti {
 
 		this.indexable = (Indexable) training;
 		this.numThreads = 0;
-
+		this.reportedException = null;
 	}
 
 	/**
@@ -351,12 +356,18 @@ public abstract class TrainFlatNetworkMulti {
 	 * @param error
 	 *            The error for that worker.
 	 */
-	public void report(final double[] gradients, final double error) {
+	public void report(final double[] gradients, final double error, Throwable ex) {
 		synchronized (this) {
-			for (int i = 0; i < gradients.length; i++) {
-				this.gradients[i] += gradients[i];
+			if (ex == null) {
+
+				for (int i = 0; i < gradients.length; i++) {
+					this.gradients[i] += gradients[i];
+				}
+				this.totalError += error;
 			}
-			this.totalError += error;
+			else {
+				this.reportedException = ex;
+			}
 		}
 	}
 
