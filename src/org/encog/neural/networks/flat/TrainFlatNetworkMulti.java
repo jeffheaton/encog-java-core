@@ -60,7 +60,7 @@ public abstract class TrainFlatNetworkMulti {
 	/**
 	 * The number of threads to use.
 	 */
-	private final int numThreads;
+	private int numThreads;
 
 	/**
 	 * The gradients.
@@ -385,5 +385,14 @@ public abstract class TrainFlatNetworkMulti {
 	 */
 	public abstract double updateWeight(double[] gradients,
 			double[] lastGradient, int index);
+
+	/**
+	 * Set the number of threads to use.
+	 * @param numThreads The number of threads to use.
+	 */
+	public void setNumThreads(final int numThreads) {
+		this.numThreads = numThreads;
+		
+	}
 
 }

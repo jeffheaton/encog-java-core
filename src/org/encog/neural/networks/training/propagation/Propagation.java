@@ -30,12 +30,23 @@
 
 package org.encog.neural.networks.training.propagation;
 
+import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.flat.FlatNetwork;
+import org.encog.neural.networks.flat.TrainFlatNetworkBackPropagation;
+import org.encog.neural.networks.flat.TrainFlatNetworkManhattan;
+import org.encog.neural.networks.flat.TrainFlatNetworkMulti;
+import org.encog.neural.networks.flat.TrainFlatNetworkResilient;
+import org.encog.neural.networks.flat.ValidateForFlat;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
+import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.util.EncogArray;
 import org.encog.util.EncogValidate;
 
 /**
@@ -59,6 +70,23 @@ public abstract class Propagation extends BasicTraining {
 	private final BasicNetwork network;
 
 	/**
+	 * The current flat network we are using for training, or null for none.
+	 */
+	private FlatNetwork currentFlatNetwork;
+
+	/**
+	 * The current flat trainer we are using, or null for none.
+	 */
+	private TrainFlatNetworkMulti flatTraining;
+
+	/**
+	 * Should we attempt to flatten the network? Usually you want this to be
+	 * true, a flat network can train much faster. However, we can not always
+	 * use flat networks. See the FlatNetwork class for more info.
+	 */
+	private boolean attemptFlatten;
+
+	/**
 	 * Construct a propagation object.
 	 * 
 	 * @param network
@@ -66,8 +94,7 @@ public abstract class Propagation extends BasicTraining {
 	 * @param training
 	 *            The training set.
 	 */
-	public Propagation(final BasicNetwork network, 
-			final NeuralDataSet training) {
+	public Propagation(final BasicNetwork network, final NeuralDataSet training) {
 		super();
 		this.network = network;
 		setTraining(training);
@@ -78,6 +105,20 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public boolean canContinue() {
 		return false;
+	}
+
+	/**
+	 * @return the currentFlatNetwork
+	 */
+	public FlatNetwork getCurrentFlatNetwork() {
+		return this.currentFlatNetwork;
+	}
+
+	/**
+	 * @return the flatTraining
+	 */
+	public TrainFlatNetworkMulti getFlatTraining() {
+		return this.flatTraining;
 	}
 
 	/**
@@ -92,6 +133,13 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public int getNumThreads() {
 		return this.numThreads;
+	}
+
+	/**
+	 * @return the attemptFlatten
+	 */
+	public boolean isAttemptFlatten() {
+		return this.attemptFlatten;
 	}
 
 	/**
@@ -112,16 +160,27 @@ public abstract class Propagation extends BasicTraining {
 	public void iteration() {
 		try {
 			preIteration();
+			processFlatten();
 
-			final CalculateGradient prop = new CalculateGradient(getNetwork(),
-					getTraining(), getNumThreads());
-			final double[] weights = NetworkCODEC.networkToArray(getNetwork());
-			prop.calculate(weights);
+			if (this.flatTraining == null) {
+				final CalculateGradient prop = new CalculateGradient(
+						this.network, getTraining(), getNumThreads());
+				final double[] weights = NetworkCODEC
+						.networkToArray(this.network);
+				prop.calculate(weights);
 
-			performIteration(prop, weights);
+				performIteration(prop, weights);
 
-			NetworkCODEC.arrayToNetwork(weights, getNetwork());
-			setError(prop.getError());
+				NetworkCODEC.arrayToNetwork(weights, this.network);
+				setError(prop.getError());
+			} else {
+				EncogArray.arrayCopy(NetworkCODEC.networkToArray(this.network),
+						this.currentFlatNetwork.getWeights());
+				this.flatTraining.iteration();
+				setError(this.flatTraining.getError());
+				NetworkCODEC.arrayToNetwork(this.currentFlatNetwork
+						.getWeights(), this.network);
+			}
 
 			postIteration();
 		} catch (final ArrayIndexOutOfBoundsException ex) {
@@ -151,6 +210,44 @@ public abstract class Propagation extends BasicTraining {
 	public abstract void performIteration(CalculateGradient prop,
 			double[] weights);
 
+	// / <summary>
+	// / Attempt to flatten the network.
+	// / </summary>
+	private void processFlatten() {
+		if (this.attemptFlatten && (this.currentFlatNetwork == null)) {
+			if ((getTraining() instanceof Indexable)
+					&& (ValidateForFlat.canBeFlat(this.network) == null)) {
+				this.currentFlatNetwork = new FlatNetwork(this.network);
+
+				if (this instanceof ResilientPropagation) {
+					final ResilientPropagation r = (ResilientPropagation) this;
+					this.flatTraining = new TrainFlatNetworkResilient(
+							this.currentFlatNetwork, getTraining(), r
+									.getZeroTolerance(), r.getInitialUpdate(),
+							r.getMaxStep());
+				} else if (this instanceof Backpropagation) {
+					final Backpropagation b = (Backpropagation) this;
+					this.flatTraining = new TrainFlatNetworkBackPropagation(
+							this.currentFlatNetwork, getTraining(), b
+									.getLearningRate(), b.getMomentum());
+				} else if (this instanceof ManhattanPropagation) {
+					final ManhattanPropagation m = (ManhattanPropagation) this;
+					this.flatTraining = new TrainFlatNetworkManhattan(
+							this.currentFlatNetwork, getTraining(), m
+									.getLearningRate());
+				} else {
+					this.currentFlatNetwork = null;
+					this.attemptFlatten = false;
+					return;
+				}
+
+				getFlatTraining().setNumThreads(this.numThreads);
+			} else {
+				this.attemptFlatten = false;
+			}
+		}
+	}
+
 	/**
 	 * Resume training.
 	 * 
@@ -159,6 +256,14 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public void resume(final TrainingContinuation state) {
 		throw new TrainingError("This training type does not support resume.");
+	}
+
+	/**
+	 * @param attemptFlatten
+	 *            the attemptFlatten to set
+	 */
+	public void setAttemptFlatten(final boolean attemptFlatten) {
+		this.attemptFlatten = attemptFlatten;
 	}
 
 	/**
