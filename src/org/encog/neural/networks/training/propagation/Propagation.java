@@ -98,6 +98,7 @@ public abstract class Propagation extends BasicTraining {
 		super();
 		this.network = network;
 		setTraining(training);
+		this.attemptFlatten = true;
 	}
 
 	/**

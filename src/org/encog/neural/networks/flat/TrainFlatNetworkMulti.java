@@ -122,7 +122,7 @@ public abstract class TrainFlatNetworkMulti {
 	 * workers are faster than CPU ones.
 	 */
 	private double calculatedCLRatio;
-	
+
 	/**
 	 * Reported exception from the threads.
 	 */
@@ -313,15 +313,20 @@ public abstract class TrainFlatNetworkMulti {
 			init();
 		}
 
-		final TaskGroup group = EncogConcurrency.getInstance()
-				.createTaskGroup();
-		this.totalError = 0;
+		if (this.workers.length > 1) {
 
-		for (final FlatGradientWorker worker : this.workers) {
-			EncogConcurrency.getInstance().processTask(worker, group);
+			final TaskGroup group = EncogConcurrency.getInstance()
+					.createTaskGroup();
+			this.totalError = 0;
+
+			for (final FlatGradientWorker worker : this.workers) {
+				EncogConcurrency.getInstance().processTask(worker, group);
+			}
+
+			group.waitForComplete();
+		} else {
+			workers[0].run();
 		}
-
-		group.waitForComplete();
 
 		learn();
 		this.currentError = this.totalError / this.workers.length;
@@ -356,7 +361,8 @@ public abstract class TrainFlatNetworkMulti {
 	 * @param error
 	 *            The error for that worker.
 	 */
-	public void report(final double[] gradients, final double error, Throwable ex) {
+	public void report(final double[] gradients, final double error,
+			Throwable ex) {
 		synchronized (this) {
 			if (ex == null) {
 
@@ -364,8 +370,7 @@ public abstract class TrainFlatNetworkMulti {
 					this.gradients[i] += gradients[i];
 				}
 				this.totalError += error;
-			}
-			else {
+			} else {
 				this.reportedException = ex;
 			}
 		}
@@ -388,11 +393,13 @@ public abstract class TrainFlatNetworkMulti {
 
 	/**
 	 * Set the number of threads to use.
-	 * @param numThreads The number of threads to use.
+	 * 
+	 * @param numThreads
+	 *            The number of threads to use.
 	 */
 	public void setNumThreads(final int numThreads) {
 		this.numThreads = numThreads;
-		
+
 	}
 
 }
