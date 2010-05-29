@@ -72,7 +72,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	 *            The context to calculate for.
 	 */
 	public KernelNetworkTrain(final cl_context context) {
-		super(context, "Encog.Resources.KernelNetTrain.txt", "NetworkTrain");
+		super(context, "org/encog/data/KernelNetTrain.txt", "NetworkTrain");
 	}
 
 	/**

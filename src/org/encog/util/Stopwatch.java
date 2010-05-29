@@ -4,25 +4,43 @@ package org.encog.util;
  * A stopwatch, meant to emulate the C# Stopwatch class.
  */
 public class Stopwatch {
-
+	private boolean stopped;
+	private long startTime;
+	private long stopTime;
+	
+	public Stopwatch()
+	{
+		reset();
+		stopped = false;
+	}
+	
 	public void reset() {
-		// TODO Auto-generated method stub
-		
+		this.startTime = System.nanoTime();
+		this.stopTime = System.nanoTime();
+		stopped = false;
 	}
 
 	public void start() {
-		// TODO Auto-generated method stub
-		
+		this.startTime = System.nanoTime();
+		this.stopped = false;
 	}
 
 	public void stop() {
-		// TODO Auto-generated method stub
-		
+		this.stopTime = System.nanoTime();
+		this.stopped = true;
 	}
 
 	public long getElapsedTicks() {
-		// TODO Auto-generated method stub
-		return 0;
+		if( !stopped )
+		{
+			stopTime = System.nanoTime();
+		}
+		
+		return (stopTime - startTime)/1000;
+	}
+
+	public long getElapsedMilliseconds() {
+		return getElapsedTicks()/1000;
 	}
 
 }

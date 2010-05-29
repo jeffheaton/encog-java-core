@@ -99,7 +99,7 @@ public class EncogKernel {
 				builder.append(obj.getValue());
 			}
 
-			CL.clBuildProgram(program, 0, null, null, null, null);
+			CL.clBuildProgram(program, 0, null, builder.toString(), null, null);
 		} else {
 			CL.clBuildProgram(program, 0, null, null, null, null);
 		}
