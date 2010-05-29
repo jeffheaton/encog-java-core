@@ -1,6 +1,9 @@
 package org.encog.util.cl;
 
+import org.encog.util.Format;
 import org.jocl.CL;
+import org.jocl.Pointer;
+import org.jocl.Sizeof;
 import org.jocl.cl_command_queue;
 import org.jocl.cl_device_id;
 
@@ -25,6 +28,11 @@ public class EncogCLDevice extends EncogCLItem {
 	 * The platform for this device.
 	 */
 	private final EncogCLPlatform platform;
+	
+	/**
+	 * Is this device a cpu?
+	 */
+	private final boolean cpu;
 
 	/**
 	 * A command queue for this device.
@@ -42,13 +50,55 @@ public class EncogCLDevice extends EncogCLItem {
 	public EncogCLDevice(final EncogCLPlatform platform,
 			final cl_device_id device) {
 		this.platform = platform;
-		// this.Name = device.Name;
-		// this.Enabled = true;
+		this.setEnabled( true );
 		this.device = device;
-		// this.Vender = device.Vendor;
+		this.setName(getDeviceString(CL.CL_DEVICE_NAME));
+		this.setVender(getDeviceString(CL.CL_DEVICE_VENDOR));
+		
+		long type = getDeviceLong(CL.CL_DEVICE_TYPE);
+		this.cpu = (type==CL.CL_DEVICE_TYPE_CPU);
 
 		this.commands = CL.clCreateCommandQueue(platform
 				.getContext(), device, 0, null);
+	}
+	
+	/**
+	 * Get a config string from the device.
+	 * @param param The param to get.
+	 * @return The config string.
+	 */
+	public String getDeviceString(int param)
+	{
+		byte[] buffer = new byte[255];
+		long[] len = new long[1];
+
+		CL.clGetDeviceInfo(
+				this.device, 
+				param, 
+				buffer.length, 
+				Pointer.to(buffer), 
+				len);
+		String value = new String(buffer,0,(int)len[0]);
+		return value;
+	}
+	
+	/**
+	 * Get a long param from the device.
+	 * @param param The param desired.
+	 * @return The param value.
+	 */
+	public long getDeviceLong(int param)
+	{
+		long[] result = new long[1];
+		long[] len = new long[1];
+		
+		CL.clGetDeviceInfo(
+				this.device, 
+				param, 
+				Sizeof.cl_long, 
+				Pointer.to(result), 
+				len);
+		return result[0];
 	}
 
 	/**
@@ -69,40 +119,35 @@ public class EncogCLDevice extends EncogCLItem {
 	 * @return The size of the global memory.
 	 */
 	public long getGlobalMemorySize() {
-		return 0;
-		// return device.GlobalMemorySize;
+		return getDeviceLong(CL.CL_DEVICE_GLOBAL_MEM_SIZE);
 	}
 
 	/**
 	 * @return The size of the local memory.
 	 */
 	public long getLocalMemorySize() {
-		return 0;
-		// return device.LocalMemorySize;
+		return getDeviceLong(CL.CL_DEVICE_LOCAL_MEM_SIZE);
 	}
 
 	/**
 	 * @return The max clock frequency.
 	 */
 	public long getMaxClockFrequency() {
-		return 0;
-		// return device.MaxClockFrequency;
+		return getDeviceLong(CL.CL_DEVICE_MAX_CLOCK_FREQUENCY);
 	}
 
 	/**
 	 * @return The number of compute units.
 	 */
 	public long getMaxComputeUnits() {
-		return 0;
-		// return device.MaxComputeUnits;
+		return getDeviceLong(CL.CL_DEVICE_MAX_COMPUTE_UNITS);
 	}
 
 	/**
 	 * @return The max workgroup size.
 	 */
 	public long getMaxWorkGroupSize() {
-		return 0;
-		// return device.MaxWorkGroupSize;
+		return getDeviceLong(CL.CL_DEVICE_MAX_WORK_GROUP_SIZE);
 	}
 
 	/**
@@ -116,8 +161,7 @@ public class EncogCLDevice extends EncogCLItem {
 	 * @return Determine if this device is a CPU.
 	 */
 	public boolean isCPU() {
-		// return this.device.Type == ComputeDeviceTypes.Cpu;
-		return false;
+		return this.cpu;
 	}
 
 	/**
@@ -125,21 +169,26 @@ public class EncogCLDevice extends EncogCLItem {
 	 */
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		/*
-		 * switch (device.getType()) { case ComputeDeviceTypes.Accelerator:
-		 * builder.Append("Accel:"); break; case ComputeDeviceTypes.Cpu:
-		 * builder.Append("CPU:"); break; case ComputeDeviceTypes.Gpu:
-		 * builder.Append("GPU:"); break; default: builder.Append("Unknown:");
-		 * break; }
-		 * 
-		 * builder.Append(this.Name); builder.Append(",ComputeUnits:");
-		 * builder.Append(this.MaxComputeUnits); builder.Append(",ClockFreq:");
-		 * builder.Append(this.MaxClockFrequency);
-		 * builder.Append(",LocalMemory=");
-		 * builder.Append(Format.FormatMemory(this.LocalMemorySize));
-		 * builder.Append(",GlobalMemory=");
-		 * builder.Append(Format.FormatMemory(this.GlobalMemorySize));
-		 */
+		
+		if( cpu )
+		{
+			builder.append("CPU:");
+		}
+		else
+		{
+			builder.append("GPU:");
+		}
+		  
+		 builder.append(this.getName()); 
+		 builder.append(",ComputeUnits:");
+		 builder.append(this.getMaxComputeUnits()); 
+		 builder.append(",ClockFreq:");
+		 builder.append(this.getMaxClockFrequency());
+		 builder.append(",LocalMemory=");
+		 builder.append(Format.formatMemory(this.getLocalMemorySize()));
+		 builder.append(",GlobalMemory=");
+		 builder.append(Format.formatMemory(this.getGlobalMemorySize()));
+		 
 		return builder.toString();
 	}
 

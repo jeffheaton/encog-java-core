@@ -63,9 +63,10 @@ public class EncogCLPlatform extends EncogCLItem {
 		this.context = CL.clCreateContextFromType(contextProperties,
 				CL.CL_DEVICE_TYPE_ALL, null, null, null);
 
-		// this.Name = platform.Name;
-		// this.Vender = platform.Vendor;
-		// this.Enabled = true;
+		
+		this.setName( getPlatformString(CL.CL_PLATFORM_NAME));
+		this.setVender(getPlatformString(CL.CL_PLATFORM_VENDOR));
+		this.setEnabled(true);
 		
 		clGetContextInfo(context, CL_CONTEXT_DEVICES, 0, null, numBytes);
 
@@ -82,6 +83,26 @@ public class EncogCLPlatform extends EncogCLItem {
 
 		this.kerVectorAdd = new KernelVectorAdd(this.context);
 		this.kerNetworkTrain = new KernelNetworkTrain(this.context);
+	}
+	
+	/**
+	 * Get a config string from the platform.
+	 * @param param The param to get.
+	 * @return The config string.
+	 */
+	public String getPlatformString(int param)
+	{
+		byte[] buffer = new byte[255];
+		long[] len = new long[1];
+
+		CL.clGetPlatformInfo(
+				this.platform, 
+				param, 
+				buffer.length, 
+				Pointer.to(buffer), 
+				len);
+		String name = new String(buffer,0,(int)len[0]);
+		return name;
 	}
 
 	/**
