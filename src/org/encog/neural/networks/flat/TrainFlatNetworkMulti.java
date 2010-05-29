@@ -312,13 +312,14 @@ public abstract class TrainFlatNetworkMulti {
 		if (this.workers == null) {
 			init();
 		}
+		
+		this.totalError = 0;
 
 		if (this.workers.length > 1) {
 
 			final TaskGroup group = EncogConcurrency.getInstance()
 					.createTaskGroup();
-			this.totalError = 0;
-
+			
 			for (final FlatGradientWorker worker : this.workers) {
 				EncogConcurrency.getInstance().processTask(worker, group);
 			}

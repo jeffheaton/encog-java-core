@@ -51,6 +51,11 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkMulti {
 		}
 	}
 
+	public TrainFlatNetworkResilient(FlatNetwork flat,
+			NeuralDataSet trainingSet) {
+		this(flat,trainingSet,ResilientPropagation.DEFAULT_ZERO_TOLERANCE,ResilientPropagation.DEFAULT_INITIAL_UPDATE,ResilientPropagation.DEFAULT_MAX_STEP);
+	}
+
 	/**
 	 * Determine the sign of the value.
 	 * 
