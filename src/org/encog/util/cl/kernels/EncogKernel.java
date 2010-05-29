@@ -80,8 +80,12 @@ public class EncogKernel {
 	 */
 	public void compile(final Map<String, String> options) {
 		// clear out any old program
-		// if (this.program != null)
-		// this.program.Dispose();
+		
+		if (this.program != null)
+		{
+			CL.clReleaseProgram(this.program);
+			CL.clReleaseKernel(this.kernel);
+		}
 
 		// Create the program from the source code
 		final cl_program program = CL.clCreateProgramWithSource(this.context,

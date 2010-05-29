@@ -7,6 +7,7 @@ import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
 import org.jocl.cl_context;
+import org.jocl.cl_event;
 import org.jocl.cl_mem;
 
 /**
@@ -112,6 +113,8 @@ public class KernelNetworkTrain extends EncogKernel {
 				.to(this.activationTypeBuffer));
 
 		try {
+			cl_event[]  events = new cl_event[1];
+			
 			// Set the work-item dimensions
 			final long[] global_work_size = new long[] { Encog.getInstance()
 					.getCL().getCLThreads() };
@@ -126,8 +129,9 @@ public class KernelNetworkTrain extends EncogKernel {
 			// Execute the kernel
 			CL.clEnqueueNDRangeKernel(workload.getDevice().getCommands(),
 					getKernel(), 1, null, global_work_size, local_work_size, 0,
-					null, null);
-
+					null, events[0]);
+			CL.clFinish(workload.getDevice().getCommands());
+			
 			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
 					.getErrorBuffer(), CL.CL_TRUE, 0, workload.getMaxUnits()
 					* Sizeof.cl_float, Pointer.to(workload.getErrors()), 0, null,
