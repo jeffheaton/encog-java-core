@@ -88,11 +88,6 @@ public abstract class TrainFlatNetworkMulti {
 	private final Indexable indexable;
 
 	/**
-	 * The weights and thresholds.
-	 */
-	private double[] weights;
-
-	/**
 	 * The workers.
 	 */
 	private FlatGradientWorker[] workers;
@@ -233,8 +228,6 @@ public abstract class TrainFlatNetworkMulti {
 		this.gradients = new double[this.network.getWeights().length];
 		this.lastGradient = new double[this.network.getWeights().length];
 
-		this.weights = this.network.getWeights();
-
 		List<EncogCLDevice> clDevices = null;
 
 		DetermineWorkload determine;
@@ -333,12 +326,9 @@ public abstract class TrainFlatNetworkMulti {
 		this.currentError = this.totalError / this.workers.length;
 
 		for (final FlatGradientWorker worker : this.workers) {
-			EncogArray.arrayCopy(this.weights, 0, worker.getWeights(), 0,
-					this.weights.length);
+			EncogArray.arrayCopy(this.network.getWeights(), 0, worker.getWeights(), 0,
+					this.network.getWeights().length);
 		}
-
-		EncogArray.arrayCopy(this.weights, 0, this.network.getWeights(), 0,
-				this.weights.length);
 
 		calculatePerformance();
 	}
@@ -347,8 +337,9 @@ public abstract class TrainFlatNetworkMulti {
 	 * Apply and learn.
 	 */
 	private void learn() {
+		double[] weights = network.getWeights();
 		for (int i = 0; i < this.gradients.length; i++) {
-			this.weights[i] += updateWeight(this.gradients, this.lastGradient,
+			weights[i] += updateWeight(this.gradients, this.lastGradient,
 					i);
 			this.gradients[i] = 0;
 		}
