@@ -155,13 +155,16 @@ public class RequiredImprovementStrategy implements Strategy {
 						}
 						this.train.getNetwork().reset();
 						this.badCycleCount = 0;
+						this.lastError = Double.NaN;
 					}
 				} else {
 					this.badCycleCount = 0;
 				}
 			}
+			else
+				lastError = train.getError();
 		}
 
-		lastError = this.train.getError();
+		lastError = Math.min(this.train.getError(),lastError);
 	}
 }
