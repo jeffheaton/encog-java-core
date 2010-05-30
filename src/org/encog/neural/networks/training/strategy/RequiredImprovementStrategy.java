@@ -109,6 +109,7 @@ public class RequiredImprovementStrategy implements Strategy {
 		this.required = required;
 		this.cycles = cycles;
 		this.badCycleCount = 0;
+		this.acceptableThreshold = threshold;
 	}
 
 	/**
