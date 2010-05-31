@@ -329,6 +329,9 @@ public abstract class TrainFlatNetworkMulti {
 			EncogArray.arrayCopy(this.network.getWeights(), 0, worker.getWeights(), 0,
 					this.network.getWeights().length);
 		}
+		
+		if( this.reportedException!=null )
+			throw(new TrainingError(reportedException));
 
 		calculatePerformance();
 	}
