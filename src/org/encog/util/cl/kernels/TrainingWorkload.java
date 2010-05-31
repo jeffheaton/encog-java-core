@@ -177,7 +177,7 @@ public class TrainingWorkload {
 
 		this.paramBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_ONLY
 				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
-				* this.inputArray.length, Pointer.to(this.paramArray), null);
+				* this.paramArray.length, Pointer.to(this.paramArray), null);
 	}
 
 	/**

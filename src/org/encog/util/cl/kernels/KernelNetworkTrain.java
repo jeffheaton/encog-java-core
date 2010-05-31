@@ -133,7 +133,7 @@ public class KernelNetworkTrain extends EncogKernel {
 					null, events[0]);
 			CL.clFinish(workload.getDevice().getCommands());
 			
-			/*CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
+			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
 					.getErrorBuffer(), CL.CL_TRUE, 0, workload.getMaxUnits()
 					* Sizeof.cl_float, Pointer.to(workload.getErrors()), 0, null,
 					null);
@@ -141,7 +141,7 @@ public class KernelNetworkTrain extends EncogKernel {
 			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
 					.getGradientBuffer(), CL.CL_TRUE, 0, this.weightArray.length
 					* workload.getMaxUnits() * Sizeof.cl_float, Pointer
-					.to(workload.getGradients()), 0, null, null);*/
+					.to(workload.getGradients()), 0, null, null);
 
 			// commands.Finish();
 		} catch (final Exception e) {
