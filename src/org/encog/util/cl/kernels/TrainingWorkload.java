@@ -127,6 +127,9 @@ public class TrainingWorkload {
 
 		int inputIndex = 0;
 		int idealIndex = 0;
+		
+		this.errors = new float[this.maxUnits];
+		this.gradients = new float[this.maxUnits*this.flat.getWeights().length];
 
 		for (int i = low; i <= high; i++) {
 			training.getRecord(i, pair);

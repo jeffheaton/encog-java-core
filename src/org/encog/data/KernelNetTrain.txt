@@ -1,4 +1,4 @@
-﻿#ifndef USE_SIGMOID 
+#ifndef USE_SIGMOID 
 #ifndef USE_TANH
 float activationTANH(float x)
 {

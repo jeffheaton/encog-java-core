@@ -3,6 +3,7 @@ package org.encog.util.cl.kernels;
 import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.neural.networks.flat.FlatNetwork;
+import org.encog.neural.networks.training.TrainingError;
 import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
@@ -132,21 +133,19 @@ public class KernelNetworkTrain extends EncogKernel {
 					null, events[0]);
 			CL.clFinish(workload.getDevice().getCommands());
 			
-			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
+			/*CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
 					.getErrorBuffer(), CL.CL_TRUE, 0, workload.getMaxUnits()
 					* Sizeof.cl_float, Pointer.to(workload.getErrors()), 0, null,
 					null);
 
 			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
-					.getErrorBuffer(), CL.CL_TRUE, 0, this.weightArray.length
+					.getGradientBuffer(), CL.CL_TRUE, 0, this.weightArray.length
 					* workload.getMaxUnits() * Sizeof.cl_float, Pointer
-					.to(workload.getGradients()), 0, null, null);
+					.to(workload.getGradients()), 0, null, null);*/
 
 			// commands.Finish();
 		} catch (final Exception e) {
-			throw new EncogError(
-					"CL device is out of resources, try fewer threads, current CL threadcount="
-							+ workload.getMaxUnits());
+			throw new TrainingError(e);
 		}
 	}
 
@@ -176,17 +175,17 @@ public class KernelNetworkTrain extends EncogKernel {
 						* flat.getLayerCounts().length, Pointer.to(flat
 						.getLayerCounts()), null);
 
-		this.layerCountBuffer = CL.clCreateBuffer(getContext(),
+		this.weightArrayBuffer = CL.clCreateBuffer(getContext(),
 				CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
 						* this.weightArray.length,
 				Pointer.to(this.weightArray), null);
 
-		this.layerCountBuffer = CL.clCreateBuffer(getContext(),
+		this.weightIndexBuffer = CL.clCreateBuffer(getContext(),
 				CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
 						* flat.getWeightIndex().length, Pointer.to(flat
 						.getWeightIndex()), null);
 
-		this.layerCountBuffer = CL.clCreateBuffer(getContext(),
+		this.activationTypeBuffer = CL.clCreateBuffer(getContext(),
 				CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
 						* flat.getActivationType().length, Pointer.to(flat
 						.getActivationType()), null);
