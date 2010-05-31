@@ -92,30 +92,18 @@ public class KernelNetworkTrain extends EncogKernel {
 			this.weightArray[i] = (float) flat.getWeights()[i];
 		}
 
-		CL.clSetKernelArg(getKernel(), 0, Sizeof.cl_mem, Pointer.to(workload
-				.getParamBuffer()));
-		CL.clSetKernelArg(getKernel(), 1, Sizeof.cl_mem, Pointer.to(workload
-				.getErrorBuffer()));
-		CL.clSetKernelArg(getKernel(), 2, Sizeof.cl_mem, Pointer
-				.to(this.layerIndexBuffer));
-		CL.clSetKernelArg(getKernel(), 3, Sizeof.cl_mem, Pointer
-				.to(this.layerCountBuffer));
-		CL.clSetKernelArg(getKernel(), 4, Sizeof.cl_mem, Pointer
-				.to(this.weightIndexBuffer));
-		CL.clSetKernelArg(getKernel(), 5, Sizeof.cl_mem, Pointer.to(workload
-				.getParamBuffer()));
-		CL.clSetKernelArg(getKernel(), 6, Sizeof.cl_mem, Pointer.to(workload
-				.getInputBuffer()));
-		CL.clSetKernelArg(getKernel(), 7, Sizeof.cl_mem, Pointer.to(workload
-				.getIdealBuffer()));
-		CL.clSetKernelArg(getKernel(), 8, Sizeof.cl_mem, Pointer
-				.to(this.weightArrayBuffer));
-		CL.clSetKernelArg(getKernel(), 9, Sizeof.cl_mem, Pointer
-				.to(this.activationTypeBuffer));
+		CL.clSetKernelArg(getKernel(), 0, Sizeof.cl_mem, Pointer.to(workload.getParamBuffer()));
+		CL.clSetKernelArg(getKernel(), 1, Sizeof.cl_mem, Pointer.to(workload.getErrorBuffer()));
+		CL.clSetKernelArg(getKernel(), 2, Sizeof.cl_mem, Pointer.to(this.layerIndexBuffer));
+		CL.clSetKernelArg(getKernel(), 3, Sizeof.cl_mem, Pointer.to(this.layerCountBuffer));
+		CL.clSetKernelArg(getKernel(), 4, Sizeof.cl_mem, Pointer.to(this.weightIndexBuffer));
+		CL.clSetKernelArg(getKernel(), 5, Sizeof.cl_mem, Pointer.to(workload.getInputBuffer()));
+		CL.clSetKernelArg(getKernel(), 6, Sizeof.cl_mem, Pointer.to(workload.getIdealBuffer()));
+		CL.clSetKernelArg(getKernel(), 7, Sizeof.cl_mem, Pointer.to(this.weightArrayBuffer));
+		CL.clSetKernelArg(getKernel(), 8, Sizeof.cl_mem, Pointer.to(workload.getGradientBuffer()));
+		CL.clSetKernelArg(getKernel(), 9, Sizeof.cl_mem, Pointer.to(this.activationTypeBuffer));
 
-		try {
-			cl_event[]  events = new cl_event[1];
-			
+		try {			
 			// Set the work-item dimensions
 			final long[] global_work_size = new long[] { Encog.getInstance()
 					.getCL().getCLThreads() };
@@ -130,7 +118,7 @@ public class KernelNetworkTrain extends EncogKernel {
 			// Execute the kernel
 			CL.clEnqueueNDRangeKernel(workload.getDevice().getCommands(),
 					getKernel(), 1, null, global_work_size, local_work_size, 0,
-					null, events[0]);
+					null, null);
 			CL.clFinish(workload.getDevice().getCommands());
 			
 			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
@@ -141,7 +129,7 @@ public class KernelNetworkTrain extends EncogKernel {
 			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
 					.getGradientBuffer(), CL.CL_TRUE, 0, this.weightArray.length
 					* workload.getMaxUnits() * Sizeof.cl_float, Pointer
-					.to(workload.getGradients()), 0, null, null);
+					.to(workload.getGradients()), 0, null, null); 
 
 			// commands.Finish();
 		} catch (final Exception e) {

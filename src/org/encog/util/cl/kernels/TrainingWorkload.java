@@ -128,9 +128,6 @@ public class TrainingWorkload {
 		int inputIndex = 0;
 		int idealIndex = 0;
 		
-		this.errors = new float[this.maxUnits];
-		this.gradients = new float[this.maxUnits*this.flat.getWeights().length];
-
 		for (int i = low; i <= high; i++) {
 			training.getRecord(i, pair);
 			for (int col = 0; col < flat.getInputCount(); col++) {
@@ -146,6 +143,13 @@ public class TrainingWorkload {
 
 		final cl_context context = this.device.getPlatform().getContext();
 
+		int errorSize = this.maxUnits;
+		int gradientSize = this.maxUnits*this.flat.getWeights().length;
+		
+		this.errors = new float[errorSize];
+		this.gradients = new float[gradientSize];
+
+
 		this.inputBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_ONLY
 				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
 				* this.inputArray.length, Pointer.to(this.inputArray), null);
@@ -154,10 +158,11 @@ public class TrainingWorkload {
 				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
 				* this.idealArray.length, Pointer.to(this.idealArray), null);
 
-		this.errorBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_WRITE,
-				Sizeof.cl_float * this.maxUnits, null, null);
-		this.gradientBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_WRITE,
-				Sizeof.cl_float * flat.getWeights().length * this.maxUnits,
+		this.errorBuffer = CL.clCreateBuffer(context, CL.CL_MEM_WRITE_ONLY,
+				Sizeof.cl_float * errorSize, null, null);
+		
+		this.gradientBuffer = CL.clCreateBuffer(context, CL.CL_MEM_WRITE_ONLY,
+				Sizeof.cl_float * gradientSize,
 				null, null);
 
 		this.paramArray[0] = flat.getInputCount();
