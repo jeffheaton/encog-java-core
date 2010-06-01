@@ -45,10 +45,6 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 6336245112244386279L;
 
-	/**
-	 * The slope of the line between the high and low thresholds.
-	 */
-	private double slope = 1;
 
 	/**
 	 * The high threshold.
@@ -84,13 +80,18 @@ public class ActivationRamp extends BasicActivationFunction {
 	 * @param low
 	 *            The low value, replaced if the low threshold is exceeded.
 	 */
-	public ActivationRamp(final double slope, final double thresholdHigh,
+	public ActivationRamp(final double thresholdHigh,
 			final double thresholdLow, final double high, final double low) {
-		this.slope = slope;
 		this.thresholdHigh = thresholdHigh;
 		this.thresholdLow = thresholdLow;
 		this.high = high;
 		this.low = low;
+	}
+
+	/**
+	 * Default constructor.
+	 */
+	public ActivationRamp() {
 	}
 
 	/**
@@ -101,13 +102,16 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	public void activationFunction(final double[] d) {
 
+		double slope = (this.thresholdHigh - this.thresholdLow)/
+			(this.high - this.low);
+		
 		for (int i = 0; i < d.length; i++) {
 			if (d[i] < this.thresholdLow) {
 				d[i] = this.low;
 			} else if (d[i] > this.thresholdHigh) {
 				d[i] = this.high;
 			} else {
-				d[i] = (this.slope * d[i]);
+				d[i] = (slope * d[i]);
 			}
 		}
 
@@ -120,7 +124,7 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationRamp(this.slope, this.thresholdHigh,
+		return new ActivationRamp( this.thresholdHigh,
 				this.thresholdLow, this.high, this.low);
 	}
 
@@ -147,13 +151,6 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	public double getLow() {
 		return this.low;
-	}
-
-	/**
-	 * @return the slope
-	 */
-	public double getSlope() {
-		return this.slope;
 	}
 
 	/**
@@ -191,14 +188,6 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	public void setLow(final double low) {
 		this.low = low;
-	}
-
-	/**
-	 * @param slope
-	 *            the slope to set
-	 */
-	public void setSlope(final double slope) {
-		this.slope = slope;
 	}
 
 	/**

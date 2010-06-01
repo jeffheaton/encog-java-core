@@ -65,6 +65,7 @@ org.encog.neural.activation.ActivationFunction
 org.encog.neural.activation.ActivationGaussian
 org.encog.neural.activation.ActivationLinear
 org.encog.neural.activation.ActivationLOG
+org.encog.neural.activation.ActivationRamp
 org.encog.neural.activation.ActivationSigmoid
 org.encog.neural.activation.ActivationSIN
 org.encog.neural.activation.ActivationSoftMax
@@ -111,7 +112,10 @@ org.encog.neural.networks.flat.FlatNetwork
 org.encog.neural.networks.flat.GradientWorkerCL
 org.encog.neural.networks.flat.GradientWorkerCPU
 org.encog.neural.networks.flat.TrainFlatNetwork
+org.encog.neural.networks.flat.TrainFlatNetworkBackPropagation
+org.encog.neural.networks.flat.TrainFlatNetworkManhattan
 org.encog.neural.networks.flat.TrainFlatNetworkMulti
+org.encog.neural.networks.flat.TrainFlatNetworkResilient
 org.encog.neural.networks.flat.ValidateForFlat
 org.encog.neural.networks.layers.BasicLayer
 org.encog.neural.networks.layers.ContextLayer
@@ -164,6 +168,7 @@ org.encog.neural.networks.training.cpn.TrainOutstar
 org.encog.neural.networks.training.genetic.GeneticScoreAdapter
 org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm
 org.encog.neural.networks.training.genetic.NeuralGenome
+org.encog.neural.networks.training.hebbian.HebbianTraining
 org.encog.neural.networks.training.LearningRate
 org.encog.neural.networks.training.lma.ComputeJacobian
 org.encog.neural.networks.training.lma.JacobianChainRule
