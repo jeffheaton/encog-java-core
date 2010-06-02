@@ -234,12 +234,9 @@ public abstract class TrainFlatNetworkMulti {
 
 		// consider CL, if enabled
 		if (Encog.getInstance().getCL() != null) {
-			// if we are already using CPU devices, then do not reuse them as CL
-			// devices.
-			// They would be pulling "double duity" and have bad performance.
-			if (this.numThreads != -1) {
-				Encog.getInstance().getCL().disableAllCPUs();
-			} else {
+			
+			if( Encog.getInstance().getCL().areCPUsPresent() ) {
+				this.numThreads = -1;
 				Encog.getInstance().getCL().enableAllCPUs();
 			}
 
