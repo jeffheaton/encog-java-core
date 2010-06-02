@@ -28,7 +28,7 @@ public class EncogCL {
 	 * to give the CL/GPU twice as much work as the CPU, specify 1.5. To give it
 	 * half as much, choose 0.5.
 	 */
-	private final double enforcedCLRatio;
+	private double enforcedCLRatio;
 
 	/**
 	 * The number of CL threads to use, defaults to 200.
@@ -184,6 +184,11 @@ public class EncogCL {
 	 */
 	public int getCLWorkloadSize() {
 		return clWorkloadSize;
+	}
+
+	public void setEnforcedCLRatio(double ratio) {
+		this.enforcedCLRatio = ratio;
+		
 	}
 	
 	
