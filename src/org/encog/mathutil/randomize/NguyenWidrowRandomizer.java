@@ -29,11 +29,7 @@
  */
 package org.encog.mathutil.randomize;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.encog.EncogError;
-import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
@@ -52,10 +48,13 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 
 	/**
 	 * Construct a Nguyen-Widrow randomizer.
-	 * @param min The min of the range.
-	 * @param max The max of the range.
+	 * 
+	 * @param min
+	 *            The min of the range.
+	 * @param max
+	 *            The max of the range.
 	 */
-	public NguyenWidrowRandomizer(double min, double max) {
+	public NguyenWidrowRandomizer(final double min, final double max) {
 		super(min, max);
 	}
 
@@ -70,41 +69,43 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	 * 2.1.1 for each weight <br>
 	 * 2.1.2 Adjust weight by dividing by norm of weight for neuron and
 	 * multiplying by beta value
-	 * 
-	 * 
+	 * @param network The network to randomize.
 	 * @see org.encog.math.randomize.BasicRandomizer#randomize(org.encog.neural.networks.BasicNetwork)
 	 */
 	@Override
-	public final void randomize(BasicNetwork network) {
+	public final void randomize(final BasicNetwork network) {
 
 		super.randomize(network);
 
 		int neuronCount = 0;
 
-		for (Layer layer : network.getStructure().getLayers()) {
+		for (final Layer layer : network.getStructure().getLayers()) {
 			neuronCount += layer.getNeuronCount();
 		}
 
-		Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
+		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
 
-		if (inputLayer == null)
+		if (inputLayer == null) {
 			throw new EncogError("Must have an input layer for Nguyen-Widrow.");
+		}
 
-		if (outputLayer == null)
+		if (outputLayer == null) {
 			throw new EncogError("Must have an output layer for Nguyen-Widrow.");
+		}
 
-		int hiddenNeurons = neuronCount - inputLayer.getNeuronCount()
+		final int hiddenNeurons = neuronCount - inputLayer.getNeuronCount()
 				- outputLayer.getNeuronCount();
 
 		// can't really do much, use regular randomization
-		if (hiddenNeurons < 1)
+		if (hiddenNeurons < 1) {
 			return;
+		}
 
-		double beta = 0.7 * Math.pow(hiddenNeurons, 1.0 / inputLayer
+		final double beta = 0.7 * Math.pow(hiddenNeurons, 1.0 / inputLayer
 				.getNeuronCount());
 
-		for (Synapse synapse : network.getStructure().getSynapses()) {
+		for (final Synapse synapse : network.getStructure().getSynapses()) {
 			randomize(beta, synapse);
 		}
 
@@ -112,36 +113,40 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 
 	/**
 	 * Randomize the specified synapse.
-	 * @param beta The beta value.
-	 * @param synapse The synapse to modify.
+	 * 
+	 * @param beta
+	 *            The beta value.
+	 * @param synapse
+	 *            The synapse to modify.
 	 */
-	private void randomize(double beta, Synapse synapse) {
-		if( synapse.getMatrix()==null )
+	private void randomize(final double beta, final Synapse synapse) {
+		if (synapse.getMatrix() == null) {
 			return;
-		
+		}
+
 		for (int j = 0; j < synapse.getToNeuronCount(); j++) {
 			double norm = 0.0;
-			
+
 			// Calculate the Euclidean Norm for the weights
 			for (int k = 0; k < synapse.getFromNeuronCount(); k++) {
-				double value = synapse.getMatrix().get(k, j);
+				final double value = synapse.getMatrix().get(k, j);
 				norm += value * value;
 			}
 
-			if( synapse.getToLayer().hasBias() ) {
-				double value = synapse.getToLayer().getBiasWeight(j);
+			if (synapse.getToLayer().hasBias()) {
+				final double value = synapse.getToLayer().getBiasWeight(j);
 				norm += value * value;
 				norm = Math.sqrt(norm);
 			}
 
 			// Rescale the weights using beta and the norm
 			for (int k = 0; k < synapse.getFromNeuronCount(); k++) {
-				double value = synapse.getMatrix().get(k, j);
+				final double value = synapse.getMatrix().get(k, j);
 				synapse.getMatrix().set(k, j, beta * value / norm);
 			}
 
-			if( synapse.getToLayer().hasBias() ) {
-				double value = synapse.getToLayer().getBiasWeight(j);
+			if (synapse.getToLayer().hasBias()) {
+				final double value = synapse.getToLayer().getBiasWeight(j);
 				synapse.getToLayer().setBiasWeight(j, beta * value / norm);
 			}
 		}

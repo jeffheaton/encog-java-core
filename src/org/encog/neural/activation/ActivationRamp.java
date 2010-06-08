@@ -69,8 +69,6 @@ public class ActivationRamp extends BasicActivationFunction {
 	/**
 	 * Construct a ramp activation function.
 	 * 
-	 * @param slope
-	 *            The slope of the line between the threshold values.
 	 * @param thresholdHigh
 	 *            The high threshold value.
 	 * @param thresholdLow

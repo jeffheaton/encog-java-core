@@ -132,7 +132,7 @@ public class TrainingContinuationPersistor implements Persistor {
 		this.current = (TrainingContinuation) obj;
 
 		// save the layers
-		out.beginTag(BasicNetworkPersistor.TAG_LAYERS);
+		out.beginTag(TrainingContinuationPersistor.TAG_ITEMS);
 		saveItems(out);
 		out.endTag();
 

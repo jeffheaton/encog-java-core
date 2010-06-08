@@ -99,7 +99,7 @@ public class SingularValueDecomposition {
 	/**
 	 * Construct the singular value decomposition
 	 * Structure to access U, S and V.
-	 * @param A
+	 * @param Arg
 	 *            Rectangular matrix
 	 */
 	public SingularValueDecomposition(Matrix Arg) {
