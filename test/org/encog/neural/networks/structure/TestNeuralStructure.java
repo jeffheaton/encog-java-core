@@ -40,6 +40,7 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.neural.pattern.JordanPattern;
+import org.encog.neural.activation.*;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
@@ -53,6 +54,7 @@ public class TestNeuralStructure extends TestCase {
 		pattern.addHiddenLayer(3);
 		pattern.setOutputNeurons(4);
 		BasicNetwork network = pattern.generate();
+		network.getStructure().finalizeStructure();
 		network.getStructure().sort();
 		List<Layer> layerList = network.getStructure().getLayers();
 		Assert.assertEquals(4,layerList.get(0).getNeuronCount());
@@ -68,7 +70,27 @@ public class TestNeuralStructure extends TestCase {
 		Assert.assertEquals(2,synapseList.get(1).getFromNeuronCount());
 		Assert.assertEquals(2,synapseList.get(2).getToNeuronCount());
 		Assert.assertEquals(1,synapseList.get(2).getFromNeuronCount());
-		
+	}
+	
+	public void testOrder()
+	{
+		Layer l1,l2,l3,l4,l5;
+		final BasicNetwork net = new BasicNetwork();
+	    net.addLayer(l1 = new BasicLayer(new ActivationTANH(), false, 1)); // L1
+	    net.addLayer(l2 = new BasicLayer(new ActivationTANH(), false, 2)); // L2
+	    net.addLayer(l3 = new BasicLayer(new ActivationTANH(), false, 3)); // L3
+	    net.addLayer(l4 = new BasicLayer(new ActivationTANH(), false, 4)); // L4
+	    net.addLayer(l5 = new BasicLayer(new ActivationLinear(), false, 5)); // L5
+	    net.getStructure().finalizeStructure();
+	    net.reset();
+	    
+	    List<Layer> layers = net.getStructure().getLayers();
+	    System.out.println(layers.toString());
+	    Assert.assertEquals(l5, layers.get(0));
+	    Assert.assertEquals(l4, layers.get(1));
+	    Assert.assertEquals(l3, layers.get(2));
+	    Assert.assertEquals(l2, layers.get(3));
+	    Assert.assertEquals(l1, layers.get(4));
 	}
 	
 	public void testStructureElman()
