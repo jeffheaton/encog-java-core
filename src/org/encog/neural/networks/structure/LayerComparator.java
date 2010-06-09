@@ -101,7 +101,7 @@ public class LayerComparator implements Comparator<Layer> {
 				|| (layer1 == this.inputLayer)) {
 			return 1;
 		} else if (depth1 != depth2) {
-			return depth2 - depth1;
+			return depth1 - depth2;
 			// failing all else, just sort them by their ids
 		} else {
 			return layer1.getID() - layer2.getID();

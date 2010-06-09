@@ -89,7 +89,7 @@ public class CalculateDepth {
 
 		// traverse all of the ways to get to that layer
 		final Collection<Layer> prev = this.network.getStructure()
-				.getPreviousLayers(this.outputLayer);
+				.getPreviousLayers(layer);
 
 		for (final Layer nextLayer : prev) {
 			if (!this.depths.containsKey(nextLayer)) {
