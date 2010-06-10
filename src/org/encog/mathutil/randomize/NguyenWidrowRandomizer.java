@@ -70,7 +70,6 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	 * 2.1.2 Adjust weight by dividing by norm of weight for neuron and
 	 * multiplying by beta value
 	 * @param network The network to randomize.
-	 * @see org.encog.math.randomize.BasicRandomizer#randomize(org.encog.neural.networks.BasicNetwork)
 	 */
 	@Override
 	public final void randomize(final BasicNetwork network) {
