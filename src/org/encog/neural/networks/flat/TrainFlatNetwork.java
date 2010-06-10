@@ -136,7 +136,7 @@ public class TrainFlatNetwork {
 	 * @return The overall error.
 	 */
 	public double getError() {
-		return this.errorCalculation.calculateRMS();
+		return this.errorCalculation.calculate();
 	}
 
 	/**

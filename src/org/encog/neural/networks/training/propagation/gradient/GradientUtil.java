@@ -234,7 +234,7 @@ public class GradientUtil {
 	 * @return The currenht error
 	 */
 	public double getError() {
-		return this.error.calculateRMS();
+		return this.error.calculate();
 	}
 
 	/**

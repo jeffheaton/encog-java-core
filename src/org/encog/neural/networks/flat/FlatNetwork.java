@@ -247,7 +247,7 @@ public class FlatNetwork {
 			compute(pair.getInput().getData(), actual);
 			errorCalculation.updateError(actual, pair.getIdeal().getData());
 		}
-		return errorCalculation.calculateRMS();
+		return errorCalculation.calculate();
 	}
 
 	

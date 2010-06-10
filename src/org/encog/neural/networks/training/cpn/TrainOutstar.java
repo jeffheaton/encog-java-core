@@ -148,7 +148,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 
 		}
 
-		setError(error.calculateRMS());
+		setError(error.calculate());
 	}
 
 	/**

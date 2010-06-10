@@ -232,7 +232,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 				process(this.pair.getInput().getData(), this.pair.getIdeal()
 						.getData());
 			}
-			final double error = this.errorCalculation.calculateRMS();
+			final double error = this.errorCalculation.calculate();
 			this.owner.report(this.gradients, error, null);
 			EncogArray.fill(this.gradients, 0);
 			this.stopwatch.stop();

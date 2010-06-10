@@ -234,7 +234,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 			final NeuralData actual = compute(pair.getInput());
 			errorCalculation.updateError(actual, pair.getIdeal());
 		}
-		return errorCalculation.calculateRMS();
+		return errorCalculation.calculate();
 	}
 
 	/**
