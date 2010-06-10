@@ -32,6 +32,7 @@
 	<property file="encog.properties"/>
 	<!-- set global properties for this build -->
 	<property name="path.src" location="${basedir}/src" />
+	<property name="path.examples" location="${basedir}/examples" />
 	<property name="path.test.src" location="${basedir}/test" />
 	<property name="path.test.build" location="${basedir}/test-build" />
 	<property name="path.test.results" location="${basedir}/tests" />
@@ -54,12 +55,25 @@
 		</exec>
 		<property file="encog.properties"/>
 	</target>
+	
+	<target name="checkout-examples" depends="init">
+		
+		<exec executable="svn">			
+			<arg value="checkout" />
+			<arg value="http://encog-java.googlecode.com/svn/trunk/encog-examples" />
+			<arg value="${path.examples}" />
+		</exec>
+		
+		<!-- load the properties file -->
+		<property file="encog.properties"/>
+	</target>
 
 	<target name="init">
 		<!-- Create the build directory structure used by compile -->
 		<mkdir dir="${path.build}" />
 		<mkdir dir="${path.test.build}" />
 		<mkdir dir="${path.doc}" />
+		<mkdir dir="${path.examples}" />
 	</target>
 
 	<target name="compile" depends="init" description="compile the source ">
@@ -87,6 +101,12 @@
 		</javadoc>
 	</target>
 
+	<target name="build-examples" depends="checkout-examples" description="Compile the examples">
+		<ant antfile="${path.examples}/build.xml" inheritAll="false" target="build"/>
+		<ant antfile="${path.examples}/build.xml" inheritAll="false" target="clean"/>
+	</target>
+
+	
 	<target name="build" depends="compile,doc" description="generate the distribution">
 
 		<!-- Create the distribution directory -->
@@ -110,9 +130,10 @@
 
 	</target>
 
-	<target name="cc-build" depends="clean-all,checkout,compile,doc,test,build">
+	<target name="cc-build" depends="clean-all,checkout,build-examples,compile,doc,test,build">
 
 		<property name="path.stage.sub" value="${path.stage}/encog-java-core-${encog.version}"/>
+		<copy todir="${path.stage.sub}" file="${basedir}/pom.xml" />
 		<copy todir="${path.stage.sub}" file="${basedir}/copyright.txt" />
 		<copy todir="${path.stage.sub}" file="${basedir}/build.xml" />
 		<copy todir="${path.stage.sub}" file="${basedir}/.checkstyle" />
@@ -131,6 +152,10 @@
 
 		<copy todir="${path.stage.sub}/doc">
 			<fileset dir="${path.doc}" />
+		</copy>
+		
+		<copy todir="${path.stage.sub}/examples">
+			<fileset dir="${path.examples}" />
 		</copy>
 		
 		<copy todir="${path.stage.sub}/test">
@@ -189,5 +214,6 @@
 		<delete dir="${path.test.results}" />
 		<delete dir="${path.dist}" />
 		<delete dir="${path.doc}" />
+		<delete dir="${path.examples}" />
 	</target>
 </project>
