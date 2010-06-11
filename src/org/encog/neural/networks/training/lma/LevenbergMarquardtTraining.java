@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.4
+ * Encog(tm) Core v2.5 
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- *
+ * 
  * Copyright 2008-2010 by Heaton Research Inc.
- *
+ * 
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- *
+ * 
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- *
+ * 
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -46,7 +46,7 @@ import org.encog.neural.networks.training.TrainingError;
 
 /**
  * Trains a neural network using a Levenberg Marquardt algorithm (LMA). This
- * training technique is based on the mathematical technique of the same name. ì
+ * training technique is based on the mathematical technique of the same name. ï¿½
  * 
  * http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
  * 
