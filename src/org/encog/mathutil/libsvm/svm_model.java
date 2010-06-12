@@ -6,6 +6,8 @@ package org.encog.mathutil.libsvm;
 /**
  * This class was taken from the libsvm package.  We have made some
  * modifications for use in Encog.
+ * 
+ * http://www.csie.ntu.edu.tw/~cjlin/libsvm/
  *
  * The libsvm Copyright/license is listed here.
  * 
