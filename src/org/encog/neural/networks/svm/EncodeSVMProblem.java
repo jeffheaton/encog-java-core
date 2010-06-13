@@ -1,4 +1,4 @@
-package org.encog.neural.networks.training.svm;
+package org.encog.neural.networks.svm;
 
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_problem;

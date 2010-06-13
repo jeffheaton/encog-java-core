@@ -4,6 +4,7 @@ import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.svm.EncodeSVMProblem;
 import org.encog.neural.networks.svm.SVMNetwork;
 
 public class SVMTrain {
@@ -21,7 +22,6 @@ public class SVMTrain {
 		{
 			this.problem = new svm_problem[this.network.getOutputCount()];
 			this.problem[i] = EncodeSVMProblem.encode(indexable, i);
-			this.network.getModels()[i] = svm.svm_train(problem[i], this.network.getParams());
 		}
 	}
 	
