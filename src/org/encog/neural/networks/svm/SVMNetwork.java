@@ -1,4 +1,4 @@
-package org.encog.neural.networks;
+package org.encog.neural.networks.svm;
 
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_model;
@@ -6,15 +6,27 @@ import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.BasicNetwork;
 
-public class SVMNetwork {
+public class SVMNetwork extends BasicNetwork {
 	
 	private svm_model[] models;
 	private svm_parameter params;
 	private int inputCount;
 	private int outputCount;
 	
-	public SVMNetwork(int inputCount, int outputCount)
+	public SVMNetwork(int inputCount, int outputCount, boolean regression)
+	{
+		this(inputCount,outputCount,0);
+		
+		if( regression )
+			this.params.svm_type = svm_parameter.EPSILON_SVR;
+		else
+			this.params.svm_type = svm_parameter.C_SVC;
+				
+	}
+	
+	public SVMNetwork(int inputCount, int outputCount, int svmType)
 	{
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
@@ -22,6 +34,21 @@ public class SVMNetwork {
 		models = new svm_model[outputCount];
 		params = new svm_parameter();
 		
+		params.svm_type = svm_parameter.C_SVC;
+		params.kernel_type = svm_parameter.RBF;
+		params.degree = 3;
+		params.coef0 = 0;
+		params.nu = 0.5;
+		params.cache_size = 100;
+		params.C = 1;
+		params.eps = 1e-3;
+		params.p = 0.1;
+		params.shrinking = 1;
+		params.probability = 0;
+		params.nr_weight = 0;
+		params.weight_label = new int[0];
+		params.weight = new double[0];
+
 		if(params.gamma == 0 && inputCount > 0)
 			params.gamma = 1.0/inputCount;
 	}
