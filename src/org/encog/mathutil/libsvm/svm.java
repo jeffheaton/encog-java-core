@@ -2,6 +2,10 @@ package org.encog.mathutil.libsvm;
 import java.io.*;
 import java.util.*;
 
+import org.encog.neural.networks.BasicNetwork;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This class was taken from the libsvm package.  We have made some
  * modifications for use in Encog.
@@ -436,7 +440,7 @@ class Solver {
 		}
 	}
 
-	void Solve(int l, QMatrix Q, double[] p_, byte[] y_,
+	int Solve(int l, QMatrix Q, double[] p_, byte[] y_,
 		   double[] alpha_, double Cp, double Cn, double eps, SolutionInfo si, int shrinking)
 	{
 		this.l = l;
@@ -689,6 +693,7 @@ class Solver {
 		si.upper_bound_n = Cn;
 
 		svm.info("\noptimization finished, #iter = "+iter+"\n");
+		return iter;
 	}
 
 	// return 1 if already optimal, return 0 otherwise
@@ -920,12 +925,12 @@ final class Solver_NU extends Solver
 {
 	private SolutionInfo si;
 
-	void Solve(int l, QMatrix Q, double[] p, byte[] y,
+	int Solve(int l, QMatrix Q, double[] p, byte[] y,
 		   double[] alpha, double Cp, double Cn, double eps,
 		   SolutionInfo si, int shrinking)
 	{
 		this.si = si;
-		super.Solve(l,Q,p,y,alpha,Cp,Cn,eps,si,shrinking);
+		return super.Solve(l,Q,p,y,alpha,Cp,Cn,eps,si,shrinking);
 	}
 
 	// return 1 if already optimal, return 0 otherwise
@@ -1319,10 +1324,13 @@ public class svm {
 
 	private static svm_print_interface svm_print_stdout = new svm_print_interface()
 	{
+		private final Logger LOGGER = LoggerFactory
+		.getLogger(svm.class);
+		
 		public void print(String s)
 		{
-			System.out.print(s);
-			System.out.flush();
+			if( LOGGER.isInfoEnabled())
+			LOGGER.info(s);
 		}
 	};
 
@@ -1351,7 +1359,7 @@ public class svm {
 		}
 
 		Solver s = new Solver();
-		s.Solve(l, new SVC_Q(prob,param,y), minus_ones, y,
+		param.statIterations = s.Solve(l, new SVC_Q(prob,param,y), minus_ones, y,
 			alpha, Cp, Cn, param.eps, si, param.shrinking);
 
 		double sum_alpha=0;
@@ -1440,7 +1448,7 @@ public class svm {
 		}
 
 		Solver s = new Solver();
-		s.Solve(l, new ONE_CLASS_Q(prob,param), zeros, ones,
+		param.statIterations = s.Solve(l, new ONE_CLASS_Q(prob,param), zeros, ones,
 			alpha, 1.0, 1.0, param.eps, si, param.shrinking);
 	}
 
@@ -1465,7 +1473,7 @@ public class svm {
 		}
 
 		Solver s = new Solver();
-		s.Solve(2*l, new SVR_Q(prob,param), linear_term, y,
+		param.statIterations = s.Solve(2*l, new SVR_Q(prob,param), linear_term, y,
 			alpha2, param.C, param.C, param.eps, si, param.shrinking);
 
 		double sum_alpha = 0;

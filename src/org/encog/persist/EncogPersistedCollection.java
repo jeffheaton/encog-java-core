@@ -145,6 +145,8 @@ public class EncogPersistedCollection {
 	 */
 	public static final String TYPE_POPULATION = "BasicPopulation";
 
+	public static final Object TYPE_SVM = "SVMNetwork";
+
 
 	/**
 	 * Throw and log an error.

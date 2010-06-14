@@ -6,8 +6,13 @@ import org.encog.neural.data.Indexable;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.svm.EncodeSVMProblem;
 import org.encog.neural.networks.svm.SVMNetwork;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SVMTrain {
+	
+	private static final transient Logger LOGGER = LoggerFactory
+	.getLogger(SVMTrain.class);
 	
 	private SVMNetwork network;
 	private Indexable indexable;
@@ -26,7 +31,7 @@ public class SVMTrain {
 	}
 	
 	public void iteration()
-	{
+	{		
 		for(int i=0;i<network.getOutputCount();i++ )
 		{
 			network.getModels()[i] = svm.svm_train(problem[i], network.getParams());
