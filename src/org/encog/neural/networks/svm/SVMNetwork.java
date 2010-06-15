@@ -88,6 +88,7 @@ public class SVMNetwork extends BasicNetwork {
 	 * 
 	 * @return The newly created persistor.
 	 */
+	@Override
 	public Persistor createPersistor() {
 		return new SVMNetworkPersistor();
 	}
