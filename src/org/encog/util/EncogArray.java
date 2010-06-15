@@ -139,4 +139,14 @@ public final class EncogArray {
 		Arrays.fill(array,value);
 		
 	}
+	
+	public static int findStringInArray(String[] search, String searchFor)
+	{
+		for(int i=0;i<search.length;i++)
+		{
+			if( search[i].equals(searchFor))
+				return i;
+		}
+		return -1;
+	}
 }
