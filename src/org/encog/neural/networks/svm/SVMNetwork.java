@@ -7,6 +7,9 @@ import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.persist.Persistor;
+import org.encog.persist.persistors.BasicNetworkPersistor;
+import org.encog.persist.persistors.SVMNetworkPersistor;
 
 public class SVMNetwork extends BasicNetwork {
 	
@@ -78,6 +81,15 @@ public class SVMNetwork extends BasicNetwork {
 		}
 		
 		return result;
+	}
+	
+	/**
+	 * Create a persistor for this object.
+	 * 
+	 * @return The newly created persistor.
+	 */
+	public Persistor createPersistor() {
+		return new SVMNetworkPersistor();
 	}
 	
 	public int getInputCount()

@@ -2441,7 +2441,12 @@ public class svm {
 	public static void svm_save_model(String model_file_name, svm_model model) throws IOException
 	{
 		DataOutputStream fp = new DataOutputStream(new BufferedOutputStream(new FileOutputStream(model_file_name)));
-
+		svm_save_model(fp,model);
+		fp.close();
+	}
+	
+	public static void svm_save_model(DataOutputStream fp, svm_model model) throws IOException
+	{
 		svm_parameter param = model.param;
 
 		fp.writeBytes("svm_type "+svm_type_table[param.svm_type]+"\n");

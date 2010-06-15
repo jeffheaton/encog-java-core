@@ -156,6 +156,30 @@ public class WriteTags {
 		endTag();
 	}
 
+	public void addProperty(final String name, final double[] array, int len) {
+		if (array != null) {
+			StringBuilder str = new StringBuilder();
+			for (int i = 0; i < len; i++) {
+				if (i != 0)
+					str.append(' ');
+				str.append(array[i]);
+			}
+			addProperty("label", str.toString());
+		}
+	}
+	
+	public void addProperty(final String name, final int[] array, int len) {
+		if (array != null) {
+			StringBuilder str = new StringBuilder();
+			for (int i = 0; i < len; i++) {
+				if (i != 0)
+					str.append(' ');
+				str.append(array[i]);
+			}
+			addProperty("label", str.toString());
+		}
+	}
+
 	/**
 	 * Add text.
 	 * 
