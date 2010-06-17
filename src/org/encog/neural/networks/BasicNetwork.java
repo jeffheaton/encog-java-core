@@ -658,4 +658,30 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 				layer.setBiasActivation(activation);
 		}
 	}
+	
+	public int getInputCount()
+	{
+		Layer layer = getLayer(BasicNetwork.TAG_INPUT);
+		if( layer!=null )
+		{
+			return layer.getNeuronCount();
+		}
+		else
+		{
+			return -1;
+		}
+	}
+	
+	public int getOutputCount()
+	{
+		Layer layer = getLayer(BasicNetwork.TAG_OUTPUT);
+		if( layer!=null )
+		{
+			return layer.getNeuronCount();
+		}
+		else
+		{
+			return -1;
+		}		
+	}
 }

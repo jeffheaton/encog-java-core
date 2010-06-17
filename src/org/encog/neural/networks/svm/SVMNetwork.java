@@ -7,6 +7,7 @@ import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNetworkPersistor;
 import org.encog.persist.persistors.SVMNetworkPersistor;
@@ -70,6 +71,14 @@ public class SVMNetwork extends BasicNetwork {
 		return result;
 	}
 	
+	public NeuralData compute(final NeuralData input,
+			final NeuralOutputHolder useHolder) {
+		
+		useHolder.setOutput( compute(input));
+		return useHolder.getOutput();
+	}
+
+	
 	public svm_node[] makeSparse(NeuralData data)
 	{
 		svm_node[] result = new svm_node[data.size()];
@@ -110,4 +119,6 @@ public class SVMNetwork extends BasicNetwork {
 	public svm_parameter getParams() {
 		return params;
 	}
+	
+	
 }
