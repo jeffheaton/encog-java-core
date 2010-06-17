@@ -164,7 +164,7 @@ public class WriteTags {
 					str.append(' ');
 				str.append(array[i]);
 			}
-			addProperty("label", str.toString());
+			addProperty(name, str.toString());
 		}
 	}
 	
@@ -176,7 +176,7 @@ public class WriteTags {
 					str.append(' ');
 				str.append(array[i]);
 			}
-			addProperty("label", str.toString());
+			addProperty(name, str.toString());
 		}
 	}
 

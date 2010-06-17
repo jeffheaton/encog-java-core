@@ -68,6 +68,12 @@ public class SVMNetworkPersistor implements Persistor {
 		SVMNetwork result = null;
 		int input=-1,output=-1;
 		
+		final String name = in.getTag().getAttributes().get(
+				EncogPersistedCollection.ATTRIBUTE_NAME);
+		final String description = in.getTag().getAttributes().get(
+				EncogPersistedCollection.ATTRIBUTE_DESCRIPTION);
+
+		
 		while (in.readToTag()) {
 			if (in.is(SVMNetworkPersistor.TAG_INPUT,true)) {
 				input = Integer.parseInt(in.readTextToTag());
@@ -83,7 +89,9 @@ public class SVMNetworkPersistor implements Persistor {
 				break;
 			}
 		}
-		
+
+		result.setName(name);
+		result.setDescription(description);
 		return result;
 	}
 	
@@ -187,7 +195,12 @@ public class SVMNetworkPersistor implements Persistor {
 	private void handleData(ReadXML in, svm_model model)
 	{	
 		int i = 0;
-		int m = model.nr_class - 1;
+		int m = model.nr_class - 1;		
+		int l = model.l;
+		
+		model.sv_coef = new double[m][l];
+		model.SV = new svm_node[l][];
+
 		
 		while (in.readToTag()) {
 			if (in.is(SVMNetworkPersistor.TAG_ROW,true)) {
@@ -281,7 +294,7 @@ public class SVMNetworkPersistor implements Persistor {
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(
 				EncogPersistedCollection.TYPE_SVM, out, obj,
-				false);
+				true);
 		final SVMNetwork net = (SVMNetwork) obj;
 		
 		out.addProperty(SVMNetworkPersistor.TAG_INPUT, net.getInputCount());
