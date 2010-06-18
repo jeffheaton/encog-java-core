@@ -1,4 +1,4 @@
-package org.encog.neural.networks.svm;
+package org.encog.neural.networks.training.svm;
 
 import java.util.Iterator;
 

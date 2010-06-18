@@ -9,7 +9,6 @@ import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.svm.EncodeSVMProblem;
 import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.Strategy;
@@ -62,11 +61,11 @@ public class SVMTrain extends BasicTraining {
 	}
 
 	public void train(int index, double gamma, double c) {
-		network.getParams().C = c;
-		network.getParams().gamma = gamma;
+		network.getParams()[index].C = c;
+		network.getParams()[index].gamma = gamma;
 
 		network.getModels()[index] = svm.svm_train(problem[index], network
-				.getParams());
+				.getParams()[index]);
 	}
 
 	public double[] crossValidate(double gamma, double c) {
@@ -76,11 +75,11 @@ public class SVMTrain extends BasicTraining {
 		for (int i = 0; i < network.getModels().length; i++) {
 			double[] target = new double[this.problem[0].l];
 
-			network.getParams().C = c;
-			network.getParams().gamma = gamma / this.network.getInputCount();
-			svm.svm_cross_validation(problem[i], network.getParams(), fold,
+			network.getParams()[i].C = c;
+			network.getParams()[i].gamma = gamma / this.network.getInputCount();
+			svm.svm_cross_validation(problem[i], network.getParams()[i], fold,
 					target);
-			result[i] = evaluate(network.getParams(), problem[i], target);
+			result[i] = evaluate(network.getParams()[i], problem[i], target);
 		}
 
 		return result;
