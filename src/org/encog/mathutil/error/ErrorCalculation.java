@@ -53,7 +53,7 @@ public class ErrorCalculation {
 	/**
 	 * The current error calculation mode.
 	 */
-	private static ErrorCalculationMode mode = ErrorCalculationMode.RMS;
+	private static ErrorCalculationMode mode = ErrorCalculationMode.MSE;
 
 	/**
 	 * The logging object.
@@ -192,6 +192,19 @@ public class ErrorCalculation {
 	 */
 	public static void setMode(ErrorCalculationMode mode) {
 		ErrorCalculation.mode = mode;
+	}
+
+	public void updateError(double actual, double ideal) {
+
+		double delta = ideal - actual;
+
+		if (this.mode == ErrorCalculationMode.ARCTAN)
+			delta = Math.atan(delta);
+
+		this.globalError += delta * delta;
+
+		this.setSize++;
+
 	}
 
 }
