@@ -24,7 +24,7 @@ public class SVMNetwork extends BasicNetwork {
 		this(inputCount,outputCount,0);
 		
 		if( regression )
-			this.params.svm_type = svm_parameter.EPSILON_SVR;
+			this.params.svm_type = svm_parameter.NU_SVR;
 		else
 			this.params.svm_type = svm_parameter.C_SVC;
 				

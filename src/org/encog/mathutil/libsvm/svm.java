@@ -527,6 +527,8 @@ class Solver {
 			int j = working_set[1];
 
 			++iter;
+			if( iter>1000)
+				break;
 
 			// update alpha[i] and alpha[j], handle bounds carefully
 

@@ -40,9 +40,11 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.data.csv.CSVNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.networks.training.svm.SVMTrain;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.util.Format;
 
@@ -270,9 +272,14 @@ public final class EncogUtility {
 	 */
 	public static void trainToError(final BasicNetwork network,
 			final NeuralDataSet trainingSet, final double error) {
-		final Propagation train = new ResilientPropagation(network,
+		
+		Train train;
+		
+		if( network instanceof SVMNetwork )
+			train = new SVMTrain(network,trainingSet);
+		else
+			train = new ResilientPropagation(network,
 				trainingSet);
-		train.setNumThreads(0);
 		EncogUtility.trainToError(train, network, trainingSet, error);
 	}
 
@@ -304,7 +311,7 @@ public final class EncogUtility {
 					+ " Error:" + Format.formatPercent(train.getError())
 					+ " Target Error: " + Format.formatPercent(error));
 			epoch++;
-		} while (train.getError() > error);
+		} while ( (train.getError() > error) && !train.isTrainingDone() );
 		train.finishTraining();
 	}
 }

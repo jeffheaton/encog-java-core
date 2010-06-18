@@ -186,5 +186,13 @@ public abstract class BasicTraining implements Train {
 	public void setTraining(final NeuralDataSet training) {
 		this.training = training;
 	}
+	
+	/**
+	 * @return True if training can progress no further.
+	 */
+	public boolean isTrainingDone()
+	{
+		return false;
+	}
 
 }

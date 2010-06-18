@@ -1207,5 +1207,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
 	}
+	
+	/**
+	 * @return True if training can progress no further.
+	 */
+	public boolean isTrainingDone()
+	{
+		return false;
+	}
+
 
 }

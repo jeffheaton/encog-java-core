@@ -1,10 +1,13 @@
 package org.encog.neural.networks.svm;
 
+import java.util.Iterator;
+
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 
 public class EncodeSVMProblem {
 	
@@ -13,11 +16,27 @@ public class EncodeSVMProblem {
 		
 	}
 	
-	public static svm_problem encode(Indexable training, int outputIndex)
+	private static long obtainTrainingLength(NeuralDataSet training)
+	{
+		if( training instanceof Indexable )
+		{
+			return ((Indexable)training).getRecordCount();
+		}
+		
+		long result = 0;
+		Iterator<NeuralDataPair> itr = training.iterator();
+		
+		while(itr.hasNext())
+			result++;
+				
+		return result;
+	}
+	
+	public static svm_problem encode(NeuralDataSet training, int outputIndex)
 	{
 		svm_problem result = new svm_problem();
 		
-		result.l = (int)training.getRecordCount();
+		result.l = (int)obtainTrainingLength(training);
 		
 		result.y = new double[result.l];
 		result.x = new svm_node[result.l][training.getInputSize()];

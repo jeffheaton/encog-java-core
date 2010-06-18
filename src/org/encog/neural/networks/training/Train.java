@@ -111,4 +111,8 @@ public interface Train {
 	 */
 	EncogCloud getCloud();
 	
+	/**
+	 * @return True if training can progress no further.
+	 */
+	boolean isTrainingDone();
 }
