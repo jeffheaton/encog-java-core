@@ -149,4 +149,20 @@ public class SVMNetwork extends BasicNetwork {
 		return params;
 	}
 
+	/**
+	 * @return the kernelType
+	 */
+	public KernelType getKernelType() {
+		return kernelType;
+	}
+
+	/**
+	 * @return the svmType
+	 */
+	public SVMType getSvmType() {
+		return svmType;
+	}
+	
+	
+
 }

@@ -9,6 +9,7 @@ import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.svm.KernelType;
 import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.Strategy;
@@ -32,11 +33,11 @@ public class SVMTrain extends BasicTraining {
 	private double gammaBegin = -10;
 	private double gammaEnd = 10;
 	private double gammaStep = 1;
-	private double bestConst;
-	private double bestGamma;
-	private double bestError;
-	private double currentConst;
-	private double currentGamma;
+	private double[] bestConst;
+	private double[] bestGamma;
+	private double[] bestError;
+	private double[] currentConst;
+	private double[] currentGamma;
 	private boolean isSetup;
 	private boolean trainingDone;
 
@@ -68,21 +69,15 @@ public class SVMTrain extends BasicTraining {
 				.getParams()[index]);
 	}
 
-	public double[] crossValidate(double gamma, double c) {
+	public double crossValidate(int index, double gamma, double c) {
 
-		double[] result = new double[network.getModels().length];
+		double[] target = new double[this.problem[0].l];
 
-		for (int i = 0; i < network.getModels().length; i++) {
-			double[] target = new double[this.problem[0].l];
-
-			network.getParams()[i].C = c;
-			network.getParams()[i].gamma = gamma / this.network.getInputCount();
-			svm.svm_cross_validation(problem[i], network.getParams()[i], fold,
-					target);
-			result[i] = evaluate(network.getParams()[i], problem[i], target);
-		}
-
-		return result;
+		network.getParams()[index].C = c;
+		network.getParams()[index].gamma = gamma / this.network.getInputCount();
+		svm.svm_cross_validation(problem[index], network.getParams()[index], fold,
+				target);
+		return evaluate(network.getParams()[index], problem[index], target);
 	}
 
 	private double evaluate(svm_parameter param, svm_problem prob,
@@ -109,9 +104,18 @@ public class SVMTrain extends BasicTraining {
 	}
 
 	private void setup() {
-		bestError = Double.POSITIVE_INFINITY;
-		this.currentConst = this.constBegin;
-		this.currentGamma = this.gammaBegin;
+		this.currentConst = new double[this.network.getOutputCount()];
+		this.currentGamma = new double[this.network.getOutputCount()];
+		this.bestConst = new double[this.network.getOutputCount()];
+		this.bestGamma = new double[this.network.getOutputCount()];
+		this.bestError = new double[this.network.getOutputCount()];
+
+
+		for (int i = 0; i < this.network.getOutputCount(); i++) {
+			this.currentConst[i] = this.constBegin;
+			this.currentGamma[i] = this.gammaBegin;
+			this.bestError[i] = Double.POSITIVE_INFINITY;
+		}
 		this.isSetup = true;
 	}
 
@@ -123,24 +127,36 @@ public class SVMTrain extends BasicTraining {
 
 			preIteration();
 
-			double[] e = this.crossValidate(this.currentGamma, currentConst);
+			if (network.getKernelType() == KernelType.RBF) {
 
-			if (e[0] < bestError) {
-				this.bestConst = this.currentConst;
-				this.bestGamma = this.currentGamma;
-				this.bestError = e[0];
+				double totalError = 0;
+				
+				for (int i = 0; i < this.network.getOutputCount(); i++) {
+					double e = this.crossValidate(i, this.currentGamma[i],
+							currentConst[i]);
+
+					if (e < bestError[i]) {
+						this.bestConst[i] = this.currentConst[i];
+						this.bestGamma[i] = this.currentGamma[i];
+						this.bestError[i] = e;
+					}
+
+					this.currentConst[i] += this.constStep;
+					if (this.currentConst[i] > this.constEnd) {
+						this.currentConst[i] = this.constBegin;
+						this.currentGamma[i] += this.gammaStep;
+						if (this.currentGamma[i] > this.gammaEnd)
+							this.trainingDone = true;
+					}
+					
+					totalError += this.bestError[i];
+				}
+
+				setError(totalError/this.network.getOutputCount());
+			} else {
+				train();
 			}
 
-			this.currentConst += this.constStep;
-			if (this.currentConst > this.constEnd) {
-				this.currentConst = this.constBegin;
-				this.currentGamma += this.gammaStep;
-				if (this.currentGamma > this.gammaEnd)
-					this.trainingDone = true;
-			}
-
-			setError(this.bestError);
-			
 			postIteration();
 		}
 	}
@@ -256,7 +272,7 @@ public class SVMTrain extends BasicTraining {
 
 	public void finishTraining() {
 		for (int i = 0; i < network.getOutputCount(); i++) {
-			train(i, this.bestGamma, this.bestConst);
+			train(i, this.bestGamma[i], this.bestConst[i]);
 		}
 	}
 
@@ -264,9 +280,8 @@ public class SVMTrain extends BasicTraining {
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
-	
-	public boolean isTrainingDone()
-	{
+
+	public boolean isTrainingDone() {
 		return this.trainingDone;
 	}
 
