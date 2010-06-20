@@ -36,38 +36,38 @@ public class SVMNetwork extends BasicNetwork {
 			
 			switch(svmType)
 			{
-				case C_SVC:
+				case SupportVectorClassification:
 					params[i].svm_type = svm_parameter.C_SVC;					
 					break;
-				case NU_SVC:
+				case NewSupportVectorClassification:
 					params[i].svm_type = svm_parameter.NU_SVC;					
 					break;					
-				case ONE_CLASS:
+				case SupportVectorOneClass:
 					params[i].svm_type = svm_parameter.ONE_CLASS;					
 					break;					
-				case EPSILON_SVR:
+				case EpsilonSupportVectorRegression:
 					params[i].svm_type = svm_parameter.EPSILON_SVR;					
 					break;					
-				case NU_SVR:
+				case NewSupportVectorRegression:
 					params[i].svm_type = svm_parameter.NU_SVR;					
 					break;					
 			}
 			
 			switch(kernelType)
 			{				
-				case LINEAR:
+				case Linear:
 					params[i].kernel_type = svm_parameter.LINEAR;
 					break;
-				case POLY:
+				case Poly:
 					params[i].kernel_type = svm_parameter.POLY;
 					break;
-				case RBF:
+				case RadialBasisFunction:
 					params[i].kernel_type = svm_parameter.RBF;
 					break;
-				case SIGMOID:
+				case Sigmoid:
 					params[i].kernel_type = svm_parameter.SIGMOID;
 					break;
-				case PRECOMPUTED:
+				case Precomputed:
 					params[i].kernel_type = svm_parameter.PRECOMPUTED;
 					break;
 			}
@@ -90,7 +90,7 @@ public class SVMNetwork extends BasicNetwork {
 	}
 	
 	public SVMNetwork(int inputCount, int outputCount, boolean regression) {
-		this(inputCount, outputCount, regression?SVMType.NU_SVR:SVMType.NU_SVC,KernelType.RBF);
+		this(inputCount, outputCount, regression?SVMType.EpsilonSupportVectorRegression:SVMType.SupportVectorClassification,KernelType.RadialBasisFunction);
 	}
 
 	public NeuralData compute(NeuralData input) {

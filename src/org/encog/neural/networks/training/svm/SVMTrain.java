@@ -2,6 +2,7 @@ package org.encog.neural.networks.training.svm;
 
 import java.util.List;
 
+import org.encog.Encog;
 import org.encog.cloud.EncogCloud;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
@@ -63,8 +64,16 @@ public class SVMTrain extends BasicTraining {
 
 	public void train(int index, double gamma, double c) {
 		network.getParams()[index].C = c;
-		network.getParams()[index].gamma = gamma;
-
+		
+		if( gamma>Encog.DEFAULT_DOUBLE_EQUAL )
+		{
+			network.getParams()[index].gamma = 1.0 / this.network.getInputCount();
+		}
+		else
+		{
+			network.getParams()[index].gamma = gamma;
+		}
+		
 		network.getModels()[index] = svm.svm_train(problem[index], network
 				.getParams()[index]);
 	}
@@ -127,7 +136,7 @@ public class SVMTrain extends BasicTraining {
 
 			preIteration();
 
-			if (network.getKernelType() == KernelType.RBF) {
+			if (network.getKernelType() == KernelType.RadialBasisFunction) {
 
 				double totalError = 0;
 				
@@ -283,6 +292,14 @@ public class SVMTrain extends BasicTraining {
 
 	public boolean isTrainingDone() {
 		return this.trainingDone;
+	}
+
+	public void train(double gamma, double c) {
+		for(int i=0;i<this.network.getOutputCount();i++)
+		{
+			train(i,gamma,c);
+		}
+		
 	}
 
 }

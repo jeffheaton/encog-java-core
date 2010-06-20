@@ -6,7 +6,9 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.BAMLogic;
+import org.encog.neural.networks.svm.KernelType;
 import org.encog.neural.networks.svm.SVMNetwork;
+import org.encog.neural.networks.svm.SVMType;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.slf4j.Logger;
@@ -23,7 +25,10 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 */
 	private int outputNeurons;
 
-	private boolean regression = true; 
+	private boolean regression = true;
+	
+	private KernelType kernelType = KernelType.RadialBasisFunction;
+	private SVMType svmType = SVMType.EpsilonSupportVectorRegression;
 	
 	/**
 	 * The logging object.
@@ -57,7 +62,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public BasicNetwork generate() {
-		final SVMNetwork network = new SVMNetwork(this.inputNeurons,this.outputNeurons,regression);
+		final SVMNetwork network = new SVMNetwork(this.inputNeurons,this.outputNeurons,svmType,kernelType);
 		return network;
 	}
 
@@ -113,5 +118,13 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
+	}
+
+	public void setKernelType(KernelType kernelType) {
+		this.kernelType = kernelType;
+	}
+
+	public void setSVMType(SVMType svmType) {
+		this.svmType = svmType;
 	}
 }
