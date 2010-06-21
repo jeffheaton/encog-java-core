@@ -1,39 +1,40 @@
 package org.encog.neural.networks.training.svm;
 
-import java.util.List;
-
 import org.encog.Encog;
-import org.encog.cloud.EncogCloud;
+import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.mathutil.libsvm.svm_problem;
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.svm.KernelType;
 import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.neural.networks.training.BasicTraining;
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.encog.mathutil.error.ErrorCalculation;
 
 public class SVMTrain extends BasicTraining {
 
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(SVMTrain.class);
 
+	public static final double DEFAULT_CONST_BEGIN = -5;
+	public static final double DEFAULT_CONST_END = 15;
+	public static final double DEFAULT_CONST_STEP = 2;
+	public static final double DEFAULT_GAMMA_BEGIN = -10;
+	public static final double DEFAULT_GAMMA_END = 10;
+	public static final double DEFAULT_GAMMA_STEP = 1;
+	
 	private SVMNetwork network;
 	private svm_problem[] problem;
 
 	private int fold = 5;
-	private double constBegin = -5;
-	private double constStep = 2;
-	private double constEnd = 15;
-	private double gammaBegin = -10;
-	private double gammaEnd = 10;
-	private double gammaStep = 1;
+	private double constBegin = DEFAULT_CONST_BEGIN;
+	private double constStep = DEFAULT_CONST_END;
+	private double constEnd = DEFAULT_CONST_STEP;
+	private double gammaBegin = DEFAULT_GAMMA_BEGIN;
+	private double gammaEnd = DEFAULT_GAMMA_END;
+	private double gammaStep = DEFAULT_GAMMA_STEP;
 	private double[] bestConst;
 	private double[] bestGamma;
 	private double[] bestError;
@@ -83,7 +84,7 @@ public class SVMTrain extends BasicTraining {
 		double[] target = new double[this.problem[0].l];
 
 		network.getParams()[index].C = c;
-		network.getParams()[index].gamma = gamma / this.network.getInputCount();
+		network.getParams()[index].gamma = gamma;
 		svm.svm_cross_validation(problem[index], network.getParams()[index], fold,
 				target);
 		return evaluate(network.getParams()[index], problem[index], target);
