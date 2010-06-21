@@ -194,6 +194,11 @@ public class ErrorCalculation {
 		ErrorCalculation.mode = mode;
 	}
 
+	/**
+	 * Update the error with single values.
+	 * @param actual The actual value.
+	 * @param ideal The ideal value.
+	 */
 	public void updateError(double actual, double ideal) {
 
 		double delta = ideal - actual;

@@ -13,36 +13,132 @@ import org.encog.neural.networks.training.BasicTraining;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Provides training for Support Vector Machine networks.
+ */
 public class SVMTrain extends BasicTraining {
 
+	/**
+	 * The logger.
+	 */
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(SVMTrain.class);
 
+	/**
+	 * The default starting number for C.
+	 */
 	public static final double DEFAULT_CONST_BEGIN = -5;
+	
+	/**
+	 * The default ending number for C.
+	 */
 	public static final double DEFAULT_CONST_END = 15;
+	
+	/**
+	 * The default step for C.
+	 */
 	public static final double DEFAULT_CONST_STEP = 2;
+	
+	/**
+	 * The default gamma begin.
+	 */
 	public static final double DEFAULT_GAMMA_BEGIN = -10;
+	
+	/**
+	 * The default gamma end.
+	 */
 	public static final double DEFAULT_GAMMA_END = 10;
+	
+	/**
+	 * The default gamma step.
+	 */
 	public static final double DEFAULT_GAMMA_STEP = 1;
 	
+	/**
+	 * The network that is to be trained.
+	 */
 	private SVMNetwork network;
+	
+	/**
+	 * The problem to train for.
+	 */
 	private svm_problem[] problem;
 
+	/**
+	 * The number of folds.
+	 */
 	private int fold = 5;
+	
+	/**
+	 * The beginning value for C.
+	 */
 	private double constBegin = DEFAULT_CONST_BEGIN;
+	
+	/**
+	 * The step value for C.
+	 */
 	private double constStep = DEFAULT_CONST_END;
+	
+	/**
+	 * The ending value for C.
+	 */
 	private double constEnd = DEFAULT_CONST_STEP;
+	
+	/**
+	 * The beginning value for gamma.
+	 */
 	private double gammaBegin = DEFAULT_GAMMA_BEGIN;
+	
+	/**
+	 * The ending value for gamma.
+	 */
 	private double gammaEnd = DEFAULT_GAMMA_END;
+	
+	/**
+	 * The step value for gamma.
+	 */
 	private double gammaStep = DEFAULT_GAMMA_STEP;
+	
+	/**
+	 * The best values found for C.
+	 */
 	private double[] bestConst;
+	
+	/**
+	 * The best values found for gamma.
+	 */
 	private double[] bestGamma;
+	
+	/**
+	 * The best error.
+	 */
 	private double[] bestError;
+	
+	/**
+	 * The current C.
+	 */
 	private double[] currentConst;
+	
+	/**
+	 * The current gamma.
+	 */
 	private double[] currentGamma;
+	
+	/**
+	 * Is the network setup.
+	 */
 	private boolean isSetup;
+	
+	/**
+	 * Is the training done.
+	 */
 	private boolean trainingDone;
 
+	/**
+	 * Construct a trainer for an SVM network.
+	 * @param network The network to train.
+	 * @param training The training data for this network.
+	 */
 	public SVMTrain(BasicNetwork network, NeuralDataSet training) {
 		this.network = (SVMNetwork) network;
 		this.setTraining(training);
@@ -55,6 +151,9 @@ public class SVMTrain extends BasicTraining {
 		}
 	}
 
+	/**
+	 * Quickly train all outputs with a C of 1.0 and a gamma equal to 1/(num inputs).
+	 */
 	public void train() {
 		double gamma = 1.0 / this.network.getInputCount();
 		double c = 1.0;
@@ -63,6 +162,12 @@ public class SVMTrain extends BasicTraining {
 			train(i, gamma, c);
 	}
 
+	/**
+	 * Quickly train one output with the specified gamma and C.
+	 * @param index The output to train.
+	 * @param gamma The gamma to train with.
+	 * @param c The C to train with.
+	 */
 	public void train(int index, double gamma, double c) {
 		network.getParams()[index].C = c;
 		
@@ -79,6 +184,13 @@ public class SVMTrain extends BasicTraining {
 				.getParams()[index]);
 	}
 
+	/**
+	 * Cross validate and check the specified index/gamma.
+	 * @param index The output index to cross validate.
+	 * @param gamma The gamma to check.
+	 * @param c The C to check.
+	 * @return The calculated error.
+	 */
 	public double crossValidate(int index, double gamma, double c) {
 
 		double[] target = new double[this.problem[0].l];
@@ -90,6 +202,13 @@ public class SVMTrain extends BasicTraining {
 		return evaluate(network.getParams()[index], problem[index], target);
 	}
 
+	/**
+	 * Evaluate the error for the specified model.
+	 * @param param The params for the SVN.
+	 * @param prob The problem to evaluate.
+	 * @param target The output values from the SVN.
+	 * @return The calculated error.
+	 */
 	private double evaluate(svm_parameter param, svm_problem prob,
 			double[] target) {
 		int total_correct = 0;
@@ -113,6 +232,9 @@ public class SVMTrain extends BasicTraining {
 		}
 	}
 
+	/**
+	 * Setup to train the SVM.
+	 */
 	private void setup() {
 		this.currentConst = new double[this.network.getOutputCount()];
 		this.currentGamma = new double[this.network.getOutputCount()];
@@ -129,6 +251,9 @@ public class SVMTrain extends BasicTraining {
 		this.isSetup = true;
 	}
 
+	/**
+	 * Perform one training iteration.
+	 */
 	public void iteration() {
 
 		if (!trainingDone) {
@@ -171,6 +296,9 @@ public class SVMTrain extends BasicTraining {
 		}
 	}
 
+	/**
+	 * @return The problem being trained.
+	 */
 	public svm_problem[] getProblem() {
 		return problem;
 	}
@@ -280,21 +408,35 @@ public class SVMTrain extends BasicTraining {
 		this.gammaStep = gammaStep;
 	}
 
+	/**
+	 * Called to finish training.
+	 */
 	public void finishTraining() {
 		for (int i = 0; i < network.getOutputCount(); i++) {
 			train(i, this.bestGamma[i], this.bestConst[i]);
 		}
 	}
 
+	/**
+	 * @return The trained network.
+	 */
 	@Override
 	public BasicNetwork getNetwork() {
 		return this.network;
 	}
 
+	/**
+	 * @return True if the training is done.
+	 */
 	public boolean isTrainingDone() {
 		return this.trainingDone;
 	}
 
+	/**
+	 * Quickly train the network with a fixed gamma and C.
+	 * @param gamma The gamma to use.
+	 * @param c The C to use.
+	 */
 	public void train(double gamma, double c) {
 		for(int i=0;i<this.network.getOutputCount();i++)
 		{

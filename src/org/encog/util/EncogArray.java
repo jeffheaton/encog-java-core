@@ -140,6 +140,12 @@ public final class EncogArray {
 		
 	}
 	
+	/**
+	 * Search for a string in an array.
+	 * @param search Where to search.
+	 * @param searchFor What we are looking for.
+	 * @return The index that the string occurs at.
+	 */
 	public static int findStringInArray(String[] search, String searchFor)
 	{
 		for(int i=0;i<search.length;i++)

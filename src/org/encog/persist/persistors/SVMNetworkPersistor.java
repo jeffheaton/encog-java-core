@@ -18,11 +18,20 @@ import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.util.EncogArray;
 
+/**
+ * Persist a SVM network.
+ */
 public class SVMNetworkPersistor implements Persistor {
 
+	/**
+	 * Constants for the SVM types.
+	 */
 	public static final String svm_type_table[] = { "c_svc", "nu_svc",
 			"one_class", "epsilon_svr", "nu_svr", };
 
+	/**
+	 * Constants for the kernel types.
+	 */
 	public static final String kernel_type_table[] = { "linear", "polynomial",
 			"rbf", "sigmoid", "precomputed" };
 
@@ -41,22 +50,86 @@ public class SVMNetworkPersistor implements Persistor {
 	 */
 	public static final String TAG_MODELS = "models";
 
+	/**
+	 * The data tag.
+	 */
 	public static final String TAG_DATA = "Data";
+	
+	/**
+	 * The row tag.
+	 */
 	public static final String TAG_ROW = "Row";
+	
+	/**
+	 * The model tag.
+	 */
 	public static final String TAG_MODEL = "Model";
+	
+	/**
+	 * The type of SVM this is.
+	 */
 	public final static String TAG_TYPE_SVM = "typeSVM";
+	
+	/**
+	 * The type of kernel to use.
+	 */
 	public final static String TAG_TYPE_KERNEL = "typeKernel";
+	
+	/**
+	 * The degree to use.
+	 */
 	public final static String TAG_DEGREE = "degree";
+	
+	/**
+	 * The gamma to use.
+	 */
 	public final static String TAG_GAMMA = "gamma";
+	
+	/**
+	 * The coefficient.
+	 */
 	public final static String TAG_COEF0 = "coef0";
+	
+	/**
+	 * The number of classes.
+	 */
 	public final static String TAG_NUMCLASS = "numClass";
+	
+	/**
+	 * The total number of cases.
+	 */
 	public final static String TAG_TOTALSV = "totalSV";
+	
+	/**
+	 * The rho to use.
+	 */
 	public final static String TAG_RHO = "rho";
+	
+	/**
+	 * The labels.
+	 */
 	public final static String TAG_LABEL = "label";
+	
+	/**
+	 * The A-probability.
+	 */
 	public final static String TAG_PROB_A = "probA";
+
+	/**
+	 * The B-probability.
+	 */
 	public final static String TAG_PROB_B = "probB";
+	
+	/**
+	 * The number of support vectors.
+	 */
 	public final static String TAG_NSV = "nSV";
 
+	/**
+	 * Load the SVM network.
+	 * @param in Where to read it from.
+	 * @return The loaded object.
+	 */
 	@Override
 	public EncogPersistedObject load(ReadXML in) {
 		SVMNetwork result = null;
@@ -85,6 +158,11 @@ public class SVMNetworkPersistor implements Persistor {
 		return result;
 	}
 
+	/**
+	 * Load the models.
+	 * @param in Where to read the models from.
+	 * @param network Where the models are read into.
+	 */
 	private void handleModels(ReadXML in, SVMNetwork network) {
 
 		int index = 0;
@@ -103,6 +181,11 @@ public class SVMNetworkPersistor implements Persistor {
 
 	}
 
+	/**
+	 * Handle a model.
+	 * @param in Where to read the model from.
+	 * @param model Where to load the model into.
+	 */
 	private void handleModel(ReadXML in, svm_model model) {
 		while (in.readToTag()) {
 			if (in.is(SVMNetworkPersistor.TAG_TYPE_SVM, true)) {
@@ -162,6 +245,11 @@ public class SVMNetworkPersistor implements Persistor {
 		}
 	}
 
+	/**
+	 * Load the data from a model.
+	 * @param in Where to read the data from.
+	 * @param model The model to load data into.
+	 */
 	private void handleData(ReadXML in, svm_model model) {
 		int i = 0;
 		int m = model.nr_class - 1;
@@ -192,6 +280,11 @@ public class SVMNetworkPersistor implements Persistor {
 		}
 	}
 
+	/**
+	 * Save a model.
+	 * @param out Where to save a model to.
+	 * @param model The model to save to.
+	 */
 	public static void saveModel(WriteXML out, svm_model model) {
 		if (model != null) {
 			out.beginTag(SVMNetworkPersistor.TAG_MODEL);
@@ -260,6 +353,11 @@ public class SVMNetworkPersistor implements Persistor {
 		}
 	}
 
+	/**
+	 * Save a SVMNetwork.
+	 * @param obj The object to save.
+	 * @param out Where to save it to.
+	 */
 	@Override
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_SVM, out,

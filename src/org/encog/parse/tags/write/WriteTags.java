@@ -156,6 +156,12 @@ public class WriteTags {
 		endTag();
 	}
 
+	/**
+	 * Write an array as a property.
+	 * @param name The name of the property.
+	 * @param array The array to write.
+	 * @param len The length of the array to write.
+	 */
 	public void addProperty(final String name, final double[] array, int len) {
 		if (array != null) {
 			StringBuilder str = new StringBuilder();
@@ -168,6 +174,12 @@ public class WriteTags {
 		}
 	}
 	
+	/**
+	 * Write an array as a property.
+	 * @param name The name of the property.
+	 * @param array The array to write.
+	 * @param len The length of the array to write.
+	 */
 	public void addProperty(final String name, final int[] array, int len) {
 		if (array != null) {
 			StringBuilder str = new StringBuilder();

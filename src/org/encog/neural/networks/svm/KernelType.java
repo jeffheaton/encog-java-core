@@ -1,9 +1,31 @@
 package org.encog.neural.networks.svm;
 
-public enum KernelType {	
+/**
+ * The type of SVM kernel in use.
+ */
+public enum KernelType {
+	/**
+	 * Linear kernel.
+	 */
 	Linear,
+	
+	/**
+	 * Poly kernel.
+	 */
 	Poly,
+	
+	/**
+	 * Radial basis function kernel.
+	 */
 	RadialBasisFunction,
+	
+	/**
+	 * Sigmoid kernel.
+	 */
 	Sigmoid,
+	
+	/**
+	 * Precomputed kernel.
+	 */
 	Precomputed 
 }
