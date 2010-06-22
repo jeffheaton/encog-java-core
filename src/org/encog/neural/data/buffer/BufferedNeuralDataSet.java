@@ -37,6 +37,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
@@ -198,6 +199,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		}
 
 	}
+	
+	
+	private List<BufferedNeuralDataSet> additional = new ArrayList<BufferedNeuralDataSet>();
 
 	/**
 	 * Error message for ADD.
@@ -345,9 +349,19 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 * Close all iterators.
 	 */
 	public void close() {
+		
+		for( BufferedNeuralDataSet set: this.additional)
+		{
+			set.close();
+		}
+		
+		this.additional.clear();
+		
 		for (final BufferedNeuralDataSetIterator iterator : this.iterators) {
 			iterator.close();
 		}
+		
+		closeInputFile();
 
 	}
 
@@ -453,7 +467,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 * @return The additional buffered data set.
 	 */
 	public Indexable openAdditional() {
-		return new BufferedNeuralDataSet(this.bufferFile);
+		BufferedNeuralDataSet result = new BufferedNeuralDataSet(this.bufferFile);
+		this.additional.add(result);
+		return result;
 	}
 
 	/**
@@ -466,6 +482,20 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 				this.input = new RandomAccessFile(this.bufferFile, "r");
 			}
 		} catch (final IOException e) {
+			throw new NeuralDataError(e);
+		}
+	}
+	
+	private void closeInputFile()
+	{
+		try
+		{
+			if( this.input!=null )
+				this.input.close();
+			this.input = null;
+		}
+		catch(IOException e)
+		{
 			throw new NeuralDataError(e);
 		}
 	}
