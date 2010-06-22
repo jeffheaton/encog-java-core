@@ -146,6 +146,17 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet, 
 		}
 	}
 	
+	public void dispose()
+	{
+		if( this.binary!=null )
+		{
+			this.binary.close();
+			this.tempBinary.delete();
+			this.tempBinary = null;
+			this.binary = null;
+		}
+	}
+	
 	/**
 	 * @return True if this training data is supervised.
 	 */
@@ -166,7 +177,6 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet, 
 
 	@Override
 	public Indexable openAdditional() {
-		// TODO Auto-generated method stub
 		return this.binary.openAdditional();
 	}
 
