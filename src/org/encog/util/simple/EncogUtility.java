@@ -75,7 +75,7 @@ public final class EncogUtility {
 		final CSVNeuralDataSet csv = new CSVNeuralDataSet(csvFile.toString(),
 				inputCount, outputCount, false);
 		final BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(binFile);
-		buffer.beginLoad(50, 6);
+		buffer.beginLoad(inputCount, outputCount);
 		for (final NeuralDataPair pair : csv) {
 			buffer.add(pair);
 		}
