@@ -428,5 +428,14 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 	public void setCloseConnection(final boolean closeConnection) {
 		this.closeConnection = closeConnection;
 	}
+	
+	/**
+	 * @return True if this training data is supervised.
+	 */
+	@Override
+	public boolean isSupervised() {
+		return this.idealSize>0;
+	}
+
 
 }

@@ -333,4 +333,13 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	public Iterator<NeuralDataPair> iterator() {
 		return new CSVNeuralIterator();
 	}
+	
+	/**
+	 * @return True if this training data is supervised.
+	 */
+	@Override
+	public boolean isSupervised() {
+		return this.idealSize>0;
+	}
+
 }

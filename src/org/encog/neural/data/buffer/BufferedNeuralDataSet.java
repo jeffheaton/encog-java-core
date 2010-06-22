@@ -504,4 +504,12 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		}
 	}
 
+	/**
+	 * @return True if this training data is supervised.
+	 */
+	@Override
+	public boolean isSupervised() {
+		return this.idealSize>0;
+	}
+
 }

@@ -275,5 +275,14 @@ public class UnionNeuralDataSet implements NeuralDataSet {
 		this.iterators.add(result);
 		return result;
 	}
+	
+	/**
+	 * @return True if this training data is supervised.
+	 */
+	@Override
+	public boolean isSupervised() {
+		return this.idealSize>0;
+	}
+
 
 }

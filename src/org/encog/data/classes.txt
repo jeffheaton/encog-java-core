@@ -1,3 +1,5 @@
+org.encog.analyst.basic.BasicAnalyst
+org.encog.analyst.EncogAnalyst
 org.encog.bot.BotError
 org.encog.bot.BotUtil
 org.encog.bot.browse.Address
@@ -33,7 +35,14 @@ org.encog.mathutil.EncogMath
 org.encog.mathutil.EncogMathError
 org.encog.mathutil.Equilateral
 org.encog.mathutil.error.ErrorCalculation
+org.encog.mathutil.error.ErrorCalculationMode
 org.encog.mathutil.IntRange
+org.encog.mathutil.libsvm.svm
+org.encog.mathutil.libsvm.svm_model
+org.encog.mathutil.libsvm.svm_node
+org.encog.mathutil.libsvm.svm_parameter
+org.encog.mathutil.libsvm.svm_print_interface
+org.encog.mathutil.libsvm.svm_problem
 org.encog.mathutil.LinearCongruentialGenerator
 org.encog.mathutil.MathConst
 org.encog.mathutil.matrices.BiPolarUtil
@@ -79,6 +88,7 @@ org.encog.neural.data.basic.BasicNeuralDataSet
 org.encog.neural.data.bipolar.BiPolarNeuralData
 org.encog.neural.data.buffer.BufferedNeuralDataSet
 org.encog.neural.data.csv.CSVNeuralDataSet
+org.encog.neural.data.external.ExternalDataSource
 org.encog.neural.data.image.ImageNeuralData
 org.encog.neural.data.image.ImageNeuralDataSet
 org.encog.neural.data.Indexable
@@ -140,6 +150,9 @@ org.encog.neural.networks.structure.LayerComparator
 org.encog.neural.networks.structure.NetworkCODEC
 org.encog.neural.networks.structure.NeuralStructure
 org.encog.neural.networks.structure.SynapseComparator
+org.encog.neural.networks.svm.KernelType
+org.encog.neural.networks.svm.SVMNetwork
+org.encog.neural.networks.svm.SVMType
 org.encog.neural.networks.synapse.BasicSynapse
 org.encog.neural.networks.synapse.DirectSynapse
 org.encog.neural.networks.synapse.neat.NEATLink
@@ -193,11 +206,14 @@ org.encog.neural.networks.training.propagation.TrainingContinuation
 org.encog.neural.networks.training.simple.TrainAdaline
 org.encog.neural.networks.training.strategy.Greedy
 org.encog.neural.networks.training.strategy.HybridStrategy
+org.encog.neural.networks.training.strategy.RequiredImprovementStrategy
 org.encog.neural.networks.training.strategy.ResetStrategy
 org.encog.neural.networks.training.strategy.SmartLearningRate
 org.encog.neural.networks.training.strategy.SmartMomentum
 org.encog.neural.networks.training.strategy.StopTrainingStrategy
 org.encog.neural.networks.training.Strategy
+org.encog.neural.networks.training.svm.EncodeSVMProblem
+org.encog.neural.networks.training.svm.SVMTrain
 org.encog.neural.networks.training.Train
 org.encog.neural.networks.training.TrainingError
 org.encog.neural.networks.training.TrainingSetScore
@@ -219,6 +235,7 @@ org.encog.neural.pattern.PatternError
 org.encog.neural.pattern.RadialBasisPattern
 org.encog.neural.pattern.RSOMPattern
 org.encog.neural.pattern.SOMPattern
+org.encog.neural.pattern.SVMPattern
 org.encog.neural.prune.HiddenLayerParams
 org.encog.neural.prune.NetworkPattern
 org.encog.neural.prune.PruneIncremental
@@ -305,6 +322,7 @@ org.encog.persist.persistors.OneToOneSynapsePersistor
 org.encog.persist.persistors.PersistorUtil
 org.encog.persist.persistors.PropertyDataPersistor
 org.encog.persist.persistors.RadialBasisFunctionLayerPersistor
+org.encog.persist.persistors.SVMNetworkPersistor
 org.encog.persist.persistors.TextDataPersistor
 org.encog.persist.persistors.TrainingContinuationPersistor
 org.encog.persist.persistors.WeightedSynapsePersistor
@@ -347,6 +365,7 @@ org.encog.util.benchmark.Evaluate
 org.encog.util.benchmark.RandomTrainingFactory
 org.encog.util.cl.EncogCL
 org.encog.util.cl.EncogCLDevice
+org.encog.util.cl.EncogCLError
 org.encog.util.cl.EncogCLItem
 org.encog.util.cl.EncogCLPlatform
 org.encog.util.cl.kernels.EncogKernel

@@ -95,4 +95,6 @@ public interface NeuralDataSet extends Iterable<NeuralDataPair> {
 	 * @return The size of the input data.
 	 */
 	int getInputSize();
+	
+	boolean isSupervised();
 }
