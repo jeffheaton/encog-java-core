@@ -148,7 +148,8 @@ public class EncogPersistedCollection {
 	public static final String TYPE_SVM = "SVMNetwork";
 
 	public static final String TYPE_LINK = "ExternalDataSource";
-
+	
+	public static final String TYPE_SCRIPT = "EncogScript";
 
 	/**
 	 * Throw and log an error.

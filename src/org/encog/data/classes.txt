@@ -312,6 +312,7 @@ org.encog.persist.persistors.BasicNetworkPersistor
 org.encog.persist.persistors.BasicNeuralDataSetPersistor
 org.encog.persist.persistors.ContextLayerPersistor
 org.encog.persist.persistors.DirectSynapsePersistor
+org.encog.persist.persistors.EncogScriptPersistor
 org.encog.persist.persistors.generic.FieldMapping
 org.encog.persist.persistors.generic.GenericPersistor
 org.encog.persist.persistors.generic.Object2XML
@@ -329,6 +330,7 @@ org.encog.persist.persistors.WeightedSynapsePersistor
 org.encog.persist.persistors.WeightlessSynapsePersistor
 org.encog.persist.PersistReader
 org.encog.persist.PersistWriter
+org.encog.script.EncogScript
 org.encog.solve.anneal.SimulatedAnnealing
 org.encog.solve.genetic.crossover.Crossover
 org.encog.solve.genetic.crossover.Splice
