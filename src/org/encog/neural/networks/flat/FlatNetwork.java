@@ -118,7 +118,7 @@ public class FlatNetwork {
 		case FlatNetwork.ACTIVATION_LINEAR:
 			return 1;
 		case FlatNetwork.ACTIVATION_TANH:
-			return (1.0 + x) * (1.0 - x);
+			return 1.0 - (x*x);
 		case FlatNetwork.ACTIVATION_SIGMOID:
 			return x * (1.0 - x);
 		default:
