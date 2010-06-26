@@ -37,6 +37,7 @@ import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.FeedforwardLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,9 +94,9 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	}
 
 	/**
-	 * Generate the Elman neural network.
+	 * Generate the feedforward neural network.
 	 * 
-	 * @return The Elman neural network.
+	 * @return The feedforward neural network.
 	 */
 	public BasicNetwork generate() {
 		int y = PatternConst.START_Y;

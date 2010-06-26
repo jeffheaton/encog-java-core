@@ -40,7 +40,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Construct an adaline neural network.
+ * Construct an ADALINE neural network.
  */
 public class ADALINEPattern implements NeuralNetworkPattern {
 
@@ -114,7 +114,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	}
 
 	/**
-	 * Not used, the BAM uses a bipoloar activation function.
+	 * Not used, ADALINE does not use custom activation functions.
 	 * 
 	 * @param activation
 	 *            Not used.

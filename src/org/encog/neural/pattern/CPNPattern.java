@@ -82,7 +82,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 *            NOT USED
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = "A CPN already has a predefined hidden layer.  No additiona"
+		final String str = "A CPN already has a predefined hidden layer.  No additional"
 				+ "specification is needed.";
 		if (this.logger.isErrorEnabled()) {
 			this.logger.error(str);
