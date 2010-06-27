@@ -1,7 +1,16 @@
 package org.encog.script;
 
-public class BasicError {
+import org.encog.EncogError;
+
+public class BasicError extends EncogError {
+	
+	public BasicError(ErrorNumbers id)
+	{
+		super("");
+		this.id = id;
+	}
+	
+	private ErrorNumbers id;
 	private String description;
-	ErrorNumbers id;
 
 }
