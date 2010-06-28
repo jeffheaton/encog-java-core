@@ -34,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.util.cl.EncogCL;
+import org.encog.util.concurrency.EncogConcurrency;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,11 +60,11 @@ public final class Encog {
 	 * The default precision to use for compares.
 	 */
 	public static final int DEFAULT_PRECISION = 10;
-	
-    /**
-     * Default point at which two doubles are equal.
-     */
-    public static final double DEFAULT_DOUBLE_EQUAL = 0.0000001;
+
+	/**
+	 * Default point at which two doubles are equal.
+	 */
+	public static final double DEFAULT_DOUBLE_EQUAL = 0.0000001;
 
 	/**
 	 * The version of the Encog JAR we are working with. Given in the form
@@ -83,13 +84,12 @@ public final class Encog {
 	 */
 	private static Encog instance;
 
-    /**
-     * If Encog is not using GPU/CL processing this attribute will be null.  
-     * Otherwise it holds the Encog CL object.
-     */
-    private EncogCL cl; 
-	
-	
+	/**
+	 * If Encog is not using GPU/CL processing this attribute will be null.
+	 * Otherwise it holds the Encog CL object.
+	 */
+	private EncogCL cl;
+
 	/**
 	 * Get the instance to the singleton.
 	 * 
@@ -113,8 +113,7 @@ public final class Encog {
 	 * 
 	 * @return The requested value.
 	 */
-	private final Map<String, String> properties = 
-		new HashMap<String, String>();
+	private final Map<String, String> properties = new HashMap<String, String>();
 
 	/**
 	 * Private constructor.
@@ -130,39 +129,41 @@ public final class Encog {
 	public Map<String, String> getProperties() {
 		return this.properties;
 	}
-	
+
 	/**
-	 * Enable OpenCL processing.  OpenCL processing allows Encog to 
-     * use GPU devices to speed calculations.  Not all areas of Encog 
-     * can use this, however, GPU's can currently accelerate the 
-     * training of Feedforward neural networks.
-     * 
-     * To make use of the GPU you must have OpenCL drivers installed.
-     * For more information on getting OpenCL drivers, visit the following
-     * URL.
-     * 
-     * http://www.heatonresearch.com/encog/opencl
+	 * Enable OpenCL processing. OpenCL processing allows Encog to use GPU
+	 * devices to speed calculations. Not all areas of Encog can use this,
+	 * however, GPU's can currently accelerate the training of Feedforward
+	 * neural networks.
+	 * 
+	 * To make use of the GPU you must have OpenCL drivers installed. For more
+	 * information on getting OpenCL drivers, visit the following URL.
+	 * 
+	 * http://www.heatonresearch.com/encog/opencl
 	 */
-    public void initCL()
-    {
-        try
-        {
-            EncogCL cl = new EncogCL();
-            this.cl = cl;
-        }
-        catch (Throwable e)
-        {
-            throw new EncogError(e);
-        }
-    }
-    
-    /**
-     * @return If Encog is not using GPU/CL processing this attribute will be null.  
-     * Otherwise it holds the Encog CL object.
-     */
-    public EncogCL getCL()
-    {
-    	return this.cl;
-    }
+	public void initCL() {
+		try {
+			EncogCL cl = new EncogCL();
+			this.cl = cl;
+		} catch (Throwable e) {
+			throw new EncogError(e);
+		}
+	}
+
+	/**
+	 * Provides any shutdown that Encog may need. Currently this shuts down the
+	 * thread pool.
+	 */
+	public void shutdown() {
+		EncogConcurrency.getInstance().shutdown(10000);
+	}
+
+	/**
+	 * @return If Encog is not using GPU/CL processing this attribute will be
+	 *         null. Otherwise it holds the Encog CL object.
+	 */
+	public EncogCL getCL() {
+		return this.cl;
+	}
 
 }
