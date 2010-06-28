@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
@@ -114,7 +115,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		 */
 		public void close() {
 			try {
-				this.input.close();
+				if( this.input!=null )
+					this.input.close();
+				this.input = null;
+				this.dataReady = false;
 			} catch (final IOException e) {
 				throw new NeuralDataError(e);
 			}
@@ -146,6 +150,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 			if (!this.dataReady) {
 				readNext();
 			}
+			
+			if( !dataReady )
+				close();
+			
 			return this.dataReady;
 		}
 
@@ -159,7 +167,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 			}
 
 			if (!this.dataReady) {
-				return null;
+				throw new NoSuchElementException();
 			}
 
 			// swap
@@ -176,6 +184,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		 */
 		private void readNext() {
 			try {
+				if( this.input==null )
+					throw new NoSuchElementException();
+				
 				if (BufferedNeuralDataSet.this.idealSize > 0) {
 					readDoubleArray(this.input, this.next.getInput());
 					readDoubleArray(this.input, this.next.getIdeal());
