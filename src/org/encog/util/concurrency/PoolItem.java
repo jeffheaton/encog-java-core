@@ -61,6 +61,8 @@ public class PoolItem implements Runnable {
 	public void run() {
 		try {
 			this.task.run();
+		} catch(Throwable t) {
+			EncogConcurrency.getInstance().registerError(t);
 		} finally {
 			if (this.group != null)
 				this.group.taskStopping();

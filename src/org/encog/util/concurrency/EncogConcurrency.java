@@ -52,6 +52,8 @@ public class EncogConcurrency {
 	 * Singleton instance.
 	 */
 	private static EncogConcurrency instance;
+	
+	private Throwable threadError;
 
 	private int currentTaskGroup;
 	
@@ -98,6 +100,12 @@ public class EncogConcurrency {
 		if (this.executor == null) {
 			task.run();
 		} else {
+			if( this.threadError!=null ) {
+				Throwable t = this.threadError;
+				this.threadError = null;
+				throw new EncogError(t);
+			}
+			
 			PoolItem item = new PoolItem(task, group);
 			if( group!=null )
 				group.taskStarting();
@@ -145,4 +153,9 @@ public class EncogConcurrency {
         }
         return result;
     }
+
+	public void registerError(Throwable t) {
+		this.threadError = t;
+		
+	}
 }
