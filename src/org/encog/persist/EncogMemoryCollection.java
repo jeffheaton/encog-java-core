@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.neural.data.external.ExternalDataSource;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.location.PersistenceLocation;
 import org.encog.persist.persistors.PersistorUtil;
@@ -232,6 +233,11 @@ public class EncogMemoryCollection {
 					throw new PersistError("Do not know how to load: " + type);
 				}
 				final EncogPersistedObject obj = persistor.load(in);
+
+				if( obj instanceof ExternalDataSource  ) {
+					((ExternalDataSource)obj).adjustLinkForLoad(location);
+				}
+				
 				this.contents.put(name, obj);
 			}
 		} finally {
@@ -258,6 +264,9 @@ public class EncogMemoryCollection {
 			writer.writeHeader();
 			writer.beginObjects();
 			for (final EncogPersistedObject obj : this.contents.values()) {
+				if( obj instanceof ExternalDataSource  ) {
+					((ExternalDataSource)obj).adjustLinkForSave(location);
+				}
 				writer.writeObject(obj);
 			}
 			writer.endObjects();

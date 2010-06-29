@@ -5,66 +5,60 @@ public class BasicVariable extends BasicObject {
 	public BasicVariable()
 	{
 		x=y=z=0;
-		data=buffer;
-		currentData=data;
 		setObjectType(BasicTypes.typeUndefined);
 		isRef=false;
 	}
 	
 	public BasicVariable(BasicObjectVariable v)
 	{
-		x=y=z=0;
-		data=v;
-		currentData=v;
+		CreateArray();
+		data=new Object[1];
+		((Object[])this.data)[0] = v;
 		setObjectType(BasicTypes.typeObject);
 		isRef=false;
 	}
 	
 	public BasicVariable(String strData)
 	{
-		x=y=z=0;
-		data=strData;
-		currentData=data;
+		CreateArray();
+		data=new String[1];
+		((String[])this.data)[0] = strData;
 		setObjectType(BasicTypes.typeString);
 		isRef=false;
 	}
 
 	public BasicVariable(float floatData)
 	{
-		x=y=z=0;
-		data=buffer;
-		currentData=floatData;
-		data=floatData;
+		CreateArray();
+		data=new Float[1];
+		((Float[])this.data)[0] = floatData;
 		setObjectType(BasicTypes.typeFloat);
 		isRef=false;
 	}
 
-	BasicVariable(short shortData)
+	public BasicVariable(short shortData)
 	{
-		x=y=z=0;
-		data=buffer;
-		currentData=shortData;
-		isRef=false;
-		data=shortData;
+		CreateArray();
+		data=new Integer[1];
+		((Integer[])this.data)[0] = new Integer(shortData);
 		setObjectType(BasicTypes.typeInteger);
+		isRef=false;
 	}
 
-	BasicVariable(long longData)
+	public BasicVariable(long longData)
 	{
-		x=y=z=0;
-		data=buffer;
-		currentData=longData;
-		data=longData;
+		CreateArray();
+		data=new Long[1];
+		((Long[])this.data)[0] = longData;
 		setObjectType(BasicTypes.typeLong);
 		isRef=false;
 	}
 
-	BasicVariable(double doubleData)
+	public BasicVariable(double doubleData)
 	{
-		x=y=z=0;
-		data=buffer;
-		currentData=doubleData;
-		data=doubleData;
+		CreateArray();
+		data=new Double[1];
+		((Double[])this.data)[0] = doubleData;
 		setObjectType(BasicTypes.typeDouble);
 		isRef=false;
 
@@ -72,30 +66,28 @@ public class BasicVariable extends BasicObject {
 
 	BasicVariable(byte byteData)
 	{
-		x=y=z=0;
-		data=buffer;
-		currentData=byteData;
-		data=byteData;
-		setObjectType(BasicTypes.typeInteger);
+		CreateArray();
+		data=new Byte[1];
+		((Byte[])this.data)[0] = byteData;
+		setObjectType(BasicTypes.typeByte);
 		isRef=false;
 
 	}
 
 	BasicVariable(boolean booleanData)
 	{
-		x=y=z=0;
-		data=buffer;
-		currentData=booleanData;
-		data=booleanData;
+		CreateArray();
+		data=new boolean[1];
+		((boolean[])this.data)[0] = booleanData;
 		setObjectType(BasicTypes.typeBoolean);
 		isRef=false;
 	}
 
 	BasicVariable(char characterData)
 	{
-		x=y=z=0;
-		data=buffer;
-		currentData=characterData;
+		CreateArray();
+		data=new char[1];
+		((char[])this.data)[0] = characterData;
 		setObjectType(BasicTypes.typeCharacter);
 		isRef=false;		
 	}
@@ -110,15 +102,14 @@ public class BasicVariable extends BasicObject {
 		if(getObjectType()==BasicTypes.typeUndefined)
 		{
 			assert(data==buffer);
-			data="";
-			currentData=data;
+			data=new String[1];
 			setObjectType(BasicTypes.typeString);
 		}
 
 		switch(getObjectType())
 		{
 		case typeString:
-			data = str;
+			((String[])data)[0] = str;
 			break;
 		default:Mismatch();
 		}
@@ -238,12 +229,9 @@ public class BasicVariable extends BasicObject {
 		if(getObjectType()!=BasicTypes.typeObject)
 			throw( new BasicError(ErrorNumbers.errorType));
 
+		this.data = new BasicObjectVariable[1];
 
-		if(data!=buffer)
-			data = null;
-
-		data=v;
-		currentData=data;
+		((BasicObjectVariable[])this.data)[0] = v;
 
 	}
 
@@ -305,7 +293,7 @@ public class BasicVariable extends BasicObject {
 	void HelpCreateRef(Object b,BasicTypes t,int xx,int yy,int zz)
 	{
 		data=b;
-		currentData=b;
+		currentIndex = 0;
 		setObjectType(t);
 		isRef=true;
 		x=xx;
@@ -321,6 +309,14 @@ public class BasicVariable extends BasicObject {
 	boolean IsNULL()
 	{
 		return( (data==null) || (data==buffer) );
+	}
+	
+	public void CreateArray()
+	{
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+		this.currentIndex = 0;
 	}
 	
 	public void CreateArray(int a,int b,int c)
@@ -473,7 +469,7 @@ public class BasicVariable extends BasicObject {
 	}
 
 	private Object data;
-	private Object currentData;
+	private int currentIndex;
 	private Object buffer;
 	private int x;
 	private int y;

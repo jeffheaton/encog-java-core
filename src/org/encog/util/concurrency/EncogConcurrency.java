@@ -153,6 +153,12 @@ public class EncogConcurrency {
         }
         return result;
     }
+    
+    public void checkError() throws EncogError
+    {
+    	if( this.threadError!=null )
+    		throw new EncogError(this.threadError);
+    }
 
 	public void registerError(Throwable t) {
 		this.threadError = t;

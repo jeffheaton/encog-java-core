@@ -186,7 +186,7 @@ public class CSVFormat {
 		try {
 			return this.numberFormatter.parse(str).doubleValue();
 		} catch (final Exception e) {
-			throw new CSVError(e);
+			throw new CSVError("Error:" + e.getMessage() + " on [" + str + "], decimal:" + this.decimal + ",sep: " + this.separator);
 		}
 	}
 }

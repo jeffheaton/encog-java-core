@@ -30,6 +30,7 @@
 
 package org.encog.util.concurrency.job;
 
+import org.encog.EncogError;
 import org.encog.StatusReportable;
 import org.encog.util.concurrency.EncogConcurrency;
 import org.encog.util.concurrency.TaskGroup;
@@ -88,7 +89,7 @@ public abstract class ConcurrentJob {
 	/**
 	 * Process the job.
 	 */
-	public void process() {
+	public void process() throws EncogError {
 		Object task;
 
 		this.totalTasks = loadWorkload();
@@ -108,7 +109,7 @@ public abstract class ConcurrentJob {
 
 		group.waitForComplete();
 		
-		//EncogConcurrency.getInstance().shutdown(Long.MAX_VALUE);
+		EncogConcurrency.getInstance().checkError();
 	}
 
 	/**
