@@ -34,7 +34,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.StatusReportable;
+import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.propagation.Propagation;
@@ -427,14 +429,23 @@ public class PruneIncremental extends ConcurrentJob {
 	public void performJobUnit(final JobUnitContext context) {
 
 		final BasicNetwork network = (BasicNetwork) context.getJobUnit();
+		BufferedNeuralDataSet buffer = null;
+		NeuralDataSet useTraining = this.training;
+		
+		if( this.training instanceof BufferedNeuralDataSet )
+		{
+			buffer = (BufferedNeuralDataSet)this.training;
+			useTraining = buffer.openAdditional();
+		}
+		
 
 		// train the neural network
-
+	
 		double error = Double.POSITIVE_INFINITY;
 		for (int z = 0; z < this.weightTries; z++) {
 			network.reset();
 			final Propagation train = new ResilientPropagation(network,
-					this.training);
+					useTraining);
 			final StopTrainingStrategy strat = new StopTrainingStrategy(0.001,
 					5);
 
@@ -448,6 +459,9 @@ public class PruneIncremental extends ConcurrentJob {
 
 			error = Math.min(error, train.getError());
 		}
+		
+		if( buffer!=null )
+			buffer.close();
 
 		if (!getShouldStop()) {
 			// update min and max

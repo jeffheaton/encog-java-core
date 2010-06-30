@@ -245,6 +245,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 * The size(in bytes) of a record.
 	 */
 	private int recordSize;
+	
+	/**
+	 * The owner;
+	 */
+	private BufferedNeuralDataSet owner;
 
 	/**
 	 * The iterators.
@@ -261,6 +266,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 * The current input file.
 	 */
 	private RandomAccessFile input;
+	
+	private long lastOffset;
 
 	/**
 	 * Construct a buffered dataset using the specified file.
@@ -373,6 +380,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		}
 		
 		closeInputFile();
+		
+		if( this.owner!=null ) {
+			this.owner.removeAdditional(this);
+		}
 
 	}
 
@@ -415,13 +426,20 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		try {
 			openInputFile();
 			final long header = 16;
-			this.input.seek((index * this.recordSize) + header);
+			final long offset = (index * this.recordSize) + header;
+			
+			if( offset!=lastOffset )
+			{
+				this.input.seek(offset);
+				this.lastOffset = offset + this.recordSize;
+			}
 			if (BufferedNeuralDataSet.this.idealSize > 0) {
 				readDoubleArray(this.input, pair.getInput());
 				readDoubleArray(this.input, pair.getIdeal());
 			} else {
 				readDoubleArray(this.input, pair.getInput());
 			}
+			this.lastOffset+=this.recordSize;
 		} catch (final IOException e) {
 			throw new NeuralDataError(e);
 		}
@@ -479,6 +497,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 */
 	public Indexable openAdditional() {
 		BufferedNeuralDataSet result = new BufferedNeuralDataSet(this.bufferFile);
+		result.setOwner(this);
 		this.additional.add(result);
 		return result;
 	}
@@ -551,6 +570,22 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	@Override
 	public boolean isSupervised() {
 		return this.idealSize>0;
+	}
+
+	public BufferedNeuralDataSet getOwner() {
+		return owner;
+	}
+
+	public void setOwner(BufferedNeuralDataSet owner) {
+		this.owner = owner;
+	}
+	
+	public void removeAdditional(BufferedNeuralDataSet child)
+	{
+		synchronized(this)
+		{
+			this.additional.remove(child);
+		}
 	}
 
 }
