@@ -368,8 +368,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 */
 	public void close() {
 		
-		for( BufferedNeuralDataSet set: this.additional)
+		Object[] obj = this.additional.toArray();
+		
+		for(int i=0;i<obj.length;i++)
 		{
+			BufferedNeuralDataSet set = (BufferedNeuralDataSet)obj[i];
 			set.close();
 		}
 		
@@ -543,6 +546,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	private void readDoubleArray(final RandomAccessFile raf,
 			final NeuralData data) throws IOException {
 		final double[] d = data.getData();
+
 		for (int i = 0; i < data.size(); i++) {
 			d[i] = raf.readDouble();
 		}
