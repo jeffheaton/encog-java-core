@@ -117,7 +117,7 @@ public class EncogPersistedCollection {
 	/**
 	 * The type is ParseTemplate.
 	 */
-	public static final String TYPE_NORMALIZATION = "Normalization";
+	public static final String TYPE_NORMALIZATION = "DataNormalization";
 
 	/**
 	 * The name attribute.
