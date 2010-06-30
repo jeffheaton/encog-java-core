@@ -371,101 +371,297 @@ public class BasicVariable extends BasicObject {
 
 	}
 
-	public void SetArrayLocation(long a,long b,long c)
+	public void SetArrayLocation(int a,int b,int c)
 	{
+		int disp;
+		long elementSize;
 
-	}
+		if(z>0)
+		{
+			if( (a<1) || (a>x) || (b<1) || (b>y) || (c<1) || (c>z) )
+				throw(new BasicError(ErrorNumbers.errorBounds));
 
-	
-	String GetStr()
-	{
-		return null;
-	}
+			a--;
+			b--;
+			c--;
+			disp=c+(b*x)+(a*y);
+		}
+		else
+		if(y>0)
+		{
+			if( (a<1) || (a>x) || (b<1) || (b>y) )
+				throw(new BasicError(ErrorNumbers.errorBounds));
+			a--;
+			b--;
 
-	float GetFloat()
-	{
-		return 0;	
-	}
+			disp=a+b+(a*x);
+		}
+		if(x>0)
+		{
+			if( (a<1) || (a>x) )
+				throw(new BasicError(ErrorNumbers.errorBounds));
+			a--;
+			disp=a;
+		}
+		else throw(new BasicError(ErrorNumbers.errorNoArray));
 
-	short GetShort()
-	{
-		return 0;
-	}
-
-	long GetLong()
-	{
-		return 0;	
-	}
-
-	double GetDouble()	
-	{
-		return 0;
-	}
-
-	byte GetByte()
-	{
-		return 0;
-	}
-
-	boolean GetBoolean()
-	{
-		return false;
-	}
-
-	char GetCharacter()
-	{
-		return 0;
-	}
-
-	BasicObjectVariable GetObject()
-	{
-		return null;
-	}
-
-
-	void HandleNumericType(BasicVariable var)
-	{
 		
+		if( getObjectType()==BasicTypes.typeUndefined )
+		{
+			throw(new BasicError(ErrorNumbers.errorType));
+		}
+		else
+		{
+			this.currentIndex = disp;
+		}
+	}
+
+	
+	public String GetStr()
+	{
+		switch(getObjectType())
+		{
+		case typeString:
+			return ((String[])this.data)[this.currentIndex];
+		case typeCharacter:
+			return ""+((char[])this.data)[this.currentIndex];
+		default:
+			throw(new BasicError(ErrorNumbers.errorType));
+		}
+	}
+
+	public float GetFloat()
+	{
+		HandleNumericType(this);
+
+		switch(getObjectType())
+		{
+		case typeFloat:return	(float)	((float[])this.data)[this.currentIndex];
+		case typeInteger:return (float)	((int[])this.data)[this.currentIndex];
+		case typeLong:return	(float)	((long[])this.data)[this.currentIndex];
+		case typeDouble:return	(float) ((double[])this.data)[this.currentIndex];
+		case typeByte:return	(float)	((byte[])this.data)[this.currentIndex];
+		default:return 0;
+		}
+	}
+
+	public short GetShort()
+	{
+		HandleNumericType(this);
+
+		switch(getObjectType())
+		{
+		case typeFloat:return	(short)	((float[])this.data)[this.currentIndex];
+		case typeInteger:return (short)	((int[])this.data)[this.currentIndex];
+		case typeLong:return	(short)	((long[])this.data)[this.currentIndex];
+		case typeDouble:return	(short) ((double[])this.data)[this.currentIndex];
+		case typeByte:return	(short)	((byte[])this.data)[this.currentIndex];
+		default:return 0;
+		}
+	}
+
+	public long GetLong()
+	{
+		HandleNumericType(this);
+
+		switch(getObjectType())
+		{
+		case typeFloat:return	(long)	((float[])this.data)[this.currentIndex];
+		case typeInteger:return (long)	((int[])this.data)[this.currentIndex];
+		case typeLong:return	(long)	((long[])this.data)[this.currentIndex];
+		case typeDouble:return	(long) ((double[])this.data)[this.currentIndex];
+		case typeByte:return	(long)	((byte[])this.data)[this.currentIndex];
+		default:return 0;
+		}
+	}
+
+	public double GetDouble()	
+	{
+		HandleNumericType(this);
+
+		switch(getObjectType())
+		{
+		case typeFloat:return	(double)	((float[])this.data)[this.currentIndex];
+		case typeInteger:return (double)	((int[])this.data)[this.currentIndex];
+		case typeLong:return	(double)	((long[])this.data)[this.currentIndex];
+		case typeDouble:return	(double) ((double[])this.data)[this.currentIndex];
+		case typeByte:return	(double)	((byte[])this.data)[this.currentIndex];
+		default:return 0;
+		}
+	}
+
+	public byte GetByte()
+	{
+		HandleNumericType(this);
+
+		switch(getObjectType())
+		{
+		case typeFloat:return	(byte)	((float[])this.data)[this.currentIndex];
+		case typeInteger:return (byte)	((int[])this.data)[this.currentIndex];
+		case typeLong:return	(byte)	((long[])this.data)[this.currentIndex];
+		case typeDouble:return	(byte) ((double[])this.data)[this.currentIndex];
+		case typeByte:return	(byte)	((byte[])this.data)[this.currentIndex];
+		default:return 0;
+		}
+	}
+
+	public boolean GetBoolean()
+	{
+		if(getObjectType()!=BasicTypes.typeBoolean)
+			throw(new BasicError(ErrorNumbers.errorType));
+		
+		return ((boolean[])this.data)[this.currentIndex];
+	}
+
+	public char GetCharacter()
+	{
+		switch(getObjectType())
+		{
+		case typeCharacter:
+			return ((char[])this.data)[this.currentIndex];
+		default:
+			throw(new BasicError(ErrorNumbers.errorType));
+		}
+	}
+
+	public BasicObjectVariable GetObject()
+	{
+		if(getObjectType()!=BasicTypes.typeObject)
+			throw(new BasicError(ErrorNumbers.errorType));
+	
+		return ((BasicObjectVariable[])this.data)[this.currentIndex];
+	}
+
+
+	private void HandleNumericType(BasicVariable var)
+	{
+		switch(var.getObjectType())
+		{
+	case typeBoolean:
+	case typeCharacter:
+	case typeString:
+		throw(new BasicError(ErrorNumbers.errorType));
+		}
 	}
 	
-	void HandleNonNumericType(BasicVariable var)
+	private void HandleNonNumericType(BasicVariable var)
 	{
+		switch(var.getObjectType())
+		{
+		case typeFloat:
+		case typeInteger:
+		case typeLong:
+		case typeByte:
+		case typeDouble:
+			throw(new BasicError(ErrorNumbers.errorType));
+		}
+	}
+	
+	public String ToString()
+	{
+		switch(getObjectType())
+		{
+		case typeString:return GetStr();
+		case typeFloat:
+		case typeInteger:
+		case typeLong:
+		case typeDouble:
+		case typeByte:return "" + GetDouble();
+		case typeBoolean:return GetBoolean()?"true":"false";
+		case typeCharacter:return ""+GetCharacter();
+		default:return "[OBJECT]";
+		}
 	}
 
 
 	boolean CompareE(BasicVariable v)
 	{
+		switch(getObjectType())
+		{
+		case typeUndefined:
+		case typeObject:
+			throw(new BasicError(ErrorNumbers.errorInvalidType));
+		case typeString:
+			return GetStr().equals(v.GetStr());
+		case typeInteger:
+		case typeLong:
+		case typeByte:
+			return(GetLong()==v.GetLong());
+		case typeCharacter:
+			return(GetCharacter()==v.GetCharacter());
+			
+		case typeFloat:
+		case typeDouble:
+			return(GetDouble()==v.GetDouble());
+		case typeBoolean:
+			return(GetBoolean()==v.GetBoolean());
+		}
 		return false;
 	}
 
 	boolean CompareNE(BasicVariable v)
 	{
-		return false;
+		return !CompareE(v);
 	}
 
 	boolean CompareGT(BasicVariable v)
 	{
+		switch(getObjectType())
+		{
+		case typeUndefined:
+		case typeObject:
+			throw(new BasicError(ErrorNumbers.errorInvalidType));
+		case typeString:
+			return(GetStr().compareTo(v.GetStr())>0);
+		case typeInteger:
+		case typeLong:
+		case typeByte:
+			return(GetLong()>v.GetLong());
+		case typeCharacter:
+			return(GetCharacter()>v.GetCharacter());
+		case typeFloat:
+		case typeDouble:
+			return(GetDouble()>v.GetDouble());
+		}
 		return false;
 	}
 
 	boolean CompareLT(BasicVariable v)
 	{
+		switch(getObjectType())
+		{
+		case typeUndefined:
+		case typeObject:
+			throw(new BasicError(ErrorNumbers.errorInvalidType));
+		case typeString:
+			return(GetStr().compareTo(v.GetStr())<0);
+		case typeInteger:
+		case typeLong:
+		case typeByte:
+			return(GetLong()<v.GetLong());
+		case typeCharacter:
+			return(GetCharacter()<v.GetCharacter());
+
+		case typeFloat:
+		case typeDouble:
+			return(GetDouble()<v.GetDouble());
+		}
 		return false;
 	}
 
 	boolean CompareGTE(BasicVariable v)
 	{
-		return false;
+		return( CompareE(v) || CompareGT(v) );
 	}
 
 	boolean CompareLTE(BasicVariable v)
 	{
-		return false;
+		return( CompareE(v) || CompareLT(v) );
 	}
 
 	private void Mismatch()
 	{
-		
+		throw new BasicError(ErrorNumbers.errorType);
 	}
 
 	private Object data;
