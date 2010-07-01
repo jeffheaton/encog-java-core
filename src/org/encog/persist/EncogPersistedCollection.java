@@ -31,6 +31,7 @@
 package org.encog.persist;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -52,7 +53,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class EncogPersistedCollection {
+public class EncogPersistedCollection implements EncogCollection {
 
 	/**
 	 * Generic error message for bad XML.
@@ -399,7 +400,7 @@ public class EncogPersistedCollection {
 	/**
 	 * @return The directory entries for the objects in this file.
 	 */
-	public Set<DirectoryEntry> getDirectory() {
+	public Collection<DirectoryEntry> getDirectory() {
 		return this.directory;
 	}
 

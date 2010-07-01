@@ -794,7 +794,7 @@ public class DataNormalization implements EncogPersistedObject {
 		final int size = getOutputFieldCount();
 		final double[] output = new double[size];
 
-		this.storage.open();
+		this.storage.open(this);
 		this.lastReport = 0;
 		int index = 0;
 		int current = 0;

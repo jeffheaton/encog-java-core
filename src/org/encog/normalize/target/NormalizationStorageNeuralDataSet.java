@@ -33,6 +33,7 @@ package org.encog.normalize.target;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.normalize.DataNormalization;
 
 /**
  * Store the normalized data to a neural data set.
@@ -88,7 +89,7 @@ public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 	/**
 	 * Not needed for this storage type.
 	 */
-	public void open() {
+	public void open(DataNormalization norm) {
 	}
 
 	/**

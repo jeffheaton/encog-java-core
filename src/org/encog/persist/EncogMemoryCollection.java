@@ -45,7 +45,7 @@ import org.encog.persist.persistors.PersistorUtil;
  * temp file structure like EncogPersistedCollection, but also can't handle
  * gigantic files. This class can load and save from/to Encog EG files.
  */
-public class EncogMemoryCollection {
+public class EncogMemoryCollection implements EncogCollection {
 
 	/**
 	 * The contents of this collection.

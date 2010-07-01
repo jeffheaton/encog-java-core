@@ -30,6 +30,8 @@
 
 package org.encog.normalize.target;
 
+import org.encog.normalize.DataNormalization;
+
 /**
  * Output the normalized data to a 1D array.
  */
@@ -64,7 +66,7 @@ public class NormalizationStorageArray1D implements NormalizationStorage {
 	/**
 	 * Not needed for this storage type.
 	 */
-	public void open() {
+	public void open(DataNormalization norm) {
 
 	}
 

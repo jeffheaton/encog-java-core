@@ -30,6 +30,8 @@
 
 package org.encog.normalize.target;
 
+import org.encog.normalize.DataNormalization;
+
 /**
  * Defines a means by which normalized data can be stored.
  */
@@ -43,7 +45,7 @@ public interface NormalizationStorage {
 	/**
 	 * Close the storage.
 	 */
-	void open();
+	void open(DataNormalization norm);
 
 	/**
 	 * Write an array.

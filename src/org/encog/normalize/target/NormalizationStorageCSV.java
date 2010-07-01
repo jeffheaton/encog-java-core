@@ -35,6 +35,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.encog.normalize.DataNormalization;
 import org.encog.normalize.NormalizationError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
@@ -88,7 +89,7 @@ public class NormalizationStorageCSV implements NormalizationStorage {
 	/**
 	 * Open the CSV file.
 	 */
-	public void open() {
+	public void open(DataNormalization norm) {
 		try {
 			final FileWriter outFile = new FileWriter(this.outputFile);
 			this.output = new PrintWriter(outFile);
