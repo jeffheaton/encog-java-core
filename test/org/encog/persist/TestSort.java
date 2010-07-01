@@ -30,6 +30,7 @@
 
 package org.encog.persist;
 
+import java.util.Collection;
 import java.util.Set;
 
 import junit.framework.Assert;
@@ -77,7 +78,7 @@ public class TestSort {
 		encog.add(NAME_NETWORK2, network2);
 		
 		encog.buildDirectory();
-		Set<DirectoryEntry> dir = encog.getDirectory();
+		Collection<DirectoryEntry> dir = encog.getDirectory();
 		Object[] dir2 = dir.toArray();
 		Assert.assertEquals(NAME_DATA1, 
 				((DirectoryEntry)dir2[0]).getName() );
