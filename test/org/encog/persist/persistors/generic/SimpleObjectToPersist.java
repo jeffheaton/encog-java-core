@@ -30,6 +30,7 @@
 
 package org.encog.persist.persistors.generic;
 
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 
@@ -172,6 +173,15 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 	 */
 	public void setSecond(final String second) {
 		this.second = second;
+	}
+
+	public EncogCollection getCollection() {
+		return null;
+	}
+
+
+	public void setCollection(EncogCollection collection) {
+		
 	}
 
 }
