@@ -239,6 +239,7 @@ public class EncogMemoryCollection implements EncogCollection {
 				}
 				
 				this.contents.put(name, obj);
+				obj.setCollection(this);
 			}
 		} finally {
 			buildDirectory();
