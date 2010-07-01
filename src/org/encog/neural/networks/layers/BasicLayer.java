@@ -48,6 +48,7 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.networks.synapse.WeightlessSynapse;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicLayerPersistor;
 import org.slf4j.Logger;
@@ -624,5 +625,20 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public void setBiasActivation(final double activation) {
 		this.biasActivation = activation;
+	}
+
+	/**
+	 * Returns null, layers do not belong to collections.
+	 */
+	public EncogCollection getCollection() {
+		return null;
+	}
+
+	/**
+	 * Not used, layers do not belong to collections.
+	 * @param collection Not used.
+	 */
+	public void setCollection(EncogCollection collection) {
+		
 	}
 }

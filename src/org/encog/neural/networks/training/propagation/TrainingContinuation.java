@@ -33,6 +33,7 @@ package org.encog.neural.networks.training.propagation;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.TrainingContinuationPersistor;
@@ -57,6 +58,11 @@ public class TrainingContinuation implements EncogPersistedObject {
 	 * The description of this object.
 	 */
 	private String description;
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
 	
 	/**
 	 * The contents of this object.
@@ -133,6 +139,20 @@ public class TrainingContinuation implements EncogPersistedObject {
 	 */
 	public void setName(final String name) {
 		this.name = name;
+	}
+	
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
 	}
 
 }

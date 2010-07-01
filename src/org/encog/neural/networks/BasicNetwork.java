@@ -53,6 +53,7 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.ObjectCloner;
@@ -105,6 +106,12 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(BasicNetwork.class);
 
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
+	
 	/**
 	 * Determine which member of the output is the winning neuron.
 	 * 
@@ -683,5 +690,19 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 		{
 			return -1;
 		}		
+	}
+	
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
 	}
 }

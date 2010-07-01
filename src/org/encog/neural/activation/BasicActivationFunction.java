@@ -30,6 +30,7 @@
 
 package org.encog.neural.activation;
 
+import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.generic.GenericPersistor;
 
@@ -48,6 +49,11 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 */
 	private static final long serialVersionUID = 672555213449163812L;
 
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
+	
 	/**
 	 * @return The object cloned.
 	 */
@@ -97,6 +103,20 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 */
 	public Persistor createPersistor() {
 		return new GenericPersistor(this.getClass());
+	}
+
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
 	}
 
 }

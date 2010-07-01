@@ -1,5 +1,6 @@
 package org.encog.script;
 
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.EncogScriptPersistor;
@@ -9,6 +10,12 @@ public class EncogScript implements EncogPersistedObject {
 	private String name;
 	private String description;
 	private String source;
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
+
 	
 	@Override
 	public Persistor createPersistor() {
@@ -49,5 +56,19 @@ public class EncogScript implements EncogPersistedObject {
 	 */
 	public void setSource(String source) {
 		this.source = source;
+	}
+	
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
 	}
 }

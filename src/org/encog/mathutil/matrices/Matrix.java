@@ -35,6 +35,7 @@ import java.io.Serializable;
 import org.encog.Encog;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.mathutil.matrices.decomposition.QRDecomposition;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.slf4j.Logger;
@@ -57,6 +58,11 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(Matrix.class);
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
 
 	/**
 	 * Turn an array of doubles into a column matrix.
@@ -246,8 +252,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				if ((long) (this.matrix[r][c] * actualPrecision) 
-						!= (long) (data[r][c] * actualPrecision)) {
+				if ((long) (this.matrix[r][c] * actualPrecision) != (long) (data[r][c] * actualPrecision)) {
 					return false;
 				}
 			}
@@ -865,6 +870,20 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 			}
 			throw new MatrixError(str);
 		}
+	}
+
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
 	}
 
 }

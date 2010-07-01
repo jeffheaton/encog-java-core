@@ -31,6 +31,7 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.neural.networks.layers.Layer;
+import org.encog.persist.EncogCollection;
 
 /**
  * An abstract class that implements basic functionality that may be needed by
@@ -177,5 +178,21 @@ public abstract class BasicSynapse implements Synapse {
 		result.append("]");
 		return result.toString();
 	}
+	
+	/**
+	 * Returns null, synapses do not belong to collections.
+	 */
+	public EncogCollection getCollection() {
+		return null;
+	}
+
+	/**
+	 * Not used, synapses do not belong to collections.
+	 * @param collection Not used.
+	 */
+	public void setCollection(EncogCollection collection) {
+		
+	}
+
 
 }

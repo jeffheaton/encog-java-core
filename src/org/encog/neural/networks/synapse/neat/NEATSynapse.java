@@ -45,6 +45,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGIgnore;
@@ -435,5 +436,21 @@ public class NEATSynapse implements Synapse, ContextClearable, Serializable {
 	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
 	}
+	
+	/**
+	 * Returns null, synapses do not belong to collections.
+	 */
+	public EncogCollection getCollection() {
+		return null;
+	}
+
+	/**
+	 * Not used, synapses do not belong to collections.
+	 * @param collection Not used.
+	 */
+	public void setCollection(EncogCollection collection) {
+		
+	}
+
 
 }

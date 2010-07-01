@@ -11,6 +11,7 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGIgnore;
@@ -66,6 +67,11 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 	private boolean headers;
 	
 	private boolean initDone = false;
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
 
 	public static final String TYPE_FILE = "FILE";
 
@@ -302,4 +308,19 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 
 	}
 
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
+	}
+
+	
 }

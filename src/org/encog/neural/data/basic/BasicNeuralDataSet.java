@@ -38,6 +38,7 @@ import java.util.List;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNeuralDataSetPersistor;
@@ -112,6 +113,11 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	 */
 	private final transient Logger logger = LoggerFactory.getLogger(this
 			.getClass());
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
 
 	/**
 	 * The data held by this object.
@@ -365,4 +371,19 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	public void setName(final String name) {
 		this.name = name;
 	}
+	
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
+	}
+
 }

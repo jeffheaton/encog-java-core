@@ -74,4 +74,8 @@ public interface EncogPersistedObject extends Serializable {
 	 */
 	void setName(String theName);
 
+	EncogCollection getCollection();
+	
+	void setCollection(EncogCollection collection);
+	
 }

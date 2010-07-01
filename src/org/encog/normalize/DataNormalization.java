@@ -56,6 +56,7 @@ import org.encog.normalize.output.OutputFieldGrouped;
 import org.encog.normalize.output.RequireTwoPass;
 import org.encog.normalize.segregate.Segregator;
 import org.encog.normalize.target.NormalizationStorage;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGIgnore;
@@ -153,7 +154,13 @@ public class DataNormalization implements EncogPersistedObject {
 	 */
 	@EGIgnore
 	private final Collection<ReadCSV> readCSV = new ArrayList<ReadCSV>();
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
 
+	
 	/**
 	 * Hold a map between the InputFieldCSV objects and the corresponding
 	 * ReadCSV object. There will likely be many fields read from a single file.
@@ -908,5 +915,19 @@ public class DataNormalization implements EncogPersistedObject {
 		}
 
 		return false;
+	}
+	
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
 	}
 }

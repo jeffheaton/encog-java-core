@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.PropertyDataPersistor;
@@ -67,6 +68,11 @@ public class PropertyData implements EncogPersistedObject {
 	 * The description.
 	 */
 	private String description;
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
 
 	/**
 	 * The property data.
@@ -246,4 +252,19 @@ public class PropertyData implements EncogPersistedObject {
 	public int size() {
 		return this.data.size();
 	}
+	
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
+	}
+
 }

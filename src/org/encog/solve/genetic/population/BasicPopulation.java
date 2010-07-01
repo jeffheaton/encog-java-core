@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGReferenceable;
@@ -129,6 +130,12 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 	 * The object description.
 	 */
 	private String description;
+	
+	/**
+	 * The Encog collection this object belongs to, or null if none.
+	 */
+	private EncogCollection encogCollection;
+
 
 	/**
 	 * Construct an empty population.
@@ -412,6 +419,20 @@ public class BasicPopulation implements Population, EncogPersistedObject {
 	 */
 	public void sort() {
 		Collections.sort(this.genomes);
+	}
+	
+	/**
+	 * @return The collection this Encog object belongs to, null if none.
+	 */
+	public EncogCollection getCollection() {
+		return this.encogCollection;
+	}
+
+	/**
+	 * Set the Encog collection that this object belongs to.
+	 */
+	public void setCollection(EncogCollection collection) {
+		this.encogCollection = collection; 
 	}
 
 }
