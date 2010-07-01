@@ -23,5 +23,24 @@ public class BasicObject {
 		this.type = type;
 	}
 	
+	private BasicObject next;
+
+	public BasicTypes getType() {
+		return type;
+	}
+
+	public void setType(BasicTypes type) {
+		this.type = type;
+	}
+
+	public BasicObject getNext() {
+		return next;
+	}
+
+	public void setNext(BasicObject next) {
+		this.next = next;
+	}
+	
+	
 	
 }

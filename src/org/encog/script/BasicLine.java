@@ -19,10 +19,33 @@ public class BasicLine extends BasicObject {
 	{
 		return text;
 	}
-	
+		
+	public List getSub() {
+		return sub;
+	}
+
+	public void setSub(List sub) {
+		this.sub = sub;
+	}
+
+	public long getNumber() {
+		return number;
+	}
+
+	public void setNumber(long number) {
+		this.number = number;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
 	private List sub;
 	private long number;
 	private String text;
-
 	
 }
