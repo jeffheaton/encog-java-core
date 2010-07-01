@@ -4,9 +4,7 @@ public class BasicVariable extends BasicObject {
 
 	public BasicVariable()
 	{
-		x=y=z=0;
-		setObjectType(BasicTypes.typeUndefined);
-		isRef=false;
+		Free();
 	}
 	
 	public BasicVariable(BasicObjectVariable v)
@@ -663,6 +661,12 @@ public class BasicVariable extends BasicObject {
 	{
 		throw new BasicError(ErrorNumbers.errorType);
 	}
+	
+	public void Free() {
+		x=y=z=0;
+		setObjectType(BasicTypes.typeUndefined);
+		isRef=false;
+	}
 
 	private Object data;
 	private int currentIndex;
@@ -671,5 +675,6 @@ public class BasicVariable extends BasicObject {
 	private int y;
 	private int z;
 	private boolean isRef;
+
 	
 }
