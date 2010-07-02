@@ -39,6 +39,18 @@ public class BasicModule extends BasicObject {
 	{
 		return false;
 	}
+	
+	
+
+	public List getProgram() {
+		return program;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+
 
 	private List program;// Linked list of the program
 	private List addto;

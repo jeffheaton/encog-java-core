@@ -80,6 +80,11 @@ public class BasicError extends EncogError {
 	}
 	
 	private ErrorNumbers id;
-	private String description;
 
+
+	public ErrorNumbers getId() {
+		return id;
+	}
+
+	
 }

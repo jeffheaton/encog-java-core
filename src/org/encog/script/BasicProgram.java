@@ -5,83 +5,95 @@ import java.util.List;
 
 public class BasicProgram extends Basic {
 
-	BasicProgram()
+	static BasicProgram instance;
+	
+	public static BasicProgram getInstance()
+	{
+		if( instance==null)
+			instance = new BasicProgram();
+		return instance;
+	}
+	
+	public BasicProgram()
 	{
 		
 	}
 	
-	void LoadModule(String str)
+	public void LoadModule(String str)
 	{
 		
 	}
 	
-	void AddFunctions(Basic functions)
+	public void AddFunctions(Basic functions)
 	{
 		
 	}
 
-	boolean Scan(BasicVariable target)
-	{
-		return false;
-	}
-	boolean Update()
-	{
-		return false;
-	}
-	boolean Execute()
-	{
-		return false;
-	}
-
-	boolean NewObject()
+	public boolean Scan(BasicVariable target)
 	{
 		return false;
 	}
 	
-	BasicVariable CreateObject()
+	public boolean Update()
+	{
+		return false;
+	}
+	
+	public boolean Execute()
+	{
+		return false;
+	}
+
+	public boolean NewObject()
+	{
+		return false;
+	}
+	
+	public BasicVariable CreateObject()
 	{
 		return null;
 	}
 	
-	void CreateGlobals()
+	public void CreateGlobals()
 	{
 		
 	}
-	void Clear()
+	
+	public void Clear()
 	{
 		modules.clear();
 		globals.clear();
 	}
 
-	void Allocate()
+	public void Allocate()
 	{
 		
 	}
-	void Free()
+	public void Free()
 	{
 		
 	}
 	
-	void Copy(BasicVariable v)
+	public void Copy(BasicVariable v)
 	{
 		
 	}
 
-	boolean Call(BasicModule module,String fn,BasicVariable target)
+	public boolean Call(BasicModule module,String fn,BasicVariable target)
 	{
 		return false;
 	}
 	
-	boolean Call(String filename,BasicVariable target)
+	public boolean Call(String filename,BasicVariable target)
 	{
 		return false;
 	}
 
-	void CloseAllFiles()
+	public void CloseAllFiles()
 	{
 		
 	}
-	void Maint()
+	public void Maint()
 	{
 		
 	}

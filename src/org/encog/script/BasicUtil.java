@@ -3,11 +3,21 @@ package org.encog.script;
 public class BasicUtil {
 	public static BasicKey FindKeyword(String token)
 	{
+		for( BasicKey key : BasicKey.KEYS)
+		{
+			if( key.getName().equals(token))
+				return key;
+		}
 		return null;
 	}
 	
 	public static BasicKey  FindKeyword(KeyNames token)
 	{
+		for( BasicKey key : BasicKey.KEYS)
+		{
+			if( key.getId()==token)
+				return key;
+		}
 		return null;
 	}
 	public static void DoInput(String str,String cap)

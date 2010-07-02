@@ -1,5 +1,6 @@
 package org.encog.script;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BasicParse extends Basic {
@@ -9,11 +10,14 @@ public class BasicParse extends Basic {
 	String name;
 
 	BasicParse(BasicModule m) {
-
+		Init();
+		module=m;
 	}
 
 	BasicParse() {
-
+		module=null;
+		currentLine=null;
+		Init();
 	}
 
 	// Parse Functions
@@ -39,21 +43,23 @@ public class BasicParse extends Basic {
 
 	}
 
-	public void ParseVariable(BasicVariable v, int l, int u) {
+	public BasicVariable ParseVariable( int l, int u) {
+		BasicVariable result = null;
+		
 		kill_space();
-		Expr(v);
+		result = Expr();
 		if( l==0 && u==0 )
-			return;
-		if( (v.GetLong()<l) || (v.GetLong()>u) )
+			return result;
+		if( (result.GetLong()<l) || (result.GetLong()>u) )
 			throw(new BasicError(ErrorNumbers.errorIllegalValue));
-
+		return result;
 	}
 
-	public boolean ParseVariable(BasicVariable var) {
+	/*public boolean ParseVariable(BasicVariable var) {
 		kill_space();
 		Expr(var);
 		return var.GetBoolean();
-	}
+	}*/
 
 	public void ExpectToken(char ch) {
 		if(!LookAhead(ch))
@@ -75,7 +81,7 @@ public class BasicParse extends Basic {
 		return false;
 	}
 
-	boolean LookAhead(String lookfor, boolean partial) {
+	public boolean LookAhead(String lookfor, boolean partial) {
 
 		if(ptr==-1)
 			return false;
@@ -113,39 +119,378 @@ public class BasicParse extends Basic {
 
 	}
 
-	boolean LookAhead(KeyNames token, boolean partial) {
+	public boolean LookAhead(KeyNames token, boolean partial) {
 		BasicKey key;
 		key=BasicUtil.FindKeyword(token);
 		return LookAhead(key.getName(),partial);
 	}
 
-	BasicKey ParseNextToken() {
+	public BasicKey ParseNextToken() {
+		String str;
+		int hold=ptr;
+		BasicKey rtn;
+
+		kill_space();
+		str = ParseVariable();
+		if(str.length()<1)
+			return null;
+
+		str = str.toUpperCase();
+
+		rtn=BasicUtil.FindKeyword(str);
+		
+		if(rtn!=null)
+			return rtn;
+
+		ptr=hold;
+		nextchar=this.line.charAt(this.ptr);
+
 		return null;
 	}
 
-	void Init() {
+	public void Init() {
+		is=null;
+		ptr = 0;
+		line = "LINE";
+		nextchar=0;
+		requestBreak=false;
+		variables=new ArrayList();
+		ifs=0;
+		name = "<GLOBAL>";
+		column=0;
+		errorLabel="";
 	}
 
-	boolean parse(String l) {
-		return false;
+	public boolean parse(String l) {
+		BasicKey key;
+
+		Maint();
+		try
+		{
+			if(!LoadLine(l))
+				return true;
+
+			do
+			{
+				do
+				{
+					kill_space();
+				} while(LookAhead(':') );
+				if(nextchar==0)
+					return true;
+
+				key=ParseNextToken();
+				if(key==null)
+				{
+					if( IsAssignment() )
+					{
+						DoAssignment();
+						continue;
+					}
+					else
+					if(BasicProgram.getInstance().Execute())
+					{
+						continue;
+					}
+					else
+					if( CallSub() )
+					{
+						LookAhead(')');
+						continue;
+					}
+					else
+						throw(new BasicError(ErrorNumbers.errorSyntax));
+				}
+
+				if(key.getType()!=KeyTypes.keyStatement && (key.getId()!=KeyNames.keyMSGBOX))
+					throw(new BasicError(ErrorNumbers.errorKeyword));
+
+				switch(key.getId())
+				{
+				case keyBEEP:	CmdBeep();break;
+				case keyCALL:	CmdCall();break;
+				case keyCASE:	CmdCase();break;
+				case keyCHDIR:	CmdChDir();break;
+				case keyCLOSE:	CmdClose();break;
+				case keyCLS:	CmdCls();break;
+				case keyCONST:	CmdConst();break;
+				case keyCREATELINK:CmdCreateLink();break;
+				case keyDIM:	CmdDim();break;
+				case keyDO:		CmdDo();break;
+				case keyELSE:	CmdElse();break;
+				case keyELSEIF:CmdElseIf();break;
+				case keyEND:	return CmdEnd();
+				case keyERASE:	CmdErase();break;
+				case keyEXIT:	return CmdExit();
+				case keyFOR:	CmdFor();break;
+				case keyFUNCTION:CmdFunction();break;
+				case keyGET:	CmdGet();break;
+				case keyGOSUB:	CmdGosub();return false;
+				case keyGOTO:	CmdGoto();return false;
+				case keyINPUT:	CmdInput();break;
+				case keyKILL:	CmdKill();break;
+				case keyLET:	CmdLet();break;
+				case keyLOAD:	CmdLoad();break;
+				case keyLOCK:	CmdLock();break;
+				case keyLOOP:	CmdLoop();break;
+				case keyLSET:	CmdLSet();break;
+				case keyMKDIR:	CmdMKDir();break;
+				case keyMSGBOX: CmdMsgBox();break;
+				case keyNAME:	CmdName();break;
+				case keyNEXT:	CmdNext();break;
+				case keyON:		return CmdOn();
+				case keyOPEN:	CmdOpen();break;
+				case keyOPTION:	CmdOption();break;
+				case keyPRINT:	CmdPrint();break;
+				case keyPUT:	CmdPut();break;
+				case keyRANDOMIZE:CmdRandomize();break;
+				case keyREDIM:	CmdReDim();break;
+				case keyREM:	CmdRem();break;
+				case keyRESET:	CmdReset();break;
+				case keyRESUME:	CmdResume();break;
+				case keyRETURN:	CmdReturn();break;
+				case keyRMDIR:	CmdRmDir();break;
+				case keyRSET:	CmdRSet();break;
+				case keyRUN:	CmdRun("MAIN");return false;
+				case keySEEK:	CmdSeek();break;
+				case keySELECT:	CmdSelect();break;
+				case keySHARED:	CmdShared();break;
+				case keySLEEP:	CmdSleep();break;
+				case keySTATIC:	CmdStatic();break;
+				case keySTOP:	CmdStop();break;
+				case keySUB:	CmdSub();break;
+				case keyTYPE:	CmdType();break;
+				case keyUNLOCK:	CmdUnLock();break;
+				case keyWEND:	CmdWEnd();break;
+				case keyWHILE:	CmdWhile();break;
+				case keyWIDTH:	CmdWidth();break;
+				case keyWRITE:	CmdWrite();break;
+				case keySETREGISTRY:CmdSetRegistry();break;
+				case keyIF:
+					switch(CmdIf())
+					{
+					case 0:return false;
+					case 1:return true;
+					case 2:break;
+					}
+					break;
+				}
+
+			}while(nextchar==':');
+		}
+		catch( BasicError n )
+		{
+			SetERR(n.getId());
+
+			if(errorLabel.charAt(0)=='*')
+				return true;
+
+			if(errorLabel!=null)
+			{			
+				/*if( this.module.getProgram().FindLabel(errorLabel)!=NULL)
+				{
+					go(errorLabel);
+					return false;
+				}*/
+			}
+
+			return DoError();
+		}
+
+		return true;
+
 	}
 
 	void DoAssignment() {
+		BasicVariable varObj;
+		String var;
+
+			// First, see if this even looks like an assignment
+
+			// See if we're updating something elsewhere
+			
+			if(BasicProgram.getInstance().Update())
+				return;
+
+			// Try and find a local or global variable
+			var = ParseVariable();				
+			varObj=GetVariable(var);
+			
+			
+			if(varObj==null)
+			{// Automatically "dim" a variable
+				varObj=new BasicVariable();
+
+				ExpectToken('=');
+				varObj = Expr();
+				variables.add(varObj);
+				varObj.setLabel( var);
+				return;
+			}
+
+			// See if we're really updating an embedded object in an object
+			if(varObj.getType()==BasicTypes.typeObject)
+			{
+				kill_space();
+			
+				if(LookAhead('.'))
+				{
+					if( !varObj.GetObject().Update() )
+						throw(new BasicError(ErrorNumbers.errorUndefinedObject));
+					return;
+				}
+			}
+
+			ExpectToken('=');
+			varObj = Expr();
+
 	}
 
-	boolean GlobalParse(String l) {
-		return false;
+	public boolean GlobalParse(String l) {
+		BasicKey key;
+
+		if(!LoadLine(l))
+			return true;
+
+		do
+		{
+			while(nextchar==':')
+				advance();
+
+			kill_space();
+			key=ParseNextToken();
+			if(key==null)
+				throw(new BasicError(ErrorNumbers.errorGlobal));
+			if(key.getType()!=KeyTypes.keyStatement)
+				throw(new BasicError(ErrorNumbers.errorGlobal));
+
+			switch(key.getId())
+			{
+			case keyDIM:CmdDim();break;
+			case keyFUNCTION:
+			case keySUB:currentLine=null;return false;
+			default:
+				throw(new BasicError(ErrorNumbers.errorGlobal));
+			}
+
+		}while(nextchar==':');
+			
+		return true;
 	}
 
 	BasicVariable CreateVariable(String var) {
-		return null;
+		BasicVariable v;
+		int x,y,z;
+		BasicVariable varObj;
+		BasicKey key;
+		
+		kill_space();
+		x=y=z=0;
+		if(LookAhead('('))
+		{
+			varObj = ParseVariable(0,0);
+			x=varObj.GetShort();
+			if(x==0)
+				throw(new BasicError(ErrorNumbers.errorDim));
+			if(LookAhead(','))
+			{
+				varObj = ParseVariable(0,0);
+				y=varObj.GetShort();
+				if(y==0)
+					throw(new BasicError(ErrorNumbers.errorDim));
+				if(LookAhead(','))
+				{
+					varObj = ParseVariable(0,0);
+					z=varObj.GetShort();
+					if(z==0)
+						throw(new BasicError(ErrorNumbers.errorDim));
+				}
+			}
+			ExpectToken(')');
+		}
+
+		kill_space();
+		if(nextchar>0 && LookAhead(KeyNames.keyAS,false) )
+		{
+			kill_space();
+			key=ParseNextToken();
+		
+			if(key==null)
+			{
+				v=BasicProgram.getInstance().CreateObject();
+				if(v==null)
+				{
+					BasicObjectVariable vobj;
+
+					if(LookAhead("STDFILE",false))
+						vobj=new ObjectStdFile();
+					else
+						throw(new BasicError(ErrorNumbers.errorInvalidType));
+					v=new BasicVariable(vobj);
+				}
+			}
+			else
+			switch(key.getId())
+			{
+			case keySTRING:v=new BasicVariable("");break;
+			case keyREAL:v=new BasicVariable((float)0.0);break;
+			case keyLONG:v=new BasicVariable((long)0);break;
+			case keyINTEGER:v=new BasicVariable((short)0);break;
+			case keyDOUBLE:v=new BasicVariable((double)0.0);break;
+			case keyBYTE:v=new BasicVariable((byte)0);break;
+			case keyBOOLEAN:v=new BasicVariable(false);break;
+			case keyCHARACTER:v=new BasicVariable((char)' ');break;
+			default:
+				throw(new BasicError(ErrorNumbers.errorInvalidType));
+			}
+		}
+		else 
+		{
+			//v=new BASIC_VARIABLE((long)0);
+			throw(new BasicError(ErrorNumbers.errorExpectedAs));
+		}
+				
+		v.setLabel(var);
+		if(x>0)
+			v.CreateArray(x,y,z);
+		kill_space();
+		return v;
 	}
 
 	boolean CallSub() {
+		String var;
+		int hold=ptr;
+		BasicVariable varObj;
+		BasicVariable ignore = null;
+
+		var = ParseVariable();
+		
+		// is it a function inside an object
+		varObj=GetVariable(var);
+		if(varObj!=null)
+		{
+			if(varObj.getType()==BasicTypes.typeObject)
+			{
+				kill_space();
+				if(LookAhead('.'))
+				{
+					if( varObj.GetObject().Execute() )
+						return true;
+				}
+			}
+		}
+
+		// Try and call a global function
+		if(BasicProgram.getInstance().Call(var,ignore))
+			return true;
+
+		ptr=hold;
+		nextchar=this.line.charAt(ptr);
 		return false;
 	}
 
 	void DisplayExpression(long l) {
+		
 	}
 
 	void DoFileInput(long l) {
@@ -164,13 +509,16 @@ public class BasicParse extends Basic {
 	void Variable(BasicVariable v) {
 	}
 
-	void Expr(BasicVariable v) {
+	public BasicVariable Expr() {
+		return null;
 	}
 
-	void Expr1(BasicVariable v) {
+	public BasicVariable Expr1() {
+		return null;
 	}
 
-	void Expr1p5(BasicVariable v) {
+	public BasicVariable Expr1p5() {
+		return null;
 	}
 
 	void ParseString(String str) {
@@ -273,9 +621,22 @@ public class BasicParse extends Basic {
 	}
 
 	void MovePastColen() {
+		boolean quote;
+		
+		kill_space();
+		quote=false;
+		while(nextchar>0 && ( quote || (nextchar!=':')) )
+		{
+			if(nextchar=='\"')
+				quote=!quote;
+			advance();
+		}
+		if(nextchar==':')
+			advance();
 	}
 
 	void Maint() {
+		
 	}
 
 	boolean Call(String fn) {
@@ -649,6 +1010,51 @@ public class BasicParse extends Basic {
 	}
 
 	void MoveToEndIf(boolean stopOnElse) {
+		while(currentLine!=null)
+		{
+			do 
+			{
+				if( LookAhead(KeyNames.keyIF,false) )
+				{// Found a nested if, is it block or line?
+					BasicVariable ignore = Expr();
+					if( !LookAhead(KeyNames.keyTHEN, false) )
+						throw(new BasicError(ErrorNumbers.errorNoThen));
+					kill_space();
+					if(nextchar==0 )
+						MoveToEndIf(false);
+				}
+
+				if(LookAhead(KeyNames.keyEND,true))
+				{
+					kill_space();
+					if(LookAhead(KeyNames.keyIF, false))
+						return;
+					else
+						throw(new BasicError(ErrorNumbers.errorBlock));
+				} 
+
+				if(stopOnElse)
+				{
+					if( LookAhead(KeyNames.keyELSE, false) )
+					{
+						ifs++;
+						return;
+					}
+
+					if( LookAhead(KeyNames.keyELSEIF,false) ) 
+					{
+						//ifs++;
+						CmdIf();
+						return;
+					}
+				}
+
+				MovePastColen();
+
+			} while(nextchar>0);
+
+			MoveNextLine();
+		}
 	}
 
 	void MoveToNext() {
@@ -663,6 +1069,7 @@ public class BasicParse extends Basic {
 	void MoveToEndCase() {
 	}
 
+	private int ifs;
 	private Stack stack;// The stack
 	private boolean requestBreak;
 	private String line;
