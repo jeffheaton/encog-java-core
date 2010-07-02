@@ -114,7 +114,9 @@ public class BasicParse extends Basic {
 	}
 
 	boolean LookAhead(KeyNames token, boolean partial) {
-		return false;
+		BasicKey key;
+		key=BasicUtil.FindKeyword(token);
+		return LookAhead(key.getName(),partial);
 	}
 
 	BasicKey ParseNextToken() {
