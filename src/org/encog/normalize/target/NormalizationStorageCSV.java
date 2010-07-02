@@ -37,6 +37,7 @@ import java.io.PrintWriter;
 
 import org.encog.normalize.DataNormalization;
 import org.encog.normalize.NormalizationError;
+import org.encog.persist.annotations.EGIgnore;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
@@ -48,17 +49,18 @@ public class NormalizationStorageCSV implements NormalizationStorage {
 	/**
 	 * The output file.
 	 */
-	private final File outputFile;
+	private File outputFile;
 	
 	/**
 	 * The output writer.
 	 */
-	private PrintWriter output;
+	@EGIgnore
+	private transient PrintWriter output;
 	
 	/**
 	 * The CSV format to use.
 	 */
-	private final CSVFormat format;
+	private CSVFormat format;
 
 	/**
 	 * Construct a CSV storage object from the specified file.
@@ -68,6 +70,11 @@ public class NormalizationStorageCSV implements NormalizationStorage {
 	public NormalizationStorageCSV(final CSVFormat format, final File file) {
 		this.format = format;
 		this.outputFile = file;
+	}
+	
+	public NormalizationStorageCSV()
+	{
+		this.format = CSVFormat.EG_FORMAT;
 	}
 
 	/**

@@ -52,7 +52,8 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 	/**
 	 * The temp binary file to use.
 	 */
-	private BufferedNeuralDataSet binary;
+	@EGIgnore
+	private transient BufferedNeuralDataSet binary;
 
 	/**
 	 * The number of inputs.
@@ -71,7 +72,8 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 	/**
 	 * The Encog collection this object belongs to, or null if none.
 	 */
-	private EncogCollection encogCollection;
+	@EGIgnore
+	private transient EncogCollection encogCollection;
 
 	public static final String TYPE_FILE = "FILE";
 
@@ -299,7 +301,7 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 			
 			if( egParentDir != null )
 			{
-				if( linkLocation.getParent().equals(egParentDir) )
+				if( linkLocation.getParent()!=null && linkLocation.getParent().equals(egParentDir) )
 				{
 					this.link = linkLocation.getName();
 				}

@@ -34,6 +34,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.normalize.DataNormalization;
+import org.encog.persist.annotations.EGIgnore;
 
 /**
  * Store the normalized data to a neural data set.
@@ -53,8 +54,15 @@ public class NormalizationStorageNeuralDataSet implements NormalizationStorage {
 	/**
 	 * The data set to add to.
 	 */
-	private final NeuralDataSet dataset;
+	@EGIgnore
+	private NeuralDataSet dataset;
 
+	
+	public NormalizationStorageNeuralDataSet()
+	{
+		
+	}
+	
 	/**
 	 * Construct a new NeuralDataSet based on the parameters specified.
 	 * 

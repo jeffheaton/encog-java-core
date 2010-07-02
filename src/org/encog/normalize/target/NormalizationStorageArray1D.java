@@ -31,6 +31,7 @@
 package org.encog.normalize.target;
 
 import org.encog.normalize.DataNormalization;
+import org.encog.persist.annotations.EGIgnore;
 
 /**
  * Output the normalized data to a 1D array.
@@ -40,13 +41,21 @@ public class NormalizationStorageArray1D implements NormalizationStorage {
 	/**
 	 * The array to store to.
 	 */
-	private final double[] array;
+	@EGIgnore
+	private transient double[] array;
 	
 	/**
 	 * The current index.
 	 */
-	private int currentIndex;
+	@EGIgnore	
+	private transient int currentIndex;
 
+	
+	public NormalizationStorageArray1D()
+	{
+		
+	}
+	
 	/**
 	 * Construct an object to store to a 2D array.
 	 * @param array The array to store to.

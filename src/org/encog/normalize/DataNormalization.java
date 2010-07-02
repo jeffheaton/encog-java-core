@@ -158,6 +158,7 @@ public class DataNormalization implements EncogPersistedObject {
 	/**
 	 * The Encog collection this object belongs to, or null if none.
 	 */
+	@EGIgnore
 	private EncogCollection encogCollection;
 
 	
@@ -216,7 +217,6 @@ public class DataNormalization implements EncogPersistedObject {
 	/**
 	 * Where the final output from the normalization is sent.
 	 */
-	@EGIgnore
 	private NormalizationStorage storage;
 
 	/**
