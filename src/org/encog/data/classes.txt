@@ -247,6 +247,7 @@ org.encog.normalize.input.InputField
 org.encog.normalize.input.InputFieldArray1D
 org.encog.normalize.input.InputFieldArray2D
 org.encog.normalize.input.InputFieldCSV
+org.encog.normalize.input.InputFieldEncogCollection
 org.encog.normalize.input.InputFieldNeuralDataSet
 org.encog.normalize.input.NeuralDataFieldHolder
 org.encog.normalize.NormalizationError
