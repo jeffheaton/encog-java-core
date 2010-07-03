@@ -538,7 +538,7 @@ public class BasicParse extends Basic {
 			switch(nextchar)
 			{
 			case '\"':
-				ParseString(str);
+				str = ParseString();
 				target.edit(str);
 				return target;
 
@@ -868,10 +868,65 @@ public class BasicParse extends Basic {
 	}
 
 	public BasicVariable Expr1p5() {
-		return null;
+		BasicVariable target = new BasicVariable();
+		
+		kill_space();
+		if( (nextchar>='A') && (nextchar<='Z') )
+			Variable(target);
+		else
+		if( (nextchar=='+') || (nextchar=='-') || Character.isDigit(nextchar) || (nextchar=='.') || (nextchar=='\"') )
+			target = Constant();
+		else
+		if( nextchar=='(' )
+		{
+			advance();
+			target = Expr();
+			if(nextchar==')')
+				advance();
+		}
+		else
+			throw(new BasicError(ErrorNumbers.errorSyntax));
+
+		while(nextchar=='^')
+		{
+			advance();
+			BasicVariable a = new BasicVariable();
+			BasicVariable b;
+			a.edit(target);
+			b = Expr1p5();
+			target.Free();
+			BasicUtil.PerformPower(target,a,b);
+		}
+		return target;
 	}
 
-	void ParseString(String str) {
+	public String ParseString() {
+		StringBuilder str = new StringBuilder();
+		
+		char ch;
+		int i=0;
+
+			if(nextchar=='\"')
+				advance();	
+			do
+			{
+				ch=getchr();
+				if(ch==34)
+				{
+					// handle double quote
+					if(nextchar==34)
+					{
+						advance();
+						str.append(ch);
+						ch=getchr();
+					}
+				}
+				str.append(ch);		
+			} while( (ch!=34) && ch>0  );
+
+			if(ch!=34)
+				throw(new BasicError(ErrorNumbers.errorBadString));
+			return str.toString();
 	}
 
 	/**
@@ -902,28 +957,79 @@ public class BasicParse extends Basic {
 		return result.toString();
 	}
 
-	void RequestBreak() {
+	public void RequestBreak() {
 		requestBreak = true;
 	}
 
-	void go(String label) {
-	}
-
-	void gosub(String label) {
-	}
-
-	void rtn() {
+	public void go(String label) {
+		if(module==null)
+			throw(new BasicError(ErrorNumbers.errorModule));
+		currentLine=module.Go(label);	
 	}
 
 	boolean IsAssignment() {
-		return false;
+		int p;
+
+		p=ptr;
+
+		// Move to first whitespace char
+		while(p<this.line.length())
+		{
+			char ch = this.line.charAt(p);
+			if( (ch==' ') || (ch=='\t') || (ch=='=') )
+				break;
+			p++;
+		}
+		if(p>=line.length())
+			return false;
+
+		// Move past any whitespace
+		while(p<line.length() && (line.charAt(p)==' ') || (line.charAt(p)=='\t') )
+			p++;
+		
+		if(p>=line.length())
+			return false;
+		
+		// Is it an assignment
+
+		if(line.charAt(p)!='=')
+			return false;
+
+		return true;
 	}
 
-	boolean EvaluateDo() {
-		return false;
+	public boolean EvaluateDo() {
+		BasicVariable varObj;
+		boolean not;
+
+		kill_space();
+
+		if(LookAhead(KeyNames.keyWHILE,false))
+			not=false;
+		else
+		if(LookAhead(KeyNames.keyUNTIL,false) )
+			not=true;
+		else
+			throw(new BasicError(ErrorNumbers.errorIllegalUse));
+
+		varObj=Expr();
+		if(not)
+		{
+			if(varObj.GetBoolean())
+				return false;
+			else			
+				return true;
+		}
+		else
+		{
+			if(varObj.GetBoolean())
+				return true;
+			else
+				return false;
+		}
 	}
 
-	BasicVariable GetNextVariable(String n) {
+	public BasicVariable GetNextVariable(String n) {
 		String str;
 
 		if (n != null) {
