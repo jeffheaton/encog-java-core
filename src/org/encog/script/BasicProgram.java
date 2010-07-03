@@ -117,5 +117,10 @@ public class BasicProgram extends Basic {
 	
 	List modules;
 	List functions;
+
+	public void print(String str) {
+		System.out.println(str);
+		
+	}
 	
 }

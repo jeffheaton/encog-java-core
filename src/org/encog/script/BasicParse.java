@@ -280,7 +280,7 @@ public class BasicParse extends Basic {
 		}
 		catch( BasicError n )
 		{
-			SetERR(n.getId());
+			//SetERR(n.getId());
 
 			if(errorLabel.charAt(0)=='*')
 				return true;
@@ -294,7 +294,6 @@ public class BasicParse extends Basic {
 				}*/
 			}
 
-			return DoError();
 		}
 
 		return true;
@@ -378,7 +377,7 @@ public class BasicParse extends Basic {
 		return true;
 	}
 
-	BasicVariable CreateVariable(String var) {
+	public BasicVariable CreateVariable(String var) {
 		BasicVariable v;
 		int x,y,z;
 		BasicVariable varObj;
@@ -457,7 +456,7 @@ public class BasicParse extends Basic {
 		return v;
 	}
 
-	boolean CallSub() {
+	public boolean CallSub() {
 		String var;
 		int hold=ptr;
 		BasicVariable varObj;
@@ -489,32 +488,383 @@ public class BasicParse extends Basic {
 		return false;
 	}
 
-	void DisplayExpression(long l) {
-		
+	public void DisplayExpression(long h) {
+		BasicVariable a;
+		String str;
+		BasicVariable var;
+		long l,space;
+
+				
+			if(LookAhead(KeyNames.keyTAB,false))
+			{
+				ExpectToken('(');
+				var = ParseVariable(0,255);
+				ExpectToken(')');
+				l=var.GetShort();
+				if(l==0)
+					return;
+
+				space=10-(column%10);
+				l--;
+				space=space+(l*10);
+				column+=space;
+
+				while( (space--)>0 )
+				{
+					BasicProgram.getInstance().print(" ");
+				}
+
+				return;
+			}
+
+			a = Expr();
+			str = a.ToString();
+
+			column+=str.length();
+			BasicProgram.getInstance().print(str);
 	}
 
-	void DoFileInput(long l) {
+	public void DoFileInput(long l) {
 	}
 
-	boolean DoError() {
-		return false;
+	public BasicVariable Constant() {
+		BasicVariable target = new BasicVariable();
+		double value,rtn;
+		int fractlnth,exponent;
+		char sign;
+		boolean neg=false;
+		String str = "";
+
+			switch(nextchar)
+			{
+			case '\"':
+				ParseString(str);
+				target.edit(str);
+				return target;
+
+			case '-':
+				advance();
+				neg=true;
+				break;
+
+			case '+':
+				advance();
+				break;
+			}
+
+			value=0.0;
+			fractlnth=0;
+			exponent=0;
+			sign='+';
+
+		// whole number part
+
+			while( Character.isDigit(nextchar) )
+				value=(10.0*value) + (getchr()-'0');
+
+		// Optional fractional
+			if(nextchar=='.')
+			{
+				advance();
+
+				while(  Character.isDigit(nextchar) )
+					{
+					value=(10.0*value) + (getchr()-'0');
+					fractlnth++;
+					}
+				}
+
+		// Optional exponent
+
+			if(nextchar=='E')
+			{
+				advance();
+
+				if( (nextchar=='+') || (nextchar=='-') )
+				{
+					advance();
+					sign=getchr();
+				}
+
+				while(  Character.isDigit(nextchar) )
+					exponent=(int)(10.0*exponent) + (getchr()-'0');
+			}
+
+			if(sign=='-')
+				rtn=value*Math.exp( Math.log(10)*(-exponent-fractlnth));
+			else	rtn=value*Math.exp( Math.log(10)*(exponent-fractlnth));
+
+			if(neg)
+				rtn=-rtn;
+			target.edit(rtn);
+			return target;
 	}
 
-	void SetERR(ErrorNumbers n) {
-	}
+	BasicVariable Variable(BasicVariable v) {
+		BasicVariable result = new BasicVariable();
+		String varName;
+		BasicVariable var;
+		BasicKey key;
 
-	void Constant(BasicVariable v) {
-	}
+			// Check for "module" function
 
-	void Variable(BasicVariable v) {
+			if(BasicProgram.getInstance().Scan(result))
+				return result;
+
+			
+			// First check for built in function, or built-in constant
+
+			varName = ParseVariable();
+			key=BasicUtil.FindKeyword(varName);
+			if(key!=null)
+			{
+				if(key.getType()==KeyTypes.keyConst)
+				{
+					switch(key.getId())
+					{
+					case keyTRUE:result.edit(true);break;
+					case keyFALSE:result.edit(false);break;
+					case keyIS:
+						if(is==null)
+							throw(new BasicError(ErrorNumbers.errorKeyword));
+						result.edit(is);
+						break;
+					}
+					return result;
+				}
+
+				if( (key.getType()==KeyTypes.keyFunction) )
+				{
+					CallInternalFunction(key.getId(),result);
+					return result;
+				}
+				throw(new BasicError(ErrorNumbers.errorKeyword));
+			}
+
+			// Check for user defined function
+
+			if(BasicProgram.getInstance().Call(varName,result))
+					return result;
+
+			// Check for actual variable
+
+			var=GetVariable(varName);
+
+			if(var==null)
+			{// Undefined variable
+				switch(result.getObjectType())
+				{
+				case typeUndefined:result.edit((short)0);break;
+				case typeString:result.edit("");break;
+				case typeFloat:
+				case typeDouble:result.edit((double)0.0);break;
+				case typeInteger:
+				case typeLong:
+				case typeByte:result.edit((long)0);break;
+				case typeBoolean:result.edit(false);break;
+				case typeCharacter:result.edit(' ');break;
+				default:throw(new BasicError(ErrorNumbers.errorUnknownVariable));
+				}
+				return result;
+			}
+			else
+			if(var.getObjectType()==BasicTypes.typeObject)
+			{
+				kill_space();
+				if(LookAhead('.'))
+				{
+					if( !var.GetObject().Scan(result) )
+						throw(new BasicError(ErrorNumbers.errorUndefinedObject));
+					
+					return result;
+				}
+			}
+			
+			result.edit(var);
+			return result;
 	}
 
 	public BasicVariable Expr() {
-		return null;
+		BasicVariable rtn = new BasicVariable();
+		char sign;
+		BasicVariable target = new BasicVariable();
+		boolean b;
+
+			kill_space();
+
+			if( (nextchar=='+') || (nextchar=='-') )
+				sign=getchr();
+			else	sign='+';
+
+			if(LookAhead("NOT",false))
+				sign='N';
+
+			if(rtn.getObjectType()!=BasicTypes.typeUndefined)
+			{
+				target.edit(rtn);// Force assignments to be of the same type by priming
+				// target with the right type
+			}
+
+			target = Expr1();
+			kill_space();
+
+			if(sign=='-')
+				BasicUtil.PerformNeg(target,target);
+				
+			if(sign=='N')
+				target.edit(!target.GetBoolean());
+
+			while( (nextchar=='&') || (nextchar=='+') || (nextchar=='-') || (this.line.indexOf("OR",ptr)==ptr) || (this.line.indexOf("AND",ptr)==ptr) )
+			{
+				if(LookAhead("OR",false))
+				{
+					BasicVariable t;
+					t = Expr1();
+					if(target.getObjectType()==BasicTypes.typeBoolean)
+					{
+						b = (target.GetBoolean()||t.GetBoolean());
+						target.edit(b);
+					}
+					else
+						target.edit(target.GetLong()|t.GetLong());
+				}
+				else
+				if(LookAhead("AND",false))
+				{
+					BasicVariable t;
+					t = Expr1();
+					if(target.getObjectType()==BasicTypes.typeBoolean)
+					{
+						b = (target.GetBoolean()&&t.GetBoolean());
+						target.edit(b);
+					}
+					else
+						target.edit(target.GetLong()&t.GetLong());
+				}
+				else
+				if( LookAhead('-') )
+				{
+					BasicVariable t;
+					t = Expr1();
+
+					BasicUtil.PerformSub(target,target,t);
+				}
+				else
+				if( getchr()=='+')
+				{
+					BasicVariable t;
+					BasicVariable t2 = new BasicVariable();
+					t = Expr1();
+					BasicUtil.PerformAdd(t2,target,t);
+					target.Free();
+					target.edit(t2);
+				}
+				else	
+				{
+					BasicVariable t;
+					BasicVariable t2 = new BasicVariable();
+					t = Expr1();
+					BasicUtil.PerformCat(t2,target,t);
+					target.Free();
+					target.edit(t2);
+				}
+
+			}
+
+//			if( (rtn.GetType()==typeUndefined) || forceRefresh )
+				rtn.edit(target);
+				return rtn;
 	}
 
 	public BasicVariable Expr1() {
-		return null;
+		BasicVariable target = new BasicVariable();
+		BasicVariable t;
+		BasicVariable v = new BasicVariable();
+		kill_space();
+
+		target = Expr1p5();
+		kill_space();
+
+		if(LookAhead(KeyNames.keyMOD,false) )
+		{
+			t = Expr1p5();
+			target.edit((long)(target.GetLong()%t.GetLong()));
+			return target;
+		}
+
+		if(!( nextchar>0 && ("/*<>=".indexOf(nextchar) != -1)) )
+			return target;
+
+		while( nextchar>0 && ("/*<>=".indexOf(nextchar) != -1) )
+			switch(getchr())
+			{
+				case '*':
+					t = Expr1p5();
+					BasicUtil.PerformMul(target,target,t);
+					break;
+
+				case '/':
+					t = Expr1p5();
+					if( t.GetDouble()==0)
+						throw(new BasicError(ErrorNumbers.errorDivZero));
+					BasicUtil.PerformDiv(target,target,t);
+					break;
+
+				case '=':
+					v.edit(target);
+					t = Expr1p5();
+					target.Free();
+					target.edit((boolean)(v.CompareE(t)));
+					break;
+
+				case '<':
+					kill_space();
+					if(nextchar=='>')
+					{
+						advance();
+						v.edit(target);
+						t = Expr1p5();	
+						target.Free();
+						target.edit(v.CompareNE(t));
+					}
+					else
+					if(nextchar=='=')
+					{
+						advance();
+						v.edit(target);
+						t = Expr1p5();	
+						target.Free();
+						target.edit((boolean)(v.CompareLTE(t)));
+					}
+					else
+					{
+						v.edit(target);
+						t = Expr1p5();
+						target.Free();
+						target.edit((boolean)(v.CompareLT(t)));
+					}
+					break;
+
+				case '>':
+					if(nextchar=='=')
+					{
+						advance();
+						v.edit(target);
+						t = Expr1p5();
+						target.Free();
+						target.edit((boolean)(v.CompareGTE(t)));
+					}
+					else
+					{
+						v.edit(target);
+						t = Expr1p5();
+						target.Free();
+						target.edit(v.CompareGT(t));
+					}
+					break;
+
+				};
+				return target;
 	}
 
 	public BasicVariable Expr1p5() {
