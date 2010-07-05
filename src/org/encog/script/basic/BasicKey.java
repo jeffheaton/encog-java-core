@@ -1,7 +1,8 @@
-package org.encog.script;
+package org.encog.script.basic;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class BasicKey {
 	

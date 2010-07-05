@@ -1,6 +1,7 @@
-package org.encog.script;
+package org.encog.script.basic;
 
 import java.io.File;
+
 
 public class ObjectStdFile extends BasicObjectVariable {
 

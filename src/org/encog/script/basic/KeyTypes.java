@@ -1,4 +1,4 @@
-package org.encog.script;
+package org.encog.script.basic;
 
 public enum KeyTypes {
 	keyFunction,

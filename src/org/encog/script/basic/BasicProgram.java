@@ -1,10 +1,11 @@
-package org.encog.script;
+package org.encog.script.basic;
 
 import java.io.RandomAccessFile;
 import java.util.List;
 import java.util.Map;
 
-public class BasicProgram extends Basic {
+
+public class BasicProgram implements Basic {
 
 	static BasicProgram instance;
 	
@@ -17,7 +18,13 @@ public class BasicProgram extends Basic {
 	
 	public BasicProgram()
 	{
-		
+		int i;
+
+		function=null;
+		quitProgram=false;
+		m_noMaint = false;
+		debugMode=false;
+		stepMode=false;
 	}
 	
 	public void LoadModule(String str)

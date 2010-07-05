@@ -1,11 +1,12 @@
-package org.encog.script;
+package org.encog.script.basic;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BasicParse extends Basic {
+
+public class BasicParse implements Basic {
 
 	public static final int MAX_VARIABLE_NAME = 80;
 

@@ -1,4 +1,5 @@
-package org.encog.script;
+package org.encog.script.basic;
+
 
 public class BasicUtil {
 	public static BasicKey FindKeyword(String token)

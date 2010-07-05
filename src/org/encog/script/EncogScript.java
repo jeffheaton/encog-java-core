@@ -1,9 +1,19 @@
 package org.encog.script;
 
+import java.io.RandomAccessFile;
+import java.util.List;
+import java.util.Map;
+
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.EncogScriptPersistor;
+import org.encog.script.basic.Basic;
+import org.encog.script.basic.BasicModule;
+import org.encog.script.basic.BasicParse;
+import org.encog.script.basic.BasicVariable;
+import org.encog.script.basic.Console;
+import org.encog.script.basic.Err;
 
 public class EncogScript implements EncogPersistedObject {
 
@@ -78,4 +88,5 @@ public class EncogScript implements EncogPersistedObject {
 		this.module = new BasicModule();
 		this.module.Load(this);
 	}
+
 }

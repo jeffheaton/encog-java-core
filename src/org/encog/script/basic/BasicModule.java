@@ -1,4 +1,4 @@
-package org.encog.script;
+package org.encog.script.basic;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -13,22 +13,23 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.encog.EncogError;
+import org.encog.script.EncogScript;
 import org.encog.util.ReflectionUtil;
 
 public class BasicModule extends BasicObject {
 	
 	
-	BasicModule()
+	public BasicModule()
 	{
 	}
 
-	void Clear()
+	public void Clear()
 	{
 		program.clear();
 		programLabels.clear();
 	}
 	
-	void Load(EncogScript script) {
+	public void Load(EncogScript script) {
 		try {
 			final InputStream is = new ByteArrayInputStream(script.getSource()
 					.getBytes());
