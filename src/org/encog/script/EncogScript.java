@@ -10,6 +10,7 @@ public class EncogScript implements EncogPersistedObject {
 	private String name;
 	private String description;
 	private String source;
+	private BasicModule module;
 	
 	/**
 	 * The Encog collection this object belongs to, or null if none.
@@ -70,5 +71,11 @@ public class EncogScript implements EncogPersistedObject {
 	 */
 	public void setCollection(EncogCollection collection) {
 		this.encogCollection = collection; 
+	}
+	
+	public void load()
+	{
+		this.module = new BasicModule();
+		this.module.Load(this);
 	}
 }

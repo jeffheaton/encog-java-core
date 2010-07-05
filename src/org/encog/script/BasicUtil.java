@@ -24,6 +24,53 @@ public class BasicUtil {
 	{
 		
 	}
+	
+	public static int FindKeyword(String str,String key)
+	{
+		boolean quote=false;
+		int wptr;
+		int rtn = 0;
+		String cmp;
+
+		cmp = key.toUpperCase();
+
+		StringBuilder word = new StringBuilder();
+		
+		int index = 0;
+		
+		while(index<str.length())
+		{
+			char ch = str.charAt(index);
+			
+			if(ch=='\"')
+			{
+				quote=!quote;
+				index++;
+				continue;
+			}
+
+			if(quote)
+			{
+				index++;
+				continue;
+			}
+
+			if( (ch=='\t') || (ch==' ') || (ch==13) || (ch==10) )
+			{
+				index++;
+				if(word.toString().equals(cmp))
+					return rtn;
+				continue;
+			}
+			
+			word.append(ch);
+			rtn++;
+			index++;
+		}
+
+		return -1;
+	}
+
 
 	public static void SyncVariables(char opp,BasicVariable in1,BasicVariable in2,BasicVariable out1,BasicVariable out2)
 	{

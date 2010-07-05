@@ -1,7 +1,9 @@
 package org.encog.script;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BasicParse extends Basic {
 
@@ -154,7 +156,7 @@ public class BasicParse extends Basic {
 		line = "LINE";
 		nextchar=0;
 		requestBreak=false;
-		variables=new ArrayList();
+		variables=new HashMap<String,BasicVariable>();
 		ifs=0;
 		name = "<GLOBAL>";
 		column=0;
@@ -322,8 +324,7 @@ public class BasicParse extends Basic {
 
 				ExpectToken('=');
 				varObj = Expr();
-				variables.add(varObj);
-				varObj.setLabel( var);
+				variables.put(var,varObj);
 				return;
 			}
 
@@ -1042,41 +1043,101 @@ public class BasicParse extends Basic {
 
 	}
 
-	BasicVariable GetVariable(String name) {
+	public BasicVariable GetVariable(String name) {
+		BasicVariable rtn;
+		
+		rtn=variables.get(name);	
+		if(rtn==null)
+			rtn=(BasicVariable)BasicProgram.getInstance().getGlobals().get(name);
+		if(rtn==null)
+			return null;
+		if(rtn.IsArray())
+		{
+			kill_space();
+			if(LookAhead('('))
+			{
+				BasicVariable varObj;
+				int x=0,y=0,z=0;
+
+				varObj = ParseVariable(0,0);
+				x=varObj.GetShort();
+				if(x>0)
+					throw(new BasicError(ErrorNumbers.errorDim));
+				if(LookAhead(','))
+				{
+					varObj = ParseVariable(0,0);
+					y=varObj.GetShort();
+					if(y>0)
+						throw(new BasicError(ErrorNumbers.errorDim));
+					if(LookAhead(','))
+					{
+						varObj = ParseVariable(0,0);
+						z=varObj.GetShort();
+						if(z>0)
+							throw(new BasicError(ErrorNumbers.errorDim));
+					}
+				}
+				ExpectToken(')');
+
+				rtn.SetArrayLocation(x,y,z);
+			}
+			else
+				throw(new BasicError(ErrorNumbers.errorArray));
+		}
+
+		return rtn;
+	}
+
+	/**
+	 * Will be defined in subclass.
+	 */
+	public boolean Scan(BasicVariable target) {
+		
+		return false;
+	}
+
+	/**
+	 * Will be defined in subclass.
+	 */
+	public boolean Update() {
+		return false;
+	}
+
+	/**
+	 * Will be defined in subclass.
+	 */
+	public boolean Execute() {
+		return false;
+	}
+
+	/**
+	 * Will be defined in subclass.
+	 */
+	public boolean NewObject() {
+		return false;
+	}
+
+	/**
+	 * Will be defined in subclass.
+	 */
+	public BasicVariable CreateObject() {
 		return null;
 	}
 
-	boolean Scan(BasicVariable target) {
-		return false;
-	}
-
-	boolean Update() {
-		return false;
-	}
-
-	boolean Execute() {
-		return false;
-	}
-
-	boolean NewObject() {
-		return false;
-	}
-
-	BasicVariable CreateObject() {
-		return null;
-	}
-
-	void CreateGlobals() {
+	/**
+	 * Will be defined in subclass.
+	 */
+	public void CreateGlobals() {
 
 	}
 
-	void MoveNextLine() {
+	public void MoveNextLine() {
 		do {
 			currentLine = (BasicLine) currentLine.getNext();
 		} while ((currentLine != null) && !LoadLine(currentLine.Command()));
 	}
 
-	void MovePastColen() {
+	public void MovePastColen() {
 		boolean quote;
 		
 		kill_space();
@@ -1091,29 +1152,263 @@ public class BasicParse extends Basic {
 			advance();
 	}
 
-	void Maint() {
+	
+	public void Maint() {
+		BasicProgram.getInstance().Maint();
+	}
+
+	public boolean Call(String var) {
+		boolean callingMain,isFunct;
+		String varName = null;
+		BasicParse caller;
+
+		caller = BasicProgram.getInstance().getFunction();
 		
+		currentLine= module.FindFunction(var);
+		if(currentLine==null)
+			return false;
+
+		if( caller==null )
+			callingMain=true;
+		else
+			callingMain=false;
+
+		if(!LoadLine(currentLine.Command()))
+			return false;
+
+		if(!LookAhead(KeyNames.keyFUNCTION,false) )
+		{
+			if(LookAhead(KeyNames.keySUB,false) )
+				isFunct=false;
+			else
+				throw(new BasicError(ErrorNumbers.errorFunctionProc));
+		}
+		else
+			isFunct=true;
+		
+
+		if(!callingMain)
+		{
+			kill_space();
+			if( nextchar>0 && 
+				(nextchar!=':') )
+			{
+
+				varName = ParseVariable();
+				kill_space();
+
+				LookAhead('(');
+				ParamaterList(caller);
+				LookAhead(')');
+			}
+
+			kill_space();
+			
+			if( (this.line.charAt(this.ptr)=='A') && (this.line.charAt(this.ptr+1)=='S') )
+			{
+				BasicVariable v = CreateVariable(var);
+				this.variables.put(varName, v);
+			}
+		}
+
+		name = var;
+
+		
+		// Actually run the program
+		int index = 0;		
+		
+		currentLine=this.currentLine.getSub().get(index++);
+			
+		if(currentLine==null)
+			return false;
+		
+		while(currentLine!=null && (!BasicProgram.getInstance().getQuitProgram()) )
+		{
+			if(parse(currentLine.Command()))
+				currentLine=this.currentLine.getSub().get(index++);
+		}
+		return true;
 	}
 
-	boolean Call(String fn) {
-		return false;
+	public boolean EventCall(String var, int x, int y, int z) {
+		
+		currentLine=this.module.FindFunction(var);
+		if(currentLine==null)
+			return false;
+
+		EventParamaterList(x,y,z);
+		name = var;
+
+		currentLine=(BasicLine)currentLine.getSub().get(0);
+		if(currentLine==null)
+			return false;
+		
+		// Actually run the program
+		while(currentLine!=null && (!BasicProgram.getInstance().getQuitProgram() ))
+		{
+			if(parse(currentLine.Command()))
+				currentLine=(BasicLine)currentLine.getSub().get(0);
+		}
+		return true;
 	}
 
-	boolean EventCall(String fn, int x, int y, int z) {
-		return false;
+	// The following call is only used to run the first pass to check
+	// for global data.
+	public boolean Call() {
+		this.variables = BasicProgram.getInstance().getGlobals();
+
+		for(BasicLine currentLine : this.module.getProgram() )
+		{
+			if(!GlobalParse(currentLine.Command()))
+				break;
+		}
+		
+		return true;
+
 	}
 
-	boolean Call() {
-		return false;
+	public void ParamaterList(BasicParse caller) {
+		String varName;
+		BasicVariable v;
+		BasicVariable v2;
+
+		while(nextchar>0 && (nextchar!=':') && (nextchar!=')') )
+		{
+			boolean byref=false;
+
+			if(LookAhead(KeyNames.keyBYREF,false))
+				byref=true;
+			else
+				LookAhead(KeyNames.keyBYVAL,false);
+
+			varName = ParseVariable();
+
+			if(byref)
+			{
+				v2=CreateVariable(varName);
+				v2=new BasicVariable();
+				
+				if( (caller.nextchar==':') || caller.nextchar>0 )
+					throw(new BasicError(ErrorNumbers.errorParamaters));
+
+				v=caller.GetNextVariable(null);
+				if(v==null)
+					throw(new BasicError(ErrorNumbers.errorUndefinedVariable));
+				v.CreateRef(v2);
+				variables.put(varName,v2);
+			}
+			else
+			{
+				v=CreateVariable(varName);
+				v = caller.Expr();
+				variables.put(varName,v);
+			}
+			caller.kill_space();
+			kill_space();
+			if(nextchar==',')
+			{
+				caller.ExpectToken(',');
+				caller.kill_space();
+				ExpectToken(',');
+				kill_space();
+			}
+		}
 	}
 
-	void ParamaterList(BasicParse caller) {
-	}
+	public void EventParamaterList(int x, int y, int z) {
+		String varName;
+		BasicVariable v;
+		int count=0;
 
-	void EventParamaterList(int x, int y, int z) {
+		if(!LoadLine(currentLine.Command()))
+			return;
+
+		if(!LookAhead(KeyNames.keyFUNCTION,false) && !LookAhead(KeyNames.keySUB,false) )
+			throw(new BasicError(ErrorNumbers.errorFunctionProc));
+		varName = ParseVariable();
+		kill_space();
+		if( nextchar!='(' )
+			return;
+		advance();
+		kill_space();
+
+		while(nextchar!=')' && nextchar>0)
+		{
+			LookAhead(KeyNames.keyBYREF,false);// Ignore
+			LookAhead(KeyNames.keyBYVAL,false);// Ignore
+			varName = ParseVariable();
+
+			v=CreateVariable(varName);
+			count++;
+			switch(count)
+			{
+				case 1:v.edit((long)x);break;
+				case 2:v.edit((long)y);break;
+				case 3:v.edit((long)z);break;
+			}
+			variables.put(varName,v);
+
+			kill_space();
+			if(nextchar==',')
+			{
+				ExpectToken(',');
+				kill_space();
+			}
+		}
 	}
 
 	void CallInternalFunction(KeyNames f, BasicVariable target) {
+		switch(f)
+		{
+		case keyABS:		FnAbs(target);break;
+		case keyASC:		FnAsc(target);break;
+		case keyATN:		FnAtn(target);break;
+		case keyCDBL:		FnCDbl(target);break;
+		case keyCHR:		FnChr(target);break;
+		case keyCINT:		FnCInt(target);break;
+		case keyCLNG:		FnCLng(target);break;
+		case keyCOS:		FnCos(target);break;
+		case keyDATE:		FnDate_(target);break;
+		case keyENVIRON:	FnEnvron_(target);break;
+		case keyEOF:		FnEof(target);break;
+		case keyERR:		FnErr(target);break;
+		case keyERROR:		FnError(target);break;
+		case keyEXP:		FnExp(target);break;
+		case keyFILEATTR:	FnFileattr(target);break;
+		case keyFIX:		FnFix(target);break;
+		case keyFREEFILE:	FnFreeFile(target);break;
+		case keyHEX:		FnHex_(target);break;
+		case keyINPUT:		FnInput_(target);break;
+		case keyINSTR:		FnInStr(target);break;
+		case keyINT:		FnInt(target);break;
+		case keyLCASE:		FnLCase(target);break;
+		case keyLEFT:		FnLeft(target);break;
+		case keyLEN:		FnLen(target);break;
+		case keyLOC:		FnLoc(target);break;
+		case keyLOG:		FnLog(target);break;
+		case keyLTRIM:		FnLTrim(target);break;
+		case keyMID:		FnMid_(target);break;
+		case keyMSGBOX:		FnMsgBox(target);break;
+		case keyOCT:		FnOct_(target);break;
+		case keyRIGHT:		FnRight_(target);break;
+		case keyRND:		FnRnd(target);break;
+		case keyRTRIM:		FnRTrim(target);break;
+		case keySHELL:		FnShell(target);break;
+		case keySEEK:		FnSeek(target);break;
+		case keySGN:		FnSgn(target);break;
+		case keySIN:		FnSin(target);break;
+		case keySPACE:		FnSpace_(target);break;
+		case keySPC:		FnSpc(target);break;
+		case keySQR:		FnSqr(target);break;
+		case keySTR:		FnStr_(target);break;
+		case keySTRIG:		FnStrig(target);break;
+		case keySTRING:		FnString_(target);break;
+		case keyTAN:		FnTan(target);break;
+		case keyTIME:		FnTime_(target);break;
+		case keyUCASE:		FnUCase_(target);break;
+		case keyVAL:		FnVal(target);break;
+		case keyREGISTRY:	FnRegistry(target);break;
+		}
 	}
 
 	void FnAbs(BasicVariable target) {
@@ -1533,7 +1828,7 @@ public class BasicParse extends Basic {
 
 	private long column;
 	private BasicVariable is;// Current value of IS keyword
-	private List variables;// Linked list of the variables, either local or a
+	private Map<String,BasicVariable> variables;// Linked list of the variables, either local or a
 							// pointer to globals in program
 	private BasicModule module;
 	private BasicLine currentLine;

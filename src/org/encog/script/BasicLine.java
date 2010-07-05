@@ -20,7 +20,7 @@ public class BasicLine extends BasicObject {
 		return text;
 	}
 		
-	public List getSub() {
+	public List<BasicLine> getSub() {
 		return sub;
 	}
 
@@ -44,7 +44,7 @@ public class BasicLine extends BasicObject {
 		this.text = text;
 	}
 
-	private List sub;
+	private List<BasicLine> sub;
 	private long number;
 	private String text;
 	

@@ -2,6 +2,7 @@ package org.encog.script;
 
 import java.io.RandomAccessFile;
 import java.util.List;
+import java.util.Map;
 
 public class BasicProgram extends Basic {
 
@@ -98,11 +99,19 @@ public class BasicProgram extends Basic {
 		
 	}
 	
-	//BASIC_LINE *FindFunction(char *label){return program.FindLabel(label);
+	
+	
+	public Map<String, BasicVariable> getGlobals() {
+		return globals;
+	}
+
+
+
+		//BASIC_LINE *FindFunction(char *label){return program.FindLabel(label);
 		boolean quitProgram;// Should the program be quit(END command)
 
 	BasicParse function;
-	List globals;
+	Map<String,BasicVariable> globals;
 	boolean m_noMaint;
 	static String m_args;
 	
@@ -116,11 +125,25 @@ public class BasicProgram extends Basic {
 	Err m_err;
 	
 	List modules;
-	List functions;
+	List<Basic> functions;
 
 	public void print(String str) {
 		System.out.println(str);
 		
 	}
+
+	public List<Basic> getFunctions() {
+		return functions;
+	}
+
+	public BasicParse getFunction() {
+		return this.function;
+	}
+
+	public boolean getQuitProgram() {
+		return this.quitProgram;
+	}
+	
+	
 	
 }
