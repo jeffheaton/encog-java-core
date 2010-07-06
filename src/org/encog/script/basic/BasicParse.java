@@ -25,16 +25,19 @@ public class BasicParse implements Basic {
 
 	// Parse Functions
 	public void advance() {
-		if(ptr==this.line.length())
+
+		if( (ptr+1)==this.line.length())
 			nextchar = 0;
-		if(ptr>=this.line.length())
-			throw(new BasicError(ErrorNumbers.errorEOL));
 		else
 			nextchar=this.line.charAt(++ptr);
 	}
 
 	public char getchr() {
 		char rtn;
+		
+		if( nextchar==0 )
+			return 0;
+		
 		rtn=nextchar;
 		advance();
 		return rtn;
@@ -493,7 +496,8 @@ public class BasicParse implements Basic {
 		return false;
 	}
 
-	public void DisplayExpression(long h) {
+	public String FormatExpression() {
+		StringBuilder result = new StringBuilder();
 		BasicVariable a;
 		String str;
 		BasicVariable var;
@@ -507,7 +511,7 @@ public class BasicParse implements Basic {
 				ExpectToken(')');
 				l=var.GetShort();
 				if(l==0)
-					return;
+					return result.toString();
 
 				space=10-(column%10);
 				l--;
@@ -516,17 +520,18 @@ public class BasicParse implements Basic {
 
 				while( (space--)>0 )
 				{
-					this.module.getProgram().print(" ");
+					result.append(" ");
 				}
 
-				return;
+				return result.toString();
 			}
 
 			a = Expr();
 			str = a.ToString();
 
 			column+=str.length();
-			this.module.getProgram().print(str);
+			result.append(str);
+			return result.toString();
 	}
 
 	public void DoFileInput(long l) {
@@ -926,7 +931,8 @@ public class BasicParse implements Basic {
 						ch=getchr();
 					}
 				}
-				str.append(ch);		
+				else
+					str.append(ch);		
 			} while( (ch!=34) && ch>0  );
 
 			if(ch!=34)
@@ -1161,20 +1167,18 @@ public class BasicParse implements Basic {
 	}
 
 	public boolean Call(String var) {
-		boolean callingMain,isFunct;
+		boolean isFunct;
 		String varName = null;
 		BasicParse caller;
 
 		caller = this.module.getProgram().getFunction();
 		
 		currentLine= module.FindFunction(var);
+		
 		if(currentLine==null)
 			return false;
 
-		if( caller==null )
-			callingMain=true;
-		else
-			callingMain=false;
+		boolean callingMain = (caller==null);
 
 		if(!LoadLine(currentLine.Command()))
 			return false;
@@ -1683,6 +1687,49 @@ public class BasicParse implements Basic {
 	}
 
 	void CmdPrint() {
+		
+		boolean no_cr=false;
+
+			column=0;
+
+			kill_space();
+
+			if( LookAhead('#') )
+			{
+				BasicVariable var;
+
+				var = ParseVariable(1,100);
+				/*if(theProgram->fileHandles[var.GetShort()]==NULL)
+					throw(errorHandleUndefined);
+				h=theProgram->fileHandles[var.GetShort()];*/
+				if(!LookAhead(','))
+					throw(new BasicError(ErrorNumbers.errorIllegalUse));
+			}
+
+			if( !(nextchar==0 || (nextchar==':')) )
+			{
+				this.module.getProgram().print(FormatExpression());
+
+				while(nextchar==';')
+				{
+					advance();
+
+					if( (nextchar==0) || (nextchar==':') )
+					{
+						no_cr=true;
+						break;
+					}
+
+					this.module.getProgram().print(FormatExpression());
+
+					kill_space();
+				}
+			}
+
+			if(!no_cr)
+			{
+				this.module.getProgram().print("\n");
+			}
 	}
 
 	void CmdPut() {

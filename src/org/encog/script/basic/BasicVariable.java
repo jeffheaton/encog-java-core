@@ -63,7 +63,7 @@ public class BasicVariable extends BasicObject {
 
 	}
 
-	BasicVariable(byte byteData)
+	public BasicVariable(byte byteData)
 	{
 		CreateArray();
 		data=new Byte[1];
@@ -73,7 +73,7 @@ public class BasicVariable extends BasicObject {
 
 	}
 
-	BasicVariable(boolean booleanData)
+	public BasicVariable(boolean booleanData)
 	{
 		CreateArray();
 		data=new boolean[1];
@@ -82,7 +82,7 @@ public class BasicVariable extends BasicObject {
 		isRef=false;
 	}
 
-	BasicVariable(char characterData)
+	public BasicVariable(char characterData)
 	{
 		CreateArray();
 		data=new char[1];
@@ -91,14 +91,14 @@ public class BasicVariable extends BasicObject {
 		isRef=false;		
 	}
 
-	BasicVariable(BasicVariable v)
+	public BasicVariable(BasicVariable v)
 	{
 		edit(v);
 	}
 	
-	void edit(String str)
+	public void edit(String str)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data == null)
 		{
 			assert(data==buffer);
 			data=new String[1];
@@ -108,40 +108,45 @@ public class BasicVariable extends BasicObject {
 		switch(getObjectType())
 		{
 		case typeString:
-			((String[])data)[0] = str;
+			((String[])data)[this.currentIndex] = str;
 			break;
 		default:Mismatch();
 		}
 	}
 	
-	void edit(float v)
+	public void edit(float v)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data == null)
+		{
+			this.data = new float[1];
 			setObjectType(BasicTypes.typeFloat);
+		}
 
 		switch(getObjectType())
 		{
-		case typeFloat:this.data=(float)v;break;
-		case typeInteger:this.data=(int)v;break;
-		case typeLong:this.data=(long)v;break;
-		case typeDouble:this.data=(double)v;break;
-		case typeByte:this.data=(byte)v;break;
+		case typeFloat:((Float[])this.data)[this.currentIndex]=(float)v;break;
+		case typeInteger:((Integer[])this.data)[this.currentIndex]=(int)v;break;
+		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
+		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
+		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
 		default:Mismatch();
 		}
 	}
 
 	void edit(short v)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
+			this.data = new short[1];
 			setObjectType(BasicTypes.typeInteger);
+		}
 		
 		switch(getObjectType())
 		{
-		case typeFloat:this.data=(float)v;break;
-		case typeInteger:this.data=(int)v;break;
-		case typeLong:this.data=(long)v;break;
-		case typeDouble:this.data=(double)v;break;
-		case typeByte:this.data=(byte)v;break;
+		case typeFloat:((Float[])this.data)[this.currentIndex]=(float)v;break;
+		case typeInteger:((Integer[])this.data)[this.currentIndex]=(int)v;break;
+		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
+		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
+		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
 		default:Mismatch();
 		}
 
@@ -149,17 +154,19 @@ public class BasicVariable extends BasicObject {
 
 	void edit(long v)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
+			this.data = new long[1];
 			setObjectType(BasicTypes.typeLong);
+		}
 		
 		switch(getObjectType())
 		{
-		case typeFloat:this.data=(float)v;break;
-		case typeInteger:this.data=(int)v;break;
-		case typeLong:this.data=(long)v;break;
-		case typeDouble:this.data=(double)v;break;
-		case typeByte:this.data=(byte)v;break;
-		case typeCharacter:this.data=(char)v;break;
+		case typeFloat:((Float[])this.data)[this.currentIndex]=(float)v;break;
+		case typeInteger:((Integer[])this.data)[this.currentIndex]=(int)v;break;
+		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
+		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
+		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
+		case typeCharacter:((Character[])this.data)[this.currentIndex]=(char)v;break;
 		default:Mismatch();
 		}
 
@@ -167,42 +174,46 @@ public class BasicVariable extends BasicObject {
 
 	void edit(double v)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data==null) {
 			setObjectType(BasicTypes.typeDouble);
+			this.data = new Double[1];
+		}
 
 		switch(getObjectType())
 		{
-		case typeFloat:this.data=(float)v;break;
-		case typeInteger:this.data=(int)v;break;
-		case typeLong:this.data=(long)v;break;
-		case typeDouble:this.data=(double)v;break;
-		case typeByte:this.data=(byte)v;break;
+		case typeFloat:((Float[])this.data)[this.currentIndex]=(float)v;break;
+		case typeInteger:((Integer[])this.data)[this.currentIndex]=(int)v;break;
+		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
+		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
+		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
 		default:Mismatch();
 		}
 	}
 
 	void edit(byte v)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
 			setObjectType(BasicTypes.typeByte);
+			this.data = new byte[1];
+		}
 
 		switch(getObjectType())
 		{
-		case typeFloat:this.data=(float)v;break;
-		case typeInteger:this.data=(int)v;break;
-		case typeLong:this.data=(long)v;break;
-		case typeDouble:this.data=(double)v;break;
-		case typeByte:this.data=(byte)v;break;
-
+		case typeFloat:((Float[])this.data)[this.currentIndex]=(float)v;break;
+		case typeInteger:((Integer[])this.data)[this.currentIndex]=(int)v;break;
+		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
+		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
+		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
 		default:Mismatch();
 		}
 	}
 
 	void edit(boolean v)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
+			this.data = new boolean[1];
 			setObjectType(BasicTypes.typeBoolean);
-		else
+		} else
 		if(getObjectType()!=BasicTypes.typeBoolean)
 			Mismatch();
 
@@ -211,8 +222,10 @@ public class BasicVariable extends BasicObject {
 
 	void edit(char v)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {			
 			setObjectType(BasicTypes.typeCharacter);
+			this.data = new byte[1];
+		}
 		else
 		if(getObjectType()!=BasicTypes.typeCharacter)
 			Mismatch();
@@ -222,16 +235,14 @@ public class BasicVariable extends BasicObject {
 
 	void edit(BasicObjectVariable v)
 	{
-		if(getObjectType()==BasicTypes.typeUndefined)
+		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
 			setObjectType(BasicTypes.typeObject);
-		else
+			this.data = new BasicObjectVariable[1]; 
+		} else
 		if(getObjectType()!=BasicTypes.typeObject)
 			throw( new BasicError(ErrorNumbers.errorType));
 
-		this.data = new BasicObjectVariable[1];
-
-		((BasicObjectVariable[])this.data)[0] = v;
-
+		((BasicObjectVariable[])this.data)[this.currentIndex] = v;
 	}
 
 	void edit(BasicVariable c)
@@ -435,11 +446,11 @@ public class BasicVariable extends BasicObject {
 
 		switch(getObjectType())
 		{
-		case typeFloat:return	(float)	((float[])this.data)[this.currentIndex];
-		case typeInteger:return (float)	((int[])this.data)[this.currentIndex];
-		case typeLong:return	(float)	((long[])this.data)[this.currentIndex];
-		case typeDouble:return	(float) ((double[])this.data)[this.currentIndex];
-		case typeByte:return	(float)	((byte[])this.data)[this.currentIndex];
+		case typeFloat:return ((Float[])this.data)[this.currentIndex].floatValue();
+		case typeInteger:return ((Integer[])this.data)[this.currentIndex].floatValue();
+		case typeLong:return ((Long[])this.data)[this.currentIndex].floatValue();
+		case typeDouble:return ((Double[])this.data)[this.currentIndex].floatValue();
+		case typeByte:return ((Byte[])this.data)[this.currentIndex].floatValue();
 		default:return 0;
 		}
 	}
@@ -450,11 +461,11 @@ public class BasicVariable extends BasicObject {
 
 		switch(getObjectType())
 		{
-		case typeFloat:return	(short)	((float[])this.data)[this.currentIndex];
-		case typeInteger:return (short)	((int[])this.data)[this.currentIndex];
-		case typeLong:return	(short)	((long[])this.data)[this.currentIndex];
-		case typeDouble:return	(short) ((double[])this.data)[this.currentIndex];
-		case typeByte:return	(short)	((byte[])this.data)[this.currentIndex];
+		case typeFloat:return ((Float[])this.data)[this.currentIndex].shortValue();
+		case typeInteger:return ((Integer[])this.data)[this.currentIndex].shortValue();
+		case typeLong:return ((Long[])this.data)[this.currentIndex].shortValue();
+		case typeDouble:return ((Double[])this.data)[this.currentIndex].shortValue();
+		case typeByte:return ((Byte[])this.data)[this.currentIndex].shortValue();
 		default:return 0;
 		}
 	}
@@ -465,11 +476,11 @@ public class BasicVariable extends BasicObject {
 
 		switch(getObjectType())
 		{
-		case typeFloat:return	(long)	((float[])this.data)[this.currentIndex];
-		case typeInteger:return (long)	((int[])this.data)[this.currentIndex];
-		case typeLong:return	(long)	((long[])this.data)[this.currentIndex];
-		case typeDouble:return	(long) ((double[])this.data)[this.currentIndex];
-		case typeByte:return	(long)	((byte[])this.data)[this.currentIndex];
+		case typeFloat:return ((Float[])this.data)[this.currentIndex].longValue();
+		case typeInteger:return ((Integer[])this.data)[this.currentIndex].longValue();
+		case typeLong:return ((Long[])this.data)[this.currentIndex].longValue();
+		case typeDouble:return ((Double[])this.data)[this.currentIndex].longValue();
+		case typeByte:return ((Byte[])this.data)[this.currentIndex].longValue();
 		default:return 0;
 		}
 	}
@@ -477,14 +488,14 @@ public class BasicVariable extends BasicObject {
 	public double GetDouble()	
 	{
 		HandleNumericType(this);
-
+		
 		switch(getObjectType())
 		{
-		case typeFloat:return	(double)	((float[])this.data)[this.currentIndex];
-		case typeInteger:return (double)	((int[])this.data)[this.currentIndex];
-		case typeLong:return	(double)	((long[])this.data)[this.currentIndex];
-		case typeDouble:return	(double) ((double[])this.data)[this.currentIndex];
-		case typeByte:return	(double)	((byte[])this.data)[this.currentIndex];
+		case typeFloat:return ((Float[])this.data)[this.currentIndex].doubleValue();
+		case typeInteger:return ((Integer[])this.data)[this.currentIndex].doubleValue();
+		case typeLong:return ((Long[])this.data)[this.currentIndex].doubleValue();
+		case typeDouble:return ((Double[])this.data)[this.currentIndex].doubleValue();
+		case typeByte:return ((Byte[])this.data)[this.currentIndex].doubleValue();
 		default:return 0;
 		}
 	}
@@ -495,11 +506,11 @@ public class BasicVariable extends BasicObject {
 
 		switch(getObjectType())
 		{
-		case typeFloat:return	(byte)	((float[])this.data)[this.currentIndex];
-		case typeInteger:return (byte)	((int[])this.data)[this.currentIndex];
-		case typeLong:return	(byte)	((long[])this.data)[this.currentIndex];
-		case typeDouble:return	(byte) ((double[])this.data)[this.currentIndex];
-		case typeByte:return	(byte)	((byte[])this.data)[this.currentIndex];
+		case typeFloat:return ((Float[])this.data)[this.currentIndex].byteValue();
+		case typeInteger:return ((Integer[])this.data)[this.currentIndex].byteValue();
+		case typeLong:return ((Long[])this.data)[this.currentIndex].byteValue();
+		case typeDouble:return ((Double[])this.data)[this.currentIndex].byteValue();
+		case typeByte:return ((Byte[])this.data)[this.currentIndex].byteValue();
 		default:return 0;
 		}
 	}

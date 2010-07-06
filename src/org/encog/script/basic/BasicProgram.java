@@ -8,16 +8,36 @@ import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.script.EncogScript;
+import org.encog.script.basic.console.ConsoleInputOutput;
+import org.encog.script.basic.console.NullConsole;
 
 
 public class BasicProgram implements Basic {
 
-	static BasicProgram instance;
+	private boolean quitProgram;// Should the program be quit(END command)
+
+	private BasicParse function;
+	private final Map<String,BasicVariable> globals = new HashMap<String,BasicVariable>();
+	private boolean m_noMaint;
+	private static String m_args;
+	
+	private RandomAccessFile fileHandles[];
+	private long fileAttr[];
+	private short reclen[];
+
+	private ConsoleInputOutput console;
+	private boolean debugMode;
+	private boolean stepMode;
+	private Err m_err;
+	
+	private final List<BasicModule> modules = new ArrayList<BasicModule>();
+	private final List<Basic> functions = new ArrayList<Basic>();
+
 		
 	public BasicProgram()
 	{
 		int i;
-
+		this.console = new NullConsole();
 		function=null;
 		quitProgram=false;
 		m_noMaint = false;
@@ -208,7 +228,7 @@ public class BasicProgram implements Basic {
 		
 
 	public void print(String str) {
-		System.out.println(str);
+		this.console.print(str);
 		
 	}
 
@@ -229,29 +249,16 @@ public class BasicProgram implements Basic {
 	public void setFunction(BasicParse function) {
 		this.function = function;
 	}
-
-
-
-	private boolean quitProgram;// Should the program be quit(END command)
-
-	private BasicParse function;
-	private final Map<String,BasicVariable> globals = new HashMap<String,BasicVariable>();
-	private boolean m_noMaint;
-	private static String m_args;
 	
-	private RandomAccessFile fileHandles[];
-	private long fileAttr[];
-	private short reclen[];
+	public ConsoleInputOutput getConsole() {
+		return console;
+	}
 
-	private Console con;
-	private boolean debugMode;
-	private boolean stepMode;
-	private Err m_err;
-	
-	private final List<BasicModule> modules = new ArrayList<BasicModule>();
-	private final List<Basic> functions = new ArrayList<Basic>();
-
-	
-	
+	/**
+	 * @param console the console to set
+	 */
+	public void setConsole(ConsoleInputOutput console) {
+		this.console = console;
+	}
 	
 }
