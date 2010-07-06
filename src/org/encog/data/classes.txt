@@ -346,7 +346,9 @@ org.encog.script.basic.BasicProgram
 org.encog.script.basic.BasicTypes
 org.encog.script.basic.BasicUtil
 org.encog.script.basic.BasicVariable
-org.encog.script.basic.Console
+org.encog.script.basic.console.ConsoleInputOutput
+org.encog.script.basic.console.NullConsole
+org.encog.script.basic.console.StandardConsole
 org.encog.script.basic.Err
 org.encog.script.basic.ErrorNumbers
 org.encog.script.basic.KeyNames
