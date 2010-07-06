@@ -4,7 +4,7 @@ package org.encog.script.basic;
 public class BasicUtil {
 	public static BasicKey FindKeyword(String token)
 	{
-		for( BasicKey key : BasicKey.KEYS)
+		for( BasicKey key : BasicKey.getKeys())
 		{
 			if( key.getName().equals(token))
 				return key;
@@ -14,7 +14,7 @@ public class BasicUtil {
 	
 	public static BasicKey  FindKeyword(KeyNames token)
 	{
-		for( BasicKey key : BasicKey.KEYS)
+		for( BasicKey key : BasicKey.getKeys())
 		{
 			if( key.getId()==token)
 				return key;
@@ -289,6 +289,25 @@ public class BasicUtil {
 	BasicError FindError(ErrorNumbers err)
 	{
 		return null;
+	}
+
+	public static String basicToUpper(String l) {
+		StringBuilder result = new StringBuilder();
+		boolean inQuote = false;
+		
+		for(int i=0;i<l.length();i++)
+		{
+			char ch = l.charAt(i);
+			if( ch=='\"')
+				inQuote = !inQuote;
+			
+			if( !inQuote )
+				ch = Character.toUpperCase(ch);
+			
+			result.append(ch);
+		}
+		
+		return result.toString();
 	}
 
 }

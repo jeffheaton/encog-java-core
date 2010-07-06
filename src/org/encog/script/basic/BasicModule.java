@@ -19,13 +19,14 @@ import org.encog.util.ReflectionUtil;
 public class BasicModule extends BasicObject {
 	
 	
-	public BasicModule()
+	public BasicModule(BasicProgram program)
 	{
+		this.program = program;
 	}
 
 	public void Clear()
 	{
-		program.clear();
+		programLines.clear();
 		programLabels.clear();
 	}
 	
@@ -37,7 +38,7 @@ public class BasicModule extends BasicObject {
 					new InputStreamReader(is));
 			String line;
 
-			int number = 1;
+			int number = 0;
 			while ((line = reader.readLine()) != null) {
 				String check = line.trim();
 				
@@ -60,17 +61,17 @@ public class BasicModule extends BasicObject {
 			throw(new BasicError(ErrorNumbers.errorLabel));
 
 		int index = this.programLabels.get(label);
-		return this.program.get(index);
+		return this.programLines.get(index);
 	}
 	
-	public void AddLine(String origLine, int number)
+	public void AddLine(String line, int number)
 	{
 		int ptr;
 		int ptr2;
 		String label = "";
 		BasicLine bl;
 
-			String line = origLine.toUpperCase();
+			line = BasicUtil.basicToUpper(line);
 
 			// Look for a label
 
@@ -136,7 +137,7 @@ public class BasicModule extends BasicObject {
 					throw( new BasicError(ErrorNumbers.errorIllegalFunctionName));
 			}
 
-			this.program.add(bl=new BasicLine(origLine));
+			this.programLines.add(bl=new BasicLine(line));
 			bl.setNumber(number);
 			if( label.length()>0 )
 			{
@@ -153,13 +154,18 @@ public class BasicModule extends BasicObject {
 			return null;
 			
 		int index = this.programLabels.get(key);
-		return this.program.get(index);
+		return this.programLines.get(index);
 	}	
 	
-	public List<BasicLine> getProgram() {
+	public List<BasicLine> getProgramLines() {
+		return programLines;
+	}
+	
+	public BasicProgram getProgram() {
 		return program;
 	}
 
 	private Map<String,Integer> programLabels = new HashMap<String,Integer>();
-	private List<BasicLine> program = new ArrayList<BasicLine>();// Linked list of the program
+	private List<BasicLine> programLines = new ArrayList<BasicLine>();// Linked list of the program
+	private BasicProgram program;
 }

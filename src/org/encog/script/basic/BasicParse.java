@@ -106,7 +106,7 @@ public class BasicParse implements Basic {
 			currentIndex++;
 			}
 
-		if( lookForIndex==lookfor2.length() )
+		if( lookForIndex!=lookfor2.length() )
 			return false;
 
 		if(!partial && currentIndex<this.line.length() )
@@ -191,7 +191,7 @@ public class BasicParse implements Basic {
 						continue;
 					}
 					else
-					if(BasicProgram.getInstance().Execute())
+					if(this.module.getProgram().Execute())
 					{
 						continue;
 					}
@@ -311,7 +311,7 @@ public class BasicParse implements Basic {
 
 			// See if we're updating something elsewhere
 			
-			if(BasicProgram.getInstance().Update())
+			if(this.module.getProgram().Update())
 				return;
 
 			// Try and find a local or global variable
@@ -418,7 +418,7 @@ public class BasicParse implements Basic {
 		
 			if(key==null)
 			{
-				v=BasicProgram.getInstance().CreateObject();
+				v=this.module.getProgram().CreateObject();
 				if(v==null)
 				{
 					BasicObjectVariable vobj;
@@ -482,7 +482,7 @@ public class BasicParse implements Basic {
 		}
 
 		// Try and call a global function
-		if(BasicProgram.getInstance().Call(var,ignore))
+		if(this.module.getProgram().Call(var,ignore))
 			return true;
 
 		ptr=hold;
@@ -513,7 +513,7 @@ public class BasicParse implements Basic {
 
 				while( (space--)>0 )
 				{
-					BasicProgram.getInstance().print(" ");
+					this.module.getProgram().print(" ");
 				}
 
 				return;
@@ -523,7 +523,7 @@ public class BasicParse implements Basic {
 			str = a.ToString();
 
 			column+=str.length();
-			BasicProgram.getInstance().print(str);
+			this.module.getProgram().print(str);
 	}
 
 	public void DoFileInput(long l) {
@@ -610,7 +610,7 @@ public class BasicParse implements Basic {
 
 			// Check for "module" function
 
-			if(BasicProgram.getInstance().Scan(result))
+			if(this.module.getProgram().Scan(result))
 				return result;
 
 			
@@ -645,7 +645,7 @@ public class BasicParse implements Basic {
 
 			// Check for user defined function
 
-			if(BasicProgram.getInstance().Call(varName,result))
+			if(this.module.getProgram().Call(varName,result))
 					return result;
 
 			// Check for actual variable
@@ -1049,7 +1049,7 @@ public class BasicParse implements Basic {
 		
 		rtn=variables.get(name);	
 		if(rtn==null)
-			rtn=(BasicVariable)BasicProgram.getInstance().getGlobals().get(name);
+			rtn=(BasicVariable)this.module.getProgram().getGlobals().get(name);
 		if(rtn==null)
 			return null;
 		if(rtn.IsArray())
@@ -1155,7 +1155,7 @@ public class BasicParse implements Basic {
 
 	
 	public void Maint() {
-		BasicProgram.getInstance().Maint();
+		this.module.getProgram().Maint();
 	}
 
 	public boolean Call(String var) {
@@ -1163,7 +1163,7 @@ public class BasicParse implements Basic {
 		String varName = null;
 		BasicParse caller;
 
-		caller = BasicProgram.getInstance().getFunction();
+		caller = this.module.getProgram().getFunction();
 		
 		currentLine= module.FindFunction(var);
 		if(currentLine==null)
@@ -1223,7 +1223,7 @@ public class BasicParse implements Basic {
 		if(currentLine==null)
 			return false;
 		
-		while(currentLine!=null && (!BasicProgram.getInstance().getQuitProgram()) )
+		while(currentLine!=null && (!this.module.getProgram().getQuitProgram()) )
 		{
 			if(parse(currentLine.Command()))
 				currentLine=this.currentLine.getSub().get(index++);
@@ -1245,7 +1245,7 @@ public class BasicParse implements Basic {
 			return false;
 		
 		// Actually run the program
-		while(currentLine!=null && (!BasicProgram.getInstance().getQuitProgram() ))
+		while(currentLine!=null && (!this.module.getProgram().getQuitProgram() ))
 		{
 			if(parse(currentLine.Command()))
 				currentLine=(BasicLine)currentLine.getSub().get(0);
@@ -1256,9 +1256,9 @@ public class BasicParse implements Basic {
 	// The following call is only used to run the first pass to check
 	// for global data.
 	public boolean Call() {
-		this.variables = BasicProgram.getInstance().getGlobals();
+		this.variables = this.module.getProgram().getGlobals();
 
-		for(BasicLine currentLine : this.module.getProgram() )
+		for(BasicLine currentLine : this.module.getProgramLines() )
 		{
 			if(!GlobalParse(currentLine.Command()))
 				break;
@@ -1757,8 +1757,18 @@ public class BasicParse implements Basic {
 	String errorLabel;
 	char nextchar;// The next character to be parsed
 
-	boolean LoadLine(String l) {
-		return false;
+	public boolean LoadLine(String l) {
+		
+		this.module.getProgram().setFunction(this);
+
+		if(l==null || l.length()==0)
+			return false;
+		
+		this.line = BasicUtil.basicToUpper(l);
+		this.ptr = 0;
+		this.nextchar = this.line.charAt(0);
+		
+		return true;
 	}
 
 	void MoveToEndIf(boolean stopOnElse) {

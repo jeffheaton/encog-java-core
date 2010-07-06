@@ -4,6 +4,7 @@ import java.io.RandomAccessFile;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -11,6 +12,7 @@ import org.encog.persist.persistors.EncogScriptPersistor;
 import org.encog.script.basic.Basic;
 import org.encog.script.basic.BasicModule;
 import org.encog.script.basic.BasicParse;
+import org.encog.script.basic.BasicProgram;
 import org.encog.script.basic.BasicVariable;
 import org.encog.script.basic.Console;
 import org.encog.script.basic.Err;
@@ -20,7 +22,7 @@ public class EncogScript implements EncogPersistedObject {
 	private String name;
 	private String description;
 	private String source;
-	private BasicModule module;
+	private BasicProgram program;
 	
 	/**
 	 * The Encog collection this object belongs to, or null if none.
@@ -85,8 +87,12 @@ public class EncogScript implements EncogPersistedObject {
 	
 	public void load()
 	{
-		this.module = new BasicModule();
-		this.module.Load(this);
+		BasicVariable result = new BasicVariable();
+		this.program = new BasicProgram();
+		this.program.LoadModule(this);
+		if(!this.program.Call("MAIN", result))
+		{
+			throw new EncogError("Can't find main sub in script.");
+		}
 	}
-
 }

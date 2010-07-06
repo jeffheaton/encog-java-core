@@ -1,5 +1,6 @@
 package org.encog.script.basic;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BasicLine extends BasicObject {
@@ -24,10 +25,6 @@ public class BasicLine extends BasicObject {
 		return sub;
 	}
 
-	public void setSub(List sub) {
-		this.sub = sub;
-	}
-
 	public long getNumber() {
 		return number;
 	}
@@ -44,7 +41,7 @@ public class BasicLine extends BasicObject {
 		this.text = text;
 	}
 
-	private List<BasicLine> sub;
+	private final List<BasicLine> sub = new ArrayList<BasicLine>();
 	private long number;
 	private String text;
 	
