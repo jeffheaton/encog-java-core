@@ -5,16 +5,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.script.basic.commands.BasicCommands;
+import org.encog.script.basic.commands.BasicFunctions;
+
 
 public class BasicParse implements Basic {
 
 	public static final int MAX_VARIABLE_NAME = 80;
 
-	String name;
+	private String name;
+	private BasicCommands commands;
+	private BasicFunctions functions;
 
 	BasicParse(BasicModule m) {
 		Init();
 		module=m;
+		this.commands = new BasicCommands(this);
+		this.functions = new BasicFunctions(this);
 	}
 
 	BasicParse() {
@@ -170,138 +177,55 @@ public class BasicParse implements Basic {
 		BasicKey key;
 
 		Maint();
-		try
-		{
-			if(!LoadLine(l))
+		try {
+			if (!LoadLine(l))
 				return true;
 
-			do
-			{
-				do
-				{
+			do {
+				do {
 					kill_space();
-				} while(LookAhead(':') );
-				if(nextchar==0)
+				} while (LookAhead(':'));
+				if (nextchar == 0)
 					return true;
 
-				key=ParseNextToken();
-				if(key==null)
-				{
-					if( IsAssignment() )
-					{
+				key = ParseNextToken();
+				if (key == null) {
+					if (IsAssignment()) {
 						DoAssignment();
 						continue;
-					}
-					else
-					if(this.module.getProgram().Execute())
-					{
+					} else if (this.module.getProgram().Execute()) {
 						continue;
-					}
-					else
-					if( CallSub() )
-					{
+					} else if (CallSub()) {
 						LookAhead(')');
 						continue;
-					}
-					else
-						throw(new BasicError(ErrorNumbers.errorSyntax));
+					} else
+						throw (new BasicError(ErrorNumbers.errorSyntax));
 				}
 
-				if(key.getType()!=KeyTypes.keyStatement && (key.getId()!=KeyNames.keyMSGBOX))
-					throw(new BasicError(ErrorNumbers.errorKeyword));
+				if (key.getType() != KeyTypes.keyStatement
+						&& (key.getId() != KeyNames.keyMSGBOX))
+					throw (new BasicError(ErrorNumbers.errorKeyword));
 
-				switch(key.getId())
-				{
-				case keyBEEP:	CmdBeep();break;
-				case keyCALL:	CmdCall();break;
-				case keyCASE:	CmdCase();break;
-				case keyCHDIR:	CmdChDir();break;
-				case keyCLOSE:	CmdClose();break;
-				case keyCLS:	CmdCls();break;
-				case keyCONST:	CmdConst();break;
-				case keyCREATELINK:CmdCreateLink();break;
-				case keyDIM:	CmdDim();break;
-				case keyDO:		CmdDo();break;
-				case keyELSE:	CmdElse();break;
-				case keyELSEIF:CmdElseIf();break;
-				case keyEND:	return CmdEnd();
-				case keyERASE:	CmdErase();break;
-				case keyEXIT:	return CmdExit();
-				case keyFOR:	CmdFor();break;
-				case keyFUNCTION:CmdFunction();break;
-				case keyGET:	CmdGet();break;
-				case keyGOSUB:	CmdGosub();return false;
-				case keyGOTO:	CmdGoto();return false;
-				case keyINPUT:	CmdInput();break;
-				case keyKILL:	CmdKill();break;
-				case keyLET:	CmdLet();break;
-				case keyLOAD:	CmdLoad();break;
-				case keyLOCK:	CmdLock();break;
-				case keyLOOP:	CmdLoop();break;
-				case keyLSET:	CmdLSet();break;
-				case keyMKDIR:	CmdMKDir();break;
-				case keyMSGBOX: CmdMsgBox();break;
-				case keyNAME:	CmdName();break;
-				case keyNEXT:	CmdNext();break;
-				case keyON:		return CmdOn();
-				case keyOPEN:	CmdOpen();break;
-				case keyOPTION:	CmdOption();break;
-				case keyPRINT:	CmdPrint();break;
-				case keyPUT:	CmdPut();break;
-				case keyRANDOMIZE:CmdRandomize();break;
-				case keyREDIM:	CmdReDim();break;
-				case keyREM:	CmdRem();break;
-				case keyRESET:	CmdReset();break;
-				case keyRESUME:	CmdResume();break;
-				case keyRETURN:	CmdReturn();break;
-				case keyRMDIR:	CmdRmDir();break;
-				case keyRSET:	CmdRSet();break;
-				case keyRUN:	CmdRun("MAIN");return false;
-				case keySEEK:	CmdSeek();break;
-				case keySELECT:	CmdSelect();break;
-				case keySHARED:	CmdShared();break;
-				case keySLEEP:	CmdSleep();break;
-				case keySTATIC:	CmdStatic();break;
-				case keySTOP:	CmdStop();break;
-				case keySUB:	CmdSub();break;
-				case keyTYPE:	CmdType();break;
-				case keyUNLOCK:	CmdUnLock();break;
-				case keyWEND:	CmdWEnd();break;
-				case keyWHILE:	CmdWhile();break;
-				case keyWIDTH:	CmdWidth();break;
-				case keyWRITE:	CmdWrite();break;
-				case keySETREGISTRY:CmdSetRegistry();break;
-				case keyIF:
-					switch(CmdIf())
-					{
-					case 0:return false;
-					case 1:return true;
-					case 2:break;
-					}
-					break;
-				}
+				if( !this.commands.process(key) )
+					return false;
 
-			}while(nextchar==':');
-		}
-		catch( BasicError n )
-		{
+			} while (nextchar == ':');
+		} catch (BasicError n) {
 			//SetERR(n.getId());
 
-			if(errorLabel!=null && errorLabel.charAt(0)=='*')
+			if (errorLabel != null && errorLabel.charAt(0) == '*')
 				return true;
 
 			// is the error to be handled?
-			if(errorLabel!=null)
-			{			
-				if( this.module.getProgramLabels().containsKey(errorLabel))
-				{
+			if (errorLabel != null) {
+				if (this.module.getProgramLabels().containsKey(errorLabel)) {
 					go(errorLabel);
 					return false;
 				}
 			}
 			// not handle so throw as a "hard error" (usual case)
 			else
-				throw(n);
+				throw (n);
 
 		}
 
@@ -373,7 +297,7 @@ public class BasicParse implements Basic {
 
 			switch(key.getId())
 			{
-			case keyDIM:CmdDim();break;
+			case keyDIM:this.commands.CmdDim();break;
 			case keyFUNCTION:
 			case keySUB:currentLine=null;return false;
 			default:
@@ -645,7 +569,7 @@ public class BasicParse implements Basic {
 
 				if( (key.getType()==KeyTypes.keyFunction) )
 				{
-					CallInternalFunction(key.getId(),result);
+					functions.callInternalFunction(key.getId(),result);
 					return result;
 				}
 				throw(new BasicError(ErrorNumbers.errorKeyword));
@@ -1369,444 +1293,8 @@ public class BasicParse implements Basic {
 		}
 	}
 
-	void CallInternalFunction(KeyNames f, BasicVariable target) {
-		switch(f)
-		{
-		case keyABS:		FnAbs(target);break;
-		case keyASC:		FnAsc(target);break;
-		case keyATN:		FnAtn(target);break;
-		case keyCDBL:		FnCDbl(target);break;
-		case keyCHR:		FnChr(target);break;
-		case keyCINT:		FnCInt(target);break;
-		case keyCLNG:		FnCLng(target);break;
-		case keyCOS:		FnCos(target);break;
-		case keyDATE:		FnDate_(target);break;
-		case keyENVIRON:	FnEnvron_(target);break;
-		case keyEOF:		FnEof(target);break;
-		case keyERR:		FnErr(target);break;
-		case keyERROR:		FnError(target);break;
-		case keyEXP:		FnExp(target);break;
-		case keyFILEATTR:	FnFileattr(target);break;
-		case keyFIX:		FnFix(target);break;
-		case keyFREEFILE:	FnFreeFile(target);break;
-		case keyHEX:		FnHex_(target);break;
-		case keyINPUT:		FnInput_(target);break;
-		case keyINSTR:		FnInStr(target);break;
-		case keyINT:		FnInt(target);break;
-		case keyLCASE:		FnLCase(target);break;
-		case keyLEFT:		FnLeft(target);break;
-		case keyLEN:		FnLen(target);break;
-		case keyLOC:		FnLoc(target);break;
-		case keyLOG:		FnLog(target);break;
-		case keyLTRIM:		FnLTrim(target);break;
-		case keyMID:		FnMid_(target);break;
-		case keyMSGBOX:		FnMsgBox(target);break;
-		case keyOCT:		FnOct_(target);break;
-		case keyRIGHT:		FnRight_(target);break;
-		case keyRND:		FnRnd(target);break;
-		case keyRTRIM:		FnRTrim(target);break;
-		case keySHELL:		FnShell(target);break;
-		case keySEEK:		FnSeek(target);break;
-		case keySGN:		FnSgn(target);break;
-		case keySIN:		FnSin(target);break;
-		case keySPACE:		FnSpace_(target);break;
-		case keySPC:		FnSpc(target);break;
-		case keySQR:		FnSqr(target);break;
-		case keySTR:		FnStr_(target);break;
-		case keySTRIG:		FnStrig(target);break;
-		case keySTRING:		FnString_(target);break;
-		case keyTAN:		FnTan(target);break;
-		case keyTIME:		FnTime_(target);break;
-		case keyUCASE:		FnUCase_(target);break;
-		case keyVAL:		FnVal(target);break;
-		case keyREGISTRY:	FnRegistry(target);break;
-		}
-	}
 
-	void FnAbs(BasicVariable target) {
-	}
 
-	void FnAsc(BasicVariable target) {
-	}
-
-	void FnAtn(BasicVariable target) {
-	}
-
-	void FnCDbl(BasicVariable target) {
-	}
-
-	void FnChr(BasicVariable target) {
-	}
-
-	void FnCInt(BasicVariable target) {
-	}
-
-	void FnCLng(BasicVariable target) {
-	}
-
-	void FnCos(BasicVariable target) {
-	}
-
-	void FnDate_(BasicVariable target) {
-	}
-
-	void FnEnvron_(BasicVariable target) {
-	}
-
-	void FnEof(BasicVariable target) {
-	}
-
-	void FnErr(BasicVariable target) {
-	}
-
-	void FnError(BasicVariable target) {
-	}
-
-	void FnExp(BasicVariable target) {
-	}
-
-	void FnFileattr(BasicVariable target) {
-	}
-
-	void FnFix(BasicVariable target) {
-	}
-
-	void FnFreeFile(BasicVariable target) {
-	}
-
-	void FnHex_(BasicVariable target) {
-	}
-
-	void FnInput_(BasicVariable target) {
-	}
-
-	void FnInStr(BasicVariable target) {
-	}
-
-	void FnInt(BasicVariable target) {
-	}
-
-	void FnLCase(BasicVariable target) {
-	}
-
-	void FnLeft(BasicVariable target) {
-	}
-
-	void FnLen(BasicVariable target) {
-	}
-
-	void FnLoc(BasicVariable target) {
-	}
-
-	void FnLog(BasicVariable target) {
-	}
-
-	void FnLTrim(BasicVariable target) {
-	}
-
-	void FnMid_(BasicVariable target) {
-	}
-
-	void FnMsgBox(BasicVariable target) {
-	}
-
-	void FnOct_(BasicVariable target) {
-	}
-
-	void FnRight_(BasicVariable target) {
-	}
-
-	void FnRnd(BasicVariable target) {
-	}
-
-	void FnRTrim(BasicVariable target) {
-	}
-
-	void FnSeek(BasicVariable target) {
-	}
-
-	void FnSgn(BasicVariable target) {
-	}
-
-	void FnShell(BasicVariable target) {
-	}
-
-	void FnSin(BasicVariable target) {
-	}
-
-	void FnSpace_(BasicVariable target) {
-	}
-
-	void FnSpc(BasicVariable target) {
-	}
-
-	void FnSqr(BasicVariable target) {
-	}
-
-	void FnStr_(BasicVariable target) {
-	}
-
-	void FnStrig(BasicVariable target) {
-	}
-
-	void FnString_(BasicVariable target) {
-	}
-
-	void FnTan(BasicVariable target) {
-	}
-
-	void FnTime_(BasicVariable target) {
-	}
-
-	void FnUCase_(BasicVariable target) {
-	}
-
-	void FnVal(BasicVariable target) {
-	}
-
-	void FnRegistry(BasicVariable target) {
-	}
-
-	void CmdBeep() {
-	}
-
-	void CmdCall() {
-	}
-
-	void CmdCase() {
-	}
-
-	void CmdChDir() {
-	}
-
-	void CmdClose() {
-	}
-
-	void CmdCls() {
-	}
-
-	void CmdConst() {
-	}
-
-	void CmdCreateLink() {
-	}
-
-	void CmdDim() {
-	}
-
-	void CmdDo() {
-	}
-
-	void CmdElse() {
-	}
-
-	void CmdElseIf() {
-	}
-
-	boolean CmdEnd() {
-		return false;
-	}
-
-	boolean CmdEndIf() {
-		return false;
-	}
-
-	void CmdEnviron() {
-	}
-
-	void CmdErase() {
-	}
-
-	boolean CmdExit() {
-		return false;
-	}
-
-	void CmdFor() {
-	}
-
-	void CmdFunction() {
-	}
-
-	void CmdGet() {
-	}
-
-	void CmdGosub() {
-	}
-
-	void CmdGoto() {
-	}
-
-	int CmdIf() {
-		return 0;
-	}
-
-	void CmdInput() {
-	}
-
-	void CmdKill() {
-	}
-
-	void CmdLet() {
-	}
-
-	void CmdLoad() {
-	}
-
-	void CmdLock() {
-	}
-
-	void CmdLoop() {
-	}
-
-	void CmdLSet() {
-	}
-
-	void CmdMsgBox() {
-	}
-
-	void CmdMKDir() {
-	}
-
-	void CmdName() {
-	}
-
-	void CmdNext() {
-	}
-
-	boolean CmdOn() {
-		return false;
-	}
-
-	void CmdOnError() {
-	}
-
-	void CmdOpen() {
-	}
-
-	void CmdOption() {
-	}
-
-	void CmdPrint() {
-		
-		boolean no_cr=false;
-
-			column=0;
-
-			kill_space();
-
-			if( LookAhead('#') )
-			{
-				BasicVariable var;
-
-				var = ParseVariable(1,100);
-				/*if(theProgram->fileHandles[var.GetShort()]==NULL)
-					throw(errorHandleUndefined);
-				h=theProgram->fileHandles[var.GetShort()];*/
-				if(!LookAhead(','))
-					throw(new BasicError(ErrorNumbers.errorIllegalUse));
-			}
-
-			if( !(nextchar==0 || (nextchar==':')) )
-			{
-				this.module.getProgram().print(FormatExpression());
-
-				while(nextchar==';')
-				{
-					advance();
-
-					if( (nextchar==0) || (nextchar==':') )
-					{
-						no_cr=true;
-						break;
-					}
-
-					this.module.getProgram().print(FormatExpression());
-
-					kill_space();
-				}
-			}
-
-			if(!no_cr)
-			{
-				this.module.getProgram().print("\n");
-			}
-	}
-
-	void CmdPut() {
-	}
-
-	void CmdRandomize() {
-	}
-
-	void CmdRead() {
-	}
-
-	void CmdReDim() {
-	}
-
-	void CmdRem() {
-	}
-
-	void CmdReset() {
-	}
-
-	void CmdResume() {
-	}
-
-	void CmdReturn() {
-	}
-
-	void CmdRmDir() {
-	}
-
-	void CmdRSet() {
-	}
-
-	boolean CmdRun(String str) {
-		return false;
-	}
-
-	void CmdSeek() {
-	}
-
-	void CmdSelect() {
-	}
-
-	void CmdShared() {
-	}
-
-	void CmdSleep() {
-	}
-
-	void CmdStatic() {
-	}
-
-	void CmdStop() {
-	}
-
-	void CmdSub() {
-	}
-
-	void CmdType() {
-	}
-
-	void CmdUnLock() {
-	}
-
-	void CmdWEnd() {
-	}
-
-	void CmdWhile() {
-	}
-
-	void CmdWidth() {
-	}
-
-	void CmdWrite() {
-	}
-
-	void CmdSetRegistry() {
-	}
 
 	String errorLabel;
 	char nextchar;// The next character to be parsed
@@ -1860,7 +1348,7 @@ public class BasicParse implements Basic {
 					if( LookAhead(KeyNames.keyELSEIF,false) ) 
 					{
 						//ifs++;
-						CmdIf();
+						this.commands.CmdIf();
 						return;
 					}
 				}
@@ -1897,5 +1385,29 @@ public class BasicParse implements Basic {
 							// pointer to globals in program
 	private BasicModule module;
 	private BasicLine currentLine;
+
+	public int getNextChar() {
+		return this.nextchar;
+	}
+
+	public BasicModule getModule() {
+		return this.module;
+	}
+
+	/**
+	 * @return the column
+	 */
+	public long getColumn() {
+		return column;
+	}
+
+	/**
+	 * @param column the column to set
+	 */
+	public void setColumn(long column) {
+		this.column = column;
+	}
+	
+	
 
 }
