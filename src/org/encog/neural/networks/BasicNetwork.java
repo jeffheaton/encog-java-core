@@ -110,7 +110,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	/**
 	 * The Encog collection this object belongs to, or null if none.
 	 */
-	private EncogCollection encogCollection;
+	private transient EncogCollection encogCollection;
 	
 	/**
 	 * Determine which member of the output is the winning neuron.
