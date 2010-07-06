@@ -152,12 +152,6 @@ public class ResilientPropagation extends Propagation {
 	private double[] gradients;
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Construct a resilient training object. Use the defaults for all training
 	 * parameters. Usually this is the constructor to use as the resilient
 	 * training algorithm is designed for the default parameters to be

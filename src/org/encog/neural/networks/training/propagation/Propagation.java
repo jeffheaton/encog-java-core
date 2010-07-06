@@ -48,6 +48,8 @@ import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropaga
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.EncogArray;
 import org.encog.util.EncogValidate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implements basic functionality that is needed by each of the propagation
@@ -85,6 +87,13 @@ public abstract class Propagation extends BasicTraining {
 	 * use flat networks. See the FlatNetwork class for more info.
 	 */
 	private boolean attemptFlatten;
+	
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
 	/**
 	 * Construct a propagation object.
@@ -184,11 +193,17 @@ public abstract class Propagation extends BasicTraining {
 			}
 
 			postIteration();
+			
+			if( this.logger.isInfoEnabled() ) {
+				logger.info("Training iteration done, error: " + this.getError());
+			}
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			EncogValidate.validateNetworkForTraining(this.network,
 					getTraining());
 		}
 	}
+	
+	
 
 	/**
 	 * Pause the training to continue later.
