@@ -32,13 +32,14 @@ public class BasicModule extends BasicObject {
 	
 	public void Load(EncogScript script) {
 		try {
+			this.addto = this.programLines;
+			
 			final InputStream is = new ByteArrayInputStream(script.getSource()
 					.getBytes());
 			final BufferedReader reader = new BufferedReader(
 					new InputStreamReader(is));
 			String line;
 
-			int number = 0;
 			while ((line = reader.readLine()) != null) {
 				String check = line.trim();
 				
@@ -48,7 +49,7 @@ public class BasicModule extends BasicObject {
 				if( check.charAt(0)=='\'')
 					continue;
 				
-				AddLine(line,number++);
+				AddLine(line);
 			}
 		} catch (IOException e) {
 			throw new EncogError(e);
@@ -64,8 +65,9 @@ public class BasicModule extends BasicObject {
 		return this.programLines.get(index);
 	}
 	
-	public void AddLine(String line, int number)
+	public void AddLine(String line)
 	{
+		boolean createSub = false;
 		int ptr;
 		int ptr2;
 		String label = "";
@@ -127,7 +129,8 @@ public class BasicModule extends BasicObject {
 
 					if(this.programLabels.containsKey(label))
 						throw(new BasicError(ErrorNumbers.errorAlreadyDeclared));
-
+					
+					createSub = true;
 				}
 			}
 
@@ -137,13 +140,17 @@ public class BasicModule extends BasicObject {
 					throw( new BasicError(ErrorNumbers.errorIllegalFunctionName));
 			}
 
-			this.programLines.add(bl=new BasicLine(line));
+			int number = this.addto.size();
+			this.addto.add(bl=new BasicLine(line));
 			bl.setNumber(number);
 			if( label.length()>0 )
 			{
 				bl.setLabel(label);
 				this.programLabels.put(label,number);
 			}	
+			
+			if( createSub )
+				this.addto = bl.getSub();
 	}
 	
 	public BasicLine FindFunction(String label)
@@ -161,11 +168,17 @@ public class BasicModule extends BasicObject {
 		return programLines;
 	}
 	
+	public Map<String,Integer> getProgramLabels()
+	{
+		return this.programLabels;
+	}
+	
 	public BasicProgram getProgram() {
 		return program;
 	}
 
 	private Map<String,Integer> programLabels = new HashMap<String,Integer>();
-	private List<BasicLine> programLines = new ArrayList<BasicLine>();// Linked list of the program
+	private List<BasicLine> programLines = new ArrayList<BasicLine>();
+	private List<BasicLine> addto;
 	private BasicProgram program;
 }

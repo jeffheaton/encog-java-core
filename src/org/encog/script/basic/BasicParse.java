@@ -30,7 +30,7 @@ public class BasicParse implements Basic {
 		if(ptr>=this.line.length())
 			throw(new BasicError(ErrorNumbers.errorEOL));
 		else
-			nextchar=this.line.charAt(ptr++);
+			nextchar=this.line.charAt(++ptr);
 	}
 
 	public char getchr() {
@@ -161,7 +161,6 @@ public class BasicParse implements Basic {
 		ifs=0;
 		name = "<GLOBAL>";
 		column=0;
-		errorLabel="";
 	}
 
 	public boolean parse(String l) {
@@ -285,17 +284,21 @@ public class BasicParse implements Basic {
 		{
 			//SetERR(n.getId());
 
-			if(errorLabel.charAt(0)=='*')
+			if(errorLabel!=null && errorLabel.charAt(0)=='*')
 				return true;
 
+			// is the error to be handled?
 			if(errorLabel!=null)
 			{			
-				/*if( this.module.getProgram().FindLabel(errorLabel)!=NULL)
+				if( this.module.getProgramLabels().containsKey(errorLabel))
 				{
 					go(errorLabel);
 					return false;
-				}*/
+				}
 			}
+			// not handle so throw as a "hard error" (usual case)
+			else
+				throw(n);
 
 		}
 
@@ -949,8 +952,7 @@ public class BasicParse implements Basic {
 		do {
 			ch = getchr();
 			result.append(ch);
-		} while ((Character.isDigit(nextchar) || (nextchar == '_') || Character
-				.isLetter(ch))
+		} while ((Character.isLetterOrDigit(nextchar) || (nextchar == '_') )
 				&& nextchar != -1 && (i++ < MAX_VARIABLE_NAME));
 
 		if (i >= MAX_VARIABLE_NAME)
@@ -1226,7 +1228,12 @@ public class BasicParse implements Basic {
 		while(currentLine!=null && (!this.module.getProgram().getQuitProgram()) )
 		{
 			if(parse(currentLine.Command()))
-				currentLine=this.currentLine.getSub().get(index++);
+			{
+				if( currentLine.getSub().size()<= index )
+					currentLine = null;
+				else
+					currentLine=this.currentLine.getSub().get(index++);
+			}
 		}
 		return true;
 	}
