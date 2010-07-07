@@ -37,4 +37,14 @@ sub main
 end sub
 ]]></source></EncogScript>
 
+<EncogScript name="test-var">
+<source><![CDATA[
+sub main
+	a = 2
+	print a
+	b = "test"
+	print b
+end sub
+]]></source></EncogScript>
+
 </Objects></Document>

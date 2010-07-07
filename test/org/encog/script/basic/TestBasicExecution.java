@@ -49,4 +49,16 @@ public class TestBasicExecution extends TestCase {
 		Assert.assertEquals("testelse1test3", console.toString());
 	}
 	
+	public void testVar()
+	{
+		PersistenceLocation location = new ResourcePersistence("org/encog/data/testbasic.eg");
+		EncogPersistedCollection encog = new EncogPersistedCollection(location);
+		EncogScript script = (EncogScript)encog.find("test-var");
+		Assert.assertNotNull(script);
+		BasicTestConsole console = new BasicTestConsole();
+		script.load();
+		script.setConsole(console);
+		script.call();
+		Assert.assertEquals("2.0test", console.toString());
+	}
 }
