@@ -28,6 +28,8 @@ public class BasicParse implements Basic {
 							// pointer to globals in program
 	private BasicModule module;
 	private BasicLine currentLine;
+	private List<BasicLine> subLines;
+
 
 	BasicParse(BasicModule m) {
 		Init();
@@ -1079,7 +1081,13 @@ public class BasicParse implements Basic {
 
 	public void MoveNextLine() {
 		do {
-			currentLine = (BasicLine) currentLine.getNext();
+			int num = currentLine.getNumber();
+			num++;
+			if( num>=subLines.size() )
+				currentLine = null;
+			else
+				currentLine=subLines.get(num);
+			
 		} while ((currentLine != null) && !LoadLine(currentLine.Command()));
 	}
 
@@ -1159,21 +1167,19 @@ public class BasicParse implements Basic {
 
 		
 		// Actually run the program
-		int index = 0;		
-		
-		currentLine=this.currentLine.getSub().get(index++);
+
+		subLines = this.currentLine.getSub(); 
 			
-		if(currentLine==null)
+		if(subLines.size()==0)
 			return false;
+		
+		currentLine=subLines.get(0);
 		
 		while(currentLine!=null && (!this.module.getProgram().getQuitProgram()) )
 		{
 			if(parse(currentLine.Command()))
 			{
-				if( currentLine.getSub().size()<= index )
-					currentLine = null;
-				else
-					currentLine=this.currentLine.getSub().get(index++);
+				MoveNextLine();
 			}
 		}
 		return true;
@@ -1326,7 +1332,7 @@ public class BasicParse implements Basic {
 		return true;
 	}
 
-	void MoveToEndIf(boolean stopOnElse) {
+	public void MoveToEndIf(boolean stopOnElse) {
 		while(currentLine!=null)
 		{
 			do 
@@ -1500,7 +1506,12 @@ public class BasicParse implements Basic {
 
 	public void increaseIFS() {
 		this.ifs++;
-		
+	}
+	
+	public void decreaseIFS() {
+		if( this.ifs==0 )
+			throw new BasicError(ErrorNumbers.errorNoIf);
+		this.ifs--;
 	}
 
 	public int getPtr() {

@@ -194,14 +194,7 @@ public class BasicCommands {
 			CmdSetRegistry();
 			break;
 		case keyIF:
-			switch (CmdIf()) {
-			case 0:
-				return false;
-			case 1:
-				return true;
-			case 2:
-				break;
-			}
+			CmdIf();
 			break;
 		}
 		return true;
@@ -238,17 +231,21 @@ public class BasicCommands {
 	}
 
 	public void CmdElse() {
+		this.parse.MoveToEndIf(false);
+		this.parse.decreaseIFS();
 	}
 
 	public void CmdElseIf() {
+		CmdElse();
+		CmdIf();
 	}
 
 	public boolean CmdEnd() {
-		return false;
+		return true;
 	}
 
-	public boolean CmdEndIf() {
-		return false;
+	public void CmdEndIf() {
+		this.parse.decreaseIFS();
 	}
 
 	public void CmdEnviron() {
@@ -276,7 +273,7 @@ public class BasicCommands {
 	public void CmdGoto() {
 	}
 
-	public int CmdIf() {
+	public void CmdIf() {
 		BasicVariable a = new BasicVariable();
 		boolean b;
 
@@ -287,16 +284,15 @@ public class BasicCommands {
 		if( b )
 		{
 			this.parse.kill_space();
-			if( this.parse.getNextChar()>0 )
+			if( this.parse.getNextChar()==0 )
 			{
-				// Block if
 				this.parse.increaseIFS();
-				return 1;
 			}
-				return 2;
+			else
+				throw new BasicError(ErrorNumbers.errorBlock);
 		}
-
-		return 1;
+		else
+			parse.MoveToEndIf(true);
 	}
 
 	public void CmdInput() {

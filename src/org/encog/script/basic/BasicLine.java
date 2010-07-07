@@ -25,11 +25,11 @@ public class BasicLine extends BasicObject {
 		return sub;
 	}
 
-	public long getNumber() {
+	public int getNumber() {
 		return number;
 	}
 
-	public void setNumber(long number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 
@@ -40,9 +40,14 @@ public class BasicLine extends BasicObject {
 	public void setText(String text) {
 		this.text = text;
 	}
+	
+	public String toString()
+	{
+		return this.Command();
+	}
 
 	private final List<BasicLine> sub = new ArrayList<BasicLine>();
-	private long number;
+	private int number;
 	private String text;
 	
 }

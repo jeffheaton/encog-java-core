@@ -22,8 +22,6 @@ public class BasicObject {
 	public void setObjectType(BasicTypes type) {
 		this.type = type;
 	}
-	
-	private BasicObject next;
 
 	public BasicTypes getType() {
 		return type;
@@ -33,14 +31,6 @@ public class BasicObject {
 		this.type = type;
 	}
 
-	public BasicObject getNext() {
-		return next;
-	}
-
-	public void setNext(BasicObject next) {
-		this.next = next;
-	}
-	
 	
 	
 	public String getLabel() {
