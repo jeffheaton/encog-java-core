@@ -76,8 +76,8 @@ public class BasicVariable extends BasicObject {
 	public BasicVariable(boolean booleanData)
 	{
 		CreateArray();
-		data=new boolean[1];
-		((boolean[])this.data)[0] = booleanData;
+		data=new Boolean[1];
+		((Boolean[])this.data)[0] = booleanData;
 		setObjectType(BasicTypes.typeBoolean);
 		isRef=false;
 	}
@@ -85,8 +85,8 @@ public class BasicVariable extends BasicObject {
 	public BasicVariable(char characterData)
 	{
 		CreateArray();
-		data=new char[1];
-		((char[])this.data)[0] = characterData;
+		data=new Character[1];
+		((Character[])this.data)[0] = characterData;
 		setObjectType(BasicTypes.typeCharacter);
 		isRef=false;		
 	}
@@ -211,13 +211,13 @@ public class BasicVariable extends BasicObject {
 	void edit(boolean v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
-			this.data = new boolean[1];
+			this.data = new Boolean[1];
 			setObjectType(BasicTypes.typeBoolean);
 		} else
 		if(getObjectType()!=BasicTypes.typeBoolean)
 			Mismatch();
 
-		this.data = v;
+		((Boolean[])this.data)[this.currentIndex] = v;
 	}
 
 	void edit(char v)
@@ -347,31 +347,31 @@ public class BasicVariable extends BasicObject {
 			break;
 
 		case typeFloat:
-			data=new float[elements];
+			data=new Float[elements];
 			break;
 
 		case typeInteger:
-			data=new short[elements];
+			data=new Short[elements];
 			break;
 
 		case typeLong:
-			data=new long[elements];
+			data=new Long[elements];
 			break;
 
 		case typeDouble:
-			data=new double[elements];
+			data=new Double[elements];
 			break;
 
 		case typeByte:
-			data=new byte[elements];
+			data=new Byte[elements];
 			break;
 
 		case typeBoolean:
-			data=new boolean[elements];
+			data=new Boolean[elements];
 			break;
 
 		case typeCharacter:
-			data=new char[elements];
+			data=new Character[elements];
 			break;
 
 		case typeObject:
@@ -520,7 +520,7 @@ public class BasicVariable extends BasicObject {
 		if(getObjectType()!=BasicTypes.typeBoolean)
 			throw(new BasicError(ErrorNumbers.errorType));
 		
-		return ((boolean[])this.data)[this.currentIndex];
+		return ((Boolean[])this.data)[this.currentIndex].booleanValue();
 	}
 
 	public char GetCharacter()

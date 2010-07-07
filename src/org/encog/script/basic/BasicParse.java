@@ -16,6 +16,18 @@ public class BasicParse implements Basic {
 	private String name;
 	private BasicCommands commands;
 	private BasicFunctions functions;
+	private int ifs;
+	private Stack stack;// The stack
+	private boolean requestBreak;
+	private String line;
+	private int ptr;// The line we're parsing and where we're at
+
+	private long column;
+	private BasicVariable is;// Current value of IS keyword
+	private Map<String,BasicVariable> variables;// Linked list of the variables, either local or a
+							// pointer to globals in program
+	private BasicModule module;
+	private BasicLine currentLine;
 
 	BasicParse(BasicModule m) {
 		Init();
@@ -33,7 +45,7 @@ public class BasicParse implements Basic {
 	// Parse Functions
 	public void advance() {
 
-		if( (ptr+1)==this.line.length())
+		if( (ptr+1)>=this.line.length())
 			nextchar = 0;
 		else
 			nextchar=this.line.charAt(++ptr);
@@ -68,11 +80,12 @@ public class BasicParse implements Basic {
 		return result;
 	}
 
-	/*public boolean ParseVariable(BasicVariable var) {
+	public boolean ParseVariable(BasicVariable var) {
 		kill_space();
-		Expr(var);
+		BasicVariable temp = Expr();
+		var.edit(temp);
 		return var.GetBoolean();
-	}*/
+	}
 
 	public void ExpectToken(char ch) {
 		if(!LookAhead(ch))
@@ -127,7 +140,7 @@ public class BasicParse implements Basic {
 		}
 			
 		ptr=currentIndex;
-		nextchar=this.line.charAt(currentIndex);
+		advance();
 		return true;
 
 	}
@@ -1362,29 +1375,106 @@ public class BasicParse implements Basic {
 	}
 
 	void MoveToNext() {
+		while(currentLine!=null)
+		{
+			do 
+			{
+				if( LookAhead(KeyNames.keyFOR,false) )
+					MoveToNext();
+
+				if( LookAhead(KeyNames.keyEND,false) )
+				{
+					kill_space();
+					if(!LookAhead(KeyNames.keyIF,false))
+						throw(new BasicError(ErrorNumbers.errorBlock));
+				} 
+
+				if(LookAhead(KeyNames.keyNEXT,false))
+					return;
+
+				MovePastColen();
+
+			} while(nextchar>0);
+
+			MoveNextLine();
+		}
 	}
 
 	void MoveToWEnd() {
+		while(currentLine!=null)
+		{
+			do 
+			{
+				if( LookAhead(KeyNames.keyWHILE,false) )
+					MoveToWEnd();
+
+				if(LookAhead(KeyNames.keyEND,false))
+				{
+					kill_space();
+					if(!LookAhead(KeyNames.keyIF,false))
+						throw(new BasicError(ErrorNumbers.errorBlock));
+				} 
+
+				if(LookAhead(KeyNames.keyWEND,false) )
+					return;
+
+				MovePastColen();
+
+			} while(nextchar>0);
+
+			MoveNextLine();
+		}
 	}
 
 	void MoveToLoop() {
+		while(currentLine!=null)
+		{
+			do 
+			{
+				if( LookAhead(KeyNames.keyDO,false) )
+					MoveToLoop();
+
+				if(LookAhead(KeyNames.keyEND,false))
+				{
+					kill_space();
+					if(!LookAhead(KeyNames.keyIF,false))
+						throw(new BasicError(ErrorNumbers.errorBlock));
+				} 
+
+				if(LookAhead(KeyNames.keyLOOP,false) )
+					return;
+
+				MovePastColen();
+
+			} while(nextchar>0);
+
+			MoveNextLine();
+		}
+
 	}
 
 	void MoveToEndCase() {
+		while(currentLine!=null)
+		{
+			do 
+			{
+				if( LookAhead(KeyNames.keySELECT,false) )
+					MoveToEndCase();
+
+				if(LookAhead(KeyNames.keyEND,false))
+				{
+					kill_space();
+					if(!LookAhead(KeyNames.keyCASE,false))
+						return;
+				} 
+
+				MovePastColen();
+
+			} while(nextchar>0);
+
+			MoveNextLine();
+		}
 	}
-
-	private int ifs;
-	private Stack stack;// The stack
-	private boolean requestBreak;
-	private String line;
-	private int ptr;// The line we're parsing and where we're at
-
-	private long column;
-	private BasicVariable is;// Current value of IS keyword
-	private Map<String,BasicVariable> variables;// Linked list of the variables, either local or a
-							// pointer to globals in program
-	private BasicModule module;
-	private BasicLine currentLine;
 
 	public int getNextChar() {
 		return this.nextchar;
@@ -1406,6 +1496,19 @@ public class BasicParse implements Basic {
 	 */
 	public void setColumn(long column) {
 		this.column = column;
+	}
+
+	public void increaseIFS() {
+		this.ifs++;
+		
+	}
+
+	public int getPtr() {
+		return this.ptr;
+	}
+
+	public String getLine() {
+		return this.line;
 	}
 	
 	

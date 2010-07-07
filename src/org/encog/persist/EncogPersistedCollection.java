@@ -394,7 +394,8 @@ public class EncogPersistedCollection implements EncogCollection {
 		final PersistReader reader = new PersistReader(this.filePrimary);
 		final EncogPersistedObject result = reader.readObject(name);
 		reader.close();
-		result.setCollection(this);
+		if( result!=null )
+			result.setCollection(this);
 		return result;
 	}
 

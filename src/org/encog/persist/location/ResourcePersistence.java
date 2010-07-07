@@ -47,7 +47,10 @@ import org.slf4j.LoggerFactory;
  * location only supports read operations, so the Encog resource is usually
  * created first as a file and then embedded in the application as a resource.
  * 
- * @author jheaton
+ * An example of the format for a file stored this way is:
+ * 
+ * org/encog/data/classes.txt
+ * 
  * 
  */
 public class ResourcePersistence implements PersistenceLocation {
@@ -65,6 +68,10 @@ public class ResourcePersistence implements PersistenceLocation {
 
 	/**
 	 * Construct a location to read from the specified resource.
+	 * 
+	 * An example of the format for a file stored this way is:
+	 * 
+ 	 * org/encog/data/classes.txt
 	 * 
 	 * @param resource
 	 *            The resource to read from.

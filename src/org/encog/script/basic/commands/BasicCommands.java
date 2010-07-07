@@ -3,8 +3,10 @@ package org.encog.script.basic.commands;
 import org.encog.script.basic.BasicError;
 import org.encog.script.basic.BasicKey;
 import org.encog.script.basic.BasicParse;
+import org.encog.script.basic.BasicUtil;
 import org.encog.script.basic.BasicVariable;
 import org.encog.script.basic.ErrorNumbers;
+import org.encog.script.basic.KeyNames;
 
 public class BasicCommands {
 
@@ -275,7 +277,26 @@ public class BasicCommands {
 	}
 
 	public int CmdIf() {
-		return 0;
+		BasicVariable a = new BasicVariable();
+		boolean b;
+
+		b=this.parse.ParseVariable(a);
+		if(!this.parse.LookAhead(KeyNames.keyTHEN,false))
+			throw(new BasicError(ErrorNumbers.errorNoThen));
+
+		if( b )
+		{
+			this.parse.kill_space();
+			if( this.parse.getNextChar()>0 )
+			{
+				// Block if
+				this.parse.increaseIFS();
+				return 1;
+			}
+				return 2;
+		}
+
+		return 1;
 	}
 
 	public void CmdInput() {

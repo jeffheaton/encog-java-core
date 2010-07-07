@@ -309,5 +309,33 @@ public class BasicUtil {
 		
 		return result.toString();
 	}
-
+	
+	public static int basicIndexOf(String str, int start, String srch)
+	{
+		boolean quote=false;
+		int searchIndex = 0;
+		
+		for(int sourceIndex = start; sourceIndex<str.length()-srch.length(); sourceIndex++)
+		{
+			char ch = str.charAt(sourceIndex);
+			char ch2 = srch.charAt(searchIndex);
+			
+			if( ch==34 )
+				quote = !quote;
+			
+			if( !quote )
+			{
+				if( Character.toUpperCase(ch)==Character.toUpperCase(ch2))
+				{
+					searchIndex++;
+					if( searchIndex==srch.length())
+						return sourceIndex - srch.length();
+				}
+				else
+					searchIndex = 0;
+			}
+		}
+		
+		return -1;
+	}
 }
