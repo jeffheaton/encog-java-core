@@ -821,7 +821,7 @@ public class BasicParse implements Basic {
 		
 		kill_space();
 		if( (nextchar>='A') && (nextchar<='Z') )
-			Variable(target);
+			target = Variable(target);
 		else
 		if( (nextchar=='+') || (nextchar=='-') || Character.isDigit(nextchar) || (nextchar=='.') || (nextchar=='\"') )
 			target = Constant();

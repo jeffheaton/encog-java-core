@@ -259,6 +259,7 @@ public class BasicCommands {
 	}
 
 	public void CmdFor() {
+		
 	}
 
 	public void CmdFunction() {

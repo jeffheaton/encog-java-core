@@ -118,7 +118,7 @@ public class BasicVariable extends BasicObject {
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null)
 		{
-			this.data = new float[1];
+			this.data = new Float[1];
 			setObjectType(BasicTypes.typeFloat);
 		}
 
@@ -136,7 +136,7 @@ public class BasicVariable extends BasicObject {
 	void edit(short v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
-			this.data = new short[1];
+			this.data = new Integer[1];
 			setObjectType(BasicTypes.typeInteger);
 		}
 		
@@ -155,7 +155,7 @@ public class BasicVariable extends BasicObject {
 	void edit(long v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
-			this.data = new long[1];
+			this.data = new Long[1];
 			setObjectType(BasicTypes.typeLong);
 		}
 		
@@ -351,7 +351,7 @@ public class BasicVariable extends BasicObject {
 			break;
 
 		case typeInteger:
-			data=new Short[elements];
+			data=new Integer[elements];
 			break;
 
 		case typeLong:
