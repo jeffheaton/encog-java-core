@@ -1,0 +1,40 @@
+<Document><Header><platform>Java</platform><fileVersion>1</fileVersion><encogVersion>2.5.0</encogVersion><modified>Tue Jul 06 17:35:28 CDT 2010</modified></Header>
+<Objects>
+<EncogScript name="test-print"><source>
+
+<![CDATA[
+sub main
+	print "test"
+end sub
+]]></source></EncogScript>
+
+<EncogScript name="test-expr">
+<source><![CDATA[
+sub main
+	print (2+5)*20
+end sub
+]]></source></EncogScript>
+
+<EncogScript name="test-if">
+<source><![CDATA[
+sub main
+	if 1 = 1 then
+		print "test"
+	end if
+	
+	if 1 = 2 then
+		print "test2"
+	else
+		print "else1"
+	end if
+	
+	if 2 = 2 then
+		print "test3"
+	else
+		print "else3"
+	end if
+	
+end sub
+]]></source></EncogScript>
+
+</Objects></Document>
