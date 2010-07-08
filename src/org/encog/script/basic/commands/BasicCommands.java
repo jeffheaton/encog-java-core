@@ -2,11 +2,14 @@ package org.encog.script.basic.commands;
 
 import org.encog.script.basic.BasicError;
 import org.encog.script.basic.BasicKey;
+import org.encog.script.basic.BasicLine;
 import org.encog.script.basic.BasicParse;
 import org.encog.script.basic.BasicUtil;
 import org.encog.script.basic.BasicVariable;
 import org.encog.script.basic.ErrorNumbers;
 import org.encog.script.basic.KeyNames;
+import org.encog.script.basic.StackEntry;
+import org.encog.script.basic.StackEntryType;
 
 public class BasicCommands {
 
@@ -228,6 +231,17 @@ public class BasicCommands {
 	}
 
 	public void CmdDo() {
+		this.parse.kill_space();
+		
+		if( this.parse.getNextChar()!=0  )
+		{
+			if(this.parse.EvaluateDo())
+				this.parse.getStack().push(new StackEntry(StackEntryType.stackDo,this.parse.getCurrentLine(),0));
+			else
+				this.parse.MoveToLoop();
+		}
+		else
+			this.parse.getStack().push(new StackEntry(StackEntryType.stackDo,this.parse.getCurrentLine(),1));
 	}
 
 	public void CmdElse() {
@@ -312,6 +326,56 @@ public class BasicCommands {
 	}
 
 	public void CmdLoop() {
+		int idx,ln;
+		BasicVariable varObj;
+		StackEntryType type;
+		BasicLine bl;
+
+		this.parse.kill_space();
+		if(this.parse.getStack().empty())
+			throw(new BasicError(ErrorNumbers.errorLongName));
+
+		if(this.parse.getStack().peekType()!=StackEntryType.stackDo)
+			throw(new BasicError(ErrorNumbers.errorLongName));
+
+		if( !this.parse.getStack().empty())
+		{
+			type = this.parse.getStack().peekType();
+			bl = this.parse.getStack().peek().getLine();
+		}
+		else
+		{
+			type = null;
+			bl = null;
+		}
+
+
+		if( this.parse.getNextChar()!=0  )
+		{
+			if(type==null)
+				throw(new BasicError(ErrorNumbers.errorIllegalUse)) ;
+			if(this.parse.EvaluateDo())
+			{
+				if(bl!=null)
+				{
+					this.parse.setCurrentLine(bl);
+					this.parse.parse();
+				}
+			}
+			else
+				this.parse.getStack().pop();
+		}
+		else
+		{
+			this.parse.setCurrentLine(bl);
+			this.parse.parse();
+
+			if(!this.parse.EvaluateDo())
+			{
+				this.parse.getStack().pop();
+				this.parse.MoveToLoop();
+			}
+		}
 	}
 
 	public void CmdLSet() {
@@ -450,9 +514,32 @@ public class BasicCommands {
 	}
 
 	public void CmdWEnd() {
+		BasicVariable varObj;
+
+		this.parse.kill_space();
+		if( this.parse.getStack().empty())
+			throw(new BasicError(ErrorNumbers.errorWend));
+
+		if(this.parse.getStack().peekType()!=StackEntryType.stackWhile)
+			throw(new BasicError(ErrorNumbers.errorWend));
+			
+		StackEntry entry = this.parse.getStack().pop();
+		this.parse.setCurrentLine(entry.getLine());
+		
+		this.parse.parse(this.parse.getCurrentLine().Command());
 	}
 
 	public void CmdWhile() {
+		BasicVariable varObj;
+
+		this.parse.kill_space();
+		
+		varObj = this.parse.Expr();
+		
+		if(varObj.GetBoolean())
+			this.parse.getStack().push( new StackEntry(StackEntryType.stackWhile,this.parse.getCurrentLine()) );
+		else
+			this.parse.MoveToWEnd();
 	}
 
 	public void CmdWidth() {

@@ -17,7 +17,7 @@ public class BasicParse implements Basic {
 	private BasicCommands commands;
 	private BasicFunctions functions;
 	private int ifs;
-	private Stack stack;// The stack
+	private Stack stack = new Stack();// The stack
 	private boolean requestBreak;
 	private String line;
 	private int ptr;// The line we're parsing and where we're at
@@ -289,6 +289,7 @@ public class BasicParse implements Basic {
 
 			ExpectToken('=');
 			varObj = Expr();
+			variables.put(var, varObj);
 
 	}
 
@@ -1406,7 +1407,7 @@ public class BasicParse implements Basic {
 		}
 	}
 
-	void MoveToWEnd() {
+	public void MoveToWEnd() {
 		while(currentLine!=null)
 		{
 			do 
@@ -1432,7 +1433,7 @@ public class BasicParse implements Basic {
 		}
 	}
 
-	void MoveToLoop() {
+	public void MoveToLoop() {
 		while(currentLine!=null)
 		{
 			do 
@@ -1522,6 +1523,26 @@ public class BasicParse implements Basic {
 		return this.line;
 	}
 	
+	public BasicLine getCurrentLine()
+	{
+		return this.currentLine;
+	}
 	
+	public Stack getStack()
+	{
+		return this.stack;
+	}
+
+	public void setCurrentLine(BasicLine currentLine) {
+		this.currentLine = currentLine;
+		if( this.currentLine!=null)
+			LoadLine(this.currentLine.getText());
+	}
+
+	public void parse() {
+		if( this.getCurrentLine()!=null)
+			parse(this.getCurrentLine().Command());
+		
+	}
 
 }

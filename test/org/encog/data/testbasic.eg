@@ -47,4 +47,26 @@ sub main
 end sub
 ]]></source></EncogScript>
 
+<EncogScript name="test-while">
+<source><![CDATA[
+sub main
+	a = 1
+	while( a<10 )
+		print a
+		a = a + 1
+	wend
+end sub
+]]></source></EncogScript>
+
+<EncogScript name="test-do1">
+<source><![CDATA[
+sub main
+	a = 1
+	do
+		print a
+		a = a + 1
+	loop while(a<10)
+end sub
+]]></source></EncogScript>
+
 </Objects></Document>

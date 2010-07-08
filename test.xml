@@ -1,0 +1,6 @@
+<DataSet>
+<pair><input><value>0</value><value>0</value></input><ideal><value>0</value></ideal></pair>
+<pair><input><value>1</value><value>0</value></input><ideal><value>1</value></ideal></pair>
+<pair><input><value>0</value><value>1</value></input><ideal><value>1</value></ideal></pair>
+<pair><input><value>1</value><value>1</value></input><ideal><value>0</value></ideal></pair>
+</DataSet>

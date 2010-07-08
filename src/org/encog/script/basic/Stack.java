@@ -1,36 +1,50 @@
 package org.encog.script.basic;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class Stack {
 
-	Stack()
+	
+	public void clear()
 	{
-		Clear();
+		this.stack.clear();
 	}
 	
-	void Clear()
+	public void push(StackEntry entry)
 	{
-		location=0;
+		this.stack.add(entry);
 	}
 	
-	//BasicLine pop(int *off,int *start=NULL,int *stop=NULL,int *step=NULL,char *var=NULL);
-	//void push(enumStackEntryType t,int off,BASIC_LINE *v,int start=0,int stop=0,int step=0,char *var=NULL);
-	//BASIC_LINE *peek(int *off,int *start=NULL,int *stop=NULL,int *step=NULL,char *var=NULL);
-	//int empty(void){return( !location );};
-	//enumStackEntryType PeekType(void){if(empty())return stackError;return typeStack[location];};
-	
-	public StackEntryType getNextType()
+	public StackEntry pop()
 	{
-		return location>0?typeStack[location-1]:StackEntryType.stackError;
+		StackEntry result = this.stack.get(0);
+		this.stack.remove(0);
+		return result;
+	}
+	
+	public boolean empty()
+	{
+		return this.stack.size()==0;
 	}
 
-	private int location;
-	private BasicLine stack[];
-	private int stack2[];
-	private int startStack[];
-	private int stopStack[];
-	private int stepStack[];
-	private String varStack[];
-	private StackEntryType typeStack[];
+	public StackEntry peek()
+	{
+		if( stack.size()==0 )
+			return null;
+		else
+			return this.stack.get(0);
+	}
+
 	
+	public StackEntryType peekType()
+	{
+		if( stack.size()==0 )
+			return StackEntryType.stackError;
+		else
+			return this.stack.get(0).getType();
+	}
+
+	private List<StackEntry> stack = new ArrayList<StackEntry>();
 }
