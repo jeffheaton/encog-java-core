@@ -1,8 +1,17 @@
 package org.encog.script.basic;
 
 
-public class BasicVariable extends BasicObject {
+public class BasicVariable {
 
+	private Object data;
+	private int currentIndex;
+	private Object buffer;
+	private int x;
+	private int y;
+	private int z;
+	private boolean isRef;
+	private BasicTypes objectType;
+	
 	public BasicVariable()
 	{
 		Free();
@@ -680,13 +689,17 @@ public class BasicVariable extends BasicObject {
 		isRef=false;
 	}
 
-	private Object data;
-	private int currentIndex;
-	private Object buffer;
-	private int x;
-	private int y;
-	private int z;
-	private boolean isRef;
+	/**
+	 * @return the objectType
+	 */
+	public BasicTypes getObjectType() {
+		return objectType;
+	}
 
-	
+	/**
+	 * @param objectType the objectType to set
+	 */
+	public void setObjectType(BasicTypes objectType) {
+		this.objectType = objectType;
+	}	
 }

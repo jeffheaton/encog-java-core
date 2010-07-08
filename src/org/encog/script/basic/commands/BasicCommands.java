@@ -23,264 +23,264 @@ public class BasicCommands {
 	{
 		switch (key.getId()) {
 		case keyBEEP:
-			CmdBeep();
+			cmdBeep();
 			break;
 		case keyCALL:
-			CmdCall();
+			cmdCall();
 			break;
 		case keyCASE:
-			CmdCase();
+			cmdCase();
 			break;
 		case keyCHDIR:
-			CmdChDir();
+			cmdChDir();
 			break;
 		case keyCLOSE:
-			CmdClose();
+			cmdClose();
 			break;
 		case keyCLS:
-			CmdCls();
+			cmdCls();
 			break;
 		case keyCONST:
-			CmdConst();
+			cmdConst();
 			break;
 		case keyCREATELINK:
-			CmdCreateLink();
+			cmdCreateLink();
 			break;
 		case keyDIM:
-			CmdDim();
+			cmdDim();
 			break;
 		case keyDO:
-			CmdDo();
+			cmdDo();
 			break;
 		case keyELSE:
-			CmdElse();
+			cmdElse();
 			break;
 		case keyELSEIF:
-			CmdElseIf();
+			cmdElseIf();
 			break;
 		case keyEND:
-			CmdEnd();
+			cmdEnd();
 		case keyERASE:
-			CmdErase();
+			cmdErase();
 			break;
 		case keyEXIT:
-			return CmdExit();
+			return cmdExit();
 		case keyFOR:
-			CmdFor();
+			cmdFor();
 			break;
 		case keyFUNCTION:
-			CmdFunction();
+			cmdFunction();
 			break;
 		case keyGET:
-			CmdGet();
+			cmdGet();
 			break;
 		case keyGOSUB:
-			CmdGosub();
+			cmdGosub();
 			return false;
 		case keyGOTO:
-			CmdGoto();
+			cmdGoto();
 			return false;
 		case keyINPUT:
-			CmdInput();
+			cmdInput();
 			break;
 		case keyKILL:
-			CmdKill();
+			cmdKill();
 			break;
 		case keyLET:
-			CmdLet();
+			cmdLet();
 			break;
 		case keyLOAD:
-			CmdLoad();
+			cmdLoad();
 			break;
 		case keyLOCK:
-			CmdLock();
+			cmdLock();
 			break;
 		case keyLOOP:
-			CmdLoop();
+			cmdLoop();
 			break;
 		case keyLSET:
-			CmdLSet();
+			cmdLSet();
 			break;
 		case keyMKDIR:
-			CmdMKDir();
+			cmdMKDir();
 			break;
 		case keyMSGBOX:
-			CmdMsgBox();
+			cmdMsgBox();
 			break;
 		case keyNAME:
-			CmdName();
+			cmdName();
 			break;
 		case keyNEXT:
-			CmdNext();
+			cmdNext();
 			break;
 		case keyON:
-			CmdOn();
+			cmdOn();
 		case keyOPEN:
-			CmdOpen();
+			cmdOpen();
 			break;
 		case keyOPTION:
-			CmdOption();
+			cmdOption();
 			break;
 		case keyPRINT:
-			CmdPrint();
+			cmdPrint();
 			break;
 		case keyPUT:
-			CmdPut();
+			cmdPut();
 			break;
 		case keyRANDOMIZE:
-			CmdRandomize();
+			cmdRandomize();
 			break;
 		case keyREDIM:
-			CmdReDim();
+			cmdReDim();
 			break;
 		case keyREM:
-			CmdRem();
+			cmdRem();
 			break;
 		case keyRESET:
-			CmdReset();
+			cmdReset();
 			break;
 		case keyRESUME:
-			CmdResume();
+			cmdResume();
 			break;
 		case keyRETURN:
-			CmdReturn();
+			cmdReturn();
 			break;
 		case keyRMDIR:
-			CmdRmDir();
+			cmdRmDir();
 			break;
 		case keyRSET:
-			CmdRSet();
+			cmdRSet();
 			break;
 		case keyRUN:
-			CmdRun("MAIN");
+			cmdRun("MAIN");
 			return false;
 		case keySEEK:
-			CmdSeek();
+			cmdSeek();
 			break;
 		case keySELECT:
-			CmdSelect();
+			cmdSelect();
 			break;
 		case keySHARED:
-			CmdShared();
+			cmdShared();
 			break;
 		case keySLEEP:
-			CmdSleep();
+			cmdSleep();
 			break;
 		case keySTATIC:
-			CmdStatic();
+			cmdStatic();
 			break;
 		case keySTOP:
-			CmdStop();
+			cmdStop();
 			break;
 		case keySUB:
-			CmdSub();
+			cmdSub();
 			break;
 		case keyTYPE:
-			CmdType();
+			cmdType();
 			break;
 		case keyUNLOCK:
-			CmdUnLock();
+			cmdUnLock();
 			break;
 		case keyWEND:
-			CmdWEnd();
+			cmdWEnd();
 			break;
 		case keyWHILE:
-			CmdWhile();
+			cmdWhile();
 			break;
 		case keyWIDTH:
-			CmdWidth();
+			cmdWidth();
 			break;
 		case keyWRITE:
-			CmdWrite();
+			cmdWrite();
 			break;
 		case keySETREGISTRY:
-			CmdSetRegistry();
+			cmdSetRegistry();
 			break;
 		case keyIF:
-			CmdIf();
+			cmdIf();
 			break;
 		}
 		return true;
 	}
 	 
-	public void CmdBeep() {
+	public void cmdBeep() {
 	}
 
-	public void CmdCall() {
+	public void cmdCall() {
 	}
 
-	public void CmdCase() {
-		this.parse.MoveToEndCase();
+	public void cmdCase() {
+		this.parse.moveToEndCase();
 	}
 
-	public void CmdChDir() {
+	public void cmdChDir() {
 	}
 
-	public void CmdClose() {
+	public void cmdClose() {
 	}
 
-	public void CmdCls() {
+	public void cmdCls() {
 	}
 
-	public void CmdConst() {
+	public void cmdConst() {
 	}
 
-	public void CmdCreateLink() {
+	public void cmdCreateLink() {
 	}
 
-	public void CmdDim() {
+	public void cmdDim() {
 		BasicVariable v;
 		String var;
 
 		for(;;)	
 		{
 			this.parse.kill_space();
-			var = this.parse.ParseVariable();
+			var = this.parse.parseVariable();
 			if( BasicUtil.FindKeyword(var)!=null)
 				throw(new BasicError(ErrorNumbers.errorKeyword));
 
-			if(this.parse.GetVariable(var)!=null)
+			if(this.parse.getVariable(var)!=null)
 				throw(new BasicError(ErrorNumbers.errorAlreadyDefined));
 		
-			v = this.parse.CreateVariable(var);
+			v = this.parse.createVariable(var);
 			this.parse.addVariable(var, v);
 			
 			this.parse.kill_space();
-			if( !this.parse.LookAhead(',') )
+			if( !this.parse.lookAhead(',') )
 				break;
 		}
 	}
 
-	public void CmdDo() {
+	public void cmdDo() {
 		this.parse.kill_space();
 		
 		if( this.parse.getNextChar()!=0  )
 		{
-			if(this.parse.EvaluateDo())
+			if(this.parse.evaluateDo())
 				this.parse.getStack().push(new StackEntry(StackEntryType.stackDo,this.parse.getCurrentLine(),0));
 			else
-				this.parse.MoveToLoop();
+				this.parse.moveToLoop();
 		}
 		else
 			this.parse.getStack().push(new StackEntry(StackEntryType.stackDo,this.parse.getCurrentLine(),1));
 	}
 
-	public void CmdElse() {
-		this.parse.MoveToEndIf(false);
+	public void cmdElse() {
+		this.parse.moveToEndIf(false);
 		this.parse.decreaseIFS();
 	}
 
-	public void CmdElseIf() {
-		CmdElse();
-		CmdIf();
+	public void cmdElseIf() {
+		cmdElse();
+		cmdIf();
 	}
 
-	public void CmdEnd() {
+	public void cmdEnd() {
 		this.parse.kill_space();
 
-		if(this.parse.LookAhead(KeyNames.keyIF, false))
+		if(this.parse.lookAhead(KeyNames.keyIF, false))
 		{
-			CmdEndIf();
+			cmdEndIf();
 		}
 		else
 		{
@@ -291,40 +291,40 @@ public class BasicCommands {
 		}		
 	}
 
-	public void CmdEndIf() {
+	public void cmdEndIf() {
 		this.parse.decreaseIFS();
 	}
 
-	public void CmdEnviron() {
+	public void cmdEnviron() {
 	}
 
-	public void CmdErase() {
+	public void cmdErase() {
 	}
 
-	public boolean CmdExit() {
+	public boolean cmdExit() {
 		return false;
 	}
 
-	public void CmdFor() {
+	public void cmdFor() {
 		BasicVariable a,varObj;
 		String var;
 		int start,stop,step;
 
-		var = this.parse.ParseVariable();
-		this.parse.ExpectToken('=');
+		var = this.parse.parseVariable();
+		this.parse.expectToken('=');
 
-		a = this.parse.Expr();
+		a = this.parse.expr();
 		start=(int)a.GetLong();
 		
-		if(!this.parse.LookAhead(KeyNames.keyTO,false) )
+		if(!this.parse.lookAhead(KeyNames.keyTO,false) )
 			throw(new BasicError(ErrorNumbers.errorNoTo));
 
-		a = this.parse.Expr();
+		a = this.parse.expr();
 		stop=(int)a.GetLong();
 
-		if(this.parse.LookAhead(KeyNames.keySTEP,false))
+		if(this.parse.lookAhead(KeyNames.keySTEP,false))
 		{
-			a = this.parse.Expr();
+			a = this.parse.expr();
 			step=(int)a.GetLong();
 		}
 		else step=1;
@@ -336,7 +336,7 @@ public class BasicCommands {
 		{
 			if(start<stop)
 			{
-				this.parse.MoveToNext();
+				this.parse.moveToNext();
 				return;
 			}
 		}
@@ -344,13 +344,13 @@ public class BasicCommands {
 		{
 			if(start>stop)
 			{
-				this.parse.MoveToNext();
+				this.parse.moveToNext();
 				return;
 			}
 		}
 			
 
-		varObj=this.parse.GetVariable(var);
+		varObj=this.parse.getVariable(var);
 
 		if(varObj==null)
 		{
@@ -363,29 +363,29 @@ public class BasicCommands {
 		parse.getStack().push(new StackEntry(StackEntryType.stackFor,this.parse.getCurrentLine(),varObj,start,stop,step));
 	}
 
-	public void CmdFunction() {
+	public void cmdFunction() {
 	}
 
-	public void CmdGet() {
+	public void cmdGet() {
 	}
 
-	public void CmdGosub() {
+	public void cmdGosub() {
 	}
 
-	public void CmdGoto() {
+	public void cmdGoto() {
 		String str;
 
 		this.parse.kill_space();
-		str = this.parse.ParseVariable();
+		str = this.parse.parseVariable();
 		this.parse.go(str);
 	}
 
-	public void CmdIf() {
+	public void cmdIf() {
 		BasicVariable a = new BasicVariable();
 		boolean b;
 
-		b=this.parse.ParseVariable(a);
-		if(!this.parse.LookAhead(KeyNames.keyTHEN,false))
+		b=this.parse.parseVariable(a);
+		if(!this.parse.lookAhead(KeyNames.keyTHEN,false))
 			throw(new BasicError(ErrorNumbers.errorNoThen));
 
 		if( b )
@@ -399,25 +399,25 @@ public class BasicCommands {
 				throw new BasicError(ErrorNumbers.errorBlock);
 		}
 		else
-			parse.MoveToEndIf(true);
+			parse.moveToEndIf(true);
 	}
 
-	public void CmdInput() {
+	public void cmdInput() {
 	}
 
-	public void CmdKill() {
+	public void cmdKill() {
 	}
 
-	public void CmdLet() {
+	public void cmdLet() {
 	}
 
-	public void CmdLoad() {
+	public void cmdLoad() {
 	}
 
-	public void CmdLock() {
+	public void cmdLock() {
 	}
 
-	public void CmdLoop() {
+	public void cmdLoop() {
 		int idx,ln;
 		BasicVariable varObj;
 		StackEntryType type;
@@ -446,7 +446,7 @@ public class BasicCommands {
 		{
 			if(type==null)
 				throw(new BasicError(ErrorNumbers.errorIllegalUse)) ;
-			if(this.parse.EvaluateDo())
+			if(this.parse.evaluateDo())
 			{
 				if(bl!=null)
 				{
@@ -464,19 +464,19 @@ public class BasicCommands {
 		}
 	}
 
-	public void CmdLSet() {
+	public void cmdLSet() {
 	}
 
-	public void CmdMsgBox() {
+	public void cmdMsgBox() {
 	}
 
-	public void CmdMKDir() {
+	public void cmdMKDir() {
 	}
 
-	public void CmdName() {
+	public void cmdName() {
 	}
 
-	public void CmdNext() {
+	public void cmdNext() {
 		int idx,ln;
 		double d;
 
@@ -520,22 +520,22 @@ public class BasicCommands {
 			this.parse.getStack().pop();
 	}
 
-	public void CmdOn() {
+	public void cmdOn() {
 
-		if( this.parse.LookAhead(KeyNames.keyERROR,false) )
+		if( this.parse.lookAhead(KeyNames.keyERROR,false) )
 		{
-			CmdOnError();
+			cmdOnError();
 		}
 		else
 			throw new BasicError(ErrorNumbers.errorIllegalUse);
 	}
 
-	public void CmdOnError() {
+	public void cmdOnError() {
 		String str;
 
-		if( this.parse.LookAhead(KeyNames.keyGOTO,false) )
+		if( this.parse.lookAhead(KeyNames.keyGOTO,false) )
 		{
-			str = this.parse.ParseVariable();
+			str = this.parse.parseVariable();
 			
 			if( str.equals("0"))
 				this.parse.setErrorLabel(null);
@@ -545,8 +545,8 @@ public class BasicCommands {
 			return;
 		}
 		else
-		if( this.parse.LookAhead(KeyNames.keyRESUME,false) )
-			if( this.parse.LookAhead(KeyNames.keyNEXT,false) )
+		if( this.parse.lookAhead(KeyNames.keyRESUME,false) )
+			if( this.parse.lookAhead(KeyNames.keyNEXT,false) )
 			{
 				this.parse.setErrorLabel("*");
 				return;
@@ -554,13 +554,13 @@ public class BasicCommands {
 		throw(new BasicError(ErrorNumbers.errorIllegalUse));
 	}
 
-	public void CmdOpen() {
+	public void cmdOpen() {
 	}
 
-	public void CmdOption() {
+	public void cmdOption() {
 	}
 
-	public void CmdPrint() {
+	public void cmdPrint() {
 		
 		boolean no_cr=false;
 
@@ -568,21 +568,21 @@ public class BasicCommands {
 
 			this.parse.kill_space();
 
-			if( this.parse.LookAhead('#') )
+			if( this.parse.lookAhead('#') )
 			{
 				BasicVariable var;
 
-				var = this.parse.ParseVariable(1,100);
+				var = this.parse.parseVariable(1,100);
 				/*if(theProgram->fileHandles[var.GetShort()]==NULL)
 					throw(errorHandleUndefined);
 				h=theProgram->fileHandles[var.GetShort()];*/
-				if(!this.parse.LookAhead(','))
+				if(!this.parse.lookAhead(','))
 					throw(new BasicError(ErrorNumbers.errorIllegalUse));
 			}
 
 			if( !(this.parse.getNextChar()==0 || (this.parse.getNextChar()==':')) )
 			{
-				this.parse.getModule().getProgram().print(this.parse.FormatExpression());
+				this.parse.getModule().getProgram().print(this.parse.formatExpression());
 
 				while(this.parse.getNextChar() ==';')
 				{
@@ -594,7 +594,7 @@ public class BasicCommands {
 						break;
 					}
 
-					this.parse.getModule().getProgram().print(this.parse.FormatExpression());
+					this.parse.getModule().getProgram().print(this.parse.formatExpression());
 
 					this.parse.kill_space();
 				}
@@ -606,75 +606,75 @@ public class BasicCommands {
 			}
 	}
 
-	public void CmdPut() {
+	public void cmdPut() {
 	}
 
-	public void CmdRandomize() {
+	public void cmdRandomize() {
 	}
 
-	public void CmdRead() {
+	public void cmdRead() {
 	}
 
-	public void CmdReDim() {
+	public void cmdReDim() {
 	}
 
-	public void CmdRem() {
+	public void cmdRem() {
 	}
 
-	public void CmdReset() {
+	public void cmdReset() {
 	}
 
-	public void CmdResume() {
+	public void cmdResume() {
 	}
 
-	public void CmdReturn() {
+	public void cmdReturn() {
 	}
 
-	public void CmdRmDir() {
+	public void cmdRmDir() {
 	}
 
-	public void CmdRSet() {
+	public void cmdRSet() {
 	}
 
-	public boolean CmdRun(String str) {
+	public boolean cmdRun(String str) {
 		return false;
 	}
 
-	public void CmdSeek() {
+	public void cmdSeek() {
 	}
 
-	public void CmdSelect() {
+	public void cmdSelect() {
 
 		BasicVariable var;
 		BasicVariable is;
 
-		if(!this.parse.LookAhead(KeyNames.keyCASE,false))
+		if(!this.parse.lookAhead(KeyNames.keyCASE,false))
 			throw(new BasicError(ErrorNumbers.errorIllegalUse));
 
-		var = this.parse.Expr();
+		var = this.parse.expr();
 		is=var;
 
 		while(parse.getCurrentLine()!=null)
 		{
 			do 
 			{
-				if( this.parse.LookAhead(KeyNames.keySELECT,false) )
-					this.parse.MoveToEndCase();
+				if( this.parse.lookAhead(KeyNames.keySELECT,false) )
+					this.parse.moveToEndCase();
 
-				if( this.parse.LookAhead(KeyNames.keyEND,false) )
+				if( this.parse.lookAhead(KeyNames.keyEND,false) )
 				{
 					this.parse.kill_space();
-					if(this.parse.LookAhead(KeyNames.keyCASE,false))
+					if(this.parse.lookAhead(KeyNames.keyCASE,false))
 						return;
-					if(this.parse.LookAhead(KeyNames.keySUB,false) || this.parse.LookAhead(KeyNames.keyFUNCTION,false) )
+					if(this.parse.lookAhead(KeyNames.keySUB,false) || this.parse.lookAhead(KeyNames.keyFUNCTION,false) )
 						throw(new BasicError(ErrorNumbers.errorBlock));
 				} 
 
-				if(this.parse.LookAhead(KeyNames.keyCASE,false))
+				if(this.parse.lookAhead(KeyNames.keyCASE,false))
 				{
-					if(this.parse.LookAhead(KeyNames.keyELSE, false))
+					if(this.parse.lookAhead(KeyNames.keyELSE, false))
 					{
-						this.parse.MovePastColen();
+						this.parse.movePastColen();
 						is=null;
 						return;
 					}
@@ -685,25 +685,25 @@ public class BasicCommands {
 						boolean bl=false;
 
 						this.parse.kill_space();
-						if( this.parse.LookAhead("IS", false)  )
+						if( this.parse.lookAhead("IS", false)  )
 						{
-							b = this.parse.Expr();
+							b = this.parse.expr();
 							if(b.GetBoolean())
 							{
-								this.parse.MovePastColen();
+								this.parse.movePastColen();
 								is=null;
 								return;
 							}
 						}
 						else
 						{
-							b = this.parse.Expr();
+							b = this.parse.expr();
 
-							if(this.parse.LookAhead(KeyNames.keyTO,false))							{
-								c = this.parse.Expr();
+							if(this.parse.lookAhead(KeyNames.keyTO,false))							{
+								c = this.parse.expr();
 								if( (var.CompareGTE(b)) && (var.CompareLTE(c)) )
 								{
-									this.parse.MovePastColen();
+									this.parse.movePastColen();
 									is=null;
 									return;
 								}
@@ -711,47 +711,47 @@ public class BasicCommands {
 
 							if(var.CompareE(b)) 
 							{
-								this.parse.MovePastColen();
+								this.parse.movePastColen();
 								is=null;
 								return;
 							}
 						}
-					} while(this.parse.LookAhead(','));
+					} while(this.parse.lookAhead(','));
 				}
 
-				this.parse.MovePastColen();
+				this.parse.movePastColen();
 
 			} while(this.parse.getNextChar()!=0);
 
-			this.parse.MoveNextLine();
+			this.parse.moveNextLine();
 		}
 
 		is=null;
 		
 	}
 
-	public void CmdShared() {
+	public void cmdShared() {
 	}
 
-	public void CmdSleep() {
+	public void cmdSleep() {
 	}
 
-	public void CmdStatic() {
+	public void cmdStatic() {
 	}
 
-	public void CmdStop() {
+	public void cmdStop() {
 	}
 
-	public void CmdSub() {
+	public void cmdSub() {
 	}
 
-	public void CmdType() {
+	public void cmdType() {
 	}
 
-	public void CmdUnLock() {
+	public void cmdUnLock() {
 	}
 
-	public void CmdWEnd() {
+	public void cmdWEnd() {
 		BasicVariable varObj;
 
 		this.parse.kill_space();
@@ -767,26 +767,26 @@ public class BasicCommands {
 		this.parse.parse(this.parse.getCurrentLine().Command());
 	}
 
-	public void CmdWhile() {
+	public void cmdWhile() {
 		BasicVariable varObj;
 
 		this.parse.kill_space();
 		
-		varObj = this.parse.Expr();
+		varObj = this.parse.expr();
 		
 		if(varObj.GetBoolean())
 			this.parse.getStack().push( new StackEntry(StackEntryType.stackWhile,this.parse.getCurrentLine()) );
 		else
-			this.parse.MoveToWEnd();
+			this.parse.moveToWEnd();
 	}
 
-	public void CmdWidth() {
+	public void cmdWidth() {
 	}
 
-	public void CmdWrite() {
+	public void cmdWrite() {
 	}
 
-	public void CmdSetRegistry() {
+	public void cmdSetRegistry() {
 	}
 
 

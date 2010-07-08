@@ -14,7 +14,6 @@ import org.encog.script.basic.BasicModule;
 import org.encog.script.basic.BasicParse;
 import org.encog.script.basic.BasicProgram;
 import org.encog.script.basic.BasicVariable;
-import org.encog.script.basic.Err;
 import org.encog.script.basic.console.ConsoleInputOutput;
 import org.encog.script.basic.console.NullConsole;
 
@@ -90,7 +89,7 @@ public class EncogScript implements EncogPersistedObject {
 	public void load()
 	{
 		this.program = new BasicProgram();
-		this.program.LoadModule(this);
+		this.program.loadModule(this);
 	}
 	
 	
@@ -114,7 +113,7 @@ public class EncogScript implements EncogPersistedObject {
 		BasicVariable result = new BasicVariable();
 		this.program.setConsole(this.console);
 		
-		if(!this.program.Call(name, result))
+		if(!this.program.call(name, result))
 		{
 			throw new EncogError("Can't find main sub in script.");
 		}

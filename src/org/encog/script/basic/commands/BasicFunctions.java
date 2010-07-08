@@ -16,198 +16,198 @@ public class BasicFunctions {
 	public void callInternalFunction(KeyNames f, BasicVariable target) {
 		switch(f)
 		{
-		case keyABS:		FnAbs(target);break;
-		case keyASC:		FnAsc(target);break;
-		case keyATN:		FnAtn(target);break;
-		case keyCDBL:		FnCDbl(target);break;
-		case keyCHR:		FnChr(target);break;
-		case keyCINT:		FnCInt(target);break;
-		case keyCLNG:		FnCLng(target);break;
-		case keyCOS:		FnCos(target);break;
-		case keyDATE:		FnDate_(target);break;
-		case keyENVIRON:	FnEnvron_(target);break;
-		case keyEOF:		FnEof(target);break;
-		case keyERR:		FnErr(target);break;
-		case keyERROR:		FnError(target);break;
-		case keyEXP:		FnExp(target);break;
-		case keyFILEATTR:	FnFileattr(target);break;
-		case keyFIX:		FnFix(target);break;
-		case keyFREEFILE:	FnFreeFile(target);break;
-		case keyHEX:		FnHex_(target);break;
-		case keyINPUT:		FnInput_(target);break;
-		case keyINSTR:		FnInStr(target);break;
-		case keyINT:		FnInt(target);break;
-		case keyLCASE:		FnLCase(target);break;
-		case keyLEFT:		FnLeft(target);break;
-		case keyLEN:		FnLen(target);break;
-		case keyLOC:		FnLoc(target);break;
-		case keyLOG:		FnLog(target);break;
-		case keyLTRIM:		FnLTrim(target);break;
-		case keyMID:		FnMid_(target);break;
-		case keyMSGBOX:		FnMsgBox(target);break;
-		case keyOCT:		FnOct_(target);break;
-		case keyRIGHT:		FnRight_(target);break;
-		case keyRND:		FnRnd(target);break;
-		case keyRTRIM:		FnRTrim(target);break;
-		case keySHELL:		FnShell(target);break;
-		case keySEEK:		FnSeek(target);break;
-		case keySGN:		FnSgn(target);break;
-		case keySIN:		FnSin(target);break;
-		case keySPACE:		FnSpace_(target);break;
-		case keySPC:		FnSpc(target);break;
-		case keySQR:		FnSqr(target);break;
-		case keySTR:		FnStr_(target);break;
-		case keySTRIG:		FnStrig(target);break;
-		case keySTRING:		FnString_(target);break;
-		case keyTAN:		FnTan(target);break;
-		case keyTIME:		FnTime_(target);break;
-		case keyUCASE:		FnUCase_(target);break;
-		case keyVAL:		FnVal(target);break;
-		case keyREGISTRY:	FnRegistry(target);break;
+		case keyABS:		fnAbs(target);break;
+		case keyASC:		fnAsc(target);break;
+		case keyATN:		fnAtn(target);break;
+		case keyCDBL:		fnCDbl(target);break;
+		case keyCHR:		fnChr(target);break;
+		case keyCINT:		fnCInt(target);break;
+		case keyCLNG:		fnCLng(target);break;
+		case keyCOS:		fnCos(target);break;
+		case keyDATE:		fnDate_(target);break;
+		case keyENVIRON:	fnEnvron_(target);break;
+		case keyEOF:		fnEof(target);break;
+		case keyERR:		fnErr(target);break;
+		case keyERROR:		fnError(target);break;
+		case keyEXP:		fnExp(target);break;
+		case keyFILEATTR:	fnFileattr(target);break;
+		case keyFIX:		fnFix(target);break;
+		case keyFREEFILE:	fnFreeFile(target);break;
+		case keyHEX:		fnHex_(target);break;
+		case keyINPUT:		fnInput_(target);break;
+		case keyINSTR:		fnInStr(target);break;
+		case keyINT:		fnInt(target);break;
+		case keyLCASE:		fnLCase(target);break;
+		case keyLEFT:		fnLeft(target);break;
+		case keyLEN:		fnLen(target);break;
+		case keyLOC:		fnLoc(target);break;
+		case keyLOG:		fnLog(target);break;
+		case keyLTRIM:		fnLTrim(target);break;
+		case keyMID:		fnMid_(target);break;
+		case keyMSGBOX:		fnMsgBox(target);break;
+		case keyOCT:		fnOct_(target);break;
+		case keyRIGHT:		fnRight_(target);break;
+		case keyRND:		fnRnd(target);break;
+		case keyRTRIM:		fnRTrim(target);break;
+		case keySHELL:		fnShell(target);break;
+		case keySEEK:		fnSeek(target);break;
+		case keySGN:		fnSgn(target);break;
+		case keySIN:		fnSin(target);break;
+		case keySPACE:		fnSpace_(target);break;
+		case keySPC:		fnSpc(target);break;
+		case keySQR:		fnSqr(target);break;
+		case keySTR:		fnStr_(target);break;
+		case keySTRIG:		fnStrig(target);break;
+		case keySTRING:		fnString_(target);break;
+		case keyTAN:		fnTan(target);break;
+		case keyTIME:		fnTime_(target);break;
+		case keyUCASE:		fnUCase_(target);break;
+		case keyVAL:		fnVal(target);break;
+		case keyREGISTRY:	fnRegistry(target);break;
 		}
 	}
 	
-	public void FnAbs(BasicVariable target) {
+	public void fnAbs(BasicVariable target) {
 	}
 
-	public void FnAsc(BasicVariable target) {
+	public void fnAsc(BasicVariable target) {
 	}
 
-	public void FnAtn(BasicVariable target) {
+	public void fnAtn(BasicVariable target) {
 	}
 
-	public void FnCDbl(BasicVariable target) {
+	public void fnCDbl(BasicVariable target) {
 	}
 
-	public void FnChr(BasicVariable target) {
+	public void fnChr(BasicVariable target) {
 	}
 
-	public void FnCInt(BasicVariable target) {
+	public void fnCInt(BasicVariable target) {
 	}
 
-	public void FnCLng(BasicVariable target) {
+	public void fnCLng(BasicVariable target) {
 	}
 
-	public void FnCos(BasicVariable target) {
+	public void fnCos(BasicVariable target) {
 	}
 
-	public void FnDate_(BasicVariable target) {
+	public void fnDate_(BasicVariable target) {
 	}
 
-	public void FnEnvron_(BasicVariable target) {
+	public void fnEnvron_(BasicVariable target) {
 	}
 
-	public void FnEof(BasicVariable target) {
+	public void fnEof(BasicVariable target) {
 	}
 
-	public void FnErr(BasicVariable target) {
+	public void fnErr(BasicVariable target) {
 	}
 
-	public void FnError(BasicVariable target) {
+	public void fnError(BasicVariable target) {
 	}
 
-	public void FnExp(BasicVariable target) {
+	public void fnExp(BasicVariable target) {
 	}
 
-	public void FnFileattr(BasicVariable target) {
+	public void fnFileattr(BasicVariable target) {
 	}
 
-	public void FnFix(BasicVariable target) {
+	public void fnFix(BasicVariable target) {
 	}
 
-	public void FnFreeFile(BasicVariable target) {
+	public void fnFreeFile(BasicVariable target) {
 	}
 
-	public void FnHex_(BasicVariable target) {
+	public void fnHex_(BasicVariable target) {
 	}
 
-	public void FnInput_(BasicVariable target) {
+	public void fnInput_(BasicVariable target) {
 	}
 
-	public void FnInStr(BasicVariable target) {
+	public void fnInStr(BasicVariable target) {
 	}
 
-	public void FnInt(BasicVariable target) {
+	public void fnInt(BasicVariable target) {
 	}
 
-	public void FnLCase(BasicVariable target) {
+	public void fnLCase(BasicVariable target) {
 	}
 
-	public void FnLeft(BasicVariable target) {
+	public void fnLeft(BasicVariable target) {
 	}
 
-	public void FnLen(BasicVariable target) {
+	public void fnLen(BasicVariable target) {
 	}
 
-	public void FnLoc(BasicVariable target) {
+	public void fnLoc(BasicVariable target) {
 	}
 
-	public void FnLog(BasicVariable target) {
+	public void fnLog(BasicVariable target) {
 	}
 
-	public void FnLTrim(BasicVariable target) {
+	public void fnLTrim(BasicVariable target) {
 	}
 
-	public void FnMid_(BasicVariable target) {
+	public void fnMid_(BasicVariable target) {
 	}
 
-	public void FnMsgBox(BasicVariable target) {
+	public void fnMsgBox(BasicVariable target) {
 	}
 
-	public void FnOct_(BasicVariable target) {
+	public void fnOct_(BasicVariable target) {
 	}
 
-	public void FnRight_(BasicVariable target) {
+	public void fnRight_(BasicVariable target) {
 	}
 
-	public void FnRnd(BasicVariable target) {
+	public void fnRnd(BasicVariable target) {
 	}
 
-	public void FnRTrim(BasicVariable target) {
+	public void fnRTrim(BasicVariable target) {
 	}
 
-	public void FnSeek(BasicVariable target) {
+	public void fnSeek(BasicVariable target) {
 	}
 
-	public void FnSgn(BasicVariable target) {
+	public void fnSgn(BasicVariable target) {
 	}
 
-	public void FnShell(BasicVariable target) {
+	public void fnShell(BasicVariable target) {
 	}
 
-	public void FnSin(BasicVariable target) {
+	public void fnSin(BasicVariable target) {
 	}
 
-	public void FnSpace_(BasicVariable target) {
+	public void fnSpace_(BasicVariable target) {
 	}
 
-	public void FnSpc(BasicVariable target) {
+	public void fnSpc(BasicVariable target) {
 	}
 
-	public void FnSqr(BasicVariable target) {
+	public void fnSqr(BasicVariable target) {
 	}
 
-	public void FnStr_(BasicVariable target) {
+	public void fnStr_(BasicVariable target) {
 	}
 
-	public void FnStrig(BasicVariable target) {
+	public void fnStrig(BasicVariable target) {
 	}
 
-	public void FnString_(BasicVariable target) {
+	public void fnString_(BasicVariable target) {
 	}
 
-	public void FnTan(BasicVariable target) {
+	public void fnTan(BasicVariable target) {
 	}
 
-	public void FnTime_(BasicVariable target) {
+	public void fnTime_(BasicVariable target) {
 	}
 
-	public void FnUCase_(BasicVariable target) {
+	public void fnUCase_(BasicVariable target) {
 	}
 
-	public void FnVal(BasicVariable target) {
+	public void fnVal(BasicVariable target) {
 	}
 
-	public void FnRegistry(BasicVariable target) {
+	public void fnRegistry(BasicVariable target) {
 	}	
 }

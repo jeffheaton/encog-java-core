@@ -3,12 +3,11 @@ package org.encog.script.basic;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BasicLine extends BasicObject {
+public class BasicLine {
 
 	public BasicLine(String t)
 	{
 		text=t;
-		setObjectType(BasicTypes.typeStatement);
 	}
 	
 	public void Edit(String t)

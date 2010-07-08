@@ -16,7 +16,7 @@ import org.encog.EncogError;
 import org.encog.script.EncogScript;
 import org.encog.util.ReflectionUtil;
 
-public class BasicModule extends BasicObject {
+public class BasicModule  {
 	
 	private Map<String,BasicLine> programLabels = new HashMap<String,BasicLine>();
 	private Map<String,BasicLine> subLabels = new HashMap<String,BasicLine>();
@@ -141,7 +141,6 @@ public class BasicModule extends BasicObject {
 			bl.setNumber(number);
 			if( label.length()>0 )
 			{
-				bl.setLabel(label);
 				this.programLabels.put(label,bl);			
 			}	
 			

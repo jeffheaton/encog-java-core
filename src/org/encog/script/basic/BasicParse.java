@@ -26,10 +26,13 @@ public class BasicParse implements Basic {
 	private BasicModule module;
 	private BasicLine currentLine;
 	private List<BasicLine> subLines;
+	private String errorLabel;
+	private char nextchar;// The next character to be parsed
+
 
 
 	BasicParse(BasicModule m) {
-		Init();
+		init();
 		module=m;
 		this.commands = new BasicCommands(this);
 		this.functions = new BasicFunctions(this);
@@ -38,7 +41,7 @@ public class BasicParse implements Basic {
 	BasicParse() {
 		module=null;
 		currentLine=null;
-		Init();
+		init();
 	}
 
 	// Parse Functions
@@ -67,11 +70,11 @@ public class BasicParse implements Basic {
 
 	}
 
-	public BasicVariable ParseVariable( int l, int u) {
+	public BasicVariable parseVariable( int l, int u) {
 		BasicVariable result = null;
 		
 		kill_space();
-		result = Expr();
+		result = expr();
 		if( l==0 && u==0 )
 			return result;
 		if( (result.GetLong()<l) || (result.GetLong()>u) )
@@ -79,20 +82,20 @@ public class BasicParse implements Basic {
 		return result;
 	}
 
-	public boolean ParseVariable(BasicVariable var) {
+	public boolean parseVariable(BasicVariable var) {
 		kill_space();
-		BasicVariable temp = Expr();
+		BasicVariable temp = expr();
 		var.edit(temp);
 		return var.GetBoolean();
 	}
 
-	public void ExpectToken(char ch) {
-		if(!LookAhead(ch))
+	public void expectToken(char ch) {
+		if(!lookAhead(ch))
 			throw(new BasicError(ErrorNumbers.errorIllegalUse));
 
 	}
 
-	public boolean LookAhead(char ch) {
+	public boolean lookAhead(char ch) {
 
 		if(ptr==-1)
 			return false;
@@ -106,7 +109,7 @@ public class BasicParse implements Basic {
 		return false;
 	}
 
-	public boolean LookAhead(String lookfor, boolean partial) {
+	public boolean lookAhead(String lookfor, boolean partial) {
 
 		if(ptr==-1)
 			return false;
@@ -144,19 +147,19 @@ public class BasicParse implements Basic {
 
 	}
 
-	public boolean LookAhead(KeyNames token, boolean partial) {
+	public boolean lookAhead(KeyNames token, boolean partial) {
 		BasicKey key;
 		key=BasicUtil.FindKeyword(token);
-		return LookAhead(key.getName(),partial);
+		return lookAhead(key.getName(),partial);
 	}
 
-	public BasicKey ParseNextToken() {
+	public BasicKey parseNextToken() {
 		String str;
 		int hold=ptr;
 		BasicKey rtn;
 
 		kill_space();
-		str = ParseVariable();
+		str = parseVariable();
 		if(str.length()<1)
 			return null;
 
@@ -173,7 +176,7 @@ public class BasicParse implements Basic {
 		return null;
 	}
 
-	public void Init() {
+	public void init() {
 		is=null;
 		ptr = 0;
 		line = "LINE";
@@ -186,27 +189,27 @@ public class BasicParse implements Basic {
 	public boolean parse(String l) {
 		BasicKey key;
 
-		Maint();
+		maint();
 		try {
-			if (!LoadLine(l))
+			if (!loadLine(l))
 				return true;
 
 			do {
 				do {
 					kill_space();
-				} while (LookAhead(':'));
+				} while (lookAhead(':'));
 				if (nextchar == 0)
 					return true;
 
-				key = ParseNextToken();
+				key = parseNextToken();
 				if (key == null) {
-					if (IsAssignment()) {
-						DoAssignment();
+					if (isAssignment()) {
+						doAssignment();
 						continue;
-					} else if (this.module.getProgram().Execute()) {
+					} else if (this.module.getProgram().execute()) {
 						continue;
-					} else if (CallSub()) {
-						LookAhead(')');
+					} else if (callSub()) {
+						lookAhead(')');
 						continue;
 					} else
 						throw (new BasicError(ErrorNumbers.errorSyntax));
@@ -245,7 +248,7 @@ public class BasicParse implements Basic {
 
 	}
 
-	void DoAssignment() {
+	private void doAssignment() {
 		BasicVariable varObj;
 		String var;
 
@@ -253,30 +256,30 @@ public class BasicParse implements Basic {
 
 			// See if we're updating something elsewhere
 			
-			if(this.module.getProgram().Update())
+			if(this.module.getProgram().update())
 				return;
 
 			// Try and find a local or global variable
-			var = ParseVariable();				
-			varObj=GetVariable(var);
+			var = parseVariable();				
+			varObj=getVariable(var);
 			
 			
 			if(varObj==null)
 			{// Automatically "dim" a variable
 				varObj=new BasicVariable();
 
-				ExpectToken('=');
-				varObj = Expr();
+				expectToken('=');
+				varObj = expr();
 				variables.put(var,varObj);
 				return;
 			}
 
 			// See if we're really updating an embedded object in an object
-			if(varObj.getType()==BasicTypes.typeObject)
+			if(varObj.getObjectType()==BasicTypes.typeObject)
 			{
 				kill_space();
 			
-				if(LookAhead('.'))
+				if(lookAhead('.'))
 				{
 					if( !varObj.GetObject().Update() )
 						throw(new BasicError(ErrorNumbers.errorUndefinedObject));
@@ -284,16 +287,16 @@ public class BasicParse implements Basic {
 				}
 			}
 
-			ExpectToken('=');
-			varObj.edit( Expr() );
+			expectToken('=');
+			varObj.edit( expr() );
 			variables.put(var, varObj);
 
 	}
 
-	public boolean GlobalParse(String l) {
+	public boolean globalParse(String l) {
 		BasicKey key;
 
-		if(!LoadLine(l))
+		if(!loadLine(l))
 			return true;
 
 		do
@@ -302,7 +305,7 @@ public class BasicParse implements Basic {
 				advance();
 
 			kill_space();
-			key=ParseNextToken();
+			key=parseNextToken();
 			if(key==null)
 				throw(new BasicError(ErrorNumbers.errorGlobal));
 			if(key.getType()!=KeyTypes.keyStatement)
@@ -310,7 +313,7 @@ public class BasicParse implements Basic {
 
 			switch(key.getId())
 			{
-			case keyDIM:this.commands.CmdDim();break;
+			case keyDIM:this.commands.cmdDim();break;
 			case keyFUNCTION:
 			case keySUB:currentLine=null;return false;
 			default:
@@ -322,7 +325,7 @@ public class BasicParse implements Basic {
 		return true;
 	}
 
-	public BasicVariable CreateVariable(String var) {
+	public BasicVariable createVariable(String var) {
 		BasicVariable v;
 		int x,y,z;
 		BasicVariable varObj;
@@ -330,43 +333,43 @@ public class BasicParse implements Basic {
 		
 		kill_space();
 		x=y=z=0;
-		if(LookAhead('('))
+		if(lookAhead('('))
 		{
-			varObj = ParseVariable(0,0);
+			varObj = parseVariable(0,0);
 			x=varObj.GetShort();
 			if(x==0)
 				throw(new BasicError(ErrorNumbers.errorDim));
-			if(LookAhead(','))
+			if(lookAhead(','))
 			{
-				varObj = ParseVariable(0,0);
+				varObj = parseVariable(0,0);
 				y=varObj.GetShort();
 				if(y==0)
 					throw(new BasicError(ErrorNumbers.errorDim));
-				if(LookAhead(','))
+				if(lookAhead(','))
 				{
-					varObj = ParseVariable(0,0);
+					varObj = parseVariable(0,0);
 					z=varObj.GetShort();
 					if(z==0)
 						throw(new BasicError(ErrorNumbers.errorDim));
 				}
 			}
-			ExpectToken(')');
+			expectToken(')');
 		}
 
 		kill_space();
-		if(nextchar>0 && LookAhead(KeyNames.keyAS,false) )
+		if(nextchar>0 && lookAhead(KeyNames.keyAS,false) )
 		{
 			kill_space();
-			key=ParseNextToken();
+			key=parseNextToken();
 		
 			if(key==null)
 			{
-				v=this.module.getProgram().CreateObject();
+				v=this.module.getProgram().createObject();
 				if(v==null)
 				{
 					BasicObjectVariable vobj;
 
-					if(LookAhead("STDFILE",false))
+					if(lookAhead("STDFILE",false))
 						vobj=new ObjectStdFile();
 					else
 						throw(new BasicError(ErrorNumbers.errorInvalidType));
@@ -394,29 +397,28 @@ public class BasicParse implements Basic {
 			throw(new BasicError(ErrorNumbers.errorExpectedAs));
 		}
 				
-		v.setLabel(var);
 		if(x>0)
 			v.CreateArray(x,y,z);
 		kill_space();
 		return v;
 	}
 
-	public boolean CallSub() {
+	public boolean callSub() {
 		String var;
 		int hold=ptr;
 		BasicVariable varObj;
 		BasicVariable ignore = null;
 
-		var = ParseVariable();
+		var = parseVariable();
 		
 		// is it a function inside an object
-		varObj=GetVariable(var);
+		varObj=getVariable(var);
 		if(varObj!=null)
 		{
-			if(varObj.getType()==BasicTypes.typeObject)
+			if(varObj.getObjectType()==BasicTypes.typeObject)
 			{
 				kill_space();
-				if(LookAhead('.'))
+				if(lookAhead('.'))
 				{
 					if( varObj.GetObject().Execute() )
 						return true;
@@ -425,7 +427,7 @@ public class BasicParse implements Basic {
 		}
 
 		// Try and call a global function
-		if(this.module.getProgram().Call(var,ignore))
+		if(this.module.getProgram().call(var,ignore))
 			return true;
 
 		ptr=hold;
@@ -433,7 +435,7 @@ public class BasicParse implements Basic {
 		return false;
 	}
 
-	public String FormatExpression() {
+	public String formatExpression() {
 		StringBuilder result = new StringBuilder();
 		BasicVariable a;
 		String str;
@@ -441,11 +443,11 @@ public class BasicParse implements Basic {
 		long l,space;
 
 				
-			if(LookAhead(KeyNames.keyTAB,false))
+			if(lookAhead(KeyNames.keyTAB,false))
 			{
-				ExpectToken('(');
-				var = ParseVariable(0,255);
-				ExpectToken(')');
+				expectToken('(');
+				var = parseVariable(0,255);
+				expectToken(')');
 				l=var.GetShort();
 				if(l==0)
 					return result.toString();
@@ -463,7 +465,7 @@ public class BasicParse implements Basic {
 				return result.toString();
 			}
 
-			a = Expr();
+			a = expr();
 			str = a.ToString();
 
 			column+=str.length();
@@ -471,10 +473,10 @@ public class BasicParse implements Basic {
 			return result.toString();
 	}
 
-	public void DoFileInput(long l) {
+	public void doFileInput(long l) {
 	}
 
-	public BasicVariable Constant() {
+	public BasicVariable constant() {
 		BasicVariable target = new BasicVariable();
 		double value,rtn;
 		int fractlnth,exponent;
@@ -485,7 +487,7 @@ public class BasicParse implements Basic {
 			switch(nextchar)
 			{
 			case '\"':
-				str = ParseString();
+				str = parseString();
 				target.edit(str);
 				return target;
 
@@ -547,7 +549,7 @@ public class BasicParse implements Basic {
 			return target;
 	}
 
-	BasicVariable Variable(BasicVariable v) {
+	private BasicVariable variable(BasicVariable v) {
 		BasicVariable result = new BasicVariable();
 		String varName;
 		BasicVariable var;
@@ -555,13 +557,13 @@ public class BasicParse implements Basic {
 
 			// Check for "module" function
 
-			if(this.module.getProgram().Scan(result))
+			if(this.module.getProgram().scan(result))
 				return result;
 
 			
 			// First check for built in function, or built-in constant
 
-			varName = ParseVariable();
+			varName = parseVariable();
 			key=BasicUtil.FindKeyword(varName);
 			if(key!=null)
 			{
@@ -590,12 +592,12 @@ public class BasicParse implements Basic {
 
 			// Check for user defined function
 
-			if(this.module.getProgram().Call(varName,result))
+			if(this.module.getProgram().call(varName,result))
 					return result;
 
 			// Check for actual variable
 
-			var=GetVariable(varName);
+			var=getVariable(varName);
 
 			if(var==null)
 			{// Undefined variable
@@ -618,7 +620,7 @@ public class BasicParse implements Basic {
 			if(var.getObjectType()==BasicTypes.typeObject)
 			{
 				kill_space();
-				if(LookAhead('.'))
+				if(lookAhead('.'))
 				{
 					if( !var.GetObject().Scan(result) )
 						throw(new BasicError(ErrorNumbers.errorUndefinedObject));
@@ -631,7 +633,7 @@ public class BasicParse implements Basic {
 			return result;
 	}
 
-	public BasicVariable Expr() {
+	public BasicVariable expr() {
 		BasicVariable rtn = new BasicVariable();
 		char sign;
 		BasicVariable target = new BasicVariable();
@@ -643,7 +645,7 @@ public class BasicParse implements Basic {
 				sign=getchr();
 			else	sign='+';
 
-			if(LookAhead("NOT",false))
+			if(lookAhead("NOT",false))
 				sign='N';
 
 			if(rtn.getObjectType()!=BasicTypes.typeUndefined)
@@ -652,7 +654,7 @@ public class BasicParse implements Basic {
 				// target with the right type
 			}
 
-			target = Expr1();
+			target = expr1();
 			kill_space();
 
 			if(sign=='-')
@@ -663,10 +665,10 @@ public class BasicParse implements Basic {
 
 			while( (nextchar=='&') || (nextchar=='+') || (nextchar=='-') || (this.line.indexOf("OR",ptr)==ptr) || (this.line.indexOf("AND",ptr)==ptr) )
 			{
-				if(LookAhead("OR",false))
+				if(lookAhead("OR",false))
 				{
 					BasicVariable t;
-					t = Expr1();
+					t = expr1();
 					if(target.getObjectType()==BasicTypes.typeBoolean)
 					{
 						b = (target.GetBoolean()||t.GetBoolean());
@@ -676,10 +678,10 @@ public class BasicParse implements Basic {
 						target.edit(target.GetLong()|t.GetLong());
 				}
 				else
-				if(LookAhead("AND",false))
+				if(lookAhead("AND",false))
 				{
 					BasicVariable t;
-					t = Expr1();
+					t = expr1();
 					if(target.getObjectType()==BasicTypes.typeBoolean)
 					{
 						b = (target.GetBoolean()&&t.GetBoolean());
@@ -689,10 +691,10 @@ public class BasicParse implements Basic {
 						target.edit(target.GetLong()&t.GetLong());
 				}
 				else
-				if( LookAhead('-') )
+				if( lookAhead('-') )
 				{
 					BasicVariable t;
-					t = Expr1();
+					t = expr1();
 
 					BasicUtil.PerformSub(target,target,t);
 				}
@@ -701,7 +703,7 @@ public class BasicParse implements Basic {
 				{
 					BasicVariable t;
 					BasicVariable t2 = new BasicVariable();
-					t = Expr1();
+					t = expr1();
 					BasicUtil.PerformAdd(t2,target,t);
 					target.Free();
 					target.edit(t2);
@@ -710,7 +712,7 @@ public class BasicParse implements Basic {
 				{
 					BasicVariable t;
 					BasicVariable t2 = new BasicVariable();
-					t = Expr1();
+					t = expr1();
 					BasicUtil.PerformCat(t2,target,t);
 					target.Free();
 					target.edit(t2);
@@ -723,18 +725,18 @@ public class BasicParse implements Basic {
 				return rtn;
 	}
 
-	public BasicVariable Expr1() {
+	public BasicVariable expr1() {
 		BasicVariable target = new BasicVariable();
 		BasicVariable t;
 		BasicVariable v = new BasicVariable();
 		kill_space();
 
-		target = Expr1p5();
+		target = expr1p5();
 		kill_space();
 
-		if(LookAhead(KeyNames.keyMOD,false) )
+		if(lookAhead(KeyNames.keyMOD,false) )
 		{
-			t = Expr1p5();
+			t = expr1p5();
 			target.edit((long)(target.GetLong()%t.GetLong()));
 			return target;
 		}
@@ -746,12 +748,12 @@ public class BasicParse implements Basic {
 			switch(getchr())
 			{
 				case '*':
-					t = Expr1p5();
+					t = expr1p5();
 					BasicUtil.PerformMul(target,target,t);
 					break;
 
 				case '/':
-					t = Expr1p5();
+					t = expr1p5();
 					if( t.GetDouble()==0)
 						throw(new BasicError(ErrorNumbers.errorDivZero));
 					BasicUtil.PerformDiv(target,target,t);
@@ -759,7 +761,7 @@ public class BasicParse implements Basic {
 
 				case '=':
 					v.edit(target);
-					t = Expr1p5();
+					t = expr1p5();
 					target.Free();
 					target.edit((boolean)(v.CompareE(t)));
 					break;
@@ -770,7 +772,7 @@ public class BasicParse implements Basic {
 					{
 						advance();
 						v.edit(target);
-						t = Expr1p5();	
+						t = expr1p5();	
 						target.Free();
 						target.edit(v.CompareNE(t));
 					}
@@ -779,14 +781,14 @@ public class BasicParse implements Basic {
 					{
 						advance();
 						v.edit(target);
-						t = Expr1p5();	
+						t = expr1p5();	
 						target.Free();
 						target.edit((boolean)(v.CompareLTE(t)));
 					}
 					else
 					{
 						v.edit(target);
-						t = Expr1p5();
+						t = expr1p5();
 						target.Free();
 						target.edit((boolean)(v.CompareLT(t)));
 					}
@@ -797,14 +799,14 @@ public class BasicParse implements Basic {
 					{
 						advance();
 						v.edit(target);
-						t = Expr1p5();
+						t = expr1p5();
 						target.Free();
 						target.edit((boolean)(v.CompareGTE(t)));
 					}
 					else
 					{
 						v.edit(target);
-						t = Expr1p5();
+						t = expr1p5();
 						target.Free();
 						target.edit(v.CompareGT(t));
 					}
@@ -814,20 +816,20 @@ public class BasicParse implements Basic {
 				return target;
 	}
 
-	public BasicVariable Expr1p5() {
+	public BasicVariable expr1p5() {
 		BasicVariable target = new BasicVariable();
 		
 		kill_space();
 		if( (nextchar>='A') && (nextchar<='Z') )
-			target = Variable(target);
+			target = variable(target);
 		else
 		if( (nextchar=='+') || (nextchar=='-') || Character.isDigit(nextchar) || (nextchar=='.') || (nextchar=='\"') )
-			target = Constant();
+			target = constant();
 		else
 		if( nextchar=='(' )
 		{
 			advance();
-			target = Expr();
+			target = expr();
 			if(nextchar==')')
 				advance();
 		}
@@ -840,14 +842,14 @@ public class BasicParse implements Basic {
 			BasicVariable a = new BasicVariable();
 			BasicVariable b;
 			a.edit(target);
-			b = Expr1p5();
+			b = expr1p5();
 			target.Free();
 			BasicUtil.PerformPower(target,a,b);
 		}
 		return target;
 	}
 
-	public String ParseString() {
+	public String parseString() {
 		StringBuilder str = new StringBuilder();
 		
 		char ch;
@@ -882,7 +884,7 @@ public class BasicParse implements Basic {
 	 * 
 	 * @return A variable name.
 	 */
-	public String ParseVariable() {
+	public String parseVariable() {
 		StringBuilder result = new StringBuilder();
 
 		char ch;
@@ -904,7 +906,7 @@ public class BasicParse implements Basic {
 		return result.toString();
 	}
 
-	private boolean IsAssignment() {
+	private boolean isAssignment() {
 		int p;
 
 		p=ptr;
@@ -935,21 +937,21 @@ public class BasicParse implements Basic {
 		return true;
 	}
 
-	public boolean EvaluateDo() {
+	public boolean evaluateDo() {
 		BasicVariable varObj;
 		boolean not;
 
 		kill_space();
 
-		if(LookAhead(KeyNames.keyWHILE,false))
+		if(lookAhead(KeyNames.keyWHILE,false))
 			not=false;
 		else
-		if(LookAhead(KeyNames.keyUNTIL,false) )
+		if(lookAhead(KeyNames.keyUNTIL,false) )
 			not=true;
 		else
 			throw(new BasicError(ErrorNumbers.errorIllegalUse));
 
-		varObj=Expr();
+		varObj=expr();
 		if(not)
 		{
 			if(varObj.GetBoolean())
@@ -966,20 +968,20 @@ public class BasicParse implements Basic {
 		}
 	}
 
-	public BasicVariable GetNextVariable(String n) {
+	public BasicVariable getNextVariable(String n) {
 		String str;
 
 		if (n != null) {
-			n = ParseVariable();
-			return GetVariable(n);
+			n = parseVariable();
+			return getVariable(n);
 		} else {
-			n = ParseVariable();
-			return GetVariable(n);
+			n = parseVariable();
+			return getVariable(n);
 		}
 
 	}
 
-	public BasicVariable GetVariable(String name) {
+	public BasicVariable getVariable(String name) {
 		BasicVariable rtn;
 		
 		rtn=variables.get(name);	
@@ -990,30 +992,30 @@ public class BasicParse implements Basic {
 		if(rtn.IsArray())
 		{
 			kill_space();
-			if(LookAhead('('))
+			if(lookAhead('('))
 			{
 				BasicVariable varObj;
 				int x=0,y=0,z=0;
 
-				varObj = ParseVariable(0,0);
+				varObj = parseVariable(0,0);
 				x=varObj.GetShort();
 				if(x<1)
 					throw(new BasicError(ErrorNumbers.errorDim));
-				if(LookAhead(','))
+				if(lookAhead(','))
 				{
-					varObj = ParseVariable(0,0);
+					varObj = parseVariable(0,0);
 					y=varObj.GetShort();
 					if(y<1)
 						throw(new BasicError(ErrorNumbers.errorDim));
-					if(LookAhead(','))
+					if(lookAhead(','))
 					{
-						varObj = ParseVariable(0,0);
+						varObj = parseVariable(0,0);
 						z=varObj.GetShort();
 						if(z<1)
 							throw(new BasicError(ErrorNumbers.errorDim));
 					}
 				}
-				ExpectToken(')');
+				expectToken(')');
 
 				rtn.SetArrayLocation(x,y,z);
 			}
@@ -1027,7 +1029,7 @@ public class BasicParse implements Basic {
 	/**
 	 * Will be defined in subclass.
 	 */
-	public boolean Scan(BasicVariable target) {
+	public boolean scan(BasicVariable target) {
 		
 		return false;
 	}
@@ -1035,39 +1037,39 @@ public class BasicParse implements Basic {
 	/**
 	 * Will be defined in subclass.
 	 */
-	public boolean Update() {
+	public boolean update() {
 		return false;
 	}
 
 	/**
 	 * Will be defined in subclass.
 	 */
-	public boolean Execute() {
+	public boolean execute() {
 		return false;
 	}
 
 	/**
 	 * Will be defined in subclass.
 	 */
-	public boolean NewObject() {
+	public boolean newObject() {
 		return false;
 	}
 
 	/**
 	 * Will be defined in subclass.
 	 */
-	public BasicVariable CreateObject() {
+	public BasicVariable createObject() {
 		return null;
 	}
 
 	/**
 	 * Will be defined in subclass.
 	 */
-	public void CreateGlobals() {
+	public void createGlobals() {
 
 	}
 
-	public void MoveNextLine() {
+	public void moveNextLine() {
 		do {
 			int num = currentLine.getNumber();
 			num++;
@@ -1076,10 +1078,10 @@ public class BasicParse implements Basic {
 			else
 				currentLine=subLines.get(num);
 			
-		} while ((currentLine != null) && !LoadLine(currentLine.Command()));
+		} while ((currentLine != null) && !loadLine(currentLine.Command()));
 	}
 
-	public void MovePastColen() {
+	public void movePastColen() {
 		boolean quote;
 		
 		kill_space();
@@ -1095,11 +1097,11 @@ public class BasicParse implements Basic {
 	}
 
 	
-	public void Maint() {
-		this.module.getProgram().Maint();
+	public void maint() {
+		this.module.getProgram().maint();
 	}
 
-	public boolean Call(String var) {
+	public boolean call(String var) {
 		boolean isFunct;
 		String varName = null;
 		BasicParse caller;
@@ -1113,12 +1115,12 @@ public class BasicParse implements Basic {
 
 		boolean callingMain = (caller==null);
 
-		if(!LoadLine(currentLine.Command()))
+		if(!loadLine(currentLine.Command()))
 			return false;
 
-		if(!LookAhead(KeyNames.keyFUNCTION,false) )
+		if(!lookAhead(KeyNames.keyFUNCTION,false) )
 		{
-			if(LookAhead(KeyNames.keySUB,false) )
+			if(lookAhead(KeyNames.keySUB,false) )
 				isFunct=false;
 			else
 				throw(new BasicError(ErrorNumbers.errorFunctionProc));
@@ -1134,19 +1136,19 @@ public class BasicParse implements Basic {
 				(nextchar!=':') )
 			{
 
-				varName = ParseVariable();
+				varName = parseVariable();
 				kill_space();
 
-				LookAhead('(');
-				ParamaterList(caller);
-				LookAhead(')');
+				lookAhead('(');
+				paramaterList(caller);
+				lookAhead(')');
 			}
 
 			kill_space();
 			
 			if( (this.line.charAt(this.ptr)=='A') && (this.line.charAt(this.ptr+1)=='S') )
 			{
-				BasicVariable v = CreateVariable(var);
+				BasicVariable v = createVariable(var);
 				this.variables.put(varName, v);
 			}
 		}
@@ -1164,19 +1166,19 @@ public class BasicParse implements Basic {
 		{
 			if(parse(currentLine.Command()))
 			{
-				MoveNextLine();
+				moveNextLine();
 			}
 		}
 		return true;
 	}
 
-	public boolean EventCall(String var, int x, int y, int z) {
+	public boolean eventCall(String var, int x, int y, int z) {
 		
 		currentLine=this.module.FindFunction(var);
 		if(currentLine==null)
 			return false;
 
-		EventParamaterList(x,y,z);
+		eventParamaterList(x,y,z);
 
 		currentLine=(BasicLine)currentLine.getSub().get(0);
 		if(currentLine==null)
@@ -1193,12 +1195,12 @@ public class BasicParse implements Basic {
 
 	// The following call is only used to run the first pass to check
 	// for global data.
-	public boolean Call() {
+	public boolean call() {
 		this.variables = this.module.getProgram().getGlobals();
 
 		for(BasicLine currentLine : this.module.getProgramLines() )
 		{
-			if(!GlobalParse(currentLine.Command()))
+			if(!globalParse(currentLine.Command()))
 				break;
 		}
 		
@@ -1206,7 +1208,7 @@ public class BasicParse implements Basic {
 
 	}
 
-	public void ParamaterList(BasicParse caller) {
+	public void paramaterList(BasicParse caller) {
 		String varName;
 		BasicVariable v;
 		BasicVariable v2;
@@ -1215,22 +1217,22 @@ public class BasicParse implements Basic {
 		{
 			boolean byref=false;
 
-			if(LookAhead(KeyNames.keyBYREF,false))
+			if(lookAhead(KeyNames.keyBYREF,false))
 				byref=true;
 			else
-				LookAhead(KeyNames.keyBYVAL,false);
+				lookAhead(KeyNames.keyBYVAL,false);
 
-			varName = ParseVariable();
+			varName = parseVariable();
 
 			if(byref)
 			{
-				v2=CreateVariable(varName);
+				v2=createVariable(varName);
 				v2=new BasicVariable();
 				
 				if( (caller.nextchar==':') || caller.nextchar>0 )
 					throw(new BasicError(ErrorNumbers.errorParamaters));
 
-				v=caller.GetNextVariable(null);
+				v=caller.getNextVariable(null);
 				if(v==null)
 					throw(new BasicError(ErrorNumbers.errorUndefinedVariable));
 				v.CreateRef(v2);
@@ -1238,33 +1240,33 @@ public class BasicParse implements Basic {
 			}
 			else
 			{
-				v=CreateVariable(varName);
-				v = caller.Expr();
+				v=createVariable(varName);
+				v = caller.expr();
 				variables.put(varName,v);
 			}
 			caller.kill_space();
 			kill_space();
 			if(nextchar==',')
 			{
-				caller.ExpectToken(',');
+				caller.expectToken(',');
 				caller.kill_space();
-				ExpectToken(',');
+				expectToken(',');
 				kill_space();
 			}
 		}
 	}
 
-	public void EventParamaterList(int x, int y, int z) {
+	public void eventParamaterList(int x, int y, int z) {
 		String varName;
 		BasicVariable v;
 		int count=0;
 
-		if(!LoadLine(currentLine.Command()))
+		if(!loadLine(currentLine.Command()))
 			return;
 
-		if(!LookAhead(KeyNames.keyFUNCTION,false) && !LookAhead(KeyNames.keySUB,false) )
+		if(!lookAhead(KeyNames.keyFUNCTION,false) && !lookAhead(KeyNames.keySUB,false) )
 			throw(new BasicError(ErrorNumbers.errorFunctionProc));
-		varName = ParseVariable();
+		varName = parseVariable();
 		kill_space();
 		if( nextchar!='(' )
 			return;
@@ -1273,11 +1275,11 @@ public class BasicParse implements Basic {
 
 		while(nextchar!=')' && nextchar>0)
 		{
-			LookAhead(KeyNames.keyBYREF,false);// Ignore
-			LookAhead(KeyNames.keyBYVAL,false);// Ignore
-			varName = ParseVariable();
+			lookAhead(KeyNames.keyBYREF,false);// Ignore
+			lookAhead(KeyNames.keyBYVAL,false);// Ignore
+			varName = parseVariable();
 
-			v=CreateVariable(varName);
+			v=createVariable(varName);
 			count++;
 			switch(count)
 			{
@@ -1290,19 +1292,13 @@ public class BasicParse implements Basic {
 			kill_space();
 			if(nextchar==',')
 			{
-				ExpectToken(',');
+				expectToken(',');
 				kill_space();
 			}
 		}
 	}
 
-
-
-
-	String errorLabel;
-	char nextchar;// The next character to be parsed
-
-	public boolean LoadLine(String l) {
+	public boolean loadLine(String l) {
 		
 		this.module.getProgram().setFunction(this);
 
@@ -1316,25 +1312,25 @@ public class BasicParse implements Basic {
 		return true;
 	}
 
-	public void MoveToEndIf(boolean stopOnElse) {
+	public void moveToEndIf(boolean stopOnElse) {
 		while(currentLine!=null)
 		{
 			do 
 			{
-				if( LookAhead(KeyNames.keyIF,false) )
+				if( lookAhead(KeyNames.keyIF,false) )
 				{// Found a nested if, is it block or line?
-					BasicVariable ignore = Expr();
-					if( !LookAhead(KeyNames.keyTHEN, false) )
+					BasicVariable ignore = expr();
+					if( !lookAhead(KeyNames.keyTHEN, false) )
 						throw(new BasicError(ErrorNumbers.errorNoThen));
 					kill_space();
 					if(nextchar==0 )
-						MoveToEndIf(false);
+						moveToEndIf(false);
 				}
 
-				if(LookAhead(KeyNames.keyEND,true))
+				if(lookAhead(KeyNames.keyEND,true))
 				{
 					kill_space();
-					if(LookAhead(KeyNames.keyIF, false))
+					if(lookAhead(KeyNames.keyIF, false))
 						return;
 					else
 						throw(new BasicError(ErrorNumbers.errorBlock));
@@ -1342,127 +1338,127 @@ public class BasicParse implements Basic {
 
 				if(stopOnElse)
 				{
-					if( LookAhead(KeyNames.keyELSE, false) )
+					if( lookAhead(KeyNames.keyELSE, false) )
 					{
 						ifs++;
 						return;
 					}
 
-					if( LookAhead(KeyNames.keyELSEIF,false) ) 
+					if( lookAhead(KeyNames.keyELSEIF,false) ) 
 					{
 						//ifs++;
-						this.commands.CmdIf();
+						this.commands.cmdIf();
 						return;
 					}
 				}
 
-				MovePastColen();
+				movePastColen();
 
 			} while(nextchar>0);
 
-			MoveNextLine();
+			moveNextLine();
 		}
 	}
 
-	public void MoveToNext() {
+	public void moveToNext() {
 		while(currentLine!=null)
 		{
 			do 
 			{
-				if( LookAhead(KeyNames.keyFOR,false) )
-					MoveToNext();
+				if( lookAhead(KeyNames.keyFOR,false) )
+					moveToNext();
 
-				if( LookAhead(KeyNames.keyEND,false) )
+				if( lookAhead(KeyNames.keyEND,false) )
 				{
 					kill_space();
-					if(!LookAhead(KeyNames.keyIF,false))
+					if(!lookAhead(KeyNames.keyIF,false))
 						throw(new BasicError(ErrorNumbers.errorBlock));
 				} 
 
-				if(LookAhead(KeyNames.keyNEXT,false))
+				if(lookAhead(KeyNames.keyNEXT,false))
 					return;
 
-				MovePastColen();
+				movePastColen();
 
 			} while(nextchar>0);
 
-			MoveNextLine();
+			moveNextLine();
 		}
 	}
 
-	public void MoveToWEnd() {
+	public void moveToWEnd() {
 		while(currentLine!=null)
 		{
 			do 
 			{
-				if( LookAhead(KeyNames.keyWHILE,false) )
-					MoveToWEnd();
+				if( lookAhead(KeyNames.keyWHILE,false) )
+					moveToWEnd();
 
-				if(LookAhead(KeyNames.keyEND,false))
+				if(lookAhead(KeyNames.keyEND,false))
 				{
 					kill_space();
-					if(!LookAhead(KeyNames.keyIF,false))
+					if(!lookAhead(KeyNames.keyIF,false))
 						throw(new BasicError(ErrorNumbers.errorBlock));
 				} 
 
-				if(LookAhead(KeyNames.keyWEND,false) )
+				if(lookAhead(KeyNames.keyWEND,false) )
 					return;
 
-				MovePastColen();
+				movePastColen();
 
 			} while(nextchar>0);
 
-			MoveNextLine();
+			moveNextLine();
 		}
 	}
 
-	public void MoveToLoop() {
+	public void moveToLoop() {
 		while(currentLine!=null)
 		{
 			do 
 			{
-				if( LookAhead(KeyNames.keyDO,false) )
-					MoveToLoop();
+				if( lookAhead(KeyNames.keyDO,false) )
+					moveToLoop();
 
-				if(LookAhead(KeyNames.keyEND,false))
+				if(lookAhead(KeyNames.keyEND,false))
 				{
 					kill_space();
-					if(!LookAhead(KeyNames.keyIF,false))
+					if(!lookAhead(KeyNames.keyIF,false))
 						throw(new BasicError(ErrorNumbers.errorBlock));
 				} 
 
-				if(LookAhead(KeyNames.keyLOOP,false) )
+				if(lookAhead(KeyNames.keyLOOP,false) )
 					return;
 
-				MovePastColen();
+				movePastColen();
 
 			} while(nextchar>0);
 
-			MoveNextLine();
+			moveNextLine();
 		}
 
 	}
 
-	public void MoveToEndCase() {
+	public void moveToEndCase() {
 		while(currentLine!=null)
 		{
 			do 
 			{
-				if( LookAhead(KeyNames.keySELECT,false) )
-					MoveToEndCase();
+				if( lookAhead(KeyNames.keySELECT,false) )
+					moveToEndCase();
 
-				if(LookAhead(KeyNames.keyEND,false))
+				if(lookAhead(KeyNames.keyEND,false))
 				{
 					kill_space();
-					if(!LookAhead(KeyNames.keyCASE,false))
+					if(!lookAhead(KeyNames.keyCASE,false))
 						return;
 				} 
 
-				MovePastColen();
+				movePastColen();
 
 			} while(nextchar>0);
 
-			MoveNextLine();
+			moveNextLine();
 		}
 	}
 
@@ -1519,7 +1515,7 @@ public class BasicParse implements Basic {
 	public void setCurrentLine(BasicLine currentLine) {
 		this.currentLine = currentLine;
 		if( this.currentLine!=null)
-			LoadLine(this.currentLine.getText());
+			loadLine(this.currentLine.getText());
 	}
 
 	public void parse() {

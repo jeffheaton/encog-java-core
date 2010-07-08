@@ -19,16 +19,12 @@ public class BasicProgram implements Basic {
 	private BasicParse function;
 	private final Map<String,BasicVariable> globals = new HashMap<String,BasicVariable>();
 	private boolean m_noMaint;
-	private static String m_args;
 	
 	private RandomAccessFile fileHandles[];
 	private long fileAttr[];
 	private short reclen[];
 
 	private ConsoleInputOutput console;
-	private boolean debugMode;
-	private boolean stepMode;
-	private Err m_err;
 	
 	private final List<BasicModule> modules = new ArrayList<BasicModule>();
 	private final List<Basic> functions = new ArrayList<Basic>();
@@ -41,27 +37,25 @@ public class BasicProgram implements Basic {
 		function=null;
 		quitProgram=false;
 		m_noMaint = false;
-		debugMode=false;
-		stepMode=false;
 	}
 	
-	public void LoadModule(EncogScript script)
+	public void loadModule(EncogScript script)
 	{
 		BasicModule module = new BasicModule(this);
 		module.Load(script);
 		this.modules.add(module);	
 	}
 	
-	public void AddFunctions(Basic functions)
+	public void addFunctions(Basic functions)
 	{
 		this.functions.add(functions);
 	}
 
-	public boolean Scan(BasicVariable target)
+	public boolean scan(BasicVariable target)
 	{
 		for( Basic basic: this.functions )
 		{
-			if( basic.Scan(target))
+			if( basic.scan(target))
 			{
 				return true;
 			}
@@ -70,11 +64,11 @@ public class BasicProgram implements Basic {
 		return false;
 	}
 	
-	public boolean Update()
+	public boolean update()
 	{
 		for( Basic basic: this.functions )
 		{
-			if( basic.Update())
+			if( basic.update())
 			{
 				return true;
 			}
@@ -83,11 +77,11 @@ public class BasicProgram implements Basic {
 		return false;
 	}
 	
-	public boolean Execute()
+	public boolean execute()
 	{
 		for( Basic basic: this.functions )
 		{
-			if( basic.Execute())
+			if( basic.execute())
 			{
 				return true;
 			}
@@ -96,11 +90,11 @@ public class BasicProgram implements Basic {
 		return false;
 	}
 
-	public boolean NewObject()
+	public boolean newObject()
 	{
 		for( Basic basic: this.functions )
 		{
-			if( basic.NewObject())
+			if( basic.newObject())
 			{
 				return true;
 			}
@@ -109,13 +103,13 @@ public class BasicProgram implements Basic {
 		return false;
 	}
 	
-	public BasicVariable CreateObject()
+	public BasicVariable createObject()
 	{
 		for( Basic basic: this.functions )
 		{
 			BasicVariable var;
 			
-			if( (var=basic.CreateObject()) !=null )
+			if( (var=basic.createObject()) !=null )
 			{
 				return var;
 			}
@@ -125,7 +119,7 @@ public class BasicProgram implements Basic {
 
 	}
 	
-	public void CreateGlobals()
+	public void createGlobals()
 	{
 		globals.clear();
 		
@@ -133,7 +127,7 @@ public class BasicProgram implements Basic {
 
 		for(Basic basic: this.functions )
 		{
-			basic.CreateGlobals();
+			basic.createGlobals();
 		}
 
 		
@@ -143,7 +137,7 @@ public class BasicProgram implements Basic {
 		{
 			BasicParse fn = new BasicParse(module);
 			
-			if( !fn.Call() )
+			if( !fn.call() )
 			{
 				throw new EncogError("Can't execute script");
 			}
@@ -154,27 +148,27 @@ public class BasicProgram implements Basic {
 
 	}
 	
-	public void Clear()
+	public void clear()
 	{
 		modules.clear();
 		globals.clear();
 	}
 
-	public void Allocate()
+	public void allocate()
 	{
 		
 	}
-	public void Free()
+	public void free()
 	{
 		
 	}
 	
-	public void Copy(BasicVariable v)
+	public void copy(BasicVariable v)
 	{
 		
 	}
 
-	public boolean Call(BasicModule module,String name,BasicVariable target)
+	public boolean call(BasicModule module,String name,BasicVariable target)
 	{
 		BasicVariable v;
 
@@ -182,10 +176,10 @@ public class BasicProgram implements Basic {
 			return false;
 
 		BasicParse fn = new BasicParse(module);
-		if(fn.Call(name))
+		if(fn.call(name))
 		{
 		// Check for return code(if any)
-			v=(BasicVariable)fn.GetVariable(name);
+			v=(BasicVariable)fn.getVariable(name);
 			if(v!=null)
 				target.edit(v);
 			return true;
@@ -193,11 +187,11 @@ public class BasicProgram implements Basic {
 		return false;
 	}
 	
-	public boolean Call(String fn,BasicVariable target)
+	public boolean call(String fn,BasicVariable target)
 	{
 		for(BasicModule module: this.modules)
 		{
-			if( Call(module,fn,target))
+			if( call(module,fn,target))
 				return true;
 		}
 
@@ -205,18 +199,18 @@ public class BasicProgram implements Basic {
 
 	}
 
-	public void CloseAllFiles()
+	public void closeAllFiles()
 	{
 		
 	}
-	public void Maint()
+	public void maint()
 	{
 		if(m_noMaint)
 			return;
 
 		for(Basic basic: this.functions)
 		{
-			basic.Maint();
+			basic.maint();
 		}
 	}
 	
