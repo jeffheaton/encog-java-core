@@ -133,7 +133,7 @@ public class BasicVariable extends BasicObject {
 		}
 	}
 
-	void edit(short v)
+	public void edit(short v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
 			this.data = new Integer[1];
@@ -152,7 +152,7 @@ public class BasicVariable extends BasicObject {
 
 	}
 
-	void edit(long v)
+	public void edit(long v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
 			this.data = new Long[1];
@@ -172,7 +172,7 @@ public class BasicVariable extends BasicObject {
 
 	}
 
-	void edit(double v)
+	public void edit(double v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data==null) {
 			setObjectType(BasicTypes.typeDouble);
@@ -190,7 +190,7 @@ public class BasicVariable extends BasicObject {
 		}
 	}
 
-	void edit(byte v)
+	public void edit(byte v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
 			setObjectType(BasicTypes.typeByte);
@@ -208,7 +208,7 @@ public class BasicVariable extends BasicObject {
 		}
 	}
 
-	void edit(boolean v)
+	public void edit(boolean v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
 			this.data = new Boolean[1];
@@ -220,7 +220,7 @@ public class BasicVariable extends BasicObject {
 		((Boolean[])this.data)[this.currentIndex] = v;
 	}
 
-	void edit(char v)
+	public void edit(char v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {			
 			setObjectType(BasicTypes.typeCharacter);
@@ -233,7 +233,7 @@ public class BasicVariable extends BasicObject {
 		this.data=v;
 	}
 
-	void edit(BasicObjectVariable v)
+	public void edit(BasicObjectVariable v)
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {
 			setObjectType(BasicTypes.typeObject);
@@ -245,7 +245,7 @@ public class BasicVariable extends BasicObject {
 		((BasicObjectVariable[])this.data)[this.currentIndex] = v;
 	}
 
-	void edit(BasicVariable c)
+	public void edit(BasicVariable c)
 	{
 		switch( c.getObjectType() )
 		{
@@ -295,12 +295,12 @@ public class BasicVariable extends BasicObject {
 		}
 	}
 
-	void CreateRef(BasicVariable v)
+	public void CreateRef(BasicVariable v)
 	{
 		v.HelpCreateRef(data,getObjectType(),x,y,z);
 	}
 
-	void HelpCreateRef(Object b,BasicTypes t,int xx,int yy,int zz)
+	public void HelpCreateRef(Object b,BasicTypes t,int xx,int yy,int zz)
 	{
 		data=b;
 		currentIndex = 0;
@@ -311,12 +311,12 @@ public class BasicVariable extends BasicObject {
 		z=zz;
 	}
 
-	boolean IsArray()
+	public boolean IsArray()
 	{
 		return x!=0;
 	}
 	
-	boolean IsNULL()
+	public boolean IsNULL()
 	{
 		return( (data==null) || (data==buffer) );
 	}
@@ -584,7 +584,7 @@ public class BasicVariable extends BasicObject {
 	}
 
 
-	boolean CompareE(BasicVariable v)
+	public boolean CompareE(BasicVariable v)
 	{
 		switch(getObjectType())
 		{
@@ -609,12 +609,12 @@ public class BasicVariable extends BasicObject {
 		return false;
 	}
 
-	boolean CompareNE(BasicVariable v)
+	public boolean CompareNE(BasicVariable v)
 	{
 		return !CompareE(v);
 	}
 
-	boolean CompareGT(BasicVariable v)
+	public boolean CompareGT(BasicVariable v)
 	{
 		switch(getObjectType())
 		{
@@ -636,7 +636,7 @@ public class BasicVariable extends BasicObject {
 		return false;
 	}
 
-	boolean CompareLT(BasicVariable v)
+	public boolean CompareLT(BasicVariable v)
 	{
 		switch(getObjectType())
 		{
@@ -659,12 +659,12 @@ public class BasicVariable extends BasicObject {
 		return false;
 	}
 
-	boolean CompareGTE(BasicVariable v)
+	public boolean CompareGTE(BasicVariable v)
 	{
 		return( CompareE(v) || CompareGT(v) );
 	}
 
-	boolean CompareLTE(BasicVariable v)
+	public boolean CompareLTE(BasicVariable v)
 	{
 		return( CompareE(v) || CompareLT(v) );
 	}

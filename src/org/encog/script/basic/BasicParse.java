@@ -12,15 +12,12 @@ import org.encog.script.basic.commands.BasicFunctions;
 public class BasicParse implements Basic {
 
 	public static final int MAX_VARIABLE_NAME = 80;
-
-	private String name;
 	private BasicCommands commands;
 	private BasicFunctions functions;
 	private int ifs;
 	private Stack stack = new Stack();// The stack
-	private boolean requestBreak;
 	private String line;
-	private int ptr;// The line we're parsing and where we're at
+	private int ptr;
 
 	private long column;
 	private BasicVariable is;// Current value of IS keyword
@@ -181,10 +178,8 @@ public class BasicParse implements Basic {
 		ptr = 0;
 		line = "LINE";
 		nextchar=0;
-		requestBreak=false;
 		variables=new HashMap<String,BasicVariable>();
 		ifs=0;
-		name = "<GLOBAL>";
 		column=0;
 	}
 
@@ -228,6 +223,8 @@ public class BasicParse implements Basic {
 		} catch (BasicError n) {
 			//SetERR(n.getId());
 
+			n.setLine(this.currentLine);
+			
 			if (errorLabel != null && errorLabel.charAt(0) == '*')
 				return true;
 
@@ -288,7 +285,7 @@ public class BasicParse implements Basic {
 			}
 
 			ExpectToken('=');
-			varObj = Expr();
+			varObj.edit( Expr() );
 			variables.put(var, varObj);
 
 	}
@@ -907,17 +904,7 @@ public class BasicParse implements Basic {
 		return result.toString();
 	}
 
-	public void RequestBreak() {
-		requestBreak = true;
-	}
-
-	public void go(String label) {
-		if(module==null)
-			throw(new BasicError(ErrorNumbers.errorModule));
-		currentLine=module.Go(label);	
-	}
-
-	boolean IsAssignment() {
+	private boolean IsAssignment() {
 		int p;
 
 		p=ptr;
@@ -1010,19 +997,19 @@ public class BasicParse implements Basic {
 
 				varObj = ParseVariable(0,0);
 				x=varObj.GetShort();
-				if(x>0)
+				if(x<1)
 					throw(new BasicError(ErrorNumbers.errorDim));
 				if(LookAhead(','))
 				{
 					varObj = ParseVariable(0,0);
 					y=varObj.GetShort();
-					if(y>0)
+					if(y<1)
 						throw(new BasicError(ErrorNumbers.errorDim));
 					if(LookAhead(','))
 					{
 						varObj = ParseVariable(0,0);
 						z=varObj.GetShort();
-						if(z>0)
+						if(z<1)
 							throw(new BasicError(ErrorNumbers.errorDim));
 					}
 				}
@@ -1163,9 +1150,6 @@ public class BasicParse implements Basic {
 				this.variables.put(varName, v);
 			}
 		}
-
-		name = var;
-
 		
 		// Actually run the program
 
@@ -1193,7 +1177,6 @@ public class BasicParse implements Basic {
 			return false;
 
 		EventParamaterList(x,y,z);
-		name = var;
 
 		currentLine=(BasicLine)currentLine.getSub().get(0);
 		if(currentLine==null)
@@ -1381,7 +1364,7 @@ public class BasicParse implements Basic {
 		}
 	}
 
-	void MoveToNext() {
+	public void MoveToNext() {
 		while(currentLine!=null)
 		{
 			do 
@@ -1460,7 +1443,7 @@ public class BasicParse implements Basic {
 
 	}
 
-	void MoveToEndCase() {
+	public void MoveToEndCase() {
 		while(currentLine!=null)
 		{
 			do 
@@ -1545,4 +1528,34 @@ public class BasicParse implements Basic {
 		
 	}
 
+	public void addVariable(String var, BasicVariable varObj) {
+		this.variables.put(var, varObj);		
+	}
+	
+	public void go(String label)
+	{
+		String key = label.toUpperCase();
+		
+		if( !this.getModule().getProgramLabels().containsKey(key) )
+			throw(new BasicError(ErrorNumbers.errorLabel));
+
+		BasicLine line = this.getModule().getProgramLabels().get(key);
+		setCurrentLine(line);
+	}
+
+	/**
+	 * @return the errorLabel
+	 */
+	public String getErrorLabel() {
+		return errorLabel;
+	}
+
+	/**
+	 * @param errorLabel the errorLabel to set
+	 */
+	public void setErrorLabel(String errorLabel) {
+		this.errorLabel = errorLabel;
+	}
+	
+	
 }

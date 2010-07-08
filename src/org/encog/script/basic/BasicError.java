@@ -8,7 +8,7 @@ import org.encog.EncogError;
 public class BasicError extends EncogError {
 	
 	private static Map<ErrorNumbers,String> errors;
-	
+	private BasicLine line;
 	
 	public BasicError(ErrorNumbers id)
 	{
@@ -84,6 +84,20 @@ public class BasicError extends EncogError {
 
 	public ErrorNumbers getId() {
 		return id;
+	}
+
+	/**
+	 * @return the line
+	 */
+	public BasicLine getLine() {
+		return line;
+	}
+
+	/**
+	 * @param line the line to set
+	 */
+	public void setLine(BasicLine line) {
+		this.line = line;
 	}
 
 	

@@ -59,7 +59,7 @@ public class BasicCommands {
 			CmdElseIf();
 			break;
 		case keyEND:
-			return CmdEnd();
+			CmdEnd();
 		case keyERASE:
 			CmdErase();
 			break;
@@ -114,7 +114,7 @@ public class BasicCommands {
 			CmdNext();
 			break;
 		case keyON:
-			return CmdOn();
+			CmdOn();
 		case keyOPEN:
 			CmdOpen();
 			break;
@@ -210,6 +210,7 @@ public class BasicCommands {
 	}
 
 	public void CmdCase() {
+		this.parse.MoveToEndCase();
 	}
 
 	public void CmdChDir() {
@@ -228,6 +229,26 @@ public class BasicCommands {
 	}
 
 	public void CmdDim() {
+		BasicVariable v;
+		String var;
+
+		for(;;)	
+		{
+			this.parse.kill_space();
+			var = this.parse.ParseVariable();
+			if( BasicUtil.FindKeyword(var)!=null)
+				throw(new BasicError(ErrorNumbers.errorKeyword));
+
+			if(this.parse.GetVariable(var)!=null)
+				throw(new BasicError(ErrorNumbers.errorAlreadyDefined));
+		
+			v = this.parse.CreateVariable(var);
+			this.parse.addVariable(var, v);
+			
+			this.parse.kill_space();
+			if( !this.parse.LookAhead(',') )
+				break;
+		}
 	}
 
 	public void CmdDo() {
@@ -254,8 +275,20 @@ public class BasicCommands {
 		CmdIf();
 	}
 
-	public boolean CmdEnd() {
-		return true;
+	public void CmdEnd() {
+		this.parse.kill_space();
+
+		if(this.parse.LookAhead(KeyNames.keyIF, false))
+		{
+			CmdEndIf();
+		}
+		else
+		{
+			this.parse.kill_space();
+			
+			if(this.parse.getNextChar()==0)			
+				this.parse.getModule().getProgram().setQuitProgram(true);
+		}		
 	}
 
 	public void CmdEndIf() {
@@ -273,7 +306,61 @@ public class BasicCommands {
 	}
 
 	public void CmdFor() {
+		BasicVariable a,varObj;
+		String var;
+		int start,stop,step;
+
+		var = this.parse.ParseVariable();
+		this.parse.ExpectToken('=');
+
+		a = this.parse.Expr();
+		start=(int)a.GetLong();
 		
+		if(!this.parse.LookAhead(KeyNames.keyTO,false) )
+			throw(new BasicError(ErrorNumbers.errorNoTo));
+
+		a = this.parse.Expr();
+		stop=(int)a.GetLong();
+
+		if(this.parse.LookAhead(KeyNames.keySTEP,false))
+		{
+			a = this.parse.Expr();
+			step=(int)a.GetLong();
+		}
+		else step=1;
+
+		if(step==0)
+			throw(new BasicError(ErrorNumbers.errorIllegalUse));
+
+		if(step<0)
+		{
+			if(start<stop)
+			{
+				this.parse.MoveToNext();
+				return;
+			}
+		}
+		else
+		{
+			if(start>stop)
+			{
+				this.parse.MoveToNext();
+				return;
+			}
+		}
+			
+
+		varObj=this.parse.GetVariable(var);
+
+		if(varObj==null)
+		{
+			varObj=new BasicVariable((long)0);
+			this.parse.addVariable(var,varObj);
+		}
+
+		varObj.edit((long)start);
+
+		parse.getStack().push(new StackEntry(StackEntryType.stackFor,this.parse.getCurrentLine(),varObj,start,stop,step));
 	}
 
 	public void CmdFunction() {
@@ -286,6 +373,11 @@ public class BasicCommands {
 	}
 
 	public void CmdGoto() {
+		String str;
+
+		this.parse.kill_space();
+		str = this.parse.ParseVariable();
+		this.parse.go(str);
 	}
 
 	public void CmdIf() {
@@ -369,12 +461,6 @@ public class BasicCommands {
 		{
 			this.parse.setCurrentLine(bl);
 			this.parse.parse();
-
-			if(!this.parse.EvaluateDo())
-			{
-				this.parse.getStack().pop();
-				this.parse.MoveToLoop();
-			}
 		}
 	}
 
@@ -391,13 +477,81 @@ public class BasicCommands {
 	}
 
 	public void CmdNext() {
+		int idx,ln;
+		double d;
+
+		this.parse.kill_space();
+		if(this.parse.getStack().empty())
+			throw(new BasicError(ErrorNumbers.errorNoFor));
+
+		if(this.parse.getStack().peekType()!=StackEntryType.stackFor)
+			throw(new BasicError(ErrorNumbers.errorNoFor));
+			
+		StackEntry entry = this.parse.getStack().peek();
+		int start = entry.getStart();
+		int stop = entry.getStop();
+		int step = entry.getStep();
+		BasicVariable varObj = entry.getVariable();
+		
+		if(varObj==null)
+			throw(new BasicError(ErrorNumbers.errorUndefinedVariable));
+		d = varObj.GetDouble();
+		d+=step;
+		varObj.edit(d);
+
+		boolean done=false;
+
+		if(step>0)
+		{
+			if(d>stop)
+				done=true;
+		}
+		else
+		{
+			if(d<stop)
+				done=true;
+		}
+
+		if(!done)
+		{
+			this.parse.setCurrentLine(entry.getLine());
+		}
+		else
+			this.parse.getStack().pop();
 	}
 
-	public boolean CmdOn() {
-		return false;
+	public void CmdOn() {
+
+		if( this.parse.LookAhead(KeyNames.keyERROR,false) )
+		{
+			CmdOnError();
+		}
+		else
+			throw new BasicError(ErrorNumbers.errorIllegalUse);
 	}
 
 	public void CmdOnError() {
+		String str;
+
+		if( this.parse.LookAhead(KeyNames.keyGOTO,false) )
+		{
+			str = this.parse.ParseVariable();
+			
+			if( str.equals("0"))
+				this.parse.setErrorLabel(null);
+			else
+				this.parse.setErrorLabel(str);
+			
+			return;
+		}
+		else
+		if( this.parse.LookAhead(KeyNames.keyRESUME,false) )
+			if( this.parse.LookAhead(KeyNames.keyNEXT,false) )
+			{
+				this.parse.setErrorLabel("*");
+				return;
+			}
+		throw(new BasicError(ErrorNumbers.errorIllegalUse));
 	}
 
 	public void CmdOpen() {
@@ -490,6 +644,90 @@ public class BasicCommands {
 	}
 
 	public void CmdSelect() {
+
+		BasicVariable var;
+		BasicVariable is;
+
+		if(!this.parse.LookAhead(KeyNames.keyCASE,false))
+			throw(new BasicError(ErrorNumbers.errorIllegalUse));
+
+		var = this.parse.Expr();
+		is=var;
+
+		while(parse.getCurrentLine()!=null)
+		{
+			do 
+			{
+				if( this.parse.LookAhead(KeyNames.keySELECT,false) )
+					this.parse.MoveToEndCase();
+
+				if( this.parse.LookAhead(KeyNames.keyEND,false) )
+				{
+					this.parse.kill_space();
+					if(this.parse.LookAhead(KeyNames.keyCASE,false))
+						return;
+					if(this.parse.LookAhead(KeyNames.keySUB,false) || this.parse.LookAhead(KeyNames.keyFUNCTION,false) )
+						throw(new BasicError(ErrorNumbers.errorBlock));
+				} 
+
+				if(this.parse.LookAhead(KeyNames.keyCASE,false))
+				{
+					if(this.parse.LookAhead(KeyNames.keyELSE, false))
+					{
+						this.parse.MovePastColen();
+						is=null;
+						return;
+					}
+
+					do	
+					{
+						BasicVariable b,c;
+						boolean bl=false;
+
+						this.parse.kill_space();
+						if( this.parse.LookAhead("IS", false)  )
+						{
+							b = this.parse.Expr();
+							if(b.GetBoolean())
+							{
+								this.parse.MovePastColen();
+								is=null;
+								return;
+							}
+						}
+						else
+						{
+							b = this.parse.Expr();
+
+							if(this.parse.LookAhead(KeyNames.keyTO,false))							{
+								c = this.parse.Expr();
+								if( (var.CompareGTE(b)) && (var.CompareLTE(c)) )
+								{
+									this.parse.MovePastColen();
+									is=null;
+									return;
+								}
+							}
+
+							if(var.CompareE(b)) 
+							{
+								this.parse.MovePastColen();
+								is=null;
+								return;
+							}
+						}
+					} while(this.parse.LookAhead(','));
+				}
+
+				this.parse.MovePastColen();
+
+			} while(this.parse.getNextChar()!=0);
+
+			this.parse.MoveNextLine();
+		}
+
+		is=null;
+		
 	}
 
 	public void CmdShared() {

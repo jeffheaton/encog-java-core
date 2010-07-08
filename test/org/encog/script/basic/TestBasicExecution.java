@@ -34,4 +34,22 @@ public class TestBasicExecution extends TestCase {
 		String str = BasicEvaluate.evaluate("test-var");
 		Assert.assertEquals("2.0test", str);
 	}
+	
+	public void testCase()
+	{
+		String str = BasicEvaluate.evaluate("test-case");
+		Assert.assertEquals("aabcd", str);
+	}
+	
+	public void testGoto()
+	{
+		String str = BasicEvaluate.evaluate("test-goto");
+		Assert.assertEquals("b", str);
+	}
+	
+	public void testError()
+	{
+		String str = BasicEvaluate.evaluate("test-onerror");
+		Assert.assertEquals("error", str);
+	}
 }

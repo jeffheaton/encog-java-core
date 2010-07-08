@@ -18,6 +18,11 @@ import org.encog.util.ReflectionUtil;
 
 public class BasicModule extends BasicObject {
 	
+	private Map<String,BasicLine> programLabels = new HashMap<String,BasicLine>();
+	private Map<String,BasicLine> subLabels = new HashMap<String,BasicLine>();
+	private List<BasicLine> programLines = new ArrayList<BasicLine>();
+	private List<BasicLine> addto;
+	private BasicProgram program;
 	
 	public BasicModule(BasicProgram program)
 	{
@@ -55,22 +60,14 @@ public class BasicModule extends BasicObject {
 			throw new EncogError(e);
 		}
 	}
-	
-	public BasicLine Go(String label)
-	{
-		if( !this.programLabels.containsKey(label.toUpperCase()) )
-			throw(new BasicError(ErrorNumbers.errorLabel));
-
-		int index = this.programLabels.get(label);
-		return this.programLines.get(index);
-	}
-	
+		
 	public void AddLine(String line)
 	{
 		boolean createSub = false;
 		int ptr;
 		int ptr2;
 		String label = "";
+		String subLabel = null;
 		BasicLine bl;
 
 			line = BasicUtil.basicToUpper(line);
@@ -83,7 +80,7 @@ public class BasicModule extends BasicObject {
 			{
 				// Check to see if this ':' is really that of a label
 				ptr2=0;
-				while((Character.isLetterOrDigit(ptr)) && (line.charAt(ptr2)!=32) )
+				while((Character.isLetterOrDigit(line.charAt(ptr2))) && (line.charAt(ptr2)!=32) )
 					ptr2++;
 
 				// If it is a label, clip it and mark it as a label
@@ -117,14 +114,13 @@ public class BasicModule extends BasicObject {
 							ptr++;
 						
 						StringBuilder b = new StringBuilder();
-						b.append('~');
 						
 						while( ptr<line.length() && " \t(".indexOf(line.charAt(ptr))==-1  )
 							b.append(line.charAt(ptr++));
-						label = b.toString();
+						subLabel = b.toString();
 					}
 					
-					if( BasicUtil.FindKeyword(label.substring(1))!=null)
+					if( BasicUtil.FindKeyword(subLabel)!=null)
 						throw(new BasicError(ErrorNumbers.errorIllegalFunctionName));
 
 					if(this.programLabels.containsKey(label))
@@ -146,8 +142,13 @@ public class BasicModule extends BasicObject {
 			if( label.length()>0 )
 			{
 				bl.setLabel(label);
-				this.programLabels.put(label,number);
+				this.programLabels.put(label,bl);			
 			}	
+			
+			if( subLabel!=null )
+			{
+				this.subLabels.put(subLabel, bl);
+			}
 			
 			if( createSub )
 				this.addto = bl.getSub();
@@ -155,20 +156,15 @@ public class BasicModule extends BasicObject {
 	
 	public BasicLine FindFunction(String label)
 	{
-		String key = "~"+label.toUpperCase();
-		
-		if( !this.programLabels.containsKey(key))
-			return null;
-			
-		int index = this.programLabels.get(key);
-		return this.programLines.get(index);
+		String key = label.toUpperCase();
+		return this.subLabels.get(key);
 	}	
 	
 	public List<BasicLine> getProgramLines() {
 		return programLines;
 	}
 	
-	public Map<String,Integer> getProgramLabels()
+	public Map<String,BasicLine> getProgramLabels()
 	{
 		return this.programLabels;
 	}
@@ -176,9 +172,4 @@ public class BasicModule extends BasicObject {
 	public BasicProgram getProgram() {
 		return program;
 	}
-
-	private Map<String,Integer> programLabels = new HashMap<String,Integer>();
-	private List<BasicLine> programLines = new ArrayList<BasicLine>();
-	private List<BasicLine> addto;
-	private BasicProgram program;
 }

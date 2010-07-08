@@ -260,5 +260,10 @@ public class BasicProgram implements Basic {
 	public void setConsole(ConsoleInputOutput console) {
 		this.console = console;
 	}
+
+	public void setQuitProgram(boolean b) {
+		this.quitProgram = b;
+		
+	}
 	
 }

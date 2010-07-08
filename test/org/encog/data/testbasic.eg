@@ -37,6 +37,31 @@ sub main
 end sub
 ]]></source></EncogScript>
 
+<EncogScript name="test-sub">
+<source><![CDATA[
+
+sub test
+	print "test"
+end sub
+
+sub test2(x as integer)
+	print x
+end sub
+
+function test3(x as integer) as integer
+	test3 = x+1
+end sub
+
+sub main
+	x = 10
+	test
+	test2(5)
+	print x
+	print test3(2)
+end sub
+
+]]></source></EncogScript>
+
 <EncogScript name="test-var">
 <source><![CDATA[
 sub main
@@ -68,5 +93,100 @@ sub main
 	loop while(a<10)
 end sub
 ]]></source></EncogScript>
+
+<EncogScript name="test-do2">
+<source><![CDATA[
+sub main
+	a = 1
+	do while(a<10)
+		print a
+		a = a + 1
+	loop 
+end sub
+]]></source></EncogScript>
+
+<EncogScript name="test-for">
+<source><![CDATA[
+
+sub main
+	for i = 1 to 10
+		print i
+	next
+
+	for i = 1 to 10 step 2
+		print i
+	next
+
+	for i= 10 to 1 step -1
+		print i
+	next
+end sub
+
+]]></source></EncogScript>
+
+
+<EncogScript name="test-array">
+<source><![CDATA[
+
+sub main
+	dim a(5) as integer
+	a(1) = 1
+	a(2) = 2
+	print a(1)
+	print a(2)
+end sub
+
+]]></source></EncogScript>
+
+<EncogScript name="test-case">
+<source><![CDATA[
+
+sub testit( n as integer)
+	Select Case n
+		Case 1 To 5
+			print "a"
+		Case 6, 7, 8
+			print "b"
+		Case 9 To 10
+			print "c"
+		Case Else
+			print "d"
+	End Select
+end sub
+
+sub main
+	testit(1)
+	testit(2)
+	testit(7)
+	testit(10)
+	testit(100)
+end sub
+
+]]></source></EncogScript>
+
+<EncogScript name="test-goto">
+<source><![CDATA[
+
+sub main
+	goto b
+	print "a"
+b:	print "b"
+end sub
+
+]]></source></EncogScript>
+
+
+<EncogScript name="test-onerror">
+<source><![CDATA[
+
+sub main
+	on error goto b
+	print 4/0
+	end
+b:	print "error"
+end sub
+
+]]></source></EncogScript>
+
 
 </Objects></Document>
