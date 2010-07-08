@@ -42,7 +42,14 @@ public class InputFieldEncogCollection extends BasicInputField {
 		this.offset = offset;
 	}
 	
-	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append(getResourceName());
+		result.append(" : Offset ");
+		result.append(getOffset());
+		return result.toString();
+	}
 	
 	
 }

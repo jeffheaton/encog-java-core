@@ -82,5 +82,14 @@ public class OutputFieldDirect extends BasicOutputField {
 	 */
 	public void rowInit() {
 	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("Direct: ");
+		result.append("Source->");
+		result.append(this.sourceField.toString());
+		return result.toString();
+	}
 
 }
