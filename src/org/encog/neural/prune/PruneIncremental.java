@@ -622,9 +622,9 @@ public class PruneIncremental extends ConcurrentJob {
 		if (choice != this.bestNetwork) {
 			if (this.logger.isDebugEnabled()) {
 				this.logger.debug("Prune found new best network: error="
-						+ error + ", network=" + network);
+						+ error + ", network=" + choice);
 			}
-			this.bestNetwork = network;
+			this.bestNetwork = choice;
 		}
 
 	}
