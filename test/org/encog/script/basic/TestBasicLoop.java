@@ -28,6 +28,6 @@ public class TestBasicLoop extends TestCase {
 	public void testFor()
 	{
 		String str = BasicEvaluate.evaluate("test-for");
-		Assert.assertEquals("1.02.03.04.05.06.07.08.09.010.01.03.05.07.09.010.09.08.07.06.05.04.03.02.01.0", str);	
+		Assert.assertEquals("123456789101357910987654321", str);	
 	}
 }

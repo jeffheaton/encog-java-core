@@ -10,7 +10,7 @@ public class TestBasicSub extends TestCase {
 	public void testSub()
 	{
 		String str = BasicEvaluate.evaluate("test-sub");
-		Assert.assertEquals("test5.010.03.0", str);	
+		Assert.assertEquals("test5.010.03", str);	
 	}
 	
 }

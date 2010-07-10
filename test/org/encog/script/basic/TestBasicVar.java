@@ -10,7 +10,7 @@ public class TestBasicVar extends TestCase {
 	public void testSub()
 	{
 		String str = BasicEvaluate.evaluate("test-array");
-		Assert.assertEquals("1.02.0", str);	
+		Assert.assertEquals("12", str);	
 	}
 
 }
