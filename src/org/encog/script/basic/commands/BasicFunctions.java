@@ -1,7 +1,10 @@
 package org.encog.script.basic.commands;
 
+import org.encog.script.basic.BasicError;
 import org.encog.script.basic.BasicParse;
+import org.encog.script.basic.BasicTypes;
 import org.encog.script.basic.BasicVariable;
+import org.encog.script.basic.ErrorNumbers;
 import org.encog.script.basic.KeyNames;
 
 public class BasicFunctions {
@@ -68,146 +71,615 @@ public class BasicFunctions {
 	}
 	
 	public void fnAbs(BasicVariable target) {
+		BasicVariable var;
+		double d;
+
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		d=var.GetDouble();
+		target.edit(var);
+		if(d<0)
+			target.edit(-d);
 	}
 
 	public void fnAsc(BasicVariable target) {
+		String str;
+
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var=this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+
+		if(var.getObjectType()==BasicTypes.typeCharacter)
+		{
+			target.edit((short)var.GetCharacter());
+		}
+		else
+		{
+			str=var.GetStr();
+			target.edit((short)str.charAt(0));
+		}
+
 	}
 
 	public void fnAtn(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var=this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit(Math.atan(var.GetDouble()));
 	}
 
 	public void fnCDbl(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+
+		switch(var.getObjectType())
+		{
+		case typeString:target.edit((double)Double.parseDouble(var.GetStr()));break;
+		case typeFloat:target.edit((double)var.GetFloat());break;
+		case typeInteger:target.edit((double)var.GetShort());break;
+		case typeLong:target.edit((double)var.GetLong());break;
+		case typeDouble:target.edit((double)var.GetDouble());break;
+		case typeByte:target.edit((double)var.GetByte());break;
+		case typeBoolean:target.edit((double)(var.GetBoolean()?-1:0));break;
+		default:throw(new BasicError(ErrorNumbers.errorType));
+		}
+
 	}
 
 	public void fnChr(BasicVariable target) {
+		BasicVariable var;
+		String str;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit( (char)var.GetShort() );
 	}
 
 	public void fnCInt(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+
+		switch(var.getObjectType())
+		{
+		case typeString:target.edit((short)Double.parseDouble(var.GetStr()));break;
+		case typeFloat:target.edit((short)var.GetFloat());break;
+		case typeInteger:target.edit((short)var.GetShort());break;
+		case typeLong:target.edit((short)var.GetLong());break;
+		case typeDouble:target.edit((short)var.GetDouble());break;
+		case typeByte:target.edit((short)var.GetByte());break;
+		case typeBoolean:target.edit((short)(var.GetBoolean()?-1:0));break;
+		default:throw(new BasicError( ErrorNumbers.errorType));
+		}
 	}
 
 	public void fnCLng(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+
+		switch(var.getObjectType())
+		{
+		case typeString:target.edit((long)Double.parseDouble(var.GetStr()));break;
+		case typeFloat:target.edit((long)var.GetFloat());break;
+		case typeInteger:target.edit((long)var.GetShort());break;
+		case typeLong:target.edit((long)var.GetLong());break;
+		case typeDouble:target.edit((long)var.GetDouble());break;
+		case typeByte:target.edit((long)var.GetByte());break;
+		case typeBoolean:target.edit((long)(var.GetBoolean()?-1:0));break;
+		default:throw(new BasicError(ErrorNumbers.errorType));
+		}
+
 	}
 
 	public void fnCos(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var=this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit(Math.cos(var.GetDouble()));		
 	}
 
 	public void fnDate_(BasicVariable target) {
+		this.parse.lookAhead('$');// Check for optional $
+		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
 	public void fnEnvron_(BasicVariable target) {
+		BasicVariable var;
+		
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit(System.getenv(var.GetStr()));
 	}
 
 	public void fnEof(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
 	public void fnErr(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
 	public void fnError(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
 	public void fnExp(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var=this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit(Math.exp(var.GetDouble()));
 	}
 
 	public void fnFileattr(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
 	public void fnFix(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit((long)var.GetLong());
 	}
 
 	public void fnFreeFile(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
 	public void fnHex_(BasicVariable target) {
+		String dest;
+		BasicVariable var;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		dest = Long.toHexString(var.GetLong());
+		target.edit(dest);
 	}
 
 	public void fnInput_(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
 	public void fnInStr(BasicVariable target) {
+		BasicVariable var1,var2,var3,var4;
+		int start=0;
+		String str1,str2;
+		int ptr;
+
+		this.parse.expectToken('(');
+		var1 = this.parse.parseVariable(0,0);
+		if(var1.getObjectType()!=BasicTypes.typeString)
+		{
+			start=var1.GetShort();
+			if(start==0)
+				throw(new BasicError(ErrorNumbers.errorIllegalUse));
+			start--;
+			this.parse.expectToken(',');
+			var2 = this.parse.parseVariable(0,0);
+			this.parse.expectToken(',');
+			var3 = this.parse.parseVariable(0,0);
+
+			str1 = var2.GetStr();
+			str2 = var3.GetStr();
+		}
+		else
+		{
+			this.parse.expectToken(',');
+			var2 = this.parse.parseVariable(0,0);
+		
+			str1 = var1.GetStr();
+			str2 = var2.GetStr();
+		}
+
+		if(this.parse.lookAhead(','))
+		{
+			var4 = this.parse.parseVariable(0,1);
+			if(var4.GetShort()==1)
+			{
+				str1 = str1.toUpperCase();
+				str2 = str2.toUpperCase();
+			}
+		}
+
+		this.parse.expectToken(')');
+
+		if(start>=(long)str1.length())
+		{
+			target.edit((short)0);
+			return;
+		}
+
+		ptr= str1.indexOf(str2,start);
+
+		target.edit( ptr+1 );
 	}
 
 	public void fnInt(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		if(var.GetLong()<0)
+		{
+			if( var.GetLong() == var.GetDouble() )
+				target.edit((long)var.GetLong());
+			else
+				target.edit((long)(var.GetLong()-1));
+		}
+		else
+		{
+			target.edit((long)var.GetLong());
+		}
+
 	}
 
 	public void fnLCase(BasicVariable target) {
+		String dest;
+		BasicVariable var;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		dest = var.GetStr().toLowerCase();
+		target.edit(dest);
 	}
 
 	public void fnLeft(BasicVariable target) {
+		BasicVariable varObj1,varObj2;
+		String dest;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		varObj1 = this.parse.parseVariable(0,0);
+		this.parse.expectToken(',');
+		varObj2 = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+
+		if(varObj2.GetShort()==0)
+		{
+			target.edit("");
+			return;
+		}
+
+		if(varObj2.GetShort()>=(long)(varObj1.GetStr().length()) )
+		{
+			target.edit(varObj1);
+			return;
+		}
+		else 
+		{
+			dest = varObj1.GetStr().substring(0,varObj2.GetShort());
+			target.edit(dest);
+		}
+
 	}
 
 	public void fnLen(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit((long)var.GetStr().length());
 	}
 
 	public void fnLoc(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));		
 	}
 
 	public void fnLog(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var=this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit(Math.log(var.GetDouble()));
 	}
 
 	public void fnLTrim(BasicVariable target) {
+		
+		BasicVariable var;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		String str = var.GetStr();
+		
+		int ptr = 0;
+		
+		while( Character.isWhitespace(str.charAt(ptr)) && ptr<str.length() )
+			ptr++;
+		
+		target.edit(str.substring(ptr));
 	}
 
 	public void fnMid_(BasicVariable target) {
+		BasicVariable varObj1 = null,varObj2 = null,varObj3 = null;
+		int n;
+		String dest;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		varObj1 = this.parse.parseVariable(0,0);
+		this.parse.expectToken(',');
+		varObj2 = this.parse.parseVariable(0,0);
+
+		if(this.parse.lookAhead(','))
+		{
+			varObj3 = this.parse.parseVariable(0,0);
+			if(varObj3.GetShort()==0)
+			{
+				target.edit("");
+				return;
+			}
+
+			n=3;
+		}
+		else n=2;
+
+		if(n==3)
+		{
+			if( (varObj2.GetShort()+varObj3.GetShort()) <= varObj1.GetStr().length() )
+			{
+				int b = varObj2.GetShort()-1;
+				int e = varObj3.GetShort();
+				dest = varObj1.GetStr().substring(b,e);
+				target.edit(dest);
+				return;
+			}
+		}
+		
+		if(varObj2.GetShort()==0)
+			throw(new BasicError(ErrorNumbers.errorIllegalValue));
+		
+		if( varObj2.GetShort()>varObj1.GetStr().length() )
+		{
+			target.edit("");
+			return;
+		}
+		
+		int b = varObj2.GetShort()-1;
+		int e = varObj1.GetStr().length()-varObj2.GetShort()+1;
+		
+		dest = varObj1.GetStr().substring(b,e);
+		target.edit(dest);
 	}
 
 	public void fnMsgBox(BasicVariable target) {
+		BasicVariable a,b,c;
+		int num=1;
+
+		this.parse.expectToken('(');
+		a = this.parse.parseVariable(0,0);
+		
+		if(this.parse.lookAhead(',') )
+		{
+			num=2;
+			b = this.parse.parseVariable(0,0);
+			if(this.parse.lookAhead(',') )
+			{
+				num=3;
+				c = this.parse.parseVariable(0,0);
+			}
+		}
+		this.parse.expectToken(')');
+		switch(num)
+		{
+			case 1:
+				//target.edit((long)MessageBox(mainWindow,a.GetStr(),_pgmptr,MB_OK));
+				break;
+			case 2:
+				//target.edit((long)MessageBox(mainWindow,a.GetStr(),b.GetStr(),MB_OK));
+				break;
+			case 3:
+				//target.edit((long)MessageBox(mainWindow,a.GetStr(),c.GetStr(),b.GetShort()));
+				break;
+			default:
+				target.edit(0);
+		}
+
 	}
 
 	public void fnOct_(BasicVariable target) {
+		String dest;
+		BasicVariable var;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		dest = Long.toOctalString(var.GetLong());
+		target.edit(dest);
 	}
 
 	public void fnRight_(BasicVariable target) {
+		BasicVariable varObj1,varObj2;
+		String dest;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		varObj1 = this.parse.parseVariable(0,0);
+		this.parse.expectToken(',');
+		varObj2 = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+
+		if(varObj2.GetShort()==0)
+		{
+			target.edit("");
+			return;
+		}
+
+		if(varObj2.GetShort()>=(long)(varObj1.GetStr().length()) )
+		{
+			target.edit(varObj1);
+			return;
+		}
+		else 
+		{
+			int b = ((varObj1.GetStr().length())-varObj2.GetShort());
+			int e = varObj2.GetShort();
+			dest = varObj1.GetStr().substring(b,e);
+			target.edit(dest);
+		}
 	}
 
 	public void fnRnd(BasicVariable target) {
+		this.parse.expectToken('(');
+		this.parse.expectToken(')');
+		target.edit((double)Math.random());
 	}
 
 	public void fnRTrim(BasicVariable target) {
+		BasicVariable var;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		String dest = var.GetStr();
+		int ptr = dest.length()-1;
+		
+		while( Character.isWhitespace(dest.charAt(ptr)) && ptr>0 )
+		{
+			ptr--;
+		}
+		
+		target.edit(dest.substring(0,ptr));
+
 	}
 
 	public void fnSeek(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));		
+
 	}
 
 	public void fnSgn(BasicVariable target) {
+		BasicVariable var;
+
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+
+		if(var.GetLong()!=0)
+			target.edit((short)0);
+		else
+		if(var.GetLong()<0)
+			target.edit((short)-1);
+		else
+			target.edit((short)1);
 	}
 
 	public void fnShell(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}
 
 	public void fnSin(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var=this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit(Math.sin(var.GetDouble()));
 	}
 
 	public void fnSpace_(BasicVariable target) {
+		StringBuilder str = new StringBuilder();
+
+		BasicVariable var;
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,80);
+		this.parse.expectToken(')');
+		
+		int count = var.GetShort();
+		
+		while( (count--)>0 )
+			str.append(' ');
+		
+		target.edit(str.toString());
 	}
 
 	public void fnSpc(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}
 
 	public void fnSqr(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var=this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit(Math.sqrt(var.GetDouble()));
+
 	}
 
 	public void fnStr_(BasicVariable target) {
+		String dest;
+		BasicVariable var;
+		
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		
+		target.edit(""+var.GetLong());
 	}
 
 	public void fnStrig(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}
 
 	public void fnString_(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}
 
 	public void fnTan(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var=this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit(Math.tan(var.GetDouble()));
 	}
 
 	public void fnTime_(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}
 
 	public void fnUCase_(BasicVariable target) {
+		String dest;
+		BasicVariable var;
+
+		this.parse.lookAhead('$');// Check for optional $
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		dest = var.GetStr().toUpperCase();
+		target.edit(dest);	
 	}
 
 	public void fnVal(BasicVariable target) {
+		BasicVariable var;
+		this.parse.expectToken('(');
+		var = this.parse.parseVariable(0,0);
+		this.parse.expectToken(')');
+		target.edit((double)Double.parseDouble(var.GetStr()));
 	}
 
 	public void fnRegistry(BasicVariable target) {
+		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}	
 }
