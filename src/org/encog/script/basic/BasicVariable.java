@@ -233,13 +233,13 @@ public class BasicVariable {
 	{
 		if(getObjectType()==BasicTypes.typeUndefined || this.data == null) {			
 			setObjectType(BasicTypes.typeCharacter);
-			this.data = new byte[1];
+			this.data = new Character[1];
 		}
 		else
 		if(getObjectType()!=BasicTypes.typeCharacter)
 			Mismatch();
 
-		this.data=v;
+		((Character[])this.data)[this.currentIndex]=v;
 	}
 
 	public void edit(BasicObjectVariable v)
@@ -537,7 +537,7 @@ public class BasicVariable {
 		switch(getObjectType())
 		{
 		case typeCharacter:
-			return ((char[])this.data)[this.currentIndex];
+			return ((Character[])this.data)[this.currentIndex].charValue();
 		default:
 			throw(new BasicError(ErrorNumbers.errorType));
 		}
@@ -576,14 +576,15 @@ public class BasicVariable {
 		}
 	}
 	
-	public String ToString()
+	public String toString()
 	{
 		switch(getObjectType())
 		{
-		case typeString:return GetStr();
-		case typeFloat:
 		case typeInteger:
 		case typeLong:
+			return ""+this.GetLong();
+		case typeString:return GetStr();
+		case typeFloat:
 		case typeDouble:
 		case typeByte:return "" + GetDouble();
 		case typeBoolean:return GetBoolean()?"true":"false";

@@ -466,7 +466,7 @@ public class BasicParse implements Basic {
 			}
 
 			a = expr();
-			str = a.ToString();
+			str = a.toString();
 
 			column+=str.length();
 			result.append(str);
