@@ -1552,6 +1552,10 @@ public class BasicParse implements Basic {
 	public void setErrorLabel(String errorLabel) {
 		this.errorLabel = errorLabel;
 	}
+
+	public BasicFunctions getStandardFunctions() {
+		return this.functions;
+	}
 	
 	
 }

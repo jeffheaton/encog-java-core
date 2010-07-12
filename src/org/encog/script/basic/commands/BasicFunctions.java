@@ -75,7 +75,7 @@ public class BasicFunctions {
 		double d;
 
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		d=var.GetDouble();
 		target.edit(var);
@@ -88,7 +88,7 @@ public class BasicFunctions {
 
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var=this.parse.parseVariable(0,0);
+		var=this.parse.expr();
 		this.parse.expectToken(')');
 
 		if(var.getObjectType()==BasicTypes.typeCharacter)
@@ -106,7 +106,7 @@ public class BasicFunctions {
 	public void fnAtn(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var=this.parse.parseVariable(0,0);
+		var=this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit(Math.atan(var.GetDouble()));
 	}
@@ -114,7 +114,7 @@ public class BasicFunctions {
 	public void fnCDbl(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 
 		switch(var.getObjectType())
@@ -137,7 +137,7 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit( (char)var.GetShort() );
 	}
@@ -145,7 +145,7 @@ public class BasicFunctions {
 	public void fnCInt(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 
 		switch(var.getObjectType())
@@ -164,7 +164,7 @@ public class BasicFunctions {
 	public void fnCLng(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 
 		switch(var.getObjectType())
@@ -184,7 +184,7 @@ public class BasicFunctions {
 	public void fnCos(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var=this.parse.parseVariable(0,0);
+		var=this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit(Math.cos(var.GetDouble()));		
 	}
@@ -199,7 +199,7 @@ public class BasicFunctions {
 		
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit(System.getenv(var.GetStr()));
 	}
@@ -219,7 +219,7 @@ public class BasicFunctions {
 	public void fnExp(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var=this.parse.parseVariable(0,0);
+		var=this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit(Math.exp(var.GetDouble()));
 	}
@@ -231,7 +231,7 @@ public class BasicFunctions {
 	public void fnFix(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit((long)var.GetLong());
 	}
@@ -246,7 +246,7 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		dest = Long.toHexString(var.GetLong());
 		target.edit(dest);
@@ -263,7 +263,7 @@ public class BasicFunctions {
 		int ptr;
 
 		this.parse.expectToken('(');
-		var1 = this.parse.parseVariable(0,0);
+		var1 = this.parse.expr();
 		if(var1.getObjectType()!=BasicTypes.typeString)
 		{
 			start=var1.GetShort();
@@ -271,9 +271,9 @@ public class BasicFunctions {
 				throw(new BasicError(ErrorNumbers.errorIllegalUse));
 			start--;
 			this.parse.expectToken(',');
-			var2 = this.parse.parseVariable(0,0);
+			var2 = this.parse.expr();
 			this.parse.expectToken(',');
-			var3 = this.parse.parseVariable(0,0);
+			var3 = this.parse.expr();
 
 			str1 = var2.GetStr();
 			str2 = var3.GetStr();
@@ -281,7 +281,7 @@ public class BasicFunctions {
 		else
 		{
 			this.parse.expectToken(',');
-			var2 = this.parse.parseVariable(0,0);
+			var2 = this.parse.expr();
 		
 			str1 = var1.GetStr();
 			str2 = var2.GetStr();
@@ -313,7 +313,7 @@ public class BasicFunctions {
 	public void fnInt(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		if(var.GetLong()<0)
 		{
@@ -335,7 +335,7 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		dest = var.GetStr().toLowerCase();
 		target.edit(dest);
@@ -347,9 +347,9 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		varObj1 = this.parse.parseVariable(0,0);
+		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
-		varObj2 = this.parse.parseVariable(0,0);
+		varObj2 = this.parse.expr();
 		this.parse.expectToken(')');
 
 		if(varObj2.GetShort()==0)
@@ -374,7 +374,7 @@ public class BasicFunctions {
 	public void fnLen(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit((long)var.GetStr().length());
 	}
@@ -386,7 +386,7 @@ public class BasicFunctions {
 	public void fnLog(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var=this.parse.parseVariable(0,0);
+		var=this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit(Math.log(var.GetDouble()));
 	}
@@ -397,7 +397,7 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		String str = var.GetStr();
 		
@@ -416,13 +416,13 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		varObj1 = this.parse.parseVariable(0,0);
+		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
-		varObj2 = this.parse.parseVariable(0,0);
+		varObj2 = this.parse.expr();
 
 		if(this.parse.lookAhead(','))
 		{
-			varObj3 = this.parse.parseVariable(0,0);
+			varObj3 = this.parse.expr();
 			if(varObj3.GetShort()==0)
 			{
 				target.edit("");
@@ -438,7 +438,7 @@ public class BasicFunctions {
 			if( (varObj2.GetShort()+varObj3.GetShort()) <= varObj1.GetStr().length() )
 			{
 				int b = varObj2.GetShort()-1;
-				int e = varObj3.GetShort();
+				int e = b+varObj3.GetShort();
 				dest = varObj1.GetStr().substring(b,e);
 				target.edit(dest);
 				return;
@@ -466,16 +466,16 @@ public class BasicFunctions {
 		int num=1;
 
 		this.parse.expectToken('(');
-		a = this.parse.parseVariable(0,0);
+		a = this.parse.expr();
 		
 		if(this.parse.lookAhead(',') )
 		{
 			num=2;
-			b = this.parse.parseVariable(0,0);
+			b = this.parse.expr();
 			if(this.parse.lookAhead(',') )
 			{
 				num=3;
-				c = this.parse.parseVariable(0,0);
+				c = this.parse.expr();
 			}
 		}
 		this.parse.expectToken(')');
@@ -502,7 +502,7 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		dest = Long.toOctalString(var.GetLong());
 		target.edit(dest);
@@ -514,9 +514,9 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		varObj1 = this.parse.parseVariable(0,0);
+		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
-		varObj2 = this.parse.parseVariable(0,0);
+		varObj2 = this.parse.expr();
 		this.parse.expectToken(')');
 
 		if(varObj2.GetShort()==0)
@@ -533,7 +533,7 @@ public class BasicFunctions {
 		else 
 		{
 			int b = ((varObj1.GetStr().length())-varObj2.GetShort());
-			int e = varObj2.GetShort();
+			int e = varObj2.GetShort()+b;
 			dest = varObj1.GetStr().substring(b,e);
 			target.edit(dest);
 		}
@@ -550,7 +550,7 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		String dest = var.GetStr();
 		int ptr = dest.length()-1;
@@ -560,7 +560,7 @@ public class BasicFunctions {
 			ptr--;
 		}
 		
-		target.edit(dest.substring(0,ptr));
+		target.edit(dest.substring(0,ptr+1));
 
 	}
 
@@ -573,10 +573,10 @@ public class BasicFunctions {
 		BasicVariable var;
 
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 
-		if(var.GetLong()!=0)
+		if(var.GetLong()==0)
 			target.edit((short)0);
 		else
 		if(var.GetLong()<0)
@@ -592,7 +592,7 @@ public class BasicFunctions {
 	public void fnSin(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var=this.parse.parseVariable(0,0);
+		var=this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit(Math.sin(var.GetDouble()));
 	}
@@ -603,7 +603,7 @@ public class BasicFunctions {
 		BasicVariable var;
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,80);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		
 		int count = var.GetShort();
@@ -621,7 +621,7 @@ public class BasicFunctions {
 	public void fnSqr(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var=this.parse.parseVariable(0,0);
+		var=this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit(Math.sqrt(var.GetDouble()));
 
@@ -633,7 +633,7 @@ public class BasicFunctions {
 		
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		
 		target.edit(""+var.GetLong());
@@ -650,7 +650,7 @@ public class BasicFunctions {
 	public void fnTan(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var=this.parse.parseVariable(0,0);
+		var=this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit(Math.tan(var.GetDouble()));
 	}
@@ -665,7 +665,7 @@ public class BasicFunctions {
 
 		this.parse.lookAhead('$');// Check for optional $
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		dest = var.GetStr().toUpperCase();
 		target.edit(dest);	
@@ -674,7 +674,7 @@ public class BasicFunctions {
 	public void fnVal(BasicVariable target) {
 		BasicVariable var;
 		this.parse.expectToken('(');
-		var = this.parse.parseVariable(0,0);
+		var = this.parse.expr();
 		this.parse.expectToken(')');
 		target.edit((double)Double.parseDouble(var.GetStr()));
 	}
