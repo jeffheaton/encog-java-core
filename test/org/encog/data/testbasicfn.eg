@@ -1,0 +1,54 @@
+<Document><Header><platform>Java</platform><fileVersion>1</fileVersion><encogVersion>2.5.0</encogVersion><modified>Tue Jul 06 17:35:28 CDT 2010</modified></Header>
+<Objects>
+
+<EncogScript name="test-math"><source>
+<![CDATA[
+sub main
+	print abs(1)
+	print abs(-1)
+	print cint(atn(0)*100)
+	print cint(cos(0)*100)
+	print cint(exp(0)*100)
+	print fix(1.5)
+	print hex(100)
+	print cint(log(5)*100)
+	print oct(100)
+	print sgn(2)
+	print sgn(0)
+	print sgn(-2)
+	print cint(sin(0)*100)
+	print sqr(9)
+	print cint(tan(0)*100)
+end sub
+]]></source></EncogScript>
+
+<EncogScript name="test-convert"><source>
+<![CDATA[
+sub main
+	print cint(1.5)
+	print int(1.5)
+	print cdbl(5)
+	print str(5)
+end sub
+]]></source></EncogScript>
+
+<EncogScript name="test-string"><source>
+<![CDATA[
+sub main
+	print asc("A")
+	print chr(65)
+	print instr("abc","b")
+	print instr("abc","d")
+	print instr(3,"abcabc","b")
+	print lcase("ABC")
+	print ucase("abc")
+	print left("abc",1)
+	print right("abc",1)
+	print mid("abc",2,1)
+	print "|"+ltrim(" trim ")+"|"
+	print "|"+rtrim(" trim ")+"|"
+	print "|"+space(1)+"|"
+end sub
+]]></source></EncogScript>
+
+</Objects></Document>

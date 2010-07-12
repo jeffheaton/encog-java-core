@@ -9,7 +9,7 @@ public class TestBasicVar extends TestCase {
 	
 	public void testSub()
 	{
-		String str = BasicEvaluate.evaluate("test-array");
+		String str = BasicEvaluate.evaluate(BasicEvaluate.FILE_TEST_BASIC,"test-array");
 		Assert.assertEquals("12", str);	
 	}
 
