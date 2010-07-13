@@ -10,36 +10,36 @@ public class ObjectStdFile extends BasicObjectVariable {
 	
 		}
 
-		boolean Scan(BasicVariable target)
+		boolean scan(BasicVariable target)
 		{
 			return false;
 		}
-		boolean Update()
+		boolean update()
 		{
 			return false;
 		}
-		boolean Execute()
+		boolean execute()
 		{
 			return false;
 		}
-		void Allocate()
+		void allocate()
 		{
 			
 		}
-		void Free()
+		void free()
 		{
 			
 		}
-		void Copy(BasicVariable v)
+		void copy(BasicVariable v)
 		{
 			
 		}
-		BasicObjectVariable CreateObject(long num)
+		BasicObjectVariable createObject(long num)
 		{
 			return new ObjectStdFile();
 		}
 		
-		void CreateFilter()
+		void createFilter()
 		{
 			
 		}

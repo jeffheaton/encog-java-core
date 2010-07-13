@@ -19,6 +19,9 @@ public class BasicFunctions {
 	}
 	
 	public void callInternalFunction(KeyNames f, BasicVariable target) {
+
+		this.parse.expectToken('(');
+
 		switch(f)
 		{
 		case keyABS:		fnAbs(target);break;
@@ -72,16 +75,15 @@ public class BasicFunctions {
 		case keyLSET:		fnLSet(target);break;
 		case keyRSET:		fnRSet(target);break;
 		}
+		this.parse.expectToken(')');
 	}
 	
 	public void fnAbs(BasicVariable target) {
 		BasicVariable var;
 		double d;
 
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		d=var.GetDouble();
+		d=var.getDouble();
 		target.edit(var);
 		if(d<0)
 			target.edit(-d);
@@ -91,17 +93,15 @@ public class BasicFunctions {
 		String str;
 
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var=this.parse.expr();
-		this.parse.expectToken(')');
 
 		if(var.getObjectType()==BasicTypes.typeCharacter)
 		{
-			target.edit((short)var.GetCharacter());
+			target.edit((short)var.getCharacter());
 		}
 		else
 		{
-			str=var.GetStr();
+			str=var.getStr();
 			target.edit((short)str.charAt(0));
 		}
 
@@ -109,27 +109,23 @@ public class BasicFunctions {
 
 	public void fnAtn(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var=this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit(Math.atan(var.GetDouble()));
+		target.edit(Math.atan(var.getDouble()));
 	}
 
 	public void fnCDbl(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
 
 		switch(var.getObjectType())
 		{
-		case typeString:target.edit((double)Double.parseDouble(var.GetStr()));break;
-		case typeFloat:target.edit((double)var.GetFloat());break;
-		case typeInteger:target.edit((double)var.GetShort());break;
-		case typeLong:target.edit((double)var.GetLong());break;
-		case typeDouble:target.edit((double)var.GetDouble());break;
-		case typeByte:target.edit((double)var.GetByte());break;
-		case typeBoolean:target.edit((double)(var.GetBoolean()?-1:0));break;
+		case typeString:target.edit((double)Double.parseDouble(var.getStr()));break;
+		case typeFloat:target.edit((double)var.getFloat());break;
+		case typeInteger:target.edit((double)var.getShort());break;
+		case typeLong:target.edit((double)var.getLong());break;
+		case typeDouble:target.edit((double)var.getDouble());break;
+		case typeByte:target.edit((double)var.getByte());break;
+		case typeBoolean:target.edit((double)(var.getBoolean()?-1:0));break;
 		default:throw(new BasicError(ErrorNumbers.errorType));
 		}
 
@@ -140,46 +136,40 @@ public class BasicFunctions {
 		String str;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit( (char)var.GetShort() );
+		target.edit( (char)var.getShort() );
 	}
 
 	public void fnCInt(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
 
 		switch(var.getObjectType())
 		{
-		case typeString:target.edit((short)Double.parseDouble(var.GetStr()));break;
-		case typeFloat:target.edit((short)var.GetFloat());break;
-		case typeInteger:target.edit((short)var.GetShort());break;
-		case typeLong:target.edit((short)var.GetLong());break;
-		case typeDouble:target.edit((short)var.GetDouble());break;
-		case typeByte:target.edit((short)var.GetByte());break;
-		case typeBoolean:target.edit((short)(var.GetBoolean()?-1:0));break;
+		case typeString:target.edit((short)Double.parseDouble(var.getStr()));break;
+		case typeFloat:target.edit((short)var.getFloat());break;
+		case typeInteger:target.edit((short)var.getShort());break;
+		case typeLong:target.edit((short)var.getLong());break;
+		case typeDouble:target.edit((short)var.getDouble());break;
+		case typeByte:target.edit((short)var.getByte());break;
+		case typeBoolean:target.edit((short)(var.getBoolean()?-1:0));break;
 		default:throw(new BasicError( ErrorNumbers.errorType));
 		}
 	}
 
 	public void fnCLng(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
 
 		switch(var.getObjectType())
 		{
-		case typeString:target.edit((long)Double.parseDouble(var.GetStr()));break;
-		case typeFloat:target.edit((long)var.GetFloat());break;
-		case typeInteger:target.edit((long)var.GetShort());break;
-		case typeLong:target.edit((long)var.GetLong());break;
-		case typeDouble:target.edit((long)var.GetDouble());break;
-		case typeByte:target.edit((long)var.GetByte());break;
-		case typeBoolean:target.edit((long)(var.GetBoolean()?-1:0));break;
+		case typeString:target.edit((long)Double.parseDouble(var.getStr()));break;
+		case typeFloat:target.edit((long)var.getFloat());break;
+		case typeInteger:target.edit((long)var.getShort());break;
+		case typeLong:target.edit((long)var.getLong());break;
+		case typeDouble:target.edit((long)var.getDouble());break;
+		case typeByte:target.edit((long)var.getByte());break;
+		case typeBoolean:target.edit((long)(var.getBoolean()?-1:0));break;
 		default:throw(new BasicError(ErrorNumbers.errorType));
 		}
 
@@ -187,10 +177,8 @@ public class BasicFunctions {
 
 	public void fnCos(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var=this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit(Math.cos(var.GetDouble()));		
+		target.edit(Math.cos(var.getDouble()));		
 	}
 
 	public void fnDate_(BasicVariable target) {
@@ -202,10 +190,8 @@ public class BasicFunctions {
 		BasicVariable var;
 		
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit(System.getenv(var.GetStr()));
+		target.edit(System.getenv(var.getStr()));
 	}
 
 	public void fnEof(BasicVariable target) {
@@ -222,10 +208,8 @@ public class BasicFunctions {
 
 	public void fnExp(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var=this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit(Math.exp(var.GetDouble()));
+		target.edit(Math.exp(var.getDouble()));
 	}
 
 	public void fnFileattr(BasicVariable target) {
@@ -234,10 +218,8 @@ public class BasicFunctions {
 
 	public void fnFix(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit((long)var.GetLong());
+		target.edit((long)var.getLong());
 	}
 
 	public void fnFreeFile(BasicVariable target) {
@@ -249,10 +231,8 @@ public class BasicFunctions {
 		BasicVariable var;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		dest = Long.toHexString(var.GetLong());
+		dest = Long.toHexString(var.getLong());
 		target.edit(dest);
 	}
 
@@ -266,11 +246,10 @@ public class BasicFunctions {
 		String str1,str2;
 		int ptr;
 
-		this.parse.expectToken('(');
 		var1 = this.parse.expr();
 		if(var1.getObjectType()!=BasicTypes.typeString)
 		{
-			start=var1.GetShort();
+			start=var1.getShort();
 			if(start==0)
 				throw(new BasicError(ErrorNumbers.errorIllegalUse));
 			start--;
@@ -279,29 +258,27 @@ public class BasicFunctions {
 			this.parse.expectToken(',');
 			var3 = this.parse.expr();
 
-			str1 = var2.GetStr();
-			str2 = var3.GetStr();
+			str1 = var2.getStr();
+			str2 = var3.getStr();
 		}
 		else
 		{
 			this.parse.expectToken(',');
 			var2 = this.parse.expr();
 		
-			str1 = var1.GetStr();
-			str2 = var2.GetStr();
+			str1 = var1.getStr();
+			str2 = var2.getStr();
 		}
 
 		if(this.parse.lookAhead(','))
 		{
 			var4 = this.parse.parseVariable(0,1);
-			if(var4.GetShort()==1)
+			if(var4.getShort()==1)
 			{
 				str1 = str1.toUpperCase();
 				str2 = str2.toUpperCase();
 			}
 		}
-
-		this.parse.expectToken(')');
 
 		if(start>=(long)str1.length())
 		{
@@ -316,19 +293,17 @@ public class BasicFunctions {
 
 	public void fnInt(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		if(var.GetLong()<0)
+		if(var.getLong()<0)
 		{
-			if( var.GetLong() == var.GetDouble() )
-				target.edit((long)var.GetLong());
+			if( var.getLong() == var.getDouble() )
+				target.edit((long)var.getLong());
 			else
-				target.edit((long)(var.GetLong()-1));
+				target.edit((long)(var.getLong()-1));
 		}
 		else
 		{
-			target.edit((long)var.GetLong());
+			target.edit((long)var.getLong());
 		}
 
 	}
@@ -338,10 +313,8 @@ public class BasicFunctions {
 		BasicVariable var;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		dest = var.GetStr().toLowerCase();
+		dest = var.getStr().toLowerCase();
 		target.edit(dest);
 	}
 
@@ -350,26 +323,24 @@ public class BasicFunctions {
 		String dest;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
 		varObj2 = this.parse.expr();
-		this.parse.expectToken(')');
 
-		if(varObj2.GetShort()==0)
+		if(varObj2.getShort()==0)
 		{
 			target.edit("");
 			return;
 		}
 
-		if(varObj2.GetShort()>=(long)(varObj1.GetStr().length()) )
+		if(varObj2.getShort()>=(long)(varObj1.getStr().length()) )
 		{
 			target.edit(varObj1);
 			return;
 		}
 		else 
 		{
-			dest = varObj1.GetStr().substring(0,varObj2.GetShort());
+			dest = varObj1.getStr().substring(0,varObj2.getShort());
 			target.edit(dest);
 		}
 
@@ -377,10 +348,8 @@ public class BasicFunctions {
 
 	public void fnLen(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit((long)var.GetStr().length());
+		target.edit((long)var.getStr().length());
 	}
 
 	public void fnLoc(BasicVariable target) {
@@ -389,10 +358,8 @@ public class BasicFunctions {
 
 	public void fnLog(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var=this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit(Math.log(var.GetDouble()));
+		target.edit(Math.log(var.getDouble()));
 	}
 
 	public void fnLTrim(BasicVariable target) {
@@ -400,10 +367,8 @@ public class BasicFunctions {
 		BasicVariable var;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		String str = var.GetStr();
+		String str = var.getStr();
 		
 		int ptr = 0;
 		
@@ -419,7 +384,6 @@ public class BasicFunctions {
 		String dest;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
 		varObj2 = this.parse.expr();
@@ -427,7 +391,7 @@ public class BasicFunctions {
 		if(this.parse.lookAhead(','))
 		{
 			varObj3 = this.parse.expr();
-			if(varObj3.GetShort()==0)
+			if(varObj3.getShort()==0)
 			{
 				target.edit("");
 				return;
@@ -439,29 +403,29 @@ public class BasicFunctions {
 
 		if(n==3)
 		{
-			if( (varObj2.GetShort()+varObj3.GetShort()) <= varObj1.GetStr().length() )
+			if( (varObj2.getShort()+varObj3.getShort()) <= varObj1.getStr().length() )
 			{
-				int b = varObj2.GetShort()-1;
-				int e = b+varObj3.GetShort();
-				dest = varObj1.GetStr().substring(b,e);
+				int b = varObj2.getShort()-1;
+				int e = b+varObj3.getShort();
+				dest = varObj1.getStr().substring(b,e);
 				target.edit(dest);
 				return;
 			}
 		}
 		
-		if(varObj2.GetShort()==0)
+		if(varObj2.getShort()==0)
 			throw(new BasicError(ErrorNumbers.errorIllegalValue));
 		
-		if( varObj2.GetShort()>varObj1.GetStr().length() )
+		if( varObj2.getShort()>varObj1.getStr().length() )
 		{
 			target.edit("");
 			return;
 		}
 		
-		int b = varObj2.GetShort()-1;
-		int e = varObj1.GetStr().length()-varObj2.GetShort()+1;
+		int b = varObj2.getShort()-1;
+		int e = varObj1.getStr().length()-varObj2.getShort()+1;
 		
-		dest = varObj1.GetStr().substring(b,e);
+		dest = varObj1.getStr().substring(b,e);
 		target.edit(dest);
 	}
 
@@ -469,7 +433,6 @@ public class BasicFunctions {
 		BasicVariable a,b=null,c;
 		int num=1;
 
-		this.parse.expectToken('(');
 		a = this.parse.expr();
 		
 		if(this.parse.lookAhead(',') )
@@ -482,20 +445,20 @@ public class BasicFunctions {
 				c = this.parse.expr();
 			}
 		}
-		this.parse.expectToken(')');
+
 		switch(num)
 		{
 			case 1:
-				JOptionPane.showMessageDialog(null, a.GetStr(), "Encog", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null, a.getStr(), "Encog", JOptionPane.PLAIN_MESSAGE);
 				target.edit((long)0);
 				break;
 			case 2:
 				if( b==null )
 					throw new BasicError(ErrorNumbers.errorIllegalUse);
-				JOptionPane.showMessageDialog(null, a.GetStr(), b.GetStr(), JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null, a.getStr(), b.getStr(), JOptionPane.PLAIN_MESSAGE);
 				break;
 			case 3:
-				boolean r = JOptionPane.showConfirmDialog(null, a.GetStr(), b.GetStr(),
+				boolean r = JOptionPane.showConfirmDialog(null, a.getStr(), b.getStr(),
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
 				target.edit(r);
 				break;
@@ -510,10 +473,8 @@ public class BasicFunctions {
 		BasicVariable var;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		dest = Long.toOctalString(var.GetLong());
+		dest = Long.toOctalString(var.getLong());
 		target.edit(dest);
 	}
 
@@ -522,35 +483,31 @@ public class BasicFunctions {
 		String dest;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
 		varObj2 = this.parse.expr();
-		this.parse.expectToken(')');
 
-		if(varObj2.GetShort()==0)
+		if(varObj2.getShort()==0)
 		{
 			target.edit("");
 			return;
 		}
 
-		if(varObj2.GetShort()>=(long)(varObj1.GetStr().length()) )
+		if(varObj2.getShort()>=(long)(varObj1.getStr().length()) )
 		{
 			target.edit(varObj1);
 			return;
 		}
 		else 
 		{
-			int b = ((varObj1.GetStr().length())-varObj2.GetShort());
-			int e = varObj2.GetShort()+b;
-			dest = varObj1.GetStr().substring(b,e);
+			int b = ((varObj1.getStr().length())-varObj2.getShort());
+			int e = varObj2.getShort()+b;
+			dest = varObj1.getStr().substring(b,e);
 			target.edit(dest);
 		}
 	}
 
 	public void fnRnd(BasicVariable target) {
-		this.parse.expectToken('(');
-		this.parse.expectToken(')');
 		target.edit((double)Math.random());
 	}
 
@@ -558,10 +515,8 @@ public class BasicFunctions {
 		BasicVariable var;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		String dest = var.GetStr();
+		String dest = var.getStr();
 		int ptr = dest.length()-1;
 		
 		while( Character.isWhitespace(dest.charAt(ptr)) && ptr>0 )
@@ -570,25 +525,21 @@ public class BasicFunctions {
 		}
 		
 		target.edit(dest.substring(0,ptr+1));
-
 	}
 
 	public void fnSeek(BasicVariable target) {
 		throw(new BasicError(ErrorNumbers.errorNotYet));		
-
 	}
 
 	public void fnSgn(BasicVariable target) {
 		BasicVariable var;
 
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
 
-		if(var.GetLong()==0)
+		if(var.getLong()==0)
 			target.edit((short)0);
 		else
-		if(var.GetLong()<0)
+		if(var.getLong()<0)
 			target.edit((short)-1);
 		else
 			target.edit((short)1);
@@ -600,10 +551,8 @@ public class BasicFunctions {
 
 	public void fnSin(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var=this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit(Math.sin(var.GetDouble()));
+		target.edit(Math.sin(var.getDouble()));
 	}
 
 	public void fnSpace_(BasicVariable target) {
@@ -611,11 +560,9 @@ public class BasicFunctions {
 
 		BasicVariable var;
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
 		
-		int count = var.GetShort();
+		int count = var.getShort();
 		
 		while( (count--)>0 )
 			str.append(' ');
@@ -629,11 +576,8 @@ public class BasicFunctions {
 
 	public void fnSqr(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var=this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit(Math.sqrt(var.GetDouble()));
-
+		target.edit(Math.sqrt(var.getDouble()));
 	}
 
 	public void fnStr_(BasicVariable target) {
@@ -641,11 +585,8 @@ public class BasicFunctions {
 		BasicVariable var;
 		
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
-		var = this.parse.expr();
-		this.parse.expectToken(')');
-		
-		target.edit(""+var.GetLong());
+		var = this.parse.expr();		
+		target.edit(""+var.getLong());
 	}
 
 	public void fnStrig(BasicVariable target) {
@@ -658,10 +599,8 @@ public class BasicFunctions {
 
 	public void fnTan(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var=this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit(Math.tan(var.GetDouble()));
+		target.edit(Math.tan(var.getDouble()));
 	}
 
 	public void fnTime_(BasicVariable target) {
@@ -673,19 +612,15 @@ public class BasicFunctions {
 		BasicVariable var;
 
 		this.parse.lookAhead('$');// Check for optional $
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		dest = var.GetStr().toUpperCase();
+		dest = var.getStr().toUpperCase();
 		target.edit(dest);	
 	}
 
 	public void fnVal(BasicVariable target) {
 		BasicVariable var;
-		this.parse.expectToken('(');
 		var = this.parse.expr();
-		this.parse.expectToken(')');
-		target.edit((double)Double.parseDouble(var.GetStr()));
+		target.edit((double)Double.parseDouble(var.getStr()));
 	}
 
 	public void fnRegistry(BasicVariable target) {
@@ -696,16 +631,14 @@ public class BasicFunctions {
 		BasicVariable a,b;
 		StringBuilder str = new StringBuilder();
 
-		this.parse.expectToken('(');
-
 		a=this.parse.expr();
 		this.parse.expectToken(',');
 		b = this.parse.expr();
-		int finalLen = b.GetShort();
+		int finalLen = b.getShort();
 
-		str.append(a.GetStr());
+		str.append(a.getStr());
 		
-		if( finalLen>=a.GetStr().length() )
+		if( finalLen>=a.getStr().length() )
 		{
 			while(str.length()<finalLen)
 				str.append(' ');
@@ -715,8 +648,6 @@ public class BasicFunctions {
 			str.setLength(finalLen);
 		}
 
-		this.parse.expectToken(')');
-
 		target.edit(str.toString());
 	}
 	
@@ -724,15 +655,13 @@ public class BasicFunctions {
 		BasicVariable a,b;
 		StringBuilder str = new StringBuilder();
 
-		this.parse.expectToken('(');
-
 		a=this.parse.expr();
 		this.parse.expectToken(',');
 		b = this.parse.expr();
-		int finalLen = b.GetShort();
+		int finalLen = b.getShort();
 
-		str.append(a.GetStr());
-		if( finalLen>=a.GetStr().length() )
+		str.append(a.getStr());
+		if( finalLen>=a.getStr().length() )
 		{
 			while(str.length()<finalLen)
 				str.insert(0, ' ');	
@@ -742,8 +671,6 @@ public class BasicFunctions {
 			while( str.length()>finalLen)
 				str.deleteCharAt(0);
 		}
-
-		this.parse.expectToken(')');
 
 		target.edit(str.toString());
 	}

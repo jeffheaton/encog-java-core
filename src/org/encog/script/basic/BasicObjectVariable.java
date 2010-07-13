@@ -2,33 +2,32 @@ package org.encog.script.basic;
 
 public abstract class BasicObjectVariable  {
 	
-	BasicObjectVariable()
+	public BasicObjectVariable()
 	{
 		objectType=-1;
 	}
 
-	abstract boolean Scan(BasicVariable target);
-	abstract boolean Update();
-	abstract boolean Execute();
-	abstract void Allocate();
-	abstract BasicObjectVariable CreateObject(long num);
-	void Free()
+	abstract boolean scan(BasicVariable target);
+	abstract boolean update();
+	abstract boolean execute();
+	abstract void allocate();
+	abstract BasicObjectVariable createObject(long num);
 	{	
 	}
 	
-	abstract void Copy(BasicVariable target);
+	abstract void copy(BasicVariable target);
 
-	int GetObjectType()
+	int getObjectType()
 	{
 		return objectType;
 	}
 	
-	void SetObjectType(int i)
+	void setObjectType(int i)
 	{
 		objectType=i;
 	}
 	
-	long GetElementSize()
+	long getElementSize()
 	{
 		return elementSize;
 	}

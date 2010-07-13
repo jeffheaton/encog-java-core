@@ -29,13 +29,13 @@ public class BasicModule  {
 		this.program = program;
 	}
 
-	public void Clear()
+	public void clear()
 	{
 		programLines.clear();
 		programLabels.clear();
 	}
 	
-	public void Load(EncogScript script) {
+	public void load(EncogScript script) {
 		try {
 			this.addto = this.programLines;
 			
@@ -54,14 +54,14 @@ public class BasicModule  {
 				if( check.charAt(0)=='\'')
 					continue;
 				
-				AddLine(line);
+				addLine(line);
 			}
 		} catch (IOException e) {
 			throw new EncogError(e);
 		}
 	}
 		
-	public void AddLine(String line)
+	public void addLine(String line)
 	{
 		boolean createSub = false;
 		int ptr;
@@ -100,9 +100,9 @@ public class BasicModule  {
 				while( ( (line.charAt(l)==' ') || (line.charAt(l)=='\t') ) && l<line.length() )
 					l++;
 				
-				ptr=BasicUtil.FindKeyword(line,"SUB");
+				ptr=BasicUtil.findKeyword(line,"SUB");
 				if(ptr==-1)
-					ptr=BasicUtil.FindKeyword(line,"FUNCTION");
+					ptr=BasicUtil.findKeyword(line,"FUNCTION");
 
 				if(ptr!=-1)
 				{
@@ -120,7 +120,7 @@ public class BasicModule  {
 						subLabel = b.toString();
 					}
 					
-					if( BasicUtil.FindKeyword(subLabel)!=null)
+					if( BasicUtil.findKeyword(subLabel)!=null)
 						throw(new BasicError(ErrorNumbers.errorIllegalFunctionName));
 
 					if(this.programLabels.containsKey(label))
@@ -132,7 +132,7 @@ public class BasicModule  {
 
 			if(label.length()>0)
 			{
-				if(BasicUtil.FindKeyword(label)!=null)
+				if(BasicUtil.findKeyword(label)!=null)
 					throw( new BasicError(ErrorNumbers.errorIllegalFunctionName));
 			}
 
@@ -153,7 +153,7 @@ public class BasicModule  {
 				this.addto = bl.getSub();
 	}
 	
-	public BasicLine FindFunction(String label)
+	public BasicLine findFunction(String label)
 	{
 		String key = label.toUpperCase();
 		return this.subLabels.get(key);

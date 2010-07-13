@@ -10,12 +10,12 @@ public class BasicLine {
 		text=t;
 	}
 	
-	public void Edit(String t)
+	public void edit(String t)
 	{
 		this.text = t;
 	}
 		
-	public String Command()
+	public String getText()
 	{
 		return text;
 	}
@@ -32,17 +32,13 @@ public class BasicLine {
 		this.number = number;
 	}
 
-	public String getText() {
-		return text;
-	}
-
 	public void setText(String text) {
 		this.text = text;
 	}
 	
 	public String toString()
 	{
-		return this.Command();
+		return this.text;
 	}
 
 	private final List<BasicLine> sub = new ArrayList<BasicLine>();

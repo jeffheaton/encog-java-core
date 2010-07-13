@@ -237,13 +237,13 @@ public class BasicCommands {
 
 		for(;;)	
 		{
-			this.parse.kill_space();
+			this.parse.killSpace();
 			var = this.parse.parseVariable();
 			
 			if( this.parse.getVariable(var)!=null )
 				throw new BasicError(ErrorNumbers.errorDim);
 			
-			if( BasicUtil.FindKeyword(var)!=null)
+			if( BasicUtil.findKeyword(var)!=null)
 				throw(new BasicError(ErrorNumbers.errorKeyword));
 
 			if(this.parse.getVariable(var)!=null)
@@ -252,14 +252,14 @@ public class BasicCommands {
 			v = this.parse.createVariable(var);
 			this.parse.addVariable(var, v);
 			
-			this.parse.kill_space();
+			this.parse.killSpace();
 			if( !this.parse.lookAhead(',') )
 				break;
 		}
 	}
 
 	public void cmdDo() {
-		this.parse.kill_space();
+		this.parse.killSpace();
 		
 		if( this.parse.getNextChar()!=0  )
 		{
@@ -283,7 +283,7 @@ public class BasicCommands {
 	}
 
 	public void cmdEnd() {
-		this.parse.kill_space();
+		this.parse.killSpace();
 
 		if(this.parse.lookAhead(KeyNames.keyIF, false))
 		{
@@ -291,7 +291,7 @@ public class BasicCommands {
 		}
 		else
 		{
-			this.parse.kill_space();
+			this.parse.killSpace();
 			
 			if(this.parse.getNextChar()==0)			
 				this.parse.getModule().getProgram().setQuitProgram(true);
@@ -343,18 +343,18 @@ public class BasicCommands {
 		this.parse.expectToken('=');
 
 		a = this.parse.expr();
-		start=(int)a.GetLong();
+		start=(int)a.getLong();
 		
 		if(!this.parse.lookAhead(KeyNames.keyTO,false) )
 			throw(new BasicError(ErrorNumbers.errorNoTo));
 
 		a = this.parse.expr();
-		stop=(int)a.GetLong();
+		stop=(int)a.getLong();
 
 		if(this.parse.lookAhead(KeyNames.keySTEP,false))
 		{
 			a = this.parse.expr();
-			step=(int)a.GetLong();
+			step=(int)a.getLong();
 		}
 		else step=1;
 
@@ -405,7 +405,7 @@ public class BasicCommands {
 	public void cmdGoto() {
 		String str;
 
-		this.parse.kill_space();
+		this.parse.killSpace();
 		str = this.parse.parseVariable();
 		this.parse.go(str);
 	}
@@ -420,7 +420,7 @@ public class BasicCommands {
 
 		if( b )
 		{
-			this.parse.kill_space();
+			this.parse.killSpace();
 			if( this.parse.getNextChar()==0 )
 			{
 				this.parse.increaseIFS();
@@ -437,7 +437,7 @@ public class BasicCommands {
 
 	public void cmdKill() {
 		BasicVariable var = this.parse.expr();
-		File file = new File(var.GetStr());
+		File file = new File(var.getStr());
 		if( !file.delete() )
 			throw(new BasicError(ErrorNumbers.errorDisk));
 	}
@@ -459,7 +459,7 @@ public class BasicCommands {
 		StackEntryType type;
 		BasicLine bl;
 
-		this.parse.kill_space();
+		this.parse.killSpace();
 		if(this.parse.getStack().empty())
 			throw(new BasicError(ErrorNumbers.errorLongName));
 
@@ -522,15 +522,15 @@ public class BasicCommands {
 		switch(num)
 		{
 			case 1:
-				JOptionPane.showMessageDialog(null, a.GetStr(), "Encog", JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null, a.getStr(), "Encog", JOptionPane.PLAIN_MESSAGE);
 				break;
 			case 2:
 				if( b==null )
 					throw new BasicError(ErrorNumbers.errorIllegalUse);
-				JOptionPane.showMessageDialog(null, a.GetStr(), b.GetStr(), JOptionPane.PLAIN_MESSAGE);
+				JOptionPane.showMessageDialog(null, a.getStr(), b.getStr(), JOptionPane.PLAIN_MESSAGE);
 				break;
 			case 3:
-				boolean r = JOptionPane.showConfirmDialog(null, a.GetStr(), b.GetStr(),
+				boolean r = JOptionPane.showConfirmDialog(null, a.getStr(), b.getStr(),
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
 				break;
 		}
@@ -539,7 +539,7 @@ public class BasicCommands {
 
 	public void cmdMKDir() {
 		BasicVariable var = this.parse.expr();
-		File file = new File(var.GetStr());
+		File file = new File(var.getStr());
 		file.mkdir();
 	}
 
@@ -551,8 +551,8 @@ public class BasicCommands {
 		
 		BasicVariable newName = this.parse.expr();
 		
-		File oldFile = new File(oldName.GetStr());
-		File newFile = new File(newName.GetStr());
+		File oldFile = new File(oldName.getStr());
+		File newFile = new File(newName.getStr());
 		
 		if( !oldFile.renameTo(newFile) )
 			throw new BasicError(ErrorNumbers.errorDisk);
@@ -562,7 +562,7 @@ public class BasicCommands {
 		int idx,ln;
 		double d;
 
-		this.parse.kill_space();
+		this.parse.killSpace();
 		if(this.parse.getStack().empty())
 			throw(new BasicError(ErrorNumbers.errorNoFor));
 
@@ -577,7 +577,7 @@ public class BasicCommands {
 		
 		if(varObj==null)
 			throw(new BasicError(ErrorNumbers.errorUndefinedVariable));
-		d = varObj.GetDouble();
+		d = varObj.getDouble();
 		d+=step;
 		varObj.edit(d);
 
@@ -637,6 +637,7 @@ public class BasicCommands {
 	}
 
 	public void cmdOpen() {
+
 	}
 
 	public void cmdOption() {
@@ -648,7 +649,7 @@ public class BasicCommands {
 
 			this.parse.setColumn(0);
 
-			this.parse.kill_space();
+			this.parse.killSpace();
 
 			if( this.parse.lookAhead('#') )
 			{
@@ -678,7 +679,7 @@ public class BasicCommands {
 
 					this.parse.getModule().getProgram().print(this.parse.formatExpression());
 
-					this.parse.kill_space();
+					this.parse.killSpace();
 				}
 			}
 
@@ -705,9 +706,9 @@ public class BasicCommands {
 
 		for(;;)	
 		{
-			this.parse.kill_space();
+			this.parse.killSpace();
 			var = this.parse.parseVariable();
-			if( BasicUtil.FindKeyword(var)!=null)
+			if( BasicUtil.findKeyword(var)!=null)
 				throw(new BasicError(ErrorNumbers.errorKeyword));
 
 			if(this.parse.getVariable(var)!=null)
@@ -716,7 +717,7 @@ public class BasicCommands {
 			v = this.parse.createVariable(var);
 			this.parse.addVariable(var, v);
 			
-			this.parse.kill_space();
+			this.parse.killSpace();
 			if( !this.parse.lookAhead(',') )
 				break;
 		}
@@ -741,7 +742,7 @@ public class BasicCommands {
 
 	public void cmdRmDir() {
 		BasicVariable var = this.parse.expr();
-		File file = new File(var.GetStr());
+		File file = new File(var.getStr());
 		if( !file.delete() )
 			throw new BasicError(ErrorNumbers.errorDisk);
 	}
@@ -773,7 +774,7 @@ public class BasicCommands {
 
 				if( this.parse.lookAhead(KeyNames.keyEND,false) )
 				{
-					this.parse.kill_space();
+					this.parse.killSpace();
 					if(this.parse.lookAhead(KeyNames.keyCASE,false))
 						return;
 					if(this.parse.lookAhead(KeyNames.keySUB,false) || this.parse.lookAhead(KeyNames.keyFUNCTION,false) )
@@ -794,11 +795,11 @@ public class BasicCommands {
 						BasicVariable b,c;
 						boolean bl=false;
 
-						this.parse.kill_space();
+						this.parse.killSpace();
 						if( this.parse.lookAhead("IS", false)  )
 						{
 							b = this.parse.expr();
-							if(b.GetBoolean())
+							if(b.getBoolean())
 							{
 								this.parse.movePastColen();
 								is=null;
@@ -811,7 +812,7 @@ public class BasicCommands {
 
 							if(this.parse.lookAhead(KeyNames.keyTO,false))							{
 								c = this.parse.expr();
-								if( (var.CompareGTE(b)) && (var.CompareLTE(c)) )
+								if( (var.compareGTE(b)) && (var.compareLTE(c)) )
 								{
 									this.parse.movePastColen();
 									is=null;
@@ -819,7 +820,7 @@ public class BasicCommands {
 								}
 							}
 
-							if(var.CompareE(b)) 
+							if(var.compareE(b)) 
 							{
 								this.parse.movePastColen();
 								is=null;
@@ -847,7 +848,7 @@ public class BasicCommands {
 	public void cmdSleep() {
 		BasicVariable var = this.parse.expr();
 		try {
-			Thread.sleep((int)var.GetLong());
+			Thread.sleep((int)var.getLong());
 		} catch (InterruptedException e) {
 		}
 	}
@@ -873,7 +874,7 @@ public class BasicCommands {
 	public void cmdWEnd() {
 		BasicVariable varObj;
 
-		this.parse.kill_space();
+		this.parse.killSpace();
 		if( this.parse.getStack().empty())
 			throw(new BasicError(ErrorNumbers.errorWend));
 
@@ -883,17 +884,17 @@ public class BasicCommands {
 		StackEntry entry = this.parse.getStack().pop();
 		this.parse.setCurrentLine(entry.getLine());
 		
-		this.parse.parse(this.parse.getCurrentLine().Command());
+		this.parse.parse(this.parse.getCurrentLine().getText());
 	}
 
 	public void cmdWhile() {
 		BasicVariable varObj;
 
-		this.parse.kill_space();
+		this.parse.killSpace();
 		
 		varObj = this.parse.expr();
 		
-		if(varObj.GetBoolean())
+		if(varObj.getBoolean())
 			this.parse.getStack().push( new StackEntry(StackEntryType.stackWhile,this.parse.getCurrentLine()) );
 		else
 			this.parse.moveToWEnd();

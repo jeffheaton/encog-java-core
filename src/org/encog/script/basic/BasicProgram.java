@@ -42,7 +42,7 @@ public class BasicProgram implements Basic {
 	public void loadModule(EncogScript script)
 	{
 		BasicModule module = new BasicModule(this);
-		module.Load(script);
+		module.load(script);
 		this.modules.add(module);	
 	}
 	
@@ -172,7 +172,7 @@ public class BasicProgram implements Basic {
 	{
 		BasicVariable v;
 
-		if( module.FindFunction(name)==null )
+		if( module.findFunction(name)==null )
 			return false;
 
 		BasicParse fn = new BasicParse(module);

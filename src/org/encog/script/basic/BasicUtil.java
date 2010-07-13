@@ -2,7 +2,8 @@ package org.encog.script.basic;
 
 
 public class BasicUtil {
-	public static BasicKey FindKeyword(String token)
+	
+	public static BasicKey findKeyword(String token)
 	{
 		for( BasicKey key : BasicKey.getKeys())
 		{
@@ -12,7 +13,7 @@ public class BasicUtil {
 		return null;
 	}
 	
-	public static BasicKey  FindKeyword(KeyNames token)
+	public static BasicKey  findKeyword(KeyNames token)
 	{
 		for( BasicKey key : BasicKey.getKeys())
 		{
@@ -21,12 +22,12 @@ public class BasicUtil {
 		}
 		return null;
 	}
-	public static void DoInput(String str,String cap)
+	public static void doInput(String str,String cap)
 	{
 		
 	}
 	
-	public static int FindKeyword(String str,String key)
+	public static int findKeyword(String str,String key)
 	{
 		boolean quote=false;
 		int wptr;
@@ -73,187 +74,187 @@ public class BasicUtil {
 	}
 
 
-	public static void SyncVariables(char opp,BasicVariable in1,BasicVariable in2,BasicVariable out1,BasicVariable out2)
+	public static void syncVariables(char opp,BasicVariable in1,BasicVariable in2,BasicVariable out1,BasicVariable out2)
 	{
-		out1.Free();// Just in case
-		out2.Free();
+		out1.free();// Just in case
+		out2.free();
 
 		if( (in1.getObjectType()==BasicTypes.typeString) || (in2.getObjectType()==BasicTypes.typeString) )
 		{
-			out1.edit( in1.GetStr());
-			out2.edit( in2.GetStr());
+			out1.edit( in1.getStr());
+			out2.edit( in2.getStr());
 			return;
 		}
 
 		if( (in1.getObjectType()==BasicTypes.typeString) || (in2.getObjectType()==BasicTypes.typeString) )
 		{
-			out1.edit( in1.GetStr());
-			out2.edit( in2.GetStr());
+			out1.edit( in1.getStr());
+			out2.edit( in2.getStr());
 			return;
 		}
 
 		if( (in1.getObjectType()==BasicTypes.typeDouble) || (in2.getObjectType()==BasicTypes.typeDouble) )
 		{
-			out1.edit( in1.GetDouble());
-			out2.edit( in2.GetDouble());
+			out1.edit( in1.getDouble());
+			out2.edit( in2.getDouble());
 			return;
 		}
 
 		if( (in1.getObjectType()==BasicTypes.typeFloat) || (in2.getObjectType()==BasicTypes.typeFloat) )
 		{
-			out1.edit( in1.GetFloat());
-			out2.edit( in2.GetFloat());
+			out1.edit( in1.getFloat());
+			out2.edit( in2.getFloat());
 			return;
 		}
 
 		if( (in1.getObjectType()==BasicTypes.typeLong) || (in2.getObjectType()==BasicTypes.typeLong) )
 		{
-			out1.edit( in1.GetLong());
-			out2.edit( in2.GetLong());
+			out1.edit( in1.getLong());
+			out2.edit( in2.getLong());
 			return;
 		}
 
 		if( (in1.getObjectType()==BasicTypes.typeInteger) || (in2.getObjectType()==BasicTypes.typeInteger) )
 		{
-			out1.edit( in1.GetShort());
-			out2.edit( in2.GetShort());
+			out1.edit( in1.getShort());
+			out2.edit( in2.getShort());
 			return;
 		}
 
 		if( (in1.getObjectType()==BasicTypes.typeByte) || (in2.getObjectType()==BasicTypes.typeByte) )
 		{
-			out1.edit( in1.GetByte());
-			out2.edit( in2.GetByte());
+			out1.edit( in1.getByte());
+			out2.edit( in2.getByte());
 			return;
 		}
 
 
 		if( (in1.getObjectType()==BasicTypes.typeCharacter) || (in2.getObjectType()==BasicTypes.typeCharacter) )
 		{
-			out1.edit( in1.GetShort());
-			out2.edit( in2.GetShort());
+			out1.edit( in1.getShort());
+			out2.edit( in2.getShort());
 			return;
 		}
 				
 		if( (in1.getObjectType()==BasicTypes.typeBoolean) || (in2.getObjectType()==BasicTypes.typeBoolean) )
 		{
-			out1.edit( in1.GetBoolean());
-			out2.edit( in2.GetBoolean());
+			out1.edit( in1.getBoolean());
+			out2.edit( in2.getBoolean());
 			return;
 		}
 	}
 
-	public static void PerformAdd(BasicVariable target,BasicVariable var1,BasicVariable var2)
+	public static void performAdd(BasicVariable target,BasicVariable var1,BasicVariable var2)
 	{
 		BasicVariable a = new BasicVariable();
 		BasicVariable b = new BasicVariable();
 
-		SyncVariables('+',var1,var2,a,b);
+		syncVariables('+',var1,var2,a,b);
 		switch(a.getObjectType())
 		{
 		case typeString:
 			StringBuilder temp = new StringBuilder();
-			temp.append(a.GetStr());
-			temp.append(b.GetStr());
+			temp.append(a.getStr());
+			temp.append(b.getStr());
 			target.edit(temp.toString());
 			break;
-		case typeFloat:target.edit((float)a.GetFloat()+b.GetFloat());break;
-		case typeInteger:target.edit((long)(a.GetShort()+b.GetShort()));break;
-		case typeLong:target.edit((long)(a.GetLong()+b.GetLong()));break;
-		case typeDouble:target.edit((double)a.GetDouble()+b.GetDouble());break;
-		case typeByte:target.edit((byte)a.GetByte()+b.GetByte());break;
-		case typeCharacter:target.edit((char)a.GetShort()+b.GetShort());break;
+		case typeFloat:target.edit((float)a.getFloat()+b.getFloat());break;
+		case typeInteger:target.edit((long)(a.getShort()+b.getShort()));break;
+		case typeLong:target.edit((long)(a.getLong()+b.getLong()));break;
+		case typeDouble:target.edit((double)a.getDouble()+b.getDouble());break;
+		case typeByte:target.edit((byte)a.getByte()+b.getByte());break;
+		case typeCharacter:target.edit((char)a.getShort()+b.getShort());break;
 		default:
 			throw(new BasicError(ErrorNumbers.errorType));
 		}
 	}
 
-	public static void PerformSub(BasicVariable target,BasicVariable var1,BasicVariable var2)
+	public static void performSub(BasicVariable target,BasicVariable var1,BasicVariable var2)
 	{
 		BasicVariable a = new BasicVariable();
 		BasicVariable b = new BasicVariable();
 
-		SyncVariables('-',var1,var2,a,b);
+		syncVariables('-',var1,var2,a,b);
 		switch(a.getObjectType())
 		{
-		case typeFloat:target.edit((float)a.GetFloat()-b.GetFloat());break;
-		case typeInteger:target.edit((long)(a.GetShort()-b.GetShort()));break;
-		case typeLong:target.edit((long)a.GetLong()-b.GetLong());break;
-		case typeDouble:target.edit((double)a.GetDouble()-b.GetDouble());break;
-		case typeByte:target.edit((byte)a.GetByte()-b.GetByte());break;
-		case typeCharacter:target.edit((char)a.GetShort()-b.GetShort());break;
+		case typeFloat:target.edit((float)a.getFloat()-b.getFloat());break;
+		case typeInteger:target.edit((long)(a.getShort()-b.getShort()));break;
+		case typeLong:target.edit((long)a.getLong()-b.getLong());break;
+		case typeDouble:target.edit((double)a.getDouble()-b.getDouble());break;
+		case typeByte:target.edit((byte)a.getByte()-b.getByte());break;
+		case typeCharacter:target.edit((char)a.getShort()-b.getShort());break;
 		default:
 			throw(new BasicError(ErrorNumbers.errorType));
 		}
 	}
 
-	public static void PerformMul(BasicVariable target,BasicVariable var1,BasicVariable var2)
+	public static void performMul(BasicVariable target,BasicVariable var1,BasicVariable var2)
 	{
 		BasicVariable a = new BasicVariable();
 		BasicVariable b = new BasicVariable();
 
-		SyncVariables('*',var1,var2,a,b);
+		syncVariables('*',var1,var2,a,b);
 		switch(a.getObjectType())
 		{
-		case typeFloat:target.edit((float)a.GetFloat()*b.GetFloat());break;
-		case typeInteger:target.edit((long)(a.GetShort()*b.GetShort()));break;
-		case typeLong:target.edit((long)a.GetLong()*b.GetLong());break;
-		case typeDouble:target.edit((double)a.GetDouble()*b.GetDouble());break;
-		case typeByte:target.edit((byte)a.GetByte()*b.GetByte());break;
-		case typeCharacter:target.edit((char)a.GetShort()*b.GetShort());break;
+		case typeFloat:target.edit((float)a.getFloat()*b.getFloat());break;
+		case typeInteger:target.edit((long)(a.getShort()*b.getShort()));break;
+		case typeLong:target.edit((long)a.getLong()*b.getLong());break;
+		case typeDouble:target.edit((double)a.getDouble()*b.getDouble());break;
+		case typeByte:target.edit((byte)a.getByte()*b.getByte());break;
+		case typeCharacter:target.edit((char)a.getShort()*b.getShort());break;
 		default:
 			throw(new BasicError(ErrorNumbers.errorType));
 		}
 	}
 
-	public static void PerformDiv(BasicVariable target,BasicVariable var1,BasicVariable var2)
+	public static void performDiv(BasicVariable target,BasicVariable var1,BasicVariable var2)
 	{
 		BasicVariable a = new BasicVariable();
 		BasicVariable b = new BasicVariable();
 
-		SyncVariables('/',var1,var2,a,b);
+		syncVariables('/',var1,var2,a,b);
 		switch(a.getObjectType())
 		{
-		case typeFloat:target.edit((float)a.GetFloat()/b.GetFloat());break;
-		case typeInteger:target.edit((long)(a.GetShort()/b.GetShort()));break;
-		case typeLong:target.edit((long)a.GetLong()/b.GetLong());break;
-		case typeDouble:target.edit((double)a.GetDouble()/b.GetDouble());break;
-		case typeByte:target.edit((byte)a.GetByte()/b.GetByte());break;
-		case typeCharacter:target.edit((char)a.GetShort()/b.GetShort());break;
+		case typeFloat:target.edit((float)a.getFloat()/b.getFloat());break;
+		case typeInteger:target.edit((long)(a.getShort()/b.getShort()));break;
+		case typeLong:target.edit((long)a.getLong()/b.getLong());break;
+		case typeDouble:target.edit((double)a.getDouble()/b.getDouble());break;
+		case typeByte:target.edit((byte)a.getByte()/b.getByte());break;
+		case typeCharacter:target.edit((char)a.getShort()/b.getShort());break;
 		default:
 			throw(new BasicError(ErrorNumbers.errorType));
 		}
 	}
 
-	public static void PerformMod(BasicVariable target,BasicVariable var1,BasicVariable var2)
+	public static void performMod(BasicVariable target,BasicVariable var1,BasicVariable var2)
 	{
 		BasicVariable a = new BasicVariable();
 		BasicVariable b = new BasicVariable();
 
-		SyncVariables('%',var1,var2,a,b);
+		syncVariables('%',var1,var2,a,b);
 		switch(a.getObjectType())
 		{
 		case typeFloat:
-		case typeInteger:target.edit((long)a.GetShort()%b.GetShort());break;
+		case typeInteger:target.edit((long)a.getShort()%b.getShort());break;
 		case typeDouble:
-		case typeLong:target.edit((long)a.GetLong()%b.GetLong());break;
-		case typeByte:target.edit((byte)a.GetByte()%b.GetByte());break;
-		case typeCharacter:target.edit((char)a.GetShort()%b.GetShort());break;
+		case typeLong:target.edit((long)a.getLong()%b.getLong());break;
+		case typeByte:target.edit((byte)a.getByte()%b.getByte());break;
+		case typeCharacter:target.edit((char)a.getShort()%b.getShort());break;
 		default:
 			throw(new BasicError(ErrorNumbers.errorType));
 		}
 	}
 
-	public static void PerformCat(BasicVariable target,BasicVariable var1,BasicVariable var2)
+	public static void performCat(BasicVariable target,BasicVariable var1,BasicVariable var2)
 	{
 		StringBuilder temp = new StringBuilder();
-		temp.append(var1.GetStr());
-		temp.append(var2.GetStr());
+		temp.append(var1.getStr());
+		temp.append(var2.getStr());
 		target.edit(temp.toString());
 		
 	}
 
-	public static void PerformPower(BasicVariable target,BasicVariable var1,BasicVariable var2)
+	public static void performPower(BasicVariable target,BasicVariable var1,BasicVariable var2)
 	{
 		if( (var1.getObjectType()==BasicTypes.typeString) ||
 			(var1.getObjectType()==BasicTypes.typeBoolean) ||
@@ -262,33 +263,27 @@ public class BasicUtil {
 		{
 			throw(new BasicError(ErrorNumbers.errorType));
 		}
-		target.edit((double)Math.pow(var1.GetDouble(),var2.GetDouble()));
+		target.edit((double)Math.pow(var1.getDouble(),var2.getDouble()));
 
 	}
 
-	public static void PerformNeg(BasicVariable target,BasicVariable var)
+	public static void performNeg(BasicVariable target,BasicVariable var)
 	{
 		BasicVariable a = new BasicVariable();
 		BasicVariable b = new BasicVariable();
 
 		switch(var.getObjectType())
 		{
-		case typeFloat:target.edit((float)-var.GetFloat());break;
-		case typeInteger:target.edit((long)-var.GetShort());break;
-		case typeLong:target.edit((long)-var.GetLong());break;
-		case typeDouble:target.edit((double)-var.GetDouble());break;
-		case typeByte:target.edit((byte)-var.GetByte());break;
-		case typeCharacter:target.edit((char)-var.GetShort());break;
+		case typeFloat:target.edit((float)-var.getFloat());break;
+		case typeInteger:target.edit((long)-var.getShort());break;
+		case typeLong:target.edit((long)-var.getLong());break;
+		case typeDouble:target.edit((double)-var.getDouble());break;
+		case typeByte:target.edit((byte)-var.getByte());break;
+		case typeCharacter:target.edit((char)-var.getShort());break;
 		default:
 			throw(new BasicError(ErrorNumbers.errorType));
 		}
 
-	}
-
-
-	BasicError FindError(ErrorNumbers err)
-	{
-		return null;
 	}
 
 	public static String basicToUpper(String l) {

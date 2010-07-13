@@ -14,12 +14,12 @@ public class BasicVariable {
 	
 	public BasicVariable()
 	{
-		Free();
+		free();
 	}
 	
 	public BasicVariable(BasicObjectVariable v)
 	{
-		CreateArray();
+		createArray();
 		data=new Object[1];
 		((Object[])this.data)[0] = v;
 		setObjectType(BasicTypes.typeObject);
@@ -28,7 +28,7 @@ public class BasicVariable {
 	
 	public BasicVariable(String strData)
 	{
-		CreateArray();
+		createArray();
 		data=new String[1];
 		((String[])this.data)[0] = strData;
 		setObjectType(BasicTypes.typeString);
@@ -37,7 +37,7 @@ public class BasicVariable {
 
 	public BasicVariable(float floatData)
 	{
-		CreateArray();
+		createArray();
 		data=new Float[1];
 		((Float[])this.data)[0] = floatData;
 		setObjectType(BasicTypes.typeFloat);
@@ -46,7 +46,7 @@ public class BasicVariable {
 
 	public BasicVariable(short shortData)
 	{
-		CreateArray();
+		createArray();
 		data=new Integer[1];
 		((Integer[])this.data)[0] = new Integer(shortData);
 		setObjectType(BasicTypes.typeInteger);
@@ -55,7 +55,7 @@ public class BasicVariable {
 
 	public BasicVariable(long longData)
 	{
-		CreateArray();
+		createArray();
 		data=new Long[1];
 		((Long[])this.data)[0] = longData;
 		setObjectType(BasicTypes.typeLong);
@@ -64,7 +64,7 @@ public class BasicVariable {
 
 	public BasicVariable(double doubleData)
 	{
-		CreateArray();
+		createArray();
 		data=new Double[1];
 		((Double[])this.data)[0] = doubleData;
 		setObjectType(BasicTypes.typeDouble);
@@ -74,7 +74,7 @@ public class BasicVariable {
 
 	public BasicVariable(byte byteData)
 	{
-		CreateArray();
+		createArray();
 		data=new Byte[1];
 		((Byte[])this.data)[0] = byteData;
 		setObjectType(BasicTypes.typeByte);
@@ -84,7 +84,7 @@ public class BasicVariable {
 
 	public BasicVariable(boolean booleanData)
 	{
-		CreateArray();
+		createArray();
 		data=new Boolean[1];
 		((Boolean[])this.data)[0] = booleanData;
 		setObjectType(BasicTypes.typeBoolean);
@@ -93,7 +93,7 @@ public class BasicVariable {
 
 	public BasicVariable(char characterData)
 	{
-		CreateArray();
+		createArray();
 		data=new Character[1];
 		((Character[])this.data)[0] = characterData;
 		setObjectType(BasicTypes.typeCharacter);
@@ -119,7 +119,7 @@ public class BasicVariable {
 		case typeString:
 			((String[])data)[this.currentIndex] = str;
 			break;
-		default:Mismatch();
+		default:mismatch();
 		}
 	}
 	
@@ -138,7 +138,7 @@ public class BasicVariable {
 		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
 		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
 		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
-		default:Mismatch();
+		default:mismatch();
 		}
 	}
 
@@ -156,7 +156,7 @@ public class BasicVariable {
 		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
 		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
 		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
-		default:Mismatch();
+		default:mismatch();
 		}
 
 	}
@@ -176,7 +176,7 @@ public class BasicVariable {
 		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
 		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
 		case typeCharacter:((Character[])this.data)[this.currentIndex]=(char)v;break;
-		default:Mismatch();
+		default:mismatch();
 		}
 
 	}
@@ -195,7 +195,7 @@ public class BasicVariable {
 		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
 		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
 		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
-		default:Mismatch();
+		default:mismatch();
 		}
 	}
 
@@ -213,7 +213,7 @@ public class BasicVariable {
 		case typeLong:((Long[])this.data)[this.currentIndex]=(long)v;break;
 		case typeDouble:((Double[])this.data)[this.currentIndex]=(double)v;break;
 		case typeByte:((Byte[])this.data)[this.currentIndex]=(byte)v;break;
-		default:Mismatch();
+		default:mismatch();
 		}
 	}
 
@@ -224,7 +224,7 @@ public class BasicVariable {
 			setObjectType(BasicTypes.typeBoolean);
 		} else
 		if(getObjectType()!=BasicTypes.typeBoolean)
-			Mismatch();
+			mismatch();
 
 		((Boolean[])this.data)[this.currentIndex] = v;
 	}
@@ -237,7 +237,7 @@ public class BasicVariable {
 		}
 		else
 		if(getObjectType()!=BasicTypes.typeCharacter)
-			Mismatch();
+			mismatch();
 
 		((Character[])this.data)[this.currentIndex]=v;
 	}
@@ -268,24 +268,24 @@ public class BasicVariable {
 
 				switch(getObjectType())
 				{
-					case typeFloat:edit(c.GetFloat());return;
-					case typeInteger:edit((long)c.GetShort());return;
-					case typeLong:edit(c.GetLong());return;
-					case typeDouble:edit(c.GetDouble());return;
-					case typeByte:edit(c.GetByte());return;
+					case typeFloat:edit(c.getFloat());return;
+					case typeInteger:edit((long)c.getShort());return;
+					case typeLong:edit(c.getLong());return;
+					case typeDouble:edit(c.getDouble());return;
+					case typeByte:edit(c.getByte());return;
 				}
 				throw(new BasicError(ErrorNumbers.errorType));
 
 			case typeString:
-				edit( c.GetStr() );
+				edit( c.getStr() );
 				return;
 
 			case typeCharacter:
-				edit( c.GetCharacter() );
+				edit( c.getCharacter() );
 				return;
 
 			case typeBoolean:
-				edit( c.GetBoolean() );
+				edit( c.getBoolean() );
 				return;
 
 			case typeObject:
@@ -293,7 +293,7 @@ public class BasicVariable {
 				// paramater not being setup properly, that is not having
 				// a proper data member setup for the object.
 				assert(((BasicObjectVariable)c.data)!=c.buffer);
-				((BasicObjectVariable)c.data).Copy(this);
+				((BasicObjectVariable)c.data).copy(this);
 				return;
 
 				
@@ -320,17 +320,17 @@ public class BasicVariable {
 		z=zz;
 	}
 
-	public boolean IsArray()
+	public boolean isArray()
 	{
 		return x!=0;
 	}
 	
-	public boolean IsNULL()
+	public boolean isNULL()
 	{
 		return( (data==null) || (data==buffer) );
 	}
 	
-	public void CreateArray()
+	public void createArray()
 	{
 		this.x = 0;
 		this.y = 0;
@@ -338,7 +338,7 @@ public class BasicVariable {
 		this.currentIndex = 0;
 	}
 	
-	public void CreateArray(int a,int b,int c)
+	public void createArray(int a,int b,int c)
 	{
 		int elements;
 
@@ -384,13 +384,13 @@ public class BasicVariable {
 			break;
 
 		case typeObject:
-			data=((BasicObjectVariable)data).CreateObject(elements);
+			data=((BasicObjectVariable)data).createObject(elements);
 			break;
 		}
 
 	}
 
-	public void SetArrayLocation(int a,int b,int c)
+	public void setArrayLocation(int a,int b,int c)
 	{
 		int disp;
 		long elementSize;
@@ -436,7 +436,7 @@ public class BasicVariable {
 	}
 
 	
-	public String GetStr()
+	public String getStr()
 	{
 		switch(getObjectType())
 		{
@@ -449,9 +449,9 @@ public class BasicVariable {
 		}
 	}
 
-	public float GetFloat()
+	public float getFloat()
 	{
-		HandleNumericType(this);
+		handleNumericType(this);
 
 		switch(getObjectType())
 		{
@@ -464,9 +464,9 @@ public class BasicVariable {
 		}
 	}
 
-	public short GetShort()
+	public short getShort()
 	{
-		HandleNumericType(this);
+		handleNumericType(this);
 
 		switch(getObjectType())
 		{
@@ -479,9 +479,9 @@ public class BasicVariable {
 		}
 	}
 
-	public long GetLong()
+	public long getLong()
 	{
-		HandleNumericType(this);
+		handleNumericType(this);
 
 		switch(getObjectType())
 		{
@@ -494,9 +494,9 @@ public class BasicVariable {
 		}
 	}
 
-	public double GetDouble()	
+	public double getDouble()	
 	{
-		HandleNumericType(this);
+		handleNumericType(this);
 		
 		switch(getObjectType())
 		{
@@ -509,9 +509,9 @@ public class BasicVariable {
 		}
 	}
 
-	public byte GetByte()
+	public byte getByte()
 	{
-		HandleNumericType(this);
+		handleNumericType(this);
 
 		switch(getObjectType())
 		{
@@ -524,7 +524,7 @@ public class BasicVariable {
 		}
 	}
 
-	public boolean GetBoolean()
+	public boolean getBoolean()
 	{
 		if(getObjectType()!=BasicTypes.typeBoolean)
 			throw(new BasicError(ErrorNumbers.errorType));
@@ -532,7 +532,7 @@ public class BasicVariable {
 		return ((Boolean[])this.data)[this.currentIndex].booleanValue();
 	}
 
-	public char GetCharacter()
+	public char getCharacter()
 	{
 		switch(getObjectType())
 		{
@@ -543,7 +543,7 @@ public class BasicVariable {
 		}
 	}
 
-	public BasicObjectVariable GetObject()
+	public BasicObjectVariable getObject()
 	{
 		if(getObjectType()!=BasicTypes.typeObject)
 			throw(new BasicError(ErrorNumbers.errorType));
@@ -552,7 +552,7 @@ public class BasicVariable {
 	}
 
 
-	private void HandleNumericType(BasicVariable var)
+	private void handleNumericType(BasicVariable var)
 	{
 		switch(var.getObjectType())
 		{
@@ -563,7 +563,7 @@ public class BasicVariable {
 		}
 	}
 	
-	private void HandleNonNumericType(BasicVariable var)
+	private void handleNonNumericType(BasicVariable var)
 	{
 		switch(var.getObjectType())
 		{
@@ -582,19 +582,19 @@ public class BasicVariable {
 		{
 		case typeInteger:
 		case typeLong:
-			return ""+this.GetLong();
-		case typeString:return GetStr();
+			return ""+this.getLong();
+		case typeString:return getStr();
 		case typeFloat:
 		case typeDouble:
-		case typeByte:return "" + GetDouble();
-		case typeBoolean:return GetBoolean()?"true":"false";
-		case typeCharacter:return ""+GetCharacter();
+		case typeByte:return "" + getDouble();
+		case typeBoolean:return getBoolean()?"true":"false";
+		case typeCharacter:return ""+getCharacter();
 		default:return "[OBJECT]";
 		}
 	}
 
 
-	public boolean CompareE(BasicVariable v)
+	public boolean compareE(BasicVariable v)
 	{
 		switch(getObjectType())
 		{
@@ -602,29 +602,29 @@ public class BasicVariable {
 		case typeObject:
 			throw(new BasicError(ErrorNumbers.errorInvalidType));
 		case typeString:
-			return GetStr().equals(v.GetStr());
+			return getStr().equals(v.getStr());
 		case typeInteger:
 		case typeLong:
 		case typeByte:
-			return(GetLong()==v.GetLong());
+			return(getLong()==v.getLong());
 		case typeCharacter:
-			return(GetCharacter()==v.GetCharacter());
+			return(getCharacter()==v.getCharacter());
 			
 		case typeFloat:
 		case typeDouble:
-			return(GetDouble()==v.GetDouble());
+			return(getDouble()==v.getDouble());
 		case typeBoolean:
-			return(GetBoolean()==v.GetBoolean());
+			return(getBoolean()==v.getBoolean());
 		}
 		return false;
 	}
 
-	public boolean CompareNE(BasicVariable v)
+	public boolean compareNE(BasicVariable v)
 	{
-		return !CompareE(v);
+		return !compareE(v);
 	}
 
-	public boolean CompareGT(BasicVariable v)
+	public boolean compareGT(BasicVariable v)
 	{
 		switch(getObjectType())
 		{
@@ -632,21 +632,21 @@ public class BasicVariable {
 		case typeObject:
 			throw(new BasicError(ErrorNumbers.errorInvalidType));
 		case typeString:
-			return(GetStr().compareTo(v.GetStr())>0);
+			return(getStr().compareTo(v.getStr())>0);
 		case typeInteger:
 		case typeLong:
 		case typeByte:
-			return(GetLong()>v.GetLong());
+			return(getLong()>v.getLong());
 		case typeCharacter:
-			return(GetCharacter()>v.GetCharacter());
+			return(getCharacter()>v.getCharacter());
 		case typeFloat:
 		case typeDouble:
-			return(GetDouble()>v.GetDouble());
+			return(getDouble()>v.getDouble());
 		}
 		return false;
 	}
 
-	public boolean CompareLT(BasicVariable v)
+	public boolean compareLT(BasicVariable v)
 	{
 		switch(getObjectType())
 		{
@@ -654,37 +654,37 @@ public class BasicVariable {
 		case typeObject:
 			throw(new BasicError(ErrorNumbers.errorInvalidType));
 		case typeString:
-			return(GetStr().compareTo(v.GetStr())<0);
+			return(getStr().compareTo(v.getStr())<0);
 		case typeInteger:
 		case typeLong:
 		case typeByte:
-			return(GetLong()<v.GetLong());
+			return(getLong()<v.getLong());
 		case typeCharacter:
-			return(GetCharacter()<v.GetCharacter());
+			return(getCharacter()<v.getCharacter());
 
 		case typeFloat:
 		case typeDouble:
-			return(GetDouble()<v.GetDouble());
+			return(getDouble()<v.getDouble());
 		}
 		return false;
 	}
 
-	public boolean CompareGTE(BasicVariable v)
+	public boolean compareGTE(BasicVariable v)
 	{
-		return( CompareE(v) || CompareGT(v) );
+		return( compareE(v) || compareGT(v) );
 	}
 
-	public boolean CompareLTE(BasicVariable v)
+	public boolean compareLTE(BasicVariable v)
 	{
-		return( CompareE(v) || CompareLT(v) );
+		return( compareE(v) || compareLT(v) );
 	}
 
-	private void Mismatch()
+	private void mismatch()
 	{
 		throw new BasicError(ErrorNumbers.errorType);
 	}
 	
-	public void Free() {
+	public void free() {
 		x=y=z=0;
 		setObjectType(BasicTypes.typeUndefined);
 		isRef=false;
