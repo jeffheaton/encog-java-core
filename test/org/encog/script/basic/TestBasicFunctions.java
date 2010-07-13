@@ -23,6 +23,6 @@ public class TestBasicFunctions extends TestCase {
 	public static void testString()
 	{
 		String str = BasicEvaluate.evaluate(BasicEvaluate.FILE_TEST_BASIC_FN,"test-string");
-		Assert.assertEquals("65A205abcABCacb|trim || trim|| |", str);
+		Assert.assertEquals("65A205abcABCacb|trim || trim|| |test  .te  test.st", str);
 	}
 }

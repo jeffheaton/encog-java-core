@@ -48,6 +48,10 @@ sub main
 	print "|"+ltrim(" trim ")+"|"
 	print "|"+rtrim(" trim ")+"|"
 	print "|"+space(1)+"|"
+	print lset("test",6)+"."
+	print lset("test",2)
+	print rset("test",6)+"."
+	print rset("test",2)
 end sub
 ]]></source></EncogScript>
 
