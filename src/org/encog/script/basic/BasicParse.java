@@ -248,7 +248,7 @@ public class BasicParse implements Basic {
 
 	}
 
-	private void doAssignment() {
+	public void doAssignment() {
 		BasicVariable varObj;
 		String var;
 
@@ -549,7 +549,7 @@ public class BasicParse implements Basic {
 			return target;
 	}
 
-	private BasicVariable variable(BasicVariable v) {
+	public BasicVariable variable() {
 		BasicVariable result = new BasicVariable();
 		String varName;
 		BasicVariable var;
@@ -821,7 +821,7 @@ public class BasicParse implements Basic {
 		
 		kill_space();
 		if( (nextchar>='A') && (nextchar<='Z') )
-			target = variable(target);
+			target = variable();
 		else
 		if( (nextchar=='+') || (nextchar=='-') || Character.isDigit(nextchar) || (nextchar=='.') || (nextchar=='\"') )
 			target = constant();
@@ -968,18 +968,7 @@ public class BasicParse implements Basic {
 		}
 	}
 
-	public BasicVariable getNextVariable(String n) {
-		String str;
 
-		if (n != null) {
-			n = parseVariable();
-			return getVariable(n);
-		} else {
-			n = parseVariable();
-			return getVariable(n);
-		}
-
-	}
 
 	public BasicVariable getVariable(String name) {
 		BasicVariable rtn;
@@ -1232,7 +1221,7 @@ public class BasicParse implements Basic {
 				if( (caller.nextchar==':') || caller.nextchar>0 )
 					throw(new BasicError(ErrorNumbers.errorParamaters));
 
-				v=caller.getNextVariable(null);
+				v=caller.parseVariable(0, 0);
 				if(v==null)
 					throw(new BasicError(ErrorNumbers.errorUndefinedVariable));
 				v.CreateRef(v2);

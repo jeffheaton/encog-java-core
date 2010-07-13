@@ -1,5 +1,7 @@
 package org.encog.script.basic.commands;
 
+import javax.swing.JOptionPane;
+
 import org.encog.script.basic.BasicError;
 import org.encog.script.basic.BasicParse;
 import org.encog.script.basic.BasicTypes;
@@ -67,6 +69,8 @@ public class BasicFunctions {
 		case keyUCASE:		fnUCase_(target);break;
 		case keyVAL:		fnVal(target);break;
 		case keyREGISTRY:	fnRegistry(target);break;
+		case keyLSET:		fnLSet(target);break;
+		case keyRSET:		fnRSet(target);break;
 		}
 	}
 	
@@ -462,7 +466,7 @@ public class BasicFunctions {
 	}
 
 	public void fnMsgBox(BasicVariable target) {
-		BasicVariable a,b,c;
+		BasicVariable a,b=null,c;
 		int num=1;
 
 		this.parse.expectToken('(');
@@ -482,13 +486,18 @@ public class BasicFunctions {
 		switch(num)
 		{
 			case 1:
-				//target.edit((long)MessageBox(mainWindow,a.GetStr(),_pgmptr,MB_OK));
+				JOptionPane.showMessageDialog(null, a.GetStr(), "Encog", JOptionPane.PLAIN_MESSAGE);
+				target.edit((long)0);
 				break;
 			case 2:
-				//target.edit((long)MessageBox(mainWindow,a.GetStr(),b.GetStr(),MB_OK));
+				if( b==null )
+					throw new BasicError(ErrorNumbers.errorIllegalUse);
+				JOptionPane.showMessageDialog(null, a.GetStr(), b.GetStr(), JOptionPane.PLAIN_MESSAGE);
 				break;
 			case 3:
-				//target.edit((long)MessageBox(mainWindow,a.GetStr(),c.GetStr(),b.GetShort()));
+				boolean r = JOptionPane.showConfirmDialog(null, a.GetStr(), b.GetStr(),
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+				target.edit(r);
 				break;
 			default:
 				target.edit(0);
@@ -682,4 +691,60 @@ public class BasicFunctions {
 	public void fnRegistry(BasicVariable target) {
 		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}	
+	
+	public void fnLSet(BasicVariable target) {
+		BasicVariable a,b;
+		StringBuilder str = new StringBuilder();
+
+		this.parse.expectToken('(');
+
+		a=this.parse.expr();
+		this.parse.expectToken(',');
+		b = this.parse.expr();
+		int finalLen = b.GetShort();
+
+		str.append(a.GetStr());
+		
+		if( finalLen>=a.GetStr().length() )
+		{
+			while(str.length()<finalLen)
+				str.append(' ');
+		}
+		else
+		{
+			str.setLength(finalLen);
+		}
+
+		this.parse.expectToken(')');
+
+		target.edit(str.toString());
+	}
+	
+	public void fnRSet(BasicVariable target) {
+		BasicVariable a,b;
+		StringBuilder str = new StringBuilder();
+
+		this.parse.expectToken('(');
+
+		a=this.parse.expr();
+		this.parse.expectToken(',');
+		b = this.parse.expr();
+		int finalLen = b.GetShort();
+
+		str.append(a.GetStr());
+		if( finalLen>=a.GetStr().length() )
+		{
+			while(str.length()<finalLen)
+				str.insert(0, ' ');	
+		}
+		else
+		{
+			while( str.length()>finalLen)
+				str.deleteCharAt(0);
+		}
+
+		this.parse.expectToken(')');
+
+		target.edit(str.toString());
+	}
 }

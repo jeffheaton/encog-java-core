@@ -1,5 +1,10 @@
 package org.encog.script.basic.commands;
 
+import java.awt.Toolkit;
+import java.io.File;
+
+import javax.swing.JOptionPane;
+
 import org.encog.script.basic.BasicError;
 import org.encog.script.basic.BasicKey;
 import org.encog.script.basic.BasicLine;
@@ -98,9 +103,6 @@ public class BasicCommands {
 		case keyLOOP:
 			cmdLoop();
 			break;
-		case keyLSET:
-			cmdLSet();
-			break;
 		case keyMKDIR:
 			cmdMKDir();
 			break;
@@ -147,9 +149,6 @@ public class BasicCommands {
 			break;
 		case keyRMDIR:
 			cmdRmDir();
-			break;
-		case keyRSET:
-			cmdRSet();
 			break;
 		case keyRUN:
 			cmdRun("MAIN");
@@ -204,9 +203,11 @@ public class BasicCommands {
 	}
 	 
 	public void cmdBeep() {
+		Toolkit.getDefaultToolkit().beep();
 	}
 
 	public void cmdCall() {
+		this.parse.expr();
 	}
 
 	public void cmdCase() {
@@ -214,6 +215,7 @@ public class BasicCommands {
 	}
 
 	public void cmdChDir() {
+		
 	}
 
 	public void cmdClose() {
@@ -223,6 +225,7 @@ public class BasicCommands {
 	}
 
 	public void cmdConst() {
+		
 	}
 
 	public void cmdCreateLink() {
@@ -236,6 +239,10 @@ public class BasicCommands {
 		{
 			this.parse.kill_space();
 			var = this.parse.parseVariable();
+			
+			if( this.parse.getVariable(var)!=null )
+				throw new BasicError(ErrorNumbers.errorDim);
+			
 			if( BasicUtil.FindKeyword(var)!=null)
 				throw(new BasicError(ErrorNumbers.errorKeyword));
 
@@ -302,7 +309,29 @@ public class BasicCommands {
 	}
 
 	public boolean cmdExit() {
-		return false;
+		BasicKey key;
+		int dummy;
+		
+		key=this.parse.parseNextToken();
+		if(key==null)
+			throw(new BasicError(ErrorNumbers.errorIllegalUse));
+		switch(key.getId())
+		{
+		case keyDO:break;
+		case keyFOR:
+			if(this.parse.getStack().peekType()!=StackEntryType.stackFor)
+				throw(new BasicError(ErrorNumbers.errorIllegalUse));
+			this.parse.getStack().pop();
+			this.parse.moveToNext();
+			return true;
+
+		case keyFUNCTION:	
+		case keySUB:
+			this.parse.setCurrentLine(null);
+			return false;
+		default:throw(new BasicError(ErrorNumbers.errorKeyword));
+		}
+		return true;
 	}
 
 	public void cmdFor() {
@@ -364,6 +393,7 @@ public class BasicCommands {
 	}
 
 	public void cmdFunction() {
+		// Just ignore this first line of a function
 	}
 
 	public void cmdGet() {
@@ -406,12 +436,18 @@ public class BasicCommands {
 	}
 
 	public void cmdKill() {
+		BasicVariable var = this.parse.expr();
+		File file = new File(var.GetStr());
+		if( !file.delete() )
+			throw(new BasicError(ErrorNumbers.errorDisk));
 	}
 
 	public void cmdLet() {
+		this.parse.doAssignment();
 	}
 
 	public void cmdLoad() {
+		
 	}
 
 	public void cmdLock() {
@@ -464,16 +500,62 @@ public class BasicCommands {
 		}
 	}
 
-	public void cmdLSet() {
-	}
 
 	public void cmdMsgBox() {
+		BasicVariable a,b=null,c;
+		int num=1;
+
+		this.parse.expectToken('(');
+		a = this.parse.expr();
+		
+		if(this.parse.lookAhead(',') )
+		{
+			num=2;
+			b = this.parse.expr();
+			if(this.parse.lookAhead(',') )
+			{
+				num=3;
+				c = this.parse.expr();
+			}
+		}
+		this.parse.expectToken(')');
+		switch(num)
+		{
+			case 1:
+				JOptionPane.showMessageDialog(null, a.GetStr(), "Encog", JOptionPane.PLAIN_MESSAGE);
+				break;
+			case 2:
+				if( b==null )
+					throw new BasicError(ErrorNumbers.errorIllegalUse);
+				JOptionPane.showMessageDialog(null, a.GetStr(), b.GetStr(), JOptionPane.PLAIN_MESSAGE);
+				break;
+			case 3:
+				boolean r = JOptionPane.showConfirmDialog(null, a.GetStr(), b.GetStr(),
+						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
+				break;
+		}
+
 	}
 
 	public void cmdMKDir() {
+		BasicVariable var = this.parse.expr();
+		File file = new File(var.GetStr());
+		file.mkdir();
 	}
 
 	public void cmdName() {
+		BasicVariable oldName = this.parse.expr();
+		
+		if(this.parse.lookAhead(KeyNames.keyAS,false))
+			throw(new BasicError(ErrorNumbers.errorIllegalUse));
+		
+		BasicVariable newName = this.parse.expr();
+		
+		File oldFile = new File(oldName.GetStr());
+		File newFile = new File(newName.GetStr());
+		
+		if( !oldFile.renameTo(newFile) )
+			throw new BasicError(ErrorNumbers.errorDisk);
 	}
 
 	public void cmdNext() {
@@ -610,30 +692,58 @@ public class BasicCommands {
 	}
 
 	public void cmdRandomize() {
+
 	}
 
 	public void cmdRead() {
 	}
 
 	public void cmdReDim() {
+
+		BasicVariable v;
+		String var;
+
+		for(;;)	
+		{
+			this.parse.kill_space();
+			var = this.parse.parseVariable();
+			if( BasicUtil.FindKeyword(var)!=null)
+				throw(new BasicError(ErrorNumbers.errorKeyword));
+
+			if(this.parse.getVariable(var)!=null)
+				throw(new BasicError(ErrorNumbers.errorAlreadyDefined));
+		
+			v = this.parse.createVariable(var);
+			this.parse.addVariable(var, v);
+			
+			this.parse.kill_space();
+			if( !this.parse.lookAhead(',') )
+				break;
+		}
+
 	}
 
 	public void cmdRem() {
+		while(this.parse.getNextChar()!=0)
+			this.parse.advance();
 	}
 
 	public void cmdReset() {
+		throw new BasicError(ErrorNumbers.errorNotYet);
 	}
 
 	public void cmdResume() {
+		throw new BasicError(ErrorNumbers.errorNotYet);
 	}
 
 	public void cmdReturn() {
 	}
 
 	public void cmdRmDir() {
-	}
-
-	public void cmdRSet() {
+		BasicVariable var = this.parse.expr();
+		File file = new File(var.GetStr());
+		if( !file.delete() )
+			throw new BasicError(ErrorNumbers.errorDisk);
 	}
 
 	public boolean cmdRun(String str) {
@@ -731,12 +841,19 @@ public class BasicCommands {
 	}
 
 	public void cmdShared() {
+		throw new BasicError(ErrorNumbers.errorNotYet);
 	}
 
 	public void cmdSleep() {
+		BasicVariable var = this.parse.expr();
+		try {
+			Thread.sleep((int)var.GetLong());
+		} catch (InterruptedException e) {
+		}
 	}
 
 	public void cmdStatic() {
+		throw new BasicError(ErrorNumbers.errorNotYet);
 	}
 
 	public void cmdStop() {
@@ -746,9 +863,11 @@ public class BasicCommands {
 	}
 
 	public void cmdType() {
+		throw new BasicError(ErrorNumbers.errorNotYet);
 	}
 
 	public void cmdUnLock() {
+		throw new BasicError(ErrorNumbers.errorNotYet);
 	}
 
 	public void cmdWEnd() {
@@ -784,6 +903,7 @@ public class BasicCommands {
 	}
 
 	public void cmdWrite() {
+		throw new BasicError(ErrorNumbers.errorNotYet);
 	}
 
 	public void cmdSetRegistry() {

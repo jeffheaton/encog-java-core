@@ -97,7 +97,7 @@ public class BasicKey {
 		keys.add(new BasicKey("LOG",KeyTypes.keyFunction,KeyNames.keyLOG));
 		keys.add(new BasicKey("LONG",KeyTypes.keyType,KeyNames.keyLONG));
 		keys.add(new BasicKey("LOOP",KeyTypes.keyStatement,KeyNames.keyLOOP));
-		keys.add(new BasicKey("LSET",KeyTypes.keyStatement,KeyNames.keyLSET));
+		keys.add(new BasicKey("LSET",KeyTypes.keyFunction,KeyNames.keyLSET));
 		keys.add(new BasicKey("LTRIM",KeyTypes.keyFunction,KeyNames.keyLTRIM));
 		keys.add(new BasicKey("MID",KeyTypes.keyFunction,KeyNames.keyMID));
 		keys.add(new BasicKey("MKDIR",KeyTypes.keyStatement,KeyNames.keyMKDIR));
@@ -130,7 +130,7 @@ public class BasicKey {
 		keys.add(new BasicKey("RIGHT",KeyTypes.keyFunction,KeyNames.keyRIGHT));
 		keys.add(new BasicKey("RMDIR",KeyTypes.keyStatement,KeyNames.keyRMDIR));
 		keys.add(new BasicKey("RND",KeyTypes.keyFunction,KeyNames.keyRND));
-		keys.add(new BasicKey("RSET",KeyTypes.keyStatement,KeyNames.keyRSET));
+		keys.add(new BasicKey("RSET",KeyTypes.keyFunction,KeyNames.keyRSET));
 		keys.add(new BasicKey("RTRIM",KeyTypes.keyFunction,KeyNames.keyRTRIM));
 		keys.add(new BasicKey("RUN",KeyTypes.keyStatement,KeyNames.keyRUN));
 		keys.add(new BasicKey("SEEK",KeyTypes.keyStatement,KeyNames.keySEEK));
