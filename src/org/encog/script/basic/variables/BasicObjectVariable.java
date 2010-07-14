@@ -28,14 +28,43 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.script.basic.console;
+package org.encog.script.basic.variables;
 
 /**
- * Defines a console that produces output and accepts input.
- * This is the basis for console I/O with Encog script.
+ * A basic variable that holds an object.
  */
-public interface ConsoleInputOutput {
-	void printLine(String line);
-	void print(String line);
-	String input(String prompt);
+public abstract class BasicObjectVariable  {
+	
+	public BasicObjectVariable()
+	{
+		objectType=-1;
+	}
+
+	public abstract boolean scan(BasicVariable target);
+	public abstract boolean update();
+	public abstract boolean execute();
+	public abstract void allocate();
+	public abstract void copy(BasicVariable target);
+	
+	public abstract BasicObjectVariable createObject(long num);
+	{	
+	}
+	
+	public int getObjectType()
+	{
+		return objectType;
+	}
+	
+	public void setObjectType(int i)
+	{
+		objectType=i;
+	}
+	
+	public long getElementSize()
+	{
+		return elementSize;
+	}
+
+	private int objectType;
+	private long elementSize;
 }

@@ -1,80 +1,16 @@
-package org.encog.script.basic;
+package org.encog.script.basic.util;
 
+import org.encog.script.basic.error.BasicError;
+import org.encog.script.basic.error.ErrorNumbers;
+import org.encog.script.basic.variables.BasicTypes;
+import org.encog.script.basic.variables.BasicVariable;
 
-public class BasicUtil {
+/**
+ * Perform basic operations.
+ */
+public class BasicPerform {
 	
-	public static BasicKey findKeyword(String token)
-	{
-		for( BasicKey key : BasicKey.getKeys())
-		{
-			if( key.getName().equals(token))
-				return key;
-		}
-		return null;
-	}
-	
-	public static BasicKey  findKeyword(KeyNames token)
-	{
-		for( BasicKey key : BasicKey.getKeys())
-		{
-			if( key.getId()==token)
-				return key;
-		}
-		return null;
-	}
-	public static void doInput(String str,String cap)
-	{
-		
-	}
-	
-	public static int findKeyword(String str,String key)
-	{
-		boolean quote=false;
-		int wptr;
-		int rtn = 0;
-		String cmp;
-
-		cmp = key.toUpperCase();
-
-		StringBuilder word = new StringBuilder();
-		
-		int index = 0;
-		
-		while(index<str.length())
-		{
-			char ch = str.charAt(index);
-			
-			if(ch=='\"')
-			{
-				quote=!quote;
-				index++;
-				continue;
-			}
-
-			if(quote)
-			{
-				index++;
-				continue;
-			}
-
-			if( (ch=='\t') || (ch==' ') || (ch==13) || (ch==10) )
-			{
-				index++;
-				if(word.toString().equals(cmp))
-					return rtn;
-				continue;
-			}
-			
-			word.append(ch);
-			rtn++;
-			index++;
-		}
-
-		return -1;
-	}
-
-
-	public static void syncVariables(char opp,BasicVariable in1,BasicVariable in2,BasicVariable out1,BasicVariable out2)
+	private static void syncVariables(char opp,BasicVariable in1,BasicVariable in2,BasicVariable out1,BasicVariable out2)
 	{
 		out1.free();// Just in case
 		out2.free();
@@ -286,51 +222,4 @@ public class BasicUtil {
 
 	}
 
-	public static String basicToUpper(String l) {
-		StringBuilder result = new StringBuilder();
-		boolean inQuote = false;
-		
-		for(int i=0;i<l.length();i++)
-		{
-			char ch = l.charAt(i);
-			if( ch=='\"')
-				inQuote = !inQuote;
-			
-			if( !inQuote )
-				ch = Character.toUpperCase(ch);
-			
-			result.append(ch);
-		}
-		
-		return result.toString();
-	}
-	
-	public static int basicIndexOf(String str, int start, String srch)
-	{
-		boolean quote=false;
-		int searchIndex = 0;
-		
-		for(int sourceIndex = start; sourceIndex<str.length()-srch.length(); sourceIndex++)
-		{
-			char ch = str.charAt(sourceIndex);
-			char ch2 = srch.charAt(searchIndex);
-			
-			if( ch==34 )
-				quote = !quote;
-			
-			if( !quote )
-			{
-				if( Character.toUpperCase(ch)==Character.toUpperCase(ch2))
-				{
-					searchIndex++;
-					if( searchIndex==srch.length())
-						return sourceIndex - srch.length();
-				}
-				else
-					searchIndex = 0;
-			}
-		}
-		
-		return -1;
-	}
 }

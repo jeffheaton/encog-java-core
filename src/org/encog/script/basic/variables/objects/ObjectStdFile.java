@@ -28,14 +28,72 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.script.basic.console;
+package org.encog.script.basic.variables.objects;
+
+import java.io.File;
+
+import org.encog.script.basic.variables.BasicObjectVariable;
+import org.encog.script.basic.variables.BasicVariable;
 
 /**
- * Defines a console that produces output and accepts input.
- * This is the basis for console I/O with Encog script.
+ * Object used to read a file.
+ *
  */
-public interface ConsoleInputOutput {
-	void printLine(String line);
-	void print(String line);
-	String input(String prompt);
+public class ObjectStdFile extends BasicObjectVariable {
+
+		public ObjectStdFile()
+		{
+	
+		}
+
+		public boolean scan(BasicVariable target)
+		{
+			return false;
+		}
+		
+		public boolean update()
+		{
+			return false;
+		}
+		public boolean execute()
+		{
+			return false;
+		}
+		
+		public void allocate()
+		{
+			
+		}
+		
+		void free()
+		{
+			
+		}
+		
+		public void copy(BasicVariable v)
+		{
+			
+		}
+		
+		
+		public BasicObjectVariable createObject(long num)
+		{
+			return new ObjectStdFile();
+		}
+		
+		public void createFilter()
+		{
+			
+		}
+		
+		private File opn;
+		private String strFilter; 
+		private String strCustomFilter;
+		private String strFile;
+		private String strFileTitle;
+		private String strInitialDir;
+		private String strTitle;
+		private String strDefExt;
+
+	
 }

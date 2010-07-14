@@ -28,14 +28,66 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.script.basic.console;
+package org.encog.script.basic.error;
 
 /**
- * Defines a console that produces output and accepts input.
- * This is the basis for console I/O with Encog script.
+ * The error numbers.
  */
-public interface ConsoleInputOutput {
-	void printLine(String line);
-	void print(String line);
-	String input(String prompt);
+public enum ErrorNumbers {
+	errorTrailer,
+	errorAlreadyDeclared,
+	errorBreak,
+	errorBounds,
+	errorExecute,
+	errorDim,
+	errorDivZero,
+	errorExpectedAs,
+	errorNoIf,
+	errorNoFunction,
+	errorFunctionProc,
+	errorNoThen,
+	errorParamaters,
+	errorIllegalUse,
+	errorIllegalOperator,
+	errorIllegalValue,
+	errorInput,
+	errorInvalidType,
+	errorBoolean,
+	errorKeyword,
+	errorModule,
+	errorNoEqual,
+	errorNoFor,
+	errorNoHandles,
+	errorNoTo,
+	errorGlobal,
+	errorNoArray,
+	errorNotYet,
+	errorNoMemory,
+	errorProgram,
+	errorNoGosub,
+	errorString,
+	errorSyntax,
+	errorType,
+	errorUndefinedObject,
+	errorUndefinedVariable,
+	errorEOL,
+	errorUnknownVariable,
+	errorConversion,
+	errorBlock,
+	errorBadString,
+	errorAlreadyDefined,
+	errorArray,
+	errorLongName,
+	errorWend,
+	errorGDI,
+	errorNotFound,
+	errorLabel,
+	errorDisk,
+	errorHandleUsed,
+	errorHandleUndefined,
+	errorIllegalFunctionName,
+	errorEOF,
+	errorAccess,
+	errorUndefined
+
 }

@@ -28,14 +28,22 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.script.basic.console;
+package org.encog.script.basic.variables;
 
 /**
- * Defines a console that produces output and accepts input.
- * This is the basis for console I/O with Encog script.
+ * The types supported by the scripting language.
  */
-public interface ConsoleInputOutput {
-	void printLine(String line);
-	void print(String line);
-	String input(String prompt);
+public enum BasicTypes {
+	typeUndefined,
+	typeString,
+	typeFloat,
+	typeInteger,
+	typeLong,
+	typeDouble,
+	typeByte,
+	typeBoolean,
+	typeCharacter,
+	typeObject,
+	typeStatement,
+	typeReff
 }

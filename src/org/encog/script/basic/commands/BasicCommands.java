@@ -1,3 +1,33 @@
+/*
+ * Encog(tm) Core v2.5 
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ * 
+ * Copyright 2008-2010 by Heaton Research Inc.
+ * 
+ * Released under the LGPL.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ * 
+ * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
+ * For information on Heaton Research trademarks, visit:
+ * 
+ * http://www.heatonresearch.com/copyright.html
+ */
+
 package org.encog.script.basic.commands;
 
 import java.awt.Toolkit;
@@ -5,27 +35,29 @@ import java.io.File;
 
 import javax.swing.JOptionPane;
 
-import org.encog.script.basic.BasicError;
-import org.encog.script.basic.BasicKey;
 import org.encog.script.basic.BasicLine;
 import org.encog.script.basic.BasicParse;
-import org.encog.script.basic.BasicUtil;
-import org.encog.script.basic.BasicVariable;
-import org.encog.script.basic.ErrorNumbers;
-import org.encog.script.basic.KeyNames;
-import org.encog.script.basic.StackEntry;
-import org.encog.script.basic.StackEntryType;
+import org.encog.script.basic.error.BasicError;
+import org.encog.script.basic.error.ErrorNumbers;
+import org.encog.script.basic.keys.BasicKey;
+import org.encog.script.basic.keys.KeyNames;
+import org.encog.script.basic.stack.StackEntry;
+import org.encog.script.basic.stack.StackEntryType;
+import org.encog.script.basic.util.BasicUtil;
+import org.encog.script.basic.variables.BasicVariable;
 
+/**
+ * Provides the execution for all of the built-in basic commands.
+ */
 public class BasicCommands {
 
 	private BasicParse parse;
-	
+
 	public BasicCommands(BasicParse basicParse) {
 		this.parse = basicParse;
 	}
-	
-	public boolean process(BasicKey key)
-	{
+
+	public boolean process(BasicKey key) {
 		switch (key.getId()) {
 		case keyBEEP:
 			cmdBeep();
@@ -201,7 +233,7 @@ public class BasicCommands {
 		}
 		return true;
 	}
-	 
+
 	public void cmdBeep() {
 		Toolkit.getDefaultToolkit().beep();
 	}
@@ -215,7 +247,7 @@ public class BasicCommands {
 	}
 
 	public void cmdChDir() {
-		
+
 	}
 
 	public void cmdClose() {
@@ -225,7 +257,7 @@ public class BasicCommands {
 	}
 
 	public void cmdConst() {
-		
+
 	}
 
 	public void cmdCreateLink() {
@@ -235,41 +267,42 @@ public class BasicCommands {
 		BasicVariable v;
 		String var;
 
-		for(;;)	
-		{
+		for (;;) {
 			this.parse.killSpace();
 			var = this.parse.parseVariable();
-			
-			if( this.parse.getVariable(var)!=null )
-				throw new BasicError(ErrorNumbers.errorDim);
-			
-			if( BasicUtil.findKeyword(var)!=null)
-				throw(new BasicError(ErrorNumbers.errorKeyword));
 
-			if(this.parse.getVariable(var)!=null)
-				throw(new BasicError(ErrorNumbers.errorAlreadyDefined));
-		
+			if (this.parse.getVariable(var) != null)
+				throw new BasicError(ErrorNumbers.errorDim);
+
+			if (BasicUtil.findKeyword(var) != null)
+				throw (new BasicError(ErrorNumbers.errorKeyword));
+
+			if (this.parse.getVariable(var) != null)
+				throw (new BasicError(ErrorNumbers.errorAlreadyDefined));
+
 			v = this.parse.createVariable(var);
 			this.parse.addVariable(var, v);
-			
+
 			this.parse.killSpace();
-			if( !this.parse.lookAhead(',') )
+			if (!this.parse.lookAhead(','))
 				break;
 		}
 	}
 
 	public void cmdDo() {
 		this.parse.killSpace();
-		
-		if( this.parse.getNextChar()!=0  )
-		{
-			if(this.parse.evaluateDo())
-				this.parse.getStack().push(new StackEntry(StackEntryType.stackDo,this.parse.getCurrentLine(),0));
+
+		if (this.parse.getNextChar() != 0) {
+			if (this.parse.evaluateDo())
+				this.parse.getStack().push(
+						new StackEntry(StackEntryType.stackDo, this.parse
+								.getCurrentLine(), 0));
 			else
 				this.parse.moveToLoop();
-		}
-		else
-			this.parse.getStack().push(new StackEntry(StackEntryType.stackDo,this.parse.getCurrentLine(),1));
+		} else
+			this.parse.getStack().push(
+					new StackEntry(StackEntryType.stackDo, this.parse
+							.getCurrentLine(), 1));
 	}
 
 	public void cmdElse() {
@@ -285,17 +318,14 @@ public class BasicCommands {
 	public void cmdEnd() {
 		this.parse.killSpace();
 
-		if(this.parse.lookAhead(KeyNames.keyIF, false))
-		{
+		if (this.parse.lookAhead(KeyNames.keyIF, false)) {
 			cmdEndIf();
-		}
-		else
-		{
+		} else {
 			this.parse.killSpace();
-			
-			if(this.parse.getNextChar()==0)			
+
+			if (this.parse.getNextChar() == 0)
 				this.parse.getModule().getProgram().setQuitProgram(true);
-		}		
+		}
 	}
 
 	public void cmdEndIf() {
@@ -310,86 +340,80 @@ public class BasicCommands {
 
 	public boolean cmdExit() {
 		BasicKey key;
-		int dummy;
-		
-		key=this.parse.parseNextToken();
-		if(key==null)
-			throw(new BasicError(ErrorNumbers.errorIllegalUse));
-		switch(key.getId())
-		{
-		case keyDO:break;
+
+		key = this.parse.parseNextToken();
+		if (key == null)
+			throw (new BasicError(ErrorNumbers.errorIllegalUse));
+		switch (key.getId()) {
+		case keyDO:
+			break;
 		case keyFOR:
-			if(this.parse.getStack().peekType()!=StackEntryType.stackFor)
-				throw(new BasicError(ErrorNumbers.errorIllegalUse));
+			if (this.parse.getStack().peekType() != StackEntryType.stackFor)
+				throw (new BasicError(ErrorNumbers.errorIllegalUse));
 			this.parse.getStack().pop();
 			this.parse.moveToNext();
 			return true;
 
-		case keyFUNCTION:	
+		case keyFUNCTION:
 		case keySUB:
 			this.parse.setCurrentLine(null);
 			return false;
-		default:throw(new BasicError(ErrorNumbers.errorKeyword));
+		default:
+			throw (new BasicError(ErrorNumbers.errorKeyword));
 		}
 		return true;
 	}
 
 	public void cmdFor() {
-		BasicVariable a,varObj;
+		BasicVariable a, varObj;
 		String var;
-		int start,stop,step;
+		int start, stop, step;
 
 		var = this.parse.parseVariable();
 		this.parse.expectToken('=');
 
 		a = this.parse.expr();
-		start=(int)a.getLong();
-		
-		if(!this.parse.lookAhead(KeyNames.keyTO,false) )
-			throw(new BasicError(ErrorNumbers.errorNoTo));
+		start = (int) a.getLong();
+
+		if (!this.parse.lookAhead(KeyNames.keyTO, false))
+			throw (new BasicError(ErrorNumbers.errorNoTo));
 
 		a = this.parse.expr();
-		stop=(int)a.getLong();
+		stop = (int) a.getLong();
 
-		if(this.parse.lookAhead(KeyNames.keySTEP,false))
-		{
+		if (this.parse.lookAhead(KeyNames.keySTEP, false)) {
 			a = this.parse.expr();
-			step=(int)a.getLong();
-		}
-		else step=1;
+			step = (int) a.getLong();
+		} else
+			step = 1;
 
-		if(step==0)
-			throw(new BasicError(ErrorNumbers.errorIllegalUse));
+		if (step == 0)
+			throw (new BasicError(ErrorNumbers.errorIllegalUse));
 
-		if(step<0)
-		{
-			if(start<stop)
-			{
+		if (step < 0) {
+			if (start < stop) {
+				this.parse.moveToNext();
+				return;
+			}
+		} else {
+			if (start > stop) {
 				this.parse.moveToNext();
 				return;
 			}
 		}
-		else
-		{
-			if(start>stop)
-			{
-				this.parse.moveToNext();
-				return;
-			}
-		}
-			
 
-		varObj=this.parse.getVariable(var);
+		varObj = this.parse.getVariable(var);
 
-		if(varObj==null)
-		{
-			varObj=new BasicVariable((long)0);
-			this.parse.addVariable(var,varObj);
+		if (varObj == null) {
+			varObj = new BasicVariable(0);
+			this.parse.addVariable(var, varObj);
 		}
 
-		varObj.edit((long)start);
+		varObj.edit(start);
 
-		parse.getStack().push(new StackEntry(StackEntryType.stackFor,this.parse.getCurrentLine(),varObj,start,stop,step));
+		parse.getStack().push(
+				new StackEntry(StackEntryType.stackFor, this.parse
+						.getCurrentLine(), varObj, start, stop, step));
 	}
 
 	public void cmdFunction() {
@@ -414,21 +438,17 @@ public class BasicCommands {
 		BasicVariable a = new BasicVariable();
 		boolean b;
 
-		b=this.parse.parseVariable(a);
-		if(!this.parse.lookAhead(KeyNames.keyTHEN,false))
-			throw(new BasicError(ErrorNumbers.errorNoThen));
+		b = this.parse.parseVariable(a);
+		if (!this.parse.lookAhead(KeyNames.keyTHEN, false))
+			throw (new BasicError(ErrorNumbers.errorNoThen));
 
-		if( b )
-		{
+		if (b) {
 			this.parse.killSpace();
-			if( this.parse.getNextChar()==0 )
-			{
+			if (this.parse.getNextChar() == 0) {
 				this.parse.increaseIFS();
-			}
-			else
+			} else
 				throw new BasicError(ErrorNumbers.errorBlock);
-		}
-		else
+		} else
 			parse.moveToEndIf(true);
 	}
 
@@ -438,8 +458,8 @@ public class BasicCommands {
 	public void cmdKill() {
 		BasicVariable var = this.parse.expr();
 		File file = new File(var.getStr());
-		if( !file.delete() )
-			throw(new BasicError(ErrorNumbers.errorDisk));
+		if (!file.delete())
+			throw (new BasicError(ErrorNumbers.errorDisk));
 	}
 
 	public void cmdLet() {
@@ -447,92 +467,78 @@ public class BasicCommands {
 	}
 
 	public void cmdLoad() {
-		
+
 	}
 
 	public void cmdLock() {
 	}
 
 	public void cmdLoop() {
-		int idx,ln;
-		BasicVariable varObj;
 		StackEntryType type;
 		BasicLine bl;
 
 		this.parse.killSpace();
-		if(this.parse.getStack().empty())
-			throw(new BasicError(ErrorNumbers.errorLongName));
+		if (this.parse.getStack().empty())
+			throw (new BasicError(ErrorNumbers.errorLongName));
 
-		if(this.parse.getStack().peekType()!=StackEntryType.stackDo)
-			throw(new BasicError(ErrorNumbers.errorLongName));
+		if (this.parse.getStack().peekType() != StackEntryType.stackDo)
+			throw (new BasicError(ErrorNumbers.errorLongName));
 
-		if( !this.parse.getStack().empty())
-		{
+		if (!this.parse.getStack().empty()) {
 			type = this.parse.getStack().peekType();
 			bl = this.parse.getStack().peek().getLine();
-		}
-		else
-		{
+		} else {
 			type = null;
 			bl = null;
 		}
 
-
-		if( this.parse.getNextChar()!=0  )
-		{
-			if(type==null)
-				throw(new BasicError(ErrorNumbers.errorIllegalUse)) ;
-			if(this.parse.evaluateDo())
-			{
-				if(bl!=null)
-				{
+		if (this.parse.getNextChar() != 0) {
+			if (type == null)
+				throw (new BasicError(ErrorNumbers.errorIllegalUse));
+			if (this.parse.evaluateDo()) {
+				if (bl != null) {
 					this.parse.setCurrentLine(bl);
 					this.parse.parse();
 				}
-			}
-			else
+			} else
 				this.parse.getStack().pop();
-		}
-		else
-		{
+		} else {
 			this.parse.setCurrentLine(bl);
 			this.parse.parse();
 		}
 	}
 
-
 	public void cmdMsgBox() {
-		BasicVariable a,b=null,c;
-		int num=1;
+		BasicVariable a, b = null, c;
+		int num = 1;
 
 		this.parse.expectToken('(');
 		a = this.parse.expr();
-		
-		if(this.parse.lookAhead(',') )
-		{
-			num=2;
+
+		if (this.parse.lookAhead(',')) {
+			num = 2;
 			b = this.parse.expr();
-			if(this.parse.lookAhead(',') )
-			{
-				num=3;
+			if (this.parse.lookAhead(',')) {
+				num = 3;
 				c = this.parse.expr();
 			}
 		}
 		this.parse.expectToken(')');
-		switch(num)
-		{
-			case 1:
-				JOptionPane.showMessageDialog(null, a.getStr(), "Encog", JOptionPane.PLAIN_MESSAGE);
-				break;
-			case 2:
-				if( b==null )
-					throw new BasicError(ErrorNumbers.errorIllegalUse);
-				JOptionPane.showMessageDialog(null, a.getStr(), b.getStr(), JOptionPane.PLAIN_MESSAGE);
-				break;
-			case 3:
-				boolean r = JOptionPane.showConfirmDialog(null, a.getStr(), b.getStr(),
-						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION;
-				break;
+		switch (num) {
+		case 1:
+			JOptionPane.showMessageDialog(null, a.getStr(), "Encog",
+					JOptionPane.PLAIN_MESSAGE);
+			break;
+		case 2:
+			if (b == null)
+				throw new BasicError(ErrorNumbers.errorIllegalUse);
+			JOptionPane.showMessageDialog(null, a.getStr(), b.getStr(),
+					JOptionPane.PLAIN_MESSAGE);
+			break;
+		case 3:
+			JOptionPane.showConfirmDialog(null, a.getStr(), b.getStr(),
+					JOptionPane.YES_NO_OPTION);
+			break;
 		}
 
 	}
@@ -545,95 +551,83 @@ public class BasicCommands {
 
 	public void cmdName() {
 		BasicVariable oldName = this.parse.expr();
-		
-		if(this.parse.lookAhead(KeyNames.keyAS,false))
-			throw(new BasicError(ErrorNumbers.errorIllegalUse));
-		
+
+		if (this.parse.lookAhead(KeyNames.keyAS, false))
+			throw (new BasicError(ErrorNumbers.errorIllegalUse));
+
 		BasicVariable newName = this.parse.expr();
-		
+
 		File oldFile = new File(oldName.getStr());
 		File newFile = new File(newName.getStr());
-		
-		if( !oldFile.renameTo(newFile) )
+
+		if (!oldFile.renameTo(newFile))
 			throw new BasicError(ErrorNumbers.errorDisk);
 	}
 
 	public void cmdNext() {
-		int idx,ln;
 		double d;
 
 		this.parse.killSpace();
-		if(this.parse.getStack().empty())
-			throw(new BasicError(ErrorNumbers.errorNoFor));
+		if (this.parse.getStack().empty())
+			throw (new BasicError(ErrorNumbers.errorNoFor));
 
-		if(this.parse.getStack().peekType()!=StackEntryType.stackFor)
-			throw(new BasicError(ErrorNumbers.errorNoFor));
-			
+		if (this.parse.getStack().peekType() != StackEntryType.stackFor)
+			throw (new BasicError(ErrorNumbers.errorNoFor));
+
 		StackEntry entry = this.parse.getStack().peek();
-		int start = entry.getStart();
+
 		int stop = entry.getStop();
 		int step = entry.getStep();
 		BasicVariable varObj = entry.getVariable();
-		
-		if(varObj==null)
-			throw(new BasicError(ErrorNumbers.errorUndefinedVariable));
+
+		if (varObj == null)
+			throw (new BasicError(ErrorNumbers.errorUndefinedVariable));
 		d = varObj.getDouble();
-		d+=step;
+		d += step;
 		varObj.edit(d);
 
-		boolean done=false;
+		boolean done = false;
 
-		if(step>0)
-		{
-			if(d>stop)
-				done=true;
-		}
-		else
-		{
-			if(d<stop)
-				done=true;
+		if (step > 0) {
+			if (d > stop)
+				done = true;
+		} else {
+			if (d < stop)
+				done = true;
 		}
 
-		if(!done)
-		{
+		if (!done) {
 			this.parse.setCurrentLine(entry.getLine());
-		}
-		else
+		} else
 			this.parse.getStack().pop();
 	}
 
 	public void cmdOn() {
 
-		if( this.parse.lookAhead(KeyNames.keyERROR,false) )
-		{
+		if (this.parse.lookAhead(KeyNames.keyERROR, false)) {
 			cmdOnError();
-		}
-		else
+		} else
 			throw new BasicError(ErrorNumbers.errorIllegalUse);
 	}
 
 	public void cmdOnError() {
 		String str;
 
-		if( this.parse.lookAhead(KeyNames.keyGOTO,false) )
-		{
+		if (this.parse.lookAhead(KeyNames.keyGOTO, false)) {
 			str = this.parse.parseVariable();
-			
-			if( str.equals("0"))
+
+			if (str.equals("0"))
 				this.parse.setErrorLabel(null);
 			else
 				this.parse.setErrorLabel(str);
-			
+
 			return;
-		}
-		else
-		if( this.parse.lookAhead(KeyNames.keyRESUME,false) )
-			if( this.parse.lookAhead(KeyNames.keyNEXT,false) )
-			{
+		} else if (this.parse.lookAhead(KeyNames.keyRESUME, false))
+			if (this.parse.lookAhead(KeyNames.keyNEXT, false)) {
 				this.parse.setErrorLabel("*");
 				return;
 			}
-		throw(new BasicError(ErrorNumbers.errorIllegalUse));
+		throw (new BasicError(ErrorNumbers.errorIllegalUse));
 	}
 
 	public void cmdOpen() {
@@ -644,49 +638,36 @@ public class BasicCommands {
 	}
 
 	public void cmdPrint() {
-		
-		boolean no_cr=false;
 
-			this.parse.setColumn(0);
+		boolean no_cr = false;
 
-			this.parse.killSpace();
+		this.parse.setColumn(0);
 
-			if( this.parse.lookAhead('#') )
-			{
-				BasicVariable var;
+		this.parse.killSpace();
 
-				var = this.parse.parseVariable(1,100);
-				/*if(theProgram->fileHandles[var.GetShort()]==NULL)
-					throw(errorHandleUndefined);
-				h=theProgram->fileHandles[var.GetShort()];*/
-				if(!this.parse.lookAhead(','))
-					throw(new BasicError(ErrorNumbers.errorIllegalUse));
-			}
+		if (!(this.parse.getNextChar() == 0 || (this.parse.getNextChar() == ':'))) {
+			this.parse.getModule().getProgram().print(
+					this.parse.formatExpression());
 
-			if( !(this.parse.getNextChar()==0 || (this.parse.getNextChar()==':')) )
-			{
-				this.parse.getModule().getProgram().print(this.parse.formatExpression());
+			while (this.parse.getNextChar() == ';') {
+				this.parse.advance();
 
-				while(this.parse.getNextChar() ==';')
-				{
-					this.parse.advance();
-
-					if( (this.parse.getNextChar()==0) || (this.parse.getNextChar()==':') )
-					{
-						no_cr=true;
-						break;
-					}
-
-					this.parse.getModule().getProgram().print(this.parse.formatExpression());
-
-					this.parse.killSpace();
+				if ((this.parse.getNextChar() == 0)
+						|| (this.parse.getNextChar() == ':')) {
+					no_cr = true;
+					break;
 				}
-			}
 
-			if(!no_cr)
-			{
-				this.parse.getModule().getProgram().print("\n");
+				this.parse.getModule().getProgram().print(
+						this.parse.formatExpression());
+
+				this.parse.killSpace();
 			}
+		}
+
+		if (!no_cr) {
+			this.parse.getModule().getProgram().print("\n");
+		}
 	}
 
 	public void cmdPut() {
@@ -704,28 +685,27 @@ public class BasicCommands {
 		BasicVariable v;
 		String var;
 
-		for(;;)	
-		{
+		for (;;) {
 			this.parse.killSpace();
 			var = this.parse.parseVariable();
-			if( BasicUtil.findKeyword(var)!=null)
-				throw(new BasicError(ErrorNumbers.errorKeyword));
+			if (BasicUtil.findKeyword(var) != null)
+				throw (new BasicError(ErrorNumbers.errorKeyword));
 
-			if(this.parse.getVariable(var)!=null)
-				throw(new BasicError(ErrorNumbers.errorAlreadyDefined));
-		
+			if (this.parse.getVariable(var) != null)
+				throw (new BasicError(ErrorNumbers.errorAlreadyDefined));
+
 			v = this.parse.createVariable(var);
 			this.parse.addVariable(var, v);
-			
+
 			this.parse.killSpace();
-			if( !this.parse.lookAhead(',') )
+			if (!this.parse.lookAhead(','))
 				break;
 		}
 
 	}
 
 	public void cmdRem() {
-		while(this.parse.getNextChar()!=0)
+		while (this.parse.getNextChar() != 0)
 			this.parse.advance();
 	}
 
@@ -743,7 +723,7 @@ public class BasicCommands {
 	public void cmdRmDir() {
 		BasicVariable var = this.parse.expr();
 		File file = new File(var.getStr());
-		if( !file.delete() )
+		if (!file.delete())
 			throw new BasicError(ErrorNumbers.errorDisk);
 	}
 
@@ -759,86 +739,75 @@ public class BasicCommands {
 		BasicVariable var;
 		BasicVariable is;
 
-		if(!this.parse.lookAhead(KeyNames.keyCASE,false))
-			throw(new BasicError(ErrorNumbers.errorIllegalUse));
+		if (!this.parse.lookAhead(KeyNames.keyCASE, false))
+			throw (new BasicError(ErrorNumbers.errorIllegalUse));
 
 		var = this.parse.expr();
-		is=var;
+		is = var;
 
-		while(parse.getCurrentLine()!=null)
-		{
-			do 
-			{
-				if( this.parse.lookAhead(KeyNames.keySELECT,false) )
+		while (parse.getCurrentLine() != null) {
+			do {
+				if (this.parse.lookAhead(KeyNames.keySELECT, false))
 					this.parse.moveToEndCase();
 
-				if( this.parse.lookAhead(KeyNames.keyEND,false) )
-				{
+				if (this.parse.lookAhead(KeyNames.keyEND, false)) {
 					this.parse.killSpace();
-					if(this.parse.lookAhead(KeyNames.keyCASE,false))
+					if (this.parse.lookAhead(KeyNames.keyCASE, false))
 						return;
-					if(this.parse.lookAhead(KeyNames.keySUB,false) || this.parse.lookAhead(KeyNames.keyFUNCTION,false) )
-						throw(new BasicError(ErrorNumbers.errorBlock));
-				} 
+					if (this.parse.lookAhead(KeyNames.keySUB, false)
+							|| this.parse
+									.lookAhead(KeyNames.keyFUNCTION, false))
+						throw (new BasicError(ErrorNumbers.errorBlock));
+				}
 
-				if(this.parse.lookAhead(KeyNames.keyCASE,false))
-				{
-					if(this.parse.lookAhead(KeyNames.keyELSE, false))
-					{
+				if (this.parse.lookAhead(KeyNames.keyCASE, false)) {
+					if (this.parse.lookAhead(KeyNames.keyELSE, false)) {
 						this.parse.movePastColen();
-						is=null;
+						is = null;
 						return;
 					}
 
-					do	
-					{
-						BasicVariable b,c;
-						boolean bl=false;
+					do {
+						BasicVariable b, c;
 
 						this.parse.killSpace();
-						if( this.parse.lookAhead("IS", false)  )
-						{
+						if (this.parse.lookAhead("IS", false)) {
 							b = this.parse.expr();
-							if(b.getBoolean())
-							{
+							if (b.getBoolean()) {
 								this.parse.movePastColen();
-								is=null;
+								is = null;
 								return;
 							}
-						}
-						else
-						{
+						} else {
 							b = this.parse.expr();
 
-							if(this.parse.lookAhead(KeyNames.keyTO,false))							{
+							if (this.parse.lookAhead(KeyNames.keyTO, false)) {
 								c = this.parse.expr();
-								if( (var.compareGTE(b)) && (var.compareLTE(c)) )
-								{
+								if ((var.compareGTE(b)) && (var.compareLTE(c))) {
 									this.parse.movePastColen();
-									is=null;
+									is = null;
 									return;
 								}
 							}
 
-							if(var.compareE(b)) 
-							{
+							if (var.compareE(b)) {
 								this.parse.movePastColen();
-								is=null;
+								is = null;
 								return;
 							}
 						}
-					} while(this.parse.lookAhead(','));
+					} while (this.parse.lookAhead(','));
 				}
 
 				this.parse.movePastColen();
 
-			} while(this.parse.getNextChar()!=0);
+			} while (this.parse.getNextChar() != 0);
 
 			this.parse.moveNextLine();
 		}
 
-		is=null;
-		
+		is = null;
+
 	}
 
 	public void cmdShared() {
@@ -848,7 +817,7 @@ public class BasicCommands {
 	public void cmdSleep() {
 		BasicVariable var = this.parse.expr();
 		try {
-			Thread.sleep((int)var.getLong());
+			Thread.sleep((int) var.getLong());
 		} catch (InterruptedException e) {
 		}
 	}
@@ -875,15 +844,15 @@ public class BasicCommands {
 		BasicVariable varObj;
 
 		this.parse.killSpace();
-		if( this.parse.getStack().empty())
-			throw(new BasicError(ErrorNumbers.errorWend));
+		if (this.parse.getStack().empty())
+			throw (new BasicError(ErrorNumbers.errorWend));
 
-		if(this.parse.getStack().peekType()!=StackEntryType.stackWhile)
-			throw(new BasicError(ErrorNumbers.errorWend));
-			
+		if (this.parse.getStack().peekType() != StackEntryType.stackWhile)
+			throw (new BasicError(ErrorNumbers.errorWend));
+
 		StackEntry entry = this.parse.getStack().pop();
 		this.parse.setCurrentLine(entry.getLine());
-		
+
 		this.parse.parse(this.parse.getCurrentLine().getText());
 	}
 
@@ -891,11 +860,13 @@ public class BasicCommands {
 		BasicVariable varObj;
 
 		this.parse.killSpace();
-		
+
 		varObj = this.parse.expr();
-		
-		if(varObj.getBoolean())
-			this.parse.getStack().push( new StackEntry(StackEntryType.stackWhile,this.parse.getCurrentLine()) );
+
+		if (varObj.getBoolean())
+			this.parse.getStack().push(
+					new StackEntry(StackEntryType.stackWhile, this.parse
+							.getCurrentLine()));
 		else
 			this.parse.moveToWEnd();
 	}
@@ -909,6 +880,5 @@ public class BasicCommands {
 
 	public void cmdSetRegistry() {
 	}
-
 
 }

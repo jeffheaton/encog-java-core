@@ -28,14 +28,16 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.script.basic.console;
+package org.encog.script.basic.keys;
 
 /**
- * Defines a console that produces output and accepts input.
- * This is the basis for console I/O with Encog script.
+ * Tye types of keywords used by Encog.
  */
-public interface ConsoleInputOutput {
-	void printLine(String line);
-	void print(String line);
-	String input(String prompt);
+public enum KeyTypes {
+	keyFunction,
+	keyStatement,
+	keyKeyword,
+	keyOperator,
+	keyConst,
+	keyType
 }

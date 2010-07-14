@@ -28,14 +28,15 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.script.basic.console;
+package org.encog.script.basic.stack;
 
 /**
- * Defines a console that produces output and accepts input.
- * This is the basis for console I/O with Encog script.
+ * The types of stack entries supported by Encog script.
  */
-public interface ConsoleInputOutput {
-	void printLine(String line);
-	void print(String line);
-	String input(String prompt);
+public enum StackEntryType {
+	stackError,
+	stackGosub,
+	stackFor,
+	stackDo,
+	stackWhile
 }
