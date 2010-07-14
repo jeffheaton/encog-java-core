@@ -61,6 +61,7 @@ public class BasicParse implements Basic {
 	private Stack stack = new Stack();// The stack
 	private String line;
 	private int ptr;
+	private BasicError lastError;
 
 	private long column;
 	private BasicVariable is;// Current value of IS keyword
@@ -264,8 +265,6 @@ public class BasicParse implements Basic {
 
 			} while (nextchar == ':');
 		} catch (BasicError n) {
-			// SetERR(n.getId());
-
 			n.setLine(this.currentLine);
 
 			if (errorLabel != null && errorLabel.charAt(0) == '*')
@@ -277,6 +276,7 @@ public class BasicParse implements Basic {
 					go(errorLabel);
 					return false;
 				}
+				this.lastError = n;
 			}
 			// not handle so throw as a "hard error" (usual case)
 			else
@@ -1514,5 +1514,21 @@ public class BasicParse implements Basic {
 	public BasicFunctions getStandardFunctions() {
 		return this.functions;
 	}
+
+	/**
+	 * @return the lastError
+	 */
+	public BasicError getLastError() {
+		return lastError;
+	}
+
+	/**
+	 * @param lastError the lastError to set
+	 */
+	public void setLastError(BasicError lastError) {
+		this.lastError = lastError;
+	}
+	
+	
 
 }

@@ -30,6 +30,8 @@
 
 package org.encog.script.basic.commands;
 
+import java.util.Date;
+
 import javax.swing.JOptionPane;
 
 import org.encog.script.basic.BasicParse;
@@ -85,26 +87,14 @@ public class BasicFunctions {
 		case keyENVIRON:
 			fnEnvron(target);
 			break;
-		case keyEOF:
-			fnEof(target);
-			break;
-		case keyERR:
-			fnErr(target);
-			break;
 		case keyERROR:
 			fnError(target);
 			break;
 		case keyEXP:
 			fnExp(target);
 			break;
-		case keyFILEATTR:
-			fnFileattr(target);
-			break;
 		case keyFIX:
 			fnFix(target);
-			break;
-		case keyFREEFILE:
-			fnFreeFile(target);
 			break;
 		case keyHEX:
 			fnHex(target);
@@ -209,41 +199,50 @@ public class BasicFunctions {
 		this.parse.expectToken(')');
 	}
 
+	/**
+	 * Take the absolute value.
+	 * @param target The result from the function.
+	 */
 	public void fnAbs(BasicVariable target) {
-		BasicVariable var;
-		double d;
-
-		var = this.parse.expr();
-		d = var.getDouble();
+		BasicVariable var = this.parse.expr();
+		double d = var.getDouble();
 		target.edit(var);
 		if (d < 0)
 			target.edit(-d);
 	}
 
+	/**
+	 * Get the ASCII value of a character or the first letter of a string.
+	 * @param target The result from the function.
+	 */
 	public void fnAsc(BasicVariable target) {
-		String str;
-
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 
 		if (var.getObjectType() == BasicTypes.typeCharacter) {
 			target.edit((short) var.getCharacter());
 		} else {
-			str = var.getStr();
+			String str = var.getStr();
 			target.edit((short) str.charAt(0));
 		}
 
 	}
 
+	/**
+	 * Take the arctan of a value.
+	 * @param target The result from the function.
+	 */
 	public void fnAtn(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 		target.edit(Math.atan(var.getDouble()));
 	}
 
+	/**
+	 * Convert a type to a double.
+	 * @param target The result from the function.
+	 */
 	public void fnCDbl(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		
+		BasicVariable var = this.parse.expr();
 
 		switch (var.getObjectType()) {
 		case typeString:
@@ -273,17 +272,22 @@ public class BasicFunctions {
 
 	}
 
+	/**
+	 * Get the character by its ASCII code.
+	 * @param target The result from the function.
+	 */
 	public void fnChr(BasicVariable target) {
-		BasicVariable var;
-		String str;
-
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 		target.edit((char) var.getShort());
 	}
 
+
+	/**
+	 * Convert a type to an int.
+	 * @param target The result from the function.
+	 */
 	public void fnCInt(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 
 		switch (var.getObjectType()) {
 		case typeString:
@@ -312,9 +316,12 @@ public class BasicFunctions {
 		}
 	}
 
+	/**
+	 * Convert a type to a long.
+	 * @param target The result from the function.
+	 */
 	public void fnCLng(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var  = this.parse.expr();
 
 		switch (var.getObjectType()) {
 		case typeString:
@@ -344,60 +351,66 @@ public class BasicFunctions {
 
 	}
 
+
+	/**
+	 * Take the cosine of a value.
+	 * @param target The result from the function.
+	 */
 	public void fnCos(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 		target.edit(Math.cos(var.getDouble()));
 	}
 
+	/**
+	 * Get the current time and date as a string.
+	 * @param target The result from the function.
+	 */
 	public void fnDate(BasicVariable target) {
-		throw (new BasicError(ErrorNumbers.errorNotYet));
+		target.edit(new Date().toString());
 	}
 
+	/**
+	 * Get the specified environmental variable.
+	 * @param target The result from the function.
+	 */
 	public void fnEnvron(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 		target.edit(System.getenv(var.getStr()));
 	}
 
-	public void fnEof(BasicVariable target) {
-		throw (new BasicError(ErrorNumbers.errorNotYet));
-	}
-
-	public void fnErr(BasicVariable target) {
-		throw (new BasicError(ErrorNumbers.errorNotYet));
-	}
-
 	public void fnError(BasicVariable target) {
-		throw (new BasicError(ErrorNumbers.errorNotYet));
+		BasicError error = this.parse.getLastError();
+		if( target!=null )
+			target.edit(error.getMessage());
+		else
+			target.edit("");
 	}
 
+	/**
+	 * Take the Exponential function of a value.
+	 * @param target The result from the function.
+	 */
 	public void fnExp(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 		target.edit(Math.exp(var.getDouble()));
 	}
 
-	public void fnFileattr(BasicVariable target) {
-		throw (new BasicError(ErrorNumbers.errorNotYet));
-	}
-
+	/**
+	 * Convert the value to an integer.
+	 * @param target The integer value.
+	 */
 	public void fnFix(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 		target.edit(var.getLong());
 	}
 
-	public void fnFreeFile(BasicVariable target) {
-		throw (new BasicError(ErrorNumbers.errorNotYet));
-	}
-
+	/**
+	 * Return the HEX string for the specified number.
+	 * @param target The HEX value.
+	 */
 	public void fnHex(BasicVariable target) {
-		String dest;
-		BasicVariable var;
-
-		var = this.parse.expr();
-		dest = Long.toHexString(var.getLong());
+		BasicVariable var = this.parse.expr();
+		String dest = Long.toHexString(var.getLong());
 		target.edit(dest);
 	}
 
@@ -405,6 +418,10 @@ public class BasicFunctions {
 		throw (new BasicError(ErrorNumbers.errorNotYet));
 	}
 
+	/**
+	 * Perform a InStr operation.
+	 * @param target The variable that gets the result of the instr.
+	 */
 	public void fnInStr(BasicVariable target) {
 		BasicVariable var1, var2, var3, var4;
 		int start = 0;
@@ -450,9 +467,12 @@ public class BasicFunctions {
 		target.edit(ptr + 1);
 	}
 
+	/**
+	 * Convert the specified string to an int.
+	 * @param target The result from the function.
+	 */
 	public void fnInt(BasicVariable target) {
-		BasicVariable var;
-		var = this.parse.expr();
+		BasicVariable var = this.parse.expr();
 		if (var.getLong() < 0) {
 			if (var.getLong() == var.getDouble())
 				target.edit(var.getLong());
@@ -464,15 +484,17 @@ public class BasicFunctions {
 
 	}
 
+	/**
+	 * Convert the specified string to lower case.
+	 * @param target The result from the function.
+	 */
 	public void fnLCase(BasicVariable target) {
-		String dest;
-		BasicVariable var;
-
-		var = this.parse.expr();
-		dest = var.getStr().toLowerCase();
+		BasicVariable var = this.parse.expr();
+		String dest = var.getStr().toLowerCase();
 		target.edit(dest);
 	}
 
+	
 	public void fnLeft(BasicVariable target) {
 		BasicVariable varObj1, varObj2;
 		String dest;
