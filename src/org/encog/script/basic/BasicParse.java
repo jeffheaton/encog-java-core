@@ -195,9 +195,8 @@ public class BasicParse implements Basic {
 				return true;
 
 			do {
-				do {
-					killSpace();
-				} while (lookAhead(':'));
+				killSpace();
+				
 				if (nextchar == 0)
 					return true;
 

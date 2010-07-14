@@ -32,8 +32,8 @@ public class BasicFunctions {
 		case keyCINT:		fnCInt(target);break;
 		case keyCLNG:		fnCLng(target);break;
 		case keyCOS:		fnCos(target);break;
-		case keyDATE:		fnDate_(target);break;
-		case keyENVIRON:	fnEnvron_(target);break;
+		case keyDATE:		fnDate(target);break;
+		case keyENVIRON:	fnEnvron(target);break;
 		case keyEOF:		fnEof(target);break;
 		case keyERR:		fnErr(target);break;
 		case keyERROR:		fnError(target);break;
@@ -41,8 +41,8 @@ public class BasicFunctions {
 		case keyFILEATTR:	fnFileattr(target);break;
 		case keyFIX:		fnFix(target);break;
 		case keyFREEFILE:	fnFreeFile(target);break;
-		case keyHEX:		fnHex_(target);break;
-		case keyINPUT:		fnInput_(target);break;
+		case keyHEX:		fnHex(target);break;
+		case keyINPUT:		fnInput(target);break;
 		case keyINSTR:		fnInStr(target);break;
 		case keyINT:		fnInt(target);break;
 		case keyLCASE:		fnLCase(target);break;
@@ -51,25 +51,25 @@ public class BasicFunctions {
 		case keyLOC:		fnLoc(target);break;
 		case keyLOG:		fnLog(target);break;
 		case keyLTRIM:		fnLTrim(target);break;
-		case keyMID:		fnMid_(target);break;
+		case keyMID:		fnMid(target);break;
 		case keyMSGBOX:		fnMsgBox(target);break;
-		case keyOCT:		fnOct_(target);break;
-		case keyRIGHT:		fnRight_(target);break;
+		case keyOCT:		fnOct(target);break;
+		case keyRIGHT:		fnRight(target);break;
 		case keyRND:		fnRnd(target);break;
 		case keyRTRIM:		fnRTrim(target);break;
 		case keySHELL:		fnShell(target);break;
 		case keySEEK:		fnSeek(target);break;
 		case keySGN:		fnSgn(target);break;
 		case keySIN:		fnSin(target);break;
-		case keySPACE:		fnSpace_(target);break;
+		case keySPACE:		fnSpace(target);break;
 		case keySPC:		fnSpc(target);break;
 		case keySQR:		fnSqr(target);break;
-		case keySTR:		fnStr_(target);break;
+		case keySTR:		fnStr(target);break;
 		case keySTRIG:		fnStrig(target);break;
-		case keySTRING:		fnString_(target);break;
+		case keySTRING:		fnString(target);break;
 		case keyTAN:		fnTan(target);break;
-		case keyTIME:		fnTime_(target);break;
-		case keyUCASE:		fnUCase_(target);break;
+		case keyTIME:		fnTime(target);break;
+		case keyUCASE:		fnUCase(target);break;
 		case keyVAL:		fnVal(target);break;
 		case keyREGISTRY:	fnRegistry(target);break;
 		case keyLSET:		fnLSet(target);break;
@@ -135,7 +135,6 @@ public class BasicFunctions {
 		BasicVariable var;
 		String str;
 
-		this.parse.lookAhead('$');// Check for optional $
 		var = this.parse.expr();
 		target.edit( (char)var.getShort() );
 	}
@@ -181,15 +180,12 @@ public class BasicFunctions {
 		target.edit(Math.cos(var.getDouble()));		
 	}
 
-	public void fnDate_(BasicVariable target) {
-		this.parse.lookAhead('$');// Check for optional $
+	public void fnDate(BasicVariable target) {
 		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
-	public void fnEnvron_(BasicVariable target) {
+	public void fnEnvron(BasicVariable target) {
 		BasicVariable var;
-		
-		this.parse.lookAhead('$');// Check for optional $
 		var = this.parse.expr();
 		target.edit(System.getenv(var.getStr()));
 	}
@@ -226,17 +222,16 @@ public class BasicFunctions {
 		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
-	public void fnHex_(BasicVariable target) {
+	public void fnHex(BasicVariable target) {
 		String dest;
 		BasicVariable var;
 
-		this.parse.lookAhead('$');// Check for optional $
 		var = this.parse.expr();
 		dest = Long.toHexString(var.getLong());
 		target.edit(dest);
 	}
 
-	public void fnInput_(BasicVariable target) {
+	public void fnInput(BasicVariable target) {
 		throw(new BasicError(ErrorNumbers.errorNotYet));
 	}
 
@@ -312,7 +307,6 @@ public class BasicFunctions {
 		String dest;
 		BasicVariable var;
 
-		this.parse.lookAhead('$');// Check for optional $
 		var = this.parse.expr();
 		dest = var.getStr().toLowerCase();
 		target.edit(dest);
@@ -322,7 +316,6 @@ public class BasicFunctions {
 		BasicVariable varObj1,varObj2;
 		String dest;
 
-		this.parse.lookAhead('$');// Check for optional $
 		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
 		varObj2 = this.parse.expr();
@@ -366,7 +359,6 @@ public class BasicFunctions {
 		
 		BasicVariable var;
 
-		this.parse.lookAhead('$');// Check for optional $
 		var = this.parse.expr();
 		String str = var.getStr();
 		
@@ -378,12 +370,11 @@ public class BasicFunctions {
 		target.edit(str.substring(ptr));
 	}
 
-	public void fnMid_(BasicVariable target) {
+	public void fnMid(BasicVariable target) {
 		BasicVariable varObj1 = null,varObj2 = null,varObj3 = null;
 		int n;
 		String dest;
 
-		this.parse.lookAhead('$');// Check for optional $
 		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
 		varObj2 = this.parse.expr();
@@ -468,21 +459,19 @@ public class BasicFunctions {
 
 	}
 
-	public void fnOct_(BasicVariable target) {
+	public void fnOct(BasicVariable target) {
 		String dest;
 		BasicVariable var;
 
-		this.parse.lookAhead('$');// Check for optional $
 		var = this.parse.expr();
 		dest = Long.toOctalString(var.getLong());
 		target.edit(dest);
 	}
 
-	public void fnRight_(BasicVariable target) {
+	public void fnRight(BasicVariable target) {
 		BasicVariable varObj1,varObj2;
 		String dest;
 
-		this.parse.lookAhead('$');// Check for optional $
 		varObj1 = this.parse.expr();
 		this.parse.expectToken(',');
 		varObj2 = this.parse.expr();
@@ -514,7 +503,6 @@ public class BasicFunctions {
 	public void fnRTrim(BasicVariable target) {
 		BasicVariable var;
 
-		this.parse.lookAhead('$');// Check for optional $
 		var = this.parse.expr();
 		String dest = var.getStr();
 		int ptr = dest.length()-1;
@@ -555,12 +543,10 @@ public class BasicFunctions {
 		target.edit(Math.sin(var.getDouble()));
 	}
 
-	public void fnSpace_(BasicVariable target) {
+	public void fnSpace(BasicVariable target) {
 		StringBuilder str = new StringBuilder();
 
-		BasicVariable var;
-		this.parse.lookAhead('$');// Check for optional $
-		var = this.parse.expr();
+		BasicVariable var  = this.parse.expr();
 		
 		int count = var.getShort();
 		
@@ -580,11 +566,10 @@ public class BasicFunctions {
 		target.edit(Math.sqrt(var.getDouble()));
 	}
 
-	public void fnStr_(BasicVariable target) {
+	public void fnStr(BasicVariable target) {
 		String dest;
 		BasicVariable var;
 		
-		this.parse.lookAhead('$');// Check for optional $
 		var = this.parse.expr();		
 		target.edit(""+var.getLong());
 	}
@@ -593,7 +578,7 @@ public class BasicFunctions {
 		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}
 
-	public void fnString_(BasicVariable target) {
+	public void fnString(BasicVariable target) {
 		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}
 
@@ -603,17 +588,13 @@ public class BasicFunctions {
 		target.edit(Math.tan(var.getDouble()));
 	}
 
-	public void fnTime_(BasicVariable target) {
+	public void fnTime(BasicVariable target) {
 		throw(new BasicError(ErrorNumbers.errorNotYet));	
 	}
 
-	public void fnUCase_(BasicVariable target) {
-		String dest;
-		BasicVariable var;
-
-		this.parse.lookAhead('$');// Check for optional $
-		var = this.parse.expr();
-		dest = var.getStr().toUpperCase();
+	public void fnUCase(BasicVariable target) {
+		BasicVariable var = this.parse.expr();
+		String dest = var.getStr().toUpperCase();
 		target.edit(dest);	
 	}
 

@@ -47,6 +47,7 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 	/**
 	 * The location of the temp binary file.
 	 */
+	@EGIgnore
 	private File tempBinary;
 
 	/**
@@ -223,7 +224,7 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 	}
 
 	public void init() {
-			File linkFile = new File(this.link);
+			File linkFile = this.obtainRelativeLink();
 			File path = linkFile.getParentFile();
 			String name = linkFile.getName();
 			int idx = name.lastIndexOf('.');
@@ -235,7 +236,7 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 			
 			if( !this.tempBinary.exists() || this.tempBinary.lastModified()<linkFile.lastModified())
 			{			
-				EncogUtility.convertCSV2Binary(new File(this.link),
+				EncogUtility.convertCSV2Binary(linkFile,
 					this.tempBinary, this.inputCount, this.idealCount,
 					this.headers);
 			}
@@ -278,38 +279,6 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 		return this.binary.openAdditional();
 	}
 
-	public void adjustLinkForLoad(PersistenceLocation location) {
-		if (location instanceof FilePersistence) {
-			FilePersistence fp = (FilePersistence) location;
-			File egParentDir = fp.getFile().getParentFile();
-			File linkLocation = new File(this.link);
-
-			if (egParentDir != null) {
-				if (linkLocation.getParent() == null) {
-					this.link = new File(egParentDir, this.link).toString();
-				}
-			}
-		}
-
-	}
-
-	public void adjustLinkForSave(PersistenceLocation location) {
-		if (location instanceof FilePersistence) {
-			FilePersistence fp = (FilePersistence) location;
-			String egParentDir = fp.getFile().getParent();
-			File linkLocation = new File(this.link);
-			
-			if( egParentDir != null )
-			{
-				if( linkLocation.getParent()!=null && linkLocation.getParent().equals(egParentDir) )
-				{
-					this.link = linkLocation.getName();
-				}
-			}
-		}
-
-	}
-
 	/**
 	 * @return The collection this Encog object belongs to, null if none.
 	 */
@@ -322,6 +291,43 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 	 */
 	public void setCollection(EncogCollection collection) {
 		this.encogCollection = collection; 
+	}
+
+	public File obtainRelativeLink() {
+		PersistenceLocation location = this.getCollection().getLocation();
+		
+		if (location instanceof FilePersistence) {
+			FilePersistence fp = (FilePersistence) location;
+			File egParentDir = fp.getFile().getParentFile();
+			File linkLocation = new File(this.link);
+
+			if (egParentDir != null) {
+				if (linkLocation.getParent() == null) {
+					return new File(egParentDir, this.link);
+				}
+			}
+		}
+		return new File(this.link);
+	}
+
+	public void storeRelativeLink(File linkLocation) {
+		PersistenceLocation location = this.getCollection().getLocation();
+		
+		if (location instanceof FilePersistence) {
+			FilePersistence fp = (FilePersistence) location;
+			String egParentDir = fp.getFile().getParent();
+
+			if( egParentDir != null )
+			{
+				if( linkLocation.getParent()!=null && linkLocation.getParent().equals(egParentDir) )
+				{
+					this.link = linkLocation.getName();
+					return;
+				}
+			}
+		}
+		this.link = linkLocation.toString();
+
 	}
 
 	

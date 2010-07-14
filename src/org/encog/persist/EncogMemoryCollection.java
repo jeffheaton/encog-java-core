@@ -48,6 +48,11 @@ import org.encog.persist.persistors.PersistorUtil;
 public class EncogMemoryCollection implements EncogCollection {
 
 	/**
+	 * The location this collection is saved at.
+	 */
+	private PersistenceLocation location;
+	
+	/**
 	 * The contents of this collection.
 	 */
 	private final Map<String, EncogPersistedObject> contents = new HashMap<String, EncogPersistedObject>();
@@ -209,6 +214,7 @@ public class EncogMemoryCollection implements EncogCollection {
 		PersistReader reader = null;
 
 		try {
+			this.location = location;
 			reader = new PersistReader(location);
 			final Map<String, String> header = reader.readHeader();
 			if (header != null) {
@@ -233,10 +239,6 @@ public class EncogMemoryCollection implements EncogCollection {
 					throw new PersistError("Do not know how to load: " + type);
 				}
 				final EncogPersistedObject obj = persistor.load(in);
-
-				if( obj instanceof ExternalDataSource  ) {
-					((ExternalDataSource)obj).adjustLinkForLoad(location);
-				}
 				
 				this.contents.put(name, obj);
 				obj.setCollection(this);
@@ -261,13 +263,12 @@ public class EncogMemoryCollection implements EncogCollection {
 
 		writer = new PersistWriter(location);
 		try {
+			this.location = location;
 			writer.begin();
 			writer.writeHeader();
 			writer.beginObjects();
 			for (final EncogPersistedObject obj : this.contents.values()) {
-				if( obj instanceof ExternalDataSource  ) {
-					((ExternalDataSource)obj).adjustLinkForSave(location);
-				}
+
 				writer.writeObject(obj);
 			}
 			writer.endObjects();
@@ -298,5 +299,10 @@ public class EncogMemoryCollection implements EncogCollection {
 		this.contents.remove(name);
 		this.contents.put(newName, obj);
 		buildDirectory();
+	}
+	
+	public PersistenceLocation getLocation()
+	{
+		return this.location;
 	}
 }

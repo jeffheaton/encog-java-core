@@ -43,7 +43,7 @@ public final class NumberList {
 	 * @param str The string to parse.
 	 * @return An array of doubles parsed from the string.
 	 */
-	public static double[] fromList(final CSVFormat format, final String str) {
+	public static synchronized double[] fromList(final CSVFormat format, final String str) {
 		// first count the numbers
 		int count = 0;
 		final StringTokenizer tok = new StringTokenizer(str, ""

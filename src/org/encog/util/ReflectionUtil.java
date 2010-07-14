@@ -206,10 +206,12 @@ public final class ReflectionUtil {
 	 * @return The class requested.
 	 */
 	public static Class< ? > resolveEncogClass(final String name) {
-		if (ReflectionUtil.classMap.size() == 0) {
-			ReflectionUtil.loadClassmap();
-		}
-		return ReflectionUtil.classMap.get(name);
+        synchronized (ReflectionUtil.classMap) { 
+            if (ReflectionUtil.classMap.size() == 0) {
+                ReflectionUtil.loadClassmap();
+            }
+        }
+        return ReflectionUtil.classMap.get(name);
 	}
 
 	/**

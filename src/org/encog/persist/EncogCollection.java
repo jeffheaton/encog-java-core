@@ -110,5 +110,11 @@ public interface EncogCollection {
 	 */
 	void updateProperties(final String name, final String newName,
 			final String desc);
+	
+	/**
+	 * @return The location this collection is stored at.
+	 */
+	PersistenceLocation getLocation();
+	
 
 }

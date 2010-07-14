@@ -54,7 +54,11 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class EncogPersistedCollection implements EncogCollection {
-
+	/**
+	 * The location this collection is saved at.
+	 */
+	private PersistenceLocation location;
+	
 	/**
 	 * Generic error message for bad XML.
 	 */
@@ -475,4 +479,8 @@ public class EncogPersistedCollection implements EncogCollection {
 		return false;
 	}
 
+	public PersistenceLocation getLocation()
+	{
+		return this.location;
+	}
 }
