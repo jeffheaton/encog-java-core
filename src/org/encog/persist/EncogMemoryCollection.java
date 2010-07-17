@@ -87,6 +87,7 @@ public class EncogMemoryCollection implements EncogCollection {
 	 */
 	public void add(final String name, final EncogPersistedObject obj) {
 		this.contents.put(name, obj);
+		obj.setCollection(this);
 		obj.setName(name);
 		buildDirectory();
 	}
