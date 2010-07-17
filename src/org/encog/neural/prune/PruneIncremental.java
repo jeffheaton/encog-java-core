@@ -76,30 +76,44 @@ public class PruneIncremental extends ConcurrentJob {
 	 *            The network to format.
 	 * @return A human readable string.
 	 */
-	public static String networkToString(final BasicNetwork network) {
-		final StringBuilder result = new StringBuilder();
-		int num = 1;
+    public static String networkToString(final BasicNetwork network) {
+        final StringBuilder result = new StringBuilder();
+        int num = 1;
 
-		Layer layer = network.getLayer(BasicNetwork.TAG_INPUT);
+        Layer layer = network.getLayer(BasicNetwork.TAG_INPUT);
 
-		// display only hidden layers
-		while (layer.getNext().size() > 0) {
-			layer = layer.getNext().get(0).getToLayer();
+        Layer[] prevlayer = new Layer[network.getStructure().getLayers().size()]; // E.F. Added 7/14/2010
+        boolean dupfound = false; // E.F. Added 7/24/2010
 
-			if (layer.getNext().size() > 0) {
-				if (result.length() > 0) {
-					result.append(",");
-				}
-				result.append("H");
-				result.append(num++);
-				result.append("=");
-				result.append(layer.getNeuronCount());
-			}
-		}
+        // display only hidden layers
+        while (layer.getNext().size() > 0 && !dupfound) { // E.F. Changed 7/14/2010
+            layer = layer.getNext().get(0).getToLayer();
 
-		return result.toString();
-	}
+            // E.F. Added dup search 7/14/2010
+            for (int j = 0; j < prevlayer.length; j++) {
+                if (layer == prevlayer[j]) {
+                    dupfound = true;
+                    break;
+                } else if (prevlayer[j] == null) {
+                    prevlayer[j] = layer;
+                    break;
+                }
+            }
+            // E.F. end of dup search
 
+            if (layer.getNext().size() > 0 && !dupfound) { // E.F. Changed 7/14/2010
+                if (result.length() > 0) {
+                    result.append(",");
+                }
+                result.append("H");
+                result.append(num++);
+                result.append("=");
+                result.append(layer.getNeuronCount());
+            }
+        }
+
+        return result.toString();
+    }
 	/**
 	 * Are we done?
 	 */

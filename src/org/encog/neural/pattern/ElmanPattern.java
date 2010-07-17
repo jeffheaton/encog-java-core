@@ -113,7 +113,7 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * Clear out any hidden neurons.
 	 */
 	public void clear() {
-		this.hiddenNeurons = 0;
+		this.hiddenNeurons = -1;
 	}
 
 	/**

@@ -12,6 +12,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.EncogCollection;
+import org.encog.persist.EncogMemoryCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGIgnore;
@@ -310,8 +311,8 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 		return new File(this.link);
 	}
 
-	public void storeRelativeLink(File linkLocation) {
-		PersistenceLocation location = this.getCollection().getLocation();
+	public void storeRelativeLink(File linkLocation, EncogMemoryCollection encogMemoryCollection) {
+		PersistenceLocation location = encogMemoryCollection.getLocation();
 		
 		if (location instanceof FilePersistence) {
 			FilePersistence fp = (FilePersistence) location;
