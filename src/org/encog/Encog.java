@@ -33,8 +33,9 @@ package org.encog;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.util.cl.EncogCL;
-import org.encog.util.concurrency.EncogConcurrency;
+import org.encog.engine.EncogEngine;
+import org.encog.engine.concurrency.EngineConcurrency;
+import org.encog.engine.opencl.EncogCL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,12 +84,6 @@ public final class Encog {
 	 * The instance.
 	 */
 	private static Encog instance;
-
-	/**
-	 * If Encog is not using GPU/CL processing this attribute will be null.
-	 * Otherwise it holds the Encog CL object.
-	 */
-	private EncogCL cl;
 
 	/**
 	 * Get the instance to the singleton.
@@ -143,8 +138,7 @@ public final class Encog {
 	 */
 	public void initCL() {
 		try {
-			EncogCL cl = new EncogCL();
-			this.cl = cl;
+			EncogEngine.getInstance().initCL();
 		} catch (Throwable e) {
 			throw new EncogError(e);
 		}
@@ -155,7 +149,7 @@ public final class Encog {
 	 * thread pool.
 	 */
 	public void shutdown() {
-		EncogConcurrency.getInstance().shutdown(10000);
+		EngineConcurrency.getInstance().shutdown(10000);
 	}
 
 	/**
@@ -163,7 +157,7 @@ public final class Encog {
 	 *         null. Otherwise it holds the Encog CL object.
 	 */
 	public EncogCL getCL() {
-		return this.cl;
+		return EncogEngine.getInstance().getCL();
 	}
 
 }

@@ -34,7 +34,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.mathutil.IntRange;
+import org.encog.engine.concurrency.DetermineWorkload;
+import org.encog.engine.concurrency.EngineConcurrency;
+import org.encog.engine.concurrency.TaskGroup;
+import org.encog.engine.util.IntRange;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -42,9 +45,6 @@ import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogArray;
-import org.encog.util.concurrency.DetermineWorkload;
-import org.encog.util.concurrency.EncogConcurrency;
-import org.encog.util.concurrency.TaskGroup;
 
 /**
  * This class is used to calculate the gradients for each of the weights and
@@ -347,12 +347,12 @@ public class CalculateGradient {
 	 * until all threads are done.
 	 */
 	private void runWorkersMultiThreaded() {
-		final TaskGroup group = EncogConcurrency.getInstance()
+		final TaskGroup group = EngineConcurrency.getInstance()
 				.createTaskGroup();
 
 		// start the workers
 		for (int i = 0; i < this.threadCount; i++) {
-			EncogConcurrency.getInstance().processTask(this.workers[i], group);
+			EngineConcurrency.getInstance().processTask(this.workers[i], group);
 		}
 
 		// wait for all workers to finish

@@ -28,7 +28,7 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog;
+package org.encog.engine;
 
 /*
  * Encog Artificial Intelligence Framework v2.x Java Version

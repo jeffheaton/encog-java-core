@@ -28,53 +28,35 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.util.cl;
+package org.encog.engine.concurrency.job;
 
-import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.engine.concurrency.EngineTask;
+
 
 /**
- * An OpenCL error occured.
- *
+ * An individual worker, that will be submitted to the thread pool.
  */
-public class EncogCLError extends EncogError {
+public class JobUnitWorker implements EngineTask {
 
 	/**
-	 * The logging object.
+	 * The context for this job unit.
 	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final JobUnitContext context;
 
 	/**
-	 * Construct a message exception.
+	 * Construct a job unit.
 	 * 
-	 * @param msg
-	 *            The exception message.
+	 * @param context
+	 *            The context of this job unit.
 	 */
-	public EncogCLError(final String msg) {
-		super(msg);
+	public JobUnitWorker(final JobUnitContext context) {
+		this.context = context;
 	}
 
 	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param t
-	 *            The other exception.
+	 * Run this job unit.
 	 */
-	public EncogCLError(final Throwable t) {
-		super(t);
-	}
-	
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param msg
-	 *            A message.
-	 * @param t
-	 * 			The other exception.
-	 */
-	public EncogCLError( final String msg, final Throwable t) {
-		super(msg,t);
+	public void run() {
+		this.context.getOwner().performJobUnit(this.context);
 	}
 }

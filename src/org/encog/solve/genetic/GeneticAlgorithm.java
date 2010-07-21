@@ -30,6 +30,8 @@
 
 package org.encog.solve.genetic;
 
+import org.encog.engine.concurrency.EngineConcurrency;
+import org.encog.engine.concurrency.TaskGroup;
 import org.encog.neural.networks.ContextClearable;
 import org.encog.solve.genetic.crossover.Crossover;
 import org.encog.solve.genetic.genome.CalculateGenomeScore;
@@ -38,8 +40,6 @@ import org.encog.solve.genetic.genome.GenomeComparator;
 import org.encog.solve.genetic.mutate.Mutate;
 import org.encog.solve.genetic.population.Population;
 import org.encog.solve.genetic.species.Species;
-import org.encog.util.concurrency.EncogConcurrency;
-import org.encog.util.concurrency.TaskGroup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -187,7 +187,7 @@ public class GeneticAlgorithm {
 		int offspringIndex = population.getPopulationSize() - offspringCount;
 		final int matingPopulationSize = (int) (population.getPopulationSize() * getMatingPopulation());
 
-		final TaskGroup group = EncogConcurrency.getInstance()
+		final TaskGroup group = EngineConcurrency.getInstance()
 				.createTaskGroup();
 
 		// mate and form the next generation
@@ -202,7 +202,7 @@ public class GeneticAlgorithm {
 			final MateWorker worker = new MateWorker(mother, father, child1,
 					child2);
 
-			EncogConcurrency.getInstance().processTask(worker, group);
+			EngineConcurrency.getInstance().processTask(worker, group);
 
 			offspringIndex += 2;
 		}

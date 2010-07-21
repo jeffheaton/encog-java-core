@@ -30,15 +30,12 @@
 
 package org.encog.neural.networks.training.propagation;
 
+import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.train.TrainFlatNetworkMulti;
+import org.encog.engine.network.train.TrainFlatNetworkResilient;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.flat.FlatNetwork;
-import org.encog.neural.networks.flat.TrainFlatNetworkBackPropagation;
-import org.encog.neural.networks.flat.TrainFlatNetworkManhattan;
-import org.encog.neural.networks.flat.TrainFlatNetworkMulti;
-import org.encog.neural.networks.flat.TrainFlatNetworkResilient;
-import org.encog.neural.networks.flat.ValidateForFlat;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
@@ -170,7 +167,6 @@ public abstract class Propagation extends BasicTraining {
 	public void iteration() {
 		try {
 			preIteration();
-			processFlatten();
 
 			if (this.flatTraining == null) {
 				final CalculateGradient prop = new CalculateGradient(
@@ -226,43 +222,6 @@ public abstract class Propagation extends BasicTraining {
 	public abstract void performIteration(CalculateGradient prop,
 			double[] weights);
 
-	// / <summary>
-	// / Attempt to flatten the network.
-	// / </summary>
-	private void processFlatten() {
-		if (this.attemptFlatten && (this.currentFlatNetwork == null)) {
-			if ((getTraining() instanceof Indexable)
-					&& (ValidateForFlat.canBeFlat(this.network) == null)) {
-				this.currentFlatNetwork = new FlatNetwork(this.network);
-
-				if (this instanceof ResilientPropagation) {
-					final ResilientPropagation r = (ResilientPropagation) this;
-					this.flatTraining = new TrainFlatNetworkResilient(
-							this.currentFlatNetwork, getTraining(), r
-									.getZeroTolerance(), r.getInitialUpdate(),
-							r.getMaxStep());
-				} else if (this instanceof Backpropagation) {
-					final Backpropagation b = (Backpropagation) this;
-					this.flatTraining = new TrainFlatNetworkBackPropagation(
-							this.currentFlatNetwork, getTraining(), b
-									.getLearningRate(), b.getMomentum());
-				} else if (this instanceof ManhattanPropagation) {
-					final ManhattanPropagation m = (ManhattanPropagation) this;
-					this.flatTraining = new TrainFlatNetworkManhattan(
-							this.currentFlatNetwork, getTraining(), m
-									.getLearningRate());
-				} else {
-					this.currentFlatNetwork = null;
-					this.attemptFlatten = false;
-					return;
-				}
-
-				getFlatTraining().setNumThreads(this.numThreads);
-			} else {
-				this.attemptFlatten = false;
-			}
-		}
-	}
 
 	/**
 	 * Resume training.

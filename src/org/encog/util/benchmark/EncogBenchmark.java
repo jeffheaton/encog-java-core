@@ -30,7 +30,7 @@
 
 package org.encog.util.benchmark;
 
-import org.encog.StatusReportable;
+import org.encog.engine.StatusReportable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;

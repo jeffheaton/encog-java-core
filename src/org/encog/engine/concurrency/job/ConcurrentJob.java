@@ -28,12 +28,11 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.util.concurrency.job;
+package org.encog.engine.concurrency.job;
 
-import org.encog.EncogError;
-import org.encog.StatusReportable;
-import org.encog.util.concurrency.EncogConcurrency;
-import org.encog.util.concurrency.TaskGroup;
+import org.encog.engine.StatusReportable;
+import org.encog.engine.concurrency.EngineConcurrency;
+import org.encog.engine.concurrency.TaskGroup;
 
 /**
  * This class forms the basis for a job that can be run concurrently.
@@ -89,12 +88,12 @@ public abstract class ConcurrentJob {
 	/**
 	 * Process the job.
 	 */
-	public void process() throws EncogError {
+	public void process()  {
 		Object task;
 
 		this.totalTasks = loadWorkload();
 		int currentTask = 0;
-		TaskGroup group = EncogConcurrency.getInstance().createTaskGroup();
+		TaskGroup group = EngineConcurrency.getInstance().createTaskGroup();
 
 		while( ((task = requestNextTask()) != null) && !shouldStop ) {
 			currentTask++;
@@ -104,12 +103,12 @@ public abstract class ConcurrentJob {
 			context.setTaskNumber(currentTask);
 
 			final JobUnitWorker worker = new JobUnitWorker(context);
-			EncogConcurrency.getInstance().processTask(worker, group);
+			EngineConcurrency.getInstance().processTask(worker, group);
 		}
 
 		group.waitForComplete();
 		
-		EncogConcurrency.getInstance().checkError();
+		EngineConcurrency.getInstance().checkError();
 	}
 
 	/**

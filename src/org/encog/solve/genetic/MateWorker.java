@@ -30,8 +30,8 @@
 
 package org.encog.solve.genetic;
 
+import org.encog.engine.concurrency.EngineTask;
 import org.encog.solve.genetic.genome.Genome;
-import org.encog.util.concurrency.EncogTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * This class is used in conjunction with a thread pool. This allows the genetic
  * algorithm to offload all of those calculations to a thread pool.
  */
-public class MateWorker implements EncogTask {
+public class MateWorker implements EngineTask {
 
 	/**
 	 * The first child.

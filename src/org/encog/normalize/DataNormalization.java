@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.encog.NullStatusReportable;
-import org.encog.StatusReportable;
+import org.encog.engine.StatusReportable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;

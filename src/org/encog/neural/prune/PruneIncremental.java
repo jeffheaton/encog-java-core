@@ -33,7 +33,9 @@ package org.encog.neural.prune;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.StatusReportable;
+import org.encog.engine.StatusReportable;
+import org.encog.engine.concurrency.job.ConcurrentJob;
+import org.encog.engine.concurrency.job.JobUnitContext;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
@@ -43,8 +45,6 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.strategy.StopTrainingStrategy;
 import org.encog.neural.pattern.NeuralNetworkPattern;
-import org.encog.util.concurrency.job.ConcurrentJob;
-import org.encog.util.concurrency.job.JobUnitContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

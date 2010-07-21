@@ -28,69 +28,81 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.mathutil;
+package org.encog.engine.concurrency.job;
 
 /**
- * A range of integers.
+ * The job unit context contains context information to be passed to a job unit.
+ * This tells the thread what to work on.
+ * 
+ * @author jheaton
+ * 
  */
-public class IntRange {
+public class JobUnitContext {
 
 	/**
-	 * The low end of the range.
+	 * Data that defines what job unit should be done.
 	 */
-	private int high;
+	private Object jobUnit;
 
 	/**
-	 * The high end of the range.
+	 * The concurrent job owner.
 	 */
-	private int low;
+	private ConcurrentJob owner;
 
 	/**
-	 * Construct an integer range.
+	 * The task number for this job.
+	 */
+	private int taskNumber;
+
+	/**
+	 * @return The job unit.
+	 */
+	public Object getJobUnit() {
+		return this.jobUnit;
+	}
+
+	/**
+	 * @return The concurrent job that owns this task.
+	 */
+	public ConcurrentJob getOwner() {
+		return this.owner;
+	}
+
+	/**
+	 * @return The task number.
+	 */
+	public int getTaskNumber() {
+		return this.taskNumber;
+	}
+
+	/**
+	 * Set the job unit.
 	 * 
-	 * @param high
-	 *            The high end of the range.
-	 * @param low
-	 *            The low end of the range.
+	 * @param jobUnit
+	 *            The job unit.
 	 */
-	public IntRange(final int high, final int low) {
-		super();
-		this.high = high;
-		this.low = low;
+	public void setJobUnit(final Object jobUnit) {
+		this.jobUnit = jobUnit;
 	}
 
 	/**
-	 * @return The high end of the range.
-	 */
-	public int getHigh() {
-		return this.high;
-	}
-
-	/**
-	 * @return The low end of the range.
-	 */
-	public int getLow() {
-		return this.low;
-	}
-
-	/**
-	 * Set the high end of the range.
+	 * Set the job owner.
 	 * 
-	 * @param high
-	 *            The high end of the range.
+	 * @param owner
+	 *            The job owner.
 	 */
-	public void setHigh(final int high) {
-		this.high = high;
+	public void setOwner(final ConcurrentJob owner) {
+		this.owner = owner;
 	}
 
 	/**
-	 * Set the low end of the range.
+	 * Set the task number.
 	 * 
-	 * @param low
-	 *            The low end of the range.
+	 * @param taskNumber
+	 *            The task number.
 	 */
-	public void setLow(final int low) {
-		this.low = low;
+	public void setTaskNumber(final int taskNumber) {
+		this.taskNumber = taskNumber;
 	}
 
 }

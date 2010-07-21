@@ -30,6 +30,8 @@
 
 package org.encog;
 
+import org.encog.engine.StatusReportable;
+
 /**
  * A report object that does nothing.
  */
