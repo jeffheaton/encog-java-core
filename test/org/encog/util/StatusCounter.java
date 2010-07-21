@@ -30,7 +30,7 @@
 
 package org.encog.util;
 
-import org.encog.StatusReportable;
+import org.encog.engine.StatusReportable;
 
 public class StatusCounter implements StatusReportable {
 
