@@ -1,7 +1,7 @@
 package org.encog.neural.networks.training.svm;
 
 import org.encog.Encog;
-import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.mathutil.libsvm.svm_problem;

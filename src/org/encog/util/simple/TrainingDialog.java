@@ -41,7 +41,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.encog.util.Format;
+import org.encog.engine.util.Format;
+
 
 /**
  * Display a training dialog.

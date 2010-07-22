@@ -35,6 +35,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.encog.engine.util.Format;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -45,7 +46,6 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodFunction;
-import org.encog.util.Format;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

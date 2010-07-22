@@ -39,7 +39,7 @@ import java.util.Map.Entry;
 
 import org.encog.Encog;
 import org.encog.EncogError;
-import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
@@ -239,7 +239,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 		for (final NeuralDataPair pair : data) {
 			final NeuralData actual = compute(pair.getInput());
-			errorCalculation.updateError(actual, pair.getIdeal());
+			errorCalculation.updateError(actual.getData(), pair.getIdeal().getData());
 		}
 		return errorCalculation.calculate();
 	}

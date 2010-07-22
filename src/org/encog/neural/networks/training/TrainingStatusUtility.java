@@ -32,7 +32,7 @@ package org.encog.neural.networks.training;
 
 import org.encog.cloud.CloudTask;
 import org.encog.cloud.EncogCloud;
-import org.encog.util.Format;
+import org.encog.engine.util.Format;
 
 /**
  * Report the status of Encog training to the cloud.

@@ -30,7 +30,7 @@
 
 package org.encog.neural.networks.training.simple;
 
-import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.engine.util.ErrorCalculation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -138,7 +138,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 				outputLayer.setBiasWeight(currentAdaline, t);
 			}
 
-			errorCalculation.updateError(output, pair.getIdeal());
+			errorCalculation.updateError(output.getData(), pair.getIdeal().getData());
 		}
 
 		// set the global error

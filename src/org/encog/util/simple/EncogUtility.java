@@ -32,6 +32,7 @@ package org.encog.util.simple;
 
 import java.io.File;
 
+import org.encog.engine.util.Format;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
@@ -46,7 +47,6 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.svm.SVMTrain;
 import org.encog.neural.pattern.FeedForwardPattern;
-import org.encog.util.Format;
 
 /**
  * General utility class for Encog.  Provides for some common Encog procedures.

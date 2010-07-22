@@ -77,14 +77,10 @@ org.encog.engine.util.Format
 org.encog.engine.util.IntRange
 org.encog.engine.util.ResourceLoader
 org.encog.engine.util.Stopwatch
-org.encog.mathutil.BoundMath
-org.encog.mathutil.BoundNumbers
 org.encog.mathutil.Convert
 org.encog.mathutil.EncogMath
 org.encog.mathutil.EncogMathError
 org.encog.mathutil.Equilateral
-org.encog.mathutil.error.ErrorCalculation
-org.encog.mathutil.error.ErrorCalculationMode
 org.encog.mathutil.libsvm.svm
 org.encog.mathutil.libsvm.svm_model
 org.encog.mathutil.libsvm.svm_node
@@ -436,10 +432,8 @@ org.encog.util.csv.ReadCSV
 org.encog.util.downsample.Downsample
 org.encog.util.downsample.RGBDownsample
 org.encog.util.downsample.SimpleIntensityDownsample
-org.encog.util.EncogArray
 org.encog.util.EncogValidate
 org.encog.util.file.Directory
-org.encog.util.Format
 org.encog.util.GenerateClasslist
 org.encog.util.http.CookieUtility
 org.encog.util.http.FormUtility

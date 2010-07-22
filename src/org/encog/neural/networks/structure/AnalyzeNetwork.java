@@ -34,11 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.engine.util.EngineArray;
+import org.encog.engine.util.Format;
 import org.encog.mathutil.NumericRange;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.util.Format;
 
 /**
  * Allows the weights and bias values of the neural network to be analyzed.

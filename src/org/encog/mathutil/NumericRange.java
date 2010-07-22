@@ -32,7 +32,7 @@ package org.encog.mathutil;
 
 import java.util.List;
 
-import org.encog.util.Format;
+import org.encog.engine.util.Format;
 
 /**
  * A numeric range has a high, low, mean, root-mean-square, standard deviation,
