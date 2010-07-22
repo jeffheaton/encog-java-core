@@ -196,9 +196,6 @@ public class TrainingWorkload {
 		this.paramArray[0] = flat.getInputCount();
 		this.paramArray[1] = flat.getOutputCount();
 		this.paramArray[2] = flat.getLayerCounts().length;
-		this.paramArray[3] = flat.getLayerOutput().length;
-		this.paramArray[4] = layerDeltaSize;
-		this.paramArray[5] = flat.getWeights().length;
 		this.paramArray[6] = this.maxUnits - 1;// index of last item
 		this.paramArray[7] = Math.max(this.trainingLength / this.maxUnits, 1);// size
 																				// each

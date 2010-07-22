@@ -114,14 +114,11 @@ kernel void NetworkTrain(
 	int inputSize = params[0];
     int outputSize = params[1];
     int layerCount = params[2];
-    int neuronCount = params[3];
-    //int layerDeltaSize = params[4];
-    int weightsSize = params[5];
     int indexLastElement = params[6];
     int sizeElement = params[7];
     int sizeLastElement = params[8];
 
-	int gradientOffset = (taskIndex*weightsSize);
+	int gradientOffset = (taskIndex*WEIGHT_COUNT);
 
 	int size;
 	if( taskIndex==indexLastElement )
@@ -130,7 +127,7 @@ kernel void NetworkTrain(
 		size = sizeElement;
 		
 		// clear out the gradients and errors
-	for(int i=0;i<weightsSize;i++)
+	for(int i=0;i<WEIGHT_COUNT;i++)
 		gradients[gradientOffset+i]=0;
 	errors[taskIndex] = 0;
 
@@ -144,7 +141,7 @@ kernel void NetworkTrain(
 		int taskInputIndex = subtaskIndex * inputSize;
 		int taskIdealIndex = subtaskIndex * outputSize;
 	
-		int sourceIndex = neuronCount - layerCounts[layerCount-1];
+		int sourceIndex = NEURON_COUNT - layerCounts[layerCount-1];
 		
 		for(int i=0;i<NEURON_COUNT;i++)
 			layerOutput[i] = 1;
@@ -235,13 +232,5 @@ kernel void NetworkTrain(
                   layerOutput[fromLayerIndex + i]); 
             }
 		}
-		
-		
 	}	
-	
-	/*
-	for(int i=0;i<NEURON_COUNT;i++)
-	{
-		gradients[i] = layerOutput[i];
-	}*/	
 }
