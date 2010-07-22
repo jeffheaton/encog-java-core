@@ -43,6 +43,9 @@
 	<property name="path.doc" location="${basedir}/doc" />
 	<property name="path.jar" location="${basedir}/jar" />
 	<property name="path.test" location="${basedir}/test" />
+	<property name="path.engine" location="${basedir}/engine" />
+	<property name="path.engine.src" location="${path.engine}/src" />
+	<property name="path.engine.build" location="${path.engine}/build" />
 	<path id="classpath">
 		<fileset dir="${path.jar}" />
 	</path>
@@ -76,6 +79,33 @@
 		<mkdir dir="${path.examples}" />
 	</target>
 
+	<target name="build-engine" depends="init" description="compile the source ">
+		<mkdir dir="${path.engine}" />
+		<mkdir dir="${path.engine.build}" />
+		<mkdir dir="${path.engine.src}/org/encog/engine" />
+		
+		<copy todir="${path.engine.src}/org/encog/engine">
+			<fileset dir="${path.src}/org/encog/engine" />
+		</copy>
+		
+		<javac srcdir="${path.engine.src}" source="1.5" target="1.5" destdir="${path.engine.build}">
+			<classpath refid="classpath" />
+		</javac>
+		
+		<copy todir="${path.engine.build}/org/encog/engine/resources">
+			<fileset dir="${path.engine.src}/org/encog/engine/resources" />
+		</copy>
+		
+		<manifest file="MANIFEST.MF">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Implementation-Version" value="${version.num}-b${encog.version}" />
+		</manifest>
+		
+		<property name="jarfile-engine" location="${path.lib}/encog-engine-${encog.version}.jar" />
+		
+		<jar jarfile="${jarfile-engine}" basedir="${path.engine.build}" manifest="MANIFEST.MF" />
+	</target>
+	
 	<target name="compile" depends="init" description="compile the source ">
 
 		<javac srcdir="${path.src}" source="1.5" target="1.5" destdir="${path.build}">
@@ -118,6 +148,10 @@
 		<copy todir="${path.build}/org/encog/data">
 			<fileset dir="src/org/encog/data" />
 		</copy>
+		
+		<copy todir="${path.build}/org/encog/engine/resources">
+			<fileset dir="src/org/encog/engine/resources" />
+		</copy>
 
 		<manifest file="MANIFEST.MF">
 			<attribute name="Built-By" value="${user.name}" />
@@ -130,7 +164,7 @@
 
 	</target>
 
-	<target name="cc-build" depends="clean-all,checkout,build-examples,compile,doc,test,build">
+	<target name="cc-build" depends="clean-all,checkout,build-examples,compile,doc,test,build,build-engine">
 
 		<property name="path.stage.sub" value="${path.stage}/encog-java-core-${encog.version}"/>
 		<copy todir="${path.stage.sub}" file="${basedir}/pom.xml" />
@@ -163,7 +197,9 @@
 				</copy>
 
 		<tstamp/>
-		<copy todir="${path.stage.sub}/lib" file="${jarfile}" />
+		<copy todir="${path.stage.sub}/lib">
+			<fileset dir="${path.lib}" />
+		</copy>
 
 
 
@@ -176,6 +212,7 @@
 	<target name="clean-all" depends="clean" description="Delete the source code">
 		<delete dir="${path.src}" />
 		<delete dir="${path.test.src}" />
+		<delete dir="${path.examples}" />		
 		<delete>
 			<fileset dir="${basedir}" excludes="build.xml" />
 		</delete>
@@ -214,6 +251,6 @@
 		<delete dir="${path.test.results}" />
 		<delete dir="${path.dist}" />
 		<delete dir="${path.doc}" />
-		<delete dir="${path.examples}" />
+		<delete dir="${path.engine}" />
 	</target>
 </project>
