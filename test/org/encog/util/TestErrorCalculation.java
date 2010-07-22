@@ -30,7 +30,7 @@
 
 package org.encog.util;
 
-import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.engine.util.ErrorCalculation;
 
 import junit.framework.TestCase;
 
