@@ -79,7 +79,7 @@
 		<mkdir dir="${path.examples}" />
 	</target>
 
-	<target name="build-engine" depends="init" description="compile the source ">
+	<target name="build-engine" depends="init" description="compile the engine source ">
 		<mkdir dir="${path.engine}" />
 		<mkdir dir="${path.engine.build}" />
 		<mkdir dir="${path.engine.src}/org/encog/engine" />
@@ -104,6 +104,8 @@
 		<property name="jarfile-engine" location="${path.lib}/encog-engine-${encog.version}.jar" />
 		
 		<jar jarfile="${jarfile-engine}" basedir="${path.engine.build}" manifest="MANIFEST.MF" />
+		
+		<copy todir="${path.lib}" file="${basedir}/whichone.txt" />
 	</target>
 	
 	<target name="compile" depends="init" description="compile the source ">
@@ -200,9 +202,7 @@
 		<copy todir="${path.stage.sub}/lib">
 			<fileset dir="${path.lib}" />
 		</copy>
-
-
-
+		
 		<zip destfile="${path.dist}/encog-core-${encog.version}-${DSTAMP}-${TSTAMP}.zip">
 			<fileset dir="${path.stage}" />
 		</zip>
