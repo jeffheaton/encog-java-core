@@ -129,7 +129,7 @@ kernel void NetworkTrain(
 	else
 		size = sizeElement;
 		
-	// clear out the gradients and errors
+		// clear out the gradients and errors
 	for(int i=0;i<weightsSize;i++)
 		gradients[gradientOffset+i]=0;
 	errors[taskIndex] = 0;
@@ -139,29 +139,33 @@ kernel void NetworkTrain(
 	for(int index=0;index<size;index++)
 	{		
 		int subtaskIndex = (taskIndex*sizeElement)+index;
-    
+		
 		// part 1: forward pass
 		int taskInputIndex = subtaskIndex * inputSize;
 		int taskIdealIndex = subtaskIndex * outputSize;
 	
-		int sourceIndex = neuronCount - inputSize;
-			
+		int sourceIndex = neuronCount - layerCounts[layerCount-1];
+		
+		for(int i=0;i<NEURON_COUNT;i++)
+			layerOutput[i] = 1;
+		
 		// load the input into the layer output array, this feeds the first layer.
 		for(int i=0;i<inputSize;i++)
 			layerOutput[sourceIndex+i] = input[taskInputIndex+i];
-
+			
+		
 		for (int currentLayer = layerCount - 1; currentLayer > 0; currentLayer--)
 		{
 			int inputIndex = layerIndex[currentLayer];
 			int outputIndex = layerIndex[currentLayer - 1];
 			int inputSize = layerCounts[currentLayer];
-			int outputSize = layerCounts[currentLayer - 1];
+			int outputSize = layerFeedCounts[currentLayer - 1];
 			int index = weightIndex[currentLayer - 1];
 
 			// bias values
 			for (int i = 0; i < outputSize; i++)
 			{
-				layerOutput[ i + outputIndex] = weights[index++];
+				layerOutput[ i + outputIndex] = 0;
 			}
 
 			for (int x = 0; x < outputSize; x++)
@@ -177,8 +181,8 @@ kernel void NetworkTrain(
 				layerOutput[outputIndex + x] = value;
 			}
 		}
- 
-		// part 2: backward pass
+		
+				// part 2: backward pass
 
 		// process the output layer first
 	
@@ -200,7 +204,7 @@ kernel void NetworkTrain(
             int fromLayerIndex = layerIndex[currentLevel + 1];
             int toLayerIndex = layerIndex[currentLevel];
             int fromLayerSize = layerCounts[currentLevel + 1];
-            int toLayerSize = layerCounts[currentLevel];
+            int toLayerSize = layerFeedCounts[currentLevel];
 
             // clear the to-deltas
             for (int i = 0; i < fromLayerSize; i++)
@@ -209,13 +213,6 @@ kernel void NetworkTrain(
             }
 
             int index = weightIndex[currentLevel];
-
-            // handle thresholds
-            for (int i = 0; i < toLayerSize; i++)
-            {
-                gradients[index+gradientOffset] += layerDelta[toLayerIndex+i];
-                index++;
-            }
 
             // handle weights
             for (int x = 0; x < toLayerSize; x++)
@@ -238,5 +235,13 @@ kernel void NetworkTrain(
                   layerOutput[fromLayerIndex + i]); 
             }
 		}
-	}
+		
+		
+	}	
+	
+	/*
+	for(int i=0;i<NEURON_COUNT;i++)
+	{
+		gradients[i] = layerOutput[i];
+	}*/	
 }

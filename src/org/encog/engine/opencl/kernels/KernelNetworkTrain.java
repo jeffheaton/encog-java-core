@@ -145,7 +145,7 @@ public class KernelNetworkTrain extends EncogKernel {
 			
 			// don't create more than we have work for
 			localWork = Math.min(localWork, workload.getMaxUnits());
-			
+					
 			// Set the work-item dimensions
 			final long[] global_work_size = new long[] { globalWork };
 			final long[] local_work_size = new long[] { localWork };
@@ -171,6 +171,12 @@ public class KernelNetworkTrain extends EncogKernel {
 					* workload.getMaxUnits() * Sizeof.cl_float, Pointer
 					.to(workload.getGradients()), 0, null, null); 
 
+			for(int i=0;i<10;i++)
+			{
+				System.out.print( "," + workload.getGradients()[i]);
+			}
+			System.out.println();
+			
 			// commands.Finish();
 		} catch (final Exception e) {
 			throw new EncogEngineError(e);
