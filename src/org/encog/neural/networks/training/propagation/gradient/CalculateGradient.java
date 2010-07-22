@@ -37,6 +37,7 @@ import java.util.Map;
 import org.encog.engine.concurrency.DetermineWorkload;
 import org.encog.engine.concurrency.EngineConcurrency;
 import org.encog.engine.concurrency.TaskGroup;
+import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.IntRange;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
@@ -44,7 +45,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.TrainingError;
-import org.encog.util.EncogArray;
 
 /**
  * This class is used to calculate the gradients for each of the weights and
@@ -328,7 +328,7 @@ public class CalculateGradient {
 
 					final double[] source = thisContext.getContext().getData();
 					final double[] target = new double[source.length];
-					EncogArray.arrayCopy(source, target);
+					EngineArray.arrayCopy(source, target);
 					workload.put(nextContext, target);
 				}
 			}
@@ -338,7 +338,7 @@ public class CalculateGradient {
 		for (final ContextLayer layer : workload.keySet()) {
 			final double[] source = (double[]) workload.get(layer);
 			final double[] target = layer.getContext().getData();
-			EncogArray.arrayCopy(source, target);
+			EngineArray.arrayCopy(source, target);
 		}
 	}
 

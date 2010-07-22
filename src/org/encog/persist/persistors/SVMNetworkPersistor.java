@@ -4,6 +4,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_model;
 import org.encog.mathutil.libsvm.svm_node;
@@ -16,7 +17,6 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
-import org.encog.util.EncogArray;
 
 /**
  * Persist a SVM network.
@@ -189,7 +189,7 @@ public class SVMNetworkPersistor implements Persistor {
 	private void handleModel(ReadXML in, svm_model model) {
 		while (in.readToTag()) {
 			if (in.is(SVMNetworkPersistor.TAG_TYPE_SVM, true)) {
-				int i = EncogArray.findStringInArray(
+				int i = EngineArray.findStringInArray(
 						SVMNetworkPersistor.svm_type_table, in.readTextToTag());
 				model.param.svm_type = i;
 			} else if (in.is(SVMNetworkPersistor.TAG_DEGREE, true)) {
@@ -233,7 +233,7 @@ public class SVMNetworkPersistor implements Persistor {
 				for (int i = 0; i < n; i++)
 					model.nSV[i] = Integer.parseInt(st.nextToken());
 			} else if (in.is(SVMNetworkPersistor.TAG_TYPE_KERNEL, true)) {
-				int i = EncogArray.findStringInArray(
+				int i = EngineArray.findStringInArray(
 						SVMNetworkPersistor.kernel_type_table, in
 								.readTextToTag());
 				model.param.kernel_type = i;

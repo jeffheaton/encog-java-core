@@ -33,11 +33,11 @@ package org.encog.neural.networks.structure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.NumericRange;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.util.EncogArray;
 import org.encog.util.Format;
 
 /**
@@ -130,9 +130,9 @@ public class AnalyzeNetwork {
 		this.weights = new NumericRange(weightList);
 		this.bias = new NumericRange(biasList);
 		this.weightsAndBias = new NumericRange(allList);
-		this.weightValues = EncogArray.listToDouble(weightList);
-		this.allValues = EncogArray.listToDouble(allList);
-		this.biasValues = EncogArray.listToDouble(biasList);
+		this.weightValues = EngineArray.listToDouble(weightList);
+		this.allValues = EngineArray.listToDouble(allList);
+		this.biasValues = EngineArray.listToDouble(biasList);
 	}
 
 	/**

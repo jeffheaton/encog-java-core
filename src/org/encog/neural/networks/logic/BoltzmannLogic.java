@@ -30,7 +30,7 @@
 
 package org.encog.neural.networks.logic;
 
-import org.encog.mathutil.BoundMath;
+import org.encog.engine.util.BoundMath;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;

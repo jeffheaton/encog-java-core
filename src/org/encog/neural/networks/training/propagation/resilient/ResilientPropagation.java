@@ -356,4 +356,6 @@ public class ResilientPropagation extends Propagation {
 		// apply the weight change, if any
 		return weightChange;
 	}
+	
+	
 }

@@ -33,6 +33,7 @@ package org.encog.neural.networks.training.propagation;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetworkMulti;
 import org.encog.engine.network.train.TrainFlatNetworkResilient;
+import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -43,7 +44,6 @@ import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.util.EncogArray;
 import org.encog.util.EncogValidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -180,7 +180,7 @@ public abstract class Propagation extends BasicTraining {
 				NetworkCODEC.arrayToNetwork(weights, this.network);
 				setError(prop.getError());
 			} else {
-				EncogArray.arrayCopy(NetworkCODEC.networkToArray(this.network),
+				EngineArray.arrayCopy(NetworkCODEC.networkToArray(this.network),
 						this.currentFlatNetwork.getWeights());
 				this.flatTraining.iteration();
 				setError(this.flatTraining.getError());

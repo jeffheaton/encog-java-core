@@ -30,8 +30,8 @@
 
 package org.encog.neural.networks.training.anneal;
 
+import org.encog.engine.util.EngineArray;
 import org.encog.solve.anneal.SimulatedAnnealing;
-import org.encog.util.EncogArray;
 
 /**
  * Simple class used by the neural simulated annealing. This class is a subclass
@@ -81,7 +81,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 */
 	@Override
 	public Double[] getArray() {
-		return EncogArray.doubleToObject(owner.getArray());
+		return EngineArray.doubleToObject(owner.getArray());
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 */
 	@Override
 	public Double[] getArrayCopy() {
-		return EncogArray.doubleToObject(owner.getArrayCopy());
+		return EngineArray.doubleToObject(owner.getArrayCopy());
 	}
 
 	/**
@@ -100,7 +100,7 @@ public class NeuralSimulatedAnnealingHelper extends SimulatedAnnealing<Double> {
 	 */
 	@Override
 	public void putArray(final Double[] array) {
-		owner.putArray(EncogArray.objectToDouble(array));
+		owner.putArray(EngineArray.objectToDouble(array));
 	}
 
 	/**

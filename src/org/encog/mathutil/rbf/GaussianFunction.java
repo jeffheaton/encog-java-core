@@ -32,7 +32,7 @@ package org.encog.mathutil.rbf;
 
 import java.io.Serializable;
 
-import org.encog.mathutil.BoundMath;
+import org.encog.engine.util.BoundMath;
 
 /**
  * Implements a radial function based on the gaussian function.

@@ -30,7 +30,8 @@
 
 package org.encog.neural.activation;
 
-import org.encog.util.EncogArray;
+import org.encog.engine.util.EngineArray;
+
 
 /**
  * A ramp activation function. This function has a high and low threshold. If
@@ -134,7 +135,7 @@ public class ActivationRamp extends BasicActivationFunction {
 	 *            The array of values to calculate over.
 	 */
 	public void derivativeFunction(final double[] d) {
-		EncogArray.fill(d, 1.0);
+		EngineArray.fill(d, 1.0);
 	}
 
 	/**

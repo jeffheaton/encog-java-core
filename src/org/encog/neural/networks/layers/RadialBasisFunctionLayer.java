@@ -30,7 +30,7 @@
 
 package org.encog.neural.networks.layers;
 
-import org.encog.mathutil.BoundMath;
+import org.encog.engine.util.BoundMath;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.mathutil.rbf.RadialBasisFunction;

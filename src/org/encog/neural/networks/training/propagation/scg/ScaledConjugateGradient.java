@@ -30,14 +30,14 @@
 
 package org.encog.neural.networks.training.propagation.scg;
 
-import org.encog.mathutil.BoundNumbers;
+import org.encog.engine.util.BoundNumbers;
+import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
-import org.encog.util.EncogArray;
 
 /**
  * This is a training class that makes use of scaled conjugate 
@@ -215,15 +215,15 @@ public class ScaledConjugateGradient extends Propagation {
 		if (this.success) {
 
 			// If the search direction is small, stop.
-			this.magP = EncogArray.vectorProduct(this.p, this.p);
+			this.magP = EngineArray.vectorProduct(this.p, this.p);
 
 			final double sigma = ScaledConjugateGradient.FIRST_SIGMA
 					/ Math.sqrt(this.magP);
 
 			// In order to compute the new step, we need a new gradient.
 			// First, save off the old data.
-			EncogArray.arrayCopy(this.gradient, this.oldGradient);
-			EncogArray.arrayCopy(this.weights, this.oldWeights);
+			EngineArray.arrayCopy(this.gradient, this.oldGradient);
+			EngineArray.arrayCopy(this.weights, this.oldWeights);
 			this.oldError = getError();
 
 			// Now we move to the new point in weight space.
@@ -257,7 +257,7 @@ public class ScaledConjugateGradient extends Propagation {
 		}
 
 		// Calculate step size.
-		final double mu = EncogArray.vectorProduct(this.p, this.r);
+		final double mu = EngineArray.vectorProduct(this.p, this.r);
 		final double alpha = mu / this.delta;
 
 		// Calculate the comparison parameter.
@@ -292,11 +292,11 @@ public class ScaledConjugateGradient extends Propagation {
 			// Do we need to restart?
 			if (this.k >= numWeights) {
 				this.restart = true;
-				EncogArray.arrayCopy(this.r, this.p);
+				EngineArray.arrayCopy(this.r, this.p);
 
 			} else {
 				// Compute new conjugate direction.
-				final double beta = (EncogArray.vectorProduct(this.r, this.r) 
+				final double beta = (EngineArray.vectorProduct(this.r, this.r) 
 						- rsum)/ mu;
 
 				// Update direction vector.
@@ -316,7 +316,7 @@ public class ScaledConjugateGradient extends Propagation {
 			// under_tolerance = false;
 
 			// Go back to w(k) since w(k) + alpha*p(k) is not better.
-			EncogArray.arrayCopy(this.oldWeights, this.weights);
+			EngineArray.arrayCopy(this.oldWeights, this.weights);
 			setError(this.oldError);
 			this.lambda2 = this.lambda;
 			this.success = false;
