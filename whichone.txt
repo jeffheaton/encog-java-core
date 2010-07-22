@@ -1,0 +1,25 @@
+** Which Encog JAR File to Use ** 
+
+In this directory you will see two .jar files for use with Encog.  
+
+
+The JAR files will be named as follows.
+
+encog-core-x.y.z.jar
+encog-engine-x.y.z.jar 
+
+You may be wondering which one to use?  Most likely, you will want 
+to use the core.  This is the complete Encog framework.  The 
+Engine contains only the low-level calculation parts of Encog.  
+Other A.I. frameworks will sometimes use just the engine to augment
+their own calculation capabilities.
+
+If you are just using the Engine or Core, you must also include the following
+JAR, it allows the Engine to make use of the GPU.
+
+JOCL-0.1.3a-beta.jar
+
+The core also requires the following two JAR's for logging.
+
+slf4j-api-1.5.6.jar     
+slf4j-jdk14-1.5.6.jar
