@@ -31,6 +31,7 @@
 package org.encog.engine.network.flat;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.encog.engine.EncogEngineError;
@@ -149,6 +150,15 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 	
 	/**
+	 * Create a flat network from an array of layers.
+	 * @param layers The layers.
+	 */
+	public FlatNetwork(FlatLayer[] layers)
+    {
+        init(layers);
+    }
+	
+	/**
 	 * Construct a flat network.
 	 * @param network The network to construct the flat network
 	 * from.
@@ -216,9 +226,11 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 		final double[] actual = new double[this.outputCount];
 
-		for (final EngineData pair : data) {
-			compute(pair.getInput(), actual);
-			errorCalculation.updateError(actual, pair.getIdeal());
+		Iterator<EngineData> itr = data.createIterator();
+		while( itr.hasNext() ) {
+			EngineData item = itr.next();
+			compute(item.getInput(), actual);
+			errorCalculation.updateError(actual, item.getIdeal());
 		}
 		return errorCalculation.calculate();
 	}

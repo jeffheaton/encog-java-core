@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author jheaton
  */
-public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
+public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Iterable<EngineData> {
 
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
@@ -288,16 +288,6 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
 	}
 
 	/**
-	 * Create an iterator for this collection.
-	 * 
-	 * @return An iterator to access this collection.
-	 */
-	public Iterator<EngineData> iterator() {
-		final BasicNeuralIterator result = new BasicNeuralIterator();
-		return result;
-	}
-
-	/**
 	 * Create an additional data set. It will use the same list.
 	 * 
 	 * @return The additional data set.
@@ -328,6 +318,17 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
 	 */
 	public void setName(final String name) {
 		this.name = name;
+	}
+
+	@Override
+	public Iterator<EngineData> createIterator() {
+		final BasicNeuralIterator result = new BasicNeuralIterator();
+		return result;
+	}
+
+	@Override
+	public Iterator<EngineData> iterator() {
+		return createIterator();
 	}
 	
 }

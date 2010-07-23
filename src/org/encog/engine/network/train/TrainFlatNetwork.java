@@ -30,6 +30,8 @@
 
 package org.encog.engine.network.train;
 
+import java.util.Iterator;
+
 import org.encog.engine.EncogEngine;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
@@ -150,9 +152,12 @@ public class TrainFlatNetwork {
 		final double[] actual = new double[this.network.getOutputCount()];
 		this.errorCalculation.reset();
 
-		for (final EngineData pair : this.training) {
-			final double[] input = pair.getInput();
-			final double[] ideal = pair.getIdeal();
+		Iterator<EngineData> itr = this.training.createIterator();
+
+		while( itr.hasNext() ) {
+			EngineData item = itr.next();
+			final double[] input = item.getInput();
+			final double[] ideal = item.getIdeal();
 
 			this.network.compute(input, actual);
 

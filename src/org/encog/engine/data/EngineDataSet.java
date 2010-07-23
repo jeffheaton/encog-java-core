@@ -30,6 +30,8 @@
 
 package org.encog.engine.data;
 
+import java.util.Iterator;
+
 /**
  * An interface designed to abstract classes that store machine learning data. This
  * interface is designed to provide EngineDataSet objects. These can be used to
@@ -45,40 +47,7 @@ package org.encog.engine.data;
  * 
  * @author jheaton
  */
-public interface EngineDataSet extends Iterable<EngineData> {
-
-	/**
-	 * Add a double array to the dataset. This is used with unsupervised
-	 * training, as no ideal output is provided. Note: not all implementations
-	 * support the add methods.
-	 * 
-	 * @param data1
-	 *            The data item to be added.
-	 */
-	void add(double[] data);
-
-	/**
-	 * Add a set of input and ideal data to the dataset. This is used with
-	 * supervised training, as ideal output is provided. Note: not all
-	 * implementations support the add methods.
-	 * 
-	 * @param inputData
-	 *            Input data.
-	 * @param idealData
-	 *            Ideal data.
-	 */
-	void add(double[] inputData, double[] idealData);
-
-	/**
-	 * Add a EngineData object to the dataset. This is used with unsupervised
-	 * training, as no ideal output is provided. Note: not all implementations
-	 * support the add methods.
-	 * 
-	 * @param inputData
-	 *            An EngineData object that contains both input and ideal
-	 *            data.
-	 */
-	void add(EngineData inputData);
+public interface EngineDataSet  {
 
 	/**
 	 * Close this datasource and release any resources obtained by it, including
@@ -100,4 +69,10 @@ public interface EngineDataSet extends Iterable<EngineData> {
 	 * @return True if this is a supervised training set.
 	 */
 	boolean isSupervised();
+	
+	/**
+	 * Creates an iterator for EngineData.
+	 * @return The iterator.
+	 */
+	Iterator<EngineData> createIterator();
 }

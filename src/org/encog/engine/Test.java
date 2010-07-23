@@ -33,7 +33,7 @@ public class Test {
 		
 		network.decodeNetwork(weight);	 
 		
-		EngineDataSet trainingSet = new BasicEngineDataSet(XOR_INPUT, XOR_IDEAL);
+		BasicEngineDataSet trainingSet = new BasicEngineDataSet(XOR_INPUT, XOR_IDEAL);
 		
 		TrainFlatNetworkResilient train = new TrainFlatNetworkResilient(network,trainingSet);
 		
