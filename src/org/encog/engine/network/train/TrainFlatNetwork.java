@@ -152,10 +152,10 @@ public class TrainFlatNetwork {
 		final double[] actual = new double[this.network.getOutputCount()];
 		this.errorCalculation.reset();
 
-		Iterator<EngineData> itr = this.training.createIterator();
+		Iterator<?> itr = this.training.createIterator();
 
 		while( itr.hasNext() ) {
-			EngineData item = itr.next();
+			EngineData item = (EngineData)itr.next();
 			final double[] input = item.getInput();
 			final double[] ideal = item.getIdeal();
 

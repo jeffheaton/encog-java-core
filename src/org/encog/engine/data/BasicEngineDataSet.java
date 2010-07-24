@@ -187,13 +187,6 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 	}
 
 	/**
-	 * Close this data set.
-	 */
-	public void close() {
-		// nothing to close
-	}
-
-	/**
 	 * Get the data held by this container.
 	 * 
 	 * @return the data

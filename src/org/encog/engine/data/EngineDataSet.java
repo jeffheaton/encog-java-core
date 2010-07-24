@@ -49,11 +49,6 @@ import java.util.Iterator;
  */
 public interface EngineDataSet  {
 
-	/**
-	 * Close this datasource and release any resources obtained by it, including
-	 * any iterators created.
-	 */
-	void close();
 
 	/**
 	 * @return The size of the input data.
@@ -74,5 +69,5 @@ public interface EngineDataSet  {
 	 * Creates an iterator for EngineData.
 	 * @return The iterator.
 	 */
-	Iterator<EngineData> createIterator();
+	Iterator<?> createIterator();
 }
