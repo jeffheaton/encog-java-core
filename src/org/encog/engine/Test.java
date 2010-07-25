@@ -19,7 +19,7 @@ public class Test {
 	
 	public static void main(String[] args)
 	{
-		//EncogEngine.getInstance().initCL();
+		EncogEngine.getInstance().initCL();
 		FlatNetwork network = new FlatNetwork(2,3,0,1,true);
 		
 		System.out.println( network.getWeights().length );

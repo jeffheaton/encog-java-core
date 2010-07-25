@@ -171,12 +171,6 @@ public class KernelNetworkTrain extends EncogKernel {
 					* workload.getMaxUnits() * Sizeof.cl_float, Pointer
 					.to(workload.getGradients()), 0, null, null); 
 
-			for(int i=0;i<10;i++)
-			{
-				System.out.print( "," + workload.getGradients()[i]);
-			}
-			System.out.println();
-			
 			// commands.Finish();
 		} catch (final Exception e) {
 			throw new EncogEngineError(e);

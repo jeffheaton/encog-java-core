@@ -1,37 +1,39 @@
 #ifndef USE_SIGMOID 
 #ifndef USE_TANH
-float activationTANH(float x)
+float activationTANH(float x, float slope)
 {
-	return -1 + (2 / (1 + exp(-2 * x)));
+	float z = exp(-slope * x);
+	return (1.0f - z) / (1.0f + z);
 }
 
-float derivativeTANH(float x)
+float derivativeTANH(float x, float slope)
 {
-	return 1-(x*x);
+	float out = activationTANH(x,slope);
+	return (slope * (1.0f - out * out));
 }
 
-float activationLinear(float x)
+float activationLinear(float x, float slope)
 {
-	return x;
+	return x*slope;
 }
 
-float derivativeLinear(float x)
+float derivativeLinear(float x, float slope)
 {
 	return 1;
 }
 
-float activationSigmoid(float x)
+float activationSigmoid(float x, float slope)
 {
-	float p = -1.0f * x;
-	return 1.0f / (1.0f + exp(p));
+	return 1.0f / (1.0f + exp(-slope * x));
 }
 
-float derivativeSigmoid(float x)
+float derivativeSigmoid(float x, float slope)
 {
-	return x * (1.0f - x);
+	float out = activationSigmoid(x,slope);
+	return slope * out * (1.0f - out);
 }
 
-float activation(int type, float x)
+float activation(int type, float x, float slope)
 {
 	switch(type)
 	{
@@ -46,7 +48,7 @@ float activation(int type, float x)
 	}
 }
 
-float derivative(int type, float x)
+float derivative(int type, float x, float slope)
 {
 	switch(type)
 	{
@@ -64,27 +66,29 @@ float derivative(int type, float x)
 #endif
 
 #ifdef USE_SIGMOID
-float activation(int t, float x)
+float activation(int t, float x, float slope)
 {
-	float p = -1.0f * x;
-	return 1.0f / (1.0f + exp(p));
+	return 1.0f / (1.0f + exp(-slope * x));
 }
 
-float derivative(int t, float x)
+float derivative(int t, float x, float slope)
 {
-	return x * (1.0f - x);
+	float out = activation(t,x,slope);
+	return slope * out * (1.0f - out);
 }
 #endif
 
 #ifdef USE_TANH
-float activation(int t, float x)
+float activation(int t, float x, float slope)
 {
-	return -1 + (2 / (1 + exp(-2 * x)));
+	float z = exp(-slope * x);
+	return (1.0f - z) / (1.0f + z);
 }
 
-float derivative(int t, float x)
+float derivative(int t, float x, float slope)
 {
-	return (1+x)*(1-x);
+	float out = activation(t,x,slope);
+	return (slope * (1.0f - out * out));
 }
 #endif
 
@@ -174,7 +178,7 @@ kernel void NetworkTrain(
 				}
        
 				float value = layerOutput[outputIndex + x] + sum;
-				value = activation(activationType[0], value);
+				value = activation(activationType[0], value, 1);
 				layerOutput[outputIndex + x] = value;
 			}
 		}
@@ -189,7 +193,7 @@ kernel void NetworkTrain(
 		{
 			float diff = ideal[taskIdealIndex+i] - layerOutput[i];
 			e+=diff*diff;
-			layerDelta[i] = diff * derivative(activationType[0],layerOutput[i]);
+			layerDelta[i] = diff * derivative(activationType[0],layerOutput[i], 1);
 		}
 
 		errors[taskIndex] += e;
@@ -229,7 +233,7 @@ kernel void NetworkTrain(
             {
                 layerDelta[fromLayerIndex + i] *= derivative(
                   activationType[currentLevel+1],
-                  layerOutput[fromLayerIndex + i]); 
+                  layerOutput[fromLayerIndex + i], 1); 
             }
 		}
 	}	
