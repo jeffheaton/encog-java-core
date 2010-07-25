@@ -110,6 +110,9 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 */
 	private int[] activationType;
 	
+	
+	private double[] slope;
+	
 	public FlatNetwork()
 	{
 		
@@ -175,7 +178,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		this.layerIndex = new int[layerCount];
 		this.activationType = new int[layerCount];
 		this.layerFeedCounts = new int[layerCount];
-
+		this.slope = new double[layerCount];
+		
 		int index = 0;
 		int neuronCount = 0;
 		int weightCount = 0;
@@ -191,6 +195,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			this.layerCounts[index] = layer.getTotalCount();
 			this.layerFeedCounts[index] = layer.getCount();
 			this.activationType[index] = layer.getActivation();
+			this.slope[index] = layer.getSlope();
 
 			neuronCount += layer.getTotalCount();
 			
@@ -252,6 +257,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		result.weightIndex = this.weightIndex;
 		result.weights = weights;
 		result.activationType = this.activationType;
+		result.slope = EngineArray.arrayCopy(this.slope);
 		return result;
 	}
 
@@ -301,8 +307,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			this.layerOutput[outputIndex + x] += sum;
 
 			this.layerOutput[outputIndex + x] = ActivationFunctions
-					.calculateActivation(this.activationType[0],
-							this.layerOutput[outputIndex + x]);
+					.calculateActivation(this.activationType[currentLayer-1],
+							this.layerOutput[outputIndex + x],this.slope[currentLayer-1]);
 		}
 	}
 
@@ -434,6 +440,13 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			double[] output) {
 		throw new EncogEngineError("Sparse computation is not supported in this type of neural network.");		
 	}
+
+
+	public double[] getSlope() {
+		return slope;
+	}
+	
+	
 	
 	
 }

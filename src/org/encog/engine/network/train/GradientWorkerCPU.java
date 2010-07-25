@@ -202,7 +202,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		for (int i = 0; i < this.actual.length; i++) {
 
 			this.layerDelta[i] = ActivationFunctions.calculateActivationDerivative(
-					this.network.getActivationType()[0], this.actual[i])
+					this.network.getActivationType()[0], this.actual[i],this.network.getSlope()[0])
 					* (ideal[i] - this.actual[i]);
 		}
 
@@ -246,7 +246,8 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 			this.layerDelta[fromLayerIndex + i] *= ActivationFunctions
 					.calculateActivationDerivative(this.network
 							.getActivationType()[currentLevel + 1],
-							this.layerOutput[fromLayerIndex + i]);
+							this.layerOutput[fromLayerIndex + i],
+							this.network.getSlope()[currentLevel + 1]);
 		}
 	}
 
