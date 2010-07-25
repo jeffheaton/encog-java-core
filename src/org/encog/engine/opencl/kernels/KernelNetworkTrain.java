@@ -93,20 +93,8 @@ public class KernelNetworkTrain extends EncogKernel {
 	private int layerDeltaSize;
 
 	/**
-	 * An array of activation function types.
+	 * The slopes.
 	 */
-	private int[] activationType;
-
-	/**
-	 * The gradients.
-	 */
-	private float[] gradientArray;
-
-	/**
-	 * The errors.
-	 */
-	private float[] errorArray;
-	
 	private float[] slopeArray;
 
 	/**
@@ -195,7 +183,6 @@ public class KernelNetworkTrain extends EncogKernel {
 	public void init(final FlatNetwork flat) {
 
 		this.weightArray = new float[flat.getWeights().length];
-		this.activationType = flat.getActivationType();
 		this.slopeArray = new float[flat.getSlope().length];
 		
 		this.layerDeltaSize = 0;

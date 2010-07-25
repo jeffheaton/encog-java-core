@@ -179,7 +179,7 @@ kernel void NetworkTrain(
 				}
        
 				float value = layerOutput[outputIndex + x] + sum;
-				value = activation(activationType[0], value, 1);
+				value = activation(activationType[0], value, slope[0]);
 				layerOutput[outputIndex + x] = value;
 			}
 		}
@@ -194,7 +194,7 @@ kernel void NetworkTrain(
 		{
 			float diff = ideal[taskIdealIndex+i] - layerOutput[i];
 			e+=diff*diff;
-			layerDelta[i] = diff * derivative(activationType[0],layerOutput[i], 1);
+			layerDelta[i] = diff * derivative(activationType[0],layerOutput[i], slope[0]);
 		}
 
 		errors[taskIndex] += e;
@@ -234,7 +234,8 @@ kernel void NetworkTrain(
             {
                 layerDelta[fromLayerIndex + i] *= derivative(
                   activationType[currentLevel+1],
-                  layerOutput[fromLayerIndex + i], 1); 
+                  layerOutput[fromLayerIndex + i],
+                  slope[currentLevel+1]); 
             }
 		}
 	}	
