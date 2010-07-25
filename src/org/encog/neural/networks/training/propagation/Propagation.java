@@ -31,7 +31,7 @@
 package org.encog.neural.networks.training.propagation;
 
 import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.engine.network.train.TrainFlatNetworkMulti;
+import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetworkResilient;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.Indexable;
@@ -76,7 +76,7 @@ public abstract class Propagation extends BasicTraining {
 	/**
 	 * The current flat trainer we are using, or null for none.
 	 */
-	private TrainFlatNetworkMulti flatTraining;
+	private TrainFlatNetwork flatTraining;
 
 	/**
 	 * Should we attempt to flatten the network? Usually you want this to be
@@ -124,7 +124,7 @@ public abstract class Propagation extends BasicTraining {
 	/**
 	 * @return the flatTraining
 	 */
-	public TrainFlatNetworkMulti getFlatTraining() {
+	public TrainFlatNetwork getFlatTraining() {
 		return this.flatTraining;
 	}
 
