@@ -55,7 +55,6 @@ org.encog.engine.network.train.RPROPConst
 org.encog.engine.network.train.TrainFlatNetwork
 org.encog.engine.network.train.TrainFlatNetworkBackPropagation
 org.encog.engine.network.train.TrainFlatNetworkManhattan
-org.encog.engine.network.train.TrainFlatNetworkMulti
 org.encog.engine.network.train.TrainFlatNetworkResilient
 org.encog.engine.opencl.EncogCL
 org.encog.engine.opencl.EncogCLDevice
