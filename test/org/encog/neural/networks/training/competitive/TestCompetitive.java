@@ -32,7 +32,7 @@ package org.encog.neural.networks.training.competitive;
 
 import junit.framework.TestCase;
 
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
@@ -83,7 +83,7 @@ public class TestCompetitive extends TestCase  {
 		BasicNetwork network = pattern.generate();
 		
 		Synapse synapse = findSynapse(network);
-		synapse.setMatrix(new Matrix(MATRIX_ARRAY));
+		synapse.setMatrix(new Matrix2D(MATRIX_ARRAY));
 
 		final CompetitiveTraining train = new CompetitiveTraining(network, 0.4,
 				training, new NeighborhoodSingle());

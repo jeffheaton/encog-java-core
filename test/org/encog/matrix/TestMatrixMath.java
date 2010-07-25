@@ -30,7 +30,7 @@
 
 package org.encog.matrix;
 
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.mathutil.matrices.MatrixError;
 import org.encog.mathutil.matrices.MatrixMath;
 
@@ -47,10 +47,10 @@ public class TestMatrixMath extends TestCase {
 			{4}
 		};
 		
-		Matrix matrix1 = new Matrix(matrixData1);
-		Matrix checkMatrix = new Matrix(matrixData2);
+		Matrix2D matrix1 = new Matrix2D(matrixData1);
+		Matrix2D checkMatrix = new Matrix2D(matrixData2);
 		
-		Matrix matrix2 = MatrixMath.transpose(matrix1);
+		Matrix2D matrix2 = MatrixMath.transpose(matrix1);
 		
 		TestCase.assertTrue(matrix2.equals(checkMatrix));
 	}
@@ -64,8 +64,8 @@ public class TestMatrixMath extends TestCase {
 			{8}
 		};
 		
-		Matrix matrix1 = new Matrix(matrixData1);
-		Matrix matrix2 = new Matrix(matrixData2);
+		Matrix2D matrix1 = new Matrix2D(matrixData1);
+		Matrix2D matrix2 = new Matrix2D(matrixData2);
 		
 		double dotProduct = MatrixMath.dotProduct(matrix1,matrix2);
 		
@@ -74,8 +74,8 @@ public class TestMatrixMath extends TestCase {
 		// test dot product errors
 		double nonVectorData[][] = {{1.0,2.0},{3.0,4.0}};
 		double differentLengthData[][] = {{1.0}};
-		Matrix nonVector = new Matrix(nonVectorData);
-		Matrix differentLength = new Matrix(differentLengthData);
+		Matrix2D nonVector = new Matrix2D(nonVectorData);
+		Matrix2D differentLength = new Matrix2D(differentLengthData);
 		
 		try
 		{
@@ -122,12 +122,12 @@ public class TestMatrixMath extends TestCase {
 				{81,90,99}
 		};
 		
-		Matrix matrix1 = new Matrix(matrixData1);
-		Matrix matrix2 = new Matrix(matrixData2);
+		Matrix2D matrix1 = new Matrix2D(matrixData1);
+		Matrix2D matrix2 = new Matrix2D(matrixData2);
 		
-		Matrix matrix3 = new Matrix(matrixData3);
+		Matrix2D matrix3 = new Matrix2D(matrixData3);
 		
-		Matrix result = MatrixMath.multiply(matrix1,matrix2);
+		Matrix2D result = MatrixMath.multiply(matrix1,matrix2);
 		
 		TestCase.assertTrue(result.equals(matrix3));
 	}
@@ -137,9 +137,9 @@ public class TestMatrixMath extends TestCase {
 		double dataBase[][] = {{1.0,2.0},{3.0,4.0}};
 		double dataTooManyRows[][] = {{1.0,2.0},{3.0,4.0},{5.0,6.0}};
 		double dataTooManyCols[][] = {{1.0,2.0,3.0},{4.0,5.0,6.0}};
-		Matrix base = new Matrix(dataBase);
-		Matrix tooManyRows = new Matrix(dataTooManyRows);
-		Matrix tooManyCols = new Matrix(dataTooManyCols);
+		Matrix2D base = new Matrix2D(dataBase);
+		Matrix2D tooManyRows = new Matrix2D(dataTooManyRows);
+		Matrix2D tooManyCols = new Matrix2D(dataTooManyCols);
 		MatrixMath.add(base, base);
 		try
 		{
@@ -162,8 +162,8 @@ public class TestMatrixMath extends TestCase {
 	public void testDivide() throws Throwable
 	{
 		double data[][] = {{2.0,4.0},{6.0,8.0}};
-		Matrix matrix = new Matrix(data);
-		Matrix result = MatrixMath.divide(matrix, 2.0);
+		Matrix2D matrix = new Matrix2D(data);
+		Matrix2D result = MatrixMath.divide(matrix, 2.0);
 		TestCase.assertEquals(1.0, result.get(0,0));
 	}
 	
@@ -180,16 +180,16 @@ public class TestMatrixMath extends TestCase {
 		}
 		
 		double checkData[][] = {{1,0},{0,1}};
-		Matrix check = new Matrix(checkData);
-		Matrix matrix = MatrixMath.identity(2);
+		Matrix2D check = new Matrix2D(checkData);
+		Matrix2D matrix = MatrixMath.identity(2);
 		TestCase.assertTrue(check.equals(matrix));
 	}
 	
 	public void testMultiplyScalar() throws Throwable
 	{
 		double data[][] = {{2.0,4.0},{6.0,8.0}};
-		Matrix matrix = new Matrix(data);
-		Matrix result = MatrixMath.multiply(matrix, 2.0);
+		Matrix2D matrix = new Matrix2D(data);
+		Matrix2D result = MatrixMath.multiply(matrix, 2.0);
 		TestCase.assertEquals(4.0, result.get(0,0));
 	}
 	
@@ -197,9 +197,9 @@ public class TestMatrixMath extends TestCase {
 	{
 		double origData[][] = {{1.0,2.0},{3.0,4.0}};
 		double checkData[][] = {{3.0,4.0}};
-		Matrix orig = new Matrix(origData);
-		Matrix matrix = MatrixMath.deleteRow(orig, 0);
-		Matrix check = new Matrix(checkData);
+		Matrix2D orig = new Matrix2D(origData);
+		Matrix2D matrix = MatrixMath.deleteRow(orig, 0);
+		Matrix2D check = new Matrix2D(checkData);
 		TestCase.assertTrue(check.equals(matrix));
 		
 		try
@@ -216,9 +216,9 @@ public class TestMatrixMath extends TestCase {
 	{		
 		double origData[][] = {{1.0,2.0},{3.0,4.0}};
 		double checkData[][] = {{2.0},{4.0}};
-		Matrix orig = new Matrix(origData);
-		Matrix matrix = MatrixMath.deleteCol(orig, 0);
-		Matrix check = new Matrix(checkData);
+		Matrix2D orig = new Matrix2D(origData);
+		Matrix2D matrix = MatrixMath.deleteCol(orig, 0);
+		Matrix2D check = new Matrix2D(checkData);
 		TestCase.assertTrue(check.equals(matrix));
 		
 		try
@@ -234,8 +234,8 @@ public class TestMatrixMath extends TestCase {
 	public void testCopy()
 	{
 		double data[][] = {{1.0,2.0},{3.0,4.0}};
-		Matrix source = new Matrix(data);
-		Matrix target = new Matrix(2,2);
+		Matrix2D source = new Matrix2D(data);
+		Matrix2D target = new Matrix2D(2,2);
 		MatrixMath.copy(source, target);
 		TestCase.assertTrue(source.equals(target));
 	}
