@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  * neural network processing. Many of the neural network classes make use of the
  * matrix classes in this package.
  */
-public class Matrix2D implements Matrix {
+public class Matrix2D extends BasicMatrix {
 
 	/**
 	 * Serial id for this class.
@@ -59,10 +59,6 @@ public class Matrix2D implements Matrix {
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(Matrix2D.class);
 	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private EncogCollection encogCollection;
 
 	/**
 	 * Turn an array of doubles into a column matrix.
@@ -91,16 +87,6 @@ public class Matrix2D implements Matrix {
 		System.arraycopy(input, 0, d[0], 0, input.length);
 		return new Matrix2D(d);
 	}
-
-	/**
-	 * The name of this object.
-	 */
-	private String name;
-
-	/**
-	 * The description for this object.
-	 */
-	private String description;
 
 	/**
 	 * The matrix data.
@@ -153,60 +139,6 @@ public class Matrix2D implements Matrix {
 		this.matrix = new double[rows][cols];
 	}
 
-	/**
-	 * Add a value to one cell in the matrix.
-	 * 
-	 * @param row
-	 *            The row to add to.
-	 * @param col
-	 *            The column to add to.
-	 * @param value
-	 *            The value to add to the matrix.
-	 */
-	public void add(final int row, final int col, final double value) {
-		validate(row, col);
-		final double newValue = this.matrix[row][col] + value;
-		set(row, col, newValue);
-	}
-
-	/**
-	 * Add the specified matrix to this matrix. This will modify the matrix to
-	 * hold the result of the addition.
-	 * 
-	 * @param matrix
-	 *            The matrix to add.
-	 */
-	public void add(final Matrix matrix) {
-		
-		if (matrix instanceof Matrix2D) {
-			final double[][] source = ((Matrix2D) matrix).getData();
-
-			for (int row = 0; row < getRows(); row++) {
-				for (int col = 0; col < getCols(); col++) {
-					this.matrix[row][col] += source[row][col];
-				}
-			}
-		}
-		else {
-			for (int row = 0; row < getRows(); row++) {
-				for (int col = 0; col < getCols(); col++) {
-					this.matrix[row][col] += matrix.get(row, col);
-				}
-			}			
-		}
-
-	}
-
-	/**
-	 * Set all rows and columns to zero.
-	 */
-	public void clear() {
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				this.matrix[r][c] = 0;
-			}
-		}
-	}
 
 	/**
 	 * Create a copy of the matrix.
@@ -218,107 +150,7 @@ public class Matrix2D implements Matrix {
 		return new Matrix2D(this.matrix);
 	}
 
-	/**
-	 * Create a Persistor for this object.
-	 * 
-	 * @return The new persistor.
-	 */
-	public Persistor createPersistor() {
-		return null;
-	}
 
-	/**
-	 * Compare to matrixes with the specified level of precision.
-	 * 
-	 * @param matrix
-	 *            The other matrix to compare to.
-	 * @param precision
-	 *            How much precision to use.
-	 * @return True if the two matrixes are equal.
-	 */
-	public boolean equals(final Matrix matrix, final int precision) {
-
-		if (precision < 0) {
-			final String str = "Precision can't be a negative number.";
-			if (Matrix2D.LOGGER.isErrorEnabled()) {
-				Matrix2D.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		final double test = Math.pow(10.0, precision);
-		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
-			final String str = "Precision of " + precision
-					+ " decimal places is not supported.";
-			if (Matrix2D.LOGGER.isErrorEnabled()) {
-				Matrix2D.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		final int actualPrecision = (int) Math.pow(Encog.DEFAULT_PRECISION,
-				precision);
-
-		if (matrix instanceof Matrix2D) {
-			final double[][] data = ((Matrix2D)matrix).getData();
-
-			for (int r = 0; r < getRows(); r++) {
-				for (int c = 0; c < getCols(); c++) {
-					if ((long) (this.matrix[r][c] * actualPrecision) != (long) (data[r][c] * actualPrecision)) {
-						return false;
-					}
-				}
-			}
-		}
-		else
-		{
-			for (int r = 0; r < getRows(); r++) {
-				for (int c = 0; c < getCols(); c++) {
-					if ((long) (this.matrix[r][c] * actualPrecision) != (long) (matrix.get(r,c) * actualPrecision)) {
-						return false;
-					}
-				}
-			}			
-		}
-
-		return true;
-	}
-
-	/**
-	 * Check to see if this matrix equals another, using default precision.
-	 * 
-	 * @param other
-	 *            The other matrix to compare.
-	 * @return True if the two matrixes are equal.
-	 */
-	@Override
-	public boolean equals(final Object other) {
-		if (other instanceof Matrix2D) {
-			return equals((Matrix2D) other, Encog.DEFAULT_PRECISION);
-		} else {
-			return false;
-		}
-	}
-
-	/**
-	 * Create a matrix from a packed array.
-	 * 
-	 * @param array
-	 *            The packed array.
-	 * @param index
-	 *            Where to start in the packed array.
-	 * @return The new index after this matrix has been read.
-	 */
-	public int fromPackedArray(final Double[] array, final int index) {
-		int i = index;
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				this.matrix[r][c] = array[i++];
-			}
-		}
-
-		return i;
-	}
 
 	/**
 	 * Read the specified cell in the matrix.
@@ -334,44 +166,6 @@ public class Matrix2D implements Matrix {
 		return this.matrix[row][col];
 	}
 
-	/**
-	 * @return A COPY of this matrix as a 2d array.
-	 */
-	public double[][] getArrayCopy() {
-		final double[][] result = new double[getRows()][getCols()];
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				result[i][j] = this.matrix[i][j];
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Read one entire column from the matrix as a sub-matrix.
-	 * 
-	 * @param col
-	 *            The column to read.
-	 * @return The column as a sub-matrix.
-	 */
-	public Matrix2D getCol(final int col) {
-		if (col > getCols()) {
-			final String str = "Can't get column #" + col
-					+ " because it does not exist.";
-			if (Matrix2D.LOGGER.isErrorEnabled()) {
-				Matrix2D.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		final double[][] newMatrix = new double[getRows()][1];
-
-		for (int row = 0; row < getRows(); row++) {
-			newMatrix[row][0] = this.matrix[row][col];
-		}
-
-		return new Matrix2D(newMatrix);
-	}
 
 	/**
 	 * Get the columns in the matrix.
@@ -387,13 +181,6 @@ public class Matrix2D implements Matrix {
 	 */
 	public double[][] getData() {
 		return this.matrix;
-	}
-
-	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
 	}
 
 	/**
@@ -502,12 +289,6 @@ public class Matrix2D implements Matrix {
 		return result;
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
-	}
 
 	/**
 	 * Get the specified row as a sub-matrix.
@@ -682,16 +463,7 @@ public class Matrix2D implements Matrix {
 			}
 		}
 	}
-
-	/**
-	 * Set the description for this object.
-	 * 
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
+	
 
 	/**
 	 * Set a submatrix.
@@ -796,24 +568,6 @@ public class Matrix2D implements Matrix {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	/**
-	 * Get the size of the array. This is the number of elements it would take
-	 * to store the matrix as a packed array.
-	 * 
-	 * @return The size of the matrix.
-	 */
-	public int size() {
-		return this.matrix[0].length * this.matrix.length;
-	}
-
-	/**
 	 * Solve A*X = B.
 	 * 
 	 * @param b
@@ -826,39 +580,6 @@ public class Matrix2D implements Matrix {
 		} else {
 			return (new QRDecomposition(this)).solve(b);
 		}
-	}
-
-	/**
-	 * Sum all of the values in the matrix.
-	 * 
-	 * @return The sum of the matrix.
-	 */
-	public double sum() {
-		double result = 0;
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				result += this.matrix[r][c];
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Convert the matrix into a packed array.
-	 * 
-	 * @return The matrix as a packed array.
-	 */
-	public Double[] toPackedArray() {
-		final Double[] result = new Double[getRows() * getCols()];
-
-		int index = 0;
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				result[index++] = this.matrix[r][c];
-			}
-		}
-
-		return result;
 	}
 
 	/**
@@ -875,47 +596,5 @@ public class Matrix2D implements Matrix {
 		return result.toString();
 	}
 
-	/**
-	 * Validate that the specified row and column are within the required
-	 * ranges. Otherwise throw a MatrixError exception.
-	 * 
-	 * @param row
-	 *            The row to check.
-	 * @param col
-	 *            The column to check.
-	 */
-	private void validate(final int row, final int col) {
-		if ((row >= getRows()) || (row < 0)) {
-			final String str = "The row:" + row + " is out of range:"
-					+ getRows();
-			if (Matrix2D.LOGGER.isErrorEnabled()) {
-				Matrix2D.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		if ((col >= getCols()) || (col < 0)) {
-			final String str = "The col:" + col + " is out of range:"
-					+ getCols();
-			if (Matrix2D.LOGGER.isErrorEnabled()) {
-				Matrix2D.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-	}
-
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
-	}
 
 }
