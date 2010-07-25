@@ -30,7 +30,7 @@
 
 package org.encog.neural.networks.training.lma;
 
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
@@ -123,7 +123,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	/**
 	 * The "hessian" matrix, used by the LMA.
 	 */
-	private final Matrix hessianMatrix;
+	private final Matrix2D hessianMatrix;
 
 	/**
 	 * The "hessian" matrix as a 2d array.
@@ -209,7 +209,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		this.network = network;
 		this.trainingLength = (int) this.indexableTraining.getRecordCount();
 		this.parametersLength = this.network.getStructure().calculateSize();
-		this.hessianMatrix = new Matrix(this.parametersLength,
+		this.hessianMatrix = new Matrix2D(this.parametersLength,
 				this.parametersLength);
 		this.hessian = this.hessianMatrix.getData();
 		this.alpha = 0.0;

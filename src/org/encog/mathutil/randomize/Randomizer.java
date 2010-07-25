@@ -30,7 +30,7 @@
 
 package org.encog.mathutil.randomize;
 
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.networks.BasicNetwork;
 
 /**
@@ -108,6 +108,6 @@ public interface Randomizer {
 	 * @param m
 	 *            A matrix to randomize.
 	 */
-	void randomize(Matrix m);
+	void randomize(Matrix2D m);
 
 }

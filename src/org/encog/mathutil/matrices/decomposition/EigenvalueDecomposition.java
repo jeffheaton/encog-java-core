@@ -31,7 +31,7 @@
 package org.encog.mathutil.matrices.decomposition;
 
 import org.encog.mathutil.EncogMath;
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 
 /**
  * Eigenvalues and eigenvectors of a real matrix.
@@ -897,7 +897,7 @@ public class EigenvalueDecomposition {
 	 * @param matrix
 	 *            Square matrix
 	 */
-	public EigenvalueDecomposition(Matrix matrix) {
+	public EigenvalueDecomposition(Matrix2D matrix) {
 		double[][] a = matrix.getData();
 		n = matrix.getCols();
 		v = new double[n][n];
@@ -948,8 +948,8 @@ public class EigenvalueDecomposition {
 	 * 
 	 * @return V
 	 */
-	public Matrix getV() {
-		return new Matrix(v);
+	public Matrix2D getV() {
+		return new Matrix2D(v);
 	}
 
 	/**
@@ -976,8 +976,8 @@ public class EigenvalueDecomposition {
 	 * @return D
 	 */
 
-	public Matrix getD() {
-		Matrix X = new Matrix(n, n);
+	public Matrix2D getD() {
+		Matrix2D X = new Matrix2D(n, n);
 		double[][] D = X.getData();
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {

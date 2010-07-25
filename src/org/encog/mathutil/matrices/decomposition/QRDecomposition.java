@@ -31,7 +31,7 @@
 package org.encog.mathutil.matrices.decomposition;
 
 import org.encog.mathutil.EncogMath;
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 
 /**
  * QR Decomposition.
@@ -71,7 +71,7 @@ public class QRDecomposition {
 	 * @param A
 	 *            Rectangular matrix
 	 */
-	public QRDecomposition(Matrix A) {
+	public QRDecomposition(Matrix2D A) {
 		// Initialize.
 		QR = A.getArrayCopy();
 		m = A.getRows();
@@ -131,8 +131,8 @@ public class QRDecomposition {
 	 * @return Lower trapezoidal matrix whose columns define the reflections
 	 */
 
-	public Matrix getH() {
-		Matrix X = new Matrix(m, n);
+	public Matrix2D getH() {
+		Matrix2D X = new Matrix2D(m, n);
 		double[][] H = X.getData();
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
@@ -152,8 +152,8 @@ public class QRDecomposition {
 	 * @return R
 	 */
 
-	public Matrix getR() {
-		Matrix X = new Matrix(n, n);
+	public Matrix2D getR() {
+		Matrix2D X = new Matrix2D(n, n);
 		double[][] R = X.getData();
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -175,8 +175,8 @@ public class QRDecomposition {
 	 * @return Q
 	 */
 
-	public Matrix getQ() {
-		Matrix X = new Matrix(m, n);
+	public Matrix2D getQ() {
+		Matrix2D X = new Matrix2D(m, n);
 		double[][] Q = X.getData();
 		for (int k = n - 1; k >= 0; k--) {
 			for (int i = 0; i < m; i++) {
@@ -211,7 +211,7 @@ public class QRDecomposition {
 	 *                Matrix is rank deficient.
 	 */
 
-	public Matrix solve(Matrix B) {
+	public Matrix2D solve(Matrix2D B) {
 		if (B.getRows() != m) {
 			throw new IllegalArgumentException(
 					"Matrix row dimensions must agree.");
@@ -248,6 +248,6 @@ public class QRDecomposition {
 				}
 			}
 		}
-		return (new Matrix(X).getMatrix(0, n - 1, 0, nx - 1));
+		return (new Matrix2D(X).getMatrix(0, n - 1, 0, nx - 1));
 	}
 }

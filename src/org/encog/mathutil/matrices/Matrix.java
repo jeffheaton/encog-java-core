@@ -46,112 +46,8 @@ import org.slf4j.LoggerFactory;
  * neural network processing. Many of the neural network classes make use of the
  * matrix classes in this package.
  */
-public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
+public interface Matrix extends Cloneable, Serializable, EncogPersistedObject {
 
-	/**
-	 * Serial id for this class.
-	 */
-	private static final long serialVersionUID = -7977897210426471675L;
-
-	/**
-	 * The logging object.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(Matrix.class);
-	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private EncogCollection encogCollection;
-
-	/**
-	 * Turn an array of doubles into a column matrix.
-	 * 
-	 * @param input
-	 *            A double array.
-	 * @return A column matrix.
-	 */
-	public static Matrix createColumnMatrix(final double[] input) {
-		final double[][] d = new double[input.length][1];
-		for (int row = 0; row < d.length; row++) {
-			d[row][0] = input[row];
-		}
-		return new Matrix(d);
-	}
-
-	/**
-	 * Turn an array of doubles into a row matrix.
-	 * 
-	 * @param input
-	 *            A double array.
-	 * @return A row matrix.
-	 */
-	public static Matrix createRowMatrix(final double[] input) {
-		final double[][] d = new double[1][input.length];
-		System.arraycopy(input, 0, d[0], 0, input.length);
-		return new Matrix(d);
-	}
-
-	/**
-	 * The name of this object.
-	 */
-	private String name;
-
-	/**
-	 * The description for this object.
-	 */
-	private String description;
-
-	/**
-	 * The matrix data.
-	 */
-	private final double[][] matrix;
-
-	/**
-	 * Construct a bipolar matrix from an array of booleans.
-	 * 
-	 * @param sourceMatrix
-	 *            The booleans to create the matrix from.
-	 */
-	public Matrix(final boolean[][] sourceMatrix) {
-		this.matrix = new double[sourceMatrix.length][sourceMatrix[0].length];
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				if (sourceMatrix[r][c]) {
-					set(r, c, 1);
-				} else {
-					set(r, c, -1);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Create a matrix from an array of doubles.
-	 * 
-	 * @param sourceMatrix
-	 *            An array of doubles.
-	 */
-	public Matrix(final double[][] sourceMatrix) {
-		this.matrix = new double[sourceMatrix.length][sourceMatrix[0].length];
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				set(r, c, sourceMatrix[r][c]);
-			}
-		}
-	}
-
-	/**
-	 * Create a blank array with the specified number of rows and columns.
-	 * 
-	 * @param rows
-	 *            How many rows in the matrix.
-	 * @param cols
-	 *            How many columns in the matrix.
-	 */
-	public Matrix(final int rows, final int cols) {
-		this.matrix = new double[rows][cols];
-	}
 
 	/**
 	 * Add a value to one cell in the matrix.
@@ -163,11 +59,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param value
 	 *            The value to add to the matrix.
 	 */
-	public void add(final int row, final int col, final double value) {
-		validate(row, col);
-		final double newValue = this.matrix[row][col] + value;
-		set(row, col, newValue);
-	}
+	public void add(final int row, final int col, final double value);
 
 	/**
 	 * Add the specified matrix to this matrix. This will modify the matrix to
@@ -176,45 +68,26 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param matrix
 	 *            The matrix to add.
 	 */
-	public void add(final Matrix matrix) {
-		final double[][] source = matrix.getData();
-
-		for (int row = 0; row < getRows(); row++) {
-			for (int col = 0; col < getCols(); col++) {
-				this.matrix[row][col] += source[row][col];
-			}
-		}
-	}
+	public void add(final Matrix matrix);
 
 	/**
 	 * Set all rows and columns to zero.
 	 */
-	public void clear() {
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				this.matrix[r][c] = 0;
-			}
-		}
-	}
+	public void clear();
 
 	/**
 	 * Create a copy of the matrix.
 	 * 
-	 * @return A colne of the matrix.
+	 * @return A clone of the matrix.
 	 */
-	@Override
-	public Matrix clone() {
-		return new Matrix(this.matrix);
-	}
+	public Matrix clone();
 
 	/**
 	 * Create a Persistor for this object.
 	 * 
 	 * @return The new persistor.
 	 */
-	public Persistor createPersistor() {
-		return null;
-	}
+	public Persistor createPersistor();
 
 	/**
 	 * Compare to matrixes with the specified level of precision.
@@ -225,41 +98,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            How much precision to use.
 	 * @return True if the two matrixes are equal.
 	 */
-	public boolean equals(final Matrix matrix, final int precision) {
-
-		if (precision < 0) {
-			final String str = "Precision can't be a negative number.";
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		final double test = Math.pow(10.0, precision);
-		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
-			final String str = "Precision of " + precision
-					+ " decimal places is not supported.";
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		final int actualPrecision = (int) Math.pow(Encog.DEFAULT_PRECISION,
-				precision);
-
-		final double[][] data = matrix.getData();
-
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				if ((long) (this.matrix[r][c] * actualPrecision) != (long) (data[r][c] * actualPrecision)) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
+	public boolean equals(final Matrix matrix, final int precision);
 
 	/**
 	 * Check to see if this matrix equals another, using default precision.
@@ -269,13 +108,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @return True if the two matrixes are equal.
 	 */
 	@Override
-	public boolean equals(final Object other) {
-		if (other instanceof Matrix) {
-			return equals((Matrix) other, Encog.DEFAULT_PRECISION);
-		} else {
-			return false;
-		}
-	}
+	public boolean equals(final Object other);
 
 	/**
 	 * Create a matrix from a packed array.
@@ -286,16 +119,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            Where to start in the packed array.
 	 * @return The new index after this matrix has been read.
 	 */
-	public int fromPackedArray(final Double[] array, final int index) {
-		int i = index;
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				this.matrix[r][c] = array[i++];
-			}
-		}
-
-		return i;
-	}
+	public int fromPackedArray(final Double[] array, final int index);
 
 	/**
 	 * Read the specified cell in the matrix.
@@ -306,23 +130,12 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            The column to read.
 	 * @return The value at the specified row and column.
 	 */
-	public double get(final int row, final int col) {
-		validate(row, col);
-		return this.matrix[row][col];
-	}
+	public double get(final int row, final int col);
 
 	/**
 	 * @return A COPY of this matrix as a 2d array.
 	 */
-	public double[][] getArrayCopy() {
-		final double[][] result = new double[getRows()][getCols()];
-		for (int i = 0; i < getRows(); i++) {
-			for (int j = 0; j < getCols(); j++) {
-				result[i][j] = this.matrix[i][j];
-			}
-		}
-		return result;
-	}
+	public double[][] getArrayCopy();
 
 	/**
 	 * Read one entire column from the matrix as a sub-matrix.
@@ -331,47 +144,19 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            The column to read.
 	 * @return The column as a sub-matrix.
 	 */
-	public Matrix getCol(final int col) {
-		if (col > getCols()) {
-			final String str = "Can't get column #" + col
-					+ " because it does not exist.";
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		final double[][] newMatrix = new double[getRows()][1];
-
-		for (int row = 0; row < getRows(); row++) {
-			newMatrix[row][0] = this.matrix[row][col];
-		}
-
-		return new Matrix(newMatrix);
-	}
+	public Matrix getCol(final int col);
 
 	/**
 	 * Get the columns in the matrix.
 	 * 
 	 * @return The number of columns in the matrix.
 	 */
-	public int getCols() {
-		return this.matrix[0].length;
-	}
-
-	/**
-	 * @return Get the 2D matrix array.
-	 */
-	public double[][] getData() {
-		return this.matrix;
-	}
+	public int getCols();
 
 	/**
 	 * @return the description
 	 */
-	public String getDescription() {
-		return this.description;
-	}
+	public String getDescription();
 
 	/**
 	 * Get a submatrix.
@@ -387,21 +172,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @return The specified submatrix.
 	 */
 	public Matrix getMatrix(final int i0, final int i1, final int j0,
-			final int j1) {
-
-		final Matrix result = new Matrix(i1 - i0 + 1, j1 - j0 + 1);
-		final double[][] b = result.getData();
-		try {
-			for (int i = i0; i <= i1; i++) {
-				for (int j = j0; j <= j1; j++) {
-					b[i - i0][j - j0] = this.matrix[i][j];
-				}
-			}
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-		return result;
-	}
+			final int j1);
 
 	/**
 	 * Get a submatrix.
@@ -414,20 +185,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            Array of column indices.
 	 * @return The specified submatrix.
 	 */
-	public Matrix getMatrix(final int i0, final int i1, final int[] c) {
-		final Matrix result = new Matrix(i1 - i0 + 1, c.length);
-		final double[][] b = result.getData();
-		try {
-			for (int i = i0; i <= i1; i++) {
-				for (int j = 0; j < c.length; j++) {
-					b[i - i0][j] = this.matrix[i][c[j]];
-				}
-			}
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-		return result;
-	}
+	public Matrix getMatrix(final int i0, final int i1, final int[] c);
 
 	/**
 	 * Get a submatrix.
@@ -440,20 +198,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            Final column index
 	 * @return The specified submatrix.
 	 */
-	public Matrix getMatrix(final int[] r, final int j0, final int j1) {
-		final Matrix result = new Matrix(r.length, j1 - j0 + 1);
-		final double[][] b = result.getData();
-		try {
-			for (int i = 0; i < r.length; i++) {
-				for (int j = j0; j <= j1; j++) {
-					b[i][j - j0] = this.matrix[r[i]][j];
-				}
-			}
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
-		}
-		return result;
-	}
+	public Matrix getMatrix(final int[] r, final int j0, final int j1);
 
 	/**
 	 * Get a submatrix.
@@ -464,27 +209,12 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            Array of column indices.
 	 * @return The specified submatrix.
 	 */
-	public Matrix getMatrix(final int[] r, final int[] c) {
-		final Matrix result = new Matrix(r.length, c.length);
-		final double[][] b = result.getData();
-		try {
-			for (int i = 0; i < r.length; i++) {
-				for (int j = 0; j < c.length; j++) {
-					b[i][j] = this.matrix[r[i]][c[j]];
-				}
-			}
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-		return result;
-	}
+	public Matrix getMatrix(final int[] r, final int[] c);
 
 	/**
 	 * @return the name
 	 */
-	public String getName() {
-		return this.name;
-	}
+	public String getName();
 
 	/**
 	 * Get the specified row as a sub-matrix.
@@ -493,33 +223,14 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            The row to get.
 	 * @return A matrix.
 	 */
-	public Matrix getRow(final int row) {
-		if (row > getRows()) {
-			final String str = "Can't get row #" + row
-					+ " because it does not exist.";
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		final double[][] newMatrix = new double[1][getCols()];
-
-		for (int col = 0; col < getCols(); col++) {
-			newMatrix[0][col] = this.matrix[row][col];
-		}
-
-		return new Matrix(newMatrix);
-	}
+	public Matrix getRow(final int row);
 
 	/**
 	 * Get the number of rows in the matrix.
 	 * 
 	 * @return The number of rows in the matrix.
 	 */
-	public int getRows() {
-		return this.matrix.length;
-	}
+	public int getRows();
 
 	/**
 	 * Compute a hash code for this matrix.
@@ -527,22 +238,12 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @return The hash code.
 	 */
 	@Override
-	public int hashCode() {
-		long result = 0;
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				result += this.matrix[r][c];
-			}
-		}
-		return (int) (result % Integer.MAX_VALUE);
-	}
+	public int hashCode();
 
 	/**
 	 * @return The matrix inverted.
 	 */
-	public Matrix inverse() {
-		return solve(MatrixMath.identity(getRows()));
-	}
+	public Matrix inverse();
 
 	/**
 	 * Determine if the matrix is a vector. A vector is has either a single
@@ -550,28 +251,14 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * 
 	 * @return True if this matrix is a vector.
 	 */
-	public boolean isVector() {
-		if (getRows() == 1) {
-			return true;
-		}
-		return getCols() == 1;
-	}
+	public boolean isVector();
 
 	/**
 	 * Return true if every value in the matrix is zero.
 	 * 
 	 * @return True if the matrix is all zeros.
 	 */
-	public boolean isZero() {
-		for (int row = 0; row < getRows(); row++) {
-			for (int col = 0; col < getCols(); col++) {
-				if (this.matrix[row][col] != 0) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
+	public boolean isZero();
 
 	/**
 	 * Multiply every value in the matrix by the specified value.
@@ -579,14 +266,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param value
 	 *            The value to multiply the matrix by.
 	 */
-	public void multiply(final double value) {
-
-		for (int row = 0; row < getRows(); row++) {
-			for (int col = 0; col < getCols(); col++) {
-				this.matrix[row][col] *= value;
-			}
-		}
-	}
+	public void multiply(final double value);
 
 	/**
 	 * Multiply every row by the specified vector.
@@ -596,14 +276,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param result
 	 *            The result to hold the values.
 	 */
-	public void multiply(final double[] vector, final double[] result) {
-		for (int i = 0; i < getRows(); i++) {
-			result[i] = 0;
-			for (int j = 0; j < getCols(); j++) {
-				result[i] += this.matrix[i][j] * vector[j];
-			}
-		}
-	}
+	public void multiply(final double[] vector, final double[] result);
 
 	/**
 	 * Set every value in the matrix to the specified value.
@@ -611,14 +284,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param value
 	 *            The value to set the matrix to.
 	 */
-	public void set(final double value) {
-		for (int row = 0; row < getRows(); row++) {
-			for (int col = 0; col < getCols(); col++) {
-				this.matrix[row][col] = value;
-			}
-		}
-
-	}
+	public void set(final double value);
 
 	/**
 	 * Set an individual cell in the matrix to the specified value.
@@ -630,10 +296,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param value
 	 *            The value to be set.
 	 */
-	public void set(final int row, final int col, final double value) {
-		validate(row, col);
-		this.matrix[row][col] = value;
-	}
+	public void set(final int row, final int col, final double value);
 
 	/**
 	 * Set this matrix's values to that of another matrix.
@@ -641,15 +304,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param matrix
 	 *            The other matrix.
 	 */
-	public void set(final Matrix matrix) {
-		final double[][] source = matrix.getData();
-
-		for (int row = 0; row < getRows(); row++) {
-			for (int col = 0; col < getCols(); col++) {
-				this.matrix[row][col] = source[row][col];
-			}
-		}
-	}
+	public void set(final Matrix matrix);
 
 	/**
 	 * Set the description for this object.
@@ -657,9 +312,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param description
 	 *            the description to set
 	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
+	public void setDescription(final String description);
 
 	/**
 	 * Set a submatrix.
@@ -677,17 +330,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * 
 	 */
 	public void setMatrix(final int i0, final int i1, final int j0,
-			final int j1, final Matrix x) {
-		try {
-			for (int i = i0; i <= i1; i++) {
-				for (int j = j0; j <= j1; j++) {
-					this.matrix[i][j] = x.get(i - i0, j - j0);
-				}
-			}
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-	}
+			final int j1, final Matrix x);
 
 	/**
 	 * Set a submatrix.
@@ -703,17 +346,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 
 	public void setMatrix(final int i0, final int i1, final int[] c,
-			final Matrix x) {
-		try {
-			for (int i = i0; i <= i1; i++) {
-				for (int j = 0; j < c.length; j++) {
-					this.matrix[i][c[j]] = x.get(i - i0, j);
-				}
-			}
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
-		}
-	}
+			final Matrix x);
 
 	/**
 	 * Set a submatrix.
@@ -729,17 +362,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 
 	public void setMatrix(final int[] r, final int j0, final int j1,
-			final Matrix x) {
-		try {
-			for (int i = 0; i < r.length; i++) {
-				for (int j = j0; j <= j1; j++) {
-					this.matrix[r[i]][j] = x.get(i, j - j0);
-				}
-			}
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			throw new ArrayIndexOutOfBoundsException("Submatrix indices");
-		}
-	}
+			final Matrix x);
 
 	/**
 	 * Set a submatrix.
@@ -751,25 +374,13 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * @param x
 	 *            The matrix to set.
 	 */
-	public void setMatrix(final int[] r, final int[] c, final Matrix x) {
-		try {
-			for (int i = 0; i < r.length; i++) {
-				for (int j = 0; j < c.length; j++) {
-					this.matrix[r[i]][c[j]] = x.get(i, j);
-				}
-			}
-		} catch (final ArrayIndexOutOfBoundsException e) {
-			throw new MatrixError("Submatrix indices");
-		}
-	}
+	public void setMatrix(final int[] r, final int[] c, final Matrix x);
 
 	/**
 	 * @param name
 	 *            the name to set
 	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
+	public void setName(final String name);
 
 	/**
 	 * Get the size of the array. This is the number of elements it would take
@@ -777,113 +388,35 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * 
 	 * @return The size of the matrix.
 	 */
-	public int size() {
-		return this.matrix[0].length * this.matrix.length;
-	}
-
-	/**
-	 * Solve A*X = B.
-	 * 
-	 * @param b
-	 *            right hand side.
-	 * @return Solution if A is square, least squares solution otherwise.
-	 */
-	public Matrix solve(final Matrix b) {
-		if (getRows() == getCols()) {
-			return (new LUDecomposition(this)).solve(b);
-		} else {
-			return (new QRDecomposition(this)).solve(b);
-		}
-	}
+	public int size();
 
 	/**
 	 * Sum all of the values in the matrix.
 	 * 
 	 * @return The sum of the matrix.
 	 */
-	public double sum() {
-		double result = 0;
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				result += this.matrix[r][c];
-			}
-		}
-		return result;
-	}
+	public double sum();
 
 	/**
 	 * Convert the matrix into a packed array.
 	 * 
 	 * @return The matrix as a packed array.
 	 */
-	public Double[] toPackedArray() {
-		final Double[] result = new Double[getRows() * getCols()];
-
-		int index = 0;
-		for (int r = 0; r < getRows(); r++) {
-			for (int c = 0; c < getCols(); c++) {
-				result[index++] = this.matrix[r][c];
-			}
-		}
-
-		return result;
-	}
-
+	public Double[] toPackedArray();
 	/**
 	 * @return Convert the matrix to a string.
 	 */
 	@Override
-	public String toString() {
-		final StringBuilder result = new StringBuilder();
-		result.append("[Matrix: rows=");
-		result.append(getRows());
-		result.append(",cols=");
-		result.append(getCols());
-		result.append("]");
-		return result.toString();
-	}
-
-	/**
-	 * Validate that the specified row and column are within the required
-	 * ranges. Otherwise throw a MatrixError exception.
-	 * 
-	 * @param row
-	 *            The row to check.
-	 * @param col
-	 *            The column to check.
-	 */
-	private void validate(final int row, final int col) {
-		if ((row >= getRows()) || (row < 0)) {
-			final String str = "The row:" + row + " is out of range:"
-					+ getRows();
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-
-		if ((col >= getCols()) || (col < 0)) {
-			final String str = "The col:" + col + " is out of range:"
-					+ getCols();
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-		}
-	}
+	public String toString();
 
 	/**
 	 * @return The collection this Encog object belongs to, null if none.
 	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
+	public EncogCollection getCollection();
 
 	/**
 	 * Set the Encog collection that this object belongs to.
 	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
-	}
+	public void setCollection(EncogCollection collection);
 
 }

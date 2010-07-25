@@ -31,6 +31,7 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
@@ -89,7 +90,7 @@ public class WeightedSynapse extends BasicSynapse {
 	public WeightedSynapse(final Layer fromLayer, final Layer toLayer) {
 		setFromLayer(fromLayer);
 		setToLayer(toLayer);
-		this.matrix = new Matrix(getFromNeuronCount(), getToNeuronCount());
+		this.matrix = new Matrix2D(getFromNeuronCount(), getToNeuronCount());
 	}
 
 	/**
@@ -114,14 +115,13 @@ public class WeightedSynapse extends BasicSynapse {
 		final NeuralData result = new BasicNeuralData(getToNeuronCount());
 
 		double[] inputArray = input.getData();
-		double[][] matrixArray = getMatrix().getData();
 		double[] resultArray = result.getData();
 
 		for (int i = 0; i < getToNeuronCount(); i++) {
 
 			double sum = 0;
 			for (int j = 0; j < inputArray.length; j++) {
-				sum += inputArray[j] * matrixArray[j][i];
+				sum += inputArray[j] * matrix.get(j,i);
 			}
 			resultArray[i] = sum;
 		}

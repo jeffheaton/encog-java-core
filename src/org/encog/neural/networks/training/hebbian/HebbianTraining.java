@@ -33,6 +33,7 @@ package org.encog.neural.networks.training.hebbian;
 import java.util.List;
 import java.util.ArrayList;
 
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -211,7 +212,7 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 
 		final double[] input = pair.getInput().getData();
 		final double[] output = outputData.getData();
-		final double[][] matrix = synapse.getMatrix().getData();
+		final Matrix matrix = synapse.getMatrix();
 
 		for (int toNeuron = 0; toNeuron < synapse.getToNeuronCount(); 
 			toNeuron++) {
@@ -231,13 +232,13 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 
 				if (this.oja) {
 					deltaWeight = (input[fromNeuron] - output[toNeuron]
-							* matrix[fromNeuron][toNeuron])
-							* output[toNeuron] * this.learningRate;
+							* matrix.get(fromNeuron,toNeuron)
+							* output[toNeuron] * this.learningRate);
 				} else {
 					deltaWeight = input[toNeuron] * output[toNeuron] * z;
 				}
 
-				matrix[fromNeuron][toNeuron] += deltaWeight;
+				matrix.add(fromNeuron,toNeuron,deltaWeight);
 			}
 		}
 	}

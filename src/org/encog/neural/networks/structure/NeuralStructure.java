@@ -40,6 +40,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.ContextLayer;

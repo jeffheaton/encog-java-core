@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.encog.engine.util.Format;
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -130,8 +130,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Holds the corrections for any matrix being trained.
 	 */
-	private final Map<Synapse, Matrix> correctionMatrix = 
-		new HashMap<Synapse, Matrix>();
+	private final Map<Synapse, Matrix2D> correctionMatrix = 
+		new HashMap<Synapse, Matrix2D>();
 
 	/**
 	 * True is a winner is to be forced, see class description, or forceWinners
@@ -209,7 +209,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		// setup the correction matrix
 		for (final Synapse synapse : this.synapses) {
-			final Matrix matrix = new Matrix(synapse.getMatrix().getRows(),
+			final Matrix2D matrix = new Matrix2D(synapse.getMatrix().getRows(),
 					synapse.getMatrix().getCols());
 			this.correctionMatrix.put(synapse, matrix);
 		}
@@ -223,7 +223,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * determined by this training iteration.
 	 */
 	private void applyCorrection() {
-		for (final Entry<Synapse, Matrix> entry : this.correctionMatrix
+		for (final Entry<Synapse, Matrix2D> entry : this.correctionMatrix
 				.entrySet()) {
 			entry.getKey().getMatrix().set(entry.getValue());
 		}
@@ -417,7 +417,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		for (final Synapse synapse : this.synapses) {
 
 			// Reset the correction matrix for this synapse and iteration.
-			final Matrix correction = this.correctionMatrix.get(synapse);
+			final Matrix2D correction = this.correctionMatrix.get(synapse);
 			correction.clear();
 
 			// Determine the BMU for each training element.
@@ -580,7 +580,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	private void trainPattern(final Synapse synapse, final NeuralData input,
 			final int current, final int bmu) {
 
-		final Matrix correction = this.correctionMatrix.get(synapse);
+		final Matrix2D correction = this.correctionMatrix.get(synapse);
 
 		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
 			inputNeuron++) {

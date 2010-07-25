@@ -31,6 +31,7 @@
 package org.encog.mathutil.randomize;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
@@ -88,7 +89,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	public void randomize(final BasicNetwork network, final Synapse synapse) {
 		if (synapse.getMatrix() != null) {
 			boolean limited = network.getStructure().isConnectionLimited();
-			final double[][] d = synapse.getMatrix().getData();
+			Matrix matrix = synapse.getMatrix();
 			for (int fromNeuron = 0; fromNeuron 
 				< synapse.getMatrix().getRows(); fromNeuron++) {
 				for (int toNeuron = 0; toNeuron 
@@ -96,8 +97,8 @@ public abstract class BasicRandomizer implements Randomizer {
 					if (!limited
 							|| network.isConnected(synapse, fromNeuron,
 									toNeuron)) {
-						d[fromNeuron][toNeuron] = 
-							randomize(d[fromNeuron][toNeuron]);
+						double d = matrix.get(fromNeuron, toNeuron);
+						matrix.set(fromNeuron,toNeuron,randomize(d));
 					}
 				}
 			}
@@ -173,7 +174,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 * @param m
 	 *            A matrix to randomize.
 	 */
-	public void randomize(final Matrix m) {
+	public void randomize(final Matrix2D m) {
 		final double[][] d = m.getData();
 		for (int r = 0; r < m.getRows(); r++) {
 			for (int c = 0; c < m.getCols(); c++) {

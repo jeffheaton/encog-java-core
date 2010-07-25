@@ -32,6 +32,7 @@ package org.encog.mathutil.randomize;
 
 import org.encog.EncogError;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
@@ -164,7 +165,7 @@ public class FanInRandomizer extends BasicRandomizer {
 	public void randomize(final BasicNetwork network, final Synapse synapse) {
 		if (synapse.getMatrix() != null) {
 			boolean limited = network.getStructure().isConnectionLimited();
-			final double[][] d = synapse.getMatrix().getData();
+			Matrix matrix = synapse.getMatrix();
 			for (int fromNeuron = 0; fromNeuron 
 				< synapse.getMatrix().getRows(); fromNeuron++) {
 				for (int toNeuron = 0; toNeuron 
@@ -172,8 +173,8 @@ public class FanInRandomizer extends BasicRandomizer {
 					if (!limited
 							|| network.isConnected(synapse, fromNeuron,
 									toNeuron)) {
-						d[fromNeuron][toNeuron] = calculateValue(synapse
-								.getMatrix().getRows());
+						matrix.set(fromNeuron,toNeuron, calculateValue(synapse
+								.getMatrix().getRows()));
 					}
 				}
 			}
@@ -265,7 +266,7 @@ public class FanInRandomizer extends BasicRandomizer {
 	 *            A matrix to randomize.
 	 */
 	@Override
-	public void randomize(final Matrix m) {
+	public void randomize(final Matrix2D m) {
 		for (int row = 0; row < m.getRows(); row++) {
 			for (int col = 0; col < m.getCols(); col++) {
 				m.set(row, col, calculateValue(m.getRows()));

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;

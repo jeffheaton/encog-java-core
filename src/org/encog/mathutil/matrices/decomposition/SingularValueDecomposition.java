@@ -60,7 +60,7 @@ package org.encog.mathutil.matrices.decomposition;
  * http://www.heatonresearch.com/copyright.html
  */
 import org.encog.mathutil.EncogMath;
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 
 /**
  * Singular Value Decomposition.
@@ -102,7 +102,7 @@ public class SingularValueDecomposition {
 	 * @param Arg
 	 *            Rectangular matrix
 	 */
-	public SingularValueDecomposition(Matrix Arg) {
+	public SingularValueDecomposition(Matrix2D Arg) {
 
 		// Derived from LINPACK code.
 		// Initialize.
@@ -539,8 +539,8 @@ public class SingularValueDecomposition {
 	 * @return U
 	 */
 
-	public Matrix getU() {
-		return new Matrix(U);
+	public Matrix2D getU() {
+		return new Matrix2D(U);
 	}
 
 	/**
@@ -549,8 +549,8 @@ public class SingularValueDecomposition {
 	 * @return V
 	 */
 
-	public Matrix getV() {
-		return new Matrix(V);
+	public Matrix2D getV() {
+		return new Matrix2D(V);
 	}
 
 	/**
@@ -569,8 +569,8 @@ public class SingularValueDecomposition {
 	 * @return S
 	 */
 
-	public Matrix getS() {
-		Matrix X = new Matrix(n, n);
+	public Matrix2D getS() {
+		Matrix2D X = new Matrix2D(n, n);
 		double[][] S = X.getData();
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {

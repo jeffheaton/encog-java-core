@@ -30,7 +30,7 @@
 
 package org.encog.mathutil.matrices.decomposition;
 
-import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.mathutil.matrices.MatrixError;
 
 /**
@@ -75,7 +75,7 @@ public class LUDecomposition {
 	 *            Rectangular matrix
 	 */
 
-	public LUDecomposition(Matrix A) {
+	public LUDecomposition(Matrix2D A) {
 
 		// Use a "left-looking", dot-product, Crout/Doolittle algorithm.
 
@@ -166,8 +166,8 @@ public class LUDecomposition {
 	 * @return L
 	 */
 
-	public Matrix getL() {
-		Matrix X = new Matrix(m, n);
+	public Matrix2D getL() {
+		Matrix2D X = new Matrix2D(m, n);
 		double[][] L = X.getData();
 		for (int i = 0; i < m; i++) {
 			for (int j = 0; j < n; j++) {
@@ -189,8 +189,8 @@ public class LUDecomposition {
 	 * @return U
 	 */
 
-	public Matrix getU() {
-		Matrix X = new Matrix(n, n);
+	public Matrix2D getU() {
+		Matrix2D X = new Matrix2D(n, n);
 		double[][] U = X.getData();
 		for (int i = 0; i < n; i++) {
 			for (int j = 0; j < n; j++) {
@@ -263,7 +263,7 @@ public class LUDecomposition {
 	 *                Matrix is singular.
 	 */
 
-	public Matrix solve(Matrix B) {
+	public Matrix2D solve(Matrix2D B) {
 		if (B.getRows() != m) {
 			throw new IllegalArgumentException(
 					"Matrix row dimensions must agree.");
@@ -274,7 +274,7 @@ public class LUDecomposition {
 
 		// Copy right hand side with pivoting
 		int nx = B.getCols();
-		Matrix Xmat = B.getMatrix(piv, 0, nx - 1);
+		Matrix2D Xmat = B.getMatrix(piv, 0, nx - 1);
 		double[][] X = Xmat.getData();
 
 		// Solve L*Y = B(piv,:)
