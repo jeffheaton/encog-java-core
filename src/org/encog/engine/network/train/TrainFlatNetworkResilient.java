@@ -37,7 +37,7 @@ import org.encog.engine.network.flat.FlatNetwork;
 /**
  * Train a flat network using RPROP.
  */
-public class TrainFlatNetworkResilient extends TrainFlatNetworkMulti {
+public class TrainFlatNetworkResilient extends TrainFlatNetwork {
 	/**
 	 * The update values, for the weights and thresholds.
 	 */

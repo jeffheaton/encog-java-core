@@ -33,7 +33,7 @@ package org.encog.engine.network.train;
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.FlatNetwork;
 
-public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkMulti {
+public class TrainFlatNetworkBackPropagation extends TrainFlatNetwork {
 
 	/**
 	 * The learning rate.

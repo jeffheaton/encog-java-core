@@ -59,7 +59,7 @@ import org.encog.engine.util.IntRange;
  * to the neural network.
  * 
  */
-public abstract class TrainFlatNetworkMulti {
+public abstract class TrainFlatNetwork {
 
 	/**
 	 * The number of threads to use.
@@ -135,7 +135,7 @@ public abstract class TrainFlatNetworkMulti {
 	 * @param training
 	 *            The training data to use.
 	 */
-	public TrainFlatNetworkMulti(final FlatNetwork network,
+	public TrainFlatNetwork(final FlatNetwork network,
 			final EngineDataSet training) {
 
 		if (!(training instanceof EngineIndexableSet)) {

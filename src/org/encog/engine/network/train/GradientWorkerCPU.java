@@ -120,7 +120,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	/**
 	 * The owner.
 	 */
-	private final TrainFlatNetworkMulti owner;
+	private final TrainFlatNetwork owner;
 
 	/**
 	 * The elapsed time.
@@ -147,7 +147,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 *            The high index to use in the training data.
 	 */
 	public GradientWorkerCPU(final FlatNetwork network,
-			final TrainFlatNetworkMulti owner, final EngineIndexableSet training,
+			final TrainFlatNetwork owner, final EngineIndexableSet training,
 			final int low, final int high) {
 		this.network = network;
 		this.training = training;

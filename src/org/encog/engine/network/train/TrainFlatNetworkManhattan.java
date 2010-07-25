@@ -37,7 +37,7 @@ import org.encog.engine.network.flat.FlatNetwork;
 /**
  * Train the flat network using Manhattan update rule.
  */
-public class TrainFlatNetworkManhattan extends TrainFlatNetworkMulti {
+public class TrainFlatNetworkManhattan extends TrainFlatNetwork {
 
 	/**
 	 * The zero tolerance to use.
