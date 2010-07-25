@@ -75,6 +75,12 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * A buffer to hold the activations for each of the layers.
 	 */
 	private cl_mem activationTypeBuffer;
+	
+	/**
+	 * A buffer to hold the slope for the activation of each of the layers.
+	 */
+	private cl_mem slopeBuffer;
+
 
 	/**
 	 * The weight and bias array for the network.
@@ -100,6 +106,8 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * The errors.
 	 */
 	private float[] errorArray;
+	
+	private float[] slopeArray;
 
 	/**
 	 * Construct the kernel for the specified context.
@@ -137,7 +145,8 @@ public class KernelNetworkTrain extends EncogKernel {
 		CL.clSetKernelArg(getKernel(), 8, Sizeof.cl_mem, Pointer.to(this.weightArrayBuffer));
 		CL.clSetKernelArg(getKernel(), 9, Sizeof.cl_mem, Pointer.to(workload.getGradientBuffer()));
 		CL.clSetKernelArg(getKernel(), 10, Sizeof.cl_mem, Pointer.to(this.activationTypeBuffer));
-
+		CL.clSetKernelArg(getKernel(), 11, Sizeof.cl_mem, Pointer.to(this.slopeBuffer));
+		
 		try {			
 			// Calculate the work-item dimensions
 			int localWork = Math.max(EncogEngine.getInstance().getCL().getCLWorkloadSize(), 1);
@@ -187,10 +196,15 @@ public class KernelNetworkTrain extends EncogKernel {
 
 		this.weightArray = new float[flat.getWeights().length];
 		this.activationType = flat.getActivationType();
-
+		this.slopeArray = new float[flat.getSlope().length];
+		
 		this.layerDeltaSize = 0;
 		for (int i = 0; i < flat.getLayerCounts().length; i++) {
 			this.layerDeltaSize += flat.getLayerCounts()[i];
+		}
+		
+		for(int i=0;i<this.slopeArray.length;i++) {
+			this.slopeArray[i] = (float)flat.getSlope()[i];
 		}
 
 		this.layerIndexBuffer = CL.clCreateBuffer(getContext(),
@@ -222,5 +236,10 @@ public class KernelNetworkTrain extends EncogKernel {
 				CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
 						* flat.getActivationType().length, Pointer.to(flat
 						.getActivationType()), null);
+		
+		this.slopeBuffer = CL.clCreateBuffer(getContext(),
+				CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
+						* this.slopeArray.length,
+				Pointer.to(this.slopeArray), null);
 	}	
 }

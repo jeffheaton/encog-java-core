@@ -103,7 +103,8 @@ kernel void NetworkTrain(
     global read_only float* ideal,
     global read_only float* weightsIn,
     global write_only float *gradients,
-    global read_only int *activationType
+    global read_only int *activationType,
+    global read_only float *slope
     )
 {
 	private float layerOutput[NEURON_COUNT];
