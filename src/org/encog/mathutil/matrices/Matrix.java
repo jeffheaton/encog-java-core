@@ -107,7 +107,6 @@ public interface Matrix extends Cloneable, Serializable, EncogPersistedObject {
 	 *            The other matrix to compare.
 	 * @return True if the two matrixes are equal.
 	 */
-	@Override
 	public boolean equals(final Object other);
 
 	/**
@@ -237,7 +236,6 @@ public interface Matrix extends Cloneable, Serializable, EncogPersistedObject {
 	 * 
 	 * @return The hash code.
 	 */
-	@Override
 	public int hashCode();
 
 	/**
@@ -403,10 +401,10 @@ public interface Matrix extends Cloneable, Serializable, EncogPersistedObject {
 	 * @return The matrix as a packed array.
 	 */
 	public Double[] toPackedArray();
+	
 	/**
 	 * @return Convert the matrix to a string.
 	 */
-	@Override
 	public String toString();
 
 	/**
