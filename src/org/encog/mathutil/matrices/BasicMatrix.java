@@ -581,21 +581,6 @@ public abstract class BasicMatrix implements Matrix {
 	}
 
 	/**
-	 * Set an individual cell in the matrix to the specified value.
-	 * 
-	 * @param row
-	 *            The row to set.
-	 * @param col
-	 *            The column to set.
-	 * @param value
-	 *            The value to be set.
-	 */
-	public void set(final int row, final int col, final double value) {
-		validate(row, col);
-		set(row,col,value);
-	}
-
-	/**
 	 * Set this matrix's values to that of another matrix.
 	 * 
 	 * @param matrix

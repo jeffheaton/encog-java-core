@@ -36,4 +36,10 @@ public class MatrixFlat extends BasicMatrix {
 		return rows;
 	}
 
+	@Override
+	public void set(int row, int col, double value) {
+		int location = this.offset+(row*this.cols)+col;
+		this.array[location] = value;		
+	}
+
 }

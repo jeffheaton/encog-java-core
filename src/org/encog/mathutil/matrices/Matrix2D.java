@@ -237,5 +237,11 @@ public class Matrix2D extends BasicMatrix {
 		return result.toString();
 	}
 
+	@Override
+	public void set(int row, int col, double value) {
+		validate(row, col);
+		this.matrix[row][col] = value;		
+	}
+
 
 }
