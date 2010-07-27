@@ -234,8 +234,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		Iterator<?> itr = data.createIterator();
 		while( itr.hasNext() ) {
 			EngineData item = (EngineData)itr.next();
-			compute(item.getInput(), actual);
-			errorCalculation.updateError(actual, item.getIdeal());
+			compute(item.getInputArray(), actual);
+			errorCalculation.updateError(actual, item.getIdealArray());
 		}
 		return errorCalculation.calculate();
 	}

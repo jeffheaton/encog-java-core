@@ -592,4 +592,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		}
 	}
 
+	@Override
+	public Iterator<?> createIterator() {
+		// TODO Auto-generated method stub
+		return this.iterator();
+	}
+
 }

@@ -30,6 +30,8 @@
 
 package org.encog.neural.data;
 
+import org.encog.engine.data.EngineData;
+
 /**
  * Training data is stored in two ways, depending on if the data is for
  * supervised, or unsupervised training.
@@ -45,7 +47,7 @@ package org.encog.neural.data;
  * 
  * @author jheaton
  */
-public interface NeuralDataPair {
+public interface NeuralDataPair extends EngineData {
 
 	/**
 	 * @return The ideal data that the neural network should produce for the

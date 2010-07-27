@@ -51,12 +51,12 @@ public interface EngineData {
 	 * @return The ideal data that the neural network should produce for the
 	 *         specified input.
 	 */
-	double[] getIdeal();
+	double[] getIdealArray();
 
 	/**
 	 * @return The input that the neural network
 	 */
-	double[] getInput();
+	double[] getInputArray();
 	
 	/**
 	 * Set the ideal data, the desired output.

@@ -161,11 +161,11 @@ public class TrainingWorkload {
 		for (int i = low; i <= high; i++) {
 			training.getRecord(i, pair);
 			for (int col = 0; col < flat.getInputCount(); col++) {
-				this.inputArray[inputIndex++] = (float) pair.getInput()[col];
+				this.inputArray[inputIndex++] = (float) pair.getInputArray()[col];
 			}
 
 			for (int col = 0; col < flat.getOutputCount(); col++) {
-				this.idealArray[idealIndex++] = (float) pair.getIdeal()[col];
+				this.idealArray[idealIndex++] = (float) pair.getIdealArray()[col];
 			}
 		}
 

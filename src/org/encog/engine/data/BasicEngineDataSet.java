@@ -213,11 +213,11 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 			return 0;
 		}
 		final EngineData first = this.data.get(0);
-		if (first.getIdeal() == null) {
+		if (first.getIdealArray() == null) {
 			return 0;
 		}
 
-		return first.getIdeal().length;
+		return first.getIdealArray().length;
 	}
 
 	/**
@@ -231,7 +231,7 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 			return 0;
 		}
 		final EngineData first = this.data.get(0);
-		return first.getInput().length;
+		return first.getInputArray().length;
 	}
 
 	/**
@@ -252,9 +252,9 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 	public void getRecord(final long index, final EngineData pair) {
 
 		final EngineData source = this.data.get((int) index);
-		pair.setInput(source.getInput());
-		if (pair.getIdeal() != null) {
-			pair.setIdeal(source.getIdeal());
+		pair.setInput(source.getInputArray());
+		if (pair.getIdealArray() != null) {
+			pair.setIdeal(source.getIdealArray());
 		}
 
 	}

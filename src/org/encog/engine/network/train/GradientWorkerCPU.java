@@ -261,7 +261,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 			this.errorCalculation.reset();
 			for (int i = this.low; i <= this.high; i++) {
 				this.training.getRecord(i, this.pair);
-				process(this.pair.getInput(), this.pair.getIdeal());
+				process(this.pair.getInputArray(), this.pair.getIdealArray());
 			}
 			final double error = this.errorCalculation.calculate();
 			this.owner.report(this.gradients, error, null);

@@ -331,5 +331,10 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 
 	}
 
+	@Override
+	public Iterator<?> createIterator() {
+		return this.iterator();
+	}
+
 	
 }

@@ -50,9 +50,9 @@ public class Test {
 		double[] output = new double[2];
 		System.out.println("Neural Network Results:");
 		for(EngineData pair: trainingSet ) {
-			network.compute(pair.getInput(),output);
-			System.out.println(pair.getInput()[0] + "," + pair.getInput()[1]
-					+ ", actual=" + output[0] + ",ideal=" + pair.getIdeal()[0]);
+			network.compute(pair.getInputArray(),output);
+			System.out.println(pair.getInputArray()[0] + "," + pair.getInputArray()[1]
+					+ ", actual=" + output[0] + ",ideal=" + pair.getIdealArray()[0]);
 		}
 	}
 }

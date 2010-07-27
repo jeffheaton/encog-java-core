@@ -94,7 +94,7 @@ public class BasicEngineData implements EngineData, Serializable {
 	 * 
 	 * @return Returns the expected results, or null if unsupervised training.
 	 */
-	public double[] getIdeal() {
+	public double[] getIdealArray() {
 		return this.ideal;
 	}
 
@@ -103,7 +103,7 @@ public class BasicEngineData implements EngineData, Serializable {
 	 * 
 	 * @return The input data.
 	 */
-	public double[] getInput() {
+	public double[] getInputArray() {
 		return this.input;
 	}
 
@@ -125,9 +125,9 @@ public class BasicEngineData implements EngineData, Serializable {
 	public String toString() {
 		final StringBuilder builder = new StringBuilder("[NeuralDataPair:");
 		builder.append("Input:");
-		builder.append(getInput());
+		builder.append(getInputArray());
 		builder.append("Ideal:");
-		builder.append(getIdeal());
+		builder.append(getIdealArray());
 		builder.append("]");
 		return builder.toString();
 	}

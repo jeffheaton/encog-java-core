@@ -386,4 +386,9 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 		this.encogCollection = collection; 
 	}
 
+	@Override
+	public Iterator<?> createIterator() {
+		return this.iterator();
+	}
+
 }
