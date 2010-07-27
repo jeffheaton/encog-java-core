@@ -230,7 +230,7 @@ public class CalculateGradient {
 
 		int i = 0;
 		for (final IntRange range : workloadRange) {
-			final Indexable trainingClone = this.indexed.openAdditional();
+			final Indexable trainingClone = (Indexable)this.indexed.openAdditional();
 			this.workers[i++] = new GradientWorker(this, trainingClone, range
 					.getLow(), range.getHigh());
 		}

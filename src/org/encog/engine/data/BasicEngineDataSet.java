@@ -252,9 +252,9 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 	public void getRecord(final long index, final EngineData pair) {
 
 		final EngineData source = this.data.get((int) index);
-		pair.setInput(source.getInputArray());
+		pair.setInputArray(source.getInputArray());
 		if (pair.getIdealArray() != null) {
-			pair.setIdeal(source.getIdealArray());
+			pair.setIdealArray(source.getIdealArray());
 		}
 
 	}

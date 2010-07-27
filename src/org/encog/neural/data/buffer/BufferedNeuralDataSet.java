@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.encog.engine.data.EngineData;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
@@ -188,10 +189,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 					throw new NoSuchElementException();
 				
 				if (BufferedNeuralDataSet.this.idealSize > 0) {
-					readDoubleArray(this.input, this.next.getInput());
-					readDoubleArray(this.input, this.next.getIdeal());
+					readDoubleArray(this.input, this.next.getInputArray());
+					readDoubleArray(this.input, this.next.getIdealArray());
 				} else {
-					readDoubleArray(this.input, this.next.getInput());
+					readDoubleArray(this.input, this.next.getInputArray());
 				}
 
 				this.dataReady = true;
@@ -425,7 +426,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 * @param pair
 	 *            THe pair to copy into.
 	 */
-	public void getRecord(final long index, final NeuralDataPair pair) {
+	public void getRecord(final long index, final EngineData pair) {
 		try {
 			openInputFile();
 			final long header = 16;
@@ -437,10 +438,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 				this.lastOffset = offset + this.recordSize;
 			}
 			if (BufferedNeuralDataSet.this.idealSize > 0) {
-				readDoubleArray(this.input, pair.getInput());
-				readDoubleArray(this.input, pair.getIdeal());
+				readDoubleArray(this.input, pair.getInputArray());
+				readDoubleArray(this.input, pair.getIdealArray());
 			} else {
-				readDoubleArray(this.input, pair.getInput());
+				readDoubleArray(this.input, pair.getInputArray());
 			}
 			this.lastOffset+=this.recordSize;
 		} catch (final IOException e) {
@@ -544,11 +545,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 	 *             Error reading data.
 	 */
 	private void readDoubleArray(final RandomAccessFile raf,
-			final NeuralData data) throws IOException {
-		final double[] d = data.getData();
+			final double[] data) throws IOException {
 
-		for (int i = 0; i < data.size(); i++) {
-			d[i] = raf.readDouble();
+		for (int i = 0; i < data.length; i++) {
+			data[i] = raf.readDouble();
 		}
 	}
 
@@ -597,5 +597,4 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable {
 		// TODO Auto-generated method stub
 		return this.iterator();
 	}
-
 }

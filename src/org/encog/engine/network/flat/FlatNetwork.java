@@ -445,6 +445,17 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	public double[] getSlope() {
 		return slope;
 	}
+
+	public void randomize(double hi, double lo) {
+		for(int i=0;i<this.weights.length;i++) {
+			this.weights[i] = (Math.random()*(hi-lo))+lo;
+		}
+		
+	}
+
+	public void randomize() {
+		randomize(1,-1);		
+	}
 	
 	
 	

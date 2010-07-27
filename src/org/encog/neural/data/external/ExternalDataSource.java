@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
 
+import org.encog.engine.data.EngineData;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
@@ -264,7 +265,7 @@ public class ExternalDataSource implements EncogPersistedObject, NeuralDataSet,
 	}
 
 	@Override
-	public void getRecord(long index, NeuralDataPair pair) {
+	public void getRecord(long index, EngineData pair) {
 		this.binary.getRecord(index, pair);
 	}
 

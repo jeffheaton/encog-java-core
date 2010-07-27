@@ -180,13 +180,13 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	}
 
 	@Override
-	public void setIdeal(double[] data) {
+	public void setIdealArray(double[] data) {
 		this.ideal.setData(data);
 		
 	}
 
 	@Override
-	public void setInput(double[] data) {
+	public void setInputArray(double[] data) {
 		this.input.setData(data);		
 	}
 

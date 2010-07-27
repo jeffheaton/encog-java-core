@@ -62,13 +62,13 @@ public interface EngineData {
 	 * Set the ideal data, the desired output.
 	 * @param data The ideal data.
 	 */
-	void setIdeal(double[] data);
+	void setIdealArray(double[] data);
 	
 	/**
 	 * Set the input.
 	 * @param data The input.
 	 */
-	void setInput(double[] data);
+	void setInputArray(double[] data);
 	
 	boolean[] defined();
 

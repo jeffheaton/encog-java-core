@@ -154,13 +154,13 @@ public class BasicEngineData implements EngineData, Serializable {
 	}
 
 	@Override
-	public void setIdeal(double[] data) {
+	public void setIdealArray(double[] data) {
 		this.ideal = data;
 		
 	}
 
 	@Override
-	public void setInput(double[] data) {
+	public void setInputArray(double[] data) {
 		this.input = data;		
 	}
 

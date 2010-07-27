@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.encog.engine.data.EngineData;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -298,12 +299,12 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	 * @param pair
 	 *            The pair to hold the data.
 	 */
-	public void getRecord(final long index, final NeuralDataPair pair) {
+	public void getRecord(final long index, final EngineData pair) {
 
 		final NeuralDataPair source = this.data.get((int) index);
-		pair.getInput().setData(source.getInput().getData());
-		if (pair.getIdeal() != null) {
-			pair.getIdeal().setData(source.getIdeal().getData());
+		pair.setInputArray(source.getInputArray());
+		if (pair.getIdealArray() != null) {
+			pair.setIdealArray(source.getIdealArray());
 		}
 
 	}
