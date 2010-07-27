@@ -238,10 +238,6 @@ public interface Matrix extends Cloneable, Serializable, EncogPersistedObject {
 	 */
 	public int hashCode();
 
-	/**
-	 * @return The matrix inverted.
-	 */
-	public Matrix inverse();
 
 	/**
 	 * Determine if the matrix is a vector. A vector is has either a single

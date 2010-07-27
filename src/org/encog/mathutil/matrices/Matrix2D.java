@@ -138,6 +138,12 @@ public class Matrix2D extends BasicMatrix {
 	public Matrix2D(final int rows, final int cols) {
 		this.matrix = new double[rows][cols];
 	}
+	
+	public Matrix2D(Matrix source)
+	{
+		this.matrix = new double[source.getRows()][source.getCols()];		
+		this.set(source);
+	}
 
 
 	/**
