@@ -66,7 +66,6 @@ org.encog.engine.opencl.kernels.KernelNetworkTrain
 org.encog.engine.opencl.kernels.KernelVectorAdd
 org.encog.engine.opencl.kernels.TrainingWorkload
 org.encog.engine.StatusReportable
-org.encog.engine.Test
 org.encog.engine.util.BoundMath
 org.encog.engine.util.BoundNumbers
 org.encog.engine.util.EngineArray

@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 
 import org.encog.Encog;
 import org.encog.EncogError;
+import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -106,6 +107,11 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(BasicNetwork.class);
 
+	
+	/**
+	 * The flat form of this network.
+	 */
+	private transient FlatNetwork flat;
 	
 	/**
 	 * The Encog collection this object belongs to, or null if none.
@@ -705,4 +711,14 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	public void setCollection(EncogCollection collection) {
 		this.encogCollection = collection; 
 	}
+
+	public FlatNetwork getFlat() {
+		return flat;
+	}
+
+	public void setFlat(FlatNetwork flat) {
+		this.flat = flat;
+	}
+	
+	
 }
