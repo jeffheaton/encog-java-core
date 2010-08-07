@@ -27,18 +27,26 @@
  * 
  * http://www.heatonresearch.com/copyright.html
  */
-
-package org.encog.neural.networks;
+package org.encog.mathutil.error;
 
 /**
- * Allows the clearContext method to be called. If the layer has a context that
- * can be cleared, it should support this interface.
- * 
+ * Selects the error calculation mode for Encog.
  */
-public interface ContextClearable {
-
+public enum ErrorCalculationMode {
 	/**
-	 * Clear the context for this layer.
+	 * Root mean square error.
 	 */
-	void clearContext();
+	RMS,
+	
+	/**
+	 * Mean square error.
+	 */
+	MSE,
+	
+	/**
+	 * Used for QuickProp, an exaggerated error function. 
+	 * Fahlman suggests using a function that exaggerates the difference the larger the error is 
+	 * in a non-linear fashion.
+	 */
+	ARCTAN
 }

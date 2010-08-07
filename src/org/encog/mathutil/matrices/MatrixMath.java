@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -57,7 +57,8 @@ public final class MatrixMath {
 	 */
 	public static Matrix add(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			final String str = "To add the matrices they must have the same number of "
+			final String str = 
+				"To add the matrices they must have the same number of "
 					+ "rows and columns.  Matrix a has "
 					+ a.getRows()
 					+ " rows and matrix b has " + b.getRows() + " rows.";
@@ -70,7 +71,8 @@ public final class MatrixMath {
 		}
 
 		if (a.getCols() != b.getCols()) {
-			final String str = "To add the matrices they must have the same number "
+			final String str = 
+				"To add the matrices they must have the same number "
 					+ "of rows and columns.  Matrix a has "
 					+ a.getCols()
 					+ " cols and matrix b has " + b.getCols() + " cols.";
@@ -80,29 +82,18 @@ public final class MatrixMath {
 			throw new MatrixError(str);
 		}
 
+		final double[][] aa = a.getData();
+		final double[][] bb = b.getData();
 		final double[][] result = new double[a.getRows()][a.getCols()];
 
-		if (a instanceof Matrix2D && b instanceof Matrix2D) {
-			final double[][] aa = ((Matrix2D) a).getData();
-			final double[][] bb = ((Matrix2D) b).getData();
-
-			for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
-				for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
-					result[resultRow][resultCol] = aa[resultRow][resultCol]
-							+ bb[resultRow][resultCol];
-				}
+		for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
+			for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
+				result[resultRow][resultCol] = aa[resultRow][resultCol]
+						+ bb[resultRow][resultCol];
 			}
-		} else {
-			for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
-				for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
-					result[resultRow][resultCol] = a.get(resultRow, resultCol)
-							+ b.get(resultRow, resultCol);
-				}
-			}
-
 		}
 
-		return new Matrix2D(result);
+		return new Matrix(result);
 	}
 
 	/**
@@ -114,21 +105,12 @@ public final class MatrixMath {
 	 *            The target matrix for the copy.
 	 */
 	public static void copy(final Matrix source, final Matrix target) {
+		final double[][] s = source.getData();
+		final double[][] t = target.getData();
 
-		if (source instanceof Matrix2D && target instanceof Matrix2D) {
-			final double[][] s = ((Matrix2D) source).getData();
-			final double[][] t = ((Matrix2D) target).getData();
-
-			for (int row = 0; row < source.getRows(); row++) {
-				for (int col = 0; col < source.getCols(); col++) {
-					t[row][col] = s[row][col];
-				}
-			}
-		} else {
-			for (int row = 0; row < source.getRows(); row++) {
-				for (int col = 0; col < source.getCols(); col++) {
-					target.set(row, col, source.get(row, col));
-				}
+		for (int row = 0; row < source.getRows(); row++) {
+			for (int col = 0; col < source.getCols(); col++) {
+				t[row][col] = s[row][col];
 			}
 		}
 
@@ -144,7 +126,7 @@ public final class MatrixMath {
 	 *            The column to delete.
 	 * @return A matrix with the column deleted.
 	 */
-	public static Matrix2D deleteCol(final Matrix matrix, final int deleted) {
+	public static Matrix deleteCol(final Matrix matrix, final int deleted) {
 		if (deleted >= matrix.getCols()) {
 			final String str = "Can't delete column " + deleted
 					+ " from matrix, it only has " + matrix.getCols()
@@ -157,19 +139,21 @@ public final class MatrixMath {
 		final double[][] newMatrix = new double[matrix.getRows()][matrix
 				.getCols() - 1];
 
+		final double[][] d = matrix.getData();
+
 		for (int row = 0; row < matrix.getRows(); row++) {
 			int targetCol = 0;
 
 			for (int col = 0; col < matrix.getCols(); col++) {
 				if (col != deleted) {
-					newMatrix[row][targetCol] = matrix.get(row, col);
+					newMatrix[row][targetCol] = d[row][col];
 					targetCol++;
 				}
 
 			}
 
 		}
-		return new Matrix2D(newMatrix);
+		return new Matrix(newMatrix);
 	}
 
 	/**
@@ -182,7 +166,7 @@ public final class MatrixMath {
 	 *            Which row to delete.
 	 * @return A new matrix with the specified row deleted.
 	 */
-	public static Matrix2D deleteRow(final Matrix matrix, final int deleted) {
+	public static Matrix deleteRow(final Matrix matrix, final int deleted) {
 
 		if (deleted >= matrix.getRows()) {
 			final String str = "Can't delete row " + deleted
@@ -196,17 +180,18 @@ public final class MatrixMath {
 		}
 		final double[][] newMatrix = new double[matrix.getRows() - 1][matrix
 				.getCols()];
+		final double[][] d = matrix.getData();
 
 		int targetRow = 0;
 		for (int row = 0; row < matrix.getRows(); row++) {
 			if (row != deleted) {
 				for (int col = 0; col < matrix.getCols(); col++) {
-					newMatrix[targetRow][col] = matrix.get(row, col);
+					newMatrix[targetRow][col] = d[row][col];
 				}
 				targetRow++;
 			}
 		}
-		return new Matrix2D(newMatrix);
+		return new Matrix(newMatrix);
 	}
 
 	/**
@@ -218,15 +203,15 @@ public final class MatrixMath {
 	 *            The value to divide by.
 	 * @return A new matrix with the division performed.
 	 */
-	public static Matrix2D divide(final Matrix a, final double b) {
+	public static Matrix divide(final Matrix a, final double b) {
 		final double[][] result = new double[a.getRows()][a.getCols()];
-
+		final double[][] d = a.getData();
 		for (int row = 0; row < a.getRows(); row++) {
 			for (int col = 0; col < a.getCols(); col++) {
-				result[row][col] = a.get(row, col) / b;
+				result[row][col] = d[row][col] / b;
 			}
 		}
-		return new Matrix2D(result);
+		return new Matrix(result);
 	}
 
 	/**
@@ -241,7 +226,8 @@ public final class MatrixMath {
 	 */
 	public static double dotProduct(final Matrix a, final Matrix b) {
 		if (!a.isVector() || !b.isVector()) {
-			final String str = "To take the dot product, both matrices must be vectors.";
+			final String str = 
+				"To take the dot product, both matrices must be vectors.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
 				MatrixMath.LOGGER.error(str);
 			}
@@ -253,7 +239,8 @@ public final class MatrixMath {
 		final Double[] bArray = b.toPackedArray();
 
 		if (aArray.length != bArray.length) {
-			final String str = "To take the dot product, both matrices must be of "
+			final String str = 
+				"To take the dot product, both matrices must be of "
 					+ "the same length.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
 				MatrixMath.LOGGER.error(str);
@@ -279,7 +266,7 @@ public final class MatrixMath {
 	 *            is always square.
 	 * @return An identity matrix.
 	 */
-	public static Matrix2D identity(final int size) {
+	public static Matrix identity(final int size) {
 		if (size < 1) {
 			final String str = "Identity matrix must be at least of "
 					+ "size 1.";
@@ -289,7 +276,7 @@ public final class MatrixMath {
 			throw new MatrixError(str);
 		}
 
-		final Matrix2D result = new Matrix2D(size, size);
+		final Matrix result = new Matrix(size, size);
 		final double[][] d = result.getData();
 
 		for (int i = 0; i < size; i++) {
@@ -309,26 +296,16 @@ public final class MatrixMath {
 	 *            The second matrix.
 	 * @return The result of the multiplication.
 	 */
-	public static Matrix2D multiply(final Matrix a, final double b) {
-
+	public static Matrix multiply(final Matrix a, final double b) {
 		final double[][] result = new double[a.getRows()][a.getCols()];
+		final double[][] d = a.getData();
 
-		if (a instanceof Matrix2D) {
-			final double[][] d = ((Matrix2D) a).getData();
-
-			for (int row = 0; row < a.getRows(); row++) {
-				for (int col = 0; col < a.getCols(); col++) {
-					result[row][col] = d[row][col] * b;
-				}
-			}
-		} else {
-			for (int row = 0; row < a.getRows(); row++) {
-				for (int col = 0; col < a.getCols(); col++) {
-					result[row][col] = a.get(row, col) * b;
-				}
+		for (int row = 0; row < a.getRows(); row++) {
+			for (int col = 0; col < a.getCols(); col++) {
+				result[row][col] = d[row][col] * b;
 			}
 		}
-		return new Matrix2D(result);
+		return new Matrix(result);
 	}
 
 	/**
@@ -340,10 +317,11 @@ public final class MatrixMath {
 	 *            The second matrix.
 	 * @return The result of the multiplication.
 	 */
-	public static Matrix2D multiply(final Matrix a, final Matrix b) {
+	public static Matrix multiply(final Matrix a, final Matrix b) {
 
 		if (b.getRows() != a.getCols()) {
-			final String str = "To use ordinary matrix multiplication the number of "
+			final String str = 
+				"To use ordinary matrix multiplication the number of "
 					+ "columns on the first matrix must mat the number of "
 					+ "rows on the second.";
 			if (MatrixMath.LOGGER.isErrorEnabled()) {
@@ -352,42 +330,27 @@ public final class MatrixMath {
 			throw new MatrixError(str);
 		}
 
-		final Matrix2D result = new Matrix2D(a.getRows(), b.getCols());
-		final double[][] c = result.getData();
+		final double[][] aData = a.getData();
+		final double[][] bData = b.getData();
 
-		if (a instanceof Matrix2D && b instanceof Matrix2D) {
-			final double[][] aData = ((Matrix2D) a).getData();
-			final double[][] bData = ((Matrix2D) b).getData();
-
-			final double[] bcolj = new double[a.getCols()];
-			for (int j = 0; j < b.getCols(); j++) {
-				for (int k = 0; k < a.getCols(); k++) {
-					bcolj[k] = bData[k][j];
-				}
-				for (int i = 0; i < a.getRows(); i++) {
-					final double[] arowi = aData[i];
-					double s = 0;
-					for (int k = 0; k < a.getCols(); k++) {
-						s += arowi[k] * bcolj[k];
-					}
-					c[i][j] = s;
-				}
+		final Matrix x = new Matrix(a.getRows(), b.getCols());
+		final double[][] c = x.getData();
+		final double[] bcolj = new double[a.getCols()];
+		for (int j = 0; j < b.getCols(); j++) {
+			for (int k = 0; k < a.getCols(); k++) {
+				bcolj[k] = bData[k][j];
 			}
-		} else {
-			for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
-				for (int resultCol = 0; resultCol < b.getCols(); resultCol++) {
-					double value = 0;
-
-					for (int i = 0; i < a.getCols(); i++) {
-
-						value += a.get(resultRow, i) * b.get(i, resultCol);
-					}
-					result.set(resultRow, resultCol, value);
+			for (int i = 0; i < a.getRows(); i++) {
+				final double[] arowi = aData[i];
+				double s = 0;
+				for (int k = 0; k < a.getCols(); k++) {
+					s += arowi[k] * bcolj[k];
 				}
+				c[i][j] = s;
 			}
 		}
+		return x;
 
-		return result;
 	}
 
 	/**
@@ -399,9 +362,10 @@ public final class MatrixMath {
 	 *            The second matrix.
 	 * @return The results of the subtraction.
 	 */
-	public static Matrix2D subtract(final Matrix a, final Matrix b) {
+	public static Matrix subtract(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			final String str = "To subtract the matrices they must have the same "
+			final String str = 
+				"To subtract the matrices they must have the same "
 					+ "number of rows and columns.  Matrix a has "
 					+ a.getRows()
 					+ " rows and matrix b has "
@@ -414,7 +378,8 @@ public final class MatrixMath {
 		}
 
 		if (a.getCols() != b.getCols()) {
-			final String str = "To subtract the matrices they must have the same "
+			final String str = 
+				"To subtract the matrices they must have the same "
 					+ "number of rows and columns.  Matrix a has "
 					+ a.getCols()
 					+ " cols and matrix b has "
@@ -427,28 +392,17 @@ public final class MatrixMath {
 		}
 
 		final double[][] result = new double[a.getRows()][a.getCols()];
+		final double[][] aa = a.getData();
+		final double[][] bb = b.getData();
 
-		if (a instanceof Matrix2D && b instanceof Matrix2D) {
-			final double[][] aa = ((Matrix2D) a).getData();
-			final double[][] bb = ((Matrix2D) b).getData();
-
-			for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
-				for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
-					result[resultRow][resultCol] = aa[resultRow][resultCol]
-							- bb[resultRow][resultCol];
-				}
+		for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
+			for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
+				result[resultRow][resultCol] = aa[resultRow][resultCol]
+						- bb[resultRow][resultCol];
 			}
-		} else {
-			for (int resultRow = 0; resultRow < a.getRows(); resultRow++) {
-				for (int resultCol = 0; resultCol < a.getCols(); resultCol++) {
-					result[resultRow][resultCol] = a.get(resultRow, resultCol)
-							- b.get(resultRow, resultCol);
-				}
-			}
-
 		}
 
-		return new Matrix2D(result);
+		return new Matrix(result);
 	}
 
 	/**
@@ -458,21 +412,19 @@ public final class MatrixMath {
 	 *            The matrix to transpose.
 	 * @return The matrix transposed.
 	 */
-	public static Matrix2D transpose(final Matrix input) {
+	public static Matrix transpose(final Matrix input) {
 		final double[][] transposeMatrix = new double[input.getCols()][input
 				.getRows()];
 
-		if (input instanceof Matrix2D) {
-			final double[][] d = ((Matrix2D) input).getData();
+		final double[][] d = input.getData();
 
-			for (int r = 0; r < input.getRows(); r++) {
-				for (int c = 0; c < input.getCols(); c++) {
-					transposeMatrix[c][r] = d[r][c];
-				}
+		for (int r = 0; r < input.getRows(); r++) {
+			for (int c = 0; c < input.getCols(); c++) {
+				transposeMatrix[c][r] = d[r][c];
 			}
 		}
 
-		return new Matrix2D(transposeMatrix);
+		return new Matrix(transposeMatrix);
 	}
 
 	/**

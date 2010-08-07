@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,17 +21,16 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
 package org.encog.neural.networks.synapse;
 
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.persist.EncogPersistedObject;

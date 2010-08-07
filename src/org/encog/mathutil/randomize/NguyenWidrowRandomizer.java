@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -27,7 +27,6 @@
  * 
  * http://www.heatonresearch.com/copyright.html
  */
-
 package org.encog.mathutil.randomize;
 
 import org.encog.EncogError;
@@ -41,7 +40,7 @@ import org.encog.neural.networks.synapse.Synapse;
  * most trainable neural network.
  * 
  * 
- * @author Stï¿½phan Corriveau
+ * @author StŽphan Corriveau
  * 
  */
 public class NguyenWidrowRandomizer extends RangeRandomizer implements

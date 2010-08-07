@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -39,11 +39,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.engine.network.flat.FlatLayer;
-import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.ContextLayer;
@@ -260,7 +256,6 @@ public class NeuralStructure implements Serializable {
 		assignID();
 		this.network.getLogic().init(this.network);
 		enforceLimit();
-		//flattenNetwork();
 	}
 
 	/**
@@ -462,24 +457,5 @@ public class NeuralStructure implements Serializable {
 		}
 		return false;
 	}
-	
-	private void flattenNetwork()
-	{
-		int index = 0;
-		FlatLayer[] flatLayers = new FlatLayer[layers.size()];
-		
-		for(int i=layers.size()-1;i>=0;i--)
-		{
-			Layer layer = layers.get(i);
-			flatLayers[index++] = new FlatLayer(ActivationFunctions.ACTIVATION_TANH ,layer.getNeuronCount(),layer.hasBias());
-		}
-		
-		FlatNetwork flat = new FlatNetwork(flatLayers);
-		this.network.setFlat(flat);
-		
-		for(Synapse synapse: this.synapses)
-		{
-			Matrix matrix = synapse.getMatrix();
-		}
-	}
+
 }

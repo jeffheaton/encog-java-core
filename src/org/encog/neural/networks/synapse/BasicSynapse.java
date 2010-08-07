@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -162,6 +162,18 @@ public abstract class BasicSynapse implements Synapse {
 	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
 	}
+	
+	@Override
+	public EncogCollection getCollection() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setCollection(EncogCollection collection) {
+		// TODO Auto-generated method stub
+		
+	}
 
 	/**
 	 * @return The synapse as a string.
@@ -178,21 +190,5 @@ public abstract class BasicSynapse implements Synapse {
 		result.append("]");
 		return result.toString();
 	}
-	
-	/**
-	 * Returns null, synapses do not belong to collections.
-	 */
-	public EncogCollection getCollection() {
-		return null;
-	}
-
-	/**
-	 * Not used, synapses do not belong to collections.
-	 * @param collection Not used.
-	 */
-	public void setCollection(EncogCollection collection) {
-		
-	}
-
 
 }

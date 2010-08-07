@@ -32,7 +32,7 @@ package org.encog.neural.prune;
 
 import java.util.Collection;
 
-import org.encog.mathutil.matrices.Matrix2D;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.mathutil.randomize.Distort;
 import org.encog.mathutil.rbf.GaussianFunction;
@@ -231,7 +231,7 @@ public class PruneSelective {
 
 		// adjust the outbound weight matrixes
 		for (final Synapse synapse : layer.getNext()) {
-			final Matrix2D newMatrix = new Matrix2D(neuronCount, synapse
+			final Matrix newMatrix = new Matrix(neuronCount, synapse
 					.getToNeuronCount());
 			// copy existing matrix to new matrix
 			for (int row = 0; row < layer.getNeuronCount(); row++) {
@@ -247,7 +247,7 @@ public class PruneSelective {
 				.getPreviousSynapses(layer);
 
 		for (final Synapse synapse : inboundSynapses) {
-			final Matrix2D newMatrix = new Matrix2D(synapse.getFromNeuronCount(),
+			final Matrix newMatrix = new Matrix(synapse.getFromNeuronCount(),
 					neuronCount);
 			// copy existing matrix to new matrix
 			for (int row = 0; row < synapse.getFromNeuronCount(); row++) {

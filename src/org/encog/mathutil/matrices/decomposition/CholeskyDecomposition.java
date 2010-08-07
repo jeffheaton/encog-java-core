@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -30,7 +30,7 @@
 
 package org.encog.mathutil.matrices.decomposition;
 
-import org.encog.mathutil.matrices.Matrix2D;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixError;
 
 /**
@@ -72,7 +72,7 @@ public class CholeskyDecomposition {
 	 *            Square, symmetric matrix.
 	 */
 
-	public CholeskyDecomposition(final Matrix2D matrix) {
+	public CholeskyDecomposition(final Matrix matrix) {
 
 		// Initialize.
 		double[][] a = matrix.getData();
@@ -120,8 +120,8 @@ public class CholeskyDecomposition {
 	 * @return L
 	 */
 
-	public Matrix2D getL() {
-		return new Matrix2D(l);
+	public Matrix getL() {
+		return new Matrix(l);
 	}
 
 	/**
@@ -131,7 +131,7 @@ public class CholeskyDecomposition {
 	 *            A Matrix with as many rows as A and any number of columns.
 	 * @return X so that L*L'*X = b.
 	 */
-	public Matrix2D solve(final Matrix2D b) {
+	public Matrix solve(final Matrix b) {
 		if (b.getRows() != n) {
 			throw new MatrixError(
 					"Matrix row dimensions must agree.");
@@ -165,6 +165,6 @@ public class CholeskyDecomposition {
 			}
 		}
 
-		return new Matrix2D(x);
+		return new Matrix(x);
 	}
 }

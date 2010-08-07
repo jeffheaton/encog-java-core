@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -30,7 +30,7 @@
 
 package org.encog.neural.networks.logic;
 
-import org.encog.mathutil.matrices.Matrix2D;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.neural.data.NeuralData;
 
@@ -56,17 +56,17 @@ public class HopfieldLogic extends ThermalLogic {
 	public void addPattern(final NeuralData pattern) {
 
 		// Create a row matrix from the input, convert boolean to bipolar
-		final Matrix2D m2 = Matrix2D.createRowMatrix(pattern.getData());
+		final Matrix m2 = Matrix.createRowMatrix(pattern.getData());
 		// Transpose the matrix and multiply by the original input matrix
-		final Matrix2D m1 = MatrixMath.transpose(m2);
-		final Matrix2D m3 = MatrixMath.multiply(m1, m2);
+		final Matrix m1 = MatrixMath.transpose(m2);
+		final Matrix m3 = MatrixMath.multiply(m1, m2);
 
 		// matrix 3 should be square by now, so create an identity
 		// matrix of the same size.
-		final Matrix2D identity = MatrixMath.identity(m3.getRows());
+		final Matrix identity = MatrixMath.identity(m3.getRows());
 
 		// subtract the identity matrix
-		final Matrix2D m4 = MatrixMath.subtract(m3, identity);
+		final Matrix m4 = MatrixMath.subtract(m3, identity);
 
 		// now add the calculated matrix, for this pattern, to the
 		// existing weight matrix.
@@ -79,7 +79,7 @@ public class HopfieldLogic extends ThermalLogic {
 	 * @param delta
 	 *            The amount to change the weights by.
 	 */
-	private void convertHopfieldMatrix(final Matrix2D delta) {
+	private void convertHopfieldMatrix(final Matrix delta) {
 		// add the new weight matrix to what is there already
 		for (int row = 0; row < delta.getRows(); row++) {
 			for (int col = 0; col < delta.getRows(); col++) {

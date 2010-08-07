@@ -32,7 +32,7 @@ package org.encog.util.logging;
 
 import java.text.NumberFormat;
 
-import org.encog.mathutil.matrices.Matrix2D;
+import org.encog.mathutil.matrices.Matrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,7 @@ public final class DumpMatrix {
 	 *            The matrix.
 	 * @return The matrix as a string.
 	 */
-	public static String dumpMatrix(final Matrix2D matrix) {
+	public static String dumpMatrix(final Matrix matrix) {
 		final NumberFormat format = NumberFormat.getNumberInstance();
 		format.setMaximumFractionDigits(DumpMatrix.MAX_PRECIS);
 		format.setMaximumFractionDigits(DumpMatrix.MAX_PRECIS);

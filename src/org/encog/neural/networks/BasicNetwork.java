@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -39,8 +39,7 @@ import java.util.Map.Entry;
 
 import org.encog.Encog;
 import org.encog.EncogError;
-import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.engine.util.ErrorCalculation;
+import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
@@ -95,6 +94,11 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	public static final String TAG_LIMIT = "CONNECTION_LIMIT";
 
 	public static final String DEFAULT_CONNECTION_LIMIT = "0.0000000001";
+	
+	/**
+	 * The Encog collection.
+	 */
+	private EncogCollection encogCollection;
 
 	/**
 	 * Serial id for this class.
@@ -107,17 +111,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(BasicNetwork.class);
 
-	
-	/**
-	 * The flat form of this network.
-	 */
-	private transient FlatNetwork flat;
-	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private transient EncogCollection encogCollection;
-	
 	/**
 	 * Determine which member of the output is the winning neuron.
 	 * 
@@ -245,7 +238,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 		for (final NeuralDataPair pair : data) {
 			final NeuralData actual = compute(pair.getInput());
-			errorCalculation.updateError(actual.getData(), pair.getIdeal().getData());
+			errorCalculation.updateError(actual, pair.getIdeal());
 		}
 		return errorCalculation.calculate();
 	}
@@ -672,32 +665,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 		}
 	}
 	
-	public int getInputCount()
-	{
-		Layer layer = getLayer(BasicNetwork.TAG_INPUT);
-		if( layer!=null )
-		{
-			return layer.getNeuronCount();
-		}
-		else
-		{
-			return -1;
-		}
-	}
-	
-	public int getOutputCount()
-	{
-		Layer layer = getLayer(BasicNetwork.TAG_OUTPUT);
-		if( layer!=null )
-		{
-			return layer.getNeuronCount();
-		}
-		else
-		{
-			return -1;
-		}		
-	}
-	
 	/**
 	 * @return The collection this Encog object belongs to, null if none.
 	 */
@@ -712,13 +679,4 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 		this.encogCollection = collection; 
 	}
 
-	public FlatNetwork getFlat() {
-		return flat;
-	}
-
-	public void setFlat(FlatNetwork flat) {
-		this.flat = flat;
-	}
-	
-	
 }

@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -31,10 +31,10 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.DirectSynapsePersistor;
 import org.slf4j.Logger;

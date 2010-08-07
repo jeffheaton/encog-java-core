@@ -31,7 +31,6 @@
 package org.encog.persist.persistors;
 
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.mathutil.matrices.Matrix2D;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
@@ -154,12 +153,12 @@ public final class PersistorUtil {
 	 *            The XML reader.
 	 * @return The loaded matrix.
 	 */
-	public static Matrix2D loadMatrix(final ReadXML in) {
+	public static Matrix loadMatrix(final ReadXML in) {
 		final int rows = in.getTag().getAttributeInt(
 				PersistorUtil.ATTRIBUTE_MATRIX_ROWS);
 		final int cols = in.getTag().getAttributeInt(
 				PersistorUtil.ATTRIBUTE_MATRIX_COLS);
-		final Matrix2D matrix = new Matrix2D(rows, cols);
+		final Matrix matrix = new Matrix(rows, cols);
 
 		int row = 0;
 
@@ -227,3 +226,4 @@ public final class PersistorUtil {
 	}
 
 }
+
