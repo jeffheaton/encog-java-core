@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -31,7 +31,7 @@
 package org.encog.matrix;
 
 import org.encog.mathutil.matrices.BiPolarUtil;
-import org.encog.mathutil.matrices.Matrix2D;
+import org.encog.mathutil.matrices.Matrix;
 
 import junit.framework.TestCase;
 
@@ -42,15 +42,15 @@ public class TestBiPolarUtil extends TestCase {
 		// test a 1x4
 		boolean[] booleanData1 = { true, false, true, false };
 		double[] checkData1 = {1,-1,1,-1};
-		Matrix2D matrix1 = Matrix2D.createRowMatrix(BiPolarUtil.bipolar2double(booleanData1));
-		Matrix2D checkMatrix1 = Matrix2D.createRowMatrix(checkData1);
+		Matrix matrix1 = Matrix.createRowMatrix(BiPolarUtil.bipolar2double(booleanData1));
+		Matrix checkMatrix1 = Matrix.createRowMatrix(checkData1);
 		TestCase.assertTrue( matrix1.equals(checkMatrix1));
 		
 		// test a 2x2
 		boolean booleanData2[][] = {{true,false},{false,true}};
 		double checkData2[][] = { {1,-1}, {-1,1} };
-		Matrix2D matrix2 = new Matrix2D(BiPolarUtil.bipolar2double(booleanData2));
-		Matrix2D checkMatrix2 = new Matrix2D(checkData2);
+		Matrix matrix2 = new Matrix(BiPolarUtil.bipolar2double(booleanData2));
+		Matrix checkMatrix2 = new Matrix(checkData2);
 		TestCase.assertTrue(matrix2.equals(checkMatrix2));
 	}
 	
