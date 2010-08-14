@@ -39,11 +39,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import org.encog.engine.network.flat.ActivationFunctions;
+import org.encog.engine.network.flat.FlatLayer;
+import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.activation.ActivationLinear;
+import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.logic.FeedforwardLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.ReflectionUtil;
 import org.slf4j.Logger;
@@ -100,6 +108,16 @@ public class NeuralStructure implements Serializable {
 	 * The next ID to be assigned to a layer.
 	 */
 	private int nextID = 1;
+	
+	/**
+	 * The flattened form of the network.
+	 */
+	private transient FlatNetwork flat;
+	
+	/**
+	 * What type of update is needed to the flat network.
+	 */
+	private transient FlatUpdateNeeded flatUpdate;
 
 	/**
 	 * Construct a structure object for the specified network.
@@ -202,8 +220,15 @@ public class NeuralStructure implements Serializable {
 	 * Build the layer structure.
 	 */
 	private void finalizeLayers() {
+		
+		// no bias values on the input layer
+		if( network.getLogic() instanceof FeedforwardLogic )
+		{
+			Layer inputLayer = this.network.getLayer(BasicNetwork.TAG_INPUT);
+			inputLayer.setBiasWeights(null);
+		}
+		
 		final List<Layer> result = new ArrayList<Layer>();
-
 		this.layers.clear();
 
 		for (final Layer layer : this.network.getLayerTags().values()) {
@@ -256,6 +281,7 @@ public class NeuralStructure implements Serializable {
 		assignID();
 		this.network.getLogic().init(this.network);
 		enforceLimit();
+		flatten();
 	}
 
 	/**
@@ -457,5 +483,76 @@ public class NeuralStructure implements Serializable {
 		}
 		return false;
 	}
+		
+	public void unflattenWeights() {
+		double[] sourceWeights = flat.getWeights();		
+		NetworkCODEC.arrayToNetwork(sourceWeights, network);
+	}
+	
+	
+	public void flatten() {
 
+		this.flat = null;
+		
+		if (ValidateForFlat.canBeFlat(this.network) == null) {
+			FlatLayer[] flatLayers = new FlatLayer[this.getLayers().size()];
+
+			int index = flatLayers.length - 1;
+			for (Layer layer : this.layers) {
+				int activationType = ActivationFunctions.ACTIVATION_LINEAR;
+				
+				Layer nextLayer = null;
+				boolean bias = false;
+				
+				if( layer.getNext().size()>0 )
+				{
+					nextLayer = layer.getNext().get(0).getToLayer();
+					bias = nextLayer.hasBias();
+				}
+
+				if (layer.getActivationFunction() instanceof ActivationLinear) {
+					activationType = ActivationFunctions.ACTIVATION_LINEAR;
+				} else if (layer.getActivationFunction() instanceof ActivationTANH) {
+					activationType = ActivationFunctions.ACTIVATION_TANH;
+				} else if (layer.getActivationFunction() instanceof ActivationSigmoid) {
+					activationType = ActivationFunctions.ACTIVATION_SIGMOID;
+				}
+
+				FlatLayer flatLayer = new FlatLayer(activationType, layer
+						.getNeuronCount(), bias);
+
+				flatLayers[index--] = flatLayer;
+			}
+
+			this.flat = new FlatNetwork(flatLayers);
+			flattenWeights();
+			this.flatUpdate = FlatUpdateNeeded.None;
+		}
+		else
+			this.flatUpdate = FlatUpdateNeeded.Never;
+	}
+	
+	public void flattenWeights()
+	{
+		double[] targetWeights = this.flat.getWeights();
+		double[] sourceWeights = NetworkCODEC.networkToArray(this.network);
+			
+		EngineArray.arrayCopy(sourceWeights,targetWeights);		
+	}
+
+	public FlatUpdateNeeded getFlatUpdate() {
+		return flatUpdate;
+	}
+	
+	public void setFlatUpdate(FlatUpdateNeeded flatUpdate) {
+		this.flatUpdate = flatUpdate;
+	}
+
+
+	public FlatNetwork getFlat() {
+		return flat;
+	}
+	
+	
+	
 }
