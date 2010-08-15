@@ -289,7 +289,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 */
 	@Override
 	public Object clone() {
-		return ObjectCloner.deepCopy(this);
+		BasicNetwork result = (BasicNetwork)ObjectCloner.deepCopy(this);
+		result.getStructure().finalizeStructure();
+		return result;
 	}
 
 	/**
@@ -509,6 +511,8 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 			(new RangeRandomizer(-1, 1)).randomize(this);
 		else
 			(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
+		
+		this.structure.flattenWeights();
 	}
 
 	/**

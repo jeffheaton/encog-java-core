@@ -127,6 +127,7 @@ public class NeuralStructure implements Serializable {
 	 */
 	public NeuralStructure(final BasicNetwork network) {
 		this.network = network;
+		this.flatUpdate = FlatUpdateNeeded.None;
 	}
 
 	/**
@@ -487,6 +488,7 @@ public class NeuralStructure implements Serializable {
 	public void unflattenWeights() {
 		double[] sourceWeights = flat.getWeights();		
 		NetworkCODEC.arrayToNetwork(sourceWeights, network);
+		this.flatUpdate = FlatUpdateNeeded.None;
 	}
 	
 	
@@ -532,12 +534,14 @@ public class NeuralStructure implements Serializable {
 			this.flatUpdate = FlatUpdateNeeded.Never;
 	}
 	
-	public void flattenWeights()
-	{
-		double[] targetWeights = this.flat.getWeights();
-		double[] sourceWeights = NetworkCODEC.networkToArray(this.network);
-			
-		EngineArray.arrayCopy(sourceWeights,targetWeights);		
+	public void flattenWeights() {
+		if (this.flat != null) {
+			double[] targetWeights = this.flat.getWeights();
+			double[] sourceWeights = NetworkCODEC.networkToArray(this.network);
+
+			EngineArray.arrayCopy(sourceWeights, targetWeights);
+			this.flatUpdate = FlatUpdateNeeded.None;
+		}
 	}
 
 	public FlatUpdateNeeded getFlatUpdate() {
@@ -551,6 +555,26 @@ public class NeuralStructure implements Serializable {
 
 	public FlatNetwork getFlat() {
 		return flat;
+	}
+
+	public void updateFlatNetwork() {
+
+		switch (this.flatUpdate) {
+
+		case Flatten:
+			flattenWeights();
+			break;
+
+		case Unflatten:
+			unflattenWeights();
+			break;
+
+		case None:
+		case Never:
+			return;
+		}
+
+		this.flatUpdate = FlatUpdateNeeded.None;
 	}
 	
 	

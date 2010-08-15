@@ -137,14 +137,7 @@ public class GradientUtil {
 
 		int index = 0;
 		for (final Layer layer : this.network.getStructure().getLayers()) {
-			final double layerDeltas[] = getLayerDeltas(layer);
-
-			if (layer.hasBias()) {
-				for (final double layerDelta : layerDeltas) {
-					this.errors[index++] += layerDelta;
-				}
-			}
-
+			
 			for (final Synapse synapse : this.network.getStructure()
 					.getPreviousSynapses(layer)) {
 				if (synapse.getMatrix() != null) {
@@ -185,6 +178,8 @@ public class GradientUtil {
 
 		final NeuralData actual = this.holder.getResult().get(synapse);
 		final double[] actualData = actual.getData();
+		
+		final double layerDeltas[] = getLayerDeltas(synapse.getToLayer());
 
 		for (int x = 0; x < synapse.getToNeuronCount(); x++) {
 			for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
@@ -192,6 +187,10 @@ public class GradientUtil {
 				this.errors[index] += value;
 				fromDeltas[y] += this.weights[index] * toDeltas[x];
 				index++;
+			}
+			
+			if( synapse.getToLayer().hasBias() ) {
+				this.errors[index++] += layerDeltas[x];
 			}
 		}
 

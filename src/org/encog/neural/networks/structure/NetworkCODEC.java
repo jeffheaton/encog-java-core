@@ -69,13 +69,6 @@ public final class NetworkCODEC {
 		int index = 0;
 
 		for (final Layer layer : network.getStructure().getLayers()) {
-			if (layer.hasBias()) {
-				// process layer bias
-				for (int i = 0; i < layer.getNeuronCount(); i++) {
-					layer.setBiasWeight(i, array[index++]);
-				}
-			}
-
 			if (network.getStructure().isConnectionLimited()) {
 				index = NetworkCODEC.processSynapseLimited(network, layer,
 						array, index);
@@ -145,12 +138,6 @@ public final class NetworkCODEC {
 		int index = 0;
 
 		for (final Layer layer : network.getStructure().getLayers()) {
-			// process layer bias
-			if (layer.hasBias()) {
-				for (int i = 0; i < layer.getNeuronCount(); i++) {
-					result[index++] = layer.getBiasWeight(i);
-				}
-			}
 
 			// process synapses
 			for (final Synapse synapse : network.getStructure()
@@ -160,6 +147,11 @@ public final class NetworkCODEC {
 					for (int x = 0; x < synapse.getToNeuronCount(); x++) {
 						for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
 							result[index++] = synapse.getMatrix().get(y, x);
+						}
+						
+						if( synapse.getToLayer().hasBias() )
+						{
+							result[index++] = synapse.getToLayer().getBiasWeights()[x];
 						}
 					}
 				}
@@ -188,6 +180,9 @@ public final class NetworkCODEC {
 				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
 					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
 						synapse.getMatrix().set(y, x, array[result++]);
+					}
+					if( synapse.getToLayer().hasBias() ) {
+						synapse.getToLayer().getBiasWeights()[x]=array[result++];
 					}
 				}
 			}

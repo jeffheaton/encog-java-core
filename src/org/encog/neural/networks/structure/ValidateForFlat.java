@@ -30,6 +30,7 @@
 package org.encog.neural.networks.structure;
 
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
@@ -77,7 +78,8 @@ public final class ValidateForFlat {
 			}
 
 			if (!(layer.getActivationFunction() instanceof ActivationSigmoid)
-					&& !(layer.getActivationFunction() instanceof ActivationTANH)) {
+					&& !(layer.getActivationFunction() instanceof ActivationTANH) 
+					&& !(layer.getActivationFunction() instanceof ActivationLinear)) {
 				return "To convert to flat a network must only use sigmoid, linear or tanh activation.";
 			}
 

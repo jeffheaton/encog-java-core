@@ -30,14 +30,19 @@
 
 package org.encog.neural.networks.training.propagation;
 
+import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
+import org.encog.engine.network.train.TrainFlatNetworkBackPropagation;
+import org.encog.engine.network.train.TrainFlatNetworkManhattan;
 import org.encog.engine.network.train.TrainFlatNetworkResilient;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.neural.networks.structure.ValidateForFlat;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
@@ -168,6 +173,9 @@ public abstract class Propagation extends BasicTraining {
 		try {
 			preIteration();
 
+			if (this.flatTraining == null && this.attemptFlatten==true )
+				attemptFlatten();
+			
 			if (this.flatTraining == null) {
 				final CalculateGradient prop = new CalculateGradient(
 						this.network, getTraining(), getNumThreads());
@@ -180,12 +188,9 @@ public abstract class Propagation extends BasicTraining {
 				NetworkCODEC.arrayToNetwork(weights, this.network);
 				setError(prop.getError());
 			} else {
-				EngineArray.arrayCopy(NetworkCODEC.networkToArray(this.network),
-						this.currentFlatNetwork.getWeights());
 				this.flatTraining.iteration();
-				setError(this.flatTraining.getError());
-				NetworkCODEC.arrayToNetwork(this.currentFlatNetwork
-						.getWeights(), this.network);
+				this.setError(this.flatTraining.getError());
+				this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Unflatten);
 			}
 
 			postIteration();
@@ -196,6 +201,7 @@ public abstract class Propagation extends BasicTraining {
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			EncogValidate.validateNetworkForTraining(this.network,
 					getTraining());
+			throw new EncogError(ex);
 		}
 	}
 	
@@ -249,6 +255,47 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public void setNumThreads(final int numThreads) {
 		this.numThreads = numThreads;
+	}
+	
+	public void attemptFlatten()
+	{
+		if( ValidateForFlat.canBeFlat(this.network)==null )
+		{
+			this.network.getStructure().updateFlatNetwork();
+			
+			if( this instanceof Backpropagation )
+			{
+				this.flatTraining = new TrainFlatNetworkBackPropagation(
+						this.network.getStructure().getFlat(),
+						this.getTraining(),
+						((Backpropagation)this).getLearningRate(),
+						((Backpropagation)this).getMomentum());
+			}
+			else if( this instanceof ResilientPropagation )
+			{
+				this.flatTraining = new TrainFlatNetworkResilient(
+						this.network.getStructure().getFlat(),
+						this.getTraining());
+			}
+			else if( this instanceof ManhattanPropagation )
+			{
+				this.flatTraining = new TrainFlatNetworkManhattan(
+						this.network.getStructure().getFlat(),
+						this.getTraining(),
+						((ManhattanPropagation)this).getLearningRate());
+			}
+		}
+		else
+			this.attemptFlatten = false;
+	}
+	
+	/**
+	 * Should be called after training has completed and the iteration method
+	 * will not be called any further.
+	 */
+	public void finishTraining() {
+		super.finishTraining();
+		this.network.getStructure().updateFlatNetwork();
 	}
 
 }

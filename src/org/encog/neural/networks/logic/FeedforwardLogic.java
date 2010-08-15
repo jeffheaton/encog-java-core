@@ -77,6 +77,8 @@ public class FeedforwardLogic implements NeuralLogic {
 	public NeuralData compute(final NeuralData input,
 			final NeuralOutputHolder useHolder) {
 		NeuralOutputHolder holder;
+		
+		this.network.getStructure().updateFlatNetwork();
 
 		final Layer inputLayer = this.network.getLayer(BasicNetwork.TAG_INPUT);
 
