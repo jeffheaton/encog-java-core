@@ -6,6 +6,7 @@ public class FlatLayer {
 	private final int count;
 	private final boolean bias;
 	private final double slope;
+	private final FlatLayer contextFedBy;
 	
 	public FlatLayer(int activation, int count, boolean bias)
 	{
@@ -13,7 +14,18 @@ public class FlatLayer {
 		this.count = count;
 		this.bias = bias;
 		this.slope = 1;
+		this.contextFedBy = null;
 	}
+	
+	public FlatLayer(int activation, int count, boolean bias, FlatLayer contextFedBy)
+	{
+		this.activation = activation;
+		this.count = count;
+		this.bias = bias;
+		this.slope = 1;
+		this.contextFedBy = contextFedBy;
+	}
+
 	
 	public FlatLayer(int activation, int count, boolean bias, double slope)
 	{
@@ -21,6 +33,16 @@ public class FlatLayer {
 		this.count = count;
 		this.bias = bias;
 		this.slope = slope;
+		this.contextFedBy = null;
+	}
+	
+	public FlatLayer(int activation, int count, boolean bias, double slope, FlatLayer contextFedBy)
+	{
+		this.activation = activation;
+		this.count = count;
+		this.bias = bias;
+		this.slope = slope;
+		this.contextFedBy = contextFedBy;
 	}
 
 	/**
@@ -46,13 +68,26 @@ public class FlatLayer {
 	
 	public int getTotalCount()
 	{
-		return getCount() + (isBias()?1:0);
+		if( this.contextFedBy==null)
+			return getCount() + (isBias()?1:0);
+		else
+			return getCount() + (isBias()?1:0) + this.contextFedBy.getCount();
+	}
+	
+	public int getContectCount()
+	{
+		if( this.contextFedBy==null)
+			return 0;
+		else
+			return this.contextFedBy.getCount();
 	}
 
 	public double getSlope() {
 		return slope;
 	}
-	
-	
-		
+
+	public FlatLayer getContextFedBy() {
+		return contextFedBy;
+	}
+
 }

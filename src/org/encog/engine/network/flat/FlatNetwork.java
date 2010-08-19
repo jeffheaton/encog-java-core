@@ -76,6 +76,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 */
 	private int[] layerCounts;
 	
+	private int[] layerContextCount;
+	
 	private int[] layerFeedCounts;
 
 	/**
@@ -112,6 +114,9 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	
 	
 	private double[] slope;
+	
+	private int[] contextTargetOffset;
+	private int[] contextTargetSize;
 	
 	public FlatNetwork()
 	{
@@ -174,11 +179,14 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		this.outputCount = layers[layerCount-1].getCount();
 
 		this.layerCounts = new int[layerCount];
+		this.layerContextCount = new int[layerCount];
 		this.weightIndex = new int[layerCount];
 		this.layerIndex = new int[layerCount];
 		this.activationType = new int[layerCount];
 		this.layerFeedCounts = new int[layerCount];
 		this.slope = new double[layerCount];
+		this.contextTargetOffset = new int[layerCount];
+		this.contextTargetSize = new int[layerCount];
 		
 		int index = 0;
 		int neuronCount = 0;
@@ -194,6 +202,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			
 			this.layerCounts[index] = layer.getTotalCount();
 			this.layerFeedCounts[index] = layer.getCount();
+			this.layerContextCount[index] = layer.getContectCount();
 			this.activationType[index] = layer.getActivation();
 			this.slope[index] = layer.getSlope();
 
@@ -211,6 +220,17 @@ public class FlatNetwork implements EngineNeuralNetwork {
 				this.layerIndex[index] = this.layerIndex[index - 1]
 						+ this.layerCounts[index - 1];
 			}
+			
+			int neuronIndex = 0;
+			for(int j=layers.length-1;j>=0;j--)
+			{
+				if( layers[j].getContextFedBy()==layer)
+				{
+					this.contextTargetSize[i] = layers[j].getContectCount();
+					this.contextTargetOffset[i] = neuronIndex+layers[j].getTotalCount()-layers[j].getContectCount();
+				}
+				neuronIndex+=layers[j].getTotalCount();
+			}
 
 			index++;
 		}
@@ -218,6 +238,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		this.weights = new double[weightCount];
 		this.layerOutput = new double[neuronCount];
 
+		initLayerOutput();
 	}
 
 	/**
@@ -253,6 +274,9 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		result.layerIndex = EngineArray.arrayCopy(this.layerIndex);
 		result.layerOutput = EngineArray.arrayCopy(this.layerOutput);
 		result.layerFeedCounts = EngineArray.arrayCopy(this.layerFeedCounts);
+		result.contextTargetOffset = EngineArray.arrayCopy(this.contextTargetOffset);
+		result.contextTargetSize = EngineArray.arrayCopy(this.contextTargetSize);
+		result.layerContextCount = EngineArray.arrayCopy(this.layerContextCount);
 		result.outputCount = this.outputCount;
 		result.weightIndex = this.weightIndex;
 		result.weights = weights;
@@ -270,7 +294,6 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	public void compute(final double[] input, final double[] output) {
 		final int sourceIndex = this.layerOutput.length - this.layerCounts[this.layerCounts.length-1];
 
-		EngineArray.fill(this.layerOutput, 1);
 		EngineArray.arrayCopy(input, 0, this.layerOutput, sourceIndex,
 				this.inputCount);
 
@@ -279,6 +302,34 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		}
 
 		EngineArray.arrayCopy(this.layerOutput, 0, output, 0, this.outputCount);
+	}
+	
+	private void initLayerOutput()
+	{
+		int index = 0;
+		
+		for (int i = 0; i < this.layerIndex.length; i++) {
+			
+			boolean hasBias = (this.layerContextCount[i]+this.layerFeedCounts[i])!=this.layerCounts[i];
+			
+			// fill in regular neurons
+			for(int j=0;j<this.layerFeedCounts[i];j++)
+			{
+				this.layerOutput[index++] = 0;
+			}
+			
+			// fill in the bias
+			if( hasBias )
+			{
+				this.layerOutput[index++] = 1.0;
+			}
+			
+			// fill in context
+			for(int j=0;j<this.layerContextCount[i];j++)
+			{
+				this.layerOutput[index++] = 0;
+			}
+		}
 	}
 
 	/**
@@ -310,6 +361,11 @@ public class FlatNetwork implements EngineNeuralNetwork {
 					.calculateActivation(this.activationType[currentLayer-1],
 							this.layerOutput[outputIndex + x],this.slope[currentLayer-1]);
 		}
+		
+		// update context values
+		int offset = this.contextTargetOffset[currentLayer];
+		for(int x=0;x<this.contextTargetSize[currentLayer];x++)
+			this.layerOutput[offset+x]=this.layerOutput[outputIndex+x];
 	}
 
 	/**

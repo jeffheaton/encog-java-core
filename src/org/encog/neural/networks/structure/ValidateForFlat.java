@@ -34,6 +34,8 @@ import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 
 /**
@@ -67,24 +69,21 @@ public final class ValidateForFlat {
 			return "To convert to a flat network, there must be an output layer.";
 		}
 
-		if (network.getStructure().isRecurrent()) {
-			return "To convert to a flat network there cannot be context layers.";
-		}
-
 		for (final Layer layer : network.getStructure().getLayers()) {
 			// only feedforward
-			if (layer.getNext().size() > 1) {
-				return "To convert to flat a network must be feedforward only.";
+			if (layer.getNext().size() > 2) {
+				return "To convert to flat a network must have at most two outbound synapses.";
+			}
+			
+			
+			if (layer.getClass()!=ContextLayer.class && layer.getClass()!=BasicLayer.class ) {
+				return "To convert to flat a network must have only BasicLayer and ContextLayer layers.";
 			}
 
 			if (!(layer.getActivationFunction() instanceof ActivationSigmoid)
 					&& !(layer.getActivationFunction() instanceof ActivationTANH) 
 					&& !(layer.getActivationFunction() instanceof ActivationLinear)) {
 				return "To convert to flat a network must only use sigmoid, linear or tanh activation.";
-			}
-
-			if (!layer.hasBias() && (layer != inputLayer)) {
-				return "To convert to flat, all non-input layers must have bias weight values.";
 			}
 		}
 		return null;

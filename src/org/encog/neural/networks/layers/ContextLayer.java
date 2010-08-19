@@ -86,9 +86,8 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	 * @param neuronCount
 	 *            The neuron count to use.
 	 */
-	public ContextLayer(final ActivationFunction activationFunction,
-			final boolean hasBias, final int neuronCount) {
-		super(activationFunction, hasBias, neuronCount);
+	public ContextLayer(final ActivationFunction activationFunction, final int neuronCount) {
+		super(activationFunction, false, neuronCount);
 		this.context = new BasicNeuralData(neuronCount);
 	}
 
@@ -100,7 +99,7 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	 *            The number of neurons on this layer.
 	 */
 	public ContextLayer(final int neuronCount) {
-		this(new ActivationTANH(), true, neuronCount);
+		this(new ActivationTANH(), neuronCount);
 	}
 
 	/**

@@ -104,17 +104,7 @@ public class ContextLayerPersistor implements Persistor {
 		if (neuronCount > 0) {
 			ContextLayer layer;
 
-			if (threshold == null) {
-				layer = new ContextLayer(activation, false, neuronCount);
-			} else {
-				final double[] t = NumberList.fromList(CSVFormat.EG_FORMAT,
-						threshold);
-				layer = new ContextLayer(activation, true, neuronCount);
-				for (int i = 0; i < t.length; i++) {
-					layer.setBiasWeight(i, t[i]);
-				}
-				layer.setBiasActivation(biasActivation);
-			}
+			layer = new ContextLayer(activation, neuronCount);
 
 			if (context != null) {
 				final double[] t = NumberList.fromList(CSVFormat.EG_FORMAT,

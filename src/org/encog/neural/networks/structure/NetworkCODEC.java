@@ -32,6 +32,8 @@ package org.encog.neural.networks.structure;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
@@ -73,7 +75,7 @@ public final class NetworkCODEC {
 				index = NetworkCODEC.processSynapseLimited(network, layer,
 						array, index);
 			} else {
-				index = NetworkCODEC.processSynapseFull(network, layer, array,
+				index = NetworkCODEC.processLayerFull(network, layer, array,
 						index);
 			}
 		}
@@ -139,23 +141,31 @@ public final class NetworkCODEC {
 
 		for (final Layer layer : network.getStructure().getLayers()) {
 
-			// process synapses
-			for (final Synapse synapse : network.getStructure()
-					.getPreviousSynapses(layer)) {
-				if (synapse.getMatrix() != null) {
-					// process each weight matrix
-					for (int x = 0; x < synapse.getToNeuronCount(); x++) {
-						for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-							result[index++] = synapse.getMatrix().get(y, x);
-						}
-						
-						if( synapse.getToLayer().hasBias() )
-						{
-							result[index++] = synapse.getToLayer().getBiasWeights()[x];
+			Synapse synapse = network.getStructure()
+					.findPreviousSynapseByLayerType(layer, BasicLayer.class);
+			Synapse contextSynapse = network.getStructure().findPreviousSynapseByLayerType(
+					layer, ContextLayer.class);
+
+			if ( synapse!=null && synapse.getMatrix() != null) {
+				// process each weight matrix
+				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+						result[index++] = synapse.getMatrix().get(y, x);
+					}
+
+					if (synapse.getToLayer().hasBias()) {
+						result[index++] = synapse.getToLayer().getBiasWeights()[x];
+					}
+					
+					if( contextSynapse!=null )
+					{
+						for(int z=0;z<synapse.getToNeuronCount();z++) {
+							result[index++] = contextSynapse.getMatrix().get(z, x);
 						}
 					}
 				}
 			}
+
 		}
 
 		return result;
@@ -169,22 +179,33 @@ public final class NetworkCODEC {
 	 * @param index The current index.
 	 * @return The index after this synapse has been read.
 	 */
-	private static int processSynapseFull(final BasicNetwork network,
+	private static int processLayerFull(final BasicNetwork network,
 			final Layer layer, final double[] array, final int index) {
 		int result = index;
 		// process synapses
-		for (final Synapse synapse : network.getStructure()
-				.getPreviousSynapses(layer)) {
-			if (synapse.getMatrix() != null) {
-				// process each weight matrix
-				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
-					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
-						synapse.getMatrix().set(y, x, array[result++]);
-					}
-					if( synapse.getToLayer().hasBias() ) {
-						synapse.getToLayer().getBiasWeights()[x]=array[result++];
+
+		Synapse synapse = network.getStructure()
+				.findPreviousSynapseByLayerType(layer, BasicLayer.class);
+		Synapse contextSynapse = network.getStructure()
+				.findPreviousSynapseByLayerType(layer, ContextLayer.class);
+
+		if (synapse != null && synapse.getMatrix() != null) {
+			// process each weight matrix
+			for (int x = 0; x < synapse.getToNeuronCount(); x++) {
+				for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
+					synapse.getMatrix().set(y, x, array[result++]);
+				}
+				if (synapse.getToLayer().hasBias()) {
+					synapse.getToLayer().getBiasWeights()[x] = array[result++];
+				}
+				
+				if( contextSynapse!=null )
+				{
+					for(int z=0;z<synapse.getToNeuronCount();z++) {
+						contextSynapse.getMatrix().set(z, x, array[result++] ); 
 					}
 				}
+
 			}
 		}
 

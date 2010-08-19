@@ -49,6 +49,7 @@ import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.FeedforwardLogic;
@@ -491,16 +492,50 @@ public class NeuralStructure implements Serializable {
 		this.flatUpdate = FlatUpdateNeeded.None;
 	}
 	
+	private int countNonContext()
+	{
+		int result = 0;
+		
+		for(Layer layer: this.getLayers() ) {
+			if( layer.getClass()!=ContextLayer.class )
+				result++;
+		}
+		
+		return result;
+	}
+	
+	public Synapse findPreviousSynapseByLayerType(Layer layer, Class<? extends Layer> type)
+	{
+		for( Synapse synapse : this.getPreviousSynapses(layer) ) {
+			if( synapse.getFromLayer().getClass()==type )
+				return synapse;
+		}
+		return null;
+	}
+	
+	public Synapse findNextSynapseByLayerType(Layer layer, Class<? extends Layer> type)
+	{
+		for( Synapse synapse : layer.getNext() ) {
+			if( synapse.getToLayer().getClass()==type )
+				return synapse;
+		}
+		return null;
+	}
 	
 	public void flatten() {
 
+		FlatLayer lastContextFed = null;
 		this.flat = null;
 		
 		if (ValidateForFlat.canBeFlat(this.network) == null) {
-			FlatLayer[] flatLayers = new FlatLayer[this.getLayers().size()];
+			FlatLayer[] flatLayers = new FlatLayer[countNonContext()];
 
 			int index = flatLayers.length - 1;
 			for (Layer layer : this.layers) {
+				
+				if( layer instanceof ContextLayer )
+					continue;
+				
 				int activationType = ActivationFunctions.ACTIVATION_LINEAR;
 				
 				Layer nextLayer = null;
@@ -508,7 +543,8 @@ public class NeuralStructure implements Serializable {
 				
 				if( layer.getNext().size()>0 )
 				{
-					nextLayer = layer.getNext().get(0).getToLayer();
+					nextLayer = network.getStructure().findNextSynapseByLayerType(layer, BasicLayer.class).getToLayer();
+					// layer.getNext().get(0).getToLayer();
 					bias = nextLayer.hasBias();
 				}
 
@@ -521,9 +557,12 @@ public class NeuralStructure implements Serializable {
 				}
 
 				FlatLayer flatLayer = new FlatLayer(activationType, layer
-						.getNeuronCount(), bias);
+						.getNeuronCount(), bias, lastContextFed );
 
 				flatLayers[index--] = flatLayer;
+				
+				if( this.findPreviousSynapseByLayerType(layer, ContextLayer.class)!=null )
+					lastContextFed = flatLayer;
 			}
 
 			this.flat = new FlatNetwork(flatLayers);
