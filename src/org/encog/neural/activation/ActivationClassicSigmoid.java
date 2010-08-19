@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.4
+ * Encog(tm) Core v2.5 
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -38,7 +38,7 @@ import org.encog.persist.Persistor;
  * numbers are generated. Do not use this activation function if negative number
  * output is desired.
  */
-public class ActivationSigmoid extends BasicActivationFunction {
+public class ActivationClassicSigmoid extends BasicActivationFunction {
 	/**
 	 * Serial id for this class.
 	 */
@@ -65,7 +65,7 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationSigmoid();
+		return new ActivationClassicSigmoid();
 	}
 
 	/**

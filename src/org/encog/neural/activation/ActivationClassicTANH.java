@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.4
+ * Encog(tm) Core v2.5 
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -34,15 +34,32 @@ import org.encog.engine.util.BoundMath;
 import org.encog.persist.Persistor;
 
 /**
- * The sigmoid activation function takes on a sigmoidal shape. Only positive
- * numbers are generated. Do not use this activation function if negative number
+ * The hyperbolic tangent activation function takes the curved shape of the
+ * hyperbolic tangent. This activation function produces both positive and
+ * negative output. Use this activation function if both negative and positive
  * output is desired.
+ * 
+ * This implementation does an approximation of the TANH function, using only a
+ * single base e exponent. This has a considerable effect on performance, adds
+ * only minimal change to the output compared to a standard TANH calculation.
  */
-public class ActivationSigmoid extends BasicActivationFunction {
+public class ActivationClassicTANH extends BasicActivationFunction {
+
 	/**
 	 * Serial id for this class.
 	 */
-	private static final long serialVersionUID = 5622349801036468572L;
+	private static final long serialVersionUID = 9121998892720207643L;
+
+	/**
+	 * Internal activation function that performs the TANH.
+	 * 
+	 * @param d
+	 *            The input value.
+	 * @return The output value.
+	 */
+	private double activationFunction(final double d) {
+		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
+	}
 
 	/**
 	 * Implements the activation function. The array is modified according to
@@ -55,7 +72,7 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	public void activationFunction(final double[] d) {
 
 		for (int i = 0; i < d.length; i++) {
-			d[i] = 1.0 / (1 + BoundMath.exp(-1.0 * d[i]));
+			d[i] = activationFunction(d[i]);
 		}
 
 	}
@@ -65,7 +82,7 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationSigmoid();
+		return new ActivationClassicTANH();
 	}
 
 	/**
@@ -81,15 +98,15 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	public void derivativeFunction(final double[] d) {
 
 		for (int i = 0; i < d.length; i++) {
-			d[i] = d[i] * (1.0 - d[i]);
+			d[i] = 1 - (d[i] * d[i]);
 		}
-
 	}
 
 	/**
-	 * @return Return true, sigmoid has a derivative.
+	 * @return Return true, TANH has a derivative.
 	 */
 	public boolean hasDerivative() {
 		return true;
 	}
+
 }

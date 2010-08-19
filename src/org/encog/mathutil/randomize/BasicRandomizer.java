@@ -61,6 +61,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 */
 	public void randomize(final BasicNetwork network) {
 
+		network.getStructure().updateFlatNetwork();
 		// randomize the weight matrix
 		for (final Synapse synapse : network.getStructure().getSynapses()) {
 			if (synapse.getMatrix() != null) {
@@ -74,6 +75,7 @@ public abstract class BasicRandomizer implements Randomizer {
 				randomize(layer.getBiasWeights());
 			}
 		}
+		network.getStructure().flattenWeights();		
 	}
 
 	/**

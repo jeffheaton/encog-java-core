@@ -1,5 +1,5 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  * 
@@ -98,7 +98,7 @@ public class ActivationTANH extends BasicActivationFunction {
 	public void derivativeFunction(final double[] d) {
 
 		for (int i = 0; i < d.length; i++) {
-			d[i] = 1 - (d[i] * d[i]);
+			d[i] = (1 + d[i]) * (1 - d[i]);
 		}
 	}
 
