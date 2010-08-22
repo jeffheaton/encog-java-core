@@ -32,6 +32,7 @@ package org.encog.neural.networks.logic;
 
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.neural.networks.layers.Layer;
@@ -78,6 +79,13 @@ public class FeedforwardLogic implements NeuralLogic {
 			final NeuralOutputHolder useHolder) {
 		NeuralOutputHolder holder;
 		
+		if( useHolder==null && this.network.getStructure().getFlat()!=null ) {
+			this.network.getStructure().updateFlatNetwork();
+			NeuralData result = new BasicNeuralData(this.network.getStructure().getFlat().getOutputCount());
+			this.network.getStructure().getFlat().compute(input.getData(), result.getData());
+			return result;
+		}
+		
 		this.network.getStructure().updateFlatNetwork();
 
 		final Layer inputLayer = this.network.getLayer(BasicNetwork.TAG_INPUT);
@@ -118,10 +126,11 @@ public class FeedforwardLogic implements NeuralLogic {
 				FeedforwardLogic.LOGGER.debug(
 						"Processing layer: {}, input= {}", layer, input);
 			}
+			
+			this.network.getStructure().updateFlatNetwork();
 
 			// typically used to process any recurrent layers that feed into
-			// this
-			// layer.
+			// this layer.
 			preprocessLayer(layer, input, source);
 
 			for (final Synapse synapse : layer.getNext()) {

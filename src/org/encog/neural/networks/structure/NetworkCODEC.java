@@ -79,6 +79,8 @@ public final class NetworkCODEC {
 						index);
 			}
 		}
+		
+		network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
 	/**
@@ -159,7 +161,7 @@ public final class NetworkCODEC {
 					
 					if( contextSynapse!=null )
 					{
-						for(int z=0;z<synapse.getToNeuronCount();z++) {
+						for(int z=0;z<synapse.getFromNeuronCount();z++) {
 							result[index++] = contextSynapse.getMatrix().get(z, x);
 						}
 					}
@@ -201,7 +203,7 @@ public final class NetworkCODEC {
 				
 				if( contextSynapse!=null )
 				{
-					for(int z=0;z<synapse.getToNeuronCount();z++) {
+					for(int z=0;z<synapse.getFromNeuronCount();z++) {
 						contextSynapse.getMatrix().set(z, x, array[result++] ); 
 					}
 				}

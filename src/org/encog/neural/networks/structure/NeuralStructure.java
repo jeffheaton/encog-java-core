@@ -34,8 +34,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
@@ -43,6 +45,7 @@ import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.network.flat.FlatLayer;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.util.EngineArray;
+import org.encog.engine.util.ObjectPair;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
@@ -524,52 +527,82 @@ public class NeuralStructure implements Serializable {
 	
 	public void flatten() {
 
-		FlatLayer lastContextFed = null;
+		Map<Layer, FlatLayer> regular2flat = new HashMap<Layer, FlatLayer>();
+		List<ObjectPair<Layer, Layer>> contexts = new ArrayList<ObjectPair<Layer, Layer>>();
 		this.flat = null;
-		
+
 		if (ValidateForFlat.canBeFlat(this.network) == null) {
 			FlatLayer[] flatLayers = new FlatLayer[countNonContext()];
 
 			int index = flatLayers.length - 1;
 			for (Layer layer : this.layers) {
-				
-				if( layer instanceof ContextLayer )
-					continue;
-				
-				int activationType = ActivationFunctions.ACTIVATION_LINEAR;
-				
-				Layer nextLayer = null;
-				boolean bias = false;
-				
-				if( layer.getNext().size()>0 )
-				{
-					nextLayer = network.getStructure().findNextSynapseByLayerType(layer, BasicLayer.class).getToLayer();
-					// layer.getNext().get(0).getToLayer();
-					bias = nextLayer.hasBias();
+
+				if (layer instanceof ContextLayer) {
+					Synapse inboundSynapse = network.getStructure()
+							.findPreviousSynapseByLayerType(layer,
+									BasicLayer.class);
+					Synapse outboundSynapse = network
+							.getStructure()
+							.findNextSynapseByLayerType(layer, BasicLayer.class);
+
+					if (inboundSynapse == null)
+						throw new NeuralNetworkError(
+								"Context layer must be connected to by one BasicLayer.");
+
+					if (outboundSynapse == null)
+						throw new NeuralNetworkError(
+								"Context layer must connect to by one BasicLayer.");
+
+					Layer inbound = inboundSynapse.getFromLayer();
+					Layer outbound = outboundSynapse.getToLayer();
+
+					contexts.add(new ObjectPair<Layer, Layer>(inbound, outbound));
+				} else {
+					int activationType = ActivationFunctions.ACTIVATION_LINEAR;
+
+					boolean bias = false;
+
+					if (layer.getNext().size() > 0) {
+						Synapse synapse = network.getStructure()
+								.findNextSynapseByLayerType(layer,
+										BasicLayer.class);
+						if (synapse != null) {
+							Layer nextLayer = synapse.getToLayer();
+							// layer.getNext().get(0).getToLayer();
+							bias = nextLayer.hasBias();
+						}
+					}
+
+					if (layer.getActivationFunction() instanceof ActivationLinear) {
+						activationType = ActivationFunctions.ACTIVATION_LINEAR;
+					} else if (layer.getActivationFunction() instanceof ActivationTANH) {
+						activationType = ActivationFunctions.ACTIVATION_TANH;
+					} else if (layer.getActivationFunction() instanceof ActivationSigmoid) {
+						activationType = ActivationFunctions.ACTIVATION_SIGMOID;
+					}
+
+					FlatLayer flatLayer = new FlatLayer(activationType,
+							layer.getNeuronCount(), bias);
+
+					regular2flat.put(layer, flatLayer);
+					flatLayers[index--] = flatLayer;
 				}
-
-				if (layer.getActivationFunction() instanceof ActivationLinear) {
-					activationType = ActivationFunctions.ACTIVATION_LINEAR;
-				} else if (layer.getActivationFunction() instanceof ActivationTANH) {
-					activationType = ActivationFunctions.ACTIVATION_TANH;
-				} else if (layer.getActivationFunction() instanceof ActivationSigmoid) {
-					activationType = ActivationFunctions.ACTIVATION_SIGMOID;
-				}
-
-				FlatLayer flatLayer = new FlatLayer(activationType, layer
-						.getNeuronCount(), bias, lastContextFed );
-
-				flatLayers[index--] = flatLayer;
-				
-				if( this.findPreviousSynapseByLayerType(layer, ContextLayer.class)!=null )
-					lastContextFed = flatLayer;
+			}
+			
+			// now link up the context layers
+			for(ObjectPair<Layer, Layer> context: contexts)
+			{
+				Layer layer = context.getB();
+				Synapse synapse = this.network.getStructure().findPreviousSynapseByLayerType(layer, BasicLayer.class);
+				FlatLayer from = regular2flat.get(context.getA());
+				FlatLayer to = regular2flat.get(synapse.getFromLayer());
+				to.setContextFedBy(from);
 			}
 
 			this.flat = new FlatNetwork(flatLayers);
 			flattenWeights();
 			this.flatUpdate = FlatUpdateNeeded.None;
-		}
-		else
+		} else
 			this.flatUpdate = FlatUpdateNeeded.Never;
 	}
 	
