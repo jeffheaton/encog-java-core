@@ -30,6 +30,9 @@
 
 package org.encog.neural.networks.structure;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
@@ -147,6 +150,12 @@ public final class NetworkCODEC {
 					.findPreviousSynapseByLayerType(layer, BasicLayer.class);
 			Synapse contextSynapse = network.getStructure().findPreviousSynapseByLayerType(
 					layer, ContextLayer.class);
+			
+			List<Synapse> list = network.getStructure().getPreviousSynapses(layer);
+			
+			if( synapse==null && contextSynapse==null && list.size()>0 ) {
+				synapse = list.get(0);
+			}
 
 			if ( synapse!=null && synapse.getMatrix() != null) {
 				// process each weight matrix
@@ -190,7 +199,13 @@ public final class NetworkCODEC {
 				.findPreviousSynapseByLayerType(layer, BasicLayer.class);
 		Synapse contextSynapse = network.getStructure()
 				.findPreviousSynapseByLayerType(layer, ContextLayer.class);
-
+		
+		List<Synapse> list = network.getStructure().getPreviousSynapses(layer);
+		
+		if( synapse==null && contextSynapse==null && list.size()>0 ) {
+			synapse = list.get(0);
+		}
+		
 		if (synapse != null && synapse.getMatrix() != null) {
 			// process each weight matrix
 			for (int x = 0; x < synapse.getToNeuronCount(); x++) {
