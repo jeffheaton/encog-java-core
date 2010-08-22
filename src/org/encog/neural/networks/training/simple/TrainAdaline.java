@@ -37,6 +37,7 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
@@ -137,6 +138,8 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 				t += this.learningRate * diff;
 				outputLayer.setBiasWeight(currentAdaline, t);
 			}
+			
+			this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 
 			errorCalculation.updateError(output.getData(), pair.getIdeal().getData());
 		}
