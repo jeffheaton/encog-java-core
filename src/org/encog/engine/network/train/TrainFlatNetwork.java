@@ -307,6 +307,7 @@ public abstract class TrainFlatNetwork {
 			init();
 		}
 		
+		network.initLayerOutput();
 		this.totalError = 0;
 
 		if (this.workers.length > 1) {

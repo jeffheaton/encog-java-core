@@ -19,6 +19,16 @@ public class ActivationFunctions {
 	 */
 	public static final int ACTIVATION_SIGMOID = 2;
 	
+	/**
+	 * A TANH activation function.
+	 */
+	public static final int ACTIVATION_CLASSIC_TANH = 3;
+
+	/**
+	 * A sigmoid activation function.
+	 */
+	public static final int ACTIVATION_CLASSIC_SIGMOID = 4;
+	
 	
 	/**
 	 * Calculate an activation.
@@ -31,9 +41,13 @@ public class ActivationFunctions {
 		case ActivationFunctions.ACTIVATION_LINEAR:
 			return x*slope;
 		case ActivationFunctions.ACTIVATION_TANH:
+			return -1.0 + (2 / (1 + BoundMath.exp(-2 * x)));
+		case ActivationFunctions.ACTIVATION_SIGMOID:
+			return 1.0 / (1 + BoundMath.exp(-1.0 * x));
+		case ActivationFunctions.ACTIVATION_CLASSIC_TANH:
 			double z = BoundMath.exp(-slope * x);
 			return (1d - z) / (1d + z);
-		case ActivationFunctions.ACTIVATION_SIGMOID:
+		case ActivationFunctions.ACTIVATION_CLASSIC_SIGMOID:
 			return 1.0 / (1.0 + BoundMath.exp(-slope * x));
 		default:
 			throw new EncogEngineError("Unknown activation type: " + type);
@@ -53,9 +67,14 @@ public class ActivationFunctions {
 		case ActivationFunctions.ACTIVATION_LINEAR:
 			return 1;
 		case ActivationFunctions.ACTIVATION_TANH:
+			return (1 + x) * (1 - x);
+		case ActivationFunctions.ACTIVATION_SIGMOID:
+			out = calculateActivation(type,x,slope);
+			return slope * out * (1d - out);
+		case ActivationFunctions.ACTIVATION_CLASSIC_TANH:
 			out = calculateActivation(type,x,slope);
 			return (slope * (1d - out * out));
-		case ActivationFunctions.ACTIVATION_SIGMOID:
+		case ActivationFunctions.ACTIVATION_CLASSIC_SIGMOID:
 			out = calculateActivation(type,x,slope);
 			return slope * out * (1d - out);
 		default:

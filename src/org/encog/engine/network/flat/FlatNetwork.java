@@ -304,7 +304,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		EngineArray.arrayCopy(this.layerOutput, 0, output, 0, this.outputCount);
 	}
 	
-	private void initLayerOutput()
+	public void initLayerOutput()
 	{
 		int index = 0;
 		

@@ -6,7 +6,7 @@ public class FlatLayer {
 	private final int count;
 	private final boolean bias;
 	private final double slope;
-	private final FlatLayer contextFedBy;
+	private FlatLayer contextFedBy;
 	
 	public FlatLayer(int activation, int count, boolean bias)
 	{
@@ -89,5 +89,26 @@ public class FlatLayer {
 	public FlatLayer getContextFedBy() {
 		return contextFedBy;
 	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[FlatLayer: count=");
+		result.append(this.count);
+		result.append(",bias=");
+		result.append(this.bias);
+		if( this.contextFedBy!=null ) {
+			result.append(",contextFed=");
+			if( this.contextFedBy==this )
+				result.append("itself");
+			else
+				result.append(this.contextFedBy);
+		}
+		result.append("]");
+		return result.toString();
+	}
 
+	public void setContextFedBy(FlatLayer from) {
+		this.contextFedBy = from;
+	}
 }
