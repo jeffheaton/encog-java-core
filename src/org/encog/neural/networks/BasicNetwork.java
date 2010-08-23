@@ -687,4 +687,28 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 		this.encogCollection = collection; 
 	}
 
+	/**
+	 * @return The number of input neurons, or zero if this network type does
+	 *         not support input neurons.
+	 */
+	public int getInputCount() {
+		Layer layer = this.layerTags.get(BasicNetwork.TAG_INPUT);
+		if( layer==null )
+			return 0;
+		else
+			return layer.getNeuronCount();
+	}
+
+	/**
+	 * @return The number of output neurons, or zero if this network type does
+	 *         not support output neurons.
+	 */
+	public int getOutputCount() {
+		Layer layer = this.layerTags.get(BasicNetwork.TAG_OUTPUT);
+		if( layer==null )
+			return 0;
+		else
+			return layer.getNeuronCount();
+	}
+
 }
