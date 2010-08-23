@@ -48,6 +48,7 @@ import org.encog.script.EncogScript;
 public class EncogScriptPersistor implements Persistor {
 
 	public static final String TAG_SOURCE = "source";
+	public static final String ATTRIBUTE_LANGUAGE = "language";
 	
 	/**
 	 * Load the specified Encog object from an XML reader.
@@ -80,6 +81,8 @@ public class EncogScriptPersistor implements Persistor {
 	
 	private void handleSource(final ReadXML in, EncogScript script)
 	{
+		String language = in.getTag().getAttributeValue(ATTRIBUTE_LANGUAGE);
+		script.setLanguage(language);
 		in.readToTag();		
 		final String text = in.getTag().getName();
 		script.setSource(text);
@@ -98,6 +101,7 @@ public class EncogScriptPersistor implements Persistor {
 		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_SCRIPT, out,
 				obj, true);
 		final EncogScript text = (EncogScript) obj;
+		out.addAttribute(ATTRIBUTE_LANGUAGE, text.getLanguage());
 		out.beginTag(TAG_SOURCE);
 		out.addCDATA(text.getSource());
 		out.endTag();

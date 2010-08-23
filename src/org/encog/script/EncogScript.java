@@ -45,9 +45,12 @@ import org.encog.persist.persistors.EncogScriptPersistor;
  */
 public class EncogScript implements EncogPersistedObject {
 
+	public static final String TYPE_JAVASCRIPT = "JavaScript";
+	
 	private String name;
 	private String description;
 	private String source;
+	private String language = TYPE_JAVASCRIPT;
 	
 	/**
 	 * The Encog collection this object belongs to, or null if none.
@@ -109,6 +112,24 @@ public class EncogScript implements EncogPersistedObject {
 	public void setCollection(EncogCollection collection) {
 		this.encogCollection = collection; 
 	}
-	
 
+	/**
+	 * @return the language
+	 */
+	public String getLanguage() {
+		return language;
+	}
+
+	/**
+	 * @param language the language to set
+	 */
+	public void setLanguage(String language) {
+		this.language = language;
+	}
+
+	public void run() {
+		EncogScriptEngine engine = EncogScriptEngineFactory.createEngine(this);
+		engine.run(this);		
+	}	
+	
 }
