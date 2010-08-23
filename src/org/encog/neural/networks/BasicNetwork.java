@@ -275,7 +275,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 		
 		this.structure.updateFlatNetwork();
 		if( this.structure.getFlat()!=null )
-			this.clearContext();
+			this.structure.getFlat().clearContext();
 	}
 
 	/**
