@@ -50,11 +50,6 @@ import org.slf4j.LoggerFactory;
 public class ContextLayerPersistor implements Persistor {
 
 	/**
-	 * Context tag.
-	 */
-	public static final String PROPERTY_CONTEXT = "context";
-
-	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
@@ -92,8 +87,6 @@ public class ContextLayerPersistor implements Persistor {
 				y = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_THRESHOLD, true)) {
 				threshold = in.readTextToTag();
-			} else if (in.is(ContextLayerPersistor.PROPERTY_CONTEXT, true)) {
-				context = in.readTextToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, true)) {
 				biasActivation = Double.parseDouble(in.readTextToTag());
 			} else if (in.is(end, false)) {
@@ -149,12 +142,6 @@ public class ContextLayerPersistor implements Persistor {
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());			
 		}
-
-		final StringBuilder result = new StringBuilder();
-		NumberList.toList(CSVFormat.EG_FORMAT, result, layer.getContext()
-				.getData());
-		out.addProperty(ContextLayerPersistor.PROPERTY_CONTEXT, result
-				.toString());
 
 		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
 		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);

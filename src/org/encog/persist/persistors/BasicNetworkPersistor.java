@@ -34,7 +34,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.ART1Logic;
 import org.encog.neural.networks.logic.BAMLogic;
@@ -49,6 +51,8 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
+import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
 
 /**
  * The Encog persistor used to persist the BasicNetwork class.
@@ -76,6 +80,8 @@ public class BasicNetworkPersistor implements Persistor {
 	 * The properties tag.
 	 */
 	public static final String TAG_PROPERTIES = "properties";
+	
+	public static final String TAG_OUTPUT = "layerOutput";
 
 	/**
 	 * The tags tag.
@@ -345,6 +351,7 @@ public class BasicNetworkPersistor implements Persistor {
 	 */
 	public EncogPersistedObject load(final ReadXML in) {
 
+		double[] output = null;
 		final String name = in.getTag().getAttributes().get(
 				EncogPersistedCollection.ATTRIBUTE_NAME);
 		final String description = in.getTag().getAttributes().get(
@@ -365,6 +372,8 @@ public class BasicNetworkPersistor implements Persistor {
 				handleLogic(in);
 			} else if (in.is(BasicNetworkPersistor.TAG_TAGS, true)) {
 				handleTags(in);
+			} else if (in.is(BasicNetworkPersistor.TAG_OUTPUT, true)) {
+				output = handleOutput(in);
 			} else if (in.is(EncogPersistedCollection.TYPE_BASIC_NET, false)) {
 				break;
 			}
@@ -402,6 +411,7 @@ public class BasicNetworkPersistor implements Persistor {
 		saveProperties(out);
 		saveTags(out);
 		saveLogic(out);
+		saveOutput(out);
 
 		out.endTag();
 	}
@@ -499,5 +509,23 @@ public class BasicNetworkPersistor implements Persistor {
 			out.endTag();
 		}
 		out.endTag();
+	}
+	
+	private void saveOutput(final WriteXML out) {
+		FlatNetwork flat = this.currentNetwork.getStructure().getFlat();
+		if (flat != null) {
+			out.beginTag(BasicNetworkPersistor.TAG_OUTPUT);
+			final StringBuilder result = new StringBuilder();
+			NumberList.toList(CSVFormat.EG_FORMAT, result,
+					flat.getLayerOutput());
+			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD,
+					result.toString());
+			out.endTag();
+		}
+	}
+	
+	private double[] handleOutput(final ReadXML in) {
+		String output = in.readTextToTag();
+		return NumberList.fromList(CSVFormat.EG_FORMAT, output);
 	}
 }
