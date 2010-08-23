@@ -40,23 +40,28 @@ public class ActivationFunctions {
 	}
 
 	/**
-	 * Calculate the derivative of the activation.
-	 * @param type The type of activation.
-	 * @param x The value to calculate for.
+	 * Calculate the derivative of the activation. It is assumed that the value
+	 * x, which is passed to this method, was the output from this activation.
+	 * This prevents this method from having to recalculate the activation, just
+	 * to recalculate the derivative.
+	 * 
+	 * @param type
+	 *            The type of activation.
+	 * @param x
+	 *            The activation to calculate for.
+	 * @param slope
+	 *            If this activation supports a slope, this is the slope of the
+	 *            activation function.
 	 * @return The result.
 	 */
 	public static double calculateActivationDerivative(final int type, final double x, final double slope) {
-		double out;
-		
 		switch (type) {
 		case ActivationFunctions.ACTIVATION_LINEAR:
 			return 1;
 		case ActivationFunctions.ACTIVATION_TANH:
-			out = calculateActivation(type,x,slope);
-			return (slope * (1.0 - out * out));
+			return (slope * (1.0 - x * x));
 		case ActivationFunctions.ACTIVATION_SIGMOID:
-			out = calculateActivation(type,x,slope);
-			return slope * out * (1.0 - out);
+			return slope * x * ( 1.0 - x);
 		default:
 			throw new EncogEngineError("Unknown activation type: " + type);
 		}
