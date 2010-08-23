@@ -94,7 +94,7 @@ public class NetworkUtil {
 		train.iteration();
 		double error1 = train.getError();
 		
-		for(int i=0;i<10;i++)
+		for(int i=0;i<50;i++)
 			train.iteration();
 		
 		double error2 = train.getError();
