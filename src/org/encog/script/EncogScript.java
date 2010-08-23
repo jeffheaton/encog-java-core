@@ -39,13 +39,6 @@ import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.EncogScriptPersistor;
-import org.encog.script.basic.Basic;
-import org.encog.script.basic.BasicModule;
-import org.encog.script.basic.BasicParse;
-import org.encog.script.basic.BasicProgram;
-import org.encog.script.basic.console.ConsoleInputOutput;
-import org.encog.script.basic.console.NullConsole;
-import org.encog.script.basic.variables.BasicVariable;
 
 /**
  * Hold one Encog script program.  Can be saved to an Encog collection.
@@ -55,8 +48,6 @@ public class EncogScript implements EncogPersistedObject {
 	private String name;
 	private String description;
 	private String source;
-	private BasicProgram program;
-	private ConsoleInputOutput console = new NullConsole();
 	
 	/**
 	 * The Encog collection this object belongs to, or null if none.
@@ -119,43 +110,5 @@ public class EncogScript implements EncogPersistedObject {
 		this.encogCollection = collection; 
 	}
 	
-	public void load()
-	{
-		this.program = new BasicProgram();
-		this.program.loadModule(this);
-	}
-	
-	
-	
-	/**
-	 * @return the console
-	 */
-	public ConsoleInputOutput getConsole() {
-		return console;
-	}
 
-	/**
-	 * @param console the console to set
-	 */
-	public void setConsole(ConsoleInputOutput console) {
-		this.console = console;
-	}
-
-	public BasicVariable call(String name)
-	{
-		BasicVariable result = new BasicVariable();
-		this.program.setConsole(this.console);
-		
-		if(!this.program.call(name, result))
-		{
-			throw new EncogError("Can't find main sub in script.");
-		}
-		
-		return result;
-	}
-	
-	public BasicVariable call()
-	{
-		return call("MAIN");
-	}
 }
