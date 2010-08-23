@@ -163,21 +163,7 @@ public class NeuralStructure implements Serializable {
 	 * @return The size of the calculated array.
 	 */
 	public int calculateSize() {
-		int size = 0;
-
-		// first determine size from matrixes
-		for (final Synapse synapse 
-				: this.network.getStructure().getSynapses()) {
-			size += synapse.getMatrixSize();
-		}
-
-		// determine size from bias values
-		for (final Layer layer : this.network.getStructure().getLayers()) {
-			if (layer.hasBias()) {
-				size += layer.getNeuronCount();
-			}
-		}
-		return size;
+		return NetworkCODEC.networkSize(network);
 	}
 
 	/**
@@ -560,7 +546,7 @@ public class NeuralStructure implements Serializable {
 				} else {
 					int activationType = ActivationFunctions.ACTIVATION_LINEAR;
 
-					boolean bias = false;
+					double bias = FlatNetwork.NO_BIAS_ACTIVATION;
 
 					if (layer.getNext().size() > 0) {
 						Synapse synapse = network.getStructure()
@@ -568,12 +554,12 @@ public class NeuralStructure implements Serializable {
 										BasicLayer.class);
 						if (synapse != null) {
 							Layer nextLayer = synapse.getToLayer();
-							// layer.getNext().get(0).getToLayer();
-							bias = nextLayer.hasBias();
+							if( nextLayer.hasBias() )
+								bias = nextLayer.getBiasActivation();
 						}
 					}
 
-					if (layer.getActivationFunction() instanceof ActivationLinear) {
+					if (layer.getActivationFunction() instanceof ActivationLinear || layer.getActivationFunction()==null ) {
 						activationType = ActivationFunctions.ACTIVATION_LINEAR;
 					} else if (layer.getActivationFunction() instanceof ActivationTANH) {
 						activationType = ActivationFunctions.ACTIVATION_TANH;
@@ -608,6 +594,8 @@ public class NeuralStructure implements Serializable {
 	
 	public void flattenWeights() {
 		if (this.flat != null) {
+			this.flatUpdate = FlatUpdateNeeded.Flatten;
+			
 			double[] targetWeights = this.flat.getWeights();
 			double[] sourceWeights = NetworkCODEC.networkToArray(this.network);
 

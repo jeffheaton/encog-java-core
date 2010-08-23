@@ -30,6 +30,7 @@
 
 package org.encog.neural.networks.layers;
 
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
@@ -52,6 +53,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ContextLayer extends BasicLayer implements ContextClearable {
 
+	public static final String ERROR = "Bias is not suppoted for a contextlayer.";
+	
 	/**
 	 * The serial id.
 	 */
@@ -158,6 +161,27 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 			this.context.setData(i, 0);
 		}
 
+	}
+	
+	
+	public double[] getBiasWeights()
+	{
+		throw new NeuralNetworkError(ERROR);
+	}
+	
+	public double getBiasWeight(final int index)
+	{
+		throw new NeuralNetworkError(ERROR);
+	}
+	
+	public void setBiasWeights(final double[] d)
+	{
+		throw new NeuralNetworkError(ERROR);
+	}
+	
+	public void setBiasWeight(final int index, final double d)
+	{
+		throw new NeuralNetworkError(ERROR);
 	}
 
 }

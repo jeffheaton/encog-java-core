@@ -70,6 +70,10 @@ public final class ValidateForFlat {
 			return "To convert to a flat network, there must be an output layer.";
 		}
 		
+		if( network.getStructure().isConnectionLimited() ) {
+			return "To convert to a flat network there can be no missing connections between layers.";
+		}
+		
 		if( !(network.getLogic() instanceof FeedforwardLogic) ) {
 			return "To convert to flat, must be using FeedforwardLogic or SimpleRecurrentLogic.";
 		}
@@ -85,7 +89,8 @@ public final class ValidateForFlat {
 				return "To convert to flat a network must have only BasicLayer and ContextLayer layers.";
 			}
 
-			if (!(layer.getActivationFunction() instanceof ActivationSigmoid)
+			if ( !(layer.getActivationFunction() == null)
+					&& !(layer.getActivationFunction() instanceof ActivationSigmoid)
 					&& !(layer.getActivationFunction() instanceof ActivationTANH) 
 					&& !(layer.getActivationFunction() instanceof ActivationLinear)) {
 				return "To convert to flat a network must only use sigmoid, linear or tanh activation.";

@@ -49,6 +49,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.NeuralLogic;
 import org.encog.neural.networks.logic.SimpleRecurrentLogic;
+import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
 import org.encog.neural.networks.synapse.Synapse;
@@ -271,7 +272,10 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 				((ContextClearable) synapse).clearContext();
 			}
 		}
-
+		
+		this.structure.updateFlatNetwork();
+		if( this.structure.getFlat()!=null )
+			this.clearContext();
 	}
 
 	/**
@@ -511,7 +515,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 			(new RangeRandomizer(-1, 1)).randomize(this);
 		else
 			(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
-		
+		this.structure.setFlatUpdate(FlatUpdateNeeded.Flatten);
 		this.structure.flattenWeights();
 	}
 
