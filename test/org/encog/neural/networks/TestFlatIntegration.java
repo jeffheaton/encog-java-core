@@ -15,7 +15,7 @@ public class TestFlatIntegration extends TestCase {
 		network1.getStructure().finalizeStructure();
 		Assert.assertNotNull(network1.getStructure().getFlat());
 		Assert.assertEquals(network1.getStructure().getFlatUpdate(),FlatUpdateNeeded.None);
-		double[] inputArray = {1.0};
+		double[] inputArray = {1.0,1.0};
 		NeuralData input = new BasicNeuralData(inputArray);
 		
 		// using a holder will cause the network to calculate without the flat network,
