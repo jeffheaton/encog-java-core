@@ -61,12 +61,18 @@ public interface ActivationFunction extends EncogPersistedObject {
 	 */
 	void activationFunction(double[] d);
 
+	
 	/**
-	 * Implements the activation function derivative. The array is modified
-	 * according derivative of the activation function being used. See the class
-	 * description for more specific information on this type of activation
-	 * function. Propagation training requires the derivative. Some activation
-	 * functions do not support a derivative and will throw an error.
+	 * Calculate the derivative of the activation. It is assumed that the value
+	 * d, which is passed to this method, was the output from this activation.
+	 * This prevents this method from having to recalculate the activation, just
+	 * to recalculate the derivative.
+	 * 
+	 * The array is modified according derivative of the activation function
+	 * being used. See the class description for more specific information on
+	 * this type of activation function. Propagation training requires the
+	 * derivative. Some activation functions do not support a derivative and
+	 * will throw an error.
 	 * 
 	 * @param d
 	 *            The input array to the activation function.
