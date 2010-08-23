@@ -30,6 +30,7 @@
 
 package org.encog.neural.activation;
 
+import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.persist.Persistor;
 
 /**
@@ -38,13 +39,18 @@ import org.encog.persist.Persistor;
  * primarily theoretical and of little actual use. Usually an activation
  * function that scales between 0 and 1 or -1 and 1 should be used.
  */
-public class ActivationLinear extends BasicActivationFunction {
+public class ActivationLinear extends BasicActivationFunction implements SlopeActivationFunction {
 
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
 
+	/**
+	 * The slope of the activation function.
+	 */
+	private double slope = 1.0;
+	
 	/**
 	 * Implements the activation function. The array is modified according to
 	 * the activation function being used. See the class description for more
@@ -54,7 +60,12 @@ public class ActivationLinear extends BasicActivationFunction {
 	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
-
+		for(int i=0;i<d.length;i++) {
+			d[i] = ActivationFunctions.calculateActivation(
+					ActivationFunctions.ACTIVATION_LINEAR, 
+					d[i], 
+					this.slope);
+		}
 	}
 
 	/**
@@ -77,7 +88,10 @@ public class ActivationLinear extends BasicActivationFunction {
 	 */
 	public void derivativeFunction(final double[] d) {
 		for (int i = 0; i < d.length; i++) {
-			d[i] = 1.0;
+			d[i] = ActivationFunctions.calculateActivationDerivative(
+				ActivationFunctions.ACTIVATION_LINEAR, 
+				d[i], 
+				this.slope);
 		}
 	}
 
@@ -86,5 +100,13 @@ public class ActivationLinear extends BasicActivationFunction {
 	 */
 	public boolean hasDerivative() {
 		return true;
+	}
+	
+	/**
+	 * Get the slope of the activation function.
+	 */
+	public double getSlope()
+	{
+		return slope;
 	}
 }

@@ -51,6 +51,7 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
+import org.encog.neural.activation.SlopeActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
@@ -566,9 +567,18 @@ public class NeuralStructure implements Serializable {
 					} else if (layer.getActivationFunction() instanceof ActivationSigmoid) {
 						activationType = ActivationFunctions.ACTIVATION_SIGMOID;
 					}
+					
+					double slope = 1;
+					
+					if( layer.getActivationFunction() instanceof SlopeActivationFunction ) {
+						slope = ((SlopeActivationFunction)layer.getActivationFunction()).getSlope();
+					}
 
-					FlatLayer flatLayer = new FlatLayer(activationType,
-							layer.getNeuronCount(), bias);
+					FlatLayer flatLayer = new FlatLayer(
+							activationType,
+							layer.getNeuronCount(), 
+							bias,
+							slope);
 
 					regular2flat.put(layer, flatLayer);
 					flatLayers[index--] = flatLayer;

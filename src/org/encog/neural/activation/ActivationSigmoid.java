@@ -30,20 +30,24 @@
 
 package org.encog.neural.activation;
 
-import org.encog.engine.util.BoundMath;
-import org.encog.persist.Persistor;
+import org.encog.engine.network.flat.ActivationFunctions;
 
 /**
  * The sigmoid activation function takes on a sigmoidal shape. Only positive
  * numbers are generated. Do not use this activation function if negative number
  * output is desired.
  */
-public class ActivationSigmoid extends BasicActivationFunction {
+public class ActivationSigmoid extends BasicActivationFunction implements SlopeActivationFunction {
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 5622349801036468572L;
 
+	/**
+	 * The slope of the activation function.
+	 */
+	private double slope = 1.0;
+	
 	/**
 	 * Implements the activation function. The array is modified according to
 	 * the activation function being used. See the class description for more
@@ -55,7 +59,10 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	public void activationFunction(final double[] d) {
 
 		for (int i = 0; i < d.length; i++) {
-			d[i] = 1.0 / (1 + BoundMath.exp(-1.0 * d[i]));
+			d[i] = ActivationFunctions.calculateActivation(
+					ActivationFunctions.ACTIVATION_SIGMOID, 
+					d[i], 
+					this.slope);
 		}
 
 	}
@@ -81,14 +88,26 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	public void derivativeFunction(final double[] d) {
 
 		for (int i = 0; i < d.length; i++) {
-			d[i] = d[i] * (1.0 - d[i]);
+			d[i] = ActivationFunctions.calculateActivationDerivative(
+					ActivationFunctions.ACTIVATION_SIGMOID, 
+					d[i], 
+					this.slope);
 		}
 
 	}
 
 	/**
-	 * @return Return true, sigmoid has a derivative.
+	 * Get the slope of the activation function.
 	 */
+	public double getSlope()
+	{
+		return slope;
+	}
+
+	/**
+	 * @return True, sigmoid has a derivative.
+	 */
+	@Override
 	public boolean hasDerivative() {
 		return true;
 	}

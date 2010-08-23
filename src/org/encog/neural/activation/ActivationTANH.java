@@ -30,8 +30,7 @@
 
 package org.encog.neural.activation;
 
-import org.encog.engine.util.BoundMath;
-import org.encog.persist.Persistor;
+import org.encog.engine.network.flat.ActivationFunctions;
 
 /**
  * The hyperbolic tangent activation function takes the curved shape of the
@@ -39,17 +38,19 @@ import org.encog.persist.Persistor;
  * negative output. Use this activation function if both negative and positive
  * output is desired.
  * 
- * This implementation does an approximation of the TANH function, using only a
- * single base e exponent. This has a considerable effect on performance, adds
- * only minimal change to the output compared to a standard TANH calculation.
  */
-public class ActivationTANH extends BasicActivationFunction {
+public class ActivationTANH extends BasicActivationFunction  implements SlopeActivationFunction {
 
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
 
+	/**
+	 * The slope of the activation function.
+	 */
+	private double slope = 1.0;
+	
 	/**
 	 * Internal activation function that performs the TANH.
 	 * 
@@ -58,7 +59,10 @@ public class ActivationTANH extends BasicActivationFunction {
 	 * @return The output value.
 	 */
 	private double activationFunction(final double d) {
-		return -1 + (2 / (1 + BoundMath.exp(-2 * d)));
+		return ActivationFunctions.calculateActivation(
+				ActivationFunctions.ACTIVATION_TANH, 
+				d, 
+				this.slope);
 	}
 
 	/**
@@ -98,7 +102,10 @@ public class ActivationTANH extends BasicActivationFunction {
 	public void derivativeFunction(final double[] d) {
 
 		for (int i = 0; i < d.length; i++) {
-			d[i] = (1 + d[i]) * (1 - d[i]);
+			d[i] = ActivationFunctions.calculateActivationDerivative(
+					ActivationFunctions.ACTIVATION_TANH, 
+					d[i], 
+					this.slope);
 		}
 	}
 
@@ -107,6 +114,14 @@ public class ActivationTANH extends BasicActivationFunction {
 	 */
 	public boolean hasDerivative() {
 		return true;
+	}
+	
+	/**
+	 * Get the slope of the activation function.
+	 */
+	public double getSlope()
+	{
+		return slope;
 	}
 
 }

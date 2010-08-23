@@ -31,7 +31,7 @@ public class ActivationFunctions {
 			return x*slope;
 		case ActivationFunctions.ACTIVATION_TANH:
 			double z = BoundMath.exp(-slope * x);
-			return (1d - z) / (1d + z);
+			return (1.0 - z) / (1.0 + z);
 		case ActivationFunctions.ACTIVATION_SIGMOID:
 			return 1.0 / (1.0 + BoundMath.exp(-slope * x));
 		default:
@@ -53,10 +53,10 @@ public class ActivationFunctions {
 			return 1;
 		case ActivationFunctions.ACTIVATION_TANH:
 			out = calculateActivation(type,x,slope);
-			return (slope * (1d - out * out));
+			return (slope * (1.0 - out * out));
 		case ActivationFunctions.ACTIVATION_SIGMOID:
 			out = calculateActivation(type,x,slope);
-			return slope * out * (1d - out);
+			return slope * out * (1.0 - out);
 		default:
 			throw new EncogEngineError("Unknown activation type: " + type);
 		}
