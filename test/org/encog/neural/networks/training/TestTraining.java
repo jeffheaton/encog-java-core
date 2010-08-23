@@ -98,7 +98,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train bprop = new ScaledConjugateGradient(network, trainingData);
-		NetworkUtil.testTraining(bprop,0.0004);
+		NetworkUtil.testTraining(bprop,0.04);
 	}
 	
 	@Test
