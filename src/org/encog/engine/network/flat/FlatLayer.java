@@ -1,46 +1,48 @@
 package org.encog.engine.network.flat;
 
+import org.encog.Encog;
+
 public class FlatLayer {
 	
 	private final int activation;
 	private final int count;
-	private final boolean bias;
+	private final double biasActivation;
 	private final double slope;
 	private FlatLayer contextFedBy;
 	
-	public FlatLayer(int activation, int count, boolean bias)
+	public FlatLayer(int activation, int count, double biasActivation)
 	{
 		this.activation = activation;
 		this.count = count;
-		this.bias = bias;
+		this.biasActivation = biasActivation;
 		this.slope = 1;
 		this.contextFedBy = null;
 	}
 	
-	public FlatLayer(int activation, int count, boolean bias, FlatLayer contextFedBy)
+	public FlatLayer(int activation, int count, double biasActivation, FlatLayer contextFedBy)
 	{
 		this.activation = activation;
 		this.count = count;
-		this.bias = bias;
+		this.biasActivation = biasActivation;
 		this.slope = 1;
 		this.contextFedBy = contextFedBy;
 	}
 
 	
-	public FlatLayer(int activation, int count, boolean bias, double slope)
+	public FlatLayer(int activation, int count, double biasActivation, double slope)
 	{
 		this.activation = activation;
 		this.count = count;
-		this.bias = bias;
+		this.biasActivation = biasActivation;
 		this.slope = slope;
 		this.contextFedBy = null;
 	}
 	
-	public FlatLayer(int activation, int count, boolean bias, double slope, FlatLayer contextFedBy)
+	public FlatLayer(int activation, int count, double biasActivation, double slope, FlatLayer contextFedBy)
 	{
 		this.activation = activation;
 		this.count = count;
-		this.bias = bias;
+		this.biasActivation = biasActivation;
 		this.slope = slope;
 		this.contextFedBy = contextFedBy;
 	}
@@ -63,7 +65,7 @@ public class FlatLayer {
 	 * @return the bias
 	 */
 	public boolean isBias() {
-		return bias;
+		return  Math.abs(this.biasActivation)>Encog.DEFAULT_DOUBLE_EQUAL;
 	}
 	
 	public int getTotalCount()
@@ -96,7 +98,11 @@ public class FlatLayer {
 		result.append("[FlatLayer: count=");
 		result.append(this.count);
 		result.append(",bias=");
-		result.append(this.bias);
+		
+		if( isBias())
+			result.append(this.biasActivation);
+		else
+			result.append("false");
 		if( this.contextFedBy!=null ) {
 			result.append(",contextFed=");
 			if( this.contextFedBy==this )
@@ -110,5 +116,9 @@ public class FlatLayer {
 
 	public void setContextFedBy(FlatLayer from) {
 		this.contextFedBy = from;
+	}
+
+	public double getBiasActivation() {
+		return this.biasActivation;
 	}
 }

@@ -38,27 +38,15 @@ import org.encog.engine.EncogEngineError;
 import org.encog.engine.EngineNeuralNetwork;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
-import org.encog.engine.util.BoundMath;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 
 
 /**
- * Implements a flat (vector based) neural network in Encog. This is meant to be
- * a very highly efficient feedforward neural network. It uses a minimum of
- * objects and is designed with one principal in mind-- SPEED. Readability, code
- * reuse, object oriented programming are all secondary in consideration.
- * 
- * Currently, the flat networks only support feedforward networks with either a
- * sigmoid or tanh activation function. Specifically, a flat network must:
- * 
- * 1. Feedforward only, no self-connections or recurrent links
- * 
- * 2. Sigmoid or TANH activation only
- * 
- * 3. All layers the same activation function
- * 
- * 4. Must have bias values
+ * Implements a flat (vector based) neural network in the Encog Engine. This is meant to 
+ * be a very highly efficient feedforward, or simple recurrent, neural network. 
+ * It uses a minimum of objects and is designed with one principal in mind-- SPEED. 
+ * Readability, code reuse, object oriented programming are all secondary in consideration.
  * 
  * Vector based neural networks are also very good for GPU processing. The flat
  * network classes will make use of the GPU if you have enabled GPU processing.
@@ -66,6 +54,10 @@ import org.encog.engine.util.ErrorCalculation;
  */
 public class FlatNetwork implements EngineNeuralNetwork {
 
+	public final static double DEFAULT_BIAS_ACTIVATION = 1.0;
+	
+	public final static double NO_BIAS_ACTIVATION = 0.0;
+	
 	/**
 	 * The number of input neurons in this network.
 	 */
@@ -118,6 +110,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	private int[] contextTargetOffset;
 	private int[] contextTargetSize;
 	
+	private double[] biasActivation;
+	
 	public FlatNetwork()
 	{
 		
@@ -134,24 +128,24 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		if( hidden1==0 && hidden2==0 )
 		{
 			layers = new FlatLayer[2];	
-			layers[0] = new FlatLayer(act,input,true);
-			layers[1] = new FlatLayer(act,output,false);
+			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
+			layers[1] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION);
 		}
 		else if( hidden1==0 || hidden2==0 )
 		{
 			int count = Math.max(hidden1, hidden2);
 			layers = new FlatLayer[3];
-			layers[0] = new FlatLayer(act,input,true);
-			layers[1] = new FlatLayer(act,count,true);
-			layers[2] = new FlatLayer(act,output,false);
+			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
+			layers[1] = new FlatLayer(act,count,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
+			layers[2] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION);
 		}
 		else
 		{
 			layers = new FlatLayer[4];
-			layers[0] = new FlatLayer(act,input,true);
-			layers[1] = new FlatLayer(act,hidden1,true);
-			layers[2] = new FlatLayer(act,hidden2,true);
-			layers[3] = new FlatLayer(act,output,false);
+			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
+			layers[1] = new FlatLayer(act,hidden1,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
+			layers[2] = new FlatLayer(act,hidden2,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
+			layers[3] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION);
 		}
 		
 		init(layers);		
@@ -187,6 +181,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		this.slope = new double[layerCount];
 		this.contextTargetOffset = new int[layerCount];
 		this.contextTargetSize = new int[layerCount];
+		this.biasActivation = new double[layerCount];
 		
 		int index = 0;
 		int neuronCount = 0;
@@ -200,6 +195,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			if( i>0 )
 				nextLayer = layers[i-1];
 			
+			this.biasActivation[index] = layer.getBiasActivation();
 			this.layerCounts[index] = layer.getTotalCount();
 			this.layerFeedCounts[index] = layer.getCount();
 			this.layerContextCount[index] = layer.getContectCount();
@@ -238,7 +234,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		this.weights = new double[weightCount];
 		this.layerOutput = new double[neuronCount];
 
-		initLayerOutput();
+		clearContext();
 	}
 
 	/**
@@ -304,7 +300,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		EngineArray.arrayCopy(this.layerOutput, 0, output, 0, this.outputCount);
 	}
 	
-	public void initLayerOutput()
+	public void clearContext()
 	{
 		int index = 0;
 		
@@ -321,7 +317,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			// fill in the bias
 			if( hasBias )
 			{
-				this.layerOutput[index++] = 1.0;
+				this.layerOutput[index++] = this.biasActivation[i];
 			}
 			
 			// fill in context
@@ -505,15 +501,10 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	public void randomize(double hi, double lo) {
 		for(int i=0;i<this.weights.length;i++) {
 			this.weights[i] = (Math.random()*(hi-lo))+lo;
-		}
-		
+		}	
 	}
 
 	public void randomize() {
 		randomize(1,-1);		
 	}
-	
-	
-	
-	
 }
