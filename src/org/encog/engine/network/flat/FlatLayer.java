@@ -1,6 +1,6 @@
 package org.encog.engine.network.flat;
 
-import org.encog.Encog;
+import org.encog.engine.EncogEngine;
 
 public class FlatLayer {
 	
@@ -19,16 +19,6 @@ public class FlatLayer {
 		this.contextFedBy = null;
 	}
 	
-	public FlatLayer(int activation, int count, double biasActivation, FlatLayer contextFedBy)
-	{
-		this.activation = activation;
-		this.count = count;
-		this.biasActivation = biasActivation;
-		this.slope = 1;
-		this.contextFedBy = contextFedBy;
-	}
-
-	
 	public FlatLayer(int activation, int count, double biasActivation, double slope)
 	{
 		this.activation = activation;
@@ -38,15 +28,6 @@ public class FlatLayer {
 		this.contextFedBy = null;
 	}
 	
-	public FlatLayer(int activation, int count, double biasActivation, double slope, FlatLayer contextFedBy)
-	{
-		this.activation = activation;
-		this.count = count;
-		this.biasActivation = biasActivation;
-		this.slope = slope;
-		this.contextFedBy = contextFedBy;
-	}
-
 	/**
 	 * @return the activation
 	 */
@@ -65,7 +46,7 @@ public class FlatLayer {
 	 * @return the bias
 	 */
 	public boolean isBias() {
-		return  Math.abs(this.biasActivation)>Encog.DEFAULT_DOUBLE_EQUAL;
+		return  Math.abs(this.biasActivation)>EncogEngine.DEFAULT_ZERO_TOLERANCE;
 	}
 	
 	public int getTotalCount()
