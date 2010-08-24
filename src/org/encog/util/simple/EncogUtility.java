@@ -109,7 +109,7 @@ public final class EncogUtility {
 	 * @param data The neural data to format.
 	 * @return The formatted neural data.
 	 */
-	private static String formatNeuralData(final NeuralData data) {
+	public static String formatNeuralData(final NeuralData data) {
 		final StringBuilder result = new StringBuilder();
 		for (int i = 0; i < data.size(); i++) {
 			if (i != 0) {
