@@ -8,6 +8,6 @@ public class TestJavaScript extends TestCase {
 	{
 		EncogScript script = new EncogScript();
 		script.setSource("print(\'Hello World\')\n");
-		script.run();
+		script.run(new StandardConsole());
 	}
 }
