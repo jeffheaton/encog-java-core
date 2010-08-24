@@ -1,19 +1,41 @@
 package org.encog.script;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.encog.persist.EncogMemoryCollection;
-import org.encog.script.javascript.EncogJavascriptEngine;
 
 public class EncogScriptEngineFactory {
-	public static EncogScriptEngine createEngine(EncogScript script)
+	
+	private static EncogScriptEngineFactory instance;
+	private Map<String,IndividualEngineFactory> map = new HashMap<String,IndividualEngineFactory>();
+	
+	public static EncogScriptEngineFactory getInstance()
 	{
-		if( script.getLanguage().equalsIgnoreCase(EncogScript.TYPE_JAVASCRIPT)) {
-			if( script.getCollection() instanceof EncogMemoryCollection )
-				return new EncogJavascriptEngine((EncogMemoryCollection)script.getCollection());
-			else
-				return new EncogJavascriptEngine();
+		if( instance==null )
+			instance = new EncogScriptEngineFactory();
+		
+		return instance;
+	}
+	
+	public void registerIndividualEngineFactory(IndividualEngineFactory factory)
+	{
+		String key = factory.getName().toLowerCase();
+		this.map.put(key,factory);
+	}
+	
+	public EncogScriptEngine createEngine(EncogScript script)
+	{
+		String key = script.getLanguage().toLowerCase();
+		IndividualEngineFactory factory = this.map.get(key);
+		if( factory==null ) {
+			throw new EncogScriptError("Uknown language: " + script.getLanguage());
 		}
 		else {
-			throw new EncogScriptError("Uknown language: " + script.getLanguage());
+			if( script.getCollection() instanceof EncogMemoryCollection )
+				return factory.create((EncogMemoryCollection)script.getCollection());
+			else
+				return factory.create();
 		}
 	}
 }

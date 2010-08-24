@@ -128,7 +128,7 @@ public class EncogScript implements EncogPersistedObject {
 	}
 
 	public void run(ConsoleInputOutput console) {
-		EncogScriptEngine engine = EncogScriptEngineFactory.createEngine(this);
+		EncogScriptEngine engine = EncogScriptEngineFactory.getInstance().createEngine(this);
 		engine.setConsole(console);
 		engine.run(this);		
 	}	
