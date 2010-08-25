@@ -52,7 +52,7 @@ public class TestActivationTANH extends TestCase {
 		Assert.assertEquals(0.0, input[0], 0.1);		
 
 		// test derivative, should throw an error
-		activation.derivativeFunction(input);
+		input[0] = activation.derivativeFunction(input[0]);
 		Assert.assertEquals(1.0, input[0], 0.1);
 
 

@@ -57,7 +57,7 @@ public class TestActivationLinear extends TestCase {
 		
 		
 		// test derivative, should throw an error
-		activation.derivativeFunction(input);
+		input[0] = activation.derivativeFunction(input[0]);
 		
 	}
 }

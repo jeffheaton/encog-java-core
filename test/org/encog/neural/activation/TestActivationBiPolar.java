@@ -59,7 +59,7 @@ public class TestActivationBiPolar extends TestCase {
 		// test derivative, should throw an error
 		try
 		{
-			activation.derivativeFunction(input);
+			activation.derivativeFunction(0);
 			Assert.assertTrue(false);// mark an error
 		}
 		catch(EncogError e)

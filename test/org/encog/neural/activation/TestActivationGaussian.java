@@ -51,11 +51,8 @@ public class TestActivationGaussian extends TestCase {
 		activation.activationFunction(input);
 		
 		Assert.assertEquals(0.5,input[0],0.1);
-	
 		
-		// test derivative, should throw an error
-		
-		activation.derivativeFunction(input);
+		input[0] = activation.derivativeFunction(input[0]);
 		Assert.assertEquals(-33,(int)(input[0]*100),0.1);		
 		
 		

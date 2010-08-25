@@ -53,7 +53,7 @@ public class TestActivationSigmoid extends TestCase {
 
 
 		// test derivative, should throw an error
-		activation.derivativeFunction(input);
+		input[0] = activation.derivativeFunction(input[0]);
 		Assert.assertEquals(0.25, input[0], 0.1);
 
 	}
