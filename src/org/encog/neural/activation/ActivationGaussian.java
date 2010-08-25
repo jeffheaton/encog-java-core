@@ -47,6 +47,20 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
 
+	/**
+	 * The offset to the parameter that holds the width.
+	 */
+	public static final int PARAM_CENTER = 0;
+	
+	/**
+	 * The offset to the parameter that holds the peak.
+	 */
+	public static final int PARAM_PEAK = 1;
+	
+	/**
+	 * The offset to the parameter that holds the width.
+	 */
+	public static final int PARAM_WIDTH = 2;
 	
 	public static final String[] PARAM_NAMES = {
 	"center", "peak", "width" };	
@@ -54,7 +68,7 @@ public class ActivationGaussian extends BasicActivationFunction {
 	/**
 	 * The gaussian function to be used.
 	 */
-	private final GaussianFunction gausian;
+	private GaussianFunction gausian;
 
 	/**
 	 * Create a gaussian activation function.
@@ -68,6 +82,10 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 */
 	public ActivationGaussian(final double center, final double peak,
 			final double width) {
+		this.params = new double[3];
+		this.params[PARAM_CENTER] = center;
+		this.params[PARAM_PEAK] = peak;
+		this.params[PARAM_WIDTH] = width;
 		this.gausian = new GaussianFunction(center, peak, width);
 	}
 
@@ -142,6 +160,17 @@ public class ActivationGaussian extends BasicActivationFunction {
 	@Override
 	public String[] getParamNames() {
 		return PARAM_NAMES;
+	}
+	
+	public void setParam(int index, double value)
+	{
+		super.setParam(index,value);
+
+		this.gausian = new GaussianFunction(
+				this.params[PARAM_CENTER],
+				this.params[PARAM_PEAK],
+				this.params[PARAM_WIDTH]);
+		
 	}
 		
 

@@ -100,7 +100,7 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	}
 
 	/**
-	 * @return The paramater names for this activation function.
+	 * @return The parameter names for this activation function.
 	 * This activation function type has no paramaters, so this method
 	 * returns an empty string.
 	 */

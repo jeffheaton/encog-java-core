@@ -50,9 +50,16 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 	"slope" };
 	
 	/**
-	 * The slope of the activation function.
+	 * The parameter for the slope.
 	 */
-	private double slope = 1.0;
+	public static final int PARAM_SLOPE = 0;
+	
+	
+	public ActivationTANH()
+	{
+		this.params = new double[1];
+		this.params[PARAM_SLOPE] = 1;
+	}
 	
 	/**
 	 * Internal activation function that performs the TANH.
@@ -65,7 +72,7 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 		return ActivationFunctions.calculateActivation(
 				ActivationFunctions.ACTIVATION_TANH, 
 				d, 
-				this.slope);
+				this.params[PARAM_SLOPE]);
 	}
 
 	/**
@@ -113,7 +120,7 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 			d[i] = ActivationFunctions.calculateActivationDerivative(
 					ActivationFunctions.ACTIVATION_TANH, 
 					d[i], 
-					this.slope);
+					this.params[PARAM_SLOPE]);
 		}
 	}
 
@@ -129,7 +136,7 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 	 */
 	public double getSlope()
 	{
-		return slope;
+		return this.params[PARAM_SLOPE];
 	}
 	
 	/**

@@ -83,5 +83,11 @@ public interface ActivationFunction extends EncogPersistedObject {
 	 * @return Return true if this function has a derivative.
 	 */
 	boolean hasDerivative();
+	
+	double[] getParams();
+	
+	void setParam(int index, double value);
+	
+	String[] getParamNames();
 
 }

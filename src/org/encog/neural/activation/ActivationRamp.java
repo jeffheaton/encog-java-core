@@ -46,28 +46,14 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 6336245112244386279L;
 
+	public static final int PARAM_HIGH_THRESHOLD = 0;
+	public static final int PARAM_LOW_THRESHOLD = 1;
+	public static final int PARAM_HIGH = 2;
+	public static final int PARAM_LOW = 3;
+	
 	public static final String[] PARAM_NAMES = {
 	"thresholdHigh","thresholdLow", "high", "low" };	
 
-	/**
-	 * The high threshold.
-	 */
-	private double thresholdHigh = 1;
-
-	/**
-	 * The low threshold.
-	 */
-	private double thresholdLow = 0;
-
-	/**
-	 * The high value that will be used if the high threshold is exceeded.
-	 */
-	private double high = 1;
-
-	/**
-	 * The low value that will be used if the low threshold is exceeded.
-	 */
-	private double low = 0;
 
 	/**
 	 * Construct a ramp activation function.
@@ -83,16 +69,19 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	public ActivationRamp(final double thresholdHigh,
 			final double thresholdLow, final double high, final double low) {
-		this.thresholdHigh = thresholdHigh;
-		this.thresholdLow = thresholdLow;
-		this.high = high;
-		this.low = low;
+		
+		this.params = new double[4];
+		this.params[PARAM_HIGH_THRESHOLD] = thresholdHigh;
+		this.params[PARAM_LOW_THRESHOLD] = thresholdLow;
+		this.params[PARAM_HIGH] = high;
+		this.params[PARAM_LOW] = low;		
 	}
 
 	/**
 	 * Default constructor.
 	 */
 	public ActivationRamp() {
+		this(1,0,1,0);
 	}
 
 	/**
@@ -103,14 +92,14 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	public void activationFunction(final double[] d) {
 
-		double slope = (this.thresholdHigh - this.thresholdLow)/
-			(this.high - this.low);
+		double slope = (this.params[PARAM_HIGH_THRESHOLD] - this.params[PARAM_LOW_THRESHOLD])/
+			(this.params[PARAM_HIGH] - this.params[PARAM_LOW]);
 		
 		for (int i = 0; i < d.length; i++) {
-			if (d[i] < this.thresholdLow) {
-				d[i] = this.low;
-			} else if (d[i] > this.thresholdHigh) {
-				d[i] = this.high;
+			if (d[i] < this.params[PARAM_LOW_THRESHOLD]) {
+				d[i] = this.params[PARAM_LOW];
+			} else if (d[i] > this.params[PARAM_HIGH_THRESHOLD]) {
+				d[i] = this.params[PARAM_HIGH];
 			} else {
 				d[i] = (slope * d[i]);
 			}
@@ -125,8 +114,11 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationRamp( this.thresholdHigh,
-				this.thresholdLow, this.high, this.low);
+		return new ActivationRamp( 
+				this.params[PARAM_HIGH_THRESHOLD],
+				this.params[PARAM_LOW_THRESHOLD], 
+				this.params[PARAM_HIGH], 
+				this.params[PARAM_LOW]);
 	}
 
 	/**
@@ -144,28 +136,28 @@ public class ActivationRamp extends BasicActivationFunction {
 	 * @return the high
 	 */
 	public double getHigh() {
-		return this.high;
+		return this.params[PARAM_HIGH];
 	}
 
 	/**
 	 * @return the low
 	 */
 	public double getLow() {
-		return this.low;
+		return this.params[PARAM_LOW];
 	}
 
 	/**
 	 * @return the thresholdHigh
 	 */
 	public double getThresholdHigh() {
-		return this.thresholdHigh;
+		return this.params[PARAM_HIGH_THRESHOLD];
 	}
 
 	/**
 	 * @return the thresholdLow
 	 */
 	public double getThresholdLow() {
-		return this.thresholdLow;
+		return this.params[PARAM_LOW_THRESHOLD];
 	}
 
 	/**
@@ -175,37 +167,6 @@ public class ActivationRamp extends BasicActivationFunction {
 		return true;
 	}
 
-	/**
-	 * @param high
-	 *            the high to set
-	 */
-	public void setHigh(final double high) {
-		this.high = high;
-	}
-
-	/**
-	 * @param low
-	 *            the low to set
-	 */
-	public void setLow(final double low) {
-		this.low = low;
-	}
-
-	/**
-	 * @param thresholdHigh
-	 *            the thresholdHigh to set
-	 */
-	public void setThresholdHigh(final double thresholdHigh) {
-		this.thresholdHigh = thresholdHigh;
-	}
-
-	/**
-	 * @param thresholdLow
-	 *            the thresholdLow to set
-	 */
-	public void setThresholdLow(final double thresholdLow) {
-		this.thresholdLow = thresholdLow;
-	}
 	
 	/**
 	 * @return The paramater names for this activation function.

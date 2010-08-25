@@ -30,6 +30,7 @@
 
 package org.encog.persist.persistors;
 
+import org.encog.EncogError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.parse.tags.read.ReadXML;
@@ -37,8 +38,10 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
+import org.encog.util.ReflectionUtil;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
+import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,8 +109,7 @@ public class BasicLayerPersistor implements Persistor {
 			if (in.is(BasicLayerPersistor.TAG_ACTIVATION, true)) {
 				in.readToTag();
 				final String type = in.getTag().getName();
-				final Persistor persistor = PersistorUtil.createPersistor(type);
-				activation = (ActivationFunction) persistor.load(in);
+				activation = loadActivation(type,in);
 			} else if (in.is(BasicLayerPersistor.PROPERTY_NEURONS, true)) {
 				neuronCount = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_THRESHOLD, true)) {
@@ -143,7 +145,7 @@ public class BasicLayerPersistor implements Persistor {
 		}
 		return null;
 	}
-
+	
 	/**
 	 * Save the specified Encog object to an XML writer.
 	 *
@@ -171,13 +173,64 @@ public class BasicLayerPersistor implements Persistor {
 		}
 
 		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
-		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
-		final Persistor persistor = layer.getActivationFunction()
-				.createPersistor();
-		persistor.save(layer.getActivationFunction(), out);
-		out.endTag();
+		
+		
+		saveActivationFunction(layer.getActivationFunction(),out);
+		
 
 		out.endTag();
+	}
+
+	public static void saveActivationFunction(ActivationFunction activationFunction,
+			WriteXML out) {
+		if( activationFunction!=null ) {
+			out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
+			out.beginTag(activationFunction.getClass().getSimpleName());
+			String[] names = activationFunction.getParamNames();
+			for(int i=0;i<names.length;i++)
+			{
+				String str = names[i];
+				double d = activationFunction.getParams()[i];
+				out.addAttribute(str, ""+CSVFormat.EG_FORMAT.format(d, 10) );
+			}
+			out.endTag();
+			out.endTag();
+		}
+	}
+
+	public static ActivationFunction loadActivation(String type, ReadXML in) {
+		
+		try {
+			Class<?> clazz = ReflectionUtil.resolveEncogClass(type);
+			ActivationFunction result = (ActivationFunction)clazz.newInstance();
+			
+			for( String key : in.getTag().getAttributes().keySet() )
+			{
+				int index = -1;
+				
+				for(int i=0;i<result.getParamNames().length;i++)
+				{
+					if( key.equalsIgnoreCase(result.getParamNames()[i]))
+					{
+						index = i;
+						break;
+					}
+					
+					if( index!=-1 )
+					{
+						String str = in.getTag().getAttributeValue(key);
+						double d = CSVFormat.EG_FORMAT.parse(str);
+						result.setParam(index, d);
+					}
+				}
+			}
+			
+			return result;
+		} catch (InstantiationException e) {
+			throw new EncogError(e);
+		} catch (IllegalAccessException e) {
+			throw new EncogError(e);
+		}
 	}
 
 }

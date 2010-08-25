@@ -55,63 +55,54 @@ public class ActivationStep extends BasicActivationFunction {
 	public static final String[] PARAM_NAMES = {
 	"center","low","high" };
 	
-	/**
-	 * The center.
-	 */
-	private double center = 0.0;
+	public static final int PARAM_CENTER = 0;
+	public static final int PARAM_LOW = 1;
+	public static final int PARAM_HIGH = 2;
 	
-	/**
-	 * The low value that is returned.
-	 */
-	private double low = 0.0;
-	
-	/**
-	 * The high value that is returned.
-	 */
-	private double high = 1.0;
 
+	public ActivationStep(double low, double center, double high)
+	{
+		this.params = new double[3];
+		this.params[PARAM_CENTER] = center;
+		this.params[PARAM_LOW] = low;
+		this.params[PARAM_HIGH] = high;
+	}
+	
+	public ActivationStep()
+	{
+		this(0.0,0.0,1.0);
+	}
+	
 	/**
 	 * @return The center.
 	 */
 	public double getCenter() {
-		return center;
-	}
-
-	public void setCenter(double center) {
-		this.center = center;
+		return this.params[PARAM_CENTER];
 	}
 
 	/**
 	 * @return The low value.
 	 */
 	public double getLow() {
-		return low;
+		return this.params[PARAM_LOW];
 	}
 
-	public void setLow(double low) {
-		this.low = low;
-	}
 
 	/**
 	 * @return The high value.
 	 */
 	public double getHigh() {
-		return high;
+		return this.params[PARAM_HIGH];
 	}
 
-	public void setHigh(double high) {
-		this.high = high;
-	}
 
 	/**
 	 * @return A clone of this object.
 	 */
 	@Override
 	public Object clone() {
-		ActivationStep result = new ActivationStep();
-		result.setCenter(this.center);
-		result.setHigh(this.high);
-		result.setLow(this.low);
+		ActivationStep result = new ActivationStep(
+				getLow(),getCenter(),getHigh());
 		return result;
 	}
 
@@ -121,10 +112,10 @@ public class ActivationStep extends BasicActivationFunction {
 	 */
 	public void activationFunction(double[] d) {
 		for (int i = 0; i < d.length; i++) {
-			if (d[i] >= this.center)
-				d[i] = this.high;
+			if (d[i] >= this.params[PARAM_CENTER])
+				d[i] = this.params[PARAM_HIGH];
 			else
-				d[i] = this.low;
+				d[i] = this.params[PARAM_LOW];
 		}
 
 	}

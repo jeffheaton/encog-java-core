@@ -77,8 +77,7 @@ public class ContextLayerPersistor implements Persistor {
 			if (in.is(BasicLayerPersistor.TAG_ACTIVATION, true)) {
 				in.readToTag();
 				final String type = in.getTag().getName();
-				final Persistor persistor = PersistorUtil.createPersistor(type);
-				activation = (ActivationFunction) persistor.load(in);
+				activation = BasicLayerPersistor.loadActivation(type, in); 
 			} else if (in.is(BasicLayerPersistor.PROPERTY_NEURONS, true)) {
 				neuronCount = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_X, true)) {
@@ -144,12 +143,9 @@ public class ContextLayerPersistor implements Persistor {
 		}
 
 		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
-		out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
-		final Persistor persistor = layer.getActivationFunction()
-				.createPersistor();
-		persistor.save(layer.getActivationFunction(), out);
-		out.endTag();
-
+		
+		BasicLayerPersistor.saveActivationFunction(layer.getActivationFunction(), out);
+		
 		out.endTag();
 	}
 

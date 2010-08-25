@@ -44,15 +44,14 @@ import org.encog.persist.Persistor;
 public class ActivationCompetitive extends BasicActivationFunction {
 
 	/**
+	 * The offset to the paramater that holds the max winners.
+	 */
+	public static final int PARAM_MAX_WINNERS = 0;
+	
+	/**
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 5396927873082336888L;
-
-	/**
-	 * How many winning neurons are allowed.
-	 */
-	private int maxWinners = 1;
-
 	
 	public static final String[] PARAM_NAMES = {
 		"maxWinners" };	
@@ -72,7 +71,8 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 *            The maximum number of winners that this function supports.
 	 */
 	public ActivationCompetitive(final int winners) {
-		this.maxWinners = winners;
+		this.params = new double[1];
+		this.params[PARAM_MAX_WINNERS] = winners;
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 		double sumWinners = 0;
 
 		// find the desired number of winners
-		for (int i = 0; i < this.maxWinners; i++) {
+		for (int i = 0; i < this.params[PARAM_MAX_WINNERS]; i++) {
 			double maxFound = Double.NEGATIVE_INFINITY;
 			int winner = -1;
 
@@ -116,7 +116,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationCompetitive(this.maxWinners);
+		return new ActivationCompetitive((int)this.params[PARAM_MAX_WINNERS]);
 	}
 
 	/**
@@ -138,7 +138,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 * @return The maximum number of winners this function supports.
 	 */
 	public int getMaxWinners() {
-		return this.maxWinners;
+		return (int)this.params[PARAM_MAX_WINNERS];
 	}
 
 	/**

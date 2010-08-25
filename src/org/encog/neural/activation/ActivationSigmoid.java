@@ -48,9 +48,15 @@ public class ActivationSigmoid extends BasicActivationFunction implements SlopeA
 	"slope" };
 	
 	/**
-	 * The slope of the activation function.
+	 * The parameter for the slope.
 	 */
-	private double slope = 1.0;
+	public static final int PARAM_SLOPE = 0;
+	
+	public ActivationSigmoid()
+	{
+		this.params = new double[1];
+		this.params[PARAM_SLOPE] = 1;
+	}
 	
 	/**
 	 * Implements the activation function. The array is modified according to
@@ -66,7 +72,7 @@ public class ActivationSigmoid extends BasicActivationFunction implements SlopeA
 			d[i] = ActivationFunctions.calculateActivation(
 					ActivationFunctions.ACTIVATION_SIGMOID, 
 					d[i], 
-					this.slope);
+					this.params[PARAM_SLOPE]);
 		}
 
 	}
@@ -100,7 +106,7 @@ public class ActivationSigmoid extends BasicActivationFunction implements SlopeA
 			d[i] = ActivationFunctions.calculateActivationDerivative(
 					ActivationFunctions.ACTIVATION_SIGMOID, 
 					d[i], 
-					this.slope);
+					this.params[PARAM_SLOPE]);
 		}
 
 	}
@@ -110,7 +116,7 @@ public class ActivationSigmoid extends BasicActivationFunction implements SlopeA
 	 */
 	public double getSlope()
 	{
-		return slope;
+		return this.params[PARAM_SLOPE];
 	}
 
 	/**

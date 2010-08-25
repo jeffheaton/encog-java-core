@@ -55,7 +55,7 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	private EncogCollection encogCollection;
 	
 	
-	private double[] params;
+	protected double[] params;
 	
 	/**
 	 * @return The object cloned.
@@ -125,6 +125,11 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	public double[] getParams()
 	{
 		return this.params;
+	}
+	
+	public void setParam(int index, double value)
+	{
+		this.params[index] = value;
 	}
 	
 	public abstract String[] getParamNames();
