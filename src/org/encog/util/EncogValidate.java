@@ -35,6 +35,9 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 
+/**
+ * Used to validate if training is valid.
+ */
 public class EncogValidate {
 
 	/**
