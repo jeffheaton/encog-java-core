@@ -47,6 +47,10 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
 
+	
+	public static final String[] PARAM_NAMES = {
+	"center", "peak", "width" };	
+	
 	/**
 	 * The gaussian function to be used.
 	 */
@@ -131,5 +135,14 @@ public class ActivationGaussian extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return true;
 	}
+	
+	/**
+	 * @return The paramater names for this activation function.
+	 */
+	@Override
+	public String[] getParamNames() {
+		return PARAM_NAMES;
+	}
+		
 
 }

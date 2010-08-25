@@ -43,6 +43,10 @@ public class ActivationSigmoid extends BasicActivationFunction implements SlopeA
 	 */
 	private static final long serialVersionUID = 5622349801036468572L;
 
+	
+	public static final String[] PARAM_NAMES = {
+	"slope" };
+	
 	/**
 	 * The slope of the activation function.
 	 */
@@ -115,5 +119,13 @@ public class ActivationSigmoid extends BasicActivationFunction implements SlopeA
 	@Override
 	public boolean hasDerivative() {
 		return true;
+	}
+	
+	/**
+	 * @return The paramater names for this activation function.
+	 */
+	@Override
+	public String[] getParamNames() {
+		return PARAM_NAMES;
 	}
 }

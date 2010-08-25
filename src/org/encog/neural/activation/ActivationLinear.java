@@ -46,6 +46,9 @@ public class ActivationLinear extends BasicActivationFunction implements SlopeAc
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
 
+	public static final String[] PARAM_NAMES = {
+	"slope" };	
+	
 	/**
 	 * The slope of the activation function.
 	 */
@@ -108,5 +111,13 @@ public class ActivationLinear extends BasicActivationFunction implements SlopeAc
 	public double getSlope()
 	{
 		return slope;
+	}
+	
+	/**
+	 * @return The paramater names for this activation function.
+	 */
+	@Override
+	public String[] getParamNames() {
+		return PARAM_NAMES;
 	}
 }

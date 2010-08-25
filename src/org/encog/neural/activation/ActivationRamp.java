@@ -46,6 +46,8 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 6336245112244386279L;
 
+	public static final String[] PARAM_NAMES = {
+	"thresholdHigh","thresholdLow", "high", "low" };	
 
 	/**
 	 * The high threshold.
@@ -203,6 +205,14 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	public void setThresholdLow(final double thresholdLow) {
 		this.thresholdLow = thresholdLow;
+	}
+	
+	/**
+	 * @return The paramater names for this activation function.
+	 */
+	@Override
+	public String[] getParamNames() {
+		return PARAM_NAMES;
 	}
 
 }

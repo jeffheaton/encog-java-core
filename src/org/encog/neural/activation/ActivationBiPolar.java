@@ -98,4 +98,14 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return false;
 	}
+
+	/**
+	 * @return The paramater names for this activation function.
+	 * This activation function type has no paramaters, so this method
+	 * returns an empty string.
+	 */
+	@Override
+	public String[] getParamNames() {
+		return new String[0];
+	}
 }

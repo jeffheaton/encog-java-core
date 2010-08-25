@@ -46,6 +46,9 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
 
+	public static final String[] PARAM_NAMES = {
+	"slope" };
+	
 	/**
 	 * The slope of the activation function.
 	 */
@@ -127,6 +130,14 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 	public double getSlope()
 	{
 		return slope;
+	}
+	
+	/**
+	 * @return The paramater names for this activation function.
+	 */
+	@Override
+	public String[] getParamNames() {
+		return PARAM_NAMES;
 	}
 
 }

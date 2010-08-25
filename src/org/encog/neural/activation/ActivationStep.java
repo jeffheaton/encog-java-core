@@ -52,6 +52,9 @@ public class ActivationStep extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 3416782010146745754L;
 
+	public static final String[] PARAM_NAMES = {
+	"center","low","high" };
+	
 	/**
 	 * The center.
 	 */
@@ -141,6 +144,14 @@ public class ActivationStep extends BasicActivationFunction {
 	 */
 	public boolean hasDerivative() {
 		return false;
+	}
+	
+	/**
+	 * @return The paramater names for this activation function.
+	 */
+	@Override
+	public String[] getParamNames() {
+		return PARAM_NAMES;
 	}
 
 }

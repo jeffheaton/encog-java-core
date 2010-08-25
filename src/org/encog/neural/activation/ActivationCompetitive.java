@@ -53,6 +53,10 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 */
 	private int maxWinners = 1;
 
+	
+	public static final String[] PARAM_NAMES = {
+		"maxWinners" };	
+	
 	/**
 	 * Create a competitive activation function with one winner allowed.
 	 */
@@ -144,5 +148,13 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return false;
 	}
-
+	
+	/**
+	 * @return The paramater names for this activation function.
+	 */
+	@Override
+	public String[] getParamNames() {
+		return PARAM_NAMES;
+	}
+	
 }
