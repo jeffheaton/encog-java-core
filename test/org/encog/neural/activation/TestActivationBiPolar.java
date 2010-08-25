@@ -67,13 +67,6 @@ public class TestActivationBiPolar extends TestCase {
 			// good, this should happen
 		}
 		
-		// test name and description
-		// names and descriptions are not stored for these
-		activation.setName("name");
-		activation.setDescription("name");
-		Assert.assertEquals(null, activation.getName());
-		Assert.assertEquals(null, activation.getDescription() );
-		
 		
 	}
 }

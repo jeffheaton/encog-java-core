@@ -58,14 +58,6 @@ public class TestActivationSoftMax extends TestCase {
 		// test derivative
 		activation.derivativeFunction(input);
 		
-		// test name and description
-		// names and descriptions are not stored for these
-		activation.setName("name");
-		activation.setDescription("name");
-		Assert.assertEquals(null, activation.getName());
-		Assert.assertEquals(null, activation.getDescription() );
-		
-		
 	}
 	
 }
