@@ -91,5 +91,7 @@ public interface ActivationFunction extends Serializable {
 	void setParam(int index, double value);
 	
 	String[] getParamNames();
+	
+	int getEngineID();
 
 }

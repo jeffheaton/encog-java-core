@@ -30,6 +30,7 @@
 
 package org.encog.neural.activation;
 
+import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.util.BoundMath;
 import org.encog.persist.Persistor;
 
@@ -117,6 +118,16 @@ public class ActivationLOG extends BasicActivationFunction {
 	@Override
 	public String[] getParamNames() {
 		return new String[0];
+	}
+	
+	/**
+	 * @return The Encog Engine ID for this activation type, or -1 if not
+	 *         defined by the Encog engine.
+	 */
+	@Override
+	public int getEngineID() {
+		// TODO Auto-generated method stub
+		return ActivationFunctions.ACTIVATION_LOG;
 	}
 
 }

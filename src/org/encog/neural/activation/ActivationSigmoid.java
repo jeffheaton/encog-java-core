@@ -132,4 +132,14 @@ public class ActivationSigmoid extends BasicActivationFunction implements SlopeA
 	public String[] getParamNames() {
 		return PARAM_NAMES;
 	}
+	
+	/**
+	 * @return The Encog Engine ID for this activation type, or -1 if not
+	 *         defined by the Encog engine.
+	 */
+	@Override
+	public int getEngineID() {
+		// TODO Auto-generated method stub
+		return ActivationFunctions.ACTIVATION_SIGMOID;
+	}
 }

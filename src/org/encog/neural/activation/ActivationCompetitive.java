@@ -30,6 +30,7 @@
 
 package org.encog.neural.activation;
 
+import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.persist.Persistor;
 
@@ -155,6 +156,15 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	@Override
 	public String[] getParamNames() {
 		return PARAM_NAMES;
+	}
+	
+	/**
+	 * @return The Encog Engine ID for this activation type, or -1 if not
+	 *         defined by the Encog engine.
+	 */
+	@Override
+	public int getEngineID() {
+		return ActivationFunctions.ACTIVATION_COMPETITIVE;
 	}
 	
 }
