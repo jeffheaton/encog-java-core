@@ -51,6 +51,7 @@ org.encog.engine.network.flat.FlatNetwork
 org.encog.engine.network.train.FlatGradientWorker
 org.encog.engine.network.train.GradientWorkerCL
 org.encog.engine.network.train.GradientWorkerCPU
+org.encog.engine.network.train.OpenCLUsage
 org.encog.engine.network.train.RPROPConst
 org.encog.engine.network.train.TrainFlatNetwork
 org.encog.engine.network.train.TrainFlatNetworkBackPropagation
@@ -347,7 +348,6 @@ org.encog.persist.location.PersistenceLocation
 org.encog.persist.location.ResourcePersistence
 org.encog.persist.PersistError
 org.encog.persist.Persistor
-org.encog.persist.persistors.ActivationGaussianPersistor
 org.encog.persist.persistors.BasicLayerPersistor
 org.encog.persist.persistors.BasicNetworkPersistor
 org.encog.persist.persistors.BasicNeuralDataSetPersistor
@@ -373,6 +373,12 @@ org.encog.persist.PersistReader
 org.encog.persist.PersistWriter
 org.encog.script.ConsoleInputOutput
 org.encog.script.EncogScript
+org.encog.script.EncogScriptEngine
+org.encog.script.EncogScriptEngineFactory
+org.encog.script.EncogScriptError
+org.encog.script.EncogScriptRuntimeError
+org.encog.script.IndividualEngineFactory
+org.encog.script.StandardConsole
 org.encog.solve.anneal.SimulatedAnnealing
 org.encog.solve.genetic.crossover.Crossover
 org.encog.solve.genetic.crossover.Splice

@@ -48,11 +48,6 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 672555213449163812L;
-
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private EncogCollection encogCollection;
 	
 	
 	protected double[] params;
@@ -63,64 +58,6 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	@Override
 	public abstract Object clone();
 
-	/**
-	 * @return Always returns null, descriptions and names are not used for
-	 *         activation functions.
-	 */
-	public String getDescription() {
-		return null;
-	}
-
-	/**
-	 * @return Always returns null, descriptions and names are not used for
-	 *         activation functions.
-	 */
-	public String getName() {
-		return null;
-	}
-
-	/**
-	 * Ignore the description, it is not used for activation functions.
-	 * 
-	 * @param theDescription
-	 *            Ignored.
-	 */
-	public void setDescription(final String theDescription) {
-
-	}
-
-	/**
-	 * Ignore the name, it is not used for activation functions.
-	 * 
-	 * @param theName
-	 *            Ignored.
-	 */
-	public void setName(final String theName) {
-
-	}
-	
-	/**
-	 * Create a Persistor for this activation function.
-	 * 
-	 * @return The persistor.
-	 */
-	public Persistor createPersistor() {
-		return new GenericPersistor(this.getClass());
-	}
-
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
-	}
 	
 	public double[] getParams()
 	{

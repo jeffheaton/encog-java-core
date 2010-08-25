@@ -32,7 +32,6 @@ package org.encog.neural.activation;
 
 import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.ActivationGaussianPersistor;
 
 /**
  * An activation function based on the gaussian function.
@@ -111,16 +110,6 @@ public class ActivationGaussian extends BasicActivationFunction {
 	public Object clone() {
 		return new ActivationGaussian(this.gausian.getCenter(), this.gausian
 				.getPeak(), this.gausian.getWidth());
-	}
-
-	/**
-	 * Create a Persistor for this activation function.
-	 * 
-	 * @return The persistor.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return new ActivationGaussianPersistor();
 	}
 
 	/**

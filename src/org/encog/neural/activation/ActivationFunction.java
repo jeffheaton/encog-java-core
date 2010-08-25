@@ -30,6 +30,8 @@
 
 package org.encog.neural.activation;
 
+import java.io.Serializable;
+
 import org.encog.persist.EncogPersistedObject;
 
 /**
@@ -49,7 +51,7 @@ import org.encog.persist.EncogPersistedObject;
  * Non-derivable activation functions are perfectly valid, they simply cannot be
  * used with every training algorithm.
  */
-public interface ActivationFunction extends EncogPersistedObject {
+public interface ActivationFunction extends Serializable {
 
 	/**
 	 * Implements the activation function. The array is modified according to
