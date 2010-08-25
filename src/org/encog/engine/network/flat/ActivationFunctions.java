@@ -2,7 +2,6 @@ package org.encog.engine.network.flat;
 
 import org.encog.engine.EncogEngineError;
 import org.encog.engine.util.BoundMath;
-import org.encog.neural.activation.ActivationCompetitive;
 
 public class ActivationFunctions {
 	/**
@@ -255,7 +254,7 @@ public class ActivationFunctions {
 		double sumWinners = 0;
 
 		// find the desired number of winners
-		for (int i = 0; i < params[ActivationCompetitive.PARAM_MAX_WINNERS]; i++) {
+		for (int i = 0; i < params[0]; i++) {
 			double maxFound = Double.NEGATIVE_INFINITY;
 			int winner = -1;
 
