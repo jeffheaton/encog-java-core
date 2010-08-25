@@ -205,9 +205,6 @@ public class JacobianChainRule implements ComputeJacobian {
 		double output = holder.getOutput().getData(0);
 		e = pair.getIdeal().getData(0) - output;
 
-		this.jacobian[this.jacobianRow][this.jacobianCol++] = calcDerivative(
-				function, output);
-
 		for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
 			final double lastOutput = holder.getResult().get(synapse)
 					.getData(i);
@@ -217,6 +214,10 @@ public class JacobianChainRule implements ComputeJacobian {
 					function, output)
 					* lastOutput;
 		}
+		
+		this.jacobian[this.jacobianRow][this.jacobianCol++] = calcDerivative(
+				function, output);
+
 
 		Synapse lastSynapse;
 
@@ -225,13 +226,14 @@ public class JacobianChainRule implements ComputeJacobian {
 			synapse = synapses.get(synapseNumber++);
 			final NeuralData outputData = holder.getResult().get(lastSynapse);
 
-			final int biasCol = this.jacobianCol;
-			this.jacobianCol += synapse.getToLayer().getNeuronCount();
-
 			// for each neuron in the input layer
 			for (int neuron = 0; neuron 
 			  < synapse.getToNeuronCount(); neuron++) {
 				output = outputData.getData(neuron);
+				
+				final double w = lastSynapse.getMatrix().get(neuron, 0);
+				final double val = calcDerivative(function, output)
+						* calcDerivative2(function, sum) * w;
 
 				// for each weight of the input neuron
 				for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
@@ -246,13 +248,12 @@ public class JacobianChainRule implements ComputeJacobian {
 						sum += lastSynapse.getToLayer().getBiasWeight(j);
 					}
 
-					final double w = lastSynapse.getMatrix().get(neuron, 0);
-					final double val = calcDerivative(function, output)
-							* calcDerivative2(function, sum) * w;
-
 					this.jacobian[this.jacobianRow][this.jacobianCol++] = val
 							* holder.getResult().get(synapse).getData(i);
-					this.jacobian[this.jacobianRow][biasCol + neuron] = val;
+				}
+				
+				if( synapse.getToLayer().hasBias() ) {
+					this.jacobian[this.jacobianRow][this.jacobianCol++] += val;
 				}
 			}
 		}
