@@ -84,8 +84,8 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	 * @param d
 	 *            The input array to the activation function.
 	 */
-	public void derivativeFunction(final double[] d) {
-
+	public double derivativeFunction(final double d) {
+		return 1;
 	}
 
 	/**

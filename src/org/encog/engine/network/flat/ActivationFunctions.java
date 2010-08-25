@@ -25,15 +25,29 @@ public class ActivationFunctions {
 	 * @param x The value to calculate the activation for.
 	 * @return The resulting value.
 	 */
-	public static double calculateActivation(final int type, final double x, final double slope) {
+	public static void calculateActivation(
+			final int type, 
+			final double[] x, 
+			final double[] params,
+			final int xOffset,
+			final int xLength,
+			final int paramOffset) {
 		switch (type) {
 		case ActivationFunctions.ACTIVATION_LINEAR:
-			return x*slope;
+			for(int i=xOffset;i<xOffset+xLength;i++)
+			x[i] = x[i]*params[paramOffset];
+			break;
 		case ActivationFunctions.ACTIVATION_TANH:
-			double z = BoundMath.exp(-slope * x);
-			return (1.0 - z) / (1.0 + z);
+			for(int i=xOffset;i<xOffset+xLength;i++)
+			{
+			double z = BoundMath.exp(-params[paramOffset] * x[i]);
+			x[i] = (1.0 - z) / (1.0 + z);
+			}
+			break;
 		case ActivationFunctions.ACTIVATION_SIGMOID:
-			return 1.0 / (1.0 + BoundMath.exp(-slope * x));
+			for(int i=xOffset;i<xOffset+xLength;i++)
+				x[i] = 1.0 / (1.0 + BoundMath.exp(-params[paramOffset] * x[i]));
+			break;
 		default:
 			throw new EncogEngineError("Unknown activation type: " + type);
 		}
@@ -54,18 +68,20 @@ public class ActivationFunctions {
 	 *            activation function.
 	 * @return The result.
 	 */
-	public static double calculateActivationDerivative(final int type, final double x, final double slope) {
+	public static double calculateActivationDerivative(
+			final int type, 
+			final double x, 
+			final double[] params,
+			final int paramOffset) {
 		switch (type) {
 		case ActivationFunctions.ACTIVATION_LINEAR:
 			return 1;
 		case ActivationFunctions.ACTIVATION_TANH:
-			return (slope * (1.0 - x * x));
+			return (params[paramOffset] * (1.0 - x * x));
 		case ActivationFunctions.ACTIVATION_SIGMOID:
-			return slope * x * ( 1.0 - x);
+			return params[paramOffset] * x * ( 1.0 - x);
 		default:
 			throw new EncogEngineError("Unknown activation type: " + type);
 		}
-	}
-
-	
+	}	
 }

@@ -78,11 +78,8 @@ public class ActivationSIN extends BasicActivationFunction {
 	 * @param d
 	 *            The input array to the activation function.
 	 */
-	public void derivativeFunction(final double[] d) {
-
-		for (int i = 0; i < d.length; i++) {
-			d[i] = BoundMath.cos(d[i]);
-		}
+	public double derivativeFunction(final double d) {
+		return BoundMath.cos(d);
 	}
 
 	/**

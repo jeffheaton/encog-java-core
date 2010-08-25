@@ -79,7 +79,7 @@ public interface ActivationFunction extends Serializable {
 	 * @param d
 	 *            The input array to the activation function.
 	 */
-	void derivativeFunction(double[] d);
+	double derivativeFunction(double d);
 
 	/**
 	 * @return Return true if this function has a derivative.

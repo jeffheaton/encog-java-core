@@ -62,20 +62,6 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 	}
 	
 	/**
-	 * Internal activation function that performs the TANH.
-	 * 
-	 * @param d
-	 *            The input value.
-	 * @return The output value.
-	 */
-	private double activationFunction(final double d) {
-		return ActivationFunctions.calculateActivation(
-				ActivationFunctions.ACTIVATION_TANH, 
-				d, 
-				this.params[PARAM_SLOPE]);
-	}
-
-	/**
 	 * Implements the activation function. The array is modified according to
 	 * the activation function being used. See the class description for more
 	 * specific information on this type of activation function.
@@ -85,9 +71,13 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 	 */
 	public void activationFunction(final double[] d) {
 
-		for (int i = 0; i < d.length; i++) {
-			d[i] = activationFunction(d[i]);
-		}
+		ActivationFunctions.calculateActivation(
+				ActivationFunctions.ACTIVATION_TANH, 
+				d, 
+				this.params,
+				0,
+				d.length,
+				0);
 
 	}
 
@@ -114,14 +104,12 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 	 * @param d
 	 *            The input array to the activation function.
 	 */
-	public void derivativeFunction(final double[] d) {
-
-		for (int i = 0; i < d.length; i++) {
-			d[i] = ActivationFunctions.calculateActivationDerivative(
-					ActivationFunctions.ACTIVATION_TANH, 
-					d[i], 
-					this.params[PARAM_SLOPE]);
-		}
+	public double derivativeFunction(final double d) {
+		return ActivationFunctions.calculateActivationDerivative(
+				ActivationFunctions.ACTIVATION_TANH, 
+				d, 
+				this.params,
+				0);
 	}
 
 	/**

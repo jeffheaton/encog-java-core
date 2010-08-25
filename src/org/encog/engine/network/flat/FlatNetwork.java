@@ -352,11 +352,15 @@ public class FlatNetwork implements EngineNeuralNetwork {
 				sum += this.weights[index++] * this.layerOutput[inputIndex + y];
 			}
 			this.layerOutput[outputIndex + x] += sum;
-
-			this.layerOutput[outputIndex + x] = ActivationFunctions
-					.calculateActivation(this.activationType[currentLayer-1],
-							this.layerOutput[outputIndex + x],this.slope[currentLayer-1]);
 		}
+		
+		ActivationFunctions.calculateActivation(
+				this.activationType[currentLayer-1], 
+				this.layerOutput, 
+				this.slope, 
+				outputIndex, 
+				outputSize, 
+				currentLayer-1);
 		
 		// update context values
 		int offset = this.contextTargetOffset[currentLayer];

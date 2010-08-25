@@ -127,7 +127,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 * @param d
 	 *            The input array to the activation function.
 	 */
-	public void derivativeFunction(final double[] d) {
+	public double derivativeFunction(final double d) {
 		throw new NeuralNetworkError(
 				"Can't use the competitive activation function "
 						+ "where a derivative is required.");

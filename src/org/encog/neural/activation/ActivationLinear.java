@@ -71,12 +71,13 @@ public class ActivationLinear extends BasicActivationFunction implements SlopeAc
 	 *            The input array to the activation function.
 	 */
 	public void activationFunction(final double[] d) {
-		for(int i=0;i<d.length;i++) {
-			d[i] = ActivationFunctions.calculateActivation(
-					ActivationFunctions.ACTIVATION_LINEAR, 
-					d[i], 
-					this.params[PARAM_SLOPE]);
-		}
+		ActivationFunctions.calculateActivation(
+				ActivationFunctions.ACTIVATION_LINEAR, 
+				d, 
+				this.params,
+				0,
+				d.length,
+				0);
 	}
 
 	/**
@@ -97,13 +98,12 @@ public class ActivationLinear extends BasicActivationFunction implements SlopeAc
 	 * @param d
 	 *            The input array to the activation function.
 	 */
-	public void derivativeFunction(final double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			d[i] = ActivationFunctions.calculateActivationDerivative(
+	public double derivativeFunction(final double x) {
+		return ActivationFunctions.calculateActivationDerivative(
 				ActivationFunctions.ACTIVATION_LINEAR, 
-				d[i], 
-				this.params[PARAM_SLOPE]);
-		}
+				x, 
+				this.params,
+				0);
 	}
 
 	/**

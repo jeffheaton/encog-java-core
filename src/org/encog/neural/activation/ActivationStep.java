@@ -124,7 +124,7 @@ public class ActivationStep extends BasicActivationFunction {
 	 * Throws an error, there is no derivative.
 	 * @param d The array to get the derivative.
 	 */
-	public void derivativeFunction(double[] d) {
+	public double derivativeFunction(double d) {
 		throw new NeuralNetworkError("Can't use the step activation function "
 				+ "where a derivative is required.");
 

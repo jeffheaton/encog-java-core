@@ -119,11 +119,8 @@ public class GradientUtil {
 
 		if (output.getActivationFunction().hasDerivative()) {
 			for (int i = 0; i < deltas.length; i++) {
-				deltas[i] = actual.getData(i);
+				deltas[i] = output.getActivationFunction().derivativeFunction(actual.getData(i));
 			}
-
-			// take the derivative of these outputs
-			output.getActivationFunction().derivativeFunction(deltas);
 
 			// multiply by the difference between the actual and idea
 			for (int i = 0; i < output.getNeuronCount(); i++) {
@@ -194,17 +191,8 @@ public class GradientUtil {
 			}
 		}
 
-		final double[] temp = new double[fromDeltas.length];
-
 		for (int i = 0; i < fromDeltas.length; i++) {
-			temp[i] = actualData[i];
-		}
-
-		// get an activation function to use
-		synapse.getToLayer().getActivationFunction().derivativeFunction(temp);
-
-		for (int i = 0; i < temp.length; i++) {
-			fromDeltas[i] *= temp[i];
+			fromDeltas[i] *= synapse.getToLayer().getActivationFunction().derivativeFunction(actualData[i]);
 		}
 
 		return index;

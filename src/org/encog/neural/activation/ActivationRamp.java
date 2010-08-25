@@ -128,8 +128,8 @@ public class ActivationRamp extends BasicActivationFunction {
 	 * @param d
 	 *            The array of values to calculate over.
 	 */
-	public void derivativeFunction(final double[] d) {
-		EngineArray.fill(d, 1.0);
+	public double derivativeFunction(final double d) {
+		return 1;
 	}
 
 	/**

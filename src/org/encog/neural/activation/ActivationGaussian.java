@@ -122,10 +122,9 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 * @param d
 	 *            The input array to the activation function.
 	 */
-	public void derivativeFunction(final double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			d[i] = this.gausian.calculateDerivative(d[i]);
-		}
+	public double derivativeFunction(double d) {
+			return this.gausian.calculateDerivative(d);
+
 
 	}
 

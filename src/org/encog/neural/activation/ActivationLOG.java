@@ -91,15 +91,14 @@ public class ActivationLOG extends BasicActivationFunction {
 	 * @param d
 	 *            The input array to the activation function.
 	 */
-	public void derivativeFunction(final double[] d) {
+	public double derivativeFunction(final double x) {
 
-		for (int i = 0; i < d.length; i++) {
-			if (d[i] >= 0) {
-				d[i] = 1 / (1 + d[i]);
+			if (x >= 0) {
+				return 1 / (1 + x);
 			} else {
-				d[i] = 1 / (1 - d[i]);
+				return 1 / (1 - x);
 			}
-		}
+
 
 	}
 
