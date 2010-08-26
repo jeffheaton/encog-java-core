@@ -46,24 +46,6 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
-
-	/**
-	 * The offset to the parameter that holds the width.
-	 */
-	public static final int PARAM_CENTER = 0;
-	
-	/**
-	 * The offset to the parameter that holds the peak.
-	 */
-	public static final int PARAM_PEAK = 1;
-	
-	/**
-	 * The offset to the parameter that holds the width.
-	 */
-	public static final int PARAM_WIDTH = 2;
-	
-	public static final String[] PARAM_NAMES = {
-	"center", "peak", "width" };	
 	
 	/**
 	 * The gaussian function to be used.
@@ -83,9 +65,9 @@ public class ActivationGaussian extends BasicActivationFunction {
 	public ActivationGaussian(final double center, final double peak,
 			final double width) {
 		this.params = new double[3];
-		this.params[PARAM_CENTER] = center;
-		this.params[PARAM_PEAK] = peak;
-		this.params[PARAM_WIDTH] = width;
+		this.params[ActivationFunctions.PARAM_GAUSSIAN_CENTER] = center;
+		this.params[ActivationFunctions.PARAM_GAUSSIAN_PEAK] = peak;
+		this.params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH] = width;
 		this.gausian = new GaussianFunction(center, peak, width);
 	}
 
@@ -143,23 +125,14 @@ public class ActivationGaussian extends BasicActivationFunction {
 		return true;
 	}
 	
-	/**
-	 * @return The paramater names for this activation function.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return PARAM_NAMES;
-	}
-	
 	public void setParam(int index, double value)
 	{
 		super.setParam(index,value);
 
 		this.gausian = new GaussianFunction(
-				this.params[PARAM_CENTER],
-				this.params[PARAM_PEAK],
-				this.params[PARAM_WIDTH]);
-		
+				this.params[ActivationFunctions.PARAM_GAUSSIAN_CENTER],
+				this.params[ActivationFunctions.PARAM_GAUSSIAN_PEAK],
+				this.params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH]);
 	}
 		
 	/**

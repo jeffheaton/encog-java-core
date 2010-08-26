@@ -95,17 +95,7 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	public boolean hasDerivative() {
 		return true;
 	}
-	
-	/**
-	 * @return The paramater names for this activation function.
-	 * This activation function type has no paramaters, so this method
-	 * returns an empty string.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return new String[0];
-	}
-	
+		
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.

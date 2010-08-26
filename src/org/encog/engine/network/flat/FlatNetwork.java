@@ -105,7 +105,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	private int[] activationType;
 	
 	
-	private double[] slope;
+	private double[] params;
+	private int[] paramIndex;
 	
 	private int[] contextTargetOffset;
 	private int[] contextTargetSize;
@@ -122,30 +123,32 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			final int hidden1, final int hidden2, final int output,
 			final boolean tanh)
 	{
+		double[] params = new double[1];
 		FlatLayer[] layers;
 		int act = tanh?ActivationFunctions.ACTIVATION_TANH:ActivationFunctions.ACTIVATION_SIGMOID;
+		params[0] = 1; // slope
 		
 		if( hidden1==0 && hidden2==0 )
 		{
 			layers = new FlatLayer[2];	
-			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
-			layers[1] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION);
+			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+			layers[1] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION, params);
 		}
 		else if( hidden1==0 || hidden2==0 )
 		{
 			int count = Math.max(hidden1, hidden2);
 			layers = new FlatLayer[3];
-			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
-			layers[1] = new FlatLayer(act,count,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
-			layers[2] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION);
+			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+			layers[1] = new FlatLayer(act,count,FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+			layers[2] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION, params);
 		}
 		else
 		{
 			layers = new FlatLayer[4];
-			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
-			layers[1] = new FlatLayer(act,hidden1,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
-			layers[2] = new FlatLayer(act,hidden2,FlatNetwork.DEFAULT_BIAS_ACTIVATION);
-			layers[3] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION);
+			layers[0] = new FlatLayer(act,input,FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+			layers[1] = new FlatLayer(act,hidden1,FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+			layers[2] = new FlatLayer(act,hidden2,FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+			layers[3] = new FlatLayer(act,output,FlatNetwork.NO_BIAS_ACTIVATION, params);
 		}
 		
 		init(layers);		
@@ -167,8 +170,14 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 */
 	public void init(FlatLayer[] layers) {
 		
+		int paramCount = 0;
+		
 		int layerCount = layers.length;
 
+		for(int i=0;i<layerCount;i++) {
+			paramCount+=ActivationFunctions.getParams(layers[i].getActivation()).length;
+		}
+		
 		this.inputCount = layers[0].getCount();
 		this.outputCount = layers[layerCount-1].getCount();
 
@@ -178,15 +187,18 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		this.layerIndex = new int[layerCount];
 		this.activationType = new int[layerCount];
 		this.layerFeedCounts = new int[layerCount];
-		this.slope = new double[layerCount];
+		this.params = new double[paramCount];
 		this.contextTargetOffset = new int[layerCount];
 		this.contextTargetSize = new int[layerCount];
 		this.biasActivation = new double[layerCount];
+		this.paramIndex = new int[layerCount];
 		
 		int index = 0;
 		int neuronCount = 0;
 		int weightCount = 0;
 
+		int currentParamIndex = 0;
+		
 		for(int i=layers.length-1;i>=0;i--) {
 			
 			FlatLayer layer = layers[i];
@@ -200,7 +212,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			this.layerFeedCounts[index] = layer.getCount();
 			this.layerContextCount[index] = layer.getContectCount();
 			this.activationType[index] = layer.getActivation();
-			this.slope[index] = layer.getSlope();
+			this.paramIndex[index]  = currentParamIndex;
+			currentParamIndex = ActivationFunctions.copyParams(layer.getParams(),this.params,currentParamIndex);
 
 			neuronCount += layer.getTotalCount();
 			
@@ -273,11 +286,12 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		result.contextTargetOffset = EngineArray.arrayCopy(this.contextTargetOffset);
 		result.contextTargetSize = EngineArray.arrayCopy(this.contextTargetSize);
 		result.layerContextCount = EngineArray.arrayCopy(this.layerContextCount);
+		result.paramIndex = EngineArray.arrayCopy(this.paramIndex);
 		result.outputCount = this.outputCount;
 		result.weightIndex = this.weightIndex;
 		result.weights = weights;
 		result.activationType = this.activationType;
-		result.slope = EngineArray.arrayCopy(this.slope);
+		result.params = EngineArray.arrayCopy(this.params);
 		return result;
 	}
 
@@ -338,7 +352,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		final int outputIndex = this.layerIndex[currentLayer - 1];
 		final int inputSize = this.layerCounts[currentLayer];
 		final int outputSize = this.layerFeedCounts[currentLayer - 1];
-
+		
 		int index = this.weightIndex[currentLayer - 1];
 
 		for (int i = 0; i < outputSize; i++) {
@@ -357,10 +371,10 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		ActivationFunctions.calculateActivation(
 				this.activationType[currentLayer-1], 
 				this.layerOutput, 
-				this.slope, 
+				this.params, 
 				outputIndex, 
 				outputSize, 
-				currentLayer-1);
+				this.paramIndex[currentLayer-1]);
 		
 		// update context values
 		int offset = this.contextTargetOffset[currentLayer];
@@ -498,9 +512,16 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 
 
-	public double[] getSlope() {
-		return slope;
+	public double[] getParams() {
+		return params;
 	}
+	
+	
+
+	public int[] getParamIndex() {
+		return paramIndex;
+	}
+
 
 	public void randomize(double hi, double lo) {
 		for(int i=0;i<this.weights.length;i++) {

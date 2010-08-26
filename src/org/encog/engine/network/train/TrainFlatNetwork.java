@@ -307,7 +307,7 @@ public abstract class TrainFlatNetwork {
 			init();
 		}
 		
-		network.clearContext();
+		this.workers[0].getNetwork().clearContext();
 		this.totalError = 0;
 
 		if (this.workers.length > 1) {
@@ -332,10 +332,22 @@ public abstract class TrainFlatNetwork {
 					this.network.getWeights().length);
 		}
 		
+		copyContexts();
+		
 		if( this.reportedException!=null )
 			throw(new EncogEngineError(reportedException));
 
 		calculatePerformance();
+	}
+	
+	private void copyContexts()
+	{
+		for(int i=0;i<(this.workers.length-1);i++)
+		{
+			double[] src = workers[i].getNetwork().getLayerOutput();
+			double[] dst = workers[i+1].getNetwork().getLayerOutput();
+			EngineArray.arrayCopy(src, dst);
+		}
 	}
 
 	/**

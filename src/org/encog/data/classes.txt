@@ -128,7 +128,6 @@ org.encog.neural.activation.ActivationStep
 org.encog.neural.activation.ActivationTANH
 org.encog.neural.activation.ActivationUtil
 org.encog.neural.activation.BasicActivationFunction
-org.encog.neural.activation.SlopeActivationFunction
 org.encog.neural.data.basic.BasicNeuralData
 org.encog.neural.data.basic.BasicNeuralDataPair
 org.encog.neural.data.basic.BasicNeuralDataSet

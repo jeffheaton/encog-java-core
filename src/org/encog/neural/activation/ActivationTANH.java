@@ -39,47 +39,19 @@ import org.encog.engine.network.flat.ActivationFunctions;
  * output is desired.
  * 
  */
-public class ActivationTANH extends BasicActivationFunction  implements SlopeActivationFunction {
+public class ActivationTANH extends BasicActivationFunction {
 
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
-
-	public static final String[] PARAM_NAMES = {
-	"slope" };
-	
-	/**
-	 * The parameter for the slope.
-	 */
-	public static final int PARAM_SLOPE = 0;
-	
 	
 	public ActivationTANH()
 	{
 		this.params = new double[1];
-		this.params[PARAM_SLOPE] = 1;
+		this.params[ActivationFunctions.PARAM_TANH_SLOPE] = 1;
 	}
 	
-	/**
-	 * Implements the activation function. The array is modified according to
-	 * the activation function being used. See the class description for more
-	 * specific information on this type of activation function.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public void activationFunction(final double[] d) {
-
-		ActivationFunctions.calculateActivation(
-				ActivationFunctions.ACTIVATION_TANH, 
-				d, 
-				this.params,
-				0,
-				d.length,
-				0);
-
-	}
 
 	/**
 	 * @return The object cloned;
@@ -89,28 +61,6 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 		return new ActivationTANH();
 	}
 
-	/**
-	 * Calculate the derivative of the activation. It is assumed that the value
-	 * d, which is passed to this method, was the output from this activation.
-	 * This prevents this method from having to recalculate the activation, just
-	 * to recalculate the derivative.
-	 * 
-	 * The array is modified according derivative of the activation function
-	 * being used. See the class description for more specific information on
-	 * this type of activation function. Propagation training requires the
-	 * derivative. Some activation functions do not support a derivative and
-	 * will throw an error.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public double derivativeFunction(final double d) {
-		return ActivationFunctions.calculateActivationDerivative(
-				ActivationFunctions.ACTIVATION_TANH, 
-				d, 
-				this.params,
-				0);
-	}
 
 	/**
 	 * @return Return true, TANH has a derivative.
@@ -124,15 +74,7 @@ public class ActivationTANH extends BasicActivationFunction  implements SlopeAct
 	 */
 	public double getSlope()
 	{
-		return this.params[PARAM_SLOPE];
-	}
-	
-	/**
-	 * @return The paramater names for this activation function.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return PARAM_NAMES;
+		return this.params[ActivationFunctions.PARAM_TANH_SLOPE];
 	}
 	
 	/**

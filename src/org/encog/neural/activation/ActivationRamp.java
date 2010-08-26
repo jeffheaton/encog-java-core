@@ -47,14 +47,8 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 6336245112244386279L;
 
-	public static final int PARAM_HIGH_THRESHOLD = 0;
-	public static final int PARAM_LOW_THRESHOLD = 1;
-	public static final int PARAM_HIGH = 2;
-	public static final int PARAM_LOW = 3;
-	
-	public static final String[] PARAM_NAMES = {
-	"thresholdHigh","thresholdLow", "high", "low" };	
 
+	
 
 	/**
 	 * Construct a ramp activation function.
@@ -72,10 +66,10 @@ public class ActivationRamp extends BasicActivationFunction {
 			final double thresholdLow, final double high, final double low) {
 		
 		this.params = new double[4];
-		this.params[PARAM_HIGH_THRESHOLD] = thresholdHigh;
-		this.params[PARAM_LOW_THRESHOLD] = thresholdLow;
-		this.params[PARAM_HIGH] = high;
-		this.params[PARAM_LOW] = low;		
+		this.params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD] = thresholdHigh;
+		this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD] = thresholdLow;
+		this.params[ActivationFunctions.PARAM_RAMP_HIGH] = high;
+		this.params[ActivationFunctions.PARAM_RAMP_LOW] = low;		
 	}
 
 	/**
@@ -86,29 +80,6 @@ public class ActivationRamp extends BasicActivationFunction {
 	}
 
 	/**
-	 * Calculate the ramp value.
-	 * 
-	 * @param d
-	 *            The array of values to calculate for.
-	 */
-	public void activationFunction(final double[] d) {
-
-		double slope = (this.params[PARAM_HIGH_THRESHOLD] - this.params[PARAM_LOW_THRESHOLD])/
-			(this.params[PARAM_HIGH] - this.params[PARAM_LOW]);
-		
-		for (int i = 0; i < d.length; i++) {
-			if (d[i] < this.params[PARAM_LOW_THRESHOLD]) {
-				d[i] = this.params[PARAM_LOW];
-			} else if (d[i] > this.params[PARAM_HIGH_THRESHOLD]) {
-				d[i] = this.params[PARAM_HIGH];
-			} else {
-				d[i] = (slope * d[i]);
-			}
-		}
-
-	}
-
-	/**
 	 * Clone the object.
 	 * 
 	 * @return The cloned object.
@@ -116,10 +87,10 @@ public class ActivationRamp extends BasicActivationFunction {
 	@Override
 	public Object clone() {
 		return new ActivationRamp( 
-				this.params[PARAM_HIGH_THRESHOLD],
-				this.params[PARAM_LOW_THRESHOLD], 
-				this.params[PARAM_HIGH], 
-				this.params[PARAM_LOW]);
+				this.params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD],
+				this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD], 
+				this.params[ActivationFunctions.PARAM_RAMP_HIGH], 
+				this.params[ActivationFunctions.PARAM_RAMP_LOW]);
 	}
 
 	/**
@@ -137,28 +108,28 @@ public class ActivationRamp extends BasicActivationFunction {
 	 * @return the high
 	 */
 	public double getHigh() {
-		return this.params[PARAM_HIGH];
+		return this.params[ActivationFunctions.PARAM_RAMP_HIGH];
 	}
 
 	/**
 	 * @return the low
 	 */
 	public double getLow() {
-		return this.params[PARAM_LOW];
+		return this.params[ActivationFunctions.PARAM_RAMP_LOW];
 	}
 
 	/**
 	 * @return the thresholdHigh
 	 */
 	public double getThresholdHigh() {
-		return this.params[PARAM_HIGH_THRESHOLD];
+		return this.params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD];
 	}
 
 	/**
 	 * @return the thresholdLow
 	 */
 	public double getThresholdLow() {
-		return this.params[PARAM_LOW_THRESHOLD];
+		return this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD];
 	}
 
 	/**
@@ -166,15 +137,6 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	public boolean hasDerivative() {
 		return true;
-	}
-
-	
-	/**
-	 * @return The paramater names for this activation function.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return PARAM_NAMES;
 	}
 	
 	/**

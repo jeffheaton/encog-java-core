@@ -49,25 +49,11 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
 
-	/**
-	 * Implements the activation function. The array is modified according to
-	 * the activation function being used. See the class description for more
-	 * specific information on this type of activation function.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public void activationFunction(final double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			if (d[i] > 0) {
-				d[i] = 1;
-			} else {
-				d[i] = -1;
-			}
-		}
-
+	public ActivationBiPolar()
+	{
+		this.params = new double[0];
 	}
-
+	
 	/**
 	 * @return The object cloned.
 	 */
@@ -98,16 +84,6 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	 */
 	public boolean hasDerivative() {
 		return false;
-	}
-
-	/**
-	 * @return The parameter names for this activation function.
-	 * This activation function type has no paramaters, so this method
-	 * returns an empty string.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return new String[0];
 	}
 
 	/**

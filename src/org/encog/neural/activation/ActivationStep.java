@@ -51,22 +51,14 @@ public class ActivationStep extends BasicActivationFunction {
 	/**
 	 * The serial ID.
 	 */
-	private static final long serialVersionUID = 3416782010146745754L;
-
-	public static final String[] PARAM_NAMES = {
-	"center","low","high" };
-	
-	public static final int PARAM_CENTER = 0;
-	public static final int PARAM_LOW = 1;
-	public static final int PARAM_HIGH = 2;
-	
+	private static final long serialVersionUID = 3416782010146745754L;	
 
 	public ActivationStep(double low, double center, double high)
 	{
 		this.params = new double[3];
-		this.params[PARAM_CENTER] = center;
-		this.params[PARAM_LOW] = low;
-		this.params[PARAM_HIGH] = high;
+		this.params[ActivationFunctions.PARAM_STEP_CENTER] = center;
+		this.params[ActivationFunctions.PARAM_STEP_LOW] = low;
+		this.params[ActivationFunctions.PARAM_STEP_HIGH] = high;
 	}
 	
 	public ActivationStep()
@@ -78,14 +70,14 @@ public class ActivationStep extends BasicActivationFunction {
 	 * @return The center.
 	 */
 	public double getCenter() {
-		return this.params[PARAM_CENTER];
+		return this.params[ActivationFunctions.PARAM_STEP_CENTER];
 	}
 
 	/**
 	 * @return The low value.
 	 */
 	public double getLow() {
-		return this.params[PARAM_LOW];
+		return this.params[ActivationFunctions.PARAM_STEP_LOW];
 	}
 
 
@@ -93,7 +85,7 @@ public class ActivationStep extends BasicActivationFunction {
 	 * @return The high value.
 	 */
 	public double getHigh() {
-		return this.params[PARAM_HIGH];
+		return this.params[ActivationFunctions.PARAM_STEP_HIGH];
 	}
 
 
@@ -105,20 +97,6 @@ public class ActivationStep extends BasicActivationFunction {
 		ActivationStep result = new ActivationStep(
 				getLow(),getCenter(),getHigh());
 		return result;
-	}
-
-	/**
-	 * The activation function.
-	 * @param d The array to calculate the activation function for.
-	 */
-	public void activationFunction(double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			if (d[i] >= this.params[PARAM_CENTER])
-				d[i] = this.params[PARAM_HIGH];
-			else
-				d[i] = this.params[PARAM_LOW];
-		}
-
 	}
 
 	/**
@@ -137,15 +115,7 @@ public class ActivationStep extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return false;
 	}
-	
-	/**
-	 * @return The paramater names for this activation function.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return PARAM_NAMES;
-	}
-	
+		
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.

@@ -43,19 +43,11 @@ import org.encog.persist.Persistor;
  * 
  */
 public class ActivationCompetitive extends BasicActivationFunction {
-
-	/**
-	 * The offset to the paramater that holds the max winners.
-	 */
-	public static final int PARAM_MAX_WINNERS = 0;
 	
 	/**
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 5396927873082336888L;
-	
-	public static final String[] PARAM_NAMES = {
-		"maxWinners" };	
 	
 	/**
 	 * Create a competitive activation function with one winner allowed.
@@ -73,51 +65,16 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 */
 	public ActivationCompetitive(final int winners) {
 		this.params = new double[1];
-		this.params[PARAM_MAX_WINNERS] = winners;
+		this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS] = winners;
 	}
 
-	/**
-	 * Perform the activation function.
-	 * 
-	 * @param d
-	 *            The data to be given to the activation function.
-	 */
-	public void activationFunction(final double[] d) {
-		final boolean[] winners = new boolean[d.length];
-		double sumWinners = 0;
-
-		// find the desired number of winners
-		for (int i = 0; i < this.params[PARAM_MAX_WINNERS]; i++) {
-			double maxFound = Double.NEGATIVE_INFINITY;
-			int winner = -1;
-
-			// find one winner
-			for (int j = 0; j < d.length; j++) {
-				if (!winners[j] && (d[j] > maxFound)) {
-					winner = j;
-					maxFound = d[j];
-				}
-			}
-			sumWinners += maxFound;
-			winners[winner] = true;
-		}
-
-		// adjust weights for winners and non-winners
-		for (int i = 0; i < d.length; i++) {
-			if (winners[i]) {
-				d[i] = d[i] / sumWinners;
-			} else {
-				d[i] = 0.0;
-			}
-		}
-	}
 
 	/**
 	 * @return A cloned copy of this object.
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationCompetitive((int)this.params[PARAM_MAX_WINNERS]);
+		return new ActivationCompetitive((int)this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS]);
 	}
 
 	/**
@@ -139,7 +96,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 * @return The maximum number of winners this function supports.
 	 */
 	public int getMaxWinners() {
-		return (int)this.params[PARAM_MAX_WINNERS];
+		return (int)this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS];
 	}
 
 	/**
@@ -148,14 +105,6 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 */
 	public boolean hasDerivative() {
 		return false;
-	}
-	
-	/**
-	 * @return The paramater names for this activation function.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return PARAM_NAMES;
 	}
 	
 	/**

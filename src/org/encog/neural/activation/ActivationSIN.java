@@ -47,40 +47,11 @@ public class ActivationSIN extends BasicActivationFunction {
 	private static final long serialVersionUID = 5301501177778271284L;
 
 	/**
-	 * Implements the activation function. The array is modified according to
-	 * the activation function being used. See the class description for more
-	 * specific information on this type of activation function.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public void activationFunction(final double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			d[i] = BoundMath.sin(d[i]);
-		}
-	}
-
-	/**
 	 * @return The object cloned;
 	 */
 	@Override
 	public Object clone() {
 		return new ActivationSIN();
-	}
-
-
-	/**
-	 * Implements the activation function derivative. The array is modified
-	 * according derivative of the activation function being used. See the class
-	 * description for more specific information on this type of activation
-	 * function. Propagation training requires the derivative. Some activation
-	 * functions do not support a derivative and will throw an error.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public double derivativeFunction(final double d) {
-		return BoundMath.cos(d);
 	}
 
 	/**
@@ -89,17 +60,7 @@ public class ActivationSIN extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return true;
 	}
-	
-	/**
-	 * @return The paramater names for this activation function.
-	 * This activation function type has no paramaters, so this method
-	 * returns an empty string.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return new String[0];
-	}
-	
+		
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.
@@ -107,6 +68,6 @@ public class ActivationSIN extends BasicActivationFunction {
 	@Override
 	public int getEngineID() {
 		// TODO Auto-generated method stub
-		return ActivationFunctions.ACTIVATION_SIGMOID;
+		return ActivationFunctions.ACTIVATION_SIN;
 	}
 }

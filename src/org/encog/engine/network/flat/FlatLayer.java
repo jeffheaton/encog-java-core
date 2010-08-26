@@ -1,30 +1,22 @@
 package org.encog.engine.network.flat;
 
 import org.encog.engine.EncogEngine;
+import org.encog.engine.util.EngineArray;
 
 public class FlatLayer {
 	
 	private final int activation;
 	private final int count;
 	private final double biasActivation;
-	private final double slope;
+	private final double[] params;
 	private FlatLayer contextFedBy;
 	
-	public FlatLayer(int activation, int count, double biasActivation)
+	public FlatLayer(int activation, int count, double biasActivation, double[] params)
 	{
 		this.activation = activation;
 		this.count = count;
 		this.biasActivation = biasActivation;
-		this.slope = 1;
-		this.contextFedBy = null;
-	}
-	
-	public FlatLayer(int activation, int count, double biasActivation, double slope)
-	{
-		this.activation = activation;
-		this.count = count;
-		this.biasActivation = biasActivation;
-		this.slope = slope;
+		this.params = EngineArray.arrayCopy(params);
 		this.contextFedBy = null;
 	}
 	
@@ -65,8 +57,8 @@ public class FlatLayer {
 			return this.contextFedBy.getCount();
 	}
 
-	public double getSlope() {
-		return slope;
+	public double[] getParams() {
+		return this.params;
 	}
 
 	public FlatLayer getContextFedBy() {

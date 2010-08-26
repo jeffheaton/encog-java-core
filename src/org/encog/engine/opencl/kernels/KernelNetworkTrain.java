@@ -183,7 +183,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	public void init(final FlatNetwork flat) {
 
 		this.weightArray = new float[flat.getWeights().length];
-		this.slopeArray = new float[flat.getSlope().length];
+		this.slopeArray = new float[flat.getParams().length];
 		
 		this.layerDeltaSize = 0;
 		for (int i = 0; i < flat.getLayerCounts().length; i++) {
@@ -191,7 +191,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		}
 		
 		for(int i=0;i<this.slopeArray.length;i++) {
-			this.slopeArray[i] = (float)flat.getSlope()[i];
+			this.slopeArray[i] = (float)flat.getParams()[i];
 		}
 
 		this.layerIndexBuffer = CL.clCreateBuffer(getContext(),

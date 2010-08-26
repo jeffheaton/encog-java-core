@@ -235,4 +235,9 @@ public class GradientWorkerCL implements FlatGradientWorker {
 			this.owner.report(null, 0, ex);
 		}
 	}
+
+	@Override
+	public FlatNetwork getNetwork() {
+		return this.network;
+	}
 }

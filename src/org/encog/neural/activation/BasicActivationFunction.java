@@ -30,6 +30,7 @@
 
 package org.encog.neural.activation;
 
+import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.generic.GenericPersistor;
@@ -52,6 +53,50 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	
 	protected double[] params;
 	
+	
+	/**
+	 * Implements the activation function. The array is modified according to
+	 * the activation function being used. See the class description for more
+	 * specific information on this type of activation function.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
+	 */
+	public void activationFunction(final double[] d) {
+
+		ActivationFunctions.calculateActivation(
+				this.getEngineID(), 
+				d, 
+				this.params,
+				0,
+				d.length,
+				0);
+	}
+
+	/**
+	 * Calculate the derivative of the activation. It is assumed that the value
+	 * d, which is passed to this method, was the output from this activation.
+	 * This prevents this method from having to recalculate the activation, just
+	 * to recalculate the derivative.
+	 * 
+	 * Some activation functions do not have derivatives and will throw an error.
+	 * 
+	 * Linear functions will return one for their derivative.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
+	 *            
+	 * @return 	The derivative.
+	 */
+	public double derivativeFunction(final double d) {
+		return ActivationFunctions.calculateActivationDerivative(
+				this.getEngineID(), 
+				d, 
+				this.params,
+				0);
+
+	}
+	
 	/**
 	 * @return The object cloned.
 	 */
@@ -69,6 +114,9 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 		this.params[index] = value;
 	}
 	
-	public abstract String[] getParamNames();
+	public String[] getParamNames()
+	{
+		return ActivationFunctions.getParams(getEngineID());
+	}
 
 }

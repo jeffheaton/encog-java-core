@@ -39,71 +39,25 @@ import org.encog.persist.Persistor;
  * primarily theoretical and of little actual use. Usually an activation
  * function that scales between 0 and 1 or -1 and 1 should be used.
  */
-public class ActivationLinear extends BasicActivationFunction implements SlopeActivationFunction {
+public class ActivationLinear extends BasicActivationFunction {
 
 	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
-
-	public static final String[] PARAM_NAMES = {
-	"slope" };	
-
-	
-	/**
-	 * The parameter for the slope.
-	 */
-	public static final int PARAM_SLOPE = 0;
-	
 	
 	public ActivationLinear()
 	{
 		this.params = new double[1];
-		this.params[PARAM_SLOPE] = 1;
+		this.params[ActivationFunctions.PARAM_LINEAR_SLOPE] = 1;
 	}
 	
-	/**
-	 * Implements the activation function. The array is modified according to
-	 * the activation function being used. See the class description for more
-	 * specific information on this type of activation function.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public void activationFunction(final double[] d) {
-		ActivationFunctions.calculateActivation(
-				ActivationFunctions.ACTIVATION_LINEAR, 
-				d, 
-				this.params,
-				0,
-				d.length,
-				0);
-	}
-
 	/**
 	 * @return The object cloned.
 	 */
 	@Override
 	public Object clone() {
 		return new ActivationLinear();
-	}
-
-	/**
-	 * Implements the activation function derivative. The array is modified
-	 * according derivative of the activation function being used. See the class
-	 * description for more specific information on this type of activation
-	 * function. Propagation training requires the derivative. Some activation
-	 * functions do not support a derivative and will throw an error.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public double derivativeFunction(final double x) {
-		return ActivationFunctions.calculateActivationDerivative(
-				ActivationFunctions.ACTIVATION_LINEAR, 
-				x, 
-				this.params,
-				0);
 	}
 
 	/**
@@ -118,15 +72,7 @@ public class ActivationLinear extends BasicActivationFunction implements SlopeAc
 	 */
 	public double getSlope()
 	{
-		return this.params[PARAM_SLOPE];
-	}
-	
-	/**
-	 * @return The paramater names for this activation function.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return PARAM_NAMES;
+		return this.params[ActivationFunctions.PARAM_LINEAR_SLOPE];
 	}
 	
 	/**

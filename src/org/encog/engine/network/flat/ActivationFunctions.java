@@ -2,8 +2,80 @@ package org.encog.engine.network.flat;
 
 import org.encog.engine.EncogEngineError;
 import org.encog.engine.util.BoundMath;
+import org.encog.engine.util.EngineArray;
 
 public class ActivationFunctions {
+	
+	public static final String[][] PARAM_NAMES = {
+		// ACTIVATION_LINEAR - 0
+		{ "slope" },
+		// ACTIVATION_TANH - 1
+		{ "slope" },
+		// ACTIVATION_SIGMOID - 2
+		{ "slope" },
+		// ACTIVATION_SOFTMAX - 3
+		{ },
+		// ACTIVATION_BIPOLAR - 4
+		{ },
+		// ACTIVATION_STEP - 5
+		{ "center","low","high" },
+		// ACTIVATION_RAMP - 6
+		{ "thresholdHigh","thresholdLow", "high", "low" },
+		// ACTIVATION_COMPETITIVE - 7
+		{ "maxWinners" },
+		// ACTIVATION_SIN - 8
+		{  },
+		// ACTIVATION_LOG - 9
+		{  },
+		// ACTIVATION_GAUSSIAN - 10
+		{ "center", "peak", "width" }
+	};
+	
+	/**
+	 * The offset to the parameter that holds the linear slope.
+	 */
+	public static final int PARAM_LINEAR_SLOPE = 0;
+	
+	/**
+	 * The offset to the parameter that holds the tanh slope.
+	 */
+	public static final int PARAM_TANH_SLOPE = 0;
+	
+	/**
+	 * The offset to the parameter that holds the sigmoid slope.
+	 */
+	public static final int PARAM_SIGMOID_SLOPE = 0;
+	
+	/**
+	 * The offset to the parameter that holds the max winners.
+	 */
+	public static final int PARAM_COMPETITIVE_MAX_WINNERS = 0;
+	
+	public static final int PARAM_STEP_CENTER = 0;
+	public static final int PARAM_STEP_LOW = 1;
+	public static final int PARAM_STEP_HIGH = 2;
+	
+	public static final int PARAM_RAMP_HIGH_THRESHOLD = 0;
+	public static final int PARAM_RAMP_LOW_THRESHOLD = 1;
+	public static final int PARAM_RAMP_HIGH = 2;
+	public static final int PARAM_RAMP_LOW = 3;
+	
+	/**
+	 * The offset to the parameter that holds the width.
+	 */
+	public static final int PARAM_GAUSSIAN_CENTER = 0;
+	
+	/**
+	 * The offset to the parameter that holds the peak.
+	 */
+	public static final int PARAM_GAUSSIAN_PEAK = 1;
+	
+	/**
+	 * The offset to the parameter that holds the width.
+	 */
+	public static final int PARAM_GAUSSIAN_WIDTH = 2;
+
+	
 	/**
 	 * A linear activation function.
 	 */
@@ -220,7 +292,13 @@ public class ActivationFunctions {
 			final int xOffset,
 			final int xLength,
 			final int paramOffset) {
-		
+		for(int i=xOffset;i<xOffset+xLength;i++) {
+			if (x[i] > 0) {
+				x[i] = 1;
+			} else {
+				x[i] = -1;
+			}
+		}
 	}
 	public static void calculateActivationSTEP(
 			final int type, 
@@ -230,6 +308,12 @@ public class ActivationFunctions {
 			final int xLength,
 			final int paramOffset) {
 		
+		for(int i=xOffset;i<xOffset+xLength;i++) {
+			if (x[i] >= params[ActivationFunctions.PARAM_STEP_CENTER])
+				x[i] = params[ActivationFunctions.PARAM_STEP_HIGH];
+			else
+				x[i] = params[ActivationFunctions.PARAM_STEP_LOW];
+		}
 	}
 	
 	public static void calculateActivationRAMP(
@@ -239,7 +323,18 @@ public class ActivationFunctions {
 			final int xOffset,
 			final int xLength,
 			final int paramOffset) {
-		
+		double slope = (params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD] - params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD])/
+		(params[ActivationFunctions.PARAM_RAMP_HIGH] - params[ActivationFunctions.PARAM_RAMP_LOW]);
+	
+		for(int i=xOffset;i<xOffset+xLength;i++) {
+		if (x[i] < params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD]) {
+			x[i] = params[ActivationFunctions.PARAM_RAMP_LOW];
+		} else if (x[i] > params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD]) {
+			x[i] = params[ActivationFunctions.PARAM_RAMP_HIGH];
+		} else {
+			x[i] = (slope * x[i]);
+		}
+	}
 	}
 	
 	public static void calculateActivationCOMPETITIVE(
@@ -286,7 +381,10 @@ public class ActivationFunctions {
 			final int xOffset,
 			final int xLength,
 			final int paramOffset) {
-		
+		for(int i=xOffset;i<xOffset+xLength;i++) {
+			x[i] = BoundMath.sin(x[i]);
+		}
+
 	}
 	
 	public static void calculateActivationLOG(
@@ -296,7 +394,14 @@ public class ActivationFunctions {
 			final int xOffset,
 			final int xLength,
 			final int paramOffset) {
-		
+		for(int i=xOffset;i<xOffset+xLength;i++) {
+			if (x[i] >= 0) {
+				x[i] = BoundMath.log(1 + x[i]);
+			} else {
+				x[i] = -BoundMath.log(1 - x[i]);
+			}
+		}
+
 	}
 	
 	public static void calculateActivationGAUSSIAN(
@@ -306,7 +411,11 @@ public class ActivationFunctions {
 			final int xOffset,
 			final int xLength,
 			final int paramOffset) {
-		
+		for(int i=xOffset;i<xOffset+xLength;i++) {
+		x[i] = params[ActivationFunctions.PARAM_GAUSSIAN_PEAK]
+		* BoundMath.exp(-Math.pow(x[i] - params[ActivationFunctions.PARAM_GAUSSIAN_CENTER], 2)
+				/ (2.0 * params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH] * params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH]));
+		}
 	}	
 	
 	
@@ -386,7 +495,7 @@ public class ActivationFunctions {
 			final double x, 
 			final double[] params,
 			final int paramOffset) {
-		return 1;
+		return BoundMath.cos(x);
 	}
 	
 	public static double calculateActivationDerivativeLOG(
@@ -394,7 +503,11 @@ public class ActivationFunctions {
 			final double x, 
 			final double[] params,
 			final int paramOffset) {
-		return 1;
+		if (x >= 0) {
+			return 1 / (1 + x);
+		} else {
+			return 1 / (1 - x);
+		}
 	}
 	
 	public static double calculateActivationDerivativeGAUSSIAN(
@@ -402,12 +515,20 @@ public class ActivationFunctions {
 			final double x, 
 			final double[] params,
 			final int paramOffset) {
-		return 1;
+		double width = params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH];
+		double peak = params[ActivationFunctions.PARAM_GAUSSIAN_PEAK];
+		return Math.exp(-0.5 * width * width * x * x) * peak
+		* width * width
+		* (width * width * x * x - 1);
 	}
 	
-	
-	
-	
-	
-	
+	public static String[] getParams(int index)
+	{
+		return PARAM_NAMES[index];
+	}
+
+	public static int copyParams(double[] source, double[] target, int index) {
+		EngineArray.arrayCopy(source, 0, target, index, source.length);
+		return index+source.length;
+	}
 }

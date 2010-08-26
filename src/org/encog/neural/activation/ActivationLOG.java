@@ -53,25 +53,7 @@ public class ActivationLOG extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 7134233791725797522L;
 
-	/**
-	 * Implements the activation function. The array is modified according to
-	 * the activation function being used. See the class description for more
-	 * specific information on this type of activation function.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public void activationFunction(final double[] d) {
 
-		for (int i = 0; i < d.length; i++) {
-			if (d[i] >= 0) {
-				d[i] = BoundMath.log(1 + d[i]);
-			} else {
-				d[i] = -BoundMath.log(1 - d[i]);
-			}
-		}
-
-	}
 
 	/**
 	 * @return The object cloned.
@@ -93,14 +75,11 @@ public class ActivationLOG extends BasicActivationFunction {
 	 *            The input array to the activation function.
 	 */
 	public double derivativeFunction(final double x) {
-
-			if (x >= 0) {
-				return 1 / (1 + x);
-			} else {
-				return 1 / (1 - x);
-			}
-
-
+		if (x >= 0) {
+			return 1 / (1 + x);
+		} else {
+			return 1 / (1 - x);
+		}
 	}
 
 	/**
@@ -109,17 +88,7 @@ public class ActivationLOG extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return true;
 	}
-	
-	/**
-	 * @return The paramater names for this activation function.
-	 * This activation function type has no paramaters, so this method
-	 * returns an empty string.
-	 */
-	@Override
-	public String[] getParamNames() {
-		return new String[0];
-	}
-	
+		
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.
