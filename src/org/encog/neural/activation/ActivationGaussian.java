@@ -47,10 +47,6 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
 	
-	/**
-	 * The gaussian function to be used.
-	 */
-	private GaussianFunction gausian;
 
 	/**
 	 * Create a gaussian activation function.
@@ -68,71 +64,37 @@ public class ActivationGaussian extends BasicActivationFunction {
 		this.params[ActivationFunctions.PARAM_GAUSSIAN_CENTER] = center;
 		this.params[ActivationFunctions.PARAM_GAUSSIAN_PEAK] = peak;
 		this.params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH] = width;
-		this.gausian = new GaussianFunction(center, peak, width);
 	}
 
-	/**
-	 * Implements the activation function. The array is modified according to
-	 * the activation function being used. See the class description for more
-	 * specific information on this type of activation function.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public void activationFunction(final double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			d[i] = this.gausian.calculate(d[i]);
-		}
-
-	}
 
 	/**
 	 * @return The object cloned.
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationGaussian(this.gausian.getCenter(), this.gausian
-				.getPeak(), this.gausian.getWidth());
+		return new ActivationGaussian(this.getCenter(), this.getPeak(), this.getWidth());
 	}
 
-	/**
-	 * Implements the activation function derivative. The array is modified
-	 * according derivative of the activation function being used. See the class
-	 * description for more specific information on this type of activation
-	 * function. Propagation training requires the derivative. Some activation
-	 * functions do not support a derivative and will throw an error.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public double derivativeFunction(double d) {
-			return this.gausian.calculateDerivative(d);
-
-
+	private double getWidth() {
+		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_WIDTH];
 	}
 
-	/**
-	 * @return The gaussian funcion used.
-	 */
-	public GaussianFunction getGausian() {
-		return this.gausian;
+
+	private double getCenter() {
+		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_CENTER];
 	}
+
+
+	private double getPeak() {
+		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_PEAK];
+	}
+
 
 	/**
 	 * @return Return true, gaussian has a derivative.
 	 */
 	public boolean hasDerivative() {
 		return true;
-	}
-	
-	public void setParam(int index, double value)
-	{
-		super.setParam(index,value);
-
-		this.gausian = new GaussianFunction(
-				this.params[ActivationFunctions.PARAM_GAUSSIAN_CENTER],
-				this.params[ActivationFunctions.PARAM_GAUSSIAN_PEAK],
-				this.params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH]);
 	}
 		
 	/**

@@ -29,6 +29,8 @@
  */
 package org.encog.neural.networks.structure;
 
+import org.encog.engine.EngineMachineLearning;
+import org.encog.engine.validate.BasicMachineLearningValidate;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
@@ -41,12 +43,9 @@ import org.encog.neural.networks.logic.FeedforwardLogic;
 
 /**
  * Only certain types of networks can be converted to a flat network. This class
- * validates this. Specifically the network must be:
- * 
- * 1. Feedforward only, no self-connections or recurrent links 2. Sigmoid, TANH
- * or linear activation only 3. Must have bias weight values
+ * validates this.
  */
-public final class ValidateForFlat {
+public class ValidateForFlat extends BasicMachineLearningValidate {
 
 	/**
 	 * Determine if the specified neural network can be flat. If it can a null
@@ -58,7 +57,13 @@ public final class ValidateForFlat {
 	 * @return Null, if the net can not be flattened, an error message
 	 *         otherwise.
 	 */
-	public static String canBeFlat(final BasicNetwork network) {
+	public String isValid(final EngineMachineLearning eml) {
+		
+		if( !(eml instanceof BasicNetwork) )
+			return "Only a BasicNetwork can be converted to a flat network.";
+		
+		BasicNetwork network = (BasicNetwork)eml;
+		
 		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
 		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
 
@@ -99,24 +104,6 @@ public final class ValidateForFlat {
 		return null;
 	}
 
-	/**
-	 * Validate the specified network.
-	 * 
-	 * @param network
-	 *            The network to validate.
-	 */
-	public static void validateNetwork(final BasicNetwork network) {
-		final String str = ValidateForFlat.canBeFlat(network);
-		if (str != null) {
-			throw new NeuralNetworkError(str);
-		}
-	}
 
-	/**
-	 * Private constructor.
-	 */
-	private ValidateForFlat() {
-
-	}
 
 }

@@ -43,6 +43,7 @@ import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.flat.ValidateForOpenCL;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLPlatform;
 import org.encog.engine.util.EngineArray;
@@ -107,25 +108,11 @@ public abstract class TrainFlatNetwork {
 	private double currentError;
 
 	/**
-	 * The average number of ticks that each CL worker took.
-	 */
-	private long clTimePerIteration;
-
-	/**
-	 * The average number of ticks that each CPU worker took.
-	 */
-	private long cpuTimePerIteration;
-
-	/**
-	 * The performance ratio between CPU and CL. Positive number means CL
-	 * workers are faster than CPU ones.
-	 */
-	private double calculatedCLRatio;
-
-	/**
 	 * Reported exception from the threads.
 	 */
 	private Throwable reportedException;
+	
+	private EncogCLDevice targetDevice;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -169,39 +156,6 @@ public abstract class TrainFlatNetwork {
 				totalCL += worker.getElapsedTime();
 			}
 		}
-
-		if (countCPU > 0) {
-			this.cpuTimePerIteration = totalCPU / countCPU;
-		}
-
-		if (countCL > 0) {
-			this.clTimePerIteration = totalCL / countCL;
-		}
-
-		this.calculatedCLRatio = ((double) this.cpuTimePerIteration)
-				/ ((double) this.clTimePerIteration);
-	}
-
-	/**
-	 * @return The performance ratio between CPU and CL. Positive number means
-	 *         CL workers are faster than CPU ones.
-	 */
-	public double getCalculatedCLRatio() {
-		return this.calculatedCLRatio;
-	}
-
-	/**
-	 * @return The average number of miliseconds that each CL worker took.
-	 */
-	public long getCLTimePerIteration() {
-		return this.clTimePerIteration;
-	}
-
-	/**
-	 * @return The average number of milliseconds that each CPU worker took.
-	 */
-	public long getCPUTimePerIteration() {
-		return this.cpuTimePerIteration;
 	}
 
 	/**
@@ -232,28 +186,25 @@ public abstract class TrainFlatNetwork {
 		this.gradients = new double[this.network.getWeights().length];
 		this.lastGradient = new double[this.network.getWeights().length];
 
-		List<EncogCLDevice> clDevices = null;
-
 		DetermineWorkload determine;
+		ValidateForOpenCL val = new ValidateForOpenCL();
 
-		// consider CL, if enabled
-		if (EncogEngine.getInstance().getCL() != null) {
-			
+		if( this.targetDevice!=null && val.isValid(this.network)==null )
+		{
 			if( EncogEngine.getInstance().getCL().areCPUsPresent() ) {
 				this.numThreads = -1;
 				EncogEngine.getInstance().getCL().enableAllCPUs();
 			}
-
-			clDevices = EncogEngine.getInstance().getCL().getEnabledDevices();
+			
 			determine = new DetermineWorkload(this.numThreads,
-					clDevices.size(), (int) this.indexable.getRecordCount());
-			determine.setCLRatio(EncogEngine.getInstance().getCL()
-					.getEnforcedCLRatio());
-		} else {
-			determine = new DetermineWorkload(this.numThreads,
-					(int) this.indexable.getRecordCount());
+					1, (int) this.indexable.getRecordCount());
 		}
-
+		else
+		{
+			determine = new DetermineWorkload(this.numThreads,
+					(int) this.indexable.getRecordCount());			
+		}
+		
 		this.workers = new FlatGradientWorker[determine.getTotalWorkerCount()];
 
 		determine.calculateWorkers();
@@ -283,10 +234,10 @@ public abstract class TrainFlatNetwork {
 			}
 		}
 
-		// handle CL
-		int idx = 0;
+		// handle CL, should only be one currently.
+		// additional devices can be used, but only on different trainers.
 		for (final IntRange r : determine.getCLRanges()) {
-			this.workers[index++] = new GradientWorkerCL(clDevices.get(idx++),
+			this.workers[index++] = new GradientWorkerCL(this.targetDevice,
 					this.network.clone(), this,
 					this.indexable.openAdditional(), r.getLow(), r.getHigh());
 		}
@@ -408,7 +359,14 @@ public abstract class TrainFlatNetwork {
 	 */
 	public void setNumThreads(final int numThreads) {
 		this.numThreads = numThreads;
+	}
 
+	public EncogCLDevice getTargetDevice() {
+		return targetDevice;
+	}
+
+	public void setTargetDevice(EncogCLDevice targetDevice) {
+		this.targetDevice = targetDevice;
 	}
 
 }

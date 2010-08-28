@@ -126,4 +126,16 @@ public class ActivationStep extends BasicActivationFunction {
 		return ActivationFunctions.ACTIVATION_STEP;
 	}
 
+	public void setCenter(double d) {
+		this.setParam(ActivationFunctions.PARAM_STEP_CENTER, d);
+	}
+	
+	public void setHigh(double d) {
+		this.setParam(ActivationFunctions.PARAM_STEP_HIGH, d);
+	}
+	
+	public void setLow(double d) {
+		this.setParam(ActivationFunctions.PARAM_STEP_LOW, d);
+	}
+
 }

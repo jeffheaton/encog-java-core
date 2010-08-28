@@ -30,6 +30,7 @@
 
 package org.encog.neural.networks;
 
+import org.encog.engine.EngineMachineLearning;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.layers.Layer;
@@ -44,7 +45,7 @@ import org.encog.persist.Persistor;
  * @author jheaton
  *
  */
-public interface Network extends EncogPersistedObject {
+public interface Network extends EncogPersistedObject, EngineMachineLearning {
 
 	/**
 	 * Add a layer to the neural network. The first layer added is the input

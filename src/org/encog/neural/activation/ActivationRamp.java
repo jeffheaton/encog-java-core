@@ -149,4 +149,21 @@ public class ActivationRamp extends BasicActivationFunction {
 		return ActivationFunctions.ACTIVATION_RAMP;
 	}
 
+	public void setThresholdLow(double d) {
+		this.setParam(ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD, d);
+	}
+
+	public void setThresholdHigh(double d) {
+		this.setParam(ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD, d);
+	}
+
+	public void setLow(double d) {
+		this.setParam(ActivationFunctions.PARAM_RAMP_LOW, d);
+	}
+
+	public void setHigh(double d) {
+		this.setParam(ActivationFunctions.PARAM_RAMP_HIGH, d);
+		
+	}
+
 }

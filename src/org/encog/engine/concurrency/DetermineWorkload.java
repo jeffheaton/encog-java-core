@@ -80,22 +80,6 @@ public class DetermineWorkload {
 	 * Workloads for OpenCL workers.
 	 */
 	private List<IntRange> clRanges = new ArrayList<IntRange>();
-
-	/**
-	 * The ratio to hand out work between CL and CPU workers. Values
-	 * above 1 give more work to the CPU, values below 0 give more to
-	 * the GPU. For example, to have the GPU's do twice as much as the
-	 * CPU set this to 1.5. Sometimes CPU's may be faster than GPU's.
-	 * Often GPU is faster. This allows the work to be better balanced.
-	 */
-	private double clRatio;
-
-	// / <summary>
-	// / 
-	// / </summary>
-	// / <param name="threads"></param>
-	// / <param name="workloadSize"></param>
-
 	
 	/**
 	 * Determine the workload.
@@ -119,7 +103,7 @@ public class DetermineWorkload {
 	 */
 	public DetermineWorkload(int cpuWorkerCount, final int clWorkerCount,
 			final int workloadSize) {
-		this.clRatio = 1;
+
 		this.cpuWorkerCount = cpuWorkerCount;
 		this.clWorkerCount = clWorkerCount;
 		this.totalWorkerCount = clWorkerCount + cpuWorkerCount;
@@ -178,7 +162,7 @@ public class DetermineWorkload {
 
 		final int baseSizePerThread = this.totalWorkloadSize
 				/ this.totalWorkerCount;
-		final int clSizePerThread = (int) (baseSizePerThread * this.clRatio);
+		final int clSizePerThread = (int)baseSizePerThread;
 		final int cpuWorkloadSize = Math.max(this.totalWorkloadSize
 				- (clSizePerThread * this.clWorkerCount), 0);
 		final int cpuSizePerThread = Math.max(cpuWorkloadSize
@@ -270,21 +254,4 @@ public class DetermineWorkload {
 	public void setClRanges(final List<IntRange> clRanges) {
 		this.clRanges = clRanges;
 	}
-
-	/**
-	 * @return the clRatio
-	 */
-	public double getCLRatio() {
-		return clRatio;
-	}
-
-	/**
-	 * @param clRatio the clRatio to set
-	 */
-	public void setCLRatio(double clRatio) {
-		this.clRatio = clRatio;
-	}
-	
-	
-
 }

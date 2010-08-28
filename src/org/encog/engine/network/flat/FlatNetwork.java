@@ -54,8 +54,14 @@ import org.encog.engine.util.ErrorCalculation;
  */
 public class FlatNetwork implements EngineNeuralNetwork {
 
+	/**
+	 * The default bias activation.
+	 */
 	public final static double DEFAULT_BIAS_ACTIVATION = 1.0;
 	
+	/**
+	 * The value that indicates that there is no bias activation.
+	 */
 	public final static double NO_BIAS_ACTIVATION = 0.0;
 	
 	/**
@@ -68,8 +74,16 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 */
 	private int[] layerCounts;
 	
+	/**
+	 * The number of context neurons in each layer.  These context neurons will feed the next layer.
+	 */
 	private int[] layerContextCount;
 	
+	/**
+	 * The number of neurons in each layer that are actually fed by neurons in
+	 * the previous layer. Bias neurons, as well as context neurons, are not fed
+	 * from the previous layer.
+	 */
 	private int[] layerFeedCounts;
 
 	/**
@@ -104,13 +118,37 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 */
 	private int[] activationType;
 	
-	
+	/**
+	 * The parameters for the activation functions in each layer. Activation
+	 * functions can have a variable number of parameters, so it is important to
+	 * use the paramIndex array to determine the location of each layer.
+	 */
 	private double[] params;
+	
+	/**
+	 * The location of each layer the the parameter array.
+	 */
 	private int[] paramIndex;
 	
+	/**
+	 * The context target for each layer. This is how the backwards connections
+	 * are formed for the recurrent neural network. Each layer either has a
+	 * zero, which means no context target, or a layer number that indicates the
+	 * target layer.
+	 */
 	private int[] contextTargetOffset;
+	
+	/**
+	 * The size of each of the context targets. If a layer's contextTargetOffset
+	 * is zero, its contextTargetSize should also be zero. The contextTargetSize
+	 * should always match the feed count of the targeted context layer.
+	 */
 	private int[] contextTargetSize;
 	
+	/**
+	 * The bias activation for each layer. This is usually either 1, for a bias,
+	 * or zero for no bias.
+	 */
 	private double[] biasActivation;
 	
 	public FlatNetwork()
@@ -286,6 +324,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		result.contextTargetOffset = EngineArray.arrayCopy(this.contextTargetOffset);
 		result.contextTargetSize = EngineArray.arrayCopy(this.contextTargetSize);
 		result.layerContextCount = EngineArray.arrayCopy(this.layerContextCount);
+		result.biasActivation = EngineArray.arrayCopy(this.biasActivation);
 		result.paramIndex = EngineArray.arrayCopy(this.paramIndex);
 		result.outputCount = this.outputCount;
 		result.weightIndex = this.weightIndex;
@@ -531,5 +570,13 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 	public void randomize() {
 		randomize(1,-1);		
+	}
+
+	public int[] getContextTargetOffset() {
+		return contextTargetOffset;
+	}
+
+	public int[] getContextTargetSize() {
+		return contextTargetSize;
 	}
 }

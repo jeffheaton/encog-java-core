@@ -1,5 +1,3 @@
-#ifndef USE_SIGMOID 
-#ifndef USE_TANH
 float activationTANH(float x, float slope)
 {
 	float z = exp(-slope * x);
@@ -38,11 +36,11 @@ float activation(int type, float x, float slope)
 	switch(type)
 	{
 		case 0:
-			return activationLinear(x);
+			return activationLinear(x,slope);
 		case 1:
-			return activationTANH(x);
+			return activationTANH(x,slope);
 		case 2:
-			return activationSigmoid(x);
+			return activationSigmoid(x,slope);
 		default:
 			return 0;
 	}
@@ -53,44 +51,16 @@ float derivative(int type, float x, float slope)
 	switch(type)
 	{
 		case 0:
-			return derivativeLinear(x);
+			return derivativeLinear(x,slope);
 		case 1:
-			return derivativeTANH(x);
+			return derivativeTANH(x,slope);
 		case 2:
-			return derivativeSigmoid(x);
+			return derivativeSigmoid(x,slope);
 		default:
 			return 0;
 	}
 }
-#endif
-#endif
 
-#ifdef USE_SIGMOID
-float activation(int t, float x, float slope)
-{
-	return 1.0f / (1.0f + exp(-slope * x));
-}
-
-float derivative(int t, float x, float slope)
-{
-	float out = activation(t,x,slope);
-	return slope * out * (1.0f - out);
-}
-#endif
-
-#ifdef USE_TANH
-float activation(int t, float x, float slope)
-{
-	float z = exp(-slope * x);
-	return (1.0f - z) / (1.0f + z);
-}
-
-float derivative(int t, float x, float slope)
-{
-	float out = activation(t,x,slope);
-	return (slope * (1.0f - out * out));
-}
-#endif
 
 kernel void NetworkTrain(
     global read_only int *params,
@@ -101,7 +71,7 @@ kernel void NetworkTrain(
     global read_only int *weightIndex,
     global read_only float* input,
     global read_only float* ideal,
-    global read_only float* weightsIn,
+    global read_only float* weights,
     global write_only float *gradients,
     global read_only int *activationType,
     global read_only float *slope
@@ -109,11 +79,7 @@ kernel void NetworkTrain(
 {
 	private float layerOutput[NEURON_COUNT];
 	private float layerDelta[NEURON_COUNT];
-	
-	local float weights[WEIGHT_COUNT];
-	
-	event_t event = async_work_group_copy((__local float*)weights, (const __global float*)weightsIn, (size_t)WEIGHT_COUNT, (event_t)0);
-		
+			
 	int taskIndex = get_global_id(0);
 
 	int inputSize = params[0];
@@ -135,8 +101,6 @@ kernel void NetworkTrain(
 	for(int i=0;i<WEIGHT_COUNT;i++)
 		gradients[gradientOffset+i]=0;
 	errors[taskIndex] = 0;
-
-	wait_group_events(1,&event);
 	
 	for(int index=0;index<size;index++)
 	{		
@@ -155,7 +119,9 @@ kernel void NetworkTrain(
 		for(int i=0;i<inputSize;i++)
 			layerOutput[sourceIndex+i] = input[taskInputIndex+i];
 			
+		//int currentLayer = layerCount-1;
 		
+	
 		for (int currentLayer = layerCount - 1; currentLayer > 0; currentLayer--)
 		{
 			int inputIndex = layerIndex[currentLayer];
@@ -183,8 +149,9 @@ kernel void NetworkTrain(
 				layerOutput[outputIndex + x] = value;
 			}
 		}
+
 		
-				// part 2: backward pass
+		// part 2: backward pass
 
 		// process the output layer first
 	
@@ -200,7 +167,8 @@ kernel void NetworkTrain(
 		errors[taskIndex] += e;
 
 		// process hidden layers
-		
+
+		//int currentLevel = 0;		
 		for(int currentLevel = 0; (currentLevel<layerCount-1); currentLevel++)
 		{
             int fromLayerIndex = layerIndex[currentLevel + 1];

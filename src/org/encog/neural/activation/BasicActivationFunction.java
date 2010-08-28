@@ -53,6 +53,11 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	
 	protected double[] params;
 	
+	public BasicActivationFunction()
+	{
+		this.params = new double[0];
+	}
+	
 	
 	/**
 	 * Implements the activation function. The array is modified according to

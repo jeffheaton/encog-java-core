@@ -517,7 +517,9 @@ public class NeuralStructure implements Serializable {
 		List<ObjectPair<Layer, Layer>> contexts = new ArrayList<ObjectPair<Layer, Layer>>();
 		this.flat = null;
 
-		if (ValidateForFlat.canBeFlat(this.network) == null) {
+		ValidateForFlat val = new ValidateForFlat();
+		
+		if (val.isValid(this.network) == null) {
 			FlatLayer[] flatLayers = new FlatLayer[countNonContext()];
 
 			int index = flatLayers.length - 1;

@@ -39,6 +39,7 @@ import java.util.Map.Entry;
 
 import org.encog.Encog;
 import org.encog.EncogError;
+import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -46,6 +47,7 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.NeuralLogic;
 import org.encog.neural.networks.logic.SimpleRecurrentLogic;
@@ -709,6 +711,19 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 			return 0;
 		else
 			return layer.getNeuronCount();
+	}
+
+	@Override
+	public void compute(double[] input, double[] output) {
+		BasicNeuralData input2 = new BasicNeuralData(input);
+		NeuralData output2 = this.compute(input2);
+		EngineArray.arrayCopy(output2.getData(),output);
+	}
+
+	@Override
+	public void computeSparse(double[] input, boolean[] provided,
+			double[] output) {
+		throw new NeuralNetworkError("Sparce calculations are not supported by this neural network type.");
 	}
 
 }

@@ -54,13 +54,6 @@ public class EncogCL {
 	private final List<EncogCLDevice> devices = new ArrayList<EncogCLDevice>();
 
 	/**
-	 * Allows you to determine how much work the CPU and GPU get. For example,
-	 * to give the CL/GPU twice as much work as the CPU, specify 1.5. To give it
-	 * half as much, choose 0.5.
-	 */
-	private double enforcedCLRatio;
-
-	/**
 	 * The number of CL threads to use, defaults to 200.
 	 */
 	private final int clThreads;
@@ -75,7 +68,6 @@ public class EncogCL {
 	 */
 	public EncogCL() {
 		final int[] numPlatforms = new int[1];
-		this.enforcedCLRatio = 1.0;
 		this.clThreads = 200;
 		this.clWorkloadSize = 10;
 
@@ -196,13 +188,6 @@ public class EncogCL {
 	}
 
 	/**
-	 * @return the enforcedCLRatio
-	 */
-	public double getEnforcedCLRatio() {
-		return enforcedCLRatio;
-	}
-
-	/**
 	 * @return the clThreads
 	 */
 	public int getCLThreads() {
@@ -214,12 +199,5 @@ public class EncogCL {
 	 */
 	public int getCLWorkloadSize() {
 		return clWorkloadSize;
-	}
-
-	public void setEnforcedCLRatio(double ratio) {
-		this.enforcedCLRatio = ratio;
-		
-	}
-	
-	
+	}	
 }

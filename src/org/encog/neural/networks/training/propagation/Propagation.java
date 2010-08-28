@@ -30,14 +30,14 @@
 
 package org.encog.neural.networks.training.propagation;
 
+import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetworkBackPropagation;
 import org.encog.engine.network.train.TrainFlatNetworkManhattan;
 import org.encog.engine.network.train.TrainFlatNetworkResilient;
-import org.encog.engine.util.EngineArray;
-import org.encog.neural.data.Indexable;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.FlatUpdateNeeded;
@@ -96,6 +96,7 @@ public abstract class Propagation extends BasicTraining {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	private EncogCLDevice targetDevice;
 
 	/**
 	 * Construct a propagation object.
@@ -248,7 +249,9 @@ public abstract class Propagation extends BasicTraining {
 	}
 
 	/**
-	 * Set the number of threads.
+	 * Set the number of threads. Specify zero to tell Encog to automatically
+	 * determine the best number of threads for the processor. If OpenCL is used
+	 * as the target device, then this value is not used.
 	 * 
 	 * @param numThreads
 	 *            The number of threads.
@@ -259,7 +262,8 @@ public abstract class Propagation extends BasicTraining {
 	
 	public void attemptFlatten()
 	{
-		if( ValidateForFlat.canBeFlat(this.network)==null )
+		ValidateForFlat val = new ValidateForFlat();
+		if( val.isValid(this.network)==null )
 		{
 			this.network.getStructure().updateFlatNetwork();
 			
@@ -270,12 +274,14 @@ public abstract class Propagation extends BasicTraining {
 						this.getTraining(),
 						((Backpropagation)this).getLearningRate(),
 						((Backpropagation)this).getMomentum());
+				this.flatTraining.setTargetDevice(this.targetDevice);
 			}
 			else if( this instanceof ResilientPropagation )
 			{
 				this.flatTraining = new TrainFlatNetworkResilient(
 						this.network.getStructure().getFlat(),
 						this.getTraining());
+				this.flatTraining.setTargetDevice(this.targetDevice);
 			}
 			else if( this instanceof ManhattanPropagation )
 			{
@@ -283,6 +289,7 @@ public abstract class Propagation extends BasicTraining {
 						this.network.getStructure().getFlat(),
 						this.getTraining(),
 						((ManhattanPropagation)this).getLearningRate());
+				this.flatTraining.setTargetDevice(this.targetDevice);
 			}
 		}
 		else
@@ -298,4 +305,41 @@ public abstract class Propagation extends BasicTraining {
 		this.network.getStructure().updateFlatNetwork();
 	}
 
+	/**
+	 * @return The OpenCL device to use, or null for the CPU.
+	 */
+	public EncogCLDevice getTargetDevice() {
+		return targetDevice;
+	}
+
+	/**
+	 * Sets the target device for the training to run on. Specify null for the
+	 * CPU, or some other OpenCL device. Must be set before the first training
+	 * iteration.
+	 * 
+	 * @param targetDevice
+	 *            The OpenCL device to use, or null to use the CPU.
+	 */
+	public void setTargetDevice(EncogCLDevice targetDevice) {
+		this.targetDevice = targetDevice;
+	}
+	
+	/**
+	 * Assign the CPU to this trainer.
+	 */
+	public void assignCPU()
+	{
+		this.targetDevice = null;
+	}
+	
+	/**
+	 * Assigns the first available OpenCL device. If you only have one GPU, this
+	 * method will probably work just fine. However, if you are dealing with
+	 * multiple OpenCL devices you should directly select the desired OpenCL
+	 * device.
+	 */
+	public void assignOpenCL()
+	{
+		this.targetDevice = Encog.getInstance().getCL().getEnabledDevices().get(0);
+	}
 }
