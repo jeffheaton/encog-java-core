@@ -132,7 +132,7 @@ public class ErrorCalculation {
 		for (int i = 0; i < actual.length; i++) {
 			double delta = ideal[i] - actual[i];
 			
-			if( this.mode==ErrorCalculationMode.ARCTAN )
+			if( ErrorCalculation.mode==ErrorCalculationMode.ARCTAN )
 				delta = Math.atan(delta);
 			
 			this.globalError += delta * delta;
@@ -184,7 +184,7 @@ public class ErrorCalculation {
 
 		double delta = ideal - actual;
 
-		if (this.mode == ErrorCalculationMode.ARCTAN)
+		if (ErrorCalculation.mode == ErrorCalculationMode.ARCTAN)
 			delta = Math.atan(delta);
 
 		this.globalError += delta * delta;

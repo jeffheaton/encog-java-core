@@ -148,8 +148,6 @@ public class TrainingWorkload {
 		this.paramArray = new int[10];
 		this.device = device;
 
-		final int layerDeltaSize = flat.getNeuronCount();
-
 		this.maxUnits = Math.min(this.trainingLength, EncogEngine.getInstance()
 				.getCL().getCLThreads());
 		final EngineData pair = BasicEngineData.createPair(flat

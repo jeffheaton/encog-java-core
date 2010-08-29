@@ -67,11 +67,6 @@ public class EngineConcurrency {
 	}
 
 	/**
-	 * Maximum number of threads.
-	 */
-	private int maxThreads;
-
-	/**
 	 * The executor service we are using.
 	 */
 	private ExecutorService executor;

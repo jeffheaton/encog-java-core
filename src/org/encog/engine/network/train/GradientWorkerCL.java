@@ -30,9 +30,7 @@
 
 package org.encog.engine.network.train;
 
-import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineIndexableSet;
-import org.encog.engine.data.EngineData;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
@@ -51,36 +49,6 @@ public class GradientWorkerCL implements FlatGradientWorker {
 	private final FlatNetwork network;
 
 	/**
-	 * The actual values from the neural network.
-	 */
-	private final double[] actual;
-
-	/**
-	 * The deltas for each layer.
-	 */
-	private final double[] layerDelta;
-
-	/**
-	 * The neuron counts, per layer.
-	 */
-	private final int[] layerCounts;
-
-	/**
-	 * The layer indexes.
-	 */
-	private final int[] layerIndex;
-
-	/**
-	 * The index to each layer's weights and thresholds.
-	 */
-	private final int[] weightIndex;
-
-	/**
-	 * The output from each layer.
-	 */
-	private final double[] layerOutput;
-
-	/**
 	 * The gradients.
 	 */
 	private final double[] gradients;
@@ -89,11 +57,6 @@ public class GradientWorkerCL implements FlatGradientWorker {
 	 * The weights and thresholds.
 	 */
 	private final double[] weights;
-
-	/**
-	 * The neural network pair.
-	 */
-	private final EngineData pair;
 
 	/**
 	 * The training data.
@@ -162,18 +125,9 @@ public class GradientWorkerCL implements FlatGradientWorker {
 
 		this.stopwatch = new Stopwatch();
 
-		this.layerDelta = new double[network.getLayerOutput().length];
 		this.gradients = new double[network.getWeights().length];
-		this.actual = new double[network.getOutputCount()];
 
 		this.weights = network.getWeights();
-		this.layerIndex = network.getLayerIndex();
-		this.layerCounts = network.getLayerCounts();
-		this.weightIndex = network.getWeightIndex();
-		this.layerOutput = network.getLayerOutput();
-
-		this.pair = BasicEngineData.createPair(network.getInputCount(),
-				network.getOutputCount());
 
 		this.device = device;
 

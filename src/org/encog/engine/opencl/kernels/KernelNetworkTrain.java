@@ -37,7 +37,6 @@ import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
 import org.jocl.cl_context;
-import org.jocl.cl_event;
 import org.jocl.cl_mem;
 
 /**

@@ -39,6 +39,11 @@ import org.encog.engine.EncogEngineError;
 public class EncogCLError extends EncogEngineError {
 
 	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Construct a message exception.
 	 * 
 	 * @param msg

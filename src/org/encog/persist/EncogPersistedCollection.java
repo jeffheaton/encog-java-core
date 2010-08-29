@@ -152,7 +152,7 @@ public class EncogPersistedCollection implements EncogCollection {
 
 	public static final String TYPE_SVM = "SVMNetwork";
 
-	public static final String TYPE_LINK = "ExternalDataSource";
+	public static final String TYPE_BINARY = "BufferedNeuralDataSet";
 	
 	public static final String TYPE_SCRIPT = "EncogScript";
 

@@ -35,7 +35,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.neural.data.external.ExternalDataSource;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.location.PersistenceLocation;
 import org.encog.persist.persistors.PersistorUtil;

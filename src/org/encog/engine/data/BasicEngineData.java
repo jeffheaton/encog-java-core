@@ -33,7 +33,7 @@ package org.encog.engine.data;
 import java.io.Serializable;
 
 /**
- * A basic implementation of the NeuralDataPair interface. This implementation
+ * A basic implementation of the EngineData interface. This implementation
  * simply holds and input and ideal NeuralData object.
  * 
  * For supervised training both input and ideal should be specified.

@@ -31,7 +31,6 @@
 package org.encog.engine.network.train;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.encog.engine.EncogEngine;

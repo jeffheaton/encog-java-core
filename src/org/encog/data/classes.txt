@@ -133,7 +133,6 @@ org.encog.neural.data.basic.BasicNeuralDataSet
 org.encog.neural.data.bipolar.BiPolarNeuralData
 org.encog.neural.data.buffer.BufferedNeuralDataSet
 org.encog.neural.data.csv.CSVNeuralDataSet
-org.encog.neural.data.external.ExternalDataSource
 org.encog.neural.data.image.ImageNeuralData
 org.encog.neural.data.image.ImageNeuralDataSet
 org.encog.neural.data.Indexable

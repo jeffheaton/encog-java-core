@@ -28,19 +28,26 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.engine;
+package org.encog.neural.data.buffer;
+
+import org.encog.EncogError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * General error class for Encog.
- * 
- * @author jheaton
+ * An error occurs working with the Encog binary training format.
  */
-public class EncogEngineError extends RuntimeException {
+public class BufferedDataError extends EncogError {
 
 	/**
-	 * 
+	 * The serial version.
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 2889950431643029874L;
+	/**
+	 * The logging object.
+	 */
+	@SuppressWarnings("unused")
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a message exception.
@@ -48,7 +55,7 @@ public class EncogEngineError extends RuntimeException {
 	 * @param msg
 	 *            The exception message.
 	 */
-	public EncogEngineError(final String msg) {
+	public BufferedDataError(final String msg) {
 		super(msg);
 	}
 
@@ -58,7 +65,7 @@ public class EncogEngineError extends RuntimeException {
 	 * @param t
 	 *            The other exception.
 	 */
-	public EncogEngineError(final Throwable t) {
+	public BufferedDataError(final Throwable t) {
 		super(t);
 	}
 	
@@ -70,7 +77,8 @@ public class EncogEngineError extends RuntimeException {
 	 * @param t
 	 * 			The other exception.
 	 */
-	public EncogEngineError( final String msg, final Throwable t) {
+	public BufferedDataError( final String msg, final Throwable t) {
 		super(msg,t);
 	}
+	
 }
