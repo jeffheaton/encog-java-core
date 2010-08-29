@@ -47,6 +47,7 @@ public class TestBufferedNeuralDataSet extends TestCase {
 	
 	public void testBufferData() throws Exception 
 	{
+		new File(FILENAME).delete();
 		BufferedNeuralDataSet set = new BufferedNeuralDataSet(new File(FILENAME));
 		set.beginLoad(2, 1);
 		for(int i=0;i<XOR.XOR_INPUT.length;i++) {
