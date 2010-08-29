@@ -1,4 +1,4 @@
-package org.encog.neural.data.binary;
+package org.encog.neural.data.buffer;
 
 import java.io.File;
 
@@ -17,11 +17,11 @@ public class TestBinaryData extends TestCase {
 	{
 		ArrayDataCODEC codec = new ArrayDataCODEC(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		BinaryDataLoader loader = new BinaryDataLoader(codec);
-		loader.external2Binary(new File("d:\\encog.bin"));
+		loader.external2Binary(new File("encog.bin"));
 	
 		ArrayDataCODEC codec2 = new ArrayDataCODEC();
 		BinaryDataLoader loader2 = new BinaryDataLoader(codec2);
-		loader2.binary2External(new File("d:\\encog.bin"));
+		loader2.binary2External(new File("encog.bin"));
 		
 		double[][] input = codec2.getInput();
 		double[][] ideal = codec2.getIdeal();
@@ -45,19 +45,19 @@ public class TestBinaryData extends TestCase {
 	{
 		ArrayDataCODEC codec = new ArrayDataCODEC(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		BinaryDataLoader loader = new BinaryDataLoader(codec);
-		loader.external2Binary(new File("d:\\encog.bin"));
+		loader.external2Binary(new File("encog.bin"));
 	
-		CSVDataCODEC codec2 = new CSVDataCODEC(new File("d:\\encog.csv"), CSVFormat.ENGLISH);
+		CSVDataCODEC codec2 = new CSVDataCODEC(new File("encog.csv"), CSVFormat.ENGLISH);
 		BinaryDataLoader loader2 = new BinaryDataLoader(codec2);
-		loader2.binary2External(new File("d:\\encog.bin"));
+		loader2.binary2External(new File("encog.bin"));
 		
-		CSVDataCODEC codec3 = new CSVDataCODEC(new File("d:\\encog.csv"), CSVFormat.ENGLISH, false, 2, 1);
+		CSVDataCODEC codec3 = new CSVDataCODEC(new File("encog.csv"), CSVFormat.ENGLISH, false, 2, 1);
 		BinaryDataLoader loader3 = new BinaryDataLoader(codec3);
-		loader3.external2Binary(new File("d:\\encog.bin"));
+		loader3.external2Binary(new File("encog.bin"));
 
 		ArrayDataCODEC codec4 = new ArrayDataCODEC();
 		BinaryDataLoader loader4 = new BinaryDataLoader(codec4);
-		loader4.binary2External(new File("d:\\encog.bin"));
+		loader4.binary2External(new File("encog.bin"));
 		
 		double[][] input = codec4.getInput();
 		double[][] ideal = codec4.getIdeal();
