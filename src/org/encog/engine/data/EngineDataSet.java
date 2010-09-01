@@ -51,13 +51,6 @@ import java.util.Iterator;
 public interface EngineDataSet {
 
 	/**
-	 * Creates an iterator for EngineData.
-	 * 
-	 * @return The iterator.
-	 */
-	Iterator< ? > createIterator();
-
-	/**
 	 * @return The size of the input data.
 	 */
 	int getIdealSize();

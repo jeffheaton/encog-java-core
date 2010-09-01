@@ -42,51 +42,7 @@ import java.util.List;
  * 
  * @author jheaton
  */
-public class BasicEngineDataSet implements Serializable, EngineIndexableSet,
-		Iterable<EngineData> {
-
-	/**
-	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
-	 * not support removes.
-	 * 
-	 * @author jheaton
-	 */
-	public class BasicNeuralIterator implements Iterator<EngineData> {
-
-		/**
-		 * The index that the iterator is currently at.
-		 */
-		private int currentIndex = 0;
-
-		/**
-		 * Is there more data for the iterator to read?
-		 * 
-		 * @return Returns true if there is more data to read.
-		 */
-		public boolean hasNext() {
-			return this.currentIndex < BasicEngineDataSet.this.data.size();
-		}
-
-		/**
-		 * Read the next item.
-		 * 
-		 * @return The next item.
-		 */
-		public EngineData next() {
-			if (!hasNext()) {
-				return null;
-			}
-
-			return BasicEngineDataSet.this.data.get(this.currentIndex++);
-		}
-
-		/**
-		 * Removes are not supported.
-		 */
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	}
+public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
 
 	/**
 	 * The serial id.
@@ -185,15 +141,6 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet,
 	}
 
 	/**
-	 * @return An iterator.
-	 */
-	@Override
-	public Iterator<EngineData> createIterator() {
-		final BasicNeuralIterator result = new BasicNeuralIterator();
-		return result;
-	}
-
-	/**
 	 * Get the data held by this container.
 	 * 
 	 * @return the data
@@ -285,14 +232,6 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet,
 			return false;
 		}
 		return this.data.get(0).isSupervised();
-	}
-
-	/**
-	 * @return An iterator.
-	 */
-	@Override
-	public Iterator<EngineData> iterator() {
-		return createIterator();
 	}
 
 	/**

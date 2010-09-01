@@ -252,13 +252,6 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 		return new BufferedDataSetIterator(this);
 	}
 
-	/**
-	 * @return An iterator.
-	 */
-	@Override
-	public Iterator<?> createIterator() {
-		return this.iterator();
-	}
 
 	/**
 	 * @return The record count.

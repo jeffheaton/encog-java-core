@@ -437,9 +437,4 @@ public class SQLNeuralDataSet implements NeuralDataSet {
 		return this.idealSize>0;
 	}
 
-	@Override
-	public Iterator<?> createIterator() {
-		return this.iterator();
-	}
-
 }

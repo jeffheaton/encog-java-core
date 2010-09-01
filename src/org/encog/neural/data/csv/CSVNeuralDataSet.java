@@ -341,10 +341,4 @@ public class CSVNeuralDataSet implements NeuralDataSet {
 	public boolean isSupervised() {
 		return this.idealSize>0;
 	}
-
-	@Override
-	public Iterator<?> createIterator() {
-		return this.iterator();
-	}
-
 }

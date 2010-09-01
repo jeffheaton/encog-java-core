@@ -31,13 +31,13 @@
 package org.encog.engine.network.flat;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.encog.engine.EncogEngineError;
 import org.encog.engine.EngineNeuralNetwork;
+import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 
@@ -230,16 +230,17 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final EngineDataSet data) {
+	public double calculateError(final EngineIndexableSet data) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		final double[] actual = new double[this.outputCount];
+		final EngineData pair = BasicEngineData.createPair(data.getInputSize(),
+				data.getIdealSize());
 
-		final Iterator<?> itr = data.createIterator();
-		while (itr.hasNext()) {
-			final EngineData item = (EngineData) itr.next();
-			compute(item.getInputArray(), actual);
-			errorCalculation.updateError(actual, item.getIdealArray());
+		for (int i = 0; i < data.getRecordCount(); i++) {
+			data.getRecord(i, pair);
+			compute(pair.getInputArray(), actual);
+			errorCalculation.updateError(actual, pair.getIdealArray());
 		}
 		return errorCalculation.calculate();
 	}
