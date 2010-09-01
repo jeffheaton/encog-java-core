@@ -38,19 +38,22 @@ public class PoolItem implements Runnable {
 	/**
 	 * The task to execute.
 	 */
-	private EngineTask task;
-	
+	private final EngineTask task;
+
 	/**
 	 * The task group.
 	 */
-	private TaskGroup group;
+	private final TaskGroup group;
 
 	/**
 	 * Create a pool item.
-	 * @param task The task to execute.
-	 * @param group The group this task belongs to.
+	 * 
+	 * @param task
+	 *            The task to execute.
+	 * @param group
+	 *            The group this task belongs to.
 	 */
-	public PoolItem(EngineTask task, TaskGroup group) {
+	public PoolItem(final EngineTask task, final TaskGroup group) {
 		this.task = task;
 		this.group = group;
 	}
@@ -61,11 +64,12 @@ public class PoolItem implements Runnable {
 	public void run() {
 		try {
 			this.task.run();
-		} catch(Throwable t) {
+		} catch (final Throwable t) {
 			EngineConcurrency.getInstance().registerError(t);
 		} finally {
-			if (this.group != null)
+			if (this.group != null) {
 				this.group.taskStopping();
+			}
 		}
 	}
 }

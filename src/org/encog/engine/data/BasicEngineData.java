@@ -52,6 +52,31 @@ public class BasicEngineData implements EngineData, Serializable {
 	private static final long serialVersionUID = -9068229682273861359L;
 
 	/**
+	 * Create a new neural data pair object of the correct size for the neural
+	 * network that is being trained. This object will be passed to the getPair
+	 * method to allow the neural data pair objects to be copied to it.
+	 * 
+	 * @param inputSize
+	 *            The size of the input data.
+	 * @param idealSize
+	 *            The size of the ideal data.
+	 * @return A new neural data pair object.
+	 */
+	public static EngineData createPair(final int inputSize, 
+			final int idealSize) {
+		EngineData result;
+
+		if (idealSize > 0) {
+			result = new BasicEngineData(new double[inputSize],
+					new double[idealSize]);
+		} else {
+			result = new BasicEngineData(new double[inputSize]);
+		}
+
+		return result;
+	}
+
+	/**
 	 * The the expected output from the neural network, or null for unsupervised
 	 * training.
 	 */
@@ -61,7 +86,6 @@ public class BasicEngineData implements EngineData, Serializable {
 	 * The training input to the neural network.
 	 */
 	private double[] input;
-
 
 	/**
 	 * Construct the object with only input. If this constructor is used, then
@@ -87,6 +111,14 @@ public class BasicEngineData implements EngineData, Serializable {
 	public BasicEngineData(final double[] input, final double[] ideal) {
 		this.input = input;
 		this.ideal = ideal;
+	}
+
+	/**
+	 * @return Array that indicates which elements are defined.
+	 */
+	@Override
+	public boolean[] defined() {
+		return null;
 	}
 
 	/**
@@ -117,6 +149,25 @@ public class BasicEngineData implements EngineData, Serializable {
 	}
 
 	/**
+	 * Set the ideal array.
+	 * @param data The ideal array.
+	 */
+	@Override
+	public void setIdealArray(final double[] data) {
+		this.ideal = data;
+
+	}
+
+	/**
+	 * Set the input array.
+	 * @param data The input array.
+	 */
+	@Override
+	public void setInputArray(final double[] data) {
+		this.input = data;
+	}
+
+	/**
 	 * Convert the object to a string.
 	 * 
 	 * @return The object as a string.
@@ -130,44 +181,6 @@ public class BasicEngineData implements EngineData, Serializable {
 		builder.append(getIdealArray());
 		builder.append("]");
 		return builder.toString();
-	}
-	
-	/**
-	 * Create a new neural data pair object of the correct size for the neural
-	 * network that is being trained. This object will be passed to the getPair
-	 * method to allow the neural data pair objects to be copied to it.
-	 * @param inputSize The size of the input data.
-	 * @param idealSize The size of the ideal data.
-	 * @return A new neural data pair object.
-	 */
-	public static EngineData createPair(final int inputSize, final int idealSize) {
-		EngineData result;
-
-		if (idealSize > 0) {
-			result = new BasicEngineData(new double[inputSize],
-					new double[idealSize]);
-		} else {
-			result = new BasicEngineData(new double[inputSize]);
-		}
-
-		return result;
-	}
-
-	@Override
-	public void setIdealArray(double[] data) {
-		this.ideal = data;
-		
-	}
-
-	@Override
-	public void setInputArray(double[] data) {
-		this.input = data;		
-	}
-
-	@Override
-	public boolean[] defined() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

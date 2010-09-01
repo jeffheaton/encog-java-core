@@ -87,7 +87,7 @@ public class EncogKernel {
 	 */
 	public EncogKernel(final cl_context context, final String sourceName,
 			final String kernelName) {
-		
+
 		this.context = context;
 		this.kernelName = kernelName;
 		this.cl = ResourceLoader.loadString(sourceName);
@@ -109,9 +109,8 @@ public class EncogKernel {
 	 */
 	public void compile(final Map<String, String> options) {
 		// clear out any old program
-		
-		if (this.program != null)
-		{
+
+		if (this.program != null) {
 			CL.clReleaseProgram(this.program);
 			CL.clReleaseKernel(this.kernel);
 		}
@@ -138,8 +137,7 @@ public class EncogKernel {
 		}
 
 		// Create the kernel
-		this.kernel = CL.clCreateKernel(program, this.kernelName,
-				null);
+		this.kernel = CL.clCreateKernel(program, this.kernelName, null);
 	}
 
 	/**
@@ -168,7 +166,8 @@ public class EncogKernel {
 	 */
 	public void prepareKernel() {
 		if (this.kernel == null) {
-			throw new EncogEngineError("Must compile CL kernel before using it.");
+			throw new EncogEngineError(
+					"Must compile CL kernel before using it.");
 		}
 	}
 

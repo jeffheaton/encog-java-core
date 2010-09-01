@@ -38,16 +38,16 @@ public enum ErrorCalculationMode {
 	 * Root mean square error.
 	 */
 	RMS,
-	
+
 	/**
 	 * Mean square error.
 	 */
 	MSE,
-	
+
 	/**
-	 * Used for QuickProp, an exaggerated error function. 
-	 * Fahlman suggests using a function that exaggerates the difference the larger the error is 
-	 * in a non-linear fashion.
+	 * Used for QuickProp, an exaggerated error function. Fahlman suggests using
+	 * a function that exaggerates the difference the larger the error is in a
+	 * non-linear fashion.
 	 */
 	ARCTAN
 }

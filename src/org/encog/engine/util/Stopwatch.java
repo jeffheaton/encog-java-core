@@ -34,43 +34,71 @@ package org.encog.engine.util;
  * A stopwatch, meant to emulate the C# Stopwatch class.
  */
 public class Stopwatch {
+
+	/**
+	 * Is the stopwatch stopped.
+	 */
 	private boolean stopped;
+
+	/**
+	 * What is the starting time.
+	 */
 	private long startTime;
+
+	/**
+	 * What is the stopped time.
+	 */
 	private long stopTime;
-	
-	public Stopwatch()
-	{
+
+	/**
+	 * Construct a stopwatch.
+	 */
+	public Stopwatch() {
 		reset();
-		stopped = false;
+		this.stopped = false;
 	}
-	
+
+	/**
+	 * @return Elapsed time in milli's.
+	 */
+	public long getElapsedMilliseconds() {
+		return getElapsedTicks() / 1000;
+	}
+
+	/**
+	 * @return Elapsed time in ticks.
+	 */
+	public long getElapsedTicks() {
+		if (!this.stopped) {
+			this.stopTime = System.nanoTime();
+		}
+
+		return (this.stopTime - this.startTime) / 1000;
+	}
+
+	/**
+	 * Reset the stop watch.
+	 */
 	public void reset() {
 		this.startTime = System.nanoTime();
 		this.stopTime = System.nanoTime();
-		stopped = false;
+		this.stopped = false;
 	}
 
+	/**
+	 * Start the stop watch.
+	 */
 	public void start() {
 		this.startTime = System.nanoTime();
 		this.stopped = false;
 	}
 
+	/**
+	 * Stop the stopwatch.
+	 */
 	public void stop() {
 		this.stopTime = System.nanoTime();
 		this.stopped = true;
-	}
-
-	public long getElapsedTicks() {
-		if( !stopped )
-		{
-			stopTime = System.nanoTime();
-		}
-		
-		return (stopTime - startTime)/1000;
-	}
-
-	public long getElapsedMilliseconds() {
-		return getElapsedTicks()/1000;
 	}
 
 }

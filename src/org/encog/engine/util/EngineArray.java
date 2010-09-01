@@ -39,6 +39,17 @@ import java.util.Collection;
 public final class EngineArray {
 
 	/**
+	 * Copy a double array.
+	 * @param input The array to copy.
+	 * @return The result of the copy.
+	 */
+	public static double[] arrayCopy(final double[] input) {
+		final double[] result = new double[input.length];
+		EngineArray.arrayCopy(input, result);
+		return result;
+	}
+
+	/**
 	 * Completely copy one array into another.
 	 * 
 	 * @param src
@@ -49,7 +60,38 @@ public final class EngineArray {
 	public static void arrayCopy(final double[] src, final double[] dst) {
 		System.arraycopy(src, 0, dst, 0, src.length);
 	}
-	
+
+	/**
+	 * Copy an array of doubles.
+	 * 
+	 * @param source
+	 *            The source.
+	 * @param sourcePos
+	 *            The source index.
+	 * @param target
+	 *            The target.
+	 * @param targetPos
+	 *            The target index.
+	 * @param length
+	 *            The length.
+	 */
+	public static void arrayCopy(final double[] source, final int sourcePos,
+			final double[] target, final int targetPos, final int length) {
+		System.arraycopy(source, sourcePos, target, targetPos, length);
+
+	}
+
+	/**
+	 * Copy an int array.
+	 * @param input The array to copy.
+	 * @return The result of the copy.
+	 */
+	public static int[] arrayCopy(final int[] input) {
+		final int[] result = new int[input.length];
+		EngineArray.arrayCopy(input, result);
+		return result;
+	}
+
 	/**
 	 * Completely copy one array into another.
 	 * 
@@ -64,7 +106,9 @@ public final class EngineArray {
 
 	/**
 	 * Convert an array of double primitives to Double objects.
-	 * @param array The primitive array.
+	 * 
+	 * @param array
+	 *            The primitive array.
 	 * @return The object array.
 	 */
 	public static Double[] doubleToObject(final double[] array) {
@@ -76,8 +120,56 @@ public final class EngineArray {
 	}
 
 	/**
+	 * Fill a double array.
+	 * @param array The array to fill.
+	 * @param value What to fill the array with.
+	 */
+	public static void fill(final double[] array, final double value) {
+		Arrays.fill(array, value);
+
+	}
+
+	/**
+	 * Search for a string in an array.
+	 * 
+	 * @param search
+	 *            Where to search.
+	 * @param searchFor
+	 *            What we are looking for.
+	 * @return The index that the string occurs at.
+	 */
+	public static int findStringInArray(final String[] search,
+			final String searchFor) {
+		for (int i = 0; i < search.length; i++) {
+			if (search[i].equals(searchFor)) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	/**
+	 * Convert the collection to an array list of doubles.
+	 * 
+	 * @param list
+	 *            The list to convert.
+	 * @return The array of doubles.
+	 */
+	public static double[] listToDouble(final Collection< ? > list) {
+		final double[] result = new double[list.size()];
+		int index = 0;
+		for (final Object obj : list) {
+			result[index++] = (Double) obj;
+		}
+
+		return result;
+	}
+
+	/**
 	 * Convert an array of Double objects to double primitives.
-	 * @param array An array of Double objects.
+	 * 
+	 * @param array
+	 *            An array of Double objects.
 	 * @return An array of double primitives.
 	 */
 	public static double[] objectToDouble(final Double[] array) {
@@ -85,23 +177,6 @@ public final class EngineArray {
 		for (int i = 0; i < array.length; i++) {
 			result[i] = new Double(array[i]);
 		}
-		return result;
-	}
-	
-	/**
-	 * Convert the collection to an array list of doubles.
-	 * @param list The list to convert.
-	 * @return The array of doubles.
-	 */
-	public static double[] listToDouble(final Collection<?> list)
-	{
-		double[] result = new double[list.size()];
-		int index = 0;
-		for(Object obj: list)
-		{
-			result[index++] = (Double)obj;
-		}
-		
 		return result;
 	}
 
@@ -114,8 +189,7 @@ public final class EngineArray {
 	 *            Second vector to multiply.
 	 * @return The product of the two vectors (a scalar value).
 	 */
-	public static double vectorProduct(final double[] a, 
-			final double[] b) {
+	public static double vectorProduct(final double[] a, final double[] b) {
 		final int length = a.length;
 		double value = 0;
 
@@ -131,52 +205,5 @@ public final class EngineArray {
 	 */
 	private EngineArray() {
 
-	}
-
-	/**
-	 * Copy an array of doubles.
-	 * @param source The source.
-	 * @param sourcePos The source index.
-	 * @param target The target.
-	 * @param targetPos The target index.
-	 * @param length The length.
-	 */
-	public static void arrayCopy(double[] source, int sourcePos, double[] target,
-			int targetPos, int length) {
-		System.arraycopy(source, sourcePos, target, targetPos, length);
-		
-	}
-
-	public static void fill(double[] array, double value) {
-		Arrays.fill(array,value);
-		
-	}
-	
-	/**
-	 * Search for a string in an array.
-	 * @param search Where to search.
-	 * @param searchFor What we are looking for.
-	 * @return The index that the string occurs at.
-	 */
-	public static int findStringInArray(String[] search, String searchFor)
-	{
-		for(int i=0;i<search.length;i++)
-		{
-			if( search[i].equals(searchFor))
-				return i;
-		}
-		return -1;
-	}
-
-	public static int[] arrayCopy(int[] input) {
-		int[] result = new int[input.length];
-		arrayCopy(input,result);
-		return result;
-	}
-	
-	public static double[] arrayCopy(double[] input) {
-		double[] result = new double[input.length];
-		arrayCopy(input,result);
-		return result;
 	}
 }

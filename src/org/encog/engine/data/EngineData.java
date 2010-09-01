@@ -70,6 +70,9 @@ public interface EngineData {
 	 */
 	void setInputArray(double[] data);
 	
+	/**	
+	 * @return An array that indicates if the data is defined.
+	 */
 	boolean[] defined();
 
 	/**

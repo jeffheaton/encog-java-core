@@ -52,31 +52,33 @@ public final class Format {
 	 */
 	public static final int SECONDS_INA_DAY = Format.SECONDS_INA_HOUR * 24;
 
-    /**
-     * Bytes in a KB.
-     */
+	/**
+	 * Bytes in a KB.
+	 */
 	public static final long MEMORY_K = 1024;
 
-    /**
-     * Bytes in a MB.
-     */
-	public static final long MEMORY_MEG = (1024 * MEMORY_K);
+	/**
+	 * Bytes in a MB.
+	 */
+	public static final long MEMORY_MEG = (1024 * Format.MEMORY_K);
 
-    /**
-     * Bytes in a GB.
-     */
-	public static final long MEMORY_GIG = (1024 * MEMORY_MEG);
+	/**
+	 * Bytes in a GB.
+	 */
+	public static final long MEMORY_GIG = (1024 * Format.MEMORY_MEG);
 
-    /**
-     * Bytes in a TB.
-     */
-	public static final long MEMORY_TERA = (1024 * MEMORY_GIG);
-	
-	
+	/**
+	 * Bytes in a TB.
+	 */
+	public static final long MEMORY_TERA = (1024 * Format.MEMORY_GIG);
+
 	/**
 	 * Format a double.
-	 * @param d The double value to format.
-	 * @param i The number of decimal places.
+	 * 
+	 * @param d
+	 *            The double value to format.
+	 * @param i
+	 *            The number of decimal places.
 	 * @return The double as a string.
 	 */
 	public static String formatDouble(final double d, final int i) {
@@ -98,8 +100,39 @@ public final class Format {
 	}
 
 	/**
-	 * Format a percent.  Using 6 decimal places.
-	 * @param e The percent to format.
+	 * Format a memory amount, to something like 32 MB.
+	 * 
+	 * @param memory
+	 *            The amount of bytes.
+	 * @return The formatted memory size.
+	 */
+	public static String formatMemory(final long memory) {
+		if (memory < Format.MEMORY_K) {
+			return memory + " bytes";
+		} else if (memory < Format.MEMORY_MEG) {
+			return Format.formatDouble(((double) memory)
+					/ ((double) Format.MEMORY_K), 2)
+					+ " KB";
+		} else if (memory < Format.MEMORY_GIG) {
+			return Format.formatDouble(((double) memory)
+					/ ((double) Format.MEMORY_MEG), 2)
+					+ " MB";
+		} else if (memory < Format.MEMORY_TERA) {
+			return Format.formatDouble(((double) memory)
+					/ ((double) Format.MEMORY_GIG), 2)
+					+ " GB";
+		} else {
+			return Format.formatDouble(((double) memory)
+					/ ((double) Format.MEMORY_TERA), 2)
+					+ " TB";
+		}
+	}
+
+	/**
+	 * Format a percent. Using 6 decimal places.
+	 * 
+	 * @param e
+	 *            The percent to format.
 	 * @return The formatted percent.
 	 */
 	public static String formatPercent(final double e) {
@@ -110,7 +143,9 @@ public final class Format {
 
 	/**
 	 * Format a percent with no decimal places.
-	 * @param e The format to percent.
+	 * 
+	 * @param e
+	 *            The format to percent.
 	 * @return The formatted percent.
 	 */
 	public static String formatPercentWhole(final double e) {
@@ -120,7 +155,9 @@ public final class Format {
 
 	/**
 	 * Format a time span as seconds, minutes, hours and days.
-	 * @param seconds The number of seconds in the timespan.
+	 * 
+	 * @param seconds
+	 *            The number of seconds in the timespan.
 	 * @return The formatted timespan.
 	 */
 	public static String formatTimeSpan(final int seconds) {
@@ -154,36 +191,6 @@ public final class Format {
 
 		return result.toString();
 	}
-
-    /**
-     * Format a memory amount, to something like 32 MB.
-     * @param memory The amount of bytes.
-     * @return The formatted memory size.
-     */
-    public static String formatMemory(long memory)
-    {
-        if (memory < Format.MEMORY_K)
-        {
-            return memory + " bytes";
-        }
-        else if (memory < Format.MEMORY_MEG)
-        {
-            return formatDouble( ((double)memory) / ((double)Format.MEMORY_K), 2)+" KB";
-        }
-        else if (memory < Format.MEMORY_GIG)
-        {
-            return formatDouble(((double)memory) / ((double)Format.MEMORY_MEG), 2) + " MB";
-        }
-        else if (memory < Format.MEMORY_TERA)
-        {
-            return formatDouble(((double)memory) / ((double)Format.MEMORY_GIG), 2) + " GB";
-        }
-        else 
-        {
-            return formatDouble(((double)memory) / ((double)Format.MEMORY_TERA), 2) + " TB";
-        }
-    }
-
 
 	/**
 	 * Private constructor.

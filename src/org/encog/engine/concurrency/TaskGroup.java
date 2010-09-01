@@ -45,7 +45,7 @@ public class TaskGroup {
 	/**
 	 * The ID for this task group.
 	 */
-	private int id;
+	private final int id;
 
 	/**
 	 * The total number of tasks in this group.
@@ -60,9 +60,13 @@ public class TaskGroup {
 	/**
 	 * The event used to sync waiting for tasks to stop.
 	 */
-	private Lock accessLock = new ReentrantLock();
-	
-	private Condition mightBeDone = accessLock.newCondition();
+	private final Lock accessLock = new ReentrantLock();
+
+	/**
+	 * Condition used to check if we are done.
+	 */
+	private final Condition mightBeDone = 
+		this.accessLock.newCondition();
 
 	/**
 	 * Create a task group with the specified id.
@@ -70,7 +74,7 @@ public class TaskGroup {
 	 * @param id
 	 *            The ID of the task group.
 	 */
-	public TaskGroup(int id) {
+	public TaskGroup(final int id) {
 		this.id = id;
 		this.totalTasks = 0;
 	}
@@ -83,14 +87,25 @@ public class TaskGroup {
 	}
 
 	/**
+	 * @return Returns true if there are no more tasks.
+	 */
+	public boolean getNoTasks() {
+		this.accessLock.lock();
+		try {
+			return this.totalTasks == this.completedTasks;
+		} finally {
+			this.accessLock.unlock();
+		}
+	}
+
+	/**
 	 * Notify that a task is starting.
 	 */
 	public void taskStarting() {
 		this.accessLock.lock();
 		try {
 			this.totalTasks++;
-		}
-		finally {
+		} finally {
 			this.accessLock.unlock();
 		}
 	}
@@ -102,23 +117,10 @@ public class TaskGroup {
 		this.accessLock.lock();
 		try {
 			this.completedTasks++;
-			if( this.completedTasks>=this.totalTasks)
+			if (this.completedTasks >= this.totalTasks) {
 				this.mightBeDone.signal();
-		}
-		finally {
-			this.accessLock.unlock();
-		}
-	}
-
-	/**
-	 * @return Returns true if there are no more tasks.
-	 */
-	public boolean getNoTasks() {
-		this.accessLock.lock();
-		try {
-			return this.totalTasks == this.completedTasks;
-		}
-		finally {
+			}
+		} finally {
 			this.accessLock.unlock();
 		}
 	}
@@ -132,7 +134,7 @@ public class TaskGroup {
 			try {
 				try {
 					this.mightBeDone.await();
-				} catch (InterruptedException e) {
+				} catch (final InterruptedException e) {
 					throw new EncogEngineError(e);
 				}
 			} finally {

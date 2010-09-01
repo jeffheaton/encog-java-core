@@ -37,5 +37,8 @@ package org.encog.engine.concurrency;
  * 
  */
 public interface EngineTask  {
+	/**
+	 * The task to perform.
+	 */
 	void run();
 }

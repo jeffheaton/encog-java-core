@@ -36,7 +36,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.encog.engine.EncogEngineError;
 
-
 /**
  * This class abstracts thread pools, and potentially grids and other types of
  * concurrency. It is used by other classes inside of Encog to allow tasks to be
@@ -51,11 +50,7 @@ public class EngineConcurrency {
 	 * Singleton instance.
 	 */
 	private static EngineConcurrency instance;
-	
-	private Throwable threadError;
 
-	private int currentTaskGroup;
-	
 	/**
 	 * @return The instance to the singleton.
 	 */
@@ -65,6 +60,21 @@ public class EngineConcurrency {
 		}
 		return EngineConcurrency.instance;
 	}
+
+	/**
+<<<<<<< .mine
+	 * An error that was caught in one of the threads. Will be thrown by the
+	 * main thread.
+	 */
+	private Throwable threadError;
+
+	/**
+=======
+>>>>>>> .r1927
+	 * The current task group, used to ensure that all threads finish at the
+	 * same time.
+	 */
+	private int currentTaskGroup;
 
 	/**
 	 * The executor service we are using.
@@ -79,31 +89,75 @@ public class EngineConcurrency {
 	}
 
 	/**
+	 * Check to see if one of the threads has thrown an error. If so, then throw
+	 * that error.
+	 */
+	public void checkError() {
+		if (this.threadError != null) {
+			throw new EncogEngineError(this.threadError);
+		}
+	}
+	
+	/**
+	 * Create a new task group.
+	 * @return The new task group.
+	 */
+	public TaskGroup createTaskGroup() {
+		TaskGroup result = null;
+		synchronized (this) {
+			this.currentTaskGroup++;
+			result = new TaskGroup(this.currentTaskGroup);
+
+		}
+		return result;
+	}
+
+	/**
+	 * Process the specified task.
+	 * @param task The task to process.
+	 */
+	public void processTask(final EngineTask task) {
+		processTask(task, null);
+	}
+
+	/**
 	 * Process the specified task. It will be processed either now, or queued to
 	 * process on the thread pool.
 	 * 
 	 * @param task
 	 *            The task to process.
+	 * @param group The task group.
 	 */
 	public void processTask(final EngineTask task, final TaskGroup group) {
 		if (this.executor == null) {
 			task.run();
 		} else {
-			if( this.threadError!=null ) {
-				Throwable t = this.threadError;
+			if (this.threadError != null) {
+				final Throwable t = this.threadError;
 				this.threadError = null;
 				throw new EncogEngineError(t);
 			}
-			
-			PoolItem item = new PoolItem(task, group);
-			if( group!=null )
+
+			final PoolItem item = new PoolItem(task, group);
+			if (group != null) {
 				group.taskStarting();
+			}
 			this.executor.execute(item);
 		}
 	}
-	
-	public void processTask(final EngineTask task) {
-		processTask(task,null);
+
+	/**
+	 * Allows threads to register errors, these errors will be thrown by the
+	 * main thread.
+	 * 
+	 * @param t
+	 *            The error to register.
+	 */
+	public void registerError(final Throwable t) {
+		synchronized (this) {
+			this.threadError = t;
+		}
+
 	}
 
 	/**
@@ -118,36 +172,9 @@ public class EngineConcurrency {
 				this.executor.shutdown();
 				this.executor.awaitTermination(timeout, TimeUnit.SECONDS);
 				this.executor = null;
-			} catch (final InterruptedException e) {				
+			} catch (final InterruptedException e) {
 				throw new EncogEngineError(e);
 			}
 		}
-	}
-	
-    /// <summary>
-    /// Create a new task group.
-    /// </summary>
-    /// <returns>The new task group.</returns>
-    public TaskGroup createTaskGroup()
-    {
-        TaskGroup result = null;
-        synchronized (this)
-        {
-            this.currentTaskGroup++;
-            result = new TaskGroup(this.currentTaskGroup);
-            
-        }
-        return result;
-    }
-    
-    public void checkError() throws EncogEngineError
-    {
-    	if( this.threadError!=null )
-    		throw new EncogEngineError(this.threadError);
-    }
-
-	public void registerError(Throwable t) {
-		this.threadError = t;
-		
 	}
 }

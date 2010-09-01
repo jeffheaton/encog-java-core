@@ -80,28 +80,32 @@ public class DetermineWorkload {
 	 * Workloads for OpenCL workers.
 	 */
 	private List<IntRange> clRanges = new ArrayList<IntRange>();
-	
+
 	/**
 	 * Determine the workload.
-	 * @param threads Threads to use, or zero to allow Encog to
-	 * pick.
-	 * @param workloadSize Total workload size.
+	 * 
+	 * @param threads
+	 *            Threads to use, or zero to allow Encog to pick.
+	 * @param workloadSize
+	 *            Total workload size.
 	 */
 	public DetermineWorkload(final int threads, final int workloadSize) {
 		this(threads, 0, workloadSize);
 	}
 
 	/**
-	 * Determine the workload, consider CL count. If worker count is zero,
-	 * Encog picks using
-	 * processor count. If worker count is -1 then no CPU threads will be
-	 * used.
-	 * @param cpuWorkerCount Threads to use, or zero to allow Encog to
-	 * pick.
-	 * @param clWorkerCount The number of CL workers.
-	 * @param workloadSize Total workload size.
+	 * Determine the workload, consider CL count. If worker count is zero, Encog
+	 * picks using processor count. If worker count is -1 then no CPU threads
+	 * will be used.
+	 * 
+	 * @param cpuWorkerCount
+	 *            Threads to use, or zero to allow Encog to pick.
+	 * @param clWorkerCount
+	 *            The number of CL workers.
+	 * @param workloadSize
+	 *            Total workload size.
 	 */
-	public DetermineWorkload(int cpuWorkerCount, final int clWorkerCount,
+	public DetermineWorkload(final int cpuWorkerCount, final int clWorkerCount,
 			final int workloadSize) {
 
 		this.cpuWorkerCount = cpuWorkerCount;
@@ -135,8 +139,8 @@ public class DetermineWorkload {
 			this.cpuWorkerCount = num;
 			this.totalWorkerCount = this.clWorkerCount + this.cpuWorkerCount;
 		} else {
-			if (cpuWorkerCount == -1) {
-				cpuWorkerCount = 0;
+			if (this.cpuWorkerCount == -1) {
+				this.cpuWorkerCount = 0;
 			}
 
 			this.totalWorkerCount = clWorkerCount + cpuWorkerCount;
@@ -162,7 +166,7 @@ public class DetermineWorkload {
 
 		final int baseSizePerThread = this.totalWorkloadSize
 				/ this.totalWorkerCount;
-		final int clSizePerThread = (int)baseSizePerThread;
+		final int clSizePerThread = baseSizePerThread;
 		final int cpuWorkloadSize = Math.max(this.totalWorkloadSize
 				- (clSizePerThread * this.clWorkerCount), 0);
 		final int cpuSizePerThread = Math.max(cpuWorkloadSize

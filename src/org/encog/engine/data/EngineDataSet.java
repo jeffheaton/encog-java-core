@@ -33,9 +33,10 @@ package org.encog.engine.data;
 import java.util.Iterator;
 
 /**
- * An interface designed to abstract classes that store machine learning data. This
- * interface is designed to provide EngineDataSet objects. These can be used to
- * train neural networks using both supervised and unsupervised training.
+ * An interface designed to abstract classes that store machine learning data.
+ * This interface is designed to provide EngineDataSet objects. These can be
+ * used to train neural networks using both supervised and unsupervised
+ * training.
  * 
  * Some implementations of this interface are memory based. That is they store
  * the entire contents of the dataset in memory.
@@ -47,8 +48,14 @@ import java.util.Iterator;
  * 
  * @author jheaton
  */
-public interface EngineDataSet  {
+public interface EngineDataSet {
 
+	/**
+	 * Creates an iterator for EngineData.
+	 * 
+	 * @return The iterator.
+	 */
+	Iterator< ? > createIterator();
 
 	/**
 	 * @return The size of the input data.
@@ -59,15 +66,9 @@ public interface EngineDataSet  {
 	 * @return The size of the input data.
 	 */
 	int getInputSize();
-	
+
 	/**
 	 * @return True if this is a supervised training set.
 	 */
 	boolean isSupervised();
-	
-	/**
-	 * Creates an iterator for EngineData.
-	 * @return The iterator.
-	 */
-	Iterator<?> createIterator();
 }

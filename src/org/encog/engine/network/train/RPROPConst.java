@@ -1,6 +1,17 @@
 package org.encog.engine.network.train;
 
-public class RPROPConst {
+/**
+ * Constants used for Resilient Propagation (RPROP) training.
+ */
+public final class RPROPConst {
+	
+	/**
+	 * Private constructor.
+	 */
+	private RPROPConst() {
+		
+	}
+	
 	/**
 	 * The default zero tolerance.
 	 */

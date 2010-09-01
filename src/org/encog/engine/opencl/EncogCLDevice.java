@@ -58,7 +58,7 @@ public class EncogCLDevice extends EncogCLItem {
 	 * The platform for this device.
 	 */
 	private final EncogCLPlatform platform;
-	
+
 	/**
 	 * Is this device a cpu?
 	 */
@@ -67,7 +67,7 @@ public class EncogCLDevice extends EncogCLItem {
 	/**
 	 * A command queue for this device.
 	 */
-	private cl_command_queue commands;
+	private final cl_command_queue commands;
 
 	/**
 	 * Construct an OpenCL device.
@@ -80,55 +80,16 @@ public class EncogCLDevice extends EncogCLItem {
 	public EncogCLDevice(final EncogCLPlatform platform,
 			final cl_device_id device) {
 		this.platform = platform;
-		this.setEnabled( true );
+		setEnabled(true);
 		this.device = device;
-		this.setName(getDeviceString(CL.CL_DEVICE_NAME));
-		this.setVender(getDeviceString(CL.CL_DEVICE_VENDOR));
-		
-		long type = getDeviceLong(CL.CL_DEVICE_TYPE);
-		this.cpu = (type==CL.CL_DEVICE_TYPE_CPU);
+		setName(getDeviceString(CL.CL_DEVICE_NAME));
+		setVender(getDeviceString(CL.CL_DEVICE_VENDOR));
 
-		this.commands = CL.clCreateCommandQueue(platform
-				.getContext(), device, 0, null);
-	}
-	
-	/**
-	 * Get a config string from the device.
-	 * @param param The param to get.
-	 * @return The config string.
-	 */
-	public String getDeviceString(int param)
-	{
-		byte[] buffer = new byte[255];
-		long[] len = new long[1];
+		final long type = getDeviceLong(CL.CL_DEVICE_TYPE);
+		this.cpu = (type == CL.CL_DEVICE_TYPE_CPU);
 
-		CL.clGetDeviceInfo(
-				this.device, 
-				param, 
-				buffer.length, 
-				Pointer.to(buffer), 
-				len);
-		String value = new String(buffer,0,(int)len[0]);
-		return value;
-	}
-	
-	/**
-	 * Get a long param from the device.
-	 * @param param The param desired.
-	 * @return The param value.
-	 */
-	public long getDeviceLong(int param)
-	{
-		long[] result = new long[1];
-		long[] len = new long[1];
-		
-		CL.clGetDeviceInfo(
-				this.device, 
-				param, 
-				Sizeof.cl_long, 
-				Pointer.to(result), 
-				len);
-		return result[0];
+		this.commands = CL.clCreateCommandQueue(platform.getContext(), device,
+				0, null);
 	}
 
 	/**
@@ -143,6 +104,39 @@ public class EncogCLDevice extends EncogCLItem {
 	 */
 	public cl_device_id getDevice() {
 		return this.device;
+	}
+
+	/**
+	 * Get a long param from the device.
+	 * 
+	 * @param param
+	 *            The param desired.
+	 * @return The param value.
+	 */
+	public long getDeviceLong(final int param) {
+		final long[] result = new long[1];
+		final long[] len = new long[1];
+
+		CL.clGetDeviceInfo(this.device, param, Sizeof.cl_long, Pointer
+				.to(result), len);
+		return result[0];
+	}
+
+	/**
+	 * Get a config string from the device.
+	 * 
+	 * @param param
+	 *            The param to get.
+	 * @return The config string.
+	 */
+	public String getDeviceString(final int param) {
+		final byte[] buffer = new byte[255];
+		final long[] len = new long[1];
+
+		CL.clGetDeviceInfo(this.device, param, buffer.length, Pointer
+				.to(buffer), len);
+		final String value = new String(buffer, 0, (int) len[0]);
+		return value;
 	}
 
 	/**
@@ -197,28 +191,26 @@ public class EncogCLDevice extends EncogCLItem {
 	/**
 	 * @return Dump this device as a string.
 	 */
+	@Override
 	public String toString() {
 		final StringBuilder builder = new StringBuilder();
-		
-		if( cpu )
-		{
+
+		if (this.cpu) {
 			builder.append("CPU:");
-		}
-		else
-		{
+		} else {
 			builder.append("GPU:");
 		}
-		  
-		 builder.append(this.getName()); 
-		 builder.append(",ComputeUnits:");
-		 builder.append(this.getMaxComputeUnits()); 
-		 builder.append(",ClockFreq:");
-		 builder.append(this.getMaxClockFrequency());
-		 builder.append(",LocalMemory=");
-		 builder.append(Format.formatMemory(this.getLocalMemorySize()));
-		 builder.append(",GlobalMemory=");
-		 builder.append(Format.formatMemory(this.getGlobalMemorySize()));
-		 
+
+		builder.append(getName());
+		builder.append(",ComputeUnits:");
+		builder.append(getMaxComputeUnits());
+		builder.append(",ClockFreq:");
+		builder.append(getMaxClockFrequency());
+		builder.append(",LocalMemory=");
+		builder.append(Format.formatMemory(getLocalMemorySize()));
+		builder.append(",GlobalMemory=");
+		builder.append(Format.formatMemory(getGlobalMemorySize()));
+
 		return builder.toString();
 	}
 

@@ -37,19 +37,19 @@ import java.io.InputStreamReader;
 
 import org.encog.engine.EncogEngineError;
 
-
-public class ResourceLoader  {
-
-
+/**
+ * Used to load resources from the JAR file.
+ */
+public final class ResourceLoader {
 
 	/**
 	 * Create an input stream to read from the resource.
-	 * 
+	 * @param resource The resource to load.
 	 * @return An input stream.
 	 */
-	public static InputStream createInputStream(String resource) {
+	public static InputStream createInputStream(
+			final String resource) {
 
-				
 		final ClassLoader loader = ResourceLoader.class.getClassLoader();
 		final InputStream is = loader.getResourceAsStream(resource);
 
@@ -62,30 +62,39 @@ public class ResourceLoader  {
 
 	/**
 	 * Load the resource as a string.
-	 * 
+	 * @param resource The resource to load.
 	 * @return The resource as a string.
 	 */
-	public static String loadString(String resource) {
+	public static String loadString(final String resource) {
 		InputStream is = null;
 		try {
-			is = createInputStream(resource);
-			StringBuilder result = new StringBuilder();
-			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			is = ResourceLoader.createInputStream(resource);
+			final StringBuilder result = new StringBuilder();
+			final BufferedReader br = new BufferedReader(new InputStreamReader(
+					is));
 			String line;
 			while ((line = br.readLine()) != null) {
 				result.append(line);
 				result.append("\r\n");
 			}
 			return result.toString();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new EncogEngineError(e);
 		} finally {
 			try {
-				if (is != null)
+				if (is != null) {
 					is.close();
-			} catch (IOException e) {
+				}
+			} catch (final IOException e) {
 				throw new EncogEngineError(e);
 			}
 		}
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private ResourceLoader() {
+
 	}
 }

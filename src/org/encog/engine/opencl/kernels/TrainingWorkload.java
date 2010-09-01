@@ -116,26 +116,31 @@ public class TrainingWorkload {
 	/**
 	 * The training errors for this workload.
 	 */
-	private float[] errors;
+	private final float[] errors;
 
 	/**
 	 * The gradients for this workload.
 	 */
-	private float[] gradients;
+	private final float[] gradients;
 
 	/**
 	 * The number of threads that OpenCL will use.
 	 */
 	private final int maxUnits;
 
-	
 	/**
 	 * Construct an OpenCL training workload.
-	 * @param device The device to use.
-	 * @param flat The network to use.
-	 * @param training The training data to use.
-	 * @param high The high index to train from.
-	 * @param low The low index to train from.
+	 * 
+	 * @param device
+	 *            The device to use.
+	 * @param flat
+	 *            The network to use.
+	 * @param training
+	 *            The training data to use.
+	 * @param high
+	 *            The high index to train from.
+	 * @param low
+	 *            The low index to train from.
 	 */
 	public TrainingWorkload(final EncogCLDevice device, final FlatNetwork flat,
 			final EngineIndexableSet training, final int high, final int low) {
@@ -150,12 +155,12 @@ public class TrainingWorkload {
 
 		this.maxUnits = Math.min(this.trainingLength, EncogEngine.getInstance()
 				.getCL().getCLThreads());
-		final EngineData pair = BasicEngineData.createPair(flat
-				.getInputCount(), flat.getOutputCount());
+		final EngineData pair = BasicEngineData.createPair(
+				flat.getInputCount(), flat.getOutputCount());
 
 		int inputIndex = 0;
 		int idealIndex = 0;
-		
+
 		for (int i = low; i <= high; i++) {
 			training.getRecord(i, pair);
 			for (int col = 0; col < flat.getInputCount(); col++) {
@@ -169,12 +174,11 @@ public class TrainingWorkload {
 
 		final cl_context context = this.device.getPlatform().getContext();
 
-		int errorSize = this.maxUnits;
-		int gradientSize = this.maxUnits*this.flat.getWeights().length;
-		
+		final int errorSize = this.maxUnits;
+		final int gradientSize = this.maxUnits * this.flat.getWeights().length;
+
 		this.errors = new float[errorSize];
 		this.gradients = new float[gradientSize];
-
 
 		this.inputBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_ONLY
 				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
@@ -186,22 +190,21 @@ public class TrainingWorkload {
 
 		this.errorBuffer = CL.clCreateBuffer(context, CL.CL_MEM_WRITE_ONLY,
 				Sizeof.cl_float * errorSize, null, null);
-		
+
 		this.gradientBuffer = CL.clCreateBuffer(context, CL.CL_MEM_WRITE_ONLY,
-				Sizeof.cl_float * gradientSize,
-				null, null);
+				Sizeof.cl_float * gradientSize, null, null);
 
 		this.paramArray[0] = flat.getInputCount();
 		this.paramArray[1] = flat.getOutputCount();
 		this.paramArray[2] = flat.getLayerCounts().length;
 		this.paramArray[6] = this.maxUnits - 1;// index of last item
 		this.paramArray[7] = Math.max(this.trainingLength / this.maxUnits, 1);// size
-																				// each
-																				// item
+		// each
+		// item
 		this.paramArray[8] = Math.max(this.trainingLength % this.maxUnits, 1);// size
-																				// of
-																				// last
-																				// item
+		// of
+		// last
+		// item
 
 		this.paramBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_ONLY
 				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
@@ -223,10 +226,24 @@ public class TrainingWorkload {
 	}
 
 	/**
+	 * @return The errors.
+	 */
+	public float[] getErrors() {
+		return this.errors;
+	}
+
+	/**
 	 * @return A buffer to hold the gradients.
 	 */
 	public cl_mem getGradientBuffer() {
 		return this.gradientBuffer;
+	}
+
+	/**
+	 * @return The gradients.
+	 */
+	public float[] getGradients() {
+		return this.gradients;
 	}
 
 	/**
@@ -241,6 +258,13 @@ public class TrainingWorkload {
 	 */
 	public cl_mem getInputBuffer() {
 		return this.inputBuffer;
+	}
+
+	/**
+	 * @return The max number of units.
+	 */
+	public int getMaxUnits() {
+		return this.maxUnits;
 	}
 
 	/**
@@ -262,26 +286,5 @@ public class TrainingWorkload {
 	 */
 	public cl_mem getParamBuffer() {
 		return this.paramBuffer;
-	}
-
-	/**
-	 * @return The max number of units.
-	 */
-	public int getMaxUnits() {
-		return this.maxUnits;
-	}
-
-	/**
-	 * @return The gradients.
-	 */
-	public float[] getGradients() {
-		return this.gradients;
-	}
-
-	/**
-	 * @return The errors.
-	 */
-	public float[] getErrors() {
-		return this.errors;
 	}
 }

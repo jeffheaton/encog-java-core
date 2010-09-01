@@ -48,12 +48,12 @@ public abstract class ConcurrentJob {
 	 * The number of tasks in this job.
 	 */
 	private int totalTasks;
-	
+
 	/**
 	 * The current task.
 	 */
 	private int current;
-	
+
 	/**
 	 * Flag to note that the job should stop.
 	 */
@@ -88,14 +88,14 @@ public abstract class ConcurrentJob {
 	/**
 	 * Process the job.
 	 */
-	public void process()  {
+	public void process() {
 		Object task;
 
 		this.totalTasks = loadWorkload();
 		int currentTask = 0;
 		TaskGroup group = EngineConcurrency.getInstance().createTaskGroup();
 
-		while( ((task = requestNextTask()) != null) && !shouldStop ) {
+		while (((task = requestNextTask()) != null) && !shouldStop) {
 			currentTask++;
 			final JobUnitContext context = new JobUnitContext();
 			context.setJobUnit(task);
@@ -107,7 +107,7 @@ public abstract class ConcurrentJob {
 		}
 
 		group.waitForComplete();
-		
+
 		EngineConcurrency.getInstance().checkError();
 	}
 
@@ -119,7 +119,8 @@ public abstract class ConcurrentJob {
 	 * @param status
 	 *            The status to report.
 	 */
-	public void reportStatus(final JobUnitContext context, final String status) {
+	public void reportStatus(final JobUnitContext context, 
+			final String status) {
 		this.report.report(this.totalTasks, current++, status);
 	}
 
@@ -129,14 +130,18 @@ public abstract class ConcurrentJob {
 	 * @return The next task to be processed.
 	 */
 	public abstract Object requestNextTask();
-	
-	public boolean getShouldStop()
-	{
+
+	/**
+	 * @return True if the process should stop.
+	 */
+	public boolean getShouldStop() {
 		return this.shouldStop;
 	}
-	
-	public void stop()
-	{
+
+	/**
+	 * Request the process to stop.
+	 */
+	public void stop() {
 		this.shouldStop = true;
 	}
 }

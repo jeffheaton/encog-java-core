@@ -69,9 +69,7 @@ public class TrainFlatNetworkResilient extends TrainFlatNetwork {
 	 */
 	public TrainFlatNetworkResilient(final FlatNetwork network,
 			final EngineDataSet training, final double zeroTolerance,
-			final double initialUpdate, final double maxStep)
-
-	{
+			final double initialUpdate, final double maxStep) {
 		super(network, training);
 		this.updateValues = new double[network.getWeights().length];
 		this.zeroTolerance = zeroTolerance;
@@ -82,9 +80,17 @@ public class TrainFlatNetworkResilient extends TrainFlatNetwork {
 		}
 	}
 
-	public TrainFlatNetworkResilient(FlatNetwork flat,
-			EngineDataSet trainingSet) {
-		this(flat,trainingSet,RPROPConst.DEFAULT_ZERO_TOLERANCE,RPROPConst.DEFAULT_INITIAL_UPDATE,RPROPConst.DEFAULT_MAX_STEP);
+	/**
+	 * Tran a network using RPROP.
+	 * @param flat
+	 *            The network to train.
+	 * @param trainingSet
+	 *            The training data to use.
+	 */
+	public TrainFlatNetworkResilient(final FlatNetwork flat,
+			final EngineDataSet trainingSet) {
+		this(flat, trainingSet, RPROPConst.DEFAULT_ZERO_TOLERANCE,
+				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
 	}
 
 	/**

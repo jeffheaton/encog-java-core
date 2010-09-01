@@ -55,22 +55,22 @@ public class EncogEngineError extends RuntimeException {
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
+	 * @param msg
+	 *            A message.
+	 * @param t
+	 *            The other exception.
+	 */
+	public EncogEngineError(final String msg, final Throwable t) {
+		super(msg, t);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
 	 * @param t
 	 *            The other exception.
 	 */
 	public EncogEngineError(final Throwable t) {
 		super(t);
-	}
-	
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param msg
-	 *            A message.
-	 * @param t
-	 * 			The other exception.
-	 */
-	public EncogEngineError( final String msg, final Throwable t) {
-		super(msg,t);
 	}
 }

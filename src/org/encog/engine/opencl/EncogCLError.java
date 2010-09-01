@@ -33,8 +33,8 @@ package org.encog.engine.opencl;
 import org.encog.engine.EncogEngineError;
 
 /**
- * An OpenCL error occured.
- *
+ * An OpenCL error.
+ * 
  */
 public class EncogCLError extends EncogEngineError {
 
@@ -56,22 +56,22 @@ public class EncogCLError extends EncogEngineError {
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
+	 * @param msg
+	 *            A message.
+	 * @param t
+	 *            The other exception.
+	 */
+	public EncogCLError(final String msg, final Throwable t) {
+		super(msg, t);
+	}
+
+	/**
+	 * Construct an exception that holds another exception.
+	 * 
 	 * @param t
 	 *            The other exception.
 	 */
 	public EncogCLError(final Throwable t) {
 		super(t);
-	}
-	
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param msg
-	 *            A message.
-	 * @param t
-	 * 			The other exception.
-	 */
-	public EncogCLError( final String msg, final Throwable t) {
-		super(msg,t);
 	}
 }

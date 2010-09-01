@@ -30,9 +30,6 @@
 
 package org.encog.engine.opencl;
 
-import static org.jocl.CL.CL_CONTEXT_DEVICES;
-import static org.jocl.CL.clGetContextInfo;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,40 +68,42 @@ public class EncogCLPlatform extends EncogCLItem {
 	/**
 	 * A kernel used to help train a network.
 	 */
-	private KernelNetworkTrain kerNetworkTrain;
+	private final KernelNetworkTrain kerNetworkTrain;
 
 	/**
 	 * A simple test kernel to add a vector.
 	 */
-	private KernelVectorAdd kerVectorAdd;
-	
+	private final KernelVectorAdd kerVectorAdd;
+
 	/**
 	 * Construct an OpenCL platform.
-	 * @param platform The OpenCL platform.
+	 * 
+	 * @param platform
+	 *            The OpenCL platform.
 	 */
 	public EncogCLPlatform(final cl_platform_id platform) {
 		final long[] numBytes = new long[1];
 		this.platform = platform;
 
-		final cl_context_properties contextProperties = 
-			new cl_context_properties();
+		final cl_context_properties contextProperties 
+			= new cl_context_properties();
 		contextProperties.addProperty(CL.CL_CONTEXT_PLATFORM, platform);
 
 		this.context = CL.clCreateContextFromType(contextProperties,
 				CL.CL_DEVICE_TYPE_ALL, null, null, null);
 
-		
-		this.setName( getPlatformString(CL.CL_PLATFORM_NAME));
-		this.setVender(getPlatformString(CL.CL_PLATFORM_VENDOR));
-		this.setEnabled(true);
-		
-		clGetContextInfo(context, CL_CONTEXT_DEVICES, 0, null, numBytes);
+		setName(getPlatformString(CL.CL_PLATFORM_NAME));
+		setVender(getPlatformString(CL.CL_PLATFORM_VENDOR));
+		setEnabled(true);
+
+		CL.clGetContextInfo(this.context, CL.CL_CONTEXT_DEVICES, 0, null,
+				numBytes);
 
 		final int numDevices = (int) numBytes[0] / Sizeof.cl_device_id;
 		final cl_device_id[] devicesList = new cl_device_id[numDevices];
-		
-		clGetContextInfo(context, CL_CONTEXT_DEVICES, numBytes[0],  
-	            Pointer.to(devicesList), null);
+
+		CL.clGetContextInfo(this.context, CL.CL_CONTEXT_DEVICES, numBytes[0],
+				Pointer.to(devicesList), null);
 
 		for (final cl_device_id deviceID : devicesList) {
 			final EncogCLDevice adapter = new EncogCLDevice(this, deviceID);
@@ -113,26 +112,6 @@ public class EncogCLPlatform extends EncogCLItem {
 
 		this.kerVectorAdd = new KernelVectorAdd(this.context);
 		this.kerNetworkTrain = new KernelNetworkTrain(this.context);
-	}
-	
-	/**
-	 * Get a config string from the platform.
-	 * @param param The param to get.
-	 * @return The config string.
-	 */
-	public String getPlatformString(int param)
-	{
-		byte[] buffer = new byte[255];
-		long[] len = new long[1];
-
-		CL.clGetPlatformInfo(
-				this.platform, 
-				param, 
-				buffer.length, 
-				Pointer.to(buffer), 
-				len);
-		String name = new String(buffer,0,(int)len[0]);
-		return name;
 	}
 
 	/**
@@ -161,6 +140,23 @@ public class EncogCLPlatform extends EncogCLItem {
 	 */
 	public cl_platform_id getPlatform() {
 		return this.platform;
+	}
+
+	/**
+	 * Get a config string from the platform.
+	 * 
+	 * @param param
+	 *            The param to get.
+	 * @return The config string.
+	 */
+	public String getPlatformString(final int param) {
+		final byte[] buffer = new byte[255];
+		final long[] len = new long[1];
+
+		CL.clGetPlatformInfo(this.platform, param, buffer.length, Pointer
+				.to(buffer), len);
+		final String name = new String(buffer, 0, (int) len[0]);
+		return name;
 	}
 
 	/**

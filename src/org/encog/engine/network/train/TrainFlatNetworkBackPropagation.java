@@ -33,6 +33,9 @@ package org.encog.engine.network.train;
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.FlatNetwork;
 
+/**
+ * Train a flat network, using backpropagation.
+ */
 public class TrainFlatNetworkBackPropagation extends TrainFlatNetwork {
 
 	/**
@@ -64,13 +67,25 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetwork {
 	 */
 	public TrainFlatNetworkBackPropagation(final FlatNetwork network,
 			final EngineDataSet training, final double learningRate,
-			final double momentum)
-
-	{
+			final double momentum) {
 		super(network, training);
 		this.momentum = momentum;
 		this.learningRate = learningRate;
 		this.lastDelta = new double[network.getWeights().length];
+	}
+
+	/**
+	 * @return the learningRate
+	 */
+	public double getLearningRate() {
+		return this.learningRate;
+	}
+
+	/**
+	 * @return the momentum
+	 */
+	public double getMomentum() {
+		return this.momentum;
 	}
 
 	/**
@@ -92,21 +107,5 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetwork {
 		this.lastDelta[index] = delta;
 		return delta;
 	}
-
-	/**
-	 * @return the learningRate
-	 */
-	public double getLearningRate() {
-		return learningRate;
-	}
-
-	/**
-	 * @return the momentum
-	 */
-	public double getMomentum() {
-		return momentum;
-	}
-	
-	
 
 }

@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-
 /**
  * Data is stored in an ArrayList. This class is memory based, so large enough
  * datasets could cause memory issues. Many other dataset types extend this
@@ -43,7 +42,8 @@ import java.util.List;
  * 
  * @author jheaton
  */
-public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Iterable<EngineData> {
+public class BasicEngineDataSet implements Serializable, EngineIndexableSet,
+		Iterable<EngineData> {
 
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
@@ -92,7 +92,6 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -2279722928570071183L;
-
 
 	/**
 	 * The data held by this object.
@@ -170,8 +169,7 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 	 */
 	public void add(final double[] inputData, final double[] idealData) {
 
-		final EngineData pair = new BasicEngineData(inputData,
-				idealData);
+		final EngineData pair = new BasicEngineData(inputData, idealData);
 		this.data.add(pair);
 	}
 
@@ -184,6 +182,15 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 	 */
 	public void add(final EngineData inputData) {
 		this.data.add(inputData);
+	}
+
+	/**
+	 * @return An iterator.
+	 */
+	@Override
+	public Iterator<EngineData> createIterator() {
+		final BasicNeuralIterator result = new BasicNeuralIterator();
+		return result;
 	}
 
 	/**
@@ -281,6 +288,14 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 	}
 
 	/**
+	 * @return An iterator.
+	 */
+	@Override
+	public Iterator<EngineData> iterator() {
+		return createIterator();
+	}
+
+	/**
 	 * Create an additional data set. It will use the same list.
 	 * 
 	 * @return The additional data set.
@@ -313,15 +328,4 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet, Ite
 		this.name = name;
 	}
 
-	@Override
-	public Iterator<EngineData> createIterator() {
-		final BasicNeuralIterator result = new BasicNeuralIterator();
-		return result;
-	}
-
-	@Override
-	public Iterator<EngineData> iterator() {
-		return createIterator();
-	}
-	
 }
