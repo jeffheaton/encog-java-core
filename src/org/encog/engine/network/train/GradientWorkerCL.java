@@ -181,7 +181,7 @@ public class GradientWorkerCL implements FlatGradientWorker {
 			final int count = (this.high - this.low) + 1;
 			final double error = Math.sqrt(e
 					/ (count * this.training.getIdealSize()));
-			this.owner.report(this.gradients, error,null);
+			this.owner.report(this.gradients, error, null);
 
 			this.stopwatch.stop();
 			this.elapsedTime = this.stopwatch.getElapsedTicks();
@@ -190,6 +190,9 @@ public class GradientWorkerCL implements FlatGradientWorker {
 		}
 	}
 
+	/**
+	 * @return The network being trained.
+	 */
 	@Override
 	public FlatNetwork getNetwork() {
 		return this.network;

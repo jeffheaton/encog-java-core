@@ -48,7 +48,6 @@ import org.encog.engine.opencl.EncogCLPlatform;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.IntRange;
 
-
 /**
  * Train a flat network using multithreading, and eventually with GPU support.
  * 
@@ -110,7 +109,10 @@ public abstract class TrainFlatNetwork {
 	 * Reported exception from the threads.
 	 */
 	private Throwable reportedException;
-	
+
+	/**
+	 * The OpenCL device targeted.
+	 */
 	private EncogCLDevice targetDevice;
 
 	/**
@@ -125,7 +127,7 @@ public abstract class TrainFlatNetwork {
 			final EngineDataSet training) {
 
 		if (!(training instanceof EngineIndexableSet)) {
-			throw new EncogEngineError (
+			throw new EncogEngineError(
 					"Training data must be Indexable for this training type.");
 		}
 
@@ -158,6 +160,18 @@ public abstract class TrainFlatNetwork {
 	}
 
 	/**
+	 * Copy the contexts to keep them consistent with multithreaded training.
+	 */
+	private void copyContexts() {
+		for (int i = 0; i < (this.workers.length - 1); i++) {
+			final double[] src = this.workers[i].getNetwork().getLayerOutput();
+			final double[] dst = this.workers[i + 1].getNetwork()
+					.getLayerOutput();
+			EngineArray.arrayCopy(src, dst);
+		}
+	}
+
+	/**
 	 * @return The error from the neural network.
 	 */
 	public double getError() {
@@ -169,6 +183,13 @@ public abstract class TrainFlatNetwork {
 	 */
 	public FlatNetwork getNetwork() {
 		return this.network;
+	}
+
+	/**
+	 * @return The target OpenCL device.
+	 */
+	public EncogCLDevice getTargetDevice() {
+		return this.targetDevice;
 	}
 
 	/**
@@ -186,24 +207,21 @@ public abstract class TrainFlatNetwork {
 		this.lastGradient = new double[this.network.getWeights().length];
 
 		DetermineWorkload determine;
-		ValidateForOpenCL val = new ValidateForOpenCL();
+		final ValidateForOpenCL val = new ValidateForOpenCL();
 
-		if( this.targetDevice!=null && val.isValid(this.network)==null )
-		{
-			if( EncogEngine.getInstance().getCL().areCPUsPresent() ) {
+		if ((this.targetDevice != null) && (val.isValid(this.network) == null)) {
+			if (EncogEngine.getInstance().getCL().areCPUsPresent()) {
 				this.numThreads = -1;
 				EncogEngine.getInstance().getCL().enableAllCPUs();
 			}
-			
+
+			determine = new DetermineWorkload(this.numThreads, 1,
+					(int) this.indexable.getRecordCount());
+		} else {
 			determine = new DetermineWorkload(this.numThreads,
-					1, (int) this.indexable.getRecordCount());
+					(int) this.indexable.getRecordCount());
 		}
-		else
-		{
-			determine = new DetermineWorkload(this.numThreads,
-					(int) this.indexable.getRecordCount());			
-		}
-		
+
 		this.workers = new FlatGradientWorker[determine.getTotalWorkerCount()];
 
 		determine.calculateWorkers();
@@ -226,8 +244,8 @@ public abstract class TrainFlatNetwork {
 				options.put("USE_TANH", "1");
 			}
 
-			for (final EncogCLPlatform platform : EncogEngine.getInstance().getCL()
-					.getPlatforms()) {
+			for (final EncogCLPlatform platform : EncogEngine.getInstance()
+					.getCL().getPlatforms()) {
 				platform.getNetworkTrain().compile(options);
 				platform.getNetworkTrain().init(this.network);
 			}
@@ -256,7 +274,7 @@ public abstract class TrainFlatNetwork {
 		if (this.workers == null) {
 			init();
 		}
-		
+
 		this.workers[0].getNetwork().clearContext();
 		this.totalError = 0;
 
@@ -264,50 +282,40 @@ public abstract class TrainFlatNetwork {
 
 			final TaskGroup group = EngineConcurrency.getInstance()
 					.createTaskGroup();
-			
+
 			for (final FlatGradientWorker worker : this.workers) {
 				EngineConcurrency.getInstance().processTask(worker, group);
 			}
 
 			group.waitForComplete();
 		} else {
-			workers[0].run();
+			this.workers[0].run();
 		}
 
 		learn();
 		this.currentError = this.totalError / this.workers.length;
 
 		for (final FlatGradientWorker worker : this.workers) {
-			EngineArray.arrayCopy(this.network.getWeights(), 0, worker.getWeights(), 0,
-					this.network.getWeights().length);
+			EngineArray.arrayCopy(this.network.getWeights(), 0, worker
+					.getWeights(), 0, this.network.getWeights().length);
 		}
-		
+
 		copyContexts();
-		
-		if( this.reportedException!=null )
-			throw(new EncogEngineError(reportedException));
+
+		if (this.reportedException != null) {
+			throw (new EncogEngineError(this.reportedException));
+		}
 
 		calculatePerformance();
-	}
-	
-	private void copyContexts()
-	{
-		for(int i=0;i<(this.workers.length-1);i++)
-		{
-			double[] src = workers[i].getNetwork().getLayerOutput();
-			double[] dst = workers[i+1].getNetwork().getLayerOutput();
-			EngineArray.arrayCopy(src, dst);
-		}
 	}
 
 	/**
 	 * Apply and learn.
 	 */
 	private void learn() {
-		double[] weights = network.getWeights();
+		final double[] weights = this.network.getWeights();
 		for (int i = 0; i < this.gradients.length; i++) {
-			weights[i] += updateWeight(this.gradients, this.lastGradient,
-					i);
+			weights[i] += updateWeight(this.gradients, this.lastGradient, i);
 			this.gradients[i] = 0;
 		}
 	}
@@ -319,9 +327,10 @@ public abstract class TrainFlatNetwork {
 	 *            The gradients from that worker.
 	 * @param error
 	 *            The error for that worker.
+	 * @param ex The exception.
 	 */
 	public void report(final double[] gradients, final double error,
-			Throwable ex) {
+			final Throwable ex) {
 		synchronized (this) {
 			if (ex == null) {
 
@@ -333,6 +342,24 @@ public abstract class TrainFlatNetwork {
 				this.reportedException = ex;
 			}
 		}
+	}
+
+	/**
+	 * Set the number of threads to use.
+	 * 
+	 * @param numThreads
+	 *            The number of threads to use.
+	 */
+	public void setNumThreads(final int numThreads) {
+		this.numThreads = numThreads;
+	}
+
+	/**
+	 * Set the target device.
+	 * @param targetDevice The target device.
+	 */
+	public void setTargetDevice(final EncogCLDevice targetDevice) {
+		this.targetDevice = targetDevice;
 	}
 
 	/**
@@ -349,23 +376,5 @@ public abstract class TrainFlatNetwork {
 	 */
 	public abstract double updateWeight(double[] gradients,
 			double[] lastGradient, int index);
-
-	/**
-	 * Set the number of threads to use.
-	 * 
-	 * @param numThreads
-	 *            The number of threads to use.
-	 */
-	public void setNumThreads(final int numThreads) {
-		this.numThreads = numThreads;
-	}
-
-	public EncogCLDevice getTargetDevice() {
-		return targetDevice;
-	}
-
-	public void setTargetDevice(EncogCLDevice targetDevice) {
-		this.targetDevice = targetDevice;
-	}
 
 }

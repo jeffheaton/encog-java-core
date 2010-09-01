@@ -61,7 +61,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	private final double[] actual;
 
 	/**
-	 * The deltas for each layer
+	 * The deltas for each layer.
 	 */
 	private final double[] layerDelta;
 
@@ -70,10 +70,13 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 */
 	private final int[] layerCounts;
 
+	/**
+	 * The feed counts, per layer.
+	 */
 	private int[] layerFeedCounts;
 
 	/**
-	 * The layer indexes
+	 * The layer indexes.
 	 */
 	private final int[] layerIndex;
 
@@ -83,12 +86,12 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	private final int[] weightIndex;
 
 	/**
-	 * The output from each layer
+	 * The output from each layer.
 	 */
 	private final double[] layerOutput;
 
 	/**
-	 * The gradients
+	 * The gradients.
 	 */
 	private final double[] gradients;
 
@@ -273,6 +276,9 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		}
 	}
 
+	/**
+	 * @return The network training.
+	 */
 	@Override
 	public FlatNetwork getNetwork() {
 		return this.network;
