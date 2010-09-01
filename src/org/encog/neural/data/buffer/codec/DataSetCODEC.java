@@ -78,4 +78,9 @@ public interface DataSetCODEC  {
 	 */
 	int getIdealSize();
 	
+	/**
+	 * Close any  open files.
+	 */
+	void close();
+	
 }

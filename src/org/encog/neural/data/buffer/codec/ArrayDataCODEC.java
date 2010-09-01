@@ -107,6 +107,12 @@ public class ArrayDataCODEC implements DataSetCODEC {
 		
 	}
 
+	@Override
+	public void close() {
+		// TODO Auto-generated method stub
+		
+	}
+
 	
 	
 }

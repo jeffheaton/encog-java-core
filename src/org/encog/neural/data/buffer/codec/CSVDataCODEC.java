@@ -200,4 +200,20 @@ public class CSVDataCODEC implements DataSetCODEC {
 	public int getIdealSize() {
 		return this.idealCount;
 	}
+
+	@Override
+	public void close() {
+		if( this.readCSV!=null )
+		{
+			this.readCSV.close();
+			this.readCSV = null;
+		}
+		
+		if( this.output!=null )
+		{
+			this.output.close();
+			this.output = null;
+		}
+		
+	}
 }

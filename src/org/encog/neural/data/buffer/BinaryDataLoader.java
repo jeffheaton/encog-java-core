@@ -39,6 +39,8 @@ import java.nio.DoubleBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 
+import org.encog.NullStatusReportable;
+import org.encog.engine.StatusReportable;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
 
 /**
@@ -53,6 +55,8 @@ public class BinaryDataLoader {
 	 * The CODEC to use.
 	 */
 	private DataSetCODEC codec;
+	
+	private StatusReportable status = new NullStatusReportable();
 
 	/**
 	 * Construct a loader with the specified CODEC.
@@ -68,6 +72,7 @@ public class BinaryDataLoader {
 	 */
 	public void external2Binary(File binaryFile) {
 		try {
+			status.report(0, 0, "Importing to binary file: " + binaryFile.toString());
 			double[] input = new double[this.codec.getInputSize()];
 			double[] ideal = new double[this.codec.getIdealSize()];
 
@@ -97,6 +102,9 @@ public class BinaryDataLoader {
 			// write will not be done that often. Read is where we will really
 			// attempt to optimize.
 			int index = 3;
+			int currentRecord = 0;
+			int lastUpdate = 0;
+			
 			while (codec.read(input, ideal)) {
 				bb = fc.map(
 						MapMode.READ_WRITE,
@@ -114,10 +122,19 @@ public class BinaryDataLoader {
 				}
 				index += input.length;
 				index += ideal.length;
+				currentRecord++;
+				lastUpdate++;
+				if( lastUpdate>=10000)
+				{
+					lastUpdate = 0;
+					this.status.report(0, currentRecord, "Importing...");
+				}
 			}
 
 			fc.close();
 			fos.close();
+			this.codec.close();
+			status.report(0, 0, "Done importing to binary file: " + binaryFile.toString());
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
@@ -129,6 +146,7 @@ public class BinaryDataLoader {
 	 */
 	public void binary2External(File binaryFile) {
 		try {
+			status.report(0, 0, "Exporting binary file: " + binaryFile.toString());
 			FileInputStream fis = new FileInputStream(binaryFile);
 			FileChannel fc = fis.getChannel();
 			ByteBuffer bb = fc.map(MapMode.READ_ONLY, 0,
@@ -146,7 +164,7 @@ public class BinaryDataLoader {
 
 			if (!isEncogFile)
 				throw new BufferedDataError(
-						"File is not a valid Encog binary file.");
+						"File is not a valid Encog binary file:" + binaryFile.toString());
 
 			char v1 = (char) bb.get(6);
 			char v2 = (char) bb.get(7);
@@ -179,6 +197,9 @@ public class BinaryDataLoader {
 
 			this.codec.prepareWrite(recordCount, inputSize, idealSize);
 
+			int currentRecord = 0;
+			int lastUpdate = 0;
+			
 			// now load the data
 			for (int i = 0; i < recordCount; i++) {
 				for (int j = 0; j < inputSize; j++) {
@@ -190,13 +211,38 @@ public class BinaryDataLoader {
 				}
 
 				this.codec.write(input, ideal);
+
+				currentRecord++;
+				lastUpdate++;
+				if( lastUpdate>=10000)
+				{
+					lastUpdate=0;
+					this.status.report(recordCount, currentRecord, "Exporting...");
+				}
+
 			}
 
 			fc.close();
 			fis.close();
+			this.codec.close();
+			status.report(0, 0, "Done exporting binary file: " + binaryFile.toString());
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
 	}
+
+	public StatusReportable getStatus() {
+		return status;
+	}
+
+	public void setStatus(StatusReportable status) {
+		this.status = status;
+	}
+
+	public DataSetCODEC getCodec() {
+		return codec;
+	}
+	
+	
 
 }
