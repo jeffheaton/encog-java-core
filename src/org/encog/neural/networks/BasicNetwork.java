@@ -719,11 +719,4 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 		NeuralData output2 = this.compute(input2);
 		EngineArray.arrayCopy(output2.getData(),output);
 	}
-
-	@Override
-	public void computeSparse(double[] input, boolean[] provided,
-			double[] output) {
-		throw new NeuralNetworkError("Sparce calculations are not supported by this neural network type.");
-	}
-
 }

@@ -114,14 +114,6 @@ public class BasicEngineData implements EngineData, Serializable {
 	}
 
 	/**
-	 * @return Array that indicates which elements are defined.
-	 */
-	@Override
-	public boolean[] defined() {
-		return null;
-	}
-
-	/**
 	 * Get the expected results. Returns null if this is unsupervised training.
 	 * 
 	 * @return Returns the expected results, or null if unsupervised training.

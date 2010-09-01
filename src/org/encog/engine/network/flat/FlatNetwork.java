@@ -364,13 +364,6 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		}
 	}
 
-	@Override
-	public void computeSparse(final double[] input, final boolean[] provided,
-			final double[] output) {
-		throw new EncogEngineError(
-				"Sparse computation is not supported in this type of neural network.");
-	}
-
 	/**
 	 * Decode the specified data into the weights of the neural network. This
 	 * method performs the opposite of encodeNetwork.

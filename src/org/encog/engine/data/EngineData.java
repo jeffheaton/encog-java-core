@@ -69,11 +69,6 @@ public interface EngineData {
 	 * @param data The input.
 	 */
 	void setInputArray(double[] data);
-	
-	/**	
-	 * @return An array that indicates if the data is defined.
-	 */
-	boolean[] defined();
 
 	/**
 	 * @return True if this training pair is supervised. That is, it has both

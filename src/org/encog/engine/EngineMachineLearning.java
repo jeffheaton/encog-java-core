@@ -44,14 +44,6 @@ public interface EngineMachineLearning {
 	void compute(double[] input, double[] output);
 
 	/**
-	 * Compute when not all values are known.
-	 * @param input The input array.
-	 * @param provided The provided array.
-	 * @param output
-	 */
-	void computeSparse(double[] input, boolean provided[], double[] output);
-
-	/**
 	 * @return The input count.
 	 */
 	int getInputCount();

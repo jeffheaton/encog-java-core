@@ -165,11 +165,6 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	}
 
 	@Override
-	public boolean[] defined() {
-		return null;
-	}
-
-	@Override
 	public double[] getIdealArray() {
 		return this.ideal.getData();
 	}
