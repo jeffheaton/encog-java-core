@@ -34,7 +34,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.encog.EncogError;
 import org.encog.engine.EncogEngineError;
 
 /**
@@ -138,7 +137,7 @@ public class TaskGroup {
 						this.mightBeDone.await();
 					}
 				} catch (InterruptedException e) {
-					throw new EncogError(e);
+					throw new EncogEngineError(e);
 				}
 			} finally {
 				this.accessLock.unlock();
