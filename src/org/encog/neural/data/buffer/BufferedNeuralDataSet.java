@@ -180,14 +180,17 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 */
 	public BufferedNeuralDataSet(File binaryFile) {
 		this.file = binaryFile;
-		initForRead();
+		open();
 	}
 
 	/**
 	 * Open the binary file for reading.
 	 */
-	private void initForRead() {
+	public void open() {
 		try {
+			if( this.stream!=null || this.fileChannel!=null )
+				throw new BufferedDataError("Dataset is already open.");
+				
 			this.stream = new FileInputStream(this.file);
 			this.fileChannel = this.stream.getChannel();
 			this.byteBuffer = this.fileChannel.map(MapMode.READ_ONLY, 0,
@@ -385,11 +388,15 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 			if (this.output != null)
 				endLoad();
 
-			if (this.fileChannel != null)
+			if (this.fileChannel != null) {
 				this.fileChannel.close();
+				this.fileChannel = null;
+			}	
 
-			if (this.stream != null)
+			if (this.stream != null) {
 				this.stream.close();
+				this.stream = null;
+			}
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
@@ -515,7 +522,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 			this.fileChannel.close();
 			this.output = null;
 
-			initForRead();
+			open();
 		} catch (final IOException e) {
 			throw new NeuralDataError(e);
 		}
