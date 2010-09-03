@@ -34,11 +34,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.DoubleBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -75,13 +70,13 @@ import org.encog.persist.persistors.BufferedNeuralDataSetPersistor;
  * format, and can be used with any Encog platform. Encog binary files are
  * stored using "little endian" numbers.
  */
-public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPersistedObject {
+public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
+		EncogPersistedObject {
 
 	/**
 	 * The version.
 	 */
 	private static final long serialVersionUID = 2577778772598513566L;
-
 
 	/**
 	 * Error message for ADD.
@@ -93,10 +88,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 */
 	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
 
-	/**
-	 * The record count.
-	 */
-	private int recordCount;
+	private boolean loading;
 
 	/**
 	 * The size of input data.
@@ -109,34 +101,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	private int idealSize;
 
 	/**
-	 * The size of a record.
-	 */
-	private int recordSize;
-
-	/**
 	 * The file being used.
 	 */
 	private File file;
 
-	/**
-	 * The input stream.
-	 */
-	private FileInputStream stream;
-
-	/**
-	 * The output stream.
-	 */
-	private RandomAccessFile output;
-
-	/**
-	 * The file channel.
-	 */
-	private FileChannel fileChannel;
-
-	/**
-	 * The byte buffer.
-	 */
-	private ByteBuffer byteBuffer;
+	private EncogEGBFile egb;
 
 	/**
 	 * Additional sets that were opened.
@@ -152,22 +121,17 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 * The Encog persisted object name.
 	 */
 	private String name;
-	
+
 	/**
 	 * The Encog persisted object description.
 	 */
 	private String description;
-	
+
 	/**
 	 * The Encog persisted object collection.
 	 */
 	private EncogCollection collection;
-	
-	/**
-	 * The current write position.
-	 */
-	private int currentWritePosition;
-	
+
 	/**
 	 * Construct the dataset using the specified binary file.
 	 * 
@@ -176,71 +140,17 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 */
 	public BufferedNeuralDataSet(File binaryFile) {
 		this.file = binaryFile;
-		open();
+		this.egb = new EncogEGBFile(binaryFile);
 	}
 
 	/**
 	 * Open the binary file for reading.
 	 */
 	public void open() {
-		try {
-			if( this.stream!=null || this.fileChannel!=null )
-				throw new BufferedDataError("Dataset is already open.");
-				
-			this.stream = new FileInputStream(this.file);
-			this.fileChannel = this.stream.getChannel();
-			this.byteBuffer = this.fileChannel.map(MapMode.READ_ONLY, 0,
-					EncogEGBFile.DOUBLE_SIZE * 3);
-			this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-			this.currentWritePosition = 0;
-			
-			boolean isEncogFile = true;
+		this.egb.open();
 
-			isEncogFile = isEncogFile ? this.byteBuffer.get(0) == 'E' : false;
-			isEncogFile = isEncogFile ? this.byteBuffer.get(1) == 'N' : false;
-			isEncogFile = isEncogFile ? this.byteBuffer.get(2) == 'C' : false;
-			isEncogFile = isEncogFile ? this.byteBuffer.get(3) == 'O' : false;
-			isEncogFile = isEncogFile ? this.byteBuffer.get(4) == 'G' : false;
-			isEncogFile = isEncogFile ? this.byteBuffer.get(5) == '-' : false;
-
-			if (!isEncogFile)
-				throw new BufferedDataError(
-						"File is not a valid Encog binary file.");
-
-			char v1 = (char) this.byteBuffer.get(6);
-			char v2 = (char) this.byteBuffer.get(7);
-			String versionStr = "" + v1 + v2;
-
-			try {
-				int version = Integer.parseInt(versionStr);
-				if (version > 0)
-					throw new BufferedDataError(
-							"File is from a newer version of Encog than is currently in use.");
-			} catch (NumberFormatException ex) {
-				throw new BufferedDataError("File has invalid version number.");
-			}
-
-			DoubleBuffer db = this.byteBuffer.asDoubleBuffer();
-
-			this.inputSize = (int) db.get(1);
-			this.idealSize = (int) db.get(2);
-
-			this.recordSize = (inputSize + idealSize)
-					* EncogEGBFile.DOUBLE_SIZE;
-
-			this.recordCount = (int) ((this.file.length() - (EncogEGBFile.DOUBLE_SIZE * 3)) / this.recordSize);
-
-			this.byteBuffer = this.fileChannel.map(MapMode.READ_ONLY,
-					3 * EncogEGBFile.DOUBLE_SIZE, recordCount
-							* recordSize);
-		} catch(FileNotFoundException ex) {
-			// can't find the file, we are probably getting ready to create it.
-			this.byteBuffer = null;
-			this.stream = null;
-			this.fileChannel = null;
-		} catch (IOException ex) {
-			throw new BufferedDataError(ex);
-		}
+		this.inputSize = egb.getInputCount();
+		this.idealSize = egb.getIdealCount();
 	}
 
 	/**
@@ -251,13 +161,12 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 		return new BufferedDataSetIterator(this);
 	}
 
-
 	/**
 	 * @return The record count.
 	 */
 	@Override
 	public long getRecordCount() {
-		return this.recordCount;
+		return this.egb.getNumberOfRecords();
 	}
 
 	/**
@@ -272,14 +181,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 		double[] inputTarget = pair.getInputArray();
 		double[] idealTarget = pair.getIdealArray();
 
-		this.byteBuffer.position((int) (this.recordSize * index));
-		for (int i = 0; i < this.inputSize; i++) {
-			inputTarget[i] = this.byteBuffer.getDouble();
-		}
-
-		for (int i = 0; i < this.idealSize; i++) {
-			idealTarget[i] = this.byteBuffer.getDouble();
-		}
+		this.egb.setLocation((int) index);
+		this.egb.read(inputTarget);
+		this.egb.read(idealTarget);
 	}
 
 	/**
@@ -301,25 +205,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 *            The data to be added.
 	 */
 	public void add(final NeuralData data1) {
-		if (this.output == null) {
+		if (!this.loading) {
 			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
-		writeDoubleArray(this.byteBuffer, data1);
 
-	}
-
-	/**
-	 * Write a double array from the specified data to the file.
-	 * 
-	 * @param buffer
-	 *            The buffer to write to.
-	 * @param data
-	 *            The data that holds the array.
-	 */
-	private void writeDoubleArray(ByteBuffer buffer, final NeuralData data) {
-		for (int i = 0; i < data.size(); i++) {
-			buffer.putDouble(data.getData(i));
-		}
+		egb.write(data1.getData());
 	}
 
 	/**
@@ -331,19 +221,13 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 *            The ideal data.
 	 */
 	public void add(final NeuralData inputData, final NeuralData idealData) {
-		try {
-		if (this.output == null) {
+
+		if (!this.loading) {
 			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
-		this.byteBuffer = this.fileChannel.map(MapMode.READ_WRITE, this.currentWritePosition, this.recordSize);
-		writeDoubleArray(this.byteBuffer, inputData);
-		writeDoubleArray(this.byteBuffer, idealData);
-		this.currentWritePosition+=this.recordSize;
-		}
-		catch(IOException ex)
-		{
-			throw new BufferedDataError(ex);
-		}
+
+		this.egb.write(inputData.getData());
+		this.egb.write(idealData.getData());
 	}
 
 	/**
@@ -352,14 +236,14 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 * @param inputData
 	 *            The pair to add.
 	 */
-	public void add(final NeuralDataPair inputData) {
-		if (this.output == null) {
+	public void add(final NeuralDataPair pair) {
+		if (!this.loading) {
 			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
-		writeDoubleArray(this.byteBuffer, inputData.getInput());
-		if (inputData.getIdeal() != null) {
-			writeDoubleArray(this.byteBuffer, inputData.getIdeal());
-		}
+
+		this.egb.write(pair.getInputArray());
+		this.egb.write(pair.getIdealArray());
+
 	}
 
 	/**
@@ -367,35 +251,22 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 */
 	@Override
 	public void close() {
-		try {
-			Object[] obj = this.additional.toArray();
 
-			for (int i = 0; i < obj.length; i++) {
-				BufferedNeuralDataSet set = (BufferedNeuralDataSet) obj[i];
-				set.close();
-			}
+		Object[] obj = this.additional.toArray();
 
-			this.additional.clear();
-
-			if (this.owner != null) {
-				this.owner.removeAdditional(this);
-			}
-
-			if (this.output != null)
-				endLoad();
-
-			if (this.fileChannel != null) {
-				this.fileChannel.close();
-				this.fileChannel = null;
-			}	
-
-			if (this.stream != null) {
-				this.stream.close();
-				this.stream = null;
-			}
-		} catch (IOException ex) {
-			throw new BufferedDataError(ex);
+		for (int i = 0; i < obj.length; i++) {
+			BufferedNeuralDataSet set = (BufferedNeuralDataSet) obj[i];
+			set.close();
 		}
+
+		this.additional.clear();
+
+		if (this.owner != null) {
+			this.owner.removeAdditional(this);
+		}
+
+		this.egb.close();
+		this.egb = null;
 	}
 
 	/**
@@ -462,45 +333,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 *            The ideal size.
 	 */
 	public void beginLoad(final int inputSize, final int idealSize) {
-		try {
-			if (this.output != null)
-				throw new BufferedDataError("File is already open for writing.");
-
-			if (this.fileChannel != null) {
-				this.fileChannel.close();
-				this.fileChannel = null;
-			}
-
-			if (this.stream != null) {
-				this.stream.close();
-				this.stream = null;
-			}
-
-			this.inputSize = inputSize;
-			this.idealSize = idealSize;
-			this.recordSize = (getInputSize() * EncogEGBFile.DOUBLE_SIZE)
-					+ (getIdealSize() * EncogEGBFile.DOUBLE_SIZE);
-			this.file.delete();
-
-			this.output = new RandomAccessFile(this.file, "rw");
-			this.fileChannel = this.output.getChannel();
-			this.byteBuffer = this.fileChannel.map(MapMode.READ_WRITE, 0,
-					EncogEGBFile.DOUBLE_SIZE * 3);
-			this.byteBuffer.put((byte) 'E');
-			this.byteBuffer.put((byte) 'N');
-			this.byteBuffer.put((byte) 'C');
-			this.byteBuffer.put((byte) 'O');
-			this.byteBuffer.put((byte) 'G');
-			this.byteBuffer.put((byte) '-');
-			this.byteBuffer.put((byte) '0');
-			this.byteBuffer.put((byte) '0');
-			this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
-			this.byteBuffer.putDouble(getInputSize());
-			this.byteBuffer.putDouble(getIdealSize());
-			this.currentWritePosition = this.byteBuffer.position();
-		} catch (final IOException e) {
-			throw new NeuralDataError(e);
-		}
+		this.egb.create(inputSize, idealSize);
+		this.loading = true;
 	}
 
 	/**
@@ -509,21 +343,13 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 * reading.
 	 */
 	public void endLoad() {
-		try {
-			if (this.output == null)
-				throw new BufferedDataError(
-						"Must call beginLoad, before endLoad.");
+		if (!this.loading)
+			throw new BufferedDataError("Must call beginLoad, before endLoad.");
 
-			this.output.close();
-			this.output = null;
-			
-			this.fileChannel.close();
-			this.fileChannel = null;
+		this.egb.close();
 
-			open();
-		} catch (final IOException e) {
-			throw new NeuralDataError(e);
-		}
+		open();
+
 	}
 
 	/**
@@ -543,7 +369,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 
 	/**
 	 * Set the name of this object, used for Encog persistance.
-	 * @param name The name of this object.
+	 * 
+	 * @param name
+	 *            The name of this object.
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -558,7 +386,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 
 	/**
 	 * Set the description of this object.
-	 * @param The description.
+	 * 
+	 * @param The
+	 *            description.
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -573,7 +403,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 
 	/**
 	 * Set the Encog persisted collection that this object belongs to.
-	 * @param collection The collection.
+	 * 
+	 * @param collection
+	 *            The collection.
 	 */
 	public void setCollection(EncogCollection collection) {
 		this.collection = collection;

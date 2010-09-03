@@ -30,14 +30,6 @@
 package org.encog.neural.data.buffer;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.DoubleBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
 
 import org.encog.NullStatusReportable;
 import org.encog.engine.StatusReportable;

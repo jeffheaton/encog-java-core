@@ -241,7 +241,7 @@ public class EncogEGBFile {
 			clear();
 			this.fc.read(this.recordBuffer);
 			this.recordBuffer.position(0);
-			for (int i = 0; i < recordCount; i++) {
+			for (int i = 0; i < d.length; i++) {
 				d[i] = this.recordBuffer.getDouble();
 			}
 		} catch (IOException ex) {
