@@ -519,8 +519,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 						"Must call beginLoad, before endLoad.");
 
 			this.output.close();
-			this.fileChannel.close();
 			this.output = null;
+			
+			this.fileChannel.close();
+			this.fileChannel = null;
 
 			open();
 		} catch (final IOException e) {
