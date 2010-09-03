@@ -27,6 +27,7 @@ public class EncogEGBFile {
 	private ByteBuffer recordBuffer;
 	private int recordCount;
 	private int recordSize;
+	private int numberOfRecords;
 
 	public EncogEGBFile(File file) {
 		this.file = file;
@@ -44,23 +45,29 @@ public class EncogEGBFile {
 			this.file.delete();
 			this.raf = new RandomAccessFile(this.file, "rw");
 			this.fc = raf.getChannel();
-			ByteBuffer bb = ByteBuffer.allocate(EncogEGBFile.HEADER_SIZE);
-			bb.order(ByteOrder.LITTLE_ENDIAN);
+			
+			this.headerBuffer.clear();
+			this.headerBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
-			bb.put((byte) 'E');
-			bb.put((byte) 'N');
-			bb.put((byte) 'C');
-			bb.put((byte) 'O');
-			bb.put((byte) 'G');
-			bb.put((byte) '-');
-			bb.put((byte) '0');
-			bb.put((byte) '0');
+			this.headerBuffer.put((byte) 'E');
+			this.headerBuffer.put((byte) 'N');
+			this.headerBuffer.put((byte) 'C');
+			this.headerBuffer.put((byte) 'O');
+			this.headerBuffer.put((byte) 'G');
+			this.headerBuffer.put((byte) '-');
+			this.headerBuffer.put((byte) '0');
+			this.headerBuffer.put((byte) '0');
 
-			bb.putDouble(input.length);
-			bb.putDouble(ideal.length);
-
-			bb.flip();
-			fc.write(bb);
+			this.headerBuffer.putDouble(input.length);
+			this.headerBuffer.putDouble(ideal.length);
+			
+			this.numberOfRecords = 0;
+			this.recordCount = this.inputCount+this.idealCount;
+			this.recordSize = this.recordCount*EncogEGBFile.DOUBLE_SIZE;
+			this.recordBuffer = ByteBuffer.allocate(this.recordSize);
+			
+			this.headerBuffer.flip();
+			fc.write(this.headerBuffer);
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
@@ -69,30 +76,30 @@ public class EncogEGBFile {
 	public void open() {
 		try {
 			this.raf = new RandomAccessFile(this.file, "rw");
-			FileChannel fc = raf.getChannel();
+			this.fc = raf.getChannel();
 
-			ByteBuffer bb = ByteBuffer.allocate(EncogEGBFile.HEADER_SIZE);
-			bb.order(ByteOrder.LITTLE_ENDIAN);
+			this.headerBuffer.clear();
+			this.headerBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
 			boolean isEncogFile = true;
 
-			fc.read(bb);
-			bb.position(0);
+			fc.read(this.headerBuffer);
+			this.headerBuffer.position(0);
 
-			isEncogFile = isEncogFile ? bb.get() == 'E' : false;
-			isEncogFile = isEncogFile ? bb.get() == 'N' : false;
-			isEncogFile = isEncogFile ? bb.get() == 'C' : false;
-			isEncogFile = isEncogFile ? bb.get() == 'O' : false;
-			isEncogFile = isEncogFile ? bb.get() == 'G' : false;
-			isEncogFile = isEncogFile ? bb.get() == '-' : false;
+			isEncogFile = isEncogFile ? this.headerBuffer.get() == 'E' : false;
+			isEncogFile = isEncogFile ? this.headerBuffer.get() == 'N' : false;
+			isEncogFile = isEncogFile ? this.headerBuffer.get() == 'C' : false;
+			isEncogFile = isEncogFile ? this.headerBuffer.get() == 'O' : false;
+			isEncogFile = isEncogFile ? this.headerBuffer.get() == 'G' : false;
+			isEncogFile = isEncogFile ? this.headerBuffer.get() == '-' : false;
 
 			if (!isEncogFile)
 				throw new BufferedDataError(
 						"File is not a valid Encog binary file:"
 								+ this.file.toString());
 
-			char v1 = (char) bb.get();
-			char v2 = (char) bb.get();
+			char v1 = (char) this.headerBuffer.get();
+			char v2 = (char) this.headerBuffer.get();
 			String versionStr = "" + v1 + v2;
 
 			try {
@@ -104,12 +111,14 @@ public class EncogEGBFile {
 				throw new BufferedDataError("File has invalid version number.");
 			}
 
-			this.inputCount = (int) bb.getDouble();
-			this.idealCount = (int) bb.getDouble();
+			this.inputCount = (int) this.headerBuffer.getDouble();
+			this.idealCount = (int) this.headerBuffer.getDouble();
+			
+			this.recordCount = this.inputCount+this.idealCount;
+			this.recordSize = this.recordCount*EncogEGBFile.DOUBLE_SIZE;
+			this.numberOfRecords = (int)(this.file.length()/this.recordSize);
 
-			this.recordCount = inputCount + idealCount;
-			this.recordSize = recordCount * EncogEGBFile.DOUBLE_SIZE;
-
+			this.recordBuffer = ByteBuffer.allocate(this.recordSize);			
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
@@ -227,6 +236,87 @@ public class EncogEGBFile {
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
-
 	}
+	
+	public double read() {
+		try {
+			clear();
+			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE);
+			this.fc.read(this.recordBuffer);
+			this.recordBuffer.position(0);			
+			return this.recordBuffer.getDouble();
+		} catch (IOException ex) {
+			throw new BufferedDataError(ex);
+		}
+	}
+
+	/**
+	 * @return the file
+	 */
+	public File getFile() {
+		return file;
+	}
+
+	/**
+	 * @return the inputCount
+	 */
+	public int getInputCount() {
+		return inputCount;
+	}
+
+	/**
+	 * @return the idealCount
+	 */
+	public int getIdealCount() {
+		return idealCount;
+	}
+
+	/**
+	 * @return the raf
+	 */
+	public RandomAccessFile getRaf() {
+		return raf;
+	}
+
+	/**
+	 * @return the fc
+	 */
+	public FileChannel getFc() {
+		return fc;
+	}
+
+	/**
+	 * @return the headerBuffer
+	 */
+	public ByteBuffer getHeaderBuffer() {
+		return headerBuffer;
+	}
+
+	/**
+	 * @return the recordBuffer
+	 */
+	public ByteBuffer getRecordBuffer() {
+		return recordBuffer;
+	}
+
+	/**
+	 * @return the recordCount
+	 */
+	public int getRecordCount() {
+		return recordCount;
+	}
+
+	/**
+	 * @return the recordSize
+	 */
+	public int getRecordSize() {
+		return recordSize;
+	}
+
+	/**
+	 * @return the numberOfRecords
+	 */
+	public int getNumberOfRecords() {
+		return numberOfRecords;
+	}	
 }

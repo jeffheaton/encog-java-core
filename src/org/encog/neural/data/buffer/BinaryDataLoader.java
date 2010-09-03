@@ -158,77 +158,32 @@ public class BinaryDataLoader {
 	 * @param binaryFile
 	 */
 	public void binary2External(File binaryFile) {
-		try {
 			status.report(0, 0, "Exporting binary file: "
 					+ binaryFile.toString());
-			FileInputStream fis = new FileInputStream(binaryFile);
-			FileChannel fc = fis.getChannel();
-
-			ByteBuffer bb = ByteBuffer.allocate(EncogEGBFile.HEADER_SIZE);			
-			bb.order(ByteOrder.LITTLE_ENDIAN);
-
-			boolean isEncogFile = true;
 			
-			fc.read(bb);
-			bb.position(0);
-
-			isEncogFile = isEncogFile ? bb.get() == 'E' : false;
-			isEncogFile = isEncogFile ? bb.get() == 'N' : false;
-			isEncogFile = isEncogFile ? bb.get() == 'C' : false;
-			isEncogFile = isEncogFile ? bb.get() == 'O' : false;
-			isEncogFile = isEncogFile ? bb.get() == 'G' : false;
-			isEncogFile = isEncogFile ? bb.get() == '-' : false;
-
-			if (!isEncogFile)
-				throw new BufferedDataError(
-						"File is not a valid Encog binary file:"
-								+ binaryFile.toString());
-
-			char v1 = (char) bb.get();
-			char v2 = (char) bb.get();
-			String versionStr = "" + v1 + v2;
-
-			try {
-				int version = Integer.parseInt(versionStr);
-				if (version > 0)
-					throw new BufferedDataError(
-							"File is from a newer version of Encog than is currently in use.");
-			} catch (NumberFormatException ex) {
-				throw new BufferedDataError("File has invalid version number.");
-			}
-
-			int inputSize = (int) bb.getDouble();
-			int idealSize = (int) bb.getDouble();
-
-			int recordSize = inputSize + idealSize;
-
-			int recordCount = (int) ((binaryFile.length() - (EncogEGBFile.DOUBLE_SIZE * 3)) / (EncogEGBFile.DOUBLE_SIZE * recordSize));
-
-			double[] input = new double[inputSize];
-			double[] ideal = new double[idealSize];
+			EncogEGBFile egb = new EncogEGBFile(binaryFile);
+			egb.open();
 			
-			bb = ByteBuffer.allocate((input.length + ideal.length)
-					* EncogEGBFile.DOUBLE_SIZE);
+			this.codec.prepareWrite(egb.getNumberOfRecords(), egb.getInputCount(), egb.getIdealCount());
 
-			this.codec.prepareWrite(recordCount, inputSize, idealSize);
-
+			int inputCount = egb.getInputCount();
+			int idealCount = egb.getIdealCount();
+			
+			double[] input = new double[inputCount];
+			double[] ideal = new double[idealCount];
+			
 			int currentRecord = 0;
 			int lastUpdate = 0;
 
 			// now load the data
-			for (int i = 0; i < recordCount; i++) {
-				
-				bb.clear();
-				bb.order(ByteOrder.LITTLE_ENDIAN);
-				fc.read(bb);
-				bb.position(0);
-				
-				for (int j = 0; j < inputSize; j++) {
-					input[j] = bb.getDouble();
+			for (int i = 0; i < egb.getNumberOfRecords(); i++) {
+
+				for (int j = 0; j < inputCount; j++) {
+					input[j] =egb.read();
 				}
 
-				for (int j = 0; j < idealSize; j++) {
-					ideal[j] = bb.getDouble();
+				for (int j = 0; j < idealCount; j++) {
+					ideal[j] = egb.read();
 				}
 
 				this.codec.write(input, ideal);
@@ -237,20 +192,16 @@ public class BinaryDataLoader {
 				lastUpdate++;
 				if (lastUpdate >= 10000) {
 					lastUpdate = 0;
-					this.status.report(recordCount, currentRecord,
+					this.status.report(egb.getNumberOfRecords(), currentRecord,
 							"Exporting...");
 				}
 
 			}
 
-			fc.close();
-			fis.close();
+			egb.close();
 			this.codec.close();
 			status.report(0, 0, "Done exporting binary file: "
 					+ binaryFile.toString());
-		} catch (IOException ex) {
-			throw new BufferedDataError(ex);
-		}
 	}
 
 	public StatusReportable getStatus() {
