@@ -86,6 +86,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 * The size of a double.
 	 */
 	public final static int DOUBLE_SIZE = Double.SIZE / 8;
+	
+	public final static int HEADER_SIZE = DOUBLE_SIZE*3;
 
 	/**
 	 * Error message for ADD.

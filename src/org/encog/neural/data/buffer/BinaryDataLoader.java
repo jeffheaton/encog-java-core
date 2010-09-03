@@ -55,44 +55,54 @@ public class BinaryDataLoader {
 	 * The CODEC to use.
 	 */
 	private DataSetCODEC codec;
-	
+
 	private StatusReportable status = new NullStatusReportable();
 
 	/**
 	 * Construct a loader with the specified CODEC.
-	 * @param codec The codec to use.
+	 * 
+	 * @param codec
+	 *            The codec to use.
 	 */
 	public BinaryDataLoader(DataSetCODEC codec) {
 		this.codec = codec;
 	}
 
 	/**
-	 * Convert an external file format, such as CSV, to the Encog binary training format.
-	 * @param binaryFile The binary file to create.
+	 * Convert an external file format, such as CSV, to the Encog binary
+	 * training format.
+	 * 
+	 * @param binaryFile
+	 *            The binary file to create.
 	 */
 	public void external2Binary(File binaryFile) {
 		try {
-			status.report(0, 0, "Importing to binary file: " + binaryFile.toString());
+			status.report(0, 0, "Importing to binary file: "
+					+ binaryFile.toString());
 			double[] input = new double[this.codec.getInputSize()];
 			double[] ideal = new double[this.codec.getIdealSize()];
 
 			RandomAccessFile fos = new RandomAccessFile(binaryFile, "rw");
 			FileChannel fc = fos.getChannel();
-			ByteBuffer bb = fc.map(MapMode.READ_WRITE, 0,
-					BufferedNeuralDataSet.DOUBLE_SIZE * 3);
-			bb.put(0, (byte) 'E');
-			bb.put(1, (byte) 'N');
-			bb.put(2, (byte) 'C');
-			bb.put(3, (byte) 'O');
-			bb.put(4, (byte) 'G');
-			bb.put(5, (byte) '-');
-			bb.put(6, (byte) '0');
-			bb.put(7, (byte) '0');
+			ByteBuffer bb = ByteBuffer
+					.allocate(BufferedNeuralDataSet.HEADER_SIZE);
 			bb.order(ByteOrder.LITTLE_ENDIAN);
-			DoubleBuffer db = bb.asDoubleBuffer();
-			db.put(1, input.length);
-			db.put(2, ideal.length);
 
+			bb.put((byte) 'E');
+			bb.put((byte) 'N');
+			bb.put((byte) 'C');
+			bb.put((byte) 'O');
+			bb.put((byte) 'G');
+			bb.put((byte) '-');
+			bb.put((byte) '0');
+			bb.put((byte) '0');
+
+			bb.putDouble(input.length);
+			bb.putDouble(ideal.length);
+
+			bb.flip();
+			fc.write(bb);
+			
 			this.codec.prepareRead();
 
 			// now transfer the file. we use a new byte buffer for each record.
@@ -104,28 +114,29 @@ public class BinaryDataLoader {
 			int index = 3;
 			int currentRecord = 0;
 			int lastUpdate = 0;
-			
-			while (codec.read(input, ideal)) {
-				bb = fc.map(
-						MapMode.READ_WRITE,
-						index * BufferedNeuralDataSet.DOUBLE_SIZE,
-						(input.length * BufferedNeuralDataSet.DOUBLE_SIZE)
-								+ (ideal.length * BufferedNeuralDataSet.DOUBLE_SIZE));
-				db = bb.asDoubleBuffer();
 
+			bb = ByteBuffer.allocate((input.length + ideal.length)
+					* BufferedNeuralDataSet.DOUBLE_SIZE);
+
+			while (codec.read(input, ideal)) {
+
+				bb.clear();
+				bb.order(ByteOrder.LITTLE_ENDIAN);
 				for (int i = 0; i < input.length; i++) {
-					db.put(input[i]);
+					bb.putDouble(input[i]);
 				}
 
 				for (int i = 0; i < ideal.length; i++) {
-					db.put(ideal[i]);
+					bb.putDouble(ideal[i]);
 				}
+				bb.flip();
+				fc.write(bb);
+				
 				index += input.length;
 				index += ideal.length;
 				currentRecord++;
 				lastUpdate++;
-				if( lastUpdate>=10000)
-				{
+				if (lastUpdate >= 10000) {
 					lastUpdate = 0;
 					this.status.report(0, currentRecord, "Importing...");
 				}
@@ -134,7 +145,8 @@ public class BinaryDataLoader {
 			fc.close();
 			fos.close();
 			this.codec.close();
-			status.report(0, 0, "Done importing to binary file: " + binaryFile.toString());
+			status.report(0, 0, "Done importing to binary file: "
+					+ binaryFile.toString());
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
@@ -142,32 +154,38 @@ public class BinaryDataLoader {
 
 	/**
 	 * Convert an Encog binary file to an external form, such as CSV.
+	 * 
 	 * @param binaryFile
 	 */
 	public void binary2External(File binaryFile) {
 		try {
-			status.report(0, 0, "Exporting binary file: " + binaryFile.toString());
+			status.report(0, 0, "Exporting binary file: "
+					+ binaryFile.toString());
 			FileInputStream fis = new FileInputStream(binaryFile);
 			FileChannel fc = fis.getChannel();
-			ByteBuffer bb = fc.map(MapMode.READ_ONLY, 0,
-					BufferedNeuralDataSet.DOUBLE_SIZE * 3);
+
+			ByteBuffer bb = ByteBuffer.allocate(BufferedNeuralDataSet.HEADER_SIZE);			
 			bb.order(ByteOrder.LITTLE_ENDIAN);
 
 			boolean isEncogFile = true;
+			
+			fc.read(bb);
+			bb.position(0);
 
-			isEncogFile = isEncogFile ? bb.get(0) == 'E' : false;
-			isEncogFile = isEncogFile ? bb.get(1) == 'N' : false;
-			isEncogFile = isEncogFile ? bb.get(2) == 'C' : false;
-			isEncogFile = isEncogFile ? bb.get(3) == 'O' : false;
-			isEncogFile = isEncogFile ? bb.get(4) == 'G' : false;
-			isEncogFile = isEncogFile ? bb.get(5) == '-' : false;
+			isEncogFile = isEncogFile ? bb.get() == 'E' : false;
+			isEncogFile = isEncogFile ? bb.get() == 'N' : false;
+			isEncogFile = isEncogFile ? bb.get() == 'C' : false;
+			isEncogFile = isEncogFile ? bb.get() == 'O' : false;
+			isEncogFile = isEncogFile ? bb.get() == 'G' : false;
+			isEncogFile = isEncogFile ? bb.get() == '-' : false;
 
 			if (!isEncogFile)
 				throw new BufferedDataError(
-						"File is not a valid Encog binary file:" + binaryFile.toString());
+						"File is not a valid Encog binary file:"
+								+ binaryFile.toString());
 
-			char v1 = (char) bb.get(6);
-			char v2 = (char) bb.get(7);
+			char v1 = (char) bb.get();
+			char v2 = (char) bb.get();
 			String versionStr = "" + v1 + v2;
 
 			try {
@@ -179,10 +197,8 @@ public class BinaryDataLoader {
 				throw new BufferedDataError("File has invalid version number.");
 			}
 
-			DoubleBuffer db = bb.asDoubleBuffer();
-
-			int inputSize = (int) db.get(1);
-			int idealSize = (int) db.get(2);
+			int inputSize = (int) bb.getDouble();
+			int idealSize = (int) bb.getDouble();
 
 			int recordSize = inputSize + idealSize;
 
@@ -190,18 +206,23 @@ public class BinaryDataLoader {
 
 			double[] input = new double[inputSize];
 			double[] ideal = new double[idealSize];
-
-			bb = fc.map(MapMode.READ_ONLY,
-					3 * BufferedNeuralDataSet.DOUBLE_SIZE, recordCount
-							* recordSize * BufferedNeuralDataSet.DOUBLE_SIZE);
+			
+			bb = ByteBuffer.allocate((input.length + ideal.length)
+					* BufferedNeuralDataSet.DOUBLE_SIZE);
 
 			this.codec.prepareWrite(recordCount, inputSize, idealSize);
 
 			int currentRecord = 0;
 			int lastUpdate = 0;
-			
+
 			// now load the data
 			for (int i = 0; i < recordCount; i++) {
+				
+				bb.clear();
+				bb.order(ByteOrder.LITTLE_ENDIAN);
+				fc.read(bb);
+				bb.position(0);
+				
 				for (int j = 0; j < inputSize; j++) {
 					input[j] = bb.getDouble();
 				}
@@ -214,10 +235,10 @@ public class BinaryDataLoader {
 
 				currentRecord++;
 				lastUpdate++;
-				if( lastUpdate>=10000)
-				{
-					lastUpdate=0;
-					this.status.report(recordCount, currentRecord, "Exporting...");
+				if (lastUpdate >= 10000) {
+					lastUpdate = 0;
+					this.status.report(recordCount, currentRecord,
+							"Exporting...");
 				}
 
 			}
@@ -225,7 +246,8 @@ public class BinaryDataLoader {
 			fc.close();
 			fis.close();
 			this.codec.close();
-			status.report(0, 0, "Done exporting binary file: " + binaryFile.toString());
+			status.report(0, 0, "Done exporting binary file: "
+					+ binaryFile.toString());
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
@@ -242,7 +264,5 @@ public class BinaryDataLoader {
 	public DataSetCODEC getCodec() {
 		return codec;
 	}
-	
-	
 
 }
