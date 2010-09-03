@@ -85,7 +85,7 @@ public class BinaryDataLoader {
 			RandomAccessFile fos = new RandomAccessFile(binaryFile, "rw");
 			FileChannel fc = fos.getChannel();
 			ByteBuffer bb = ByteBuffer
-					.allocate(BufferedNeuralDataSet.HEADER_SIZE);
+					.allocate(EncogEGBFile.HEADER_SIZE);
 			bb.order(ByteOrder.LITTLE_ENDIAN);
 
 			bb.put((byte) 'E');
@@ -116,7 +116,7 @@ public class BinaryDataLoader {
 			int lastUpdate = 0;
 
 			bb = ByteBuffer.allocate((input.length + ideal.length)
-					* BufferedNeuralDataSet.DOUBLE_SIZE);
+					* EncogEGBFile.DOUBLE_SIZE);
 
 			while (codec.read(input, ideal)) {
 
@@ -164,7 +164,7 @@ public class BinaryDataLoader {
 			FileInputStream fis = new FileInputStream(binaryFile);
 			FileChannel fc = fis.getChannel();
 
-			ByteBuffer bb = ByteBuffer.allocate(BufferedNeuralDataSet.HEADER_SIZE);			
+			ByteBuffer bb = ByteBuffer.allocate(EncogEGBFile.HEADER_SIZE);			
 			bb.order(ByteOrder.LITTLE_ENDIAN);
 
 			boolean isEncogFile = true;
@@ -202,13 +202,13 @@ public class BinaryDataLoader {
 
 			int recordSize = inputSize + idealSize;
 
-			int recordCount = (int) ((binaryFile.length() - (BufferedNeuralDataSet.DOUBLE_SIZE * 3)) / (BufferedNeuralDataSet.DOUBLE_SIZE * recordSize));
+			int recordCount = (int) ((binaryFile.length() - (EncogEGBFile.DOUBLE_SIZE * 3)) / (EncogEGBFile.DOUBLE_SIZE * recordSize));
 
 			double[] input = new double[inputSize];
 			double[] ideal = new double[idealSize];
 			
 			bb = ByteBuffer.allocate((input.length + ideal.length)
-					* BufferedNeuralDataSet.DOUBLE_SIZE);
+					* EncogEGBFile.DOUBLE_SIZE);
 
 			this.codec.prepareWrite(recordCount, inputSize, idealSize);
 

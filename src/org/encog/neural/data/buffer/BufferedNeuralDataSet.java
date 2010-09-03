@@ -82,12 +82,6 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 	 */
 	private static final long serialVersionUID = 2577778772598513566L;
 
-	/**
-	 * The size of a double.
-	 */
-	public final static int DOUBLE_SIZE = Double.SIZE / 8;
-	
-	public final static int HEADER_SIZE = DOUBLE_SIZE*3;
 
 	/**
 	 * Error message for ADD.
@@ -196,7 +190,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 			this.stream = new FileInputStream(this.file);
 			this.fileChannel = this.stream.getChannel();
 			this.byteBuffer = this.fileChannel.map(MapMode.READ_ONLY, 0,
-					BufferedNeuralDataSet.DOUBLE_SIZE * 3);
+					EncogEGBFile.DOUBLE_SIZE * 3);
 			this.byteBuffer.order(ByteOrder.LITTLE_ENDIAN);
 			this.currentWritePosition = 0;
 			
@@ -232,12 +226,12 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 			this.idealSize = (int) db.get(2);
 
 			this.recordSize = (inputSize + idealSize)
-					* BufferedNeuralDataSet.DOUBLE_SIZE;
+					* EncogEGBFile.DOUBLE_SIZE;
 
-			this.recordCount = (int) ((this.file.length() - (BufferedNeuralDataSet.DOUBLE_SIZE * 3)) / this.recordSize);
+			this.recordCount = (int) ((this.file.length() - (EncogEGBFile.DOUBLE_SIZE * 3)) / this.recordSize);
 
 			this.byteBuffer = this.fileChannel.map(MapMode.READ_ONLY,
-					3 * BufferedNeuralDataSet.DOUBLE_SIZE, recordCount
+					3 * EncogEGBFile.DOUBLE_SIZE, recordCount
 							* recordSize);
 		} catch(FileNotFoundException ex) {
 			// can't find the file, we are probably getting ready to create it.
@@ -484,14 +478,14 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable, EncogPer
 
 			this.inputSize = inputSize;
 			this.idealSize = idealSize;
-			this.recordSize = (getInputSize() * DOUBLE_SIZE)
-					+ (getIdealSize() * DOUBLE_SIZE);
+			this.recordSize = (getInputSize() * EncogEGBFile.DOUBLE_SIZE)
+					+ (getIdealSize() * EncogEGBFile.DOUBLE_SIZE);
 			this.file.delete();
 
 			this.output = new RandomAccessFile(this.file, "rw");
 			this.fileChannel = this.output.getChannel();
 			this.byteBuffer = this.fileChannel.map(MapMode.READ_WRITE, 0,
-					BufferedNeuralDataSet.DOUBLE_SIZE * 3);
+					EncogEGBFile.DOUBLE_SIZE * 3);
 			this.byteBuffer.put((byte) 'E');
 			this.byteBuffer.put((byte) 'N');
 			this.byteBuffer.put((byte) 'C');
