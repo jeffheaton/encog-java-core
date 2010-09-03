@@ -199,6 +199,17 @@ public class EncogEGBFile {
 			throw new BufferedDataError(ex);
 		}
 	}
+	
+	public void write(byte b) {
+		try {
+			clear();
+			this.recordBuffer.put(b);
+			this.recordBuffer.flip();
+			this.fc.write(this.recordBuffer);
+		} catch (IOException ex) {
+			throw new BufferedDataError(ex);
+		}		
+	}	
 
 	public double read(int row, int col) {
 		try {
@@ -318,5 +329,6 @@ public class EncogEGBFile {
 	 */
 	public int getNumberOfRecords() {
 		return numberOfRecords;
-	}	
+	}
+
 }

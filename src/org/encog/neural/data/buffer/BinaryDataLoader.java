@@ -76,62 +76,28 @@ public class BinaryDataLoader {
 	 *            The binary file to create.
 	 */
 	public void external2Binary(File binaryFile) {
-		try {
+		
 			status.report(0, 0, "Importing to binary file: "
 					+ binaryFile.toString());
+			
+			EncogEGBFile egb = new EncogEGBFile(binaryFile);
+			
+			egb.create(codec.getInputSize(), codec.getIdealSize());
+			
 			double[] input = new double[this.codec.getInputSize()];
 			double[] ideal = new double[this.codec.getIdealSize()];
-
-			RandomAccessFile fos = new RandomAccessFile(binaryFile, "rw");
-			FileChannel fc = fos.getChannel();
-			ByteBuffer bb = ByteBuffer
-					.allocate(EncogEGBFile.HEADER_SIZE);
-			bb.order(ByteOrder.LITTLE_ENDIAN);
-
-			bb.put((byte) 'E');
-			bb.put((byte) 'N');
-			bb.put((byte) 'C');
-			bb.put((byte) 'O');
-			bb.put((byte) 'G');
-			bb.put((byte) '-');
-			bb.put((byte) '0');
-			bb.put((byte) '0');
-
-			bb.putDouble(input.length);
-			bb.putDouble(ideal.length);
-
-			bb.flip();
-			fc.write(bb);
 			
 			this.codec.prepareRead();
 
-			// now transfer the file. we use a new byte buffer for each record.
-			// This allows us to not need to know the size of the data being
-			// imported. If we determined the size ahead of time, we could use
-			// fewer file channels, and likely increase performance. However,
-			// write will not be done that often. Read is where we will really
-			// attempt to optimize.
 			int index = 3;
 			int currentRecord = 0;
 			int lastUpdate = 0;
 
-			bb = ByteBuffer.allocate((input.length + ideal.length)
-					* EncogEGBFile.DOUBLE_SIZE);
-
 			while (codec.read(input, ideal)) {
 
-				bb.clear();
-				bb.order(ByteOrder.LITTLE_ENDIAN);
-				for (int i = 0; i < input.length; i++) {
-					bb.putDouble(input[i]);
-				}
-
-				for (int i = 0; i < ideal.length; i++) {
-					bb.putDouble(ideal[i]);
-				}
-				bb.flip();
-				fc.write(bb);
-				
+				egb.write(input);
+				egb.write(ideal);
+								
 				index += input.length;
 				index += ideal.length;
 				currentRecord++;
@@ -142,14 +108,11 @@ public class BinaryDataLoader {
 				}
 			}
 
-			fc.close();
-			fos.close();
+			egb.close();
 			this.codec.close();
 			status.report(0, 0, "Done importing to binary file: "
 					+ binaryFile.toString());
-		} catch (IOException ex) {
-			throw new BufferedDataError(ex);
-		}
+		
 	}
 
 	/**
