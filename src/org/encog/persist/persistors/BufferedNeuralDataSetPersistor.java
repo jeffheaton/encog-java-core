@@ -67,7 +67,7 @@ public class BufferedNeuralDataSetPersistor implements Persistor {
 			if (in.is(BufferedNeuralDataSetPersistor.TAG_FILE, true)) {
 				String str = in.readTextToTag();
 				file = new File(str);
-			} else if (in.is(EncogPersistedCollection.TYPE_TRAINING, false)) {
+			} else if (in.is(EncogPersistedCollection.TYPE_BINARY, false)) {
 				break;
 			}
 		}

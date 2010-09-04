@@ -85,7 +85,7 @@ public class TrainingContinuationPersistor implements Persistor {
 		while (in.readToTag()) {
 			if (in.is(TrainingContinuationPersistor.TAG_ITEM, true)) {
 				handleItem(in);
-			} else if (in.is(TrainingContinuationPersistor.TAG_ITEM, false)) {
+			} else if (in.is(TrainingContinuationPersistor.TAG_ITEMS, false)) {
 				break;
 			}
 		}
