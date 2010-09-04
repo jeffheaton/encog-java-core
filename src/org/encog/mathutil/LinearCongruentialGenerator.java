@@ -159,7 +159,7 @@ public class LinearCongruentialGenerator {
 	 */
 	public double range(final double min, final double max) {
 		final double range = max - min;
-		return (range * nextDouble()) + min;
+		return (range * nextDouble()) - min;
 	}
 
 	/**
