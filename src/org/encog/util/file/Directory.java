@@ -109,7 +109,8 @@ public final class Directory {
 				if (element.isDirectory()) {
 					Directory.deleteDirectory(element);
 				} else {
-					element.delete();
+					if( !element.delete() )
+						throw new EncogError("Failed to delete: " + element.toString() + "\nFile may be in use." );
 				}
 			}
 		}

@@ -59,7 +59,7 @@ public final class RandomTrainingFactory {
 	 *            The maximum random number.
 	 * @return The random training set.
 	 */
-	public static NeuralDataSet generate(final int count, final int inputCount,
+	public static NeuralDataSet generate(final long seed, final int count, final int inputCount,
 			final int idealCount, final double min, final double max) {
 		
 		LinearCongruentialGenerator rand = new LinearCongruentialGenerator(1000);
@@ -85,6 +85,35 @@ public final class RandomTrainingFactory {
 		}
 		return result;
 	}
+	
+	public static void generate(NeuralDataSet training, long seed,
+			final int count, final double min, final double max) {
+		
+		LinearCongruentialGenerator rand = new LinearCongruentialGenerator(seed);
+		
+		int inputCount = training.getInputSize();
+		int idealCount = training.getIdealSize();
+		
+		for (int i = 0; i < count; i++) {
+			final NeuralData inputData = new BasicNeuralData(inputCount);
+
+			for (int j = 0; j < inputCount; j++) {
+				inputData.setData(j, rand.range(min, max));
+			}
+
+			final NeuralData idealData = new BasicNeuralData(idealCount);
+
+			for (int j = 0; j < idealCount; j++) {
+				idealData.setData(j, rand.range(min, max));
+			}
+
+			final BasicNeuralDataPair pair = new BasicNeuralDataPair(inputData,
+					idealData);
+			training.add(pair);
+
+		}
+	}
+
 
 	/**
 	 * Private constructor.
