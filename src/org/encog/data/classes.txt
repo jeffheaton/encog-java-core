@@ -48,6 +48,7 @@ org.encog.engine.EngineNeuralNetwork
 org.encog.engine.network.flat.ActivationFunctions
 org.encog.engine.network.flat.FlatLayer
 org.encog.engine.network.flat.FlatNetwork
+org.encog.engine.network.flat.ValidateForOpenCL
 org.encog.engine.network.train.FlatGradientWorker
 org.encog.engine.network.train.GradientWorkerCL
 org.encog.engine.network.train.GradientWorkerCPU
@@ -76,6 +77,9 @@ org.encog.engine.util.IntRange
 org.encog.engine.util.ObjectPair
 org.encog.engine.util.ResourceLoader
 org.encog.engine.util.Stopwatch
+org.encog.engine.validate.BasicMachineLearningValidate
+org.encog.engine.validate.ValidateMachineLearning
+org.encog.engine.validate.ValidateMachineLearningError
 org.encog.mathutil.Convert
 org.encog.mathutil.EncogMath
 org.encog.mathutil.EncogMathError
@@ -131,7 +135,15 @@ org.encog.neural.data.basic.BasicNeuralData
 org.encog.neural.data.basic.BasicNeuralDataPair
 org.encog.neural.data.basic.BasicNeuralDataSet
 org.encog.neural.data.bipolar.BiPolarNeuralData
+org.encog.neural.data.buffer.BinaryDataLoader
+org.encog.neural.data.buffer.BufferedDataError
+org.encog.neural.data.buffer.BufferedDataSetIterator
 org.encog.neural.data.buffer.BufferedNeuralDataSet
+org.encog.neural.data.buffer.codec.ArrayDataCODEC
+org.encog.neural.data.buffer.codec.CSVDataCODEC
+org.encog.neural.data.buffer.codec.DataSetCODEC
+org.encog.neural.data.buffer.codec.NeuralDataSetCODEC
+org.encog.neural.data.buffer.EncogEGBFile
 org.encog.neural.data.csv.CSVNeuralDataSet
 org.encog.neural.data.image.ImageNeuralData
 org.encog.neural.data.image.ImageNeuralDataSet
@@ -348,6 +360,7 @@ org.encog.persist.Persistor
 org.encog.persist.persistors.BasicLayerPersistor
 org.encog.persist.persistors.BasicNetworkPersistor
 org.encog.persist.persistors.BasicNeuralDataSetPersistor
+org.encog.persist.persistors.BufferedNeuralDataSetPersistor
 org.encog.persist.persistors.ContextLayerPersistor
 org.encog.persist.persistors.DirectSynapsePersistor
 org.encog.persist.persistors.EncogScriptPersistor
@@ -432,7 +445,6 @@ org.encog.util.ObjectCloner
 org.encog.util.ReflectionUtil
 org.encog.util.SerializeObject
 org.encog.util.simple.EncogUtility
-org.encog.util.simple.ImportExportUtility
 org.encog.util.simple.TrainingDialog
 org.encog.util.Stopwatch
 org.encog.util.time.DateUtil
