@@ -514,7 +514,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 	 */
 	private double getDataRAW(final TemporalDataDescription desc,
 			final int index) {
-		final TemporalPoint point = this.points.get(index);
+		final TemporalPoint point = this.points.get(index-1);
 		return point.getData(desc.getIndex());
 	}
 
