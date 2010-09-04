@@ -101,7 +101,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	/**
 	 * The Encog collection.
 	 */
-	private EncogCollection encogCollection;
+	private transient EncogCollection encogCollection;
 
 	/**
 	 * Serial id for this class.
