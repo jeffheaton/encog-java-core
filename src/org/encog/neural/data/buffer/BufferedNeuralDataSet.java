@@ -30,6 +30,7 @@
 package org.encog.neural.data.buffer;
 
 import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +41,7 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -67,7 +69,7 @@ import org.encog.persist.persistors.BufferedNeuralDataSetPersistor;
  * stored using "little endian" numbers.
  */
 public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
-		EncogPersistedObject {
+		EncogPersistedObject, Serializable {
 
 	/**
 	 * The version.
@@ -84,24 +86,24 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
 
-	private boolean loading;
+	private transient boolean loading;
 
 	/**
 	 * The file being used.
 	 */
 	private File file;
 
-	private EncogEGBFile egb;
+	private transient EncogEGBFile egb;
 
 	/**
 	 * Additional sets that were opened.
 	 */
-	private List<BufferedNeuralDataSet> additional = new ArrayList<BufferedNeuralDataSet>();
+	private transient List<BufferedNeuralDataSet> additional = new ArrayList<BufferedNeuralDataSet>();
 
 	/**
 	 * The owner;
 	 */
-	private BufferedNeuralDataSet owner;
+	private transient BufferedNeuralDataSet owner;
 
 	/**
 	 * The Encog persisted object name.
@@ -116,7 +118,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	/**
 	 * The Encog persisted object collection.
 	 */
-	private EncogCollection collection;
+	private transient EncogCollection collection;
 
 	/**
 	 * Construct the dataset using the specified binary file.
@@ -417,5 +419,16 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 
 	public EncogEGBFile getEGB() {
 		return this.egb;
+	}
+
+	public NeuralDataSet loadToMemory() {
+		BasicNeuralDataSet result = new BasicNeuralDataSet();
+		
+		for(NeuralDataPair pair: this)
+		{
+			result.add(pair);
+		}
+		
+		return result;
 	}
 }
