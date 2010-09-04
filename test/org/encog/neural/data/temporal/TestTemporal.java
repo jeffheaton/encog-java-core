@@ -65,6 +65,22 @@ public class TestTemporal extends TestCase {
 		NeuralDataPair pair = itr.next();
 		TestCase.assertEquals(10, pair.getInput().size());
 		TestCase.assertEquals(1, pair.getIdeal().size());
+		TestCase.assertEquals(1.0, pair.getInput().getData(0));
+		TestCase.assertEquals(2.0, pair.getInput().getData(1));
+		TestCase.assertEquals(4.0, pair.getInput().getData(2));
+		TestCase.assertEquals(5.0, pair.getInput().getData(3));
+		TestCase.assertEquals(7.0, pair.getInput().getData(4));
+		TestCase.assertEquals(8.0, pair.getInput().getData(5));
+		TestCase.assertEquals(10.0, pair.getInput().getData(6));
+		TestCase.assertEquals(11.0, pair.getInput().getData(7));
+		TestCase.assertEquals(13.0, pair.getInput().getData(8));
+		TestCase.assertEquals(14.0, pair.getInput().getData(9));
+		TestCase.assertEquals(18.0, pair.getIdeal().getData(0));
+		
+		// set 1
+		pair = itr.next();
+		TestCase.assertEquals(10, pair.getInput().size());
+		TestCase.assertEquals(1, pair.getIdeal().size());
 		TestCase.assertEquals(4.0, pair.getInput().getData(0));
 		TestCase.assertEquals(5.0, pair.getInput().getData(1));
 		TestCase.assertEquals(7.0, pair.getInput().getData(2));
@@ -77,7 +93,7 @@ public class TestTemporal extends TestCase {
 		TestCase.assertEquals(17.0, pair.getInput().getData(9));
 		TestCase.assertEquals(21.0, pair.getIdeal().getData(0));
 		
-		// set 1
+		// set 2
 		pair = itr.next();
 		TestCase.assertEquals(10, pair.getInput().size());
 		TestCase.assertEquals(1, pair.getIdeal().size());
@@ -93,7 +109,7 @@ public class TestTemporal extends TestCase {
 		TestCase.assertEquals(20.0, pair.getInput().getData(9));
 		TestCase.assertEquals(24.0, pair.getIdeal().getData(0));
 		
-		// set 2
+		// set 3
 		pair = itr.next();
 		TestCase.assertEquals(10, pair.getInput().size());
 		TestCase.assertEquals(1, pair.getIdeal().size());
@@ -108,22 +124,6 @@ public class TestTemporal extends TestCase {
 		TestCase.assertEquals(22.0, pair.getInput().getData(8));
 		TestCase.assertEquals(23.0, pair.getInput().getData(9));
 		TestCase.assertEquals(27.0, pair.getIdeal().getData(0));
-		
-		// set 3
-		pair = itr.next();
-		TestCase.assertEquals(10, pair.getInput().size());
-		TestCase.assertEquals(1, pair.getIdeal().size());
-		TestCase.assertEquals(13.0, pair.getInput().getData(0));
-		TestCase.assertEquals(14.0, pair.getInput().getData(1));
-		TestCase.assertEquals(16.0, pair.getInput().getData(2));
-		TestCase.assertEquals(17.0, pair.getInput().getData(3));
-		TestCase.assertEquals(19.0, pair.getInput().getData(4));
-		TestCase.assertEquals(20.0, pair.getInput().getData(5));
-		TestCase.assertEquals(22.0, pair.getInput().getData(6));
-		TestCase.assertEquals(23.0, pair.getInput().getData(7));
-		TestCase.assertEquals(25.0, pair.getInput().getData(8));
-		TestCase.assertEquals(26.0, pair.getInput().getData(9));
-		TestCase.assertEquals(30.0, pair.getIdeal().getData(0));
 		
 		TestCase.assertNull(itr.next());
 	}
@@ -156,17 +156,17 @@ public class TestTemporal extends TestCase {
 		NeuralDataPair pair = itr.next();
 		TestCase.assertEquals(10, pair.getInput().size());
 		TestCase.assertEquals(1, pair.getIdeal().size());
-		TestCase.assertEquals(10.0, pair.getInput().getData(0));
-		TestCase.assertEquals(11.0, pair.getInput().getData(1));
-		TestCase.assertEquals(13.0, pair.getInput().getData(2));
-		TestCase.assertEquals(14.0, pair.getInput().getData(3));
-		TestCase.assertEquals(16.0, pair.getInput().getData(4));
-		TestCase.assertEquals(17.0, pair.getInput().getData(5));
-		TestCase.assertEquals(19.0, pair.getInput().getData(6));
-		TestCase.assertEquals(20.0, pair.getInput().getData(7));
-		TestCase.assertEquals(22.0, pair.getInput().getData(8));
-		TestCase.assertEquals(23.0, pair.getInput().getData(9));
-		TestCase.assertEquals(27.0, pair.getIdeal().getData(0));
+		TestCase.assertEquals(7.0, pair.getInput().getData(0));
+		TestCase.assertEquals(8.0, pair.getInput().getData(1));
+		TestCase.assertEquals(10.0, pair.getInput().getData(2));
+		TestCase.assertEquals(11.0, pair.getInput().getData(3));
+		TestCase.assertEquals(13.0, pair.getInput().getData(4));
+		TestCase.assertEquals(14.0, pair.getInput().getData(5));
+		TestCase.assertEquals(16.0, pair.getInput().getData(6));
+		TestCase.assertEquals(17.0, pair.getInput().getData(7));
+		TestCase.assertEquals(19.0, pair.getInput().getData(8));
+		TestCase.assertEquals(20.0, pair.getInput().getData(9));
+		TestCase.assertEquals(24.0, pair.getIdeal().getData(0));
 		
 		// only one set
 		TestCase.assertNull(itr.next());
@@ -204,7 +204,7 @@ public class TestTemporal extends TestCase {
 		TestCase.assertEquals(0.25, Math.round(pair.getInput().getData(7)*4.0)/4.0);
 		TestCase.assertEquals(3.0, pair.getInput().getData(8));
 		TestCase.assertEquals(0.25, Math.round(pair.getInput().getData(9)*4.0)/4.0);
-		TestCase.assertEquals(21.0, pair.getIdeal().getData(0));
+		TestCase.assertEquals(18.0, pair.getIdeal().getData(0));
 	}
 	
 	public void testActivationTemporal()
@@ -229,8 +229,8 @@ public class TestTemporal extends TestCase {
 		NeuralDataPair pair = itr.next();
 		TestCase.assertEquals(10, pair.getInput().size());
 		TestCase.assertEquals(1, pair.getIdeal().size());
-		TestCase.assertEquals(1.0, Math.round(pair.getInput().getData(0)*4.0)/4.0);
-		TestCase.assertEquals(1.0, Math.round(pair.getInput().getData(1)*4.0)/4.0);
+		TestCase.assertEquals(0.5, Math.round(pair.getInput().getData(0)*4.0)/4.0);
+		TestCase.assertEquals(0.75, Math.round(pair.getInput().getData(1)*4.0)/4.0);
 		TestCase.assertEquals(1.0, Math.round(pair.getInput().getData(2)*4.0)/4.0);
 		TestCase.assertEquals(1.0, Math.round(pair.getInput().getData(3)*4.0)/4.0);
 
