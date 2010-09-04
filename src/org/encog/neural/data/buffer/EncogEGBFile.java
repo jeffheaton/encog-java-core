@@ -8,6 +8,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.channels.FileChannel;
 
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataPair;
+
 public class EncogEGBFile {
 
 	/**
@@ -45,7 +48,7 @@ public class EncogEGBFile {
 			this.file.delete();
 			this.raf = new RandomAccessFile(this.file, "rw");
 			this.fc = raf.getChannel();
-			
+
 			this.headerBuffer.clear();
 			this.headerBuffer.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -60,12 +63,12 @@ public class EncogEGBFile {
 
 			this.headerBuffer.putDouble(input.length);
 			this.headerBuffer.putDouble(ideal.length);
-			
+
 			this.numberOfRecords = 0;
-			this.recordCount = this.inputCount+this.idealCount;
-			this.recordSize = this.recordCount*EncogEGBFile.DOUBLE_SIZE;
+			this.recordCount = this.inputCount + this.idealCount;
+			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
 			this.recordBuffer = ByteBuffer.allocate(this.recordSize);
-			
+
 			this.headerBuffer.flip();
 			fc.write(this.headerBuffer);
 		} catch (IOException ex) {
@@ -113,12 +116,12 @@ public class EncogEGBFile {
 
 			this.inputCount = (int) this.headerBuffer.getDouble();
 			this.idealCount = (int) this.headerBuffer.getDouble();
-			
-			this.recordCount = this.inputCount+this.idealCount;
-			this.recordSize = this.recordCount*EncogEGBFile.DOUBLE_SIZE;
-			this.numberOfRecords = (int)(this.file.length()/this.recordSize);
 
-			this.recordBuffer = ByteBuffer.allocate(this.recordSize);			
+			this.recordCount = this.inputCount + this.idealCount;
+			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
+			this.numberOfRecords = (int) ((this.file.length() - EncogEGBFile.HEADER_SIZE) / this.recordSize);
+
+			this.recordBuffer = ByteBuffer.allocate(this.recordSize);
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
@@ -199,7 +202,7 @@ public class EncogEGBFile {
 			throw new BufferedDataError(ex);
 		}
 	}
-	
+
 	public void write(byte b) {
 		try {
 			clear();
@@ -208,12 +211,13 @@ public class EncogEGBFile {
 			this.fc.write(this.recordBuffer);
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
-		}		
-	}	
+		}
+	}
 
 	public double read(int row, int col) {
 		try {
 			clear();
+			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE);
 			this.fc.read(this.recordBuffer, calculateIndex(row, col));
 			this.recordBuffer.position(0);
 			return this.recordBuffer.getDouble(0);
@@ -226,8 +230,10 @@ public class EncogEGBFile {
 	public void read(int row, double[] d) {
 		try {
 			clear();
+			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE * d.length);
 			this.fc.read(this.recordBuffer, calculateIndex(row));
 			this.recordBuffer.position(0);
+
 			for (int i = 0; i < recordCount; i++) {
 				d[i] = this.recordBuffer.getDouble();
 			}
@@ -239,6 +245,7 @@ public class EncogEGBFile {
 	public void read(double[] d) {
 		try {
 			clear();
+			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE * d.length);
 			this.fc.read(this.recordBuffer);
 			this.recordBuffer.position(0);
 			for (int i = 0; i < d.length; i++) {
@@ -248,13 +255,13 @@ public class EncogEGBFile {
 			throw new BufferedDataError(ex);
 		}
 	}
-	
+
 	public double read() {
 		try {
 			clear();
 			this.recordBuffer.limit(EncogEGBFile.DOUBLE_SIZE);
 			this.fc.read(this.recordBuffer);
-			this.recordBuffer.position(0);			
+			this.recordBuffer.position(0);
 			return this.recordBuffer.getDouble();
 		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
@@ -329,6 +336,255 @@ public class EncogEGBFile {
 	 */
 	public int getNumberOfRecords() {
 		return numberOfRecords;
+	}
+
+	public void deleteRow(int row) {
+		try {
+			for (int i = row; i < this.numberOfRecords - 1; i++) {
+				int s = (int) EncogEGBFile.HEADER_SIZE + (this.recordSize * i)
+						+ this.recordSize;
+				int t = (int) EncogEGBFile.HEADER_SIZE + (this.recordSize * i);
+
+				clear();
+				this.fc.read(this.recordBuffer, s);
+				this.recordBuffer.flip();
+				this.fc.write(this.recordBuffer, t);
+			}
+
+			this.numberOfRecords--;
+
+			this.raf.setLength((int) (this.numberOfRecords * this.recordSize)
+					+ EncogEGBFile.HEADER_SIZE);
+		} catch (IOException ex) {
+			throw new BufferedDataError(ex);
+		}
+
+	}
+
+	public void addRow(int row) {
+		try {
+			this.numberOfRecords++;
+
+			this.raf.setLength((int) (this.numberOfRecords * this.recordSize)
+					+ EncogEGBFile.HEADER_SIZE);
+
+			for (int i = this.numberOfRecords - 1; i >= row; i--) {
+				int s = (int) EncogEGBFile.HEADER_SIZE + (this.recordSize * i);
+				int t = (int) EncogEGBFile.HEADER_SIZE + (this.recordSize * i)
+						+ this.recordSize;
+
+				clear();
+				this.fc.read(this.recordBuffer, s);
+				this.recordBuffer.flip();
+				this.fc.write(this.recordBuffer, t);
+			}
+
+			clear();
+			for (int i = 0; i < this.recordCount; i++) {
+				this.recordBuffer.putDouble(0);
+			}
+			this.recordBuffer.flip();
+			this.fc.write(this.recordBuffer, EncogEGBFile.HEADER_SIZE
+					+ (this.recordSize * row));
+
+		} catch (IOException ex) {
+			throw new BufferedDataError(ex);
+		}
+
+	}
+	
+	private long checkWrite(ByteBuffer writeBuffer, long inWriteLocation) throws IOException
+	{
+		long writeLocation = inWriteLocation;
+		
+		if (!writeBuffer.hasRemaining()) {
+			this.fc.position(writeLocation);
+			writeBuffer.flip();
+			this.fc.write(writeBuffer);
+			writeLocation = this.fc.position();
+			writeBuffer.clear();
+			writeBuffer.order(ByteOrder.LITTLE_ENDIAN);
+		}
+		
+		return writeLocation;
+	}
+
+	public void deleteCol(int col) {
+
+		try {
+			// process the file
+
+			// allocate buffers
+			ByteBuffer readBuffer = ByteBuffer
+					.allocate(EncogEGBFile.DOUBLE_SIZE * 1024);
+			ByteBuffer writeBuffer = ByteBuffer
+					.allocate(EncogEGBFile.DOUBLE_SIZE * 1024);
+
+			readBuffer.clear();
+			writeBuffer.clear();
+			readBuffer.order(ByteOrder.LITTLE_ENDIAN);
+			writeBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+			long readLocation = EncogEGBFile.HEADER_SIZE;
+			long writeLocation = EncogEGBFile.HEADER_SIZE;
+			int recordOffset = 0;
+
+			this.fc.position(readLocation);
+			this.fc.read(readBuffer);
+			readLocation = fc.position();
+			readBuffer.rewind();
+
+			boolean done = false;
+			int count = 0;
+
+			do {
+				// if there is more to read, then process it
+				if (readBuffer.hasRemaining()) {
+					double d = readBuffer.getDouble();
+					// skip the specified column, as we write
+					if (recordOffset != col) {
+						writeLocation = checkWrite(writeBuffer,writeLocation);
+						writeBuffer.putDouble(d);
+					}
+
+					// keep track of where we are in a record.
+					recordOffset++;
+					if (recordOffset >= this.recordCount) {
+						recordOffset = 0;
+						count++;
+						// are we done?
+						if (count >= this.numberOfRecords)
+							done = true;
+					}
+				} else {
+					// read more
+					readBuffer.clear();
+					readBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+					this.fc.position(readLocation);
+					this.fc.read(readBuffer);
+					readLocation = fc.position();
+					readBuffer.rewind();
+				}
+			} while (!done);
+
+			// write any remaining data in the write buffer
+			if (writeBuffer.position() > 0) {
+				writeBuffer.flip();
+				this.fc.write(writeBuffer, writeLocation);
+			}
+
+			// does it fall inside of input or ideal?
+			if (col < this.inputCount) {
+				this.inputCount--;
+				this.recordCount--;
+			} else {
+				this.idealCount--;
+				this.recordCount--;
+			}
+
+			this.recordCount = this.inputCount + this.idealCount;
+			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
+
+			// adjust file size
+			this.raf.setLength((int) (this.numberOfRecords * this.recordSize)
+					+ EncogEGBFile.HEADER_SIZE);
+
+		} catch (IOException ex) {
+			throw new BufferedDataError(ex);
+		}
+
+	}
+
+	public void addColumn(int col, boolean isInput) {
+		try {
+			// process the file
+
+			// allocate buffers
+			ByteBuffer readBuffer = ByteBuffer
+					.allocate(EncogEGBFile.DOUBLE_SIZE * 1024);
+			ByteBuffer writeBuffer = ByteBuffer
+					.allocate(EncogEGBFile.DOUBLE_SIZE * 1024);
+
+			readBuffer.clear();
+			writeBuffer.clear();
+			readBuffer.order(ByteOrder.LITTLE_ENDIAN);
+			writeBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+			long readLocation = EncogEGBFile.HEADER_SIZE;
+			long writeLocation = EncogEGBFile.HEADER_SIZE;
+			int recordOffset = 0;
+
+			this.fc.position(readLocation);
+			this.fc.read(readBuffer);
+			readLocation = fc.position();
+			readBuffer.rewind();
+
+			boolean done = false;
+			int count = 0;
+
+			do {
+				// if there is more to read, then process it
+				if (readBuffer.hasRemaining()) {
+					double d = readBuffer.getDouble();
+
+					// If this is the column to insert, add a zero
+					if (recordOffset == col) {
+						// do we need to cycle the write buffer?
+						writeLocation = checkWrite(writeBuffer,writeLocation);
+						writeBuffer.putDouble(0);
+					}
+					
+					// write the existing value
+					writeLocation = checkWrite(writeBuffer,writeLocation);
+					writeBuffer.putDouble(d);
+						
+					// keep track of where we are in a record.
+					recordOffset++;
+					if (recordOffset >= this.recordCount) {
+						recordOffset = 0;
+						count++;
+						// are we done?
+						if (count >= this.numberOfRecords)
+							done = true;
+					}
+				} else {
+					// read more
+					readBuffer.clear();
+					readBuffer.order(ByteOrder.LITTLE_ENDIAN);
+
+					this.fc.position(readLocation);
+					this.fc.read(readBuffer);
+					readLocation = fc.position();
+					readBuffer.rewind();
+				}
+			} while (!done);
+
+			// write any remaining data in the write buffer
+			if (writeBuffer.position() > 0) {
+				writeBuffer.flip();
+				this.fc.write(writeBuffer, writeLocation);
+			}
+
+			// does it fall inside of input or ideal?
+			if (isInput) {
+				this.inputCount++;
+				this.recordCount++;
+			} else {
+				this.idealCount++;
+				this.recordCount++;
+			}
+
+			this.recordCount = this.inputCount + this.idealCount;
+			this.recordSize = this.recordCount * EncogEGBFile.DOUBLE_SIZE;
+
+			// adjust file size
+			this.raf.setLength((int) (this.numberOfRecords * this.recordSize)
+					+ EncogEGBFile.HEADER_SIZE);
+
+		} catch (IOException ex) {
+			throw new BufferedDataError(ex);
+		}
 	}
 
 }

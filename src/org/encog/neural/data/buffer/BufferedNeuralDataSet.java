@@ -30,10 +30,6 @@
 package org.encog.neural.data.buffer;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -91,16 +87,6 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	private boolean loading;
 
 	/**
-	 * The size of input data.
-	 */
-	private int inputSize;
-
-	/**
-	 * The size of ideal data.
-	 */
-	private int idealSize;
-
-	/**
 	 * The file being used.
 	 */
 	private File file;
@@ -141,6 +127,8 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	public BufferedNeuralDataSet(File binaryFile) {
 		this.file = binaryFile;
 		this.egb = new EncogEGBFile(binaryFile);
+		if( file.exists() )
+			this.egb.open();
 	}
 
 	/**
@@ -148,9 +136,6 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	public void open() {
 		this.egb.open();
-
-		this.inputSize = egb.getInputCount();
-		this.idealSize = egb.getIdealCount();
 	}
 
 	/**
@@ -166,7 +151,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	@Override
 	public long getRecordCount() {
-		return this.egb.getNumberOfRecords();
+		if( this.egb==null)
+			return 0;
+		else
+			return this.egb.getNumberOfRecords();
 	}
 
 	/**
@@ -274,7 +262,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	@Override
 	public int getIdealSize() {
-		return this.idealSize;
+		if( this.egb==null)
+			return 0;
+		else
+			return this.egb.getIdealCount();
 	}
 
 	/**
@@ -282,7 +273,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	@Override
 	public int getInputSize() {
-		return this.inputSize;
+		if( this.egb==null)
+			return 0;
+		else
+			return this.egb.getInputCount();
 	}
 
 	/**
@@ -290,7 +284,10 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	@Override
 	public boolean isSupervised() {
-		return this.idealSize > 0;
+		if( this.egb==null)
+			return false;
+		else
+		return this.egb.getIdealCount() > 0;
 	}
 
 	/**
@@ -416,5 +413,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	public File getFile() {
 		return this.file;
+	}
+
+	public EncogEGBFile getEGB() {
+		return this.egb;
 	}
 }
