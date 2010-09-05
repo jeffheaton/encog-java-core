@@ -122,38 +122,4 @@ public class TestTraining extends TestCase   {
 		NeuralGeneticAlgorithm genetic = new NeuralGeneticAlgorithm(network, new RangeRandomizer(-1,1), score, 500,0.1,0.25);
 		NetworkUtil.testTraining(genetic,0.00001);
 	}
-	
-	public void testCont()
-	{
-		Logging.stopConsoleLogging();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
-		
-		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
-		Propagation prop = new Backpropagation(network, trainingData, 0.7, 0.9);
-		
-		Assert.assertFalse(prop.canContinue());
-		
-		try
-		{
-			prop.pause();
-			Assert.assertFalse(true);
-		}
-		catch(Exception e)
-		{
-			// we want an exception.
-		}
-		
-		try
-		{
-			prop.resume(null);
-			Assert.assertFalse(true);
-		}
-		catch(Exception e)
-		{
-			// we want an exception.
-		}
-	}
-	
-
-
 }
