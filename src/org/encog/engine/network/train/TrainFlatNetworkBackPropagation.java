@@ -108,4 +108,11 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetwork {
 		return delta;
 	}
 
+	/**
+	 * @return The last deltas.
+	 */
+	public double[] getLastDelta() {
+		return lastDelta;
+	}
+	
 }

@@ -38,6 +38,7 @@ import org.encog.engine.network.train.TrainFlatNetworkBackPropagation;
 import org.encog.engine.network.train.TrainFlatNetworkManhattan;
 import org.encog.engine.network.train.TrainFlatNetworkResilient;
 import org.encog.engine.opencl.EncogCLDevice;
+import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.FlatUpdateNeeded;
@@ -269,18 +270,26 @@ public abstract class Propagation extends BasicTraining {
 			
 			if( this instanceof Backpropagation )
 			{
-				this.flatTraining = new TrainFlatNetworkBackPropagation(
+				Backpropagation back = (Backpropagation)this;
+				TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
 						this.network.getStructure().getFlat(),
 						this.getTraining(),
-						((Backpropagation)this).getLearningRate(),
-						((Backpropagation)this).getMomentum());
+						back.getLearningRate(),
+						back.getMomentum());
+				this.flatTraining = backFlat;
+				EngineArray.arrayCopy(back.getLastDelta(),backFlat.getLastDelta());
 				this.flatTraining.setTargetDevice(this.targetDevice);
 			}
 			else if( this instanceof ResilientPropagation )
 			{
-				this.flatTraining = new TrainFlatNetworkResilient(
+				ResilientPropagation rprop = (ResilientPropagation)this;
+				TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
 						this.network.getStructure().getFlat(),
-						this.getTraining());
+						this.getTraining()); 
+				this.flatTraining = rpropFlat;
+				
+				EngineArray.arrayCopy(rprop.getLastGradient(),rpropFlat.getLastGradient());
+				EngineArray.arrayCopy(rprop.getUpdateValues(),rpropFlat.getUpdateValues());
 				this.flatTraining.setTargetDevice(this.targetDevice);
 			}
 			else if( this instanceof ManhattanPropagation )

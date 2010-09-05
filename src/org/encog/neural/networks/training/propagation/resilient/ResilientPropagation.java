@@ -30,6 +30,8 @@
 
 package org.encog.neural.networks.training.propagation.resilient;
 
+import org.encog.engine.network.train.TrainFlatNetworkResilient;
+import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.TrainingError;
@@ -258,6 +260,13 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
+		if( this.getFlatTraining()!=null)
+		{
+			TrainFlatNetworkResilient rpropFlat = (TrainFlatNetworkResilient)getFlatTraining();
+			EngineArray.arrayCopy(rpropFlat.getUpdateValues(),this.updateValues);
+			EngineArray.arrayCopy(rpropFlat.getLastGradient(),this.lastGradient);
+		}
+		
 		result.set(ResilientPropagation.LAST_GRADIENTS, this.lastGradient);
 		result.set(ResilientPropagation.UPDATE_VALUES, this.updateValues);
 		return result;
@@ -295,6 +304,12 @@ public class ResilientPropagation extends Propagation {
 				.get(ResilientPropagation.LAST_GRADIENTS);
 		this.updateValues = (double[]) state
 				.get(ResilientPropagation.UPDATE_VALUES);
+		
+		if( this.getFlatTraining()!=null ) {
+			TrainFlatNetworkResilient rpropFlat = (TrainFlatNetworkResilient)this.getFlatTraining();
+			EngineArray.arrayCopy(this.lastGradient, rpropFlat.getLastGradient());
+			EngineArray.arrayCopy(this.updateValues, rpropFlat.getUpdateValues());
+		}
 	}
 
 	/**
@@ -355,6 +370,20 @@ public class ResilientPropagation extends Propagation {
 
 		// apply the weight change, if any
 		return weightChange;
+	}
+
+	/**
+	 * @return The update values.
+	 */
+	public double[] getUpdateValues() {
+		return updateValues;
+	}
+
+	/**
+	 * @return The last gradients.
+	 */
+	public double[] getLastGradient() {
+		return lastGradient;
 	}
 	
 	

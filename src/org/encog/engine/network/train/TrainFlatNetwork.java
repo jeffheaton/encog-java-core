@@ -133,6 +133,9 @@ public abstract class TrainFlatNetwork {
 
 		this.training = training;
 		this.network = network;
+		
+		this.gradients = new double[this.network.getWeights().length];
+		this.lastGradient = new double[this.network.getWeights().length];
 
 		this.indexable = (EngineIndexableSet) training;
 		this.numThreads = 0;
@@ -203,8 +206,6 @@ public abstract class TrainFlatNetwork {
 	 * Init the process.
 	 */
 	private void init() {
-		this.gradients = new double[this.network.getWeights().length];
-		this.lastGradient = new double[this.network.getWeights().length];
 
 		DetermineWorkload determine;
 		final ValidateForOpenCL val = new ValidateForOpenCL();
@@ -376,5 +377,14 @@ public abstract class TrainFlatNetwork {
 	 */
 	public abstract double updateWeight(double[] gradients,
 			double[] lastGradient, int index);
+
+	/**
+	 * @return The gradients from the last iteration;
+	 */
+	public double[] getLastGradient() {
+		return lastGradient;
+	}
+	
+	
 
 }

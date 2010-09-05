@@ -30,13 +30,19 @@
 
 package org.encog.neural.networks.training.propagation.back;
 
+import org.encog.engine.network.train.TrainFlatNetworkBackPropagation;
+import org.encog.engine.network.train.TrainFlatNetworkResilient;
+import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
+import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.strategy.SmartLearningRate;
 import org.encog.neural.networks.training.strategy.SmartMomentum;
 import org.slf4j.Logger;
@@ -70,6 +76,11 @@ public class Backpropagation extends Propagation implements Momentum,
 		LearningRate {
 
 	/**
+	 * The resume key for backpropagation.
+	 */
+	public final static String LAST_DELTA = "LAST_DELTA";
+	
+	/**
 	 * The momentum, this is the degree to which the previous training cycle
 	 * affects the current one.
 	 */
@@ -85,7 +96,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	/**
 	 * The last delta values, used for momentum.
 	 */
-	private final double[] lastDelta;
+	private double[] lastDelta;
 
 	/**
 	 * The logging object.
@@ -195,5 +206,62 @@ public class Backpropagation extends Propagation implements Momentum,
 	public void setMomentum(final double m) {
 		this.momentum = m;
 	}
+	
+	/**
+	 * Determine if the specified continuation object is valid to resume with.
+	 * @param state The continuation object to check.
+	 * @return True if the specified continuation object is valid for this
+	 * training method and network.
+	 */
+	public boolean isValidResume(final TrainingContinuation state) {
+		if (!state.getContents().containsKey(Backpropagation.LAST_DELTA)) {
+			return false;
+		}
+
+		final double[] d = (double[]) state
+				.get(Backpropagation.LAST_DELTA);
+		return d.length == getNetwork().getStructure().calculateSize();
+	}
+	
+	/**
+	 * Pause the training.
+	 * @return A training continuation object to continue with.
+	 */
+	public TrainingContinuation pause() {
+		final TrainingContinuation result = new TrainingContinuation();
+		if( this.getFlatTraining()!=null)
+		{
+			TrainFlatNetworkBackPropagation backFlat = (TrainFlatNetworkBackPropagation)getFlatTraining();
+			EngineArray.arrayCopy(backFlat.getLastDelta(),this.lastDelta);
+		}
+		
+		result.set(Backpropagation.LAST_DELTA, this.lastDelta);
+
+		return result;
+	}
+	
+	/**
+	 * Resume training.
+	 * @param state The training state to return to.
+	 */
+	public void resume(final TrainingContinuation state) {
+		if (!isValidResume(state)) {
+			throw new TrainingError("Invalid training resume data length");
+		}
+		
+		this.lastDelta = (double[]) state
+				.get(Backpropagation.LAST_DELTA);
+		
+		if( this.getFlatTraining()!=null ) {
+			TrainFlatNetworkBackPropagation backFlat = (TrainFlatNetworkBackPropagation)getFlatTraining();
+			EngineArray.arrayCopy(this.lastDelta, backFlat.getLastDelta());
+		}
+	}
+
+	public double[] getLastDelta() {
+		return lastDelta;
+	}
+
+
 
 }

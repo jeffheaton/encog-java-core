@@ -159,4 +159,11 @@ public class TrainFlatNetworkResilient extends TrainFlatNetwork {
 		return weightChange;
 	}
 
+	/**
+	 * @return The RPROP update values.
+	 */
+	public double[] getUpdateValues() {
+		return updateValues;
+	}
+
 }
