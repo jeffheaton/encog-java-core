@@ -563,21 +563,18 @@ public class NeuralStructure implements Serializable {
 
 					double[] params = new double[1];
 					
-					if( layer.getActivationFunction()==null ) {
+					if( layer.getActivationFunction()==null )
+					{
 						activationType = ActivationFunctions.ACTIVATION_LINEAR;
 						params = new double[1];
 						params[0] = 1;
-					} else if (layer.getActivationFunction() instanceof ActivationLinear ) {
-						activationType = ActivationFunctions.ACTIVATION_LINEAR;
-						params = layer.getActivationFunction().getParams();
-					} else if (layer.getActivationFunction() instanceof ActivationTANH) {
-						activationType = ActivationFunctions.ACTIVATION_TANH;
-						params = layer.getActivationFunction().getParams();
-					} else if (layer.getActivationFunction() instanceof ActivationSigmoid) {
-						activationType = ActivationFunctions.ACTIVATION_SIGMOID;
+					}
+					else
+					{
+						activationType = layer.getActivationFunction().getEngineID();
 						params = layer.getActivationFunction().getParams();
 					}
-
+					
 					FlatLayer flatLayer = new FlatLayer(
 							activationType,
 							layer.getNeuronCount(), 

@@ -35,6 +35,7 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 
@@ -118,6 +119,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 			}
 		}
 		this.mustInit = false;
+		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
 	/**
@@ -149,6 +151,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 		}
 
 		setError(error.calculate());
+		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
 	/**

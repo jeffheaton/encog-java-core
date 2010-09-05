@@ -30,6 +30,7 @@
 package org.encog.neural.networks.structure;
 
 import org.encog.engine.EngineMachineLearning;
+import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.validate.BasicMachineLearningValidate;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
@@ -92,13 +93,6 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 			
 			if (layer.getClass()!=ContextLayer.class && layer.getClass()!=BasicLayer.class ) {
 				return "To convert to flat a network must have only BasicLayer and ContextLayer layers.";
-			}
-
-			if ( !(layer.getActivationFunction() == null)
-					&& !(layer.getActivationFunction() instanceof ActivationSigmoid)
-					&& !(layer.getActivationFunction() instanceof ActivationTANH) 
-					&& !(layer.getActivationFunction() instanceof ActivationLinear)) {
-				return "To convert to flat a network must only use sigmoid, linear or tanh activation.";
 			}
 		}
 		return null;

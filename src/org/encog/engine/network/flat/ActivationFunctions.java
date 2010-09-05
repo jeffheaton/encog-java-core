@@ -310,15 +310,15 @@ public final class ActivationFunctions {
 		double sumWinners = 0;
 
 		// find the desired number of winners
-		for (int i = 0; i < params[0]; i++) {
+		for (int i = 0; i < params[paramOffset]; i++) {
 			double maxFound = Double.NEGATIVE_INFINITY;
 			int winner = -1;
 
 			// find one winner
-			for (int j = xOffset; j < xOffset + xLength; j++) {
-				if (!winners[j] && (x[j] > maxFound)) {
+			for (int j = 0; j < xLength; j++) {
+				if (!winners[j] && (x[xOffset+j] > maxFound)) {
 					winner = j;
-					maxFound = x[j];
+					maxFound = x[xOffset+j];
 				}
 			}
 			sumWinners += maxFound;
@@ -326,11 +326,11 @@ public final class ActivationFunctions {
 		}
 
 		// adjust weights for winners and non-winners
-		for (int i = xOffset; i < xOffset + xLength; i++) {
+		for (int i = 0; i < xLength; i++) {
 			if (winners[i]) {
-				x[i] = x[i] / sumWinners;
+				x[xOffset+i] = x[xOffset+i] / sumWinners;
 			} else {
-				x[i] = 0.0;
+				x[xOffset+i] = 0.0;
 			}
 		}
 	}
