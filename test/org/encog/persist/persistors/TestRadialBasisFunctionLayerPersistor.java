@@ -53,9 +53,10 @@ public class TestRadialBasisFunctionLayerPersistor {
 	 * @return The created test layer.
 	 */
 	private RadialBasisFunctionLayer createTestLayer() {
-		final RadialBasisFunction rbf = new GaussianFunction(1, 2, 3);
-		final RadialBasisFunctionLayer layer = new RadialBasisFunctionLayer(1);
-		layer.getRadialBasisFunction()[0] = rbf;
+		final RadialBasisFunctionLayer layer = new RadialBasisFunctionLayer(1,2);
+		layer.getRadius()[0] = 1;
+		layer.getCenter()[0][0] = 2;
+		layer.getCenter()[0][1] = 3;
 		return layer;
 	}
 
@@ -111,12 +112,12 @@ public class TestRadialBasisFunctionLayerPersistor {
 		final byte[] store = saveRadialFunctionLayer(layer);
 		final RadialBasisFunctionLayer layer2 = loadRadialFunctionLayer(store);
 		Assert.assertEquals(layer.getNeuronCount(), layer2.getNeuronCount());
-		Assert.assertEquals(layer.getRadialBasisFunction()[0].getCenter(),
-				layer.getRadialBasisFunction()[0].getCenter(),0.01);
-		Assert.assertEquals(layer.getRadialBasisFunction()[0].getWidth(), layer
-				.getRadialBasisFunction()[0].getWidth(),0.01);
-		Assert.assertEquals(layer.getRadialBasisFunction()[0].getPeak(), layer
-				.getRadialBasisFunction()[0].getPeak(),0.01);
+
+		Assert.assertEquals( 1.0, layer.getRadius()[0], 0.1);
+		Assert.assertEquals( 2.0, layer.getCenter()[0][0], 0.1 );
+		Assert.assertEquals( 3.0, layer.getCenter()[0][1], 0.1 );
+
+		
 	}
 
 }
