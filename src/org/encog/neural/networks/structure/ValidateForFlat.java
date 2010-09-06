@@ -40,6 +40,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.logic.FeedforwardLogic;
 
 /**
@@ -85,13 +86,12 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 		}
 
 		for (final Layer layer : network.getStructure().getLayers()) {
-			// only feedforward
 			if (layer.getNext().size() > 2) {
 				return "To convert to flat a network must have at most two outbound synapses.";
 			}
 			
-			
-			if (layer.getClass()!=ContextLayer.class && layer.getClass()!=BasicLayer.class ) {
+			// && layer.getClass()!=RadialBasisFunctionLayer.class
+			if (layer.getClass()!=ContextLayer.class && layer.getClass()!=BasicLayer.class  ) {
 				return "To convert to flat a network must have only BasicLayer and ContextLayer layers.";
 			}
 		}

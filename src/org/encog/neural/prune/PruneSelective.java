@@ -272,20 +272,9 @@ public class PruneSelective {
 		if (layer instanceof RadialBasisFunctionLayer) {
 			final RadialBasisFunctionLayer rbf 
 				= (RadialBasisFunctionLayer) layer;
-			final RadialBasisFunction[] newRBF 
-				= new RadialBasisFunction[neuronCount];
+			for(int i=0;i<neuronCount;i++)
+				rbf.addNeuron();
 			
-			for (int i = 0; i < rbf.getRadialBasisFunction().length; i++) {
-				newRBF[i] = rbf.getRadialBasisFunction()[i];
-			}
-
-			for (int i = rbf.getRadialBasisFunction().length; 
-				i < neuronCount; i++) {
-				newRBF[i] = new GaussianFunction(Math.random() - 0.5, Math
-						.random(), Math.random() - 0.5);
-			}
-
-			rbf.setRadialBasisFunction(newRBF);
 
 		}
 
@@ -341,16 +330,7 @@ public class PruneSelective {
 		// adjust RBF
 		if (targetLayer instanceof RadialBasisFunctionLayer) {
 			final RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer) targetLayer;
-			final RadialBasisFunction[] newRBF = new GaussianFunction[targetLayer
-					.getNeuronCount() - 1];
-
-			int targetIndex = 0;
-			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
-				if (i != neuron) {
-					newRBF[targetIndex++] = rbf.getRadialBasisFunction()[i];
-				}
-			}
-			rbf.setRadialBasisFunction(newRBF);
+			rbf.removeNeuron(neuron);
 
 		}
 

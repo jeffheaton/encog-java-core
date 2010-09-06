@@ -47,6 +47,8 @@ import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ObjectPair;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
@@ -55,6 +57,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.logic.FeedforwardLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.ReflectionUtil;
@@ -546,8 +549,6 @@ public class NeuralStructure implements Serializable {
 
 					contexts.add(new ObjectPair<Layer, Layer>(inbound, outbound));
 				} else {
-					int activationType = ActivationFunctions.ACTIVATION_LINEAR;
-
 					double bias = FlatNetwork.NO_BIAS_ACTIVATION;
 
 					if (layer.getNext().size() > 0) {
@@ -561,6 +562,7 @@ public class NeuralStructure implements Serializable {
 						}
 					}
 
+					int activationType;
 					double[] params = new double[1];
 					
 					if( layer.getActivationFunction()==null )

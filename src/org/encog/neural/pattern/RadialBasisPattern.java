@@ -114,7 +114,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 		final Layer output = new BasicLayer(new ActivationLinear(), true, this.outputNeurons);
 		final BasicNetwork network = new BasicNetwork();
 		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(
-				this.hiddenNeurons);
+				this.hiddenNeurons, this.inputNeurons);
 		network.addLayer(input);
 		network.addLayer(rbfLayer, SynapseType.Direct);
 		network.addLayer(output);
