@@ -38,11 +38,8 @@ import org.encog.engine.EngineNeuralNetwork;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineIndexableSet;
-import org.encog.engine.util.BoundMath;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
-import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.basic.BasicNeuralData;
 
 /**
  * Implements a flat (vector based) neural network in the Encog Engine. This is
