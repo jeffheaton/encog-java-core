@@ -41,17 +41,17 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	/**
 	 * The learning rate.
 	 */
-	private final double learningRate;
+	private double learningRate;
 
 	/**
 	 * The momentum.
 	 */
-	private final double momentum;
+	private double momentum;
 
 	/**
 	 * The last delta values.
 	 */
-	private final double[] lastDelta;
+	private double[] lastDelta;
 
 	/**
 	 * Construct a backprop trainer for flat networks.
@@ -113,6 +113,18 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	 */
 	public double[] getLastDelta() {
 		return lastDelta;
+	}
+
+	public void setLearningRate(double rate) {
+		this.learningRate = rate;
+	}
+	
+	public void setMomentum(double rate) {
+		this.learningRate = rate;
+	}
+
+	public void setLastDelta(double[] ds) {
+		this.lastDelta = ds;
 	}
 	
 }

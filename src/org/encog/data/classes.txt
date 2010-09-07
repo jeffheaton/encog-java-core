@@ -190,15 +190,6 @@ org.encog.neural.networks.training.neat.NEATInnovationType
 org.encog.neural.networks.training.neat.NEATLinkGene
 org.encog.neural.networks.training.neat.NEATNeuronGene
 org.encog.neural.networks.training.neat.NEATTraining
-org.encog.neural.networks.training.propagation.back.Backpropagation
-org.encog.neural.networks.training.propagation.gradient.CalculateGradient
-org.encog.neural.networks.training.propagation.gradient.GradientUtil
-org.encog.neural.networks.training.propagation.gradient.GradientWorker
-org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation
-org.encog.neural.networks.training.propagation.Propagation
-org.encog.neural.networks.training.propagation.resilient.ResilientPropagation
-org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradient
-org.encog.neural.networks.training.propagation.TrainingContinuation
 org.encog.neural.networks.training.simple.TrainAdaline
 org.encog.neural.networks.training.strategy.Greedy
 org.encog.neural.networks.training.strategy.HybridStrategy

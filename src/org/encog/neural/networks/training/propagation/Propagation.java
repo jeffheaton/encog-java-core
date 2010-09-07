@@ -47,7 +47,6 @@ import org.encog.neural.networks.structure.ValidateForFlat;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
-import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.EncogValidate;
@@ -83,13 +82,6 @@ public abstract class Propagation extends BasicTraining {
 	 * The current flat trainer we are using, or null for none.
 	 */
 	private TrainFlatNetwork flatTraining;
-
-	/**
-	 * Should we attempt to flatten the network? Usually you want this to be
-	 * true, a flat network can train much faster. However, we can not always
-	 * use flat networks. See the FlatNetwork class for more info.
-	 */
-	private boolean attemptFlatten;
 	
 	/**
 	 * The logging object.
@@ -111,7 +103,6 @@ public abstract class Propagation extends BasicTraining {
 		super();
 		this.network = network;
 		setTraining(training);
-		this.attemptFlatten = true;
 	}
 
 	/**
@@ -150,13 +141,6 @@ public abstract class Propagation extends BasicTraining {
 	}
 
 	/**
-	 * @return the attemptFlatten
-	 */
-	public boolean isAttemptFlatten() {
-		return this.attemptFlatten;
-	}
-
-	/**
 	 * Determine if this specified training continuation object is valid for
 	 * this training method.
 	 * 
@@ -175,25 +159,9 @@ public abstract class Propagation extends BasicTraining {
 		try {
 			preIteration();
 
-			if (this.flatTraining == null && this.attemptFlatten==true )
-				attemptFlatten();
-			
-			if (this.flatTraining == null) {
-				final CalculateGradient prop = new CalculateGradient(
-						this.network, getTraining(), getNumThreads());
-				final double[] weights = NetworkCODEC
-						.networkToArray(this.network);
-				prop.calculate(weights);
-
-				performIteration(prop, weights);
-
-				NetworkCODEC.arrayToNetwork(weights, this.network);
-				setError(prop.getError());
-			} else {
-				this.flatTraining.iteration();
-				this.setError(this.flatTraining.getError());
-				this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Unflatten);
-			}
+			this.flatTraining.iteration();
+			this.setError(this.flatTraining.getError());
+			this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Unflatten);
 
 			postIteration();
 			
@@ -218,18 +186,6 @@ public abstract class Propagation extends BasicTraining {
 		throw new TrainingError("This training type does not support pause.");
 	}
 
-	/**
-	 * Perform an iteration. This is implemented for each of the propagation
-	 * method types.
-	 * 
-	 * @param prop
-	 *            The gradients.
-	 * @param weights
-	 *            The weights.
-	 */
-	public abstract void performIteration(CalculateGradient prop,
-			double[] weights);
-
 
 	/**
 	 * Resume training.
@@ -239,14 +195,6 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public void resume(final TrainingContinuation state) {
 		throw new TrainingError("This training type does not support resume.");
-	}
-
-	/**
-	 * @param attemptFlatten
-	 *            the attemptFlatten to set
-	 */
-	public void setAttemptFlatten(final boolean attemptFlatten) {
-		this.attemptFlatten = attemptFlatten;
 	}
 
 	/**
@@ -261,7 +209,7 @@ public abstract class Propagation extends BasicTraining {
 		this.numThreads = numThreads;
 	}
 	
-	public void attemptFlatten()
+	public void flatten()
 	{
 		ValidateForFlat val = new ValidateForFlat();
 		if( val.isValid(this.network)==null )
@@ -288,8 +236,8 @@ public abstract class Propagation extends BasicTraining {
 						this.getTraining()); 
 				this.flatTraining = rpropFlat;
 				
-				EngineArray.arrayCopy(rprop.getLastGradient(),rpropFlat.getLastGradient());
-				EngineArray.arrayCopy(rprop.getUpdateValues(),rpropFlat.getUpdateValues());
+				//EngineArray.arrayCopy(rprop.getLastGradient(),rpropFlat.getLastGradient());
+				//EngineArray.arrayCopy(rprop.getUpdateValues(),rpropFlat.getUpdateValues());
 				this.flatTraining.setTargetDevice(this.targetDevice);
 			}
 			else if( this instanceof ManhattanPropagation )
@@ -301,8 +249,9 @@ public abstract class Propagation extends BasicTraining {
 				this.flatTraining.setTargetDevice(this.targetDevice);
 			}
 		}
-		else
-			this.attemptFlatten = false;
+		else {
+			throw new TrainingError("Backprop, SCG, RPROP and Manhattan can only be used with flat-compatible networks.");
+		}
 	}
 	
 	/**
@@ -351,4 +300,13 @@ public abstract class Propagation extends BasicTraining {
 	{
 		this.targetDevice = Encog.getInstance().getCL().getEnabledDevices().get(0);
 	}
+
+	/**
+	 * @param flatTraining the flatTraining to set
+	 */
+	public void setFlatTraining(TrainFlatNetwork flatTraining) {
+		this.flatTraining = flatTraining;
+	}
+	
+	
 }

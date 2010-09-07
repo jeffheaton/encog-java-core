@@ -30,11 +30,12 @@
 
 package org.encog.neural.networks.training.propagation.manhattan;
 
+import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
+import org.encog.engine.network.train.prop.TrainFlatNetworkManhattan;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.Propagation;
-import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,21 +62,6 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * The default tolerance to determine of a number is close to zero.
 	 */
 	static final double DEFAULT_ZERO_TOLERANCE = 0.001;
-
-	/**
-	 * The zero tolearnce to use.
-	 */
-	private final double zeroTolerance;
-
-	/**
-	 * The learning rate.
-	 */
-	private double learningRate;
-	
-	/**
-	 * The gradients.
-	 */
-	private double[] gradients;
 
 	/**
 	 * The logging object.
@@ -117,44 +103,18 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 			final NeuralDataSet training, final double learnRate,
 			final double zeroTolerance) {
 		super(network, training);
-		this.zeroTolerance = zeroTolerance;
-		this.learningRate = learnRate;
-		this.gradients = new double[network.getStructure().calculateSize()];
+
+		setFlatTraining( new TrainFlatNetworkManhattan(
+				network.getStructure().getFlat(),
+				this.getTraining(),
+				learnRate) );
 	}
 
 	/**
 	 * @return The learning rate that was specified in the constructor.
 	 */
 	public double getLearningRate() {
-		return this.learningRate;
-	}
-
-	/**
-	 * @return The zero tolerance that was specified in the constructor.
-	 */
-	public double getZeroTolerance() {
-		return this.zeroTolerance;
-	}
-
-	/**
-	 * Perform a training iteration. This is where the actual Manhattan 
-	 * specific training takes place.
-	 * 
-	 * @param prop
-	 *            The gradients.
-	 * @param weights
-	 *            The network weights.
-	 */
-	@Override
-	public void performIteration(final CalculateGradient prop,
-			final double[] weights) {
-
-		this.gradients = prop.getGradients();
-
-		for (int i = 0; i < this.gradients.length; i++) {
-			weights[i] += updateWeight(i);
-		}
-
+		return ((TrainFlatNetworkBackPropagation)this.getFlatTraining()).getLearningRate();
 	}
 
 	/**
@@ -164,22 +124,8 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The new learning rate.
 	 */
 	public void setLearningRate(final double rate) {
-		this.learningRate = rate;
+		((TrainFlatNetworkBackPropagation)this.getFlatTraining()).setLearningRate(rate);
 	}
 
-	/**
-	 * Determine the amount to update a weight by.
-	 * @param index The index of the weight to update.
-	 * @return The amount the weight should be updated by.
-	 */
-	private double updateWeight(final int index) {
-		if (Math.abs(this.gradients[index]) < this.zeroTolerance) {
-			return 0;
-		} else if (this.gradients[index] > 0) {
-			return this.learningRate;
-		} else {
-			return -this.learningRate;
-		}
-	}
 
 }

@@ -30,6 +30,8 @@
 
 package org.encog.neural.networks.training.propagation.resilient;
 
+import org.encog.engine.network.train.prop.RPROPConst;
+import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
@@ -37,7 +39,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.encog.neural.networks.training.propagation.gradient.CalculateGradient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,39 +80,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ResilientPropagation extends Propagation {
 
-	/**
-	 * The default zero tolerance.
-	 */
-	public static final double DEFAULT_ZERO_TOLERANCE = 0.00000000000000001;
-
-	/**
-	 * The POSITIVE ETA value. This is specified by the resilient propagation
-	 * algorithm. This is the percentage by which the deltas are increased by if
-	 * the partial derivative is greater than zero.
-	 */
-	public static final double POSITIVE_ETA = 1.2;
-
-	/**
-	 * The NEGATIVE ETA value. This is specified by the resilient propagation
-	 * algorithm. This is the percentage by which the deltas are increased by if
-	 * the partial derivative is less than zero.
-	 */
-	public static final double NEGATIVE_ETA = 0.5;
-
-	/**
-	 * The minimum delta value for a weight matrix value.
-	 */
-	public static final double DELTA_MIN = 1e-6;
-
-	/**
-	 * The starting update for a delta.
-	 */
-	public static final double DEFAULT_INITIAL_UPDATE = 0.1;
-
-	/**
-	 * The maximum amount a delta can reach.
-	 */
-	public static final double DEFAULT_MAX_STEP = 50;
 
 	/**
 	 * Continuation tag for the last gradients.
@@ -123,35 +91,6 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public static final String UPDATE_VALUES = "UPDATE_VALUES";
 
-	/**
-	 * The zero tolerance.
-	 */
-	private final double zeroTolerance;
-
-	/**
-	 * The initial update value.
-	 */
-	private final double initialUpdate;
-
-	/**
-	 * The maximum delta amount.
-	 */
-	private final double maxStep;
-
-	/**
-	 * The update value.
-	 */
-	private double[] updateValues;
-
-	/**
-	 * The last gradients.
-	 */
-	private double[] lastGradient;
-
-	/**
-	 * The current gradients.
-	 */
-	private double[] gradients;
 
 	/**
 	 * Construct a resilient training object. Use the defaults for all training
@@ -166,9 +105,9 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
-		this(network, training, ResilientPropagation.DEFAULT_ZERO_TOLERANCE,
-				ResilientPropagation.DEFAULT_INITIAL_UPDATE,
-				ResilientPropagation.DEFAULT_MAX_STEP);
+		this(network, training, RPROPConst.DEFAULT_ZERO_TOLERANCE,
+				RPROPConst.DEFAULT_INITIAL_UPDATE,
+				RPROPConst.DEFAULT_MAX_STEP);
 	}
 
 	/**
@@ -194,17 +133,11 @@ public class ResilientPropagation extends Propagation {
 			final double initialUpdate, final double maxStep) {
 
 		super(network, training);
-		this.initialUpdate = initialUpdate;
-		this.maxStep = maxStep;
-		this.zeroTolerance = zeroTolerance;
-
-		this.updateValues = new double[network.getStructure().calculateSize()];
-		this.lastGradient = new double[network.getStructure().calculateSize()];
-
-		for (int i = 0; i < this.updateValues.length; i++) {
-			this.updateValues[i] = this.initialUpdate;
-		}
-
+		
+		TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
+				network.getStructure().getFlat(),
+				this.getTraining()); 
+		this.setFlatTraining( rpropFlat );
 	}
 
 	/**
@@ -214,26 +147,6 @@ public class ResilientPropagation extends Propagation {
 		return true;
 	}
 
-	/**
-	 * @return The initial update amount, set by the constructor.
-	 */
-	public double getInitialUpdate() {
-		return this.initialUpdate;
-	}
-
-	/**
-	 * @return The maximum step, set by the constructor.
-	 */
-	public double getMaxStep() {
-		return this.maxStep;
-	}
-
-	/**
-	 * @return The zero tolerance, set by the constructor.
-	 */
-	public double getZeroTolerance() {
-		return this.zeroTolerance;
-	}
 
 	/**
 	 * Determine if the specified continuation object is valid to resume with.
@@ -260,36 +173,10 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
-		if( this.getFlatTraining()!=null)
-		{
-			TrainFlatNetworkResilient rpropFlat = (TrainFlatNetworkResilient)getFlatTraining();
-			EngineArray.arrayCopy(rpropFlat.getUpdateValues(),this.updateValues);
-			EngineArray.arrayCopy(rpropFlat.getLastGradient(),this.lastGradient);
-		}
 		
-		result.set(ResilientPropagation.LAST_GRADIENTS, this.lastGradient);
-		result.set(ResilientPropagation.UPDATE_VALUES, this.updateValues);
+		result.set(ResilientPropagation.LAST_GRADIENTS, ((TrainFlatNetworkResilient)this.getFlatTraining()).getLastGradient());
+		result.set(ResilientPropagation.UPDATE_VALUES, ((TrainFlatNetworkResilient)this.getFlatTraining()).getUpdateValues());
 		return result;
-	}
-
-	/**
-	 * Perform a training iteration. This is where the actual RPROP specific
-	 * training takes place.
-	 * 
-	 * @param prop
-	 *            The gradients.
-	 * @param weights
-	 *            The network weights.
-	 */
-	@Override
-	public void performIteration(final CalculateGradient prop,
-			final double[] weights) {
-
-		this.gradients = prop.getGradients();
-
-		for (int i = 0; i < this.gradients.length; i++) {
-			weights[i] += updateWeight(this.gradients, i);
-		}
 	}
 
 	/**
@@ -300,91 +187,14 @@ public class ResilientPropagation extends Propagation {
 		if (!isValidResume(state)) {
 			throw new TrainingError("Invalid training resume data length");
 		}
-		this.lastGradient = (double[]) state
+		double[] lastGradient = (double[]) state
 				.get(ResilientPropagation.LAST_GRADIENTS);
-		this.updateValues = (double[]) state
+		double[] updateValues = (double[]) state
 				.get(ResilientPropagation.UPDATE_VALUES);
 		
-		if( this.getFlatTraining()!=null ) {
-			TrainFlatNetworkResilient rpropFlat = (TrainFlatNetworkResilient)this.getFlatTraining();
-			EngineArray.arrayCopy(this.lastGradient, rpropFlat.getLastGradient());
-			EngineArray.arrayCopy(this.updateValues, rpropFlat.getUpdateValues());
-		}
+		EngineArray.arrayCopy( lastGradient, ((TrainFlatNetworkResilient)this.getFlatTraining()).getLastGradient() );
+		EngineArray.arrayCopy( updateValues, ((TrainFlatNetworkResilient)this.getFlatTraining()).getUpdateValues() );
+		
 	}
-
-	/**
-	 * Determine the sign of the value.
-	 * 
-	 * @param value
-	 *            The value to check.
-	 * @return -1 if less than zero, 1 if greater, or 0 if zero.
-	 */
-	private int sign(final double value) {
-		if (Math.abs(value) < this.zeroTolerance) {
-			return 0;
-		} else if (value > 0) {
-			return 1;
-		} else {
-			return -1;
-		}
-	}
-
-	/**
-	 * Determine the amount to change a weight by.
-	 * @param gradients The gradients.
-	 * @param index The weight to adjust.
-	 * @return The amount to change this weight by.
-	 */
-	private double updateWeight(final double[] gradients, final int index) {
-		// multiply the current and previous gradient, and take the
-		// sign. We want to see if the gradient has changed its sign.
-		final int change = sign(this.gradients[index]
-				* this.lastGradient[index]);
-		double weightChange = 0;
-
-		// if the gradient has retained its sign, then we increase the
-		// delta so that it will converge faster
-		if (change > 0) {
-			double delta = this.updateValues[index]
-					* ResilientPropagation.POSITIVE_ETA;
-			delta = Math.min(delta, this.maxStep);
-			weightChange = sign(this.gradients[index]) * delta;
-			this.updateValues[index] = delta;
-			this.lastGradient[index] = this.gradients[index];
-		} else if (change < 0) {
-			// if change<0, then the sign has changed, and the last
-			// delta was too big
-			double delta = this.updateValues[index]
-					* ResilientPropagation.NEGATIVE_ETA;
-			delta = Math.max(delta, ResilientPropagation.DELTA_MIN);
-			this.updateValues[index] = delta;
-			// set the previous gradent to zero so that there will be no
-			// adjustment the next iteration
-			this.lastGradient[index] = 0;
-		} else if (change == 0) {
-			// if change==0 then there is no change to the delta
-			final double delta = this.lastGradient[index];
-			weightChange = sign(this.gradients[index]) * delta;
-			this.lastGradient[index] = this.gradients[index];
-		}
-
-		// apply the weight change, if any
-		return weightChange;
-	}
-
-	/**
-	 * @return The update values.
-	 */
-	public double[] getUpdateValues() {
-		return updateValues;
-	}
-
-	/**
-	 * @return The last gradients.
-	 */
-	public double[] getLastGradient() {
-		return lastGradient;
-	}
-	
 	
 }
