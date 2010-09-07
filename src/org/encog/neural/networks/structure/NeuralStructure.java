@@ -38,21 +38,17 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.network.flat.FlatLayer;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.flat.FlatNetworkRBF;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ObjectPair;
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.mathutil.rbf.GaussianFunction;
-import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationLinear;
-import org.encog.neural.activation.ActivationSigmoid;
-import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
@@ -515,7 +511,7 @@ public class NeuralStructure implements Serializable {
 	}
 	
 	public void flatten() {
-
+		boolean isRBF = false;
 		Map<Layer, FlatLayer> regular2flat = new HashMap<Layer, FlatLayer>();
 		List<ObjectPair<Layer, Layer>> contexts = new ArrayList<ObjectPair<Layer, Layer>>();
 		this.flat = null;
@@ -523,6 +519,21 @@ public class NeuralStructure implements Serializable {
 		ValidateForFlat val = new ValidateForFlat();
 		
 		if (val.isValid(this.network) == null) {
+			if( this.layers.size()==3 &&  this.layers.get(1) instanceof RadialBasisFunctionLayer )
+			{
+				RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer)this.layers.get(1);
+				this.flat = new FlatNetworkRBF(
+					this.network.getInputCount(),
+					rbf.getNeuronCount(),
+					this.network.getOutputCount(),
+					rbf.getCenter(),
+					rbf.getRadius());
+				flattenWeights();
+				this.flatUpdate = FlatUpdateNeeded.None;
+				return;
+			}
+			
+			
 			FlatLayer[] flatLayers = new FlatLayer[countNonContext()];
 
 			int index = flatLayers.length - 1;
@@ -548,19 +559,9 @@ public class NeuralStructure implements Serializable {
 					Layer outbound = outboundSynapse.getToLayer();
 
 					contexts.add(new ObjectPair<Layer, Layer>(inbound, outbound));
-				} else {
-					double bias = FlatNetwork.NO_BIAS_ACTIVATION;
-
-					if (layer.getNext().size() > 0) {
-						Synapse synapse = network.getStructure()
-								.findNextSynapseByLayerType(layer,
-										BasicLayer.class);
-						if (synapse != null) {
-							Layer nextLayer = synapse.getToLayer();
-							if( nextLayer.hasBias() )
-								bias = nextLayer.getBiasActivation();
-						}
-					}
+				} 
+				else {
+					double bias = this.findNextBias(layer);
 
 					int activationType;
 					double[] params = new double[1];
@@ -599,6 +600,11 @@ public class NeuralStructure implements Serializable {
 			}
 
 			this.flat = new FlatNetwork(flatLayers);
+			
+			if( isRBF ) {
+				this.flat.setEndTraining(flatLayers.length-1);
+			}
+			
 			flattenWeights();
 			this.flatUpdate = FlatUpdateNeeded.None;
 		} else
@@ -650,6 +656,44 @@ public class NeuralStructure implements Serializable {
 		this.flatUpdate = FlatUpdateNeeded.None;
 	}
 	
-	
-	
+	private double findNextBias(Layer layer)
+	{
+		double bias = FlatNetwork.NO_BIAS_ACTIVATION;
+
+		if (layer.getNext().size() > 0) {
+			Synapse synapse = network.getStructure()
+					.findNextSynapseByLayerType(layer,
+							BasicLayer.class);
+			if (synapse != null) {
+				Layer nextLayer = synapse.getToLayer();
+				if( nextLayer.hasBias() )
+					bias = nextLayer.getBiasActivation();
+			}
+		}
+		return bias;
+	}	
+
+	private double[] constructRBFParams(RadialBasisFunctionLayer layer)
+	{
+		double[] result = new double[layer.getNeuronCount()+(layer.getNeuronCount()*layer.getDimensions())];
+		
+		int index = 0;
+		
+		// copy radius
+		for(int i=0;i<layer.getRadius().length; i++) {
+			result[index++] = layer.getRadius()[i];
+		}
+		
+		// copy centers
+		for(int i=0;i<layer.getCenter().length;i++)
+		{
+			for(int j=0;j<layer.getCenter()[i].length;j++)
+			{
+				result[index++] = layer.getCenter()[i][j];
+			}
+		}
+		
+		
+		return result;
+	}
 }

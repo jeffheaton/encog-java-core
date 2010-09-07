@@ -28,13 +28,14 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.engine.network.train;
+package org.encog.engine.network.train.gradient;
 
 import org.encog.engine.data.BasicEngineData;
-import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.data.EngineData;
+import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.train.prop.TrainFlatNetworkProp;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.Stopwatch;
@@ -123,7 +124,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	/**
 	 * The owner.
 	 */
-	private final TrainFlatNetwork owner;
+	private final TrainFlatNetworkProp owner;
 
 	/**
 	 * The elapsed time.
@@ -150,7 +151,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 *            The high index to use in the training data.
 	 */
 	public GradientWorkerCPU(final FlatNetwork network,
-			final TrainFlatNetwork owner, final EngineIndexableSet training,
+			final TrainFlatNetworkProp owner, final EngineIndexableSet training,
 			final int low, final int high) {
 		this.network = network;
 		this.training = training;
@@ -209,7 +210,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 					* (ideal[i] - this.actual[i]);
 		}
 
-		for (int i = 0; i < this.layerCounts.length - 1; i++) {
+		for (int i = this.network.getBeginTraining(); i < this.network.getEndTraining(); i++) {
 			processLevel(i);
 		}
 	}

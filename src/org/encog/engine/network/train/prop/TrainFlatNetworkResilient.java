@@ -28,7 +28,7 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.engine.network.train;
+package org.encog.engine.network.train.prop;
 
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.FlatNetwork;
@@ -37,7 +37,7 @@ import org.encog.engine.network.flat.FlatNetwork;
 /**
  * Train a flat network using RPROP.
  */
-public class TrainFlatNetworkResilient extends TrainFlatNetwork {
+public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	/**
 	 * The update values, for the weights and thresholds.
 	 */

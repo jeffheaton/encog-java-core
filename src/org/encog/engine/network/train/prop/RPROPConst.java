@@ -1,4 +1,4 @@
-package org.encog.engine.network.train;
+package org.encog.engine.network.train.prop;
 
 /**
  * Constants used for Resilient Propagation (RPROP) training.

@@ -206,4 +206,18 @@ public final class EngineArray {
 	private EngineArray() {
 
 	}
+
+	public static double[][] arrayCopy(double[][] source) {
+		double[][] result = new double[source.length][source[0].length];
+		
+		for(int row = 0; row<source.length; row++)
+		{
+			for(int col = 0; col<source[0].length; col++)
+			{
+				result[row][col] = source[row][col];
+			}
+		}
+		
+		return result;
+	}
 }

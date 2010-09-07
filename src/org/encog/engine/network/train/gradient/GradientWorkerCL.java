@@ -28,10 +28,12 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.engine.network.train;
+package org.encog.engine.network.train.gradient;
 
 import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.train.TrainFlatNetwork;
+import org.encog.engine.network.train.prop.TrainFlatNetworkProp;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
 import org.encog.engine.opencl.kernels.TrainingWorkload;
@@ -76,7 +78,7 @@ public class GradientWorkerCL implements FlatGradientWorker {
 	/**
 	 * The owner.
 	 */
-	private final TrainFlatNetwork owner;
+	private final TrainFlatNetworkProp owner;
 
 	/**
 	 * The elapsed time, for performance.
@@ -115,7 +117,7 @@ public class GradientWorkerCL implements FlatGradientWorker {
 	 *            The high index to use in the training data.
 	 */
 	public GradientWorkerCL(final EncogCLDevice device,
-			final FlatNetwork network, final TrainFlatNetwork owner,
+			final FlatNetwork network, final TrainFlatNetworkProp owner,
 			final EngineIndexableSet training, final int low, final int high) {
 		this.network = network;
 		this.training = training;

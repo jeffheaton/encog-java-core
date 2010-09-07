@@ -30,7 +30,7 @@
 
 package org.encog.neural.networks.training.propagation.resilient;
 
-import org.encog.engine.network.train.TrainFlatNetworkResilient;
+import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;

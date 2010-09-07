@@ -63,7 +63,7 @@ public final class ActivationFunctions {
 			// ACTIVATION_LOG - 9
 			{},
 			// ACTIVATION_GAUSSIAN - 10
-			{ "center", "peak", "width" } };
+			{ "center", "peak", "width" }};
 
 	/**
 	 * The offset to the parameter that holds the linear slope.

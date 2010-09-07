@@ -28,65 +28,91 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.engine.network.train;
+package org.encog.engine.network.train.prop;
 
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.FlatNetwork;
 
-
 /**
- * Train the flat network using Manhattan update rule.
+ * Train a flat network, using backpropagation.
  */
-public class TrainFlatNetworkManhattan extends TrainFlatNetwork {
-
-	/**
-	 * The zero tolerance to use.
-	 */
-	private final double zeroTolerance;
+public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 
 	/**
 	 * The learning rate.
 	 */
-	private double learningRate;
+	private final double learningRate;
 
 	/**
-	 * Construct a trainer for flat networks to use the Manhattan update rule.
+	 * The momentum.
+	 */
+	private final double momentum;
+
+	/**
+	 * The last delta values.
+	 */
+	private final double[] lastDelta;
+
+	/**
+	 * Construct a backprop trainer for flat networks.
 	 * 
 	 * @param network
 	 *            The network to train.
 	 * @param training
-	 *            The training data to use.
+	 *            The training data.
 	 * @param learningRate
-	 *            The learning rate to use.
+	 *            The learning rate.
+	 * @param momentum
+	 *            The momentum.
 	 */
-	public TrainFlatNetworkManhattan(final FlatNetwork network,
-			final EngineDataSet training, final double learningRate) {
+	public TrainFlatNetworkBackPropagation(final FlatNetwork network,
+			final EngineDataSet training, final double learningRate,
+			final double momentum) {
 		super(network, training);
+		this.momentum = momentum;
 		this.learningRate = learningRate;
-		this.zeroTolerance = RPROPConst.DEFAULT_ZERO_TOLERANCE;
+		this.lastDelta = new double[network.getWeights().length];
 	}
 
 	/**
-	 * Calculate the amount to change the weight by.
+	 * @return the learningRate
+	 */
+	public double getLearningRate() {
+		return this.learningRate;
+	}
+
+	/**
+	 * @return the momentum
+	 */
+	public double getMomentum() {
+		return this.momentum;
+	}
+
+	/**
+	 * Update a weight.
 	 * 
 	 * @param gradients
 	 *            The gradients.
 	 * @param lastGradient
 	 *            The last gradients.
 	 * @param index
-	 *            The index to update.
-	 * @return The amount to change the weight by.
+	 *            The index.
+	 * @return The weight delta.
 	 */
 	@Override
 	public double updateWeight(final double[] gradients,
 			final double[] lastGradient, final int index) {
-		if (Math.abs(gradients[index]) < this.zeroTolerance) {
-			return 0;
-		} else if (gradients[index] > 0) {
-			return this.learningRate;
-		} else {
-			return -this.learningRate;
-		}
+		final double delta = (gradients[index] * this.learningRate)
+				+ (this.lastDelta[index] * this.momentum);
+		this.lastDelta[index] = delta;
+		return delta;
 	}
 
+	/**
+	 * @return The last deltas.
+	 */
+	public double[] getLastDelta() {
+		return lastDelta;
+	}
+	
 }

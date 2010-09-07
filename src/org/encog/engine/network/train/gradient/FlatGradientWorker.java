@@ -28,7 +28,7 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.engine.network.train;
+package org.encog.engine.network.train.gradient;
 
 import org.encog.engine.concurrency.EngineTask;
 import org.encog.engine.network.flat.FlatNetwork;

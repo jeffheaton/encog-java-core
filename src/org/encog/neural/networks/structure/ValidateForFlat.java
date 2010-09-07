@@ -89,9 +89,8 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 			if (layer.getNext().size() > 2) {
 				return "To convert to flat a network must have at most two outbound synapses.";
 			}
-			
-			// && layer.getClass()!=RadialBasisFunctionLayer.class
-			if (layer.getClass()!=ContextLayer.class && layer.getClass()!=BasicLayer.class  ) {
+			 
+			if (layer.getClass()!=ContextLayer.class && layer.getClass()!=BasicLayer.class  && layer.getClass()!=RadialBasisFunctionLayer.class ) {
 				return "To convert to flat a network must have only BasicLayer and ContextLayer layers.";
 			}
 		}

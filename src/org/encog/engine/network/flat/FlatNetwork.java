@@ -38,8 +38,11 @@ import org.encog.engine.EngineNeuralNetwork;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.util.BoundMath;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.basic.BasicNeuralData;
 
 /**
  * Implements a flat (vector based) neural network in the Encog Engine. This is
@@ -151,6 +154,16 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 */
 	private double[] biasActivation;
 
+	/**
+	 * The layer that training should begin on.
+	 */
+	private int beginTraining;
+	
+	/**
+	 * The layer that training should end on.
+	 */
+	private int endTraining;
+	
 	/**
 	 * Default constructor.
 	 */
@@ -280,7 +293,11 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	@Override
 	public FlatNetwork clone() {
 		final FlatNetwork result = new FlatNetwork();
-
+		cloneFlatNetwork(result);
+		return result;
+	}
+	
+	public void cloneFlatNetwork(FlatNetwork result) {
 		result.inputCount = this.inputCount;
 		result.layerCounts = EngineArray.arrayCopy(this.layerCounts);
 		result.layerIndex = EngineArray.arrayCopy(this.layerIndex);
@@ -299,7 +316,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		result.weights = this.weights;
 		result.activationType = this.activationType;
 		result.params = EngineArray.arrayCopy(this.params);
-		return result;
+		result.beginTraining = this.beginTraining;
+		result.endTraining = this.endTraining;
 	}
 
 	/**
@@ -316,13 +334,15 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 		EngineArray.arrayCopy(input, 0, this.layerOutput, sourceIndex,
 				this.inputCount);
-
+		
 		for (int i = this.layerIndex.length - 1; i > 0; i--) {
 			computeLayer(i);
 		}
-
+	
 		EngineArray.arrayCopy(this.layerOutput, 0, output, 0, this.outputCount);
 	}
+	
+
 
 	/**
 	 * Calculate a layer.
@@ -330,7 +350,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 * @param currentLayer
 	 *            The layer to calculate.
 	 */
-	private void computeLayer(final int currentLayer) {
+	protected void computeLayer(final int currentLayer) {
 
 		final int inputIndex = this.layerIndex[currentLayer];
 		final int outputIndex = this.layerIndex[currentLayer - 1];
@@ -541,8 +561,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		final int layerCount = layers.length;
 
 		for (int i = 0; i < layerCount; i++) {
-			paramCount += ActivationFunctions.getParams(layers[i]
-					.getActivation()).length;
+			paramCount += layers[i].getParams().length;
 		}
 
 		this.inputCount = layers[0].getCount();
@@ -613,6 +632,9 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 			index++;
 		}
+		
+		this.beginTraining = 0;
+		this.endTraining = this.layerCounts.length-1;
 
 		this.weights = new double[weightCount];
 		this.layerOutput = new double[neuronCount];
@@ -639,4 +661,34 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			this.weights[i] = (Math.random() * (hi - lo)) + lo;
 		}
 	}
+
+	/**
+	 * @return the beginTraining
+	 */
+	public int getBeginTraining() {
+		return beginTraining;
+	}
+
+	/**
+	 * @param beginTraining the beginTraining to set
+	 */
+	public void setBeginTraining(int beginTraining) {
+		this.beginTraining = beginTraining;
+	}
+
+	/**
+	 * @return the endTraining
+	 */
+	public int getEndTraining() {
+		return endTraining;
+	}
+
+	/**
+	 * @param endTraining the endTraining to set
+	 */
+	public void setEndTraining(int endTraining) {
+		this.endTraining = endTraining;
+	}
+	
+	
 }
