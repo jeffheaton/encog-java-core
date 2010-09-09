@@ -76,11 +76,7 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 		if (outputLayer == null) {
 			return "To convert to a flat network, there must be an output layer.";
 		}
-		
-		if( network.getStructure().isConnectionLimited() ) {
-			return "To convert to a flat network there can be no missing connections between layers.";
-		}
-		
+				
 		if( !(network.getLogic() instanceof FeedforwardLogic) ) {
 			return "To convert to flat, must be using FeedforwardLogic or SimpleRecurrentLogic.";
 		}

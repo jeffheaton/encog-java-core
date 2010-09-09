@@ -657,6 +657,8 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 			}
 			synapse.getMatrix().set(fromNeuron, toNeuron, 0);
 		}
+		
+		this.structure.setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
 	/**

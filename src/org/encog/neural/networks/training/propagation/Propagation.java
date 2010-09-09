@@ -34,21 +34,12 @@ import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
-import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
-import org.encog.engine.network.train.prop.TrainFlatNetworkManhattan;
-import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
 import org.encog.engine.opencl.EncogCLDevice;
-import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.FlatUpdateNeeded;
-import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.neural.networks.structure.ValidateForFlat;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
-import org.encog.neural.networks.training.propagation.back.Backpropagation;
-import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation;
-import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.EncogValidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -209,50 +200,6 @@ public abstract class Propagation extends BasicTraining {
 		this.numThreads = numThreads;
 	}
 	
-	public void flatten()
-	{
-		ValidateForFlat val = new ValidateForFlat();
-		if( val.isValid(this.network)==null )
-		{
-			this.network.getStructure().updateFlatNetwork();
-			
-			if( this instanceof Backpropagation )
-			{
-				Backpropagation back = (Backpropagation)this;
-				TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
-						this.network.getStructure().getFlat(),
-						this.getTraining(),
-						back.getLearningRate(),
-						back.getMomentum());
-				this.flatTraining = backFlat;
-				EngineArray.arrayCopy(back.getLastDelta(),backFlat.getLastDelta());
-				this.flatTraining.setTargetDevice(this.targetDevice);
-			}
-			else if( this instanceof ResilientPropagation )
-			{
-				ResilientPropagation rprop = (ResilientPropagation)this;
-				TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
-						this.network.getStructure().getFlat(),
-						this.getTraining()); 
-				this.flatTraining = rpropFlat;
-				
-				//EngineArray.arrayCopy(rprop.getLastGradient(),rpropFlat.getLastGradient());
-				//EngineArray.arrayCopy(rprop.getUpdateValues(),rpropFlat.getUpdateValues());
-				this.flatTraining.setTargetDevice(this.targetDevice);
-			}
-			else if( this instanceof ManhattanPropagation )
-			{
-				this.flatTraining = new TrainFlatNetworkManhattan(
-						this.network.getStructure().getFlat(),
-						this.getTraining(),
-						((ManhattanPropagation)this).getLearningRate());
-				this.flatTraining.setTargetDevice(this.targetDevice);
-			}
-		}
-		else {
-			throw new TrainingError("Backprop, SCG, RPROP and Manhattan can only be used with flat-compatible networks.");
-		}
-	}
 	
 	/**
 	 * Should be called after training has completed and the iteration method

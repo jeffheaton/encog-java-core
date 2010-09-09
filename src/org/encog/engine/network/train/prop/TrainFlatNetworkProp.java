@@ -137,7 +137,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 
 		this.training = training;
 		this.network = network;
-		
+
 		this.gradients = new double[this.network.getWeights().length];
 		this.lastGradient = new double[this.network.getWeights().length];
 
@@ -267,13 +267,12 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		// handle CPU
 		for (final IntRange r : determine.getCPURanges()) {
 			this.workers[index++] = new GradientWorkerCPU(this.network.clone(),
-					this, this.indexable.openAdditional(), r.getLow(), r
-							.getHigh());
+					this, this.indexable.openAdditional(), r.getLow(),
+					r.getHigh());
 		}
 	}
-	
-	public void calculateGradients()
-	{
+
+	public void calculateGradients() {
 		if (this.workers == null) {
 			init();
 		}
@@ -294,7 +293,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		} else {
 			this.workers[0].run();
 		}
-		
+
 		this.currentError = this.totalError / this.workers.length;
 
 	}
@@ -304,11 +303,15 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	public void iteration() {
 		calculateGradients();
-		learn();
 		
+		if( this.network.isLimited() )
+			learnLimited();
+		else
+			learn();
+
 		for (final FlatGradientWorker worker : this.workers) {
-			EngineArray.arrayCopy(this.network.getWeights(), 0, worker
-					.getWeights(), 0, this.network.getWeights().length);
+			EngineArray.arrayCopy(this.network.getWeights(), 0,
+					worker.getWeights(), 0, this.network.getWeights().length);
 		}
 
 		copyContexts();
@@ -332,13 +335,32 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	}
 
 	/**
+	 * Apply and learn. This is the same as learn, but it checks to see if any
+	 * of the weights are below the limit threshold. In this case, these weights
+	 * are zeroed out. Having two methods allows the regular learn method, which
+	 * is what is usually use, to be as fast as possible.
+	 */
+	protected void learnLimited() {
+		double limit = this.network.getConnectionLimit();
+		final double[] weights = this.network.getWeights();
+		for (int i = 0; i < this.gradients.length; i++) {
+			if (weights[i] < limit)
+				weights[i] = 0;
+			else
+				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+			this.gradients[i] = 0;
+		}
+	}
+
+	/**
 	 * Called by the worker threads to report the progress at each step.
 	 * 
 	 * @param gradients
 	 *            The gradients from that worker.
 	 * @param error
 	 *            The error for that worker.
-	 * @param ex The exception.
+	 * @param ex
+	 *            The exception.
 	 */
 	public void report(final double[] gradients, final double error,
 			final Throwable ex) {
@@ -367,7 +389,9 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 
 	/**
 	 * Set the target device.
-	 * @param targetDevice The target device.
+	 * 
+	 * @param targetDevice
+	 *            The target device.
 	 */
 	public void setTargetDevice(final EncogCLDevice targetDevice) {
 		this.targetDevice = targetDevice;
@@ -394,7 +418,5 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	public double[] getLastGradient() {
 		return lastGradient;
 	}
-	
-	
 
 }

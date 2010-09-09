@@ -606,6 +606,11 @@ public class NeuralStructure implements Serializable {
 			}
 			
 			flattenWeights();
+			
+			if( this.isConnectionLimited() ) {
+				
+			}
+			
 			this.flatUpdate = FlatUpdateNeeded.None;
 		} else
 			this.flatUpdate = FlatUpdateNeeded.Never;
@@ -620,6 +625,13 @@ public class NeuralStructure implements Serializable {
 
 			EngineArray.arrayCopy(sourceWeights, targetWeights);
 			this.flatUpdate = FlatUpdateNeeded.None;
+			
+			// handle limited connection networks
+			if( this.connectionLimited ) {
+				this.flat.setConnectionLimit(this.connectionLimit);
+			} else {
+				this.flat.clearConnectionLimit();
+			}
 		}
 	}
 

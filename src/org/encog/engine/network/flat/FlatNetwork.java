@@ -33,6 +33,7 @@ package org.encog.engine.network.flat;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.engine.EncogEngine;
 import org.encog.engine.EncogEngineError;
 import org.encog.engine.EngineNeuralNetwork;
 import org.encog.engine.data.BasicEngineData;
@@ -162,6 +163,16 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	private int endTraining;
 	
 	/**
+	 * Does this network have some connections disabled.
+	 */
+	private boolean isLimited;
+	
+	/**
+	 * The limit, under which, all a cconnection is not considered to exist.
+	 */
+	private double connectionLimit;
+	
+	/**
 	 * Default constructor.
 	 */
 	public FlatNetwork() {
@@ -229,6 +240,9 @@ public class FlatNetwork implements EngineNeuralNetwork {
 					FlatNetwork.NO_BIAS_ACTIVATION, params);
 		}
 
+		this.isLimited = false;
+		this.connectionLimit = 0.0;
+		
 		init(layers);
 	}
 
@@ -686,6 +700,33 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	public void setEndTraining(int endTraining) {
 		this.endTraining = endTraining;
 	}
+
+	/**
+	 * @return the connectionLimit
+	 */
+	public double getConnectionLimit() {
+		return connectionLimit;
+	}
+
+	/**
+	 * @param connectionLimit the connectionLimit to set
+	 */
+	public void setConnectionLimit(double connectionLimit) {
+		this.connectionLimit = connectionLimit;
+		if( this.connectionLimit>EncogEngine.DEFAULT_ZERO_TOLERANCE )
+			this.isLimited = true;
+	}
+
+	/**
+	 * @return the isLimited
+	 */
+	public boolean isLimited() {
+		return isLimited;
+	}
 	
+	public void clearConnectionLimit() {
+		this.connectionLimit = 0.0;
+		this.isLimited = false;
+	}
 	
 }
