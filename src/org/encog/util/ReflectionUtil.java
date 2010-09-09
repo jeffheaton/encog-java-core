@@ -254,15 +254,28 @@ public final class ReflectionUtil {
 	 * @param value The value to get the enum for.
 	 * @return The enum that was resolved.
 	 */
-	public static Object resolveEnum(Field field, String value) {
-		Class<?> type = field.getType();
+	public static Object resolveEnum(final Field field, final String value) {
+		final Class< ? > type = field.getType();
 		Object[] objs = type.getEnumConstants();
-		for( Object obj: objs)
-		{
-			if( obj.toString().equals(value))
+		for (Object obj : objs) {
+			if (obj.toString().equals(value)) {
 				return obj;
+			}
 		}
 		return null;
 	}
-
+	
+	/**
+	 * Generate a hash code for an object.  Return 0 for null objects.
+	 * @param <T> The type of object to generate for.
+	 * @param o The object to generate.
+	 * @return The hash code.
+	 */
+	public static <T> int safeHashCode(final T o) {
+		if (o == null) {
+			return 0;
+		} else {
+			return o.hashCode();
+		}
+	}
 }

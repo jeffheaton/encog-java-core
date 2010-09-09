@@ -30,6 +30,7 @@
 
 package org.encog.neural.data.market;
 
+import org.encog.util.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,17 +123,11 @@ public class TickerSymbol {
 	}
 
 	/**
-	 * Generate a valid hash code.
-	 * 
-	 * @return The hash code.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int hashCode() {
-		final StringBuilder str = new StringBuilder(getSymbol());
-		if (this.exchange != null) {
-			str.append(this.exchange);
-		}
-		return str.hashCode();
+		return ReflectionUtil.safeHashCode(this.symbol) 
+		+ ReflectionUtil.safeHashCode(this.exchange);
 	}
-
 }
