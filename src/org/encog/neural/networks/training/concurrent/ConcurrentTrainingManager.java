@@ -3,17 +3,27 @@ package org.encog.neural.networks.training.concurrent;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.concurrency.EngineConcurrency;
-import org.encog.engine.concurrency.TaskGroup;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.Train;
+import org.encog.ConsoleStatusReportable;
+import org.encog.Encog;
+import org.encog.NullStatusReportable;
+import org.encog.engine.StatusReportable;
+import org.encog.engine.opencl.EncogCLDevice;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformer;
+import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformerCPU;
+import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformerOpenCL;
 
 public class ConcurrentTrainingManager implements Runnable {
 
 	private List<ConcurrentTrainingPerformer> performers = new ArrayList<ConcurrentTrainingPerformer>();
 	private List<TrainingJob> queue = new ArrayList<TrainingJob>();
 	private Thread thread;
+	private static ConcurrentTrainingManager instance;
+	private StatusReportable report = new NullStatusReportable();
+
+	private ConcurrentTrainingManager() {
+
+	}
 
 	public void clearPerformers() {
 		this.performers.clear();
@@ -40,9 +50,8 @@ public class ConcurrentTrainingManager implements Runnable {
 				if (performer.ready())
 					result = performer;
 			}
-			
-			if( result==null )
-			{
+
+			if (result == null) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -53,14 +62,52 @@ public class ConcurrentTrainingManager implements Runnable {
 		return result;
 	}
 
-	public void run()
-	{		
-		for(TrainingJob job: this.queue) 
-		{
+	public void run() {
+
+		this.report.report(this.queue.size(), 0, "Starting first job");
+
+		int count = 0;
+		for (TrainingJob job : this.queue) {
 			// find a performer
 			ConcurrentTrainingPerformer perform = this.waitForFreePerformer();
 			perform.perform(job);
-		}		
+			count++;
+			this.report.report(this.queue.size(), count, "Jobs submitted: "
+					+ count + " of " + this.queue.size());
+			reportErrors();
+		}
+
+		// now wait for all performers to finish
+		boolean done = false;
+
+		this.report.report(this.queue.size(), count,
+				"No more jobs to submit, waiting for last job.");
+		while (!done) {
+			boolean foundOne = false;
+			for (ConcurrentTrainingPerformer performer : this.performers) {
+				if (!performer.ready())
+					foundOne = true;
+			}
+			if (foundOne) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+
+				}
+			} else {
+				done = true;
+			}
+		}
+
+		this.report.report(this.queue.size(), count, "All training done.");
+	}
+
+	private void reportErrors() {
+		for (TrainingJob job : this.queue) {
+			if (job.getError() != null) {
+				throw new NeuralNetworkError(job.getError());
+			}
+		}
 	}
 
 	public void start() {
@@ -74,7 +121,56 @@ public class ConcurrentTrainingManager implements Runnable {
 		} catch (InterruptedException e) {
 
 		}
-		
+
+	}
+
+	public static ConcurrentTrainingManager getInstance() {
+		if (ConcurrentTrainingManager.instance == null)
+			ConcurrentTrainingManager.instance = new ConcurrentTrainingManager();
+		return ConcurrentTrainingManager.instance;
+	}
+
+	public void setReport(StatusReportable report) {
+		this.report = report;
+	}
+
+	public void detectPerformers() {
+		detectPerformers(false);
+	}
+
+	public void detectPerformers(boolean splitCores) {
+		boolean useCPU = true;
+		this.clearPerformers();
+
+		// handle OpenCL mode
+		if (Encog.getInstance().getCL() != null) {
+
+			// should we let OpenCL run the CPU?
+			if (Encog.getInstance().getCL().areCPUsPresent())
+				useCPU = false;
+
+			// add a performer for each OpenCL device.
+			for (EncogCLDevice device : Encog.getInstance().getCL()
+					.getDevices()) {
+				addPerformer(new ConcurrentTrainingPerformerOpenCL(device));
+			}
+		}
+
+		// now create CPU performers
+		if (useCPU) {
+			int threads;
+
+			if (splitCores) {
+				Runtime runtime = Runtime.getRuntime();
+				threads = runtime.availableProcessors();
+			} else {
+				threads = 1;
+			}
+
+			for (int i = 0; i < threads; i++) {
+				addPerformer(new ConcurrentTrainingPerformerCPU());
+			}
+		}
 	}
 
 }

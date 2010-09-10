@@ -19,12 +19,19 @@ public class ConcurrentTrainingPerformerCPU implements ConcurrentTrainingPerform
 		{
 			throw new NeuralNetworkError("Performer is already performing a job.");
 		}
+		
+		setupJob(job);
 				
 		this.ready.set(false);
 		this.currentJob = job;
 		
 		Thread t = new Thread(this);
 		t.start();
+	}
+	
+	protected void setupJob(TrainingJob job)
+	{
+		// nothing to be done
 	}
 
 	@Override
@@ -41,7 +48,6 @@ public class ConcurrentTrainingPerformerCPU implements ConcurrentTrainingPerform
 			while( currentJob.shouldContinue() ) {
 				train.iteration();
 				interation++;
-				System.out.println(interation);
 			}		
 		}
 		catch(Throwable t)
