@@ -370,17 +370,16 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 		int index = this.weightIndex[currentLayer - 1];
 
-		for (int i = 0; i < outputSize; i++) {
-			this.layerOutput[i + outputIndex] = 0;
-		}
-
+		final int limitX = outputIndex + outputSize;
+		final int limitY = inputIndex + inputSize;
+		
 		// weight values
-		for (int x = 0; x < outputSize; x++) {
+		for (int x = outputIndex; x < limitX; x++) {
 			double sum = 0;
-			for (int y = 0; y < inputSize; y++) {
-				sum += this.weights[index++] * this.layerOutput[inputIndex + y];
+			for (int y = inputIndex; y < limitY; y++) {
+				sum += this.weights[index++] * this.layerOutput[y];
 			}
-			this.layerOutput[outputIndex + x] += sum;
+			this.layerOutput[x] = sum;
 		}
 
 		ActivationFunctions.calculateActivation(
@@ -390,6 +389,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 		// update context values
 		final int offset = this.contextTargetOffset[currentLayer];
+
 		for (int x = 0; x < this.contextTargetSize[currentLayer]; x++) {
 			this.layerOutput[offset + x] = this.layerOutput[outputIndex + x];
 		}
