@@ -385,7 +385,6 @@ org.encog.util.ReflectionUtil
 org.encog.util.SerializeObject
 org.encog.util.simple.EncogUtility
 org.encog.util.simple.TrainingDialog
-org.encog.util.Stopwatch
 org.encog.util.time.DateUtil
 org.encog.util.time.EnglishTimeUnitNames
 org.encog.util.time.TimeSpan
