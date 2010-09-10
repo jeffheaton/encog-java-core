@@ -67,7 +67,7 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 		BasicNetwork network = (BasicNetwork)eml;
 		
 		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
+		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
 
 		if (inputLayer == null) {
 			return "To convert to a flat network, there must be an input layer.";
