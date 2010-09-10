@@ -56,6 +56,7 @@ import org.encog.normalize.output.OutputFieldGrouped;
 import org.encog.normalize.output.RequireTwoPass;
 import org.encog.normalize.segregate.Segregator;
 import org.encog.normalize.target.NormalizationStorage;
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -129,7 +130,7 @@ import org.encog.util.csv.ReadCSV;
  * 
  */
 @EGReferenceable
-public class DataNormalization implements EncogPersistedObject {
+public class DataNormalization extends BasicPersistedObject {
 
 	/**
 	 * The serial ID.
@@ -154,14 +155,7 @@ public class DataNormalization implements EncogPersistedObject {
 	 */
 	@EGIgnore
 	private final Collection<ReadCSV> readCSV = new ArrayList<ReadCSV>();
-	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	@EGIgnore
-	private EncogCollection encogCollection;
-
-	
+		
 	/**
 	 * Hold a map between the InputFieldCSV objects and the corresponding
 	 * ReadCSV object. There will likely be many fields read from a single file.
@@ -245,16 +239,6 @@ public class DataNormalization implements EncogPersistedObject {
 	 * single record does not produce a message.
 	 */
 	private int lastReport;
-
-	/**
-	 * The name of this object.
-	 */
-	private String name;
-
-	/**
-	 * The description of this object.
-	 */
-	private String description;
 
 	/**
 	 * Add an input field.
@@ -371,13 +355,6 @@ public class DataNormalization implements EncogPersistedObject {
 		}
 
 		return result;
-	}
-
-	/**
-	 * @return A persistor to persist this Normalization object.
-	 */
-	public Persistor createPersistor() {
-		return new GenericPersistor(DataNormalization.class);
 	}
 
 	/**
@@ -515,13 +492,6 @@ public class DataNormalization implements EncogPersistedObject {
 	}
 
 	/**
-	 * @return The description of this object.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
 	 * @return The object groups.
 	 */
 	public Set<OutputFieldGroup> getGroups() {
@@ -533,13 +503,6 @@ public class DataNormalization implements EncogPersistedObject {
 	 */
 	public Collection<InputField> getInputFields() {
 		return this.inputFields;
-	}
-
-	/**
-	 * @return The name of this object.
-	 */
-	public String getName() {
-		return this.name;
 	}
 
 	/**
@@ -851,26 +814,6 @@ public class DataNormalization implements EncogPersistedObject {
 	}
 
 	/**
-	 * Set the current description.
-	 * 
-	 * @param description
-	 *            The description.
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * Set the name of this object.
-	 * 
-	 * @param name
-	 *            The name.
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	/**
 	 * Set the object that this one is reporting to.
 	 * 
 	 * @param report
@@ -915,19 +858,5 @@ public class DataNormalization implements EncogPersistedObject {
 		}
 
 		return false;
-	}
-	
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
 	}
 }

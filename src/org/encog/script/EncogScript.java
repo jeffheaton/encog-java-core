@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -43,46 +44,17 @@ import org.encog.persist.persistors.EncogScriptPersistor;
 /**
  * Hold one Encog script program.  Can be saved to an Encog collection.
  */
-public class EncogScript implements EncogPersistedObject {
+public class EncogScript extends BasicPersistedObject {
 
 	public static final String TYPE_JAVASCRIPT = "JavaScript";
 	
-	private String name;
-	private String description;
 	private String source;
 	private String language = TYPE_JAVASCRIPT;
 	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private EncogCollection encogCollection;
-
 	
 	@Override
 	public Persistor createPersistor() {
 		return new EncogScriptPersistor();
-	}
-
-	@Override
-	public String getDescription() {
-		return this.description;
-	}
-
-	@Override
-	public String getName() {
-		return this.name;
-	}
-
-	@Override
-	public void setDescription(String description) {
-		this.description = description;
-		
-	}
-
-	@Override
-	public void setName(String name) {
-		this.name = name;
-		
 	}
 
 	/**
@@ -99,20 +71,6 @@ public class EncogScript implements EncogPersistedObject {
 		this.source = source;
 	}
 	
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
-	}
-
 	/**
 	 * @return the language
 	 */

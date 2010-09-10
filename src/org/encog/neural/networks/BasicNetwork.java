@@ -38,7 +38,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.encog.Encog;
-import org.encog.EncogError;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
@@ -56,7 +55,7 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
-import org.encog.persist.EncogCollection;
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.ObjectCloner;
@@ -79,7 +78,7 @@ import org.slf4j.LoggerFactory;
  * Once the neural network has been completely constructed.
  *
  */
-public class BasicNetwork implements Serializable, Network, ContextClearable {
+public class BasicNetwork extends BasicPersistedObject implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Tag used for the input layer.
@@ -97,11 +96,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	public static final String TAG_LIMIT = "CONNECTION_LIMIT";
 
 	public static final String DEFAULT_CONNECTION_LIMIT = "0.0000000001";
-
-	/**
-	 * The Encog collection.
-	 */
-	private transient EncogCollection encogCollection;
 
 	/**
 	 * Serial id for this class.
@@ -136,16 +130,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 		return win;
 	}
-
-	/**
-	 * The description of this object.
-	 */
-	private String description;
-
-	/**
-	 * The name of this object.
-	 */
-	private String name;
 
 	/**
 	 * Holds the structure of the network. This keeps the network from having to
@@ -340,6 +324,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 *
 	 * @return The newly created persistor.
 	 */
+	@Override
 	public Persistor createPersistor() {
 		return new BasicNetworkPersistor();
 	}
@@ -372,13 +357,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	}
 
 	/**
-	 * @return The description for this object.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
 	 * Get the layer specified by the tag.
 	 *
 	 * @param tag
@@ -401,13 +379,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 */
 	public NeuralLogic getLogic() {
 		return this.logic;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
 	}
 
 	/**
@@ -522,16 +493,6 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	}
 
 	/**
-	 * Set the description for this object.
-	 *
-	 * @param theDescription
-	 *            The description.
-	 */
-	public void setDescription(final String theDescription) {
-		this.description = theDescription;
-	}
-
-	/**
 	 * Set the type of logic this network should use.
 	 *
 	 * @param logic
@@ -539,15 +500,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 */
 	public void setLogic(final NeuralLogic logic) {
 		this.logic = logic;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
+	}	
 
 	/**
 	 * Set a property as a double.
@@ -678,22 +631,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	}
 
 	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection;
-	}
-
-	/**
-	 * @return The number of input neurons, or zero if this network type does
-	 *         not support input neurons.
+	 * {@inheritDoc}
 	 */
 	public int getInputCount() {
 		Layer layer = this.layerTags.get(BasicNetwork.TAG_INPUT);
@@ -704,8 +642,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	}
 
 	/**
-	 * @return The number of output neurons, or zero if this network type does
-	 *         not support output neurons.
+	 * {@inheritDoc}
 	 */
 	public int getOutputCount() {
 		Layer layer = this.layerTags.get(BasicNetwork.TAG_OUTPUT);
@@ -715,6 +652,9 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 			return layer.getNeuronCount();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void compute(double[] input, double[] output) {
 		BasicNeuralData input2 = new BasicNeuralData(input);

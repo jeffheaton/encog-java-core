@@ -31,6 +31,7 @@
 package org.encog.neural.networks.synapse;
 
 import org.encog.neural.networks.layers.Layer;
+import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.EncogCollection;
 
 /**
@@ -42,7 +43,8 @@ import org.encog.persist.EncogCollection;
  * @author jheaton
  *
  */
-public abstract class BasicSynapse implements Synapse {
+public abstract class BasicSynapse extends BasicPersistedSubObject 
+	implements Synapse  {
 
 	/**
 	 * The serial ID.
@@ -66,16 +68,6 @@ public abstract class BasicSynapse implements Synapse {
 	public abstract Object clone();
 
 	/**
-	 * The EncogPersistedObject requires a name and description, however, these
-	 * are not used on synapses.
-	 *
-	 * @return Not used.
-	 */
-	public String getDescription() {
-		return null;
-	}
-
-	/**
 	 * @return The from layer.
 	 */
 	public Layer getFromLayer() {
@@ -87,16 +79,6 @@ public abstract class BasicSynapse implements Synapse {
 	 */
 	public int getFromNeuronCount() {
 		return this.fromLayer.getNeuronCount();
-	}
-
-	/**
-	 * The EncogPersistedObject requires a name and description, however, these
-	 * are not used on synapses.
-	 *
-	 * @return Not used.
-	 */
-	public String getName() {
-		return null;
 	}
 
 	/**
@@ -119,17 +101,6 @@ public abstract class BasicSynapse implements Synapse {
 	 */
 	public boolean isSelfConnected() {
 		return this.fromLayer == this.toLayer;
-	}
-
-	/**
-	 * The EncogPersistedObject requires a name and description, however, these
-	 * are not used on synapses.
-	 *
-	 * @param d
-	 *            Not used.
-	 */
-	public void setDescription(final String d) {
-
 	}
 
 	/**
@@ -161,18 +132,6 @@ public abstract class BasicSynapse implements Synapse {
 	 */
 	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
-	}
-
-	@Override
-	public EncogCollection getCollection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setCollection(EncogCollection collection) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**

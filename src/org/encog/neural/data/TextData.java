@@ -30,6 +30,7 @@
 
 package org.encog.neural.data;
 
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -44,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class TextData implements EncogPersistedObject {
+public class TextData extends BasicPersistedObject {
 	/**
 	 * The serial ID.
 	 */
@@ -54,21 +55,6 @@ public class TextData implements EncogPersistedObject {
 	 * The text data that is stored.
 	 */
 	private String text;
-
-	/**
-	 * The name of this object.
-	 */
-	private String name;
-
-	/**
-	 * The description of this object.
-	 */
-	private String description;
-	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private EncogCollection encogCollection;
 
 	/**
 	 * The logging object.
@@ -100,45 +86,12 @@ public class TextData implements EncogPersistedObject {
 	}
 
 	/**
-	 * @return The description of this object.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
-	 * @return The name of this object.
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
 	 * @return The text held by this object.
 	 */
 	public String getText() {
 		return this.text;
 	}
 
-	/**
-	 * Set the description of this object.
-	 * 
-	 * @param description
-	 *            The description of this object.
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * Set the name of this object.
-	 * 
-	 * @param name
-	 *            The name of this object.
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
 
 	/**
 	 * Set the text held by this object.
@@ -149,20 +102,4 @@ public class TextData implements EncogPersistedObject {
 	public void setText(final String text) {
 		this.text = text;
 	}
-	
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
-	}
-
-
 }

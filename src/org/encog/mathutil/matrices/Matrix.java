@@ -35,6 +35,7 @@ import java.io.Serializable;
 import org.encog.Encog;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.mathutil.matrices.decomposition.QRDecomposition;
+import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -46,7 +47,8 @@ import org.slf4j.LoggerFactory;
  * neural network processing. Many of the neural network classes make use of the
  * matrix classes in this package.
  */
-public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
+public class Matrix extends BasicPersistedSubObject
+	implements Cloneable, Serializable {
 
 	/**
 	 * Serial id for this class.
@@ -59,10 +61,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(Matrix.class);
 
-	/**
-	 * The Encog collection.
-	 */
-	private EncogCollection encogCollection;
 
 	/**
 	 * Turn an array of doubles into a column matrix.
@@ -92,15 +90,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		return new Matrix(d);
 	}
 
-	/**
-	 * The name of this object.
-	 */
-	private String name;
-
-	/**
-	 * The description for this object.
-	 */
-	private String description;
 
 	/**
 	 * The matrix data.
@@ -368,13 +357,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
 	 * Get a submatrix.
 	 *
 	 * @param i0
@@ -478,13 +460,6 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 			throw new MatrixError("Submatrix indices");
 		}
 		return result;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
 	}
 
 	/**
@@ -650,17 +625,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 				this.matrix[row][col] = source[row][col];
 			}
 		}
-	}
-
-	/**
-	 * Set the description for this object.
-	 *
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
+	}	
 
 	/**
 	 * Set a submatrix.
@@ -762,14 +727,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 		} catch (final ArrayIndexOutOfBoundsException e) {
 			throw new MatrixError("Submatrix indices");
 		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
+	}	
 
 	/**
 	 * Get the size of the array. This is the number of elements it would take
@@ -871,19 +829,4 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 			throw new MatrixError(str);
 		}
 	}
-
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection;
-	}
-
 }

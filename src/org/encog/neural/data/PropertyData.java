@@ -38,6 +38,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -52,27 +53,12 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class PropertyData implements EncogPersistedObject {
+public class PropertyData extends BasicPersistedObject {
 
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -7940416732740995199L;
-
-	/**
-	 * The name.
-	 */
-	private String name;
-
-	/**
-	 * The description.
-	 */
-	private String description;
-	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private EncogCollection encogCollection;
 
 	/**
 	 * The property data.
@@ -95,6 +81,7 @@ public class PropertyData implements EncogPersistedObject {
 		final PropertyData result = new PropertyData();
 		result.setName(getName());
 		result.setDescription(getDescription());
+		result.setCollection(getCollection());
 
 		for (final String key : this.data.keySet()) {
 			result.set(key, get(key));
@@ -148,13 +135,6 @@ public class PropertyData implements EncogPersistedObject {
 	}
 
 	/**
-	 * @return The description of this object.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
 	 * Get a property as a double.
 	 * 
 	 * @param field
@@ -184,13 +164,6 @@ public class PropertyData implements EncogPersistedObject {
 		} catch (final NumberFormatException e) {
 			throw new EncogError(e);
 		}
-	}
-
-	/**
-	 * @return The name of this object.
-	 */
-	public String getName() {
-		return this.name;
 	}
 
 	/**
@@ -227,44 +200,9 @@ public class PropertyData implements EncogPersistedObject {
 	}
 
 	/**
-	 * Set the description for this object.
-	 * 
-	 * @param description
-	 *            The description of this property.
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * Set the name of this property.
-	 * 
-	 * @param name
-	 *            The name of this property.
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return The number of properties defined.
 	 */
 	public int size() {
 		return this.data.size();
 	}
-	
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
-	}
-
 }
