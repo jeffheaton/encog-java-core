@@ -55,16 +55,6 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
 	private List<EngineData> data = new ArrayList<EngineData>();
 
 	/**
-	 * The description for this object.
-	 */
-	private String description;
-
-	/**
-	 * The name for this object.
-	 */
-	private String name;
-
-	/**
 	 * Default constructor.
 	 */
 	public BasicEngineDataSet() {
@@ -150,13 +140,6 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
 	}
 
 	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
 	 * Get the size of the ideal dataset. This is obtained from the first item
 	 * in the list.
 	 * 
@@ -186,13 +169,6 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
 		}
 		final EngineData first = this.data.get(0);
 		return first.getInputArray().length;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
 	}
 
 	/**
@@ -250,21 +226,4 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
 	public void setData(final List<EngineData> data) {
 		this.data = data;
 	}
-
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-
 }

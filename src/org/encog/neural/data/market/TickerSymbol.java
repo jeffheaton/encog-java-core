@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Holds a ticker symbol and exchange. The exchange is for external use only and
  * is not used by Encog currently.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class TickerSymbol {
 
@@ -61,7 +61,7 @@ public class TickerSymbol {
 
 	/**
 	 * Construct a ticker symbol with no exchange.
-	 * 
+	 *
 	 * @param symbol
 	 *            The ticker symbol.
 	 */
@@ -72,7 +72,7 @@ public class TickerSymbol {
 
 	/**
 	 * Construct a ticker symbol with exchange.
-	 * 
+	 *
 	 * @param symbol
 	 *            The ticker symbol.
 	 * @param exchange
@@ -84,11 +84,7 @@ public class TickerSymbol {
 	}
 
 	/**
-	 * Determine if two ticker symbols equal each other.
-	 * 
-	 * @param other
-	 *            The other ticker symbol.
-	 * @return True if the two symbols equal.
+	 * {@inheritDoc}
 	 */
 	public boolean equals(final TickerSymbol other) {
 		// if the symbols do not even match then they are not equal
@@ -127,7 +123,7 @@ public class TickerSymbol {
 	 */
 	@Override
 	public int hashCode() {
-		return ReflectionUtil.safeHashCode(this.symbol) 
+		return ReflectionUtil.safeHashCode(this.symbol)
 		+ ReflectionUtil.safeHashCode(this.exchange);
 	}
 }

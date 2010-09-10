@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -87,7 +87,7 @@ public class AnalyzeNetwork {
 
 	/**
 	 * Construct a network analyze class. Analyze the specified network.
-	 * 
+	 *
 	 * @param network
 	 *            The network to analyze.
 	 */
@@ -109,7 +109,7 @@ public class AnalyzeNetwork {
 
 		for (final Synapse synapse : network.getStructure().getSynapses()) {
 			if (synapse.getMatrixSize() > 0) {
-				for (int from = 0; from 
+				for (int from = 0; from
 				< synapse.getFromNeuronCount(); from++) {
 					for (int to = 0; to < synapse.getToNeuronCount(); to++) {
 						if (network.isConnected(synapse, from, to)) {
@@ -192,7 +192,7 @@ public class AnalyzeNetwork {
 	}
 
 	/**
-	 * @return The network analysis as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 /**
  * This class contains market data that was loaded for a specific ticker symbol
  * and a specific date. This data is usually loaded from external sources.
- * 
+ *
  * @author jheaton
  */
 public class LoadedMarketData implements Comparable<LoadedMarketData> {
@@ -70,7 +70,7 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 
 	/**
 	 * Construct one sample of market data.
-	 * 
+	 *
 	 * @param when
 	 *            When was this sample taken.
 	 * @param ticker
@@ -83,11 +83,7 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 	}
 
 	/**
-	 * Allow market data to be sorted. Sort by date.
-	 * 
-	 * @param other
-	 *            The other market data to compare to.
-	 * @return 0 if equal.
+	 * {@inheritDoc}
 	 */
 	public int compareTo(final LoadedMarketData other) {
 		return getWhen().compareTo(other.getWhen());
@@ -95,7 +91,7 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 
 	/**
 	 * Get one type of market data from this date.
-	 * 
+	 *
 	 * @param type
 	 *            The type of data needed.
 	 * @return The market data for the specified date and of the specified type.
@@ -120,7 +116,7 @@ public class LoadedMarketData implements Comparable<LoadedMarketData> {
 
 	/**
 	 * Set financial data for this date.
-	 * 
+	 *
 	 * @param type
 	 *            The type of data being set.
 	 * @param data

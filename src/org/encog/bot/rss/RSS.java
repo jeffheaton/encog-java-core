@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -64,7 +64,7 @@ public class RSS {
 
 	/**
 	 * Simple utility method that obtains the text of an XML node.
-	 * 
+	 *
 	 * @param n
 	 *            The XML node.
 	 * @return The text of the specified XML node.
@@ -83,7 +83,7 @@ public class RSS {
 	/**
 	 * Simple utility function that converts a RSS formatted date into a Java
 	 * date.
-	 * 
+	 *
 	 * @param datestr
 	 *            The RSS formatted date.
 	 * @return A Java java.util.date
@@ -107,7 +107,7 @@ public class RSS {
 	/**
 	 * All of the attributes for this RSS document.
 	 */
-	private final Map<String, String> attributes 
+	private final Map<String, String> attributes
 		= new HashMap<String, String>();
 
 	/**
@@ -117,7 +117,7 @@ public class RSS {
 
 	/**
 	 * Get the list of attributes.
-	 * 
+	 *
 	 * @return the attributes
 	 */
 	public Map<String, String> getAttributes() {
@@ -133,7 +133,7 @@ public class RSS {
 
 	/**
 	 * Load all RSS data from the specified URL.
-	 * 
+	 *
 	 * @param url
 	 *            URL that contains XML data.
 	 */
@@ -186,7 +186,7 @@ public class RSS {
 
 	/**
 	 * Load the channle node.
-	 * 
+	 *
 	 * @param channel
 	 *            A node that contains a channel.
 	 */
@@ -207,7 +207,7 @@ public class RSS {
 
 	/**
 	 * Load the specified RSS item, or story.
-	 * 
+	 *
 	 * @param item
 	 *            A XML node that contains a RSS item.
 	 */
@@ -221,9 +221,7 @@ public class RSS {
 	}
 
 	/**
-	 * Convert the object to a String.
-	 * 
-	 * @return The object as a String.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

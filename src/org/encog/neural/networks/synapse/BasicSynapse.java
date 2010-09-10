@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -38,9 +38,9 @@ import org.encog.persist.EncogCollection;
  * the other synapse classes. Specifically this class handles processing the
  * from and to layer, as well as providing a name and description for the
  * EncogPersistedObject.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public abstract class BasicSynapse implements Synapse {
 
@@ -68,7 +68,7 @@ public abstract class BasicSynapse implements Synapse {
 	/**
 	 * The EncogPersistedObject requires a name and description, however, these
 	 * are not used on synapses.
-	 * 
+	 *
 	 * @return Not used.
 	 */
 	public String getDescription() {
@@ -92,7 +92,7 @@ public abstract class BasicSynapse implements Synapse {
 	/**
 	 * The EncogPersistedObject requires a name and description, however, these
 	 * are not used on synapses.
-	 * 
+	 *
 	 * @return Not used.
 	 */
 	public String getName() {
@@ -124,7 +124,7 @@ public abstract class BasicSynapse implements Synapse {
 	/**
 	 * The EncogPersistedObject requires a name and description, however, these
 	 * are not used on synapses.
-	 * 
+	 *
 	 * @param d
 	 *            Not used.
 	 */
@@ -134,7 +134,7 @@ public abstract class BasicSynapse implements Synapse {
 
 	/**
 	 * Set the from layer for this synapse.
-	 * 
+	 *
 	 * @param fromLayer
 	 *            The from layer for this synapse.
 	 */
@@ -145,7 +145,7 @@ public abstract class BasicSynapse implements Synapse {
 	/**
 	 * The EncogPersistedObject requires a name and description, however, these
 	 * are not used on synapses.
-	 * 
+	 *
 	 * @param n
 	 *            Not used.
 	 */
@@ -155,14 +155,14 @@ public abstract class BasicSynapse implements Synapse {
 
 	/**
 	 * Set the target layer from this synapse.
-	 * 
+	 *
 	 * @param toLayer
 	 *            The target layer from this synapse.
 	 */
 	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
 	}
-	
+
 	@Override
 	public EncogCollection getCollection() {
 		// TODO Auto-generated method stub
@@ -172,11 +172,11 @@ public abstract class BasicSynapse implements Synapse {
 	@Override
 	public void setCollection(EncogCollection collection) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
-	 * @return The synapse as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

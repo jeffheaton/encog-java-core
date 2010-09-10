@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -42,10 +42,10 @@ import org.jocl.cl_device_id;
  * system. Some GPU drivers will also map your CPU as a compute device. A device
  * will likely have parallel processing capabilities. A CPU device will have
  * multiple cores. A GPU, will have multiple compute units.
- * 
+ *
  * Devices are held by Platforms. A platform is a way to group all devices from
  * a single vendor or driver.
- * 
+ *
  */
 public class EncogCLDevice extends EncogCLItem {
 
@@ -71,7 +71,7 @@ public class EncogCLDevice extends EncogCLItem {
 
 	/**
 	 * Construct an OpenCL device.
-	 * 
+	 *
 	 * @param platform
 	 *            The platform.
 	 * @param device
@@ -108,7 +108,7 @@ public class EncogCLDevice extends EncogCLItem {
 
 	/**
 	 * Get a long param from the device.
-	 * 
+	 *
 	 * @param param
 	 *            The param desired.
 	 * @return The param value.
@@ -124,7 +124,7 @@ public class EncogCLDevice extends EncogCLItem {
 
 	/**
 	 * Get a config string from the device.
-	 * 
+	 *
 	 * @param param
 	 *            The param to get.
 	 * @return The config string.
@@ -187,9 +187,8 @@ public class EncogCLDevice extends EncogCLItem {
 	public boolean isCPU() {
 		return this.cpu;
 	}
-
 	/**
-	 * @return Dump this device as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

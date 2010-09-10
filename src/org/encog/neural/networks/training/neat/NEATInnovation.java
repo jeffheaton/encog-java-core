@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -37,13 +37,13 @@ import org.encog.solve.genetic.innovation.BasicInnovation;
 /**
  * Implements a NEAT innovation. This lets NEAT track what changes it has
  * previously tried with a neural network.
- * 
+ *
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
- * 
+ *
  * http://www.cs.ucf.edu/~kstanley/
- * 
+ *
  */
 public class NEATInnovation extends BasicInnovation {
 
@@ -98,7 +98,7 @@ public class NEATInnovation extends BasicInnovation {
 
 	/**
 	 * Construct an innovation.
-	 * 
+	 *
 	 * @param fromNeuronID
 	 *            The from neuron.
 	 * @param toNeuronID
@@ -124,7 +124,7 @@ public class NEATInnovation extends BasicInnovation {
 
 	/**
 	 * Construct an innovation.
-	 * 
+	 *
 	 * @param fromNeuronID
 	 *            The from neuron.
 	 * @param toNeuronID
@@ -156,7 +156,7 @@ public class NEATInnovation extends BasicInnovation {
 
 	/**
 	 * Construct an innovation.
-	 * 
+	 *
 	 * @param neuronGene
 	 *            The neuron gene.
 	 * @param innovationID
@@ -229,7 +229,7 @@ public class NEATInnovation extends BasicInnovation {
 
 	/**
 	 * Set the neuron id.
-	 * 
+	 *
 	 * @param neuronID
 	 *            The neuron id.
 	 */
@@ -238,7 +238,7 @@ public class NEATInnovation extends BasicInnovation {
 	}
 
 	/**
-	 * @return The innovation as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

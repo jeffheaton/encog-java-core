@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -45,7 +45,7 @@ public class EncogCL {
 	/**
 	 * The platforms detected.
 	 */
-	private final List<EncogCLPlatform> platforms = 
+	private final List<EncogCLPlatform> platforms =
 		new ArrayList<EncogCLPlatform>();
 
 	/**
@@ -87,8 +87,8 @@ public class EncogCL {
 				this.devices.add(device);
 			}
 		}
-		
-		
+
+
 		CL.setExceptionsEnabled(true);
 	}
 
@@ -106,7 +106,7 @@ public class EncogCL {
 
 	/**
 	 * Choose a device. Simply returns the first device detected.
-	 * 
+	 *
 	 * @return The first device detected.
 	 */
 	public EncogCLDevice chooseDevice() {
@@ -175,7 +175,7 @@ public class EncogCL {
 	}
 
 	/**
-	 * @return Dump all devices as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
@@ -199,5 +199,5 @@ public class EncogCL {
 	 */
 	public int getCLWorkloadSize() {
 		return clWorkloadSize;
-	}	
+	}
 }

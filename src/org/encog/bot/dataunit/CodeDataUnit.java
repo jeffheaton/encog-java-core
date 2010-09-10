@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -35,9 +35,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A data unit that holds code.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class CodeDataUnit extends DataUnit {
 
@@ -61,7 +61,7 @@ public class CodeDataUnit extends DataUnit {
 
 	/**
 	 * Set the code to the specified string.
-	 * 
+	 *
 	 * @param str
 	 *            The new code.
 	 */
@@ -71,7 +71,7 @@ public class CodeDataUnit extends DataUnit {
 	}
 
 	/**
-	 * @return This object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

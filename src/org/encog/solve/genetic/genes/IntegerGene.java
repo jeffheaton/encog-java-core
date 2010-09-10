@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -42,7 +42,7 @@ public class IntegerGene extends BasicGene {
 
 	/**
 	 * Copy another gene to this one.
-	 * 
+	 *
 	 * @param gene
 	 *            The other gene to copy.
 	 */
@@ -51,11 +51,7 @@ public class IntegerGene extends BasicGene {
 	}
 
 	/**
-	 * Determine if this gene has the same values as another.
-	 * 
-	 * @param obj
-	 *            The other gene.
-	 * @return True, if the two objects are equal.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean equals(final Object obj) {
@@ -83,7 +79,7 @@ public class IntegerGene extends BasicGene {
 
 	/**
 	 * Set the value of this gene.
-	 * 
+	 *
 	 * @param value
 	 *            The value of this gene.
 	 */
@@ -92,7 +88,7 @@ public class IntegerGene extends BasicGene {
 	}
 
 	/**
-	 * @return The gene as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -35,14 +35,14 @@ import java.io.Serializable;
 /**
  * A basic implementation of the EngineData interface. This implementation
  * simply holds and input and ideal NeuralData object.
- * 
+ *
  * For supervised training both input and ideal should be specified.
- * 
+ *
  * For unsupervised training the input property should be valid, however the
  * ideal property should contain null.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class BasicEngineData implements EngineData, Serializable {
 
@@ -55,14 +55,14 @@ public class BasicEngineData implements EngineData, Serializable {
 	 * Create a new neural data pair object of the correct size for the neural
 	 * network that is being trained. This object will be passed to the getPair
 	 * method to allow the neural data pair objects to be copied to it.
-	 * 
+	 *
 	 * @param inputSize
 	 *            The size of the input data.
 	 * @param idealSize
 	 *            The size of the ideal data.
 	 * @return A new neural data pair object.
 	 */
-	public static EngineData createPair(final int inputSize, 
+	public static EngineData createPair(final int inputSize,
 			final int idealSize) {
 		EngineData result;
 
@@ -90,7 +90,7 @@ public class BasicEngineData implements EngineData, Serializable {
 	/**
 	 * Construct the object with only input. If this constructor is used, then
 	 * unsupervised training is being used.
-	 * 
+	 *
 	 * @param input
 	 *            The input to the neural network.
 	 */
@@ -102,7 +102,7 @@ public class BasicEngineData implements EngineData, Serializable {
 	/**
 	 * Construct a BasicNeuralDataPair class with the specified input and ideal
 	 * values.
-	 * 
+	 *
 	 * @param input
 	 *            The input to the neural network.
 	 * @param ideal
@@ -115,7 +115,7 @@ public class BasicEngineData implements EngineData, Serializable {
 
 	/**
 	 * Get the expected results. Returns null if this is unsupervised training.
-	 * 
+	 *
 	 * @return Returns the expected results, or null if unsupervised training.
 	 */
 	public double[] getIdealArray() {
@@ -124,7 +124,7 @@ public class BasicEngineData implements EngineData, Serializable {
 
 	/**
 	 * Get the input data.
-	 * 
+	 *
 	 * @return The input data.
 	 */
 	public double[] getInputArray() {
@@ -133,7 +133,7 @@ public class BasicEngineData implements EngineData, Serializable {
 
 	/**
 	 * Determine if this data pair is supervised.
-	 * 
+	 *
 	 * @return True if this data pair is supervised.
 	 */
 	public boolean isSupervised() {
@@ -160,9 +160,7 @@ public class BasicEngineData implements EngineData, Serializable {
 	}
 
 	/**
-	 * Convert the object to a string.
-	 * 
-	 * @return The object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

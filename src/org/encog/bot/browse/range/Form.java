@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -37,17 +37,17 @@ import org.slf4j.LoggerFactory;
 
 /**
  * A document range that represents a form, and all embedded tags.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class Form extends DocumentRange {
 
 	/**
 	 * The method for this form.
-	 * 
+	 *
 	 * @author jheaton
-	 * 
+	 *
 	 */
 	public enum Method {
 		/**
@@ -78,7 +78,7 @@ public class Form extends DocumentRange {
 
 	/**
 	 * Construct a form on the specified web page.
-	 * 
+	 *
 	 * @param source
 	 *            The web page that contains this form.
 	 */
@@ -88,7 +88,7 @@ public class Form extends DocumentRange {
 
 	/**
 	 * Find the form input by type.
-	 * 
+	 *
 	 * @param type
 	 *            The type of input we want.
 	 * @param index
@@ -128,7 +128,7 @@ public class Form extends DocumentRange {
 
 	/**
 	 * Set the action for the form.
-	 * 
+	 *
 	 * @param action
 	 *            The URL to send the form to.
 	 */
@@ -138,7 +138,7 @@ public class Form extends DocumentRange {
 
 	/**
 	 * Set the method to send the form.
-	 * 
+	 *
 	 * @param method
 	 *            How to send the form.
 	 */
@@ -147,7 +147,7 @@ public class Form extends DocumentRange {
 	}
 
 	/**
-	 * @return The object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

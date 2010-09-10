@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -44,9 +44,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Base class used to read tags. This base class is used by both the XML and
  * HTML parsing.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class ReadTags {
 
@@ -101,7 +101,7 @@ public class ReadTags {
 
 	/**
 	 * The constructor should be passed an InputStream that we will parse from.
-	 * 
+	 *
 	 * @param is
 	 *            An InputStream to parse from.
 	 */
@@ -122,7 +122,7 @@ public class ReadTags {
 
 	/**
 	 * Remove any whitespace characters that are next in the InputStream.
-	 * 
+	 *
 	 */
 	protected void eatWhitespace() {
 		while (Character.isWhitespace((char) this.source.peek())) {
@@ -133,7 +133,7 @@ public class ReadTags {
 	/**
 	 * Return the last tag found, this is normally called just after the read
 	 * function returns a zero.
-	 * 
+	 *
 	 * @return The last HTML tag found.
 	 */
 	public Tag getTag() {
@@ -142,7 +142,7 @@ public class ReadTags {
 
 	/**
 	 * Checks to see if the next tag is the tag specified.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the tag desired.
 	 * @param start
@@ -163,7 +163,7 @@ public class ReadTags {
 
 	/**
 	 * Parse an attribute name, if one is present.
-	 * 
+	 *
 	 * @return Return the attribute name, or null if none present.
 	 */
 	protected String parseAttributeName() {
@@ -186,7 +186,7 @@ public class ReadTags {
 
 	/**
 	 * Parse any special characters(i.e. &nbsp);
-	 * 
+	 *
 	 * @return The character that was parsed.
 	 */
 	private char parseSpecialCharacter() {
@@ -239,7 +239,7 @@ public class ReadTags {
 
 	/**
 	 * Called to parse a double or single quote string.
-	 * 
+	 *
 	 * @return The string parsed.
 	 */
 	protected String parseString() {
@@ -247,7 +247,7 @@ public class ReadTags {
 		eatWhitespace();
 		if ("\"\'".indexOf(this.source.peek()) != -1) {
 			final int delim = this.source.read();
-			while ((this.source.peek() != delim) 
+			while ((this.source.peek() != delim)
 					&& (this.source.peek() != -1)) {
 				if (result.length() > ReadTags.MAX_LENGTH) {
 					break;
@@ -274,7 +274,7 @@ public class ReadTags {
 
 	/**
 	 * Called when a tag is detected. This method will parse the tag.
-	 * 
+	 *
 	 */
 	protected void parseTag() {
 		this.tag.clear();
@@ -371,7 +371,7 @@ public class ReadTags {
 
 	/**
 	 * Check to see if the ending tag is present.
-	 * 
+	 *
 	 * @param name
 	 *            The type of end tag being sought.
 	 * @return True if the ending tag was found.
@@ -427,10 +427,10 @@ public class ReadTags {
 	 * Read a single character from the HTML source, if this function returns
 	 * zero(0) then you should call getTag to see what tag was found. Otherwise
 	 * the value returned is simply the next character found.
-	 * 
+	 *
 	 * @return The character read, or zero if there is an HTML tag. If zero is
 	 *         returned, then call getTag to get the next tag.
-	 * 
+	 *
 	 */
 	public int read() {
 		// handle inserting a "virtual" end tag
@@ -455,7 +455,7 @@ public class ReadTags {
 		if (this.source.peek() == '<') {
 			parseTag();
 			if ((this.tag.getType() == Tag.Type.BEGIN)
-					&& (this.tag.getName().equalsIgnoreCase("script") 
+					&& (this.tag.getName().equalsIgnoreCase("script")
 							|| this.tag
 							.getName().equalsIgnoreCase("style"))) {
 				this.lockedEndTag = this.tag.getName().toLowerCase();
@@ -470,7 +470,7 @@ public class ReadTags {
 
 	/**
 	 * Read until we reach the next tag.
-	 * 
+	 *
 	 * @return True if a tag was found, false on EOF.
 	 */
 	public boolean readToTag() {
@@ -484,7 +484,7 @@ public class ReadTags {
 	}
 
 	/**
-	 * @return This object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

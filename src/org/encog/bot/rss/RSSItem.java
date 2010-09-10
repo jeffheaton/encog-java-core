@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -71,7 +71,7 @@ public class RSSItem {
 
 	/**
 	 * Get the publication date.
-	 * 
+	 *
 	 * @return The publication date.
 	 */
 	public Date getDate() {
@@ -80,7 +80,7 @@ public class RSSItem {
 
 	/**
 	 * Get the description.
-	 * 
+	 *
 	 * @return The description.
 	 */
 	public String getDescription() {
@@ -89,7 +89,7 @@ public class RSSItem {
 
 	/**
 	 * Get the hyperlink.
-	 * 
+	 *
 	 * @return The hyperlink.
 	 */
 	public String getLink() {
@@ -98,7 +98,7 @@ public class RSSItem {
 
 	/**
 	 * Get the item title.
-	 * 
+	 *
 	 * @return The item title.
 	 */
 	public String getTitle() {
@@ -107,7 +107,7 @@ public class RSSItem {
 
 	/**
 	 * Load an item from the specified node.
-	 * 
+	 *
 	 * @param node
 	 *            The Node to load the item from.
 	 */
@@ -135,7 +135,7 @@ public class RSSItem {
 
 	/**
 	 * Set the publication date.
-	 * 
+	 *
 	 * @param date
 	 *            The new publication date.
 	 */
@@ -145,7 +145,7 @@ public class RSSItem {
 
 	/**
 	 * Get the description.
-	 * 
+	 *
 	 * @param description
 	 *            The new description.
 	 */
@@ -155,7 +155,7 @@ public class RSSItem {
 
 	/**
 	 * Set the hyperlink.
-	 * 
+	 *
 	 * @param link
 	 *            The new hyperlink.
 	 */
@@ -165,7 +165,7 @@ public class RSSItem {
 
 	/**
 	 * Set the item title.
-	 * 
+	 *
 	 * @param title
 	 *            The new item title.
 	 */
@@ -174,9 +174,7 @@ public class RSSItem {
 	}
 
 	/**
-	 * Convert the object to a String.
-	 * 
-	 * @return The object as a String.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

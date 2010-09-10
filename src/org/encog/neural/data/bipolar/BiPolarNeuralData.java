@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -41,14 +41,14 @@ import org.slf4j.LoggerFactory;
 /**
  * A NeuralData implementation designed to work with bipolar data. Bipolar data
  * contains two values. True is stored as 1, and false is stored as -1.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = -6082894455587612231L;
 	/**
@@ -64,7 +64,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Construct this object with the specified data.
-	 * 
+	 *
 	 * @param d
 	 *            The data to create this object with.
 	 */
@@ -75,7 +75,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Construct a data object with the specified size.
-	 * 
+	 *
 	 * @param size
 	 *            The size of this data object.
 	 */
@@ -85,7 +85,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * This will throw an error, as "add" is not supported for bipolar.
-	 * 
+	 *
 	 * @param index
 	 *            Not used.
 	 * @param value
@@ -119,7 +119,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Get the specified data item as a boolean.
-	 * 
+	 *
 	 * @param i
 	 *            The index to read.
 	 * @return The specified data item's value.
@@ -130,7 +130,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Get the data held by this object as an array of doubles.
-	 * 
+	 *
 	 * @return The data held by this object.
 	 */
 	public double[] getData() {
@@ -139,7 +139,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Get the data held by the index.
-	 * 
+	 *
 	 * @param index
 	 *            The index to read.
 	 * @return Return the data held at the specified index.
@@ -150,7 +150,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Store the array.
-	 * 
+	 *
 	 * @param data
 	 *            The data to store.
 	 */
@@ -161,7 +161,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	/**
 	 * Set the specified index of this object as a boolean. This value will be
 	 * converted into bipolar.
-	 * 
+	 *
 	 * @param index
 	 *            The index to set.
 	 * @param value
@@ -174,7 +174,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	/**
 	 * Set the specified index of this object as a double. This value will be
 	 * converted into bipolar.
-	 * 
+	 *
 	 * @param index
 	 *            The index to set.
 	 * @param d
@@ -186,7 +186,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 
 	/**
 	 * Get the size of this data object.
-	 * 
+	 *
 	 * @return The size of this data object.
 	 */
 	public int size() {
@@ -194,7 +194,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	}
 
 	/**
-	 * @return This object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

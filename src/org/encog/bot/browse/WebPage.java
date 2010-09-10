@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -44,9 +44,9 @@ import org.slf4j.LoggerFactory;
  * of DataUnits and contents, which are ranges of data units. The data units are
  * basically tags and blocks of text. The contents collection uses DocumentRange
  * objects to assign meatning to the lower level DataObjects.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class WebPage {
 
@@ -73,7 +73,7 @@ public class WebPage {
 
 	/**
 	 * Add to the content collection.
-	 * 
+	 *
 	 * @param span
 	 *            The range to add to the collection.
 	 */
@@ -84,7 +84,7 @@ public class WebPage {
 
 	/**
 	 * Add a data unit to the collection.
-	 * 
+	 *
 	 * @param unit
 	 *            The data unit to load.
 	 */
@@ -94,7 +94,7 @@ public class WebPage {
 
 	/**
 	 * Find the specified DocumentRange subclass in the contents list.
-	 * 
+	 *
 	 * @param c
 	 *            The class type to search for.
 	 * @param index
@@ -117,7 +117,7 @@ public class WebPage {
 
 	/**
 	 * Find the link that contains the specified string.
-	 * 
+	 *
 	 * @param str
 	 *            The string to search for.
 	 * @return The link that contains the specified string.
@@ -151,7 +151,7 @@ public class WebPage {
 
 	/**
 	 * Get the number of data items in this collection.
-	 * 
+	 *
 	 * @return The size of the data unit.
 	 */
 	public int getDataSize() {
@@ -160,7 +160,7 @@ public class WebPage {
 
 	/**
 	 * Get the DataUnit unit at the specified index.
-	 * 
+	 *
 	 * @param i
 	 *            The index to use.
 	 * @return The DataUnit found at the specified index.
@@ -171,7 +171,7 @@ public class WebPage {
 
 	/**
 	 * Get the title for this document.
-	 * 
+	 *
 	 * @return The DocumentRange that specifies the title of this document.
 	 */
 	public DocumentRange getTitle() {
@@ -180,7 +180,7 @@ public class WebPage {
 
 	/**
 	 * Set the title of this document.
-	 * 
+	 *
 	 * @param title
 	 *            The DocumentRange that specifies the title.
 	 */
@@ -190,7 +190,7 @@ public class WebPage {
 	}
 
 	/**
-	 * @return The object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

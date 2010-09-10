@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -44,9 +44,9 @@ import org.slf4j.LoggerFactory;
  * of tags that all apply to one "concept". For example, a Form, or a Link. This
  * allows the form to collect the elements inside the form, or a link to collect
  * the text along with the link tag.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class DocumentRange {
 
@@ -93,7 +93,7 @@ public class DocumentRange {
 
 	/**
 	 * Construct a document range from the specified WebPage.
-	 * 
+	 *
 	 * @param source
 	 *            The web page that this range belongs to.
 	 */
@@ -103,7 +103,7 @@ public class DocumentRange {
 
 	/**
 	 * Add an element.
-	 * 
+	 *
 	 * @param element
 	 *            The element to add.
 	 */
@@ -163,7 +163,7 @@ public class DocumentRange {
 
 	/**
 	 * Get the text from this range.
-	 * 
+	 *
 	 * @return The text from this range.
 	 */
 	public String getTextOnly() {
@@ -182,7 +182,7 @@ public class DocumentRange {
 
 	/**
 	 * Set the beginning index.
-	 * 
+	 *
 	 * @param begin
 	 *            The beginning index.
 	 */
@@ -200,7 +200,7 @@ public class DocumentRange {
 
 	/**
 	 * Set the ending index.
-	 * 
+	 *
 	 * @param end
 	 *            The ending index.
 	 */
@@ -218,7 +218,7 @@ public class DocumentRange {
 
 	/**
 	 * Set the parent.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent.
 	 */
@@ -228,7 +228,7 @@ public class DocumentRange {
 
 	/**
 	 * Set the source web page.
-	 * 
+	 *
 	 * @param source
 	 *            The source web page.
 	 */
@@ -237,7 +237,7 @@ public class DocumentRange {
 	}
 
 	/**
-	 * @return This object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

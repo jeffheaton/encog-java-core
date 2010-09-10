@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.4
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -55,30 +55,30 @@ import org.slf4j.LoggerFactory;
  * winner-take-all neural network, such as the self organizing map (SOM). This
  * is an unsupervised training method, no ideal data is needed on the training
  * set. If ideal data is provided, it will be ignored.
- * 
+ *
  * Training is done by looping over all of the training elements and calculating
  * a "best matching unit" (BMU). This BMU output neuron is then adjusted to
  * better "learn" this pattern. Additionally, this training may be applied to
  * othr "nearby" output neurons. The degree to which nearby neurons are update
  * is defined by the neighborhood function.
- * 
+ *
  * A neighborhood function is required to determine the degree to which
  * neighboring neurons (to the winning neuron) are updated by each training
  * iteration.
- * 
+ *
  * Because this is unsupervised training, calculating an error to measure
  * progress by is difficult. The error is defined to be the "worst", or longest,
  * Euclidean distance of any of the BMU's. This value should be minimized, as
  * learning progresses.
- * 
+ *
  * Because only the BMU neuron and its close neighbors are updated, you can end
  * up with some output neurons that learn nothing. By default these neurons are
  * not forced to win patterns that are not represented well. This spreads out
  * the workload among all output neurons. This feature is not used by default,
  * but can be enabled by setting the "forceWinner" property.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
@@ -131,7 +131,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Holds the corrections for any matrix being trained.
 	 */
-	private final Map<Synapse, Matrix> correctionMatrix = 
+	private final Map<Synapse, Matrix> correctionMatrix =
 		new HashMap<Synapse, Matrix>();
 
 	/**
@@ -144,27 +144,27 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * When used with autodecay, this is the starting learning rate.
 	 */
 	private double startRate;
-	
+
 	/**
 	 * When used with autodecay, this is the ending learning rate.
 	 */
 	private double endRate;
-	
+
 	/**
 	 * When used with autodecay, this is the starting radius.
 	 */
 	private double startRadius;
-	
+
 	/**
 	 * When used with autodecay, this is the ending radius.
 	 */
 	private double endRadius;
-	
+
 	/**
 	 * This is the current autodecay learning rate.
 	 */
 	private double autoDecayRate;
-	
+
 	/**
 	 * This is the current autodecay radius.
 	 */
@@ -182,7 +182,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	/**
 	 * Create an instance of competitive training.
-	 * 
+	 *
 	 * @param network
 	 *            The network to train.
 	 * @param learningRate
@@ -249,7 +249,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * Copy the specified input pattern to the weight matrix. This causes an
 	 * output neuron to learn this pattern "exactly". This is useful when a
 	 * winner is to be forced.
-	 * 
+	 *
 	 * @param synapse
 	 *            The synapse that is the target of the copy.
 	 * @param outputNeuron
@@ -259,7 +259,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 */
 	private void copyInputPattern(final Synapse synapse,
 			final int outputNeuron, final NeuralData input) {
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount;
 			inputNeuron++) {
 			synapse.getMatrix().set(inputNeuron, outputNeuron,
 					input.getData(inputNeuron));
@@ -267,7 +267,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * Called to decay the learning rate and radius by the specified amount.  
+	 * Called to decay the learning rate and radius by the specified amount.
 	 * @param d The percent to decay by.
 	 */
 	public void decay(final double d) {
@@ -289,7 +289,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Determine the weight adjustment for a single neuron during a training
 	 * iteration.
-	 * 
+	 *
 	 * @param weight
 	 *            The starting weight.
 	 * @param input
@@ -312,7 +312,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Force any neurons that did not win to off-load patterns from overworked
 	 * neurons.
-	 * 
+	 *
 	 * @param won
 	 *            An array that specifies how many times each output neuron has
 	 *            "won".
@@ -491,7 +491,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Determine if a winner is to be forced. See class description for more
 	 * info.
-	 * 
+	 *
 	 * @param forceWinner
 	 *            True if a winner is to be forced.
 	 */
@@ -501,7 +501,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	/**
 	 * Set the learning rate. This is the rate at which the weights are changed.
-	 * 
+	 *
 	 * @param rate
 	 *            The learning rate.
 	 */
@@ -521,7 +521,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * @return This object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
@@ -535,7 +535,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	/**
 	 * Train for the specified synapse and BMU.
-	 * 
+	 *
 	 * @param bmu
 	 *            The best matching unit for this input.
 	 * @param synapse
@@ -546,7 +546,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	private void train(final int bmu, final Synapse synapse,
 			final NeuralData input) {
 		// adjust the weight for the BMU and its neighborhood
-		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount; 
+		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount;
 			outputNeuron++) {
 			trainPattern(synapse, input, outputNeuron, bmu);
 		}
@@ -569,7 +569,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 	/**
 	 * Train for the specified pattern.
-	 * 
+	 *
 	 * @param synapse
 	 *            The synapse to train.
 	 * @param input
@@ -584,7 +584,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 
 		final Matrix correction = this.correctionMatrix.get(synapse);
 
-		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount; 
+		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount;
 			inputNeuron++) {
 
 			final double currentWeight = synapse.getMatrix().get(inputNeuron,

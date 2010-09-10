@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -51,17 +51,17 @@ public class OutputFieldDirect extends BasicOutputField {
 	public OutputFieldDirect(final InputField sourceField) {
 		this.sourceField = sourceField;
 	}
-	
+
 	/**
 	 * Default constructor, used for reflection.
 	 */
 	public OutputFieldDirect() {
-		
+
 	}
 
 	/**
 	 * Calculate the value for this field. This will simply be the
-	 * value from the input field. 
+	 * value from the input field.
 	 * @param subfield Not used, as this output field type does not
 	 * support subfields.
 	 * @return The calculated value for this field.
@@ -82,7 +82,10 @@ public class OutputFieldDirect extends BasicOutputField {
 	 */
 	public void rowInit() {
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();

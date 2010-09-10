@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * for prediction. One or more data items might be captured at this point. The
  * TemporalDataDescription class is used to describe each of these data items
  * captured at each point.
- * 
+ *
  * @author jheaton
  */
 public class TemporalPoint implements Comparable<TemporalPoint> {
@@ -61,7 +61,7 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 
 	/**
 	 * Construct a temporal point of the specified size.
-	 * 
+	 *
 	 * @param size
 	 *            The size to create the temporal point for.
 	 */
@@ -70,12 +70,7 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 	}
 
 	/**
-	 * Compare two temporal points.
-	 * 
-	 * @param that
-	 *            The other temporal point to compare.
-	 * @return Returns 0 if they are equal, less than 0 if this point is less,
-	 *         greater than zero if this point is greater.
+	 * {@inheritDoc}
 	 */
 	public int compareTo(final TemporalPoint that) {
 		if (getSequence() == that.getSequence()) {
@@ -96,7 +91,7 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 
 	/**
 	 * Get the data at the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            The index to get the data at.
 	 * @return The data at the specified index.
@@ -122,7 +117,7 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 
 	/**
 	 * Set the data at the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            The index to set the data at.
 	 * @param d
@@ -141,9 +136,7 @@ public class TemporalPoint implements Comparable<TemporalPoint> {
 	}
 
 	/**
-	 * Convert this point to string form.
-	 * 
-	 * @return This point as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

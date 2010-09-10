@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -42,13 +42,13 @@ import org.slf4j.LoggerFactory;
  * An extension of the BasicNeuralData class that is designed to hold images for
  * input into a neural network. This class should only be used with the
  * ImageNeuralDataSet collection.
- * 
+ *
  * This class provides the ability to associate images with the elements of a
  * dataset. These images will be downsampled to the resolution specified in the
  * ImageNeuralData set class that they are added to.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class ImageNeuralData extends BasicNeuralData {
 
@@ -69,7 +69,7 @@ public class ImageNeuralData extends BasicNeuralData {
 
 	/**
 	 * Construct an object based on an image.
-	 * 
+	 *
 	 * @param image
 	 *            The image to use.
 	 */
@@ -82,7 +82,7 @@ public class ImageNeuralData extends BasicNeuralData {
 	 * Downsample, and copy, the image contents into the data of this object.
 	 * Calling this method has no effect on the image, as the same image can be
 	 * downsampled multiple times to different resolutions.
-	 * 
+	 *
 	 * @param downsampler
 	 *            The downsampler object to use.
 	 * @param findBounds
@@ -106,7 +106,7 @@ public class ImageNeuralData extends BasicNeuralData {
 				width);
 
 		for (int i = 0; i < sample.length; i++) {
-			sample[i] = OutputFieldRangeMapped.calculate(sample[i], 0, 
+			sample[i] = OutputFieldRangeMapped.calculate(sample[i], 0,
 					255, hi,lo);
 		}
 
@@ -129,9 +129,7 @@ public class ImageNeuralData extends BasicNeuralData {
 	}
 
 	/**
-	 * Return a string representation of this object.
-	 * 
-	 * @return The string form of this object.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -35,9 +35,9 @@ package org.encog.persist;
  * quite long and should not be read into memory in its entirity. Directory
  * entry classes allow you to list the contents of a file without loading the
  * entire file.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class DirectoryEntry implements Comparable<DirectoryEntry> {
 
@@ -58,7 +58,7 @@ public class DirectoryEntry implements Comparable<DirectoryEntry> {
 
 	/**
 	 * Construct a directory entry for the specified object.
-	 * 
+	 *
 	 * @param obj
 	 *            The Encog object.
 	 */
@@ -77,7 +77,7 @@ public class DirectoryEntry implements Comparable<DirectoryEntry> {
 
 	/**
 	 * Construct a directory entry from strings.
-	 * 
+	 *
 	 * @param type
 	 *            The type of object.
 	 * @param name
@@ -93,11 +93,7 @@ public class DirectoryEntry implements Comparable<DirectoryEntry> {
 	}
 
 	/**
-	 * Compare the two objects.
-	 * 
-	 * @param other
-	 *            The other object.
-	 * @return 0 if equal.
+	 * {@inheritDoc}
 	 */
 	public int compareTo(final DirectoryEntry other) {
 		if (other.getType().equals(other.getType())) {
@@ -109,11 +105,7 @@ public class DirectoryEntry implements Comparable<DirectoryEntry> {
 	}
 
 	/**
-	 * Returns true if the two objects are equal.
-	 * 
-	 * @param other
-	 *            The other object.
-	 * @return True if equal.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean equals(final Object other) {
@@ -154,7 +146,7 @@ public class DirectoryEntry implements Comparable<DirectoryEntry> {
 	}
 
 	/**
-	 * @return This object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

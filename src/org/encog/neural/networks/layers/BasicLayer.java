@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -58,39 +58,39 @@ import org.slf4j.LoggerFactory;
  * Basic functionality that most of the neural layers require. The basic layer
  * is often used by itself to implement forward or recurrent layers. Other layer
  * types are based on the basic layer as well.
- * 
+ *
  * The following summarizes how basic layers calculate the output for a neural
  * network.
- * 
+ *
  * Example of a simple XOR network.
- * 
+ *
  * Input: BasicLayer: 2 Neurons, null biasWeights, null biasActivation
- * 
+ *
  * Hidden: BasicLayer: 2 Neurons, 2 biasWeights, 1 biasActivation
- * 
+ *
  * Output: BasicLayer: 1 Neuron, 1 biasWeights, 1 biasActivation
- * 
+ *
  * Input1Output and Input2Output are both provided.
- * 
+ *
  * Synapse 1: Input to Hidden Hidden1Activation = (Input1Output *
  * Input1->Hidden1Weight) + (Input2Output * Input2->Hidden1Weight) +
  * (HiddenBiasActivation * Hidden1BiasWeight)
- * 
+ *
  * Hidden1Output = calculate(Hidden1Activation, HiddenActivationFunction)
- * 
+ *
  * Hidden2Activation = (Input1Output * Input1->Hidden2Weight) + (Input2Output *
  * Input2->Hidden2Weight) + (HiddenBiasActivation * Hidden2BiasWeight)
- * 
+ *
  * Hidden2Output = calculate(Hidden2Activation, HiddenActivationFunction)
- * 
+ *
  * Synapse 2: Hidden to Output
- * 
- * Output1Activation = (Hidden1Output * Hidden1->Output1Weight) 
+ *
+ * Output1Activation = (Hidden1Output * Hidden1->Output1Weight)
  * + (Hidden2Output *
  * Hidden2->Output1Weight) + (OutputBiasActivation * Output1BiasWeight)
- * 
+ *
  * Output1Output = calculate(Output1Activation, OutputActivationFunction)
- * 
+ *
  * @author jheaton
  */
 public class BasicLayer implements Layer, Serializable {
@@ -171,7 +171,7 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Construct this layer with a non-default activation function, also
 	 * determine if a bias is desired or not.
-	 * 
+	 *
 	 * @param activationFunction
 	 *            The activation function to use.
 	 * @param neuronCount
@@ -192,7 +192,7 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Construct this layer with a sigmoid activation function.
-	 * 
+	 *
 	 * @param neuronCount
 	 *            How many neurons in this layer.
 	 */
@@ -203,7 +203,7 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Add a layer as the next layer. The layer will be added with a weighted
 	 * synapse.
-	 * 
+	 *
 	 * @param next
 	 *            THe next layer.
 	 */
@@ -262,7 +262,7 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Add a synapse to the list of outbound synapses. Usually you should simply
 	 * call the addLayer method to add to the outbound list.
-	 * 
+	 *
 	 * @param synapse
 	 *            The synapse to add.
 	 */
@@ -271,13 +271,7 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Compare this layer to another.
-	 * 
-	 * @return The value 0 if the argument layer is equal to this layer; a value
-	 *         less than 0 if this layer is less than the argument; and a value
-	 *         greater than 0 if this layer is greater than the layer argument.
-	 * @param other
-	 *            The other layer to compare.
+	 * {@inheritDoc}
 	 */
 	public int compareTo(final Layer other) {
 		if (other.getID() == getID()) {
@@ -292,7 +286,7 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Compute the outputs for this layer given the input pattern. The output is
 	 * also stored in the fire instance variable.
-	 * 
+	 *
 	 * @param pattern
 	 *            The input pattern.
 	 * @return The output from this layer.
@@ -317,7 +311,7 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Create a persistor for this layer.
-	 * 
+	 *
 	 * @return The new persistor.
 	 */
 	public Persistor createPersistor() {
@@ -361,7 +355,7 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Get the neuron count for this layer.
-	 * 
+	 *
 	 * @return the neuronCount
 	 */
 	public int getNeuronCount() {
@@ -396,14 +390,14 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Get an bias weight value. See the Layer interface documentation for more
 	 * information on how Encog handles bias values.
-	 * 
+	 *
 	 * @param index
 	 *            The bias value to get.
 	 * @return The bias value.
 	 */
 	public double getBiasWeight(final int index) {
 		if (!hasBias()) {
-			final String str = 
+			final String str =
 			"Attempting to access bias on a layer that has no bias.";
 			if (BasicLayer.LOGGER.isErrorEnabled()) {
 				BasicLayer.LOGGER.error(str);
@@ -436,7 +430,7 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Determine if this layer is connected to another layer.
-	 * 
+	 *
 	 * @param layer
 	 *            A layer to check and see if this layer is connected to.
 	 * @return True if the two layers are connected.
@@ -466,7 +460,7 @@ public class BasicLayer implements Layer, Serializable {
 	 * Process the input pattern. For the basic layer, nothing is done. This is
 	 * how the context layer gets a chance to record the input. Other similar
 	 * functions, where access is needed to the input.
-	 * 
+	 *
 	 * @param pattern
 	 *            The input to this layer.
 	 */
@@ -476,7 +470,7 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Get the output from this layer when called in a recurrent manor. For the
 	 * BaiscLayer, this is not implemented.
-	 * 
+	 *
 	 * @return The output when called in a recurrent way.
 	 */
 	public NeuralData recur() {
@@ -485,7 +479,7 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Set the activation function for this layer.
-	 * 
+	 *
 	 * @param f
 	 *            The activation function.
 	 */
@@ -503,7 +497,7 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Set the id for this layer.
-	 * 
+	 *
 	 * @param id
 	 *            The id for this layer.
 	 */
@@ -521,7 +515,7 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Set the network for this layer.
-	 * 
+	 *
 	 * @param network
 	 *            The network for this layer.
 	 */
@@ -533,7 +527,7 @@ public class BasicLayer implements Layer, Serializable {
 	 * Set the neuron count. This just sets it, it does not make any adjustments
 	 * to the class. To automatically change the neuron count refer to the
 	 * pruning classes.
-	 * 
+	 *
 	 * @param neuronCount
 	 *            The new neuron count.
 	 */
@@ -545,7 +539,7 @@ public class BasicLayer implements Layer, Serializable {
 	 * Set the bias array. This does not modify any of the other values in the
 	 * network, it just sets the bias weight array. If you want to change the
 	 * structure of the neural network you should use the pruning classes.
-	 * 
+	 *
 	 * @param d
 	 *            The new bias weight array.
 	 */
@@ -555,7 +549,7 @@ public class BasicLayer implements Layer, Serializable {
 
 	/**
 	 * Set an individual bias weight value.
-	 * 
+	 *
 	 * @param index
 	 *            The index of the bias weight value.
 	 * @param d
@@ -563,7 +557,7 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public void setBiasWeight(final int index, final double d) {
 		if (!hasBias()) {
-			final String str = 
+			final String str =
 "Attempting to set a bias weight on a layer that does not use bias.";
 			if (BasicLayer.LOGGER.isErrorEnabled()) {
 				BasicLayer.LOGGER.error(str);
@@ -576,7 +570,7 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Set the x coordinate for this layer. The coordinates are used when the
 	 * layer must be displayed in a GUI situation.
-	 * 
+	 *
 	 * @param x
 	 *            The x-coordinate.
 	 */
@@ -587,7 +581,7 @@ public class BasicLayer implements Layer, Serializable {
 	/**
 	 * Set the y coordinate for this layer. The coordinates are used when the
 	 * layer must be displayed in a GUI situation.
-	 * 
+	 *
 	 * @param y
 	 *            The y-coordinate.
 	 */
@@ -596,7 +590,7 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * @return This object as a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
@@ -639,6 +633,6 @@ public class BasicLayer implements Layer, Serializable {
 	 * @param collection Not used.
 	 */
 	public void setCollection(EncogCollection collection) {
-		
+
 	}
 }

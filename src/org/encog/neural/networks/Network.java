@@ -199,7 +199,7 @@ public interface Network extends EncogPersistedObject, EngineMachineLearning {
 	void setName(final String name);
 
 	/**
-	 * @return Convert this object to a string.
+	 * {@inheritDoc}
 	 */
 	String toString();
 

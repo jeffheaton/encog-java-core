@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -42,13 +42,13 @@ public abstract class BasicGene implements Gene {
 	 */
 	@EGAttribute
 	private boolean enabled = true;
-	
+
 	/**
 	 * ID of this gene, -1 for unassigned.
 	 */
 	@EGAttribute
 	private long id = -1;
-	
+
 	/**
 	 * Innovation ID, -1 for unassigned.
 	 */
@@ -56,7 +56,7 @@ public abstract class BasicGene implements Gene {
 	private long innovationId = -1;
 
 	/**
-	 * Compare to another gene, sort by innovation id's.
+	 * {@inheritDoc}
 	 */
 	public int compareTo(final Gene o) {
 		return ((int) (getInnovationId() - o.getInnovationId()));

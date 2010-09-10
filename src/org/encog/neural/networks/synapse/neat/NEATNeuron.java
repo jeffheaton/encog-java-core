@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -42,13 +42,13 @@ import org.encog.persist.annotations.EGReferenceable;
  * Implements a NEAT neuron. Neat neurons are of a specific type, defined by the
  * NEATNeuronType enum. Usually NEAT uses a sigmoid activation function. The
  * activation response is used to allow the slope of the sigmoid to be evolved.
- * 
+ *
  * NeuroEvolution of Augmenting Topologies (NEAT) is a genetic algorithm for the
  * generation of evolving artificial neural networks. It was developed by Ken
  * Stanley while at The University of Texas at Austin.
- * 
+ *
  * http://www.cs.ucf.edu/~kstanley/
- * 
+ *
  */
 @EGReferenceable
 public class NEATNeuron implements Serializable {
@@ -132,7 +132,7 @@ public class NEATNeuron implements Serializable {
 
 	/**
 	 * Construct a NEAT neuron.
-	 * 
+	 *
 	 * @param neuronType
 	 *            The type of neuron.
 	 * @param neuronID
@@ -237,7 +237,7 @@ public class NEATNeuron implements Serializable {
 
 	/**
 	 * Set the output.
-	 * 
+	 *
 	 * @param output
 	 *            The output of the neuron.
 	 */
@@ -247,7 +247,7 @@ public class NEATNeuron implements Serializable {
 	}
 
 	/**
-	 * @return A string representation of the neuron.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

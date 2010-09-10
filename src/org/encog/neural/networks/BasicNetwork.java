@@ -67,17 +67,17 @@ import org.slf4j.LoggerFactory;
  * This class implements a neural network. This class works in conjunction the
  * Layer classes. Layers are added to the BasicNetwork to specify the structure
  * of the neural network.
- * 
+ *
  * The first layer added is the input layer, the final layer added is the output
  * layer. Any layers added between these two layers are the hidden layers.
- * 
+ *
  * The network structure is stored in the structure member. It is important to
  * call:
- * 
+ *
  * network.getStructure().finalizeStructure();
- * 
+ *
  * Once the neural network has been completely constructed.
- * 
+ *
  */
 public class BasicNetwork implements Serializable, Network, ContextClearable {
 
@@ -97,7 +97,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	public static final String TAG_LIMIT = "CONNECTION_LIMIT";
 
 	public static final String DEFAULT_CONNECTION_LIMIT = "0.0000000001";
-	
+
 	/**
 	 * The Encog collection.
 	 */
@@ -116,7 +116,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Determine which member of the output is the winning neuron.
-	 * 
+	 *
 	 * @param output
 	 *            The output from the neural network.
 	 * @return The winning neuron.
@@ -180,7 +180,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Construct a basic network using the specified logic.
-	 * 
+	 *
 	 * @param logic
 	 *            The logic to use with the neural network.
 	 */
@@ -193,7 +193,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * Add a layer to the neural network. The first layer added is the input
 	 * layer, the last layer added is the output layer. This layer is added with
 	 * a weighted synapse.
-	 * 
+	 *
 	 * @param layer
 	 *            The layer to be added.
 	 */
@@ -207,7 +207,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * Add a layer to the neural network. If there are no layers added this
 	 * layer will become the input layer. This function automatically updates
 	 * both the input and output layer references.
-	 * 
+	 *
 	 * @param layer
 	 *            The layer to be added to the network.
 	 * @param type
@@ -230,7 +230,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	/**
 	 * Calculate the error for this neural network. The error is calculated
 	 * using root-mean-square(RMS).
-	 * 
+	 *
 	 * @param data
 	 *            The training set.
 	 * @return The error percentage.
@@ -248,7 +248,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Calculate the total number of neurons in the network across all layers.
-	 * 
+	 *
 	 * @return The neuron count.
 	 */
 	public int calculateNeuronCount() {
@@ -274,7 +274,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 				((ContextClearable) synapse).clearContext();
 			}
 		}
-		
+
 		this.structure.updateFlatNetwork();
 		if( this.structure.getFlat()!=null )
 			this.structure.getFlat().clearContext();
@@ -290,7 +290,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	/**
 	 * Return a clone of this neural network. Including structure, weights and
 	 * bias values. This is a deep copy.
-	 * 
+	 *
 	 * @return A cloned copy of the neural network.
 	 */
 	@Override
@@ -302,7 +302,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Compute the output for a given input to the neural network.
-	 * 
+	 *
 	 * @param input
 	 *            The input to the neural network.
 	 * @return The output from the neural network.
@@ -322,7 +322,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * provides a parameter to specify an output holder to use. This holder
 	 * allows propagation training to track the output from each layer. If you
 	 * do not need this holder pass null, or use the other compare method.
-	 * 
+	 *
 	 * @param input
 	 *            The input provide to the neural network.
 	 * @param useHolder
@@ -337,7 +337,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Create a persistor for this object.
-	 * 
+	 *
 	 * @return The newly created persistor.
 	 */
 	public Persistor createPersistor() {
@@ -347,7 +347,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	/**
 	 * Compare the two neural networks. For them to be equal they must be of the
 	 * same structure, and have the same matrix values.
-	 * 
+	 *
 	 * @param other
 	 *            The other neural network.
 	 * @return True if the two networks are equal.
@@ -360,7 +360,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * Determine if this neural network is equal to another. Equal neural
 	 * networks have the same weight matrix and bias values, within a specified
 	 * precision.
-	 * 
+	 *
 	 * @param other
 	 *            The other neural network.
 	 * @param precision
@@ -380,7 +380,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get the layer specified by the tag.
-	 * 
+	 *
 	 * @param tag
 	 *            The tag.
 	 * @return The layer associated with that tag.
@@ -419,7 +419,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get the specified property as a double.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the property.
 	 * @return The property as a double.
@@ -430,7 +430,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get the specified property as a long.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the specified property.
 	 * @return The value of the specified property.
@@ -441,7 +441,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get the specified property as a string.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the property.
 	 * @return The value of the property.
@@ -461,7 +461,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Get a list of all of the tags on a specific layer.
-	 * 
+	 *
 	 * @param layer
 	 *            The layer to check.
 	 * @return A collection of the layer tags.
@@ -491,7 +491,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Generate a hash code.
-	 * 
+	 *
 	 * @return THe hash code.
 	 */
 	@Override
@@ -505,14 +505,14 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * does not have an input, output or hidden layers, then Nguyen-Widrow
 	 * cannot be used and a simple range randomize between -1 and 1 will be
 	 * used.
-	 * 
+	 *
 	 */
 	public void reset() {
 		Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
 		Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
 
-		if ( this.structure.getLayers().size()<3 || 
-				inputLayer == null 
+		if ( this.structure.getLayers().size()<3 ||
+				inputLayer == null
 				|| outputLayer == null)
 			(new RangeRandomizer(-1, 1)).randomize(this);
 		else
@@ -523,7 +523,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set the description for this object.
-	 * 
+	 *
 	 * @param theDescription
 	 *            The description.
 	 */
@@ -533,7 +533,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set the type of logic this network should use.
-	 * 
+	 *
 	 * @param logic
 	 *            The logic used by the network.
 	 */
@@ -551,7 +551,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set a property as a double.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the property.
 	 * @param d
@@ -563,7 +563,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set a property as a long.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the property.
 	 * @param l
@@ -575,7 +575,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Set a property as a double.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the property.
 	 * @param value
@@ -587,7 +587,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 
 	/**
 	 * Tag a layer.
-	 * 
+	 *
 	 * @param tag
 	 *            The tag name.
 	 * @param layer
@@ -599,7 +599,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	}
 
 	/**
-	 * @return Convert this object to a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
@@ -614,7 +614,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	/**
 	 * Determine the winner for the specified input. This is the number of the
 	 * winning neuron.
-	 * 
+	 *
 	 * @param input
 	 *            The input patter to present to the neural network.
 	 * @return The winning neuron.
@@ -657,14 +657,14 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 			}
 			synapse.getMatrix().set(fromNeuron, toNeuron, 0);
 		}
-		
+
 		this.structure.setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
 	/**
 	 * Sets the bias activation for every layer that supports bias. Make sure
 	 * that the network structure has been finalized before calling this method.
-	 * 
+	 *
 	 * @param activation
 	 *            THe new activation.
 	 */
@@ -676,7 +676,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 				layer.setBiasActivation(activation);
 		}
 	}
-	
+
 	/**
 	 * @return The collection this Encog object belongs to, null if none.
 	 */
@@ -688,7 +688,7 @@ public class BasicNetwork implements Serializable, Network, ContextClearable {
 	 * Set the Encog collection that this object belongs to.
 	 */
 	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
+		this.encogCollection = collection;
 	}
 
 	/**

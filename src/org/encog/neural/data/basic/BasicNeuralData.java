@@ -1,10 +1,10 @@
 /*
- * Encog(tm) Core v2.5 
+ * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Basic implementation of the NeuralData interface that stores the data in an
  * array.
- * 
+ *
  * @author jheaton
- * 
+ *
  */
 public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
@@ -64,7 +64,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
 	/**
 	 * Construct this object with the specified data.
-	 * 
+	 *
 	 * @param d
 	 *            The data to construct this object with.
 	 */
@@ -75,7 +75,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
 	/**
 	 * Construct this object with blank data and a specified size.
-	 * 
+	 *
 	 * @param size
 	 *            The amount of data to store.
 	 */
@@ -86,7 +86,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	/**
 	 * Construct a new BasicNeuralData object from an existing one. This makes a
 	 * copy of an array.
-	 * 
+	 *
 	 * @param d
 	 *            The object to be copied.
 	 */
@@ -97,7 +97,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
 	/**
 	 * Add a value to the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            The index to add to.
 	 * @param value
@@ -126,7 +126,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
 	/**
 	 * Get the data as an array.
-	 * 
+	 *
 	 * @return The data held by this object.
 	 */
 	public double[] getData() {
@@ -135,7 +135,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
 	/**
 	 * Get a data value at the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            The index to read.
 	 * @return The data at the specified index.
@@ -146,7 +146,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
 	/**
 	 * Set the entire data array.
-	 * 
+	 *
 	 * @param data
 	 *            The data to store.
 	 */
@@ -156,7 +156,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
 	/**
 	 * Set the data element specified by the index.
-	 * 
+	 *
 	 * @param index
 	 *            The data element to set.
 	 * @param d
@@ -168,7 +168,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 
 	/**
 	 * Get the number of data elements present.
-	 * 
+	 *
 	 * @return The number of data elements present.
 	 */
 	public int size() {
@@ -176,9 +176,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	}
 
 	/**
-	 * Return a string representation of this object.
-	 * 
-	 * @return The string form of this object.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {

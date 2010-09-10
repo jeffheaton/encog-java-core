@@ -4,13 +4,13 @@ public class InputFieldEncogCollection extends BasicInputField {
 
 	private String resourceName;
 	private int offset;
-	
-	
+
+
 	public InputFieldEncogCollection()
 	{
-		
+
 	}
-	
+
 	public InputFieldEncogCollection(String resourceName, int offset) {
 		super();
 		this.resourceName = resourceName;
@@ -41,7 +41,10 @@ public class InputFieldEncogCollection extends BasicInputField {
 	public void setOffset(int offset) {
 		this.offset = offset;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
@@ -50,6 +53,6 @@ public class InputFieldEncogCollection extends BasicInputField {
 		result.append(getOffset());
 		return result.toString();
 	}
-	
-	
+
+
 }

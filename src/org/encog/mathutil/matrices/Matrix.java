@@ -2,9 +2,9 @@
  * Encog(tm) Core v2.5
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
- * 
+ *
  * Copyright 2008-2010 by Heaton Research Inc.
- * 
+ *
  * Released under the LGPL.
  *
  * This is free software; you can redistribute it and/or modify it
@@ -21,10 +21,10 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- * 
+ *
  * Encog and Heaton Research are Trademarks of Heaton Research, Inc.
  * For information on Heaton Research trademarks, visit:
- * 
+ *
  * http://www.heatonresearch.com/copyright.html
  */
 
@@ -58,7 +58,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 */
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(Matrix.class);
-	
+
 	/**
 	 * The Encog collection.
 	 */
@@ -66,7 +66,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Turn an array of doubles into a column matrix.
-	 * 
+	 *
 	 * @param input
 	 *            A double array.
 	 * @return A column matrix.
@@ -81,7 +81,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Turn an array of doubles into a row matrix.
-	 * 
+	 *
 	 * @param input
 	 *            A double array.
 	 * @return A row matrix.
@@ -109,7 +109,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Construct a bipolar matrix from an array of booleans.
-	 * 
+	 *
 	 * @param sourceMatrix
 	 *            The booleans to create the matrix from.
 	 */
@@ -128,7 +128,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Create a matrix from an array of doubles.
-	 * 
+	 *
 	 * @param sourceMatrix
 	 *            An array of doubles.
 	 */
@@ -143,7 +143,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Create a blank array with the specified number of rows and columns.
-	 * 
+	 *
 	 * @param rows
 	 *            How many rows in the matrix.
 	 * @param cols
@@ -155,7 +155,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Add a value to one cell in the matrix.
-	 * 
+	 *
 	 * @param row
 	 *            The row to add to.
 	 * @param col
@@ -172,7 +172,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	/**
 	 * Add the specified matrix to this matrix. This will modify the matrix to
 	 * hold the result of the addition.
-	 * 
+	 *
 	 * @param matrix
 	 *            The matrix to add.
 	 */
@@ -199,7 +199,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Create a copy of the matrix.
-	 * 
+	 *
 	 * @return A colne of the matrix.
 	 */
 	@Override
@@ -209,7 +209,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Create a Persistor for this object.
-	 * 
+	 *
 	 * @return The new persistor.
 	 */
 	public Persistor createPersistor() {
@@ -218,7 +218,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Compare to matrixes with the specified level of precision.
-	 * 
+	 *
 	 * @param matrix
 	 *            The other matrix to compare to.
 	 * @param precision
@@ -252,7 +252,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				if ((long) (this.matrix[r][c] * actualPrecision) 
+				if ((long) (this.matrix[r][c] * actualPrecision)
 						!= (long) (data[r][c] * actualPrecision)) {
 					return false;
 				}
@@ -264,7 +264,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Check to see if this matrix equals another, using default precision.
-	 * 
+	 *
 	 * @param other
 	 *            The other matrix to compare.
 	 * @return True if the two matrixes are equal.
@@ -280,7 +280,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Create a matrix from a packed array.
-	 * 
+	 *
 	 * @param array
 	 *            The packed array.
 	 * @param index
@@ -300,7 +300,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Read the specified cell in the matrix.
-	 * 
+	 *
 	 * @param row
 	 *            The row to read.
 	 * @param col
@@ -327,7 +327,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Read one entire column from the matrix as a sub-matrix.
-	 * 
+	 *
 	 * @param col
 	 *            The column to read.
 	 * @return The column as a sub-matrix.
@@ -353,7 +353,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Get the columns in the matrix.
-	 * 
+	 *
 	 * @return The number of columns in the matrix.
 	 */
 	public int getCols() {
@@ -376,7 +376,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Get a submatrix.
-	 * 
+	 *
 	 * @param i0
 	 *            Initial row index.
 	 * @param i1
@@ -406,7 +406,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Get a submatrix.
-	 * 
+	 *
 	 * @param i0
 	 *            Initial row index.
 	 * @param i1
@@ -432,7 +432,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Get a submatrix.
-	 * 
+	 *
 	 * @param r
 	 *            Array of row indices.
 	 * @param j0
@@ -458,7 +458,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Get a submatrix.
-	 * 
+	 *
 	 * @param r
 	 *            Array of row indices.
 	 * @param c
@@ -489,7 +489,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Get the specified row as a sub-matrix.
-	 * 
+	 *
 	 * @param row
 	 *            The row to get.
 	 * @return A matrix.
@@ -515,7 +515,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Get the number of rows in the matrix.
-	 * 
+	 *
 	 * @return The number of rows in the matrix.
 	 */
 	public int getRows() {
@@ -524,7 +524,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Compute a hash code for this matrix.
-	 * 
+	 *
 	 * @return The hash code.
 	 */
 	@Override
@@ -548,7 +548,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	/**
 	 * Determine if the matrix is a vector. A vector is has either a single
 	 * number of rows or columns.
-	 * 
+	 *
 	 * @return True if this matrix is a vector.
 	 */
 	public boolean isVector() {
@@ -560,7 +560,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Return true if every value in the matrix is zero.
-	 * 
+	 *
 	 * @return True if the matrix is all zeros.
 	 */
 	public boolean isZero() {
@@ -576,7 +576,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Multiply every value in the matrix by the specified value.
-	 * 
+	 *
 	 * @param value
 	 *            The value to multiply the matrix by.
 	 */
@@ -591,7 +591,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Multiply every row by the specified vector.
-	 * 
+	 *
 	 * @param vector
 	 *            The vector to multiply by.
 	 * @param result
@@ -608,7 +608,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set every value in the matrix to the specified value.
-	 * 
+	 *
 	 * @param value
 	 *            The value to set the matrix to.
 	 */
@@ -623,7 +623,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set an individual cell in the matrix to the specified value.
-	 * 
+	 *
 	 * @param row
 	 *            The row to set.
 	 * @param col
@@ -638,7 +638,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set this matrix's values to that of another matrix.
-	 * 
+	 *
 	 * @param matrix
 	 *            The other matrix.
 	 */
@@ -654,7 +654,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set the description for this object.
-	 * 
+	 *
 	 * @param description
 	 *            the description to set
 	 */
@@ -664,7 +664,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set a submatrix.
-	 * 
+	 *
 	 * @param i0
 	 *            Initial row index
 	 * @param i1
@@ -675,7 +675,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 *            Final column index
 	 * @param x
 	 *            A(i0:i1,j0:j1)
-	 * 
+	 *
 	 */
 	public void setMatrix(final int i0, final int i1, final int j0,
 			final int j1, final Matrix x) {
@@ -692,7 +692,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set a submatrix.
-	 * 
+	 *
 	 * @param i0
 	 *            Initial row index
 	 * @param i1
@@ -718,7 +718,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set a submatrix.
-	 * 
+	 *
 	 * @param r
 	 *            Array of row indices.
 	 * @param j0
@@ -744,7 +744,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Set a submatrix.
-	 * 
+	 *
 	 * @param r
 	 *            Array of row indices.
 	 * @param c
@@ -765,8 +765,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * {@inheritDoc}
 	 */
 	public void setName(final String name) {
 		this.name = name;
@@ -775,7 +774,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	/**
 	 * Get the size of the array. This is the number of elements it would take
 	 * to store the matrix as a packed array.
-	 * 
+	 *
 	 * @return The size of the matrix.
 	 */
 	public int size() {
@@ -784,7 +783,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Solve A*X = B.
-	 * 
+	 *
 	 * @param b
 	 *            right hand side.
 	 * @return Solution if A is square, least squares solution otherwise.
@@ -799,7 +798,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Sum all of the values in the matrix.
-	 * 
+	 *
 	 * @return The sum of the matrix.
 	 */
 	public double sum() {
@@ -814,7 +813,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 
 	/**
 	 * Convert the matrix into a packed array.
-	 * 
+	 *
 	 * @return The matrix as a packed array.
 	 */
 	public Double[] toPackedArray() {
@@ -831,7 +830,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	}
 
 	/**
-	 * @return Convert the matrix to a string.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public String toString() {
@@ -847,7 +846,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	/**
 	 * Validate that the specified row and column are within the required
 	 * ranges. Otherwise throw a MatrixError exception.
-	 * 
+	 *
 	 * @param row
 	 *            The row to check.
 	 * @param col
@@ -884,7 +883,7 @@ public class Matrix implements Cloneable, Serializable, EncogPersistedObject {
 	 * Set the Encog collection that this object belongs to.
 	 */
 	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
+		this.encogCollection = collection;
 	}
 
 }
