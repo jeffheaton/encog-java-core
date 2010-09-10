@@ -49,7 +49,7 @@ public class ValidateForOpenCL extends BasicMachineLearningValidate {
 	@Override
 	public String isValid(final EngineMachineLearning network) {
 
-		if ((network instanceof FlatNetwork)) {
+		if (!(network instanceof FlatNetwork)) {
 			return "Only flat networks are valid to be used for OpenCL";
 		}
 
