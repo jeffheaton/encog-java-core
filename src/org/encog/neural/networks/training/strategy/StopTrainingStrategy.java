@@ -30,8 +30,8 @@
 
 package org.encog.neural.networks.training.strategy;
 
-import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  * 
  */
-public class StopTrainingStrategy implements Strategy {
+public class StopTrainingStrategy implements EndTrainingStrategy {
 
 	/**
 	 * The default minimum improvement before training stops.
@@ -117,10 +117,7 @@ public class StopTrainingStrategy implements Strategy {
 	}
 
 	/**
-	 * Initialize this strategy.
-	 * 
-	 * @param train
-	 *            The training algorithm.
+	 * {@inheritDoc}
 	 */
 	public void init(final Train train) {
 		this.train = train;
@@ -129,7 +126,7 @@ public class StopTrainingStrategy implements Strategy {
 	}
 
 	/**
-	 * Called just after a training iteration.
+	 * {@inheritDoc}
 	 */
 	public void postIteration() {
 
@@ -152,13 +149,13 @@ public class StopTrainingStrategy implements Strategy {
 	}
 
 	/**
-	 * Called just before a training iteration.
+	 * {@inheritDoc}
 	 */
 	public void preIteration() {
 	}
 
 	/**
-	 * @return True if training should stop.
+	 * {@inheritDoc}
 	 */
 	public boolean shouldStop() {
 		return this.shouldStop;
