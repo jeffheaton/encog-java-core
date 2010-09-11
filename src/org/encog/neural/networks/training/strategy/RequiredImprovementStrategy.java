@@ -154,7 +154,7 @@ public class RequiredImprovementStrategy implements Strategy {
 							this.logger
 									.debug("Failed to improve network, resetting.");
 						}
-						//this.train.getNetwork().reset();
+						this.train.getNetwork().reset();
 						this.badCycleCount = 0;
 						this.lastError = Double.NaN;
 					}
