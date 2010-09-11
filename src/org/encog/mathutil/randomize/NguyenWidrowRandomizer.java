@@ -32,6 +32,7 @@ package org.encog.mathutil.randomize;
 import org.encog.EncogError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.synapse.Synapse;
 
 /**
@@ -107,6 +108,9 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 		for (final Synapse synapse : network.getStructure().getSynapses()) {
 			randomize(beta, synapse);
 		}
+		
+		network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
+		network.getStructure().flattenWeights();
 
 	}
 

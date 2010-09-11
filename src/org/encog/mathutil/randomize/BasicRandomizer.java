@@ -33,6 +33,7 @@ package org.encog.mathutil.randomize;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -75,7 +76,8 @@ public abstract class BasicRandomizer implements Randomizer {
 				randomize(layer.getBiasWeights());
 			}
 		}
-		network.getStructure().flattenWeights();		
+		network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
+		network.getStructure().flattenWeights();
 	}
 
 	/**
