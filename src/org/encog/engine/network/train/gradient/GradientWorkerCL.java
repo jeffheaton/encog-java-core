@@ -37,6 +37,8 @@ import org.encog.engine.network.train.prop.TrainFlatNetworkProp;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
 import org.encog.engine.opencl.kernels.TrainingWorkload;
+import org.encog.engine.util.ErrorCalculation;
+import org.encog.engine.util.ErrorCalculationMode;
 import org.encog.engine.util.Stopwatch;
 
 
@@ -181,8 +183,12 @@ public class GradientWorkerCL implements FlatGradientWorker {
 			}
 
 			final int count = (this.high - this.low) + 1;
-			final double error = Math.sqrt(e
-					/ (count * this.training.getIdealSize()));
+			double error = e
+					/ (count * this.training.getIdealSize());
+			
+			if( ErrorCalculation.getMode()==ErrorCalculationMode.RMS) {
+				error = Math.sqrt(error);
+			}
 			this.owner.report(this.gradients, error, null);
 
 			this.stopwatch.stop();
