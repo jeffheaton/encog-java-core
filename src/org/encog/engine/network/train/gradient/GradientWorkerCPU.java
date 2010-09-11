@@ -199,12 +199,12 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 *            The ideal values.
 	 */
 	private void process(final double[] input, final double[] ideal) {
-		
 		this.network.compute(input, this.actual);
 
 		this.errorCalculation.updateError(this.actual, ideal);
-		
+
 		for (int i = 0; i < this.actual.length; i++) {
+
 			this.layerDelta[i] = ActivationFunctions.calculateActivationDerivative(
 					this.network.getActivationType()[0], this.actual[i],this.network.getParams(),this.network.getParamIndex()[0])
 					* (ideal[i] - this.actual[i]);
@@ -226,28 +226,32 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		final int toLayerIndex = this.layerIndex[currentLevel];
 		final int fromLayerSize = this.layerCounts[currentLevel + 1];
 		final int toLayerSize = this.layerFeedCounts[currentLevel];
-		final int activationType = this.network.getActivationType()[currentLevel + 1];
-		final double[] params = this.network.getParams();
-		final int paramIndex = this.network.getParamIndex()[currentLevel + 1];
-		final int lenX = toLayerIndex+toLayerSize;
-		final int lenY = fromLayerIndex+fromLayerSize;
-		
+
+		// clear the to-deltas
+		for (int i = 0; i < fromLayerSize; i++) {
+			this.layerDelta[fromLayerIndex + i] = 0;
+		}
+
 		int index = this.weightIndex[currentLevel];
-		
+
 		// handle weights
-		for (int y = fromLayerIndex; y < lenY; y++) {
-			double sum = 0;
-			final double output = this.layerOutput[y];
-			for (int x = toLayerIndex; x < lenX; x++) {
-				this.gradients[index] += output * this.layerDelta[x];
-				sum += this.weights[index] * this.layerDelta[x];
+		for (int x = 0; x < toLayerSize; x++) {
+			for (int y = 0; y < fromLayerSize; y++) {
+				final double value = this.layerOutput[fromLayerIndex + y]
+						* this.layerDelta[toLayerIndex + x];
+				this.gradients[index] += value;
+				this.layerDelta[fromLayerIndex + y] += this.weights[index]
+						* this.layerDelta[toLayerIndex + x];
 				index++;
 			}
-			
-			this.layerDelta[fromLayerIndex] = sum * ActivationFunctions
-			.calculateActivationDerivative(activationType,
-					this.layerOutput[fromLayerIndex],
-					params, paramIndex);
+		}
+
+		for (int i = 0; i < fromLayerSize; i++) {
+			this.layerDelta[fromLayerIndex + i] *= ActivationFunctions
+					.calculateActivationDerivative(this.network
+							.getActivationType()[currentLevel + 1],
+							this.layerOutput[fromLayerIndex + i],
+							this.network.getParams(), this.network.getParamIndex()[currentLevel + 1]);
 		}
 	}
 
