@@ -105,10 +105,10 @@ public class DetermineWorkload {
 	 * @param workloadSize
 	 *            Total workload size.
 	 */
-	public DetermineWorkload(final int cpuWorkerCount, final int clWorkerCount,
+	public DetermineWorkload(final int theCpuWorkerCount, final int clWorkerCount,
 			final int workloadSize) {
 
-		this.cpuWorkerCount = cpuWorkerCount;
+		this.cpuWorkerCount = theCpuWorkerCount;
 		this.clWorkerCount = clWorkerCount;
 		this.totalWorkerCount = clWorkerCount + cpuWorkerCount;
 		this.totalWorkloadSize = workloadSize;

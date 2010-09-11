@@ -179,28 +179,28 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	}
 
 	/**
-	 * @return The error from the neural network.
+	 * {@inheritDoc}
 	 */
 	public double getError() {
 		return this.currentError;
 	}
 
 	/**
-	 * @return The trained neural network.
+	 * {@inheritDoc}
 	 */
 	public FlatNetwork getNetwork() {
 		return this.network;
 	}
 
 	/**
-	 * @return The target OpenCL device.
+	 * {@inheritDoc}
 	 */
 	public EncogCLDevice getTargetDevice() {
 		return this.targetDevice;
 	}
 
 	/**
-	 * @return The data we are training with.
+	 * {@inheritDoc}
 	 */
 	public EngineDataSet getTraining() {
 		return this.training;
@@ -299,12 +299,12 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	}
 
 	/**
-	 * Perform one training iteration.
+	 * {@inheritDoc}
 	 */
 	public void iteration() {
 		calculateGradients();
-		
-		if( this.network.isLimited() )
+
+		if (this.network.isLimited())
 			learnLimited();
 		else
 			learn();
@@ -378,20 +378,14 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	}
 
 	/**
-	 * Set the number of threads to use.
-	 * 
-	 * @param numThreads
-	 *            The number of threads to use.
+	 * {@inheritDoc}
 	 */
 	public void setNumThreads(final int numThreads) {
 		this.numThreads = numThreads;
 	}
 
 	/**
-	 * Set the target device.
-	 * 
-	 * @param targetDevice
-	 *            The target device.
+	 * {@inheritDoc}
 	 */
 	public void setTargetDevice(final EncogCLDevice targetDevice) {
 		this.targetDevice = targetDevice;
@@ -417,6 +411,13 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	public double[] getLastGradient() {
 		return lastGradient;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumThreads() {
+		return this.numThreads;
 	}
 
 }

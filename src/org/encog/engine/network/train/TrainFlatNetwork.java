@@ -43,4 +43,9 @@ public interface TrainFlatNetwork {
 	 */
 	void setTargetDevice(final EncogCLDevice targetDevice);
 
+	/**
+	 * @return The number of threads.
+	 */
+	int getNumThreads();
+
 }

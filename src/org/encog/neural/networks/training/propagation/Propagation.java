@@ -43,7 +43,6 @@ import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogValidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 /**
  * Implements basic functionality that is needed by each of the propagation
  * methods. The specifics of each of the propagation methods is implemented
@@ -53,11 +52,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public abstract class Propagation extends BasicTraining {
-
-	/**
-	 * The number of threads to use.
-	 */
-	private int numThreads = 0;
 
 	/**
 	 * The network.
@@ -79,8 +73,6 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	private EncogCLDevice targetDevice;
 
 	/**
 	 * Construct a propagation object.
@@ -128,7 +120,7 @@ public abstract class Propagation extends BasicTraining {
 	 * @return The number of threads.
 	 */
 	public int getNumThreads() {
-		return this.numThreads;
+		return this.flatTraining.getNumThreads();
 	}
 
 	/**
@@ -197,7 +189,7 @@ public abstract class Propagation extends BasicTraining {
 	 *            The number of threads.
 	 */
 	public void setNumThreads(final int numThreads) {
-		this.numThreads = numThreads;
+		this.flatTraining.setNumThreads(numThreads);
 	}
 	
 	
@@ -214,7 +206,7 @@ public abstract class Propagation extends BasicTraining {
 	 * @return The OpenCL device to use, or null for the CPU.
 	 */
 	public EncogCLDevice getTargetDevice() {
-		return targetDevice;
+		return this.flatTraining.getTargetDevice();
 	}
 
 	/**
@@ -226,7 +218,7 @@ public abstract class Propagation extends BasicTraining {
 	 *            The OpenCL device to use, or null to use the CPU.
 	 */
 	public void setTargetDevice(EncogCLDevice targetDevice) {
-		this.targetDevice = targetDevice;
+		this.flatTraining.setTargetDevice(targetDevice);
 	}
 	
 	/**
@@ -234,7 +226,7 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public void assignCPU()
 	{
-		this.targetDevice = null;
+		this.flatTraining.setTargetDevice(null);
 	}
 	
 	/**
@@ -245,7 +237,7 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public void assignOpenCL()
 	{
-		this.targetDevice = Encog.getInstance().getCL().getEnabledDevices().get(0);
+		this.setTargetDevice(Encog.getInstance().getCL().getEnabledDevices().get(0));
 	}
 
 	/**
