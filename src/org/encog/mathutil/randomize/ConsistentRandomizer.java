@@ -31,6 +31,7 @@
 package org.encog.mathutil.randomize;
 
 import org.encog.mathutil.LinearCongruentialGenerator;
+import org.encog.neural.networks.BasicNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +54,8 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 * The maximum value for the random range.
 	 */
 	private final double max;
+	
+	private final int seed;
 
 	/**
 	 * The logging object.
@@ -84,6 +87,7 @@ public class ConsistentRandomizer extends BasicRandomizer {
 			final int seed) {
 		this.max = max;
 		this.min = min;
+		this.seed = seed;
 		this.rand = new LinearCongruentialGenerator(seed);
 	}
 
@@ -102,6 +106,7 @@ public class ConsistentRandomizer extends BasicRandomizer {
 		this.rand = new LinearCongruentialGenerator(seed);
 		this.max = max;
 		this.min = min;
+		this.seed = seed;
 	}
 
 	/**
@@ -113,6 +118,11 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 */
 	public double randomize(final double d) {
 		return this.rand.range(this.min, this.max);
+	}
+	
+	public void randomize(final BasicNetwork network) {
+		this.rand.setSeed(this.seed);
+		super.randomize(network);
 	}
 
 }
