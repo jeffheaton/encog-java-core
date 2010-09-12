@@ -91,23 +91,6 @@ public class ConsistentRandomizer extends BasicRandomizer {
 		this.rand = new LinearCongruentialGenerator(seed);
 	}
 
-	/**
-	 * Construct a range randomizer.
-	 * 
-	 * @param seed
-	 *            The seed for the random number generator.
-	 * @param min
-	 *            The minimum random value.
-	 * @param max
-	 *            The maximum random value.
-	 */
-	public ConsistentRandomizer(final int seed, final double min,
-			final double max) {
-		this.rand = new LinearCongruentialGenerator(seed);
-		this.max = max;
-		this.min = min;
-		this.seed = seed;
-	}
 
 	/**
 	 * Generate a random number based on the range specified in the constructor.
