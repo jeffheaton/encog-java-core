@@ -1,6 +1,3 @@
-#define NEURON_COUNT 10
-#define WEIGHT_COUNT 10
-
 float activationTANH(float x, float slope)
 {
 	float z = exp(-slope * x);
