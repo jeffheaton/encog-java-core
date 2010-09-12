@@ -227,31 +227,30 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		final int fromLayerSize = this.layerCounts[currentLevel + 1];
 		final int toLayerSize = this.layerFeedCounts[currentLevel];
 
-		// clear the to-deltas
-		for (int i = 0; i < fromLayerSize; i++) {
-			this.layerDelta[fromLayerIndex + i] = 0;
-		}
-
-		int index = this.weightIndex[currentLevel];
-
+		final int index = this.weightIndex[currentLevel];
+		final int activationType = this.network.getActivationType()[currentLevel + 1];
+		final int pindex = this.network.getParamIndex()[currentLevel + 1];
+		
 		// handle weights
-		for (int x = 0; x < toLayerSize; x++) {
-			for (int y = 0; y < fromLayerSize; y++) {
-				final double value = this.layerOutput[fromLayerIndex + y]
-						* this.layerDelta[toLayerIndex + x];
-				this.gradients[index] += value;
-				this.layerDelta[fromLayerIndex + y] += this.weights[index]
-						* this.layerDelta[toLayerIndex + x];
-				index++;
+		int yi = fromLayerIndex;
+		for (int y = 0; y < fromLayerSize; y++) {
+			final double output = this.layerOutput[yi];
+			double sum = 0;
+			int xi = toLayerIndex;
+			int wi = index+y;
+			for (int x = 0; x < toLayerSize; x++) {
+				this.gradients[wi] += output * this.layerDelta[xi];
+				sum += this.weights[wi] * this.layerDelta[xi];
+				wi+=fromLayerSize;
+				xi++;
 			}
-		}
-
-		for (int i = 0; i < fromLayerSize; i++) {
-			this.layerDelta[fromLayerIndex + i] *= ActivationFunctions
-					.calculateActivationDerivative(this.network
-							.getActivationType()[currentLevel + 1],
-							this.layerOutput[fromLayerIndex + i],
-							this.network.getParams(), this.network.getParamIndex()[currentLevel + 1]);
+			
+			this.layerDelta[yi] = sum * ActivationFunctions
+			.calculateActivationDerivative(
+					activationType,
+					this.layerOutput[yi],
+					this.network.getParams(), pindex);
+			yi++;
 		}
 	}
 
