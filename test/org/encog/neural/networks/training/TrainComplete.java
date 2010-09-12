@@ -16,7 +16,7 @@ import junit.framework.TestCase;
 
 public class TrainComplete extends TestCase {
 	
-	public void testCase()
+	public void testCompleteTrain()
 	{
 		Logging.stopConsoleLogging();
 		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
@@ -30,6 +30,7 @@ public class TrainComplete extends TestCase {
 			rprop.iteration();
 			iteration++;
 		} while( iteration<5000 && rprop.getError()>0.01);
+		System.out.println(iteration);
 		Assert.assertTrue(iteration<40);
 	}
 	
