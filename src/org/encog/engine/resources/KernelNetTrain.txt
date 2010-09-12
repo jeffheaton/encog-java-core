@@ -1,3 +1,6 @@
+#define NEURON_COUNT 10
+#define WEIGHT_COUNT 10
+
 float activationTANH(float x, float slope)
 {
 	float z = exp(-slope * x);
@@ -176,35 +179,32 @@ kernel void NetworkTrain(
             int fromLayerSize = layerCounts[currentLevel + 1];
             int toLayerSize = layerFeedCounts[currentLevel];
 
-            // clear the to-deltas
-            for (int i = 0; i < fromLayerSize; i++)
-            {
-                layerDelta[fromLayerIndex + i] = 0;
-            }
+			int index = weightIndex[currentLevel];
+			//int activationType = activationType[currentLevel+1];
 
-            int index = weightIndex[currentLevel];
-
-            // handle weights
-            for (int x = 0; x < toLayerSize; x++)
-            {
-                for (int y = 0; y < fromLayerSize; y++)
-                {
-                    float value = layerOutput[fromLayerIndex + y]
-                            * layerDelta[toLayerIndex + x];
-                    gradients[index+gradientOffset] += value;
-                    layerDelta[fromLayerIndex + y] += weights[index]
-                            * layerDelta[toLayerIndex + x];
-                    index++;
-                }
-            }
-
-            for (int i = 0; i < fromLayerSize; i++)
-            {
-                layerDelta[fromLayerIndex + i] *= derivative(
+			// handle weights
+			int yi = fromLayerIndex;
+			for (int y = 0; y < fromLayerSize; y++) 
+			{
+				float output = layerOutput[yi];
+				float sum = 0;
+				int xi = toLayerIndex;
+				int wi = index+y;
+				for (int x = 0; x < toLayerSize; x++) 
+				{
+					gradients[wi] += output * layerDelta[xi];
+					sum += weights[wi] * layerDelta[xi];
+					wi+=fromLayerSize;
+					xi++;
+				}
+			
+				layerDelta[yi] = sum * derivative(
                   activationType[currentLevel+1],
-                  layerOutput[fromLayerIndex + i],
-                  slope[currentLevel+1]); 
-            }
+                  layerOutput[yi],
+                  slope[currentLevel+1]);
+
+				yi++;
+			}
 		}
 	}	
 }
