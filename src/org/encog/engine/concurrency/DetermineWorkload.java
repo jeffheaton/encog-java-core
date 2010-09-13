@@ -98,14 +98,15 @@ public class DetermineWorkload {
 	 * picks using processor count. If worker count is -1 then no CPU threads
 	 * will be used.
 	 * 
-	 * @param cpuWorkerCount
+	 * @param theCpuWorkerCount
 	 *            Threads to use, or zero to allow Encog to pick.
 	 * @param clWorkerCount
 	 *            The number of CL workers.
 	 * @param workloadSize
 	 *            Total workload size.
 	 */
-	public DetermineWorkload(final int theCpuWorkerCount, final int clWorkerCount,
+	public DetermineWorkload(final int theCpuWorkerCount, 
+			final int clWorkerCount,
 			final int workloadSize) {
 
 		this.cpuWorkerCount = theCpuWorkerCount;

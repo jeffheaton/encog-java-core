@@ -84,12 +84,11 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	 *
 	 * @param activationFunction
 	 *            The activation function to use.
-	 * @param hasBias
-	 *            Does this layer have bias values?
 	 * @param neuronCount
 	 *            The neuron count to use.
 	 */
-	public ContextLayer(final ActivationFunction activationFunction, final int neuronCount) {
+	public ContextLayer(final ActivationFunction activationFunction, 
+			final int neuronCount) {
 		super(activationFunction, false, neuronCount);
 		this.context = new BasicNeuralData(neuronCount);
 	}
@@ -163,24 +162,36 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 
 	}
 	
-	
-	public double[] getBiasWeights()
-	{
+	/**
+	 * @return The weight biases.
+	 */
+	public double[] getBiasWeights() {
 		throw new NeuralNetworkError(ERROR);
 	}
-	
-	public double getBiasWeight(final int index)
-	{
+
+	/**
+	 * Get one weight bias value.
+	 * @param index The index to get.
+	 * @return The bias value.
+	 */
+	public double getBiasWeight(final int index) {
 		throw new NeuralNetworkError(ERROR);
 	}
-	
-	public void setBiasWeights(final double[] d)
-	{
+
+	/**
+	 * Set the bias weights.
+	 * @param d The bias weights.
+	 */
+	public void setBiasWeights(final double[] d) {
 		throw new NeuralNetworkError(ERROR);
 	}
-	
-	public void setBiasWeight(final int index, final double d)
-	{
+
+	/**
+	 * Set a bias weight.
+	 * @param index The index of the value to set.
+	 * @param d The new value.
+	 */
+	public void setBiasWeight(final int index, final double d) {
 		throw new NeuralNetworkError(ERROR);
 	}
 

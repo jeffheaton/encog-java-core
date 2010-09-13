@@ -45,7 +45,7 @@ public abstract class BasicPersistedSubObject implements EncogPersistedObject {
 	 *            Not used.
 	 */
 	@Override
-	public void setCollection(EncogCollection collection) {
+	public void setCollection(final EncogCollection collection) {
 
 	}
 
@@ -56,18 +56,18 @@ public abstract class BasicPersistedSubObject implements EncogPersistedObject {
 	 *            Not used.
 	 */
 	@Override
-	public void setDescription(String theDescription) {
+	public void setDescription(final String theDescription) {
 
 	}
 
 	/**
 	 * Not implemented. This object is not a "top level persisted object".
 	 * 
-	 * @param theDescription
+	 * @param theName
 	 *            Not used.
 	 */
 	@Override
-	public void setName(String theName) {
+	public void setName(final String theName) {
 
 	}
 }
