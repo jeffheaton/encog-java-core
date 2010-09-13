@@ -1,5 +1,3 @@
-org.encog.analyst.basic.BasicAnalyst
-org.encog.analyst.EncogAnalyst
 org.encog.bot.BotError
 org.encog.bot.BotUtil
 org.encog.bot.browse.Address
