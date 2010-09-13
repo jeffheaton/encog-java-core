@@ -28,19 +28,45 @@
  * http://www.heatonresearch.com/copyright.html
  */
 
-package org.encog.neural.activation;
+package org.encog.util;
 
-import org.encog.util.ActivationUtil;
-import org.junit.Assert;
+/**
+ * Utility classes for activation functions. Used to convert a single value
+ * to/from an array. This is necessary because the activation functions are
+ * designed to operate on arrays, rather than single values.
+ * 
+ * @author jheaton
+ * 
+ */
+public final class ActivationUtil {
 
-import junit.framework.TestCase;
+	/**
+	 * Get a single value from an array. Return the first element in the array.
+	 * 
+	 * @param d
+	 *            The array.
+	 * @return The first element in the array.
+	 */
+	public static double fromArray(final double[] d) {
+		return d[0];
+	}
 
-public class TestActivationUtil extends TestCase {
-	
-	public void testActivationUtil()
-	{
-		double[] d = ActivationUtil.toArray(1.0);
-		double d2 = ActivationUtil.fromArray(d);
-		Assert.assertEquals(1.0,d2,0.1);
+	/**
+	 * Take a single value and create an array that holds it.
+	 * 
+	 * @param d
+	 *            The single value.
+	 * @return The array.
+	 */
+	public static double[] toArray(final double d) {
+		final double[] result = new double[1];
+		result[0] = d;
+		return result;
+	}
+
+	/**
+	 * Private constructor.
+	 */
+	private ActivationUtil() {
 	}
 }
