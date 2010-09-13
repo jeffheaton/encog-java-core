@@ -72,10 +72,12 @@ public final class ObjectCloner {
 			throw new EncogError(e);
 		} finally {
 			try {
-				if( oos!=null )
+				if (oos != null) {
 					oos.close();
-				if( ois!=null )
+				}
+				if (ois != null) {
 					ois.close();
+				}
 			} catch (final Exception e) {
 				throw new EncogError(e);
 			}

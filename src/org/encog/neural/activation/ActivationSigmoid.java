@@ -43,12 +43,14 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = 5622349801036468572L;
 
-	public ActivationSigmoid()
-	{
+	/**
+	 * Construct a basic sigmoid function, with a slope of 1.
+	 */
+	public ActivationSigmoid() {
 		this.params = new double[1];
 		this.params[ActivationFunctions.PARAM_SIGMOID_SLOPE] = 1;
 	}
-	
+
 	/**
 	 * @return The object cloned;
 	 */
@@ -56,12 +58,11 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	public Object clone() {
 		return new ActivationSigmoid();
 	}
-	
+
 	/**
-	 * Get the slope of the activation function.
+	 * @return Get the slope of the activation function.
 	 */
-	public double getSlope()
-	{
+	public double getSlope() {
 		return this.params[ActivationFunctions.PARAM_SIGMOID_SLOPE];
 	}
 
@@ -72,7 +73,7 @@ public class ActivationSigmoid extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return true;
 	}
-	
+
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.

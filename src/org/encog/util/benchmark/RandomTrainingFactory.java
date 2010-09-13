@@ -47,6 +47,9 @@ public final class RandomTrainingFactory {
 	/**
 	 * Generate a random training set.
 	 * 
+	 * @param seed
+	 *            The seed value to use, the same seed value will always produce
+	 *            the same results.
 	 * @param count
 	 *            How many training items to generate.
 	 * @param inputCount
@@ -59,10 +62,12 @@ public final class RandomTrainingFactory {
 	 *            The maximum random number.
 	 * @return The random training set.
 	 */
-	public static NeuralDataSet generate(final long seed, final int count, final int inputCount,
+	public static NeuralDataSet generate(final long seed, 
+			final int count, final int inputCount,
 			final int idealCount, final double min, final double max) {
 		
-		LinearCongruentialGenerator rand = new LinearCongruentialGenerator(1000);
+		LinearCongruentialGenerator rand = 
+			new LinearCongruentialGenerator(seed);
 		
 		final NeuralDataSet result = new BasicNeuralDataSet();
 		for (int i = 0; i < count; i++) {
@@ -86,10 +91,21 @@ public final class RandomTrainingFactory {
 		return result;
 	}
 	
-	public static void generate(NeuralDataSet training, long seed,
-			final int count, final double min, final double max) {
+	/**
+	 * Generate random training into a training set.
+	 * @param training The training set to generate into.
+	 * @param seed The seed to use.
+	 * @param count How much data to generate.
+	 * @param min The low random value.
+	 * @param max The high random value.
+	 */
+	public static void generate(final NeuralDataSet training, 
+			final long seed,
+			final int count, 
+			final double min, final double max) {
 		
-		LinearCongruentialGenerator rand = new LinearCongruentialGenerator(seed);
+		LinearCongruentialGenerator rand 
+			= new LinearCongruentialGenerator(seed);
 		
 		int inputCount = training.getInputSize();
 		int idealCount = training.getIdealSize();

@@ -31,8 +31,6 @@
 package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.engine.util.BoundMath;
-import org.encog.persist.Persistor;
 
 /**
  * An activation function based on the logarithm function.
@@ -63,25 +61,6 @@ public class ActivationLOG extends BasicActivationFunction {
 		return new ActivationLOG();
 	}
 
-
-	/**
-	 * Implements the activation function derivative. The array is modified
-	 * according derivative of the activation function being used. See the class
-	 * description for more specific information on this type of activation
-	 * function. Propagation training requires the derivative. Some activation
-	 * functions do not support a derivative and will throw an error.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public double derivativeFunction(final double x) {
-		if (x >= 0) {
-			return 1 / (1 + x);
-		} else {
-			return 1 / (1 - x);
-		}
-	}
-
 	/**
 	 * @return Return true, log has a derivative.
 	 */
@@ -95,7 +74,6 @@ public class ActivationLOG extends BasicActivationFunction {
 	 */
 	@Override
 	public int getEngineID() {
-		// TODO Auto-generated method stub
 		return ActivationFunctions.ACTIVATION_LOG;
 	}
 

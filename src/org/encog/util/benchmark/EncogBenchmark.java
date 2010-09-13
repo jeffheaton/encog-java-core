@@ -129,8 +129,8 @@ public class EncogBenchmark {
 		network.getStructure().finalizeStructure();
 		network.reset();
 
-		final NeuralDataSet training = RandomTrainingFactory.generate(1000,10000,
-				20, 20, -1, 1);
+		final NeuralDataSet training = RandomTrainingFactory.generate(
+			1000,10000, 20, 20, -1, 1);
 
 		final double result = Evaluate.evaluateNetwork(network, training);
 		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,

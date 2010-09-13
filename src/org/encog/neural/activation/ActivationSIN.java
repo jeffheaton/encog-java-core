@@ -31,8 +31,6 @@
 package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.engine.util.BoundMath;
-import org.encog.persist.Persistor;
 
 /**
  * An activation function based on the sin function.

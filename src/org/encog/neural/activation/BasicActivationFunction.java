@@ -31,9 +31,6 @@
 package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.persist.EncogCollection;
-import org.encog.persist.Persistor;
-import org.encog.persist.persistors.generic.GenericPersistor;
 
 /**
  * Holds basic functionality that all activation functions will likely have use
@@ -49,16 +46,19 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 672555213449163812L;
-	
-	
+
+	/**
+	 * The params for this activation function.
+	 */
 	protected double[] params;
-	
-	public BasicActivationFunction()
-	{
+
+	/**
+	 * Construct a base activation function with no params.
+	 */
+	public BasicActivationFunction() {
 		this.params = new double[0];
 	}
-	
-	
+
 	/**
 	 * Implements the activation function. The array is modified according to
 	 * the activation function being used. See the class description for more
@@ -69,13 +69,8 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 */
 	public void activationFunction(final double[] d) {
 
-		ActivationFunctions.calculateActivation(
-				this.getEngineID(), 
-				d, 
-				this.params,
-				0,
-				d.length,
-				0);
+		ActivationFunctions.calculateActivation(this.getEngineID(), d,
+				this.params, 0, d.length, 0);
 	}
 
 	/**
@@ -84,43 +79,46 @@ public abstract class BasicActivationFunction implements ActivationFunction {
 	 * This prevents this method from having to recalculate the activation, just
 	 * to recalculate the derivative.
 	 * 
-	 * Some activation functions do not have derivatives and will throw an error.
+	 * Some activation functions do not have derivatives and will throw an
+	 * error.
 	 * 
 	 * Linear functions will return one for their derivative.
 	 * 
 	 * @param d
 	 *            The input array to the activation function.
-	 *            
-	 * @return 	The derivative.
+	 * 
+	 * @return The derivative.
 	 */
 	public double derivativeFunction(final double d) {
-		return ActivationFunctions.calculateActivationDerivative(
-				this.getEngineID(), 
-				d, 
-				this.params,
-				0);
+		return ActivationFunctions.calculateActivationDerivative(this
+				.getEngineID(), d, this.params, 0);
 
 	}
-	
+
 	/**
 	 * @return The object cloned.
 	 */
 	@Override
 	public abstract Object clone();
 
-	
-	public double[] getParams()
-	{
+	/**
+	 * {@inheritDoc}
+	 */
+	public double[] getParams() {
 		return this.params;
 	}
-	
-	public void setParam(int index, double value)
-	{
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setParam(final int index, final double value) {
 		this.params[index] = value;
 	}
-	
-	public String[] getParamNames()
-	{
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String[] getParamNames() {
 		return ActivationFunctions.getParams(getEngineID());
 	}
 

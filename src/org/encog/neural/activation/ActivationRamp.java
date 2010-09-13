@@ -31,8 +31,6 @@
 package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.engine.util.EngineArray;
-
 
 /**
  * A ramp activation function. This function has a high and low threshold. If
@@ -43,12 +41,9 @@ import org.encog.engine.util.EngineArray;
 public class ActivationRamp extends BasicActivationFunction {
 
 	/**
-	 * The serial ID. 
+	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 6336245112244386279L;
-
-
-	
 
 	/**
 	 * Construct a ramp activation function.
@@ -64,19 +59,19 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	public ActivationRamp(final double thresholdHigh,
 			final double thresholdLow, final double high, final double low) {
-		
+
 		this.params = new double[4];
 		this.params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD] = thresholdHigh;
 		this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD] = thresholdLow;
 		this.params[ActivationFunctions.PARAM_RAMP_HIGH] = high;
-		this.params[ActivationFunctions.PARAM_RAMP_LOW] = low;		
+		this.params[ActivationFunctions.PARAM_RAMP_LOW] = low;
 	}
 
 	/**
 	 * Default constructor.
 	 */
 	public ActivationRamp() {
-		this(1,0,1,0);
+		this(1, 0, 1, 0);
 	}
 
 	/**
@@ -86,22 +81,11 @@ public class ActivationRamp extends BasicActivationFunction {
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationRamp( 
+		return new ActivationRamp(
 				this.params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD],
-				this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD], 
-				this.params[ActivationFunctions.PARAM_RAMP_HIGH], 
+				this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD],
+				this.params[ActivationFunctions.PARAM_RAMP_HIGH],
 				this.params[ActivationFunctions.PARAM_RAMP_LOW]);
-	}
-
-	/**
-	 * Calculate the derivative of this function. This will always be 1, as it
-	 * is a linear function.
-	 * 
-	 * @param d
-	 *            The array of values to calculate over.
-	 */
-	public double derivativeFunction(final double d) {
-		return 1;
 	}
 
 	/**
@@ -138,7 +122,7 @@ public class ActivationRamp extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return true;
 	}
-	
+
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.
@@ -149,21 +133,37 @@ public class ActivationRamp extends BasicActivationFunction {
 		return ActivationFunctions.ACTIVATION_RAMP;
 	}
 
-	public void setThresholdLow(double d) {
+	/**
+	 * Set the threshold low.
+	 * @param d The threshold low.
+	 */
+	public void setThresholdLow(final double d) {
 		this.setParam(ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD, d);
 	}
 
-	public void setThresholdHigh(double d) {
+	/**
+	 * Set the threshold high.
+	 * @param d The threshold high.
+	 */
+	public void setThresholdHigh(final double d) {
 		this.setParam(ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD, d);
 	}
 
-	public void setLow(double d) {
+	/**
+	 * Set the low value.
+	 * @param d The low value.
+	 */
+	public void setLow(final double d) {
 		this.setParam(ActivationFunctions.PARAM_RAMP_LOW, d);
 	}
 
-	public void setHigh(double d) {
+	/**
+	 * Set the high value.
+	 * @param d The high value.
+	 */
+	public void setHigh(final double d) {
 		this.setParam(ActivationFunctions.PARAM_RAMP_HIGH, d);
-		
+
 	}
 
 }

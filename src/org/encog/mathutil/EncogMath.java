@@ -33,7 +33,16 @@ package org.encog.mathutil;
 /**
  * Several useful math functions for Encog.
  */
-public class EncogMath {
+public final class EncogMath {
+	
+	
+	/**
+	 * Private constructor.
+	 */
+	private EncogMath() {
+		
+	}
+	
 	/**
 	 * Convert degrees to radians.
 	 * 
@@ -42,7 +51,7 @@ public class EncogMath {
 	 * @return Radians.
 	 */
 	public static double deg2rad(final double deg) {
-		return deg * (Math.PI / 180.0);
+		return deg * (Math.PI / MathConst.DEG_SEMICIRCLE);
 	}
 
 	/**
@@ -73,6 +82,6 @@ public class EncogMath {
 	 * @return Degrees.
 	 */
 	public static double rad2deg(final double rad) {
-		return rad * (180.0 / Math.PI);
+		return rad * (MathConst.DEG_SEMICIRCLE / Math.PI);
 	}
 }

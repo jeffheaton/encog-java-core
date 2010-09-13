@@ -31,7 +31,6 @@
 package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.neural.NeuralNetworkError;
 
 /**
  * The step activation function is a very simple activation function. It is the
@@ -51,21 +50,31 @@ public class ActivationStep extends BasicActivationFunction {
 	/**
 	 * The serial ID.
 	 */
-	private static final long serialVersionUID = 3416782010146745754L;	
+	private static final long serialVersionUID = 3416782010146745754L;
 
-	public ActivationStep(double low, double center, double high)
-	{
+	/**
+	 * Construct a step activation function.
+	 * @param low The low of the function.
+	 * @param center The center of the function.
+	 * @param high The high of the function.
+	 */
+	public ActivationStep(
+			final double low, 
+			final double center, 
+			final double high) {
 		this.params = new double[3];
 		this.params[ActivationFunctions.PARAM_STEP_CENTER] = center;
 		this.params[ActivationFunctions.PARAM_STEP_LOW] = low;
 		this.params[ActivationFunctions.PARAM_STEP_HIGH] = high;
 	}
-	
-	public ActivationStep()
-	{
-		this(0.0,0.0,1.0);
+
+	/**
+	 * Create a basic step activation with low=0, center=0, high=1.
+	 */
+	public ActivationStep() {
+		this(0.0, 0.0, 1.0);
 	}
-	
+
 	/**
 	 * @return The center.
 	 */
@@ -80,7 +89,6 @@ public class ActivationStep extends BasicActivationFunction {
 		return this.params[ActivationFunctions.PARAM_STEP_LOW];
 	}
 
-
 	/**
 	 * @return The high value.
 	 */
@@ -88,25 +96,14 @@ public class ActivationStep extends BasicActivationFunction {
 		return this.params[ActivationFunctions.PARAM_STEP_HIGH];
 	}
 
-
 	/**
 	 * @return A clone of this object.
 	 */
 	@Override
 	public Object clone() {
-		ActivationStep result = new ActivationStep(
-				getLow(),getCenter(),getHigh());
+		ActivationStep result = new ActivationStep(getLow(), getCenter(),
+				getHigh());
 		return result;
-	}
-
-	/**
-	 * Throws an error, there is no derivative.
-	 * @param d The array to get the derivative.
-	 */
-	public double derivativeFunction(double d) {
-		throw new NeuralNetworkError("Can't use the step activation function "
-				+ "where a derivative is required.");
-
 	}
 
 	/**
@@ -115,7 +112,7 @@ public class ActivationStep extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return false;
 	}
-		
+
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.
@@ -126,15 +123,33 @@ public class ActivationStep extends BasicActivationFunction {
 		return ActivationFunctions.ACTIVATION_STEP;
 	}
 
-	public void setCenter(double d) {
+	/**
+	 * Set the center of this function.
+	 * 
+	 * @param d
+	 *            The center of this function.
+	 */
+	public void setCenter(final double d) {
 		this.setParam(ActivationFunctions.PARAM_STEP_CENTER, d);
 	}
-	
-	public void setHigh(double d) {
+
+	/**
+	 * Set the high of this function.
+	 * 
+	 * @param d
+	 *            The high of this function.
+	 */
+	public void setHigh(final double d) {
 		this.setParam(ActivationFunctions.PARAM_STEP_HIGH, d);
 	}
-	
-	public void setLow(double d) {
+
+	/**
+	 * Set the low of this function.
+	 * 
+	 * @param d
+	 *            The low of this function.
+	 */
+	public void setLow(final double d) {
 		this.setParam(ActivationFunctions.PARAM_STEP_LOW, d);
 	}
 

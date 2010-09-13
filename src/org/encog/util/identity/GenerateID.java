@@ -30,6 +30,15 @@
 
 package org.encog.util.identity;
 
+/**
+ * Interface that defines a unique ID generator.
+ */
 public interface GenerateID {
-	public long generate();
+
+	/**
+	 * Generate the next ID.
+	 * 
+	 * @return The next ID.
+	 */
+	long generate();
 }

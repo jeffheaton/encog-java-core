@@ -32,7 +32,6 @@ package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.persist.Persistor;
 
 /**
  * An activation function that only allows a specified number, usually one, of
@@ -43,12 +42,12 @@ import org.encog.persist.Persistor;
  * 
  */
 public class ActivationCompetitive extends BasicActivationFunction {
-	
+
 	/**
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 5396927873082336888L;
-	
+
 	/**
 	 * Create a competitive activation function with one winner allowed.
 	 */
@@ -68,13 +67,13 @@ public class ActivationCompetitive extends BasicActivationFunction {
 		this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS] = winners;
 	}
 
-
 	/**
 	 * @return A cloned copy of this object.
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationCompetitive((int)this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS]);
+		return new ActivationCompetitive(
+				(int) this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS]);
 	}
 
 	/**
@@ -84,6 +83,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 * 
 	 * @param d
 	 *            The input array to the activation function.
+	 * @return The derivative.
 	 */
 	public double derivativeFunction(final double d) {
 		throw new NeuralNetworkError(
@@ -96,7 +96,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	 * @return The maximum number of winners this function supports.
 	 */
 	public int getMaxWinners() {
-		return (int)this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS];
+		return (int) this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS];
 	}
 
 	/**
@@ -106,7 +106,7 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return false;
 	}
-	
+
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.
@@ -115,5 +115,5 @@ public class ActivationCompetitive extends BasicActivationFunction {
 	public int getEngineID() {
 		return ActivationFunctions.ACTIVATION_COMPETITIVE;
 	}
-	
+
 }

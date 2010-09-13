@@ -49,7 +49,7 @@ import org.encog.neural.networks.training.svm.SVMTrain;
 import org.encog.neural.pattern.FeedForwardPattern;
 
 /**
- * General utility class for Encog.  Provides for some common Encog procedures.
+ * General utility class for Encog. Provides for some common Encog procedures.
  */
 public final class EncogUtility {
 
@@ -57,16 +57,22 @@ public final class EncogUtility {
 	 * Private constructor.
 	 */
 	private EncogUtility() {
-		
+
 	}
-	
+
 	/**
 	 * Convert a CSV file to a binary training file.
-	 * @param csvFile The CSV file.
-	 * @param binFile The binary file.
-	 * @param inputCount The number of input values.
-	 * @param outputCount The number of output values.
-	 * @param headers True, if there are headers on the3 CSV.
+	 * 
+	 * @param csvFile
+	 *            The CSV file.
+	 * @param binFile
+	 *            The binary file.
+	 * @param inputCount
+	 *            The number of input values.
+	 * @param outputCount
+	 *            The number of output values.
+	 * @param headers
+	 *            True, if there are headers on the3 CSV.
 	 */
 	public static void convertCSV2Binary(final File csvFile,
 			final File binFile, final int inputCount, final int outputCount,
@@ -106,7 +112,9 @@ public final class EncogUtility {
 
 	/**
 	 * Format neural data as a list of numbers.
-	 * @param data The neural data to format.
+	 * 
+	 * @param data
+	 *            The neural data to format.
 	 * @return The formatted neural data.
 	 */
 	public static String formatNeuralData(final NeuralData data) {
@@ -134,8 +142,7 @@ public final class EncogUtility {
 	 * @param tanh
 	 *            True to use hyperbolic tangent activation function, false to
 	 *            use the sigmoid activation function.
-	 * @return
-	 * 			The neural network.
+	 * @return The neural network.
 	 */
 	public static BasicNetwork simpleFeedForward(final int input,
 			final int hidden1, final int hidden2, final int output,
@@ -174,8 +181,7 @@ public final class EncogUtility {
 	 */
 	public static void trainConsole(final BasicNetwork network,
 			final NeuralDataSet trainingSet, final int minutes) {
-		final Propagation train = new ResilientPropagation(network,
-				trainingSet);
+		final Propagation train = new ResilientPropagation(network, trainingSet);
 		train.setNumThreads(0);
 		EncogUtility.trainConsole(train, network, trainingSet, minutes);
 	}
@@ -220,13 +226,15 @@ public final class EncogUtility {
 
 	/**
 	 * Train using SCG and display progress to a dialog box.
-	 * @param network The network to train.
-	 * @param trainingSet The training set to use.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param trainingSet
+	 *            The training set to use.
 	 */
 	public static void trainDialog(final BasicNetwork network,
 			final NeuralDataSet trainingSet) {
-		final Propagation train = new ResilientPropagation(network,
-				trainingSet);
+		final Propagation train = new ResilientPropagation(network, trainingSet);
 		train.setNumThreads(0);
 		EncogUtility.trainDialog(train, network, trainingSet);
 	}
@@ -266,20 +274,25 @@ public final class EncogUtility {
 
 	/**
 	 * Train the network, to a specific error, send the output to the console.
-	 * @param network The network to train.
-	 * @param trainingSet The training set to use.
-	 * @param error The error level to train to.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param trainingSet
+	 *            The training set to use.
+	 * @param error
+	 *            The error level to train to.
 	 */
 	public static void trainToError(final BasicNetwork network,
 			final NeuralDataSet trainingSet, final double error) {
-		
+
 		Train train;
-		
-		if( network instanceof SVMNetwork )
-			train = new SVMTrain(network,trainingSet);
-		else
-			train = new ResilientPropagation(network,
-				trainingSet);
+
+		if (network instanceof SVMNetwork) {
+			train = new SVMTrain(network, trainingSet);
+		}
+		else {
+			train = new ResilientPropagation(network, trainingSet);
+		}
 		EncogUtility.trainToError(train, network, trainingSet, error);
 	}
 
@@ -311,7 +324,7 @@ public final class EncogUtility {
 					+ " Error:" + Format.formatPercent(train.getError())
 					+ " Target Error: " + Format.formatPercent(error));
 			epoch++;
-		} while ( (train.getError() > error) && !train.isTrainingDone() );
+		} while ((train.getError() > error) && !train.isTrainingDone());
 		train.finishTraining();
 	}
 }

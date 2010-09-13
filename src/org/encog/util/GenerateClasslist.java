@@ -102,7 +102,7 @@ public class GenerateClasslist {
 
 		System.out.println(temp + "." + name);
 	}
-	
+
 	/**
 	 * Process a C# file.
 	 * 
@@ -122,10 +122,10 @@ public class GenerateClasslist {
 		path = path.substring(0, idx);
 
 		// strip off base
-		if( path.length()>this.base.length()) {
+		if (path.length() > this.base.length()) {
 			path = path.substring(this.base.length() + 1);
 		}
-		
+
 		// insert .'s
 		final StringBuilder temp = new StringBuilder(path);
 		for (int i = 0; i < temp.length(); i++) {
@@ -134,12 +134,14 @@ public class GenerateClasslist {
 			}
 		}
 
-		System.out.println( "Encog." + temp + "." + name);
+		System.out.println("Encog." + temp + "." + name);
 	}
 
 	/**
 	 * Scan the specified directory.
-	 * @param dir The directory to scan.
+	 * 
+	 * @param dir
+	 *            The directory to scan.
 	 */
 	public void scan(final File dir) {
 		final File[] files = dir.listFiles();
@@ -148,8 +150,7 @@ public class GenerateClasslist {
 				final String strFile = file.toString();
 				if (strFile.endsWith(".java")) {
 					processJAVA(file);
-				}
-				else if(strFile.endsWith(".cs")) {
+				} else if (strFile.endsWith(".cs")) {
 					processCS(file);
 				}
 			} else if (file.isDirectory()) {

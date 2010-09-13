@@ -77,8 +77,9 @@ public final class ReflectionUtil {
 			}
 		}
 		
-		if( c.getSuperclass()!=null )
-			return findField(c.getSuperclass(),name);
+		if (c.getSuperclass() != null) {
+			return findField(c.getSuperclass(), name);
+		}
 		
 		return null;
 	}

@@ -45,13 +45,14 @@ public class ActivationTANH extends BasicActivationFunction {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
-	
-	public ActivationTANH()
-	{
+
+	/**
+	 * Construct a basic HTAN activation function, with a slope of 1.
+	 */
+	public ActivationTANH() {
 		this.params = new double[1];
 		this.params[ActivationFunctions.PARAM_TANH_SLOPE] = 1;
 	}
-	
 
 	/**
 	 * @return The object cloned;
@@ -61,22 +62,20 @@ public class ActivationTANH extends BasicActivationFunction {
 		return new ActivationTANH();
 	}
 
-
 	/**
 	 * @return Return true, TANH has a derivative.
 	 */
 	public boolean hasDerivative() {
 		return true;
 	}
-	
+
 	/**
-	 * Get the slope of the activation function.
+	 * @return Get the slope of the activation function.
 	 */
-	public double getSlope()
-	{
+	public double getSlope() {
 		return this.params[ActivationFunctions.PARAM_TANH_SLOPE];
 	}
-	
+
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.

@@ -39,7 +39,7 @@ import java.util.Map.Entry;
 
 import org.encog.Encog;
 import org.encog.engine.util.EngineArray;
-import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
@@ -66,19 +66,20 @@ import org.slf4j.LoggerFactory;
  * This class implements a neural network. This class works in conjunction the
  * Layer classes. Layers are added to the BasicNetwork to specify the structure
  * of the neural network.
- *
+ * 
  * The first layer added is the input layer, the final layer added is the output
  * layer. Any layers added between these two layers are the hidden layers.
- *
+ * 
  * The network structure is stored in the structure member. It is important to
  * call:
- *
+ * 
  * network.getStructure().finalizeStructure();
- *
+ * 
  * Once the neural network has been completely constructed.
- *
+ * 
  */
-public class BasicNetwork extends BasicPersistedObject implements Serializable, Network, ContextClearable {
+public class BasicNetwork extends BasicPersistedObject implements Serializable,
+		Network, ContextClearable {
 
 	/**
 	 * Tag used for the input layer.
@@ -110,7 +111,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Determine which member of the output is the winning neuron.
-	 *
+	 * 
 	 * @param output
 	 *            The output from the neural network.
 	 * @return The winning neuron.
@@ -164,7 +165,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Construct a basic network using the specified logic.
-	 *
+	 * 
 	 * @param logic
 	 *            The logic to use with the neural network.
 	 */
@@ -177,7 +178,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	 * Add a layer to the neural network. The first layer added is the input
 	 * layer, the last layer added is the output layer. This layer is added with
 	 * a weighted synapse.
-	 *
+	 * 
 	 * @param layer
 	 *            The layer to be added.
 	 */
@@ -191,7 +192,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	 * Add a layer to the neural network. If there are no layers added this
 	 * layer will become the input layer. This function automatically updates
 	 * both the input and output layer references.
-	 *
+	 * 
 	 * @param layer
 	 *            The layer to be added to the network.
 	 * @param type
@@ -214,7 +215,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	/**
 	 * Calculate the error for this neural network. The error is calculated
 	 * using root-mean-square(RMS).
-	 *
+	 * 
 	 * @param data
 	 *            The training set.
 	 * @return The error percentage.
@@ -225,14 +226,15 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 		for (final NeuralDataPair pair : data) {
 			final NeuralData actual = compute(pair.getInput());
-			errorCalculation.updateError(actual, pair.getIdeal());
+			errorCalculation.updateError(actual.getData(), pair.getIdeal()
+					.getData());
 		}
 		return errorCalculation.calculate();
 	}
 
 	/**
 	 * Calculate the total number of neurons in the network across all layers.
-	 *
+	 * 
 	 * @return The neuron count.
 	 */
 	public int calculateNeuronCount() {
@@ -260,7 +262,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 		}
 
 		this.structure.updateFlatNetwork();
-		if( this.structure.getFlat()!=null )
+		if (this.structure.getFlat() != null)
 			this.structure.getFlat().clearContext();
 	}
 
@@ -274,19 +276,19 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	/**
 	 * Return a clone of this neural network. Including structure, weights and
 	 * bias values. This is a deep copy.
-	 *
+	 * 
 	 * @return A cloned copy of the neural network.
 	 */
 	@Override
 	public Object clone() {
-		BasicNetwork result = (BasicNetwork)ObjectCloner.deepCopy(this);
+		BasicNetwork result = (BasicNetwork) ObjectCloner.deepCopy(this);
 		result.getStructure().finalizeStructure();
 		return result;
 	}
 
 	/**
 	 * Compute the output for a given input to the neural network.
-	 *
+	 * 
 	 * @param input
 	 *            The input to the neural network.
 	 * @return The output from the neural network.
@@ -306,7 +308,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	 * provides a parameter to specify an output holder to use. This holder
 	 * allows propagation training to track the output from each layer. If you
 	 * do not need this holder pass null, or use the other compare method.
-	 *
+	 * 
 	 * @param input
 	 *            The input provide to the neural network.
 	 * @param useHolder
@@ -321,7 +323,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Create a persistor for this object.
-	 *
+	 * 
 	 * @return The newly created persistor.
 	 */
 	@Override
@@ -332,7 +334,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	/**
 	 * Compare the two neural networks. For them to be equal they must be of the
 	 * same structure, and have the same matrix values.
-	 *
+	 * 
 	 * @param other
 	 *            The other neural network.
 	 * @return True if the two networks are equal.
@@ -345,7 +347,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	 * Determine if this neural network is equal to another. Equal neural
 	 * networks have the same weight matrix and bias values, within a specified
 	 * precision.
-	 *
+	 * 
 	 * @param other
 	 *            The other neural network.
 	 * @param precision
@@ -358,7 +360,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Get the layer specified by the tag.
-	 *
+	 * 
 	 * @param tag
 	 *            The tag.
 	 * @return The layer associated with that tag.
@@ -390,7 +392,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Get the specified property as a double.
-	 *
+	 * 
 	 * @param name
 	 *            The name of the property.
 	 * @return The property as a double.
@@ -401,7 +403,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Get the specified property as a long.
-	 *
+	 * 
 	 * @param name
 	 *            The name of the specified property.
 	 * @return The value of the specified property.
@@ -412,7 +414,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Get the specified property as a string.
-	 *
+	 * 
 	 * @param name
 	 *            The name of the property.
 	 * @return The value of the property.
@@ -432,7 +434,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Get a list of all of the tags on a specific layer.
-	 *
+	 * 
 	 * @param layer
 	 *            The layer to check.
 	 * @return A collection of the layer tags.
@@ -462,7 +464,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Generate a hash code.
-	 *
+	 * 
 	 * @return THe hash code.
 	 */
 	@Override
@@ -476,14 +478,13 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	 * does not have an input, output or hidden layers, then Nguyen-Widrow
 	 * cannot be used and a simple range randomize between -1 and 1 will be
 	 * used.
-	 *
+	 * 
 	 */
 	public void reset() {
 		Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
 		Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
 
-		if ( this.structure.getLayers().size()<3 ||
-				inputLayer == null
+		if (this.structure.getLayers().size() < 3 || inputLayer == null
 				|| outputLayer == null)
 			(new RangeRandomizer(-1, 1)).randomize(this);
 		else
@@ -494,17 +495,17 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Set the type of logic this network should use.
-	 *
+	 * 
 	 * @param logic
 	 *            The logic used by the network.
 	 */
 	public void setLogic(final NeuralLogic logic) {
 		this.logic = logic;
-	}	
+	}
 
 	/**
 	 * Set a property as a double.
-	 *
+	 * 
 	 * @param name
 	 *            The name of the property.
 	 * @param d
@@ -516,7 +517,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Set a property as a long.
-	 *
+	 * 
 	 * @param name
 	 *            The name of the property.
 	 * @param l
@@ -528,7 +529,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Set a property as a double.
-	 *
+	 * 
 	 * @param name
 	 *            The name of the property.
 	 * @param value
@@ -540,7 +541,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 
 	/**
 	 * Tag a layer.
-	 *
+	 * 
 	 * @param tag
 	 *            The tag name.
 	 * @param layer
@@ -567,7 +568,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	/**
 	 * Determine the winner for the specified input. This is the number of the
 	 * winning neuron.
-	 *
+	 * 
 	 * @param input
 	 *            The input patter to present to the neural network.
 	 * @return The winning neuron.
@@ -617,15 +618,13 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	/**
 	 * Sets the bias activation for every layer that supports bias. Make sure
 	 * that the network structure has been finalized before calling this method.
-	 *
+	 * 
 	 * @param activation
 	 *            THe new activation.
 	 */
-	public void setBiasActivation(double activation)
-	{
-		for(Layer layer: this.structure.getLayers())
-		{
-			if( layer.hasBias() )
+	public void setBiasActivation(double activation) {
+		for (Layer layer : this.structure.getLayers()) {
+			if (layer.hasBias())
 				layer.setBiasActivation(activation);
 		}
 	}
@@ -635,7 +634,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	 */
 	public int getInputCount() {
 		Layer layer = this.layerTags.get(BasicNetwork.TAG_INPUT);
-		if( layer==null )
+		if (layer == null)
 			return 0;
 		else
 			return layer.getNeuronCount();
@@ -646,7 +645,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	 */
 	public int getOutputCount() {
 		Layer layer = this.layerTags.get(BasicNetwork.TAG_OUTPUT);
-		if( layer==null )
+		if (layer == null)
 			return 0;
 		else
 			return layer.getNeuronCount();
@@ -659,6 +658,6 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable, 
 	public void compute(double[] input, double[] output) {
 		BasicNeuralData input2 = new BasicNeuralData(input);
 		NeuralData output2 = this.compute(input2);
-		EngineArray.arrayCopy(output2.getData(),output);
+		EngineArray.arrayCopy(output2.getData(), output);
 	}
 }

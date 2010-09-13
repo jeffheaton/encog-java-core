@@ -32,20 +32,31 @@ package org.encog.util.identity;
 
 import org.encog.persist.annotations.EGAttribute;
 
+/**
+ * Used to generate a unique id.
+ * 
+ */
 public class BasicGenerateID implements GenerateID {
-	
+
+	/**
+	 * The current ID to generate.
+	 */
 	@EGAttribute
 	private long currentID;
-	
-	public BasicGenerateID()
-	{
+
+	/**
+	 * Construct the ID generator to start at 1.
+	 */
+	public BasicGenerateID() {
 		this.currentID = 1;
 	}
-	
-	public long generate()
-	{
-		synchronized(this)
-		{
+
+	/**
+	 * Generate the next ID.
+	 * @return The next ID.
+	 */
+	public long generate() {
+		synchronized (this) {
 			return this.currentID++;
 		}
 	}

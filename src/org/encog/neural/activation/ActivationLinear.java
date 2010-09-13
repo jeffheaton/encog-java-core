@@ -31,7 +31,6 @@
 package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.persist.Persistor;
 
 /**
  * The Linear layer is really not an activation function at all. The input is
@@ -45,13 +44,15 @@ public class ActivationLinear extends BasicActivationFunction {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -5356580554235104944L;
-	
-	public ActivationLinear()
-	{
+
+	/**
+	 * Construct a linear activation function, with a slope of 1.
+	 */
+	public ActivationLinear() {
 		this.params = new double[1];
 		this.params[ActivationFunctions.PARAM_LINEAR_SLOPE] = 1;
 	}
-	
+
 	/**
 	 * @return The object cloned.
 	 */
@@ -66,15 +67,14 @@ public class ActivationLinear extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return true;
 	}
-	
+
 	/**
-	 * Get the slope of the activation function.
+	 * @return The slope of the activation function.
 	 */
-	public double getSlope()
-	{
+	public double getSlope() {
 		return this.params[ActivationFunctions.PARAM_LINEAR_SLOPE];
 	}
-	
+
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.

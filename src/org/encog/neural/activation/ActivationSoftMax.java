@@ -31,8 +31,6 @@
 package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.engine.util.BoundMath;
-import org.encog.persist.Persistor;
 
 /**
  * The softmax activation function.
@@ -47,25 +45,6 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	 */
 	private static final long serialVersionUID = -960489243250457611L;
 
-	/**
-	 * Implements the activation function. The array is modified according to
-	 * the activation function being used. See the class description for more
-	 * specific information on this type of activation function.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public void activationFunction(final double[] d) {
-
-		double sum = 0;
-		for (int i = 0; i < d.length; i++) {
-			d[i] = BoundMath.exp(d[i]);
-			sum += d[i];
-		}
-		for (int i = 0; i < d.length; i++) {
-			d[i] = d[i] / sum;
-		}
-	}
 
 	/**
 	 * @return The object cloned;
@@ -73,20 +52,6 @@ public class ActivationSoftMax extends BasicActivationFunction implements
 	@Override
 	public Object clone() {
 		return new ActivationSoftMax();
-	}
-
-	/**
-	 * Implements the activation function derivative. The array is modified
-	 * according derivative of the activation function being used. See the class
-	 * description for more specific information on this type of activation
-	 * function. Propagation training requires the derivative. Some activation
-	 * functions do not support a derivative and will throw an error.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 */
-	public double derivativeFunction(final double d) {
-		return 1;
 	}
 
 	/**

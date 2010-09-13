@@ -32,8 +32,6 @@ package org.encog.neural.activation;
 
 import java.io.Serializable;
 
-import org.encog.persist.EncogPersistedObject;
-
 /**
  * This interface allows various activation functions to be used with the neural
  * network. Activation functions are applied to the output from each layer of a
@@ -63,7 +61,6 @@ public interface ActivationFunction extends Serializable {
 	 */
 	void activationFunction(double[] d);
 
-	
 	/**
 	 * Calculate the derivative of the activation. It is assumed that the value
 	 * d, which is passed to this method, was the output from this activation.
@@ -78,6 +75,7 @@ public interface ActivationFunction extends Serializable {
 	 * 
 	 * @param d
 	 *            The input array to the activation function.
+	 * @return The derivative.
 	 */
 	double derivativeFunction(double d);
 
@@ -85,13 +83,27 @@ public interface ActivationFunction extends Serializable {
 	 * @return Return true if this function has a derivative.
 	 */
 	boolean hasDerivative();
-	
+
+	/**
+	 * @return The params for this activation function.
+	 */
 	double[] getParams();
-	
+
+	/**
+	 * Set one of the params for this activation function.
+	 * @param index The index of the param to set.
+	 * @param value The value to set.
+	 */
 	void setParam(int index, double value);
-	
+
+	/**
+	 * @return The names of the parameters.
+	 */
 	String[] getParamNames();
-	
+
+	/**
+	 * @return The Encog Engine ID of this activation function.
+	 */
 	int getEngineID();
 
 }

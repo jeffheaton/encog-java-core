@@ -31,8 +31,6 @@
 package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
-import org.encog.mathutil.rbf.GaussianFunction;
-import org.encog.persist.Persistor;
 
 /**
  * An activation function based on the gaussian function.
@@ -46,7 +44,6 @@ public class ActivationGaussian extends BasicActivationFunction {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
-	
 
 	/**
 	 * Create a gaussian activation function.
@@ -66,29 +63,35 @@ public class ActivationGaussian extends BasicActivationFunction {
 		this.params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH] = width;
 	}
 
-
 	/**
 	 * @return The object cloned.
 	 */
 	@Override
 	public Object clone() {
-		return new ActivationGaussian(this.getCenter(), this.getPeak(), this.getWidth());
+		return new ActivationGaussian(this.getCenter(), this.getPeak(), this
+				.getWidth());
 	}
 
+	/**
+	 * @return The width of the function.
+	 */
 	private double getWidth() {
 		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_WIDTH];
 	}
 
-
+	/**
+	 * @return The center of the function.
+	 */
 	private double getCenter() {
 		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_CENTER];
 	}
 
-
+	/**
+	 * @return The peak of the function.
+	 */
 	private double getPeak() {
 		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_PEAK];
 	}
-
 
 	/**
 	 * @return Return true, gaussian has a derivative.
@@ -96,7 +99,7 @@ public class ActivationGaussian extends BasicActivationFunction {
 	public boolean hasDerivative() {
 		return true;
 	}
-		
+
 	/**
 	 * @return The Encog Engine ID for this activation type, or -1 if not
 	 *         defined by the Encog engine.
@@ -106,5 +109,5 @@ public class ActivationGaussian extends BasicActivationFunction {
 		// TODO Auto-generated method stub
 		return ActivationFunctions.ACTIVATION_GAUSSIAN;
 	}
-	
+
 }

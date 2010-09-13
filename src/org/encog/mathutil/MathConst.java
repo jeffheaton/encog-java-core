@@ -42,6 +42,16 @@ public final class MathConst {
 	 * Euler's number.
 	 */
 	public static final double EULERS_NUMBER = 2.718281828;
+	
+	/**
+	 * Degrees in a semicircle.
+	 */
+	public static final double DEG_SEMICIRCLE = 180.0;
+	
+	/**
+	 * Degrees in a circle.
+	 */
+	public static final double DEG_CIRCLE = 360.0;
 
 	/**
 	 * Private constructor.

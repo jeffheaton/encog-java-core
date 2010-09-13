@@ -38,7 +38,7 @@ import org.encog.neural.networks.layers.Layer;
 /**
  * Used to validate if training is valid.
  */
-public class EncogValidate {
+public final class EncogValidate {
 
 	/**
 	 * Validate a network for training.
@@ -79,6 +79,9 @@ public class EncogValidate {
 		}
 	}
 
+	/**
+	 * Private constructor.
+	 */
 	private EncogValidate() {
 
 	}

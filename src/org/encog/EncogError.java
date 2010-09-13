@@ -77,9 +77,9 @@ public class EncogError extends RuntimeException {
 	 * @param msg
 	 *            A message.
 	 * @param t
-	 * 			The other exception.
+	 *            The other exception.
 	 */
-	public EncogError( final String msg, final Throwable t) {
-		super(msg,t);
+	public EncogError(final String msg, final Throwable t) {
+		super(msg, t);
 	}
 }

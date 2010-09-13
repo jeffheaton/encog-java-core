@@ -70,7 +70,7 @@ public class LinearCongruentialGenerator {
 
 	/**
 	 * Construct the default LCG.  You need only specify a seed.
-	 * @param seed
+	 * @param seed The seed to use.
 	 */
 	public LinearCongruentialGenerator(final long seed) {
 		this((long) Math.pow(2L, 32L), 1103515245L, 12345L, seed);

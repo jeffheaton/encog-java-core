@@ -32,8 +32,6 @@ package org.encog.neural.activation;
 
 import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.persist.Persistor;
-import org.encog.persist.persistors.generic.GenericPersistor;
 
 /**
  * BiPolar activation function. This will scale the neural data into the bipolar
@@ -49,11 +47,13 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
 
-	public ActivationBiPolar()
-	{
+	/**
+	 * Construct the bipolar activation function.
+	 */
+	public ActivationBiPolar() {
 		this.params = new double[0];
 	}
-	
+
 	/**
 	 * @return The object cloned.
 	 */
@@ -71,6 +71,7 @@ public class ActivationBiPolar extends BasicActivationFunction {
 	 * 
 	 * @param d
 	 *            The input array to the activation function.
+	 * @return The derivative.
 	 */
 	public double derivativeFunction(final double d) {
 		throw new NeuralNetworkError(
