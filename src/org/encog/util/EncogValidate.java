@@ -73,7 +73,7 @@ public final class EncogValidate {
 		if ((training.getIdealSize() > 0)
 				&& (outputLayer.getNeuronCount() != training.getIdealSize())) {
 			throw new NeuralNetworkError("The output layer size of "
-					+ inputLayer.getNeuronCount()
+					+ outputLayer.getNeuronCount()
 					+ " must match the training input size of "
 					+ training.getIdealSize() + ".");
 		}
