@@ -71,7 +71,8 @@ kernel void NetworkTrain(
     global read_only int *weightIndex,
     global read_only float* input,
     global read_only float* ideal,
-    global read_only float* weights,
+    global read_only float* weightsIn,
+    global write_only float* weightsOut,
     global write_only float *gradients,
     global read_only int *activationType,
     global read_only float *slope
@@ -81,7 +82,6 @@ kernel void NetworkTrain(
 	private float layerDelta[NEURON_COUNT];
 			
 	int taskIndex = get_global_id(0);
-
 	int inputSize = params[0];
     int outputSize = params[1];
     int layerCount = params[2];
@@ -97,14 +97,12 @@ kernel void NetworkTrain(
 	else
 		size = sizeElement;
 		
-		// clear out the gradients and errors
-	for(int i=0;i<WEIGHT_COUNT;i++)
-		gradients[gradientOffset+i]=0;
+	// clear out the gradients and errors
 	errors[taskIndex] = 0;
 	
-	for(int index=0;index<size;index++)
-	{		
-		int subtaskIndex = (taskIndex*sizeElement)+index;
+	for(int trainIndex=0;trainIndex<size;trainIndex++)
+	{		 
+		int subtaskIndex = (taskIndex*sizeElement)+trainIndex;
 		
 		// part 1: forward pass
 		int taskInputIndex = subtaskIndex * inputSize;
@@ -130,18 +128,12 @@ kernel void NetworkTrain(
 			int outputSize = layerFeedCounts[currentLayer - 1];
 			int index = weightIndex[currentLayer - 1];
 
-			// bias values
-			for (int i = 0; i < outputSize; i++)
-			{
-				layerOutput[ i + outputIndex] = 0;
-			}
-
 			for (int x = 0; x < outputSize; x++)
 			{
 				float sum = 0;
 				for (int y = 0; y < inputSize; y++)
 				{
-					sum += weights[index++] * layerOutput[inputIndex + y];
+					sum += weightsIn[index++] * layerOutput[inputIndex + y];
 				}
        
 				float value = layerOutput[outputIndex + x] + sum;
@@ -189,8 +181,8 @@ kernel void NetworkTrain(
 				int wi = index+y;
 				for (int x = 0; x < toLayerSize; x++) 
 				{
-					gradients[wi] += output * layerDelta[xi];
-					sum += weights[wi] * layerDelta[xi];
+					gradients[wi+gradientOffset] = output * layerDelta[xi];
+					sum += weightsIn[wi] * layerDelta[xi];
 					wi+=fromLayerSize;
 					xi++;
 				}
@@ -204,4 +196,14 @@ kernel void NetworkTrain(
 			}
 		}
 	}	
+	
+	// now that the gradients have been calculated, update the network
+	barrier(CLK_GLOBAL_MEM_FENCE);
+	/*
+	// loop over all gradients and sum them into the first subtask
+	for(int index=1;index<size;index++)
+	{		 
+		int subtaskIndex = (taskIndex*sizeElement)+index;
+		for(int i=0;i<
+	}*/
 }

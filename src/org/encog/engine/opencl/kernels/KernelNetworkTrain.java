@@ -46,9 +46,14 @@ import org.jocl.cl_mem;
 public class KernelNetworkTrain extends EncogKernel {
 
 	/**
-	 * A buffer to hold the weight and bias matrix.
+	 * A buffer to communicate weights to the kernel.
 	 */
-	private cl_mem weightArrayBuffer;
+	private cl_mem weightInArrayBuffer;
+	
+	/**
+	 * A buffer to communicate weights from the kernel.
+	 */
+	private cl_mem weightOutArrayBuffer;
 
 	/**
 	 * A buffer to hold the layer index.
@@ -83,7 +88,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	/**
 	 * The weight and bias array for the network.
 	 */
-	private float[] weightArray;
+	private float[] weightInArray;
 
 	/**
 	 * The size of all layer deltas.
@@ -118,7 +123,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		final FlatNetwork flat = workload.getNetwork();
 
 		for (int i = 0; i < flat.getWeights().length; i++) {
-			this.weightArray[i] = (float) flat.getWeights()[i];
+			this.weightInArray[i] = (float) flat.getWeights()[i];
 		}
 
 		CL.clSetKernelArg(getKernel(), 0, Sizeof.cl_mem, Pointer.to(workload
@@ -138,12 +143,13 @@ public class KernelNetworkTrain extends EncogKernel {
 		CL.clSetKernelArg(getKernel(), 7, Sizeof.cl_mem, Pointer.to(workload
 				.getIdealBuffer()));
 		CL.clSetKernelArg(getKernel(), 8, Sizeof.cl_mem, Pointer
-				.to(this.weightArrayBuffer));
-		CL.clSetKernelArg(getKernel(), 9, Sizeof.cl_mem, Pointer.to(workload
+				.to(this.weightInArrayBuffer));
+		CL.clSetKernelArg(getKernel(), 9, Sizeof.cl_mem, Pointer.to(this.weightOutArrayBuffer));
+		CL.clSetKernelArg(getKernel(), 10, Sizeof.cl_mem, Pointer.to(workload
 				.getGradientBuffer()));
-		CL.clSetKernelArg(getKernel(), 10, Sizeof.cl_mem, Pointer
-				.to(this.activationTypeBuffer));
 		CL.clSetKernelArg(getKernel(), 11, Sizeof.cl_mem, Pointer
+				.to(this.activationTypeBuffer));
+		CL.clSetKernelArg(getKernel(), 12, Sizeof.cl_mem, Pointer
 				.to(this.slopeBuffer));
 
 		try {
@@ -160,9 +166,9 @@ public class KernelNetworkTrain extends EncogKernel {
 			final long[] localWorkSize = new long[] { localWork };
 
 			CL.clEnqueueWriteBuffer(workload.getDevice().getCommands(),
-					this.weightArrayBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
-							* this.weightArray.length, Pointer
-							.to(this.weightArray), 0, null, null);
+					this.weightInArrayBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
+							* this.weightInArray.length, Pointer
+							.to(this.weightInArray), 0, null, null);
 
 			// Execute the kernel
 			CL.clEnqueueNDRangeKernel(workload.getDevice().getCommands(),
@@ -177,7 +183,7 @@ public class KernelNetworkTrain extends EncogKernel {
 
 			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
 					.getGradientBuffer(), CL.CL_TRUE, 0,
-					this.weightArray.length * workload.getMaxUnits()
+					this.weightInArray.length * workload.getMaxUnits()
 							* Sizeof.cl_float, Pointer.to(workload
 							.getGradients()), 0, null, null);
 
@@ -195,7 +201,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	 */
 	public void init(final FlatNetwork flat) {
 
-		this.weightArray = new float[flat.getWeights().length];
+		this.weightInArray = new float[flat.getWeights().length];
 		this.slopeArray = new float[flat.getParams().length];
 
 		this.layerDeltaSize = 0;
@@ -222,10 +228,13 @@ public class KernelNetworkTrain extends EncogKernel {
 						* flat.getLayerFeedCounts().length, Pointer.to(flat
 						.getLayerFeedCounts()), null);
 
-		this.weightArrayBuffer = CL.clCreateBuffer(getContext(),
+		this.weightInArrayBuffer = CL.clCreateBuffer(getContext(),
 				CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
-						* this.weightArray.length,
-				Pointer.to(this.weightArray), null);
+						* this.weightInArray.length,
+				Pointer.to(this.weightInArray), null);
+		
+		this.weightOutArrayBuffer = CL.clCreateBuffer(getContext(), CL.CL_MEM_WRITE_ONLY,
+				Sizeof.cl_float * this.weightInArray.length, null, null);
 
 		this.weightIndexBuffer = CL.clCreateBuffer(getContext(),
 				CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
