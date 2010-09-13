@@ -18,6 +18,10 @@ import org.encog.engine.util.ErrorCalculationMode;
 
 public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
+	public static final int LEARN_RPROP = 0;
+	public static final int LEARN_BPROP = 1;
+	public static final int LEARN_MANHATTAN = 2;
+	
 	private double error;
 	private EncogCLDevice targetDevice;
 
@@ -45,6 +49,31 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * THe workload to use.
 	 */
 	private final TrainingWorkload workload;
+	
+	/**
+	 * Training type.
+	 */
+	private int learningType;
+	
+	/**
+	 * The learning rate.
+	 */
+	private double learningRate;
+	
+	/**
+	 * The momentum.
+	 */
+	private double momentum;
+	
+	/**
+	 * The initial update.
+	 */
+	private double initialUpdate;
+	
+	/**
+	 * The max step.
+	 */
+	private double maxStep;
 
 	
 	/**
@@ -95,7 +124,31 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 				platform.getNetworkTrain().compile(options);
 				platform.getNetworkTrain().init(this.network);
 			}
-
+	}
+	
+	public void learnRPROP()
+	{
+		learnRPROP(RPROPConst.DEFAULT_INITIAL_UPDATE,RPROPConst.DEFAULT_MAX_STEP);
+	}
+	
+	public void learnRPROP(final double initialUpdate, final double maxStep)
+	{
+		this.learningType = TrainFlatNetworkOpenCL.LEARN_RPROP;
+		this.initialUpdate = initialUpdate;
+		this.maxStep = maxStep;
+	}
+	
+	public void learnBPROP(double learningRate, double momentum)
+	{
+		this.learningType = TrainFlatNetworkOpenCL.LEARN_BPROP;
+		this.momentum = momentum;
+		this.learningRate = learningRate;
+	}
+	
+	public void learnManhattan(double learningRate)
+	{
+		this.learningType = TrainFlatNetworkOpenCL.LEARN_MANHATTAN;
+		this.learningRate = learningRate;
 	}
 	
 	/**
@@ -145,6 +198,10 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	@Override
 	public void iteration() {
 
+		if( this.learningType==-1) {
+			throw new EncogEngineError("Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
+		}
+		
 		final KernelNetworkTrain k = this.targetDevice.getPlatform()
 				.getNetworkTrain();
 
