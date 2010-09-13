@@ -73,7 +73,6 @@ org.encog.neural.activation.ActivationSIN
 org.encog.neural.activation.ActivationSoftMax
 org.encog.neural.activation.ActivationStep
 org.encog.neural.activation.ActivationTANH
-org.encog.neural.activation.ActivationUtil
 org.encog.neural.activation.BasicActivationFunction
 org.encog.neural.data.basic.BasicNeuralData
 org.encog.neural.data.basic.BasicNeuralDataPair

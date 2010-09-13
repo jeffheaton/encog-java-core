@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Holds a ticker symbol and exchange. The exchange is for external use only and
  * is not used by Encog currently.
- *
+ * 
  * @author jheaton
- *
+ * 
  */
 public class TickerSymbol {
 
@@ -61,7 +61,7 @@ public class TickerSymbol {
 
 	/**
 	 * Construct a ticker symbol with no exchange.
-	 *
+	 * 
 	 * @param symbol
 	 *            The ticker symbol.
 	 */
@@ -72,7 +72,7 @@ public class TickerSymbol {
 
 	/**
 	 * Construct a ticker symbol with exchange.
-	 *
+	 * 
 	 * @param symbol
 	 *            The ticker symbol.
 	 * @param exchange
@@ -86,7 +86,14 @@ public class TickerSymbol {
 	/**
 	 * {@inheritDoc}
 	 */
-	public boolean equals(final TickerSymbol other) {
+	public boolean equals(final Object o) {
+
+		if (!(o instanceof TickerSymbol)) {
+			return false;
+		}
+
+		TickerSymbol other = (TickerSymbol) o;
+
 		// if the symbols do not even match then they are not equal
 		if (!other.getSymbol().equals(getSymbol())) {
 			return false;
@@ -124,6 +131,6 @@ public class TickerSymbol {
 	@Override
 	public int hashCode() {
 		return ReflectionUtil.safeHashCode(this.symbol)
-		+ ReflectionUtil.safeHashCode(this.exchange);
+				+ ReflectionUtil.safeHashCode(this.exchange);
 	}
 }

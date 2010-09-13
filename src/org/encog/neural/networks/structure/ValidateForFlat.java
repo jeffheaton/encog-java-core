@@ -54,18 +54,19 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 	 * is returned, otherwise, an error is returned to show why the network
 	 * cannot be flattened.
 	 * 
-	 * @param network
+	 * @param eml
 	 *            The network to check.
 	 * @return Null, if the net can not be flattened, an error message
 	 *         otherwise.
 	 */
 	public String isValid(final EngineMachineLearning eml) {
-		
-		if( !(eml instanceof BasicNetwork) )
+
+		if (!(eml instanceof BasicNetwork)) {
 			return "Only a BasicNetwork can be converted to a flat network.";
-		
-		BasicNetwork network = (BasicNetwork)eml;
-		
+		}
+
+		BasicNetwork network = (BasicNetwork) eml;
+
 		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
 		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
 
@@ -76,8 +77,8 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 		if (outputLayer == null) {
 			return "To convert to a flat network, there must be an output layer.";
 		}
-				
-		if( !(network.getLogic() instanceof FeedforwardLogic) ) {
+
+		if (!(network.getLogic() instanceof FeedforwardLogic)) {
 			return "To convert to flat, must be using FeedforwardLogic or SimpleRecurrentLogic.";
 		}
 
@@ -85,14 +86,14 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 			if (layer.getNext().size() > 2) {
 				return "To convert to flat a network must have at most two outbound synapses.";
 			}
-			 
-			if (layer.getClass()!=ContextLayer.class && layer.getClass()!=BasicLayer.class  && layer.getClass()!=RadialBasisFunctionLayer.class ) {
+
+			if (layer.getClass() != ContextLayer.class
+					&& layer.getClass() != BasicLayer.class
+					&& layer.getClass() != RadialBasisFunctionLayer.class) {
 				return "To convert to flat a network must have only BasicLayer and ContextLayer layers.";
 			}
 		}
 		return null;
 	}
-
-
 
 }
