@@ -17,11 +17,6 @@ public interface TrainFlatNetwork {
 	FlatNetwork getNetwork();
 
 	/**
-	 * @return The target OpenCL device.
-	 */
-	EncogCLDevice getTargetDevice();
-
-	/**
 	 * @return The data we are training with.
 	 */
 	EngineDataSet getTraining();
@@ -37,11 +32,6 @@ public interface TrainFlatNetwork {
 	 *            The number of threads to use.
 	 */
 	void setNumThreads(final int numThreads);
-	/**
-	 * Set the target device.
-	 * @param targetDevice The target device.
-	 */
-	void setTargetDevice(final EncogCLDevice targetDevice);
 
 	/**
 	 * @return The number of threads.

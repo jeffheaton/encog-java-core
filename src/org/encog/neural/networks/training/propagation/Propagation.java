@@ -206,7 +206,7 @@ public abstract class Propagation extends BasicTraining {
 	 * @return The OpenCL device to use, or null for the CPU.
 	 */
 	public EncogCLDevice getTargetDevice() {
-		return this.flatTraining.getTargetDevice();
+		return null;
 	}
 
 	/**
@@ -218,7 +218,7 @@ public abstract class Propagation extends BasicTraining {
 	 *            The OpenCL device to use, or null to use the CPU.
 	 */
 	public void setTargetDevice(EncogCLDevice targetDevice) {
-		this.flatTraining.setTargetDevice(targetDevice);
+		
 	}
 	
 	/**
@@ -226,7 +226,7 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public void assignCPU()
 	{
-		this.flatTraining.setTargetDevice(null);
+		//this.flatTraining.setTargetDevice(null);
 	}
 	
 	/**

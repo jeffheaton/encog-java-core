@@ -114,10 +114,6 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	protected Throwable reportedException;
 
-	/**
-	 * The OpenCL device targeted.
-	 */
-	protected EncogCLDevice targetDevice;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -195,13 +191,6 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public EncogCLDevice getTargetDevice() {
-		return this.targetDevice;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	public EngineDataSet getTraining() {
 		return this.training;
 	}
@@ -211,61 +200,15 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	private void init() {
 
-		DetermineWorkload determine;
-		final ValidateForOpenCL val = new ValidateForOpenCL();
+		DetermineWorkload determine = new DetermineWorkload(this.numThreads,
+				(int) this.indexable.getRecordCount());
 
-		if ((this.targetDevice != null) && (val.isValid(this.network) == null)) {
-			if (EncogEngine.getInstance().getCL().areCPUsPresent()) {
-				this.numThreads = -1;
-				EncogEngine.getInstance().getCL().enableAllCPUs();
-			}
+		this.workers = new FlatGradientWorker[determine.getThreadCount()];
 
-			determine = new DetermineWorkload(this.numThreads, 1,
-					(int) this.indexable.getRecordCount());
-		} else {
-			determine = new DetermineWorkload(this.numThreads,
-					(int) this.indexable.getRecordCount());
-		}
-
-		this.workers = new FlatGradientWorker[determine.getTotalWorkerCount()];
-
-		determine.calculateWorkers();
 		int index = 0;
 
-		// if we are using CL, then we need to compile the kernels for this
-		// network
-		if (EncogEngine.getInstance().getCL() != null) {
-			final Map<String, String> options = new HashMap<String, String>();
-			options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
-			options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
-
-			// is there only one activation function? If so, there are some
-			// optimizations we can use.
-			final int act = this.network.hasSameActivationFunction();
-
-			if (act == ActivationFunctions.ACTIVATION_SIGMOID) {
-				options.put("USE_SIGMOID", "1");
-			} else if (act == ActivationFunctions.ACTIVATION_TANH) {
-				options.put("USE_TANH", "1");
-			}
-
-			for (final EncogCLPlatform platform : EncogEngine.getInstance()
-					.getCL().getPlatforms()) {
-				platform.getNetworkTrain().compile(options);
-				platform.getNetworkTrain().init(this.network);
-			}
-		}
-
-		// handle CL, should only be one currently.
-		// additional devices can be used, but only on different trainers.
-		for (final IntRange r : determine.getCLRanges()) {
-			this.workers[index++] = new GradientWorkerCL(this.targetDevice,
-					this.network.clone(), this,
-					this.indexable.openAdditional(), r.getLow(), r.getHigh());
-		}
-
 		// handle CPU
-		for (final IntRange r : determine.getCPURanges()) {
+		for (final IntRange r : determine.calculateWorkers()) {
 			this.workers[index++] = new GradientWorkerCPU(this.network.clone(),
 					this, this.indexable.openAdditional(), r.getLow(),
 					r.getHigh());
@@ -382,13 +325,6 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	public void setNumThreads(final int numThreads) {
 		this.numThreads = numThreads;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setTargetDevice(final EncogCLDevice targetDevice) {
-		this.targetDevice = targetDevice;
 	}
 
 	/**
