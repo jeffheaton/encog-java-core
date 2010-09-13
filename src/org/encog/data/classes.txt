@@ -30,8 +30,6 @@ org.encog.mathutil.Convert
 org.encog.mathutil.EncogMath
 org.encog.mathutil.EncogMathError
 org.encog.mathutil.Equilateral
-org.encog.mathutil.error.ErrorCalculation
-org.encog.mathutil.error.ErrorCalculationMode
 org.encog.mathutil.libsvm.svm
 org.encog.mathutil.libsvm.svm_model
 org.encog.mathutil.libsvm.svm_node
