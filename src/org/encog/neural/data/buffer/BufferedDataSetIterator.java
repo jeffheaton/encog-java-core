@@ -45,40 +45,42 @@ public class BufferedDataSetIterator implements Iterator<NeuralDataPair> {
 	 * The dataset being iterated over.
 	 */
 	private BufferedNeuralDataSet data;
-	
+
 	/**
 	 * The current record.
 	 */
 	private int current;
-	
+
 	/**
 	 * Construct the iterator.
-	 * @param data The dataset to iterate over.
+	 * 
+	 * @param data
+	 *            The dataset to iterate over.
 	 */
-	public BufferedDataSetIterator(BufferedNeuralDataSet data)
-	{
+	public BufferedDataSetIterator(final BufferedNeuralDataSet data) {
 		this.data = data;
 		this.current = 0;
 	}
-	
+
 	/**
 	 * @return True if there is are more records to read.
 	 */
 	@Override
 	public boolean hasNext() {
-		return this.current<data.getRecordCount();
+		return this.current < data.getRecordCount();
 	}
 
 	/**
-	 * Return the next record, or null if there are no more.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public NeuralDataPair next() {
-		
-		if(!hasNext() )
+
+		if (!hasNext())
 			return null;
-		
-		NeuralDataPair pair = BasicNeuralDataPair.createPair(this.data.getInputSize(), this.data.getIdealSize());
+
+		NeuralDataPair pair = BasicNeuralDataPair.createPair(this.data
+				.getInputSize(), this.data.getIdealSize());
 		this.data.getRecord(this.current++, pair);
 		return pair;
 	}

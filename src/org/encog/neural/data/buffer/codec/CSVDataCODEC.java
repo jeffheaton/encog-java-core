@@ -55,99 +55,117 @@ public class CSVDataCODEC implements DataSetCODEC {
 	 * The external CSV file.
 	 */
 	private File file;
-	
+
 	/**
 	 * The CSV format to use.
 	 */
 	private CSVFormat format;
-	
+
 	/**
 	 * The size of the input data.
 	 */
-	private int inputCount; 
-	
+	private int inputCount;
+
 	/**
 	 * The size of the ideal data.
 	 */
 	private int idealCount;
-	
+
 	/**
 	 * True, if headers are present in the CSV file.
 	 */
 	private boolean headers;
-	
+
 	/**
 	 * The utility to assist in reading the CSV file.
 	 */
 	private ReadCSV readCSV;
-	
+
 	/**
 	 * A file used to output the CSV file.
 	 */
 	private PrintStream output;
-	
+
 	/**
 	 * Create a CODEC to load data from CSV to binary.
-	 * @param file The CSV file to load.
-	 * @param format The format that the CSV file is in.
-	 * @param inputCount The number of input columns.
-	 * @param idealCount The number of ideal columns.
+	 * 
+	 * @param file
+	 *            The CSV file to load.
+	 * @param format
+	 *            The format that the CSV file is in.
+	 * @param headers
+	 * 			True, if there are headers.
+	 * @param inputCount
+	 *            The number of input columns.
+	 * @param idealCount
+	 *            The number of ideal columns.
 	 */
-	public CSVDataCODEC(File file, CSVFormat format, boolean headers, int inputCount, int idealCount)
-	{
-		if( this.inputCount!=0 )
-			throw new BufferedDataError("To export CSV, you must use the CSVDataCODEC constructor that does not specify input or ideal sizes.");
+	public CSVDataCODEC(
+			final File file, 
+			final CSVFormat format, 
+			final boolean headers,
+			final int inputCount, final int idealCount) {
+		if (this.inputCount != 0) {
+			throw new BufferedDataError(
+					"To export CSV, you must use the CSVDataCODEC constructor that does not specify input or ideal sizes.");
+		}
 		this.file = file;
 		this.format = format;
 		this.inputCount = inputCount;
 		this.idealCount = idealCount;
 		this.headers = headers;
 	}
-	
+
 	/**
 	 * Constructor to create CSV from binary..
-	 * @param file The CSV file to create.
-	 * @param format The format for that CSV file.
+	 * 
+	 * @param file
+	 *            The CSV file to create.
+	 * @param format
+	 *            The format for that CSV file.
 	 */
-	public CSVDataCODEC(File file, CSVFormat format) {
+	public CSVDataCODEC(final File file, final CSVFormat format) {
 		this.file = file;
 		this.format = format;
 	}
 
 	/**
 	 * Read one record of data from a CSV file.
-	 * @param input The input data array.
-	 * @param ideal The ideal data array.
+	 * 
+	 * @param input
+	 *            The input data array.
+	 * @param ideal
+	 *            The ideal data array.
 	 * @return True, if there is more data to be read.
 	 */
 	@Override
-	public boolean read(double[] input, double[] ideal) {
-		if( this.readCSV.next() )
-		{
+	public boolean read(final double[] input, final double[] ideal) {
+		if (this.readCSV.next()) {
 			int index = 0;
-			for(int i=0;i<input.length;i++)
-			{
+			for (int i = 0; i < input.length; i++) {
 				input[i] = readCSV.getDouble(index++);
 			}
-			
-			for(int i=0;i<ideal.length;i++)
-			{
+
+			for (int i = 0; i < ideal.length; i++) {
 				ideal[i] = readCSV.getDouble(index++);
 			}
 			return true;
-		}
-		else
+		} else {
 			return false;
+		}
 	}
 
 	/**
 	 * Write one record of data to a CSV file.
-	 * @param input The input data array.
-	 * @param ideal The ideal data array.
+	 * 
+	 * @param input
+	 *            The input data array.
+	 * @param ideal
+	 *            The ideal data array.
 	 */
 	@Override
-	public void write(double[] input, double[] ideal) {
-		double[] record = new double[input.length+ideal.length];
+	public void write(final double[] input, final double[] ideal) {
+		double[] record = new double[input.length + ideal.length];
 		EngineArray.arrayCopy(input, record);
 		EngineArray.arrayCopy(ideal, 0, record, input.length, ideal.length);
 		StringBuilder result = new StringBuilder();
@@ -157,36 +175,42 @@ public class CSVDataCODEC implements DataSetCODEC {
 
 	/**
 	 * Prepare to write to a CSV file.
-	 * @param recordCount The total record count, that will be written.
-	 * @param inputSize The input size.
-	 * @param idealSize The ideal size.
+	 * 
+	 * @param recordCount
+	 *            The total record count, that will be written.
+	 * @param inputSize
+	 *            The input size.
+	 * @param idealSize
+	 *            The ideal size.
 	 */
 	@Override
-	public void prepareWrite(int recordCount, int inputSize, int idealSize) {
-		try
-		{
-		this.inputCount = inputSize;
-		this.idealCount = idealSize;
-		this.output= new PrintStream(new FileOutputStream(this.file));
-		}
-		catch(IOException ex)
-		{
+	public void prepareWrite(
+				final int recordCount, 
+				final int inputSize, 
+				final int idealSize) {
+		try {
+			this.inputCount = inputSize;
+			this.idealCount = idealSize;
+			this.output = new PrintStream(new FileOutputStream(this.file));
+		} catch (IOException ex) {
 			throw new BufferedDataError(ex);
 		}
 	}
-	
+
 	/**
 	 * Prepare to read from the CSV file.
 	 */
-	public void prepareRead()
-	{
-		if( this.inputCount==0 )
-			throw new BufferedDataError("To import CSV, you must use the CSVDataCODEC constructor that specifies input and ideal sizes.");
-		this.readCSV = new ReadCSV(this.file.toString(), this.headers, this.format);
+	public void prepareRead() {
+		if (this.inputCount == 0) {
+			throw new BufferedDataError(
+					"To import CSV, you must use the CSVDataCODEC constructor that specifies input and ideal sizes.");
+		}
+		this.readCSV = new ReadCSV(this.file.toString(), this.headers,
+				this.format);
 	}
-	
+
 	/**
-	 * @return The size of the input data.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getInputSize() {
@@ -194,26 +218,27 @@ public class CSVDataCODEC implements DataSetCODEC {
 	}
 
 	/**
-	 * @return The size of the ideal data.
+	 * {@inheritDoc}
 	 */
 	@Override
 	public int getIdealSize() {
 		return this.idealCount;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() {
-		if( this.readCSV!=null )
-		{
+		if (this.readCSV != null) {
 			this.readCSV.close();
 			this.readCSV = null;
 		}
-		
-		if( this.output!=null )
-		{
+
+		if (this.output != null) {
 			this.output.close();
 			this.output = null;
 		}
-		
+
 	}
 }

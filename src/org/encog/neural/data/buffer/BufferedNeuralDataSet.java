@@ -42,6 +42,7 @@ import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -68,8 +69,8 @@ import org.encog.persist.persistors.BufferedNeuralDataSetPersistor;
  * format, and can be used with any Encog platform. Encog binary files are
  * stored using "little endian" numbers.
  */
-public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
-		EncogPersistedObject, Serializable {
+public class BufferedNeuralDataSet extends BasicPersistedObject implements NeuralDataSet, Indexable,
+		Serializable {
 
 	/**
 	 * The version.
@@ -86,6 +87,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
 
+	/**
+	 * True, if we are in the process of loading.
+	 */
 	private transient boolean loading;
 
 	/**
@@ -93,6 +97,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	private File file;
 
+	/**
+	 * The EGB file we are working wtih.
+	 */
 	private transient EncogEGBFile egb;
 
 	/**
@@ -101,24 +108,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	private transient List<BufferedNeuralDataSet> additional = new ArrayList<BufferedNeuralDataSet>();
 
 	/**
-	 * The owner;
+	 * The owner.
 	 */
 	private transient BufferedNeuralDataSet owner;
-
-	/**
-	 * The Encog persisted object name.
-	 */
-	private String name;
-
-	/**
-	 * The Encog persisted object description.
-	 */
-	private String description;
-
-	/**
-	 * The Encog persisted object collection.
-	 */
-	private transient EncogCollection collection;
 
 	/**
 	 * Construct the dataset using the specified binary file.
@@ -126,11 +118,12 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 * @param binaryFile
 	 *            The file to use.
 	 */
-	public BufferedNeuralDataSet(File binaryFile) {
+	public BufferedNeuralDataSet(final File binaryFile) {
 		this.file = binaryFile;
 		this.egb = new EncogEGBFile(binaryFile);
-		if( file.exists() )
+		if (file.exists()) {
 			this.egb.open();
+		}
 	}
 
 	/**
@@ -153,21 +146,24 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	@Override
 	public long getRecordCount() {
-		if( this.egb==null)
+		if (this.egb == null) {
 			return 0;
-		else
+		} else {
 			return this.egb.getNumberOfRecords();
+		}
 	}
 
 	/**
 	 * Read an individual record.
 	 * 
-	 * @param The
-	 *            zero-based index. Specify 0 for the first record, 1 for the
-	 *            second, and so on.
+	 * @param index
+	 *            The zero-based index. Specify 0 for the first record, 1 for
+	 *            the second, and so on.
+	 * @param pair
+	 *            THe data to read.
 	 */
 	@Override
-	public void getRecord(long index, EngineData pair) {
+	public void getRecord(final long index, final EngineData pair) {
 		double[] inputTarget = pair.getInputArray();
 		double[] idealTarget = pair.getIdealArray();
 
@@ -223,7 +219,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	/**
 	 * Add a data pair of both input and ideal data.
 	 * 
-	 * @param inputData
+	 * @param pair
 	 *            The pair to add.
 	 */
 	public void add(final NeuralDataPair pair) {
@@ -264,10 +260,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	@Override
 	public int getIdealSize() {
-		if( this.egb==null)
+		if (this.egb == null) {
 			return 0;
-		else
+		} else {
 			return this.egb.getIdealCount();
+		}
 	}
 
 	/**
@@ -275,10 +272,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	@Override
 	public int getInputSize() {
-		if( this.egb==null)
+		if (this.egb == null) {
 			return 0;
-		else
+		} else {
 			return this.egb.getInputCount();
+		}
 	}
 
 	/**
@@ -286,10 +284,11 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 */
 	@Override
 	public boolean isSupervised() {
-		if( this.egb==null)
+		if (this.egb == null) {
 			return false;
-		else
-		return this.egb.getIdealCount() > 0;
+		} else {
+			return this.egb.getIdealCount() > 0;
+		}
 	}
 
 	/**
@@ -306,7 +305,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 * @param owner
 	 *            The owner.
 	 */
-	public void setOwner(BufferedNeuralDataSet owner) {
+	public void setOwner(final BufferedNeuralDataSet owner) {
 		this.owner = owner;
 	}
 
@@ -316,7 +315,7 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 * @param child
 	 *            The additional dataset to remove.
 	 */
-	public void removeAdditional(BufferedNeuralDataSet child) {
+	public void removeAdditional(final BufferedNeuralDataSet child) {
 		synchronized (this) {
 			this.additional.remove(child);
 		}
@@ -342,8 +341,9 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	 * reading.
 	 */
 	public void endLoad() {
-		if (!this.loading)
+		if (!this.loading) {
 			throw new BufferedDataError("Must call beginLoad, before endLoad.");
+		}
 
 		this.egb.close();
 
@@ -360,75 +360,30 @@ public class BufferedNeuralDataSet implements NeuralDataSet, Indexable,
 	}
 
 	/**
-	 * @return The name of this object.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Set the name of this object, used for Encog persistance.
-	 * 
-	 * @param name
-	 *            The name of this object.
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return The description of this object.
-	 */
-	public String getDescription() {
-		return description;
-	}
-
-	/**
-	 * Set the description of this object.
-	 * 
-	 * @param The
-	 *            description.
-	 */
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @return The Encog persisted collection that this object belongs to.
-	 */
-	public EncogCollection getCollection() {
-		return collection;
-	}
-
-	/**
-	 * Set the Encog persisted collection that this object belongs to.
-	 * 
-	 * @param collection
-	 *            The collection.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.collection = collection;
-	}
-
-	/**
 	 * @return The binary file used.
 	 */
 	public File getFile() {
 		return this.file;
 	}
 
+	/**
+	 * @return The EGB file to use.
+	 */
 	public EncogEGBFile getEGB() {
 		return this.egb;
 	}
 
+	/**
+	 * Load the binary dataset to memory.  Memory access is faster.
+	 * @return A memory dataset.
+	 */
 	public NeuralDataSet loadToMemory() {
 		BasicNeuralDataSet result = new BasicNeuralDataSet();
-		
-		for(NeuralDataPair pair: this)
-		{
+
+		for (NeuralDataPair pair : this) {
 			result.add(pair);
 		}
-		
+
 		return result;
 	}
 }

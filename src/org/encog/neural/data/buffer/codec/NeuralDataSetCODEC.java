@@ -36,37 +36,65 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 
+/**
+ * A CODEC that works with the NeuralDataSet class.
+ */
 public class NeuralDataSetCODEC implements DataSetCODEC {
 
+	/**
+	 * The number of input elements.
+	 */
 	private int inputSize;
-	private int idealSize;
-	private NeuralDataSet dataset;
-	private Iterator<NeuralDataPair> iterator;
 	
-	public NeuralDataSetCODEC(NeuralDataSet dataset)
-	{
+	/**
+	 * The number of ideal elements.
+	 */
+	private int idealSize;
+	
+	/**
+	 * The dataset.
+	 */
+	private NeuralDataSet dataset;
+	
+	/**
+	 * The iterator used to read through the dataset.
+	 */
+	private Iterator<NeuralDataPair> iterator;
+
+	/**
+	 * Construct a CODEC.
+	 * @param dataset The dataset to use.
+	 */
+	public NeuralDataSetCODEC(final NeuralDataSet dataset) {
 		this.dataset = dataset;
 		this.inputSize = dataset.getInputSize();
 		this.idealSize = dataset.getIdealSize();
 	}
 
-
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getInputSize() {
 		return inputSize;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public int getIdealSize() {
 		return idealSize;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean read(double[] input, double[] ideal) {
-		if( !iterator.hasNext() )
+	public boolean read(final double[] input, final double[] ideal) {
+		if (!iterator.hasNext()) {
 			return false;
-		else
-		{
+		} else {
 			NeuralDataPair pair = iterator.next();
 			EngineArray.arrayCopy(pair.getInputArray(), input);
 			EngineArray.arrayCopy(pair.getIdealArray(), ideal);
@@ -74,31 +102,42 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 		}
 	}
 
-	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void write(double[] input, double[] ideal) {
-		NeuralDataPair pair = BasicNeuralDataPair.createPair(inputSize, idealSize);
-		EngineArray.arrayCopy(input,pair.getIdealArray());
-		EngineArray.arrayCopy(ideal,pair.getIdealArray());
+	public void write(final double[] input, final double[] ideal) {
+		NeuralDataPair pair = BasicNeuralDataPair.createPair(inputSize,
+				idealSize);
+		EngineArray.arrayCopy(input, pair.getIdealArray());
+		EngineArray.arrayCopy(ideal, pair.getIdealArray());
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void prepareWrite(int recordCount, int inputSize, int idealSize) {
+	public void prepareWrite(final int recordCount, 
+			final int inputSize, final int idealSize) {
 		this.inputSize = inputSize;
 		this.idealSize = idealSize;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void prepareRead() {
 		this.iterator = this.dataset.iterator();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-	
-	
 }

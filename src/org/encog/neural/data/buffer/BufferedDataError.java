@@ -68,17 +68,17 @@ public class BufferedDataError extends EncogError {
 	public BufferedDataError(final Throwable t) {
 		super(t);
 	}
-	
+
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
 	 * @param msg
 	 *            A message.
 	 * @param t
-	 * 			The other exception.
+	 *            The other exception.
 	 */
-	public BufferedDataError( final String msg, final Throwable t) {
-		super(msg,t);
+	public BufferedDataError(final String msg, final Throwable t) {
+		super(msg, t);
 	}
-	
+
 }

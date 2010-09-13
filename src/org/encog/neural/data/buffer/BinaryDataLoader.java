@@ -48,6 +48,9 @@ public class BinaryDataLoader {
 	 */
 	private DataSetCODEC codec;
 
+	/**
+	 * Used to report the status.
+	 */
 	private StatusReportable status = new NullStatusReportable();
 
 	/**
@@ -56,7 +59,7 @@ public class BinaryDataLoader {
 	 * @param codec
 	 *            The codec to use.
 	 */
-	public BinaryDataLoader(DataSetCODEC codec) {
+	public BinaryDataLoader(final DataSetCODEC codec) {
 		this.codec = codec;
 	}
 
@@ -67,106 +70,117 @@ public class BinaryDataLoader {
 	 * @param binaryFile
 	 *            The binary file to create.
 	 */
-	public void external2Binary(File binaryFile) {
-		
-			status.report(0, 0, "Importing to binary file: "
-					+ binaryFile.toString());
-			
-			EncogEGBFile egb = new EncogEGBFile(binaryFile);
-			
-			egb.create(codec.getInputSize(), codec.getIdealSize());
-			
-			double[] input = new double[this.codec.getInputSize()];
-			double[] ideal = new double[this.codec.getIdealSize()];
-			
-			this.codec.prepareRead();
+	public void external2Binary(final File binaryFile) {
 
-			int index = 3;
-			int currentRecord = 0;
-			int lastUpdate = 0;
+		status.report(0, 0, "Importing to binary file: "
+				+ binaryFile.toString());
 
-			while (codec.read(input, ideal)) {
+		EncogEGBFile egb = new EncogEGBFile(binaryFile);
 
-				egb.write(input);
-				egb.write(ideal);
-								
-				index += input.length;
-				index += ideal.length;
-				currentRecord++;
-				lastUpdate++;
-				if (lastUpdate >= 10000) {
-					lastUpdate = 0;
-					this.status.report(0, currentRecord, "Importing...");
-				}
+		egb.create(codec.getInputSize(), codec.getIdealSize());
+
+		double[] input = new double[this.codec.getInputSize()];
+		double[] ideal = new double[this.codec.getIdealSize()];
+
+		this.codec.prepareRead();
+
+		int index = 3;
+		int currentRecord = 0;
+		int lastUpdate = 0;
+
+		while (codec.read(input, ideal)) {
+
+			egb.write(input);
+			egb.write(ideal);
+
+			index += input.length;
+			index += ideal.length;
+			currentRecord++;
+			lastUpdate++;
+			if (lastUpdate >= 10000) {
+				lastUpdate = 0;
+				this.status.report(0, currentRecord, "Importing...");
 			}
+		}
 
-			egb.close();
-			this.codec.close();
-			status.report(0, 0, "Done importing to binary file: "
-					+ binaryFile.toString());
-		
+		egb.close();
+		this.codec.close();
+		status.report(0, 0, "Done importing to binary file: "
+				+ binaryFile.toString());
+
 	}
 
 	/**
 	 * Convert an Encog binary file to an external form, such as CSV.
 	 * 
 	 * @param binaryFile
+	 *            THe binary file to use.
 	 */
-	public void binary2External(File binaryFile) {
-			status.report(0, 0, "Exporting binary file: "
-					+ binaryFile.toString());
-			
-			EncogEGBFile egb = new EncogEGBFile(binaryFile);
-			egb.open();
-			
-			this.codec.prepareWrite(egb.getNumberOfRecords(), egb.getInputCount(), egb.getIdealCount());
+	public void binary2External(final File binaryFile) {
+		status.report(0, 0, "Exporting binary file: " + binaryFile.toString());
 
-			int inputCount = egb.getInputCount();
-			int idealCount = egb.getIdealCount();
-			
-			double[] input = new double[inputCount];
-			double[] ideal = new double[idealCount];
-			
-			int currentRecord = 0;
-			int lastUpdate = 0;
+		EncogEGBFile egb = new EncogEGBFile(binaryFile);
+		egb.open();
 
-			// now load the data
-			for (int i = 0; i < egb.getNumberOfRecords(); i++) {
+		this.codec.prepareWrite(egb.getNumberOfRecords(), egb.getInputCount(),
+				egb.getIdealCount());
 
-				for (int j = 0; j < inputCount; j++) {
-					input[j] =egb.read();
-				}
+		int inputCount = egb.getInputCount();
+		int idealCount = egb.getIdealCount();
 
-				for (int j = 0; j < idealCount; j++) {
-					ideal[j] = egb.read();
-				}
+		double[] input = new double[inputCount];
+		double[] ideal = new double[idealCount];
 
-				this.codec.write(input, ideal);
+		int currentRecord = 0;
+		int lastUpdate = 0;
 
-				currentRecord++;
-				lastUpdate++;
-				if (lastUpdate >= 10000) {
-					lastUpdate = 0;
-					this.status.report(egb.getNumberOfRecords(), currentRecord,
-							"Exporting...");
-				}
+		// now load the data
+		for (int i = 0; i < egb.getNumberOfRecords(); i++) {
 
+			for (int j = 0; j < inputCount; j++) {
+				input[j] = egb.read();
 			}
 
-			egb.close();
-			this.codec.close();
-			status.report(0, 0, "Done exporting binary file: "
-					+ binaryFile.toString());
+			for (int j = 0; j < idealCount; j++) {
+				ideal[j] = egb.read();
+			}
+
+			this.codec.write(input, ideal);
+
+			currentRecord++;
+			lastUpdate++;
+			if (lastUpdate >= 10000) {
+				lastUpdate = 0;
+				this.status.report(egb.getNumberOfRecords(), currentRecord,
+						"Exporting...");
+			}
+
+		}
+
+		egb.close();
+		this.codec.close();
+		status.report(0, 0, "Done exporting binary file: "
+				+ binaryFile.toString());
 	}
 
+	/**
+	 * @return The object that status is reported to.
+	 */
 	public StatusReportable getStatus() {
 		return status;
 	}
 
-	public void setStatus(StatusReportable status) {
+	/**
+	 * Set the object that status is reported to.
+	 * @param status THe object to report status to.
+	 */
+	public void setStatus(final StatusReportable status) {
 		this.status = status;
 	}
 
+	/**
+	 * @return The CODEC that is being used.
+	 */
 	public DataSetCODEC getCodec() {
 		return codec;
 	}
