@@ -68,6 +68,8 @@ float derivative(int type, float x, float slope)
 
 int testSign(float v)
 {
+	//return sign(v);
+	
 	if( fabs(v)<0.00001f )
 	{
 		return 0;
@@ -159,12 +161,6 @@ kernel void NetworkTrain(
 			}
 		}
 		
-		for(int i=0;i<NEURON_COUNT;i++)
-		{
-			gradients[i] = layerOutput[i];
-		}
-
-		
 		// part 2: backward pass
 
 		// process the output layer first
@@ -181,8 +177,7 @@ kernel void NetworkTrain(
 		errors[taskIndex] += e;
 
 		// process hidden layers
-
-		//int currentLevel = 0;		
+		
 		for(int currentLevel = 0; (currentLevel<layerCount-1); currentLevel++)
 		{
             int fromLayerIndex = layerIndex[currentLevel + 1];
@@ -191,7 +186,6 @@ kernel void NetworkTrain(
             int toLayerSize = layerFeedCounts[currentLevel];
 
 			int index = weightIndex[currentLevel];
-			//int activationType = activationType[currentLevel+1];
 
 			// handle weights
 			int yi = fromLayerIndex;
@@ -225,13 +219,14 @@ kernel void NetworkTrain(
 	if( taskIndex==0 )
 	{
 		// loop over all gradients and sum them into the first subtask
-		for(int i=1;i<indexLastElement;i++)
-		{		 
-			for(int j=0;j<WEIGHT_COUNT;j++)
-			{
-				gradients[j]+=gradients[(i*WEIGHT_COUNT)+j];
+		for(int i=0;i<WEIGHT_COUNT;i++) 
+		{
+			for(int j=1;j<=indexLastElement;j++)
+			{		 
+				//gradients[i] += gradients[(j*WEIGHT_COUNT)+i];
 			}
 		}
+		
 		// teach the weights
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{

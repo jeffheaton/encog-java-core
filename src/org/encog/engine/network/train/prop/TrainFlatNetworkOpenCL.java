@@ -75,6 +75,8 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * The max step.
 	 */
 	private double maxStep;
+	
+	private KernelNetworkTrain kernel;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -132,11 +134,11 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.maxStep = maxStep;
 		
 		int weightLength = this.network.getWeights().length;
-		final KernelNetworkTrain k = this.targetDevice.getPlatform().getNetworkTrain();
+		this.kernel = this.targetDevice.getPlatform().getNetworkTrain();
 		for(int i=0;i<weightLength;i++)
 		{
-			k.getTempDataArray()[i] = 0;
-			k.getTempDataArray()[i+weightLength] = (float)this.initialUpdate;
+			kernel.getTempDataArray()[i] = 0;
+			kernel.getTempDataArray()[i+weightLength] = (float)this.initialUpdate;
 		}
 
 	}
@@ -243,6 +245,21 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	public void setNumThreads(int numThreads) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public double[] getLastGradient() {
+		double[] result = new double[this.weights.length];
+		for(int i=0;i<result.length;i++)
+			result[i] = kernel.getTempDataArray()[i];
+		return result;
+	}
+
+	public double[] getUpdateValues() {
+		double[] result = new double[this.weights.length];
+		int len = this.network.getWeights().length;
+		for(int i=0;i<result.length;i++)
+			result[i] = kernel.getTempDataArray()[len+i];
+		return result;
 	}
 
 }
