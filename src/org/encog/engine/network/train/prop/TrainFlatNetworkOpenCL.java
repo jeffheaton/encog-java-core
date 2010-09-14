@@ -92,7 +92,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 					"Training data must be Indexable for this training type.");
 		}
 		
-		if (EncogEngine.getInstance().getCL() != null) {
+		if (EncogEngine.getInstance().getCL() == null) {
 			throw new EncogEngineError(
 			"You must enable OpenCL before using this training type.");
 
@@ -111,7 +111,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 				this.targetDevice, 
 				network, 
 				this.training, 
-				(int)this.training.getRecordCount(),
+				(int)this.training.getRecordCount()-1,
 				0);
 		
 
@@ -212,15 +212,9 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		}
 
 		double e = 0;
-		int index = 0;
-		int errorIndex = 0;
 
 		for (int i = 0; i < this.workload.getMaxUnits(); i++) {
-			e += this.workload.getErrors()[errorIndex++];
-
-			for (int j = 0; j < this.gradients.length; j++) {
-				this.gradients[j] += this.workload.getGradients()[index++];
-			}
+			e += this.workload.getErrors()[i];
 		}
 
 		final int count = (int)this.training.getRecordCount();

@@ -116,10 +116,7 @@ kernel void NetworkTrain(
 		// load the input into the layer output array, this feeds the first layer.
 		for(int i=0;i<inputSize;i++)
 			layerOutput[sourceIndex+i] = input[taskInputIndex+i];
-			
-		//int currentLayer = layerCount-1;
-		
-	
+				
 		for (int currentLayer = layerCount - 1; currentLayer > 0; currentLayer--)
 		{
 			int inputIndex = layerIndex[currentLayer];
@@ -136,10 +133,13 @@ kernel void NetworkTrain(
 					sum += weightsIn[index++] * layerOutput[inputIndex + y];
 				}
        
-				float value = layerOutput[outputIndex + x] + sum;
-				value = activation(activationType[0], value, slope[0]);
-				layerOutput[outputIndex + x] = value;
+				layerOutput[outputIndex + x] = activation(activationType[0], sum, slope[0]);
 			}
+		}
+		
+		for(int i=0;i<NEURON_COUNT;i++)
+		{
+			gradients[i] = layerOutput[i];
 		}
 
 		
@@ -199,11 +199,31 @@ kernel void NetworkTrain(
 	
 	// now that the gradients have been calculated, update the network
 	barrier(CLK_GLOBAL_MEM_FENCE);
-	/*
-	// loop over all gradients and sum them into the first subtask
-	for(int index=1;index<size;index++)
-	{		 
-		int subtaskIndex = (taskIndex*sizeElement)+index;
-		for(int i=0;i<
-	}*/
+	
+	if( taskIndex==0 )
+	{
+		// loop over all gradients and sum them into the first subtask
+		for(int i=1;i<indexLastElement;i++)
+		{		 
+			for(int j=0;j<WEIGHT_COUNT;j++)
+			{
+				gradients[j]+=gradients[(i*WEIGHT_COUNT)+j];
+			}
+		}
+		// teach the weights
+		for(int i=0;i<WEIGHT_COUNT;i++)
+		{
+			weightsIn[i]+=gradients[i]*0.5f;
+		}	
+	}
+	
+	barrier(CLK_GLOBAL_MEM_FENCE);
+	if( taskIndex==0 )
+	{
+		// finally, after all is done, return the weights to the CPU
+		for(int i=0;i<WEIGHT_COUNT;i++)
+		{
+			weightsOut[i] = weightsIn[i];
+		}
+	}
 }
