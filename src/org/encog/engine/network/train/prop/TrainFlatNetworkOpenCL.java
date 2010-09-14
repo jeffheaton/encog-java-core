@@ -13,6 +13,7 @@ import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLPlatform;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
 import org.encog.engine.opencl.kernels.TrainingWorkload;
+import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.ErrorCalculationMode;
 
@@ -21,7 +22,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	public static final int LEARN_RPROP = 0;
 	public static final int LEARN_BPROP = 1;
 	public static final int LEARN_MANHATTAN = 2;
-	
+
 	private double error;
 	private EncogCLDevice targetDevice;
 
@@ -49,33 +50,32 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * THe workload to use.
 	 */
 	private final TrainingWorkload workload;
-	
+
 	/**
 	 * Training type.
 	 */
 	private int learningType;
-	
+
 	/**
 	 * The learning rate.
 	 */
 	private double learningRate;
-	
+
 	/**
 	 * The momentum.
 	 */
 	private double momentum;
-	
+
 	/**
 	 * The initial update.
 	 */
 	private double initialUpdate;
-	
+
 	/**
 	 * The max step.
 	 */
 	private double maxStep;
 
-	
 	/**
 	 * Train a flat network multithreaded.
 	 * 
@@ -91,66 +91,67 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			throw new EncogEngineError(
 					"Training data must be Indexable for this training type.");
 		}
-		
+
 		if (EncogEngine.getInstance().getCL() == null) {
 			throw new EncogEngineError(
-			"You must enable OpenCL before using this training type.");
+					"You must enable OpenCL before using this training type.");
 
 		}
-		
+
 		this.targetDevice = targetDevice;
 		this.network = network;
-		this.training = (EngineIndexableSet)training;
+		this.training = (EngineIndexableSet) training;
 
 		this.gradients = new double[network.getWeights().length];
 
 		this.weights = network.getWeights();
 
+		this.workload = new TrainingWorkload(this.targetDevice, network,
+				this.training, (int) this.training.getRecordCount() - 1, 0);
 
-		this.workload = new TrainingWorkload(
-				this.targetDevice, 
-				network, 
-				this.training, 
-				(int)this.training.getRecordCount()-1,
-				0);
-		
+		final Map<String, String> options = new HashMap<String, String>();
+		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
+		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
 
-			final Map<String, String> options = new HashMap<String, String>();
-			options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
-			options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
-
-			for (final EncogCLPlatform platform : EncogEngine.getInstance()
-					.getCL().getPlatforms()) {
-				platform.getNetworkTrain().compile(options);
-				platform.getNetworkTrain().init(this.network);
-			}
+		for (final EncogCLPlatform platform : EncogEngine.getInstance().getCL()
+				.getPlatforms()) {
+			platform.getNetworkTrain().compile(options);
+			platform.getNetworkTrain().init(this.network,
+					this.network.getWeights().length * 2);
+		}		
 	}
-	
-	public void learnRPROP()
-	{
-		learnRPROP(RPROPConst.DEFAULT_INITIAL_UPDATE,RPROPConst.DEFAULT_MAX_STEP);
+
+	public void learnRPROP() {
+		learnRPROP(RPROPConst.DEFAULT_INITIAL_UPDATE,
+				RPROPConst.DEFAULT_MAX_STEP);
 	}
-	
-	public void learnRPROP(final double initialUpdate, final double maxStep)
-	{
+
+	public void learnRPROP(final double initialUpdate, final double maxStep) {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_RPROP;
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
+		
+		int weightLength = this.network.getWeights().length;
+		final KernelNetworkTrain k = this.targetDevice.getPlatform().getNetworkTrain();
+		for(int i=0;i<weightLength;i++)
+		{
+			k.getTempDataArray()[i] = 0;
+			k.getTempDataArray()[i+weightLength] = (float)this.initialUpdate;
+		}
+
 	}
-	
-	public void learnBPROP(double learningRate, double momentum)
-	{
+
+	public void learnBPROP(double learningRate, double momentum) {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_BPROP;
 		this.momentum = momentum;
 		this.learningRate = learningRate;
 	}
-	
-	public void learnManhattan(double learningRate)
-	{
+
+	public void learnManhattan(double learningRate) {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_MANHATTAN;
 		this.learningRate = learningRate;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -198,10 +199,11 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	@Override
 	public void iteration() {
 
-		if( this.learningType==-1) {
-			throw new EncogEngineError("Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
+		if (this.learningType == -1) {
+			throw new EncogEngineError(
+					"Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
 		}
-		
+
 		final KernelNetworkTrain k = this.targetDevice.getPlatform()
 				.getNetworkTrain();
 
@@ -217,18 +219,21 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			e += this.workload.getErrors()[i];
 		}
 
-		final int count = (int)this.training.getRecordCount();
-		
-		this.error = e
-				/ (count * this.training.getIdealSize());
-		
-		if( ErrorCalculation.getMode()==ErrorCalculationMode.RMS) {
+		final int count = (int) this.training.getRecordCount();
+
+		this.error = e / (count * this.training.getIdealSize());
+
+		if (ErrorCalculation.getMode() == ErrorCalculationMode.RMS) {
 			this.error = Math.sqrt(error);
 		}
-		//this.owner.report(this.gradients, error, null);
 
+		final int len = this.network.getWeights().length;
 
-		
+		for (int i = 0; i < len; i++) {
+			this.network.getWeights()[i] = k.getWeightOutArray()[i];
+		}
+		// this.owner.report(this.gradients, error, null);
+
 	}
 
 	/**
@@ -237,9 +242,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	@Override
 	public void setNumThreads(int numThreads) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
-
-	
 }

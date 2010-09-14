@@ -1,3 +1,8 @@
+#define POSITIVE_ETA 1.2f
+#define NEGATIVE_ETA 0.5f
+#define DELTA_MIN 0.00001f
+#define MAX_STEP 50.0f	
+
 float activationTANH(float x, float slope)
 {
 	float z = exp(-slope * x);
@@ -61,6 +66,21 @@ float derivative(int type, float x, float slope)
 	}
 }
 
+int testSign(float v)
+{
+	if( fabs(v)<0.00001f )
+	{
+		return 0;
+	}
+	else if( v>0 )
+	{
+		return 1;
+	}
+	else 
+	{
+		return -1;
+	}
+}
 
 kernel void NetworkTrain(
     global read_only int *params,
@@ -75,7 +95,9 @@ kernel void NetworkTrain(
     global write_only float* weightsOut,
     global write_only float *gradients,
     global read_only int *activationType,
-    global read_only float *slope
+    global read_only float *slope,
+    global read_only float *tempDataIn,
+    global read_only float *tempDataOut
     )
 {
 	private float layerOutput[NEURON_COUNT];
@@ -213,7 +235,41 @@ kernel void NetworkTrain(
 		// teach the weights
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{
-			weightsIn[i]+=gradients[i]*0.5f;
+			int change = testSign(gradients[i] * tempDataIn[i]);
+			float weightChange = 0;
+
+			// if the gradient has retained its sign, then we increase the
+			// delta so that it will converge faster
+			if (change > 0) 
+			{
+				float delta = tempDataIn[i+WEIGHT_COUNT]
+					* POSITIVE_ETA;
+				delta = min(delta, MAX_STEP);
+				weightChange = testSign(gradients[i]) * delta;
+				tempDataIn[i+WEIGHT_COUNT] = delta;
+				tempDataIn[i] = gradients[i];
+			}
+			else if (change < 0) 
+			{
+				// if change<0, then the sign has changed, and the last
+				// delta was too big
+				float delta = tempDataIn[i+WEIGHT_COUNT]
+					* NEGATIVE_ETA;
+				delta = max(delta, DELTA_MIN);
+				tempDataIn[i+WEIGHT_COUNT] = delta;
+				// set the previous gradient to zero so that there will be no
+				// adjustment the next iteration
+				tempDataIn[i] = 0;
+			} 
+			else if (change == 0) 
+			{
+				// if change==0 then there is no change to the delta
+				float delta = tempDataIn[i+WEIGHT_COUNT];
+				weightChange = testSign(gradients[i]) * delta;
+				tempDataIn[i] = gradients[i];
+			}
+			
+			weightsIn[i]+=weightChange;
 		}	
 	}
 	
@@ -224,6 +280,11 @@ kernel void NetworkTrain(
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{
 			weightsOut[i] = weightsIn[i];
+		}
+		
+		for(int i=0;i<(WEIGHT_COUNT*2);i++)
+		{
+			tempDataOut[i] = tempDataIn[i];
 		}
 	}
 }

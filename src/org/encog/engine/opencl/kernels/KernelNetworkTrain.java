@@ -84,11 +84,19 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * A buffer to hold the slope for the activation of each of the layers.
 	 */
 	private cl_mem slopeBuffer;
+	
+	private cl_mem tempDataInBuffer;
+	
+	private cl_mem tempDataOutBuffer;
 
 	/**
 	 * The weight and bias array for the network.
 	 */
 	private float[] weightInArray;
+	
+	private float[] weightOutArray;
+	
+	private float[] tempDataArray;
 
 	/**
 	 * The size of all layer deltas.
@@ -151,6 +159,10 @@ public class KernelNetworkTrain extends EncogKernel {
 				.to(this.activationTypeBuffer));
 		CL.clSetKernelArg(getKernel(), 12, Sizeof.cl_mem, Pointer
 				.to(this.slopeBuffer));
+		CL.clSetKernelArg(getKernel(), 13, Sizeof.cl_mem, Pointer
+				.to(this.tempDataInBuffer));
+		CL.clSetKernelArg(getKernel(), 14, Sizeof.cl_mem, Pointer
+				.to(this.tempDataOutBuffer));
 
 		try {
 			// Calculate the work-item dimensions
@@ -169,6 +181,11 @@ public class KernelNetworkTrain extends EncogKernel {
 					this.weightInArrayBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
 							* this.weightInArray.length, Pointer
 							.to(this.weightInArray), 0, null, null);
+			
+			CL.clEnqueueWriteBuffer(workload.getDevice().getCommands(),
+					this.tempDataInBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
+							* this.tempDataArray.length, Pointer
+							.to(this.tempDataArray), 0, null, null);
 
 			// Execute the kernel
 			CL.clEnqueueNDRangeKernel(workload.getDevice().getCommands(),
@@ -186,11 +203,48 @@ public class KernelNetworkTrain extends EncogKernel {
 					this.weightInArray.length * workload.getMaxUnits()
 							* Sizeof.cl_float, Pointer.to(workload
 							.getGradients()), 0, null, null);
+			
+			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), this.weightOutArrayBuffer, 
+					CL.CL_TRUE, 0,
+					this.weightOutArray.length 
+							* Sizeof.cl_float, Pointer.to(this.weightOutArray), 0, null, null);
+			
+			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), this.tempDataOutBuffer, 
+					CL.CL_TRUE, 0,
+					this.tempDataArray.length 
+							* Sizeof.cl_float, Pointer.to(this.tempDataArray), 0, null, null);
+			
+			
 
 			// commands.Finish();
 		} catch (final Exception e) {
 			throw new EncogEngineError(e);
 		}
+	}
+	
+	
+
+	/**
+	 * @return the weightOutArray
+	 */
+	public float[] getWeightOutArray() {
+		return weightOutArray;
+	}
+	
+	
+
+	/**
+	 * @param tempDataArray the tempDataArray to set
+	 */
+	public void setTempDataArray(float[] tempDataArray) {
+		this.tempDataArray = tempDataArray;
+	}
+
+	/**
+	 * @return the tempDataArray
+	 */
+	public float[] getTempDataArray() {
+		return tempDataArray;
 	}
 
 	/**
@@ -199,9 +253,11 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * @param flat
 	 *            The network to be trained.
 	 */
-	public void init(final FlatNetwork flat) {
+	public void init(final FlatNetwork flat, int tempDataSize) {
 
 		this.weightInArray = new float[flat.getWeights().length];
+		this.weightOutArray = new float[flat.getWeights().length];
+		this.tempDataArray = new float[tempDataSize];
 		this.slopeArray = new float[flat.getParams().length];
 
 		this.layerDeltaSize = 0;
@@ -249,5 +305,13 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.slopeBuffer = CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_ONLY
 				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
 				* this.slopeArray.length, Pointer.to(this.slopeArray), null);
+		
+		this.tempDataInBuffer = CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_ONLY
+				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
+				* this.tempDataArray.length, Pointer.to(this.tempDataArray), null);
+		
+		this.tempDataOutBuffer = CL.clCreateBuffer(getContext(), CL.CL_MEM_WRITE_ONLY,
+				Sizeof.cl_float * this.tempDataArray.length, null, null);
+
 	}
 }
