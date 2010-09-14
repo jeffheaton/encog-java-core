@@ -30,25 +30,16 @@
 
 package org.encog.engine.network.train.prop;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.encog.engine.EncogEngine;
 import org.encog.engine.EncogEngineError;
 import org.encog.engine.concurrency.DetermineWorkload;
 import org.encog.engine.concurrency.EngineConcurrency;
 import org.encog.engine.concurrency.TaskGroup;
-import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.data.EngineDataSet;
-import org.encog.engine.network.flat.ActivationFunctions;
+import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.engine.network.flat.ValidateForOpenCL;
 import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.gradient.FlatGradientWorker;
-import org.encog.engine.network.train.gradient.GradientWorkerCL;
 import org.encog.engine.network.train.gradient.GradientWorkerCPU;
-import org.encog.engine.opencl.EncogCLDevice;
-import org.encog.engine.opencl.EncogCLPlatform;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.IntRange;
 
@@ -140,26 +131,6 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		this.indexable = (EngineIndexableSet) training;
 		this.numThreads = 0;
 		this.reportedException = null;
-	}
-
-	/**
-	 * Calculate the GPU vs CPU performance.
-	 */
-	private void calculatePerformance() {
-		long totalCPU = 0;
-		long countCPU = 0;
-		long totalCL = 0;
-		long countCL = 0;
-
-		for (final FlatGradientWorker worker : this.workers) {
-			if (worker instanceof GradientWorkerCPU) {
-				countCPU++;
-				totalCPU += worker.getElapsedTime();
-			} else if (worker instanceof GradientWorkerCL) {
-				countCL++;
-				totalCL += worker.getElapsedTime();
-			}
-		}
 	}
 
 	/**
@@ -262,8 +233,6 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		if (this.reportedException != null) {
 			throw (new EncogEngineError(this.reportedException));
 		}
-
-		calculatePerformance();
 	}
 
 	/**
