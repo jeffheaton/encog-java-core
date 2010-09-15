@@ -11,8 +11,7 @@ float activationTANH(float x, float slope)
 
 float derivativeTANH(float x, float slope)
 {
-	float out = activationTANH(x,slope);
-	return (slope * (1.0f - out * out));
+	return (slope * (1.0f - x * x));
 }
 
 float activationLinear(float x, float slope)
@@ -32,8 +31,7 @@ float activationSigmoid(float x, float slope)
 
 float derivativeSigmoid(float x, float slope)
 {
-	float out = activationSigmoid(x,slope);
-	return slope * out * (1.0f - out);
+	return slope * x * (1.0f - x);
 }
 
 float activation(int type, float x, float slope)
@@ -223,7 +221,7 @@ kernel void NetworkTrain(
 		{
 			for(int j=1;j<=indexLastElement;j++)
 			{		 
-				//gradients[i] += gradients[(j*WEIGHT_COUNT)+i];
+				gradients[i] += gradients[(j*WEIGHT_COUNT)+i];
 			}
 		}
 		
