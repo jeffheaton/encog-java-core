@@ -3,84 +3,8 @@
 #define DELTA_MIN 0.00001f
 #define MAX_STEP 50.0f	
 
-float activationTANH(float x, float slope)
-{
-	float z = exp(-slope * x);
-	return (1.0f - z) / (1.0f + z);
-}
-
-float derivativeTANH(float x, float slope)
-{
-	return (slope * (1.0f - x * x));
-}
-
-float activationLinear(float x, float slope)
-{
-	return x*slope;
-}
-
-float derivativeLinear(float x, float slope)
-{
-	return 1;
-}
-
-float activationSigmoid(float x, float slope)
-{
-	return 1.0f / (1.0f + exp(-slope * x));
-}
-
-float derivativeSigmoid(float x, float slope)
-{
-	return slope * x * (1.0f - x);
-}
-
-float activation(int type, float x, float slope)
-{
-	switch(type)
-	{
-		case 0:
-			return activationLinear(x,slope);
-		case 1:
-			return activationTANH(x,slope);
-		case 2:
-			return activationSigmoid(x,slope);
-		default:
-			return 0;
-	}
-}
-
-float derivative(int type, float x, float slope)
-{
-	switch(type)
-	{
-		case 0:
-			return derivativeLinear(x,slope);
-		case 1:
-			return derivativeTANH(x,slope);
-		case 2:
-			return derivativeSigmoid(x,slope);
-		default:
-			return 0;
-	}
-}
-
-int testSign(float v)
-{
-	//return sign(v);
-	
-	if( fabs(v)<0.00001f )
-	{
-		return 0;
-	}
-	else if( v>0 )
-	{
-		return 1;
-	}
-	else 
-	{
-		return -1;
-	}
-}
+#define ACTIVATION(x,slope) tanh(x)
+#define DERIVATIVE(x,slope) (slope * (1.0f - x * x))
 
 kernel void NetworkTrain(
     global read_only int *params,
@@ -147,15 +71,17 @@ kernel void NetworkTrain(
 			int outputSize = layerFeedCounts[currentLayer - 1];
 			int index = weightIndex[currentLayer - 1];
 
+			global float *wptr = weightsIn+index;
 			for (int x = 0; x < outputSize; x++)
 			{
 				float sum = 0;
+				float *outputPtr = layerOutput+inputIndex;
 				for (int y = 0; y < inputSize; y++)
 				{
-					sum += weightsIn[index++] * layerOutput[inputIndex + y];
+					sum += *(wptr++) * layerOutput[inputIndex + y];
 				}
        
-				layerOutput[outputIndex + x] = activation(activationType[0], sum, slope[0]);
+				layerOutput[outputIndex + x] = ACTIVATION(sum, slope[0]);
 			}
 		}
 		
@@ -169,7 +95,7 @@ kernel void NetworkTrain(
 		{
 			float diff = ideal[taskIdealIndex+i] - layerOutput[i];
 			e+=diff*diff;
-			layerDelta[i] = diff * derivative(activationType[0],layerOutput[i], slope[0]);
+			layerDelta[i] = diff * DERIVATIVE(layerOutput[i], slope[0]);
 		}
 
 		errors[taskIndex] += e;
@@ -191,18 +117,21 @@ kernel void NetworkTrain(
 			{
 				float output = layerOutput[yi];
 				float sum = 0;
-				int xi = toLayerIndex;
 				int wi = index+y;
+				global float * gptr = gradients+wi+gradientOffset;
+				global float * wptr = weightsIn + wi;
+				float * dptr = layerDelta + toLayerIndex;
 				for (int x = 0; x < toLayerSize; x++) 
 				{
-					gradients[wi+gradientOffset] = output * layerDelta[xi];
-					sum += weightsIn[wi] * layerDelta[xi];
+					*gptr = output * (*dptr);
+					sum += (*wptr) * (*dptr);
 					wi+=fromLayerSize;
-					xi++;
+					wptr+=fromLayerSize;
+					gptr+=fromLayerSize;
+					dptr++;
 				}
 			
-				layerDelta[yi] = sum * derivative(
-                  activationType[currentLevel+1],
+				layerDelta[yi] = sum * DERIVATIVE(
                   layerOutput[yi],
                   slope[currentLevel+1]);
 
@@ -226,10 +155,12 @@ kernel void NetworkTrain(
 		}
 
 		// teach the weights
-#ifdef LEARN_RPROP		
+#ifdef LEARN_RPROP
+		global float *wptr = weightsIn;
+		global float *gptr = gradients;		
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{
-			int change = testSign(gradients[i] * tempDataIn[i]);
+			int change = sign((*gptr) * tempDataIn[i]);
 			float weightChange = 0;
 
 			// if the gradient has retained its sign, then we increase the
@@ -239,9 +170,9 @@ kernel void NetworkTrain(
 				float delta = tempDataIn[i+WEIGHT_COUNT]
 					* POSITIVE_ETA;
 				delta = min(delta, MAX_STEP);
-				weightChange = testSign(gradients[i]) * delta;
+				weightChange = sign(*gptr) * delta;
 				tempDataIn[i+WEIGHT_COUNT] = delta;
-				tempDataIn[i] = gradients[i];
+				tempDataIn[i] = *gptr;
 			}
 			else if (change < 0) 
 			{
@@ -259,11 +190,12 @@ kernel void NetworkTrain(
 			{
 				// if change==0 then there is no change to the delta
 				float delta = tempDataIn[i+WEIGHT_COUNT];
-				weightChange = testSign(gradients[i]) * delta;
+				weightChange = sign(*gptr) * delta;
 				tempDataIn[i] = gradients[i];
 			}
 			
-			weightsIn[i]+=weightChange;
+			*(wptr++)+=weightChange;
+			gptr++;
 		}	
 #endif
 #ifdef LEARN_BPROP		
@@ -277,7 +209,7 @@ kernel void NetworkTrain(
 #ifdef LEARN_MANHATTAN
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{
-			int direction = testSign(gradients[i]);
+			int direction = sign(gradients[i]);
 			weightsIn[i]+=tempDataIn[0]*direction;
 		}
 #endif
@@ -297,4 +229,5 @@ kernel void NetworkTrain(
 			tempDataOut[i] = tempDataIn[i];
 		}
 	}
+	
 }
