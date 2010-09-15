@@ -56,12 +56,12 @@ public class EncogCL {
 	/**
 	 * The number of CL threads to use, defaults to 200.
 	 */
-	private final int clThreads;
+	private int clThreads;
 
 	/**
 	 * The size of a CL workload, defaults to 10.
 	 */
-	private final int clWorkloadSize;
+	private int clWorkloadSize;
 
 	/**
 	 * Construct an Encog OpenCL object.
@@ -200,4 +200,16 @@ public class EncogCL {
 	public int getCLWorkloadSize() {
 		return clWorkloadSize;
 	}
+
+	public void setCLThreads(int clThreads) {
+		this.clThreads = clThreads;
+	}
+
+	public void setCLWorkloadSize(int clWorkloadSize) {
+		this.clWorkloadSize = clWorkloadSize;
+	}
+	
+	
+	
+	
 }
