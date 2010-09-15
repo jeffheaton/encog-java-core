@@ -30,10 +30,12 @@ public class ConcurrentTrainingPerformerOpenCL extends ConcurrentTrainingPerform
 	
 	protected void setupJob(TrainingJob job)
 	{
+		/*
 		if( job.getTrain() instanceof Propagation)
 			((Propagation)job.getTrain()).setTargetDevice(this.device);
 		else
 			throw new NeuralNetworkError("Can't use " + job.getTrain().getClass().getSimpleName() + " on OpenCL.");
+			*/
 	}
 
 	

@@ -32,6 +32,9 @@ package org.encog.neural.networks.training.propagation.manhattan;
 
 import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.engine.network.train.prop.TrainFlatNetworkManhattan;
+import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
+import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.LearningRate;
@@ -70,24 +73,6 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Construct a class to train with Manhattan propagation. Use default zero
-	 * tolerance.
-	 * 
-	 * @param network
-	 *            The network that is to be trained.
-	 * @param training
-	 *            The training data to use.
-	 * @param learnRate
-	 *            A fixed learning to the weight matrix for each training
-	 *            iteration.
-	 */
-	public ManhattanPropagation(final BasicNetwork network,
-			final NeuralDataSet training, final double learnRate) {
-		this(network, training, learnRate,
-				ManhattanPropagation.DEFAULT_ZERO_TOLERANCE);
-	}
-
-	/**
 	 * Construct a Manhattan propagation training object.
 	 * 
 	 * @param network
@@ -96,18 +81,41 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The training data to use.
 	 * @param learnRate
 	 *            The learning rate.
-	 * @param zeroTolerance
-	 *            The zero tolerance.
+	 * @param device
+	 * 			The OpenCL device to use, null for CPU.
 	 */
 	public ManhattanPropagation(final BasicNetwork network,
-			final NeuralDataSet training, final double learnRate,
-			final double zeroTolerance) {
+			final NeuralDataSet training, EncogCLDevice device, final double learnRate) {
 		super(network, training);
 
-		setFlatTraining( new TrainFlatNetworkManhattan(
-				network.getStructure().getFlat(),
-				this.getTraining(),
-				learnRate) );
+		if (device == null) {
+			setFlatTraining( new TrainFlatNetworkManhattan(
+					network.getStructure().getFlat(),
+					this.getTraining(),
+					learnRate) );
+		} else {
+			TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
+					network.getStructure().getFlat(), this.getTraining(),
+					device);
+			rpropFlat.learnManhattan(learnRate);
+			this.setFlatTraining(rpropFlat);
+		}
+
+	}
+	
+	/**
+	 * Construct a Manhattan propagation training object.  Use the CPU to train.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
+	 * @param learnRate
+	 *            The learning rate.
+	 */
+	public ManhattanPropagation(final BasicNetwork network,
+			final NeuralDataSet training, final double learnRate) {
+		this(network,training,null,learnRate);
 	}
 
 	/**

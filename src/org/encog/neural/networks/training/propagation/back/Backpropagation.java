@@ -31,6 +31,9 @@
 package org.encog.neural.networks.training.propagation.back;
 
 import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
+import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
+import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -84,7 +87,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Create a class to train using backpropagation.
+	 * Create a class to train using backpropagation.  Use auto learn rate and momentum.  Use the CPU to train.
 	 * 
 	 * @param network
 	 *            The network that is to be trained.
@@ -93,13 +96,13 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
-		this(network, training, 0, 0);
+		this(network, training, null, 0, 0);
 		addStrategy(new SmartLearningRate());
 		addStrategy(new SmartMomentum());
 	}
 
 	/**
-	 * 
+	 * Train using the specified learning rate and momentum.  Use the CPU to train.
 	 * @param network
 	 *            The network that is to be trained
 	 * @param training
@@ -113,15 +116,46 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
+			final double momentum)
+	{
+		this(network,training,null,learnRate,momentum);
+	}
+
+	/**
+	 * 
+	 * @param network
+	 *            The network that is to be trained
+	 * @param training
+	 *            The training set
+	 * @param device The device to use, null for CPU.
+	 * @param learnRate
+	 *            The rate at which the weight matrix will be adjusted based on
+	 *            learning.
+	 * @param momentum
+	 *            The influence that previous iteration's training deltas will
+	 *            have on the current iteration.
+	 */
+	public Backpropagation(final BasicNetwork network,
+			final NeuralDataSet training, final EncogCLDevice device, final double learnRate,
 			final double momentum) {
 		super(network, training);
 		
-		TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
-				network.getStructure().getFlat(),
-				this.getTraining(),
-				learnRate,
-				momentum);
-		this.setFlatTraining(backFlat);
+		if (device == null) {
+			TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
+					network.getStructure().getFlat(),
+					this.getTraining(),
+					learnRate,
+					momentum);
+			this.setFlatTraining(backFlat);
+		} else {
+			TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
+					network.getStructure().getFlat(), this.getTraining(),
+					device);
+			rpropFlat.learnBPROP(learnRate, momentum);
+			this.setFlatTraining(rpropFlat);
+		}
+		
+
 	}
 
 	/**

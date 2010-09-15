@@ -224,8 +224,9 @@ kernel void NetworkTrain(
 				gradients[i] += gradients[(j*WEIGHT_COUNT)+i];
 			}
 		}
-		
+
 		// teach the weights
+#ifdef LEARN_RPROP		
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{
 			int change = testSign(gradients[i] * tempDataIn[i]);
@@ -264,6 +265,22 @@ kernel void NetworkTrain(
 			
 			weightsIn[i]+=weightChange;
 		}	
+#endif
+#ifdef LEARN_BPROP		
+		for(int i=0;i<WEIGHT_COUNT;i++)
+		{
+			float delta = (gradients[i]*tempDataIn[0]);
+			weightsIn[i]+=delta+(tempDataIn[i+2]*tempDataIn[1]);
+			tempDataIn[i+2] = delta;
+		}
+#endif
+#ifdef LEARN_MANHATTAN
+		for(int i=0;i<WEIGHT_COUNT;i++)
+		{
+			int direction = testSign(gradients[i]);
+			weightsIn[i]+=tempDataIn[0]*direction;
+		}
+#endif
 	}
 	
 	barrier(CLK_GLOBAL_MEM_FENCE);

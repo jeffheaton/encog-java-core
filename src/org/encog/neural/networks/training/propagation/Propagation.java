@@ -210,37 +210,6 @@ public abstract class Propagation extends BasicTraining {
 	}
 
 	/**
-	 * Sets the target device for the training to run on. Specify null for the
-	 * CPU, or some other OpenCL device. Must be set before the first training
-	 * iteration.
-	 * 
-	 * @param targetDevice
-	 *            The OpenCL device to use, or null to use the CPU.
-	 */
-	public void setTargetDevice(EncogCLDevice targetDevice) {
-		
-	}
-	
-	/**
-	 * Assign the CPU to this trainer.
-	 */
-	public void assignCPU()
-	{
-		//this.flatTraining.setTargetDevice(null);
-	}
-	
-	/**
-	 * Assigns the first available OpenCL device. If you only have one GPU, this
-	 * method will probably work just fine. However, if you are dealing with
-	 * multiple OpenCL devices you should directly select the desired OpenCL
-	 * device.
-	 */
-	public void assignOpenCL()
-	{
-		this.setTargetDevice(Encog.getInstance().getCL().getEnabledDevices().get(0));
-	}
-
-	/**
 	 * @param flatTraining the flatTraining to set
 	 */
 	public void setFlatTraining(TrainFlatNetwork flatTraining) {

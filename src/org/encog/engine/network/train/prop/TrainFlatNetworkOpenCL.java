@@ -85,18 +85,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.targetDevice = targetDevice;
 		this.network = network;
-		this.training = (EngineIndexableSet) training;
-
-		final Map<String, String> options = new HashMap<String, String>();
-		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
-		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
-
-		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, this.network.getWeights().length * 2);
-		
-		for (final EncogCLPlatform platform : EncogEngine.getInstance().getCL()
-				.getPlatforms()) {
-			kernel.compile(options);
-		}		
+		this.training = (EngineIndexableSet) training;				
 	}
 
 	public void learnRPROP() {
@@ -108,6 +97,14 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_RPROP;
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
+		
+		final Map<String, String> options = new HashMap<String, String>();
+		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
+		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
+		options.put("LEARN_RPROP", null);
+
+		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, this.network.getWeights().length * 2);
+		kernel.compile(options);
 		
 		int weightLength = this.network.getWeights().length;
 
@@ -123,11 +120,32 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_BPROP;
 		this.momentum = momentum;
 		this.learningRate = learningRate;
+		
+		this.learningType = TrainFlatNetworkOpenCL.LEARN_BPROP;
+		
+		final Map<String, String> options = new HashMap<String, String>();
+		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
+		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
+		options.put("LEARN_BPROP", null);
+
+		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, this.network.getWeights().length+2 );
+		kernel.compile(options);
+		kernel.getTempDataArray()[0]=(float)learningRate;
+		kernel.getTempDataArray()[1]=(float)momentum;
 	}
 
 	public void learnManhattan(double learningRate) {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_MANHATTAN;
 		this.learningRate = learningRate;
+		
+		final Map<String, String> options = new HashMap<String, String>();
+		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
+		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
+		options.put("LEARN_MANHATTAN", null);
+
+		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, 1 );
+		kernel.compile(options);
+		kernel.getTempDataArray()[0]=(float)learningRate;
 	}
 
 	/**

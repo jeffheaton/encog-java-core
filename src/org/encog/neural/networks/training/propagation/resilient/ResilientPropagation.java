@@ -95,7 +95,7 @@ public class ResilientPropagation extends Propagation {
 	 * Construct a resilient training object. Use the defaults for all training
 	 * parameters. Usually this is the constructor to use as the resilient
 	 * training algorithm is designed for the default parameters to be
-	 * acceptable for nearly all problems.
+	 * acceptable for nearly all problems. Use the CPU to train.
 	 * 
 	 * @param network
 	 *            The network to train.
@@ -107,7 +107,20 @@ public class ResilientPropagation extends Propagation {
 		this(network, training, null, RPROPConst.DEFAULT_ZERO_TOLERANCE,
 				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
 	}
-	
+
+	/**
+	 * Construct an RPROP trainer, allows an OpenCL device to be specified. Use
+	 * the defaults for all training parameters. Usually this is the constructor
+	 * to use as the resilient training algorithm is designed for the default
+	 * parameters to be acceptable for nearly all problems.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
+	 * @param device
+	 *            The device to use.
+	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training, EncogCLDevice device) {
 		this(network, training, device, RPROPConst.DEFAULT_ZERO_TOLERANCE,
@@ -133,8 +146,9 @@ public class ResilientPropagation extends Propagation {
 	 *            The maximum that a delta can reach.
 	 */
 	public ResilientPropagation(final BasicNetwork network,
-			final NeuralDataSet training, EncogCLDevice device, final double zeroTolerance,
-			final double initialUpdate, final double maxStep) {
+			final NeuralDataSet training, EncogCLDevice device,
+			final double zeroTolerance, final double initialUpdate,
+			final double maxStep) {
 
 		super(network, training);
 
@@ -218,5 +232,5 @@ public class ResilientPropagation extends Propagation {
 				.getFlatTraining()).getUpdateValues());
 
 	}
-	
+
 }
