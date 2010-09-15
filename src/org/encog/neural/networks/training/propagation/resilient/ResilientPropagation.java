@@ -30,17 +30,18 @@
 
 package org.encog.neural.networks.training.propagation.resilient;
 
+import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.prop.RPROPConst;
-import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
+import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
 import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * One problem with the backpropagation algorithm is that the magnitude of the
@@ -80,7 +81,6 @@ import org.slf4j.LoggerFactory;
  */
 public class ResilientPropagation extends Propagation {
 
-
 	/**
 	 * Continuation tag for the last gradients.
 	 */
@@ -90,7 +90,6 @@ public class ResilientPropagation extends Propagation {
 	 * Continuation tag for the last values.
 	 */
 	public static final String UPDATE_VALUES = "UPDATE_VALUES";
-
 
 	/**
 	 * Construct a resilient training object. Use the defaults for all training
@@ -105,9 +104,14 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
-		this(network, training, RPROPConst.DEFAULT_ZERO_TOLERANCE,
-				RPROPConst.DEFAULT_INITIAL_UPDATE,
-				RPROPConst.DEFAULT_MAX_STEP);
+		this(network, training, null, RPROPConst.DEFAULT_ZERO_TOLERANCE,
+				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
+	}
+	
+	public ResilientPropagation(final BasicNetwork network,
+			final NeuralDataSet training, EncogCLDevice device) {
+		this(network, training, device, RPROPConst.DEFAULT_ZERO_TOLERANCE,
+				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
 	}
 
 	/**
@@ -129,15 +133,23 @@ public class ResilientPropagation extends Propagation {
 	 *            The maximum that a delta can reach.
 	 */
 	public ResilientPropagation(final BasicNetwork network,
-			final NeuralDataSet training, final double zeroTolerance,
+			final NeuralDataSet training, EncogCLDevice device, final double zeroTolerance,
 			final double initialUpdate, final double maxStep) {
 
 		super(network, training);
-		
-		TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
-				network.getStructure().getFlat(),
-				this.getTraining()); 
-		this.setFlatTraining( rpropFlat );
+
+		if (device == null) {
+			TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
+					network.getStructure().getFlat(), this.getTraining());
+			this.setFlatTraining(rpropFlat);
+		} else {
+			TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
+					network.getStructure().getFlat(), this.getTraining(),
+					device);
+			rpropFlat.learnRPROP(initialUpdate, maxStep);
+			this.setFlatTraining(rpropFlat);
+		}
+
 	}
 
 	/**
@@ -147,12 +159,13 @@ public class ResilientPropagation extends Propagation {
 		return true;
 	}
 
-
 	/**
 	 * Determine if the specified continuation object is valid to resume with.
-	 * @param state The continuation object to check.
+	 * 
+	 * @param state
+	 *            The continuation object to check.
 	 * @return True if the specified continuation object is valid for this
-	 * training method and network.
+	 *         training method and network.
 	 */
 	public boolean isValidResume(final TrainingContinuation state) {
 		if (!state.getContents().containsKey(
@@ -169,19 +182,26 @@ public class ResilientPropagation extends Propagation {
 
 	/**
 	 * Pause the training.
+	 * 
 	 * @return A training continuation object to continue with.
 	 */
 	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
-		
-		result.set(ResilientPropagation.LAST_GRADIENTS, ((TrainFlatNetworkResilient)this.getFlatTraining()).getLastGradient());
-		result.set(ResilientPropagation.UPDATE_VALUES, ((TrainFlatNetworkResilient)this.getFlatTraining()).getUpdateValues());
+
+		result.set(ResilientPropagation.LAST_GRADIENTS,
+				((TrainFlatNetworkResilient) this.getFlatTraining())
+						.getLastGradient());
+		result.set(ResilientPropagation.UPDATE_VALUES,
+				((TrainFlatNetworkResilient) this.getFlatTraining())
+						.getUpdateValues());
 		return result;
 	}
 
 	/**
 	 * Resume training.
-	 * @param state The training state to return to.
+	 * 
+	 * @param state
+	 *            The training state to return to.
 	 */
 	public void resume(final TrainingContinuation state) {
 		if (!isValidResume(state)) {
@@ -191,10 +211,12 @@ public class ResilientPropagation extends Propagation {
 				.get(ResilientPropagation.LAST_GRADIENTS);
 		double[] updateValues = (double[]) state
 				.get(ResilientPropagation.UPDATE_VALUES);
-		
-		EngineArray.arrayCopy( lastGradient, ((TrainFlatNetworkResilient)this.getFlatTraining()).getLastGradient() );
-		EngineArray.arrayCopy( updateValues, ((TrainFlatNetworkResilient)this.getFlatTraining()).getUpdateValues() );
-		
+
+		EngineArray.arrayCopy(lastGradient, ((TrainFlatNetworkResilient) this
+				.getFlatTraining()).getLastGradient());
+		EngineArray.arrayCopy(updateValues, ((TrainFlatNetworkResilient) this
+				.getFlatTraining()).getUpdateValues());
+
 	}
 	
 }

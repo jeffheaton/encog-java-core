@@ -13,7 +13,6 @@ import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLPlatform;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
 import org.encog.engine.opencl.kernels.TrainingWorkload;
-import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.ErrorCalculationMode;
 
@@ -30,16 +29,6 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * The network to train.
 	 */
 	private final FlatNetwork network;
-
-	/**
-	 * The gradients.
-	 */
-	private final double[] gradients;
-
-	/**
-	 * The weights and thresholds.
-	 */
-	private final double[] weights;
 
 	/**
 	 * The training data.
@@ -103,10 +92,6 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.targetDevice = targetDevice;
 		this.network = network;
 		this.training = (EngineIndexableSet) training;
-
-		this.gradients = new double[network.getWeights().length];
-
-		this.weights = network.getWeights();
 
 		this.workload = new TrainingWorkload(this.targetDevice, network,
 				this.training, (int) this.training.getRecordCount() - 1, 0);
@@ -211,10 +196,6 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		k.calculate(this.workload);
 
-		for (int j = 0; j < this.gradients.length; j++) {
-			this.gradients[j] = 0;
-		}
-
 		double e = 0;
 
 		for (int i = 0; i < this.workload.getMaxUnits(); i++) {
@@ -248,14 +229,14 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	}
 
 	public double[] getLastGradient() {
-		double[] result = new double[this.weights.length];
+		double[] result = new double[this.network.getWeights().length];
 		for(int i=0;i<result.length;i++)
 			result[i] = kernel.getTempDataArray()[i];
 		return result;
 	}
 
 	public double[] getUpdateValues() {
-		double[] result = new double[this.weights.length];
+		double[] result = new double[this.network.getWeights().length];
 		int len = this.network.getWeights().length;
 		for(int i=0;i<result.length;i++)
 			result[i] = kernel.getTempDataArray()[len+i];
