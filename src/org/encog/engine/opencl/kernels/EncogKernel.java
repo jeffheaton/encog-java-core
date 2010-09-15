@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.encog.engine.EncogEngineError;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.ResourceLoader;
 import org.jocl.CL;
 import org.jocl.cl_context;
@@ -67,6 +68,8 @@ public class EncogKernel {
 	 */
 	private cl_kernel kernel;
 
+	private EncogCLDevice device;
+	
 	/**
 	 * The name of the function that should be called to execute this kernel,
 	 * from inside the OpenCL source code.
@@ -77,18 +80,19 @@ public class EncogKernel {
 	 * Create an Encog OpenCL kernel. The Kernel will be loaded from an embedded
 	 * resource.
 	 * 
-	 * @param context
-	 *            The OpenCL context that this kernel belongs to.
+	 * @param device
+	 *            The OpenCL device to use.
 	 * @param sourceName
 	 *            The name of the kernel, from an embedded resource.
 	 * @param kernelName
 	 *            The name of the function, in the kernel, called to start the
 	 *            kernel.
 	 */
-	public EncogKernel(final cl_context context, final String sourceName,
+	public EncogKernel(final EncogCLDevice device, final String sourceName,
 			final String kernelName) {
 
-		this.context = context;
+		this.context = device.getPlatform().getContext();
+		this.device = device;
 		this.kernelName = kernelName;
 		this.cl = ResourceLoader.loadString(sourceName);
 	}
@@ -170,5 +174,14 @@ public class EncogKernel {
 					"Must compile CL kernel before using it.");
 		}
 	}
+
+	/**
+	 * @return the device
+	 */
+	public EncogCLDevice getDevice() {
+		return device;
+	}
+	
+	
 
 }

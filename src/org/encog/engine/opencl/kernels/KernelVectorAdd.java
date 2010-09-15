@@ -48,11 +48,11 @@ public class KernelVectorAdd extends EncogKernel {
 	/**
 	 * Construct a simple kernel to add two vectors.
 	 * 
-	 * @param context
-	 *            The context to use.
+	 * @param device
+	 *            The device to use.
 	 */
-	public KernelVectorAdd(final cl_context context) {
-		super(context, "org/encog/engine/resources/KernelVectorAdd.txt", "VectorAdd");
+	public KernelVectorAdd(final EncogCLDevice device) {
+		super(device, "org/encog/engine/resources/KernelVectorAdd.txt", "VectorAdd");
 	}
 
 	/**

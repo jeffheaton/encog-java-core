@@ -12,7 +12,6 @@ import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLPlatform;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
-import org.encog.engine.opencl.kernels.TrainingWorkload;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.ErrorCalculationMode;
 
@@ -34,11 +33,6 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * The training data.
 	 */
 	private final EngineIndexableSet training;
-
-	/**
-	 * THe workload to use.
-	 */
-	private final TrainingWorkload workload;
 
 	/**
 	 * Training type.
@@ -93,18 +87,15 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.network = network;
 		this.training = (EngineIndexableSet) training;
 
-		this.workload = new TrainingWorkload(this.targetDevice, network,
-				this.training, (int) this.training.getRecordCount() - 1, 0);
-
 		final Map<String, String> options = new HashMap<String, String>();
 		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
 		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
 
+		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, this.network.getWeights().length * 2);
+		
 		for (final EncogCLPlatform platform : EncogEngine.getInstance().getCL()
 				.getPlatforms()) {
-			platform.getNetworkTrain().compile(options);
-			platform.getNetworkTrain().init(this.network,
-					this.network.getWeights().length * 2);
+			kernel.compile(options);
 		}		
 	}
 
@@ -119,7 +110,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.maxStep = maxStep;
 		
 		int weightLength = this.network.getWeights().length;
-		this.kernel = this.targetDevice.getPlatform().getNetworkTrain();
+
 		for(int i=0;i<weightLength;i++)
 		{
 			kernel.getTempDataArray()[i] = 0;
@@ -191,15 +182,12 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 					"Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
 		}
 
-		final KernelNetworkTrain k = this.targetDevice.getPlatform()
-				.getNetworkTrain();
-
-		k.calculate(this.workload);
+		this.kernel.calculate();
 
 		double e = 0;
 
-		for (int i = 0; i < this.workload.getMaxUnits(); i++) {
-			e += this.workload.getErrors()[i];
+		for (int i = 0; i < this.kernel.getMaxUnits(); i++) {
+			e += this.kernel.getErrors()[i];
 		}
 
 		final int count = (int) this.training.getRecordCount();
@@ -213,7 +201,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		final int len = this.network.getWeights().length;
 
 		for (int i = 0; i < len; i++) {
-			this.network.getWeights()[i] = k.getWeightOutArray()[i];
+			this.network.getWeights()[i] = this.kernel.getWeightOutArray()[i];
 		}
 		// this.owner.report(this.gradients, error, null);
 

@@ -66,16 +66,6 @@ public class EncogCLPlatform extends EncogCLItem {
 	private final List<EncogCLDevice> devices = new ArrayList<EncogCLDevice>();
 
 	/**
-	 * A kernel used to help train a network.
-	 */
-	private final KernelNetworkTrain kerNetworkTrain;
-
-	/**
-	 * A simple test kernel to add a vector.
-	 */
-	private final KernelVectorAdd kerVectorAdd;
-
-	/**
 	 * Construct an OpenCL platform.
 	 * 
 	 * @param platform
@@ -109,9 +99,6 @@ public class EncogCLPlatform extends EncogCLItem {
 			final EncogCLDevice adapter = new EncogCLDevice(this, deviceID);
 			this.devices.add(adapter);
 		}
-
-		this.kerVectorAdd = new KernelVectorAdd(this.context);
-		this.kerNetworkTrain = new KernelNetworkTrain(this.context);
 	}
 
 	/**
@@ -126,13 +113,6 @@ public class EncogCLPlatform extends EncogCLItem {
 	 */
 	public List<EncogCLDevice> getDevices() {
 		return this.devices;
-	}
-
-	/**
-	 * @return A kernel used to help train a network.
-	 */
-	public KernelNetworkTrain getNetworkTrain() {
-		return this.kerNetworkTrain;
 	}
 
 	/**
@@ -157,13 +137,6 @@ public class EncogCLPlatform extends EncogCLItem {
 				.to(buffer), len);
 		final String name = new String(buffer, 0, (int) len[0]);
 		return name;
-	}
-
-	/**
-	 * @return A simple kernel to add two vectors, used to test only.
-	 */
-	public KernelVectorAdd getVectorAdd() {
-		return this.kerVectorAdd;
 	}
 
 }

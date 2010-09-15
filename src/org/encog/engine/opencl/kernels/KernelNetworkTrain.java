@@ -32,7 +32,11 @@ package org.encog.engine.opencl.kernels;
 
 import org.encog.engine.EncogEngine;
 import org.encog.engine.EncogEngineError;
+import org.encog.engine.data.BasicEngineData;
+import org.encog.engine.data.EngineData;
+import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
@@ -107,154 +111,76 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * The slopes.
 	 */
 	private float[] slopeArray;
+	
+	/**
+	 * An array to hold the input to the neural network.
+	 */
+	private final float[] inputArray;
 
 	/**
-	 * Construct the kernel for the specified context.
-	 * 
-	 * @param context
-	 *            The context to calculate for.
+	 * An array to hold the ideal values expected from the network.
 	 */
-	public KernelNetworkTrain(final cl_context context) {
-		super(context, "org/encog/engine/resources/KernelNetTrain.txt",
+	private final float[] idealArray;
+
+	/**
+	 * The input buffer.
+	 */
+	private final cl_mem inputBuffer;
+
+	/**
+	 * The ideal buffer.
+	 */
+	private final cl_mem idealBuffer;
+
+	/**
+	 * Holds parameters passed to the kernel.
+	 */
+	private final int[] paramArray;
+
+	/**
+	 * A buffer to hold the parameters.
+	 */
+	private final cl_mem paramBuffer;
+
+	/**
+	 * A buffer to hold the errors.
+	 */
+	private final cl_mem errorBuffer;
+
+	/**
+	 * A buffer to hold the gradients.
+	 */
+	private final cl_mem gradientBuffer;
+
+	/**
+	 * The number of threads that OpenCL will use.
+	 */
+	private final int maxUnits;
+
+
+	private final FlatNetwork flat;
+	
+	/**
+	 * The training errors for this workload.
+	 */
+	private final float[] errors;
+
+	/**
+	 * The gradients for this workload.
+	 */
+	private final float[] gradients;
+
+
+	
+	public KernelNetworkTrain(
+			final EncogCLDevice device, 
+			final FlatNetwork flat, 
+			EngineIndexableSet training, 
+			int tempDataSize) {
+		super(device, "org/encog/engine/resources/KernelNetTrain.txt",
 				"NetworkTrain");
-	}
-
-	/**
-	 * Calculate the gradients for one workload.
-	 * 
-	 * @param workload
-	 *            The workload to calculate for.
-	 */
-	public void calculate(final TrainingWorkload workload) {
-		prepareKernel();
-
-		final FlatNetwork flat = workload.getNetwork();
-
-		for (int i = 0; i < flat.getWeights().length; i++) {
-			this.weightInArray[i] = (float) flat.getWeights()[i];
-		}
-
-		CL.clSetKernelArg(getKernel(), 0, Sizeof.cl_mem, Pointer.to(workload
-				.getParamBuffer()));
-		CL.clSetKernelArg(getKernel(), 1, Sizeof.cl_mem, Pointer.to(workload
-				.getErrorBuffer()));
-		CL.clSetKernelArg(getKernel(), 2, Sizeof.cl_mem, Pointer
-				.to(this.layerIndexBuffer));
-		CL.clSetKernelArg(getKernel(), 3, Sizeof.cl_mem, Pointer
-				.to(this.layerCountBuffer));
-		CL.clSetKernelArg(getKernel(), 4, Sizeof.cl_mem, Pointer
-				.to(this.layerFeedCountBuffer));
-		CL.clSetKernelArg(getKernel(), 5, Sizeof.cl_mem, Pointer
-				.to(this.weightIndexBuffer));
-		CL.clSetKernelArg(getKernel(), 6, Sizeof.cl_mem, Pointer.to(workload
-				.getInputBuffer()));
-		CL.clSetKernelArg(getKernel(), 7, Sizeof.cl_mem, Pointer.to(workload
-				.getIdealBuffer()));
-		CL.clSetKernelArg(getKernel(), 8, Sizeof.cl_mem, Pointer
-				.to(this.weightInArrayBuffer));
-		CL.clSetKernelArg(getKernel(), 9, Sizeof.cl_mem, Pointer.to(this.weightOutArrayBuffer));
-		CL.clSetKernelArg(getKernel(), 10, Sizeof.cl_mem, Pointer.to(workload
-				.getGradientBuffer()));
-		CL.clSetKernelArg(getKernel(), 11, Sizeof.cl_mem, Pointer
-				.to(this.activationTypeBuffer));
-		CL.clSetKernelArg(getKernel(), 12, Sizeof.cl_mem, Pointer
-				.to(this.slopeBuffer));
-		CL.clSetKernelArg(getKernel(), 13, Sizeof.cl_mem, Pointer
-				.to(this.tempDataInBuffer));
-		CL.clSetKernelArg(getKernel(), 14, Sizeof.cl_mem, Pointer
-				.to(this.tempDataOutBuffer));
-
-		try {
-			// Calculate the work-item dimensions
-			int localWork = Math.max(EncogEngine.getInstance().getCL()
-					.getCLWorkloadSize(), 1);
-			final int globalWork = workload.getMaxUnits();
-
-			// don't create more than we have work for
-			localWork = Math.min(localWork, workload.getMaxUnits());
-
-			// Set the work-item dimensions
-			final long[] globalWorkSize = new long[] { globalWork };
-			final long[] localWorkSize = new long[] { localWork };
-
-			CL.clEnqueueWriteBuffer(workload.getDevice().getCommands(),
-					this.weightInArrayBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
-							* this.weightInArray.length, Pointer
-							.to(this.weightInArray), 0, null, null);
-			
-			CL.clEnqueueWriteBuffer(workload.getDevice().getCommands(),
-					this.tempDataInBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
-							* this.tempDataArray.length, Pointer
-							.to(this.tempDataArray), 0, null, null);
-
-			// Execute the kernel
-			CL.clEnqueueNDRangeKernel(workload.getDevice().getCommands(),
-					getKernel(), 1, null, globalWorkSize, localWorkSize, 0,
-					null, null);
-			CL.clFinish(workload.getDevice().getCommands());
-
-			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
-					.getErrorBuffer(), CL.CL_TRUE, 0, workload.getMaxUnits()
-					* Sizeof.cl_float, Pointer.to(workload.getErrors()), 0,
-					null, null);
-
-			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), workload
-					.getGradientBuffer(), CL.CL_TRUE, 0,
-					this.weightInArray.length * workload.getMaxUnits()
-							* Sizeof.cl_float, Pointer.to(workload
-							.getGradients()), 0, null, null);
-			
-			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), this.weightOutArrayBuffer, 
-					CL.CL_TRUE, 0,
-					this.weightOutArray.length 
-							* Sizeof.cl_float, Pointer.to(this.weightOutArray), 0, null, null);
-			
-			CL.clEnqueueReadBuffer(workload.getDevice().getCommands(), this.tempDataOutBuffer, 
-					CL.CL_TRUE, 0,
-					this.tempDataArray.length 
-							* Sizeof.cl_float, Pointer.to(this.tempDataArray), 0, null, null);
-			
-			
-
-			// commands.Finish();
-		} catch (final Exception e) {
-			throw new EncogEngineError(e);
-		}
-	}
-	
-	
-
-	/**
-	 * @return the weightOutArray
-	 */
-	public float[] getWeightOutArray() {
-		return weightOutArray;
-	}
-	
-	
-
-	/**
-	 * @param tempDataArray the tempDataArray to set
-	 */
-	public void setTempDataArray(float[] tempDataArray) {
-		this.tempDataArray = tempDataArray;
-	}
-
-	/**
-	 * @return the tempDataArray
-	 */
-	public float[] getTempDataArray() {
-		return tempDataArray;
-	}
-
-	/**
-	 * Init the kernal for new training.
-	 * 
-	 * @param flat
-	 *            The network to be trained.
-	 */
-	public void init(final FlatNetwork flat, int tempDataSize) {
-
+		
+		this.flat = flat;
 		this.weightInArray = new float[flat.getWeights().length];
 		this.weightOutArray = new float[flat.getWeights().length];
 		this.tempDataArray = new float[tempDataSize];
@@ -268,7 +194,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		for (int i = 0; i < this.slopeArray.length; i++) {
 			this.slopeArray[i] = (float) flat.getParams()[i];
 		}
-
+		
 		this.layerIndexBuffer = CL.clCreateBuffer(getContext(),
 				CL.CL_MEM_READ_ONLY | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
 						* flat.getLayerIndex().length, Pointer.to(flat
@@ -312,6 +238,203 @@ public class KernelNetworkTrain extends EncogKernel {
 		
 		this.tempDataOutBuffer = CL.clCreateBuffer(getContext(), CL.CL_MEM_WRITE_ONLY,
 				Sizeof.cl_float * this.tempDataArray.length, null, null);
+		
+		int trainingLength = (int)training.getRecordCount();
+		int inputSize = flat.getInputCount();
+		int idealSize = flat.getOutputCount();
+		this.inputArray = new float[inputSize * trainingLength];
+		this.idealArray = new float[idealSize * trainingLength];
+		this.paramArray = new int[10];
+
+		this.maxUnits = Math.min(trainingLength, EncogEngine.getInstance()
+				.getCL().getCLThreads());
+		final EngineData pair = BasicEngineData.createPair(
+				flat.getInputCount(), flat.getOutputCount());
+
+		int inputIndex = 0;
+		int idealIndex = 0;
+
+		for (int i = 0; i < trainingLength; i++) {
+			training.getRecord(i, pair);
+			for (int col = 0; col < flat.getInputCount(); col++) {
+				this.inputArray[inputIndex++] = (float) pair.getInputArray()[col];
+			}
+
+			for (int col = 0; col < flat.getOutputCount(); col++) {
+				this.idealArray[idealIndex++] = (float) pair.getIdealArray()[col];
+			}
+		}
+
+		final cl_context context = device.getPlatform().getContext();
+
+		final int errorSize = this.maxUnits;
+		final int gradientSize = this.maxUnits * flat.getWeights().length;
+
+		this.errors = new float[errorSize];
+		this.gradients = new float[gradientSize];
+		
+		this.inputBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_ONLY
+				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
+				* this.inputArray.length, Pointer.to(this.inputArray), null);
+
+		this.idealBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_ONLY
+				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
+				* this.idealArray.length, Pointer.to(this.idealArray), null);
+
+		this.errorBuffer = CL.clCreateBuffer(context, CL.CL_MEM_WRITE_ONLY,
+				Sizeof.cl_float * errorSize, null, null);
+
+		this.gradientBuffer = CL.clCreateBuffer(context, CL.CL_MEM_WRITE_ONLY,
+				Sizeof.cl_float * gradientSize, null, null);
+
+		this.paramArray[0] = flat.getInputCount();
+		this.paramArray[1] = flat.getOutputCount();
+		this.paramArray[2] = flat.getLayerCounts().length;
+		this.paramArray[6] = this.maxUnits - 1;// index of last item
+		// size each item
+		this.paramArray[7] = Math.max(trainingLength / this.maxUnits, 1);
+		// size of last item
+		this.paramArray[8] = Math.max(trainingLength % this.maxUnits, 1);
+
+		this.paramBuffer = CL.clCreateBuffer(context, CL.CL_MEM_READ_ONLY
+				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
+				* this.paramArray.length, Pointer.to(this.paramArray), null);
 
 	}
+
+	/**
+	 * Calculate the gradients for one workload.
+	 * 
+	 * @param workload
+	 *            The workload to calculate for.
+	 */
+	public void calculate() {
+		prepareKernel();
+
+		for (int i = 0; i < this.flat.getWeights().length; i++) {
+			this.weightInArray[i] = (float) flat.getWeights()[i];
+		}
+
+		CL.clSetKernelArg(getKernel(), 0, Sizeof.cl_mem, Pointer.to(this.paramBuffer));
+		CL.clSetKernelArg(getKernel(), 1, Sizeof.cl_mem, Pointer.to(this.errorBuffer));
+		CL.clSetKernelArg(getKernel(), 2, Sizeof.cl_mem, Pointer
+				.to(this.layerIndexBuffer));
+		CL.clSetKernelArg(getKernel(), 3, Sizeof.cl_mem, Pointer
+				.to(this.layerCountBuffer));
+		CL.clSetKernelArg(getKernel(), 4, Sizeof.cl_mem, Pointer
+				.to(this.layerFeedCountBuffer));
+		CL.clSetKernelArg(getKernel(), 5, Sizeof.cl_mem, Pointer
+				.to(this.weightIndexBuffer));
+		CL.clSetKernelArg(getKernel(), 6, Sizeof.cl_mem, Pointer.to(this.inputBuffer));
+		CL.clSetKernelArg(getKernel(), 7, Sizeof.cl_mem, Pointer.to(this.idealBuffer));
+		CL.clSetKernelArg(getKernel(), 8, Sizeof.cl_mem, Pointer
+				.to(this.weightInArrayBuffer));
+		CL.clSetKernelArg(getKernel(), 9, Sizeof.cl_mem, Pointer.to(this.weightOutArrayBuffer));
+		CL.clSetKernelArg(getKernel(), 10, Sizeof.cl_mem, Pointer.to(this.gradientBuffer));
+		CL.clSetKernelArg(getKernel(), 11, Sizeof.cl_mem, Pointer
+				.to(this.activationTypeBuffer));
+		CL.clSetKernelArg(getKernel(), 12, Sizeof.cl_mem, Pointer
+				.to(this.slopeBuffer));
+		CL.clSetKernelArg(getKernel(), 13, Sizeof.cl_mem, Pointer
+				.to(this.tempDataInBuffer));
+		CL.clSetKernelArg(getKernel(), 14, Sizeof.cl_mem, Pointer
+				.to(this.tempDataOutBuffer));
+
+		try {
+			// Calculate the work-item dimensions
+			int localWork = Math.max(EncogEngine.getInstance().getCL()
+					.getCLWorkloadSize(), 1);
+			final int globalWork = this.maxUnits;
+
+			// don't create more than we have work for
+			localWork = Math.min(localWork, this.maxUnits);
+
+			// Set the work-item dimensions
+			final long[] globalWorkSize = new long[] { globalWork };
+			final long[] localWorkSize = new long[] { localWork };
+
+			CL.clEnqueueWriteBuffer(getDevice().getCommands(),
+					this.weightInArrayBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
+							* this.weightInArray.length, Pointer
+							.to(this.weightInArray), 0, null, null);
+			
+			CL.clEnqueueWriteBuffer(getDevice().getCommands(),
+					this.tempDataInBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
+							* this.tempDataArray.length, Pointer
+							.to(this.tempDataArray), 0, null, null);
+
+			// Execute the kernel
+			CL.clEnqueueNDRangeKernel(getDevice().getCommands(),
+					getKernel(), 1, null, globalWorkSize, localWorkSize, 0,
+					null, null);
+			CL.clFinish(getDevice().getCommands());
+
+			CL.clEnqueueReadBuffer(getDevice().getCommands(), this.errorBuffer, 
+					CL.CL_TRUE, 0, this.maxUnits
+					* Sizeof.cl_float, Pointer.to(this.errors), 0,
+					null, null);
+
+			CL.clEnqueueReadBuffer(getDevice().getCommands(), this.gradientBuffer, CL.CL_TRUE, 0,
+					this.weightInArray.length * this.maxUnits
+							* Sizeof.cl_float, Pointer.to(this.gradients), 0, null, null);
+			
+			CL.clEnqueueReadBuffer(getDevice().getCommands(), this.weightOutArrayBuffer, 
+					CL.CL_TRUE, 0,
+					this.weightOutArray.length 
+							* Sizeof.cl_float, Pointer.to(this.weightOutArray), 0, null, null);
+			
+			CL.clEnqueueReadBuffer(getDevice().getCommands(), this.tempDataOutBuffer, 
+					CL.CL_TRUE, 0,
+					this.tempDataArray.length 
+							* Sizeof.cl_float, Pointer.to(this.tempDataArray), 0, null, null);
+			
+			
+
+			// commands.Finish();
+		} catch (final Exception e) {
+			throw new EncogEngineError(e);
+		}
+	}
+	
+	
+
+	/**
+	 * @return the weightOutArray
+	 */
+	public float[] getWeightOutArray() {
+		return weightOutArray;
+	}
+	
+	
+
+	/**
+	 * @param tempDataArray the tempDataArray to set
+	 */
+	public void setTempDataArray(float[] tempDataArray) {
+		this.tempDataArray = tempDataArray;
+	}
+
+	/**
+	 * @return the tempDataArray
+	 */
+	public float[] getTempDataArray() {
+		return tempDataArray;
+	}
+
+	/**
+	 * @return the maxUnits
+	 */
+	public int getMaxUnits() {
+		return maxUnits;
+	}
+
+	/**
+	 * @return the errors
+	 */
+	public float[] getErrors() {
+		return errors;
+	}
+
+	
+	
 }
