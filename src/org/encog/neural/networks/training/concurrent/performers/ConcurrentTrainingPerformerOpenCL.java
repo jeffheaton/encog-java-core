@@ -26,17 +26,4 @@ public class ConcurrentTrainingPerformerOpenCL extends ConcurrentTrainingPerform
 	public EncogCLDevice getDevice() {
 		return device;
 	}
-	
-	protected void setupJob(TrainingJob job)
-	{
-		/*
-		if( job.getTrain() instanceof Propagation)
-			((Propagation)job.getTrain()).setTargetDevice(this.device);
-		else
-			throw new NeuralNetworkError("Can't use " + job.getTrain().getClass().getSimpleName() + " on OpenCL.");
-			*/
-	}
-
-	
-
 }

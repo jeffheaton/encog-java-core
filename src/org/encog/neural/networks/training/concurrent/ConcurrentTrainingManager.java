@@ -6,12 +6,19 @@ import java.util.List;
 import org.encog.Encog;
 import org.encog.NullStatusReportable;
 import org.encog.engine.StatusReportable;
+import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.concurrent.jobs.BPROPJob;
+import org.encog.neural.networks.training.concurrent.jobs.RPROPJob;
 import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
 import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformer;
 import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformerCPU;
 import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformerOpenCL;
+import org.encog.neural.networks.training.strategy.end.EndIterationsStrategy;
+import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 
 public class ConcurrentTrainingManager implements Runnable {
 
@@ -171,6 +178,27 @@ public class ConcurrentTrainingManager implements Runnable {
 				addPerformer(new ConcurrentTrainingPerformerCPU());
 			}
 		}
+	}
+
+	public TrainingJob addTrainRPROP(BasicNetwork network, NeuralDataSet training,
+			boolean loadToMemory, double initialUpdate, double maxStep, EndTrainingStrategy ending) {
+		RPROPJob job = new RPROPJob(network, training, loadToMemory,
+				initialUpdate, maxStep);
+		job.getStrategies().add(ending);
+		this.addTrainingJob(job);
+		return job;
+	}
+
+	public TrainingJob addTrainRPROP(BasicNetwork network, NeuralDataSet training,
+			EndIterationsStrategy ending) {
+		
+		return addTrainRPROP(
+				network,
+				training,
+				true,
+				RPROPConst.DEFAULT_INITIAL_UPDATE,
+				RPROPConst.DEFAULT_MAX_STEP,
+				ending);
 	}
 
 }

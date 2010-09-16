@@ -3,13 +3,14 @@ package org.encog.neural.networks.training.concurrent.jobs;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 
-public class TrainingJob {
+public abstract class TrainingJob {
 
 	private BasicNetwork network;
 	private NeuralDataSet training;
@@ -116,6 +117,8 @@ public class TrainingJob {
 	public void setTrain(Train train) {
 		this.train = train;
 	}
+	
+	public abstract void createTrainer(EncogCLDevice device);
 	
 	
 }

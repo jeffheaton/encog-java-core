@@ -1,7 +1,11 @@
 package org.encog.neural.networks.training.concurrent.jobs;
 
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.Strategy;
+import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
 public class BPROPJob extends TrainingJob {
 
@@ -46,6 +50,23 @@ public class BPROPJob extends TrainingJob {
 	 */
 	public void setMomentum(double momentum) {
 		this.momentum = momentum;
+	}
+
+
+	@Override
+	public void createTrainer(EncogCLDevice device) {
+		Train train = new Backpropagation(
+				getNetwork(),
+				getTraining(),
+				device,
+				getLearningRate(),
+				getMomentum());
+		
+		for(Strategy strategy : this.getStrategies() ) {
+			train.addStrategy(strategy);
+		}
+		
+		this.setTrain(train);
 	}
 	
 	
