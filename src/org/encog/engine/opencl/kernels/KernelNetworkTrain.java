@@ -173,24 +173,30 @@ public class KernelNetworkTrain extends EncogKernel {
 	 */
 	private final float[] gradients;
 
-	public void compile(final Map<String, String> options, int activation) {
-		
+	public void compile(final Map<String, String> options, FlatNetwork network) {
+
+		int activation = network.getUniformActivation();
+
 		StringBuilder source = new StringBuilder();
 
 		switch (activation) {
-			case ActivationFunctions.ACTIVATION_TANH:
+		case ActivationFunctions.ACTIVATION_TANH:
+			if (network.anySlopeNotOne()) {
 				source.append("#define ACTIVATION(x,slope) tanh(x)\r\n");
-				source.append("#define DERIVATIVE(x,slope) (slope * (1.0f - x * x))\r\n");
-				break;
-			case ActivationFunctions.ACTIVATION_SIGMOID:
-				source.append("#define ACTIVATION(x,slope) (1.0f / (1.0f + exp(-slope * x)))\r\n");
-				source.append("#define DERIVATIVE(x,slope) (slope * x * (1.0f - x))\r\n");
-				break;
+			} else {
+				source.append("#define ACTIVATION(x,slope) tanh(x)\r\n");
+			}
+			source.append("#define DERIVATIVE(x,slope) (slope * (1.0f - x * x))\r\n");
+			break;
+		case ActivationFunctions.ACTIVATION_SIGMOID:
+			source.append("#define ACTIVATION(x,slope) (1.0f / (1.0f + exp(-slope * x)))\r\n");
+			source.append("#define DERIVATIVE(x,slope) (slope * x * (1.0f - x))\r\n");
+			break;
 		}
 
 		source.append(ResourceLoader.loadString(getSourceName()));
 		setCLSource(source.toString());
-		
+
 		compile(options);
 	}
 
@@ -459,6 +465,25 @@ public class KernelNetworkTrain extends EncogKernel {
 	 */
 	public float[] getErrors() {
 		return errors;
+	}
+
+	public void release() {
+		super.release();
+		CL.clReleaseMemObject(this.activationTypeBuffer);
+		CL.clReleaseMemObject(this.errorBuffer);
+		CL.clReleaseMemObject(this.gradientBuffer);
+		CL.clReleaseMemObject(this.idealBuffer);
+		CL.clReleaseMemObject(this.inputBuffer);
+		CL.clReleaseMemObject(this.layerCountBuffer);
+		CL.clReleaseMemObject(this.layerFeedCountBuffer);
+		CL.clReleaseMemObject(this.layerIndexBuffer);
+		CL.clReleaseMemObject(this.paramBuffer);
+		CL.clReleaseMemObject(this.slopeBuffer);
+		CL.clReleaseMemObject(this.tempDataInBuffer);
+		CL.clReleaseMemObject(this.tempDataOutBuffer);
+		CL.clReleaseMemObject(this.weightInArrayBuffer);
+		CL.clReleaseMemObject(this.weightIndexBuffer);
+		CL.clReleaseMemObject(this.weightOutArrayBuffer);
 	}
 
 }

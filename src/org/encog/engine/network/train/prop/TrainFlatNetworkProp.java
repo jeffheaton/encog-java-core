@@ -324,5 +324,12 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	public int getNumThreads() {
 		return this.numThreads;
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void finishTraining() {
+		// nothing to do
+	}
 
 }

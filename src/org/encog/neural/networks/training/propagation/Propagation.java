@@ -200,6 +200,7 @@ public abstract class Propagation extends BasicTraining {
 	public void finishTraining() {
 		super.finishTraining();
 		this.network.getStructure().updateFlatNetwork();
+		this.flatTraining.finishTraining();
 	}
 
 	/**
@@ -215,6 +216,6 @@ public abstract class Propagation extends BasicTraining {
 	public void setFlatTraining(TrainFlatNetwork flatTraining) {
 		this.flatTraining = flatTraining;
 	}
-	
+
 	
 }

@@ -205,8 +205,12 @@ public class EncogKernel {
 		this.cl = cl;
 	}
 	
-	
-
-	
-
+	public void release() {	
+		if (this.program != null) {
+			CL.clReleaseProgram(this.program);
+			CL.clReleaseKernel(this.kernel);
+			this.program = null;
+			this.kernel = null;
+		}
+	}
 }

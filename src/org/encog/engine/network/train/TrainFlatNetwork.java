@@ -38,4 +38,8 @@ public interface TrainFlatNetwork {
 	 */
 	int getNumThreads();
 
+	/**
+	 * Training is to stop, free any resources.
+	 */
+	void finishTraining();
 }

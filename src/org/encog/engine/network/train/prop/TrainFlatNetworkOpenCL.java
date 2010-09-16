@@ -105,7 +105,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, this.network.getWeights().length * 2);
 		
-		kernel.compile(options,this.network.getUniformActivation());
+		kernel.compile(options,network);
 		
 		int weightLength = this.network.getWeights().length;
 
@@ -137,7 +137,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		final Map<String, String> options = getOptions("LEARN_BPROP");
 
 		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, this.network.getWeights().length+2 );
-		kernel.compile(options,this.network.getUniformActivation());
+		kernel.compile(options,network);
 		kernel.getTempDataArray()[0]=(float)learningRate;
 		kernel.getTempDataArray()[1]=(float)momentum;
 	}
@@ -149,7 +149,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		final Map<String, String> options = getOptions("LEARN_MANHATTAN");
 
 		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, 1 );
-		kernel.compile(options,this.network.getUniformActivation());
+		kernel.compile(options,network);
 		kernel.getTempDataArray()[0]=(float)learningRate;
 	}
 
@@ -252,6 +252,14 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		for(int i=0;i<result.length;i++)
 			result[i] = kernel.getTempDataArray()[len+i];
 		return result;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void finishTraining() {
+		if( this.kernel!=null )
+			this.kernel.release();
 	}
 
 }
