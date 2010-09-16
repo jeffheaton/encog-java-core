@@ -3,8 +3,7 @@ package org.encog.neural.networks.training.concurrent.performers;
 import org.encog.Encog;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.networks.training.concurrent.TrainingJob;
-import org.encog.neural.networks.training.propagation.Propagation;
+import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
 
 public class ConcurrentTrainingPerformerOpenCL extends ConcurrentTrainingPerformerCPU {
 

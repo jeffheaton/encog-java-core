@@ -2,35 +2,33 @@ package org.encog.neural.networks.training.concurrent.performers;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import org.encog.engine.concurrency.EngineConcurrency;
-import org.encog.engine.concurrency.TaskGroup;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.Train;
-import org.encog.neural.networks.training.concurrent.TrainingJob;
+import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
 
-public class ConcurrentTrainingPerformerCPU implements ConcurrentTrainingPerformer, Runnable {
+public class ConcurrentTrainingPerformerCPU implements
+		ConcurrentTrainingPerformer, Runnable {
 
 	private AtomicBoolean ready = new AtomicBoolean(true);
 	private TrainingJob currentJob;
-	
+
 	@Override
 	public void perform(TrainingJob job) {
-		if( this.ready.get()==false )
-		{
-			throw new NeuralNetworkError("Performer is already performing a job.");
+		if (this.ready.get() == false) {
+			throw new NeuralNetworkError(
+					"Performer is already performing a job.");
 		}
-		
+
 		setupJob(job);
-				
+
 		this.ready.set(false);
 		this.currentJob = job;
-		
+
 		Thread t = new Thread(this);
 		t.start();
 	}
-	
-	protected void setupJob(TrainingJob job)
-	{
+
+	protected void setupJob(TrainingJob job) {
 		// nothing to be done
 	}
 
@@ -40,23 +38,18 @@ public class ConcurrentTrainingPerformerCPU implements ConcurrentTrainingPerform
 	}
 
 	public void run() {
-		try
-		{
-			Train train = this.currentJob.getTrain();			
+		try {
+			Train train = this.currentJob.getTrain();
 			int interation = 1;
-			
-			while( currentJob.shouldContinue() ) {
+
+			while (currentJob.shouldContinue()) {
 				train.iteration();
 				interation++;
-			}		
-		}
-		catch(Throwable t)
-		{
+			}
+		} catch (Throwable t) {
 			currentJob.setError(t);
-		}
-		finally
-		{
+		} finally {
 			this.ready.set(true);
-		}		
+		}
 	}
 }

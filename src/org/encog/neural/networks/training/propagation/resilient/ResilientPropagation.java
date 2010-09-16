@@ -104,7 +104,7 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
-		this(network, training, null, RPROPConst.DEFAULT_ZERO_TOLERANCE,
+		this(network, training, null, 
 				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
 	}
 
@@ -123,7 +123,7 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training, EncogCLDevice device) {
-		this(network, training, device, RPROPConst.DEFAULT_ZERO_TOLERANCE,
+		this(network, training, device, 
 				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
 	}
 
@@ -147,7 +147,7 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training, EncogCLDevice device,
-			final double zeroTolerance, final double initialUpdate,
+			final double initialUpdate,
 			final double maxStep) {
 
 		super(network, training);
