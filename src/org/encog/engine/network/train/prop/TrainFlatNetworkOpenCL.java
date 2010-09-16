@@ -7,10 +7,11 @@ import org.encog.engine.EncogEngine;
 import org.encog.engine.EncogEngineError;
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.flat.ValidateForOpenCL;
 import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
-import org.encog.engine.opencl.EncogCLPlatform;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.ErrorCalculationMode;
@@ -72,6 +73,8 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	public TrainFlatNetworkOpenCL(final FlatNetwork network,
 			final EngineDataSet training, final EncogCLDevice targetDevice) {
 
+		(new ValidateForOpenCL()).validate(network);
+		
 		if (!(training instanceof EngineIndexableSet)) {
 			throw new EncogEngineError(
 					"Training data must be Indexable for this training type.");
@@ -98,13 +101,11 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
 		
-		final Map<String, String> options = new HashMap<String, String>();
-		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
-		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
-		options.put("LEARN_RPROP", null);
+		final Map<String, String> options = getOptions("LEARN_RPROP");
 
 		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, this.network.getWeights().length * 2);
-		kernel.compile(options);
+		
+		kernel.compile(options,this.network.getUniformActivation());
 		
 		int weightLength = this.network.getWeights().length;
 
@@ -115,6 +116,16 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		}
 
 	}
+	
+	private Map<String,String> getOptions(String learningType)
+	{
+		final Map<String, String> options = new HashMap<String, String>();
+		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
+		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
+		options.put(learningType, null);
+
+		return options;
+	}
 
 	public void learnBPROP(double learningRate, double momentum) {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_BPROP;
@@ -123,13 +134,10 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_BPROP;
 		
-		final Map<String, String> options = new HashMap<String, String>();
-		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
-		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
-		options.put("LEARN_BPROP", null);
+		final Map<String, String> options = getOptions("LEARN_BPROP");
 
 		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, this.network.getWeights().length+2 );
-		kernel.compile(options);
+		kernel.compile(options,this.network.getUniformActivation());
 		kernel.getTempDataArray()[0]=(float)learningRate;
 		kernel.getTempDataArray()[1]=(float)momentum;
 	}
@@ -138,13 +146,10 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_MANHATTAN;
 		this.learningRate = learningRate;
 		
-		final Map<String, String> options = new HashMap<String, String>();
-		options.put("NEURON_COUNT", "" + this.network.getNeuronCount());
-		options.put("WEIGHT_COUNT", "" + this.network.getWeights().length);
-		options.put("LEARN_MANHATTAN", null);
+		final Map<String, String> options = getOptions("LEARN_MANHATTAN");
 
 		this.kernel = new KernelNetworkTrain(targetDevice, network, this.training, 1 );
-		kernel.compile(options);
+		kernel.compile(options,this.network.getUniformActivation());
 		kernel.getTempDataArray()[0]=(float)learningRate;
 	}
 

@@ -156,22 +156,22 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 * The layer that training should begin on.
 	 */
 	private int beginTraining;
-	
+
 	/**
 	 * The layer that training should end on.
 	 */
 	private int endTraining;
-	
+
 	/**
 	 * Does this network have some connections disabled.
 	 */
 	private boolean isLimited;
-	
+
 	/**
 	 * The limit, under which, all a cconnection is not considered to exist.
 	 */
 	private double connectionLimit;
-	
+
 	/**
 	 * Default constructor.
 	 */
@@ -242,7 +242,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 		this.isLimited = false;
 		this.connectionLimit = 0.0;
-		
+
 		init(layers);
 	}
 
@@ -307,7 +307,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		cloneFlatNetwork(result);
 		return result;
 	}
-	
+
 	public void cloneFlatNetwork(FlatNetwork result) {
 		result.inputCount = this.inputCount;
 		result.layerCounts = EngineArray.arrayCopy(this.layerCounts);
@@ -345,15 +345,13 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 		EngineArray.arrayCopy(input, 0, this.layerOutput, sourceIndex,
 				this.inputCount);
-		
+
 		for (int i = this.layerIndex.length - 1; i > 0; i--) {
 			computeLayer(i);
 		}
-	
+
 		EngineArray.arrayCopy(this.layerOutput, 0, output, 0, this.outputCount);
 	}
-	
-
 
 	/**
 	 * Calculate a layer.
@@ -372,7 +370,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 		final int limitX = outputIndex + outputSize;
 		final int limitY = inputIndex + inputSize;
-		
+
 		// weight values
 		for (int x = outputIndex; x < limitX; x++) {
 			double sum = 0;
@@ -398,7 +396,9 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	/**
 	 * Decode the specified data into the weights of the neural network. This
 	 * method performs the opposite of encodeNetwork.
-	 * @param data The data to be decoded.
+	 * 
+	 * @param data
+	 *            The data to be decoded.
 	 */
 	@Override
 	public void decodeNetwork(final double[] data) {
@@ -415,6 +415,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 * Encode the neural network to an array of doubles. This includes the
 	 * network weights. To read this into a neural network, use the
 	 * decodeNetwork method.
+	 * 
 	 * @return The encoded network.
 	 */
 	@Override
@@ -611,8 +612,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			this.layerContextCount[index] = layer.getContectCount();
 			this.activationType[index] = layer.getActivation();
 			this.paramIndex[index] = currentParamIndex;
-			currentParamIndex = ActivationFunctions.copyParams(layer
-					.getParams(), this.params, currentParamIndex);
+			currentParamIndex = ActivationFunctions.copyParams(
+					layer.getParams(), this.params, currentParamIndex);
 
 			neuronCount += layer.getTotalCount();
 
@@ -643,9 +644,9 @@ public class FlatNetwork implements EngineNeuralNetwork {
 
 			index++;
 		}
-		
+
 		this.beginTraining = 0;
-		this.endTraining = this.layerCounts.length-1;
+		this.endTraining = this.layerCounts.length - 1;
 
 		this.weights = new double[weightCount];
 		this.layerOutput = new double[neuronCount];
@@ -654,7 +655,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 
 	/**
-	 * Perform a simple randomization of the weights of the neural network 
+	 * Perform a simple randomization of the weights of the neural network
 	 * between -1 and 1.
 	 */
 	public void randomize() {
@@ -662,10 +663,13 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 
 	/**
-	 * Perform a simple randomization of the weights of the neural network 
+	 * Perform a simple randomization of the weights of the neural network
 	 * between the specified hi and lo.
-	 * @param hi The network high.
-	 * @param lo The network low.
+	 * 
+	 * @param hi
+	 *            The network high.
+	 * @param lo
+	 *            The network low.
 	 */
 	public void randomize(final double hi, final double lo) {
 		for (int i = 0; i < this.weights.length; i++) {
@@ -681,7 +685,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 
 	/**
-	 * @param beginTraining the beginTraining to set
+	 * @param beginTraining
+	 *            the beginTraining to set
 	 */
 	public void setBeginTraining(int beginTraining) {
 		this.beginTraining = beginTraining;
@@ -695,7 +700,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 
 	/**
-	 * @param endTraining the endTraining to set
+	 * @param endTraining
+	 *            the endTraining to set
 	 */
 	public void setEndTraining(int endTraining) {
 		this.endTraining = endTraining;
@@ -709,11 +715,12 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 
 	/**
-	 * @param connectionLimit the connectionLimit to set
+	 * @param connectionLimit
+	 *            the connectionLimit to set
 	 */
 	public void setConnectionLimit(double connectionLimit) {
 		this.connectionLimit = connectionLimit;
-		if( this.connectionLimit>EncogEngine.DEFAULT_ZERO_TOLERANCE )
+		if (this.connectionLimit > EncogEngine.DEFAULT_ZERO_TOLERANCE)
 			this.isLimited = true;
 	}
 
@@ -723,10 +730,31 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	public boolean isLimited() {
 		return isLimited;
 	}
-	
+
 	public void clearConnectionLimit() {
 		this.connectionLimit = 0.0;
 		this.isLimited = false;
 	}
-	
+
+	/**
+	 * Determine if the hidden and output layers have a uniform activation
+	 * function. If they do, then return that activation function. Otherwise
+	 * return -1.
+	 * 
+	 * @return -1 if there is no uniform activation function, the number of that
+	 *         activation function, otherwise.
+	 */
+	public int getUniformActivation() {
+		int lastActivation = -1;
+
+		for (int i = 0; i < this.activationType.length - 1; i++) {
+			if (lastActivation != -1 && this.activationType[i] != lastActivation)
+				return -1;
+			else
+				lastActivation = this.activationType[i];
+		}
+		
+		return this.activationType[0];
+	}
+
 }

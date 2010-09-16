@@ -29,6 +29,7 @@
  */
 package org.encog.engine.network.flat;
 
+import org.encog.engine.EncogEngineError;
 import org.encog.engine.EngineMachineLearning;
 import org.encog.engine.validate.BasicMachineLearningValidate;
 
@@ -56,11 +57,14 @@ public class ValidateForOpenCL extends BasicMachineLearningValidate {
 		final FlatNetwork flat = (FlatNetwork) network;
 
 		for (final int activation : flat.getActivationType()) {
-			if ((activation != ActivationFunctions.ACTIVATION_LINEAR)
-					&& (activation != ActivationFunctions.ACTIVATION_SIGMOID)
+			if ( (activation != ActivationFunctions.ACTIVATION_SIGMOID)
 					&& (activation != ActivationFunctions.ACTIVATION_TANH)) {
-				return "Can't use OpenCL if activation function is not linear, sigmoid or tanh.";
+				return "Can't use OpenCL if activation function is not sigmoid or tanh.";
 			}
+		}
+		
+		if( flat.getUniformActivation()==-1 ) {
+			return "Can't use OpenCL training on a neural network that uses multiple activation functions.";
 		}
 
 		boolean hasContext = false;

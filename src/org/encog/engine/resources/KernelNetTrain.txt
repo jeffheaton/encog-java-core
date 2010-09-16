@@ -3,9 +3,6 @@
 #define DELTA_MIN 0.00001f
 #define MAX_STEP 50.0f	
 
-#define ACTIVATION(x,slope) tanh(x)
-#define DERIVATIVE(x,slope) (slope * (1.0f - x * x))
-
 kernel void NetworkTrain(
     global read_only int *params,
     global write_only float *errors,

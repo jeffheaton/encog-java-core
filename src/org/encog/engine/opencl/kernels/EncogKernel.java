@@ -51,7 +51,7 @@ public class EncogKernel {
 	/**
 	 * The source code for the kernel.
 	 */
-	private final String cl;
+	private String cl;
 
 	/**
 	 * The OpenCL context.
@@ -69,6 +69,8 @@ public class EncogKernel {
 	private cl_kernel kernel;
 
 	private EncogCLDevice device;
+	
+	private final String sourceName;
 	
 	/**
 	 * The name of the function that should be called to execute this kernel,
@@ -90,7 +92,7 @@ public class EncogKernel {
 	 */
 	public EncogKernel(final EncogCLDevice device, final String sourceName,
 			final String kernelName) {
-
+		this.sourceName = sourceName;
 		this.context = device.getPlatform().getContext();
 		this.device = device;
 		this.kernelName = kernelName;
@@ -181,7 +183,30 @@ public class EncogKernel {
 	public EncogCLDevice getDevice() {
 		return device;
 	}
+
+	/**
+	 * @return the sourceName
+	 */
+	public String getSourceName() {
+		return sourceName;
+	}
+
+	/**
+	 * @return the cl
+	 */
+	public String getCLSource() {
+		return cl;
+	}
+
+	/**
+	 * @param cl the cl to set
+	 */
+	public void setCLSource(String cl) {
+		this.cl = cl;
+	}
 	
+	
+
 	
 
 }
