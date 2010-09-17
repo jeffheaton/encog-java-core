@@ -101,5 +101,10 @@ public class ConcurrentTrainingPerformerCPU implements
 			this.ready.set(true);
 		}
 	}
+	
+	public String toString()
+	{
+		return "[CPU-Performer]";
+	}
 
 }

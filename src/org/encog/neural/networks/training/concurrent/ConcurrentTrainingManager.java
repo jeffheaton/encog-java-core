@@ -344,5 +344,20 @@ public final class ConcurrentTrainingManager implements Runnable {
 
 		return result;
 	}
+	
+	public String toString()
+	{
+		StringBuilder builder = new StringBuilder();
+		int index = 1;
+		for(ConcurrentTrainingPerformer performer : this.performers)
+		{
+			builder.append("Performer ");
+			builder.append(index++);
+			builder.append(": ");
+			builder.append(performer.toString());
+			builder.append("\n");
+		}
+		return builder.toString();
+	}
 
 }

@@ -69,4 +69,13 @@ public class ConcurrentTrainingPerformerOpenCL extends
 	public EncogCLDevice getDevice() {
 		return this.device;
 	}
+	
+	public String toString()
+	{
+		StringBuilder result = new StringBuilder();
+		result.append("[OpenCL-Performer: ");
+		result.append(device.toString());
+		result.append("]");
+		return result.toString();
+	}
 }
