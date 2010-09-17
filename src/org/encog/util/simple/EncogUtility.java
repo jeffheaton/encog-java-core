@@ -222,6 +222,7 @@ public final class EncogUtility {
 					+ Format.formatTimeSpan((int) remaining * 60));
 			epoch++;
 		} while (remaining > 0);
+		train.finishTraining();
 	}
 
 	/**
