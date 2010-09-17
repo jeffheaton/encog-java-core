@@ -82,7 +82,7 @@ public class EncogCLPlatform extends EncogCLItem {
 		this.context = CL.clCreateContextFromType(contextProperties,
 				CL.CL_DEVICE_TYPE_ALL, null, null, null);
 
-		setName(getPlatformString(CL.CL_PLATFORM_NAME));
+		setName(getPlatformString(CL.CL_PLATFORM_NAME).trim());
 		setVender(getPlatformString(CL.CL_PLATFORM_VENDOR));
 		setEnabled(true);
 

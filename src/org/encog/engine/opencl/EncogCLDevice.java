@@ -82,7 +82,7 @@ public class EncogCLDevice extends EncogCLItem {
 		this.platform = platform;
 		setEnabled(true);
 		this.device = device;
-		setName(getDeviceString(CL.CL_DEVICE_NAME));
+		setName(getDeviceString(CL.CL_DEVICE_NAME).trim());
 		setVender(getDeviceString(CL.CL_DEVICE_VENDOR));
 
 		final long type = getDeviceLong(CL.CL_DEVICE_TYPE);
