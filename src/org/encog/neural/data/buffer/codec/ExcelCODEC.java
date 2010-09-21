@@ -1,11 +1,37 @@
+/*
+ * Encog(tm) Core v2.5 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2010 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
+
 package org.encog.neural.data.buffer.codec;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import org.encog.neural.data.buffer.BufferedDataError;
 import org.encog.parse.tags.read.ReadXML;
@@ -14,11 +40,13 @@ import org.encog.util.csv.CSVFormat;
 public class ExcelCODEC implements DataSetCODEC {
 
 	final private File file;
-	private ZipFile zipFile;
+	private ZipFile readZipFile;
 	private ZipEntry entry;
 	private ReadXML xmlIn;
 	private int inputCount;
 	private int idealCount;
+	private FileOutputStream fos;
+    private ZipOutputStream zos;
 
 	/**
 	 * Constructor to create Excel from binary.
@@ -54,9 +82,9 @@ public class ExcelCODEC implements DataSetCODEC {
 	 */
 	@Override
 	public void close() {
-		if (this.zipFile != null) {
+		if (this.readZipFile != null) {
 			try {
-				this.zipFile.close();
+				this.readZipFile.close();
 			} catch (final IOException e) {
 				throw new BufferedDataError(e);
 			}
@@ -85,9 +113,9 @@ public class ExcelCODEC implements DataSetCODEC {
 	@Override
 	public void prepareRead() {
 		try {
-			this.zipFile = new ZipFile(this.file);
+			this.readZipFile = new ZipFile(this.file);
 
-			final Enumeration<? extends ZipEntry> entries = this.zipFile
+			final Enumeration<? extends ZipEntry> entries = this.readZipFile
 					.entries();
 
 			this.entry = null;
@@ -100,12 +128,12 @@ public class ExcelCODEC implements DataSetCODEC {
 			}
 
 			if (this.entry == null) {
-				this.zipFile.close();
-				this.zipFile = null;
+				this.readZipFile.close();
+				this.readZipFile = null;
 				throw new BufferedDataError("Could not find worksheet.");
 			}
 
-			final InputStream is = this.zipFile.getInputStream(this.entry);
+			final InputStream is = this.readZipFile.getInputStream(this.entry);
 			this.xmlIn = new ReadXML(is);
 
 			System.out.println(this.entry.getName());
@@ -122,7 +150,13 @@ public class ExcelCODEC implements DataSetCODEC {
 			final int idealSize) {
 		this.inputCount = inputSize;
 		this.idealCount = idealSize;
-
+		
+		try {
+		this.fos = new FileOutputStream(this.file);
+		this.zos = new ZipOutputStream(fos);
+		} catch(IOException ex) {
+			
+		}
 	}
 
 	/**

@@ -21,6 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+
 package org.encog.bot.browse.range;
 
 import org.encog.bot.browse.WebPage;
