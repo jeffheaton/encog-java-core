@@ -62,14 +62,14 @@ public final class RandomTrainingFactory {
 	 *            The maximum random number.
 	 * @return The random training set.
 	 */
-	public static NeuralDataSet generate(final long seed, 
+	public static BasicNeuralDataSet generate(final long seed, 
 			final int count, final int inputCount,
 			final int idealCount, final double min, final double max) {
 		
 		LinearCongruentialGenerator rand = 
 			new LinearCongruentialGenerator(seed);
 		
-		final NeuralDataSet result = new BasicNeuralDataSet();
+		final BasicNeuralDataSet result = new BasicNeuralDataSet();
 		for (int i = 0; i < count; i++) {
 			final NeuralData inputData = new BasicNeuralData(inputCount);
 

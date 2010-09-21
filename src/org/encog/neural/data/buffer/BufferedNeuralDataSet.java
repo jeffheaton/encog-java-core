@@ -386,4 +386,17 @@ public class BufferedNeuralDataSet extends BasicPersistedObject implements Neura
 
 		return result;
 	}
+
+	/**
+	 * Load the specified training set.
+	 * @param training The training set to load.
+	 */
+	public void load(final NeuralDataSet training) {
+		beginLoad(training.getInputSize(), training.getIdealSize());
+		for( final NeuralDataPair pair : training ) {
+			add(pair);
+		}
+		endLoad();
+		
+	}
 }

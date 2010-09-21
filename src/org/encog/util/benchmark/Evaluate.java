@@ -34,6 +34,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.util.simple.EncogUtility;
 
 /**
  * Used to evaluate the training time for a network.
@@ -46,39 +47,16 @@ public final class Evaluate {
 	/**
 	 * Mili-seconds in a second.
 	 */
-	public static final double MILIS = 1000;
+	public static final int MILIS = 1000;
 
-	/**
-	 * How many times to try.
-	 */
-	public static final int TRYS = 10;
-
-	/**
-	 * Evaluate how long it takes to calculate the error for the network. This
-	 * causes each of the training pairs to be run through the network. The
-	 * network is evaluated 10 times and the lowest time is reported.
-	 * 
-	 * @param network
-	 *            The network to evaluate with.
-	 * @param training
-	 *            The training data to use.
-	 * @return The lowest number of seconds that each of the ten attempts took.
-	 */
-	public static double evaluateNetwork(final BasicNetwork network,
-			final NeuralDataSet training) {
-		// train the neural network
-		long result = Long.MAX_VALUE;
-
-		for (int i = 1; i < Evaluate.TRYS; i++) {
-			final long start = System.currentTimeMillis();
-			network.calculateError(training);
-			final long time = System.currentTimeMillis() - start;
-			if (time < result) {
-				result = time;
-			}
-		}
-
-		return result / Evaluate.MILIS;
+	
+	public static int evaluateTrain(int input, int hidden1, int hidden2,
+			int output) {
+		final BasicNetwork network = EncogUtility.simpleFeedForward(input,
+				hidden1, hidden2, output, true);
+		final NeuralDataSet training = RandomTrainingFactory.generate(1000,
+				10000, input, output, -1, 1);
+		return evaluateTrain(network, training);
 	}
 
 	/**
@@ -92,21 +70,21 @@ public final class Evaluate {
 	 *            The training data to use.
 	 * @return The lowest number of seconds that each of the ten attempts took.
 	 */
-	public static double evaluateTrain(final BasicNetwork network,
+	public static int evaluateTrain(final BasicNetwork network,
 			final NeuralDataSet training) {
 		// train the neural network
 		final Train train = new ResilientPropagation(network, training);
-		long result = Long.MAX_VALUE;
 
-		for (int i = 1; i < Evaluate.TRYS; i++) {
 			final long start = System.currentTimeMillis();
-			train.iteration();
-			final long time = System.currentTimeMillis() - start;
-			if (time < result) {
-				result = time;
+			final long stop = start + (10*MILIS);
+			
+			int iterations = 0;
+			while( System.currentTimeMillis()<stop ) {
+				iterations++;
+				train.iteration();	
 			}
-		}
-		return result / Evaluate.MILIS;
+			
+		return iterations;
 	}
 	
 	/**

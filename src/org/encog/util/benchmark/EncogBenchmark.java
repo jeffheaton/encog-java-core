@@ -30,13 +30,15 @@
 
 package org.encog.util.benchmark;
 
+import java.io.File;
+
+import org.encog.Encog;
 import org.encog.engine.StatusReportable;
-import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.ContextLayer;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.engine.util.Format;
+import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.basic.BasicNeuralDataPair;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.util.logging.Logging;
 
 /**
@@ -50,7 +52,7 @@ public class EncogBenchmark {
 	/**
 	 * Number of steps in all.
 	 */
-	private static final int STEPS = 7;
+	private static final int STEPS = 4;
 
 	/**
 	 * The first step.
@@ -72,40 +74,16 @@ public class EncogBenchmark {
 	 */
 	private static final int STEP4 = 4;
 
-	/**
-	 * The fifth step.
-	 */
-	private static final int STEP5 = 5;
-
-	/**
-	 * The sixth step.
-	 */
-	private static final int STEP6 = 6;
-
-	/**
-	 * The seventh step.
-	 */
-	private static final int STEP7 = 7;
-
-	/**
-	 * The number of input neurons.
-	 */
-	private static final int INPUT_COUNT = 20;
-
-	/**
-	 * The number of output neurons.
-	 */
-	private static final int OUTPUT_COUNT = 20;
-
-	/**
-	 * The number of hidden neurons.
-	 */
-	private static final int HIDDEN_COUNT = 30;
 
 	/**
 	 * Report progress.
 	 */
 	private final StatusReportable report;
+	
+	private int cpuScore;
+	private int clScore;
+	private int memoryScore;
+	private int binaryScore;
 
 	/**
 	 * Construct a benchmark object.
@@ -118,89 +96,34 @@ public class EncogBenchmark {
 	}
 
 	/**
-	 * Benchmark a network with no hidden layers.
-	 * 
-	 * @return The amount of time this benchmark took.
-	 */
-	private double benchmar0Hidden() {
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(EncogBenchmark.INPUT_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.OUTPUT_COUNT));
-		network.getStructure().finalizeStructure();
-		network.reset();
-
-		final NeuralDataSet training = RandomTrainingFactory.generate(
-			1000,10000, 20, 20, -1, 1);
-
-		final double result = Evaluate.evaluateNetwork(network, training);
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-				"Evaluate 0 hidden layer result: " + result);
-		return result;
-	}
-
-	/**
-	 * Benchmark a network with one hidden layer.
-	 * 
-	 * @return The amount of time this benchmark took.
-	 */
-	private double benchmar1Hidden() {
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(EncogBenchmark.INPUT_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.HIDDEN_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.OUTPUT_COUNT));
-		network.getStructure().finalizeStructure();
-		network.reset();
-
-		final NeuralDataSet training = RandomTrainingFactory.generate(1000,10000,
-				20, 20, -1, 1);
-
-		final double result = Evaluate.evaluateNetwork(network, training);
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP3,
-				"Evaluate 1 hidden layer result: " + result);
-		return result;
-	}
-
-	/**
-	 * Benchmark a network with two hidden layers.
-	 * 
-	 * @return The amount of time this benchmark took.
-	 */
-	private double benchmar2Hidden() {
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(EncogBenchmark.INPUT_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.HIDDEN_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.HIDDEN_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.OUTPUT_COUNT));
-		network.getStructure().finalizeStructure();
-		network.reset();
-
-		final NeuralDataSet training = RandomTrainingFactory.generate(1000,10000,
-				20, 20, -1, 1);
-
-		final double result = Evaluate.evaluateNetwork(network, training);
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP4,
-				"Evaluate 2 hidden layer result: " + result);
-		return result;
-	}
-
-	/**
 	 * Perform the benchmark. Returns the total amount of time for all of the
 	 * benchmarks. Returns the final score. The lower the better for a score.
 	 * 
 	 * @return The total time, which is the final Encog benchmark score.
 	 */
-	public double process() {
+	public String process() {
 		Logging.stopConsoleLogging();
 		this.report.report(EncogBenchmark.STEPS, 0, "Beginning benchmark");
-		double total = 0;
-		total += trainElman();
-		total += benchmar0Hidden();
-		total += benchmar1Hidden();
-		total += benchmar2Hidden();
-		total += train0Hidden();
-		total += train1Hidden();
-		total += train2Hidden();
-		return total;
+		
+		evalCPU();
+		evalOpenCL();
+		evalMemory();
+		evalBinary();
+		
+		StringBuilder result = new StringBuilder();
+		
+		result.append("Encog Benchmark: CPU:");
+		result.append(Format.formatInteger(this.cpuScore));
+		result.append(", GPU:");
+		result.append(Format.formatInteger(this.clScore));
+		result.append(", Memory:");
+		result.append(Format.formatInteger(this.memoryScore));
+		result.append(", Disk:");
+		result.append(Format.formatInteger(this.binaryScore));
+		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEPS, 
+				result.toString());
+		
+		return result.toString();
 	}
 
 	/**
@@ -208,92 +131,161 @@ public class EncogBenchmark {
 	 * 
 	 * @return The amount of time this benchmark took.
 	 */
-	private double train0Hidden() {
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(EncogBenchmark.INPUT_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.OUTPUT_COUNT));
-		network.getStructure().finalizeStructure();
-		network.reset();
+	private void evalCPU() {
 
-		final NeuralDataSet training = RandomTrainingFactory.generate(1000,10000,
-				20, 20, -1, 1);
-
-		final double result = Evaluate.evaluateTrain(network, training);
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP5,
-				"Train 0 hidden layer result: " + result);
-		return result;
-	}
-
-	/**
-	 * Train the neural network with 1 hidden layer.
-	 * 
-	 * @return The amount of time this benchmark took.
-	 */
-	private double train1Hidden() {
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(EncogBenchmark.INPUT_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.HIDDEN_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.OUTPUT_COUNT));
-		network.getStructure().finalizeStructure();
-		network.reset();
-
-		final NeuralDataSet training = RandomTrainingFactory.generate(1000,10000,
-				20, 20, -1, 1);
-
-		final double result = Evaluate.evaluateTrain(network, training);
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP6,
-				"Train 1 hidden layer result: " + result);
-		return result;
-	}
-
-	/**
-	 * Train the neural network with 2 hidden layers.
-	 * 
-	 * @return The amount of time this benchmark took.
-	 */
-	private double train2Hidden() {
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(EncogBenchmark.INPUT_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.HIDDEN_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.HIDDEN_COUNT));
-		network.addLayer(new BasicLayer(EncogBenchmark.OUTPUT_COUNT));
-		network.getStructure().finalizeStructure();
-		network.reset();
-
-		final NeuralDataSet training = RandomTrainingFactory.generate(1000,10000,
-				20, 20, -1, 1);
-
-		final double result = Evaluate.evaluateTrain(network, training);
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP7,
-				"Train 2 hidden layer result: " + result);
-		return result;
-	}
-
-	/**
-	 * Train an Elman neural network.
-	 * 
-	 * @return The amount of time this benchmark took.
-	 */
-	private double trainElman() {
-		// construct an Elman type network
-		Layer hidden;
-		final Layer context = new ContextLayer(30);
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(EncogBenchmark.INPUT_COUNT));
-		hidden = new BasicLayer(EncogBenchmark.HIDDEN_COUNT);
-		network.addLayer(hidden);
-		hidden.addNext(context, SynapseType.OneToOne);
-		context.addNext(hidden);
-		network.addLayer(new BasicLayer(EncogBenchmark.OUTPUT_COUNT));
-		network.getStructure().finalizeStructure();
-		network.reset();
-
-		final NeuralDataSet training = RandomTrainingFactory.generate(1000,10000,
-				20, 20, -1, 1);
-
-		final double result = Evaluate.evaluateTrain(network, training);
+		int small = Evaluate.evaluateTrain(2, 4, 0, 1);
 		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP1,
-				"Training Elman result: " + result);
-		return result;
+				"Evaluate CPU, tiny= " + Format.formatInteger(small / 100));
+
+		int medium = Evaluate.evaluateTrain(10, 20, 0, 1);
+		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP1,
+				"Evaluate CPU, small= " + Format.formatInteger(medium / 30));
+
+		int large = Evaluate.evaluateTrain(100, 200, 40, 5);
+		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP1,
+				"Evaluate CPU, large= " + Format.formatInteger(large));
+
+		int huge = Evaluate.evaluateTrain(200, 300, 200, 50);
+		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP1,
+				"Evaluate CPU, huge= " + Format.formatInteger(huge));
+
+		int result = (small / 100) + (medium / 30) + large + huge;
+
+		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP1,
+				"CPU result: " + result);
+		this.cpuScore = result;
 	}
+
+	/**
+	 * Train the neural network with 0 hidden layers.
+	 * 
+	 * @return The amount of time this benchmark took.
+	 */
+	private void evalOpenCL() {
+
+		try {
+			Encog.getInstance().initCL();
+
+			int small = Evaluate.evaluateTrain(2, 4, 0, 1);
+			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
+					"Evaluate OpenCL, tiny= "
+							+ Format.formatInteger(small / 100));
+
+			int medium = Evaluate.evaluateTrain(10, 20, 0, 1);
+			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
+					"Evaluate OpenCL, small= "
+							+ Format.formatInteger(medium / 30));
+
+			int large = Evaluate.evaluateTrain(100, 200, 40, 5);
+			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
+					"Evaluate OpenCL, large= " + Format.formatInteger(large));
+
+			int huge = Evaluate.evaluateTrain(200, 300, 200, 50);
+			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
+					"Evaluate OpenCL, huge= " + Format.formatInteger(huge));
+
+			int result = (small / 100) + (medium / 30) + large + huge;
+
+			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
+					"OpenCL result: " + result);
+			this.clScore = result;
+		} catch (Throwable t) {
+			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
+					"No OpenCL devices, result: 0");
+			this.clScore = 0;
+		}
+	}
+
+	private void evalMemory() {
+		final BasicNeuralDataSet training = RandomTrainingFactory.generate(
+				1000, 10000, 10, 10, -1, 1);
+
+		final long start = System.currentTimeMillis();
+		final long stop = start + (10 * Evaluate.MILIS);
+		int record = 0;
+
+		NeuralDataPair pair = BasicNeuralDataPair.createPair(10, 10);
+
+		int iterations = 0;
+		while (System.currentTimeMillis() < stop) {
+			iterations++;
+			training.getRecord(record++, pair);
+			if (record >= training.getRecordCount())
+				record = 0;
+		}
+		
+		iterations/=100000;
+
+		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP3,
+				"Memory dataset, result: " + Format.formatInteger(iterations));
+
+		this.memoryScore = iterations;
+	}
+
+	private void evalBinary() {
+		File file = new File("temp.egb");
+
+		final BasicNeuralDataSet training = RandomTrainingFactory.generate(
+				1000, 10000, 10, 10, -1, 1);
+
+		// create the binary file
+
+		file.delete();
+		BufferedNeuralDataSet training2 = new BufferedNeuralDataSet(file);
+		training2.load(training);
+
+		final long start = System.currentTimeMillis();
+		final long stop = start + (10 * Evaluate.MILIS);
+		int record = 0;
+
+		NeuralDataPair pair = BasicNeuralDataPair.createPair(10, 10);
+
+		int iterations = 0;
+		while (System.currentTimeMillis() < stop) {
+			iterations++;
+			training2.getRecord(record++, pair);
+			if (record >= training2.getRecordCount())
+				record = 0;
+		}
+		
+		iterations/=100000;
+
+		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP4,
+				"Disk(binary) dataset, result: "
+						+ Format.formatInteger(iterations));
+
+		file.delete();
+		this.binaryScore = iterations;
+	}
+
+	/**
+	 * @return the cpuScore
+	 */
+	public int getCpuScore() {
+		return cpuScore;
+	}
+
+	/**
+	 * @return the clScore
+	 */
+	public int getClScore() {
+		return clScore;
+	}
+
+	/**
+	 * @return the memoryScore
+	 */
+	public int getMemoryScore() {
+		return memoryScore;
+	}
+
+	/**
+	 * @return the binaryScore
+	 */
+	public int getBinaryScore() {
+		return binaryScore;
+	}
+	
+	
+
 }
