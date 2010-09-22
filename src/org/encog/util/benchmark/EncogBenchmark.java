@@ -173,6 +173,7 @@ public class EncogBenchmark {
 			// use the first CPU.  Failing that, as well, don't test OpenCL.
 			if (this.device == null) {
 				PrintStream saved = System.err;
+				System.setErr(null);// don't display OpenCL errors
 				try {
 				if (Encog.getInstance().getCL() == null)
 					Encog.getInstance().initCL();
