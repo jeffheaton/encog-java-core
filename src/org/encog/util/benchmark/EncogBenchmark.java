@@ -25,9 +25,11 @@
 package org.encog.util.benchmark;
 
 import java.io.File;
+import java.io.PrintStream;
 
 import org.encog.Encog;
 import org.encog.engine.StatusReportable;
+import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.Format;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
@@ -68,16 +70,17 @@ public class EncogBenchmark {
 	 */
 	private static final int STEP4 = 4;
 
-
 	/**
 	 * Report progress.
 	 */
 	private final StatusReportable report;
-	
+
 	private int cpuScore;
 	private int clScore;
 	private int memoryScore;
 	private int binaryScore;
+
+	private EncogCLDevice device;
 
 	/**
 	 * Construct a benchmark object.
@@ -98,25 +101,33 @@ public class EncogBenchmark {
 	public String process() {
 		Logging.stopConsoleLogging();
 		this.report.report(EncogBenchmark.STEPS, 0, "Beginning benchmark");
-		
+
 		evalCPU();
 		evalOpenCL();
 		evalMemory();
 		evalBinary();
-		
+
 		StringBuilder result = new StringBuilder();
-		
+
 		result.append("Encog Benchmark: CPU:");
 		result.append(Format.formatInteger(this.cpuScore));
-		result.append(", GPU:");
+		result.append(", OpenCL");
+		if( this.device==null )
+			result.append("(none)");
+		else if( this.device.isCPU() )
+			result.append("(cpu)");
+		else 
+			result.append("(gpu)");
+		
+		result.append(":");
 		result.append(Format.formatInteger(this.clScore));
 		result.append(", Memory:");
 		result.append(Format.formatInteger(this.memoryScore));
 		result.append(", Disk:");
 		result.append(Format.formatInteger(this.binaryScore));
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEPS, 
+		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEPS,
 				result.toString());
-		
+
 		return result.toString();
 	}
 
@@ -158,15 +169,32 @@ public class EncogBenchmark {
 	private void evalOpenCL() {
 
 		try {
-			Encog.getInstance().initCL();
+			// did the caller assign a device?  If not, use the first GPU, failing that, 
+			// use the first CPU.  Failing that, as well, don't test OpenCL.
+			if (this.device == null) {
+				PrintStream saved = System.err;
+				try {
+				if (Encog.getInstance().getCL() == null)
+					Encog.getInstance().initCL();
 
-			int small = Evaluate.evaluateTrain(2, 4, 0, 1);
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
+				this.device = Encog.getInstance().getCL().chooseDevice();
+				}
+				finally { 
+					System.setErr(saved);
+				}
+			}
+
+			int small = Evaluate.evaluateTrain(device, 2, 4, 0, 1);
+			this.report.report(
+					EncogBenchmark.STEPS,
+					EncogBenchmark.STEP2,
 					"Evaluate OpenCL, tiny= "
 							+ Format.formatInteger(small / 100));
 
 			int medium = Evaluate.evaluateTrain(10, 20, 0, 1);
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
+			this.report.report(
+					EncogBenchmark.STEPS,
+					EncogBenchmark.STEP2,
 					"Evaluate OpenCL, small= "
 							+ Format.formatInteger(medium / 30));
 
@@ -207,8 +235,8 @@ public class EncogBenchmark {
 			if (record >= training.getRecordCount())
 				record = 0;
 		}
-		
-		iterations/=100000;
+
+		iterations /= 100000;
 
 		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP3,
 				"Memory dataset, result: " + Format.formatInteger(iterations));
@@ -241,10 +269,12 @@ public class EncogBenchmark {
 			if (record >= training2.getRecordCount())
 				record = 0;
 		}
-		
-		iterations/=100000;
 
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP4,
+		iterations /= 100000;
+
+		this.report.report(
+				EncogBenchmark.STEPS,
+				EncogBenchmark.STEP4,
 				"Disk(binary) dataset, result: "
 						+ Format.formatInteger(iterations));
 
@@ -279,7 +309,19 @@ public class EncogBenchmark {
 	public int getBinaryScore() {
 		return binaryScore;
 	}
-	
-	
+
+	/**
+	 * @return the device
+	 */
+	public EncogCLDevice getDevice() {
+		return device;
+	}
+
+	/**
+	 * @param device the device to set
+	 */
+	public void setDevice(EncogCLDevice device) {
+		this.device = device;
+	}
 
 }

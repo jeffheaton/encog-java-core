@@ -97,18 +97,35 @@ public class EncogCL {
 		}
 		return false;
 	}
+	
+	/**
+	 * Choose a device. If a GPU is found, return that.   Otherwise try to find a CPU.
+	 *
+	 * @return The first device detected.
+	 */
+	public EncogCLDevice chooseDevice() {
+		EncogCLDevice result = chooseDevice(true);
+		if( result==null ) {
+			result = chooseDevice(false);
+		}
+		return result;
+	}
 
 	/**
 	 * Choose a device. Simply returns the first device detected.
 	 *
 	 * @return The first device detected.
 	 */
-	public EncogCLDevice chooseDevice() {
-		if (this.devices.size() < 1) {
-			return null;
-		} else {
-			return this.devices.get(0);
+	public EncogCLDevice chooseDevice(boolean useGPU) {
+
+		for (EncogCLDevice device : this.devices) {
+			if (useGPU && !device.isCPU()) {
+				return device;
+			} else if (!useGPU && device.isCPU()) {
+				return device;
+			}
 		}
+		return null;
 	}
 
 	/**
