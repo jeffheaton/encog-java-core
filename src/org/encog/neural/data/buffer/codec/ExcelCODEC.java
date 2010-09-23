@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -52,52 +53,52 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * The Excel file.
 	 */
 	private final File file;
-	
+
 	/**
 	 * The Excel file that we are reading.
 	 */
 	private ZipFile readZipFile;
-	
+
 	/**
 	 * The current zip entry.
 	 */
 	private ZipEntry entry;
-	
+
 	/**
 	 * XML that is currently being parsed.
 	 */
 	private ReadXML xmlIn;
-	
+
 	/**
 	 * The number of inputs.
 	 */
 	private int inputCount;
-	
+
 	/**
 	 * THe number of ideals.
 	 */
 	private int idealCount;
-	
+
 	/**
 	 * The file stream to write to.
 	 */
 	private FileOutputStream fos;
-	
+
 	/**
 	 * The zip stream to write to.
 	 */
 	private ZipOutputStream zos;
-	
+
 	/**
 	 * A byte buffer to hold the output during an export to XLSX.
 	 */
 	private ByteArrayOutputStream buffer;
-	
+
 	/**
 	 * The XML output.
 	 */
 	private WriteXML xmlOut;
-	
+
 	/**
 	 * THe current row, during an export.
 	 */
@@ -210,7 +211,7 @@ public class ExcelCODEC implements DataSetCODEC {
 		try {
 			this.readZipFile = new ZipFile(this.file);
 
-			final Enumeration< ? extends ZipEntry> entries = this.readZipFile
+			final Enumeration<? extends ZipEntry> entries = this.readZipFile
 					.entries();
 
 			this.entry = null;
@@ -231,6 +232,8 @@ public class ExcelCODEC implements DataSetCODEC {
 			final InputStream is = this.readZipFile.getInputStream(this.entry);
 			this.xmlIn = new ReadXML(is);
 
+		} catch (final ZipException e) {
+			throw new BufferedDataError("Not a valid Excel file.");
 		} catch (final IOException e) {
 			throw new BufferedDataError(e);
 		}
@@ -354,7 +357,9 @@ public class ExcelCODEC implements DataSetCODEC {
 
 	/**
 	 * Convert a numeric index, to an Excel column.
-	 * @param index The numeric index.
+	 * 
+	 * @param index
+	 *            The numeric index.
 	 * @return The column, i.e. A or AA.
 	 */
 	private String toColumn(final int index) {
