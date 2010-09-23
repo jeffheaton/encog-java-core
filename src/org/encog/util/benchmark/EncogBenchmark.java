@@ -192,18 +192,18 @@ public class EncogBenchmark {
 					"Evaluate OpenCL, tiny= "
 							+ Format.formatInteger(small / 100));
 
-			int medium = Evaluate.evaluateTrain(10, 20, 0, 1);
+			int medium = Evaluate.evaluateTrain(device, 10, 20, 0, 1);
 			this.report.report(
 					EncogBenchmark.STEPS,
 					EncogBenchmark.STEP2,
 					"Evaluate OpenCL, small= "
 							+ Format.formatInteger(medium / 30));
 
-			int large = Evaluate.evaluateTrain(100, 200, 40, 5);
+			int large = Evaluate.evaluateTrain(device, 100, 200, 40, 5);
 			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
 					"Evaluate OpenCL, large= " + Format.formatInteger(large));
 
-			int huge = Evaluate.evaluateTrain(200, 300, 200, 50);
+			int huge = Evaluate.evaluateTrain(device, 200, 300, 200, 50);
 			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
 					"Evaluate OpenCL, huge= " + Format.formatInteger(huge));
 
