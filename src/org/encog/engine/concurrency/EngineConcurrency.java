@@ -79,7 +79,7 @@ public class EngineConcurrency {
 	 * Construct a concurrency object.
 	 */
 	public EngineConcurrency() {
-		this.executor = Executors.newFixedThreadPool(100);
+		this.executor = Executors.newCachedThreadPool();
 	}
 
 	/**
