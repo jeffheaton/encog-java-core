@@ -231,7 +231,6 @@ public class ExcelCODEC implements DataSetCODEC {
 			final InputStream is = this.readZipFile.getInputStream(this.entry);
 			this.xmlIn = new ReadXML(is);
 
-			System.out.println(this.entry.getName());
 		} catch (final IOException e) {
 			throw new BufferedDataError(e);
 		}
