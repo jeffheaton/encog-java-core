@@ -28,10 +28,10 @@ package org.encog.engine.data;
  * Training data is stored in two ways, depending on if the data is for
  * supervised, or unsupervised training.
  * 
- * For supervised training just an input value is provided, and the ideal output
+ * For unsupervised training just an input value is provided, and the ideal output
  * values are null.
  * 
- * For unsupervised training both input and the expected ideal outputs are
+ * For supervised training both input and the expected ideal outputs are
  * provided.
  * 
  * This interface abstracts classes that provide a holder for both of these two
