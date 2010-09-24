@@ -42,6 +42,10 @@ kernel void NetworkTrain(
 		
 	// clear out the gradients and errors
 	errors[taskIndex] = 0;
+	for(int i=0;i<WEIGHT_COUNT;i++)
+	{
+		gradients[gradientOffset+i] = 0;
+	}
 	
 	for(int trainIndex=0;trainIndex<size;trainIndex++)
 	{		 
@@ -120,7 +124,7 @@ kernel void NetworkTrain(
 				float * dptr = layerDelta + toLayerIndex;
 				for (int x = 0; x < toLayerSize; x++) 
 				{
-					*gptr = output * (*dptr);
+					*gptr += output * (*dptr);
 					sum += (*wptr) * (*dptr);
 					wi+=fromLayerSize;
 					wptr+=fromLayerSize;

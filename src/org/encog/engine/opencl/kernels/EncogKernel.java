@@ -32,8 +32,11 @@ import org.encog.engine.EncogEngineError;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.ResourceLoader;
 import org.jocl.CL;
+import org.jocl.Pointer;
+import org.jocl.Sizeof;
 import org.jocl.cl_context;
 import org.jocl.cl_kernel;
+import org.jocl.cl_mem;
 import org.jocl.cl_program;
 
 /**
@@ -63,9 +66,22 @@ public class EncogKernel {
 	private cl_kernel kernel;
 
 	private EncogCLDevice device;
-	
+
 	private final String sourceName;
 	
+	private int localWork;
+	private int globalWork;
+
+	private long allocatedMemory;
+	
+	public long getAllocatedMemory() {
+		return allocatedMemory;
+	}
+
+	public void setAllocatedMemory(long allocatedMemory) {
+		this.allocatedMemory = allocatedMemory;
+	}
+
 	/**
 	 * The name of the function that should be called to execute this kernel,
 	 * from inside the OpenCL source code.
@@ -193,13 +209,38 @@ public class EncogKernel {
 	}
 
 	/**
-	 * @param cl the cl to set
+	 * @param cl
+	 *            the cl to set
 	 */
 	public void setCLSource(String cl) {
 		this.cl = cl;
 	}
-	
-	public void release() {	
+
+	/**
+	 * Get a long param from the device.
+	 * 
+	 * @param param
+	 *            The param desired.
+	 * @return The param value.
+	 */
+	public long getWorkGroupLong(final int param) {
+		final long[] result = new long[1];
+		final long[] len = new long[1];
+
+		CL.clGetKernelWorkGroupInfo(this.kernel, this.device.getDevice(),
+				param, Sizeof.cl_long, Pointer.to(result), len);
+		return result[0];
+	}
+
+	/**
+	 * @return Suggested max workgroup size. You will very likely crash the GPU
+	 *         if you go above this.
+	 */
+	public int getMaxWorkGroupSize() {
+		return (int) getWorkGroupLong(CL.CL_KERNEL_WORK_GROUP_SIZE);
+	}
+
+	public void release() {
 		if (this.program != null) {
 			CL.clReleaseProgram(this.program);
 			CL.clReleaseKernel(this.kernel);
@@ -207,4 +248,88 @@ public class EncogKernel {
 			this.kernel = null;
 		}
 	}
+	
+	public cl_mem createArrayReadOnly(int[] array)
+	{
+		this.allocatedMemory+=Sizeof.cl_float* array.length; 
+		return CL.clCreateBuffer(getContext(),
+					CL.CL_MEM_READ_WRITE | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
+							* array.length,
+					Pointer.to(array), null);
+	}
+	
+	public cl_mem createArrayReadOnly(float[] array)
+	{
+		this.allocatedMemory+=Sizeof.cl_float* array.length;
+		return CL.clCreateBuffer(getContext(),
+					CL.CL_MEM_READ_WRITE | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
+							* array.length,
+					Pointer.to(array), null);
+	}
+	
+	public cl_mem createFloatArrayWriteOnly(int length)
+	{
+		this.allocatedMemory+=Sizeof.cl_float * length;
+		return CL.clCreateBuffer(getContext(),
+				CL.CL_MEM_READ_WRITE, Sizeof.cl_float
+						* length, null, null);
+	}
+	
+	public void setArg(int num, cl_mem mem)
+	{
+		CL.clSetKernelArg(getKernel(), num, Sizeof.cl_mem,
+				Pointer.to(mem));
+	}
+	
+	public void array2BufferFloat(float[] source, cl_mem targetBuffer)
+	{
+		CL.clEnqueueWriteBuffer(getDevice().getCommands(),
+				targetBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
+						* source.length,
+				Pointer.to(source), 0, null, null);
+	}
+	
+	public void buffer2Float(cl_mem sourceBuffer, float[] target)
+	{
+		CL.clEnqueueReadBuffer(getDevice().getCommands(),
+				sourceBuffer, CL.CL_TRUE, 0,
+				target.length * Sizeof.cl_float,
+				Pointer.to(target), 0, null, null);
+	}
+	
+
+	public void execute()
+	{
+		final long[] globalWorkSize = new long[] { this.getGlobalWork() };
+		final long[] localWorkSize = new long[] { this.getLocalWork() };
+
+		// Execute the kernel
+		CL.clEnqueueNDRangeKernel(getDevice().getCommands(), getKernel(),
+				1, null, globalWorkSize, localWorkSize, 0, null, null);
+		CL.clFinish(getDevice().getCommands());
+	}
+	
+	public void releaseBuffer(cl_mem mem)
+	{
+		CL.clReleaseMemObject(mem);
+	}
+
+	public int getLocalWork() {
+		return localWork;
+	}
+
+	public void setLocalWork(int localWork) {
+		this.localWork = localWork;
+	}
+
+	public int getGlobalWork() {
+		return globalWork;
+	}
+
+	public void setGlobalWork(int globalWork) {
+		this.globalWork = globalWork;
+	}
+	
+	
+
 }

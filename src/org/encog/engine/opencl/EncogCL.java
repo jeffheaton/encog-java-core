@@ -62,8 +62,8 @@ public class EncogCL {
 	 */
 	public EncogCL() {
 		final int[] numPlatforms = new int[1];
-		this.clThreads = 200;
-		this.clWorkloadSize = 10;
+		this.clThreads = 1;
+		this.clWorkloadSize = 1;
 
 		final cl_platform_id[] platformIDs = new cl_platform_id[5];
 		CL.clGetPlatformIDs(platformIDs.length, platformIDs, numPlatforms);

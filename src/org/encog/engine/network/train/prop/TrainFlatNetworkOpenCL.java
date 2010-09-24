@@ -233,7 +233,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		double e = 0;
 
-		for (int i = 0; i < this.kernel.getMaxUnits(); i++) {
+		for (int i = 0; i < this.kernel.getGlobalWork(); i++) {
 			e += this.kernel.getErrors()[i];
 		}
 
