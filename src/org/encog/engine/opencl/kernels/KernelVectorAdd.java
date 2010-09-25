@@ -98,11 +98,11 @@ public class KernelVectorAdd extends EncogKernel {
 		final long[] local_work_size = new long[] { 1 };
 
 		// Execute the kernel
-		CL.clEnqueueNDRangeKernel(device.getCommands(), getKernel(), 1, null,
+		CL.clEnqueueNDRangeKernel(device.getQueue().getCommands(), getKernel(), 1, null,
 				global_work_size, local_work_size, 0, null, null);
 
 		// Read the output data
-		CL.clEnqueueReadBuffer(device.getCommands(), memObjects[2], CL.CL_TRUE,
+		CL.clEnqueueReadBuffer(device.getQueue().getCommands(), memObjects[2], CL.CL_TRUE,
 				0, n * Sizeof.cl_float, dst, 0, null, null);
 
 		final double[] result = new double[dstArray.length];

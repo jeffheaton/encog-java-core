@@ -281,33 +281,6 @@ public class EncogKernel {
 				Pointer.to(mem));
 	}
 	
-	public void array2BufferFloat(float[] source, cl_mem targetBuffer)
-	{
-		CL.clEnqueueWriteBuffer(getDevice().getCommands(),
-				targetBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
-						* source.length,
-				Pointer.to(source), 0, null, null);
-	}
-	
-	public void buffer2Float(cl_mem sourceBuffer, float[] target)
-	{
-		CL.clEnqueueReadBuffer(getDevice().getCommands(),
-				sourceBuffer, CL.CL_TRUE, 0,
-				target.length * Sizeof.cl_float,
-				Pointer.to(target), 0, null, null);
-	}
-	
-
-	public void execute()
-	{
-		final long[] globalWorkSize = new long[] { this.getGlobalWork() };
-		final long[] localWorkSize = new long[] { this.getLocalWork() };
-
-		// Execute the kernel
-		CL.clEnqueueNDRangeKernel(getDevice().getCommands(), getKernel(),
-				1, null, globalWorkSize, localWorkSize, 0, null, null);
-		CL.clFinish(getDevice().getCommands());
-	}
 	
 	public void releaseBuffer(cl_mem mem)
 	{

@@ -34,6 +34,7 @@ import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
+import org.encog.engine.opencl.EncogCLQueue;
 import org.encog.engine.util.Format;
 import org.encog.engine.util.ResourceLoader;
 import org.jocl.cl_mem;
@@ -317,17 +318,19 @@ public class KernelNetworkTrain extends EncogKernel {
 		setArg(14,this.tempDataOutBuffer);
 
 		try {
-			array2BufferFloat(this.weightInArray,this.weightInArrayBuffer);
-			array2BufferFloat(this.tempDataArray,this.tempDataInBuffer);
+			EncogCLQueue queue = this.device.getQueue();
+			
+			queue.array2BufferFloat(this.weightInArray,this.weightInArrayBuffer);
+			queue.array2BufferFloat(this.tempDataArray,this.tempDataInBuffer);
 
 			// Execute the kernel
-			execute();
-
+			queue.execute(this);
+			queue.waitFinish();
 			
 			// Read the results
-			buffer2Float(this.errorBuffer,this.errors);
-			buffer2Float(this.weightOutArrayBuffer,this.weightOutArray);
-			buffer2Float(this.tempDataOutBuffer,this.tempDataArray);
+			queue.buffer2Float(this.errorBuffer,this.errors);
+			queue.buffer2Float(this.weightOutArrayBuffer,this.weightOutArray);
+			queue.buffer2Float(this.tempDataOutBuffer,this.tempDataArray);
 			
 		} catch (final Exception e) {
 			throw new EncogEngineError(e);

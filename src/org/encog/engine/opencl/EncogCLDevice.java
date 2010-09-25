@@ -57,11 +57,8 @@ public class EncogCLDevice extends EncogCLItem {
 	 * Is this device a cpu?
 	 */
 	private final boolean cpu;
-
-	/**
-	 * A command queue for this device.
-	 */
-	private final cl_command_queue commands;
+	
+	private final EncogCLQueue queue;
 
 	/**
 	 * Construct an OpenCL device.
@@ -81,16 +78,7 @@ public class EncogCLDevice extends EncogCLItem {
 
 		final long type = getDeviceLong(CL.CL_DEVICE_TYPE);
 		this.cpu = (type == CL.CL_DEVICE_TYPE_CPU);
-
-		this.commands = CL.clCreateCommandQueue(platform.getContext(), device,
-				0, null);
-	}
-
-	/**
-	 * @return The OpenCL command queue.
-	 */
-	public cl_command_queue getCommands() {
-		return this.commands;
+		this.queue = new EncogCLQueue(this);
 	}
 
 	/**
@@ -206,5 +194,14 @@ public class EncogCLDevice extends EncogCLItem {
 
 		return builder.toString();
 	}
+
+	/**
+	 * @return the queue
+	 */
+	public EncogCLQueue getQueue() {
+		return queue;
+	}
+	
+	
 
 }

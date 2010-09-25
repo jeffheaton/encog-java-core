@@ -1,0 +1,53 @@
+#define POSITIVE_ETA 1.2f
+#define NEGATIVE_ETA 0.5f
+#define DELTA_MIN 0.00001f
+#define MAX_STEP 50.0f	
+
+kernel void NetworkLearnBPROP(
+    global read_only int *params,
+    global write_only float *errors,
+    global read_only int *layerIndex,
+    global read_only int *layerCounts,
+    global read_only int *layerFeedCounts,
+    global read_only int *weightIndex,
+    global read_only float* input,
+    global read_only float* ideal,
+    global read_only float* weightsIn,
+    global write_only float* weightsOut,
+    global write_only float *gradients,
+    global read_only int *activationType,
+    global read_only float *slope,
+    global read_only float *tempDataIn,
+    global read_only float *tempDataOut
+    )
+{	
+	// now that the gradients have been calculated, update the network
+
+	// loop over all gradients and sum them into the first subtask
+	for(int i=0;i<WEIGHT_COUNT;i++) 
+	{
+		for(int j=1;j<=indexLastElement;j++)
+		{		 
+			gradients[i] += gradients[(j*WEIGHT_COUNT)+i];
+		}
+	}
+
+	// teach the weights
+	for(int i=0;i<WEIGHT_COUNT;i++)
+	{
+		float delta = (gradients[i]*tempDataIn[0]);
+		weightsIn[i]+=delta+(tempDataIn[i+2]*tempDataIn[1]);
+		tempDataIn[i+2] = delta;
+	}
+	
+	// finally, after all is done, return the weights to the CPU
+	for(int i=0;i<WEIGHT_COUNT;i++)
+	{
+		weightsOut[i] = weightsIn[i];
+	}
+		
+	for(int i=0;i<(WEIGHT_COUNT*2);i++)
+	{
+		tempDataOut[i] = tempDataIn[i];
+	}	
+}
