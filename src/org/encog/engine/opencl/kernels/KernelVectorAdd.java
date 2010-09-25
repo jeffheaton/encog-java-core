@@ -27,6 +27,7 @@ package org.encog.engine.opencl.kernels;
 import static org.jocl.CL.clSetKernelArg;
 
 import org.encog.engine.opencl.EncogCLDevice;
+import org.encog.engine.opencl.EncogCLQueue;
 import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
@@ -39,14 +40,33 @@ import org.jocl.cl_mem;
  */
 public class KernelVectorAdd extends EncogKernel {
 
+	final private float[] arrayA;
+	final private float[] arrayB;
+	final private float[] targetArray;
+	
+	private cl_mem bufferArrayA;
+	private cl_mem bufferArrayB;
+	private cl_mem bufferTargetArray;
+	
 	/**
 	 * Construct a simple kernel to add two vectors.
 	 * 
 	 * @param device
 	 *            The device to use.
 	 */
-	public KernelVectorAdd(final EncogCLDevice device) {
+	public KernelVectorAdd(final EncogCLDevice device, int length) {
 		super(device, "org/encog/engine/resources/KernelVectorAdd.txt", "VectorAdd");
+		// Create input- and output data
+		this.arrayA = new float[length];
+		this.arrayB = new float[length];
+		this.targetArray = new float[length];
+		
+		this.bufferArrayA = this.createArrayReadOnly(arrayA);
+		this.bufferArrayB = this.createArrayReadOnly(arrayB);
+		this.bufferTargetArray = this.createFloatArrayWriteOnly(this.targetArray.length);
+		
+		this.setGlobalWork(length);
+		this.setLocalWork(1);
 	}
 
 	/**
@@ -62,53 +82,29 @@ public class KernelVectorAdd extends EncogKernel {
 	 */
 	public double[] add(final EncogCLDevice device, final double[] inputA,
 			final double[] inputB) {
-		// Create input- and output data
-		final int n = inputA.length;
-		final float[] srcArrayA = new float[n];
-		final float[] srcArrayB = new float[n];
-		final float[] dstArray = new float[n];
 
-		for (int i = 0; i < n; i++) {
-			srcArrayA[i] = (float) inputA[i];
-			srcArrayB[i] = (float) inputB[i];
+		for (int i = 0; i < inputA.length; i++) {
+			this.arrayA[i] = (float) inputA[i];
+			this.arrayB[i] = (float) inputB[i];
 		}
-		final Pointer srcA = Pointer.to(srcArrayA);
-		final Pointer srcB = Pointer.to(srcArrayB);
-		final Pointer dst = Pointer.to(dstArray);
-
-		// Allocate the memory objects for the input- and output data
-		final cl_mem[] memObjects = new cl_mem[3];
-		memObjects[0] = CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_ONLY
-				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * n, srcA, null);
-		memObjects[1] = CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_ONLY
-				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * n, srcB, null);
-		memObjects[2] = CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_WRITE,
-				Sizeof.cl_float * n, null, null);
 		
-        // Set the arguments for the kernel
-        clSetKernelArg(getKernel(), 0, 
-            Sizeof.cl_mem, Pointer.to(memObjects[0]));
-        clSetKernelArg(getKernel(), 1, 
-            Sizeof.cl_mem, Pointer.to(memObjects[1]));
-        clSetKernelArg(getKernel(), 2, 
-            Sizeof.cl_mem, Pointer.to(memObjects[2]));
+		setArg(0,this.bufferArrayA);
+		setArg(1,this.bufferArrayB);
+		setArg(2,this.bufferTargetArray);
 
-		// Set the work-item dimensions
-		final long[] global_work_size = new long[] { n };
-		final long[] local_work_size = new long[] { 1 };
+		EncogCLQueue queue = this.getDevice().getQueue();
 
-		// Execute the kernel
-		CL.clEnqueueNDRangeKernel(device.getQueue().getCommands(), getKernel(), 1, null,
-				global_work_size, local_work_size, 0, null, null);
+		queue.array2BufferFloat(this.arrayA, this.bufferArrayA);
+		queue.array2BufferFloat(this.arrayB, this.bufferArrayB);
+		
+		queue.execute(this);
 
-		// Read the output data
-		CL.clEnqueueReadBuffer(device.getQueue().getCommands(), memObjects[2], CL.CL_TRUE,
-				0, n * Sizeof.cl_float, dst, 0, null, null);
+		queue.buffer2Float(this.bufferTargetArray, this.targetArray);
 
-		final double[] result = new double[dstArray.length];
+		final double[] result = new double[this.targetArray.length];
 
-		for (int i = 0; i < dstArray.length; i++) {
-			result[i] = dstArray[i];
+		for (int i = 0; i < targetArray.length; i++) {
+			result[i] = targetArray[i];
 		}
 
 		return result;
