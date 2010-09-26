@@ -192,8 +192,8 @@ public class KernelNetworkTrain extends EncogKernel {
 		
 		// Calculate the work-item dimensions
 		int trainingLength = (int) training.getRecordCount();
-		int threads = EncogEngine.getInstance().getCL().getCLThreads();
-		threads = Math.min(trainingLength, EncogEngine.getInstance().getCL().getCLThreads());
+		int threads = EncogEngine.getInstance().getCL().getGlobalWork();
+		threads = Math.min(trainingLength, EncogEngine.getInstance().getCL().getGlobalWork());
 		this.setLocalWork( Math.min(this.getMaxWorkGroupSize(), threads) );
 		this.setGlobalWork( Math.min(threads,getLocalWork()) );
 		
@@ -296,6 +296,40 @@ public class KernelNetworkTrain extends EncogKernel {
 		System.out.println(Format.formatMemory(this.getAllocatedMemory()));
 
 	}
+	
+	private void calculateSegment(int start, int size, boolean learn)
+	{
+		EncogCLQueue queue = this.device.getQueue();
+		
+		EngineArray.fill(this.gradients, 0);
+		
+		if( learn )
+		{
+			this.paramArray[3] = 1;
+		}
+		else
+		{
+			this.paramArray[3] = 0;
+		}
+		
+		this.paramArray[4] = start;
+		
+		queue.array2Buffer(this.weightInArray,this.weightInArrayBuffer);
+		queue.array2Buffer(this.tempDataArray,this.tempDataInBuffer);
+		queue.array2Buffer(this.gradients, this.gradientInBuffer);
+		queue.array2Buffer(this.paramArray, this.paramBuffer);
+
+		// Execute the kernel
+		queue.execute(this);
+		queue.waitFinish();
+		
+		// Read the results
+		queue.buffer2Array(this.errorBuffer,this.errors);
+		queue.buffer2Array(this.weightOutArrayBuffer,this.weightOutArray);
+		queue.buffer2Array(this.tempDataOutBuffer,this.tempDataArray);
+		queue.buffer2Array(this.gradientOutBuffer, this.gradients);
+
+	}
 
 	/**
 	 * Calculate the gradients for one workload.
@@ -328,24 +362,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		setArg(15,this.gradientInBuffer);
 
 		try {
-			EncogCLQueue queue = this.device.getQueue();
-			
-			EngineArray.fill(this.gradients, 0);
-			
-			queue.array2BufferFloat(this.weightInArray,this.weightInArrayBuffer);
-			queue.array2BufferFloat(this.tempDataArray,this.tempDataInBuffer);
-			queue.array2BufferFloat(this.gradients, this.gradientInBuffer);
-
-			// Execute the kernel
-			queue.execute(this);
-			queue.waitFinish();
-			
-			// Read the results
-			queue.buffer2Float(this.errorBuffer,this.errors);
-			queue.buffer2Float(this.weightOutArrayBuffer,this.weightOutArray);
-			queue.buffer2Float(this.tempDataOutBuffer,this.tempDataArray);
-			queue.buffer2Float(this.gradientOutBuffer, this.gradients);
-			
+			calculateSegment(0,(int)this.training.getRecordCount(),true);
 		} catch (final Exception e) {
 			throw new EncogEngineError(e);
 		}

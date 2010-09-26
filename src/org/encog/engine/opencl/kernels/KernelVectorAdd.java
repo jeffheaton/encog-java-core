@@ -94,12 +94,12 @@ public class KernelVectorAdd extends EncogKernel {
 
 		EncogCLQueue queue = this.getDevice().getQueue();
 
-		queue.array2BufferFloat(this.arrayA, this.bufferArrayA);
-		queue.array2BufferFloat(this.arrayB, this.bufferArrayB);
+		queue.array2Buffer(this.arrayA, this.bufferArrayA);
+		queue.array2Buffer(this.arrayB, this.bufferArrayB);
 		
 		queue.execute(this);
 
-		queue.buffer2Float(this.bufferTargetArray, this.targetArray);
+		queue.buffer2Array(this.bufferTargetArray, this.targetArray);
 
 		final double[] result = new double[this.targetArray.length];
 

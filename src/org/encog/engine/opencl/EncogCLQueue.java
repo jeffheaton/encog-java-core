@@ -47,7 +47,7 @@ public class EncogCLQueue {
 		CL.clFinish(this.commands);
 	}
 	
-	public void array2BufferFloat(float[] source, cl_mem targetBuffer)
+	public void array2Buffer(float[] source, cl_mem targetBuffer)
 	{
 		CL.clEnqueueWriteBuffer(this.commands,
 				targetBuffer, CL.CL_TRUE, 0, Sizeof.cl_float
@@ -55,11 +55,27 @@ public class EncogCLQueue {
 				Pointer.to(source), 0, null, null);
 	}
 	
-	public void buffer2Float(cl_mem sourceBuffer, float[] target)
+	public void buffer2Array(cl_mem sourceBuffer, float[] target)
 	{
 		CL.clEnqueueReadBuffer(this.commands,
 				sourceBuffer, CL.CL_TRUE, 0,
 				target.length * Sizeof.cl_float,
+				Pointer.to(target), 0, null, null);
+	}
+	
+	public void array2Buffer(int[] source, cl_mem targetBuffer)
+	{
+		CL.clEnqueueWriteBuffer(this.commands,
+				targetBuffer, CL.CL_TRUE, 0, Sizeof.cl_int
+						* source.length,
+				Pointer.to(source), 0, null, null);
+	}
+	
+	public void buffer2Array(cl_mem sourceBuffer, int[] target)
+	{
+		CL.clEnqueueReadBuffer(this.commands,
+				sourceBuffer, CL.CL_TRUE, 0,
+				target.length * Sizeof.cl_int,
 				Pointer.to(target), 0, null, null);
 	}
 

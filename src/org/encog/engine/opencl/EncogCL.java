@@ -39,8 +39,7 @@ public class EncogCL {
 	/**
 	 * The platforms detected.
 	 */
-	private final List<EncogCLPlatform> platforms =
-		new ArrayList<EncogCLPlatform>();
+	private final List<EncogCLPlatform> platforms = new ArrayList<EncogCLPlatform>();
 
 	/**
 	 * All devices, from all platforms.
@@ -50,20 +49,23 @@ public class EncogCL {
 	/**
 	 * The number of CL threads to use, defaults to 200.
 	 */
-	private int clThreads;
+	private int globalWork;
 
 	/**
-	 * The size of a CL workload, defaults to 10.
+	 * Maximum CL training size per call to OpenCL device.  On most systems, especially when 
+	 * you are using the same GPU as you use for your display, the operating system will 
+	 * shutdown the GPU if a kernel executes for too long.  To prevent this from happening Encog 
+	 * breaks requests to the GPU down into smaller sizes.  This property determines this size.
 	 */
-	private int clWorkloadSize;
+	private int maxTrainingSize;
 
 	/**
 	 * Construct an Encog OpenCL object.
 	 */
 	public EncogCL() {
 		final int[] numPlatforms = new int[1];
-		this.clThreads = 1;
-		this.clWorkloadSize = 1;
+		this.globalWork = 100;
+		this.maxTrainingSize = 1000;
 
 		final cl_platform_id[] platformIDs = new cl_platform_id[5];
 		CL.clGetPlatformIDs(platformIDs.length, platformIDs, numPlatforms);
@@ -82,7 +84,6 @@ public class EncogCL {
 			}
 		}
 
-
 		CL.setExceptionsEnabled(true);
 	}
 
@@ -97,7 +98,7 @@ public class EncogCL {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Choose a device. If a GPU is found, return that.   Otherwise try to find a CPU.
 	 *
@@ -105,7 +106,7 @@ public class EncogCL {
 	 */
 	public EncogCLDevice chooseDevice() {
 		EncogCLDevice result = chooseDevice(true);
-		if( result==null ) {
+		if (result == null) {
 			result = chooseDevice(false);
 		}
 		return result;
@@ -199,28 +200,45 @@ public class EncogCL {
 	}
 
 	/**
-	 * @return the clThreads
+	 * The global workload size for OpenCL.  The more processors your OpenCL device has, the more 
+	 * concurrency can occur.  Higher values for the global workload result in more concurrency.  However, 
+	 * most OpenCL devices can only go so high.  Additionally, larger workloads require more memory.
+	 * @return The size of the OpenCL global workload.
 	 */
-	public int getCLThreads() {
-		return clThreads;
+	public int getGlobalWork() {
+		return globalWork;
 	}
 
 	/**
-	 * @return the clWorkloadSize
+	 * The global workload size for OpenCL.  The more processors your OpenCL device has, the more 
+	 * concurrency can occur.  Higher values for the global workload result in more concurrency.  However, 
+	 * most OpenCL devices can only go so high.  Additionally, larger workloads require more memory.
+	 * @param globalWork The size of the OpenCL global workload.
 	 */
-	public int getCLWorkloadSize() {
-		return clWorkloadSize;
+	public void setGlobalWork(int globalWork) {
+		this.globalWork = globalWork;
 	}
 
-	public void setCLThreads(int clThreads) {
-		this.clThreads = clThreads;
+	/**
+	 * Maximum CL training size per call to OpenCL device.  On most systems, especially when 
+	 * you are using the same GPU as you use for your display, the operating system will 
+	 * shutdown the GPU if a kernel executes for too long.  To prevent this from happening Encog 
+	 * breaks requests to the GPU down into smaller sizes.  This property determines this size.
+	 * @return The maximum training size.
+	 */
+	public int getMaxTrainingSize() {
+		return maxTrainingSize;
 	}
 
-	public void setCLWorkloadSize(int clWorkloadSize) {
-		this.clWorkloadSize = clWorkloadSize;
+	/**
+	 * Maximum CL training size per call to OpenCL device.  On most systems, especially when 
+	 * you are using the same GPU as you use for your display, the operating system will 
+	 * shutdown the GPU if a kernel executes for too long.  To prevent this from happening Encog 
+	 * breaks requests to the GPU down into smaller sizes.  This property determines this size.
+	 * @param maxTrainingSize The maximum training size.
+	 */
+	public void setMaxTrainingSize(int maxTrainingSize) {
+		this.maxTrainingSize = maxTrainingSize;
 	}
-	
-	
-	
-	
+
 }
