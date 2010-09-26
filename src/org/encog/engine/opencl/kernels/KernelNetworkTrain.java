@@ -35,6 +35,7 @@ import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLQueue;
+import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.Format;
 import org.encog.engine.util.ResourceLoader;
 import org.jocl.cl_mem;
@@ -146,7 +147,9 @@ public class KernelNetworkTrain extends EncogKernel {
 	/**
 	 * A buffer to hold the gradients.
 	 */
-	private cl_mem gradientBuffer;
+	private cl_mem gradientOutBuffer;
+	
+	private cl_mem gradientInBuffer;
 
 	private final FlatNetwork flat;
 
@@ -154,6 +157,8 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * The training errors for this workload.
 	 */
 	private float[] errors;
+	
+	private float[] gradients;
 	
 	private EngineIndexableSet training;
 	
@@ -209,6 +214,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.weightOutArray = new float[flat.getWeights().length];
 		this.tempDataArray = new float[tempDataSize];
 		this.slopeArray = new float[flat.getParams().length];
+		this.gradients = new float[flat.getWeights().length];
 
 		this.layerDeltaSize = 0;
 		for (int i = 0; i < flat.getLayerCounts().length; i++) {
@@ -258,6 +264,8 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.paramArray[0] = flat.getInputCount();
 		this.paramArray[1] = flat.getOutputCount();
 		this.paramArray[2] = flat.getLayerCounts().length;
+		this.paramArray[3] = 1; // should it learn
+		this.paramArray[4] = 0; // training offset
 		this.paramArray[6] = this.getGlobalWork() - 1;// index of last item
 		// size each item
 		this.paramArray[7] = Math.max(trainingLength / this.getGlobalWork(), 1);
@@ -272,7 +280,8 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.inputBuffer = createArrayReadOnly(this.inputArray);
 		this.idealBuffer = createArrayReadOnly(this.idealArray);
 		this.errorBuffer = createFloatArrayWriteOnly(errorSize);
-		this.gradientBuffer = createFloatArrayWriteOnly(gradientSize);		
+		this.gradientOutBuffer = createFloatArrayWriteOnly(gradientSize);
+		this.gradientInBuffer = createArrayReadOnly(this.gradients);
 		this.paramBuffer = createArrayReadOnly(this.paramArray);
 		this.layerIndexBuffer = createArrayReadOnly(flat.getLayerIndex());
 		this.layerCountBuffer = createArrayReadOnly(flat.getLayerCounts());
@@ -311,17 +320,21 @@ public class KernelNetworkTrain extends EncogKernel {
 		setArg(7,this.idealBuffer);
 		setArg(8,this.weightInArrayBuffer);
 		setArg(9,this.weightOutArrayBuffer);
-		setArg(10,this.gradientBuffer);
+		setArg(10,this.gradientOutBuffer);
 		setArg(11,this.activationTypeBuffer);
 		setArg(12,this.slopeBuffer);
 		setArg(13,this.tempDataInBuffer);
 		setArg(14,this.tempDataOutBuffer);
+		setArg(15,this.gradientInBuffer);
 
 		try {
 			EncogCLQueue queue = this.device.getQueue();
 			
+			EngineArray.fill(this.gradients, 0);
+			
 			queue.array2BufferFloat(this.weightInArray,this.weightInArrayBuffer);
 			queue.array2BufferFloat(this.tempDataArray,this.tempDataInBuffer);
+			queue.array2BufferFloat(this.gradients, this.gradientInBuffer);
 
 			// Execute the kernel
 			queue.execute(this);
@@ -331,6 +344,7 @@ public class KernelNetworkTrain extends EncogKernel {
 			queue.buffer2Float(this.errorBuffer,this.errors);
 			queue.buffer2Float(this.weightOutArrayBuffer,this.weightOutArray);
 			queue.buffer2Float(this.tempDataOutBuffer,this.tempDataArray);
+			queue.buffer2Float(this.gradientOutBuffer, this.gradients);
 			
 		} catch (final Exception e) {
 			throw new EncogEngineError(e);
@@ -370,7 +384,8 @@ public class KernelNetworkTrain extends EncogKernel {
 		super.release();
 		releaseBuffer(this.activationTypeBuffer);
 		releaseBuffer(this.errorBuffer);
-		releaseBuffer(this.gradientBuffer);
+		releaseBuffer(this.gradientOutBuffer);
+		releaseBuffer(this.gradientInBuffer);
 		releaseBuffer(this.idealBuffer);
 		releaseBuffer(this.inputBuffer);
 		releaseBuffer(this.layerCountBuffer);

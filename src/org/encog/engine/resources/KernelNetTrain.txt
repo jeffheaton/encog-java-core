@@ -14,11 +14,12 @@ kernel void NetworkTrain(
     global read_only float* ideal,
     global read_only float* weightsIn,
     global write_only float* weightsOut,
-    global write_only float *gradients,
+    global write_only float *gradientsOut,
     global read_only int *activationType,
     global read_only float *slope,
     global read_only float *tempDataIn,
-    global read_only float *tempDataOut
+    global read_only float *tempDataOut,
+    global read_only float *gradientsIn
     )
 {
 	private float layerOutput[NEURON_COUNT];
@@ -28,6 +29,7 @@ kernel void NetworkTrain(
 	int inputSize = params[0];
     int outputSize = params[1];
     int layerCount = params[2];
+    int trainingOffset = params[4];
     int indexLastElement = params[6];
     int sizeElement = params[7];
     int sizeLastElement = params[8];
@@ -44,12 +46,12 @@ kernel void NetworkTrain(
 	errors[taskIndex] = 0;
 	for(int i=0;i<WEIGHT_COUNT;i++)
 	{
-		gradients[gradientOffset+i] = 0;
+		gradientsOut[gradientOffset+i] = 0;
 	}
 	
 	for(int trainIndex=0;trainIndex<size;trainIndex++)
 	{		 
-		int subtaskIndex = (taskIndex*sizeElement)+trainIndex;
+		int subtaskIndex = (taskIndex*sizeElement)+trainIndex+trainingOffset;
 		
 		// part 1: forward pass
 		int taskInputIndex = subtaskIndex * inputSize;
@@ -119,7 +121,7 @@ kernel void NetworkTrain(
 				float output = layerOutput[yi];
 				float sum = 0;
 				int wi = index+y;
-				global float * gptr = gradients+wi+gradientOffset;
+				global float * gptr = gradientsOut+wi+gradientOffset;
 				global float * wptr = weightsIn + wi;
 				float * dptr = layerDelta + toLayerIndex;
 				for (int x = 0; x < toLayerSize; x++) 
@@ -149,16 +151,20 @@ kernel void NetworkTrain(
 		// loop over all gradients and sum them into the first subtask
 		for(int i=0;i<WEIGHT_COUNT;i++) 
 		{
+			gradientsOut[i]+=gradientsIn[i];
 			for(int j=1;j<=indexLastElement;j++)
 			{		 
-				gradients[i] += gradients[(j*WEIGHT_COUNT)+i];
+				gradientsOut[i] += gradientsOut[(j*WEIGHT_COUNT)+i];
 			}
 		}
+	}
 
+	if( taskIndex==0 && params[3]>0 )
+	{
 		// teach the weights
 #ifdef LEARN_RPROP
 		global float *wptr = weightsIn;
-		global float *gptr = gradients;		
+		global float *gptr = gradientsOut;		
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{
 			int change = sign((*gptr) * tempDataIn[i]);
@@ -192,7 +198,7 @@ kernel void NetworkTrain(
 				// if change==0 then there is no change to the delta
 				float delta = tempDataIn[i+WEIGHT_COUNT];
 				weightChange = sign(*gptr) * delta;
-				tempDataIn[i] = gradients[i];
+				tempDataIn[i] = gradientsOut[i];
 			}
 			
 			*(wptr++)+=weightChange;
@@ -202,7 +208,7 @@ kernel void NetworkTrain(
 #ifdef LEARN_BPROP		
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{
-			float delta = (gradients[i]*tempDataIn[0]);
+			float delta = (gradientsOut[i]*tempDataIn[0]);
 			weightsIn[i]+=delta+(tempDataIn[i+2]*tempDataIn[1]);
 			tempDataIn[i+2] = delta;
 		}
@@ -210,7 +216,7 @@ kernel void NetworkTrain(
 #ifdef LEARN_MANHATTAN
 		for(int i=0;i<WEIGHT_COUNT;i++)
 		{
-			int direction = sign(gradients[i]);
+			int direction = sign(gradientsOut[i]);
 			weightsIn[i]+=tempDataIn[0]*direction;
 		}
 #endif

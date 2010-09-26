@@ -122,6 +122,16 @@ public final class EngineArray {
 		Arrays.fill(array, value);
 
 	}
+	
+	/**
+	 * Fill a float array.
+	 * @param array The array to fill.
+	 * @param value What to fill the array with.
+	 */
+	public static void fill(final float[] array, final float value) {
+		Arrays.fill(array, value);
+
+	}
 
 	/**
 	 * Search for a string in an array.
