@@ -228,19 +228,29 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			throw new EncogEngineError(
 					"Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
 		}
-
-		this.kernel.calculate();
-
-		double e = 0;
-
-		for (int i = 0; i < this.kernel.getGlobalWork(); i++) {
-			e += this.kernel.getErrors()[i];
+		
+		long networkLoad = this.network.getWeights().length*(this.training.getRecordCount());
+		int workloadCount = (int)(networkLoad/(long)(EncogEngine.getInstance().getCL().getMaxTrainingSize()*1000l));
+		int maxWorkloadSize = (int)this.training.getRecordCount()/workloadCount;
+		int lastWorkloadSize = (int)this.training.getRecordCount()%workloadCount;
+		
+		if( workloadCount==0 )
+			lastWorkloadSize = maxWorkloadSize;
+		
+		int currentIndex = 0;
+		this.error=0;
+		
+		while(workloadCount>0) {
+			this.callKernel(currentIndex, maxWorkloadSize,false);
+			workloadCount--;
+			currentIndex+=maxWorkloadSize;
 		}
+		
+		this.callKernel(currentIndex, lastWorkloadSize,true);
 
-		final int count = (int) this.training.getRecordCount();
-
-		this.error = e / (count * this.training.getIdealSize());
-
+		int count = (int)this.training.getRecordCount();
+		this.error= this.error / (count * this.training.getIdealSize());
+		
 		if (ErrorCalculation.getMode() == ErrorCalculationMode.RMS) {
 			this.error = Math.sqrt(error);
 		}
@@ -252,6 +262,18 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		}
 		// this.owner.report(this.gradients, error, null);
 
+	}
+	
+	private void callKernel(int start, int size, boolean learn)
+	{
+		this.kernel.calculate(0,(int)this.training.getRecordCount(),learn);
+
+		double e = 0;
+
+		for (int i = 0; i < this.kernel.getGlobalWork(); i++) {
+			e += this.kernel.getErrors()[i];
+		}
+		this.error = e;
 	}
 
 	/**

@@ -163,6 +163,8 @@ public class KernelNetworkTrain extends EncogKernel {
 	private EngineIndexableSet training;
 	
 	private final EncogCLDevice device;
+	
+	private int trainingLength;
 
 	public void compile(final Map<String, String> options, FlatNetwork network) {
 
@@ -191,7 +193,6 @@ public class KernelNetworkTrain extends EncogKernel {
 		compile(options);
 		
 		// Calculate the work-item dimensions
-		int trainingLength = (int) training.getRecordCount();
 		int threads = EncogEngine.getInstance().getCL().getGlobalWork();
 		threads = Math.min(trainingLength, EncogEngine.getInstance().getCL().getGlobalWork());
 		this.setLocalWork( Math.min(this.getMaxWorkGroupSize(), threads) );
@@ -208,6 +209,7 @@ public class KernelNetworkTrain extends EncogKernel {
 				"NetworkTrain");
 
 		this.training = training;
+		this.trainingLength = (int)training.getRecordCount();
 		this.device = device;
 		this.flat = flat;
 		this.weightInArray = new float[flat.getWeights().length];
@@ -225,7 +227,6 @@ public class KernelNetworkTrain extends EncogKernel {
 			this.slopeArray[i] = (float) flat.getParams()[i];
 		}
 
-		int trainingLength = (int) training.getRecordCount();
 		int inputSize = flat.getInputCount();
 		int idealSize = flat.getOutputCount();
 		
@@ -264,16 +265,6 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.paramArray[0] = flat.getInputCount();
 		this.paramArray[1] = flat.getOutputCount();
 		this.paramArray[2] = flat.getLayerCounts().length;
-		this.paramArray[3] = 1; // should it learn
-		this.paramArray[4] = 0; // training offset
-		this.paramArray[6] = this.getGlobalWork() - 1;// index of last item
-		// size each item
-		this.paramArray[7] = Math.max(trainingLength / this.getGlobalWork(), 1);
-		// size of last item
-		if( this.getGlobalWork()==1 )
-			this.paramArray[8] = trainingLength;
-		else
-			this.paramArray[8] = Math.max(trainingLength % this.getGlobalWork(), 1);
 
 		// create the buffers
 		this.setAllocatedMemory(0);
@@ -293,53 +284,29 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.slopeBuffer = createArrayReadOnly(this.slopeArray);
 		this.tempDataInBuffer = createArrayReadOnly(this.tempDataArray);
 		this.tempDataOutBuffer = createFloatArrayWriteOnly(this.tempDataArray.length);
-		System.out.println(Format.formatMemory(this.getAllocatedMemory()));
-
 	}
 	
-	private void calculateSegment(int start, int size, boolean learn)
-	{
-		EncogCLQueue queue = this.device.getQueue();
-		
-		EngineArray.fill(this.gradients, 0);
-		
-		if( learn )
-		{
-			this.paramArray[3] = 1;
-		}
-		else
-		{
-			this.paramArray[3] = 0;
-		}
-		
-		this.paramArray[4] = start;
-		
-		queue.array2Buffer(this.weightInArray,this.weightInArrayBuffer);
-		queue.array2Buffer(this.tempDataArray,this.tempDataInBuffer);
-		queue.array2Buffer(this.gradients, this.gradientInBuffer);
-		queue.array2Buffer(this.paramArray, this.paramBuffer);
-
-		// Execute the kernel
-		queue.execute(this);
-		queue.waitFinish();
-		
-		// Read the results
-		queue.buffer2Array(this.errorBuffer,this.errors);
-		queue.buffer2Array(this.weightOutArrayBuffer,this.weightOutArray);
-		queue.buffer2Array(this.tempDataOutBuffer,this.tempDataArray);
-		queue.buffer2Array(this.gradientOutBuffer, this.gradients);
-
-	}
-
 	/**
 	 * Calculate the gradients for one workload.
 	 * 
 	 * @param workload
 	 *            The workload to calculate for.
 	 */
-	public void calculate() {
+	public void calculate(final int start, final int size, final boolean learn) {
 		prepareKernel();
 
+		this.paramArray[3] = learn?1:0; // should it learn
+		this.paramArray[4] = start; // training offset
+		this.paramArray[6] = this.getGlobalWork() - 1;// index of last item
+		// size each item
+		this.paramArray[7] = Math.max(size / this.getGlobalWork(), 1);
+		// size of last item
+		if( this.getGlobalWork()==1 )
+			this.paramArray[8] = size;
+		else
+			this.paramArray[8] = Math.max(size % this.getGlobalWork(), 1);
+
+		
 		for (int i = 0; i < this.flat.getWeights().length; i++) {
 			this.weightInArray[i] = (float) flat.getWeights()[i];
 		}
@@ -362,7 +329,36 @@ public class KernelNetworkTrain extends EncogKernel {
 		setArg(15,this.gradientInBuffer);
 
 		try {
-			calculateSegment(0,(int)this.training.getRecordCount(),true);
+			EncogCLQueue queue = this.device.getQueue();
+			
+			EngineArray.fill(this.gradients, 0);
+			
+			if( learn )
+			{
+				this.paramArray[3] = 1;
+			}
+			else
+			{
+				this.paramArray[3] = 0;
+			}
+			
+			this.paramArray[4] = start;
+			
+			queue.array2Buffer(this.weightInArray,this.weightInArrayBuffer);
+			queue.array2Buffer(this.tempDataArray,this.tempDataInBuffer);
+			queue.array2Buffer(this.gradients, this.gradientInBuffer);
+			queue.array2Buffer(this.paramArray, this.paramBuffer);
+
+			// Execute the kernel
+			queue.execute(this);
+			queue.waitFinish();
+			
+			// Read the results
+			queue.buffer2Array(this.errorBuffer,this.errors);
+			queue.buffer2Array(this.weightOutArrayBuffer,this.weightOutArray);
+			queue.buffer2Array(this.tempDataOutBuffer,this.tempDataArray);
+			queue.buffer2Array(this.gradientOutBuffer, this.gradients);
+
 		} catch (final Exception e) {
 			throw new EncogEngineError(e);
 		}
