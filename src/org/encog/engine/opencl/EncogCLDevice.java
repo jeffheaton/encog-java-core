@@ -28,7 +28,6 @@ import org.encog.engine.util.Format;
 import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
-import org.jocl.cl_command_queue;
 import org.jocl.cl_device_id;
 
 /**
@@ -36,10 +35,10 @@ import org.jocl.cl_device_id;
  * system. Some GPU drivers will also map your CPU as a compute device. A device
  * will likely have parallel processing capabilities. A CPU device will have
  * multiple cores. A GPU, will have multiple compute units.
- *
+ * 
  * Devices are held by Platforms. A platform is a way to group all devices from
  * a single vendor or driver.
- *
+ * 
  */
 public class EncogCLDevice extends EncogCLItem {
 
@@ -57,12 +56,12 @@ public class EncogCLDevice extends EncogCLItem {
 	 * Is this device a cpu?
 	 */
 	private final boolean cpu;
-	
+
 	private final EncogCLQueue queue;
 
 	/**
 	 * Construct an OpenCL device.
-	 *
+	 * 
 	 * @param platform
 	 *            The platform.
 	 * @param device
@@ -90,7 +89,7 @@ public class EncogCLDevice extends EncogCLItem {
 
 	/**
 	 * Get a long param from the device.
-	 *
+	 * 
 	 * @param param
 	 *            The param desired.
 	 * @return The param value.
@@ -106,7 +105,7 @@ public class EncogCLDevice extends EncogCLItem {
 
 	/**
 	 * Get a config string from the device.
-	 *
+	 * 
 	 * @param param
 	 *            The param to get.
 	 * @return The config string.
@@ -164,11 +163,19 @@ public class EncogCLDevice extends EncogCLItem {
 	}
 
 	/**
+	 * @return the queue
+	 */
+	public EncogCLQueue getQueue() {
+		return this.queue;
+	}
+
+	/**
 	 * @return Determine if this device is a CPU.
 	 */
 	public boolean isCPU() {
 		return this.cpu;
 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -194,14 +201,5 @@ public class EncogCLDevice extends EncogCLItem {
 
 		return builder.toString();
 	}
-
-	/**
-	 * @return the queue
-	 */
-	public EncogCLQueue getQueue() {
-		return queue;
-	}
-	
-	
 
 }

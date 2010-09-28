@@ -27,8 +27,6 @@ package org.encog.engine.opencl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.opencl.kernels.KernelNetworkTrain;
-import org.encog.engine.opencl.kernels.KernelVectorAdd;
 import org.jocl.CL;
 import org.jocl.Pointer;
 import org.jocl.Sizeof;
@@ -50,7 +48,7 @@ public class EncogCLPlatform extends EncogCLItem {
 
 	/**
 	 * The OpenCL context for this platform. One context is created for each
-	 * platform.
+	 * platform.W
 	 */
 	private final cl_context context;
 

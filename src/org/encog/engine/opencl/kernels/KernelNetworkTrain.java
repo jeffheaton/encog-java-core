@@ -36,7 +36,6 @@ import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLQueue;
 import org.encog.engine.util.EngineArray;
-import org.encog.engine.util.Format;
 import org.encog.engine.util.ResourceLoader;
 import org.jocl.cl_mem;
 
@@ -86,17 +85,29 @@ public class KernelNetworkTrain extends EncogKernel {
 	 */
 	private cl_mem slopeBuffer;
 
+	/**
+	 * The temp data in buffer. Temp data that is used while training.
+	 */
 	private cl_mem tempDataInBuffer;
 
+	/**
+	 * The temp data out buffer. Temp data that is used while training.
+	 */
 	private cl_mem tempDataOutBuffer;
 
 	/**
 	 * The weight and bias array for the network.
 	 */
-	private float[] weightInArray;
+	private final float[] weightInArray;
 
-	private float[] weightOutArray;
+	/**
+	 * The weight output array.
+	 */
+	private final float[] weightOutArray;
 
+	/**
+	 * The temp data array.  Temp data that is used while training.
+	 */
 	private float[] tempDataArray;
 
 	/**
@@ -107,7 +118,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	/**
 	 * The slopes.
 	 */
-	private float[] slopeArray;
+	private final float[] slopeArray;
 
 	/**
 	 * An array to hold the input to the neural network.
@@ -132,7 +143,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	/**
 	 * Holds parameters passed to the kernel.
 	 */
-	private int[] paramArray;
+	private final int[] paramArray;
 
 	/**
 	 * A buffer to hold the parameters.
@@ -148,68 +159,57 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * A buffer to hold the gradients.
 	 */
 	private cl_mem gradientOutBuffer;
-	
+
+	/**
+	 * The gradient input buffer.
+	 */
 	private cl_mem gradientInBuffer;
 
+	/**
+	 * The network to train.
+	 */
 	private final FlatNetwork flat;
 
 	/**
 	 * The training errors for this workload.
 	 */
 	private float[] errors;
-	
-	private float[] gradients;
-	
-	private EngineIndexableSet training;
-	
+
+	/**
+	 * The gradients.
+	 */
+	private final float[] gradients;
+
+	/**
+	 * The training data to use.
+	 */
+	private final EngineIndexableSet training;
+
+	/**
+	 * The device to train with.
+	 */
 	private final EncogCLDevice device;
-	
-	private int trainingLength;
 
-	public void compile(final Map<String, String> options, FlatNetwork network) {
+	/**
+	 * The length of the training data.
+	 */
+	private final int trainingLength;
 
-		int activation = network.getUniformActivation();
-
-		StringBuilder source = new StringBuilder();
-
-		switch (activation) {
-		case ActivationFunctions.ACTIVATION_TANH:
-			if (network.anySlopeNotOne()) {
-				source.append("#define ACTIVATION(x,slope) tanh(x)\r\n");
-			} else {
-				source.append("#define ACTIVATION(x,slope) tanh(x)\r\n");
-			}
-			source.append("#define DERIVATIVE(x,slope) (slope * (1.0f - x * x))\r\n");
-			break;
-		case ActivationFunctions.ACTIVATION_SIGMOID:
-			source.append("#define ACTIVATION(x,slope) (1.0f / (1.0f + exp(-slope * x)))\r\n");
-			source.append("#define DERIVATIVE(x,slope) (slope * x * (1.0f - x))\r\n");
-			break;
-		}
-
-		source.append(ResourceLoader.loadString(getSourceName()));
-		setCLSource(source.toString());
-
-		compile(options);
-		
-		// Calculate the work-item dimensions
-		int threads = EncogEngine.getInstance().getCL().getGlobalWork();
-		threads = Math.min(trainingLength, EncogEngine.getInstance().getCL().getGlobalWork());
-		this.setLocalWork( Math.min(this.getMaxWorkGroupSize(), threads) );
-		this.setGlobalWork( Math.min(threads,getLocalWork()) );
-		
-		// setup
-		init();
-	}
-
+	/**
+	 * Construct a kernel to train the network.
+	 * @param device The OpenCL device to use.
+	 * @param flat The network to train.
+	 * @param training The training data.
+	 * @param tempDataSize How much temp data.
+	 */
 	public KernelNetworkTrain(final EncogCLDevice device,
-			final FlatNetwork flat, EngineIndexableSet training,
-			int tempDataSize) {
+			final FlatNetwork flat, final EngineIndexableSet training,
+			final int tempDataSize) {
 		super(device, "org/encog/engine/resources/KernelNetTrain.txt",
 				"NetworkTrain");
 
 		this.training = training;
-		this.trainingLength = (int)training.getRecordCount();
+		this.trainingLength = (int) this.training.getRecordCount();
 		this.device = device;
 		this.flat = flat;
 		this.weightInArray = new float[flat.getWeights().length];
@@ -227,11 +227,11 @@ public class KernelNetworkTrain extends EncogKernel {
 			this.slopeArray[i] = (float) flat.getParams()[i];
 		}
 
-		int inputSize = flat.getInputCount();
-		int idealSize = flat.getOutputCount();
-		
-		this.inputArray = new float[inputSize * trainingLength];
-		this.idealArray = new float[idealSize * trainingLength];
+		final int inputSize = flat.getInputCount();
+		final int idealSize = flat.getOutputCount();
+
+		this.inputArray = new float[inputSize * this.trainingLength];
+		this.idealArray = new float[idealSize * this.trainingLength];
 		this.paramArray = new int[10];
 
 		final EngineData pair = BasicEngineData.createPair(
@@ -240,123 +240,90 @@ public class KernelNetworkTrain extends EncogKernel {
 		int inputIndex = 0;
 		int idealIndex = 0;
 
-		for (int i = 0; i < trainingLength; i++) {
+		for (int i = 0; i < this.trainingLength; i++) {
 			training.getRecord(i, pair);
 			for (int col = 0; col < flat.getInputCount(); col++) {
-				this.inputArray[inputIndex++] = (float) pair.getInputArray()[col];
+				this.inputArray[inputIndex++] 
+				               = (float) pair.getInputArray()[col];
 			}
 
 			for (int col = 0; col < flat.getOutputCount(); col++) {
-				this.idealArray[idealIndex++] = (float) pair.getIdealArray()[col];
+				this.idealArray[idealIndex++] 
+				                = (float) pair.getIdealArray()[col];
 			}
 		}
 
 	}
-	
-	public void init()
-	{		
-		int trainingLength = (int) training.getRecordCount();
 
-		final int errorSize = this.getGlobalWork();
-		final int gradientSize = this.getGlobalWork() * flat.getWeights().length;
-
-		this.errors = new float[errorSize];
-
-		this.paramArray[0] = flat.getInputCount();
-		this.paramArray[1] = flat.getOutputCount();
-		this.paramArray[2] = flat.getLayerCounts().length;
-
-		// create the buffers
-		this.setAllocatedMemory(0);
-		this.inputBuffer = createArrayReadOnly(this.inputArray);
-		this.idealBuffer = createArrayReadOnly(this.idealArray);
-		this.errorBuffer = createFloatArrayWriteOnly(errorSize);
-		this.gradientOutBuffer = createFloatArrayWriteOnly(gradientSize);
-		this.gradientInBuffer = createArrayReadOnly(this.gradients);
-		this.paramBuffer = createArrayReadOnly(this.paramArray);
-		this.layerIndexBuffer = createArrayReadOnly(flat.getLayerIndex());
-		this.layerCountBuffer = createArrayReadOnly(flat.getLayerCounts());
-		this.layerFeedCountBuffer = createArrayReadOnly(flat.getLayerFeedCounts());
-		this.weightInArrayBuffer = createArrayReadOnly(this.weightInArray);
-		this.weightOutArrayBuffer = createFloatArrayWriteOnly(this.weightInArray.length);
-		this.weightIndexBuffer = createArrayReadOnly(flat.getWeightIndex());
-		this.activationTypeBuffer = createArrayReadOnly(flat.getActivationType());
-		this.slopeBuffer = createArrayReadOnly(this.slopeArray);
-		this.tempDataInBuffer = createArrayReadOnly(this.tempDataArray);
-		this.tempDataOutBuffer = createFloatArrayWriteOnly(this.tempDataArray.length);
-	}
-	
 	/**
-	 * Calculate the gradients for one workload.
-	 * 
-	 * @param workload
-	 *            The workload to calculate for.
+	 * Calculate one iteration over the specified range.
+	 * @param start The starting position to calculate for.
+	 * @param size The ending position to calculate for.
+	 * @param learn True, if we should learn.
 	 */
-	public void calculate(final int start, final int size, final boolean learn) {
+	public void calculate(final int start, final int size, 
+			final boolean learn) {
 		prepareKernel();
 
-		this.paramArray[3] = learn?1:0; // should it learn
+		this.paramArray[3] = learn ? 1 : 0; // should it learn
 		this.paramArray[4] = start; // training offset
-		this.paramArray[6] = this.getGlobalWork() - 1;// index of last item
+		this.paramArray[6] = getGlobalWork() - 1;// index of last item
 		// size each item
-		this.paramArray[7] = Math.max(size / this.getGlobalWork(), 1);
+		this.paramArray[7] = Math.max(size / getGlobalWork(), 1);
 		// size of last item
-		if( this.getGlobalWork()==1 )
+		if (getGlobalWork() == 1) {
 			this.paramArray[8] = size;
-		else
-			this.paramArray[8] = Math.max(size % this.getGlobalWork(), 1);
-
-		
-		for (int i = 0; i < this.flat.getWeights().length; i++) {
-			this.weightInArray[i] = (float) flat.getWeights()[i];
+		} else {
+			this.paramArray[8] = Math.max(size % getGlobalWork(), 1);
 		}
 
-		setArg(0,this.paramBuffer);
-		setArg(1,this.errorBuffer);
-		setArg(2,this.layerIndexBuffer);
-		setArg(3,this.layerCountBuffer);
-		setArg(4,this.layerFeedCountBuffer);
-		setArg(5,this.weightIndexBuffer);
-		setArg(6,this.inputBuffer);
-		setArg(7,this.idealBuffer);
-		setArg(8,this.weightInArrayBuffer);
-		setArg(9,this.weightOutArrayBuffer);
-		setArg(10,this.gradientOutBuffer);
-		setArg(11,this.activationTypeBuffer);
-		setArg(12,this.slopeBuffer);
-		setArg(13,this.tempDataInBuffer);
-		setArg(14,this.tempDataOutBuffer);
-		setArg(15,this.gradientInBuffer);
+		for (int i = 0; i < this.flat.getWeights().length; i++) {
+			this.weightInArray[i] = (float) this.flat.getWeights()[i];
+		}
+
+		setArg(0, this.paramBuffer);
+		setArg(1, this.errorBuffer);
+		setArg(2, this.layerIndexBuffer);
+		setArg(3, this.layerCountBuffer);
+		setArg(4, this.layerFeedCountBuffer);
+		setArg(5, this.weightIndexBuffer);
+		setArg(6, this.inputBuffer);
+		setArg(7, this.idealBuffer);
+		setArg(8, this.weightInArrayBuffer);
+		setArg(9, this.weightOutArrayBuffer);
+		setArg(10, this.gradientOutBuffer);
+		setArg(11, this.activationTypeBuffer);
+		setArg(12, this.slopeBuffer);
+		setArg(13, this.tempDataInBuffer);
+		setArg(14, this.tempDataOutBuffer);
+		setArg(15, this.gradientInBuffer);
 
 		try {
-			EncogCLQueue queue = this.device.getQueue();
-			
+			final EncogCLQueue queue = this.device.getQueue();
+
 			EngineArray.fill(this.gradients, 0);
-			
-			if( learn )
-			{
+
+			if (learn) {
 				this.paramArray[3] = 1;
-			}
-			else
-			{
+			} else {
 				this.paramArray[3] = 0;
 			}
-			
+
 			this.paramArray[4] = start;
-			
-			queue.array2Buffer(this.weightInArray,this.weightInArrayBuffer);
-			queue.array2Buffer(this.tempDataArray,this.tempDataInBuffer);
+
+			queue.array2Buffer(this.weightInArray, this.weightInArrayBuffer);
+			queue.array2Buffer(this.tempDataArray, this.tempDataInBuffer);
 			queue.array2Buffer(this.gradients, this.gradientInBuffer);
 			queue.array2Buffer(this.paramArray, this.paramBuffer);
 
 			// Execute the kernel
 			queue.execute(this);
 			queue.waitFinish();
-			
+
 			// Read the results
-			queue.buffer2Array(this.errorBuffer,this.errors);
-			queue.buffer2Array(this.weightOutArrayBuffer,this.weightOutArray);
-			queue.buffer2Array(this.tempDataOutBuffer,this.tempDataArray);
+			queue.buffer2Array(this.errorBuffer, this.errors);
+			queue.buffer2Array(this.weightOutArrayBuffer, this.weightOutArray);
+			queue.buffer2Array(this.tempDataOutBuffer, this.tempDataArray);
 			queue.buffer2Array(this.gradientOutBuffer, this.gradients);
 
 		} catch (final Exception e) {
@@ -365,34 +332,111 @@ public class KernelNetworkTrain extends EncogKernel {
 	}
 
 	/**
-	 * @return the weightOutArray
+	 * Compile the kernel.
+	 * @param options The options.
+	 * @param network The network to compile for.
 	 */
-	public float[] getWeightOutArray() {
-		return weightOutArray;
-	}
+	public void compile(final Map<String, String> options,
+			final FlatNetwork network) {
 
-	/**
-	 * @param tempDataArray
-	 *            the tempDataArray to set
-	 */
-	public void setTempDataArray(float[] tempDataArray) {
-		this.tempDataArray = tempDataArray;
-	}
+		final int activation = network.getUniformActivation();
 
-	/**
-	 * @return the tempDataArray
-	 */
-	public float[] getTempDataArray() {
-		return tempDataArray;
+		final StringBuilder source = new StringBuilder();
+
+		switch (activation) {
+		case ActivationFunctions.ACTIVATION_TANH:
+			if (network.anySlopeNotOne()) {
+				source.append("#define ACTIVATION(x,slope) tanh(x)\r\n");
+			} else {
+				source.append("#define ACTIVATION(x,slope) tanh(x)\r\n");
+			}
+			source.append(
+				"#define DERIVATIVE(x,slope) (slope * (1.0f - x * x))\r\n");
+			break;
+		case ActivationFunctions.ACTIVATION_SIGMOID:
+			source.append(
+		"#define ACTIVATION(x,slope) (1.0f / (1.0f + exp(-slope * x)))\r\n");
+			source.append(
+				"#define DERIVATIVE(x,slope) (slope * x * (1.0f - x))\r\n");
+			break;
+		}
+
+		source.append(ResourceLoader.loadString(getSourceName()));
+		setCLSource(source.toString());
+
+		compile(options);
+
+		// Calculate the work-item dimensions
+		int threads = EncogEngine.getInstance().getCL().getGlobalWork();
+		threads = Math.min(this.trainingLength, EncogEngine.getInstance()
+				.getCL().getGlobalWork());
+		setLocalWork(Math.min(getMaxWorkGroupSize(), threads));
+		setGlobalWork(Math.min(threads, getLocalWork()));
+
+		// setup
+		init();
 	}
 
 	/**
 	 * @return the errors
 	 */
 	public float[] getErrors() {
-		return errors;
+		return this.errors;
 	}
 
+	/**
+	 * @return the tempDataArray
+	 */
+	public float[] getTempDataArray() {
+		return this.tempDataArray;
+	}
+
+	/**
+	 * @return the weightOutArray
+	 */
+	public float[] getWeightOutArray() {
+		return this.weightOutArray;
+	}
+
+	/**
+	 * Setup the kernel.
+	 */
+	public void init() {
+		final int errorSize = getGlobalWork();
+		final int gradientSize = getGlobalWork()
+				* this.flat.getWeights().length;
+
+		this.errors = new float[errorSize];
+
+		this.paramArray[0] = this.flat.getInputCount();
+		this.paramArray[1] = this.flat.getOutputCount();
+		this.paramArray[2] = this.flat.getLayerCounts().length;
+
+		// create the buffers
+		this.inputBuffer = createArrayReadOnly(this.inputArray);
+		this.idealBuffer = createArrayReadOnly(this.idealArray);
+		this.errorBuffer = createFloatArrayWriteOnly(errorSize);
+		this.gradientOutBuffer = createFloatArrayWriteOnly(gradientSize);
+		this.gradientInBuffer = createArrayReadOnly(this.gradients);
+		this.paramBuffer = createArrayReadOnly(this.paramArray);
+		this.layerIndexBuffer = createArrayReadOnly(this.flat.getLayerIndex());
+		this.layerCountBuffer = createArrayReadOnly(this.flat.getLayerCounts());
+		this.layerFeedCountBuffer = createArrayReadOnly(this.flat
+				.getLayerFeedCounts());
+		this.weightInArrayBuffer = createArrayReadOnly(this.weightInArray);
+		this.weightOutArrayBuffer = createFloatArrayWriteOnly(this.weightInArray.length);
+		this.weightIndexBuffer = createArrayReadOnly(this.flat.getWeightIndex());
+		this.activationTypeBuffer = createArrayReadOnly(this.flat
+				.getActivationType());
+		this.slopeBuffer = createArrayReadOnly(this.slopeArray);
+		this.tempDataInBuffer = createArrayReadOnly(this.tempDataArray);
+		this.tempDataOutBuffer = createFloatArrayWriteOnly(this.tempDataArray.length);
+	}
+
+	/**
+	 * Release the kernel and all buffers.
+	 */
+	@Override
 	public void release() {
 		super.release();
 		releaseBuffer(this.activationTypeBuffer);
@@ -411,5 +455,13 @@ public class KernelNetworkTrain extends EncogKernel {
 		releaseBuffer(this.weightInArrayBuffer);
 		releaseBuffer(this.weightIndexBuffer);
 		releaseBuffer(this.weightOutArrayBuffer);
+	}
+
+	/**
+	 * @param tempDataArray
+	 *            the tempDataArray to set
+	 */
+	public void setTempDataArray(final float[] tempDataArray) {
+		this.tempDataArray = tempDataArray;
 	}
 }

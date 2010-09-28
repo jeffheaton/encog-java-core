@@ -24,14 +24,8 @@
 
 package org.encog.engine.opencl.kernels;
 
-import static org.jocl.CL.clSetKernelArg;
-
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLQueue;
-import org.jocl.CL;
-import org.jocl.Pointer;
-import org.jocl.Sizeof;
-import org.jocl.cl_context;
 import org.jocl.cl_mem;
 
 /**
@@ -40,33 +34,58 @@ import org.jocl.cl_mem;
  */
 public class KernelVectorAdd extends EncogKernel {
 
-	final private float[] arrayA;
-	final private float[] arrayB;
-	final private float[] targetArray;
+	/**
+	 * The first array.
+	 */
+	private final float[] arrayA;
 	
-	private cl_mem bufferArrayA;
-	private cl_mem bufferArrayB;
-	private cl_mem bufferTargetArray;
+	/**
+	 * The second array.
+	 */
+	private final float[] arrayB;
 	
+	/**
+	 * The target array.
+	 */
+	private final float[] targetArray;
+
+	/**
+	 * The first buffer.
+	 */
+	private final cl_mem bufferArrayA;
+	
+	/**
+	 * The second buffer.
+	 */
+	private final cl_mem bufferArrayB;
+	
+	/**
+	 * The result buffer.
+	 */
+	private final cl_mem bufferTargetArray;
+
 	/**
 	 * Construct a simple kernel to add two vectors.
 	 * 
 	 * @param device
 	 *            The device to use.
+	 * @param length
+	 * 	The length of the vector.
 	 */
-	public KernelVectorAdd(final EncogCLDevice device, int length) {
-		super(device, "org/encog/engine/resources/KernelVectorAdd.txt", "VectorAdd");
+	public KernelVectorAdd(final EncogCLDevice device, final int length) {
+		super(device, "org/encog/engine/resources/KernelVectorAdd.txt",
+				"VectorAdd");
 		// Create input- and output data
 		this.arrayA = new float[length];
 		this.arrayB = new float[length];
 		this.targetArray = new float[length];
-		
-		this.bufferArrayA = this.createArrayReadOnly(arrayA);
-		this.bufferArrayB = this.createArrayReadOnly(arrayB);
-		this.bufferTargetArray = this.createFloatArrayWriteOnly(this.targetArray.length);
-		
-		this.setGlobalWork(length);
-		this.setLocalWork(1);
+
+		this.bufferArrayA = this.createArrayReadOnly(this.arrayA);
+		this.bufferArrayB = this.createArrayReadOnly(this.arrayB);
+		this.bufferTargetArray = createFloatArrayWriteOnly(this.targetArray.length);
+
+		setGlobalWork(length);
+		setLocalWork(1);
 	}
 
 	/**
@@ -87,24 +106,24 @@ public class KernelVectorAdd extends EncogKernel {
 			this.arrayA[i] = (float) inputA[i];
 			this.arrayB[i] = (float) inputB[i];
 		}
-		
-		setArg(0,this.bufferArrayA);
-		setArg(1,this.bufferArrayB);
-		setArg(2,this.bufferTargetArray);
 
-		EncogCLQueue queue = this.getDevice().getQueue();
+		setArg(0, this.bufferArrayA);
+		setArg(1, this.bufferArrayB);
+		setArg(2, this.bufferTargetArray);
+
+		final EncogCLQueue queue = getDevice().getQueue();
 
 		queue.array2Buffer(this.arrayA, this.bufferArrayA);
 		queue.array2Buffer(this.arrayB, this.bufferArrayB);
-		
+
 		queue.execute(this);
 
 		queue.buffer2Array(this.bufferTargetArray, this.targetArray);
 
 		final double[] result = new double[this.targetArray.length];
 
-		for (int i = 0; i < targetArray.length; i++) {
-			result[i] = targetArray[i];
+		for (int i = 0; i < this.targetArray.length; i++) {
+			result[i] = this.targetArray[i];
 		}
 
 		return result;

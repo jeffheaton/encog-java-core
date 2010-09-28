@@ -52,10 +52,12 @@ public class EncogCL {
 	private int globalWork;
 
 	/**
-	 * Maximum CL training size per call to OpenCL device.  On most systems, especially when 
-	 * you are using the same GPU as you use for your display, the operating system will 
-	 * shutdown the GPU if a kernel executes for too long.  To prevent this from happening Encog 
-	 * breaks requests to the GPU down into smaller sizes.  This property determines this size.
+	 * Maximum CL training size per call to OpenCL device. On most systems,
+	 * especially when you are using the same GPU as you use for your display,
+	 * the operating system will shutdown the GPU if a kernel executes for too
+	 * long. To prevent this from happening Encog breaks requests to the GPU
+	 * down into smaller sizes. This property determines this size.
+	 * 
 	 */
 	private int maxTrainingSize;
 
@@ -100,8 +102,9 @@ public class EncogCL {
 	}
 
 	/**
-	 * Choose a device. If a GPU is found, return that.   Otherwise try to find a CPU.
-	 *
+	 * Choose a device. If a GPU is found, return that. Otherwise try to find a
+	 * CPU.
+	 * 
 	 * @return The first device detected.
 	 */
 	public EncogCLDevice chooseDevice() {
@@ -114,12 +117,12 @@ public class EncogCL {
 
 	/**
 	 * Choose a device. Simply returns the first device detected.
-	 *
+	 * 
 	 * @return The first device detected.
 	 */
 	public EncogCLDevice chooseDevice(boolean useGPU) {
 
-		for (EncogCLDevice device : this.devices) {
+		for (final EncogCLDevice device : this.devices) {
 			if (useGPU && !device.isCPU()) {
 				return device;
 			} else if (!useGPU && device.isCPU()) {
@@ -180,10 +183,62 @@ public class EncogCL {
 	}
 
 	/**
+	 * The global workload size for OpenCL. The more processors your OpenCL
+	 * device has, the more concurrency can occur. Higher values for the global
+	 * workload result in more concurrency. However, most OpenCL devices can
+	 * only go so high. Additionally, larger workloads require more memory.
+	 * 
+	 * @return The size of the OpenCL global workload.
+	 */
+	public int getGlobalWork() {
+		return this.globalWork;
+	}
+
+	/**
+	 * Maximum CL training size per call to OpenCL device. On most systems,
+	 * especially when you are using the same GPU as you use for your display,
+	 * the operating system will shutdown the GPU if a kernel executes for too
+	 * long. To prevent this from happening Encog breaks requests to the GPU
+	 * down into smaller sizes. This property determines this size.
+	 * 
+	 * @return The maximum training size.
+	 */
+	public int getMaxTrainingSize() {
+		return this.maxTrainingSize;
+	}
+
+	/**
 	 * @return All platforms detected.
 	 */
 	public List<EncogCLPlatform> getPlatforms() {
 		return this.platforms;
+	}
+
+	/**
+	 * The global workload size for OpenCL. The more processors your OpenCL
+	 * device has, the more concurrency can occur. Higher values for the global
+	 * workload result in more concurrency. However, most OpenCL devices can
+	 * only go so high. Additionally, larger workloads require more memory.
+	 * 
+	 * @param globalWork
+	 *            The size of the OpenCL global workload.
+	 */
+	public void setGlobalWork(final int globalWork) {
+		this.globalWork = globalWork;
+	}
+
+	/**
+	 * Maximum CL training size per call to OpenCL device. On most systems,
+	 * especially when you are using the same GPU as you use for your display,
+	 * the operating system will shutdown the GPU if a kernel executes for too
+	 * long. To prevent this from happening Encog breaks requests to the GPU
+	 * down into smaller sizes. This property determines this size.
+	 * 
+	 * @param maxTrainingSize
+	 *            The maximum training size.
+	 */
+	public void setMaxTrainingSize(final int maxTrainingSize) {
+		this.maxTrainingSize = maxTrainingSize;
 	}
 
 	/**
@@ -197,48 +252,6 @@ public class EncogCL {
 			result.append("\n");
 		}
 		return result.toString();
-	}
-
-	/**
-	 * The global workload size for OpenCL.  The more processors your OpenCL device has, the more 
-	 * concurrency can occur.  Higher values for the global workload result in more concurrency.  However, 
-	 * most OpenCL devices can only go so high.  Additionally, larger workloads require more memory.
-	 * @return The size of the OpenCL global workload.
-	 */
-	public int getGlobalWork() {
-		return globalWork;
-	}
-
-	/**
-	 * The global workload size for OpenCL.  The more processors your OpenCL device has, the more 
-	 * concurrency can occur.  Higher values for the global workload result in more concurrency.  However, 
-	 * most OpenCL devices can only go so high.  Additionally, larger workloads require more memory.
-	 * @param globalWork The size of the OpenCL global workload.
-	 */
-	public void setGlobalWork(int globalWork) {
-		this.globalWork = globalWork;
-	}
-
-	/**
-	 * Maximum CL training size per call to OpenCL device.  On most systems, especially when 
-	 * you are using the same GPU as you use for your display, the operating system will 
-	 * shutdown the GPU if a kernel executes for too long.  To prevent this from happening Encog 
-	 * breaks requests to the GPU down into smaller sizes.  This property determines this size.
-	 * @return The maximum training size.
-	 */
-	public int getMaxTrainingSize() {
-		return maxTrainingSize;
-	}
-
-	/**
-	 * Maximum CL training size per call to OpenCL device.  On most systems, especially when 
-	 * you are using the same GPU as you use for your display, the operating system will 
-	 * shutdown the GPU if a kernel executes for too long.  To prevent this from happening Encog 
-	 * breaks requests to the GPU down into smaller sizes.  This property determines this size.
-	 * @param maxTrainingSize The maximum training size.
-	 */
-	public void setMaxTrainingSize(int maxTrainingSize) {
-		this.maxTrainingSize = maxTrainingSize;
 	}
 
 }

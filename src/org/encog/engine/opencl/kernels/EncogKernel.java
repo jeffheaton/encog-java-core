@@ -65,22 +65,25 @@ public class EncogKernel {
 	 */
 	private cl_kernel kernel;
 
-	private EncogCLDevice device;
+	/**
+	 * The device this kernel will run on.
+	 */
+	private final EncogCLDevice device;
 
+	/**
+	 * The name of the source resource.
+	 */
 	private final String sourceName;
-	
+
+	/**
+	 * The size of the local work group.
+	 */
 	private int localWork;
+
+	/**
+	 * The size of the global work group.
+	 */
 	private int globalWork;
-
-	private long allocatedMemory;
-	
-	public long getAllocatedMemory() {
-		return allocatedMemory;
-	}
-
-	public void setAllocatedMemory(long allocatedMemory) {
-		this.allocatedMemory = allocatedMemory;
-	}
 
 	/**
 	 * The name of the function that should be called to execute this kernel,
@@ -157,10 +160,63 @@ public class EncogKernel {
 	}
 
 	/**
+	 * Create an array buffer that is read only for floats.
+	 * @param array The array to base on.
+	 * @return The memory buffer.
+	 */
+	public cl_mem createArrayReadOnly(final float[] array) {
+		return CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_ONLY
+				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float * array.length,
+				Pointer.to(array), null);
+	}
+
+	/**
+	 * Create an array buffer that is read only for ints.
+	 * @param array The array to base on.
+	 * @return The memory buffer.
+	 */
+	public cl_mem createArrayReadOnly(final int[] array) {
+		return CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_ONLY
+				| CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int * array.length,
+				Pointer.to(array), null);
+	}
+
+	/**
+	 * Create an array buffer that is write only.
+	 * @param length The length of the buffer.
+	 * @return The memory buffer.
+	 */
+	public cl_mem createFloatArrayWriteOnly(final int length) {
+		return CL.clCreateBuffer(getContext(), CL.CL_MEM_READ_WRITE,
+				Sizeof.cl_float * length, null, null);
+	}
+
+	/**
+	 * @return the cl
+	 */
+	public String getCLSource() {
+		return this.cl;
+	}
+
+	/**
 	 * @return The OpenCL context that this kernel belongs to.
 	 */
 	public cl_context getContext() {
 		return this.context;
+	}
+
+	/**
+	 * @return the device
+	 */
+	public EncogCLDevice getDevice() {
+		return this.device;
+	}
+
+	/**
+	 * @return The size of the global work buffer.
+	 */
+	public int getGlobalWork() {
+		return this.globalWork;
 	}
 
 	/**
@@ -171,6 +227,21 @@ public class EncogKernel {
 	}
 
 	/**
+	 * @return The size of the local work group.
+	 */
+	public int getLocalWork() {
+		return this.localWork;
+	}
+
+	/**
+	 * @return Suggested max workgroup size. You will very likely crash the GPU
+	 *         if you go above this.
+	 */
+	public int getMaxWorkGroupSize() {
+		return (int) getWorkGroupLong(CL.CL_KERNEL_WORK_GROUP_SIZE);
+	}
+
+	/**
 	 * @return The OpenCL program that the kernel belongs to.
 	 */
 	public cl_program getProgram() {
@@ -178,42 +249,10 @@ public class EncogKernel {
 	}
 
 	/**
-	 * Called internally to prepare to execute a kernel.
-	 */
-	public void prepareKernel() {
-		if (this.kernel == null) {
-			throw new EncogEngineError(
-					"Must compile CL kernel before using it.");
-		}
-	}
-
-	/**
-	 * @return the device
-	 */
-	public EncogCLDevice getDevice() {
-		return device;
-	}
-
-	/**
 	 * @return the sourceName
 	 */
 	public String getSourceName() {
-		return sourceName;
-	}
-
-	/**
-	 * @return the cl
-	 */
-	public String getCLSource() {
-		return cl;
-	}
-
-	/**
-	 * @param cl
-	 *            the cl to set
-	 */
-	public void setCLSource(String cl) {
-		this.cl = cl;
+		return this.sourceName;
 	}
 
 	/**
@@ -233,13 +272,18 @@ public class EncogKernel {
 	}
 
 	/**
-	 * @return Suggested max workgroup size. You will very likely crash the GPU
-	 *         if you go above this.
+	 * Called internally to prepare to execute a kernel.
 	 */
-	public int getMaxWorkGroupSize() {
-		return (int) getWorkGroupLong(CL.CL_KERNEL_WORK_GROUP_SIZE);
+	public void prepareKernel() {
+		if (this.kernel == null) {
+			throw new EncogEngineError(
+					"Must compile CL kernel before using it.");
+		}
 	}
 
+	/**
+	 * Release this kernel.
+	 */
 	public void release() {
 		if (this.program != null) {
 			CL.clReleaseProgram(this.program);
@@ -248,61 +292,46 @@ public class EncogKernel {
 			this.kernel = null;
 		}
 	}
-	
-	public cl_mem createArrayReadOnly(int[] array)
-	{
-		this.allocatedMemory+=Sizeof.cl_float* array.length; 
-		return CL.clCreateBuffer(getContext(),
-					CL.CL_MEM_READ_WRITE | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_int
-							* array.length,
-					Pointer.to(array), null);
-	}
-	
-	public cl_mem createArrayReadOnly(float[] array)
-	{
-		this.allocatedMemory+=Sizeof.cl_float* array.length;
-		return CL.clCreateBuffer(getContext(),
-					CL.CL_MEM_READ_WRITE | CL.CL_MEM_COPY_HOST_PTR, Sizeof.cl_float
-							* array.length,
-					Pointer.to(array), null);
-	}
-	
-	public cl_mem createFloatArrayWriteOnly(int length)
-	{
-		this.allocatedMemory+=Sizeof.cl_float * length;
-		return CL.clCreateBuffer(getContext(),
-				CL.CL_MEM_READ_WRITE, Sizeof.cl_float
-						* length, null, null);
-	}
-	
-	public void setArg(int num, cl_mem mem)
-	{
-		CL.clSetKernelArg(getKernel(), num, Sizeof.cl_mem,
-				Pointer.to(mem));
-	}
-	
-	
-	public void releaseBuffer(cl_mem mem)
-	{
+
+	/**
+	 * Release a buffer.
+	 * @param mem The buffer to release.
+	 */
+	public void releaseBuffer(final cl_mem mem) {
 		CL.clReleaseMemObject(mem);
 	}
 
-	public int getLocalWork() {
-		return localWork;
+	/**
+	 * Set an argument.
+	 * @param num The argument number.
+	 * @param mem The memory buffer.
+	 */
+	public void setArg(final int num, final cl_mem mem) {
+		CL.clSetKernelArg(getKernel(), num, Sizeof.cl_mem, Pointer.to(mem));
 	}
 
-	public void setLocalWork(int localWork) {
-		this.localWork = localWork;
+	/**
+	 * @param cl
+	 *            the cl to set
+	 */
+	public void setCLSource(final String cl) {
+		this.cl = cl;
 	}
 
-	public int getGlobalWork() {
-		return globalWork;
-	}
-
-	public void setGlobalWork(int globalWork) {
+	/**
+	 * Set the size of the global work group.
+	 * @param globalWork The size of the global work group.
+	 */
+	public void setGlobalWork(final int globalWork) {
 		this.globalWork = globalWork;
 	}
-	
-	
+
+	/**
+	 * Set the size of the local work group.
+	 * @param localWork The size of the local work group.
+	 */
+	public void setLocalWork(final int localWork) {
+		this.localWork = localWork;
+	}
 
 }
