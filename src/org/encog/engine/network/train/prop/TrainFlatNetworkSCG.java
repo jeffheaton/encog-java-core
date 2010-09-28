@@ -29,13 +29,17 @@ import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.util.BoundNumbers;
 import org.encog.engine.util.EngineArray;
 
+/**
+ * Train a network using scaled conjugate gradient.
+ * 
+ */
 public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 
 	/**
 	 * The starting value for sigma.
 	 */
 	protected static final double FIRST_SIGMA = 1.E-4D;
-	
+
 	/**
 	 * The starting value for lambda.
 	 */
@@ -45,28 +49,28 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 	 * Should we restart?
 	 */
 	private boolean restart;
-	
+
 	/**
 	 * The second lambda value.
 	 */
 	private double lambda2;
-	
+
 	/**
 	 * The first lambda value.
 	 */
 	private double lambda;
-	
+
 	/**
-	 * The number of iterations.  The network will reset when this value
+	 * The number of iterations. The network will reset when this value
 	 * increases over the number of weights in the network.
 	 */
 	private int k;
-	
+
 	/**
 	 * Tracks if the latest training cycle was successful.
 	 */
 	private boolean success = true;
-	
+
 	/**
 	 * The magnitude of p.
 	 */
@@ -81,36 +85,44 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 	 * Step direction vector.
 	 */
 	private final double[] r;
-	
+
 	/**
 	 * The neural network weights.
 	 */
 	private final double[] weights;
-		
+
 	/**
 	 * The current delta.
 	 */
 	private double delta;
-	
+
 	/**
 	 * The old error value, used to make sure an improvement happened.
 	 */
 	private double oldError;
-	
+
 	/**
 	 * The old weight values, used to restore the neural network.
 	 */
 	private final double[] oldWeights;
-	
+
 	/**
 	 * The old gradients, used to compare.
 	 */
 	private final double[] oldGradient;
 
-	
-	public TrainFlatNetworkSCG(FlatNetwork network, EngineDataSet training) {
+	/**
+	 * Construct the training object.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
+	 */
+	public TrainFlatNetworkSCG(final FlatNetwork network,
+			final EngineDataSet training) {
 		super(network, training);
-		
+
 		this.success = true;
 		this.delta = 0;
 		this.lambda2 = 0;
@@ -122,7 +134,7 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 		this.weights = EngineArray.arrayCopy(network.getWeights());
 		final int numWeights = this.weights.length;
 
-		//this.gradients = new double[numWeights];
+		// this.gradients = new double[numWeights];
 		this.oldWeights = new double[numWeights];
 		this.oldGradient = new double[numWeights];
 
@@ -139,18 +151,19 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 		}
 
 	}
-	
+
 	/**
-	 * Calculate the gradients.  They are normalized as well.
+	 * Calculate the gradients. They are normalized as well.
 	 */
+	@Override
 	public void calculateGradients() {
 
-		final int outCount = this.getNetwork().getOutputCount();
+		final int outCount = getNetwork().getOutputCount();
 
 		super.calculateGradients();
 
 		// normalize
-		
+
 		final double factor = -2D / this.gradients.length / outCount;
 
 		for (int i = 0; i < this.gradients.length; i++) {
@@ -158,7 +171,7 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 		}
 
 	}
-	
+
 	/**
 	 * Perform one iteration.
 	 */
@@ -262,8 +275,8 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 
 			} else {
 				// Compute new conjugate direction.
-				final double beta = (EngineArray.vectorProduct(this.r, this.r) 
-						- rsum)/ mu;
+				final double beta = (EngineArray.vectorProduct(this.r, this.r) - rsum)
+						/ mu;
 
 				// Update direction vector.
 				for (int i = 0; i < numWeights; ++i) {
@@ -274,7 +287,7 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 			}
 
 			if (gdelta >= 0.75D) {
-				this.lambda *= 0.25D; 
+				this.lambda *= 0.25D;
 			}
 
 		} else {
@@ -299,10 +312,12 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 		EngineArray.arrayCopy(this.weights, this.network.getWeights());
 	}
 
-
+	/**
+	 * 
+	 */
 	@Override
-	public double updateWeight(double[] gradients, double[] lastGradient,
-			int index) {
+	public double updateWeight(final double[] gradients,
+			final double[] lastGradient, final int index) {
 		return 0;
 	}
 

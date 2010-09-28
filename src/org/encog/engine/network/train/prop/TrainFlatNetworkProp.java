@@ -99,7 +99,6 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	protected Throwable reportedException;
 
-
 	/**
 	 * Train a flat network multithreaded.
 	 * 
@@ -125,59 +124,6 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		this.indexable = (EngineIndexableSet) training;
 		this.numThreads = 0;
 		this.reportedException = null;
-	}
-
-	/**
-	 * Copy the contexts to keep them consistent with multithreaded training.
-	 */
-	private void copyContexts() {
-		for (int i = 0; i < (this.workers.length - 1); i++) {
-			final double[] src = this.workers[i].getNetwork().getLayerOutput();
-			final double[] dst = this.workers[i + 1].getNetwork()
-					.getLayerOutput();
-			EngineArray.arrayCopy(src, dst);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double getError() {
-		return this.currentError;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public FlatNetwork getNetwork() {
-		return this.network;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public EngineDataSet getTraining() {
-		return this.training;
-	}
-
-	/**
-	 * Init the process.
-	 */
-	private void init() {
-
-		DetermineWorkload determine = new DetermineWorkload(this.numThreads,
-				(int) this.indexable.getRecordCount());
-
-		this.workers = new FlatGradientWorker[determine.getThreadCount()];
-
-		int index = 0;
-
-		// handle CPU
-		for (final IntRange r : determine.calculateWorkers()) {
-			this.workers[index++] = new GradientWorkerCPU(this.network.clone(),
-					this, this.indexable.openAdditional(), r.getLow(),
-					r.getHigh());
-		}
 	}
 
 	public void calculateGradients() {
@@ -207,19 +153,94 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	}
 
 	/**
+	 * Copy the contexts to keep them consistent with multithreaded training.
+	 */
+	private void copyContexts() {
+		for (int i = 0; i < (this.workers.length - 1); i++) {
+			final double[] src = this.workers[i].getNetwork().getLayerOutput();
+			final double[] dst = this.workers[i + 1].getNetwork()
+					.getLayerOutput();
+			EngineArray.arrayCopy(src, dst);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void finishTraining() {
+		// nothing to do
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getError() {
+		return this.currentError;
+	}
+
+	/**
+	 * @return The gradients from the last iteration;
+	 */
+	public double[] getLastGradient() {
+		return this.lastGradient;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public FlatNetwork getNetwork() {
+		return this.network;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getNumThreads() {
+		return this.numThreads;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public EngineDataSet getTraining() {
+		return this.training;
+	}
+
+	/**
+	 * Init the process.
+	 */
+	private void init() {
+
+		final DetermineWorkload determine = new DetermineWorkload(
+				this.numThreads, (int) this.indexable.getRecordCount());
+
+		this.workers = new FlatGradientWorker[determine.getThreadCount()];
+
+		int index = 0;
+
+		// handle CPU
+		for (final IntRange r : determine.calculateWorkers()) {
+			this.workers[index++] = new GradientWorkerCPU(this.network.clone(),
+					this, this.indexable.openAdditional(), r.getLow(), r
+							.getHigh());
+		}
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public void iteration() {
 		calculateGradients();
 
-		if (this.network.isLimited())
+		if (this.network.isLimited()) {
 			learnLimited();
-		else
+		} else {
 			learn();
+		}
 
 		for (final FlatGradientWorker worker : this.workers) {
-			EngineArray.arrayCopy(this.network.getWeights(), 0,
-					worker.getWeights(), 0, this.network.getWeights().length);
+			EngineArray.arrayCopy(this.network.getWeights(), 0, worker
+					.getWeights(), 0, this.network.getWeights().length);
 		}
 
 		copyContexts();
@@ -247,13 +268,14 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * is what is usually use, to be as fast as possible.
 	 */
 	protected void learnLimited() {
-		double limit = this.network.getConnectionLimit();
+		final double limit = this.network.getConnectionLimit();
 		final double[] weights = this.network.getWeights();
 		for (int i = 0; i < this.gradients.length; i++) {
-			if (weights[i] < limit)
+			if (weights[i] < limit) {
 				weights[i] = 0;
-			else
+			} else {
 				weights[i] += updateWeight(this.gradients, this.lastGradient, i);
+			}
 			this.gradients[i] = 0;
 		}
 	}
@@ -304,26 +326,5 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 */
 	public abstract double updateWeight(double[] gradients,
 			double[] lastGradient, int index);
-
-	/**
-	 * @return The gradients from the last iteration;
-	 */
-	public double[] getLastGradient() {
-		return lastGradient;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getNumThreads() {
-		return this.numThreads;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void finishTraining() {
-		// nothing to do
-	}
 
 }
