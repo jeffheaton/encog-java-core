@@ -255,22 +255,23 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			throw new EncogEngineError(
 					"Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
 		}
+		
+		long networkLoad = this.network.getWeights().length*(this.training.getRecordCount());
+		int workloadCount = (int)(networkLoad/(long)(EncogEngine.getInstance().getCL().getMaxTrainingSize()*1000l));
 
-		final long networkLoad = this.network.getWeights().length
-				* (this.training.getRecordCount());
-		int workloadCount = (int) (networkLoad / (EncogEngine.getInstance()
-				.getCL().getMaxTrainingSize() * 1000l));
-		final int maxWorkloadSize = (int) this.training.getRecordCount()
-				/ workloadCount;
-		int lastWorkloadSize = (int) this.training.getRecordCount()
-				% workloadCount;
-
-		if (workloadCount == 0) {
-			lastWorkloadSize = maxWorkloadSize;
+		int maxWorkloadSize;
+		int lastWorkloadSize;
+		
+		if( workloadCount==0 ) {
+			lastWorkloadSize = (int)training.getRecordCount();
+			maxWorkloadSize = lastWorkloadSize;
+		} else {
+			maxWorkloadSize = (int)this.training.getRecordCount()/workloadCount;
+			lastWorkloadSize = (int)this.training.getRecordCount()%workloadCount;
 		}
-
+		
 		int currentIndex = 0;
-		this.error = 0;
+		this.error=0;
 
 		while (workloadCount > 0) {
 			callKernel(currentIndex, maxWorkloadSize, false);
