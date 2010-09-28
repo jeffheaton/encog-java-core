@@ -65,7 +65,7 @@ public class EncogCL {
 	public EncogCL() {
 		final int[] numPlatforms = new int[1];
 		this.globalWork = 100;
-		this.maxTrainingSize = 1000;
+		this.maxTrainingSize = 5000;
 
 		final cl_platform_id[] platformIDs = new cl_platform_id[5];
 		CL.clGetPlatformIDs(platformIDs.length, platformIDs, numPlatforms);

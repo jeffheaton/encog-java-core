@@ -233,7 +233,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		int workloadCount = (int)(networkLoad/(long)(EncogEngine.getInstance().getCL().getMaxTrainingSize()*1000l));
 		int maxWorkloadSize = (int)this.training.getRecordCount()/workloadCount;
 		int lastWorkloadSize = (int)this.training.getRecordCount()%workloadCount;
-		
+	
 		if( workloadCount==0 )
 			lastWorkloadSize = maxWorkloadSize;
 		
