@@ -50,7 +50,7 @@ public class BasicPersistedObject implements EncogPersistedObject {
 	/**
 	 * The collection the object belongs to.
 	 */
-	private EncogCollection collection;
+	private transient EncogCollection collection;
 
 	/**
 	 * {@inheritDoc}
