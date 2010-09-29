@@ -362,7 +362,7 @@ public class TemporalNeuralDataSet extends BasicNeuralDataSet {
 		}
 
 		if (desc.getActivationFunction() != null) {
-			desc.getActivationFunction().activationFunction(result);
+			desc.getActivationFunction().activationFunction(result,0,result.length);
 		}
 
 		return result[0];

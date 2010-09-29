@@ -26,7 +26,7 @@ package org.encog.neural.networks.training.lma;
 
 import java.util.List;
 
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -140,7 +140,7 @@ public class JacobianChainRule implements ComputeJacobian {
 	private double calcDerivative2(final ActivationFunction a, final double d) {
 		final double[] temp = new double[1];
 		temp[0] = d;
-		a.activationFunction(temp);
+		a.activationFunction(temp,0,temp.length);
 		temp[0] = a.derivativeFunction(temp[0]);
 		return temp[0];
 	}

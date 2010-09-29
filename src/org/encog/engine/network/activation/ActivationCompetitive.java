@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.neural.NeuralNetworkError;
 
 /**
@@ -36,6 +35,11 @@ import org.encog.neural.NeuralNetworkError;
  * 
  */
 public class ActivationCompetitive implements ActivationFunction {
+
+	/**
+	 * The offset to the parameter that holds the max winners.
+	 */
+	public static final int PARAM_COMPETITIVE_MAX_WINNERS = 0;
 
 	/**
 	 * The serial ID.
@@ -63,14 +67,15 @@ public class ActivationCompetitive implements ActivationFunction {
 	 */
 	public ActivationCompetitive(final int winners) {
 		this.params = new double[1];
-		this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS] = winners;
+		this.params[ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS] = winners;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
+	public void activationFunction(final double[] x, final int start,
+			final int size) {
 		final boolean[] winners = new boolean[x.length];
 		double sumWinners = 0;
 
@@ -80,7 +85,7 @@ public class ActivationCompetitive implements ActivationFunction {
 			int winner = -1;
 
 			// find one winner
-			for (int j = 0; j < x.length; j++) {
+			for (int j = start; j < start + size; j++) {
 				if (!winners[j] && (x[j] > maxFound)) {
 					winner = j;
 					maxFound = x[j];
@@ -91,7 +96,7 @@ public class ActivationCompetitive implements ActivationFunction {
 		}
 
 		// adjust weights for winners and non-winners
-		for (int i = 0; i < x.length; i++) {
+		for (int i = start; i < start + size; i++) {
 			if (winners[i]) {
 				x[i] = x[i] / sumWinners;
 			} else {
@@ -105,9 +110,9 @@ public class ActivationCompetitive implements ActivationFunction {
 	 * @return A cloned copy of this object.
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationCompetitive(
-				(int) this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS]);
+				(int) this.params[ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS]);
 	}
 
 	/**
@@ -130,7 +135,7 @@ public class ActivationCompetitive implements ActivationFunction {
 	 * @return The maximum number of winners this function supports.
 	 */
 	public int getMaxWinners() {
-		return (int) this.params[ActivationFunctions.PARAM_COMPETITIVE_MAX_WINNERS];
+		return (int) this.params[ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS];
 	}
 
 	/**
@@ -164,6 +169,14 @@ public class ActivationCompetitive implements ActivationFunction {
 	@Override
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;
-
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative, 
+			final boolean allSlopeOne) {
+		return null;
 	}
 }

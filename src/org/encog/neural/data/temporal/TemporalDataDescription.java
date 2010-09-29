@@ -24,7 +24,7 @@
 
 package org.encog.neural.data.temporal;
 
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

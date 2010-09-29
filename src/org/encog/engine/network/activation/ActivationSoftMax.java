@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.util.BoundMath;
 
 /**
@@ -55,7 +54,7 @@ public class ActivationSoftMax implements ActivationFunction {
 	 * @return The object cloned;
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationSoftMax();
 	}
 
@@ -72,15 +71,16 @@ public class ActivationSoftMax implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
+	public void activationFunction(final double[] x, final int start,
+			final int size) {
 		double sum = 0;
-		for (int i = 0; i < x.length; i++) {
+		for (int i = start; i < start + size; i++) {
 			x[i] = BoundMath.exp(x[i]);
 			sum += x[i];
 		}
-		for (int i = 0; i < x.length; i++) {
+		for (int i = start; i < start + size; i++) {
 			x[i] = x[i] / sum;
-		}		
+		}
 	}
 
 	/**
@@ -114,6 +114,15 @@ public class ActivationSoftMax implements ActivationFunction {
 	@Override
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative, 
+			final boolean allSlopeOne) {
+		return null;
 	}
 
 }

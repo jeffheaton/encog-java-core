@@ -61,7 +61,7 @@ public class ActivationLOG implements ActivationFunction {
 	 * @return The object cloned.
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationLOG();
 	}
 
@@ -76,9 +76,10 @@ public class ActivationLOG implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
+	public void activationFunction(final double[] x, final int start, 
+			final int size) {
 
-		for (int i = 0; i < x.length; i++) {
+		for (int i = start; i < start + size; i++) {
 			if (x[i] >= 0) {
 				x[i] = BoundMath.log(1 + x[i]);
 			} else {
@@ -123,6 +124,15 @@ public class ActivationLOG implements ActivationFunction {
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative, 
+			final boolean allSlopeOne) {
+		return null;
 	}
 
 }

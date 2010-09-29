@@ -24,7 +24,7 @@
 
 package org.encog.neural.pattern;
 
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 
 /**

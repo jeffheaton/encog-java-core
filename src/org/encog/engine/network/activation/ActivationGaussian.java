@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.util.BoundMath;
 
 /**
@@ -35,6 +34,22 @@ import org.encog.engine.util.BoundMath;
  */
 public class ActivationGaussian implements ActivationFunction {
 
+	/**
+	 * The offset to the parameter that holds the width.
+	 */
+	public static final int PARAM_GAUSSIAN_CENTER = 0;
+
+	/**
+	 * The offset to the parameter that holds the peak.
+	 */
+	public static final int PARAM_GAUSSIAN_PEAK = 1;
+
+	/**
+	 * The offset to the parameter that holds the width.
+	 */
+	public static final int PARAM_GAUSSIAN_WIDTH = 2;
+
+	
 	/**
 	 * The parameters.
 	 */
@@ -58,16 +73,16 @@ public class ActivationGaussian implements ActivationFunction {
 	public ActivationGaussian(final double center, final double peak,
 			final double width) {
 		this.params = new double[3];
-		this.params[ActivationFunctions.PARAM_GAUSSIAN_CENTER] = center;
-		this.params[ActivationFunctions.PARAM_GAUSSIAN_PEAK] = peak;
-		this.params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH] = width;
+		this.params[ActivationGaussian.PARAM_GAUSSIAN_CENTER] = center;
+		this.params[ActivationGaussian.PARAM_GAUSSIAN_PEAK] = peak;
+		this.params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH] = width;
 	}
 
 	/**
 	 * @return The object cloned.
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationGaussian(this.getCenter(), this.getPeak(), this
 				.getWidth());
 	}
@@ -76,21 +91,21 @@ public class ActivationGaussian implements ActivationFunction {
 	 * @return The width of the function.
 	 */
 	private double getWidth() {
-		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_WIDTH];
+		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_WIDTH];
 	}
 
 	/**
 	 * @return The center of the function.
 	 */
 	private double getCenter() {
-		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_CENTER];
+		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_CENTER];
 	}
 
 	/**
 	 * @return The peak of the function.
 	 */
 	private double getPeak() {
-		return this.getParams()[ActivationFunctions.PARAM_GAUSSIAN_PEAK];
+		return this.getParams()[ActivationGaussian.PARAM_GAUSSIAN_PEAK];
 	}
 
 	/**
@@ -104,12 +119,13 @@ public class ActivationGaussian implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
-		for (int i = 0; i < x.length ; i++) {
-			x[i] = params[ActivationFunctions.PARAM_GAUSSIAN_PEAK]
+	public void activationFunction(final double[] x, final int start, 
+			final int size) {
+		for (int i = start; i < start+size ; i++) {
+			x[i] = params[ActivationGaussian.PARAM_GAUSSIAN_PEAK]
 			     * BoundMath.exp(-Math.pow(x[i] 
-                    - params[ActivationFunctions.PARAM_GAUSSIAN_CENTER],2)
-                    / (2.0 * params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH] * params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH]));
+                    - params[ActivationGaussian.PARAM_GAUSSIAN_CENTER],2)
+                    / (2.0 * params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH] * params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH]));
 		}
 		
 	}
@@ -119,8 +135,8 @@ public class ActivationGaussian implements ActivationFunction {
 	 */
 	@Override
 	public double derivativeFunction(final double x) {
-		final double width = params[ActivationFunctions.PARAM_GAUSSIAN_WIDTH];
-		final double peak = params[ActivationFunctions.PARAM_GAUSSIAN_PEAK];
+		final double width = params[ActivationGaussian.PARAM_GAUSSIAN_WIDTH];
+		final double peak = params[ActivationGaussian.PARAM_GAUSSIAN_PEAK];
 		return Math.exp(-0.5 * width * width * x * x) * peak * width * width
 				* (width * width * x * x - 1);
 	}
@@ -149,6 +165,15 @@ public class ActivationGaussian implements ActivationFunction {
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative, 
+			final boolean allSlopeOne) {
+		return null;
 	}
 
 }

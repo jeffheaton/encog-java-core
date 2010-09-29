@@ -25,6 +25,7 @@
 package org.encog.engine.network.flat;
 
 import org.encog.engine.EncogEngine;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.util.EngineArray;
 
 /**
@@ -36,7 +37,7 @@ public class FlatLayer {
 	/**
 	 * The activation function.
 	 */
-	private final int activation;
+	private final ActivationFunction activation;
 
 	/**
 	 * The neuron count.
@@ -47,11 +48,6 @@ public class FlatLayer {
 	 * The bias activation, usually 1 for bias or 0 for no bias.
 	 */
 	private final double biasActivation;
-
-	/**
-	 * The params for the activation function.
-	 */
-	private final double[] params;
 
 	/**
 	 * The layer that feeds this layer's context.
@@ -70,19 +66,18 @@ public class FlatLayer {
 	 * @param params
 	 *            The parameters.
 	 */
-	public FlatLayer(final int activation, final int count,
+	public FlatLayer(final ActivationFunction activation, final int count,
 			final double biasActivation, final double[] params) {
 		this.activation = activation;
 		this.count = count;
 		this.biasActivation = biasActivation;
-		this.params = EngineArray.arrayCopy(params);
 		this.contextFedBy = null;
 	}
 
 	/**
 	 * @return the activation
 	 */
-	public int getActivation() {
+	public ActivationFunction getActivation() {
 		return this.activation;
 	}
 
@@ -116,13 +111,6 @@ public class FlatLayer {
 	 */
 	public int getCount() {
 		return this.count;
-	}
-
-	/**
-	 * @return The parameters that this activation uses.
-	 */
-	public double[] getParams() {
-		return this.params;
 	}
 
 	/**

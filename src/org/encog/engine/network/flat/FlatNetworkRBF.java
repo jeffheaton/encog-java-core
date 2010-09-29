@@ -24,6 +24,7 @@
 
 package org.encog.engine.network.flat;
 
+import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.util.BoundMath;
 import org.encog.engine.util.EngineArray;
 
@@ -56,9 +57,12 @@ public class FlatNetworkRBF extends FlatNetwork {
 	 *            The number of input neurons. (also the number of dimensions)
 	 * @param hiddenCount
 	 *            The number of hidden neurons.
-	 * @param outputCount The number of output neurons.
-	 * @param center The centers.
-	 * @param radius The radii.
+	 * @param outputCount
+	 *            The number of output neurons.
+	 * @param center
+	 *            The centers.
+	 * @param radius
+	 *            The radii.
 	 */
 	public FlatNetworkRBF(final int inputCount, final int hiddenCount,
 			final int outputCount, final double[][] center,
@@ -71,12 +75,12 @@ public class FlatNetworkRBF extends FlatNetwork {
 		double[] slope = new double[1];
 		slope[0] = 1.0;
 
-		layers[0] = new FlatLayer(ActivationFunctions.ACTIVATION_LINEAR,
-				inputCount, 0.0, slope);
-		layers[1] = new FlatLayer(ActivationFunctions.ACTIVATION_LINEAR,
-				hiddenCount, 1.0, slope);
-		layers[2] = new FlatLayer(ActivationFunctions.ACTIVATION_LINEAR,
-				outputCount, 0.0, slope);
+		layers[0] = new FlatLayer(new ActivationLinear(), inputCount, 0.0,
+				slope);
+		layers[1] = new FlatLayer(new ActivationLinear(), hiddenCount, 1.0,
+				slope);
+		layers[2] = new FlatLayer(new ActivationLinear(), outputCount, 0.0,
+				slope);
 
 		init(layers);
 	}

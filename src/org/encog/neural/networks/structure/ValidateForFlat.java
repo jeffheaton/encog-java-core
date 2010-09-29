@@ -25,12 +25,7 @@
 package org.encog.neural.networks.structure;
 
 import org.encog.engine.EngineMachineLearning;
-import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.validate.BasicMachineLearningValidate;
-import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationLinear;
-import org.encog.neural.activation.ActivationSigmoid;
-import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;

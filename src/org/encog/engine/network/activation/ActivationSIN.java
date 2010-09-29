@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.util.BoundMath;
 
 /**
@@ -56,7 +55,7 @@ public class ActivationSIN implements ActivationFunction {
 	 * @return The object cloned;
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationSIN();
 	}
 
@@ -71,8 +70,9 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
-		for (int i = 0; i < x.length; i++) {
+	public void activationFunction(final double[] x, final int start, 
+			final int size) {
+		for (int i = start; i < start+size; i++) {
 			x[i] = BoundMath.sin(x[i]);
 		}		
 	}
@@ -108,7 +108,15 @@ public class ActivationSIN implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;
-		
+		this.params[index] = value;		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative, 
+			final boolean allSlopeOne) {
+		return null;
 	}
 }

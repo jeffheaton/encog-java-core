@@ -24,8 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
-
 /**
  * A ramp activation function. This function has a high and low threshold. If
  * the high threshold is exceeded a fixed value is returned. Likewise, if the
@@ -33,6 +31,26 @@ import org.encog.engine.network.flat.ActivationFunctions;
  * 
  */
 public class ActivationRamp implements ActivationFunction {
+
+	/**
+	 * The ramp high threshold parameter.
+	 */
+	public static final int PARAM_RAMP_HIGH_THRESHOLD = 0;
+
+	/**
+	 * The ramp low threshold parameter.
+	 */
+	public static final int PARAM_RAMP_LOW_THRESHOLD = 1;
+
+	/**
+	 * The ramp high parameter.
+	 */
+	public static final int PARAM_RAMP_HIGH = 2;
+
+	/**
+	 * The ramp low parameter.
+	 */
+	public static final int PARAM_RAMP_LOW = 3;
 
 	/**
 	 * The serial ID.
@@ -60,10 +78,10 @@ public class ActivationRamp implements ActivationFunction {
 			final double thresholdLow, final double high, final double low) {
 
 		this.params = new double[4];
-		this.params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD] = thresholdHigh;
-		this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD] = thresholdLow;
-		this.params[ActivationFunctions.PARAM_RAMP_HIGH] = high;
-		this.params[ActivationFunctions.PARAM_RAMP_LOW] = low;
+		this.params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD] = thresholdHigh;
+		this.params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD] = thresholdLow;
+		this.params[ActivationRamp.PARAM_RAMP_HIGH] = high;
+		this.params[ActivationRamp.PARAM_RAMP_LOW] = low;
 	}
 
 	/**
@@ -79,40 +97,40 @@ public class ActivationRamp implements ActivationFunction {
 	 * @return The cloned object.
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationRamp(
-				this.params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD],
-				this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD],
-				this.params[ActivationFunctions.PARAM_RAMP_HIGH],
-				this.params[ActivationFunctions.PARAM_RAMP_LOW]);
+				this.params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD],
+				this.params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD],
+				this.params[ActivationRamp.PARAM_RAMP_HIGH],
+				this.params[ActivationRamp.PARAM_RAMP_LOW]);
 	}
 
 	/**
 	 * @return the high
 	 */
 	public double getHigh() {
-		return this.params[ActivationFunctions.PARAM_RAMP_HIGH];
+		return this.params[ActivationRamp.PARAM_RAMP_HIGH];
 	}
 
 	/**
 	 * @return the low
 	 */
 	public double getLow() {
-		return this.params[ActivationFunctions.PARAM_RAMP_LOW];
+		return this.params[ActivationRamp.PARAM_RAMP_LOW];
 	}
 
 	/**
 	 * @return the thresholdHigh
 	 */
 	public double getThresholdHigh() {
-		return this.params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD];
+		return this.params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD];
 	}
 
 	/**
 	 * @return the thresholdLow
 	 */
 	public double getThresholdLow() {
-		return this.params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD];
+		return this.params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD];
 	}
 
 	/**
@@ -129,7 +147,7 @@ public class ActivationRamp implements ActivationFunction {
 	 *            The threshold low.
 	 */
 	public void setThresholdLow(final double d) {
-		this.setParam(ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD, d);
+		this.setParam(ActivationRamp.PARAM_RAMP_LOW_THRESHOLD, d);
 	}
 
 	/**
@@ -139,7 +157,7 @@ public class ActivationRamp implements ActivationFunction {
 	 *            The threshold high.
 	 */
 	public void setThresholdHigh(final double d) {
-		this.setParam(ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD, d);
+		this.setParam(ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD, d);
 	}
 
 	/**
@@ -149,7 +167,7 @@ public class ActivationRamp implements ActivationFunction {
 	 *            The low value.
 	 */
 	public void setLow(final double d) {
-		this.setParam(ActivationFunctions.PARAM_RAMP_LOW, d);
+		this.setParam(ActivationRamp.PARAM_RAMP_LOW, d);
 	}
 
 	/**
@@ -159,7 +177,7 @@ public class ActivationRamp implements ActivationFunction {
 	 *            The high value.
 	 */
 	public void setHigh(final double d) {
-		this.setParam(ActivationFunctions.PARAM_RAMP_HIGH, d);
+		this.setParam(ActivationRamp.PARAM_RAMP_HIGH, d);
 
 	}
 
@@ -167,15 +185,16 @@ public class ActivationRamp implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
-		final double slope = (params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD] - params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD])
-				/ (params[ActivationFunctions.PARAM_RAMP_HIGH] - params[ActivationFunctions.PARAM_RAMP_LOW]);
+	public void activationFunction(final double[] x, final int start, 
+			final int size) {
+		final double slope = (params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD] - params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD])
+				/ (params[ActivationRamp.PARAM_RAMP_HIGH] - params[ActivationRamp.PARAM_RAMP_LOW]);
 
-		for (int i = 0; i < x.length; i++) {
-			if (x[i] < params[ActivationFunctions.PARAM_RAMP_LOW_THRESHOLD]) {
-				x[i] = params[ActivationFunctions.PARAM_RAMP_LOW];
-			} else if (x[i] > params[ActivationFunctions.PARAM_RAMP_HIGH_THRESHOLD]) {
-				x[i] = params[ActivationFunctions.PARAM_RAMP_HIGH];
+		for (int i = start; i < start+size; i++) {
+			if (x[i] < params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD]) {
+				x[i] = params[ActivationRamp.PARAM_RAMP_LOW];
+			} else if (x[i] > params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD]) {
+				x[i] = params[ActivationRamp.PARAM_RAMP_HIGH];
 			} else {
 				x[i] = (slope * x[i]);
 			}
@@ -216,6 +235,15 @@ public class ActivationRamp implements ActivationFunction {
 	@Override
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative, 
+			final boolean allSlopeOne) {
+		return null;
 	}
 
 }

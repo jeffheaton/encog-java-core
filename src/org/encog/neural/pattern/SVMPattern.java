@@ -24,17 +24,11 @@
 
 package org.encog.neural.pattern;
 
-import org.encog.neural.activation.ActivationBiPolar;
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.logic.BAMLogic;
 import org.encog.neural.networks.svm.KernelType;
 import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.neural.networks.svm.SVMType;
-import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

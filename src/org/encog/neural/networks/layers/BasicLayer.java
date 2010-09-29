@@ -30,9 +30,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.DirectSynapse;
@@ -298,7 +298,7 @@ public class BasicLayer implements Layer, Serializable {
 		}
 
 		// apply the activation function
-		getActivationFunction().activationFunction(result.getData());
+		getActivationFunction().activationFunction(result.getData(),0,result.getData().length);
 
 		return result;
 	}

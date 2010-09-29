@@ -28,10 +28,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.ContextClearable;
@@ -230,7 +230,7 @@ public class NEATSynapse implements Synapse, ContextClearable, Serializable {
 
 				final double[] d = new double[1];
 				d[0] = sum / currentNeuron.getActivationResponse();
-				this.activationFunction.activationFunction(d);
+				this.activationFunction.activationFunction(d,0,d.length);
 
 				this.neurons.get(index).setOutput(d[0]);
 

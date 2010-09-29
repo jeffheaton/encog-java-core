@@ -25,7 +25,7 @@
 package org.encog.persist.persistors;
 
 import org.encog.EncogError;
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
@@ -35,7 +35,6 @@ import org.encog.persist.Persistor;
 import org.encog.util.ReflectionUtil;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
-import org.encog.util.csv.ReadCSV;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

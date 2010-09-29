@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
 
 /**
  * The step activation function is a very simple activation function. It is the
@@ -41,6 +40,22 @@ import org.encog.engine.network.flat.ActivationFunctions;
  */
 public class ActivationStep implements ActivationFunction {
 
+	/**
+	 * The step center parameter.
+	 */
+	public static final int PARAM_STEP_CENTER = 0;
+
+	/**
+	 * The step low parameter.
+	 */
+	public static final int PARAM_STEP_LOW = 1;
+
+	/**
+	 * The step high parameter.
+	 */
+	public static final int PARAM_STEP_HIGH = 2;
+
+	
 	/**
 	 * The serial ID.
 	 */
@@ -62,9 +77,9 @@ public class ActivationStep implements ActivationFunction {
 			final double center, 
 			final double high) {
 		this.params = new double[3];
-		this.params[ActivationFunctions.PARAM_STEP_CENTER] = center;
-		this.params[ActivationFunctions.PARAM_STEP_LOW] = low;
-		this.params[ActivationFunctions.PARAM_STEP_HIGH] = high;
+		this.params[ActivationStep.PARAM_STEP_CENTER] = center;
+		this.params[ActivationStep.PARAM_STEP_LOW] = low;
+		this.params[ActivationStep.PARAM_STEP_HIGH] = high;
 	}
 
 	/**
@@ -78,28 +93,28 @@ public class ActivationStep implements ActivationFunction {
 	 * @return The center.
 	 */
 	public double getCenter() {
-		return this.params[ActivationFunctions.PARAM_STEP_CENTER];
+		return this.params[ActivationStep.PARAM_STEP_CENTER];
 	}
 
 	/**
 	 * @return The low value.
 	 */
 	public double getLow() {
-		return this.params[ActivationFunctions.PARAM_STEP_LOW];
+		return this.params[ActivationStep.PARAM_STEP_LOW];
 	}
 
 	/**
 	 * @return The high value.
 	 */
 	public double getHigh() {
-		return this.params[ActivationFunctions.PARAM_STEP_HIGH];
+		return this.params[ActivationStep.PARAM_STEP_HIGH];
 	}
 
 	/**
 	 * @return A clone of this object.
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		ActivationStep result = new ActivationStep(getLow(), getCenter(),
 				getHigh());
 		return result;
@@ -119,7 +134,7 @@ public class ActivationStep implements ActivationFunction {
 	 *            The center of this function.
 	 */
 	public void setCenter(final double d) {
-		this.setParam(ActivationFunctions.PARAM_STEP_CENTER, d);
+		this.setParam(ActivationStep.PARAM_STEP_CENTER, d);
 	}
 
 	/**
@@ -129,7 +144,7 @@ public class ActivationStep implements ActivationFunction {
 	 *            The high of this function.
 	 */
 	public void setHigh(final double d) {
-		this.setParam(ActivationFunctions.PARAM_STEP_HIGH, d);
+		this.setParam(ActivationStep.PARAM_STEP_HIGH, d);
 	}
 
 	/**
@@ -139,19 +154,20 @@ public class ActivationStep implements ActivationFunction {
 	 *            The low of this function.
 	 */
 	public void setLow(final double d) {
-		this.setParam(ActivationFunctions.PARAM_STEP_LOW, d);
+		this.setParam(ActivationStep.PARAM_STEP_LOW, d);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
-		for (int i = 0; i < x.length; i++) {
-			if (x[i] >= params[ActivationFunctions.PARAM_STEP_CENTER]) {
-				x[i] = params[ActivationFunctions.PARAM_STEP_HIGH];
+	public void activationFunction(final double[] x, final int start, 
+			final int size) {
+		for (int i = start; i < start+size; i++) {
+			if (x[i] >= params[ActivationStep.PARAM_STEP_CENTER]) {
+				x[i] = params[ActivationStep.PARAM_STEP_HIGH];
 			} else {
-				x[i] = params[ActivationFunctions.PARAM_STEP_LOW];
+				x[i] = params[ActivationStep.PARAM_STEP_LOW];
 			}
 		}		
 	}
@@ -186,8 +202,16 @@ public class ActivationStep implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;
-		
+		this.params[index] = value;		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative, 
+			final boolean allSlopeOne) {
+		return null;
 	}
 
 }

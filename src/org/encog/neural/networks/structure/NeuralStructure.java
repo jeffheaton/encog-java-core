@@ -32,10 +32,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Map.Entry;
 
-import org.encog.engine.network.flat.ActivationFunctions;
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.flat.FlatLayer;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.flat.FlatNetworkRBF;
@@ -105,12 +106,12 @@ public class NeuralStructure implements Serializable {
 	 * The next ID to be assigned to a layer.
 	 */
 	private int nextID = 1;
-	
+
 	/**
 	 * The flattened form of the network.
 	 */
 	private transient FlatNetwork flat;
-	
+
 	/**
 	 * What type of update is needed to the flat network.
 	 */
@@ -166,7 +167,7 @@ public class NeuralStructure implements Serializable {
 	 *            The layer type we are looking for.
 	 * @return True if this layer type is present.
 	 */
-	public boolean containsLayerType(final Class< ? > type) {
+	public boolean containsLayerType(final Class<?> type) {
 		for (final Layer layer : this.layers) {
 			if (ReflectionUtil.isInstanceOf(layer.getClass(), type)) {
 				return true;
@@ -204,14 +205,13 @@ public class NeuralStructure implements Serializable {
 	 * Build the layer structure.
 	 */
 	private void finalizeLayers() {
-		
+
 		// no bias values on the input layer
-		if( network.getLogic() instanceof FeedforwardLogic )
-		{
+		if (network.getLogic() instanceof FeedforwardLogic) {
 			Layer inputLayer = this.network.getLayer(BasicNetwork.TAG_INPUT);
 			inputLayer.setBiasWeights(null);
 		}
-		
+
 		final List<Layer> result = new ArrayList<Layer>();
 		this.layers.clear();
 
@@ -305,8 +305,7 @@ public class NeuralStructure implements Serializable {
 		}
 
 		if (required && (result == null)) {
-			final String str = 
-				"This operation requires a network with a synapse between the "
+			final String str = "This operation requires a network with a synapse between the "
 					+ nameLayer(fromLayer)
 					+ " layer to the "
 					+ nameLayer(toLayer) + " layer.";
@@ -467,43 +466,42 @@ public class NeuralStructure implements Serializable {
 		}
 		return false;
 	}
-		
+
 	public void unflattenWeights() {
-		double[] sourceWeights = flat.getWeights();		
+		double[] sourceWeights = flat.getWeights();
 		NetworkCODEC.arrayToNetwork(sourceWeights, network);
 		this.flatUpdate = FlatUpdateNeeded.None;
 	}
-	
-	private int countNonContext()
-	{
+
+	private int countNonContext() {
 		int result = 0;
-		
-		for(Layer layer: this.getLayers() ) {
-			if( layer.getClass()!=ContextLayer.class )
+
+		for (Layer layer : this.getLayers()) {
+			if (layer.getClass() != ContextLayer.class)
 				result++;
 		}
-		
+
 		return result;
 	}
-	
-	public Synapse findPreviousSynapseByLayerType(Layer layer, Class<? extends Layer> type)
-	{
-		for( Synapse synapse : this.getPreviousSynapses(layer) ) {
-			if( synapse.getFromLayer().getClass()==type )
+
+	public Synapse findPreviousSynapseByLayerType(Layer layer,
+			Class<? extends Layer> type) {
+		for (Synapse synapse : this.getPreviousSynapses(layer)) {
+			if (synapse.getFromLayer().getClass() == type)
 				return synapse;
 		}
 		return null;
 	}
-	
-	public Synapse findNextSynapseByLayerType(Layer layer, Class<? extends Layer> type)
-	{
-		for( Synapse synapse : layer.getNext() ) {
-			if( synapse.getToLayer().getClass()==type )
+
+	public Synapse findNextSynapseByLayerType(Layer layer,
+			Class<? extends Layer> type) {
+		for (Synapse synapse : layer.getNext()) {
+			if (synapse.getToLayer().getClass() == type)
 				return synapse;
 		}
 		return null;
 	}
-	
+
 	public void flatten() {
 		boolean isRBF = false;
 		Map<Layer, FlatLayer> regular2flat = new HashMap<Layer, FlatLayer>();
@@ -511,23 +509,20 @@ public class NeuralStructure implements Serializable {
 		this.flat = null;
 
 		ValidateForFlat val = new ValidateForFlat();
-		
+
 		if (val.isValid(this.network) == null) {
-			if( this.layers.size()==3 &&  this.layers.get(1) instanceof RadialBasisFunctionLayer )
-			{
-				RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer)this.layers.get(1);
-				this.flat = new FlatNetworkRBF(
-					this.network.getInputCount(),
-					rbf.getNeuronCount(),
-					this.network.getOutputCount(),
-					rbf.getCenter(),
-					rbf.getRadius());
+			if (this.layers.size() == 3
+					&& this.layers.get(1) instanceof RadialBasisFunctionLayer) {
+				RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer) this.layers
+						.get(1);
+				this.flat = new FlatNetworkRBF(this.network.getInputCount(),
+						rbf.getNeuronCount(), this.network.getOutputCount(),
+						rbf.getCenter(), rbf.getRadius());
 				flattenWeights();
 				this.flatUpdate = FlatUpdateNeeded.None;
 				return;
 			}
-			
-			
+
 			FlatLayer[] flatLayers = new FlatLayer[countNonContext()];
 
 			int index = flatLayers.length - 1;
@@ -552,76 +547,71 @@ public class NeuralStructure implements Serializable {
 					Layer inbound = inboundSynapse.getFromLayer();
 					Layer outbound = outboundSynapse.getToLayer();
 
-					contexts.add(new ObjectPair<Layer, Layer>(inbound, outbound));
-				} 
-				else {
+					contexts
+							.add(new ObjectPair<Layer, Layer>(inbound, outbound));
+				} else {
 					double bias = this.findNextBias(layer);
 
-					int activationType;
+					ActivationFunction activationType;
 					double[] params = new double[1];
-					
-					if( layer.getActivationFunction()==null )
-					{
-						activationType = ActivationFunctions.ACTIVATION_LINEAR;
+
+					if (layer.getActivationFunction() == null) {
+						activationType = new ActivationLinear();
 						params = new double[1];
 						params[0] = 1;
-					}
-					else
-					{
-						activationType = layer.getActivationFunction().getEngineID();
+					} else {
+						activationType = layer.getActivationFunction();
 						params = layer.getActivationFunction().getParams();
 					}
-					
-					FlatLayer flatLayer = new FlatLayer(
-							activationType,
-							layer.getNeuronCount(), 
-							bias,
-							params);
+
+					FlatLayer flatLayer = new FlatLayer(activationType, layer
+							.getNeuronCount(), bias, params);
 
 					regular2flat.put(layer, flatLayer);
 					flatLayers[index--] = flatLayer;
 				}
 			}
-			
+
 			// now link up the context layers
-			for(ObjectPair<Layer, Layer> context: contexts)
-			{
+			for (ObjectPair<Layer, Layer> context : contexts) {
 				Layer layer = context.getB();
-				Synapse synapse = this.network.getStructure().findPreviousSynapseByLayerType(layer, BasicLayer.class);
+				Synapse synapse = this.network
+						.getStructure()
+						.findPreviousSynapseByLayerType(layer, BasicLayer.class);
 				FlatLayer from = regular2flat.get(context.getA());
 				FlatLayer to = regular2flat.get(synapse.getFromLayer());
 				to.setContextFedBy(from);
 			}
 
 			this.flat = new FlatNetwork(flatLayers);
-			
-			if( isRBF ) {
-				this.flat.setEndTraining(flatLayers.length-1);
+
+			if (isRBF) {
+				this.flat.setEndTraining(flatLayers.length - 1);
 			}
-			
+
 			flattenWeights();
-			
-			if( this.isConnectionLimited() ) {
-				
+
+			if (this.isConnectionLimited()) {
+
 			}
-			
+
 			this.flatUpdate = FlatUpdateNeeded.None;
 		} else
 			this.flatUpdate = FlatUpdateNeeded.Never;
 	}
-	
+
 	public void flattenWeights() {
 		if (this.flat != null) {
 			this.flatUpdate = FlatUpdateNeeded.Flatten;
-			
+
 			double[] targetWeights = this.flat.getWeights();
 			double[] sourceWeights = NetworkCODEC.networkToArray(this.network);
 
 			EngineArray.arrayCopy(sourceWeights, targetWeights);
 			this.flatUpdate = FlatUpdateNeeded.None;
-			
+
 			// handle limited connection networks
-			if( this.connectionLimited ) {
+			if (this.connectionLimited) {
 				this.flat.setConnectionLimit(this.connectionLimit);
 			} else {
 				this.flat.clearConnectionLimit();
@@ -632,11 +622,10 @@ public class NeuralStructure implements Serializable {
 	public FlatUpdateNeeded getFlatUpdate() {
 		return flatUpdate;
 	}
-	
+
 	public void setFlatUpdate(FlatUpdateNeeded flatUpdate) {
 		this.flatUpdate = flatUpdate;
 	}
-
 
 	public FlatNetwork getFlat() {
 		return flat;
@@ -661,45 +650,40 @@ public class NeuralStructure implements Serializable {
 
 		this.flatUpdate = FlatUpdateNeeded.None;
 	}
-	
-	private double findNextBias(Layer layer)
-	{
+
+	private double findNextBias(Layer layer) {
 		double bias = FlatNetwork.NO_BIAS_ACTIVATION;
 
 		if (layer.getNext().size() > 0) {
 			Synapse synapse = network.getStructure()
-					.findNextSynapseByLayerType(layer,
-							BasicLayer.class);
+					.findNextSynapseByLayerType(layer, BasicLayer.class);
 			if (synapse != null) {
 				Layer nextLayer = synapse.getToLayer();
-				if( nextLayer.hasBias() )
+				if (nextLayer.hasBias())
 					bias = nextLayer.getBiasActivation();
 			}
 		}
 		return bias;
-	}	
+	}
 
-	private double[] constructRBFParams(RadialBasisFunctionLayer layer)
-	{
-		double[] result = new double[layer.getNeuronCount()+(layer.getNeuronCount()*layer.getDimensions())];
-		
+	private double[] constructRBFParams(RadialBasisFunctionLayer layer) {
+		double[] result = new double[layer.getNeuronCount()
+				+ (layer.getNeuronCount() * layer.getDimensions())];
+
 		int index = 0;
-		
+
 		// copy radius
-		for(int i=0;i<layer.getRadius().length; i++) {
+		for (int i = 0; i < layer.getRadius().length; i++) {
 			result[index++] = layer.getRadius()[i];
 		}
-		
+
 		// copy centers
-		for(int i=0;i<layer.getCenter().length;i++)
-		{
-			for(int j=0;j<layer.getCenter()[i].length;j++)
-			{
+		for (int i = 0; i < layer.getCenter().length; i++) {
+			for (int j = 0; j < layer.getCenter()[i].length; j++) {
 				result[index++] = layer.getCenter()[i][j];
 			}
 		}
-		
-		
+
 		return result;
 	}
 }

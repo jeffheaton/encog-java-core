@@ -33,6 +33,10 @@ import org.encog.engine.EngineNeuralNetwork;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 
@@ -111,19 +115,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	/**
 	 * The activation types.
 	 */
-	private int[] activationType;
-
-	/**
-	 * The parameters for the activation functions in each layer. Activation
-	 * functions can have a variable number of parameters, so it is important to
-	 * use the paramIndex array to determine the location of each layer.
-	 */
-	private double[] params;
-
-	/**
-	 * The location of each layer the the parameter array.
-	 */
-	private int[] paramIndex;
+	private ActivationFunction[] activationFunctions;
 
 	/**
 	 * The context target for each layer. This is how the backwards connections
@@ -203,8 +195,8 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			final int output, final boolean tanh) {
 		final double[] params = new double[1];
 		FlatLayer[] layers;
-		final int act = tanh ? ActivationFunctions.ACTIVATION_TANH
-				: ActivationFunctions.ACTIVATION_SIGMOID;
+		final ActivationFunction act = tanh ? new ActivationTANH()
+				: new ActivationSigmoid();
 		params[0] = 1; // slope
 
 		if ((hidden1 == 0) && (hidden2 == 0)) {
@@ -315,12 +307,15 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		result.layerContextCount = EngineArray
 				.arrayCopy(this.layerContextCount);
 		result.biasActivation = EngineArray.arrayCopy(this.biasActivation);
-		result.paramIndex = EngineArray.arrayCopy(this.paramIndex);
 		result.outputCount = this.outputCount;
 		result.weightIndex = this.weightIndex;
 		result.weights = this.weights;
-		result.activationType = this.activationType;
-		result.params = EngineArray.arrayCopy(this.params);
+
+		result.activationFunctions = new ActivationFunction[this.activationFunctions.length];
+		for (int i = 0; i < result.activationFunctions.length; i++) {
+			result.activationFunctions[i] = this.activationFunctions[i].clone();
+		}
+
 		result.beginTraining = this.beginTraining;
 		result.endTraining = this.endTraining;
 	}
@@ -374,10 +369,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			this.layerOutput[x] = sum;
 		}
 
-		ActivationFunctions.calculateActivation(
-				this.activationType[currentLayer - 1], this.layerOutput,
-				this.params, outputIndex, outputSize,
-				this.paramIndex[currentLayer - 1]);
+		this.activationFunctions[currentLayer-1].activationFunction(this.layerOutput,outputIndex, outputSize);
 
 		// update context values
 		final int offset = this.contextTargetOffset[currentLayer];
@@ -415,13 +407,6 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	@Override
 	public double[] encodeNetwork() {
 		return this.weights;
-	}
-
-	/**
-	 * @return The activation types for each of the layers.
-	 */
-	public int[] getActivationType() {
-		return this.activationType;
 	}
 
 	/**
@@ -502,20 +487,6 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 
 	/**
-	 * @return The parameter index for each layer.
-	 */
-	public int[] getParamIndex() {
-		return this.paramIndex;
-	}
-
-	/**
-	 * @return The activation parameters.
-	 */
-	public double[] getParams() {
-		return this.params;
-	}
-
-	/**
 	 * @return The index of each layer in the weight and threshold array.
 	 */
 	public int[] getWeightIndex() {
@@ -538,17 +509,17 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 *         no activation functions or more than one type of activation
 	 *         function.
 	 */
-	public int hasSameActivationFunction() {
-		final List<Integer> map = new ArrayList<Integer>();
+	public Class<?> hasSameActivationFunction() {
+		final List<Class> map = new ArrayList<Class>();
 
-		for (final int activation : this.activationType) {
-			if (!map.contains(activation)) {
-				map.add(activation);
+		for (final ActivationFunction activation : this.activationFunctions) {
+			if (!map.contains(activation.getClass())) {
+				map.add(activation.getClass());
 			}
 		}
 
 		if (map.size() != 1) {
-			return -1;
+			return null;
 		} else {
 			return map.get(0);
 		}
@@ -562,13 +533,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	 */
 	public void init(final FlatLayer[] layers) {
 
-		int paramCount = 0;
-
 		final int layerCount = layers.length;
-
-		for (int i = 0; i < layerCount; i++) {
-			paramCount += layers[i].getParams().length;
-		}
 
 		this.inputCount = layers[0].getCount();
 		this.outputCount = layers[layerCount - 1].getCount();
@@ -577,19 +542,15 @@ public class FlatNetwork implements EngineNeuralNetwork {
 		this.layerContextCount = new int[layerCount];
 		this.weightIndex = new int[layerCount];
 		this.layerIndex = new int[layerCount];
-		this.activationType = new int[layerCount];
+		this.activationFunctions = new ActivationFunction[layerCount];
 		this.layerFeedCounts = new int[layerCount];
-		this.params = new double[paramCount];
 		this.contextTargetOffset = new int[layerCount];
 		this.contextTargetSize = new int[layerCount];
 		this.biasActivation = new double[layerCount];
-		this.paramIndex = new int[layerCount];
 
 		int index = 0;
 		int neuronCount = 0;
 		int weightCount = 0;
-
-		int currentParamIndex = 0;
 
 		for (int i = layers.length - 1; i >= 0; i--) {
 
@@ -604,10 +565,7 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			this.layerCounts[index] = layer.getTotalCount();
 			this.layerFeedCounts[index] = layer.getCount();
 			this.layerContextCount[index] = layer.getContectCount();
-			this.activationType[index] = layer.getActivation();
-			this.paramIndex[index] = currentParamIndex;
-			currentParamIndex = ActivationFunctions.copyParams(
-					layer.getParams(), this.params, currentParamIndex);
+			this.activationFunctions[index] = layer.getActivation();
 
 			neuronCount += layer.getTotalCount();
 
@@ -731,47 +689,34 @@ public class FlatNetwork implements EngineNeuralNetwork {
 	}
 
 	/**
-	 * Determine if the hidden and output layers have a uniform activation
-	 * function. If they do, then return that activation function. Otherwise
-	 * return -1.
-	 * 
-	 * @return -1 if there is no uniform activation function, the number of that
-	 *         activation function, otherwise.
-	 */
-	public int getUniformActivation() {
-		int lastActivation = -1;
-
-		for (int i = 0; i < this.activationType.length - 1; i++) {
-			if (lastActivation != -1
-					&& this.activationType[i] != lastActivation)
-				return -1;
-			else
-				lastActivation = this.activationType[i];
-		}
-
-		return this.activationType[0];
-	}
-
-	/**
 	 * Determine if the hidden or output layers have a slope other than 1.0.
-	 * Only counts sigmoid, linear and tanh. Other activation types will cause this
-	 * method to return false.
+	 * Only counts sigmoid, linear and tanh. Other activation types will cause
+	 * this method to return false.
 	 * 
 	 * @return True if there is a slope other than 1.0, false otherwise.
 	 */
 	public boolean anySlopeNotOne() {
-		for (int i = 0; i < this.activationType.length - 1; i++) {
-			if (this.activationType[i] != ActivationFunctions.ACTIVATION_LINEAR
-					&& this.activationType[i] != ActivationFunctions.ACTIVATION_SIGMOID
-					&& this.activationType[i] != ActivationFunctions.ACTIVATION_TANH) {
+		for (ActivationFunction activation : this.activationFunctions) {
+			if (!(activation instanceof ActivationLinear)
+					&& !(activation instanceof ActivationSigmoid)
+					&& !(activation instanceof ActivationTANH)) {
 				return false;
 			}
 
-			if (Math.abs(this.params[this.paramIndex[i]] - 1.0) > EncogEngine.DEFAULT_ZERO_TOLERANCE) {
+			if (Math.abs(activation.getParams()[0] - 1.0) > EncogEngine.DEFAULT_ZERO_TOLERANCE) {
 				return false;
 			}
 		}
 		return true;
 	}
+
+	/**
+	 * @return The activation functions.
+	 */
+	public ActivationFunction[] getActivationFunctions() {
+		return activationFunctions;
+	}
+	
+	
 
 }

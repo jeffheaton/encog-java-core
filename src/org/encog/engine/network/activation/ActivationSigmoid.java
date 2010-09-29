@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.util.BoundMath;
 
 /**
@@ -33,6 +32,12 @@ import org.encog.engine.util.BoundMath;
  * output is desired.
  */
 public class ActivationSigmoid implements ActivationFunction {
+
+	/**
+	 * The offset to the parameter that holds the sigmoid slope.
+	 */
+	public static final int PARAM_SIGMOID_SLOPE = 0;
+
 	/**
 	 * Serial id for this class.
 	 */
@@ -42,20 +47,20 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * The parameters.
 	 */
 	private double[] params;
-	
+
 	/**
 	 * Construct a basic sigmoid function, with a slope of 1.
 	 */
 	public ActivationSigmoid() {
 		this.params = new double[1];
-		this.params[ActivationFunctions.PARAM_SIGMOID_SLOPE] = 1;
+		this.params[ActivationSigmoid.PARAM_SIGMOID_SLOPE] = 1;
 	}
 
 	/**
 	 * @return The object cloned;
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationSigmoid();
 	}
 
@@ -63,7 +68,7 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * @return Get the slope of the activation function.
 	 */
 	public double getSlope() {
-		return this.params[ActivationFunctions.PARAM_SIGMOID_SLOPE];
+		return this.params[ActivationSigmoid.PARAM_SIGMOID_SLOPE];
 	}
 
 	/**
@@ -78,10 +83,11 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
-		for (int i = 0; i < x.length; i++) {
+	public void activationFunction(final double[] x, final int start,
+			final int size) {
+		for (int i = start; i < start + size; i++) {
 			x[i] = 1.0 / (1.0 + BoundMath.exp(-params[0] * x[i]));
-		}		
+		}
 	}
 
 	/**
@@ -97,8 +103,8 @@ public class ActivationSigmoid implements ActivationFunction {
 	 */
 	@Override
 	public String[] getParamNames() {
-		// TODO Auto-generated method stub
-		return null;
+		final String[] results = { "slope" };
+		return results;
 	}
 
 	/**
@@ -107,7 +113,7 @@ public class ActivationSigmoid implements ActivationFunction {
 	@Override
 	public double[] getParams() {
 		// TODO Auto-generated method stub
-		return null;
+		return this.params;
 	}
 
 	/**
@@ -115,7 +121,19 @@ public class ActivationSigmoid implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		// TODO Auto-generated method stub
-		
+		this.params[index] = value;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative,
+			final boolean allSlopeOne) {
+		if (derivative) {
+			return "(1.0f / (1.0f + exp(-slope * x)))";
+		} else {
+			return "(slope * x * (1.0f - x))";
+		}
 	}
 }

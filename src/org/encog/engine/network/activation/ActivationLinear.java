@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
 
 /**
  * The Linear layer is really not an activation function at all. The input is
@@ -34,6 +33,11 @@ import org.encog.engine.network.flat.ActivationFunctions;
  */
 public class ActivationLinear implements ActivationFunction {
 
+	/**
+	 * The offset to the parameter that holds the linear slope.
+	 */
+	public static final int PARAM_LINEAR_SLOPE = 0;
+	
 	/**
 	 * Serial id for this class.
 	 */
@@ -49,14 +53,14 @@ public class ActivationLinear implements ActivationFunction {
 	 */
 	public ActivationLinear() {
 		this.params = new double[1];
-		this.params[ActivationFunctions.PARAM_LINEAR_SLOPE] = 1;
+		this.params[ActivationLinear.PARAM_LINEAR_SLOPE] = 1;
 	}
 
 	/**
 	 * @return The object cloned.
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationLinear();
 	}
 
@@ -71,15 +75,18 @@ public class ActivationLinear implements ActivationFunction {
 	 * @return The slope of the activation function.
 	 */
 	public double getSlope() {
-		return this.params[ActivationFunctions.PARAM_LINEAR_SLOPE];
+		return this.params[ActivationLinear.PARAM_LINEAR_SLOPE];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] d) {		
-	
+	public void activationFunction(final double[] x, final int start, 
+			final int size) {		
+		for (int i = start; i < start + size; i++) {
+			x[i] = x[i] * params[0];
+		}
 	}
 
 	/**
@@ -113,5 +120,18 @@ public class ActivationLinear implements ActivationFunction {
 	@Override
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative,
+			final boolean allSlopeOne) {
+		if (derivative) {
+			return "(1.0)";
+		} else {
+			return "(slope * x)";
+		}
 	}
 }

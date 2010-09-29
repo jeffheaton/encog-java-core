@@ -31,7 +31,7 @@ import org.encog.engine.EncogEngineError;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineIndexableSet;
-import org.encog.engine.network.flat.ActivationFunctions;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLQueue;
@@ -215,7 +215,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.weightInArray = new float[flat.getWeights().length];
 		this.weightOutArray = new float[flat.getWeights().length];
 		this.tempDataArray = new float[tempDataSize];
-		this.slopeArray = new float[flat.getParams().length];
+		this.slopeArray = new float[flat.getActivationFunctions().length];
 		this.gradients = new float[flat.getWeights().length];
 
 		this.layerDeltaSize = 0;
@@ -223,7 +223,10 @@ public class KernelNetworkTrain extends EncogKernel {
 			this.layerDeltaSize += flat.getLayerCounts()[i];
 		}
 
-		EngineArray.arrayCopy(flat.getParams(),this.slopeArray);
+		int index = 0;
+		for(int i=0;i<flat.getActivationFunctions().length;i++) {
+			this.slopeArray[index++] = (float)flat.getActivationFunctions()[i].getParams()[0];
+		}
 		
 		final int inputSize = flat.getInputCount();
 		final int idealSize = flat.getOutputCount();
@@ -335,27 +338,18 @@ public class KernelNetworkTrain extends EncogKernel {
 	public void compile(final Map<String, String> options,
 			final FlatNetwork network) {
 
-		final int activation = network.getUniformActivation();
-
+		final ActivationFunction activation = network.getActivationFunctions()[0];
+		final boolean allSlopeOne = !network.anySlopeNotOne();
 		final StringBuilder source = new StringBuilder();
 
-		switch (activation) {
-		case ActivationFunctions.ACTIVATION_TANH:
-			if (network.anySlopeNotOne()) {
-				source.append("#define ACTIVATION(x,slope) tanh(x)\r\n");
-			} else {
-				source.append("#define ACTIVATION(x,slope) tanh(x)\r\n");
-			}
-			source.append(
-				"#define DERIVATIVE(x,slope) (slope * (1.0f - x * x))\r\n");
-			break;
-		case ActivationFunctions.ACTIVATION_SIGMOID:
-			source.append(
-		"#define ACTIVATION(x,slope) (1.0f / (1.0f + exp(-slope * x)))\r\n");
-			source.append(
-				"#define DERIVATIVE(x,slope) (slope * x * (1.0f - x))\r\n");
-			break;
-		}
+		source.append("#define ACTIVATION(x,slope)");
+		source.append(activation.getOpenCLExpression(false, allSlopeOne));
+		source.append("\r\n");
+		
+		source.append("#define DERIVATIVE(x,slope)");
+		source.append(activation.getOpenCLExpression(false, allSlopeOne));
+		source.append("\r\n");
+		
 
 		source.append(ResourceLoader.loadString(getSourceName()));
 		setCLSource(source.toString());
@@ -422,8 +416,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.weightInArrayBuffer = createArrayReadOnly(this.weightInArray);
 		this.weightOutArrayBuffer = createFloatArrayWriteOnly(this.weightInArray.length);
 		this.weightIndexBuffer = createArrayReadOnly(this.flat.getWeightIndex());
-		this.activationTypeBuffer = createArrayReadOnly(this.flat
-				.getActivationType());
+		this.activationTypeBuffer = createArrayReadOnly(this.flat.getLayerCounts());
 		this.slopeBuffer = createArrayReadOnly(this.slopeArray);
 		this.tempDataInBuffer = createArrayReadOnly(this.tempDataArray);
 		this.tempDataOutBuffer = createFloatArrayWriteOnly(this.tempDataArray.length);

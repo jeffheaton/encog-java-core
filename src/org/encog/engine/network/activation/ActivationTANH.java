@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.network.flat.ActivationFunctions;
 import org.encog.engine.util.BoundMath;
 
 /**
@@ -37,6 +36,11 @@ import org.encog.engine.util.BoundMath;
 public class ActivationTANH implements ActivationFunction {
 
 	/**
+	 * The offset to the parameter that holds the tanh slope.
+	 */
+	public static final int PARAM_TANH_SLOPE = 0;
+
+	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
@@ -45,20 +49,20 @@ public class ActivationTANH implements ActivationFunction {
 	 * The parameters.
 	 */
 	private double[] params;
-	
+
 	/**
 	 * Construct a basic HTAN activation function, with a slope of 1.
 	 */
 	public ActivationTANH() {
 		this.params = new double[1];
-		this.params[ActivationFunctions.PARAM_TANH_SLOPE] = 1;
+		this.params[ActivationTANH.PARAM_TANH_SLOPE] = 1;
 	}
 
 	/**
 	 * @return The object cloned;
 	 */
 	@Override
-	public Object clone() {
+	public ActivationFunction clone() {
 		return new ActivationTANH();
 	}
 
@@ -73,19 +77,19 @@ public class ActivationTANH implements ActivationFunction {
 	 * @return Get the slope of the activation function.
 	 */
 	public double getSlope() {
-		return this.params[ActivationFunctions.PARAM_TANH_SLOPE];
+		return this.params[ActivationTANH.PARAM_TANH_SLOPE];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x) {
-		for (int i = 0; i < x.length; i++) {
+	public void activationFunction(final double[] x, final int start,
+			final int size) {
+		for (int i = start; i < start + size; i++) {
 			final double z = BoundMath.exp(-params[0] * x[i]);
 			x[i] = (1.0 - z) / (1.0 + z);
 		}
-		
 	}
 
 	/**
@@ -118,7 +122,24 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;		
+		this.params[index] = value;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getOpenCLExpression(final boolean derivative,
+			final boolean allSlopeOne) {
+
+		if (derivative) {
+			return "(slope * (1.0f - x * x))";
+		} else {
+			if (allSlopeOne) {
+				return "tanh(x)";
+			} else {
+				return "tanh(x)";
+			}
+		}
+	}
 }

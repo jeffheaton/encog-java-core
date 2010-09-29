@@ -24,12 +24,9 @@
 
 package org.encog.neural.networks.layers;
 
+import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.util.BoundMath;
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.mathutil.rbf.GaussianFunction;
-import org.encog.mathutil.rbf.RadialBasisFunction;
-import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.Persistor;

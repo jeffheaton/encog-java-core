@@ -43,7 +43,7 @@ import java.io.Serializable;
  * Non-derivable activation functions are perfectly valid, they simply cannot be
  * used with every training algorithm.
  */
-public interface ActivationFunction extends Serializable {
+public interface ActivationFunction extends Serializable, Cloneable {
 
 	/**
 	 * Implements the activation function. The array is modified according to
@@ -52,8 +52,12 @@ public interface ActivationFunction extends Serializable {
 	 * 
 	 * @param d
 	 *            The input array to the activation function.
+	 * @param start
+	 * 		The starting index.
+	 * @param size
+	 * 		The number of values to calculate.
 	 */
-	void activationFunction(double[] d);
+	void activationFunction(double[] d, int start, int size);
 
 	/**
 	 * Calculate the derivative of the activation. It is assumed that the value
@@ -95,4 +99,18 @@ public interface ActivationFunction extends Serializable {
 	 */
 	String[] getParamNames();
 
+	/**
+	 * @return A cloned copy of this activation function.
+	 * @return
+	 */
+	ActivationFunction clone();
+	
+	/**
+	 * Returns the OpenCL expression for this activation function.
+	 * @param allSlopeOne True if all activation functions have a slope of 1.
+	 * @param derivative True if we want the derivative, false otherwise.
+	 * @return The OpenCL expression for this activation function.
+	 */
+	String getOpenCLExpression(final boolean derivative, 
+			final boolean allSlopeOne);
 }

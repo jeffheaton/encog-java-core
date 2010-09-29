@@ -27,7 +27,7 @@ package org.encog.engine.network.train.gradient;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineIndexableSet;
-import org.encog.engine.network.flat.ActivationFunctions;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.prop.TrainFlatNetworkProp;
 import org.encog.engine.util.EngineArray;
@@ -199,9 +199,9 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 
 		for (int i = 0; i < this.actual.length; i++) {
 
-			this.layerDelta[i] = ActivationFunctions.calculateActivationDerivative(
-					this.network.getActivationType()[0], this.actual[i],this.network.getParams(),this.network.getParamIndex()[0])
-					* (ideal[i] - this.actual[i]);
+			this.layerDelta[i] = 
+				this.network.getActivationFunctions()[0].derivativeFunction(this.actual[i])
+				* (ideal[i] - this.actual[i]);
 		}
 
 		for (int i = this.network.getBeginTraining(); i < this.network.getEndTraining(); i++) {
@@ -222,8 +222,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		final int toLayerSize = this.layerFeedCounts[currentLevel];
 
 		final int index = this.weightIndex[currentLevel];
-		final int activationType = this.network.getActivationType()[currentLevel + 1];
-		final int pindex = this.network.getParamIndex()[currentLevel + 1];
+		final ActivationFunction activation = this.network.getActivationFunctions()[currentLevel + 1];
 		
 		// handle weights
 		int yi = fromLayerIndex;
@@ -239,11 +238,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 				xi++;
 			}
 			
-			this.layerDelta[yi] = sum * ActivationFunctions
-			.calculateActivationDerivative(
-					activationType,
-					this.layerOutput[yi],
-					this.network.getParams(), pindex);
+			this.layerDelta[yi] = sum * activation.derivativeFunction(this.layerOutput[yi]);
 			yi++;
 		}
 	}

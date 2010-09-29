@@ -27,7 +27,7 @@ package org.encog.neural.networks.layers;
 import java.util.Collection;
 import java.util.List;
 
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.synapse.Synapse;
