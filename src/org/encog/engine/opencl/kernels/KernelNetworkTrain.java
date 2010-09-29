@@ -223,10 +223,8 @@ public class KernelNetworkTrain extends EncogKernel {
 			this.layerDeltaSize += flat.getLayerCounts()[i];
 		}
 
-		for (int i = 0; i < this.slopeArray.length; i++) {
-			this.slopeArray[i] = (float) flat.getParams()[i];
-		}
-
+		EngineArray.arrayCopy(flat.getParams(),this.slopeArray);
+		
 		final int inputSize = flat.getInputCount();
 		final int idealSize = flat.getOutputCount();
 
@@ -277,9 +275,7 @@ public class KernelNetworkTrain extends EncogKernel {
 			this.paramArray[8] = Math.max(size % getGlobalWork(), 1);
 		}
 
-		for (int i = 0; i < this.flat.getWeights().length; i++) {
-			this.weightInArray[i] = (float) this.flat.getWeights()[i];
-		}
+		EngineArray.arrayCopy(this.flat.getWeights(),this.weightInArray);
 
 		setArg(0, this.paramBuffer);
 		setArg(1, this.errorBuffer);

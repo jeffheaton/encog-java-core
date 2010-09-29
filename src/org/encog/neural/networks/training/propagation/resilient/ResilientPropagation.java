@@ -196,12 +196,22 @@ public class ResilientPropagation extends Propagation {
 	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
 
-		result.set(ResilientPropagation.LAST_GRADIENTS,
-				((TrainFlatNetworkResilient) this.getFlatTraining())
-						.getLastGradient());
-		result.set(ResilientPropagation.UPDATE_VALUES,
-				((TrainFlatNetworkResilient) this.getFlatTraining())
-						.getUpdateValues());
+		if( this.getFlatTraining() instanceof TrainFlatNetworkResilient) {
+			result.set(ResilientPropagation.LAST_GRADIENTS,
+					((TrainFlatNetworkResilient) this.getFlatTraining())
+							.getLastGradient());
+			result.set(ResilientPropagation.UPDATE_VALUES,
+					((TrainFlatNetworkResilient) this.getFlatTraining())
+							.getUpdateValues());	
+		} else {
+			result.set(ResilientPropagation.LAST_GRADIENTS,
+					((TrainFlatNetworkOpenCL) this.getFlatTraining())
+							.getLastGradient());
+			result.set(ResilientPropagation.UPDATE_VALUES,
+					((TrainFlatNetworkOpenCL) this.getFlatTraining())
+							.getUpdateValues());
+		}
+		
 		return result;
 	}
 

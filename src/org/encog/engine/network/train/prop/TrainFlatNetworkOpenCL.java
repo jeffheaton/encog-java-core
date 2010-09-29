@@ -36,6 +36,7 @@ import org.encog.engine.network.flat.ValidateForOpenCL;
 import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
+import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.ErrorCalculationMode;
 
@@ -288,12 +289,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			this.error = Math.sqrt(this.error);
 		}
 
-		final int len = this.network.getWeights().length;
-
-		for (int i = 0; i < len; i++) {
-			this.network.getWeights()[i] = this.kernel.getWeightOutArray()[i];
-		}
-		// this.owner.report(this.gradients, error, null);
+		EngineArray.arrayCopy(this.kernel.getWeightOutArray(),this.network.getWeights());
 
 	}
 

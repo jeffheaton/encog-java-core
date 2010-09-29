@@ -224,4 +224,26 @@ public final class EngineArray {
 		
 		return result;
 	}
+
+	/**
+	 * Copy an array of floats to an array of doubles.
+	 * @param source The source array.
+	 * @param target The target array.
+	 */
+	public static void arrayCopy(final float[] source, final double[] target) {
+		for(int i=0;i<source.length;i++) {
+			target[i] = source[i];
+		}
+	}
+	
+	/**
+	 * Copy an array of floats to an array of doubles.
+	 * @param source The source array.
+	 * @param target The target array.
+	 */
+	public static void arrayCopy(final double[] source, final float[] target) {
+		for(int i=0;i<source.length;i++) {
+			target[i] = (float)source[i];
+		}
+	}
 }
