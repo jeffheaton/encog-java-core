@@ -262,7 +262,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	public void calculate(final int start, final int size, 
 			final boolean learn) {
 		prepareKernel();
-System.out.println("Calculate: " + start + ", size: " + size);
+
 		this.paramArray[3] = learn ? 1 : 0; // should it learn
 		this.paramArray[4] = start; // training offset
 		this.paramArray[6] = getGlobalWork() - 1;// index of last item
