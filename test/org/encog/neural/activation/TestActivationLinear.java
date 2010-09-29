@@ -26,8 +26,7 @@ package org.encog.neural.activation;
 
 import junit.framework.TestCase;
 
-import org.encog.EncogError;
-import org.encog.persist.persistors.generic.GenericPersistor;
+import org.encog.engine.network.activation.ActivationLinear;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,7 +42,7 @@ public class TestActivationLinear extends TestCase {
 		
 		double[] input = { 1,2,3 };
 		
-		activation.activationFunction(input);
+		activation.activationFunction(input,0,input.length);
 		
 		Assert.assertEquals(1.0,input[0],0.1);
 		Assert.assertEquals(2.0,input[1],0.1);

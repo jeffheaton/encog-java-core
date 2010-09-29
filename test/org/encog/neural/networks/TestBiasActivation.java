@@ -24,14 +24,12 @@
 
 package org.encog.neural.networks;
 
-import java.util.Arrays;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.layers.BasicLayer;
@@ -40,7 +38,6 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.logging.Logging;
-import org.encog.util.simple.EncogUtility;
 
 public class TestBiasActivation extends TestCase {
 	

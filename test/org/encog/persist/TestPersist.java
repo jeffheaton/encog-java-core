@@ -24,13 +24,13 @@
 
 package org.encog.persist;
 
-import org.encog.neural.activation.ActivationSigmoid;
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.neural.pattern.RadialBasisPattern;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestPersist extends TestCase {
 	

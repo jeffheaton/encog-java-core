@@ -24,12 +24,12 @@
 
 package org.encog.neural.activation;
 
+import junit.framework.TestCase;
+
 import org.encog.EncogError;
-import org.encog.persist.persistors.generic.GenericPersistor;
+import org.encog.engine.network.activation.ActivationBiPolar;
 import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.TestCase;
 
 public class TestActivationBiPolar extends TestCase {
 	
@@ -37,29 +37,19 @@ public class TestActivationBiPolar extends TestCase {
 	public void testBiPolar() throws Throwable
 	{
 		ActivationBiPolar activation = new ActivationBiPolar();
-		Assert.assertFalse(activation.hasDerivative());
+		Assert.assertTrue(activation.hasDerivative());
 		
 		ActivationBiPolar clone = (ActivationBiPolar)activation.clone();
 		Assert.assertNotNull(clone);
 		
 		double[] input = { 0.5, -0.5 };
 		
-		activation.activationFunction(input);
+		activation.activationFunction(input,0,input.length);
 		
 		Assert.assertEquals(1.0,input[0],0.1);
 		Assert.assertEquals(-1.0,input[1],0.1);
 		
 		
-		// test derivative, should throw an error
-		try
-		{
-			activation.derivativeFunction(0);
-			Assert.assertTrue(false);// mark an error
-		}
-		catch(EncogError e)
-		{
-			// good, this should happen
-		}
 		
 		
 	}

@@ -24,6 +24,7 @@
 
 package org.encog.neural.activation;
 
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.persist.persistors.generic.GenericPersistor;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,7 +42,7 @@ public class TestActivationSigmoid extends TestCase {
 
 		double[] input = { 0.0  };
 
-		activation.activationFunction(input);
+		activation.activationFunction(input,0,input.length);
 
 		Assert.assertEquals(0.5, input[0], 0.1);		
 

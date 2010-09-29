@@ -27,16 +27,13 @@ package org.encog.neural.networks.training.competitive;
 import junit.framework.TestCase;
 
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.training.competitive.CompetitiveTraining;
 import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodSingle;
 import org.encog.neural.pattern.SOMPattern;
 import org.encog.util.logging.Logging;

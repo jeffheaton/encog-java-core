@@ -26,6 +26,11 @@ package org.encog.neural.networks.structure;
 
 import java.util.List;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
@@ -34,10 +39,6 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.neural.pattern.JordanPattern;
-import org.encog.neural.activation.*;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestNeuralStructure extends TestCase {
 	public void testStructureFeedForward()

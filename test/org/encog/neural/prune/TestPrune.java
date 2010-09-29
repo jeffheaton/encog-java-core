@@ -26,9 +26,7 @@ package org.encog.neural.prune;
 
 import junit.framework.Assert;
 
-import org.encog.NullStatusReportable;
-import org.encog.engine.StatusReportable;
-import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;

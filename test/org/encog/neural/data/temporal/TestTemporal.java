@@ -26,11 +26,11 @@ package org.encog.neural.data.temporal;
 
 import java.util.Iterator;
 
-import org.encog.neural.activation.ActivationTANH;
+import junit.framework.TestCase;
+
+import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.temporal.TemporalDataDescription.Type;
-
-import junit.framework.TestCase;
 
 public class TestTemporal extends TestCase {
 	public void testBasicTemporal()
