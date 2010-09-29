@@ -196,7 +196,7 @@ kernel void NetworkTrain(
 			else if (change == 0) 
 			{
 				// if change==0 then there is no change to the delta
-				float delta = tempDataIn[i+WEIGHT_COUNT];
+				float delta = tempDataIn[i];
 				weightChange = sign(*gptr) * delta;
 				tempDataIn[i] = gradientsOut[i];
 			}
