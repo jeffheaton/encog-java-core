@@ -131,9 +131,9 @@ public class ActivationSigmoid implements ActivationFunction {
 	public String getOpenCLExpression(final boolean derivative,
 			final boolean allSlopeOne) {
 		if (derivative) {
-			return "(1.0f / (1.0f + exp(-slope * x)))";
-		} else {
 			return "(slope * x * (1.0f - x))";
+		} else {
+			return "(1.0f / (1.0f + exp(-slope * x)))";
 		}
 	}
 }

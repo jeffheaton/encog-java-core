@@ -700,14 +700,14 @@ public class FlatNetwork implements EngineNeuralNetwork {
 			if (!(activation instanceof ActivationLinear)
 					&& !(activation instanceof ActivationSigmoid)
 					&& !(activation instanceof ActivationTANH)) {
-				return false;
+				return true;
 			}
 
 			if (Math.abs(activation.getParams()[0] - 1.0) > EncogEngine.DEFAULT_ZERO_TOLERANCE) {
-				return false;
+				return true;
 			}
 		}
-		return true;
+		return false;
 	}
 
 	/**

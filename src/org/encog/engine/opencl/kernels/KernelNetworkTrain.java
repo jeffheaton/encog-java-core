@@ -347,7 +347,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		source.append("\r\n");
 		
 		source.append("#define DERIVATIVE(x,slope)");
-		source.append(activation.getOpenCLExpression(false, allSlopeOne));
+		source.append(activation.getOpenCLExpression(true, allSlopeOne));
 		source.append("\r\n");
 		
 
