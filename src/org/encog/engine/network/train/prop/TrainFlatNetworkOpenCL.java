@@ -109,6 +109,13 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * The kernel in use.
 	 */
 	private KernelNetworkTrain kernel;
+	
+	
+	private final int workloadCount;
+
+	private final int maxWorkloadSize;
+	
+	private final int lastWorkloadSize;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -139,6 +146,18 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.targetDevice = targetDevice;
 		this.network = network;
 		this.training = (EngineIndexableSet) training;
+		
+		//
+		long networkLoad = this.network.getWeights().length*(this.training.getRecordCount());
+		this.workloadCount = (int)(networkLoad/(long)(EncogEngine.getInstance().getCL().getMaxTrainingSize()*1000l));
+		
+		if( workloadCount==0 ) {
+			lastWorkloadSize = (int)this.training.getRecordCount();
+			maxWorkloadSize = lastWorkloadSize;
+		} else {
+			maxWorkloadSize = (int)this.training.getRecordCount()/workloadCount;
+			lastWorkloadSize = (int)this.training.getRecordCount()%workloadCount;
+		}
 	}
 
 	/**
@@ -149,14 +168,14 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 */
 	private void callKernel(final int start, final int size, 
 			final boolean learn) {
-		this.kernel.calculate(0, (int) this.training.getRecordCount(), learn);
+		this.kernel.calculate(start, size, learn);
 
 		double e = 0;
 
 		for (int i = 0; i < this.kernel.getGlobalWork(); i++) {
 			e += this.kernel.getErrors()[i];
 		}
-		this.error = e;
+		this.error += e;
 	}
 
 	/**
@@ -256,33 +275,20 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			throw new EncogEngineError(
 					"Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
 		}
-		
-		long networkLoad = this.network.getWeights().length*(this.training.getRecordCount());
-		int workloadCount = (int)(networkLoad/(long)(EncogEngine.getInstance().getCL().getMaxTrainingSize()*1000l));
-
-		int maxWorkloadSize;
-		int lastWorkloadSize;
-		
-		if( workloadCount==0 ) {
-			lastWorkloadSize = (int)training.getRecordCount();
-			maxWorkloadSize = lastWorkloadSize;
-		} else {
-			maxWorkloadSize = (int)this.training.getRecordCount()/workloadCount;
-			lastWorkloadSize = (int)this.training.getRecordCount()%workloadCount;
-		}
-		
+				
 		int currentIndex = 0;
 		this.error=0;
+		int count = this.workloadCount;
 
-		while (workloadCount > 0) {
+		while (count > 0) {
 			callKernel(currentIndex, maxWorkloadSize, false);
-			workloadCount--;
+			count--;
 			currentIndex += maxWorkloadSize;
 		}
 
 		callKernel(currentIndex, lastWorkloadSize, true);
 
-		final int count = (int) this.training.getRecordCount();
+		count = (int) this.training.getRecordCount();
 		this.error = this.error / (count * this.training.getIdealSize());
 
 		if (ErrorCalculation.getMode() == ErrorCalculationMode.RMS) {
@@ -400,6 +406,18 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 */
 	public double getMaxStep() {
 		return maxStep;
+	}
+
+	public int getWorkloadCount() {
+		return workloadCount;
+	}
+
+	public int getMaxWorkloadSize() {
+		return maxWorkloadSize;
+	}
+
+	public int getLastWorkloadSize() {
+		return lastWorkloadSize;
 	}
 	
 	
