@@ -147,17 +147,33 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.network = network;
 		this.training = (EngineIndexableSet) training;
 		
-		//
+		// Divide the training set into smaller workloads if it is too big.
+		// This ensures that the GPU does not timeout if it still needs to run the display.
 		long networkLoad = this.network.getWeights().length*(this.training.getRecordCount());
-		this.workloadCount = (int)(networkLoad/(long)(EncogEngine.getInstance().getCL().getMaxTrainingSize()*1000l));
+		int calcWorkloadCount = (int)(networkLoad/(long)(EncogEngine.getInstance().getCL().getMaxTrainingSize()*1000l));
+		int calcLastWorkloadSize;
 		
-		if( workloadCount==0 ) {
-			lastWorkloadSize = (int)this.training.getRecordCount();
-			maxWorkloadSize = lastWorkloadSize;
+		// if workload is zero, then everything will be in one large group
+		if( calcWorkloadCount==0 ) {
+			calcLastWorkloadSize = (int)this.training.getRecordCount();
+			maxWorkloadSize = calcWorkloadCount;
 		} else {
-			maxWorkloadSize = (int)this.training.getRecordCount()/workloadCount;
-			lastWorkloadSize = (int)this.training.getRecordCount()%workloadCount;
+			// divide into smaller groups
+			maxWorkloadSize = (int)this.training.getRecordCount()/calcWorkloadCount;
+			calcLastWorkloadSize = (int)this.training.getRecordCount()%calcWorkloadCount;
+			
+			// if calcLastWorkloadSize is zero, then the workload split evenly.
+			// training is done on the last workload, so we must force there to be one
+			if( calcLastWorkloadSize==0)
+			{
+				calcLastWorkloadSize = maxWorkloadSize;
+				calcWorkloadCount--;
+			}
+		
 		}
+		
+		this.workloadCount = calcWorkloadCount;
+		this.lastWorkloadSize = calcLastWorkloadSize;
 	}
 
 	/**
@@ -175,6 +191,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		for (int i = 0; i < this.kernel.getGlobalWork(); i++) {
 			e += this.kernel.getErrors()[i];
 		}
+		//System.out.println("Iteration: start=" + start + ",count=" + size + ",error=" + e);
 		this.error += e;
 	}
 
@@ -279,14 +296,24 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		int currentIndex = 0;
 		this.error=0;
 		int count = this.workloadCount;
+		int increaseLast = 0;
+		
+		//is the last workload size less than the number of threads?
+		if( lastWorkloadSize<this.kernel.getGlobalWork() )
+		{
+			count--;
+			increaseLast = maxWorkloadSize;
+		}
 
+		// handle workloads
 		while (count > 0) {
 			callKernel(currentIndex, maxWorkloadSize, false);
 			count--;
 			currentIndex += maxWorkloadSize;
 		}
 
-		callKernel(currentIndex, lastWorkloadSize, true);
+		// handle the last workload
+		callKernel(currentIndex, lastWorkloadSize+increaseLast, true);
 
 		count = (int) this.training.getRecordCount();
 		this.error = this.error / (count * this.training.getIdealSize());
