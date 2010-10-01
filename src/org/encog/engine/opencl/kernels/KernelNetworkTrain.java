@@ -335,7 +335,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * @param network The network to compile for.
 	 */
 	public void compile(final Map<String, String> options,
-			final FlatNetwork network) {
+			final FlatNetwork network, int requestedGlobalSize) {
 
 		final ActivationFunction activation = network.getActivationFunctions()[0];
 		final boolean allSlopeOne = !network.anySlopeNotOne();
@@ -354,18 +354,16 @@ public class KernelNetworkTrain extends EncogKernel {
 		setCLSource(source.toString());
 
 		compile(options);
-		assignWorkgroupSizes(this.trainingLength);
+		assignWorkgroupSizes(this.trainingLength, requestedGlobalSize);
 		
 		// setup
 		init();
 	}
 	
-	public void assignWorkgroupSizes(int size)
+	public void assignWorkgroupSizes(int trainingSize, int requestedGlobalSize)
 	{
 		// Calculate the work-item dimensions
-		int threads = EncogEngine.getInstance().getCL().getGlobalWork();
-		threads = Math.min(size, EncogEngine.getInstance()
-				.getCL().getGlobalWork());
+		int threads = Math.min(trainingSize, requestedGlobalSize);
 		setLocalWork(Math.min(getMaxWorkGroupSize(), threads));
 		setGlobalWork(Math.min(threads, getLocalWork()));
 	}
