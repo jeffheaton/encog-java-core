@@ -3,6 +3,13 @@
 #define DELTA_MIN 0.00001f
 #define MAX_STEP 50.0f	
 
+#define PARRAY_INPUT_COUNT 0
+#define PARRAY_OUTPUT_COUNT 1
+#define PARRAY_LAYER_COUNT 2
+#define PARRAY_LEARN 3 
+#define PARRAY_START 4
+#define PARRAY_ITEMS_PER 5
+
 kernel void NetworkTrain(
     global read_only int *params,
     global write_only float *errors,
@@ -26,22 +33,16 @@ kernel void NetworkTrain(
 	private float layerDelta[NEURON_COUNT];
 			
 	int taskIndex = get_global_id(0);
-	int inputSize = params[0];
-    int outputSize = params[1];
-    int layerCount = params[2];
-    int trainingOffset = params[4];
-    int indexLastElement = params[6];
-    int sizeElement = params[7];
-    int sizeLastElement = params[8];
-
+	int globalSize = get_global_size(0);
+	
+	int inputSize = params[PARRAY_INPUT_COUNT];
+    int outputSize = params[PARRAY_OUTPUT_COUNT];
+    int layerCount = params[PARRAY_LAYER_COUNT];
+    int trainingOffset = params[PARRAY_START];
+	int itemsPer = params[PARRAY_ITEMS_PER];
+	
 	int gradientOffset = (taskIndex*WEIGHT_COUNT);
-
-	int size;
-	if( taskIndex==indexLastElement )
-		size = sizeLastElement;
-	else
-		size = sizeElement;
-		
+	
 	// clear out the gradients and errors
 	errors[taskIndex] = 0;
 	for(int i=0;i<WEIGHT_COUNT;i++)
@@ -49,9 +50,9 @@ kernel void NetworkTrain(
 		gradientsOut[gradientOffset+i] = 0;
 	}
 	
-	for(int trainIndex=0;trainIndex<size;trainIndex++)
+	for(int trainIndex=0;trainIndex<itemsPer;trainIndex++)
 	{		 
-		int subtaskIndex = (taskIndex*sizeElement)+trainIndex+trainingOffset;
+		int subtaskIndex = (taskIndex*itemsPer)+trainIndex+trainingOffset;
 		
 		// part 1: forward pass
 		int taskInputIndex = subtaskIndex * inputSize;
@@ -148,18 +149,18 @@ kernel void NetworkTrain(
 	
 	if( taskIndex==0 )
 	{
-		// loop over all gradients and sum them into the first subtask
+		// loop over all gradients and sum them into the first "global" task
 		for(int i=0;i<WEIGHT_COUNT;i++) 
 		{
 			gradientsOut[i]+=gradientsIn[i];
-			for(int j=1;j<=indexLastElement;j++)
+			for(int j=1;j<globalSize;j++)
 			{		 
 				gradientsOut[i] += gradientsOut[(j*WEIGHT_COUNT)+i];
 			}
 		}
 	}
 
-	if( taskIndex==0 && params[3]>0 )
+	if( taskIndex==0 && params[PARRAY_LEARN]>0 )
 	{
 		// teach the weights
 #ifdef LEARN_RPROP

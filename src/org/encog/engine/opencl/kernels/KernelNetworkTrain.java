@@ -45,6 +45,13 @@ import org.jocl.cl_mem;
  */
 public class KernelNetworkTrain extends EncogKernel {
 
+	public static final int PARRAY_INPUT_COUNT = 0;
+	public static final int PARRAY_OUTPUT_COUNT = 1;
+	public static final int PARRAY_LAYER_COUNT = 2;
+	public static final int PARRAY_LEARN = 3; 
+	public static final int PARRAY_START = 4;
+	public static final int PARRAY_ITEMS_PER = 5;
+	
 	/**
 	 * A buffer to communicate weights to the kernel.
 	 */
@@ -266,17 +273,9 @@ public class KernelNetworkTrain extends EncogKernel {
 			final boolean learn) {
 		prepareKernel();
 
-		this.paramArray[3] = learn ? 1 : 0; // should it learn
-		this.paramArray[4] = start; // training offset
-		this.paramArray[6] = getGlobalWork() - 1;// index of last item
-		// size each item
-		this.paramArray[7] = Math.max(size / getGlobalWork(), 1);
-		// size of last item
-		if (getGlobalWork() == 1) {
-			this.paramArray[8] = size;
-		} else {
-			this.paramArray[8] = Math.max(size % getGlobalWork(), 1);
-		}
+		this.paramArray[PARRAY_LEARN] = learn ? 1 : 0; // should it learn
+		this.paramArray[PARRAY_START] = start; // training offset
+		this.paramArray[PARRAY_ITEMS_PER] = size;// index of last item
 
 		EngineArray.arrayCopy(this.flat.getWeights(),this.weightInArray);
 
@@ -355,16 +354,20 @@ public class KernelNetworkTrain extends EncogKernel {
 		setCLSource(source.toString());
 
 		compile(options);
-
+		assignWorkgroupSizes(this.trainingLength);
+		
+		// setup
+		init();
+	}
+	
+	public void assignWorkgroupSizes(int size)
+	{
 		// Calculate the work-item dimensions
 		int threads = EncogEngine.getInstance().getCL().getGlobalWork();
-		threads = Math.min(this.trainingLength, EncogEngine.getInstance()
+		threads = Math.min(size, EncogEngine.getInstance()
 				.getCL().getGlobalWork());
 		setLocalWork(Math.min(getMaxWorkGroupSize(), threads));
 		setGlobalWork(Math.min(threads, getLocalWork()));
-
-		// setup
-		init();
 	}
 
 	/**
