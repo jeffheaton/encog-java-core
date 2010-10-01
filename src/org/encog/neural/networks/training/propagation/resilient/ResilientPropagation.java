@@ -24,8 +24,6 @@
 
 package org.encog.neural.networks.training.propagation.resilient;
 
-import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
 import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
@@ -131,8 +129,8 @@ public class ResilientPropagation extends Propagation {
 	 *            The network to train.
 	 * @param training
 	 *            The training set to use.
-	 * @param zeroTolerance
-	 *            The zero tolerance.
+	 * @param device
+	 *            Optional EncogCL device to execute on.
 	 * @param initialUpdate
 	 *            The initial update values, this is the amount that the deltas
 	 *            are all initially set to.
@@ -140,7 +138,7 @@ public class ResilientPropagation extends Propagation {
 	 *            The maximum that a delta can reach.
 	 */
 	public ResilientPropagation(final BasicNetwork network,
-			final NeuralDataSet training, EncogCLDevice device,
+			final NeuralDataSet training, final EncogCLDevice device,
 			final double initialUpdate,
 			final double maxStep) {
 

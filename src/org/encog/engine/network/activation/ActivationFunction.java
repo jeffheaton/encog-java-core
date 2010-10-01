@@ -101,7 +101,6 @@ public interface ActivationFunction extends Serializable, Cloneable {
 
 	/**
 	 * @return A cloned copy of this activation function.
-	 * @return
 	 */
 	ActivationFunction clone();
 	

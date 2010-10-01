@@ -49,12 +49,12 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * Learn RPROP.
 	 */
 	public static final int LEARN_RPROP = 0;
-	
+
 	/**
 	 * Learn backpropagation.
 	 */
 	public static final int LEARN_BPROP = 1;
-	
+
 	/**
 	 * Learn Manhattan update rule.
 	 */
@@ -64,7 +64,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * The error.
 	 */
 	private double error;
-	
+
 	/**
 	 * The target device.
 	 */
@@ -109,11 +109,10 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * The kernel in use.
 	 */
 	private KernelNetworkTrain kernel;
-	
-	
-	private int sizeGlobalWorkItem=10;
-	
-	private int globalWorkItemSize=100;
+
+	private final int sizeGlobalWorkItem = 10;
+
+	private final int globalWorkItemSize = 100;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -123,7 +122,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * @param training
 	 *            The training data to use.
 	 * @param targetDevice
-	 * 			The target device.
+	 *            The target device.
 	 */
 	public TrainFlatNetworkOpenCL(final FlatNetwork network,
 			final EngineDataSet training, final EncogCLDevice targetDevice) {
@@ -148,13 +147,17 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 	/**
 	 * Call the kernel.
-	 * @param start The starting training element.
-	 * @param size The number of training elements.
-	 * @param learn Should we learn?
+	 * 
+	 * @param start
+	 *            The starting training element.
+	 * @param size
+	 *            The number of training elements.
+	 * @param learn
+	 *            Should we learn?
 	 */
-	private void callKernel(final int start, final int size, 
-			final boolean learn) {
-		//System.out.println("Iteration: start=" + start + ",sizePer=" + size + ",total=" + (size*this.kernel.getGlobalWork()) );
+	private void callKernel(final int start, final int size, final boolean learn) {
+		// System.out.println("Iteration: start=" + start + ",sizePer=" + size +
+		// ",total=" + (size*this.kernel.getGlobalWork()) );
 		this.kernel.calculate(start, size, learn);
 
 		double e = 0;
@@ -162,7 +165,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		for (int i = 0; i < this.kernel.getGlobalWork(); i++) {
 			e += this.kernel.getErrors()[i];
 		}
-		
+
 		this.error += e;
 	}
 
@@ -195,6 +198,34 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	}
 
 	/**
+	 * @return the learningRate
+	 */
+	public double getLearningRate() {
+		return this.learningRate;
+	}
+
+	/**
+	 * @return the learningType
+	 */
+	public int getLearningType() {
+		return this.learningType;
+	}
+
+	/**
+	 * @return the maxStep
+	 */
+	public double getMaxStep() {
+		return this.maxStep;
+	}
+
+	/**
+	 * @return the momentum
+	 */
+	public double getMomentum() {
+		return this.momentum;
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -213,7 +244,9 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 	/**
 	 * Get the learning properties.
-	 * @param learningType The learning type.
+	 * 
+	 * @param learningType
+	 *            The learning type.
 	 * @return The options.
 	 */
 	private Map<String, String> getOptions(final String learningType) {
@@ -233,7 +266,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return The training data to use.
 	 */
 	@Override
 	public EngineDataSet getTraining() {
@@ -263,34 +296,34 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			throw new EncogEngineError(
 					"Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
 		}
-				
+
 		int currentIndex = 0;
-		this.error=0;
-		
-		this.kernel.assignWorkgroupSizes((int)this.training.getRecordCount(),this.globalWorkItemSize);
-		
-		int global = this.kernel.getGlobalWork();
-		int workPerIteration = global*this.sizeGlobalWorkItem;
-		
-		int count = (int)(this.training.getRecordCount()/workPerIteration);
-		int remainder = (int)(this.training.getRecordCount()%workPerIteration);
-		
+		this.error = 0;
+
+		this.kernel.assignWorkgroupSizes((int) this.training.getRecordCount(),
+				this.globalWorkItemSize);
+
+		final int global = this.kernel.getGlobalWork();
+		final int workPerIteration = global * this.sizeGlobalWorkItem;
+
+		int count = (int) (this.training.getRecordCount() / workPerIteration);
+		int remainder = (int) (this.training.getRecordCount() % workPerIteration);
+
 		int remainderPer;
 		int remainderGlobal = global;
-		
-		// if there is no "final training set", because it lined up evenly, still create one.
+
+		// if there is no "final training set", because it lined up evenly,
+		// still create one.
 		// the final training set is where learning happens.
-		if( remainder==0 )
-		{
+		if (remainder == 0) {
 			remainder = this.kernel.getGlobalWork();
 			count--;
 		}
-		
-		remainderPer = remainder/global;
-		
+
+		remainderPer = remainder / global;
+
 		// does the remainder not have enough to fill the global tasks global?
-		if( remainderPer==0 )
-		{
+		if (remainderPer == 0) {
 			remainderPer = 1;
 			remainderGlobal = remainder;
 		}
@@ -299,11 +332,13 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		while (count > 0) {
 			callKernel(currentIndex, this.sizeGlobalWorkItem, false);
 			count--;
-			currentIndex += this.sizeGlobalWorkItem*this.kernel.getGlobalWork();
+			currentIndex += this.sizeGlobalWorkItem
+					* this.kernel.getGlobalWork();
 		}
 
 		// handle the final workload
-		this.kernel.assignWorkgroupSizes(remainderGlobal,this.globalWorkItemSize);
+		this.kernel.assignWorkgroupSizes(remainderGlobal,
+				this.globalWorkItemSize);
 		callKernel(currentIndex, remainderPer, true);
 
 		count = (int) this.training.getRecordCount();
@@ -313,14 +348,18 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			this.error = Math.sqrt(this.error);
 		}
 
-		EngineArray.arrayCopy(this.kernel.getWeightOutArray(),this.network.getWeights());
+		EngineArray.arrayCopy(this.kernel.getWeightOutArray(), this.network
+				.getWeights());
 
 	}
 
 	/**
 	 * Learn using backpropagation.
-	 * @param learningRate The learning rate.
-	 * @param momentum The momentum.
+	 * 
+	 * @param learningRate
+	 *            The learning rate.
+	 * @param momentum
+	 *            The momentum.
 	 */
 	public void learnBPROP(final double learningRate, final double momentum) {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_BPROP;
@@ -333,14 +372,16 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.kernel = new KernelNetworkTrain(this.targetDevice, this.network,
 				this.training, this.network.getWeights().length + 2);
-		this.kernel.compile(options, this.network,this.globalWorkItemSize);
+		this.kernel.compile(options, this.network, this.globalWorkItemSize);
 		this.kernel.getTempDataArray()[0] = (float) learningRate;
 		this.kernel.getTempDataArray()[1] = (float) momentum;
 	}
 
 	/**
 	 * Learn using the Manhattan update rule.
-	 * @param learningRate The learning rate.
+	 * 
+	 * @param learningRate
+	 *            The learning rate.
 	 */
 	public void learnManhattan(final double learningRate) {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_MANHATTAN;
@@ -350,13 +391,12 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.kernel = new KernelNetworkTrain(this.targetDevice, this.network,
 				this.training, 1);
-		this.kernel.compile(options, this.network,this.globalWorkItemSize);
+		this.kernel.compile(options, this.network, this.globalWorkItemSize);
 		this.kernel.getTempDataArray()[0] = (float) learningRate;
 	}
-	
-	
+
 	/**
-	 * Learn using RPROP.  Use default max step and initial update.
+	 * Learn using RPROP. Use default max step and initial update.
 	 */
 	public void learnRPROP() {
 		learnRPROP(RPROPConst.DEFAULT_INITIAL_UPDATE,
@@ -365,8 +405,11 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 	/**
 	 * Learn using RPROP with a custom initial update and max step.
-	 * @param initialUpdate The initial update value.
-	 * @param maxStep The max step.
+	 * 
+	 * @param initialUpdate
+	 *            The initial update value.
+	 * @param maxStep
+	 *            The max step.
 	 */
 	public void learnRPROP(final double initialUpdate, final double maxStep) {
 		this.learningType = TrainFlatNetworkOpenCL.LEARN_RPROP;
@@ -378,7 +421,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.kernel = new KernelNetworkTrain(this.targetDevice, this.network,
 				this.training, this.network.getWeights().length * 2);
 
-		this.kernel.compile(options, this.network,this.globalWorkItemSize);
+		this.kernel.compile(options, this.network, this.globalWorkItemSize);
 
 		final int weightLength = this.network.getWeights().length;
 
@@ -396,34 +439,6 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	public void setNumThreads(final int numThreads) {
 		// TODO Auto-generated method stub
 
-	}
-
-	/**
-	 * @return the learningType
-	 */
-	public int getLearningType() {
-		return learningType;
-	}
-
-	/**
-	 * @return the learningRate
-	 */
-	public double getLearningRate() {
-		return learningRate;
-	}
-
-	/**
-	 * @return the momentum
-	 */
-	public double getMomentum() {
-		return momentum;
-	}
-
-	/**
-	 * @return the maxStep
-	 */
-	public double getMaxStep() {
-		return maxStep;
 	}
 
 }
