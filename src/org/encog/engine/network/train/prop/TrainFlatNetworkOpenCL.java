@@ -110,9 +110,9 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 */
 	private KernelNetworkTrain kernel;
 
-	private final int sizeGlobalWorkItem = 10;
+	private int numGlobalWorkItems = 100;
 
-	private final int globalWorkItemSize = 100;
+	private int itemsPerGlobalWorkItem = 10;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -301,10 +301,10 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.error = 0;
 
 		this.kernel.assignWorkgroupSizes((int) this.training.getRecordCount(),
-				this.globalWorkItemSize);
+				this.numGlobalWorkItems);
 
 		final int global = this.kernel.getGlobalWork();
-		final int workPerIteration = global * this.sizeGlobalWorkItem;
+		final int workPerIteration = global * this.itemsPerGlobalWorkItem;
 
 		int count = (int) (this.training.getRecordCount() / workPerIteration);
 		int remainder = (int) (this.training.getRecordCount() % workPerIteration);
@@ -330,15 +330,15 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		// handle workloads
 		while (count > 0) {
-			callKernel(currentIndex, this.sizeGlobalWorkItem, false);
+			callKernel(currentIndex, this.itemsPerGlobalWorkItem, false);
 			count--;
-			currentIndex += this.sizeGlobalWorkItem
+			currentIndex += this.itemsPerGlobalWorkItem
 					* this.kernel.getGlobalWork();
 		}
 
 		// handle the final workload
 		this.kernel.assignWorkgroupSizes(remainderGlobal,
-				this.globalWorkItemSize);
+				this.numGlobalWorkItems);
 		callKernel(currentIndex, remainderPer, true);
 
 		count = (int) this.training.getRecordCount();
@@ -372,7 +372,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.kernel = new KernelNetworkTrain(this.targetDevice, this.network,
 				this.training, this.network.getWeights().length + 2);
-		this.kernel.compile(options, this.network, this.globalWorkItemSize);
+		this.kernel.compile(options, this.network, this.numGlobalWorkItems);
 		this.kernel.getTempDataArray()[0] = (float) learningRate;
 		this.kernel.getTempDataArray()[1] = (float) momentum;
 	}
@@ -391,7 +391,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.kernel = new KernelNetworkTrain(this.targetDevice, this.network,
 				this.training, 1);
-		this.kernel.compile(options, this.network, this.globalWorkItemSize);
+		this.kernel.compile(options, this.network, this.numGlobalWorkItems);
 		this.kernel.getTempDataArray()[0] = (float) learningRate;
 	}
 
@@ -421,7 +421,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.kernel = new KernelNetworkTrain(this.targetDevice, this.network,
 				this.training, this.network.getWeights().length * 2);
 
-		this.kernel.compile(options, this.network, this.globalWorkItemSize);
+		this.kernel.compile(options, this.network, this.numGlobalWorkItems);
 
 		final int weightLength = this.network.getWeights().length;
 
@@ -437,8 +437,25 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 */
 	@Override
 	public void setNumThreads(final int numThreads) {
-		// TODO Auto-generated method stub
 
 	}
+
+	public int getNumGlobalWorkItems() {
+		return numGlobalWorkItems;
+	}
+
+	public void setNumGlobalWorkItems(int numGlobalWorkItems) {
+		this.numGlobalWorkItems = numGlobalWorkItems;
+	}
+
+	public int getItemsPerGlobalWorkItem() {
+		return itemsPerGlobalWorkItem;
+	}
+
+	public void setItemsPerGlobalWorkItem(int itemsPerGlobalWorkItem) {
+		this.itemsPerGlobalWorkItem = itemsPerGlobalWorkItem;
+	}
+	
+	
 
 }
