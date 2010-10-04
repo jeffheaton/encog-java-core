@@ -24,6 +24,7 @@
 
 package org.encog.util.benchmark;
 
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
@@ -56,7 +57,7 @@ public final class Evaluate {
 				hidden1, hidden2, output, true);
 		final NeuralDataSet training = RandomTrainingFactory.generate(1000,
 				10000, input, output, -1, 1);
-		return evaluateTrain(device, network, training);
+		return evaluateTrain(new OpenCLTrainingProfile(device), network, training);
 	}
 
 	/**
@@ -70,18 +71,18 @@ public final class Evaluate {
 	 *            The training data to use.
 	 * @return The lowest number of seconds that each of the ten attempts took.
 	 */
-	public static int evaluateTrain(final EncogCLDevice device,
+	public static int evaluateTrain(final OpenCLTrainingProfile profile,
 			final BasicNetwork network, final NeuralDataSet training) {
 		// train the neural network
 		Train train;
 		
-		if( device==null ) {
+		if( profile==null ) {
 			train = new ResilientPropagation(network, training);
 		} else {
 			train = new ResilientPropagation(
 					network, 
 					training, 
-					device, 
+					profile, 
 					RPROPConst.DEFAULT_INITIAL_UPDATE, 
 					RPROPConst.DEFAULT_MAX_STEP);
 		}

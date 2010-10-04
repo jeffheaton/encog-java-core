@@ -26,8 +26,11 @@ package org.encog.util.simple;
 
 import java.io.File;
 
+import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.util.Format;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -321,5 +324,12 @@ public final class EncogUtility {
 			epoch++;
 		} while ((train.getError() > error) && !train.isTrainingDone());
 		train.finishTraining();
+	}
+
+	public static OpenCLTrainingProfile createProfile(BasicNetwork network,
+			NeuralDataSet training) {
+		network.getStructure().updateFlatNetwork();
+		FlatNetwork flat = network.getStructure().getFlat();
+		return OpenCLTrainingProfile.createProfile(flat, (EngineIndexableSet)training);
 	}
 }

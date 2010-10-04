@@ -24,6 +24,7 @@
 
 package org.encog.neural.networks.training.propagation.back;
 
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
 import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
@@ -121,7 +122,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The network that is to be trained
 	 * @param training
 	 *            The training set
-	 * @param device The device to use, null for CPU.
+	 * @param profile The OpenCL profile to use, null for CPU.
 	 * @param learnRate
 	 *            The rate at which the weight matrix will be adjusted based on
 	 *            learning.
@@ -130,11 +131,11 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            have on the current iteration.
 	 */
 	public Backpropagation(final BasicNetwork network,
-			final NeuralDataSet training, final EncogCLDevice device, final double learnRate,
+			final NeuralDataSet training, final OpenCLTrainingProfile profile, final double learnRate,
 			final double momentum) {
 		super(network, training);
 		
-		if (device == null) {
+		if (profile == null) {
 			TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
 					network.getStructure().getFlat(),
 					this.getTraining(),
@@ -144,7 +145,7 @@ public class Backpropagation extends Propagation implements Momentum,
 		} else {
 			TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
 					network.getStructure().getFlat(), this.getTraining(),
-					device);
+					profile);
 			rpropFlat.learnBPROP(learnRate, momentum);
 			this.setFlatTraining(rpropFlat);
 		}

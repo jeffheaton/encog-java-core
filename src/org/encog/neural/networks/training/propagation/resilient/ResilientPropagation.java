@@ -24,6 +24,7 @@
 
 package org.encog.neural.networks.training.propagation.resilient;
 
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
 import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
@@ -110,12 +111,12 @@ public class ResilientPropagation extends Propagation {
 	 *            The network to train.
 	 * @param training
 	 *            The training data to use.
-	 * @param device
-	 *            The device to use.
+	 * @param profile
+	 *            The profile to use.
 	 */
 	public ResilientPropagation(final BasicNetwork network,
-			final NeuralDataSet training, EncogCLDevice device) {
-		this(network, training, device, 
+			final NeuralDataSet training, OpenCLTrainingProfile profile) {
+		this(network, training, profile, 
 				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
 	}
 
@@ -129,8 +130,8 @@ public class ResilientPropagation extends Propagation {
 	 *            The network to train.
 	 * @param training
 	 *            The training set to use.
-	 * @param device
-	 *            Optional EncogCL device to execute on.
+	 * @param profile
+	 *            Optional EncogCL profile to execute on.
 	 * @param initialUpdate
 	 *            The initial update values, this is the amount that the deltas
 	 *            are all initially set to.
@@ -138,20 +139,20 @@ public class ResilientPropagation extends Propagation {
 	 *            The maximum that a delta can reach.
 	 */
 	public ResilientPropagation(final BasicNetwork network,
-			final NeuralDataSet training, final EncogCLDevice device,
+			final NeuralDataSet training, final OpenCLTrainingProfile profile,
 			final double initialUpdate,
 			final double maxStep) {
 
 		super(network, training);
 
-		if (device == null) {
+		if (profile == null) {
 			TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
 					network.getStructure().getFlat(), this.getTraining());
 			this.setFlatTraining(rpropFlat);
 		} else {
 			TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
 					network.getStructure().getFlat(), this.getTraining(),
-					device);
+					profile);
 			rpropFlat.learnRPROP(initialUpdate, maxStep);
 			this.setFlatTraining(rpropFlat);
 		}

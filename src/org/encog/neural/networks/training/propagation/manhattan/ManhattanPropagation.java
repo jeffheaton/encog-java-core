@@ -24,6 +24,7 @@
 
 package org.encog.neural.networks.training.propagation.manhattan;
 
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.engine.network.train.prop.TrainFlatNetworkManhattan;
 import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
@@ -75,14 +76,14 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The training data to use.
 	 * @param learnRate
 	 *            The learning rate.
-	 * @param device
-	 * 			The OpenCL device to use, null for CPU.
+	 * @param profile
+	 * 			The OpenCL profile to use, null for CPU.
 	 */
 	public ManhattanPropagation(final BasicNetwork network,
-			final NeuralDataSet training, EncogCLDevice device, final double learnRate) {
+			final NeuralDataSet training, final OpenCLTrainingProfile profile, final double learnRate) {
 		super(network, training);
 
-		if (device == null) {
+		if (profile == null) {
 			setFlatTraining( new TrainFlatNetworkManhattan(
 					network.getStructure().getFlat(),
 					this.getTraining(),
@@ -90,7 +91,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 		} else {
 			TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
 					network.getStructure().getFlat(), this.getTraining(),
-					device);
+					profile);
 			rpropFlat.learnManhattan(learnRate);
 			this.setFlatTraining(rpropFlat);
 		}

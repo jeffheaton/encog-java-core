@@ -26,6 +26,7 @@ package org.encog.neural.networks.training.concurrent.performers;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.Train;
@@ -82,7 +83,8 @@ public class ConcurrentTrainingPerformerCPU implements
 			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
 				device = ((ConcurrentTrainingPerformerOpenCL) this).getDevice();
 			}
-			this.currentJob.createTrainer(device);
+			OpenCLTrainingProfile profile = new OpenCLTrainingProfile(device);
+			this.currentJob.createTrainer(profile);
 			final Train train = this.currentJob.getTrain();
 			int interation = 1;
 

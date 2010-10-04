@@ -28,6 +28,7 @@ import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -200,7 +201,7 @@ public abstract class Propagation extends BasicTraining {
 	/**
 	 * @return The OpenCL device to use, or null for the CPU.
 	 */
-	public EncogCLDevice getTargetDevice() {
+	public OpenCLTrainingProfile getProfile() {
 		return null;
 	}
 

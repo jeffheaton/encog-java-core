@@ -24,6 +24,7 @@
 
 package org.encog.neural.networks.training.concurrent.jobs;
 
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -73,9 +74,9 @@ public class BPROPJob extends TrainingJob {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createTrainer(final EncogCLDevice device) {
+	public void createTrainer(final OpenCLTrainingProfile profile) {
 		final Train train = new Backpropagation(getNetwork(), getTraining(),
-				device, getLearningRate(), getMomentum());
+				profile, getLearningRate(), getMomentum());
 
 		for (final Strategy strategy : getStrategies()) {
 			train.addStrategy(strategy);
