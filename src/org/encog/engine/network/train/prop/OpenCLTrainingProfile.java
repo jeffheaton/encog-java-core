@@ -23,7 +23,7 @@
  */
 package org.encog.engine.network.train.prop;
 
-import org.encog.Encog;
+import org.encog.engine.EncogEngine;
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
@@ -69,7 +69,7 @@ public class OpenCLTrainingProfile {
 	}
 
 	public static OpenCLTrainingProfile createProfile(final FlatNetwork network, final EngineIndexableSet training) {
-		EncogCLDevice device = Encog.getInstance().getCL().chooseDevice();
+		EncogCLDevice device = EncogEngine.getInstance().getCL().chooseDevice();
 		if( device.isCPU() ) {
 			int numGlobalWorkItems = 200;
 			int itemsPerGlobalWorkItem = (int)training.getRecordCount();
@@ -80,7 +80,7 @@ public class OpenCLTrainingProfile {
 	}
 
 	public static OpenCLTrainingProfile createProfile() {
-		EncogCLDevice device = Encog.getInstance().getCL().chooseDevice();
+		EncogCLDevice device = EncogEngine.getInstance().getCL().chooseDevice();
 		return new OpenCLTrainingProfile(device);
 	}
 }
