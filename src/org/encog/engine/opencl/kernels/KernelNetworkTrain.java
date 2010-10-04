@@ -26,8 +26,6 @@ package org.encog.engine.opencl.kernels;
 
 import java.util.Map;
 
-import org.encog.engine.EncogEngine;
-import org.encog.engine.EncogEngineError;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineIndexableSet;
@@ -35,7 +33,8 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLQueue;
-import org.encog.engine.opencl.OutOfOpenCLResources;
+import org.encog.engine.opencl.exceptions.OpenCLError;
+import org.encog.engine.opencl.exceptions.OutOfOpenCLResources;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ResourceLoader;
 import org.jocl.CLException;
@@ -331,9 +330,9 @@ public class KernelNetworkTrain extends EncogKernel {
 				throw new OutOfOpenCLResources(e);
 			}
 			else 
-				throw new EncogEngineError(e);
+				throw new OpenCLError(e);
 		} catch (final Exception e) {
-			throw new EncogEngineError(e);
+			throw new OpenCLError(e);
 		}
 	}
 

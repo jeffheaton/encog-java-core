@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.engine.EncogEngineError;
+import org.encog.engine.opencl.exceptions.MissingOpenCLAdapterError;
 import org.jocl.CL;
 import org.jocl.cl_platform_id;
 
@@ -51,6 +52,7 @@ public class EncogCL {
 	 * Construct an Encog OpenCL object.
 	 */
 	public EncogCL() {
+		try {
 		final int[] numPlatforms = new int[1];
 
 		final cl_platform_id[] platformIDs = new cl_platform_id[5];
@@ -71,6 +73,9 @@ public class EncogCL {
 		}
 
 		CL.setExceptionsEnabled(true);
+		} catch( UnsatisfiedLinkError ex ) {
+			throw new MissingOpenCLAdapterError(ex);
+		}
 	}
 
 	/**

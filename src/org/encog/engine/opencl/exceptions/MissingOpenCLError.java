@@ -21,50 +21,25 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-
-package org.encog.engine;
+package org.encog.engine.opencl.exceptions;
 
 /**
- * General error class for Encog.
+ * This error is thrown when the native JOCL adapter was found, but the OpenCL
+ * driver was not found. This generally means you need to install a video driver
+ * that is compatable with OpenCL.
  * 
- * @author jheaton
  */
-public class EncogEngineError extends RuntimeException {
+public class MissingOpenCLError extends OpenCLError {
 
 	/**
-	 * The serial id. 
+	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	/**
-	 * Construct a message exception.
-	 * 
-	 * @param msg
-	 *            The exception message.
-	 */
-	public EncogEngineError(final String msg) {
-		super(msg);
+	public MissingOpenCLError(Throwable t) {
+		super(
+				"Native JOCL DLL, found, but can't find OpenCL. (see: http://www.heatonresearch.com/encog/troubleshooting/nocl.html)",
+				t);
 	}
 
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param msg
-	 *            A message.
-	 * @param t
-	 *            The other exception.
-	 */
-	public EncogEngineError(final String msg, final Throwable t) {
-		super(msg, t);
-	}
-
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param t
-	 *            The other exception.
-	 */
-	public EncogEngineError(final Throwable t) {
-		super(t);
-	}
 }

@@ -21,16 +21,14 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+package org.encog.engine.opencl.exceptions;
 
-package org.encog.engine;
+import org.encog.engine.EncogEngineError;
 
 /**
- * General error class for Encog.
- * 
- * @author jheaton
+ * Thrown when an OpenCL error occurs.
  */
-public class EncogEngineError extends RuntimeException {
-
+public class OpenCLError extends EncogEngineError {
 	/**
 	 * The serial id. 
 	 */
@@ -42,7 +40,7 @@ public class EncogEngineError extends RuntimeException {
 	 * @param msg
 	 *            The exception message.
 	 */
-	public EncogEngineError(final String msg) {
+	public OpenCLError(final String msg) {
 		super(msg);
 	}
 
@@ -54,7 +52,7 @@ public class EncogEngineError extends RuntimeException {
 	 * @param t
 	 *            The other exception.
 	 */
-	public EncogEngineError(final String msg, final Throwable t) {
+	public OpenCLError(final String msg, final Throwable t) {
 		super(msg, t);
 	}
 
@@ -64,7 +62,7 @@ public class EncogEngineError extends RuntimeException {
 	 * @param t
 	 *            The other exception.
 	 */
-	public EncogEngineError(final Throwable t) {
+	public OpenCLError(final Throwable t) {
 		super(t);
 	}
 }

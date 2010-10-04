@@ -132,11 +132,7 @@ public final class Encog {
 	 * http://www.heatonresearch.com/encog/opencl
 	 */
 	public void initCL() {
-		try {
-			EncogEngine.getInstance().initCL();
-		} catch (Throwable e) {
-			throw new EncogError(e);
-		}
+		EncogEngine.getInstance().initCL();
 	}
 
 	/**

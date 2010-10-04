@@ -21,35 +21,27 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.opencl;
-
-import org.encog.engine.EncogEngineError;
+package org.encog.engine.opencl.exceptions;
 
 /**
- * This exception is thrown when the underlying OpenCL system returns with the
- * CL_OUT_OF_RESOURCES. This generally either means that you have run out of
- * OpenCL resources. Or the kernel took too long to execute, and the OS shut it
- * down. By default, most operating systems do not allow kernel's much time to
- * execute, because the user cannot interact with the display while a kernel is
- * running.
+ * This error is thrown when the JOCL driver, usually a .DLL or shared library,
+ * cannot be found.
  * 
- * The usual solution to this is to adjust the OpenCLTrainingProfile object to
- * process fewer training items per kernel execution.
+ * For more information see:
  * 
- * See:
+ * http://www.heatonresearch.com/encog/troubleshooting/nonative.html
  * 
- * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
  */
-public class OutOfOpenCLResources extends EncogEngineError {
+public class MissingOpenCLAdapterError extends OpenCLError {
 
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public OutOfOpenCLResources(Throwable t) {
+	public MissingOpenCLAdapterError(Throwable t) {
 		super(
-				"Out of OpenCL resources or hit OS-imposed timeout. (see: http://www.heatonresearch.com/encog/troubleshooting/ooresource.html)",
+				"Can't find the JOCL native DLL. (see: http://www.heatonresearch.com/encog/troubleshooting/nonative.html)",
 				t);
 	}
 

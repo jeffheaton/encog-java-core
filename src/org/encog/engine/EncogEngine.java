@@ -75,12 +75,8 @@ public class EncogEngine {
 	 * http://www.heatonresearch.com/encog/opencl
 	 */
 	public void initCL() {
-		try {
-			EncogCL cl = new EncogCL();
-			this.cl = cl;
-		} catch (Throwable e) {
-			throw new EncogEngineError(e);
-		}
+		EncogCL cl = new EncogCL();
+		this.cl = cl;
 	}
 
 	/**
