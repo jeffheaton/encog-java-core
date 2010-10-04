@@ -332,4 +332,18 @@ public final class EncogUtility {
 		FlatNetwork flat = network.getStructure().getFlat();
 		return OpenCLTrainingProfile.createProfile(flat, (EngineIndexableSet)training);
 	}
+
+	public static OpenCLTrainingProfile createProfileMax(BasicNetwork network,
+			NeuralDataSet training) {
+		network.getStructure().updateFlatNetwork();
+		FlatNetwork flat = network.getStructure().getFlat();
+		return OpenCLTrainingProfile.createProfileMax(flat, (EngineIndexableSet)training);
+	}
+
+	public static OpenCLTrainingProfile createProfileRatio(
+			BasicNetwork network, NeuralDataSet training, double d) {
+		network.getStructure().updateFlatNetwork();
+		FlatNetwork flat = network.getStructure().getFlat();
+		return OpenCLTrainingProfile.createProfileRatio(flat, (EngineIndexableSet)training, 1.0);
+	}
 }

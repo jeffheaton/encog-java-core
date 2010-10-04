@@ -31,6 +31,7 @@ import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
+import org.encog.util.simple.EncogUtility;
 
 /**
  * This performer allows jobs to be performed by the CPU.
@@ -79,11 +80,12 @@ public class ConcurrentTrainingPerformerCPU implements
 	 */
 	public void run() {
 		try {
-			EncogCLDevice device = null;
+			OpenCLTrainingProfile profile = null;
 			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
-				device = ((ConcurrentTrainingPerformerOpenCL) this).getDevice();
+				EncogCLDevice device = ((ConcurrentTrainingPerformerOpenCL) this).getDevice();
+				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), 1.0);
 			}
-			OpenCLTrainingProfile profile = new OpenCLTrainingProfile(device);
+			
 			this.currentJob.createTrainer(profile);
 			final Train train = this.currentJob.getTrain();
 			int interation = 1;

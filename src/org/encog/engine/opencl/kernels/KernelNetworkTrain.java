@@ -35,8 +35,10 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLQueue;
+import org.encog.engine.opencl.OutOfOpenCLResources;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ResourceLoader;
+import org.jocl.CLException;
 import org.jocl.cl_mem;
 
 /**
@@ -324,6 +326,12 @@ public class KernelNetworkTrain extends EncogKernel {
 			queue.buffer2Array(this.tempDataOutBuffer, this.tempDataArray);
 			queue.buffer2Array(this.gradientOutBuffer, this.gradients);
 
+		} catch(CLException e) {
+			if( e.getMessage().equals("CL_OUT_OF_RESOURCES") ) {
+				throw new OutOfOpenCLResources(e);
+			}
+			else 
+				throw new EncogEngineError(e);
 		} catch (final Exception e) {
 			throw new EncogEngineError(e);
 		}

@@ -71,9 +71,7 @@ public class OpenCLTrainingProfile {
 	public static OpenCLTrainingProfile createProfile(final FlatNetwork network, final EngineIndexableSet training) {
 		EncogCLDevice device = EncogEngine.getInstance().getCL().chooseDevice();
 		if( device.isCPU() ) {
-			int numGlobalWorkItems = 200;
-			int itemsPerGlobalWorkItem = (int)training.getRecordCount();
-			return new OpenCLTrainingProfile(device,numGlobalWorkItems,itemsPerGlobalWorkItem);
+			return createProfileMax(network,training);
 		}
 		else
 			return new OpenCLTrainingProfile(device);
@@ -82,5 +80,18 @@ public class OpenCLTrainingProfile {
 	public static OpenCLTrainingProfile createProfile() {
 		EncogCLDevice device = EncogEngine.getInstance().getCL().chooseDevice();
 		return new OpenCLTrainingProfile(device);
+	}
+
+	public static OpenCLTrainingProfile createProfileMax(FlatNetwork flat,
+			EngineIndexableSet training) {
+		return createProfileRatio(flat,training,1.0);
+	}
+	
+	public static OpenCLTrainingProfile createProfileRatio(FlatNetwork flat,
+			EngineIndexableSet training, double ratio) {
+		EncogCLDevice device = EncogEngine.getInstance().getCL().chooseDevice();
+		int numGlobalWorkItems = 200;
+		int itemsPerGlobalWorkItem = (int)training.getRecordCount();
+		return new OpenCLTrainingProfile(device,numGlobalWorkItems,(int)(itemsPerGlobalWorkItem*ratio));
 	}
 }
