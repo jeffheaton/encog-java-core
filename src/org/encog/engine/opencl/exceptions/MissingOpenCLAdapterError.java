@@ -41,7 +41,7 @@ public class MissingOpenCLAdapterError extends OpenCLError {
 
 	public MissingOpenCLAdapterError(Throwable t) {
 		super(
-				"Can't find the JOCL native DLL. (see: http://www.heatonresearch.com/encog/troubleshooting/nonative.html)",
+				"Can't find the JOCL native DLL or OpenCL system. (see: http://www.heatonresearch.com/encog/troubleshooting/nocl.html)",
 				t);
 	}
 
