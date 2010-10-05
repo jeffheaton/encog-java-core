@@ -52,13 +52,6 @@ import org.encog.neural.pattern.FeedForwardPattern;
 public final class EncogUtility {
 
 	/**
-	 * Private constructor.
-	 */
-	private EncogUtility() {
-
-	}
-
-	/**
 	 * Convert a CSV file to a binary training file.
 	 * 
 	 * @param csvFile
@@ -84,6 +77,110 @@ public final class EncogUtility {
 			buffer.add(pair);
 		}
 		buffer.endLoad();
+	}
+
+	/**
+	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
+	 * is found. Try to determine the best values for the number of global work
+	 * items and OpenCL ratio.
+	 * 
+	 * @param network
+	 *            The network to be trained.
+	 * @param training
+	 *            The training data to be used.
+	 * @return A training profile.
+	 */
+	public static OpenCLTrainingProfile createProfile(
+			final BasicNetwork network, final NeuralDataSet training) {
+		network.getStructure().updateFlatNetwork();
+		final FlatNetwork flat = network.getStructure().getFlat();
+		return OpenCLTrainingProfile.createProfile(flat,
+				(EngineIndexableSet) training);
+	}
+
+	/**
+	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
+	 * is found. Use the max values for the number of global work items and
+	 * OpenCL ratio. If your GPU can handle it, this will provide the best
+	 * performance. Note, that you might see your OS reboot your GPU if the
+	 * kernel takes too long to execute.
+	 * 
+	 * See:
+	 * 
+	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
+	 * 
+	 * @param network
+	 *            The network to be trained.
+	 * @param training
+	 *            The training data to be used.
+	 * @return A training profile.
+	 */
+	public static OpenCLTrainingProfile createProfileMax(
+			final BasicNetwork network, final NeuralDataSet training) {
+		network.getStructure().updateFlatNetwork();
+		final FlatNetwork flat = network.getStructure().getFlat();
+		return OpenCLTrainingProfile.createProfileMax(flat,
+				(EngineIndexableSet) training);
+	}
+
+	/**
+	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
+	 * is found. The ratio allows you to specify how much of the training set
+	 * should be sent to the kernel. Specify 1.0 for max performance, or 0.5 to
+	 * send only half. The higher this value, the more likely your OS may
+	 * timeout your kernel, especially with a less powerful GPU.
+	 * 
+	 * See:
+	 * 
+	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
+	 * 
+	 * @param network
+	 *            The network to be trained.
+	 * @param training
+	 *            The training data to be used.
+	 * @param ratio
+	 *            The ratio to use. Specify 1.0(max) to process the entire
+	 *            training set with each call to the OpenCL kernel.
+	 * @return A training profile.
+	 */
+	public static OpenCLTrainingProfile createProfileRatio(
+			final BasicNetwork network, final NeuralDataSet training,
+			final double ratio) {
+		network.getStructure().updateFlatNetwork();
+		final FlatNetwork flat = network.getStructure().getFlat();
+		return OpenCLTrainingProfile.createProfileRatio(flat,
+				(EngineIndexableSet) training, ratio);
+	}
+
+	/**
+	 * Create a profile a specific OpenCL device. The ratio allows you to
+	 * specify how much of the training set should be sent to the kernel.
+	 * Specify 1.0 for max performance, or 0.5 to send only half. The higher
+	 * this value, the more likely your OS may timeout your kernel, especially
+	 * with a less powerful GPU.
+	 * 
+	 * See:
+	 * 
+	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
+	 * 
+	 * @param device
+	 *            The OpenCL device to use.
+	 * @param network
+	 *            The network to be trained.
+	 * @param training
+	 *            The training data to be used.
+	 * @param ratio
+	 *            The ratio to use. Specify 1.0(max) to process the entire
+	 *            training set with each call to the OpenCL kernel.
+	 * @return A training profile.
+	 */
+	public static OpenCLTrainingProfile createProfileRatio(
+			final EncogCLDevice device, final BasicNetwork network,
+			final NeuralDataSet training, final double ratio) {
+		network.getStructure().updateFlatNetwork();
+		final FlatNetwork flat = network.getStructure().getFlat();
+		return OpenCLTrainingProfile.createProfileRatio(flat,
+				(EngineIndexableSet) training, ratio);
 	}
 
 	/**
@@ -288,8 +385,7 @@ public final class EncogUtility {
 
 		if (network instanceof SVMNetwork) {
 			train = new SVMTrain(network, trainingSet);
-		}
-		else {
+		} else {
 			train = new ResilientPropagation(network, trainingSet);
 		}
 		EncogUtility.trainToError(train, network, trainingSet, error);
@@ -328,100 +424,9 @@ public final class EncogUtility {
 	}
 
 	/**
-	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
-	 * is found. Try to determine the best values for the number of global work
-	 * items and OpenCL ratio.
-	 * 
-	 * @param network
-	 *            The network to be trained.
-	 * @param training
-	 *            The training data to be used.
-	 * @return A training profile.
+	 * Private constructor.
 	 */
-	public static OpenCLTrainingProfile createProfile(BasicNetwork network,
-			NeuralDataSet training) {
-		network.getStructure().updateFlatNetwork();
-		FlatNetwork flat = network.getStructure().getFlat();
-		return OpenCLTrainingProfile.createProfile(flat, (EngineIndexableSet)training);
-	}
+	private EncogUtility() {
 
-	/**
-	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
-	 * is found. Use the max values for the number of global work items and
-	 * OpenCL ratio. If your GPU can handle it, this will provide the best
-	 * performance. Note, that you might see your OS reboot your GPU if the
-	 * kernel takes too long to execute.
-	 * 
-	 * See:
-	 * 
-	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
-	 * 
-	 * @param network
-	 *            The network to be trained.
-	 * @param training
-	 *            The training data to be used.
-	 * @return A training profile.
-	 */
-	public static OpenCLTrainingProfile createProfileMax(BasicNetwork network,
-			NeuralDataSet training) {
-		network.getStructure().updateFlatNetwork();
-		FlatNetwork flat = network.getStructure().getFlat();
-		return OpenCLTrainingProfile.createProfileMax(flat, (EngineIndexableSet)training);
 	}
-
-	/**
-	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
-	 * is found. The ratio allows you to specify how much of the training set
-	 * should be sent to the kernel. Specify 1.0 for max performance, or 0.5 to
-	 * send only half. The higher this value, the more likely your OS may
-	 * timeout your kernel, especially with a less powerful GPU.
-	 * 
-	 * See:
-	 * 
-	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
-	 * 
-	 * @param network
-	 *            The network to be trained.
-	 * @param training
-	 *            The training data to be used.
-	 * @param ratio
-	 *            The ratio to use. Specify 1.0(max) to process the entire
-	 *            training set with each call to the OpenCL kernel.
-	 * @return A training profile.
-	 */
-	public static OpenCLTrainingProfile createProfileRatio(
-			BasicNetwork network, NeuralDataSet training, double d) {
-		network.getStructure().updateFlatNetwork();
-		FlatNetwork flat = network.getStructure().getFlat();
-		return OpenCLTrainingProfile.createProfileRatio(flat, (EngineIndexableSet)training, 1.0);
-	}
-	
-	/**
-	 * Create a profile a specific OpenCL device. The ratio allows you to
-	 * specify how much of the training set should be sent to the kernel.
-	 * Specify 1.0 for max performance, or 0.5 to send only half. The higher
-	 * this value, the more likely your OS may timeout your kernel, especially
-	 * with a less powerful GPU.
-	 * 
-	 * See:
-	 * 
-	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
-	 * 
-	 * @param device
-	 *            The OpenCL device to use.
-	 * @param network
-	 *            The network to be trained.
-	 * @param training
-	 *            The training data to be used.
-	 * @param ratio
-	 *            The ratio to use. Specify 1.0(max) to process the entire
-	 *            training set with each call to the OpenCL kernel.
-	 * @return A training profile.
-	 */
-	public static OpenCLTrainingProfile createProfileRatio(EncogCLDevice device,
-			BasicNetwork network, NeuralDataSet training, double d) {
-		network.getStructure().updateFlatNetwork();
-		FlatNetwork flat = network.getStructure().getFlat();
-		return OpenCLTrainingProfile.createProfileRatio(flat, (EngineIndexableSet)training, 1.0);
-	}	
 }
