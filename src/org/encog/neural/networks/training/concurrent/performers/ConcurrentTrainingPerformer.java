@@ -24,6 +24,7 @@
 
 package org.encog.neural.networks.training.concurrent.performers;
 
+import org.encog.neural.networks.training.concurrent.ConcurrentTrainingManager;
 import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
 
 /**
@@ -43,4 +44,16 @@ public interface ConcurrentTrainingPerformer {
 	 * @param job The job to perform.
 	 */
 	void perform(TrainingJob job);
+	
+	/**
+	 * Set the manager.
+	 * @param manager The manager.
+	 */
+	void setManager(ConcurrentTrainingManager manager);
+	
+	/**
+	 * Get the manager.
+	 * @return The manager
+	 */
+	ConcurrentTrainingManager getManager();
 }

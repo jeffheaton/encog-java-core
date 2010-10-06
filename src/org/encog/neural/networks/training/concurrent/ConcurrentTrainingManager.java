@@ -26,6 +26,9 @@ package org.encog.neural.networks.training.concurrent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.encog.Encog;
 import org.encog.NullStatusReportable;
@@ -55,6 +58,16 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * The singleton instance.
 	 */
 	private static ConcurrentTrainingManager instance;
+
+	/**
+	 * The event used to sync waiting for tasks to stop.
+	 */
+	private final Lock accessLock = new ReentrantLock();
+
+	/**
+	 * Condition used to check if we are done.
+	 */
+	private final Condition mightBeDone = this.accessLock.newCondition();
 
 	/**
 	 * @return The singleton instance.
@@ -100,7 +113,14 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 *            The performer to add.
 	 */
 	public void addPerformer(final ConcurrentTrainingPerformer performer) {
-		this.performers.add(performer);
+		try {
+			this.accessLock.lock();
+			this.performers.add(performer);
+			performer.setManager(this);
+		} finally {
+			this.accessLock.unlock();
+		}
+
 	}
 
 	/**
@@ -110,7 +130,12 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 *            The training job to add.
 	 */
 	public void addTrainingJob(final TrainingJob job) {
-		this.queue.add(job);
+		try {
+			this.accessLock.lock();
+			this.queue.add(job);
+		} finally {
+			this.accessLock.unlock();
+		}
 
 	}
 
@@ -166,14 +191,25 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * Clear all of the performers.
 	 */
 	public void clearPerformers() {
-		this.performers.clear();
+		try {
+			this.accessLock.lock();
+			this.performers.clear();
+		} finally {
+			this.accessLock.unlock();
+		}
+
 	}
 
 	/**
 	 * Clear the workload.
 	 */
 	public void clearQueue() {
-		this.queue.clear();
+		try {
+			this.accessLock.lock();
+			this.queue.clear();
+		} finally {
+			this.accessLock.unlock();
+		}
 	}
 
 	/**
@@ -194,38 +230,43 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 *            True, if a CPU performer should be created for each core.
 	 */
 	public void detectPerformers(final boolean splitCores) {
-		boolean useCPU = true;
-		clearPerformers();
+		try {
+			this.accessLock.lock();
+			boolean useCPU = true;
+			clearPerformers();
 
-		// handle OpenCL mode
-		if (Encog.getInstance().getCL() != null) {
+			// handle OpenCL mode
+			if (Encog.getInstance().getCL() != null) {
 
-			// should we let OpenCL run the CPU?
-			if (Encog.getInstance().getCL().areCPUsPresent()) {
-				useCPU = false;
+				// should we let OpenCL run the CPU?
+				if (Encog.getInstance().getCL().areCPUsPresent()) {
+					useCPU = false;
+				}
+
+				// add a performer for each OpenCL device.
+				for (final EncogCLDevice device : Encog.getInstance().getCL()
+						.getDevices()) {
+					addPerformer(new ConcurrentTrainingPerformerOpenCL(device));
+				}
 			}
 
-			// add a performer for each OpenCL device.
-			for (final EncogCLDevice device : Encog.getInstance().getCL()
-					.getDevices()) {
-				addPerformer(new ConcurrentTrainingPerformerOpenCL(device));
-			}
-		}
+			// now create CPU performers
+			if (useCPU) {
+				int threads;
 
-		// now create CPU performers
-		if (useCPU) {
-			int threads;
+				if (splitCores) {
+					final Runtime runtime = Runtime.getRuntime();
+					threads = runtime.availableProcessors();
+				} else {
+					threads = 1;
+				}
 
-			if (splitCores) {
-				final Runtime runtime = Runtime.getRuntime();
-				threads = runtime.availableProcessors();
-			} else {
-				threads = 1;
+				for (int i = 0; i < threads; i++) {
+					addPerformer(new ConcurrentTrainingPerformerCPU());
+				}
 			}
-
-			for (int i = 0; i < threads; i++) {
-				addPerformer(new ConcurrentTrainingPerformerCPU());
-			}
+		} finally {
+			this.accessLock.unlock();
 		}
 	}
 
@@ -277,8 +318,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 				"No more jobs to submit, waiting for last job.");
 		while (!done) {
 			boolean foundOne = false;
-			for (final ConcurrentTrainingPerformer performer 
-					: this.performers) {
+			for (final ConcurrentTrainingPerformer performer : this.performers) {
 				if (!performer.ready()) {
 					foundOne = true;
 				}
@@ -318,33 +358,50 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * @return The free performer.
 	 */
 	public ConcurrentTrainingPerformer waitForFreePerformer() {
-		ConcurrentTrainingPerformer result = null;
 
-		while (result == null) {
-			for (final ConcurrentTrainingPerformer performer 
-					: this.performers) {
-				if (performer.ready()) {
-					result = performer;
+		try {
+			this.accessLock.lock();
+			ConcurrentTrainingPerformer result = null;
+
+			while (result == null) {
+				for (final ConcurrentTrainingPerformer performer : this.performers) {
+					if (performer.ready()) {
+						result = performer;
+					}
+				}
+
+				if (result == null) {
+					try {
+						this.mightBeDone.await();
+					} catch (InterruptedException e) {
+						return null;
+					}
 				}
 			}
 
-			if (result == null) {
-				try {
-					Thread.sleep(1000);
-				} catch (final InterruptedException e) {
-				}
-			}
+			return result;
+		} finally {
+			this.accessLock.unlock();
 		}
 
-		return result;
 	}
-	
-	public String toString()
-	{
+
+	public void jobDone() {
+		try {
+			this.accessLock.lock();
+			this.mightBeDone.signal();
+		} finally {
+			this.accessLock.unlock();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		int index = 1;
-		for(ConcurrentTrainingPerformer performer : this.performers)
-		{
+		for (ConcurrentTrainingPerformer performer : this.performers) {
 			builder.append("Performer ");
 			builder.append(index++);
 			builder.append(": ");

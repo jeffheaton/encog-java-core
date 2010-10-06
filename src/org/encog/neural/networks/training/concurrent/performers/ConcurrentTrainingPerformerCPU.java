@@ -30,6 +30,7 @@ import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.concurrent.ConcurrentTrainingManager;
 import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
 import org.encog.util.simple.EncogUtility;
 
@@ -49,6 +50,8 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * The current job.
 	 */
 	private TrainingJob currentJob;
+	
+	private ConcurrentTrainingManager manager;
 
 	/**
 	 * {@inheritDoc}
@@ -82,7 +85,6 @@ public class ConcurrentTrainingPerformerCPU implements
 		try {
 			OpenCLTrainingProfile profile = null;
 			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
-				EncogCLDevice device = ((ConcurrentTrainingPerformerOpenCL) this).getDevice();
 				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), 1.0);
 			}
 			
@@ -98,12 +100,32 @@ public class ConcurrentTrainingPerformerCPU implements
 			this.currentJob.setError(t);
 		} finally {
 			this.ready.set(true);
+			this.manager.jobDone();
 		}
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	public String toString()
 	{
 		return "[CPU-Performer]";
 	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public ConcurrentTrainingManager getManager() {
+		return manager;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setManager(ConcurrentTrainingManager manager) {
+		this.manager = manager;
+	}
+	
+	
 
 }

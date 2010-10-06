@@ -39,6 +39,7 @@ public class ConcurrentTrainingPerformerOpenCL extends
 	 * The OpenCL device to use.
 	 */
 	private final EncogCLDevice device;
+	
 
 	/**
 	 * Construct an OpenCL device performer.
