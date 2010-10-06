@@ -97,8 +97,8 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
-		this(network, training, null, 
-				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
+		this(network, training, null, RPROPConst.DEFAULT_INITIAL_UPDATE,
+				RPROPConst.DEFAULT_MAX_STEP);
 	}
 
 	/**
@@ -116,8 +116,8 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training, OpenCLTrainingProfile profile) {
-		this(network, training, profile, 
-				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
+		this(network, training, profile, RPROPConst.DEFAULT_INITIAL_UPDATE,
+				RPROPConst.DEFAULT_MAX_STEP);
 	}
 
 	/**
@@ -140,8 +140,7 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public ResilientPropagation(final BasicNetwork network,
 			final NeuralDataSet training, final OpenCLTrainingProfile profile,
-			final double initialUpdate,
-			final double maxStep) {
+			final double initialUpdate, final double maxStep) {
 
 		super(network, training);
 
@@ -195,13 +194,13 @@ public class ResilientPropagation extends Propagation {
 	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
 
-		if( this.getFlatTraining() instanceof TrainFlatNetworkResilient) {
+		if (this.getFlatTraining() instanceof TrainFlatNetworkResilient) {
 			result.set(ResilientPropagation.LAST_GRADIENTS,
 					((TrainFlatNetworkResilient) this.getFlatTraining())
 							.getLastGradient());
 			result.set(ResilientPropagation.UPDATE_VALUES,
 					((TrainFlatNetworkResilient) this.getFlatTraining())
-							.getUpdateValues());	
+							.getUpdateValues());
 		} else {
 			result.set(ResilientPropagation.LAST_GRADIENTS,
 					((TrainFlatNetworkOpenCL) this.getFlatTraining())
@@ -210,7 +209,7 @@ public class ResilientPropagation extends Propagation {
 					((TrainFlatNetworkOpenCL) this.getFlatTraining())
 							.getUpdateValues());
 		}
-		
+
 		return result;
 	}
 
@@ -229,10 +228,19 @@ public class ResilientPropagation extends Propagation {
 		double[] updateValues = (double[]) state
 				.get(ResilientPropagation.UPDATE_VALUES);
 
-		EngineArray.arrayCopy(lastGradient, ((TrainFlatNetworkResilient) this
-				.getFlatTraining()).getLastGradient());
-		EngineArray.arrayCopy(updateValues, ((TrainFlatNetworkResilient) this
-				.getFlatTraining()).getUpdateValues());
+		if (this.getFlatTraining() instanceof TrainFlatNetworkResilient) {
+			EngineArray.arrayCopy(lastGradient,
+					((TrainFlatNetworkResilient) this.getFlatTraining())
+							.getLastGradient());
+			EngineArray.arrayCopy(updateValues,
+					((TrainFlatNetworkResilient) this.getFlatTraining())
+							.getUpdateValues());
+		} else if (this.getFlatTraining() instanceof TrainFlatNetworkOpenCL) {
+			EngineArray.arrayCopy(lastGradient, ((TrainFlatNetworkOpenCL) this
+					.getFlatTraining()).getLastGradient());
+			EngineArray.arrayCopy(updateValues, ((TrainFlatNetworkOpenCL) this
+					.getFlatTraining()).getUpdateValues());
+		}
 
 	}
 
