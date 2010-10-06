@@ -185,12 +185,12 @@ public class ActivationRamp implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start, 
+	public void activationFunction(final double[] x, final int start,
 			final int size) {
 		final double slope = (params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD] - params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD])
 				/ (params[ActivationRamp.PARAM_RAMP_HIGH] - params[ActivationRamp.PARAM_RAMP_LOW]);
 
-		for (int i = start; i < start+size; i++) {
+		for (int i = start; i < start + size; i++) {
 			if (x[i] < params[ActivationRamp.PARAM_RAMP_LOW_THRESHOLD]) {
 				x[i] = params[ActivationRamp.PARAM_RAMP_LOW];
 			} else if (x[i] > params[ActivationRamp.PARAM_RAMP_HIGH_THRESHOLD]) {
@@ -236,12 +236,12 @@ public class ActivationRamp implements ActivationFunction {
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative, 
+	public String getOpenCLExpression(final boolean derivative,
 			final boolean allSlopeOne) {
 		return null;
 	}

@@ -46,13 +46,36 @@ import org.jocl.cl_mem;
  */
 public class KernelNetworkTrain extends EncogKernel {
 
+	/**
+	 * The input count.
+	 */
 	public static final int PARRAY_INPUT_COUNT = 0;
+
+	/**
+	 * The output count.
+	 */
 	public static final int PARRAY_OUTPUT_COUNT = 1;
+
+	/**
+	 * The layer count.
+	 */
 	public static final int PARRAY_LAYER_COUNT = 2;
-	public static final int PARRAY_LEARN = 3; 
+
+	/**
+	 * Are we learning? 0=no, 1 =yes.
+	 */
+	public static final int PARRAY_LEARN = 3;
+
+	/**
+	 * What is the starting index to train at.
+	 */
 	public static final int PARRAY_START = 4;
+
+	/**
+	 * Items to train per call.
+	 */
 	public static final int PARRAY_ITEMS_PER = 5;
-	
+
 	/**
 	 * A buffer to communicate weights to the kernel.
 	 */
@@ -114,7 +137,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	private final float[] weightOutArray;
 
 	/**
-	 * The temp data array.  Temp data that is used while training.
+	 * The temp data array. Temp data that is used while training.
 	 */
 	private float[] tempDataArray;
 
@@ -205,10 +228,15 @@ public class KernelNetworkTrain extends EncogKernel {
 
 	/**
 	 * Construct a kernel to train the network.
-	 * @param device The OpenCL device to use.
-	 * @param flat The network to train.
-	 * @param training The training data.
-	 * @param tempDataSize How much temp data.
+	 * 
+	 * @param device
+	 *            The OpenCL device to use.
+	 * @param flat
+	 *            The network to train.
+	 * @param training
+	 *            The training data.
+	 * @param tempDataSize
+	 *            How much temp data.
 	 */
 	public KernelNetworkTrain(final EncogCLDevice device,
 			final FlatNetwork flat, final EngineIndexableSet training,
@@ -232,10 +260,11 @@ public class KernelNetworkTrain extends EncogKernel {
 		}
 
 		int index = 0;
-		for(int i=0;i<flat.getActivationFunctions().length;i++) {
-			this.slopeArray[index++] = (float)flat.getActivationFunctions()[i].getParams()[0];
+		for (int i = 0; i < flat.getActivationFunctions().length; i++) {
+			this.slopeArray[index++] = (float) flat.getActivationFunctions()[i]
+					.getParams()[0];
 		}
-		
+
 		final int inputSize = flat.getInputCount();
 		final int idealSize = flat.getOutputCount();
 
@@ -252,33 +281,48 @@ public class KernelNetworkTrain extends EncogKernel {
 		for (int i = 0; i < this.trainingLength; i++) {
 			training.getRecord(i, pair);
 			for (int col = 0; col < flat.getInputCount(); col++) {
-				this.inputArray[inputIndex++] 
-				               = (float) pair.getInputArray()[col];
+				this.inputArray[inputIndex++] = (float) pair.getInputArray()[col];
 			}
 
 			for (int col = 0; col < flat.getOutputCount(); col++) {
-				this.idealArray[idealIndex++] 
-				                = (float) pair.getIdealArray()[col];
+				this.idealArray[idealIndex++] = (float) pair.getIdealArray()[col];
 			}
 		}
 
 	}
 
 	/**
+	 * Assign the workgroup sizes based on the training set size.
+	 * @param trainingSize The training set size.
+	 * @param requestedGlobalSize The requested global size.
+	 */
+	public void assignWorkgroupSizes(final int trainingSize,
+			final int requestedGlobalSize) {
+		// Calculate the work-item dimensions
+		final int threads = Math.min(trainingSize, requestedGlobalSize);
+		setLocalWork(Math.min(getMaxWorkGroupSize(), threads));
+		setGlobalWork(Math.min(threads, getLocalWork()));
+	}
+
+	/**
 	 * Calculate one iteration over the specified range.
-	 * @param start The starting position to calculate for.
-	 * @param size The ending position to calculate for.
-	 * @param learn True, if we should learn.
+	 * 
+	 * @param start
+	 *            The starting position to calculate for.
+	 * @param size
+	 *            The ending position to calculate for.
+	 * @param learn
+	 *            True, if we should learn.
 	 */
 	public void calculate(final int start, final int size, 
 			final boolean learn) {
 		prepareKernel();
 
-		this.paramArray[PARRAY_LEARN] = learn ? 1 : 0; // should it learn
-		this.paramArray[PARRAY_START] = start; // training offset
-		this.paramArray[PARRAY_ITEMS_PER] = size;// index of last item
+		this.paramArray[KernelNetworkTrain.PARRAY_LEARN] = learn ? 1 : 0; 
+		this.paramArray[KernelNetworkTrain.PARRAY_START] = start; 
+		this.paramArray[KernelNetworkTrain.PARRAY_ITEMS_PER] = size;
 
-		EngineArray.arrayCopy(this.flat.getWeights(),this.weightInArray);
+		EngineArray.arrayCopy(this.flat.getWeights(), this.weightInArray);
 
 		setArg(0, this.paramBuffer);
 		setArg(1, this.errorBuffer);
@@ -325,12 +369,12 @@ public class KernelNetworkTrain extends EncogKernel {
 			queue.buffer2Array(this.tempDataOutBuffer, this.tempDataArray);
 			queue.buffer2Array(this.gradientOutBuffer, this.gradients);
 
-		} catch(CLException e) {
-			if( e.getMessage().equals("CL_OUT_OF_RESOURCES") ) {
+		} catch (final CLException e) {
+			if (e.getMessage().equals("CL_OUT_OF_RESOURCES")) {
 				throw new OutOfOpenCLResources(e);
-			}
-			else 
+			} else {
 				throw new OpenCLError(e);
+			}
 		} catch (final Exception e) {
 			throw new OpenCLError(e);
 		}
@@ -338,11 +382,16 @@ public class KernelNetworkTrain extends EncogKernel {
 
 	/**
 	 * Compile the kernel.
-	 * @param options The options.
-	 * @param network The network to compile for.
+	 * 
+	 * @param options
+	 *            The options.
+	 * @param network
+	 *            The network to compile for.
+	 * @param requestedGlobalSize
+	 * 			THe requested global workload size.
 	 */
 	public void compile(final Map<String, String> options,
-			final FlatNetwork network, int requestedGlobalSize) {
+			final FlatNetwork network, final int requestedGlobalSize) {
 
 		final ActivationFunction activation = network.getActivationFunctions()[0];
 		final boolean allSlopeOne = !network.anySlopeNotOne();
@@ -351,28 +400,19 @@ public class KernelNetworkTrain extends EncogKernel {
 		source.append("#define ACTIVATION(x,slope)");
 		source.append(activation.getOpenCLExpression(false, allSlopeOne));
 		source.append("\r\n");
-		
+
 		source.append("#define DERIVATIVE(x,slope)");
 		source.append(activation.getOpenCLExpression(true, allSlopeOne));
 		source.append("\r\n");
-		
 
 		source.append(ResourceLoader.loadString(getSourceName()));
 		setCLSource(source.toString());
 
 		compile(options);
 		assignWorkgroupSizes(this.trainingLength, requestedGlobalSize);
-		
+
 		// setup
 		init();
-	}
-	
-	public void assignWorkgroupSizes(int trainingSize, int requestedGlobalSize)
-	{
-		// Calculate the work-item dimensions
-		int threads = Math.min(trainingSize, requestedGlobalSize);
-		setLocalWork(Math.min(getMaxWorkGroupSize(), threads));
-		setGlobalWork(Math.min(threads, getLocalWork()));
 	}
 
 	/**
@@ -424,7 +464,8 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.weightInArrayBuffer = createArrayReadOnly(this.weightInArray);
 		this.weightOutArrayBuffer = createFloatArrayWriteOnly(this.weightInArray.length);
 		this.weightIndexBuffer = createArrayReadOnly(this.flat.getWeightIndex());
-		this.activationTypeBuffer = createArrayReadOnly(this.flat.getLayerCounts());
+		this.activationTypeBuffer = createArrayReadOnly(this.flat
+				.getLayerCounts());
 		this.slopeBuffer = createArrayReadOnly(this.slopeArray);
 		this.tempDataInBuffer = createArrayReadOnly(this.tempDataArray);
 		this.tempDataOutBuffer = createFloatArrayWriteOnly(this.tempDataArray.length);

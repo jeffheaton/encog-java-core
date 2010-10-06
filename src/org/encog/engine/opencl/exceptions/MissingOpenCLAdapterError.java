@@ -39,7 +39,13 @@ public class MissingOpenCLAdapterError extends OpenCLError {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public MissingOpenCLAdapterError(Throwable t) {
+	/**
+	 * Construct the exception.
+	 * 
+	 * @param t
+	 *            The wrapped exception.
+	 */
+	public MissingOpenCLAdapterError(final Throwable t) {
 		super(
 				"Can't find the JOCL native DLL or OpenCL system. (see: http://www.heatonresearch.com/encog/troubleshooting/nocl.html)",
 				t);

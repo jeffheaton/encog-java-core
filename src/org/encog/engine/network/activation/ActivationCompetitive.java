@@ -67,7 +67,8 @@ public class ActivationCompetitive implements ActivationFunction {
 	 */
 	public ActivationCompetitive(final int winners) {
 		this.params = new double[1];
-		this.params[ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS] = winners;
+		this.params[ActivationCompetitive.PARAM_COMPETITIVE_MAX_WINNERS] 
+		            = winners;
 	}
 
 	/**
@@ -170,12 +171,12 @@ public class ActivationCompetitive implements ActivationFunction {
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative, 
+	public String getOpenCLExpression(final boolean derivative,
 			final boolean allSlopeOne) {
 		return null;
 	}

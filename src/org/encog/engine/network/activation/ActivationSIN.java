@@ -38,19 +38,18 @@ public class ActivationSIN implements ActivationFunction {
 	 */
 	private static final long serialVersionUID = 5301501177778271284L;
 
-	
 	/**
 	 * Construct the sin activation function.
 	 */
 	public ActivationSIN() {
 		this.params = new double[0];
 	}
-	
+
 	/**
 	 * The parameters.
 	 */
 	private double[] params;
-	
+
 	/**
 	 * @return The object cloned;
 	 */
@@ -70,11 +69,11 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start, 
+	public void activationFunction(final double[] x, final int start,
 			final int size) {
-		for (int i = start; i < start+size; i++) {
+		for (int i = start; i < start + size; i++) {
 			x[i] = BoundMath.sin(x[i]);
-		}		
+		}
 	}
 
 	/**
@@ -99,7 +98,6 @@ public class ActivationSIN implements ActivationFunction {
 	 */
 	@Override
 	public double[] getParams() {
-		// TODO Auto-generated method stub
 		return this.params;
 	}
 
@@ -108,14 +106,14 @@ public class ActivationSIN implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;		
+		this.params[index] = value;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative, 
+	public String getOpenCLExpression(final boolean derivative,
 			final boolean allSlopeOne) {
 		return null;
 	}

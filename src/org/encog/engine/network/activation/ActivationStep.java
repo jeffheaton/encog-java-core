@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-
 /**
  * The step activation function is a very simple activation function. It is the
  * activation function that was used by the original perceptron. Using the
@@ -55,7 +54,6 @@ public class ActivationStep implements ActivationFunction {
 	 */
 	public static final int PARAM_STEP_HIGH = 2;
 
-	
 	/**
 	 * The serial ID.
 	 */
@@ -65,16 +63,18 @@ public class ActivationStep implements ActivationFunction {
 	 * The parameters.
 	 */
 	private double[] params;
-	
+
 	/**
 	 * Construct a step activation function.
-	 * @param low The low of the function.
-	 * @param center The center of the function.
-	 * @param high The high of the function.
+	 * 
+	 * @param low
+	 *            The low of the function.
+	 * @param center
+	 *            The center of the function.
+	 * @param high
+	 *            The high of the function.
 	 */
-	public ActivationStep(
-			final double low, 
-			final double center, 
+	public ActivationStep(final double low, final double center,
 			final double high) {
 		this.params = new double[3];
 		this.params[ActivationStep.PARAM_STEP_CENTER] = center;
@@ -161,15 +161,15 @@ public class ActivationStep implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start, 
+	public void activationFunction(final double[] x, final int start,
 			final int size) {
-		for (int i = start; i < start+size; i++) {
+		for (int i = start; i < start + size; i++) {
 			if (x[i] >= params[ActivationStep.PARAM_STEP_CENTER]) {
 				x[i] = params[ActivationStep.PARAM_STEP_HIGH];
 			} else {
 				x[i] = params[ActivationStep.PARAM_STEP_LOW];
 			}
-		}		
+		}
 	}
 
 	/**
@@ -202,14 +202,14 @@ public class ActivationStep implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;		
+		this.params[index] = value;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative, 
+	public String getOpenCLExpression(final boolean derivative,
 			final boolean allSlopeOne) {
 		return null;
 	}

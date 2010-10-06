@@ -57,6 +57,9 @@ public class EncogCLDevice extends EncogCLItem {
 	 */
 	private final boolean cpu;
 
+	/**
+	 * The OpenCL command queue.
+	 */
 	private final EncogCLQueue queue;
 
 	/**

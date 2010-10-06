@@ -28,8 +28,8 @@ package org.encog.engine.data;
  * Training data is stored in two ways, depending on if the data is for
  * supervised, or unsupervised training.
  * 
- * For unsupervised training just an input value is provided, and the ideal output
- * values are null.
+ * For unsupervised training just an input value is provided, and the ideal
+ * output values are null.
  * 
  * For supervised training both input and the expected ideal outputs are
  * provided.
@@ -51,16 +51,20 @@ public interface EngineData {
 	 * @return The input that the neural network
 	 */
 	double[] getInputArray();
-	
+
 	/**
 	 * Set the ideal data, the desired output.
-	 * @param data The ideal data.
+	 * 
+	 * @param data
+	 *            The ideal data.
 	 */
 	void setIdealArray(double[] data);
-	
+
 	/**
 	 * Set the input.
-	 * @param data The input.
+	 * 
+	 * @param data
+	 *            The input.
 	 */
 	void setInputArray(double[] data);
 

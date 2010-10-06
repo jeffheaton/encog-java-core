@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-
 /**
  * BiPolar activation function. This will scale the neural data into the bipolar
  * range. Greater than zero becomes 1, less than or equal to zero becomes -1.
@@ -43,7 +42,7 @@ public class ActivationBiPolar implements ActivationFunction {
 	 * The parameters.
 	 */
 	private double[] params;
-	
+
 	/**
 	 * Construct the bipolar activation function.
 	 */
@@ -85,10 +84,10 @@ public class ActivationBiPolar implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start, 
+	public void activationFunction(final double[] x, final int start,
 			final int size) {
-		
-		for (int i = start; i < start+size; i++) {
+
+		for (int i = start; i < start + size; i++) {
 			if (x[i] > 0) {
 				x[i] = 1;
 			} else {
@@ -102,7 +101,7 @@ public class ActivationBiPolar implements ActivationFunction {
 	 */
 	@Override
 	public String[] getParamNames() {
-		final String[] result = { "slope" }; 
+		final String[] result = { "slope" };
 		return result;
 	}
 
@@ -119,14 +118,14 @@ public class ActivationBiPolar implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;		
+		this.params[index] = value;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative, 
+	public String getOpenCLExpression(final boolean derivative,
 			final boolean allSlopeOne) {
 		return null;
 	}

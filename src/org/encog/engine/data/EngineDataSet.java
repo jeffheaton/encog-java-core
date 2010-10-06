@@ -24,7 +24,6 @@
 
 package org.encog.engine.data;
 
-import java.util.Iterator;
 
 /**
  * An interface designed to abstract classes that store machine learning data.

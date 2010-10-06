@@ -47,33 +47,32 @@ public class EncogCL {
 	 */
 	private final List<EncogCLDevice> devices = new ArrayList<EncogCLDevice>();
 
-
 	/**
 	 * Construct an Encog OpenCL object.
 	 */
 	public EncogCL() {
 		try {
-		final int[] numPlatforms = new int[1];
+			final int[] numPlatforms = new int[1];
 
-		final cl_platform_id[] platformIDs = new cl_platform_id[5];
-		CL.clGetPlatformIDs(platformIDs.length, platformIDs, numPlatforms);
+			final cl_platform_id[] platformIDs = new cl_platform_id[5];
+			CL.clGetPlatformIDs(platformIDs.length, platformIDs, numPlatforms);
 
-		if (numPlatforms[0] == 0) {
-			throw new EncogEngineError("Can't find any OpenCL platforms");
-		}
-
-		for (int i = 0; i < numPlatforms[0]; i++) {
-			final cl_platform_id platformID = platformIDs[i];
-			final EncogCLPlatform platform = new EncogCLPlatform(platformID);
-			this.platforms.add(platform);
-
-			for (final EncogCLDevice device : platform.getDevices()) {
-				this.devices.add(device);
+			if (numPlatforms[0] == 0) {
+				throw new EncogEngineError("Can't find any OpenCL platforms");
 			}
-		}
 
-		CL.setExceptionsEnabled(true);
-		} catch( UnsatisfiedLinkError ex ) {
+			for (int i = 0; i < numPlatforms[0]; i++) {
+				final cl_platform_id platformID = platformIDs[i];
+				final EncogCLPlatform platform = new EncogCLPlatform(platformID);
+				this.platforms.add(platform);
+
+				for (final EncogCLDevice device : platform.getDevices()) {
+					this.devices.add(device);
+				}
+			}
+
+			CL.setExceptionsEnabled(true);
+		} catch (UnsatisfiedLinkError ex) {
 			throw new MissingOpenCLAdapterError(ex);
 		}
 	}
@@ -107,9 +106,11 @@ public class EncogCL {
 	/**
 	 * Choose a device. Simply returns the first device detected.
 	 * 
+	 * @param useGPU
+	 *            Do we prefer to use the GPU?
 	 * @return The first device detected.
 	 */
-	public EncogCLDevice chooseDevice(boolean useGPU) {
+	public EncogCLDevice chooseDevice(final boolean useGPU) {
 
 		for (final EncogCLDevice device : this.devices) {
 			if (useGPU && !device.isCPU()) {

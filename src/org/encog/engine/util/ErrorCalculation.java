@@ -24,7 +24,6 @@
 
 package org.encog.engine.util;
 
-
 /**
  * Calculate the error of a neural network. Encog currently supports three error
  * calculation modes. See ErrorCalculationMode for more info.
@@ -32,110 +31,9 @@ package org.encog.engine.util;
 public class ErrorCalculation {
 
 	/**
-	 * The overall error.
-	 */
-	private double globalError;
-
-	/**
-	 * The size of a set.
-	 */
-	private int setSize;
-
-	/**
 	 * The current error calculation mode.
 	 */
 	private static ErrorCalculationMode mode = ErrorCalculationMode.MSE;
-
-	/**
-	 * Returns the root mean square error for a complete training set.
-	 * 
-	 * @return The current error for the neural network.
-	 */
-	public double calculate() {
-		if (this.setSize == 0) {
-			return 0;
-		}
-
-		switch( ErrorCalculation.getMode() )
-		{
-			case RMS:
-				return this.calculateRMS();
-			case MSE:
-				return this.calculateMSE();
-			case ARCTAN:
-				return this.calculateARCTAN();
-			default:
-				return this.calculateMSE();
-		}
-
-	}
-	
-	/**
-	 * Calculate the error with MSE.
-	 * 
-	 * @return The current error for the neural network.
-	 */
-	public double calculateMSE() {
-		if (this.setSize == 0) {
-			return 0;
-		}
-		final double err = this.globalError / this.setSize;
-		return err;
-
-	}
-	
-	/**
-	 * Calculate the error with RMS.
-	 * 
-	 * @return The current error for the neural network.
-	 */
-	public double calculateRMS() {
-		if (this.setSize == 0) {
-			return 0;
-		}
-		final double err = Math.sqrt(this.globalError / this.setSize);
-		return err;
-	}
-	
-	/**
-	 * Calculate the error with ARCTAN.
-	 * 
-	 * @return The current error for the neural network.
-	 */
-	public double calculateARCTAN() {
-		return calculateMSE();
-	}
-
-	/**
-	 * Reset the error accumulation to zero.
-	 */
-	public void reset() {
-		this.globalError = 0;
-		this.setSize = 0;
-	}
-
-	/**
-	 * Called to update for each number that should be checked.
-	 * 
-	 * @param actual
-	 *            The actual number.
-	 * @param ideal
-	 *            The ideal number.
-	 */
-	public void updateError(final double[] actual, final double[] ideal) {
-		for (int i = 0; i < actual.length; i++) {
-			double delta = ideal[i] - actual[i];
-			
-			if( ErrorCalculation.mode==ErrorCalculationMode.ARCTAN )
-				delta = Math.atan(delta);
-			
-			this.globalError += delta * delta;
-		}
-
-		this.setSize += ideal.length;
-	}
-
-
 
 	/**
 	 * get the error calculation mode, this is static and therefore global to
@@ -147,11 +45,10 @@ public class ErrorCalculation {
 	 * 
 	 * The default error mode for Encog is RMS.
 	 * 
-	 * return The current mode.
+	 * @return The current mode.
 	 */
-
 	public static ErrorCalculationMode getMode() {
-		return mode;
+		return ErrorCalculation.mode;
 	}
 
 	/**
@@ -165,26 +62,129 @@ public class ErrorCalculation {
 	 * @param mode
 	 *            The new mode.
 	 */
-	public static void setMode(ErrorCalculationMode mode) {
+	public static void setMode(final ErrorCalculationMode mode) {
 		ErrorCalculation.mode = mode;
 	}
 
 	/**
-	 * Update the error with single values.
-	 * @param actual The actual value.
-	 * @param ideal The ideal value.
+	 * The overall error.
 	 */
-	public void updateError(double actual, double ideal) {
+	private double globalError;
+
+	/**
+	 * The size of a set.
+	 */
+	private int setSize;
+
+	/**
+	 * Returns the root mean square error for a complete training set.
+	 * 
+	 * @return The current error for the neural network.
+	 */
+	public double calculate() {
+		if (this.setSize == 0) {
+			return 0;
+		}
+
+		switch (ErrorCalculation.getMode()) {
+		case RMS:
+			return calculateRMS();
+		case MSE:
+			return calculateMSE();
+		case ARCTAN:
+			return calculateARCTAN();
+		default:
+			return calculateMSE();
+		}
+
+	}
+
+	/**
+	 * Calculate the error with ARCTAN.
+	 * 
+	 * @return The current error for the neural network.
+	 */
+	public double calculateARCTAN() {
+		return calculateMSE();
+	}
+
+	/**
+	 * Calculate the error with MSE.
+	 * 
+	 * @return The current error for the neural network.
+	 */
+	public double calculateMSE() {
+		if (this.setSize == 0) {
+			return 0;
+		}
+		final double err = this.globalError / this.setSize;
+		return err;
+
+	}
+
+	/**
+	 * Calculate the error with RMS.
+	 * 
+	 * @return The current error for the neural network.
+	 */
+	public double calculateRMS() {
+		if (this.setSize == 0) {
+			return 0;
+		}
+		final double err = Math.sqrt(this.globalError / this.setSize);
+		return err;
+	}
+
+	/**
+	 * Reset the error accumulation to zero.
+	 */
+	public void reset() {
+		this.globalError = 0;
+		this.setSize = 0;
+	}
+
+	/**
+	 * Update the error with single values.
+	 * 
+	 * @param actual
+	 *            The actual value.
+	 * @param ideal
+	 *            The ideal value.
+	 */
+	public void updateError(final double actual, final double ideal) {
 
 		double delta = ideal - actual;
 
-		if (ErrorCalculation.mode == ErrorCalculationMode.ARCTAN)
+		if (ErrorCalculation.mode == ErrorCalculationMode.ARCTAN) {
 			delta = Math.atan(delta);
+		}
 
 		this.globalError += delta * delta;
 
 		this.setSize++;
 
+	}
+
+	/**
+	 * Called to update for each number that should be checked.
+	 * 
+	 * @param actual
+	 *            The actual number.
+	 * @param ideal
+	 *            The ideal number.
+	 */
+	public void updateError(final double[] actual, final double[] ideal) {
+		for (int i = 0; i < actual.length; i++) {
+			double delta = ideal[i] - actual[i];
+
+			if (ErrorCalculation.mode == ErrorCalculationMode.ARCTAN) {
+				delta = Math.atan(delta);
+			}
+
+			this.globalError += delta * delta;
+		}
+
+		this.setSize += ideal.length;
 	}
 
 }

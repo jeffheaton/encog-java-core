@@ -34,7 +34,9 @@ public final class EngineArray {
 
 	/**
 	 * Copy a double array.
-	 * @param input The array to copy.
+	 * 
+	 * @param input
+	 *            The array to copy.
 	 * @return The result of the copy.
 	 */
 	public static double[] arrayCopy(final double[] input) {
@@ -53,6 +55,20 @@ public final class EngineArray {
 	 */
 	public static void arrayCopy(final double[] src, final double[] dst) {
 		System.arraycopy(src, 0, dst, 0, src.length);
+	}
+
+	/**
+	 * Copy an array of floats to an array of doubles.
+	 * 
+	 * @param source
+	 *            The source array.
+	 * @param target
+	 *            The target array.
+	 */
+	public static void arrayCopy(final double[] source, final float[] target) {
+		for (int i = 0; i < source.length; i++) {
+			target[i] = (float) source[i];
+		}
 	}
 
 	/**
@@ -76,8 +92,41 @@ public final class EngineArray {
 	}
 
 	/**
+	 * Copy a 2D double array.
+	 * @param source The source.
+	 * @return The copied array.
+	 */
+	public static double[][] arrayCopy(final double[][] source) {
+		final double[][] result = new double[source.length][source[0].length];
+
+		for (int row = 0; row < source.length; row++) {
+			for (int col = 0; col < source[0].length; col++) {
+				result[row][col] = source[row][col];
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Copy an array of floats to an array of doubles.
+	 * 
+	 * @param source
+	 *            The source array.
+	 * @param target
+	 *            The target array.
+	 */
+	public static void arrayCopy(final float[] source, final double[] target) {
+		for (int i = 0; i < source.length; i++) {
+			target[i] = source[i];
+		}
+	}
+
+	/**
 	 * Copy an int array.
-	 * @param input The array to copy.
+	 * 
+	 * @param input
+	 *            The array to copy.
 	 * @return The result of the copy.
 	 */
 	public static int[] arrayCopy(final int[] input) {
@@ -115,18 +164,24 @@ public final class EngineArray {
 
 	/**
 	 * Fill a double array.
-	 * @param array The array to fill.
-	 * @param value What to fill the array with.
+	 * 
+	 * @param array
+	 *            The array to fill.
+	 * @param value
+	 *            What to fill the array with.
 	 */
 	public static void fill(final double[] array, final double value) {
 		Arrays.fill(array, value);
 
 	}
-	
+
 	/**
 	 * Fill a float array.
-	 * @param array The array to fill.
-	 * @param value What to fill the array with.
+	 * 
+	 * @param array
+	 *            The array to fill.
+	 * @param value
+	 *            What to fill the array with.
 	 */
 	public static void fill(final float[] array, final float value) {
 		Arrays.fill(array, value);
@@ -159,7 +214,7 @@ public final class EngineArray {
 	 *            The list to convert.
 	 * @return The array of doubles.
 	 */
-	public static double[] listToDouble(final Collection< ? > list) {
+	public static double[] listToDouble(final Collection<?> list) {
 		final double[] result = new double[list.size()];
 		int index = 0;
 		for (final Object obj : list) {
@@ -209,41 +264,5 @@ public final class EngineArray {
 	 */
 	private EngineArray() {
 
-	}
-
-	public static double[][] arrayCopy(double[][] source) {
-		double[][] result = new double[source.length][source[0].length];
-		
-		for(int row = 0; row<source.length; row++)
-		{
-			for(int col = 0; col<source[0].length; col++)
-			{
-				result[row][col] = source[row][col];
-			}
-		}
-		
-		return result;
-	}
-
-	/**
-	 * Copy an array of floats to an array of doubles.
-	 * @param source The source array.
-	 * @param target The target array.
-	 */
-	public static void arrayCopy(final float[] source, final double[] target) {
-		for(int i=0;i<source.length;i++) {
-			target[i] = source[i];
-		}
-	}
-	
-	/**
-	 * Copy an array of floats to an array of doubles.
-	 * @param source The source array.
-	 * @param target The target array.
-	 */
-	public static void arrayCopy(final double[] source, final float[] target) {
-		for(int i=0;i<source.length;i++) {
-			target[i] = (float)source[i];
-		}
 	}
 }

@@ -39,15 +39,16 @@ import org.encog.engine.util.IntRange;
 public class DetermineWorkload {
 
 	/**
-	 * What is the minimum number of workload entries for a thread to be worthwhile.
+	 * What is the minimum number of workload entries for a thread to be
+	 * worthwhile.
 	 */
 	public static final int MIN_WORTHWHILE = 100;
-	
+
 	/**
 	 * How many threads to use.
 	 */
 	private int threadCount;
-	
+
 	/**
 	 * What is the total workload size?
 	 */
@@ -55,10 +56,13 @@ public class DetermineWorkload {
 
 	/**
 	 * Determine the workload.
-	 * @param threads Threads to use, or zero to allow Encog to pick.
-	 * @param workloadSize Total workload size.
+	 * 
+	 * @param threads
+	 *            Threads to use, or zero to allow Encog to pick.
+	 * @param workloadSize
+	 *            Total workload size.
 	 */
-	public DetermineWorkload(int threads, int workloadSize) {
+	public DetermineWorkload(final int threads, final int workloadSize) {
 
 		this.workloadSize = workloadSize;
 		if (threads == 0) {
@@ -89,6 +93,7 @@ public class DetermineWorkload {
 
 	/**
 	 * Calculate the high and low ranges for each worker.
+	 * 
 	 * @return A list of IntRange objects.
 	 */
 	public List<IntRange> calculateWorkers() {

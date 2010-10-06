@@ -23,7 +23,6 @@
  */
 package org.encog.engine.opencl.exceptions;
 
-import org.encog.engine.EncogEngineError;
 
 /**
  * This exception is thrown when the underlying OpenCL system returns with the
@@ -47,7 +46,11 @@ public class OutOfOpenCLResources extends OpenCLError {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public OutOfOpenCLResources(Throwable t) {
+	/**
+	 * Construct the exception.
+	 * @param t The wrapped exception.
+	 */
+	public OutOfOpenCLResources(final Throwable t) {
 		super(
 				"Out of OpenCL resources or hit OS-imposed timeout. (see: http://www.heatonresearch.com/encog/troubleshooting/ooresource.html)",
 				t);
