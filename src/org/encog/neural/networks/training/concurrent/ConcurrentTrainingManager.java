@@ -277,7 +277,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 		try {
 			this.thread.join();
 		} catch (final InterruptedException e) {
-			// not used
+			return;
 		}
 
 	}
@@ -317,20 +317,25 @@ public final class ConcurrentTrainingManager implements Runnable {
 		this.report.report(this.queue.size(), count,
 				"No more jobs to submit, waiting for last job.");
 		while (!done) {
-			boolean foundOne = false;
-			for (final ConcurrentTrainingPerformer performer : this.performers) {
-				if (!performer.ready()) {
-					foundOne = true;
+			try {
+				this.accessLock.unlock();
+				boolean foundOne = false;
+				for (final ConcurrentTrainingPerformer performer : this.performers) {
+					if (!performer.ready()) {
+						foundOne = true;
+					}
 				}
-			}
-			if (foundOne) {
-				try {
-					Thread.sleep(1000);
-				} catch (final InterruptedException e) {
+				if (foundOne) {
+					try {
+						this.mightBeDone.await();
+					} catch (final InterruptedException e) {
 
+					}
+				} else {
+					done = true;
 				}
-			} else {
-				done = true;
+			} finally {
+				this.accessLock.unlock();
 			}
 		}
 
@@ -339,7 +344,9 @@ public final class ConcurrentTrainingManager implements Runnable {
 
 	/**
 	 * Setup the object to report status to.
-	 * @param report The object to report status to.
+	 * 
+	 * @param report
+	 *            The object to report status to.
 	 */
 	public void setReport(final StatusReportable report) {
 		this.report = report;
@@ -355,6 +362,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 
 	/**
 	 * Wait for a free performer.
+	 * 
 	 * @return The free performer.
 	 */
 	public ConcurrentTrainingPerformer waitForFreePerformer() {
