@@ -87,7 +87,7 @@ public class RangeRandomizer extends BasicRandomizer {
 	 * @return The random number.
 	 */
 	public double randomize(final double d) {
-		return RangeRandomizer.randomize(this.min, this.max);
+		return nextDouble(this.min, this.max);
 	}
 
 	public static int randomInt(int min, int max) {

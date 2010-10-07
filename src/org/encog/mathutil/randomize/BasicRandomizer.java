@@ -24,6 +24,8 @@
 
 package org.encog.mathutil.randomize;
 
+import java.util.Random;
+
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
@@ -45,7 +47,20 @@ public abstract class BasicRandomizer implements Randomizer {
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
+	
+	/**
+	 * The random number generator.
+	 */
+	private Random random;
+	
+	/**
+	 * Construct a random number generator with a random(current time) seed.
+	 * If you want to set your own seed, just call "getRandom().setSeed".
+	 */
+	public BasicRandomizer() {
+		this.random = new Random(System.currentTimeMillis());
+	}
+	
 	/**
 	 * Randomize the synapses and biases in the basic network based on an array,
 	 * modify the array. Previous values may be used, or they may be discarded,
@@ -180,4 +195,39 @@ public abstract class BasicRandomizer implements Randomizer {
 		}
 	}
 
+	/**
+	 * @return The random number generator in use. Use this to set the seed, if
+	 *         desired.
+	 */
+	public Random getRandom() {
+		return random;
+	}
+	
+	/**
+	 * @return The next double.
+	 */
+	public double nextDouble() {
+		return this.random.nextDouble();
+	}
+
+	/**
+	 * @param random the random to set
+	 */
+	public void setRandom(final Random random) {
+		this.random = random;
+	}
+	
+	/**
+	 * Generate a random number in the specified range.
+	 *
+	 * @param min
+	 *            The minimum value.
+	 * @param max
+	 *            The maximum value.
+	 * @return A random number.
+	 */
+	public double nextDouble(final double min, final double max) {
+		final double range = max - min;
+		return (range * this.random.nextDouble()) + min;
+	}
 }

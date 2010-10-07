@@ -616,7 +616,7 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * Returns null, layers do not belong to collections.
+	 * @return Returns null, layers do not belong to collections.
 	 */
 	public EncogCollection getCollection() {
 		return null;
@@ -626,7 +626,7 @@ public class BasicLayer implements Layer, Serializable {
 	 * Not used, layers do not belong to collections.
 	 * @param collection Not used.
 	 */
-	public void setCollection(EncogCollection collection) {
+	public void setCollection(final EncogCollection collection) {
 
 	}
 }

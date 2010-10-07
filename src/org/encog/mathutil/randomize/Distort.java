@@ -65,7 +65,7 @@ public class Distort extends BasicRandomizer {
 	 * @return The result.
 	 */
 	public double randomize(final double d) {
-		return d + (this.factor - (Math.random() * this.factor * 2));
+		return d + (this.factor - (nextDouble() * this.factor * 2));
 	}
 
 }

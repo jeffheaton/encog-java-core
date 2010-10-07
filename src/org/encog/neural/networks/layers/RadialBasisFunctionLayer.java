@@ -31,8 +31,6 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.RadialBasisFunctionLayerPersistor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This layer type makes use of several radial basis function to scale the
@@ -55,11 +53,16 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 */
 	private static final long serialVersionUID = 2779781041654829282L;
 
+
 	/**
-	 * The logging object.
+	 * The centers.
 	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(RadialBasisFunctionLayer.class);
+	private double[][] center;
+
+	/**
+	 * The radaii.
+	 */
+	private double[] radius;
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default
@@ -69,10 +72,6 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 		this(1, 1);
 	}
 
-	private double[][] center;
-
-	private double[] radius;
-
 	/**
 	 * Construct a radial basis function layer.
 	 * 
@@ -81,10 +80,32 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 * @param dimensions
 	 *            The number of neurons in the input layer.
 	 */
-	public RadialBasisFunctionLayer(final int neuronCount, final int dimensions) {
+	public RadialBasisFunctionLayer(final int neuronCount, 
+			final int dimensions) {
 		super(new ActivationLinear(), false, neuronCount);
 		this.center = new double[neuronCount][dimensions];
 		this.radius = new double[neuronCount];
+	}
+
+	/**
+	 * Add a neuron to this layer.
+	 */
+	public void addNeuron() {
+		final double[] newRadius = new double[getNeuronCount() + 1];
+		final double[][] newCenter 
+			= new double[getNeuronCount() + 1][getDimensions()];
+
+		for (int x = 0; x < this.radius.length; x++) {
+			newRadius[x] = this.radius[x];
+			for (int y = 0; y < getDimensions(); y++) {
+				newCenter[x][y] = this.center[x][y];
+			}
+		}
+
+		setNeuronCount(getNeuronCount() + 1);
+
+		this.radius = newRadius;
+		this.center = newCenter;
 	}
 
 	/**
@@ -99,30 +120,26 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	public NeuralData compute(final NeuralData pattern) {
 
 		final NeuralData result = new BasicNeuralData(getNeuronCount());
-		double[] x = pattern.getData();
+		final double[] x = pattern.getData();
 
 		for (int i = 0; i < getNeuronCount(); i++) {
 
 			// take the eucl distance
 			double sum = 0;
 			for (int j = 0; j < getDimensions(); j++) {
-				double v = (x[j] - center[i][j]);
+				final double v = (x[j] - this.center[i][j]);
 				sum += v * v;
 			}
 
-			double norm = Math.sqrt(sum);
+			final double norm = Math.sqrt(sum);
 
-			double output = BoundMath.exp(-this.radius[i] * norm * norm);
+			final double output = BoundMath.exp(-this.radius[i] * norm * norm);
 
 			result.setData(i, output);
 
 		}
 
 		return result;
-	}
-
-	public int getDimensions() {
-		return this.center[0].length;
 	}
 
 	/**
@@ -133,6 +150,27 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	@Override
 	public Persistor createPersistor() {
 		return new RadialBasisFunctionLayerPersistor();
+	}
+
+	/**
+	 * @return The centers.
+	 */
+	public double[][] getCenter() {
+		return this.center;
+	}
+
+	/**
+	 * @return The dimensions.
+	 */
+	public int getDimensions() {
+		return this.center[0].length;
+	}
+
+	/**
+	 * @return The radii.
+	 */
+	public double[] getRadius() {
+		return this.radius;
 	}
 
 	/**
@@ -154,18 +192,13 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 		}
 	}
 
-	public double[] getRadius() {
-		return this.radius;
-	}
-
-	public double[][] getCenter() {
-		return this.center;
-	}
-
-	public void removeNeuron(int neuron) {
-		double[] newRadius = new double[this.getNeuronCount() - 1];
-		double[][] newCenter = new double[this.getNeuronCount() - 1][this
-				.getDimensions()];
+	/**
+	 * Remove the specified neuron.
+	 * @param neuron The neuron to remove.
+	 */
+	public void removeNeuron(final int neuron) {
+		final double[] newRadius = new double[getNeuronCount() - 1];
+		final double[][] newCenter = new double[getNeuronCount() - 1][getDimensions()];
 
 		for (int x = 0; x < this.radius.length; x++) {
 			if (x != neuron) {
@@ -176,25 +209,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 			}
 		}
 
-		this.setNeuronCount(getNeuronCount() - 1);
-
-		this.radius = newRadius;
-		this.center = newCenter;
-	}
-
-	public void addNeuron() {
-		double[] newRadius = new double[this.getNeuronCount() + 1];
-		double[][] newCenter = new double[this.getNeuronCount() + 1][this
-				.getDimensions()];
-
-		for (int x = 0; x < this.radius.length; x++) {
-			newRadius[x] = this.radius[x];
-			for (int y = 0; y < getDimensions(); y++) {
-				newCenter[x][y] = this.center[x][y];
-			}
-		}
-
-		this.setNeuronCount(getNeuronCount() + 1);
+		setNeuronCount(getNeuronCount() - 1);
 
 		this.radius = newRadius;
 		this.center = newCenter;

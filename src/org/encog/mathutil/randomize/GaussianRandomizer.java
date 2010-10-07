@@ -96,8 +96,8 @@ public class GaussianRandomizer extends BasicRandomizer {
 			this.useLast = false;
 		} else {
 			do {
-				x1 = 2.0 * Math.random() - 1.0;
-				x2 = 2.0 * Math.random() - 1.0;
+				x1 = 2.0 * nextDouble() - 1.0;
+				x2 = 2.0 * nextDouble() - 1.0;
 				w = x1 * x1 + x2 * x2;
 			} while (w >= 1.0);
 

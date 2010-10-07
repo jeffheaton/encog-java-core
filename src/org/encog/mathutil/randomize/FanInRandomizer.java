@@ -131,7 +131,7 @@ public class FanInRandomizer extends BasicRandomizer {
 			rowValue = rows;
 		}
 
-		return (this.lowerBound / rowValue) + Math.random()
+		return (this.lowerBound / rowValue) + nextDouble()
 				* ((this.upperBound - this.lowerBound) / rowValue);
 	}
 
