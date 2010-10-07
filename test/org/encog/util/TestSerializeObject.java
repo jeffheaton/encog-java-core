@@ -24,19 +24,15 @@
 
 package org.encog.util;
 
-import java.io.ByteArrayOutputStream;
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.neural.pattern.RadialBasisPattern;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.encog.util.obj.SerializeObject;
 
 
 public class TestSerializeObject extends TestCase {
