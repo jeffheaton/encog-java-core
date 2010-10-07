@@ -24,6 +24,7 @@
 
 package org.encog.mathutil.rbf;
 
+import org.encog.engine.network.rbf.RadialBasisFunctionMulti;
 import org.encog.engine.util.BoundMath;
 
 /**

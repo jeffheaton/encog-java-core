@@ -24,8 +24,8 @@
 
 package org.encog.neural.networks.training.competitive.neighborhood;
 
+import org.encog.engine.network.rbf.RadialBasisFunctionMulti;
 import org.encog.mathutil.rbf.GaussianFunctionMulti;
-import org.encog.mathutil.rbf.RadialBasisFunctionMulti;
 
 /**
  * Implements a multi-dimensional gaussian neighborhood function.  DO not

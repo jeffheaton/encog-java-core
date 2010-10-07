@@ -22,11 +22,10 @@
  * http://www.heatonresearch.com/copyright
  */
 
-package org.encog.mathutil.rbf;
+package org.encog.engine.network.rbf;
 
 import java.io.Serializable;
 
-import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.BoundMath;
 
 /**
@@ -38,7 +37,7 @@ import org.encog.engine.util.BoundMath;
 public class GaussianFunction implements RadialBasisFunction, Serializable {
 
 	/**
-	 * 
+	 * Serial id.
 	 */
 	private static final long serialVersionUID = 548203092442332198L;
 

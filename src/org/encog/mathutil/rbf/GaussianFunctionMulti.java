@@ -24,6 +24,8 @@
 
 package org.encog.mathutil.rbf;
 
+import org.encog.engine.network.rbf.RadialBasisFunctionMulti;
+
 
 /**
  * Multi-dimensional gaussian function. Do not use this to implement a 1d

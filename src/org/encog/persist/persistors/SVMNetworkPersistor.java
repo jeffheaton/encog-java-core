@@ -28,12 +28,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.StringTokenizer;
 
+import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_model;
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_parameter;
-import org.encog.mathutil.rbf.RadialBasisFunction;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.parse.tags.read.ReadXML;

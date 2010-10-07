@@ -22,7 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 
-package org.encog.mathutil.rbf;
+package org.encog.engine.network.rbf;
 
 /**
  * A multi-dimension RBF.

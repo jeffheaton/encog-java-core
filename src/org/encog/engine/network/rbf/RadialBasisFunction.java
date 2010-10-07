@@ -22,7 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 
-package org.encog.mathutil.rbf;
+package org.encog.engine.network.rbf;
 
 /**
  * Provides a generic interface to a radial basis function (RBF). Encog uses
