@@ -24,7 +24,7 @@
 
 package org.encog.neural.data.market;
 
-import org.encog.util.ReflectionUtil;
+import org.encog.util.obj.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

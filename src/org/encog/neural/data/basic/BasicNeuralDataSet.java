@@ -37,7 +37,7 @@ import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNeuralDataSetPersistor;
-import org.encog.util.ObjectCloner;
+import org.encog.util.obj.ObjectCloner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

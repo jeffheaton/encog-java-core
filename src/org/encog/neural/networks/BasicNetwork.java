@@ -52,7 +52,7 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNetworkPersistor;
-import org.encog.util.ObjectCloner;
+import org.encog.util.obj.ObjectCloner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

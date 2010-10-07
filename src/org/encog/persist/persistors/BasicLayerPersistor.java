@@ -32,16 +32,16 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
-import org.encog.util.ReflectionUtil;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
+import org.encog.util.obj.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Provides basic functions that many of the persistors will need.
- *
- *
+ * 
+ * 
  * @author jheaton
  */
 public class BasicLayerPersistor implements Persistor {
@@ -84,7 +84,7 @@ public class BasicLayerPersistor implements Persistor {
 
 	/**
 	 * Load the specified Encog object from an XML reader.
-	 *
+	 * 
 	 * @param in
 	 *            The XML reader to use.
 	 * @return The loaded object.
@@ -102,7 +102,7 @@ public class BasicLayerPersistor implements Persistor {
 			if (in.is(BasicLayerPersistor.TAG_ACTIVATION, true)) {
 				in.readToTag();
 				final String type = in.getTag().getName();
-				activation = loadActivation(type,in);
+				activation = loadActivation(type, in);
 			} else if (in.is(BasicLayerPersistor.PROPERTY_NEURONS, true)) {
 				neuronCount = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_THRESHOLD, true)) {
@@ -111,7 +111,8 @@ public class BasicLayerPersistor implements Persistor {
 				x = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_Y, true)) {
 				y = in.readIntToTag();
-			} else if (in.is(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, true)) {
+			} else if (in
+					.is(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, true)) {
 				biasActivation = Double.parseDouble(in.readTextToTag());
 			} else if (in.is(end, false)) {
 				break;
@@ -138,10 +139,10 @@ public class BasicLayerPersistor implements Persistor {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Save the specified Encog object to an XML writer.
-	 *
+	 * 
 	 * @param obj
 	 *            The object to save.
 	 * @param out
@@ -159,32 +160,30 @@ public class BasicLayerPersistor implements Persistor {
 
 		if (layer.hasBias()) {
 			final StringBuilder result = new StringBuilder();
-			NumberList
-					.toList(CSVFormat.EG_FORMAT, result, layer.getBiasWeights());
+			NumberList.toList(CSVFormat.EG_FORMAT, result, layer
+					.getBiasWeights());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
 					.toString());
 		}
 
-		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
-		
-		
-		saveActivationFunction(layer.getActivationFunction(),out);
-		
+		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer
+				.getBiasActivation());
+
+		saveActivationFunction(layer.getActivationFunction(), out);
 
 		out.endTag();
 	}
 
-	public static void saveActivationFunction(ActivationFunction activationFunction,
-			WriteXML out) {
-		if( activationFunction!=null ) {
+	public static void saveActivationFunction(
+			ActivationFunction activationFunction, WriteXML out) {
+		if (activationFunction != null) {
 			out.beginTag(BasicLayerPersistor.TAG_ACTIVATION);
 			out.beginTag(activationFunction.getClass().getSimpleName());
 			String[] names = activationFunction.getParamNames();
-			for(int i=0;i<names.length;i++)
-			{
+			for (int i = 0; i < names.length; i++) {
 				String str = names[i];
 				double d = activationFunction.getParams()[i];
-				out.addAttribute(str, ""+CSVFormat.EG_FORMAT.format(d, 10) );
+				out.addAttribute(str, "" + CSVFormat.EG_FORMAT.format(d, 10));
 			}
 			out.endTag();
 			out.endTag();
@@ -192,32 +191,29 @@ public class BasicLayerPersistor implements Persistor {
 	}
 
 	public static ActivationFunction loadActivation(String type, ReadXML in) {
-		
+
 		try {
 			Class<?> clazz = ReflectionUtil.resolveEncogClass(type);
-			ActivationFunction result = (ActivationFunction)clazz.newInstance();
-			
-			for( String key : in.getTag().getAttributes().keySet() )
-			{
+			ActivationFunction result = (ActivationFunction) clazz
+					.newInstance();
+
+			for (String key : in.getTag().getAttributes().keySet()) {
 				int index = -1;
-				
-				for(int i=0;i<result.getParamNames().length;i++)
-				{
-					if( key.equalsIgnoreCase(result.getParamNames()[i]))
-					{
+
+				for (int i = 0; i < result.getParamNames().length; i++) {
+					if (key.equalsIgnoreCase(result.getParamNames()[i])) {
 						index = i;
 						break;
 					}
-					
-					if( index!=-1 )
-					{
+
+					if (index != -1) {
 						String str = in.getTag().getAttributeValue(key);
 						double d = CSVFormat.EG_FORMAT.parse(str);
 						result.setParam(index, d);
 					}
 				}
 			}
-			
+
 			return result;
 		} catch (InstantiationException e) {
 			throw new EncogError(e);

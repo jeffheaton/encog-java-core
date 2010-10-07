@@ -30,9 +30,9 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.Persistor;
-import org.encog.util.ReflectionUtil;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
+import org.encog.util.obj.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

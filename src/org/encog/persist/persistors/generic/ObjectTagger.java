@@ -32,7 +32,7 @@ import java.util.Map;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.annotations.EGReferenceable;
-import org.encog.util.ReflectionUtil;
+import org.encog.util.obj.ReflectionUtil;
 
 /**
  * The object tagger is used in generic persistence to tag objects with a

@@ -22,7 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 
-package org.encog.util;
+package org.encog.util.obj;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,6 +40,7 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.location.ResourcePersistence;
+import org.encog.util.obj.ModuleHandler.ClassInfo;
 
 /**
  * This class includes some utilities to be used with reflection. This are
@@ -173,24 +174,13 @@ public final class ReflectionUtil {
 	 * simple name.
 	 */
 	public static void loadClassmap() {
-		try {
-			final ResourcePersistence resource = new ResourcePersistence(
-					"org/encog/data/classes.txt");
-			final InputStream is = resource.createInputStream();
-			final BufferedReader reader = new BufferedReader(
-					new InputStreamReader(is));
-			String line;
-			while ((line = reader.readLine()) != null) {
-				final Class< ? > c = Class.forName(line);
-				ReflectionUtil.classMap.put(c.getSimpleName(), c);
-			}
-			is.close();
-		} catch (final IOException e) {
-			throw new EncogError(e);
-		} catch (final ClassNotFoundException e) {
-			throw new EncogError(e);
+					
+		final ClassInfo[] info = ModuleHandler.createModuleList("org.encog.*");
+		
+		for (final ClassInfo inf : info) {
+			final Class<?> c = inf.theclass;			
+			ReflectionUtil.classMap.put(c.getSimpleName(), c);
 		}
-
 	}
 
 	/**
@@ -206,6 +196,7 @@ public final class ReflectionUtil {
                 ReflectionUtil.loadClassmap();
             }
         }
+        Map<String, Class<?>> i = ReflectionUtil.classMap;
         return ReflectionUtil.classMap.get(name);
 	}
 

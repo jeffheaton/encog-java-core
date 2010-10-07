@@ -34,7 +34,7 @@ import org.encog.persist.PersistError;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReference;
 import org.encog.persist.persistors.PersistorUtil;
-import org.encog.util.ReflectionUtil;
+import org.encog.util.obj.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

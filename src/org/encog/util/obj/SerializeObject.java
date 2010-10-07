@@ -22,7 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 
-package org.encog.util;
+package org.encog.util.obj;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

@@ -57,9 +57,9 @@ import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReferenceable;
 import org.encog.persist.persistors.generic.GenericPersistor;
-import org.encog.util.ReflectionUtil;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
+import org.encog.util.obj.ReflectionUtil;
 
 /**
  * This class is used to normalize both input and ideal data for neural

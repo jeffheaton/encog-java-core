@@ -33,7 +33,7 @@ import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
-import org.encog.util.ReflectionUtil;
+import org.encog.util.obj.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
