@@ -57,7 +57,13 @@ public final class Evaluate {
 				hidden1, hidden2, output, true);
 		final NeuralDataSet training = RandomTrainingFactory.generate(1000,
 				10000, input, output, -1, 1);
-		return evaluateTrain(new OpenCLTrainingProfile(device), network, training);
+		
+		OpenCLTrainingProfile profile = null;
+		
+		if( device!=null )
+			profile = EncogUtility.createProfileMax(network, training);
+		
+		return evaluateTrain(profile, network, training);
 	}
 
 	/**

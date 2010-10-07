@@ -32,6 +32,7 @@ import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.logic.FeedforwardLogic;
+import org.encog.neural.networks.logic.ThermalLogic;
 
 /**
  * Only certain types of networks can be converted to a flat network. This class
@@ -68,7 +69,8 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 			return "To convert to a flat network, there must be an output layer.";
 		}
 
-		if (!(network.getLogic() instanceof FeedforwardLogic)) {
+		if (!(network.getLogic() instanceof FeedforwardLogic) || 
+			  (network.getLogic() instanceof ThermalLogic )) {
 			return "To convert to flat, must be using FeedforwardLogic or SimpleRecurrentLogic.";
 		}
 

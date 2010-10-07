@@ -318,7 +318,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 				"No more jobs to submit, waiting for last job.");
 		while (!done) {
 			try {
-				this.accessLock.unlock();
+				this.accessLock.lock();
 				boolean foundOne = false;
 				for (final ConcurrentTrainingPerformer performer : this.performers) {
 					if (!performer.ready()) {

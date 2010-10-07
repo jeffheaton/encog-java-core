@@ -50,6 +50,7 @@ import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.logic.FeedforwardLogic;
+import org.encog.neural.networks.logic.SimpleRecurrentLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.util.ReflectionUtil;
 import org.slf4j.Logger;
@@ -206,8 +207,9 @@ public class NeuralStructure implements Serializable {
 	 */
 	private void finalizeLayers() {
 
-		// no bias values on the input layer
-		if (network.getLogic() instanceof FeedforwardLogic) {
+		// no bias values on the input layer for feedforward/srn
+		if (network.getLogic().getClass() == FeedforwardLogic.class ||
+				network.getLogic().getClass() == SimpleRecurrentLogic.class ) {
 			Layer inputLayer = this.network.getLayer(BasicNetwork.TAG_INPUT);
 			inputLayer.setBiasWeights(null);
 		}
@@ -632,6 +634,12 @@ public class NeuralStructure implements Serializable {
 	}
 
 	public void updateFlatNetwork() {
+		
+		// if flatUpdate is null, the network was likely just loaded from a  serialized file
+		if( this.flatUpdate==null ) {
+			flattenWeights();
+			this.flatUpdate = FlatUpdateNeeded.None;
+		}
 
 		switch (this.flatUpdate) {
 
