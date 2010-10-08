@@ -24,7 +24,6 @@
 
 package org.encog.mathutil.rbf;
 
-import org.encog.engine.network.rbf.RadialBasisFunction;
 
 /**
  * Multi-dimensional Mexican Hat, or Ricker wavelet, function.
@@ -37,35 +36,20 @@ import org.encog.engine.network.rbf.RadialBasisFunction;
  * http://en.wikipedia.org/wiki/Mexican_Hat_Function
  * 
  */
-public class MexicanHatFunction implements RadialBasisFunction {
-
-	/**
-	 * The center of the RBF.
-	 */
-	private final double[] center;
-
-	/**
-	 * The peak of the RBF.
-	 */
-	private double peak;
-
-	/**
-	 * The width of the RBF.
-	 */
-	private double width;
+public class MexicanHatFunction extends BasicRBF {
 
 	/**
 	 * Create centered at zero, width 0, and peak 0.
 	 */
 	public MexicanHatFunction(int dimensions)
 	{
-		this.center = new double[dimensions];
-		this.peak = 1.0;
-		this.width = 1.0;		
+		this.setCenters(new double[dimensions]);
+		this.setPeak(1.0);
+		this.setWidth(1.0);		
 	}
 	
 	/**
-	 * Construct a multi-dimension Gaussian function with the specified peak,
+	 * Construct a multi-dimension Mexican hat function with the specified peak,
 	 * centers and widths.
 	 * 
 	 * @param peak
@@ -77,13 +61,13 @@ public class MexicanHatFunction implements RadialBasisFunction {
 	 */
 	public MexicanHatFunction(final double peak, final double[] center,
 			final double width) {
-		this.center = center;
-		this.peak = peak;
-		this.width = width;
+		this.setCenters( center );
+		this.setPeak( peak );
+		this.setWidth( width );
 	}
 	
 	/**
-	 * Construct a single-dimension Gaussian function with the specified peak,
+	 * Construct a single-dimension Mexican hat function with the specified peak,
 	 * centers and widths.
 	 * 
 	 * @param peak
@@ -95,10 +79,10 @@ public class MexicanHatFunction implements RadialBasisFunction {
 	 */
 	public MexicanHatFunction(final double center, final double peak,
 			final double width) {
-		this.center = new double[1];
-		this.center[0] = center;
-		this.peak = peak;
-		this.width = width;
+		this.setCenters(new double[1]);
+		this.getCenters()[0] = center;
+		this.setPeak(peak);
+		this.setWidth(width);
 	}
 
 
@@ -111,6 +95,8 @@ public class MexicanHatFunction implements RadialBasisFunction {
 	 */
 	public double calculate(final double[] x) {
 		
+		double[] center = getCenters();
+		
 		// calculate the "norm", but don't take square root
 		// don't square because we are just going to square it
 		double norm = 0;
@@ -121,55 +107,7 @@ public class MexicanHatFunction implements RadialBasisFunction {
 
 		// calculate the value
 		
-		return this.peak * (1-norm)*Math.exp(-norm/2);
-	}
-
-	/**
-	 * Get the center for the specified dimension.
-	 * 
-	 * @param dimension
-	 *            The dimension.
-	 * @return The center.
-	 */
-	public double getCenter(final int dimension) {
-		return this.center[dimension];
-	}
-
-	/**
-	 * @return The number of dimensions.
-	 */
-	public int getDimensions() {
-		return this.center.length;
-	}
-
-	/**
-	 * @return The peak.
-	 */
-	public double getPeak() {
-		return this.peak;
-	}
-
-
-	public double getWidth() {
-		return this.width;
-	}
-
-	/**
-	 * Set the width for all dimensions.
-	 * 
-	 * @param w
-	 *            The width.
-	 */
-	public void setWidth(final double w) {
-		this.width = w;
-	}
-
-	/**
-	 * @return The centers.
-	 */
-	@Override
-	public double[] getCenters() {
-		return this.center;
+		return this.getPeak() * (1-norm)*Math.exp(-norm/2);
 	}
 
 }

@@ -31,31 +31,16 @@ import org.encog.engine.network.rbf.RadialBasisFunction;
  * function, simply use GaussianFunction for that.
  * 
  */
-public class GaussianFunction implements RadialBasisFunction {
-
-	/**
-	 * The center of the RBF.
-	 */
-	private final double[] center;
-
-	/**
-	 * The peak of the RBF.
-	 */
-	private double peak;
-
-	/**
-	 * The width of the RBF.
-	 */
-	private double width;
+public class GaussianFunction extends BasicRBF {
 
 	/**
 	 * Create centered at zero, width 0, and peak 0.
 	 */
 	public GaussianFunction(int dimensions)
 	{
-		this.center = new double[dimensions];
-		this.peak = 1.0;
-		this.width = 1.0;		
+		this.setCenters(new double[dimensions]);
+		this.setPeak(1.0);
+		this.setWidth(1.0);		
 	}
 	
 	/**
@@ -71,9 +56,9 @@ public class GaussianFunction implements RadialBasisFunction {
 	 */
 	public GaussianFunction(final double peak, final double[] center,
 			final double width) {
-		this.center = center;
-		this.peak = peak;
-		this.width = width;
+		this.setCenters( center );
+		this.setPeak( peak );
+		this.setWidth( width );
 	}
 	
 	/**
@@ -89,15 +74,15 @@ public class GaussianFunction implements RadialBasisFunction {
 	 */
 	public GaussianFunction(final double center, final double peak,
 			final double width) {
-		this.center = new double[1];
-		this.center[0] = center;
-		this.peak = peak;
-		this.width = width;
+		this.setCenters(new double[1]);
+		this.getCenters()[0] = center;
+		this.setPeak(peak);
+		this.setWidth(width);
 	}
 
 
 	/**
-	 * Calculate thre result from the function.
+	 * Calculate the result from the function.
 	 * 
 	 * @param x
 	 *            The parameters for the function, one for each dimension.
@@ -105,60 +90,15 @@ public class GaussianFunction implements RadialBasisFunction {
 	 */
 	public double calculate(final double[] x) {
 		double value = 0;
+		double[] center = getCenters();
+		double width = getWidth();
 
-		for (int i = 0; i < this.center.length; i++) {
-			value += Math.pow(x[i] - this.center[i], 2)
-					/ (2.0 * this.width * this.width);
+		for (int i = 0; i < center.length; i++) {
+			value += Math.pow(x[i] - center[i], 2)
+					/ (2.0 * width * width);
 		}
-		return this.peak * Math.exp(-value);
+		return this.getPeak() * Math.exp(-value);
 	}
 
-	/**
-	 * Get the center for the specified dimension.
-	 * 
-	 * @param dimension
-	 *            The dimension.
-	 * @return The center.
-	 */
-	public double getCenter(final int dimension) {
-		return this.center[dimension];
-	}
-
-	/**
-	 * @return The number of dimensions.
-	 */
-	public int getDimensions() {
-		return this.center.length;
-	}
-
-	/**
-	 * @return The peak.
-	 */
-	public double getPeak() {
-		return this.peak;
-	}
-
-
-	public double getWidth() {
-		return this.width;
-	}
-
-	/**
-	 * Set the width for all dimensions.
-	 * 
-	 * @param w
-	 *            The width.
-	 */
-	public void setWidth(final double w) {
-		this.width = w;
-	}
-
-	/**
-	 * @return The centers.
-	 */
-	@Override
-	public double[] getCenters() {
-		return this.center;
-	}
 
 }

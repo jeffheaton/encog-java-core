@@ -32,136 +32,69 @@ import org.encog.engine.util.BoundMath;
  * function, simply use MultiquadricFunction for that.
  *
  */
-public class MultiquadricFunction implements RadialBasisFunction {
-	/**
-	 * The center of the RBF.
-	 */
-	private double[] center;
-
-	/**
-	 * The peak of the RBF.
-	 */
-	private double peak;
-
-	/**
-	 * The width of the RBF.
-	 */
-	private double width;
+public class MultiquadricFunction extends BasicRBF {
 
 	/**
 	 * Create centered at zero, width 0, and peak 0.
 	 */
 	public MultiquadricFunction(int dimensions)
 	{
-		this.center = new double[dimensions];
-		this.peak = 1.0;
-		this.width = 1.0;		
+		this.setCenters(new double[dimensions]);
+		this.setPeak(1.0);
+		this.setWidth(1.0);		
 	}
 	
 	/**
-	 * Construct a multi-dimension Multiquadric function with the specified
-	 * peak, centers and widths.
-	 * @param peak The peak for all dimensions.
-	 * @param center The centers for each dimension.
-	 * @param width The widths for each dimension.
+	 * Construct a multi-dimension Multiquadric function with the specified peak,
+	 * centers and widths.
+	 * 
+	 * @param peak
+	 *            The peak for all dimensions.
+	 * @param center
+	 *            The centers for each dimension.
+	 * @param width
+	 *            The widths for each dimension.
 	 */
 	public MultiquadricFunction(final double peak, final double[] center,
 			final double width) {
-		this.center = center;
-		this.peak = peak;
-		this.width = width;
+		this.setCenters( center );
+		this.setPeak( peak );
+		this.setWidth( width );
+	}
+	
+	/**
+	 * Construct a single-dimension Multiquadric function with the specified peak,
+	 * centers and widths.
+	 * 
+	 * @param peak
+	 *            The peak for all dimensions.
+	 * @param center
+	 *            The centers for each dimension.
+	 * @param width
+	 *            The widths for each dimension.
+	 */
+	public MultiquadricFunction(final double center, final double peak,
+			final double width) {
+		this.setCenters(new double[1]);
+		this.getCenters()[0] = center;
+		this.setPeak(peak);
+		this.setWidth(width);
 	}
 
-	/**
-	 * Construct a Multiquadric function with the specified number of
-	 * dimensions. The peak, center and widths are all the same.
-	 * @param dimensions The number of dimensions.
-	 * @param peak The peak used for all dimensions.
-	 * @param center The center used for all dimensions.
-	 * @param width The widths used for all dimensions.
-	 */
-	public MultiquadricFunction(final int dimensions, final double peak,
-			final double center, final double width) {
-		this.peak = peak;
-		this.center = new double[dimensions];
-		this.width = width;
-	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public double calculate(final double[] x) {
 		double value = 0;
+		double[] center = getCenters();
+		double width = getWidth();
 
-		for (int i = 0; i < this.center.length; i++) {
-			value += Math.pow(x[i] - this.center[i], 2)
-					+ (this.width * this.width);
+		for (int i = 0; i < center.length; i++) {
+			value += Math.pow(x[i] - center[i], 2)
+					+ (width * width);
 		}
-		return this.peak * BoundMath.sqrt(value);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double[] getCenter() {
-		return this.center;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double getCenter(final int dimension) {
-		return this.center[dimension];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getDimensions() {
-		return this.center.length;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double getPeak() {
-		return this.peak;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public double getWidth() {
-		return this.width;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setCenter(final double[] center) {
-		this.center = center;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setPeak(final double peak) {
-		this.peak = peak;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setWidth(final double w) {
-		this.width = w;
-	}
-	
-	/**
-	 * @return The centers.
-	 */
-	@Override
-	public double[] getCenters() {
-		return this.center;
+		return this.getPeak() * BoundMath.sqrt(value);
 	}
 
 

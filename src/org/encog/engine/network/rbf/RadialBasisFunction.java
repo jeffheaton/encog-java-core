@@ -49,6 +49,12 @@ public interface RadialBasisFunction {
 	 * @return The center of the RBF.
 	 */
 	double getPeak();
+	
+	/**
+	 * Set the peak.
+	 * @param peak The peak.
+	 */
+	void setPeak(double peak);
 
 	/**
 	 * @return The width of the RBF.
@@ -70,4 +76,10 @@ public interface RadialBasisFunction {
 	 * @return Get the centers.
 	 */
 	double[] getCenters();	
+	
+	/**
+	 * Set the centers.
+	 * @param center The centers.
+	 */
+	void setCenters(double[] center);
 }
