@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class NeighborhoodGaussian implements NeighborhoodFunction {
+public class NeighborhoodSingleRBF implements NeighborhoodFunction {
 
 	/**
 	 * The logging object.
@@ -54,7 +54,7 @@ public class NeighborhoodGaussian implements NeighborhoodFunction {
 	 * @param radial
 	 *            The radial basis function to use.
 	 */
-	public NeighborhoodGaussian(final RadialBasisFunction radial) {
+	public NeighborhoodSingleRBF(final RadialBasisFunction radial) {
 		this.radial = radial;
 	}
 

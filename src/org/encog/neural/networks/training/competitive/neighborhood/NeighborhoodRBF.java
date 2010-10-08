@@ -28,6 +28,7 @@ import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.mathutil.rbf.InverseMultiquadricFunction;
+import org.encog.mathutil.rbf.MexicanHatFunction;
 import org.encog.mathutil.rbf.MultiquadricFunction;
 import org.encog.mathutil.rbf.RBFEnum;
 
@@ -86,6 +87,9 @@ public class NeighborhoodRBF implements NeighborhoodFunction {
 			case Multiquadric:
 				this.rbf = new MultiquadricFunction(2);
 				break;
+			case MexicanHat:
+				this.rbf = new MexicanHatFunction(2);
+				break;				
 		}
 		
 		this.rbf.setWidth(1);

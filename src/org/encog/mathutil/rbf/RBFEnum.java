@@ -35,19 +35,10 @@ public enum RBFEnum {
 	Gaussian,
 
 	/**
-	 * Gaussian multi.
-	 */
-	GaussianMulti,
-
-	/**
 	 * Multiquadric.
 	 */
 	Multiquadric,
 
-	/**
-	 * Multiquadric multi.
-	 */
-	MultiquadricMulti,
 
 	/**
 	 * Inverse Multiquadric.
@@ -55,7 +46,7 @@ public enum RBFEnum {
 	InverseMultiquadric,
 
 	/**
-	 * Inverse Multiquadric Multi.
+	 * Mexican hat
 	 */
-	InverseMultiquadricMulti
+	MexicanHat
 }
