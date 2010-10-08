@@ -25,14 +25,9 @@
 package org.encog.engine.network.rbf;
 
 /**
- * Provides a generic interface to a radial basis function (RBF). Encog uses
- * RBF's for a variety of purposes.
- * 
- * @author jheaton
- * 
+ * A multi-dimension RBF.
  */
 public interface RadialBasisFunction {
-
 	/**
 	 * Calculate the RBF result for the specified value.
 	 * 
@@ -40,24 +35,18 @@ public interface RadialBasisFunction {
 	 *            The value to be passed into the RBF.
 	 * @return The RBF value.
 	 */
-	double calculate(double x);
+	double calculate(double[] x);
 
 	/**
-	 * Calculate the derivative of the RBF function.
-	 * 
-	 * @param x
-	 *            The value to calculate for.
-	 * @return The calculated value.
-	 */
-	double calculateDerivative(double x);
-
-	/**
+	 * Get the center of this RBD.
+	 * @param dimension The dimension to get the center for.
 	 * @return The center of the RBF.
 	 */
-	double getCenter();
+	double getCenter(int dimension);
 
 	/**
-	 * @return The peak of the RBF.
+	 * Get the center of this RBD.
+	 * @return The center of the RBF.
 	 */
 	double getPeak();
 
@@ -65,10 +54,20 @@ public interface RadialBasisFunction {
 	 * @return The width of the RBF.
 	 */
 	double getWidth();
+	
+	/**
+	 * @return The dimensions in this RBF.
+	 */
+	int getDimensions();
 
 	/**
 	 * Set the width.
 	 * @param radius The width.
 	 */
 	void setWidth(double radius);
+
+	/**
+	 * @return Get the centers.
+	 */
+	double[] getCenters();	
 }

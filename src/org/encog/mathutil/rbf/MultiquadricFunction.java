@@ -28,15 +28,15 @@ import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.BoundMath;
 
 /**
- * Implements a radial function based on the multiquadric function.
+ * Multi-dimensional Multiquadric function. Do not use this to implement a 1d
+ * function, simply use MultiquadricFunction for that.
  *
  */
 public class MultiquadricFunction implements RadialBasisFunction {
-
 	/**
 	 * The center of the RBF.
 	 */
-	private double center;
+	private double[] center;
 
 	/**
 	 * The peak of the RBF.
@@ -49,13 +49,23 @@ public class MultiquadricFunction implements RadialBasisFunction {
 	private double width;
 
 	/**
-	 * Construct a Multiquadric RBF with the specified center, peak and
-	 * width.
-	 * @param center The center.
-	 * @param peak The peak.
-	 * @param width The width.
+	 * Create centered at zero, width 0, and peak 0.
 	 */
-	public MultiquadricFunction(final double center, final double peak,
+	public MultiquadricFunction(int dimensions)
+	{
+		this.center = new double[dimensions];
+		this.peak = 1.0;
+		this.width = 1.0;		
+	}
+	
+	/**
+	 * Construct a multi-dimension Multiquadric function with the specified
+	 * peak, centers and widths.
+	 * @param peak The peak for all dimensions.
+	 * @param center The centers for each dimension.
+	 * @param width The widths for each dimension.
+	 */
+	public MultiquadricFunction(final double peak, final double[] center,
 			final double width) {
 		this.center = center;
 		this.peak = peak;
@@ -63,57 +73,52 @@ public class MultiquadricFunction implements RadialBasisFunction {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Construct a Multiquadric function with the specified number of
+	 * dimensions. The peak, center and widths are all the same.
+	 * @param dimensions The number of dimensions.
+	 * @param peak The peak used for all dimensions.
+	 * @param center The center used for all dimensions.
+	 * @param width The widths used for all dimensions.
 	 */
-	public double calculate(final double x) {
-		return this.peak
-				* BoundMath.sqrt(BoundMath.pow(x - this.center, 2)
-						+ (this.width * this.width));
+	public MultiquadricFunction(final int dimensions, final double peak,
+			final double center, final double width) {
+		this.peak = peak;
+		this.center = new double[dimensions];
+		this.width = width;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double calculateDerivative(final double x) {
-		return calculateFirstDerivative(x);
-	}
-	
-	/**
-	 * Calculate the value of the second derivative of the Multiquadric
-	 * function for the specified value.
-	 * @param x The value to calculate the derivative Multiquadric
-	 * function for.
-	 * @return The return value for the derivative of the Multiquadric
-	 * function.
-	 */
-	public double calculateFirstDerivative(final double x) {
-		return this.peak
-				* (x - this.center)
-				/ BoundMath.sqrt(BoundMath.pow(x - this.center, 2)
-						+ (this.width * this.width));
-	}
+	public double calculate(final double[] x) {
+		double value = 0;
 
-	/**
-	 * Calculate the value of the second derivative of the Multiquadric
-	 * function for the specified value.
-	 * @param x The value to calculate the derivative Multiquadric
-	 * function for.
-	 * @return The return value for the derivative of the Multiquadric
-	 * function.
-	 */
-	public double calculateSecondDerivative(final double x) {
-		return this.peak
-				* this.width
-				* this.width
-				/ BoundMath.pow(BoundMath.pow(x - this.center, 2) + this.width
-						* this.width, 1.5);
+		for (int i = 0; i < this.center.length; i++) {
+			value += Math.pow(x[i] - this.center[i], 2)
+					+ (this.width * this.width);
+		}
+		return this.peak * BoundMath.sqrt(value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getCenter() {
+	public double[] getCenter() {
 		return this.center;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getCenter(final int dimension) {
+		return this.center[dimension];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getDimensions() {
+		return this.center.length;
 	}
 
 	/**
@@ -133,13 +138,12 @@ public class MultiquadricFunction implements RadialBasisFunction {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setCenter(final double center) {
+	public void setCenter(final double[] center) {
 		this.center = center;
 	}
 
 	/**
-	 * @param peak
-	 *            the peak to set
+	 * {@inheritDoc}
 	 */
 	public void setPeak(final double peak) {
 		this.peak = peak;
@@ -148,8 +152,17 @@ public class MultiquadricFunction implements RadialBasisFunction {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setWidth(final double width) {
-		this.width = width;
+	public void setWidth(final double w) {
+		this.width = w;
 	}
+	
+	/**
+	 * @return The centers.
+	 */
+	@Override
+	public double[] getCenters() {
+		return this.center;
+	}
+
 
 }

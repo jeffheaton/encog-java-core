@@ -69,7 +69,9 @@ public class NeighborhoodGaussian implements NeighborhoodFunction {
 	 * @return The ratio for this neuron's adjustment.
 	 */
 	public double function(final int currentNeuron, final int bestNeuron) {
-		return this.radial.calculate(currentNeuron - bestNeuron);
+		double[] d = new double[1];
+		d[0] = currentNeuron - bestNeuron;
+		return this.radial.calculate(d);
 	}
 
 	/**

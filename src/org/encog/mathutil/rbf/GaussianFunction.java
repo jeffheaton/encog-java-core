@@ -24,33 +24,24 @@
 
 package org.encog.mathutil.rbf;
 
-import java.io.Serializable;
-
 import org.encog.engine.network.rbf.RadialBasisFunction;
-import org.encog.engine.util.BoundMath;
 
 /**
- * Implements a radial function based on the gaussian function.
- * 
- * @author jheaton
+ * Multi-dimensional gaussian function. Do not use this to implement a 1d
+ * function, simply use GaussianFunction for that.
  * 
  */
-public class GaussianFunction implements RadialBasisFunction, Serializable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 548203092442332198L;
+public class GaussianFunction implements RadialBasisFunction {
 
 	/**
 	 * The center of the RBF.
 	 */
-	private final double center;
+	private final double[] center;
 
 	/**
 	 * The peak of the RBF.
 	 */
-	private final double peak;
+	private double peak;
 
 	/**
 	 * The width of the RBF.
@@ -58,78 +49,116 @@ public class GaussianFunction implements RadialBasisFunction, Serializable {
 	private double width;
 
 	/**
-	 * Construct a Gaussian RBF with the specified center, peak and width.
-	 * 
-	 * @param center
-	 *            The center.
-	 * @param peak
-	 *            The peak.
-	 * @param width
-	 *            The width.
+	 * Create centered at zero, width 0, and peak 0.
 	 */
-	public GaussianFunction(final double center, final double peak,
+	public GaussianFunction(int dimensions)
+	{
+		this.center = new double[dimensions];
+		this.peak = 1.0;
+		this.width = 1.0;		
+	}
+	
+	/**
+	 * Construct a multi-dimension Gaussian function with the specified peak,
+	 * centers and widths.
+	 * 
+	 * @param peak
+	 *            The peak for all dimensions.
+	 * @param center
+	 *            The centers for each dimension.
+	 * @param width
+	 *            The widths for each dimension.
+	 */
+	public GaussianFunction(final double peak, final double[] center,
 			final double width) {
 		this.center = center;
 		this.peak = peak;
 		this.width = width;
 	}
+	
+	/**
+	 * Construct a single-dimension Gaussian function with the specified peak,
+	 * centers and widths.
+	 * 
+	 * @param peak
+	 *            The peak for all dimensions.
+	 * @param center
+	 *            The centers for each dimension.
+	 * @param width
+	 *            The widths for each dimension.
+	 */
+	public GaussianFunction(final double center, final double peak,
+			final double width) {
+		this.center = new double[1];
+		this.center[0] = center;
+		this.peak = peak;
+		this.width = width;
+	}
+
 
 	/**
-	 * Calculate the value of the Gaussian function for the specified value.
+	 * Calculate thre result from the function.
 	 * 
 	 * @param x
-	 *            The value to calculate the Gaussian function for.
-	 * @return The return value for the Gaussian function.
+	 *            The parameters for the function, one for each dimension.
+	 * @return The result of the function.
 	 */
-	public double calculate(final double x) {
-		return this.peak
-				* BoundMath.exp(-Math.pow(x - this.center, 2)
-						/ (2.0 * this.width * this.width));
+	public double calculate(final double[] x) {
+		double value = 0;
+
+		for (int i = 0; i < this.center.length; i++) {
+			value += Math.pow(x[i] - this.center[i], 2)
+					/ (2.0 * this.width * this.width);
+		}
+		return this.peak * Math.exp(-value);
 	}
 
 	/**
-	 * Calculate the value of the derivative of the Gaussian function for the
-	 * specified value.
+	 * Get the center for the specified dimension.
 	 * 
-	 * @param x
-	 *            The value to calculate the derivative Gaussian function for.
-	 * @return The return value for the derivative of the Gaussian function.
+	 * @param dimension
+	 *            The dimension.
+	 * @return The center.
 	 */
-	public double calculateDerivative(final double x) {
-		return Math.exp(-0.5 * this.width * this.width * x * x) * this.peak
-				* this.width * this.width
-				* (this.width * this.width * x * x - 1);
+	public double getCenter(final int dimension) {
+		return this.center[dimension];
 	}
 
 	/**
-	 * @return The center of the RBF.
+	 * @return The number of dimensions.
 	 */
-	public double getCenter() {
-		return this.center;
+	public int getDimensions() {
+		return this.center.length;
 	}
 
 	/**
-	 * @return The peak of the RBF.
+	 * @return The peak.
 	 */
 	public double getPeak() {
 		return this.peak;
 	}
 
-	/**
-	 * @return The width of the RBF.
-	 */
+
 	public double getWidth() {
 		return this.width;
 	}
 
 	/**
-	 * Set the width of the function.
+	 * Set the width for all dimensions.
 	 * 
-	 * @param radius
+	 * @param w
 	 *            The width.
 	 */
-	public void setWidth(final double radius) {
-		this.width = radius;
+	public void setWidth(final double w) {
+		this.width = w;
+	}
+
+	/**
+	 * @return The centers.
+	 */
+	@Override
+	public double[] getCenters() {
+		return this.center;
 	}
 
 }

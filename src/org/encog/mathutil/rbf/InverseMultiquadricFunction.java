@@ -28,15 +28,15 @@ import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.BoundMath;
 
 /**
- * Implements an Inverse Multiquadric Function.
+ * Multi-dimensional Inverse Multiquadric function. 
  *
  */
-public class InverseMultiquadricFunction implements RadialBasisFunction {
-
+public class InverseMultiquadricFunction implements
+		RadialBasisFunction {
 	/**
 	 * The center of the RBF.
 	 */
-	private double center;
+	private double[] center;
 
 	/**
 	 * The peak of the RBF.
@@ -47,80 +47,78 @@ public class InverseMultiquadricFunction implements RadialBasisFunction {
 	 * The width of the RBF.
 	 */
 	private double width;
+	
+	/**
+	 * Create centered at zero, width 0, and peak 0.
+	 */
+	public InverseMultiquadricFunction(int dimensions)
+	{
+		this.center = new double[dimensions];
+		this.peak = 1.0;
+		this.width = 1.0;		
+	}
 
 	/**
-	 * Construct an Inverse Multiquadric RBF with the specified center, peak
-	 * and width.
-	 * @param center The center.
-	 * @param peak The peak.
+	 * Construct a multi-dimension Inverse Multiquadric function with the
+	 * specified peak, centers and widths.
+	 * @param peak The peak for all dimensions
+	 * @param center The centers for each dimension.
 	 * @param width The width.
 	 */
-	public InverseMultiquadricFunction(final double center, final double peak,
-			final double width) {
+	public InverseMultiquadricFunction(final double peak,
+			final double[] center, final double width) {
 		this.center = center;
 		this.peak = peak;
 		this.width = width;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Construct a Inverse Multiquadric function with the specified number of
+	 * dimensions. The peak, center and widths are all the same.
+	 * @param dimensions The number of dimensions.
+	 * @param peak The peak used for all dimensions.
+	 * @param center The center used for all dimensions.
+	 * @param width The widths used for all dimensions.
 	 */
-	public double calculate(final double x) {
-		return this.peak
-				/ BoundMath.sqrt(BoundMath.pow(x - this.center, 2)
-						+ (this.width * this.width));
+	public InverseMultiquadricFunction(final int dimensions,
+			final double peak, final double center, final double width) {
+		this.peak = peak;
+		this.center = new double[dimensions];
+		this.width = width;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double calculateDerivative(final double x) {
-		return calculateFirstDerivative(x);
-	}
+	public double calculate(final double[] x) {
+		double value = 0;
 
-	// / <summary>
-	// / 
-	// / </summary>
-	// / <param name="x"></param>
-	// / <returns></returns>
-	
-	/**
-	 * Calculate the value of the second derivative of the Inverse
-	 * Multiquadric function for the specified value.
-	 * @param x The value to calculate the derivative Inverse
-	 * Multiquadric function for.
-	 * @return The return value for the derivative of the Inverse Multiquadric
-	 * function.
-	 */
-	public double calculateFirstDerivative(final double x) {
-		return -1
-				* this.peak
-				* (x - this.center)
-				/ BoundMath.pow(BoundMath.pow(x - this.center, 2)
-						+ (this.width * this.width), 1.5);
-	}
-
-	/**
-	 * Calculate the value of the second derivative of the Inverse
-	 * Multiquadric function for the specified value.
-	 * @param x The value to calculate the derivative Inverse
-	 * Multiquadric function for.
-	 * @return The return value for the derivative of the Inverse
-	 * Multiquadric function.
-	 */
-	public double calculateSecondDerivative(final double x) {
-		return this.peak
-				* (this.width * this.width + 2 * BoundMath.pow(x - this.center,
-						2))
-				/ BoundMath.pow(BoundMath.pow(x - this.center, 2) + this.width
-						* this.width, 2.5);
+		for (int i = 0; i < this.center.length; i++) {
+			value += Math.pow(x[i] - this.center[i], 2)
+					+ (this.width * this.width);
+		}
+		return this.peak / BoundMath.sqrt(value);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double getCenter() {
+	public double[] getCenter() {
 		return this.center;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public double getCenter(final int dimension) {
+		return this.center[dimension];
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getDimensions() {
+		return this.center.length;
 	}
 
 	/**
@@ -140,7 +138,7 @@ public class InverseMultiquadricFunction implements RadialBasisFunction {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setCenter(final double center) {
+	public void setCenter(final double[] center) {
 		this.center = center;
 	}
 
@@ -154,8 +152,17 @@ public class InverseMultiquadricFunction implements RadialBasisFunction {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setWidth(final double width) {
-		this.width = width;
+	public void setWidth(final double w) {
+		this.width = w;
 	}
+	
+	/**
+	 * @return The centers.
+	 */
+	@Override
+	public double[] getCenters() {
+		return this.center;
+	}
+
 
 }
