@@ -71,6 +71,8 @@ public final class ConcurrentTrainingManager implements Runnable {
 	
 	private int jobNumber;
 
+	private boolean singleThreaded;
+	
 	/**
 	 * @return The singleton instance.
 	 */
@@ -239,6 +241,8 @@ public final class ConcurrentTrainingManager implements Runnable {
 			
 			int clCount = 1;
 			int cpuCount = 1;
+			
+			this.setSingleThreaded(splitCores);
 
 			// handle OpenCL mode
 			if (Encog.getInstance().getCL() != null) {
@@ -432,5 +436,15 @@ public final class ConcurrentTrainingManager implements Runnable {
 		}
 		return builder.toString();
 	}
+
+	public boolean isSingleThreaded() {
+		return singleThreaded;
+	}
+
+	public void setSingleThreaded(boolean singleThreaded) {
+		this.singleThreaded = singleThreaded;
+	}
+
+
 
 }

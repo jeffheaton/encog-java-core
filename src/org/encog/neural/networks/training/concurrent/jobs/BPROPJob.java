@@ -30,6 +30,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
 /**
@@ -74,9 +75,14 @@ public class BPROPJob extends TrainingJob {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createTrainer(final OpenCLTrainingProfile profile) {
-		final Train train = new Backpropagation(getNetwork(), getTraining(),
+	public void createTrainer(final OpenCLTrainingProfile profile, boolean singleThreaded) {
+		final Propagation train = new Backpropagation(getNetwork(), getTraining(),
 				profile, getLearningRate(), getMomentum());
+		
+		if( singleThreaded )
+			train.setNumThreads(1);
+		else
+			train.setNumThreads(0);
 
 		for (final Strategy strategy : getStrategies()) {
 			train.addStrategy(strategy);

@@ -30,6 +30,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
 /**
@@ -74,10 +75,16 @@ public class RPROPJob extends TrainingJob {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createTrainer(final OpenCLTrainingProfile profile) {
-		final Train train = new ResilientPropagation(getNetwork(),
+	public void createTrainer(final OpenCLTrainingProfile profile, boolean singleThreaded) {
+		final Propagation train = new ResilientPropagation(getNetwork(),
 				getTraining(), profile, getInitialUpdate(), getMaxStep());
 
+		if( singleThreaded )
+			train.setNumThreads(1);
+		else
+			train.setNumThreads(0);
+			
+		
 		for (final Strategy strategy : getStrategies()) {
 			train.addStrategy(strategy);
 		}

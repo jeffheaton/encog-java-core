@@ -99,7 +99,7 @@ public class ConcurrentTrainingPerformerCPU implements
 				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), 1.0);
 			}
 			
-			this.currentJob.createTrainer(profile);
+			this.currentJob.createTrainer(profile, manager.isSingleThreaded());
 			final Train train = this.currentJob.getTrain();
 			int interation = 1;
 
