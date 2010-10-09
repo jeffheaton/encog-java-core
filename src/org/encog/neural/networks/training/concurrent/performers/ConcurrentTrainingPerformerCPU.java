@@ -96,6 +96,7 @@ public class ConcurrentTrainingPerformerCPU implements
 			OpenCLTrainingProfile profile = null;
 			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
 				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), 1.0);
+				System.out.println("GO CL");
 			}
 			
 			this.currentJob.createTrainer(profile);

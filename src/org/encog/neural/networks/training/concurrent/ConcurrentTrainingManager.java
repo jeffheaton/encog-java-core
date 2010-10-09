@@ -220,7 +220,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * do not create another CPU performer.
 	 */
 	public void detectPerformers() {
-		detectPerformers(false);
+		detectPerformers(false,0);
 	}
 
 	/**
@@ -231,7 +231,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * @param splitCores
 	 *            True, if a CPU performer should be created for each core.
 	 */
-	public void detectPerformers(final boolean splitCores) {
+	public void detectPerformers(final boolean splitCores, int forceCoreCount) {
 		try {
 			this.accessLock.lock();
 			boolean useCPU = true;
@@ -256,12 +256,15 @@ public final class ConcurrentTrainingManager implements Runnable {
 			}
 
 			// now create CPU performers
-			if (useCPU) {
+			if (useCPU && forceCoreCount>=0 ) {
 				int threads;
 
 				if (splitCores) {
 					final Runtime runtime = Runtime.getRuntime();
-					threads = runtime.availableProcessors();
+					if( forceCoreCount>0 )
+						threads = forceCoreCount;
+					else
+						threads = runtime.availableProcessors();
 				} else {
 					threads = 1;
 				}
