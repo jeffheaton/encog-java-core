@@ -49,6 +49,12 @@ public interface TrainFlatNetwork {
 	 * Perform one training iteration.
 	 */
 	void iteration();
+	
+	/**
+	 * Perform one training iteration.
+	 */
+	void iteration(int count);
+	
 	/**
 	 * Set the number of threads to use.
 	 * 
@@ -66,4 +72,15 @@ public interface TrainFlatNetwork {
 	 * Training is to stop, free any resources.
 	 */
 	void finishTraining();
+	
+	/**
+	 * @return The current iteration.
+	 */
+	int getIteration();
+	
+	/**
+	 * Set the iteration.
+	 * @param iteration The iteration.
+	 */
+	void setIteration(int iteration);
 }

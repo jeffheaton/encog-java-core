@@ -24,12 +24,10 @@
 
 package org.encog.neural.networks.training.propagation;
 
-import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.FlatUpdateNeeded;
@@ -212,5 +210,34 @@ public abstract class Propagation extends BasicTraining {
 		this.flatTraining = flatTraining;
 	}
 
+	/**
+	 * Perform the specified number of training iterations. This can be more efficient than single 
+	 * training iterations.  This is particularly true if you are training with a GPU.
+	 * @param count The number of training iterations.
+	 */
+	public void iteration(int count) {
+		try {
+			preIteration();
+
+			this.flatTraining.iteration(count);
+			this.setIteration(this.flatTraining.getIteration());
+			this.setError(this.flatTraining.getError());
+			this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Unflatten);
+
+			postIteration();
+			
+			if( this.logger.isInfoEnabled() ) {
+				logger.info("Training iterations done, error: " + this.getError());
+			}
+		} catch (final ArrayIndexOutOfBoundsException ex) {
+			EncogValidate.validateNetworkForTraining(this.network,
+					getTraining());
+			throw new EncogError(ex);
+		}
+	}
+	
+	
+	
+	
 	
 }

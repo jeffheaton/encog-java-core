@@ -298,7 +298,6 @@ public final class EncogUtility {
 			final BasicNetwork network, final NeuralDataSet trainingSet,
 			final int minutes) {
 
-		int epoch = 1;
 		long remaining;
 
 		System.out.println("Beginning training...");
@@ -310,12 +309,14 @@ public final class EncogUtility {
 			final long elapsed = (current - start) / 1000;// seconds
 			remaining = minutes - elapsed / 60;
 
-			System.out.println("Iteration #" + Format.formatInteger(epoch)
+			int iteration = train.getIteration();
+			
+			System.out.println("Iteration #" + Format.formatInteger(iteration)
 					+ " Error:" + Format.formatPercent(train.getError())
 					+ " elapsed time = " + Format.formatTimeSpan((int) elapsed)
 					+ " time left = "
 					+ Format.formatTimeSpan((int) remaining * 60));
-			epoch++;
+
 		} while (remaining > 0);
 		train.finishTraining();
 	}
@@ -349,20 +350,18 @@ public final class EncogUtility {
 	public static void trainDialog(final Train train,
 			final BasicNetwork network, final NeuralDataSet trainingSet) {
 
-		int epoch = 1;
 		final TrainingDialog dialog = new TrainingDialog();
 		dialog.setVisible(true);
 
 		final long start = System.currentTimeMillis();
 		do {
 			train.iteration();
-
+			int iteration = train.getIteration();
 			final long current = System.currentTimeMillis();
 			final long elapsed = (current - start) / 1000;// seconds
-			dialog.setIterations(epoch);
+			dialog.setIterations(iteration);
 			dialog.setError(train.getError());
 			dialog.setTime((int) elapsed);
-			epoch++;
 		} while (!dialog.shouldStop());
 		train.finishTraining();
 		dialog.dispose();

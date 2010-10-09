@@ -100,6 +100,11 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	protected Throwable reportedException;
 
 	/**
+	 * The iteration.
+	 */
+	protected int iteration;
+
+	/**
 	 * Train a flat network multithreaded.
 	 * 
 	 * @param network
@@ -221,8 +226,8 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		// handle CPU
 		for (final IntRange r : determine.calculateWorkers()) {
 			this.workers[index++] = new GradientWorkerCPU(this.network.clone(),
-					this, this.indexable.openAdditional(), r.getLow(), r
-							.getHigh());
+					this, this.indexable.openAdditional(), r.getLow(),
+					r.getHigh());
 		}
 	}
 
@@ -230,6 +235,9 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * {@inheritDoc}
 	 */
 	public void iteration() {
+
+		this.iteration++;
+
 		calculateGradients();
 
 		if (this.network.isLimited()) {
@@ -239,8 +247,8 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		}
 
 		for (final FlatGradientWorker worker : this.workers) {
-			EngineArray.arrayCopy(this.network.getWeights(), 0, worker
-					.getWeights(), 0, this.network.getWeights().length);
+			EngineArray.arrayCopy(this.network.getWeights(), 0,
+					worker.getWeights(), 0, this.network.getWeights().length);
 		}
 
 		copyContexts();
@@ -327,4 +335,29 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	public abstract double updateWeight(double[] gradients,
 			double[] lastGradient, int index);
 
+	/**
+	 * Perform the specified number of training iterations. This is a basic implementation 
+	 * that just calls iteration the specified number of times.  However, some training 
+	 * methods, particularly with the GPU, benefit greatly by calling with higher numbers than 1.
+	 * @param count The number of training iterations.
+	 */
+	public void iteration(int count) {
+		for (int i = 0; i < count; i++) {
+			iteration();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getIteration() {
+		return this.iteration;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setIteration(int iteration) {
+		this.iteration = iteration;
+	}
 }

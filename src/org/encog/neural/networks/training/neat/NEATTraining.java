@@ -207,6 +207,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * The Encog cloud.
 	 */
 	private EncogCloud cloud;
+	
+	/**
+	 * The iteration number.
+	 */
+	private int iteration;
 
 	/**
 	 * Construct a NEAT training object.
@@ -750,6 +755,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	@Override
 	public void iteration() {
 
+		this.iteration++;
 		final List<NEATGenome> newPop = new ArrayList<NEATGenome>();
 
 		int numSpawnedSoFar = 0;
@@ -1210,5 +1216,27 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		return false;
 	}
 
+	/**
+	 * Perform the specified number of training iterations. This is a basic implementation 
+	 * that just calls iteration the specified number of times.  However, some training 
+	 * methods, particularly with the GPU, benefit greatly by calling with higher numbers than 1.
+	 * @param count The number of training iterations.
+	 */
+	public void iteration(int count) {
+		for(int i=0;i<count;i++) {
+			iteration();
+		}
+	}
 
+
+
+	@Override
+	public int getIteration() {
+		return this.iteration;
+	}
+
+	@Override
+	public void setIteration(int iteration) {
+		this.iteration = iteration;
+	}
 }

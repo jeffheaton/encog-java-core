@@ -105,6 +105,11 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 */
 	private KernelNetworkTrain kernel;
 	
+	/**
+	 * The iteration.
+	 */
+	private int iteration;
+	
 	private final OpenCLTrainingProfile profile;
 
 	/**
@@ -423,5 +428,31 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	@Override
 	public void setNumThreads(final int numThreads) {
 
+	}
+
+	/**
+	 * Perform the specified number of training iterations. This is a basic implementation 
+	 * that just calls iteration the specified number of times.  However, some training 
+	 * methods, particularly with the GPU, benefit greatly by calling with higher numbers than 1.
+	 * @param count The number of training iterations.
+	 */
+	public void iteration(int count) {
+		for (int i = 0; i < count; i++) {
+			iteration();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getIteration() {
+		return this.iteration;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public void setIteration(int iteration) {
+		this.iteration = iteration;
 	}
 }

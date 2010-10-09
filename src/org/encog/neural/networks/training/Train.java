@@ -86,6 +86,11 @@ public interface Train {
 	 * Perform one iteration of training.
 	 */
 	void iteration();
+	
+	/**
+	 * Perform a number of training iterations.
+	 */
+	void iteration(int count);
 
 	/**
 	 * @param error
@@ -109,4 +114,15 @@ public interface Train {
 	 * @return True if training can progress no further.
 	 */
 	boolean isTrainingDone();
+	
+	/**
+	 * @return The current training iteration.
+	 */
+	int getIteration();
+	
+	/**
+	 * Set the current training iteration.
+	 * @param iteration Iteration.
+	 */
+	void setIteration(int iteration);
 }

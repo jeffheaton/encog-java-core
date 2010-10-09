@@ -30,6 +30,7 @@ public class EndIterationsStrategy implements EndTrainingStrategy {
 
 	private int maxIterations;
 	private int currentIteration;
+	private Train train;
 	
 	public EndIterationsStrategy(int maxIterations) {
 		this.maxIterations = maxIterations;
@@ -50,7 +51,7 @@ public class EndIterationsStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public void init(Train train) {
-	
+		this.train = train;
 	}
 
 	/**
@@ -58,8 +59,7 @@ public class EndIterationsStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public void postIteration() {
-		this.currentIteration++;
-		
+		this.currentIteration = this.train.getIteration();
 	}
 
 	/**
