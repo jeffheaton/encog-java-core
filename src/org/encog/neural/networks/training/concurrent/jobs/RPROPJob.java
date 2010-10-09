@@ -25,11 +25,9 @@
 package org.encog.neural.networks.training.concurrent.jobs;
 
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 
@@ -66,9 +64,36 @@ public class RPROPJob extends TrainingJob {
 	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory, final double initialUpdate,
 			final double maxStep) {
+		this(network,training,loadToMemory,initialUpdate,maxStep,1,1);
+	}
+	
+	/**
+	 * Construct an RPROP job. For more information on RPROP see the
+	 * ResilientPropagation class.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
+	 * @param loadToMemory
+	 *            True if binary training data should be loaded to memory.
+	 * @param initialUpdate
+	 *            The initial update.
+	 * @param maxStep
+	 *            The max step.
+	 * @param openCLRatio
+	 * 		The open cl ratio.
+	 * @param iterationsPer
+	 * 		The number of iterations per cycle.
+	 */
+	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
+			final boolean loadToMemory, final double initialUpdate,
+			final double maxStep, final double openCLRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
+		this.setOpenCLRatio(openCLRatio);
+		this.setIterationsPer(iterationsPer);
 	}
 
 	/**

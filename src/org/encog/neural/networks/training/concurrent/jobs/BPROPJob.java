@@ -50,7 +50,8 @@ public class BPROPJob extends TrainingJob {
 
 	/**
 	 * Construct a job definition for RPROP. For more information on backprop,
-	 * see the Backpropagation class.
+	 * see the Backpropagation class.  Use OpenCLratio of 1.0 and process one
+	 * iteration per cycle.
 	 * 
 	 * @param network
 	 *            The network to use.
@@ -66,9 +67,36 @@ public class BPROPJob extends TrainingJob {
 	public BPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory, final double learningRate,
 			final double momentum) {
+		this(network,training,loadToMemory,learningRate,momentum,1.0,1);
+	}
+	
+	/**
+	 * Construct a job definition for RPROP. For more information on backprop,
+	 * see the Backpropagation class.
+	 * 
+	 * @param network
+	 *            The network to use.
+	 * @param training
+	 *            The training data to use.
+	 * @param loadToMemory
+	 *            Should binary data be loaded to memory?
+	 * @param learningRate
+	 *            THe learning rate to use.
+	 * @param momentum
+	 *            The momentum to use.
+	 * @param openCLRatio
+	 * 			The OpenCLRatio to use.
+	 * @param iterationsPer
+	 * 			How many iterations to process per cycle.
+	 */
+	public BPROPJob(final BasicNetwork network, final NeuralDataSet training,
+			final boolean loadToMemory, final double learningRate,
+			final double momentum, final double openCLRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);
 		this.learningRate = learningRate;
 		this.momentum = momentum;
+		this.setOpenCLRatio(openCLRatio);
+		this.setIterationsPer(iterationsPer);
 	}
 
 	/**

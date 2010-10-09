@@ -96,7 +96,7 @@ public class ConcurrentTrainingPerformerCPU implements
 			watch.start();
 			OpenCLTrainingProfile profile = null;
 			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
-				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), 1.0);
+				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), this.currentJob.getOpenCLRatio());
 			}
 			
 			this.currentJob.createTrainer(profile, manager.isSingleThreaded());
@@ -104,7 +104,7 @@ public class ConcurrentTrainingPerformerCPU implements
 			int interation = 1;
 
 			while (this.currentJob.shouldContinue()) {
-				train.iteration();
+				train.iteration(this.currentJob.getIterationsPer());
 				interation++;
 			}
 			watch.stop();

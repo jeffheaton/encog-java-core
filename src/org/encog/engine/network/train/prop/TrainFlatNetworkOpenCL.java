@@ -152,11 +152,13 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 *            The number of training elements.
 	 * @param learn
 	 *            Should we learn?
+	 * @param iterations
+	 * 			The number of iterations.
 	 */
-	private void callKernel(final int start, final int size, final boolean learn) {
+	private void callKernel(final int start, final int size, final boolean learn, int iterations) {
 		// System.out.println("Iteration: start=" + start + ",sizePer=" + size +
 		// ",total=" + (size*this.kernel.getGlobalWork()) );
-		this.kernel.calculate(start, size, learn);
+		this.kernel.calculate(start, size, learn, iterations);
 
 		double e = 0;
 
@@ -275,18 +277,23 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		}
 		return result;
 	}
+	
+	public void iteration() {
+		iteration(1);
+	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void iteration() {
+	public void iteration(int iterations) {
 
 		if (this.learningType == -1) {
 			throw new EncogEngineError(
 					"Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
 		}
 
+		this.iteration+=iterations;
 		int currentIndex = 0;
 		this.error = 0;
 
@@ -317,10 +324,18 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			remainderPer = 1;
 			remainderGlobal = remainder;
 		}
+		
+		// If we are using an OpenCL ratio other than 1.0, which means that we are 
+		// braining up a single training iteration, there is no reason to try and batch 
+		// up multiple iterations.
+		if( count>0 && iterations>1 )
+		{
+			throw new EncogEngineError("Must use an OpenCL ratio of 1.0 if you are going to use an iteration count > 1.");
+		}
 
 		// handle workloads
 		while (count > 0) {
-			callKernel(currentIndex, this.profile.getItemsPerGlobalWorkItem(), false);
+			callKernel(currentIndex, this.profile.getItemsPerGlobalWorkItem(), false, 1);
 			count--;
 			currentIndex += this.profile.getItemsPerGlobalWorkItem()
 					* this.kernel.getGlobalWork();
@@ -329,7 +344,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		// handle the final workload
 		this.kernel.assignWorkgroupSizes(remainderGlobal,
 				this.profile.getNumGlobalWorkItems());
-		callKernel(currentIndex, remainderPer, true);
+		callKernel(currentIndex, remainderPer, true, iterations);
 
 		count = (int) this.training.getRecordCount();
 		this.error = this.error / (count * this.training.getIdealSize());
@@ -428,18 +443,6 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	@Override
 	public void setNumThreads(final int numThreads) {
 
-	}
-
-	/**
-	 * Perform the specified number of training iterations. This is a basic implementation 
-	 * that just calls iteration the specified number of times.  However, some training 
-	 * methods, particularly with the GPU, benefit greatly by calling with higher numbers than 1.
-	 * @param count The number of training iterations.
-	 */
-	public void iteration(int count) {
-		for (int i = 0; i < count; i++) {
-			iteration();
-		}
 	}
 
 	/**

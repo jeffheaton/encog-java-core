@@ -75,6 +75,11 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * Items to train per call.
 	 */
 	public static final int PARRAY_ITEMS_PER = 5;
+	
+	/**
+	 * Items to train per call.
+	 */
+	public static final int PARRAY_ITERATIONS = 6;
 
 	/**
 	 * A buffer to communicate weights to the kernel.
@@ -311,17 +316,20 @@ public class KernelNetworkTrain extends EncogKernel {
 	 *            The starting position to calculate for.
 	 * @param size
 	 *            The ending position to calculate for.
+	 * @param iterations
+	 * 			The number of iterations to execute.
 	 * @param learn
 	 *            True, if we should learn.
 	 */
 	public void calculate(final int start, final int size, 
-			final boolean learn) {
+			final boolean learn, final int iterations) {
 		prepareKernel();
 
 		this.paramArray[KernelNetworkTrain.PARRAY_LEARN] = learn ? 1 : 0; 
 		this.paramArray[KernelNetworkTrain.PARRAY_START] = start; 
 		this.paramArray[KernelNetworkTrain.PARRAY_ITEMS_PER] = size;
-
+		this.paramArray[KernelNetworkTrain.PARRAY_ITERATIONS] = iterations;
+		
 		EngineArray.arrayCopy(this.flat.getWeights(), this.weightInArray);
 
 		setArg(0, this.paramBuffer);

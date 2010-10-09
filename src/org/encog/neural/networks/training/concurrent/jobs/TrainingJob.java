@@ -69,6 +69,10 @@ public abstract class TrainingJob {
 	 * Holds any errors that occur during training.
 	 */
 	private Throwable error;
+	
+	private int iterationsPer;
+	
+	private double openCLRatio;
 
 	/**
 	 * Construct a training job.
@@ -82,6 +86,8 @@ public abstract class TrainingJob {
 		this.network = network;
 		this.training = training;
 		this.loadToMemory = loadToMemory;
+		this.iterationsPer = 1;
+		this.openCLRatio = 1.0;
 	}
 
 	/**
@@ -187,5 +193,35 @@ public abstract class TrainingJob {
 		}
 		return true;
 	}
+
+	/**
+	 * @return the iterationsPer
+	 */
+	public int getIterationsPer() {
+		return iterationsPer;
+	}
+
+	/**
+	 * @param iterationsPer the iterationsPer to set
+	 */
+	public void setIterationsPer(int iterationsPer) {
+		this.iterationsPer = iterationsPer;
+	}
+
+	/**
+	 * @return the openCLRatio
+	 */
+	public double getOpenCLRatio() {
+		return openCLRatio;
+	}
+
+	/**
+	 * @param openCLRatio the openCLRatio to set
+	 */
+	public void setOpenCLRatio(double openCLRatio) {
+		this.openCLRatio = openCLRatio;
+	}
+	
+	
 
 }
