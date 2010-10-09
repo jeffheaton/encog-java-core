@@ -32,7 +32,7 @@ import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
  * OpenCL and CPU.
  * 
  */
-public interface ConcurrentTrainingPerformer {
+public interface ConcurrentTrainingPerformer extends Runnable {
 	
 	/**
 	 * @return True, if this performer is ready to train a job.

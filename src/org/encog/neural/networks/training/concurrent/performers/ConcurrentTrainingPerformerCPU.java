@@ -26,6 +26,7 @@ package org.encog.neural.networks.training.concurrent.performers;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.encog.engine.concurrency.EngineConcurrency;
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.Stopwatch;
@@ -74,8 +75,8 @@ public class ConcurrentTrainingPerformerCPU implements
 		this.ready.set(false);
 		this.currentJob = job;
 
-		final Thread t = new Thread(this);
-		t.start();
+		PerformerTask task = new PerformerTask(this);
+		EngineConcurrency.getInstance().processTask(task);
 	}
 
 	/**
@@ -96,7 +97,6 @@ public class ConcurrentTrainingPerformerCPU implements
 			OpenCLTrainingProfile profile = null;
 			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
 				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), 1.0);
-				System.out.println("GO CL");
 			}
 			
 			this.currentJob.createTrainer(profile);
