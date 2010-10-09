@@ -45,7 +45,8 @@ public class ConcurrentTrainingPerformerOpenCL extends
 	 * Construct an OpenCL device performer.
 	 * @param device The device to use.
 	 */
-	public ConcurrentTrainingPerformerOpenCL(final EncogCLDevice device) {
+	public ConcurrentTrainingPerformerOpenCL(int number, final EncogCLDevice device) {
+		super(number);
 		if (Encog.getInstance().getCL() == null) {
 			throw new NeuralNetworkError(
 					"Can't use an OpenCL performer, because OpenCL " 
@@ -69,7 +70,9 @@ public class ConcurrentTrainingPerformerOpenCL extends
 	public String toString()
 	{
 		StringBuilder result = new StringBuilder();
-		result.append("[OpenCL-Performer: ");
+		result.append("[");
+		result.append(this.getNumber());
+		result.append(":OpenCL-Performer: ");
 		result.append(device.toString());
 		result.append("]");
 		return result.toString();

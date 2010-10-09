@@ -68,6 +68,8 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 * Condition used to check if we are done.
 	 */
 	private final Condition mightBeDone = this.accessLock.newCondition();
+	
+	private int jobNumber;
 
 	/**
 	 * @return The singleton instance.
@@ -234,6 +236,9 @@ public final class ConcurrentTrainingManager implements Runnable {
 			this.accessLock.lock();
 			boolean useCPU = true;
 			clearPerformers();
+			
+			int clCount = 1;
+			int cpuCount = 1;
 
 			// handle OpenCL mode
 			if (Encog.getInstance().getCL() != null) {
@@ -246,7 +251,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 				// add a performer for each OpenCL device.
 				for (final EncogCLDevice device : Encog.getInstance().getCL()
 						.getDevices()) {
-					addPerformer(new ConcurrentTrainingPerformerOpenCL(device));
+					addPerformer(new ConcurrentTrainingPerformerOpenCL(clCount++,device));
 				}
 			}
 
@@ -262,7 +267,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 				}
 
 				for (int i = 0; i < threads; i++) {
-					addPerformer(new ConcurrentTrainingPerformerCPU());
+					addPerformer(new ConcurrentTrainingPerformerCPU(cpuCount++));
 				}
 			}
 		} finally {
@@ -298,6 +303,7 @@ public final class ConcurrentTrainingManager implements Runnable {
 	 */
 	public void run() {
 
+		this.jobNumber = 0;
 		this.report.report(this.queue.size(), 0, "Starting first job");
 
 		int count = 0;
@@ -306,8 +312,6 @@ public final class ConcurrentTrainingManager implements Runnable {
 			final ConcurrentTrainingPerformer perform = waitForFreePerformer();
 			perform.perform(job);
 			count++;
-			this.report.report(this.queue.size(), count, "Jobs submitted: "
-					+ count + " of " + this.queue.size());
 			reportErrors();
 		}
 
@@ -340,6 +344,11 @@ public final class ConcurrentTrainingManager implements Runnable {
 		}
 
 		this.report.report(this.queue.size(), count, "All training done.");
+	}
+
+	private void reportStatus(String str) {
+		this.report.report(this.queue.size(), jobNumber, str); 
+		
 	}
 
 	/**
@@ -394,8 +403,10 @@ public final class ConcurrentTrainingManager implements Runnable {
 
 	}
 
-	public void jobDone() {
+	public void jobDone(long time, ConcurrentTrainingPerformerCPU perf) {
 		try {
+			this.jobNumber++;
+			this.reportStatus("Job finished in " + time + "ms, on " + perf.toString() );
 			this.accessLock.lock();
 			this.mightBeDone.signal();
 		} finally {

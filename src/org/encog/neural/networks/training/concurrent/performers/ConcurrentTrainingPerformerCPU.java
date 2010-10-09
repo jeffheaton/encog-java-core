@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.opencl.EncogCLDevice;
+import org.encog.engine.util.Stopwatch;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.concurrent.ConcurrentTrainingManager;
@@ -52,7 +53,14 @@ public class ConcurrentTrainingPerformerCPU implements
 	private TrainingJob currentJob;
 	
 	private ConcurrentTrainingManager manager;
+	
+	private int number;
 
+	public ConcurrentTrainingPerformerCPU(int number)
+	{
+		this.number = number;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -82,7 +90,9 @@ public class ConcurrentTrainingPerformerCPU implements
 	 * {@inheritDoc}
 	 */
 	public void run() {
+		Stopwatch watch = new Stopwatch();
 		try {
+			watch.start();
 			OpenCLTrainingProfile profile = null;
 			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
 				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), 1.0);
@@ -96,11 +106,12 @@ public class ConcurrentTrainingPerformerCPU implements
 				train.iteration();
 				interation++;
 			}
+			watch.stop();
 		} catch (final Throwable t) {
 			this.currentJob.setError(t);
 		} finally {
 			this.ready.set(true);
-			this.manager.jobDone();
+			this.manager.jobDone(watch.getElapsedMilliseconds(),this);
 		}
 	}
 	
@@ -109,7 +120,11 @@ public class ConcurrentTrainingPerformerCPU implements
 	 */
 	public String toString()
 	{
-		return "[CPU-Performer]";
+		return "[CPU-Performer: " + this.number + "]";
+	}
+
+	public int getNumber() {
+		return number;
 	}
 
 	/**
