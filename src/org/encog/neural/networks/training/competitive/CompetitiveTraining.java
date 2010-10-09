@@ -453,6 +453,8 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 				applyCorrection();
 			}
 		}
+		
+		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 
 		// update the error
 		setError(this.bmuUtil.getWorstDistance());
