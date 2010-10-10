@@ -24,10 +24,7 @@
 package org.encog.engine.network.train.prop;
 
 import org.encog.engine.EncogEngine;
-import org.encog.engine.EncogEngineError;
-import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.data.EngineIndexableSet;
-import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.exceptions.OpenCLError;
 import org.encog.engine.opencl.kernels.EncogKernel;
@@ -70,25 +67,64 @@ public class OpenCLTrainingProfile {
 	private EncogCLDevice device;
 
 	/**
-	 * The local r
+	 * The local ratio
 	 */
 	private final double localRatio;
 
-	private final double globalRatio;
+	/**
+	 * The global ratio.
+	 */
+	private final int globalRatio;
 
+	/**
+	 * The segmentation ratio.
+	 */
 	private final double segmentationRatio;
 
+	/**
+	 * The calculated size of the global workgroup.
+	 */
 	private int kernelGlobalWorkgroup;
+	
+	/**
+	 * The calculated size of the local workgroup.
+	 */
 	private int kernelLocalWorkgroup;
-	private int kernelItemsPerCall;
+
+	/**
+	 * The number of training items processed per call.
+	 */
 	private int kernelWorkPerCall;
+	
+	/**
+	 * The number of calls to the kernel that will be made. The number of segments.
+	 */
 	private int kernelNumberOfCalls;
+	
+	/**
+	 * The number of items in the remainder.
+	 */
 	private int kernelRemainder;
+	
+	/**
+	 * The size of the global and local workgroups for the remainder.
+	 */
 	private int kernelRemainderGlobal;
+	
+	/**
+	 * The number of training items processed per call in the remainder.
+	 */
 	private int kernelRemainderPer;
 
+	/**
+	 * Construct a training profile.
+	 * @param device The device to use.
+	 * @param localRatio The local ratio.
+	 * @param globalRatio The global ratio.
+	 * @param segmentationRatio The segmentation ratio.
+	 */
 	public OpenCLTrainingProfile(EncogCLDevice device, double localRatio,
-			double globalRatio, double segmentationRatio) {
+			int globalRatio, double segmentationRatio) {
 		super();
 		this.device = device;
 
@@ -116,10 +152,19 @@ public class OpenCLTrainingProfile {
 		this.segmentationRatio = segmentationRatio;
 	}
 
+	/**
+	 * Construct a training profile with the specified device and the value of one for all ratios.
+	 * @param device The device to use.
+	 */
 	public OpenCLTrainingProfile(EncogCLDevice device) {
-		this(device, 1.0, 1.0, 1.0);
+		this(device, 1.0, 1, 1.0);
 	}
 
+	/**
+	 * Calculate the kernel values.
+	 * @param kernel The kernel to calculate for.
+	 * @param training The training params to use.
+	 */
 	public void calculateKernelParams(EncogKernel kernel,
 			EngineIndexableSet training) {
 		boolean globalValuesAssigned = false;
@@ -194,58 +239,95 @@ public class OpenCLTrainingProfile {
 		}
 	}
 
+	/**
+	 * @return The device to use.
+	 */
 	public EncogCLDevice getDevice() {
 		return device;
 	}
 
+	/**
+	 * Set the device to use.
+	 * @param device The device to use.
+	 */
 	public void setDevice(EncogCLDevice device) {
 		this.device = device;
 	}
 
+	/**
+	 * @return The local ratio.
+	 */
 	public double getLocalRatio() {
 		return localRatio;
 	}
 
-	public double getGlobalRatio() {
+	/**
+	 * @return The global ratio.
+	 */
+	public int getGlobalRatio() {
 		return globalRatio;
 	}
 
+	/**
+	 * @return The segmentation ratio.
+	 */
 	public double getSegmentationRatio() {
 		return segmentationRatio;
 	}
-
+	
+	
+	/**
+	 * @return The calculated size of the global workgroup.
+	 */
 	public int getKernelGlobalWorkgroup() {
 		return kernelGlobalWorkgroup;
 	}
 
+	/**
+	 * @return The calculated size of the local workgroup.
+	 */
 	public int getKernelLocalWorkgroup() {
 		return kernelLocalWorkgroup;
 	}
 
-	public int getKernelItemsPerCall() {
-		return kernelItemsPerCall;
-	}
-
+	/**
+	 * @return The number of training items processed per call.
+	 */
 	public int getKernelWorkPerCall() {
 		return kernelWorkPerCall;
 	}
 
+	/**
+	 * @return The number of calls to the kernel that will be made. The number of segments.
+	 */
 	public int getKernelNumberOfCalls() {
 		return kernelNumberOfCalls;
 	}
 
+	/**
+	 * @return The number of items in the remainder.
+	 */
 	public int getKernelRemainder() {
 		return kernelRemainder;
 	}
 
+	/**
+	 * @return The size of the global and local workgroups for the remainder.
+	 */
 	public int getKernelRemainderGlobal() {
 		return kernelRemainderGlobal;
 	}
 
+	/**
+	 * @return The number of training items processed per call in the remainder.
+	 */
 	public int getKernelRemainderPer() {
 		return kernelRemainderPer;
 	}
 
+	/**
+	 * @return All internal values as a string.
+	 */
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		result.append("OpenCL Profile:\n");
@@ -268,10 +350,6 @@ public class OpenCLTrainingProfile {
 
 		result.append("kernelLocalWorkgroup: ");
 		result.append(kernelLocalWorkgroup);
-		result.append("\n");
-
-		result.append("kernelItemsPerCall: ");
-		result.append(kernelItemsPerCall);
 		result.append("\n");
 
 		result.append("kernelWorkPerCall: ");

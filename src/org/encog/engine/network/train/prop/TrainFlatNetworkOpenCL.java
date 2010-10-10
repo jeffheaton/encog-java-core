@@ -34,7 +34,6 @@ import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.flat.ValidateForOpenCL;
 import org.encog.engine.network.train.TrainFlatNetwork;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.kernels.KernelNetworkTrain;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
