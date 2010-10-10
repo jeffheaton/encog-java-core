@@ -25,6 +25,7 @@
 package org.encog.neural.networks.training.concurrent.jobs;
 
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
+import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
@@ -62,9 +63,36 @@ public class RPROPJob extends TrainingJob {
 	 *            The max step.
 	 */
 	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
-			final boolean loadToMemory, final double initialUpdate,
-			final double maxStep) {
-		this(network,training,loadToMemory,initialUpdate,maxStep,1,1);
+			final boolean loadToMemory) {
+		this(network,training,loadToMemory,RPROPConst.DEFAULT_INITIAL_UPDATE,RPROPConst.DEFAULT_MAX_STEP,1,1,1,1);
+	}
+
+	/**
+	 * Construct an RPROP job. For more information on RPROP see the
+	 * ResilientPropagation class.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data to use.
+	 * @param loadToMemory
+	 *            True if binary training data should be loaded to memory.
+	 * @param initialUpdate
+	 *            The initial update.
+	 * @param maxStep
+	 *            The max step.
+	 * @param localRatio
+	 * 		The local ratio, used if this job is performed by an OpenCL Device.
+	 * @param globalRatio
+	 * 		The global ratio, used if this job is performed by an OpenCL Device.
+	 * @param segmentationRatio
+	 * 		The segmentation ratio, used if this job is performed by an OpenCL Device.
+	 * @param iterationsPer
+	 * 			How many iterations to process per cycle.
+	 */
+	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
+			final boolean loadToMemory, final double localRatio, final double globalRatio, final double segmentationRatio, final int iterationsPer) {
+		this(network,training,loadToMemory,localRatio,globalRatio,segmentationRatio,RPROPConst.DEFAULT_INITIAL_UPDATE,RPROPConst.DEFAULT_MAX_STEP,iterationsPer);
 	}
 	
 	/**
@@ -81,18 +109,24 @@ public class RPROPJob extends TrainingJob {
 	 *            The initial update.
 	 * @param maxStep
 	 *            The max step.
-	 * @param openCLRatio
-	 * 		The open cl ratio.
+	 * @param localRatio
+	 * 		The local ratio, used if this job is performed by an OpenCL Device.
+	 * @param globalRatio
+	 * 		The global ratio, used if this job is performed by an OpenCL Device.
+	 * @param segmentationRatio
+	 * 		The segmentation ratio, used if this job is performed by an OpenCL Device.
 	 * @param iterationsPer
-	 * 		The number of iterations per cycle.
+	 * 			How many iterations to process per cycle.
 	 */
 	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory, final double initialUpdate,
-			final double maxStep, final double openCLRatio, final int iterationsPer) {
+			final double maxStep, final double localRatio, final double globalRatio, final double segmentationRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;
-		this.setOpenCLRatio(openCLRatio);
+		this.setLocalRatio(localRatio);
+		this.setGlobalRatio(globalRatio);
+		this.setSegmentationRatio(segmentationRatio);
 		this.setIterationsPer(iterationsPer);
 	}
 

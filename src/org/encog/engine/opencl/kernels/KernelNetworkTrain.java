@@ -31,6 +31,7 @@ import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLQueue;
 import org.encog.engine.opencl.exceptions.OpenCLError;
@@ -306,7 +307,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		// Calculate the work-item dimensions
 		final int threads = Math.min(trainingSize, requestedGlobalSize);
 		setLocalWork(Math.min(getMaxWorkGroupSize(), threads));
-		setGlobalWork(Math.min(threads, getLocalWork()));
+		setGlobalWork(threads);
 	}
 
 	/**
@@ -398,8 +399,8 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * @param requestedGlobalSize
 	 * 			THe requested global workload size.
 	 */
-	public void compile(final Map<String, String> options,
-			final FlatNetwork network, final int requestedGlobalSize) {
+	public void compile(final Map<String, String> options,OpenCLTrainingProfile profile,
+			final FlatNetwork network) {
 
 		final ActivationFunction activation = network.getActivationFunctions()[0];
 		final boolean allSlopeOne = !network.anySlopeNotOne();
@@ -417,10 +418,9 @@ public class KernelNetworkTrain extends EncogKernel {
 		setCLSource(source.toString());
 
 		compile(options);
-		assignWorkgroupSizes(this.trainingLength, requestedGlobalSize);
-
+		profile.calculateKernelParams(this, training);
 		// setup
-		init();
+		init(profile);
 	}
 
 	/**
@@ -447,9 +447,9 @@ public class KernelNetworkTrain extends EncogKernel {
 	/**
 	 * Setup the kernel.
 	 */
-	public void init() {
-		final int errorSize = getGlobalWork();
-		final int gradientSize = getGlobalWork()
+	public void init(OpenCLTrainingProfile profile) {
+		final int errorSize = profile.getKernelGlobalWorkgroup();
+		final int gradientSize = profile.getKernelGlobalWorkgroup()
 				* this.flat.getWeights().length;
 
 		this.errors = new float[errorSize];

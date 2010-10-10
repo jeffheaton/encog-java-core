@@ -61,7 +61,7 @@ public final class Evaluate {
 		OpenCLTrainingProfile profile = null;
 		
 		if( device!=null )
-			profile = EncogUtility.createProfileMax(network, training);
+			profile = new OpenCLTrainingProfile(device);
 		
 		return evaluateTrain(profile, network, training);
 	}

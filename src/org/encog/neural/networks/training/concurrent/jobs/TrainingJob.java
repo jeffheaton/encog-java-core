@@ -72,7 +72,9 @@ public abstract class TrainingJob {
 	
 	private int iterationsPer;
 	
-	private double openCLRatio;
+	private double localRatio;
+	private double globalRatio;
+	private double segmentationRatio;
 
 	/**
 	 * Construct a training job.
@@ -87,7 +89,9 @@ public abstract class TrainingJob {
 		this.training = training;
 		this.loadToMemory = loadToMemory;
 		this.iterationsPer = 1;
-		this.openCLRatio = 1.0;
+		this.localRatio = 1.0;
+		this.globalRatio = 1.0;
+		this.segmentationRatio = 1.0;
 	}
 
 	/**
@@ -208,19 +212,30 @@ public abstract class TrainingJob {
 		this.iterationsPer = iterationsPer;
 	}
 
-	/**
-	 * @return the openCLRatio
-	 */
-	public double getOpenCLRatio() {
-		return openCLRatio;
+	public double getLocalRatio() {
+		return localRatio;
 	}
 
-	/**
-	 * @param openCLRatio the openCLRatio to set
-	 */
-	public void setOpenCLRatio(double openCLRatio) {
-		this.openCLRatio = openCLRatio;
+	public void setLocalRatio(double localRatio) {
+		this.localRatio = localRatio;
 	}
+
+	public double getGlobalRatio() {
+		return globalRatio;
+	}
+
+	public void setGlobalRatio(double globalRatio) {
+		this.globalRatio = globalRatio;
+	}
+
+	public double getSegmentationRatio() {
+		return segmentationRatio;
+	}
+
+	public void setSegmentationRatio(double segmentationRatio) {
+		this.segmentationRatio = segmentationRatio;
+	}
+
 	
 	
 

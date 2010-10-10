@@ -24,9 +24,13 @@
 package org.encog.engine.network.train.prop;
 
 import org.encog.engine.EncogEngine;
+import org.encog.engine.EncogEngineError;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
+import org.encog.engine.opencl.exceptions.OpenCLError;
+import org.encog.engine.opencl.kernels.EncogKernel;
 
 /**
  * Specifies a training profile for an OpenCL training session. Includes the
@@ -47,193 +51,225 @@ import org.encog.engine.opencl.EncogCLDevice;
 public class OpenCLTrainingProfile {
 
 	/**
-	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
-	 * is found. Try to determine the best values for the number of global work
-	 * items and OpenCL ratio. For this function call, you are not even
-	 * providing the network or training set, so it is unlikely that good values
-	 * will be determined for the global items or ratio.
-	 * 
-	 * @return A training profile.
-	 */
-	public static OpenCLTrainingProfile createProfile() {
-		final EncogCLDevice device = EncogEngine.getInstance().getCL()
-				.chooseDevice();
-		return new OpenCLTrainingProfile(device);
-	}
-
-	/**
-	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
-	 * is found. Try to determine the best values for the number of global work
-	 * items and OpenCL ratio.
-	 * 
-	 * @param network
-	 *            The network to be trained.
-	 * @param training
-	 *            The training data to be used.
-	 * @return A training profile.
-	 */
-	public static OpenCLTrainingProfile createProfile(
-			final FlatNetwork network, final EngineIndexableSet training) {
-		final EncogCLDevice device = EncogEngine.getInstance().getCL()
-				.chooseDevice();
-		if (device.isCPU()) {
-			return OpenCLTrainingProfile.createProfileMax(network, training);
-		} else {
-			return new OpenCLTrainingProfile(device);
-		}
-	}
-
-	/**
-	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
-	 * is found. Use the max values for the number of global work items and
-	 * OpenCL ratio. If your GPU can handle it, this will provide the best
-	 * performance. Note, that you might see your OS reboot your GPU if the
-	 * kernel takes too long to execute.
-	 * 
-	 * See:
-	 * 
-	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
-	 * 
-	 * @param network
-	 *            The network to be trained.
-	 * @param training
-	 *            The training data to be used.
-	 * @return A training profile.
-	 */
-	public static OpenCLTrainingProfile createProfileMax(
-			final FlatNetwork network, final EngineIndexableSet training) {
-		return OpenCLTrainingProfile.createProfileRatio(network, training, 1.0);
-	}
-
-	/**
-	 * Create a profile a specific OpenCL device. The ratio allows you to
-	 * specify how much of the training set should be sent to the kernel.
-	 * Specify 1.0 for max performance, or 0.5 to send only half. The higher
-	 * this value, the more likely your OS may timeout your kernel, especially
-	 * with a less powerful GPU.
-	 * 
-	 * See:
-	 * 
-	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
-	 * 
-	 * @param device
-	 *            The OpenCL device to use.
-	 * @param network
-	 *            The network to be trained.
-	 * @param training
-	 *            The training data to be used.
-	 * @param ratio
-	 *            The ratio to use. Specify 1.0(max) to process the entire
-	 *            training set with each call to the OpenCL kernel.
-	 * @return A training profile.
-	 */
-	public static OpenCLTrainingProfile createProfileRatio(
-			final EncogCLDevice device, final FlatNetwork network,
-			final EngineIndexableSet training, final double ratio) {
-		final int numGlobalWorkItems = 200;
-		final int itemsPerGlobalWorkItem = (int) training.getRecordCount();
-		return new OpenCLTrainingProfile(device, numGlobalWorkItems,
-				(int) (itemsPerGlobalWorkItem * ratio));
-	}
-
-	/**
-	 * Create a profile from the first available OpenCL GPU, or CPU, if no GPU
-	 * is found. The ratio allows you to specify how much of the training set
-	 * should be sent to the kernel. Specify 1.0 for max performance, or 0.5 to
-	 * send only half. The higher this value, the more likely your OS may
-	 * timeout your kernel, especially with a less powerful GPU.
-	 * 
-	 * See:
-	 * 
-	 * http://www.heatonresearch.com/encog/troubleshooting/ooresource.html
-	 * 
-	 * @param network
-	 *            The network to be trained.
-	 * @param training
-	 *            The training data to be used.
-	 * @param ratio
-	 *            The ratio to use. Specify 1.0(max) to process the entire
-	 *            training set with each call to the OpenCL kernel.
-	 * @return A training profile.
-	 */
-	public static OpenCLTrainingProfile createProfileRatio(
-			final FlatNetwork network, final EngineIndexableSet training,
-			final double ratio) {
-		final EncogCLDevice device = EncogEngine.getInstance().getCL()
-				.chooseDevice();
-		return OpenCLTrainingProfile.createProfileRatio(device, network, training,
-				ratio);
-	}
-
-	/**
 	 * The OpenCL device to use.
 	 */
-	private final EncogCLDevice device;
-
+	private EncogCLDevice device;
+	
 	/**
-	 * The number of global work items.
+	 * The local r
 	 */
-	private final int numGlobalWorkItems;
-
-	/**
-	 * The number of elements per global work item.
-	 */
-	private final int itemsPerGlobalWorkItem;
-
-	/**
-	 * Create a default OpenCL training profile. Use 100 global workload items
-	 * and 10 training elements per call to the kernel.
-	 * 
-	 * @param device
-	 *            The device to use.
-	 */
-	public OpenCLTrainingProfile(final EncogCLDevice device) {
-		this(device, 100, 10);
-	}
-
-	/**
-	 * Construct an OpenCL training profile.
-	 * 
-	 * @param device
-	 *            The device to use.
-	 * @param numGlobalWorkItems
-	 *            The number of global work items. OpenCL devices can only take
-	 *            so many global work items, this is the workload to be sent out
-	 *            to the kernels. The higher this number is, the better
-	 *            performance will be.
-	 * @param itemsPerGlobalWorkItem
-	 *            The number of training items per global work item. How many
-	 *            training elements per global work item. The larger the number
-	 *            of work elements that can be processed at once, the better
-	 *            performance will be. This number can not be higher than the
-	 *            total number of training elements.
-	 */
-	public OpenCLTrainingProfile(final EncogCLDevice device,
-			final int numGlobalWorkItems, final int itemsPerGlobalWorkItem) {
+	private final double localRatio;
+	
+	private final double globalRatio;
+	
+	private final double segmentationRatio;
+	
+	private int kernelGlobalWorkgroup;
+	private int kernelLocalWorkgroup;
+	private int kernelItemsPerCall;
+	private int kernelWorkPerCall;
+	private int kernelNumberOfCalls;
+	private int kernelRemainder;
+	private int kernelRemainderGlobal;
+	private int kernelRemainderPer;
+	
+	public OpenCLTrainingProfile(EncogCLDevice device, double localRatio,
+			double globalRatio, double segmentationRatio) {
 		super();
 		this.device = device;
-		this.numGlobalWorkItems = numGlobalWorkItems;
-		this.itemsPerGlobalWorkItem = itemsPerGlobalWorkItem;
+		
+		if( localRatio<0 || globalRatio<0 || segmentationRatio<0 ) {
+			throw new OpenCLError("None of the ratios can be below zero.");
+		}
+		
+		if( localRatio>1.0 ) {
+			throw new OpenCLError("The local ratio cannot be greater than 1.0.  That would cause the OpenCL device to have more local items than it can handle.");
+		}
+		
+		if( globalRatio<1.0 ) {
+			throw new OpenCLError("The global ratio cannot be less than 1.0.  That would cause the global work area to be less than a local work area.");
+		}
+		
+		if( segmentationRatio>1.0 ) {
+			throw new OpenCLError("The segmentation ratio cannot be greater than 1.0.  That would cause the trainer to require more training elements per iteration than exist.");
+		}
+		
+		this.localRatio = localRatio;
+		this.globalRatio = globalRatio;
+		this.segmentationRatio = segmentationRatio;
 	}
 
-	/**
-	 * @return The device used.
-	 */
+	public OpenCLTrainingProfile(EncogCLDevice device) {
+		this(device,1.0,1.0,1.0);
+	}
+	
+	public void calculateKernelParams(EncogKernel kernel, EngineIndexableSet training)
+	{
+		boolean globalValuesAssigned = false;
+		int workPerIteration;
+		
+		if( Math.abs(this.segmentationRatio-1.0)<EncogEngine.DEFAULT_ZERO_TOLERANCE )
+		{
+			// if the segmentation ratio is 1, then we want NO SEGMENTATION
+			// we will have to find a workgroup size that is even
+			int trialLocalSize = (int)Math.min( kernel.getMaxWorkGroupSize(), training.getRecordCount() );
+			
+			trialLocalSize++;// falsely add one so the loop can decrease it with no effect.
+			
+			// loop and try to find a local size small enough to be even.
+			do {
+				trialLocalSize--;
+				this.kernelLocalWorkgroup = (int)(trialLocalSize * this.localRatio);
+				this.kernelGlobalWorkgroup = (int)(this.kernelLocalWorkgroup * this.globalRatio);
+				this.kernelWorkPerCall = (int)((training.getRecordCount()/this.kernelGlobalWorkgroup)*this.segmentationRatio);
+				workPerIteration = this.kernelGlobalWorkgroup * this.kernelWorkPerCall;
+			} while( (workPerIteration!=training.getRecordCount()) && trialLocalSize>1 );
+			
+			if( trialLocalSize>0 )
+				globalValuesAssigned = true;
+		}
+		
+		// if we either wanted to segment, or the attempt to find an even group size above failed
+		if( !globalValuesAssigned )
+		{
+			// otherwise divide into segments
+			int maxLocalSize = (int)Math.min( kernel.getMaxWorkGroupSize(), training.getRecordCount() );
+			this.kernelLocalWorkgroup = (int)(maxLocalSize * this.localRatio);
+			this.kernelGlobalWorkgroup = (int)(this.kernelLocalWorkgroup * this.globalRatio);
+			this.kernelWorkPerCall = (int)((training.getRecordCount()/this.kernelGlobalWorkgroup)*this.segmentationRatio);
+		}
+			
+		workPerIteration = this.kernelGlobalWorkgroup * this.kernelWorkPerCall;
+		
+		this.kernelNumberOfCalls = (int) (training.getRecordCount() / workPerIteration);
+		this.kernelRemainder = (int) (training.getRecordCount() % workPerIteration);
+
+		this.kernelRemainderGlobal = this.kernelGlobalWorkgroup;
+
+		// if there is no "final training set", because it lined up evenly,
+		// still create one.
+		// the final training set is where learning happens.
+		if (this.kernelRemainder == 0) {
+			this.kernelRemainder = this.kernelGlobalWorkgroup;
+			this.kernelRemainderPer = this.kernelWorkPerCall;
+			this.kernelNumberOfCalls--;
+		}
+		else
+			this.kernelRemainderPer = this.kernelRemainder / this.kernelGlobalWorkgroup;
+
+		// does the remainder not have enough to fill the global tasks global?
+		if (this.kernelRemainderPer == 0) {
+			this.kernelRemainderPer = 1;
+			this.kernelRemainderGlobal = this.kernelRemainder;
+		}
+	}
+	
+
+
 	public EncogCLDevice getDevice() {
-		return this.device;
+		return device;
 	}
 
-	/**
-	 * @return the itemsPerGlobalWorkItem
-	 */
-	public int getItemsPerGlobalWorkItem() {
-		return this.itemsPerGlobalWorkItem;
+	public void setDevice(EncogCLDevice device) {
+		this.device = device;
 	}
 
-	/**
-	 * @return the numGlobalWorkItems
-	 */
-	public int getNumGlobalWorkItems() {
-		return this.numGlobalWorkItems;
+	public double getLocalRatio() {
+		return localRatio;
 	}
+
+	public double getGlobalRatio() {
+		return globalRatio;
+	}
+
+	public double getSegmentationRatio() {
+		return segmentationRatio;
+	}
+	
+	
+
+	public int getKernelGlobalWorkgroup() {
+		return kernelGlobalWorkgroup;
+	}
+
+	public int getKernelLocalWorkgroup() {
+		return kernelLocalWorkgroup;
+	}
+
+	public int getKernelItemsPerCall() {
+		return kernelItemsPerCall;
+	}
+
+	public int getKernelWorkPerCall() {
+		return kernelWorkPerCall;
+	}
+
+	public int getKernelNumberOfCalls() {
+		return kernelNumberOfCalls;
+	}
+
+	public int getKernelRemainder() {
+		return kernelRemainder;
+	}
+
+	public int getKernelRemainderGlobal() {
+		return kernelRemainderGlobal;
+	}
+
+	public int getKernelRemainderPer() {
+		return kernelRemainderPer;
+	}
+
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("OpenCL Profile:\n");
+		result.append("Local Ratio: ");
+		result.append(this.localRatio);
+		result.append("\n");
+		result.append("Number of global work items: ");
+		result.append(this.globalRatio);
+		result.append("\n");
+		result.append("Segmentation Ratio: ");
+		result.append(this.segmentationRatio);
+		result.append("\n");
+		result.append("Device: ");
+		result.append(this.device.toString());
+		result.append("\n");
+		
+		
+		result.append("kernelGlobalWorkgroup: ");
+		result.append(kernelGlobalWorkgroup);
+		result.append("\n");
+		
+		result.append("kernelLocalWorkgroup: ");
+		result.append(kernelLocalWorkgroup);
+		result.append("\n");
+
+		result.append("kernelItemsPerCall: ");
+		result.append(kernelItemsPerCall);
+		result.append("\n");
+		
+		result.append("kernelWorkPerCall: ");
+		result.append(kernelWorkPerCall);
+		result.append("\n");
+		
+		result.append("kernelNumberOfCalls: ");
+		result.append(kernelNumberOfCalls);
+		result.append("\n");
+		
+		result.append("kernelRemainder: ");
+		result.append(kernelRemainder);
+		result.append("\n");	
+				
+		result.append("kernelRemainderGlobal: ");
+		result.append(kernelRemainderGlobal);
+		result.append("\n");
+		
+		result.append("kernelRemainderPer: ");
+		result.append(kernelRemainderPer);
+		result.append("\n");
+
+		return result.toString();
+	}
+	
 }

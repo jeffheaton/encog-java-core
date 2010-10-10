@@ -96,7 +96,11 @@ public class ConcurrentTrainingPerformerCPU implements
 			watch.start();
 			OpenCLTrainingProfile profile = null;
 			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
-				profile = EncogUtility.createProfileRatio(this.currentJob.getNetwork(), this.currentJob.getTraining(), this.currentJob.getOpenCLRatio());
+				EncogCLDevice device = ((ConcurrentTrainingPerformerOpenCL)this).getDevice();
+				profile = new OpenCLTrainingProfile(device,
+						this.currentJob.getLocalRatio(),
+						this.currentJob.getGlobalRatio(),
+						this.currentJob.getSegmentationRatio());
 			}
 			
 			this.currentJob.createTrainer(profile, manager.isSingleThreaded());

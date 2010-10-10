@@ -67,7 +67,7 @@ public class BPROPJob extends TrainingJob {
 	public BPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory, final double learningRate,
 			final double momentum) {
-		this(network,training,loadToMemory,learningRate,momentum,1.0,1);
+		this(network,training,loadToMemory,learningRate,momentum,1.0,1.0,1.0,1);
 	}
 	
 	/**
@@ -84,18 +84,24 @@ public class BPROPJob extends TrainingJob {
 	 *            THe learning rate to use.
 	 * @param momentum
 	 *            The momentum to use.
-	 * @param openCLRatio
-	 * 			The OpenCLRatio to use.
+	 * @param localRatio
+	 * 		The local ratio, used if this job is performed by an OpenCL Device.
+	 * @param globalRatio
+	 * 		The global ratio, used if this job is performed by an OpenCL Device.
+	 * @param segmentationRatio
+	 * 		The segmentation ratio, used if this job is performed by an OpenCL Device.
 	 * @param iterationsPer
 	 * 			How many iterations to process per cycle.
 	 */
 	public BPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory, final double learningRate,
-			final double momentum, final double openCLRatio, final int iterationsPer) {
+			final double momentum, final double localRatio, final double globalRatio, final double segmentationRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);
 		this.learningRate = learningRate;
 		this.momentum = momentum;
-		this.setOpenCLRatio(openCLRatio);
+		this.setLocalRatio(localRatio);
+		this.setGlobalRatio(globalRatio);
+		this.setSegmentationRatio(segmentationRatio);
 		this.setIterationsPer(iterationsPer);
 	}
 

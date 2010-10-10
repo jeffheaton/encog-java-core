@@ -297,33 +297,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		int currentIndex = 0;
 		this.error = 0;
 
-		this.kernel.assignWorkgroupSizes((int) this.training.getRecordCount(),
-				this.profile.getNumGlobalWorkItems());
-
-		final int global = this.kernel.getGlobalWork();
-		final int workPerIteration = global * this.profile.getItemsPerGlobalWorkItem();
-
-		int count = (int) (this.training.getRecordCount() / workPerIteration);
-		int remainder = (int) (this.training.getRecordCount() % workPerIteration);
-
-		int remainderPer;
-		int remainderGlobal = global;
-
-		// if there is no "final training set", because it lined up evenly,
-		// still create one.
-		// the final training set is where learning happens.
-		if (remainder == 0) {
-			remainder = this.kernel.getGlobalWork();
-			count--;
-		}
-
-		remainderPer = remainder / global;
-
-		// does the remainder not have enough to fill the global tasks global?
-		if (remainderPer == 0) {
-			remainderPer = 1;
-			remainderGlobal = remainder;
-		}
+		int count = this.profile.getKernelNumberOfCalls();
 		
 		// If we are using an OpenCL ratio other than 1.0, which means that we are 
 		// braining up a single training iteration, there is no reason to try and batch 
@@ -333,18 +307,22 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 			throw new EncogEngineError("Must use an OpenCL ratio of 1.0 if you are going to use an iteration count > 1.");
 		}
 
+		this.kernel.setGlobalWork(this.profile.getKernelGlobalWorkgroup());
+		this.kernel.setLocalWork(this.profile.getKernelLocalWorkgroup());
+		
 		// handle workloads
 		while (count > 0) {
-			callKernel(currentIndex, this.profile.getItemsPerGlobalWorkItem(), false, 1);
+			callKernel(currentIndex, this.profile.getKernelWorkPerCall(), false, 1);
 			count--;
-			currentIndex += this.profile.getItemsPerGlobalWorkItem()
+			currentIndex += this.profile.getKernelWorkPerCall()
 					* this.kernel.getGlobalWork();
 		}
 
 		// handle the final workload
-		this.kernel.assignWorkgroupSizes(remainderGlobal,
-				this.profile.getNumGlobalWorkItems());
-		callKernel(currentIndex, remainderPer, true, iterations);
+		this.kernel.setGlobalWork(this.profile.getKernelRemainderGlobal());
+		this.kernel.setLocalWork(this.profile.getKernelRemainderGlobal());
+		
+		callKernel(currentIndex, this.profile.getKernelRemainderPer(), true, iterations);
 
 		count = (int) this.training.getRecordCount();
 		this.error = this.error / (count * this.training.getIdealSize());
@@ -377,7 +355,8 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.kernel = new KernelNetworkTrain(this.profile.getDevice(), this.network,
 				this.training, this.network.getWeights().length + 2);
-		this.kernel.compile(options, this.network, this.profile.getNumGlobalWorkItems());
+		this.kernel.compile(options, profile, this.network);
+	
 		this.kernel.getTempDataArray()[0] = (float) learningRate;
 		this.kernel.getTempDataArray()[1] = (float) momentum;
 	}
@@ -396,7 +375,8 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.kernel = new KernelNetworkTrain(this.profile.getDevice(), this.network,
 				this.training, 1);
-		this.kernel.compile(options, this.network, this.profile.getNumGlobalWorkItems());
+		this.kernel.compile(options, profile, this.network);
+		
 		this.kernel.getTempDataArray()[0] = (float) learningRate;
 	}
 
@@ -426,8 +406,8 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		this.kernel = new KernelNetworkTrain(this.profile.getDevice(), this.network,
 				this.training, this.network.getWeights().length * 2);
 
-		this.kernel.compile(options, this.network, this.profile.getNumGlobalWorkItems());
-
+		this.kernel.compile(options, profile,this.network);
+		
 		final int weightLength = this.network.getWeights().length;
 
 		for (int i = 0; i < weightLength; i++) {
