@@ -38,14 +38,28 @@ import org.encog.engine.opencl.kernels.EncogKernel;
  * 
  * device The device to use.
  * 
- * numGlobalWorkItems The number of global work items. OpenCL devices can only
- * take so many global work items, this is the workload to be sent out to the
- * kernels. The higher this number is, the better performance will be.
+ * local ratio: The local workgroup is a OpenCL concept where the global work
+ * group is broken into several local work groups. The bigger the local work
+ * group the faster things will run. However, your OpenCL device will impose a
+ * maximum local work group size. This ratio allows you to use a smaller local
+ * work group, for example 0.5 would be half of the max size of the local work
+ * group. You will almost always want to leave this value at the max 1.0. It is
+ * rare that you might need to decrease it because of the GPU being overtaxed.
  * 
- * itemsPerGlobalWorkItem The number of training items per global work item. How
- * many training elements per global work item. The larger the number of work
- * elements that can be processed at once, the better performance will be. This
- * number can not be higher than the total number of training elements.
+ * 
+ * global ratio: The global work group must be a multiple of the local work
+ * group. The default value is 1, which means local and global workgroups the
+ * same size. Do not set this value lower than 1.0. Values higher than 1.0 can
+ * result in higher performance. Should be set to an integer value. For example,
+ * 2 would specify a global work workgroup twice the size of the local. Higher
+ * values will increase resource load on the GPU and may crash.
+ * 
+ * segmentation ratio: The main purpose of this ratio is to allow you to scale
+ * back on how long the kernels take to execute. For maximum performance leave
+ * this value at the default 1.0 value. However, if your GPU is crashing,
+ * setting it to a value lower can help. If your are running Encog on the same
+ * GPU as your display uses, you may run into timeout issues if your kernel
+ * takes too long to execute. Setting this ratio lower can help.
  * 
  */
 public class OpenCLTrainingProfile {
@@ -54,16 +68,16 @@ public class OpenCLTrainingProfile {
 	 * The OpenCL device to use.
 	 */
 	private EncogCLDevice device;
-	
+
 	/**
 	 * The local r
 	 */
 	private final double localRatio;
-	
+
 	private final double globalRatio;
-	
+
 	private final double segmentationRatio;
-	
+
 	private int kernelGlobalWorkgroup;
 	private int kernelLocalWorkgroup;
 	private int kernelItemsPerCall;
@@ -72,75 +86,91 @@ public class OpenCLTrainingProfile {
 	private int kernelRemainder;
 	private int kernelRemainderGlobal;
 	private int kernelRemainderPer;
-	
+
 	public OpenCLTrainingProfile(EncogCLDevice device, double localRatio,
 			double globalRatio, double segmentationRatio) {
 		super();
 		this.device = device;
-		
-		if( localRatio<0 || globalRatio<0 || segmentationRatio<0 ) {
+
+		if (localRatio < 0 || globalRatio < 0 || segmentationRatio < 0) {
 			throw new OpenCLError("None of the ratios can be below zero.");
 		}
-		
-		if( localRatio>1.0 ) {
-			throw new OpenCLError("The local ratio cannot be greater than 1.0.  That would cause the OpenCL device to have more local items than it can handle.");
+
+		if (localRatio > 1.0) {
+			throw new OpenCLError(
+					"The local ratio cannot be greater than 1.0.  That would cause the OpenCL device to have more local items than it can handle.");
 		}
-		
-		if( globalRatio<1.0 ) {
-			throw new OpenCLError("The global ratio cannot be less than 1.0.  That would cause the global work area to be less than a local work area.");
+
+		if (globalRatio < 1.0) {
+			throw new OpenCLError(
+					"The global ratio cannot be less than 1.0.  That would cause the global work area to be less than a local work area.");
 		}
-		
-		if( segmentationRatio>1.0 ) {
-			throw new OpenCLError("The segmentation ratio cannot be greater than 1.0.  That would cause the trainer to require more training elements per iteration than exist.");
+
+		if (segmentationRatio > 1.0) {
+			throw new OpenCLError(
+					"The segmentation ratio cannot be greater than 1.0.  That would cause the trainer to require more training elements per iteration than exist.");
 		}
-		
+
 		this.localRatio = localRatio;
 		this.globalRatio = globalRatio;
 		this.segmentationRatio = segmentationRatio;
 	}
 
 	public OpenCLTrainingProfile(EncogCLDevice device) {
-		this(device,1.0,1.0,1.0);
+		this(device, 1.0, 1.0, 1.0);
 	}
-	
-	public void calculateKernelParams(EncogKernel kernel, EngineIndexableSet training)
-	{
+
+	public void calculateKernelParams(EncogKernel kernel,
+			EngineIndexableSet training) {
 		boolean globalValuesAssigned = false;
 		int workPerIteration;
-		
-		if( Math.abs(this.segmentationRatio-1.0)<EncogEngine.DEFAULT_ZERO_TOLERANCE )
-		{
+
+		// there are two special cases
+
+		// first, if the ratio is 1.0
+		if (Math.abs(this.segmentationRatio - 1.0) < EncogEngine.DEFAULT_ZERO_TOLERANCE) {
 			// if the segmentation ratio is 1, then we want NO SEGMENTATION
 			// we will have to find a workgroup size that is even
-			int trialLocalSize = (int)Math.min( kernel.getMaxWorkGroupSize(), training.getRecordCount() );
-			
-			trialLocalSize++;// falsely add one so the loop can decrease it with no effect.
-			
+			int trialLocalSize = (int) Math.min(kernel.getMaxWorkGroupSize(),
+					training.getRecordCount());
+
+			trialLocalSize++;// falsely add one so the loop can decrease it with
+			// no effect.
+
 			// loop and try to find a local size small enough to be even.
 			do {
 				trialLocalSize--;
-				this.kernelLocalWorkgroup = (int)(trialLocalSize * this.localRatio);
-				this.kernelGlobalWorkgroup = (int)(this.kernelLocalWorkgroup * this.globalRatio);
-				this.kernelWorkPerCall = (int)((training.getRecordCount()/this.kernelGlobalWorkgroup)*this.segmentationRatio);
-				workPerIteration = this.kernelGlobalWorkgroup * this.kernelWorkPerCall;
-			} while( (workPerIteration!=training.getRecordCount()) && trialLocalSize>1 );
-			
-			if( trialLocalSize>0 )
+				this.kernelLocalWorkgroup = (int) (trialLocalSize * this.localRatio);
+				this.kernelGlobalWorkgroup = (int) (this.kernelLocalWorkgroup * this.globalRatio);
+				this.kernelWorkPerCall = (int) ((training.getRecordCount() / this.kernelGlobalWorkgroup) * this.segmentationRatio);
+				workPerIteration = this.kernelGlobalWorkgroup
+						* this.kernelWorkPerCall;
+			} while ((workPerIteration != training.getRecordCount())
+					&& trialLocalSize > 1);
+
+			if (trialLocalSize > 0)
 				globalValuesAssigned = true;
 		}
-		
-		// if we either wanted to segment, or the attempt to find an even group size above failed
-		if( !globalValuesAssigned )
-		{
+
+		// if we either wanted to segment, or the attempt to find an even group
+		// size above failed
+		if (!globalValuesAssigned) {
 			// otherwise divide into segments
-			int maxLocalSize = (int)Math.min( kernel.getMaxWorkGroupSize(), training.getRecordCount() );
-			this.kernelLocalWorkgroup = (int)(maxLocalSize * this.localRatio);
-			this.kernelGlobalWorkgroup = (int)(this.kernelLocalWorkgroup * this.globalRatio);
-			this.kernelWorkPerCall = (int)((training.getRecordCount()/this.kernelGlobalWorkgroup)*this.segmentationRatio);
+			int maxLocalSize = (int) Math.min(kernel.getMaxWorkGroupSize(),
+					training.getRecordCount());
+			this.kernelLocalWorkgroup = (int) (maxLocalSize * this.localRatio);
+			this.kernelGlobalWorkgroup = (int) (this.kernelLocalWorkgroup * this.globalRatio);
+
+			// second special case, if the segmentation ratio is zero, then just
+			// do one item per OpenCL call
+			if (this.segmentationRatio < EncogEngine.DEFAULT_ZERO_TOLERANCE)
+				this.kernelWorkPerCall = 1;
+			else
+				this.kernelWorkPerCall = (int) ((training.getRecordCount() / this.kernelGlobalWorkgroup) * this.segmentationRatio);
 		}
-			
+
 		workPerIteration = this.kernelGlobalWorkgroup * this.kernelWorkPerCall;
-		
+
 		this.kernelNumberOfCalls = (int) (training.getRecordCount() / workPerIteration);
 		this.kernelRemainder = (int) (training.getRecordCount() % workPerIteration);
 
@@ -153,9 +183,9 @@ public class OpenCLTrainingProfile {
 			this.kernelRemainder = this.kernelGlobalWorkgroup;
 			this.kernelRemainderPer = this.kernelWorkPerCall;
 			this.kernelNumberOfCalls--;
-		}
-		else
-			this.kernelRemainderPer = this.kernelRemainder / this.kernelGlobalWorkgroup;
+		} else
+			this.kernelRemainderPer = this.kernelRemainder
+					/ this.kernelGlobalWorkgroup;
 
 		// does the remainder not have enough to fill the global tasks global?
 		if (this.kernelRemainderPer == 0) {
@@ -163,8 +193,6 @@ public class OpenCLTrainingProfile {
 			this.kernelRemainderGlobal = this.kernelRemainder;
 		}
 	}
-	
-
 
 	public EncogCLDevice getDevice() {
 		return device;
@@ -185,8 +213,6 @@ public class OpenCLTrainingProfile {
 	public double getSegmentationRatio() {
 		return segmentationRatio;
 	}
-	
-	
 
 	public int getKernelGlobalWorkgroup() {
 		return kernelGlobalWorkgroup;
@@ -235,12 +261,11 @@ public class OpenCLTrainingProfile {
 		result.append("Device: ");
 		result.append(this.device.toString());
 		result.append("\n");
-		
-		
+
 		result.append("kernelGlobalWorkgroup: ");
 		result.append(kernelGlobalWorkgroup);
 		result.append("\n");
-		
+
 		result.append("kernelLocalWorkgroup: ");
 		result.append(kernelLocalWorkgroup);
 		result.append("\n");
@@ -248,28 +273,28 @@ public class OpenCLTrainingProfile {
 		result.append("kernelItemsPerCall: ");
 		result.append(kernelItemsPerCall);
 		result.append("\n");
-		
+
 		result.append("kernelWorkPerCall: ");
 		result.append(kernelWorkPerCall);
 		result.append("\n");
-		
+
 		result.append("kernelNumberOfCalls: ");
 		result.append(kernelNumberOfCalls);
 		result.append("\n");
-		
+
 		result.append("kernelRemainder: ");
 		result.append(kernelRemainder);
-		result.append("\n");	
-				
+		result.append("\n");
+
 		result.append("kernelRemainderGlobal: ");
 		result.append(kernelRemainderGlobal);
 		result.append("\n");
-		
+
 		result.append("kernelRemainderPer: ");
 		result.append(kernelRemainderPer);
 		result.append("\n");
 
 		return result.toString();
 	}
-	
+
 }
