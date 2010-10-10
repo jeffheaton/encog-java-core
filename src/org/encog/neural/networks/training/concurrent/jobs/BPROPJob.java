@@ -67,7 +67,7 @@ public class BPROPJob extends TrainingJob {
 	public BPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory, final double learningRate,
 			final double momentum) {
-		this(network,training,loadToMemory,learningRate,momentum,1.0,1.0,1.0,1);
+		this(network,training,loadToMemory,learningRate,momentum,1.0,1,1.0,1);
 	}
 	
 	/**
@@ -95,7 +95,7 @@ public class BPROPJob extends TrainingJob {
 	 */
 	public BPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory, final double learningRate,
-			final double momentum, final double localRatio, final double globalRatio, final double segmentationRatio, final int iterationsPer) {
+			final double momentum, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);
 		this.learningRate = learningRate;
 		this.momentum = momentum;

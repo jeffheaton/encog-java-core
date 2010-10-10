@@ -91,8 +91,11 @@ public class RPROPJob extends TrainingJob {
 	 * 			How many iterations to process per cycle.
 	 */
 	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
-			final boolean loadToMemory, final double localRatio, final double globalRatio, final double segmentationRatio, final int iterationsPer) {
-		this(network,training,loadToMemory,localRatio,globalRatio,segmentationRatio,RPROPConst.DEFAULT_INITIAL_UPDATE,RPROPConst.DEFAULT_MAX_STEP,iterationsPer);
+			final boolean loadToMemory, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
+		
+		this(network,training,
+			loadToMemory,RPROPConst.DEFAULT_INITIAL_UPDATE,
+			RPROPConst.DEFAULT_MAX_STEP,localRatio,globalRatio,segmentationRatio,iterationsPer);
 	}
 	
 	/**
@@ -120,7 +123,7 @@ public class RPROPJob extends TrainingJob {
 	 */
 	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory, final double initialUpdate,
-			final double maxStep, final double localRatio, final double globalRatio, final double segmentationRatio, final int iterationsPer) {
+			final double maxStep, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);
 		this.initialUpdate = initialUpdate;
 		this.maxStep = maxStep;

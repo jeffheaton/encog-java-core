@@ -70,10 +70,24 @@ public abstract class TrainingJob {
 	 */
 	private Throwable error;
 	
+	/**
+	 * The number of iterations per cycle.
+	 */
 	private int iterationsPer;
 	
+	/**
+	 * The local ratio.
+	 */
 	private double localRatio;
-	private double globalRatio;
+	
+	/**
+	 * The global ratio.
+	 */
+	private int globalRatio;
+	
+	/**
+	 * The segmentation ratio.
+	 */
 	private double segmentationRatio;
 
 	/**
@@ -90,7 +104,7 @@ public abstract class TrainingJob {
 		this.loadToMemory = loadToMemory;
 		this.iterationsPer = 1;
 		this.localRatio = 1.0;
-		this.globalRatio = 1.0;
+		this.globalRatio = 1;
 		this.segmentationRatio = 1.0;
 	}
 
@@ -220,11 +234,11 @@ public abstract class TrainingJob {
 		this.localRatio = localRatio;
 	}
 
-	public double getGlobalRatio() {
+	public int getGlobalRatio() {
 		return globalRatio;
 	}
 
-	public void setGlobalRatio(double globalRatio) {
+	public void setGlobalRatio(int globalRatio) {
 		this.globalRatio = globalRatio;
 	}
 
