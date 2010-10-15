@@ -24,6 +24,7 @@
 
 package org.encog.neural.networks.training.strategy;
 
+import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Strategy;
@@ -87,9 +88,14 @@ public class SmartLearningRate implements Strategy {
 	 */
 	private long determineTrainingSize() {
 		long result = 0;
-		for (@SuppressWarnings("unused")
-		final NeuralDataPair pair : this.train.getTraining()) {
-			result++;
+
+		if (this.train instanceof Indexable) {
+			result = ((Indexable) this).getRecordCount();
+		} else {
+			for (@SuppressWarnings("unused")
+			final NeuralDataPair pair : this.train.getTraining()) {
+				result++;
+			}
 		}
 		return result;
 	}
