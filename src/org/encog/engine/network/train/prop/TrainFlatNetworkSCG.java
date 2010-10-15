@@ -110,6 +110,11 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 	 * The old gradients, used to compare.
 	 */
 	private final double[] oldGradient;
+	
+	/**
+	 * Should the initial gradients be calculated.
+	 */
+	private boolean mustInit;
 
 	/**
 	 * Construct the training object.
@@ -134,22 +139,31 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 		this.weights = EngineArray.arrayCopy(network.getWeights());
 		final int numWeights = this.weights.length;
 
-		// this.gradients = new double[numWeights];
 		this.oldWeights = new double[numWeights];
 		this.oldGradient = new double[numWeights];
 
 		this.p = new double[numWeights];
 		this.r = new double[numWeights];
 
-		// Calculate the starting set of gradients.
+		this.mustInit = true;
+	}
+	
+	/**
+	 * Calculate the starting set of gradients.
+	 */
+	private void init()
+	{
+		final int numWeights = this.weights.length;
+		
 		calculateGradients();
 
 		this.k = 1;
 
 		for (int i = 0; i < numWeights; ++i) {
 			this.p[i] = this.r[i] = -this.gradients[i];
-		}
-
+		}		
+		
+		mustInit = false;
 	}
 
 	/**
@@ -178,6 +192,9 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 	@Override
 	public void iteration() {
 
+		if( this.mustInit ) {
+			init();
+		}
 		final int numWeights = this.weights.length;
 		// Storage space for previous iteration values.
 
