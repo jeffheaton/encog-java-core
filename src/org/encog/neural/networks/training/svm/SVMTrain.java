@@ -169,8 +169,9 @@ public class SVMTrain extends BasicTraining {
 		this.isSetup = false;
 		this.trainingDone = false;
 
+		this.problem = new svm_problem[this.network.getOutputCount()];
+		
 		for (int i = 0; i < this.network.getOutputCount(); i++) {
-			this.problem = new svm_problem[this.network.getOutputCount()];
 			this.problem[i] = EncodeSVMProblem.encode(training, i);
 		}
 	}
