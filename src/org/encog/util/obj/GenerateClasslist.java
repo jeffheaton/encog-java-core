@@ -119,6 +119,8 @@ public class GenerateClasslist {
 		if (path.length() > this.base.length()) {
 			path = path.substring(this.base.length() + 1);
 		}
+		else
+			path="";
 
 		// insert .'s
 		final StringBuilder temp = new StringBuilder(path);

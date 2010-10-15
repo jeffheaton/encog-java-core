@@ -674,24 +674,4 @@ public class NeuralStructure implements Serializable {
 		return bias;
 	}
 
-	private double[] constructRBFParams(RadialBasisFunctionLayer layer) {
-		double[] result = new double[layer.getNeuronCount()
-				+ (layer.getNeuronCount() * layer.getDimensions())];
-
-		int index = 0;
-
-		// copy radius
-		for (int i = 0; i < layer.getRadius().length; i++) {
-			result[index++] = layer.getRadius()[i];
-		}
-
-		// copy centers
-		for (int i = 0; i < layer.getCenter().length; i++) {
-			for (int j = 0; j < layer.getCenter()[i].length; j++) {
-				result[index++] = layer.getCenter()[i][j];
-			}
-		}
-
-		return result;
-	}
 }

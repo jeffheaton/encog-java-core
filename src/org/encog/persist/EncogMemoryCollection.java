@@ -295,8 +295,10 @@ public class EncogMemoryCollection implements EncogCollection {
 		buildDirectory();
 	}
 	
-	public PersistenceLocation getLocation()
-	{
+	/**
+	 * @return The location.
+	 */
+	public PersistenceLocation getLocation() {
 		return this.location;
 	}
 }

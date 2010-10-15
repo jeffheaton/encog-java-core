@@ -25,10 +25,13 @@
 package org.encog.persist;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.encog.persist.location.PersistenceLocation;
 
+/**
+ * An interface to either a memory or disk-based encog collection.
+ *
+ */
 public interface EncogCollection {
 	/**
 	 * Add an element to the collection.
