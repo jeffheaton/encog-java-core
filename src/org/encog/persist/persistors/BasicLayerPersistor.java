@@ -26,6 +26,7 @@ package org.encog.persist.persistors;
 
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
@@ -194,6 +195,11 @@ public class BasicLayerPersistor implements Persistor {
 
 		try {
 			Class<?> clazz = ReflectionUtil.resolveEncogClass(type);
+			
+			if( clazz==null ) {
+				throw new NeuralNetworkError("Unknown activation function type: " + type);
+			}
+			
 			ActivationFunction result = (ActivationFunction) clazz
 					.newInstance();
 
