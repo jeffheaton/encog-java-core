@@ -238,7 +238,7 @@ public final class NetworkCODEC {
 	}
 
 	/**
-	 * Process a fully connected synapse.
+	 * Process a synapse.
 	 * @param network The network to process.
 	 * @param layer The layer to process.
 	 * @param array The array to process.
