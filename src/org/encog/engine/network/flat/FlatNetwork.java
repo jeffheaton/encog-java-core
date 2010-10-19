@@ -24,6 +24,7 @@
 
 package org.encog.engine.network.flat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +52,12 @@ import org.encog.engine.util.ErrorCalculation;
  * network classes will make use of the GPU if you have enabled GPU processing.
  * See the Encog class for more info.
  */
-public class FlatNetwork implements EngineNeuralNetwork {
+public class FlatNetwork implements EngineNeuralNetwork, Serializable {
+
+	/**
+	 * The serial ID.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The default bias activation.
