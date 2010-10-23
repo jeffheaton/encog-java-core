@@ -290,6 +290,7 @@ public class EncogBenchmark {
 				record = 0;
 		}
 
+		training.close();
 		iterations /= 100000;
 
 		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP4,
