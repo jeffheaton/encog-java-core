@@ -24,7 +24,6 @@ kernel void NetworkTrain(
     global write_only float* weightsOut,
     global write_only float *gradientsOut,
     global read_only int *activationType,
-    global read_only float *slope,
     global read_only float *tempDataIn,
     global read_only float *tempDataOut,
     global read_only float *gradientsIn
@@ -90,7 +89,7 @@ kernel void NetworkTrain(
 						sum += *(wptr++) * layerOutput[inputIndex + y];
 					}
        
-					layerOutput[outputIndex + x] = ACTIVATION(sum, slope[0]);
+					layerOutput[outputIndex + x] = ACTIVATION(sum, 1.0);
 				}
 			}
 		
@@ -103,7 +102,7 @@ kernel void NetworkTrain(
 			{
 				float diff = ideal[taskIdealIndex+i] - layerOutput[i];
 				e+=diff*diff;
-				layerDelta[i] = diff * DERIVATIVE(layerOutput[i], slope[0]);
+				layerDelta[i] = diff * DERIVATIVE(layerOutput[i], 1.0);
 			}				
 
 			errors[taskIndex] += e;
@@ -141,7 +140,7 @@ kernel void NetworkTrain(
 			
 					layerDelta[yi] = sum * DERIVATIVE(
             	      layerOutput[yi],
-                	  slope[currentLevel+1]);
+                	  1.0);
 
 					yi++;
 				}

@@ -118,11 +118,6 @@ public class KernelNetworkTrain extends EncogKernel {
 	private cl_mem activationTypeBuffer;
 
 	/**
-	 * A buffer to hold the slope for the activation of each of the layers.
-	 */
-	private cl_mem slopeBuffer;
-
-	/**
 	 * The temp data in buffer. Temp data that is used while training.
 	 */
 	private cl_mem tempDataInBuffer;
@@ -151,11 +146,6 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * The size of all layer deltas.
 	 */
 	private int layerDeltaSize;
-
-	/**
-	 * The slopes.
-	 */
-	private final float[] slopeArray;
 
 	/**
 	 * An array to hold the input to the neural network.
@@ -257,18 +247,11 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.weightInArray = new float[flat.getWeights().length];
 		this.weightOutArray = new float[flat.getWeights().length];
 		this.tempDataArray = new float[tempDataSize];
-		this.slopeArray = new float[flat.getActivationFunctions().length];
 		this.gradients = new float[flat.getWeights().length];
 
 		this.layerDeltaSize = 0;
 		for (int i = 0; i < flat.getLayerCounts().length; i++) {
 			this.layerDeltaSize += flat.getLayerCounts()[i];
-		}
-
-		int index = 0;
-		for (int i = 0; i < flat.getActivationFunctions().length; i++) {
-			this.slopeArray[index++] = (float) flat.getActivationFunctions()[i]
-					.getParams()[0];
 		}
 
 		final int inputSize = flat.getInputCount();
@@ -345,10 +328,9 @@ public class KernelNetworkTrain extends EncogKernel {
 		setArg(9, this.weightOutArrayBuffer);
 		setArg(10, this.gradientOutBuffer);
 		setArg(11, this.activationTypeBuffer);
-		setArg(12, this.slopeBuffer);
-		setArg(13, this.tempDataInBuffer);
-		setArg(14, this.tempDataOutBuffer);
-		setArg(15, this.gradientInBuffer);
+		setArg(12, this.tempDataInBuffer);
+		setArg(13, this.tempDataOutBuffer);
+		setArg(14, this.gradientInBuffer);
 
 		try {
 			final EncogCLQueue queue = this.device.getQueue();
@@ -473,7 +455,6 @@ public class KernelNetworkTrain extends EncogKernel {
 		this.weightIndexBuffer = createArrayReadOnly(this.flat.getWeightIndex());
 		this.activationTypeBuffer = createArrayReadOnly(this.flat
 				.getLayerCounts());
-		this.slopeBuffer = createArrayReadOnly(this.slopeArray);
 		this.tempDataInBuffer = createArrayReadOnly(this.tempDataArray);
 		this.tempDataOutBuffer = createFloatArrayWriteOnly(this.tempDataArray.length);
 	}
@@ -494,7 +475,6 @@ public class KernelNetworkTrain extends EncogKernel {
 		releaseBuffer(this.layerFeedCountBuffer);
 		releaseBuffer(this.layerIndexBuffer);
 		releaseBuffer(this.paramBuffer);
-		releaseBuffer(this.slopeBuffer);
 		releaseBuffer(this.tempDataInBuffer);
 		releaseBuffer(this.tempDataOutBuffer);
 		releaseBuffer(this.weightInArrayBuffer);
