@@ -52,6 +52,8 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNetworkPersistor;
+import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -653,5 +655,15 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		BasicNeuralData input2 = new BasicNeuralData(input);
 		NeuralData output2 = this.compute(input2);
 		EngineArray.arrayCopy(output2.getData(), output);
+	}
+
+	/**
+	 * @return The weights as a comma separated list.
+	 */
+	public String dumpWeights() {
+		this.structure.updateFlatNetwork();
+		StringBuilder result = new StringBuilder();
+		NumberList.toList(CSVFormat.EG_FORMAT, result, this.structure.getFlat().getWeights());
+		return result.toString();
 	}
 }
