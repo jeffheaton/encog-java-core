@@ -57,10 +57,6 @@ public class RPROPJob extends TrainingJob {
 	 *            The training data to use.
 	 * @param loadToMemory
 	 *            True if binary training data should be loaded to memory.
-	 * @param initialUpdate
-	 *            The initial update.
-	 * @param maxStep
-	 *            The max step.
 	 */
 	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
 			final boolean loadToMemory) {
@@ -79,8 +75,6 @@ public class RPROPJob extends TrainingJob {
 	 *            True if binary training data should be loaded to memory.
 	 * @param initialUpdate
 	 *            The initial update.
-	 * @param maxStep
-	 *            The max step.
 	 * @param localRatio
 	 * 		The local ratio, used if this job is performed by an OpenCL Device.
 	 * @param globalRatio

@@ -394,10 +394,10 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * 
 	 * @param options
 	 *            The options.
+	 * @param profile
+	 * 			The OpenCL training profile.
 	 * @param network
 	 *            The network to compile for.
-	 * @param requestedGlobalSize
-	 * 			THe requested global workload size.
 	 */
 	public void compile(final Map<String, String> options,OpenCLTrainingProfile profile,
 			final FlatNetwork network) {
