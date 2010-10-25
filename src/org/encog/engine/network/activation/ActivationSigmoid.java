@@ -34,11 +34,6 @@ import org.encog.engine.util.BoundMath;
 public class ActivationSigmoid implements ActivationFunction {
 
 	/**
-	 * The offset to the parameter that holds the sigmoid slope.
-	 */
-	public static final int PARAM_SIGMOID_SLOPE = 0;
-
-	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 5622349801036468572L;
@@ -52,8 +47,7 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * Construct a basic sigmoid function, with a slope of 1.
 	 */
 	public ActivationSigmoid() {
-		this.params = new double[1];
-		this.params[ActivationSigmoid.PARAM_SIGMOID_SLOPE] = 1;
+		this.params = new double[0];
 	}
 
 	/**
@@ -62,13 +56,6 @@ public class ActivationSigmoid implements ActivationFunction {
 	@Override
 	public ActivationFunction clone() {
 		return new ActivationSigmoid();
-	}
-
-	/**
-	 * @return Get the slope of the activation function.
-	 */
-	public double getSlope() {
-		return this.params[ActivationSigmoid.PARAM_SIGMOID_SLOPE];
 	}
 
 	/**
@@ -86,7 +73,7 @@ public class ActivationSigmoid implements ActivationFunction {
 	public void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
-			x[i] = 1.0 / (1.0 + BoundMath.exp(-params[0] * x[i]));
+			x[i] = 1.0 / (1.0 + BoundMath.exp(-2 * x[i]));
 		}
 	}
 
@@ -95,7 +82,7 @@ public class ActivationSigmoid implements ActivationFunction {
 	 */
 	@Override
 	public double derivativeFunction(final double x) {
-		return params[0] * x * (1.0 - x);
+		return x * (1.0 - x);
 	}
 
 	/**
@@ -103,7 +90,7 @@ public class ActivationSigmoid implements ActivationFunction {
 	 */
 	@Override
 	public String[] getParamNames() {
-		final String[] results = { "slope" };
+		final String[] results = { };
 		return results;
 	}
 
@@ -112,7 +99,6 @@ public class ActivationSigmoid implements ActivationFunction {
 	 */
 	@Override
 	public double[] getParams() {
-		// TODO Auto-generated method stub
 		return this.params;
 	}
 
@@ -128,12 +114,11 @@ public class ActivationSigmoid implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative,
-			final boolean allSlopeOne) {
+	public String getOpenCLExpression(final boolean derivative) {
 		if (derivative) {
-			return "(slope * x * (1.0f - x))";
+			return "(x * (1.0f - x))";
 		} else {
-			return "(1.0f / (1.0f + exp(-slope * x)))";
+			return "(1.0f / (1.0f + exp(-1 * x)))";
 		}
 	}
 }

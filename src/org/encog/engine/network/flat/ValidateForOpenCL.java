@@ -53,7 +53,7 @@ public class ValidateForOpenCL extends BasicMachineLearningValidate {
 		final FlatNetwork flat = (FlatNetwork) network;
 
 		for (ActivationFunction activation : flat.getActivationFunctions()) {
-			if (activation.getOpenCLExpression(true,true) == null) {
+			if (activation.getOpenCLExpression(true) == null) {
 				return "Can't use OpenCL if activation function does not have an OpenCL expression.";
 			}
 		}

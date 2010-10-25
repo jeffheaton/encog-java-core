@@ -106,10 +106,8 @@ public interface ActivationFunction extends Serializable, Cloneable {
 	
 	/**
 	 * Returns the OpenCL expression for this activation function.
-	 * @param allSlopeOne True if all activation functions have a slope of 1.
 	 * @param derivative True if we want the derivative, false otherwise.
 	 * @return The OpenCL expression for this activation function.
 	 */
-	String getOpenCLExpression(final boolean derivative, 
-			final boolean allSlopeOne);
+	String getOpenCLExpression(final boolean derivativee);
 }

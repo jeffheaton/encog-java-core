@@ -695,28 +695,6 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	}
 
 	/**
-	 * Determine if the hidden or output layers have a slope other than 1.0.
-	 * Only counts sigmoid, linear and tanh. Other activation types will cause
-	 * this method to return false.
-	 * 
-	 * @return True if there is a slope other than 1.0, false otherwise.
-	 */
-	public boolean anySlopeNotOne() {
-		for (ActivationFunction activation : this.activationFunctions) {
-			if (!(activation instanceof ActivationLinear)
-					&& !(activation instanceof ActivationSigmoid)
-					&& !(activation instanceof ActivationTANH)) {
-				return true;
-			}
-
-			if (Math.abs(activation.getParams()[0] - 1.0) > EncogEngine.DEFAULT_ZERO_TOLERANCE) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
 	 * @return The activation functions.
 	 */
 	public ActivationFunction[] getActivationFunctions() {

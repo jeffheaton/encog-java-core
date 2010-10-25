@@ -403,15 +403,14 @@ public class KernelNetworkTrain extends EncogKernel {
 			final FlatNetwork network) {
 
 		final ActivationFunction activation = network.getActivationFunctions()[0];
-		final boolean allSlopeOne = !network.anySlopeNotOne();
 		final StringBuilder source = new StringBuilder();
 
 		source.append("#define ACTIVATION(x,slope)");
-		source.append(activation.getOpenCLExpression(false, allSlopeOne));
+		source.append(activation.getOpenCLExpression(false));
 		source.append("\r\n");
 
 		source.append("#define DERIVATIVE(x,slope)");
-		source.append(activation.getOpenCLExpression(true, allSlopeOne));
+		source.append(activation.getOpenCLExpression(true));
 		source.append("\r\n");
 
 		source.append(ResourceLoader.loadString(getSourceName()));

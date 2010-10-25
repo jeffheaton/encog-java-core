@@ -125,8 +125,7 @@ public class ActivationBiPolar implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative,
-			final boolean allSlopeOne) {
+	public String getOpenCLExpression(final boolean derivative) {
 		return null;
 	}
 }

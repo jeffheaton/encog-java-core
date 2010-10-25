@@ -102,7 +102,7 @@ public class ActivationLinear implements ActivationFunction {
 	 */
 	@Override
 	public String[] getParamNames() {
-		final String[] result = { "slope" }; 
+		final String[] result = { }; 
 		return result;
 	}
 
@@ -126,12 +126,11 @@ public class ActivationLinear implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative,
-			final boolean allSlopeOne) {
+	public String getOpenCLExpression(final boolean derivative) {
 		if (derivative) {
 			return "(1.0)";
 		} else {
-			return "(slope * x)";
+			return "(x)";
 		}
 	}
 }

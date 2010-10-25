@@ -36,11 +36,6 @@ import org.encog.engine.util.BoundMath;
 public class ActivationTANH implements ActivationFunction {
 
 	/**
-	 * The offset to the parameter that holds the tanh slope.
-	 */
-	public static final int PARAM_TANH_SLOPE = 0;
-
-	/**
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = 9121998892720207643L;
@@ -54,8 +49,7 @@ public class ActivationTANH implements ActivationFunction {
 	 * Construct a basic HTAN activation function, with a slope of 1.
 	 */
 	public ActivationTANH() {
-		this.params = new double[1];
-		this.params[ActivationTANH.PARAM_TANH_SLOPE] = 1;
+		this.params = new double[0];
 	}
 
 	/**
@@ -74,21 +68,13 @@ public class ActivationTANH implements ActivationFunction {
 	}
 
 	/**
-	 * @return Get the slope of the activation function.
-	 */
-	public double getSlope() {
-		return this.params[ActivationTANH.PARAM_TANH_SLOPE];
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
-			final double z = BoundMath.exp(-params[0] * x[i]);
-			x[i] = (1.0 - z) / (1.0 + z);
+			x[i] = Math.tanh(x[i]);
 		}
 	}
 
@@ -97,7 +83,7 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	@Override
 	public double derivativeFunction(final double x) {
-		return (params[0] * (1.0 - x * x));
+		return (1.0 - x * x);
 	}
 
 	/**
@@ -105,7 +91,7 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	@Override
 	public String[] getParamNames() {
-		final String[] result = { "slope" };
+		final String[] result = {  };
 		return result;
 	}
 
@@ -129,17 +115,12 @@ public class ActivationTANH implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String getOpenCLExpression(final boolean derivative,
-			final boolean allSlopeOne) {
+	public String getOpenCLExpression(final boolean derivative) {
 
 		if (derivative) {
-			return "(slope * (1.0f - x * x))";
+			return "(1.0f - x * x)";
 		} else {
-			if (allSlopeOne) {
-				return "tanh(x)";
-			} else {
-				return "tanh(x)";
-			}
+			return "tanh(x)";
 		}
 	}
 }
