@@ -223,8 +223,8 @@ public class TestTemporal extends TestCase {
 		NeuralDataPair pair = itr.next();
 		TestCase.assertEquals(10, pair.getInput().size());
 		TestCase.assertEquals(1, pair.getIdeal().size());
-		TestCase.assertEquals(0.5, Math.round(pair.getInput().getData(0)*4.0)/4.0);
-		TestCase.assertEquals(0.75, Math.round(pair.getInput().getData(1)*4.0)/4.0);
+		TestCase.assertEquals(0.75, Math.round(pair.getInput().getData(0)*4.0)/4.0);
+		TestCase.assertEquals(1.0, Math.round(pair.getInput().getData(1)*4.0)/4.0);
 		TestCase.assertEquals(1.0, Math.round(pair.getInput().getData(2)*4.0)/4.0);
 		TestCase.assertEquals(1.0, Math.round(pair.getInput().getData(3)*4.0)/4.0);
 

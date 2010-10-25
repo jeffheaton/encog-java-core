@@ -46,12 +46,14 @@ public class TrainComplete extends TestCase {
 		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = EncogUtility.simpleFeedForward(2, 5, 7, 1, true);
-		Randomizer randomizer = new ConsistentRandomizer(-1, 1, 50);
-		randomizer.randomize(network);
+		Randomizer randomizer = new ConsistentRandomizer(-1, 1, 19);
+		//randomizer.randomize(network);
+		System.out.println(network.dumpWeights());
 		Train rprop = new ResilientPropagation(network, trainingData);
 		int iteration = 0;
 		do {
 			rprop.iteration();
+			System.out.println(rprop.getError());
 			iteration++;
 		} while( iteration<5000 && rprop.getError()>0.01);
 		System.out.println(iteration);
