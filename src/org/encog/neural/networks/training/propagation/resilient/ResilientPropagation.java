@@ -28,7 +28,6 @@ import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
 import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -115,7 +114,7 @@ public class ResilientPropagation extends Propagation {
 	 *            The profile to use.
 	 */
 	public ResilientPropagation(final BasicNetwork network,
-			final NeuralDataSet training, OpenCLTrainingProfile profile) {
+			final NeuralDataSet training, final OpenCLTrainingProfile profile) {
 		this(network, training, profile, RPROPConst.DEFAULT_INITIAL_UPDATE,
 				RPROPConst.DEFAULT_MAX_STEP);
 	}

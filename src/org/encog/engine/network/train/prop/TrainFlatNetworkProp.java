@@ -52,7 +52,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * The number of threads to use.
 	 */
-	protected int numThreads;
+	private int numThreads;
 
 	/**
 	 * The gradients.
@@ -62,7 +62,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * The last gradients, from the last training iteration.
 	 */
-	protected double[] lastGradient;
+	private double[] lastGradient;
 
 	/**
 	 * The network to train.
@@ -72,22 +72,22 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * The training data.
 	 */
-	protected final EngineDataSet training;
+	private final EngineDataSet training;
 
 	/**
 	 * The network in indexable form.
 	 */
-	protected final EngineIndexableSet indexable;
+	private final EngineIndexableSet indexable;
 
 	/**
 	 * The workers.
 	 */
-	protected FlatGradientWorker[] workers;
+	private FlatGradientWorker[] workers;
 
 	/**
 	 * The total error. Used to take the average of.
 	 */
-	protected double totalError;
+	private double totalError;
 
 	/**
 	 * The current error is the average error over all of the threads.
@@ -97,12 +97,12 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * Reported exception from the threads.
 	 */
-	protected Throwable reportedException;
+	private Throwable reportedException;
 
 	/**
 	 * The iteration.
 	 */
-	protected int iteration;
+	private int iteration;
 
 	/**
 	 * Train a flat network multithreaded.
@@ -131,6 +131,9 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		this.reportedException = null;
 	}
 
+	/**
+	 * Calculate the gradients.
+	 */
 	public void calculateGradients() {
 		if (this.workers == null) {
 			init();
@@ -336,12 +339,15 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 			double[] lastGradient, int index);
 
 	/**
-	 * Perform the specified number of training iterations. This is a basic implementation 
-	 * that just calls iteration the specified number of times.  However, some training 
-	 * methods, particularly with the GPU, benefit greatly by calling with higher numbers than 1.
-	 * @param count The number of training iterations.
+	 * Perform the specified number of training iterations. This is a basic
+	 * implementation that just calls iteration the specified number of times.
+	 * However, some training methods, particularly with the GPU, benefit
+	 * greatly by calling with higher numbers than 1.
+	 * 
+	 * @param count
+	 *            The number of training iterations.
 	 */
-	public void iteration(int count) {
+	public void iteration(final int count) {
 		for (int i = 0; i < count; i++) {
 			iteration();
 		}
@@ -357,7 +363,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setIteration(int iteration) {
+	public void setIteration(final int iteration) {
 		this.iteration = iteration;
 	}
 }

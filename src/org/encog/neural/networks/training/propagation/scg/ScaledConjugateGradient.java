@@ -24,39 +24,33 @@
 
 package org.encog.neural.networks.training.propagation.scg;
 
-import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
 import org.encog.engine.network.train.prop.TrainFlatNetworkSCG;
-import org.encog.engine.util.BoundNumbers;
-import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.propagation.Propagation;
 
 /**
- * This is a training class that makes use of scaled conjugate 
- * gradient methods.  It is a very fast and efficient training
- * algorithm.
- *
+ * This is a training class that makes use of scaled conjugate gradient methods.
+ * It is a very fast and efficient training algorithm.
+ * 
  */
 public class ScaledConjugateGradient extends Propagation {
 
-
 	/**
 	 * Construct a training class.
-	 * @param network The network to train.
-	 * @param training The training data.
+	 * 
+	 * @param network
+	 *            The network to train.
+	 * @param training
+	 *            The training data.
 	 */
 	public ScaledConjugateGradient(final BasicNetwork network,
 			final NeuralDataSet training) {
 		super(network, training);
 
-		TrainFlatNetworkSCG rpropFlat = new TrainFlatNetworkSCG(
-				network.getStructure().getFlat(),
-				this.getTraining()); 
-		this.setFlatTraining( rpropFlat );
+		final TrainFlatNetworkSCG rpropFlat = new TrainFlatNetworkSCG(network
+				.getStructure().getFlat(), getTraining());
+		setFlatTraining(rpropFlat);
 	}
-
 
 }

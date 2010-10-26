@@ -103,12 +103,12 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * The kernel in use.
 	 */
 	private KernelNetworkTrain kernel;
-	
+
 	/**
 	 * The iteration.
 	 */
 	private int iteration;
-	
+
 	private final OpenCLTrainingProfile profile;
 
 	/**
@@ -152,9 +152,10 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * @param learn
 	 *            Should we learn?
 	 * @param iterations
-	 * 			The number of iterations.
+	 *            The number of iterations.
 	 */
-	private void callKernel(final int start, final int size, final boolean learn, int iterations) {
+	private void callKernel(final int start, final int size,
+			final boolean learn, final int iterations) {
 		// System.out.println("Iteration: start=" + start + ",sizePer=" + size +
 		// ",total=" + (size*this.kernel.getGlobalWork()) );
 		this.kernel.calculate(start, size, learn, iterations);
@@ -183,6 +184,13 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	@Override
 	public double getError() {
 		return this.error;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getIteration() {
+		return this.iteration;
 	}
 
 	/**
@@ -276,7 +284,10 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		}
 		return result;
 	}
-	
+
+	/**
+	 * {@inheritDoc}
+	 */
 	public void iteration() {
 		iteration(1);
 	}
@@ -285,33 +296,36 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void iteration(int iterations) {
+	public void iteration(final int iterations) {
 
 		if (this.learningType == -1) {
 			throw new EncogEngineError(
 					"Learning type has not been defined yet, you must first call one of the learnXXXX methods, such as learnRPROP.");
 		}
 
-		this.iteration+=iterations;
+		this.iteration += iterations;
 		int currentIndex = 0;
 		this.error = 0;
 
 		int count = this.profile.getKernelNumberOfCalls();
-		
-		// If we are using an OpenCL ratio other than 1.0, which means that we are 
-		// braining up a single training iteration, there is no reason to try and batch 
+
+		// If we are using an OpenCL ratio other than 1.0, which means that we
+		// are
+		// braining up a single training iteration, there is no reason to try
+		// and batch
 		// up multiple iterations.
-		if( count>0 && iterations>1 )
-		{
-			throw new EncogEngineError("Must use an OpenCL ratio of 1.0 if you are going to use an iteration count > 1.");
+		if ((count > 0) && (iterations > 1)) {
+			throw new EncogEngineError(
+					"Must use an OpenCL ratio of 1.0 if you are going to use an iteration count > 1.");
 		}
 
 		this.kernel.setGlobalWork(this.profile.getKernelGlobalWorkgroup());
 		this.kernel.setLocalWork(this.profile.getKernelLocalWorkgroup());
-		
+
 		// handle workloads
 		while (count > 0) {
-			callKernel(currentIndex, this.profile.getKernelWorkPerCall(), false, 1);
+			callKernel(currentIndex, this.profile.getKernelWorkPerCall(),
+					false, 1);
 			count--;
 			currentIndex += this.profile.getKernelWorkPerCall()
 					* this.kernel.getGlobalWork();
@@ -320,8 +334,9 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 		// handle the final workload
 		this.kernel.setGlobalWork(this.profile.getKernelRemainderGlobal());
 		this.kernel.setLocalWork(this.profile.getKernelRemainderGlobal());
-		
-		callKernel(currentIndex, this.profile.getKernelRemainderPer(), true, iterations);
+
+		callKernel(currentIndex, this.profile.getKernelRemainderPer(), true,
+				iterations);
 
 		count = (int) this.training.getRecordCount();
 		this.error = this.error / (count * this.training.getIdealSize());
@@ -352,10 +367,11 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		final Map<String, String> options = getOptions("LEARN_BPROP");
 
-		this.kernel = new KernelNetworkTrain(this.profile.getDevice(), this.network,
-				this.training, this.network.getWeights().length + 2);
-		this.kernel.compile(options, profile, this.network);
-	
+		this.kernel = new KernelNetworkTrain(this.profile.getDevice(),
+				this.network, this.training,
+				this.network.getWeights().length + 2);
+		this.kernel.compile(options, this.profile, this.network);
+
 		this.kernel.getTempDataArray()[0] = (float) learningRate;
 		this.kernel.getTempDataArray()[1] = (float) momentum;
 	}
@@ -372,10 +388,10 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		final Map<String, String> options = getOptions("LEARN_MANHATTAN");
 
-		this.kernel = new KernelNetworkTrain(this.profile.getDevice(), this.network,
-				this.training, 1);
-		this.kernel.compile(options, profile, this.network);
-		
+		this.kernel = new KernelNetworkTrain(this.profile.getDevice(),
+				this.network, this.training, 1);
+		this.kernel.compile(options, this.profile, this.network);
+
 		this.kernel.getTempDataArray()[0] = (float) learningRate;
 	}
 
@@ -402,11 +418,12 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		final Map<String, String> options = getOptions("LEARN_RPROP");
 
-		this.kernel = new KernelNetworkTrain(this.profile.getDevice(), this.network,
-				this.training, this.network.getWeights().length * 2);
+		this.kernel = new KernelNetworkTrain(this.profile.getDevice(),
+				this.network, this.training,
+				this.network.getWeights().length * 2);
 
-		this.kernel.compile(options, profile,this.network);
-		
+		this.kernel.compile(options, this.profile, this.network);
+
 		final int weightLength = this.network.getWeights().length;
 
 		for (int i = 0; i < weightLength; i++) {
@@ -419,22 +436,15 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void setIteration(final int iteration) {
+		this.iteration = iteration;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void setNumThreads(final int numThreads) {
 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getIteration() {
-		return this.iteration;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	public void setIteration(int iteration) {
-		this.iteration = iteration;
 	}
 }

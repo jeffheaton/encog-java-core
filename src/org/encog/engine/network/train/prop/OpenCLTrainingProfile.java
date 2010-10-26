@@ -85,7 +85,7 @@ public class OpenCLTrainingProfile {
 	 * The calculated size of the global workgroup.
 	 */
 	private int kernelGlobalWorkgroup;
-	
+
 	/**
 	 * The calculated size of the local workgroup.
 	 */
@@ -95,40 +95,58 @@ public class OpenCLTrainingProfile {
 	 * The number of training items processed per call.
 	 */
 	private int kernelWorkPerCall;
-	
+
 	/**
-	 * The number of calls to the kernel that will be made. The number of segments.
+	 * The number of calls to the kernel that will be made. The number of
+	 * segments.
 	 */
 	private int kernelNumberOfCalls;
-	
+
 	/**
 	 * The number of items in the remainder.
 	 */
 	private int kernelRemainder;
-	
+
 	/**
 	 * The size of the global and local workgroups for the remainder.
 	 */
 	private int kernelRemainderGlobal;
-	
+
 	/**
 	 * The number of training items processed per call in the remainder.
 	 */
 	private int kernelRemainderPer;
 
 	/**
-	 * Construct a training profile.
-	 * @param device The device to use.
-	 * @param localRatio The local ratio.
-	 * @param globalRatio The global ratio.
-	 * @param segmentationRatio The segmentation ratio.
+	 * Construct a training profile with the specified device and the value of
+	 * one for all ratios.
+	 * 
+	 * @param device
+	 *            The device to use.
 	 */
-	public OpenCLTrainingProfile(EncogCLDevice device, double localRatio,
-			int globalRatio, double segmentationRatio) {
+	public OpenCLTrainingProfile(final EncogCLDevice device) {
+		this(device, 1.0, 1, 1.0);
+	}
+
+	/**
+	 * Construct a training profile.
+	 * 
+	 * @param device
+	 *            The device to use.
+	 * @param localRatio
+	 *            The local ratio.
+	 * @param globalRatio
+	 *            The global ratio.
+	 * @param segmentationRatio
+	 *            The segmentation ratio.
+	 */
+	public OpenCLTrainingProfile(final EncogCLDevice device,
+			final double localRatio, final int globalRatio,
+			final double segmentationRatio) {
 		super();
 		this.device = device;
 
-		if (localRatio < 0 || globalRatio < 0 || segmentationRatio < 0) {
+		if ((localRatio < 0) || (globalRatio < 0) || (segmentationRatio < 0)) {
 			throw new OpenCLError("None of the ratios can be below zero.");
 		}
 
@@ -153,20 +171,15 @@ public class OpenCLTrainingProfile {
 	}
 
 	/**
-	 * Construct a training profile with the specified device and the value of one for all ratios.
-	 * @param device The device to use.
-	 */
-	public OpenCLTrainingProfile(EncogCLDevice device) {
-		this(device, 1.0, 1, 1.0);
-	}
-
-	/**
 	 * Calculate the kernel values.
-	 * @param kernel The kernel to calculate for.
-	 * @param training The training params to use.
+	 * 
+	 * @param kernel
+	 *            The kernel to calculate for.
+	 * @param training
+	 *            The training params to use.
 	 */
-	public void calculateKernelParams(EncogKernel kernel,
-			EngineIndexableSet training) {
+	public void calculateKernelParams(final EncogKernel kernel,
+			final EngineIndexableSet training) {
 		boolean globalValuesAssigned = false;
 		int workPerIteration;
 
@@ -179,39 +192,42 @@ public class OpenCLTrainingProfile {
 			int trialLocalSize = (int) Math.min(kernel.getMaxWorkGroupSize(),
 					training.getRecordCount());
 
-			trialLocalSize++;// falsely add one so the loop can decrease it with
+			trialLocalSize++;// falsely add one so the loop can decrease it
+								// with
 			// no effect.
 
 			// loop and try to find a local size small enough to be even.
 			do {
 				trialLocalSize--;
 				this.kernelLocalWorkgroup = (int) (trialLocalSize * this.localRatio);
-				this.kernelGlobalWorkgroup = (int) (this.kernelLocalWorkgroup * this.globalRatio);
+				this.kernelGlobalWorkgroup = (this.kernelLocalWorkgroup * this.globalRatio);
 				this.kernelWorkPerCall = (int) ((training.getRecordCount() / this.kernelGlobalWorkgroup) * this.segmentationRatio);
 				workPerIteration = this.kernelGlobalWorkgroup
 						* this.kernelWorkPerCall;
 			} while ((workPerIteration != training.getRecordCount())
-					&& trialLocalSize > 1);
+					&& (trialLocalSize > 1));
 
-			if (trialLocalSize > 0)
+			if (trialLocalSize > 0) {
 				globalValuesAssigned = true;
+			}
 		}
 
 		// if we either wanted to segment, or the attempt to find an even group
 		// size above failed
 		if (!globalValuesAssigned) {
 			// otherwise divide into segments
-			int maxLocalSize = (int) Math.min(kernel.getMaxWorkGroupSize(),
-					training.getRecordCount());
+			final int maxLocalSize = (int) Math.min(kernel
+					.getMaxWorkGroupSize(), training.getRecordCount());
 			this.kernelLocalWorkgroup = (int) (maxLocalSize * this.localRatio);
-			this.kernelGlobalWorkgroup = (int) (this.kernelLocalWorkgroup * this.globalRatio);
+			this.kernelGlobalWorkgroup = (this.kernelLocalWorkgroup * this.globalRatio);
 
 			// second special case, if the segmentation ratio is zero, then just
 			// do one item per OpenCL call
-			if (this.segmentationRatio < EncogEngine.DEFAULT_ZERO_TOLERANCE)
+			if (this.segmentationRatio < EncogEngine.DEFAULT_ZERO_TOLERANCE) {
 				this.kernelWorkPerCall = 1;
-			else
+			} else {
 				this.kernelWorkPerCall = (int) ((training.getRecordCount() / this.kernelGlobalWorkgroup) * this.segmentationRatio);
+			}
 		}
 
 		workPerIteration = this.kernelGlobalWorkgroup * this.kernelWorkPerCall;
@@ -228,9 +244,10 @@ public class OpenCLTrainingProfile {
 			this.kernelRemainder = this.kernelGlobalWorkgroup;
 			this.kernelRemainderPer = this.kernelWorkPerCall;
 			this.kernelNumberOfCalls--;
-		} else
+		} else {
 			this.kernelRemainderPer = this.kernelRemainder
 					/ this.kernelGlobalWorkgroup;
+		}
 
 		// does the remainder not have enough to fill the global tasks global?
 		if (this.kernelRemainderPer == 0) {
@@ -243,93 +260,96 @@ public class OpenCLTrainingProfile {
 	 * @return The device to use.
 	 */
 	public EncogCLDevice getDevice() {
-		return device;
-	}
-
-	/**
-	 * Set the device to use.
-	 * @param device The device to use.
-	 */
-	public void setDevice(EncogCLDevice device) {
-		this.device = device;
-	}
-
-	/**
-	 * @return The local ratio.
-	 */
-	public double getLocalRatio() {
-		return localRatio;
+		return this.device;
 	}
 
 	/**
 	 * @return The global ratio.
 	 */
 	public int getGlobalRatio() {
-		return globalRatio;
+		return this.globalRatio;
 	}
 
-	/**
-	 * @return The segmentation ratio.
-	 */
-	public double getSegmentationRatio() {
-		return segmentationRatio;
-	}
-	
-	
 	/**
 	 * @return The calculated size of the global workgroup.
 	 */
 	public int getKernelGlobalWorkgroup() {
-		return kernelGlobalWorkgroup;
+		return this.kernelGlobalWorkgroup;
 	}
 
 	/**
 	 * @return The calculated size of the local workgroup.
 	 */
 	public int getKernelLocalWorkgroup() {
-		return kernelLocalWorkgroup;
+		return this.kernelLocalWorkgroup;
 	}
 
 	/**
-	 * @return The number of training items processed per call.
-	 */
-	public int getKernelWorkPerCall() {
-		return kernelWorkPerCall;
-	}
-
-	/**
-	 * @return The number of calls to the kernel that will be made. The number of segments.
+	 * @return The number of calls to the kernel that will be made. The number
+	 *         of segments.
 	 */
 	public int getKernelNumberOfCalls() {
-		return kernelNumberOfCalls;
+		return this.kernelNumberOfCalls;
 	}
 
 	/**
 	 * @return The number of items in the remainder.
 	 */
 	public int getKernelRemainder() {
-		return kernelRemainder;
+		return this.kernelRemainder;
 	}
 
 	/**
 	 * @return The size of the global and local workgroups for the remainder.
 	 */
 	public int getKernelRemainderGlobal() {
-		return kernelRemainderGlobal;
+		return this.kernelRemainderGlobal;
 	}
 
 	/**
 	 * @return The number of training items processed per call in the remainder.
 	 */
 	public int getKernelRemainderPer() {
-		return kernelRemainderPer;
+		return this.kernelRemainderPer;
+	}
+
+	/**
+	 * @return The number of training items processed per call.
+	 */
+	public int getKernelWorkPerCall() {
+		return this.kernelWorkPerCall;
+	}
+
+	/**
+	 * @return The local ratio.
+	 */
+	public double getLocalRatio() {
+		return this.localRatio;
+	}
+
+	/**
+	 * @return The segmentation ratio.
+	 */
+	public double getSegmentationRatio() {
+		return this.segmentationRatio;
+	}
+
+	/**
+	 * Set the device to use.
+	 * 
+	 * @param device
+	 *            The device to use.
+	 */
+	public void setDevice(final EncogCLDevice device) {
+		this.device = device;
 	}
 
 	/**
 	 * @return All internal values as a string.
 	 */
+	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append("OpenCL Profile:\n");
 		result.append("Local Ratio: ");
 		result.append(this.localRatio);
@@ -345,31 +365,31 @@ public class OpenCLTrainingProfile {
 		result.append("\n");
 
 		result.append("kernelGlobalWorkgroup: ");
-		result.append(kernelGlobalWorkgroup);
+		result.append(this.kernelGlobalWorkgroup);
 		result.append("\n");
 
 		result.append("kernelLocalWorkgroup: ");
-		result.append(kernelLocalWorkgroup);
+		result.append(this.kernelLocalWorkgroup);
 		result.append("\n");
 
 		result.append("kernelWorkPerCall: ");
-		result.append(kernelWorkPerCall);
+		result.append(this.kernelWorkPerCall);
 		result.append("\n");
 
 		result.append("kernelNumberOfCalls: ");
-		result.append(kernelNumberOfCalls);
+		result.append(this.kernelNumberOfCalls);
 		result.append("\n");
 
 		result.append("kernelRemainder: ");
-		result.append(kernelRemainder);
+		result.append(this.kernelRemainder);
 		result.append("\n");
 
 		result.append("kernelRemainderGlobal: ");
-		result.append(kernelRemainderGlobal);
+		result.append(this.kernelRemainderGlobal);
 		result.append("\n");
 
 		result.append("kernelRemainderPer: ");
-		result.append(kernelRemainderPer);
+		result.append(this.kernelRemainderPer);
 		result.append("\n");
 
 		return result.toString();

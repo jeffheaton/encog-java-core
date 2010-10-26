@@ -70,7 +70,7 @@ public final class NetworkCODEC {
 		for (final Layer layer : network.getStructure().getLayers()) {
 			index = NetworkCODEC.processLayer(network, layer, array, index);
 		}
-		
+
 		network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
@@ -114,52 +114,54 @@ public final class NetworkCODEC {
 
 		return true;
 	}
-	
+
 	public static int networkSize(final BasicNetwork network) {
 
 		// see if there is already an up to date flat network
-		if( network.getStructure().getFlat()!=null 
-			&& (network.getStructure().getFlatUpdate()==FlatUpdateNeeded.None 
-			|| network.getStructure().getFlatUpdate()==FlatUpdateNeeded.Unflatten) ) {
+		if ((network.getStructure().getFlat() != null)
+				&& ((network.getStructure().getFlatUpdate() == FlatUpdateNeeded.None) || (network
+						.getStructure().getFlatUpdate() == FlatUpdateNeeded.Unflatten))) {
 			return network.getStructure().getFlat().getWeights().length;
 		}
-		
+
 		int index = 0;
 
 		// loop over all of the layers, take the output layer first
 		for (final Layer layer : network.getStructure().getLayers()) {
 
-			// see if the previous layer, which is the next layer that the loop will hit,
+			// see if the previous layer, which is the next layer that the loop
+			// will hit,
 			// is either a connection to a BasicLayer or a ContextLayer.
 			Synapse synapse = network.getStructure()
 					.findPreviousSynapseByLayerType(layer, BasicLayer.class);
-			Synapse contextSynapse = network.getStructure().findPreviousSynapseByLayerType(
-					layer, ContextLayer.class);
-			
+			final Synapse contextSynapse = network.getStructure()
+					.findPreviousSynapseByLayerType(layer, ContextLayer.class);
+
 			// get a list of of the previous synapses to this layer
-			List<Synapse> list = network.getStructure().getPreviousSynapses(layer);
-			
-			// If there is not a BasicLayer or contextLayer as the next layer, then
+			final List<Synapse> list = network.getStructure()
+					.getPreviousSynapses(layer);
+
+			// If there is not a BasicLayer or contextLayer as the next layer,
+			// then
 			// just take the first synapse of any type.
-			if( synapse==null && contextSynapse==null && list.size()>0 ) {
+			if ((synapse == null) && (contextSynapse == null)
+					&& (list.size() > 0)) {
 				synapse = list.get(0);
 			}
 
 			// is there any data to record for this synapse?
-			if ( synapse!=null && synapse.getMatrix() != null) {
+			if ((synapse != null) && (synapse.getMatrix() != null)) {
 				// process each weight matrix
 				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
-					
-					index+=synapse.getFromNeuronCount();
-					
+
+					index += synapse.getFromNeuronCount();
 
 					if (synapse.getToLayer().hasBias()) {
 						index++;
 					}
-					
-					if( contextSynapse!=null )
-					{
-						index+=synapse.getFromNeuronCount();
+
+					if (contextSynapse != null) {
+						index += synapse.getFromNeuronCount();
 					}
 				}
 			}
@@ -178,15 +180,16 @@ public final class NetworkCODEC {
 	 * @return The memory of the neuron.
 	 */
 	public static double[] networkToArray(final BasicNetwork network) {
-		final int size = networkSize(network);
+		final int size = NetworkCODEC.networkSize(network);
 
 		// see if there is already an up to date flat network
-		if( network.getStructure().getFlat()!=null 
-			&& (network.getStructure().getFlatUpdate()==FlatUpdateNeeded.None 
-			|| network.getStructure().getFlatUpdate()==FlatUpdateNeeded.Unflatten) ) {
-			return EngineArray.arrayCopy(network.getStructure().getFlat().getWeights());
+		if ((network.getStructure().getFlat() != null)
+				&& ((network.getStructure().getFlatUpdate() == FlatUpdateNeeded.None) || (network
+						.getStructure().getFlatUpdate() == FlatUpdateNeeded.Unflatten))) {
+			return EngineArray.arrayCopy(network.getStructure().getFlat()
+					.getWeights());
 		}
-		
+
 		// allocate an array to hold
 		final double[] result = new double[size];
 
@@ -195,24 +198,28 @@ public final class NetworkCODEC {
 		// loop over all of the layers, take the output layer first
 		for (final Layer layer : network.getStructure().getLayers()) {
 
-			// see if the previous layer, which is the next layer that the loop will hit,
+			// see if the previous layer, which is the next layer that the loop
+			// will hit,
 			// is either a connection to a BasicLayer or a ContextLayer.
 			Synapse synapse = network.getStructure()
 					.findPreviousSynapseByLayerType(layer, BasicLayer.class);
-			Synapse contextSynapse = network.getStructure().findPreviousSynapseByLayerType(
-					layer, ContextLayer.class);
-			
+			final Synapse contextSynapse = network.getStructure()
+					.findPreviousSynapseByLayerType(layer, ContextLayer.class);
+
 			// get a list of of the previous synapses to this layer
-			List<Synapse> list = network.getStructure().getPreviousSynapses(layer);
-			
-			// If there is not a BasicLayer or contextLayer as the next layer, then
+			final List<Synapse> list = network.getStructure()
+					.getPreviousSynapses(layer);
+
+			// If there is not a BasicLayer or contextLayer as the next layer,
+			// then
 			// just take the first synapse of any type.
-			if( synapse==null && contextSynapse==null && list.size()>0 ) {
+			if ((synapse == null) && (contextSynapse == null)
+					&& (list.size() > 0)) {
 				synapse = list.get(0);
 			}
 
 			// is there any data to record for this synapse?
-			if ( synapse!=null && synapse.getMatrix() != null) {
+			if ((synapse != null) && (synapse.getMatrix() != null)) {
 				// process each weight matrix
 				for (int x = 0; x < synapse.getToNeuronCount(); x++) {
 					for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
@@ -222,11 +229,11 @@ public final class NetworkCODEC {
 					if (synapse.getToLayer().hasBias()) {
 						result[index++] = synapse.getToLayer().getBiasWeights()[x];
 					}
-					
-					if( contextSynapse!=null )
-					{
-						for(int z=0;z<synapse.getFromNeuronCount();z++) {
-							result[index++] = contextSynapse.getMatrix().get(z, x);
+
+					if (contextSynapse != null) {
+						for (int z = 0; z < synapse.getFromNeuronCount(); z++) {
+							result[index++] = contextSynapse.getMatrix().get(z,
+									x);
 						}
 					}
 				}
@@ -239,34 +246,41 @@ public final class NetworkCODEC {
 
 	/**
 	 * Process a synapse.
-	 * @param network The network to process.
-	 * @param layer The layer to process.
-	 * @param array The array to process.
-	 * @param index The current index.
+	 * 
+	 * @param network
+	 *            The network to process.
+	 * @param layer
+	 *            The layer to process.
+	 * @param array
+	 *            The array to process.
+	 * @param index
+	 *            The current index.
 	 * @return The index after this synapse has been read.
 	 */
 	private static int processLayer(final BasicNetwork network,
 			final Layer layer, final double[] array, final int index) {
 		int result = index;
 
-		// see if the previous layer, which is the next layer that the loop will hit,
+		// see if the previous layer, which is the next layer that the loop will
+		// hit,
 		// is either a connection to a BasicLayer or a ContextLayer.
 		Synapse synapse = network.getStructure()
 				.findPreviousSynapseByLayerType(layer, BasicLayer.class);
-		Synapse contextSynapse = network.getStructure()
+		final Synapse contextSynapse = network.getStructure()
 				.findPreviousSynapseByLayerType(layer, ContextLayer.class);
 
 		// get a list of of the previous synapses to this layer
-		List<Synapse> list = network.getStructure().getPreviousSynapses(layer);
+		final List<Synapse> list = network.getStructure().getPreviousSynapses(
+				layer);
 
 		// If there is not a BasicLayer or contextLayer as the next layer, then
 		// just take the first synapse of any type.
-		if( synapse==null && contextSynapse==null && list.size()>0 ) {
+		if ((synapse == null) && (contextSynapse == null) && (list.size() > 0)) {
 			synapse = list.get(0);
 		}
-		
-		// is there any data to record for this synapse?		
-		if (synapse != null && synapse.getMatrix() != null) {
+
+		// is there any data to record for this synapse?
+		if ((synapse != null) && (synapse.getMatrix() != null)) {
 			// process each weight matrix
 			for (int x = 0; x < synapse.getToNeuronCount(); x++) {
 				for (int y = 0; y < synapse.getFromNeuronCount(); y++) {
@@ -275,23 +289,23 @@ public final class NetworkCODEC {
 				if (synapse.getToLayer().hasBias()) {
 					synapse.getToLayer().getBiasWeights()[x] = array[result++];
 				}
-				
-				if( contextSynapse!=null )
-				{
-					for(int z=0;z<synapse.getFromNeuronCount();z++) {
-						
+
+				if (contextSynapse != null) {
+					for (int z = 0; z < synapse.getFromNeuronCount(); z++) {
+
 						double value = array[result++];
-						
-						final double oldValue = synapse.getMatrix().get(z,x);
-						
-						// if this connection is limited, do not update it to anything but zero
+
+						final double oldValue = synapse.getMatrix().get(z, x);
+
+						// if this connection is limited, do not update it to
+						// anything but zero
 						if (Math.abs(oldValue) < network.getStructure()
 								.getConnectionLimit()) {
 							value = 0;
 						}
-						
+
 						// update the actual matrix
-						contextSynapse.getMatrix().set(z, x, value ); 
+						contextSynapse.getMatrix().set(z, x, value);
 					}
 				}
 

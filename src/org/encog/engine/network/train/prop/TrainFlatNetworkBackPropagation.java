@@ -69,6 +69,13 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	}
 
 	/**
+	 * @return The last deltas.
+	 */
+	public double[] getLastDelta() {
+		return this.lastDelta;
+	}
+
+	/**
 	 * @return the learningRate
 	 */
 	public double getLearningRate() {
@@ -80,6 +87,36 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	 */
 	public double getMomentum() {
 		return this.momentum;
+	}
+
+	/**
+	 * Set the last delta.
+	 * 
+	 * @param ds
+	 *            The last delta.
+	 */
+	public void setLastDelta(final double[] ds) {
+		this.lastDelta = ds;
+	}
+
+	/**
+	 * Set the learning rate.
+	 * 
+	 * @param rate
+	 *            The learning rate.
+	 */
+	public void setLearningRate(final double rate) {
+		this.learningRate = rate;
+	}
+
+	/**
+	 * Set the momentum.
+	 * 
+	 * @param rate
+	 *            The momentum.
+	 */
+	public void setMomentum(final double rate) {
+		this.momentum = rate;
 	}
 
 	/**
@@ -102,23 +139,4 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 		return delta;
 	}
 
-	/**
-	 * @return The last deltas.
-	 */
-	public double[] getLastDelta() {
-		return lastDelta;
-	}
-
-	public void setLearningRate(double rate) {
-		this.learningRate = rate;
-	}
-	
-	public void setMomentum(double rate) {
-		this.learningRate = rate;
-	}
-
-	public void setLastDelta(double[] ds) {
-		this.lastDelta = ds;
-	}
-	
 }

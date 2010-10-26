@@ -34,7 +34,6 @@ import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.Stopwatch;
 
-
 /**
  * Worker class for the mulithreaded training of flat networks.
  */
@@ -68,7 +67,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	/**
 	 * The feed counts, per layer.
 	 */
-	private int[] layerFeedCounts;
+	private final int[] layerFeedCounts;
 
 	/**
 	 * The layer indexes.
@@ -145,8 +144,8 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 *            The high index to use in the training data.
 	 */
 	public GradientWorkerCPU(final FlatNetwork network,
-			final TrainFlatNetworkProp owner, final EngineIndexableSet training,
-			final int low, final int high) {
+			final TrainFlatNetworkProp owner,
+			final EngineIndexableSet training, final int low, final int high) {
 		this.network = network;
 		this.training = training;
 		this.low = low;
@@ -166,8 +165,8 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		this.layerOutput = network.getLayerOutput();
 		this.layerFeedCounts = network.getLayerFeedCounts();
 
-		this.pair = BasicEngineData.createPair(network.getInputCount(),
-				network.getOutputCount());
+		this.pair = BasicEngineData.createPair(network.getInputCount(), network
+				.getOutputCount());
 	}
 
 	/**
@@ -175,6 +174,14 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 */
 	public long getElapsedTime() {
 		return this.elapsedTime;
+	}
+
+	/**
+	 * @return The network training.
+	 */
+	@Override
+	public FlatNetwork getNetwork() {
+		return this.network;
 	}
 
 	/**
@@ -199,12 +206,13 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 
 		for (int i = 0; i < this.actual.length; i++) {
 
-			this.layerDelta[i] = 
-				this.network.getActivationFunctions()[0].derivativeFunction(this.actual[i])
-				* (ideal[i] - this.actual[i]);
+			this.layerDelta[i] = this.network.getActivationFunctions()[0]
+					.derivativeFunction(this.actual[i])
+					* (ideal[i] - this.actual[i]);
 		}
 
-		for (int i = this.network.getBeginTraining(); i < this.network.getEndTraining(); i++) {
+		for (int i = this.network.getBeginTraining(); i < this.network
+				.getEndTraining(); i++) {
 			processLevel(i);
 		}
 	}
@@ -222,23 +230,25 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		final int toLayerSize = this.layerFeedCounts[currentLevel];
 
 		final int index = this.weightIndex[currentLevel];
-		final ActivationFunction activation = this.network.getActivationFunctions()[currentLevel + 1];
-		
+		final ActivationFunction activation = this.network
+				.getActivationFunctions()[currentLevel + 1];
+
 		// handle weights
 		int yi = fromLayerIndex;
 		for (int y = 0; y < fromLayerSize; y++) {
 			final double output = this.layerOutput[yi];
 			double sum = 0;
 			int xi = toLayerIndex;
-			int wi = index+y;
+			int wi = index + y;
 			for (int x = 0; x < toLayerSize; x++) {
 				this.gradients[wi] += output * this.layerDelta[xi];
 				sum += this.weights[wi] * this.layerDelta[xi];
-				wi+=fromLayerSize;
+				wi += fromLayerSize;
 				xi++;
 			}
-			
-			this.layerDelta[yi] = sum * activation.derivativeFunction(this.layerOutput[yi]);
+
+			this.layerDelta[yi] = sum
+					* activation.derivativeFunction(this.layerOutput[yi]);
 			yi++;
 		}
 	}
@@ -260,17 +270,9 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 			EngineArray.fill(this.gradients, 0);
 			this.stopwatch.stop();
 			this.elapsedTime = this.stopwatch.getElapsedTicks();
-		} catch (Throwable ex) {
+		} catch (final Throwable ex) {
 			this.owner.report(null, 0, ex);
 		}
-	}
-
-	/**
-	 * @return The network training.
-	 */
-	@Override
-	public FlatNetwork getNetwork() {
-		return this.network;
 	}
 
 }

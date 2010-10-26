@@ -36,6 +36,7 @@ import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogValidate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  * Implements basic functionality that is needed by each of the propagation
  * methods. The specifics of each of the propagation methods is implemented
@@ -60,7 +61,7 @@ public abstract class Propagation extends BasicTraining {
 	 * The current flat trainer we are using, or null for none.
 	 */
 	private TrainFlatNetwork flatTraining;
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -75,7 +76,8 @@ public abstract class Propagation extends BasicTraining {
 	 * @param training
 	 *            The training set.
 	 */
-	public Propagation(final BasicNetwork network, final NeuralDataSet training) {
+	public Propagation(final BasicNetwork network, 
+			final NeuralDataSet training) {
 		super();
 		this.network = network;
 		setTraining(training);
@@ -86,6 +88,17 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public boolean canContinue() {
 		return false;
+	}
+
+	/**
+	 * Should be called after training has completed and the iteration method
+	 * will not be called any further.
+	 */
+	@Override
+	public void finishTraining() {
+		super.finishTraining();
+		this.network.getStructure().updateFlatNetwork();
+		this.flatTraining.finishTraining();
 	}
 
 	/**
@@ -117,6 +130,13 @@ public abstract class Propagation extends BasicTraining {
 	}
 
 	/**
+	 * @return The OpenCL device to use, or null for the CPU.
+	 */
+	public OpenCLTrainingProfile getProfile() {
+		return null;
+	}
+
+	/**
 	 * Determine if this specified training continuation object is valid for
 	 * this training method.
 	 * 
@@ -136,13 +156,15 @@ public abstract class Propagation extends BasicTraining {
 			preIteration();
 
 			this.flatTraining.iteration();
-			this.setError(this.flatTraining.getError());
-			this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Unflatten);
+			setError(this.flatTraining.getError());
+			this.network.getStructure().setFlatUpdate(
+					FlatUpdateNeeded.Unflatten);
 
 			postIteration();
-			
-			if( this.logger.isInfoEnabled() ) {
-				logger.info("Training iteration done, error: " + this.getError());
+
+			if (this.logger.isInfoEnabled()) {
+				this.logger.info("Training iteration done, error: "
+						+ getError());
 			}
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			EncogValidate.validateNetworkForTraining(this.network,
@@ -150,8 +172,38 @@ public abstract class Propagation extends BasicTraining {
 			throw new EncogError(ex);
 		}
 	}
-	
-	
+
+	/**
+	 * Perform the specified number of training iterations. This can be more
+	 * efficient than single training iterations. This is particularly true if
+	 * you are training with a GPU.
+	 * 
+	 * @param count
+	 *            The number of training iterations.
+	 */
+	@Override
+	public void iteration(final int count) {
+		try {
+			preIteration();
+
+			this.flatTraining.iteration(count);
+			setIteration(this.flatTraining.getIteration());
+			setError(this.flatTraining.getError());
+			this.network.getStructure().setFlatUpdate(
+					FlatUpdateNeeded.Unflatten);
+
+			postIteration();
+
+			if (this.logger.isInfoEnabled()) {
+				this.logger.info("Training iterations done, error: "
+						+ getError());
+			}
+		} catch (final ArrayIndexOutOfBoundsException ex) {
+			EncogValidate.validateNetworkForTraining(this.network,
+					getTraining());
+			throw new EncogError(ex);
+		}
+	}
 
 	/**
 	 * Pause the training to continue later.
@@ -162,7 +214,6 @@ public abstract class Propagation extends BasicTraining {
 		throw new TrainingError("This training type does not support pause.");
 	}
 
-
 	/**
 	 * Resume training.
 	 * 
@@ -171,6 +222,14 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public void resume(final TrainingContinuation state) {
 		throw new TrainingError("This training type does not support resume.");
+	}
+
+	/**
+	 * @param flatTraining
+	 *            the flatTraining to set
+	 */
+	public void setFlatTraining(final TrainFlatNetwork flatTraining) {
+		this.flatTraining = flatTraining;
 	}
 
 	/**
@@ -184,60 +243,5 @@ public abstract class Propagation extends BasicTraining {
 	public void setNumThreads(final int numThreads) {
 		this.flatTraining.setNumThreads(numThreads);
 	}
-	
-	
-	/**
-	 * Should be called after training has completed and the iteration method
-	 * will not be called any further.
-	 */
-	public void finishTraining() {
-		super.finishTraining();
-		this.network.getStructure().updateFlatNetwork();
-		this.flatTraining.finishTraining();
-	}
 
-	/**
-	 * @return The OpenCL device to use, or null for the CPU.
-	 */
-	public OpenCLTrainingProfile getProfile() {
-		return null;
-	}
-
-	/**
-	 * @param flatTraining the flatTraining to set
-	 */
-	public void setFlatTraining(TrainFlatNetwork flatTraining) {
-		this.flatTraining = flatTraining;
-	}
-
-	/**
-	 * Perform the specified number of training iterations. This can be more efficient than single 
-	 * training iterations.  This is particularly true if you are training with a GPU.
-	 * @param count The number of training iterations.
-	 */
-	public void iteration(int count) {
-		try {
-			preIteration();
-
-			this.flatTraining.iteration(count);
-			this.setIteration(this.flatTraining.getIteration());
-			this.setError(this.flatTraining.getError());
-			this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Unflatten);
-
-			postIteration();
-			
-			if( this.logger.isInfoEnabled() ) {
-				logger.info("Training iterations done, error: " + this.getError());
-			}
-		} catch (final ArrayIndexOutOfBoundsException ex) {
-			EncogValidate.validateNetworkForTraining(this.network,
-					getTraining());
-			throw new EncogError(ex);
-		}
-	}
-	
-	
-	
-	
-	
 }

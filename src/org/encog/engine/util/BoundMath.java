@@ -110,4 +110,13 @@ public final class BoundMath {
 	private BoundMath() {
 
 	}
+
+	/**
+	 * Calculate TANH, within bounds.
+	 * @param d The value to calculate for.
+	 * @return The result.
+	 */
+	public static double tanh(final double d) {
+		return BoundNumbers.bound(Math.tanh(d));
+	}
 }

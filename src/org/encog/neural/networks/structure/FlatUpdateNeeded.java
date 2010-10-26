@@ -24,9 +24,25 @@
 
 package org.encog.neural.networks.structure;
 
+/**
+ * Is a flat update needed? 
+ */
 public enum FlatUpdateNeeded {
+	/**
+	 * No update needed.
+	 */
 	None,
+	/**
+	 * Need to copy weights from object network to flat network.
+	 */
 	Flatten,
+	/**
+	 * Need to copy weights from flat network to object network.
+	 */
 	Unflatten,
+	
+	/**
+	 * Never flatten this network.
+	 */
 	Never
 }

@@ -66,7 +66,10 @@ public abstract class BasicTraining implements Train {
 	 * The current error rate.
 	 */
 	private double error;
-	
+
+	/**
+	 * The current iteration.
+	 */
 	private int iteration;
 
 	/**
@@ -115,6 +118,13 @@ public abstract class BasicTraining implements Train {
 	}
 
 	/**
+	 * @return the iteration
+	 */
+	public int getIteration() {
+		return this.iteration;
+	}
+
+	/**
 	 * @return The strategies to use.
 	 */
 	public List<Strategy> getStrategies() {
@@ -126,6 +136,28 @@ public abstract class BasicTraining implements Train {
 	 */
 	public NeuralDataSet getTraining() {
 		return this.training;
+	}
+
+	/**
+	 * @return True if training can progress no further.
+	 */
+	public boolean isTrainingDone() {
+		return false;
+	}
+
+	/**
+	 * Perform the specified number of training iterations. This is a basic
+	 * implementation that just calls iteration the specified number of times.
+	 * However, some training methods, particularly with the GPU, benefit
+	 * greatly by calling with higher numbers than 1.
+	 * 
+	 * @param count
+	 *            The number of training iterations.
+	 */
+	public void iteration(final int count) {
+		for (int i = 0; i < count; i++) {
+			iteration();
+		}
 	}
 
 	/**
@@ -143,7 +175,7 @@ public abstract class BasicTraining implements Train {
 	public void preIteration() {
 
 		this.iteration++;
-		
+
 		if (this.statusUtil != null) {
 			this.statusUtil.update();
 		} else {
@@ -160,7 +192,9 @@ public abstract class BasicTraining implements Train {
 
 	/**
 	 * Set the cloud use to track this training.
-	 * @param cloud The cloud.
+	 * 
+	 * @param cloud
+	 *            The cloud.
 	 */
 	public void setCloud(final EncogCloud cloud) {
 		this.cloud = cloud;
@@ -176,6 +210,14 @@ public abstract class BasicTraining implements Train {
 	}
 
 	/**
+	 * @param iteration
+	 *            the iteration to set
+	 */
+	public void setIteration(final int iteration) {
+		this.iteration = iteration;
+	}
+
+	/**
 	 * Set the training object that this strategy is working with.
 	 * 
 	 * @param training
@@ -184,39 +226,5 @@ public abstract class BasicTraining implements Train {
 	public void setTraining(final NeuralDataSet training) {
 		this.training = training;
 	}
-	
-	/**
-	 * @return True if training can progress no further.
-	 */
-	public boolean isTrainingDone()
-	{
-		return false;
-	}
-	
-	/**
-	 * Perform the specified number of training iterations. This is a basic implementation 
-	 * that just calls iteration the specified number of times.  However, some training 
-	 * methods, particularly with the GPU, benefit greatly by calling with higher numbers than 1.
-	 * @param count The number of training iterations.
-	 */
-	public void iteration(int count) {
-		for(int i=0;i<count;i++) {
-			iteration();
-		}
-	}
 
-	/**
-	 * @return the iteration
-	 */
-	public int getIteration() {
-		return iteration;
-	}
-
-	/**
-	 * @param iteration the iteration to set
-	 */
-	public void setIteration(int iteration) {
-		this.iteration = iteration;
-	}
-	
 }

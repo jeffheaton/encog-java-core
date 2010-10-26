@@ -30,8 +30,8 @@ import org.encog.engine.data.EngineData;
  * Training data is stored in two ways, depending on if the data is for
  * supervised, or unsupervised training.
  * 
- * For unsupervised training just an input value is provided, and the ideal output
- * values are null.
+ * For unsupervised training just an input value is provided, and the ideal
+ * output values are null.
  * 
  * For supervised training both input and the expected ideal outputs are
  * provided.

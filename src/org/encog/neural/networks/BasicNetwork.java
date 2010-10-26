@@ -218,7 +218,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	public double calculateError(final NeuralDataSet data) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
-		this.clearContext();
+		clearContext();
 
 		for (final NeuralDataPair pair : data) {
 			final NeuralData actual = compute(pair.getInput());
@@ -258,8 +258,9 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		}
 
 		this.structure.updateFlatNetwork();
-		if (this.structure.getFlat() != null)
+		if (this.structure.getFlat() != null) {
 			this.structure.getFlat().clearContext();
+		}
 	}
 
 	/**
@@ -277,9 +278,19 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	@Override
 	public Object clone() {
-		BasicNetwork result = (BasicNetwork) ObjectCloner.deepCopy(this);
+		final BasicNetwork result = (BasicNetwork) ObjectCloner.deepCopy(this);
 		result.getStructure().finalizeStructure();
 		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void compute(final double[] input, final double[] output) {
+		final BasicNeuralData input2 = new BasicNeuralData(input);
+		final NeuralData output2 = this.compute(input2);
+		EngineArray.arrayCopy(output2.getData(), output);
 	}
 
 	/**
@@ -292,7 +303,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	public NeuralData compute(final NeuralData input) {
 		try {
 			return this.logic.compute(input, null);
-		} catch (ArrayIndexOutOfBoundsException ex) {
+		} catch (final ArrayIndexOutOfBoundsException ex) {
 			throw new NeuralNetworkError(
 					"Index exception: there was likely a mismatch between layer sizes, or the size of the input presented to the network.",
 					ex);
@@ -328,6 +339,54 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	}
 
 	/**
+	 * @return The weights as a comma separated list.
+	 */
+	public String dumpWeights() {
+		this.structure.updateFlatNetwork();
+		final StringBuilder result = new StringBuilder();
+		NumberList.toList(CSVFormat.EG_FORMAT, result, this.structure.getFlat()
+				.getWeights());
+		return result.toString();
+	}
+
+	/**
+	 * Enable, or disable, a connection.
+	 * @param synapse The synapse that contains the connection.
+	 * @param fromNeuron The source neuron.
+	 * @param toNeuron The target connection.
+	 * @param enable True to enable, false to disable.
+	 */
+	public void enableConnection(final Synapse synapse, final int fromNeuron,
+			final int toNeuron, final boolean enable) {
+		if (synapse.getMatrix() == null) {
+			throw new NeuralNetworkError(
+					"Can't enable/disable connection on a synapse that does not have a weight matrix.");
+		}
+
+		final double value = synapse.getMatrix().get(fromNeuron, toNeuron);
+
+		if (enable) {
+			if (!this.structure.isConnectionLimited()) {
+				return;
+			}
+
+			if (Math.abs(value) < this.structure.getConnectionLimit()) {
+				synapse.getMatrix().set(fromNeuron, toNeuron,
+						RangeRandomizer.randomize(-1, 1));
+			}
+		} else {
+			if (!this.structure.isConnectionLimited()) {
+				this.properties.put(BasicNetwork.TAG_LIMIT,
+						BasicNetwork.DEFAULT_CONNECTION_LIMIT);
+				this.structure.finalizeStructure();
+			}
+			synapse.getMatrix().set(fromNeuron, toNeuron, 0);
+		}
+
+		this.structure.setFlatUpdate(FlatUpdateNeeded.Flatten);
+	}
+
+	/**
 	 * Compare the two neural networks. For them to be equal they must be of the
 	 * same structure, and have the same matrix values.
 	 * 
@@ -355,6 +414,18 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	}
 
 	/**
+	 * {@inheritDoc}
+	 */
+	public int getInputCount() {
+		final Layer layer = this.layerTags.get(BasicNetwork.TAG_INPUT);
+		if (layer == null) {
+			return 0;
+		} else {
+			return layer.getNeuronCount();
+		}
+	}
+
+	/**
 	 * Get the layer specified by the tag.
 	 * 
 	 * @param tag
@@ -377,6 +448,18 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	public NeuralLogic getLogic() {
 		return this.logic;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public int getOutputCount() {
+		final Layer layer = this.layerTags.get(BasicNetwork.TAG_OUTPUT);
+		if (layer == null) {
+			return 0;
+		} else {
+			return layer.getNeuronCount();
+		}
 	}
 
 	/**
@@ -469,6 +552,23 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	}
 
 	/**
+	 * Determine if the specified connection is enabled.
+	 * @param synapse The synapse.
+	 * @param fromNeuron The source neuron.
+	 * @param toNeuron THe target neuron.
+	 * @return True, if the connection is enabled, false otherwise.
+	 */
+	public boolean isConnected(final Synapse synapse, final int fromNeuron,
+			final int toNeuron) {
+		if (!this.structure.isConnectionLimited()) {
+			return true;
+		}
+		final double value = synapse.getMatrix().get(fromNeuron, toNeuron);
+
+		return (Math.abs(value) > this.structure.getConnectionLimit());
+	}
+
+	/**
 	 * Reset the weight matrix and the bias values. This will use a
 	 * Nguyen-Widrow randomizer with a range between -1 and 1. If the network
 	 * does not have an input, output or hidden layers, then Nguyen-Widrow
@@ -477,16 +577,32 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * 
 	 */
 	public void reset() {
-		Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
-		Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
+		final Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
+		final Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
 
-		if (this.structure.getLayers().size() < 3 || inputLayer == null
-				|| outputLayer == null)
+		if ((this.structure.getLayers().size() < 3) || (inputLayer == null)
+				|| (outputLayer == null)) {
 			(new RangeRandomizer(-1, 1)).randomize(this);
-		else
+		} else {
 			(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
+		}
 		this.structure.setFlatUpdate(FlatUpdateNeeded.Flatten);
 		this.structure.flattenWeights();
+	}
+
+	/**
+	 * Sets the bias activation for every layer that supports bias. Make sure
+	 * that the network structure has been finalized before calling this method.
+	 * 
+	 * @param activation
+	 *            THe new activation.
+	 */
+	public void setBiasActivation(final double activation) {
+		for (final Layer layer : this.structure.getLayers()) {
+			if (layer.hasBias()) {
+				layer.setBiasActivation(activation);
+			}
+		}
 	}
 
 	/**
@@ -573,97 +689,5 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 
 		final NeuralData output = compute(input);
 		return BasicNetwork.determineWinner(output);
-	}
-
-	public boolean isConnected(Synapse synapse, int fromNeuron, int toNeuron) {
-		if (!this.structure.isConnectionLimited())
-			return true;
-		double value = synapse.getMatrix().get(fromNeuron, toNeuron);
-
-		return (Math.abs(value) > this.structure.getConnectionLimit());
-	}
-
-	public void enableConnection(Synapse synapse, int fromNeuron, int toNeuron,
-			boolean enable) {
-		if (synapse.getMatrix() == null) {
-			throw new NeuralNetworkError(
-					"Can't enable/disable connection on a synapse that does not have a weight matrix.");
-		}
-
-		double value = synapse.getMatrix().get(fromNeuron, toNeuron);
-
-		if (enable) {
-			if (!this.structure.isConnectionLimited())
-				return;
-
-			if (Math.abs(value) < this.structure.getConnectionLimit())
-				synapse.getMatrix().set(fromNeuron, toNeuron,
-						RangeRandomizer.randomize(-1, 1));
-		} else {
-			if (!this.structure.isConnectionLimited()) {
-				this.properties.put(BasicNetwork.TAG_LIMIT,
-						BasicNetwork.DEFAULT_CONNECTION_LIMIT);
-				this.structure.finalizeStructure();
-			}
-			synapse.getMatrix().set(fromNeuron, toNeuron, 0);
-		}
-
-		this.structure.setFlatUpdate(FlatUpdateNeeded.Flatten);
-	}
-
-	/**
-	 * Sets the bias activation for every layer that supports bias. Make sure
-	 * that the network structure has been finalized before calling this method.
-	 * 
-	 * @param activation
-	 *            THe new activation.
-	 */
-	public void setBiasActivation(double activation) {
-		for (Layer layer : this.structure.getLayers()) {
-			if (layer.hasBias())
-				layer.setBiasActivation(activation);
-		}
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getInputCount() {
-		Layer layer = this.layerTags.get(BasicNetwork.TAG_INPUT);
-		if (layer == null)
-			return 0;
-		else
-			return layer.getNeuronCount();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getOutputCount() {
-		Layer layer = this.layerTags.get(BasicNetwork.TAG_OUTPUT);
-		if (layer == null)
-			return 0;
-		else
-			return layer.getNeuronCount();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void compute(double[] input, double[] output) {
-		BasicNeuralData input2 = new BasicNeuralData(input);
-		NeuralData output2 = this.compute(input2);
-		EngineArray.arrayCopy(output2.getData(), output);
-	}
-
-	/**
-	 * @return The weights as a comma separated list.
-	 */
-	public String dumpWeights() {
-		this.structure.updateFlatNetwork();
-		StringBuilder result = new StringBuilder();
-		NumberList.toList(CSVFormat.EG_FORMAT, result, this.structure.getFlat().getWeights());
-		return result.toString();
 	}
 }

@@ -30,8 +30,6 @@ import org.encog.Encog;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.mathutil.matrices.decomposition.QRDecomposition;
 import org.encog.persist.BasicPersistedSubObject;
-import org.encog.persist.EncogCollection;
-import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

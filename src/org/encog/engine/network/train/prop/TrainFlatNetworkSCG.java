@@ -110,7 +110,7 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 	 * The old gradients, used to compare.
 	 */
 	private final double[] oldGradient;
-	
+
 	/**
 	 * Should the initial gradients be calculated.
 	 */
@@ -147,24 +147,6 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 
 		this.mustInit = true;
 	}
-	
-	/**
-	 * Calculate the starting set of gradients.
-	 */
-	private void init()
-	{
-		final int numWeights = this.weights.length;
-		
-		calculateGradients();
-
-		this.k = 1;
-
-		for (int i = 0; i < numWeights; ++i) {
-			this.p[i] = this.r[i] = -this.gradients[i];
-		}		
-		
-		mustInit = false;
-	}
 
 	/**
 	 * Calculate the gradients. They are normalized as well.
@@ -187,12 +169,29 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 	}
 
 	/**
+	 * Calculate the starting set of gradients.
+	 */
+	private void init() {
+		final int numWeights = this.weights.length;
+
+		calculateGradients();
+
+		this.k = 1;
+
+		for (int i = 0; i < numWeights; ++i) {
+			this.p[i] = this.r[i] = -this.gradients[i];
+		}
+
+		this.mustInit = false;
+	}
+
+	/**
 	 * Perform one iteration.
 	 */
 	@Override
 	public void iteration() {
 
-		if( this.mustInit ) {
+		if (this.mustInit) {
 			init();
 		}
 		final int numWeights = this.weights.length;
@@ -330,7 +329,11 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 	}
 
 	/**
-	 * 
+	 * Update the weights.
+	 * @param gradients The current gradients.
+	 * @param lastGradient The last gradients.
+	 * @param index The weight index being updated.
+	 * @return The new weight value.
 	 */
 	@Override
 	public double updateWeight(final double[] gradients,

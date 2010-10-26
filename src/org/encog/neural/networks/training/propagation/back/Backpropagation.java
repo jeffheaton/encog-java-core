@@ -27,12 +27,8 @@ package org.encog.neural.networks.training.propagation.back;
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
-import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
-import org.encog.engine.opencl.EncogCLDevice;
-import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
 import org.encog.neural.networks.training.TrainingError;
@@ -74,7 +70,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * The resume key for backpropagation.
 	 */
 	public final static String LAST_DELTA = "LAST_DELTA";
-	
+
 	/**
 	 * The logging object.
 	 */
@@ -82,7 +78,8 @@ public class Backpropagation extends Propagation implements Momentum,
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Create a class to train using backpropagation.  Use auto learn rate and momentum.  Use the CPU to train.
+	 * Create a class to train using backpropagation. Use auto learn rate and
+	 * momentum. Use the CPU to train.
 	 * 
 	 * @param network
 	 *            The network that is to be trained.
@@ -97,7 +94,9 @@ public class Backpropagation extends Propagation implements Momentum,
 	}
 
 	/**
-	 * Train using the specified learning rate and momentum.  Use the CPU to train.
+	 * Train using the specified learning rate and momentum. Use the CPU to
+	 * train.
+	 * 
 	 * @param network
 	 *            The network that is to be trained
 	 * @param training
@@ -111,9 +110,8 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training, final double learnRate,
-			final double momentum)
-	{
-		this(network,training,null,learnRate,momentum);
+			final double momentum) {
+		this(network, training, null, learnRate, momentum);
 	}
 
 	/**
@@ -122,7 +120,8 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The network that is to be trained
 	 * @param training
 	 *            The training set
-	 * @param profile The OpenCL profile to use, null for CPU.
+	 * @param profile
+	 *            The OpenCL profile to use, null for CPU.
 	 * @param learnRate
 	 *            The rate at which the weight matrix will be adjusted based on
 	 *            learning.
@@ -131,26 +130,30 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            have on the current iteration.
 	 */
 	public Backpropagation(final BasicNetwork network,
-			final NeuralDataSet training, final OpenCLTrainingProfile profile, final double learnRate,
-			final double momentum) {
+			final NeuralDataSet training, final OpenCLTrainingProfile profile,
+			final double learnRate, final double momentum) {
 		super(network, training);
-		
-		if (profile == null) {
-			TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
-					network.getStructure().getFlat(),
-					this.getTraining(),
-					learnRate,
-					momentum);
-			this.setFlatTraining(backFlat);
-		} else {
-			TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
-					network.getStructure().getFlat(), this.getTraining(),
-					profile);
-			rpropFlat.learnBPROP(learnRate, momentum);
-			this.setFlatTraining(rpropFlat);
-		}
-		
 
+		if (profile == null) {
+			final TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
+					network.getStructure().getFlat(), getTraining(), learnRate,
+					momentum);
+			setFlatTraining(backFlat);
+		} else {
+			final TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
+					network.getStructure().getFlat(), getTraining(), profile);
+			rpropFlat.learnBPROP(learnRate, momentum);
+			setFlatTraining(rpropFlat);
+		}
+
+	}
+
+	/**
+	 * @return Ther last delta values.
+	 */
+	public double[] getLastDelta() {
+		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
+				.getLastDelta();
 	}
 
 	/**
@@ -159,7 +162,8 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *         matrix to allow learning.
 	 */
 	public double getLearningRate() {
-		return ((TrainFlatNetworkBackPropagation)this.getFlatTraining()).getLearningRate();
+		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
+				.getLearningRate();
 	}
 
 	/**
@@ -168,7 +172,58 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *         training iteration. This can be useful to overcome local minima.
 	 */
 	public double getMomentum() {
-		return ((TrainFlatNetworkBackPropagation)this.getFlatTraining()).getMomentum();
+		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
+				.getMomentum();
+	}
+
+	/**
+	 * Determine if the specified continuation object is valid to resume with.
+	 * 
+	 * @param state
+	 *            The continuation object to check.
+	 * @return True if the specified continuation object is valid for this
+	 *         training method and network.
+	 */
+	@Override
+	public boolean isValidResume(final TrainingContinuation state) {
+		if (!state.getContents().containsKey(Backpropagation.LAST_DELTA)) {
+			return false;
+		}
+
+		final double[] d = (double[]) state.get(Backpropagation.LAST_DELTA);
+		return d.length == getNetwork().getStructure().calculateSize();
+	}
+
+	/**
+	 * Pause the training.
+	 * 
+	 * @return A training continuation object to continue with.
+	 */
+	@Override
+	public TrainingContinuation pause() {
+		final TrainingContinuation result = new TrainingContinuation();
+
+		final TrainFlatNetworkBackPropagation backFlat = (TrainFlatNetworkBackPropagation) getFlatTraining();
+		final double[] d = backFlat.getLastDelta();
+		result.set(Backpropagation.LAST_DELTA, d);
+		return result;
+	}
+
+	/**
+	 * Resume training.
+	 * 
+	 * @param state
+	 *            The training state to return to.
+	 */
+	@Override
+	public void resume(final TrainingContinuation state) {
+		if (!isValidResume(state)) {
+			throw new TrainingError("Invalid training resume data length");
+		}
+
+		((TrainFlatNetworkBackPropagation) getFlatTraining())
+				.setLastDelta((double[]) state.get(Backpropagation.LAST_DELTA));
+
 	}
 
 	/**
@@ -180,7 +235,8 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The learning rate.
 	 */
 	public void setLearningRate(final double rate) {
-		((TrainFlatNetworkBackPropagation)this.getFlatTraining()).setLearningRate(rate);
+		((TrainFlatNetworkBackPropagation) getFlatTraining())
+				.setLearningRate(rate);
 	}
 
 	/**
@@ -192,53 +248,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The momentum.
 	 */
 	public void setMomentum(final double m) {
-		((TrainFlatNetworkBackPropagation)this.getFlatTraining()).setLearningRate(m);
-	}
-	
-	/**
-	 * Determine if the specified continuation object is valid to resume with.
-	 * @param state The continuation object to check.
-	 * @return True if the specified continuation object is valid for this
-	 * training method and network.
-	 */
-	public boolean isValidResume(final TrainingContinuation state) {
-		if (!state.getContents().containsKey(Backpropagation.LAST_DELTA)) {
-			return false;
-		}
-
-		final double[] d = (double[]) state
-				.get(Backpropagation.LAST_DELTA);
-		return d.length == getNetwork().getStructure().calculateSize();
-	}
-	
-	/**
-	 * Pause the training.
-	 * @return A training continuation object to continue with.
-	 */
-	public TrainingContinuation pause() {
-		final TrainingContinuation result = new TrainingContinuation();
-		
-		TrainFlatNetworkBackPropagation backFlat = (TrainFlatNetworkBackPropagation)getFlatTraining();
-		double[] d = backFlat.getLastDelta();
-		result.set(Backpropagation.LAST_DELTA, d);
-		return result;
-	}
-	
-	/**
-	 * Resume training.
-	 * @param state The training state to return to.
-	 */
-	public void resume(final TrainingContinuation state) {
-		if (!isValidResume(state)) {
-			throw new TrainingError("Invalid training resume data length");
-		}
-		
-		((TrainFlatNetworkBackPropagation)this.getFlatTraining()).setLastDelta(
-			(double[]) state.get(Backpropagation.LAST_DELTA));
-		
-	}
-
-	public double[] getLastDelta() {
-		return ((TrainFlatNetworkBackPropagation)this.getFlatTraining()).getLastDelta();
+		((TrainFlatNetworkBackPropagation) getFlatTraining())
+				.setLearningRate(m);
 	}
 }

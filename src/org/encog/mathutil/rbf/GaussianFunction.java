@@ -24,8 +24,6 @@
 
 package org.encog.mathutil.rbf;
 
-import org.encog.engine.network.rbf.RadialBasisFunction;
-
 /**
  * Multi-dimensional gaussian function. Do not use this to implement a 1d
  * function, simply use GaussianFunction for that.
@@ -33,34 +31,6 @@ import org.encog.engine.network.rbf.RadialBasisFunction;
  */
 public class GaussianFunction extends BasicRBF {
 
-	/**
-	 * Create centered at zero, width 0, and peak 0.
-	 */
-	public GaussianFunction(int dimensions)
-	{
-		this.setCenters(new double[dimensions]);
-		this.setPeak(1.0);
-		this.setWidth(1.0);		
-	}
-	
-	/**
-	 * Construct a multi-dimension Gaussian function with the specified peak,
-	 * centers and widths.
-	 * 
-	 * @param peak
-	 *            The peak for all dimensions.
-	 * @param center
-	 *            The centers for each dimension.
-	 * @param width
-	 *            The widths for each dimension.
-	 */
-	public GaussianFunction(final double peak, final double[] center,
-			final double width) {
-		this.setCenters( center );
-		this.setPeak( peak );
-		this.setWidth( width );
-	}
-	
 	/**
 	 * Construct a single-dimension Gaussian function with the specified peak,
 	 * centers and widths.
@@ -74,12 +44,38 @@ public class GaussianFunction extends BasicRBF {
 	 */
 	public GaussianFunction(final double center, final double peak,
 			final double width) {
-		this.setCenters(new double[1]);
-		this.getCenters()[0] = center;
-		this.setPeak(peak);
-		this.setWidth(width);
+		setCenters(new double[1]);
+		getCenters()[0] = center;
+		setPeak(peak);
+		setWidth(width);
 	}
 
+	/**
+	 * Construct a multi-dimension Gaussian function with the specified peak,
+	 * centers and widths.
+	 * 
+	 * @param peak
+	 *            The peak for all dimensions.
+	 * @param center
+	 *            The centers for each dimension.
+	 * @param width
+	 *            The widths for each dimension.
+	 */
+	public GaussianFunction(final double peak, final double[] center,
+			final double width) {
+		setCenters(center);
+		setPeak(peak);
+		setWidth(width);
+	}
+
+	/**
+	 * Create centered at zero, width 0, and peak 0.
+	 */
+	public GaussianFunction(final int dimensions) {
+		setCenters(new double[dimensions]);
+		setPeak(1.0);
+		setWidth(1.0);
+	}
 
 	/**
 	 * Calculate the result from the function.
@@ -90,15 +86,13 @@ public class GaussianFunction extends BasicRBF {
 	 */
 	public double calculate(final double[] x) {
 		double value = 0;
-		double[] center = getCenters();
-		double width = getWidth();
+		final double[] center = getCenters();
+		final double width = getWidth();
 
 		for (int i = 0; i < center.length; i++) {
-			value += Math.pow(x[i] - center[i], 2)
-					/ (2.0 * width * width);
+			value += Math.pow(x[i] - center[i], 2) / (2.0 * width * width);
 		}
-		return this.getPeak() * Math.exp(-value);
+		return getPeak() * Math.exp(-value);
 	}
-
 
 }

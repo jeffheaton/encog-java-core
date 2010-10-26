@@ -76,7 +76,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * Items to train per call.
 	 */
 	public static final int PARRAY_ITEMS_PER = 5;
-	
+
 	/**
 	 * Items to train per call.
 	 */
@@ -282,8 +282,11 @@ public class KernelNetworkTrain extends EncogKernel {
 
 	/**
 	 * Assign the workgroup sizes based on the training set size.
-	 * @param trainingSize The training set size.
-	 * @param requestedGlobalSize The requested global size.
+	 * 
+	 * @param trainingSize
+	 *            The training set size.
+	 * @param requestedGlobalSize
+	 *            The requested global size.
 	 */
 	public void assignWorkgroupSizes(final int trainingSize,
 			final int requestedGlobalSize) {
@@ -301,19 +304,19 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * @param size
 	 *            The ending position to calculate for.
 	 * @param iterations
-	 * 			The number of iterations to execute.
+	 *            The number of iterations to execute.
 	 * @param learn
 	 *            True, if we should learn.
 	 */
-	public void calculate(final int start, final int size, 
-			final boolean learn, final int iterations) {
+	public void calculate(final int start, final int size, final boolean learn,
+			final int iterations) {
 		prepareKernel();
 
-		this.paramArray[KernelNetworkTrain.PARRAY_LEARN] = learn ? 1 : 0; 
-		this.paramArray[KernelNetworkTrain.PARRAY_START] = start; 
+		this.paramArray[KernelNetworkTrain.PARRAY_LEARN] = learn ? 1 : 0;
+		this.paramArray[KernelNetworkTrain.PARRAY_START] = start;
 		this.paramArray[KernelNetworkTrain.PARRAY_ITEMS_PER] = size;
 		this.paramArray[KernelNetworkTrain.PARRAY_ITERATIONS] = iterations;
-		
+
 		EngineArray.arrayCopy(this.flat.getWeights(), this.weightInArray);
 
 		setArg(0, this.paramBuffer);
@@ -377,12 +380,12 @@ public class KernelNetworkTrain extends EncogKernel {
 	 * @param options
 	 *            The options.
 	 * @param profile
-	 * 			The OpenCL training profile.
+	 *            The OpenCL training profile.
 	 * @param network
 	 *            The network to compile for.
 	 */
-	public void compile(final Map<String, String> options,OpenCLTrainingProfile profile,
-			final FlatNetwork network) {
+	public void compile(final Map<String, String> options,
+			final OpenCLTrainingProfile profile, final FlatNetwork network) {
 
 		final ActivationFunction activation = network.getActivationFunctions()[0];
 		final StringBuilder source = new StringBuilder();
@@ -399,7 +402,7 @@ public class KernelNetworkTrain extends EncogKernel {
 		setCLSource(source.toString());
 
 		compile(options);
-		profile.calculateKernelParams(this, training);
+		profile.calculateKernelParams(this, this.training);
 		// setup
 		init(profile);
 	}
@@ -427,8 +430,9 @@ public class KernelNetworkTrain extends EncogKernel {
 
 	/**
 	 * Setup the kernel.
+	 * @param profile The OpenCL training profile.
 	 */
-	public void init(OpenCLTrainingProfile profile) {
+	public void init(final OpenCLTrainingProfile profile) {
 		final int errorSize = profile.getKernelGlobalWorkgroup();
 		final int gradientSize = profile.getKernelGlobalWorkgroup()
 				* this.flat.getWeights().length;

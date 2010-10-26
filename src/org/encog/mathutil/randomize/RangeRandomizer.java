@@ -28,17 +28,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A randomizer that will create random weight and bias values that are
- * between a specified range.
- *
+ * A randomizer that will create random weight and bias values that are between
+ * a specified range.
+ * 
  * @author jheaton
- *
+ * 
  */
 public class RangeRandomizer extends BasicRandomizer {
 
+	public static int randomInt(final int min, final int max) {
+		return (int) RangeRandomizer.randomize(min, max + 1);
+	}
+
 	/**
 	 * Generate a random number in the specified range.
-	 *
+	 * 
 	 * @param min
 	 *            The minimum value.
 	 * @param max
@@ -68,7 +72,7 @@ public class RangeRandomizer extends BasicRandomizer {
 
 	/**
 	 * Construct a range randomizer.
-	 *
+	 * 
 	 * @param min
 	 *            The minimum random value.
 	 * @param max
@@ -81,17 +85,13 @@ public class RangeRandomizer extends BasicRandomizer {
 
 	/**
 	 * Generate a random number based on the range specified in the constructor.
-	 *
+	 * 
 	 * @param d
 	 *            The range randomizer ignores this value.
 	 * @return The random number.
 	 */
 	public double randomize(final double d) {
 		return nextDouble(this.min, this.max);
-	}
-
-	public static int randomInt(int min, int max) {
-		return (int)randomize(min,max+1);
 	}
 
 }

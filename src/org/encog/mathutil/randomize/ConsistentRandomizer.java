@@ -49,6 +49,9 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 */
 	private final double max;
 	
+	/**
+	 * The seed.
+	 */
 	private final int seed;
 
 	/**
@@ -76,6 +79,7 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 *            The minimum random value.
 	 * @param max
 	 *            The maximum random value.
+	 * @param seed	The seed value.
 	 */
 	public ConsistentRandomizer(final double min, final double max,
 			final int seed) {
@@ -97,6 +101,10 @@ public class ConsistentRandomizer extends BasicRandomizer {
 		return this.rand.range(this.min, this.max);
 	}
 	
+	/**
+	 * Randomize the network.
+	 * @param network The network to randomize.
+	 */
 	public void randomize(final BasicNetwork network) {
 		this.rand.setSeed(this.seed);
 		super.randomize(network);

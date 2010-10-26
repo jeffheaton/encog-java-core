@@ -89,6 +89,7 @@ public interface Train {
 	
 	/**
 	 * Perform a number of training iterations.
+	 * @param count The number of iterations to perform.
 	 */
 	void iteration(int count);
 

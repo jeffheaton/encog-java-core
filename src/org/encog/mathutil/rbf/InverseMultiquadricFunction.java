@@ -33,12 +33,22 @@ import org.encog.engine.util.BoundMath;
 public class InverseMultiquadricFunction extends BasicRBF {
 
 	/**
-	 * Create centered at zero, width 0, and peak 0.
+	 * Construct a single-dimension Inverse-Multiquadric function with the
+	 * specified peak, centers and widths.
+	 * 
+	 * @param peak
+	 *            The peak for all dimensions.
+	 * @param center
+	 *            The centers for each dimension.
+	 * @param width
+	 *            The widths for each dimension.
 	 */
-	public InverseMultiquadricFunction(int dimensions) {
-		this.setCenters(new double[dimensions]);
-		this.setPeak(1.0);
-		this.setWidth(1.0);
+	public InverseMultiquadricFunction(final double center, final double peak,
+			final double width) {
+		setCenters(new double[1]);
+		getCenters()[0] = center;
+		setPeak(peak);
+		setWidth(width);
 	}
 
 	/**
@@ -54,28 +64,19 @@ public class InverseMultiquadricFunction extends BasicRBF {
 	 */
 	public InverseMultiquadricFunction(final double peak,
 			final double[] center, final double width) {
-		this.setCenters(center);
-		this.setPeak(peak);
-		this.setWidth(width);
+		setCenters(center);
+		setPeak(peak);
+		setWidth(width);
 	}
 
 	/**
-	 * Construct a single-dimension Inverse-Multiquadric function with the
-	 * specified peak, centers and widths.
-	 * 
-	 * @param peak
-	 *            The peak for all dimensions.
-	 * @param center
-	 *            The centers for each dimension.
-	 * @param width
-	 *            The widths for each dimension.
+	 * Create centered at zero, width 0, and peak 0.
+	 * @param dimensions The dimensions.
 	 */
-	public InverseMultiquadricFunction(final double center, final double peak,
-			final double width) {
-		this.setCenters(new double[1]);
-		this.getCenters()[0] = center;
-		this.setPeak(peak);
-		this.setWidth(width);
+	public InverseMultiquadricFunction(final int dimensions) {
+		setCenters(new double[dimensions]);
+		setPeak(1.0);
+		setWidth(1.0);
 	}
 
 	/**
@@ -83,13 +84,13 @@ public class InverseMultiquadricFunction extends BasicRBF {
 	 */
 	public double calculate(final double[] x) {
 		double value = 0;
-		double[] center = getCenters();
-		double width = getWidth();
+		final double[] center = getCenters();
+		final double width = getWidth();
 
 		for (int i = 0; i < center.length; i++) {
 			value += Math.pow(x[i] - center[i], 2) + (width * width);
 		}
-		return this.getPeak() / BoundMath.sqrt(value);
+		return getPeak() / BoundMath.sqrt(value);
 	}
 
 }
