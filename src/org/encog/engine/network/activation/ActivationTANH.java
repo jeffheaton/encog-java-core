@@ -24,7 +24,6 @@
 
 package org.encog.engine.network.activation;
 
-import org.encog.engine.util.BoundMath;
 
 /**
  * The hyperbolic tangent activation function takes the curved shape of the
