@@ -168,7 +168,7 @@ public class NeuralStructure implements Serializable {
 	 *            The layer type we are looking for.
 	 * @return True if this layer type is present.
 	 */
-	public boolean containsLayerType(final Class< ? > type) {
+	public boolean containsLayerType(final Class<?> type) {
 		for (final Layer layer : this.layers) {
 			if (ReflectionUtil.isInstanceOf(layer.getClass(), type)) {
 				return true;
@@ -180,6 +180,7 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Count the number of non-context layers.
+	 * 
 	 * @return The number of non-context layers.
 	 */
 	private int countNonContext() {
@@ -303,7 +304,9 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Find the next bias.
-	 * @param layer The layer to search from.
+	 * 
+	 * @param layer
+	 *            The layer to search from.
 	 * @return The next bias.
 	 */
 	private double findNextBias(final Layer layer) {
@@ -324,12 +327,15 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Find the next synapse by layer type.
-	 * @param layer The layer to search from.
-	 * @param type The synapse type to look for.
+	 * 
+	 * @param layer
+	 *            The layer to search from.
+	 * @param type
+	 *            The synapse type to look for.
 	 * @return The synapse found, or null.
 	 */
 	public Synapse findNextSynapseByLayerType(final Layer layer,
-			final Class< ? extends Layer> type) {
+			final Class<? extends Layer> type) {
 		for (final Synapse synapse : layer.getNext()) {
 			if (synapse.getToLayer().getClass() == type) {
 				return synapse;
@@ -340,12 +346,15 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Find previous synapse by layer type.
-	 * @param layer The layer to start from.
-	 * @param type The type of layer.
+	 * 
+	 * @param layer
+	 *            The layer to start from.
+	 * @param type
+	 *            The type of layer.
 	 * @return The synapse found.
 	 */
 	public Synapse findPreviousSynapseByLayerType(final Layer layer,
-			final Class< ? extends Layer> type) {
+			final Class<? extends Layer> type) {
 		for (final Synapse synapse : getPreviousSynapses(layer)) {
 			if (synapse.getFromLayer().getClass() == type) {
 				return synapse;
@@ -391,7 +400,7 @@ public class NeuralStructure implements Serializable {
 	}
 
 	/**
-	 * Flatten the network.  Generate the flat network.
+	 * Flatten the network. Generate the flat network.
 	 */
 	public void flatten() {
 		final boolean isRBF = false;
@@ -408,7 +417,7 @@ public class NeuralStructure implements Serializable {
 						.get(1);
 				this.flat = new FlatNetworkRBF(this.network.getInputCount(),
 						rbf.getNeuronCount(), this.network.getOutputCount(),
-						rbf.getCenter(), rbf.getRadius());
+						rbf.getRadialBasisFunction());
 				flattenWeights();
 				this.flatUpdate = FlatUpdateNeeded.None;
 				return;
@@ -674,7 +683,9 @@ public class NeuralStructure implements Serializable {
 
 	/**
 	 * Set the type of flat update needed.
-	 * @param flatUpdate The type of flat update needed.
+	 * 
+	 * @param flatUpdate
+	 *            The type of flat update needed.
 	 */
 	public void setFlatUpdate(final FlatUpdateNeeded flatUpdate) {
 		this.flatUpdate = flatUpdate;

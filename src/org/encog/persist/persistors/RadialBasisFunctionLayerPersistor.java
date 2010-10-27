@@ -28,16 +28,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
 import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.PersistError;
 import org.encog.persist.Persistor;
+import org.encog.persist.persistors.generic.Object2XML;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
+import org.encog.util.obj.ReflectionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,25 +54,28 @@ import org.slf4j.LoggerFactory;
 public class RadialBasisFunctionLayerPersistor implements Persistor {
 
 	/**
-	 * XML tag for the number of dimensions.
-	 */
-	public static final String PROPERTY_RADIAL_DIMENSIONS = "dimensions";
-
-	/**
 	 * XML tag for the radial functions collection.
 	 */
-	public static final String PROPERTY_RADIAL_RADIUS = "radius";
-
+	public static final String PROPERTY_RBF = "rbf";
+	
 	/**
-	 * The center of the RBF. XML property.
+	 * The centers.
 	 */
-	public static final String PROPERTY_CENTER = "center";
+	public static final String PROPERTY_CENTERS = "centers";
 
+	
 	/**
-	 * A set of centers
+	 * The peak.
 	 */
-	public static final String PROPERTY_SET = "set";
+	public static final String PROPERTY_PEAK = "peak";
 
+	
+	/**
+	 * The width.
+	 */
+	public static final String PROPERTY_WIDTH = "width";
+
+	
 	/**
 	 * The logging object.
 	 */
@@ -86,8 +94,7 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 		int x = 0;
 		int y = 0;
 		int dimensions = 1;
-		double[] radius = null;
-		List<Object> centers = null;
+		RadialBasisFunction[] rbfs = new RadialBasisFunction[0];
 
 		final String end = in.getTag().getName();
 
@@ -98,65 +105,83 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 				x = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_Y, true)) {
 				y = in.readIntToTag();
-			} else if (in.is(RadialBasisFunctionLayerPersistor.PROPERTY_RADIAL_DIMENSIONS,true)) {
-				dimensions = in.readIntToTag();
-			} else if (in.is(RadialBasisFunctionLayerPersistor.PROPERTY_RADIAL_RADIUS,true)) {
-				String str = in.readTextToTag();
-				radius = NumberList.fromList(CSVFormat.EG_FORMAT, str);
-			} else if (in.is(RadialBasisFunctionLayerPersistor.PROPERTY_CENTER,true)) {
-				centers = loadCenters(in);
-			} else
-			if (in.is(end, false)) {
-				break;
-			}
-		}
-		
-		RadialBasisFunctionLayer layer = new RadialBasisFunctionLayer(neuronCount,dimensions);
-		layer.setX(x);
-		layer.setY(y);
-		
-		for(int i=0;i<radius.length;i++) {
-			layer.getRadius()[i] = radius[i];
-		}
-		
-		int xx = 0;
-		for(Object obj: centers)
-		{
-			double[] d = (double[])obj;
-			for(int yy = 0 ; yy<d.length; yy++)
-			{
-				layer.getCenter()[xx][yy] = d[yy];
-			}
-			xx++;
-		}
-	
-		return layer;
-	}
-
-	/**
-	 * Load a RBF function.
-	 * 
-	 * @param in
-	 *            The XML reader.
-	 * @return the RBF loaded.
-	 */
-	private List<Object> loadCenters(final ReadXML in) {
-		List<Object> result = new ArrayList<Object>();
-		final String end = in.getTag().getName();
-		
-		while (in.readToTag()) {
-			if (in.is(RadialBasisFunctionLayerPersistor.PROPERTY_SET, true)) {
-				String str = in.readTextToTag();
-				double[] d = NumberList.fromList(CSVFormat.EG_FORMAT, str);
-				result.add(d);
+			} else if (in.is(RadialBasisFunctionLayerPersistor.PROPERTY_RBF,
+					true)) {
+				rbfs = loadAllRBF(in);
 			} else if (in.is(end, false)) {
 				break;
 			}
 		}
+
+		RadialBasisFunctionLayer layer = new RadialBasisFunctionLayer(neuronCount);
+		layer.setRadialBasisFunction(rbfs);
+		layer.setX(x);
+		layer.setY(y);
+
+		return layer;
+	}
+
+	private RadialBasisFunction[] loadAllRBF(final ReadXML in) {
+
+		List<RadialBasisFunction> rbfs = new ArrayList<RadialBasisFunction>();
+		
+		while (in.readToTag()) {
+			if (in.is(PROPERTY_RBF, false)) {
+				break;
+			} else {
+				String name = in.getTag().getName();
+				RadialBasisFunction rbf = loadRBF(name,in);
+				rbfs.add(rbf);
+			}  
+		}
+		
+		RadialBasisFunction[] result = new RadialBasisFunction[rbfs.size()];
+		
+		for(int i=0;i<rbfs.size();i++)
+			result[i] = rbfs.get(i);
 		
 		return result;
 	}
-
+	
+	private RadialBasisFunction loadRBF(final String name,final ReadXML in) {
+		
+		Class<?> clazz = ReflectionUtil.resolveEncogClass(name);
+		
+		if( clazz==null ) {
+			throw new NeuralNetworkError("Unknown activation function type: " + name);
+		}
+		
+		RadialBasisFunction result;
+		try {
+			result = (RadialBasisFunction) clazz
+					.newInstance();
+		} catch (InstantiationException e) {
+			throw new PersistError(e);
+		} catch (IllegalAccessException e) {
+			throw new PersistError(e);
+		}
+		
+		while (in.readToTag()) {
+			if (in.is(name, false)) {
+				break;
+			} else if (in.is(PROPERTY_CENTERS, true)) {
+				String str = in.readTextToTag();
+				double[] centers = NumberList.fromList(CSVFormat.EG_FORMAT, str);
+				result.setCenters(centers);
+			} else if (in.is(PROPERTY_PEAK, true)) {
+				String str = in.readTextToTag();
+				double d = Double.parseDouble(str);
+				result.setPeak(d);
+			} else if (in.is(PROPERTY_WIDTH,
+					true)) {
+				String str = in.readTextToTag();
+				double d = Double.parseDouble(str);
+				result.setWidth(d);
+			} 
+		}
+		
+		return result;
+	}
 
 	/**
 	 * Save a RBF layer.
@@ -174,28 +199,24 @@ public class RadialBasisFunctionLayerPersistor implements Persistor {
 
 		out.addProperty(BasicLayerPersistor.PROPERTY_NEURONS, layer
 				.getNeuronCount());
-		out.addProperty(RadialBasisFunctionLayerPersistor.PROPERTY_RADIAL_DIMENSIONS, layer
-				.getDimensions());
 		out.addProperty(BasicLayerPersistor.PROPERTY_X, layer.getX());
 		out.addProperty(BasicLayerPersistor.PROPERTY_Y, layer.getY());
-		
-		StringBuilder result = new StringBuilder();
-		
-		NumberList.toList(CSVFormat.EG_FORMAT, result, layer.getRadius());
-		
-		out.addProperty(RadialBasisFunctionLayerPersistor.PROPERTY_RADIAL_RADIUS, result.toString());
-		
-		out.beginTag(RadialBasisFunctionLayerPersistor.PROPERTY_CENTER);
-		
-		for(int x = 0; x<layer.getCenter().length; x++ )
-		{
-			result.setLength(0);
-			NumberList.toList(CSVFormat.EG_FORMAT, result, layer.getCenter()[x]);
-			out.addProperty(RadialBasisFunctionLayerPersistor.PROPERTY_SET, result.toString());
-		}
-		
-		out.endTag();
 
+		saveRBF(out, layer);
+
+		out.endTag();
+	}
+
+	private void saveRBF(WriteXML out, RadialBasisFunctionLayer layer) {
+		
+		out.beginTag(RadialBasisFunctionLayerPersistor.PROPERTY_RBF);
+		for (RadialBasisFunction rbf : layer.getRadialBasisFunction()) {
+			out.beginTag(rbf.getClass().getSimpleName());
+			out.addProperty(PROPERTY_CENTERS, rbf.getCenters(), rbf.getCenters().length);
+			out.addProperty(PROPERTY_PEAK, rbf.getPeak());
+			out.addProperty(PROPERTY_WIDTH, rbf.getWidth());
+			out.endTag();
+		}
 		out.endTag();
 	}
 

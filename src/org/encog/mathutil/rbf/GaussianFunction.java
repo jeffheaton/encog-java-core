@@ -32,6 +32,12 @@ package org.encog.mathutil.rbf;
 public class GaussianFunction extends BasicRBF {
 
 	/**
+	 * Default constructor, used for reflection.
+	 */
+	public GaussianFunction() {
+	}
+	
+	/**
 	 * Construct a single-dimension Gaussian function with the specified peak,
 	 * centers and widths.
 	 * 

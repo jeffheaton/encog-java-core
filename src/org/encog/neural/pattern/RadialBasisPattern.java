@@ -26,6 +26,7 @@ package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
@@ -107,15 +108,14 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 				this.inputNeurons);
 		final Layer output = new BasicLayer(new ActivationLinear(), true, this.outputNeurons);
 		final BasicNetwork network = new BasicNetwork();
-		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(
-				this.hiddenNeurons, this.inputNeurons);
+		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(this.hiddenNeurons);
 		network.addLayer(input);
 		network.addLayer(rbfLayer, SynapseType.Direct);
 		network.addLayer(output);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		network.tagLayer(RBF_LAYER, rbfLayer);
-		rbfLayer.randomizeGaussianCentersAndWidths(0, 1);
+		rbfLayer.randomizeRBFCentersAndWidths(inputNeurons,0,1,RBFEnum.Gaussian);
 		int y = PatternConst.START_Y;
 		input.setX(PatternConst.START_X);
 		input.setY(y);

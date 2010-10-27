@@ -24,10 +24,12 @@
 
 package org.encog.engine.network.rbf;
 
+import java.io.Serializable;
+
 /**
  * A multi-dimension RBF.
  */
-public interface RadialBasisFunction {
+public interface RadialBasisFunction extends Serializable {
 	/**
 	 * Calculate the RBF result for the specified value.
 	 * 

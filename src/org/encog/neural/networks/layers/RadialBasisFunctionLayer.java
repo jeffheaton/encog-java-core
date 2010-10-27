@@ -25,8 +25,14 @@
 package org.encog.neural.networks.layers;
 
 import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.engine.util.BoundMath;
+import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.mathutil.rbf.InverseMultiquadricFunction;
+import org.encog.mathutil.rbf.MexicanHatFunction;
+import org.encog.mathutil.rbf.MultiquadricFunction;
+import org.encog.mathutil.rbf.RBFEnum;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.Persistor;
@@ -53,23 +59,17 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 */
 	private static final long serialVersionUID = 2779781041654829282L;
 
-
 	/**
-	 * The centers.
+	 * The radial basis functions to use, there should be one for each neuron.
 	 */
-	private double[][] center;
-
-	/**
-	 * The radaii.
-	 */
-	private double[] radius;
+	private RadialBasisFunction[] radialBasisFunction;
 
 	/**
 	 * Default constructor, mainly so the workbench can easily create a default
 	 * layer.
 	 */
 	public RadialBasisFunctionLayer() {
-		this(1, 1);
+		this(1);
 	}
 
 	/**
@@ -77,35 +77,10 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 * 
 	 * @param neuronCount
 	 *            The neuron count.
-	 * @param dimensions
-	 *            The number of neurons in the input layer.
 	 */
-	public RadialBasisFunctionLayer(final int neuronCount, 
-			final int dimensions) {
+	public RadialBasisFunctionLayer(final int neuronCount) {
 		super(new ActivationLinear(), false, neuronCount);
-		this.center = new double[neuronCount][dimensions];
-		this.radius = new double[neuronCount];
-	}
-
-	/**
-	 * Add a neuron to this layer.
-	 */
-	public void addNeuron() {
-		final double[] newRadius = new double[getNeuronCount() + 1];
-		final double[][] newCenter 
-			= new double[getNeuronCount() + 1][getDimensions()];
-
-		for (int x = 0; x < this.radius.length; x++) {
-			newRadius[x] = this.radius[x];
-			for (int y = 0; y < getDimensions(); y++) {
-				newCenter[x][y] = this.center[x][y];
-			}
-		}
-
-		setNeuronCount(getNeuronCount() + 1);
-
-		this.radius = newRadius;
-		this.center = newCenter;
+		this.radialBasisFunction = new RadialBasisFunction[neuronCount];
 	}
 
 	/**
@@ -114,29 +89,27 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 * 
 	 * @param pattern
 	 *            The incoming Project.
-	 * @return The output from this layer.
+	 * @returns The output from this layer.
 	 */
 	@Override
 	public NeuralData compute(final NeuralData pattern) {
-
 		final NeuralData result = new BasicNeuralData(getNeuronCount());
-		final double[] x = pattern.getData();
 
 		for (int i = 0; i < getNeuronCount(); i++) {
 
-			// take the eucl distance
-			double sum = 0;
-			for (int j = 0; j < getDimensions(); j++) {
-				final double v = (x[j] - this.center[i][j]);
-				sum += v * v;
+			if (this.radialBasisFunction[i] == null) {
+				final String str = "Error, must define radial functions for each neuron";
+				throw new NeuralNetworkError(str);
 			}
 
-			final double norm = Math.sqrt(sum);
+			final RadialBasisFunction f = this.radialBasisFunction[i];
 
-			final double output = BoundMath.exp(-this.radius[i] * norm * norm);
+			if (pattern.size() != f.getDimensions()) {
+				throw new NeuralNetworkError(
+						"Inputs must equal the number of dimensions.");
+			}
 
-			result.setData(i, output);
-
+			result.setData(i, f.calculate(pattern.getData()));
 		}
 
 		return result;
@@ -145,7 +118,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	/**
 	 * Create a persistor for this layer.
 	 * 
-	 * @return The new persistor.
+	 * @return The persistor.
 	 */
 	@Override
 	public Persistor createPersistor() {
@@ -153,65 +126,73 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	}
 
 	/**
-	 * @return The centers.
-	 */
-	public double[][] getCenter() {
-		return this.center;
-	}
-
-	/**
-	 * @return The dimensions.
-	 */
-	public int getDimensions() {
-		return this.center[0].length;
-	}
-
-	/**
-	 * @return The radii.
-	 */
-	public double[] getRadius() {
-		return this.radius;
-	}
-
-	/**
-	 * Set the Gaussian components to random values.
+	 * Get an array of radial basis functions.
 	 * 
-	 * @param min
-	 *            The minimum value for the center and radius.
-	 * @param max
-	 *            The maximum value for the center and radius.
+	 * @return An array of radial basis functions.
 	 */
-	public void randomizeGaussianCentersAndWidths(final double min,
-			final double max) {
+	public RadialBasisFunction[] getRadialBasisFunction() {
+		return this.radialBasisFunction;
+	}
 
-		for (int x = 0; x < this.radius.length; x++) {
-			this.radius[x] = RangeRandomizer.randomize(min, max);
-			for (int y = 0; y < getDimensions(); y++) {
-				this.center[x][y] = RangeRandomizer.randomize(min, max);
-			}
+	/**
+	 * Set the gausian components to random values.
+	 * @param dimensions The number of dimensions in the network.
+	 * @param min The minimum value for the centers, widths and peaks.
+	 * @param max The maximum value for the centers, widths and peaks.
+	 * @param t The RBF to use.
+	 */
+	public void randomizeRBFCentersAndWidths(final int dimensions,
+			final double min, final double max, final RBFEnum t) {
+		final double[] centers = new double[dimensions];
+		for (int i = 0; i < centers.length; i++) {
+			centers[i] = RangeRandomizer.randomize(min, max);
+		}
+
+		for (int i = 0; i < getNeuronCount(); i++) {
+			setRBFOptions(i, t, centers, 1.0, RangeRandomizer.randomize(min,
+					max));
 		}
 	}
 
 	/**
-	 * Remove the specified neuron.
-	 * @param neuron The neuron to remove.
+	 * Set the RBF.
+	 * 
+	 * @param value
+	 *            The new RBF
 	 */
-	public void removeNeuron(final int neuron) {
-		final double[] newRadius = new double[getNeuronCount() - 1];
-		final double[][] newCenter = new double[getNeuronCount() - 1][getDimensions()];
-
-		for (int x = 0; x < this.radius.length; x++) {
-			if (x != neuron) {
-				newRadius[x] = this.radius[x];
-				for (int y = 0; y < getDimensions(); y++) {
-					newCenter[x][y] = this.center[x][y];
-				}
-			}
-		}
-
-		setNeuronCount(getNeuronCount() - 1);
-
-		this.radius = newRadius;
-		this.center = newCenter;
+	public void setRadialBasisFunction(final RadialBasisFunction[] value) {
+		this.radialBasisFunction = value;
 	}
+
+	/**
+	 * Set the RBF.
+	 * 
+	 * @param rbfIndex
+	 *            The RBF to set.
+	 * @param rbfType
+	 *            The type of RBF to use.
+	 * @param center
+	 *            The centers.
+	 * @param peak
+	 *            The peak.
+	 * @param width
+	 *            The widths.
+	 */
+	public void setRBFOptions(final int rbfIndex, final RBFEnum rbfType,
+			final double[] center, final double peak, final double width) {
+		if (rbfType == RBFEnum.Gaussian) {
+			this.radialBasisFunction[rbfIndex] = new GaussianFunction(peak,
+					center, width);
+		} else if (rbfType == RBFEnum.Multiquadric) {
+			this.radialBasisFunction[rbfIndex] = new MultiquadricFunction(peak,
+					center, width);
+		} else if (rbfType == RBFEnum.InverseMultiquadric) {
+			this.radialBasisFunction[rbfIndex] = new InverseMultiquadricFunction(
+					peak, center, width);
+		} else if (rbfType == RBFEnum.MexicanHat) {
+			this.radialBasisFunction[rbfIndex] = new MexicanHatFunction(peak,
+					center, width);
+		}
+	}
+
 }

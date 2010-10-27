@@ -27,6 +27,7 @@ package org.encog.engine.network.flat;
 import java.io.Serializable;
 
 import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.BoundMath;
 import org.encog.engine.util.EngineArray;
 
@@ -36,15 +37,10 @@ import org.encog.engine.util.EngineArray;
 public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 
 	/**
-	 * The RBF centers.
+	 * The RBF's used.
 	 */
-	private double[][] center;
-
-	/**
-	 * The RBF radius.
-	 */
-	private double[] radius;
-
+	private RadialBasisFunction[] rbf;
+	
 	/**
 	 * Default constructor.
 	 */
@@ -67,10 +63,7 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	 *            The radii.
 	 */
 	public FlatNetworkRBF(final int inputCount, final int hiddenCount,
-			final int outputCount, final double[][] center,
-			final double[] radius) {
-		this.center = EngineArray.arrayCopy(center);
-		this.radius = EngineArray.arrayCopy(radius);
+			final int outputCount, RadialBasisFunction[] rbf) {
 
 		FlatLayer[] layers = new FlatLayer[3];
 
@@ -96,8 +89,7 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	public FlatNetworkRBF clone() {
 		final FlatNetworkRBF result = new FlatNetworkRBF();
 		cloneFlatNetwork(result);
-		result.center = EngineArray.arrayCopy(this.center);
-		result.radius = EngineArray.arrayCopy(this.radius);
+		result.rbf = this.rbf;
 		return result;
 	}
 
@@ -112,24 +104,11 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	@Override
 	public void compute(final double[] x, final double[] output) {
 
-		int dimensions = this.center[0].length;
 		int outputIndex = this.getLayerIndex()[1];
 
-		for (int i = 0; i < this.center.length; i++) {
-
-			// take the eucl distance
-			double sum = 0;
-			for (int j = 0; j < dimensions; j++) {
-				double v = (x[j] - center[i][j]);
-				sum += v * v;
-			}
-
-			double norm = Math.sqrt(sum);
-
-			double o = BoundMath.exp(-this.radius[i] * norm * norm);
-
+		for (int i = 0; i < rbf.length; i++) {
+			double o = this.rbf[i].calculate(x);
 			this.getLayerOutput()[outputIndex + i] = o;
-
 		}
 
 		// now compute the output
