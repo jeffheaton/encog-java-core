@@ -29,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
@@ -47,10 +48,9 @@ public class TestRadialBasisFunctionLayerPersistor {
 	 * @return The created test layer.
 	 */
 	private RadialBasisFunctionLayer createTestLayer() {
-		final RadialBasisFunctionLayer layer = new RadialBasisFunctionLayer(1,2);
-		layer.getRadius()[0] = 1;
-		layer.getCenter()[0][0] = 2;
-		layer.getCenter()[0][1] = 3;
+		final RadialBasisFunctionLayer layer = new RadialBasisFunctionLayer(1);
+		double[] centers = { 1 };
+		layer.setRBFOptions(0, RBFEnum.Gaussian, centers, 2, 3);
 		return layer;
 	}
 
@@ -107,9 +107,12 @@ public class TestRadialBasisFunctionLayerPersistor {
 		final RadialBasisFunctionLayer layer2 = loadRadialFunctionLayer(store);
 		Assert.assertEquals(layer.getNeuronCount(), layer2.getNeuronCount());
 
-		Assert.assertEquals( 1.0, layer.getRadius()[0], 0.1);
-		Assert.assertEquals( 2.0, layer.getCenter()[0][0], 0.1 );
-		Assert.assertEquals( 3.0, layer.getCenter()[0][1], 0.1 );
+		RadialBasisFunction[] rbf = layer.getRadialBasisFunction();
+		Assert.assertEquals(1, rbf.length);
+	
+		Assert.assertEquals( 1.0, rbf[0].getCenters()[0], 0.1);
+		Assert.assertEquals( 3.0, rbf[0].getWidth(), 0.1);		
+		Assert.assertEquals( 2.0, rbf[0].getPeak(), 0.1 );
 
 		
 	}
