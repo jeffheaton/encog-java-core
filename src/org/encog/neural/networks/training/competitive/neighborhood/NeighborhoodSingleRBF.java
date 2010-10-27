@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A neighborhood function based on the Gaussian function.
+ * A neighborhood function based on an RBF function.
  * 
  * @author jheaton
  */

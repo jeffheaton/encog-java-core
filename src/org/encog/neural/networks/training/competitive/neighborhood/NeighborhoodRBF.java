@@ -33,8 +33,7 @@ import org.encog.mathutil.rbf.MultiquadricFunction;
 import org.encog.mathutil.rbf.RBFEnum;
 
 /**
- * Implements a multi-dimensional gaussian neighborhood function.  DO not
- * use this for a 1D gaussian, just use the NeighborhoodGaussian for that.
+ * Implements a multi-dimensional RBF neighborhood function.  
  *
  */
 public class NeighborhoodRBF implements NeighborhoodFunction {
