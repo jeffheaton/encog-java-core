@@ -135,7 +135,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	}
 
 	/**
-	 * Set the gausian components to random values.
+	 * Set the RBF components to random values.
 	 * @param dimensions The number of dimensions in the network.
 	 * @param min The minimum value for the centers, widths and peaks.
 	 * @param max The maximum value for the centers, widths and peaks.
@@ -149,7 +149,8 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 		}
 
 		for (int i = 0; i < getNeuronCount(); i++) {
-			setRBFOptions(i, t, centers, 1.0, RangeRandomizer.randomize(min,
+			setRBFOptions(i, t, centers, RangeRandomizer.randomize(min,
+					max), RangeRandomizer.randomize(min,
 					max));
 		}
 	}

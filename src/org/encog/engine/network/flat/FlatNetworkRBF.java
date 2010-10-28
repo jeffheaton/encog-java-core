@@ -66,7 +66,8 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 			final int outputCount, RadialBasisFunction[] rbf) {
 
 		FlatLayer[] layers = new FlatLayer[3];
-
+		this.rbf = rbf;
+		
 		double[] slope = new double[1];
 		slope[0] = 1.0;
 
