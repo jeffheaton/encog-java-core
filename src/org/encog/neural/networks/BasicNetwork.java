@@ -24,6 +24,9 @@
 
 package org.encog.neural.networks;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -689,5 +692,26 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 
 		final NeuralData output = compute(input);
 		return BasicNetwork.determineWinner(output);
+	}
+	
+	/**
+	 * Make sure that the network has been flattened before being written. 
+	 * @param stream The output stream.
+	 * @throws IOException Thrown if an IO error occurs.
+	 */
+	private void writeObject(ObjectOutputStream stream) throws IOException {
+		this.structure.updateFlatNetwork();
+		stream.defaultWriteObject();		
+	}
+
+	/**
+	 * Read the network, and make sure the structure is up to date after reading. 
+	 * @param stream The output stream.
+	 * @throws IOException Thrown if an IO error occurs.
+	 */
+	private void readObject(ObjectInputStream stream) throws IOException,
+			ClassNotFoundException {
+		stream.defaultReadObject();
+		this.structure.finalizeStructure();
 	}
 }
