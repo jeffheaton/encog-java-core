@@ -494,7 +494,7 @@ public class NeuralStructure implements Serializable {
 			for (int i = 0; i < flatLayerCount; i++) {
 				FlatLayer fedBy = flatLayers[i].getContextFedBy();
 				if (fedBy != null) {
-					Layer fedBy2 = flat2regular.get(fedBy);
+					Layer fedBy2 = flat2regular.get(flatLayers[i+1]);
 					Synapse synapse = findPreviousSynapseByLayerType(fedBy2,
 							ContextLayer.class);
 					if (synapse == null)
