@@ -43,6 +43,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ContextLayerPersistor implements Persistor {
 
+	public final String PROPERTY_CONTEXT = "context";
+
 	/**
 	 * The logging object.
 	 */
@@ -71,7 +73,7 @@ public class ContextLayerPersistor implements Persistor {
 			if (in.is(BasicLayerPersistor.TAG_ACTIVATION, true)) {
 				in.readToTag();
 				final String type = in.getTag().getName();
-				activation = BasicLayerPersistor.loadActivation(type, in); 
+				activation = BasicLayerPersistor.loadActivation(type, in);
 			} else if (in.is(BasicLayerPersistor.PROPERTY_NEURONS, true)) {
 				neuronCount = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_X, true)) {
@@ -80,7 +82,10 @@ public class ContextLayerPersistor implements Persistor {
 				y = in.readIntToTag();
 			} else if (in.is(BasicLayerPersistor.PROPERTY_THRESHOLD, true)) {
 				threshold = in.readTextToTag();
-			} else if (in.is(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, true)) {
+			} else if (in.is(PROPERTY_CONTEXT, true)) {
+				context = in.readTextToTag();
+			} else if (in
+					.is(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, true)) {
 				biasActivation = Double.parseDouble(in.readTextToTag());
 			} else if (in.is(end, false)) {
 				break;
@@ -103,7 +108,6 @@ public class ContextLayerPersistor implements Persistor {
 
 			layer.setX(x);
 			layer.setY(y);
-			
 
 			return layer;
 		}
@@ -130,16 +134,23 @@ public class ContextLayerPersistor implements Persistor {
 
 		if (layer.hasBias()) {
 			final StringBuilder result = new StringBuilder();
-			NumberList
-					.toList(CSVFormat.EG_FORMAT, result, layer.getBiasWeights());
+			NumberList.toList(CSVFormat.EG_FORMAT, result, layer
+					.getBiasWeights());
 			out.addProperty(BasicLayerPersistor.PROPERTY_THRESHOLD, result
-					.toString());			
+					.toString());
 		}
 
-		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer.getBiasActivation());
-		
-		BasicLayerPersistor.saveActivationFunction(layer.getActivationFunction(), out);
-		
+		StringBuilder ctx = new StringBuilder();
+		NumberList.toList(CSVFormat.EG_FORMAT, ctx, layer.getContext()
+				.getData());
+		out.addProperty(PROPERTY_CONTEXT, ctx.toString());
+
+		out.addProperty(BasicLayerPersistor.PROPERTY_BIAS_ACTIVATION, layer
+				.getBiasActivation());
+
+		BasicLayerPersistor.saveActivationFunction(layer
+				.getActivationFunction(), out);
+
 		out.endTag();
 	}
 

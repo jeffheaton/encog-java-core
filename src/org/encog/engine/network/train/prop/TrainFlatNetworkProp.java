@@ -164,12 +164,19 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 * Copy the contexts to keep them consistent with multithreaded training.
 	 */
 	private void copyContexts() {
+		
+		// copy the contexts(layer outputO from each group to the next group
 		for (int i = 0; i < (this.workers.length - 1); i++) {
 			final double[] src = this.workers[i].getNetwork().getLayerOutput();
 			final double[] dst = this.workers[i + 1].getNetwork()
 					.getLayerOutput();
 			EngineArray.arrayCopy(src, dst);
 		}
+		 
+         // copy the contexts from the final group to the real network
+         EngineArray.arrayCopy(
+             this.workers[this.workers.length - 1].getNetwork().getLayerOutput(),
+             this.network.getLayerOutput());
 	}
 
 	/**

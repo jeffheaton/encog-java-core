@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.encog.Encog;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.location.FilePersistence;
 import org.encog.persist.location.PersistenceLocation;
 import org.slf4j.Logger;
@@ -263,6 +264,12 @@ public class EncogPersistedCollection implements EncogCollection {
 	 *            The object to add.
 	 */
 	public void add(final String name, final EncogPersistedObject obj) {
+		
+		if( obj instanceof BasicNetwork )
+		{
+			((BasicNetwork)obj).getStructure().updateFlatNetwork();
+		}
+		
 		obj.setName(name);
 		final PersistWriter writer = new PersistWriter(this.fileTemp);
 		writer.begin();

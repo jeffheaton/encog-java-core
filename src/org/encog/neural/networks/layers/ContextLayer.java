@@ -58,6 +58,11 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	 * The context data that this layer will store.
 	 */
 	private final NeuralData context;
+	
+	/**
+	 * The location in the flat network that the context is stored at.
+	 */
+	private int flatContextIndex = -1;
 
 	/**
 	 * The logging object.
@@ -188,5 +193,22 @@ public class ContextLayer extends BasicLayer implements ContextClearable {
 	public void setBiasWeight(final int index, final double d) {
 		throw new NeuralNetworkError(ERROR);
 	}
+
+	/**
+	 * @return The index, in the flat network, where the context is stored.
+	 */
+	public int getFlatContextIndex() {
+		return flatContextIndex;
+	}
+
+	/**
+	 * Set the flat context index.
+	 * @param flatContextIndex The index, in the flat network, where the context is stored.
+	 */
+	public void setFlatContextIndex(int flatContextIndex) {
+		this.flatContextIndex = flatContextIndex;
+	}
+	
+	
 
 }

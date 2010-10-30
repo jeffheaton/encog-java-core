@@ -405,6 +405,7 @@ public class NeuralStructure implements Serializable {
 	public void flatten() {
 		final boolean isRBF = false;
 		final Map<Layer, FlatLayer> regular2flat = new HashMap<Layer, FlatLayer>();
+		final Map<FlatLayer, Layer> flat2regular = new HashMap<FlatLayer, Layer>();
 		final List<ObjectPair<Layer, Layer>> contexts = new ArrayList<ObjectPair<Layer, Layer>>();
 		this.flat = null;
 
@@ -423,7 +424,8 @@ public class NeuralStructure implements Serializable {
 				return;
 			}
 
-			final FlatLayer[] flatLayers = new FlatLayer[countNonContext()];
+			int flatLayerCount = countNonContext();
+			final FlatLayer[] flatLayers = new FlatLayer[flatLayerCount];
 
 			int index = flatLayers.length - 1;
 			for (final Layer layer : this.layers) {
@@ -470,6 +472,7 @@ public class NeuralStructure implements Serializable {
 							layer.getNeuronCount(), bias, params);
 
 					regular2flat.put(layer, flatLayer);
+					flat2regular.put(flatLayer, layer);
 					flatLayers[index--] = flatLayer;
 				}
 			}
@@ -487,15 +490,44 @@ public class NeuralStructure implements Serializable {
 
 			this.flat = new FlatNetwork(flatLayers);
 
+			// update the context indexes on the non-flat network
+			for (int i = 0; i < flatLayerCount; i++) {
+				FlatLayer fedBy = flatLayers[i].getContextFedBy();
+				if (fedBy != null) {
+					Layer fedBy2 = flat2regular.get(fedBy);
+					Synapse synapse = findPreviousSynapseByLayerType(fedBy2,
+							ContextLayer.class);
+					if (synapse == null)
+						throw new NeuralNetworkError(
+								"Can't find parent synapse to context layer.");
+					ContextLayer context = (ContextLayer) synapse
+							.getFromLayer();
+
+					// find fedby index
+					int fedByIndex = -1;
+					for (int j = 0; j < flatLayerCount; j++) {
+						if (flatLayers[j] == fedBy) {
+							fedByIndex = j;
+							break;
+						}
+					}
+
+					if (fedByIndex == -1)
+						throw new NeuralNetworkError(
+								"Can't find layer feeding context.");
+
+					context.setFlatContextIndex(this.flat
+							.getContextTargetOffset()[fedByIndex]);
+				}
+			}
+
+			// RBF networks will not train every layer
+
 			if (isRBF) {
 				this.flat.setEndTraining(flatLayers.length - 1);
 			}
 
 			flattenWeights();
-
-			if (isConnectionLimited()) {
-
-			}
 
 			this.flatUpdate = FlatUpdateNeeded.None;
 		} else {
@@ -516,6 +548,19 @@ public class NeuralStructure implements Serializable {
 
 			EngineArray.arrayCopy(sourceWeights, targetWeights);
 			this.flatUpdate = FlatUpdateNeeded.None;
+
+			// update context layers
+			for (Layer layer : this.layers) {
+				if (layer instanceof ContextLayer) {
+					ContextLayer context = (ContextLayer) layer;
+					if (context.getFlatContextIndex() != -1) {
+						EngineArray.arrayCopy(context.getContext().getData(),
+								0, this.flat.getLayerOutput(), context
+										.getFlatContextIndex(), context
+										.getContext().size());
+					}
+				}
+			}
 
 			// handle limited connection networks
 			if (this.connectionLimited) {
@@ -703,9 +748,28 @@ public class NeuralStructure implements Serializable {
 	 * Unflatten the weights.
 	 */
 	public void unflattenWeights() {
-		final double[] sourceWeights = this.flat.getWeights();
-		NetworkCODEC.arrayToNetwork(sourceWeights, this.network);
-		this.flatUpdate = FlatUpdateNeeded.None;
+
+		if (flat != null) {
+			double[] sourceWeights = flat.getWeights();
+			NetworkCODEC.arrayToNetwork(sourceWeights, network);
+			this.flatUpdate = FlatUpdateNeeded.None;
+
+			// update context layers
+			for (Layer layer : this.layers) {
+				if (layer instanceof ContextLayer) {
+					ContextLayer context = (ContextLayer) layer;
+					if (context.getFlatContextIndex() != -1) {
+
+						EngineArray.arrayCopy(this.flat.getLayerOutput(),
+								context.getFlatContextIndex(), context
+										.getContext().getData(), 0, context
+										.getContext().size());
+					}
+				}
+			}
+
+		}
+
 	}
 
 	/**
