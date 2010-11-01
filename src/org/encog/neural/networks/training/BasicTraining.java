@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.encog.cloud.EncogCloud;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,6 +145,15 @@ public abstract class BasicTraining implements Train {
 	 * @return True if training can progress no further.
 	 */
 	public boolean isTrainingDone() {
+		for (Strategy strategy : this.strategies) {
+			if (strategy instanceof EndTrainingStrategy) {
+				EndTrainingStrategy end = (EndTrainingStrategy)strategy;
+				if( end.shouldStop() ) {
+					return true;
+				}
+			}
+		}
+		
 		return false;
 	}
 

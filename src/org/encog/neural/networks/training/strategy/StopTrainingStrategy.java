@@ -70,6 +70,11 @@ public class StopTrainingStrategy implements EndTrainingStrategy {
 	private double lastError;
 	
 	/**
+	 * The error rate from the previous iteration.
+	 */
+	private double bestError;
+	
+	/**
 	 * The minimum improvement before training stops.
 	 */
 	private final double minImprovement;
@@ -108,6 +113,7 @@ public class StopTrainingStrategy implements EndTrainingStrategy {
 		this.minImprovement = minImprovement;
 		this.toleratedCycles = toleratedCycles;
 		this.badCycles = 0;
+		this.bestError = Double.MAX_VALUE;
 	}
 
 	/**
@@ -125,7 +131,7 @@ public class StopTrainingStrategy implements EndTrainingStrategy {
 	public void postIteration() {
 
 		if (this.ready) {
-			if (Math.abs(this.lastError 
+			if (Math.abs(this.bestError 
 					- this.train.getError()) < this.minImprovement) {
 				this.badCycles++;
 				if (this.badCycles > this.toleratedCycles) {
@@ -139,6 +145,7 @@ public class StopTrainingStrategy implements EndTrainingStrategy {
 		}
 
 		this.lastError = this.train.getError();
+		this.bestError = Math.min(this.lastError, this.bestError);
 
 	}
 
