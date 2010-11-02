@@ -148,6 +148,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 			centers[i] = RangeRandomizer.randomize(min, max);
 		}
 
+		this.radialBasisFunction = new RadialBasisFunction[this.getNeuronCount()];
 		for (int i = 0; i < getNeuronCount(); i++) {
 			setRBFOptions(i, t, centers, RangeRandomizer.randomize(min,
 					max), RangeRandomizer.randomize(min,

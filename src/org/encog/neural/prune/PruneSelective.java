@@ -148,8 +148,10 @@ public class PruneSelective {
 				.getPreviousSynapses(layer);
 
 		for (final Synapse synapse : inboundSynapses) {
-			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
-				result += synapse.getMatrix().get(i, neuron);
+			if (synapse.getMatrix() != null) {
+				for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
+					result += synapse.getMatrix().get(i, neuron);
+				}
 			}
 		}
 
@@ -222,8 +224,8 @@ public class PruneSelective {
 
 		// adjust the outbound weight matrixes
 		for (final Synapse synapse : layer.getNext()) {
-			final Matrix newMatrix = new Matrix(neuronCount, synapse
-					.getToNeuronCount());
+			final Matrix newMatrix = new Matrix(neuronCount,
+					synapse.getToNeuronCount());
 			// copy existing matrix to new matrix
 			for (int row = 0; row < layer.getNeuronCount(); row++) {
 				for (int col = 0; col < synapse.getToNeuronCount(); col++) {
@@ -238,15 +240,19 @@ public class PruneSelective {
 				.getPreviousSynapses(layer);
 
 		for (final Synapse synapse : inboundSynapses) {
-			final Matrix newMatrix = new Matrix(synapse.getFromNeuronCount(),
-					neuronCount);
-			// copy existing matrix to new matrix
-			for (int row = 0; row < synapse.getFromNeuronCount(); row++) {
-				for (int col = 0; col < synapse.getToNeuronCount(); col++) {
-					newMatrix.set(row, col, synapse.getMatrix().get(row, col));
+			if (synapse.getMatrix() != null) {
+				final Matrix newMatrix = new Matrix(
+						synapse.getFromNeuronCount(), neuronCount);
+				// copy existing matrix to new matrix
+				for (int row = 0; row < synapse.getFromNeuronCount(); row++) {
+					for (int col = 0; col < synapse.getToNeuronCount(); col++) {
+						newMatrix.set(row, col,
+								synapse.getMatrix().get(row, col));
+					}
 				}
+
+				synapse.setMatrix(newMatrix);
 			}
-			synapse.setMatrix(newMatrix);
 		}
 
 		// adjust the bias
@@ -275,9 +281,7 @@ public class PruneSelective {
 	public void prune(final Layer targetLayer, final int neuron) {
 		// delete a row on this matrix
 		for (final Synapse synapse : targetLayer.getNext()) {
-			synapse
-					.setMatrix(MatrixMath
-							.deleteRow(synapse.getMatrix(), neuron));
+			synapse.setMatrix(MatrixMath.deleteRow(synapse.getMatrix(), neuron));
 		}
 
 		// delete a column on the previous
@@ -287,16 +291,17 @@ public class PruneSelective {
 		for (final Layer prevLayer : previous) {
 			if (previous != null) {
 				for (final Synapse synapse : prevLayer.getNext()) {
-					synapse.setMatrix(MatrixMath.deleteCol(synapse.getMatrix(),
-							neuron));
+					if (synapse.getMatrix() != null) {
+						synapse.setMatrix(MatrixMath.deleteCol(
+								synapse.getMatrix(), neuron));
+					}
 				}
 			}
 		}
 
 		// remove the bias
 		if (targetLayer.hasBias()) {
-			final double[] newBias 
-				= new double[targetLayer.getNeuronCount() - 1];
+			final double[] newBias = new double[targetLayer.getNeuronCount() - 1];
 
 			int targetIndex = 0;
 			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
@@ -329,8 +334,8 @@ public class PruneSelective {
 		final Distort d = new Distort(percent);
 
 		if (layer.hasBias()) {
-			layer.setBiasWeight(neuron, d
-					.randomize(layer.getBiasWeight(neuron)));
+			layer.setBiasWeight(neuron,
+					d.randomize(layer.getBiasWeight(neuron)));
 		}
 
 		// calculate the outbound significance
