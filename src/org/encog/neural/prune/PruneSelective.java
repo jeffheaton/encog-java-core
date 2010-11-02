@@ -26,15 +26,12 @@ package org.encog.neural.prune;
 
 import java.util.Collection;
 
-import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.mathutil.randomize.Distort;
-import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -262,16 +259,6 @@ public class PruneSelective {
 			layer.setBiasWeights(newBias2);
 		}
 
-		// adjust RBF
-		if (layer instanceof RadialBasisFunctionLayer) {
-			final RadialBasisFunctionLayer rbf 
-				= (RadialBasisFunctionLayer) layer;
-			/*for(int i=0;i<neuronCount;i++)
-				rbf.addNeuron();*/
-			
-
-		}
-
 		// finally, up the neuron count
 		layer.setNeuronCount(neuronCount);
 	}
@@ -319,13 +306,6 @@ public class PruneSelective {
 			}
 
 			targetLayer.setBiasWeights(newBias);
-		}
-
-		// adjust RBF
-		if (targetLayer instanceof RadialBasisFunctionLayer) {
-			final RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer) targetLayer;
-			//rbf.removeNeuron(neuron);
-
 		}
 
 		// update the neuron count
