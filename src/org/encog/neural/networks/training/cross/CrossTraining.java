@@ -40,7 +40,7 @@ public abstract class CrossTraining extends BasicTraining {
 	/**
 	 * The folded dataset.
 	 */
-	private final FoldedDataSet folded;
+	private final FoldedDataSet folded;	
 
 	/**
 	 * Construct a cross trainer.

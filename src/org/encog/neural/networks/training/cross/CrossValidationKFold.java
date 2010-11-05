@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.cross;
 
+import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.neural.data.folded.FoldedDataSet;
 import org.encog.neural.networks.training.Train;
 
@@ -50,6 +51,10 @@ public class CrossValidationKFold extends CrossTraining {
 	 */
 	private final Train train;
 
+	private final NetworkFold[] networks;
+
+	private final FlatNetwork flatNetwork;
+
 	/**
 	 * Construct a cross validation trainer.
 	 * 
@@ -62,6 +67,14 @@ public class CrossValidationKFold extends CrossTraining {
 		super(train.getNetwork(), (FoldedDataSet) train.getTraining());
 		this.train = train;
 		getFolded().fold(k);
+
+		this.flatNetwork = train.getNetwork().getStructure().getFlat();
+
+		this.networks = new NetworkFold[k];
+		for (int i = 0; i < networks.length; i++) {
+			this.networks[i] = new NetworkFold(flatNetwork);
+		}
+
 	}
 
 	/**
@@ -73,18 +86,24 @@ public class CrossValidationKFold extends CrossTraining {
 		double error = 0;
 
 		for (int valFold = 0; valFold < getFolded().getNumFolds(); valFold++) {
+
+			// restore the correct network
+			this.networks[valFold].copyToNetwork(this.flatNetwork);
+			
 			// train with non-validation folds
-			for (int curFold = 0; curFold < valFold; curFold++) {
-				getFolded().setCurrentFold(curFold);
-				this.train.iteration();
-			}
-			for (int curFold = valFold + 1; curFold < getFolded().getNumFolds(); curFold++) {
-				getFolded().setCurrentFold(curFold);
-				this.train.iteration();
+			for (int curFold = 0; curFold < getFolded().getNumFolds(); curFold++) {
+				if (curFold != valFold) {
+					getFolded().setCurrentFold(curFold);
+					this.train.iteration();
+				}
 			}
 
-			// evaluate with the validation fold
-			error += getNetwork().calculateError(getFolded());
+			// evaluate with the validation fold			
+			getFolded().setCurrentFold(valFold);
+			double e = this.flatNetwork.calculateError(getFolded());
+			System.out.println("Fold " + valFold + ", " + e);
+			error += e;
+			this.networks[valFold].copyFromNetwork(this.flatNetwork);
 		}
 
 		setError(error / getFolded().getNumFolds());
