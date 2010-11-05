@@ -416,6 +416,14 @@ public class NeuralStructure implements Serializable {
 					&& (this.layers.get(1) instanceof RadialBasisFunctionLayer)) {
 				final RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer) this.layers
 						.get(1);
+				
+				
+				for(Layer layer: this.layers ) {
+					if( layer.hasBias() ) {
+						throw new NeuralNetworkError("Bias cannot be used with an RBF neural network.");
+					}
+				}
+				
 				this.flat = new FlatNetworkRBF(this.network.getInputCount(),
 						rbf.getNeuronCount(), this.network.getOutputCount(),
 						rbf.getRadialBasisFunction());
