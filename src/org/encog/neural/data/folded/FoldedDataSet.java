@@ -83,6 +83,11 @@ public class FoldedDataSet implements Indexable {
 	 * The size of the current fold.
 	 */
 	private int currentFoldSize;
+	
+	/**
+	 * The owner object(from openAdditional)
+	 */
+	private FoldedDataSet owner;
 
 	/**
 	 * Create a folded dataset.
@@ -159,21 +164,30 @@ public class FoldedDataSet implements Indexable {
 	 * @return the currentFold
 	 */
 	public int getCurrentFold() {
-		return this.currentFold;
+		if( this.owner!=null )
+			return owner.getCurrentFold();
+		else
+			return this.currentFold;
 	}
 
 	/**
 	 * @return the currentFoldOffset
 	 */
 	public int getCurrentFoldOffset() {
-		return this.currentFoldOffset;
+		if( this.owner!=null )
+			return owner.getCurrentFoldOffset();
+		else
+			return this.currentFoldOffset;
 	}
 
 	/**
 	 * @return the currentFoldSize
 	 */
 	public int getCurrentFoldSize() {
-		return this.currentFoldSize;
+		if( this.owner!=null )
+			return this.owner.getCurrentFoldSize();
+		else
+			return this.currentFoldSize;
 	}
 
 	
@@ -205,7 +219,7 @@ public class FoldedDataSet implements Indexable {
 	 */
 	@Override
 	public void getRecord(final long index, final EngineData pair) {
-		this.underlying.getRecord(this.currentFoldOffset + index, pair);
+		this.underlying.getRecord(this.getCurrentFoldOffset() + index, pair);
 	}
 
 	/**
@@ -230,6 +244,22 @@ public class FoldedDataSet implements Indexable {
 	public boolean isSupervised() {
 		return this.underlying.isSupervised();
 	}
+	
+	
+
+	/**
+	 * @return The owner.
+	 */
+	public FoldedDataSet getOwner() {
+		return owner;
+	}
+
+	/**
+	 * @param owner The owner.
+	 */
+	public void setOwner(FoldedDataSet owner) {
+		this.owner = owner;
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -246,6 +276,7 @@ public class FoldedDataSet implements Indexable {
 	public EngineIndexableSet openAdditional() {
 		final FoldedDataSet folded = new FoldedDataSet(
 				(Indexable) this.underlying.openAdditional());
+		folded.setOwner(this);
 		return folded;
 	}
 
@@ -255,6 +286,11 @@ public class FoldedDataSet implements Indexable {
 	 *            the currentFold to set
 	 */
 	public void setCurrentFold(final int currentFold) {
+		
+		if( this.owner!=null ) {
+			throw new TrainingError("Can't set the fold on a non-top-level set.");
+		}
+		
 		if (currentFold >= this.numFolds) {
 			throw new TrainingError(
 					"Can't set the current fold to be greater than the number of folds.");
