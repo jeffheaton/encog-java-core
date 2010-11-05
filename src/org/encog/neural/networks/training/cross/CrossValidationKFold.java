@@ -101,7 +101,7 @@ public class CrossValidationKFold extends CrossTraining {
 			// evaluate with the validation fold			
 			getFolded().setCurrentFold(valFold);
 			double e = this.flatNetwork.calculateError(getFolded());
-			System.out.println("Fold " + valFold + ", " + e);
+			//System.out.println("Fold " + valFold + ", " + e);
 			error += e;
 			this.networks[valFold].copyFromNetwork(this.flatNetwork);
 		}
