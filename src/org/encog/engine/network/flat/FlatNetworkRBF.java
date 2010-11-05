@@ -73,7 +73,7 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 
 		layers[0] = new FlatLayer(new ActivationLinear(), inputCount, 0.0,
 				slope);
-		layers[1] = new FlatLayer(new ActivationLinear(), hiddenCount, 1.0,
+		layers[1] = new FlatLayer(new ActivationLinear(), hiddenCount, 0.0,
 				slope);
 		layers[2] = new FlatLayer(new ActivationLinear(), outputCount, 0.0,
 				slope);
