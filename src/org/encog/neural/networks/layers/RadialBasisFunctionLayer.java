@@ -29,7 +29,6 @@ import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.mathutil.rbf.InverseMultiquadricFunction;
-import org.encog.mathutil.rbf.MexicanHatFunction;
 import org.encog.mathutil.rbf.MultiquadricFunction;
 import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.neural.NeuralNetworkError;
@@ -49,7 +48,8 @@ import org.encog.persist.persistors.RadialBasisFunctionLayerPersistor;
  * function. Calling any methods that deal with the activation function or bias
  * values will result in an error.
  * 
- * @author jheaton
+ * Contributed to Encog By M.Fletcher and M.Dean University of Cambridge, Dept.
+ * of Physics, UK
  * 
  */
 public class RadialBasisFunctionLayer extends BasicLayer {
@@ -89,22 +89,23 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 * 
 	 * @param pattern
 	 *            The incoming Project.
-	 * @returns The output from this layer.
+	 * @return The output from this layer.
 	 */
-	@Override
 	public NeuralData compute(final NeuralData pattern) {
 		final NeuralData result = new BasicNeuralData(getNeuronCount());
 
 		for (int i = 0; i < getNeuronCount(); i++) {
 
 			if (this.radialBasisFunction[i] == null) {
-				final String str = "Error, must define radial functions for each neuron";
+				final String str = 
+	"Error, must define radial functions for each neuron";
+
 				throw new NeuralNetworkError(str);
 			}
 
 			final RadialBasisFunction f = this.radialBasisFunction[i];
 
-			if (pattern.size() != f.getDimensions()) {
+			if (pattern.getData().length != f.getDimensions()) {
 				throw new NeuralNetworkError(
 						"Inputs must equal the number of dimensions.");
 			}
@@ -116,9 +117,7 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	}
 
 	/**
-	 * Create a persistor for this layer.
-	 * 
-	 * @return The persistor.
+	 * @return Create a persistor for this layer.
 	 */
 	@Override
 	public Persistor createPersistor() {
@@ -126,8 +125,6 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	}
 
 	/**
-	 * Get an array of radial basis functions.
-	 * 
 	 * @return An array of radial basis functions.
 	 */
 	public RadialBasisFunction[] getRadialBasisFunction() {
@@ -136,65 +133,165 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 
 	/**
 	 * Set the RBF components to random values.
-	 * @param dimensions The number of dimensions in the network.
-	 * @param min The minimum value for the centers, widths and peaks.
-	 * @param max The maximum value for the centers, widths and peaks.
-	 * @param t The RBF to use.
+	 * 
+	 * @param dimensions
+	 *            The number of dimensions in the network.
+	 * @param min
+	 *            Minimum random value.
+	 * @param max
+	 *            Max random value.
+	 * @param t
+	 *            The type of RBF to use.
 	 */
 	public void randomizeRBFCentersAndWidths(final int dimensions,
 			final double min, final double max, final RBFEnum t) {
 		final double[] centers = new double[dimensions];
-		for (int i = 0; i < centers.length; i++) {
+
+		for (int i = 0; i < dimensions; i++) {
 			centers[i] = RangeRandomizer.randomize(min, max);
 		}
 
-		this.radialBasisFunction = new RadialBasisFunction[this.getNeuronCount()];
 		for (int i = 0; i < getNeuronCount(); i++) {
-			setRBFOptions(i, t, centers, RangeRandomizer.randomize(min,
-					max), RangeRandomizer.randomize(min,
-					max));
+			setRBFFunction(i, t, centers, RangeRandomizer.randomize(min, max));
 		}
 	}
 
 	/**
-	 * Set the RBF.
+	 * Set the array of radial basis functions.
 	 * 
-	 * @param value
-	 *            The new RBF
+	 * @param v
+	 *            An array of radial basis functions.
 	 */
-	public void setRadialBasisFunction(final RadialBasisFunction[] value) {
-		this.radialBasisFunction = value;
+	public void setRadialBasisFunction(final RadialBasisFunction[] v) {
+		this.radialBasisFunction = v;
 	}
 
 	/**
-	 * Set the RBF.
+	 * Array containing center position. Row n contains centers for neuron n.
+	 * Row n contains x elements for x number of dimensions.
 	 * 
-	 * @param rbfIndex
-	 *            The RBF to set.
-	 * @param rbfType
-	 *            The type of RBF to use.
-	 * @param center
+	 * @param centers The centers.
+	 * @param widths
+	 *            Array containing widths. Row n contains widths for neuron n.
+	 *            Row n contains x elements for x number of dimensions.
+	 * @param t
+	 *            The RBF Function to use for this layer.
+	 */
+	public void setRBFCentersAndWidths(final double[][] centers,
+			final double[] widths, final RBFEnum t) {
+		for (int i = 0; i < getNeuronCount(); i++) {
+			setRBFFunction(i, t, centers[i], widths[i]);
+		}
+	}
+
+	/**
+	 * Equally spaces all hidden neurons within the n dimensional variable
+	 * space.
+	 * 
+	 * @param minPosition
+	 *            The minimum position neurons should be centered. Typically 0.
+	 * @param maxPosition
+	 *            The maximum position neurons should be centered. Typically 1
+	 * @param RBFType
+	 *            The RBF type to use.
+	 * @param dimensions
+	 *            The number of dimensions.
+	 * @param volumeNeuronRBFWidth
+	 *            The neuron width of neurons within the mesh.
+	 * @param useWideEdgeRBFs
+	 *            Enables wider RBF's around the boundary of the neuron mesh.
+	 */
+	public void setRBFCentersAndWidthsEqualSpacing(final double minPosition,
+			final double maxPosition, final RBFEnum t,
+			final int dimensions, final double volumeNeuronRBFWidth,
+			final boolean useWideEdgeRBFs) {
+		final int totalNumHiddenNeurons = getNeuronCount();
+
+		final double disMinMaxPosition = Math.abs(maxPosition - minPosition);
+
+		// Check to make sure we have the correct number of neurons for the
+		// provided dimensions
+		final int expectedSideLength = (int) Math.pow(totalNumHiddenNeurons,
+				1.0 / dimensions);
+		if (expectedSideLength != Math.pow(totalNumHiddenNeurons,
+				1.0 / dimensions)) {
+			throw new NeuralNetworkError(
+					"Total number of RBF neurons must be some integer to the power of 'dimensions'.");
+		}
+
+		final double edgeNeuronRBFWidth = 2.5 * volumeNeuronRBFWidth;
+
+		final double[][] centers = new double[totalNumHiddenNeurons][];
+		final double[] widths = new double[totalNumHiddenNeurons];
+
+		for (int i = 0; i < totalNumHiddenNeurons; i++) {
+			centers[i] = new double[dimensions];
+
+			final int sideLength = expectedSideLength;
+
+			// Evenly distribute the volume neurons.
+			int temp = i;
+
+			// First determine the centers
+			for (int j = dimensions; j > 0; j--) {
+				// i + j * sidelength + k * sidelength ^2 + ... l * sidelength ^
+				// n
+				// i - neuron number in x direction, i.e. 0,1,2,3
+				// j - neuron number in y direction, i.e. 0,1,2,3
+				// Following example assumes sidelength of 4
+				// e.g Neuron 5 - x position is (int)5/4 * 0.33 = 0.33
+				// then take modulus of 5%4 = 1
+				// Neuron 5 - y position is (int)1/1 * 0.33 = 0.33
+				centers[i][j - 1] = ((int) (temp / Math.pow(sideLength, j - 1)) * (disMinMaxPosition / (sideLength - 1)))
+						+ minPosition;
+				temp = temp % (int) (Math.pow(sideLength, j - 1));
+			}
+
+			// Now set the widths
+			boolean contains = false;
+
+			for (int z = 0; z < centers[0].length; z++) {
+				if ((centers[i][z] == 1.0) || (centers[i][z] == 0.0)) {
+					contains = true;
+				}
+			}
+
+			if (contains && useWideEdgeRBFs) {
+				widths[i] = edgeNeuronRBFWidth;
+			} else {
+				widths[i] = volumeNeuronRBFWidth;
+			}
+
+			// centers[i] = (double)(1 / (double)(neuronCount - 1)) * (double)i;
+		}
+
+		setRBFCentersAndWidths(centers, widths, t);
+		// SaveOutNeuronCentersAndWeights(centers, widths);
+	}
+
+	/**
+	 * Set an RBF function.
+	 * 
+	 * @param index
+	 *            The index to set.
+	 * @param t
+	 *            The function type.
+	 * @param centers
 	 *            The centers.
-	 * @param peak
-	 *            The peak.
 	 * @param width
-	 *            The widths.
+	 *            The width.
 	 */
-	public void setRBFOptions(final int rbfIndex, final RBFEnum rbfType,
-			final double[] center, final double peak, final double width) {
-		if (rbfType == RBFEnum.Gaussian) {
-			this.radialBasisFunction[rbfIndex] = new GaussianFunction(peak,
-					center, width);
-		} else if (rbfType == RBFEnum.Multiquadric) {
-			this.radialBasisFunction[rbfIndex] = new MultiquadricFunction(peak,
-					center, width);
-		} else if (rbfType == RBFEnum.InverseMultiquadric) {
-			this.radialBasisFunction[rbfIndex] = new InverseMultiquadricFunction(
-					peak, center, width);
-		} else if (rbfType == RBFEnum.MexicanHat) {
-			this.radialBasisFunction[rbfIndex] = new MexicanHatFunction(peak,
-					center, width);
+	public void setRBFFunction(final int index, final RBFEnum t,
+			final double[] centers, final double width) {
+		if (t == RBFEnum.Gaussian) {
+			this.radialBasisFunction[index] = new GaussianFunction(0.5,
+					centers, width);
+		} else if (t == RBFEnum.Multiquadric) {
+			this.radialBasisFunction[index] = new MultiquadricFunction(0.5,
+					centers, width);
+		} else if (t == RBFEnum.InverseMultiquadric) {
+			this.radialBasisFunction[index] = new InverseMultiquadricFunction(
+					0.5, centers, width);
 		}
 	}
-
 }

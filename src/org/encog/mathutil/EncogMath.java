@@ -24,19 +24,20 @@
 
 package org.encog.mathutil;
 
+import org.encog.Encog;
+
 /**
  * Several useful math functions for Encog.
  */
 public final class EncogMath {
-	
-	
+
 	/**
 	 * Private constructor.
 	 */
 	private EncogMath() {
-		
+
 	}
-	
+
 	/**
 	 * Convert degrees to radians.
 	 * 
@@ -50,8 +51,11 @@ public final class EncogMath {
 
 	/**
 	 * sqrt(a^2 + b^2) without under/overflow.
-	 * @param a First param.
-	 * @param b Second param.
+	 * 
+	 * @param a
+	 *            First param.
+	 * @param b
+	 *            Second param.
 	 * @return The result.
 	 */
 	public static double hypot(final double a, final double b) {
@@ -77,5 +81,15 @@ public final class EncogMath {
 	 */
 	public static double rad2deg(final double rad) {
 		return rad * (MathConst.DEG_SEMICIRCLE / Math.PI);
+	}
+
+	/**
+	 * Determine if one double equals another, within the default percision.
+	 * @param d1 The first number.
+	 * @param d2 The second number.
+	 * @return True if the two doubles are equal.
+	 */
+	public static boolean doubleEquals(final double d1, final double d2) {
+		return Math.abs(d1 - d2) < Encog.DEFAULT_DOUBLE_EQUAL;
 	}
 }

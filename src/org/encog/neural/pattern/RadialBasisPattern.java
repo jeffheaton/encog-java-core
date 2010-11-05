@@ -106,16 +106,17 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 
 		final Layer input = new BasicLayer(new ActivationLinear(), false,
 				this.inputNeurons);
-		final Layer output = new BasicLayer(new ActivationLinear(), true, this.outputNeurons);
+		final Layer output = new BasicLayer(new ActivationLinear(), true,
+				this.outputNeurons);
 		final BasicNetwork network = new BasicNetwork();
-		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(this.hiddenNeurons);
+		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(
+				this.hiddenNeurons);
 		network.addLayer(input);
 		network.addLayer(rbfLayer, SynapseType.Direct);
 		network.addLayer(output);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		network.tagLayer(RBF_LAYER, rbfLayer);
-		rbfLayer.randomizeRBFCentersAndWidths(inputNeurons,0,1,RBFEnum.Gaussian);
 		int y = PatternConst.START_Y;
 		input.setX(PatternConst.START_X);
 		input.setY(y);
@@ -125,6 +126,14 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 		y += PatternConst.INC_Y;
 		output.setX(PatternConst.START_X);
 		output.setY(y);
+
+		// Set the standard RBF neuron width.
+		// Literature seems to suggest this is a good default value.
+		double volumeNeuronWidth = 2.0 / rbfLayer.getNeuronCount();
+
+		rbfLayer.setRBFCentersAndWidthsEqualSpacing(0, 1, RBFEnum.Gaussian,
+				input.getNeuronCount(), volumeNeuronWidth, true);
+
 		return network;
 	}
 
