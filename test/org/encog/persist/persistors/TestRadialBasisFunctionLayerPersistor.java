@@ -50,7 +50,7 @@ public class TestRadialBasisFunctionLayerPersistor {
 	private RadialBasisFunctionLayer createTestLayer() {
 		final RadialBasisFunctionLayer layer = new RadialBasisFunctionLayer(1);
 		double[] centers = { 1 };
-		layer.setRBFOptions(0, RBFEnum.Gaussian, centers, 2, 3);
+		layer.setRBFFunction(0, RBFEnum.Gaussian, centers, 3);
 		return layer;
 	}
 
@@ -112,7 +112,7 @@ public class TestRadialBasisFunctionLayerPersistor {
 	
 		Assert.assertEquals( 1.0, rbf[0].getCenters()[0], 0.1);
 		Assert.assertEquals( 3.0, rbf[0].getWidth(), 0.1);		
-		Assert.assertEquals( 2.0, rbf[0].getPeak(), 0.1 );
+		Assert.assertEquals( 0.5, rbf[0].getPeak(), 0.1 );
 
 		
 	}
