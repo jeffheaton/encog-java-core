@@ -41,6 +41,11 @@ import org.slf4j.LoggerFactory;
  */
 public class LoadedMarketData implements Comparable<LoadedMarketData> {
 
+	public final int INDEX_DOUBLE_HIGH = 0;
+	public final int INDEX_DOUBLE_LOW = 0;
+	public final int INDEX_DOUBLE_OPEN = 0;
+	public final int INDEX_DOUBLE_CLOSE = 0;
+	
 	/**
 	 * When was this data sample taken.
 	 */
