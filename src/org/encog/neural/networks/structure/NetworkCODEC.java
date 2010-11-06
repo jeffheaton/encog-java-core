@@ -24,6 +24,7 @@
 
 package org.encog.neural.networks.structure;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.encog.engine.util.EngineArray;
@@ -104,9 +105,9 @@ public final class NetworkCODEC {
 			throw new NeuralNetworkError(str);
 		}
 
-		for (final Double element : array1) {
-			final long l1 = (long) (element.doubleValue() * test);
-			final long l2 = (long) (element.doubleValue() * test);
+		for(int i=0;i<array1.length;i++) {
+			final long l1 = (long) (array1[i] * test);
+			final long l2 = (long) (array2[i] * test);
 			if (l1 != l2) {
 				return false;
 			}
@@ -114,6 +115,29 @@ public final class NetworkCODEC {
 
 		return true;
 	}
+	
+	/**
+	 * Determine if the two neural networks are equal.
+	 * Uses exact precision required by Arrays.equals.
+	 * 
+	 * @param network1
+	 *            The first network.
+	 * @param network2
+	 *            The second network.
+	 * @return True if the two networks are equal.
+	 */
+	public static boolean equals(final BasicNetwork network1,
+			final BasicNetwork network2) {
+		final double[] array1 = NetworkCODEC.networkToArray(network1);
+		final double[] array2 = NetworkCODEC.networkToArray(network2);
+
+		if (array1.length != array2.length) {
+			return false;
+		}
+
+		return Arrays.equals(array1, array2);
+	}
+
 
 	public static int networkSize(final BasicNetwork network) {
 
