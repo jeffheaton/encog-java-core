@@ -51,8 +51,7 @@ public final class ReflectionUtil {
 	/**
 	 * A map between short class names and the full path names.
 	 */
-	private static Map<String, Class< ? >> classMap = 
-		new HashMap<String, Class< ? >>();
+	private static Map<String, Class<?>> classMap = new HashMap<String, Class<?>>();
 
 	/**
 	 * Find the specified field, look also in superclasses.
@@ -63,7 +62,7 @@ public final class ReflectionUtil {
 	 *            The name of the field we are looking for.
 	 * @return The field.
 	 */
-	public static Field findField(final Class< ? > c, final String name) {
+	public static Field findField(final Class<?> c, final String name) {
 		final Collection<Field> list = ReflectionUtil.getAllFields(c);
 		for (final Field field : list) {
 			if (field.getName().equals(name)) {
@@ -71,11 +70,11 @@ public final class ReflectionUtil {
 				return field;
 			}
 		}
-		
+
 		if (c.getSuperclass() != null) {
 			return findField(c.getSuperclass(), name);
 		}
-		
+
 		return null;
 	}
 
@@ -86,7 +85,7 @@ public final class ReflectionUtil {
 	 *            The class to access.
 	 * @return All of the fields from this class and subclasses.
 	 */
-	public static Collection<Field> getAllFields(final Class< ? > c) {
+	public static Collection<Field> getAllFields(final Class<?> c) {
 		final List<Field> result = new ArrayList<Field>();
 		ReflectionUtil.getAllFields(c, result);
 		return result;
@@ -100,13 +99,13 @@ public final class ReflectionUtil {
 	 * @param fields
 	 *            A collection to hold the classes.
 	 */
-	public static void getAllFields(final Class< ? > c,
+	public static void getAllFields(final Class<?> c,
 			final Collection<Field> fields) {
 		for (final Field field : c.getDeclaredFields()) {
 			fields.add(field);
 		}
 
-		final Class< ? > s = c.getSuperclass();
+		final Class<?> s = c.getSuperclass();
 		if (s != null) {
 			ReflectionUtil.getAllFields(s, fields);
 		}
@@ -121,8 +120,8 @@ public final class ReflectionUtil {
 	 *            Is class1 an instance of class 2.
 	 * @return True if class 1 is an instance of class 2.
 	 */
-	public static boolean isInstanceOf(final Class< ? > class1,
-			final Class< ? > class2) {
+	public static boolean isInstanceOf(final Class<?> class1,
+			final Class<?> class2) {
 
 		// same class?
 		if (class1.equals(class2)) {
@@ -130,7 +129,7 @@ public final class ReflectionUtil {
 		}
 
 		// implements interface
-		for (final Class< ? > clazz : class1.getInterfaces()) {
+		for (final Class<?> clazz : class1.getInterfaces()) {
 			if (clazz.equals(class1)) {
 				return true;
 			}
@@ -173,13 +172,44 @@ public final class ReflectionUtil {
 	 * Load the classmap file. This allows classes to be resolved using just the
 	 * simple name.
 	 */
+	public static void loadStandardClassmap() {
+		String currentClass = null;
+		try {
+			final ResourcePersistence resource = new ResourcePersistence(
+					"org/encog/data/classes.txt");
+			final InputStream is = resource.createInputStream();
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(is));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.trim().length() != 0) {
+					currentClass = line;
+					final Class<?> c = Class.forName(line);
+					ReflectionUtil.classMap.put(c.getSimpleName(), c);
+				}
+			}
+			is.close();
+		} catch (final IOException e) {
+			throw new EncogError(e);
+		} catch (final ClassNotFoundException e) {
+			throw new EncogError("Unknown class: " + currentClass);
+		}
+
+	}
+
+	/**
+	 * Load the classmap file. This allows classes to be resolved using just the
+	 * simple name.
+	 */
 	public static void loadClassmap() {
-					
+		loadStandardClassmap();
 		final ClassInfo[] info = ModuleHandler.createModuleList("org.encog.*");
-		
+
 		for (final ClassInfo inf : info) {
-			final Class<?> c = inf.theclass;			
-			ReflectionUtil.classMap.put(c.getSimpleName(), c);
+			final Class<?> c = inf.theclass;
+			if (!ReflectionUtil.classMap.containsKey(c.getSimpleName())) {
+				ReflectionUtil.classMap.put(c.getSimpleName(), c);
+			}
 		}
 	}
 
@@ -190,14 +220,14 @@ public final class ReflectionUtil {
 	 *            The simple name of the class.
 	 * @return The class requested.
 	 */
-	public static Class< ? > resolveEncogClass(final String name) {
-        synchronized (ReflectionUtil.classMap) { 
-            if (ReflectionUtil.classMap.size() == 0) {
-                ReflectionUtil.loadClassmap();
-            }
-        }
-        Map<String, Class<?>> i = ReflectionUtil.classMap;
-        return ReflectionUtil.classMap.get(name);
+	public static Class<?> resolveEncogClass(final String name) {
+		synchronized (ReflectionUtil.classMap) {
+			if (ReflectionUtil.classMap.size() == 0) {
+				ReflectionUtil.loadClassmap();
+			}
+		}
+		Map<String, Class<?>> i = ReflectionUtil.classMap;
+		return ReflectionUtil.classMap.get(name);
 	}
 
 	/**
@@ -241,7 +271,7 @@ public final class ReflectionUtil {
 	 * @return The enum that was resolved.
 	 */
 	public static Object resolveEnum(final Field field, final String value) {
-		final Class< ? > type = field.getType();
+		final Class<?> type = field.getType();
 		Object[] objs = type.getEnumConstants();
 		for (Object obj : objs) {
 			if (obj.toString().equals(value)) {
@@ -250,7 +280,7 @@ public final class ReflectionUtil {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Generate a hash code for an object.  Return 0 for null objects.
 	 * @param <T> The type of object to generate for.
