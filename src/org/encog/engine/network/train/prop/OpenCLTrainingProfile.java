@@ -227,6 +227,9 @@ public class OpenCLTrainingProfile {
 				this.kernelWorkPerCall = 1;
 			} else {
 				this.kernelWorkPerCall = (int) ((training.getRecordCount() / this.kernelGlobalWorkgroup) * this.segmentationRatio);
+				if( this.kernelWorkPerCall==0 ) {
+					this.kernelWorkPerCall= 1;
+				}
 			}
 		}
 
