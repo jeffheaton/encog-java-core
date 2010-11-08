@@ -41,8 +41,6 @@ import org.encog.neural.networks.training.Train;
  * must be the FoldedDataSet. The folded dataset can wrap most other training
  * sets.
  * 
- * @author jheaton
- * 
  */
 public class CrossValidationKFold extends CrossTraining {
 
@@ -51,8 +49,14 @@ public class CrossValidationKFold extends CrossTraining {
 	 */
 	private final Train train;
 
+	/**
+	 * The network folds.
+	 */
 	private final NetworkFold[] networks;
 
+	/**
+	 * The flat network to train.
+	 */
 	private final FlatNetwork flatNetwork;
 
 	/**

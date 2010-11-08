@@ -3,35 +3,57 @@ package org.encog.neural.networks.training.cross;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.util.EngineArray;
 
+/**
+ * The network for one fold of a cross validation.
+ */
 public class NetworkFold {
 
-	final double[] weights;
-	final double[] output;
+	/**
+	 * The weights for this fold.
+	 */
+	private final double[] weights;
+	
+	/**
+	 * The output for this fold.
+	 */
+	private final double[] output;
 
-	public NetworkFold(FlatNetwork flat) {
+	/**
+	 * Construct a fold from the specified flat network.
+	 * @param flat THe flat network.
+	 */
+	public NetworkFold(final FlatNetwork flat) {
 		this.weights = EngineArray.arrayCopy(flat.getWeights());
 		this.output = EngineArray.arrayCopy(flat.getLayerOutput());
 	}
 
-	public void copyToNetwork(FlatNetwork target) {
+	/**
+	 * Copy weights and output to the network.
+	 * @param target The network to copy to.
+	 */
+	public void copyToNetwork(final FlatNetwork target) {
 		EngineArray.arrayCopy(this.weights, target.getWeights());
 		EngineArray.arrayCopy(this.output, target.getLayerOutput());		
 	}
 
-	public void copyFromNetwork(FlatNetwork source) {
+	/**
+	 * Copy the weights and output from the network.
+	 * @param source The network to copy from.
+	 */
+	public void copyFromNetwork(final FlatNetwork source) {
 		EngineArray.arrayCopy(source.getWeights(), this.weights);
 		EngineArray.arrayCopy(source.getLayerOutput(), this.output);
 	}
 
 	/**
-	 * @return the weights
+	 * @return The network weights.
 	 */
 	public double[] getWeights() {
 		return weights;
 	}
 
 	/**
-	 * @return the output
+	 * @return The network output.
 	 */
 	public double[] getOutput() {
 		return output;
