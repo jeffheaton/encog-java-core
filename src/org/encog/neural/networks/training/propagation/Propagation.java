@@ -153,6 +153,7 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public void iteration() {
 		try {
+			this.network.getStructure().updateFlatNetwork();
 			preIteration();
 
 			this.flatTraining.iteration();
