@@ -315,7 +315,7 @@ public final class NetworkCODEC {
 				}
 
 				if (contextSynapse != null) {
-					for (int z = 0; z < synapse.getFromNeuronCount(); z++) {
+					for (int z = 0; z < contextSynapse.getFromNeuronCount(); z++) {
 
 						double value = array[result++];
 
