@@ -118,7 +118,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 */
 	public BasicNetwork generate() {
 		// construct an Jordan type network
-		final Layer input = new BasicLayer(this.activation, true,
+		final Layer input = new BasicLayer(this.activation, false,
 				this.inputNeurons);
 		final Layer hidden = new BasicLayer(this.activation, true,
 				this.hiddenNeurons);

@@ -185,7 +185,7 @@ public final class NetworkCODEC {
 					}
 
 					if (contextSynapse != null) {
-						index += synapse.getFromNeuronCount();
+						index += contextSynapse.getFromNeuronCount();
 					}
 				}
 			}
@@ -255,7 +255,7 @@ public final class NetworkCODEC {
 					}
 
 					if (contextSynapse != null) {
-						for (int z = 0; z < synapse.getFromNeuronCount(); z++) {
+						for (int z = 0; z < contextSynapse.getFromNeuronCount(); z++) {
 							result[index++] = contextSynapse.getMatrix().get(z,
 									x);
 						}

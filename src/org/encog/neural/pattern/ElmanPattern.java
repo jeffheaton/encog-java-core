@@ -120,7 +120,7 @@ public class ElmanPattern implements NeuralNetworkPattern {
 		final Layer context = new ContextLayer(this.hiddenNeurons);
 		final BasicNetwork network = new BasicNetwork();
 
-		final Layer input = new BasicLayer(this.activation, true,
+		final Layer input = new BasicLayer(this.activation, false,
 				this.inputNeurons);
 		network.addLayer(input);
 		input.setX(PatternConst.START_X);
