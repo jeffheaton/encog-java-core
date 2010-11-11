@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v2.5 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2010 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.engine.concurrency.calc;
 
 import java.util.ArrayList;
@@ -8,76 +31,96 @@ import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 
-public class ConcurrentCalculate {
-	
-	private FlatNetwork network;
-	private EngineIndexableSet trainingData;
-	private List<CalcOpenCLDevice> devices = new ArrayList<CalcOpenCLDevice>();
+/**
+ * Class used to provide concurrent calculation between the CPU and OpenCL
+ * devices.
+ * 
+ */
+public final class ConcurrentCalculate {
+
+	/**
+	 * The instance.
+	 */
 	private static ConcurrentCalculate instance;
-	private boolean useOpenCL;
+
+	/**
+	 * @return The instance.
+	 */
+	public static ConcurrentCalculate getInstance() {
+		if (ConcurrentCalculate.instance == null) {
+			ConcurrentCalculate.instance = new ConcurrentCalculate();
+		}
+		return ConcurrentCalculate.instance;
+	}
+
+	/**
+	 * The current network.
+	 */
+	private FlatNetwork network;
 	
+	/**
+	 * The current training data.
+	 */
+	private EngineIndexableSet trainingData;
+
+	/**
+	 * The OpenCL devices to use.
+	 */
+	private final List<CalcOpenCLDevice> devices 
+		= new ArrayList<CalcOpenCLDevice>();
+
+	/**
+	 * True, if we should use OpenCL.
+	 */
+	private boolean useOpenCL;
+
 	/**
 	 * Private constructor.
 	 */
-	private ConcurrentCalculate()
-	{
-		
-	}
-	
-	public static ConcurrentCalculate getInstance()
-	{
-		if( instance==null )
-			instance = new ConcurrentCalculate();
-		return instance;
+	private ConcurrentCalculate() {
+
 	}
 
-	public FlatNetwork getNetwork() {
-		return network;
-	}
-
-	public void setNetwork(FlatNetwork network) {
-		this.network = network;
-		for(CalcOpenCLDevice dev: this.devices)
-		{
-			dev.setTraining(trainingData);
-		}
-	}
-
-	public EngineIndexableSet getTrainingData() {
-		return trainingData;
-	}
-
-	public void setTrainingData(EngineIndexableSet trainingData) {
-		this.trainingData = trainingData;
-		for(CalcOpenCLDevice dev: this.devices)
-		{
-			dev.setTraining(trainingData);
-		}
-	}
-	
-	public double calculateError()
-	{
+	/**
+	 * @return THe calculated error.
+	 */
+	public double calculateError() {
 		// if we are using OpenCL, then try to execute on OpenCL first
-		if( this.useOpenCL ) {
-			for(CalcOpenCLDevice dev: this.devices) {
-				CalculationResult result = dev.calculateError();
-				if( result.isExecuted() )
-				{
+		if (this.useOpenCL) {
+			for (final CalcOpenCLDevice dev : this.devices) {
+				final CalculationResult result = dev.calculateError();
+				if (result.isExecuted()) {
 					return result.getError();
 				}
 			}
 		}
-		
+
 		// use regular CPU code to calculate
 		return this.network.calculateError(this.trainingData);
 	}
-	
-	public void initCL()
-	{
+
+	/**
+	 * @return The current network.
+	 */
+	public FlatNetwork getNetwork() {
+		return this.network;
+	}
+
+	/**
+	 * @return The current training data.
+	 */
+	public EngineIndexableSet getTrainingData() {
+		return this.trainingData;
+	}
+
+	/**
+	 * Init for OpenCL.
+	 */
+	public void initCL() {
 		this.devices.clear();
-		for(EncogCLDevice device: EncogEngine.getInstance().getCL().getEnabledDevices() )
-		{
-			this.devices.add(new CalcOpenCLDevice(device,this));
+		for (final EncogCLDevice device : EncogEngine.getInstance().getCL()
+				.getEnabledDevices()) {
+			this.devices.add(new CalcOpenCLDevice(device, this));
 		}
 		this.useOpenCL = true;
 	}
@@ -86,15 +129,37 @@ public class ConcurrentCalculate {
 	 * @return the useOpenCL
 	 */
 	public boolean isUseOpenCL() {
-		return useOpenCL;
+		return this.useOpenCL;
 	}
 
 	/**
-	 * @param useOpenCL the useOpenCL to set
+	 * Set the current network.
+	 * @param network The current network.
 	 */
-	public void setUseOpenCL(boolean useOpenCL) {
+	public void setNetwork(final FlatNetwork network) {
+		this.network = network;
+		for (final CalcOpenCLDevice dev : this.devices) {
+			dev.setTraining(this.trainingData);
+		}
+	}
+
+	/**
+	 * Set the current training data.
+	 * @param trainingData The current training data.
+	 */
+	public void setTrainingData(final EngineIndexableSet trainingData) {
+		this.trainingData = trainingData;
+		for (final CalcOpenCLDevice dev : this.devices) {
+			dev.setTraining(trainingData);
+		}
+	}
+
+	/**
+	 * @param useOpenCL
+	 *            the useOpenCL to set
+	 */
+	public void setUseOpenCL(final boolean useOpenCL) {
 		this.useOpenCL = useOpenCL;
 	}
-	
-	
+
 }
