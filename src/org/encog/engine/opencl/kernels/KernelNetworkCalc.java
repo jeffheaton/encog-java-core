@@ -381,7 +381,7 @@ public class KernelNetworkCalc extends EncogKernel {
 		this.paramArray[0] = this.flat.getInputCount();
 		this.paramArray[1] = this.flat.getOutputCount();
 		this.paramArray[2] = this.flat.getLayerCounts().length;
-		
+
 		if (this.layerCountBuffer != null) {
 			releaseBuffer(this.layerCountBuffer);
 			this.layerCountBuffer = null;
@@ -418,12 +418,12 @@ public class KernelNetworkCalc extends EncogKernel {
 
 	private void allocateCommon() {
 		if (this.training != null && this.flat != null) {
-			
+
 			if (this.layerOutputBuffer != null) {
 				releaseBuffer(this.layerOutputBuffer);
 				this.layerOutputBuffer = null;
 			}
-			
+
 			this.layerOutputBuffer = this
 					.createFloatArrayWriteOnly(this.layerOutput.length);
 		}
@@ -456,7 +456,7 @@ public class KernelNetworkCalc extends EncogKernel {
 
 		final int errorSize = (int) training.getRecordCount();
 		this.errors = new float[errorSize];
-		
+
 		if (this.errorBuffer != null) {
 			releaseBuffer(this.errorBuffer);
 			this.errorBuffer = null;
@@ -472,12 +472,22 @@ public class KernelNetworkCalc extends EncogKernel {
 			this.inputBuffer = null;
 		}
 
-		
 		this.errorBuffer = createFloatArrayWriteOnly(errorSize);
 		this.inputBuffer = createArrayReadOnly(this.inputArray);
 		this.idealBuffer = createArrayReadOnly(this.idealArray);
 
 		allocateCommon();
+	}
+
+	/**
+	 * @return The error from the last evaluation.
+	 */
+	public double getError() {
+		double result = 0;
+		for (int i = 0; i < this.errors.length; i++) {
+			result += this.errors[i];
+		}
+		return result;
 	}
 
 }
