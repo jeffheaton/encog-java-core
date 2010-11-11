@@ -14,6 +14,7 @@ public class ConcurrentCalculate {
 	private EngineIndexableSet trainingData;
 	private List<CalcOpenCLDevice> devices = new ArrayList<CalcOpenCLDevice>();
 	private static ConcurrentCalculate instance;
+	private boolean useOpenCL;
 	
 	/**
 	 * Private constructor.
@@ -56,6 +57,18 @@ public class ConcurrentCalculate {
 	
 	public double calculateError()
 	{
+		// if we are using OpenCL, then try to execute on OpenCL first
+		if( this.useOpenCL ) {
+			for(CalcOpenCLDevice dev: this.devices) {
+				CalculationResult result = dev.calculateError();
+				if( result.isExecuted() )
+				{
+					return result.getError();
+				}
+			}
+		}
+		
+		// use regular CPU code to calculate
 		return this.network.calculateError(this.trainingData);
 	}
 	
@@ -66,5 +79,22 @@ public class ConcurrentCalculate {
 		{
 			this.devices.add(new CalcOpenCLDevice(device,this));
 		}
+		this.useOpenCL = true;
 	}
+
+	/**
+	 * @return the useOpenCL
+	 */
+	public boolean isUseOpenCL() {
+		return useOpenCL;
+	}
+
+	/**
+	 * @param useOpenCL the useOpenCL to set
+	 */
+	public void setUseOpenCL(boolean useOpenCL) {
+		this.useOpenCL = useOpenCL;
+	}
+	
+	
 }

@@ -42,8 +42,8 @@ import org.jocl.CLException;
 import org.jocl.cl_mem;
 
 /**
- * An OpenCL kernel that is designed to calculate the output of a
- * neural network.
+ * An OpenCL kernel that is designed to calculate the output of a neural
+ * network.
  */
 public class KernelNetworkCalc extends EncogKernel {
 
@@ -88,11 +88,6 @@ public class KernelNetworkCalc extends EncogKernel {
 	private cl_mem weightInArrayBuffer;
 
 	/**
-	 * A buffer to communicate weights from the kernel.
-	 */
-	private cl_mem weightOutArrayBuffer;
-
-	/**
 	 * A buffer to hold the layer index.
 	 */
 	private cl_mem layerIndexBuffer;
@@ -113,19 +108,9 @@ public class KernelNetworkCalc extends EncogKernel {
 	private cl_mem weightIndexBuffer;
 
 	/**
-	 * A buffer to hold the activations for each of the layers.
-	 */
-	private cl_mem activationTypeBuffer;
-
-	/**
 	 * The weight and bias array for the network.
 	 */
 	private float[] weightInArray;
-
-	/**
-	 * The weight output array.
-	 */
-	private float[] weightOutArray;
 
 	/**
 	 * An array to hold the input to the neural network.
@@ -143,9 +128,19 @@ public class KernelNetworkCalc extends EncogKernel {
 	private cl_mem inputBuffer;
 
 	/**
+	 * The layer output buffer.
+	 */
+	private cl_mem layerOutputBuffer;
+
+	/**
 	 * The ideal buffer.
 	 */
 	private cl_mem idealBuffer;
+
+	/**
+	 * The layer output.
+	 */
+	private float[] layerOutput;
 
 	/**
 	 * Holds parameters passed to the kernel.
@@ -204,6 +199,9 @@ public class KernelNetworkCalc extends EncogKernel {
 				"NetworkCalc");
 
 		this.device = device;
+		this.paramArray = new int[10];
+		this.paramBuffer = createArrayReadOnly(this.paramArray);
+
 	}
 
 	/**
@@ -251,8 +249,6 @@ public class KernelNetworkCalc extends EncogKernel {
 		setArg(6, this.inputBuffer);
 		setArg(7, this.idealBuffer);
 		setArg(8, this.weightInArrayBuffer);
-		setArg(9, this.weightOutArrayBuffer);
-		setArg(11, this.activationTypeBuffer);
 
 		try {
 			final EncogCLQueue queue = this.device.getQueue();
@@ -268,7 +264,6 @@ public class KernelNetworkCalc extends EncogKernel {
 
 			// Read the results
 			queue.buffer2Array(this.errorBuffer, this.errors);
-			queue.buffer2Array(this.weightOutArrayBuffer, this.weightOutArray);
 
 		} catch (final CLException e) {
 			if (e.getMessage().equals("CL_OUT_OF_RESOURCES")) {
@@ -301,17 +296,11 @@ public class KernelNetworkCalc extends EncogKernel {
 		source.append(activation.getOpenCLExpression(false));
 		source.append("\r\n");
 
-		source.append("#define DERIVATIVE(x,slope)");
-		source.append(activation.getOpenCLExpression(true));
-		source.append("\r\n");
-
 		source.append(ResourceLoader.loadString(getSourceName()));
 		setCLSource(source.toString());
 
 		compile(options);
 		profile.calculateKernelParams(this, this.training);
-		// setup
-		init(profile);
 	}
 
 	/**
@@ -321,62 +310,58 @@ public class KernelNetworkCalc extends EncogKernel {
 		return this.errors;
 	}
 
-
-	/**
-	 * @return the weightOutArray
-	 */
-	public float[] getWeightOutArray() {
-		return this.weightOutArray;
-	}
-
-	/**
-	 * Setup the kernel.
-	 * @param profile The OpenCL training profile.
-	 */
-	public void init(final OpenCLTrainingProfile profile) {
-		final int errorSize = profile.getKernelGlobalWorkgroup();
-
-		this.errors = new float[errorSize];
-
-		this.paramArray[0] = this.flat.getInputCount();
-		this.paramArray[1] = this.flat.getOutputCount();
-		this.paramArray[2] = this.flat.getLayerCounts().length;
-
-		// create the buffers
-		this.inputBuffer = createArrayReadOnly(this.inputArray);
-		this.idealBuffer = createArrayReadOnly(this.idealArray);
-		this.errorBuffer = createFloatArrayWriteOnly(errorSize);
-		this.paramBuffer = createArrayReadOnly(this.paramArray);
-		this.layerIndexBuffer = createArrayReadOnly(this.flat.getLayerIndex());
-		this.layerCountBuffer = createArrayReadOnly(this.flat.getLayerCounts());
-		this.layerFeedCountBuffer = createArrayReadOnly(this.flat
-				.getLayerFeedCounts());
-		this.weightInArrayBuffer = createArrayReadOnly(this.weightInArray);
-		this.weightOutArrayBuffer = createFloatArrayWriteOnly(this.weightInArray.length);
-		this.weightIndexBuffer = createArrayReadOnly(this.flat.getWeightIndex());
-		this.activationTypeBuffer = createArrayReadOnly(this.flat
-				.getLayerCounts());
-	}
-
 	/**
 	 * Release the kernel and all buffers.
 	 */
 	@Override
 	public void release() {
 		super.release();
-		releaseBuffer(this.activationTypeBuffer);
-		releaseBuffer(this.errorBuffer);
-		releaseBuffer(this.idealBuffer);
-		releaseBuffer(this.inputBuffer);
-		releaseBuffer(this.layerCountBuffer);
-		releaseBuffer(this.layerFeedCountBuffer);
-		releaseBuffer(this.layerIndexBuffer);
-		releaseBuffer(this.paramBuffer);
-		releaseBuffer(this.weightInArrayBuffer);
-		releaseBuffer(this.weightIndexBuffer);
-		releaseBuffer(this.weightOutArrayBuffer);
-	}
 
+		if (this.errorBuffer != null) {
+			releaseBuffer(this.errorBuffer);
+			this.errorBuffer = null;
+		}
+
+		if (this.idealBuffer != null) {
+			releaseBuffer(this.idealBuffer);
+			this.idealBuffer = null;
+		}
+
+		if (this.inputBuffer != null) {
+			releaseBuffer(this.inputBuffer);
+			this.inputBuffer = null;
+		}
+
+		if (this.layerCountBuffer != null) {
+			releaseBuffer(this.layerCountBuffer);
+			this.layerCountBuffer = null;
+		}
+
+		if (this.layerFeedCountBuffer != null) {
+			releaseBuffer(this.layerFeedCountBuffer);
+			this.layerFeedCountBuffer = null;
+		}
+
+		if (this.layerIndexBuffer != null) {
+			releaseBuffer(this.layerIndexBuffer);
+			this.layerIndexBuffer = null;
+		}
+
+		if (this.paramBuffer != null) {
+			releaseBuffer(this.paramBuffer);
+			this.paramBuffer = null;
+		}
+
+		if (this.weightInArrayBuffer != null) {
+			releaseBuffer(this.weightInArrayBuffer);
+			this.weightInArrayBuffer = null;
+		}
+
+		if (this.weightIndexBuffer != null) {
+			releaseBuffer(this.weightIndexBuffer);
+			this.weightIndexBuffer = null;
+		}
+	}
 
 	public FlatNetwork getFlat() {
 		return flat;
@@ -384,17 +369,64 @@ public class KernelNetworkCalc extends EncogKernel {
 
 	public void setFlat(FlatNetwork flat) {
 		this.flat = flat;
-		
+
 		this.weightInArray = new float[flat.getWeights().length];
-		this.weightOutArray = new float[flat.getWeights().length];
 
 		final int inputSize = flat.getInputCount();
 		final int idealSize = flat.getOutputCount();
 
 		this.inputArray = new float[inputSize * this.trainingLength];
 		this.idealArray = new float[idealSize * this.trainingLength];
-		this.paramArray = new int[10];
 
+		this.paramArray[0] = this.flat.getInputCount();
+		this.paramArray[1] = this.flat.getOutputCount();
+		this.paramArray[2] = this.flat.getLayerCounts().length;
+		
+		if (this.layerCountBuffer != null) {
+			releaseBuffer(this.layerCountBuffer);
+			this.layerCountBuffer = null;
+		}
+
+		if (this.layerFeedCountBuffer != null) {
+			releaseBuffer(this.layerFeedCountBuffer);
+			this.layerFeedCountBuffer = null;
+		}
+
+		if (this.layerIndexBuffer != null) {
+			releaseBuffer(this.layerIndexBuffer);
+			this.layerIndexBuffer = null;
+		}
+
+		if (this.weightInArrayBuffer != null) {
+			releaseBuffer(this.weightInArrayBuffer);
+			this.weightInArrayBuffer = null;
+		}
+
+		if (this.weightIndexBuffer != null) {
+			releaseBuffer(this.weightIndexBuffer);
+			this.weightIndexBuffer = null;
+		}
+
+		this.layerIndexBuffer = createArrayReadOnly(this.flat.getLayerIndex());
+		this.layerCountBuffer = createArrayReadOnly(this.flat.getLayerCounts());
+		this.layerFeedCountBuffer = createArrayReadOnly(this.flat
+				.getLayerFeedCounts());
+		this.weightInArrayBuffer = createArrayReadOnly(this.weightInArray);
+		this.weightIndexBuffer = createArrayReadOnly(this.flat.getWeightIndex());
+		allocateCommon();
+	}
+
+	private void allocateCommon() {
+		if (this.training != null && this.flat != null) {
+			
+			if (this.layerOutputBuffer != null) {
+				releaseBuffer(this.layerOutputBuffer);
+				this.layerOutputBuffer = null;
+			}
+			
+			this.layerOutputBuffer = this
+					.createFloatArrayWriteOnly(this.layerOutput.length);
+		}
 	}
 
 	public EngineIndexableSet getTraining() {
@@ -422,7 +454,30 @@ public class KernelNetworkCalc extends EncogKernel {
 			}
 		}
 
+		final int errorSize = (int) training.getRecordCount();
+		this.errors = new float[errorSize];
+		
+		if (this.errorBuffer != null) {
+			releaseBuffer(this.errorBuffer);
+			this.errorBuffer = null;
+		}
+
+		if (this.idealBuffer != null) {
+			releaseBuffer(this.idealBuffer);
+			this.idealBuffer = null;
+		}
+
+		if (this.inputBuffer != null) {
+			releaseBuffer(this.inputBuffer);
+			this.inputBuffer = null;
+		}
+
+		
+		this.errorBuffer = createFloatArrayWriteOnly(errorSize);
+		this.inputBuffer = createArrayReadOnly(this.inputArray);
+		this.idealBuffer = createArrayReadOnly(this.idealArray);
+
+		allocateCommon();
 	}
-	
-	
+
 }

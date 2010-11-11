@@ -10,12 +10,22 @@ public class CalcOpenCLDevice {
 	private final EncogCLDevice device;
 	private final ConcurrentCalculate calc;
 	private final KernelNetworkCalc kernelCalc;
+	private boolean busy;
 	
 	public CalcOpenCLDevice(EncogCLDevice device, ConcurrentCalculate calc) {
 		super();
 		this.device = device;
 		this.calc = calc;
 		this.kernelCalc = new KernelNetworkCalc(this.device);
+	}
+	
+	public CalculationResult calculateError()
+	{
+		if( this.busy )
+			return new CalculationResult(false,false);
+		
+		CalculationResult result = new CalculationResult(true,true);
+		return result;
 	}
 
 	public EncogCLDevice getDevice() {
