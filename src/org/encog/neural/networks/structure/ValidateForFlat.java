@@ -33,6 +33,8 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.logic.FeedforwardLogic;
 import org.encog.neural.networks.logic.ThermalLogic;
+import org.encog.neural.networks.synapse.Synapse;
+import org.encog.neural.networks.synapse.neat.NEATSynapse;
 
 /**
  * Only certain types of networks can be converted to a flat network. This class
@@ -69,8 +71,8 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 			return "To convert to a flat network, there must be an output layer.";
 		}
 
-		if (!(network.getLogic() instanceof FeedforwardLogic) || 
-			  (network.getLogic() instanceof ThermalLogic )) {
+		if (!(network.getLogic() instanceof FeedforwardLogic)
+				|| (network.getLogic() instanceof ThermalLogic)) {
 			return "To convert to flat, must be using FeedforwardLogic or SimpleRecurrentLogic.";
 		}
 
@@ -85,6 +87,13 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 				return "To convert to flat a network must have only BasicLayer and ContextLayer layers.";
 			}
 		}
+
+		for (final Synapse synapse : network.getStructure().getSynapses()) {
+			if (synapse instanceof NEATSynapse) {
+				return "A NEAT synapse cannot be flattened.";
+			}
+		}
+
 		return null;
 	}
 
