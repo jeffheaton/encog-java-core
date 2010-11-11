@@ -280,9 +280,16 @@ public class ModuleHandler {
                     if (attr != null) {
                         String mcp = attr.getValue(Attributes.Name.CLASS_PATH);
                         if (mcp != null) {
-                            String[] mcpnames = mcp.split(" ");
-                            for (String name : mcpnames) {
-                                addUnique(files, new File(name));
+                            String[] mcpLocations = mcp.split(" ");
+                            for (String location : mcpLocations) {
+								File l = null;
+								try {
+									URL locationUrl = new URL(location);
+									l = new File(locationUrl.getFile());
+								} catch (MalformedURLException ex) {
+									l = new File(location);
+								}
+                                addUnique(files, l);
                             }
                         }
                     }
