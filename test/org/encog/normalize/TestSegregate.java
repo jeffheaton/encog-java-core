@@ -152,7 +152,7 @@ public class TestSegregate extends TestCase {
 			InputField firepoint;
 			InputField[] wilderness = new InputField[4];
 			InputField[] soilType = new InputField[40];
-			InputField coverType;	
+			InputField coverType;
 			
 			DataNormalization norm = new DataNormalization();
 			norm.setReport(new NullStatusReportable());

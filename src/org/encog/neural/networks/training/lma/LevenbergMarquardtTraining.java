@@ -40,7 +40,7 @@ import org.encog.neural.networks.training.TrainingError;
 
 /**
  * Trains a neural network using a Levenberg Marquardt algorithm (LMA). This
- * training technique is based on the mathematical technique of the same name. �
+ * training technique is based on the mathematical technique of the same name.
  * 
  * http://en.wikipedia.org/wiki/Levenberg%E2%80%93Marquardt_algorithm
  * 

@@ -36,7 +36,7 @@ import org.encog.neural.networks.synapse.Synapse;
  * most trainable neural network.
  * 
  * 
- * @author St�phan Corriveau
+ * @author St?phan Corriveau
  * 
  */
 public class NguyenWidrowRandomizer extends RangeRandomizer implements
