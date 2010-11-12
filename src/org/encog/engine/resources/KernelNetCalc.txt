@@ -21,7 +21,7 @@ kernel void NetworkCalc(
     global read_only float* input,
     global read_only float* ideal,
     global read_only float* weightsIn,
-    global read_only float* layerOutput
+    global write_only float* layerOutputOut
     )
 {
 	int taskIndex = get_global_id(0);
@@ -29,16 +29,14 @@ kernel void NetworkCalc(
 	int inputSize = params[PARRAY_INPUT_COUNT];
     int outputSize = params[PARRAY_OUTPUT_COUNT];
     int layerCount = params[PARRAY_LAYER_COUNT];
-    int trainingOffset = params[PARRAY_START];
 	
-	// clear out the errors
-	errors[taskIndex] = 0;	
-		
 	// forward pass
 	int taskInputIndex = taskIndex * inputSize;
 	int taskIdealIndex = taskIndex * outputSize;
 	
 	int sourceIndex = NEURON_COUNT - layerCounts[layerCount-1];
+	
+	global float* layerOutput = layerOutputOut + (taskIndex*NEURON_COUNT);
 		
 	for(int i=0;i<NEURON_COUNT;i++)
 		layerOutput[i] = 1;
@@ -59,7 +57,7 @@ kernel void NetworkCalc(
 		for (int x = 0; x < outputSize; x++)
 		{
 			float sum = 0;
-			float *outputPtr = layerOutput+inputIndex;
+			global float *outputPtr = layerOutput+inputIndex;
 			for (int y = 0; y < inputSize; y++)
 			{
 				sum += *(wptr++) * layerOutput[inputIndex + y];
@@ -70,4 +68,13 @@ kernel void NetworkCalc(
 	}	
 	
 	// Calculate the errors 
+	float e = 0;
+   
+	for(int i=0;i<outputSize;i++)
+	{
+		float diff = ideal[taskIdealIndex+i] - layerOutput[i];
+		e+=diff*diff;
+	}				
+
+	errors[taskIndex] = e;
 }

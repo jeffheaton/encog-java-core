@@ -120,7 +120,12 @@ public final class ConcurrentCalculate {
 		this.devices.clear();
 		for (final EncogCLDevice device : EncogEngine.getInstance().getCL()
 				.getEnabledDevices()) {
-			this.devices.add(new CalcOpenCLDevice(device, this));
+			CalcOpenCLDevice d = new CalcOpenCLDevice(device, this);
+			this.devices.add(d);
+			if( this.network!=null )
+				d.setNetwork(this.network);
+			if( this.trainingData!=null )
+				d.setTraining(this.trainingData);
 		}
 		this.useOpenCL = true;
 	}

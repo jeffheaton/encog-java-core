@@ -24,6 +24,7 @@
 
 package org.encog.engine.opencl.kernels;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.engine.data.BasicEngineData;
@@ -31,12 +32,12 @@ import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.EncogCLQueue;
 import org.encog.engine.opencl.exceptions.OpenCLError;
 import org.encog.engine.opencl.exceptions.OutOfOpenCLResources;
 import org.encog.engine.util.EngineArray;
+import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.ResourceLoader;
 import org.jocl.CLException;
 import org.jocl.cl_mem;
@@ -237,6 +238,8 @@ public class KernelNetworkCalc extends EncogKernel {
 
 		this.paramArray[KernelNetworkCalc.PARRAY_START] = start;
 		this.paramArray[KernelNetworkCalc.PARRAY_ITEMS_PER] = size;
+		this.setGlobalWork(size);
+		this.setLocalWork(1);
 
 		EngineArray.arrayCopy(this.flat.getWeights(), this.weightInArray);
 
@@ -249,6 +252,7 @@ public class KernelNetworkCalc extends EncogKernel {
 		setArg(6, this.inputBuffer);
 		setArg(7, this.idealBuffer);
 		setArg(8, this.weightInArrayBuffer);
+		setArg(9, this.layerOutputBuffer);
 
 		try {
 			final EncogCLQueue queue = this.device.getQueue();
@@ -264,6 +268,7 @@ public class KernelNetworkCalc extends EncogKernel {
 
 			// Read the results
 			queue.buffer2Array(this.errorBuffer, this.errors);
+			queue.buffer2Array(this.layerOutputBuffer, this.layerOutput );
 
 		} catch (final CLException e) {
 			if (e.getMessage().equals("CL_OUT_OF_RESOURCES")) {
@@ -286,8 +291,7 @@ public class KernelNetworkCalc extends EncogKernel {
 	 * @param network
 	 *            The network to compile for.
 	 */
-	public void compile(final Map<String, String> options,
-			final OpenCLTrainingProfile profile, final FlatNetwork network) {
+	public void compile(final FlatNetwork network) {
 
 		final ActivationFunction activation = network.getActivationFunctions()[0];
 		final StringBuilder source = new StringBuilder();
@@ -298,9 +302,12 @@ public class KernelNetworkCalc extends EncogKernel {
 
 		source.append(ResourceLoader.loadString(getSourceName()));
 		setCLSource(source.toString());
+		
+		final Map<String, String> options = new HashMap<String, String>();
+		options.put("NEURON_COUNT", "" + network.getNeuronCount());
+		options.put("WEIGHT_COUNT", "" + network.getWeights().length);
 
 		compile(options);
-		profile.calculateKernelParams(this, this.training);
 	}
 
 	/**
@@ -375,9 +382,6 @@ public class KernelNetworkCalc extends EncogKernel {
 		final int inputSize = flat.getInputCount();
 		final int idealSize = flat.getOutputCount();
 
-		this.inputArray = new float[inputSize * this.trainingLength];
-		this.idealArray = new float[idealSize * this.trainingLength];
-
 		this.paramArray[0] = this.flat.getInputCount();
 		this.paramArray[1] = this.flat.getOutputCount();
 		this.paramArray[2] = this.flat.getLayerCounts().length;
@@ -414,6 +418,7 @@ public class KernelNetworkCalc extends EncogKernel {
 		this.weightInArrayBuffer = createArrayReadOnly(this.weightInArray);
 		this.weightIndexBuffer = createArrayReadOnly(this.flat.getWeightIndex());
 		allocateCommon();
+		compile(flat);
 	}
 
 	private void allocateCommon() {
@@ -424,6 +429,7 @@ public class KernelNetworkCalc extends EncogKernel {
 				this.layerOutputBuffer = null;
 			}
 
+			this.layerOutput = new float[this.flat.getLayerOutput().length*this.trainingLength];
 			this.layerOutputBuffer = this
 					.createFloatArrayWriteOnly(this.layerOutput.length);
 		}
@@ -440,6 +446,9 @@ public class KernelNetworkCalc extends EncogKernel {
 		final EngineData pair = BasicEngineData.createPair(
 				flat.getInputCount(), flat.getOutputCount());
 
+		this.inputArray = new float[training.getInputSize() * this.trainingLength];
+		this.idealArray = new float[training.getIdealSize() * this.trainingLength];
+		
 		int inputIndex = 0;
 		int idealIndex = 0;
 
@@ -483,11 +492,12 @@ public class KernelNetworkCalc extends EncogKernel {
 	 * @return The error from the last evaluation.
 	 */
 	public double getError() {
+		ErrorCalculation ec = new ErrorCalculation();
 		double result = 0;
 		for (int i = 0; i < this.errors.length; i++) {
 			result += this.errors[i];
 		}
-		return result;
+		return result/(this.errors.length*this.flat.getOutputCount());
 	}
 
 }
