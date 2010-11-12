@@ -206,22 +206,6 @@ public class KernelNetworkCalc extends EncogKernel {
 	}
 
 	/**
-	 * Assign the workgroup sizes based on the training set size.
-	 * 
-	 * @param trainingSize
-	 *            The training set size.
-	 * @param requestedGlobalSize
-	 *            The requested global size.
-	 */
-	public void assignWorkgroupSizes(final int trainingSize,
-			final int requestedGlobalSize) {
-		// Calculate the work-item dimensions
-		final int threads = Math.min(trainingSize, requestedGlobalSize);
-		setLocalWork(Math.min(getMaxWorkGroupSize(), threads));
-		setGlobalWork(threads);
-	}
-
-	/**
 	 * Calculate one iteration over the specified range.
 	 * 
 	 * @param start
@@ -239,7 +223,7 @@ public class KernelNetworkCalc extends EncogKernel {
 		this.paramArray[KernelNetworkCalc.PARRAY_START] = start;
 		this.paramArray[KernelNetworkCalc.PARRAY_ITEMS_PER] = size;
 		this.setGlobalWork(size);
-		this.setLocalWork(1);
+		this.setLocalWork(64);
 
 		EngineArray.arrayCopy(this.flat.getWeights(), this.weightInArray);
 
