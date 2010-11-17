@@ -171,6 +171,7 @@
 		<property name="path.stage.sub" value="${path.stage}/encog-java-core-${encog.version}"/>
 		<copy todir="${path.stage.sub}" file="${basedir}/pom.xml" />
 		<copy todir="${path.stage.sub}" file="${basedir}/copyright.txt" />
+		<copy todir="${path.stage.sub}" file="${basedir}/IntroductionToEncogJava.pdf" />
 		<copy todir="${path.stage.sub}" file="${basedir}/build.xml" />
 		<copy todir="${path.stage.sub}" file="${basedir}/.checkstyle" />
 		<copy todir="${path.stage.sub}" file="${basedir}/.classpath" />
