@@ -467,7 +467,6 @@ org.encog.util.logging.DumpMatrix
 org.encog.util.logging.EncogFormatter
 org.encog.util.logging.Logging
 org.encog.util.obj.GenerateClasslist
-org.encog.util.obj.ModuleHandler
 org.encog.util.obj.ObjectCloner
 org.encog.util.obj.ReflectionUtil
 org.encog.util.obj.SerializeObject
