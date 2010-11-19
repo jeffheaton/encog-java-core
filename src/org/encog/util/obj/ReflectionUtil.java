@@ -39,7 +39,6 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.location.ResourcePersistence;
-import org.encog.util.obj.ModuleHandler.ClassInfo;
 
 /**
  * This class includes some utilities to be used with reflection. This are
@@ -201,14 +200,26 @@ public final class ReflectionUtil {
 	 * simple name.
 	 */
 	public static void loadClassmap() {
-		loadStandardClassmap();
-		final ClassInfo[] info = ModuleHandler.createModuleList("org.encog.*");
-
-		for (final ClassInfo inf : info) {
-			final Class<?> c = inf.theclass;
-			if (!ReflectionUtil.classMap.containsKey(c.getSimpleName())) {
-				ReflectionUtil.classMap.put(c.getSimpleName(), c);
+		String currentClass = null;
+		try {
+			final ResourcePersistence resource = new ResourcePersistence(
+					"org/encog/data/classes.txt");
+			final InputStream is = resource.createInputStream();
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(is));
+			String line;
+			while ((line = reader.readLine()) != null) {
+				if (line.trim().length() != 0) {
+					currentClass = line;
+					final Class<?> c = Class.forName(line);
+					ReflectionUtil.classMap.put(c.getSimpleName(), c);
+				}
 			}
+			is.close();
+		} catch (final IOException e) {
+			throw new EncogError(e);
+		} catch (final ClassNotFoundException e) {
+			throw new EncogError("Unknown class: " + currentClass);
 		}
 	}
 
