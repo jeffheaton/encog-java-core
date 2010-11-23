@@ -205,10 +205,6 @@ public class KernelNetworkCalc extends EncogKernel {
 	 *            The starting position to calculate for.
 	 * @param size
 	 *            The ending position to calculate for.
-	 * @param iterations
-	 *            The number of iterations to execute.
-	 * @param learn
-	 *            True, if we should learn.
 	 */
 	public void calculate(final int start, final int size) {
 		prepareKernel();

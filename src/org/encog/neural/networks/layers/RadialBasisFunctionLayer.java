@@ -191,8 +191,6 @@ public class RadialBasisFunctionLayer extends BasicLayer {
 	 *            The minimum position neurons should be centered. Typically 0.
 	 * @param maxPosition
 	 *            The maximum position neurons should be centered. Typically 1
-	 * @param RBFType
-	 *            The RBF type to use.
 	 * @param dimensions
 	 *            The number of dimensions.
 	 * @param volumeNeuronRBFWidth
