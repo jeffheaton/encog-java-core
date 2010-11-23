@@ -37,6 +37,16 @@ import org.encog.neural.networks.synapse.Synapse;
 
 /**
  * Calculate the Jacobian using the chain rule.
+ * ----------------------------------------------------
+ * 
+ * This implementation of the Levenberg Marquardt algorithm is based heavily on code
+ * published in an article by César Roberto de Souza.  The original article can be
+ * found here:
+ * 
+ * http://crsouza.blogspot.com/2009/11/neural-network-learning-by-levenberg_18.html
+ * 
+ * Portions of this class are under the following copyright/license.
+ * Copyright 2009 by César Roberto de Souza, Released under the LGPL.
  */
 public class JacobianChainRule implements ComputeJacobian {
 	/**
