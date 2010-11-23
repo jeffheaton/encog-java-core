@@ -187,12 +187,6 @@ public class KernelNetworkCalc extends EncogKernel {
 	 * 
 	 * @param device
 	 *            The OpenCL device to use.
-	 * @param flat
-	 *            The network to train.
-	 * @param training
-	 *            The training data.
-	 * @param tempDataSize
-	 *            How much temp data.
 	 */
 	public KernelNetworkCalc(final EncogCLDevice device) {
 		super(device, "org/encog/engine/resources/KernelNetCalc.txt",
@@ -267,10 +261,6 @@ public class KernelNetworkCalc extends EncogKernel {
 	/**
 	 * Compile the kernel.
 	 * 
-	 * @param options
-	 *            The options.
-	 * @param profile
-	 *            The OpenCL training profile.
 	 * @param network
 	 *            The network to compile for.
 	 */

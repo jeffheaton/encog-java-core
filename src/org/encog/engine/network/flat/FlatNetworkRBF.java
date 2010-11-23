@@ -56,13 +56,11 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 	 *            The number of hidden neurons.
 	 * @param outputCount
 	 *            The number of output neurons.
-	 * @param center
-	 *            The centers.
-	 * @param radius
-	 *            The radii.
+	 * @param rbf 
+	 * 				The radial basis functions to use.
 	 */
 	public FlatNetworkRBF(final int inputCount, final int hiddenCount,
-			final int outputCount, RadialBasisFunction[] rbf) {
+			final int outputCount, final RadialBasisFunction[] rbf) {
 
 		FlatLayer[] layers = new FlatLayer[3];
 		this.rbf = rbf;
