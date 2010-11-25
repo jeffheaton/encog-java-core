@@ -136,7 +136,7 @@ public class GenomeComparator implements Comparator<Genome> {
 		if (this.calculateScore.shouldMinimize()) {
 			return d1 < d2;
 		} else {
-			return d2 > d1;
+			return d1 > d2;
 		}
 	}
 
