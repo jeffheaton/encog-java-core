@@ -164,6 +164,10 @@ public class Object2XML {
 	 */
 	private void saveObject(final Object obj)
 			throws IllegalAccessException {
+		// ignore arrays
+		if( obj.getClass().isArray() )
+			return;
+		
 		// does this object have an ID?		
 		if (this.tagger.hasReference(obj)) {
 			final int id = this.tagger.getReference(obj);
