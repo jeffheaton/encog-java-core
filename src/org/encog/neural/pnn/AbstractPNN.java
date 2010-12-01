@@ -85,6 +85,13 @@ public class AbstractPNN {
 	public double[] getDeriv2() {
 		return deriv2;
 	}
+
+
+
+	public double calcErrorWithSingleSigma(double xrecent) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 	
