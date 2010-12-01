@@ -2,13 +2,15 @@ package org.encog.neural.pnn;
 
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
-public class AbstractPNN {
+public abstract class AbstractPNN {
 
 	private final int inputCount;
 	private final int outputCount;
 	private final PNNKernelType kernelType;
 	private final PNNOutputMode outputMode;
-	private final BasicNeuralDataSet samples = new BasicNeuralDataSet();
+	private BasicNeuralDataSet samples = new BasicNeuralDataSet();
+	private boolean sharedSamples;
+	private boolean trained;
 	
 	/**
 	 * The first derivative.
@@ -88,17 +90,56 @@ public class AbstractPNN {
 
 
 
-	public double calcErrorWithSingleSigma(double xrecent) {
-		// TODO Auto-generated method stub
-		return 0;
+	public abstract double calcErrorWithSingleSigma(double xrecent);
+
+
+	public abstract double calcErrorWithMultipleSigma(double[] x, double[] direc,
+			double[] deriv22, boolean b);
+
+
+
+	/**
+	 * @return the sharedSamples
+	 */
+	public boolean isSharedSamples() {
+		return sharedSamples;
 	}
 
 
 
-	public double calcErrorWithMultipleSigma(double[] x, double[] direc,
-			double[] deriv22, boolean b) {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 * @param sharedSamples the sharedSamples to set
+	 */
+	public void setSharedSamples(boolean sharedSamples) {
+		this.sharedSamples = sharedSamples;
+	}
+
+
+
+	/**
+	 * @param samples the samples to set
+	 */
+	public void setSamples(BasicNeuralDataSet samples) {
+		this.samples = samples;
+		this.sharedSamples = true;
+	}
+
+
+
+	/**
+	 * @return the trained
+	 */
+	public boolean isTrained() {
+		return trained;
+	}
+
+
+
+	/**
+	 * @param trained the trained to set
+	 */
+	public void setTrained(boolean trained) {
+		this.trained = trained;
 	}
 	
 	

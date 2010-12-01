@@ -4,6 +4,8 @@ import org.encog.mathutil.EncogMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.networks.training.pnn.DeriveMinimum;
+import org.encog.neural.networks.training.pnn.GlobalMinimumSearch;
 
 public class BasicPNN extends AbstractPNN {
 
@@ -14,6 +16,16 @@ public class BasicPNN extends AbstractPNN {
 	private double[] priors;
 	private int[] classCount;
 	private int exclude;
+
+	
+	
+	/**
+	 * @return the sigma
+	 */
+	public double[] getSigma() {
+		return sigma;
+	}
+
 
 	public BasicPNN(int inputCount, int outputCount, PNNKernelType kernelType,
 			PNNOutputMode outputMode) {
@@ -38,6 +50,7 @@ public class BasicPNN extends AbstractPNN {
 				break;
 		}
 	}
+	
 
 	public NeuralData compute(NeuralData input) {
 
@@ -134,6 +147,19 @@ public class BasicPNN extends AbstractPNN {
 	 */
 	public void setExclude(int exclude) {
 		this.exclude = exclude;
+	}
+
+	@Override
+	public double calcErrorWithMultipleSigma(double[] x, double[] direc,
+			double[] deriv22, boolean b) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double calcErrorWithSingleSigma(double xrecent) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 	
 	
