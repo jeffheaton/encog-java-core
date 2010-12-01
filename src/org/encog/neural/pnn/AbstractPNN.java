@@ -92,6 +92,14 @@ public class AbstractPNN {
 		// TODO Auto-generated method stub
 		return 0;
 	}
+
+
+
+	public double calcErrorWithMultipleSigma(double[] x, double[] direc,
+			double[] deriv22, boolean b) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 	
