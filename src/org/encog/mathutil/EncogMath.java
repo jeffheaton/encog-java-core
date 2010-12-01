@@ -84,11 +84,52 @@ public final class EncogMath {
 
 	/**
 	 * Determine if one double equals another, within the default percision.
-	 * @param d1 The first number.
-	 * @param d2 The second number.
+	 * 
+	 * @param d1
+	 *            The first number.
+	 * @param d2
+	 *            The second number.
 	 * @return True if the two doubles are equal.
 	 */
 	public static boolean doubleEquals(final double d1, final double d2) {
 		return Math.abs(d1 - d2) < Encog.DEFAULT_DOUBLE_EQUAL;
+	}
+
+	/**
+	 * Get the index to the greatest number in a double array.
+	 * 
+	 * @param array
+	 *            The array to search.
+	 * @return The index of the greatest value, or -1 if empty.
+	 */
+	public static int maxIndex(double[] array) {
+		int result = -1;
+
+		for (int i = 0; i < array.length; i++) {
+			if (result == -1 || array[result] < array[i]) {
+				result = i;
+			}
+		}
+
+		return result;
+	}
+	
+	/**
+	 * Get the index to the smallest number in a double array.
+	 * 
+	 * @param array
+	 *            The array to search.
+	 * @return The index of the smallest value, or -1 if empty.
+	 */
+	public static int minIndex(double[] array) {
+		int result = -1;
+
+		for (int i = 0; i < array.length; i++) {
+			if (result == -1 || array[result] > array[i]) {
+				result = i;
+			}
+		}
+
+		return result;
 	}
 }
