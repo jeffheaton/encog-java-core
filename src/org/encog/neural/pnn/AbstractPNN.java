@@ -1,5 +1,8 @@
 package org.encog.neural.pnn;
 
+import org.encog.neural.data.Indexable;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 public abstract class AbstractPNN {
@@ -11,6 +14,8 @@ public abstract class AbstractPNN {
 	private BasicNeuralDataSet samples = new BasicNeuralDataSet();
 	private boolean sharedSamples;
 	private boolean trained;
+	private boolean separateClass;
+	private int exclude;
 	
 	/**
 	 * The first derivative.
@@ -23,7 +28,7 @@ public abstract class AbstractPNN {
 	private final double[] deriv2; 
 	
 	
-	public AbstractPNN(int inputCount, int outputCount, PNNKernelType kernelType, PNNOutputMode outputMode) {
+	public AbstractPNN(int inputCount, int outputCount,boolean separateClass ,PNNKernelType kernelType, PNNOutputMode outputMode) {
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 		this.kernelType = kernelType;
@@ -31,8 +36,23 @@ public abstract class AbstractPNN {
 		
 		deriv = new double[inputCount];
 		deriv2 = new double[inputCount];
+		this.separateClass = separateClass;
+		exclude = -1;
 	}
 	
+	/**
+	 * @return the exclude
+	 */
+	public int getExclude() {
+		return exclude;
+	}
+
+	/**
+	 * @param exclude the exclude to set
+	 */
+	public void setExclude(int exclude) {
+		this.exclude = exclude;
+	}
 	
 
 	/**
@@ -90,13 +110,15 @@ public abstract class AbstractPNN {
 
 
 
-	public abstract double calcErrorWithSingleSigma(double xrecent);
+	public abstract double calcErrorWithSingleSigma(double sigma);
 
 
 	public abstract double calcErrorWithMultipleSigma(double[] x, double[] direc,
 			double[] deriv22, boolean b);
 
 
+	public abstract NeuralData compute(NeuralData input);
+	public abstract NeuralData computeDeriv(NeuralData input, NeuralData ideal);
 
 	/**
 	 * @return the sharedSamples
@@ -142,6 +164,10 @@ public abstract class AbstractPNN {
 		this.trained = trained;
 	}
 	
+	public double calculateError(Indexable training, boolean derivative) {
+		return 0;
+	}
+
 	
 	
 	

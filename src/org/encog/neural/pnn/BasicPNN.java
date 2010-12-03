@@ -1,11 +1,11 @@
 package org.encog.neural.pnn;
 
 import org.encog.mathutil.EncogMath;
+import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.training.pnn.DeriveMinimum;
-import org.encog.neural.networks.training.pnn.GlobalMinimumSearch;
 
 public class BasicPNN extends AbstractPNN {
 
@@ -15,7 +15,7 @@ public class BasicPNN extends AbstractPNN {
 	private double[] sigma;
 	private double[] priors;
 	private int[] classCount;
-	private int exclude;
+
 
 	
 	
@@ -29,11 +29,10 @@ public class BasicPNN extends AbstractPNN {
 
 	public BasicPNN(int inputCount, int outputCount, PNNKernelType kernelType,
 			PNNOutputMode outputMode) {
-		super(inputCount, outputCount, kernelType, outputMode);
+		super(inputCount, outputCount, false, kernelType, outputMode);
 
 		sigma = new double[inputCount];
-		exclude = -1;
-
+		
 		if( outputMode==PNNOutputMode.Classification )
 		{
 			classCount = new int[outputCount];
@@ -51,6 +50,10 @@ public class BasicPNN extends AbstractPNN {
 		}
 	}
 	
+	public NeuralData computeDeriv(NeuralData input) {
+		return null;
+	}
+	
 
 	public NeuralData compute(NeuralData input) {
 
@@ -63,7 +66,7 @@ public class BasicPNN extends AbstractPNN {
 
 			// should this sample be excluded?
 			trainingIndex++;
-			if( trainingIndex==this.exclude )
+			if( trainingIndex==this.getExclude() )
 				continue;
 			
 			double distance = 0;
@@ -135,20 +138,6 @@ public class BasicPNN extends AbstractPNN {
 		}
 	}
 
-	/**
-	 * @return the exclude
-	 */
-	public int getExclude() {
-		return exclude;
-	}
-
-	/**
-	 * @param exclude the exclude to set
-	 */
-	public void setExclude(int exclude) {
-		this.exclude = exclude;
-	}
-
 	@Override
 	public double calcErrorWithMultipleSigma(double[] x, double[] direc,
 			double[] deriv22, boolean b) {
@@ -156,10 +145,20 @@ public class BasicPNN extends AbstractPNN {
 		return 0;
 	}
 
+
+	public double calcErrorWithSingleSigma(double sigma) {
+		   int ivar ;
+
+		   for (ivar=0 ; ivar<getInputCount() ; ivar++)
+		      getSigma()[ivar] = sigma ;
+
+		   return calculateError ( this.getSamples() , false ) ;
+	}
+
+
 	@Override
-	public double calcErrorWithSingleSigma(double xrecent) {
-		// TODO Auto-generated method stub
-		return 0;
+	public NeuralData computeDeriv(NeuralData input, NeuralData ideal) {
+		return null;
 	}
 	
 	
