@@ -1,20 +1,69 @@
+<!-- 
+ Encog Artificial Intelligence Framework v2.x
+ Java Version
+ http://www.heatonresearch.com/encog/
+ http://code.google.com/p/encog-java/
+  
+ Copyright 2008-2010, Heaton Research Inc., and individual contributors.
+ See the copyright.txt in the distribution for a full listing of 
+ individual contributors.
+ 
+ This is free software; you can redistribute it and/or modify it
+ under the terms of the GNU Lesser General Public License as
+ published by the Free Software Foundation; either version 2.1 of
+ the License, or (at your option) any later version.
+ 
+ This software is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+ 
+ You should have received a copy of the GNU Lesser General Public
+ License along with this software; if not, write to the Free
+ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
 <!-- This POM makes Encog a Maven artifact, accessible from other programs 
-	using Maven. Autor of this POM: iirekm -->
+	using Maven. 
+
+Authors of this POM file: iirekm, jheaton
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.encog</groupId>
+	<artifactId>encog-core</artifactId>
+	<version>2.6.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>Encog Core</name>
+	<description>Encog Machine Learning Framework.</description>
+	<url>http://www.heatonresearch.com/encog/</url>
+	<licenses>
+    		<license>
+      			<name>The Apache Software License, Version 2.0</name>
+      			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+  	<scm>
+    		<connection>scm:svn:http://encog-java.googlecode.com/svn/trunk/encog-core/</connection>
+    		<developerConnection>scm:svn:https://encog-java.googlecode.com/svn/trunk/encog-core/</developerConnection>
+    		<url>http://code.google.com/p/encog-java/source/browse/</url>
+  	</scm>
+	<developers>
+		<developer>
+			<id>jeffheatondotcom</id>
+			<name>Jeff Heaton</name>
+			<email>support@heatonresearch.com</email>
+    		</developer>
+	</developers>
 
 	<parent>
-		<groupId>org.encog</groupId>
-		<artifactId>encog</artifactId>
-		<version>2.6.0-SNAPSHOT</version>
-		<relativePath>../encog-build/pom.xml</relativePath>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>5</version>
 	</parent>
-	<packaging>jar</packaging>
 
-	<artifactId>encog-core</artifactId>
-	<name>Encog Core library</name>
-	<description>Encog Java Neural Network Framework - Core library</description>
 
 	<build>
 		<!-- use src/main/java for resources as well -->
@@ -39,26 +88,80 @@
 				</excludes>
 			</testResource>
 		</testResources>
-	</build>
 
+		<plugins>
+			<!-- use javac 1.6 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<!-- build also source jar - useful for working in Eclipse -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Generate Javadoc, required to push to repo -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+        			<groupId>org.apache.maven.plugins</groupId>
+        			<artifactId>maven-gpg-plugin</artifactId>
+        			<version>1.1</version>
+        			<executions>
+          				<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-jdk14</artifactId>
+			<version>1.6.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.hsqldb</groupId>
 			<artifactId>hsqldb</artifactId>
 			<version>2.0.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.jocl</groupId>
 			<artifactId>jocl</artifactId>
