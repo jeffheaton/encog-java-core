@@ -827,17 +827,19 @@ public class DataNormalization extends BasicPersistedObject {
 	}
 
 	/**
-	 * Should this row be included? Check the segregatprs.
+	 * Should this row be included? Check the segregators.
 	 * 
 	 * @return True if the row should be included.
 	 */
 	private boolean shouldInclude() {
+		boolean included = false;
 		for (final Segregator segregator : this.segregators) {
-			if (!segregator.shouldInclude()) {
-				return false;
+
+			if (segregator.shouldInclude()) {
+				included = true;
 			}
 		}
-		return true;
+		return included;
 	}
 
 	/**
