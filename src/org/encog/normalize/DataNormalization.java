@@ -832,6 +832,12 @@ public class DataNormalization extends BasicPersistedObject {
 	 * @return True if the row should be included.
 	 */
 	private boolean shouldInclude() {
+		
+		// If no segregators, then include
+		if( this.segregators.size()==0 )
+			return true;
+		
+		// include if one segregator says to include
 		boolean included = false;
 		for (final Segregator segregator : this.segregators) {
 
