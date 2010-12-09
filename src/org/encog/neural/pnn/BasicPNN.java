@@ -3,6 +3,7 @@ package org.encog.neural.pnn;
 import org.encog.mathutil.EncogMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
@@ -42,11 +43,6 @@ public class BasicPNN extends AbstractPNN {
 	 * The training samples that form the memory of this network.
 	 */
 	private BasicNeuralDataSet samples;
-
-	/**
-	 * Are the samples shared from a training set?
-	 */
-	private boolean shared;
 
 	/**
 	 * Used for classification, the number of cases in each class.
@@ -93,15 +89,13 @@ public class BasicPNN extends AbstractPNN {
 		
 		double psum = 0.0;
 
-		final NeuralDataPair pair = BasicNeuralDataPair.createPair(this.samples
-				.getInputSize(), this.samples.getIdealSize());
-
-		for (int r = 0; r < this.samples.getRecordCount(); r++) {
+		int r = -1;
+		for(NeuralDataPair pair: this.samples) {
+			r++;
+			
 			if (r == getExclude()) {
 				continue;
 			}
-
-			this.samples.getRecord(r, pair);
 
 			double dist = 0.0;
 			for (int i = 0; i < getInputCount(); i++) {
@@ -176,19 +170,6 @@ public class BasicPNN extends AbstractPNN {
 	}
 
 	/**
-	 * If the samples are shared, privatize them.
-	 */
-	@Override
-	public void privatize() {
-		if (!this.shared) {
-			return; 
-		}
-
-		this.samples = (BasicNeuralDataSet) this.samples.clone();
-		this.shared = false;
-	}
-
-	/**
 	 * @return the sigma
 	 */
 	public double[] getSigma() {
@@ -200,21 +181,6 @@ public class BasicPNN extends AbstractPNN {
 	 */
 	public BasicNeuralDataSet getSamples() {
 		return samples;
-	}
-
-	/**
-	 * @return the shared
-	 */
-	public boolean isShared() {
-		return shared;
-	}
-
-	/**
-	 * @param shared
-	 *            the shared to set
-	 */
-	public void setShared(boolean shared) {
-		this.shared = shared;
 	}
 
 	/**

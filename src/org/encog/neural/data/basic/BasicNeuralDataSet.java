@@ -29,9 +29,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.engine.data.EngineData;
+import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -166,6 +168,33 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	 */
 	public BasicNeuralDataSet(final List<NeuralDataPair> data) {
 		this.data = data;
+	}
+
+	/**
+	 * Copy whatever dataset type is specified into a memory dataset.
+	 * @param set The dataset to copy.
+	 */
+	public BasicNeuralDataSet(NeuralDataSet set) {
+		int inputCount = set.getInputSize();
+		int idealCount = set.getIdealSize();
+		
+		for(NeuralDataPair pair: set) {
+			
+			BasicNeuralData input = null;
+			BasicNeuralData ideal = null;
+			
+			if( inputCount>0 ) {
+				input = new BasicNeuralData(inputCount);
+				EngineArray.arrayCopy(pair.getInputArray(), input.getData());
+			}
+			
+			if( idealCount>0 ) {
+				ideal = new BasicNeuralData(idealCount);
+				EngineArray.arrayCopy(pair.getIdealArray(), ideal.getData());
+			}
+			
+			add(new BasicNeuralDataPair(input,ideal));
+		}
 	}
 
 	/**

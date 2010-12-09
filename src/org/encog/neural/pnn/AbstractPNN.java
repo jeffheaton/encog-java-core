@@ -138,11 +138,6 @@ public abstract class AbstractPNN {
 	}
 
 	/**
-	 * Privatize data.
-	 */
-	public abstract void privatize();
-
-	/**
 	 * Reset the confusion.
 	 */
 	public void resetConfusion() {
