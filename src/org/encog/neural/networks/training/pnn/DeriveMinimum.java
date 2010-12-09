@@ -48,7 +48,7 @@ public class DeriveMinimum {
 	 * @return The best error.
 	 */
 	public double calculate(final int maxIterations, final double maxError,
-			final double eps, final double tol, final AbstractPNN network,
+			final double eps, final double tol, final CalculationCriteria network,
 			final int n, final double[] x, final double ystart,
 			final double[] base, final double[] direc, final double[] g,
 			final double[] h, final double[] deriv2) {

@@ -66,7 +66,7 @@ public class GlobalMinimumSearch {
 			final double maxError, 
 			final double eps, 
 			final double tol, 
-			final AbstractPNN network, 
+			final CalculationCriteria network, 
 			final double y 
 	) {
 		double prevdist = 0.0;
@@ -249,7 +249,7 @@ public class GlobalMinimumSearch {
 	 */
 	public void findBestRange(final double low, final double high,
 			int numberOfPoints, final boolean useLog, final double minError,
-			final AbstractPNN network) {
+			final CalculationCriteria network) {
 		int i, ibest;
 		double x, y, rate, previous;
 		boolean firstPointKnown;
