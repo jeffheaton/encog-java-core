@@ -222,14 +222,19 @@ public class TrainBasicPNN implements CalculationCriteria {
 
 			else if (this.network.getOutputMode() == PNNOutputMode.Classification) {
 				final int tclass = (int) target.getData(0);
+				NeuralData output;
+				
 				if (deriv) {
-					final NeuralData output = computeDeriv(input, pair
-							.getIdeal());
+					output = computeDeriv(input, pair
+							.getIdeal());										
 					final int oclass = (int) output.getData(0);
 				} else {
-					final NeuralData output = this.network.compute(input);
+					output = this.network.compute(input);
 					final int oclass = (int) output.getData(0);
 				}
+				
+				out[0] = output.getData(0);
+								
 				for (int i = 0; i < out.length; i++) {
 					if (i == tclass) {
 						diff = 1.0 - out[i];
@@ -358,7 +363,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 			}
 
 			if (this.network.getOutputMode() == PNNOutputMode.Classification) {
-				pop = (int) pair.getIdeal().getData(0) - 1;
+				pop = (int) pair.getIdeal().getData(0);
 				out[pop] += dist;
 				vptr = pop * this.network.getInputCount();
 				wptr = pop * this.network.getInputCount();

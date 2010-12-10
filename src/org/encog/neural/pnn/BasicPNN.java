@@ -115,7 +115,7 @@ public class BasicPNN extends AbstractPNN {
 			}
 
 			if (getOutputMode() == PNNOutputMode.Classification) {
-				int pop = (int) pair.getIdeal().getData(0) - 1;
+				int pop = (int) pair.getIdeal().getData(0);
 				out[pop] += dist;
 			} else if (getOutputMode() == PNNOutputMode.Classification) {
 				for (int i = 0; i < getInputCount(); i++) {
