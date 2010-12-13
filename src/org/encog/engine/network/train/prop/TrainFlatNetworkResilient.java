@@ -143,7 +143,7 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 			lastGradient[index] = 0;
 		} else if (change == 0) {
 			// if change==0 then there is no change to the delta
-			final double delta = lastGradient[index];
+			final double delta = this.updateValues[index];
 			weightChange = sign(gradients[index]) * delta;
 			lastGradient[index] = gradients[index];
 		}
