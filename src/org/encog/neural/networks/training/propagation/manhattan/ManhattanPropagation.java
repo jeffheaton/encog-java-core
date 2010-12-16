@@ -112,7 +112,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * @return The learning rate that was specified in the constructor.
 	 */
 	public double getLearningRate() {
-		return ((TrainFlatNetworkBackPropagation) getFlatTraining())
+		return ((TrainFlatNetworkManhattan) getFlatTraining())
 				.getLearningRate();
 	}
 
@@ -123,7 +123,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The new learning rate.
 	 */
 	public void setLearningRate(final double rate) {
-		((TrainFlatNetworkBackPropagation) getFlatTraining())
+		((TrainFlatNetworkManhattan) getFlatTraining())
 				.setLearningRate(rate);
 	}
 

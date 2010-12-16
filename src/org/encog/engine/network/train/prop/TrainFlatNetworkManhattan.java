@@ -82,4 +82,20 @@ public class TrainFlatNetworkManhattan extends TrainFlatNetworkProp {
 		}
 	}
 
+	/**
+	 * @return the learningRate
+	 */
+	public double getLearningRate() {
+		return learningRate;
+	}
+
+	/**
+	 * @param learningRate the learningRate to set
+	 */
+	public void setLearningRate(double learningRate) {
+		this.learningRate = learningRate;
+	}
+	
+	
+
 }
