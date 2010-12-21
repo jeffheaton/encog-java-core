@@ -42,10 +42,5 @@ public interface FlatGradientWorker extends EngineTask {
      * @return The network being trained by this thread.
      */
     FlatNetwork getNetwork();
-    
-    /**
-     * @return The elapsed time for the last iteration of this worker.
-     */
-    long getElapsedTime();
-	
+   	
 }

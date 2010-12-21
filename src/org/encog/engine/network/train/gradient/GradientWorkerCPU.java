@@ -119,16 +119,6 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	private final TrainFlatNetworkProp owner;
 
 	/**
-	 * The elapsed time.
-	 */
-	private long elapsedTime;
-
-	/**
-	 * The stopwatch, to evaluate performance.
-	 */
-	private final Stopwatch stopwatch;
-
-	/**
 	 * Construct a gradient worker.
 	 * 
 	 * @param network
@@ -151,8 +141,6 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		this.high = high;
 		this.owner = owner;
 
-		this.stopwatch = new Stopwatch();
-
 		this.layerDelta = new double[network.getLayerOutput().length];
 		this.gradients = new double[network.getWeights().length];
 		this.actual = new double[network.getOutputCount()];
@@ -166,13 +154,6 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 
 		this.pair = BasicEngineData.createPair(network.getInputCount(), network
 				.getOutputCount());
-	}
-
-	/**
-	 * @return Elapsed time for the last iteration.
-	 */
-	public long getElapsedTime() {
-		return this.elapsedTime;
 	}
 
 	/**
@@ -257,8 +238,6 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 */
 	public void run() {
 		try {
-			this.stopwatch.reset();
-			this.stopwatch.start();
 			this.errorCalculation.reset();
 			for (int i = this.low; i <= this.high; i++) {
 				this.training.getRecord(i, this.pair);
@@ -267,8 +246,6 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 			final double error = this.errorCalculation.calculate();
 			this.owner.report(this.gradients, error, null);
 			EngineArray.fill(this.gradients, 0);
-			this.stopwatch.stop();
-			this.elapsedTime = this.stopwatch.getElapsedTicks();
 		} catch (final Throwable ex) {
 			this.owner.report(null, 0, ex);
 		}
