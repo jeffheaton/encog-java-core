@@ -162,6 +162,11 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	 * The limit, under which, all a cconnection is not considered to exist.
 	 */
 	private double connectionLimit;
+	
+	/**
+	 * True if the network has context.
+	 */
+	private boolean hasContext;
 
 	/**
 	 * Default constructor.
@@ -591,6 +596,7 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 			int neuronIndex = 0;
 			for (int j = layers.length - 1; j >= 0; j--) {
 				if (layers[j].getContextFedBy() == layer) {
+					this.hasContext = true;
 					this.contextTargetSize[i] = layers[j].getContectCount();
 					this.contextTargetOffset[i] = neuronIndex
 							+ layers[j].getTotalCount()
@@ -700,6 +706,11 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 		return activationFunctions;
 	}
 	
-	
+	/**
+	 * @return True if this network has context.
+	 */
+	public boolean getHasContext() {
+		return this.hasContext;
+	}
 
 }

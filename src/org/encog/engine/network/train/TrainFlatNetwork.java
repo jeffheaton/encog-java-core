@@ -25,7 +25,6 @@ package org.encog.engine.network.train;
 
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.engine.opencl.EncogCLDevice;
 
 public interface TrainFlatNetwork {
 

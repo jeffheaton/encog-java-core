@@ -138,7 +138,10 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 			init();
 		}
 
-		this.workers[0].getNetwork().clearContext();
+		if( this.network.getHasContext() ) {
+			this.workers[0].getNetwork().clearContext();	
+		}
+		
 		this.totalError = 0;
 
 		if (this.workers.length > 1) {
@@ -260,8 +263,10 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 					worker.getWeights(), 0, this.network.getWeights().length);
 		}
 
-		copyContexts();
-
+		if( this.network.getHasContext() ) {
+			copyContexts();	
+		}
+		
 		if (this.reportedException != null) {
 			throw (new EncogEngineError(this.reportedException));
 		}
