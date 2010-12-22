@@ -57,7 +57,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 * If you want to set your own seed, just call "getRandom().setSeed".
 	 */
 	public BasicRandomizer() {
-		this.random = new Random(System.currentTimeMillis());
+		this.random = new Random(System.nanoTime());
 	}
 	
 	/**
