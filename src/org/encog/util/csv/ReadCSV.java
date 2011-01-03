@@ -406,10 +406,10 @@ public class ReadCSV {
 				result.add(item.toString());
 				item.setLength(0);
 				quoted = false;
-			} else if ((ch == '\"') && (item.length() == 0)) {
-				quoted = true;
 			} else if ((ch == '\"') && quoted) {
 				quoted = false;
+			} else if ((ch == '\"') && (item.length() == 0)) {
+				quoted = true;
 			} else {
 				item.append(ch);
 			}
