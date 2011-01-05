@@ -47,7 +47,7 @@ public class MemoryDataLoader {
 	 * 
 	 * @return The binary file to create.
 	 */
-	public NeuralDataSet External2Memory() {
+	public NeuralDataSet external2Memory() {
 		status.report(0, 0, "Importing to memory");
 
 		if (result != null) {

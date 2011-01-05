@@ -111,7 +111,7 @@ public class CSVNeuralDataSet extends BasicNeuralDataSet {
         DataSetCODEC codec = new CSVDataCODEC(new File(filename), format, headers, inputSize, idealSize);
         MemoryDataLoader load = new MemoryDataLoader(codec);
         load.setResult(this);
-        load.External2Memory();
+        load.external2Memory();
 	}
 
 
