@@ -36,6 +36,9 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
+import org.encog.neural.data.buffer.MemoryDataLoader;
+import org.encog.neural.data.buffer.codec.CSVDataCODEC;
+import org.encog.neural.data.buffer.codec.DataSetCODEC;
 import org.encog.neural.data.csv.CSVNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.svm.SVMNetwork;
@@ -44,6 +47,7 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.svm.SVMTrain;
 import org.encog.neural.pattern.FeedForwardPattern;
+import org.encog.util.csv.CSVFormat;
 
 /**
  * General utility class for Encog. Provides for some common Encog procedures.
@@ -77,6 +81,23 @@ public final class EncogUtility {
 		}
 		buffer.endLoad();
 	}
+		
+    /**
+     * Load CSV to memory.
+     * @param filename The CSV file to load.
+     * @param input The input count.
+     * @param ideal The ideal count.
+     * @param headers True, if headers are present.
+     * @param format The loaded dataset.
+     * @return The loaded dataset.
+     */
+    public static NeuralDataSet loadCSV2Memory(String filename, int input, int ideal, boolean headers, CSVFormat format)
+    {
+        DataSetCODEC codec = new CSVDataCODEC(new File(filename), format, headers, input, ideal);
+        MemoryDataLoader load = new MemoryDataLoader(codec);
+        NeuralDataSet dataset = load.external2Memory();
+        return dataset;
+    }
 
 	/**
 	 * Evaluate the network and display (to the console) the output for every
