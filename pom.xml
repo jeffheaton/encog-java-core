@@ -162,12 +162,10 @@ Authors of this POM file: iirekm, jheaton
 			<artifactId>hsqldb</artifactId>
 			<version>2.0.0</version>
 		</dependency>
-		<dependency>
+        <dependency>
 			<groupId>org.jocl</groupId>
 			<artifactId>jocl</artifactId>
-			<version>0.1.3a-beta</version>
-			<scope>system</scope>
-			<systemPath>${basedir}/jar/JOCL-0.1.3a-beta.jar</systemPath>
+			<version>0.1.4-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
