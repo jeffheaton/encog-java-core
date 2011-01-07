@@ -144,7 +144,7 @@ public class ResilientPropagation extends Propagation {
 
 		if (profile == null) {
 			TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
-					network.getStructure().getFlat(), this.getTraining());
+					network.getStructure().getFlat(), this.getTraining(), RPROPConst.DEFAULT_ZERO_TOLERANCE, initialUpdate, maxStep);
 			this.setFlatTraining(rpropFlat);
 		} else {
 			TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
