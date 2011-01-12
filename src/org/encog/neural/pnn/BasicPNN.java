@@ -3,13 +3,8 @@ package org.encog.neural.pnn;
 import org.encog.mathutil.EncogMath;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.pnn.AbstractPNN;
-import org.encog.neural.pnn.PNNKernelType;
-import org.encog.neural.pnn.PNNOutputMode;
 
 /**
  * This class implements either a:
@@ -52,7 +47,7 @@ public class BasicPNN extends AbstractPNN {
 	/**
 	 * The prior probability weights. 
 	 */
-	double[] priors; 
+	double[] priors;
 
 	/**
 	 * Construct a BasicPNN network.
@@ -61,19 +56,13 @@ public class BasicPNN extends AbstractPNN {
 	 * @param inputCount The number of inputs in this network.
 	 * @param outputCount The number of outputs in this network.
 	 */
-	public BasicPNN(final PNNKernelType kernel,
-			final PNNOutputMode outmodel, final int inputCount,
-			final int outputCount) {
+	public BasicPNN(final PNNKernelType kernel, final PNNOutputMode outmodel,
+			final int inputCount, final int outputCount) {
 		super(kernel, outmodel, inputCount, outputCount);
 
 		this.setSeparateClass(false);
 
 		this.sigma = new double[inputCount];
-
-		if (getOutputMode() == PNNOutputMode.Classification) {
-			this.countPer = new int[getOutputCount()];
-			this.priors = new double[getOutputCount()];
-		}
 	}
 
 	/**
@@ -86,13 +75,12 @@ public class BasicPNN extends AbstractPNN {
 
 		final double[] out = new double[getOutputCount()];
 
-		
 		double psum = 0.0;
 
 		int r = -1;
-		for(NeuralDataPair pair: this.samples) {
+		for (NeuralDataPair pair : this.samples) {
 			r++;
-			
+
 			if (r == getExclude()) {
 				continue;
 			}
@@ -111,7 +99,7 @@ public class BasicPNN extends AbstractPNN {
 			}
 
 			if (dist < 1.e-40) {
-				dist = 1.e-40; 
+				dist = 1.e-40;
 			}
 
 			if (getOutputMode() == PNNOutputMode.Classification) {
@@ -132,7 +120,7 @@ public class BasicPNN extends AbstractPNN {
 			}
 		}
 
-		if (getOutputMode() == PNNOutputMode.Classification) { 
+		if (getOutputMode() == PNNOutputMode.Classification) {
 			psum = 0.0;
 			for (int i = 0; i < getOutputCount(); i++) {
 				if (this.priors[i] >= 0.0) {
@@ -160,7 +148,7 @@ public class BasicPNN extends AbstractPNN {
 			}
 		}
 
-		else if (getOutputMode() == PNNOutputMode.Regression) { 
+		else if (getOutputMode() == PNNOutputMode.Regression) {
 			for (int i = 0; i < getOutputCount(); i++) {
 				out[i] /= psum;
 			}
@@ -203,6 +191,18 @@ public class BasicPNN extends AbstractPNN {
 	 */
 	public void setSamples(BasicNeuralDataSet samples) {
 		this.samples = samples;
-	}
 
+		// update counts per
+		if (getOutputMode() == PNNOutputMode.Classification) {
+
+			this.countPer = new int[getOutputCount()];
+			this.priors = new double[getOutputCount()];
+			
+			for(NeuralDataPair pair: samples) {
+				int i = (int)pair.getIdeal().getData(0);
+				this.countPer[i]++;
+			}
+
+		}
+	}
 }
