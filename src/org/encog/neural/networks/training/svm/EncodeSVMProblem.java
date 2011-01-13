@@ -27,7 +27,6 @@ import java.util.Iterator;
 
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_problem;
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -45,27 +44,6 @@ public class EncodeSVMProblem {
 	}
 
 	/**
-	 * Obtain the length of the training data.
-	 * 
-	 * @param training
-	 *            The training date to check.
-	 * @return The length of the training data.
-	 */
-	private static long obtainTrainingLength(NeuralDataSet training) {
-		if (training instanceof Indexable) {
-			return ((Indexable) training).getRecordCount();
-		}
-
-		long result = 0;
-		Iterator<NeuralDataPair> itr = training.iterator();
-
-		while (itr.hasNext())
-			result++;
-
-		return result;
-	}
-
-	/**
 	 * Encode the Encog dataset.
 	 * 
 	 * @param training
@@ -78,7 +56,7 @@ public class EncodeSVMProblem {
 	public static svm_problem encode(NeuralDataSet training, int outputIndex) {
 		svm_problem result = new svm_problem();
 
-		result.l = (int) obtainTrainingLength(training);
+		result.l = (int) training.getRecordCount();
 
 		result.y = new double[result.l];
 		result.x = new svm_node[result.l][training.getInputSize()];

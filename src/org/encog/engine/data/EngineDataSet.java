@@ -56,4 +56,23 @@ public interface EngineDataSet {
 	 * @return True if this is a supervised training set.
 	 */
 	boolean isSupervised();
+	
+	/**
+	 * Determine the total number of records in the set.
+	 * @return The total number of records in the set.
+	 */
+	long getRecordCount();
+
+	/**
+	 * Read an individual record, specified by index, in random order.
+	 * @param index The index to read.
+	 * @param pair The pair that the record will be copied into.
+	 */
+	void getRecord(long index, EngineData pair);
+
+	/**
+	 * Opens an additional instance of this dataset.  
+	 * @return The new instance.
+	 */
+	EngineDataSet openAdditional();
 }

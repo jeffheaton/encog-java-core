@@ -29,8 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.engine.data.EngineData;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.util.EngineArray;
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  */
 public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
-		Indexable {
+		NeuralDataSet {
 
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
@@ -367,7 +367,7 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	 * 
 	 * @return The additional data set.
 	 */
-	public Indexable openAdditional() {
+	public EngineDataSet openAdditional() {
 		return new BasicNeuralDataSet(this.data);
 	}
 

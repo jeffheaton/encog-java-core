@@ -1,15 +1,11 @@
 package org.encog.neural.networks.training.pnn;
 
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.neural.networks.training.pnn.CalculationCriteria;
-import org.encog.neural.networks.training.pnn.DeriveMinimum;
-import org.encog.neural.networks.training.pnn.GlobalMinimumSearch;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
@@ -168,7 +164,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 	 * @param deriv Should we find the derivative.
 	 * @return The error.
 	 */
-	public double calculateError(final Indexable training,
+	public double calculateError(final NeuralDataSet training,
 			final boolean deriv) {
 
 		double err, tot_err;

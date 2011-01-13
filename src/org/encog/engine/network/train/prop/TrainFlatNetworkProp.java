@@ -28,7 +28,6 @@ import org.encog.engine.concurrency.DetermineWorkload;
 import org.encog.engine.concurrency.EngineConcurrency;
 import org.encog.engine.concurrency.TaskGroup;
 import org.encog.engine.data.EngineDataSet;
-import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.gradient.FlatGradientWorker;
@@ -76,7 +75,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * The network in indexable form.
 	 */
-	private final EngineIndexableSet indexable;
+	private final EngineDataSet indexable;
 
 	/**
 	 * The workers.
@@ -114,18 +113,13 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	public TrainFlatNetworkProp(final FlatNetwork network,
 			final EngineDataSet training) {
 
-		if (!(training instanceof EngineIndexableSet)) {
-			throw new EncogEngineError(
-					"Training data must be Indexable for this training type.");
-		}
-
 		this.training = training;
 		this.network = network;
 
 		this.gradients = new double[this.network.getWeights().length];
 		this.lastGradient = new double[this.network.getWeights().length];
 
-		this.indexable = (EngineIndexableSet) training;
+		this.indexable = training;
 		this.numThreads = 0;
 		this.reportedException = null;
 	}

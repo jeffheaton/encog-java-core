@@ -29,7 +29,6 @@ import java.util.List;
 import org.encog.engine.StatusReportable;
 import org.encog.engine.concurrency.job.ConcurrentJob;
 import org.encog.engine.concurrency.job.JobUnitContext;
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;

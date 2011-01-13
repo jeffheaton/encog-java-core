@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.encog.engine.data.BasicEngineDataSet;
 import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 
 /**
  * 
@@ -59,7 +59,7 @@ public class KMeansCluster {
 		this.sumSqr = temp;
 	}
 
-	public EngineIndexableSet createDataSet() {
+	public EngineDataSet createDataSet() {
 		final BasicEngineDataSet result = new BasicEngineDataSet();
 
 		for (final EngineData data : this.data) {

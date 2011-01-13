@@ -41,7 +41,6 @@ org.encog.engine.data.BasicEngineData
 org.encog.engine.data.BasicEngineDataSet
 org.encog.engine.data.EngineData
 org.encog.engine.data.EngineDataSet
-org.encog.engine.data.EngineIndexableSet
 org.encog.engine.EncogEngine
 org.encog.engine.EncogEngineError
 org.encog.engine.EngineMachineLearning
@@ -157,7 +156,6 @@ org.encog.neural.data.folded.FoldedDataSet
 org.encog.neural.data.folded.FoldedIterator
 org.encog.neural.data.image.ImageNeuralData
 org.encog.neural.data.image.ImageNeuralDataSet
-org.encog.neural.data.Indexable
 org.encog.neural.data.market.loader.LoadedMarketData
 org.encog.neural.data.market.loader.LoaderError
 org.encog.neural.data.market.loader.MarketLoader
@@ -179,7 +177,6 @@ org.encog.neural.data.temporal.TemporalError
 org.encog.neural.data.temporal.TemporalNeuralDataSet
 org.encog.neural.data.temporal.TemporalPoint
 org.encog.neural.data.TextData
-org.encog.neural.data.union.UnionNeuralDataSet
 org.encog.neural.networks.BasicNetwork
 org.encog.neural.networks.ContextClearable
 org.encog.neural.networks.layers.BasicLayer

@@ -25,12 +25,8 @@ package org.encog.util.simple;
 
 import java.io.File;
 
-import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
-import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.Format;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;

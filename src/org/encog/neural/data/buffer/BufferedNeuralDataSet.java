@@ -30,15 +30,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.engine.data.EngineData;
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.EncogCollection;
-import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BufferedNeuralDataSetPersistor;
 
@@ -63,7 +60,7 @@ import org.encog.persist.persistors.BufferedNeuralDataSetPersistor;
  * format, and can be used with any Encog platform. Encog binary files are
  * stored using "little endian" numbers.
  */
-public class BufferedNeuralDataSet extends BasicPersistedObject implements NeuralDataSet, Indexable,
+public class BufferedNeuralDataSet extends BasicPersistedObject implements NeuralDataSet,
 		Serializable {
 
 	/**

@@ -25,7 +25,6 @@ package org.encog.util.simple;
 
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ObjectPair;
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -78,7 +77,7 @@ public class TrainingSetUtil {
 
 	public static ObjectPair<double[][], double[][]> trainingToArray(
 			NeuralDataSet training) {
-		int length = trainingSetSize(training);
+		int length = (int)training.getRecordCount();
 		double[][] a = new double[length][training.getInputSize()];
 		double[][] b = new double[length][training.getIdealSize()];
 
@@ -90,19 +89,5 @@ public class TrainingSetUtil {
 		}
 
 		return new ObjectPair<double[][], double[][]>(a, b);
-	}
-
-	public static int trainingSetSize(NeuralDataSet training) {
-
-		if (training instanceof Indexable) {
-			return (int) ((Indexable) training).getRecordCount();
-		} else {
-			int length = 0;
-			for (NeuralDataPair pair : training) {
-				length++;
-			}
-			return length;
-		}
-
 	}
 }

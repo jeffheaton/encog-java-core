@@ -27,7 +27,7 @@ import java.util.Map;
 
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
@@ -209,7 +209,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	/**
 	 * The training data to use.
 	 */
-	private final EngineIndexableSet training;
+	private final EngineDataSet training;
 
 	/**
 	 * The device to train with.
@@ -234,7 +234,7 @@ public class KernelNetworkTrain extends EncogKernel {
 	 *            How much temp data.
 	 */
 	public KernelNetworkTrain(final EncogCLDevice device,
-			final FlatNetwork flat, final EngineIndexableSet training,
+			final FlatNetwork flat, final EngineDataSet training,
 			final int tempDataSize) {
 		super(device, "org/encog/engine/resources/KernelNetTrain.txt",
 				"NetworkTrain");

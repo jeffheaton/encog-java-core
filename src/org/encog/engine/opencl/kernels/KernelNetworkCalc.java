@@ -28,7 +28,7 @@ import java.util.Map;
 
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
@@ -170,7 +170,7 @@ public class KernelNetworkCalc extends EncogKernel {
 	/**
 	 * The training data to use.
 	 */
-	private EngineIndexableSet training;
+	private EngineDataSet training;
 
 	/**
 	 * The device to train with.
@@ -404,11 +404,11 @@ public class KernelNetworkCalc extends EncogKernel {
 		}
 	}
 
-	public EngineIndexableSet getTraining() {
+	public EngineDataSet getTraining() {
 		return training;
 	}
 
-	public void setTraining(EngineIndexableSet training) {
+	public void setTraining(EngineDataSet training) {
 		this.training = training;
 		this.trainingLength = (int) this.training.getRecordCount();
 

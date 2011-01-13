@@ -23,7 +23,7 @@
  */
 package org.encog.engine.concurrency.calc;
 
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.kernels.KernelNetworkCalc;
@@ -121,7 +121,7 @@ public class CalcOpenCLDevice {
 	 * @param training
 	 *            The training data that will be used.
 	 */
-	public void setTraining(final EngineIndexableSet training) {
+	public void setTraining(final EngineDataSet training) {
 		this.kernelCalc.setTraining(training);
 	}
 

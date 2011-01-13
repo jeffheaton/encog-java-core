@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.engine.EncogEngine;
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.opencl.EncogCLDevice;
 
@@ -61,7 +61,7 @@ public final class ConcurrentCalculate {
 	/**
 	 * The current training data.
 	 */
-	private EngineIndexableSet trainingData;
+	private EngineDataSet trainingData;
 
 	/**
 	 * The OpenCL devices to use.
@@ -109,7 +109,7 @@ public final class ConcurrentCalculate {
 	/**
 	 * @return The current training data.
 	 */
-	public EngineIndexableSet getTrainingData() {
+	public EngineDataSet getTrainingData() {
 		return this.trainingData;
 	}
 
@@ -152,7 +152,7 @@ public final class ConcurrentCalculate {
 	 * Set the current training data.
 	 * @param trainingData The current training data.
 	 */
-	public void setTrainingData(final EngineIndexableSet trainingData) {
+	public void setTrainingData(final EngineDataSet trainingData) {
 		this.trainingData = trainingData;
 		for (final CalcOpenCLDevice dev : this.devices) {
 			dev.setTraining(trainingData);

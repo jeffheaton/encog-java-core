@@ -26,10 +26,9 @@ package org.encog.neural.data.folded;
 import java.util.Iterator;
 
 import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineIndexableSet;
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.TrainingError;
 
 /**
@@ -41,7 +40,7 @@ import org.encog.neural.networks.training.TrainingError;
  * folds (fold size 1). Call the fold method to create more folds.
  * 
  */
-public class FoldedDataSet implements Indexable {
+public class FoldedDataSet implements NeuralDataSet {
 
 	/**
 	 * Error message: adds are not supported.
@@ -51,7 +50,7 @@ public class FoldedDataSet implements Indexable {
 	/**
 	 * The underlying dataset.
 	 */
-	private final Indexable underlying;
+	private final NeuralDataSet underlying;
 
 	/**
 	 * The fold that we are currently on.
@@ -95,7 +94,7 @@ public class FoldedDataSet implements Indexable {
 	 * @param underlying
 	 *            The underlying folded dataset.
 	 */
-	public FoldedDataSet(final Indexable underlying) {
+	public FoldedDataSet(final NeuralDataSet underlying) {
 		this.underlying = underlying;
 		fold(1);
 	}
@@ -233,7 +232,7 @@ public class FoldedDataSet implements Indexable {
 	/**
 	 * @return The underlying dataset.
 	 */
-	public Indexable getUnderlying() {
+	public NeuralDataSet getUnderlying() {
 		return this.underlying;
 	}
 
@@ -273,9 +272,9 @@ public class FoldedDataSet implements Indexable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public EngineIndexableSet openAdditional() {
+	public NeuralDataSet openAdditional() {
 		final FoldedDataSet folded = new FoldedDataSet(
-				(Indexable) this.underlying.openAdditional());
+				(NeuralDataSet)this.underlying.openAdditional());
 		folded.setOwner(this);
 		return folded;
 	}

@@ -29,7 +29,6 @@ import java.util.Map;
 import org.encog.engine.EncogEngine;
 import org.encog.engine.EncogEngineError;
 import org.encog.engine.data.EngineDataSet;
-import org.encog.engine.data.EngineIndexableSet;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.flat.ValidateForOpenCL;
 import org.encog.engine.network.train.TrainFlatNetwork;
@@ -71,7 +70,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 	/**
 	 * The training data.
 	 */
-	private final EngineIndexableSet training;
+	private final EngineDataSet training;
 
 	/**
 	 * Training type.
@@ -125,7 +124,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		(new ValidateForOpenCL()).validate(network);
 
-		if (!(training instanceof EngineIndexableSet)) {
+		if (!(training instanceof EngineDataSet)) {
 			throw new EncogEngineError(
 					"Training data must be Indexable for this training type.");
 		}
@@ -138,7 +137,7 @@ public class TrainFlatNetworkOpenCL implements TrainFlatNetwork {
 
 		this.profile = profile;
 		this.network = network;
-		this.training = (EngineIndexableSet) training;
+		this.training = (EngineDataSet) training;
 	}
 
 	/**

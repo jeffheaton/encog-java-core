@@ -32,7 +32,7 @@ import org.encog.engine.EncogEngineError;
 import org.encog.engine.EngineNeuralNetwork;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -250,7 +250,7 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final EngineIndexableSet data) {
+	public double calculateError(final EngineDataSet data) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		final double[] actual = new double[this.outputCount];

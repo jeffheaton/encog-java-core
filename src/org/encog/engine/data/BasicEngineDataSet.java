@@ -34,7 +34,7 @@ import java.util.List;
  * 
  * @author jheaton
  */
-public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
+public class BasicEngineDataSet implements EngineDataSet, Serializable {
 
 	/**
 	 * The serial id.
@@ -207,7 +207,7 @@ public class BasicEngineDataSet implements Serializable, EngineIndexableSet {
 	 * 
 	 * @return The additional data set.
 	 */
-	public EngineIndexableSet openAdditional() {
+	public EngineDataSet openAdditional() {
 		return new BasicEngineDataSet(this.data);
 	}
 

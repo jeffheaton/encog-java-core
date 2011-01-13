@@ -25,13 +25,12 @@ package org.encog.engine.network.train.gradient;
 
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.prop.TrainFlatNetworkProp;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
-import org.encog.engine.util.Stopwatch;
 
 /**
  * Worker class for the mulithreaded training of flat networks.
@@ -101,7 +100,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	/**
 	 * The training data.
 	 */
-	private final EngineIndexableSet training;
+	private final EngineDataSet training;
 
 	/**
 	 * The high end of the training data.
@@ -134,7 +133,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 */
 	public GradientWorkerCPU(final FlatNetwork network,
 			final TrainFlatNetworkProp owner,
-			final EngineIndexableSet training, final int low, final int high) {
+			final EngineDataSet training, final int low, final int high) {
 		this.network = network;
 		this.training = training;
 		this.low = low;

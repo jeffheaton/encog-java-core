@@ -23,7 +23,6 @@
  */
 package org.encog.neural.networks.training.strategy;
 
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Strategy;
@@ -81,25 +80,6 @@ public class SmartLearningRate implements Strategy {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Determine the training size.
-	 * 
-	 * @return The training size.
-	 */
-	private long determineTrainingSize() {
-		long result = 0;
-
-		if (this.train instanceof Indexable) {
-			result = ((Indexable) this).getRecordCount();
-		} else {
-			for (@SuppressWarnings("unused")
-			final NeuralDataPair pair : this.train.getTraining()) {
-				result++;
-			}
-		}
-		return result;
-	}
-
-	/**
 	 * Initialize this strategy.
 	 * 
 	 * @param train
@@ -109,7 +89,7 @@ public class SmartLearningRate implements Strategy {
 		this.train = train;
 		this.ready = false;
 		this.setter = (LearningRate) train;
-		this.trainingSize = determineTrainingSize();
+		this.trainingSize = train.getTraining().getRecordCount();
 		this.currentLearningRate = 1.0 / this.trainingSize;
 		if (this.logger.isInfoEnabled()) {
 			this.logger.info("Starting learning rate: {}",

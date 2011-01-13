@@ -25,7 +25,6 @@ package org.encog.neural.networks.training.lma;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
-import org.encog.neural.data.Indexable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -104,7 +103,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	/**
 	 * The training set that we are using to train.
 	 */
-	private final Indexable indexableTraining;
+	private final NeuralDataSet indexableTraining;
 
 	/**
 	 * The training set length.
@@ -190,10 +189,6 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 */
 	public LevenbergMarquardtTraining(final BasicNetwork network,
 			final NeuralDataSet training) {
-		if (!(training instanceof Indexable)) {
-			throw new TrainingError(
-					"Levenberg Marquardt requires an indexable training set.");
-		}
 
 		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
 
@@ -208,7 +203,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		}
 
 		setTraining(training);
-		this.indexableTraining = (Indexable) getTraining();
+		this.indexableTraining = getTraining();
 		this.network = network;
 		this.trainingLength = (int) this.indexableTraining.getRecordCount();
 		this.parametersLength = this.network.getStructure().calculateSize();

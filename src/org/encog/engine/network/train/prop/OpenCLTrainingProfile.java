@@ -24,7 +24,7 @@
 package org.encog.engine.network.train.prop;
 
 import org.encog.engine.EncogEngine;
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.opencl.exceptions.OpenCLError;
 import org.encog.engine.opencl.kernels.EncogKernel;
@@ -179,7 +179,7 @@ public class OpenCLTrainingProfile {
 	 *            The training params to use.
 	 */
 	public void calculateKernelParams(final EncogKernel kernel,
-			final EngineIndexableSet training) {
+			final EngineDataSet training) {
 		boolean globalValuesAssigned = false;
 		int workPerIteration;
 

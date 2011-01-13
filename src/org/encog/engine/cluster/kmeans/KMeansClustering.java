@@ -25,7 +25,7 @@ package org.encog.engine.cluster.kmeans;
 
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineIndexableSet;
+import org.encog.engine.data.EngineDataSet;
 
 /**
  * This class performs a basic K-Means clustering. This class can be used on
@@ -57,7 +57,7 @@ public class KMeansClustering {
 	/**
 	 * The dataset to cluster.
 	 */
-	private final EngineIndexableSet set;
+	private final EngineDataSet set;
 
 	/**
 	 * Within-cluster sum of squares (WCSS).
@@ -72,7 +72,7 @@ public class KMeansClustering {
 	 * @param set
 	 *            The dataset to cluster.
 	 */
-	public KMeansClustering(final int k, final EngineIndexableSet set) {
+	public KMeansClustering(final int k, final EngineDataSet set) {
 
 		this.clusters = new KMeansCluster[k];
 		for (int i = 0; i < k; i++) {
