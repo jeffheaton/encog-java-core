@@ -141,7 +141,7 @@ public class CSVFormat {
 	 *            The number of fractional digits.
 	 * @return The number formatted as a string.
 	 */
-	public String format(final double d, final int digits) {
+	public synchronized String format(final double d, final int digits) {
 		this.numberFormatter.setGroupingUsed(false);
 		this.numberFormatter.setMaximumFractionDigits(digits);
 		return this.numberFormatter.format(d);
@@ -175,7 +175,7 @@ public class CSVFormat {
 	 *            The string to parse.
 	 * @return The parsed number.
 	 */
-	public double parse(final String str) {
+	public synchronized double parse(final String str) {
 		try {
 			return this.numberFormatter.parse(str).doubleValue();
 		} catch (final Exception e) {
