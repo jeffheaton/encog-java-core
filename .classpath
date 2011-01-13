@@ -5,8 +5,8 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="jar/hsqldb.jar"/>
 	<classpathentry kind="lib" path="jar/junit-4.6.jar"/>
-	<classpathentry kind="lib" path="jar/slf4j-api-1.5.6.jar"/>
-	<classpathentry kind="lib" path="jar/slf4j-jdk14-1.5.6.jar"/>
 	<classpathentry kind="lib" path="jar/JOCL-0.1.3a-beta.jar"/>
+	<classpathentry kind="lib" path="jar/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="jar/slf4j-jdk14-1.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
