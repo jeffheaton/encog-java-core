@@ -165,7 +165,7 @@ Authors of this POM file: iirekm, jheaton
         <dependency>
 			<groupId>org.jocl</groupId>
 			<artifactId>jocl</artifactId>
-			<version>0.1.4-SNAPSHOT</version>
+			<version>0.1.4c</version>
 		</dependency>
 	</dependencies>
 </project>
