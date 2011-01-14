@@ -23,6 +23,7 @@
  */
 package org.encog.persist;
 
+import org.encog.persist.map.PersistedObject;
 import org.encog.persist.persistors.generic.GenericPersistor;
 
 /**
@@ -105,6 +106,20 @@ public class BasicPersistedObject implements EncogPersistedObject {
 	@Override
 	public void setName(final String theName) {
 		this.name = theName;
-
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return false;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		
 	}
 }

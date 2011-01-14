@@ -4,9 +4,9 @@ import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
+import org.encog.persist.BasicPersistedObject;
 
-public class ThermalNetwork {
-
+public abstract class ThermalNetwork extends BasicPersistedObject {
 
 	/**
 	 * The current state of the thermal network.
@@ -96,5 +96,9 @@ public class ThermalNetwork {
 	{
 		int index = (toNeuron*neuronCount) + fromNeuron;
 		weights[index] += value;
+	}
+	
+	public void setWeights(double[] weights) {
+		this.weights = weights;		
 	}
 }

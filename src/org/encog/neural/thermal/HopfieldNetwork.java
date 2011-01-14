@@ -3,6 +3,8 @@ package org.encog.neural.thermal;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.neural.data.NeuralData;
+import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedObject;
 
 public class HopfieldNetwork extends ThermalNetwork {
 
@@ -103,6 +105,26 @@ public class HopfieldNetwork extends ThermalNetwork {
 		} while (!done);
 
 		return cycle;
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return true;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		obj.clear(PersistConst.TYPE_HOPFIELD);
+		obj.setStandardProperties(this);
+		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
+		obj.setProperty(PersistConst.OUTPUT, this.getCurrentState().getData());
+		obj.setProperty(PersistConst.NEURON_COUNT, this.getNeuronCount());
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		obj.requireType(PersistConst.TYPE_HOPFIELD);
+		this.setWeights(obj.getPropertyDoubleArray(PersistConst.WEIGHTS,true));
 	}
 
 }
