@@ -23,6 +23,7 @@
  */
 package org.encog.persist.persistors.generic;
 
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -32,7 +33,7 @@ import org.encog.persist.Persistor;
  * 
  * @author jheaton
  */
-public class SimpleObjectToPersist implements EncogPersistedObject {
+public class SimpleObjectToPersist extends BasicPersistedObject {
 
 	/**
 	 * 
@@ -54,15 +55,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 	 */
 	private double number;
 
-	/**
-	 * The name of this object.
-	 */
-	private String name;
-
-	/**
-	 * The description of this object.
-	 */
-	private String description;
 
 	/**
 	 * Not used for this simple test.
@@ -83,12 +75,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 		return null;
 	}
 
-	/**
-	 * @return The description.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
 
 	/**
 	 * @return The first test string.
@@ -97,12 +83,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 		return this.first;
 	}
 
-	/**
-	 * @return The name.
-	 */
-	public String getName() {
-		return this.name;
-	}
 
 	/**
 	 * @return The second test string.
@@ -119,16 +99,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 	}
 
 	/**
-	 * Set the description of this object.
-	 * 
-	 * @param theDescription
-	 *            The description of this object.
-	 */
-	public void setDescription(final String theDescription) {
-		this.description = theDescription;
-	}
-
-	/**
 	 * Set the first test string.
 	 * 
 	 * @param first
@@ -138,15 +108,6 @@ public class SimpleObjectToPersist implements EncogPersistedObject {
 		this.first = first;
 	}
 
-	/**
-	 * Set the name of this object.
-	 * 
-	 * @param theName
-	 *            The name of this object.
-	 */
-	public void setName(final String theName) {
-		this.name = theName;
-	}
 
 	/**
 	 * The number to test with.

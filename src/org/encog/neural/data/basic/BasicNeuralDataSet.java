@@ -34,7 +34,7 @@ import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.persist.EncogCollection;
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicNeuralDataSetPersistor;
@@ -49,7 +49,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
+public class BasicNeuralDataSet extends BasicPersistedObject implements Serializable,
 		NeuralDataSet {
 
 	/**
@@ -109,26 +109,11 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	 */
 	private final transient Logger logger = LoggerFactory.getLogger(this
 			.getClass());
-	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private EncogCollection encogCollection;
 
 	/**
 	 * The data held by this object.
 	 */
 	private List<NeuralDataPair> data = new ArrayList<NeuralDataPair>();
-
-	/**
-	 * The description for this object.
-	 */
-	private String description;
-
-	/**
-	 * The name for this object.
-	 */
-	private String name;
 
 	/**
 	 * Default constructor.
@@ -268,13 +253,6 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 	}
 
 	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
 	 * Get the size of the ideal dataset. This is obtained from the first item
 	 * in the list.
 	 * 
@@ -306,12 +284,6 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 		return first.getInput().size();
 	}
 
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
-	}
 
 	/**
 	 * Get a record by index into the specified pair.
@@ -379,33 +351,4 @@ public class BasicNeuralDataSet implements EncogPersistedObject, Serializable,
 		this.data = data;
 	}
 
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
-	}
-	
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
-	}
 }

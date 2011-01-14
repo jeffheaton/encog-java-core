@@ -41,6 +41,7 @@ import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.networks.synapse.WeightlessSynapse;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
+import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.BasicLayerPersistor;
@@ -86,12 +87,12 @@ import org.slf4j.LoggerFactory;
  *
  * @author jheaton
  */
-public class BasicLayer implements Layer, Serializable {
+public class BasicLayer extends BasicPersistedSubObject implements Layer, Serializable {
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -5682296868750703898L;
-
+	
 	/**
 	 * The logging object.
 	 */
@@ -122,16 +123,6 @@ public class BasicLayer implements Layer, Serializable {
 	 * Which activation function to use for this layer.
 	 */
 	private ActivationFunction activationFunction;
-
-	/**
-	 * The description for this object.
-	 */
-	private String description;
-
-	/**
-	 * The name for this object.
-	 */
-	private String name;
 
 	/**
 	 * How many neurons does this layer hold.
@@ -319,24 +310,10 @@ public class BasicLayer implements Layer, Serializable {
 	}
 
 	/**
-	 * @return the description
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
 	 * @return The id of this layer.
 	 */
 	public int getID() {
 		return this.id;
-	}
-
-	/**
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
 	}
 
 	/**
@@ -480,13 +457,6 @@ public class BasicLayer implements Layer, Serializable {
 		this.activationFunction = f;
 	}
 
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	public void setDescription(final String description) {
-		this.description = description;
-	}
 
 	/**
 	 * Set the id for this layer.
@@ -496,14 +466,6 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public void setID(final int id) {
 		this.id = id;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(final String name) {
-		this.name = name;
 	}
 
 	/**
@@ -612,13 +574,6 @@ public class BasicLayer implements Layer, Serializable {
 	 */
 	public void setBiasActivation(final double activation) {
 		this.biasActivation = activation;
-	}
-
-	/**
-	 * @return Returns null, layers do not belong to collections.
-	 */
-	public EncogCollection getCollection() {
-		return null;
 	}
 
 	/**

@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
@@ -42,8 +43,8 @@ import org.encog.util.identity.GenerateID;
  * Defines the basic functionality for a population of genomes.
  */
 @EGReferenceable
-public class BasicPopulation implements Population, EncogPersistedObject {
-
+public class BasicPopulation extends BasicPersistedObject implements Population, EncogPersistedObject {
+	
 	/**
 	 * 
 	 */

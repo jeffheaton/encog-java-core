@@ -25,6 +25,8 @@ package org.encog.persist;
 
 import java.io.Serializable;
 
+import org.encog.persist.map.PersistedObject;
+
 /**
  * This interface flags an class as being able to be persisted into an Encog
  * collection.
@@ -70,5 +72,11 @@ public interface EncogPersistedObject extends Serializable {
 	EncogCollection getCollection();
 	
 	void setCollection(EncogCollection collection);
+	
+	public boolean supportsMapPersistence();
+	
+	public void persistToMap(PersistedObject obj);
+	
+	public void persistFromMap(PersistedObject obj);
 	
 }

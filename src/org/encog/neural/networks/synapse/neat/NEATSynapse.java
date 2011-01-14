@@ -38,6 +38,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGAttribute;
@@ -68,13 +69,13 @@ import org.encog.persist.persistors.generic.GenericPersistor;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATSynapse implements Synapse, ContextClearable, Serializable {
+public class NEATSynapse extends BasicPersistedSubObject implements Synapse, ContextClearable, Serializable {
 
 	/**
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 3660295468309926508L;
-
+	
 	/**
 	 * The activation function.
 	 */
@@ -258,13 +259,6 @@ public class NEATSynapse implements Synapse, ContextClearable, Serializable {
 	}
 
 	/**
-	 * @return null, this is not used.
-	 */
-	public String getDescription() {
-		return null;
-	}
-
-	/**
 	 * @return The from layer.
 	 */
 	public Layer getFromLayer() {
@@ -294,13 +288,6 @@ public class NEATSynapse implements Synapse, ContextClearable, Serializable {
 	 */
 	public int getMatrixSize() {
 		return 0;
-	}
-
-	/**
-	 * @return null, this is not used.
-	 */
-	public String getName() {
-		return null;
 	}
 
 	/**
@@ -401,16 +388,6 @@ public class NEATSynapse implements Synapse, ContextClearable, Serializable {
 	}
 
 	/**
-	 * Not used.
-	 * 
-	 * @param name
-	 *            not used.
-	 */
-	public void setName(final String name) {
-
-	}
-
-	/**
 	 * Sets if snapshot is used.
 	 * 
 	 * @param snapshot
@@ -429,17 +406,4 @@ public class NEATSynapse implements Synapse, ContextClearable, Serializable {
 	public void setToLayer(final Layer toLayer) {
 		this.toLayer = toLayer;
 	}
-
-	@Override
-	public EncogCollection getCollection() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setCollection(EncogCollection collection) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }

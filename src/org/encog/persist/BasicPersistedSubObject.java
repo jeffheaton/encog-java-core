@@ -23,6 +23,8 @@
  */
 package org.encog.persist;
 
+import org.encog.persist.map.PersistedObject;
+
 /**
  * Provides a basic implementation for an Encog persisted object that is not top
  * level. Because it is not stored in the top level collection the name,
@@ -92,5 +94,20 @@ public abstract class BasicPersistedSubObject implements EncogPersistedObject {
 	@Override
 	public void setName(final String theName) {
 
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return false;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		
 	}
 }

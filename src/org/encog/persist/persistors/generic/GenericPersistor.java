@@ -28,6 +28,7 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.Persistor;
+import org.encog.persist.map.PersistedObject;
 
 /**
  * An Encog perisistor that can be used with any object that supports the Encog
@@ -65,9 +66,13 @@ public class GenericPersistor implements Persistor {
 		EncogPersistedObject current;
 		try {
 			current = (EncogPersistedObject) this.clazz.newInstance();
-			final XML2Object conv = new XML2Object();
-			conv.load(in, current);
-			return current;
+			if( current.supportsMapPersistence() ) {
+				return null;
+			} else {
+				final XML2Object conv = new XML2Object();
+				conv.load(in, current);
+				return current;
+			}
 		} catch (final InstantiationException e) {
 			throw new PersistError(e);
 		} catch (final IllegalAccessException e) {
@@ -85,8 +90,13 @@ public class GenericPersistor implements Persistor {
 	 *            The XML object.
 	 */
 	public void save(final EncogPersistedObject obj, final WriteXML out) {
-		final Object2XML conv = new Object2XML();
-		conv.save(obj, out);
+		if( obj.supportsMapPersistence() ) {
+			PersistedObject po = new PersistedObject();
+			obj.persistToMap(po);
+		} else {		
+			final Object2XML conv = new Object2XML();
+			conv.save(obj, out);
+		}
 	}
 
 }
