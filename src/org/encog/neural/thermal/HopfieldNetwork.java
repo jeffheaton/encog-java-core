@@ -12,6 +12,11 @@ public class HopfieldNetwork extends ThermalNetwork {
 		super(neuronCount);
 	}
 	
+	public HopfieldNetwork()
+	{
+		
+	}
+	
 	/**
 	 * Train the neural network for the specified pattern. The neural network
 	 * can be trained for more than one pattern. To do this simply call the
@@ -118,7 +123,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 		obj.setStandardProperties(this);
 		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
 		obj.setProperty(PersistConst.OUTPUT, this.getCurrentState().getData());
-		obj.setProperty(PersistConst.NEURON_COUNT, this.getNeuronCount());
+		obj.setProperty(PersistConst.NEURON_COUNT, this.getNeuronCount(),false);
 	}
 	
 	public void persistFromMap(PersistedObject obj)

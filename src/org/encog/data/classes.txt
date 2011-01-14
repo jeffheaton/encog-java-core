@@ -1,3 +1,4 @@
+org.encog.neural.thermal.HopfieldNetwork
 org.encog.bot.BotError
 org.encog.bot.BotUtil
 org.encog.bot.browse.Address

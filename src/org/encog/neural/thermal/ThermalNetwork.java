@@ -17,6 +17,11 @@ public abstract class ThermalNetwork extends BasicPersistedObject {
 	
 	private int neuronCount;
 	
+	public ThermalNetwork()
+	{
+		
+	}
+	
 	public ThermalNetwork(int neuronCount) {
 		this.neuronCount = neuronCount;
 		this.weights = new double[neuronCount*neuronCount];

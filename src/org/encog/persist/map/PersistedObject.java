@@ -14,6 +14,12 @@ public class PersistedObject extends PersistedProperty {
 	private final Map<String,PersistedProperty> data = new HashMap<String,PersistedProperty>();
 	private String objectType;
 	
+	public PersistedObject()
+	{
+		super(false);
+	}
+	
+	
 	/**
 	 * @return the data
 	 */
@@ -39,9 +45,22 @@ public class PersistedObject extends PersistedProperty {
 	 * @param name The name of the property.
 	 * @param value The value to set to.
 	 */
-	public void setProperty(String name, String value)
+	public void setProperty(String name, String value, boolean attribute)
 	{
-		this.data.put(name, new PersistedValue(value));
+		if( value!=null )
+		{
+			this.data.put(name, new PersistedValue(value,attribute));
+		}
+	}
+
+	/**
+	 * Set a property as a double value.
+	 * @param name The name of the property.
+	 * @param value The value to set to.
+	 */
+	public void setProperty(String name, int value, boolean attribute)
+	{
+			this.data.put(name, new PersistedValue(value,attribute));
 	}
 	
 	/**
@@ -49,9 +68,9 @@ public class PersistedObject extends PersistedProperty {
 	 * @param name The name of the property.
 	 * @param value The value to set to.
 	 */
-	public void setProperty(String name, double value)
+	public void setProperty(String name, double value, boolean attribute)
 	{
-		this.data.put(name, new PersistedValue(value));
+			this.data.put(name, new PersistedValue(value,attribute));
 	}
 	
 	/**
@@ -61,14 +80,17 @@ public class PersistedObject extends PersistedProperty {
 	 */
 	public void setProperty(String name, double[] value)
 	{
-		this.data.put(name, new PersistedValueArray(value));
+		if( value!=null )
+		{
+			this.data.put(name, new PersistedValueArray(value));
+		}
 	}
 	
 
 	public void setStandardProperties(EncogPersistedObject obj) {
-		setProperty(PersistConst.NAME, obj.getName());
-		setProperty(PersistConst.DESCRIPTION, obj.getDescription());
-		setProperty(PersistConst.NATIVE, obj.getClass().toString());
+		setProperty(PersistConst.NAME, obj.getName(),true);
+		setProperty(PersistConst.DESCRIPTION, obj.getDescription(),true);
+		setProperty(PersistConst.NATIVE, obj.getClass().toString(),true);
 		
 	}
 
@@ -109,5 +131,11 @@ public class PersistedObject extends PersistedProperty {
 	@Override
 	public String getString() {
 		return this.objectType;
+	}
+
+
+	public void setPropertyList(String name, String str) {
+		System.out.println( name + " - " + str);
+		
 	}
 }
