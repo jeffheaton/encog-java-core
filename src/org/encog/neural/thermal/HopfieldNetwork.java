@@ -59,14 +59,14 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 */
 	public void run() {
 		
-		for(int fromNeuron = 0; fromNeuron<getNeuronCount() ; fromNeuron++ )
+		for(int toNeuron = 0; toNeuron<getNeuronCount() ; toNeuron++ )
 		{
 			double sum = 0;
-			for(int toNeuron = 0; toNeuron<getNeuronCount() ; toNeuron++)
+			for(int fromNeuron = 0; fromNeuron<getNeuronCount() ; fromNeuron++)
 			{
 				sum += getCurrentState().getData(fromNeuron) * getWeight(fromNeuron,toNeuron);
 			}
-			getCurrentState().setData(fromNeuron,sum);
+			getCurrentState().setData(toNeuron,sum);
 		}
 	}
 
