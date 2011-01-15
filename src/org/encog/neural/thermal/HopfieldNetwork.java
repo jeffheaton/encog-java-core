@@ -129,7 +129,10 @@ public class HopfieldNetwork extends ThermalNetwork {
 	public void persistFromMap(PersistedObject obj)
 	{
 		obj.requireType(PersistConst.TYPE_HOPFIELD);
-		this.setWeights(obj.getPropertyDoubleArray(PersistConst.WEIGHTS,true));
+		int neuronCount = obj.getPropertyInt(PersistConst.NEURON_COUNT,true);
+		double[] weights = obj.getPropertyDoubleArray(PersistConst.WEIGHTS,true);
+		double[] state = obj.getPropertyDoubleArray(PersistConst.OUTPUT, true);
+		init(neuronCount,weights,state);
 	}
 
 }

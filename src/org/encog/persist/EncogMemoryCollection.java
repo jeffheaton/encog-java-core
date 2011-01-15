@@ -232,7 +232,7 @@ public class EncogMemoryCollection implements EncogCollection {
 					throw new PersistError("Do not know how to load: " + type);
 				}
 				final EncogPersistedObject obj = persistor.load(in);
-				
+				obj.setName(name);
 				this.contents.put(name, obj);
 				obj.setCollection(this);
 			}

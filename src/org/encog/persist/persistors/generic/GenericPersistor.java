@@ -69,7 +69,8 @@ public class GenericPersistor implements Persistor {
 			if( current.supportsMapPersistence() ) {
 				XML2Map conv = new XML2Map();
 				PersistedObject po = conv.load(in);
-				return null;
+				current.persistFromMap(po);
+				return current;
 			} else {
 				final XML2Object conv = new XML2Object();
 				conv.load(in, current);

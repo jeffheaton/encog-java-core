@@ -1,6 +1,7 @@
 package org.encog.neural.thermal;
 
 import org.encog.engine.util.EngineArray;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
@@ -103,7 +104,20 @@ public abstract class ThermalNetwork extends BasicPersistedObject {
 		weights[index] += value;
 	}
 	
-	public void setWeights(double[] weights) {
-		this.weights = weights;		
+	public void init(int neuronCount, double[] weights, double[] output)
+	{
+		if( neuronCount!=output.length )
+		{
+			throw new NeuralNetworkError("Neuron count(" + neuronCount + ") must match output count("+output.length+").");
+		}
+		
+		if( neuronCount!=weights.length )
+		{
+			throw new NeuralNetworkError("Neuron count(" + neuronCount + ") must match 2 times weight count("+output.length+").");
+		}
+		
+		this.neuronCount = neuronCount;
+		this.weights = weights;
+		this.currentState.setData(output);
 	}
 }

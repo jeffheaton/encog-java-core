@@ -5,6 +5,8 @@ import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 import org.encog.persist.persistors.BasicLayerPersistor;
+import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
 
 public class XML2Map {
 	
@@ -30,6 +32,12 @@ public class XML2Map {
 				if( in.getTag().getName().equals(PersistConst.LIST)) {
 					str = in.readTextToTag();
 					result.setPropertyList(name,str);
+				} else if( in.getTag().getName().equals(PersistConst.DATA)) {
+					str = in.readTextToTag();
+					double[] d = NumberList.fromList(CSVFormat.ENGLISH, str);
+					result.setProperty(name, d);
+				} else {
+					result.setProperty(name, str, false);
 				}
 			} else if( in.getTag().getType()==Type.END ) {
 				if( in.getTag().getName().equals(objectName))

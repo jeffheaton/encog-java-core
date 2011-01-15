@@ -13,4 +13,6 @@ public class PersistConst {
 	public static final String NATIVE = "native";
 
 	public static final String LIST = "list";
+
+	public static final String DATA = "data";
 }

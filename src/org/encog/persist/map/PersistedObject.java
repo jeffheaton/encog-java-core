@@ -82,7 +82,7 @@ public class PersistedObject extends PersistedProperty {
 	{
 		if( value!=null )
 		{
-			this.data.put(name, new PersistedValueArray(value));
+			this.data.put(name, new PersistedDoubleArray(value));
 		}
 	}
 	
@@ -101,26 +101,43 @@ public class PersistedObject extends PersistedProperty {
 		}
 		
 	}
-
-	public String getPropertyString(String name, boolean required)
+	
+	private boolean require(String name,boolean required)
 	{
 		if( !this.data.containsKey(name) )
 		{
 			if( required )
 				throw new PersistError("The property " + name + " was required.");
+			return true;
+		}
+		return false;
+	}
+
+	public String getPropertyString(String name, boolean required)
+	{
+		if( require(name,required) )
+		{
 			return null;
 		}
-		
 		PersistedProperty result = this.data.get(name);
 		return result.getString();
 	}
 	
 	public double[] getPropertyDoubleArray(String name, boolean required) {
-		String str = getPropertyString(name,required);
 		try
 		{
-			double[] result = NumberList.fromList(CSVFormat.EG_FORMAT, str);
-			return result;
+			if( require(name,required) )
+			{
+				return null;
+			}
+			
+			PersistedProperty result = this.data.get(name);
+			if( result instanceof PersistedDoubleArray )
+			{
+				PersistedDoubleArray a = (PersistedDoubleArray)result;
+				return a.getDoubleArray();
+			}
+			throw new PersistError("Expected double array for " + name);
 		}
 		catch(Exception e)
 		{
@@ -137,5 +154,16 @@ public class PersistedObject extends PersistedProperty {
 	public void setPropertyList(String name, String str) {
 		System.out.println( name + " - " + str);
 		
+	}
+
+
+	public int getPropertyInt(String name, boolean required) {
+		String str = this.getPropertyString(name, required);
+		try {
+			return Integer.parseInt(str);
+		}
+		catch(NumberFormatException ex) {
+			throw new PersistError("Property: " + name + ", had invalid integer:" + str );
+		}
 	}
 }
