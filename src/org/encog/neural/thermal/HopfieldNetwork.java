@@ -134,5 +134,4 @@ public class HopfieldNetwork extends ThermalNetwork {
 		double[] state = obj.getPropertyDoubleArray(PersistConst.OUTPUT, true);
 		init(neuronCount,weights,state);
 	}
-
 }

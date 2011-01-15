@@ -164,4 +164,15 @@ public class PersistedObject extends PersistedProperty {
 			throw new PersistError("Property: " + name + ", had invalid integer:" + str );
 		}
 	}
+
+
+	public double getPropertyDouble(String name, boolean required) {
+		String str = this.getPropertyString(name, required);
+		try {
+			return Double.parseDouble(str);
+		}
+		catch(NumberFormatException ex) {
+			throw new PersistError("Property: " + name + ", had invalid double:" + str );
+		}
+	}
 }
