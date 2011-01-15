@@ -302,7 +302,6 @@ org.encog.neural.pattern.NeuralNetworkPattern
 org.encog.neural.pattern.PatternConst
 org.encog.neural.pattern.PatternError
 org.encog.neural.pattern.RadialBasisPattern
-org.encog.neural.pattern.RSOMPattern
 org.encog.neural.pattern.SOMPattern
 org.encog.neural.pattern.SVMPattern
 org.encog.neural.prune.HiddenLayerParams
