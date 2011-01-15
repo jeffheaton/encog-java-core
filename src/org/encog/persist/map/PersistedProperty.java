@@ -1,6 +1,8 @@
 package org.encog.persist.map;
 
-public abstract class PersistedProperty {
+import java.io.Serializable;
+
+public abstract class PersistedProperty implements Serializable {
 	
 	private final boolean attribute;
 	

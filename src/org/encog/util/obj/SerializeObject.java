@@ -30,6 +30,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+import org.encog.EncogError;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.map.PersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +84,58 @@ public final class SerializeObject {
 		out.writeObject(object);
 		out.close();
 	}
+	
+	
+	public static EncogPersistedObject loadEG(final String filename) throws IOException,
+			ClassNotFoundException, InstantiationException, IllegalAccessException {
+		EncogPersistedObject object;
+		FileInputStream fis = null;
+		ObjectInputStream in = null;
+		fis = new FileInputStream(filename);
+		in = new ObjectInputStream(fis);
+		object = readObjectEG(in);
+		in.close();
+		return object;
+	}
+
+	public static void saveEG(final String filename, final EncogPersistedObject object)
+			throws IOException {
+		FileOutputStream fos = null;
+		ObjectOutputStream out = null;
+
+		fos = new FileOutputStream(filename);
+		out = new ObjectOutputStream(fos);
+		writeObjectEG(out,object);
+		out.close();
+	}
+	
+	public static void writeObjectEG(ObjectOutputStream out, EncogPersistedObject obj) throws IOException {
+		if( obj.supportsMapPersistence() ) {
+			PersistedObject po = new PersistedObject();
+			obj.persistToMap(po);
+			out.writeObject(po);
+		} else {
+			out.writeObject(obj);
+		}
+	}
+	
+	public static EncogPersistedObject readObjectEG(ObjectInputStream in) throws IOException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+		Object readObj = in.readObject();
+		
+		if( readObj instanceof EncogPersistedObject ) {
+			return (EncogPersistedObject)readObj;
+		} else if( readObj instanceof PersistedObject ) {
+			PersistedObject po =  (PersistedObject)readObj;
+			Class<?> c = ReflectionUtil.resolveEncogClass(po.getObjectType());
+			EncogPersistedObject result = (EncogPersistedObject) c.newInstance();
+			result.persistFromMap(po);
+			return result;
+		} else {
+			throw new EncogError("Unknown object type");
+		}
+	}
+	
+	
 
 	/**
 	 * The logging object.

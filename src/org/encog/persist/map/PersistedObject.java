@@ -6,8 +6,6 @@ import java.util.Map;
 import org.encog.parse.ParseError;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
-import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 
 public class PersistedObject extends PersistedProperty {
 	

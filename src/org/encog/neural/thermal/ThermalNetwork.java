@@ -111,13 +111,14 @@ public abstract class ThermalNetwork extends BasicPersistedObject {
 			throw new NeuralNetworkError("Neuron count(" + neuronCount + ") must match output count("+output.length+").");
 		}
 		
-		if( neuronCount!=weights.length )
+		if( (neuronCount*neuronCount)!=weights.length )
 		{
-			throw new NeuralNetworkError("Neuron count(" + neuronCount + ") must match 2 times weight count("+output.length+").");
+			throw new NeuralNetworkError("Weight count(" + weights.length + ") must be the square of the neuron count("+neuronCount+").");
 		}
 		
 		this.neuronCount = neuronCount;
 		this.weights = weights;
+		this.currentState = new BiPolarNeuralData(neuronCount);
 		this.currentState.setData(output);
 	}
 }
