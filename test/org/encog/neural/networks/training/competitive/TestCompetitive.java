@@ -70,7 +70,7 @@ public class TestCompetitive extends TestCase  {
 		SOMPattern pattern = new SOMPattern();
 		pattern.setInputNeurons(4);
 		pattern.setOutputNeurons(2);
-		BasicNetwork network = pattern.generate();
+		BasicNetwork network = (BasicNetwork)pattern.generate();
 		
 		Synapse synapse = findSynapse(network);
 		synapse.setMatrix(new Matrix(MATRIX_ARRAY));

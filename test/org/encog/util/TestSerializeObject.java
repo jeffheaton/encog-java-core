@@ -51,7 +51,7 @@ public class TestSerializeObject extends TestCase {
 		pattern.setInputNeurons(1);
 		pattern.addHiddenLayer(2);
 		pattern.setOutputNeurons(3);
-		BasicNetwork net = pattern.generate();
+		BasicNetwork net = (BasicNetwork)pattern.generate();
 
 		SerializeObject.save("encog.ser", net);
 		net = (BasicNetwork) SerializeObject.load("encog.ser");
@@ -66,7 +66,7 @@ public class TestSerializeObject extends TestCase {
 		pattern.setInputNeurons(1);
 		pattern.addHiddenLayer(2);
 		pattern.setOutputNeurons(3);
-		BasicNetwork net = pattern.generate();
+		BasicNetwork net = (BasicNetwork)pattern.generate();
 
 		SerializeObject.save("encog.ser", net);
 		net = (BasicNetwork) SerializeObject.load("encog.ser");

@@ -39,7 +39,7 @@ public class TestPersist extends TestCase {
 		pattern.setInputNeurons(1);
 		pattern.addHiddenLayer(2);
 		pattern.setOutputNeurons(3);
-		BasicNetwork net = pattern.generate();
+		BasicNetwork net = (BasicNetwork)pattern.generate();
 		return net;
 	}
 	
@@ -50,7 +50,7 @@ public class TestPersist extends TestCase {
 		pattern.addHiddenLayer(2);
 		pattern.setOutputNeurons(3);
 		pattern.setActivationFunction(new ActivationSigmoid());
-		BasicNetwork net = pattern.generate();
+		BasicNetwork net = (BasicNetwork)pattern.generate();
 		return net;
 	}
 	

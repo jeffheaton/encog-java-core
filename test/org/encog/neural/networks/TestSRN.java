@@ -17,7 +17,7 @@ public class TestSRN  extends TestCase {
 		elmanPattern.setInputNeurons(input);
 		elmanPattern.addHiddenLayer(hidden);
 		elmanPattern.setOutputNeurons(ideal);
-		BasicNetwork network = elmanPattern.generate();
+		BasicNetwork network = (BasicNetwork)elmanPattern.generate();
 		NeuralDataSet training = RandomTrainingFactory.generate(1000, 5, network.getInputCount(), network.getOutputCount(), -1, 1);
 		ResilientPropagation prop = new ResilientPropagation(network,training);
 		prop.iteration();
@@ -31,7 +31,7 @@ public class TestSRN  extends TestCase {
 		jordanPattern.setInputNeurons(input);
 		jordanPattern.addHiddenLayer(hidden);
 		jordanPattern.setOutputNeurons(ideal);
-		BasicNetwork network = jordanPattern.generate();
+		BasicNetwork network = (BasicNetwork)jordanPattern.generate();
 		NeuralDataSet training = RandomTrainingFactory.generate(1000, 5, network.getInputCount(), network.getOutputCount(), -1, 1);
 		ResilientPropagation prop = new ResilientPropagation(network,training);
 		prop.iteration();

@@ -62,7 +62,7 @@ public class TestART1 extends TestCase {
 		ART1Pattern pattern = new ART1Pattern();
 		pattern.setInputNeurons(INPUT_NEURONS);
 		pattern.setOutputNeurons(OUTPUT_NEURONS);
-		BasicNetwork network = pattern.generate();
+		BasicNetwork network = (BasicNetwork)pattern.generate();
 		ART1Logic logic = (ART1Logic) network.getLogic();
 		
 		Assert.assertEquals(present(logic,"   O "),0);

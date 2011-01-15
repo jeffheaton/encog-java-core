@@ -41,7 +41,7 @@ public class TestADALINE extends TestCase {
 		ADALINEPattern pattern = new ADALINEPattern();
 		pattern.setInputNeurons(2);
 		pattern.setOutputNeurons(1);
-		BasicNetwork network = pattern.generate();
+		BasicNetwork network = (BasicNetwork)pattern.generate();
 		
 		// train it
 		NeuralDataSet training = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);

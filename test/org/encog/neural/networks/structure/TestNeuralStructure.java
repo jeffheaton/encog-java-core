@@ -47,7 +47,7 @@ public class TestNeuralStructure extends TestCase {
 		pattern.addHiddenLayer(2);
 		pattern.addHiddenLayer(3);
 		pattern.setOutputNeurons(4);
-		BasicNetwork network = pattern.generate();
+		BasicNetwork network = (BasicNetwork)pattern.generate();
 		network.getStructure().finalizeStructure();
 		network.getStructure().sort();
 		List<Layer> layerList = network.getStructure().getLayers();
@@ -93,7 +93,7 @@ public class TestNeuralStructure extends TestCase {
 		pattern.setInputNeurons(1);
 		pattern.addHiddenLayer(2);
 		pattern.setOutputNeurons(3);
-		BasicNetwork network = pattern.generate();
+		BasicNetwork network = (BasicNetwork)pattern.generate();
 		List<Layer> list = network.getStructure().getLayers();
 		Assert.assertEquals(3,list.get(0).getNeuronCount());
 		Assert.assertTrue(list.get(1) instanceof BasicLayer );
@@ -118,7 +118,7 @@ public class TestNeuralStructure extends TestCase {
 		pattern.setInputNeurons(1);
 		pattern.addHiddenLayer(2);
 		pattern.setOutputNeurons(3);
-		BasicNetwork network = pattern.generate();
+		BasicNetwork network = (BasicNetwork)pattern.generate();
 		List<Layer> list = network.getStructure().getLayers();
 		Assert.assertEquals(3,list.get(0).getNeuronCount());
 		Assert.assertTrue(list.get(1) instanceof BasicLayer );
