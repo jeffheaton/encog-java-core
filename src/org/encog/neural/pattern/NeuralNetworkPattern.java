@@ -25,6 +25,7 @@ package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.persist.EncogPersistedObject;
 
 /**
  * Patterns are used to create common sorts of neural networks. Information
@@ -54,7 +55,7 @@ public interface NeuralNetworkPattern {
 	 * 
 	 * @return The resulting neural network.
 	 */
-	BasicNetwork generate();
+	EncogPersistedObject generate();
 
 	/**
 	 * Set the activation function to be used for all created layers that allow

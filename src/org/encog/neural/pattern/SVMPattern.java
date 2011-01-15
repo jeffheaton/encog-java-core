@@ -28,6 +28,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.svm.KernelType;
 import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.neural.networks.svm.SVMType;
+import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +79,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The generated network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 		final SVMNetwork network = new SVMNetwork(this.inputNeurons,this.outputNeurons,svmType,kernelType);
 		return network;
 	}

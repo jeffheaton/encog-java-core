@@ -29,6 +29,7 @@ import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +81,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The generated network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 		final BasicNetwork network = new BasicNetwork();
 
 		int y = PatternConst.START_Y;

@@ -33,6 +33,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.synapse.neat.NEATNeuron;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
+import org.encog.persist.EncogPersistedObject;
 
 public class NEATPattern implements NeuralNetworkPattern {
 	/**
@@ -78,7 +79,7 @@ public class NEATPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The neural network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 
 		int y = PatternConst.START_Y;
 		final BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),

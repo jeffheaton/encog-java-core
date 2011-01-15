@@ -31,6 +31,7 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.BAMLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +97,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The generated network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 		final BasicNetwork network = new BasicNetwork(new BAMLogic());
 
 		final Layer f1Layer = new BasicLayer(new ActivationBiPolar(), false,

@@ -259,7 +259,7 @@ public class PruneIncremental extends ConcurrentJob {
 			}
 		}
 
-		return this.pattern.generate();
+		return (BasicNetwork)this.pattern.generate();
 	}
 
 	/**

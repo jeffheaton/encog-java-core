@@ -30,6 +30,7 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
+import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,7 +91,7 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The feedforward neural network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 		int y = PatternConst.START_Y;
 		final Layer input = new BasicLayer(this.activation, false,
 				this.inputNeurons);

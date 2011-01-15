@@ -32,6 +32,7 @@ import org.encog.neural.networks.logic.ART1Logic;
 import org.encog.neural.networks.logic.ARTLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -122,7 +123,7 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The generated neural network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 		final BasicNetwork network = new BasicNetwork(new ART1Logic());
 
 		int y = PatternConst.START_Y;

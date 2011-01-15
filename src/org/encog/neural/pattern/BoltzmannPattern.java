@@ -29,6 +29,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.BoltzmannLogic;
+import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,7 +92,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The generated network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 		final Layer layer = new BasicLayer(new ActivationBiPolar(), true,
 				this.neuronCount);
 

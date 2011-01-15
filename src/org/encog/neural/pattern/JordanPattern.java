@@ -29,6 +29,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +116,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return A Jordan neural network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 		// construct an Jordan type network
 		final Layer input = new BasicLayer(this.activation, false,
 				this.inputNeurons);

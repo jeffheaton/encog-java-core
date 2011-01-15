@@ -170,7 +170,7 @@ public final class EncogUtility {
 			pattern.addHiddenLayer(hidden2);
 		}
 
-		final BasicNetwork network = pattern.generate();
+		final BasicNetwork network = (BasicNetwork)pattern.generate();
 		network.reset();
 		return network;
 	}

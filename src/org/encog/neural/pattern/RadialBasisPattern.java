@@ -31,6 +31,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,7 +102,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The neural network.
 	 */
-	public BasicNetwork generate() {
+	public EncogPersistedObject generate() {
 
 		final Layer input = new BasicLayer(new ActivationLinear(), false,
 				this.inputNeurons);
