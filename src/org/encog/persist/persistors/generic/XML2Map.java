@@ -1,5 +1,6 @@
 package org.encog.persist.persistors.generic;
 
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.persist.map.PersistConst;
@@ -36,12 +37,35 @@ public class XML2Map {
 					str = in.readTextToTag();
 					double[] d = NumberList.fromList(CSVFormat.ENGLISH, str);
 					result.setProperty(name, d);
+				} else if( in.getTag().getName().equals(PersistConst.MATRIX)) { 
+					str = in.readTextToTag();
+					result.setProperty(name, inputMatrix(str));
 				} else {
 					result.setProperty(name, str, false);
 				}
 			} else if( in.getTag().getType()==Type.END ) {
 				if( in.getTag().getName().equals(objectName))
 					break;
+			}
+		}
+		
+		return result;
+	}
+	
+	private Matrix inputMatrix(String line)
+	{
+		double[] d = NumberList.fromList(CSVFormat.EG_FORMAT, line);
+		int rows = (int)d[0];
+		int cols = (int)d[1];
+		
+		Matrix result = new Matrix(rows,cols);
+		
+		int index = 2;
+		for(int r = 0;r<rows;r++)
+		{
+			for(int c = 0; c< cols; c++)
+			{
+				result.set(r,c,d[index++]);
 			}
 		}
 		

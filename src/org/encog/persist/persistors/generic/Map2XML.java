@@ -1,12 +1,17 @@
 package org.encog.persist.persistors.generic;
 
+import org.encog.Encog;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedDoubleArray;
+import org.encog.persist.map.PersistedMatrix;
 import org.encog.persist.map.PersistedObject;
 import org.encog.persist.map.PersistedProperty;
 import org.encog.persist.map.PersistedValue;
 import org.encog.persist.map.PersistedValueArray;
+import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
 
 public class Map2XML {
 	
@@ -51,10 +56,38 @@ public class Map2XML {
 					out.endTag();
 					out.endTag();
 				}
+				else if( property instanceof PersistedMatrix )
+				{
+					PersistedMatrix pm = (PersistedMatrix)property;
+					out.beginTag(key);
+					out.beginTag(PersistConst.MATRIX);
+					out.addText(outputMatrix(pm.getMatrix()));
+					out.endTag();
+					out.endTag();
+				}
 			}
 		}		
 		
 		// close the opening tag
 		out.endTag();
+	}
+	
+	private String outputMatrix(Matrix matrix)
+	{
+		StringBuilder result = new StringBuilder();
+		result.append(matrix.getRows());
+		result.append(',');
+		result.append(matrix.getCols());		
+		
+		for(int row=0;row<matrix.getRows();row++)
+		{
+			for(int col=0;col<matrix.getCols();col++)
+			{
+				result.append(',');
+				result.append(CSVFormat.EG_FORMAT.format(matrix.get(row, col), Encog.DEFAULT_PRECISION));
+			}
+		}
+		
+		return result.toString();
 	}
 }

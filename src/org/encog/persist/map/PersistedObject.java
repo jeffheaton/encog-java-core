@@ -3,6 +3,7 @@ package org.encog.persist.map;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.parse.ParseError;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
@@ -173,6 +174,37 @@ public class PersistedObject extends PersistedProperty {
 		}
 		catch(NumberFormatException ex) {
 			throw new PersistError("Property: " + name + ", had invalid double:" + str );
+		}
+	}
+
+
+	public void setProperty(String name, Matrix value) {
+		if( value!=null )
+		{
+			this.data.put(name, new PersistedMatrix(value));
+		}
+	}
+
+
+	public Matrix getPropertyMatrix(String name, boolean required) {
+		try
+		{
+			if( require(name,required) )
+			{
+				return null;
+			}
+			
+			PersistedProperty result = this.data.get(name);
+			if( result instanceof PersistedMatrix )
+			{
+				PersistedMatrix m = (PersistedMatrix)result;
+				return m.getMatrix();
+			}
+			throw new PersistError("Expected double array for " + name);
+		}
+		catch(Exception e)
+		{
+			throw new ParseError("Invalid double array: " + name);
 		}
 	}
 }
