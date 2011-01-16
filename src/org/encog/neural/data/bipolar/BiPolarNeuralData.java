@@ -53,7 +53,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this object with the specified data.

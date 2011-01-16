@@ -1,4 +1,7 @@
+org.encog.neural.bam.BAM
+org.encog.neural.thermal.BoltzmannMachine
 org.encog.neural.thermal.HopfieldNetwork
+org.encog.neural.art.ART1
 org.encog.bot.BotError
 org.encog.bot.BotUtil
 org.encog.bot.browse.Address

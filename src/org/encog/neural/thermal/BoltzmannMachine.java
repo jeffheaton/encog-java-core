@@ -48,8 +48,6 @@ public class BoltzmannMachine extends ThermalNetwork {
 		super(neuronCount);
 
 		this.threshold = new double[neuronCount];
-		this.on = new int[neuronCount];
-		this.off = new int[neuronCount];
 	}
 
 	/**
@@ -65,21 +63,24 @@ public class BoltzmannMachine extends ThermalNetwork {
 	/**
 	 * Run the network until thermal equilibrium is established.
 	 */
-	public void establishEquilibrium() {
-		int n, i;
-
+	public void establishEquilibrium() {		
 		final int count = getNeuronCount();
+		
+		if( this.on==null ) {
+			this.on = new int[count];
+			this.off = new int[count];
+		}
 
-		for (i = 0; i < count; i++) {
+		for (int i = 0; i < count; i++) {
 			this.on[i] = 0;
 			this.off[i] = 0;
 		}
 
-		for (n = 0; n < this.runCycles * count; n++) {
+		for (int n = 0; n < this.runCycles * count; n++) {
 			run((int) RangeRandomizer.randomize(0, count - 1));
 		}
-		for (n = 0; n < this.annealCycles * count; n++) {
-			i = (int) RangeRandomizer.randomize(0, count - 1);
+		for (int n = 0; n < this.annealCycles * count; n++) {
+			int i = (int) RangeRandomizer.randomize(0, count - 1);
 			run(i);
 			if (getCurrentState().getBoolean(i)) {
 				this.on[i]++;
@@ -88,7 +89,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 			}
 		}
 
-		for (i = 0; i < count; i++) {
+		for (int i = 0; i < count; i++) {
 			getCurrentState().setData(i, this.on[i] > this.off[i]);
 		}
 	}

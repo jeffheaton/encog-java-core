@@ -23,12 +23,14 @@
  */
 package org.encog.persist;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.encog.parse.tags.read.ReadXML;
+import org.encog.persist.location.FilePersistence;
 import org.encog.persist.location.PersistenceLocation;
 import org.encog.persist.persistors.PersistorUtil;
 
@@ -299,5 +301,13 @@ public class EncogMemoryCollection implements EncogCollection {
 	 */
 	public PersistenceLocation getLocation() {
 		return this.location;
+	}
+
+	public void save(String file) {
+		save(new FilePersistence(new File(file)));
+	}
+	
+	public void load(String file) {
+		load(new FilePersistence(new File(file)));
 	}
 }

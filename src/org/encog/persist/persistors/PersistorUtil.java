@@ -125,6 +125,11 @@ public final class PersistorUtil {
 		if (persistor == null) {
 			final Class< ? > clazz = ReflectionUtil
 					.resolveEncogClass(className);
+			
+			if( clazz==null) {
+				throw new PersistError("Unregistered class: " + className);
+			}
+			
 			EncogPersistedObject temp;
 			try {
 				temp = (EncogPersistedObject) clazz.newInstance();

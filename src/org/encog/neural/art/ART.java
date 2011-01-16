@@ -34,11 +34,6 @@ public class ART extends BasicPersistedObject {
 	 */
 	public static final String PROPERTY_VIGILANCE = "VIGILANCE";
 
-
-	public static final String PROPERTY_F1_COUNT = "f1Count";
-	public static final String PROPERTY_F2_COUNT = "f2Count";
 	public static final String PROPERTY_NO_WINNER = "noWinner";
-	public static final String PROPERTY_WEIGHTS_F1_F2 = "weightsF1F2";
-	public static final String PROPERTY_WEIGHTS_F2_F1 = "weightsF2F1";
 	
 }
