@@ -24,14 +24,7 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.logic.ART1Logic;
-import org.encog.neural.networks.logic.ARTLogic;
-import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.synapse.WeightedSynapse;
+import org.encog.neural.art.ART1;
 import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,16 +33,6 @@ import org.slf4j.LoggerFactory;
  * Pattern to create an ART-1 neural network.
  */
 public class ART1Pattern implements NeuralNetworkPattern {
-
-	/**
-	 * The tag for the F1 layer.
-	 */
-	public static final String TAG_F1 = "F1";
-
-	/**
-	 * The tag for the F2 layer.
-	 */
-	public static final String TAG_F2 = "F2";
 
 	/**
 	 * The logging object.
@@ -124,42 +107,15 @@ public class ART1Pattern implements NeuralNetworkPattern {
 	 * @return The generated neural network.
 	 */
 	public EncogPersistedObject generate() {
-		final BasicNetwork network = new BasicNetwork(new ART1Logic());
-
-		int y = PatternConst.START_Y;
-
-		final Layer layerF1 = new BasicLayer(new ActivationLinear(), false,
-				this.inputNeurons);
-		final Layer layerF2 = new BasicLayer(new ActivationLinear(), false,
-				this.outputNeurons);
-		final Synapse synapseF1toF2 = new WeightedSynapse(layerF1, layerF2);
-		final Synapse synapseF2toF1 = new WeightedSynapse(layerF2, layerF1);
-		layerF1.getNext().add(synapseF1toF2);
-		layerF2.getNext().add(synapseF2toF1);
-
-		// apply tags
-		network.tagLayer(BasicNetwork.TAG_INPUT, layerF1);
-		network.tagLayer(BasicNetwork.TAG_OUTPUT, layerF2);
-		network.tagLayer(ART1Pattern.TAG_F1, layerF1);
-		network.tagLayer(ART1Pattern.TAG_F2, layerF2);
-
-		layerF1.setX(PatternConst.START_X);
-		layerF1.setY(y);
-		y += PatternConst.INC_Y;
-
-		layerF2.setX(PatternConst.START_X);
-		layerF2.setY(y);
-
-		network.setProperty(ARTLogic.PROPERTY_A1, this.a1);
-		network.setProperty(ARTLogic.PROPERTY_B1, this.b1);
-		network.setProperty(ARTLogic.PROPERTY_C1, this.c1);
-		network.setProperty(ARTLogic.PROPERTY_D1, this.d1);
-		network.setProperty(ARTLogic.PROPERTY_L, this.l);
-		network.setProperty(ARTLogic.PROPERTY_VIGILANCE, this.vigilance);
-
-		network.getStructure().finalizeStructure();
-
-		return network;
+		
+		ART1 art = new ART1(this.inputNeurons,this.outputNeurons);
+		art.setA1(this.a1);
+		art.setB1(this.b1);
+		art.setC1(this.c1);
+		art.setD1(this.d1);
+		art.setL(this.l);
+		art.setVigilance(this.vigilance);		
+		return art;		
 	}
 
 	/**

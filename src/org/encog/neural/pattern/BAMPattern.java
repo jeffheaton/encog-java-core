@@ -25,10 +25,10 @@ package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationBiPolar;
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.neural.bam.BAM;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.logic.BAMLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.persist.EncogPersistedObject;
@@ -45,16 +45,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class BAMPattern implements NeuralNetworkPattern {
-
-	/**
-	 * The tag for the F1 layer.
-	 */
-	public static final String TAG_F1 = "F1";
-
-	/**
-	 * The tag for the F2 layer.
-	 */
-	public static final String TAG_F2 = "F2";
 
 	/**
 	 * The number of neurons in the first layer.
@@ -98,32 +88,8 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public EncogPersistedObject generate() {
-		final BasicNetwork network = new BasicNetwork(new BAMLogic());
-
-		final Layer f1Layer = new BasicLayer(new ActivationBiPolar(), false,
-				this.f1Neurons);
-		final Layer f2Layer = new BasicLayer(new ActivationBiPolar(), false,
-				this.f2Neurons);
-		final Synapse synapseInputToOutput = new WeightedSynapse(f1Layer,
-				f2Layer);
-		final Synapse synapseOutputToInput = new WeightedSynapse(f2Layer,
-				f1Layer);
-		f1Layer.addSynapse(synapseInputToOutput);
-		f2Layer.addSynapse(synapseOutputToInput);
-
-		network.tagLayer(BAMPattern.TAG_F1, f1Layer);
-		network.tagLayer(BAMPattern.TAG_F2, f2Layer);
-
-		network.getStructure().finalizeStructure();
-		network.getStructure().finalizeStructure();
-
-		f1Layer.setY(PatternConst.START_Y);
-		f2Layer.setY(PatternConst.START_Y);
-
-		f1Layer.setX(PatternConst.START_X);
-		f2Layer.setX(PatternConst.INDENT_X);
-
-		return network;
+		BAM bam = new BAM(this.f1Neurons,this.f2Neurons);
+		return bam;
 	}
 
 	/**

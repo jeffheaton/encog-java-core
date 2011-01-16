@@ -31,7 +31,6 @@ import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.logic.FeedforwardLogic;
-import org.encog.neural.networks.logic.ThermalLogic;
 import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.neat.NEATSynapse;
 
@@ -68,11 +67,6 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 
 		if (outputLayer == null) {
 			return "To convert to a flat network, there must be an output layer.";
-		}
-
-		if (!(network.getLogic() instanceof FeedforwardLogic)
-				|| (network.getLogic() instanceof ThermalLogic)) {
-			return "To convert to flat, must be using FeedforwardLogic or SimpleRecurrentLogic.";
 		}
 
 		for (final Layer layer : network.getStructure().getLayers()) {

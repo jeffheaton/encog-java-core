@@ -5,7 +5,6 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.neural.networks.NeuralOutputHolder;
-import org.encog.neural.networks.logic.ART1Logic;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ public class ART1 extends ART {
 	 * The logging object.
 	 */
 	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(ART1Logic.class);
+			.getLogger(ART1.class);
 
 	/**
 	 * last winner in F2 layer.

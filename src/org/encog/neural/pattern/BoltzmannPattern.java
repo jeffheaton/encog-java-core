@@ -23,12 +23,8 @@
  */
 package org.encog.neural.pattern;
 
-import org.encog.engine.network.activation.ActivationBiPolar;
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.logic.BoltzmannLogic;
+import org.encog.neural.thermal.BoltzmannMachine;
 import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,22 +89,11 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public EncogPersistedObject generate() {
-		final Layer layer = new BasicLayer(new ActivationBiPolar(), true,
-				this.neuronCount);
-
-		final BasicNetwork result = new BasicNetwork(new BoltzmannLogic());
-		result.setProperty(BoltzmannLogic.PROPERTY_ANNEAL_CYCLES,
-				this.annealCycles);
-		result.setProperty(BoltzmannLogic.PROPERTY_RUN_CYCLES, this.runCycles);
-		result.setProperty(BoltzmannLogic.PROPERTY_TEMPERATURE,
-				this.temperature);
-		result.addLayer(layer);
-		layer.addNext(layer);
-		layer.setX(PatternConst.START_X);
-		layer.setY(PatternConst.START_Y);
-		result.getStructure().finalizeStructure();
-		result.reset();
-		return result;
+		BoltzmannMachine boltz = new BoltzmannMachine(this.neuronCount);
+		boltz.setTemperature(this.temperature);
+		boltz.setRunCycles(this.runCycles);
+		boltz.setAnnealCycles(this.annealCycles);
+		return boltz;		
 	}
 
 	/**

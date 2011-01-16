@@ -29,13 +29,8 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.logic.ART1Logic;
-import org.encog.neural.networks.logic.BAMLogic;
-import org.encog.neural.networks.logic.BoltzmannLogic;
 import org.encog.neural.networks.logic.FeedforwardLogic;
-import org.encog.neural.networks.logic.HopfieldLogic;
 import org.encog.neural.networks.logic.NeuralLogic;
 import org.encog.neural.networks.logic.SimpleRecurrentLogic;
 import org.encog.neural.networks.synapse.Synapse;
@@ -232,16 +227,8 @@ public class BasicNetworkPersistor implements Persistor {
 	 */
 	private void handleLogic(final ReadXML in) {
 		final String value = in.readTextToTag();
-		if (value.equalsIgnoreCase("ART1Logic")) {
-			this.currentNetwork.setLogic(new ART1Logic());
-		} else if (value.equalsIgnoreCase("BAMLogic")) {
-			this.currentNetwork.setLogic(new BAMLogic());
-		} else if (value.equalsIgnoreCase("BoltzmannLogic")) {
-			this.currentNetwork.setLogic(new BoltzmannLogic());
-		} else if (value.equalsIgnoreCase("FeedforwardLogic")) {
+		if (value.equalsIgnoreCase("FeedforwardLogic")) {
 			this.currentNetwork.setLogic(new FeedforwardLogic());
-		} else if (value.equalsIgnoreCase("HopfieldLogic")) {
-			this.currentNetwork.setLogic(new HopfieldLogic());
 		} else if (value.equalsIgnoreCase("SimpleRecurrentLogic")) {
 			this.currentNetwork.setLogic(new SimpleRecurrentLogic());
 		} else {
@@ -438,10 +425,7 @@ public class BasicNetworkPersistor implements Persistor {
 		out.beginTag(BasicNetworkPersistor.TAG_LOGIC);
 		final NeuralLogic logic = this.currentNetwork.getLogic();
 		if ((logic instanceof FeedforwardLogic)
-				|| (logic instanceof SimpleRecurrentLogic)
-				|| (logic instanceof BoltzmannLogic)
-				|| (logic instanceof ART1Logic) || (logic instanceof BAMLogic)
-				|| (logic instanceof HopfieldLogic)) {
+				|| (logic instanceof SimpleRecurrentLogic)) {
 			out.addText(logic.getClass().getSimpleName());
 		} else {
 			out.addText(logic.getClass().getName());

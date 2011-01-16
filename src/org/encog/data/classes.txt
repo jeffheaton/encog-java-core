@@ -187,16 +187,10 @@ org.encog.neural.networks.layers.BasicLayer
 org.encog.neural.networks.layers.ContextLayer
 org.encog.neural.networks.layers.Layer
 org.encog.neural.networks.layers.RadialBasisFunctionLayer
-org.encog.neural.networks.logic.ART1Logic
-org.encog.neural.networks.logic.ARTLogic
-org.encog.neural.networks.logic.BAMLogic
-org.encog.neural.networks.logic.BoltzmannLogic
 org.encog.neural.networks.logic.FeedforwardLogic
-org.encog.neural.networks.logic.HopfieldLogic
 org.encog.neural.networks.logic.NeuralLogic
 org.encog.neural.networks.logic.SimpleRecurrentLogic
 org.encog.neural.networks.logic.SOMLogic
-org.encog.neural.networks.logic.ThermalLogic
 org.encog.neural.networks.Network
 org.encog.neural.networks.NeuralDataMapping
 org.encog.neural.networks.NeuralOutputHolder

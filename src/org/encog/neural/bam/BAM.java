@@ -5,7 +5,6 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralDataMapping;
 import org.encog.neural.networks.NeuralOutputHolder;
-import org.encog.neural.networks.logic.BAMLogic;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
@@ -18,7 +17,7 @@ public class BAM extends BasicPersistedObject {
 	 * The logging object.
 	 */
 	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(BAMLogic.class);
+			.getLogger(BAM.class);
 
 	private int f1Count;
 	private int f2Count;

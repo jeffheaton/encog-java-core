@@ -28,7 +28,7 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.logic.HopfieldLogic;
+import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,17 +83,8 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public EncogPersistedObject generate() {
-		final Layer layer = new BasicLayer(new ActivationBiPolar(), false,
-				this.neuronCount);
-
-		final BasicNetwork result = new BasicNetwork(new HopfieldLogic());
-		result.addLayer(layer);
-		layer.addNext(layer);
-		layer.setX(PatternConst.START_X);
-		layer.setY(PatternConst.START_Y);
-		result.getStructure().finalizeStructure();
-		result.reset();
-		return result;
+		HopfieldNetwork logic = new HopfieldNetwork(this.neuronCount);
+		return logic;
 	}
 
 	/**

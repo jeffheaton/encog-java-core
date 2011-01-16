@@ -184,4 +184,34 @@ public class BoltzmannMachine extends ThermalNetwork {
 		this.temperature = obj.getPropertyDouble(PersistConst.TEMPERATURE,true);
 		init(neuronCount,weights,state);
 	}
+
+	/**
+	 * @return the annealCycles
+	 */
+	public int getAnnealCycles() {
+		return annealCycles;
+	}
+
+	/**
+	 * @param annealCycles the annealCycles to set
+	 */
+	public void setAnnealCycles(int annealCycles) {
+		this.annealCycles = annealCycles;
+	}
+
+	/**
+	 * @return the runCycles
+	 */
+	public int getRunCycles() {
+		return runCycles;
+	}
+
+	/**
+	 * @param runCycles the runCycles to set
+	 */
+	public void setRunCycles(int runCycles) {
+		this.runCycles = runCycles;
+	}
+	
+	
 }
