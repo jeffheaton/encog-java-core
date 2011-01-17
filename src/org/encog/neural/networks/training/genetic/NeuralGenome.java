@@ -23,12 +23,12 @@
  */
 package org.encog.neural.networks.training.genetic;
 
+import org.encog.ml.genetic.genes.DoubleGene;
+import org.encog.ml.genetic.genes.Gene;
+import org.encog.ml.genetic.genome.BasicGenome;
+import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.solve.genetic.genes.DoubleGene;
-import org.encog.solve.genetic.genes.Gene;
-import org.encog.solve.genetic.genome.BasicGenome;
-import org.encog.solve.genetic.genome.Chromosome;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -27,6 +27,9 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.genetic.genes.Gene;
+import org.encog.ml.genetic.genome.BasicGenome;
+import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.synapse.neat.NEATLink;
 import org.encog.neural.networks.synapse.neat.NEATNeuron;
@@ -34,9 +37,6 @@ import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.neural.pattern.NEATPattern;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReference;
-import org.encog.solve.genetic.genes.Gene;
-import org.encog.solve.genetic.genome.BasicGenome;
-import org.encog.solve.genetic.genome.Chromosome;
 
 /**
  * Implements a NEAT genome. This is a "blueprint" for creating a neural

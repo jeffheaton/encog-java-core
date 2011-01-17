@@ -23,10 +23,10 @@
  */
 package org.encog.neural.networks.training.neat;
 
+import org.encog.ml.genetic.genes.BasicGene;
+import org.encog.ml.genetic.genes.Gene;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.persist.annotations.EGAttribute;
-import org.encog.solve.genetic.genes.BasicGene;
-import org.encog.solve.genetic.genes.Gene;
 
 /**
  * Implements a NEAT neuron gene.

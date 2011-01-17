@@ -24,15 +24,15 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.mathutil.randomize.Randomizer;
+import org.encog.ml.genetic.GeneticAlgorithm;
+import org.encog.ml.genetic.crossover.Splice;
+import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.mutate.MutatePerturb;
+import org.encog.ml.genetic.population.BasicPopulation;
+import org.encog.ml.genetic.population.Population;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
-import org.encog.solve.genetic.GeneticAlgorithm;
-import org.encog.solve.genetic.crossover.Splice;
-import org.encog.solve.genetic.genome.Genome;
-import org.encog.solve.genetic.mutate.MutatePerturb;
-import org.encog.solve.genetic.population.BasicPopulation;
-import org.encog.solve.genetic.population.Population;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

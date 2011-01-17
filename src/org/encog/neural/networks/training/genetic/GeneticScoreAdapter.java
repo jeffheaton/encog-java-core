@@ -23,10 +23,10 @@
  */
 package org.encog.neural.networks.training.genetic;
 
+import org.encog.ml.genetic.genome.CalculateGenomeScore;
+import org.encog.ml.genetic.genome.Genome;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
-import org.encog.solve.genetic.genome.CalculateGenomeScore;
-import org.encog.solve.genetic.genome.Genome;
 
 /**
  * This adapter allows a CalculateScore object to be used to calculate a

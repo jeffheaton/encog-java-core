@@ -32,6 +32,14 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.genetic.GeneticAlgorithm;
+import org.encog.ml.genetic.genome.Chromosome;
+import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.genome.GenomeComparator;
+import org.encog.ml.genetic.population.BasicPopulation;
+import org.encog.ml.genetic.population.Population;
+import org.encog.ml.genetic.species.BasicSpecies;
+import org.encog.ml.genetic.species.Species;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
@@ -40,14 +48,6 @@ import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
-import org.encog.solve.genetic.GeneticAlgorithm;
-import org.encog.solve.genetic.genome.Chromosome;
-import org.encog.solve.genetic.genome.Genome;
-import org.encog.solve.genetic.genome.GenomeComparator;
-import org.encog.solve.genetic.population.BasicPopulation;
-import org.encog.solve.genetic.population.Population;
-import org.encog.solve.genetic.species.BasicSpecies;
-import org.encog.solve.genetic.species.Species;
 
 /**
  * The two parents.

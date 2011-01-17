@@ -24,7 +24,7 @@
 package org.encog.neural.networks.training.anneal;
 
 import org.encog.engine.util.EngineArray;
-import org.encog.solve.anneal.SimulatedAnnealing;
+import org.encog.ml.anneal.SimulatedAnnealing;
 
 /**
  * Simple class used by the neural simulated annealing. This class is a subclass

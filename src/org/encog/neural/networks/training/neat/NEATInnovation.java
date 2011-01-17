@@ -23,9 +23,9 @@
  */
 package org.encog.neural.networks.training.neat;
 
+import org.encog.ml.genetic.innovation.BasicInnovation;
 import org.encog.neural.networks.synapse.neat.NEATNeuronType;
 import org.encog.persist.annotations.EGAttribute;
-import org.encog.solve.genetic.innovation.BasicInnovation;
 
 /**
  * Implements a NEAT innovation. This lets NEAT track what changes it has
