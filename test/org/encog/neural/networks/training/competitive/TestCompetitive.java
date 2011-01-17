@@ -69,7 +69,7 @@ public class TestCompetitive extends TestCase  {
 
 		// Create the neural network.
 		SOM network = new SOM(4,2);		
-		network.setMatrix(new Matrix(MATRIX_ARRAY));
+		network.setWeights(new Matrix(MATRIX_ARRAY));
 
 		final BasicTrainSOM train = new BasicTrainSOM(network, 0.4,
 				training, new NeighborhoodSingle());
