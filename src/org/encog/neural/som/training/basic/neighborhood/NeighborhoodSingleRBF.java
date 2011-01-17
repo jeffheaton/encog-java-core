@@ -21,25 +21,18 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.competitive.neighborhood;
+package org.encog.neural.som.training.basic.neighborhood;
 
+import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A neighborhood function that uses a simple bubble. A radius is defined, and
- * any neuron that is plus or minus that width from the winning neuron will be
- * updated as a result of training.
+ * A neighborhood function based on an RBF function.
  * 
  * @author jheaton
- * 
  */
-public class NeighborhoodBubble implements NeighborhoodFunction {
-
-	/**
-	 * The radius of the bubble.
-	 */
-	private double radius;
+public class NeighborhoodSingleRBF implements NeighborhoodFunction {
 
 	/**
 	 * The logging object.
@@ -48,17 +41,20 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
-	 * Create a bubble neighborhood function that will return 1.0 (full update)
-	 * for any neuron that is plus or minus the width distance from the winning
-	 * neuron.
-	 * 
-	 * @param radius
-	 *            The width of the bubble, this is the distance that the neuron
-	 *            can be from the winning neuron. The true width, across the
-	 *            bubble, is actually two times this parameter.
+	 * The radial basis function (RBF) to use to calculate the training falloff
+	 * from the best neuron.
 	 */
-	public NeighborhoodBubble(final int radius) {
-		this.radius = radius;
+	private final RadialBasisFunction radial;
+
+	/**
+	 * Construct the neighborhood function with the specified radial function.
+	 * Generally this will be a Gaussian function but any RBF should do.
+	 * 
+	 * @param radial
+	 *            The radial basis function to use.
+	 */
+	public NeighborhoodSingleRBF(final RadialBasisFunction radial) {
+		this.radial = radial;
 	}
 
 	/**
@@ -72,29 +68,24 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 	 * @return The ratio for this neuron's adjustment.
 	 */
 	public double function(final int currentNeuron, final int bestNeuron) {
-		final int distance = Math.abs(bestNeuron - currentNeuron);
-		if (distance <= this.radius) {
-			return 1.0;
-		} else {
-			return 0.0;
-		}
+		double[] d = new double[1];
+		d[0] = currentNeuron - bestNeuron;
+		return this.radial.calculate(d);
 	}
 
 	/**
 	 * @return The radius.
 	 */
 	public double getRadius() {
-		return this.radius;
+		return this.radial.getWidth();
 	}
 
 	/**
 	 * Set the radius.
-	 * 
-	 * @param radius
-	 *            The new radius.
+	 * @param radius The new radius.
 	 */
 	public void setRadius(final double radius) {
-		this.radius = radius;
+		this.radial.setWidth(radius);
 	}
 
 }

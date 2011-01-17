@@ -21,25 +21,45 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.competitive.neighborhood;
+package org.encog.neural.som.training.basic.neighborhood;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A very simple neighborhood function that will return 1.0 (full effect) for
- * the winning neuron, and 0.0 (no change) for everything else.
+ * A neighborhood function that uses a simple bubble. A radius is defined, and
+ * any neuron that is plus or minus that width from the winning neuron will be
+ * updated as a result of training.
  * 
  * @author jheaton
  * 
  */
-public class NeighborhoodSingle implements NeighborhoodFunction {
+public class NeighborhoodBubble implements NeighborhoodFunction {
+
+	/**
+	 * The radius of the bubble.
+	 */
+	private double radius;
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+	/**
+	 * Create a bubble neighborhood function that will return 1.0 (full update)
+	 * for any neuron that is plus or minus the width distance from the winning
+	 * neuron.
+	 * 
+	 * @param radius
+	 *            The width of the bubble, this is the distance that the neuron
+	 *            can be from the winning neuron. The true width, across the
+	 *            bubble, is actually two times this parameter.
+	 */
+	public NeighborhoodBubble(final int radius) {
+		this.radius = radius;
+	}
 
 	/**
 	 * Determine how much the current neuron should be affected by training
@@ -52,7 +72,8 @@ public class NeighborhoodSingle implements NeighborhoodFunction {
 	 * @return The ratio for this neuron's adjustment.
 	 */
 	public double function(final int currentNeuron, final int bestNeuron) {
-		if (currentNeuron == bestNeuron) {
+		final int distance = Math.abs(bestNeuron - currentNeuron);
+		if (distance <= this.radius) {
 			return 1.0;
 		} else {
 			return 0.0;
@@ -60,21 +81,20 @@ public class NeighborhoodSingle implements NeighborhoodFunction {
 	}
 
 	/**
-	 * The radius for this neighborhood function is always 1.
 	 * @return The radius.
 	 */
 	public double getRadius() {
-		return 1;
+		return this.radius;
 	}
 
 	/**
-	 * Set the radius.  This type does not use a radius, so this has no effect.
+	 * Set the radius.
 	 * 
 	 * @param radius
-	 *            The radius.
+	 *            The new radius.
 	 */
 	public void setRadius(final double radius) {
-		// no effect on this type
+		this.radius = radius;
 	}
 
 }

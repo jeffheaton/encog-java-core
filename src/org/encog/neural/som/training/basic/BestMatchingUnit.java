@@ -21,9 +21,10 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.competitive;
+package org.encog.neural.som.training.basic;
 
 import org.encog.engine.util.BoundMath;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.synapse.Synapse;
 
@@ -45,7 +46,7 @@ public class BestMatchingUnit {
 	/**
 	 * The owner of this class.
 	 */
-	private final CompetitiveTraining training;
+	private final BasicTrainSOM training;
 
 	/**
 	 * What is the worst BMU distance so far, this becomes the error for the
@@ -57,7 +58,7 @@ public class BestMatchingUnit {
 	 * Construct a BestMatchingUnit class.  The training class must be provided.
 	 * @param training The parent class.
 	 */
-	public BestMatchingUnit(final CompetitiveTraining training) {
+	public BestMatchingUnit(final BasicTrainSOM training) {
 		this.training = training;
 	}
 
@@ -71,14 +72,14 @@ public class BestMatchingUnit {
 	 *            The input vector.
 	 * @return The output neuron number that is the BMU.
 	 */
-	public int calculateBMU(final Synapse synapse, final NeuralData input) {
+	public int calculateBMU(final Matrix matrix, final NeuralData input) {
 		int result = 0;
 		
 		// Track the lowest distance so far.
 		double lowestDistance = Double.MAX_VALUE;
 
 		for (int i = 0; i < this.training.getOutputNeuronCount(); i++) {
-			final double distance = calculateEuclideanDistance(synapse, input,
+			final double distance = calculateEuclideanDistance(matrix, input,
 					i);
 
 			// Track the lowest distance, this is the BMU.
@@ -109,14 +110,14 @@ public class BestMatchingUnit {
 	 *            The neuron we are calculating the distance for.
 	 * @return The Euclidean distance.
 	 */
-	public double calculateEuclideanDistance(final Synapse synapse,
+	public double calculateEuclideanDistance(final Matrix matrix,
 			final NeuralData input, final int outputNeuron) {
 		double result = 0;
 		
 		// Loop over all input data.
 		for (int i = 0; i < input.size(); i++) {
 			final double diff = input.getData(i)
-					- synapse.getMatrix().get(i, outputNeuron);
+					- matrix.get(i, outputNeuron);
 			result += diff * diff;
 		}
 		return BoundMath.sqrt(result);

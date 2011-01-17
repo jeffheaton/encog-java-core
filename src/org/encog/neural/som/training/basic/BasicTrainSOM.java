@@ -21,12 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.competitive;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
+package org.encog.neural.som.training.basic;
 
 import org.encog.engine.util.Format;
 import org.encog.mathutil.matrices.Matrix;
@@ -34,12 +29,10 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.structure.FlatUpdateNeeded;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodFunction;
+import org.encog.neural.som.SOM;
+import org.encog.neural.som.training.basic.neighborhood.NeighborhoodFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * Training is done by looping over all of the training elements and calculating
  * a "best matching unit" (BMU). This BMU output neuron is then adjusted to
  * better "learn" this pattern. Additionally, this training may be applied to
- * othr "nearby" output neurons. The degree to which nearby neurons are update
+ * other "nearby" output neurons. The degree to which nearby neurons are update
  * is defined by the neighborhood function.
  *
  * A neighborhood function is required to determine the degree to which
@@ -73,7 +66,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  *
  */
-public class CompetitiveTraining extends BasicTraining implements LearningRate {
+public class BasicTrainSOM extends BasicTraining implements LearningRate {
 
 	/**
 	 * The neighborhood function to use to determine to what degree a neuron
@@ -89,22 +82,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * The network being trained.
 	 */
-	private final BasicNetwork network;
-
-	/**
-	 * The input layer.
-	 */
-	private final Layer inputLayer;
-
-	/**
-	 * The output layer.
-	 */
-	private final Layer outputLayer;
-
-	/**
-	 * A collection of the synapses being modified.
-	 */
-	private final Collection<Synapse> synapses;
+	private final SOM network;
 
 	/**
 	 * How many neurons in the input layer.
@@ -124,8 +102,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	/**
 	 * Holds the corrections for any matrix being trained.
 	 */
-	private final Map<Synapse, Matrix> correctionMatrix =
-		new HashMap<Synapse, Matrix>();
+	private final Matrix correctionMatrix;
 
 	/**
 	 * True is a winner is to be forced, see class description, or forceWinners
@@ -185,28 +162,20 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param neighborhood
 	 *            The neighborhood function to use.
 	 */
-	public CompetitiveTraining(final BasicNetwork network,
+	public BasicTrainSOM(final SOM network,
 			final double learningRate, final NeuralDataSet training,
 			final NeighborhoodFunction neighborhood) {
 		this.neighborhood = neighborhood;
 		setTraining(training);
 		this.learningRate = learningRate;
 		this.network = network;
-		this.inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		this.outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
-		this.synapses = network.getStructure().getPreviousSynapses(
-				this.outputLayer);
-		this.inputNeuronCount = this.inputLayer.getNeuronCount();
-		this.outputNeuronCount = this.outputLayer.getNeuronCount();
+		this.inputNeuronCount = network.getInputNeuronCount();
+		this.outputNeuronCount = network.getOutputNeuronCount();
 		this.forceWinner = false;
 		setError(0);
 
 		// setup the correction matrix
-		for (final Synapse synapse : this.synapses) {
-			final Matrix matrix = new Matrix(synapse.getMatrix().getRows(),
-					synapse.getMatrix().getCols());
-			this.correctionMatrix.put(synapse, matrix);
-		}
+		this.correctionMatrix = new Matrix(this.inputNeuronCount,this.outputNeuronCount);
 
 		// create the BMU class
 		this.bmuUtil = new BestMatchingUnit(this);
@@ -217,11 +186,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * determined by this training iteration.
 	 */
 	private void applyCorrection() {
-		for (final Entry<Synapse, Matrix> entry : this.correctionMatrix
-				.entrySet()) {
-			entry.getKey().getMatrix().set(entry.getValue());
-		}
-		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
+		this.network.getMatrix().set(this.correctionMatrix);
 	}
 
 	/**
@@ -250,11 +215,11 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param input
 	 *            The input pattern to copy.
 	 */
-	private void copyInputPattern(final Synapse synapse,
+	private void copyInputPattern(final Matrix matrix,
 			final int outputNeuron, final NeuralData input) {
 		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount;
 			inputNeuron++) {
-			synapse.getMatrix().set(inputNeuron, outputNeuron,
+			matrix.set(inputNeuron, outputNeuron,
 					input.getData(inputNeuron));
 		}
 	}
@@ -316,7 +281,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 *            The synapse to modify.
 	 * @return True if a winner was forced.
 	 */
-	private boolean forceWinners(final Synapse synapse, final int[] won,
+	private boolean forceWinners(final Matrix matrix, final int[] won,
 			final NeuralData leastRepresented) {
 
 		double maxActivation = Double.MIN_VALUE;
@@ -341,7 +306,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		// If a neurons was found that did not activate for any patterns, then
 		// force it to "win" the least represented pattern.
 		if (maxActivationNeuron != -1) {
-			copyInputPattern(synapse, maxActivationNeuron, leastRepresented);
+			copyInputPattern(matrix, maxActivationNeuron, leastRepresented);
 			return true;
 		} else {
 			return false;
@@ -373,7 +338,7 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @return The network being trained.
 	 */
 	public BasicNetwork getNetwork() {
-		return this.network;
+		return null;
 	}
 
 	/**
@@ -408,18 +373,15 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 		double leastRepresentedActivation = Double.MAX_VALUE;
 		NeuralData leastRepresented = null;
 
-		// The synapses are processed parallel to each other.
-		for (final Synapse synapse : this.synapses) {
 
 			// Reset the correction matrix for this synapse and iteration.
-			final Matrix correction = this.correctionMatrix.get(synapse);
-			correction.clear();
+			this.correctionMatrix.clear();
 
 			// Determine the BMU for each training element.
 			for (final NeuralDataPair pair : getTraining()) {
 				final NeuralData input = pair.getInput();
 
-				final int bmu = this.bmuUtil.calculateBMU(synapse, input);
+				final int bmu = this.bmuUtil.calculateBMU(this.network.getMatrix(), input);
 
 				// If we are to force a winner each time, then track how many
 				// times each output neuron becomes the BMU (winner).
@@ -439,21 +401,17 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 					}
 				}
 
-				train(bmu, synapse, input);
-
-			}
+				train(bmu, this.network.getMatrix(), input);
 
 			if (this.forceWinner) {
 				// force any non-winning neurons to share the burden somewhat\
-				if (!forceWinners(synapse, won, leastRepresented)) {
+				if (!forceWinners(this.network.getMatrix(), won, leastRepresented)) {
 					applyCorrection();
 				}
 			} else {
 				applyCorrection();
 			}
 		}
-		
-		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 
 		// update the error
 		setError(this.bmuUtil.getWorstDistance());
@@ -538,12 +496,12 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param input
 	 *            The input to train for.
 	 */
-	private void train(final int bmu, final Synapse synapse,
+	private void train(final int bmu, final Matrix matrix,
 			final NeuralData input) {
 		// adjust the weight for the BMU and its neighborhood
 		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount;
 			outputNeuron++) {
-			trainPattern(synapse, input, outputNeuron, bmu);
+			trainPattern(matrix, input, outputNeuron, bmu);
 		}
 	}
 
@@ -553,11 +511,11 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param pattern The pattern to train.
 	 */
 	public void trainPattern(final NeuralData pattern) {
-		for (final Synapse synapse : this.synapses) {
-			final NeuralData input = pattern;
-			final int bmu = this.bmuUtil.calculateBMU(synapse, input);
-			train(bmu, synapse, input);
-		}
+
+		final NeuralData input = pattern;
+		final int bmu = this.bmuUtil.calculateBMU(this.network.getMatrix(), input);
+		train(bmu, this.network.getMatrix(), input);
+
 		applyCorrection();
 
 	}
@@ -574,22 +532,20 @@ public class CompetitiveTraining extends BasicTraining implements LearningRate {
 	 * @param bmu
 	 *            The best matching unit, or winning output neuron.
 	 */
-	private void trainPattern(final Synapse synapse, final NeuralData input,
+	private void trainPattern(final Matrix matrix, final NeuralData input,
 			final int current, final int bmu) {
-
-		final Matrix correction = this.correctionMatrix.get(synapse);
 
 		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount;
 			inputNeuron++) {
 
-			final double currentWeight = synapse.getMatrix().get(inputNeuron,
+			final double currentWeight = matrix.get(inputNeuron,
 					current);
 			final double inputValue = input.getData(inputNeuron);
 
 			final double newWeight = determineNewWeight(currentWeight,
 					inputValue, current, bmu);
 
-			correction.set(inputNeuron, current, newWeight);
+			this.correctionMatrix.set(inputNeuron, current, newWeight);
 		}
 	}
 

@@ -29,6 +29,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.logic.SOMLogic;
+import org.encog.neural.som.SOM;
 import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,22 +89,8 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 * @return The neural network.
 	 */
 	public EncogPersistedObject generate() {
-		final Layer input = new BasicLayer(new ActivationLinear(), false,
-				this.inputNeurons);
-		final Layer output = new BasicLayer(new ActivationLinear(), false,
-				this.outputNeurons);
-		int y = PatternConst.START_Y;
-		final BasicNetwork network = new BasicNetwork(new SOMLogic());
-		network.addLayer(input);
-		network.addLayer(output);
-		input.setX(PatternConst.START_X);
-		output.setX(PatternConst.START_X);
-		input.setY(y);
-		y += PatternConst.INC_Y;
-		output.setY(y);
-		network.getStructure().finalizeStructure();
-		network.reset();
-		return network;
+		SOM som = new SOM(this.inputNeurons,this.outputNeurons);
+		return som;
 	}
 
 	/**

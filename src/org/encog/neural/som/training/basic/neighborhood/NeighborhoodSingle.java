@@ -21,41 +21,25 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.competitive.neighborhood;
+package org.encog.neural.som.training.basic.neighborhood;
 
-import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A neighborhood function based on an RBF function.
+ * A very simple neighborhood function that will return 1.0 (full effect) for
+ * the winning neuron, and 0.0 (no change) for everything else.
  * 
  * @author jheaton
+ * 
  */
-public class NeighborhoodSingleRBF implements NeighborhoodFunction {
+public class NeighborhoodSingle implements NeighborhoodFunction {
 
 	/**
 	 * The logging object.
 	 */
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
-	 * The radial basis function (RBF) to use to calculate the training falloff
-	 * from the best neuron.
-	 */
-	private final RadialBasisFunction radial;
-
-	/**
-	 * Construct the neighborhood function with the specified radial function.
-	 * Generally this will be a Gaussian function but any RBF should do.
-	 * 
-	 * @param radial
-	 *            The radial basis function to use.
-	 */
-	public NeighborhoodSingleRBF(final RadialBasisFunction radial) {
-		this.radial = radial;
-	}
 
 	/**
 	 * Determine how much the current neuron should be affected by training
@@ -68,24 +52,29 @@ public class NeighborhoodSingleRBF implements NeighborhoodFunction {
 	 * @return The ratio for this neuron's adjustment.
 	 */
 	public double function(final int currentNeuron, final int bestNeuron) {
-		double[] d = new double[1];
-		d[0] = currentNeuron - bestNeuron;
-		return this.radial.calculate(d);
+		if (currentNeuron == bestNeuron) {
+			return 1.0;
+		} else {
+			return 0.0;
+		}
 	}
 
 	/**
+	 * The radius for this neighborhood function is always 1.
 	 * @return The radius.
 	 */
 	public double getRadius() {
-		return this.radial.getWidth();
+		return 1;
 	}
 
 	/**
-	 * Set the radius.
-	 * @param radius The new radius.
+	 * Set the radius.  This type does not use a radius, so this has no effect.
+	 * 
+	 * @param radius
+	 *            The radius.
 	 */
 	public void setRadius(final double radius) {
-		this.radial.setWidth(radius);
+		// no effect on this type
 	}
 
 }

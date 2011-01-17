@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.competitive.neighborhood;
+package org.encog.neural.som.training.basic.neighborhood;
 
 import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.EngineArray;
