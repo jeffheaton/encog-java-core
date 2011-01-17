@@ -173,10 +173,6 @@ org.encog.neural.networks.structure.SynapseComparator
 org.encog.neural.networks.structure.ValidateForFlat
 org.encog.neural.networks.synapse.BasicSynapse
 org.encog.neural.networks.synapse.DirectSynapse
-org.encog.neural.networks.synapse.neat.NEATLink
-org.encog.neural.networks.synapse.neat.NEATNeuron
-org.encog.neural.networks.synapse.neat.NEATNeuronType
-org.encog.neural.networks.synapse.neat.NEATSynapse
 org.encog.neural.networks.synapse.OneToOneSynapse
 org.encog.neural.networks.synapse.Synapse
 org.encog.neural.networks.synapse.SynapseType
@@ -209,13 +205,6 @@ org.encog.neural.networks.training.lma.ComputeJacobian
 org.encog.neural.networks.training.lma.JacobianChainRule
 org.encog.neural.networks.training.lma.LevenbergMarquardtTraining
 org.encog.neural.networks.training.Momentum
-org.encog.neural.networks.training.neat.NEATGenome
-org.encog.neural.networks.training.neat.NEATInnovation
-org.encog.neural.networks.training.neat.NEATInnovationList
-org.encog.neural.networks.training.neat.NEATInnovationType
-org.encog.neural.networks.training.neat.NEATLinkGene
-org.encog.neural.networks.training.neat.NEATNeuronGene
-org.encog.neural.networks.training.neat.NEATTraining
 org.encog.neural.networks.training.propagation.back.Backpropagation
 org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation
 org.encog.neural.networks.training.propagation.Propagation
