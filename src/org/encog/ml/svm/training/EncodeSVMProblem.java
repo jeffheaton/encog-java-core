@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.svm;
+package org.encog.ml.svm.training;
 
 import java.util.Iterator;
 

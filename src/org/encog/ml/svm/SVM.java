@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.svm;
+package org.encog.ml.svm;
 
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_model;
@@ -53,7 +53,7 @@ import org.encog.persist.persistors.SVMNetworkPersistor;
  * neural network training classes will work. This class must be trained using
  * SVMTrain.
  */
-public class SVMNetwork extends BasicNetwork {
+public class SVM extends BasicNetwork {
 
 	/**
 	 * The SVM's to use, one for each output.
@@ -97,7 +97,7 @@ public class SVMNetwork extends BasicNetwork {
 	 * @param kernelType
 	 *            The SVM kernal type.
 	 */
-	public SVMNetwork(int inputCount, int outputCount, SVMType svmType,
+	public SVM(int inputCount, int outputCount, SVMType svmType,
 			KernelType kernelType) {
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
@@ -174,7 +174,7 @@ public class SVMNetwork extends BasicNetwork {
 	 * @param regression
 	 *            True if this network is used for regression.
 	 */
-	public SVMNetwork(int inputCount, int outputCount, boolean regression) {
+	public SVM(int inputCount, int outputCount, boolean regression) {
 		this(inputCount, outputCount,
 				regression ? SVMType.EpsilonSupportVectorRegression
 						: SVMType.SupportVectorClassification,

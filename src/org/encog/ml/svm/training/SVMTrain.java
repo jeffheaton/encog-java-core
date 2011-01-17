@@ -21,17 +21,17 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.svm;
+package org.encog.ml.svm.training;
 
 import org.encog.Encog;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.mathutil.libsvm.svm_problem;
+import org.encog.ml.svm.KernelType;
+import org.encog.ml.svm.SVM;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.svm.KernelType;
-import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,7 +80,7 @@ public class SVMTrain extends BasicTraining {
 	/**
 	 * The network that is to be trained.
 	 */
-	private SVMNetwork network;
+	private SVM network;
 	
 	/**
 	 * The problem to train for.
@@ -163,7 +163,7 @@ public class SVMTrain extends BasicTraining {
 	 * @param training The training data for this network.
 	 */
 	public SVMTrain(BasicNetwork network, NeuralDataSet training) {
-		this.network = (SVMNetwork) network;
+		this.network = (SVM) network;
 		this.setTraining(training);
 		this.isSetup = false;
 		this.trainingDone = false;

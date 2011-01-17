@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.svm;
+package org.encog.ml.svm;
 
 /**
  * The type of SVM kernel in use.

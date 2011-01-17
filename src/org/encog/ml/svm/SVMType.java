@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.svm;
+package org.encog.ml.svm;
 
 /**
  * Supports both class and new support vector calculations, as well as one-class

@@ -23,18 +23,13 @@
  */
 package org.encog.persist.persistors;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.StringTokenizer;
 
-import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.EngineArray;
-import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_model;
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_parameter;
-import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
-import org.encog.neural.networks.svm.SVMNetwork;
+import org.encog.ml.svm.SVM;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.EncogPersistedCollection;
@@ -155,7 +150,7 @@ public class SVMNetworkPersistor implements Persistor {
 	 */
 	@Override
 	public EncogPersistedObject load(ReadXML in) {
-		SVMNetwork result = null;
+		SVM result = null;
 		int input = -1, output = -1;
 
 		final String name = in.getTag().getAttributes().get(
@@ -169,7 +164,7 @@ public class SVMNetworkPersistor implements Persistor {
 			} else if (in.is(SVMNetworkPersistor.TAG_OUTPUT, true)) {
 				output = Integer.parseInt(in.readTextToTag());
 			} else if (in.is(SVMNetworkPersistor.TAG_MODELS, true)) {
-				result = new SVMNetwork(input, output, false);
+				result = new SVM(input, output, false);
 				handleModels(in, result);
 			} else if (in.is(EncogPersistedCollection.TYPE_SVM, false)) {
 				break;
@@ -186,7 +181,7 @@ public class SVMNetworkPersistor implements Persistor {
 	 * @param in Where to read the models from.
 	 * @param network Where the models are read into.
 	 */
-	private void handleModels(ReadXML in, SVMNetwork network) {
+	private void handleModels(ReadXML in, SVM network) {
 
 		int index = 0;
 		while (in.readToTag()) {
@@ -385,7 +380,7 @@ public class SVMNetworkPersistor implements Persistor {
 	public void save(EncogPersistedObject obj, WriteXML out) {
 		PersistorUtil.beginEncogObject(EncogPersistedCollection.TYPE_SVM, out,
 				obj, true);
-		final SVMNetwork net = (SVMNetwork) obj;
+		final SVM net = (SVM) obj;
 
 		out.addProperty(SVMNetworkPersistor.TAG_INPUT, net.getInputCount());
 		out.addProperty(SVMNetworkPersistor.TAG_OUTPUT, net.getOutputCount());

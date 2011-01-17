@@ -28,6 +28,8 @@ import java.io.File;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.Format;
+import org.encog.ml.svm.SVM;
+import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -37,11 +39,9 @@ import org.encog.neural.data.buffer.codec.CSVDataCODEC;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
 import org.encog.neural.data.csv.CSVNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.svm.SVMNetwork;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
-import org.encog.neural.networks.training.svm.SVMTrain;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.util.csv.CSVFormat;
 
@@ -294,7 +294,7 @@ public final class EncogUtility {
 
 		Train train;
 
-		if (network instanceof SVMNetwork) {
+		if (network instanceof SVM) {
 			train = new SVMTrain(network, trainingSet);
 		} else {
 			train = new ResilientPropagation(network, trainingSet);
