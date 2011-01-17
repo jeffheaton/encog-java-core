@@ -186,7 +186,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * determined by this training iteration.
 	 */
 	private void applyCorrection() {
-		this.network.getMatrix().set(this.correctionMatrix);
+		this.network.getWeights().set(this.correctionMatrix);
 	}
 
 	/**
@@ -381,7 +381,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 			for (final NeuralDataPair pair : getTraining()) {
 				final NeuralData input = pair.getInput();
 
-				final int bmu = this.bmuUtil.calculateBMU(this.network.getMatrix(), input);
+				final int bmu = this.bmuUtil.calculateBMU(this.network.getWeights(), input);
 
 				// If we are to force a winner each time, then track how many
 				// times each output neuron becomes the BMU (winner).
@@ -401,11 +401,11 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 					}
 				}
 
-				train(bmu, this.network.getMatrix(), input);
+				train(bmu, this.network.getWeights(), input);
 
 			if (this.forceWinner) {
 				// force any non-winning neurons to share the burden somewhat\
-				if (!forceWinners(this.network.getMatrix(), won, leastRepresented)) {
+				if (!forceWinners(this.network.getWeights(), won, leastRepresented)) {
 					applyCorrection();
 				}
 			} else {
@@ -513,8 +513,8 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	public void trainPattern(final NeuralData pattern) {
 
 		final NeuralData input = pattern;
-		final int bmu = this.bmuUtil.calculateBMU(this.network.getMatrix(), input);
-		train(bmu, this.network.getMatrix(), input);
+		final int bmu = this.bmuUtil.calculateBMU(this.network.getWeights(), input);
+		train(bmu, this.network.getWeights(), input);
 
 		applyCorrection();
 
