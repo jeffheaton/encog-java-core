@@ -30,9 +30,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
-import org.encog.neural.networks.logic.FeedforwardLogic;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.synapse.neat.NEATSynapse;
 
 /**
  * Only certain types of networks can be converted to a flat network. This class
@@ -78,12 +76,6 @@ public class ValidateForFlat extends BasicMachineLearningValidate {
 					&& layer.getClass() != BasicLayer.class
 					&& layer.getClass() != RadialBasisFunctionLayer.class) {
 				return "To convert to flat a network must have only BasicLayer and ContextLayer layers.";
-			}
-		}
-
-		for (final Synapse synapse : network.getStructure().getSynapses()) {
-			if (synapse instanceof NEATSynapse) {
-				return "A NEAT synapse cannot be flattened.";
 			}
 		}
 
