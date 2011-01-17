@@ -220,13 +220,6 @@ org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing
 org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealingHelper
 org.encog.neural.networks.training.BasicTraining
 org.encog.neural.networks.training.CalculateScore
-org.encog.neural.networks.training.competitive.BestMatchingUnit
-org.encog.neural.networks.training.competitive.CompetitiveTraining
-org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodBubble
-org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodFunction
-org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodRBF
-org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodSingle
-org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodSingleRBF
 org.encog.neural.networks.training.concurrent.ConcurrentTrainingManager
 org.encog.neural.networks.training.concurrent.jobs.BPROPJob
 org.encog.neural.networks.training.concurrent.jobs.RPROPJob
