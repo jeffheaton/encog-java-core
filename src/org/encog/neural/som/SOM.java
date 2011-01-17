@@ -49,8 +49,7 @@ public class SOM extends BasicPersistedObject {
 
 		this.inputNeuronCount = inputCount;
 		this.outputNeuronCount = outputCount;
-		this.weights = new Matrix(this.outputNeuronCount,
-				this.inputNeuronCount + 1);
+		this.weights = new Matrix(inputCount,outputCount);
 	}
 
 	/**
@@ -137,5 +136,10 @@ public class SOM extends BasicPersistedObject {
 		this.inputNeuronCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,true);
 		this.outputNeuronCount = obj.getPropertyInt(PersistConst.OUTPUT_COUNT,true);
 		this.weights = obj.getPropertyMatrix(PersistConst.WEIGHTS,true);		
+	}
+
+	public void reset() {
+		this.weights.randomize(-1,1);
+		
 	}
 }

@@ -28,6 +28,7 @@ import java.io.Serializable;
 import org.encog.Encog;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.mathutil.matrices.decomposition.QRDecomposition;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.Persistor;
 import org.slf4j.Logger;
@@ -819,5 +820,16 @@ public class Matrix extends BasicPersistedSubObject
 			}
 			throw new MatrixError(str);
 		}
+	}
+
+	public void randomize(double min, double max) {
+		for(int row=0;row<getRows();row++)
+		{
+			for(int col=0;col<getCols();col++)
+			{
+				this.matrix[row][col] = RangeRandomizer.randomize(min, max);
+			}
+		}
+		
 	}
 }
