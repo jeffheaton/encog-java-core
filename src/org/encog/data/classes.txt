@@ -189,9 +189,6 @@ org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerfo
 org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformerCPU
 org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformerOpenCL
 org.encog.neural.networks.training.concurrent.performers.PerformerTask
-org.encog.neural.networks.training.cpn.FindCPN
-org.encog.neural.networks.training.cpn.TrainInstar
-org.encog.neural.networks.training.cpn.TrainOutstar
 org.encog.neural.networks.training.cross.CrossTraining
 org.encog.neural.networks.training.cross.CrossValidationKFold
 org.encog.neural.networks.training.cross.NetworkFold
