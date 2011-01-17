@@ -33,8 +33,9 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.training.competitive.neighborhood.NeighborhoodSingle;
-import org.encog.neural.pattern.SOMPattern;
+import org.encog.neural.som.SOM;
+import org.encog.neural.som.training.basic.BasicTrainSOM;
+import org.encog.neural.som.training.basic.neighborhood.NeighborhoodSingle;
 import org.encog.util.logging.Logging;
 import org.junit.Assert;
 import org.junit.Test;
@@ -67,15 +68,10 @@ public class TestCompetitive extends TestCase  {
 				TestCompetitive.SOM_INPUT, null);
 
 		// Create the neural network.
-		SOMPattern pattern = new SOMPattern();
-		pattern.setInputNeurons(4);
-		pattern.setOutputNeurons(2);
-		BasicNetwork network = (BasicNetwork)pattern.generate();
-		
-		Synapse synapse = findSynapse(network);
-		synapse.setMatrix(new Matrix(MATRIX_ARRAY));
+		SOM network = new SOM(4,2);		
+		network.setMatrix(new Matrix(MATRIX_ARRAY));
 
-		final CompetitiveTraining train = new CompetitiveTraining(network, 0.4,
+		final BasicTrainSOM train = new BasicTrainSOM(network, 0.4,
 				training, new NeighborhoodSingle());
 		train.setForceWinner(true);
 		int iteration = 0;

@@ -23,11 +23,14 @@
  */
 package org.encog.neural.networks.training.competitive.neighborhood;
 
+import junit.framework.TestCase;
+
 import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.neural.som.training.basic.neighborhood.NeighborhoodBubble;
+import org.encog.neural.som.training.basic.neighborhood.NeighborhoodSingle;
+import org.encog.neural.som.training.basic.neighborhood.NeighborhoodSingleRBF;
 import org.junit.Assert;
-
-import junit.framework.TestCase;
 
 public class TestNeighborhood extends TestCase {
 	
