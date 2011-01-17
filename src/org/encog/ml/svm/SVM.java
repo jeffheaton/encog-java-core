@@ -27,12 +27,13 @@ import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_model;
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_parameter;
+import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NeuralOutputHolder;
+import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.BasicNetworkPersistor;
 import org.encog.persist.persistors.SVMNetworkPersistor;
 
 /**
@@ -53,7 +54,7 @@ import org.encog.persist.persistors.SVMNetworkPersistor;
  * neural network training classes will work. This class must be trained using
  * SVMTrain.
  */
-public class SVM extends BasicNetwork {
+public class SVM extends BasicPersistedObject implements MLRegression {
 
 	/**
 	 * The SVM's to use, one for each output.
@@ -227,16 +228,6 @@ public class SVM extends BasicNetwork {
 		}
 
 		return result;
-	}
-
-	/**
-	 * Create a persistor for this object.
-	 * 
-	 * @return The newly created persistor.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return new SVMNetworkPersistor();
 	}
 
 	/**

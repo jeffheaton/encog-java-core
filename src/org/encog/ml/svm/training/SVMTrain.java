@@ -28,6 +28,7 @@ import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.mathutil.libsvm.svm_problem;
+import org.encog.ml.MLMethod;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.neural.data.NeuralDataSet;
@@ -162,7 +163,7 @@ public class SVMTrain extends BasicTraining {
 	 * @param network The network to train.
 	 * @param training The training data for this network.
 	 */
-	public SVMTrain(BasicNetwork network, NeuralDataSet training) {
+	public SVMTrain(SVM network, NeuralDataSet training) {
 		this.network = (SVM) network;
 		this.setTraining(training);
 		this.isSetup = false;
@@ -445,7 +446,7 @@ public class SVMTrain extends BasicTraining {
 	 * @return The trained network.
 	 */
 	@Override
-	public BasicNetwork getNetwork() {
+	public MLMethod getNetwork() {
 		return this.network;
 	}
 

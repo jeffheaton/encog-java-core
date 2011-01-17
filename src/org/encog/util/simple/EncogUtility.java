@@ -28,6 +28,7 @@ import java.io.File;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.Format;
+import org.encog.ml.MLMethod;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.data.NeuralData;
@@ -289,15 +290,15 @@ public final class EncogUtility {
 	 * @param error
 	 *            The error level to train to.
 	 */
-	public static void trainToError(final BasicNetwork network,
+	public static void trainToError(final MLMethod network,
 			final NeuralDataSet trainingSet, final double error) {
 
 		Train train;
 
 		if (network instanceof SVM) {
-			train = new SVMTrain(network, trainingSet);
+			train = new SVMTrain((SVM)network, trainingSet);
 		} else {
-			train = new ResilientPropagation(network, trainingSet);
+			train = new ResilientPropagation((BasicNetwork)network, trainingSet);
 		}
 		EncogUtility.trainToError(train, network, trainingSet, error);
 	}
@@ -316,7 +317,7 @@ public final class EncogUtility {
 	 *            The desired error level.
 	 */
 	public static void trainToError(final Train train,
-			final BasicNetwork network, final NeuralDataSet trainingSet,
+			final MLMethod network, final NeuralDataSet trainingSet,
 			final double error) {
 
 		int epoch = 1;
