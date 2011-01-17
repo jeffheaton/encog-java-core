@@ -23,15 +23,18 @@
  */
 package org.encog.neural.neat.training;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.BasicGenome;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.NEATLink;
+import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.pattern.NEATPattern;
@@ -555,9 +558,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 */
 	public void decode() {
 
-		final NEATPattern pattern = new NEATPattern();
-
-		final List<NEATNeuron> neurons = pattern.getNeurons();
+		final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 
 		for (final Gene gene : getNeurons().getGenes()) {
 			final NEATNeuronGene neuronGene = (NEATNeuronGene) gene;
@@ -588,18 +589,17 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			}
 		}
 
-		pattern
-				.setNEATActivationFunction(((NEATTraining) getGeneticAlgorithm())
-						.getNeatActivationFunction());
-		pattern.setActivationFunction(((NEATTraining) getGeneticAlgorithm())
+		NEATNetwork network = new NEATNetwork(inputCount, 
+				outputCount,
+				neurons,
+				((NEATTraining) getGeneticAlgorithm()).getNeatActivationFunction(), 
+				0);
+		network.setSnapshot(((NEATTraining) getGeneticAlgorithm())
+				.isSnapshot());
+		network.setActivationFunction(((NEATTraining) getGeneticAlgorithm())
 				.getOutputActivationFunction());
-		pattern.setInputNeurons(this.inputCount);
-		pattern.setOutputNeurons(this.outputCount);
-		pattern
-				.setSnapshot(((NEATTraining) getGeneticAlgorithm())
-						.isSnapshot());
-
-		setOrganism(pattern.generate());
+		
+		setOrganism(network);
 
 	}
 

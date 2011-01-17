@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training;
 
+import org.encog.ml.MLRegression;
 import org.encog.neural.networks.BasicNetwork;
 
 /**
@@ -38,7 +39,7 @@ public interface CalculateScore {
 	 * @param network The network.
 	 * @return The score.
 	 */
-	double calculateScore(BasicNetwork network);
+	double calculateScore(MLRegression network);
 	
 	/**
 	 * @return True if the goal is to minimize the score.

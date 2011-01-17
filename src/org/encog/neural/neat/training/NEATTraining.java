@@ -41,6 +41,7 @@ import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.BasicSpecies;
 import org.encog.ml.genetic.species.Species;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.CalculateScore;
@@ -89,7 +90,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	/**
 	 * The best ever network.
 	 */
-	private BasicNetwork bestEverNetwork;
+	private NEATNetwork bestEverNetwork;
 
 	/**
 	 * The number of inputs.
@@ -569,7 +570,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	/**
 	 * @return A network created for the best genome.
 	 */
-	public BasicNetwork getNetwork() {
+	public NEATNetwork getNetwork() {
 		return this.bestEverNetwork;
 	}
 
@@ -1118,7 +1119,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		if (getComparator().isBetterThan(currentBest, this.bestEverScore)) {
 			this.bestEverScore = currentBest;
-			this.bestEverNetwork = ((BasicNetwork) genome.getOrganism());
+			this.bestEverNetwork = ((NEATNetwork) genome.getOrganism());
 		}
 
 		this.bestEverScore = getComparator().bestScore(getError(),

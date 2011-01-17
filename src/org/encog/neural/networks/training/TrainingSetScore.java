@@ -23,8 +23,10 @@
  */
 package org.encog.neural.networks.training;
 
+import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.util.error.CalculateRegressionError;
 
 /**
  * Calculate a score based on a training set. This class allows simulated
@@ -50,11 +52,11 @@ public class TrainingSetScore implements CalculateScore {
 
 	/**
 	 * Calculate the score for the network.
-	 * @param network The network to calculate for.
+	 * @param method The network to calculate for.
 	 * @return The score.
 	 */
-	public double calculateScore(final BasicNetwork network) {
-		return network.calculateError(this.training);
+	public double calculateScore(final MLRegression method) {
+		return CalculateRegressionError.calculateError(method, this.training);
 	}
 
 	/**

@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.genetic;
 
+import org.encog.ml.MLRegression;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.neural.networks.BasicNetwork;
@@ -53,7 +54,7 @@ public class GeneticScoreAdapter implements CalculateGenomeScore {
 	 * @return The calculated score.
 	 */
 	public double calculateScore(final Genome genome) {
-		final BasicNetwork network = (BasicNetwork) genome.getOrganism();
+		final MLRegression network = (MLRegression) genome.getOrganism();
 		return this.calculateScore.calculateScore(network);
 	}
 
