@@ -23,8 +23,11 @@
  */
 package org.encog.neural.networks.training.strategy;
 
+import org.encog.ml.MLMethod;
+import org.encog.ml.MLResettable;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.TrainingError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,6 +74,8 @@ public class RequiredImprovementStrategy implements Strategy {
 	 */
 	private double acceptableThreshold;
 
+	private MLResettable method;
+	
 	/**
 	 * Construct a reset strategy. The error rate must fall below the required
 	 * rate in the specified number of cycles, or the neural network will be
@@ -102,7 +107,7 @@ public class RequiredImprovementStrategy implements Strategy {
 		this.required = required;
 		this.cycles = cycles;
 		this.badCycleCount = 0;
-		this.acceptableThreshold = threshold;
+		this.acceptableThreshold = threshold;		
 	}
 
 	/**
@@ -123,6 +128,12 @@ public class RequiredImprovementStrategy implements Strategy {
 	 */
 	public void init(final Train train) {
 		this.train = train;
+		
+		if( !(train.getNetwork() instanceof MLMethod) ) {
+			throw new TrainingError("To use the required improvement strategy the machine learning method must support MLResettable.");
+		}
+		
+		this.method = (MLResettable)this.train.getNetwork();
 	}
 
 	/**
@@ -147,7 +158,7 @@ public class RequiredImprovementStrategy implements Strategy {
 							this.logger
 									.debug("Failed to improve network, resetting.");
 						}
-						this.train.getNetwork().reset();
+						this.method.reset();
 						this.badCycleCount = 0;
 						this.lastError = Double.NaN;
 					}

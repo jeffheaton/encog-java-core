@@ -26,6 +26,7 @@ package org.encog.neural.networks.training;
 import java.util.List;
 
 import org.encog.cloud.EncogCloud;
+import org.encog.ml.MLMethod;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 
@@ -69,7 +70,7 @@ public interface Train {
 	 * 
 	 * @return The best network.
 	 */
-	BasicNetwork getNetwork();
+	MLMethod getNetwork();
 
 	/**
 	 * @return The strategies to use.

@@ -23,8 +23,11 @@
  */
 package org.encog.neural.networks.training.strategy;
 
+import org.encog.ml.MLMethod;
+import org.encog.ml.MLResettable;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.TrainingError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,6 +66,8 @@ public class ResetStrategy implements Strategy {
 	 * How many bad cycles have there been so far.
 	 */
 	private int badCycleCount;
+	
+	private MLResettable method;
 
 	/**
 	 * Construct a reset strategy.  The error rate must fall
@@ -86,6 +91,12 @@ public class ResetStrategy implements Strategy {
 	 */
 	public void init(final Train train) {
 		this.train = train;
+		
+		if( !(train.getNetwork() instanceof MLMethod) ) {
+			throw new TrainingError("To use the reset strategy the machine learning method must support MLResettable.");
+		}
+		
+		this.method = (MLResettable)this.train.getNetwork();
 	}
 
 	/**
@@ -105,7 +116,7 @@ public class ResetStrategy implements Strategy {
 				if (this.logger.isDebugEnabled()) {
 					this.logger.debug("Failed to imrove network, resetting.");
 				}
-				this.train.getNetwork().reset();
+				this.method.reset();
 				this.badCycleCount = 0;
 			}
 		} else {

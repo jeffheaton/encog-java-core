@@ -28,7 +28,6 @@ import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.ContextClearable;
 import org.encog.persist.Persistor;
 import org.encog.persist.persistors.ContextLayerPersistor;
 import org.slf4j.Logger;
@@ -44,7 +43,7 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  *
  */
-public class ContextLayer extends BasicLayer implements ContextClearable {
+public class ContextLayer extends BasicLayer  {
 
 	public static final String ERROR = "Bias is not suppoted for a contextlayer.";
 	

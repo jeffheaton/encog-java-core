@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.cross;
 
+import org.encog.ml.MLMethod;
 import org.encog.neural.data.folded.FoldedDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
@@ -35,7 +36,7 @@ public abstract class CrossTraining extends BasicTraining {
 	/**
 	 * The network to train.
 	 */
-	private final BasicNetwork network;
+	private final MLMethod network;
 	
 	/**
 	 * The folded dataset.
@@ -47,7 +48,7 @@ public abstract class CrossTraining extends BasicTraining {
 	 * @param network The network.
 	 * @param training The training data.
 	 */
-	public CrossTraining(final BasicNetwork network,
+	public CrossTraining(final MLMethod network,
 			final FoldedDataSet training) {
 		this.network = network;
 		setTraining(training);
@@ -65,7 +66,7 @@ public abstract class CrossTraining extends BasicTraining {
 	 * @return The network.
 	 */
 	@Override
-	public BasicNetwork getNetwork() {
+	public MLMethod getNetwork() {
 		return this.network;
 	}
 

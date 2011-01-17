@@ -38,6 +38,10 @@ import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.MLContext;
+import org.encog.ml.MLEncodable;
+import org.encog.ml.MLRegression;
+import org.encog.ml.MLResettable;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -77,7 +81,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class BasicNetwork extends BasicPersistedObject implements Serializable,
-		Network, ContextClearable {
+		Network, MLContext, MLRegression, MLEncodable, MLResettable {
 
 	/**
 	 * Tag used for the input layer.
@@ -247,18 +251,6 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * Clear any data from any context layers.
 	 */
 	public void clearContext() {
-		for (final Layer layer : this.structure.getLayers()) {
-			if (layer instanceof ContextClearable) {
-				((ContextClearable) layer).clearContext();
-			}
-		}
-
-		for (final Synapse synapse : this.structure.getSynapses()) {
-			if (synapse instanceof ContextClearable) {
-				((ContextClearable) synapse).clearContext();
-			}
-		}
-
 		this.structure.updateFlatNetwork();
 		if (this.structure.getFlat() != null) {
 			this.structure.getFlat().clearContext();
@@ -712,5 +704,27 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 			ClassNotFoundException {
 		stream.defaultReadObject();
 		this.structure.finalizeStructure();
+	}
+
+	@Override
+	public int encodedArrayLength() {		
+		return NetworkCODEC.networkSize(this);
+	}
+
+	@Override
+	public void decodeFromArray(double[] encoded) {
+		NetworkCODEC.arrayToNetwork(encoded, this);
+		
+	}
+
+	@Override
+	public void encodeToArray(double[] encoded) {
+		EngineArray.arrayCopy(NetworkCODEC.networkToArray(this),encoded);		
+	}
+	
+
+	@Override
+	public void reset(int seed) {
+		reset();
 	}
 }

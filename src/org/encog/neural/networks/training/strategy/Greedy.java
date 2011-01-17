@@ -23,10 +23,12 @@
  */
 package org.encog.neural.networks.training.strategy;
 
+import org.encog.ml.MLEncodable;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.TrainingError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,8 +68,10 @@ public class Greedy implements Strategy {
 	/**
 	 * The logging object.
 	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	private final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	private MLEncodable method;
+	
 	/**
 	 * Initialize this strategy.
 	 * @param train The training algorithm.
@@ -75,6 +79,13 @@ public class Greedy implements Strategy {
 	public void init(final Train train) {
 		this.train = train;
 		this.ready = false;
+		
+		if( !(train.getNetwork() instanceof MLEncodable) ) {
+			throw new TrainingError("To make use of the Greedy strategy the machine learning method must support MLEncodable.");
+		}
+		
+		this.method = ((MLEncodable)train.getNetwork());
+		this.lastNetwork = new double[this.method.encodedArrayLength()];
 	}
 
 	/**
@@ -88,8 +99,7 @@ public class Greedy implements Strategy {
 							.debug("Greedy strategy dropped last iteration.");
 				}
 				this.train.setError(this.lastError);
-				NetworkCODEC.arrayToNetwork(this.lastNetwork, this.train
-						.getNetwork());
+				this.method.decodeFromArray(this.lastNetwork);
 			}
 		} else {
 			this.ready = true;
@@ -101,10 +111,9 @@ public class Greedy implements Strategy {
 	 */
 	public void preIteration() {
 
-		final BasicNetwork network = this.train.getNetwork();
-		if (network != null) {
+		if (this.method != null) {
 			this.lastError = this.train.getError();
-			this.lastNetwork = NetworkCODEC.networkToArray(network);
+			this.method.encodeToArray(this.lastNetwork);
 			this.train.setError(this.lastError);
 		}
 	}

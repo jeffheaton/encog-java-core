@@ -25,6 +25,7 @@ package org.encog.ml.genetic;
 
 import org.encog.engine.concurrency.EngineConcurrency;
 import org.encog.engine.concurrency.TaskGroup;
+import org.encog.ml.MLContext;
 import org.encog.ml.genetic.crossover.Crossover;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
@@ -32,7 +33,6 @@ import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.Species;
-import org.encog.neural.networks.ContextClearable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,8 +99,8 @@ public class GeneticAlgorithm {
 	 * @param g The genome to calculate for.
 	 */
 	public void calculateScore(final Genome g) {
-		if( g.getOrganism() instanceof ContextClearable )
-			((ContextClearable)g.getOrganism()).clearContext();
+		if( g.getOrganism() instanceof MLContext )
+			((MLContext)g.getOrganism()).clearContext();
 		final double score = calculateScore.calculateScore(g);
 		g.setScore(score);
 	}

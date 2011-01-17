@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.encog.cloud.EncogCloud;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +101,9 @@ public abstract class BasicTraining implements Train {
 			this.statusUtil = null;
 		}
 		
-		getNetwork().getStructure().updateFlatNetwork();
+		if( getNetwork() instanceof BasicNetwork ) {		
+			((BasicNetwork)getNetwork()).getStructure().updateFlatNetwork();
+		}
 	}
 
 	/**

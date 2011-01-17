@@ -23,28 +23,20 @@
  */
 package org.encog.neural.neat;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.MLContext;
+import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.ContextClearable;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.BasicPersistedSubObject;
-import org.encog.persist.EncogCollection;
-import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGAttribute;
-import org.encog.persist.annotations.EGIgnore;
-import org.encog.persist.persistors.generic.GenericPersistor;
 
 /**
  * Implements a NEAT network as a synapse between two layers. In Encog, a NEAT
@@ -70,7 +62,7 @@ import org.encog.persist.persistors.generic.GenericPersistor;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATNetwork extends BasicPersistedObject implements ContextClearable {
+public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRegression {
 
 	/**
 	 * The serial ID.
@@ -343,5 +335,15 @@ public class NEATNetwork extends BasicPersistedObject implements ContextClearabl
 	 */
 	public void setSnapshot(final boolean snapshot) {
 		this.snapshot = snapshot;
+	}
+
+	@Override
+	public int getInputCount() {
+		return this.inputCount;
+	}
+
+	@Override
+	public int getOutputCount() {
+		return this.outputCount;
 	}
 }
