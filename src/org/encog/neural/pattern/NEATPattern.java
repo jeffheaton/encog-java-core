@@ -29,10 +29,9 @@ import java.util.List;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.synapse.neat.NEATNeuron;
-import org.encog.neural.networks.synapse.neat.NEATSynapse;
 import org.encog.persist.EncogPersistedObject;
 
 public class NEATPattern implements NeuralNetworkPattern {
@@ -80,26 +79,7 @@ public class NEATPattern implements NeuralNetworkPattern {
 	 * @return The neural network.
 	 */
 	public EncogPersistedObject generate() {
-
-		int y = PatternConst.START_Y;
-		final BasicLayer inputLayer = new BasicLayer(new ActivationLinear(),
-				false, this.inputNeurons);
-		inputLayer.setX(PatternConst.START_X);
-		inputLayer.setY(y);
-		y += PatternConst.INC_Y;
-		final BasicLayer outputLayer = new BasicLayer(this.outputActivation, false, this.outputNeurons);
-		outputLayer.setX(PatternConst.START_X);
-		outputLayer.setY(y);
-		final NEATSynapse synapse = new NEATSynapse(inputLayer, outputLayer,
-				this.neurons, this.neatActivation, 0);
-		synapse.setSnapshot(this.snapshot);
-		inputLayer.addSynapse(synapse);
-		final BasicNetwork network = new BasicNetwork();
-		network.tagLayer(BasicNetwork.TAG_INPUT, inputLayer);
-		network.tagLayer(BasicNetwork.TAG_OUTPUT, outputLayer);
-		network.getStructure().finalizeStructure();
-		
-		return network;
+		return null;
 
 	}
 
