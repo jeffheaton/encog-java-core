@@ -40,7 +40,6 @@ import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.neural.networks.synapse.WeightedSynapse;
 import org.encog.neural.networks.synapse.WeightlessSynapse;
-import org.encog.neural.networks.synapse.neat.NEATSynapse;
 import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.Persistor;
@@ -224,9 +223,6 @@ public class BasicLayer extends BasicPersistedSubObject implements Layer, Serial
 			break;
 		case Direct:
 			synapse = new DirectSynapse(this, next);
-			break;
-		case NEAT:
-			synapse = new NEATSynapse(this, next);
 			break;
 		default:
 			throw new NeuralNetworkError("Unknown synapse type");
