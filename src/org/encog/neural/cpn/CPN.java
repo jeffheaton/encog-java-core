@@ -45,7 +45,7 @@ public class CPN extends BasicPersistedObject implements MLRegression {
 		return 0;
 	}
 	
-	public NeuralData computeInstar(NeuralData input)
+	public NeuralData computeOutstar(NeuralData input)
 	{
 		NeuralData result = new BasicNeuralData(this.outstarCount);
 
@@ -54,14 +54,14 @@ public class CPN extends BasicPersistedObject implements MLRegression {
 		for (int i = 0; i < this.outstarCount; i++) {
 			Sum = 0;
 			for (int j = 0; j < this.instarCount; j++) {
-				Sum += this.weightsInstarToOutstar.get(i, j) * input.getData(j);
+				Sum += this.weightsInstarToOutstar.get(j, i) * input.getData(j);
 			}
 			result.setData(i, Sum);
 		}
 		return result;
 	}
 	
-	public NeuralData computeOutstar(NeuralData input)
+	public NeuralData computeInstar(NeuralData input)
 	{
 		NeuralData result = new BasicNeuralData(this.instarCount);
 		int w, i, j;
@@ -72,7 +72,7 @@ public class CPN extends BasicPersistedObject implements MLRegression {
 		for (i = 0; i < this.instarCount; i++) {
 			Sum = 0;
 			for (j = 0; j < this.inputCount; j++) {
-				Sum += this.weightsInputToInstar.get(i, j) * input.getData(j);
+				Sum += this.weightsInputToInstar.get(j, i) * input.getData(j);
 			}
 			result.setData(i, Sum);
 			winners[i] = false;
@@ -80,7 +80,7 @@ public class CPN extends BasicPersistedObject implements MLRegression {
 		SumWinners = 0;
 		for (w = 0; w < winnerCount; w++) {
 			MaxOut = Double.MIN_VALUE;
-			for (i = 0; i < this.inputCount; i++) {
+			for (i = 0; i < this.instarCount; i++) {
 				if (!winners[i] && result.getData(i) > MaxOut)
 					MaxOut = result.getData(Winner = i);
 			}
