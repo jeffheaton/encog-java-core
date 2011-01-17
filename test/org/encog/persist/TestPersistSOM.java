@@ -55,6 +55,6 @@ public class TestPersistSOM extends TestCase {
 	{
 		Assert.assertEquals(4, network.getInputNeuronCount());
 		Assert.assertEquals(2, network.getOutputNeuronCount());
-		Assert.assertEquals(10, network.getWeights().toPackedArray().length);
+		Assert.assertEquals(8, network.getWeights().toPackedArray().length);
 	}
 }
