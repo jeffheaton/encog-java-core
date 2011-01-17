@@ -23,7 +23,9 @@
  */
 package org.encog.neural.cpn.training;
 
+import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
+import org.encog.neural.cpn.CPN;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -48,7 +50,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	/**
 	 * The network being trained.
 	 */
-	private final BasicNetwork network;
+	private final CPN network;
 
 	/**
 	 * The training data. Supervised training, so both input and ideal must be
@@ -63,11 +65,6 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	private boolean mustInit = true;
 
 	/**
-	 * The parts of this CPN network.
-	 */
-	private final FindCPN parts;
-
-	/**
 	 * Construct the outstar trainer.
 	 * 
 	 * @param network
@@ -77,12 +74,11 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * @param learningRate
 	 *            The learning rate.
 	 */
-	public TrainOutstar(final BasicNetwork network,
+	public TrainOutstar(final CPN network,
 			final NeuralDataSet training, final double learningRate) {
 		this.network = network;
 		this.training = training;
 		this.learningRate = learningRate;
-		this.parts = new FindCPN(this.network);
 	}
 
 	/**
@@ -95,7 +91,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	/**
 	 * @return The network being trained.
 	 */
-	public BasicNetwork getNetwork() {
+	public CPN getNetwork() {
 		return this.network;
 	}
 
@@ -104,15 +100,14 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 */
 	private void initWeight() {
 		for (int i = 0; i 
-			< this.parts.getOutstarLayer().getNeuronCount(); i++) {
+			< this.network.getOutstarCount(); i++) {
 			int j = 0;
 			for (final NeuralDataPair pair : this.training) {
-				this.parts.getOutstarSynapse().getMatrix().set(j++, i,
+				network.getWeightsInstarToOutstar().set(j++, i,
 						pair.getIdeal().getData(i));
 			}
 		}
 		this.mustInit = false;
-		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
 	/**
@@ -127,24 +122,21 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 		final ErrorCalculation error = new ErrorCalculation();
 
 		for (final NeuralDataPair pair : this.training) {
-			final NeuralData out = this.parts.getInstarSynapse().compute(
+			final NeuralData out = network.computeInstar(
 					pair.getInput());
 
 			error.updateError(out.getData(), pair.getIdeal().getData());
 
-			final int j = this.parts.winner(out);
+			final int j = EngineArray.indexOfLargest(out.getData());
 			for (int i = 0; i 
-				< this.parts.getOutstarLayer().getNeuronCount(); i++) {
+				< network.getOutstarCount(); i++) {
 				final double delta = this.learningRate
-						* (pair.getIdeal().getData(i) - this.parts
-								.getOutstarSynapse().getMatrix().get(j, i));
-				this.parts.getOutstarSynapse().getMatrix().add(j, i, delta);
+						* (pair.getIdeal().getData(i) - network.getWeightsInstarToOutstar().get(j, i));
+				network.getWeightsInstarToOutstar().add(j, i, delta);
 			}
-
 		}
 
 		setError(error.calculate());
-		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
 	/**

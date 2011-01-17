@@ -24,11 +24,11 @@
 package org.encog.neural.cpn.training;
 
 import org.encog.engine.util.BoundMath;
+import org.encog.engine.util.EngineArray;
+import org.encog.neural.cpn.CPN;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 
@@ -43,7 +43,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	/**
 	 * The network being trained.
 	 */
-	private final BasicNetwork network;
+	private final CPN network;
 
 	/**
 	 * The training data. This is unsupervised training, so only the input
@@ -63,11 +63,6 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	private boolean mustInit = true;
 
 	/**
-	 * Used to find the parts of the CPN network.
-	 */
-	private final FindCPN parts;
-
-	/**
 	 * Construct the instar training object.
 	 * 
 	 * @param network
@@ -77,12 +72,11 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * @param learningRate
 	 *            The learning rate.
 	 */
-	public TrainInstar(final BasicNetwork network,
+	public TrainInstar(final CPN network,
 			final NeuralDataSet training, final double learningRate) {
 		this.network = network;
 		this.training = training;
 		this.learningRate = learningRate;
-		this.parts = new FindCPN(network);
 	}
 
 	/**
@@ -95,7 +89,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	/**
 	 * @return The network being trained.
 	 */
-	public BasicNetwork getNetwork() {
+	public CPN getNetwork() {
 		return this.network;
 	}
 
@@ -105,15 +99,12 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	private void initWeights() {
 		int i = 0;
 		for (final NeuralDataPair pair : this.training) {
-			for (int j = 0; j 
-			< this.parts.getInputLayer().getNeuronCount(); j++) {
-				this.parts.getInstarSynapse().getMatrix().set(j, i,
+			for (int j = 0; j < this.network.getInputCount(); j++) {
+				this.network.getWeightsInputToInstar().set(j, i,
 						pair.getInput().getData(j));
 			}
 			i++;
 		}
-
-		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 		this.mustInit = false;
 	}
 
@@ -129,17 +120,16 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 		double worstDistance = Double.NEGATIVE_INFINITY;
 
 		for (final NeuralDataPair pair : this.training) {
-			final NeuralData out = this.parts.getInstarSynapse().compute(
-					pair.getInput());
+			final NeuralData out = network.computeInstar(pair.getInput());
 
 			// determine winner
-			final int winner = this.parts.winner(out);
+			final int winner = EngineArray.indexOfLargest(out.getData());
 
 			// calculate the distance
 			double distance = 0;
 			for (int i = 0; i < pair.getInput().size(); i++) {
 				final double diff = pair.getInput().getData(i)
-						- this.parts.getInstarSynapse().getMatrix().get(i,
+						- network.getWeightsInputToInstar().get(i,
 								winner);
 				distance += diff * diff;
 			}
@@ -150,18 +140,15 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 			}
 
 			// train
-			for (int j = 0; j < this.parts.getInstarSynapse()
-					.getFromNeuronCount(); j++) {
+			for (int j = 0; j < network.getInputCount(); j++) {
 				final double delta = this.learningRate
-						* (pair.getInput().getData(j) - this.parts
-								.getInstarSynapse().getMatrix().get(j, winner));
+						* (pair.getInput().getData(j) - network.getWeightsInputToInstar().get(j, winner));
 
-				this.parts.getInstarSynapse().getMatrix().add(j, winner, delta);
+				network.getWeightsInputToInstar().add(j, winner, delta);
 
 			}
 		}
 
-		this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
 		setError(worstDistance);
 	}
 
