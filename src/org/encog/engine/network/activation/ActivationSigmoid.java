@@ -72,7 +72,7 @@ public class ActivationSigmoid implements ActivationFunction {
 	public void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
-			x[i] = 1.0 / (1.0 + BoundMath.exp(-2 * x[i]));
+			x[i] = 1.0 / (1.0 + BoundMath.exp(-1 * x[i]));
 		}
 	}
 
