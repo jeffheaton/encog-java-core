@@ -27,9 +27,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.persist.BasicPersistedSubObject;
+import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.annotations.EGReferenceable;
+import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedObject;
 
 /**
  * Implements a NEAT neuron. Neat neurons are of a specific type, defined by the
@@ -44,8 +48,11 @@ import org.encog.persist.annotations.EGReferenceable;
  *
  */
 @EGReferenceable
-public class NEATNeuron implements Serializable {
+public class NEATNeuron extends BasicPersistedSubObject {
 
+	public static final String NEURON_ID = "neuronID";
+	public static final String ACTIVATION_RESPONSE = "aresp";
+	
 	/**
 	 * The serial id.
 	 */
@@ -266,5 +273,72 @@ public class NEATNeuron implements Serializable {
 		}
 		result.append("]");
 		return result.toString();
+	}
+
+	@Override
+	public Persistor createPersistor() {
+		return null;
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return true;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		obj.clear(PersistConst.SUBTYPE_NEAT_NEURON);
+		
+		obj.setProperty(NEURON_ID, (int)this.neuronID, true);
+		obj.setProperty(ACTIVATION_RESPONSE, this.activationResponse, true);
+		switch( this.neuronType )
+		{
+			case Input:
+				obj.setProperty(PersistConst.TYPE, "I",true);
+				break;
+			case Bias:
+				obj.setProperty(PersistConst.TYPE, "B",true);
+				break;
+			case Hidden:
+				obj.setProperty(PersistConst.TYPE, "H",true);
+				break;
+			case Output:
+				obj.setProperty(PersistConst.TYPE, "O",true);
+				break;
+			case None:
+				obj.setProperty(PersistConst.TYPE, "H",true);
+				break;
+		}
+		obj.setProperty(PersistConst.OUTPUT, this.output,true);
+
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		obj.requireType(PersistConst.SUBTYPE_NEAT_NEURON);
+		this.neuronID = obj.getPropertyInt(NEURON_ID, true);
+		this.activationResponse = obj.getPropertyDouble(ACTIVATION_RESPONSE,true);
+		String type = obj.getPropertyString(PersistConst.TYPE, true);
+		type = type.toLowerCase().trim();
+		if( type.length()>0 ) {
+			switch(type.charAt(0))
+			{
+				case 'i':
+					this.neuronType = NEATNeuronType.Input;
+					break;
+				case 'o':
+					this.neuronType = NEATNeuronType.Output;
+					break;
+				case 'h':
+					this.neuronType = NEATNeuronType.Hidden;
+					break;
+				case 'b':
+					this.neuronType = NEATNeuronType.Bias;
+					break;
+				case 'n':
+					this.neuronType = NEATNeuronType.None;
+					break;
+			}
+		}
 	}
 }

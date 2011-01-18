@@ -31,6 +31,13 @@ public class PersistConst {
 	public static final String PROPERTY_WEIGHTS_F1_F2 = "weightsF1F2";
 	public static final String PROPERTY_WEIGHTS_F2_F1 = "weightsF2F1";
 	public static final String ACTIVATION_FUNCTION = "activationFunction";
+	public static final String SUBTYPE_NEAT_NEURON = "NEATNeuron";
+	public static final String NEURONS = "neurons";
+	public static final String TYPE = "type";
+	public static final String SUBTYPE_NEAT_LINK = "NEATLink";
+	public static final String RECURRENT = "recurrent";
+	public static final String WEIGHT = "weight";
+	public static final String LINKS = "links";
 	
 		
 }

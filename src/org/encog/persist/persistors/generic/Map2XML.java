@@ -43,9 +43,13 @@ public class Map2XML {
 				}
 				else if( property instanceof PersistedValueArray )
 				{
+					PersistedValueArray pva = (PersistedValueArray)property;
 					out.beginTag(key);
 					out.beginTag(PersistConst.LIST);
-					out.addText(property.getString());
+					for(PersistedObject po: pva.getList())
+					{
+						save(po,out);
+					}
 					out.endTag();
 					out.endTag();
 				}

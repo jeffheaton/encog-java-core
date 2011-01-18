@@ -1,6 +1,7 @@
 package org.encog.persist.map;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.engine.network.activation.ActivationFunction;
@@ -132,11 +133,6 @@ public class PersistedObject extends PersistedProperty {
 		return this.objectType;
 	}
 
-	public void setPropertyList(String name, String str) {
-		System.out.println(name + " - " + str);
-
-	}
-
 	public int getPropertyInt(String name, boolean required) {
 		String str = this.getPropertyString(name, required);
 		try {
@@ -215,4 +211,39 @@ public class PersistedObject extends PersistedProperty {
 		throw new PersistError("Expected activation function for " + name);
 
 	}
+
+	public void setProperty(String name, List<PersistedObject> list) {
+		if (list != null) {
+			this.data.put(name, new PersistedValueArray(list));
+		}		
+	}
+
+	public void setProperty(String name, boolean value,
+			boolean attribute) {
+		this.setProperty(name, value?"t":"f",attribute);
+		
+	}
+
+	public boolean getPropertyBoolean(String name, boolean required) {
+		String str = this.getPropertyString(name, required);
+		if( str.length()>0 && str.trim().toLowerCase().charAt(0)=='t')
+			return true;
+		return false;
+	}
+
+	public List<PersistedObject> getPropertyValueArray(String name) {
+		
+		if (require(name, true)) {
+			return null;
+		}
+
+		PersistedProperty result = this.data.get(name);
+		if (result instanceof PersistedValueArray) {
+			PersistedValueArray pva = (PersistedValueArray) result;
+			return pva.getList();
+		}
+		throw new PersistError("Expected object array for " + name);
+
+	}
+
 }

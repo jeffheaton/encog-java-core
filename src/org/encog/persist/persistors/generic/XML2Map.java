@@ -1,13 +1,21 @@
 package org.encog.persist.persistors.generic;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
+import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.PersistError;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 import org.encog.persist.persistors.BasicLayerPersistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
+import org.encog.util.obj.ReflectionUtil;
 
 public class XML2Map {
 	
@@ -16,12 +24,17 @@ public class XML2Map {
 		String type = in.getTag().getName();
 		PersistedObject result = new PersistedObject();
 		result.clear(type);
-		
+		loadObject(in,result);
+		return result;
+	}
+	
+	private void loadObject(ReadXML in, PersistedObject po)
+	{
 		// handle attributes
 		for( String key: in.getTag().getAttributes().keySet() )
 		{
 			String value = in.getTag().getAttributeValue(key);
-			result.setProperty(key, value, true);
+			po.setProperty(key, value, true);
 		}
 		
 		String objectName = in.getTag().getName();
@@ -31,21 +44,21 @@ public class XML2Map {
 				String name = in.getTag().getName();
 				String str = in.readTextToTag();
 				if( in.getTag().getName().equals(PersistConst.LIST)) {
-					str = in.readTextToTag();
-					result.setPropertyList(name,str);
+					List<PersistedObject> list = inputList(in);
+					po.setProperty(name, list);
 				} else if( in.getTag().getName().equals(PersistConst.DATA)) {
 					str = in.readTextToTag();
 					double[] d = NumberList.fromList(CSVFormat.ENGLISH, str);
-					result.setProperty(name, d);
+					po.setProperty(name, d);
 				} else if( in.getTag().getName().equals(PersistConst.MATRIX)) { 
 					str = in.readTextToTag();
-					result.setProperty(name, inputMatrix(str));
+					po.setProperty(name, inputMatrix(str));
 				} else if( in.getTag().getName().equals(PersistConst.ACTIVATION_TYPE)) { 
 					in.readToTag();
 					String t = in.getTag().getName();
-					result.setProperty(name, ActivationPersistUtil.loadActivation(t, in));
+					po.setProperty(name, ActivationPersistUtil.loadActivation(t, in));
 				} else {
-					result.setProperty(name, str, false);
+					po.setProperty(name, str, false);
 				}
 			} else if( in.getTag().getType()==Type.END ) {
 				if( in.getTag().getName().equals(objectName))
@@ -53,9 +66,28 @@ public class XML2Map {
 			}
 		}
 		
-		return result;
 	}
 	
+	private List<PersistedObject> inputList(ReadXML in) {
+		List<PersistedObject> result = new ArrayList<PersistedObject>();
+		String objectName = in.getTag().getName();
+		// handle properties
+		while (in.readToTag()) {
+			if( in.getTag().getType()==Type.BEGIN ) {
+				String type = in.getTag().getName();
+				PersistedObject po = new PersistedObject();
+				po.clear(type);
+				loadObject(in,po);
+				result.add( po );
+			} else if( in.getTag().getType()==Type.END ) {
+				if( in.getTag().getName().equals(objectName))
+					break;				
+			}
+		}
+		
+		return result;
+	}
+
 	private Matrix inputMatrix(String line)
 	{
 		double[] d = NumberList.fromList(CSVFormat.EG_FORMAT, line);

@@ -24,7 +24,9 @@
 package org.encog.neural.neat;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -70,6 +72,10 @@ public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRe
 	 * The serial ID.
 	 */
 	private static final long serialVersionUID = 3660295468309926508L;
+
+	public static final String PROPERTY_NETWORK_DEPTH = "depth";
+	public static final String PROPERTY_LINKS = "links";
+	public static final String PROPERTY_SNAPSHOT = "snapshot";
 	
 	/**
 	 * The activation function.
@@ -361,6 +367,31 @@ public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRe
 		obj.setProperty(PersistConst.INPUT_COUNT, this.inputCount,false);
 		obj.setProperty(PersistConst.OUTPUT_COUNT, this.outputCount,false);
 		obj.setProperty(PersistConst.ACTIVATION_FUNCTION, this.activationFunction);
+		obj.setProperty(PROPERTY_NETWORK_DEPTH, this.networkDepth,false);
+		obj.setProperty(PROPERTY_SNAPSHOT, this.snapshot, false);
+		
+		// store neurons
+		List<PersistedObject> neuronList = new ArrayList<PersistedObject>();
+		List<PersistedObject> linkList = new ArrayList<PersistedObject>();
+		for(NEATNeuron neuron : this.neurons)
+		{
+			PersistedObject persistedNeuron = new PersistedObject();
+			neuron.persistToMap(persistedNeuron);
+			neuronList.add(persistedNeuron);
+			
+			for(NEATLink link : neuron.getOutputboundLinks())
+			{
+				PersistedObject persistedLink = new PersistedObject();
+				link.persistToMap(persistedLink);
+				linkList.add(persistedLink);
+			}
+		}
+		obj.setProperty(PersistConst.NEURONS, neuronList);
+		
+		// store links & neurons
+		
+		obj.setProperty(PersistConst.NEURONS, neuronList);
+		obj.setProperty(PersistConst.LINKS, linkList);
 
 	}
 	
@@ -368,7 +399,55 @@ public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRe
 	{
 		obj.requireType(PersistConst.TYPE_NEAT);
 		this.inputCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,true);
-		this.outputCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,true);
+		this.outputCount = obj.getPropertyInt(PersistConst.OUTPUT_COUNT,true);
 		this.activationFunction = obj.getPropertyActivationFunction(PersistConst.ACTIVATION_FUNCTION,true);
+		this.networkDepth = obj.getPropertyInt(PROPERTY_NETWORK_DEPTH, true);
+		this.snapshot = obj.getPropertyBoolean(PROPERTY_SNAPSHOT, true);
+		
+		List<PersistedObject> neuronList = obj.getPropertyValueArray(PersistConst.NEURONS);
+		List<PersistedObject> linkList = obj.getPropertyValueArray(PersistConst.LINKS);
+		
+		// create the neurons
+		this.neurons.clear();
+		
+		Map<String,NEATNeuron> neuronMap = new HashMap<String,NEATNeuron>();
+		for( PersistedObject persistedNeuron : neuronList )
+		{
+			NEATNeuron neuron = new NEATNeuron();
+			neuron.persistFromMap(persistedNeuron);
+			neuronMap.put(""+neuron.getNeuronID(), neuron);
+			this.neurons.add(neuron);
+		}
+		
+		// create the links
+		for( PersistedObject persistedLink : linkList )
+		{
+			String fromNeuronStr = persistedLink.getPropertyString(NEATLink.FROM_NEURON, true);
+			String toNeuronStr = persistedLink.getPropertyString(NEATLink.TO_NEURON, true);
+			NEATNeuron fromNeuron = null;
+			NEATNeuron toNeuron = null;
+			
+			// find the from and to neurons
+			if( neuronMap.containsKey(fromNeuronStr) ) {
+				fromNeuron = neuronMap.get(fromNeuronStr);
+			}
+			
+			if( neuronMap.containsKey(toNeuronStr) ) {
+				toNeuron = neuronMap.get(toNeuronStr);
+			}
+			
+			// create the link
+			NEATLink link = new NEATLink(0.0, fromNeuron, toNeuron, false);
+			link.persistFromMap(persistedLink);
+						
+			// link up things
+			if( fromNeuron!=null ) {
+				fromNeuron.getOutputboundLinks().add(link);
+			}
+			
+			if( toNeuron!=null ) {
+				toNeuron.getInboundLinks().add(link);
+			}
+		}
 	}
 }
