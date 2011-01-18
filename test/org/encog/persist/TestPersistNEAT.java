@@ -24,30 +24,41 @@
 package org.encog.persist;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationStep;
 import org.encog.neural.art.ART1;
+import org.encog.neural.neat.NEATNetwork;
+import org.encog.neural.neat.NEATNeuron;
 import org.encog.util.obj.SerializeObject;
 
-public class TestPersistART extends TestCase {
+public class TestPersistNEAT extends TestCase {
 	
 	public final String EG_FILENAME = "encogtest.eg";
 	public final String EG_RESOURCE = "test";
 	public final String SERIAL_FILENAME = "encogtest.ser";
 	
-	private ART1 create()
+	private NEATNetwork create()
 	{
-		ART1 network = new ART1(6,3);
-		network.getWeightsF1toF2().set(1, 1, 2.0);
-		network.getWeightsF2toF1().set(2, 2, 3.0);
-		return network;
+		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
+		ActivationFunction af = new ActivationStep();
+		
+		NEATNetwork result = new NEATNetwork(2, 
+				1,
+				neurons,
+				af, 
+				3);
+		return result;
 	}
 	
 	public void testPersistEG()
 	{
-		ART1 network = create();
+		NEATNetwork network = create();
 
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.add(EG_RESOURCE, network);
@@ -55,33 +66,33 @@ public class TestPersistART extends TestCase {
 		
 		EncogMemoryCollection encog2 = new EncogMemoryCollection();
 		encog2.load(EG_FILENAME);
-		ART1 network2 = (ART1)encog2.find(EG_RESOURCE);
+		NEATNetwork network2 = (NEATNetwork)encog2.find(EG_RESOURCE);
 		validate(network2);
 	}
 	
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
-		ART1 network = create();
+		NEATNetwork network = create();
 		
 		SerializeObject.save(SERIAL_FILENAME, network);
-		ART1 network2 = (ART1)SerializeObject.load(SERIAL_FILENAME);
+		NEATNetwork network2 = (NEATNetwork)SerializeObject.load(SERIAL_FILENAME);
 				
 		validate(network2);
 	}
 	
 	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
-		ART1 network = create();
+		NEATNetwork network = create();
 		
 		SerializeObject.saveEG(SERIAL_FILENAME, network);
-		ART1 network2 = (ART1)SerializeObject.loadEG(SERIAL_FILENAME);
+		NEATNetwork network2 = (NEATNetwork)SerializeObject.loadEG(SERIAL_FILENAME);
 				
 		validate(network2);
 	}
 	
-	private void validate(ART1 network)
+	private void validate(NEATNetwork network)
 	{
-		Assert.assertEquals(6, network.getF1Count());
+		/*Assert.assertEquals(6, network.getF1Count());
 		Assert.assertEquals(3, network.getF2Count());
 		Assert.assertEquals(18, network.getWeightsF1toF2().size());
 		Assert.assertEquals(18, network.getWeightsF2toF1().size());
@@ -91,6 +102,6 @@ public class TestPersistART extends TestCase {
 		Assert.assertEquals(1.5, network.getB1());
 		Assert.assertEquals(5.0, network.getC1());
 		Assert.assertEquals(0.9, network.getD1());
-		Assert.assertEquals(0.9, network.getVigilance());
+		Assert.assertEquals(0.9, network.getVigilance());*/
 	}
 }
