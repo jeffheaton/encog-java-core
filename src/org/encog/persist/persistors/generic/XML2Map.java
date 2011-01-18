@@ -40,6 +40,10 @@ public class XML2Map {
 				} else if( in.getTag().getName().equals(PersistConst.MATRIX)) { 
 					str = in.readTextToTag();
 					result.setProperty(name, inputMatrix(str));
+				} else if( in.getTag().getName().equals(PersistConst.ACTIVATION_TYPE)) { 
+					in.readToTag();
+					String t = in.getTag().getName();
+					result.setProperty(name, ActivationPersistUtil.loadActivation(t, in));
 				} else {
 					result.setProperty(name, str, false);
 				}

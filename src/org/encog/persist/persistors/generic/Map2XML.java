@@ -4,6 +4,7 @@ import org.encog.Encog;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedActivationFunction;
 import org.encog.persist.map.PersistedDoubleArray;
 import org.encog.persist.map.PersistedMatrix;
 import org.encog.persist.map.PersistedObject;
@@ -62,6 +63,15 @@ public class Map2XML {
 					out.beginTag(key);
 					out.beginTag(PersistConst.MATRIX);
 					out.addText(outputMatrix(pm.getMatrix()));
+					out.endTag();
+					out.endTag();
+				}
+				else if( property instanceof PersistedActivationFunction )
+				{
+					PersistedActivationFunction pa = (PersistedActivationFunction)property;
+					out.beginTag(key);
+					out.beginTag(PersistConst.ACTIVATION_TYPE);
+					ActivationPersistUtil.saveActivationFunction(pa.getActivationFunction(), out);
 					out.endTag();
 					out.endTag();
 				}

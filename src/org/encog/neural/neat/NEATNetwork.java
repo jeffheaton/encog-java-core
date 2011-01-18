@@ -37,6 +37,8 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedObject;
 
 /**
  * Implements a NEAT network as a synapse between two layers. In Encog, a NEAT
@@ -345,5 +347,28 @@ public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRe
 	@Override
 	public int getOutputCount() {
 		return this.outputCount;
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return true;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		obj.clear(PersistConst.TYPE_NEAT);
+		obj.setStandardProperties(this);
+		obj.setProperty(PersistConst.INPUT_COUNT, this.inputCount,false);
+		obj.setProperty(PersistConst.OUTPUT_COUNT, this.outputCount,false);
+		obj.setProperty(PersistConst.ACTIVATION_FUNCTION, this.activationFunction);
+
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		obj.requireType(PersistConst.TYPE_NEAT);
+		this.inputCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,true);
+		this.outputCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,true);
+		this.activationFunction = obj.getPropertyActivationFunction(PersistConst.ACTIVATION_FUNCTION,true);
 	}
 }
