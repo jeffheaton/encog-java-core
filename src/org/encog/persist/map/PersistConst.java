@@ -9,6 +9,7 @@ public class PersistConst {
 	public static final String TYPE_NEAT = "NEATNetwork";
 	public static final String TYPE_BASIC_POPULATION = "BasicPopulation";
 	public static final String TYPE_BASIC_SPECIES = "BasicSpecies";
+	public static final String TYPE_NEAT_NEURON_GENE = "NEATNeuronGene";
 	
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
@@ -37,11 +38,13 @@ public class PersistConst {
 	public static final String NEURONS = "neurons";
 	public static final String TYPE = "type";
 	public static final String SUBTYPE_NEAT_LINK = "NEATLink";
+	public static final String SUBTYPE_NEAT_LINK_GENE = "NEATLinkGene";
 	public static final String RECURRENT = "recurrent";
 	public static final String WEIGHT = "weight";
 	public static final String LINKS = "links";
 	public static final String TYPE_NEAT_INNOVATION = "NEATInnovation";
 	public static final String PROPERTY_ID = "id";
-	
+	public static final String TYPE_NEAT_GENOME = "NEATGenome";
+	public static final String ENABLED = "enabled";
 		
 }

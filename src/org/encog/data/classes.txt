@@ -1,3 +1,6 @@
+org.encog.neural.neat.training.NEATLinkGene
+org.encog.neural.neat.training.NEATNeuronGene
+org.encog.neural.neat.training.NEATGenome
 org.encog.ml.genetic.population.BasicPopulation
 org.encog.neural.neat.NEATNetwork
 org.encog.neural.som.SOM

@@ -297,6 +297,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		final NEATGenome genome = (NEATGenome) population.getGenomes().get(0);
 		setCalculateScore(new GeneticScoreAdapter(calculateScore));
+		setComparator(new GenomeComparator(getCalculateScore()));
 		setPopulation(population);
 		this.inputCount = genome.getInputCount();
 		this.outputCount = genome.getOutputCount();

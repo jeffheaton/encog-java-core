@@ -25,7 +25,12 @@ package org.encog.neural.neat.training;
 
 import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
+import org.encog.neural.neat.NEATLink;
+import org.encog.neural.neat.NEATNeuron;
+import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedObject;
 
 /**
  * Implements a NEAT link gene. This describes a way in which two neurons are
@@ -161,6 +166,37 @@ public class NEATLinkGene extends BasicGene {
 		result.append(this.toNeuronID);
 		result.append("]");
 		return result.toString();
+	}
+
+	@Override
+	public Persistor createPersistor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return true;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		obj.clear(PersistConst.SUBTYPE_NEAT_LINK_GENE);
+
+		obj.setProperty(NEATLink.FROM_NEURON,(int)this.fromNeuronID,true);
+		obj.setProperty(NEATLink.TO_NEURON,(int)this.toNeuronID,true);
+		obj.setProperty(PersistConst.RECURRENT,this.recurrent,true);
+		obj.setProperty(PersistConst.WEIGHT,this.weight,true);
+
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		obj.requireType(PersistConst.SUBTYPE_NEAT_LINK_GENE);
+		this.recurrent = obj.getPropertyBoolean(PersistConst.RECURRENT, true);
+		this.weight = obj.getPropertyDouble(PersistConst.WEIGHT, true);
+		this.fromNeuronID = obj.getPropertyInt(NEATLink.FROM_NEURON,true);
+		this.toNeuronID = obj.getPropertyInt(NEATLink.TO_NEURON,true);
 	}
 
 }

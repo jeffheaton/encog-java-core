@@ -23,6 +23,8 @@
  */
 package org.encog.ml.genetic.genes;
 
+import org.encog.persist.Persistor;
+
 /**
  * A gene that holds a single character.
  */
@@ -63,5 +65,11 @@ public class CharGene extends BasicGene {
 	@Override
 	public String toString() {
 		return "" + this.value;
+	}
+
+	@Override
+	public Persistor createPersistor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

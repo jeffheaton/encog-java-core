@@ -23,6 +23,8 @@
  */
 package org.encog.ml.genetic.genes;
 
+import org.encog.persist.Persistor;
+
 /**
  * A gene that contains a floating point value.
  */
@@ -63,5 +65,11 @@ public class DoubleGene extends BasicGene {
 	@Override
 	public String toString() {
 		return "" + value;
+	}
+
+	@Override
+	public Persistor createPersistor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

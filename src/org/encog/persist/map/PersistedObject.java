@@ -7,12 +7,14 @@ import java.util.Map;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.population.Population;
 import org.encog.parse.ParseError;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
+import org.encog.util.obj.ReflectionUtil;
 
 public class PersistedObject extends PersistedProperty {
 
@@ -268,6 +270,36 @@ public class PersistedObject extends PersistedProperty {
 			{
 				throw new PersistError("Do not know how to persist " + obj.getClass().getName());
 			}
+		}
+		
+		setProperty( name, temp );
+		
+	}
+	
+	public void getPropertyGenericList(String name,
+			List list) {
+		
+		List<PersistedObject> temp = this.getPropertyValueArray(name);
+		
+		for(PersistedObject obj: temp )
+		{
+			String type = obj.getObjectType();
+			Class<?> clazz = ReflectionUtil.resolveEncogClass(type);
+			
+			if( clazz == null ) {
+				throw new PersistError("Unregistered class: " + type);
+			}
+			
+			EncogPersistedObject epo;
+			try {
+				epo = (EncogPersistedObject)clazz.newInstance();
+			} catch (InstantiationException e) {
+				throw new PersistError(e);
+			} catch (IllegalAccessException e) {
+				throw new PersistError(e);
+			}
+			epo.persistFromMap(obj);
+			list.add(epo);
 		}
 		
 		setProperty( name, temp );

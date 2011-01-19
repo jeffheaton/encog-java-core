@@ -23,7 +23,6 @@
  */
 package org.encog.neural.neat;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -285,30 +284,55 @@ public class NEATNeuron extends BasicPersistedSubObject {
 		return true;
 	}
 	
+	public static NEATNeuronType string2NeuronType(String t)
+	{
+		String type = t.toLowerCase().trim();
+		
+		if( type.length()>0 ) {
+			switch(type.charAt(0))
+			{
+				case 'i':
+					return NEATNeuronType.Input;
+				case 'o':
+					return NEATNeuronType.Output;
+				case 'h':
+					return NEATNeuronType.Hidden;
+				case 'b':
+					return NEATNeuronType.Bias;
+				case 'n':
+					return NEATNeuronType.None;
+			}
+		}
+		
+		return null;
+	}
+	
+	public static String neuronType2String(NEATNeuronType t)
+	{
+		switch( t )
+		{
+			case Input:
+				return "I";
+			case Bias:
+				return "B";
+			case Hidden:
+				return "H";
+			case Output:
+				return "O";
+			case None:
+				return "N";
+			default:
+				return null;			
+		}
+	}
+	
 	public void persistToMap(PersistedObject obj)
 	{
 		obj.clear(PersistConst.SUBTYPE_NEAT_NEURON);
 		
 		obj.setProperty(NEURON_ID, (int)this.neuronID, true);
 		obj.setProperty(ACTIVATION_RESPONSE, this.activationResponse, true);
-		switch( this.neuronType )
-		{
-			case Input:
-				obj.setProperty(PersistConst.TYPE, "I",true);
-				break;
-			case Bias:
-				obj.setProperty(PersistConst.TYPE, "B",true);
-				break;
-			case Hidden:
-				obj.setProperty(PersistConst.TYPE, "H",true);
-				break;
-			case Output:
-				obj.setProperty(PersistConst.TYPE, "O",true);
-				break;
-			case None:
-				obj.setProperty(PersistConst.TYPE, "H",true);
-				break;
-		}
+		obj.setProperty(PersistConst.TYPE, neuronType2String(this.neuronType),true);
 		obj.setProperty(PersistConst.OUTPUT, this.output,true);
 
 	}
@@ -319,26 +343,6 @@ public class NEATNeuron extends BasicPersistedSubObject {
 		this.neuronID = obj.getPropertyInt(NEURON_ID, true);
 		this.activationResponse = obj.getPropertyDouble(ACTIVATION_RESPONSE,true);
 		String type = obj.getPropertyString(PersistConst.TYPE, true);
-		type = type.toLowerCase().trim();
-		if( type.length()>0 ) {
-			switch(type.charAt(0))
-			{
-				case 'i':
-					this.neuronType = NEATNeuronType.Input;
-					break;
-				case 'o':
-					this.neuronType = NEATNeuronType.Output;
-					break;
-				case 'h':
-					this.neuronType = NEATNeuronType.Hidden;
-					break;
-				case 'b':
-					this.neuronType = NEATNeuronType.Bias;
-					break;
-				case 'n':
-					this.neuronType = NEATNeuronType.None;
-					break;
-			}
-		}
+		this.neuronType = NEATNeuron.string2NeuronType(type);		
 	}
 }

@@ -28,13 +28,11 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.species.Species;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
-import org.encog.persist.PersistError;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGReferenceable;
 import org.encog.persist.map.PersistConst;
@@ -457,10 +455,8 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 		
 		obj.setPropertyGenericList( Population.PROPERTY_INNOVATIONS, this.innovations.getInnovations());
 		obj.setPropertyGenericList( Population.PROPERTY_SPECIES, this.species);
+		obj.setPropertyGenericList( Population.PROPERTY_GENOMES, this.genomes);
 		
-		//obj.setProperty( Population.PROPERTY_GENOMES, genomeList );
-		//obj.setProperty( Population.PROPERTY_INNOVATIONS, innovationList );
-		//obj.setProperty( Population.PROPERTY_SPECIES, speciesList );
 	}
 	
 	public void persistFromMap(PersistedObject obj)
@@ -478,6 +474,8 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 		this.survivalRate = obj.getPropertyDouble( Population.PROPERTY_SURVIVAL_RATE, true);
 		this.youngScoreBonus = obj.getPropertyDouble(Population.PROPERTY_YOUNG_AGE_BONUS, true); 
 		this.youngBonusAgeThreshold = obj.getPropertyInt(Population.PROPERTY_YOUNG_AGE_THRESHOLD, true);
+		
+		obj.getPropertyGenericList(Population.PROPERTY_GENOMES, this.genomes); 
 	}
 
 }

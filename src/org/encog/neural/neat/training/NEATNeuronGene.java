@@ -25,8 +25,12 @@ package org.encog.neural.neat.training;
 
 import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
+import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
+import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedObject;
 
 /**
  * Implements a NEAT neuron gene.
@@ -40,6 +44,11 @@ import org.encog.persist.annotations.EGAttribute;
  */
 public class NEATNeuronGene extends BasicGene {
 
+	public static final String PROPERTY_ACT_RESPONSE = "aResp";
+	public static final String PROPERTY_RECURRENT = "recurrent";
+	public static final String PROPERTY_SPLIT_X = "splitX";
+	public static final String PROPERTY_SPLIT_Y = "splitY";
+	
 	/**
 	 * The activation response, the slope of the activation function.
 	 */
@@ -223,4 +232,40 @@ public class NEATNeuronGene extends BasicGene {
 		this.splitY = splitY;
 	}
 
+	@Override
+	public Persistor createPersistor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public boolean supportsMapPersistence()
+	{
+		return true;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		obj.clear(PersistConst.TYPE_NEAT_NEURON_GENE);
+		obj.setProperty(PersistConst.PROPERTY_ID, (int)this.getId(),true);
+		obj.setProperty(NEATNeuronGene.PROPERTY_ACT_RESPONSE, this.getActivationResponse(),true);
+		obj.setProperty(NEATNeuronGene.PROPERTY_RECURRENT, this.isRecurrent(),true);
+		obj.setProperty(NEATNeuronGene.PROPERTY_SPLIT_X, this.getSplitX(), true);
+		obj.setProperty(NEATNeuronGene.PROPERTY_SPLIT_Y, this.getSplitY(), true);
+		obj.setProperty(PersistConst.ENABLED, this.isEnabled(), true);
+		obj.setProperty(PersistConst.TYPE, NEATNeuron.neuronType2String(this.neuronType), true);
+		
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		obj.requireType(PersistConst.TYPE_NEAT_NEURON_GENE);
+		this.setId(obj.getPropertyInt(PersistConst.PROPERTY_ID, true));
+		this.activationResponse =  obj.getPropertyDouble(NEATNeuronGene.PROPERTY_ACT_RESPONSE, true);
+		this.recurrent = obj.getPropertyBoolean(NEATNeuronGene.PROPERTY_RECURRENT, true);
+		this.splitX = obj.getPropertyDouble(NEATNeuronGene.PROPERTY_SPLIT_X, true);
+		this.splitY = obj.getPropertyDouble(NEATNeuronGene.PROPERTY_SPLIT_Y, true);
+		this.setEnabled( obj.getPropertyBoolean(PersistConst.ENABLED, true));
+		String nt = obj.getPropertyString(PersistConst.TYPE, true);
+		this.neuronType =  NEATNeuron.string2NeuronType(nt);
+	}
 }
