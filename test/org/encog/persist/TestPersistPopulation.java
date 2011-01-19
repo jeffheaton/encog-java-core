@@ -1,0 +1,113 @@
+/*
+ * Encog(tm) Core v2.6 Unit Test - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2010 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
+package org.encog.persist;
+
+import java.io.IOException;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+import org.encog.ml.genetic.innovation.BasicInnovationList;
+import org.encog.ml.genetic.innovation.InnovationList;
+import org.encog.ml.genetic.population.BasicPopulation;
+import org.encog.ml.genetic.species.BasicSpecies;
+import org.encog.neural.neat.training.NEATGenome;
+import org.encog.neural.neat.training.NEATInnovation;
+import org.encog.neural.neat.training.NEATInnovationType;
+import org.encog.neural.thermal.HopfieldNetwork;
+import org.encog.util.obj.SerializeObject;
+
+public class TestPersistPopulation extends TestCase {
+	
+	public final String EG_FILENAME = "encogtest.eg";
+	public final String EG_RESOURCE = "test";
+	public final String SERIAL_FILENAME = "encogtest.ser";
+	
+	private BasicPopulation generate()
+	{
+		BasicPopulation result = new BasicPopulation();
+		result.setOldAgePenalty(1);
+		result.setOldAgeThreshold(2);
+		result.setPopulationSize(3);
+		result.setSurvivalRate(4);
+		result.setYoungBonusAgeThreshhold(5);
+		result.setYoungScoreBonus(6);
+		
+		NEATInnovation innovation1 = new NEATInnovation(3,0,NEATInnovationType.NewNeuron,1);
+		NEATInnovation innovation2 = new NEATInnovation(3,4,NEATInnovationType.NewLink,2);
+		result.setInnovations(new BasicInnovationList());
+		result.getInnovations().add(innovation1);
+		result.getInnovations().add(innovation2);
+		
+		NEATGenome genome1 = new NEATGenome();
+		
+		return result;
+	}
+	
+	public void testPersistEG()
+	{
+		BasicPopulation pop = generate();
+
+		EncogMemoryCollection encog = new EncogMemoryCollection();
+		encog.add(EG_RESOURCE, pop);
+		encog.save(EG_FILENAME);
+		
+		EncogMemoryCollection encog2 = new EncogMemoryCollection();
+		encog2.load(EG_FILENAME);
+		BasicPopulation network2 = (BasicPopulation)encog2.find(EG_RESOURCE);
+		
+		validate(network2);
+	}
+	
+	public void testPersistSerial() throws IOException, ClassNotFoundException
+	{
+		BasicPopulation pop = generate();
+		
+		SerializeObject.save(SERIAL_FILENAME, pop);
+		BasicPopulation pop2 = (BasicPopulation)SerializeObject.load(SERIAL_FILENAME);
+				
+		validate(pop2);
+	}
+	
+	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
+	{
+		BasicPopulation pop = generate();
+		
+		SerializeObject.saveEG(SERIAL_FILENAME, pop);
+		BasicPopulation pop2 = (BasicPopulation)SerializeObject.loadEG(SERIAL_FILENAME);
+				
+		validate(pop2);
+	}
+	
+	private void validate(BasicPopulation pop)
+	{
+		Assert.assertEquals(1.0,pop.getOldAgePenalty());
+		Assert.assertEquals(2,pop.getOldAgeThreshold());
+		Assert.assertEquals(3,pop.getPopulationSize());
+		Assert.assertEquals(4.0,pop.getSurvivalRate());
+		Assert.assertEquals(5,pop.getYoungBonusAgeThreshold());
+		Assert.assertEquals(6.0,pop.getYoungScoreBonus());
+
+	}
+}
