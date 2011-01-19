@@ -62,7 +62,7 @@ public class TestPersistPopulation extends TestCase {
 		step.setCenter(0.5);
 		
 		NEATTraining train = new NEATTraining(
-				score, 2, 1, 1000);
+				score, 2, 1, 10);
 		train.setOutputActivationFunction(step);
 		
 		return train.getPopulation();
@@ -89,7 +89,7 @@ public class TestPersistPopulation extends TestCase {
 		
 		SerializeObject.save(SERIAL_FILENAME, pop);
 		BasicPopulation pop2 = (BasicPopulation)SerializeObject.load(SERIAL_FILENAME);
-				
+		
 		validate(pop2);
 	}
 	
@@ -107,10 +107,16 @@ public class TestPersistPopulation extends TestCase {
 	{
 		Assert.assertEquals(0.3,pop.getOldAgePenalty());
 		Assert.assertEquals(50,pop.getOldAgeThreshold());
-		Assert.assertEquals(1000,pop.getPopulationSize());
+		Assert.assertEquals(10,pop.getPopulationSize());
 		Assert.assertEquals(0.2,pop.getSurvivalRate());
 		Assert.assertEquals(10,pop.getYoungBonusAgeThreshold());
 		Assert.assertEquals(0.3,pop.getYoungScoreBonus());
+		
+		// see if the population can actually be used to train
+		NeuralDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		
+		CalculateScore score = new TrainingSetScore(trainingSet);
+		NEATTraining train = new NEATTraining(score,pop);
+		train.iteration();
 
 	}
 }
