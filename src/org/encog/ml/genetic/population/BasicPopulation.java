@@ -455,29 +455,12 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 		obj.setProperty( Population.PROPERTY_YOUNG_AGE_BONUS ,this.youngScoreBonus, false);
 		obj.setProperty( Population.PROPERTY_YOUNG_AGE_THRESHOLD ,this.youngBonusAgeThreshold, false);
 		
-		List<PersistedObject> genomeList = new ArrayList<PersistedObject>();
-		List<PersistedObject> innovationList = new ArrayList<PersistedObject>();
-		List<PersistedObject> speciesList = new ArrayList<PersistedObject>();
-
-		// handle innovations
-		for(Innovation innovation: this.innovations.getInnovations())
-		{
-			if( innovation instanceof EncogPersistedObject)
-			{
-				PersistedObject ep = new PersistedObject();
-				EncogPersistedObject epo = (EncogPersistedObject)innovation;
-				epo.persistToMap(ep);
-				innovationList.add(ep);
-			}
-			else
-			{
-				throw new PersistError("Do not know how to persist " + innovation.getClass().getName());
-			}
-		}
+		obj.setPropertyGenericList( Population.PROPERTY_INNOVATIONS, this.innovations.getInnovations());
+		obj.setPropertyGenericList( Population.PROPERTY_SPECIES, this.species);
 		
-		obj.setProperty( Population.PROPERTY_GENOMES, genomeList );
-		obj.setProperty( Population.PROPERTY_INNOVATIONS, innovationList );
-		obj.setProperty( Population.PROPERTY_SPECIES, speciesList );
+		//obj.setProperty( Population.PROPERTY_GENOMES, genomeList );
+		//obj.setProperty( Population.PROPERTY_INNOVATIONS, innovationList );
+		//obj.setProperty( Population.PROPERTY_SPECIES, speciesList );
 	}
 	
 	public void persistFromMap(PersistedObject obj)

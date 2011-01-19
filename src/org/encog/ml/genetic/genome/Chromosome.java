@@ -23,6 +23,7 @@
  */
 package org.encog.ml.genetic.genome;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,7 +40,7 @@ import org.encog.persist.annotations.EGReferenceable;
  * 
  */
 @EGReferenceable
-public class Chromosome {
+public class Chromosome implements Serializable {
 
 	/**
 	 * The individual elements of this chromosome.

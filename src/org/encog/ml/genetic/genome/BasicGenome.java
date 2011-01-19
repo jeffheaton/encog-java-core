@@ -58,7 +58,7 @@ public abstract class BasicGenome extends BasicPersistedSubObject implements Gen
 	 * The genetic algorithm for this gene.
 	 */
 	@EGIgnore
-	private GeneticAlgorithm geneticAlgorithm;
+	private transient GeneticAlgorithm geneticAlgorithm;
 
 	/**
 	 * The genome id.

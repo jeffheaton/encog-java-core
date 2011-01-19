@@ -1,11 +1,15 @@
 package org.encog.persist.map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.genetic.innovation.Innovation;
+import org.encog.ml.genetic.innovation.InnovationList;
+import org.encog.ml.genetic.population.Population;
 import org.encog.parse.ParseError;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.PersistError;
@@ -245,5 +249,30 @@ public class PersistedObject extends PersistedProperty {
 		throw new PersistError("Expected object array for " + name);
 
 	}
+
+	public void setPropertyGenericList(String name,
+			List<?> list) {
+		
+		List<PersistedObject> temp = new ArrayList<PersistedObject>();
+		
+		for(Object obj: list )
+		{
+			if( obj instanceof EncogPersistedObject)
+			{
+				PersistedObject ep = new PersistedObject();
+				EncogPersistedObject epo = (EncogPersistedObject)obj;
+				epo.persistToMap(ep);
+				temp.add(ep);
+			}
+			else
+			{
+				throw new PersistError("Do not know how to persist " + obj.getClass().getName());
+			}
+		}
+		
+		setProperty( name, temp );
+		
+	}
+
 
 }
