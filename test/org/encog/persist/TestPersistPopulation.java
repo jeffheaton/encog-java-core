@@ -28,13 +28,21 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.engine.network.activation.ActivationStep;
 import org.encog.ml.genetic.innovation.BasicInnovationList;
 import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.population.BasicPopulation;
+import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.BasicSpecies;
+import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATInnovationType;
+import org.encog.neural.neat.training.NEATTraining;
+import org.encog.neural.networks.XOR;
+import org.encog.neural.networks.training.CalculateScore;
+import org.encog.neural.networks.training.TrainingSetScore;
 import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.util.obj.SerializeObject;
 
@@ -44,30 +52,25 @@ public class TestPersistPopulation extends TestCase {
 	public final String EG_RESOURCE = "test";
 	public final String SERIAL_FILENAME = "encogtest.ser";
 	
-	private BasicPopulation generate()
+	private Population generate()
 	{
-		BasicPopulation result = new BasicPopulation();
-		result.setOldAgePenalty(1);
-		result.setOldAgeThreshold(2);
-		result.setPopulationSize(3);
-		result.setSurvivalRate(4);
-		result.setYoungBonusAgeThreshhold(5);
-		result.setYoungScoreBonus(6);
+		NeuralDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);
 		
-		NEATInnovation innovation1 = new NEATInnovation(3,0,NEATInnovationType.NewNeuron,1);
-		NEATInnovation innovation2 = new NEATInnovation(3,4,NEATInnovationType.NewLink,2);
-		result.setInnovations(new BasicInnovationList());
-		result.getInnovations().add(innovation1);
-		result.getInnovations().add(innovation2);
+		CalculateScore score = new TrainingSetScore(trainingSet);
+		// train the neural network
+		ActivationStep step = new ActivationStep();
+		step.setCenter(0.5);
 		
-		NEATGenome genome1 = new NEATGenome();
+		NEATTraining train = new NEATTraining(
+				score, 2, 1, 1000);
+		train.setOutputActivationFunction(step);
 		
-		return result;
+		return train.getPopulation();
 	}
 	
 	public void testPersistEG()
 	{
-		BasicPopulation pop = generate();
+		Population pop = generate();
 
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.add(EG_RESOURCE, pop);
@@ -82,7 +85,7 @@ public class TestPersistPopulation extends TestCase {
 	
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
-		BasicPopulation pop = generate();
+		Population pop = generate();
 		
 		SerializeObject.save(SERIAL_FILENAME, pop);
 		BasicPopulation pop2 = (BasicPopulation)SerializeObject.load(SERIAL_FILENAME);
@@ -92,7 +95,7 @@ public class TestPersistPopulation extends TestCase {
 	
 	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
 	{
-		BasicPopulation pop = generate();
+		Population pop = generate();
 		
 		SerializeObject.saveEG(SERIAL_FILENAME, pop);
 		BasicPopulation pop2 = (BasicPopulation)SerializeObject.loadEG(SERIAL_FILENAME);
@@ -102,12 +105,12 @@ public class TestPersistPopulation extends TestCase {
 	
 	private void validate(BasicPopulation pop)
 	{
-		Assert.assertEquals(1.0,pop.getOldAgePenalty());
-		Assert.assertEquals(2,pop.getOldAgeThreshold());
-		Assert.assertEquals(3,pop.getPopulationSize());
-		Assert.assertEquals(4.0,pop.getSurvivalRate());
-		Assert.assertEquals(5,pop.getYoungBonusAgeThreshold());
-		Assert.assertEquals(6.0,pop.getYoungScoreBonus());
+		Assert.assertEquals(0.3,pop.getOldAgePenalty());
+		Assert.assertEquals(50,pop.getOldAgeThreshold());
+		Assert.assertEquals(1000,pop.getPopulationSize());
+		Assert.assertEquals(0.2,pop.getSurvivalRate());
+		Assert.assertEquals(10,pop.getYoungBonusAgeThreshold());
+		Assert.assertEquals(0.3,pop.getYoungScoreBonus());
 
 	}
 }
