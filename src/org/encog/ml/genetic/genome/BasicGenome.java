@@ -28,13 +28,14 @@ import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.GeneticError;
+import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGIgnore;
 
 /**
  * A basic abstract genome. Provides base functionality.
  */
-public abstract class BasicGenome implements Genome {
+public abstract class BasicGenome extends BasicPersistedSubObject implements Genome {
 
 	/**
 	 * The adjusted score.

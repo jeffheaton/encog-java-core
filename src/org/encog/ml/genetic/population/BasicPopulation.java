@@ -28,13 +28,17 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.ml.genetic.genome.Genome;
+import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.species.Species;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.PersistError;
 import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGReferenceable;
+import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedObject;
 import org.encog.persist.persistors.generic.GenericPersistor;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
@@ -427,6 +431,70 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 	 */
 	public void setCollection(EncogCollection collection) {
 		this.encogCollection = collection; 
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return true;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		obj.clear(PersistConst.TYPE_BASIC_POPULATION);
+		obj.setStandardProperties(this);
+		
+		obj.setProperty( Population.PROPERTY_NEXT_GENE_ID, (int)this.geneIDGenerate.getCurrentID(), false );
+		obj.setProperty( Population.PROPERTY_NEXT_GENOME_ID, (int)this.genomeIDGenerate.getCurrentID(), false );
+		obj.setProperty( Population.PROPERTY_NEXT_INNOVATION_ID, (int)this.innovationIDGenerate.getCurrentID(), false );
+		obj.setProperty( Population.PROPERTY_NEXT_SPECIES_ID, (int)this.speciesIDGenerate.getCurrentID(), false );
+
+		obj.setProperty( Population.PROPERTY_OLD_AGE_PENALTY ,this.oldAgePenalty, false);
+		obj.setProperty( Population.PROPERTY_OLD_AGE_THRESHOLD ,this.oldAgeThreshold, false);
+		obj.setProperty( Population.PROPERTY_POPULATION_SIZE ,this.populationSize, false);
+		obj.setProperty( Population.PROPERTY_SURVIVAL_RATE ,this.survivalRate, false);
+		obj.setProperty( Population.PROPERTY_YOUNG_AGE_BONUS ,this.youngScoreBonus, false);
+		obj.setProperty( Population.PROPERTY_YOUNG_AGE_THRESHOLD ,this.youngBonusAgeThreshold, false);
+		
+		List<PersistedObject> genomeList = new ArrayList<PersistedObject>();
+		List<PersistedObject> innovationList = new ArrayList<PersistedObject>();
+		List<PersistedObject> speciesList = new ArrayList<PersistedObject>();
+
+		// handle innovations
+		for(Innovation innovation: this.innovations.getInnovations())
+		{
+			if( innovation instanceof EncogPersistedObject)
+			{
+				PersistedObject ep = new PersistedObject();
+				EncogPersistedObject epo = (EncogPersistedObject)innovation;
+				epo.persistToMap(ep);
+				innovationList.add(ep);
+			}
+			else
+			{
+				throw new PersistError("Do not know how to persist " + innovation.getClass().getName());
+			}
+		}
+		
+		obj.setProperty( Population.PROPERTY_GENOMES, genomeList );
+		obj.setProperty( Population.PROPERTY_INNOVATIONS, innovationList );
+		obj.setProperty( Population.PROPERTY_SPECIES, speciesList );
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		obj.requireType(PersistConst.TYPE_BASIC_POPULATION);
+
+		this.genomeIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_GENOME_ID, true));
+		this.geneIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_GENE_ID, true ) );
+		this.innovationIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_INNOVATION_ID, true ) );
+		this.speciesIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_SPECIES_ID, true ) );
+
+		this.oldAgePenalty = obj.getPropertyDouble(Population.PROPERTY_OLD_AGE_PENALTY, true); 
+		this.oldAgeThreshold = obj.getPropertyInt(Population.PROPERTY_OLD_AGE_THRESHOLD, true);
+		this.populationSize = obj.getPropertyInt( Population.PROPERTY_POPULATION_SIZE, true);
+		this.survivalRate = obj.getPropertyDouble( Population.PROPERTY_SURVIVAL_RATE, true);
+		this.youngScoreBonus = obj.getPropertyDouble(Population.PROPERTY_YOUNG_AGE_BONUS, true); 
+		this.youngBonusAgeThreshold = obj.getPropertyInt(Population.PROPERTY_YOUNG_AGE_THRESHOLD, true);
 	}
 
 }

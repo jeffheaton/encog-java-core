@@ -81,7 +81,7 @@ public class PersistedObject extends PersistedProperty {
 	public void setStandardProperties(EncogPersistedObject obj) {
 		setProperty(PersistConst.NAME, obj.getName(), true);
 		setProperty(PersistConst.DESCRIPTION, obj.getDescription(), true);
-		setProperty(PersistConst.NATIVE, obj.getClass().toString(), true);
+		setProperty(PersistConst.NATIVE, obj.getClass().getName(), true);
 
 	}
 

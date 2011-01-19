@@ -29,6 +29,7 @@ import org.encog.ml.genetic.genome.BasicGenome;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,5 +102,11 @@ public class NeuralGenome extends BasicGenome {
 		for (int i = 0; i < net.length; i++) {
 			((DoubleGene) this.networkChromosome.getGene(i)).setValue(net[i]);
 		}
+	}
+
+	@Override
+	public Persistor createPersistor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

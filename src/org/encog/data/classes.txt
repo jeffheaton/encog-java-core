@@ -1,3 +1,4 @@
+org.encog.ml.genetic.population.BasicPopulation
 org.encog.neural.neat.NEATNetwork
 org.encog.neural.som.SOM
 org.encog.neural.bam.BAM

@@ -23,13 +23,14 @@
  */
 package org.encog.ml.genetic.innovation;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Provides basic functionality for a list of innovations.
  */
-public class BasicInnovationList implements InnovationList {
+public class BasicInnovationList implements InnovationList, Serializable {
 
 	/**
 	 * The list of innovations.

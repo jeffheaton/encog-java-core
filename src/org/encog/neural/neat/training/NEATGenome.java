@@ -38,6 +38,7 @@ import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.pattern.NEATPattern;
+import org.encog.persist.Persistor;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.annotations.EGReference;
 
@@ -876,6 +877,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		result.append(getScore());
 		result.append(")");
 		return result.toString();
+	}
+
+	@Override
+	public Persistor createPersistor() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

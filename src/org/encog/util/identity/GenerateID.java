@@ -34,4 +34,11 @@ public interface GenerateID {
 	 * @return The next ID.
 	 */
 	long generate();
+	
+	/**
+	 * @return the currentID
+	 */
+	long getCurrentID();
+	
+	void setCurrentID(long currentID);
 }

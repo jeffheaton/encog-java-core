@@ -35,6 +35,22 @@ import org.encog.persist.EncogPersistedObject;
  */
 public interface Population extends EncogPersistedObject {
 	
+	public static final String PROPERTY_NEXT_GENE_ID = "nextGeneID";
+	public static final String PROPERTY_NEXT_GENOME_ID = "nextGenomeID";
+	public static final String PROPERTY_NEXT_INNOVATION_ID = "nextInnovationID";
+	public static final String PROPERTY_NEXT_SPECIES_ID = "nextSpeciesID";
+	public static final String PROPERTY_OLD_AGE_PENALTY = "oldAgePenalty";
+	public static final String PROPERTY_OLD_AGE_THRESHOLD = "oldAgeThreshold";
+	public static final String PROPERTY_POPULATION_SIZE = "populationSize";
+	public static final String PROPERTY_SURVIVAL_RATE = "survivalRate";
+	public static final String PROPERTY_YOUNG_AGE_BONUS = "youngAgeBonus";
+	public static final String PROPERTY_YOUNG_AGE_THRESHOLD = "youngAgeThreshold";
+
+	public static final String PROPERTY_GENOMES = "genomes";
+	public static final String PROPERTY_INNOVATIONS = "innovations";
+	public static final String PROPERTY_SPECIES = "species";
+
+	
 	/**
 	 * Add a genome to the population.
 	 * @param genome The genome to add.

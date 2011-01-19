@@ -23,13 +23,15 @@
  */
 package org.encog.util.identity;
 
+import java.io.Serializable;
+
 import org.encog.persist.annotations.EGAttribute;
 
 /**
  * Used to generate a unique id.
  * 
  */
-public class BasicGenerateID implements GenerateID {
+public class BasicGenerateID implements GenerateID, Serializable {
 
 	/**
 	 * The current ID to generate.
@@ -53,4 +55,20 @@ public class BasicGenerateID implements GenerateID {
 			return this.currentID++;
 		}
 	}
+
+	/**
+	 * @return the currentID
+	 */
+	public long getCurrentID() {
+		return currentID;
+	}
+
+	/**
+	 * @param currentID the currentID to set
+	 */
+	public void setCurrentID(long currentID) {
+		this.currentID = currentID;
+	}
+	
+	
 }

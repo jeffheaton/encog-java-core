@@ -26,6 +26,8 @@ package org.encog.neural.neat.training;
 import org.encog.ml.genetic.innovation.BasicInnovation;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.persist.annotations.EGAttribute;
+import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedObject;
 
 /**
  * Implements a NEAT innovation. This lets NEAT track what changes it has
@@ -40,6 +42,14 @@ import org.encog.persist.annotations.EGAttribute;
  */
 public class NEATInnovation extends BasicInnovation {
 
+	public final static String PROPERTY_FROM_NEURON_ID = "from";
+	public final static String PROPERTY_TO_NEURON_ID = "to";
+	public final static String PROPERTY_NEURON_ID = "neuron";
+	public final static String PROPERTY_SPLIT_X = "splitX";
+	public final static String PROPERTY_SPLIT_Y = "splitY";
+	public final static String PROPERTY_INNOVATION_TYPE = "type";
+
+	
 	/**
 	 * The from neuron id.
 	 */
@@ -255,6 +265,40 @@ public class NEATInnovation extends BasicInnovation {
 		result.append(this.splitY);
 		result.append("]");
 		return result.toString();
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return true;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		obj.clear(PersistConst.TYPE_NEAT_INNOVATION);
+		
+		obj.setProperty(BasicInnovation.PROPERTY_INNOVATION_ID, this.getInnovationID(),true);
+		obj.setProperty(NEATInnovation.PROPERTY_FROM_NEURON_ID, this.fromNeuronID,true);
+		obj.setProperty(NEATInnovation.PROPERTY_TO_NEURON_ID, this.toNeuronID,true);
+		obj.setProperty(NEATInnovation.PROPERTY_NEURON_ID, this.neuronID,true);
+		obj.setProperty(NEATInnovation.PROPERTY_SPLIT_X, this.splitX,true);
+		obj.setProperty(NEATInnovation.PROPERTY_SPLIT_Y, this.splitY,true);
+				
+		switch( this.innovationType )
+		{
+			case NewNeuron:
+				obj.setProperty(NEATInnovation.PROPERTY_INNOVATION_TYPE, "neuron",true);
+				break;
+			case NewLink:
+				obj.setProperty(NEATInnovation.PROPERTY_INNOVATION_TYPE, "link",true);
+				break;
+		}
+		
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		obj.requireType(PersistConst.TYPE_NEAT_INNOVATION);
+		
 	}
 
 }

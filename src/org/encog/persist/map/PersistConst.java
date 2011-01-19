@@ -7,6 +7,7 @@ public class PersistConst {
 	public static final String TYPE_BAM = "BAM";
 	public static final String TYPE_SOM = "SOM";
 	public static final String TYPE_NEAT = "NEATNetwork";
+	public static final String TYPE_BASIC_POPULATION = "BasicPopulation";
 	
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
@@ -38,6 +39,7 @@ public class PersistConst {
 	public static final String RECURRENT = "recurrent";
 	public static final String WEIGHT = "weight";
 	public static final String LINKS = "links";
+	public static final String TYPE_NEAT_INNOVATION = "NEATInnovation";	
 	
 		
 }
