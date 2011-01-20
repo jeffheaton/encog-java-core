@@ -123,20 +123,30 @@ public class RSS {
 	public List<RSSItem> getItems() {
 		return this.items;
 	}
-
+	/**
+	 * Load all RSS data from the specified URL.
+	 * @param url
+	 */
+	public void load(final URL url){
+		load(url, -1);
+	}
 	/**
 	 * Load all RSS data from the specified URL.
 	 *
 	 * @param url
 	 *            URL that contains XML data.
+	 * @param timeout           
 	 */
-	public void load(final URL url) {
+	public void load(final URL url, int timeout) {
 		try {
-			if (this.logger.isInfoEnabled()) {
-				this.logger.info("Loading RSS from:" + url);
+			if (this.logger.isDebugEnabled()) {
+				this.logger.debug("Loading RSS from:" + url);
 			}
 
 			final URLConnection http = url.openConnection();
+			if(timeout>0){
+				http.setConnectTimeout(timeout);
+			}
 			http.setRequestProperty("User-Agent",
 "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Win64; x64; Trident/4.0)");
 			final InputStream is = http.getInputStream();
