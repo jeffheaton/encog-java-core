@@ -87,8 +87,14 @@ public class TestPersistSVM extends TestCase {
 		validate(network2);
 	}
 	
-	private void validate(SVM network)
+	private void validate(SVM svm)
 	{
-		
+		Assert.assertEquals(KernelType.RadialBasisFunction, svm.getKernelType());
+		Assert.assertEquals(SVMType.EpsilonSupportVectorRegression, svm.getSvmType());
+		Assert.assertEquals(1.0, svm.getParams()[0].C);
+		Assert.assertEquals(100.0, svm.getParams()[0].cache_size);
+		Assert.assertEquals(1, svm.getParams().length);
+		Assert.assertEquals(1, svm.getModels().length);
+		Assert.assertEquals(4, svm.getModels()[0].SV.length);
 	}
 }
