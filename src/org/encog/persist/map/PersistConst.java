@@ -10,6 +10,7 @@ public class PersistConst {
 	public static final String TYPE_BASIC_POPULATION = "BasicPopulation";
 	public static final String TYPE_BASIC_SPECIES = "BasicSpecies";
 	public static final String TYPE_NEAT_NEURON_GENE = "NEATNeuronGene";
+	public static final String TYPE_SVM = "SVM";
 	
 	public static final String NAME = "name";
 	public static final String DESCRIPTION = "description";
@@ -46,5 +47,7 @@ public class PersistConst {
 	public static final String PROPERTY_ID = "id";
 	public static final String TYPE_NEAT_GENOME = "NEATGenome";
 	public static final String ENABLED = "enabled";
+	public static final String IDATA = "idata";
+	
 		
 }

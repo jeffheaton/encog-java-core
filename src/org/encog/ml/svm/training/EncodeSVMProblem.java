@@ -27,6 +27,7 @@ import java.util.Iterator;
 
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_problem;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -81,4 +82,5 @@ public class EncodeSVMProblem {
 
 		return result;
 	}
+	
 }

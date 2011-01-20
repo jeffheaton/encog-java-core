@@ -5,10 +5,10 @@ import java.util.Arrays;
 import org.encog.Encog;
 import org.encog.util.csv.CSVFormat;
 
-public class PersistedDoubleArray extends PersistedProperty {
-	private double[] data;
+public class PersistedIntArray extends PersistedProperty {
+	private int[] data;
 	
-	public PersistedDoubleArray(double[] d)
+	public PersistedIntArray(int[] d)
 	{
 		super(false);
 		this.data = d;
@@ -26,7 +26,7 @@ public class PersistedDoubleArray extends PersistedProperty {
 		{
 			if( result.length()>0 )
 				result.append(',');
-			result.append(CSVFormat.EG_FORMAT.format(data[i],Encog.DEFAULT_PRECISION));
+			result.append(data[i]);
 		}
 		return result.toString();
 	}
@@ -36,7 +36,7 @@ public class PersistedDoubleArray extends PersistedProperty {
 		return data;
 	}
 
-	public double[] getDoubleArray() {
+	public int[] getIntArray() {
 		return data;
 	}
 }

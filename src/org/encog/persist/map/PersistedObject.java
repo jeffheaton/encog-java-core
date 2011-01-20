@@ -306,5 +306,11 @@ public class PersistedObject extends PersistedProperty {
 		
 	}
 
+	public void setProperty(String name, int[] value) {
+		if (value != null) {
+			this.data.put(name, new PersistedIntArray(value));
+		}		
+	}
+
 
 }

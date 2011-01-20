@@ -922,15 +922,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		
 		this.linksChromosome = new Chromosome();
 		this.neuronsChromosome = new Chromosome();
-		 
-			
+		 			
 		this.getChromosomes().add(this.neuronsChromosome);
 		this.getChromosomes().add(this.linksChromosome);
 		
 		obj.getPropertyGenericList(NEATGenome.PROPERTY_NEURONS, this.neuronsChromosome.getGenes());
-		obj.getPropertyGenericList(NEATGenome.PROPERTY_LINKS, this.linksChromosome.getGenes());
-		
+		obj.getPropertyGenericList(NEATGenome.PROPERTY_LINKS, this.linksChromosome.getGenes());		
 	}
-
 
 }

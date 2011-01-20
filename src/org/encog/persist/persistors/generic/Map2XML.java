@@ -6,6 +6,7 @@ import org.encog.parse.tags.write.WriteXML;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedActivationFunction;
 import org.encog.persist.map.PersistedDoubleArray;
+import org.encog.persist.map.PersistedIntArray;
 import org.encog.persist.map.PersistedMatrix;
 import org.encog.persist.map.PersistedObject;
 import org.encog.persist.map.PersistedProperty;
@@ -57,6 +58,14 @@ public class Map2XML {
 				{
 					out.beginTag(key);
 					out.beginTag(PersistConst.DATA);
+					out.addText(property.getString());
+					out.endTag();
+					out.endTag();
+				}
+				else if( property instanceof PersistedIntArray )
+				{
+					out.beginTag(key);
+					out.beginTag(PersistConst.IDATA);
 					out.addText(property.getString());
 					out.endTag();
 					out.endTag();
