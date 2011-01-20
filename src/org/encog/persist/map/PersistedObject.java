@@ -118,7 +118,7 @@ public class PersistedObject extends PersistedProperty {
 	}
 
 	public double[] getPropertyDoubleArray(String name, boolean required) {
-		try {
+
 			if (require(name, required)) {
 				return null;
 			}
@@ -129,9 +129,7 @@ public class PersistedObject extends PersistedProperty {
 				return a.getDoubleArray();
 			}
 			throw new PersistError("Expected double array for " + name);
-		} catch (Exception e) {
-			throw new ParseError("Invalid double array: " + name);
-		}
+		
 	}
 
 	@Override
@@ -310,6 +308,21 @@ public class PersistedObject extends PersistedProperty {
 		if (value != null) {
 			this.data.put(name, new PersistedIntArray(value));
 		}		
+	}
+
+	public int[] getPropertyIntArray(String name, boolean required) {
+		
+			if (require(name, required)) {
+				return null;
+			}
+
+			PersistedProperty result = this.data.get(name);
+			if (result instanceof PersistedIntArray) {
+				PersistedIntArray a = (PersistedIntArray) result;
+				return a.getIntArray();
+			}
+			throw new PersistError("Expected int array for " + name);
+		
 	}
 
 

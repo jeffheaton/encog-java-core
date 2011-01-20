@@ -3,19 +3,13 @@ package org.encog.persist.persistors.generic;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.neural.NeuralNetworkError;
 import org.encog.parse.tags.Tag.Type;
 import org.encog.parse.tags.read.ReadXML;
-import org.encog.persist.EncogPersistedObject;
-import org.encog.persist.PersistError;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
-import org.encog.persist.persistors.BasicLayerPersistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
-import org.encog.util.obj.ReflectionUtil;
 
 public class XML2Map {
 	
@@ -49,6 +43,10 @@ public class XML2Map {
 				} else if( in.getTag().getName().equals(PersistConst.DATA)) {
 					str = in.readTextToTag();
 					double[] d = NumberList.fromList(CSVFormat.ENGLISH, str);
+					po.setProperty(name, d);
+				} else if( in.getTag().getName().equals(PersistConst.IDATA)) {
+					str = in.readTextToTag();
+					int[] d = NumberList.fromListInt(CSVFormat.ENGLISH, str);
 					po.setProperty(name, d);
 				} else if( in.getTag().getName().equals(PersistConst.MATRIX)) { 
 					str = in.readTextToTag();

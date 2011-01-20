@@ -87,4 +87,30 @@ public final class NumberList {
 	private NumberList() {
 
 	}
+
+	public static int[] fromListInt(CSVFormat format, String str) {
+		// first count the numbers
+		int count = 0;
+		final StringTokenizer tok = new StringTokenizer(str, ""
+				+ format.getSeparator());
+		while (tok.hasMoreTokens()) {
+			tok.nextToken();
+			count++;
+		}
+
+		// now allocate an object to hold that many numbers
+		final int[] result = new int[count];
+
+		// and finally parse the numbers
+		int index = 0;
+		final StringTokenizer tok2 = new StringTokenizer(str, ""
+				+ format.getSeparator());
+		while (tok2.hasMoreTokens()) {
+			final String num = tok2.nextToken();
+			final int value = Integer.parseInt(num);
+			result[index++] = value;
+		}
+
+		return result;
+	}
 }

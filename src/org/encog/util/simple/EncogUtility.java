@@ -29,6 +29,7 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLMethod;
+import org.encog.ml.MLRegression;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.data.NeuralData;
@@ -105,7 +106,7 @@ public final class EncogUtility {
 	 * @param training
 	 *            The training set to evaluate.
 	 */
-	public static void evaluate(final BasicNetwork network,
+	public static void evaluate(final MLRegression network,
 			final NeuralDataSet training) {
 		for (final NeuralDataPair pair : training) {
 			final NeuralData output = network.compute(pair.getInput());

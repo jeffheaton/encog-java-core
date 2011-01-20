@@ -23,11 +23,8 @@
  */
 package org.encog.ml.svm.training;
 
-import java.util.Iterator;
-
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_problem;
-import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -50,8 +47,8 @@ public class EncodeSVMProblem {
 	 * @param training
 	 *            The training data.
 	 * @param outputIndex
-	 *            The ideal element to use, this is necessary becase SVM's have
-	 *            only a single output.
+	 *            The ideal element to use, this is necessary because SVM's have
+	 *            only a single output.  This value is typically zero.
 	 * @return The SVM problem.
 	 */
 	public static svm_problem encode(NeuralDataSet training, int outputIndex) {
