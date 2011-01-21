@@ -334,7 +334,6 @@ org.encog.persist.persistors.generic.XML2Object
 org.encog.persist.persistors.OneToOneSynapsePersistor
 org.encog.persist.persistors.PersistorUtil
 org.encog.persist.persistors.PropertyDataPersistor
-org.encog.persist.persistors.SVMNetworkPersistor
 org.encog.persist.persistors.TextDataPersistor
 org.encog.persist.persistors.TrainingContinuationPersistor
 org.encog.persist.persistors.WeightedSynapsePersistor
