@@ -45,20 +45,6 @@ public class TestSerializeObject extends TestCase {
 		XOR.testXORDataSet(set);
 	}
 	
-	public void testSerializeNetwork() throws Throwable
-	{
-		RadialBasisPattern pattern = new RadialBasisPattern();
-		pattern.setInputNeurons(1);
-		pattern.addHiddenLayer(2);
-		pattern.setOutputNeurons(3);
-		BasicNetwork net = (BasicNetwork)pattern.generate();
-
-		SerializeObject.save("encog.ser", net);
-		net = (BasicNetwork) SerializeObject.load("encog.ser");
-		Assert.assertEquals(3, net.getStructure().getLayers().size());
-		
-	}
-	
 
 	public void testSerializeNetwork2() throws Throwable
 	{
