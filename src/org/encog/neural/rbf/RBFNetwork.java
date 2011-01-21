@@ -11,8 +11,9 @@ import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.persist.BasicPersistedObject;
 
-public class RBFNetwork implements MLRegression  {
+public class RBFNetwork extends BasicPersistedObject implements MLRegression  {
 	
 	private FlatNetworkRBF flat;	
 	private RadialBasisFunction[] rbf;

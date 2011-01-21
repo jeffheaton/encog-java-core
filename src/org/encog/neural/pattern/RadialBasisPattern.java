@@ -29,8 +29,8 @@ import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.synapse.SynapseType;
+import org.encog.neural.rbf.RBFNetwork;
 import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,37 +104,8 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 */
 	public EncogPersistedObject generate() {
 
-		final Layer input = new BasicLayer(new ActivationLinear(), false,
-				this.inputNeurons);
-		final Layer output = new BasicLayer(new ActivationLinear(), false,
-				this.outputNeurons);
-		final BasicNetwork network = new BasicNetwork();
-		final RadialBasisFunctionLayer rbfLayer = new RadialBasisFunctionLayer(
-				this.hiddenNeurons);
-		network.addLayer(input);
-		network.addLayer(rbfLayer, SynapseType.Direct);
-		network.addLayer(output);
-		network.getStructure().finalizeStructure();
-		network.reset();
-		network.tagLayer(RBF_LAYER, rbfLayer);
-		int y = PatternConst.START_Y;
-		input.setX(PatternConst.START_X);
-		input.setY(y);
-		y += PatternConst.INC_Y;
-		rbfLayer.setX(PatternConst.START_X);
-		rbfLayer.setY(y);
-		y += PatternConst.INC_Y;
-		output.setX(PatternConst.START_X);
-		output.setY(y);
-
-		// Set the standard RBF neuron width.
-		// Literature seems to suggest this is a good default value.
-		double volumeNeuronWidth = 2.0 / rbfLayer.getNeuronCount();
-
-		rbfLayer.setRBFCentersAndWidthsEqualSpacing(0, 1, RBFEnum.Gaussian,
-				input.getNeuronCount(), volumeNeuronWidth, true);
-
-		return network;
+		RBFNetwork result = new RBFNetwork(inputNeurons, this.hiddenNeurons ,outputNeurons,RBFEnum.Gaussian);
+		return result;
 	}
 
 	/**

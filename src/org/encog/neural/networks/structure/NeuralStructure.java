@@ -31,8 +31,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
@@ -47,7 +47,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.ContextLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.layers.RadialBasisFunctionLayer;
 import org.encog.neural.networks.logic.FeedforwardLogic;
 import org.encog.neural.networks.logic.SimpleRecurrentLogic;
 import org.encog.neural.networks.synapse.Synapse;
@@ -411,25 +410,6 @@ public class NeuralStructure implements Serializable {
 		final ValidateForFlat val = new ValidateForFlat();
 
 		if (val.isValid(this.network) == null) {
-			if ((this.layers.size() == 3)
-					&& (this.layers.get(1) instanceof RadialBasisFunctionLayer)) {
-				final RadialBasisFunctionLayer rbf = (RadialBasisFunctionLayer) this.layers
-						.get(1);
-				
-				
-				for(Layer layer: this.layers ) {
-					if( layer.hasBias() ) {
-						throw new NeuralNetworkError("Bias cannot be used with an RBF neural network.");
-					}
-				}
-				
-				this.flat = new FlatNetworkRBF(this.network.getInputCount(),
-						rbf.getNeuronCount(), this.network.getOutputCount(),
-						rbf.getRadialBasisFunction());
-				flattenWeights();
-				this.flatUpdate = FlatUpdateNeeded.None;
-				return;
-			}
 
 			int flatLayerCount = countNonContext();
 			final FlatLayer[] flatLayers = new FlatLayer[flatLayerCount];

@@ -46,7 +46,6 @@ org.encog.engine.network.flat.FlatLayer
 org.encog.engine.network.flat.FlatNetwork
 org.encog.engine.network.flat.FlatNetworkRBF
 org.encog.engine.network.flat.ValidateForOpenCL
-org.encog.engine.network.rbf.RadialBasisFunction
 org.encog.engine.network.train.gradient.FlatGradientWorker
 org.encog.engine.network.train.gradient.GradientWorkerCPU
 org.encog.engine.network.train.prop.OpenCLTrainingProfile
@@ -160,7 +159,6 @@ org.encog.neural.networks.BasicNetwork
 org.encog.neural.networks.layers.BasicLayer
 org.encog.neural.networks.layers.ContextLayer
 org.encog.neural.networks.layers.Layer
-org.encog.neural.networks.layers.RadialBasisFunctionLayer
 org.encog.neural.networks.logic.FeedforwardLogic
 org.encog.neural.networks.logic.NeuralLogic
 org.encog.neural.networks.logic.SimpleRecurrentLogic
@@ -177,7 +175,6 @@ org.encog.neural.networks.structure.NeuralStructure
 org.encog.neural.networks.structure.SynapseComparator
 org.encog.neural.networks.structure.ValidateForFlat
 org.encog.neural.networks.synapse.BasicSynapse
-org.encog.neural.networks.synapse.DirectSynapse
 org.encog.neural.networks.synapse.OneToOneSynapse
 org.encog.neural.networks.synapse.Synapse
 org.encog.neural.networks.synapse.SynapseType
@@ -226,8 +223,6 @@ org.encog.neural.networks.training.strategy.SmartLearningRate
 org.encog.neural.networks.training.strategy.SmartMomentum
 org.encog.neural.networks.training.strategy.StopTrainingStrategy
 org.encog.neural.networks.training.Strategy
-org.encog.neural.networks.training.svd.SVD
-org.encog.neural.networks.training.svd.SVDTraining
 org.encog.neural.networks.training.Train
 org.encog.neural.networks.training.TrainingError
 org.encog.neural.networks.training.TrainingSetScore
@@ -329,7 +324,6 @@ org.encog.persist.persistors.BasicNetworkPersistor
 org.encog.persist.persistors.BasicNeuralDataSetPersistor
 org.encog.persist.persistors.BufferedNeuralDataSetPersistor
 org.encog.persist.persistors.ContextLayerPersistor
-org.encog.persist.persistors.DirectSynapsePersistor
 org.encog.persist.persistors.EncogScriptPersistor
 org.encog.persist.persistors.generic.FieldMapping
 org.encog.persist.persistors.generic.GenericPersistor
@@ -340,7 +334,6 @@ org.encog.persist.persistors.generic.XML2Object
 org.encog.persist.persistors.OneToOneSynapsePersistor
 org.encog.persist.persistors.PersistorUtil
 org.encog.persist.persistors.PropertyDataPersistor
-org.encog.persist.persistors.RadialBasisFunctionLayerPersistor
 org.encog.persist.persistors.SVMNetworkPersistor
 org.encog.persist.persistors.TextDataPersistor
 org.encog.persist.persistors.TrainingContinuationPersistor

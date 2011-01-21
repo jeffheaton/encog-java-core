@@ -29,7 +29,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
-import org.encog.neural.networks.training.svd.SVD;
 import org.encog.neural.rbf.RBFNetwork;
 import org.encog.util.simple.TrainingSetUtil;
 

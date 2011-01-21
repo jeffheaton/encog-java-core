@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.svd;
+package org.encog.neural.rbf.training;
 
 import org.encog.engine.network.rbf.RadialBasisFunction;
 
