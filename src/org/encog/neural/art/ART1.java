@@ -4,7 +4,6 @@ import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 import org.slf4j.Logger;
@@ -171,8 +170,7 @@ public class ART1 extends ART {
 	 *            The NeuralOutputHolder to use.
 	 * @return The output from the network.
 	 */
-	public NeuralData compute(final NeuralData input,
-			final NeuralOutputHolder useHolder) {
+	public NeuralData compute(final NeuralData input) {
 		if (!(input instanceof BiPolarNeuralData)) {
 			final String str = 
 				"Input to ART1 logic network must be BiPolarNeuralData.";

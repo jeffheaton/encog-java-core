@@ -4,7 +4,6 @@ import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralDataMapping;
-import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
@@ -83,8 +82,7 @@ public class BAM extends BasicPersistedObject {
 	 *            NOT USED
 	 * @return NOT USED
 	 */
-	public NeuralData compute(final NeuralData input,
-			final NeuralOutputHolder useHolder) {
+	public NeuralData compute(final NeuralData input) {
 		final String str = "Compute on BasicNetwork cannot be used, rather call"
 				+ " the compute(NeuralData) method on the BAMLogic.";
 		if (BAM.LOGGER.isErrorEnabled()) {

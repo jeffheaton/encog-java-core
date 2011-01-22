@@ -36,7 +36,6 @@ import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.map.PersistConst;
@@ -274,13 +273,6 @@ public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRe
 	 */
 	public List<NEATNeuron> getNeurons() {
 		return this.neurons;
-	}
-
-	/**
-	 * @return The type of synapse that this is.
-	 */
-	public SynapseType getType() {
-		return null;
 	}
 
 	/**

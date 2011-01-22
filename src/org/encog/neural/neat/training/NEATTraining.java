@@ -221,12 +221,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 */
 	public NEATTraining(final CalculateScore score, final BasicNetwork network,
 			final Population population) {
-		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
 		setCalculateScore(new GeneticScoreAdapter(score));
 		setComparator(new GenomeComparator(getCalculateScore()));
-		this.inputCount = inputLayer.getNeuronCount();
-		this.outputCount = outputLayer.getNeuronCount();
+		this.inputCount = network.getInputCount();
+		this.outputCount = network.getOutputCount();
 		setPopulation(population);
 
 		for (final Genome obj : population.getGenomes()) {
