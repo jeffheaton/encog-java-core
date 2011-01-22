@@ -68,6 +68,7 @@ public class TestTraining extends TestCase   {
 		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
+
 		Train bprop = new Backpropagation(network, trainingData, 0.7, 0.9);
 		NetworkUtil.testTraining(bprop,0.01);
 	}

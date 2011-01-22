@@ -32,7 +32,6 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.basic.BasicTrainSOM;
 import org.encog.neural.som.training.basic.neighborhood.NeighborhoodSingle;
@@ -52,12 +51,6 @@ public class TestCompetitive extends TestCase  {
 			{-0.8738960119753589, -0.48043680531294997}, 
 			{-0.9455207768842442, -0.8612565984447569}
 			};
-
-	private Synapse findSynapse(BasicNetwork network)
-	{
-		Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
-		return input.getNext().get(0);
-	}
 	
 	@Test
 	public void testSOM() {

@@ -42,15 +42,36 @@ public class TestBiasActivation extends TestCase {
 	
 	public void testLayerOutput()
 	{
-		Layer hidden, output;
+		Layer layer1, layer2;
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(null, false,2));
-		network.addLayer(hidden = new BasicLayer(new ActivationSigmoid(), true,4));
-		network.addLayer(output = new BasicLayer(new ActivationSigmoid(), true,1));
-		network.reset();
-		hidden.setBiasActivation(0.5);
-		output.setBiasActivation(-1.0);
+		network.addLayer(layer1 = new BasicLayer(null, true,2));
+		network.addLayer(layer2 = new BasicLayer(new ActivationSigmoid(), true,4));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(), false,1));
+		layer1.setBiasActivation(0.5);
+		layer2.setBiasActivation(-1.0);
 		network.getStructure().finalizeStructure();
+		network.reset();
+		
+		FlatNetwork flat = network.getStructure().getFlat();
+		
+		Assert.assertNotNull(flat);
+		double[] layerOutput = flat.getLayerOutput();
+		Assert.assertEquals(layerOutput[5], -1.0);
+		Assert.assertEquals(layerOutput[8], 0.5);	
+	}
+	
+	public void testLayerOutputPostFinalize()
+	{
+		BasicNetwork network = new BasicNetwork();
+		network.addLayer(new BasicLayer(null, true,2));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(), true,4));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(), false,1));
+
+		network.getStructure().finalizeStructure();
+		network.reset();
+		
+		network.setLayerBiasActivation(0,0.5);
+		network.setLayerBiasActivation(1,-1.0);
 		
 		FlatNetwork flat = network.getStructure().getFlat();
 		
@@ -67,9 +88,7 @@ public class TestBiasActivation extends TestCase {
 		BasicNetwork network2 = (BasicNetwork)network1.clone();
 		BasicNetwork network3 = (BasicNetwork)network1.clone();
 		network2.setBiasActivation(-1);
-		network2.getStructure().finalizeStructure();
 		network3.setBiasActivation(0.5);
-		network3.getStructure().finalizeStructure();
 		
 		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
@@ -80,10 +99,6 @@ public class TestBiasActivation extends TestCase {
 		NetworkUtil.testTraining(rprop1,0.03);
 		NetworkUtil.testTraining(rprop2,0.01);
 		NetworkUtil.testTraining(rprop3,0.01);
-		
-		network1.getStructure().updateFlatNetwork();
-		network2.getStructure().updateFlatNetwork();
-		network3.getStructure().updateFlatNetwork();
 		
 		double[] w1 = NetworkCODEC.networkToArray(network1);
 		double[] w2 = NetworkCODEC.networkToArray(network2);

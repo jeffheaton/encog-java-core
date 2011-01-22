@@ -37,34 +37,17 @@ public class NetworkUtil {
 	public static BasicNetwork createXORNetworkUntrained()
 	{
 		// random matrix data.  However, it provides a constant starting point 
-		// for the unit tests.
-		
+		// for the unit tests.		
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,2));
-		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
-		//network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
-		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,1));
+		network.addLayer(new BasicLayer(null,true,2));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),true,4));
+		network.addLayer(new BasicLayer(new ActivationSigmoid(),false,1));
 		network.getStructure().finalizeStructure();
 		
 		(new ConsistentRandomizer(-1,1)).randomize(network);
 		
 		return network;
 	}
-	public static BasicNetwork createXORNetworkRangeRandomizedUntrained()
-    {
-        // random matrix data.  However, it provides a constant starting point 
-        // for the unit tests.
-        
-        BasicNetwork network = new BasicNetwork();
-        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,2));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,1));
-        network.getStructure().finalizeStructure();
-        (new RangeRandomizer(-1,1)).randomize( network);
-        
-        return network;
-    }
 	
 	public static BasicNetwork createXORNetworknNguyenWidrowUntrained()
     {
@@ -72,10 +55,10 @@ public class NetworkUtil {
         // for the unit tests.
         
         BasicNetwork network = new BasicNetwork();
-        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,2));
+        network.addLayer(new BasicLayer(null,true,2));
         network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,3));
-        network.addLayer(new BasicLayer(new ActivationSigmoid(),true,1));
+        network.addLayer(new BasicLayer(new ActivationSigmoid(),false,3));
+        network.addLayer(new BasicLayer(null,false,1));
         network.getStructure().finalizeStructure();
         (new NguyenWidrowRandomizer(-1,1)).randomize( network );
         

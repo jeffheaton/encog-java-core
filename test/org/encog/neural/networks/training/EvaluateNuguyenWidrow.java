@@ -55,7 +55,7 @@ public class EvaluateNuguyenWidrow {
            Train bpropNguyen = new Backpropagation( network3, trainingData3, 0.9, 0.8 );     
            train(i, bpropNguyen, "NguyenWidrowRandomizer" );
            
-           BasicNetwork network2 = NetworkUtil.createXORNetworkRangeRandomizedUntrained();
+           BasicNetwork network2 = NetworkUtil.createXORNetworkUntrained();
            
            Train bpropRange = new Backpropagation( network2, trainingData2, 0.9, 0.8 );     
            train(i, bpropRange,  "RangeRandomizer       ");

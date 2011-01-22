@@ -45,19 +45,4 @@ public class TestSerializeObject extends TestCase {
 		XOR.testXORDataSet(set);
 	}
 	
-
-	public void testSerializeNetwork2() throws Throwable
-	{
-		ElmanPattern pattern = new ElmanPattern();
-		pattern.setInputNeurons(1);
-		pattern.addHiddenLayer(2);
-		pattern.setOutputNeurons(3);
-		BasicNetwork net = (BasicNetwork)pattern.generate();
-
-		SerializeObject.save("encog.ser", net);
-		net = (BasicNetwork) SerializeObject.load("encog.ser");
-		Assert.assertEquals(4, net.getStructure().getLayers().size());
-		
-	}
-	
 }
