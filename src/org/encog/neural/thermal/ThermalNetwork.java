@@ -3,8 +3,6 @@ package org.encog.neural.thermal;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.persist.BasicPersistedObject;
 
 public abstract class ThermalNetwork extends BasicPersistedObject {

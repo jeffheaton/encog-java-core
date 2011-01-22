@@ -26,7 +26,6 @@ package org.encog.neural.rbf.training;
 import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.ObjectPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.rbf.RBFNetwork;

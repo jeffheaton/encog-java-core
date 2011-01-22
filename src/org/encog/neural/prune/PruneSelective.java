@@ -31,7 +31,6 @@ import org.encog.mathutil.randomize.Distort;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,6 +127,9 @@ public class PruneSelective {
 	 */
 	public double determineNeuronSignificance(final Layer layer,
 			final int neuron) {
+		
+		return 0;
+		/*
 		// calculate the bias significance
 		double result = 0;
 
@@ -154,7 +156,7 @@ public class PruneSelective {
 			}
 		}
 
-		return Math.abs(result);
+		return Math.abs(result);*/
 	}
 
 	/**
@@ -212,7 +214,7 @@ public class PruneSelective {
 	 */
 	private void increaseNeuronCount(final Layer layer, final int neuronCount) {
 		// adjust the bias
-		final double[] newBias = new double[neuronCount];
+/*		final double[] newBias = new double[neuronCount];
 		if (layer.hasBias()) {
 			for (int i = 0; i < layer.getNeuronCount(); i++) {
 				newBias[i] = layer.getBiasWeight(i);
@@ -265,7 +267,7 @@ public class PruneSelective {
 		}
 
 		// finally, up the neuron count
-		layer.setNeuronCount(neuronCount);
+		layer.setNeuronCount(neuronCount);*/
 	}
 
 	/**
@@ -279,7 +281,7 @@ public class PruneSelective {
 	 */
 	public void prune(final Layer targetLayer, final int neuron) {
 		// delete a row on this matrix
-		for (final Synapse synapse : targetLayer.getNext()) {
+/*		for (final Synapse synapse : targetLayer.getNext()) {
 			synapse.setMatrix(MatrixMath.deleteRow(synapse.getMatrix(), neuron));
 		}
 
@@ -314,7 +316,7 @@ public class PruneSelective {
 
 		// update the neuron count
 		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
-
+*/
 	}
 
 	/**
@@ -330,6 +332,7 @@ public class PruneSelective {
 	 */
 	public void stimulateNeuron(final double percent, final Layer layer,
 			final int neuron) {
+		/*
 		final Distort d = new Distort(percent);
 
 		if (layer.hasBias()) {
@@ -353,7 +356,7 @@ public class PruneSelective {
 				final double v = synapse.getMatrix().get(i, neuron);
 				synapse.getMatrix().set(i, neuron, d.randomize(v));
 			}
-		}
+		}*/
 	}
 
 	/**

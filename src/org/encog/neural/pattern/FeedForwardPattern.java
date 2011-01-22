@@ -92,33 +92,24 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 * @return The feedforward neural network.
 	 */
 	public EncogPersistedObject generate() {
-		int y = PatternConst.START_Y;
-		final Layer input = new BasicLayer(this.activation, false,
+
+		final Layer input = new BasicLayer(null, true,
 				this.inputNeurons);
 
 		final BasicNetwork result = new BasicNetwork();
 		result.addLayer(input);
 
-		input.setX(PatternConst.START_X);
-		input.setY(y);
-		y += PatternConst.INC_Y;
 
 		for (final Integer count : this.hidden) {
 
 			final Layer hidden = new BasicLayer(this.activation, true, count);
 
 			result.addLayer(hidden);
-			hidden.setX(PatternConst.START_X);
-			hidden.setY(y);
-			y += PatternConst.INC_Y;
 		}
 
-		final Layer output = new BasicLayer(this.activation, true,
+		final Layer output = new BasicLayer(this.activation, false,
 				this.outputNeurons);
 		result.addLayer(output);
-		output.setX(PatternConst.START_X);
-		output.setY(y);
-		y += PatternConst.INC_Y;
 
 		result.getStructure().finalizeStructure();
 		result.reset();

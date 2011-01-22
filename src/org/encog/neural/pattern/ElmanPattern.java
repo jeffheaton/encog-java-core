@@ -24,11 +24,9 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.ContextLayer;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,32 +114,13 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 * @return The Elman neural network.
 	 */
 	public EncogPersistedObject generate() {
-		int y = PatternConst.START_Y;
-		final Layer context = new ContextLayer(this.hiddenNeurons);
-		final BasicNetwork network = new BasicNetwork();
-
-		final Layer input = new BasicLayer(this.activation, false,
-				this.inputNeurons);
-		network.addLayer(input);
-		input.setX(PatternConst.START_X);
-		input.setY(y);
-		y += PatternConst.INC_Y;
-
-		final Layer hidden = new BasicLayer(this.activation, true,
-				this.hiddenNeurons);
-		network.addLayer(hidden);
-		hidden.setX(PatternConst.START_X);
-		hidden.setY(y);
-		context.setX(PatternConst.INDENT_X);
-		context.setY(y);
-		y += PatternConst.INC_Y;
-		hidden.addNext(context, SynapseType.OneToOne);
-		context.addNext(hidden);
-		final Layer output = new BasicLayer(this.activation, true,
-				this.outputNeurons);
-		network.addLayer(output);
-		output.setX(PatternConst.START_X);
-		output.setY(y);
+		BasicLayer input,hidden,output;
+		
+		BasicNetwork network = new BasicNetwork();
+		network.addLayer(input = new BasicLayer(this.activation, true,this.inputNeurons));
+		network.addLayer(hidden = new BasicLayer(this.activation, true,this.hiddenNeurons));
+		network.addLayer(output = new BasicLayer(null, false,this.outputNeurons));
+		hidden.setContextFedBy(hidden);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;
@@ -178,3 +157,4 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	}
 
 }
+

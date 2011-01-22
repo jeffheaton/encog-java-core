@@ -101,7 +101,6 @@ public class CPNPattern implements NeuralNetworkPattern {
 	public EncogPersistedObject generate() {
 
 		Layer input, instar, outstar;
-		int y = PatternConst.START_Y;
 
 		final BasicNetwork network = new BasicNetwork();
 		network.addLayer(input = new BasicLayer(new ActivationLinear(), false,
@@ -112,23 +111,6 @@ public class CPNPattern implements NeuralNetworkPattern {
 				false, this.outstarCount));
 		network.getStructure().finalizeStructure();
 		network.reset();
-
-		input.setX(PatternConst.START_X);
-		input.setY(y);
-		y += PatternConst.INC_Y;
-
-		instar.setX(PatternConst.START_X);
-		instar.setY(y);
-		y += PatternConst.INC_Y;
-
-		outstar.setX(PatternConst.START_X);
-		outstar.setY(y);
-
-		// tag as needed
-		network.tagLayer(BasicNetwork.TAG_INPUT, input);
-		network.tagLayer(BasicNetwork.TAG_OUTPUT, outstar);
-		network.tagLayer(CPNPattern.TAG_INSTAR, instar);
-		network.tagLayer(CPNPattern.TAG_OUTSTAR, outstar);
 
 		return network;
 	}

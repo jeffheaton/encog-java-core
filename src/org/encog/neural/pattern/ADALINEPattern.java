@@ -84,11 +84,9 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	public EncogPersistedObject generate() {
 		final BasicNetwork network = new BasicNetwork();
 
-		int y = PatternConst.START_Y;
-
-		final Layer inputLayer = new BasicLayer(new ActivationLinear(), false,
+		final Layer inputLayer = new BasicLayer(new ActivationLinear(), true,
 				this.inputNeurons);
-		final Layer outputLayer = new BasicLayer(new ActivationLinear(), true,
+		final Layer outputLayer = new BasicLayer(new ActivationLinear(), false,
 				this.outputNeurons);
 
 		network.addLayer(inputLayer);
@@ -96,13 +94,6 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 		network.getStructure().finalizeStructure();
 
 		(new RangeRandomizer(-0.5, 0.5)).randomize(network);
-
-		inputLayer.setX(PatternConst.START_X);
-		inputLayer.setY(y);
-		y += PatternConst.INC_Y;
-
-		outputLayer.setX(PatternConst.START_X);
-		outputLayer.setY(y);
 
 		return network;
 	}

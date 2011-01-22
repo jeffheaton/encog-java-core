@@ -32,7 +32,6 @@ import org.encog.engine.concurrency.job.JobUnitContext;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.strategy.StopTrainingStrategy;
@@ -69,7 +68,7 @@ public class PruneIncremental extends ConcurrentJob {
 	 * @return A human readable string.
 	 */
     public static String networkToString(final BasicNetwork network) {
-        final StringBuilder result = new StringBuilder();
+        /*final StringBuilder result = new StringBuilder();
         int num = 1;
 
         Layer layer = network.getLayer(BasicNetwork.TAG_INPUT);
@@ -104,7 +103,9 @@ public class PruneIncremental extends ConcurrentJob {
             }
         }
 
-        return result.toString();
+        return result.toString();*/
+    	
+    	return null;
     }
 	/**
 	 * Are we done?

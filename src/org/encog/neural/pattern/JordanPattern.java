@@ -24,11 +24,9 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.ContextLayer;
-import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,34 +115,14 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * @return A Jordan neural network.
 	 */
 	public EncogPersistedObject generate() {
-		// construct an Jordan type network
-		final Layer input = new BasicLayer(this.activation, false,
-				this.inputNeurons);
-		final Layer hidden = new BasicLayer(this.activation, true,
-				this.hiddenNeurons);
-		final Layer output = new BasicLayer(this.activation, true,
-				this.outputNeurons);
-		final Layer context = new ContextLayer(this.outputNeurons);
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(input);
-		network.addLayer(hidden);
-		network.addLayer(output);
-
-		output.addNext(context, SynapseType.OneToOne);
-		context.addNext(hidden);
-
-		int y = PatternConst.START_Y;
-		input.setX(PatternConst.START_X);
-		input.setY(y);
-		y += PatternConst.INC_Y;
-		hidden.setX(PatternConst.START_X);
-		hidden.setY(y);
-		context.setX(PatternConst.INDENT_X);
-		context.setY(y);
-		y += PatternConst.INC_Y;
-		output.setX(PatternConst.START_X);
-		output.setY(y);
-
+		
+		BasicLayer input,hidden,output;
+		
+		BasicNetwork network = new BasicNetwork();
+		network.addLayer(input = new BasicLayer(this.activation, true,this.inputNeurons));
+		network.addLayer(hidden = new BasicLayer(this.activation, true,this.hiddenNeurons));
+		network.addLayer(output = new BasicLayer(null, false,this.outputNeurons));
+		hidden.setContextFedBy(output);
 		network.getStructure().finalizeStructure();
 		network.reset();
 		return network;

@@ -26,7 +26,6 @@ package org.encog.neural.som.training.basic;
 import org.encog.engine.util.BoundMath;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.networks.synapse.Synapse;
 
 /**
  * The "Best Matching Unit" or BMU is a very important concept in the training
