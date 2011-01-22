@@ -35,7 +35,6 @@ import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.NeuralOutputHolder;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.map.PersistConst;
@@ -303,18 +302,6 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 		return result;
 	}
 
-	/**
-	 * Compute the output for the given input.
-	 * @param input The input to the SVM.
-	 * @param useHolder The output holder to use.
-	 * @return The results from the SVM.
-	 */
-	public NeuralData compute(final NeuralData input,
-			final NeuralOutputHolder useHolder) {
-
-		useHolder.setOutput(compute(input));
-		return useHolder.getOutput();
-	}
 
 	/**
 	 * Convert regular Encog NeuralData into the "sparse" data needed by an SVM.
