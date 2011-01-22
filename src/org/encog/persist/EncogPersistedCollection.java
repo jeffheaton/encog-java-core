@@ -264,11 +264,6 @@ public class EncogPersistedCollection implements EncogCollection {
 	 */
 	public void add(final String name, final EncogPersistedObject obj) {
 		
-		if( obj instanceof BasicNetwork )
-		{
-			((BasicNetwork)obj).getStructure().updateFlatNetwork();
-		}
-		
 		obj.setName(name);
 		final PersistWriter writer = new PersistWriter(this.fileTemp);
 		writer.begin();

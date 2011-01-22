@@ -5,7 +5,6 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
-import org.encog.persist.persistors.BasicLayerPersistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.obj.ReflectionUtil;
 
