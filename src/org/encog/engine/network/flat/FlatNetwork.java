@@ -203,37 +203,36 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	 */
 	public FlatNetwork(final int input, final int hidden1, final int hidden2,
 			final int output, final boolean tanh) {
-		final double[] params = new double[1];
+
 		FlatLayer[] layers;
 		final ActivationFunction act = tanh ? new ActivationTANH()
 				: new ActivationSigmoid();
-		params[0] = 1; // slope
 
 		if ((hidden1 == 0) && (hidden2 == 0)) {
 			layers = new FlatLayer[2];
 			layers[0] = new FlatLayer(act, input,
-					FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[1] = new FlatLayer(act, output,
-					FlatNetwork.NO_BIAS_ACTIVATION, params);
+					FlatNetwork.NO_BIAS_ACTIVATION);
 		} else if ((hidden1 == 0) || (hidden2 == 0)) {
 			final int count = Math.max(hidden1, hidden2);
 			layers = new FlatLayer[3];
 			layers[0] = new FlatLayer(act, input,
-					FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[1] = new FlatLayer(act, count,
-					FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[2] = new FlatLayer(act, output,
-					FlatNetwork.NO_BIAS_ACTIVATION, params);
+					FlatNetwork.NO_BIAS_ACTIVATION);
 		} else {
 			layers = new FlatLayer[4];
 			layers[0] = new FlatLayer(act, input,
-					FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[1] = new FlatLayer(act, hidden1,
-					FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[2] = new FlatLayer(act, hidden2,
-					FlatNetwork.DEFAULT_BIAS_ACTIVATION, params);
+					FlatNetwork.DEFAULT_BIAS_ACTIVATION);
 			layers[3] = new FlatLayer(act, output,
-					FlatNetwork.NO_BIAS_ACTIVATION, params);
+					FlatNetwork.NO_BIAS_ACTIVATION);
 		}
 
 		this.isLimited = false;

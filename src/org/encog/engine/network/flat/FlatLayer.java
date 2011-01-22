@@ -66,7 +66,7 @@ public class FlatLayer {
 	 *            The parameters.
 	 */
 	public FlatLayer(final ActivationFunction activation, final int count,
-			final double biasActivation, final double[] params) {
+			final double biasActivation) {
 		this.activation = activation;
 		this.count = count;
 		this.biasActivation = biasActivation;

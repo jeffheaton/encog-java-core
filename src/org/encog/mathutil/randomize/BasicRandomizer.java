@@ -25,11 +25,10 @@ package org.encog.mathutil.randomize;
 
 import java.util.Random;
 
+import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.structure.FlatUpdateNeeded;
-import org.encog.neural.networks.synapse.Synapse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,51 +68,12 @@ public abstract class BasicRandomizer implements Randomizer {
 	 *            A network to randomize.
 	 */
 	public void randomize(final BasicNetwork network) {
-
-		network.getStructure().updateFlatNetwork();
-		// randomize the weight matrix
-		for (final Synapse synapse : network.getStructure().getSynapses()) {
-			if (synapse.getMatrix() != null) {
-				randomize(network, synapse);
-			}
-		}
-
-		// randomize the bias
-		for (final Layer layer : network.getStructure().getLayers()) {
-			if (layer.hasBias()) {
-				randomize(layer.getBiasWeights());
-			}
-		}
-		network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
-		network.getStructure().flattenWeights();
-	}
-
-	/**
-	 * Randomize a synapse, only randomize those connections that are actually
-	 * connected.
-	 * 
-	 * @param network
-	 *            The network the synapse belongs to.
-	 * @param synapse
-	 *            The synapse to randomize.
-	 */
-	public void randomize(final BasicNetwork network, final Synapse synapse) {
-		if (synapse.getMatrix() != null) {
-			boolean limited = network.getStructure().isConnectionLimited();
-			final double[][] d = synapse.getMatrix().getData();
-			for (int fromNeuron = 0; fromNeuron 
-				< synapse.getMatrix().getRows(); fromNeuron++) {
-				for (int toNeuron = 0; toNeuron 
-					< synapse.getMatrix().getCols(); toNeuron++) {
-					if (!limited
-							|| network.isConnected(synapse, fromNeuron,
-									toNeuron)) {
-						d[fromNeuron][toNeuron] = 
-							randomize(d[fromNeuron][toNeuron]);
-					}
-				}
-			}
-
+		
+		FlatNetwork flat = network.getStructure().getFlat();
+		double[] weights = flat.getWeights();
+		
+		for (int i = 0; i < weights.length; i++) {
+			weights[i] = randomize(weights[i]);
 		}
 	}
 

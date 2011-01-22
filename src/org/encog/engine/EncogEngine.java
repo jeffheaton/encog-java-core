@@ -37,7 +37,7 @@ public class EncogEngine {
 	/**
 	 * The default zero tolerance.
 	 */
-	public static final double DEFAULT_ZERO_TOLERANCE = 0.000001;
+	public static final double DEFAULT_ZERO_TOLERANCE = 0.000000000001;
 
 	/**
 	 * The instance.
