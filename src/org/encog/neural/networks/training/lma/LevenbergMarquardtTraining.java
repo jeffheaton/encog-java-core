@@ -190,14 +190,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	public LevenbergMarquardtTraining(final BasicNetwork network,
 			final NeuralDataSet training) {
 
-		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
-
-		if (outputLayer == null) {
-			throw new TrainingError(
-					"Levenberg Marquardt requires an output layer.");
-		}
-
-		if (outputLayer.getNeuronCount() != 1) {
+		if (network.getOutputCount() != 1) {
 			throw new TrainingError(
 					"Levenberg Marquardt requires an output layer with a single neuron.");
 		}

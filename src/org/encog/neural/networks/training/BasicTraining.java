@@ -100,10 +100,7 @@ public abstract class BasicTraining implements Train {
 			this.statusUtil.finish();
 			this.statusUtil = null;
 		}
-		
-		if( getNetwork() instanceof BasicNetwork ) {		
-			((BasicNetwork)getNetwork()).getStructure().updateFlatNetwork();
-		}
+			
 	}
 
 	/**

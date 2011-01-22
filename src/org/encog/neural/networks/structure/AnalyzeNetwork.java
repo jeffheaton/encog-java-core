@@ -31,7 +31,6 @@ import org.encog.engine.util.Format;
 import org.encog.mathutil.NumericRange;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 
 /**
  * Allows the weights and bias values of the neural network to be analyzed.
@@ -94,29 +93,13 @@ public class AnalyzeNetwork {
 		for (final Layer layer : network.getStructure().getLayers()) {
 			if (layer.hasBias()) {
 				for (int i = 0; i < layer.getNeuronCount(); i++) {
-					biasList.add(layer.getBiasWeight(i));
-					allList.add(layer.getBiasWeight(i));
+					//biasList.add(layer.getBiasWeight(i));
+					//allList.add(layer.getBiasWeight(i));
 				}
 			}
 		}
 
-		for (final Synapse synapse : network.getStructure().getSynapses()) {
-			if (synapse.getMatrixSize() > 0) {
-				for (int from = 0; from
-				< synapse.getFromNeuronCount(); from++) {
-					for (int to = 0; to < synapse.getToNeuronCount(); to++) {
-						if (network.isConnected(synapse, from, to)) {
-							final double d = synapse.getMatrix().get(from, to);
-							weightList.add(d);
-							allList.add(d);
-						} else {
-							assignDisabled++;
-						}
-						assignedTotal++;
-					}
-				}
-			}
-		}
+		
 
 		this.disabledConnections = assignDisabled;
 		this.totalConnections = assignedTotal;

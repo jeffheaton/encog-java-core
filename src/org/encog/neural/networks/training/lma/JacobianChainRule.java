@@ -32,8 +32,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.NeuralOutputHolder;
-import org.encog.neural.networks.synapse.Synapse;
 
 /**
  * Calculate the Jacobian using the chain rule.
@@ -190,16 +188,11 @@ public class JacobianChainRule implements ComputeJacobian {
 		// error values
 		double e = 0.0;
 		double sum = 0.0;
-
+/*
 		final ActivationFunction function = this.network.getLayer(
 				BasicNetwork.TAG_INPUT).getActivationFunction();
 
-		final NeuralOutputHolder holder = new NeuralOutputHolder();
-
-		this.network.compute(pair.getInput(), holder);
-
-		final List<Synapse> synapses = this.network.getStructure()
-				.getSynapses();
+		this.network.compute(pair.getInput());
 
 		int synapseNumber = 0;
 
@@ -260,7 +253,7 @@ public class JacobianChainRule implements ComputeJacobian {
 				}
 			}
 		}
-
+*/
 		// return error
 		return e;
 	}

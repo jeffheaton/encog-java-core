@@ -23,9 +23,6 @@
  */
 package org.encog.neural.networks;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,16 +45,10 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.logic.NeuralLogic;
-import org.encog.neural.networks.logic.SimpleRecurrentLogic;
-import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
-import org.encog.neural.networks.synapse.Synapse;
-import org.encog.neural.networks.synapse.SynapseType;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.persistors.BasicNetworkPersistor;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
@@ -81,24 +72,14 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class BasicNetwork extends BasicPersistedObject implements Serializable,
-		Network, MLContext, MLRegression, MLEncodable, MLResettable {
-
-	/**
-	 * Tag used for the input layer.
-	 */
-	public static final String TAG_INPUT = "INPUT";
-
-	/**
-	 * Tag used for the output layer.
-	 */
-	public static final String TAG_OUTPUT = "OUTPUT";
+		MLContext, MLRegression, MLEncodable, MLResettable {
 
 	/**
 	 * Tag used for the connection limit.
 	 */
 	public static final String TAG_LIMIT = "CONNECTION_LIMIT";
 
-	public static final String DEFAULT_CONNECTION_LIMIT = "0.0000000001";
+	public static final double DEFAULT_CONNECTION_LIMIT = 0.0000000001;
 
 	/**
 	 * Serial id for this class.
@@ -141,53 +122,16 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	private final NeuralStructure structure;
 
 	/**
-	 * This class tells the network how to calculate the output for each of the
-	 * layers.
-	 */
-	private NeuralLogic logic;
-
-	/**
 	 * Properties about the neural network. Some NeuralLogic classes require
 	 * certain properties to be set.
 	 */
 	private final Map<String, String> properties = new HashMap<String, String>();
 
 	/**
-	 * The tags for the layers.
-	 */
-	private final Map<String, Layer> layerTags = new HashMap<String, Layer>();
-
-	/**
 	 * Construct an empty neural network.
 	 */
 	public BasicNetwork() {
 		this.structure = new NeuralStructure(this);
-		this.logic = new SimpleRecurrentLogic();
-	}
-
-	/**
-	 * Construct a basic network using the specified logic.
-	 * 
-	 * @param logic
-	 *            The logic to use with the neural network.
-	 */
-	public BasicNetwork(final NeuralLogic logic) {
-		this.structure = new NeuralStructure(this);
-		this.logic = logic;
-	}
-
-	/**
-	 * Add a layer to the neural network. The first layer added is the input
-	 * layer, the last layer added is the output layer. This layer is added with
-	 * a weighted synapse.
-	 * 
-	 * @param layer
-	 *            The layer to be added.
-	 */
-	public void addLayer(final Layer layer) {
-		layer.setNetwork(this);
-		this.structure.assignID(layer);
-		addLayer(layer, SynapseType.Weighted);
 	}
 
 	/**
@@ -200,18 +144,9 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * @param type
 	 *            What sort of synapse should connect this layer to the last.
 	 */
-	public void addLayer(final Layer layer, final SynapseType type) {
-
-		// is this the first layer? If so, mark as the input layer.
-		if (this.layerTags.size() == 0) {
-			tagLayer(BasicNetwork.TAG_INPUT, layer);
-			tagLayer(BasicNetwork.TAG_OUTPUT, layer);
-		} else {
-			// add the layer to any previous layers
-			final Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
-			outputLayer.addNext(layer, type);
-			tagLayer(BasicNetwork.TAG_OUTPUT, layer);
-		}
+	public void addLayer(final Layer layer) {
+		layer.setNetwork(this);
+		this.structure.getLayers().add(layer);
 	}
 
 	/**
@@ -251,17 +186,10 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * Clear any data from any context layers.
 	 */
 	public void clearContext() {
-		this.structure.updateFlatNetwork();
+
 		if (this.structure.getFlat() != null) {
 			this.structure.getFlat().clearContext();
 		}
-	}
-
-	/**
-	 * Remove all layer tags.
-	 */
-	public void clearLayerTags() {
-		this.layerTags.clear();
 	}
 
 	/**
@@ -273,14 +201,12 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	@Override
 	public Object clone() {
 		final BasicNetwork result = (BasicNetwork) ObjectCloner.deepCopy(this);
-		result.getStructure().finalizeStructure();
 		return result;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void compute(final double[] input, final double[] output) {
 		final BasicNeuralData input2 = new BasicNeuralData(input);
 		final NeuralData output2 = this.compute(input2);
@@ -296,30 +222,15 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	public NeuralData compute(final NeuralData input) {
 		try {
-			return this.logic.compute(input, null);
+			NeuralData result = new BasicNeuralData(this.structure.getFlat()
+					.getOutputCount());
+			this.structure.getFlat().compute(input.getData(), result.getData());
+			return result;
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			throw new NeuralNetworkError(
 					"Index exception: there was likely a mismatch between layer sizes, or the size of the input presented to the network.",
 					ex);
 		}
-	}
-
-	/**
-	 * Compute the output for a given input to the neural network. This method
-	 * provides a parameter to specify an output holder to use. This holder
-	 * allows propagation training to track the output from each layer. If you
-	 * do not need this holder pass null, or use the other compare method.
-	 * 
-	 * @param input
-	 *            The input provide to the neural network.
-	 * @param useHolder
-	 *            Allows a holder to be specified, this allows propagation
-	 *            training to check the output of each layer.
-	 * @return The results from the output neurons.
-	 */
-	public NeuralData compute(final NeuralData input,
-			final NeuralOutputHolder useHolder) {
-		return this.logic.compute(input, useHolder);
 	}
 
 	/**
@@ -329,14 +240,14 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	@Override
 	public Persistor createPersistor() {
-		return new BasicNetworkPersistor();
+		return null;
 	}
 
 	/**
 	 * @return The weights as a comma separated list.
 	 */
 	public String dumpWeights() {
-		this.structure.updateFlatNetwork();
+
 		final StringBuilder result = new StringBuilder();
 		NumberList.toList(CSVFormat.EG_FORMAT, result, this.structure.getFlat()
 				.getWeights());
@@ -345,19 +256,15 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 
 	/**
 	 * Enable, or disable, a connection.
-	 * @param synapse The synapse that contains the connection.
+	 * @param fromLayer The layer that contains the from neuron.
 	 * @param fromNeuron The source neuron.
 	 * @param toNeuron The target connection.
 	 * @param enable True to enable, false to disable.
 	 */
-	public void enableConnection(final Synapse synapse, final int fromNeuron,
+	public void enableConnection(final int fromLayer, final int fromNeuron,
 			final int toNeuron, final boolean enable) {
-		if (synapse.getMatrix() == null) {
-			throw new NeuralNetworkError(
-					"Can't enable/disable connection on a synapse that does not have a weight matrix.");
-		}
 
-		final double value = synapse.getMatrix().get(fromNeuron, toNeuron);
+		final double value = this.getWeight(fromLayer, fromNeuron, toNeuron);
 
 		if (enable) {
 			if (!this.structure.isConnectionLimited()) {
@@ -365,19 +272,17 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 			}
 
 			if (Math.abs(value) < this.structure.getConnectionLimit()) {
-				synapse.getMatrix().set(fromNeuron, toNeuron,
+				this.setWeight(fromLayer, fromNeuron, toNeuron, 
 						RangeRandomizer.randomize(-1, 1));
 			}
 		} else {
 			if (!this.structure.isConnectionLimited()) {
-				this.properties.put(BasicNetwork.TAG_LIMIT,
+				this.setProperty(BasicNetwork.TAG_LIMIT,
 						BasicNetwork.DEFAULT_CONNECTION_LIMIT);
-				this.structure.finalizeStructure();
+				
 			}
-			synapse.getMatrix().set(fromNeuron, toNeuron, 0);
+			this.setWeight(fromLayer, fromNeuron, toNeuron, 0);
 		}
-
-		this.structure.setFlatUpdate(FlatUpdateNeeded.Flatten);
 	}
 
 	/**
@@ -405,55 +310,6 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	public boolean equals(final BasicNetwork other, final int precision) {
 		return NetworkCODEC.equals(this, other, precision);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getInputCount() {
-		final Layer layer = this.layerTags.get(BasicNetwork.TAG_INPUT);
-		if (layer == null) {
-			return 0;
-		} else {
-			return layer.getNeuronCount();
-		}
-	}
-
-	/**
-	 * Get the layer specified by the tag.
-	 * 
-	 * @param tag
-	 *            The tag.
-	 * @return The layer associated with that tag.
-	 */
-	public Layer getLayer(final String tag) {
-		return this.layerTags.get(tag);
-	}
-
-	/**
-	 * @return The map of all layer tags.
-	 */
-	public Map<String, Layer> getLayerTags() {
-		return this.layerTags;
-	}
-
-	/**
-	 * @return The logic used by this network.
-	 */
-	public NeuralLogic getLogic() {
-		return this.logic;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public int getOutputCount() {
-		final Layer layer = this.layerTags.get(BasicNetwork.TAG_OUTPUT);
-		if (layer == null) {
-			return 0;
-		} else {
-			return layer.getNeuronCount();
-		}
 	}
 
 	/**
@@ -505,35 +361,6 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		return this.structure;
 	}
 
-	/**
-	 * Get a list of all of the tags on a specific layer.
-	 * 
-	 * @param layer
-	 *            The layer to check.
-	 * @return A collection of the layer tags.
-	 */
-	public Collection<String> getTags(final Layer layer) {
-		final Collection<String> result = new ArrayList<String>();
-
-		for (final Entry<String, Layer> entry : this.layerTags.entrySet()) {
-			if (entry.getValue() == layer) {
-				result.add(entry.getKey());
-			}
-		}
-
-		return result;
-	}
-
-	/**
-	 * @return The size of the matrix.
-	 */
-	public int getWeightMatrixSize() {
-		int result = 0;
-		for (final Synapse synapse : this.structure.getSynapses()) {
-			result += synapse.getMatrixSize();
-		}
-		return result;
-	}
 
 	/**
 	 * Generate a hash code.
@@ -552,14 +379,15 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * @param toNeuron THe target neuron.
 	 * @return True, if the connection is enabled, false otherwise.
 	 */
-	public boolean isConnected(final Synapse synapse, final int fromNeuron,
+	public boolean isConnected(final int layer, final int fromNeuron,
 			final int toNeuron) {
-		if (!this.structure.isConnectionLimited()) {
+		/*if (!this.structure.isConnectionLimited()) {
 			return true;
 		}
 		final double value = synapse.getMatrix().get(fromNeuron, toNeuron);
 
-		return (Math.abs(value) > this.structure.getConnectionLimit());
+		return (Math.abs(value) > this.structure.getConnectionLimit());*/
+		return false;
 	}
 
 	/**
@@ -571,17 +399,12 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * 
 	 */
 	public void reset() {
-		final Layer inputLayer = getLayer(BasicNetwork.TAG_INPUT);
-		final Layer outputLayer = getLayer(BasicNetwork.TAG_OUTPUT);
 
-		if ((this.structure.getLayers().size() < 3) || (inputLayer == null)
-				|| (outputLayer == null)) {
+		if (this.getLayerCount()<3) {
 			(new RangeRandomizer(-1, 1)).randomize(this);
 		} else {
 			(new NguyenWidrowRandomizer(-1, 1)).randomize(this);
 		}
-		this.structure.setFlatUpdate(FlatUpdateNeeded.Flatten);
-		this.structure.flattenWeights();
 	}
 
 	/**
@@ -592,21 +415,114 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 *            THe new activation.
 	 */
 	public void setBiasActivation(final double activation) {
-		for (final Layer layer : this.structure.getLayers()) {
-			if (layer.hasBias()) {
-				layer.setBiasActivation(activation);
+		// first, see what mode we are on.  If the network has not been finalized, set the layers
+		if (this.structure.getFlat() == null) {
+			for (final Layer layer : this.structure.getLayers()) {
+				if (layer.hasBias()) {
+					layer.setBiasActivation(activation);
+				}
+			}
+		} else {
+			for(int i=0;i<getLayerCount();i++)
+			{
+				if( this.isLayerBiased(i) )
+				{
+					setLayerBiasActivation(i,activation);
+				}
 			}
 		}
 	}
-
-	/**
-	 * Set the type of logic this network should use.
-	 * 
-	 * @param logic
-	 *            The logic used by the network.
-	 */
-	public void setLogic(final NeuralLogic logic) {
-		this.logic = logic;
+	
+	public int getLayerCount()
+	{
+		this.structure.requireFlat();
+		return this.structure.getFlat().getLayerCounts().length;
+	}
+	
+	public int getLayerNeuronCount(int l)
+	{
+		this.structure.requireFlat();
+		int layerNumber = getLayerCount()-l-1;
+		return this.structure.getFlat().getLayerCounts()[layerNumber];
+	}
+	
+	public boolean isLayerBiased(int l)
+	{
+		this.structure.requireFlat();
+		int layerNumber = getLayerCount()-l-1;
+		return this.structure.getFlat().getLayerCounts()[layerNumber]!=this.structure.getFlat().getLayerFeedCounts()[layerNumber];
+	}
+	
+	public double getLayerBiasActivation(int l)
+	{
+		if( !isLayerBiased(l) )
+		{
+			throw new NeuralNetworkError("Error, the specified layer does not have a bias: " + l);
+		}
+		
+		this.structure.requireFlat();
+		int layerNumber = getLayerCount()-l-1;
+		
+		int layerOutputIndex = this.structure.getFlat().getLayerIndex()[layerNumber];
+		int count = this.structure.getFlat().getLayerCounts()[layerNumber];		
+		return this.structure.getFlat().getLayerOutput()[layerOutputIndex+count-1];
+	}
+	
+	public void setLayerBiasActivation(int l, double value)
+	{
+		if( !isLayerBiased(l) )
+		{
+			throw new NeuralNetworkError("Error, the specified layer does not have a bias: " + l);
+		}
+		
+		this.structure.requireFlat();
+		int layerNumber = getLayerCount()-l-1;
+		
+		int layerOutputIndex = this.structure.getFlat().getLayerIndex()[layerNumber];
+		int count = this.structure.getFlat().getLayerCounts()[layerNumber];		
+		this.structure.getFlat().getLayerOutput()[layerOutputIndex+count-1] = value;
+	}
+	
+	public double getWeight(int fromLayer, int fromNeuron, int toNeuron)
+	{
+		this.structure.requireFlat();
+		int fromLayerNumber = getLayerCount()-fromLayer-1;
+		int toLayerNumber = fromLayerNumber-1;
+		
+		if( toLayerNumber<0 )
+		{
+			throw new NeuralNetworkError("The specified layer is not connected to another layer: " + fromLayer);
+		}
+		
+		int weightBaseIndex = this.structure.getFlat().getWeightIndex()[toLayerNumber];
+		int count = this.structure.getFlat().getLayerCounts()[toNeuron];
+		int weightIndex = weightBaseIndex + toNeuron + (fromNeuron*count);
+		
+		return this.structure.getFlat().getWeights()[weightIndex];
+	}
+	
+	public void setWeight(int fromLayer, int fromNeuron, int toNeuron, double value)
+	{
+		this.structure.requireFlat();
+		int fromLayerNumber = getLayerCount()-fromLayer-1;
+		int toLayerNumber = fromLayerNumber-1;
+		
+		if( toLayerNumber<0 )
+		{
+			throw new NeuralNetworkError("The specified layer is not connected to another layer: " + fromLayer);
+		}
+		
+		int weightBaseIndex = this.structure.getFlat().getWeightIndex()[toLayerNumber];
+		int count = this.structure.getFlat().getLayerCounts()[toNeuron];
+		int weightIndex = weightBaseIndex + toNeuron + (fromNeuron*count);
+		
+		this.structure.getFlat().getWeights()[weightIndex] = value;
+	}
+	
+	public void addWeight(int fromLayer, int fromNeuron, int toNeuron, double value)
+	{
+		double old = getWeight(fromLayer,fromNeuron,toNeuron);
+		setWeight(fromLayer,fromNeuron,toNeuron,old+value);
 	}
 
 	/**
@@ -619,6 +535,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	public void setProperty(final String name, final double d) {
 		this.properties.put(name, "" + d);
+		this.structure.updateProperties();
 	}
 
 	/**
@@ -631,6 +548,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	public void setProperty(final String name, final long l) {
 		this.properties.put(name, "" + l);
+		this.structure.updateProperties();
 	}
 
 	/**
@@ -643,19 +561,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	public void setProperty(final String name, final String value) {
 		this.properties.put(name, value);
-	}
-
-	/**
-	 * Tag a layer.
-	 * 
-	 * @param tag
-	 *            The tag name.
-	 * @param layer
-	 *            THe layer to tag.
-	 */
-	public void tagLayer(final String tag, final Layer layer) {
-		layer.setNetwork(this);
-		this.layerTags.put(tag, layer);
+		this.structure.updateProperties();
 	}
 
 	/**
@@ -684,47 +590,53 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		final NeuralData output = compute(input);
 		return BasicNetwork.determineWinner(output);
 	}
-	
-	/**
-	 * Make sure that the network has been flattened before being written. 
-	 * @param stream The output stream.
-	 * @throws IOException Thrown if an IO error occurs.
-	 */
-	private void writeObject(ObjectOutputStream stream) throws IOException {
-		this.structure.updateFlatNetwork();
-		stream.defaultWriteObject();		
-	}
-
-	/**
-	 * Read the network, and make sure the structure is up to date after reading. 
-	 * @param stream The output stream.
-	 * @throws IOException Thrown if an IO error occurs.
-	 */
-	private void readObject(ObjectInputStream stream) throws IOException,
-			ClassNotFoundException {
-		stream.defaultReadObject();
-		this.structure.finalizeStructure();
-	}
 
 	@Override
-	public int encodedArrayLength() {		
-		return NetworkCODEC.networkSize(this);
+	public int encodedArrayLength() {
+		this.structure.requireFlat();
+		return this.structure.getFlat().getEncodeLength();
 	}
 
 	@Override
 	public void decodeFromArray(double[] encoded) {
-		NetworkCODEC.arrayToNetwork(encoded, this);
-		
+		this.structure.requireFlat();
+		double[] weights = this.structure.getFlat().getWeights();
+		if (weights.length != encoded.length) {
+			throw new NeuralNetworkError(
+					"Size mismatch, encoded array should be of length "
+							+ weights.length);
+		}
+
+		EngineArray.arrayCopy(encoded, weights);
 	}
 
 	@Override
 	public void encodeToArray(double[] encoded) {
-		EngineArray.arrayCopy(NetworkCODEC.networkToArray(this),encoded);		
+		this.structure.requireFlat();
+		double[] weights = this.structure.getFlat().getWeights();
+		if (weights.length != encoded.length) {
+			throw new NeuralNetworkError(
+					"Size mismatch, encoded array should be of length "
+							+ weights.length);
+		}
+
+		EngineArray.arrayCopy(weights, encoded);
 	}
-	
 
 	@Override
 	public void reset(int seed) {
 		reset();
+	}
+
+	@Override
+	public int getInputCount() {
+		this.structure.requireFlat();
+		return this.getStructure().getFlat().getInputCount();
+	}
+
+	@Override
+	public int getOutputCount() {
+		this.structure.requireFlat();
+		return this.getStructure().getFlat().getOutputCount();
 	}
 }

@@ -30,8 +30,6 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.structure.FlatUpdateNeeded;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 
@@ -44,11 +42,6 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 * The network to train.
 	 */
 	private final BasicNetwork network;
-
-	/**
-	 * The synapse to train.
-	 */
-	private final Synapse synapse;
 
 	/**
 	 * The training data to use.
@@ -72,15 +65,12 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 */
 	public TrainAdaline(final BasicNetwork network,
 			final NeuralDataSet training, final double learningRate) {
-		if (network.getStructure().getLayers().size() > 2) {
+		if (network.getLayerCount() > 2) {
 			throw new NeuralNetworkError(
 					"An ADALINE network only has two layers.");
 		}
 		this.network = network;
 
-		final Layer input = network.getLayer(BasicNetwork.TAG_INPUT);
-
-		this.synapse = input.getNext().get(0);
 		this.training = training;
 		this.learningRate = learningRate;
 	}
@@ -106,10 +96,6 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
-		final Layer inputLayer = this.network.getLayer(BasicNetwork.TAG_INPUT);
-		final Layer outputLayer = this.network
-				.getLayer(BasicNetwork.TAG_OUTPUT);
-
 		for (final NeuralDataPair pair : this.training) {
 			// calculate the error
 			final NeuralData output = this.network.compute(pair.getInput());
@@ -120,20 +106,19 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 						- output.getData(currentAdaline);
 
 				// weights
-				for (int i = 0; i < inputLayer.getNeuronCount(); i++) {
-					final double input = pair.getInput().getData(i);
-					this.synapse.getMatrix().add(i, currentAdaline,
+				for (int i = 0; i <= this.network.getInputCount(); i++) {
+					final double input;
+					
+					if( i==this.network.getInputCount() )
+						input = 1.0;
+					else
+						input = pair.getInput().getData(i);
+					
+					this.network.addWeight(0, i, currentAdaline,
 							this.learningRate * diff * input);
 				}
-
-				// bias
-				double t = outputLayer.getBiasWeight(currentAdaline);
-				t += this.learningRate * diff;
-				outputLayer.setBiasWeight(currentAdaline, t);
 			}
 			
-			this.network.getStructure().setFlatUpdate(FlatUpdateNeeded.Flatten);
-
 			errorCalculation.updateError(output.getData(), pair.getIdeal().getData());
 		}
 

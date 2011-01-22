@@ -23,8 +23,8 @@
  */
 package org.encog.neural.networks.training.hebbian;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
@@ -32,7 +32,6 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.neural.networks.synapse.Synapse;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.TrainingError;
@@ -81,15 +80,6 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 	 */
 	private final boolean oja;
 
-	/**
-	 * The output layer that is being trained.
-	 */
-	private final Layer outputLayer;
-
-	/**
-	 * The output synapses that are being trained.
-	 */
-	private List<Synapse> outputSynapse = new ArrayList<Synapse>();
 
 	/**
 	 * Construct a Hebbian training object. It will train in supervised or
@@ -113,18 +103,13 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 		this.learningRate = learningRate;
 		this.supervised = training.getIdealSize() > 0;
 		this.oja = oja;
-		this.outputLayer = this.network.getLayer(BasicNetwork.TAG_OUTPUT);
 
-		if (this.outputLayer == null) {
-			throw new TrainingError(
-					"Can't use Hebbian training without an output layer.");
-		}
 
 		if ( (this.oja == true) && (this.supervised == true)) {
 			throw new TrainingError(
 					"Can't use OJA Hebbian training with supervised data.");
 		}
-
+/*
 		this.outputSynapse = this.network.getStructure().getPreviousSynapses(
 				this.outputLayer);
 
@@ -132,7 +117,7 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 			throw new TrainingError(
 				"Can't use Hebbian learning, the output layer " +
 				"has no inbound synapses.");
-		}
+		}*/
 
 	}
 
@@ -178,11 +163,11 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 	public void iteration() {
 		preIteration();
 
-		for (final NeuralDataPair pair : this.training) {
+		/*for (final NeuralDataPair pair : this.training) {
 			for (final Synapse synapse : this.outputSynapse) {
 				trainSynapse(synapse, pair);
 			}
-		}
+		}*/
 		postIteration();
 	}
 
@@ -199,9 +184,9 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 	 * @param synapse The synapse to train.
 	 * @param pair The data to train it with.
 	 */
-	private void trainSynapse(final Synapse synapse, 
+	private void trainSynapse( 
 			final NeuralDataPair pair) {
-		final NeuralData outputData = this.network.compute(pair.getInput());
+		/*final NeuralData outputData = this.network.compute(pair.getInput());
 
 		final double[] input = pair.getInput().getData();
 		final double[] output = outputData.getData();
@@ -233,7 +218,7 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 
 				matrix.add(fromNeuron,toNeuron,deltaWeight);
 			}
-		}
+		}*/
 	}
 
 }

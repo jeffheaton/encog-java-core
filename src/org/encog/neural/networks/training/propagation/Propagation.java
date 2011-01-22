@@ -29,7 +29,6 @@ import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.structure.FlatUpdateNeeded;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogValidate;
@@ -96,7 +95,6 @@ public abstract class Propagation extends BasicTraining {
 	@Override
 	public void finishTraining() {
 		super.finishTraining();
-		this.network.getStructure().updateFlatNetwork();
 		this.flatTraining.finishTraining();
 	}
 
@@ -151,14 +149,11 @@ public abstract class Propagation extends BasicTraining {
 	 * Perform one training iteration.
 	 */
 	public void iteration() {
-		try {
-			this.network.getStructure().updateFlatNetwork();
+		try {		
 			preIteration();
 
 			this.flatTraining.iteration();
 			setError(this.flatTraining.getError());
-			this.network.getStructure().setFlatUpdate(
-					FlatUpdateNeeded.Unflatten);
 
 			postIteration();
 
@@ -189,8 +184,6 @@ public abstract class Propagation extends BasicTraining {
 			this.flatTraining.iteration(count);
 			setIteration(this.flatTraining.getIteration());
 			setError(this.flatTraining.getError());
-			this.network.getStructure().setFlatUpdate(
-					FlatUpdateNeeded.Unflatten);
 
 			postIteration();
 
