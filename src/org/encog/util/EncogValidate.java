@@ -43,30 +43,21 @@ public final class EncogValidate {
 	 */
 	public static void validateNetworkForTraining(final BasicNetwork network,
 			final NeuralDataSet training) {
-		final Layer inputLayer = network.getLayer(BasicNetwork.TAG_INPUT);
-		final Layer outputLayer = network.getLayer(BasicNetwork.TAG_OUTPUT);
 
-		if (inputLayer == null) {
-			throw new NeuralNetworkError(
-					"This operation requires that the neural network have an input layer.");
-		}
+		int inputCount = network.getInputCount();
+		int outputCount = network.getOutputCount();		
 
-		if (outputLayer == null) {
-			throw new NeuralNetworkError(
-					"This operation requires that the neural network have an output layer.");
-		}
-
-		if (inputLayer.getNeuronCount() != training.getInputSize()) {
+		if (inputCount != training.getInputSize()) {
 			throw new NeuralNetworkError("The input layer size of "
-					+ inputLayer.getNeuronCount()
+					+ inputCount
 					+ " must match the training input size of "
 					+ training.getInputSize() + ".");
 		}
 
 		if ((training.getIdealSize() > 0)
-				&& (outputLayer.getNeuronCount() != training.getIdealSize())) {
+				&& (outputCount != training.getIdealSize())) {
 			throw new NeuralNetworkError("The output layer size of "
-					+ outputLayer.getNeuronCount()
+					+ outputCount
 					+ " must match the training input size of "
 					+ training.getIdealSize() + ".");
 		}
