@@ -171,19 +171,6 @@ public class FanInRandomizer extends BasicRandomizer {
 		}
 	}
 
-	/**
-	 * Randomize the array based on an array, modify the array. Previous values
-	 * may be used, or they may be discarded, depending on the randomizer.
-	 * 
-	 * @param d
-	 *            An array to randomize.
-	 */
-	@Override
-	public void randomize(final Double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			d[i] = calculateValue(1);
-		}
-	}
 
 	/**
 	 * Randomize the 2d array based on an array, modify the array. Previous
@@ -195,23 +182,6 @@ public class FanInRandomizer extends BasicRandomizer {
 	 */
 	@Override
 	public void randomize(final double[][] d) {
-		for (int row = 0; row < d.length; row++) {
-			for (int col = 0; col < d[0].length; col++) {
-				d[row][col] = calculateValue(d.length);
-			}
-		}
-	}
-
-	/**
-	 * Randomize the 2d array based on an array, modify the array. Previous
-	 * values may be used, or they may be discarded, depending on the
-	 * randomizer.
-	 * 
-	 * @param d
-	 *            An array to randomize.
-	 */
-	@Override
-	public void randomize(final Double[][] d) {
 		for (int row = 0; row < d.length; row++) {
 			for (int col = 0; col < d[0].length; col++) {
 				d[row][col] = calculateValue(d.length);

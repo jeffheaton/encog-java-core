@@ -66,15 +66,6 @@ public interface Randomizer {
 	void randomize(double[] d);
 
 	/**
-	 * Randomize the array based on an array, modify the array. Previous values
-	 * may be used, or they may be discarded, depending on the randomizer.
-	 *
-	 * @param d
-	 *            An array to randomize.
-	 */
-	void randomize(Double[] d);
-
-	/**
 	 * Randomize the 2d array based on an array, modify the array. Previous
 	 * values may be used, or they may be discarded, depending on the
 	 * randomizer.
@@ -85,16 +76,6 @@ public interface Randomizer {
 	void randomize(double[][] d);
 
 	/**
-	 * Randomize the 2d array based on an array, modify the array. Previous
-	 * values may be used, or they may be discarded, depending on the
-	 * randomizer.
-	 *
-	 * @param d
-	 *            An array to randomize.
-	 */
-	void randomize(Double[][] d);
-
-	/**
 	 * Randomize the matrix based on an array, modify the array. Previous values
 	 * may be used, or they may be discarded, depending on the randomizer.
 	 *
@@ -102,5 +83,13 @@ public interface Randomizer {
 	 *            A matrix to randomize.
 	 */
 	void randomize(Matrix m);
+	
+	/**
+	 * Randomize an array.
+	 * @param d The array to randomize.
+	 * @param begin The beginning element.
+	 * @param size The size of the array.
+	 */
+	void randomize(final double[] d,int begin, int size);
 
 }

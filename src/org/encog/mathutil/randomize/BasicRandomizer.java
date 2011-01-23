@@ -28,7 +28,6 @@ import java.util.Random;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,24 +84,24 @@ public abstract class BasicRandomizer implements Randomizer {
 	 *            An array to randomize.
 	 */
 	public void randomize(final double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			d[i] = randomize(d[i]);
-		}
-
+		randomize(d,0,d.length);
 	}
-
+	
 	/**
 	 * Randomize the array based on an array, modify the array. Previous values
 	 * may be used, or they may be discarded, depending on the randomizer.
 	 * 
 	 * @param d
 	 *            An array to randomize.
+	 * @param begin The beginning element of the array.
+	 * @param size The size of the array to copy.
 	 */
-	public void randomize(final Double[] d) {
-		for (int i = 0; i < d.length; i++) {
-			d[i] = randomize(d[i]);
+	public void randomize(final double[] d,int begin, int size) {
+		for (int i = 0; i < size; i++) {
+			d[begin+i] = randomize(d[begin+i]);
 		}
 	}
+	
 
 	/**
 	 * Randomize the 2d array based on an array, modify the array. Previous
@@ -118,24 +117,6 @@ public abstract class BasicRandomizer implements Randomizer {
 				d[r][c] = randomize(d[r][c]);
 			}
 		}
-
-	}
-
-	/**
-	 * Randomize the 2d array based on an array, modify the array. Previous
-	 * values may be used, or they may be discarded, depending on the
-	 * randomizer.
-	 * 
-	 * @param d
-	 *            An array to randomize.
-	 */
-	public void randomize(final Double[][] d) {
-		for (int r = 0; r < d.length; r++) {
-			for (int c = 0; c < d[0].length; c++) {
-				d[r][c] = randomize(d[r][c]);
-			}
-		}
-
 	}
 
 	/**

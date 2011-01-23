@@ -138,20 +138,14 @@ public class NeuralStructure implements Serializable {
 		if (!this.connectionLimited) {
 			return;
 		}
-
-		/*for (final Synapse synapse : this.synapses) {
-			final Matrix matrix = synapse.getMatrix();
-			if (matrix != null) {
-				for (int row = 0; row < matrix.getRows(); row++) {
-					for (int col = 0; col < matrix.getCols(); col++) {
-						final double value = matrix.get(row, col);
-						if (Math.abs(value) < this.connectionLimit) {
-							matrix.set(row, col, 0);
-						}
-					}
-				}
+		
+		double[] weights = this.flat.getWeights();
+		
+		for(int i=0;i<weights.length;i++) {
+			if (Math.abs(weights[i]) < this.connectionLimit) {
+				weights[i] = 0;
 			}
-		}*/
+		}
 	}
 
 	/**
