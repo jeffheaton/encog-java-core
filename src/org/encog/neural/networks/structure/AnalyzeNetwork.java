@@ -90,11 +90,39 @@ public class AnalyzeNetwork {
 		final List<Double> weightList = new ArrayList<Double>();
 		final List<Double> allList = new ArrayList<Double>();
 
+		for(int layerNumber=0;layerNumber<network.getLayerCount()-1;layerNumber++)
+		{
+			int fromCount = network.getLayerNeuronCount(layerNumber);
+			int fromBiasCount = network.getLayerTotalNeuronCount(layerNumber);
+			int toCount = network.getLayerNeuronCount(layerNumber+1);
+			
+			// weights
+			for(int fromNeuron = 0; fromNeuron<fromCount; fromNeuron++)
+			{
+				for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
+				{
+					double v = network.getWeight(layerNumber, fromNeuron, toNeuron);
+					weightList.add(v);
+					allList.add(v);
+				}
+			}
+			
+			// bias
+			if( fromCount!=fromBiasCount ) {
+				int biasNeuron = fromCount;
+				for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
+				{
+					double v = network.getWeight(layerNumber, biasNeuron, toNeuron);
+					biasList.add(v);
+					allList.add(v);
+				}
+			}
+		}
+		
 		for (final Layer layer : network.getStructure().getLayers()) {
 			if (layer.hasBias()) {
 				for (int i = 0; i < layer.getNeuronCount(); i++) {
-					//biasList.add(layer.getBiasWeight(i));
-					//allList.add(layer.getBiasWeight(i));
+					
 				}
 			}
 		}
