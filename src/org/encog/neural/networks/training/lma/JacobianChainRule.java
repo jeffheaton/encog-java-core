@@ -188,72 +188,68 @@ public class JacobianChainRule implements ComputeJacobian {
 		// error values
 		double e = 0.0;
 		double sum = 0.0;
-/*
-		final ActivationFunction function = this.network.getLayer(
-				BasicNetwork.TAG_INPUT).getActivationFunction();
 
 		this.network.compute(pair.getInput());
 
-		int synapseNumber = 0;
+		int fromLayer = 0;
+		int toLayer = 1;
+		int fromNeuronCount = this.network.getLayerTotalNeuronCount(fromLayer);
+		int toNeuronCount = this.network.getLayerNeuronCount(toLayer);
 
-		Synapse synapse = synapses.get(synapseNumber++);
-
-		double output = holder.getOutput().getData(0);
+		double output = this.network.getStructure().getFlat().getLayerOutput()[0];
 		e = pair.getIdeal().getData(0) - output;
 
-		for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
-			final double lastOutput = holder.getResult().get(synapse)
-					.getData(i);
+		for (int i = 0; i < fromNeuronCount; i++) {
+			final double lastOutput = network.getLayerOutput(fromLayer,i);
 
 			this.jacobian[this.jacobianRow][this.jacobianCol++] 
 			    = calcDerivative(
-					function, output)
+					this.network.getActivation(toLayer), output)
 					* lastOutput;
 		}
 		
 		this.jacobian[this.jacobianRow][this.jacobianCol++] = calcDerivative(
-				function, output);
+				network.getActivation(toLayer), output);
 
+		while (fromLayer < network.getLayerCount()) {
 
-		Synapse lastSynapse;
-
-		while (synapseNumber < synapses.size()) {
-			lastSynapse = synapse;
-			synapse = synapses.get(synapseNumber++);
-			final NeuralData outputData = holder.getResult().get(lastSynapse);
+			fromLayer++;
+			toLayer++;
+			fromNeuronCount = this.network.getLayerTotalNeuronCount(fromLayer);
+			toNeuronCount = this.network.getLayerNeuronCount(toLayer);
+			
+			// this.network.getLayerOutput(fromLayer, neuronNumber) holder.getResult().get(lastSynapse);
 
 			// for each neuron in the input layer
 			for (int neuron = 0; neuron 
-			  < synapse.getToNeuronCount(); neuron++) {
-				output = outputData.getData(neuron);
+			  < toNeuronCount; neuron++) {
+				output = this.network.getLayerOutput(fromLayer, neuron);
 				
-				final double w = lastSynapse.getMatrix().get(neuron, 0);
+				ActivationFunction function = network.getActivation(fromLayer);
+				
+				final double w = network.getWeight(fromLayer, neuron, 0);
 				final double val = calcDerivative(function, output)
 						* calcDerivative2(function, sum) * w;
 
 				// for each weight of the input neuron
-				for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
+				for (int i = 0; i < fromNeuronCount; i++) {
 					sum = 0.0;
 					// for each neuron in the next layer
-					for (int j = 0; j < lastSynapse.getToNeuronCount(); j++) {
+					for (int j = 0; j < toNeuronCount; j++) {
 						// for each weight of the next neuron
 						for (int k = 0; k 
-						  < lastSynapse.getFromNeuronCount(); k++) {
-							sum += lastSynapse.getMatrix().get(k, j) * output;
+						  < fromNeuronCount; k++) {
+							sum += network.getWeight(fromLayer, k, j) * output;
 						}
-						sum += lastSynapse.getToLayer().getBiasWeight(j);
 					}
 
 					this.jacobian[this.jacobianRow][this.jacobianCol++] = val
-							* holder.getResult().get(synapse).getData(i);
+							* this.network.getLayerOutput(fromLayer, i);
 				}
-				
-				if( synapse.getToLayer().hasBias() ) {
-					this.jacobian[this.jacobianRow][this.jacobianCol++] += val;
-				}
+			
 			}
 		}
-*/
+
 		// return error
 		return e;
 	}

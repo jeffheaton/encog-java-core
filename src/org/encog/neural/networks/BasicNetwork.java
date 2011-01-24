@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
@@ -521,6 +522,23 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		int weightIndex = weightBaseIndex + fromNeuron + (toNeuron*count);
 		
 		this.structure.getFlat().getWeights()[weightIndex] = value;
+	}
+	
+	public double getLayerOutput(int layer, int neuronNumber)
+	{
+		this.structure.requireFlat();
+		int layerNumber = getLayerCount()-layer-1;
+		int index = this.structure.getFlat().getLayerIndex()[layerNumber] + neuronNumber;
+		double[] output = this.structure.getFlat().getLayerOutput();
+		if( index >= output.length)
+			throw new NeuralNetworkError("The layer index: " + index + " specifies an output index larger than the network has.");
+		return output[index];
+	}
+	
+	public ActivationFunction getActivation(int layer) {
+		this.structure.requireFlat();
+		int layerNumber = getLayerCount()-layer-1;
+		return this.structure.getFlat().getActivationFunctions()[layerNumber];
 	}
 	
 	public void addWeight(int fromLayer, int fromNeuron, int toNeuron, double value)
