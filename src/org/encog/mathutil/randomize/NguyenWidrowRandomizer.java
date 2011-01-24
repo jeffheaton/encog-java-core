@@ -23,6 +23,8 @@
  */
 package org.encog.mathutil.randomize;
 
+import org.encog.EncogError;
+import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 
 /**
@@ -66,7 +68,13 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	 * @param network The network to randomize.
 	 */
 	@Override
-	public final void randomize(final BasicNetwork network) {
+	public final void randomize(final MLMethod method) {
+		
+		if( !(method instanceof BasicNetwork) ) {
+			throw new EncogError("Ngyyen Widrow only works on BasicNetwork.");
+		}
+		
+		BasicNetwork network = (BasicNetwork)method;
 
 		new RangeRandomizer(getMin(), getMax()).randomize(network);
 

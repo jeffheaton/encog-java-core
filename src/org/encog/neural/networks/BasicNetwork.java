@@ -24,11 +24,8 @@
 package org.encog.neural.networks;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.encog.Encog;
 import org.encog.engine.util.EngineArray;

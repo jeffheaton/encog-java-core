@@ -24,6 +24,7 @@
 package org.encog.mathutil.randomize;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 
 /**
@@ -43,7 +44,7 @@ public interface Randomizer {
 	 * @param network
 	 *            A network to randomize.
 	 */
-	void randomize(BasicNetwork network);
+	void randomize(MLMethod network);
 
 	/**
 	 * Starting with the specified number, randomize it to the degree specified

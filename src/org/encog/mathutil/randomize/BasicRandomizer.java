@@ -26,6 +26,8 @@ package org.encog.mathutil.randomize;
 import java.util.Random;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.MLEncodable;
+import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,11 +67,20 @@ public abstract class BasicRandomizer implements Randomizer {
 	 * @param network
 	 *            A network to randomize.
 	 */
-	public void randomize(final BasicNetwork network) {
+	public void randomize(final MLMethod method) {
 		
-		for(int i=0;i<network.getLayerCount()-1;i++)
-		{
-			randomize(network,i);
+		if( method instanceof BasicNetwork ) {
+			BasicNetwork network = (BasicNetwork)method;
+			for(int i=0;i<network.getLayerCount()-1;i++)
+			{
+				randomize(network,i);
+			}
+		} else if( method instanceof MLEncodable) {
+			MLEncodable encode = (MLEncodable)method;
+			double[] encoded = new double[encode.encodedArrayLength()]; 
+			encode.encodeToArray(encoded);
+			randomize(encoded);
+			encode.decodeFromArray(encoded);
 		}
 	}
 
