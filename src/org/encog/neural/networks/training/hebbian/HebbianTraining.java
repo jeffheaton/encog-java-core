@@ -1,9 +1,9 @@
 /*
- * Encog(tm) Core v3.0 - Java Version
+ * Encog(tm) Core v2.5 - Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  
- * Copyright 2008-2011 Heaton Research, Inc.
+ * Copyright 2008-2010 Heaton Research, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,17 +21,14 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.hebbian;
 
-import java.util.ArrayList;
-import java.util.List;
+package org.encog.neural.networks.training.hebbian;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.TrainingError;
@@ -80,7 +77,6 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 	 */
 	private final boolean oja;
 
-
 	/**
 	 * Construct a Hebbian training object. It will train in supervised or
 	 * unsupervised mode, depending on the nature of the training data.
@@ -103,21 +99,11 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 		this.learningRate = learningRate;
 		this.supervised = training.getIdealSize() > 0;
 		this.oja = oja;
-
-
+		
 		if ( (this.oja == true) && (this.supervised == true)) {
 			throw new TrainingError(
 					"Can't use OJA Hebbian training with supervised data.");
 		}
-/*
-		this.outputSynapse = this.network.getStructure().getPreviousSynapses(
-				this.outputLayer);
-
-		if (this.outputSynapse.size() == 0) {
-			throw new TrainingError(
-				"Can't use Hebbian learning, the output layer " +
-				"has no inbound synapses.");
-		}*/
 
 	}
 
@@ -163,11 +149,9 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 	public void iteration() {
 		preIteration();
 
-		/*for (final NeuralDataPair pair : this.training) {
-			for (final Synapse synapse : this.outputSynapse) {
-				trainSynapse(synapse, pair);
-			}
-		}*/
+		for (final NeuralDataPair pair : this.training) {
+			trainLayer(this.network,this.network.getLayerCount()-2,pair);
+		}
 		postIteration();
 	}
 
@@ -184,15 +168,14 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 	 * @param synapse The synapse to train.
 	 * @param pair The data to train it with.
 	 */
-	private void trainSynapse( 
+	private void trainLayer(final BasicNetwork network, int layerNumber,
 			final NeuralDataPair pair) {
-		/*final NeuralData outputData = this.network.compute(pair.getInput());
+		final NeuralData outputData = this.network.compute(pair.getInput());
 
 		final double[] input = pair.getInput().getData();
 		final double[] output = outputData.getData();
-		final Matrix matrix = synapse.getMatrix();
 
-		for (int toNeuron = 0; toNeuron < synapse.getToNeuronCount(); 
+		for (int toNeuron = 0; toNeuron < network.getOutputCount(); 
 			toNeuron++) {
 
 			double z;
@@ -206,19 +189,19 @@ public class HebbianTraining extends BasicTraining implements LearningRate {
 			double deltaWeight;
 
 			for (int fromNeuron = 0; fromNeuron  
-				< synapse.getFromNeuronCount(); fromNeuron++) {
+				< network.getLayerTotalNeuronCount(fromNeuron); fromNeuron++) {
 
 				if (this.oja) {
 					deltaWeight = (input[fromNeuron] - output[toNeuron]
-							* matrix.get(fromNeuron,toNeuron)
+							* network.getWeight(layerNumber,fromNeuron,toNeuron)
 							* output[toNeuron] * this.learningRate);
 				} else {
 					deltaWeight = input[toNeuron] * output[toNeuron] * z;
 				}
 
-				matrix.add(fromNeuron,toNeuron,deltaWeight);
+				network.addWeight(layerNumber,fromNeuron,toNeuron,deltaWeight);
 			}
-		}*/
+		}
 	}
 
 }
