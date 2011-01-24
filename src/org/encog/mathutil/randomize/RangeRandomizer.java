@@ -93,4 +93,18 @@ public class RangeRandomizer extends BasicRandomizer {
 		return nextDouble(this.min, this.max);
 	}
 
+	/**
+	 * @return the min
+	 */
+	public double getMin() {
+		return min;
+	}
+
+	/**
+	 * @return the max
+	 */
+	public double getMax() {
+		return max;
+	}
+	
 }

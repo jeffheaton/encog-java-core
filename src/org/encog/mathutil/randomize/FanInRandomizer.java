@@ -204,5 +204,25 @@ public class FanInRandomizer extends BasicRandomizer {
 			}
 		}
 	}
-
+	
+	/**
+	 * Randomize one level of a neural network.
+	 * @param network The network to randomize
+	 * @param fromLevel The from level to randomize.
+	 */
+	public void randomize(final BasicNetwork network, int fromLayer)
+	{
+		int fromCount = network.getLayerTotalNeuronCount(fromLayer);
+		int toCount = network.getLayerNeuronCount(fromLayer+1);
+		
+		for(int fromNeuron = 0; fromNeuron<fromCount; fromNeuron++)
+		{
+			for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
+			{
+				double v = network.getWeight(fromLayer, fromNeuron, toNeuron);
+				v = calculateValue(toCount);
+				network.setWeight(fromLayer, fromNeuron, toNeuron, v);
+			}
+		}
+	}
 }

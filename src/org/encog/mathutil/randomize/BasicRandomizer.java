@@ -25,7 +25,6 @@ package org.encog.mathutil.randomize;
 
 import java.util.Random;
 
-import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
 import org.slf4j.Logger;
@@ -68,11 +67,9 @@ public abstract class BasicRandomizer implements Randomizer {
 	 */
 	public void randomize(final BasicNetwork network) {
 		
-		FlatNetwork flat = network.getStructure().getFlat();
-		double[] weights = flat.getWeights();
-		
-		for (int i = 0; i < weights.length; i++) {
-			weights[i] = randomize(weights[i]);
+		for(int i=0;i<network.getLayerCount()-1;i++)
+		{
+			randomize(network,i);
 		}
 	}
 
@@ -115,6 +112,27 @@ public abstract class BasicRandomizer implements Randomizer {
 		for (int r = 0; r < d.length; r++) {
 			for (int c = 0; c < d[0].length; c++) {
 				d[r][c] = randomize(d[r][c]);
+			}
+		}
+	}
+	
+	/**
+	 * Randomize one level of a neural network.
+	 * @param network The network to randomize
+	 * @param fromLevel The from level to randomize.
+	 */
+	public void randomize(final BasicNetwork network, int fromLayer)
+	{
+		int fromCount = network.getLayerTotalNeuronCount(fromLayer);
+		int toCount = network.getLayerNeuronCount(fromLayer+1);
+		
+		for(int fromNeuron = 0; fromNeuron<fromCount; fromNeuron++)
+		{
+			for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
+			{
+				double v = network.getWeight(fromLayer, fromNeuron, toNeuron);
+				v = randomize(v);
+				network.setWeight(fromLayer, fromNeuron, toNeuron, v);
 			}
 		}
 	}

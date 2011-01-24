@@ -439,11 +439,18 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		return this.structure.getFlat().getLayerCounts().length;
 	}
 	
-	public int getLayerNeuronCount(int l)
+	public int getLayerTotalNeuronCount(int l)
 	{
 		this.structure.requireFlat();
 		int layerNumber = getLayerCount()-l-1;
 		return this.structure.getFlat().getLayerCounts()[layerNumber];
+	}
+	
+	public int getLayerNeuronCount(int l)
+	{
+		this.structure.requireFlat();
+		int layerNumber = getLayerCount()-l-1;
+		return this.structure.getFlat().getLayerFeedCounts()[layerNumber];
 	}
 	
 	public boolean isLayerBiased(int l)
@@ -495,8 +502,8 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		}
 		
 		int weightBaseIndex = this.structure.getFlat().getWeightIndex()[toLayerNumber];
-		int count = this.structure.getFlat().getLayerCounts()[toNeuron];
-		int weightIndex = weightBaseIndex + toNeuron + (fromNeuron*count);
+		int count = this.structure.getFlat().getLayerCounts()[fromLayerNumber];
+		int weightIndex = weightBaseIndex + fromNeuron + (toNeuron*count);
 		
 		return this.structure.getFlat().getWeights()[weightIndex];
 	}
@@ -513,8 +520,8 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		}
 		
 		int weightBaseIndex = this.structure.getFlat().getWeightIndex()[toLayerNumber];
-		int count = this.structure.getFlat().getLayerCounts()[toNeuron];
-		int weightIndex = weightBaseIndex + toNeuron + (fromNeuron*count);
+		int count = this.structure.getFlat().getLayerCounts()[fromLayerNumber];
+		int weightIndex = weightBaseIndex + fromNeuron + (toNeuron*count);
 		
 		this.structure.getFlat().getWeights()[weightIndex] = value;
 	}

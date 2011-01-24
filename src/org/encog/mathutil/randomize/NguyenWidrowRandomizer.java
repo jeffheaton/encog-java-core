@@ -23,9 +23,7 @@
  */
 package org.encog.mathutil.randomize;
 
-import org.encog.EncogError;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 
 /**
  * Implementation of <i>Nguyen-Widrow</i> weight initialization. This is the
@@ -38,6 +36,9 @@ import org.encog.neural.networks.layers.Layer;
  */
 public class NguyenWidrowRandomizer extends RangeRandomizer implements
 		Randomizer {
+	
+	private int inputCount;
+	private double beta;
 
 	/**
 	 * Construct a Nguyen-Widrow randomizer.
@@ -49,6 +50,63 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	 */
 	public NguyenWidrowRandomizer(final double min, final double max) {
 		super(min, max);
+	}
+	
+	/**
+	 * The <i>Nguyen-Widrow</i> initialization algorithm is the following :
+	 * <br>
+	 * 1. Initialize all weight of hidden layers with (ranged) random values<br>
+	 * 2. For each hidden layer<br>
+	 * 2.1 calculate beta value, 0.7 * Nth(#neurons of input layer) root of
+	 * #neurons of current layer <br>
+	 * 2.2 for each synapse<br>
+	 * 2.1.1 for each weight <br>
+	 * 2.1.2 Adjust weight by dividing by norm of weight for neuron and
+	 * multiplying by beta value
+	 * @param network The network to randomize.
+	 */
+	@Override
+	public final void randomize(final BasicNetwork network) {
+
+		new RangeRandomizer(getMin(), getMax()).randomize(network);
+
+		int hiddenNeurons = 0;
+
+		for(int i=1;i<network.getLayerCount()-1;i++)
+		{
+			hiddenNeurons+=network.getLayerTotalNeuronCount(i);
+		}
+
+		// can't really do much, use regular randomization
+		if (hiddenNeurons < 1) {
+			return;
+		}
+
+		this.inputCount = network.getInputCount();
+		this.beta = 0.7 * Math.pow(hiddenNeurons, 1.0 / network.getInputCount());
+
+		super.randomize(network);
+	}
+	
+	/**
+	 * Randomize one level of a neural network.
+	 * @param network The network to randomize
+	 * @param fromLevel The from level to randomize.
+	 */
+	public void randomize(final BasicNetwork network, int fromLayer)
+	{
+		int fromCount = network.getLayerTotalNeuronCount(fromLayer);
+		int toCount = network.getLayerNeuronCount(fromLayer+1);
+		
+		for(int fromNeuron = 0; fromNeuron<fromCount; fromNeuron++)
+		{
+			for(int toNeuron = 0; toNeuron<toCount; toNeuron++)
+			{
+				double v = network.getWeight(fromLayer, fromNeuron, toNeuron);
+				v = (this.beta * v) / this.inputCount;
+				network.setWeight(fromLayer, fromNeuron, toNeuron, v);
+			}
+		}
 	}
 
 
