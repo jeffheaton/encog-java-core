@@ -191,8 +191,8 @@ public class JacobianChainRule implements ComputeJacobian {
 
 		this.network.compute(pair.getInput());
 
-		int fromLayer = 0;
-		int toLayer = 1;
+		int fromLayer = this.network.getLayerCount()-2;
+		int toLayer = this.network.getLayerCount()-1;
 		int fromNeuronCount = this.network.getLayerTotalNeuronCount(fromLayer);
 		int toNeuronCount = this.network.getLayerNeuronCount(toLayer);
 
@@ -207,14 +207,11 @@ public class JacobianChainRule implements ComputeJacobian {
 					this.network.getActivation(toLayer), output)
 					* lastOutput;
 		}
-		
-		this.jacobian[this.jacobianRow][this.jacobianCol++] = calcDerivative(
-				network.getActivation(toLayer), output);
 
-		while (fromLayer < network.getLayerCount()) {
+		while (fromLayer >0 ) {
 
-			fromLayer++;
-			toLayer++;
+			fromLayer--;
+			toLayer--;
 			fromNeuronCount = this.network.getLayerTotalNeuronCount(fromLayer);
 			toNeuronCount = this.network.getLayerNeuronCount(toLayer);
 			
@@ -223,11 +220,11 @@ public class JacobianChainRule implements ComputeJacobian {
 			// for each neuron in the input layer
 			for (int neuron = 0; neuron 
 			  < toNeuronCount; neuron++) {
-				output = this.network.getLayerOutput(fromLayer, neuron);
+				output = this.network.getLayerOutput(toLayer, neuron);
 				
-				ActivationFunction function = network.getActivation(fromLayer);
+				ActivationFunction function = network.getActivation(toLayer);
 				
-				final double w = network.getWeight(fromLayer, neuron, 0);
+				final double w = network.getWeight(toLayer, neuron, 0);
 				final double val = calcDerivative(function, output)
 						* calcDerivative2(function, sum) * w;
 
@@ -239,7 +236,7 @@ public class JacobianChainRule implements ComputeJacobian {
 						// for each weight of the next neuron
 						for (int k = 0; k 
 						  < fromNeuronCount; k++) {
-							sum += network.getWeight(fromLayer, k, j) * output;
+							sum += network.getWeight(toLayer, k, j) * output;
 						}
 					}
 
