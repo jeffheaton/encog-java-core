@@ -712,4 +712,8 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 		return this.hasContext;
 	}
 
+	public void setWeights(double[] weights) {
+		this.weights = weights;		
+	}
+
 }

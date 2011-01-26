@@ -661,4 +661,14 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		this.structure.requireFlat();
 		return this.getStructure().getFlat().getOutputCount();
 	}
+
+	public void validateNeuron(int targetLayer, int neuron) {
+		if( targetLayer<0 || targetLayer>=getLayerCount()) {
+			throw new NeuralNetworkError("Invalid layer count: " + targetLayer);
+		}
+		
+		if( neuron<0 || neuron>=this.getLayerTotalNeuronCount(targetLayer)) {
+			throw new NeuralNetworkError("Invalid neuron number: " + neuron);
+		}
+	}
 }
