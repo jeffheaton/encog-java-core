@@ -23,11 +23,7 @@
  */
 package org.encog.neural.prune;
 
-import java.util.Collection;
-
-import org.encog.mathutil.matrices.Matrix;
-import org.encog.mathutil.matrices.MatrixMath;
-import org.encog.mathutil.randomize.Distort;
+import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
@@ -75,18 +71,20 @@ public class PruneSelective {
 	 * @param neuronCount
 	 *            The new neuron count for this layer.
 	 */
-	public void changeNeuronCount(final Layer layer, final int neuronCount) {
+	public void changeNeuronCount(final int layer, final int neuronCount) {
 
 		if (neuronCount == 0) {
 			throw new NeuralNetworkError("Can't decrease to zero neurons.");
 		}
 
+		int currentCount = this.network.getLayerNeuronCount(layer);
+
 		// is there anything to do?
-		if (neuronCount == layer.getNeuronCount()) {
+		if (neuronCount == currentCount) {
 			return;
 		}
 
-		if (neuronCount > layer.getNeuronCount()) {
+		if (neuronCount > currentCount) {
 			increaseNeuronCount(layer, neuronCount);
 		} else {
 			decreaseNeuronCount(layer, neuronCount);
@@ -101,11 +99,12 @@ public class PruneSelective {
 	 * @param neuronCount
 	 *            The new neuron count.
 	 */
-	private void decreaseNeuronCount(final Layer layer, final int neuronCount) {
+	private void decreaseNeuronCount(final int layer, final int neuronCount) {
 		// create an array to hold the least significant neurons, which will be
 		// removed
 
-		final int lostNeuronCount = layer.getNeuronCount() - neuronCount;
+		final int lostNeuronCount = this.network.getLayerNeuronCount(layer)
+				- neuronCount;
 		final int[] lostNeuron = findWeakestNeurons(layer, lostNeuronCount);
 
 		// finally, actually prune the neurons that the previous steps
@@ -125,9 +124,8 @@ public class PruneSelective {
 	 *            The neuron to query.
 	 * @return How significant is this neuron.
 	 */
-	public double determineNeuronSignificance(final Layer layer,
-			final int neuron) {
-		
+	public double determineNeuronSignificance(final int layer, final int neuron) {
+
 		return 0;
 		/*
 		// calculate the bias significance
@@ -165,7 +163,7 @@ public class PruneSelective {
 	 * @param count The number of neurons to find.
 	 * @return An array of the indexes of the weakest neurons.
 	 */
-	private int[] findWeakestNeurons(final Layer layer, final int count) {
+	private int[] findWeakestNeurons(final int layer, final int count) {
 		// create an array to hold the least significant neurons, which will be
 		// returned
 		final double[] lostNeuronSignificance = new double[count];
@@ -180,7 +178,7 @@ public class PruneSelective {
 
 		// now loop over the remaining neurons and see if any are better ones to
 		// remove
-		for (int i = count; i < layer.getNeuronCount(); i++) {
+		for (int i = count; i < network.getLayerNeuronCount(layer); i++) {
 			final double significance = determineNeuronSignificance(layer, i);
 
 			// is this neuron less significant than one already chosen?
@@ -212,62 +210,62 @@ public class PruneSelective {
 	 * @param neuronCount
 	 *            The new neuron count.
 	 */
-	private void increaseNeuronCount(final Layer layer, final int neuronCount) {
+	private void increaseNeuronCount(final int layer, final int neuronCount) {
 		// adjust the bias
-/*		final double[] newBias = new double[neuronCount];
-		if (layer.hasBias()) {
-			for (int i = 0; i < layer.getNeuronCount(); i++) {
-				newBias[i] = layer.getBiasWeight(i);
-			}
+		/*		final double[] newBias = new double[neuronCount];
+				if (layer.hasBias()) {
+					for (int i = 0; i < layer.getNeuronCount(); i++) {
+						newBias[i] = layer.getBiasWeight(i);
+					}
 
-			layer.setBiasWeights(newBias);
-		}
-
-		// adjust the outbound weight matrixes
-		for (final Synapse synapse : layer.getNext()) {
-			final Matrix newMatrix = new Matrix(neuronCount,
-					synapse.getToNeuronCount());
-			// copy existing matrix to new matrix
-			for (int row = 0; row < layer.getNeuronCount(); row++) {
-				for (int col = 0; col < synapse.getToNeuronCount(); col++) {
-					newMatrix.set(row, col, synapse.getMatrix().get(row, col));
+					layer.setBiasWeights(newBias);
 				}
-			}
-			synapse.setMatrix(newMatrix);
-		}
 
-		// adjust the inbound weight matrixes
-		final Collection<Synapse> inboundSynapses = this.network.getStructure()
-				.getPreviousSynapses(layer);
+				// adjust the outbound weight matrixes
+				for (final Synapse synapse : layer.getNext()) {
+					final Matrix newMatrix = new Matrix(neuronCount,
+							synapse.getToNeuronCount());
+					// copy existing matrix to new matrix
+					for (int row = 0; row < layer.getNeuronCount(); row++) {
+						for (int col = 0; col < synapse.getToNeuronCount(); col++) {
+							newMatrix.set(row, col, synapse.getMatrix().get(row, col));
+						}
+					}
+					synapse.setMatrix(newMatrix);
+				}
 
-		for (final Synapse synapse : inboundSynapses) {
-			if (synapse.getMatrix() != null) {
-				final Matrix newMatrix = new Matrix(
-						synapse.getFromNeuronCount(), neuronCount);
-				// copy existing matrix to new matrix
-				for (int row = 0; row < synapse.getFromNeuronCount(); row++) {
-					for (int col = 0; col < synapse.getToNeuronCount(); col++) {
-						newMatrix.set(row, col,
-								synapse.getMatrix().get(row, col));
+				// adjust the inbound weight matrixes
+				final Collection<Synapse> inboundSynapses = this.network.getStructure()
+						.getPreviousSynapses(layer);
+
+				for (final Synapse synapse : inboundSynapses) {
+					if (synapse.getMatrix() != null) {
+						final Matrix newMatrix = new Matrix(
+								synapse.getFromNeuronCount(), neuronCount);
+						// copy existing matrix to new matrix
+						for (int row = 0; row < synapse.getFromNeuronCount(); row++) {
+							for (int col = 0; col < synapse.getToNeuronCount(); col++) {
+								newMatrix.set(row, col,
+										synapse.getMatrix().get(row, col));
+							}
+						}
+
+						synapse.setMatrix(newMatrix);
 					}
 				}
 
-				synapse.setMatrix(newMatrix);
-			}
-		}
+				// adjust the bias
+				if (layer.hasBias()) {
+					final double[] newBias2 = new double[neuronCount];
 
-		// adjust the bias
-		if (layer.hasBias()) {
-			final double[] newBias2 = new double[neuronCount];
+					for (int i = 0; i < layer.getNeuronCount(); i++) {
+						newBias2[i] = layer.getBiasWeight(i);
+					}
+					layer.setBiasWeights(newBias2);
+				}
 
-			for (int i = 0; i < layer.getNeuronCount(); i++) {
-				newBias2[i] = layer.getBiasWeight(i);
-			}
-			layer.setBiasWeights(newBias2);
-		}
-
-		// finally, up the neuron count
-		layer.setNeuronCount(neuronCount);*/
+				// finally, up the neuron count
+				layer.setNeuronCount(neuronCount);*/
 	}
 
 	/**
@@ -279,44 +277,78 @@ public class PruneSelective {
 	 * @param neuron
 	 *            The neuron to prune.
 	 */
-	public void prune(final Layer targetLayer, final int neuron) {
-		// delete a row on this matrix
-/*		for (final Synapse synapse : targetLayer.getNext()) {
-			synapse.setMatrix(MatrixMath.deleteRow(synapse.getMatrix(), neuron));
+	public void prune(final int targetLayer, final int neuron) {
+		// check for errors
+		network.validateNeuron(targetLayer, neuron);
+
+		// access the flat network
+		FlatNetwork flat = this.network.getStructure().getFlat();
+		double[] oldWeights = flat.getWeights();
+
+		// first find out how many connections there will be after this prune.
+		int connections = oldWeights.length;
+		int inBoundConnections = 0;
+		int outBoundConnections = 0;
+
+		// are connections removed from the previous layer?
+		if (targetLayer > 0) {
+			inBoundConnections = this.network
+				.getLayerTotalNeuronCount(targetLayer - 1); 
+			connections -=  inBoundConnections;
 		}
 
-		// delete a column on the previous
-		final Collection<Layer> previous = this.network.getStructure()
-				.getPreviousLayers(targetLayer);
+		// are there connections removed from the next layer?
+		if (targetLayer < (this.network.getLayerCount() - 1)) {
+			outBoundConnections = this.network.getLayerNeuronCount(targetLayer + 1);
+			connections -= outBoundConnections;
+		}
 
-		for (final Layer prevLayer : previous) {
-			if (previous != null) {
-				for (final Synapse synapse : prevLayer.getNext()) {
-					if (synapse.getMatrix() != null) {
-						synapse.setMatrix(MatrixMath.deleteCol(
-								synapse.getMatrix(), neuron));
+		// allocate new weights now that we know how big the new weights will be
+		double[] newWeights = new double[connections];
+
+		// construct the new weights
+		int weightsIndex = 0;
+
+		for (int fromLayer = flat.getLayerCounts().length - 2; fromLayer >=0 ; fromLayer--) {
+			int fromNeuronCount = network.getLayerTotalNeuronCount(fromLayer);
+			int toNeuronCount = network.getLayerNeuronCount(fromLayer + 1);
+			int toLayer = fromLayer + 1;
+
+			for (int toNeuron = 0; toNeuron < toNeuronCount; toNeuron++) {
+				for (int fromNeuron = 0; fromNeuron < fromNeuronCount; fromNeuron++) {
+					boolean skip = false;
+					if ((toLayer == targetLayer) && (toNeuron == neuron))
+						skip = true;
+					else if ((fromLayer == targetLayer)
+							&& (fromNeuron == neuron))
+						skip = true;
+
+					if (!skip) {
+						newWeights[weightsIndex++] = this.network.getWeight(
+								fromLayer, fromNeuron, toNeuron);
 					}
 				}
 			}
 		}
 
-		// remove the bias
-		if (targetLayer.hasBias()) {
-			final double[] newBias = new double[targetLayer.getNeuronCount() - 1];
+		// swap in the new weights
+		flat.setWeights(newWeights);
 
-			int targetIndex = 0;
-			for (int i = 0; i < targetLayer.getNeuronCount(); i++) {
-				if (i != neuron) {
-					newBias[targetIndex++] = targetLayer.getBiasWeight(i);
-				}
-			}
-
-			targetLayer.setBiasWeights(newBias);
+		// decrease layer count
+		int flatLayer = network.getLayerCount() - targetLayer - 1;
+		flat.getLayerCounts()[flatLayer]--;
+		flat.getLayerFeedCounts()[flatLayer]--;
+		
+		// reindex
+		int neuronCount = 0;
+		int weightCount = 0;
+		for(int i=0;i<flat.getLayerCounts().length;i++)
+		{			
+			flat.getLayerIndex()[i] = neuronCount;
+			flat.getWeightIndex()[i] = weightCount;
+			neuronCount+=flat.getLayerCounts()[i];					
 		}
-
-		// update the neuron count
-		targetLayer.setNeuronCount(targetLayer.getNeuronCount() - 1);
-*/
+		
 	}
 
 	/**
@@ -330,7 +362,7 @@ public class PruneSelective {
 	 * @param neuron
 	 *            The neuron to randomize.
 	 */
-	public void stimulateNeuron(final double percent, final Layer layer,
+	public void stimulateNeuron(final double percent, final int layer,
 			final int neuron) {
 		/*
 		final Distort d = new Distort(percent);
@@ -370,7 +402,7 @@ public class PruneSelective {
 	 * @param percent
 	 *            The percent to stimulate by.
 	 */
-	public void stimulateWeakNeurons(final Layer layer, final int count,
+	public void stimulateWeakNeurons(final int layer, final int count,
 			final double percent) {
 		final int[] weak = findWeakestNeurons(layer, count);
 		for (final int element : weak) {
