@@ -26,7 +26,6 @@ package org.encog.neural.prune;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -126,41 +125,39 @@ public class PruneSelective {
 	 */
 	public double determineNeuronSignificance(final int layer, final int neuron) {
 
-		return 0;
-		/*
+		network.validateNeuron(layer, neuron);
+		
 		// calculate the bias significance
 		double result = 0;
 
-		if (layer.hasBias()) {
-			result += layer.getBiasWeight(neuron);
+		// calculate the inbound significance
+		if( layer>0 ) {
+			int prevLayer = layer-1;
+			int prevCount = network.getLayerTotalNeuronCount(prevLayer);
+			for(int i=0;i<prevCount;i++) {
+				result+=network.getWeight(prevLayer, i, neuron);
+			}
 		}
-
+		
 		// calculate the outbound significance
-		for (final Synapse synapse : layer.getNext()) {
-			for (int i = 0; i < synapse.getToNeuronCount(); i++) {
-				result += synapse.getMatrix().get(neuron, i);
+		if( layer<network.getLayerCount()-1 ) {
+			int nextLayer = layer+1;
+			int nextCount = network.getLayerNeuronCount(nextLayer);
+			for(int i=0;i<nextCount;i++) {
+				result+=network.getWeight(layer, neuron, i);
 			}
 		}
 
-		// calculate the bias significance
-		final Collection<Synapse> inboundSynapses = this.network.getStructure()
-				.getPreviousSynapses(layer);
-
-		for (final Synapse synapse : inboundSynapses) {
-			if (synapse.getMatrix() != null) {
-				for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
-					result += synapse.getMatrix().get(i, neuron);
-				}
-			}
-		}
-
-		return Math.abs(result);*/
+		return Math.abs(result);
 	}
 
 	/**
-	 * Find the weakest neurons on a layer.  Considers both weight and bias.
-	 * @param layer The layer to search.
-	 * @param count The number of neurons to find.
+	 * Find the weakest neurons on a layer. Considers both weight and bias.
+	 * 
+	 * @param layer
+	 *            The layer to search.
+	 * @param count
+	 *            The number of neurons to find.
 	 * @return An array of the indexes of the weakest neurons.
 	 */
 	private int[] findWeakestNeurons(final int layer, final int count) {
@@ -212,60 +209,42 @@ public class PruneSelective {
 	 */
 	private void increaseNeuronCount(final int layer, final int neuronCount) {
 		// adjust the bias
-		/*		final double[] newBias = new double[neuronCount];
-				if (layer.hasBias()) {
-					for (int i = 0; i < layer.getNeuronCount(); i++) {
-						newBias[i] = layer.getBiasWeight(i);
-					}
-
-					layer.setBiasWeights(newBias);
-				}
-
-				// adjust the outbound weight matrixes
-				for (final Synapse synapse : layer.getNext()) {
-					final Matrix newMatrix = new Matrix(neuronCount,
-							synapse.getToNeuronCount());
-					// copy existing matrix to new matrix
-					for (int row = 0; row < layer.getNeuronCount(); row++) {
-						for (int col = 0; col < synapse.getToNeuronCount(); col++) {
-							newMatrix.set(row, col, synapse.getMatrix().get(row, col));
-						}
-					}
-					synapse.setMatrix(newMatrix);
-				}
-
-				// adjust the inbound weight matrixes
-				final Collection<Synapse> inboundSynapses = this.network.getStructure()
-						.getPreviousSynapses(layer);
-
-				for (final Synapse synapse : inboundSynapses) {
-					if (synapse.getMatrix() != null) {
-						final Matrix newMatrix = new Matrix(
-								synapse.getFromNeuronCount(), neuronCount);
-						// copy existing matrix to new matrix
-						for (int row = 0; row < synapse.getFromNeuronCount(); row++) {
-							for (int col = 0; col < synapse.getToNeuronCount(); col++) {
-								newMatrix.set(row, col,
-										synapse.getMatrix().get(row, col));
-							}
-						}
-
-						synapse.setMatrix(newMatrix);
-					}
-				}
-
-				// adjust the bias
-				if (layer.hasBias()) {
-					final double[] newBias2 = new double[neuronCount];
-
-					for (int i = 0; i < layer.getNeuronCount(); i++) {
-						newBias2[i] = layer.getBiasWeight(i);
-					}
-					layer.setBiasWeights(newBias2);
-				}
-
-				// finally, up the neuron count
-				layer.setNeuronCount(neuronCount);*/
+		/*
+		 * final double[] newBias = new double[neuronCount]; if
+		 * (layer.hasBias()) { for (int i = 0; i < layer.getNeuronCount(); i++)
+		 * { newBias[i] = layer.getBiasWeight(i); }
+		 * 
+		 * layer.setBiasWeights(newBias); }
+		 * 
+		 * // adjust the outbound weight matrixes for (final Synapse synapse :
+		 * layer.getNext()) { final Matrix newMatrix = new Matrix(neuronCount,
+		 * synapse.getToNeuronCount()); // copy existing matrix to new matrix
+		 * for (int row = 0; row < layer.getNeuronCount(); row++) { for (int col
+		 * = 0; col < synapse.getToNeuronCount(); col++) { newMatrix.set(row,
+		 * col, synapse.getMatrix().get(row, col)); } }
+		 * synapse.setMatrix(newMatrix); }
+		 * 
+		 * // adjust the inbound weight matrixes final Collection<Synapse>
+		 * inboundSynapses = this.network.getStructure()
+		 * .getPreviousSynapses(layer);
+		 * 
+		 * for (final Synapse synapse : inboundSynapses) { if
+		 * (synapse.getMatrix() != null) { final Matrix newMatrix = new Matrix(
+		 * synapse.getFromNeuronCount(), neuronCount); // copy existing matrix
+		 * to new matrix for (int row = 0; row < synapse.getFromNeuronCount();
+		 * row++) { for (int col = 0; col < synapse.getToNeuronCount(); col++) {
+		 * newMatrix.set(row, col, synapse.getMatrix().get(row, col)); } }
+		 * 
+		 * synapse.setMatrix(newMatrix); } }
+		 * 
+		 * // adjust the bias if (layer.hasBias()) { final double[] newBias2 =
+		 * new double[neuronCount];
+		 * 
+		 * for (int i = 0; i < layer.getNeuronCount(); i++) { newBias2[i] =
+		 * layer.getBiasWeight(i); } layer.setBiasWeights(newBias2); }
+		 * 
+		 * // finally, up the neuron count layer.setNeuronCount(neuronCount);
+		 */
 	}
 
 	/**
@@ -280,7 +259,12 @@ public class PruneSelective {
 	public void prune(final int targetLayer, final int neuron) {
 		// check for errors
 		network.validateNeuron(targetLayer, neuron);
-
+		
+		// don't empty a layer
+		if( this.network.getLayerNeuronCount(targetLayer)<=1 ) {
+			throw new NeuralNetworkError("A layer must have at least a single neuron.  If you want to remove the entire layer use the pruneLayer method.");
+		}
+		
 		// access the flat network
 		FlatNetwork flat = this.network.getStructure().getFlat();
 		double[] oldWeights = flat.getWeights();
@@ -293,13 +277,14 @@ public class PruneSelective {
 		// are connections removed from the previous layer?
 		if (targetLayer > 0) {
 			inBoundConnections = this.network
-				.getLayerTotalNeuronCount(targetLayer - 1); 
-			connections -=  inBoundConnections;
+					.getLayerTotalNeuronCount(targetLayer - 1);
+			connections -= inBoundConnections;
 		}
 
 		// are there connections removed from the next layer?
 		if (targetLayer < (this.network.getLayerCount() - 1)) {
-			outBoundConnections = this.network.getLayerNeuronCount(targetLayer + 1);
+			outBoundConnections = this.network
+					.getLayerNeuronCount(targetLayer + 1);
 			connections -= outBoundConnections;
 		}
 
@@ -309,7 +294,7 @@ public class PruneSelective {
 		// construct the new weights
 		int weightsIndex = 0;
 
-		for (int fromLayer = flat.getLayerCounts().length - 2; fromLayer >=0 ; fromLayer--) {
+		for (int fromLayer = flat.getLayerCounts().length - 2; fromLayer >= 0; fromLayer--) {
 			int fromNeuronCount = network.getLayerTotalNeuronCount(fromLayer);
 			int toNeuronCount = network.getLayerNeuronCount(fromLayer + 1);
 			int toLayer = fromLayer + 1;
@@ -338,17 +323,21 @@ public class PruneSelective {
 		int flatLayer = network.getLayerCount() - targetLayer - 1;
 		flat.getLayerCounts()[flatLayer]--;
 		flat.getLayerFeedCounts()[flatLayer]--;
-		
+
 		// reindex
 		int neuronCount = 0;
 		int weightCount = 0;
-		for(int i=0;i<flat.getLayerCounts().length;i++)
-		{			
+		for (int i = 0; i < flat.getLayerCounts().length; i++) {
+			if( i>0 ) {
+				int from = flat.getLayerFeedCounts()[i-1];
+				int to = flat.getLayerCounts()[i];
+				weightCount+=from*to;				
+			}
 			flat.getLayerIndex()[i] = neuronCount;
 			flat.getWeightIndex()[i] = weightCount;
-			neuronCount+=flat.getLayerCounts()[i];					
+			neuronCount += flat.getLayerCounts()[i];			
 		}
-		
+
 	}
 
 	/**
@@ -365,30 +354,24 @@ public class PruneSelective {
 	public void stimulateNeuron(final double percent, final int layer,
 			final int neuron) {
 		/*
-		final Distort d = new Distort(percent);
-
-		if (layer.hasBias()) {
-			layer.setBiasWeight(neuron,
-					d.randomize(layer.getBiasWeight(neuron)));
-		}
-
-		// calculate the outbound significance
-		for (final Synapse synapse : layer.getNext()) {
-			for (int i = 0; i < synapse.getToNeuronCount(); i++) {
-				final double v = synapse.getMatrix().get(neuron, i);
-				synapse.getMatrix().set(neuron, i, d.randomize(v));
-			}
-		}
-
-		final Collection<Synapse> inboundSynapses = this.network.getStructure()
-				.getPreviousSynapses(layer);
-
-		for (final Synapse synapse : inboundSynapses) {
-			for (int i = 0; i < synapse.getFromNeuronCount(); i++) {
-				final double v = synapse.getMatrix().get(i, neuron);
-				synapse.getMatrix().set(i, neuron, d.randomize(v));
-			}
-		}*/
+		 * final Distort d = new Distort(percent);
+		 * 
+		 * if (layer.hasBias()) { layer.setBiasWeight(neuron,
+		 * d.randomize(layer.getBiasWeight(neuron))); }
+		 * 
+		 * // calculate the outbound significance for (final Synapse synapse :
+		 * layer.getNext()) { for (int i = 0; i < synapse.getToNeuronCount();
+		 * i++) { final double v = synapse.getMatrix().get(neuron, i);
+		 * synapse.getMatrix().set(neuron, i, d.randomize(v)); } }
+		 * 
+		 * final Collection<Synapse> inboundSynapses =
+		 * this.network.getStructure() .getPreviousSynapses(layer);
+		 * 
+		 * for (final Synapse synapse : inboundSynapses) { for (int i = 0; i <
+		 * synapse.getFromNeuronCount(); i++) { final double v =
+		 * synapse.getMatrix().get(i, neuron); synapse.getMatrix().set(i,
+		 * neuron, d.randomize(v)); } }
+		 */
 	}
 
 	/**
