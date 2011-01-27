@@ -1,7 +1,5 @@
 package org.encog.neural.prune;
 
-import java.util.Arrays;
-
 import junit.framework.TestCase;
 
 import org.encog.engine.network.flat.FlatNetwork;
@@ -84,7 +82,6 @@ public class TestPruneSelective extends TestCase {
 	public void testPruneNeuronHidden()
 	{
 		BasicNetwork network = obtainNetwork();
-		System.out.println(network.dumpWeights());
 		PruneSelective prune = new PruneSelective(network);
 		prune.prune(1, 1);
 		Assert.assertEquals(18, network.encodedArrayLength());
@@ -98,7 +95,6 @@ public class TestPruneSelective extends TestCase {
 	public void testPruneNeuronOutput()
 	{
 		BasicNetwork network = obtainNetwork();
-		System.out.println(network.dumpWeights());
 		PruneSelective prune = new PruneSelective(network);
 		prune.prune(2, 1);
 		Assert.assertEquals(21, network.encodedArrayLength());
