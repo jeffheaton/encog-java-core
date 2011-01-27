@@ -208,43 +208,8 @@ public class PruneSelective {
 	 *            The new neuron count.
 	 */
 	private void increaseNeuronCount(final int layer, final int neuronCount) {
-		// adjust the bias
-		/*
-		 * final double[] newBias = new double[neuronCount]; if
-		 * (layer.hasBias()) { for (int i = 0; i < layer.getNeuronCount(); i++)
-		 * { newBias[i] = layer.getBiasWeight(i); }
-		 * 
-		 * layer.setBiasWeights(newBias); }
-		 * 
-		 * // adjust the outbound weight matrixes for (final Synapse synapse :
-		 * layer.getNext()) { final Matrix newMatrix = new Matrix(neuronCount,
-		 * synapse.getToNeuronCount()); // copy existing matrix to new matrix
-		 * for (int row = 0; row < layer.getNeuronCount(); row++) { for (int col
-		 * = 0; col < synapse.getToNeuronCount(); col++) { newMatrix.set(row,
-		 * col, synapse.getMatrix().get(row, col)); } }
-		 * synapse.setMatrix(newMatrix); }
-		 * 
-		 * // adjust the inbound weight matrixes final Collection<Synapse>
-		 * inboundSynapses = this.network.getStructure()
-		 * .getPreviousSynapses(layer);
-		 * 
-		 * for (final Synapse synapse : inboundSynapses) { if
-		 * (synapse.getMatrix() != null) { final Matrix newMatrix = new Matrix(
-		 * synapse.getFromNeuronCount(), neuronCount); // copy existing matrix
-		 * to new matrix for (int row = 0; row < synapse.getFromNeuronCount();
-		 * row++) { for (int col = 0; col < synapse.getToNeuronCount(); col++) {
-		 * newMatrix.set(row, col, synapse.getMatrix().get(row, col)); } }
-		 * 
-		 * synapse.setMatrix(newMatrix); } }
-		 * 
-		 * // adjust the bias if (layer.hasBias()) { final double[] newBias2 =
-		 * new double[neuronCount];
-		 * 
-		 * for (int i = 0; i < layer.getNeuronCount(); i++) { newBias2[i] =
-		 * layer.getBiasWeight(i); } layer.setBiasWeights(newBias2); }
-		 * 
-		 * // finally, up the neuron count layer.setNeuronCount(neuronCount);
-		 */
+		this.network.validateNeuron(layer, 0);
+		
 	}
 
 	/**
@@ -325,6 +290,14 @@ public class PruneSelective {
 		flat.getLayerFeedCounts()[flatLayer]--;
 
 		// reindex
+		reindexNetwork();
+
+	}
+	
+	private void reindexNetwork()
+	{
+		FlatNetwork flat = this.network.getStructure().getFlat();
+		
 		int neuronCount = 0;
 		int weightCount = 0;
 		for (int i = 0; i < flat.getLayerCounts().length; i++) {
@@ -337,7 +310,6 @@ public class PruneSelective {
 			flat.getWeightIndex()[i] = weightCount;
 			neuronCount += flat.getLayerCounts()[i];			
 		}
-
 	}
 
 	/**
