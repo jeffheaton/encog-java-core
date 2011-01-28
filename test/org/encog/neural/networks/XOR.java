@@ -25,6 +25,7 @@ package org.encog.neural.networks;
 
 import junit.framework.TestCase;
 
+import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -44,7 +45,7 @@ public class XOR {
 
 		public static double XOR_IDEAL[][] = { { 0.0 }, { 1.0 }, { 1.0 }, { 0.0 } };
 		
-		public static boolean verifyXOR(BasicNetwork network,double tolerance) 
+		public static boolean verifyXOR(MLRegression network,double tolerance) 
 		{
 			for(int trainingSet=0;trainingSet<XOR.XOR_IDEAL.length;trainingSet++)
 			{
