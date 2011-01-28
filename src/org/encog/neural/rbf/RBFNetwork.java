@@ -277,14 +277,10 @@ public class RBFNetwork extends BasicPersistedObject implements MLRegression  {
 
 		obj.setProperty(BasicNetwork.TAG_BEGIN_TRAINING, flat.getBeginTraining(), false);
 		obj.setProperty(BasicNetwork.TAG_CONNECTION_LIMIT, flat.getConnectionLimit(), false);		
-		obj.setProperty(BasicNetwork.TAG_CONTEXT_TARGET_OFFSET, flat.getContextTargetOffset() );
-		obj.setProperty(BasicNetwork.TAG_CONTEXT_TARGET_SIZE, flat.getContextTargetSize() );
 		obj.setProperty(BasicNetwork.TAG_END_TRAINING, flat.getEndTraining(), false );
-		obj.setProperty(BasicNetwork.TAG_HAS_CONTEXT, flat.getHasContext(), false );
 		obj.setProperty(PersistConst.INPUT_COUNT, flat.getInputCount(), false );
 		obj.setProperty(BasicNetwork.TAG_LAYER_COUNTS, flat.getLayerCounts() );
 		obj.setProperty(BasicNetwork.TAG_LAYER_FEED_COUNTS, flat.getLayerFeedCounts() );
-		obj.setProperty(BasicNetwork.TAG_LAYER_CONTEXT_COUNT, flat.getLayerContextCount() );
 
 		obj.setProperty(BasicNetwork.TAG_LAYER_INDEX, flat.getLayerIndex() );
 		obj.setProperty(PersistConst.OUTPUT, flat.getLayerOutput() );
@@ -321,10 +317,7 @@ public class RBFNetwork extends BasicPersistedObject implements MLRegression  {
 		
 		flat.setBeginTraining(obj.getPropertyInt(BasicNetwork.TAG_BEGIN_TRAINING, true));
 		flat.setConnectionLimit(obj.getPropertyDouble(BasicNetwork.TAG_CONNECTION_LIMIT, true));
-		flat.setContextTargetSize(obj.getPropertyIntArray(BasicNetwork.TAG_CONTEXT_TARGET_SIZE,true) );
-		flat.setContextTargetOffset(obj.getPropertyIntArray(BasicNetwork.TAG_CONTEXT_TARGET_OFFSET,true) );
 		flat.setEndTraining( obj.getPropertyInt(BasicNetwork.TAG_END_TRAINING, true) );
-		flat.setHasContext( obj.getPropertyBoolean(BasicNetwork.TAG_HAS_CONTEXT, true ) );
 		flat.setInputCount( obj.getPropertyInt(PersistConst.INPUT_COUNT, true) );
 		flat.setLayerCounts( obj.getPropertyIntArray( BasicNetwork.TAG_LAYER_COUNTS, true) );
 		flat.setLayerFeedCounts( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_FEED_COUNTS, true) );
@@ -334,7 +327,6 @@ public class RBFNetwork extends BasicPersistedObject implements MLRegression  {
 		flat.setWeights(obj.getPropertyDoubleArray(PersistConst.WEIGHTS, true));
 		flat.setOutputCount( obj.getPropertyInt(PersistConst.OUTPUT_COUNT, true) );
 		flat.setBiasActivation(obj.getPropertyDoubleArray(BasicNetwork.TAG_BIAS_ACTIVATION, true));
-		flat.setLayerContextCount( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_CONTEXT_COUNT, true) );
 		
 		List<PersistedObject> list  = obj.getPropertyValueArray(TAG_RBF);
 		this.rbf = new RadialBasisFunction[list.size()];
@@ -359,5 +351,8 @@ public class RBFNetwork extends BasicPersistedObject implements MLRegression  {
 		}
 		
 		this.flat.setRBF(this.rbf);
+		int[] context = new int[3];
+		this.flat.setContextTargetOffset(context);
+		this.flat.setContextTargetSize(context);
 	}
 }
