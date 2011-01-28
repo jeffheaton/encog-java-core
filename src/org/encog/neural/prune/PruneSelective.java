@@ -24,6 +24,10 @@
 package org.encog.neural.prune;
 
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.util.EngineArray;
+import org.encog.mathutil.randomize.Distort;
+import org.encog.mathutil.randomize.Randomizer;
+import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.slf4j.Logger;
@@ -31,15 +35,19 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Prune a neural network selectively. This class allows you to either add or
- * remove neurons from layers of a neural network. Tools
+ * remove neurons from layers of a neural network. You can also randomize or stimulate
+ * neurons.
  * 
- * @author jheaton
+ * No provision is given for removing an entire layer.  Removing a layer requires a 
+ * totally new set of weights between the layers before and after the removed one.  This
+ * essentially makes any remaining weights useless.  At this point you are better off just
+ * creating a new network of the desired dimensions.
  * 
  */
 public class PruneSelective {
 
 	/**
-	 * 
+	 * The network to prune.
 	 */
 	private final BasicNetwork network;
 
@@ -64,6 +72,8 @@ public class PruneSelective {
 	 * zero-weighted neuron is added, which will not affect the output of the
 	 * neural network. If the neuron count is decreased, then the weakest neuron
 	 * will be removed.
+	 * 
+	 * This method cannot be used to remove a bias neuron.
 	 * 
 	 * @param layer
 	 *            The layer to adjust.
@@ -288,7 +298,8 @@ public class PruneSelective {
 
 	/**
 	 * Prune one of the neurons from this layer. Remove all entries in this
-	 * weight matrix and other layers.
+	 * weight matrix and other layers.  This method cannot be used to remove
+	 * a bias neuron.
 	 * 
 	 * @param targetLayer
 	 *            The neuron to prune. Zero specifies the first neuron.
@@ -301,7 +312,7 @@ public class PruneSelective {
 		
 		// don't empty a layer
 		if( this.network.getLayerNeuronCount(targetLayer)<=1 ) {
-			throw new NeuralNetworkError("A layer must have at least a single neuron.  If you want to remove the entire layer use the pruneLayer method.");
+			throw new NeuralNetworkError("A layer must have at least a single neuron.  If you want to remove the entire layer you must create a new network.");
 		}
 		
 		// access the flat network
@@ -367,7 +378,10 @@ public class PruneSelective {
 		reindexNetwork();
 
 	}
-	
+
+	/**
+	 * Creat new index values for the network.
+	 */
 	private void reindexNetwork()
 	{
 		FlatNetwork flat = this.network.getStructure().getFlat();
@@ -400,27 +414,103 @@ public class PruneSelective {
 	 * @param neuron
 	 *            The neuron to randomize.
 	 */
-	public void stimulateNeuron(final double percent, final int layer,
+	public void stimulateNeuron(final double percent, final int targetLayer,
 			final int neuron) {
-		/*
-		 * final Distort d = new Distort(percent);
-		 * 
-		 * if (layer.hasBias()) { layer.setBiasWeight(neuron,
-		 * d.randomize(layer.getBiasWeight(neuron))); }
-		 * 
-		 * // calculate the outbound significance for (final Synapse synapse :
-		 * layer.getNext()) { for (int i = 0; i < synapse.getToNeuronCount();
-		 * i++) { final double v = synapse.getMatrix().get(neuron, i);
-		 * synapse.getMatrix().set(neuron, i, d.randomize(v)); } }
-		 * 
-		 * final Collection<Synapse> inboundSynapses =
-		 * this.network.getStructure() .getPreviousSynapses(layer);
-		 * 
-		 * for (final Synapse synapse : inboundSynapses) { for (int i = 0; i <
-		 * synapse.getFromNeuronCount(); i++) { final double v =
-		 * synapse.getMatrix().get(i, neuron); synapse.getMatrix().set(i,
-		 * neuron, d.randomize(v)); } }
-		 */
+		
+		randomizeNeuron(targetLayer,neuron,false,0,0,true,percent);
+	}
+	
+	/**
+	 * 
+	 * @param low The low-end of the range.
+	 * @param high The high-end of the range.
+	 * @param targetLayer The target layer.
+	 * @param neuron The target neuron.
+	 */
+	public void randomizeNeuron(final double low, final double high, final int targetLayer,
+			final int neuron) {
+		
+		randomizeNeuron(targetLayer,neuron,true,low,high,false,0.0);
+	}
+	
+	/**
+	 * Assign random values to the network.  The range will be the min/max of existing neurons.
+	 * @param targetLayer The target layer.
+	 * @param neuron The target neuron.
+	 */
+	public void randomizeNeuron(final int targetLayer,
+			final int neuron) {
+		FlatNetwork flat = this.network.getStructure().getFlat();
+		double low = EngineArray.min(flat.getWeights());
+		double high = EngineArray.max(flat.getWeights());
+		randomizeNeuron(targetLayer,neuron,true,low,high,false,0.0);
+	}
+	
+	/**
+	 * Used internally to randomize a neuron.  Usually called from randomizeNeuron or 
+	 * stimulateNeuron.
+	 * @param targetLayer The target layer.
+	 * @param neuron The target neuron.
+	 * @param useRange True if range randomization should be used.
+	 * @param low The low-end of the range.
+	 * @param high The high-end of the range.
+	 * @param usePercent True if percent stimulation should be used.
+	 * @param percent The percent to stimulate by.
+	 */
+	private void randomizeNeuron(final int targetLayer,
+			final int neuron, boolean useRange, double low, double high, boolean usePercent, double percent) {
+		
+		final Randomizer d;
+		
+		if( useRange ) {
+			d = new RangeRandomizer(low,high);
+		}
+		else {
+			d = new Distort(percent);
+		}
+		
+		// check for errors
+		network.validateNeuron(targetLayer, neuron);
+		
+		// access the flat network
+		FlatNetwork flat = this.network.getStructure().getFlat();
+
+
+		// allocate new weights now that we know how big the new weights will be
+		double[] newWeights = new double[flat.getWeights().length];
+
+		// construct the new weights
+		int weightsIndex = 0;
+
+		for (int fromLayer = flat.getLayerCounts().length - 2; fromLayer >= 0; fromLayer--) {
+			int fromNeuronCount = network.getLayerTotalNeuronCount(fromLayer);
+			int toNeuronCount = network.getLayerNeuronCount(fromLayer + 1);
+			int toLayer = fromLayer + 1;
+
+			for (int toNeuron = 0; toNeuron < toNeuronCount; toNeuron++) {
+				for (int fromNeuron = 0; fromNeuron < fromNeuronCount; fromNeuron++) {
+					boolean randomize = false;
+					if ((toLayer == targetLayer) && (toNeuron == neuron))
+						randomize = true;
+					else if ((fromLayer == targetLayer)
+							&& (fromNeuron == neuron))
+						randomize = true;
+
+					double weight = this.network.getWeight(
+							fromLayer, fromNeuron, toNeuron);
+										
+					if (randomize) {
+						weight = d.randomize(weight);
+					}
+					
+					newWeights[weightsIndex++] = weight;
+				}
+			}
+		}
+
+		// swap in the new weights
+		flat.setWeights(newWeights);
+
 	}
 
 	/**

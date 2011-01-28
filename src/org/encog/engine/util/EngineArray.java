@@ -275,4 +275,20 @@ public final class EngineArray {
 		
 		return result;
 	}
+
+	public static double min(double[] weights) {
+		double result = Double.MAX_VALUE;
+		for(int i=0;i<weights.length;i++) {
+			result = Math.min(result, weights[i]);
+		}
+		return result;
+	}
+	
+	public static double max(double[] weights) {
+		double result = Double.MIN_VALUE;
+		for(int i=0;i<weights.length;i++) {
+			result = Math.max(result, weights[i]);
+		}
+		return result;
+	}
 }
