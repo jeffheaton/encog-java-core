@@ -124,11 +124,11 @@ public class TestPruneSelective extends TestCase {
 		BasicNetwork network = XOR.createTrainedXOR();
 		Assert.assertTrue( XOR.verifyXOR(network, 0.10) );
 		PruneSelective prune = new PruneSelective(network);
-		//prune.changeNeuronCount(1, 5);
+		prune.changeNeuronCount(1, 5);
 		
-		//BasicNetwork model = EncogUtility.simpleFeedForward(2,5,0,1,false);
-		//checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());
+		BasicNetwork model = EncogUtility.simpleFeedForward(2,5,0,1,false);
+		checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());
 		
-		//Assert.assertTrue( XOR.verifyXOR(network, 0.10) );
+		Assert.assertTrue( XOR.verifyXOR(network, 0.10) );
 	}
 }
