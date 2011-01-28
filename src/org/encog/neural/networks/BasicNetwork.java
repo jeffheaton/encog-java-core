@@ -24,11 +24,15 @@
 package org.encog.neural.networks;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.engine.network.flat.FlatNetworkRBF;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
@@ -47,6 +51,8 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.Persistor;
+import org.encog.persist.map.PersistConst;
+import org.encog.persist.map.PersistedObject;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
@@ -89,6 +95,20 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 */
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(BasicNetwork.class);
+	
+	public static final String TAG_CONNECTION_LIMIT = "connectionLimit";
+	public static final String TAG_BEGIN_TRAINING = "beginTraining";
+	public static final String TAG_CONTEXT_TARGET_OFFSET = "contextTargetOffset";
+	public static final String TAG_CONTEXT_TARGET_SIZE = "contextTargetSize";
+	public static final String TAG_END_TRAINING = "endTraining";
+	public static final String TAG_HAS_CONTEXT = "hasContext";
+	public static final String TAG_LAYER_COUNTS = "layerCounts";
+	public static final String TAG_LAYER_FEED_COUNTS = "layerFeedCounts";
+	public static final String TAG_LAYER_INDEX = "layerIndex";
+	public static final String TAG_WEIGHT_INDEX = "weightIndex";
+	public static final String TAG_BIAS_ACTIVATION = "biasActivation";
+
+	private static final String TAG_LAYER_CONTEXT_COUNT = "layerContextCount";
 
 	/**
 	 * Determine which member of the output is the winning neuron.
@@ -231,15 +251,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		}
 	}
 
-	/**
-	 * Create a persistor for this object.
-	 * 
-	 * @return The newly created persistor.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return null;
-	}
+
 
 	/**
 	 * @return The weights as a comma separated list.
@@ -672,5 +684,106 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		if( neuron<0 || neuron>=this.getLayerTotalNeuronCount(targetLayer)) {
 			throw new NeuralNetworkError("Invalid neuron number: " + neuron);
 		}
+	}
+	
+	public boolean supportsMapPersistence()
+	{
+		return true;
+	}
+	
+	public void persistToMap(PersistedObject obj)
+	{
+		this.getStructure().requireFlat();
+		
+		obj.clear(PersistConst.TYPE_BASIC_NETWORK);
+		obj.setStandardProperties(this);
+		
+		FlatNetwork flat = this.structure.getFlat();
+
+		if( flat instanceof FlatNetworkRBF )		
+			obj.setProperty(PersistConst.TYPE, "RBF", false);
+		else
+			obj.setProperty(PersistConst.TYPE, "FLAT", false);
+		
+		
+		PersistedObject activationFunctions = new PersistedObject();
+		for(int i=0;i<flat.getActivationFunctions().length;i++)
+		{
+			activationFunctions.setProperty("layer-"+i, flat.getActivationFunctions()[i]);
+		}
+		
+		PersistedObject objProp = new PersistedObject();
+		for( String key : this.properties.keySet() ) {
+			String value = this.properties.get(key);
+			objProp.setProperty(key, value, false);
+		}
+		obj.setProperty(PersistConst.PROPERTIES, objProp);
+		
+		obj.setProperty(PersistConst.ACTIVATION_FUNCTION, activationFunctions);
+		obj.setProperty(BasicNetwork.TAG_BEGIN_TRAINING, flat.getBeginTraining(), false);
+		obj.setProperty(BasicNetwork.TAG_CONNECTION_LIMIT, flat.getConnectionLimit(), false);		
+		obj.setProperty(BasicNetwork.TAG_CONTEXT_TARGET_OFFSET, flat.getContextTargetOffset() );
+		obj.setProperty(BasicNetwork.TAG_CONTEXT_TARGET_SIZE, flat.getContextTargetSize() );
+		obj.setProperty(BasicNetwork.TAG_END_TRAINING, flat.getEndTraining(), false );
+		obj.setProperty(BasicNetwork.TAG_HAS_CONTEXT, flat.getHasContext(), false );
+		obj.setProperty(PersistConst.INPUT_COUNT, flat.getInputCount(), false );
+		obj.setProperty(BasicNetwork.TAG_LAYER_COUNTS, flat.getLayerCounts() );
+		obj.setProperty(BasicNetwork.TAG_LAYER_FEED_COUNTS, flat.getLayerFeedCounts() );
+		obj.setProperty(BasicNetwork.TAG_LAYER_CONTEXT_COUNT, flat.getLayerContextCount() );
+
+		obj.setProperty(BasicNetwork.TAG_LAYER_INDEX, flat.getLayerIndex() );
+		obj.setProperty(PersistConst.OUTPUT, flat.getLayerOutput() );
+		obj.setProperty(PersistConst.OUTPUT_COUNT, flat.getOutputCount(), false );
+		obj.setProperty(PersistConst.NEURONS, flat.getNeuronCount(), false);
+		obj.setProperty(BasicNetwork.TAG_WEIGHT_INDEX, flat.getWeightIndex() );
+		obj.setProperty(PersistConst.WEIGHTS, flat.getWeights());
+		obj.setProperty(BasicNetwork.TAG_BIAS_ACTIVATION, flat.getBiasActivation());
+	}
+	
+	public void persistFromMap(PersistedObject obj)
+	{
+		FlatNetwork flat;
+		obj.requireType(PersistConst.TYPE_BASIC_NETWORK);
+		String networkType = obj.getPropertyString(PersistConst.TYPE, true);
+		
+		if( networkType.equals("FLAT") )		
+			flat = new FlatNetwork();
+		else if( networkType.equals("RBF") )
+			flat = new FlatNetworkRBF();
+		else
+			throw new NeuralNetworkError("Unknown flat type: " + networkType);
+		
+		flat.setBeginTraining(obj.getPropertyInt(BasicNetwork.TAG_BEGIN_TRAINING, true));
+		flat.setConnectionLimit(obj.getPropertyDouble(BasicNetwork.TAG_CONNECTION_LIMIT, true));
+		flat.setContextTargetSize(obj.getPropertyIntArray(BasicNetwork.TAG_CONTEXT_TARGET_SIZE,true) );
+		flat.setContextTargetOffset(obj.getPropertyIntArray(BasicNetwork.TAG_CONTEXT_TARGET_OFFSET,true) );
+		flat.setEndTraining( obj.getPropertyInt(BasicNetwork.TAG_END_TRAINING, true) );
+		flat.setHasContext( obj.getPropertyBoolean(BasicNetwork.TAG_HAS_CONTEXT, true ) );
+		flat.setInputCount( obj.getPropertyInt(PersistConst.INPUT_COUNT, true) );
+		flat.setLayerCounts( obj.getPropertyIntArray( BasicNetwork.TAG_LAYER_COUNTS, true) );
+		flat.setLayerFeedCounts( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_FEED_COUNTS, true) );
+		flat.setLayerIndex( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_INDEX, true) );
+		flat.setLayerOutput(obj.getPropertyDoubleArray(PersistConst.OUTPUT, true) );
+		flat.setWeightIndex(obj.getPropertyIntArray(BasicNetwork.TAG_WEIGHT_INDEX, true));
+		flat.setWeights(obj.getPropertyDoubleArray(PersistConst.WEIGHTS, true));
+		flat.setOutputCount( obj.getPropertyInt(PersistConst.OUTPUT_COUNT, true) );
+		flat.setBiasActivation(obj.getPropertyDoubleArray(BasicNetwork.TAG_BIAS_ACTIVATION, true));
+		flat.setLayerContextCount( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_CONTEXT_COUNT, true) );
+		
+		List<PersistedObject> propertiesList = obj.getPropertyValueArray(PersistConst.PROPERTIES);
+		PersistedObject networkProperties = propertiesList.get(0);
+		for(String key: networkProperties.getData().keySet() ) {
+			this.setProperty(key, networkProperties.getPropertyString(key, true));
+		}
+		
+		List<PersistedObject> activationFunctionList = obj.getPropertyValueArray(PersistConst.ACTIVATION_FUNCTION);
+		PersistedObject activationFunctions = activationFunctionList.get(0);
+		flat.setActivationFunctions(new ActivationFunction[flat.getLayerCounts().length]);
+		for(int i=0;i<flat.getActivationFunctions().length;i++)
+		{
+			flat.getActivationFunctions()[i] = activationFunctions.getPropertyActivationFunction("layer-"+i, true);
+		}
+		
+		this.structure.setFlat(flat);
 	}
 }

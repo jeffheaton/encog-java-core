@@ -348,5 +348,13 @@ public class PersistedObject extends PersistedProperty {
 		
 	}
 
+	public void setProperty(String name,
+			PersistedObject obj) {
+		
+		List<PersistedObject> list = new ArrayList<PersistedObject>();
+		list.add(obj);
+		setProperty(name,list);
+	}
+
 
 }

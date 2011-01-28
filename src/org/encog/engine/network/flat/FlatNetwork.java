@@ -720,4 +720,65 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 		this.layerOutput = layerOutput;		
 	}
 
+	public void setContextTargetOffset(int[] contextTargetOffset) {
+		this.contextTargetOffset = contextTargetOffset;
+		
+	}
+
+	public void setHasContext(boolean hasContext) {
+		this.hasContext = hasContext;		
+	}
+
+	public void setInputCount(int inputCount) {
+		this.inputCount = inputCount;	
+	}
+
+	public void setLayerCounts(int[] layerCounts) {
+		this.layerCounts = layerCounts;
+		
+	}
+
+	public void setLayerFeedCounts(int[] layerFeedCounts) {
+		this.layerFeedCounts = layerFeedCounts;
+		
+	}
+
+	public void setLayerIndex(int[] layerIndex) {
+		this.layerIndex = layerIndex;		
+	}
+
+	public void setWeightIndex(int[] weightIndex) {
+		this.weightIndex = weightIndex;
+		
+	}
+
+	public void setActivationFunctions(ActivationFunction[] af) {
+		this.activationFunctions = af;
+		
+	}
+
+	public void setContextTargetSize(int[] contextTargetSize) {
+		this.contextTargetSize = contextTargetSize;
+		
+	}
+
+	public void setOutputCount(int outputCount) {
+		this.outputCount = outputCount;		
+	}
+
+	public double[] getBiasActivation() {
+		return biasActivation;
+	}
+
+	public void setBiasActivation(double[] biasActivation) {
+		this.biasActivation = biasActivation;
+	}
+
+	public int[] getLayerContextCount() {
+		return layerContextCount;
+	}
+
+	public void setLayerContextCount(int[] layerContextCount) {
+		this.layerContextCount = layerContextCount;
+	}
 }

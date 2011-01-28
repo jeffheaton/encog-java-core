@@ -269,4 +269,9 @@ public class NeuralStructure implements Serializable {
 		
 	}
 
+	public void setFlat(FlatNetwork flat) {
+		this.flat = flat;
+		
+	}
+
 }
