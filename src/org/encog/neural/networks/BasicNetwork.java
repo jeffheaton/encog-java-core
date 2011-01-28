@@ -491,6 +491,8 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	public double getWeight(int fromLayer, int fromNeuron, int toNeuron)
 	{
 		this.structure.requireFlat();
+		this.validateNeuron(fromLayer, fromNeuron);
+		this.validateNeuron(fromLayer+1, toNeuron);
 		int fromLayerNumber = getLayerCount()-fromLayer-1;
 		int toLayerNumber = fromLayerNumber-1;
 		

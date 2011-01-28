@@ -716,4 +716,8 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 		this.weights = weights;		
 	}
 
+	public void setLayerOutput(double[] layerOutput) {
+		this.layerOutput = layerOutput;		
+	}
+
 }

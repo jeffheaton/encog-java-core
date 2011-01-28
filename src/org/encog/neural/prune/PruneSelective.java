@@ -207,9 +207,75 @@ public class PruneSelective {
 	 * @param neuronCount
 	 *            The new neuron count.
 	 */
-	private void increaseNeuronCount(final int layer, final int neuronCount) {
-		this.network.validateNeuron(layer, 0);
+	private void increaseNeuronCount(final int targetLayer, final int neuronCount) {
+
+		// check for errors
+		if( targetLayer>this.network.getLayerCount() ) {
+			throw new NeuralNetworkError("Invalid layer " + targetLayer);
+		}
 		
+		if( neuronCount<=0 ) {
+			throw new NeuralNetworkError("Invalid neuron count " + neuronCount);
+		}
+		
+		int increaseBy = neuronCount - network.getLayerNeuronCount(targetLayer);
+		
+		if( increaseBy<=0 ) {
+			throw new NeuralNetworkError("New neuron count is either a decrease or no change: " + neuronCount);
+		}
+		
+		// access the flat network
+		FlatNetwork flat = this.network.getStructure().getFlat();
+		double[] oldWeights = flat.getWeights();
+
+		// first find out how many connections there will be after this prune.
+		int connections = oldWeights.length;
+		int inBoundConnections = 0;
+		int outBoundConnections = 0;
+
+		// are connections added from the previous layer?
+		if (targetLayer > 0) {
+			inBoundConnections = this.network
+					.getLayerTotalNeuronCount(targetLayer - 1);
+			connections += inBoundConnections * increaseBy;
+		}
+
+		// are there connections added from the next layer?
+		if (targetLayer < (this.network.getLayerCount() - 1)) {
+			outBoundConnections = this.network
+					.getLayerNeuronCount(targetLayer + 1);
+			connections += outBoundConnections * increaseBy;
+		}
+		
+		// increase layer count
+		int flatLayer = network.getLayerCount() - targetLayer - 1;
+		flat.getLayerCounts()[flatLayer]+=increaseBy;
+		flat.getLayerFeedCounts()[flatLayer]+=increaseBy;
+
+		// allocate new weights now that we know how big the new weights will be
+		double[] newWeights = new double[connections];
+
+		// construct the new weights
+		int weightsIndex = 0;
+
+		for (int fromLayer = flat.getLayerCounts().length - 2; fromLayer >= 0; fromLayer--) {
+			int fromNeuronCount = network.getLayerTotalNeuronCount(fromLayer);
+			int toNeuronCount = network.getLayerNeuronCount(fromLayer + 1);
+			int toLayer = fromLayer + 1;
+
+			for (int toNeuron = 0; toNeuron < toNeuronCount; toNeuron++) {
+				for (int fromNeuron = 0; fromNeuron < fromNeuronCount; fromNeuron++) {
+					newWeights[weightsIndex++] = this.network.getWeight(
+						fromLayer, fromNeuron, toNeuron);					
+				}
+			}
+		}
+
+		// swap in the new weights
+		flat.setWeights(newWeights);
+
+		// reindex
+		reindexNetwork();		
 	}
 
 	/**
@@ -310,6 +376,9 @@ public class PruneSelective {
 			flat.getWeightIndex()[i] = weightCount;
 			neuronCount += flat.getLayerCounts()[i];			
 		}
+		
+		flat.setLayerOutput(new double[neuronCount]);
+		flat.clearContext();
 	}
 
 	/**
