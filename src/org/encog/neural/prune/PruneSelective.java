@@ -218,7 +218,8 @@ public class PruneSelective {
 			throw new NeuralNetworkError("Invalid neuron count " + neuronCount);
 		}
 		
-		int increaseBy = neuronCount - network.getLayerNeuronCount(targetLayer);
+		int oldNeuronCount = network.getLayerNeuronCount(targetLayer);
+		int increaseBy = neuronCount - oldNeuronCount;
 		
 		if( increaseBy<=0 ) {
 			throw new NeuralNetworkError("New neuron count is either a decrease or no change: " + neuronCount);
@@ -265,7 +266,14 @@ public class PruneSelective {
 
 			for (int toNeuron = 0; toNeuron < toNeuronCount; toNeuron++) {
 				for (int fromNeuron = 0; fromNeuron < fromNeuronCount; fromNeuron++) {
-					newWeights[weightsIndex++] = this.network.getWeight(
+					if( toLayer==targetLayer && toNeuron>=oldNeuronCount ) {
+						newWeights[weightsIndex++] = 0;
+					}
+					else if( fromLayer==targetLayer && fromNeuron>oldNeuronCount ) {
+						newWeights[weightsIndex++] = 0;
+					}
+					else 
+						newWeights[weightsIndex++] = this.network.getWeight(
 						fromLayer, fromNeuron, toNeuron);					
 				}
 			}
