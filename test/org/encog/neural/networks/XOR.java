@@ -32,6 +32,8 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
+import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.util.simple.EncogUtility;
 
 
 
@@ -84,6 +86,14 @@ public class XOR {
 				
 				row++;
 			}
+		}
+		
+		public static BasicNetwork createTrainedXOR()
+		{
+			double[] TRAINED_XOR_WEIGHTS = { 25.427193285452972,-26.92000502099534,20.76598054603445,-12.921266548020219,-0.9223427050161919,-1.0588373209475093,-3.80109620509867,3.1764938777876837,80.98981535707951,-75.5552829139118,37.089976176012634,74.85166823997326,75.20561368661059,-37.18307123471437,-21.044949631177417,43.81815044327334,9.648991753485689 };
+			BasicNetwork network = EncogUtility.simpleFeedForward(2, 4, 0, 1, false);
+			NetworkCODEC.arrayToNetwork(TRAINED_XOR_WEIGHTS, network);
+			return network;
 		}
 		
 		public static BasicNetwork createThreeLayerNet()

@@ -4,6 +4,7 @@ import junit.framework.TestCase;
 
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.util.simple.EncogUtility;
 import org.junit.Assert;
@@ -57,12 +58,13 @@ public class TestPruneSelective extends TestCase {
 	
 	private void checkWithModel(FlatNetwork model, FlatNetwork pruned)
 	{
+		Assert.assertEquals(model.getWeights().length, pruned.getWeights().length);
 		Assert.assertArrayEquals(model.getContextTargetOffset(),pruned.getContextTargetOffset());
 		Assert.assertArrayEquals(model.getContextTargetSize(),pruned.getContextTargetSize());
 		Assert.assertArrayEquals(model.getLayerCounts(),pruned.getLayerCounts());
 		Assert.assertArrayEquals(model.getLayerFeedCounts(),pruned.getLayerFeedCounts());
 		Assert.assertArrayEquals(model.getLayerIndex(),pruned.getLayerIndex());
-		Assert.assertEquals(model.getLayerOutput().length,model.getLayerOutput().length);
+		Assert.assertEquals(model.getLayerOutput().length,pruned.getLayerOutput().length);
 		Assert.assertArrayEquals(model.getWeightIndex(),pruned.getWeightIndex());
 	}
 	
@@ -115,5 +117,18 @@ public class TestPruneSelective extends TestCase {
 		Assert.assertEquals(63.0, inputSig,0.01);
 		Assert.assertEquals(95.0, hiddenSig,0.01);
 		Assert.assertEquals(26.0, outputSig,0.01);
+	}
+	
+	public void testIncreaseNeuronCountHidden()
+	{
+		BasicNetwork network = XOR.createTrainedXOR();
+		Assert.assertTrue( XOR.verifyXOR(network, 0.10) );
+		PruneSelective prune = new PruneSelective(network);
+		//prune.changeNeuronCount(1, 5);
+		
+		//BasicNetwork model = EncogUtility.simpleFeedForward(2,5,0,1,false);
+		//checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());
+		
+		//Assert.assertTrue( XOR.verifyXOR(network, 0.10) );
 	}
 }
