@@ -131,4 +131,34 @@ public class TestPruneSelective extends TestCase {
 		
 		Assert.assertTrue( XOR.verifyXOR(network, 0.10) );
 	}
+	
+	public void testRandomizeNeuronInput()
+	{
+		double[] d = { 0,0,0,0,0,0,0,0,0,0,0,0,0 };
+		BasicNetwork network = EncogUtility.simpleFeedForward(2,3,0,1,false);
+		NetworkCODEC.arrayToNetwork(d, network);
+		PruneSelective prune = new PruneSelective(network);
+		prune.randomizeNeuron(100, 100, 0,1);
+		Assert.assertEquals("0,0,0,0,0,100,0,0,100,0,0,100,0", network.dumpWeights());
+	}
+	
+	public void testRandomizeNeuronHidden()
+	{
+		double[] d = { 0,0,0,0,0,0,0,0,0,0,0,0,0 };
+		BasicNetwork network = EncogUtility.simpleFeedForward(2,3,0,1,false);
+		NetworkCODEC.arrayToNetwork(d, network);
+		PruneSelective prune = new PruneSelective(network);
+		prune.randomizeNeuron(100, 100, 1,1);
+		Assert.assertEquals("0,100,0,0,0,0,0,100,100,100,0,0,0", network.dumpWeights());
+	}
+	
+	public void testRandomizeNeuronOutput()
+	{
+		double[] d = { 0,0,0,0,0,0,0,0,0,0,0,0,0 };
+		BasicNetwork network = EncogUtility.simpleFeedForward(2,3,0,1,false);
+		NetworkCODEC.arrayToNetwork(d, network);
+		PruneSelective prune = new PruneSelective(network);
+		prune.randomizeNeuron(100, 100, 2,0);
+		Assert.assertEquals("100,100,100,100,0,0,0,0,0,0,0,0,0", network.dumpWeights());
+	}
 }
