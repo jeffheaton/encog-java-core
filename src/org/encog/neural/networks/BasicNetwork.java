@@ -108,7 +108,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	public static final String TAG_WEIGHT_INDEX = "weightIndex";
 	public static final String TAG_BIAS_ACTIVATION = "biasActivation";
 
-	private static final String TAG_LAYER_CONTEXT_COUNT = "layerContextCount";
+	public static final String TAG_LAYER_CONTEXT_COUNT = "layerContextCount";
 
 	/**
 	 * Determine which member of the output is the winning neuron.
@@ -698,13 +698,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		obj.clear(PersistConst.TYPE_BASIC_NETWORK);
 		obj.setStandardProperties(this);
 		
-		FlatNetwork flat = this.structure.getFlat();
-
-		if( flat instanceof FlatNetworkRBF )		
-			obj.setProperty(PersistConst.TYPE, "RBF", false);
-		else
-			obj.setProperty(PersistConst.TYPE, "FLAT", false);
-		
+		FlatNetwork flat = this.structure.getFlat();		
 		
 		PersistedObject activationFunctions = new PersistedObject();
 		for(int i=0;i<flat.getActivationFunctions().length;i++)
@@ -744,14 +738,8 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	{
 		FlatNetwork flat;
 		obj.requireType(PersistConst.TYPE_BASIC_NETWORK);
-		String networkType = obj.getPropertyString(PersistConst.TYPE, true);
 		
-		if( networkType.equals("FLAT") )		
-			flat = new FlatNetwork();
-		else if( networkType.equals("RBF") )
-			flat = new FlatNetworkRBF();
-		else
-			throw new NeuralNetworkError("Unknown flat type: " + networkType);
+		flat = new FlatNetwork();
 		
 		flat.setBeginTraining(obj.getPropertyInt(BasicNetwork.TAG_BEGIN_TRAINING, true));
 		flat.setConnectionLimit(obj.getPropertyDouble(BasicNetwork.TAG_CONNECTION_LIMIT, true));

@@ -109,4 +109,9 @@ public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 				.getOutputCount());
 	}
 
+	public void setRBF(RadialBasisFunction[] rbf) {
+		this.rbf = rbf;
+	}
+
+	
 }
