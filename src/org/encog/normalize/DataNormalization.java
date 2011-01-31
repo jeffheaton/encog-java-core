@@ -23,9 +23,7 @@
  */
 package org.encog.normalize;
 
-import org.encog.persist.annotations.EGReferenceable;
 
-@EGReferenceable
 public class DataNormalization  {
 
 

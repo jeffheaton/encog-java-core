@@ -26,9 +26,6 @@ package org.encog.util.csv;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import org.encog.persist.annotations.EGAttribute;
-import org.encog.persist.annotations.EGIgnore;
-
 /**
  * Specifies a CSV format. This allows you to determine if a decimal point or
  * decimal comma is uses. It also specifies the character that should be used to
@@ -86,19 +83,16 @@ public class CSVFormat {
 	/**
 	 * The decimal character.
 	 */
-	@EGAttribute
 	private final char decimal;
 
 	/**
 	 * The separator character.
 	 */
-	@EGAttribute
 	private final char separator;
 
 	/**
 	 * The number formatter to use for this format.
 	 */
-	@EGIgnore
 	private final NumberFormat numberFormatter;
 
 	/**

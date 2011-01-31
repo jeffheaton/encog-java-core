@@ -28,7 +28,6 @@ import org.encog.ml.genetic.genes.Gene;
 import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.persist.Persistor;
-import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -52,31 +51,26 @@ public class NEATNeuronGene extends BasicGene {
 	/**
 	 * The activation response, the slope of the activation function.
 	 */
-	@EGAttribute
 	private double activationResponse;
 
 	/**
 	 * The neuron type.
 	 */
-	@EGAttribute
 	private NEATNeuronType neuronType;
 
 	/**
 	 * True if this is recurrent.
 	 */
-	@EGAttribute
 	private boolean recurrent;
 
 	/**
 	 * The x-split.
 	 */
-	@EGAttribute
 	private double splitX;
 
 	/**
 	 * The y-split.
 	 */
-	@EGAttribute
 	private double splitY;
 
 	/**

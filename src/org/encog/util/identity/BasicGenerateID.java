@@ -25,8 +25,6 @@ package org.encog.util.identity;
 
 import java.io.Serializable;
 
-import org.encog.persist.annotations.EGAttribute;
-
 /**
  * Used to generate a unique id.
  * 
@@ -36,7 +34,6 @@ public class BasicGenerateID implements GenerateID, Serializable {
 	/**
 	 * The current ID to generate.
 	 */
-	@EGAttribute
 	private long currentID;
 
 	/**

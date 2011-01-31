@@ -29,7 +29,6 @@ import org.encog.ml.genetic.innovation.BasicInnovationList;
 import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.ml.genetic.population.Population;
 import org.encog.neural.neat.NEATNeuronType;
-import org.encog.persist.annotations.EGReference;
 
 /**
  * Implements a NEAT innovation list.
@@ -51,7 +50,6 @@ public class NEATInnovationList extends BasicInnovationList {
 	/**
 	 * The population.
 	 */
-	@EGReference
 	private Population population;
 
 	/**

@@ -28,7 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.genetic.genes.Gene;
-import org.encog.persist.annotations.EGReferenceable;
 
 /**
  * Implements a chromosome to genetic algorithm. This is an abstract class.
@@ -39,7 +38,6 @@ import org.encog.persist.annotations.EGReferenceable;
  * Genomes in this genetic algorithm consist of one or more chromosomes. 
  * 
  */
-@EGReferenceable
 public class Chromosome implements Serializable {
 
 	/**

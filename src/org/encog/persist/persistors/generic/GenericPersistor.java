@@ -66,16 +66,11 @@ public class GenericPersistor implements Persistor {
 		EncogPersistedObject current;
 		try {
 			current = (EncogPersistedObject) this.clazz.newInstance();
-			if( current.supportsMapPersistence() ) {
-				XML2Map conv = new XML2Map();
-				PersistedObject po = conv.load(in);
-				current.persistFromMap(po);
-				return current;
-			} else {
-				final XML2Object conv = new XML2Object();
-				conv.load(in, current);
-				return current;
-			}
+			
+			XML2Map conv = new XML2Map();
+			PersistedObject po = conv.load(in);
+			current.persistFromMap(po);
+			return current;			 
 		} catch (final InstantiationException e) {
 			throw new PersistError(e);
 		} catch (final IllegalAccessException e) {
@@ -97,9 +92,6 @@ public class GenericPersistor implements Persistor {
 			obj.persistToMap(po);
 			Map2XML conv = new Map2XML();
 			conv.save(po,out);
-		} else {		
-			final Object2XML conv = new Object2XML();
-			conv.save(obj, out);
 		}
 	}
 

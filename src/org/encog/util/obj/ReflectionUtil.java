@@ -37,7 +37,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
-import org.encog.persist.annotations.EGIgnore;
 import org.encog.persist.location.ResourcePersistence;
 
 /**
@@ -238,33 +237,6 @@ public final class ReflectionUtil {
 		}
 		Map<String, Class<?>> i = ReflectionUtil.classMap;
 		return ReflectionUtil.classMap.get(name);
-	}
-
-	/**
-	 * Determine if Encog persistence should access the specified field.
-	 * 
-	 * @param field
-	 *            The field to check.
-	 * @param base
-	 *            True if this is the actual Encog persisted class(top level)
-	 * @return True if the class should be accessed.
-	 */
-	public static boolean shouldAccessField(final Field field,
-			final boolean base) {
-		if (field.getAnnotation(EGIgnore.class) != null) {
-			return false;
-		}
-
-		if ((field.getModifiers() & Modifier.STATIC) == 0) {
-			if (base) {
-				if (field.getName().equalsIgnoreCase("name")
-						|| field.getName().equalsIgnoreCase("description")) {
-					return false;
-				}
-			}
-			return true;
-		}
-		return false;
 	}
 
 	/**

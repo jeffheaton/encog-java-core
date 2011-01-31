@@ -238,11 +238,6 @@ org.encog.parse.tags.Tag
 org.encog.parse.tags.TagConst
 org.encog.parse.tags.write.WriteTags
 org.encog.parse.tags.write.WriteXML
-org.encog.persist.annotations.EGAttribute
-org.encog.persist.annotations.EGIgnore
-org.encog.persist.annotations.EGReference
-org.encog.persist.annotations.EGReferenceable
-org.encog.persist.annotations.EGUnsupported
 org.encog.persist.BasicPersistedObject
 org.encog.persist.BasicPersistedSubObject
 org.encog.persist.DirectoryEntry

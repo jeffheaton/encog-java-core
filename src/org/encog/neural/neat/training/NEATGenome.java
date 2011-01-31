@@ -37,8 +37,6 @@ import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.persist.Persistor;
-import org.encog.persist.annotations.EGAttribute;
-import org.encog.persist.annotations.EGReference;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -77,37 +75,31 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	/**
 	 * The number of inputs.
 	 */
-	@EGAttribute
 	private int inputCount;
 
 	/**
 	 * The chromsome that holds the links.
 	 */
-	@EGReference
 	private Chromosome linksChromosome;
 
 	/**
 	 * THe network depth.
 	 */
-	@EGAttribute
 	private int networkDepth;
 
 	/**
 	 * The chromosome that holds the neurons.
 	 */
-	@EGReference
 	private Chromosome neuronsChromosome;
 
 	/**
 	 * The number of outputs.
 	 */
-	@EGAttribute
 	private int outputCount;
 
 	/**
 	 * The species id.
 	 */
-	@EGAttribute
 	private long speciesID;
 
 	/**

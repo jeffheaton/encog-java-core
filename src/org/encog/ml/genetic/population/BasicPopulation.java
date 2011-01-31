@@ -34,7 +34,6 @@ import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.annotations.EGReferenceable;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 import org.encog.persist.persistors.generic.GenericPersistor;
@@ -44,7 +43,6 @@ import org.encog.util.identity.GenerateID;
 /**
  * Defines the basic functionality for a population of genomes.
  */
-@EGReferenceable
 public class BasicPopulation extends BasicPersistedObject implements Population, EncogPersistedObject {
 	
 	/**

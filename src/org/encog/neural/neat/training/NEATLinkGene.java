@@ -26,9 +26,7 @@ package org.encog.neural.neat.training;
 import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.neural.neat.NEATLink;
-import org.encog.neural.neat.NEATNeuron;
 import org.encog.persist.Persistor;
-import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -48,25 +46,21 @@ public class NEATLinkGene extends BasicGene {
 	/**
 	 * The from neuron id.
 	 */
-	@EGAttribute
 	private long fromNeuronID;
 
 	/**
 	 * Is this a recurrent connection.
 	 */
-	@EGAttribute
 	private boolean recurrent;
 
 	/**
 	 * The to neuron id.
-	 */
-	@EGAttribute
+	 */	
 	private long toNeuronID;
 
 	/**
 	 * The weight of this link.
 	 */
-	@EGAttribute
 	private double weight;
 
 	/**

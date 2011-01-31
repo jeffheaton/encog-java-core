@@ -25,7 +25,6 @@ package org.encog.neural.neat.training;
 
 import org.encog.ml.genetic.innovation.BasicInnovation;
 import org.encog.neural.neat.NEATNeuronType;
-import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -53,43 +52,36 @@ public class NEATInnovation extends BasicInnovation {
 	/**
 	 * The from neuron id.
 	 */
-	@EGAttribute
 	private long fromNeuronID;
 
 	/**
 	 * The type of innovation.
 	 */
-	@EGAttribute
 	private NEATInnovationType innovationType;
 
 	/**
 	 * The neuron id.
 	 */
-	@EGAttribute
 	private long neuronID;
 
 	/**
 	 * The type of neuron, or none, if this is a link innovation.
 	 */
-	@EGAttribute
 	private NEATNeuronType neuronType;
 
 	/**
 	 * The split x property.
 	 */
-	@EGAttribute
 	private double splitX;
 
 	/**
 	 * The split y property.
 	 */
-	@EGAttribute
 	private double splitY;
 
 	/**
 	 * The to neuron's id.
 	 */
-	@EGAttribute
 	private long toNeuronID;
 
 	/**

@@ -32,7 +32,6 @@ import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
 import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.annotations.EGReference;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -85,7 +84,6 @@ public class BasicSpecies extends BasicPersistedSubObject implements Species, Se
 	/**
 	 * The owner class.
 	 */
-	@EGReference
 	private Population population;
 
 	/**

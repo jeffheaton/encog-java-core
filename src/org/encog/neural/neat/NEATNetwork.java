@@ -37,7 +37,6 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.annotations.EGAttribute;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -84,7 +83,6 @@ public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRe
 	/**
 	 * The depth of the network.
 	 */
-	@EGAttribute
 	private int networkDepth;
 
 	/**
@@ -95,7 +93,6 @@ public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRe
 	/**
 	 * Should snapshot be used to calculate the output of the neural network.
 	 */
-	@EGAttribute
 	private boolean snapshot = false;
 	
 	private int inputCount;

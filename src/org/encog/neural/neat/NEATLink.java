@@ -23,11 +23,8 @@
  */
 package org.encog.neural.neat;
 
-import java.io.Serializable;
-
 import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.annotations.EGReference;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -54,7 +51,6 @@ public class NEATLink extends BasicPersistedSubObject {
 	/**
 	 * The source neuron.
 	 */
-	@EGReference
 	private NEATNeuron fromNeuron;
 
 	/**
@@ -65,7 +61,6 @@ public class NEATLink extends BasicPersistedSubObject {
 	/**
 	 * The target neuron.
 	 */
-	@EGReference
 	private NEATNeuron toNeuron;
 
 	/**

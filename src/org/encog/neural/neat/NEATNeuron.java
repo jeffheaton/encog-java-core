@@ -28,9 +28,6 @@ import java.util.List;
 
 import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.annotations.EGAttribute;
-import org.encog.persist.annotations.EGIgnore;
-import org.encog.persist.annotations.EGReferenceable;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -46,7 +43,6 @@ import org.encog.persist.map.PersistedObject;
  * http://www.cs.ucf.edu/~kstanley/
  *
  */
-@EGReferenceable
 public class NEATNeuron extends BasicPersistedSubObject {
 
 	public static final String NEURON_ID = "neuronID";
@@ -61,7 +57,6 @@ public class NEATNeuron extends BasicPersistedSubObject {
 	 * The activation response. This is evolved to allow NEAT to scale the slope
 	 * of the activation function.
 	 */
-	@EGAttribute
 	private double activationResponse;
 
 	/**
@@ -72,19 +67,16 @@ public class NEATNeuron extends BasicPersistedSubObject {
 	/**
 	 * The neuron id.
 	 */
-	@EGAttribute
 	private long neuronID;
 
 	/**
 	 * The type of neuron this is.
 	 */
-	@EGAttribute
 	private NEATNeuronType neuronType;
 
 	/**
 	 * The output from the neuron.
 	 */
-	@EGAttribute
 	private double output;
 
 	/**
@@ -95,31 +87,26 @@ public class NEATNeuron extends BasicPersistedSubObject {
 	/**
 	 * The x-position of this neuron. Used to split links, as well as display.
 	 */
-	@EGAttribute
 	private int posX;
 
 	/**
 	 * The y-position of this neuron. Used to split links, as well as display.
 	 */
-	@EGAttribute
 	private int posY;
 
 	/**
 	 * The split value for X. Used to track splits.
 	 */
-	@EGAttribute
 	private double splitX;
 
 	/**
 	 * The split value for Y. Used to track splits.
 	 */
-	@EGAttribute
 	private double splitY;
 
 	/**
 	 * The sum activation.
 	 */
-	@EGIgnore
 	private double sumActivation;
 
 	/**

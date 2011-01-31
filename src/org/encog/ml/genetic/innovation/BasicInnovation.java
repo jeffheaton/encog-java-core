@@ -23,11 +23,8 @@
  */
 package org.encog.ml.genetic.innovation;
 
-import java.io.Serializable;
-
 import org.encog.persist.BasicPersistedSubObject;
 import org.encog.persist.Persistor;
-import org.encog.persist.annotations.EGAttribute;
 
 /**
  * Provides basic functionality for an innovation.
@@ -39,7 +36,6 @@ public class BasicInnovation extends BasicPersistedSubObject implements Innovati
 	/**
 	 * The innovation id.
 	 */
-	@EGAttribute
 	private long innovationID;
 
 	/**
