@@ -26,7 +26,6 @@ package org.encog.neural.data.image;
 import java.awt.Image;
 
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.normalize.output.OutputFieldRangeMapped;
 import org.encog.util.downsample.Downsample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -99,8 +98,8 @@ public class ImageNeuralData extends BasicNeuralData {
 				width);
 
 		for (int i = 0; i < sample.length; i++) {
-			sample[i] = OutputFieldRangeMapped.calculate(sample[i], 0,
-					255, hi,lo);
+			//sample[i] = OutputFieldRangeMapped.calculate(sample[i], 0,
+					//255, hi,lo);
 		}
 
 		this.setData(sample);
