@@ -342,4 +342,9 @@ public final class EncogUtility {
 	private EncogUtility() {
 
 	}
+
+	public static NeuralDataSet loadEGB2Memory(String filename) {
+		BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(filename));
+		return buffer.loadToMemory();
+	}
 }

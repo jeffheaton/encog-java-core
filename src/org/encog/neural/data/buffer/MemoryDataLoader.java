@@ -73,7 +73,7 @@ public class MemoryDataLoader {
 	public NeuralDataSet external2Memory() {
 		status.report(0, 0, "Importing to memory");
 
-		if (result != null) {
+		if (result == null) {
 			this.result = new BasicNeuralDataSet();
 		}
 
