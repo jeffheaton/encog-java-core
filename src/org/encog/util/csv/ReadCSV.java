@@ -103,6 +103,11 @@ public class ReadCSV {
 	 * The data.
 	 */
 	private String[] data;
+	
+	/**
+	 * The column names.
+	 */
+	private List<String> columnNames = new ArrayList<String>();
 
 	/**
 	 * Construct a CSV reader from an input stream. Allows a delimiter character
@@ -206,7 +211,9 @@ public class ReadCSV {
 				final List<String> tok = parse(line);
 
 				int i = 0;
+				this.columnNames.clear();
 				for (final String header : tok) {
+					this.columnNames.add(header.toLowerCase());
 					this.columns.put(header.toLowerCase(), i++);
 				}
 			}
@@ -420,6 +427,10 @@ public class ReadCSV {
 		}
 
 		return result;
+	}
+
+	public List<String> getColumnNames() {
+		return this.columnNames;
 	}
 
 }
