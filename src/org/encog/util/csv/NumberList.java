@@ -72,13 +72,7 @@ public final class NumberList {
 	 */
 	public static void toList(final CSVFormat format,
 			final StringBuilder result, final double[] data) {
-		result.setLength(0);
-		for (int i = 0; i < data.length; i++) {
-			if (i != 0) {
-				result.append(format.getSeparator());
-			}
-			result.append(format.format(data[i], 20));
-		}
+		toList(format, 20, result, data);
 	}
 
 	/**
@@ -112,5 +106,17 @@ public final class NumberList {
 		}
 
 		return result;
+	}
+
+	public static synchronized void toList(CSVFormat format, int precision,
+			StringBuilder result, double[] data) {
+		result.setLength(0);
+		for (int i = 0; i < data.length; i++) {
+			if (i != 0) {
+				result.append(format.getSeparator());
+			}
+			result.append(format.format(data[i], precision));
+		}
+		
 	}
 }

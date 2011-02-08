@@ -149,4 +149,5 @@ public class Equilateral {
 		}
 		return Math.sqrt(result);
 	}
+
 }
