@@ -52,6 +52,9 @@ public class BasicCachedFile extends BasicFile {
     public void analyze(String input, boolean headers, CSVFormat format)
     {
         resetStatus();
+        setInputFilename(input);
+        setExpectInputHeaders(headers);
+        setInputFormat(format);
         this.columnMapping.clear();
         this.columns.clear();
 

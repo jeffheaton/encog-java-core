@@ -99,8 +99,7 @@ public class BasicFile {
 	 */
 	public PrintWriter prepareOutputFile(String outputFile) {
 		try {
-			FileWriter outFile = new FileWriter(outputFile);
-			PrintWriter tw = new PrintWriter(outFile);
+			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 
 			// write headers, if needed
 			if (expectInputHeaders) {
