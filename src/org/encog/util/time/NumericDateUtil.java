@@ -15,7 +15,7 @@ public class NumericDateUtil {
     {
     	GregorianCalendar gc = new GregorianCalendar();
     	gc.setTime(time);
-    	int month = gc.get(Calendar.MONTH);
+    	int month = gc.get(Calendar.MONTH)+1;
     	int day = gc.get(Calendar.DAY_OF_MONTH);
     	int year = gc.get(Calendar.YEAR);
         return (long)(day + (month * MONTH_OFFSET) + (year * YEAR_OFFSET));
@@ -37,7 +37,7 @@ public class NumericDateUtil {
     {
     	GregorianCalendar gc = new GregorianCalendar();
     	gc.setTime(time);
-    	int month = gc.get(Calendar.MONTH);
+    	int month = gc.get(Calendar.MONTH)+1;
     	int day = gc.get(Calendar.DAY_OF_MONTH);
     	int year = gc.get(Calendar.YEAR);
     	GregorianCalendar gc2 = new GregorianCalendar(year,month,day);
@@ -68,7 +68,7 @@ public class NumericDateUtil {
         
     	GregorianCalendar gc = new GregorianCalendar();
     	gc.setTime(date);
-    	int month = gc.get(Calendar.MONTH);
+    	int month = gc.get(Calendar.MONTH)+1;
     	int day = gc.get(Calendar.DAY_OF_MONTH);
     	int year = gc.get(Calendar.YEAR);
         

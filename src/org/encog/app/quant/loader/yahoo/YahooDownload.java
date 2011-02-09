@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -93,6 +95,9 @@ public class YahooDownload implements MarketLoader {
 			final double low = csv.getDouble("low");
 			final double volume = csv.getDouble("volume");
 
+			NumberFormat df = DecimalFormat.getInstance();
+			df.setGroupingUsed(false);
+			
             StringBuilder line = new StringBuilder();
             line.append(NumericDateUtil.date2Long(date));
             line.append(outputFormat.getSeparator());
@@ -106,7 +111,7 @@ public class YahooDownload implements MarketLoader {
             line.append(outputFormat.getSeparator());
             line.append(outputFormat.format(close, percision));
             line.append(outputFormat.getSeparator());
-            line.append(volume);
+            line.append(df.format(volume));
             line.append(outputFormat.getSeparator());
             line.append(outputFormat.format(adjClose, percision));
             tw.println(line.toString());
