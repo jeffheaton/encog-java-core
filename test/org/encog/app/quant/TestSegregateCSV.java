@@ -81,7 +81,7 @@ public class TestSegregateCSV extends TestCase {
         Assert.assertNull(tr.readLine());
         tr.close();
 
-        tr = new BufferedReader(new FileReader(OUTPUT1_NAME));
+        tr = new BufferedReader(new FileReader(OUTPUT2_NAME));
         Assert.assertEquals("four,4", tr.readLine());
         Assert.assertNull(tr.readLine());
         tr.close();
