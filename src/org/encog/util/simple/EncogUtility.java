@@ -347,4 +347,30 @@ public final class EncogUtility {
 		BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(filename));
 		return buffer.loadToMemory();
 	}
+
+    /**
+     * Convert a CSV file to a binary training file.
+     * @param csvFile The binary file.
+     * @param binFile The binary file.
+     * @param inputCount The number of input values. 
+     * @param outputCount The number of output values.
+     * @param headers True, if there are headers on the CSV.
+     */
+    public static void convertCSV2Binary(String csvFile,
+             String binFile, int inputCount, int outputCount,
+             boolean headers)
+    {
+
+        (new File(binFile)).delete();
+        CSVNeuralDataSet csv = new CSVNeuralDataSet(csvFile.toString(),
+               inputCount, outputCount, false);
+        BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(binFile));
+        buffer.beginLoad(inputCount, outputCount);
+        for(NeuralDataPair pair : csv)
+        {
+            buffer.add(pair);
+        }
+        buffer.endLoad();
+    }
+
 }

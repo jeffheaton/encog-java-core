@@ -71,5 +71,22 @@ public class NormalizeArray {
         return result;
     }
 
+	public double getNormalizedHigh() {
+		return normalizedHigh;
+	}
+
+	public void setNormalizedHigh(double normalizedHigh) {
+		this.normalizedHigh = normalizedHigh;
+	}
+
+	public double getNormalizedLow() {
+		return normalizedLow;
+	}
+
+	public void setNormalizedLow(double normalizedLow) {
+		this.normalizedLow = normalizedLow;
+	}
+
+    
 	
 }
