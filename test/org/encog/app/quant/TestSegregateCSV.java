@@ -2,18 +2,17 @@ package org.encog.app.quant;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
 import org.encog.app.quant.segregate.SegregateCSV;
 import org.encog.app.quant.segregate.SegregateTargetPercent;
 import org.encog.util.csv.CSVFormat;
-
-import junit.framework.Assert;
-import junit.framework.TestCase;
 
 public class TestSegregateCSV extends TestCase {
 
@@ -66,7 +65,7 @@ public class TestSegregateCSV extends TestCase {
         (new File(OUTPUT2_NAME)).delete();
     }
 
-    public void TestFilterCSVNoHeaders() throws IOException
+    public void testFilterCSVNoHeaders() throws IOException
     {
         generateTestFileHeadings(false);
         SegregateCSV norm = new SegregateCSV();
