@@ -14,7 +14,6 @@ import java.util.Date;
 
 import org.encog.app.quant.loader.LoaderError;
 import org.encog.app.quant.loader.MarketLoader;
-import org.encog.neural.data.market.TickerSymbol;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.http.FormUtility;
