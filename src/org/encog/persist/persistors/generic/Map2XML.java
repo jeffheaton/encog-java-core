@@ -52,6 +52,8 @@ public class Map2XML {
 			}
 		}
 		
+		out.addAttribute(PersistConst.VERSION, "1");
+		
 		// write the opening tag
 		out.beginTag(obj.getObjectType());
 		

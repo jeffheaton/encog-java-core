@@ -74,6 +74,7 @@ public class PersistConst {
 	public static final String ENABLED = "enabled";
 	public static final String IDATA = "idata";
 	public static final String PROPERTIES = "properties";
+	public static final String VERSION = "ver";
 	
 
 }
