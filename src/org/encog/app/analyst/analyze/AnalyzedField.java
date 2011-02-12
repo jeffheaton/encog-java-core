@@ -1,5 +1,13 @@
 package org.encog.app.analyst.analyze;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.encog.app.analyst.script.AnalystScript;
+
 public class AnalyzedField {
 	
 	private String name;
@@ -12,9 +20,12 @@ public class AnalyzedField {
 	private boolean isClass;
 	private boolean isComplete;
 	private double total;
+	private int instances;
+	private double devTotal;
+	private Map<String,Object> classSize = new HashMap<String,Object>();
+	private AnalystScript script;
 	
-	
-	public AnalyzedField(String name)
+	public AnalyzedField(AnalystScript script, String name)
 	{
 		this.name = name;
 		this.min = Double.MAX_VALUE;
@@ -23,8 +34,10 @@ public class AnalyzedField {
 		this.standardDeviation = Double.NaN;
 		this.isInteger = true;
 		this.isReal = true;
-		this.isClass = false;
+		this.isClass = true;
 		this.isComplete = true;
+		this.instances  = 0;
+		this.script = script;
 	}
 	
 	/**
@@ -139,12 +152,14 @@ public class AnalyzedField {
 	}
 
 	
-	public void analyze(String str) {
+	public void analyze1(String str) {
 		
 		if( str.trim().length()==0 ) {
 			this.isComplete = false;
 			return;
 		}
+		
+		this.instances++;
 		
 		if (this.isInteger) {
 			try {
@@ -154,6 +169,11 @@ public class AnalyzedField {
 				this.total+=i;
 			} catch (NumberFormatException ex) {
 				this.isInteger = false;
+				if(!this.isReal ) {
+				this.max = 0;
+				this.min = 0;
+				this.standardDeviation = 0;
+				}
 			}
 		}
 		
@@ -164,10 +184,54 @@ public class AnalyzedField {
 				this.min = Math.min(d, this.min);
 				this.total+=d;
 			} catch (NumberFormatException ex) {
-				this.isInteger = false;
+				this.isReal = false;
+				if(!this.isInteger) {
+				this.max = 0;
+				this.min = 0;
+				this.standardDeviation = 0;
+				}
 			}
 		}
 		
+		if( this.isClass ) {
+			if( !this.classSize.containsKey(str) ) {
+				this.classSize.put(str, null);	
+			}
+			if ( this.classSize.size()>script.getConfig().getMaxClassSize() )
+				this.isClass = false;
+		}
+	}
+
+	public void completePass1() {
 		
+		this.devTotal = 0;
+		
+		if( this.instances==0)
+			this.mean = 0;
+		else
+			this.mean = this.total/this.instances;	
+	}
+	
+	public void analyze2(String str) {
+		if( str.trim().length()==0 ) {
+			return;
+		}
+		
+		if( this.isReal || this.isInteger ) {
+			double d = Double.parseDouble(str);
+			this.devTotal += Math.pow((d - this.mean),2);
+		}
+	}
+	
+	public void completePass2() {
+		this.standardDeviation = Math.sqrt(this.devTotal/this.instances);
+	}
+	
+	public List<String> getClassMembers()
+	{
+		List<String> result = new ArrayList<String>();
+		result.addAll(this.classSize.keySet());
+		Collections.sort(result);
+		return result;
 	}
 }

@@ -7,18 +7,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.encog.app.analyst.analyze.AnalyzedField;
 import org.encog.app.analyst.analyze.PerformAnalysis;
+import org.encog.app.analyst.script.AnalystScript;
+import org.encog.app.analyst.script.WriteScriptFile;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.ReadCSV;
 
 public class EncogAnalyst {
 	
 	public final static String ACTION_ANALYZE = "ANALYZE";
+		
+	private AnalystScript script = new AnalystScript();
 
 	public void analyze(File file, boolean headers, CSVFormat format)
 	{
-		PerformAnalysis a = new PerformAnalysis(file.toString(),true,CSVFormat.ENGLISH);
-		a.process();
+		PerformAnalysis a = new PerformAnalysis(script, file.toString(),headers,CSVFormat.ENGLISH);
+		a.process(this);
 		
 	}
 	
@@ -74,11 +78,44 @@ public class EncogAnalyst {
 	}
 
 	public void save(OutputStream stream) {
-
+		this.script.save(stream);
+		
 	}
 
 	public void load(InputStream stream) {
-
+		this.script.load(stream);
 	}
+	
+	
+	
+	/**
+	 * @return the script
+	 */
+	public AnalystScript getScript() {
+		return script;
+	}
+
+	public static void main(String[] args)
+	{
+		EncogAnalyst a = new EncogAnalyst();
+	
+		a.load("d:\\data\\iris.txt");
+		a.analyze(
+				new File("d:\\data\\iris_raw.csv"), 
+				false, 
+				CSVFormat.ENGLISH);
+		a.save("d:\\data\\iris.txt");
+		
+/*
+		a.analyze(
+				new File("d:\\data\\forest.csv"), 
+				false, 
+				CSVFormat.ENGLISH);
+		a.save("d:\\data\\forest.txt");*/
+		
+		System.out.println("Done");
+	}
+
+	
 
 }
