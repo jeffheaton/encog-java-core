@@ -68,6 +68,9 @@ public class ScriptSave {
 	
 	private void saveNormalize(WriteScriptFile out) {
 		out.addSection("NORMALIZE");
+		out.addSubSection("CONFIG");
+		out.writeProperty("sourceFile", this.script.getNormalize().getSourceFile());
+		out.writeProperty("targetFile", this.script.getNormalize().getTargetFile());		
 		out.addSubSection("RANGE");
 		out.addColumn("name");
 		out.addColumn("action");

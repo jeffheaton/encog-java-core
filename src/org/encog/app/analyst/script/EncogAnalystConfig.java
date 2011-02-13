@@ -7,6 +7,7 @@ import java.util.StringTokenizer;
 public class EncogAnalystConfig {
 	
 	public final static String FILE_RAW = "FILE_RAW";
+	public static final String FILE_NORMALIZE = "FILE_NORMALIZE";
 	
 	private Map<String,String> filenames = new HashMap<String,String>();
 	private int maxClassSize = 50;

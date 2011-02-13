@@ -119,6 +119,8 @@ public class EncogAnalyst {
 		}
 		
 		this.script.getNormalize().setNormalizedFields(norm);
+		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_RAW);
+		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
 	}
 	
 	public void wizard(File file, boolean b, CSVFormat english) {
