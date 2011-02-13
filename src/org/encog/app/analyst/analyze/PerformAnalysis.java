@@ -2,6 +2,7 @@ package org.encog.app.analyst.analyze;
 
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
+import org.encog.app.analyst.script.DataField;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -92,8 +93,32 @@ public class PerformAnalysis {
 
 		
 		csv.close();
+		// remove any classes that did not qualify
+		for(AnalyzedField field: this.fields) {
+			if( field.isClass() ) {
+				if( !script.getConfig().isAllowIntClasses() && field.isInteger() ) {
+					field.setClass(false);
+				}
+				
+				if( !script.getConfig().isAllowStringClasses() && (!field.isInteger() && !field.isReal()) ) {
+					field.setClass(false);
+				}
+				
+				if( !script.getConfig().isAllowRealClasses() && field.isReal() ) {
+					field.setClass(false);
+				}
+			}
+		}
 		
-		target.getScript().setFields(this.fields);
+		// now copy the fields
+		DataField[] df = new DataField[fields.length];
+		
+		for(int i=0;i<df.length;i++) {
+			df[i] = this.fields[i].finalizeField();
+		}
+		
+		target.getScript().setFields(df);
+
 	}
 
 }

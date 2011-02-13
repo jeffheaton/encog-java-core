@@ -93,6 +93,11 @@ public class WriteScriptFile {
 	public void writeProperty(String name, int value) {
 		out.println(name+"="+value);		
 	}
+
+	public void writeProperty(String name, String value) {
+		out.println(name+"="+value);	
+		
+	}
 	
 	
 	
