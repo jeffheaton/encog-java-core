@@ -1,20 +1,16 @@
 package org.encog.app.analyst.script;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.script.normalize.AnalystNormalize;
+import org.encog.app.analyst.script.normalize.NormalizedField;
 
 public class AnalystScript {
 
 	private final EncogAnalystConfig config = new EncogAnalystConfig();
 	private DataField[] fields;
-	private NormalizedField[] normalizedFields;
+	private final AnalystNormalize normalize = new AnalystNormalize();
 
 	/**
 	 * @return the config
@@ -47,19 +43,13 @@ public class AnalystScript {
 		ScriptLoad s = new ScriptLoad(this);
 		s.load(stream);
 	}
-	
 
 	/**
-	 * @return the normalizedFields
+	 * @return the normalize
 	 */
-	public NormalizedField[] getNormalizedFields() {
-		return normalizedFields;
+	public AnalystNormalize getNormalize() {
+		return normalize;
 	}
-
-	/**
-	 * @param normalizedFields the normalizedFields to set
-	 */
-	public void setNormalizedFields(NormalizedField[] normalizedFields) {
-		this.normalizedFields = normalizedFields;
-	}	
+		
+	
 }

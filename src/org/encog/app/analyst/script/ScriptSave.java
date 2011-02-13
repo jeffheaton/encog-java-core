@@ -2,6 +2,7 @@ package org.encog.app.analyst.script;
 
 import java.io.OutputStream;
 
+import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.quant.normalize.NormalizationDesired;
 
 public class ScriptSave {
@@ -73,7 +74,7 @@ public class ScriptSave {
 		out.addColumn("high");
 		out.addColumn("low");
 		out.writeLine();
-		for(NormalizedField field: this.script.getNormalizedFields()) {
+		for(NormalizedField field: this.script.getNormalize().getNormalizedFields()) {
 			out.addColumn(field.getName());
 			switch(field.getAction())
 			{

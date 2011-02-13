@@ -12,8 +12,8 @@ import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
-import org.encog.app.analyst.script.NormalizedField;
 import org.encog.app.analyst.script.WriteScriptFile;
+import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.quant.normalize.NormalizationDesired;
 import org.encog.util.csv.CSVFormat;
 
@@ -118,7 +118,7 @@ public class EncogAnalyst {
 			}			
 		}
 		
-		this.script.setNormalizedFields(norm);
+		this.script.getNormalize().setNormalizedFields(norm);
 	}
 	
 	public void wizard(File file, boolean b, CSVFormat english) {

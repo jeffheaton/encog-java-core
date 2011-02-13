@@ -1,4 +1,4 @@
-package org.encog.app.analyst.script;
+package org.encog.app.analyst.script.normalize;
 
 import org.encog.app.quant.normalize.NormalizationDesired;
 
