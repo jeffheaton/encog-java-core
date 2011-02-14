@@ -415,4 +415,12 @@ public class NormalizeCSV extends BasicFile {
 		return this.stats;
 	}
 
+	public void analyze(String inputFilename, boolean expectInputHeaders, CSVFormat inputFormat, NormalizationStats stats) {
+		this.inputFilename = inputFilename;
+		this.inputFormat = inputFormat;
+		this.expectInputHeaders = expectInputHeaders;
+		this.stats = stats;
+		this.analyzed = true;		
+	}
+
 }

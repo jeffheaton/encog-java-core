@@ -6,22 +6,22 @@ import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.quant.normalize.NormalizationDesired;
 
 public class ScriptSave {
-	
+
 	private AnalystScript script;
-	
+
 	public ScriptSave(AnalystScript script) {
 		this.script = script;
 	}
 
 	private void saveConfig(WriteScriptFile out) {
 		EncogAnalystConfig config = this.script.getConfig();
-		
+
 		out.addSection("SETUP");
 		out.addSubSection("CONFIG");
 		out.writeProperty("maxClassCount", config.getMaxClassSize());
-		out.writeProperty("allowedClasses",config.getAllowedClasses());
+		out.writeProperty("allowedClasses", config.getAllowedClasses());
 		out.addSubSection("FILENAMES");
-		for(String key:config.getFilenames().keySet()) {
+		for (String key : config.getFilenames().keySet()) {
 			String value = config.getFilenames().get(key);
 			out.writeProperty(key, value);
 		}
@@ -56,42 +56,52 @@ public class ScriptSave {
 		out.flush();
 
 		out.addSubSection("CLASSES");
+		out.addColumn("field");
+		out.addColumn("code");
+		out.addColumn("name");
+		out.writeLine();
+		
 		for (DataField field : this.script.getFields()) {
 			if (field.isClass()) {
-				out.addColumn(field.getName());
-				out.addColumns(field.getClassMembers());
-				out.writeLine();
+				for(ClassItem col: field.getClassMembers() ) {
+					out.addColumn(field.getName());
+					out.addColumn(col.getCode());
+					out.addColumn(col.getName());
+					out.writeLine();
+				}
 			}
 		}
 
 	}
-	
+
 	private void saveNormalize(WriteScriptFile out) {
 		out.addSection("NORMALIZE");
 		out.addSubSection("CONFIG");
-		out.writeProperty("sourceFile", this.script.getNormalize().getSourceFile());
-		out.writeProperty("targetFile", this.script.getNormalize().getTargetFile());		
+		out.writeProperty("sourceFile", this.script.getNormalize()
+				.getSourceFile());
+		out.writeProperty("targetFile", this.script.getNormalize()
+				.getTargetFile());
 		out.addSubSection("RANGE");
 		out.addColumn("name");
 		out.addColumn("action");
 		out.addColumn("high");
 		out.addColumn("low");
 		out.writeLine();
-		for(NormalizedField field: this.script.getNormalize().getNormalizedFields()) {
+		for (NormalizedField field : this.script.getNormalize()
+				.getNormalizedFields()) {
 			out.addColumn(field.getName());
-			switch(field.getAction())
-			{
-				case Ignore:
-					out.addColumn("ignore");
-					break;
-				case Normalize:
-					out.addColumn("range");
-					break;
-				case PassThrough:
-					out.addColumn("pass");
-					break;
+			switch (field.getAction()) {
+			case Ignore:
+				out.addColumn("ignore");
+				break;
+			case Normalize:
+				out.addColumn("range");
+				break;
+			case PassThrough:
+				out.addColumn("pass");
+				break;
 			}
-			
+
 			out.addColumn(field.getNormalizedHigh());
 			out.addColumn(field.getNormalizedLow());
 			out.writeLine();

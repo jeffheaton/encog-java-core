@@ -14,7 +14,7 @@ public class DataField {
 	private boolean isReal;
 	private boolean isClass;
 	private boolean isComplete;
-	private List<String> classMembers = new ArrayList<String>();
+	private List<ClassItem> classMembers = new ArrayList<ClassItem>();
 
 	public DataField(String name)
 	{
@@ -143,7 +143,7 @@ public class DataField {
 	/**
 	 * @return the classMembers
 	 */
-	public List<String> getClassMembers() {
+	public List<ClassItem> getClassMembers() {
 		return classMembers;
 	}
 	

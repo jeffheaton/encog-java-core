@@ -119,6 +119,9 @@ public class EncogAnalystConfig {
 		this.filenames.put(key, value);
 		
 	}
+	public String getFilename(String sourceFile) {
+		return this.filenames.get(sourceFile);
+	}
 	
 	
 }

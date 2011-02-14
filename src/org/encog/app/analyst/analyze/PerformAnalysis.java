@@ -110,6 +110,15 @@ public class PerformAnalysis {
 			}
 		}
 		
+		// merge with existing
+		if( target.getScript().getFields()!=null &&
+				fields.length==target.getScript().getFields().length )
+		{
+			for(int i=0;i<fields.length;i++) {
+				this.fields[i].setName(target.getScript().getFields()[i].getName());
+			}
+		}
+		
 		// now copy the fields
 		DataField[] df = new DataField[fields.length];
 		

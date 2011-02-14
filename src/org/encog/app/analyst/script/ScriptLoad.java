@@ -9,8 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.script.normalize.NormalizedField;
+import org.encog.app.quant.normalize.NormalizationDesired;
 
 public class ScriptLoad {
 	
@@ -71,12 +74,116 @@ public class ScriptLoad {
 		}
 	}
 	
+	private List<String> splitColumns(String line) {
+		List<String> result = new ArrayList<String>();
+		StringTokenizer tok = new StringTokenizer(line,",");
+		while(tok.hasMoreTokens()) {
+			String str = tok.nextToken().trim();
+			if( str.length()>0 && str.charAt(0)=='\"')
+			{
+				str = str.substring(1);
+				if( str.endsWith("\""))
+				{
+					str = str.substring(0,str.length()-1);
+				}
+			}
+			result.add(str);
+		}
+		return result;
+	}
+	
+	private void handleDataStats(List<String> list) {
+		List<DataField> dfs = new ArrayList<DataField>();
+		boolean first = true;
+		for(String line: list) {
+			if(!first ) {
+				List<String> cols = splitColumns(line);
+				String name = cols.get(0);
+				boolean isclass = Integer.parseInt(cols.get(1))>0;
+				boolean iscomplete = Integer.parseInt(cols.get(2))>0;
+				boolean isint = Integer.parseInt(cols.get(3))>0;
+				boolean isreal = Integer.parseInt(cols.get(4))>0;
+				double amax = Double.parseDouble(cols.get(5));
+				double amin = Double.parseDouble(cols.get(6));
+				double mean = Double.parseDouble(cols.get(7));
+				double sdev = Double.parseDouble(cols.get(8));
+				DataField df = new DataField(name);
+				df.setClass(isclass);
+				df.setComplete(iscomplete);
+				df.setInteger(isint);
+				df.setReal(isreal);
+				df.setMax(amax);
+				df.setMin(amin);
+				df.setMean(mean);
+				df.setStandardDeviation(sdev);
+				dfs.add(df);
+			} else {
+				first = false;
+			}			
+		}
+		
+		DataField[] array = new DataField[dfs.size()];
+		for(int i=0;i<array.length;i++) {
+			array[i] = dfs.get(i);
+		}
+		
+		this.script.setFields(array);
+	}
+	
+	private void handleNormalizeRange(List<String> list) {
+		List<NormalizedField> nfs = new ArrayList<NormalizedField>();
+		boolean first = true;
+		for(String line: list) {
+			if(!first ) {
+				List<String> cols = splitColumns(line);
+				String name = cols.get(0);				
+				String action = cols.get(1);
+				double high = Double.parseDouble(cols.get(2));
+				double low = Double.parseDouble(cols.get(3));
+				
+				NormalizationDesired des = null;
+				if( action.equals("range")) {
+					des = NormalizationDesired.Normalize;
+				} else if( action.equals("ignore")) {
+					des = NormalizationDesired.Ignore;
+				} else if( action.equals("pass")) {
+					des = NormalizationDesired.PassThrough;
+				}
+				NormalizedField nf = new NormalizedField(name,des,high,low);
+				nfs.add(nf);
+			} else {
+				first = false;
+			}			
+		}
+		
+		NormalizedField[] array = new NormalizedField[nfs.size()];
+		for(int i=0;i<array.length;i++) {
+			array[i] = nfs.get(i);
+		}
+		
+		this.script.getNormalize().setNormalizedFields(array);
+
+	}
+	
+	private void handleNormalizeConfig(List<String> list) {
+		Map<String, String> prop = this.handleProperties(list);
+		
+		this.script.getNormalize().setSourceFile(prop.get("sourceFile"));
+		this.script.getNormalize().setTargetFile(prop.get("targetFile"));
+	}
+	
 	private void processSubSection(String currentSection, String currentSubsection, List<String> list)
 	{
 		if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			handleConfig(list);
 		} else if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("FILENAMES") ) {
 			handleFilenames(list);
+		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("STATS") ) {
+			handleDataStats(list);
+		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("RANGE") ) {
+			handleNormalizeRange(list);
+		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			handleNormalizeConfig(list);
 		}
 	}
 

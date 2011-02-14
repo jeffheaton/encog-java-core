@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.app.analyst.script.AnalystScript;
+import org.encog.app.analyst.script.ClassItem;
 import org.encog.app.analyst.script.DataField;
 
 public class AnalyzedField extends DataField {
@@ -14,7 +15,7 @@ public class AnalyzedField extends DataField {
 	private double total;
 	private int instances;
 	private double devTotal;
-	private Map<String, Object> classSize = new HashMap<String, Object>();
+	private Map<String, ClassItem> classMap = new HashMap<String, ClassItem>();
 	private AnalystScript script;
 
 	public AnalyzedField(AnalystScript script, String name) {
@@ -65,10 +66,10 @@ public class AnalyzedField extends DataField {
 		}
 
 		if (this.isClass()) {
-			if (!this.classSize.containsKey(str)) {
-				this.classSize.put(str, null);
+			if (!this.classMap.containsKey(str)) {
+				this.classMap.put(str, new ClassItem(str,str));
 			}
-			if (this.classSize.size() > script.getConfig().getMaxClassSize())
+			if (this.classMap.size() > script.getConfig().getMaxClassSize())
 				this.setClass(false);
 		}
 	}
@@ -98,10 +99,16 @@ public class AnalyzedField extends DataField {
 		this.setStandardDeviation(Math.sqrt(this.devTotal / this.instances));
 	}
 
-	public List<String> getClassMembers() {
-		List<String> result = new ArrayList<String>();
-		result.addAll(this.classSize.keySet());
-		Collections.sort(result);
+	public List<ClassItem> getClassMembers() {
+		List<String> sorted = new ArrayList<String>();
+		sorted.addAll(this.classMap.keySet());		
+		Collections.sort(sorted);
+		
+		List<ClassItem> result = new ArrayList<ClassItem>();
+		for(String str: sorted) {
+			result.add(this.classMap.get(str));
+		}
+		
 		return result;
 	}
 
@@ -121,7 +128,7 @@ public class AnalyzedField extends DataField {
 		result.getClassMembers().clear();
 
 		if (result.isClass()) {
-			List<String> list = getClassMembers();
+			List<ClassItem> list = getClassMembers();
 			result.getClassMembers().addAll(list);
 		}
 

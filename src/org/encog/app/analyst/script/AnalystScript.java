@@ -50,6 +50,15 @@ public class AnalystScript {
 	public AnalystNormalize getNormalize() {
 		return normalize;
 	}
+
+	public DataField findDataField(String name) {
+		for(DataField dataField: this.fields) {
+			if( dataField.getName().equals(name))
+				return dataField;
+		}
+		
+		return null;
+	}
 		
 	
 }

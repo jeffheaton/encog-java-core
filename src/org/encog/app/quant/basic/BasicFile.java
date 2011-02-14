@@ -4,6 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.encog.Encog;
 import org.encog.NullStatusReportable;
 import org.encog.app.quant.QuantError;
 import org.encog.engine.StatusReportable;
@@ -85,6 +86,7 @@ public class BasicFile {
 	 * Construct the object, and set the defaults.
 	 */
 	public BasicFile() {
+		this.precision = Encog.DEFAULT_PRECISION;
 		this.report = new NullStatusReportable();
 		this.reportInterval = 10000;
 		resetStatus();

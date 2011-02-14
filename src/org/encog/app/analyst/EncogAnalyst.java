@@ -15,7 +15,11 @@ import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.WriteScriptFile;
 import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.quant.normalize.NormalizationDesired;
+import org.encog.app.quant.normalize.NormalizationStats;
+import org.encog.app.quant.normalize.NormalizeCSV;
+import org.encog.app.quant.normalize.NormalizedFieldStats;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.file.FileUtil;
 
 public class EncogAnalyst {
 	
@@ -100,7 +104,7 @@ public class EncogAnalyst {
 		return script;
 	}
 	
-	private void generateNormalizedFields() {
+	private void generateNormalizedFields(File file) {
 		NormalizedField[] norm = new NormalizedField[this.script.getFields().length];
 		DataField[] dataFields = this.getScript().getFields();
 		
@@ -118,6 +122,8 @@ public class EncogAnalyst {
 			}			
 		}
 		
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_NORMALIZE, FileUtil.addFilenameBase(file, "_norm").toString());
+		
 		this.script.getNormalize().setNormalizedFields(norm);
 		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_RAW);
 		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
@@ -125,7 +131,36 @@ public class EncogAnalyst {
 	
 	public void wizard(File file, boolean b, CSVFormat english) {
 		analyze(file, b, english);
-		generateNormalizedFields();
+		generateNormalizedFields(file);
+	}
+	
+	public void normalize()
+	{
+		// get filenames
+		String sourceFile = this.script.getConfig().getFilename( this.script.getNormalize().getSourceFile() );
+		String targetFile = this.script.getConfig().getFilename( this.script.getNormalize().getTargetFile() );
+		
+		// prepare to normalize
+		NormalizeCSV norm = new NormalizeCSV();
+		NormalizedField[] normFields = this.script.getNormalize().getNormalizedFields();
+		NormalizationStats stats = new NormalizationStats(normFields.length);
+		
+		int index = 0;
+		for(NormalizedField normField: this.script.getNormalize().getNormalizedFields())
+		{
+			NormalizedFieldStats nfs = new NormalizedFieldStats(); 
+			DataField dataField = this.script.findDataField(normField.getName());
+			stats.getStats()[index++] = nfs;
+			nfs.setName(normField.getName());
+			nfs.setAction(normField.getAction());
+			nfs.setNormalizedHigh(normField.getNormalizedHigh());
+			nfs.setNormalizedLow(normField.getNormalizedLow());
+			nfs.setActualHigh(dataField.getMax());
+			nfs.setActualLow(dataField.getMin());
+		}
+		
+		norm.analyze(sourceFile,false,CSVFormat.ENGLISH, stats);
+		norm.normalize(targetFile);
 	}
 
 	public static void main(String[] args)
@@ -137,6 +172,7 @@ public class EncogAnalyst {
 				new File("d:\\data\\iris_raw.csv"), 
 				false, 
 				CSVFormat.ENGLISH);
+		a.normalize();
 		a.save("d:\\data\\iris.txt");
 		
 /*
