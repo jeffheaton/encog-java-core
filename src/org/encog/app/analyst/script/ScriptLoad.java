@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -130,6 +131,51 @@ public class ScriptLoad {
 		this.script.setFields(array);
 	}
 	
+	private void handleDataClasses(List<String> list) {
+		
+		Map<String,List<ClassItem>> map = new HashMap<String,List<ClassItem>>();
+		
+		boolean first = true;
+		for(String line: list) {
+			if(!first ) {
+				List<String> cols = splitColumns(line);
+				String field = cols.get(0);
+				String code = cols.get(1);
+				String name = cols.get(2);
+				
+				DataField df = this.script.findDataField(field);
+				
+				if( df==null ) {
+					throw new AnalystError("Attempting to add class to unknown field: " + name);
+				}
+				
+				List<ClassItem> classItems;
+				
+				if( !map.containsKey(field) ) {
+					classItems = new ArrayList<ClassItem>();
+					map.put(field, classItems);
+				} else {
+					classItems = map.get(field);
+				}
+				
+				classItems.add(new ClassItem(code,name));
+			} else {
+				first = false;
+			}			
+		}
+		
+		for(DataField field: this.script.getFields())
+		{
+			if( field.isClass() ) {
+				List<ClassItem> classList = map.get(field.getName());
+				Collections.sort(classList);
+				field.getClassMembers().clear();
+				field.getClassMembers().addAll(classList);
+			}
+		}
+
+	}
+	
 	private void handleNormalizeRange(List<String> list) {
 		List<NormalizedField> nfs = new ArrayList<NormalizedField>();
 		boolean first = true;
@@ -162,7 +208,6 @@ public class ScriptLoad {
 		}
 		
 		this.script.getNormalize().setNormalizedFields(array);
-
 	}
 	
 	private void handleNormalizeConfig(List<String> list) {
@@ -180,12 +225,16 @@ public class ScriptLoad {
 			handleFilenames(list);
 		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("STATS") ) {
 			handleDataStats(list);
+		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("CLASSES") ) {
+			handleDataClasses(list);
 		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("RANGE") ) {
 			handleNormalizeRange(list);
 		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			handleNormalizeConfig(list);
 		}
 	}
+
+	
 
 	public void load(InputStream stream) {
 		try {

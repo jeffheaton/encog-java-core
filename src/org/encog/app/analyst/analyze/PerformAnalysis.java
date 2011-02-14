@@ -1,7 +1,10 @@
 package org.encog.app.analyst.analyze;
 
+import java.util.List;
+
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
+import org.encog.app.analyst.script.ClassItem;
 import org.encog.app.analyst.script.DataField;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -115,7 +118,22 @@ public class PerformAnalysis {
 				fields.length==target.getScript().getFields().length )
 		{
 			for(int i=0;i<fields.length;i++) {
+				// copy the old field name
 				this.fields[i].setName(target.getScript().getFields()[i].getName());
+				
+				if( this.fields[i].isClass() ) {
+					List<ClassItem> t = this.fields[i].getClassMembers();
+					List<ClassItem> s = target.getScript().getFields()[i].getClassMembers();
+					
+					if( s.size()==t.size())
+					{
+						for(int j=0;j<s.size();j++)
+						{
+							if( t.get(j).getCode().equals(s.get(j).getCode()))
+								t.get(j).setName(s.get(j).getName());
+						}
+					}
+				}
 			}
 		}
 		
