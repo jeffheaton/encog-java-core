@@ -60,8 +60,8 @@ public class TrainingSetUtil {
 				input.setData(i, d);
 			}
 
-			if (inputSize > 0) {
-				ideal = new BasicNeuralData(inputSize);
+			if (idealSize > 0) {
+				ideal = new BasicNeuralData(idealSize);
 				for (int i = 0; i < idealSize; i++) {
 					double d = csv.getDouble(index++);
 					ideal.setData(i, d);

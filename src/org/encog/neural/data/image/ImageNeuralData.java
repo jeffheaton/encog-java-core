@@ -98,8 +98,10 @@ public class ImageNeuralData extends BasicNeuralData {
 				width);
 
 		for (int i = 0; i < sample.length; i++) {
-			//sample[i] = OutputFieldRangeMapped.calculate(sample[i], 0,
-					//255, hi,lo);
+			
+	        sample[i] =  ((sample[i] - 0)
+	                / (255 - 0))
+	                * (hi - lo) + lo;
 		}
 
 		this.setData(sample);
