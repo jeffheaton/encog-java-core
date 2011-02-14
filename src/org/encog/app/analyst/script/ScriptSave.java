@@ -26,6 +26,15 @@ public class ScriptSave {
 			out.writeProperty(key, value);
 		}
 	}
+	
+	private void saveClassify(WriteScriptFile out) {
+		out.addSection("CLASSIFY");
+		out.addSection("CONFIG");
+		out.writeProperty("sourceFile", this.script.getClassify()
+				.getSourceFile());
+		out.writeProperty("targetFile", this.script.getClassify()
+				.getTargetFile());		
+	}
 
 	private void saveData(WriteScriptFile out) {
 		out.addSection("DATA");
@@ -113,6 +122,7 @@ public class ScriptSave {
 		saveConfig(out);
 		saveData(out);
 		saveNormalize(out);
+		saveClassify(out);
 		out.flush();
 	}
 }

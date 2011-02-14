@@ -3,6 +3,7 @@ package org.encog.app.analyst.script;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.encog.app.analyst.script.classify.AnalystClassify;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.normalize.NormalizedField;
 
@@ -11,6 +12,7 @@ public class AnalystScript {
 	private final EncogAnalystConfig config = new EncogAnalystConfig();
 	private DataField[] fields;
 	private final AnalystNormalize normalize = new AnalystNormalize();
+	private final AnalystClassify classify = new AnalystClassify();
 
 	/**
 	 * @return the config
@@ -59,6 +61,14 @@ public class AnalystScript {
 		
 		return null;
 	}
+
+	/**
+	 * @return the classify
+	 */
+	public AnalystClassify getClassify() {
+		return classify;
+	}
 		
+	
 	
 }
