@@ -236,7 +236,7 @@ public class JacobianChainRule implements ComputeJacobian {
 						// for each weight of the next neuron
 						for (int k = 0; k 
 						  < fromNeuronCount; k++) {
-							sum += network.getWeight(toLayer, k, j) * output;
+							sum += network.getWeight(fromLayer, k, j) * output;
 						}
 					}
 
