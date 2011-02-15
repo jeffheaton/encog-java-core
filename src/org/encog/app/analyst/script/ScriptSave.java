@@ -22,6 +22,9 @@ public class ScriptSave {
 		out.addSubSection("CONFIG");
 		out.writeProperty("maxClassCount", config.getMaxClassSize());
 		out.writeProperty("allowedClasses", config.getAllowedClasses());
+		out.writeProperty("outputHeaders", config.isOutputHeaders());
+		out.writeProperty("inputHeaders", config.isInputHeaders());
+		out.writeProperty("csvFormat", config.getCSVFormat());
 		out.addSubSection("FILENAMES");
 		for (String key : config.getFilenames().keySet()) {
 			String value = config.getFilenames().get(key);

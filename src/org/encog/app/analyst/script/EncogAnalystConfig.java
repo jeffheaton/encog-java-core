@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.encog.util.csv.CSVFormat;
+
 public class EncogAnalystConfig {
 	
 	public final static String FILE_RAW = "FILE_RAW";
@@ -15,6 +17,9 @@ public class EncogAnalystConfig {
 	private boolean allowIntClasses = true;
 	private boolean allowRealClasses = false;
 	private boolean allowStringClasses = true;
+	private boolean outputHeaders = true;
+	private boolean inputHeaders = false;
+	private CSVFormat csvFormat = CSVFormat.ENGLISH;
 	/**
 	 * @return the maxClassSize
 	 */
@@ -123,6 +128,56 @@ public class EncogAnalystConfig {
 	public String getFilename(String sourceFile) {
 		return this.filenames.get(sourceFile);
 	}
+	
+	/**
+	 * @return the outputHeaders
+	 */
+	public boolean isOutputHeaders() {
+		return outputHeaders;
+	}
+	/**
+	 * @param outputHeaders the outputHeaders to set
+	 */
+	public void setOutputHeaders(boolean outputHeaders) {
+		this.outputHeaders = outputHeaders;
+	}
+	/**
+	 * @return the csvFormat
+	 */
+	public CSVFormat getCSVFormat() {
+		return csvFormat;
+	}
+	/**
+	 * @param csvFormat the csvFormat to set
+	 */
+	public void setCSVFormat(CSVFormat csvFormat) {
+		this.csvFormat = csvFormat;
+	}
+	public void setCSVFormat(String value) {
+		if( value.equals("deccomma") ) {
+			this.csvFormat = CSVFormat.DECIMAL_COMMA;
+		} else {
+			this.csvFormat = CSVFormat.DECIMAL_POINT;
+		}
+			
+		
+	}
+	/**
+	 * @return the inputHeaders
+	 */
+	public boolean isInputHeaders() {
+		return inputHeaders;
+	}
+	/**
+	 * @param inputHeaders the inputHeaders to set
+	 */
+	public void setInputHeaders(boolean inputHeaders) {
+		this.inputHeaders = inputHeaders;
+	}
+	
+	
+	
+	
 	
 	
 }

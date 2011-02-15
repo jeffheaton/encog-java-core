@@ -35,6 +35,8 @@ public class EncogAnalyst {
 	public void analyze(File file, boolean headers, CSVFormat format)
 	{
 		script.getConfig().setFilename(EncogAnalystConfig.FILE_RAW,file.toString());
+		script.getConfig().setCSVFormat(format);
+		script.getConfig().setInputHeaders(headers);
 		PerformAnalysis a = new PerformAnalysis(script, file.toString(),headers,CSVFormat.ENGLISH);
 		a.process(this);
 		
@@ -173,22 +175,31 @@ public class EncogAnalyst {
 		analyze(file, b, english);
 		generateNormalizedFields(file);
 		generateClassifiedFields(file);		
-	}
+	}	
 	
 	public void classify()
 	{
+		// mark generated
+		this.script.markGenerated(this.script.getClassify().getTargetFile());
+		
 		// get filenames
 		String sourceFile = this.script.getConfig().getFilename( this.script.getClassify().getSourceFile() );
 		String targetFile = this.script.getConfig().getFilename( this.script.getClassify().getTargetFile() );
 		
 		// prepare to classify
+		boolean headers = this.script.expectInputHeaders(this.script.getClassify().getSourceFile());
 		ClassifyCSV classify = new ClassifyCSV();
-		classify.analyze(sourceFile, false, CSVFormat.ENGLISH, 4);
+		classify.setProduceOutputHeaders(this.script.getConfig().isOutputHeaders());
+		classify.analyze(sourceFile, headers, CSVFormat.ENGLISH, 4);
 		classify.process(targetFile, ClassifyMethod.Equilateral, -1, null);
 	}
 	
 	public void normalize()
 	{
+		// mark generated
+		this.script.markGenerated(this.script.getNormalize().getTargetFile());
+		
+		
 		// get filenames
 		String sourceFile = this.script.getConfig().getFilename( this.script.getNormalize().getSourceFile() );
 		String targetFile = this.script.getConfig().getFilename( this.script.getNormalize().getTargetFile() );
@@ -212,7 +223,9 @@ public class EncogAnalyst {
 			nfs.setActualLow(dataField.getMin());
 		}
 		
-		norm.analyze(sourceFile,false,CSVFormat.ENGLISH, stats);
+		boolean headers = this.script.expectInputHeaders(this.script.getNormalize().getSourceFile());
+		norm.analyze(sourceFile,headers,this.script.getConfig().getCSVFormat(), stats);
+		norm.setProduceOutputHeaders(this.script.getConfig().isOutputHeaders());
 		norm.normalize(targetFile);
 	}
 

@@ -2,6 +2,8 @@ package org.encog.app.analyst.script;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.encog.app.analyst.script.classify.AnalystClassify;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
@@ -13,6 +15,7 @@ public class AnalystScript {
 	private DataField[] fields;
 	private final AnalystNormalize normalize = new AnalystNormalize();
 	private final AnalystClassify classify = new AnalystClassify();
+	private final Set<String> generated = new HashSet<String>();
 
 	/**
 	 * @return the config
@@ -70,5 +73,19 @@ public class AnalystScript {
 	}
 		
 	
+	public void markGenerated(String filename) {
+		this.generated.add(filename);
+	}
 	
+	public boolean isGenerated(String filename) {
+		return this.generated.contains(filename);
+	}
+	
+	public boolean expectInputHeaders(String filename)
+	{
+		if( isGenerated(filename) )
+			return this.config.isOutputHeaders();
+		else
+			return this.config.isInputHeaders();
+	}
 }

@@ -98,6 +98,22 @@ public class WriteScriptFile {
 		out.println(name+"="+value);	
 		
 	}
+
+	public void writeProperty(String name, boolean value) {
+		out.println(name+"="+(value?'t':'f'));		
+	}
+
+	public void writeProperty(String name, CSVFormat csvFormat) {
+		String fmt;
+		if( csvFormat==CSVFormat.ENGLISH || csvFormat==CSVFormat.ENGLISH || csvFormat==CSVFormat.DECIMAL_POINT) {
+			fmt = "decpnt";
+		} else if( csvFormat==CSVFormat.DECIMAL_COMMA ) {
+			fmt = "deccomma";
+		} else {
+			fmt = "decpnt";
+		}
+		out.println(name+"="+fmt);
+	}
 	
 	
 	

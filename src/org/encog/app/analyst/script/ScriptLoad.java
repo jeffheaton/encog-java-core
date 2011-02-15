@@ -58,6 +58,12 @@ public class ScriptLoad {
 			}
 			else if( name.equals("allowedClasses")) {
 				this.script.getConfig().setAllowedClasses(value);
+			} else if( name.equals("csvFormat")) {
+				this.script.getConfig().setCSVFormat(value);
+			} else if( name.equals("outputHeaders") ) {
+				this.script.getConfig().setOutputHeaders(value.trim().equalsIgnoreCase("t"));
+			} else if( name.equals("inputHeaders") ) {
+				this.script.getConfig().setInputHeaders(value.trim().equalsIgnoreCase("t"));
 			} else {
 				throw new AnalystError("Invalid setup item: " + name);
 			}
