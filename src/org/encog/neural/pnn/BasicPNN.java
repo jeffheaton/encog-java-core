@@ -24,6 +24,7 @@
 package org.encog.neural.pnn;
 
 import org.encog.mathutil.EncogMath;
+import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -50,7 +51,7 @@ import org.encog.neural.data.basic.BasicNeuralDataSet;
  * by Timothy Masters, PhD (http://www.timothymasters.info/)
  * John Wiley & Sons Inc (Computers); April 3, 1995, ISBN: 0471105880
  */
-public class BasicPNN extends AbstractPNN {
+public class BasicPNN extends AbstractPNN implements MLRegression {
 
 	/**
 	 * The sigma's specify the widths of each kernel used.
