@@ -165,7 +165,6 @@ org.encog.neural.networks.training.cross.NetworkFold
 org.encog.neural.networks.training.genetic.GeneticScoreAdapter
 org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm
 org.encog.neural.networks.training.genetic.NeuralGenome
-org.encog.neural.networks.training.hebbian.HebbianTraining
 org.encog.neural.networks.training.LearningRate
 org.encog.neural.networks.training.lma.ComputeJacobian
 org.encog.neural.networks.training.lma.JacobianChainRule
