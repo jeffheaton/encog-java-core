@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.encog.app.analyst.analyze.AnalyzedField;
 import org.encog.app.analyst.analyze.PerformAnalysis;
@@ -13,7 +15,10 @@ import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.WriteScriptFile;
+import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.normalize.NormalizedField;
+import org.encog.app.quant.classify.ClassifyCSV;
+import org.encog.app.quant.classify.ClassifyMethod;
 import org.encog.app.quant.normalize.NormalizationDesired;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
@@ -132,9 +137,54 @@ public class EncogAnalyst {
 		this.script.getClassify().setTargetFile(EncogAnalystConfig.FILE_CLASSIFY);
 	}
 	
+	private void generateClassifiedFields(File file) {
+
+		List<ClassifyField> classifyFields = new ArrayList<ClassifyField>();
+		DataField[] dataFields = this.getScript().getFields();
+		
+		for(int i=0;i<this.script.getFields().length;i++)
+		{
+			DataField f = dataFields[i];
+			
+			if( f.isClass() ) {
+				ClassifyMethod method;
+				
+				if( f.getClassMembers().size()>=3 )
+					method = ClassifyMethod.Equilateral;
+				else
+					method = ClassifyMethod.OneOf;
+				
+				ClassifyField cField = new ClassifyField(f.getName(),method);
+				classifyFields.add(cField);
+			}
+		}
+		
+		ClassifyField[] array = new ClassifyField[classifyFields.size()];
+		for(int i=0;i<array.length;i++) {
+			array[i] = classifyFields.get(i);
+		}
+		
+		this.script.getClassify().setClassifiedFields(array);
+
+		
+	}
+	
 	public void wizard(File file, boolean b, CSVFormat english) {
 		analyze(file, b, english);
 		generateNormalizedFields(file);
+		generateClassifiedFields(file);		
+	}
+	
+	public void classify()
+	{
+		// get filenames
+		String sourceFile = this.script.getConfig().getFilename( this.script.getClassify().getSourceFile() );
+		String targetFile = this.script.getConfig().getFilename( this.script.getClassify().getTargetFile() );
+		
+		// prepare to classify
+		ClassifyCSV classify = new ClassifyCSV();
+		classify.analyze(sourceFile, false, CSVFormat.ENGLISH, 4);
+		classify.process(targetFile, ClassifyMethod.Equilateral, -1, null);
 	}
 	
 	public void normalize()
@@ -176,6 +226,7 @@ public class EncogAnalyst {
 				false, 
 				CSVFormat.ENGLISH);
 		a.normalize();
+		a.classify();
 		a.save("d:\\data\\iris.txt");
 		
 /*

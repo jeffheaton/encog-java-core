@@ -2,7 +2,9 @@ package org.encog.app.analyst.script;
 
 import java.io.OutputStream;
 
+import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.normalize.NormalizedField;
+import org.encog.app.quant.classify.ClassifyMethod;
 import org.encog.app.quant.normalize.NormalizationDesired;
 
 public class ScriptSave {
@@ -33,7 +35,25 @@ public class ScriptSave {
 		out.writeProperty("sourceFile", this.script.getClassify()
 				.getSourceFile());
 		out.writeProperty("targetFile", this.script.getClassify()
-				.getTargetFile());		
+				.getTargetFile());
+		
+		out.addSection("FIELDS");
+		out.addColumn("name");
+		out.addColumn("type");
+		out.writeLine();
+		for(ClassifyField field: this.script.getClassify().getClassifiedFields())
+		{
+			out.addColumn(field.getName());
+			switch(field.getMethod()) {
+				case Equilateral:
+					out.addColumn("equilateral");
+					break;
+				case OneOf:
+					out.addColumn("oneof");
+					break;
+			}
+			out.writeLine();
+		}
 	}
 
 	private void saveData(WriteScriptFile out) {

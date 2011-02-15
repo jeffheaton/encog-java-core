@@ -2,7 +2,7 @@ package org.encog.app.analyst.script.classify;
 
 public class AnalystClassify {
 
-	private ClassifyField[] fields;
+	private ClassifyField[] classifiedFields;
 	private String sourceFile = "";
 	private String targetFile = "";
 	
@@ -31,18 +31,17 @@ public class AnalystClassify {
 		this.targetFile = targetFile;
 	}
 	/**
-	 * @return the fields
+	 * @return the classifiedFields
 	 */
-	public ClassifyField[] getFields() {
-		return fields;
+	public ClassifyField[] getClassifiedFields() {
+		return classifiedFields;
 	}
 	/**
-	 * @param fields the fields to set
+	 * @param classifiedFields the classifiedFields to set
 	 */
-	public void setFields(ClassifyField[] fields) {
-		this.fields = fields;
+	public void setClassifiedFields(ClassifyField[] classifiedFields) {
+		this.classifiedFields = classifiedFields;
 	}
-	
 	
 	
 }
