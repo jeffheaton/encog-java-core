@@ -193,7 +193,6 @@ org.encog.neural.networks.training.Strategy
 org.encog.neural.networks.training.Train
 org.encog.neural.networks.training.TrainingError
 org.encog.neural.networks.training.TrainingSetScore
-org.encog.neural.networks.training.TrainingStatusUtility
 org.encog.neural.NeuralNetworkError
 org.encog.neural.pattern.ADALINEPattern
 org.encog.neural.pattern.ART1Pattern

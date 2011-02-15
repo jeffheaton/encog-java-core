@@ -25,10 +25,8 @@ package org.encog.neural.networks.training;
 
 import java.util.List;
 
-import org.encog.cloud.EncogCloud;
 import org.encog.ml.MLMethod;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
 
 /**
  * Interface for all neural network training methods. This allows the training
@@ -99,17 +97,6 @@ public interface Train {
 	 *            strategies.
 	 */
 	void setError(double error);
-
-	/**
-	 * Set the cloud use to track the training.
-	 * @param cloud The cloud used to track the training.
-	 */
-	void setCloud(EncogCloud cloud);
-	
-	/**
-	 * @return The cloud used to track the training.
-	 */
-	EncogCloud getCloud();
 	
 	/**
 	 * @return True if training can progress no further.

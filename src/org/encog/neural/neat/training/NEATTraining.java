@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.encog.cloud.EncogCloud;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -43,7 +42,6 @@ import org.encog.ml.genetic.species.Species;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
@@ -202,11 +200,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * Determines if we are using snapshot mode.
 	 */
 	private boolean snapshot;
-
-	/**
-	 * The Encog cloud.
-	 */
-	private EncogCloud cloud;
 	
 	/**
 	 * The iteration number.
@@ -529,13 +522,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 */
 	public void finishTraining() {
 
-	}
-
-	/**
-	 * @return The Encog cloud in use. 
-	 */
-	public EncogCloud getCloud() {
-		return this.cloud;
 	}
 
 	/**
@@ -883,13 +869,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 	}
 
-	/**
-	 * Set the Encog cloud to use.
-	 * @param cloud The Encog cloud to use.
-	 */
-	public void setCloud(final EncogCloud cloud) {
-		this.cloud = cloud;
-	}
 
 	/**
 	 * Not used.
