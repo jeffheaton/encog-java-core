@@ -128,7 +128,7 @@ public class BasicPNN extends AbstractPNN {
 			if (getOutputMode() == PNNOutputMode.Classification) {
 				int pop = (int) pair.getIdeal().getData(0);
 				out[pop] += dist;
-			} else if (getOutputMode() == PNNOutputMode.Classification) {
+			} else if (getOutputMode() == PNNOutputMode.Unsupervised) {
 				for (int i = 0; i < getInputCount(); i++) {
 					out[i] += dist * pair.getInput().getData(i);
 				}
@@ -224,6 +224,10 @@ public class BasicPNN extends AbstractPNN {
 			for(NeuralDataPair pair: samples) {
 				int i = (int)pair.getIdeal().getData(0);
 				this.countPer[i]++;
+			}
+			
+			for(int i=0;i<this.priors.length;i++) {
+				this.priors[i] = -1;
 			}
 
 		}

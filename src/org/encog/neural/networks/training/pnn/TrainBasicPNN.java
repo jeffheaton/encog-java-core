@@ -437,7 +437,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 			}
 		}
 
-		if (this.network.getOutputMode() == PNNOutputMode.Regression) {
+		if (this.network.getOutputMode() == PNNOutputMode.Classification) {
 			psum = 0.0;
 			for (pop = 0; pop < this.network.getOutputCount(); pop++) {
 				if (this.network.getPriors()[pop] >= 0.0) {
