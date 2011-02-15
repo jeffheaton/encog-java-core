@@ -230,7 +230,7 @@ public class NormalizeCSV extends BasicFile {
             tw = new PrintWriter(new FileWriter(file));
 
             // write headers, if needed
-            if (this.isExpectInputHeaders() )
+            if (this.isProduceOutputHeaders() )
             {
                 writeHeaders(tw);
             }

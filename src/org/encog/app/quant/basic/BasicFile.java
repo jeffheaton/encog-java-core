@@ -83,12 +83,18 @@ public class BasicFile {
 	private int currentRecord;
 
 	/**
+	 * Should output headers be produced?
+	 */
+	private boolean produceOutputHeaders;
+
+	/**
 	 * Construct the object, and set the defaults.
 	 */
 	public BasicFile() {
 		this.precision = Encog.DEFAULT_PRECISION;
 		this.report = new NullStatusReportable();
 		this.reportInterval = 10000;
+		this.produceOutputHeaders = true;
 		resetStatus();
 	}
 
@@ -104,17 +110,26 @@ public class BasicFile {
 			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 
 			// write headers, if needed
-			if (expectInputHeaders) {
+			if (this.produceOutputHeaders) {
 				int index = 0;
 				StringBuilder line = new StringBuilder();
-				for (String str : this.inputHeadings) {
-					if (line.length() > 0) {
-						line.append(",");
+
+				if (this.inputHeadings != null) {
+					for (String str : this.inputHeadings) {
+						if (line.length() > 0) {
+							line.append(",");
+						}
+						line.append("\"");
+						line.append(str);
+						line.append("\"");
+						index++;
 					}
-					line.append("\"");
-					line.append(str);
-					line.append("\"");
-					index++;
+				} else {
+					for(int i=0;i<this.columnCount;i++) {
+						line.append("\"field-");
+						line.append(i);
+						line.append("\"");
+					}
 				}
 				tw.println(line.toString());
 			}
@@ -217,6 +232,11 @@ public class BasicFile {
 			this.inputHeadings = new String[csv.getColumnNames().size()];
 			for (int i = 0; i < csv.getColumnNames().size(); i++) {
 				this.inputHeadings[i] = csv.getColumnNames().get(i);
+			}
+		} else {
+			this.inputHeadings = new String[csv.getColumnCount()];
+			for (int i = 0; i < csv.getColumnCount(); i++) {
+				this.inputHeadings[i] = "field-" + i;
 			}
 		}
 	}
@@ -444,6 +464,20 @@ public class BasicFile {
 	 */
 	public void setReportInterval(int reportInterval) {
 		this.reportInterval = reportInterval;
+	}
+
+	/**
+	 * @return the produceOutputHeaders
+	 */
+	public boolean isProduceOutputHeaders() {
+		return produceOutputHeaders;
+	}
+
+	/**
+	 * @param produceOutputHeaders the produceOutputHeaders to set
+	 */
+	public void setProduceOutputHeaders(boolean produceOutputHeaders) {
+		this.produceOutputHeaders = produceOutputHeaders;
 	}
 
 }
