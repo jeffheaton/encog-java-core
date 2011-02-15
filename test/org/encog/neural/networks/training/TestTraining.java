@@ -38,6 +38,7 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
 import org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm;
+import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation;
@@ -58,6 +59,17 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train rprop = new ResilientPropagation(network, trainingData);
+		NetworkUtil.testTraining(rprop,0.03);
+	}
+	
+	@Test
+	public void testLMA() throws Throwable
+	{
+		Logging.stopConsoleLogging();
+		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		
+		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
+		Train rprop = new LevenbergMarquardtTraining(network, trainingData);
 		NetworkUtil.testTraining(rprop,0.03);
 	}
 	
