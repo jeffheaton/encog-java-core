@@ -34,10 +34,6 @@ import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.EncogPersistedObject;
-import org.encog.persist.Persistor;
-import org.encog.persist.persistors.BasicNeuralDataSetPersistor;
 import org.encog.util.obj.ObjectCloner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class BasicNeuralDataSet extends BasicPersistedObject implements Serializable,
+public class BasicNeuralDataSet implements Serializable,
 		NeuralDataSet {
 
 	/**
@@ -232,15 +228,6 @@ public class BasicNeuralDataSet extends BasicPersistedObject implements Serializ
 	 */
 	public void close() {
 		// nothing to close
-	}
-
-	/**
-	 * Create a persistor for this object.
-	 * 
-	 * @return A persistor for this object.
-	 */
-	public Persistor createPersistor() {
-		return new BasicNeuralDataSetPersistor();
 	}
 
 	/**

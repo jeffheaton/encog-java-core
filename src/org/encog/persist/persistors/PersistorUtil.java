@@ -101,11 +101,6 @@ public final class PersistorUtil {
 		Persistor persistor;
 		
 		try {
-			// handle any hard coded ones
-			if (className.equals("TrainingData")) {
-				return new BasicNeuralDataSetPersistor();
-			}
-
 			// find using classes
 			final String name = className + "Persistor";
 			final Class< ? > c = Class.forName("org.encog.persist.persistors."
