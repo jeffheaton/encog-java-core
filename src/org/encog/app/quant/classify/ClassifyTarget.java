@@ -6,142 +6,140 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.app.quant.basic.BasicFile;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.csv.NumberList;
 
 public class ClassifyTarget {
-    /**
-     * @return The classes that this field can hold.
-     */
-    public List<ClassItem> getClasses() { return this.classes; } 
+	/**
+	 * @return The classes that this field can hold.
+	 */
+	public List<ClassItem> getClasses() {
+		return this.classes;
+	}
 
-    /**
-     * The index of this field.
-     */
-    private int targetIndex;
+	/**
+	 * The index of this field.
+	 */
+	private int targetIndex;
 
-    /**
-     * The high-value that this field is normalized into.
-     */
-    private double high;
+	/**
+	 * The high-value that this field is normalized into.
+	 */
+	private double high;
 
-    /**
-     * The low value that this field is normalized into.
-     */
-    private double low;
+	/**
+	 * The low value that this field is normalized into.
+	 */
+	private double low;
 
-    /**
-     * True, if this field is numeric.
-     */
-    private boolean numeric;
-    
-    private int insertAt;
-    private String originalName;
-    private boolean inserted;
+	/**
+	 * True, if this field is numeric.
+	 */
+	private boolean numeric;
 
-    /**
-     * @return If equilateral classification is used, this is the Equilateral object.
-     */
-    public Equilateral getEquilateralEncode() { return this.eq; }
+	private int insertAt;
+	private String originalName;
+	private boolean inserted;
 
-    /**
-     * The classification method to use.
-     */
-    private ClassifyMethod method;
+	/**
+	 * @return If equilateral classification is used, this is the Equilateral object.
+	 */
+	public Equilateral getEquilateralEncode() {
+		return this.eq;
+	}
 
-    /**
-     * The list of classes.
-     */
-    private List<ClassItem> classes = new ArrayList<ClassItem>();
+	/**
+	 * The classification method to use.
+	 */
+	private ClassifyMethod method;
 
-    /**
-     * If equilateral classification is used, this is the Equilateral object.
-     */
-    private Equilateral eq;
+	/**
+	 * The list of classes.
+	 */
+	private List<ClassItem> classes = new ArrayList<ClassItem>();
 
-    /**
-     * Allows the index of a field to be looked up.
-     */
-    private Map<String, Integer> lookup = new HashMap<String, Integer>();
-    
-    private final ClassifyStats owner;
-    
-    public ClassifyTarget(ClassifyStats owner) {
-    	this.owner = owner;
-    }
+	/**
+	 * If equilateral classification is used, this is the Equilateral object.
+	 */
+	private Equilateral eq;
 
-    /** 
-     * @return Returns the number of columns needed for this classification.  The number
-     * of columns needed will vary, depending on the classification method used.
-     */
-    public int getColumnsNeeded()
-    {
-            switch (this.method)
-            {
-                case Equilateral:
-                    return this.classes.size() - 1;
-                case OneOf:
-                    return this.classes.size();
-                case SingleField:
-                    return 1;
-                default:
-                    return -1;
-            }
+	/**
+	 * Allows the index of a field to be looked up.
+	 */
+	private Map<String, Integer> lookup = new HashMap<String, Integer>();
 
-    }
+	private final ClassifyStats owner;
+
+	public ClassifyTarget(ClassifyStats owner) {
+		this.owner = owner;
+	}
+
+	/** 
+	 * @return Returns the number of columns needed for this classification.  The number
+	 * of columns needed will vary, depending on the classification method used.
+	 */
+	public int getColumnsNeeded() {
+		switch (this.method) {
+		case Equilateral:
+			return this.classes.size() - 1;
+		case OneOf:
+			return this.classes.size();
+		case SingleField:
+			return 1;
+		default:
+			return -1;
+		}
+
+	}
 
 	/**
 	 * Init any internal structures.
 	 */
-    public void init()
-    {
-        this.eq = new Equilateral(this.classes.size(), high, low);
+	public void init() {
+		this.eq = new Equilateral(this.classes.size(), high, low);
 
-        // build lookup map
-        for (int i = 0; i < this.classes.size(); i++)
-        {
-            this.lookup.put(classes.get(i).getName(), classes.get(i).getIndex()) ;
-        }
-    }
-    
-    /**
-     * Lookup the specified field.
-     * @param str The name of the field to lookup.
-     * @return The index of the field, or -1 if not found.
-     */
-    public int lookup(String str)
-    {
-        if (!this.lookup.containsKey(str))
-            return -1;
-        return this.lookup.get(str);
-    }
+		// build lookup map
+		for (int i = 0; i < this.classes.size(); i++) {
+			this.lookup
+					.put(classes.get(i).getName(), classes.get(i).getIndex());
+		}
+	}
 
-    /**
-     * Determine what class the specified data belongs to.
-     * @param data The data to analyze.
-     * @return The class the data belongs to.
-     */
-    public ClassItem determineClass(double[] data)
-    {
-        int resultIndex = 0;
+	/**
+	 * Lookup the specified field.
+	 * @param str The name of the field to lookup.
+	 * @return The index of the field, or -1 if not found.
+	 */
+	public int lookup(String str) {
+		if (!this.lookup.containsKey(str))
+			return -1;
+		return this.lookup.get(str);
+	}
 
-        switch (this.method)
-        {
-            case Equilateral:
-                resultIndex = this.eq.decode(data);
-                break;
-            case OneOf:
-                resultIndex = EngineArray.indexOfLargest(data);
-                break;
-            case SingleField:
-                resultIndex = (int)data[0];
-                break;
-        }
+	/**
+	 * Determine what class the specified data belongs to.
+	 * @param data The data to analyze.
+	 * @return The class the data belongs to.
+	 */
+	public ClassItem determineClass(double[] data) {
+		int resultIndex = 0;
 
-        return this.classes.get(resultIndex);
-    }
+		switch (this.method) {
+		case Equilateral:
+			resultIndex = this.eq.decode(data);
+			break;
+		case OneOf:
+			resultIndex = EngineArray.indexOfLargest(data);
+			break;
+		case SingleField:
+			resultIndex = (int) data[0];
+			break;
+		}
 
+		return this.classes.get(resultIndex);
+	}
 
 	/**
 	 * @return The high-range of the normalization target.
@@ -212,7 +210,7 @@ public class ClassifyTarget {
 
 	public void add(ClassItem item) {
 		this.classes.add(item);
-		
+
 	}
 
 	/**
@@ -228,7 +226,7 @@ public class ClassifyTarget {
 	public void setTargetIndex(int targetIndex) {
 		this.targetIndex = targetIndex;
 	}
-	
+
 	/**
 	 * Perform the encoding for "one of".
 	 * @param classNumber The class number.
@@ -258,11 +256,11 @@ public class ClassifyTarget {
 	public String encodeEquilateral(int classNumber) {
 		StringBuilder result = new StringBuilder();
 		double[] d = this.eq.encode(classNumber);
-		NumberList
-				.toList(this.getOwner().getFormat(), this.owner.getPrecision(), result, d);
+		NumberList.toList(this.getOwner().getFormat(),
+				this.owner.getPrecision(), result, d);
 		return result.toString();
 	}
-	
+
 	/**
 	 * Encode a single field.
 	 * @param classNumber The class number to encode.
@@ -342,6 +340,39 @@ public class ClassifyTarget {
 		this.inserted = inserted;
 	}
 
-	
+	public String encodeHeaders(String name) {
+		StringBuilder line = new StringBuilder();
+		switch (this.method) {
+		case SingleField:
+			BasicFile.appendComma(line);
+			line.append('\"');
+			line.append(name);
+			line.append('\"');
+			break;
+		case Equilateral:
+			for (int i = 0; i < this.classes.size() - 1; i++) {
+				BasicFile.appendComma(line);
+				line.append('\"');
+				line.append(name);
+				line.append('-');
+				line.append(i);
+				line.append('\"');
+			}
+			break;
+		case OneOf:
+			for (int i = 0; i < this.classes.size(); i++) {
+				BasicFile.appendComma(line);
+				line.append('\"');
+				line.append(name);
+				line.append('-');
+				line.append(i);
+				line.append('\"');
+			}
+			break;
+		default:
+			return null;
+		}
+		return line.toString();
+	}
 
 }

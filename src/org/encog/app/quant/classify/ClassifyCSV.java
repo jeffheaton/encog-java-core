@@ -10,7 +10,6 @@ import java.util.List;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 import org.encog.util.csv.ReadCSV;
 
 /**
@@ -55,33 +54,33 @@ public class ClassifyCSV extends BasicFile {
 		this.setInputFormat(format);
 		this.classify.setPrecision(this.getPrecision());
 		this.classify.setFormat(format);
-		
+
 		ReadCSV csv = new ReadCSV(this.getInputFilename(),
 				this.isExpectInputHeaders(), this.getInputFormat());
 		csv.next();
 		this.setColumnCount(csv.getColumnCount());
-		readHeaders(csv);		
+		readHeaders(csv);
 		csv.close();
-				
+
 		this.setAnalyzed(true);
 	}
-	
-	public void addTarget(int classField, ClassifyMethod method, int insertAt, String originalName)
-	{
-		addTarget(classField,method,1,-1,insertAt,originalName);
+
+	public void addTarget(int classField, ClassifyMethod method, int insertAt,
+			String originalName) {
+		addTarget(classField, method, 1, -1, insertAt, originalName);
 	}
-	
-	public void addTarget(String classField, ClassifyMethod method, double high, double low, int insertAt, String originalName)
-	{
-		for(int i=0;i<this.getInputHeadings().length;i++) {
-			if( classField.equals(this.getInputHeadings()[i])) {
-				addTarget(i,method,high,low,insertAt,originalName);
+
+	public void addTarget(String classField, ClassifyMethod method,
+			double high, double low, int insertAt, String originalName) {
+		for (int i = 0; i < this.getInputHeadings().length; i++) {
+			if (classField.equals(this.getInputHeadings()[i])) {
+				addTarget(i, method, high, low, insertAt, originalName);
 			}
 		}
 	}
-	
-	public void addTarget(int classField, ClassifyMethod method, double high, double low, int insertAt, String originalName)
-	{
+
+	public void addTarget(int classField, ClassifyMethod method, double high,
+			double low, int insertAt, String originalName) {
 		List<String> classesFound = new ArrayList<String>();
 		ClassifyTarget target = new ClassifyTarget(this.classify);
 		target.setTargetIndex(classField);
@@ -90,7 +89,7 @@ public class ClassifyCSV extends BasicFile {
 		target.setOriginalName(originalName);
 		target.setHigh(high);
 		target.setLow(low);
-		
+
 		resetStatus();
 		int recordCount = 0;
 		ReadCSV csv = new ReadCSV(this.getInputFilename(),
@@ -146,14 +145,12 @@ public class ClassifyCSV extends BasicFile {
 		}
 
 		target.init();
-		
+
 		this.classify.add(classField, target);
-		
+
 		reportDone(true);
 
 	}
-
-
 
 	/**
 	 * Prepare the output file, write headers if needed.
@@ -163,37 +160,53 @@ public class ClassifyCSV extends BasicFile {
 	 * @return The output stream for the text file.
 	 */
 	public PrintWriter prepareOutputFile(String outputFile) {
-		
+
 		try {
 			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 			// write headers, if needed
 			if (this.isProduceOutputHeaders()) {
-				int index = 0;
 				StringBuilder line = new StringBuilder();
-				for (String str : this.getInputHeadings()) {
-					
-					for( ClassifyTarget target: this.classify.getFields().values() ) {
-					
+
+				for (ClassifyTarget target : this.classify.getFields().values()) {
+					target.setInserted(false);
+				}
+
+				for (int i = 0; i < this.getColumnCount(); i++) {
+
+					for (ClassifyTarget target : this.classify.getFields()
+							.values()) {
+
 						String org = target.getOriginalName();
-						
-					if ( org!=null && index == target.getTargetIndex() ) {
-						if (line.length() > 0) {
-							line.append(",");
+
+						// do we need to insert the orig. field
+						if (org != null && i == target.getTargetIndex()) {
+							BasicFile.appendComma(line);
+							line.append("\"");
+							line.append(org);
+							line.append("\"");
+						}						
+
+						// do we need to insert the classify field
+						if (target.getInsertAt() == i) {
+							BasicFile.appendComma(line);
+							line.append(target.encodeHeaders(this.getInputHeadings()[i]));
+							target.setInserted(true);
+						} else if( i != target.getTargetIndex() ) {
+							// insert regular field
+							BasicFile.appendComma(line);
+							line.append("\"");
+							line.append(this.getInputHeadings()[i]);
+							line.append("\"");
 						}
-
-						line.append("\"");
-						line.append(org);
-						line.append("\"");
 					}
-
-					if (line.length() > 0) {
-						line.append(",");
-					}
-					line.append("\"");
-					line.append(this.getInputHeadings()[index++]);
-					line.append("\"");
 				}
+				
+				for (ClassifyTarget target : this.classify.getFields()
+						.values()) {
+					BasicFile.appendComma(line);
+					line.append(target.encodeHeaders(this.getInputHeadings()[target.getTargetIndex()]));
 				}
+				
 				tw.println(line.toString());
 			}
 
@@ -201,9 +214,7 @@ public class ClassifyCSV extends BasicFile {
 		} catch (IOException e) {
 			throw new QuantError(e);
 		}
-
 	}
-
 
 	/**
 	 * Process the file.
@@ -218,62 +229,63 @@ public class ClassifyCSV extends BasicFile {
 		PrintWriter tw;
 
 		validateAnalyzed();
-		
-		if( this.classify.getFields().size()==0) {
+
+		if (this.classify.getFields().size() == 0) {
 			throw new QuantError("No classify targets defined.");
 		}
 
 		tw = this.prepareOutputFile(outputFile);
-		
-		for(ClassifyTarget target: this.classify.getFields().values() ) {
+
+		for (ClassifyTarget target : this.classify.getFields().values()) {
 			target.setInserted(false);
 		}
-		
-		ReadCSV csv = new ReadCSV(this.getInputFilename(), this.isExpectInputHeaders(),
-				this.getInputFormat());
+
+		ReadCSV csv = new ReadCSV(this.getInputFilename(),
+				this.isExpectInputHeaders(), this.getInputFormat());
 		this.classify.init();
 
 		resetStatus();
 		while (csv.next()) {
 			updateStatus(false);
 			StringBuilder line = new StringBuilder();
-			
+
 			for (int i = 0; i < this.getColumnCount(); i++) {
 				if (i > 0) {
 					line.append(this.getInputFormat().getSeparator());
 				}
-				
+
 				boolean shouldInsert = true;
-				
-				for(ClassifyTarget target: this.classify.getFields().values() ) {
+
+				for (ClassifyTarget target : this.classify.getFields().values()) {
 					if (target.getInsertAt() == i) {
-						int classNumber = target.lookup(csv
-								.get(target.getTargetIndex()));
-						
+						int classNumber = target.lookup(csv.get(target
+								.getTargetIndex()));
+
 						line.append(target.encode(classNumber));
 						line.append(this.getInputFormat().getSeparator());
 						target.setInserted(true);
-					}	
-					
-					if (target.getOriginalName() == null && i == target.getTargetIndex()) {
+					}
+
+					if (target.getOriginalName() == null
+							&& i == target.getTargetIndex()) {
 						shouldInsert = false;
 					}
 				}
-				
-				if( shouldInsert)
+
+				if (shouldInsert)
 					line.append(csv.get(i));
 			}
 
 			// if we failed to insert the class field anywhere, then insert it
 			// at the end
-			for(ClassifyTarget target: this.classify.getFields().values() ) {
-				if (line.charAt(line.length() - 1) != this.getInputFormat().getSeparator())
+			for (ClassifyTarget target : this.classify.getFields().values()) {
+				if (line.charAt(line.length() - 1) != this.getInputFormat()
+						.getSeparator())
 					line.append(this.getInputFormat().getSeparator());
-				int classNumber = target.lookup(csv
-						.get(target.getTargetIndex()));
+				int classNumber = target
+						.lookup(csv.get(target.getTargetIndex()));
 				line.append(target.encode(classNumber));
 			}
-		
 
 			tw.println(line.toString());
 		}
@@ -283,6 +295,5 @@ public class ClassifyCSV extends BasicFile {
 		reportDone(false);
 		this.classify.init();
 	}
-
 
 }

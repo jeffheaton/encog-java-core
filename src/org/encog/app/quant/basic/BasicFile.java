@@ -479,5 +479,10 @@ public class BasicFile {
 	public void setProduceOutputHeaders(boolean produceOutputHeaders) {
 		this.produceOutputHeaders = produceOutputHeaders;
 	}
+	
+	public static void appendComma(StringBuilder line) {
+		if( line.length()>0 && !line.toString().endsWith(","))
+			line.append(',');		
+	}
 
 }
