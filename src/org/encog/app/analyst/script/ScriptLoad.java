@@ -13,7 +13,9 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.normalize.NormalizedField;
+import org.encog.app.quant.classify.ClassifyMethod;
 import org.encog.app.quant.normalize.NormalizationDesired;
 
 public class ScriptLoad {
@@ -223,6 +225,47 @@ public class ScriptLoad {
 		this.script.getNormalize().setTargetFile(prop.get("targetFile"));
 	}
 	
+	private void handleClassifyConfig(List<String> list) {
+		Map<String, String> prop = this.handleProperties(list);
+		
+		this.script.getClassify().setSourceFile(prop.get("sourceFile"));
+		this.script.getClassify().setTargetFile(prop.get("targetFile"));
+	}
+	
+	private void handleClassifyFields(List<String> list) {
+		List<ClassifyField> nfs = new ArrayList<ClassifyField>();
+		boolean first = true;
+		for(String line: list) {
+			if(!first ) {
+				List<String> cols = splitColumns(line);
+				String name = cols.get(0);				
+				String action = cols.get(1);
+				double high = Double.parseDouble(cols.get(2));
+				double low = Double.parseDouble(cols.get(3));
+				
+				ClassifyMethod des = null;
+				if( action.equals("equilateral")) {
+					des = ClassifyMethod.Equilateral;
+				} else if( action.equals("oneof")) {
+					des = ClassifyMethod.OneOf;
+				} else if( action.equals("single")) {
+					des = ClassifyMethod.SingleField;
+				}
+				ClassifyField nf = new ClassifyField(name,des,high,low);
+				nfs.add(nf);
+			} else {
+				first = false;
+			}			
+		}
+		
+		ClassifyField[] array = new ClassifyField[nfs.size()];
+		for(int i=0;i<array.length;i++) {
+			array[i] = nfs.get(i);
+		}
+		
+		this.script.getClassify().setClassifiedFields(array);
+	}
+	
 	private void processSubSection(String currentSection, String currentSubsection, List<String> list)
 	{
 		if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
@@ -237,6 +280,10 @@ public class ScriptLoad {
 			handleNormalizeRange(list);
 		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			handleNormalizeConfig(list);
+		} else if( currentSection.equals("CLASSIFY") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			handleClassifyConfig(list);
+		}  else if( currentSection.equals("CLASSIFY") && currentSubsection.equalsIgnoreCase("FIELDS") ) {
+			handleClassifyFields(list);
 		}
 	}
 

@@ -43,6 +43,8 @@ public class ScriptSave {
 		out.addSection("FIELDS");
 		out.addColumn("name");
 		out.addColumn("type");
+		out.addColumn("high");
+		out.addColumn("low");
 		out.writeLine();
 		for(ClassifyField field: this.script.getClassify().getClassifiedFields())
 		{
@@ -54,7 +56,12 @@ public class ScriptSave {
 				case OneOf:
 					out.addColumn("oneof");
 					break;
+				case SingleField:
+					out.addColumn("single");
+					break;
 			}
+			out.addColumn(field.getHigh());
+			out.addColumn(field.getLow());
 			out.writeLine();
 		}
 	}

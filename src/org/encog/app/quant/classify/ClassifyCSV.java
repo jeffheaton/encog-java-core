@@ -55,15 +55,29 @@ public class ClassifyCSV extends BasicFile {
 		this.setInputFormat(format);
 		this.classify.setPrecision(this.getPrecision());
 		this.classify.setFormat(format);
+		
+		ReadCSV csv = new ReadCSV(this.getInputFilename(),
+				this.isExpectInputHeaders(), this.getInputFormat());
+		csv.next();
+		this.setColumnCount(csv.getColumnCount());
+		readHeaders(csv);		
+		csv.close();
 				
 		this.setAnalyzed(true);
-
-
 	}
 	
 	public void addTarget(int classField, ClassifyMethod method, int insertAt, String originalName)
 	{
 		addTarget(classField,method,1,-1,insertAt,originalName);
+	}
+	
+	public void addTarget(String classField, ClassifyMethod method, double high, double low, int insertAt, String originalName)
+	{
+		for(int i=0;i<this.getInputHeadings().length;i++) {
+			if( classField.equals(this.getInputHeadings()[i])) {
+				addTarget(i,method,high,low,insertAt,originalName);
+			}
+		}
 	}
 	
 	public void addTarget(int classField, ClassifyMethod method, double high, double low, int insertAt, String originalName)
@@ -89,9 +103,7 @@ public class ClassifyCSV extends BasicFile {
 			recordCount++;
 		}
 		this.setRecordCount(recordCount);
-		this.setColumnCount(csv.getColumnCount());
 
-		readHeaders(csv);
 		csv.close();
 
 		// determine if class is numeric
@@ -206,6 +218,10 @@ public class ClassifyCSV extends BasicFile {
 		PrintWriter tw;
 
 		validateAnalyzed();
+		
+		if( this.classify.getFields().size()==0) {
+			throw new QuantError("No classify targets defined.");
+		}
 
 		tw = this.prepareOutputFile(outputFile);
 		

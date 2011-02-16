@@ -9,12 +9,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.app.analyst.analyze.AnalyzedField;
 import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
-import org.encog.app.analyst.script.WriteScriptFile;
 import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.quant.classify.ClassifyCSV;
@@ -156,7 +154,7 @@ public class EncogAnalyst {
 				else
 					method = ClassifyMethod.OneOf;
 				
-				ClassifyField cField = new ClassifyField(f.getName(),method);
+				ClassifyField cField = new ClassifyField(f.getName(),method,1,-1);
 				classifyFields.add(cField);
 			}
 		}
@@ -191,7 +189,13 @@ public class EncogAnalyst {
 		ClassifyCSV classify = new ClassifyCSV();
 		classify.setProduceOutputHeaders(this.script.getConfig().isOutputHeaders());
 		classify.analyze(sourceFile, headers, CSVFormat.ENGLISH);
-		classify.addTarget(4, ClassifyMethod.Equilateral, -1, null);
+		
+		for( ClassifyField field : this.script.getClassify().getClassifiedFields() ) {
+			
+			classify.addTarget(field.getName(), field.getMethod(),field.getHigh(),field.getLow(), -1, null);	
+		}
+		
+		
 		classify.process(targetFile);
 	}
 	
