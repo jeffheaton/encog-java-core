@@ -65,8 +65,8 @@ public class BestMatchingUnit {
 	 * Calculate the best matching unit (BMU). This is the output neuron that
 	 * has the lowest Euclidean distance to the input vector.
 	 * 
-	 * @param synapse
-	 *            The synapse to calculate for.
+	 * @param matrix
+	 *            The matrix to calculate for.
 	 * @param input
 	 *            The input vector.
 	 * @return The output neuron number that is the BMU.
@@ -101,8 +101,8 @@ public class BestMatchingUnit {
 	 * input vector.  This is the square root of the squares of the differences
 	 * between the weight and input vectors.
 	 * 
-	 * @param synapse
-	 *            The synapse to get the weights from.
+	 * @param matrix
+	 *            The matrix to get the weights from.
 	 * @param input
 	 *            The input vector.
 	 * @param outputNeuron

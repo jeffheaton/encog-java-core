@@ -409,7 +409,7 @@ public class PruneSelective {
 	 * 
 	 * @param percent
 	 *            The percent to randomize by.
-	 * @param layer
+	 * @param targetLayer
 	 *            The layer that the neuron is on.
 	 * @param neuron
 	 *            The neuron to randomize.

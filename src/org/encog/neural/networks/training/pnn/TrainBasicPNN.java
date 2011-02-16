@@ -136,9 +136,9 @@ public class TrainBasicPNN implements CalculationCriteria {
 	/**
 	 * Calculate the error with multiple sigmas.
 	 * @param x The data.
-	 * @param direc The first derivative.
-	 * @param deriv2 The 2nd derivatives.
-	 * @param b Calculate the derivative.
+	 * @param der1 The first derivative.
+	 * @param der2 The 2nd derivatives.
+	 * @param der Calculate the derivative.
 	 * @return The error.
 	 */
 	public double calcErrorWithMultipleSigma(final double[] x,

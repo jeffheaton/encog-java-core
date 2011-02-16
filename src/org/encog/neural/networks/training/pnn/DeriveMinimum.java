@@ -25,7 +25,6 @@ package org.encog.neural.networks.training.pnn;
 
 import org.encog.engine.EncogEngine;
 import org.encog.engine.util.EngineArray;
-import org.encog.neural.pnn.AbstractPNN;
 
 /**
  * This class determines optimal values for multiple sigmas in a PNN kernel.
@@ -42,8 +41,6 @@ public class DeriveMinimum {
 	/**
 	 * Derive the minimum, using a conjugate gradient method.
 	 * 
-	 * @param itmax
-	 *            The maximum iterations.
 	 * @param maxError
 	 *            Stop at this error rate.
 	 * @param eps
