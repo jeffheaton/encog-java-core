@@ -190,8 +190,9 @@ public class EncogAnalyst {
 		boolean headers = this.script.expectInputHeaders(this.script.getClassify().getSourceFile());
 		ClassifyCSV classify = new ClassifyCSV();
 		classify.setProduceOutputHeaders(this.script.getConfig().isOutputHeaders());
-		classify.analyze(sourceFile, headers, CSVFormat.ENGLISH, 4);
-		classify.process(targetFile, ClassifyMethod.Equilateral, -1, null);
+		classify.analyze(sourceFile, headers, CSVFormat.ENGLISH);
+		classify.addTarget(4, ClassifyMethod.Equilateral, -1, null);
+		classify.process(targetFile);
 	}
 	
 	public void normalize()

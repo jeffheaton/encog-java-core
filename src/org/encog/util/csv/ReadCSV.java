@@ -333,12 +333,12 @@ public class ReadCSV {
 	/**
 	 * Obtain a column as an integer referenced by a string.
 	 * 
-	 * @param col
+	 * @param i
 	 *            The column header name being read.
 	 * @return The column data as an integer.
 	 */
-	public int getInt(final String col) {
-		final String str = get(col);
+	public int getInt(final int i) {
+		final String str = get(i);
 		try {
 			return this.format.getNumberFormatter().parse(str).intValue();
 		} catch (final ParseException e) {

@@ -39,8 +39,6 @@ public class ClassifyCSV extends BasicFile {
 	 */
 	public ClassifyCSV() {
 		this.classify = new ClassifyStats();
-		this.classify.setHigh(1);
-		this.classify.setLow(-1);
 	}
 
 	/**
@@ -50,16 +48,35 @@ public class ClassifyCSV extends BasicFile {
 	 * @param format The format of the input file.
 	 * @param classField The field to be classified.
 	 */
-	public void analyze(String inputFile, boolean headers, CSVFormat format,
-			int classField) {
-		List<String> classesFound = new ArrayList<String>();
+	public void analyze(String inputFile, boolean headers, CSVFormat format) {
+
 		this.setInputFilename(inputFile);
 		this.setExpectInputHeaders(headers);
 		this.setInputFormat(format);
-		this.classify.setClassField(classField);
-
+		this.classify.setPrecision(this.getPrecision());
+		this.classify.setFormat(format);
+				
 		this.setAnalyzed(true);
 
+
+	}
+	
+	public void addTarget(int classField, ClassifyMethod method, int insertAt, String originalName)
+	{
+		addTarget(classField,method,1,-1,insertAt,originalName);
+	}
+	
+	public void addTarget(int classField, ClassifyMethod method, double high, double low, int insertAt, String originalName)
+	{
+		List<String> classesFound = new ArrayList<String>();
+		ClassifyTarget target = new ClassifyTarget(this.classify);
+		target.setTargetIndex(classField);
+		target.setMethod(method);
+		target.setInsertAt(insertAt);
+		target.setOriginalName(originalName);
+		target.setHigh(high);
+		target.setLow(low);
+		
 		resetStatus();
 		int recordCount = 0;
 		ReadCSV csv = new ReadCSV(this.getInputFilename(),
@@ -78,12 +95,12 @@ public class ClassifyCSV extends BasicFile {
 		csv.close();
 
 		// determine if class is numeric
-		this.classify.setNumeric(true);
+		target.setNumeric(true);
 		for (String key : classesFound) {
-			this.classify.setNumeric(false);
+			target.setNumeric(false);
 			try {
 				Integer.parseInt(key);
-				this.classify.setNumeric(true);
+				target.setNumeric(true);
 				break;
 			} catch (NumberFormatException ex) {
 
@@ -91,8 +108,8 @@ public class ClassifyCSV extends BasicFile {
 		}
 
 		// sort either by string or numeric
-		this.classify.getClasses().clear();
-		if (this.classify.isNumeric()) {
+		target.getClasses().clear();
+		if (target.isNumeric()) {
 			// sort numeric
 			int[] temp = new int[classesFound.size()];
 			for (int i = 0; i < classesFound.size(); i++)
@@ -101,7 +118,7 @@ public class ClassifyCSV extends BasicFile {
 
 			// create classes
 			for (int i = 0; i < temp.length; i++) {
-				this.classify.getClasses().add(new ClassItem("" + temp[i], i));
+				target.getClasses().add(new ClassItem("" + temp[i], i));
 			}
 		} else {
 			// sort string
@@ -112,77 +129,18 @@ public class ClassifyCSV extends BasicFile {
 
 			// create classes
 			for (int i = 0; i < temp.length; i++) {
-				this.classify.getClasses().add(new ClassItem(temp[i], i));
+				target.getClasses().add(new ClassItem(temp[i], i));
 			}
 		}
 
-		this.classify.init();
+		target.init();
+		
+		this.classify.add(classField, target);
+		
 		reportDone(true);
+
 	}
 
-	/**
-	 * Perform the encoding for "one of".
-	 * @param classNumber The class number.
-	 * @return The encoded columns.
-	 */
-	private String encodeOneOf(int classNumber) {
-		StringBuilder result = new StringBuilder();
-		for (int i = 0; i < this.classify.getClasses().size(); i++) {
-			if (i > 0) {
-				result.append(this.getInputFormat().getSeparator());
-			}
-
-			if (i == classNumber) {
-				result.append(this.classify.getHigh());
-			} else {
-				result.append(this.classify.getLow());
-			}
-		}
-		return result.toString();
-	}
-
-	/**
-	 * Perform an equilateral encode.
-	 * @param classNumber The class number.
-	 * @return The class to encode.
-	 */
-	private String encodeEquilateral(int classNumber) {
-		StringBuilder result = new StringBuilder();
-		double[] d = this.classify.getEquilateralEncode().encode(classNumber);
-		NumberList
-				.toList(this.getInputFormat(), this.getPrecision(), result, d);
-		return result.toString();
-	}
-	
-	/**
-	 * Encode a single field.
-	 * @param classNumber The class number to encode.
-	 * @return The encoded columns.
-	 */
-	private String encodeSingleField(int classNumber) {
-		StringBuilder result = new StringBuilder();
-		result.append(classNumber);
-		return result.toString();
-	}
-
-	/**
-	 * Encode the class.
-	 * @param method The encoding method.
-	 * @param classNumber The class number.
-	 * @return The encoded class.
-	 */
-	private String encode(ClassifyMethod method, int classNumber) {
-		switch (method) {
-		case OneOf:
-			return encodeOneOf(classNumber);
-		case Equilateral:
-			return encodeEquilateral(classNumber);
-		case SingleField:
-			return encodeSingleField(classNumber);
-		default:
-			return null;
-		}
-	}
 
 
 	/**
@@ -192,23 +150,27 @@ public class ClassifyCSV extends BasicFile {
 	 * @param idx The index to insert the orig name.
 	 * @return The output stream for the text file.
 	 */
-	public PrintWriter prepareOutputFile(String outputFile,
-			String originalName, int idx) {
+	public PrintWriter prepareOutputFile(String outputFile) {
 		
 		try {
 			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 			// write headers, if needed
-			if (this.isExpectInputHeaders()) {
+			if (this.isProduceOutputHeaders()) {
 				int index = 0;
 				StringBuilder line = new StringBuilder();
 				for (String str : this.getInputHeadings()) {
-					if (index == idx) {
+					
+					for( ClassifyTarget target: this.classify.getFields().values() ) {
+					
+						String org = target.getOriginalName();
+						
+					if ( org!=null && index == target.getTargetIndex() ) {
 						if (line.length() > 0) {
 							line.append(",");
 						}
 
 						line.append("\"");
-						line.append(originalName);
+						line.append(org);
 						line.append("\"");
 					}
 
@@ -218,6 +180,7 @@ public class ClassifyCSV extends BasicFile {
 					line.append("\"");
 					line.append(this.getInputHeadings()[index++]);
 					line.append("\"");
+				}
 				}
 				tw.println(line.toString());
 			}
@@ -239,20 +202,17 @@ public class ClassifyCSV extends BasicFile {
 	 * @param originalName If not null, include original column and
 	 * name it this. Usually null.
 	 */
-	public void process(String outputFile, ClassifyMethod method, int insertAt,
-			String originalName) {
+	public void process(String outputFile) {
 		PrintWriter tw;
 
 		validateAnalyzed();
 
-		this.getStats().setMethod( method );
-
-		if (originalName == null)
-			tw = this.prepareOutputFile(outputFile);
-		else
-			tw = this.prepareOutputFile(outputFile, originalName,
-					this.classify.getClassField());
-
+		tw = this.prepareOutputFile(outputFile);
+		
+		for(ClassifyTarget target: this.classify.getFields().values() ) {
+			target.setInserted(false);
+		}
+		
 		ReadCSV csv = new ReadCSV(this.getInputFilename(), this.isExpectInputHeaders(),
 				this.getInputFormat());
 		this.classify.init();
@@ -261,35 +221,43 @@ public class ClassifyCSV extends BasicFile {
 		while (csv.next()) {
 			updateStatus(false);
 			StringBuilder line = new StringBuilder();
-			int classNumber = this.classify.lookup(csv
-					.get(this.classify.getClassField()));
-			boolean inserted = false;
-
+			
 			for (int i = 0; i < this.getColumnCount(); i++) {
 				if (i > 0) {
 					line.append(this.getInputFormat().getSeparator());
 				}
-
-				if (insertAt == i) {
-					line.append(encode(method, classNumber));
-					line.append(this.getInputFormat().getSeparator());
-					inserted = true;
+				
+				boolean shouldInsert = true;
+				
+				for(ClassifyTarget target: this.classify.getFields().values() ) {
+					if (target.getInsertAt() == i) {
+						int classNumber = target.lookup(csv
+								.get(target.getTargetIndex()));
+						
+						line.append(target.encode(classNumber));
+						line.append(this.getInputFormat().getSeparator());
+						target.setInserted(true);
+					}	
+					
+					if (target.getOriginalName() == null && i == target.getTargetIndex()) {
+						shouldInsert = false;
+					}
 				}
-
-				if (originalName == null && i == this.classify.getClassField()) {
-					continue;
-				}
-
-				line.append(csv.get(i));
+				
+				if( shouldInsert)
+					line.append(csv.get(i));
 			}
 
 			// if we failed to insert the class field anywhere, then insert it
 			// at the end
-			if (!inserted) {
+			for(ClassifyTarget target: this.classify.getFields().values() ) {
 				if (line.charAt(line.length() - 1) != this.getInputFormat().getSeparator())
 					line.append(this.getInputFormat().getSeparator());
-				line.append(encode(method, classNumber));
+				int classNumber = target.lookup(csv
+						.get(target.getTargetIndex()));
+				line.append(target.encode(classNumber));
 			}
+		
 
 			tw.println(line.toString());
 		}
@@ -299,5 +267,6 @@ public class ClassifyCSV extends BasicFile {
 		reportDone(false);
 		this.classify.init();
 	}
+
 
 }
