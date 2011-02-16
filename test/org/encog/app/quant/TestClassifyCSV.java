@@ -79,24 +79,29 @@ public class TestClassifyCSV extends TestCase {
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
 
-        if( headers )
-            Assert.assertEquals("\"a\",\"b\"",tr.readLine());
 
         switch( method )
         {
             case SingleField:
+                if( headers )
+                    Assert.assertEquals("\"a\",\"b\"",tr.readLine());
+
                 Assert.assertEquals("one,0", tr.readLine());
                 Assert.assertEquals("two,1",tr.readLine());
                 Assert.assertEquals("three,2",tr.readLine());
                 Assert.assertEquals("four,3",tr.readLine());
                 break;
             case Equilateral:
+                if( headers )
+            		Assert.assertEquals("\"a\",\"b-0\",\"b-1\",\"b-2\"",tr.readLine());
                 Assert.assertEquals("one,-0.8165,-0.4714,-0.3333",tr.readLine());
                 Assert.assertEquals("two,0.8165,-0.4714,-0.3333",tr.readLine());
                 Assert.assertEquals("three,0,0.9428,-0.3333",tr.readLine());
                 Assert.assertEquals("four,0,0,1", tr.readLine());
                 break;
             case OneOf:
+            	if( headers)
+            		Assert.assertEquals("\"a\",\"b-0\",\"b-1\",\"b-2\",\"b-3\"",tr.readLine());
                 Assert.assertEquals("one,1.0,-1.0,-1.0,-1.0", tr.readLine());
                 Assert.assertEquals("two,-1.0,1.0,-1.0,-1.0", tr.readLine());
                 Assert.assertEquals("three,-1.0,-1.0,1.0,-1.0", tr.readLine());
