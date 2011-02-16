@@ -21,6 +21,7 @@ import org.encog.app.quant.normalize.NormalizationDesired;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
 import org.encog.app.quant.normalize.NormalizedFieldStats;
+import org.encog.app.quant.shuffle.ShuffleCSV;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.FileUtil;
 
@@ -129,12 +130,15 @@ public class EncogAnalyst {
 		
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_NORMALIZE, FileUtil.addFilenameBase(file, "_norm").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_CLASSIFY, FileUtil.addFilenameBase(file, "_class").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RANDOM, FileUtil.addFilenameBase(file, "_random").toString());
 		
 		this.script.getNormalize().setNormalizedFields(norm);
 		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_RAW);
 		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
 		this.script.getClassify().setSourceFile(EncogAnalystConfig.FILE_NORMALIZE);
 		this.script.getClassify().setTargetFile(EncogAnalystConfig.FILE_CLASSIFY);
+		this.script.getRandomize().setSourceFile(EncogAnalystConfig.FILE_CLASSIFY);
+		this.script.getRandomize().setTargetFile(EncogAnalystConfig.FILE_RANDOM);
 	}
 	
 	private void generateClassifiedFields(File file) {
@@ -164,15 +168,18 @@ public class EncogAnalyst {
 			array[i] = classifyFields.get(i);
 		}
 		
-		this.script.getClassify().setClassifiedFields(array);
+		this.script.getClassify().setClassifiedFields(array);		
+	}
+	
+	private void generateRandomize(File file) {
 
-		
 	}
 	
 	public void wizard(File file, boolean b, CSVFormat english) {
 		analyze(file, b, english);
 		generateNormalizedFields(file);
-		generateClassifiedFields(file);		
+		generateClassifiedFields(file);
+		generateRandomize(file);
 	}	
 	
 	public void classify()
@@ -203,8 +210,7 @@ public class EncogAnalyst {
 	{
 		// mark generated
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
-		
-		
+				
 		// get filenames
 		String sourceFile = this.script.getConfig().getFilename( this.script.getNormalize().getSourceFile() );
 		String targetFile = this.script.getConfig().getFilename( this.script.getNormalize().getTargetFile() );
@@ -233,6 +239,23 @@ public class EncogAnalyst {
 		norm.setProduceOutputHeaders(this.script.getConfig().isOutputHeaders());
 		norm.normalize(targetFile);
 	}
+	
+	public void randomize()
+	{
+		// mark generated
+		this.script.markGenerated(this.script.getNormalize().getTargetFile());
+				
+		// get filenames
+		String sourceFile = this.script.getConfig().getFilename( this.script.getRandomize().getSourceFile() );
+		String targetFile = this.script.getConfig().getFilename( this.script.getRandomize().getTargetFile() );
+		
+		// prepare to normalize
+		ShuffleCSV norm = new ShuffleCSV();
+		boolean headers = this.script.expectInputHeaders(this.script.getRandomize().getSourceFile());
+		norm.analyze(sourceFile, headers ,this.script.getConfig().getCSVFormat());
+		norm.process(targetFile);
+	}
+
 
 	public static void main(String[] args)
 	{
@@ -245,6 +268,7 @@ public class EncogAnalyst {
 				CSVFormat.ENGLISH);
 		a.normalize();
 		a.classify();
+		a.randomize();
 		a.save("d:\\data\\iris.txt");
 		
 /*

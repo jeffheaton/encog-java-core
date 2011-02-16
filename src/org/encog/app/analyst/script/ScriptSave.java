@@ -65,6 +65,16 @@ public class ScriptSave {
 			out.writeLine();
 		}
 	}
+	
+	private void saveRandomize(WriteScriptFile out)
+	{
+		out.addSection("RANDOMIZE");
+		out.addSection("CONFIG");
+		out.writeProperty("sourceFile", this.script.getRandomize()
+				.getSourceFile());
+		out.writeProperty("targetFile", this.script.getRandomize()
+				.getTargetFile());		
+	}
 
 	private void saveData(WriteScriptFile out) {
 		out.addSection("DATA");
@@ -153,6 +163,7 @@ public class ScriptSave {
 		saveData(out);
 		saveNormalize(out);
 		saveClassify(out);
+		saveRandomize(out);
 		out.flush();
 	}
 }

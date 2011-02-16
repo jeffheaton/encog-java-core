@@ -232,6 +232,13 @@ public class ScriptLoad {
 		this.script.getClassify().setTargetFile(prop.get("targetFile"));
 	}
 	
+	private void handleRandomizeConfig(List<String> list) {
+		Map<String, String> prop = this.handleProperties(list);
+		
+		this.script.getRandomize().setSourceFile(prop.get("sourceFile"));
+		this.script.getRandomize().setTargetFile(prop.get("targetFile"));
+	}
+	
 	private void handleClassifyFields(List<String> list) {
 		List<ClassifyField> nfs = new ArrayList<ClassifyField>();
 		boolean first = true;
@@ -284,6 +291,8 @@ public class ScriptLoad {
 			handleClassifyConfig(list);
 		}  else if( currentSection.equals("CLASSIFY") && currentSubsection.equalsIgnoreCase("FIELDS") ) {
 			handleClassifyFields(list);
+		} else if( currentSection.equals("RANDOMIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			handleRandomizeConfig(list);
 		}
 	}
 

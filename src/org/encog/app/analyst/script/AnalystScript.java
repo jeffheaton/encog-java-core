@@ -8,6 +8,7 @@ import java.util.Set;
 import org.encog.app.analyst.script.classify.AnalystClassify;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.normalize.NormalizedField;
+import org.encog.app.analyst.script.randomize.AnalystRandomize;
 
 public class AnalystScript {
 
@@ -15,6 +16,7 @@ public class AnalystScript {
 	private DataField[] fields;
 	private final AnalystNormalize normalize = new AnalystNormalize();
 	private final AnalystClassify classify = new AnalystClassify();
+	private final AnalystRandomize randomize = new AnalystRandomize();
 	private final Set<String> generated = new HashSet<String>();
 
 	/**
@@ -81,6 +83,13 @@ public class AnalystScript {
 		return this.generated.contains(filename);
 	}
 	
+	/**
+	 * @return the randomize
+	 */
+	public AnalystRandomize getRandomize() {
+		return randomize;
+	}
+
 	public boolean expectInputHeaders(String filename)
 	{
 		if( isGenerated(filename) )
