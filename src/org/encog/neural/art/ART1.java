@@ -189,8 +189,6 @@ public class ART1 extends ART {
 	 * 
 	 * @param input
 	 *            The input to the network.
-	 * @param useHolder
-	 *            The NeuralOutputHolder to use.
 	 * @return The output from the network.
 	 */
 	public NeuralData compute(final NeuralData input) {

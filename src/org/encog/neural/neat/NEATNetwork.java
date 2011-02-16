@@ -133,12 +133,12 @@ public class NEATNetwork extends BasicPersistedObject implements MLContext, MLRe
 	}
 
 	/**
-	 * Construct a NEAT synapse.
+	 * Construct a NEAT network.
 	 * 
-	 * @param fromLayer
-	 *            The input layer.
-	 * @param toLayer
-	 *            The output layer.
+	 * @param inputCount
+	 *            The input count.
+	 * @param outputCount
+	 *            The output count.
 	 */
 	public NEATNetwork(final int inputCount, final int outputCount) {
 		this.inputCount = inputCount;

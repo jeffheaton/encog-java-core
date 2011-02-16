@@ -159,8 +159,6 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * 
 	 * @param layer
 	 *            The layer to be added to the network.
-	 * @param type
-	 *            What sort of synapse should connect this layer to the last.
 	 */
 	public void addLayer(final Layer layer) {
 		layer.setNetwork(this);
@@ -223,7 +221,9 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Compute the output for this network.
+	 * @param input The input.
+	 * @param output The output.
 	 */
 	public void compute(final double[] input, final double[] output) {
 		final BasicNeuralData input2 = new BasicNeuralData(input);
@@ -384,7 +384,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 
 	/**
 	 * Determine if the specified connection is enabled.
-	 * @param synapse The synapse.
+	 * @param layer The layer to check.
 	 * @param fromNeuron The source neuron.
 	 * @param toNeuron THe target neuron.
 	 * @return True, if the connection is enabled, false otherwise.

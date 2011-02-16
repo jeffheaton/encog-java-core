@@ -274,7 +274,6 @@ public class ClassifyTarget {
 
 	/**
 	 * Encode the class.
-	 * @param method The encoding method.
 	 * @param classNumber The class number.
 	 * @return The encoded class.
 	 */

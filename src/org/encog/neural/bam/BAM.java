@@ -101,8 +101,6 @@ public class BAM extends BasicPersistedObject {
 	 * 
 	 * @param input
 	 *            NOT USED
-	 * @param useHolder
-	 *            NOT USED
 	 * @return NOT USED
 	 */
 	public NeuralData compute(final NeuralData input) {
