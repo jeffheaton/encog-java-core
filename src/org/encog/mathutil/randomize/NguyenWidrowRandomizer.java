@@ -65,7 +65,7 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	 * 2.1.1 for each weight <br>
 	 * 2.1.2 Adjust weight by dividing by norm of weight for neuron and
 	 * multiplying by beta value
-	 * @param network The network to randomize.
+	 * @param method The network to randomize.
 	 */
 	@Override
 	public final void randomize(final MLMethod method) {
@@ -99,7 +99,7 @@ public class NguyenWidrowRandomizer extends RangeRandomizer implements
 	/**
 	 * Randomize one level of a neural network.
 	 * @param network The network to randomize
-	 * @param fromLevel The from level to randomize.
+	 * @param fromLayer The from level to randomize.
 	 */
 	public void randomize(final BasicNetwork network, int fromLayer)
 	{

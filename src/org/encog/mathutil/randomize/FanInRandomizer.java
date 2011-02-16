@@ -208,7 +208,7 @@ public class FanInRandomizer extends BasicRandomizer {
 	/**
 	 * Randomize one level of a neural network.
 	 * @param network The network to randomize
-	 * @param fromLevel The from level to randomize.
+	 * @param fromLayer The from level to randomize.
 	 */
 	public void randomize(final BasicNetwork network, int fromLayer)
 	{

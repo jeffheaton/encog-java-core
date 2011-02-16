@@ -64,7 +64,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	 * modify the array. Previous values may be used, or they may be discarded,
 	 * depending on the randomizer.
 	 * 
-	 * @param network
+	 * @param method
 	 *            A network to randomize.
 	 */
 	public void randomize(final MLMethod method) {
@@ -130,7 +130,7 @@ public abstract class BasicRandomizer implements Randomizer {
 	/**
 	 * Randomize one level of a neural network.
 	 * @param network The network to randomize
-	 * @param fromLevel The from level to randomize.
+	 * @param fromLayer The from level to randomize.
 	 */
 	public void randomize(final BasicNetwork network, int fromLayer)
 	{

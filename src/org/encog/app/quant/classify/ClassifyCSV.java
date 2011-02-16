@@ -45,7 +45,6 @@ public class ClassifyCSV extends BasicFile {
 	 * @param inputFile The input file to analyze.
 	 * @param headers True, if the input file has headers.
 	 * @param format The format of the input file.
-	 * @param classField The field to be classified.
 	 */
 	public void analyze(String inputFile, boolean headers, CSVFormat format) {
 
@@ -65,11 +64,31 @@ public class ClassifyCSV extends BasicFile {
 		this.setAnalyzed(true);
 	}
 
+	/**
+	 * Add a classification target field. Use -1 to 1 for the range.
+	 * @param classField The target field number.
+	 * @param method The classification method.
+	 * @param insertAt The column to insert the classified columns at,
+	 * or -1 for the end.
+	 * @param originalName If not null, include original column and
+	 * name it this. Usually null.
+	 */
 	public void addTarget(int classField, ClassifyMethod method, int insertAt,
 			String originalName) {
 		addTarget(classField, method, 1, -1, insertAt, originalName);
 	}
 
+	/**
+	 * Add a classification target field.
+	 * @param classField The target field name.
+	 * @param method The classification method.
+	 * @param high The high-range of the resulting values.
+	 * @param low The low-range of the resulting values.
+	 * @param insertAt The column to insert the classified columns at,
+	 * or -1 for the end.
+	 * @param originalName If not null, include original column and
+	 * name it this. Usually null.
+	 */
 	public void addTarget(String classField, ClassifyMethod method,
 			double high, double low, int insertAt, String originalName) {
 		for (int i = 0; i < this.getInputHeadings().length; i++) {
@@ -79,6 +98,18 @@ public class ClassifyCSV extends BasicFile {
 		}
 	}
 
+
+	/**
+	 * Add a classification target field.
+	 * @param classField
+	 * @param method The classification method.
+	 * @param high The high-range of the resulting values.
+	 * @param low The low-range of the resulting values.
+	 * @param insertAt The column to insert the classified columns at,
+	 * or -1 for the end.
+	 * @param originalName If not null, include original column and
+	 * name it this. Usually null.
+	 */
 	public void addTarget(int classField, ClassifyMethod method, double high,
 			double low, int insertAt, String originalName) {
 		List<String> classesFound = new ArrayList<String>();
@@ -155,8 +186,6 @@ public class ClassifyCSV extends BasicFile {
 	/**
 	 * Prepare the output file, write headers if needed.
 	 * @param outputFile The name of the output file.
-	 * @param originalName The name of original field.
-	 * @param idx The index to insert the orig name.
 	 * @return The output stream for the text file.
 	 */
 	public PrintWriter prepareOutputFile(String outputFile) {
@@ -219,11 +248,6 @@ public class ClassifyCSV extends BasicFile {
 	/**
 	 * Process the file.
 	 * @param outputFile The output file.
-	 * @param method The classification method.
-	 * @param insertAt The column to insert the classified columns at,
-	 * or -1 for the end.
-	 * @param originalName If not null, include original column and
-	 * name it this. Usually null.
 	 */
 	public void process(String outputFile) {
 		PrintWriter tw;

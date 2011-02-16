@@ -16,8 +16,7 @@ import org.encog.util.csv.ReadCSV;
  */
 public class SegregateCSV extends BasicFile {
 	/**
-	 * The segregation targets.
-	 * @return
+	 * @return The segregation targets.
 	 */
 	public List<SegregateTargetPercent> getTargets() {
 		return this.targets;

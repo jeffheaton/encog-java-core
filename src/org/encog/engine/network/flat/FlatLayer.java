@@ -62,8 +62,6 @@ public class FlatLayer {
 	 *            The neuron count.
 	 * @param biasActivation
 	 *            The bias activation.
-	 * @param params
-	 *            The parameters.
 	 */
 	public FlatLayer(final ActivationFunction activation, final int count,
 			final double biasActivation) {
