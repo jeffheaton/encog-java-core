@@ -72,6 +72,7 @@ public class TestSegregateCSV extends TestCase {
         norm.getTargets().add(new SegregateTargetPercent(OUTPUT1_NAME, 75));
         norm.getTargets().add(new SegregateTargetPercent(OUTPUT2_NAME, 25));
         norm.analyze(INPUT_NAME, false, CSVFormat.ENGLISH);
+        norm.setProduceOutputHeaders(false);
         norm.process();
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT1_NAME));

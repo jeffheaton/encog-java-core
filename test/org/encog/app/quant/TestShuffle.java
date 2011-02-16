@@ -69,6 +69,7 @@ public class TestShuffle extends TestCase {
         generateTestFileHeadings(false);
         ShuffleCSV norm = new ShuffleCSV();
         norm.analyze(INPUT_NAME, false, CSVFormat.ENGLISH);
+        norm.setProduceOutputHeaders(false);
         norm.process(OUTPUT_NAME);
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));

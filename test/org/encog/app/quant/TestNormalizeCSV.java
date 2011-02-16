@@ -63,6 +63,7 @@ public class TestNormalizeCSV extends TestCase {
         generateTestFileHeadings(false);
         NormalizeCSV norm = new NormalizeCSV();
         norm.analyze(INPUT_NAME, false, CSVFormat.ENGLISH);
+        norm.setProduceOutputHeaders(false);
         norm.getStats().getStats()[2].makePassThrough();
         norm.getStats().getStats()[3].setAction( NormalizationDesired.Ignore);
         norm.getStats().getStats()[4].setAction( NormalizationDesired.Ignore);

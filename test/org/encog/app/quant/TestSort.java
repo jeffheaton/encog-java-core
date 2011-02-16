@@ -71,6 +71,7 @@ public class TestSort extends TestCase {
         generateTestFileHeadings(false);
         SortCSV norm = new SortCSV();
         norm.getSortOrder().add(new SortedField(1,SortType.SortInteger,true));
+        norm.setProduceOutputHeaders(false);
         norm.process(INPUT_NAME,OUTPUT_NAME,false,CSVFormat.ENGLISH);
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));

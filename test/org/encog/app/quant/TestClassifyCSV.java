@@ -51,8 +51,9 @@ public class TestClassifyCSV extends TestCase {
     {
         generateTestFile(true);
         ClassifyCSV norm = new ClassifyCSV();
-        norm.analyze(INPUT_NAME, true, CSVFormat.ENGLISH, 1);
-        norm.process(OUTPUT_NAME, ClassifyMethod.SingleField, -1, "org");
+        norm.analyze(INPUT_NAME, true, CSVFormat.ENGLISH);
+        norm.addTarget(1, ClassifyMethod.SingleField, -1, "org");
+        norm.process(OUTPUT_NAME);
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
 
@@ -71,8 +72,10 @@ public class TestClassifyCSV extends TestCase {
         generateTestFile(headers);
         ClassifyCSV norm = new ClassifyCSV();
         norm.setPrecision(4);
-        norm.analyze(INPUT_NAME, headers, CSVFormat.ENGLISH, 1);
-        norm.process(OUTPUT_NAME,method,-1,null);
+        norm.analyze(INPUT_NAME, headers, CSVFormat.ENGLISH);
+        norm.addTarget(1,method,-1,null);
+        norm.setProduceOutputHeaders(headers);
+        norm.process(OUTPUT_NAME);
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
 
