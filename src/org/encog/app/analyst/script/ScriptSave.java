@@ -4,8 +4,7 @@ import java.io.OutputStream;
 
 import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.normalize.NormalizedField;
-import org.encog.app.quant.classify.ClassifyMethod;
-import org.encog.app.quant.normalize.NormalizationDesired;
+import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 
 public class ScriptSave {
 
@@ -34,7 +33,7 @@ public class ScriptSave {
 	
 	private void saveClassify(WriteScriptFile out) {
 		out.addSection("CLASSIFY");
-		out.addSection("CONFIG");
+		out.addSubSection("CONFIG");
 		out.writeProperty("sourceFile", this.script.getClassify()
 				.getSourceFile());
 		out.writeProperty("targetFile", this.script.getClassify()
@@ -69,11 +68,43 @@ public class ScriptSave {
 	private void saveRandomize(WriteScriptFile out)
 	{
 		out.addSection("RANDOMIZE");
-		out.addSection("CONFIG");
+		out.addSubSection("CONFIG");
 		out.writeProperty("sourceFile", this.script.getRandomize()
 				.getSourceFile());
 		out.writeProperty("targetFile", this.script.getRandomize()
 				.getTargetFile());		
+	}
+	
+	private void saveGenerate(WriteScriptFile out)
+	{
+		out.addSection("GENERATE");
+		out.addSubSection("CONFIG");
+		out.writeProperty("sourceFile", this.script.getGenerate()
+				.getSourceFile());
+		out.writeProperty("targetFile", this.script.getGenerate()
+				.getTargetFile());
+		out.writeProperty("input", this.script.getGenerate()
+				.getInput());
+		out.writeProperty("ideal", this.script.getGenerate()
+				.getIdeal());
+	}
+	
+	private void saveSegregate(WriteScriptFile out)
+	{
+		out.addSection("SEGREGATE");
+		out.addSubSection("CONFIG");
+		out.writeProperty("sourceFile", this.script.getSegregate()
+				.getSourceFile());
+		out.addSubSection("FILES");
+		out.addColumn("file");
+		out.addColumn("percent");
+		out.writeLine();
+		
+		for(AnalystSegregateTarget target: this.script.getSegregate().getSegregateTargets() ) {
+			out.addColumn(target.getFile());
+			out.addColumn(target.getPercent());
+			out.writeLine();
+		}
 	}
 
 	private void saveData(WriteScriptFile out) {
@@ -164,6 +195,8 @@ public class ScriptSave {
 		saveNormalize(out);
 		saveClassify(out);
 		saveRandomize(out);
+		saveSegregate(out);
+		saveGenerate(out);
 		out.flush();
 	}
 }

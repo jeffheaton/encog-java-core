@@ -71,7 +71,5 @@ public class ClassifyField {
 	 */
 	public void setLow(double low) {
 		this.low = low;
-	}
-	
-	
+	}	
 }

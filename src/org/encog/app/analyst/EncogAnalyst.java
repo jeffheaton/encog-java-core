@@ -15,15 +15,19 @@ import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.normalize.NormalizedField;
+import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.quant.classify.ClassifyCSV;
 import org.encog.app.quant.classify.ClassifyMethod;
 import org.encog.app.quant.normalize.NormalizationDesired;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
 import org.encog.app.quant.normalize.NormalizedFieldStats;
+import org.encog.app.quant.segregate.SegregateCSV;
+import org.encog.app.quant.segregate.SegregateTargetPercent;
 import org.encog.app.quant.shuffle.ShuffleCSV;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.FileUtil;
+import org.encog.util.simple.EncogUtility;
 
 public class EncogAnalyst {
 	
@@ -128,9 +132,13 @@ public class EncogAnalyst {
 			}			
 		}
 		
+		String s;
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_NORMALIZE, FileUtil.addFilenameBase(file, "_norm").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_CLASSIFY, FileUtil.addFilenameBase(file, "_class").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RANDOM, FileUtil.addFilenameBase(file, "_random").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAIN, s= FileUtil.addFilenameBase(file, "_train").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_EVAL, FileUtil.addFilenameBase(file, "_eval").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAINSET, FileUtil.forceExtension(s, "egb"));
 		
 		this.script.getNormalize().setNormalizedFields(norm);
 		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_RAW);
@@ -139,6 +147,9 @@ public class EncogAnalyst {
 		this.script.getClassify().setTargetFile(EncogAnalystConfig.FILE_CLASSIFY);
 		this.script.getRandomize().setSourceFile(EncogAnalystConfig.FILE_CLASSIFY);
 		this.script.getRandomize().setTargetFile(EncogAnalystConfig.FILE_RANDOM);
+		this.script.getSegregate().setSourceFile(EncogAnalystConfig.FILE_RANDOM);
+		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
+		this.script.getGenerate().setTargetFile(EncogAnalystConfig.FILE_TRAINSET);
 	}
 	
 	private void generateClassifiedFields(File file) {
@@ -175,11 +186,26 @@ public class EncogAnalyst {
 
 	}
 	
+	private void generateSegregate(File file) {
+		AnalystSegregateTarget[] array = new AnalystSegregateTarget[2];
+		array[0] = new AnalystSegregateTarget(EncogAnalystConfig.FILE_TRAIN,75);
+		array[1] = new AnalystSegregateTarget(EncogAnalystConfig.FILE_EVAL,25);
+		this.script.getSegregate().setSegregateTargets(array);
+	}
+	
+	private void generateGenerate(File file) {
+		//int inputColumns = this.script.getFields().length - this.script.getClassify().getClassifiedFields().length;
+		//int idealColumns = this.script.getClassify().
+		
+	}
+	
 	public void wizard(File file, boolean b, CSVFormat english) {
 		analyze(file, b, english);
 		generateNormalizedFields(file);
 		generateClassifiedFields(file);
 		generateRandomize(file);
+		generateSegregate(file);
+		generateGenerate(file);
 	}	
 	
 	public void classify()
@@ -243,7 +269,7 @@ public class EncogAnalyst {
 	public void randomize()
 	{
 		// mark generated
-		this.script.markGenerated(this.script.getNormalize().getTargetFile());
+		this.script.markGenerated(this.script.getRandomize().getTargetFile());
 				
 		// get filenames
 		String sourceFile = this.script.getConfig().getFilename( this.script.getRandomize().getSourceFile() );
@@ -254,6 +280,41 @@ public class EncogAnalyst {
 		boolean headers = this.script.expectInputHeaders(this.script.getRandomize().getSourceFile());
 		norm.analyze(sourceFile, headers ,this.script.getConfig().getCSVFormat());
 		norm.process(targetFile);
+	}
+	
+	public void segregate()
+	{	
+		// get filenames		
+		String inputFile = this.script.getConfig().getFilename( this.script.getSegregate().getSourceFile() );
+		
+		// prepare to segregate
+		boolean headers = this.script.expectInputHeaders(this.script.getSegregate().getSourceFile());
+		SegregateCSV seg = new SegregateCSV();		
+		for( AnalystSegregateTarget target: this.script.getSegregate().getSegregateTargets() )
+		{
+			String filename = this.script.getConfig().getFilename( target.getFile() );
+			seg.getTargets().add(new SegregateTargetPercent(filename,target.getPercent()));
+			// mark generated
+			this.script.markGenerated(target.getFile());
+		}
+		seg.analyze(inputFile, headers, this.script.getConfig().getCSVFormat());
+
+		seg.process();		
+	}
+	
+	public void generate()
+	{
+		// mark generated
+		this.script.markGenerated(this.script.getNormalize().getTargetFile());
+				
+		// get filenames
+		String sourceFile = this.script.getConfig().getFilename( this.script.getGenerate().getSourceFile() );
+		String targetFile = this.script.getConfig().getFilename( this.script.getGenerate().getTargetFile() );
+		int input = this.script.getGenerate().getInput();
+		int ideal = this.script.getGenerate().getIdeal();
+		
+		boolean headers = this.script.expectInputHeaders(this.script.getGenerate().getSourceFile());
+		EncogUtility.convertCSV2Binary(sourceFile, targetFile, input, ideal, headers);
 	}
 
 
@@ -269,6 +330,8 @@ public class EncogAnalyst {
 		a.normalize();
 		a.classify();
 		a.randomize();
+		a.segregate();
+		a.generate();
 		a.save("d:\\data\\iris.txt");
 		
 /*

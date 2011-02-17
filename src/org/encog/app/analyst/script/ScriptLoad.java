@@ -15,6 +15,7 @@ import java.util.StringTokenizer;
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.normalize.NormalizedField;
+import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.quant.classify.ClassifyMethod;
 import org.encog.app.quant.normalize.NormalizationDesired;
 
@@ -218,6 +219,15 @@ public class ScriptLoad {
 		this.script.getNormalize().setNormalizedFields(array);
 	}
 	
+	private void handleGenerateConfig(List<String> list) {
+		Map<String, String> prop = this.handleProperties(list);
+		
+		this.script.getGenerate().setSourceFile(prop.get("sourceFile"));
+		this.script.getGenerate().setTargetFile(prop.get("targetFile"));
+		this.script.getGenerate().setInput(Integer.parseInt(prop.get("input")));
+		this.script.getGenerate().setIdeal(Integer.parseInt(prop.get("ideal")));
+	}
+	
 	private void handleNormalizeConfig(List<String> list) {
 		Map<String, String> prop = this.handleProperties(list);
 		
@@ -237,6 +247,12 @@ public class ScriptLoad {
 		
 		this.script.getRandomize().setSourceFile(prop.get("sourceFile"));
 		this.script.getRandomize().setTargetFile(prop.get("targetFile"));
+	}
+	
+	private void handleSegregateConfig(List<String> list) {
+		Map<String, String> prop = this.handleProperties(list);
+		
+		this.script.getSegregate().setSourceFile(prop.get("sourceFile"));
 	}
 	
 	private void handleClassifyFields(List<String> list) {
@@ -273,6 +289,30 @@ public class ScriptLoad {
 		this.script.getClassify().setClassifiedFields(array);
 	}
 	
+	private void handleSegregateFiles(List<String> list) {
+		List<AnalystSegregateTarget> nfs = new ArrayList<AnalystSegregateTarget>();
+		boolean first = true;
+		for(String line: list) {
+			if(!first ) {
+				List<String> cols = splitColumns(line);
+				String filename = cols.get(0);				
+				int percent = Integer.parseInt(cols.get(1));
+				
+				AnalystSegregateTarget nf = new AnalystSegregateTarget(filename,percent);
+				nfs.add(nf);
+			} else {
+				first = false;
+			}			
+		}
+		
+		AnalystSegregateTarget[] array = new AnalystSegregateTarget[nfs.size()];
+		for(int i=0;i<array.length;i++) {
+			array[i] = nfs.get(i);
+		}
+		
+		this.script.getSegregate().setSegregateTargets(array);
+	}
+	
 	private void processSubSection(String currentSection, String currentSubsection, List<String> list)
 	{
 		if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
@@ -293,6 +333,12 @@ public class ScriptLoad {
 			handleClassifyFields(list);
 		} else if( currentSection.equals("RANDOMIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			handleRandomizeConfig(list);
+		} else if( currentSection.equals("SEGREGATE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			handleSegregateConfig(list);
+		} else if( currentSection.equals("SEGREGATE") && currentSubsection.equalsIgnoreCase("FILES") ) {
+			handleSegregateFiles(list);
+		} else if( currentSection.equals("GENERATE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			handleGenerateConfig(list);
 		}
 	}
 

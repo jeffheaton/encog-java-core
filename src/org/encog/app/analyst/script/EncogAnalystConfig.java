@@ -12,6 +12,9 @@ public class EncogAnalystConfig {
 	public static final String FILE_NORMALIZE = "FILE_NORMALIZE";
 	public final static String FILE_CLASSIFY = "FILE_CLASSIFY";
 	public static final String FILE_RANDOM = "FILE_RANDOMIZE";
+	public static final String FILE_TRAIN = "FILE_TRAIN";
+	public static final String FILE_EVAL = "FILE_EVAL";
+	public static final String FILE_TRAINSET = "FILE_TRAINSET";
 	
 	private Map<String,String> filenames = new HashMap<String,String>();
 	private int maxClassSize = 50;

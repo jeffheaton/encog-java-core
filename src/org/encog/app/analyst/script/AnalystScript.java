@@ -6,9 +6,11 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.encog.app.analyst.script.classify.AnalystClassify;
+import org.encog.app.analyst.script.generate.AnalystGenerate;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.analyst.script.randomize.AnalystRandomize;
+import org.encog.app.analyst.script.segregate.AnalystSegregate;
 
 public class AnalystScript {
 
@@ -17,7 +19,10 @@ public class AnalystScript {
 	private final AnalystNormalize normalize = new AnalystNormalize();
 	private final AnalystClassify classify = new AnalystClassify();
 	private final AnalystRandomize randomize = new AnalystRandomize();
+	private final AnalystSegregate segregate = new AnalystSegregate();
+	private final AnalystGenerate generate = new AnalystGenerate();
 	private final Set<String> generated = new HashSet<String>();
+	
 
 	/**
 	 * @return the config
@@ -88,6 +93,20 @@ public class AnalystScript {
 	 */
 	public AnalystRandomize getRandomize() {
 		return randomize;
+	}
+	
+	/**
+	 * @return the generate
+	 */
+	public AnalystGenerate getGenerate() {
+		return generate;
+	}
+
+	/**
+	 * @return the segregate
+	 */
+	public AnalystSegregate getSegregate() {
+		return segregate;
 	}
 
 	public boolean expectInputHeaders(String filename)
