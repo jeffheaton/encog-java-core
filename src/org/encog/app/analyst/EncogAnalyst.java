@@ -30,6 +30,8 @@ import org.encog.app.quant.shuffle.ShuffleCSV;
 import org.encog.bot.BotUtil;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.MLMethod;
+import org.encog.ml.MLRegression;
+import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.EncogEGBFile;
 import org.encog.neural.networks.BasicNetwork;
@@ -177,6 +179,7 @@ public class EncogAnalyst {
 		this.script.getMachineLearning().setTrainingFile(EncogAnalystConfig.FILE_TRAINSET);
 		this.script.getMachineLearning().setResourceFile(EncogAnalystConfig.FILE_EG);
 		this.script.getMachineLearning().setOutputFile(EncogAnalystConfig.FILE_OUTPUT);
+		this.script.getMachineLearning().setEvalFile(EncogAnalystConfig.FILE_EVAL);
 		this.script.getMachineLearning().setMLType("feedforward");
 		this.script.getMachineLearning().setMLArchitecture("TANH(?)->TANH(10)->TANH(?)");
 		this.script.getMachineLearning().setResourceName("ml");
@@ -465,6 +468,31 @@ public class EncogAnalyst {
 		EncogUtility.trainToError((MLMethod)method, trainingSet, 0.01);					
 		encog.save(resourceFile);
 	}
+	
+	public void evaluate()
+	{
+		// get filenames
+		String evalFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getEvalFile());
+		String resourceFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getResourceFile());
+		String resource = this.script.getMachineLearning().getResourceName();
+		
+		EncogMemoryCollection encog = new EncogMemoryCollection();
+		encog.load(resourceFile);
+		MLRegression method = (MLRegression) encog.find(resource);
+		
+		boolean headers = this.script.expectInputHeaders(this.script
+				.getClassify().getSourceFile());
+		
+		NeuralDataSet trainingSet = EncogUtility.loadCSV2Memory(evalFile, method.getInputCount(), 0, headers, this.script.getConfig().getCSVFormat());
+		
+		for(NeuralDataPair pair: trainingSet) {
+			
+		}
+							
+		encog.save(resourceFile);
+	}
 
 	public static void main(String[] args) {
 		
@@ -472,10 +500,10 @@ public class EncogAnalyst {
 		
 		EncogAnalyst a = new EncogAnalyst();
 
-		//a.wizard(new File("d:\\data\\iris.txt"), new File(
-		//		"d:\\data\\iris_raw.csv"), false, CSVFormat.ENGLISH);
+		a.wizard(new File("d:\\data\\iris.txt"), new File(
+				"d:\\data\\iris_raw.csv"), false, CSVFormat.ENGLISH);
 
-		URL url = null;
+		/*URL url = null;
 		try {
 			url = new URL(
 					"http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data");
@@ -485,7 +513,7 @@ public class EncogAnalyst {
 
 		a.wizard(url, new File("d:\\data\\iris.txt"), new File(
 				"d:\\data\\iris_raw.csv"), false, CSVFormat.ENGLISH);
-
+*/
 		a.normalize();
 		a.classify();
 		a.randomize();

@@ -122,6 +122,8 @@ public class ScriptSave {
 		out.addSubSection("CONFIG");
 		out.writeProperty("trainingFile", this.script.getMachineLearning()
 				.getTrainingFile());
+		out.writeProperty("evalFile", this.script.getMachineLearning()
+				.getEvalFile());
 		out.writeProperty("resourceFile", this.script.getMachineLearning()
 				.getResourceFile());	
 		out.writeProperty("outputFile", this.script.getMachineLearning()
