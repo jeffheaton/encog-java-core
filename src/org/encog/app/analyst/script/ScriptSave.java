@@ -120,14 +120,17 @@ public class ScriptSave {
 	{
 		out.addSection("ML");
 		out.addSubSection("CONFIG");
-		out.writeProperty("sourceFile", this.script.getMachineLearning()
-				.getSourceFile());
-		out.writeProperty("targetFile", this.script.getMachineLearning()
-				.getTargetFile());		
+		out.writeProperty("trainingFile", this.script.getMachineLearning()
+				.getTrainingFile());
+		out.writeProperty("resourceFile", this.script.getMachineLearning()
+				.getResourceFile());	
+		out.writeProperty("outputFile", this.script.getMachineLearning()
+				.getOutputFile());
+
 
 		out.writeProperty("type",this.script.getMachineLearning().getMLType());		
 		out.writeProperty("architecture",this.script.getMachineLearning().getMLArchitecture());
-		out.writeProperty("resource",this.script.getMachineLearning().getResourceName());
+		out.writeProperty("resourceName",this.script.getMachineLearning().getResourceName());
 		
 	}
 

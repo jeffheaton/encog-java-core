@@ -3,34 +3,12 @@ package org.encog.app.analyst.script.ml;
 public class AnalystMachineLearning {
 	private String MLType = "";
 	private String MLArchitecture = "";
-	private String sourceFile = "";
-	private String targetFile = "";
+	private String trainingFile = "";
+	private String resourceFile = "";
+	private String outputFile = "";
+	private String evalFile = "";
 	private String resourceName = "";
 	
-	/**
-	 * @return the sourceFile
-	 */
-	public String getSourceFile() {
-		return sourceFile;
-	}
-	/**
-	 * @param sourceFile the sourceFile to set
-	 */
-	public void setSourceFile(String sourceFile) {
-		this.sourceFile = sourceFile;
-	}
-	/**
-	 * @return the targetFile
-	 */
-	public String getTargetFile() {
-		return targetFile;
-	}
-	/**
-	 * @param targetFile the targetFile to set
-	 */
-	public void setTargetFile(String targetFile) {
-		this.targetFile = targetFile;
-	}
 	/**
 	 * @return the resourceName
 	 */
@@ -66,6 +44,54 @@ public class AnalystMachineLearning {
 	 */
 	public void setMLArchitecture(String mLArchitecture) {
 		MLArchitecture = mLArchitecture;
+	}
+	/**
+	 * @return the resourceFile
+	 */
+	public String getResourceFile() {
+		return resourceFile;
+	}
+	/**
+	 * @param resourceFile the resourceFile to set
+	 */
+	public void setResourceFile(String resourceFile) {
+		this.resourceFile = resourceFile;
+	}
+	/**
+	 * @return the outputFile
+	 */
+	public String getOutputFile() {
+		return outputFile;
+	}
+	/**
+	 * @param outputFile the outputFile to set
+	 */
+	public void setOutputFile(String outputFile) {
+		this.outputFile = outputFile;
+	}
+	/**
+	 * @return the evalFile
+	 */
+	public String getEvalFile() {
+		return evalFile;
+	}
+	/**
+	 * @param evalFile the evalFile to set
+	 */
+	public void setEvalFile(String evalFile) {
+		this.evalFile = evalFile;
+	}
+	/**
+	 * @return the trainingFile
+	 */
+	public String getTrainingFile() {
+		return trainingFile;
+	}
+	/**
+	 * @param trainingFile the trainingFile to set
+	 */
+	public void setTrainingFile(String trainingFile) {
+		this.trainingFile = trainingFile;
 	}
 	
 	

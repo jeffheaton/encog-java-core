@@ -146,6 +146,8 @@ public class EncogAnalyst {
 				FileUtil.addFilenameBase(file, "_class").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RANDOM,
 				FileUtil.addFilenameBase(file, "_random").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_OUTPUT,
+				FileUtil.addFilenameBase(file, "_output").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAIN,
 				train = FileUtil.addFilenameBase(file, "_train").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_EVAL,
@@ -172,8 +174,9 @@ public class EncogAnalyst {
 		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
 		this.script.getGenerate().setTargetFile(
 				EncogAnalystConfig.FILE_TRAINSET);
-		this.script.getMachineLearning().setSourceFile(EncogAnalystConfig.FILE_TRAINSET);
-		this.script.getMachineLearning().setTargetFile(EncogAnalystConfig.FILE_EG);
+		this.script.getMachineLearning().setTrainingFile(EncogAnalystConfig.FILE_TRAINSET);
+		this.script.getMachineLearning().setResourceFile(EncogAnalystConfig.FILE_EG);
+		this.script.getMachineLearning().setOutputFile(EncogAnalystConfig.FILE_OUTPUT);
 		this.script.getMachineLearning().setMLType("feedforward");
 		this.script.getMachineLearning().setMLArchitecture("TANH(?)->TANH(10)->TANH(?)");
 		this.script.getMachineLearning().setResourceName("ml");
@@ -421,46 +424,46 @@ public class EncogAnalyst {
 	public void create()
 	{
 		// get filenames
-		String sourceFile = this.script.getConfig().getFilename(
-				this.script.getMachineLearning().getSourceFile());
-		String targetFile = this.script.getConfig().getFilename(
-				this.script.getMachineLearning().getTargetFile());
+		String trainingFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getTrainingFile());
+		String resourceFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
 		String type = this.script.getMachineLearning().getMLType();
 		String arch = this.script.getMachineLearning().getMLArchitecture();
 		
-		EncogEGBFile egb = new EncogEGBFile(new File(sourceFile));
+		EncogEGBFile egb = new EncogEGBFile(new File(trainingFile));
 		egb.open();
 		int input = egb.getInputCount();
 		int ideal = egb.getIdealCount();
 		egb.close();
 		
 		EncogMemoryCollection encog = new EncogMemoryCollection();
-		if( new File(targetFile).exists()) {
-			encog.load(targetFile);
+		if( new File(resourceFile).exists()) {
+			encog.load(resourceFile);
 		}
 		EncogPersistedObject obj = createML(type,arch,input, ideal);
 		encog.add(resource, obj);
-		encog.save(targetFile);
+		encog.save(resourceFile);
 	}
 	
 	public void train()
 	{
 		// get filenames
-		String sourceFile = this.script.getConfig().getFilename(
-				this.script.getMachineLearning().getSourceFile());
-		String targetFile = this.script.getConfig().getFilename(
-				this.script.getMachineLearning().getTargetFile());
+		String trainingFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getTrainingFile());
+		String resourceFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
 		
-		NeuralDataSet trainingSet = EncogUtility.loadEGB2Memory(sourceFile);
+		NeuralDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
 		
 		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.load(targetFile);
+		encog.load(resourceFile);
 				
 		EncogPersistedObject method = encog.find(resource);
 		EncogUtility.trainToError((MLMethod)method, trainingSet, 0.01);					
-		encog.save(targetFile);
+		encog.save(resourceFile);
 	}
 
 	public static void main(String[] args) {

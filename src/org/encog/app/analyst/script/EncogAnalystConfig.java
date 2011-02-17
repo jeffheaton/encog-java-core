@@ -16,6 +16,7 @@ public class EncogAnalystConfig {
 	public static final String FILE_EVAL = "FILE_EVAL";
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
 	public static final String FILE_EG = "FILE_EG";
+	public static final String FILE_OUTPUT = "FILE_OUTPUT";
 	
 	private Map<String,String> filenames = new HashMap<String,String>();
 	private int maxClassSize = 50;
