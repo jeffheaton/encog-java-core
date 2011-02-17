@@ -24,6 +24,8 @@
 package org.encog.bot;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -249,6 +251,37 @@ public final class BotUtil {
 			} while (length >= 0);
 
 			return result.toString();
+		} catch (final IOException e) {
+			if (BotUtil.LOGGER.isErrorEnabled()) {
+				BotUtil.LOGGER.error("Exception", e);
+			}
+			throw new BotError(e);
+		}
+	}
+	
+	/**
+	 * Load the specified URL to a file.
+	 * @param url The URL.
+	 * @param file The file.
+	 */
+	public static void downloadPage(final URL url, final File file) {
+		try {
+			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
+
+			int length;
+
+			final FileOutputStream fos = new FileOutputStream(file);
+			final InputStream is = url.openStream();
+
+			do {
+				length = is.read(buffer);
+				
+				if (length >= 0) {
+					fos.write(buffer,0,length);
+				}
+			} while (length >= 0);
+
+			fos.close();
 		} catch (final IOException e) {
 			if (BotUtil.LOGGER.isErrorEnabled()) {
 				BotUtil.LOGGER.error("Exception", e);

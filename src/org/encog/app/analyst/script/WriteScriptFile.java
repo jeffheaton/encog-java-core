@@ -114,7 +114,4 @@ public class WriteScriptFile {
 		}
 		out.println(name+"="+fmt);
 	}
-	
-	
-	
 }

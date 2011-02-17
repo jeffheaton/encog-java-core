@@ -242,6 +242,14 @@ public class ScriptLoad {
 		this.script.getClassify().setTargetFile(prop.get("targetFile"));
 	}
 	
+	private void handleHeaderDataSource(List<String> list) {
+		Map<String, String> prop = this.handleProperties(list);
+		
+		this.script.getInformation().setDataSource(prop.get("sourceFile"));
+		this.script.getInformation().setDataSourceFormat(prop.get("sourceFormat"));
+		this.script.getInformation().setDataSourceHeaders(prop.get("sourceHeaders").trim().equalsIgnoreCase("t"));
+	}
+	
 	private void handleRandomizeConfig(List<String> list) {
 		Map<String, String> prop = this.handleProperties(list);
 		
@@ -339,6 +347,8 @@ public class ScriptLoad {
 			handleSegregateFiles(list);
 		} else if( currentSection.equals("GENERATE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			handleGenerateConfig(list);
+		} else if( currentSection.equals("HEADER") && currentSubsection.equalsIgnoreCase("DATASOURCE") ) {
+			handleHeaderDataSource(list);
 		}
 	}
 

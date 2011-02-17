@@ -7,6 +7,8 @@ import java.util.Set;
 
 import org.encog.app.analyst.script.classify.AnalystClassify;
 import org.encog.app.analyst.script.generate.AnalystGenerate;
+import org.encog.app.analyst.script.information.AnalystInformation;
+import org.encog.app.analyst.script.ml.AnalystMachineLearning;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.analyst.script.randomize.AnalystRandomize;
@@ -16,11 +18,13 @@ public class AnalystScript {
 
 	private final EncogAnalystConfig config = new EncogAnalystConfig();
 	private DataField[] fields;
+	private final AnalystInformation information = new AnalystInformation();
 	private final AnalystNormalize normalize = new AnalystNormalize();
 	private final AnalystClassify classify = new AnalystClassify();
 	private final AnalystRandomize randomize = new AnalystRandomize();
 	private final AnalystSegregate segregate = new AnalystSegregate();
 	private final AnalystGenerate generate = new AnalystGenerate();
+	private final AnalystMachineLearning machineLearning = new AnalystMachineLearning();
 	private final Set<String> generated = new HashSet<String>();
 	
 
@@ -116,4 +120,21 @@ public class AnalystScript {
 		else
 			return this.config.isInputHeaders();
 	}
+
+	/**
+	 * @return the information
+	 */
+	public AnalystInformation getInformation() {
+		return information;
+	}
+
+	/**
+	 * @return the machineLearning
+	 */
+	public AnalystMachineLearning getMachineLearning() {
+		return machineLearning;
+	}
+	
+	
+	
 }

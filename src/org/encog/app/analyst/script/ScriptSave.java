@@ -75,6 +75,15 @@ public class ScriptSave {
 				.getTargetFile());		
 	}
 	
+	private void saveInformation(WriteScriptFile out)
+	{
+		out.addSection("HEADER");
+		out.addSubSection("DATASOURCE");
+		out.writeProperty("sourceFile", this.script.getInformation().getDataSource());
+		out.writeProperty("sourceFormat", this.script.getInformation().getDataSourceFormat());
+		out.writeProperty("sourceHeaders", this.script.getInformation().isDataSourceHeaders());
+	}
+	
 	private void saveGenerate(WriteScriptFile out)
 	{
 		out.addSection("GENERATE");
@@ -105,6 +114,21 @@ public class ScriptSave {
 			out.addColumn(target.getPercent());
 			out.writeLine();
 		}
+	}
+	
+	private void saveMachineLearning(WriteScriptFile out)
+	{
+		out.addSection("ML");
+		out.addSubSection("CONFIG");
+		out.writeProperty("sourceFile", this.script.getMachineLearning()
+				.getSourceFile());
+		out.writeProperty("targetFile", this.script.getMachineLearning()
+				.getTargetFile());		
+
+		out.writeProperty("type",this.script.getMachineLearning().getMLType());		
+		out.writeProperty("architecture",this.script.getMachineLearning().getMLArchitecture());
+		out.writeProperty("resource",this.script.getMachineLearning().getResourceName());
+		
 	}
 
 	private void saveData(WriteScriptFile out) {
@@ -190,6 +214,7 @@ public class ScriptSave {
 
 	public void save(OutputStream stream) {
 		WriteScriptFile out = new WriteScriptFile(stream);
+		saveInformation(out);
 		saveConfig(out);
 		saveData(out);
 		saveNormalize(out);
@@ -197,6 +222,7 @@ public class ScriptSave {
 		saveRandomize(out);
 		saveSegregate(out);
 		saveGenerate(out);
+		saveMachineLearning(out);
 		out.flush();
 	}
 }
