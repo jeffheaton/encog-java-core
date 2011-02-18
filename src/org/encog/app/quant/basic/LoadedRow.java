@@ -27,11 +27,16 @@ public class LoadedRow {
      */
     public LoadedRow(ReadCSV csv)
     {
+        this(csv,0);
+    }
+    
+    public LoadedRow(ReadCSV csv, int extra)
+    {
         int count = csv.getColumnCount();
         this.data = new String[count];
         for (int i = 0; i < count; i++)
         {
             this.data[i] = csv.get(i); 
         }
-    }	
+    }
 }

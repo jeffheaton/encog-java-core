@@ -20,6 +20,7 @@ import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.quant.classify.ClassifyCSV;
 import org.encog.app.quant.classify.ClassifyMethod;
+import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.app.quant.normalize.NormalizationDesired;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
@@ -160,22 +161,15 @@ public class EncogAnalyst {
 				FileUtil.forceExtension(file.toString(), "eg"));
 
 		this.script.getNormalize().setNormalizedFields(norm);
-		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_RAW);
-		this.script.getNormalize().setTargetFile(
-				EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getClassify().setSourceFile(
-				EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getClassify().setTargetFile(
-				EncogAnalystConfig.FILE_CLASSIFY);
-		this.script.getRandomize().setSourceFile(
-				EncogAnalystConfig.FILE_CLASSIFY);
-		this.script.getRandomize()
-				.setTargetFile(EncogAnalystConfig.FILE_RANDOM);
-		this.script.getSegregate()
-				.setSourceFile(EncogAnalystConfig.FILE_RANDOM);
-		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
-		this.script.getGenerate().setTargetFile(
-				EncogAnalystConfig.FILE_TRAINSET);
+		this.script.getRandomize().setSourceFile(EncogAnalystConfig.FILE_RAW);
+		this.script.getRandomize().setTargetFile(EncogAnalystConfig.FILE_RANDOM);
+		this.script.getSegregate().setSourceFile(EncogAnalystConfig.FILE_RANDOM);		
+		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
+		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
+		this.script.getClassify().setSourceFile(EncogAnalystConfig.FILE_NORMALIZE);
+		this.script.getClassify().setTargetFile(EncogAnalystConfig.FILE_CLASSIFY);
+		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_CLASSIFY);
+		this.script.getGenerate().setTargetFile(EncogAnalystConfig.FILE_TRAINSET);
 		this.script.getMachineLearning().setTrainingFile(EncogAnalystConfig.FILE_TRAINSET);
 		this.script.getMachineLearning().setResourceFile(EncogAnalystConfig.FILE_EG);
 		this.script.getMachineLearning().setOutputFile(EncogAnalystConfig.FILE_OUTPUT);
@@ -478,6 +472,9 @@ public class EncogAnalyst {
 				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
 		
+		String outputFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getOutputFile());
+		
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.load(resourceFile);
 		MLRegression method = (MLRegression) encog.find(resource);
@@ -485,13 +482,11 @@ public class EncogAnalyst {
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getClassify().getSourceFile());
 		
-		NeuralDataSet trainingSet = EncogUtility.loadCSV2Memory(evalFile, method.getInputCount(), 0, headers, this.script.getConfig().getCSVFormat());
-		
-		for(NeuralDataPair pair: trainingSet) {
-			
-		}
-							
-		encog.save(resourceFile);
+
+		EvaluateCSV eval = new EvaluateCSV();
+		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
+		eval.process(outputFile, method);
+
 	}
 
 	public static void main(String[] args) {
@@ -500,10 +495,10 @@ public class EncogAnalyst {
 		
 		EncogAnalyst a = new EncogAnalyst();
 
-		a.wizard(new File("d:\\data\\iris.txt"), new File(
-				"d:\\data\\iris_raw.csv"), false, CSVFormat.ENGLISH);
+		//a.wizard(new File("d:\\data\\iris.txt"), new File(
+		//		"d:\\data\\iris_raw.csv"), false, CSVFormat.ENGLISH);
 
-		/*URL url = null;
+		URL url = null;
 		try {
 			url = new URL(
 					"http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data");
@@ -511,17 +506,18 @@ public class EncogAnalyst {
 			e.printStackTrace();
 		}
 
-		a.wizard(url, new File("d:\\data\\iris.txt"), new File(
-				"d:\\data\\iris_raw.csv"), false, CSVFormat.ENGLISH);
-*/
-		a.normalize();
-		a.classify();
+		a.wizard(url, new File("d:\\iris\\iris.txt"), new File(
+				"d:\\iris\\iris_raw.csv"), false, CSVFormat.ENGLISH);
+
 		a.randomize();
 		a.segregate();
+		a.normalize();
+		a.classify();
 		a.generate();
 		a.create();
 		a.train();
-		a.save("d:\\data\\iris.txt");
+		//a.evaluate();
+		a.save("d:\\iris\\iris.txt");
 
 		/*
 				a.analyze(

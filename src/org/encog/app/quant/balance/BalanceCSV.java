@@ -83,7 +83,7 @@ public class BalanceCSV extends BasicFile {
 
             if (count < countPer)
             {
-                WriteRow(tw, row);
+                writeRow(tw, row);
                 count++;
             }
 

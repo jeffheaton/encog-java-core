@@ -121,7 +121,7 @@ public class ShuffleCSV extends BasicFile {
 
 		resetStatus();
 		while ((row = GetNextRow(csv)) != null) {
-			WriteRow(tw, row);
+			writeRow(tw, row);
 			updateStatus(false);
 		}
 		reportDone(false);

@@ -129,7 +129,7 @@ public class SegregateCSV extends BasicFile {
                 {
                     updateStatus(false);
                     LoadedRow row = new LoadedRow(csv);
-                    WriteRow(tw, row);
+                    writeRow(tw, row);
                     target.setNumberRemaining(target.getNumberRemaining()-1);
                 }
 

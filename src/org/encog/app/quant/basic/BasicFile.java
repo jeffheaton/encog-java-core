@@ -180,7 +180,7 @@ public class BasicFile {
 	 * @param row
 	 *            The row to write out.
 	 */
-	public void WriteRow(PrintWriter tw, LoadedRow row) {
+	public void writeRow(PrintWriter tw, LoadedRow row) {
 		StringBuilder line = new StringBuilder();
 
 		for (int i = 0; i < this.columnCount; i++) {

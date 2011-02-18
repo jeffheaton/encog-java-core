@@ -105,7 +105,7 @@ public class FilterCSV extends BasicFile {
             LoadedRow row = new LoadedRow(csv);
             if (shouldProcess(row))
             {
-                WriteRow(tw, row);
+                writeRow(tw, row);
                 this.filteredCount++;
             }
         }
