@@ -27,31 +27,33 @@ public class TestNormalizeCSV extends TestCase {
         {
             tw.println("a,b,c,d,e");
         }
-        tw.println("one,1,1,2,3");
-        tw.println("two,2,2,3,4");
-        tw.println("three,3,3,4,5");
-        tw.println("four,3,4,5,6");
-        tw.println("five,2,5,6,7");
-        tw.println("six,1,6,7,8");
+        tw.println("one,1,1,a,3");
+        tw.println("two,2,2,a,4");
+        tw.println("three,3,3,b,4");
+        tw.println("four,3,4,b,6");
+        tw.println("five,2,5,c,7");
+        tw.println("six,1,6,c,8");
 
         // close the stream
         tw.close();
     }
 
     public void testNormCSVHeaders() throws IOException
-    {
+    {    	
+    	String[] cls = {"a","b","c"};
         generateTestFileHeadings(true);
         NormalizeCSV norm = new NormalizeCSV();
+        norm.setPrecision(4);
         norm.analyze(INPUT_NAME, true, CSVFormat.ENGLISH);
         norm.getStats().getStats()[2].makePassThrough();
-        norm.getStats().getStats()[3].setAction( NormalizationAction.Ignore);
+        norm.getStats().getStats()[3].makeClass( NormalizationAction.Equilateral, cls, 1, -1 );
         norm.getStats().getStats()[4].setAction( NormalizationAction.Ignore);
         norm.normalize(OUTPUT_NAME);
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
-        Assert.assertEquals("\"a\",\"b\",\"c\"",tr.readLine());
-        Assert.assertEquals("\"one\",-1,\"1\"",tr.readLine());
-        Assert.assertEquals("\"two\",0,\"2\"",tr.readLine());
+        Assert.assertEquals("\"a\",\"b\",\"c\",\"d-0\",\"d-1\"",tr.readLine());
+        Assert.assertEquals("\"one\",-1,\"1\",0,0",tr.readLine());
+        Assert.assertEquals("\"two\",0,\"2\",0,0",tr.readLine());
         tr.close();
 
         (new File(INPUT_NAME)).delete();
