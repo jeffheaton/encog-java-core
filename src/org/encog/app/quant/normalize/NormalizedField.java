@@ -469,6 +469,11 @@ public class NormalizedField {
 	public List<ClassItem> getClasses() {
 		return classes;
 	}
+
+	public Equilateral getEq() {
+		return eq;
+	}
+	
 	
 	
 

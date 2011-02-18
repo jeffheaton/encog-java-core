@@ -33,7 +33,7 @@ public class LoadedRow {
     public LoadedRow(ReadCSV csv, int extra)
     {
         int count = csv.getColumnCount();
-        this.data = new String[count];
+        this.data = new String[count+extra];
         for (int i = 0; i < count; i++)
         {
             this.data[i] = csv.get(i); 

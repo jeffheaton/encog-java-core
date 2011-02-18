@@ -10,6 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.encog.app.analyst.analyze.PerformAnalysis;
+import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
@@ -131,6 +132,8 @@ public class EncogAnalyst {
 			if (f.isInteger() || f.isReal() && !f.isClass()) {
 				action = NormalizationAction.Normalize;
 				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+				norm[i].setActualHigh(f.getMax());
+				norm[i].setActualLow(f.getMin());
 			} else if( f.isClass() ) { 
 				if( f.getClassMembers().size()>2)
 					action = NormalizationAction.Equilateral;
@@ -439,14 +442,14 @@ public class EncogAnalyst {
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getNormalize().getSourceFile());
 		
-	
-		
 
-		EvaluateCSV eval = new EvaluateCSV();
+		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
-		eval.process(outputFile, method);
+		eval.process(outputFile, this, method);
 
 	}
+	
+
 
 	public static void main(String[] args) {
 		

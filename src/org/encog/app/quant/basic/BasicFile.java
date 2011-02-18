@@ -183,7 +183,7 @@ public class BasicFile {
 	public void writeRow(PrintWriter tw, LoadedRow row) {
 		StringBuilder line = new StringBuilder();
 
-		for (int i = 0; i < this.columnCount; i++) {
+		for (int i = 0; i < row.getData().length; i++) {
 			if (i > 0) {
 				line.append(",");
 			}
