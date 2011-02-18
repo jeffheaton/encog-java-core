@@ -445,6 +445,29 @@ public class NormalizedField {
 		}
 		return encode(classNumber);
 	}
+	
+	public void makeClass(NormalizationAction action, int classFrom, int classTo, int high,
+			int low) {
+		
+		if( (action!=NormalizationAction.Equilateral) 
+				&& (action!=NormalizationAction.OneOf)
+				&& (action!=NormalizationAction.SingleField) ) {
+				throw new QuantError("Unsupported normalization type");
+			}
+			
+			this.action = action;
+			this.classes.clear();
+			this.normalizedHigh = high;
+			this.normalizedLow = low;
+			this.actualHigh = 0;
+			this.actualLow = 0;
+			
+			int index = 0;
+			for(int i = classFrom; i<classTo;i++) {
+				this.classes.add(new ClassItem(""+i, index++));
+			}
+		
+	}
 
 	public void makeClass(NormalizationAction action, String[] cls, double high, double low) {
 		if( (action!=NormalizationAction.Equilateral) 
@@ -473,6 +496,8 @@ public class NormalizedField {
 	public Equilateral getEq() {
 		return eq;
 	}
+
+	
 	
 	
 	
