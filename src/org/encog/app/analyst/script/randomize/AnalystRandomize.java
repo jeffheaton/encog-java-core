@@ -1,6 +1,5 @@
 package org.encog.app.analyst.script.randomize;
 
-import org.encog.app.analyst.script.normalize.NormalizedField;
 
 public class AnalystRandomize {
 

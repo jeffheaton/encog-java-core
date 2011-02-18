@@ -1,5 +1,7 @@
 package org.encog.app.analyst.script.normalize;
 
+import org.encog.app.quant.normalize.NormalizedField;
+
 public class AnalystNormalize {
 	private NormalizedField[] normalizedFields;
 	private String sourceFile = "";

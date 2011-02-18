@@ -3,7 +3,7 @@ package org.encog.app.quant.normalize;
 /**
  * Normalization actions desired.
  */
-public enum NormalizationDesired
+public enum NormalizationAction
 {
     /**
      * Do not normalize the column, just allow it to pass through.  This allows 
@@ -19,5 +19,20 @@ public enum NormalizationDesired
     /**
      * Ignore this column, do not include in the output.
      */
-    Ignore
+    Ignore,
+    
+	/// <summary>
+    /// Use the "one-of" classification method.
+    /// </summary>
+    OneOf,
+
+    /// <summary>
+    /// Use the equilateral classification method.
+    /// </summary>
+    Equilateral,
+
+    /// <summary>
+    /// Use a single-field classification method.
+    /// </summary>
+    SingleField
 }

@@ -1,6 +1,5 @@
 package org.encog.app.analyst.script.segregate;
 
-import org.encog.app.analyst.script.normalize.NormalizedField;
 
 public class AnalystSegregate {
 	

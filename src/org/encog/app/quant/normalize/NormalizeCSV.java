@@ -68,7 +68,7 @@ public class NormalizeCSV extends BasicFile {
 
             for (int i = 0; i < fieldCount; i++)
             {
-                stats.getStats()[i] = new NormalizedFieldStats();
+                stats.getStats()[i] = new NormalizedField();
                 if (headers)
                 	stats.getStats()[i].setName( csv.getColumnNames().get(i) );
                 else
@@ -80,7 +80,7 @@ public class NormalizeCSV extends BasicFile {
             {
                 for (int i = 0; i < fieldCount; i++)
                 {
-                    if (stats.getStats()[i].getAction() == NormalizationDesired.Normalize)
+                    if (stats.getStats()[i].getAction() == NormalizationAction.Normalize)
                     {
                         String str = csv.get(i);
                         
@@ -151,10 +151,10 @@ public class NormalizeCSV extends BasicFile {
             updateStatus(false);
 
             int index = 0;
-            for (NormalizedFieldStats stat : this.stats.getStats() )
+            for (NormalizedField stat : this.stats.getStats() )
             {
                 String str = csv.get(index++);
-                if (line.length() > 0 && stat.getAction() != NormalizationDesired.Ignore)
+                if (line.length() > 0 && stat.getAction() != NormalizationAction.Ignore)
                     line.append(this.getInputFormat().getSeparator() );
                 switch (stat.getAction() )
                 {
@@ -194,12 +194,12 @@ public class NormalizeCSV extends BasicFile {
     private void writeHeaders(PrintWriter tw)
     {
         StringBuilder line = new StringBuilder();
-        for (NormalizedFieldStats stat : this.stats.getStats() )
+        for (NormalizedField stat : this.stats.getStats() )
         {
-            if (line.length() > 0 && stat.getAction() != NormalizationDesired.Ignore)
+            if (line.length() > 0 && stat.getAction() != NormalizationAction.Ignore)
                 line.append(this.getInputFormat().getSeparator() );
 
-            if (stat.getAction() != NormalizationDesired.Ignore)
+            if (stat.getAction() != NormalizationAction.Ignore)
             {
                 line.append("\"");
                 line.append(stat.getName() );
@@ -242,10 +242,10 @@ public class NormalizeCSV extends BasicFile {
                 StringBuilder line = new StringBuilder();
                 updateStatus(false);
                 int index = 0;
-                for(NormalizedFieldStats stat : this.stats.getStats())
+                for(NormalizedField stat : this.stats.getStats())
                 {
                     String str = csv.get(index++);
-                    if (line.length() > 0 && stat.getAction()!=NormalizationDesired.Ignore)
+                    if (line.length() > 0 && stat.getAction()!=NormalizationAction.Ignore)
                         line.append(this.getInputFormat().getSeparator());
                     switch (stat.getAction())
                     {
@@ -306,7 +306,7 @@ public class NormalizeCSV extends BasicFile {
      */
     public void readStatsFile(String filename)
     {
-        List<NormalizedFieldStats> list = new ArrayList<NormalizedFieldStats>();
+        List<NormalizedField> list = new ArrayList<NormalizedField>();
 
         ReadCSV csv = null;
 
@@ -323,23 +323,23 @@ public class NormalizeCSV extends BasicFile {
                     double alow = csv.getDouble(3);
                     double nhigh = csv.getDouble(4);
                     double nlow = csv.getDouble(5);
-                    list.add(new NormalizedFieldStats(NormalizationDesired.Normalize, name, ahigh, alow, nhigh, nlow));
+                    list.add(new NormalizedField(NormalizationAction.Normalize, name, ahigh, alow, nhigh, nlow));
                 }
                 else if (type.equals("PassThrough"))
                 {
                     String name = csv.get(1);
-                    list.add(new NormalizedFieldStats(NormalizationDesired.PassThrough,name));
+                    list.add(new NormalizedField(NormalizationAction.PassThrough,name));
                 }
                 else if (type.equals("Ignore"))
                 {
                     String name = csv.get(1);
-                    list.add(new NormalizedFieldStats(NormalizationDesired.Ignore,name));
+                    list.add(new NormalizedField(NormalizationAction.Ignore,name));
                 }
             }
             csv.close();
 
             this.stats = new NormalizationStats(list.size());
-            this.stats.setStats(new NormalizedFieldStats[list.size()]);
+            this.stats.setStats(new NormalizedField[list.size()]);
             for(int i=0;i<list.size();i++)
             {
             	this.stats.getStats()[i] = list.get(i);
@@ -366,7 +366,7 @@ public class NormalizeCSV extends BasicFile {
 
             tw.println("type,name,ahigh,alow,nhigh,nlow");
 
-            for (NormalizedFieldStats stat : this.stats.getStats() )
+            for (NormalizedField stat : this.stats.getStats() )
             {
                 StringBuilder line = new StringBuilder();
                 switch (stat.getAction() )

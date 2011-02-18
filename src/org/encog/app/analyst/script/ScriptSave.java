@@ -3,8 +3,8 @@ package org.encog.app.analyst.script;
 import java.io.OutputStream;
 
 import org.encog.app.analyst.script.classify.ClassifyField;
-import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
+import org.encog.app.quant.normalize.NormalizedField;
 
 public class ScriptSave {
 

@@ -16,15 +16,14 @@ import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.classify.ClassifyField;
-import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.quant.classify.ClassifyCSV;
 import org.encog.app.quant.classify.ClassifyMethod;
 import org.encog.app.quant.evaluate.EvaluateCSV;
-import org.encog.app.quant.normalize.NormalizationDesired;
+import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
-import org.encog.app.quant.normalize.NormalizedFieldStats;
+import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.app.quant.segregate.SegregateCSV;
 import org.encog.app.quant.segregate.SegregateTargetPercent;
 import org.encog.app.quant.shuffle.ShuffleCSV;
@@ -32,7 +31,6 @@ import org.encog.bot.BotUtil;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.EncogEGBFile;
 import org.encog.neural.networks.BasicNetwork;
@@ -131,14 +129,14 @@ public class EncogAnalyst {
 
 		for (int i = 0; i < this.script.getFields().length; i++) {
 			DataField f = dataFields[i];
-			NormalizationDesired action;
+			NormalizationAction action;
 
 			if (f.isInteger() || f.isReal() && !f.isClass()) {
-				action = NormalizationDesired.Normalize;
+				action = NormalizationAction.Normalize;
 				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
 			} else {
-				action = NormalizationDesired.PassThrough;
-				norm[i] = new NormalizedField(f.getName(), action);
+				action = NormalizationAction.PassThrough;
+				norm[i] = new NormalizedField(action, f.getName());
 			}
 		}
 
@@ -323,7 +321,7 @@ public class EncogAnalyst {
 		int index = 0;
 		for (NormalizedField normField : this.script.getNormalize()
 				.getNormalizedFields()) {
-			NormalizedFieldStats nfs = new NormalizedFieldStats();
+			NormalizedField nfs = new NormalizedField();
 			DataField dataField = this.script
 					.findDataField(normField.getName());
 			stats.getStats()[index++] = nfs;

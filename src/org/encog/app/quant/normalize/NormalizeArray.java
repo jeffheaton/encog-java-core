@@ -16,12 +16,12 @@ public class NormalizeArray {
     /**
      * Contains stats about the array normalized.
      */
-    private NormalizedFieldStats stats;
+    private NormalizedField stats;
 
     /**
      * @return Contains stats about the array normalized.
      */
-    public NormalizedFieldStats getStats()
+    public NormalizedField getStats()
     { 
     	return this.stats; 
     }
@@ -52,7 +52,7 @@ public class NormalizeArray {
      */
     public double[] process(double[] inputArray)
     {
-        this.stats = new NormalizedFieldStats();
+        this.stats = new NormalizedField();
         this.stats.setNormalizedHigh( normalizedHigh );
         this.stats.setNormalizedLow( normalizedLow );
 

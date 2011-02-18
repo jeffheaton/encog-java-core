@@ -10,7 +10,6 @@ import org.encog.app.analyst.script.generate.AnalystGenerate;
 import org.encog.app.analyst.script.information.AnalystInformation;
 import org.encog.app.analyst.script.ml.AnalystMachineLearning;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
-import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.analyst.script.randomize.AnalystRandomize;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 

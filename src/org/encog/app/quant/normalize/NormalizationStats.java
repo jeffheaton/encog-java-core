@@ -17,7 +17,7 @@ public class NormalizationStats {
     /**
      * Access the normalized column data.
      */
-    private NormalizedFieldStats[] stats;
+    private NormalizedField[] stats;
 
     /**
      * Create a new object.
@@ -25,7 +25,7 @@ public class NormalizationStats {
      */
     public NormalizationStats(int count)
     {
-        this.stats = new NormalizedFieldStats[count];
+        this.stats = new NormalizedField[count];
     }
 
     /**
@@ -34,7 +34,7 @@ public class NormalizationStats {
      */
     public void fixSingleValue()
     {
-        for(NormalizedFieldStats stat : this.stats)
+        for(NormalizedField stat : this.stats)
         {
             stat.fixSingleValue();
         }
@@ -43,7 +43,7 @@ public class NormalizationStats {
     /**
      * @return The field stats.
      */
-	public NormalizedFieldStats[] getStats() {
+	public NormalizedField[] getStats() {
 		return stats;
 	}
 
@@ -51,7 +51,7 @@ public class NormalizationStats {
 	 * Set the field stats.
 	 * @param stats The field stats.
 	 */
-	public void setStats(NormalizedFieldStats[] stats) {
+	public void setStats(NormalizedField[] stats) {
 		this.stats = stats;
 	}
    	

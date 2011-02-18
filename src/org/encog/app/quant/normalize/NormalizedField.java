@@ -6,7 +6,7 @@ import org.encog.Encog;
  * This object holds the normalization stats for a column.  This includes
  * the actual and desired high-low range for this column.
  */
-public class NormalizedFieldStats {
+public class NormalizedField {
 
     /**
      * The actual high from the sample data.
@@ -31,7 +31,7 @@ public class NormalizedFieldStats {
     /**
      * The action that should be taken on this column.
      */
-    private NormalizationDesired action;
+    private NormalizationAction action;
 
     /**
      * The name of this column.
@@ -43,7 +43,7 @@ public class NormalizedFieldStats {
      * @param action The desired action.
      * @param name The name of this column.
      */
-    public NormalizedFieldStats(NormalizationDesired action, String name) 
+    public NormalizedField(NormalizationAction action, String name) 
     {
     	this(action, name, 0, 0, 0, 0);
     }
@@ -57,7 +57,7 @@ public class NormalizedFieldStats {
      * @param nhigh The normalized high.
      * @param nlow The normalized low.
      */
-    public NormalizedFieldStats(NormalizationDesired action, String name, double ahigh, double alow, double nhigh, double nlow)
+    public NormalizedField(NormalizationAction action, String name, double ahigh, double alow, double nhigh, double nlow)
     {
         this.action = action;
         this.actualHigh = ahigh;
@@ -72,24 +72,31 @@ public class NormalizedFieldStats {
      * @param normalizedHigh The normalized high.
      * @param normalizedLow The normalized low.
      */
-    public NormalizedFieldStats(double normalizedHigh, double normalizedLow)
+    public NormalizedField(double normalizedHigh, double normalizedLow)
     {
         this.normalizedHigh = normalizedHigh;
         this.normalizedLow = normalizedLow;
         this.actualHigh = Double.MIN_VALUE;
         this.actualLow = Double.MAX_VALUE;
-        this.action = NormalizationDesired.Normalize;
+        this.action = NormalizationAction.Normalize;
     }
 
     /**
      * Construct the object with a range of 1 and -1.
      */
-    public NormalizedFieldStats() 
+    public NormalizedField() 
     {
     	this(1, -1);
     }
 
-    /**
+    public NormalizedField(String name, NormalizationAction action, double high, double low) {
+    	this.name = name;
+    	this.action = action;
+    	this.normalizedHigh = high;
+    	this.normalizedLow = low;
+	}
+
+	/**
      * Make this a pass-through field.
      */
     public void makePassThrough()
@@ -98,7 +105,7 @@ public class NormalizedFieldStats {
         this.normalizedLow = 0;
         this.actualHigh = 0;
         this.actualLow = 0;
-        this.action = NormalizationDesired.PassThrough;
+        this.action = NormalizationAction.PassThrough;
     }
 
     /**
@@ -141,7 +148,7 @@ public class NormalizedFieldStats {
      */
     public void fixSingleValue()
     {
-        if (action == NormalizationDesired.Normalize)
+        if (action == NormalizationAction.Normalize)
         {
             if (Math.abs(actualHigh - actualLow) < Encog.DEFAULT_DOUBLE_EQUAL)
             {
@@ -214,7 +221,7 @@ public class NormalizedFieldStats {
 	/**
 	 * @return The action for the field.
 	 */
-	public NormalizationDesired getAction() {
+	public NormalizationAction getAction() {
 		return action;
 	}
 
@@ -222,7 +229,7 @@ public class NormalizedFieldStats {
 	 * Set the action for the field.
 	 * @param action The action for the field.
 	 */
-	public void setAction(NormalizationDesired action) {
+	public void setAction(NormalizationAction action) {
 		this.action = action;
 	}
 

@@ -14,10 +14,10 @@ import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.classify.ClassifyField;
-import org.encog.app.analyst.script.normalize.NormalizedField;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.quant.classify.ClassifyMethod;
-import org.encog.app.quant.normalize.NormalizationDesired;
+import org.encog.app.quant.normalize.NormalizationAction;
+import org.encog.app.quant.normalize.NormalizedField;
 
 public class ScriptLoad {
 	
@@ -196,13 +196,13 @@ public class ScriptLoad {
 				double high = Double.parseDouble(cols.get(2));
 				double low = Double.parseDouble(cols.get(3));
 				
-				NormalizationDesired des = null;
+				NormalizationAction des = null;
 				if( action.equals("range")) {
-					des = NormalizationDesired.Normalize;
+					des = NormalizationAction.Normalize;
 				} else if( action.equals("ignore")) {
-					des = NormalizationDesired.Ignore;
+					des = NormalizationAction.Ignore;
 				} else if( action.equals("pass")) {
-					des = NormalizationDesired.PassThrough;
+					des = NormalizationAction.PassThrough;
 				}
 				NormalizedField nf = new NormalizedField(name,des,high,low);
 				nfs.add(nf);
