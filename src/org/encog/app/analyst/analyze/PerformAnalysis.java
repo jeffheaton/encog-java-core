@@ -3,9 +3,10 @@ package org.encog.app.analyst.analyze;
 import java.util.List;
 
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
-import org.encog.app.analyst.script.ClassItem;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.quant.normalize.ClassItem;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -122,8 +123,8 @@ public class PerformAnalysis {
 				this.fields[i].setName(target.getScript().getFields()[i].getName());
 				
 				if( this.fields[i].isClass() ) {
-					List<ClassItem> t = this.fields[i].getClassMembers();
-					List<ClassItem> s = target.getScript().getFields()[i].getClassMembers();
+					List<AnalystClassItem> t = this.fields[i].getClassMembers();
+					List<AnalystClassItem> s = target.getScript().getFields()[i].getClassMembers();
 					
 					if( s.size()==t.size())
 					{

@@ -2,6 +2,7 @@ package org.encog.app.quant.evaluate;
 
 import java.io.PrintWriter;
 
+import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
 import org.encog.ml.MLRegression;
@@ -36,10 +37,15 @@ public class EvaluateCSV extends BasicFile {
 
         PrintWriter tw = this.prepareOutputFile(outputFile);
         NeuralData input = new BasicNeuralData(method.getInputCount());
+        
+        int methodCount = method.getInputCount() + method.getOutputCount();
+        if( methodCount!=this.getColumnCount()) {
+        	throw new QuantError("ML Method expects " + methodCount + ", however " + this.getColumnCount() + " columes are in the file.");
+        }
 
         resetStatus();
         while (csv.next())
-        {
+        {        	
             updateStatus(false);
             LoadedRow row = new LoadedRow(csv, method.getOutputCount());
             for(int i=0;i<method.getInputCount();i++) {

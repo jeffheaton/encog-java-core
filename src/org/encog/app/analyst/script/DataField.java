@@ -14,7 +14,7 @@ public class DataField {
 	private boolean isReal;
 	private boolean isClass;
 	private boolean isComplete;
-	private List<ClassItem> classMembers = new ArrayList<ClassItem>();
+	private List<AnalystClassItem> classMembers = new ArrayList<AnalystClassItem>();
 
 	public DataField(String name)
 	{
@@ -143,7 +143,7 @@ public class DataField {
 	/**
 	 * @return the classMembers
 	 */
-	public List<ClassItem> getClassMembers() {
+	public List<AnalystClassItem> getClassMembers() {
 		return classMembers;
 	}
 	

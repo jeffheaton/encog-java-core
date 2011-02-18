@@ -466,4 +466,10 @@ public class NormalizedField {
 		
 	}
 
+	public List<ClassItem> getClasses() {
+		return classes;
+	}
+	
+	
+
 }

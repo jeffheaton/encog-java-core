@@ -10,11 +10,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.encog.app.analyst.analyze.PerformAnalysis;
+import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.quant.evaluate.EvaluateCSV;
+import org.encog.app.quant.normalize.ClassItem;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
@@ -129,6 +131,17 @@ public class EncogAnalyst {
 			if (f.isInteger() || f.isReal() && !f.isClass()) {
 				action = NormalizationAction.Normalize;
 				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+			} else if( f.isClass() ) { 
+				if( f.getClassMembers().size()>2)
+					action = NormalizationAction.Equilateral;
+				else
+					action = NormalizationAction.OneOf;
+				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+				int index = 0;
+				for(AnalystClassItem item : f.getClassMembers() )
+				{
+					norm[i].getClasses().add(new ClassItem(item.getName(),index++));
+				}
 			} else {
 				action = NormalizationAction.PassThrough;
 				norm[i] = new NormalizedField(action, f.getName());
@@ -138,8 +151,6 @@ public class EncogAnalyst {
 		String train;
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_NORMALIZE,
 				FileUtil.addFilenameBase(file, "_norm").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_CLASSIFY,
-				FileUtil.addFilenameBase(file, "_class").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RANDOM,
 				FileUtil.addFilenameBase(file, "_random").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_OUTPUT,
@@ -159,7 +170,7 @@ public class EncogAnalyst {
 		this.script.getSegregate().setSourceFile(EncogAnalystConfig.FILE_RANDOM);		
 		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
 		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_CLASSIFY);
+		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_NORMALIZE);
 		this.script.getGenerate().setTargetFile(EncogAnalystConfig.FILE_TRAINSET);
 		this.script.getMachineLearning().setTrainingFile(EncogAnalystConfig.FILE_TRAINSET);
 		this.script.getMachineLearning().setResourceFile(EncogAnalystConfig.FILE_EG);
@@ -181,37 +192,40 @@ public class EncogAnalyst {
 		array[1] = new AnalystSegregateTarget(EncogAnalystConfig.FILE_EVAL, 25);
 		this.script.getSegregate().setSegregateTargets(array);
 	}
-
-	private void generateGenerate(File file) {
-/*		int inputColumns = this.script.getFields().length
-				- this.script.getClassify().getClassifiedFields().length;
-		ClassifyField targetField = this.script.getClassify()
-				.getClassifiedFields()[0];
-		int idealColumns = 0;
-
-		DataField df = this.script.findDataField(targetField.getName());
-
-		if (df != null) {
-			if (df.isClass()) {
-				switch (targetField.getMethod()) {
-				case Equilateral:
-					idealColumns = df.getClassMembers().size() - 1;
-					break;
-				case OneOf:
-					idealColumns = df.getClassMembers().size();
-					break;
-				case SingleField:
-					idealColumns = 1;
-					break;
-				}
-			} else {
-				idealColumns = 1;
+	
+	private NormalizedField getTargetField() {
+		NormalizedField[] fields = this.script.getNormalize().getNormalizedFields();
+		
+		
+		// first try to find a classify field
+		for(int i=0;i<fields.length;i++) {
+			DataField df = this.script.findDataField(fields[i].getName());
+			if( fields[i].getAction().isClassify() && df.isClass() ) {
+				return fields[i];
 			}
 		}
+		
+		// otherwise, just return the first regression field
+		for(int i=0;i<fields.length;i++) {
+			DataField df = this.script.findDataField(fields[i].getName());
+			if( !df.isClass() && (df.isReal() || df.isInteger()) ) {
+				return fields[i];
+			}
+		}
+		
+		// can't find anything useful!
+		return null;
+	}
+
+	private void generateGenerate(File file) {
+		NormalizedField targetField = getTargetField();
+
+		int inputColumns = this.script.getNormalize().calculateInputColumns(targetField);
+		int idealColumns = this.script.getNormalize().calculateOutputColumns(targetField);
 
 		this.script.getGenerate().setInput(inputColumns);
 		this.script.getGenerate().setIdeal(idealColumns);
-*/
+
 	}
 
 	public void wizard(File saveFile, File analyzeFile, boolean b,
@@ -250,22 +264,7 @@ public class EncogAnalyst {
 		NormalizeCSV norm = new NormalizeCSV();
 		NormalizedField[] normFields = this.script.getNormalize()
 				.getNormalizedFields();
-		NormalizationStats stats = new NormalizationStats(normFields.length);
-
-		int index = 0;
-		for (NormalizedField normField : this.script.getNormalize()
-				.getNormalizedFields()) {
-			NormalizedField nfs = new NormalizedField();
-			DataField dataField = this.script
-					.findDataField(normField.getName());
-			stats.getStats()[index++] = nfs;
-			nfs.setName(normField.getName());
-			nfs.setAction(normField.getAction());
-			nfs.setNormalizedHigh(normField.getNormalizedHigh());
-			nfs.setNormalizedLow(normField.getNormalizedLow());
-			nfs.setActualHigh(dataField.getMax());
-			nfs.setActualLow(dataField.getMin());
-		}
+		NormalizationStats stats = new NormalizationStats(normFields);
 
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getNormalize().getSourceFile());
@@ -395,6 +394,32 @@ public class EncogAnalyst {
 		encog.save(resourceFile);
 	}
 	
+	public void evaluateRaw()
+	{
+		// get filenames
+		String evalFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getEvalFile());
+		String resourceFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getResourceFile());
+		String resource = this.script.getMachineLearning().getResourceName();
+		
+		String outputFile = this.script.getConfig().getFilename(
+				this.script.getMachineLearning().getOutputFile());
+		
+		EncogMemoryCollection encog = new EncogMemoryCollection();
+		encog.load(resourceFile);
+		MLRegression method = (MLRegression) encog.find(resource);
+		
+		boolean headers = this.script.expectInputHeaders(this.script
+				.getNormalize().getSourceFile());
+		
+
+		EvaluateCSV eval = new EvaluateCSV();
+		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
+		eval.process(outputFile, method);
+
+	}
+	
 	public void evaluate()
 	{
 		// get filenames
@@ -413,6 +438,8 @@ public class EncogAnalyst {
 		
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getNormalize().getSourceFile());
+		
+	
 		
 
 		EvaluateCSV eval = new EvaluateCSV();
@@ -438,8 +465,8 @@ public class EncogAnalyst {
 			e.printStackTrace();
 		}
 
-		a.wizard(url, new File("d:\\iris\\iris.txt"), new File(
-				"d:\\iris\\iris_raw.csv"), false, CSVFormat.ENGLISH);
+		a.wizard(url, new File("c:\\iris\\iris.txt"), new File(
+				"c:\\iris\\iris_raw.csv"), false, CSVFormat.ENGLISH);
 
 		a.randomize();
 		a.segregate();
@@ -447,8 +474,8 @@ public class EncogAnalyst {
 		a.generate();
 		a.create();
 		a.train();
-		//a.evaluate();
-		a.save("d:\\iris\\iris.txt");
+		a.evaluate();
+		a.save("c:\\iris\\iris.txt");
 
 		/*
 				a.analyze(

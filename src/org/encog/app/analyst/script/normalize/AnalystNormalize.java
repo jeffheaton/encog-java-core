@@ -50,4 +50,17 @@ public class AnalystNormalize {
 	public void setNormalizedFields(NormalizedField[] normalizedFields) {
 		this.normalizedFields = normalizedFields;
 	}
+
+	public int calculateInputColumns(NormalizedField targetField) {
+		int result = 0;
+		for( NormalizedField field: this.normalizedFields ) {
+			if( field!=targetField )
+			result+=field.getColumnsNeeded();
+		}
+		return result;
+	}
+
+	public int calculateOutputColumns(NormalizedField targetField) {
+		return targetField.getColumnsNeeded();
+	}
 }

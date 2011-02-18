@@ -34,5 +34,10 @@ public enum NormalizationAction
     /// <summary>
     /// Use a single-field classification method.
     /// </summary>
-    SingleField
+    SingleField;
+
+	public boolean isClassify() {		
+		return (this == OneOf) || (this==SingleField) || (this==Equilateral) ;
+	}
+
 }

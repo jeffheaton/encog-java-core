@@ -1,11 +1,11 @@
 package org.encog.app.analyst.script;
 
-public class ClassItem implements Comparable<ClassItem> {
+public class AnalystClassItem implements Comparable<AnalystClassItem> {
 	
 	private String code;
 	private String name;
 	
-	public ClassItem(String code, String name) {
+	public AnalystClassItem(String code, String name) {
 		super();
 		this.code = code;
 		this.name = name;
@@ -40,7 +40,7 @@ public class ClassItem implements Comparable<ClassItem> {
 	}
 
 	@Override
-	public int compareTo(ClassItem o) {
+	public int compareTo(AnalystClassItem o) {
 		return this.code.compareTo(o.getCode());
 	}
 	

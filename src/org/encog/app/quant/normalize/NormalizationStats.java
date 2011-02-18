@@ -40,7 +40,12 @@ public class NormalizationStats {
         this.stats = new NormalizedField[count];
     }
 
-    /**
+    public NormalizationStats(NormalizedField[] normFields) {
+		this();
+		this.stats = normFields;
+	}
+
+	/**
      *  Scan all columns and fix any columns where the min/max are the same value.
      * You cannot normalize when the min/max are the same values.
      * @param owner 

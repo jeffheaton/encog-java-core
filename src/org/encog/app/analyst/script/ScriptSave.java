@@ -138,7 +138,7 @@ public class ScriptSave {
 		
 		for (DataField field : this.script.getFields()) {
 			if (field.isClass()) {
-				for(ClassItem col: field.getClassMembers() ) {
+				for(AnalystClassItem col: field.getClassMembers() ) {
 					out.addColumn(field.getName());
 					out.addColumn(col.getCode());
 					out.addColumn(col.getName());
@@ -175,6 +175,15 @@ public class ScriptSave {
 			case PassThrough:
 				out.addColumn("pass");
 				break;
+			case OneOf:
+				out.addColumn("oneof");
+				break;
+			case Equilateral:
+				out.addColumn("equilateral");
+				break;
+			case SingleField:
+				out.addColumn("single");
+				break;			
 			}
 
 			out.addColumn(field.getNormalizedHigh());

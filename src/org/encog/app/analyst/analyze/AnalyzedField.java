@@ -6,16 +6,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
-import org.encog.app.analyst.script.ClassItem;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.quant.normalize.ClassItem;
 
 public class AnalyzedField extends DataField {
 
 	private double total;
 	private int instances;
 	private double devTotal;
-	private Map<String, ClassItem> classMap = new HashMap<String, ClassItem>();
+	private Map<String, AnalystClassItem> classMap = new HashMap<String, AnalystClassItem>();
 	private AnalystScript script;
 
 	public AnalyzedField(AnalystScript script, String name) {
@@ -67,7 +68,7 @@ public class AnalyzedField extends DataField {
 
 		if (this.isClass()) {
 			if (!this.classMap.containsKey(str)) {
-				this.classMap.put(str, new ClassItem(str,str));
+				this.classMap.put(str, new AnalystClassItem(str,str));
 			}
 			if (this.classMap.size() > script.getConfig().getMaxClassSize())
 				this.setClass(false);
@@ -99,12 +100,12 @@ public class AnalyzedField extends DataField {
 		this.setStandardDeviation(Math.sqrt(this.devTotal / this.instances));
 	}
 
-	public List<ClassItem> getClassMembers() {
+	public List<AnalystClassItem> getClassMembers() {
 		List<String> sorted = new ArrayList<String>();
 		sorted.addAll(this.classMap.keySet());		
 		Collections.sort(sorted);
 		
-		List<ClassItem> result = new ArrayList<ClassItem>();
+		List<AnalystClassItem> result = new ArrayList<AnalystClassItem>();
 		for(String str: sorted) {
 			result.add(this.classMap.get(str));
 		}
@@ -128,7 +129,7 @@ public class AnalyzedField extends DataField {
 		result.getClassMembers().clear();
 
 		if (result.isClass()) {
-			List<ClassItem> list = getClassMembers();
+			List<AnalystClassItem> list = getClassMembers();
 			result.getClassMembers().addAll(list);
 		}
 

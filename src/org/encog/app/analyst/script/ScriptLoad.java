@@ -140,7 +140,7 @@ public class ScriptLoad {
 	
 	private void handleDataClasses(List<String> list) {
 		
-		Map<String,List<ClassItem>> map = new HashMap<String,List<ClassItem>>();
+		Map<String,List<AnalystClassItem>> map = new HashMap<String,List<AnalystClassItem>>();
 		
 		boolean first = true;
 		for(String line: list) {
@@ -156,16 +156,16 @@ public class ScriptLoad {
 					throw new AnalystError("Attempting to add class to unknown field: " + name);
 				}
 				
-				List<ClassItem> classItems;
+				List<AnalystClassItem> classItems;
 				
 				if( !map.containsKey(field) ) {
-					classItems = new ArrayList<ClassItem>();
+					classItems = new ArrayList<AnalystClassItem>();
 					map.put(field, classItems);
 				} else {
 					classItems = map.get(field);
 				}
 				
-				classItems.add(new ClassItem(code,name));
+				classItems.add(new AnalystClassItem(code,name));
 			} else {
 				first = false;
 			}			
@@ -174,7 +174,7 @@ public class ScriptLoad {
 		for(DataField field: this.script.getFields())
 		{
 			if( field.isClass() ) {
-				List<ClassItem> classList = map.get(field.getName());
+				List<AnalystClassItem> classList = map.get(field.getName());
 				Collections.sort(classList);
 				field.getClassMembers().clear();
 				field.getClassMembers().addAll(classList);
@@ -201,7 +201,14 @@ public class ScriptLoad {
 					des = NormalizationAction.Ignore;
 				} else if( action.equals("pass")) {
 					des = NormalizationAction.PassThrough;
+				} else if( action.equals("equilateral")) {
+					des = NormalizationAction.Equilateral;
+				} else if( action.equals("single")) {
+					des = NormalizationAction.SingleField;
+				} else if( action.equals("oneof")) {
+					des = NormalizationAction.OneOf;
 				}
+				
 				NormalizedField nf = new NormalizedField(name,des,high,low);
 				nfs.add(nf);
 			} else {
