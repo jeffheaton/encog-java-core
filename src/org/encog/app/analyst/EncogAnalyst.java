@@ -8,17 +8,12 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
-import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
-import org.encog.app.quant.classify.ClassifyCSV;
-import org.encog.app.quant.classify.ClassifyMethod;
 import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizationStats;
@@ -164,8 +159,6 @@ public class EncogAnalyst {
 		this.script.getSegregate().setSourceFile(EncogAnalystConfig.FILE_RANDOM);		
 		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
 		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getClassify().setSourceFile(EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getClassify().setTargetFile(EncogAnalystConfig.FILE_CLASSIFY);
 		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_CLASSIFY);
 		this.script.getGenerate().setTargetFile(EncogAnalystConfig.FILE_TRAINSET);
 		this.script.getMachineLearning().setTrainingFile(EncogAnalystConfig.FILE_TRAINSET);
@@ -177,35 +170,6 @@ public class EncogAnalyst {
 		this.script.getMachineLearning().setResourceName("ml");
 	}
 
-	private void generateClassifiedFields(File file) {
-
-		List<ClassifyField> classifyFields = new ArrayList<ClassifyField>();
-		DataField[] dataFields = this.getScript().getFields();
-
-		for (int i = 0; i < this.script.getFields().length; i++) {
-			DataField f = dataFields[i];
-
-			if (f.isClass()) {
-				ClassifyMethod method;
-
-				if (f.getClassMembers().size() >= 3)
-					method = ClassifyMethod.Equilateral;
-				else
-					method = ClassifyMethod.OneOf;
-
-				ClassifyField cField = new ClassifyField(f.getName(), method,
-						1, -1);
-				classifyFields.add(cField);
-			}
-		}
-
-		ClassifyField[] array = new ClassifyField[classifyFields.size()];
-		for (int i = 0; i < array.length; i++) {
-			array[i] = classifyFields.get(i);
-		}
-
-		this.script.getClassify().setClassifiedFields(array);
-	}
 
 	private void generateRandomize(File file) {
 
@@ -219,7 +183,7 @@ public class EncogAnalyst {
 	}
 
 	private void generateGenerate(File file) {
-		int inputColumns = this.script.getFields().length
+/*		int inputColumns = this.script.getFields().length
 				- this.script.getClassify().getClassifiedFields().length;
 		ClassifyField targetField = this.script.getClassify()
 				.getClassifiedFields()[0];
@@ -247,14 +211,13 @@ public class EncogAnalyst {
 
 		this.script.getGenerate().setInput(inputColumns);
 		this.script.getGenerate().setIdeal(idealColumns);
-
+*/
 	}
 
 	public void wizard(File saveFile, File analyzeFile, boolean b,
 			CSVFormat english) {
 		analyze(analyzeFile, b, english);
 		generateNormalizedFields(analyzeFile);
-		generateClassifiedFields(analyzeFile);
 		generateRandomize(analyzeFile);
 		generateSegregate(analyzeFile);
 		generateGenerate(analyzeFile);
@@ -268,38 +231,9 @@ public class EncogAnalyst {
 		BotUtil.downloadPage(url, analyzeFile);
 		analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
-		generateClassifiedFields(analyzeFile);
 		generateRandomize(analyzeFile);
 		generateSegregate(analyzeFile);
 		generateGenerate(analyzeFile);
-	}
-
-	public void classify() {
-		// mark generated
-		this.script.markGenerated(this.script.getClassify().getTargetFile());
-
-		// get filenames
-		String sourceFile = this.script.getConfig().getFilename(
-				this.script.getClassify().getSourceFile());
-		String targetFile = this.script.getConfig().getFilename(
-				this.script.getClassify().getTargetFile());
-
-		// prepare to classify
-		boolean headers = this.script.expectInputHeaders(this.script
-				.getClassify().getSourceFile());
-		ClassifyCSV classify = new ClassifyCSV();
-		classify.setProduceOutputHeaders(this.script.getConfig()
-				.isOutputHeaders());
-		classify.analyze(sourceFile, headers, CSVFormat.ENGLISH);
-
-		for (ClassifyField field : this.script.getClassify()
-				.getClassifiedFields()) {
-
-			classify.addTarget(field.getName(), field.getMethod(),
-					field.getHigh(), field.getLow(), -1, null);
-		}
-
-		classify.process(targetFile);
 	}
 
 	public void normalize() {
@@ -478,7 +412,7 @@ public class EncogAnalyst {
 		MLRegression method = (MLRegression) encog.find(resource);
 		
 		boolean headers = this.script.expectInputHeaders(this.script
-				.getClassify().getSourceFile());
+				.getNormalize().getSourceFile());
 		
 
 		EvaluateCSV eval = new EvaluateCSV();
@@ -510,7 +444,6 @@ public class EncogAnalyst {
 		a.randomize();
 		a.segregate();
 		a.normalize();
-		a.classify();
 		a.generate();
 		a.create();
 		a.train();

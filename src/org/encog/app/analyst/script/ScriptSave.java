@@ -2,7 +2,6 @@ package org.encog.app.analyst.script;
 
 import java.io.OutputStream;
 
-import org.encog.app.analyst.script.classify.ClassifyField;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.quant.normalize.NormalizedField;
 
@@ -31,39 +30,6 @@ public class ScriptSave {
 		}
 	}
 	
-	private void saveClassify(WriteScriptFile out) {
-		out.addSection("CLASSIFY");
-		out.addSubSection("CONFIG");
-		out.writeProperty("sourceFile", this.script.getClassify()
-				.getSourceFile());
-		out.writeProperty("targetFile", this.script.getClassify()
-				.getTargetFile());
-		
-		out.addSection("FIELDS");
-		out.addColumn("name");
-		out.addColumn("type");
-		out.addColumn("high");
-		out.addColumn("low");
-		out.writeLine();
-		for(ClassifyField field: this.script.getClassify().getClassifiedFields())
-		{
-			out.addColumn(field.getName());
-			switch(field.getMethod()) {
-				case Equilateral:
-					out.addColumn("equilateral");
-					break;
-				case OneOf:
-					out.addColumn("oneof");
-					break;
-				case SingleField:
-					out.addColumn("single");
-					break;
-			}
-			out.addColumn(field.getHigh());
-			out.addColumn(field.getLow());
-			out.writeLine();
-		}
-	}
 	
 	private void saveRandomize(WriteScriptFile out)
 	{
@@ -223,7 +189,6 @@ public class ScriptSave {
 		saveConfig(out);
 		saveData(out);
 		saveNormalize(out);
-		saveClassify(out);
 		saveRandomize(out);
 		saveSegregate(out);
 		saveGenerate(out);

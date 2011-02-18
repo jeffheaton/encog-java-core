@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.encog.app.analyst.script.classify.AnalystClassify;
 import org.encog.app.analyst.script.generate.AnalystGenerate;
 import org.encog.app.analyst.script.information.AnalystInformation;
 import org.encog.app.analyst.script.ml.AnalystMachineLearning;
@@ -19,7 +18,6 @@ public class AnalystScript {
 	private DataField[] fields;
 	private final AnalystInformation information = new AnalystInformation();
 	private final AnalystNormalize normalize = new AnalystNormalize();
-	private final AnalystClassify classify = new AnalystClassify();
 	private final AnalystRandomize randomize = new AnalystRandomize();
 	private final AnalystSegregate segregate = new AnalystSegregate();
 	private final AnalystGenerate generate = new AnalystGenerate();
@@ -73,13 +71,6 @@ public class AnalystScript {
 		}
 		
 		return null;
-	}
-
-	/**
-	 * @return the classify
-	 */
-	public AnalystClassify getClassify() {
-		return classify;
 	}
 		
 	

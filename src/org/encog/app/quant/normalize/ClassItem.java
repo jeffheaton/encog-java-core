@@ -1,4 +1,4 @@
-package org.encog.app.quant.classify;
+package org.encog.app.quant.normalize;
 
 /**
  * A class item.
