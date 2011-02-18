@@ -7,12 +7,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.encog.app.quant.normalize.NormalizationDesired;
-import org.encog.app.quant.normalize.NormalizeCSV;
-import org.encog.util.csv.CSVFormat;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.app.quant.normalize.NormalizationAction;
+import org.encog.app.quant.normalize.NormalizeCSV;
+import org.encog.util.csv.CSVFormat;
 
 public class TestNormalizeCSV extends TestCase {
 
@@ -44,8 +44,8 @@ public class TestNormalizeCSV extends TestCase {
         NormalizeCSV norm = new NormalizeCSV();
         norm.analyze(INPUT_NAME, true, CSVFormat.ENGLISH);
         norm.getStats().getStats()[2].makePassThrough();
-        norm.getStats().getStats()[3].setAction( NormalizationDesired.Ignore);
-        norm.getStats().getStats()[4].setAction( NormalizationDesired.Ignore);
+        norm.getStats().getStats()[3].setAction( NormalizationAction.Ignore);
+        norm.getStats().getStats()[4].setAction( NormalizationAction.Ignore);
         norm.normalize(OUTPUT_NAME);
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
@@ -65,8 +65,8 @@ public class TestNormalizeCSV extends TestCase {
         norm.analyze(INPUT_NAME, false, CSVFormat.ENGLISH);
         norm.setProduceOutputHeaders(false);
         norm.getStats().getStats()[2].makePassThrough();
-        norm.getStats().getStats()[3].setAction( NormalizationDesired.Ignore);
-        norm.getStats().getStats()[4].setAction( NormalizationDesired.Ignore);
+        norm.getStats().getStats()[3].setAction( NormalizationAction.Ignore);
+        norm.getStats().getStats()[4].setAction( NormalizationAction.Ignore);
         norm.normalize(OUTPUT_NAME);
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
