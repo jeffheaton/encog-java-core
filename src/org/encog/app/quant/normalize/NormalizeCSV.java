@@ -61,6 +61,8 @@ public class NormalizeCSV extends BasicFile {
 			// analyze first row
 			int fieldCount = csv.getColumnCount();
 			this.stats = new NormalizationStats(fieldCount);
+			this.stats.setFormat(this.getInputFormat());
+			this.stats.setPrecision(this.precision);
 
 			for (int i = 0; i < fieldCount; i++) {
 				stats.getStats()[i] = new NormalizedField();
@@ -204,6 +206,9 @@ public class NormalizeCSV extends BasicFile {
 
 		ReadCSV csv = null;
 		PrintWriter tw = null;
+		this.stats.setFormat(this.getInputFormat());
+		this.stats.setPrecision(this.precision);
+
 
 		try {
 			csv = new ReadCSV(this.getInputFilename(),
