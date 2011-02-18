@@ -52,8 +52,8 @@ public class TestNormalizeCSV extends TestCase {
 
         BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
         Assert.assertEquals("\"a\",\"b\",\"c\",\"d-0\",\"d-1\"",tr.readLine());
-        Assert.assertEquals("\"one\",-1,\"1\",0,0",tr.readLine());
-        Assert.assertEquals("\"two\",0,\"2\",0,0",tr.readLine());
+        Assert.assertEquals("\"one\",-1,\"1\",-0.866,-0.5",tr.readLine());
+        Assert.assertEquals("\"two\",0,\"2\",-0.866,-0.5",tr.readLine());
         tr.close();
 
         (new File(INPUT_NAME)).delete();
