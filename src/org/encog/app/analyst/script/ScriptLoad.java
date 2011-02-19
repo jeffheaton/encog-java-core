@@ -244,6 +244,7 @@ public class ScriptLoad {
 		Map<String, String> prop = this.handleProperties(list);
 		
 		this.script.getInformation().setDataSource(prop.get("sourceFile"));
+		this.script.getInformation().setRawFile(prop.get("rawFile"));
 		this.script.getInformation().setDataSourceFormat(prop.get("sourceFormat"));
 		this.script.getInformation().setDataSourceHeaders(prop.get("sourceHeaders").trim().equalsIgnoreCase("t"));
 	}

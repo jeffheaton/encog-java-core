@@ -5,6 +5,7 @@ import org.encog.util.csv.CSVFormat;
 public class AnalystInformation {
 	
 	private String dataSource = "";
+	private String rawFile = "";
 	private CSVFormat dataSourceFormat = CSVFormat.DECIMAL_POINT;
 	private boolean dataSourceHeaders = false;
 	/**
@@ -51,6 +52,19 @@ public class AnalystInformation {
 		}
 		
 	}
+	/**
+	 * @return the rawFile
+	 */
+	public String getRawFile() {
+		return rawFile;
+	}
+	/**
+	 * @param rawFile the rawFile to set
+	 */
+	public void setRawFile(String rawFile) {
+		this.rawFile = rawFile;
+	}
+	
 	
 	
 }

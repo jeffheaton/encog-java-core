@@ -6,20 +6,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
-import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
-import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.evaluate.EvaluateCSV;
-import org.encog.app.quant.normalize.ClassItem;
-import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
 import org.encog.app.quant.normalize.NormalizedField;
@@ -37,7 +32,6 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.persist.EncogMemoryCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.file.FileUtil;
 import org.encog.util.logging.Logging;
 import org.encog.util.simple.EncogUtility;
 
@@ -319,6 +313,12 @@ public class EncogAnalyst {
 
 	}
 	
+	public void download()
+	{
+		//URL url = new URL(this.script.getInformation().getDataSource());
+		//BotUtil.downloadPage(url, analyzeFile);
+	}
+	
 
 
 	public static void main(String[] args) {
@@ -330,7 +330,9 @@ public class EncogAnalyst {
 		//a.wizard(new File("d:\\data\\iris.txt"), new File(
 		//		"d:\\data\\iris_raw.csv"), false, CSVFormat.ENGLISH);
 
-		URL url = null;
+		AnalystWizard wiz = new AnalystWizard(a);
+		
+		/*URL url = null;
 		try {
 			url = new URL(
 					"http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data");
@@ -338,11 +340,15 @@ public class EncogAnalyst {
 			e.printStackTrace();
 		}
 		
-		AnalystWizard wiz = new AnalystWizard(a);
-
 		wiz.wizard(url, new File("c:\\iris\\iris.txt"), new File(
-				"c:\\iris\\iris_raw.csv"), false, CSVFormat.ENGLISH);
+				"c:\\iris\\iris_raw.csv"), false, CSVFormat.ENGLISH);*/
 
+		URL url = null;
+		
+		
+		wiz.wizard(new File("c:\\analyst\\forest\\forest.txt"), new File(
+				"d:\\analyst\\forest\\forest_raw.csv"), false, CSVFormat.ENGLISH);
+		
 		a.randomize();
 		a.segregate();
 		a.normalize();
@@ -350,7 +356,7 @@ public class EncogAnalyst {
 		a.create();
 		a.train();
 		a.evaluate();
-		a.save("c:\\iris\\iris.txt");
+		a.save("d:\\analyst\\forest\\forest.txt");
 
 		/*
 				a.analyze(

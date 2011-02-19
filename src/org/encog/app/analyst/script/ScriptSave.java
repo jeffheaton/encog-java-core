@@ -46,6 +46,7 @@ public class ScriptSave {
 		out.addSection("HEADER");
 		out.addSubSection("DATASOURCE");
 		out.writeProperty("sourceFile", this.script.getInformation().getDataSource());
+		out.writeProperty("rawFile", this.script.getInformation().getRawFile());
 		out.writeProperty("sourceFormat", this.script.getInformation().getDataSourceFormat());
 		out.writeProperty("sourceHeaders", this.script.getInformation().isDataSourceHeaders());
 	}

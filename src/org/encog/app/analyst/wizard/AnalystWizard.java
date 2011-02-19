@@ -74,6 +74,7 @@ public class AnalystWizard {
 				FileUtil.forceExtension(file.toString(), "eg"));
 
 		this.script.getNormalize().setNormalizedFields(norm);
+		this.script.getInformation().setRawFile(EncogAnalystConfig.FILE_RAW);
 		this.script.getRandomize().setSourceFile(EncogAnalystConfig.FILE_RAW);
 		this.script.getRandomize().setTargetFile(EncogAnalystConfig.FILE_RANDOM);
 		this.script.getSegregate().setSourceFile(EncogAnalystConfig.FILE_RANDOM);		

@@ -108,7 +108,11 @@ public class PerformAnalysis {
 					field.setClass(false);
 				}
 				
-				if( !script.getConfig().isAllowRealClasses() && field.isReal() ) {
+				if( !script.getConfig().isAllowRealClasses() && field.isReal() && !field.isInteger() ) {
+					field.setClass(false);
+				}
+				
+				if( field.isInteger() && field.getClassMembers().size()<=2 ) {
 					field.setClass(false);
 				}
 			}
