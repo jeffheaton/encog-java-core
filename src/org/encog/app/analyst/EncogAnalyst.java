@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 
+import org.encog.NullStatusReportable;
 import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.AnalystScript;
@@ -22,6 +23,7 @@ import org.encog.app.quant.segregate.SegregateCSV;
 import org.encog.app.quant.segregate.SegregateTargetPercent;
 import org.encog.app.quant.shuffle.ShuffleCSV;
 import org.encog.bot.BotUtil;
+import org.encog.engine.StatusReportable;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
@@ -40,6 +42,7 @@ public class EncogAnalyst {
 	public final static String ACTION_ANALYZE = "ANALYZE";
 
 	private AnalystScript script = new AnalystScript();
+	private StatusReportable report = new NullStatusReportable();
 
 	public void analyze(File file, boolean headers, CSVFormat format) {
 		script.getConfig().setFilename(EncogAnalystConfig.FILE_RAW,
@@ -318,54 +321,20 @@ public class EncogAnalyst {
 		//URL url = new URL(this.script.getInformation().getDataSource());
 		//BotUtil.downloadPage(url, analyzeFile);
 	}
-	
 
-
-	public static void main(String[] args) {
-		
-		Logging.stopConsoleLogging();
-		
-		EncogAnalyst a = new EncogAnalyst();
-
-		//a.wizard(new File("d:\\data\\iris.txt"), new File(
-		//		"d:\\data\\iris_raw.csv"), false, CSVFormat.ENGLISH);
-
-		AnalystWizard wiz = new AnalystWizard(a);
-		
-		/*URL url = null;
-		try {
-			url = new URL(
-					"http://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data");
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		
-		wiz.wizard(url, new File("c:\\iris\\iris.txt"), new File(
-				"c:\\iris\\iris_raw.csv"), false, CSVFormat.ENGLISH);*/
-
-		URL url = null;
-		
-		
-		wiz.wizard(new File("c:\\analyst\\forest\\forest.txt"), new File(
-				"d:\\analyst\\forest\\forest_raw.csv"), false, CSVFormat.ENGLISH);
-		
-		a.randomize();
-		a.segregate();
-		a.normalize();
-		a.generate();
-		a.create();
-		a.train();
-		a.evaluate();
-		a.save("d:\\analyst\\forest\\forest.txt");
-
-		/*
-				a.analyze(
-						new File("d:\\data\\forest.csv"), 
-						false, 
-						CSVFormat.ENGLISH);
-				a.save("d:\\data\\forest.txt");*/
-
-		System.out.println("Done");
+	/**
+	 * @return the report
+	 */
+	public StatusReportable getReport() {
+		return report;
 	}
 
+	/**
+	 * @param report the report to set
+	 */
+	public void setReport(StatusReportable report) {
+		this.report = report;
+	}
+	
+	
 }

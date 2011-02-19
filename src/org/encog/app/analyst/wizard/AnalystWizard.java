@@ -152,7 +152,9 @@ public class AnalystWizard {
 		this.script.getInformation().setDataSource(url.toExternalForm());
 		this.script.getInformation().setDataSourceFormat(format);
 		this.script.getInformation().setDataSourceHeaders(b);
+		this.analyst.getReport().reportPhase(2, 1, "Downloading data");
 		BotUtil.downloadPage(url, analyzeFile);
+		this.analyst.getReport().reportPhase(2, 1, "Wizard analyzing data");
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
 		generateRandomize(analyzeFile);

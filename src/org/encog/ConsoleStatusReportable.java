@@ -48,4 +48,10 @@ public class ConsoleStatusReportable implements StatusReportable {
 		}
 
 	}
+
+	@Override
+	public void reportPhase(int total, int current, String message) {
+		System.out.println("Phase " + current + "/" + total + ":" + message);
+		
+	}
 }
