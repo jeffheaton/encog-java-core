@@ -16,14 +16,14 @@ public class MLMethodFactory {
 	private final SVMFactory svmFactory = new SVMFactory();
 	private final RBFNetworkFactory rbfFactory = new RBFNetworkFactory();
 	
-	public MLMethod create(String methodType, String architecture)
+	public MLMethod create(String methodType, String architecture, int input, int output)
 	{
 		if( TYPE_FEEDFORWARD.equals(methodType) ) {
-			return feedforwardFactory.create(architecture);
+			return feedforwardFactory.create(architecture,input,output);
 		} else if( TYPE_RBFNETWORK.equals(methodType) ) {
-			return rbfFactory.create(architecture);
+			return rbfFactory.create(architecture,input,output);
 		} else if( TYPE_SVM.equals(methodType) ) {
-			return svmFactory.create(architecture);
+			return svmFactory.create(architecture,input,output);
 		}
 		throw new EncogError("Unknown method type: " + methodType);
 	}

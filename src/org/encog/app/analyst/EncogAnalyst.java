@@ -26,6 +26,7 @@ import org.encog.engine.StatusReportable;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
+import org.encog.ml.factory.MLMethodFactory;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.EncogEGBFile;
 import org.encog.neural.networks.BasicNetwork;
@@ -209,23 +210,6 @@ public class EncogAnalyst {
 				headers);
 	}
 
-	private EncogPersistedObject createML(String type, String arch, int input,
-			int ideal) {
-
-		if (type.equalsIgnoreCase("feedforward")) {
-			BasicNetwork network = new BasicNetwork();
-			network.addLayer(new BasicLayer(new ActivationSigmoid(), true,
-					input));
-			network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 4));
-			network.addLayer(new BasicLayer(null, false, ideal));
-			network.getStructure().finalizeStructure();
-			network.reset();
-			return network;
-		}
-
-		return null;
-	}
-
 	public void create() {
 		this.report.reportPhase(0, 0, "Create Machine Learning Method");
 		// get filenames
@@ -247,8 +231,11 @@ public class EncogAnalyst {
 		if (new File(resourceFile).exists()) {
 			encog.load(resourceFile);
 		}
-		EncogPersistedObject obj = createML(type, arch, input, ideal);
-		encog.add(resource, obj);
+		
+		MLMethodFactory factory = new MLMethodFactory();
+		MLMethod obj = factory.create(type, arch, input, ideal);
+		
+		encog.add(resource, (EncogPersistedObject)obj);
 		encog.save(resourceFile);
 	}
 

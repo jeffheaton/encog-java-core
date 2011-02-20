@@ -58,7 +58,7 @@ public class AnalystWizard {
 		this.script.getMachineLearning().setOutputFile(EncogAnalystConfig.FILE_OUTPUT);
 		this.script.getMachineLearning().setEvalFile(EncogAnalystConfig.FILE_EVAL);
 		this.script.getMachineLearning().setMLType("feedforward");
-		this.script.getMachineLearning().setMLArchitecture("TANH(?)->TANH(10)->TANH(?)");
+		this.script.getMachineLearning().setMLArchitecture("?B->TANH->10B->TANH->?");
 		this.script.getMachineLearning().setResourceName("ml");
 	}
 	

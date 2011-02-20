@@ -180,10 +180,7 @@ public class NeuralStructure implements Serializable {
 			throw new NeuralNetworkError("There must be at least two layers before the structure is finalized.");
 		}
 		
-		final double[] params = new double[1];
-		FlatLayer[] flatLayers = new FlatLayer[this.layers.size()];
-				
-		params[0] = 1; // slope
+		FlatLayer[] flatLayers = new FlatLayer[this.layers.size()];		
 
 		for(int i=0;i<this.layers.size();i++)
 		{

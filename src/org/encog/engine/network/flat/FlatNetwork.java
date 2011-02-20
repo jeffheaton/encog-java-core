@@ -235,8 +235,8 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 					FlatNetwork.NO_BIAS_ACTIVATION);
 		}
 
-		this.isLimited = false;
-		this.connectionLimit = 0.0;
+		//this.isLimited = false;
+		//this.connectionLimit = 0.0;
 
 		init(layers);
 	}
