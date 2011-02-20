@@ -125,6 +125,4 @@ public class AnalystScript {
 		return machineLearning;
 	}
 	
-	
-	
 }

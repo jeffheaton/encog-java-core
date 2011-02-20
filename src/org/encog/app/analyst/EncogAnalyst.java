@@ -335,6 +335,5 @@ public class EncogAnalyst {
 	public void setReport(StatusReportable report) {
 		this.report = report;
 	}
-	
-	
+			
 }
