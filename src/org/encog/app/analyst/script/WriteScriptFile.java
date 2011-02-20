@@ -114,4 +114,10 @@ public class WriteScriptFile {
 		}
 		out.println(name+"="+fmt);
 	}
+
+	public void addTask(String name, String task) {
+		addSubSection(name);
+		this.out.println(task);
+		
+	}
 }

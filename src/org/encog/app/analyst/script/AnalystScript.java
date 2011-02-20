@@ -2,7 +2,9 @@ package org.encog.app.analyst.script;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.encog.app.analyst.script.generate.AnalystGenerate;
@@ -23,6 +25,7 @@ public class AnalystScript {
 	private final AnalystGenerate generate = new AnalystGenerate();
 	private final AnalystMachineLearning machineLearning = new AnalystMachineLearning();
 	private final Set<String> generated = new HashSet<String>();
+	private final Map<String,String> tasks = new HashMap<String,String>();
 	
 
 	/**
@@ -125,4 +128,23 @@ public class AnalystScript {
 		return machineLearning;
 	}
 	
+	public void clearTasks()
+	{
+		this.tasks.clear();
+	}
+	
+	public String getTask(String name) {
+		if( !this.tasks.containsKey(name) ) {
+			
+		}
+		return this.tasks.get(name);
+	}
+	
+	public void addTask(String name, String task) {
+		this.tasks.put(name, task);
+	}
+
+	public Map<String, String> getTasks() {
+		return this.tasks;		
+	}
 }

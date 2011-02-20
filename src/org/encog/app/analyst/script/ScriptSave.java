@@ -1,6 +1,7 @@
 package org.encog.app.analyst.script;
 
 import java.io.OutputStream;
+import java.util.Map.Entry;
 
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.quant.normalize.NormalizedField;
@@ -148,6 +149,13 @@ public class ScriptSave {
 			}
 		}
 
+	}
+	
+	private void saveTasks(WriteScriptFile out) {
+		for( Entry<String, String> entry : this.script.getTasks().entrySet() )
+		{
+			out.addTask(entry.getKey(),entry.getValue());
+		}
 	}
 
 	private void saveNormalize(WriteScriptFile out) {
