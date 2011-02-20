@@ -27,6 +27,41 @@ public class AnalystWizard {
 		this.script = analyst.getScript();
 	}
 	
+	private void generateSettings(File file)
+	{
+		String train;
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_NORMALIZE,
+				FileUtil.addFilenameBase(file, "_norm").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RANDOM,
+				FileUtil.addFilenameBase(file, "_random").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_OUTPUT,
+				FileUtil.addFilenameBase(file, "_output").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAIN,
+				train = FileUtil.addFilenameBase(file, "_train").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_EVAL,
+				FileUtil.addFilenameBase(file, "_eval").toString());
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAINSET,
+				FileUtil.forceExtension(train, "egb"));
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_EG,
+				FileUtil.forceExtension(file.toString(), "eg"));
+		
+		this.script.getInformation().setRawFile(EncogAnalystConfig.FILE_RAW);
+		this.script.getRandomize().setSourceFile(EncogAnalystConfig.FILE_RAW);
+		this.script.getRandomize().setTargetFile(EncogAnalystConfig.FILE_RANDOM);
+		this.script.getSegregate().setSourceFile(EncogAnalystConfig.FILE_RANDOM);		
+		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
+		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
+		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_NORMALIZE);
+		this.script.getGenerate().setTargetFile(EncogAnalystConfig.FILE_TRAINSET);
+		this.script.getMachineLearning().setTrainingFile(EncogAnalystConfig.FILE_TRAINSET);
+		this.script.getMachineLearning().setResourceFile(EncogAnalystConfig.FILE_EG);
+		this.script.getMachineLearning().setOutputFile(EncogAnalystConfig.FILE_OUTPUT);
+		this.script.getMachineLearning().setEvalFile(EncogAnalystConfig.FILE_EVAL);
+		this.script.getMachineLearning().setMLType("feedforward");
+		this.script.getMachineLearning().setMLArchitecture("TANH(?)->TANH(10)->TANH(?)");
+		this.script.getMachineLearning().setResourceName("ml");
+	}
+	
 	private void generateNormalizedFields(File file) {
 		NormalizedField[] norm = new NormalizedField[this.script.getFields().length];
 		DataField[] dataFields = script.getFields();
@@ -56,39 +91,7 @@ public class AnalystWizard {
 				norm[i] = new NormalizedField(action, f.getName());
 			}
 		}
-
-		String train;
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_NORMALIZE,
-				FileUtil.addFilenameBase(file, "_norm").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RANDOM,
-				FileUtil.addFilenameBase(file, "_random").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_OUTPUT,
-				FileUtil.addFilenameBase(file, "_output").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAIN,
-				train = FileUtil.addFilenameBase(file, "_train").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_EVAL,
-				FileUtil.addFilenameBase(file, "_eval").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAINSET,
-				FileUtil.forceExtension(train, "egb"));
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_EG,
-				FileUtil.forceExtension(file.toString(), "eg"));
-
 		this.script.getNormalize().setNormalizedFields(norm);
-		this.script.getInformation().setRawFile(EncogAnalystConfig.FILE_RAW);
-		this.script.getRandomize().setSourceFile(EncogAnalystConfig.FILE_RAW);
-		this.script.getRandomize().setTargetFile(EncogAnalystConfig.FILE_RANDOM);
-		this.script.getSegregate().setSourceFile(EncogAnalystConfig.FILE_RANDOM);		
-		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
-		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getGenerate().setTargetFile(EncogAnalystConfig.FILE_TRAINSET);
-		this.script.getMachineLearning().setTrainingFile(EncogAnalystConfig.FILE_TRAINSET);
-		this.script.getMachineLearning().setResourceFile(EncogAnalystConfig.FILE_EG);
-		this.script.getMachineLearning().setOutputFile(EncogAnalystConfig.FILE_OUTPUT);
-		this.script.getMachineLearning().setEvalFile(EncogAnalystConfig.FILE_EVAL);
-		this.script.getMachineLearning().setMLType("feedforward");
-		this.script.getMachineLearning().setMLArchitecture("TANH(?)->TANH(10)->TANH(?)");
-		this.script.getMachineLearning().setResourceName("ml");
 	}
 
 
@@ -152,9 +155,11 @@ public class AnalystWizard {
 		this.script.getInformation().setDataSource(url.toExternalForm());
 		this.script.getInformation().setDataSourceFormat(format);
 		this.script.getInformation().setDataSourceHeaders(b);
+		
+		this.generateSettings(analyzeFile);
 		this.analyst.getReport().reportPhase(2, 1, "Downloading data");
-		BotUtil.downloadPage(url, analyzeFile);
-		this.analyst.getReport().reportPhase(2, 1, "Wizard analyzing data");
+		analyst.download();
+		this.analyst.getReport().reportPhase(2, 2, "Wizard analyzing data");
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
 		generateRandomize(analyzeFile);

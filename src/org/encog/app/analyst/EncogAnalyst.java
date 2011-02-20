@@ -14,7 +14,6 @@ import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
-import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
@@ -34,7 +33,6 @@ import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.persist.EncogMemoryCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.logging.Logging;
 import org.encog.util.simple.EncogUtility;
 
 public class EncogAnalyst {
@@ -119,8 +117,8 @@ public class EncogAnalyst {
 		return script;
 	}
 
-
 	public void normalize() {
+		this.report.reportPhase(0, 0, "Normalizing");
 		// mark generated
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
 
@@ -132,6 +130,7 @@ public class EncogAnalyst {
 
 		// prepare to normalize
 		NormalizeCSV norm = new NormalizeCSV();
+		norm.setReport(this.report);
 		NormalizedField[] normFields = this.script.getNormalize()
 				.getNormalizedFields();
 		NormalizationStats stats = new NormalizationStats(normFields);
@@ -145,6 +144,8 @@ public class EncogAnalyst {
 	}
 
 	public void randomize() {
+		this.report.reportPhase(0, 0, "Randomizing");
+
 		// mark generated
 		this.script.markGenerated(this.script.getRandomize().getTargetFile());
 
@@ -156,6 +157,7 @@ public class EncogAnalyst {
 
 		// prepare to normalize
 		ShuffleCSV norm = new ShuffleCSV();
+		norm.setReport(this.report);
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getRandomize().getSourceFile());
 		norm.analyze(sourceFile, headers, this.script.getConfig()
@@ -164,6 +166,7 @@ public class EncogAnalyst {
 	}
 
 	public void segregate() {
+		this.report.reportPhase(0, 0, "Segregating");
 		// get filenames		
 		String inputFile = this.script.getConfig().getFilename(
 				this.script.getSegregate().getSourceFile());
@@ -181,12 +184,14 @@ public class EncogAnalyst {
 			// mark generated
 			this.script.markGenerated(target.getFile());
 		}
+		seg.setReport(this.report);
 		seg.analyze(inputFile, headers, this.script.getConfig().getCSVFormat());
 
 		seg.process();
 	}
 
 	public void generate() {
+		this.report.reportPhase(0, 0, "Generating Training");
 		// mark generated
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
 
@@ -203,24 +208,26 @@ public class EncogAnalyst {
 		EncogUtility.convertCSV2Binary(sourceFile, targetFile, input, ideal,
 				headers);
 	}
-	
-	private EncogPersistedObject createML(String type, String arch,int input,int ideal) {
-		
-		if( type.equalsIgnoreCase("feedforward") ) {
+
+	private EncogPersistedObject createML(String type, String arch, int input,
+			int ideal) {
+
+		if (type.equalsIgnoreCase("feedforward")) {
 			BasicNetwork network = new BasicNetwork();
-			network.addLayer(new BasicLayer(new ActivationSigmoid(), true,input));
-			network.addLayer(new BasicLayer(new ActivationSigmoid(), true,4));
-			network.addLayer(new BasicLayer(null, false,ideal));
+			network.addLayer(new BasicLayer(new ActivationSigmoid(), true,
+					input));
+			network.addLayer(new BasicLayer(new ActivationSigmoid(), true, 4));
+			network.addLayer(new BasicLayer(null, false, ideal));
 			network.getStructure().finalizeStructure();
 			network.reset();
 			return network;
 		}
-		
+
 		return null;
 	}
-	
-	public void create()
-	{
+
+	public void create() {
+		this.report.reportPhase(0, 0, "Create Machine Learning Method");
 		// get filenames
 		String trainingFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getTrainingFile());
@@ -229,97 +236,101 @@ public class EncogAnalyst {
 		String resource = this.script.getMachineLearning().getResourceName();
 		String type = this.script.getMachineLearning().getMLType();
 		String arch = this.script.getMachineLearning().getMLArchitecture();
-		
+
 		EncogEGBFile egb = new EncogEGBFile(new File(trainingFile));
 		egb.open();
 		int input = egb.getInputCount();
 		int ideal = egb.getIdealCount();
 		egb.close();
-		
+
 		EncogMemoryCollection encog = new EncogMemoryCollection();
-		if( new File(resourceFile).exists()) {
+		if (new File(resourceFile).exists()) {
 			encog.load(resourceFile);
 		}
-		EncogPersistedObject obj = createML(type,arch,input, ideal);
+		EncogPersistedObject obj = createML(type, arch, input, ideal);
 		encog.add(resource, obj);
 		encog.save(resourceFile);
 	}
-	
-	public void train()
-	{
+
+	public void train() {
+		this.report.reportPhase(0, 0, "Training");
 		// get filenames
 		String trainingFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getTrainingFile());
 		String resourceFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
-		
+
 		NeuralDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
-		
+
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.load(resourceFile);
-				
+
 		EncogPersistedObject method = encog.find(resource);
-		EncogUtility.trainToError((MLMethod)method, trainingSet, 0.01);					
+		EncogUtility.trainToError((MLMethod) method, trainingSet, 0.01);
 		encog.save(resourceFile);
 	}
-	
-	public void evaluateRaw()
-	{
+
+	public void evaluateRaw() {
+		this.report.reportPhase(0, 0, "Evaluate with Raw Data");
 		// get filenames
 		String evalFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getEvalFile());
 		String resourceFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
-		
+
 		String outputFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getOutputFile());
-		
+
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.load(resourceFile);
 		MLRegression method = (MLRegression) encog.find(resource);
-		
+
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getNormalize().getSourceFile());
-		
 
 		EvaluateCSV eval = new EvaluateCSV();
+		eval.setReport(this.report);
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, method);
 
 	}
-	
-	public void evaluate()
-	{
+
+	public void evaluate() {
+		this.report.reportPhase(0, 0, "Evaluate");
 		// get filenames
 		String evalFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getEvalFile());
 		String resourceFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
-		
+
 		String outputFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getOutputFile());
-		
+
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.load(resourceFile);
 		MLRegression method = (MLRegression) encog.find(resource);
-		
+
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getNormalize().getSourceFile());
-		
 
 		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
+		eval.setReport(this.report);
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, this, method);
 
 	}
-	
-	public void download()
-	{
-		//URL url = new URL(this.script.getInformation().getDataSource());
-		//BotUtil.downloadPage(url, analyzeFile);
+
+	public void download() {
+		try {
+			URL url = new URL(this.script.getInformation().getDataSource());
+			BotUtil.downloadPage(url, new File(this.script.getInformation()
+					.getRawFile()));
+		} catch (IOException ex) {
+			throw new AnalystError(ex);
+		}
 	}
 
 	/**
@@ -335,5 +346,5 @@ public class EncogAnalyst {
 	public void setReport(StatusReportable report) {
 		this.report = report;
 	}
-			
+
 }
