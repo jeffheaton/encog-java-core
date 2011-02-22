@@ -30,6 +30,7 @@ public class AnalystWizard {
 	private void generateSettings(File file)
 	{
 		String train;
+		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RAW, file.toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_NORMALIZE,
 				FileUtil.addFilenameBase(file, "_norm").toString());
 		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RANDOM,
@@ -155,6 +156,7 @@ public class AnalystWizard {
 		this.script.getInformation().setDataSource(url.toExternalForm());
 		this.script.getInformation().setDataSourceFormat(format);
 		this.script.getInformation().setDataSourceHeaders(b);
+		this.script.getInformation().setRawFile(analyzeFile.toString());
 		
 		this.generateSettings(analyzeFile);
 		this.analyst.getReport().reportPhase(2, 1, "Downloading data");

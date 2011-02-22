@@ -69,7 +69,7 @@ public final class BotUtil {
 	/**
 	 * How much data to read at once.
 	 */
-	public static final int BUFFER_SIZE = 8192;
+	public static final int BUFFER_SIZE = 32768;
 
 	/**
 	 * The logging object.
@@ -310,6 +310,8 @@ public final class BotUtil {
 		}
 		return result.toString();
 	}
+	
+
 
 	/**
 	 * Private constructor.

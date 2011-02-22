@@ -21,9 +21,11 @@ import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.app.quant.segregate.SegregateCSV;
 import org.encog.app.quant.segregate.SegregateTargetPercent;
 import org.encog.app.quant.shuffle.ShuffleCSV;
+import org.encog.bot.BotError;
 import org.encog.bot.BotUtil;
 import org.encog.engine.StatusReportable;
 import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.engine.util.Format;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.factory.MLMethodFactory;
@@ -309,12 +311,46 @@ public class EncogAnalyst {
 		eval.process(outputFile, this, method);
 
 	}
+	
+	private void downloadPage(final URL url, final File file) {
+		long size = 0;
+		try {
+			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
+
+			int length;
+			int lastUpdate = 0;
+
+			final FileOutputStream fos = new FileOutputStream(file);
+			final InputStream is = url.openStream();
+
+			do {
+				length = is.read(buffer);
+				
+				if (length >= 0) {
+					fos.write(buffer,0,length);
+					size+=length;
+				}
+				
+				if( lastUpdate>10 ) {
+					this.report.report(0, (int)(size/Format.MEMORY_MEG), "Downloading... " + Format.formatMemory(size));
+					lastUpdate = 0;
+				}
+				lastUpdate++;
+			} while (length >= 0);
+
+			fos.close();
+		} catch (final IOException e) {
+			throw new AnalystError(e);
+		}
+	}
 
 	public void download() {
 		try {
-			URL url = new URL(this.script.getInformation().getDataSource());
-			BotUtil.downloadPage(url, new File(this.script.getInformation()
-					.getRawFile()));
+			String sourceURL = this.script.getInformation().getDataSource(); 
+			String rawFile = this.script.getInformation().getRawFile();
+			String rawFilename = this.script.getConfig().getFilename(rawFile);
+			URL url = new URL(sourceURL);
+			downloadPage(url, new File(rawFilename));
 		} catch (IOException ex) {
 			throw new AnalystError(ex);
 		}
