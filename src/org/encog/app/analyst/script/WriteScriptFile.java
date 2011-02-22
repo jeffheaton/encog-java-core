@@ -83,11 +83,11 @@ public class WriteScriptFile {
 
 	public void addSection(String str) {
 		this.currentSection = str;
-		out.println("**"+str);		
+		out.println("["+str+"]");		
 	}
 	
 	public void addSubSection(String str) {
-		out.println("**"+this.currentSection+":"+str);		
+		out.println("["+this.currentSection+":"+str+"]");		
 	}
 
 	public void writeProperty(String name, int value) {

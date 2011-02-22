@@ -333,16 +333,19 @@ public class ScriptLoad {
 				}
 
 				// is it a section or subsection
-				else if (line.startsWith("**")) {			
+				else if (line.startsWith("[")) {			
 					// handle previous section
 					this.processSubSection(currentSection, currentSubSection, subSection);
 					
 					// now begin the new section
 					subSection.clear();
-					line = line.substring(2).trim();
-					int idx = line.indexOf(':');
+					String s = line.substring(1).trim();
+					if( !s.endsWith("]") )
+						throw new AnalystError("Invalid section: " + line);
+					s = s.substring(0, line.length()-1);
+					int idx = s.indexOf(':');
 					if (idx == -1) {
-						currentSection = line;
+						currentSection = s;
 					} else {
 						if (currentSection.length() < 1) {
 							throw new AnalystError(
@@ -350,8 +353,8 @@ public class ScriptLoad {
 											+ line);
 						}
 
-						String newSection = line.substring(0, idx);
-						String newSubSection = line.substring(idx + 1);
+						String newSection = s.substring(0, idx);
+						String newSubSection = s.substring(idx + 1);
 
 						if (!newSection.equals(currentSection)) {
 							throw new AnalystError("Can't begin subsection "
