@@ -59,9 +59,6 @@ public class AnalystWizard {
 		this.script.getMachineLearning().setResourceFile(EncogAnalystConfig.FILE_EG);
 		this.script.getMachineLearning().setOutputFile(EncogAnalystConfig.FILE_OUTPUT);
 		this.script.getMachineLearning().setEvalFile(EncogAnalystConfig.FILE_EVAL);
-		this.script.getMachineLearning().setMLType("feedforward");
-		this.script.getMachineLearning().setMLArchitecture("?B->TANH->10B->TANH->?");
-		this.script.getMachineLearning().setResourceName("ml");
 	}
 	
 	private void generateNormalizedFields(File file) {
@@ -144,6 +141,12 @@ public class AnalystWizard {
 
 		this.script.getGenerate().setInput(inputColumns);
 		this.script.getGenerate().setIdeal(idealColumns);
+
+		int hidden = (int)(((double)inputColumns)*1.5);
+		this.script.getMachineLearning().setMLType("feedforward");
+		this.script.getMachineLearning().setMLArchitecture("?B->TANH->"+hidden+"B->TANH->?");
+		this.script.getMachineLearning().setResourceName("ml");
+
 
 	}
 

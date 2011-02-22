@@ -1,9 +1,10 @@
 package org.encog.app.analyst.evaluate;
 
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.encog.app.analyst.EncogAnalyst;
-import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
 import org.encog.app.quant.normalize.ClassItem;
@@ -16,6 +17,9 @@ import org.encog.util.csv.ReadCSV;
 
 public class AnalystEvaluateCSV extends BasicFile {
 
+	private final Map<String,Integer> classCorrect = new HashMap<String,Integer>();
+	private final Map<String,Integer> classCount = new HashMap<String,Integer>();
+	
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
 	 * processed.
@@ -79,20 +83,53 @@ public class AnalystEvaluateCSV extends BasicFile {
 				} else if (normFieldNumber == computeIndex) {
 					output = method.compute(input);				
 					if( field.getColumnsNeeded()>1 ) {
+						// classification
 						ClassItem cls = field.determineClass(output.getData());
-						row.getData()[finalCol] = cls.getName();	
+						row.getData()[finalCol] = cls.getName();
+						
+						String a = row.getData()[finalCol-1];
+						String b = row.getData()[finalCol];
+
+						// update count
+						if( !classCount.containsKey(a) ) {
+							classCount.put(a, 1);
+						} else {
+							int i = classCount.get(a);
+							classCount.put(a, i+1);
+						}
+						
+						// update correct
+						if( a.equals(b) ) {
+							if( !classCorrect.containsKey(a) ) {
+								classCorrect.put(a, 1);
+							} else {
+								int i = classCorrect.get(a);
+								classCorrect.put(a, i+1);
+							}	
+						}						
 					} else {
+						// regression
 						row.getData()[finalCol] = this.getInputFormat().format(output.getData(0), this.getPrecision());
 					}
 				}
 			}
 
+			
 			writeRow(tw, row);
 		}
 		reportDone(false);
 		tw.close();
 		csv.close();
-
 	}
+
+	public Map<String, Integer> getClassCorrect() {
+		return classCorrect;
+	}
+
+	public Map<String, Integer> getClassCount() {
+		return classCount;
+	}
+	
+	
 
 }

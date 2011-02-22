@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import org.encog.NullStatusReportable;
@@ -41,6 +46,9 @@ public class EncogAnalyst {
 
 	private AnalystScript script = new AnalystScript();
 	private StatusReportable report = new NullStatusReportable();
+	private Map<String,Integer> classCorrect = new HashMap<String,Integer>();
+	private Map<String,Integer> classCount = new HashMap<String,Integer>();
+
 
 	public void analyze(File file, boolean headers, CSVFormat format) {
 		script.getConfig().setFilename(EncogAnalystConfig.FILE_RAW,
@@ -306,6 +314,9 @@ public class EncogAnalyst {
 		eval.setReport(this.report);
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, this, method);
+		
+		this.classCorrect = eval.getClassCorrect();
+		this.classCount = eval.getClassCount();
 
 	}
 	
@@ -408,6 +419,45 @@ public class EncogAnalyst {
 	 */
 	public void setReport(StatusReportable report) {
 		this.report = report;
+	}
+
+	public Map<String, Integer> getClassCorrect() {
+		return classCorrect;
+	}
+
+	public void setClassCorrect(Map<String, Integer> classCorrect) {
+		this.classCorrect = classCorrect;
+	}
+
+	public Map<String, Integer> getClassCount() {
+		return classCount;
+	}
+
+	public void setClassCount(Map<String, Integer> classCount) {
+		this.classCount = classCount;
+	}
+	
+	public String evalToString() {
+		List<String> list = new ArrayList<String>();
+		list.addAll(this.classCount.keySet());
+		Collections.sort(list);
+		
+		StringBuilder result = new StringBuilder();
+		for(String key: list) {
+			result.append(key);
+			result.append(" ");
+			double correct = classCorrect.get(key);
+			double count = classCount.get(key);
+			
+			result.append(Format.formatInteger((int)correct));
+			result.append('/');
+			result.append(Format.formatInteger((int)count));
+			result.append('(');
+			result.append(Format.formatPercent(correct/count));
+			result.append(")\n");
+		}
+				
+		return result.toString();
 	}
 
 }
