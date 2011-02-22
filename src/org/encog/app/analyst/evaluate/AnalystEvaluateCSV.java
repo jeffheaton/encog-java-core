@@ -1,13 +1,17 @@
 package org.encog.app.analyst.evaluate;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
 import org.encog.app.quant.normalize.ClassItem;
+import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
@@ -40,6 +44,79 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 		performBasicCounts();
 	}
+	
+	/**
+	 * Prepare the output file, write headers if needed.
+	 * 
+	 * @param outputFile
+	 *            The name of the output file.
+	 * @param method 
+	 * @return The output stream for the text file.
+	 */
+	public PrintWriter prepareOutputFile(String outputFile, int input, int output) {
+		try {
+			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
+
+			// write headers, if needed
+			if (this.isProduceOutputHeaders()) {
+				StringBuilder line = new StringBuilder();
+
+				// display the input fields
+				if (this.inputHeadings != null) {
+					for(int i=0;i<input;i++) {
+						BasicFile.appendComma(line);
+						line.append("\"");
+						line.append(this.inputHeadings[i]);
+						line.append("\"");
+					}
+				} else {
+					for(int i=0;i<input;i++) {
+						BasicFile.appendComma(line);
+						line.append("\"input-");
+						line.append(i);
+						line.append("\"");
+					}
+				}
+				
+				// handle ideal fields
+				if( output>1 ) {
+					for(int i=0;i<output;i++) {
+						BasicFile.appendComma(line);
+						line.append("\"ideal");
+						line.append(i);
+						line.append("\"");
+					}
+				} else {
+					BasicFile.appendComma(line);
+					line.append("\"ideal");
+					line.append("\"");
+				}
+				
+				// handle actual fields
+				if( output>1 ) {
+					for(int i=0;i<output;i++) {
+						BasicFile.appendComma(line);
+						line.append("\"actual");
+						line.append(i);
+						line.append("\"");
+					}
+				} else {
+					BasicFile.appendComma(line);
+					line.append("\"actual");
+					line.append("\"");
+				}
+				
+				
+				tw.println(line.toString());
+			}
+
+			return tw;
+
+		} catch (IOException e) {
+			throw new QuantError(e);
+		}
+	}
+
 
 	public void process(String outputFile, EncogAnalyst analyst,
 			MLRegression method) {
@@ -48,11 +125,20 @@ public class AnalystEvaluateCSV extends BasicFile {
 				this.isExpectInputHeaders(), this.getInputFormat());
 
 		NeuralData output = null;
-		PrintWriter tw = this.prepareOutputFile(outputFile);
+		
 		NeuralData input = new BasicNeuralData(method.getInputCount());
 		NormalizedField[] fields = analyst.getScript().getNormalize()
 				.getNormalizedFields();
 		int finalCol = getColumnCount();
+		int computeIndex = method.getInputCount();
+		
+		PrintWriter tw;
+		if( fields[computeIndex].isClassify() ) {
+				tw = this.prepareOutputFile(outputFile, method.getInputCount(), 1);
+		} else {
+			tw = this.prepareOutputFile(outputFile, method.getInputCount(), method.getOutputCount());
+		}
+		
 
 		resetStatus();
 		while (csv.next()) {
@@ -61,7 +147,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 			int inputIndex = 0;
 			int outputIndex = 0;
-			int computeIndex = method.getInputCount();
+			
 
 			for (int normFieldNumber = 0; normFieldNumber < fields.length; normFieldNumber++) {
 				NormalizedField field = fields[normFieldNumber];

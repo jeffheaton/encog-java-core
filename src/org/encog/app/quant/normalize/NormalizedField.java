@@ -497,6 +497,13 @@ public class NormalizedField {
 		return eq;
 	}
 
+	public boolean isClassify() {
+		// TODO Auto-generated method stub
+		return this.action==NormalizationAction.Equilateral 
+			|| this.action==NormalizationAction.OneOf
+			|| this.action==NormalizationAction.SingleField;
+	}
+
 	
 	
 	
