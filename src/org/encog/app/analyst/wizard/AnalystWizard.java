@@ -3,6 +3,7 @@ package org.encog.app.analyst.wizard;
 import java.io.File;
 import java.net.URL;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
@@ -133,6 +134,10 @@ public class AnalystWizard {
 
 	private void generateGenerate(File file) {
 		NormalizedField targetField = getTargetField();
+		
+		if( targetField==null ) {
+			throw new AnalystError("Failed to find a target field to analyze.  Please specify the target field.");
+		}
 
 		int inputColumns = this.script.getNormalize().calculateInputColumns(targetField);
 		int idealColumns = this.script.getNormalize().calculateOutputColumns(targetField);

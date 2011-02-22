@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.zip.GZIPInputStream;
 
 import org.encog.NullStatusReportable;
 import org.encog.app.analyst.analyze.PerformAnalysis;
@@ -21,18 +22,14 @@ import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.app.quant.segregate.SegregateCSV;
 import org.encog.app.quant.segregate.SegregateTargetPercent;
 import org.encog.app.quant.shuffle.ShuffleCSV;
-import org.encog.bot.BotError;
 import org.encog.bot.BotUtil;
 import org.encog.engine.StatusReportable;
-import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.EncogEGBFile;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.persist.EncogMemoryCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.util.csv.CSVFormat;
@@ -312,15 +309,18 @@ public class EncogAnalyst {
 
 	}
 	
-	private void downloadPage(final URL url, final File file) {
-		long size = 0;
+	private void downloadPage(final URL url, final File file) {		
 		try {
+			// download the URL
+			long size = 0;
 			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
-
+			
+			File tempFile = new File(file.getParentFile(), "temp.tmp");
+			
 			int length;
 			int lastUpdate = 0;
 
-			final FileOutputStream fos = new FileOutputStream(file);
+			FileOutputStream fos = new FileOutputStream(tempFile);
 			final InputStream is = url.openStream();
 
 			do {
@@ -339,18 +339,58 @@ public class EncogAnalyst {
 			} while (length >= 0);
 
 			fos.close();
+			// unzip if needed
+			
+			if( url.toString().toLowerCase().endsWith(".gz"))
+			{
+				FileInputStream fis = new FileInputStream(tempFile);
+				GZIPInputStream gis = new GZIPInputStream(fis);
+				fos = new FileOutputStream(file);
+				
+				size = 0;
+				lastUpdate = 0;
+				
+				do {
+					length = gis.read(buffer);
+					
+					if (length >= 0) {
+						fos.write(buffer,0,length);
+						size+=length;
+					}
+					
+					if( lastUpdate>10 ) {
+						this.report.report(0, (int)(size/Format.MEMORY_MEG), "Uncompressing... " + Format.formatMemory(size));
+						lastUpdate = 0;
+					}
+					lastUpdate++;
+				} while (length >= 0);
+				
+				fos.close();
+				fis.close();
+				gis.close();
+				tempFile.delete();
+				
+
+			}
+			else {			
+				// rename the temp file to the actual file
+				file.delete();
+				tempFile.renameTo(file);
+			}
+			
 		} catch (final IOException e) {
 			throw new AnalystError(e);
 		}
 	}
 
 	public void download() {
-		try {
+		try {			
 			String sourceURL = this.script.getInformation().getDataSource(); 
 			String rawFile = this.script.getInformation().getRawFile();
-			String rawFilename = this.script.getConfig().getFilename(rawFile);
+			File rawFilename = new File( this.script.getConfig().getFilename(rawFile) );
 			URL url = new URL(sourceURL);
-			downloadPage(url, new File(rawFilename));
+			if(!rawFilename.exists())
+				downloadPage(url, rawFilename);
 		} catch (IOException ex) {
 			throw new AnalystError(ex);
 		}
