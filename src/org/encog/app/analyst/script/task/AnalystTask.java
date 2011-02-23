@@ -9,6 +9,9 @@ public class AnalystTask {
 	private String name;
 	private final List<String> lines = new ArrayList<String>();
 	
+	public AnalystTask(String name) {
+		this.name = name;
+	}
 	/**
 	 * @return the name
 	 */

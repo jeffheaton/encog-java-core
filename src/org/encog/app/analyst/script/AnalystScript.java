@@ -13,6 +13,7 @@ import org.encog.app.analyst.script.ml.AnalystMachineLearning;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.randomize.AnalystRandomize;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
+import org.encog.app.analyst.script.task.AnalystTask;
 
 public class AnalystScript {
 
@@ -25,7 +26,7 @@ public class AnalystScript {
 	private final AnalystGenerate generate = new AnalystGenerate();
 	private final AnalystMachineLearning machineLearning = new AnalystMachineLearning();
 	private final Set<String> generated = new HashSet<String>();
-	private final Map<String,String> tasks = new HashMap<String,String>();
+	private final Map<String,AnalystTask> tasks = new HashMap<String,AnalystTask>();
 	
 
 	/**
@@ -133,18 +134,18 @@ public class AnalystScript {
 		this.tasks.clear();
 	}
 	
-	public String getTask(String name) {
+	public AnalystTask getTask(String name) {
 		if( !this.tasks.containsKey(name) ) {
-			
+			return null;
 		}
 		return this.tasks.get(name);
 	}
 	
-	public void addTask(String name, String task) {
-		this.tasks.put(name, task);
+	public void addTask(AnalystTask task) {
+		this.tasks.put(task.getName(), task);
 	}
 
-	public Map<String, String> getTasks() {
+	public Map<String, AnalystTask> getTasks() {
 		return this.tasks;		
 	}
 }

@@ -10,6 +10,7 @@ import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
+import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.ClassItem;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
@@ -149,6 +150,39 @@ public class AnalystWizard {
 
 
 	}
+	
+	public void generateTasks()
+	{
+		AnalystTask task1 = new AnalystTask("task-full");
+		task1.getLines().add("randomize");
+		task1.getLines().add("segregate");
+		task1.getLines().add("normalize");
+		task1.getLines().add("generate");
+		task1.getLines().add("create");
+		task1.getLines().add("train");
+		task1.getLines().add("evaluate");
+		
+		AnalystTask task2 = new AnalystTask("task-generate");
+		task2.getLines().add("randomize");
+		task2.getLines().add("segregate");
+		task2.getLines().add("normalize");
+		task2.getLines().add("generate");
+		
+		AnalystTask task3 = new AnalystTask("task-create");
+		task3.getLines().add("create");
+		
+		AnalystTask task4 = new AnalystTask("task-train");
+		task4.getLines().add("train");
+		
+		AnalystTask task5 = new AnalystTask("task-evaluate");
+		task5.getLines().add("evaluate");
+		
+		this.script.addTask(task1);
+		this.script.addTask(task2);
+		this.script.addTask(task3);
+		this.script.addTask(task4);
+		this.script.addTask(task5);
+	}
 
 	public void wizard(File saveFile, File analyzeFile, boolean b,
 			CSVFormat english) {
@@ -157,6 +191,7 @@ public class AnalystWizard {
 		generateRandomize(analyzeFile);
 		generateSegregate(analyzeFile);
 		generateGenerate(analyzeFile);
+		generateTasks();
 	}
 
 	public void wizard(URL url, File saveFile, File analyzeFile, boolean b,
@@ -175,6 +210,7 @@ public class AnalystWizard {
 		generateRandomize(analyzeFile);
 		generateSegregate(analyzeFile);
 		generateGenerate(analyzeFile);
+		generateTasks();
 	}
 
 }

@@ -1,9 +1,13 @@
 package org.encog.app.analyst.script;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
+import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizedField;
 
 public class ScriptSave {
@@ -152,9 +156,16 @@ public class ScriptSave {
 	}
 	
 	private void saveTasks(WriteScriptFile out) {
-		for( Entry<String, String> entry : this.script.getTasks().entrySet() )
-		{
-			out.addTask(entry.getKey(),entry.getValue());
+		out.addSection("TASKS");
+		List<String> list = new ArrayList<String>();
+		list.addAll(this.script.getTasks().keySet());
+		Collections.sort(list);
+		for(String key: list) {
+			AnalystTask task = this.script.getTask(key);
+			out.addSubSection(task.getName());
+			for(String line: task.getLines()) {
+				out.addLine(line);
+			}
 		}
 	}
 
@@ -211,6 +222,7 @@ public class ScriptSave {
 		saveSegregate(out);
 		saveGenerate(out);
 		saveMachineLearning(out);
+		saveTasks(out);
 		out.flush();
 	}
 }

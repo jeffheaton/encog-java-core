@@ -20,6 +20,7 @@ import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
+import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
@@ -435,6 +436,36 @@ public class EncogAnalyst {
 
 	public void setClassCount(Map<String, Integer> classCount) {
 		this.classCount = classCount;
+	}
+	
+	public void executeTask(AnalystTask task) {
+		for(String line: task.getLines() ) {
+			line = line.trim();
+			if( line.equals("randomize")) {
+				randomize();
+			} else if( line.equals("segregate")) {
+				segregate();
+			} else if( line.equals("normalize")) {
+				normalize();
+			} else if( line.equals("generate")) {
+				generate();
+			} else if( line.equals("create")) {
+				create();
+			} else if( line.equals("train")) {
+				train();
+			} else if( line.equals("evaluate")) {
+				evaluate();
+			}  				
+		}
+	}
+	
+	public void executeTask(String name) {
+		AnalystTask task = this.script.getTask(name);
+		if( task==null ) {
+			throw new AnalystError("Can't find task: " + name);
+		}
+		
+		executeTask(task);
 	}
 	
 	public String evalToString() {
