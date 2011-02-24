@@ -185,8 +185,15 @@ public class AnalystWizard {
 	}
 
 	public void wizard(File analyzeFile, boolean b,
-			CSVFormat english) {
-		this.analyst.analyze(analyzeFile, b, english);
+			CSVFormat format) {
+
+		this.script.getInformation().setDataSourceFormat(format);
+		this.script.getInformation().setDataSourceHeaders(b);
+		this.script.getInformation().setRawFile(analyzeFile.toString());
+		
+		this.generateSettings(analyzeFile);
+		this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
+		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
 		generateRandomize(analyzeFile);
 		generateSegregate(analyzeFile);
