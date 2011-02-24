@@ -14,6 +14,7 @@ import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
+import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
 
@@ -310,7 +311,18 @@ public class ScriptLoad {
 			handleGenerateConfig(list);
 		} else if( currentSection.equals("HEADER") && currentSubsection.equalsIgnoreCase("DATASOURCE") ) {
 			handleHeaderDataSource(list);
+		} else if( currentSection.equals("TASKS") && currentSubsection.length()>0 ) {
+			handleTask(list, currentSubsection);
 		}
+	}
+	
+	private void handleTask(List<String> list, String name)
+	{
+		AnalystTask task = new AnalystTask(name);
+		for( String line: list ) {
+			task.getLines().add(line);
+		}
+		this.script.addTask(task);
 	}
 
 	
@@ -342,10 +354,11 @@ public class ScriptLoad {
 					String s = line.substring(1).trim();
 					if( !s.endsWith("]") )
 						throw new AnalystError("Invalid section: " + line);
-					s = s.substring(0, line.length()-1);
+					s = s.substring(0, line.length()-2);
 					int idx = s.indexOf(':');
 					if (idx == -1) {
 						currentSection = s;
+						currentSubSection = "";
 					} else {
 						if (currentSection.length() < 1) {
 							throw new AnalystError(

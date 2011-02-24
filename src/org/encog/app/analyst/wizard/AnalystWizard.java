@@ -153,7 +153,7 @@ public class AnalystWizard {
 	
 	public void generateTasks()
 	{
-		AnalystTask task1 = new AnalystTask("task-full");
+		AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
 		task1.getLines().add("randomize");
 		task1.getLines().add("segregate");
 		task1.getLines().add("normalize");
@@ -184,7 +184,7 @@ public class AnalystWizard {
 		this.script.addTask(task5);
 	}
 
-	public void wizard(File saveFile, File analyzeFile, boolean b,
+	public void wizard(File analyzeFile, boolean b,
 			CSVFormat english) {
 		this.analyst.analyze(analyzeFile, b, english);
 		generateNormalizedFields(analyzeFile);

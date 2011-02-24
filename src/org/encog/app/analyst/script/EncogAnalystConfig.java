@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.util.csv.CSVFormat;
 
 public class EncogAnalystConfig {
@@ -130,8 +131,10 @@ public class EncogAnalystConfig {
 		this.filenames.put(key, value);
 		
 	}
-	public String getFilename(String sourceFile) {
-		return this.filenames.get(sourceFile);
+	public String getFilename(String file) {
+		if( !this.filenames.containsKey(file))
+			throw new AnalystError("Undefined file: " + file);
+		return this.filenames.get(file);
 	}
 	
 	/**

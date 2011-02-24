@@ -45,6 +45,8 @@ public class EncogAnalyst {
 
 	public final static String ACTION_ANALYZE = "ANALYZE";
 
+	public static final String TASK_FULL = "task-full";
+
 	private AnalystScript script = new AnalystScript();
 	private StatusReportable report = new NullStatusReportable();
 	private Map<String,Integer> classCorrect = new HashMap<String,Integer>();
