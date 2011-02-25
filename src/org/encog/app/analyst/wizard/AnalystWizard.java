@@ -220,4 +220,13 @@ public class AnalystWizard {
 		generateTasks();
 	}
 
+	public void reanalyze() {
+		String rawID = this.script.getInformation().getRawFile();
+		String rawFilename = this.script.getConfig().getFilename(rawID);
+		
+		this.analyst.analyze(new File(rawFilename), 
+				this.script.getConfig().isInputHeaders(), 
+				this.script.getConfig().getCSVFormat());
+	}
+
 }
