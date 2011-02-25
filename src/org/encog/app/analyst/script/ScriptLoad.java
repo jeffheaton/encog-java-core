@@ -208,7 +208,7 @@ public class ScriptLoad {
 					des = NormalizationAction.SingleField;
 				} else if( action.equals("oneof")) {
 					des = NormalizationAction.OneOf;
-				}
+				} 
 				
 				NormalizedField nf = new NormalizedField(name,des,high,low);
 				nfs.add(nf);
@@ -255,6 +255,18 @@ public class ScriptLoad {
 		
 		this.script.getRandomize().setSourceFile(prop.get("sourceFile"));
 		this.script.getRandomize().setTargetFile(prop.get("targetFile"));
+	}
+	
+	private void handleMachineLearningConfig(List<String> list) {
+		Map<String, String> prop = this.handleProperties(list);
+		
+		this.script.getMachineLearning().setTrainingFile(prop.get("trainingFile"));
+		this.script.getMachineLearning().setEvalFile(prop.get("evalFile"));
+		this.script.getMachineLearning().setResourceFile(prop.get("resourceFile"));
+		this.script.getMachineLearning().setOutputFile(prop.get("outputFile"));
+		this.script.getMachineLearning().setMLType(prop.get("type"));
+		this.script.getMachineLearning().setMLArchitecture(prop.get("architecture"));
+		this.script.getMachineLearning().setResourceName(prop.get("resourceName"));
 	}
 	
 	private void handleSegregateConfig(List<String> list) {
@@ -311,6 +323,8 @@ public class ScriptLoad {
 			handleGenerateConfig(list);
 		} else if( currentSection.equals("HEADER") && currentSubsection.equalsIgnoreCase("DATASOURCE") ) {
 			handleHeaderDataSource(list);
+		} else if( currentSection.equals("ML") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			handleMachineLearningConfig(list);
 		} else if( currentSection.equals("TASKS") && currentSubsection.length()>0 ) {
 			handleTask(list, currentSubsection);
 		}
@@ -392,7 +406,12 @@ public class ScriptLoad {
 				
 				
 			}
+			
+			// handle final subsection
 			this.processSubSection(currentSection, currentSubSection, subSection);
+			
+			// init the script
+			this.script.init();
 		} catch (IOException ex) {
 			throw new AnalystError(ex);
 		}

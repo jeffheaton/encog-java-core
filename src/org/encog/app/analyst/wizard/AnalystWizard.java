@@ -81,17 +81,13 @@ public class AnalystWizard {
 				else
 					action = NormalizationAction.OneOf;
 				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
-				int index = 0;
-				for(AnalystClassItem item : f.getClassMembers() )
-				{
-					norm[i].getClasses().add(new ClassItem(item.getName(),index++));
-				}
 			} else {
 				action = NormalizationAction.PassThrough;
 				norm[i] = new NormalizedField(action, f.getName());
 			}
 		}
 		this.script.getNormalize().setNormalizedFields(norm);
+		this.script.getNormalize().init(this.script);
 	}
 
 

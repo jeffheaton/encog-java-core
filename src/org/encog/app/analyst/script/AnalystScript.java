@@ -148,4 +148,8 @@ public class AnalystScript {
 	public Map<String, AnalystTask> getTasks() {
 		return this.tasks;		
 	}
+
+	public void init() {
+		this.normalize.init(this);		
+	}
 }
