@@ -46,7 +46,8 @@ public class ConsoleStatusReportable implements StatusReportable {
 		} else {
 			System.out.println(current + "/" + total + " : " + message);
 		}
-
 	}
+	
+	
 
 }
