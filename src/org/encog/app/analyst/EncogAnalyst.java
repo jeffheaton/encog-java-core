@@ -21,6 +21,7 @@ import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
@@ -36,6 +37,9 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.EncogEGBFile;
+import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.persist.EncogMemoryCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.util.csv.CSVFormat;
@@ -48,7 +52,7 @@ public class EncogAnalyst {
 	public static final String TASK_FULL = "task-full";
 
 	private AnalystScript script = new AnalystScript();
-	private StatusReportable report = new NullStatusReportable();
+	private List<AnalystListener> listeners = new ArrayList<AnalystListener>();
 	private Map<String,Integer> classCorrect = new HashMap<String,Integer>();
 	private Map<String,Integer> classCount = new HashMap<String,Integer>();
 
@@ -141,7 +145,7 @@ public class EncogAnalyst {
 
 		// prepare to normalize
 		NormalizeCSV norm = new NormalizeCSV();
-		norm.setReport(this.report);
+		norm.setReport(new AnalystReportBridge(this));
 		NormalizedField[] normFields = this.script.getNormalize()
 				.getNormalizedFields();
 		NormalizationStats stats = new NormalizationStats(normFields);
@@ -168,7 +172,7 @@ public class EncogAnalyst {
 
 		// prepare to normalize
 		ShuffleCSV norm = new ShuffleCSV();
-		norm.setReport(this.report);
+		norm.setReport(new AnalystReportBridge(this));
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getRandomize().getSourceFile());
 		norm.analyze(sourceFile, headers, this.script.getConfig()
@@ -195,7 +199,7 @@ public class EncogAnalyst {
 			// mark generated
 			this.script.markGenerated(target.getFile());
 		}
-		seg.setReport(this.report);
+		seg.setReport(new AnalystReportBridge(this));
 		seg.analyze(inputFile, headers, this.script.getConfig().getCSVFormat());
 
 		seg.process();
@@ -264,7 +268,16 @@ public class EncogAnalyst {
 		encog.load(resourceFile);
 
 		EncogPersistedObject method = encog.find(resource);
-		EncogUtility.trainToError((MLMethod) method, trainingSet, 0.01);
+		ResilientPropagation rprop = new ResilientPropagation((BasicNetwork)method,trainingSet);
+		
+		reportTrainingBegin();
+		do {
+			rprop.iteration();
+			this.reportTraining(rprop);
+		} while(rprop.getError()>0.01 );
+		reportTrainingEnd();
+		
+		
 		encog.save(resourceFile);
 	}
 
@@ -288,7 +301,7 @@ public class EncogAnalyst {
 				.getNormalize().getSourceFile());
 
 		EvaluateCSV eval = new EvaluateCSV();
-		eval.setReport(this.report);
+		eval.setReport(new AnalystReportBridge(this));
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, method);
 
@@ -314,7 +327,7 @@ public class EncogAnalyst {
 				.getNormalize().getSourceFile());
 
 		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
-		eval.setReport(this.report);
+		eval.setReport(new AnalystReportBridge(this));
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, this, method);
 		
@@ -346,7 +359,7 @@ public class EncogAnalyst {
 				}
 				
 				if( lastUpdate>10 ) {
-					this.report.report(0, (int)(size/Format.MEMORY_MEG), "Downloading... " + Format.formatMemory(size));
+					report(0, (int)(size/Format.MEMORY_MEG), "Downloading... " + Format.formatMemory(size));
 					lastUpdate = 0;
 				}
 				lastUpdate++;
@@ -373,7 +386,7 @@ public class EncogAnalyst {
 					}
 					
 					if( lastUpdate>10 ) {
-						this.report.report(0, (int)(size/Format.MEMORY_MEG), "Uncompressing... " + Format.formatMemory(size));
+						report(0, (int)(size/Format.MEMORY_MEG), "Uncompressing... " + Format.formatMemory(size));
 						lastUpdate = 0;
 					}
 					lastUpdate++;
@@ -397,6 +410,48 @@ public class EncogAnalyst {
 		}
 	}
 
+	private void reportCommandBegin(int total, int current, String name)
+	{
+		for(AnalystListener listener: this.listeners) {
+			listener.reportCommandBegin(total, current, name);
+		}		
+	}
+	
+	private void reportCommandEnd()
+	{
+		for(AnalystListener listener: this.listeners) {
+			listener.reportCommandEnd();
+		}		
+	}
+	
+	private void reportTrainingBegin()
+	{
+		for(AnalystListener listener: this.listeners) {
+			listener.reportTrainingBegin();
+		}		
+	}
+	
+	private void reportTrainingEnd()
+	{
+		for(AnalystListener listener: this.listeners) {
+			listener.reportTrainingEnd();
+		}		
+	}
+	
+	private void reportTraining(Train train)
+	{
+		for(AnalystListener listener: this.listeners) {
+			listener.reportTraining(train);
+		}		
+	}
+	
+	private void report(int total, int current, String message) 
+	{
+		for(AnalystListener listener: this.listeners) {
+			listener.report(total, current, message);
+		}		
+	}
+
 	public void download() {
 		try {			
 			String sourceURL = this.script.getInformation().getDataSource(); 
@@ -408,20 +463,6 @@ public class EncogAnalyst {
 		} catch (IOException ex) {
 			throw new AnalystError(ex);
 		}
-	}
-
-	/**
-	 * @return the report
-	 */
-	public StatusReportable getReport() {
-		return report;
-	}
-
-	/**
-	 * @param report the report to set
-	 */
-	public void setReport(StatusReportable report) {
-		this.report = report;
 	}
 
 	public Map<String, Integer> getClassCorrect() {
@@ -441,7 +482,10 @@ public class EncogAnalyst {
 	}
 	
 	public void executeTask(AnalystTask task) {
+		int total = task.getLines().size();
+		int current = 1;
 		for(String line: task.getLines() ) {
+			this.reportCommandBegin(total, current, line);
 			line = line.trim();
 			if( line.equals("randomize")) {
 				randomize();
@@ -457,7 +501,9 @@ public class EncogAnalyst {
 				train();
 			} else if( line.equals("evaluate")) {
 				evaluate();
-			}  				
+			}
+			this.reportCommandEnd();
+			current++;
 		}
 	}
 	
@@ -492,5 +538,21 @@ public class EncogAnalyst {
 				
 		return result.toString();
 	}
+
+	/**
+	 * @return the listeners
+	 */
+	public List<AnalystListener> getListeners() {
+		return listeners;
+	}
+	
+	public void addAnalystListener(AnalystListener listener) {
+		this.listeners.add(listener);
+	}
+	
+	public void removeAnalystListener(AnalystListener listener) {
+		this.listeners.remove(listener);
+	}
+	
 
 }
