@@ -40,11 +40,4 @@ public interface StatusReportable {
 	 */
 	void report(int total, int current, String message);
 	
-	/**
-	 * Report on the phase.  Phases are used for longer jobs that may contain subtasks.
-	 * @param total How many phases there are.
-	 * @param current The current phase.
-	 * @param message The message.
-	 */
-	void reportPhase(int total, int current, String message);
 }

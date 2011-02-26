@@ -129,7 +129,7 @@ public class EncogAnalyst {
 	}
 
 	public void normalize() {
-		this.report.reportPhase(0, 0, "Normalizing");
+		//this.report.reportPhase(0, 0, "Normalizing");
 		// mark generated
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
 
@@ -155,7 +155,7 @@ public class EncogAnalyst {
 	}
 
 	public void randomize() {
-		this.report.reportPhase(0, 0, "Randomizing");
+		//this.report.reportPhase(0, 0, "Randomizing");
 
 		// mark generated
 		this.script.markGenerated(this.script.getRandomize().getTargetFile());
@@ -177,7 +177,7 @@ public class EncogAnalyst {
 	}
 
 	public void segregate() {
-		this.report.reportPhase(0, 0, "Segregating");
+		
 		// get filenames		
 		String inputFile = this.script.getConfig().getFilename(
 				this.script.getSegregate().getSourceFile());
@@ -202,7 +202,7 @@ public class EncogAnalyst {
 	}
 
 	public void generate() {
-		this.report.reportPhase(0, 0, "Generating Training");
+
 		// mark generated
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
 
@@ -221,7 +221,7 @@ public class EncogAnalyst {
 	}
 
 	public void create() {
-		this.report.reportPhase(0, 0, "Create Machine Learning Method");
+
 		// get filenames
 		String trainingFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getTrainingFile());
@@ -250,7 +250,7 @@ public class EncogAnalyst {
 	}
 
 	public void train() {
-		this.report.reportPhase(0, 0, "Training");
+
 		// get filenames
 		String trainingFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getTrainingFile());
@@ -269,7 +269,7 @@ public class EncogAnalyst {
 	}
 
 	public void evaluateRaw() {
-		this.report.reportPhase(0, 0, "Evaluate with Raw Data");
+
 		// get filenames
 		String evalFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getEvalFile());
@@ -295,7 +295,7 @@ public class EncogAnalyst {
 	}
 
 	public void evaluate() {
-		this.report.reportPhase(0, 0, "Evaluate");
+
 		// get filenames
 		String evalFile = this.script.getConfig().getFilename(
 				this.script.getMachineLearning().getEvalFile());

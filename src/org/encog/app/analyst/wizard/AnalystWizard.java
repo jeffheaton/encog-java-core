@@ -188,7 +188,7 @@ public class AnalystWizard {
 		this.script.getInformation().setRawFile(analyzeFile.toString());
 		
 		this.generateSettings(analyzeFile);
-		this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
+		//this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
 		generateRandomize(analyzeFile);
@@ -205,9 +205,9 @@ public class AnalystWizard {
 		this.script.getInformation().setRawFile(analyzeFile.toString());
 		
 		this.generateSettings(analyzeFile);
-		this.analyst.getReport().reportPhase(2, 1, "Downloading data");
+		//this.analyst.getReport().reportPhase(2, 1, "Downloading data");
 		analyst.download();
-		this.analyst.getReport().reportPhase(2, 2, "Wizard analyzing data");
+		//this.analyst.getReport().reportPhase(2, 2, "Wizard analyzing data");
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
 		generateRandomize(analyzeFile);
