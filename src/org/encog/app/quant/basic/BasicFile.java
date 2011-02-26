@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import org.encog.Encog;
 import org.encog.NullStatusReportable;
 import org.encog.app.quant.QuantError;
+import org.encog.app.quant.QuantTask;
 import org.encog.engine.StatusReportable;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -16,7 +17,7 @@ import org.encog.util.csv.ReadCSV;
  * is not useful on its own. However, it does form the foundation for most Encog
  * CSV file processing.
  */
-public class BasicFile {
+public class BasicFile implements QuantTask {
 
 	/**
 	 * The column headings from the input file.
@@ -86,6 +87,11 @@ public class BasicFile {
 	 * Should output headers be produced?
 	 */
 	private boolean produceOutputHeaders;
+	
+	/**
+	 * True, if the process should stop.
+	 */
+	private boolean cancel;
 
 	/**
 	 * Construct the object, and set the defaults.
@@ -209,7 +215,7 @@ public class BasicFile {
 		int recordCount = 0;
 		ReadCSV csv = new ReadCSV(this.inputFilename, this.expectInputHeaders,
 				this.inputFormat);
-		while (csv.next()) {
+		while (csv.next() && !this.cancel ) {
 			updateStatus(true);
 			recordCount++;
 		}
@@ -483,6 +489,16 @@ public class BasicFile {
 	public static void appendComma(StringBuilder line) {
 		if( line.length()>0 && !line.toString().endsWith(","))
 			line.append(',');		
+	}
+	
+	public void requestStop()
+	{
+		this.cancel = true;
+	}
+		
+	public boolean shouldStop()
+	{
+		return this.cancel;
 	}
 
 }

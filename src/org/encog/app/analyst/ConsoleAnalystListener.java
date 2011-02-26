@@ -9,6 +9,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	private String currentTask = "";
 	private Stopwatch stopwatch = new Stopwatch();
 	private boolean shutdownRequested;
+	private boolean cancelCommand;
 
 	@Override
 	public void report(int total, int current, String message) {
@@ -34,11 +35,12 @@ public class ConsoleAnalystListener implements AnalystListener {
 	}
 
 	@Override
-	public void reportCommandEnd() {
+	public void reportCommandEnd(boolean cancel) {
+		this.cancelCommand = false;
 		this.stopwatch.stop();
 		System.out.println("Task "
 				+ this.currentTask
-				+ " complete, task elapsed time "
+				+ " " + (cancel?"completed":"canceled") + ", task elapsed time "
 				+ Format.formatTimeSpan((int) (this.stopwatch
 						.getElapsedMilliseconds() / 1000)));
 
@@ -71,6 +73,16 @@ public class ConsoleAnalystListener implements AnalystListener {
 	@Override
 	public synchronized boolean shouldShutDown() {
 		return this.shutdownRequested;
+	}
+
+	@Override
+	public synchronized void requestCancelCommand() {
+		this.cancelCommand = true;		
+	}
+
+	@Override
+	public synchronized boolean shouldStopCommand() {
+		return this.cancelCommand;
 	}
 
 }

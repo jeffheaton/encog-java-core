@@ -66,7 +66,7 @@ public class BalanceCSV extends BasicFile {
         ReadCSV csv = new ReadCSV(this.getInputFilename(), this.isExpectInputHeaders(), this.getInputFormat());
 
         resetStatus();
-        while (csv.next())
+        while (csv.next() && !shouldStop() )
         {
             LoadedRow row = new LoadedRow(csv);
             updateStatus(false);

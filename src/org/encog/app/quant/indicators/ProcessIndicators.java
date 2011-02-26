@@ -28,7 +28,7 @@ public class ProcessIndicators extends BasicCachedFile {
 
             resetStatus();
             int row = 0;
-            while (csv.next())
+            while (csv.next() && !shouldStop() )
             {
                 updateStatus("Reading data");
                 for(BaseCachedColumn column : this.getColumns())

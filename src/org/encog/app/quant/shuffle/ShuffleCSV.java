@@ -76,7 +76,7 @@ public class ShuffleCSV extends BasicFile {
 			this.buffer[i] = null;
 
 		int index = 0;
-		while (csv.next() && (index < this.bufferSize)) {
+		while (csv.next() && (index < this.bufferSize)&& !this.shouldStop()) {
 			LoadedRow row = new LoadedRow(csv);
 			buffer[index++] = row;
 		}

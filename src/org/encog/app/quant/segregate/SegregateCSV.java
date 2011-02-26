@@ -125,7 +125,7 @@ public class SegregateCSV extends BasicFile {
         {
                 PrintWriter tw = this.prepareOutputFile(target.getFilename());
 
-                while (target.getNumberRemaining() > 0 && csv.next())
+                while (target.getNumberRemaining() > 0 && csv.next() && !this.shouldStop())
                 {
                     updateStatus(false);
                     LoadedRow row = new LoadedRow(csv);

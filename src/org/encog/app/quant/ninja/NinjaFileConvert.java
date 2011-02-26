@@ -28,7 +28,7 @@ public class NinjaFileConvert extends BasicCachedFile {
 			PrintWriter tw = new PrintWriter(new FileWriter(target));
 
 			resetStatus();
-			while (csv.next()) {
+			while (csv.next() && !this.shouldStop()) {
 				StringBuilder line = new StringBuilder();
 				updateStatus(false);
 				line.append(this.getColumnData(FileData.DATE, csv));

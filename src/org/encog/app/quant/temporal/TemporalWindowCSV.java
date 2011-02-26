@@ -182,7 +182,7 @@ public class TemporalWindowCSV extends BasicFile {
             }
 
             resetStatus();
-            while (csv.next())
+            while (csv.next()&& !this.shouldStop())
             {
                 updateStatus(false);
                 // begin to populate the bar
@@ -342,7 +342,7 @@ public class TemporalWindowCSV extends BasicFile {
         try
         {
             csv = new ReadCSV(filename, headers, format);
-            if (!csv.next())
+            if (!csv.next()&& !this.shouldStop())
             {
                 throw new EncogError("Empty file");
             }

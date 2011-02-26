@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
-import org.encog.NullStatusReportable;
 import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.AnalystScript;
@@ -22,6 +21,7 @@ import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.util.AnalystReportBridge;
+import org.encog.app.quant.QuantTask;
 import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
@@ -30,7 +30,6 @@ import org.encog.app.quant.segregate.SegregateCSV;
 import org.encog.app.quant.segregate.SegregateTargetPercent;
 import org.encog.app.quant.shuffle.ShuffleCSV;
 import org.encog.bot.BotUtil;
-import org.encog.engine.StatusReportable;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
@@ -53,9 +52,9 @@ public class EncogAnalyst {
 
 	private AnalystScript script = new AnalystScript();
 	private List<AnalystListener> listeners = new ArrayList<AnalystListener>();
-	private Map<String,Integer> classCorrect = new HashMap<String,Integer>();
-	private Map<String,Integer> classCount = new HashMap<String,Integer>();
-
+	private Map<String, Integer> classCorrect = new HashMap<String, Integer>();
+	private Map<String, Integer> classCount = new HashMap<String, Integer>();
+	private QuantTask currentQuantTask = null;
 
 	public void analyze(File file, boolean headers, CSVFormat format) {
 		script.getConfig().setFilename(EncogAnalystConfig.FILE_RAW,
@@ -132,7 +131,7 @@ public class EncogAnalyst {
 		return script;
 	}
 
-	public void normalize() {
+	public boolean normalize() {
 		//this.report.reportPhase(0, 0, "Normalizing");
 		// mark generated
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
@@ -145,6 +144,7 @@ public class EncogAnalyst {
 
 		// prepare to normalize
 		NormalizeCSV norm = new NormalizeCSV();
+		setCurrentQuantTask( norm );
 		norm.setReport(new AnalystReportBridge(this));
 		NormalizedField[] normFields = this.script.getNormalize()
 				.getNormalizedFields();
@@ -156,9 +156,11 @@ public class EncogAnalyst {
 				.getCSVFormat(), stats);
 		norm.setProduceOutputHeaders(this.script.getConfig().isOutputHeaders());
 		norm.normalize(targetFile);
+		setCurrentQuantTask(null);
+		return norm.shouldStop();
 	}
 
-	public void randomize() {
+	public boolean randomize() {
 		//this.report.reportPhase(0, 0, "Randomizing");
 
 		// mark generated
@@ -172,16 +174,19 @@ public class EncogAnalyst {
 
 		// prepare to normalize
 		ShuffleCSV norm = new ShuffleCSV();
+		setCurrentQuantTask( norm );
 		norm.setReport(new AnalystReportBridge(this));
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getRandomize().getSourceFile());
 		norm.analyze(sourceFile, headers, this.script.getConfig()
 				.getCSVFormat());
 		norm.process(targetFile);
+		setCurrentQuantTask(null);
+		return norm.shouldStop();
 	}
 
-	public void segregate() {
-		
+	public boolean segregate() {
+
 		// get filenames		
 		String inputFile = this.script.getConfig().getFilename(
 				this.script.getSegregate().getSourceFile());
@@ -190,6 +195,7 @@ public class EncogAnalyst {
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getSegregate().getSourceFile());
 		SegregateCSV seg = new SegregateCSV();
+		setCurrentQuantTask( seg );
 		for (AnalystSegregateTarget target : this.script.getSegregate()
 				.getSegregateTargets()) {
 			String filename = this.script.getConfig().getFilename(
@@ -203,9 +209,11 @@ public class EncogAnalyst {
 		seg.analyze(inputFile, headers, this.script.getConfig().getCSVFormat());
 
 		seg.process();
+		setCurrentQuantTask(null);
+		return seg.shouldStop();
 	}
 
-	public void generate() {
+	public boolean generate() {
 
 		// mark generated
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
@@ -222,9 +230,10 @@ public class EncogAnalyst {
 				.getGenerate().getSourceFile());
 		EncogUtility.convertCSV2Binary(sourceFile, targetFile, input, ideal,
 				headers);
+		return false;
 	}
 
-	public void create() {
+	public boolean create() {
 
 		// get filenames
 		String trainingFile = this.script.getConfig().getFilename(
@@ -245,15 +254,16 @@ public class EncogAnalyst {
 		if (new File(resourceFile).exists()) {
 			encog.load(resourceFile);
 		}
-		
+
 		MLMethodFactory factory = new MLMethodFactory();
 		MLMethod obj = factory.create(type, arch, input, ideal);
-		
-		encog.add(resource, (EncogPersistedObject)obj);
+
+		encog.add(resource, (EncogPersistedObject) obj);
 		encog.save(resourceFile);
+		return false;
 	}
 
-	public void train() {
+	public boolean train() {
 
 		// get filenames
 		String trainingFile = this.script.getConfig().getFilename(
@@ -268,17 +278,18 @@ public class EncogAnalyst {
 		encog.load(resourceFile);
 
 		EncogPersistedObject method = encog.find(resource);
-		ResilientPropagation rprop = new ResilientPropagation((BasicNetwork)method,trainingSet);
-		
+		ResilientPropagation rprop = new ResilientPropagation(
+				(BasicNetwork) method, trainingSet);
+
 		reportTrainingBegin();
 		do {
 			rprop.iteration();
 			this.reportTraining(rprop);
-		} while(rprop.getError()>0.01 );
+		} while (rprop.getError() > 0.01 && !this.shouldStopCommand());
 		reportTrainingEnd();
-		
-		
+
 		encog.save(resourceFile);
+		return this.shouldStopCommand();
 	}
 
 	public void evaluateRaw() {
@@ -301,13 +312,14 @@ public class EncogAnalyst {
 				.getNormalize().getSourceFile());
 
 		EvaluateCSV eval = new EvaluateCSV();
+		setCurrentQuantTask( eval );
 		eval.setReport(new AnalystReportBridge(this));
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, method);
-
+		setCurrentQuantTask(null);
 	}
 
-	public void evaluate() {
+	public boolean evaluate() {
 
 		// get filenames
 		String evalFile = this.script.getConfig().getFilename(
@@ -327,23 +339,25 @@ public class EncogAnalyst {
 				.getNormalize().getSourceFile());
 
 		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
+		setCurrentQuantTask( eval );
 		eval.setReport(new AnalystReportBridge(this));
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, this, method);
-		
+		setCurrentQuantTask(null);
 		this.classCorrect = eval.getClassCorrect();
 		this.classCount = eval.getClassCount();
+		return eval.shouldStop();
 
 	}
-	
-	private void downloadPage(final URL url, final File file) {		
+
+	private void downloadPage(final URL url, final File file) {
 		try {
 			// download the URL
 			long size = 0;
 			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
-			
+
 			File tempFile = new File(file.getParentFile(), "temp.tmp");
-			
+
 			int length;
 			int lastUpdate = 0;
 
@@ -352,14 +366,15 @@ public class EncogAnalyst {
 
 			do {
 				length = is.read(buffer);
-				
+
 				if (length >= 0) {
-					fos.write(buffer,0,length);
-					size+=length;
+					fos.write(buffer, 0, length);
+					size += length;
 				}
-				
-				if( lastUpdate>10 ) {
-					report(0, (int)(size/Format.MEMORY_MEG), "Downloading... " + Format.formatMemory(size));
+
+				if (lastUpdate > 10) {
+					report(0, (int) (size / Format.MEMORY_MEG),
+							"Downloading... " + Format.formatMemory(size));
 					lastUpdate = 0;
 				}
 				lastUpdate++;
@@ -367,98 +382,109 @@ public class EncogAnalyst {
 
 			fos.close();
 			// unzip if needed
-			
-			if( url.toString().toLowerCase().endsWith(".gz"))
-			{
+
+			if (url.toString().toLowerCase().endsWith(".gz")) {
 				FileInputStream fis = new FileInputStream(tempFile);
 				GZIPInputStream gis = new GZIPInputStream(fis);
 				fos = new FileOutputStream(file);
-				
+
 				size = 0;
 				lastUpdate = 0;
-				
+
 				do {
 					length = gis.read(buffer);
-					
+
 					if (length >= 0) {
-						fos.write(buffer,0,length);
-						size+=length;
+						fos.write(buffer, 0, length);
+						size += length;
 					}
-					
-					if( lastUpdate>10 ) {
-						report(0, (int)(size/Format.MEMORY_MEG), "Uncompressing... " + Format.formatMemory(size));
+
+					if (lastUpdate > 10) {
+						report(0, (int) (size / Format.MEMORY_MEG),
+								"Uncompressing... " + Format.formatMemory(size));
 						lastUpdate = 0;
 					}
 					lastUpdate++;
 				} while (length >= 0);
-				
+
 				fos.close();
 				fis.close();
 				gis.close();
 				tempFile.delete();
-				
 
-			}
-			else {			
+			} else {
 				// rename the temp file to the actual file
 				file.delete();
 				tempFile.renameTo(file);
 			}
-			
+
 		} catch (final IOException e) {
 			throw new AnalystError(e);
 		}
 	}
 
-	private void reportCommandBegin(int total, int current, String name)
-	{
-		for(AnalystListener listener: this.listeners) {
+	private void reportCommandBegin(int total, int current, String name) {
+		for (AnalystListener listener : this.listeners) {
 			listener.reportCommandBegin(total, current, name);
-		}		
+		}
 	}
-	
-	private void reportCommandEnd()
-	{
-		for(AnalystListener listener: this.listeners) {
-			listener.reportCommandEnd();
-		}		
+
+	private void reportCommandEnd(boolean canceled) {
+		for (AnalystListener listener : this.listeners) {
+			listener.reportCommandEnd(canceled);
+		}
 	}
-	
-	private void reportTrainingBegin()
-	{
-		for(AnalystListener listener: this.listeners) {
+
+	private void reportTrainingBegin() {
+		for (AnalystListener listener : this.listeners) {
 			listener.reportTrainingBegin();
-		}		
+		}
 	}
-	
-	private void reportTrainingEnd()
-	{
-		for(AnalystListener listener: this.listeners) {
+
+	private void reportTrainingEnd() {
+		for (AnalystListener listener : this.listeners) {
 			listener.reportTrainingEnd();
-		}		
+		}
 	}
-	
-	private void reportTraining(Train train)
-	{
-		for(AnalystListener listener: this.listeners) {
+
+	private void reportTraining(Train train) {
+		for (AnalystListener listener : this.listeners) {
 			listener.reportTraining(train);
-		}		
+		}
+	}
+
+	private void report(int total, int current, String message) {
+		for (AnalystListener listener : this.listeners) {
+			listener.report(total, current, message);
+		}
+	}
+
+	private boolean shouldStopAll() {
+		for (AnalystListener listener : this.listeners) {
+			if (listener.shouldShutDown()) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
-	private void report(int total, int current, String message) 
-	{
-		for(AnalystListener listener: this.listeners) {
-			listener.report(total, current, message);
-		}		
+	private boolean shouldStopCommand() {
+		for (AnalystListener listener : this.listeners) {
+			if (listener.shouldStopCommand()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public void download() {
-		try {			
-			String sourceURL = this.script.getInformation().getDataSource(); 
+		try {
+			String sourceURL = this.script.getInformation().getDataSource();
 			String rawFile = this.script.getInformation().getRawFile();
-			File rawFilename = new File( this.script.getConfig().getFilename(rawFile) );
+			File rawFilename = new File(this.script.getConfig().getFilename(
+					rawFile));
 			URL url = new URL(sourceURL);
-			if(!rawFilename.exists())
+			if (!rawFilename.exists())
 				downloadPage(url, rawFilename);
 		} catch (IOException ex) {
 			throw new AnalystError(ex);
@@ -480,62 +506,68 @@ public class EncogAnalyst {
 	public void setClassCount(Map<String, Integer> classCount) {
 		this.classCount = classCount;
 	}
-	
+
 	public void executeTask(AnalystTask task) {
 		int total = task.getLines().size();
 		int current = 1;
-		for(String line: task.getLines() ) {
+		for (String line : task.getLines()) {
 			this.reportCommandBegin(total, current, line);
 			line = line.trim();
-			if( line.equals("randomize")) {
-				randomize();
-			} else if( line.equals("segregate")) {
-				segregate();
-			} else if( line.equals("normalize")) {
-				normalize();
-			} else if( line.equals("generate")) {
-				generate();
-			} else if( line.equals("create")) {
-				create();
-			} else if( line.equals("train")) {
-				train();
-			} else if( line.equals("evaluate")) {
-				evaluate();
+			boolean canceled = false;
+			if (line.equals("randomize")) {
+				canceled = randomize();
+			} else if (line.equals("segregate")) {
+				canceled = segregate();
+			} else if (line.equals("normalize")) {
+				canceled = normalize();
+			} else if (line.equals("generate")) {
+				canceled = generate();
+			} else if (line.equals("create")) {
+				canceled = create();
+			} else if (line.equals("train")) {
+				canceled = train();
+			} else if (line.equals("evaluate")) {
+				canceled = evaluate();
 			}
-			this.reportCommandEnd();
+					
+			this.reportCommandEnd(canceled);
+			setCurrentQuantTask(null);
 			current++;
+			
+			if( this.shouldStopAll() )
+				break;
 		}
 	}
-	
+
 	public void executeTask(String name) {
 		AnalystTask task = this.script.getTask(name);
-		if( task==null ) {
+		if (task == null) {
 			throw new AnalystError("Can't find task: " + name);
 		}
-		
+
 		executeTask(task);
 	}
-	
+
 	public String evalToString() {
 		List<String> list = new ArrayList<String>();
 		list.addAll(this.classCount.keySet());
 		Collections.sort(list);
-		
+
 		StringBuilder result = new StringBuilder();
-		for(String key: list) {
+		for (String key : list) {
 			result.append(key);
 			result.append(" ");
 			double correct = classCorrect.get(key);
 			double count = classCount.get(key);
-			
-			result.append(Format.formatInteger((int)correct));
+
+			result.append(Format.formatInteger((int) correct));
 			result.append('/');
-			result.append(Format.formatInteger((int)count));
+			result.append(Format.formatInteger((int) count));
 			result.append('(');
-			result.append(Format.formatPercent(correct/count));
+			result.append(Format.formatPercent(correct / count));
 			result.append(")\n");
 		}
-				
+
 		return result.toString();
 	}
 
@@ -545,14 +577,24 @@ public class EncogAnalyst {
 	public List<AnalystListener> getListeners() {
 		return listeners;
 	}
-	
+
 	public void addAnalystListener(AnalystListener listener) {
 		this.listeners.add(listener);
 	}
-	
+
 	public void removeAnalystListener(AnalystListener listener) {
 		this.listeners.remove(listener);
 	}
 	
+	private synchronized void setCurrentQuantTask(QuantTask task) {
+		this.currentQuantTask = task;
+	}
+	
+	public synchronized void stopCurrentTask() {
+		if( this.currentQuantTask!=null ) {
+			this.currentQuantTask.requestStop();
+		}
+	}
 
+	
 }

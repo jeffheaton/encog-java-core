@@ -44,7 +44,7 @@ public class EvaluateCSV extends BasicFile {
         }
 
         resetStatus();
-        while (csv.next())
+        while (csv.next() && !shouldStop() )
         {        	
             updateStatus(false);
             LoadedRow row = new LoadedRow(csv, method.getOutputCount());

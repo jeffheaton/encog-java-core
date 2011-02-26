@@ -87,7 +87,7 @@ public class NormalizeCSV extends BasicFile {
 					}
 				}
 				updateStatus(true);
-			} while (csv.next());
+			} while (csv.next()&& !this.shouldStop());
 		} finally {
 			reportDone(true);
 			// Close the CSV file
@@ -163,7 +163,7 @@ public class NormalizeCSV extends BasicFile {
 				}
 			}
 			tw.println(line.toString());
-		} while (csv.next());
+		} while (csv.next()&& !this.shouldStop());
 
 		reportDone(false);
 		tw.close();
@@ -223,7 +223,7 @@ public class NormalizeCSV extends BasicFile {
 
 			resetStatus();
 			// write file contents
-			while (csv.next()) {
+			while (csv.next()&& !this.shouldStop()) {
 				StringBuilder line = new StringBuilder();
 				updateStatus(false);
 				int index = 0;
@@ -293,7 +293,7 @@ public class NormalizeCSV extends BasicFile {
 
 		try {
 			csv = new ReadCSV(filename, true, CSVFormat.EG_FORMAT);
-			while (csv.next()) {
+			while (csv.next()&& !this.shouldStop()) {
 				String type = csv.get(0);
 				if (type.equals("Normalize")) {
 					String name = csv.get(1);

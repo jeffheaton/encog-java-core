@@ -99,7 +99,7 @@ public class FilterCSV extends BasicFile {
         this.filteredCount = 0;
 
         resetStatus();
-        while (csv.next())
+        while (csv.next() && !shouldStop() )
         {
             updateStatus(false);
             LoadedRow row = new LoadedRow(csv);

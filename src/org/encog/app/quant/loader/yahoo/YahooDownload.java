@@ -12,6 +12,7 @@ import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.encog.app.quant.QuantTask;
 import org.encog.app.quant.loader.LoaderError;
 import org.encog.app.quant.loader.MarketLoader;
 import org.encog.util.csv.CSVFormat;
@@ -19,19 +20,19 @@ import org.encog.util.csv.ReadCSV;
 import org.encog.util.http.FormUtility;
 import org.encog.util.time.NumericDateUtil;
 
-public class YahooDownload implements MarketLoader {
+public class YahooDownload implements MarketLoader, QuantTask {
 
     public static final String INDEX_DJIA = "^dji";
     public static final String INDEX_SP500 = "^gspc";
     public static final String INDEX_NASDAQ = "^ixic";
-
-    public int percision;
+    
+    private int percision;    
+    private boolean cancel;
 
     public YahooDownload()
     {
         setPercision( 10 );
     }
-
 
 	/**
 	 * This method builds a URL to load data from Yahoo Finance for a neural
@@ -85,7 +86,7 @@ public class YahooDownload implements MarketLoader {
 		PrintWriter tw = new PrintWriter(new FileWriter(output));
         tw.println("date,time,open price,high price,low price,close price,volume,adjusted price");
 
-		while (csv.next()) {
+		while (csv.next() && !shouldStop() ) {
 			final Date date = csv.getDate("date");
 			final double adjClose = csv.getDouble("adj close");
 			final double open = csv.getDouble("open");
@@ -140,6 +141,16 @@ public class YahooDownload implements MarketLoader {
 		this.percision = percision;
 	}
 
-    
+
+	public void requestStop()
+	{
+		this.cancel = true;
+	}
+		
+	public boolean shouldStop()
+	{
+		return this.cancel;
+	}
+
 	
 }

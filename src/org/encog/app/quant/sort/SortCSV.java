@@ -1,14 +1,11 @@
 package org.encog.app.quant.sort;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
 import org.encog.util.csv.CSVFormat;
@@ -44,7 +41,7 @@ public class SortCSV extends BasicFile {
 
 		ReadCSV csv = new ReadCSV(getInputFilename(), isExpectInputHeaders(),
 				getInputFormat());
-		while (csv.next()) {
+		while (csv.next()&& !this.shouldStop()) {
 			updateStatus("Reading input file");
 			LoadedRow row = new LoadedRow(csv);
 			this.data.add(row);
