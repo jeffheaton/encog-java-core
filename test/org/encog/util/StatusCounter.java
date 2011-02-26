@@ -38,10 +38,4 @@ public class StatusCounter implements StatusReportable {
 		return count;
 	}
 
-	@Override
-	public void reportPhase(int total, int current, String message) {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
