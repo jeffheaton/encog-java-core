@@ -85,7 +85,8 @@ public class AnalystNormalize {
 			}
 			
 			if( norm.getAction()==NormalizationAction.Equilateral ||
-				norm.getAction()==NormalizationAction.OneOf ) {
+				norm.getAction()==NormalizationAction.OneOf ||
+				norm.getAction()==NormalizationAction.SingleField ) {
 								
 				int index = 0;
 				for(AnalystClassItem item : f.getClassMembers() )
