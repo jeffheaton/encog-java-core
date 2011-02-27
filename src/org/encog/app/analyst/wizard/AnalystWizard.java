@@ -15,6 +15,7 @@ import org.encog.app.quant.normalize.ClassItem;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.bot.BotUtil;
+import org.encog.ml.factory.MLMethodFactory;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.FileUtil;
 
@@ -22,11 +23,13 @@ public class AnalystWizard {
 	
 	private AnalystScript script;
 	private EncogAnalyst analyst;
+	private WizardMethodType methodType;
 	
 	public AnalystWizard(EncogAnalyst analyst)
 	{
 		this.analyst = analyst;
 		this.script = analyst.getScript();
+		this.methodType = WizardMethodType.FeedForward;
 	}
 	
 	private void generateSettings(File file)
@@ -139,12 +142,27 @@ public class AnalystWizard {
 		this.script.getGenerate().setInput(inputColumns);
 		this.script.getGenerate().setIdeal(idealColumns);
 
+		switch(this.methodType) {
+			case FeedForward:
+				generateFeedForward(inputColumns);
+				break;
+			case SVM:
+				generateSVM(inputColumns);
+				break;
+		}
+	}
+	
+	private void generateFeedForward(int inputColumns) {
 		int hidden = (int)(((double)inputColumns)*1.5);
-		this.script.getMachineLearning().setMLType("feedforward");
+		this.script.getMachineLearning().setMLType(MLMethodFactory.TYPE_FEEDFORWARD);
 		this.script.getMachineLearning().setMLArchitecture("?B->TANH->"+hidden+"B->TANH->?");
 		this.script.getMachineLearning().setResourceName("ml");
-
-
+	}
+	
+	private void generateSVM(int inputColumns) {
+		this.script.getMachineLearning().setMLType(MLMethodFactory.TYPE_SVM);
+		this.script.getMachineLearning().setMLArchitecture("?->C(type=new,kernel=gaussian)->?");
+		this.script.getMachineLearning().setResourceName("ml");		
 	}
 	
 	public void generateTasks()
@@ -225,4 +243,17 @@ public class AnalystWizard {
 				this.script.getConfig().getCSVFormat());
 	}
 
+	/**
+	 * @return the methodType
+	 */
+	public WizardMethodType getMethodType() {
+		return methodType;
+	}
+
+	/**
+	 * @param methodType the methodType to set
+	 */
+	public void setMethodType(WizardMethodType methodType) {
+		this.methodType = methodType;
+	}
 }
