@@ -23,6 +23,7 @@
  */
 package org.encog.ml.svm.training;
 
+import org.encog.EncogError;
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.neural.data.NeuralData;
@@ -52,6 +53,7 @@ public class EncodeSVMProblem {
 	 * @return The SVM problem.
 	 */
 	public static svm_problem encode(NeuralDataSet training, int outputIndex) {
+		try {
 		svm_problem result = new svm_problem();
 
 		result.l = (int) training.getRecordCount();
@@ -78,6 +80,9 @@ public class EncodeSVMProblem {
 		}
 
 		return result;
+		} catch(OutOfMemoryError e) {
+			throw new EncogError("SVM Model - Out of Memory");
+		}
 	}
 	
 }

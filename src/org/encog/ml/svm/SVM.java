@@ -65,7 +65,7 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 	public static final String PARAMETER_KERNEL_TYPE = "kernelType";
 	public static final String PARAMETER_MODELS = "models";
 	public static final String PARAMETER_PARAMS = "params";
-	
+
 	public static final String PARAM_DEGREE = "degree";
 	public static final String PARAM_GAMMA = "gama";
 	public static final String PARAM_COEF = "coef";
@@ -89,7 +89,7 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 	public static final String MODEL_COEF = "coef";
 	public static final String MODEL_LABEL = "label";
 	public static final String MODEL_NSV = "nsv";
-	
+
 	/**
 	 * The SVM's to use, one for each output.
 	 */
@@ -183,10 +183,9 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 		else
 			throw new PersistError("Unknown SVMType: " + t);
 	}
-	
-	public SVM()
-	{
-		
+
+	public SVM() {
+
 	}
 
 	/**
@@ -302,7 +301,6 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 		return result;
 	}
 
-
 	/**
 	 * Convert regular Encog NeuralData into the "sparse" data needed by an SVM.
 	 * 
@@ -371,14 +369,14 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 		obj.clear(PersistConst.TYPE_SVM);
 		obj.setStandardProperties(this);
 		obj.setProperty(PersistConst.TYPE, svmTypeToString(this.svmType), false);
-		obj.setProperty(SVM.PARAMETER_KERNEL_TYPE, kernelTypeToString(this.kernelType), false);
+		obj.setProperty(SVM.PARAMETER_KERNEL_TYPE,
+				kernelTypeToString(this.kernelType), false);
 		obj.setProperty(PersistConst.INPUT_COUNT, this.inputCount, false);
 		obj.setProperty(PersistConst.OUTPUT_COUNT, this.outputCount, false);
-		
+
 		// handle the params
 		List<PersistedObject> persistedParams = new ArrayList<PersistedObject>();
-		for(svm_parameter param: this.params)
-		{
+		for (svm_parameter param : this.params) {
 			PersistedObject pparm = new PersistedObject();
 			pparm.clear("Params");
 			pparm.setProperty(SVM.PARAM_DEGREE, param.degree, true);
@@ -397,134 +395,149 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 			pparm.setProperty(SVM.PARAM_DEGREE, param.statIterations, true);
 			persistedParams.add(pparm);
 		}
-		
-		obj.setProperty(SVM.PARAMETER_PARAMS,persistedParams);
-		
+
+		obj.setProperty(SVM.PARAMETER_PARAMS, persistedParams);
+
 		// handle the models
 		List<PersistedObject> persistedModels = new ArrayList<PersistedObject>();
-		for(svm_model model: this.models)
-		{
-			PersistedObject pmodel = new PersistedObject();
-			pmodel.clear("Model");
-			
-			pmodel.setProperty(SVM.MODEL_NCLASS, model.nr_class, true);
-			pmodel.setProperty(SVM.MODEL_L, model.l, true);
-			pmodel.setProperty(SVM.MODEL_RHO, model.rho);
-			pmodel.setProperty(SVM.MODEL_PROB_A, model.probA );
-			pmodel.setProperty(SVM.MODEL_PROB_B, model.probB );
-			pmodel.setProperty(SVM.MODEL_NODES, svmNodeToString(model.SV), false);
-			pmodel.setProperty(SVM.MODEL_COEF, new Matrix( model.sv_coef ) );
-			pmodel.setProperty(SVM.MODEL_LABEL, model.label );
-			pmodel.setProperty(SVM.MODEL_NSV, model.nSV );
-			persistedModels.add(pmodel);
+		for (svm_model model : this.models) {
+			if (model != null) {
+				PersistedObject pmodel = new PersistedObject();
+				pmodel.clear("Model");
+
+				pmodel.setProperty(SVM.MODEL_NCLASS, model.nr_class, true);
+				pmodel.setProperty(SVM.MODEL_L, model.l, true);
+				pmodel.setProperty(SVM.MODEL_RHO, model.rho);
+				pmodel.setProperty(SVM.MODEL_PROB_A, model.probA);
+				pmodel.setProperty(SVM.MODEL_PROB_B, model.probB);
+				pmodel.setProperty(SVM.MODEL_NODES, svmNodeToString(model.SV),
+						false);
+				pmodel.setProperty(SVM.MODEL_COEF, new Matrix(model.sv_coef));
+				pmodel.setProperty(SVM.MODEL_LABEL, model.label);
+				pmodel.setProperty(SVM.MODEL_NSV, model.nSV);
+				persistedModels.add(pmodel);
+			}
 		}
-		
-		obj.setProperty(SVM.PARAMETER_MODELS,persistedModels);
-		
+
+		obj.setProperty(SVM.PARAMETER_MODELS, persistedModels);
+
 	}
 
 	public void persistFromMap(PersistedObject obj) {
 		obj.requireType(PersistConst.TYPE_SVM);
-		this.svmType = stringToSVMType( obj.getPropertyString(PersistConst.TYPE, true) );
-		this.kernelType = stringToKernelType( obj.getPropertyString(SVM.PARAMETER_KERNEL_TYPE, true) );
+		this.svmType = stringToSVMType(obj.getPropertyString(PersistConst.TYPE,
+				true));
+		this.kernelType = stringToKernelType(obj.getPropertyString(
+				SVM.PARAMETER_KERNEL_TYPE, true));
 		this.inputCount = obj.getPropertyInt(PersistConst.INPUT_COUNT, true);
 		this.outputCount = obj.getPropertyInt(PersistConst.OUTPUT_COUNT, true);
-		
-		List<PersistedObject> paramsList = obj.getPropertyValueArray(SVM.PARAMETER_PARAMS);
-		List<PersistedObject> modelList = obj.getPropertyValueArray(SVM.PARAMETER_MODELS);
-		
+
+		List<PersistedObject> paramsList = obj
+				.getPropertyValueArray(SVM.PARAMETER_PARAMS);
+		List<PersistedObject> modelList = obj
+				.getPropertyValueArray(SVM.PARAMETER_MODELS);
+
 		// read params
 		this.params = new svm_parameter[paramsList.size()];
 		int index = 0;
-		for(PersistedObject param: paramsList )
-		{
+		for (PersistedObject param : paramsList) {
 			this.params[index] = new svm_parameter();
 			this.params[index].C = param.getPropertyDouble(SVM.PARAM_C, true);
-			this.params[index].cache_size = param.getPropertyDouble(SVM.PARAM_CACHE_SIZE, true);
-			this.params[index].coef0 = param.getPropertyDouble(SVM.PARAM_COEF, true);
-			
-			this.params[index].degree = param.getPropertyInt(SVM.PARAM_DEGREE, true);
-			this.params[index].gamma = param.getPropertyDouble(SVM.PARAM_GAMMA, true);
-			this.params[index].eps = param.getPropertyDouble(SVM.PARAM_EPS, true);
-			this.params[index].nr_weight = param.getPropertyInt(SVM.PARAM_NUM_WEIGHT, true);
-			this.params[index].weight_label = param.getPropertyIntArray(SVM.PARAM_WEIGHT_LABEL, true);
-			this.params[index].weight = param.getPropertyDoubleArray(PersistConst.WEIGHT, true);
+			this.params[index].cache_size = param.getPropertyDouble(
+					SVM.PARAM_CACHE_SIZE, true);
+			this.params[index].coef0 = param.getPropertyDouble(SVM.PARAM_COEF,
+					true);
+
+			this.params[index].degree = param.getPropertyInt(SVM.PARAM_DEGREE,
+					true);
+			this.params[index].gamma = param.getPropertyDouble(SVM.PARAM_GAMMA,
+					true);
+			this.params[index].eps = param.getPropertyDouble(SVM.PARAM_EPS,
+					true);
+			this.params[index].nr_weight = param.getPropertyInt(
+					SVM.PARAM_NUM_WEIGHT, true);
+			this.params[index].weight_label = param.getPropertyIntArray(
+					SVM.PARAM_WEIGHT_LABEL, true);
+			this.params[index].weight = param.getPropertyDoubleArray(
+					PersistConst.WEIGHT, true);
 			this.params[index].nu = param.getPropertyDouble(SVM.PARAM_NU, true);
 			this.params[index].p = param.getPropertyDouble(SVM.PARAM_P, true);
-			this.params[index].shrinking = param.getPropertyInt(SVM.PARAM_SHRINKING, true);
-			this.params[index].probability = param.getPropertyInt(SVM.PARAM_PROBABILITY, true);			
+			this.params[index].shrinking = param.getPropertyInt(
+					SVM.PARAM_SHRINKING, true);
+			this.params[index].probability = param.getPropertyInt(
+					SVM.PARAM_PROBABILITY, true);
 			index++;
 		}
-		
+
 		// models
 		this.models = new svm_model[paramsList.size()];
 		index = 0;
-		for(PersistedObject param: modelList )
-		{			
+		for (PersistedObject param : modelList) {
 			this.models[index] = new svm_model();
-			this.models[index].nr_class = param.getPropertyInt(SVM.MODEL_NCLASS, true);
+			this.models[index].nr_class = param.getPropertyInt(
+					SVM.MODEL_NCLASS, true);
 			int l = param.getPropertyInt(SVM.MODEL_L, true);
 			this.models[index].l = l;
-			this.models[index].rho = param.getPropertyDoubleArray(SVM.MODEL_RHO, true);
-			this.models[index].probA = param.getPropertyDoubleArray(SVM.MODEL_PROB_A, false);
-			this.models[index].probB = param.getPropertyDoubleArray(SVM.MODEL_PROB_B, false);
-			this.models[index].SV = svmStringToNode(param.getPropertyString(SVM.MODEL_NODES,true),l);
-			this.models[index].sv_coef = param.getPropertyMatrix(SVM.MODEL_COEF, true).getData(); 
-			this.models[index].label = param.getPropertyIntArray(SVM.MODEL_LABEL, false );
-			this.models[index].nSV = param.getPropertyIntArray(SVM.MODEL_NSV, false );
+			this.models[index].rho = param.getPropertyDoubleArray(
+					SVM.MODEL_RHO, true);
+			this.models[index].probA = param.getPropertyDoubleArray(
+					SVM.MODEL_PROB_A, false);
+			this.models[index].probB = param.getPropertyDoubleArray(
+					SVM.MODEL_PROB_B, false);
+			this.models[index].SV = svmStringToNode(
+					param.getPropertyString(SVM.MODEL_NODES, true), l);
+			this.models[index].sv_coef = param.getPropertyMatrix(
+					SVM.MODEL_COEF, true).getData();
+			this.models[index].label = param.getPropertyIntArray(
+					SVM.MODEL_LABEL, false);
+			this.models[index].nSV = param.getPropertyIntArray(SVM.MODEL_NSV,
+					false);
 			index++;
 		}
 	}
-	
-	public static svm_node[][] svmStringToNode(String str, int l)
-	{
+
+	public static svm_node[][] svmStringToNode(String str, int l) {
 		int strIndex = 0;
 		svm_node[][] result = new svm_node[l][];
-		
+
 		int index = 0;
 		int current;
-		while( (current = str.indexOf('|',strIndex)) != -1 )
-		{
-			String str2 = str.substring(strIndex,current);
-			strIndex = current+1;
-						
+		while ((current = str.indexOf('|', strIndex)) != -1) {
+			String str2 = str.substring(strIndex, current);
+			strIndex = current + 1;
+
 			double[] temp = NumberList.fromList(CSVFormat.EG_FORMAT, str2);
 			result[index] = new svm_node[temp.length];
-			for(int i=0;i<temp.length;i++)
-			{
+			for (int i = 0; i < temp.length; i++) {
 				result[index][i] = new svm_node();
-				result[index][i].index = i+1;
+				result[index][i].index = i + 1;
 				result[index][i].value = temp[i];
 			}
-			
+
 			index++;
-		}		
-		
+		}
+
 		return result;
 	}
-	
-	public static String svmNodeToString(svm_node[][] nodes)
-	{
+
+	public static String svmNodeToString(svm_node[][] nodes) {
 		StringBuilder result = new StringBuilder();
-		
-		for(int i=0;i<nodes.length;i++)
-		{
-			for(int j=1;j<(nodes[0].length+1);j++)
-			{
-				for(svm_node node: nodes[i] )
-				{
-					if( node.index==j )
-					{
-						if( j>1 )
+
+		for (int i = 0; i < nodes.length; i++) {
+			for (int j = 1; j < (nodes[0].length + 1); j++) {
+				for (svm_node node : nodes[i]) {
+					if (node.index == j) {
+						if (j > 1)
 							result.append(',');
-						result.append(CSVFormat.ENGLISH.format(node.value, Encog.DEFAULT_PRECISION));
+						result.append(CSVFormat.ENGLISH.format(node.value,
+								Encog.DEFAULT_PRECISION));
 					}
 				}
 			}
-			
+
 			result.append("|");
 		}
-		
+
 		return result.toString();
 	}
 

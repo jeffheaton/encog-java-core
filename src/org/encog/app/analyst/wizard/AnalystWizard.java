@@ -5,16 +5,13 @@ import java.net.URL;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
-import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
-import org.encog.app.quant.normalize.ClassItem;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
-import org.encog.bot.BotUtil;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.FileUtil;
@@ -24,6 +21,7 @@ public class AnalystWizard {
 	private AnalystScript script;
 	private EncogAnalyst analyst;
 	private WizardMethodType methodType;
+	private boolean directClassification = false;
 	
 	public AnalystWizard(EncogAnalyst analyst)
 	{
@@ -72,14 +70,18 @@ public class AnalystWizard {
 		for (int i = 0; i < this.script.getFields().length; i++) {
 			DataField f = dataFields[i];
 			NormalizationAction action;
+			boolean isLast = i==this.script.getFields().length-1;
 
-			if (f.isInteger() || f.isReal() && !f.isClass()) {
+			if ( (f.isInteger() || f.isReal()) && !f.isClass()) {
 				action = NormalizationAction.Normalize;
 				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
 				norm[i].setActualHigh(f.getMax());
 				norm[i].setActualLow(f.getMin());
 			} else if( f.isClass() ) { 
-				if( f.getClassMembers().size()>2)
+				if( isLast && this.directClassification ) {
+					action = NormalizationAction.SingleField;
+				}
+				else if( f.getClassMembers().size()>2)
 					action = NormalizationAction.Equilateral;
 				else
 					action = NormalizationAction.OneOf;
@@ -162,7 +164,7 @@ public class AnalystWizard {
 	private void generateSVM(int inputColumns) {
 		this.script.getMachineLearning().setMLType(MLMethodFactory.TYPE_SVM);
 		this.script.getMachineLearning().setMLArchitecture("?->C(type=new,kernel=gaussian)->?");
-		this.script.getMachineLearning().setResourceName("ml");		
+		this.script.getMachineLearning().setResourceName("ml");
 	}
 	
 	public void generateTasks()
@@ -205,7 +207,8 @@ public class AnalystWizard {
 		this.script.getInformation().setDataSourceHeaders(b);
 		this.script.getInformation().setRawFile(analyzeFile.toString());
 		
-		this.generateSettings(analyzeFile);
+		determineClassification();
+		generateSettings(analyzeFile);
 		//this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
@@ -255,5 +258,14 @@ public class AnalystWizard {
 	 */
 	public void setMethodType(WizardMethodType methodType) {
 		this.methodType = methodType;
+	}
+	
+	private void determineClassification()
+	{
+		this.directClassification = false;
+		
+		if( this.methodType==WizardMethodType.SVM ) {
+			this.directClassification = true;
+		}
 	}
 }

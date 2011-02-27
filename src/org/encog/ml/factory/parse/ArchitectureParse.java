@@ -11,7 +11,7 @@ import org.encog.util.SimpleParser;
 
 public class ArchitectureParse {
 	
-	public ArchitectureLayer parseLayer(String line, int defaultValue) {
+	public static ArchitectureLayer parseLayer(String line, int defaultValue) {
 		ArchitectureLayer layer = new ArchitectureLayer();
 		
 		String check = line.trim().toUpperCase();
@@ -38,6 +38,7 @@ public class ArchitectureParse {
 				throw new EncogError("Default (?) in an invalid location.");
 			}
 			else {
+				layer.setCount(defaultValue);
 				return layer;
 			}
 		}
@@ -57,7 +58,7 @@ public class ArchitectureParse {
 		
 		layer.setName(check.substring(0,startIndex).trim());
 		
-		String paramStr = check.substring(startIndex,endIndex-1);
+		String paramStr = check.substring(startIndex+1,endIndex-1);
 		Map<String,String> params = parseParams(paramStr);
 		layer.getParams().putAll(params);
 		return layer;

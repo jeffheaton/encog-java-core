@@ -34,6 +34,8 @@ import org.encog.engine.util.Format;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.factory.MLMethodFactory;
+import org.encog.ml.svm.SVM;
+import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.EncogEGBFile;
 import org.encog.neural.networks.BasicNetwork;
@@ -144,7 +146,7 @@ public class EncogAnalyst {
 
 		// prepare to normalize
 		NormalizeCSV norm = new NormalizeCSV();
-		setCurrentQuantTask( norm );
+		setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(this));
 		NormalizedField[] normFields = this.script.getNormalize()
 				.getNormalizedFields();
@@ -174,7 +176,7 @@ public class EncogAnalyst {
 
 		// prepare to normalize
 		ShuffleCSV norm = new ShuffleCSV();
-		setCurrentQuantTask( norm );
+		setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(this));
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getRandomize().getSourceFile());
@@ -195,7 +197,7 @@ public class EncogAnalyst {
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getSegregate().getSourceFile());
 		SegregateCSV seg = new SegregateCSV();
-		setCurrentQuantTask( seg );
+		setCurrentQuantTask(seg);
 		for (AnalystSegregateTarget target : this.script.getSegregate()
 				.getSegregateTargets()) {
 			String filename = this.script.getConfig().getFilename(
@@ -278,14 +280,30 @@ public class EncogAnalyst {
 		encog.load(resourceFile);
 
 		EncogPersistedObject method = encog.find(resource);
-		ResilientPropagation rprop = new ResilientPropagation(
-				(BasicNetwork) method, trainingSet);
+
+		Train train = null;
+		boolean singleIteration = false;
+
+		if (method instanceof BasicNetwork) {
+			train = new ResilientPropagation((BasicNetwork) method, trainingSet);
+			singleIteration = false;
+		} else if (method instanceof SVM) {
+			train = new SVMTrain((SVM) method, trainingSet);
+			singleIteration = true;
+		}
 
 		reportTrainingBegin();
-		do {
-			rprop.iteration();
-			this.reportTraining(rprop);
-		} while (rprop.getError() > 0.01 && !this.shouldStopCommand());
+
+		if (!singleIteration) {
+			do {
+				train.iteration();
+				this.reportTraining(train);
+			} while (train.getError() > 0.01 && !this.shouldStopCommand());
+		} else {
+			train.iteration();
+			this.reportTraining(train);
+		}
+
 		reportTrainingEnd();
 
 		encog.save(resourceFile);
@@ -312,7 +330,7 @@ public class EncogAnalyst {
 				.getNormalize().getSourceFile());
 
 		EvaluateCSV eval = new EvaluateCSV();
-		setCurrentQuantTask( eval );
+		setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this));
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, method);
@@ -339,7 +357,7 @@ public class EncogAnalyst {
 				.getNormalize().getSourceFile());
 
 		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
-		setCurrentQuantTask( eval );
+		setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this));
 		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
 		eval.process(outputFile, this, method);
@@ -467,7 +485,7 @@ public class EncogAnalyst {
 		}
 		return false;
 	}
-	
+
 	private boolean shouldStopCommand() {
 		for (AnalystListener listener : this.listeners) {
 			if (listener.shouldStopCommand()) {
@@ -529,12 +547,12 @@ public class EncogAnalyst {
 			} else if (line.equals("evaluate")) {
 				canceled = evaluate();
 			}
-					
+
 			this.reportCommandEnd(canceled);
 			setCurrentQuantTask(null);
 			current++;
-			
-			if( this.shouldStopAll() )
+
+			if (this.shouldStopAll())
 				break;
 		}
 	}
@@ -585,16 +603,15 @@ public class EncogAnalyst {
 	public void removeAnalystListener(AnalystListener listener) {
 		this.listeners.remove(listener);
 	}
-	
+
 	private synchronized void setCurrentQuantTask(QuantTask task) {
 		this.currentQuantTask = task;
 	}
-	
+
 	public synchronized void stopCurrentTask() {
-		if( this.currentQuantTask!=null ) {
+		if (this.currentQuantTask != null) {
 			this.currentQuantTask.requestStop();
 		}
 	}
 
-	
 }
