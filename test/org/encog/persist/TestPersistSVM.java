@@ -47,7 +47,7 @@ public class TestPersistSVM extends TestCase {
 	private SVM create()
 	{
 		NeuralDataSet training = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
-		SVM result = new SVM(2,1,SVMType.EpsilonSupportVectorRegression,KernelType.RadialBasisFunction);
+		SVM result = new SVM(2,SVMType.EpsilonSupportVectorRegression,KernelType.RadialBasisFunction);
 		final SVMTrain train = new SVMTrain(result, training);
 		train.train();
 		return result;
@@ -91,10 +91,8 @@ public class TestPersistSVM extends TestCase {
 	{
 		Assert.assertEquals(KernelType.RadialBasisFunction, svm.getKernelType());
 		Assert.assertEquals(SVMType.EpsilonSupportVectorRegression, svm.getSvmType());
-		Assert.assertEquals(1.0, svm.getParams()[0].C);
-		Assert.assertEquals(100.0, svm.getParams()[0].cache_size);
-		Assert.assertEquals(1, svm.getParams().length);
-		Assert.assertEquals(1, svm.getModels().length);
-		Assert.assertEquals(4, svm.getModels()[0].SV.length);
+		Assert.assertEquals(1.0, svm.getParams().C);
+		Assert.assertEquals(100.0, svm.getParams().cache_size);
+		Assert.assertEquals(4, svm.getModel().SV.length);
 	}
 }
