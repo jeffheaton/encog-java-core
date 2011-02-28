@@ -85,7 +85,7 @@ public class SVMTrain extends BasicTraining {
 	/**
 	 * The problem to train for.
 	 */
-	private svm_problem[] problem;
+	private svm_problem problem;
 
 	/**
 	 * The number of folds.
@@ -125,27 +125,27 @@ public class SVMTrain extends BasicTraining {
 	/**
 	 * The best values found for C.
 	 */
-	private double[] bestConst;
+	private double bestConst;
 	
 	/**
 	 * The best values found for gamma.
 	 */
-	private double[] bestGamma;
+	private double bestGamma;
 	
 	/**
 	 * The best error.
 	 */
-	private double[] bestError;
+	private double bestError;
 	
 	/**
 	 * The current C.
 	 */
-	private double[] currentConst;
+	private double currentConst;
 	
 	/**
 	 * The current gamma.
 	 */
-	private double[] currentGamma;
+	private double currentGamma;
 	
 	/**
 	 * Is the network setup.
@@ -168,11 +168,9 @@ public class SVMTrain extends BasicTraining {
 		this.isSetup = false;
 		this.trainingDone = false;
 
-		this.problem = new svm_problem[this.network.getOutputCount()];
+		this.problem = new svm_problem();
 		
-		for (int i = 0; i < this.network.getOutputCount(); i++) {
-			this.problem[i] = EncodeSVMProblem.encode(training, i);
-		}
+			this.problem = EncodeSVMProblem.encode(training, 0);
 	}
 
 	/**
@@ -182,30 +180,35 @@ public class SVMTrain extends BasicTraining {
 		double gamma = 1.0 / this.network.getInputCount();
 		double c = 1.0;
 
-		for (int i = 0; i < network.getOutputCount(); i++)
-			train(i, gamma, c);
-	}
-
-	/**
-	 * Quickly train one output with the specified gamma and C.
-	 * @param index The output to train.
-	 * @param gamma The gamma to train with.
-	 * @param c The C to train with.
-	 */
-	public void train(int index, double gamma, double c) {
-		network.getParams()[index].C = c;
+		network.getParams().C = c;
 		
 		if( gamma>Encog.DEFAULT_DOUBLE_EQUAL )
 		{
-			network.getParams()[index].gamma = 1.0 / this.network.getInputCount();
+			network.getParams().gamma = 1.0 / this.network.getInputCount();
 		}
 		else
 		{
-			network.getParams()[index].gamma = gamma;
+			network.getParams().gamma = gamma;
 		}
 		
-		network.getModels()[index] = svm.svm_train(problem[index], network
-				.getParams()[index]);
+		network.setModel( svm.svm_train(problem, network
+				.getParams()) );
+	}
+	
+	public void train(double gamma, double c) {
+		network.getParams().C = c;
+		
+		if( gamma>Encog.DEFAULT_DOUBLE_EQUAL )
+		{
+			network.getParams().gamma = 1.0 / this.network.getInputCount();
+		}
+		else
+		{
+			network.getParams().gamma = gamma;
+		}
+		
+		network.setModel( svm.svm_train(problem, network
+				.getParams()) );
 	}
 
 	/**
@@ -215,15 +218,15 @@ public class SVMTrain extends BasicTraining {
 	 * @param c The C to check.
 	 * @return The calculated error.
 	 */
-	public double crossValidate(int index, double gamma, double c) {
+	public double crossValidate(double gamma, double c) {
 
-		double[] target = new double[this.problem[0].l];
+		double[] target = new double[this.problem.l];
 
-		network.getParams()[index].C = c;
-		network.getParams()[index].gamma = gamma;
-		svm.svm_cross_validation(problem[index], network.getParams()[index], fold,
+		network.getParams().C = c;
+		network.getParams().gamma = gamma;
+		svm.svm_cross_validation(problem, network.getParams(), fold,
 				target);
-		return evaluate(network.getParams()[index], problem[index], target);
+		return evaluate(network.getParams(), problem, target);
 	}
 
 	/**
@@ -260,18 +263,10 @@ public class SVMTrain extends BasicTraining {
 	 * Setup to train the SVM.
 	 */
 	private void setup() {
-		this.currentConst = new double[this.network.getOutputCount()];
-		this.currentGamma = new double[this.network.getOutputCount()];
-		this.bestConst = new double[this.network.getOutputCount()];
-		this.bestGamma = new double[this.network.getOutputCount()];
-		this.bestError = new double[this.network.getOutputCount()];
 
-
-		for (int i = 0; i < this.network.getOutputCount(); i++) {
-			this.currentConst[i] = this.constBegin;
-			this.currentGamma[i] = this.gammaBegin;
-			this.bestError[i] = Double.POSITIVE_INFINITY;
-		}
+			this.currentConst = this.constBegin;
+			this.currentGamma = this.gammaBegin;
+			this.bestError = Double.POSITIVE_INFINITY;
 		this.isSetup = true;
 	}
 
@@ -290,26 +285,26 @@ public class SVMTrain extends BasicTraining {
 
 				double totalError = 0;
 				
-				for (int i = 0; i < this.network.getOutputCount(); i++) {
-					double e = this.crossValidate(i, this.currentGamma[i],
-							currentConst[i]);
+				
+					double e = this.crossValidate(this.currentGamma,
+							currentConst);
 
-					if (e < bestError[i]) {
-						this.bestConst[i] = this.currentConst[i];
-						this.bestGamma[i] = this.currentGamma[i];
-						this.bestError[i] = e;
+					if (e < bestError) {
+						this.bestConst = this.currentConst;
+						this.bestGamma = this.currentGamma;
+						this.bestError = e;
 					}
 
-					this.currentConst[i] += this.constStep;
-					if (this.currentConst[i] > this.constEnd) {
-						this.currentConst[i] = this.constBegin;
-						this.currentGamma[i] += this.gammaStep;
-						if (this.currentGamma[i] > this.gammaEnd)
+					this.currentConst += this.constStep;
+					if (this.currentConst > this.constEnd) {
+						this.currentConst = this.constBegin;
+						this.currentGamma += this.gammaStep;
+						if (this.currentGamma > this.gammaEnd)
 							this.trainingDone = true;
 					}
 					
-					totalError += this.bestError[i];
-				}
+					totalError += this.bestError;
+				
 
 				setError(totalError/this.network.getOutputCount());
 			} else {
@@ -323,7 +318,7 @@ public class SVMTrain extends BasicTraining {
 	/**
 	 * @return The problem being trained.
 	 */
-	public svm_problem[] getProblem() {
+	public svm_problem getProblem() {
 		return problem;
 	}
 
@@ -436,9 +431,8 @@ public class SVMTrain extends BasicTraining {
 	 * Called to finish training.
 	 */
 	public void finishTraining() {
-		for (int i = 0; i < network.getOutputCount(); i++) {
-			train(i, this.bestGamma[i], this.bestConst[i]);
-		}
+		train(this.bestGamma, this.bestConst);
+		
 	}
 
 	/**
@@ -454,19 +448,6 @@ public class SVMTrain extends BasicTraining {
 	 */
 	public boolean isTrainingDone() {
 		return this.trainingDone;
-	}
-
-	/**
-	 * Quickly train the network with a fixed gamma and C.
-	 * @param gamma The gamma to use.
-	 * @param c The C to use.
-	 */
-	public void train(double gamma, double c) {
-		for(int i=0;i<this.network.getOutputCount();i++)
-		{
-			train(i,gamma,c);
-		}
-		
 	}
 
 }

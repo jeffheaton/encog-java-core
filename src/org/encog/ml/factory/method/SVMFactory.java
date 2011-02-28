@@ -24,10 +24,15 @@ public class SVMFactory {
 		
 		int inputCount = inputLayer.getCount();
 		int outputCount = outputLayer.getCount();
+		
+		if( outputCount!=1 ) {
+			throw new EncogError("SVM can only have an output size of 1.");
+		}
+		
 		SVMType svmType = SVMType.NewSupportVectorClassification;
 		KernelType kernelType = KernelType.RadialBasisFunction;
 		
-		SVM result = new SVM(inputCount,outputCount,svmType,kernelType);
+		SVM result = new SVM(inputCount,svmType,kernelType);
 		
 		return result;
 	}

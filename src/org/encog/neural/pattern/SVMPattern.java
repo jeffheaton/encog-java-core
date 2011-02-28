@@ -79,7 +79,10 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public EncogPersistedObject generate() {
-		final SVM network = new SVM(this.inputNeurons,this.outputNeurons,svmType,kernelType);
+		if( this.outputNeurons!=1) {
+			throw new PatternError("A SVM may only have one output.");
+		}
+		final SVM network = new SVM(this.inputNeurons,svmType,kernelType);
 		return network;
 	}
 
