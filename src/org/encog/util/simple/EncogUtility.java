@@ -27,7 +27,9 @@ import java.io.File;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.Format;
+import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.svm.SVM;
@@ -372,5 +374,20 @@ public final class EncogUtility {
         }
         buffer.endLoad();
     }
+
+	public static double calculateRegressionError(MLRegression method,
+			NeuralDataSet data) {
+		
+		final ErrorCalculation errorCalculation = new ErrorCalculation();
+		if( method instanceof MLContext )
+			((MLContext)method).clearContext();
+
+		for (final NeuralDataPair pair : data) {
+			final NeuralData actual = method.compute(pair.getInput());
+			errorCalculation.updateError(actual.getData(), pair.getIdeal()
+					.getData());
+		}
+		return errorCalculation.calculate();
+	}
 
 }

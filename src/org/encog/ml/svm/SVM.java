@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_model;
 import org.encog.mathutil.libsvm.svm_node;
@@ -195,66 +196,64 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 	 * @param kernelType
 	 *            The SVM kernal type.
 	 */
-	public SVM(int inputCount, SVMType svmType,
-			KernelType kernelType) {
+	public SVM(int inputCount, SVMType svmType, KernelType kernelType) {
 		this.inputCount = inputCount;
 		this.kernelType = kernelType;
 		this.svmType = svmType;
 
-		model = new svm_model();
 		params = new svm_parameter();
 
-			switch (svmType) {
-			case SupportVectorClassification:
-				params.svm_type = svm_parameter.C_SVC;
-				break;
-			case NewSupportVectorClassification:
-				params.svm_type = svm_parameter.NU_SVC;
-				break;
-			case SupportVectorOneClass:
-				params.svm_type = svm_parameter.ONE_CLASS;
-				break;
-			case EpsilonSupportVectorRegression:
-				params.svm_type = svm_parameter.EPSILON_SVR;
-				break;
-			case NewSupportVectorRegression:
-				params.svm_type = svm_parameter.NU_SVR;
-				break;
-			}
+		switch (svmType) {
+		case SupportVectorClassification:
+			params.svm_type = svm_parameter.C_SVC;
+			break;
+		case NewSupportVectorClassification:
+			params.svm_type = svm_parameter.NU_SVC;
+			break;
+		case SupportVectorOneClass:
+			params.svm_type = svm_parameter.ONE_CLASS;
+			break;
+		case EpsilonSupportVectorRegression:
+			params.svm_type = svm_parameter.EPSILON_SVR;
+			break;
+		case NewSupportVectorRegression:
+			params.svm_type = svm_parameter.NU_SVR;
+			break;
+		}
 
-			switch (kernelType) {
-			case Linear:
-				params.kernel_type = svm_parameter.LINEAR;
-				break;
-			case Poly:
-				params.kernel_type = svm_parameter.POLY;
-				break;
-			case RadialBasisFunction:
-				params.kernel_type = svm_parameter.RBF;
-				break;
-			case Sigmoid:
-				params.kernel_type = svm_parameter.SIGMOID;
-				break;
-			case Precomputed:
-				params.kernel_type = svm_parameter.PRECOMPUTED;
-				break;
-			}
+		switch (kernelType) {
+		case Linear:
+			params.kernel_type = svm_parameter.LINEAR;
+			break;
+		case Poly:
+			params.kernel_type = svm_parameter.POLY;
+			break;
+		case RadialBasisFunction:
+			params.kernel_type = svm_parameter.RBF;
+			break;
+		case Sigmoid:
+			params.kernel_type = svm_parameter.SIGMOID;
+			break;
+		case Precomputed:
+			params.kernel_type = svm_parameter.PRECOMPUTED;
+			break;
+		}
 
-			//			params[i].kernel_type = svm_parameter.RBF;
-			params.degree = 3;
-			params.coef0 = 0;
-			params.nu = 0.5;
-			params.cache_size = 100;
-			params.C = 1;
-			params.eps = 1e-3;
-			params.p = 0.1;
-			params.shrinking = 1;
-			params.probability = 0;
-			params.nr_weight = 0;
-			params.weight_label = new int[0];
-			params.weight = new double[0];
-			params.gamma = 1.0 / inputCount;
-		
+		//			params[i].kernel_type = svm_parameter.RBF;
+		params.degree = 3;
+		params.coef0 = 0;
+		params.nu = 0.5;
+		params.cache_size = 100;
+		params.C = 1;
+		params.eps = 1e-3;
+		params.p = 0.1;
+		params.shrinking = 1;
+		params.probability = 0;
+		params.nr_weight = 0;
+		params.weight_label = new int[0];
+		params.weight = new double[0];
+		params.gamma = 1.0 / inputCount;
+
 	}
 
 	/**
@@ -269,9 +268,8 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 	 *            True if this network is used for regression.
 	 */
 	public SVM(int inputCount, boolean regression) {
-		this(inputCount,
-				regression ? SVMType.EpsilonSupportVectorRegression
-						: SVMType.SupportVectorClassification,
+		this(inputCount, regression ? SVMType.EpsilonSupportVectorRegression
+				: SVMType.SupportVectorClassification,
 				KernelType.RadialBasisFunction);
 	}
 
@@ -281,13 +279,18 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 	 * @return The results from the SVM.
 	 */
 	public NeuralData compute(NeuralData input) {
+		
+		if( this.model==null ) {
+			throw new EncogError("Can't use the SVM yet, it has not been trained, and no model exists.");
+		}
+		
 		NeuralData result = new BasicNeuralData(1);
 
 		svm_node[] formattedInput = makeSparse(input);
 
 		double d = svm.svm_predict(this.model, formattedInput);
 		result.setData(0, d);
-		
+
 		return result;
 	}
 
@@ -358,42 +361,36 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 
 		// handle the params
 
-			PersistedObject pparm = new PersistedObject();
-			pparm.clear("Params");
-			obj.setProperty(SVM.PARAM_DEGREE, params.degree, true);
-			obj.setProperty(SVM.PARAM_GAMMA, params.gamma, true);
-			obj.setProperty(SVM.PARAM_COEF, params.coef0, true);
-			obj.setProperty(SVM.PARAM_CACHE_SIZE, params.cache_size, true);
-			obj.setProperty(SVM.PARAM_EPS, params.eps, true);
-			obj.setProperty(SVM.PARAM_C, params.C, true);
-			obj.setProperty(SVM.PARAM_NUM_WEIGHT, params.nr_weight, true);
-			obj.setProperty(SVM.PARAM_WEIGHT_LABEL, params.weight_label);
-			obj.setProperty(PersistConst.WEIGHT, params.weight);
-			obj.setProperty(SVM.PARAM_NU, params.nu, true);
-			obj.setProperty(SVM.PARAM_P, params.p, true);
-			obj.setProperty(SVM.PARAM_SHRINKING, params.shrinking, true);
-			obj.setProperty(SVM.PARAM_PROBABILITY, params.probability, true);
-			obj.setProperty(SVM.PARAM_DEGREE, params.statIterations, true);
+		PersistedObject pparm = new PersistedObject();
+		pparm.clear("Params");
+		obj.setProperty(SVM.PARAM_DEGREE, params.degree, true);
+		obj.setProperty(SVM.PARAM_GAMMA, params.gamma, true);
+		obj.setProperty(SVM.PARAM_COEF, params.coef0, true);
+		obj.setProperty(SVM.PARAM_CACHE_SIZE, params.cache_size, true);
+		obj.setProperty(SVM.PARAM_EPS, params.eps, true);
+		obj.setProperty(SVM.PARAM_C, params.C, true);
+		obj.setProperty(SVM.PARAM_NUM_WEIGHT, params.nr_weight, true);
+		obj.setProperty(SVM.PARAM_WEIGHT_LABEL, params.weight_label);
+		obj.setProperty(PersistConst.WEIGHT, params.weight);
+		obj.setProperty(SVM.PARAM_NU, params.nu, true);
+		obj.setProperty(SVM.PARAM_P, params.p, true);
+		obj.setProperty(SVM.PARAM_SHRINKING, params.shrinking, true);
+		obj.setProperty(SVM.PARAM_PROBABILITY, params.probability, true);
+		obj.setProperty(SVM.PARAM_DEGREE, params.statIterations, true);
 
 		// handle the models
 
-			if (model != null) {
-				PersistedObject pmodel = new PersistedObject();
-
-				obj.setProperty(SVM.MODEL_NCLASS, model.nr_class, true);
-				obj.setProperty(SVM.MODEL_L, model.l, true);
-				obj.setProperty(SVM.MODEL_RHO, model.rho);
-				obj.setProperty(SVM.MODEL_PROB_A, model.probA);
-				obj.setProperty(SVM.MODEL_PROB_B, model.probB);
-				obj.setProperty(SVM.MODEL_NODES, svmNodeToString(model.SV),
-						false);
-				obj.setProperty(SVM.MODEL_COEF, new Matrix(model.sv_coef));
-				obj.setProperty(SVM.MODEL_LABEL, model.label);
-				obj.setProperty(SVM.MODEL_NSV, model.nSV);
-
-			}
-
-
+		if (model != null) {
+			obj.setProperty(SVM.MODEL_NCLASS, model.nr_class, true);
+			obj.setProperty(SVM.MODEL_L, model.l, true);
+			obj.setProperty(SVM.MODEL_RHO, model.rho);
+			obj.setProperty(SVM.MODEL_PROB_A, model.probA);
+			obj.setProperty(SVM.MODEL_PROB_B, model.probB);
+			obj.setProperty(SVM.MODEL_NODES, svmNodeToString(model.SV), false);
+			obj.setProperty(SVM.MODEL_COEF, new Matrix(model.sv_coef));
+			obj.setProperty(SVM.MODEL_LABEL, model.label);
+			obj.setProperty(SVM.MODEL_NSV, model.nSV);
+		}
 	}
 
 	public void persistFromMap(PersistedObject obj) {
@@ -410,54 +407,50 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 
 		this.params = new svm_parameter();
 		this.params.C = obj.getPropertyDouble(SVM.PARAM_C, true);
-		this.params.cache_size = obj.getPropertyDouble(
-				SVM.PARAM_CACHE_SIZE, true);
-		this.params.coef0 = obj.getPropertyDouble(SVM.PARAM_COEF,
-					true);
-
-		this.params.degree = obj.getPropertyInt(SVM.PARAM_DEGREE,
+		this.params.cache_size = obj.getPropertyDouble(SVM.PARAM_CACHE_SIZE,
 				true);
-		this.params.gamma = obj.getPropertyDouble(SVM.PARAM_GAMMA,
-					true);
-		this.params.eps = obj.getPropertyDouble(SVM.PARAM_EPS,
-					true);
-		this.params.nr_weight = obj.getPropertyInt(
-					SVM.PARAM_NUM_WEIGHT, true);
+		this.params.coef0 = obj.getPropertyDouble(SVM.PARAM_COEF, true);
+
+		this.params.degree = obj.getPropertyInt(SVM.PARAM_DEGREE, true);
+		this.params.gamma = obj.getPropertyDouble(SVM.PARAM_GAMMA, true);
+		this.params.eps = obj.getPropertyDouble(SVM.PARAM_EPS, true);
+		this.params.nr_weight = obj.getPropertyInt(SVM.PARAM_NUM_WEIGHT, true);
 		this.params.weight_label = obj.getPropertyIntArray(
-					SVM.PARAM_WEIGHT_LABEL, true);
-		this.params.weight = obj.getPropertyDoubleArray(
-					PersistConst.WEIGHT, true);
+				SVM.PARAM_WEIGHT_LABEL, true);
+		this.params.weight = obj.getPropertyDoubleArray(PersistConst.WEIGHT,
+				true);
 		this.params.nu = obj.getPropertyDouble(SVM.PARAM_NU, true);
 		this.params.p = obj.getPropertyDouble(SVM.PARAM_P, true);
-		this.params.shrinking = obj.getPropertyInt(
-					SVM.PARAM_SHRINKING, true);
-		this.params.probability = obj.getPropertyInt(
-					SVM.PARAM_PROBABILITY, true);
-		
-		// models
-		this.model = new svm_model();
-		index = 0;
+		this.params.shrinking = obj.getPropertyInt(SVM.PARAM_SHRINKING, true);
+		this.params.probability = obj.getPropertyInt(SVM.PARAM_PROBABILITY,
+				true);
+
+		// model
+
+		int l = obj.getPropertyInt(SVM.MODEL_L, false);
+
+		if (l > 0) {
+			this.model = new svm_model();
 
 			this.model = new svm_model();
-			this.model.nr_class = obj.getPropertyInt(
-					SVM.MODEL_NCLASS, true);
-			int l = obj.getPropertyInt(SVM.MODEL_L, true);
+			this.model.nr_class = obj.getPropertyInt(SVM.MODEL_NCLASS, true);
+
 			this.model.l = l;
-			this.model.rho = obj.getPropertyDoubleArray(
-					SVM.MODEL_RHO, true);
-			this.model.probA = obj.getPropertyDoubleArray(
-					SVM.MODEL_PROB_A, false);
-			this.model.probB = obj.getPropertyDoubleArray(
-					SVM.MODEL_PROB_B, false);
+			this.model.rho = obj.getPropertyDoubleArray(SVM.MODEL_RHO, true);
+			this.model.probA = obj.getPropertyDoubleArray(SVM.MODEL_PROB_A,
+					false);
+			this.model.probB = obj.getPropertyDoubleArray(SVM.MODEL_PROB_B,
+					false);
 			this.model.SV = svmStringToNode(
 					obj.getPropertyString(SVM.MODEL_NODES, true), l);
-			this.model.sv_coef = obj.getPropertyMatrix(
-					SVM.MODEL_COEF, true).getData();
-			this.model.label = obj.getPropertyIntArray(
-					SVM.MODEL_LABEL, false);
-			this.model.nSV = obj.getPropertyIntArray(SVM.MODEL_NSV,
-					false);
-			index++;
+			this.model.sv_coef = obj.getPropertyMatrix(SVM.MODEL_COEF, true)
+					.getData();
+			this.model.label = obj.getPropertyIntArray(SVM.MODEL_LABEL, false);
+			this.model.nSV = obj.getPropertyIntArray(SVM.MODEL_NSV, false);
+			this.model.param = this.params;
+		} else {
+			this.model = null;
+		}
 	}
 
 	public static svm_node[][] svmStringToNode(String str, int l) {
@@ -512,7 +505,7 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 
 	public void setModel(svm_model model) {
 		this.model = model;
-		
+
 	}
 
 }

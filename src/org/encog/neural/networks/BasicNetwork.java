@@ -56,6 +56,7 @@ import org.encog.persist.map.PersistedObject;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
+import org.encog.util.simple.EncogUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,15 +175,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * @return The error percentage.
 	 */
 	public double calculateError(final NeuralDataSet data) {
-		final ErrorCalculation errorCalculation = new ErrorCalculation();
-		clearContext();
-
-		for (final NeuralDataPair pair : data) {
-			final NeuralData actual = compute(pair.getInput());
-			errorCalculation.updateError(actual.getData(), pair.getIdeal()
-					.getData());
-		}
-		return errorCalculation.calculate();
+		return EncogUtility.calculateRegressionError(this,data);
 	}
 
 	/**

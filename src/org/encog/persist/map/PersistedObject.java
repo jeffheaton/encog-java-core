@@ -162,6 +162,9 @@ public class PersistedObject extends PersistedProperty {
 
 	public int getPropertyInt(String name, boolean required) {
 		String str = this.getPropertyString(name, required);
+		if( str==null ) {
+			return -1;
+		}
 		try {
 			return Integer.parseInt(str);
 		} catch (NumberFormatException ex) {

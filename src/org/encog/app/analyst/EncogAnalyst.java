@@ -300,8 +300,16 @@ public class EncogAnalyst {
 				this.reportTraining(train);
 			} while (train.getError() > 0.01 && !this.shouldStopCommand());
 		} else {
+			if( method instanceof SVM ) {
+				((SVMTrain)train).train();
+				double error = EncogUtility.calculateRegressionError((SVM)method, trainingSet);
+				train.setError(error);
+				train.setIteration(1);
+				this.reportTraining(train);
+			} else {
 			train.iteration();
 			this.reportTraining(train);
+			}
 		}
 
 		reportTrainingEnd();

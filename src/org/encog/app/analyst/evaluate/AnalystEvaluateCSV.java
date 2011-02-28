@@ -167,8 +167,9 @@ public class AnalystEvaluateCSV extends BasicFile {
 						}
 					}
 				} else if (normFieldNumber == computeIndex) {
-					output = method.compute(input);				
-					if( field.getColumnsNeeded()>1 ) {
+					output = method.compute(input);	
+
+					if( field.isClassify() ) {
 						// classification
 						ClassItem cls = field.determineClass(output.getData());
 						row.getData()[finalCol] = cls.getName();
