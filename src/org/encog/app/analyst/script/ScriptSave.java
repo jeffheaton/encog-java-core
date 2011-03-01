@@ -43,12 +43,14 @@ public class ScriptSave {
 	
 	private void saveRandomize(WriteScriptFile out)
 	{
-		out.addSection("RANDOMIZE");
+		saveSubSection(out,"RANDOMIZE","CONFIG");
+		
+		/*out.addSection("RANDOMIZE");
 		out.addSubSection("CONFIG");
 		out.writeProperty("sourceFile", this.script.getRandomize()
 				.getSourceFile());
 		out.writeProperty("targetFile", this.script.getRandomize()
-				.getTargetFile());		
+				.getTargetFile());*/		
 	}
 	
 	private void saveSubSection(WriteScriptFile out, String section, String subSection)

@@ -166,23 +166,21 @@ public class EncogAnalyst {
 	}
 
 	public boolean randomize() {
-		//this.report.reportPhase(0, 0, "Randomizing");
+		// get filenames
+		String sourceID = this.script.getProperties().getPropertyString(ScriptProperties.RANDOMIZE_CONFIG_sourceFile);
+		String targetID = this.script.getProperties().getPropertyString(ScriptProperties.RANDOMIZE_CONFIG_targetFile);
+		
+		String sourceFile = this.script.getProperties().getFilename(sourceID);
+		String targetFile = this.script.getProperties().getFilename(targetID);
 
 		// mark generated
-		this.script.markGenerated(this.script.getRandomize().getTargetFile());
-
-		// get filenames
-		String sourceFile = this.script.getProperties().getFilename(
-				this.script.getRandomize().getSourceFile());
-		String targetFile = this.script.getProperties().getFilename(
-				this.script.getRandomize().getTargetFile());
+		this.script.markGenerated(targetID);
 
 		// prepare to normalize
 		ShuffleCSV norm = new ShuffleCSV();
 		setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(this));
-		boolean headers = this.script.expectInputHeaders(this.script
-				.getRandomize().getSourceFile());
+		boolean headers = this.script.expectInputHeaders(sourceID);
 		norm.analyze(sourceFile, headers, this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 		norm.process(targetFile);
 		setCurrentQuantTask(null);

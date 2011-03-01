@@ -59,8 +59,8 @@ public class AnalystWizard {
 				FileUtil.forceExtension(file.toString(), "eg"));
 		
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, AnalystWizard.FILE_RAW);
-		this.script.getRandomize().setSourceFile(AnalystWizard.FILE_RAW);
-		this.script.getRandomize().setTargetFile(AnalystWizard.FILE_RANDOM);
+		this.script.getProperties().setProperty(ScriptProperties.RANDOMIZE_CONFIG_sourceFile , AnalystWizard.FILE_RAW);
+		this.script.getProperties().setProperty(ScriptProperties.RANDOMIZE_CONFIG_targetFile , AnalystWizard.FILE_RANDOM);	
 		this.script.getSegregate().setSourceFile(AnalystWizard.FILE_RANDOM);		
 		this.script.getNormalize().setSourceFile(AnalystWizard.FILE_TRAIN);
 		this.script.getNormalize().setTargetFile(AnalystWizard.FILE_NORMALIZE);

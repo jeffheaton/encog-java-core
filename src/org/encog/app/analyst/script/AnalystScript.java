@@ -9,7 +9,6 @@ import java.util.Set;
 
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.prop.ScriptProperties;
-import org.encog.app.analyst.script.randomize.AnalystRandomize;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.util.csv.CSVFormat;
@@ -18,7 +17,6 @@ public class AnalystScript {
 
 	private DataField[] fields;
 	private final AnalystNormalize normalize = new AnalystNormalize();
-	private final AnalystRandomize randomize = new AnalystRandomize();
 	private final AnalystSegregate segregate = new AnalystSegregate();
 	private final Set<String> generated = new HashSet<String>();
 	private final Map<String,AnalystTask> tasks = new HashMap<String,AnalystTask>();
@@ -80,13 +78,6 @@ public class AnalystScript {
 	
 	public boolean isGenerated(String filename) {
 		return this.generated.contains(filename);
-	}
-	
-	/**
-	 * @return the randomize
-	 */
-	public AnalystRandomize getRandomize() {
-		return randomize;
 	}
 
 	/**

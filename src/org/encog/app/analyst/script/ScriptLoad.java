@@ -232,10 +232,11 @@ public class ScriptLoad {
 	}
 	
 	private void handleRandomizeConfig(List<String> list) {
-		Map<String, String> prop = this.handleProperties(list);
+		loadSubSection(list,"RANDOMIZE","CONFIG");
+		/*Map<String, String> prop = this.handleProperties(list);
 		
 		this.script.getRandomize().setSourceFile(prop.get("sourceFile"));
-		this.script.getRandomize().setTargetFile(prop.get("targetFile"));
+		this.script.getRandomize().setTargetFile(prop.get("targetFile"));*/
 	}
 	
 	private void handleMachineLearningConfig(List<String> list) {
