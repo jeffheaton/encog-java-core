@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.encog.app.analyst.script.generate.AnalystGenerate;
 import org.encog.app.analyst.script.ml.AnalystMachineLearning;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -22,7 +21,6 @@ public class AnalystScript {
 	private final AnalystNormalize normalize = new AnalystNormalize();
 	private final AnalystRandomize randomize = new AnalystRandomize();
 	private final AnalystSegregate segregate = new AnalystSegregate();
-	private final AnalystGenerate generate = new AnalystGenerate();
 	private final AnalystMachineLearning machineLearning = new AnalystMachineLearning();
 	private final Set<String> generated = new HashSet<String>();
 	private final Map<String,AnalystTask> tasks = new HashMap<String,AnalystTask>();
@@ -91,13 +89,6 @@ public class AnalystScript {
 	 */
 	public AnalystRandomize getRandomize() {
 		return randomize;
-	}
-	
-	/**
-	 * @return the generate
-	 */
-	public AnalystGenerate getGenerate() {
-		return generate;
 	}
 
 	/**

@@ -64,8 +64,9 @@ public class AnalystWizard {
 		this.script.getSegregate().setSourceFile(AnalystWizard.FILE_RANDOM);		
 		this.script.getNormalize().setSourceFile(AnalystWizard.FILE_TRAIN);
 		this.script.getNormalize().setTargetFile(AnalystWizard.FILE_NORMALIZE);
-		this.script.getGenerate().setSourceFile(AnalystWizard.FILE_NORMALIZE);
-		this.script.getGenerate().setTargetFile(AnalystWizard.FILE_TRAINSET);
+		
+		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_sourceFile, AnalystWizard.FILE_NORMALIZE);
+		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_targetFile, AnalystWizard.FILE_TRAINSET);
 		this.script.getMachineLearning().setTrainingFile(AnalystWizard.FILE_TRAINSET);
 		this.script.getMachineLearning().setResourceFile(AnalystWizard.FILE_EG);
 		this.script.getMachineLearning().setOutputFile(AnalystWizard.FILE_OUTPUT);
@@ -150,8 +151,8 @@ public class AnalystWizard {
 		int inputColumns = this.script.getNormalize().calculateInputColumns(targetField);
 		int idealColumns = this.script.getNormalize().calculateOutputColumns(targetField);
 
-		this.script.getGenerate().setInput(inputColumns);
-		this.script.getGenerate().setIdeal(idealColumns);
+		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_input,inputColumns);
+		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_ideal,idealColumns);
 
 		switch(this.methodType) {
 			case FeedForward:

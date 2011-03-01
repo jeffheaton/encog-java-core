@@ -206,12 +206,8 @@ public class ScriptLoad {
 	}
 	
 	private void handleGenerateConfig(List<String> list) {
-		Map<String, String> prop = this.handleProperties(list);
 		
-		this.script.getGenerate().setSourceFile(prop.get("sourceFile"));
-		this.script.getGenerate().setTargetFile(prop.get("targetFile"));
-		this.script.getGenerate().setInput(Integer.parseInt(prop.get("input")));
-		this.script.getGenerate().setIdeal(Integer.parseInt(prop.get("ideal")));
+		loadSubSection(list,"GENERATE","CONFIG");
 	}
 	
 	private void handleNormalizeConfig(List<String> list) {

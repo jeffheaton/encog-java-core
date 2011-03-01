@@ -223,15 +223,15 @@ public class EncogAnalyst {
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
 
 		// get filenames
-		String sourceFile = this.script.getProperties().getFilename(
-				this.script.getGenerate().getSourceFile());
-		String targetFile = this.script.getProperties().getFilename(
-				this.script.getGenerate().getTargetFile());
-		int input = this.script.getGenerate().getInput();
-		int ideal = this.script.getGenerate().getIdeal();
+		String sourceID = this.script.getProperties().getPropertyString(ScriptProperties.GENERATE_CONFIG_sourceFile);
+		String targetID = this.script.getProperties().getPropertyString(ScriptProperties.GENERATE_CONFIG_targetFile);
+		
+		String sourceFile = this.script.getProperties().getFilename(sourceID);
+		String targetFile = this.script.getProperties().getFilename(targetID);
+		int input = this.script.getProperties().getPropertyInt(ScriptProperties.GENERATE_CONFIG_input);
+		int ideal = this.script.getProperties().getPropertyInt(ScriptProperties.GENERATE_CONFIG_ideal);
 
-		boolean headers = this.script.expectInputHeaders(this.script
-				.getGenerate().getSourceFile());
+		boolean headers = this.script.expectInputHeaders(sourceID);
 		EncogUtility.convertCSV2Binary(sourceFile, targetFile, input, ideal,
 				headers);
 		return false;

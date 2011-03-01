@@ -79,7 +79,9 @@ public class ScriptSave {
 	
 	private void saveGenerate(WriteScriptFile out)
 	{
-		out.addSection("GENERATE");
+		saveSubSection(out,"GENERATE","CONFIG");
+		
+		/*out.addSection("GENERATE");
 		out.addSubSection("CONFIG");
 		out.writeProperty("sourceFile", this.script.getGenerate()
 				.getSourceFile());
@@ -88,7 +90,7 @@ public class ScriptSave {
 		out.writeProperty("input", this.script.getGenerate()
 				.getInput());
 		out.writeProperty("ideal", this.script.getGenerate()
-				.getIdeal());
+				.getIdeal());*/
 	}
 	
 	private void saveSegregate(WriteScriptFile out)
