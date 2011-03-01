@@ -14,10 +14,10 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.randomize.AnalystRandomize;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.util.csv.CSVFormat;
 
 public class AnalystScript {
 
-	private final EncogAnalystConfig config = new EncogAnalystConfig();
 	private DataField[] fields;
 	private final AnalystNormalize normalize = new AnalystNormalize();
 	private final AnalystRandomize randomize = new AnalystRandomize();
@@ -28,13 +28,14 @@ public class AnalystScript {
 	private final Map<String,AnalystTask> tasks = new HashMap<String,AnalystTask>();
 	private final ScriptProperties properties = new ScriptProperties();
 
-	/**
-	 * @return the config
-	 */
-	public EncogAnalystConfig getConfig() {
-		return config;
-	}
 
+	public AnalystScript() {
+		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, CSVFormat.ENGLISH);
+		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_maxClassCount, 50);
+		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_allowedClasses, "integer,string");
+		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_outputHeaders, true);
+	}
+	
 	/**
 	 * @return the fields
 	 */
@@ -109,9 +110,9 @@ public class AnalystScript {
 	public boolean expectInputHeaders(String filename)
 	{
 		if( isGenerated(filename) )
-			return this.config.isOutputHeaders();
+			return this.properties.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders); 
 		else
-			return this.config.isInputHeaders();
+			return this.properties.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_inputHeaders);
 	}
 
 	/**

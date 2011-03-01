@@ -7,7 +7,6 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
-import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
@@ -254,9 +253,10 @@ public class AnalystWizard {
 		
 		String rawFilename = this.script.getProperties().getFilename(rawID);
 		
-		this.analyst.analyze(new File(rawFilename), 
-				this.script.getConfig().isInputHeaders(), 
-				this.script.getConfig().getCSVFormat());
+		this.analyst.analyze(new File(rawFilename),
+				this.script.getProperties().getPropertyBoolean(ScriptProperties.SETUP_CONFIG_inputHeaders),
+				this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+
 	}
 
 	/**

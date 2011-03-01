@@ -89,7 +89,7 @@ public class ScriptProperties {
 		
 		if( value.equals("deccomma") ) {
 			return CSVFormat.DECIMAL_COMMA;
-		} else if( value.equals("deccomma") ) {
+		} else if( value.equals("decpnt") ) {
 			return CSVFormat.DECIMAL_POINT;
 		} else {
 			return null;
@@ -140,5 +140,30 @@ public class ScriptProperties {
 		}
 		
 		return (String)this.data.get(key2);
+	}
+
+	public boolean getPropertyBoolean(String name) {
+		if( !data.containsKey(name) )
+			return false;
+		else
+			return data.get(name).toLowerCase().startsWith("t");
+	}
+
+	public int getPropertyInt(String name) {
+		try {
+			String value = this.data.get(name);
+			if( value==null ) {
+				return 0;
+			}
+			return Integer.parseInt(value);
+		} catch(NumberFormatException ex)
+		{
+			throw new AnalystError(ex);
+		}
+	}
+
+	public void setProperty(String name, int i) {
+		this.data.put(name, ""+i);
+		
 	}
 }

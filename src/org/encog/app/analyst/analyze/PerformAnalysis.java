@@ -6,6 +6,7 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.quant.normalize.ClassItem;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -97,18 +98,28 @@ public class PerformAnalysis {
 
 		
 		csv.close();
+		
+		String str = script.getProperties().getPropertyString(ScriptProperties.SETUP_CONFIG_allowedClasses);
+		if( str==null ) {
+			str = "";
+		}
+		
+		boolean allowInt = str.contains("int");
+		boolean allowReal = str.contains("real") || str.contains("double");
+		boolean allowString = str.contains("string");
+		
 		// remove any classes that did not qualify
 		for(AnalyzedField field: this.fields) {
 			if( field.isClass() ) {
-				if( !script.getConfig().isAllowIntClasses() && field.isInteger() ) {
+				if( !allowInt && field.isInteger() ) {
 					field.setClass(false);
 				}
 				
-				if( !script.getConfig().isAllowStringClasses() && (!field.isInteger() && !field.isReal()) ) {
+				if( !allowString && (!field.isInteger() && !field.isReal()) ) {
 					field.setClass(false);
 				}
 				
-				if( !script.getConfig().isAllowRealClasses() && field.isReal() && !field.isInteger() ) {
+				if( !allowReal && field.isReal() && !field.isInteger() ) {
 					field.setClass(false);
 				}
 				

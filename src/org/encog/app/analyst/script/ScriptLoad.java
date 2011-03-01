@@ -49,28 +49,7 @@ public class ScriptLoad {
 	}
 
 	private void handleConfig(List<String> list) {
-		
-		Map<String,String> prop = handleProperties(list);
-		
-		for(Entry<String, String> e : prop.entrySet() )
-		{
-			String name = e.getKey();
-			String value = e.getValue();
-			if( name.equals("maxClassCount")) {
-				this.script.getConfig().setMaxClassSize(Integer.parseInt(value));
-			}
-			else if( name.equals("allowedClasses")) {
-				this.script.getConfig().setAllowedClasses(value);
-			} else if( name.equals("csvFormat")) {
-				this.script.getConfig().setCSVFormat(value);
-			} else if( name.equals("outputHeaders") ) {
-				this.script.getConfig().setOutputHeaders(value.trim().equalsIgnoreCase("t"));
-			} else if( name.equals("inputHeaders") ) {
-				this.script.getConfig().setInputHeaders(value.trim().equalsIgnoreCase("t"));
-			} else {
-				throw new AnalystError("Invalid setup item: " + name);
-			}
-		}
+		loadSubSection(list,"SETUP","CONFIG");		
 	}
 	
 	private void handleFilenames(List<String> list) {

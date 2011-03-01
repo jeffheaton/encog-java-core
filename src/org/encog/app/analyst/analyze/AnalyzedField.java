@@ -9,6 +9,7 @@ import java.util.Map;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.quant.normalize.ClassItem;
 
 public class AnalyzedField extends DataField {
@@ -70,7 +71,9 @@ public class AnalyzedField extends DataField {
 			if (!this.classMap.containsKey(str)) {
 				this.classMap.put(str, new AnalystClassItem(str,str));
 			}
-			if (this.classMap.size() > script.getConfig().getMaxClassSize())
+			
+			int max = script.getProperties().getPropertyInt(ScriptProperties.SETUP_CONFIG_maxClassCount);
+			if (this.classMap.size() > max )
 				this.setClass(false);
 		}
 	}

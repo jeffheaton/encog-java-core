@@ -17,7 +17,6 @@ import java.util.zip.GZIPInputStream;
 import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.AnalystScript;
-import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
@@ -62,8 +61,10 @@ public class EncogAnalyst {
 
 	public void analyze(File file, boolean headers, CSVFormat format) {
 		script.getProperties().setFilename(AnalystWizard.FILE_RAW, file.toString());
-		script.getConfig().setCSVFormat(format);
-		script.getConfig().setInputHeaders(headers);
+		
+		script.getProperties().setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, format);
+		script.getProperties().setProperty(ScriptProperties.SETUP_CONFIG_inputHeaders, headers);
+		
 		PerformAnalysis a = new PerformAnalysis(script, file.toString(),
 				headers, CSVFormat.ENGLISH);
 		a.process(this);
@@ -155,9 +156,10 @@ public class EncogAnalyst {
 
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getNormalize().getSourceFile());
-		norm.analyze(sourceFile, headers, this.script.getConfig()
-				.getCSVFormat(), stats);
-		norm.setProduceOutputHeaders(this.script.getConfig().isOutputHeaders());
+		norm.analyze(sourceFile, headers, 
+				this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat),
+				stats);
+		norm.setProduceOutputHeaders(this.script.getProperties().getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders));
 		norm.normalize(targetFile);
 		setCurrentQuantTask(null);
 		return norm.shouldStop();
@@ -181,8 +183,7 @@ public class EncogAnalyst {
 		norm.setReport(new AnalystReportBridge(this));
 		boolean headers = this.script.expectInputHeaders(this.script
 				.getRandomize().getSourceFile());
-		norm.analyze(sourceFile, headers, this.script.getConfig()
-				.getCSVFormat());
+		norm.analyze(sourceFile, headers, this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 		norm.process(targetFile);
 		setCurrentQuantTask(null);
 		return norm.shouldStop();
@@ -209,7 +210,7 @@ public class EncogAnalyst {
 			this.script.markGenerated(target.getFile());
 		}
 		seg.setReport(new AnalystReportBridge(this));
-		seg.analyze(inputFile, headers, this.script.getConfig().getCSVFormat());
+		seg.analyze(inputFile, headers, this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 
 		seg.process();
 		setCurrentQuantTask(null);
@@ -342,7 +343,7 @@ public class EncogAnalyst {
 		EvaluateCSV eval = new EvaluateCSV();
 		setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this));
-		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
+		eval.analyze(evalFile, headers, this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 		eval.process(outputFile, method);
 		setCurrentQuantTask(null);
 	}
@@ -369,7 +370,7 @@ public class EncogAnalyst {
 		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
 		setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this));
-		eval.analyze(evalFile, headers, this.script.getConfig().getCSVFormat());
+		eval.analyze(evalFile, headers, this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 		eval.process(outputFile, this, method);
 		setCurrentQuantTask(null);
 		this.classCorrect = eval.getClassCorrect();
