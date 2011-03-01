@@ -18,6 +18,7 @@ import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.EncogAnalystConfig;
+import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.util.AnalystReportBridge;
@@ -60,8 +61,7 @@ public class EncogAnalyst {
 	private QuantTask currentQuantTask = null;
 
 	public void analyze(File file, boolean headers, CSVFormat format) {
-		script.getConfig().setFilename(AnalystWizard.FILE_RAW,
-				file.toString());
+		script.getConfig().setFilename(AnalystWizard.FILE_RAW, file.toString());
 		script.getConfig().setCSVFormat(format);
 		script.getConfig().setInputHeaders(headers);
 		PerformAnalysis a = new PerformAnalysis(script, file.toString(),
@@ -301,15 +301,16 @@ public class EncogAnalyst {
 				this.reportTraining(train);
 			} while (train.getError() > 0.01 && !this.shouldStopCommand());
 		} else {
-			if( method instanceof SVM ) {
-				((SVMTrain)train).train();
-				double error = EncogUtility.calculateRegressionError((SVM)method, trainingSet);
+			if (method instanceof SVM) {
+				((SVMTrain) train).train();
+				double error = EncogUtility.calculateRegressionError(
+						(SVM) method, trainingSet);
 				train.setError(error);
 				train.setIteration(1);
 				this.reportTraining(train);
 			} else {
-			train.iteration();
-			this.reportTraining(train);
+				train.iteration();
+				this.reportTraining(train);
 			}
 		}
 
@@ -505,17 +506,16 @@ public class EncogAnalyst {
 	}
 
 	public void download() {
-		try {
-			String sourceURL = this.script.getInformation().getDataSource();
-			String rawFile = this.script.getInformation().getRawFile();
-			File rawFilename = new File(this.script.getConfig().getFilename(
-					rawFile));
-			URL url = new URL(sourceURL);
-			if (!rawFilename.exists())
-				downloadPage(url, rawFilename);
-		} catch (IOException ex) {
-			throw new AnalystError(ex);
-		}
+		URL sourceURL = this.script.getProperties().getPropertyURL(
+				ScriptProperties.HEADER_DATASOURCE_sourceFile);
+
+		String rawFile = this.script.getProperties().getPropertyFile(
+				ScriptProperties.HEADER_DATASOURCE_rawFile);
+		File rawFilename = new File(this.script.getConfig()
+				.getFilename(rawFile));
+
+		if (!rawFilename.exists())
+			downloadPage(sourceURL, rawFilename);
 	}
 
 	public Map<String, Integer> getClassCorrect() {

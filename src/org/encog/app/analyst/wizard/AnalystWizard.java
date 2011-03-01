@@ -8,6 +8,7 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
+import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
@@ -58,7 +59,7 @@ public class AnalystWizard {
 		this.script.getConfig().setFilename(AnalystWizard.FILE_EG,
 				FileUtil.forceExtension(file.toString(), "eg"));
 		
-		this.script.getInformation().setRawFile(AnalystWizard.FILE_RAW);
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, AnalystWizard.FILE_RAW);
 		this.script.getRandomize().setSourceFile(AnalystWizard.FILE_RAW);
 		this.script.getRandomize().setTargetFile(AnalystWizard.FILE_RANDOM);
 		this.script.getSegregate().setSourceFile(AnalystWizard.FILE_RANDOM);		
@@ -212,9 +213,10 @@ public class AnalystWizard {
 	public void wizard(File analyzeFile, boolean b,
 			CSVFormat format) {
 
-		this.script.getInformation().setDataSourceFormat(format);
-		this.script.getInformation().setDataSourceHeaders(b);
-		this.script.getInformation().setRawFile(analyzeFile.toString());
+		
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
 		
 		determineClassification();
 		generateSettings(analyzeFile);
@@ -229,11 +231,12 @@ public class AnalystWizard {
 
 	public void wizard(URL url, File saveFile, File analyzeFile, boolean b,
 			CSVFormat format) {
-		this.script.getInformation().setDataSource(url.toExternalForm());
-		this.script.getInformation().setDataSourceFormat(format);
-		this.script.getInformation().setDataSourceHeaders(b);
-		this.script.getInformation().setRawFile(analyzeFile.toString());
 		
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFile, url);
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
+				
 		this.generateSettings(analyzeFile);
 		//this.analyst.getReport().reportPhase(2, 1, "Downloading data");
 		analyst.download();
@@ -247,7 +250,8 @@ public class AnalystWizard {
 	}
 
 	public void reanalyze() {
-		String rawID = this.script.getInformation().getRawFile();
+		String rawID = this.script.getProperties().getPropertyFile(ScriptProperties.HEADER_DATASOURCE_rawFile);
+		
 		String rawFilename = this.script.getConfig().getFilename(rawID);
 		
 		this.analyst.analyze(new File(rawFilename), 

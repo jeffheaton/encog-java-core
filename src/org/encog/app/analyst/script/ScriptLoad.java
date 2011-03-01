@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
@@ -244,10 +245,10 @@ public class ScriptLoad {
 	private void handleHeaderDataSource(List<String> list) {
 		Map<String, String> prop = this.handleProperties(list);
 		
-		this.script.getInformation().setDataSource(prop.get("sourceFile"));
-		this.script.getInformation().setRawFile(prop.get("rawFile"));
-		this.script.getInformation().setDataSourceFormat(prop.get("sourceFormat"));
-		this.script.getInformation().setDataSourceHeaders(prop.get("sourceHeaders").trim().equalsIgnoreCase("t"));
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFile, prop.get("sourceFile"));
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, prop.get("rawFile"));
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFormat, prop.get("sourceFormat"));
+		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceHeaders, prop.get("sourceHeaders"));
 	}
 	
 	private void handleRandomizeConfig(List<String> list) {

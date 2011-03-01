@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizedField;
@@ -50,10 +51,10 @@ public class ScriptSave {
 	{
 		out.addSection("HEADER");
 		out.addSubSection("DATASOURCE");
-		out.writeProperty("sourceFile", this.script.getInformation().getDataSource());
-		out.writeProperty("rawFile", this.script.getInformation().getRawFile());
-		out.writeProperty("sourceFormat", this.script.getInformation().getDataSourceFormat());
-		out.writeProperty("sourceHeaders", this.script.getInformation().isDataSourceHeaders());
+		out.writeProperty("sourceFile", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceFile));
+		out.writeProperty("rawFile", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_rawFile));
+		out.writeProperty("sourceFormat", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceFormat));
+		out.writeProperty("sourceHeaders", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceHeaders));		
 	}
 	
 	private void saveGenerate(WriteScriptFile out)
