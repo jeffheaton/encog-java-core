@@ -55,18 +55,23 @@ public class ScriptSave {
 		List<PropertyEntry> list = PropertyConstraints.getInstance().getEntries(section,subSection);
 		Collections.sort(list);
 		for(PropertyEntry entry:list) {
-			//Object value = 
+			String key = section + ":" + subSection + "_" + entry.getName();
+			String value = this.script.getProperties().getPropertyString(key);
+			if( value!=null ) {
+				out.writeProperty(entry.getName(), value);
+			}
 		}
 	}
 	
 	private void saveInformation(WriteScriptFile out)
 	{
-		out.addSection("HEADER");
+		saveSubSection(out,"HEADER","DATASOURCE");
+		/*out.addSection("HEADER");
 		out.addSubSection("DATASOURCE");
 		out.writeProperty("sourceFile", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceFile));
 		out.writeProperty("rawFile", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_rawFile));
 		out.writeProperty("sourceFormat", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceFormat));
-		out.writeProperty("sourceHeaders", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceHeaders));		
+		out.writeProperty("sourceHeaders", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceHeaders));*/		
 	}
 	
 	private void saveGenerate(WriteScriptFile out)

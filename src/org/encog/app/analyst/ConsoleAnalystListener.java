@@ -40,7 +40,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 		this.stopwatch.stop();
 		System.out.println("Task "
 				+ this.currentTask
-				+ " " + (cancel?"completed":"canceled") + ", task elapsed time "
+				+ " " + (cancel?"canceled":"completed") + ", task elapsed time "
 				+ Format.formatTimeSpan((int) (this.stopwatch
 						.getElapsedMilliseconds() / 1000)));
 

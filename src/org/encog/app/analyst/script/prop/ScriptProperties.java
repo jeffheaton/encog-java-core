@@ -9,39 +9,39 @@ import org.encog.util.csv.CSVFormat;
 
 public class ScriptProperties {
 
-	public static final String HEADER_DATASOURCE_sourceFile = "HEADER_DATASOURCE_sourceFile";
-	public static final String HEADER_DATASOURCE_rawFile = "HEADER_DATASOURCE_rawFile";
-	public static final String HEADER_DATASOURCE_sourceFormat = "HEADER_DATASOURCE_sourceFormat";
-	public static final String HEADER_DATASOURCE_sourceHeaders = "HEADER_DATASOURCE_sourceHeaders";
-	public static final String SETUP_CONFIG_maxClassCount = "SETUP_CONFIG_maxClassCount";
-	public static final String SETUP_CONFIG_allowedClasses = "SETUP_CONFIG_allowedClasses";
-	public static final String SETUP_CONFIG_outputHeaders = "SETUP_CONFIG_outputHeaders";
-	public static final String SETUP_CONFIG_inputHeaders = "SETUP_CONFIG_inputHeaders";
-	public static final String SETUP_CONFIG_csvFormat = "SETUP_CONFIG_csvFormat";
-	public static final String SETUP_FILENAMES_FILE_EVAL = "SETUP_FILENAMES_FILE_EVAL";
-	public static final String SETUP_FILENAMES_FILE_NORMALIZE = "SETUP_FILENAMES_FILE_NORMALIZE";
-	public static final String SETUP_FILENAMES_FILE_TRAINSET = "SETUP_FILENAMES_FILE_TRAINSET";
-	public static final String SETUP_FILENAMES_FILE_TRAIN = "SETUP_FILENAMES_FILE_TRAIN";
-	public static final String SETUP_FILENAMES_FILE_EG = "SETUP_FILENAMES_FILE_EG";
-	public static final String SETUP_FILENAMES_FILE_RAW = "SETUP_FILENAMES_FILE_RAW";
-	public static final String SETUP_FILENAMES_FILE_OUTPUT = "SETUP_FILENAMES_FILE_OUTPUT";
-	public static final String SETUP_FILENAMES_FILE_RANDOMIZE = "SETUP_FILENAMES_FILE_RANDOMIZE";
-	public static final String NORMALIZE_CONFIG_sourceFile = "NORMALIZE_CONFIG_sourceFile";
-	public static final String NORMALIZE_CONFIG_targetFile = "NORMALIZE_CONFIG_targetFile";
-	public static final String RANDOMIZE_CONFIG_sourceFile = "RANDOMIZE_CONFIG_sourceFile";
-	public static final String RANDOMIZE_CONFIG_targetFile = "RANDOMIZE_CONFIG_targetFile";
-	public static final String SEGREGATE_CONFIG_sourceFile = "SEGREGATE_CONFIG_sourceFile";
-	public static final String GENERATE_CONFIG_sourceFile = "GENERATE_CONFIG_sourceFile";
-	public static final String GENERATE_CONFIG_targetFile = "GENERATE_CONFIG_targetFile";
-	public static final String GENERATE_CONFIG_input = "GENERATE_CONFIG_input";
-	public static final String GENERATE_CONFIG_ideal = "GENERATE_CONFIG_ideal";
-	public static final String ML_CONFIG_trainingFile = "ML_CONFIG_trainingFile";
-	public static final String ML_CONFIG_evalFile = "ML_CONFIG_evalFile";
-	public static final String ML_CONFIG_resourceFile = "ML_CONFIG_resourceFile";
-	public static final String ML_CONFIG_outputFile = "ML_CONFIG_outputFile";
-	public static final String ML_CONFIG_type = "ML_CONFIG_type";
-	public static final String ML_CONFIG_architecture = "ML_CONFIG_architecture";
-	public static final String ML_CONFIG_resourceName = "ML_CONFIG_resourceName";
+	public static final String HEADER_DATASOURCE_sourceFile = "HEADER:DATASOURCE_sourceFile";
+	public static final String HEADER_DATASOURCE_rawFile = "HEADER:DATASOURCE_rawFile";
+	public static final String HEADER_DATASOURCE_sourceFormat = "HEADER:DATASOURCE_sourceFormat";
+	public static final String HEADER_DATASOURCE_sourceHeaders = "HEADER:DATASOURCE_sourceHeaders";
+	public static final String SETUP_CONFIG_maxClassCount = "SETUP:CONFIG_maxClassCount";
+	public static final String SETUP_CONFIG_allowedClasses = "SETUP:CONFIG_allowedClasses";
+	public static final String SETUP_CONFIG_outputHeaders = "SETUP:CONFIG_outputHeaders";
+	public static final String SETUP_CONFIG_inputHeaders = "SETUP:CONFIG_inputHeaders";
+	public static final String SETUP_CONFIG_csvFormat = "SETUP:CONFIG_csvFormat";
+	public static final String SETUP_FILENAMES_FILE_EVAL = "SETUP:FILENAMES_FILE_EVAL";
+	public static final String SETUP_FILENAMES_FILE_NORMALIZE = "SETUP:FILENAMES_FILE_NORMALIZE";
+	public static final String SETUP_FILENAMES_FILE_TRAINSET = "SETUP:FILENAMES_FILE_TRAINSET";
+	public static final String SETUP_FILENAMES_FILE_TRAIN = "SETUP:FILENAMES_FILE_TRAIN";
+	public static final String SETUP_FILENAMES_FILE_EG = "SETUP:FILENAMES_FILE_EG";
+	public static final String SETUP_FILENAMES_FILE_RAW = "SETUP:FILENAMES_FILE_RAW";
+	public static final String SETUP_FILENAMES_FILE_OUTPUT = "SETUP:FILENAMES_FILE_OUTPUT";
+	public static final String SETUP_FILENAMES_FILE_RANDOMIZE = "SETUP:FILENAMES_FILE_RANDOMIZE";
+	public static final String NORMALIZE_CONFIG_sourceFile = "NORMALIZE:CONFIG_sourceFile";
+	public static final String NORMALIZE_CONFIG_targetFile = "NORMALIZE:CONFIG_targetFile";
+	public static final String RANDOMIZE_CONFIG_sourceFile = "RANDOMIZE:CONFIG_sourceFile";
+	public static final String RANDOMIZE_CONFIG_targetFile = "RANDOMIZE:CONFIG_targetFile";
+	public static final String SEGREGATE_CONFIG_sourceFile = "SEGREGATE:CONFIG_sourceFile";
+	public static final String GENERATE_CONFIG_sourceFile = "GENERATE:CONFIG_sourceFile";
+	public static final String GENERATE_CONFIG_targetFile = "GENERATE:CONFIG_targetFile";
+	public static final String GENERATE_CONFIG_input = "GENERATE:CONFIG_input";
+	public static final String GENERATE_CONFIG_ideal = "GENERATE:CONFIG_ideal";
+	public static final String ML_CONFIG_trainingFile = "ML:CONFIG_trainingFile";
+	public static final String ML_CONFIG_evalFile = "ML:CONFIG_evalFile";
+	public static final String ML_CONFIG_resourceFile = "ML:CONFIG_resourceFile";
+	public static final String ML_CONFIG_outputFile = "ML:CONFIG_outputFile";
+	public static final String ML_CONFIG_type = "ML:CONFIG_type";
+	public static final String ML_CONFIG_architecture = "ML:CONFIG_architecture";
+	public static final String ML_CONFIG_resourceName = "ML:CONFIG_resourceName";
 
 	private final Map<String,Object> data = new HashMap<String,Object>();
 	
@@ -54,6 +54,9 @@ public class ScriptProperties {
 	}
 	
 	public String getPropertyString(String name) {
+		if(!data.containsKey(name)) {
+			return null;
+		}
 		return data.get(name).toString();
 	}
 

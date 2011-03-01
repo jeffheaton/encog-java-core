@@ -39,5 +39,9 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 	public int compareTo(PropertyEntry o) {
 		return this.name.compareTo(o.name);
 	}
+
+	public String getKey() {
+		return section  + "_" + name;
+	}
 	
 }

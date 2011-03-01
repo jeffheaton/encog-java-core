@@ -109,8 +109,8 @@ public class PropertyConstraints {
 	}
 
 	public List<PropertyEntry> getEntries(String section, String subSection) {
-		// TODO Auto-generated method stub
-		return null;
+		String key = section + ":" + subSection;
+		return this.data.get(key);
 	}
 
 }
