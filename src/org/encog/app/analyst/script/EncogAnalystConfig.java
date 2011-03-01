@@ -9,7 +9,6 @@ import org.encog.util.csv.CSVFormat;
 
 public class EncogAnalystConfig {
 	
-	private Map<String,String> filenames = new HashMap<String,String>();
 	private int maxClassSize = 50;
 	private boolean allowIntClasses = true;
 	private boolean allowRealClasses = false;
@@ -111,21 +110,6 @@ public class EncogAnalystConfig {
 				this.allowStringClasses = true;
 			}
 		}
-	}
-	/**
-	 * @return the filenames
-	 */
-	public Map<String, String> getFilenames() {
-		return filenames;
-	}
-	public void setFilename(String key, String value) {
-		this.filenames.put(key, value);
-		
-	}
-	public String getFilename(String file) {
-		if( !this.filenames.containsKey(file))
-			throw new AnalystError("Undefined file: " + file);
-		return this.filenames.get(file);
 	}
 	
 	/**

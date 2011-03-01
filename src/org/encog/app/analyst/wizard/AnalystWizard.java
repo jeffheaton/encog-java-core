@@ -43,20 +43,20 @@ public class AnalystWizard {
 	private void generateSettings(File file)
 	{
 		String train;
-		this.script.getConfig().setFilename(AnalystWizard.FILE_RAW, file.toString());
-		this.script.getConfig().setFilename(AnalystWizard.FILE_NORMALIZE,
+		this.script.getProperties().setFilename(AnalystWizard.FILE_RAW, file.toString());
+		this.script.getProperties().setFilename(AnalystWizard.FILE_NORMALIZE,
 				FileUtil.addFilenameBase(file, "_norm").toString());
-		this.script.getConfig().setFilename(AnalystWizard.FILE_RANDOM,
+		this.script.getProperties().setFilename(AnalystWizard.FILE_RANDOM,
 				FileUtil.addFilenameBase(file, "_random").toString());
-		this.script.getConfig().setFilename(AnalystWizard.FILE_OUTPUT,
+		this.script.getProperties().setFilename(AnalystWizard.FILE_OUTPUT,
 				FileUtil.addFilenameBase(file, "_output").toString());
-		this.script.getConfig().setFilename(AnalystWizard.FILE_TRAIN,
+		this.script.getProperties().setFilename(AnalystWizard.FILE_TRAIN,
 				train = FileUtil.addFilenameBase(file, "_train").toString());
-		this.script.getConfig().setFilename(AnalystWizard.FILE_EVAL,
+		this.script.getProperties().setFilename(AnalystWizard.FILE_EVAL,
 				FileUtil.addFilenameBase(file, "_eval").toString());
-		this.script.getConfig().setFilename(AnalystWizard.FILE_TRAINSET,
+		this.script.getProperties().setFilename(AnalystWizard.FILE_TRAINSET,
 				FileUtil.forceExtension(train, "egb"));
-		this.script.getConfig().setFilename(AnalystWizard.FILE_EG,
+		this.script.getProperties().setFilename(AnalystWizard.FILE_EG,
 				FileUtil.forceExtension(file.toString(), "eg"));
 		
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, AnalystWizard.FILE_RAW);
@@ -252,7 +252,7 @@ public class AnalystWizard {
 	public void reanalyze() {
 		String rawID = this.script.getProperties().getPropertyFile(ScriptProperties.HEADER_DATASOURCE_rawFile);
 		
-		String rawFilename = this.script.getConfig().getFilename(rawID);
+		String rawFilename = this.script.getProperties().getFilename(rawID);
 		
 		this.analyst.analyze(new File(rawFilename), 
 				this.script.getConfig().isInputHeaders(), 

@@ -76,11 +76,11 @@ public class ScriptLoad {
 	private void handleFilenames(List<String> list) {
 		
 		Map<String,String> prop = handleProperties(list);
-		this.script.getConfig().getFilenames().clear();
+		this.script.getProperties().clearFilenames();
 		
 		for(Entry<String, String> e : prop.entrySet() )
 		{
-			this.script.getConfig().setFilename(e.getKey(), e.getValue());
+			this.script.getProperties().setFilename(e.getKey(), e.getValue());
 		}
 	}
 	

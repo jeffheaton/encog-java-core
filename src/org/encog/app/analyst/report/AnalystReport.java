@@ -108,9 +108,9 @@ public class AnalystReport {
 		report.header("Name");
 		report.header("Filename");
 		report.endRow();
-		for( String key : this.analyst.getScript().getConfig().getFilenames().keySet() )
+		for( String key : this.analyst.getScript().getProperties().getFilenames() )
 		{
-			String value = this.analyst.getScript().getConfig().getFilenames().get(key);
+			String value = this.analyst.getScript().getProperties().getFilename(key);
 			report.beginRow();
 			report.cell(key);
 			report.cell(value);

@@ -2,9 +2,12 @@ package org.encog.app.analyst.script.prop;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.util.csv.CSVFormat;
 
 public class ScriptProperties {
@@ -43,49 +46,86 @@ public class ScriptProperties {
 	public static final String ML_CONFIG_architecture = "ML:CONFIG_architecture";
 	public static final String ML_CONFIG_resourceName = "ML:CONFIG_resourceName";
 
-	private final Map<String,Object> data = new HashMap<String,Object>();
-	
-	public void setProperty(String name,String value) {
+	private final Map<String, Object> data = new HashMap<String, Object>();
+
+	public void setProperty(String name, String value) {
 		data.put(name, value);
 	}
-	
+
 	public Object getProperty(String name) {
 		return data.get(name);
 	}
-	
+
 	public String getPropertyString(String name) {
-		if(!data.containsKey(name)) {
+		if (!data.containsKey(name)) {
 			return null;
 		}
 		return data.get(name).toString();
 	}
 
-	public void setProperty(String name,
-			CSVFormat format) {
+	public void setProperty(String name, CSVFormat format) {
 		data.put(name, format);
-		
+
 	}
 
 	public void setProperty(String name, boolean b) {
-		data.put(name, b);		
+		data.put(name, b);
 	}
 
 	public void setProperty(String name, File analyzeFile) {
 		data.put(name, analyzeFile);
-		
+
 	}
 
 	public void setProperty(String name, URL url) {
 		data.put(name, url);
-		
+
 	}
 
 	public String getPropertyFile(String name) {
-		return (String)data.get(name);
-		
+		return (String) data.get(name);
+
 	}
 
 	public URL getPropertyURL(String name) {
-		return (URL)data.get(name);
+		return (URL) data.get(name);
+	}
+
+	public void clearFilenames() {
+		Object[] array = this.data.keySet().toArray();
+		for (int i = 0; i < array.length; i++) {
+			String key = (String) array[i];
+			if (key.startsWith("SETUP:FILENAMES")) {
+				this.data.remove(key);
+			}
+		}
+	}
+
+	public List<String> getFilenames() {
+		List<String> result = new ArrayList<String>();
+		for (String key : this.data.keySet()) {
+			if (key.startsWith("SETUP:FILENAMES")) {
+				int index = key.indexOf('_');
+				if (index == -1) {
+					result.add(key.substring(index + 1));
+				}
+			}
+		}
+		return result;
+	}
+	
+	public void setFilename(String key, String value) {
+		String key2 = "SETUP:FILENAMES_" + key;
+		this.data.put(key2, value);
+		
+	}
+	public String getFilename(String file) {
+		String key2 = "SETUP:FILENAMES_" + file;
+		
+		if( !this.data.containsKey(key2) ) {
+			throw new AnalystError("Undefined file: " + file);
+		}
+		
+		return (String)this.data.get(key2);
 	}
 }

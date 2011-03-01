@@ -61,7 +61,7 @@ public class EncogAnalyst {
 	private QuantTask currentQuantTask = null;
 
 	public void analyze(File file, boolean headers, CSVFormat format) {
-		script.getConfig().setFilename(AnalystWizard.FILE_RAW, file.toString());
+		script.getProperties().setFilename(AnalystWizard.FILE_RAW, file.toString());
 		script.getConfig().setCSVFormat(format);
 		script.getConfig().setInputHeaders(headers);
 		PerformAnalysis a = new PerformAnalysis(script, file.toString(),
@@ -140,9 +140,9 @@ public class EncogAnalyst {
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
 
 		// get filenames
-		String sourceFile = this.script.getConfig().getFilename(
+		String sourceFile = this.script.getProperties().getFilename(
 				this.script.getNormalize().getSourceFile());
-		String targetFile = this.script.getConfig().getFilename(
+		String targetFile = this.script.getProperties().getFilename(
 				this.script.getNormalize().getTargetFile());
 
 		// prepare to normalize
@@ -170,9 +170,9 @@ public class EncogAnalyst {
 		this.script.markGenerated(this.script.getRandomize().getTargetFile());
 
 		// get filenames
-		String sourceFile = this.script.getConfig().getFilename(
+		String sourceFile = this.script.getProperties().getFilename(
 				this.script.getRandomize().getSourceFile());
-		String targetFile = this.script.getConfig().getFilename(
+		String targetFile = this.script.getProperties().getFilename(
 				this.script.getRandomize().getTargetFile());
 
 		// prepare to normalize
@@ -191,7 +191,7 @@ public class EncogAnalyst {
 	public boolean segregate() {
 
 		// get filenames		
-		String inputFile = this.script.getConfig().getFilename(
+		String inputFile = this.script.getProperties().getFilename(
 				this.script.getSegregate().getSourceFile());
 
 		// prepare to segregate
@@ -201,7 +201,7 @@ public class EncogAnalyst {
 		setCurrentQuantTask(seg);
 		for (AnalystSegregateTarget target : this.script.getSegregate()
 				.getSegregateTargets()) {
-			String filename = this.script.getConfig().getFilename(
+			String filename = this.script.getProperties().getFilename(
 					target.getFile());
 			seg.getTargets().add(
 					new SegregateTargetPercent(filename, target.getPercent()));
@@ -222,9 +222,9 @@ public class EncogAnalyst {
 		this.script.markGenerated(this.script.getNormalize().getTargetFile());
 
 		// get filenames
-		String sourceFile = this.script.getConfig().getFilename(
+		String sourceFile = this.script.getProperties().getFilename(
 				this.script.getGenerate().getSourceFile());
-		String targetFile = this.script.getConfig().getFilename(
+		String targetFile = this.script.getProperties().getFilename(
 				this.script.getGenerate().getTargetFile());
 		int input = this.script.getGenerate().getInput();
 		int ideal = this.script.getGenerate().getIdeal();
@@ -239,9 +239,9 @@ public class EncogAnalyst {
 	public boolean create() {
 
 		// get filenames
-		String trainingFile = this.script.getConfig().getFilename(
+		String trainingFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getTrainingFile());
-		String resourceFile = this.script.getConfig().getFilename(
+		String resourceFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
 		String type = this.script.getMachineLearning().getMLType();
@@ -269,9 +269,9 @@ public class EncogAnalyst {
 	public boolean train() {
 
 		// get filenames
-		String trainingFile = this.script.getConfig().getFilename(
+		String trainingFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getTrainingFile());
-		String resourceFile = this.script.getConfig().getFilename(
+		String resourceFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
 
@@ -323,13 +323,13 @@ public class EncogAnalyst {
 	public void evaluateRaw() {
 
 		// get filenames
-		String evalFile = this.script.getConfig().getFilename(
+		String evalFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getEvalFile());
-		String resourceFile = this.script.getConfig().getFilename(
+		String resourceFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
 
-		String outputFile = this.script.getConfig().getFilename(
+		String outputFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getOutputFile());
 
 		EncogMemoryCollection encog = new EncogMemoryCollection();
@@ -350,13 +350,13 @@ public class EncogAnalyst {
 	public boolean evaluate() {
 
 		// get filenames
-		String evalFile = this.script.getConfig().getFilename(
+		String evalFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getEvalFile());
-		String resourceFile = this.script.getConfig().getFilename(
+		String resourceFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getResourceFile());
 		String resource = this.script.getMachineLearning().getResourceName();
 
-		String outputFile = this.script.getConfig().getFilename(
+		String outputFile = this.script.getProperties().getFilename(
 				this.script.getMachineLearning().getOutputFile());
 
 		EncogMemoryCollection encog = new EncogMemoryCollection();
@@ -511,7 +511,7 @@ public class EncogAnalyst {
 
 		String rawFile = this.script.getProperties().getPropertyFile(
 				ScriptProperties.HEADER_DATASOURCE_rawFile);
-		File rawFilename = new File(this.script.getConfig()
+		File rawFilename = new File(this.script.getProperties()
 				.getFilename(rawFile));
 
 		if (!rawFilename.exists())

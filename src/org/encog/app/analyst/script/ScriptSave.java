@@ -31,8 +31,11 @@ public class ScriptSave {
 		out.writeProperty("inputHeaders", config.isInputHeaders());
 		out.writeProperty("csvFormat", config.getCSVFormat());
 		out.addSubSection("FILENAMES");
-		for (String key : config.getFilenames().keySet()) {
-			String value = config.getFilenames().get(key);
+		
+		List<String> list = this.script.getProperties().getFilenames();
+		
+		for (String key : list) {
+			String value = this.script.getProperties().getFilename(key);
 			out.writeProperty(key, value);
 		}
 	}
