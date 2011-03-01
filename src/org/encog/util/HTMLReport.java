@@ -105,4 +105,30 @@ public class HTMLReport {
 		
 		
 	}
+	
+	public void h2(String title) {
+		text.append("<h2>");
+		text.append(title);
+		text.append("</h2>");
+	}
+
+	public void h3(String title) {
+		text.append("<h3>");
+		text.append(title);
+		text.append("</h3>");
+	}
+
+	public void beginList() {
+		text.append("<ul>");		
+	}
+
+	public void listItem(String str) {
+		text.append("<li>");
+		text.append(str);
+		
+	}
+
+	public void endList() {
+		text.append("</ul>");		
+	}
 }
