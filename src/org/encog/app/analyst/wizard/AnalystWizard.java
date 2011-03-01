@@ -62,8 +62,9 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.RANDOMIZE_CONFIG_sourceFile , AnalystWizard.FILE_RAW);
 		this.script.getProperties().setProperty(ScriptProperties.RANDOMIZE_CONFIG_targetFile , AnalystWizard.FILE_RANDOM);
 		this.script.getProperties().setProperty(ScriptProperties.SEGREGATE_CONFIG_sourceFile , AnalystWizard.FILE_RANDOM);
-		this.script.getNormalize().setSourceFile(AnalystWizard.FILE_TRAIN);
-		this.script.getNormalize().setTargetFile(AnalystWizard.FILE_NORMALIZE);
+		
+		this.script.getProperties().setProperty(ScriptProperties.NORMALIZE_CONFIG_sourceFile , AnalystWizard.FILE_TRAIN);
+		this.script.getProperties().setProperty(ScriptProperties.NORMALIZE_CONFIG_targetFile , AnalystWizard.FILE_NORMALIZE);
 		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_sourceFile, AnalystWizard.FILE_NORMALIZE);
 		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_targetFile, AnalystWizard.FILE_TRAINSET);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_trainingFile, AnalystWizard.FILE_TRAINSET);

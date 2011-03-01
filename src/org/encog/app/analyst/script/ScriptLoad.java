@@ -211,10 +211,12 @@ public class ScriptLoad {
 	}
 	
 	private void handleNormalizeConfig(List<String> list) {
-		Map<String, String> prop = this.handleProperties(list);
+		loadSubSection(list,"NORMALIZE","CONFIG");
+		
+		/*Map<String, String> prop = this.handleProperties(list);
 		
 		this.script.getNormalize().setSourceFile(prop.get("sourceFile"));
-		this.script.getNormalize().setTargetFile(prop.get("targetFile"));
+		this.script.getNormalize().setTargetFile(prop.get("targetFile"));*/
 	}
 	
 	private void loadSubSection(List<String> list, String section, String subSection) {

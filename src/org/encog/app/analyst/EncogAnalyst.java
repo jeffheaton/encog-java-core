@@ -136,16 +136,17 @@ public class EncogAnalyst {
 	}
 
 	public boolean normalize() {
-		//this.report.reportPhase(0, 0, "Normalizing");
-		// mark generated
-		this.script.markGenerated(this.script.getNormalize().getTargetFile());
-
+		
 		// get filenames
-		String sourceFile = this.script.getProperties().getFilename(
-				this.script.getNormalize().getSourceFile());
-		String targetFile = this.script.getProperties().getFilename(
-				this.script.getNormalize().getTargetFile());
+		String sourceID = this.script.getProperties().getPropertyString(ScriptProperties.NORMALIZE_CONFIG_sourceFile);
+		String targetID = this.script.getProperties().getPropertyString(ScriptProperties.NORMALIZE_CONFIG_targetFile);
+		
+		String sourceFile = this.script.getProperties().getFilename(sourceID);
+		String targetFile = this.script.getProperties().getFilename(targetID);
 
+		// mark generated
+		this.script.markGenerated(targetID);
+		
 		// prepare to normalize
 		NormalizeCSV norm = new NormalizeCSV();
 		setCurrentQuantTask(norm);
@@ -154,8 +155,7 @@ public class EncogAnalyst {
 				.getNormalizedFields();
 		NormalizationStats stats = new NormalizationStats(normFields);
 
-		boolean headers = this.script.expectInputHeaders(this.script
-				.getNormalize().getSourceFile());
+		boolean headers = this.script.expectInputHeaders(sourceID);
 		norm.analyze(sourceFile, headers, 
 				this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat),
 				stats);
@@ -218,15 +218,16 @@ public class EncogAnalyst {
 
 	public boolean generate() {
 
-		// mark generated
-		this.script.markGenerated(this.script.getNormalize().getTargetFile());
-
 		// get filenames
 		String sourceID = this.script.getProperties().getPropertyString(ScriptProperties.GENERATE_CONFIG_sourceFile);
 		String targetID = this.script.getProperties().getPropertyString(ScriptProperties.GENERATE_CONFIG_targetFile);
 		
 		String sourceFile = this.script.getProperties().getFilename(sourceID);
 		String targetFile = this.script.getProperties().getFilename(targetID);
+		
+		// mark generated
+		this.script.markGenerated(targetID);
+		
 		int input = this.script.getProperties().getPropertyInt(ScriptProperties.GENERATE_CONFIG_input);
 		int ideal = this.script.getProperties().getPropertyInt(ScriptProperties.GENERATE_CONFIG_ideal);
 
@@ -345,8 +346,7 @@ public class EncogAnalyst {
 		encog.load(resourceFile);
 		MLRegression method = (MLRegression) encog.find(resource);
 
-		boolean headers = this.script.expectInputHeaders(this.script
-				.getNormalize().getSourceFile());
+		boolean headers = this.script.expectInputHeaders(evalID);
 
 		EvaluateCSV eval = new EvaluateCSV();
 		setCurrentQuantTask(eval);
@@ -375,8 +375,7 @@ public class EncogAnalyst {
 		encog.load(resourceFile);
 		MLRegression method = (MLRegression) encog.find(resource);
 
-		boolean headers = this.script.expectInputHeaders(this.script
-				.getNormalize().getSourceFile());
+		boolean headers = this.script.expectInputHeaders(evalID);
 
 		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
 		setCurrentQuantTask(eval);
