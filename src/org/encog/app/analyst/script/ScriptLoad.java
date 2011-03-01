@@ -253,9 +253,11 @@ public class ScriptLoad {
 	}
 	
 	private void handleSegregateConfig(List<String> list) {
-		Map<String, String> prop = this.handleProperties(list);
+		loadSubSection(list,"SEGREGATE","CONFIG");
 		
-		this.script.getSegregate().setSourceFile(prop.get("sourceFile"));
+		/*Map<String, String> prop = this.handleProperties(list);
+		
+		this.script.getSegregate().setSourceFile(prop.get("sourceFile"));*/
 	}	
 	
 	private void handleSegregateFiles(List<String> list) {

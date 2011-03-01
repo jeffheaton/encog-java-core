@@ -97,10 +97,7 @@ public class ScriptSave {
 	
 	private void saveSegregate(WriteScriptFile out)
 	{
-		out.addSection("SEGREGATE");
-		out.addSubSection("CONFIG");
-		out.writeProperty("sourceFile", this.script.getSegregate()
-				.getSourceFile());
+		saveSubSection(out,"SEGREGATE","CONFIG");
 		out.addSubSection("FILES");
 		out.addColumn("file");
 		out.addColumn("percent");

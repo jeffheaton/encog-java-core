@@ -189,13 +189,13 @@ public class EncogAnalyst {
 
 	public boolean segregate() {
 
-		// get filenames		
-		String inputFile = this.script.getProperties().getFilename(
-				this.script.getSegregate().getSourceFile());
+		// get filenames
+		String sourceID = this.script.getProperties().getPropertyString(ScriptProperties.SEGREGATE_CONFIG_sourceFile);
+		
+		String sourceFile = this.script.getProperties().getFilename(sourceID);
 
 		// prepare to segregate
-		boolean headers = this.script.expectInputHeaders(this.script
-				.getSegregate().getSourceFile());
+		boolean headers = this.script.expectInputHeaders(sourceID);
 		SegregateCSV seg = new SegregateCSV();
 		setCurrentQuantTask(seg);
 		for (AnalystSegregateTarget target : this.script.getSegregate()
@@ -207,8 +207,9 @@ public class EncogAnalyst {
 			// mark generated
 			this.script.markGenerated(target.getFile());
 		}
+		
 		seg.setReport(new AnalystReportBridge(this));
-		seg.analyze(inputFile, headers, this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+		seg.analyze(sourceFile, headers, this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 
 		seg.process();
 		setCurrentQuantTask(null);

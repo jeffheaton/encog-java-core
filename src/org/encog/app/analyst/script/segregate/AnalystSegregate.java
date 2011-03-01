@@ -4,22 +4,7 @@ package org.encog.app.analyst.script.segregate;
 public class AnalystSegregate {
 	
 	private AnalystSegregateTarget[] segregateTargets;
-	private String sourceFile = "";
 		
-	/**
-	 * @return the sourceFile
-	 */
-	public String getSourceFile() {
-		return sourceFile;
-	}
-
-	/**
-	 * @param sourceFile the sourceFile to set
-	 */
-	public void setSourceFile(String sourceFile) {
-		this.sourceFile = sourceFile;
-	}
-
 	/**
 	 * @return the segregateTargets
 	 */
