@@ -113,7 +113,8 @@ public class ScriptSave {
 	
 	private void saveMachineLearning(WriteScriptFile out)
 	{
-		out.addSection("ML");
+		saveSubSection(out,"ML","CONFIG");
+		/*out.addSection("ML");
 		out.addSubSection("CONFIG");
 		out.writeProperty("trainingFile", this.script.getMachineLearning()
 				.getTrainingFile());
@@ -128,7 +129,7 @@ public class ScriptSave {
 		out.writeProperty("type",this.script.getMachineLearning().getMLType());		
 		out.writeProperty("architecture",this.script.getMachineLearning().getMLArchitecture());
 		out.writeProperty("resourceName",this.script.getMachineLearning().getResourceName());
-		
+		*/
 	}
 
 	private void saveData(WriteScriptFile out) {

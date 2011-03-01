@@ -67,10 +67,11 @@ public class AnalystWizard {
 		
 		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_sourceFile, AnalystWizard.FILE_NORMALIZE);
 		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_targetFile, AnalystWizard.FILE_TRAINSET);
-		this.script.getMachineLearning().setTrainingFile(AnalystWizard.FILE_TRAINSET);
-		this.script.getMachineLearning().setResourceFile(AnalystWizard.FILE_EG);
-		this.script.getMachineLearning().setOutputFile(AnalystWizard.FILE_OUTPUT);
-		this.script.getMachineLearning().setEvalFile(AnalystWizard.FILE_EVAL);
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_trainingFile, AnalystWizard.FILE_TRAINSET);
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceFile, AnalystWizard.FILE_EG);
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_outputFile, AnalystWizard.FILE_OUTPUT);
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);		
 	}
 	
 	private void generateNormalizedFields(File file) {
@@ -166,15 +167,15 @@ public class AnalystWizard {
 	
 	private void generateFeedForward(int inputColumns) {
 		int hidden = (int)(((double)inputColumns)*1.5);
-		this.script.getMachineLearning().setMLType(MLMethodFactory.TYPE_FEEDFORWARD);
-		this.script.getMachineLearning().setMLArchitecture("?B->TANH->"+hidden+"B->TANH->?");
-		this.script.getMachineLearning().setResourceName("ml");
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_FEEDFORWARD);
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?B->TANH->"+hidden+"B->TANH->?");
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
 	}
 	
 	private void generateSVM(int inputColumns) {
-		this.script.getMachineLearning().setMLType(MLMethodFactory.TYPE_SVM);
-		this.script.getMachineLearning().setMLArchitecture("?->C(type=new,kernel=gaussian)->?");
-		this.script.getMachineLearning().setResourceName("ml");
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SVM);
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?->C(type=new,kernel=gaussian)->?");
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
 	}
 	
 	public void generateTasks()

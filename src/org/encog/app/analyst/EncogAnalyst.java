@@ -240,13 +240,16 @@ public class EncogAnalyst {
 	public boolean create() {
 
 		// get filenames
+		String trainingID = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_trainingFile);
+		String resourceID = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
+		
 		String trainingFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getTrainingFile());
+				trainingID);
 		String resourceFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getResourceFile());
-		String resource = this.script.getMachineLearning().getResourceName();
-		String type = this.script.getMachineLearning().getMLType();
-		String arch = this.script.getMachineLearning().getMLArchitecture();
+				resourceID);
+		String resource = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
+		String type = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_type);
+		String arch = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_architecture);
 
 		EncogEGBFile egb = new EncogEGBFile(new File(trainingFile));
 		egb.open();
@@ -270,11 +273,14 @@ public class EncogAnalyst {
 	public boolean train() {
 
 		// get filenames
+		String trainingID = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_trainingFile);
+		String resourceID = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
+		
 		String trainingFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getTrainingFile());
+				trainingID);
 		String resourceFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getResourceFile());
-		String resource = this.script.getMachineLearning().getResourceName();
+				resourceID);
+		String resource = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
 
 		NeuralDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
 
@@ -324,14 +330,17 @@ public class EncogAnalyst {
 	public void evaluateRaw() {
 
 		// get filenames
+		String evalID = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_evalFile);
+		String resourceID = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
+		
 		String evalFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getEvalFile());
+				evalID);
 		String resourceFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getResourceFile());
-		String resource = this.script.getMachineLearning().getResourceName();
+				resourceID);
+		String resource = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
 
 		String outputFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getOutputFile());
+				this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
 
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.load(resourceFile);
@@ -351,14 +360,17 @@ public class EncogAnalyst {
 	public boolean evaluate() {
 
 		// get filenames
+		String evalID = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_evalFile);
+		String resourceID = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
+		
 		String evalFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getEvalFile());
+				evalID);
 		String resourceFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getResourceFile());
-		String resource = this.script.getMachineLearning().getResourceName();
+				resourceID);
+		String resource = this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
 
 		String outputFile = this.script.getProperties().getFilename(
-				this.script.getMachineLearning().getOutputFile());
+				this.script.getProperties().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
 
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.load(resourceFile);

@@ -7,6 +7,7 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.quant.normalize.ClassItem;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.engine.util.Format;
@@ -95,10 +96,15 @@ public class AnalystReport {
 		report.header("Value");
 		report.endRow();
 		
-		report.tablePair("Type",this.analyst.getScript().getMachineLearning().getMLType());
-		report.tablePair("Architecture",this.analyst.getScript().getMachineLearning().getMLArchitecture());
-		report.tablePair("Resource File",this.analyst.getScript().getMachineLearning().getResourceFile());
-		report.tablePair("Resource Name",this.analyst.getScript().getMachineLearning().getResourceName());
+		String t = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_type);
+		String a = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_architecture);
+		String rf = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
+		String rn = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
+		
+		report.tablePair("Type",t);
+		report.tablePair("Architecture",a);
+		report.tablePair("Resource File",rf);
+		report.tablePair("Resource Name",rn);
 		report.endTable();
 		
 		

@@ -239,7 +239,8 @@ public class ScriptLoad {
 	}
 	
 	private void handleMachineLearningConfig(List<String> list) {
-		Map<String, String> prop = this.handleProperties(list);
+		loadSubSection(list,"ML","CONFIG");
+/*		Map<String, String> prop = this.handleProperties(list);
 		
 		this.script.getMachineLearning().setTrainingFile(prop.get("trainingFile"));
 		this.script.getMachineLearning().setEvalFile(prop.get("evalFile"));
@@ -247,7 +248,7 @@ public class ScriptLoad {
 		this.script.getMachineLearning().setOutputFile(prop.get("outputFile"));
 		this.script.getMachineLearning().setMLType(prop.get("type"));
 		this.script.getMachineLearning().setMLArchitecture(prop.get("architecture"));
-		this.script.getMachineLearning().setResourceName(prop.get("resourceName"));
+		this.script.getMachineLearning().setResourceName(prop.get("resourceName"));*/
 	}
 	
 	private void handleSegregateConfig(List<String> list) {
