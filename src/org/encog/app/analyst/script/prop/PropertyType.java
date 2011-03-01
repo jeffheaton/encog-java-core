@@ -1,4 +1,4 @@
-package org.encog.app.analyst.script.ScriptProperties;
+package org.encog.app.analyst.script.prop;
 
 public enum PropertyType {
 	TypeBoolean,

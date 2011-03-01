@@ -7,10 +7,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
 import org.encog.app.analyst.script.generate.AnalystGenerate;
 import org.encog.app.analyst.script.ml.AnalystMachineLearning;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.randomize.AnalystRandomize;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 import org.encog.app.analyst.script.task.AnalystTask;

@@ -18,7 +18,7 @@ import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.EncogAnalystConfig;
-import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.util.AnalystReportBridge;

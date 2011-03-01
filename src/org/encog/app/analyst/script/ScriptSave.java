@@ -4,9 +4,10 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map.Entry;
 
-import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
+import org.encog.app.analyst.script.prop.PropertyConstraints;
+import org.encog.app.analyst.script.prop.PropertyEntry;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizedField;
@@ -45,6 +46,17 @@ public class ScriptSave {
 				.getSourceFile());
 		out.writeProperty("targetFile", this.script.getRandomize()
 				.getTargetFile());		
+	}
+	
+	private void saveSubSection(WriteScriptFile out, String section, String subSection)
+	{
+		out.addSection(section);
+		out.addSubSection(subSection);
+		List<PropertyEntry> list = PropertyConstraints.getInstance().getEntries(section,subSection);
+		Collections.sort(list);
+		for(PropertyEntry entry:list) {
+			//Object value = 
+		}
 	}
 	
 	private void saveInformation(WriteScriptFile out)

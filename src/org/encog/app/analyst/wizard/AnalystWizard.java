@@ -8,7 +8,7 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.EncogAnalystConfig;
-import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;

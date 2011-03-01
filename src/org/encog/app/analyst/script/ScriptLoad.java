@@ -13,7 +13,7 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
-import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
+import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;

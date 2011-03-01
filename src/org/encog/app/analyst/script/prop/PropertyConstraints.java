@@ -1,4 +1,4 @@
-package org.encog.app.analyst.script.ScriptProperties;
+package org.encog.app.analyst.script.prop;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,7 +48,7 @@ public class PropertyConstraints {
 	public final String ML_CONFIG_architecture = "ML_CONFIG_architecture";
 	public final String ML_CONFIG_resourceName = "ML_CONFIG_resourceName";
 
-	private PropertyConstraints instance;
+	private static PropertyConstraints instance;
 	private final Map<String,List<PropertyEntry>> data = new HashMap<String,List<PropertyEntry>>();
 
 	private PropertyConstraints() {
@@ -100,12 +100,17 @@ public class PropertyConstraints {
 		}
 	}
 
-	public PropertyConstraints getInstance() {
+	public static PropertyConstraints getInstance() {
 		if (instance == null) {
-			this.instance = new PropertyConstraints();
+			instance = new PropertyConstraints();
 		}
 
-		return this.instance;
+		return instance;
+	}
+
+	public List<PropertyEntry> getEntries(String section, String subSection) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -1,6 +1,6 @@
-package org.encog.app.analyst.script.ScriptProperties;
+package org.encog.app.analyst.script.prop;
 
-public class PropertyEntry {
+public class PropertyEntry implements Comparable<PropertyEntry> {
 	
 	private final PropertyType entryType;
 	private final String name;
@@ -33,6 +33,11 @@ public class PropertyEntry {
 	 */
 	public String getSection() {
 		return section;
+	}
+
+	@Override
+	public int compareTo(PropertyEntry o) {
+		return this.name.compareTo(o.name);
 	}
 	
 }
