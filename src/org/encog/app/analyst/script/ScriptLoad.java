@@ -242,13 +242,18 @@ public class ScriptLoad {
 		this.script.getNormalize().setTargetFile(prop.get("targetFile"));
 	}
 	
-	private void handleHeaderDataSource(List<String> list) {
+	private void loadSubSection(List<String> list, String section, String subSection) {
 		Map<String, String> prop = this.handleProperties(list);
 		
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFile, prop.get("sourceFile"));
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, prop.get("rawFile"));
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFormat, prop.get("sourceFormat"));
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceHeaders, prop.get("sourceHeaders"));
+		for(String name: prop.keySet()) {
+			String key = section + ":" + subSection + "_" + name;
+			String value = prop.get(key);
+			this.script.getProperties().setProperty(key, value);
+		}		
+	}
+	
+	private void handleHeaderDataSource(List<String> list) {
+		loadSubSection(list,"HEADER","DATASOURCE");
 	}
 	
 	private void handleRandomizeConfig(List<String> list) {
