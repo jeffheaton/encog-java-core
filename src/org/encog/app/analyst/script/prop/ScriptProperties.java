@@ -1,6 +1,7 @@
 package org.encog.app.analyst.script.prop;
 
 import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,14 +22,6 @@ public class ScriptProperties {
 	public static final String SETUP_CONFIG_outputHeaders = "SETUP:CONFIG_outputHeaders";
 	public static final String SETUP_CONFIG_inputHeaders = "SETUP:CONFIG_inputHeaders";
 	public static final String SETUP_CONFIG_csvFormat = "SETUP:CONFIG_csvFormat";
-	public static final String SETUP_FILENAMES_FILE_EVAL = "SETUP:FILENAMES_FILE_EVAL";
-	public static final String SETUP_FILENAMES_FILE_NORMALIZE = "SETUP:FILENAMES_FILE_NORMALIZE";
-	public static final String SETUP_FILENAMES_FILE_TRAINSET = "SETUP:FILENAMES_FILE_TRAINSET";
-	public static final String SETUP_FILENAMES_FILE_TRAIN = "SETUP:FILENAMES_FILE_TRAIN";
-	public static final String SETUP_FILENAMES_FILE_EG = "SETUP:FILENAMES_FILE_EG";
-	public static final String SETUP_FILENAMES_FILE_RAW = "SETUP:FILENAMES_FILE_RAW";
-	public static final String SETUP_FILENAMES_FILE_OUTPUT = "SETUP:FILENAMES_FILE_OUTPUT";
-	public static final String SETUP_FILENAMES_FILE_RANDOMIZE = "SETUP:FILENAMES_FILE_RANDOMIZE";
 	public static final String NORMALIZE_CONFIG_sourceFile = "NORMALIZE:CONFIG_sourceFile";
 	public static final String NORMALIZE_CONFIG_targetFile = "NORMALIZE:CONFIG_targetFile";
 	public static final String RANDOMIZE_CONFIG_sourceFile = "RANDOMIZE:CONFIG_sourceFile";
@@ -46,7 +39,7 @@ public class ScriptProperties {
 	public static final String ML_CONFIG_architecture = "ML:CONFIG_architecture";
 	public static final String ML_CONFIG_resourceName = "ML:CONFIG_resourceName";
 
-	private final Map<String, Object> data = new HashMap<String, Object>();
+	private final Map<String, String> data = new HashMap<String, String>();
 
 	public void setProperty(String name, String value) {
 		data.put(name, value);
@@ -64,21 +57,25 @@ public class ScriptProperties {
 	}
 
 	public void setProperty(String name, CSVFormat format) {
-		data.put(name, format);
-
+		
+		if( format.getDecimal()=='.' ) {
+			data.put(name, "decpnt");
+		} else if( format.getDecimal()==',' ) {
+			data.put(name, "deccomma");
+		}
 	}
 
 	public void setProperty(String name, boolean b) {
-		data.put(name, b);
+		data.put(name, b?"t":"f");
 	}
 
 	public void setProperty(String name, File analyzeFile) {
-		data.put(name, analyzeFile);
+		data.put(name, analyzeFile.toString());
 
 	}
 
 	public void setProperty(String name, URL url) {
-		data.put(name, url);
+		data.put(name, url.toExternalForm());
 
 	}
 
@@ -86,9 +83,25 @@ public class ScriptProperties {
 		return (String) data.get(name);
 
 	}
+	
+	public CSVFormat getPropertyFormat(String name) {
+		String value = data.get(name);
+		
+		if( value.equals("deccomma") ) {
+			return CSVFormat.DECIMAL_COMMA;
+		} else if( value.equals("deccomma") ) {
+			return CSVFormat.DECIMAL_POINT;
+		} else {
+			return null;
+		}
+	}
 
 	public URL getPropertyURL(String name) {
-		return (URL) data.get(name);
+		try {
+			return new URL(data.get(name));
+		} catch (MalformedURLException e) {
+			throw new AnalystError(e);
+		}
 	}
 
 	public void clearFilenames() {
