@@ -22,14 +22,6 @@ public class ScriptSave {
 
 	private void saveConfig(WriteScriptFile out) {
 		saveSubSection(out,"SETUP","CONFIG");
-		
-		/*out.addSection("SETUP");
-		out.addSubSection("CONFIG");
-		out.writeProperty("maxClassCount", config.getMaxClassSize());
-		out.writeProperty("allowedClasses", config.getAllowedClasses());
-		out.writeProperty("outputHeaders", config.isOutputHeaders());
-		out.writeProperty("inputHeaders", config.isInputHeaders());
-		out.writeProperty("csvFormat", config.getCSVFormat());*/
 		out.addSubSection("FILENAMES");
 		
 		List<String> list = this.script.getProperties().getFilenames();
@@ -44,13 +36,6 @@ public class ScriptSave {
 	private void saveRandomize(WriteScriptFile out)
 	{
 		saveSubSection(out,"RANDOMIZE","CONFIG");
-		
-		/*out.addSection("RANDOMIZE");
-		out.addSubSection("CONFIG");
-		out.writeProperty("sourceFile", this.script.getRandomize()
-				.getSourceFile());
-		out.writeProperty("targetFile", this.script.getRandomize()
-				.getTargetFile());*/		
 	}
 	
 	private void saveSubSection(WriteScriptFile out, String section, String subSection)

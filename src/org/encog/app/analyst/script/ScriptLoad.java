@@ -212,11 +212,6 @@ public class ScriptLoad {
 	
 	private void handleNormalizeConfig(List<String> list) {
 		loadSubSection(list,"NORMALIZE","CONFIG");
-		
-		/*Map<String, String> prop = this.handleProperties(list);
-		
-		this.script.getNormalize().setSourceFile(prop.get("sourceFile"));
-		this.script.getNormalize().setTargetFile(prop.get("targetFile"));*/
 	}
 	
 	private void loadSubSection(List<String> list, String section, String subSection) {
@@ -235,31 +230,14 @@ public class ScriptLoad {
 	
 	private void handleRandomizeConfig(List<String> list) {
 		loadSubSection(list,"RANDOMIZE","CONFIG");
-		/*Map<String, String> prop = this.handleProperties(list);
-		
-		this.script.getRandomize().setSourceFile(prop.get("sourceFile"));
-		this.script.getRandomize().setTargetFile(prop.get("targetFile"));*/
 	}
 	
 	private void handleMachineLearningConfig(List<String> list) {
 		loadSubSection(list,"ML","CONFIG");
-/*		Map<String, String> prop = this.handleProperties(list);
-		
-		this.script.getMachineLearning().setTrainingFile(prop.get("trainingFile"));
-		this.script.getMachineLearning().setEvalFile(prop.get("evalFile"));
-		this.script.getMachineLearning().setResourceFile(prop.get("resourceFile"));
-		this.script.getMachineLearning().setOutputFile(prop.get("outputFile"));
-		this.script.getMachineLearning().setMLType(prop.get("type"));
-		this.script.getMachineLearning().setMLArchitecture(prop.get("architecture"));
-		this.script.getMachineLearning().setResourceName(prop.get("resourceName"));*/
 	}
 	
 	private void handleSegregateConfig(List<String> list) {
 		loadSubSection(list,"SEGREGATE","CONFIG");
-		
-		/*Map<String, String> prop = this.handleProperties(list);
-		
-		this.script.getSegregate().setSourceFile(prop.get("sourceFile"));*/
 	}	
 	
 	private void handleSegregateFiles(List<String> list) {
