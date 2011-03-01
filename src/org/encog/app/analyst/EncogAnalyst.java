@@ -21,6 +21,7 @@ import org.encog.app.analyst.script.EncogAnalystConfig;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.util.AnalystReportBridge;
+import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.QuantTask;
 import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.app.quant.normalize.NormalizationStats;
@@ -59,7 +60,7 @@ public class EncogAnalyst {
 	private QuantTask currentQuantTask = null;
 
 	public void analyze(File file, boolean headers, CSVFormat format) {
-		script.getConfig().setFilename(EncogAnalystConfig.FILE_RAW,
+		script.getConfig().setFilename(AnalystWizard.FILE_RAW,
 				file.toString());
 		script.getConfig().setCSVFormat(format);
 		script.getConfig().setInputHeaders(headers);

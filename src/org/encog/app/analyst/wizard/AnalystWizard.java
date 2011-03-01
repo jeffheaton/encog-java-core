@@ -18,6 +18,15 @@ import org.encog.util.file.FileUtil;
 
 public class AnalystWizard {
 	
+	public final static String FILE_RAW = "FILE_RAW";
+	public static final String FILE_NORMALIZE = "FILE_NORMALIZE";
+	public static final String FILE_RANDOM = "FILE_RANDOMIZE";
+	public static final String FILE_TRAIN = "FILE_TRAIN";
+	public static final String FILE_EVAL = "FILE_EVAL";
+	public static final String FILE_TRAINSET = "FILE_TRAINSET";
+	public static final String FILE_EG = "FILE_EG";
+	public static final String FILE_OUTPUT = "FILE_OUTPUT";
+	
 	private AnalystScript script;
 	private EncogAnalyst analyst;
 	private WizardMethodType methodType;
@@ -33,34 +42,34 @@ public class AnalystWizard {
 	private void generateSettings(File file)
 	{
 		String train;
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RAW, file.toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_NORMALIZE,
+		this.script.getConfig().setFilename(AnalystWizard.FILE_RAW, file.toString());
+		this.script.getConfig().setFilename(AnalystWizard.FILE_NORMALIZE,
 				FileUtil.addFilenameBase(file, "_norm").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_RANDOM,
+		this.script.getConfig().setFilename(AnalystWizard.FILE_RANDOM,
 				FileUtil.addFilenameBase(file, "_random").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_OUTPUT,
+		this.script.getConfig().setFilename(AnalystWizard.FILE_OUTPUT,
 				FileUtil.addFilenameBase(file, "_output").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAIN,
+		this.script.getConfig().setFilename(AnalystWizard.FILE_TRAIN,
 				train = FileUtil.addFilenameBase(file, "_train").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_EVAL,
+		this.script.getConfig().setFilename(AnalystWizard.FILE_EVAL,
 				FileUtil.addFilenameBase(file, "_eval").toString());
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_TRAINSET,
+		this.script.getConfig().setFilename(AnalystWizard.FILE_TRAINSET,
 				FileUtil.forceExtension(train, "egb"));
-		this.script.getConfig().setFilename(EncogAnalystConfig.FILE_EG,
+		this.script.getConfig().setFilename(AnalystWizard.FILE_EG,
 				FileUtil.forceExtension(file.toString(), "eg"));
 		
-		this.script.getInformation().setRawFile(EncogAnalystConfig.FILE_RAW);
-		this.script.getRandomize().setSourceFile(EncogAnalystConfig.FILE_RAW);
-		this.script.getRandomize().setTargetFile(EncogAnalystConfig.FILE_RANDOM);
-		this.script.getSegregate().setSourceFile(EncogAnalystConfig.FILE_RANDOM);		
-		this.script.getNormalize().setSourceFile(EncogAnalystConfig.FILE_TRAIN);
-		this.script.getNormalize().setTargetFile(EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getGenerate().setSourceFile(EncogAnalystConfig.FILE_NORMALIZE);
-		this.script.getGenerate().setTargetFile(EncogAnalystConfig.FILE_TRAINSET);
-		this.script.getMachineLearning().setTrainingFile(EncogAnalystConfig.FILE_TRAINSET);
-		this.script.getMachineLearning().setResourceFile(EncogAnalystConfig.FILE_EG);
-		this.script.getMachineLearning().setOutputFile(EncogAnalystConfig.FILE_OUTPUT);
-		this.script.getMachineLearning().setEvalFile(EncogAnalystConfig.FILE_EVAL);
+		this.script.getInformation().setRawFile(AnalystWizard.FILE_RAW);
+		this.script.getRandomize().setSourceFile(AnalystWizard.FILE_RAW);
+		this.script.getRandomize().setTargetFile(AnalystWizard.FILE_RANDOM);
+		this.script.getSegregate().setSourceFile(AnalystWizard.FILE_RANDOM);		
+		this.script.getNormalize().setSourceFile(AnalystWizard.FILE_TRAIN);
+		this.script.getNormalize().setTargetFile(AnalystWizard.FILE_NORMALIZE);
+		this.script.getGenerate().setSourceFile(AnalystWizard.FILE_NORMALIZE);
+		this.script.getGenerate().setTargetFile(AnalystWizard.FILE_TRAINSET);
+		this.script.getMachineLearning().setTrainingFile(AnalystWizard.FILE_TRAINSET);
+		this.script.getMachineLearning().setResourceFile(AnalystWizard.FILE_EG);
+		this.script.getMachineLearning().setOutputFile(AnalystWizard.FILE_OUTPUT);
+		this.script.getMachineLearning().setEvalFile(AnalystWizard.FILE_EVAL);
 	}
 	
 	private void generateNormalizedFields(File file) {
@@ -102,8 +111,8 @@ public class AnalystWizard {
 
 	private void generateSegregate(File file) {
 		AnalystSegregateTarget[] array = new AnalystSegregateTarget[2];
-		array[0] = new AnalystSegregateTarget(EncogAnalystConfig.FILE_TRAIN, 75);
-		array[1] = new AnalystSegregateTarget(EncogAnalystConfig.FILE_EVAL, 25);
+		array[0] = new AnalystSegregateTarget(AnalystWizard.FILE_TRAIN, 75);
+		array[1] = new AnalystSegregateTarget(AnalystWizard.FILE_EVAL, 25);
 		this.script.getSegregate().setSegregateTargets(array);
 	}
 	

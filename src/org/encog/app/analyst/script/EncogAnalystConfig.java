@@ -9,15 +9,6 @@ import org.encog.util.csv.CSVFormat;
 
 public class EncogAnalystConfig {
 	
-	public final static String FILE_RAW = "FILE_RAW";
-	public static final String FILE_NORMALIZE = "FILE_NORMALIZE";
-	public static final String FILE_RANDOM = "FILE_RANDOMIZE";
-	public static final String FILE_TRAIN = "FILE_TRAIN";
-	public static final String FILE_EVAL = "FILE_EVAL";
-	public static final String FILE_TRAINSET = "FILE_TRAINSET";
-	public static final String FILE_EG = "FILE_EG";
-	public static final String FILE_OUTPUT = "FILE_OUTPUT";
-	
 	private Map<String,String> filenames = new HashMap<String,String>();
 	private int maxClassSize = 50;
 	private boolean allowIntClasses = true;

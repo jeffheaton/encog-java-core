@@ -12,7 +12,7 @@ import org.encog.persist.location.ResourcePersistence;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
-public class ScriptProperties {
+public class PropertyConstraints {
 
 	public final String HEADER_DATASOURCE_sourceFile = "HEADER_DATASOURCE_sourceFile";
 	public final String HEADER_DATASOURCE_rawFile = "HEADER_DATASOURCE_rawFile";
@@ -48,17 +48,64 @@ public class ScriptProperties {
 	public final String ML_CONFIG_architecture = "ML_CONFIG_architecture";
 	public final String ML_CONFIG_resourceName = "ML_CONFIG_resourceName";
 
-	private final Map<String,Object> data = new HashMap<String,Object>();
-	
-	public void setProperty(String name,String value) {
-		data.put(name, value);
+	private PropertyConstraints instance;
+	private final Map<String,List<PropertyEntry>> data = new HashMap<String,List<PropertyEntry>>();
+
+	private PropertyConstraints() {
+		String currentClass = null;
+		try {
+			final ResourcePersistence resource = new ResourcePersistence(
+					"org/encog/data/analyst.csv");
+			final InputStream is = resource.createInputStream();
+			ReadCSV csv = new ReadCSV(is, false, CSVFormat.EG_FORMAT);
+
+			while (csv.next()) {
+				String sectionStr = csv.get(0);
+				String nameStr = csv.get(1);
+				String typeStr = csv.get(2);
+
+				// determine type
+				PropertyType t = null;
+				if ("boolean".equalsIgnoreCase(typeStr)) {
+					t = PropertyType.TypeBoolean;
+				} else if ("double".equalsIgnoreCase(typeStr)) {
+					t = PropertyType.TypeDouble;
+				} else if ("format".equalsIgnoreCase(typeStr)) {
+					t = PropertyType.typeFormat;
+				} else if ("integer".equalsIgnoreCase(typeStr)) {
+					t = PropertyType.TypeInteger;
+				} else if ("double".equalsIgnoreCase(typeStr)) {
+					t = PropertyType.TypeListString;
+				} else if ("string".equalsIgnoreCase(typeStr)) {
+					t = PropertyType.TypeString;
+				}
+				
+				PropertyEntry entry = new PropertyEntry(t,nameStr,sectionStr);				
+				List<PropertyEntry> list;
+				
+				if( this.data.containsKey(sectionStr)) {
+					list = data.get(sectionStr);
+				} else {
+					list = new ArrayList<PropertyEntry>();
+					this.data.put(sectionStr, list);
+				}
+				
+				list.add(entry);				
+			}
+
+			csv.close();
+			is.close();
+		} catch (final IOException e) {
+			throw new EncogError(e);
+		}
 	}
-	
-	public Object getProperty(String name) {
-		return data.get(name);
+
+	public PropertyConstraints getInstance() {
+		if (instance == null) {
+			this.instance = new PropertyConstraints();
+		}
+
+		return this.instance;
 	}
-	
-	public String getPropertyString(String name) {
-		return (String)data.get(name);
-	}
+
 }

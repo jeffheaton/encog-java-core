@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.app.analyst.script.ScriptProperties.ScriptProperties;
 import org.encog.app.analyst.script.generate.AnalystGenerate;
 import org.encog.app.analyst.script.information.AnalystInformation;
 import org.encog.app.analyst.script.ml.AnalystMachineLearning;
@@ -27,7 +28,7 @@ public class AnalystScript {
 	private final AnalystMachineLearning machineLearning = new AnalystMachineLearning();
 	private final Set<String> generated = new HashSet<String>();
 	private final Map<String,AnalystTask> tasks = new HashMap<String,AnalystTask>();
-	
+	private final ScriptProperties properties = new ScriptProperties();
 
 	/**
 	 * @return the config
@@ -152,4 +153,12 @@ public class AnalystScript {
 	public void init() {
 		this.normalize.init(this);		
 	}
+
+	/**
+	 * @return the properties
+	 */
+	public ScriptProperties getProperties() {
+		return properties;
+	}
+	
 }
