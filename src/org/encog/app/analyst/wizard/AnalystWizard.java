@@ -161,6 +161,8 @@ public class AnalystWizard {
 			case SVM:
 				generateSVM(inputColumns);
 				break;
+			case RBF:
+				generateRBF(inputColumns);
 		}
 	}
 	
@@ -174,6 +176,13 @@ public class AnalystWizard {
 	private void generateSVM(int inputColumns) {
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SVM);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?->C(type=new,kernel=gaussian)->?");
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
+	}
+	
+	private void generateRBF(int inputColumns) {
+		int hidden = (int)(((double)inputColumns)*1.5);
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_RBFNETWORK);
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?->GAUSSIAN("+hidden+")->?");
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
 	}
 	

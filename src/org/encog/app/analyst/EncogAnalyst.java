@@ -42,6 +42,8 @@ import org.encog.neural.data.buffer.EncogEGBFile;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
+import org.encog.neural.rbf.RBFNetwork;
+import org.encog.neural.rbf.training.SVDTraining;
 import org.encog.persist.EncogMemoryCollection;
 import org.encog.persist.EncogPersistedObject;
 import org.encog.util.csv.CSVFormat;
@@ -297,6 +299,9 @@ public class EncogAnalyst {
 			singleIteration = false;
 		} else if (method instanceof SVM) {
 			train = new SVMTrain((SVM) method, trainingSet);
+			singleIteration = true;
+		} else if (method instanceof RBFNetwork){
+			train = new SVDTraining((RBFNetwork)method,trainingSet);
 			singleIteration = true;
 		}
 
