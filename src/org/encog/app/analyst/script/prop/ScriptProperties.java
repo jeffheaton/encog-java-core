@@ -119,7 +119,7 @@ public class ScriptProperties {
 		for (String key : this.data.keySet()) {
 			if (key.startsWith("SETUP:FILENAMES")) {
 				int index = key.indexOf('_');
-				if (index == -1) {
+				if (index != -1) {
 					result.add(key.substring(index + 1));
 				}
 			}

@@ -219,7 +219,10 @@ public class ScriptLoad {
 		
 		for(String name: prop.keySet()) {
 			String key = section + ":" + subSection + "_" + name;
-			String value = prop.get(key);
+			String value = prop.get(name);
+			if( value==null ) {
+				value = "";
+			}
 			this.script.getProperties().setProperty(key, value);
 		}		
 	}
