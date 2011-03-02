@@ -38,6 +38,9 @@ public class ScriptProperties {
 	public static final String ML_CONFIG_type = "ML:CONFIG_type";
 	public static final String ML_CONFIG_architecture = "ML:CONFIG_architecture";
 	public static final String ML_CONFIG_resourceName = "ML:CONFIG_resourceName";
+	public static final String ML_TRAIN_type = "ML:TRAIN_type";
+	public static final String ML_TRAIN_arguments = "ML:TRAIN_arguments";
+	public static final String ML_TRAIN_targetError = "ML:TRAIN_targetError";
 
 	private final Map<String, String> data = new HashMap<String, String>();
 
@@ -165,5 +168,9 @@ public class ScriptProperties {
 	public void setProperty(String name, int i) {
 		this.data.put(name, ""+i);
 		
+	}
+
+	public void setProperty(String name, double d) {
+		this.data.put(name, CSVFormat.EG_FORMAT.format(d, 5));		
 	}
 }

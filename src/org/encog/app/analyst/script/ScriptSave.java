@@ -33,14 +33,10 @@ public class ScriptSave {
 	}
 	
 	
-	private void saveRandomize(WriteScriptFile out)
-	{
-		saveSubSection(out,"RANDOMIZE","CONFIG");
-	}
-	
 	private void saveSubSection(WriteScriptFile out, String section, String subSection)
 	{
-		out.addSection(section);
+		if( !section.equals(out.getCurrentSection()) )
+			out.addSection(section);
 		out.addSubSection(subSection);
 		List<PropertyEntry> list = PropertyConstraints.getInstance().getEntries(section,subSection);
 		Collections.sort(list);
@@ -49,37 +45,12 @@ public class ScriptSave {
 			String value = this.script.getProperties().getPropertyString(key);
 			if( value!=null ) {
 				out.writeProperty(entry.getName(), value);
+			} else {
+				out.writeProperty(entry.getName(), "");
 			}
 		}
 	}
-	
-	private void saveInformation(WriteScriptFile out)
-	{
-		saveSubSection(out,"HEADER","DATASOURCE");
-		/*out.addSection("HEADER");
-		out.addSubSection("DATASOURCE");
-		out.writeProperty("sourceFile", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceFile));
-		out.writeProperty("rawFile", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_rawFile));
-		out.writeProperty("sourceFormat", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceFormat));
-		out.writeProperty("sourceHeaders", this.script.getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_sourceHeaders));*/		
-	}
-	
-	private void saveGenerate(WriteScriptFile out)
-	{
-		saveSubSection(out,"GENERATE","CONFIG");
 		
-		/*out.addSection("GENERATE");
-		out.addSubSection("CONFIG");
-		out.writeProperty("sourceFile", this.script.getGenerate()
-				.getSourceFile());
-		out.writeProperty("targetFile", this.script.getGenerate()
-				.getTargetFile());
-		out.writeProperty("input", this.script.getGenerate()
-				.getInput());
-		out.writeProperty("ideal", this.script.getGenerate()
-				.getIdeal());*/
-	}
-	
 	private void saveSegregate(WriteScriptFile out)
 	{
 		saveSubSection(out,"SEGREGATE","CONFIG");
@@ -98,22 +69,8 @@ public class ScriptSave {
 	private void saveMachineLearning(WriteScriptFile out)
 	{
 		saveSubSection(out,"ML","CONFIG");
-		/*out.addSection("ML");
-		out.addSubSection("CONFIG");
-		out.writeProperty("trainingFile", this.script.getMachineLearning()
-				.getTrainingFile());
-		out.writeProperty("evalFile", this.script.getMachineLearning()
-				.getEvalFile());
-		out.writeProperty("resourceFile", this.script.getMachineLearning()
-				.getResourceFile());	
-		out.writeProperty("outputFile", this.script.getMachineLearning()
-				.getOutputFile());
-
-
-		out.writeProperty("type",this.script.getMachineLearning().getMLType());		
-		out.writeProperty("architecture",this.script.getMachineLearning().getMLArchitecture());
-		out.writeProperty("resourceName",this.script.getMachineLearning().getResourceName());
-		*/
+		saveSubSection(out,"ML","TRAIN");
+		
 	}
 
 	private void saveData(WriteScriptFile out) {
@@ -218,13 +175,13 @@ public class ScriptSave {
 
 	public void save(OutputStream stream) {
 		WriteScriptFile out = new WriteScriptFile(stream);
-		saveInformation(out);
+		saveSubSection(out,"HEADER","DATASOURCE");
 		saveConfig(out);
 		saveData(out);
 		saveNormalize(out);
-		saveRandomize(out);
+		saveSubSection(out,"RANDOMIZE","CONFIG");
 		saveSegregate(out);
-		saveGenerate(out);
+		saveSubSection(out,"GENERATE","CONFIG");
 		saveMachineLearning(out);
 		saveTasks(out);
 		out.flush();

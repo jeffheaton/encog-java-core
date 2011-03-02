@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
-import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
@@ -46,10 +45,6 @@ public class ScriptLoad {
 		}
 		
 		return result;
-	}
-
-	private void handleConfig(List<String> list) {
-		loadSubSection(list,"SETUP","CONFIG");		
 	}
 	
 	private void handleFilenames(List<String> list) {
@@ -205,20 +200,11 @@ public class ScriptLoad {
 		this.script.getNormalize().setNormalizedFields(array);
 	}
 	
-	private void handleGenerateConfig(List<String> list) {
-		
-		loadSubSection(list,"GENERATE","CONFIG");
-	}
-	
-	private void handleNormalizeConfig(List<String> list) {
-		loadSubSection(list,"NORMALIZE","CONFIG");
-	}
-	
 	private void loadSubSection(List<String> list, String section, String subSection) {
 		Map<String, String> prop = this.handleProperties(list);
 		
 		for(String name: prop.keySet()) {
-			String key = section + ":" + subSection + "_" + name;
+			String key = section.toUpperCase() + ":" + subSection.toUpperCase() + "_" + name;
 			String value = prop.get(name);
 			if( value==null ) {
 				value = "";
@@ -226,23 +212,7 @@ public class ScriptLoad {
 			this.script.getProperties().setProperty(key, value);
 		}		
 	}
-	
-	private void handleHeaderDataSource(List<String> list) {
-		loadSubSection(list,"HEADER","DATASOURCE");
-	}
-	
-	private void handleRandomizeConfig(List<String> list) {
-		loadSubSection(list,"RANDOMIZE","CONFIG");
-	}
-	
-	private void handleMachineLearningConfig(List<String> list) {
-		loadSubSection(list,"ML","CONFIG");
-	}
-	
-	private void handleSegregateConfig(List<String> list) {
-		loadSubSection(list,"SEGREGATE","CONFIG");
-	}	
-	
+		
 	private void handleSegregateFiles(List<String> list) {
 		List<AnalystSegregateTarget> nfs = new ArrayList<AnalystSegregateTarget>();
 		boolean first = true;
@@ -270,7 +240,7 @@ public class ScriptLoad {
 	private void processSubSection(String currentSection, String currentSubsection, List<String> list)
 	{
 		if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			handleConfig(list);
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("FILENAMES") ) {
 			handleFilenames(list);
 		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("STATS") ) {
@@ -280,19 +250,19 @@ public class ScriptLoad {
 		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("RANGE") ) {
 			handleNormalizeRange(list);
 		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			handleNormalizeConfig(list);
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("RANDOMIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			handleRandomizeConfig(list);
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("SEGREGATE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			handleSegregateConfig(list);
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("SEGREGATE") && currentSubsection.equalsIgnoreCase("FILES") ) {
 			handleSegregateFiles(list);
 		} else if( currentSection.equals("GENERATE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			handleGenerateConfig(list);
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("HEADER") && currentSubsection.equalsIgnoreCase("DATASOURCE") ) {
-			handleHeaderDataSource(list);
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("ML") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			handleMachineLearningConfig(list);
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("TASKS") && currentSubsection.length()>0 ) {
 			handleTask(list, currentSubsection);
 		}

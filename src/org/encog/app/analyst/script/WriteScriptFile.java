@@ -119,4 +119,8 @@ public class WriteScriptFile {
 			this.writeLine();
 		out.println(l);		
 	}
+
+	public String getCurrentSection() {
+		return this.currentSection;
+	}
 }

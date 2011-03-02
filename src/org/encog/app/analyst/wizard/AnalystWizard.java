@@ -156,34 +156,47 @@ public class AnalystWizard {
 
 		switch(this.methodType) {
 			case FeedForward:
-				generateFeedForward(inputColumns);
+				generateFeedForward(inputColumns, idealColumns);
 				break;
 			case SVM:
-				generateSVM(inputColumns);
+				generateSVM(inputColumns, idealColumns);
 				break;
 			case RBF:
-				generateRBF(inputColumns);
+				generateRBF(inputColumns, idealColumns);
 		}
 	}
 	
-	private void generateFeedForward(int inputColumns) {
+	private void generateFeedForward(int inputColumns, int outputColumns) {
 		int hidden = (int)(((double)inputColumns)*1.5);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_FEEDFORWARD);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?B->TANH->"+hidden+"B->TANH->?");
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
+		
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,"rprop");
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_targetError,0.01);
 	}
 	
-	private void generateSVM(int inputColumns) {
+	private void generateSVM(int inputColumns, int outputColumns) {
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SVM);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?->C(type=new,kernel=gaussian)->?");
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
+		
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,"svm-train");
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_targetError,0.01);
 	}
 	
-	private void generateRBF(int inputColumns) {
+	private void generateRBF(int inputColumns, int outputColumns) {
 		int hidden = (int)(((double)inputColumns)*1.5);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_RBFNETWORK);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?->GAUSSIAN("+hidden+")->?");
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
+		
+		if(outputColumns>1)
+			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,"rprop");
+		else
+			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,"svd");
+		
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,0.01);		
 	}
 	
 	public void generateTasks()
