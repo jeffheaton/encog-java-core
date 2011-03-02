@@ -263,6 +263,8 @@ public class ScriptLoad {
 			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("ML") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			loadSubSection(list,currentSection,currentSubsection);
+		} else if( currentSection.equals("ML") && currentSubsection.equalsIgnoreCase("TRAIN") ) {
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("TASKS") && currentSubsection.length()>0 ) {
 			handleTask(list, currentSubsection);
 		}
