@@ -30,7 +30,7 @@ public class CmdRandomize extends Cmd {
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));
 		boolean headers = this.getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers, this.getScript().getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+		norm.analyze(sourceFile, headers, this.getScript().getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 		norm.process(targetFile);
 		getAnalyst().setCurrentQuantTask(null);
 		return norm.shouldStop();

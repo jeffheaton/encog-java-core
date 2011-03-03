@@ -37,7 +37,7 @@ public class CmdSegregate extends Cmd {
 		}
 		
 		seg.setReport(new AnalystReportBridge(getAnalyst()));
-		seg.analyze(sourceFile, headers, this.getScript().getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+		seg.analyze(sourceFile, headers, this.getScript().getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 
 		seg.process();
 		getAnalyst().setCurrentQuantTask(null);

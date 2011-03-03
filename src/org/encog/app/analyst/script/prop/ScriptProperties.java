@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.AnalystFileFormat;
+import org.encog.app.analyst.util.ConvertStringConst;
 import org.encog.util.csv.CSVFormat;
 
 public class ScriptProperties {
@@ -59,12 +61,11 @@ public class ScriptProperties {
 		return data.get(name).toString();
 	}
 
-	public void setProperty(String name, CSVFormat format) {
-		
-		if( format.getDecimal()=='.' ) {
-			data.put(name, "decpnt");
-		} else if( format.getDecimal()==',' ) {
-			data.put(name, "deccomma");
+	public void setProperty(String name, AnalystFileFormat format) {
+		if( format==null ) {
+			data.put(name, "");
+		} else {
+			data.put(name, ConvertStringConst.analystFileFormat2String(format));
 		}
 	}
 
@@ -87,16 +88,15 @@ public class ScriptProperties {
 
 	}
 	
-	public CSVFormat getPropertyFormat(String name) {
+	public AnalystFileFormat getPropertyFormat(String name) {
 		String value = data.get(name);
-		
-		if( value.equals("deccomma") ) {
-			return CSVFormat.DECIMAL_COMMA;
-		} else if( value.equals("decpnt") ) {
-			return CSVFormat.DECIMAL_POINT;
-		} else {
-			return null;
-		}
+		return ConvertStringConst.string2AnalystFileFormat(value);
+	}
+	
+	public CSVFormat getPropertyCSVFormat(String name) {
+		String value = data.get(name);
+		AnalystFileFormat code = ConvertStringConst.string2AnalystFileFormat(value);
+		return ConvertStringConst.convertToCSVFormat(code);
 	}
 
 	public URL getPropertyURL(String name) {

@@ -47,7 +47,7 @@ public class CmdEvaluate extends Cmd {
 		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this.getAnalyst()));
-		eval.analyze(evalFile, headers, getProp().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+		eval.analyze(evalFile, headers, getProp().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 		eval.process(outputFile, getAnalyst(), method);
 		getAnalyst().setCurrentQuantTask(null);
 		this.classCorrect = eval.getClassCorrect();
@@ -79,7 +79,7 @@ public class CmdEvaluate extends Cmd {
 		EvaluateCSV eval = new EvaluateCSV();
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(getAnalyst()));
-		eval.analyze(evalFile, headers, getProp().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+		eval.analyze(evalFile, headers, getProp().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
 		eval.process(outputFile, method);
 		getAnalyst().setCurrentQuantTask(null);
 	}

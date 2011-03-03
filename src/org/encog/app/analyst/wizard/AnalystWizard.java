@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
@@ -233,8 +234,7 @@ public class AnalystWizard {
 	}
 
 	public void wizard(File analyzeFile, boolean b,
-			CSVFormat format) {
-
+			AnalystFileFormat format) {
 		
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
@@ -252,7 +252,7 @@ public class AnalystWizard {
 	}
 
 	public void wizard(URL url, File saveFile, File analyzeFile, boolean b,
-			CSVFormat format) {
+			AnalystFileFormat format) {
 		
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFile, url);
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);

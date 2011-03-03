@@ -37,7 +37,7 @@ public class CmdNormalize extends Cmd {
 
 		boolean headers = getScript().expectInputHeaders(sourceID);
 		norm.analyze(sourceFile, headers, 
-				getProp().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat),
+				getProp().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat),
 				stats);
 		norm.setProduceOutputHeaders(getScript().getProperties().getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders));
 		norm.normalize(targetFile);

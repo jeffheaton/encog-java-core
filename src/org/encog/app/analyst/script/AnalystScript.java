@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
@@ -24,7 +25,7 @@ public class AnalystScript {
 
 
 	public AnalystScript() {
-		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, CSVFormat.ENGLISH);
+		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, AnalystFileFormat.DECPNT_COMMA);
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_maxClassCount, 50);
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_allowedClasses, "integer,string");
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_outputHeaders, true);

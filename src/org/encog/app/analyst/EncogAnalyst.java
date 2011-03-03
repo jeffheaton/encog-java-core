@@ -56,7 +56,7 @@ public class EncogAnalyst {
 		addCommand(new CmdTrain(this));		
 	}
 
-	public void analyze(File file, boolean headers, CSVFormat format) {
+	public void analyze(File file, boolean headers, AnalystFileFormat format) {
 		script.getProperties().setFilename(AnalystWizard.FILE_RAW, file.toString());
 		
 		script.getProperties().setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, format);
