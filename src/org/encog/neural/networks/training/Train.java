@@ -26,6 +26,7 @@ package org.encog.neural.networks.training;
 import java.util.List;
 
 import org.encog.ml.MLMethod;
+import org.encog.ml.MLTrain;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
@@ -34,7 +35,7 @@ import org.encog.neural.data.NeuralDataSet;
  * specific types of neural network structure.
  */
 
-public interface Train {
+public interface Train extends MLTrain {
 
 	/**
 	 * Training strategies can be added to improve the training results. There

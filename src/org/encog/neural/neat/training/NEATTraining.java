@@ -31,6 +31,7 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.ml.genetic.genome.Genome;
@@ -1216,5 +1217,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	@Override
 	public void setIteration(int iteration) {
 		this.iteration = iteration;
+	}
+
+	@Override
+	public TrainingImplementationType getImplementationType() {
+		return TrainingImplementationType.Iterative;
 	}
 }

@@ -27,6 +27,7 @@ import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
 import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
@@ -76,7 +77,7 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public Propagation(final BasicNetwork network, 
 			final NeuralDataSet training) {
-		super();
+		super(TrainingImplementationType.Iterative);
 		this.network = network;
 		setTraining(training);
 	}

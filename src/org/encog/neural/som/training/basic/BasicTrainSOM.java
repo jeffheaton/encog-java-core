@@ -25,6 +25,7 @@ package org.encog.neural.som.training.basic;
 
 import org.encog.engine.util.Format;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -165,6 +166,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	public BasicTrainSOM(final SOM network,
 			final double learningRate, final NeuralDataSet training,
 			final NeighborhoodFunction neighborhood) {
+		super(TrainingImplementationType.Iterative);
 		this.neighborhood = neighborhood;
 		setTraining(training);
 		this.learningRate = learningRate;

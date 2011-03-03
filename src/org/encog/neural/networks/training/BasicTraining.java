@@ -26,6 +26,7 @@ package org.encog.neural.networks.training;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 import org.slf4j.Logger;
@@ -60,6 +61,8 @@ public abstract class BasicTraining implements Train {
 	 * The current iteration.
 	 */
 	private int iteration;
+	
+	private TrainingImplementationType implementationType;
 
 	/**
 	 * The logging object.
@@ -67,6 +70,10 @@ public abstract class BasicTraining implements Train {
 	@SuppressWarnings("unused")
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	public BasicTraining(TrainingImplementationType implementationType) {
+		this.implementationType = implementationType;
+	}
+	
 	/**
 	 * Training strategies can be added to improve the training results. There
 	 * are a number to choose from, and several can be used at once.
@@ -195,6 +202,10 @@ public abstract class BasicTraining implements Train {
 	 */
 	public void setTraining(final NeuralDataSet training) {
 		this.training = training;
+	}
+	
+	public TrainingImplementationType getImplementationType() {
+		return this.implementationType;
 	}
 
 }

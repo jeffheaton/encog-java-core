@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training.anneal;
 
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
@@ -95,6 +96,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 			final double startTemp,
 			final double stopTemp,
 			final int cycles) {
+		super(TrainingImplementationType.Iterative);
 		this.network = network;
 		this.calculateScore = calculateScore;
 		this.anneal = new NeuralSimulatedAnnealingHelper(this);

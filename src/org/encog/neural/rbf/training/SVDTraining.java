@@ -25,6 +25,7 @@ package org.encog.neural.rbf.training;
 
 import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.ObjectPair;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
@@ -53,7 +54,7 @@ public class SVDTraining extends BasicTraining {
 	 * indexable.
 	 */
 	public SVDTraining(RBFNetwork network, NeuralDataSet training) {
-
+		super(TrainingImplementationType.OnePass);
 		if (network.getOutputCount() != 1) {
 			throw new TrainingError(
 					"SVD requires an output layer with a single neuron.");

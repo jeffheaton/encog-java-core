@@ -25,6 +25,7 @@ package org.encog.neural.cpn.training;
 
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.cpn.CPN;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -74,6 +75,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 */
 	public TrainOutstar(final CPN network,
 			final NeuralDataSet training, final double learningRate) {
+		super(TrainingImplementationType.Iterative);
 		this.network = network;
 		this.training = training;
 		this.learningRate = learningRate;

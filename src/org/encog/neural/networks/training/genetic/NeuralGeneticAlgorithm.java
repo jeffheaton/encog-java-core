@@ -24,6 +24,7 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.mathutil.randomize.Randomizer;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.genome.Genome;
@@ -112,7 +113,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 			final Randomizer randomizer, final CalculateScore calculateScore,
 			final int populationSize, final double mutationPercent,
 			final double percentToMate) {
-
+		super(TrainingImplementationType.Iterative);
 		this.genetic = new NeuralGeneticAlgorithmHelper();
 		this.genetic.setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		final Population population = new BasicPopulation(populationSize);

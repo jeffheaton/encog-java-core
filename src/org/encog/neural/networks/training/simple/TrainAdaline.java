@@ -24,6 +24,7 @@
 package org.encog.neural.networks.training.simple;
 
 import org.encog.engine.util.ErrorCalculation;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -65,6 +66,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 */
 	public TrainAdaline(final BasicNetwork network,
 			final NeuralDataSet training, final double learningRate) {
+		super(TrainingImplementationType.Iterative);
 		if (network.getLayerCount() > 2) {
 			throw new NeuralNetworkError(
 					"An ADALINE network only has two layers.");

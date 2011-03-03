@@ -25,6 +25,7 @@ package org.encog.neural.networks.training.lma;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -189,7 +190,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 */
 	public LevenbergMarquardtTraining(final BasicNetwork network,
 			final NeuralDataSet training) {
-
+		super(TrainingImplementationType.Iterative);
 		if (network.getOutputCount() != 1) {
 			throw new TrainingError(
 					"Levenberg Marquardt requires an output layer with a single neuron.");
