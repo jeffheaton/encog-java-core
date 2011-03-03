@@ -2,6 +2,7 @@ package org.encog.app.analyst;
 
 import org.encog.engine.util.Format;
 import org.encog.engine.util.Stopwatch;
+import org.encog.ml.MLTrain;
 import org.encog.neural.networks.training.Train;
 
 public class ConsoleAnalystListener implements AnalystListener {
@@ -57,7 +58,7 @@ public class ConsoleAnalystListener implements AnalystListener {
 	}
 
 	@Override
-	public void reportTraining(Train train) {
+	public void reportTraining(MLTrain train) {
 		
 		System.out.println("Iteration #" + Format.formatInteger(train.getIteration())
 				+ " Error:" + Format.formatPercent(train.getError())

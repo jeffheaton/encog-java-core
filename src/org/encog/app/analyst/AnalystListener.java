@@ -1,5 +1,6 @@
 package org.encog.app.analyst;
 
+import org.encog.ml.MLTrain;
 import org.encog.neural.networks.training.Train;
 
 public interface AnalystListener {
@@ -12,7 +13,7 @@ public interface AnalystListener {
 	void reportCommandEnd(boolean canceled);
 	void reportTrainingBegin();
 	void reportTrainingEnd();
-	void reportTraining(Train train);
+	void reportTraining(MLTrain train);
 	void report(int total, int current, String message);
 
 }

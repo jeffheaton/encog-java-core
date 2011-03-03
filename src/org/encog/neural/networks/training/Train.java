@@ -47,24 +47,6 @@ public interface Train extends MLTrain {
 	void addStrategy(Strategy strategy);
 
 	/**
-	 * Should be called once training is complete and no more iterations are
-	 * needed. Calling iteration again will simply begin the training again, and
-	 * require finishTraining to be called once the new training session is
-	 * complete.
-	 * 
-	 * It is particularly important to call finishTraining for multithreaded
-	 * training techniques.
-	 */
-	void finishTraining();
-
-	/**
-	 * Get the current error percent from the training.
-	 * 
-	 * @return The current error.
-	 */
-	double getError();
-
-	/**
 	 * Get the current best network from the training.
 	 * 
 	 * @return The best network.
@@ -75,22 +57,7 @@ public interface Train extends MLTrain {
 	 * @return The strategies to use.
 	 */
 	List<Strategy> getStrategies();
-
-	/**
-	 * @return The training data to use.
-	 */
-	NeuralDataSet getTraining();
-
-	/**
-	 * Perform one iteration of training.
-	 */
-	void iteration();
 	
-	/**
-	 * Perform a number of training iterations.
-	 * @param count The number of iterations to perform.
-	 */
-	void iteration(int count);
 
 	/**
 	 * @param error
@@ -98,17 +65,7 @@ public interface Train extends MLTrain {
 	 *            strategies.
 	 */
 	void setError(double error);
-	
-	/**
-	 * @return True if training can progress no further.
-	 */
-	boolean isTrainingDone();
-	
-	/**
-	 * @return The current training iteration.
-	 */
-	int getIteration();
-	
+			
 	/**
 	 * Set the current training iteration.
 	 * @param iteration Iteration.

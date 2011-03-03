@@ -173,4 +173,9 @@ public class ScriptProperties {
 	public void setProperty(String name, double d) {
 		this.data.put(name, CSVFormat.EG_FORMAT.format(d, 5));		
 	}
+
+	public double getPropertyDouble(String name) {
+		String value = this.data.get(name);
+		return CSVFormat.EG_FORMAT.parse(value);
+	}
 }

@@ -30,6 +30,7 @@ import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.QuantTask;
 import org.encog.bot.BotUtil;
 import org.encog.engine.util.Format;
+import org.encog.ml.MLTrain;
 import org.encog.neural.networks.training.Train;
 import org.encog.util.csv.CSVFormat;
 
@@ -232,7 +233,7 @@ public class EncogAnalyst {
 		}
 	}
 
-	public void reportTraining(Train train) {
+	public void reportTraining(MLTrain train) {
 		for (AnalystListener listener : this.listeners) {
 			listener.reportTraining(train);
 		}

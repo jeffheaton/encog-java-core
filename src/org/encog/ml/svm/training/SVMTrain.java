@@ -47,36 +47,6 @@ public class SVMTrain extends BasicTraining {
 	 */
 	private static final transient Logger LOGGER = LoggerFactory
 			.getLogger(SVMTrain.class);
-
-	/**
-	 * The default starting number for C.
-	 */
-	public static final double DEFAULT_CONST_BEGIN = -5;
-	
-	/**
-	 * The default ending number for C.
-	 */
-	public static final double DEFAULT_CONST_END = 15;
-	
-	/**
-	 * The default step for C.
-	 */
-	public static final double DEFAULT_CONST_STEP = 2;
-	
-	/**
-	 * The default gamma begin.
-	 */
-	public static final double DEFAULT_GAMMA_BEGIN = -10;
-	
-	/**
-	 * The default gamma end.
-	 */
-	public static final double DEFAULT_GAMMA_END = 10;
-	
-	/**
-	 * The default gamma step.
-	 */
-	public static final double DEFAULT_GAMMA_STEP = 1;
 	
 	/**
 	 * The network that is to be trained.
@@ -92,67 +62,7 @@ public class SVMTrain extends BasicTraining {
 	 * The number of folds.
 	 */
 	private int fold = 5;
-	
-	/**
-	 * The beginning value for C.
-	 */
-	private double constBegin = DEFAULT_CONST_BEGIN;
-	
-	/**
-	 * The step value for C.
-	 */
-	private double constStep = DEFAULT_CONST_END;
-	
-	/**
-	 * The ending value for C.
-	 */
-	private double constEnd = DEFAULT_CONST_STEP;
-	
-	/**
-	 * The beginning value for gamma.
-	 */
-	private double gammaBegin = DEFAULT_GAMMA_BEGIN;
-	
-	/**
-	 * The ending value for gamma.
-	 */
-	private double gammaEnd = DEFAULT_GAMMA_END;
-	
-	/**
-	 * The step value for gamma.
-	 */
-	private double gammaStep = DEFAULT_GAMMA_STEP;
-	
-	/**
-	 * The best values found for C.
-	 */
-	private double bestConst;
-	
-	/**
-	 * The best values found for gamma.
-	 */
-	private double bestGamma;
-	
-	/**
-	 * The best error.
-	 */
-	private double bestError;
-	
-	/**
-	 * The current C.
-	 */
-	private double currentConst;
-	
-	/**
-	 * The current gamma.
-	 */
-	private double currentGamma;
-	
-	/**
-	 * Is the network setup.
-	 */
-	private boolean isSetup;
-	
+			
 	/**
 	 * Is the training done.
 	 */
@@ -164,10 +74,9 @@ public class SVMTrain extends BasicTraining {
 	 * @param training The training data for this network.
 	 */
 	public SVMTrain(SVM network, NeuralDataSet training) {
-		super(TrainingImplementationType.Iterative);
+		super(TrainingImplementationType.OnePass);
 		this.network = (SVM) network;
 		this.setTraining(training);
-		this.isSetup = false;
 		this.trainingDone = false;
 
 		this.problem = new svm_problem();
@@ -178,7 +87,7 @@ public class SVMTrain extends BasicTraining {
 	/**
 	 * Quickly train all outputs with a C of 1.0 and a gamma equal to 1/(num inputs).
 	 */
-	public void train() {
+	public void iteration() {
 		double gamma = 1.0 / this.network.getInputCount();
 		double c = 1.0;
 
@@ -197,7 +106,7 @@ public class SVMTrain extends BasicTraining {
 				.getParams()) );
 	}
 	
-	public void train(double gamma, double c) {
+	public void iteration(double gamma, double c) {
 		network.getParams().C = c;
 		
 		if( gamma>Encog.DEFAULT_DOUBLE_EQUAL )
@@ -211,6 +120,8 @@ public class SVMTrain extends BasicTraining {
 		
 		network.setModel( svm.svm_train(problem, network
 				.getParams()) );
+		
+		this.trainingDone = true;
 	}
 
 	/**
@@ -261,61 +172,6 @@ public class SVMTrain extends BasicTraining {
 		}
 	}
 
-	/**
-	 * Setup to train the SVM.
-	 */
-	private void setup() {
-
-			this.currentConst = this.constBegin;
-			this.currentGamma = this.gammaBegin;
-			this.bestError = Double.POSITIVE_INFINITY;
-		this.isSetup = true;
-	}
-
-	/**
-	 * Perform one training iteration.
-	 */
-	public void iteration() {
-
-		if (!trainingDone) {
-			if (!isSetup)
-				setup();
-
-			preIteration();
-
-			if (network.getKernelType() == KernelType.RadialBasisFunction) {
-
-				double totalError = 0;
-				
-				
-					double e = this.crossValidate(this.currentGamma,
-							currentConst);
-
-					if (e < bestError) {
-						this.bestConst = this.currentConst;
-						this.bestGamma = this.currentGamma;
-						this.bestError = e;
-					}
-
-					this.currentConst += this.constStep;
-					if (this.currentConst > this.constEnd) {
-						this.currentConst = this.constBegin;
-						this.currentGamma += this.gammaStep;
-						if (this.currentGamma > this.gammaEnd)
-							this.trainingDone = true;
-					}
-					
-					totalError += this.bestError;
-				
-
-				setError(totalError/this.network.getOutputCount());
-			} else {
-				train();
-			}
-
-			postIteration();
-		}
-	}
 
 	/**
 	 * @return The problem being trained.
@@ -337,104 +193,6 @@ public class SVMTrain extends BasicTraining {
 	 */
 	public void setFold(int fold) {
 		this.fold = fold;
-	}
-
-	/**
-	 * @return the constBegin
-	 */
-	public double getConstBegin() {
-		return constBegin;
-	}
-
-	/**
-	 * @param constBegin
-	 *            the constBegin to set
-	 */
-	public void setConstBegin(double constBegin) {
-		this.constBegin = constBegin;
-	}
-
-	/**
-	 * @return the constStep
-	 */
-	public double getConstStep() {
-		return constStep;
-	}
-
-	/**
-	 * @param constStep
-	 *            the constStep to set
-	 */
-	public void setConstStep(double constStep) {
-		this.constStep = constStep;
-	}
-
-	/**
-	 * @return the constEnd
-	 */
-	public double getConstEnd() {
-		return constEnd;
-	}
-
-	/**
-	 * @param constEnd
-	 *            the constEnd to set
-	 */
-	public void setConstEnd(double constEnd) {
-		this.constEnd = constEnd;
-	}
-
-	/**
-	 * @return the gammaBegin
-	 */
-	public double getGammaBegin() {
-		return gammaBegin;
-	}
-
-	/**
-	 * @param gammaBegin
-	 *            the gammaBegin to set
-	 */
-	public void setGammaBegin(double gammaBegin) {
-		this.gammaBegin = gammaBegin;
-	}
-
-	/**
-	 * @return the gammaEnd
-	 */
-	public double getGammaEnd() {
-		return gammaEnd;
-	}
-
-	/**
-	 * @param gammaEnd
-	 *            the gammaEnd to set
-	 */
-	public void setGammaEnd(double gammaEnd) {
-		this.gammaEnd = gammaEnd;
-	}
-
-	/**
-	 * @return the gammaStep
-	 */
-	public double getGammaStep() {
-		return gammaStep;
-	}
-
-	/**
-	 * @param gammaStep
-	 *            the gammaStep to set
-	 */
-	public void setGammaStep(double gammaStep) {
-		this.gammaStep = gammaStep;
-	}
-
-	/**
-	 * Called to finish training.
-	 */
-	public void finishTraining() {
-		train(this.bestGamma, this.bestConst);
-		
 	}
 
 	/**
