@@ -25,11 +25,16 @@ package org.encog.neural.networks.training;
 
 import java.util.List;
 
+import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 
 public class MockTrain extends BasicTraining implements LearningRate, Momentum {
+
+	public MockTrain() {
+		super(TrainingImplementationType.Iterative);
+	}
 
 	private BasicNetwork network;
 	private boolean wasUsed;
