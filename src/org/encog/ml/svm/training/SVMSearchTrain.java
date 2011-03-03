@@ -215,6 +215,8 @@ public class SVMSearchTrain extends BasicTraining {
 
 				setError(totalError/this.network.getOutputCount());
 			} else {
+				this.internalTrain.setGamma(this.currentGamma);
+				this.internalTrain.setC(this.currentConst);
 				this.internalTrain.iteration();
 			}
 
@@ -331,7 +333,9 @@ public class SVMSearchTrain extends BasicTraining {
 	 * Called to finish training.
 	 */
 	public void finishTraining() {
-		this.internalTrain.iteration(this.bestGamma, this.bestConst);
+		this.internalTrain.setGamma(this.bestGamma);
+		this.internalTrain.setC(this.bestConst);
+		this.internalTrain.iteration();
 		
 	}
 

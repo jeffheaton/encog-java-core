@@ -29,11 +29,13 @@ import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.ml.MLMethod;
+import org.encog.ml.MLRegression;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.util.simple.EncogUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -67,6 +69,9 @@ public class SVMTrain extends BasicTraining {
 	 * Is the training done.
 	 */
 	private boolean trainingDone;
+	
+	private double gamma;
+	private double c;
 
 	/**
 	 * Construct a trainer for an SVM network.
@@ -81,48 +86,26 @@ public class SVMTrain extends BasicTraining {
 
 		this.problem = new svm_problem();
 		
-			this.problem = EncodeSVMProblem.encode(training, 0);
+		this.problem = EncodeSVMProblem.encode(training, 0);
+		this.gamma = 1.0 / this.network.getInputCount();
+		this.c = 1.0;
 	}
 
 	/**
 	 * Quickly train all outputs with a C of 1.0 and a gamma equal to 1/(num inputs).
 	 */
 	public void iteration() {
-		double gamma = 1.0 / this.network.getInputCount();
-		double c = 1.0;
 
 		network.getParams().C = c;
-		
-		if( gamma>Encog.DEFAULT_DOUBLE_EQUAL )
-		{
-			network.getParams().gamma = 1.0 / this.network.getInputCount();
-		}
-		else
-		{
-			network.getParams().gamma = gamma;
-		}
-		
-		network.setModel( svm.svm_train(problem, network
-				.getParams()) );
-	}
-	
-	public void iteration(double gamma, double c) {
-		network.getParams().C = c;
-		
-		if( gamma>Encog.DEFAULT_DOUBLE_EQUAL )
-		{
-			network.getParams().gamma = 1.0 / this.network.getInputCount();
-		}
-		else
-		{
-			network.getParams().gamma = gamma;
-		}
+		network.getParams().gamma = gamma;
 		
 		network.setModel( svm.svm_train(problem, network
 				.getParams()) );
 		
+		this.setError(EncogUtility.calculateRegressionError((MLRegression)this.network, this.getTraining()));
 		this.trainingDone = true;
 	}
+	
 
 	/**
 	 * Cross validate and check the specified index/gamma.
@@ -209,5 +192,23 @@ public class SVMTrain extends BasicTraining {
 	public boolean isTrainingDone() {
 		return this.trainingDone;
 	}
+
+	public double getGamma() {
+		return gamma;
+	}
+
+	public void setGamma(double gamma) {
+		this.gamma = gamma;
+	}
+
+	public double getC() {
+		return c;
+	}
+
+	public void setC(double c) {
+		this.c = c;
+	}
+	
+	
 
 }
