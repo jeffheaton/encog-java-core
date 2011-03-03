@@ -49,7 +49,7 @@ public class TestPersistSVM extends TestCase {
 		NeuralDataSet training = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		SVM result = new SVM(2,SVMType.EpsilonSupportVectorRegression,KernelType.RadialBasisFunction);
 		final SVMTrain train = new SVMTrain(result, training);
-		train.train();
+		train.iteration();
 		return result;
 	}
 	
