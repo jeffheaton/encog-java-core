@@ -5,6 +5,7 @@ import java.net.URL;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
+import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
@@ -26,18 +27,22 @@ public class AnalystWizard {
 	public static final String FILE_EVAL = "FILE_EVAL";
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
 	public static final String FILE_EG = "FILE_EG";
-	public static final String FILE_OUTPUT = "FILE_OUTPUT";
+	public static final String FILE_OUTPUT = "FILE_OUTPUT";	
 	
 	private AnalystScript script;
 	private EncogAnalyst analyst;
 	private WizardMethodType methodType;
 	private boolean directClassification = false;
+	private int targetField;
+	private AnalystGoal goal;
 	
 	public AnalystWizard(EncogAnalyst analyst)
 	{
 		this.analyst = analyst;
 		this.script = analyst.getScript();
 		this.methodType = WizardMethodType.FeedForward;
+		this.targetField = -1;
+		this.goal = AnalystGoal.Classification;
 	}
 	
 	private void generateSettings(File file)
@@ -100,7 +105,7 @@ public class AnalystWizard {
 					action = NormalizationAction.OneOf;
 				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
 			} else {
-				action = NormalizationAction.PassThrough;
+				action = NormalizationAction.Ignore;
 				norm[i] = new NormalizedField(action, f.getName());
 			}
 		}
@@ -301,4 +306,18 @@ public class AnalystWizard {
 			this.directClassification = true;
 		}
 	}
+
+	public AnalystGoal getGoal() {
+		return goal;
+	}
+
+	public void setGoal(AnalystGoal goal) {
+		this.goal = goal;
+	}
+
+	public void setTargetField(int targetField) {
+		this.targetField = targetField;
+	}
+	
+	
 }
