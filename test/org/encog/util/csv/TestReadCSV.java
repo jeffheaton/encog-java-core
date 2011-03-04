@@ -36,15 +36,17 @@ public class TestReadCSV extends TestCase {
 	public void testCSVSpace() throws IOException
 	{
 		PrintWriter out = new PrintWriter(new FileWriter(INPUT_NAME));
-		out.println("one 1");
-		out.println("two\t2");
-		out.println("three  3");
+		out.println("one 1 \"test one two three\"");
+		out.println("two\t2 \"test one two three\"");
+		out.println("three  3  \"test one two three\"");
 		out.close();
 		
 		ReadCSV csv = new ReadCSV(INPUT_NAME,false,new CSVFormat('.',' '));
 		csv.next();
+		Assert.assertEquals(3, csv.getColumnCount());
 		Assert.assertEquals("one", csv.get(0));
 		Assert.assertEquals("1", csv.get(1));
+		Assert.assertEquals("test one two three", csv.get(2));
 		csv.next();
 		Assert.assertEquals("two", csv.get(0));
 		Assert.assertEquals("2", csv.get(1));
