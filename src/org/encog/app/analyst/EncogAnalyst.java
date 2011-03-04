@@ -58,12 +58,11 @@ public class EncogAnalyst {
 
 	public void analyze(File file, boolean headers, AnalystFileFormat format) {
 		script.getProperties().setFilename(AnalystWizard.FILE_RAW, file.toString());
-		
-		script.getProperties().setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, format);
+				
 		script.getProperties().setProperty(ScriptProperties.SETUP_CONFIG_inputHeaders, headers);
 		
 		PerformAnalysis a = new PerformAnalysis(script, file.toString(),
-				headers, CSVFormat.ENGLISH);
+				headers, format);
 		a.process(this);
 
 	}

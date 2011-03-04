@@ -126,5 +126,18 @@ public class AnalystScript {
 	public ScriptProperties getProperties() {
 		return properties;
 	}
+
+	public CSVFormat determineFormat(String sourceID) {
+		String rawID = getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_rawFile);
+		CSVFormat result;
+		
+		if( sourceID.equals(rawID)) {
+			result = getProperties().getPropertyCSVFormat(ScriptProperties.HEADER_DATASOURCE_sourceFormat);
+		} else {
+			result = getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat);
+		}
+		
+		return result;
+	}
 	
 }

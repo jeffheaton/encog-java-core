@@ -1,9 +1,11 @@
 package org.encog.app.analyst.commands;
 
+import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.shuffle.ShuffleCSV;
+import org.encog.util.csv.CSVFormat;
 
 public class CmdRandomize extends Cmd {
 
@@ -21,7 +23,9 @@ public class CmdRandomize extends Cmd {
 		
 		String sourceFile = getProp().getFilename(sourceID);
 		String targetFile = getProp().getFilename(targetID);
-
+		// get the format
+		CSVFormat format = this.getScript().determineFormat(sourceID);
+		
 		// mark generated
 		getScript().markGenerated(targetID);
 
@@ -30,7 +34,7 @@ public class CmdRandomize extends Cmd {
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));
 		boolean headers = this.getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers, this.getScript().getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+		norm.analyze(sourceFile, headers, format);
 		norm.process(targetFile);
 		getAnalyst().setCurrentQuantTask(null);
 		return norm.shouldStop();

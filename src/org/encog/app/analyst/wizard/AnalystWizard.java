@@ -71,7 +71,9 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_trainingFile, AnalystWizard.FILE_TRAINSET);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceFile, AnalystWizard.FILE_EG);
 		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_outputFile, AnalystWizard.FILE_OUTPUT);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);		
+		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);
+		
+		script.getProperties().setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, AnalystFileFormat.DECPNT_COMMA);
 	}
 	
 	private void generateNormalizedFields(File file) {
@@ -240,6 +242,7 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
 		
+		generateTasks();
 		determineClassification();
 		generateSettings(analyzeFile);
 		//this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
@@ -248,7 +251,7 @@ public class AnalystWizard {
 		generateRandomize(analyzeFile);
 		generateSegregate(analyzeFile);
 		generateGenerate(analyzeFile);
-		generateTasks();
+		
 	}
 
 	public void wizard(URL url, File saveFile, File analyzeFile, boolean b,
@@ -260,15 +263,9 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
 				
 		this.generateSettings(analyzeFile);
-		//this.analyst.getReport().reportPhase(2, 1, "Downloading data");
 		analyst.download();
-		//this.analyst.getReport().reportPhase(2, 2, "Wizard analyzing data");
-		this.analyst.analyze(analyzeFile, b, format);
-		generateNormalizedFields(analyzeFile);
-		generateRandomize(analyzeFile);
-		generateSegregate(analyzeFile);
-		generateGenerate(analyzeFile);
-		generateTasks();
+		
+		wizard(analyzeFile, b, format);		
 	}
 
 	public void reanalyze() {

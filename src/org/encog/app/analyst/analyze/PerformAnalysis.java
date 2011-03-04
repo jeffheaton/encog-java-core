@@ -2,11 +2,13 @@ package org.encog.app.analyst.analyze;
 
 import java.util.List;
 
+import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
+import org.encog.app.analyst.util.ConvertStringConst;
 import org.encog.app.quant.normalize.ClassItem;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -15,11 +17,11 @@ public class PerformAnalysis {
 
 	private String filename; 
 	private boolean headers;
-	private CSVFormat format;
+	private AnalystFileFormat format;
 	private AnalyzedField[] fields;
 	private AnalystScript script;
 	
-	public PerformAnalysis(AnalystScript script,String filename, boolean headers, CSVFormat format) {
+	public PerformAnalysis(AnalystScript script,String filename, boolean headers, AnalystFileFormat format) {
 		this.filename = filename;
 		this.headers = headers;
 		this.format = format;	
@@ -58,7 +60,8 @@ public class PerformAnalysis {
 	
 	public void process(EncogAnalyst target)
 	{
-		ReadCSV csv = new ReadCSV(this.filename, this.headers, this.format);
+		CSVFormat csvFormat = ConvertStringConst.convertToCSVFormat(this.format);
+		ReadCSV csv = new ReadCSV(this.filename, this.headers, csvFormat);
 				
 		// pass one, calculate the min/max
 		while(csv.next())
@@ -82,7 +85,7 @@ public class PerformAnalysis {
 		csv.close();
 	
 		// pass two, standard deviation
-		csv = new ReadCSV(this.filename, this.headers, this.format);
+		csv = new ReadCSV(this.filename, this.headers, csvFormat);
 		while(csv.next())
 		{
 			for(int i=0;i<csv.getColumnCount();i++)
