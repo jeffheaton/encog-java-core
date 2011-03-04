@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.util.SimpleParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -394,6 +395,30 @@ public class ReadCSV {
 		}
 
 	}
+	
+	private List<String> parse(final String line) {
+		if( this.format.getSeparator()==' ') {
+			return parseSpaceSep(line);
+		} else {
+			return parseCharSep(line);
+		}
+	}
+	
+	private List<String> parseSpaceSep(final String line) {
+		final List<String> result = new ArrayList<String>();
+		SimpleParser parse  = new SimpleParser(line);
+		
+		while(!parse.eol()) {
+			if( parse.peek()=='\"') {
+				result.add( parse.readQuotedString() );
+			} else {
+				result.add( parse.readToWhiteSpace() );
+			}
+			parse.eatWhiteSpace();
+		}
+		
+		return result;
+	}
 
 	/**
 	 * Parse the line into a list of values.
@@ -402,7 +427,7 @@ public class ReadCSV {
 	 *            The line to parse.
 	 * @return The elements on this line.
 	 */
-	private List<String> parse(final String line) {
+	private List<String> parseCharSep(final String line) {
 		final StringBuilder item = new StringBuilder();
 		final List<String> result = new ArrayList<String>();
 		boolean quoted = false;

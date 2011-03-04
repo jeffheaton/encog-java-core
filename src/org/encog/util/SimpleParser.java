@@ -133,4 +133,20 @@ public class SimpleParser {
     {
         this.currentPosition = this.marked;
     }
+
+	public String readQuotedString() {
+		
+		if( peek()!='\"')
+			return "";
+		
+		StringBuilder result = new StringBuilder();
+		
+		advance();
+		while( peek()!='\"' && !this.eol() ) {
+			result.append(readChar());
+		}
+		advance();
+		
+		return result.toString();
+	}
 }
