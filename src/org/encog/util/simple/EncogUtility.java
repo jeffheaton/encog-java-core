@@ -27,6 +27,7 @@ import java.io.File;
 
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLContext;
@@ -37,6 +38,7 @@ import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
 import org.encog.neural.data.buffer.codec.CSVDataCODEC;
@@ -48,6 +50,7 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.ReadCSV;
 
 /**
  * General utility class for Encog. Provides for some common Encog procedures.
@@ -374,6 +377,36 @@ public final class EncogUtility {
         }
         buffer.endLoad();
     }
+    
+    public static void convertCSV2Binary(String csvFile, CSVFormat format,
+            String binFile, int inputCount, int[] ideal,
+            boolean headers)
+   {
+
+       (new File(binFile)).delete();
+       ReadCSV csv = new ReadCSV(csvFile.toString(), headers, format);
+       
+       BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(binFile));
+       buffer.beginLoad(inputCount, ideal.length);
+       while(csv.next())
+       {
+    	   BasicNeuralData inputData = new BasicNeuralData(inputCount);
+    	   BasicNeuralData idealData = new BasicNeuralData(ideal.length);
+    	   
+    	   // handle input data
+    	   int inputIndex = 0;
+    	   for(int i=0;i<csv.getColumnCount();i++) {
+    		   if( !EngineArray.contains(ideal,i) ) {
+    			   inputData.setData(inputIndex++,csv.getDouble(i));
+    		   }
+    	   }
+    	   
+    	   // handle ideal data
+    	   
+           buffer.add(inputData,idealData);
+       }
+       buffer.endLoad();
+   }
 
 	public static double calculateRegressionError(MLRegression method,
 			NeuralDataSet data) {

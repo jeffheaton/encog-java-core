@@ -291,4 +291,14 @@ public final class EngineArray {
 		}
 		return result;
 	}
+
+	public static boolean contains(int[] array, int target) {
+		for(int i=0;i<array.length;i++) {
+			if( array[i]==target) {
+				return true;
+			}
+		}
+		
+		return false;
+	}
 }

@@ -19,7 +19,7 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.FileUtil;
 
 public class AnalystWizard {
-	
+
 	public final static String FILE_RAW = "FILE_RAW";
 	public static final String FILE_NORMALIZE = "FILE_NORMALIZE";
 	public static final String FILE_RANDOM = "FILE_RANDOMIZE";
@@ -27,28 +27,27 @@ public class AnalystWizard {
 	public static final String FILE_EVAL = "FILE_EVAL";
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
 	public static final String FILE_EG = "FILE_EG";
-	public static final String FILE_OUTPUT = "FILE_OUTPUT";	
-	
+	public static final String FILE_OUTPUT = "FILE_OUTPUT";
+
 	private AnalystScript script;
 	private EncogAnalyst analyst;
 	private WizardMethodType methodType;
 	private boolean directClassification = false;
-	private int targetField;
+	private String targetField;
 	private AnalystGoal goal;
-	
-	public AnalystWizard(EncogAnalyst analyst)
-	{
+
+	public AnalystWizard(EncogAnalyst analyst) {
 		this.analyst = analyst;
 		this.script = analyst.getScript();
 		this.methodType = WizardMethodType.FeedForward;
-		this.targetField = -1;
+		this.targetField = "";
 		this.goal = AnalystGoal.Classification;
 	}
-	
-	private void generateSettings(File file)
-	{
+
+	private void generateSettings(File file) {
 		String train;
-		this.script.getProperties().setFilename(AnalystWizard.FILE_RAW, file.toString());
+		this.script.getProperties().setFilename(AnalystWizard.FILE_RAW,
+				file.toString());
 		this.script.getProperties().setFilename(AnalystWizard.FILE_NORMALIZE,
 				FileUtil.addFilenameBase(file, "_norm").toString());
 		this.script.getProperties().setFilename(AnalystWizard.FILE_RANDOM,
@@ -63,24 +62,48 @@ public class AnalystWizard {
 				FileUtil.forceExtension(train, "egb"));
 		this.script.getProperties().setFilename(AnalystWizard.FILE_EG,
 				FileUtil.forceExtension(file.toString(), "eg"));
-		
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, AnalystWizard.FILE_RAW);
-		this.script.getProperties().setProperty(ScriptProperties.RANDOMIZE_CONFIG_sourceFile , AnalystWizard.FILE_RAW);
-		this.script.getProperties().setProperty(ScriptProperties.RANDOMIZE_CONFIG_targetFile , AnalystWizard.FILE_RANDOM);
-		this.script.getProperties().setProperty(ScriptProperties.SEGREGATE_CONFIG_sourceFile , AnalystWizard.FILE_RANDOM);
-		
-		this.script.getProperties().setProperty(ScriptProperties.NORMALIZE_CONFIG_sourceFile , AnalystWizard.FILE_TRAIN);
-		this.script.getProperties().setProperty(ScriptProperties.NORMALIZE_CONFIG_targetFile , AnalystWizard.FILE_NORMALIZE);
-		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_sourceFile, AnalystWizard.FILE_NORMALIZE);
-		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_targetFile, AnalystWizard.FILE_TRAINSET);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_trainingFile, AnalystWizard.FILE_TRAINSET);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceFile, AnalystWizard.FILE_EG);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_outputFile, AnalystWizard.FILE_OUTPUT);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);
-		
-		script.getProperties().setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, AnalystFileFormat.DECPNT_COMMA);
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_rawFile,
+				AnalystWizard.FILE_RAW);
+		this.script.getProperties().setProperty(
+				ScriptProperties.RANDOMIZE_CONFIG_sourceFile,
+				AnalystWizard.FILE_RAW);
+		this.script.getProperties().setProperty(
+				ScriptProperties.RANDOMIZE_CONFIG_targetFile,
+				AnalystWizard.FILE_RANDOM);
+		this.script.getProperties().setProperty(
+				ScriptProperties.SEGREGATE_CONFIG_sourceFile,
+				AnalystWizard.FILE_RANDOM);
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.NORMALIZE_CONFIG_sourceFile,
+				AnalystWizard.FILE_TRAIN);
+		this.script.getProperties().setProperty(
+				ScriptProperties.NORMALIZE_CONFIG_targetFile,
+				AnalystWizard.FILE_NORMALIZE);
+		this.script.getProperties().setProperty(
+				ScriptProperties.GENERATE_CONFIG_sourceFile,
+				AnalystWizard.FILE_NORMALIZE);
+		this.script.getProperties().setProperty(
+				ScriptProperties.GENERATE_CONFIG_targetFile,
+				AnalystWizard.FILE_TRAINSET);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_trainingFile,
+				AnalystWizard.FILE_TRAINSET);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_resourceFile, AnalystWizard.FILE_EG);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_outputFile,
+				AnalystWizard.FILE_OUTPUT);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);
+
+		script.getProperties().setProperty(
+				ScriptProperties.SETUP_CONFIG_csvFormat,
+				AnalystFileFormat.DECPNT_COMMA);
 	}
-	
+
 	private void generateNormalizedFields(File file) {
 		NormalizedField[] norm = new NormalizedField[this.script.getFields().length];
 		DataField[] dataFields = script.getFields();
@@ -88,18 +111,17 @@ public class AnalystWizard {
 		for (int i = 0; i < this.script.getFields().length; i++) {
 			DataField f = dataFields[i];
 			NormalizationAction action;
-			boolean isLast = i==this.script.getFields().length-1;
+			boolean isLast = i == this.script.getFields().length - 1;
 
-			if ( (f.isInteger() || f.isReal()) && !f.isClass()) {
+			if ((f.isInteger() || f.isReal()) && !f.isClass()) {
 				action = NormalizationAction.Normalize;
 				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
 				norm[i].setActualHigh(f.getMax());
 				norm[i].setActualLow(f.getMin());
-			} else if( f.isClass() ) { 
-				if( isLast && this.directClassification ) {
+			} else if (f.isClass()) {
+				if (isLast && this.directClassification) {
 					action = NormalizationAction.SingleField;
-				}
-				else if( f.getClassMembers().size()>2)
+				} else if (f.getClassMembers().size() > 2)
 					action = NormalizationAction.Equilateral;
 				else
 					action = NormalizationAction.OneOf;
@@ -113,7 +135,6 @@ public class AnalystWizard {
 		this.script.getNormalize().init(this.script);
 	}
 
-
 	private void generateRandomize(File file) {
 
 	}
@@ -124,91 +145,143 @@ public class AnalystWizard {
 		array[1] = new AnalystSegregateTarget(AnalystWizard.FILE_EVAL, 25);
 		this.script.getSegregate().setSegregateTargets(array);
 	}
-	
-	private NormalizedField getTargetField() {
-		NormalizedField[] fields = this.script.getNormalize().getNormalizedFields();
-		
-		
-		// first try to find a classify field
-		for(int i=0;i<fields.length;i++) {
-			DataField df = this.script.findDataField(fields[i].getName());
-			if( fields[i].getAction().isClassify() && df.isClass() ) {
-				return fields[i];
+
+	private void determineTargetField() {
+		NormalizedField[] fields = this.script.getNormalize()
+				.getNormalizedFields();
+
+		if (this.targetField.trim().length() == 0) {
+			boolean success = false;
+
+			if (this.goal == AnalystGoal.Classification) {
+				// first try to the last classify field
+				for (int i = 0; i < fields.length; i++) {
+					DataField df = this.script.findDataField(fields[i]
+							.getName());
+					if (fields[i].getAction().isClassify() && df.isClass()) {
+						this.targetField = fields[i].getName();
+						success = true;
+					}
+				}
+			} else {
+
+				// otherwise, just return the last regression field
+				for (int i = 0; i < fields.length; i++) {
+					DataField df = this.script.findDataField(fields[i]
+							.getName());
+					if (!df.isClass() && (df.isReal() || df.isInteger())) {
+						this.targetField = fields[i].getName();
+						success = true;
+					}
+				}
+			}
+
+			if (!success) {
+				throw new AnalystError(
+						"Can't determine target field automatically, please specify one.");
+			}
+		} else {
+			if (this.script.findDataField(this.targetField) == null) {
+				throw new AnalystError("Invalid target field: "
+						+ this.targetField);
 			}
 		}
-		
-		// otherwise, just return the first regression field
-		for(int i=0;i<fields.length;i++) {
-			DataField df = this.script.findDataField(fields[i].getName());
-			if( !df.isClass() && (df.isReal() || df.isInteger()) ) {
-				return fields[i];
-			}
-		}
-		
-		// can't find anything useful!
-		return null;
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.DATA_CONFIG_targetField, this.targetField);
+		this.script.getProperties().setProperty(
+				ScriptProperties.DATA_CONFIG_goal, this.goal);
+
 	}
 
 	private void generateGenerate(File file) {
-		NormalizedField targetField = getTargetField();
-		
-		if( targetField==null ) {
-			throw new AnalystError("Failed to find a target field to analyze.  Please specify the target field.");
+		determineTargetField();
+		NormalizedField targetField = this.script
+				.findNormalizedField(this.targetField);
+
+		if (targetField == null) {
+			throw new AnalystError(
+					"Failed to find normalized version of target field: "
+							+ this.targetField);
 		}
 
-		int inputColumns = this.script.getNormalize().calculateInputColumns(targetField);
-		int idealColumns = this.script.getNormalize().calculateOutputColumns(targetField);
+		int inputColumns = this.script.getNormalize().calculateInputColumns(
+				targetField);
+		int idealColumns = this.script.getNormalize().calculateOutputColumns(
+				targetField);
 
-		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_input,inputColumns);
-		this.script.getProperties().setProperty(ScriptProperties.GENERATE_CONFIG_ideal,idealColumns);
+		this.script.getProperties().setProperty(
+				ScriptProperties.GENERATE_CONFIG_input, inputColumns);
+		this.script.getProperties().setProperty(
+				ScriptProperties.GENERATE_CONFIG_ideal, idealColumns);
 
-		switch(this.methodType) {
-			case FeedForward:
-				generateFeedForward(inputColumns, idealColumns);
-				break;
-			case SVM:
-				generateSVM(inputColumns, idealColumns);
-				break;
-			case RBF:
-				generateRBF(inputColumns, idealColumns);
+		switch (this.methodType) {
+		case FeedForward:
+			generateFeedForward(inputColumns, idealColumns);
+			break;
+		case SVM:
+			generateSVM(inputColumns, idealColumns);
+			break;
+		case RBF:
+			generateRBF(inputColumns, idealColumns);
 		}
 	}
-	
+
 	private void generateFeedForward(int inputColumns, int outputColumns) {
-		int hidden = (int)(((double)inputColumns)*1.5);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_FEEDFORWARD);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?B->TANH->"+hidden+"B->TANH->?");
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
-		
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,"rprop");
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_targetError,0.01);
+		int hidden = (int) (((double) inputColumns) * 1.5);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_type,
+				MLMethodFactory.TYPE_FEEDFORWARD);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_architecture,
+				"?B->TANH->" + hidden + "B->TANH->?");
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_resourceName, "ml");
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
+				"rprop");
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_targetError, 0.01);
 	}
-	
+
 	private void generateSVM(int inputColumns, int outputColumns) {
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SVM);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?->C(type=new,kernel=gaussian)->?");
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
-		
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,"svm-train");
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_targetError,0.01);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SVM);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_architecture,
+				"?->C(type=new,kernel=gaussian)->?");
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_resourceName, "ml");
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
+				"svm-train");
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_targetError, 0.01);
 	}
-	
+
 	private void generateRBF(int inputColumns, int outputColumns) {
-		int hidden = (int)(((double)inputColumns)*1.5);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_RBFNETWORK);
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_architecture, "?->GAUSSIAN("+hidden+")->?");
-		this.script.getProperties().setProperty(ScriptProperties.ML_CONFIG_resourceName, "ml");
-		
-		if(outputColumns>1)
-			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,"rprop");
+		int hidden = (int) (((double) inputColumns) * 1.5);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_type,
+				MLMethodFactory.TYPE_RBFNETWORK);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_architecture,
+				"?->GAUSSIAN(" + hidden + ")->?");
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_resourceName, "ml");
+
+		if (outputColumns > 1)
+			this.script.getProperties().setProperty(
+					ScriptProperties.ML_TRAIN_type, "rprop");
 		else
-			this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,"svd");
-		
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,0.01);		
+			this.script.getProperties().setProperty(
+					ScriptProperties.ML_TRAIN_type, "svd");
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
+				0.01);
 	}
-	
-	public void generateTasks()
-	{
+
+	public void generateTasks() {
 		AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
 		task1.getLines().add("randomize");
 		task1.getLines().add("segregate");
@@ -217,22 +290,22 @@ public class AnalystWizard {
 		task1.getLines().add("create");
 		task1.getLines().add("train");
 		task1.getLines().add("evaluate");
-		
+
 		AnalystTask task2 = new AnalystTask("task-generate");
 		task2.getLines().add("randomize");
 		task2.getLines().add("segregate");
 		task2.getLines().add("normalize");
 		task2.getLines().add("generate");
-		
+
 		AnalystTask task3 = new AnalystTask("task-create");
 		task3.getLines().add("create");
-		
+
 		AnalystTask task4 = new AnalystTask("task-train");
 		task4.getLines().add("train");
-		
+
 		AnalystTask task5 = new AnalystTask("task-evaluate");
 		task5.getLines().add("evaluate");
-		
+
 		this.script.addTask(task1);
 		this.script.addTask(task2);
 		this.script.addTask(task3);
@@ -240,47 +313,56 @@ public class AnalystWizard {
 		this.script.addTask(task5);
 	}
 
-	public void wizard(File analyzeFile, boolean b,
-			AnalystFileFormat format) {
-		
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
-		
+	public void wizard(File analyzeFile, boolean b, AnalystFileFormat format) {
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
+
 		generateTasks();
 		determineClassification();
 		generateSettings(analyzeFile);
-		//this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
+		// this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
 		generateRandomize(analyzeFile);
 		generateSegregate(analyzeFile);
 		generateGenerate(analyzeFile);
-		
+
 	}
 
 	public void wizard(URL url, File saveFile, File analyzeFile, boolean b,
 			AnalystFileFormat format) {
-		
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFile, url);
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
-		this.script.getProperties().setProperty(ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
-				
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_sourceFile, url);
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
+
 		this.generateSettings(analyzeFile);
 		analyst.download();
-		
-		wizard(analyzeFile, b, format);		
+
+		wizard(analyzeFile, b, format);
 	}
 
 	public void reanalyze() {
-		String rawID = this.script.getProperties().getPropertyFile(ScriptProperties.HEADER_DATASOURCE_rawFile);
-		
+		String rawID = this.script.getProperties().getPropertyFile(
+				ScriptProperties.HEADER_DATASOURCE_rawFile);
+
 		String rawFilename = this.script.getProperties().getFilename(rawID);
-		
+
 		this.analyst.analyze(new File(rawFilename),
-				this.script.getProperties().getPropertyBoolean(ScriptProperties.SETUP_CONFIG_inputHeaders),
-				this.script.getProperties().getPropertyFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+				this.script.getProperties().getPropertyBoolean(
+						ScriptProperties.SETUP_CONFIG_inputHeaders),
+				this.script.getProperties().getPropertyFormat(
+						ScriptProperties.SETUP_CONFIG_csvFormat));
 
 	}
 
@@ -292,17 +374,17 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param methodType the methodType to set
+	 * @param methodType
+	 *            the methodType to set
 	 */
 	public void setMethodType(WizardMethodType methodType) {
 		this.methodType = methodType;
 	}
-	
-	private void determineClassification()
-	{
+
+	private void determineClassification() {
 		this.directClassification = false;
-		
-		if( this.methodType==WizardMethodType.SVM ) {
+
+		if (this.methodType == WizardMethodType.SVM) {
 			this.directClassification = true;
 		}
 	}
@@ -315,9 +397,12 @@ public class AnalystWizard {
 		this.goal = goal;
 	}
 
-	public void setTargetField(int targetField) {
+	public void setTargetField(String targetField) {
 		this.targetField = targetField;
 	}
-	
-	
+
+	public String getTargetField() {
+		return this.targetField;
+	}
+
 }

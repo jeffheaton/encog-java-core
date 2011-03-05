@@ -12,6 +12,7 @@ import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 
 public class AnalystScript {
@@ -65,7 +66,7 @@ public class AnalystScript {
 
 	public DataField findDataField(String name) {
 		for(DataField dataField: this.fields) {
-			if( dataField.getName().equals(name))
+			if( dataField.getName().equalsIgnoreCase(name))
 				return dataField;
 		}
 		
@@ -138,6 +139,15 @@ public class AnalystScript {
 		}
 		
 		return result;
+	}
+
+	public NormalizedField findNormalizedField(String name) {
+		for(NormalizedField field: this.getNormalize().getNormalizedFields()) {
+			if( field.getName().equalsIgnoreCase(name))
+				return field;
+		}
+		
+		return null;
 	}
 	
 }

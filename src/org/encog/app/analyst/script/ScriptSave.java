@@ -74,7 +74,7 @@ public class ScriptSave {
 	}
 
 	private void saveData(WriteScriptFile out) {
-		out.addSection("DATA");
+		saveSubSection(out,"DATA","CONFIG");
 		out.addSubSection("STATS");
 		out.addColumn("name");
 		out.addColumn("isclass");

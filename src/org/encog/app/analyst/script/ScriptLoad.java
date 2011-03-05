@@ -243,6 +243,8 @@ public class ScriptLoad {
 			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("FILENAMES") ) {
 			handleFilenames(list);
+		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("STATS") ) {
 			handleDataStats(list);
 		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("CLASSES") ) {

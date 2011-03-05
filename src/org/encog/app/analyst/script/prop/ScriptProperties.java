@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
+import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.util.ConvertStringConst;
 import org.encog.util.csv.CSVFormat;
 
@@ -24,6 +25,8 @@ public class ScriptProperties {
 	public static final String SETUP_CONFIG_outputHeaders = "SETUP:CONFIG_outputHeaders";
 	public static final String SETUP_CONFIG_inputHeaders = "SETUP:CONFIG_inputHeaders";
 	public static final String SETUP_CONFIG_csvFormat = "SETUP:CONFIG_csvFormat";
+	public static final String DATA_CONFIG_targetField = "DATA:CONFIG_targetField";
+	public static final String DATA_CONFIG_goal = "DATA:CONFIG_goal";
 	public static final String NORMALIZE_CONFIG_sourceFile = "NORMALIZE:CONFIG_sourceFile";
 	public static final String NORMALIZE_CONFIG_targetFile = "NORMALIZE:CONFIG_targetFile";
 	public static final String RANDOMIZE_CONFIG_sourceFile = "RANDOMIZE:CONFIG_sourceFile";
@@ -177,5 +180,19 @@ public class ScriptProperties {
 	public double getPropertyDouble(String name) {
 		String value = this.data.get(name);
 		return CSVFormat.EG_FORMAT.parse(value);
+	}
+
+	public void setProperty(String name, AnalystGoal goal) {
+		switch(goal) {
+			case Classification:
+				data.put(name, "classification");
+				break;
+			case Regression:
+				data.put(name, "regression");
+				break;
+			default:
+				data.put(name, "");
+		}
+		
 	}
 }
