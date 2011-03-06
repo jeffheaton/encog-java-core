@@ -15,7 +15,6 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.ml.factory.MLMethodFactory;
-import org.encog.util.csv.CSVFormat;
 import org.encog.util.file.FileUtil;
 
 public class AnalystWizard {
@@ -209,11 +208,6 @@ public class AnalystWizard {
 				targetField);
 		int idealColumns = this.script.getNormalize().calculateOutputColumns(
 				targetField);
-
-		this.script.getProperties().setProperty(
-				ScriptProperties.GENERATE_CONFIG_input, inputColumns);
-		this.script.getProperties().setProperty(
-				ScriptProperties.GENERATE_CONFIG_ideal, idealColumns);
 
 		switch (this.methodType) {
 		case FeedForward:

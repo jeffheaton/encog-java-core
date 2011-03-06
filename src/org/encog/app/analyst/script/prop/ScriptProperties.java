@@ -34,8 +34,6 @@ public class ScriptProperties {
 	public static final String SEGREGATE_CONFIG_sourceFile = "SEGREGATE:CONFIG_sourceFile";
 	public static final String GENERATE_CONFIG_sourceFile = "GENERATE:CONFIG_sourceFile";
 	public static final String GENERATE_CONFIG_targetFile = "GENERATE:CONFIG_targetFile";
-	public static final String GENERATE_CONFIG_input = "GENERATE:CONFIG_input";
-	public static final String GENERATE_CONFIG_ideal = "GENERATE:CONFIG_ideal";
 	public static final String ML_CONFIG_trainingFile = "ML:CONFIG_trainingFile";
 	public static final String ML_CONFIG_evalFile = "ML:CONFIG_evalFile";
 	public static final String ML_CONFIG_resourceFile = "ML:CONFIG_resourceFile";

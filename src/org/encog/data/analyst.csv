@@ -24,8 +24,6 @@ RANDOMIZE:CONFIG,targetFile,file
 SEGREGATE:CONFIG,sourceFile,file
 GENERATE:CONFIG,sourceFile,file
 GENERATE:CONFIG,targetFile,file
-GENERATE:CONFIG,input,file
-GENERATE:CONFIG,ideal,file
 ML:CONFIG,trainingFile,file
 ML:CONFIG,evalFile,file
 ML:CONFIG,resourceFile,file
