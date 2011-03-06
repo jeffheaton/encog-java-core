@@ -379,7 +379,7 @@ public final class EncogUtility {
     }
     
     public static void convertCSV2Binary(String csvFile, CSVFormat format,
-            String binFile, int inputCount, int[] ideal,
+            String binFile, int[] input, int[] ideal,
             boolean headers)
    {
 
@@ -387,21 +387,23 @@ public final class EncogUtility {
        ReadCSV csv = new ReadCSV(csvFile.toString(), headers, format);
        
        BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(binFile));
-       buffer.beginLoad(inputCount, ideal.length);
+       buffer.beginLoad(input.length, ideal.length);
        while(csv.next())
        {
-    	   BasicNeuralData inputData = new BasicNeuralData(inputCount);
+    	   BasicNeuralData inputData = new BasicNeuralData(input.length);
     	   BasicNeuralData idealData = new BasicNeuralData(ideal.length);
     	   
     	   // handle input data
-    	   int inputIndex = 0;
-    	   for(int i=0;i<csv.getColumnCount();i++) {
-    		   if( !EngineArray.contains(ideal,i) ) {
-    			   inputData.setData(inputIndex++,csv.getDouble(i));
-    		   }
+    	   for(int i=0;i<input.length;i++) {
+    		   inputData.setData(i, csv.getDouble(input[i]));
     	   }
     	   
-    	   // handle ideal data
+    	   // handle input data
+    	   for(int i=0;i<ideal.length;i++) {
+    		   idealData.setData(i, csv.getDouble(ideal[i]));
+    	   }
+    	   
+    	   // add to dataset
     	   
            buffer.add(inputData,idealData);
        }

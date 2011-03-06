@@ -178,7 +178,7 @@ public class AnalystWizard {
 
 			if (!success) {
 				throw new AnalystError(
-						"Can't determine target field automatically, please specify one.");
+						"Can't determine target field automatically, please specify one.\nThis can also happen if you specified the wrong file format.");
 			}
 		} else {
 			if (this.script.findDataField(this.targetField) == null) {

@@ -37,6 +37,8 @@ public class CmdEvaluate extends Cmd {
 
 		String outputFile = getProp().getFilename(
 				getProp().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
+		
+		String targetField = getProp().getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
 
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.load(resourceFile);
@@ -48,7 +50,7 @@ public class CmdEvaluate extends Cmd {
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this.getAnalyst()));
 		eval.analyze(evalFile, headers, getProp().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
-		eval.process(outputFile, getAnalyst(), method);
+		eval.process(outputFile, getAnalyst(), method,targetField);
 		getAnalyst().setCurrentQuantTask(null);
 		this.classCorrect = eval.getClassCorrect();
 		this.classCount = eval.getClassCount();

@@ -28,6 +28,7 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.QuantTask;
+import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.bot.BotUtil;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLTrain;
@@ -333,6 +334,60 @@ public class EncogAnalyst {
 		if (this.currentQuantTask != null) {
 			this.currentQuantTask.requestStop();
 		}
+	}
+	
+	public int[] determineInputFields() {
+		List<Integer> fields = new ArrayList<Integer>();
+		String targetField = this.script.getProperties().getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
+		
+		// calculate size of each field
+		int currentIndex = 0;
+		for(NormalizedField norm : this.script.getNormalize().getNormalizedFields() ) {
+			int cols = norm.getColumnsNeeded();
+			
+			if( !norm.getName().equalsIgnoreCase(targetField) ) {
+				for(int i=0;i<cols;i++) {
+					fields.add(currentIndex++);
+				}
+			} else {
+				currentIndex+=cols;
+			}
+		}
+		
+		// allocate result array
+		int[] result = new int[fields.size()];
+		for(int i=0;i<result.length;i++) {
+			result[i] = fields.get(i);
+		}
+		
+		return result;
+	}
+	
+	public int[] determineIdealFields() {
+		List<Integer> fields = new ArrayList<Integer>();
+		String targetField = this.script.getProperties().getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
+		
+		// calculate size of each field
+		int currentIndex = 0;
+		for(NormalizedField norm : this.script.getNormalize().getNormalizedFields() ) {
+			int cols = norm.getColumnsNeeded();
+			
+			if( norm.getName().equalsIgnoreCase(targetField) ) {
+				for(int i=0;i<cols;i++) {
+					fields.add(currentIndex++);
+				}
+			} else {
+				currentIndex+=cols;
+			}
+		}
+		
+		// allocate result array
+		int[] result = new int[fields.size()];
+		for(int i=0;i<result.length;i++) {
+			result[i] = fields.get(i);
+		}
+		
+		return result;
 	}
 
 }

@@ -65,4 +65,13 @@ public class AnalystNormalize {
 			}			
 		}		
 	}
+
+	public int countActiveFields() {
+		int result = 0;
+		for(int i=0;i<this.normalizedFields.length;i++) {
+			if(this.normalizedFields[i].getAction()!=NormalizationAction.Ignore)
+				result++;
+		}
+		return result;
+	}
 }

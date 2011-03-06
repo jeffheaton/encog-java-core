@@ -11,7 +11,6 @@ import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
 import org.encog.app.quant.normalize.ClassItem;
-import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
@@ -60,7 +59,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 			// write headers, if needed
 			if (this.isProduceOutputHeaders()) {
 				StringBuilder line = new StringBuilder();
-
+				
 				// display the input fields
 				if (this.inputHeadings != null) {
 					for(int i=0;i<input;i++) {
@@ -119,7 +118,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 
 	public void process(String outputFile, EncogAnalyst analyst,
-			MLRegression method) {
+			MLRegression method, String targetFieldName) {
 
 		ReadCSV csv = new ReadCSV(this.getInputFilename(),
 				this.isExpectInputHeaders(), this.getInputFormat());
@@ -129,77 +128,86 @@ public class AnalystEvaluateCSV extends BasicFile {
 		NeuralData input = new BasicNeuralData(method.getInputCount());
 		NormalizedField[] fields = analyst.getScript().getNormalize()
 				.getNormalizedFields();
-		int finalCol = getColumnCount();
-		int computeIndex = method.getInputCount();
 		
-		PrintWriter tw;
-		if( fields[computeIndex].isClassify() ) {
-				tw = this.prepareOutputFile(outputFile, method.getInputCount(), 1);
-		} else {
-			tw = this.prepareOutputFile(outputFile, method.getInputCount(), method.getOutputCount());
-		}
-		
+		NormalizedField targetField = analyst.getScript().findNormalizedField(targetFieldName);
 
+		PrintWriter tw = this.prepareOutputFile(outputFile, analyst.getScript().getNormalize().countActiveFields()-1, 1);
+		
 		resetStatus();
 		while (csv.next()) {
 			updateStatus(false);
 			LoadedRow row = new LoadedRow(csv, 1);
+			int finalCol = row.getData().length-1;
 
 			int inputIndex = 0;
 			int outputIndex = 0;
-			
+			String idealClass = "";
 
+			// build the input
 			for (int normFieldNumber = 0; normFieldNumber < fields.length; normFieldNumber++) {
 				NormalizedField field = fields[normFieldNumber];
 
 				int columnsNeeded = field.getColumnsNeeded();
+				String str = row.getData()[inputIndex];
 
-				if (normFieldNumber < computeIndex) {
-					double d = this.getInputFormat().parse(
-							row.getData()[inputIndex++]);
-					
-					if (columnsNeeded == 1) {						
+				if (field!=targetField ) {
+					// input data
+					 					
+					if (columnsNeeded == 1) {	
+						double d = this.getInputFormat().parse(str);
 						input.setData(outputIndex++, field.normalize(d));
 					} else if (columnsNeeded > 1) {
-						double[] e = field.getEq().encode((int)d);
+						int idx = field.lookup(str);
+						double[] e = field.getEq().encode(idx);
 						for(int i=0;i<e.length;i++) {
-							input.setData(outputIndex++, d);	
+							input.setData(outputIndex++, e[i]);	
 						}
 					}
-				} else if (normFieldNumber == computeIndex) {
-					output = method.compute(input);	
-
-					if( field.isClassify() ) {
-						// classification
-						ClassItem cls = field.determineClass(output.getData());
-						row.getData()[finalCol] = cls.getName();
-						
-						String a = row.getData()[finalCol-1];
-						String b = row.getData()[finalCol];
-
-						// update count
-						if( !classCount.containsKey(a) ) {
-							classCount.put(a, 1);
-						} else {
-							int i = classCount.get(a);
-							classCount.put(a, i+1);
-						}
-						
-						// update correct
-						if( a.equals(b) ) {
-							if( !classCorrect.containsKey(a) ) {
-								classCorrect.put(a, 1);
-							} else {
-								int i = classCorrect.get(a);
-								classCorrect.put(a, i+1);
-							}	
-						}						
-					} else {
-						// regression
-						row.getData()[finalCol] = this.getInputFormat().format(output.getData(0), this.getPrecision());
-					}
+				} else {
+					idealClass = str;
 				}
+				
+				inputIndex++;
 			}
+			
+			// evaluate
+			
+
+			// evaluation data
+			output = method.compute(input);	
+
+			if( targetField.isClassify() ) {
+				// classification
+				ClassItem cls = targetField.determineClass(output.getData());
+				row.getData()[finalCol] = cls.getName();
+				
+				String a = idealClass;
+				String b = row.getData()[finalCol];
+
+				// update count
+				if( !classCount.containsKey(a) ) {
+					classCount.put(a, 1);
+				} else {
+					int i = classCount.get(a);
+					classCount.put(a, i+1);
+				}
+				
+				// update correct
+				if( a.equals(b) ) {
+					if( !classCorrect.containsKey(a) ) {
+						classCorrect.put(a, 1);
+					} else {
+						int i = classCorrect.get(a);
+						classCorrect.put(a, i+1);
+					}	
+				}						
+			} else {
+				// regression
+				 double n = output.getData(0);
+				 n = targetField.deNormalize(n);				 
+				 row.getData()[finalCol] = this.getInputFormat().format(n, this.getPrecision());
+			}
+		
 
 			
 			writeRow(tw, row);
