@@ -27,6 +27,7 @@ public class AnalystWizard {
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
 	public static final String FILE_EG = "FILE_EG";
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
+	public static final String FILE_TIME = "FILE_TIME";
 
 	private AnalystScript script;
 	private EncogAnalyst analyst;
@@ -34,6 +35,10 @@ public class AnalystWizard {
 	private boolean directClassification = false;
 	private String targetField;
 	private AnalystGoal goal;
+	private int lagWindowSize;
+	private int leadWindowSize;
+	private boolean includeTargetField;
+	private boolean timeSeries;
 
 	public AnalystWizard(EncogAnalyst analyst) {
 		this.analyst = analyst;
@@ -41,6 +46,9 @@ public class AnalystWizard {
 		this.methodType = WizardMethodType.FeedForward;
 		this.targetField = "";
 		this.goal = AnalystGoal.Classification;
+		this.leadWindowSize = 0;
+		this.lagWindowSize = 0;
+		this.includeTargetField = false;
 	}
 
 	private void generateSettings(File file) {
@@ -49,8 +57,15 @@ public class AnalystWizard {
 				file.toString());
 		this.script.getProperties().setFilename(AnalystWizard.FILE_NORMALIZE,
 				FileUtil.addFilenameBase(file, "_norm").toString());
-		this.script.getProperties().setFilename(AnalystWizard.FILE_RANDOM,
-				FileUtil.addFilenameBase(file, "_random").toString());
+
+		if (!this.timeSeries) {
+			this.script.getProperties().setFilename(AnalystWizard.FILE_RANDOM,
+					FileUtil.addFilenameBase(file, "_random").toString());
+		} else {
+			this.script.getProperties().setFilename(AnalystWizard.FILE_TIME,
+					FileUtil.addFilenameBase(file, "_random").toString());
+		}
+
 		this.script.getProperties().setFilename(AnalystWizard.FILE_OUTPUT,
 				FileUtil.addFilenameBase(file, "_output").toString());
 		this.script.getProperties().setFilename(AnalystWizard.FILE_TRAIN,
@@ -62,31 +77,44 @@ public class AnalystWizard {
 		this.script.getProperties().setFilename(AnalystWizard.FILE_EG,
 				FileUtil.forceExtension(file.toString(), "eg"));
 
+		String target;
+
+		// starting point
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_rawFile,
-				AnalystWizard.FILE_RAW);
-		this.script.getProperties().setProperty(
-				ScriptProperties.RANDOMIZE_CONFIG_sourceFile,
-				AnalystWizard.FILE_RAW);
-		this.script.getProperties().setProperty(
-				ScriptProperties.RANDOMIZE_CONFIG_targetFile,
-				AnalystWizard.FILE_RANDOM);
-		this.script.getProperties().setProperty(
-				ScriptProperties.SEGREGATE_CONFIG_sourceFile,
-				AnalystWizard.FILE_RANDOM);
+				target = AnalystWizard.FILE_RAW);
 
+		// randomize
+		if (!this.timeSeries) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.RANDOMIZE_CONFIG_sourceFile,
+					AnalystWizard.FILE_RAW);
+			this.script.getProperties().setProperty(
+					ScriptProperties.RANDOMIZE_CONFIG_targetFile,
+					target = AnalystWizard.FILE_RANDOM);
+		}
+
+		// segregate
+		this.script.getProperties().setProperty(
+				ScriptProperties.SEGREGATE_CONFIG_sourceFile, target);
+
+		// normalize
 		this.script.getProperties().setProperty(
 				ScriptProperties.NORMALIZE_CONFIG_sourceFile,
 				AnalystWizard.FILE_TRAIN);
 		this.script.getProperties().setProperty(
 				ScriptProperties.NORMALIZE_CONFIG_targetFile,
 				AnalystWizard.FILE_NORMALIZE);
+
+		// generate
 		this.script.getProperties().setProperty(
 				ScriptProperties.GENERATE_CONFIG_sourceFile,
 				AnalystWizard.FILE_NORMALIZE);
 		this.script.getProperties().setProperty(
 				ScriptProperties.GENERATE_CONFIG_targetFile,
 				AnalystWizard.FILE_TRAINSET);
+
+		// ML
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_trainingFile,
 				AnalystWizard.FILE_TRAINSET);
@@ -98,6 +126,7 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);
 
+		// other
 		script.getProperties().setProperty(
 				ScriptProperties.SETUP_CONFIG_csvFormat,
 				AnalystFileFormat.DECPNT_COMMA);
@@ -277,18 +306,28 @@ public class AnalystWizard {
 
 	public void generateTasks() {
 		AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
-		task1.getLines().add("randomize");
+		if (!this.timeSeries) {
+			task1.getLines().add("randomize");
+		}
 		task1.getLines().add("segregate");
 		task1.getLines().add("normalize");
+		if( this.timeSeries) {
+			task1.getLines().add("series");	
+		}
 		task1.getLines().add("generate");
 		task1.getLines().add("create");
 		task1.getLines().add("train");
 		task1.getLines().add("evaluate");
 
 		AnalystTask task2 = new AnalystTask("task-generate");
-		task2.getLines().add("randomize");
+		if (!this.timeSeries) {
+			task2.getLines().add("randomize");
+		}
 		task2.getLines().add("segregate");
 		task2.getLines().add("normalize");
+		if( this.timeSeries) {
+			task1.getLines().add("series");	
+		}
 		task2.getLines().add("generate");
 
 		AnalystTask task3 = new AnalystTask("task-create");
@@ -305,27 +344,6 @@ public class AnalystWizard {
 		this.script.addTask(task3);
 		this.script.addTask(task4);
 		this.script.addTask(task5);
-	}
-
-	public void wizard(File analyzeFile, boolean b, AnalystFileFormat format) {
-
-		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
-		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
-		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
-
-		generateTasks();
-		determineClassification();
-		generateSettings(analyzeFile);
-		// this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
-		this.analyst.analyze(analyzeFile, b, format);
-		generateNormalizedFields(analyzeFile);
-		generateRandomize(analyzeFile);
-		generateSegregate(analyzeFile);
-		generateGenerate(analyzeFile);
-
 	}
 
 	public void wizard(URL url, File saveFile, File analyzeFile, boolean b,
@@ -352,7 +370,8 @@ public class AnalystWizard {
 
 		String rawFilename = this.script.getProperties().getFilename(rawID);
 
-		this.analyst.analyze(new File(rawFilename),
+		this.analyst.analyze(
+				new File(rawFilename),
 				this.script.getProperties().getPropertyBoolean(
 						ScriptProperties.SETUP_CONFIG_inputHeaders),
 				this.script.getProperties().getPropertyFormat(
@@ -397,6 +416,83 @@ public class AnalystWizard {
 
 	public String getTargetField() {
 		return this.targetField;
+	}
+
+	/**
+	 * @return the lagWindowSize
+	 */
+	public int getLagWindowSize() {
+		return lagWindowSize;
+	}
+
+	/**
+	 * @param lagWindowSize the lagWindowSize to set
+	 */
+	public void setLagWindowSize(int lagWindowSize) {
+		this.lagWindowSize = lagWindowSize;
+	}
+
+	/**
+	 * @return the leadWindowSize
+	 */
+	public int getLeadWindowSize() {
+		return leadWindowSize;
+	}
+
+	/**
+	 * @param leadWindowSize the leadWindowSize to set
+	 */
+	public void setLeadWindowSize(int leadWindowSize) {
+		this.leadWindowSize = leadWindowSize;
+	}
+
+	/**
+	 * @return the includeTargetField
+	 */
+	public boolean isIncludeTargetField() {
+		return includeTargetField;
+	}
+
+	/**
+	 * @param includeTargetField the includeTargetField to set
+	 */
+	public void setIncludeTargetField(boolean includeTargetField) {
+		this.includeTargetField = includeTargetField;
+	}
+
+	private void generateTime(File file) {
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.SERIES_CONFIG_lag, this.lagWindowSize);
+		this.script.getProperties().setProperty(
+				ScriptProperties.SERIES_CONFIG_lead, this.leadWindowSize);
+		this.script.getProperties().setProperty(
+				ScriptProperties.SERIES_CONFIG_includeTarget, this.includeTargetField);
+
+	}
+
+	public void wizard(File analyzeFile, boolean b, AnalystFileFormat format) {
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
+		this.script.getProperties().setProperty(
+				ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
+
+		this.timeSeries = (this.lagWindowSize > 0 || this.leadWindowSize > 0);
+
+		generateTasks();
+		determineClassification();
+		generateSettings(analyzeFile);
+		// this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
+		this.analyst.analyze(analyzeFile, b, format);
+		generateNormalizedFields(analyzeFile);
+		generateRandomize(analyzeFile);
+		generateSegregate(analyzeFile);
+		generateGenerate(analyzeFile);
+		generateTime(analyzeFile);
+
 	}
 
 }

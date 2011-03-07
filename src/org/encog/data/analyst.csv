@@ -24,6 +24,11 @@ RANDOMIZE:CONFIG,targetFile,file
 SEGREGATE:CONFIG,sourceFile,file
 GENERATE:CONFIG,sourceFile,file
 GENERATE:CONFIG,targetFile,file
+SERIES:CONFIG,sourceFile,file
+SERIES:CONFIG,targetFile,file
+SERIES:CONFIG,lead,int
+SERIES:CONFIG,lag,int
+SERIES:CONFIG,includeTarget,boolean
 ML:CONFIG,trainingFile,file
 ML:CONFIG,evalFile,file
 ML:CONFIG,resourceFile,file

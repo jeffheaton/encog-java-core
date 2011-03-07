@@ -253,6 +253,10 @@ public class ScriptLoad {
 			handleNormalizeRange(list);
 		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			loadSubSection(list,currentSection,currentSubsection);
+		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			loadSubSection(list,currentSection,currentSubsection);
+		} else if( currentSection.equals("SERIES") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
+			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("RANDOMIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("SEGREGATE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {

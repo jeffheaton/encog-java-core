@@ -179,6 +179,7 @@ public class ScriptSave {
 		saveConfig(out);
 		saveData(out);
 		saveNormalize(out);
+		saveSubSection(out,"SERIES","CONFIG");
 		saveSubSection(out,"RANDOMIZE","CONFIG");
 		saveSegregate(out);
 		saveSubSection(out,"GENERATE","CONFIG");
