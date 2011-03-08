@@ -39,6 +39,7 @@ public class AnalystWizard {
 	private int leadWindowSize;
 	private boolean includeTargetField;
 	private boolean timeSeries;
+	private File egName;
 
 	public AnalystWizard(EncogAnalyst analyst) {
 		this.analyst = analyst;
@@ -74,9 +75,14 @@ public class AnalystWizard {
 				FileUtil.addFilenameBase(file, "_eval").toString());
 		this.script.getProperties().setFilename(AnalystWizard.FILE_TRAINSET,
 				FileUtil.forceExtension(train, "egb"));
+		
+		if( this.egName==null ) {
+			egName = new File( FileUtil.forceExtension(file.toString(), "eg") );			
+		} 
+		
 		this.script.getProperties().setFilename(AnalystWizard.FILE_EG,
-				FileUtil.forceExtension(file.toString(), "eg"));
-
+				egName.toString());
+		
 		String target;
 
 		// starting point
@@ -506,4 +512,17 @@ public class AnalystWizard {
 
 	}
 
+	/**
+	 * @return the egName
+	 */
+	public File getEGName() {
+		return egName;
+	}
+
+	/**
+	 * @param projectFile the egName to set
+	 */
+	public void setEGName(File projectFile) {
+		this.egName = projectFile;
+	}
 }
