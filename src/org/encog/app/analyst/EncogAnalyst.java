@@ -22,6 +22,7 @@ import org.encog.app.analyst.commands.CmdGenerate;
 import org.encog.app.analyst.commands.CmdNormalize;
 import org.encog.app.analyst.commands.CmdRandomize;
 import org.encog.app.analyst.commands.CmdSegregate;
+import org.encog.app.analyst.commands.CmdSeries;
 import org.encog.app.analyst.commands.CmdTrain;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -55,6 +56,7 @@ public class EncogAnalyst {
 		addCommand(new CmdRandomize(this));
 		addCommand(new CmdSegregate(this));
 		addCommand(new CmdTrain(this));		
+		addCommand(new CmdSeries(this));
 	}
 
 	public void analyze(File file, boolean headers, AnalystFileFormat format) {
