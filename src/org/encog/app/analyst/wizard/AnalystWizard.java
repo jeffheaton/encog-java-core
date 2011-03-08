@@ -27,7 +27,7 @@ public class AnalystWizard {
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
 	public static final String FILE_EG = "FILE_EG";
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
-	public static final String FILE_TIME = "FILE_TIME";
+	public static final String FILE_SERIES = "FILE_SERIES";
 
 	private AnalystScript script;
 	private EncogAnalyst analyst;
@@ -62,8 +62,8 @@ public class AnalystWizard {
 			this.script.getProperties().setFilename(AnalystWizard.FILE_RANDOM,
 					FileUtil.addFilenameBase(file, "_random").toString());
 		} else {
-			this.script.getProperties().setFilename(AnalystWizard.FILE_TIME,
-					FileUtil.addFilenameBase(file, "_random").toString());
+			this.script.getProperties().setFilename(AnalystWizard.FILE_SERIES,
+					FileUtil.addFilenameBase(file, "_series").toString());
 		}
 
 		this.script.getProperties().setFilename(AnalystWizard.FILE_OUTPUT,
@@ -104,12 +104,22 @@ public class AnalystWizard {
 				AnalystWizard.FILE_TRAIN);
 		this.script.getProperties().setProperty(
 				ScriptProperties.NORMALIZE_CONFIG_targetFile,
-				AnalystWizard.FILE_NORMALIZE);
+				target = AnalystWizard.FILE_NORMALIZE);
+
+		// series
+		if (this.timeSeries) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.SERIES_CONFIG_sourceFile,
+					target);
+			this.script.getProperties().setProperty(
+					ScriptProperties.SERIES_CONFIG_targetFile,
+					target = AnalystWizard.FILE_SERIES);
+		}
 
 		// generate
 		this.script.getProperties().setProperty(
 				ScriptProperties.GENERATE_CONFIG_sourceFile,
-				AnalystWizard.FILE_NORMALIZE);
+				target);
 		this.script.getProperties().setProperty(
 				ScriptProperties.GENERATE_CONFIG_targetFile,
 				AnalystWizard.FILE_TRAINSET);
@@ -311,8 +321,8 @@ public class AnalystWizard {
 		}
 		task1.getLines().add("segregate");
 		task1.getLines().add("normalize");
-		if( this.timeSeries) {
-			task1.getLines().add("series");	
+		if (this.timeSeries) {
+			task1.getLines().add("series");
 		}
 		task1.getLines().add("generate");
 		task1.getLines().add("create");
@@ -325,8 +335,8 @@ public class AnalystWizard {
 		}
 		task2.getLines().add("segregate");
 		task2.getLines().add("normalize");
-		if( this.timeSeries) {
-			task1.getLines().add("series");	
+		if (this.timeSeries) {
+			task1.getLines().add("series");
 		}
 		task2.getLines().add("generate");
 
@@ -467,7 +477,8 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.SERIES_CONFIG_lead, this.leadWindowSize);
 		this.script.getProperties().setProperty(
-				ScriptProperties.SERIES_CONFIG_includeTarget, this.includeTargetField);
+				ScriptProperties.SERIES_CONFIG_includeTarget,
+				this.includeTargetField);
 
 	}
 

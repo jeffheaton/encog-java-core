@@ -92,6 +92,11 @@ public class BasicFile implements QuantTask {
 	 * True, if the process should stop.
 	 */
 	private boolean cancel;
+	
+	/**
+	 * The output format, usually, the same as the input format.
+	 */
+	private CSVFormat outputFormat;
 
 	/**
 	 * Construct the object, and set the defaults.
@@ -114,6 +119,9 @@ public class BasicFile implements QuantTask {
 	public PrintWriter prepareOutputFile(String outputFile) {
 		try {
 			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
+			if( this.outputFormat==null) {
+				this.outputFormat = this.inputFormat;
+			}
 
 			// write headers, if needed
 			if (this.produceOutputHeaders) {
@@ -123,7 +131,7 @@ public class BasicFile implements QuantTask {
 				if (this.inputHeadings != null) {
 					for (String str : this.inputHeadings) {
 						if (line.length() > 0) {
-							line.append(",");
+							line.append(this.outputFormat.getSeparator());
 						}
 						line.append("\"");
 						line.append(str);
@@ -190,9 +198,7 @@ public class BasicFile implements QuantTask {
 		StringBuilder line = new StringBuilder();
 
 		for (int i = 0; i < row.getData().length; i++) {
-			if (i > 0) {
-				line.append(",");
-			}
+			this.appendSeparator(line, this.outputFormat);			
 
 			/*
 			 * if (nonNumeric[i]) { line.Append("\""); line.Append(row.Data[i]);
@@ -211,6 +217,10 @@ public class BasicFile implements QuantTask {
 	 * internally.
 	 */
 	public void performBasicCounts() {
+		if( this.outputFormat==null) {
+			this.outputFormat = this.inputFormat;
+		}
+		
 		resetStatus();
 		int recordCount = 0;
 		ReadCSV csv = new ReadCSV(this.inputFilename, this.expectInputHeaders,
@@ -486,9 +496,9 @@ public class BasicFile implements QuantTask {
 		this.produceOutputHeaders = produceOutputHeaders;
 	}
 	
-	public static void appendComma(StringBuilder line) {
-		if( line.length()>0 && !line.toString().endsWith(","))
-			line.append(',');		
+	public static void appendSeparator(StringBuilder line, CSVFormat format) {
+		if( line.length()>0 && !line.toString().endsWith(format.getSeparator()+""))
+			line.append(format.getSeparator());		
 	}
 	
 	public void requestStop()
@@ -501,4 +511,17 @@ public class BasicFile implements QuantTask {
 		return this.cancel;
 	}
 
+	/**
+	 * @return the outputFormat
+	 */
+	public CSVFormat getOutputFormat() {
+		return outputFormat;
+	}
+
+	/**
+	 * @param outputFormat the outputFormat to set
+	 */
+	public void setOutputFormat(CSVFormat outputFormat) {
+		this.outputFormat = outputFormat;
+	}
 }

@@ -6,6 +6,7 @@ import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.segregate.SegregateCSV;
 import org.encog.app.quant.segregate.SegregateTargetPercent;
+import org.encog.util.csv.CSVFormat;
 
 public class CmdSegregate extends Cmd {
 
@@ -21,7 +22,11 @@ public class CmdSegregate extends Cmd {
 		String sourceID = getProp().getPropertyString(ScriptProperties.SEGREGATE_CONFIG_sourceFile);
 		
 		String sourceFile = getProp().getFilename(sourceID);
-
+		
+		// get formats
+		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);
+		CSVFormat outputFormat = this.getScript().determineOutputFormat(); 
+			
 		// prepare to segregate
 		boolean headers = getScript().expectInputHeaders(sourceID);
 		SegregateCSV seg = new SegregateCSV();
@@ -37,7 +42,8 @@ public class CmdSegregate extends Cmd {
 		}
 		
 		seg.setReport(new AnalystReportBridge(getAnalyst()));
-		seg.analyze(sourceFile, headers, this.getScript().getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+		seg.analyze(sourceFile, headers, inputFormat);
+		seg.setOutputFormat(outputFormat);
 
 		seg.process();
 		getAnalyst().setCurrentQuantTask(null);

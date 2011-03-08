@@ -28,9 +28,10 @@ public class CmdSeries extends Cmd {
 		int inputWindowSize = this.getProp().getPropertyInt(ScriptProperties.SERIES_CONFIG_lag);
 		int outputWindowSize =  this.getProp().getPropertyInt(ScriptProperties.SERIES_CONFIG_lead);
 		
-		// get the format
-		CSVFormat format = this.getScript().determineFormat(sourceID);
-		
+		// get formats
+		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);
+		CSVFormat outputFormat = this.getScript().determineOutputFormat(); 
+			
 		// mark generated
 		getScript().markGenerated(targetID);
 
@@ -41,7 +42,8 @@ public class CmdSeries extends Cmd {
 		boolean headers = this.getScript().expectInputHeaders(sourceID);
 		series.setInputWindow(inputWindowSize);
 		series.setPredictWindow(outputWindowSize);
-		series.analyze(sourceFile, headers, format);
+		series.analyze(sourceFile, headers, inputFormat);
+		series.setOutputFormat(outputFormat);
 		series.process(targetFile);
 		getAnalyst().setCurrentQuantTask(null);
 		return series.shouldStop();

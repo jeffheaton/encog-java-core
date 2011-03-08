@@ -44,11 +44,11 @@ public class ScriptProperties {
 	public static final String ML_TRAIN_type = "ML:TRAIN_type";
 	public static final String ML_TRAIN_arguments = "ML:TRAIN_arguments";
 	public static final String ML_TRAIN_targetError = "ML:TRAIN_targetError";
-	public static final String SERIES_CONFIG_lead = "SERIES_CONFIG:lead";
-	public static final String SERIES_CONFIG_lag = "SERIES_CONFIG:lag";
-	public static final String SERIES_CONFIG_includeTarget = "SERIES_CONFIG:includeTarget";	
-	public static final String SERIES_CONFIG_sourceFile = "SERIES_CONFIG:sourceFile";
-	public static final String SERIES_CONFIG_targetFile = "SERIES_CONFIG:targetFile";
+	public static final String SERIES_CONFIG_lead = "SERIES:CONFIG_lead";
+	public static final String SERIES_CONFIG_lag = "SERIES:CONFIG_lag";
+	public static final String SERIES_CONFIG_includeTarget = "SERIES:CONFIG_includeTarget";	
+	public static final String SERIES_CONFIG_sourceFile = "SERIES:CONFIG_sourceFile";
+	public static final String SERIES_CONFIG_targetFile = "SERIES:CONFIG_targetFile";
 
 	private final Map<String, String> data = new HashMap<String, String>();
 

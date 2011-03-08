@@ -128,7 +128,7 @@ public class AnalystScript {
 		return properties;
 	}
 
-	public CSVFormat determineFormat(String sourceID) {
+	public CSVFormat determineInputFormat(String sourceID) {
 		String rawID = getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_rawFile);
 		CSVFormat result;
 		
@@ -139,6 +139,10 @@ public class AnalystScript {
 		}
 		
 		return result;
+	}
+	
+	public CSVFormat determineOutputFormat() {		
+		return getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat);
 	}
 
 	public NormalizedField findNormalizedField(String name) {

@@ -63,14 +63,14 @@ public class AnalystEvaluateCSV extends BasicFile {
 				// display the input fields
 				if (this.inputHeadings != null) {
 					for(int i=0;i<input;i++) {
-						BasicFile.appendComma(line);
+						BasicFile.appendSeparator(line,this.getOutputFormat());
 						line.append("\"");
 						line.append(this.inputHeadings[i]);
 						line.append("\"");
 					}
 				} else {
 					for(int i=0;i<input;i++) {
-						BasicFile.appendComma(line);
+						BasicFile.appendSeparator(line,this.getOutputFormat());
 						line.append("\"input-");
 						line.append(i);
 						line.append("\"");
@@ -80,13 +80,13 @@ public class AnalystEvaluateCSV extends BasicFile {
 				// handle ideal fields
 				if( output>1 ) {
 					for(int i=0;i<output;i++) {
-						BasicFile.appendComma(line);
+						BasicFile.appendSeparator(line,this.getOutputFormat());
 						line.append("\"ideal");
 						line.append(i);
 						line.append("\"");
 					}
 				} else {
-					BasicFile.appendComma(line);
+					BasicFile.appendSeparator(line,this.getOutputFormat());
 					line.append("\"ideal");
 					line.append("\"");
 				}
@@ -94,13 +94,13 @@ public class AnalystEvaluateCSV extends BasicFile {
 				// handle actual fields
 				if( output>1 ) {
 					for(int i=0;i<output;i++) {
-						BasicFile.appendComma(line);
+						BasicFile.appendSeparator(line,this.getOutputFormat());
 						line.append("\"actual");
 						line.append(i);
 						line.append("\"");
 					}
 				} else {
-					BasicFile.appendComma(line);
+					BasicFile.appendSeparator(line,this.getOutputFormat());
 					line.append("\"actual");
 					line.append("\"");
 				}

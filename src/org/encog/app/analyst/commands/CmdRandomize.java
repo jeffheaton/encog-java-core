@@ -23,8 +23,11 @@ public class CmdRandomize extends Cmd {
 		
 		String sourceFile = getProp().getFilename(sourceID);
 		String targetFile = getProp().getFilename(targetID);
-		// get the format
-		CSVFormat format = this.getScript().determineFormat(sourceID);
+
+		// get formats
+		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);
+		CSVFormat outputFormat = this.getScript().determineOutputFormat(); 
+			
 		
 		// mark generated
 		getScript().markGenerated(targetID);
@@ -34,7 +37,8 @@ public class CmdRandomize extends Cmd {
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));
 		boolean headers = this.getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers, format);
+		norm.analyze(sourceFile, headers, inputFormat);
+		norm.setOutputFormat(outputFormat);
 		norm.process(targetFile);
 		getAnalyst().setCurrentQuantTask(null);
 		return norm.shouldStop();

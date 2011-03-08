@@ -10,6 +10,7 @@ import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.Equilateral;
+import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
 /**
@@ -269,14 +270,14 @@ public class NormalizedField {
 		StringBuilder line = new StringBuilder();
 		switch (this.action) {
 		case SingleField:
-			BasicFile.appendComma(line);
+			BasicFile.appendSeparator(line,CSVFormat.EG_FORMAT);
 			line.append('\"');
 			line.append(name);
 			line.append('\"');
 			break;
 		case Equilateral:
 			for (int i = 0; i < this.classes.size() - 1; i++) {
-				BasicFile.appendComma(line);
+				BasicFile.appendSeparator(line,CSVFormat.EG_FORMAT);
 				line.append('\"');
 				line.append(name);
 				line.append('-');
@@ -286,7 +287,7 @@ public class NormalizedField {
 			break;
 		case OneOf:
 			for (int i = 0; i < this.classes.size(); i++) {
-				BasicFile.appendComma(line);
+				BasicFile.appendSeparator(line,CSVFormat.EG_FORMAT);
 				line.append('\"');
 				line.append(name);
 				line.append('-');

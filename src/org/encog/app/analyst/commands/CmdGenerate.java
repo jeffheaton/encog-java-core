@@ -18,7 +18,7 @@ public class CmdGenerate extends Cmd {
 		// get filenames
 		String sourceID = getProp().getPropertyString(ScriptProperties.GENERATE_CONFIG_sourceFile);
 		String targetID = getProp().getPropertyString(ScriptProperties.GENERATE_CONFIG_targetFile);
-		CSVFormat format = this.getAnalyst().getScript().determineFormat(sourceID);
+		CSVFormat format = this.getAnalyst().getScript().determineInputFormat(sourceID);
 		
 		String sourceFile = getProp().getFilename(sourceID);
 		String targetFile = getProp().getFilename(targetID);

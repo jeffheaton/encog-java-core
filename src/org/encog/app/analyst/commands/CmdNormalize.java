@@ -6,6 +6,7 @@ import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.app.quant.normalize.NormalizeCSV;
 import org.encog.app.quant.normalize.NormalizedField;
+import org.encog.util.csv.CSVFormat;
 
 public class CmdNormalize extends Cmd {
 
@@ -27,6 +28,10 @@ public class CmdNormalize extends Cmd {
 		// mark generated
 		getScript().markGenerated(targetID);
 		
+		// get formats
+		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);
+		CSVFormat outputFormat = this.getScript().determineOutputFormat(); 
+					
 		// prepare to normalize
 		NormalizeCSV norm = new NormalizeCSV();
 		getAnalyst().setCurrentQuantTask(norm);
@@ -36,9 +41,8 @@ public class CmdNormalize extends Cmd {
 		NormalizationStats stats = new NormalizationStats(normFields);
 
 		boolean headers = getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers, 
-				getProp().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat),
-				stats);
+		norm.analyze(sourceFile, headers,inputFormat, stats);
+		norm.setOutputFormat(outputFormat);
 		norm.setProduceOutputHeaders(getScript().getProperties().getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders));
 		norm.normalize(targetFile);
 		getAnalyst().setCurrentQuantTask(null);
