@@ -9,9 +9,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.encog.EncogError;
 import org.encog.bot.BotUtil;
+import org.encog.persist.location.ResourcePersistence;
 
 public class FileUtil {
 
@@ -86,26 +88,45 @@ public class FileUtil {
 
 	public static void copy(File source, File target) {
 		try {
-			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
-
-			int length;
-
 			final FileOutputStream fos = new FileOutputStream(target);
 			final InputStream is = new FileInputStream(source);
+			
+			copy(is,fos);
 
+			fos.close();
+			is.close();
+		} catch (final IOException e) {
+			throw new EncogError(e);
+		}
+	}
+	
+	public static void copy(InputStream is, OutputStream os) {
+		try {
+			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
+			int length;
 			do {
 				length = is.read(buffer);
 
 				if (length >= 0) {
-					fos.write(buffer, 0, length);
+					os.write(buffer, 0, length);
 				}
 			} while (length >= 0);
-
-			fos.close();
-		} catch (final IOException e) {
-			throw new EncogError(e);
+		} catch(IOException ex) {
+			throw new EncogError(ex);
 		}
+	}
 
+	public static void copyResource(String resource, File targetFile) {
+		try {
+		ResourcePersistence rp = new ResourcePersistence(resource);
+		InputStream is = rp.createInputStream();
+		OutputStream os = new FileOutputStream(targetFile);
+		copy(is,os);
+		is.close();
+		os.close();
+		} catch(IOException ex) {
+			throw new EncogError(ex);
+		}
 	}
 
 }

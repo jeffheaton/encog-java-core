@@ -24,7 +24,13 @@
 package org.encog.util.simple;
 
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 
+import org.encog.Encog;
+import org.encog.EncogError;
+import org.encog.app.quant.basic.BasicFile;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.EngineArray;
@@ -423,6 +429,38 @@ public final class EncogUtility {
 					.getData());
 		}
 		return errorCalculation.calculate();
+	}
+
+	public static void saveCSV(File targetFile, CSVFormat format, NeuralDataSet set) {
+		try {
+			FileWriter outFile = new FileWriter(targetFile);
+			PrintWriter out = new PrintWriter(outFile);
+			
+			for(NeuralDataPair data: set) {
+				StringBuilder line = new StringBuilder();
+				
+				for(int i=0;i<data.getInput().size();i++) {
+					double d = data.getInput().getData(i);
+					BasicFile.appendSeparator(line, format);
+					line.append( format.format(d, Encog.DEFAULT_PRECISION));
+				}
+				
+				for(int i=0;i<data.getIdeal().size();i++) {
+					double d = data.getIdeal().getData(i);
+					BasicFile.appendSeparator(line, format);
+					line.append( format.format(d, Encog.DEFAULT_PRECISION));
+				}
+								
+				out.println(line);
+			}
+			
+			out.close();
+			outFile.close();
+
+		} catch(IOException ex) {
+			throw new EncogError(ex);
+		}
+		
 	}
 
 }
