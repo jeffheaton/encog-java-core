@@ -29,6 +29,7 @@ import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 public class MockTrain extends BasicTraining implements LearningRate, Momentum {
 
@@ -96,6 +97,21 @@ public class MockTrain extends BasicTraining implements LearningRate, Momentum {
 
 	public void setMomentum(double m) {
 		this.momentum = m;
+		
+	}
+
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
 		
 	}
 
