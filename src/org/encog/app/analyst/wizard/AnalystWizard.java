@@ -40,6 +40,10 @@ public class AnalystWizard {
 	private boolean includeTargetField;
 	private boolean timeSeries;
 	private File egName;
+	private boolean taskSegregate = true;
+	private boolean taskRandomize = true;
+	private boolean taskNormalize = true;
+	private NormalizeRange range = NormalizeRange.NegOne2One;
 
 	public AnalystWizard(EncogAnalyst analyst) {
 		this.analyst = analyst;
@@ -60,8 +64,11 @@ public class AnalystWizard {
 				FileUtil.addFilenameBase(file, "_norm").toString());
 
 		if (!this.timeSeries) {
-			this.script.getProperties().setFilename(AnalystWizard.FILE_RANDOM,
-					FileUtil.addFilenameBase(file, "_random").toString());
+			if (this.taskRandomize) {
+				this.script.getProperties().setFilename(
+						AnalystWizard.FILE_RANDOM,
+						FileUtil.addFilenameBase(file, "_random").toString());
+			}
 		} else {
 			this.script.getProperties().setFilename(AnalystWizard.FILE_SERIES,
 					FileUtil.addFilenameBase(file, "_series").toString());
@@ -69,20 +76,24 @@ public class AnalystWizard {
 
 		this.script.getProperties().setFilename(AnalystWizard.FILE_OUTPUT,
 				FileUtil.addFilenameBase(file, "_output").toString());
+
 		this.script.getProperties().setFilename(AnalystWizard.FILE_TRAIN,
 				train = FileUtil.addFilenameBase(file, "_train").toString());
-		this.script.getProperties().setFilename(AnalystWizard.FILE_EVAL,
-				FileUtil.addFilenameBase(file, "_eval").toString());
+
+		if (this.taskSegregate) {
+			this.script.getProperties().setFilename(AnalystWizard.FILE_EVAL,
+					FileUtil.addFilenameBase(file, "_eval").toString());
+		}
 		this.script.getProperties().setFilename(AnalystWizard.FILE_TRAINSET,
 				FileUtil.forceExtension(train, "egb"));
-		
-		if( this.egName==null ) {
-			egName = new File( FileUtil.forceExtension(file.toString(), "eg") );			
-		} 
-		
+
+		if (this.egName == null) {
+			egName = new File(FileUtil.forceExtension(file.toString(), "eg"));
+		}
+
 		this.script.getProperties().setFilename(AnalystWizard.FILE_EG,
 				egName.toString());
-		
+
 		String target;
 
 		// starting point
@@ -91,7 +102,7 @@ public class AnalystWizard {
 				target = AnalystWizard.FILE_RAW);
 
 		// randomize
-		if (!this.timeSeries) {
+		if (!this.timeSeries && this.taskRandomize) {
 			this.script.getProperties().setProperty(
 					ScriptProperties.RANDOMIZE_CONFIG_sourceFile,
 					AnalystWizard.FILE_RAW);
@@ -101,13 +112,15 @@ public class AnalystWizard {
 		}
 
 		// segregate
-		this.script.getProperties().setProperty(
-				ScriptProperties.SEGREGATE_CONFIG_sourceFile, target);
+		if (this.taskSegregate) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.SEGREGATE_CONFIG_sourceFile, target);
+			target = AnalystWizard.FILE_TRAIN;
+		}
 
 		// normalize
 		this.script.getProperties().setProperty(
-				ScriptProperties.NORMALIZE_CONFIG_sourceFile,
-				AnalystWizard.FILE_TRAIN);
+				ScriptProperties.NORMALIZE_CONFIG_sourceFile, target);
 		this.script.getProperties().setProperty(
 				ScriptProperties.NORMALIZE_CONFIG_targetFile,
 				target = AnalystWizard.FILE_NORMALIZE);
@@ -115,8 +128,7 @@ public class AnalystWizard {
 		// series
 		if (this.timeSeries) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.SERIES_CONFIG_sourceFile,
-					target);
+					ScriptProperties.SERIES_CONFIG_sourceFile, target);
 			this.script.getProperties().setProperty(
 					ScriptProperties.SERIES_CONFIG_targetFile,
 					target = AnalystWizard.FILE_SERIES);
@@ -124,8 +136,7 @@ public class AnalystWizard {
 
 		// generate
 		this.script.getProperties().setProperty(
-				ScriptProperties.GENERATE_CONFIG_sourceFile,
-				target);
+				ScriptProperties.GENERATE_CONFIG_sourceFile, target);
 		this.script.getProperties().setProperty(
 				ScriptProperties.GENERATE_CONFIG_targetFile,
 				AnalystWizard.FILE_TRAINSET);
@@ -139,8 +150,15 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_outputFile,
 				AnalystWizard.FILE_OUTPUT);
-		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);
+		if (this.taskSegregate) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.ML_CONFIG_evalFile,
+					AnalystWizard.FILE_EVAL);
+		} else {
+			this.script.getProperties().setProperty(
+					ScriptProperties.ML_CONFIG_evalFile,
+					target);
+		}
 
 		// other
 		script.getProperties().setProperty(
@@ -169,7 +187,11 @@ public class AnalystWizard {
 					action = NormalizationAction.Equilateral;
 				else
 					action = NormalizationAction.OneOf;
-				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+				
+				if( this.range == NormalizeRange.NegOne2One)
+					norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+				else
+					norm[i] = new NormalizedField(f.getName(), action, 1, 0);
 			} else {
 				action = NormalizationAction.Ignore;
 				norm[i] = new NormalizedField(action, f.getName());
@@ -179,15 +201,16 @@ public class AnalystWizard {
 		this.script.getNormalize().init(this.script);
 	}
 
-	private void generateRandomize(File file) {
-
-	}
-
 	private void generateSegregate(File file) {
-		AnalystSegregateTarget[] array = new AnalystSegregateTarget[2];
-		array[0] = new AnalystSegregateTarget(AnalystWizard.FILE_TRAIN, 75);
-		array[1] = new AnalystSegregateTarget(AnalystWizard.FILE_EVAL, 25);
-		this.script.getSegregate().setSegregateTargets(array);
+		if (this.taskSegregate) {
+			AnalystSegregateTarget[] array = new AnalystSegregateTarget[2];
+			array[0] = new AnalystSegregateTarget(AnalystWizard.FILE_TRAIN, 75);
+			array[1] = new AnalystSegregateTarget(AnalystWizard.FILE_EVAL, 25);
+			this.script.getSegregate().setSegregateTargets(array);
+		} else {
+			AnalystSegregateTarget[] array = new AnalystSegregateTarget[0];
+			this.script.getSegregate().setSegregateTargets(array);
+		}
 	}
 
 	private void determineTargetField() {
@@ -271,9 +294,16 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_type,
 				MLMethodFactory.TYPE_FEEDFORWARD);
-		this.script.getProperties().setProperty(
+		
+		if( this.range==NormalizeRange.NegOne2One) {
+			this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_architecture,
 				"?B->TANH->" + hidden + "B->TANH->?");
+		} else {
+			this.script.getProperties().setProperty(
+					ScriptProperties.ML_CONFIG_architecture,
+					"?B->SIGMOID->" + hidden + "B->SIGMOID->?");
+		}
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_resourceName, "ml");
 
@@ -322,11 +352,17 @@ public class AnalystWizard {
 
 	public void generateTasks() {
 		AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
-		if (!this.timeSeries) {
+		if (!this.timeSeries && this.taskRandomize) {
 			task1.getLines().add("randomize");
 		}
-		task1.getLines().add("segregate");
-		task1.getLines().add("normalize");
+
+		if (this.taskSegregate) {
+			task1.getLines().add("segregate");
+		}
+
+		if (this.taskNormalize) {
+			task1.getLines().add("normalize");
+		}
 		if (this.timeSeries) {
 			task1.getLines().add("series");
 		}
@@ -336,11 +372,16 @@ public class AnalystWizard {
 		task1.getLines().add("evaluate");
 
 		AnalystTask task2 = new AnalystTask("task-generate");
-		if (!this.timeSeries) {
+		if (!this.timeSeries && this.taskRandomize) {
 			task2.getLines().add("randomize");
 		}
-		task2.getLines().add("segregate");
-		task2.getLines().add("normalize");
+
+		if (this.taskSegregate) {
+			task2.getLines().add("segregate");
+		}
+		if (this.taskNormalize) {
+			task2.getLines().add("normalize");
+		}
 		if (this.timeSeries) {
 			task1.getLines().add("series");
 		}
@@ -502,11 +543,10 @@ public class AnalystWizard {
 		generateTasks();
 		determineClassification();
 		generateSettings(analyzeFile);
-		// this.analyst.getReport().reportPhase(1, 1, "Wizard analyzing data");
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
-		generateRandomize(analyzeFile);
 		generateSegregate(analyzeFile);
+
 		generateGenerate(analyzeFile);
 		generateTime(analyzeFile);
 
@@ -525,4 +565,63 @@ public class AnalystWizard {
 	public void setEGName(File projectFile) {
 		this.egName = projectFile;
 	}
+
+	/**
+	 * @return the taskSegregate
+	 */
+	public boolean isTaskSegregate() {
+		return taskSegregate;
+	}
+
+	/**
+	 * @param taskSegregate the taskSegregate to set
+	 */
+	public void setTaskSegregate(boolean taskSegregate) {
+		this.taskSegregate = taskSegregate;
+	}
+
+	/**
+	 * @return the taskRandomize
+	 */
+	public boolean isTaskRandomize() {
+		return taskRandomize;
+	}
+
+	/**
+	 * @param taskRandomize the taskRandomize to set
+	 */
+	public void setTaskRandomize(boolean taskRandomize) {
+		this.taskRandomize = taskRandomize;
+	}
+
+	/**
+	 * @return the taskNormalize
+	 */
+	public boolean isTaskNormalize() {
+		return taskNormalize;
+	}
+
+	/**
+	 * @param taskNormalize the taskNormalize to set
+	 */
+	public void setTaskNormalize(boolean taskNormalize) {
+		this.taskNormalize = taskNormalize;
+	}
+
+	/**
+	 * @return the range
+	 */
+	public NormalizeRange getRange() {
+		return range;
+	}
+
+	/**
+	 * @param range the range to set
+	 */
+	public void setRange(NormalizeRange range) {
+		this.range = range;
+	}
+	
+	
+
 }

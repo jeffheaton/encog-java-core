@@ -6,6 +6,7 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
@@ -59,6 +60,10 @@ public class AnalystEvaluateCSV extends BasicFile {
 			// write headers, if needed
 			if (this.isProduceOutputHeaders()) {
 				StringBuilder line = new StringBuilder();
+				
+				if( this.getInputHeadings().length<input ) {
+					throw new AnalystError("Not enough input columns.");
+				}
 				
 				// display the input fields
 				if (this.inputHeadings != null) {
