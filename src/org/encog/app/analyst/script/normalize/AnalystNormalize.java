@@ -41,6 +41,11 @@ public class AnalystNormalize {
 	}
 
 	public void init(AnalystScript script) {
+		
+		if( this.normalizedFields== null) {
+			return;
+		}
+		
 		for( NormalizedField norm : this.normalizedFields ) {
 			DataField f = script.findDataField(norm.getName());
 			
