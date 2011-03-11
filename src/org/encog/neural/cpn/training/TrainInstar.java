@@ -32,6 +32,7 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
  * Used for Instar training of a CPN neural network. A CPN network is a hybrid
@@ -163,5 +164,21 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
+	
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
+	}
+
 
 }

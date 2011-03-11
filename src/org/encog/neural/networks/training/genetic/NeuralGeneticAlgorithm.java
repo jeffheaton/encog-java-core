@@ -34,6 +34,7 @@ import org.encog.ml.genetic.population.Population;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -174,4 +175,20 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	public void setGenetic(final NeuralGeneticAlgorithmHelper genetic) {
 		this.genetic = genetic;
 	}
+	
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
+	}
+
 }

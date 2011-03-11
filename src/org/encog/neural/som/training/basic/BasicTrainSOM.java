@@ -32,6 +32,7 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.basic.neighborhood.NeighborhoodFunction;
 import org.slf4j.Logger;
@@ -550,5 +551,21 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 			this.correctionMatrix.set(inputNeuron, current, newWeight);
 		}
 	}
+	
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
+	}
+
 
 }

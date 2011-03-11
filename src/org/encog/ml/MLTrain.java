@@ -1,6 +1,8 @@
 package org.encog.ml;
 
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.networks.training.TrainingError;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 public interface MLTrain {
 	TrainingImplementationType getImplementationType();
@@ -48,6 +50,24 @@ public interface MLTrain {
 	 * @return The current training iteration.
 	 */
 	int getIteration();
+	
+	public boolean canContinue();
+	
+	/**
+	 * Pause the training to continue later.
+	 * 
+	 * @return A training continuation object.
+	 */
+	public TrainingContinuation pause();
+
+	/**
+	 * Resume training.
+	 * 
+	 * @param state
+	 *            The training continuation object to use to continue.
+	 */
+	public void resume(final TrainingContinuation state);
+
 
 
 

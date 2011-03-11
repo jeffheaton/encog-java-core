@@ -36,6 +36,7 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
  * Trains a neural network using a Levenberg Marquardt algorithm (LMA). This
@@ -404,5 +405,21 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 
 		return result / 2.0;
 	}
+	
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
+	}
+
 
 }

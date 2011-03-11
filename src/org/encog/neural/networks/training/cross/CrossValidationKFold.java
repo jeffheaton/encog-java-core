@@ -27,6 +27,7 @@ import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.neural.data.folded.FoldedDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
  * Train using K-Fold cross validation. Each iteration will train a number of
@@ -113,4 +114,20 @@ public class CrossValidationKFold extends CrossTraining {
 
 		setError(error / getFolded().getNumFolds());
 	}
+	
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
+	}
+
 }

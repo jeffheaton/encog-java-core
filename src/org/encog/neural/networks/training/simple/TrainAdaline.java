@@ -33,6 +33,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
  * Train an ADALINE neural network.
@@ -136,6 +137,21 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 */
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
+	}
+
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
 	}
 
 }

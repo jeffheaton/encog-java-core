@@ -48,6 +48,7 @@ import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
  * The two parents.
@@ -1223,4 +1224,20 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	public TrainingImplementationType getImplementationType() {
 		return TrainingImplementationType.Iterative;
 	}
+	
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
+	}
+
 }

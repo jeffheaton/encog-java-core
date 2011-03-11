@@ -29,6 +29,7 @@ import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -353,5 +354,21 @@ public class SVMSearchTrain extends BasicTraining {
 	public boolean isTrainingDone() {
 		return this.trainingDone;
 	}
+	
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
+	}
+
 
 }

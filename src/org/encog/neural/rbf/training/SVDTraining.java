@@ -29,6 +29,7 @@ import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.rbf.RBFNetwork;
 import org.encog.util.simple.TrainingSetUtil;
 
@@ -132,4 +133,20 @@ public class SVDTraining extends BasicTraining {
 			}
 		}
 	}
+	
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
+	}
+
 }

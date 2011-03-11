@@ -28,6 +28,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
+import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,6 +183,21 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 */
 	public CalculateScore getCalculateScore() {
 		return calculateScore;
+	}
+
+	@Override
+	public boolean canContinue() {
+		return false;
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	@Override
+	public void resume(TrainingContinuation state) {
+		
 	}
 
 
