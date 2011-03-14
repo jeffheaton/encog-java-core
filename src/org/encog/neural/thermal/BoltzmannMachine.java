@@ -24,7 +24,10 @@
 package org.encog.neural.thermal;
 
 import org.encog.engine.util.BoundMath;
+import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -235,6 +238,35 @@ public class BoltzmannMachine extends ThermalNetwork {
 	public void setRunCycles(int runCycles) {
 		this.runCycles = runCycles;
 	}
-	
+
+	/**
+	 * Note: for Boltzmann networks, you will usually want to call the "run" method to 
+	 * compute the output.
+	 * 
+	 * This method can be used to copy the input data to the current state.  A single 
+	 * iteration is then run, and the new current state is returned.
+	 * @param input The input pattern.
+	 * @return The new current state.
+	 */
+	@Override
+	public NeuralData compute(NeuralData input) {
+		BiPolarNeuralData result = new BiPolarNeuralData(input.size());
+		EngineArray
+				.arrayCopy(input.getData(), this.getCurrentState().getData());
+		run();
+		EngineArray.arrayCopy(this.getCurrentState().getData(),
+				result.getData());
+		return result;
+	}
+
+	@Override
+	public int getInputCount() {
+		return this.getNeuronCount();
+	}
+
+	@Override
+	public int getOutputCount() {
+		return this.getNeuronCount();
+	}
 	
 }

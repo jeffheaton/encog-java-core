@@ -24,11 +24,14 @@
 package org.encog.neural.thermal;
 
 import org.encog.engine.util.EngineArray;
+import org.encog.ml.MLAutoAssocation;
+import org.encog.ml.MLMethod;
+import org.encog.ml.MLResettable;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.persist.BasicPersistedObject;
 
-public abstract class ThermalNetwork extends BasicPersistedObject {
+public abstract class ThermalNetwork extends BasicPersistedObject implements MLMethod, MLAutoAssocation, MLResettable {
 
 	/**
 	 * The current state of the thermal network.
@@ -142,4 +145,15 @@ public abstract class ThermalNetwork extends BasicPersistedObject {
 		this.currentState = new BiPolarNeuralData(neuronCount);
 		this.currentState.setData(output);
 	}
+	
+	public void reset(int seed) {
+		this.getCurrentState().clear();
+		EngineArray.fill(this.weights, 0.0);
+	}
+	
+	public void reset() {
+		reset(0);
+	}
+	
+	
 }

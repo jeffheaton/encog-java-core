@@ -23,9 +23,11 @@
  */
 package org.encog.neural.thermal;
 
+import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
@@ -34,12 +36,11 @@ public class HopfieldNetwork extends ThermalNetwork {
 	public HopfieldNetwork(int neuronCount) {
 		super(neuronCount);
 	}
-	
-	public HopfieldNetwork()
-	{
-		
+
+	public HopfieldNetwork() {
+
 	}
-	
+
 	/**
 	 * Train the neural network for the specified pattern. The neural network
 	 * can be trained for more than one pattern. To do this simply call the
@@ -78,8 +79,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 		// add the new weight matrix to what is there already
 		for (int row = 0; row < delta.getRows(); row++) {
 			for (int col = 0; col < delta.getRows(); col++) {
-				addWeight(row, col,
-						delta.get(row, col));
+				addWeight(row, col, delta.get(row, col));
 			}
 		}
 	}
@@ -88,15 +88,14 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 * Perform one Hopfield iteration.
 	 */
 	public void run() {
-		
-		for(int toNeuron = 0; toNeuron<getNeuronCount() ; toNeuron++ )
-		{
+
+		for (int toNeuron = 0; toNeuron < getNeuronCount(); toNeuron++) {
 			double sum = 0;
-			for(int fromNeuron = 0; fromNeuron<getNeuronCount() ; fromNeuron++)
-			{
-				sum += getCurrentState().getData(fromNeuron) * getWeight(fromNeuron,toNeuron);
+			for (int fromNeuron = 0; fromNeuron < getNeuronCount(); fromNeuron++) {
+				sum += getCurrentState().getData(fromNeuron)
+						* getWeight(fromNeuron, toNeuron);
 			}
-			getCurrentState().setData(toNeuron,sum);
+			getCurrentState().setData(toNeuron, sum);
 		}
 	}
 
@@ -134,27 +133,55 @@ public class HopfieldNetwork extends ThermalNetwork {
 
 		return cycle;
 	}
-	
-	public boolean supportsMapPersistence()
-	{
+
+	public boolean supportsMapPersistence() {
 		return true;
 	}
-	
-	public void persistToMap(PersistedObject obj)
-	{
+
+	public void persistToMap(PersistedObject obj) {
 		obj.clear(PersistConst.TYPE_HOPFIELD);
 		obj.setStandardProperties(this);
 		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
 		obj.setProperty(PersistConst.OUTPUT, this.getCurrentState().getData());
-		obj.setProperty(PersistConst.NEURON_COUNT, this.getNeuronCount(),false);
+		obj.setProperty(PersistConst.NEURON_COUNT, this.getNeuronCount(), false);
 	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
+
+	public void persistFromMap(PersistedObject obj) {
 		obj.requireType(PersistConst.TYPE_HOPFIELD);
-		int neuronCount = obj.getPropertyInt(PersistConst.NEURON_COUNT,true);
-		double[] weights = obj.getPropertyDoubleArray(PersistConst.WEIGHTS,true);
+		int neuronCount = obj.getPropertyInt(PersistConst.NEURON_COUNT, true);
+		double[] weights = obj.getPropertyDoubleArray(PersistConst.WEIGHTS,
+				true);
 		double[] state = obj.getPropertyDoubleArray(PersistConst.OUTPUT, true);
-		init(neuronCount,weights,state);
+		init(neuronCount, weights, state);
+	}
+
+	@Override
+	public int getInputCount() {
+		return super.getNeuronCount();
+	}
+
+	@Override
+	public int getOutputCount() {
+		return super.getNeuronCount();
+	}
+
+	/**
+	 * Note: for Hopfield networks, you will usually want to call the "run" method to 
+	 * compute the output.
+	 * 
+	 * This method can be used to copy the input data to the current state.  A single 
+	 * iteration is then run, and the new current state is returned.
+	 * @param input The input pattern.
+	 * @return The new current state.
+	 */
+	@Override
+	public NeuralData compute(NeuralData input) {
+		BiPolarNeuralData result = new BiPolarNeuralData(input.size());
+		EngineArray
+				.arrayCopy(input.getData(), this.getCurrentState().getData());
+		run();
+		EngineArray.arrayCopy(this.getCurrentState().getData(),
+				result.getData());
+		return result;
 	}
 }
