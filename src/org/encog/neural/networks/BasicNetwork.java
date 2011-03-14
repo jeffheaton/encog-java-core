@@ -37,6 +37,7 @@ import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.BasicML;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLRegression;
@@ -76,7 +77,7 @@ import org.slf4j.LoggerFactory;
  * Once the neural network has been completely constructed.
  * 
  */
-public class BasicNetwork extends BasicPersistedObject implements Serializable,
+public class BasicNetwork extends BasicML implements 
 		MLContext, MLRegression, MLEncodable, MLResettable {
 
 	/**
@@ -139,12 +140,6 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	 * constantly lookup layers and synapses.
 	 */
 	private final NeuralStructure structure;
-
-	/**
-	 * Properties about the neural network. Some NeuralLogic classes require
-	 * certain properties to be set.
-	 */
-	private final Map<String, String> properties = new HashMap<String, String>();
 
 	/**
 	 * Construct an empty neural network.
@@ -315,45 +310,6 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		return NetworkCODEC.equals(this, other, precision);
 	}
 
-	/**
-	 * @return A map of all properties.
-	 */
-	public Map<String, String> getProperties() {
-		return this.properties;
-	}
-
-	/**
-	 * Get the specified property as a double.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The property as a double.
-	 */
-	public double getPropertyDouble(final String name) {
-		return Double.parseDouble(this.properties.get(name));
-	}
-
-	/**
-	 * Get the specified property as a long.
-	 * 
-	 * @param name
-	 *            The name of the specified property.
-	 * @return The value of the specified property.
-	 */
-	public long getPropertyLong(final String name) {
-		return Long.parseLong(this.properties.get(name));
-	}
-
-	/**
-	 * Get the specified property as a string.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The value of the property.
-	 */
-	public String getPropertyString(final String name) {
-		return this.properties.get(name);
-	}
 
 	/**
 	 * @return Get the structure of the neural network. The structure allows you
@@ -555,44 +511,6 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 	}
 
 	/**
-	 * Set a property as a double.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @param d
-	 *            The value of the property.
-	 */
-	public void setProperty(final String name, final double d) {
-		this.properties.put(name, "" + d);
-		this.structure.updateProperties();
-	}
-
-	/**
-	 * Set a property as a long.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @param l
-	 *            The value of the property.
-	 */
-	public void setProperty(final String name, final long l) {
-		this.properties.put(name, "" + l);
-		this.structure.updateProperties();
-	}
-
-	/**
-	 * Set a property as a double.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @param value
-	 *            The value of the property.
-	 */
-	public void setProperty(final String name, final String value) {
-		this.properties.put(name, value);
-		this.structure.updateProperties();
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -699,12 +617,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 			activationFunctions.setProperty("layer-"+i, flat.getActivationFunctions()[i]);
 		}
 		
-		PersistedObject objProp = new PersistedObject();
-		for( String key : this.properties.keySet() ) {
-			String value = this.properties.get(key);
-			objProp.setProperty(key, value, false);
-		}
-		obj.setProperty(PersistConst.PROPERTIES, objProp);
+		propertiesToMap(obj);
 		
 		obj.setProperty(PersistConst.ACTIVATION_FUNCTION, activationFunctions);
 		obj.setProperty(BasicNetwork.TAG_BEGIN_TRAINING, flat.getBeginTraining(), false);
@@ -751,11 +664,7 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		flat.setBiasActivation(obj.getPropertyDoubleArray(BasicNetwork.TAG_BIAS_ACTIVATION, true));
 		flat.setLayerContextCount( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_CONTEXT_COUNT, true) );
 		
-		List<PersistedObject> propertiesList = obj.getPropertyValueArray(PersistConst.PROPERTIES);
-		PersistedObject networkProperties = propertiesList.get(0);
-		for(String key: networkProperties.getData().keySet() ) {
-			this.setProperty(key, networkProperties.getPropertyString(key, true));
-		}
+		propertiesFromMap(obj);
 		
 		List<PersistedObject> activationFunctionList = obj.getPropertyValueArray(PersistConst.ACTIVATION_FUNCTION);
 		PersistedObject activationFunctions = activationFunctionList.get(0);
@@ -766,5 +675,11 @@ public class BasicNetwork extends BasicPersistedObject implements Serializable,
 		}
 		
 		this.structure.setFlat(flat);
+	}
+
+	@Override
+	public void updateProperties() {
+		this.structure.updateProperties();
+		
 	}
 }
