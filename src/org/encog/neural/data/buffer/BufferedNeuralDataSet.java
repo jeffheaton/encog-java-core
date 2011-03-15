@@ -60,8 +60,8 @@ import org.encog.persist.persistors.BufferedNeuralDataSetPersistor;
  * format, and can be used with any Encog platform. Encog binary files are
  * stored using "little endian" numbers.
  */
-public class BufferedNeuralDataSet extends BasicPersistedObject implements NeuralDataSet,
-		Serializable {
+public class BufferedNeuralDataSet extends BasicPersistedObject implements
+		NeuralDataSet, Serializable {
 
 	/**
 	 * The version.
@@ -155,12 +155,14 @@ public class BufferedNeuralDataSet extends BasicPersistedObject implements Neura
 	 */
 	@Override
 	public void getRecord(final long index, final EngineData pair) {
-		double[] inputTarget = pair.getInputArray();
-		double[] idealTarget = pair.getIdealArray();
-
 		this.egb.setLocation((int) index);
+		double[] inputTarget = pair.getInputArray();
 		this.egb.read(inputTarget);
-		this.egb.read(idealTarget);
+
+		if (pair.getIdealArray() != null) {
+			double[] idealTarget = pair.getIdealArray();
+			this.egb.read(idealTarget);
+		}
 	}
 
 	/**
@@ -365,7 +367,8 @@ public class BufferedNeuralDataSet extends BasicPersistedObject implements Neura
 	}
 
 	/**
-	 * Load the binary dataset to memory.  Memory access is faster.
+	 * Load the binary dataset to memory. Memory access is faster.
+	 * 
 	 * @return A memory dataset.
 	 */
 	public NeuralDataSet loadToMemory() {
@@ -380,14 +383,16 @@ public class BufferedNeuralDataSet extends BasicPersistedObject implements Neura
 
 	/**
 	 * Load the specified training set.
-	 * @param training The training set to load.
+	 * 
+	 * @param training
+	 *            The training set to load.
 	 */
 	public void load(final NeuralDataSet training) {
 		beginLoad(training.getInputSize(), training.getIdealSize());
-		for( final NeuralDataPair pair : training ) {
+		for (final NeuralDataPair pair : training) {
 			add(pair);
 		}
 		endLoad();
-		
+
 	}
 }
