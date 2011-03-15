@@ -70,7 +70,8 @@ public class TestPruneSelective extends TestCase {
 	
 	public void testPruneNeuronInput()
 	{
-		BasicNetwork network = obtainNetwork();		
+		BasicNetwork network = obtainNetwork();
+		Assert.assertEquals(2, network.getInputCount());
 		PruneSelective prune = new PruneSelective(network);
 		prune.prune(0, 1);
 		Assert.assertEquals(22, network.encodedArrayLength());
@@ -78,7 +79,8 @@ public class TestPruneSelective extends TestCase {
 		Assert.assertEquals("1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,22,23,25", network.dumpWeights());
 		
 		BasicNetwork model = EncogUtility.simpleFeedForward(1,3,0,4,false);
-		checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());		
+		checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());
+		Assert.assertEquals(1, network.getInputCount());
 	}
 	
 	public void testPruneNeuronHidden()
@@ -97,6 +99,7 @@ public class TestPruneSelective extends TestCase {
 	public void testPruneNeuronOutput()
 	{
 		BasicNetwork network = obtainNetwork();
+		Assert.assertEquals(4, network.getOutputCount());
 		PruneSelective prune = new PruneSelective(network);
 		prune.prune(2, 1);
 		Assert.assertEquals(21, network.encodedArrayLength());
@@ -104,7 +107,8 @@ public class TestPruneSelective extends TestCase {
 		Assert.assertEquals("1,2,3,4,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25", network.dumpWeights());
 		
 		BasicNetwork model = EncogUtility.simpleFeedForward(2,3,0,3,false);
-		checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());		
+		checkWithModel(model.getStructure().getFlat(),network.getStructure().getFlat());
+		Assert.assertEquals(3, network.getOutputCount());
 	}
 	
 	public void testNeuronSignificance()
