@@ -401,6 +401,9 @@ public class PruneSelective {
 		
 		flat.setLayerOutput(new double[neuronCount]);
 		flat.clearContext();
+		
+		flat.setInputCount(flat.getLayerFeedCounts()[flat.getLayerCounts().length-1]);
+		flat.setOutputCount(flat.getLayerFeedCounts()[0]);
 	}
 
 	/**
