@@ -126,6 +126,12 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod, MLAuto
 	public void addWeight(int fromNeuron, int toNeuron, double value)
 	{
 		int index = (toNeuron*neuronCount) + fromNeuron;
+		if( index>=weights.length ) {
+			throw new NeuralNetworkError("Out of range: fromNeuron:" 
+					+ fromNeuron 
+					+ ", toNeuron: " 
+					+ toNeuron);
+		}
 		weights[index] += value;
 	}
 	

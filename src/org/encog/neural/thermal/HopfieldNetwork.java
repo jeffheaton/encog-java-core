@@ -27,6 +27,7 @@ import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.persist.map.PersistConst;
@@ -52,6 +53,10 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 */
 	public void addPattern(final NeuralData pattern) {
 
+		if( pattern.size()!=this.getNeuronCount() ) {
+			throw new NeuralNetworkError("Network with " + getNeuronCount() + " neurons, cannot learn a pattern of size " + pattern.size());
+		}
+		
 		// Create a row matrix from the input, convert boolean to bipolar
 		final Matrix m2 = Matrix.createRowMatrix(pattern.getData());
 		// Transpose the matrix and multiply by the original input matrix
