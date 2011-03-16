@@ -24,6 +24,7 @@
 package org.encog.neural.thermal;
 
 import org.encog.engine.util.EngineArray;
+import org.encog.ml.BasicML;
 import org.encog.ml.MLAutoAssocation;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLResettable;
@@ -31,7 +32,7 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.persist.BasicPersistedObject;
 
-public abstract class ThermalNetwork extends BasicPersistedObject implements MLMethod, MLAutoAssocation, MLResettable {
+public abstract class ThermalNetwork extends BasicML implements MLMethod, MLAutoAssocation, MLResettable {
 
 	/**
 	 * The current state of the thermal network.

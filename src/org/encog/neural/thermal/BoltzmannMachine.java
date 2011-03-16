@@ -196,11 +196,13 @@ public class BoltzmannMachine extends ThermalNetwork {
 		obj.setProperty(ANNEAL_CYCLES, this.annealCycles,false);
 		obj.setProperty(RUN_CYCLES, this.runCycles, false);
 		obj.setProperty(PersistConst.TEMPERATURE, this.temperature, false);
+		propertiesToMap(obj);
 	}
 	
 	public void persistFromMap(PersistedObject obj)
 	{
 		obj.requireType(PersistConst.TYPE_BOLTZMANN);
+		propertiesFromMap(obj);
 		int neuronCount = obj.getPropertyInt(PersistConst.NEURON_COUNT,true);
 		this.threshold = obj.getPropertyDoubleArray(PersistConst.THRESHOLDS, true);
 		double[] weights = obj.getPropertyDoubleArray(PersistConst.WEIGHTS,true);
@@ -267,6 +269,11 @@ public class BoltzmannMachine extends ThermalNetwork {
 	@Override
 	public int getOutputCount() {
 		return this.getNeuronCount();
+	}
+
+	@Override
+	public void updateProperties() {
+		// nothing needed here		
 	}
 	
 }

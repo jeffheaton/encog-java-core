@@ -24,6 +24,7 @@
 package org.encog.neural.thermal;
 
 import org.encog.engine.util.EngineArray;
+import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.neural.data.NeuralData;
@@ -141,6 +142,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 	public void persistToMap(PersistedObject obj) {
 		obj.clear(PersistConst.TYPE_HOPFIELD);
 		obj.setStandardProperties(this);
+		propertiesToMap(obj);
 		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
 		obj.setProperty(PersistConst.OUTPUT, this.getCurrentState().getData());
 		obj.setProperty(PersistConst.NEURON_COUNT, this.getNeuronCount(), false);
@@ -152,7 +154,8 @@ public class HopfieldNetwork extends ThermalNetwork {
 		double[] weights = obj.getPropertyDoubleArray(PersistConst.WEIGHTS,
 				true);
 		double[] state = obj.getPropertyDoubleArray(PersistConst.OUTPUT, true);
-		init(neuronCount, weights, state);
+		propertiesFromMap(obj);
+		init(neuronCount, weights, state);		
 	}
 
 	@Override
@@ -180,8 +183,17 @@ public class HopfieldNetwork extends ThermalNetwork {
 		EngineArray
 				.arrayCopy(input.getData(), this.getCurrentState().getData());
 		run();
+		
+		for(int i=0;i<this.getCurrentState().size();i++) {
+			result.setData(i, BiPolarUtil.double2bipolar(this.getCurrentState().getData(i)));
+		}
 		EngineArray.arrayCopy(this.getCurrentState().getData(),
 				result.getData());
 		return result;
+	}
+	
+	@Override
+	public void updateProperties() {
+		// nothing needed here		
 	}
 }
