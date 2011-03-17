@@ -227,6 +227,7 @@ public class EncogMemoryCollection implements EncogCollection {
 
 				final String type = in.getTag().getName();
 				final String name = in.getTag().getAttributeValue("name");
+				final String description = in.getTag().getAttributeValue("description");
 
 				final Persistor persistor = PersistorUtil.createPersistor(type);
 
@@ -235,6 +236,7 @@ public class EncogMemoryCollection implements EncogCollection {
 				}
 				final EncogPersistedObject obj = persistor.load(in);
 				obj.setName(name);
+				obj.setDescription(description);
 				this.contents.put(name, obj);
 				obj.setCollection(this);
 			}
@@ -309,5 +311,10 @@ public class EncogMemoryCollection implements EncogCollection {
 	
 	public void load(String file) {
 		load(new FilePersistence(new File(file)));
+	}
+
+	public void save() {
+		save(this.location);
+		
 	}
 }
