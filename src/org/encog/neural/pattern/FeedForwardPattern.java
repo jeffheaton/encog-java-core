@@ -56,7 +56,12 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	/**
 	 * The activation function.
 	 */
-	private ActivationFunction activation;
+	private ActivationFunction activationHidden;
+	
+	/**
+	 * The activation function.
+	 */
+	private ActivationFunction activationOutput;
 
 	/**
 	 * The number of hidden neurons.
@@ -93,6 +98,9 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 */
 	public EncogPersistedObject generate() {
 
+		if( this.activationOutput==null )
+			this.activationOutput = this.activationHidden;
+		
 		final Layer input = new BasicLayer(null, true,
 				this.inputNeurons);
 
@@ -102,12 +110,12 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 
 		for (final Integer count : this.hidden) {
 
-			final Layer hidden = new BasicLayer(this.activation, true, count);
+			final Layer hidden = new BasicLayer(this.activationHidden, true, count);
 
 			result.addLayer(hidden);
 		}
 
-		final Layer output = new BasicLayer(this.activation, false,
+		final Layer output = new BasicLayer(this.activationOutput, false,
 				this.outputNeurons);
 		result.addLayer(output);
 
@@ -124,7 +132,7 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 *            The activation function.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		this.activation = activation;
+		this.activationHidden = activation;
 	}
 
 	/**
@@ -146,5 +154,21 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
+
+	/**
+	 * @return the activationOutput
+	 */
+	public ActivationFunction getActivationOutput() {
+		return activationOutput;
+	}
+
+	/**
+	 * @param activationOutput the activationOutput to set
+	 */
+	public void setActivationOutput(ActivationFunction activationOutput) {
+		this.activationOutput = activationOutput;
+	}
+
+	
 
 }
