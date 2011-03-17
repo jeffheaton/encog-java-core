@@ -24,6 +24,7 @@ public class TestPersistBasicNetwork extends TestCase {
 		XOR.verifyXOR(network, 0.1);
 		
 		network.setProperty("test", "test2");
+		network.setDescription("desc");
 		
 		EncogMemoryCollection encog = new EncogMemoryCollection();
 		encog.add(EG_RESOURCE, network);
@@ -32,6 +33,7 @@ public class TestPersistBasicNetwork extends TestCase {
 		EncogMemoryCollection encog2 = new EncogMemoryCollection();
 		encog2.load(EG_FILENAME);
 		BasicNetwork network2 = (BasicNetwork)encog2.find(EG_RESOURCE);
+		Assert.assertEquals("desc", network2.getDescription());
 		network2.clearContext();
 		XOR.verifyXOR(network2, 0.1);
 		Assert.assertEquals("test2", network2.getPropertyString("test"));
