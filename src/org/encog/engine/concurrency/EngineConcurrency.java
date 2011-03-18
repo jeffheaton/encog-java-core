@@ -55,15 +55,12 @@ public class EngineConcurrency {
 	}
 
 	/**
-<<<<<<< .mine
 	 * An error that was caught in one of the threads. Will be thrown by the
 	 * main thread.
 	 */
 	private Throwable threadError;
 
 	/**
-=======
->>>>>>> .r1927
 	 * The current task group, used to ensure that all threads finish at the
 	 * same time.
 	 */
