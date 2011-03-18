@@ -23,6 +23,8 @@
  */
 package org.encog.ml;
 
-public interface MLClassification extends MLMethod {
-	int classify(double[] input);
+import org.encog.neural.data.NeuralData;
+
+public interface MLClassification extends MLInputOutput {
+	int classify(NeuralData input);
 }

@@ -25,8 +25,6 @@ package org.encog.ml;
 
 import org.encog.neural.data.NeuralData;
 
-public interface MLRegression extends MLMethod {
-	int getInputCount();
-	int getOutputCount();
+public interface MLRegression extends MLInputOutput {
 	NeuralData compute(NeuralData input);
 }

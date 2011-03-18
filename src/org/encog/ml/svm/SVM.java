@@ -23,9 +23,6 @@
  */
 package org.encog.ml.svm;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.mathutil.libsvm.svm;
@@ -33,6 +30,7 @@ import org.encog.mathutil.libsvm.svm_model;
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.BasicML;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -61,7 +59,7 @@ import org.encog.util.csv.NumberList;
  * neural network training classes will work. This class must be trained using
  * SVMTrain.
  */
-public class SVM extends BasicPersistedObject implements MLRegression {
+public class SVM extends BasicML implements MLRegression {
 
 	public static final String PARAMETER_KERNEL_TYPE = "kernelType";
 	public static final String PARAMETER_MODELS = "models";
@@ -508,4 +506,8 @@ public class SVM extends BasicPersistedObject implements MLRegression {
 
 	}
 
+	@Override
+	public void updateProperties() {
+		// unneeded		
+	}
 }

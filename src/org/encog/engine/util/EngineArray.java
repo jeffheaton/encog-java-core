@@ -301,4 +301,14 @@ public final class EngineArray {
 		
 		return false;
 	}
+
+	public static int maxIndex(double[] data) {
+		int result = -1;
+		for(int i=0;i<data.length;i++) {
+			if( result==-1 || data[i]>data[result] ) {
+				result = i;
+			}
+		}
+		return result;
+	}
 }

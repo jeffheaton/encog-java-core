@@ -27,13 +27,14 @@ import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.ml.BasicML;
+import org.encog.ml.MLClassification;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
-public class SOM extends BasicML {
+public class SOM extends BasicML implements MLClassification {
 	/**
 	 * Do not allow patterns to go below this very small number.
 	 */
@@ -171,4 +172,21 @@ public class SOM extends BasicML {
 	public void updateProperties() {
 		// unneeded
 	}
+
+	@Override
+	public int classify(NeuralData input) {
+		NeuralData result = this.compute(input);
+		return EngineArray.maxIndex(result.getData());
+	}
+
+	@Override
+	public int getInputCount() {
+		return this.inputNeuronCount;
+	}
+
+	@Override
+	public int getOutputCount() {
+		return 1;
+	}
+
 }
