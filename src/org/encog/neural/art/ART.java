@@ -23,10 +23,11 @@
  */
 package org.encog.neural.art;
 
+import org.encog.ml.BasicML;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.persist.BasicPersistedObject;
 
-public class ART extends BasicPersistedObject {
+public class ART extends BasicML {
 	/**
 	 * Neural network property, the A1 parameter.
 	 */
@@ -58,5 +59,11 @@ public class ART extends BasicPersistedObject {
 	public static final String PROPERTY_VIGILANCE = "VIGILANCE";
 
 	public static final String PROPERTY_NO_WINNER = "noWinner";
+
+	@Override
+	public void updateProperties() {
+		// unneeded
+		
+	}
 	
 }

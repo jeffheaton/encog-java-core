@@ -26,13 +26,14 @@ package org.encog.neural.som;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
+import org.encog.ml.BasicML;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
-public class SOM extends BasicPersistedObject {
+public class SOM extends BasicML {
 	/**
 	 * Do not allow patterns to go below this very small number.
 	 */
@@ -164,5 +165,10 @@ public class SOM extends BasicPersistedObject {
 	public void reset() {
 		this.weights.randomize(-1,1);
 		
+	}
+
+	@Override
+	public void updateProperties() {
+		// unneeded
 	}
 }

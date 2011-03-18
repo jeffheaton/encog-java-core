@@ -35,6 +35,7 @@ import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.mathutil.rbf.InverseMultiquadricFunction;
 import org.encog.mathutil.rbf.MultiquadricFunction;
 import org.encog.mathutil.rbf.RBFEnum;
+import org.encog.ml.BasicML;
 import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
@@ -46,7 +47,7 @@ import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 import org.encog.util.obj.ReflectionUtil;
 
-public class RBFNetwork extends BasicPersistedObject implements MLRegression  {
+public class RBFNetwork  extends BasicML implements MLRegression  {
 	
 	private FlatNetworkRBF flat;	
 	private RadialBasisFunction[] rbf;
@@ -354,5 +355,10 @@ public class RBFNetwork extends BasicPersistedObject implements MLRegression  {
 		int[] context = new int[3];
 		this.flat.setContextTargetOffset(context);
 		this.flat.setContextTargetSize(context);
+	}
+	
+	@Override
+	public void updateProperties() {
+		// unneeded
 	}
 }

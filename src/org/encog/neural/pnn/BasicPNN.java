@@ -233,4 +233,10 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 
 		}
 	}
+
+	@Override
+	public void updateProperties() {
+		// unneeded
+		
+	}
 }

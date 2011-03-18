@@ -24,12 +24,13 @@
 package org.encog.neural.cpn;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.BasicML;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.persist.BasicPersistedObject;
 
-public class CPN extends BasicPersistedObject implements MLRegression {
+public class CPN  extends BasicML implements MLRegression {
 
 	private final int inputCount;
 	private final int instarCount;
@@ -134,6 +135,9 @@ public class CPN extends BasicPersistedObject implements MLRegression {
 		return weightsInstarToOutstar;
 	}
 	
-	
+	@Override
+	public void updateProperties() {
+		// unneeded
+	}
 
 }

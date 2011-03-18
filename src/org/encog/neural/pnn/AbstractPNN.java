@@ -23,12 +23,10 @@
  */
 package org.encog.neural.pnn;
 
+import org.encog.ml.BasicML;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 
-public abstract class AbstractPNN {
+public abstract class AbstractPNN  extends BasicML {
 
 	// Input neuron count.
 	private final int inputCount;

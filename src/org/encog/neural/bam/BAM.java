@@ -24,6 +24,7 @@
 package org.encog.neural.bam;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.BasicML;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralDataMapping;
@@ -33,7 +34,7 @@ import org.encog.persist.map.PersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BAM extends BasicPersistedObject {
+public class BAM extends BasicML {
 
 	/**
 	 * The logging object.
@@ -250,6 +251,12 @@ public class BAM extends BasicPersistedObject {
 		this.f2Count = obj.getPropertyInt(PersistConst.PROPERTY_F2_COUNT, true);
 		this.weightsF1toF2 = obj.getPropertyMatrix(PersistConst.PROPERTY_WEIGHTS_F1_F2, true);
 		this.weightsF2toF1 = obj.getPropertyMatrix(PersistConst.PROPERTY_WEIGHTS_F2_F1, true);
+	}
+
+	@Override
+	public void updateProperties() {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
