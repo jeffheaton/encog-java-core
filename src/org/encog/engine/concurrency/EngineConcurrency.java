@@ -75,7 +75,11 @@ public class EngineConcurrency {
 	 * Construct a concurrency object.
 	 */
 	public EngineConcurrency() {
-		this.executor = Executors.newCachedThreadPool();
+		Runtime runtime = Runtime.getRuntime();        
+        int threads = runtime.availableProcessors();
+        if( threads>1 )
+        	threads++;
+		this.executor = Executors.newFixedThreadPool(threads);
 	}
 
 	/**
