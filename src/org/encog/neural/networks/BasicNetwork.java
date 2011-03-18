@@ -38,6 +38,7 @@ import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.BasicML;
+import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLRegression;
@@ -78,7 +79,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class BasicNetwork extends BasicML implements 
-		MLContext, MLRegression, MLEncodable, MLResettable {
+		MLContext, MLRegression, MLEncodable, MLResettable, MLClassification {
 
 	/**
 	 * Tag used for the connection limit.
@@ -681,5 +682,10 @@ public class BasicNetwork extends BasicML implements
 	public void updateProperties() {
 		this.structure.updateProperties();
 		
+	}
+
+	@Override
+	public int classify(NeuralData input) {
+		return winner(input);
 	}
 }
