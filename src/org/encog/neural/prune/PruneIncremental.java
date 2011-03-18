@@ -67,46 +67,25 @@ public class PruneIncremental extends ConcurrentJob {
 	 *            The network to format.
 	 * @return A human readable string.
 	 */
-    public static String networkToString(final BasicNetwork network) {
-        /*final StringBuilder result = new StringBuilder();
-        int num = 1;
+	public static String networkToString(final BasicNetwork network) {
+		final StringBuilder result = new StringBuilder();
+		int num = 1;
 
-        Layer layer = network.getLayer(BasicNetwork.TAG_INPUT);
+		// display only hidden layers
+		for (int i = 1; i < network.getLayerCount()-1; i++) {
 
-        Layer[] prevlayer = new Layer[network.getStructure().getLayers().size()]; // E.F. Added 7/14/2010
-        boolean dupfound = false; // E.F. Added 7/24/2010
+			if (result.length() > 0) {
+				result.append(",");
+			}
+			result.append("H");
+			result.append(num++);
+			result.append("=");
+			result.append(network.getLayerNeuronCount(i));
+		}
 
-        // display only hidden layers
-        while (layer.getNext().size() > 0 && !dupfound) { // E.F. Changed 7/14/2010
-            layer = layer.getNext().get(0).getToLayer();
+		return result.toString();
+	}
 
-            // E.F. Added dup search 7/14/2010
-            for (int j = 0; j < prevlayer.length; j++) {
-                if (layer == prevlayer[j]) {
-                    dupfound = true;
-                    break;
-                } else if (prevlayer[j] == null) {
-                    prevlayer[j] = layer;
-                    break;
-                }
-            }
-            // E.F. end of dup search
-
-            if (layer.getNext().size() > 0 && !dupfound) { // E.F. Changed 7/14/2010
-                if (result.length() > 0) {
-                    result.append(",");
-                }
-                result.append("H");
-                result.append(num++);
-                result.append("=");
-                result.append(layer.getNeuronCount());
-            }
-        }
-
-        return result.toString();*/
-    	
-    	return null;
-    }
 	/**
 	 * Are we done?
 	 */
@@ -260,7 +239,7 @@ public class PruneIncremental extends ConcurrentJob {
 			}
 		}
 
-		return (BasicNetwork)this.pattern.generate();
+		return (BasicNetwork) this.pattern.generate();
 	}
 
 	/**
@@ -438,16 +417,14 @@ public class PruneIncremental extends ConcurrentJob {
 		final BasicNetwork network = (BasicNetwork) context.getJobUnit();
 		BufferedNeuralDataSet buffer = null;
 		NeuralDataSet useTraining = this.training;
-		
-		if( this.training instanceof BufferedNeuralDataSet )
-		{
-			buffer = (BufferedNeuralDataSet)this.training;
+
+		if (this.training instanceof BufferedNeuralDataSet) {
+			buffer = (BufferedNeuralDataSet) this.training;
 			useTraining = buffer.openAdditional();
 		}
-		
 
 		// train the neural network
-	
+
 		double error = Double.POSITIVE_INFINITY;
 		for (int z = 0; z < this.weightTries; z++) {
 			network.reset();
@@ -466,8 +443,8 @@ public class PruneIncremental extends ConcurrentJob {
 
 			error = Math.min(error, train.getError());
 		}
-		
-		if( buffer!=null )
+
+		if (buffer != null)
 			buffer.close();
 
 		if (!getShouldStop()) {
@@ -480,15 +457,12 @@ public class PruneIncremental extends ConcurrentJob {
 				int networkHidden1Count;
 				int networkHidden2Count;
 
-				if (network.getStructure().getLayers().size() > 3) {
-					networkHidden2Count = network.getStructure().getLayers()
-							.get(1).getNeuronCount();
-					networkHidden1Count = network.getStructure().getLayers()
-							.get(2).getNeuronCount();
+				if (network.getLayerCount() > 3) {
+					networkHidden2Count = network.getLayerNeuronCount(1);
+					networkHidden1Count = network.getLayerNeuronCount(2);
 				} else {
 					networkHidden2Count = 0;
-					networkHidden1Count = network.getStructure().getLayers()
-							.get(1).getNeuronCount();
+					networkHidden1Count = network.getLayerNeuronCount(1);
 				}
 
 				int row, col;
@@ -501,6 +475,9 @@ public class PruneIncremental extends ConcurrentJob {
 					col = networkHidden2Count - this.hidden.get(1).getMin();
 				}
 
+				if (row < 0 || col < 0) {
+					System.out.println("STOP");
+				}
 				this.results[row][col] = error;
 			}
 
@@ -508,9 +485,13 @@ public class PruneIncremental extends ConcurrentJob {
 			this.currentTry++;
 
 			updateBest(network, error);
-			reportStatus(context, "Current: "
-					+ PruneIncremental.networkToString(network) + "; Best: "
-					+ PruneIncremental.networkToString(this.bestNetwork));
+			reportStatus(
+					context,
+					"Current: "
+							+ PruneIncremental.networkToString(network)
+							+ "; Best: "
+							+ PruneIncremental
+									.networkToString(this.bestNetwork));
 		}
 
 	}

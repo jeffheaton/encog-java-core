@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.engine.util.IntRange;
+import org.encog.neural.networks.training.TrainingError;
 
 /**
  * Used by several Encog training methods to break up a workload. Can also be
@@ -63,6 +64,10 @@ public class DetermineWorkload {
 	 */
 	public DetermineWorkload(final int threads, final int workloadSize) {
 
+		if( workloadSize==0) {
+			throw new TrainingError("Workload is of size zero.");
+		}
+		
 		this.workloadSize = workloadSize;
 		if (threads == 0) {
 			int num = Runtime.getRuntime().availableProcessors();
