@@ -35,11 +35,6 @@ import org.slf4j.LoggerFactory;
  */
 public class NeighborhoodSingle implements NeighborhoodFunction {
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Determine how much the current neuron should be affected by training

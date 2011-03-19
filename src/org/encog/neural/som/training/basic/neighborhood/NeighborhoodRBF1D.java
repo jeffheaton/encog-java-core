@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author jheaton
  */
-public class NeighborhoodSingleRBF implements NeighborhoodFunction {
+public class NeighborhoodRBF1D implements NeighborhoodFunction {
 
 	/**
 	 * The logging object.
@@ -53,7 +53,7 @@ public class NeighborhoodSingleRBF implements NeighborhoodFunction {
 	 * @param radial
 	 *            The radial basis function to use.
 	 */
-	public NeighborhoodSingleRBF(final RadialBasisFunction radial) {
+	public NeighborhoodRBF1D(final RadialBasisFunction radial) {
 		this.radial = radial;
 	}
 
