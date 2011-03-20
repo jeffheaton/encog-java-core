@@ -149,6 +149,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	public void persistToMap(PersistedObject obj) {
 		obj.clear(PersistConst.TYPE_SOM);
 		obj.setStandardProperties(this);
+		propertiesToMap(obj);
 		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
 		obj.setProperty(PersistConst.INPUT_COUNT, this.inputNeuronCount, false);
 		obj.setProperty(PersistConst.OUTPUT_COUNT, this.outputNeuronCount,
@@ -157,6 +158,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 
 	public void persistFromMap(PersistedObject obj) {
 		obj.requireType(PersistConst.TYPE_SOM);
+		propertiesFromMap(obj);
 		this.inputNeuronCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,
 				true);
 		this.outputNeuronCount = obj.getPropertyInt(PersistConst.OUTPUT_COUNT,
