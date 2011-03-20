@@ -33,7 +33,6 @@ import org.encog.EncogError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
-import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLContext;
@@ -462,5 +461,4 @@ public final class EncogUtility {
 		}
 		
 	}
-
 }

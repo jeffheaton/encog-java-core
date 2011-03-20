@@ -23,36 +23,28 @@
  */
 package org.encog.neural.networks;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
-import org.encog.engine.network.flat.FlatNetworkRBF;
 import org.encog.engine.util.EngineArray;
-import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLEncodable;
+import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
-import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.Persistor;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 import org.encog.util.csv.CSVFormat;
@@ -79,7 +71,7 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class BasicNetwork extends BasicML implements 
-		MLContext, MLRegression, MLEncodable, MLResettable, MLClassification {
+		MLContext, MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 
 	/**
 	 * Tag used for the connection limit.

@@ -85,6 +85,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 */
 	public EncogPersistedObject generate() {
 		SOM som = new SOM(this.inputNeurons,this.outputNeurons);
+		som.reset();
 		return som;
 	}
 

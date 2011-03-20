@@ -26,6 +26,7 @@ package org.encog.neural.som.training.basic;
 import org.encog.engine.util.BoundMath;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.som.SOM;
 
 /**
  * The "Best Matching Unit" or BMU is a very important concept in the training
@@ -45,7 +46,7 @@ public class BestMatchingUnit {
 	/**
 	 * The owner of this class.
 	 */
-	private final BasicTrainSOM training;
+	private final SOM som;
 
 	/**
 	 * What is the worst BMU distance so far, this becomes the error for the
@@ -57,8 +58,8 @@ public class BestMatchingUnit {
 	 * Construct a BestMatchingUnit class.  The training class must be provided.
 	 * @param training The parent class.
 	 */
-	public BestMatchingUnit(final BasicTrainSOM training) {
-		this.training = training;
+	public BestMatchingUnit(final SOM som) {
+		this.som = som;
 	}
 
 	/**
@@ -71,14 +72,14 @@ public class BestMatchingUnit {
 	 *            The input vector.
 	 * @return The output neuron number that is the BMU.
 	 */
-	public int calculateBMU(final Matrix matrix, final NeuralData input) {
+	public int calculateBMU(final NeuralData input) {
 		int result = 0;
 		
 		// Track the lowest distance so far.
 		double lowestDistance = Double.MAX_VALUE;
 
-		for (int i = 0; i < this.training.getOutputNeuronCount(); i++) {
-			final double distance = calculateEuclideanDistance(matrix, input,
+		for (int i = 0; i < this.som.getOutputNeuronCount(); i++) {
+			final double distance = calculateEuclideanDistance(this.som.getWeights(), input,
 					i);
 
 			// Track the lowest distance, this is the BMU.

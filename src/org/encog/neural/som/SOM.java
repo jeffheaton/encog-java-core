@@ -28,13 +28,18 @@ import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
+import org.encog.ml.MLError;
+import org.encog.ml.MLResettable;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.persist.BasicPersistedObject;
+import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
 
-public class SOM extends BasicML implements MLClassification {
+public class SOM extends BasicML implements MLClassification, MLResettable,
+		MLError {
 	/**
 	 * Do not allow patterns to go below this very small number.
 	 */
@@ -46,7 +51,6 @@ public class SOM extends BasicML implements MLClassification {
 	 */
 	Matrix weights;
 
-
 	/**
 	 * Number of input neurons
 	 */
@@ -57,11 +61,10 @@ public class SOM extends BasicML implements MLClassification {
 	 */
 	protected int outputNeuronCount;
 
-	public SOM()
-	{
-		
+	public SOM() {
+
 	}
-	
+
 	/**
 	 * The constructor.
 	 * 
@@ -74,7 +77,7 @@ public class SOM extends BasicML implements MLClassification {
 
 		this.inputNeuronCount = inputCount;
 		this.outputNeuronCount = outputCount;
-		this.weights = new Matrix(inputCount,outputCount);
+		this.weights = new Matrix(inputCount, outputCount);
 	}
 
 	/**
@@ -102,10 +105,10 @@ public class SOM extends BasicML implements MLClassification {
 	public int winner(final NeuralData input) {
 
 		NeuralData output = compute(input);
-		int win = EngineArray.indexOfLargest(output.getData());		
+		int win = EngineArray.indexOfLargest(output.getData());
 		return win;
 	}
-	
+
 	/**
 	 * Determine the winner for the specified input. This is the number of the
 	 * winning neuron.
@@ -113,20 +116,18 @@ public class SOM extends BasicML implements MLClassification {
 	 * @return The winning neuron.
 	 */
 	public NeuralData compute(final NeuralData input) {
-		
+
 		NeuralData result = new BasicNeuralData(this.outputNeuronCount);
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
 			final Matrix optr = this.weights.getCol(i);
 			final Matrix inputMatrix = Matrix.createRowMatrix(input.getData());
-			result.setData(i,MatrixMath.dotProduct(inputMatrix, optr));
+			result.setData(i, MatrixMath.dotProduct(inputMatrix, optr));
 		}
 
 		return result;
 	}
-	
-	
-	
+
 	/**
 	 * @return the weights
 	 */
@@ -141,31 +142,31 @@ public class SOM extends BasicML implements MLClassification {
 		this.weights = weights;
 	}
 
-	public boolean supportsMapPersistence()
-	{
+	public boolean supportsMapPersistence() {
 		return true;
 	}
-	
-	public void persistToMap(PersistedObject obj)
-	{
+
+	public void persistToMap(PersistedObject obj) {
 		obj.clear(PersistConst.TYPE_SOM);
 		obj.setStandardProperties(this);
 		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
-		obj.setProperty(PersistConst.INPUT_COUNT, this.inputNeuronCount,false);
-		obj.setProperty(PersistConst.OUTPUT_COUNT, this.outputNeuronCount,false);
+		obj.setProperty(PersistConst.INPUT_COUNT, this.inputNeuronCount, false);
+		obj.setProperty(PersistConst.OUTPUT_COUNT, this.outputNeuronCount,
+				false);
 	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
+
+	public void persistFromMap(PersistedObject obj) {
 		obj.requireType(PersistConst.TYPE_SOM);
-		this.inputNeuronCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,true);
-		this.outputNeuronCount = obj.getPropertyInt(PersistConst.OUTPUT_COUNT,true);
-		this.weights = obj.getPropertyMatrix(PersistConst.WEIGHTS,true);		
+		this.inputNeuronCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,
+				true);
+		this.outputNeuronCount = obj.getPropertyInt(PersistConst.OUTPUT_COUNT,
+				true);
+		this.weights = obj.getPropertyMatrix(PersistConst.WEIGHTS, true);
 	}
 
 	public void reset() {
-		this.weights.randomize(-1,1);
-		
+		this.weights.randomize(-1, 1);
+
 	}
 
 	@Override
@@ -187,6 +188,28 @@ public class SOM extends BasicML implements MLClassification {
 	@Override
 	public int getOutputCount() {
 		return 1;
+	}
+
+	@Override
+	public void reset(int seed) {
+		reset();
+	}
+
+	@Override
+	public double calculateError(NeuralDataSet data) {
+
+		BestMatchingUnit bmu = new BestMatchingUnit(this);
+
+		bmu.reset();
+
+		// Determine the BMU for each training element.
+		for (final NeuralDataPair pair : data) {
+			final NeuralData input = pair.getInput();
+			bmu.calculateBMU(input);
+		}
+
+		// update the error
+		return bmu.getWorstDistance()/100.0;
 	}
 
 }
