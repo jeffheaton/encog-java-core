@@ -26,6 +26,7 @@ package org.encog.neural.pattern;
 import org.encog.engine.network.activation.ActivationCompetitive;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.neural.cpn.CPN;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
@@ -99,20 +100,7 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 * @return The generated network.
 	 */
 	public EncogPersistedObject generate() {
-
-		Layer input, instar, outstar;
-
-		final BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(new ActivationLinear(), false,
-				this.inputCount));
-		network.addLayer(instar = new BasicLayer(new ActivationCompetitive(),
-				false, this.instarCount));
-		network.addLayer(outstar = new BasicLayer(new ActivationLinear(),
-				false, this.outstarCount));
-		network.getStructure().finalizeStructure();
-		network.reset();
-
-		return network;
+		return new CPN(inputCount,instarCount,outstarCount,1);
 	}
 
 	/**
