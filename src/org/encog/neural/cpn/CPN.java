@@ -24,13 +24,14 @@
 package org.encog.neural.cpn;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLRegression;
+import org.encog.ml.MLResettable;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.persist.BasicPersistedObject;
 
-public class CPN  extends BasicML implements MLRegression {
+public class CPN  extends BasicML implements MLRegression, MLResettable {
 
 	private final int inputCount;
 	private final int instarCount;
@@ -138,6 +139,18 @@ public class CPN  extends BasicML implements MLRegression {
 	@Override
 	public void updateProperties() {
 		// unneeded
+	}
+
+	@Override
+	public void reset() {
+		reset(100);		
+	}
+
+	@Override
+	public void reset(int seed) {
+		ConsistentRandomizer randomize = new ConsistentRandomizer(-1,1,seed);
+		randomize.randomize(weightsInputToInstar);
+		randomize.randomize(weightsInstarToOutstar);		
 	}
 
 }
