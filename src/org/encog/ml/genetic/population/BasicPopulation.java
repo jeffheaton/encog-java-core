@@ -451,7 +451,8 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 		obj.setProperty( Population.PROPERTY_YOUNG_AGE_BONUS ,this.youngScoreBonus, false);
 		obj.setProperty( Population.PROPERTY_YOUNG_AGE_THRESHOLD ,this.youngBonusAgeThreshold, false);
 		
-		obj.setPropertyGenericList( Population.PROPERTY_INNOVATIONS, this.innovations.getInnovations());
+		if( this.innovations!=null )
+			obj.setPropertyGenericList( Population.PROPERTY_INNOVATIONS, this.innovations.getInnovations());
 		obj.setPropertyGenericList( Population.PROPERTY_SPECIES, this.species);
 		obj.setPropertyGenericList( Population.PROPERTY_GENOMES, this.genomes);
 		
