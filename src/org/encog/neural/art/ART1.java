@@ -24,6 +24,8 @@
 package org.encog.neural.art;
 
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.MLClassification;
+import org.encog.ml.MLResettable;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
@@ -32,7 +34,7 @@ import org.encog.persist.map.PersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ART1 extends ART {
+public class ART1 extends ART implements MLResettable, MLClassification {
 	/**
 	 * The logging object.
 	 */
@@ -345,17 +347,7 @@ public class ART1 extends ART {
 	 * Reset the weight matrix back to starting values.
 	 */
 	public void reset() {
-		for (int i = 0; i < f1Count; i++) {
-			for (int j = 0; j < f2Count; j++) {
-				weightsF1toF2.set(i, j,
-						(this.b1 - 1) / this.d1 + 0.2);
-				weightsF2toF1.set(
-						j,
-						i,
-						this.l / (this.l - 1 + f1Count)
-								- 0.1);
-			}
-		}
+		reset(0);
 	}
 
 	/**
@@ -473,6 +465,10 @@ public class ART1 extends ART {
 		this.vigilance = obj.getPropertyDouble(PROPERTY_VIGILANCE, true);
 		this.weightsF1toF2 = obj.getPropertyMatrix(PersistConst.PROPERTY_WEIGHTS_F1_F2, true);
 		this.weightsF2toF1 = obj.getPropertyMatrix(PersistConst.PROPERTY_WEIGHTS_F2_F1, true);
+		this.inhibitF2 = new boolean[f2Count];
+		this.outputF1 = new BiPolarNeuralData(f1Count);
+		this.outputF2 = new BiPolarNeuralData(f2Count);
+		this.noWinner = f2Count;
 	}
 
 	/**
@@ -501,6 +497,52 @@ public class ART1 extends ART {
 	 */
 	public int getF2Count() {
 		return f2Count;
+	}
+
+	@Override
+	public int getInputCount() {
+		return this.f1Count;
+	}
+
+	@Override
+	public int getOutputCount() {
+		return this.f2Count;
+	}
+
+	@Override
+	public int classify(NeuralData input) {
+		BiPolarNeuralData input2 = new BiPolarNeuralData(this.f1Count);
+		BiPolarNeuralData output = new BiPolarNeuralData(this.f2Count);
+		
+		if( input.size()!=input2.size() ) {
+			throw new NeuralNetworkError("Input array size does not match.");
+		}
+		
+		for(int i=0;i<input2.size();i++) {
+			input2.setData(i, input.getData(i)>0);
+		}
+		
+		this.compute(input2, output);
+		
+		if( this.hasWinner() )
+			return this.winner;
+		else
+			return -1;
+	}
+
+	@Override
+	public void reset(int seed) {
+		for (int i = 0; i < f1Count; i++) {
+			for (int j = 0; j < f2Count; j++) {
+				weightsF1toF2.set(i, j,
+						(this.b1 - 1) / this.d1 + 0.2);
+				weightsF2toF1.set(
+						j,
+						i,
+						this.l / (this.l - 1 + f1Count)
+								- 0.1);
+			}
+		}		
 	}
 	
 	

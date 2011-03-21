@@ -106,29 +106,6 @@ public class BasicNetwork extends BasicML implements
 	public static final String TAG_LAYER_CONTEXT_COUNT = "layerContextCount";
 
 	/**
-	 * Determine which member of the output is the winning neuron.
-	 * 
-	 * @param output
-	 *            The output from the neural network.
-	 * @return The winning neuron.
-	 */
-	public static int determineWinner(final NeuralData output) {
-
-		int win = 0;
-
-		double biggest = Double.MIN_VALUE;
-		for (int i = 0; i < output.size(); i++) {
-
-			if (output.getData(i) > biggest) {
-				biggest = output.getData(i);
-				win = i;
-			}
-		}
-
-		return win;
-	}
-
-	/**
 	 * Holds the structure of the network. This keeps the network from having to
 	 * constantly lookup layers and synapses.
 	 */
@@ -526,9 +503,8 @@ public class BasicNetwork extends BasicML implements
 	 * @return The winning neuron.
 	 */
 	public int winner(final NeuralData input) {
-
 		final NeuralData output = compute(input);
-		return BasicNetwork.determineWinner(output);
+		return EngineArray.maxIndex(output.getData());
 	}
 
 	@Override
