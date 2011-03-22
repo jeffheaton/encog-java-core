@@ -55,7 +55,7 @@ public class NEATPopulation extends BasicPopulation {
 	public NEATPopulation(
 			final int inputCount, final int outputCount,
 			final int populationSize) {
-
+		super(populationSize);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 

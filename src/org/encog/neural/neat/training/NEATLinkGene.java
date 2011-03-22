@@ -181,6 +181,7 @@ public class NEATLinkGene extends BasicGene {
 		obj.setProperty(NEATLink.TO_NEURON,(int)this.toNeuronID,true);
 		obj.setProperty(PersistConst.RECURRENT,this.recurrent,true);
 		obj.setProperty(PersistConst.WEIGHT,this.weight,true);
+		obj.setProperty(NEATLink.INNOVATION, (int)this.getInnovationId(),true);
 
 	}
 	
@@ -191,6 +192,7 @@ public class NEATLinkGene extends BasicGene {
 		this.weight = obj.getPropertyDouble(PersistConst.WEIGHT, true);
 		this.fromNeuronID = obj.getPropertyInt(NEATLink.FROM_NEURON,true);
 		this.toNeuronID = obj.getPropertyInt(NEATLink.TO_NEURON,true);
+		this.setInnovationId(obj.getPropertyInt(NEATLink.INNOVATION,true));
 	}
 
 }

@@ -47,6 +47,7 @@ public class NEATLink extends BasicPersistedSubObject {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -4117045705080951946L;
+	public static final String INNOVATION = "in";
 
 	/**
 	 * The source neuron.
