@@ -76,14 +76,6 @@ public abstract class BasicGenome extends BasicPersistedSubObject implements Gen
 	private double score = 0;
 
 	/**
-	 * Construct a basic genome.
-	 * @param geneticAlgorithm
-	 */
-	public BasicGenome(final GeneticAlgorithm geneticAlgorithm) {
-		this.geneticAlgorithm = geneticAlgorithm;
-	}
-
-	/**
 	 * @return The number of genes in this genome.
 	 */
 	public int calculateGeneCount() {

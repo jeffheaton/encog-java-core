@@ -130,8 +130,8 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 					.clone();
 			randomizer.randomize(chromosomeNetwork);
 
-			final NeuralGenome genome = new NeuralGenome(this,
-					chromosomeNetwork);
+			final NeuralGenome genome = new NeuralGenome(chromosomeNetwork);
+			genome.setGeneticAlgorithm(getGenetic());
 			getGenetic().calculateScore(genome);
 			getGenetic().getPopulation().add(genome);
 		}

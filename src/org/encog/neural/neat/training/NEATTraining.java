@@ -42,6 +42,7 @@ import org.encog.ml.genetic.species.BasicSpecies;
 import org.encog.ml.genetic.species.Species;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.neat.NEATNetwork;
+import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.Strategy;
@@ -96,17 +97,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * The number of inputs.
 	 */
 	private final int inputCount;
-
-	/**
-	 * The activation function for neat to use.
-	 */
-	private ActivationFunction neatActivationFunction = new ActivationSigmoid();
-
-	/**
-	 * The activation function to use on the output layer of Encog.
-	 */
-	private ActivationFunction outputActivationFunction 
-		= new ActivationLinear();
 
 	/**
 	 * The number of output neurons.
@@ -209,40 +199,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	private int iteration;
 
 	/**
-	 * Construct a NEAT training object.
-	 * @param score The score to calculate from.
-	 * @param network The network to use as a model.
-	 * @param population The population to train.
-	 */
-	public NEATTraining(final CalculateScore score, final BasicNetwork network,
-			final Population population) {
-		setCalculateScore(new GeneticScoreAdapter(score));
-		setComparator(new GenomeComparator(getCalculateScore()));
-		this.inputCount = network.getInputCount();
-		this.outputCount = network.getOutputCount();
-		setPopulation(population);
-
-		for (final Genome obj : population.getGenomes()) {
-			if (!(obj instanceof NEATGenome)) {
-				throw new TrainingError(
-						"Population can only contain objects of NEATGenome.");
-			}
-
-			final NEATGenome neat = (NEATGenome) obj;
-
-			if ((neat.getInputCount() != this.inputCount)
-					|| (neat.getOutputCount() != this.outputCount)) {
-				throw new TrainingError(
-						"All NEATGenome's must have the same input and output sizes as the base network.");
-			}
-			neat.setGeneticAlgorithm(this);
-		}
-
-		init();
-	}
-
-	/**
-	 * Construct a neat trainer with a new population.
+	 * Construct a neat trainer with a new population.  The new population is created 
+	 * from the specified parameters.
 	 * 
 	 * @param calculateScore
 	 *            The score calculation object.
@@ -262,12 +220,12 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		setComparator(new GenomeComparator(getCalculateScore()));
-		setPopulation(new BasicPopulation(populationSize));
+		setPopulation(new NEATPopulation(populationSize));
 
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
 			getPopulation().add(
-					new NEATGenome(this, getPopulation().assignGenomeID(),
+					new NEATGenome(getPopulation().assignGenomeID(),
 							inputCount, outputCount));
 		}
 
@@ -275,7 +233,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	/**
-	 * Construct neat training with a predefined population.
+	 * Construct neat training with an existing population.
 	 * 
 	 * @param calculateScore
 	 *            The score object to use.
@@ -512,10 +470,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 
 		// finally, create the genome
-		final NEATGenome babyGenome = new NEATGenome(this, getPopulation()
+		final NEATGenome babyGenome = new NEATGenome(getPopulation()
 				.assignGenomeID(), babyNeurons, babyGenes, mom.getInputCount(),
 				mom.getOutputCount());
-
+		babyGenome.setGeneticAlgorithm(this);
+		
 		return babyGenome;
 	}
 
@@ -548,24 +507,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	/**
-	 * @return The activation function to use with NEAT.
-	 */
-	public ActivationFunction getNeatActivationFunction() {
-		return this.neatActivationFunction;
-	}
-
-	/**
 	 * @return A network created for the best genome.
 	 */
 	public NEATNetwork getNetwork() {
 		return this.bestEverNetwork;
-	}
-
-	/**
-	 * @return The activation function to use with the Encog output layer.
-	 */
-	public ActivationFunction getOutputActivationFunction() {
-		return this.outputActivationFunction;
 	}
 
 	/**
@@ -723,7 +668,26 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		} else {
 			this.bestEverScore = Double.MIN_VALUE;
 		}
+		
+		// check the population
+		for (final Genome obj : getPopulation().getGenomes()) {
+			if (!(obj instanceof NEATGenome)) {
+				throw new TrainingError(
+						"Population can only contain objects of NEATGenome.");
+			}
 
+			final NEATGenome neat = (NEATGenome) obj;
+
+			if ((neat.getInputCount() != this.inputCount)
+					|| (neat.getOutputCount() != this.outputCount)) {
+				throw new TrainingError(
+						"All NEATGenome's must have the same input and output sizes as the base network.");
+			}
+			neat.setGeneticAlgorithm(this);
+		}
+
+		getPopulation().claim(this);
+		
 		resetAndKill();
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
@@ -879,28 +843,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 *            Not used.
 	 */
 	public void setError(final double error) {
-	}
-
-	/**
-	 * Set the NEAT activation, used by the NEAT neurons.
-	 * 
-	 * @param neatActivationFunction
-	 *            The activation function.
-	 */
-	public void setNeatActivationFunction(
-			final ActivationFunction neatActivationFunction) {
-		this.neatActivationFunction = neatActivationFunction;
-	}
-
-	/**
-	 * Set the activatoin function for the Encog output layer.
-	 * 
-	 * @param outputActivationFunction
-	 *            The activation function.
-	 */
-	public void setOutputActivationFunction(
-			final ActivationFunction outputActivationFunction) {
-		this.outputActivationFunction = outputActivationFunction;
 	}
 
 	/**

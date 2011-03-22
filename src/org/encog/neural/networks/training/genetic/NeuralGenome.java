@@ -56,10 +56,8 @@ public class NeuralGenome extends BasicGenome {
 	 * @param nga The NeuralGeneticAlgorithm class to use.
 	 * @param network The network to use.
 	 */
-	public NeuralGenome(final NeuralGeneticAlgorithm nga,
+	public NeuralGenome(
 			final BasicNetwork network) {
-		super(nga.getGenetic());
-
 		setOrganism(network);
 
 		this.networkChromosome = new Chromosome();

@@ -25,6 +25,8 @@ package org.encog.ml.genetic.genome;
 
 import java.util.List;
 
+import org.encog.ml.genetic.GeneticAlgorithm;
+
 /**
  * A genome is the basic blueprint for creating an organism in Encog. A genome
  * is made up of one or more chromosomes, which are in turn made up of genes.
@@ -111,4 +113,15 @@ public interface Genome extends Comparable<Genome> {
 	 * @param score The new score.
 	 */
 	void setScore(double score);
+	
+	/**
+	 * @return Get the GA used by this genome.  This is normally a transient field and only used during training.
+	 */
+	GeneticAlgorithm getGeneticAlgorithm();
+	
+	/**
+	 * Set the GA used by this genome.  This is normally a transient field and only used during training.
+	 * @param ga The GA.
+	 */
+	void setGeneticAlgorithm(GeneticAlgorithm ga);
 }

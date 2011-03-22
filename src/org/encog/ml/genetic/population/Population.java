@@ -25,6 +25,7 @@ package org.encog.ml.genetic.population;
 
 import java.util.List;
 
+import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.species.Species;
@@ -197,5 +198,11 @@ public interface Population extends EncogPersistedObject {
 	 * Sort the population by best score.
 	 */
 	void sort();
+	
+	/**
+	 * Claim the population, before training.
+	 * @param ga The GA that is claiming.
+	 */
+	void claim(GeneticAlgorithm ga);
 
 }

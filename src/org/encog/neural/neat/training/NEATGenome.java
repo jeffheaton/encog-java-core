@@ -36,6 +36,7 @@ import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
+import org.encog.neural.neat.NEATPopulation;
 import org.encog.persist.Persistor;
 import org.encog.persist.map.PersistConst;
 import org.encog.persist.map.PersistedObject;
@@ -103,21 +104,12 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	private long speciesID;
 
 	/**
-	 * Default constructor, used mainly for persistence.
-	 */
-	public NEATGenome() {
-		super(null);
-	}
-
-	/**
 	 * Construct a genome by copying another.
 	 *
 	 * @param other
 	 *            The other genome.
 	 */
 	public NEATGenome(final NEATGenome other) {
-		super(other.getGeneticAlgorithm());
-
 		this.neuronsChromosome = new Chromosome();
 		this.linksChromosome = new Chromosome();
 
@@ -157,9 +149,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Create a NEAT gnome.
-	 *
-	 * @param training
-	 *            The owner object.
 	 * @param genomeID
 	 *            The genome id.
 	 * @param neurons
@@ -171,10 +160,9 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 * @param outputCount
 	 *            The output count.
 	 */
-	public NEATGenome(final NEATTraining training, final long genomeID,
+	public NEATGenome(final long genomeID,
 			final Chromosome neurons, final Chromosome links,
 			final int inputCount, final int outputCount) {
-		super(training);
 		setGenomeID(genomeID);
 		this.linksChromosome = links;
 		this.neuronsChromosome = neurons;
@@ -189,9 +177,6 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 
 	/**
 	 * Construct a genome, do not provide links and neurons.
-	 *
-	 * @param training
-	 *            The owner object.
 	 * @param id
 	 *            The genome id.
 	 * @param inputCount
@@ -199,9 +184,8 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	 * @param outputCount
 	 *            The output count.
 	 */
-	public NEATGenome(final NEATTraining training, final long id,
+	public NEATGenome(final long id,
 			final int inputCount, final int outputCount) {
-		super(training);
 		setGenomeID(id);
 		setAdjustedScore(0);
 		this.inputCount = inputCount;
@@ -243,6 +227,10 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 			}
 		}
 
+	}
+	
+	public NEATGenome() {
+		
 	}
 
 	/**
@@ -589,12 +577,11 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		NEATNetwork network = new NEATNetwork(inputCount, 
 				outputCount,
 				neurons,
-				((NEATTraining) getGeneticAlgorithm()).getNeatActivationFunction(), 
+				((NEATPopulation)((NEATTraining) getGeneticAlgorithm()).getPopulation()).getNeatActivationFunction(), 
 				0);
 		network.setSnapshot(((NEATTraining) getGeneticAlgorithm())
 				.isSnapshot());
-		network.setActivationFunction(((NEATTraining) getGeneticAlgorithm())
-				.getOutputActivationFunction());
+		network.setActivationFunction(((NEATPopulation)((NEATTraining) getGeneticAlgorithm()).getPopulation()).getOutputActivationFunction());
 		
 		setOrganism(network);
 

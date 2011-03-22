@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.species.Species;
@@ -475,6 +476,14 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 		this.youngBonusAgeThreshold = obj.getPropertyInt(Population.PROPERTY_YOUNG_AGE_THRESHOLD, true);
 		
 		obj.getPropertyGenericList(Population.PROPERTY_GENOMES, this.genomes); 
+	}
+
+	@Override
+	public void claim(GeneticAlgorithm ga) {
+		for(Genome genome: this.genomes) {
+			genome.setGeneticAlgorithm(ga);
+		}
+		
 	}
 
 }
