@@ -63,7 +63,7 @@ public class TestPersistPopulation extends TestCase {
 		
 		NEATTraining train = new NEATTraining(
 				score, 2, 1, 10);
-		train.setOutputActivationFunction(step);
+		//train.setOutputActivationFunction(step);
 		
 		return train.getPopulation();
 	}
