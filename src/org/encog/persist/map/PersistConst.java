@@ -31,6 +31,7 @@ public class PersistConst {
 	public static final String TYPE_SOM = "SOM";
 	public static final String TYPE_NEAT = "NEATNetwork";
 	public static final String TYPE_BASIC_POPULATION = "BasicPopulation";
+	public static final String TYPE_NEAT_POPULATION = "NEATPopulation";
 	public static final String TYPE_BASIC_SPECIES = "BasicSpecies";
 	public static final String TYPE_NEAT_NEURON_GENE = "NEATNeuronGene";
 	public static final String TYPE_SVM = "SVM";

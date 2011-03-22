@@ -112,6 +112,7 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 	public NEATGenome(final NEATGenome other) {
 		this.neuronsChromosome = new Chromosome();
 		this.linksChromosome = new Chromosome();
+		this.setGeneticAlgorithm(other.getGeneticAlgorithm());
 
 		getChromosomes().add(this.neuronsChromosome);
 		getChromosomes().add(this.linksChromosome);
@@ -579,12 +580,13 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 				neurons,
 				((NEATPopulation)((NEATTraining) getGeneticAlgorithm()).getPopulation()).getNeatActivationFunction(), 
 				0);
+		
+		
 		network.setSnapshot(((NEATTraining) getGeneticAlgorithm())
 				.isSnapshot());
 		network.setActivationFunction(((NEATPopulation)((NEATTraining) getGeneticAlgorithm()).getPopulation()).getOutputActivationFunction());
 		
-		setOrganism(network);
-
+		setOrganism(network);		
 	}
 
 	/**

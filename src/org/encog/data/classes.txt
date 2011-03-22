@@ -280,3 +280,4 @@ org.encog.util.time.TimeSpan
 org.encog.util.time.TimeUnit
 org.encog.util.time.TimeUnitNames
 org.encog.util.YahooSearch
+org.encog.neural.neat.NEATPopulation

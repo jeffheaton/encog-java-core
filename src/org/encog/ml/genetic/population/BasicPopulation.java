@@ -439,7 +439,11 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 	{
 		obj.clear(PersistConst.TYPE_BASIC_POPULATION);
 		obj.setStandardProperties(this);
-		
+		populationToMap(obj);
+	}
+	
+	public void populationToMap(PersistedObject obj)
+	{		
 		obj.setProperty( Population.PROPERTY_NEXT_GENE_ID, (int)this.geneIDGenerate.getCurrentID(), false );
 		obj.setProperty( Population.PROPERTY_NEXT_GENOME_ID, (int)this.genomeIDGenerate.getCurrentID(), false );
 		obj.setProperty( Population.PROPERTY_NEXT_INNOVATION_ID, (int)this.innovationIDGenerate.getCurrentID(), false );
@@ -462,7 +466,11 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 	public void persistFromMap(PersistedObject obj)
 	{
 		obj.requireType(PersistConst.TYPE_BASIC_POPULATION);
-
+		populationFromMap(obj); 
+	}
+	
+	public void populationFromMap(PersistedObject obj)
+	{
 		this.genomeIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_GENOME_ID, true));
 		this.geneIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_GENE_ID, true ) );
 		this.innovationIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_INNOVATION_ID, true ) );

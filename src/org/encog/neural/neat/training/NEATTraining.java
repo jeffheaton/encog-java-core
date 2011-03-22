@@ -253,11 +253,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		this.inputCount = genome.getInputCount();
 		this.outputCount = genome.getOutputCount();
 
-		for (final Genome obj : population.getGenomes()) {
-			final NEATGenome neat = (NEATGenome) obj;
-			neat.setGeneticAlgorithm(this);
-		}
-
 		init();
 	}
 
