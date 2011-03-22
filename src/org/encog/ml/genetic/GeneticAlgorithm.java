@@ -60,6 +60,11 @@ public class GeneticAlgorithm {
 	 * The crossover object.
 	 */
 	private Crossover crossover;
+	
+	/**
+	 * Is this the first iteration.
+	 */
+	private boolean first = true;
 
 	/**
 	 * The logging object.
@@ -174,6 +179,11 @@ public class GeneticAlgorithm {
 	 * @throws NeuralNetworkException
 	 */
 	public void iteration() {
+		
+		if( first ) {
+			this.getPopulation().claim(this);
+			first = false;
+		}
 
 		final int countToMate = (int) (population.getPopulationSize() * getPercentToMate());
 		final int offspringCount = countToMate * 2;
