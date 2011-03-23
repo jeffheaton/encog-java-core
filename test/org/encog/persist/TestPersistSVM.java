@@ -23,6 +23,7 @@
  */
 package org.encog.persist;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
@@ -57,13 +58,8 @@ public class TestPersistSVM extends TestCase {
 	{
 		SVM network = create();
 
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.add(EG_RESOURCE, network);
-		encog.save(EG_FILENAME);
-		
-		EncogMemoryCollection encog2 = new EncogMemoryCollection();
-		encog2.load(EG_FILENAME);
-		SVM network2 = (SVM)encog2.find(EG_RESOURCE);
+		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
+		SVM network2 = (SVM)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
 		validate(network2);
 	}
 	
@@ -81,8 +77,8 @@ public class TestPersistSVM extends TestCase {
 	{
 		SVM network = create();
 		
-		SerializeObject.saveEG(SERIAL_FILENAME, network);
-		SVM network2 = (SVM)SerializeObject.loadEG(SERIAL_FILENAME);
+		SerializeObject.save(SERIAL_FILENAME, network);
+		SVM network2 = (SVM)SerializeObject.load(SERIAL_FILENAME);
 				
 		validate(network2);
 	}
@@ -90,9 +86,7 @@ public class TestPersistSVM extends TestCase {
 	private void validate(SVM svm)
 	{
 		Assert.assertEquals(KernelType.RadialBasisFunction, svm.getKernelType());
-		Assert.assertEquals(SVMType.EpsilonSupportVectorRegression, svm.getSvmType());
-		Assert.assertEquals(1.0, svm.getParams().C);
-		Assert.assertEquals(100.0, svm.getParams().cache_size);
+		Assert.assertEquals(SVMType.EpsilonSupportVectorRegression, svm.getSVMType());
 		Assert.assertEquals(4, svm.getModel().SV.length);
 	}
 }
