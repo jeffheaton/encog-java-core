@@ -23,11 +23,13 @@
  */
 package org.encog.persist;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.svm.SVM;
 import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.util.obj.SerializeObject;
 
@@ -41,13 +43,10 @@ public class TestPersistHopfield extends TestCase {
 	{
 		HopfieldNetwork network = new HopfieldNetwork(4);
 		network.setWeight(1,1,1);
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.add(EG_RESOURCE, network);
-		encog.save(EG_FILENAME);
+		network.setProperty("x", 10);
 		
-		EncogMemoryCollection encog2 = new EncogMemoryCollection();
-		encog2.load(EG_FILENAME);
-		HopfieldNetwork network2 = (HopfieldNetwork)encog2.find(EG_RESOURCE);
+		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
+		HopfieldNetwork network2 = (HopfieldNetwork)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
 		
 		validateHopfield(network2);
 	}
@@ -59,17 +58,6 @@ public class TestPersistHopfield extends TestCase {
 		
 		SerializeObject.save(SERIAL_FILENAME, network);
 		HopfieldNetwork network2 = (HopfieldNetwork)SerializeObject.load(SERIAL_FILENAME);
-				
-		validateHopfield(network2);
-	}
-	
-	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-	{
-		HopfieldNetwork network = new HopfieldNetwork(4);
-		network.setWeight(1,1,1);
-		
-		SerializeObject.saveEG(SERIAL_FILENAME, network);
-		HopfieldNetwork network2 = (HopfieldNetwork)SerializeObject.loadEG(SERIAL_FILENAME);
 				
 		validateHopfield(network2);
 	}

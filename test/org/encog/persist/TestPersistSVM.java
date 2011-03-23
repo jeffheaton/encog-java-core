@@ -72,17 +72,7 @@ public class TestPersistSVM extends TestCase {
 				
 		validate(network2);
 	}
-	
-	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-	{
-		SVM network = create();
 		
-		SerializeObject.save(SERIAL_FILENAME, network);
-		SVM network2 = (SVM)SerializeObject.load(SERIAL_FILENAME);
-				
-		validate(network2);
-	}
-	
 	private void validate(SVM svm)
 	{
 		Assert.assertEquals(KernelType.RadialBasisFunction, svm.getKernelType());
