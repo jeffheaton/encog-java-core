@@ -235,14 +235,6 @@ org.encog.persist.PersistError
 org.encog.persist.Persistor
 org.encog.persist.PersistReader
 org.encog.persist.PersistWriter
-org.encog.script.ConsoleInputOutput
-org.encog.script.EncogScript
-org.encog.script.EncogScriptEngine
-org.encog.script.EncogScriptEngineFactory
-org.encog.script.EncogScriptError
-org.encog.script.EncogScriptRuntimeError
-org.encog.script.IndividualEngineFactory
-org.encog.script.StandardConsole
 org.encog.util.benchmark.EncogBenchmark
 org.encog.util.benchmark.Evaluate
 org.encog.util.benchmark.RandomTrainingFactory
