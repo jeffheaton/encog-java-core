@@ -39,8 +39,8 @@ import org.encog.Encog;
 import org.encog.neural.data.buffer.BufferedDataError;
 import org.encog.parse.tags.read.ReadXML;
 import org.encog.parse.tags.write.WriteXML;
-import org.encog.persist.location.ResourcePersistence;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.file.ResourceInputStream;
 
 /**
  * A CODEC that can read/write Microsoft Excel (*.XLSX) files.
@@ -251,9 +251,8 @@ public class ExcelCODEC implements DataSetCODEC {
 			this.fos = new FileOutputStream(this.file);
 			this.zos = new ZipOutputStream(this.fos);
 
-			final ResourcePersistence resource = new ResourcePersistence(
-					"org/encog/data/blank.xlsx");
-			final InputStream is = resource.createInputStream();
+			InputStream is = ResourceInputStream.openResourceInputStream("org/encog/data/blank.xlsx");
+
 			final ZipInputStream zis = new ZipInputStream(is);
 
 			ZipEntry entry;

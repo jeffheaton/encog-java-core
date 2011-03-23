@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
-import org.encog.persist.location.ResourcePersistence;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
+import org.encog.util.file.ResourceInputStream;
 
 public class PropertyConstraints {
 
@@ -54,9 +54,8 @@ public class PropertyConstraints {
 	private PropertyConstraints() {
 		String currentClass = null;
 		try {
-			final ResourcePersistence resource = new ResourcePersistence(
-					"org/encog/data/analyst.csv");
-			final InputStream is = resource.createInputStream();
+			
+			InputStream is = ResourceInputStream.openResourceInputStream("org/encog/data/analyst.csv");
 			ReadCSV csv = new ReadCSV(is, false, CSVFormat.EG_FORMAT);
 
 			while (csv.next()) {

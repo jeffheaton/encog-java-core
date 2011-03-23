@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
-import org.encog.persist.location.ResourcePersistence;
+import org.encog.util.file.ResourceInputStream;
 
 /**
  * This class includes some utilities to be used with reflection. This are
@@ -172,9 +172,7 @@ public final class ReflectionUtil {
 	public static void loadStandardClassmap() {
 		String currentClass = null;
 		try {
-			final ResourcePersistence resource = new ResourcePersistence(
-					"org/encog/data/classes.txt");
-			final InputStream is = resource.createInputStream();
+			InputStream is = ResourceInputStream.openResourceInputStream("org/encog/data/classes.txt");
 			final BufferedReader reader = new BufferedReader(
 					new InputStreamReader(is));
 			String line;
@@ -201,9 +199,8 @@ public final class ReflectionUtil {
 	public static void loadClassmap() {
 		String currentClass = null;
 		try {
-			final ResourcePersistence resource = new ResourcePersistence(
-					"org/encog/data/classes.txt");
-			final InputStream is = resource.createInputStream();
+			InputStream is = ResourceInputStream.openResourceInputStream("org/encog/data/classes.txt");
+			
 			final BufferedReader reader = new BufferedReader(
 					new InputStreamReader(is));
 			String line;

@@ -13,7 +13,6 @@ import java.io.OutputStream;
 
 import org.encog.EncogError;
 import org.encog.bot.BotUtil;
-import org.encog.persist.location.ResourcePersistence;
 
 public class FileUtil {
 
@@ -118,8 +117,7 @@ public class FileUtil {
 
 	public static void copyResource(String resource, File targetFile) {
 		try {
-		ResourcePersistence rp = new ResourcePersistence(resource);
-		InputStream is = rp.createInputStream();
+		InputStream is = ResourceInputStream.openResourceInputStream(resource);
 		OutputStream os = new FileOutputStream(targetFile);
 		copy(is,os);
 		is.close();

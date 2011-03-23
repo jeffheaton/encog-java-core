@@ -231,11 +231,6 @@ org.encog.persist.EncogCollection
 org.encog.persist.EncogMemoryCollection
 org.encog.persist.EncogPersistedCollection
 org.encog.persist.EncogPersistedObject
-org.encog.persist.location.FilePersistence
-org.encog.persist.location.InputStreamPersistence
-org.encog.persist.location.OutputStreamPersistence
-org.encog.persist.location.PersistenceLocation
-org.encog.persist.location.ResourcePersistence
 org.encog.persist.PersistError
 org.encog.persist.Persistor
 org.encog.persist.PersistReader
