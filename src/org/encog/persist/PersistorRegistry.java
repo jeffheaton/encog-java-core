@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.ml.svm.PersistSVM;
+import org.encog.neural.thermal.PersistHopfield;
 
 public class PersistorRegistry {
 	
@@ -12,9 +13,10 @@ public class PersistorRegistry {
 	
 	private PersistorRegistry() {
 		add(new PersistSVM());
+		add(new PersistHopfield());
 	}
 
-	public void add(PersistSVM persistor) {
+	public void add(EncogPersistor persistor) {
 		map.put(persistor.getPersistClassString(), persistor);		
 	}
 	

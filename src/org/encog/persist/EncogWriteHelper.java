@@ -3,9 +3,11 @@ package org.encog.persist;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import org.encog.Encog;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
 
 public class EncogWriteHelper {
 	
@@ -122,5 +124,18 @@ public class EncogWriteHelper {
 
 	public String getCurrentSection() {
 		return this.currentSection;
+	}
+
+	public void addProperties(Map<String, String> properties) {
+		for(String key: properties.keySet() ) {
+			String value = properties.get(key);
+			this.writeProperty(key, value);
+		}		
+	}
+
+	public void writeProperty(String name, double[] d) {
+		StringBuilder result = new StringBuilder();
+		NumberList.toList(CSVFormat.EG_FORMAT, result, d);
+		writeProperty(name,result.toString());
 	}
 }

@@ -82,8 +82,13 @@ public class EncogReadHelper {
 				}
 
 			}
+			
+			if( this.currentSectionName.length()==0 )
+				return null;
+			
 			this.section = new EncogFileSection(currentSectionName,currentSubSectionName);
 			this.section.getLines().addAll(this.lines);
+			this.currentSectionName = this.currentSubSectionName = "";
 			return this.section;
 		} catch (IOException ex) {
 			throw new PersistError(ex);

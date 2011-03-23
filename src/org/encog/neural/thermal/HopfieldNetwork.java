@@ -144,25 +144,6 @@ public class HopfieldNetwork extends ThermalNetwork {
 		return true;
 	}
 
-	public void persistToMap(PersistedObject obj) {
-		obj.clear(PersistConst.TYPE_HOPFIELD);
-		obj.setStandardProperties(this);
-		propertiesToMap(obj);
-		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
-		obj.setProperty(PersistConst.OUTPUT, this.getCurrentState().getData());
-		obj.setProperty(PersistConst.NEURON_COUNT, this.getNeuronCount(), false);
-	}
-
-	public void persistFromMap(PersistedObject obj) {
-		obj.requireType(PersistConst.TYPE_HOPFIELD);
-		int neuronCount = obj.getPropertyInt(PersistConst.NEURON_COUNT, true);
-		double[] weights = obj.getPropertyDoubleArray(PersistConst.WEIGHTS,
-				true);
-		double[] state = obj.getPropertyDoubleArray(PersistConst.OUTPUT, true);
-		propertiesFromMap(obj);
-		init(neuronCount, weights, state);		
-	}
-
 	@Override
 	public int getInputCount() {
 		return super.getNeuronCount();
@@ -201,4 +182,10 @@ public class HopfieldNetwork extends ThermalNetwork {
 	public void updateProperties() {
 		// nothing needed here		
 	}
+
+
+
+
+
+
 }

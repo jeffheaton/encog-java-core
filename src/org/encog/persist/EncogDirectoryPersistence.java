@@ -47,6 +47,10 @@ public class EncogDirectoryPersistence {
 		try {
 			EncogPersistor p = PersistorRegistry.getInstance().getPersistor(
 					obj.getClass());
+			
+			if( p==null ) { 
+				throw new PersistError("Do not know how to persist object: " + obj.getClass().getSimpleName());
+			}
 
 			os.flush();
 			PrintWriter pw = new PrintWriter(os);

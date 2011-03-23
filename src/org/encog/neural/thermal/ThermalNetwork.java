@@ -162,5 +162,18 @@ public abstract class ThermalNetwork extends BasicML implements MLMethod, MLAuto
 		reset(0);
 	}
 	
+	public void setWeights(double[] w) {
+		this.weights = w;		
+	}
+	
+	public void setCurrentState(double[] s) {
+		this.currentState = new BiPolarNeuralData(s.length);
+		EngineArray.arrayCopy(s, this.currentState.getData());		
+	}
+	
+	public void setNeuronCount(int c) {
+		this.neuronCount = c;
+		
+	}
 	
 }
