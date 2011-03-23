@@ -1,3 +1,5 @@
+org.encog.neural.neat.NEATPopulation
+org.encog.ml.genetic.species.BasicSpecies
 org.encog.neural.rbf.RBFNetwork
 org.encog.ml.svm.SVM
 org.encog.neural.neat.training.NEATLinkGene
@@ -280,4 +282,3 @@ org.encog.util.time.TimeSpan
 org.encog.util.time.TimeUnit
 org.encog.util.time.TimeUnitNames
 org.encog.util.YahooSearch
-org.encog.neural.neat.NEATPopulation

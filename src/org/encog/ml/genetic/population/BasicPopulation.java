@@ -30,6 +30,7 @@ import java.util.List;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.InnovationList;
+import org.encog.ml.genetic.species.BasicSpecies;
 import org.encog.ml.genetic.species.Species;
 import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.EncogCollection;
@@ -483,7 +484,25 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 		this.youngScoreBonus = obj.getPropertyDouble(Population.PROPERTY_YOUNG_AGE_BONUS, true); 
 		this.youngBonusAgeThreshold = obj.getPropertyInt(Population.PROPERTY_YOUNG_AGE_THRESHOLD, true);
 		
-		obj.getPropertyGenericList(Population.PROPERTY_GENOMES, this.genomes); 
+		obj.getPropertyGenericList(Population.PROPERTY_GENOMES, this.genomes);
+		//obj.getPropertyGenericList(Population.PROPERTY_INNOVATIONS, this.innovations);
+		obj.getPropertyGenericList(Population.PROPERTY_SPECIES, this.species);
+		
+		for( Species s : this.species) {
+			if( s instanceof BasicSpecies ) {
+				Genome leader = findGenome(((BasicSpecies)s).getTempLeaderID());
+				s.setLeader(leader);
+				((BasicSpecies)s).setPopulation(this);
+			}
+		}
+	}
+
+	private Genome findGenome(long id) {
+		for(Genome genome: this.genomes) {
+			if( genome.getGenomeID()==id)
+				return genome;
+		}
+		return null;
 	}
 
 	@Override

@@ -85,6 +85,8 @@ public class BasicSpecies extends BasicPersistedSubObject implements Species, Se
 	 * The owner class.
 	 */
 	private Population population;
+	
+	private transient long leaderID;
 
 	/**
 	 * Default constructor, used mainly for persistence.
@@ -283,6 +285,22 @@ public class BasicSpecies extends BasicPersistedSubObject implements Species, Se
 		return true;
 	}
 	
+	
+	
+	/**
+	 * @return the leaderID
+	 */
+	public long getTempLeaderID() {
+		return leaderID;
+	}
+
+	/**
+	 * @param leaderID the leaderID to set
+	 */
+	public void setTempLeaderID(long leaderID) {
+		this.leaderID = leaderID;
+	}
+
 	public void persistToMap(PersistedObject obj)
 	{
 		obj.clear(PersistConst.TYPE_BASIC_SPECIES);
@@ -303,6 +321,16 @@ public class BasicSpecies extends BasicPersistedSubObject implements Species, Se
 		this.bestScore = obj.getPropertyDouble(BasicSpecies.PROPERTY_BEST_SCORE, true);
 		this.gensNoImprovement = obj.getPropertyInt(BasicSpecies.PROPERTY_GENS_NO_IMPROVE, true);
 		this.spawnsRequired = obj.getPropertyDouble(BasicSpecies.PROPERTY_SPAWNS_REQUIRED, true);
+		this.leaderID = obj.getPropertyInt(BasicSpecies.PROPERTY_LEADER,true);
 	}
+
+	/**
+	 * @param population the population to set
+	 */
+	public void setPopulation(Population population) {
+		this.population = population;
+	}
+	
+	
 
 }
