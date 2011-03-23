@@ -1,5 +1,4 @@
 /*
- * Encog(tm) Core v3.0 - Java Version
  * http://www.heatonresearch.com/encog/
  * http://code.google.com/p/encog-java/
  
@@ -23,23 +22,15 @@
  */
 package org.encog.ml.svm;
 
-import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_model;
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_parameter;
-import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.PersistError;
-import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
-import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 
 /**
  * This is a network that is backed by one or more Support Vector Machines
@@ -61,34 +52,6 @@ import org.encog.util.csv.NumberList;
  */
 public class SVM extends BasicML implements MLRegression {
 
-	public static final String PARAMETER_KERNEL_TYPE = "kernelType";
-	public static final String PARAMETER_MODELS = "models";
-	public static final String PARAMETER_PARAMS = "params";
-
-	public static final String PARAM_DEGREE = "degree";
-	public static final String PARAM_GAMMA = "gama";
-	public static final String PARAM_COEF = "coef";
-	public static final String PARAM_CACHE_SIZE = "cacheSize";
-	public static final String PARAM_EPS = "eps";
-	public static final String PARAM_C = "c";
-	public static final String PARAM_NUM_WEIGHT = "numWeight";
-	public static final String PARAM_WEIGHT_LABEL = "weightLabel";
-	public static final String PARAM_NU = "nu";
-	public static final String PARAM_P = "p";
-	public static final String PARAM_SHRINKING = "shrinking";
-	public static final String PARAM_PROBABILITY = "probability";
-	public static final String PARAM_STAT_ITERATIONS = "statIterations";
-
-	public static final String MODEL_NCLASS = "modelNclass";
-	public static final String MODEL_L = "modelL";
-	public static final String MODEL_RHO = "modelRho";
-	public static final String MODEL_PROB_A = "modelProba";
-	public static final String MODEL_PROB_B = "modelProbb";
-	public static final String MODEL_NODES = "modelNodes";
-	public static final String MODEL_COEF = "modelCoef";
-	public static final String MODEL_LABEL = "modelLabel";
-	public static final String MODEL_NSV = "modelNsv";
-
 	/**
 	 * The SVM model to use.
 	 */
@@ -104,82 +67,24 @@ public class SVM extends BasicML implements MLRegression {
 	 */
 	private int inputCount;
 
-	/**
-	 * The kernel type.
-	 */
-	private KernelType kernelType;
-
-	/**
-	 * The SVM type.
-	 */
-	private SVMType svmType;
-
-	public static String svmTypeToString(SVMType t) {
-		switch (t) {
-		case SupportVectorClassification:
-			return "SupportVectorClassification";
-		case NewSupportVectorClassification:
-			return "NewSupportVectorClassification";
-		case SupportVectorOneClass:
-			return "SupportVectorOneClass";
-		case EpsilonSupportVectorRegression:
-			return "EpsilonSupportVectorRegression";
-		case NewSupportVectorRegression:
-			return "EpsilonSupportVectorRegression";
-		default:
-			throw new PersistError("Unknown SVMType: " + t);
-		}
-	}
-
-	public static SVMType stringToSVMType(String str) {
-		if (str.equals("SupportVectorClassification"))
-			return SVMType.SupportVectorClassification;
-		else if (str.equals("NewSupportVectorClassification"))
-			return SVMType.NewSupportVectorClassification;
-		else if (str.equals("SupportVectorOneClass"))
-			return SVMType.SupportVectorOneClass;
-		else if (str.equals("EpsilonSupportVectorRegression"))
-			return SVMType.EpsilonSupportVectorRegression;
-		else if (str.equals("NewSupportVectorRegression"))
-			return SVMType.EpsilonSupportVectorRegression;
-		else
-			throw new PersistError("Unknown SVMType: " + str);
-	}
-
-	public static String kernelTypeToString(KernelType t) {
-		switch (t) {
-		case Linear:
-			return "Linear";
-		case Poly:
-			return "Poly";
-		case RadialBasisFunction:
-			return "RadialBasisFunction";
-		case Sigmoid:
-			return "Sigmoid";
-		case Precomputed:
-			return "Precomputed";
-		default:
-			throw new PersistError("Unknown SVMType: " + t);
-		}
-	}
-
-	public static KernelType stringToKernelType(String t) {
-		if (t.equals("Linear"))
-			return KernelType.Linear;
-		else if (t.equals("Poly"))
-			return KernelType.Poly;
-		else if (t.equals("RadialBasisFunction"))
-			return KernelType.RadialBasisFunction;
-		else if (t.equals("Sigmoid"))
-			return KernelType.Sigmoid;
-		else if (t.equals("Precomputed"))
-			return KernelType.Precomputed;
-		else
-			throw new PersistError("Unknown SVMType: " + t);
-	}
-
 	public SVM() {
 
+	}
+
+	public SVM(svm_model model) {
+		this.model = model;
+		this.params = model.param;
+		this.inputCount = 0;
+
+		// determine the input count
+		for (int row = 0; row < this.model.SV.length; row++) {
+			for (int col = 0; col < this.model.SV[row].length; col++) {
+				inputCount = Math
+						.max(this.model.SV[row][col].index, inputCount);
+			}
+		}
+
+		//
 	}
 
 	/**
@@ -196,8 +101,6 @@ public class SVM extends BasicML implements MLRegression {
 	 */
 	public SVM(int inputCount, SVMType svmType, KernelType kernelType) {
 		this.inputCount = inputCount;
-		this.kernelType = kernelType;
-		this.svmType = svmType;
 
 		params = new svm_parameter();
 
@@ -237,7 +140,7 @@ public class SVM extends BasicML implements MLRegression {
 			break;
 		}
 
-		//			params[i].kernel_type = svm_parameter.RBF;
+		// params[i].kernel_type = svm_parameter.RBF;
 		params.degree = 3;
 		params.coef0 = 0;
 		params.nu = 0.5;
@@ -273,15 +176,18 @@ public class SVM extends BasicML implements MLRegression {
 
 	/**
 	 * Compute the output for the given input.
-	 * @param input The input to the SVM.
+	 * 
+	 * @param input
+	 *            The input to the SVM.
 	 * @return The results from the SVM.
 	 */
 	public NeuralData compute(NeuralData input) {
-		
-		if( this.model==null ) {
-			throw new EncogError("Can't use the SVM yet, it has not been trained, and no model exists.");
+
+		if (this.model == null) {
+			throw new EncogError(
+					"Can't use the SVM yet, it has not been trained, and no model exists.");
 		}
-		
+
 		NeuralData result = new BasicNeuralData(1);
 
 		svm_node[] formattedInput = makeSparse(input);
@@ -331,169 +237,8 @@ public class SVM extends BasicML implements MLRegression {
 		return params;
 	}
 
-	/**
-	 * @return The SVM kernel type.
-	 */
-	public KernelType getKernelType() {
-		return kernelType;
-	}
-
-	/**
-	 * @return The type of SVM in use.
-	 */
-	public SVMType getSvmType() {
-		return svmType;
-	}
-
 	public boolean supportsMapPersistence() {
 		return true;
-	}
-
-	public void persistToMap(PersistedObject obj) {
-		obj.clear(PersistConst.TYPE_SVM);
-		obj.setStandardProperties(this);
-		obj.setProperty(PersistConst.TYPE, svmTypeToString(this.svmType), false);
-		obj.setProperty(SVM.PARAMETER_KERNEL_TYPE,
-				kernelTypeToString(this.kernelType), false);
-		obj.setProperty(PersistConst.INPUT_COUNT, this.inputCount, false);
-
-		// handle the params
-
-		PersistedObject pparm = new PersistedObject();
-		pparm.clear("Params");
-		obj.setProperty(SVM.PARAM_DEGREE, params.degree, true);
-		obj.setProperty(SVM.PARAM_GAMMA, params.gamma, true);
-		obj.setProperty(SVM.PARAM_COEF, params.coef0, true);
-		obj.setProperty(SVM.PARAM_CACHE_SIZE, params.cache_size, true);
-		obj.setProperty(SVM.PARAM_EPS, params.eps, true);
-		obj.setProperty(SVM.PARAM_C, params.C, true);
-		obj.setProperty(SVM.PARAM_NUM_WEIGHT, params.nr_weight, true);
-		obj.setProperty(SVM.PARAM_WEIGHT_LABEL, params.weight_label);
-		obj.setProperty(PersistConst.WEIGHT, params.weight);
-		obj.setProperty(SVM.PARAM_NU, params.nu, true);
-		obj.setProperty(SVM.PARAM_P, params.p, true);
-		obj.setProperty(SVM.PARAM_SHRINKING, params.shrinking, true);
-		obj.setProperty(SVM.PARAM_PROBABILITY, params.probability, true);
-		obj.setProperty(SVM.PARAM_DEGREE, params.statIterations, true);
-
-		// handle the models
-
-		if (model != null) {
-			obj.setProperty(SVM.MODEL_NCLASS, model.nr_class, true);
-			obj.setProperty(SVM.MODEL_L, model.l, true);
-			obj.setProperty(SVM.MODEL_RHO, model.rho);
-			obj.setProperty(SVM.MODEL_PROB_A, model.probA);
-			obj.setProperty(SVM.MODEL_PROB_B, model.probB);
-			obj.setProperty(SVM.MODEL_NODES, svmNodeToString(model.SV), false);
-			obj.setProperty(SVM.MODEL_COEF, new Matrix(model.sv_coef));
-			obj.setProperty(SVM.MODEL_LABEL, model.label);
-			obj.setProperty(SVM.MODEL_NSV, model.nSV);
-		}
-	}
-
-	public void persistFromMap(PersistedObject obj) {
-		obj.requireType(PersistConst.TYPE_SVM);
-		this.svmType = stringToSVMType(obj.getPropertyString(PersistConst.TYPE,
-				true));
-		this.kernelType = stringToKernelType(obj.getPropertyString(
-				SVM.PARAMETER_KERNEL_TYPE, true));
-		this.inputCount = obj.getPropertyInt(PersistConst.INPUT_COUNT, true);
-
-		// read params
-		this.params = new svm_parameter();
-		int index = 0;
-
-		this.params = new svm_parameter();
-		this.params.C = obj.getPropertyDouble(SVM.PARAM_C, true);
-		this.params.cache_size = obj.getPropertyDouble(SVM.PARAM_CACHE_SIZE,
-				true);
-		this.params.coef0 = obj.getPropertyDouble(SVM.PARAM_COEF, true);
-
-		this.params.degree = obj.getPropertyInt(SVM.PARAM_DEGREE, true);
-		this.params.gamma = obj.getPropertyDouble(SVM.PARAM_GAMMA, true);
-		this.params.eps = obj.getPropertyDouble(SVM.PARAM_EPS, true);
-		this.params.nr_weight = obj.getPropertyInt(SVM.PARAM_NUM_WEIGHT, true);
-		this.params.weight_label = obj.getPropertyIntArray(
-				SVM.PARAM_WEIGHT_LABEL, true);
-		this.params.weight = obj.getPropertyDoubleArray(PersistConst.WEIGHT,
-				true);
-		this.params.nu = obj.getPropertyDouble(SVM.PARAM_NU, true);
-		this.params.p = obj.getPropertyDouble(SVM.PARAM_P, true);
-		this.params.shrinking = obj.getPropertyInt(SVM.PARAM_SHRINKING, true);
-		this.params.probability = obj.getPropertyInt(SVM.PARAM_PROBABILITY,
-				true);
-
-		// model
-
-		int l = obj.getPropertyInt(SVM.MODEL_L, false);
-
-		if (l > 0) {
-			this.model = new svm_model();
-
-			this.model = new svm_model();
-			this.model.nr_class = obj.getPropertyInt(SVM.MODEL_NCLASS, true);
-
-			this.model.l = l;
-			this.model.rho = obj.getPropertyDoubleArray(SVM.MODEL_RHO, true);
-			this.model.probA = obj.getPropertyDoubleArray(SVM.MODEL_PROB_A,
-					false);
-			this.model.probB = obj.getPropertyDoubleArray(SVM.MODEL_PROB_B,
-					false);
-			this.model.SV = svmStringToNode(
-					obj.getPropertyString(SVM.MODEL_NODES, true), l);
-			this.model.sv_coef = obj.getPropertyMatrix(SVM.MODEL_COEF, true)
-					.getData();
-			this.model.label = obj.getPropertyIntArray(SVM.MODEL_LABEL, false);
-			this.model.nSV = obj.getPropertyIntArray(SVM.MODEL_NSV, false);
-			this.model.param = this.params;
-		} else {
-			this.model = null;
-		}
-	}
-
-	public static svm_node[][] svmStringToNode(String str, int l) {
-		int strIndex = 0;
-		svm_node[][] result = new svm_node[l][];
-
-		int index = 0;
-		int current;
-		while ((current = str.indexOf('|', strIndex)) != -1) {
-			String str2 = str.substring(strIndex, current);
-			strIndex = current + 1;
-
-			double[] temp = NumberList.fromList(CSVFormat.EG_FORMAT, str2);
-			result[index] = new svm_node[temp.length];
-			for (int i = 0; i < temp.length; i++) {
-				result[index][i] = new svm_node();
-				result[index][i].index = i + 1;
-				result[index][i].value = temp[i];
-			}
-
-			index++;
-		}
-
-		return result;
-	}
-
-	public static String svmNodeToString(svm_node[][] nodes) {
-		StringBuilder result = new StringBuilder();
-
-		for (int i = 0; i < nodes.length; i++) {
-			for (int j = 1; j < (nodes[0].length + 1); j++) {
-				for (svm_node node : nodes[i]) {
-					if (node.index == j) {
-						if (j > 1)
-							result.append(',');
-						result.append(CSVFormat.ENGLISH.format(node.value,
-								Encog.DEFAULT_PRECISION));
-					}
-				}
-			}
-
-			result.append("|");
-		}
-
-		return result.toString();
 	}
 
 	@Override
@@ -508,6 +253,40 @@ public class SVM extends BasicML implements MLRegression {
 
 	@Override
 	public void updateProperties() {
-		// unneeded		
+		// unneeded
+	}
+
+	public KernelType getKernelType() {
+		switch (this.params.kernel_type) {
+		case svm_parameter.LINEAR:
+			return KernelType.Linear;
+		case svm_parameter.POLY:
+			return KernelType.Poly;
+		case svm_parameter.RBF:
+			return KernelType.RadialBasisFunction;
+		case svm_parameter.SIGMOID:
+			return KernelType.Sigmoid;
+		case svm_parameter.PRECOMPUTED:
+			return KernelType.Precomputed;
+		default:
+			return null;
+		}
+	}
+
+	public SVMType getSVMType() {
+		switch (params.svm_type) {
+		case svm_parameter.C_SVC:
+			return SVMType.SupportVectorClassification;
+		case svm_parameter.NU_SVC:
+			return SVMType.NewSupportVectorClassification;
+		case svm_parameter.ONE_CLASS:
+			return SVMType.SupportVectorOneClass;
+		case svm_parameter.EPSILON_SVR:
+			return SVMType.EpsilonSupportVectorRegression;
+		case svm_parameter.NU_SVR:
+			return SVMType.NewSupportVectorRegression;
+		default:
+			return null;
+		}
 	}
 }
