@@ -141,9 +141,7 @@ org.encog.neural.data.NeuralData
 org.encog.neural.data.NeuralDataError
 org.encog.neural.data.NeuralDataPair
 org.encog.neural.data.NeuralDataSet
-org.encog.neural.data.PropertyData
 org.encog.neural.data.sql.SQLNeuralDataSet
-org.encog.neural.data.TextData
 org.encog.neural.networks.BasicNetwork
 org.encog.neural.networks.NeuralDataMapping
 org.encog.neural.networks.structure.AnalyzeNetwork
