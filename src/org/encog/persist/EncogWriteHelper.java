@@ -1,4 +1,4 @@
-package org.encog.app.analyst.script;
+package org.encog.persist;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -7,7 +7,7 @@ import java.util.List;
 import org.encog.Encog;
 import org.encog.util.csv.CSVFormat;
 
-public class WriteScriptFile {
+public class EncogWriteHelper {
 	
 	public final static char QUOTE = '\"';
 	public final static char COMMA = ',';
@@ -16,7 +16,7 @@ public class WriteScriptFile {
 	private StringBuilder line = new StringBuilder();
 	private String currentSection;
 
-	public WriteScriptFile(OutputStream stream)
+	public EncogWriteHelper(OutputStream stream)
 	{
 		this.out = new PrintWriter(stream);		
 	}

@@ -11,6 +11,7 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizedField;
+import org.encog.persist.EncogWriteHelper;
 
 public class ScriptSave {
 
@@ -20,7 +21,7 @@ public class ScriptSave {
 		this.script = script;
 	}
 
-	private void saveConfig(WriteScriptFile out) {
+	private void saveConfig(EncogWriteHelper out) {
 		saveSubSection(out,"SETUP","CONFIG");
 		out.addSubSection("FILENAMES");
 		
@@ -33,7 +34,7 @@ public class ScriptSave {
 	}
 	
 	
-	private void saveSubSection(WriteScriptFile out, String section, String subSection)
+	private void saveSubSection(EncogWriteHelper out, String section, String subSection)
 	{
 		if( !section.equals(out.getCurrentSection()) )
 			out.addSection(section);
@@ -51,7 +52,7 @@ public class ScriptSave {
 		}
 	}
 		
-	private void saveSegregate(WriteScriptFile out)
+	private void saveSegregate(EncogWriteHelper out)
 	{
 		saveSubSection(out,"SEGREGATE","CONFIG");
 		out.addSubSection("FILES");
@@ -66,14 +67,14 @@ public class ScriptSave {
 		}
 	}
 	
-	private void saveMachineLearning(WriteScriptFile out)
+	private void saveMachineLearning(EncogWriteHelper out)
 	{
 		saveSubSection(out,"ML","CONFIG");
 		saveSubSection(out,"ML","TRAIN");
 		
 	}
 
-	private void saveData(WriteScriptFile out) {
+	private void saveData(EncogWriteHelper out) {
 		saveSubSection(out,"DATA","CONFIG");
 		out.addSubSection("STATS");
 		out.addColumn("name");
@@ -120,7 +121,7 @@ public class ScriptSave {
 
 	}
 	
-	private void saveTasks(WriteScriptFile out) {
+	private void saveTasks(EncogWriteHelper out) {
 		out.addSection("TASKS");
 		List<String> list = new ArrayList<String>();
 		list.addAll(this.script.getTasks().keySet());
@@ -134,7 +135,7 @@ public class ScriptSave {
 		}
 	}
 
-	private void saveNormalize(WriteScriptFile out) {
+	private void saveNormalize(EncogWriteHelper out) {
 		saveSubSection(out,"NORMALIZE","CONFIG");
 
 		out.addSubSection("RANGE");
@@ -174,7 +175,7 @@ public class ScriptSave {
 	}
 
 	public void save(OutputStream stream) {
-		WriteScriptFile out = new WriteScriptFile(stream);
+		EncogWriteHelper out = new EncogWriteHelper(stream);
 		saveSubSection(out,"HEADER","DATASOURCE");
 		saveConfig(out);
 		saveData(out);
