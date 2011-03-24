@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.mathutil.matrices.Matrix;
@@ -110,5 +111,72 @@ public class EncogFileSection {
 		
 		return result;
 	}
+
+	public static int[] parseIntArray(Map<String, String> params,
+			String name) {
+		String value = null;
+		try {
+			value = params.get(name);
+			if( value==null ) {
+				throw new PersistError("Missing property: " + name);
+			}
+			
+			return NumberList.fromListInt(CSVFormat.EG_FORMAT, value);
+			
+		} catch(NumberFormatException ex) {
+			throw new PersistError("Field: " + name + ", " + "invalid integer: " + value);
+		}
+	}
+	
+	public static double[] parseDoubleArray(Map<String, String> params,
+			String name) {
+		String value = null;
+		try {
+			value = params.get(name);
+			if( value==null ) {
+				throw new PersistError("Missing property: " + name);
+			}
+			
+			return NumberList.fromList(CSVFormat.EG_FORMAT, value);
+			
+		} catch(NumberFormatException ex) {
+			throw new PersistError("Field: " + name + ", " + "invalid integer: " + value);
+		}
+	}
+
+	public static boolean parseBoolean(Map<String, String> params,
+			String name) {
+		String value = null;
+		try {
+			value = params.get(name);
+			if( value==null ) {
+				throw new PersistError("Missing property: " + name);
+			}
+			
+			return value.trim().toLowerCase().charAt(0) == 't';
+			
+		} catch(NumberFormatException ex) {
+			throw new PersistError("Field: " + name + ", " + "invalid integer: " + value);
+		}
+	}
+	
+	public static List<String> splitColumns(String line) {
+		List<String> result = new ArrayList<String>();
+		StringTokenizer tok = new StringTokenizer(line,",");
+		while(tok.hasMoreTokens()) {
+			String str = tok.nextToken().trim();
+			if( str.length()>0 && str.charAt(0)=='\"')
+			{
+				str = str.substring(1);
+				if( str.endsWith("\""))
+				{
+					str = str.substring(0,str.length()-1);
+				}
+			}
+			result.add(str);
+		}
+		return result;
+	}
+
 	
 }
