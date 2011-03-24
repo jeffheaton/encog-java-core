@@ -185,34 +185,6 @@ public class BoltzmannMachine extends ThermalNetwork {
 		return true;
 	}
 	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.TYPE_BOLTZMANN);
-		obj.setStandardProperties(this);
-		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
-		obj.setProperty(PersistConst.THRESHOLDS, this.getThreshold());
-		obj.setProperty(PersistConst.OUTPUT, this.getCurrentState().getData());
-		obj.setProperty(PersistConst.NEURON_COUNT, this.getNeuronCount(),false);
-		obj.setProperty(ANNEAL_CYCLES, this.annealCycles,false);
-		obj.setProperty(RUN_CYCLES, this.runCycles, false);
-		obj.setProperty(PersistConst.TEMPERATURE, this.temperature, false);
-		propertiesToMap(obj);
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.TYPE_BOLTZMANN);
-		propertiesFromMap(obj);
-		int neuronCount = obj.getPropertyInt(PersistConst.NEURON_COUNT,true);
-		this.threshold = obj.getPropertyDoubleArray(PersistConst.THRESHOLDS, true);
-		double[] weights = obj.getPropertyDoubleArray(PersistConst.WEIGHTS,true);
-		double[] state = obj.getPropertyDoubleArray(PersistConst.OUTPUT, true);
-		this.annealCycles = obj.getPropertyInt(ANNEAL_CYCLES, true);
-		this.runCycles = obj.getPropertyInt(RUN_CYCLES, true);
-		this.temperature = obj.getPropertyDouble(PersistConst.TEMPERATURE,true);
-		init(neuronCount,weights,state);
-	}
-
 	/**
 	 * @return the annealCycles
 	 */
