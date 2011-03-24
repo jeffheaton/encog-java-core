@@ -91,6 +91,10 @@ public class EncogWriteHelper {
 	public void addSubSection(String str) {
 		out.println("["+this.currentSection+":"+str+"]");		
 	}
+	
+	public void writeProperty(String name, double value) {
+		out.println(name+"="+ CSVFormat.EG_FORMAT.format(value,Encog.DEFAULT_PRECISION));		
+	}
 
 	public void writeProperty(String name, int value) {
 		out.println(name+"="+value);		

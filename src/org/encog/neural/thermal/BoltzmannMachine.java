@@ -275,5 +275,10 @@ public class BoltzmannMachine extends ThermalNetwork {
 	public void updateProperties() {
 		// nothing needed here		
 	}
+
+	public void setThreshold(double[] t) {
+		this.threshold = t;
+		
+	}
 	
 }
