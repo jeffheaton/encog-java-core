@@ -33,12 +33,12 @@ public class PersistBoltzmann implements EncogPersistor {
 				Map<String,String> params = section.parseParams();
 				result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.WEIGHTS)));
 				result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.OUTPUT)));
-				result.setNeuronCount(Integer.parseInt(params.get(PersistConst.NEURON_COUNT)));
+				result.setNeuronCount(EncogFileSection.parseInt(params, PersistConst.NEURON_COUNT));
 				
 				result.setThreshold(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.THRESHOLDS)));
-				result.setAnnealCycles(Integer.parseInt(params.get(BoltzmannMachine.ANNEAL_CYCLES)));
-				result.setAnnealCycles(Integer.parseInt(params.get(BoltzmannMachine.RUN_CYCLES)));
-				result.setTemperature(Double.parseDouble(params.get(PersistConst.TEMPERATURE)));				
+				result.setAnnealCycles(EncogFileSection.parseInt(params, BoltzmannMachine.ANNEAL_CYCLES));
+				result.setRunCycles(EncogFileSection.parseInt(params, BoltzmannMachine.RUN_CYCLES) );
+				result.setTemperature(EncogFileSection.parseDouble(params, PersistConst.TEMPERATURE));				
 			}
 		}
 		 

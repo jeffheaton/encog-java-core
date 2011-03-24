@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.util.csv.CSVFormat;
 
 public class EncogFileSection {
 	
@@ -51,7 +52,35 @@ public class EncogFileSection {
 		return result;
 	}
 	
+	public static int parseInt(Map<String,String> params, String name) {
+		String value = null;
+		try {
+			value = params.get(name);
+			if( value==null ) {
+				throw new PersistError("Missing property: " + name);
+			}
+			
+			return Integer.parseInt(value);
+			
+		} catch(NumberFormatException ex) {
+			throw new PersistError("Field: " + name + ", " + "invalid integer: " + value);
+		}
+	}
 	
+	public static double parseDouble(Map<String,String> params, String name) {
+		String value = null;
+		try {
+			value = params.get(name);
+			if( value==null ) {
+				throw new PersistError("Missing property: " + name);
+			}
+			
+			return CSVFormat.EG_FORMAT.parse(value);
+			
+		} catch(NumberFormatException ex) {
+			throw new PersistError("Field: " + name + ", " + "invalid integer: " + value);
+		}
+	}
 	
 	
 }
