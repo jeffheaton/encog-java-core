@@ -23,12 +23,14 @@
  */
 package org.encog.persist;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.neural.thermal.BoltzmannMachine;
+import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.util.obj.SerializeObject;
 
 public class TestPersistBoltzmann extends TestCase {
@@ -42,13 +44,10 @@ public class TestPersistBoltzmann extends TestCase {
 		BoltzmannMachine network = new BoltzmannMachine(4);
 		network.setWeight(1,1,1);
 		network.getThreshold()[2] = 2;
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.add(EG_RESOURCE, network);
-		encog.save(EG_FILENAME);
 		
-		EncogMemoryCollection encog2 = new EncogMemoryCollection();
-		encog2.load(EG_FILENAME);
-		BoltzmannMachine network2 = (BoltzmannMachine)encog2.find(EG_RESOURCE);
+		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
+		BoltzmannMachine network2 = (BoltzmannMachine)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		
 		validateHopfield(network2);
 	}
 	
@@ -60,18 +59,6 @@ public class TestPersistBoltzmann extends TestCase {
 		
 		SerializeObject.save(SERIAL_FILENAME, network);
 		BoltzmannMachine network2 = (BoltzmannMachine)SerializeObject.load(SERIAL_FILENAME);
-				
-		validateHopfield(network2);
-	}
-	
-	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-	{
-		BoltzmannMachine network = new BoltzmannMachine(4);
-		network.setWeight(1,1,1);
-		network.getThreshold()[2] = 2;
-		
-		SerializeObject.saveEG(SERIAL_FILENAME, network);
-		BoltzmannMachine network2 = (BoltzmannMachine)SerializeObject.loadEG(SERIAL_FILENAME);
 				
 		validateHopfield(network2);
 	}
