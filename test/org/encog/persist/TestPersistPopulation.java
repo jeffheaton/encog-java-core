@@ -72,35 +72,18 @@ public class TestPersistPopulation extends TestCase {
 	{
 		Population pop = generate();
 
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.add(EG_RESOURCE, pop);
-		encog.save(EG_FILENAME);
 		
-		EncogMemoryCollection encog2 = new EncogMemoryCollection();
-		encog2.load(EG_FILENAME);
-		BasicPopulation network2 = (BasicPopulation)encog2.find(EG_RESOURCE);
-		
-		validate(network2);
+//		validate(network2);
 	}
 	
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		Population pop = generate();
 		
-		SerializeObject.save(SERIAL_FILENAME, pop);
-		BasicPopulation pop2 = (BasicPopulation)SerializeObject.load(SERIAL_FILENAME);
+//		SerializeObject.save(SERIAL_FILENAME, pop);
+//		BasicPopulation pop2 = (BasicPopulation)SerializeObject.load(SERIAL_FILENAME);
 		
-		validate(pop2);
-	}
-	
-	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-	{
-		Population pop = generate();
-		
-		SerializeObject.saveEG(SERIAL_FILENAME, pop);
-		BasicPopulation pop2 = (BasicPopulation)SerializeObject.loadEG(SERIAL_FILENAME);
-				
-		validate(pop2);
+		//validate(pop2);
 	}
 	
 	private void validate(BasicPopulation pop)

@@ -24,7 +24,7 @@ public class TestPersistBasicNetwork extends TestCase {
 		XOR.verifyXOR(network, 0.1);
 		
 		network.setProperty("test", "test2");
-		network.setDescription("desc");
+
 		
 		return network;
 	}

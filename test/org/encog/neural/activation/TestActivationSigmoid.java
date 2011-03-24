@@ -23,12 +23,11 @@
  */
 package org.encog.neural.activation;
 
+import junit.framework.TestCase;
+
 import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.persist.persistors.generic.GenericPersistor;
 import org.junit.Assert;
 import org.junit.Test;
-
-import junit.framework.TestCase;
 
 public class TestActivationSigmoid extends TestCase {
 	@Test
