@@ -258,5 +258,21 @@ public class BAM extends BasicML {
 		// TODO Auto-generated method stub
 		
 	}
+
+	public void setF1Count(int i) {
+		this.f1Count = i;		
+	}
 	
+	public void setF2Count(int i) {
+		this.f2Count = i;		
+	}
+
+	public void setWeightsF1toF2(Matrix matrix) {
+		this.weightsF1toF2 = matrix;		
+	}
+
+	public void setWeightsF2toF1(Matrix matrix) {
+		this.weightsF2toF1 = matrix;		
+	}
+
 }
