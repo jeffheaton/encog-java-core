@@ -23,11 +23,13 @@
  */
 package org.encog.persist;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.svm.SVM;
 import org.encog.neural.art.ART1;
 import org.encog.util.obj.SerializeObject;
 
@@ -49,13 +51,9 @@ public class TestPersistART extends TestCase {
 	{
 		ART1 network = create();
 
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.add(EG_RESOURCE, network);
-		encog.save(EG_FILENAME);
-		
-		EncogMemoryCollection encog2 = new EncogMemoryCollection();
-		encog2.load(EG_FILENAME);
-		ART1 network2 = (ART1)encog2.find(EG_RESOURCE);
+		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
+		ART1 network2 = (ART1)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+
 		validate(network2);
 	}
 	
@@ -68,17 +66,7 @@ public class TestPersistART extends TestCase {
 				
 		validate(network2);
 	}
-	
-	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-	{
-		ART1 network = create();
 		
-		SerializeObject.saveEG(SERIAL_FILENAME, network);
-		ART1 network2 = (ART1)SerializeObject.loadEG(SERIAL_FILENAME);
-				
-		validate(network2);
-	}
-	
 	private void validate(ART1 network)
 	{
 		Assert.assertEquals(6, network.getF1Count());
