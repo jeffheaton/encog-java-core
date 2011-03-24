@@ -214,4 +214,14 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 		return bmu.getWorstDistance()/100.0;
 	}
 
+	
+	public void setOutputNeuronCount(int i) {
+		this.outputNeuronCount = i;
+		
+	}
+
+	public void setInputCount(int i) {
+		this.inputNeuronCount = i;		
+	}
+
 }

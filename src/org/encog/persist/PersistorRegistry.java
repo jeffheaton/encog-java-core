@@ -8,6 +8,7 @@ import org.encog.neural.art.PersistART1;
 import org.encog.neural.bam.PersistBAM;
 import org.encog.neural.networks.PersistBasicNetwork;
 import org.encog.neural.rbf.PersistRBFNetwork;
+import org.encog.neural.som.PersistSOM;
 import org.encog.neural.thermal.PersistBoltzmann;
 import org.encog.neural.thermal.PersistHopfield;
 
@@ -24,6 +25,7 @@ public class PersistorRegistry {
 		add(new PersistBAM());
 		add(new PersistBasicNetwork());
 		add(new PersistRBFNetwork());
+		add(new PersistSOM());
 	}
 
 	public void add(EncogPersistor persistor) {
