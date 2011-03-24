@@ -59,7 +59,7 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 	public static final String TAG_RBF_FUNCTION = "RBF";
 	
 	public RBFNetwork() {
-		
+		this.flat = new FlatNetworkRBF();
 	}
 	
 	public RBFNetwork(final int inputCount, 
@@ -356,7 +356,11 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 		this.flat.setContextTargetOffset(context);
 		this.flat.setContextTargetSize(context);
 	}
-	
+
+	public void setRBF(RadialBasisFunction[] rbf) {
+		this.rbf = rbf;
+	}
+
 	@Override
 	public void updateProperties() {
 		// unneeded

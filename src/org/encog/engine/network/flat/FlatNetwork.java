@@ -743,8 +743,8 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 		
 	}
 
-	public void setLayerIndex(int[] layerIndex) {
-		this.layerIndex = layerIndex;		
+	public void setLayerIndex(int[] i) {
+		this.layerIndex = i;		
 	}
 
 	public void setWeightIndex(int[] weightIndex) {
