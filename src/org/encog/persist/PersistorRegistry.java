@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.encog.ml.svm.PersistSVM;
+import org.encog.neural.art.PersistART1;
 import org.encog.neural.thermal.PersistBoltzmann;
 import org.encog.neural.thermal.PersistHopfield;
 
@@ -16,6 +17,7 @@ public class PersistorRegistry {
 		add(new PersistSVM());
 		add(new PersistHopfield());
 		add(new PersistBoltzmann());
+		add(new PersistART1());
 	}
 
 	public void add(EncogPersistor persistor) {

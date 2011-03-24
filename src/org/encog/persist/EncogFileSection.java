@@ -6,7 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
 
 public class EncogFileSection {
 	
@@ -81,6 +83,32 @@ public class EncogFileSection {
 			throw new PersistError("Field: " + name + ", " + "invalid integer: " + value);
 		}
 	}
-	
+
+	public static Matrix parseMatrix(Map<String, String> params,
+			String name) {
+		
+		if( !params.containsKey(name) ) {
+			throw new PersistError("Missing property: " + name );
+		}
+		
+		String line = params.get(name);
+
+		double[] d = NumberList.fromList(CSVFormat.EG_FORMAT, line);
+		int rows = (int)d[0];
+		int cols = (int)d[1];
+		
+		Matrix result = new Matrix(rows,cols);
+		
+		int index = 2;
+		for(int r = 0;r<rows;r++)
+		{
+			for(int c = 0; c< cols; c++)
+			{
+				result.set(r,c,d[index++]);
+			}
+		}
+		
+		return result;
+	}
 	
 }

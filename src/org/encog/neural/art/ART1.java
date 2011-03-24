@@ -432,45 +432,6 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 		return true;
 	}
 	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.TYPE_ART1);
-		obj.setStandardProperties(this);
-		
-		obj.setProperty(PROPERTY_A1, this.a1, false);
-		obj.setProperty(PROPERTY_B1, this.b1, false);
-		obj.setProperty(PROPERTY_C1, this.c1, false);
-		obj.setProperty(PROPERTY_D1, this.d1, false);
-		obj.setProperty(PersistConst.PROPERTY_F1_COUNT, this.f1Count, false);
-		obj.setProperty(PersistConst.PROPERTY_F2_COUNT, this.f2Count, false);
-		obj.setProperty(PROPERTY_NO_WINNER, this.noWinner, false);
-		obj.setProperty(PROPERTY_L, this.l, false);
-		obj.setProperty(PROPERTY_VIGILANCE, this.vigilance, false);
-		obj.setProperty(PersistConst.PROPERTY_WEIGHTS_F1_F2, this.weightsF1toF2);
-		obj.setProperty(PersistConst.PROPERTY_WEIGHTS_F2_F1, this.weightsF2toF1);
-
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.TYPE_ART1);
-		this.a1 = obj.getPropertyDouble(PROPERTY_A1, true);
-		this.b1 = obj.getPropertyDouble(PROPERTY_B1, true);
-		this.c1 = obj.getPropertyDouble(PROPERTY_C1, true);
-		this.d1 = obj.getPropertyDouble(PROPERTY_D1, true);
-		this.f1Count = obj.getPropertyInt(PersistConst.PROPERTY_F1_COUNT, true);
-		this.f2Count = obj.getPropertyInt(PersistConst.PROPERTY_F2_COUNT, true);
-		this.noWinner =  obj.getPropertyInt(PROPERTY_NO_WINNER, true);
-		this.l = obj.getPropertyDouble(PROPERTY_L, true);
-		this.vigilance = obj.getPropertyDouble(PROPERTY_VIGILANCE, true);
-		this.weightsF1toF2 = obj.getPropertyMatrix(PersistConst.PROPERTY_WEIGHTS_F1_F2, true);
-		this.weightsF2toF1 = obj.getPropertyMatrix(PersistConst.PROPERTY_WEIGHTS_F2_F1, true);
-		this.inhibitF2 = new boolean[f2Count];
-		this.outputF1 = new BiPolarNeuralData(f1Count);
-		this.outputF2 = new BiPolarNeuralData(f2Count);
-		this.noWinner = f2Count;
-	}
-
 	/**
 	 * @return the weightsF1toF2
 	 */
@@ -544,7 +505,32 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 			}
 		}		
 	}
+
+	public int getNoWinner() {
+		return this.noWinner;
+	}
+
+	public void setF1Count(int i) {
+		this.f1Count = i;		
+	}
 	
+	public void setF2Count(int i) {
+		this.f2Count = i;		
+	}
+
+	public void setNoWinner(int i) {
+		this.noWinner = i;
+		
+	}
+
+	public void setWeightsF1toF2(Matrix matrix) {
+		this.weightsF1toF2 = matrix;		
+	}
+	
+	public void setWeightsF2toF1(Matrix matrix) {
+		this.weightsF2toF1 = matrix;		
+	}
+
 	
 	
 	

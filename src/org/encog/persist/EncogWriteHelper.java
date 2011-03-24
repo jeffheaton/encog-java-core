@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.mathutil.matrices.Matrix;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
@@ -140,6 +141,24 @@ public class EncogWriteHelper {
 	public void writeProperty(String name, double[] d) {
 		StringBuilder result = new StringBuilder();
 		NumberList.toList(CSVFormat.EG_FORMAT, result, d);
+		writeProperty(name,result.toString());
+	}
+
+	public void writeProperty(String name, Matrix matrix) {
+		StringBuilder result = new StringBuilder();
+		result.append(matrix.getRows());
+		result.append(',');
+		result.append(matrix.getCols());		
+		
+		for(int row=0;row<matrix.getRows();row++)
+		{
+			for(int col=0;col<matrix.getCols();col++)
+			{
+				result.append(',');
+				result.append(CSVFormat.EG_FORMAT.format(matrix.get(row, col), Encog.DEFAULT_PRECISION));
+			}
+		}
+		
 		writeProperty(name,result.toString());
 	}
 }
