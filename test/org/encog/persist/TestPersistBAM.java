@@ -23,6 +23,7 @@
  */
 package org.encog.persist;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
@@ -50,13 +51,9 @@ public class TestPersistBAM extends TestCase {
 	{
 		BAM network = create();
 
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.add(EG_RESOURCE, network);
-		encog.save(EG_FILENAME);
-		
-		EncogMemoryCollection encog2 = new EncogMemoryCollection();
-		encog2.load(EG_FILENAME);
-		BAM network2 = (BAM)encog2.find(EG_RESOURCE);
+		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
+		BAM network2 = (BAM)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+
 		validateBAM(network2);
 	}
 	
@@ -66,16 +63,6 @@ public class TestPersistBAM extends TestCase {
 		
 		SerializeObject.save(SERIAL_FILENAME, network);
 		BAM network2 = (BAM)SerializeObject.load(SERIAL_FILENAME);
-				
-		validateBAM(network2);
-	}
-	
-	public void testPersistSerialEG() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException
-	{
-		BAM network = create();
-		
-		SerializeObject.saveEG(SERIAL_FILENAME, network);
-		BAM network2 = (BAM)SerializeObject.loadEG(SERIAL_FILENAME);
 				
 		validateBAM(network2);
 	}
