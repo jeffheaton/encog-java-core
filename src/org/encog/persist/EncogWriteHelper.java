@@ -161,4 +161,12 @@ public class EncogWriteHelper {
 		
 		writeProperty(name,result.toString());
 	}
+
+	public void writeProperty(String name,
+			int[] array) {
+		StringBuilder result = new StringBuilder();
+		NumberList.toListInt(CSVFormat.EG_FORMAT, result, array);
+		writeProperty(name,result.toString());
+		
+	}
 }

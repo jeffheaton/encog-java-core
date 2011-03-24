@@ -119,4 +119,15 @@ public final class NumberList {
 		}
 		
 	}
+
+	public static void toListInt(CSVFormat format, StringBuilder result,
+			int[] data) {
+		result.setLength(0);
+		for (int i = 0; i < data.length; i++) {
+			if (i != 0) {
+				result.append(format.getSeparator());
+			}
+			result.append(""+data[i]);
+		}
+	}
 }
