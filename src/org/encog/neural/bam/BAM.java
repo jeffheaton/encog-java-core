@@ -28,9 +28,7 @@ import org.encog.ml.BasicML;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralDataMapping;
-import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -227,31 +225,6 @@ public class BAM extends BasicML {
 		return weightsF2toF1;
 	}
 	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
-	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.TYPE_BAM);
-		obj.setStandardProperties(this);
-		
-		obj.setProperty(PersistConst.PROPERTY_F1_COUNT, this.f1Count, false);
-		obj.setProperty(PersistConst.PROPERTY_F2_COUNT, this.f2Count, false);
-		obj.setProperty(PersistConst.PROPERTY_WEIGHTS_F1_F2, this.weightsF1toF2);
-		obj.setProperty(PersistConst.PROPERTY_WEIGHTS_F2_F1, this.weightsF2toF1);
-
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.TYPE_BAM);
-		this.f1Count = obj.getPropertyInt(PersistConst.PROPERTY_F1_COUNT, true);
-		this.f2Count = obj.getPropertyInt(PersistConst.PROPERTY_F2_COUNT, true);
-		this.weightsF1toF2 = obj.getPropertyMatrix(PersistConst.PROPERTY_WEIGHTS_F1_F2, true);
-		this.weightsF2toF1 = obj.getPropertyMatrix(PersistConst.PROPERTY_WEIGHTS_F2_F1, true);
-	}
 
 	@Override
 	public void updateProperties() {

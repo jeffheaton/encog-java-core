@@ -23,10 +23,7 @@
  */
 package org.encog.neural.neat;
 
-import org.encog.persist.BasicPersistedSubObject;
-import org.encog.persist.Persistor;
 import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 
 /**
  * Implements a link between two NEAT neurons.
@@ -38,7 +35,7 @@ import org.encog.persist.map.PersistedObject;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATLink extends BasicPersistedSubObject {
+public class NEATLink  {
 
 	public static final String FROM_NEURON = "fromNeuron";
 	public static final String TO_NEURON = "toNeuron";
@@ -124,31 +121,9 @@ public class NEATLink extends BasicPersistedSubObject {
 		return this.recurrent;
 	}
 	
-	@Override
-	public Persistor createPersistor() {
-		return null;
-	}
 	
 	public boolean supportsMapPersistence()
 	{
 		return true;
-	}
-	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.SUBTYPE_NEAT_LINK);
-		
-		obj.setProperty(FROM_NEURON,this.fromNeuron.getNeuronID(),true);
-		obj.setProperty(TO_NEURON,this.toNeuron.getNeuronID(),true);
-		obj.setProperty(PersistConst.RECURRENT,this.recurrent,true);
-		obj.setProperty(PersistConst.WEIGHT,this.weight,true);
-
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.SUBTYPE_NEAT_LINK);
-		this.recurrent = obj.getPropertyBoolean(PersistConst.RECURRENT, true);
-		this.weight = obj.getPropertyDouble(PersistConst.WEIGHT, true);
 	}
 }

@@ -29,8 +29,6 @@ import org.encog.Encog;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.mathutil.matrices.decomposition.QRDecomposition;
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.persist.BasicPersistedSubObject;
-import org.encog.persist.Persistor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,8 +37,7 @@ import org.slf4j.LoggerFactory;
  * neural network processing. Many of the neural network classes make use of the
  * matrix classes in this package.
  */
-public class Matrix extends BasicPersistedSubObject
-	implements Cloneable, Serializable {
+public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Serial id for this class.
@@ -186,15 +183,6 @@ public class Matrix extends BasicPersistedSubObject
 	@Override
 	public Matrix clone() {
 		return new Matrix(this.matrix);
-	}
-
-	/**
-	 * Create a Persistor for this object.
-	 *
-	 * @return The new persistor.
-	 */
-	public Persistor createPersistor() {
-		return null;
 	}
 
 	/**

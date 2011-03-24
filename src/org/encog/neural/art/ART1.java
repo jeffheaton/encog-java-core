@@ -29,8 +29,6 @@ import org.encog.ml.MLResettable;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

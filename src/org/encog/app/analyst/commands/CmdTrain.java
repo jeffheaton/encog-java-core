@@ -1,5 +1,7 @@
 package org.encog.app.analyst.commands;
 
+import java.io.File;
+
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -7,15 +9,12 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.persist.EncogMemoryCollection;
-import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.simple.EncogUtility;
 
 public class CmdTrain extends Cmd {
 
 	public final static String COMMAND_NAME = "TRAIN";
-
-	private EncogMemoryCollection encog;
 
 	public CmdTrain(EncogAnalyst analyst) {
 		super(analyst);
@@ -25,14 +24,8 @@ public class CmdTrain extends Cmd {
 		String resourceID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_resourceFile);
 		String resourceFile = getProp().getFilename(resourceID);
-
-		this.encog = new EncogMemoryCollection();
-		encog.load(resourceFile);
-
-		String resource = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_resourceName);
-
-		EncogPersistedObject method = encog.find(resource);
+		
+		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(new File(resourceFile));
 
 		if (!(method instanceof MLMethod)) {
 			throw new AnalystError(
@@ -83,14 +76,6 @@ public class CmdTrain extends Cmd {
 		this.getAnalyst().reportTrainingEnd();
 	}
 
-	private void saveMethod() {
-		String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_resourceFile);
-		String resourceFile = getProp().getFilename(resourceID);
-
-		encog.save(resourceFile);
-	}
-
 	public boolean executeCommand() {
 
 		MLMethod method = obtainMethod();
@@ -98,7 +83,12 @@ public class CmdTrain extends Cmd {
 		MLTrain trainer = createTrainer(method, trainingSet);
 
 		performTraining(trainer, method, trainingSet);
-		saveMethod();
+		
+		String resourceID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_resourceFile);
+		String resourceFile = getProp().getFilename(resourceID);
+		EncogDirectoryPersistence.saveObject(new File(resourceFile), method);
+
 
 		return this.getAnalyst().shouldStopCommand();
 	}

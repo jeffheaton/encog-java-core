@@ -30,15 +30,12 @@ import java.util.List;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
-import org.encog.persist.BasicPersistedSubObject;
-import org.encog.persist.Persistor;
 import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 
 /**
  * Provides basic functionality for a species.
  */
-public class BasicSpecies extends BasicPersistedSubObject implements Species, Serializable {
+public class BasicSpecies  implements Species, Serializable {
 
 	public static final String PROPERTY_AGE = "age";
 	public static final String PROPERTY_BEST_SCORE = "bestScore";
@@ -272,20 +269,7 @@ public class BasicSpecies extends BasicPersistedSubObject implements Species, Se
 	 */
 	public void setSpawnsRequired(final double spawnsRequired) {
 		this.spawnsRequired = spawnsRequired;
-	}
-
-	@Override
-	public Persistor createPersistor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
-	
-	
+	}	
 	
 	/**
 	 * @return the leaderID
@@ -301,28 +285,6 @@ public class BasicSpecies extends BasicPersistedSubObject implements Species, Se
 		this.leaderID = leaderID;
 	}
 
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.TYPE_BASIC_SPECIES);
-		
-		obj.setProperty(PersistConst.PROPERTY_ID,(int)this.getSpeciesID(),true);
-		obj.setProperty(BasicSpecies.PROPERTY_AGE,this.age,true);
-		obj.setProperty(BasicSpecies.PROPERTY_BEST_SCORE,this.bestScore,true);
-		obj.setProperty(BasicSpecies.PROPERTY_GENS_NO_IMPROVE,this.gensNoImprovement,true);
-		obj.setProperty(BasicSpecies.PROPERTY_LEADER,this.leader.getGenomeID(),true);
-		obj.setProperty(BasicSpecies.PROPERTY_SPAWNS_REQUIRED,this.spawnsRequired,true);
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.TYPE_BASIC_SPECIES);
-		this.speciesID = obj.getPropertyInt(PersistConst.PROPERTY_ID, true);
-		this.age = obj.getPropertyInt(BasicSpecies.PROPERTY_AGE, true);
-		this.bestScore = obj.getPropertyDouble(BasicSpecies.PROPERTY_BEST_SCORE, true);
-		this.gensNoImprovement = obj.getPropertyInt(BasicSpecies.PROPERTY_GENS_NO_IMPROVE, true);
-		this.spawnsRequired = obj.getPropertyDouble(BasicSpecies.PROPERTY_SPAWNS_REQUIRED, true);
-		this.leaderID = obj.getPropertyInt(BasicSpecies.PROPERTY_LEADER,true);
-	}
 
 	/**
 	 * @param population the population to set

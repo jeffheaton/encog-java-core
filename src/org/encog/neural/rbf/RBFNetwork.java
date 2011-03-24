@@ -41,10 +41,8 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.persist.BasicPersistedObject;
 import org.encog.persist.PersistError;
 import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 import org.encog.util.obj.ReflectionUtil;
 
 public class RBFNetwork  extends BasicML implements MLRegression  {
@@ -271,91 +269,6 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 		return true;
 	}
 	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.TYPE_RBF_NETWORK);
-		obj.setStandardProperties(this);	
-
-		obj.setProperty(BasicNetwork.TAG_BEGIN_TRAINING, flat.getBeginTraining(), false);
-		obj.setProperty(BasicNetwork.TAG_CONNECTION_LIMIT, flat.getConnectionLimit(), false);		
-		obj.setProperty(BasicNetwork.TAG_END_TRAINING, flat.getEndTraining(), false );
-		obj.setProperty(PersistConst.INPUT_COUNT, flat.getInputCount(), false );
-		obj.setProperty(BasicNetwork.TAG_LAYER_COUNTS, flat.getLayerCounts() );
-		obj.setProperty(BasicNetwork.TAG_LAYER_FEED_COUNTS, flat.getLayerFeedCounts() );
-
-		obj.setProperty(BasicNetwork.TAG_LAYER_INDEX, flat.getLayerIndex() );
-		obj.setProperty(PersistConst.OUTPUT, flat.getLayerOutput() );
-		obj.setProperty(PersistConst.OUTPUT_COUNT, flat.getOutputCount(), false );
-		obj.setProperty(PersistConst.NEURONS, flat.getNeuronCount(), false);
-		obj.setProperty(BasicNetwork.TAG_WEIGHT_INDEX, flat.getWeightIndex() );
-		obj.setProperty(PersistConst.WEIGHTS, flat.getWeights());
-		obj.setProperty(BasicNetwork.TAG_BIAS_ACTIVATION, flat.getBiasActivation());
-		
-		List<PersistedObject> list  = new ArrayList<PersistedObject>();
-		
-		for( RadialBasisFunction radial : this.rbf ) {
-			PersistedObject rbfObj = new PersistedObject();
-			rbfObj.clear(TAG_RBF_FUNCTION);
-			rbfObj.setProperty(PersistConst.TYPE, radial.getClass().getSimpleName(),true);
-			rbfObj.setProperty(TAG_RBF_CENTERS, radial.getCenters() );
-			rbfObj.setProperty(TAG_RBF_PEAK, radial.getPeak(), true );
-			rbfObj.setProperty(TAG_RBF_WIDTH, radial.getWidth(), true );
-			list.add(rbfObj);
-		}
-		
-		obj.setProperty(RBFNetwork.TAG_RBF, list);
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.TYPE_RBF_NETWORK);
-		
-		flat = new FlatNetworkRBF();
-		flat.setActivationFunctions(new ActivationFunction[3]);
-		flat.getActivationFunctions()[0] = new ActivationLinear();
-		flat.getActivationFunctions()[0] = new ActivationLinear();
-		flat.getActivationFunctions()[0] = new ActivationLinear();
-		
-		flat.setBeginTraining(obj.getPropertyInt(BasicNetwork.TAG_BEGIN_TRAINING, true));
-		flat.setConnectionLimit(obj.getPropertyDouble(BasicNetwork.TAG_CONNECTION_LIMIT, true));
-		flat.setEndTraining( obj.getPropertyInt(BasicNetwork.TAG_END_TRAINING, true) );
-		flat.setInputCount( obj.getPropertyInt(PersistConst.INPUT_COUNT, true) );
-		flat.setLayerCounts( obj.getPropertyIntArray( BasicNetwork.TAG_LAYER_COUNTS, true) );
-		flat.setLayerFeedCounts( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_FEED_COUNTS, true) );
-		flat.setLayerIndex( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_INDEX, true) );
-		flat.setLayerOutput(obj.getPropertyDoubleArray(PersistConst.OUTPUT, true) );
-		flat.setWeightIndex(obj.getPropertyIntArray(BasicNetwork.TAG_WEIGHT_INDEX, true));
-		flat.setWeights(obj.getPropertyDoubleArray(PersistConst.WEIGHTS, true));
-		flat.setOutputCount( obj.getPropertyInt(PersistConst.OUTPUT_COUNT, true) );
-		flat.setBiasActivation(obj.getPropertyDoubleArray(BasicNetwork.TAG_BIAS_ACTIVATION, true));
-		
-		List<PersistedObject> list  = obj.getPropertyValueArray(TAG_RBF);
-		this.rbf = new RadialBasisFunction[list.size()];
-		int index = 0;
-		for(PersistedObject radial: list )
-		{
-			String type = radial.getPropertyString(PersistConst.TYPE, true);
-			Class<?> clazz = ReflectionUtil.resolveEncogClass(type);
-			try {
-				this.rbf[index] = (RadialBasisFunction)clazz.newInstance();
-			} catch (InstantiationException e) {
-				throw new PersistError(e);
-			} catch (IllegalAccessException e) {
-				throw new PersistError(e);
-			}
-			
-			this.rbf[index].setCenters(radial.getPropertyDoubleArray(TAG_RBF_CENTERS, true));
-			this.rbf[index].setPeak(radial.getPropertyDouble(TAG_RBF_PEAK, true));
-			this.rbf[index].setWidth(radial.getPropertyDouble(TAG_RBF_WIDTH, true));
-			         
-			index++;
-		}
-		
-		this.flat.setRBF(this.rbf);
-		int[] context = new int[3];
-		this.flat.setContextTargetOffset(context);
-		this.flat.setContextTargetSize(context);
-	}
 
 	public void setRBF(RadialBasisFunction[] rbf) {
 		this.rbf = rbf;

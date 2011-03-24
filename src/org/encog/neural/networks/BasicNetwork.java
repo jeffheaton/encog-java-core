@@ -46,7 +46,6 @@ import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
 import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
@@ -571,80 +570,6 @@ public class BasicNetwork extends BasicML implements
 		return true;
 	}
 	
-	public void persistToMap(PersistedObject obj)
-	{
-		this.getStructure().requireFlat();
-		
-		obj.clear(PersistConst.TYPE_BASIC_NETWORK);
-		obj.setStandardProperties(this);
-		
-		FlatNetwork flat = this.structure.getFlat();		
-		
-		PersistedObject activationFunctions = new PersistedObject();
-		for(int i=0;i<flat.getActivationFunctions().length;i++)
-		{
-			activationFunctions.setProperty("layer-"+i, flat.getActivationFunctions()[i]);
-		}
-		
-		propertiesToMap(obj);
-		
-		obj.setProperty(PersistConst.ACTIVATION_FUNCTION, activationFunctions);
-		obj.setProperty(BasicNetwork.TAG_BEGIN_TRAINING, flat.getBeginTraining(), false);
-		obj.setProperty(BasicNetwork.TAG_CONNECTION_LIMIT, flat.getConnectionLimit(), false);		
-		obj.setProperty(BasicNetwork.TAG_CONTEXT_TARGET_OFFSET, flat.getContextTargetOffset() );
-		obj.setProperty(BasicNetwork.TAG_CONTEXT_TARGET_SIZE, flat.getContextTargetSize() );
-		obj.setProperty(BasicNetwork.TAG_END_TRAINING, flat.getEndTraining(), false );
-		obj.setProperty(BasicNetwork.TAG_HAS_CONTEXT, flat.getHasContext(), false );
-		obj.setProperty(PersistConst.INPUT_COUNT, flat.getInputCount(), false );
-		obj.setProperty(BasicNetwork.TAG_LAYER_COUNTS, flat.getLayerCounts() );
-		obj.setProperty(BasicNetwork.TAG_LAYER_FEED_COUNTS, flat.getLayerFeedCounts() );
-		obj.setProperty(BasicNetwork.TAG_LAYER_CONTEXT_COUNT, flat.getLayerContextCount() );
-
-		obj.setProperty(BasicNetwork.TAG_LAYER_INDEX, flat.getLayerIndex() );
-		obj.setProperty(PersistConst.OUTPUT, flat.getLayerOutput() );
-		obj.setProperty(PersistConst.OUTPUT_COUNT, flat.getOutputCount(), false );
-		obj.setProperty(PersistConst.NEURONS, flat.getNeuronCount(), false);
-		obj.setProperty(BasicNetwork.TAG_WEIGHT_INDEX, flat.getWeightIndex() );
-		obj.setProperty(PersistConst.WEIGHTS, flat.getWeights());
-		obj.setProperty(BasicNetwork.TAG_BIAS_ACTIVATION, flat.getBiasActivation());
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		FlatNetwork flat;
-		obj.requireType(PersistConst.TYPE_BASIC_NETWORK);
-		
-		flat = new FlatNetwork();
-		
-		flat.setBeginTraining(obj.getPropertyInt(BasicNetwork.TAG_BEGIN_TRAINING, true));
-		flat.setConnectionLimit(obj.getPropertyDouble(BasicNetwork.TAG_CONNECTION_LIMIT, true));
-		flat.setContextTargetSize(obj.getPropertyIntArray(BasicNetwork.TAG_CONTEXT_TARGET_SIZE,true) );
-		flat.setContextTargetOffset(obj.getPropertyIntArray(BasicNetwork.TAG_CONTEXT_TARGET_OFFSET,true) );
-		flat.setEndTraining( obj.getPropertyInt(BasicNetwork.TAG_END_TRAINING, true) );
-		flat.setHasContext( obj.getPropertyBoolean(BasicNetwork.TAG_HAS_CONTEXT, true ) );
-		flat.setInputCount( obj.getPropertyInt(PersistConst.INPUT_COUNT, true) );
-		flat.setLayerCounts( obj.getPropertyIntArray( BasicNetwork.TAG_LAYER_COUNTS, true) );
-		flat.setLayerFeedCounts( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_FEED_COUNTS, true) );
-		flat.setLayerIndex( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_INDEX, true) );
-		flat.setLayerOutput(obj.getPropertyDoubleArray(PersistConst.OUTPUT, true) );
-		flat.setWeightIndex(obj.getPropertyIntArray(BasicNetwork.TAG_WEIGHT_INDEX, true));
-		flat.setWeights(obj.getPropertyDoubleArray(PersistConst.WEIGHTS, true));
-		flat.setOutputCount( obj.getPropertyInt(PersistConst.OUTPUT_COUNT, true) );
-		flat.setBiasActivation(obj.getPropertyDoubleArray(BasicNetwork.TAG_BIAS_ACTIVATION, true));
-		flat.setLayerContextCount( obj.getPropertyIntArray(BasicNetwork.TAG_LAYER_CONTEXT_COUNT, true) );
-		
-		propertiesFromMap(obj);
-		
-		List<PersistedObject> activationFunctionList = obj.getPropertyValueArray(PersistConst.ACTIVATION_FUNCTION);
-		PersistedObject activationFunctions = activationFunctionList.get(0);
-		flat.setActivationFunctions(new ActivationFunction[flat.getLayerCounts().length]);
-		for(int i=0;i<flat.getActivationFunctions().length;i++)
-		{
-			flat.getActivationFunctions()[i] = activationFunctions.getPropertyActivationFunction("layer-"+i, true);
-		}
-		
-		this.structure.setFlat(flat);
-	}
 
 	@Override
 	public void updateProperties() {

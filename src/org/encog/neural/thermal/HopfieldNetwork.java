@@ -30,8 +30,6 @@ import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 
 public class HopfieldNetwork extends ThermalNetwork {
 

@@ -30,7 +30,6 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.MLResettable;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.persist.BasicPersistedObject;
 
 public abstract class ThermalNetwork extends BasicML implements MLMethod, MLAutoAssocation, MLResettable {
 

@@ -1,5 +1,6 @@
 package org.encog.app.analyst.commands;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,8 +13,9 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.engine.util.Format;
+import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
-import org.encog.persist.EncogMemoryCollection;
+import org.encog.persist.EncogDirectoryPersistence;
 
 public class CmdEvaluate extends Cmd {
 
@@ -33,16 +35,13 @@ public class CmdEvaluate extends Cmd {
 		
 		String evalFile = getProp().getFilename(evalID);
 		String resourceFile = getProp().getFilename(resourceID);
-		String resource = getProp().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
 
 		String outputFile = getProp().getFilename(
 				getProp().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
 		
 		String targetField = getProp().getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
-
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.load(resourceFile);
-		MLRegression method = (MLRegression) encog.find(resource);
+		
+		MLRegression method = (MLRegression)EncogDirectoryPersistence.loadObject(new File(resourceFile));
 
 		boolean headers = getScript().expectInputHeaders(evalID);
 
@@ -67,14 +66,11 @@ public class CmdEvaluate extends Cmd {
 				evalID);
 		String resourceFile = getProp().getFilename(
 				resourceID);
-		String resource = getProp().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
 
 		String outputFile = getProp().getFilename(
 				getProp().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
 
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		encog.load(resourceFile);
-		MLRegression method = (MLRegression) encog.find(resource);
+		MLRegression method = (MLRegression)EncogDirectoryPersistence.loadObject(new File(resourceFile));
 
 		boolean headers = getScript().expectInputHeaders(evalID);
 

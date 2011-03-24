@@ -24,10 +24,9 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationSigmoid;
+import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,7 +113,7 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return A Jordan neural network.
 	 */
-	public EncogPersistedObject generate() {
+	public MLMethod generate() {
 		
 		BasicLayer input,hidden,output;
 		

@@ -35,9 +35,6 @@ import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
-import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.Persistor;
-import org.encog.persist.persistors.BufferedNeuralDataSetPersistor;
 
 /**
  * This class is not memory based, so very long files can be used, without
@@ -60,7 +57,7 @@ import org.encog.persist.persistors.BufferedNeuralDataSetPersistor;
  * format, and can be used with any Encog platform. Encog binary files are
  * stored using "little endian" numbers.
  */
-public class BufferedNeuralDataSet extends BasicPersistedObject implements
+public class BufferedNeuralDataSet implements
 		NeuralDataSet, Serializable {
 
 	/**
@@ -342,14 +339,6 @@ public class BufferedNeuralDataSet extends BasicPersistedObject implements
 
 		open();
 
-	}
-
-	/**
-	 * @return An Encog persistor for this object.
-	 */
-	@Override
-	public Persistor createPersistor() {
-		return new BufferedNeuralDataSetPersistor();
 	}
 
 	/**

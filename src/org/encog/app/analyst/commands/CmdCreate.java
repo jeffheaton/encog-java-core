@@ -6,9 +6,9 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.MLMethodFactory;
+import org.encog.neural.art.ART1;
 import org.encog.neural.data.buffer.EncogEGBFile;
-import org.encog.persist.EncogMemoryCollection;
-import org.encog.persist.EncogPersistedObject;
+import org.encog.persist.EncogDirectoryPersistence;
 
 public class CmdCreate extends Cmd {
 
@@ -37,16 +37,11 @@ public class CmdCreate extends Cmd {
 		int ideal = egb.getIdealCount();
 		egb.close();
 
-		EncogMemoryCollection encog = new EncogMemoryCollection();
-		if (new File(resourceFile).exists()) {
-			encog.load(resourceFile);
-		}
-
 		MLMethodFactory factory = new MLMethodFactory();
 		MLMethod obj = factory.create(type, arch, input, ideal);
 
-		encog.add(resource, (EncogPersistedObject) obj);
-		encog.save(resourceFile);
+		EncogDirectoryPersistence.saveObject(new File(resourceFile), obj);
+
 		return false;
 	}
 

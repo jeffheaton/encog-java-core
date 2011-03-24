@@ -28,12 +28,11 @@ import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.GeneticError;
-import org.encog.persist.BasicPersistedSubObject;
 
 /**
  * A basic abstract genome. Provides base functionality.
  */
-public abstract class BasicGenome extends BasicPersistedSubObject implements Genome {
+public abstract class BasicGenome implements Genome {
 
 	public static final String PROPERTY_ADJUSTED_SCORE = "ascore";
 	public static final String PROPERTY_SCORE = "score";

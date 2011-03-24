@@ -26,15 +26,11 @@ package org.encog.neural.networks.training.propagation;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.Persistor;
-import org.encog.persist.persistors.TrainingContinuationPersistor;
-
 /**
  * Allows training to be continued.
  * 
  */
-public class TrainingContinuation extends BasicPersistedObject {
+public class TrainingContinuation  {
 
 	/**
 	 * The serial ID.
@@ -45,13 +41,6 @@ public class TrainingContinuation extends BasicPersistedObject {
 	 * The contents of this object.
 	 */
 	private final Map<String, Object> contents = new HashMap<String, Object>();
-
-	/**
-	 * @return A persistor for this object.
-	 */
-	public Persistor createPersistor() {
-		return new TrainingContinuationPersistor();
-	}
 
 	/**
 	 * Get an object by name.

@@ -30,22 +30,14 @@ import java.util.List;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.InnovationList;
-import org.encog.ml.genetic.species.BasicSpecies;
 import org.encog.ml.genetic.species.Species;
-import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.EncogCollection;
-import org.encog.persist.EncogPersistedObject;
-import org.encog.persist.Persistor;
-import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
-import org.encog.persist.persistors.generic.GenericPersistor;
 import org.encog.util.identity.BasicGenerateID;
 import org.encog.util.identity.GenerateID;
 
 /**
  * Defines the basic functionality for a population of genomes.
  */
-public class BasicPopulation extends BasicPersistedObject implements Population, EncogPersistedObject {
+public class BasicPopulation implements Population {
 	
 	/**
 	 * 
@@ -126,11 +118,6 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 	 * The object description.
 	 */
 	private String description;
-	
-	/**
-	 * The Encog collection this object belongs to, or null if none.
-	 */
-	private EncogCollection encogCollection;
 
 
 	/**
@@ -159,16 +146,6 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 	public void add(final Genome genome) {
 		this.genomes.add(genome);
 
-	}
-
-	/**
-	 * Add all of the specified members to this population.
-	 * 
-	 * @param newPop
-	 *            A list of new genomes to add.
-	 */
-	public void addAll(final List<? extends Genome> newPop) {
-		this.genomes.addAll(newPop);
 	}
 
 	/**
@@ -205,13 +182,6 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 	public void clear() {
 		this.genomes.clear();
 
-	}
-
-	/**
-	 * @return A persistor for this object.
-	 */
-	public Persistor createPersistor() {
-		return new GenericPersistor(BasicPopulation.class);
 	}
 
 	/**
@@ -417,84 +387,9 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 		Collections.sort(this.genomes);
 	}
 	
-	/**
-	 * @return The collection this Encog object belongs to, null if none.
-	 */
-	public EncogCollection getCollection() {
-		return this.encogCollection;
-	}
-
-	/**
-	 * Set the Encog collection that this object belongs to.
-	 */
-	public void setCollection(EncogCollection collection) {
-		this.encogCollection = collection; 
-	}
-	
 	public boolean supportsMapPersistence()
 	{
 		return true;
-	}
-	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.TYPE_BASIC_POPULATION);
-		obj.setStandardProperties(this);
-		populationToMap(obj);
-	}
-	
-	public void populationToMap(PersistedObject obj)
-	{		
-		obj.setProperty( Population.PROPERTY_NEXT_GENE_ID, (int)this.geneIDGenerate.getCurrentID(), false );
-		obj.setProperty( Population.PROPERTY_NEXT_GENOME_ID, (int)this.genomeIDGenerate.getCurrentID(), false );
-		obj.setProperty( Population.PROPERTY_NEXT_INNOVATION_ID, (int)this.innovationIDGenerate.getCurrentID(), false );
-		obj.setProperty( Population.PROPERTY_NEXT_SPECIES_ID, (int)this.speciesIDGenerate.getCurrentID(), false );
-
-		obj.setProperty( Population.PROPERTY_OLD_AGE_PENALTY ,this.oldAgePenalty, false);
-		obj.setProperty( Population.PROPERTY_OLD_AGE_THRESHOLD ,this.oldAgeThreshold, false);
-		obj.setProperty( Population.PROPERTY_POPULATION_SIZE ,this.populationSize, false);
-		obj.setProperty( Population.PROPERTY_SURVIVAL_RATE ,this.survivalRate, false);
-		obj.setProperty( Population.PROPERTY_YOUNG_AGE_BONUS ,this.youngScoreBonus, false);
-		obj.setProperty( Population.PROPERTY_YOUNG_AGE_THRESHOLD ,this.youngBonusAgeThreshold, false);
-		
-		if( this.innovations!=null )
-			obj.setPropertyGenericList( Population.PROPERTY_INNOVATIONS, this.innovations.getInnovations());
-		obj.setPropertyGenericList( Population.PROPERTY_SPECIES, this.species);
-		obj.setPropertyGenericList( Population.PROPERTY_GENOMES, this.genomes);
-		
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.TYPE_BASIC_POPULATION);
-		populationFromMap(obj); 
-	}
-	
-	public void populationFromMap(PersistedObject obj)
-	{
-		this.genomeIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_GENOME_ID, true));
-		this.geneIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_GENE_ID, true ) );
-		this.innovationIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_INNOVATION_ID, true ) );
-		this.speciesIDGenerate.setCurrentID( obj.getPropertyInt( Population.PROPERTY_NEXT_SPECIES_ID, true ) );
-
-		this.oldAgePenalty = obj.getPropertyDouble(Population.PROPERTY_OLD_AGE_PENALTY, true); 
-		this.oldAgeThreshold = obj.getPropertyInt(Population.PROPERTY_OLD_AGE_THRESHOLD, true);
-		this.populationSize = obj.getPropertyInt( Population.PROPERTY_POPULATION_SIZE, true);
-		this.survivalRate = obj.getPropertyDouble( Population.PROPERTY_SURVIVAL_RATE, true);
-		this.youngScoreBonus = obj.getPropertyDouble(Population.PROPERTY_YOUNG_AGE_BONUS, true); 
-		this.youngBonusAgeThreshold = obj.getPropertyInt(Population.PROPERTY_YOUNG_AGE_THRESHOLD, true);
-		
-		obj.getPropertyGenericList(Population.PROPERTY_GENOMES, this.genomes);
-		//obj.getPropertyGenericList(Population.PROPERTY_INNOVATIONS, this.innovations);
-		obj.getPropertyGenericList(Population.PROPERTY_SPECIES, this.species);
-		
-		for( Species s : this.species) {
-			if( s instanceof BasicSpecies ) {
-				Genome leader = findGenome(((BasicSpecies)s).getTempLeaderID());
-				s.setLeader(leader);
-				((BasicSpecies)s).setPopulation(this);
-			}
-		}
 	}
 
 	private Genome findGenome(long id) {
@@ -511,6 +406,11 @@ public class BasicPopulation extends BasicPersistedObject implements Population,
 			genome.setGeneticAlgorithm(ga);
 		}
 		
+	}
+
+	@Override
+	public void addAll(List<? extends Genome> newPop) {
+		this.genomes.addAll(newPop);		
 	}
 
 }

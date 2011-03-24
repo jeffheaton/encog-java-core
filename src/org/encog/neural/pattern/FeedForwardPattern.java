@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +96,7 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The feedforward neural network.
 	 */
-	public EncogPersistedObject generate() {
+	public MLMethod generate() {
 
 		if( this.activationOutput==null )
 			this.activationOutput = this.activationHidden;

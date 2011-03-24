@@ -25,12 +25,10 @@ package org.encog.ml.genetic.genes;
 
 import java.io.Serializable;
 
-import org.encog.persist.BasicPersistedSubObject;
-
 /**
  * Implements the basic functionality for a gene. This is an abstract class.
  */
-public abstract class BasicGene extends BasicPersistedSubObject implements Gene, Serializable {
+public abstract class BasicGene implements Gene, Serializable {
 
 	/**
 	 * Is this gene enabled?

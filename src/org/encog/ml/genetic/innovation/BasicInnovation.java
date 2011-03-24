@@ -23,13 +23,11 @@
  */
 package org.encog.ml.genetic.innovation;
 
-import org.encog.persist.BasicPersistedSubObject;
-import org.encog.persist.Persistor;
 
 /**
  * Provides basic functionality for an innovation.
  */
-public class BasicInnovation extends BasicPersistedSubObject implements Innovation {
+public class BasicInnovation implements Innovation {
 
 	public final static String PROPERTY_INNOVATION_ID = "id";
 	
@@ -51,12 +49,6 @@ public class BasicInnovation extends BasicPersistedSubObject implements Innovati
 	 */
 	public void setInnovationID(final long innovationID) {
 		this.innovationID = innovationID;
-	}
-
-	@Override
-	public Persistor createPersistor() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

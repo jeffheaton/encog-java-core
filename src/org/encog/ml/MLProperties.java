@@ -2,8 +2,6 @@ package org.encog.ml;
 
 import java.util.Map;
 
-import org.encog.persist.map.PersistedObject;
-
 public interface MLProperties extends MLMethod {
 
 	/**
@@ -67,10 +65,6 @@ public interface MLProperties extends MLMethod {
 	 *            The value of the property.
 	 */
 	void setProperty(final String name, final String value);
-	
-	void propertiesToMap(PersistedObject obj);
-	
-	void propertiesFromMap(PersistedObject obj);
 	
 	void updateProperties();
 	

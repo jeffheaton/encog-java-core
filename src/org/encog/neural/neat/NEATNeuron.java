@@ -26,10 +26,7 @@ package org.encog.neural.neat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.persist.BasicPersistedSubObject;
-import org.encog.persist.Persistor;
 import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 
 /**
  * Implements a NEAT neuron. Neat neurons are of a specific type, defined by the
@@ -43,7 +40,7 @@ import org.encog.persist.map.PersistedObject;
  * http://www.cs.ucf.edu/~kstanley/
  *
  */
-public class NEATNeuron extends BasicPersistedSubObject {
+public class NEATNeuron {
 
 	public static final String NEURON_ID = "neuronID";
 	public static final String ACTIVATION_RESPONSE = "aresp";
@@ -260,16 +257,6 @@ public class NEATNeuron extends BasicPersistedSubObject {
 		result.append("]");
 		return result.toString();
 	}
-
-	@Override
-	public Persistor createPersistor() {
-		return null;
-	}
-	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
 	
 	public static NEATNeuronType string2NeuronType(String t)
 	{
@@ -312,24 +299,5 @@ public class NEATNeuron extends BasicPersistedSubObject {
 				return null;			
 		}
 	}
-	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.SUBTYPE_NEAT_NEURON);
-		
-		obj.setProperty(NEURON_ID, (int)this.neuronID, true);
-		obj.setProperty(ACTIVATION_RESPONSE, this.activationResponse, true);
-		obj.setProperty(PersistConst.TYPE, neuronType2String(this.neuronType),true);
-		obj.setProperty(PersistConst.OUTPUT, this.output,true);
 
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.SUBTYPE_NEAT_NEURON);
-		this.neuronID = obj.getPropertyInt(NEURON_ID, true);
-		this.activationResponse = obj.getPropertyDouble(ACTIVATION_RESPONSE,true);
-		String type = obj.getPropertyString(PersistConst.TYPE, true);
-		this.neuronType = NEATNeuron.string2NeuronType(type);		
-	}
 }

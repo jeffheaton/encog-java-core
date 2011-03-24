@@ -28,8 +28,6 @@ import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 
 public class BoltzmannMachine extends ThermalNetwork {
 

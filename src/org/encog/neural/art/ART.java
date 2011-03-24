@@ -24,8 +24,6 @@
 package org.encog.neural.art;
 
 import org.encog.ml.BasicML;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.persist.BasicPersistedObject;
 
 public class ART extends BasicML {
 	/**

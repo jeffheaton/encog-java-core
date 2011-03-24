@@ -36,7 +36,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 
 public class SOM extends BasicML implements MLClassification, MLResettable,
 		MLError {
@@ -146,25 +145,6 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 		return true;
 	}
 
-	public void persistToMap(PersistedObject obj) {
-		obj.clear(PersistConst.TYPE_SOM);
-		obj.setStandardProperties(this);
-		propertiesToMap(obj);
-		obj.setProperty(PersistConst.WEIGHTS, this.getWeights());
-		obj.setProperty(PersistConst.INPUT_COUNT, this.inputNeuronCount, false);
-		obj.setProperty(PersistConst.OUTPUT_COUNT, this.outputNeuronCount,
-				false);
-	}
-
-	public void persistFromMap(PersistedObject obj) {
-		obj.requireType(PersistConst.TYPE_SOM);
-		propertiesFromMap(obj);
-		this.inputNeuronCount = obj.getPropertyInt(PersistConst.INPUT_COUNT,
-				true);
-		this.outputNeuronCount = obj.getPropertyInt(PersistConst.OUTPUT_COUNT,
-				true);
-		this.weights = obj.getPropertyMatrix(PersistConst.WEIGHTS, true);
-	}
 
 	public void reset() {
 		this.weights.randomize(-1, 1);

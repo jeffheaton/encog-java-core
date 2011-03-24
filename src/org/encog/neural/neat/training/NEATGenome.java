@@ -37,9 +37,6 @@ import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.persist.Persistor;
-import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
 
 /**
  * Implements a NEAT genome. This is a "blueprint" for creating a neural
@@ -863,52 +860,5 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		result.append(")");
 		return result.toString();
 	}
-
-	@Override
-	public Persistor createPersistor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
-	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.TYPE_NEAT_GENOME);
-		
-		obj.setProperty(PersistConst.PROPERTY_ID, (int)this.getGenomeID(),true);
-		obj.setProperty(BasicGenome.PROPERTY_ADJUSTED_SCORE, this.getAdjustedScore(),true);
-		obj.setProperty(BasicGenome.PROPERTY_SCORE, this.getScore(),true);
-		obj.setProperty(BasicGenome.PROPERTY_SPAWN_AMOUNT, this.getAmountToSpawn(),true);
-		obj.setProperty(BasicGenome.PROPERTY_SPECIES, (int)this.getSpeciesID(), true);
-		obj.setProperty(PersistConst.INPUT_COUNT, this.inputCount, true);
-		obj.setProperty(PersistConst.OUTPUT_COUNT, this.outputCount, true);
-
-		obj.setPropertyGenericList( NEATGenome.PROPERTY_NEURONS, this.neuronsChromosome.getGenes());
-		obj.setPropertyGenericList( NEATGenome.PROPERTY_LINKS, this.linksChromosome.getGenes());
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.TYPE_NEAT_GENOME);
-		this.setGenomeID(obj.getPropertyInt(PersistConst.PROPERTY_ID, true));
-		this.setAdjustedScore(obj.getPropertyDouble(BasicGenome.PROPERTY_ADJUSTED_SCORE, true));
-		this.setScore(obj.getPropertyDouble(BasicGenome.PROPERTY_SPAWN_AMOUNT, true));
-		this.setSpeciesID(obj.getPropertyInt(BasicGenome.PROPERTY_SPECIES, true));
-		this.inputCount =  obj.getPropertyInt(PersistConst.INPUT_COUNT, true);
-		this.outputCount =  obj.getPropertyInt(PersistConst.OUTPUT_COUNT, true);
-		
-		this.linksChromosome = new Chromosome();
-		this.neuronsChromosome = new Chromosome();
-		 			
-		this.getChromosomes().add(this.neuronsChromosome);
-		this.getChromosomes().add(this.linksChromosome);
-		
-		obj.getPropertyGenericList(NEATGenome.PROPERTY_NEURONS, this.neuronsChromosome.getGenes());
-		obj.getPropertyGenericList(NEATGenome.PROPERTY_LINKS, this.linksChromosome.getGenes());		
-	}
-
 }

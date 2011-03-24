@@ -24,8 +24,8 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.ml.MLMethod;
 import org.encog.neural.bam.BAM;
-import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,7 +81,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The generated network.
 	 */
-	public EncogPersistedObject generate() {
+	public MLMethod generate() {
 		BAM bam = new BAM(this.f1Neurons,this.f2Neurons);
 		return bam;
 	}

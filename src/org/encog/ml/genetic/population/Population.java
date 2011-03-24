@@ -29,12 +29,11 @@ import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.species.Species;
-import org.encog.persist.EncogPersistedObject;
 
 /**
  * Defines a population of genomes.
  */
-public interface Population extends EncogPersistedObject {
+public interface Population {
 	
 	public static final String PROPERTY_NEXT_GENE_ID = "nextGeneID";
 	public static final String PROPERTY_NEXT_GENOME_ID = "nextGenomeID";

@@ -5,11 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.persist.BasicPersistedObject;
-import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
-
-public abstract class BasicML extends BasicPersistedObject implements MLMethod, MLProperties, Serializable {
+public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	
 	/**
 	 * Properties about the neural network. Some NeuralLogic classes require
@@ -95,25 +91,7 @@ public abstract class BasicML extends BasicPersistedObject implements MLMethod, 
 		this.properties.put(name, value);
 		updateProperties();
 	}
-	
-	public void propertiesToMap(PersistedObject obj)
-	{
-		PersistedObject objProp = new PersistedObject();
-		for( String key : this.properties.keySet() ) {
-			String value = this.properties.get(key);
-			objProp.setProperty(key, value, false);
-		}
-		obj.setProperty(PersistConst.PROPERTIES, objProp);		
-	}
-	
-	public void propertiesFromMap(PersistedObject obj) {
-		List<PersistedObject> propertiesList = obj.getPropertyValueArray(PersistConst.PROPERTIES);
-		PersistedObject networkProperties = propertiesList.get(0);
-		for(String key: networkProperties.getData().keySet() ) {
-			this.setProperty(key, networkProperties.getPropertyString(key, true));
-		}
-	}
-	
+		
 	public abstract void updateProperties();
 
 }

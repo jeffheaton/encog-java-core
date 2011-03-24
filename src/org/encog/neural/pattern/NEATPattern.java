@@ -27,12 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.ml.MLMethod;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.NEATNeuron;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.persist.EncogPersistedObject;
 
 public class NEATPattern implements NeuralNetworkPattern {
 	/**
@@ -78,7 +75,7 @@ public class NEATPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The neural network.
 	 */
-	public EncogPersistedObject generate() {
+	public MLMethod generate() {
 		return null;
 
 	}

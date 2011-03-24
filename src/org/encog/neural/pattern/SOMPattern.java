@@ -24,8 +24,8 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.ml.MLMethod;
 import org.encog.neural.som.SOM;
-import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +83,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 * 
 	 * @return The neural network.
 	 */
-	public EncogPersistedObject generate() {
+	public MLMethod generate() {
 		SOM som = new SOM(this.inputNeurons,this.outputNeurons);
 		som.reset();
 		return som;

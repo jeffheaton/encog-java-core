@@ -4,13 +4,8 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.genetic.population.BasicPopulation;
-import org.encog.ml.genetic.population.Population;
 import org.encog.neural.neat.training.NEATGenome;
-import org.encog.neural.networks.training.CalculateScore;
-import org.encog.persist.Persistor;
 import org.encog.persist.map.PersistConst;
-import org.encog.persist.map.PersistedObject;
-import org.encog.persist.persistors.generic.GenericPersistor;
 
 public class NEATPopulation extends BasicPopulation {
 	
@@ -129,30 +124,5 @@ public class NEATPopulation extends BasicPopulation {
 			ActivationFunction outputActivationFunction) {
 		this.outputActivationFunction = outputActivationFunction;
 	}
-	
-	public void persistToMap(PersistedObject obj)
-	{
-		obj.clear(PersistConst.TYPE_NEAT_POPULATION);
-		obj.setStandardProperties(this);
-		populationToMap(obj);
-		obj.setProperty(PROPERTY_NEAT_ACTIVATION, this.neatActivationFunction);
-		obj.setProperty(PROPERTY_OUTPUT_ACTIVATION, this.outputActivationFunction);
-	}
-	
-	public void persistFromMap(PersistedObject obj)
-	{
-		obj.requireType(PersistConst.TYPE_NEAT_POPULATION);
-		populationFromMap(obj);
-		this.neatActivationFunction = obj.getPropertyActivationFunction(PROPERTY_NEAT_ACTIVATION, true);
-		this.outputActivationFunction = obj.getPropertyActivationFunction(PROPERTY_OUTPUT_ACTIVATION, true);
-	}
 
-	/**
-	 * @return A persistor for this object.
-	 */
-	public Persistor createPersistor() {
-		return new GenericPersistor(NEATPopulation.class);
-	}
-
-	
 }

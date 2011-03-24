@@ -24,10 +24,10 @@
 package org.encog.neural.pattern;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.ml.MLMethod;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
-import org.encog.persist.EncogPersistedObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,7 +78,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	/**
 	 * @return The generated network.
 	 */
-	public EncogPersistedObject generate() {
+	public MLMethod generate() {
 		if( this.outputNeurons!=1) {
 			throw new PatternError("A SVM may only have one output.");
 		}

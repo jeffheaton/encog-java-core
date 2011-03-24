@@ -23,7 +23,6 @@
  */
 package org.encog.ml.genetic.genes;
 
-import org.encog.persist.Persistor;
 
 /**
  * A gene that contains an integer value.
@@ -89,11 +88,4 @@ public class IntegerGene extends BasicGene {
 	public String toString() {
 		return "" + this.value;
 	}
-
-	@Override
-	public Persistor createPersistor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }
