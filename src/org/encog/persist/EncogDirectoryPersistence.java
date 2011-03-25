@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -47,9 +48,10 @@ public class EncogDirectoryPersistence {
 		try {
 			EncogPersistor p = PersistorRegistry.getInstance().getPersistor(
 					obj.getClass());
-			
-			if( p==null ) { 
-				throw new PersistError("Do not know how to persist object: " + obj.getClass().getSimpleName());
+
+			if (p == null) {
+				throw new PersistError("Do not know how to persist object: "
+						+ obj.getClass().getSimpleName());
 			}
 
 			os.flush();
@@ -78,7 +80,7 @@ public class EncogDirectoryPersistence {
 
 				ch = (char) b;
 
-				if (ch != 13 && ch!=10)
+				if (ch != 13 && ch != 10)
 					result.append((char) ch);
 
 			} while (ch != 10);
@@ -116,12 +118,31 @@ public class EncogDirectoryPersistence {
 
 	}
 
-	public static void saveToDirectory(String name, Object obj) {
-
+	public void saveToDirectory(String name, Object obj) {
+		File path = new File(this.parent,name);
+		EncogDirectoryPersistence.saveObject(path,obj);
 	}
 
-	public static Object loadFromDirectory(String name) {
-		return null;
+	public Object loadFromDirectory(String name) {
+		File path = new File(this.parent,name);
+		return EncogDirectoryPersistence.loadObject(path);
+	}
+
+	public File getParent() {
+		return this.parent;
+	}
+
+	public String getEncogType(String name) {
+		try {
+			File path = new File(this.parent, name);
+			BufferedReader br = new BufferedReader(new FileReader(path));
+			String header = br.readLine();
+			String[] params = header.split(",");
+			br.close();
+			return params[1];
+		} catch (IOException ex) {
+			throw new PersistError(ex);
+		}
 	}
 
 }
