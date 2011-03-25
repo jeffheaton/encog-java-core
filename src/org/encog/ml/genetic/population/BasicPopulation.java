@@ -413,4 +413,40 @@ public class BasicPopulation implements Population {
 		this.genomes.addAll(newPop);		
 	}
 
+	/**
+	 * @return the geneIDGenerate
+	 */
+	public GenerateID getGeneIDGenerate() {
+		return geneIDGenerate;
+	}
+
+	/**
+	 * @return the genomeIDGenerate
+	 */
+	public GenerateID getGenomeIDGenerate() {
+		return genomeIDGenerate;
+	}
+
+	/**
+	 * @return the innovationIDGenerate
+	 */
+	public GenerateID getInnovationIDGenerate() {
+		return innovationIDGenerate;
+	}
+
+	/**
+	 * @return the speciesIDGenerate
+	 */
+	public GenerateID getSpeciesIDGenerate() {
+		return speciesIDGenerate;
+	}
+
+	/**
+	 * @param youngBonusAgeThreshold the youngBonusAgeThreshold to set
+	 */
+	public void setYoungBonusAgeThreshold(int youngBonusAgeThreshold) {
+		this.youngBonusAgeThreshold = youngBonusAgeThreshold;
+	}
+
+	
 }
