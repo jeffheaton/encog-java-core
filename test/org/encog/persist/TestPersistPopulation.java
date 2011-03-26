@@ -23,6 +23,7 @@
  */
 package org.encog.persist;
 
+import java.io.File;
 import java.io.IOException;
 
 import junit.framework.Assert;
@@ -34,8 +35,10 @@ import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.BasicSpecies;
+import org.encog.neural.art.ART1;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovation;
 import org.encog.neural.neat.training.NEATInnovationType;
@@ -49,10 +52,9 @@ import org.encog.util.obj.SerializeObject;
 public class TestPersistPopulation extends TestCase {
 	
 	public final String EG_FILENAME = "encogtest.eg";
-	public final String EG_RESOURCE = "test";
 	public final String SERIAL_FILENAME = "encogtest.ser";
 	
-	private Population generate()
+	private NEATPopulation generate()
 	{
 		NeuralDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);
 		
@@ -65,28 +67,30 @@ public class TestPersistPopulation extends TestCase {
 				score, 2, 1, 10);
 		//train.setOutputActivationFunction(step);
 		
-		return train.getPopulation();
+		return (NEATPopulation)train.getPopulation();
 	}
 	
 	public void testPersistEG()
 	{
 		Population pop = generate();
 
+		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), pop);
+		NEATPopulation pop2 = (NEATPopulation)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
 		
-//		validate(network2);
+		validate(pop2);
 	}
 	
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
-		Population pop = generate();
+		NEATPopulation pop = generate();
 		
-//		SerializeObject.save(SERIAL_FILENAME, pop);
-//		BasicPopulation pop2 = (BasicPopulation)SerializeObject.load(SERIAL_FILENAME);
+		SerializeObject.save(SERIAL_FILENAME, pop);
+		NEATPopulation pop2 = (NEATPopulation)SerializeObject.load(SERIAL_FILENAME);
 		
-		//validate(pop2);
+		validate(pop2);
 	}
 	
-	private void validate(BasicPopulation pop)
+	private void validate(NEATPopulation pop)
 	{
 		Assert.assertEquals(0.3,pop.getOldAgePenalty());
 		Assert.assertEquals(50,pop.getOldAgeThreshold());
