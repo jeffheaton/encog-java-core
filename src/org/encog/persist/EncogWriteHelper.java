@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
@@ -168,5 +169,17 @@ public class EncogWriteHelper {
 		NumberList.toListInt(CSVFormat.EG_FORMAT, result, array);
 		writeProperty(name,result.toString());
 		
+	}
+
+	public void writeProperty(String name,
+			ActivationFunction act) {
+		StringBuilder result = new StringBuilder();
+		result.append(act.getClass().getSimpleName());
+		
+		for(int i=0;i<act.getParams().length;i++) {
+			result.append('|');
+			result.append(CSVFormat.EG_FORMAT.format(act.getParams()[i], Encog.DEFAULT_PRECISION));
+		}
+		writeProperty(name,result.toString());
 	}
 }

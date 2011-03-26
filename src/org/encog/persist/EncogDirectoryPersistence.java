@@ -24,23 +24,40 @@ public class EncogDirectoryPersistence {
 	}
 
 	public static void saveObject(File filename, Object obj) {
+		FileOutputStream fos = null;
+		
 		try {
-			FileOutputStream fos = new FileOutputStream(filename);
+			fos = new FileOutputStream(filename);
 			saveObject(fos, obj);
-			fos.close();
 		} catch (IOException ex) {
 			throw new PersistError(ex);
+		} finally {
+			try {
+				fos.close();
+			} catch (IOException e) {
+
+			}
 		}
 	}
 
 	public static Object loadObject(File file) {
+		FileInputStream fis = null;
+		
 		try {
-			FileInputStream fis = new FileInputStream(file);
+			fis = new FileInputStream(file);
 			Object result = loadObject(fis);
-			fis.close();
+			
 			return result;
 		} catch (IOException ex) {
 			throw new PersistError(ex);
+		} finally {
+			if( fis!=null ) {
+				try {
+					fis.close();
+				} catch (IOException e) {
+					
+				}
+			}
 		}
 	}
 

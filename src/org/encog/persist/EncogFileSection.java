@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
@@ -176,6 +177,41 @@ public class EncogFileSection {
 			result.add(str);
 		}
 		return result;
+	}
+
+	public static ActivationFunction parseActivationFunction(
+			Map<String, String> params, String name) {
+		String value = null;
+		try {
+			value = params.get(name);
+			if( value==null ) {
+				throw new PersistError("Missing property: " + name);
+			}
+			
+			ActivationFunction af = null;
+			String[] cols = value.split("\\|");
+			
+			String afName = "org.encog.engine.network.activation." + cols[0];
+			try {
+				Class<?> clazz = Class.forName(afName);
+				af = (ActivationFunction) clazz.newInstance();
+			} catch (ClassNotFoundException e) {
+				throw new PersistError(e);
+			} catch (InstantiationException e) {
+				throw new PersistError(e);
+			} catch (IllegalAccessException e) {
+				throw new PersistError(e);
+			}
+			
+			for(int i=0;i<af.getParamNames().length;i++) {
+				af.setParam(i, CSVFormat.EG_FORMAT.parse(cols[i+1]));
+			}
+			
+			return af;
+			
+		} catch(Exception ex) {
+			throw new PersistError(ex);
+		}
 	}
 
 	

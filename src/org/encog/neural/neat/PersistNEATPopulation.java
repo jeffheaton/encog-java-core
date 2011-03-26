@@ -3,6 +3,7 @@ package org.encog.neural.neat;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.ml.genetic.genes.Gene;
@@ -17,14 +18,12 @@ import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.neural.neat.training.NEATInnovationType;
 import org.encog.neural.neat.training.NEATLinkGene;
 import org.encog.neural.neat.training.NEATNeuronGene;
-import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
 import org.encog.persist.map.PersistConst;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 
 public class PersistNEATPopulation implements EncogPersistor {
 
@@ -38,116 +37,153 @@ public class PersistNEATPopulation implements EncogPersistor {
 		NEATPopulation result = new NEATPopulation();
 		result.setInnovations(new NEATInnovationList());
 		EncogReadHelper in = new EncogReadHelper(is);
-		Map<Integer,Species> speciesMap = new HashMap<Integer,Species>();
-		Map<Species,Integer> leaderMap = new HashMap<Species,Integer>();
-		Map<Integer,Genome> genomeMap = new HashMap<Integer,Genome>();
+		Map<Integer, Species> speciesMap = new HashMap<Integer, Species>();
+		Map<Species, Integer> leaderMap = new HashMap<Species, Integer>();
+		Map<Integer, Genome> genomeMap = new HashMap<Integer, Genome>();
 		EncogFileSection section;
-		
-		while( (section = in.readNextSection()) != null ) {
-			if( section.getSectionName().equals("NEAT-POPULATION") && section.getSubSectionName().equals("INNOVATIONS") ) {
-				for(String line :section.getLines()) {
-					String[] cols = line.split(",");
+
+		while ((section = in.readNextSection()) != null) {
+			if (section.getSectionName().equals("NEAT-POPULATION")
+					&& section.getSubSectionName().equals("INNOVATIONS")) {
+				for (String line : section.getLines()) {
+					List<String> cols = EncogFileSection.splitColumns(line);
 					NEATInnovation innovation = new NEATInnovation();
-					innovation.setInnovationID(Integer.parseInt(cols[0]));
-					innovation.setInnovationType(PersistNEATPopulation.stringToInnovationType(cols[1]));
-					innovation.setNeuronType(PersistNEATPopulation.stringToNeuronType(cols[2]));
-					innovation.setSplitX(CSVFormat.EG_FORMAT.parse(cols[3]));
-					innovation.setSplitY(CSVFormat.EG_FORMAT.parse(cols[4]));
-					innovation.setFromNeuronID(Integer.parseInt(cols[5]));
-					innovation.setToNeuronID(Integer.parseInt(cols[6]));
+					innovation.setInnovationID(Integer.parseInt(cols.get(0)));
+					innovation.setInnovationType(PersistNEATPopulation
+							.stringToInnovationType(cols.get(1)));
+					innovation.setNeuronType(PersistNEATPopulation.stringToNeuronType(cols.get(2)));
+					innovation.setSplitX(CSVFormat.EG_FORMAT.parse(cols.get(3)));
+					innovation.setSplitY(CSVFormat.EG_FORMAT.parse(cols.get(4)));
+					innovation.setFromNeuronID(Integer.parseInt(cols.get(5)));
+					innovation.setToNeuronID(Integer.parseInt(cols.get(6)));
 					result.getInnovations().add(innovation);
 				}
-			} else if( section.getSectionName().equals("NEAT-POPULATION") && section.getSubSectionName().equals("SPECIES") ) {
-				for(String line :section.getLines()) {
+			} else if (section.getSectionName().equals("NEAT-POPULATION")
+					&& section.getSubSectionName().equals("SPECIES")) {
+				for (String line : section.getLines()) {
 					String[] cols = line.split(",");
 					BasicSpecies species = new BasicSpecies();
-					
+
 					species.setSpeciesID(Integer.parseInt(cols[0]));
 					species.setAge(Integer.parseInt(cols[1]));
 					species.setBestScore(CSVFormat.EG_FORMAT.parse(cols[2]));
 					species.setGensNoImprovement(Integer.parseInt(cols[3]));
-					species.setSpawnsRequired(CSVFormat.EG_FORMAT.parse(cols[4]));
-					species.setSpawnsRequired(CSVFormat.EG_FORMAT.parse(cols[5]));
+					species.setSpawnsRequired(CSVFormat.EG_FORMAT
+							.parse(cols[4]));
+					species.setSpawnsRequired(CSVFormat.EG_FORMAT
+							.parse(cols[5]));
 					leaderMap.put(species, Integer.parseInt(cols[6]));
-					result.getSpecies().add(species);	
-					speciesMap.put((int)species.getSpeciesID(), species);
+					result.getSpecies().add(species);
+					speciesMap.put((int) species.getSpeciesID(), species);
 				}
-			} else if( section.getSectionName().equals("NEAT-POPULATION") && section.getSubSectionName().equals("GENOMES") ) {
+			} else if (section.getSectionName().equals("NEAT-POPULATION")
+					&& section.getSubSectionName().equals("GENOMES")) {
 				NEATGenome lastGenome = null;
-				for(String line :section.getLines()) {
-					String[] cols = line.split(",");
-					if( cols[0].charAt(1)=='g') {
+				for (String line : section.getLines()) {
+					List<String> cols = EncogFileSection.splitColumns(line);
+					if (cols.get(0).equalsIgnoreCase("g") ) {
 						lastGenome = new NEATGenome();
 						lastGenome.setNeuronsChromosome(new Chromosome());
 						lastGenome.setLinksChromosome(new Chromosome());
-						lastGenome.getChromosomes().add(lastGenome.getNeuronsChromosome());
-						lastGenome.getChromosomes().add(lastGenome.getLinksChromosome());
-						lastGenome.setGenomeID(Integer.parseInt(cols[1]));
-						lastGenome.setSpeciesID(Integer.parseInt(cols[2]));
-						lastGenome.setAdjustedScore(CSVFormat.EG_FORMAT.parse(cols[3]));
-						lastGenome.setAmountToSpawn(CSVFormat.EG_FORMAT.parse(cols[4]));
-						lastGenome.setNetworkDepth(Integer.parseInt(cols[5]));
-						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols[6]));						
+						lastGenome.getChromosomes().add(
+								lastGenome.getNeuronsChromosome());
+						lastGenome.getChromosomes().add(
+								lastGenome.getLinksChromosome());
+						lastGenome.setGenomeID(Integer.parseInt(cols.get(1)));
+						lastGenome.setSpeciesID(Integer.parseInt(cols.get(2)));
+						lastGenome.setAdjustedScore(CSVFormat.EG_FORMAT
+								.parse(cols.get(3)));
+						lastGenome.setAmountToSpawn(CSVFormat.EG_FORMAT
+								.parse(cols.get(4)));
+						lastGenome.setNetworkDepth(Integer.parseInt(cols.get(5)));
+						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(6)));
 						result.getGenomes().add(lastGenome);
-						genomeMap.put((int)lastGenome.getGenomeID(), lastGenome);
-					} else if( cols[0].charAt(1)=='n') {
+						genomeMap.put((int) lastGenome.getGenomeID(),
+								lastGenome);
+					} else if (cols.get(0).equalsIgnoreCase("n") ) {
 						NEATNeuronGene neuronGene = new NEATNeuronGene();
-						neuronGene.setId(Integer.parseInt(cols[1]));
-						neuronGene.setNeuronType(PersistNEATPopulation.stringToNeuronType(cols[2]));
-						neuronGene.setEnabled(cols[3].equalsIgnoreCase("t"));
-						neuronGene.setInnovationId(Integer.parseInt(cols[4]));
-						neuronGene.setActivationResponse(CSVFormat.EG_FORMAT.parse(cols[5]));
-						neuronGene.setSplitX(CSVFormat.EG_FORMAT.parse(cols[6]));
-						neuronGene.setSplitY(CSVFormat.EG_FORMAT.parse(cols[7]));
-						lastGenome.getNeurons().add(neuronGene);											
-					} else if( cols[0].charAt(1)=='l') {
+						neuronGene.setId(Integer.parseInt(cols.get(1)));
+						neuronGene.setNeuronType(PersistNEATPopulation
+								.stringToNeuronType(cols.get(2)));
+						neuronGene.setEnabled(cols.get(3).equalsIgnoreCase("t"));
+						neuronGene.setInnovationId(Integer.parseInt(cols.get(4)));
+						neuronGene.setActivationResponse(CSVFormat.EG_FORMAT
+								.parse(cols.get(5)));
+						neuronGene
+								.setSplitX(CSVFormat.EG_FORMAT.parse(cols.get(6)));
+						neuronGene
+								.setSplitY(CSVFormat.EG_FORMAT.parse(cols.get(7)));
+						lastGenome.getNeurons().add(neuronGene);
+					} else if (cols.get(0).equalsIgnoreCase("l")) {
 						NEATLinkGene linkGene = new NEATLinkGene();
-						linkGene.setId(Integer.parseInt(cols[1]));
-						linkGene.setEnabled(cols[2].equalsIgnoreCase("t"));
-						linkGene.setEnabled(cols[3].equalsIgnoreCase("t"));
-						linkGene.setFromNeuronID(Integer.parseInt(cols[4]));
-						linkGene.setToNeuronID(Integer.parseInt(cols[5]));
-						linkGene.setWeight(CSVFormat.EG_FORMAT.parse(cols[6]));
-						linkGene.setInnovationId(Integer.parseInt(cols[7]));
+						linkGene.setId(Integer.parseInt(cols.get(1)));
+						linkGene.setEnabled(cols.get(2).equalsIgnoreCase("t"));
+						linkGene.setEnabled(cols.get(3).equalsIgnoreCase("t"));
+						linkGene.setFromNeuronID(Integer.parseInt(cols.get(4)));
+						linkGene.setToNeuronID(Integer.parseInt(cols.get(5)));
+						linkGene.setWeight(CSVFormat.EG_FORMAT.parse(cols.get(6)));
+						linkGene.setInnovationId(Integer.parseInt(cols.get(7)));
 						lastGenome.getLinks().add(linkGene);
 					}
 				}
-			} else if( section.getSectionName().equals("NEAT-POPULATION") && section.getSubSectionName().equals("CONFIG") ) {
-				Map<String,String> params = section.parseParams();				
-				result.setInputCount(EncogFileSection.parseInt(params,PersistConst.INPUT_COUNT));
-				result.setOutputCount(EncogFileSection.parseInt(params,PersistConst.OUTPUT_COUNT));
-				result.setOldAgePenalty(EncogFileSection.parseDouble(params,NEATPopulation.PROPERTY_OLD_AGE_PENALTY));
-				result.setOldAgeThreshold(EncogFileSection.parseInt(params,NEATPopulation.PROPERTY_OLD_AGE_THRESHOLD));
-				result.setPopulationSize(EncogFileSection.parseInt(params,NEATPopulation.PROPERTY_POPULATION_SIZE));
-				result.setSurvivalRate(EncogFileSection.parseDouble(params,NEATPopulation.PROPERTY_SURVIVAL_RATE));
-				result.setYoungBonusAgeThreshhold(EncogFileSection.parseInt(params,NEATPopulation.PROPERTY_YOUNG_AGE_THRESHOLD));
-				result.setYoungScoreBonus(EncogFileSection.parseDouble(params,NEATPopulation.PROPERTY_YOUNG_AGE_BONUS));
-				result.getGenomeIDGenerate().setCurrentID(EncogFileSection.parseInt(params,NEATPopulation.PROPERTY_NEXT_GENOME_ID));
-				result.getInnovationIDGenerate().setCurrentID(EncogFileSection.parseInt(params,NEATPopulation.PROPERTY_NEXT_INNOVATION_ID));
-				result.getGeneIDGenerate().setCurrentID(EncogFileSection.parseInt(params,NEATPopulation.PROPERTY_NEXT_GENE_ID));
-				result.getSpeciesIDGenerate().setCurrentID(EncogFileSection.parseInt(params,NEATPopulation.PROPERTY_NEXT_SPECIES_ID));
+			} else if (section.getSectionName().equals("NEAT-POPULATION")
+					&& section.getSubSectionName().equals("CONFIG")) {
+				Map<String, String> params = section.parseParams();
+				
+				result.setNeatActivationFunction(EncogFileSection.parseActivationFunction(params,NEATPopulation.PROPERTY_NEAT_ACTIVATION));
+				result.setOutputActivationFunction(EncogFileSection.parseActivationFunction(params,NEATPopulation.PROPERTY_OUTPUT_ACTIVATION));
+				result.setInputCount(EncogFileSection.parseInt(params,
+						PersistConst.INPUT_COUNT));
+				result.setOutputCount(EncogFileSection.parseInt(params,
+						PersistConst.OUTPUT_COUNT));
+				result.setOldAgePenalty(EncogFileSection.parseDouble(params,
+						NEATPopulation.PROPERTY_OLD_AGE_PENALTY));
+				result.setOldAgeThreshold(EncogFileSection.parseInt(params,
+						NEATPopulation.PROPERTY_OLD_AGE_THRESHOLD));
+				result.setPopulationSize(EncogFileSection.parseInt(params,
+						NEATPopulation.PROPERTY_POPULATION_SIZE));
+				result.setSurvivalRate(EncogFileSection.parseDouble(params,
+						NEATPopulation.PROPERTY_SURVIVAL_RATE));
+				result.setYoungBonusAgeThreshhold(EncogFileSection.parseInt(
+						params, NEATPopulation.PROPERTY_YOUNG_AGE_THRESHOLD));
+				result.setYoungScoreBonus(EncogFileSection.parseDouble(params,
+						NEATPopulation.PROPERTY_YOUNG_AGE_BONUS));
+				result.getGenomeIDGenerate().setCurrentID(
+						EncogFileSection.parseInt(params,
+								NEATPopulation.PROPERTY_NEXT_GENOME_ID));
+				result.getInnovationIDGenerate().setCurrentID(
+						EncogFileSection.parseInt(params,
+								NEATPopulation.PROPERTY_NEXT_INNOVATION_ID));
+				result.getGeneIDGenerate().setCurrentID(
+						EncogFileSection.parseInt(params,
+								NEATPopulation.PROPERTY_NEXT_GENE_ID));
+				result.getSpeciesIDGenerate().setCurrentID(
+						EncogFileSection.parseInt(params,
+								NEATPopulation.PROPERTY_NEXT_SPECIES_ID));
 			}
 		}
-		
+
 		// now link everything up
-		
+
 		// first put all the genomes into correct species
-		for(Genome genome: result.getGenomes()) {
-			NEATGenome neatGenome = (NEATGenome)genome;
-			int speciesId = (int)neatGenome.getSpeciesID();
+		for (Genome genome : result.getGenomes()) {
+			NEATGenome neatGenome = (NEATGenome) genome;
+			int speciesId = (int) neatGenome.getSpeciesID();
 			Species species = speciesMap.get(speciesId);
-			if( species!=null ) {
+			if (species != null) {
 				species.getMembers().add(neatGenome);
 			}
+			neatGenome.setInputCount(result.getInputCount());
+			neatGenome.setOutputCount(result.getOutputCount());
 		}
-		
+
 		// set the species leader links
-		for( Species species : leaderMap.keySet()) {
+		for (Species species : leaderMap.keySet()) {
 			int leaderID = leaderMap.get(species);
 			Genome leader = genomeMap.get(leaderID);
 			species.setLeader(leader);
 		}
-		 
+
 		return result;
 	}
 
@@ -157,6 +193,8 @@ public class PersistNEATPopulation implements EncogPersistor {
 		NEATPopulation pop = (NEATPopulation) obj;
 		out.addSection("NEAT-POPULATION");
 		out.addSubSection("CONFIG");
+		out.writeProperty(NEATPopulation.PROPERTY_OUTPUT_ACTIVATION, pop.getOutputActivationFunction());
+		out.writeProperty(NEATPopulation.PROPERTY_NEAT_ACTIVATION, pop.getNeatActivationFunction());
 		out.writeProperty(PersistConst.INPUT_COUNT, pop.getInputCount());
 		out.writeProperty(PersistConst.OUTPUT_COUNT, pop.getOutputCount());
 		out.writeProperty(NEATPopulation.PROPERTY_OLD_AGE_PENALTY,
@@ -180,16 +218,21 @@ public class PersistNEATPopulation implements EncogPersistor {
 		out.writeProperty(NEATPopulation.PROPERTY_NEXT_SPECIES_ID, pop
 				.getSpeciesIDGenerate().getCurrentID());
 		out.addSubSection("INNOVATIONS");
-		for (Innovation innovation : pop.getInnovations().getInnovations()) {
-			NEATInnovation neatInnovation = (NEATInnovation) innovation;
-			out.addColumn(neatInnovation.getInnovationID());
-			out.addColumn(PersistNEATPopulation.innovationTypeToString(neatInnovation.getInnovationType()));
-			out.addColumn(PersistNEATPopulation.neuronTypeToString(neatInnovation.getNeuronType()));
-			out.addColumn(neatInnovation.getSplitX());
-			out.addColumn(neatInnovation.getSplitY());
-			out.addColumn(neatInnovation.getFromNeuronID());
-			out.addColumn(neatInnovation.getToNeuronID());
-			out.writeLine();
+		if (pop.getInnovations() != null) {
+			for (Innovation innovation : pop.getInnovations().getInnovations()) {
+				NEATInnovation neatInnovation = (NEATInnovation) innovation;
+				out.addColumn(neatInnovation.getInnovationID());
+				out.addColumn(PersistNEATPopulation
+						.innovationTypeToString(neatInnovation
+								.getInnovationType()));
+				out.addColumn(PersistNEATPopulation
+						.neuronTypeToString(neatInnovation.getNeuronType()));
+				out.addColumn(neatInnovation.getSplitX());
+				out.addColumn(neatInnovation.getSplitY());
+				out.addColumn(neatInnovation.getFromNeuronID());
+				out.addColumn(neatInnovation.getToNeuronID());
+				out.writeLine();
+			}
 		}
 		out.addSubSection("GENOMES");
 		for (Genome genome : pop.getGenomes()) {
@@ -207,7 +250,8 @@ public class PersistNEATPopulation implements EncogPersistor {
 				NEATNeuronGene neatNeuronGene = (NEATNeuronGene) neuronGene;
 				out.addColumn("n");
 				out.addColumn(neatNeuronGene.getId());
-				out.addColumn(PersistNEATPopulation.neuronTypeToString(neatNeuronGene.getNeuronType()));
+				out.addColumn(PersistNEATPopulation
+						.neuronTypeToString(neatNeuronGene.getNeuronType()));
 				out.addColumn(neatNeuronGene.isEnabled());
 				out.addColumn(neatNeuronGene.getInnovationId());
 				out.addColumn(neatNeuronGene.getActivationResponse());
@@ -229,7 +273,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			}
 		}
 		out.addSubSection("SPECIES");
-		for(Species species : pop.getSpecies()) {
+		for (Species species : pop.getSpecies()) {
 			out.addColumn(species.getSpeciesID());
 			out.addColumn(species.getAge());
 			out.addColumn(species.getBestScore());
@@ -275,30 +319,30 @@ public class PersistNEATPopulation implements EncogPersistor {
 			return null;
 		}
 	}
-	
+
 	public static NEATInnovationType stringToInnovationType(String t) {
-		if( t.equalsIgnoreCase("l")) {
+		if (t.equalsIgnoreCase("l")) {
 			return NEATInnovationType.NewLink;
-		} else if( t.equalsIgnoreCase("n") ) {
+		} else if (t.equalsIgnoreCase("n")) {
 			return NEATInnovationType.NewNeuron;
 		} else {
 			return null;
 		}
 	}
-	
-	public static NEATNeuronType stringToNeuronType( String t) {
-		if( t.equals("b") ) {
+
+	public static NEATNeuronType stringToNeuronType(String t) {
+		if (t.equals("b")) {
 			return NEATNeuronType.Bias;
-		} else if( t.equals("h") ) {
+		} else if (t.equals("h")) {
 			return NEATNeuronType.Hidden;
-		} else if( t.equals("i") ) {
+		} else if (t.equals("i")) {
 			return NEATNeuronType.Input;
-		} else if( t.equals("n") ) {
+		} else if (t.equals("n")) {
 			return NEATNeuronType.None;
-		} else if( t.equals("o") ) {
+		} else if (t.equals("o")) {
 			return NEATNeuronType.Output;
 		} else {
 			return null;
-		}		
+		}
 	}
 }
