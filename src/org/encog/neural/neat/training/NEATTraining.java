@@ -215,15 +215,8 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		setComparator(new GenomeComparator(getCalculateScore()));
-		setPopulation(new NEATPopulation(populationSize));
-
-		// create the initial population
-		for (int i = 0; i < populationSize; i++) {
-			getPopulation().add(
-					new NEATGenome(getPopulation().assignGenomeID(),
-							inputCount, outputCount));
-		}
-
+		setPopulation(new NEATPopulation(inputCount,outputCount,populationSize));
+		
 		init();
 	}
 

@@ -58,16 +58,13 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
-			add(new NEATGenome(assignGenomeID(), inputCount, outputCount));
+			NEATGenome genome = new NEATGenome(assignGenomeID(), inputCount, outputCount);
+			add(genome);
 		}
 	}
 	
 	public NEATPopulation() {
 		
-	}
-
-	public NEATPopulation(int populationSize) {
-		super(populationSize);
 	}
 
 	/**

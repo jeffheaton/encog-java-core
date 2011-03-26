@@ -182,6 +182,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 			int leaderID = leaderMap.get(species);
 			Genome leader = genomeMap.get(leaderID);
 			species.setLeader(leader);
+			((BasicSpecies)species).setPopulation(result);
 		}
 
 		return result;
