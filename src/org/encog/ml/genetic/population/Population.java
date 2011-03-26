@@ -23,6 +23,7 @@
  */
 package org.encog.ml.genetic.population;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
@@ -33,7 +34,7 @@ import org.encog.ml.genetic.species.Species;
 /**
  * Defines a population of genomes.
  */
-public interface Population {
+public interface Population extends Serializable {
 	
 	public static final String PROPERTY_NEXT_GENE_ID = "nextGeneID";
 	public static final String PROPERTY_NEXT_GENOME_ID = "nextGenomeID";

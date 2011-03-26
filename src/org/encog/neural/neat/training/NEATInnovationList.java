@@ -23,6 +23,8 @@
  */
 package org.encog.neural.neat.training;
 
+import java.io.Serializable;
+
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.ml.genetic.innovation.BasicInnovationList;
@@ -40,7 +42,7 @@ import org.encog.neural.neat.NEATNeuronType;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATInnovationList extends BasicInnovationList {
+public class NEATInnovationList extends BasicInnovationList implements Serializable {
 
 	/**
 	 * The next neuron id.

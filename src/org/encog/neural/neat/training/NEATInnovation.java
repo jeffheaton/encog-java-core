@@ -23,6 +23,8 @@
  */
 package org.encog.neural.neat.training;
 
+import java.io.Serializable;
+
 import org.encog.ml.genetic.innovation.BasicInnovation;
 import org.encog.neural.neat.NEATNeuronType;
 import org.encog.persist.map.PersistConst;
@@ -38,7 +40,7 @@ import org.encog.persist.map.PersistConst;
  * http://www.cs.ucf.edu/~kstanley/
  *
  */
-public class NEATInnovation extends BasicInnovation {
+public class NEATInnovation extends BasicInnovation implements Serializable {
 
 	public final static String PROPERTY_FROM_NEURON_ID = "from";
 	public final static String PROPERTY_TO_NEURON_ID = "to";
@@ -256,6 +258,39 @@ public class NEATInnovation extends BasicInnovation {
 		result.append("]");
 		return result.toString();
 	}
+
+	public void setInnovationType(NEATInnovationType t) {
+		this.innovationType = t;
+		
+	}
+
+	public void setNeuronType(NEATNeuronType t) {
+		this.neuronType = t;
+		
+	}
+
+	public void setSplitX(double d) {
+		this.splitX = d;
+	}
+	public void setSplitY(double d) {
+		this.splitY = d;
+	}
+
+	/**
+	 * @param fromNeuronID the fromNeuronID to set
+	 */
+	public void setFromNeuronID(long fromNeuronID) {
+		this.fromNeuronID = fromNeuronID;
+	}
+
+	/**
+	 * @param toNeuronID the toNeuronID to set
+	 */
+	public void setToNeuronID(long toNeuronID) {
+		this.toNeuronID = toNeuronID;
+	}
+	
+	
 	
 
 }

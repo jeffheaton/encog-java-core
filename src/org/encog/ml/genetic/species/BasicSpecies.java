@@ -292,7 +292,11 @@ public class BasicSpecies  implements Species, Serializable {
 	public void setPopulation(Population population) {
 		this.population = population;
 	}
-	
-	
+
+	public void setSpeciesID(int i) {
+		this.speciesID = i;
+	}
+
+
 
 }

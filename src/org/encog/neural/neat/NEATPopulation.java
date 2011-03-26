@@ -1,5 +1,7 @@
 package org.encog.neural.neat;
 
+import java.io.Serializable;
+
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
@@ -7,7 +9,7 @@ import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.persist.map.PersistConst;
 
-public class NEATPopulation extends BasicPopulation {
+public class NEATPopulation extends BasicPopulation implements Serializable {
 	
 	public static final String PROPERTY_NEAT_ACTIVATION = "neatAct";
 	public static final String PROPERTY_OUTPUT_ACTIVATION = "outAct";

@@ -23,6 +23,8 @@
  */
 package org.encog.neural.neat.training;
 
+import java.io.Serializable;
+
 import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.neural.neat.NEATNeuron;
@@ -39,7 +41,7 @@ import org.encog.persist.map.PersistConst;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATNeuronGene extends BasicGene {
+public class NEATNeuronGene extends BasicGene implements Serializable {
 
 	public static final String PROPERTY_ACT_RESPONSE = "aResp";
 	public static final String PROPERTY_RECURRENT = "recurrent";

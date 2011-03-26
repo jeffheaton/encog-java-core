@@ -23,6 +23,8 @@
  */
 package org.encog.neural.neat.training;
 
+import java.io.Serializable;
+
 import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.neural.neat.NEATLink;
@@ -39,7 +41,7 @@ import org.encog.persist.map.PersistConst;
  * http://www.cs.ucf.edu/~kstanley/
  *
  */
-public class NEATLinkGene extends BasicGene {
+public class NEATLinkGene extends BasicGene implements Serializable {
 
 	/**
 	 * The from neuron id.
@@ -158,6 +160,14 @@ public class NEATLinkGene extends BasicGene {
 		result.append(this.toNeuronID);
 		result.append("]");
 		return result.toString();
+	}
+
+	public void setFromNeuronID(int i) {
+		this.fromNeuronID = i;
+	}
+	
+	public void setToNeuronID(int i) {
+		this.toNeuronID = i;
 	}
 
 }

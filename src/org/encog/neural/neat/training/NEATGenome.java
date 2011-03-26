@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat.training;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +50,7 @@ import org.encog.neural.neat.NEATPopulation;
  * http://www.cs.ucf.edu/~kstanley/
  *
  */
-public class NEATGenome extends BasicGenome implements Cloneable {
+public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
 	public static final String PROPERTY_NEURONS = "neurons";
 	public static final String PROPERTY_LINKS = "links";
@@ -860,5 +861,49 @@ public class NEATGenome extends BasicGenome implements Cloneable {
 		result.append(")");
 		return result.toString();
 	}
+
+	/**
+	 * @return the linksChromosome
+	 */
+	public Chromosome getLinksChromosome() {
+		return linksChromosome;
+	}
+
+	/**
+	 * @param linksChromosome the linksChromosome to set
+	 */
+	public void setLinksChromosome(Chromosome linksChromosome) {
+		this.linksChromosome = linksChromosome;
+	}
+
+	/**
+	 * @return the neuronsChromosome
+	 */
+	public Chromosome getNeuronsChromosome() {
+		return neuronsChromosome;
+	}
+
+	/**
+	 * @param neuronsChromosome the neuronsChromosome to set
+	 */
+	public void setNeuronsChromosome(Chromosome neuronsChromosome) {
+		this.neuronsChromosome = neuronsChromosome;
+	}
+
+	/**
+	 * @param inputCount the inputCount to set
+	 */
+	public void setInputCount(int inputCount) {
+		this.inputCount = inputCount;
+	}
+
+	/**
+	 * @param outputCount the outputCount to set
+	 */
+	public void setOutputCount(int outputCount) {
+		this.outputCount = outputCount;
+	}
+
+	
 	
 }
