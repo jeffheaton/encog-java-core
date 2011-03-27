@@ -24,20 +24,16 @@
 package org.encog.neural.neat;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.persist.map.PersistConst;
 
 /**
  * Implements a NEAT network as a synapse between two layers. In Encog, a NEAT
@@ -157,14 +153,6 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 	}
 
 	/**
-	 * @return A clone of this object.
-	 */
-	@Override
-	public Object clone() {
-		return null;
-	}
-
-	/**
 	 * Compute the output from this synapse.
 	 * 
 	 * @param input
@@ -240,24 +228,6 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 	}
 
 	/**
-	 * Get the weight matrix. Not used for a NEAT synapse.
-	 * 
-	 * @return The weight matrix.
-	 */
-	public Matrix getMatrix() {
-		return null;
-	}
-
-	/**
-	 * Get the size of the matrix, or zero if one is not defined.
-	 * 
-	 * @return The size of the matrix.
-	 */
-	public int getMatrixSize() {
-		return 0;
-	}
-
-	/**
 	 * @return The network depth.
 	 */
 	public int getNetworkDepth() {
@@ -272,25 +242,10 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 	}
 
 	/**
-	 * @return True if this is a self-connected synapse. That is, the from and
-	 *         to layers are the same.
-	 */
-	public boolean isSelfConnected() {
-		return false;
-	}
-
-	/**
 	 * @return True if snapshot is being used.
 	 */
 	public boolean isSnapshot() {
 		return this.snapshot;
-	}
-
-	/**
-	 * @return True if the weights for this synapse can be modified.
-	 */
-	public boolean isTeachable() {
-		return false;
 	}
 
 	/**
@@ -300,27 +255,6 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 	public void setActivationFunction(
 			final ActivationFunction activationFunction) {
 		this.activationFunction = activationFunction;
-	}
-
-	/**
-	 * Not used.
-	 * 
-	 * @param description
-	 *            Not used.
-	 */
-	public void setDescription(final String description) {
-
-	}
-
-	/**
-	 * Assign a new weight matrix to this layer. Not used by a NEAT network.
-	 * 
-	 * @param matrix
-	 *            The new matrix.
-	 */
-	public void setMatrix(final Matrix matrix) {
-		throw new NeuralNetworkError(
-				"Neat synapse cannot have a simple matrix.");
 	}
 
 	/**
@@ -343,13 +277,21 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 		return this.outputCount;
 	}
 	
-	public boolean supportsMapPersistence()
-	{
-		return true;
-	}
-
 	@Override
 	public void updateProperties() {
+		
+	}
+
+	public void setInputCount(int i) {
+		this.inputCount = i;		
+	}
+	
+	public void setOutputCount(int i) {
+		this.inputCount = i;		
+	}
+
+	public void setNetworkDepth(int i) {
+		this.networkDepth = i;
 		
 	}
 	
