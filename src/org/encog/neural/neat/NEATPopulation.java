@@ -6,14 +6,15 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.genetic.population.BasicPopulation;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.training.NEATGenome;
+import org.encog.neural.neat.training.NEATInnovationList;
 import org.encog.persist.map.PersistConst;
 
 public class NEATPopulation extends BasicPopulation implements Serializable {
-	
+
 	public static final String PROPERTY_NEAT_ACTIVATION = "neatAct";
 	public static final String PROPERTY_OUTPUT_ACTIVATION = "outAct";
-
 
 	/**
 	 * The number of input units. All members of the population must agree with
@@ -49,22 +50,33 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	 * @param populationSize
 	 *            The population size.
 	 */
-	public NEATPopulation(
-			final int inputCount, final int outputCount,
+	public NEATPopulation(final int inputCount, final int outputCount,
 			final int populationSize) {
 		super(populationSize);
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
 
+		if (populationSize == 0) {
+			throw new NeuralNetworkError(
+					"Population must have more than zero genomes.");
+		}
+
 		// create the initial population
 		for (int i = 0; i < populationSize; i++) {
-			NEATGenome genome = new NEATGenome(assignGenomeID(), inputCount, outputCount);
+			NEATGenome genome = new NEATGenome(assignGenomeID(), inputCount,
+					outputCount);
 			add(genome);
 		}
+
+		// create initial innovations
+		NEATGenome genome = (NEATGenome) this.getGenomes().get(0);
+		this.setInnovations(new NEATInnovationList(this, genome.getLinks(),
+				genome.getNeurons()));
+
 	}
-	
+
 	public NEATPopulation() {
-		
+
 	}
 
 	/**
@@ -105,7 +117,8 @@ public class NEATPopulation extends BasicPopulation implements Serializable {
 	/**
 	 * @param neatActivationFunction the neatActivationFunction to set
 	 */
-	public void setNeatActivationFunction(ActivationFunction neatActivationFunction) {
+	public void setNeatActivationFunction(
+			ActivationFunction neatActivationFunction) {
 		this.neatActivationFunction = neatActivationFunction;
 	}
 
