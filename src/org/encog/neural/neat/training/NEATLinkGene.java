@@ -170,4 +170,8 @@ public class NEATLinkGene extends BasicGene implements Serializable {
 		this.toNeuronID = i;
 	}
 
+	public void setRecurrent(boolean b) {
+		this.recurrent = b;
+	}
+
 }

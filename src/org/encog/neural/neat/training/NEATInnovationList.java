@@ -31,6 +31,8 @@ import org.encog.ml.genetic.innovation.BasicInnovationList;
 import org.encog.ml.genetic.innovation.Innovation;
 import org.encog.ml.genetic.population.Population;
 import org.encog.neural.neat.NEATNeuronType;
+import org.encog.neural.neat.NEATPopulation;
+import org.encog.neural.networks.training.TrainingError;
 
 /**
  * Implements a NEAT innovation list.
@@ -151,7 +153,7 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 			}
 		}
 
-		return result;
+		throw new TrainingError("Failed to find innovation for neuron: " + neuronID );
 	}
 
 	/**
@@ -207,5 +209,9 @@ public class NEATInnovationList extends BasicInnovationList implements Serializa
 		add(newInnovation);
 
 		return (this.nextNeuronID - 1); // ??????? should it be innov?
+	}
+
+	public void setPopulation(NEATPopulation population) {
+		this.population = population;		
 	}
 }

@@ -562,6 +562,9 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				final NEATNeuron fromNeuron = neurons.get(element);
 
 				element = getElementPos(linkGene.getToNeuronID());
+				if( element==-1 ) {
+					System.out.println("test");
+				}
 				final NEATNeuron toNeuron = neurons.get(element);
 
 				final NEATLink link = new NEATLink(linkGene.getWeight(),

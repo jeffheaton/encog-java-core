@@ -225,4 +225,14 @@ public class NEATNeuronGene extends BasicGene implements Serializable {
 	public void setSplitY(final double splitY) {
 		this.splitY = splitY;
 	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[NEATNeuronGene: id=");
+		result.append(this.getId());
+		result.append(", type=");
+		result.append(this.getNeuronType());
+		result.append("]");
+		return result.toString();
+	}
 }
