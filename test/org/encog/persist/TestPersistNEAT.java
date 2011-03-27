@@ -23,6 +23,7 @@
  */
 package org.encog.persist;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -123,17 +124,20 @@ public class TestPersistNEAT extends TestCase {
 	{
 		NEATNetwork network = create();
 
-		//validate(network2);
+		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
+		NEATNetwork network2 = (NEATNetwork)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		
+		validate(network2);
 	}
 	
 	public void testPersistSerial() throws IOException, ClassNotFoundException
 	{
 		NEATNetwork network = create();
 		
-	//	SerializeObject.save(SERIAL_FILENAME, network);
-//		NEATNetwork network2 = (NEATNetwork)SerializeObject.load(SERIAL_FILENAME);
+		SerializeObject.save(SERIAL_FILENAME, network);
+		NEATNetwork network2 = (NEATNetwork)SerializeObject.load(SERIAL_FILENAME);
 				
-		//validate(network2);
+		validate(network2);
 	}
 		
 	private void validate(NEATNetwork network)
