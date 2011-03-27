@@ -23,7 +23,7 @@
  */
 package org.encog.neural.neat;
 
-import org.encog.persist.map.PersistConst;
+import java.io.Serializable;
 
 /**
  * Implements a link between two NEAT neurons.
@@ -35,16 +35,13 @@ import org.encog.persist.map.PersistConst;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATLink  {
+public class NEATLink implements Serializable {
 
-	public static final String FROM_NEURON = "fromNeuron";
-	public static final String TO_NEURON = "toNeuron";
-	
 	/**
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -4117045705080951946L;
-	public static final String INNOVATION = "in";
+
 
 	/**
 	 * The source neuron.
@@ -120,10 +117,18 @@ public class NEATLink  {
 	public boolean isRecurrent() {
 		return this.recurrent;
 	}
-	
-	
-	public boolean supportsMapPersistence()
-	{
+
+	public boolean supportsMapPersistence() {
 		return true;
+	}
+	
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[NEATLink: fromNeuron=");
+		result.append(this.getFromNeuron().getNeuronID());
+		result.append(", toNeuron=");
+		result.append(this.getToNeuron().getNeuronID());
+		result.append("]");
+		return result.toString();
 	}
 }

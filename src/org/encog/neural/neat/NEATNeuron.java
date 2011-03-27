@@ -23,6 +23,7 @@
  */
 package org.encog.neural.neat;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +41,7 @@ import org.encog.persist.map.PersistConst;
  * http://www.cs.ucf.edu/~kstanley/
  *
  */
-public class NEATNeuron {
+public class NEATNeuron implements Serializable {
 
 	public static final String NEURON_ID = "neuronID";
 	public static final String ACTIVATION_RESPONSE = "aresp";
@@ -299,5 +300,7 @@ public class NEATNeuron {
 				return null;			
 		}
 	}
+	
+	
 
 }

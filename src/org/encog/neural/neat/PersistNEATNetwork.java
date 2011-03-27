@@ -100,7 +100,6 @@ public class PersistNEATNetwork implements EncogPersistor {
 		
 		out.addSubSection("NEURONS");
 		for (NEATNeuron neatNeuron : neat.getNeurons() ) {
-			out.addColumn("n");
 			out.addColumn(neatNeuron.getNeuronID());
 			out.addColumn(PersistNEATPopulation.neuronTypeToString(neatNeuron.getNeuronType()));
 			out.addColumn(neatNeuron.getActivationResponse());
@@ -111,11 +110,7 @@ public class PersistNEATNetwork implements EncogPersistor {
 		
 		out.addSubSection("LINKS");
 		for (NEATNeuron neatNeuron : neat.getNeurons() ) {
-			
-			for( NEATLink link: neatNeuron.getInboundLinks() ) {
-				writeLink(out,link);
-			}
-			
+						
 			for(NEATLink link: neatNeuron.getOutputboundLinks() ) {
 				writeLink(out,link);
 			}			

@@ -287,7 +287,7 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 	}
 	
 	public void setOutputCount(int i) {
-		this.inputCount = i;		
+		this.outputCount = i;		
 	}
 
 	public void setNetworkDepth(int i) {
