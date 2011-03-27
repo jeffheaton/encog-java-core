@@ -31,6 +31,7 @@ import java.util.Map;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.ml.BasicML;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
@@ -62,7 +63,7 @@ import org.encog.persist.map.PersistConst;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATNetwork implements MLContext, MLRegression {
+public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 
 	/**
 	 * The serial ID.
@@ -345,6 +346,11 @@ public class NEATNetwork implements MLContext, MLRegression {
 	public boolean supportsMapPersistence()
 	{
 		return true;
+	}
+
+	@Override
+	public void updateProperties() {
+		
 	}
 	
 }
