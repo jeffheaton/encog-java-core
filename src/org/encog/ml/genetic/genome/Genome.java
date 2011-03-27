@@ -26,6 +26,7 @@ package org.encog.ml.genetic.genome;
 import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
+import org.encog.ml.genetic.population.Population;
 
 /**
  * A genome is the basic blueprint for creating an organism in Encog. A genome
@@ -124,4 +125,15 @@ public interface Genome extends Comparable<Genome> {
 	 * @param ga The GA.
 	 */
 	void setGeneticAlgorithm(GeneticAlgorithm ga);
+	
+	/**
+	 * @return The population that this genome belongs to.
+	 */
+	Population getPopulation();
+	
+	/**
+	 * Set the population that this genome belongs to.
+	 * @param population The population that this genome belongs to.
+	 */
+	void setPopulation(Population population);
 }

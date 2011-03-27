@@ -145,7 +145,7 @@ public class BasicPopulation implements Population {
 	 */
 	public void add(final Genome genome) {
 		this.genomes.add(genome);
-
+		genome.setPopulation(this);
 	}
 
 	/**

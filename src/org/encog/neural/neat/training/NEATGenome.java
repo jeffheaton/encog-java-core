@@ -542,6 +542,8 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 	 */
 	public void decode() {
 
+		NEATPopulation pop = (NEATPopulation)this.getPopulation();
+		
 		final List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
 
 		for (final Gene gene : getNeurons().getGenes()) {
@@ -579,14 +581,12 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 		NEATNetwork network = new NEATNetwork(inputCount, 
 				outputCount,
 				neurons,
-				((NEATPopulation)((NEATTraining) getGeneticAlgorithm()).getPopulation()).getNeatActivationFunction(), 
+				pop.getNeatActivationFunction(), 
 				0);
 		
 		
-		network.setSnapshot(((NEATTraining) getGeneticAlgorithm())
-				.isSnapshot());
-		network.setActivationFunction(((NEATPopulation)((NEATTraining) getGeneticAlgorithm()).getPopulation()).getOutputActivationFunction());
-		
+		network.setSnapshot(pop.isSnapshot());
+		network.setActivationFunction(pop.getOutputActivationFunction());		
 		setOrganism(network);		
 	}
 

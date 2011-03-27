@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.GeneticError;
+import org.encog.ml.genetic.population.Population;
 
 /**
  * A basic abstract genome. Provides base functionality.
@@ -73,6 +74,8 @@ public abstract class BasicGenome implements Genome {
 	 * The score of this genome.
 	 */
 	private double score = 0;
+	
+	private Population population;
 
 	/**
 	 * @return The number of genes in this genome.
@@ -270,6 +273,21 @@ public abstract class BasicGenome implements Genome {
 		builder.append(getScore());
 		return builder.toString();
 	}
+
+	/**
+	 * @return the population
+	 */
+	public Population getPopulation() {
+		return population;
+	}
+
+	/**
+	 * @param population the population to set
+	 */
+	public void setPopulation(Population population) {
+		this.population = population;
+	}
+	
 	
 
 }

@@ -100,7 +100,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 								.parse(cols.get(4)));
 						lastGenome.setNetworkDepth(Integer.parseInt(cols.get(5)));
 						lastGenome.setScore(CSVFormat.EG_FORMAT.parse(cols.get(6)));
-						result.getGenomes().add(lastGenome);
+						result.add(lastGenome);
 						genomeMap.put((int) lastGenome.getGenomeID(),
 								lastGenome);
 					} else if (cols.get(0).equalsIgnoreCase("n") ) {
