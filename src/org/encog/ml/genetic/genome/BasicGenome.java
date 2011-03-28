@@ -23,6 +23,7 @@
  */
 package org.encog.ml.genetic.genome;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +34,7 @@ import org.encog.ml.genetic.population.Population;
 /**
  * A basic abstract genome. Provides base functionality.
  */
-public abstract class BasicGenome implements Genome {
+public abstract class BasicGenome implements Genome, Serializable {
 
 	public static final String PROPERTY_ADJUSTED_SCORE = "ascore";
 	public static final String PROPERTY_SCORE = "score";

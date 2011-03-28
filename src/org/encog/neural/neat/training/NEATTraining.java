@@ -457,6 +457,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 				.assignGenomeID(), babyNeurons, babyGenes, mom.getInputCount(),
 				mom.getOutputCount());
 		babyGenome.setGeneticAlgorithm(this);
+		babyGenome.setPopulation(getPopulation());
 		
 		return babyGenome;
 	}
