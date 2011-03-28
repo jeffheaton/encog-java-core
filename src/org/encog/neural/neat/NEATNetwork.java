@@ -30,10 +30,13 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLContext;
+import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.util.simple.EncogUtility;
 
 /**
  * Implements a NEAT network as a synapse between two layers. In Encog, a NEAT
@@ -59,7 +62,7 @@ import org.encog.neural.data.basic.BasicNeuralData;
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATNetwork extends BasicML implements MLContext, MLRegression {
+public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLError {
 
 	/**
 	 * The serial ID.
@@ -316,8 +319,14 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 		this.outputActivationFunction = outputActivationFunction;
 	}
 
-	
-	
-	
-	
+	/**
+	 * Calculate the error for this neural network. 
+	 * 
+	 * @param data
+	 *            The training set.
+	 * @return The error percentage.
+	 */
+	public double calculateError(final NeuralDataSet data) {
+		return EncogUtility.calculateRegressionError(this,data);
+	}	
 }

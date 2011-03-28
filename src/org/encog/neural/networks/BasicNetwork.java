@@ -23,11 +23,8 @@
  */
 package org.encog.neural.networks;
 
-import java.util.List;
-
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -45,7 +42,6 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
-import org.encog.persist.PersistConst;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
@@ -131,8 +127,7 @@ public class BasicNetwork extends BasicML implements
 	}
 
 	/**
-	 * Calculate the error for this neural network. The error is calculated
-	 * using root-mean-square(RMS).
+	 * Calculate the error for this neural network. 
 	 * 
 	 * @param data
 	 *            The training set.
