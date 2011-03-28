@@ -34,6 +34,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationStep;
 import org.encog.neural.art.ART1;
 import org.encog.neural.neat.NEATLink;
@@ -51,7 +52,8 @@ public class TestPersistNEAT extends TestCase {
 	private NEATNetwork create()
 	{
 		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
-		ActivationFunction af = new ActivationStep();
+		ActivationFunction afSigmoid = new ActivationSigmoid();
+		ActivationFunction afStep = new ActivationStep();
 		
 		// create the neurons
 		NEATNeuron input1 = new NEATNeuron(
@@ -106,7 +108,8 @@ public class TestPersistNEAT extends TestCase {
 		NEATNetwork result = new NEATNetwork(2, 
 				1,
 				neurons,
-				af, 
+				afSigmoid,
+				afStep,
 				3);
 				
 		return result;
@@ -145,10 +148,11 @@ public class TestPersistNEAT extends TestCase {
 		Assert.assertEquals(1, network.getOutputCount());
 		Assert.assertEquals(2, network.getInputCount());
 		Assert.assertEquals(3, network.getNetworkDepth());
-		Assert.assertTrue(network.getActivationFunction() instanceof ActivationStep);
-		Assert.assertEquals(0.0, ((ActivationStep)network.getActivationFunction()).getCenter() );
-		Assert.assertEquals(1.0, ((ActivationStep)network.getActivationFunction()).getHigh() );
-		Assert.assertEquals(0.0, ((ActivationStep)network.getActivationFunction()).getLow() );
+		Assert.assertTrue(network.getActivationFunction() instanceof ActivationSigmoid);
+		Assert.assertTrue(network.getOutputActivationFunction() instanceof ActivationStep);
+		Assert.assertEquals(0.0, ((ActivationStep)network.getOutputActivationFunction()).getCenter() );
+		Assert.assertEquals(1.0, ((ActivationStep)network.getOutputActivationFunction()).getHigh() );
+		Assert.assertEquals(0.0, ((ActivationStep)network.getOutputActivationFunction()).getLow() );
 		Assert.assertEquals(5,network.getNeurons().size());
 		
 		Map<NEATNeuronType,NEATNeuron> neurons = new HashMap<NEATNeuronType,NEATNeuron>();
