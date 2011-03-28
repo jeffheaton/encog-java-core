@@ -25,8 +25,6 @@ package org.encog.bot.rss;
 
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -35,12 +33,6 @@ import org.w3c.dom.NodeList;
  * class.
  */
 public class RSSItem {
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The title of this item.

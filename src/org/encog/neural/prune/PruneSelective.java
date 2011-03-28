@@ -30,8 +30,6 @@ import org.encog.mathutil.randomize.Randomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Prune a neural network selectively. This class allows you to either add or
@@ -50,12 +48,6 @@ public class PruneSelective {
 	 * The network to prune.
 	 */
 	private final BasicNetwork network;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct an object prune the neural network.

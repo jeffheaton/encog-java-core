@@ -27,8 +27,6 @@ import java.awt.Image;
 import java.awt.image.PixelGrabber;
 
 import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Downsample an image using a simple intensity scale. Color information is
@@ -37,11 +35,6 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  */
 public class SimpleIntensityDownsample extends RGBDownsample {
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Called to downsample the image and store it in the down sample component.
@@ -68,9 +61,6 @@ public class SimpleIntensityDownsample extends RGBDownsample {
 		try {
 			grabber.grabPixels();
 		} catch (final InterruptedException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
 			throw new EncogError(e);
 		}
 

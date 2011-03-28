@@ -29,8 +29,6 @@ import org.encog.Encog;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.mathutil.matrices.decomposition.QRDecomposition;
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class implements a mathematical matrix. Matrix math is very important to
@@ -43,12 +41,6 @@ public class Matrix implements Cloneable, Serializable {
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -7977897210426471675L;
-
-	/**
-	 * The logging object.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(Matrix.class);
 
 
 	/**
@@ -197,21 +189,13 @@ public class Matrix implements Cloneable, Serializable {
 	public boolean equals(final Matrix matrix, final int precision) {
 
 		if (precision < 0) {
-			final String str = "Precision can't be a negative number.";
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+			throw new MatrixError("Precision can't be a negative number.");
 		}
 
 		final double test = Math.pow(10.0, precision);
 		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
-			final String str = "Precision of " + precision
-					+ " decimal places is not supported.";
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+			throw new MatrixError("Precision of " + precision
+					+ " decimal places is not supported.");
 		}
 
 		final int actualPrecision = (int) Math.pow(Encog.DEFAULT_PRECISION,
@@ -303,12 +287,8 @@ public class Matrix implements Cloneable, Serializable {
 	 */
 	public Matrix getCol(final int col) {
 		if (col > getCols()) {
-			final String str = "Can't get column #" + col
-					+ " because it does not exist.";
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+			throw new MatrixError("Can't get column #" + col
+					+ " because it does not exist.");
 		}
 
 		final double[][] newMatrix = new double[getRows()][1];
@@ -451,12 +431,8 @@ public class Matrix implements Cloneable, Serializable {
 	 */
 	public Matrix getRow(final int row) {
 		if (row > getRows()) {
-			final String str = "Can't get row #" + row
-					+ " because it does not exist.";
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+			throw new MatrixError("Can't get row #" + row
+					+ " because it does not exist.");
 		}
 
 		final double[][] newMatrix = new double[1][getCols()];
@@ -794,18 +770,12 @@ public class Matrix implements Cloneable, Serializable {
 		if ((row >= getRows()) || (row < 0)) {
 			final String str = "The row:" + row + " is out of range:"
 					+ getRows();
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
 			throw new MatrixError(str);
 		}
 
 		if ((col >= getCols()) || (col < 0)) {
 			final String str = "The col:" + col + " is out of range:"
 					+ getCols();
-			if (Matrix.LOGGER.isErrorEnabled()) {
-				Matrix.LOGGER.error(str);
-			}
 			throw new MatrixError(str);
 		}
 	}

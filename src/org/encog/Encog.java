@@ -29,8 +29,6 @@ import java.util.Map;
 import org.encog.engine.EncogEngine;
 import org.encog.engine.concurrency.EngineConcurrency;
 import org.encog.engine.opencl.EncogCL;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Main Encog class, does little more than provide version information. Also
@@ -89,12 +87,6 @@ public final class Encog {
 		}
 		return Encog.instance;
 	}
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Get the properties as a Map.

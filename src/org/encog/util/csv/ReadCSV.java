@@ -39,8 +39,6 @@ import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.util.SimpleParser;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Read and parse CSV format files.
@@ -84,11 +82,6 @@ public class ReadCSV {
 	 * The CSV format to use.
 	 */
 	private CSVFormat format;
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The buffered reader to read the file.
@@ -165,9 +158,6 @@ public class ReadCSV {
 			this.reader = new BufferedReader(new FileReader(filename));
 			begin(headers, format);
 		} catch (final IOException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
 			throw new EncogError(e);
 		}
 	}
@@ -189,9 +179,6 @@ public class ReadCSV {
 			this.reader = new BufferedReader(new FileReader(filename));
 			begin(headers, format);
 		} catch (final IOException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
 			throw new EncogError(e);
 		}
 	}
@@ -221,10 +208,6 @@ public class ReadCSV {
 
 			this.data = null;
 		} catch (final IOException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
-
 			throw new EncogError(e);
 		}
 	}
@@ -237,10 +220,6 @@ public class ReadCSV {
 		try {
 			this.reader.close();
 		} catch (final IOException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
-
 			throw new EncogError(e);
 		}
 	}
@@ -298,10 +277,6 @@ public class ReadCSV {
 			final String str = get(column);
 			return this.sdf.parse(str);
 		} catch (final ParseException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
-
 			throw new EncogError(e);
 		}
 
@@ -387,10 +362,6 @@ public class ReadCSV {
 
 			return true;
 		} catch (final IOException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
-
 			throw new EncogError(e);
 		}
 

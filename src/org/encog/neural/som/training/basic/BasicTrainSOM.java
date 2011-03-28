@@ -35,8 +35,7 @@ import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.basic.neighborhood.NeighborhoodFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This class implements competitive training, which would be used in a
@@ -141,11 +140,6 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * This is the current autodecay radius.
 	 */
 	private double autoDecayRadius;
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The current radius.
@@ -364,9 +358,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 */
 	public void iteration() {
 
-		if (this.logger.isInfoEnabled()) {
-			this.logger.info("Performing Competitive Training iteration.");
-		}
+		EncogLogging.log(EncogLogging.LEVEL_INFO,"Performing SOM Training iteration.");
 
 		preIteration();
 

@@ -40,8 +40,7 @@ import org.encog.bot.dataunit.TagDataUnit;
 import org.encog.bot.dataunit.TextDataUnit;
 import org.encog.parse.tags.Tag;
 import org.encog.parse.tags.read.ReadHTML;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Called to actually load a web page. This will read the HTML on a web page and
@@ -71,11 +70,6 @@ public class LoadWebPage {
 	 * The last hierarchy element that was processed.
 	 */
 	private DocumentRange lastHierarchyElement;
-
-	/**
-	 * The logger.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a web page loader with the specified base URL.
@@ -212,9 +206,7 @@ public class LoadWebPage {
 			bis.close();
 			return result;
 		} catch (final IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
+			EncogLogging.log(e);
 			throw new BrowseError(e);
 		}
 	}

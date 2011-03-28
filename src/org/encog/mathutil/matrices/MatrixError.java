@@ -24,8 +24,7 @@
 package org.encog.mathutil.matrices;
 
 import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Used by the matrix classes to indicate an error.
@@ -38,18 +37,12 @@ public class MatrixError extends EncogError {
 	private static final long serialVersionUID = -8961386981267748942L;
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Construct this exception with a message.
 	 * 
 	 * @param message
 	 *            The message for this exception.
 	 */
-	public MatrixError(final String message) {
+	public MatrixError(final String message) {		
 		super(message);
 	}
 

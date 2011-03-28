@@ -33,8 +33,6 @@ import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.Species;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implements a genetic algorithm. This is an abstract class. Other classes are
@@ -65,12 +63,6 @@ public class GeneticAlgorithm {
 	 * Is this the first iteration.
 	 */
 	private boolean first = true;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Percent of the population that the mating population chooses partners.

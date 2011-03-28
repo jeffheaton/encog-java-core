@@ -28,8 +28,7 @@ import org.encog.ml.MLResettable;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.TrainingError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * The reset strategy will reset the weights if the neural network fails to fall
@@ -41,11 +40,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class ResetStrategy implements Strategy {
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The required minimum error.
@@ -113,9 +107,7 @@ public class ResetStrategy implements Strategy {
 		if (this.train.getError() > this.required) {
 			this.badCycleCount++;
 			if (this.badCycleCount > this.cycles) {
-				if (this.logger.isDebugEnabled()) {
-					this.logger.debug("Failed to imrove network, resetting.");
-				}
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Failed to imrove network, resetting.");
 				this.method.reset();
 				this.badCycleCount = 0;
 			}

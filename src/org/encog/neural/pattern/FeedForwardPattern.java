@@ -31,8 +31,6 @@ import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Used to create feedforward neural networks. A feedforward network has an
@@ -68,11 +66,6 @@ public class FeedForwardPattern implements NeuralNetworkPattern {
 	 */
 	private final List<Integer> hidden = new ArrayList<Integer>();
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Add a hidden layer, with the specified number of neurons.

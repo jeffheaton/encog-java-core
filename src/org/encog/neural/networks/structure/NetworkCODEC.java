@@ -29,8 +29,6 @@ import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class will extract the "long term memory" of a neural network, that is
@@ -43,12 +41,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public final class NetworkCODEC {
-
-	/**
-	 * The logging object.
-	 */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(NetworkCODEC.class);
 
 	private final static String ERROR = "This machine learning method cannot be encoded:";
 	
@@ -92,12 +84,8 @@ public final class NetworkCODEC {
 
 		final double test = Math.pow(10.0, precision);
 		if (Double.isInfinite(test) || (test > Long.MAX_VALUE)) {
-			final String str = "Precision of " + precision
-					+ " decimal places is not supported.";
-			if (NetworkCODEC.LOGGER.isErrorEnabled()) {
-				NetworkCODEC.LOGGER.error(str);
-			}
-			throw new NeuralNetworkError(str);
+			throw new NeuralNetworkError( "Precision of " + precision
+					+ " decimal places is not supported.");
 		}
 
 		for(int i=0;i<array1.length;i++) {

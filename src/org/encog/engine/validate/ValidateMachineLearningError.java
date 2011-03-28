@@ -24,8 +24,6 @@
 package org.encog.engine.validate;
 
 import org.encog.engine.EncogEngineError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Error from validation.
@@ -36,12 +34,6 @@ public class ValidateMachineLearningError extends EncogEngineError {
 	 * 
 	 */
 	private static final long serialVersionUID = -5909341149180956178L;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a message exception.

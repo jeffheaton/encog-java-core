@@ -23,9 +23,6 @@
  */
 package org.encog.mathutil.randomize;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A randomizer that distorts what is already present in the neural network.
  * 
@@ -38,12 +35,6 @@ public class Distort extends BasicRandomizer {
 	 * The factor to use to distort the numbers.
 	 */
 	private final double factor;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a distort randomizer for the specified factor.

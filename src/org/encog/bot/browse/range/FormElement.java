@@ -24,8 +24,6 @@
 package org.encog.bot.browse.range;
 
 import org.encog.bot.browse.WebPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A document range that represents one individual component to a form.
@@ -49,12 +47,6 @@ public abstract class FormElement extends DocumentRange {
 	 * The owner of this form element.
 	 */
 	private Form owner;
-
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a form element from the specified web page.

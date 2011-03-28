@@ -29,15 +29,8 @@ import org.encog.ml.MLResettable;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ART1 extends ART implements MLResettable, MLClassification {
-	/**
-	 * The logging object.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(ART1.class);
 
 	/**
 	 * last winner in F2 layer.
@@ -193,12 +186,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 */
 	public NeuralData compute(final NeuralData input) {
 		if (!(input instanceof BiPolarNeuralData)) {
-			final String str = 
-				"Input to ART1 logic network must be BiPolarNeuralData.";
-			if (ART1.LOGGER.isErrorEnabled()) {
-				ART1.LOGGER.error(str);
-			}
-			throw new NeuralNetworkError(str);
+			throw new NeuralNetworkError("Input to ART1 logic network must be BiPolarNeuralData.");
 		}
 
 		final BiPolarNeuralData output = new BiPolarNeuralData(f1Count);

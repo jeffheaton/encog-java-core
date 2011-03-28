@@ -24,8 +24,6 @@
 package org.encog.neural.som.training.basic.neighborhood;
 
 import org.encog.engine.network.rbf.RadialBasisFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A neighborhood function based on an RBF function.
@@ -33,12 +31,6 @@ import org.slf4j.LoggerFactory;
  * @author jheaton
  */
 public class NeighborhoodRBF1D implements NeighborhoodFunction {
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The radial basis function (RBF) to use to calculate the training falloff

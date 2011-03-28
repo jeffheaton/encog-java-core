@@ -25,8 +25,6 @@ package org.encog.bot.browse.range;
 
 import org.encog.bot.browse.Address;
 import org.encog.bot.browse.WebPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A document range that represents a hyperlink, and any embedded tags and text.
@@ -40,12 +38,6 @@ public class Link extends DocumentRange {
 	 * The target address for this link.
 	 */
 	private Address target;
-
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a link from the specified web page.

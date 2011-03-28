@@ -28,8 +28,6 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class SVMPattern implements NeuralNetworkPattern {
 	/**
@@ -48,22 +46,13 @@ public class SVMPattern implements NeuralNetworkPattern {
 	private SVMType svmType = SVMType.EpsilonSupportVectorRegression;
 	
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Unused, a BAM has no hidden layers.
 	 * 
 	 * @param count
 	 *            Not used.
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = "A SVM network has no hidden layers.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
+		throw new PatternError( "A SVM network has no hidden layers.");
 	}
 
 	/**
@@ -93,12 +82,7 @@ public class SVMPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "A SVM network can't specify a custom activation function.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError( "A SVM network can't specify a custom activation function.");
 	}
 
 	

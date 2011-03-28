@@ -28,8 +28,6 @@ import java.awt.image.ImageObserver;
 import java.util.concurrent.Semaphore;
 
 import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Simple class to determine the size of an image.
@@ -54,11 +52,6 @@ public class ImageSize implements ImageObserver {
 	private final Semaphore wait;
 
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Determine the size of an image.
 	 * 
 	 * @param image
@@ -72,9 +65,6 @@ public class ImageSize implements ImageObserver {
 			try {
 				this.wait.acquire();
 			} catch (final InterruptedException e) {
-				if (this.logger.isErrorEnabled()) {
-					this.logger.error("Exception", e);
-				}
 				throw new EncogError(e);
 			}
 		}

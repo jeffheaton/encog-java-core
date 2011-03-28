@@ -25,8 +25,6 @@ package org.encog.mathutil.randomize;
 
 import org.encog.mathutil.LinearCongruentialGenerator;
 import org.encog.neural.networks.BasicNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A randomizer that takes a seed and will always produce consistent results.
@@ -52,12 +50,6 @@ public class ConsistentRandomizer extends BasicRandomizer {
 	 * The seed.
 	 */
 	private final int seed;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a range randomizer.

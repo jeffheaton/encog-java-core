@@ -27,8 +27,6 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to generate an Elman style recurrent neural network. This
@@ -67,12 +65,6 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	private ActivationFunction activation;
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Create an object to generate Elman neural networks.
 	 */
 	public ElmanPattern() {
@@ -89,13 +81,9 @@ public class ElmanPattern implements NeuralNetworkPattern {
 	 */
 	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			final String str = "An Elman neural network should have only one hidden layer.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
-			}
-			throw new PatternError(str);
+			throw new PatternError( "An Elman neural network should have only one hidden layer.");
 		}
-
+		
 		this.hiddenNeurons = count;
 
 	}

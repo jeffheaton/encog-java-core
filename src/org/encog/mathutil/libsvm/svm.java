@@ -22,12 +22,15 @@
  * http://www.heatonresearch.com/copyright
  */
 package org.encog.mathutil.libsvm;
-import java.io.*;
-import java.util.*;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.StringTokenizer;
 
-import org.encog.neural.networks.BasicNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This class was taken from the libsvm package.  We have made some
@@ -1348,14 +1351,10 @@ public class svm {
 	public static final int LIBSVM_VERSION=291; 
 
 	private static svm_print_interface svm_print_stdout = new svm_print_interface()
-	{
-		private final Logger LOGGER = LoggerFactory
-		.getLogger(svm.class);
-		
+	{		
 		public void print(String s)
 		{
-			if( LOGGER.isInfoEnabled())
-			LOGGER.info(s);
+			EncogLogging.log(EncogLogging.LEVEL_INFO,s);
 		}
 	};
 

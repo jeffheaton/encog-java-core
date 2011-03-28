@@ -29,8 +29,6 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.network.flat.FlatLayer;
 import org.encog.neural.networks.BasicNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Basic functionality that most of the neural layers require. The basic layer
@@ -76,12 +74,6 @@ public class BasicLayer extends FlatLayer implements Layer, Serializable {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -5682296868750703898L;
-	
-	/**
-	 * The logging object.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(BasicLayer.class);
 	
 	private double biasActivation = 1.0;
 

@@ -27,8 +27,6 @@ import java.io.Serializable;
 
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A basic implementation of the NeuralDataPair interface. This implementation
@@ -59,13 +57,6 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * The training input to the neural network.
 	 */
 	private final NeuralData input;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final transient Logger logger = LoggerFactory.getLogger(this
-			.getClass());
 
 	/**
 	 * Construct the object with only input. If this constructor is used, then

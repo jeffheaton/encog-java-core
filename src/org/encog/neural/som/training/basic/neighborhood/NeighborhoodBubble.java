@@ -23,9 +23,6 @@
  */
 package org.encog.neural.som.training.basic.neighborhood;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A neighborhood function that uses a simple bubble. A radius is defined, and
  * any neuron that is plus or minus that width from the winning neuron will be
@@ -40,12 +37,6 @@ public class NeighborhoodBubble implements NeighborhoodFunction {
 	 * The radius of the bubble.
 	 */
 	private double radius;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Create a bubble neighborhood function that will return 1.0 (full update)

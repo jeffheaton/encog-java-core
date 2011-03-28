@@ -26,8 +26,6 @@ package org.encog.neural.pattern;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.neural.bam.BAM;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Construct a Bidirectional Access Memory (BAM) neural network. This neural
@@ -51,22 +49,13 @@ public class BAMPattern implements NeuralNetworkPattern {
 	private int f2Neurons;
 
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Unused, a BAM has no hidden layers.
 	 * 
 	 * @param count
 	 *            Not used.
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = "A BAM network has no hidden layers.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
+		throw new PatternError("A BAM network has no hidden layers.");
 	}
 
 	/**
@@ -93,12 +82,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "A BAM network can't specify a custom activation function.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError("A BAM network can't specify a custom activation function.");
 	}
 
 	/**
@@ -132,12 +116,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 *            The number of input neurons.
 	 */
 	public void setInputNeurons(final int count) {
-		final String str = "A BAM network has no input layer, consider setting F1 layer.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError( "A BAM network has no input layer, consider setting F1 layer.");
 	}
 
 	/**
@@ -147,12 +126,7 @@ public class BAMPattern implements NeuralNetworkPattern {
 	 *            The output neuron count.
 	 */
 	public void setOutputNeurons(final int count) {
-		final String str = "A BAM network has no output layer, consider setting F2 layer.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError("A BAM network has no output layer, consider setting F2 layer.");
 	}
 
 }

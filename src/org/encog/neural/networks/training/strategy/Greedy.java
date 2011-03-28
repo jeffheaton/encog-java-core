@@ -29,8 +29,7 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.TrainingError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * A simple greedy strategy. If the last iteration did not improve training,
@@ -65,11 +64,6 @@ public class Greedy implements Strategy {
 	 */
 	private boolean ready;
 
-	/**
-	 * The logging object.
-	 */
-	private final transient Logger logger = LoggerFactory.getLogger(this.getClass());
-
 	private MLEncodable method;
 	
 	/**
@@ -94,10 +88,7 @@ public class Greedy implements Strategy {
 	public void postIteration() {
 		if (this.ready) {
 			if (this.train.getError() > this.lastError) {
-				if (this.logger.isDebugEnabled()) {
-					this.logger
-							.debug("Greedy strategy dropped last iteration.");
-				}
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Greedy strategy dropped last iteration.");				
 				this.train.setError(this.lastError);
 				this.method.decodeFromArray(this.lastNetwork);
 			}

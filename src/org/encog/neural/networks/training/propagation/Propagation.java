@@ -33,8 +33,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogValidate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Implements basic functionality that is needed by each of the propagation
@@ -61,11 +60,6 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	private TrainFlatNetwork flatTraining;
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a propagation object.
@@ -158,10 +152,8 @@ public abstract class Propagation extends BasicTraining {
 
 			postIteration();
 
-			if (this.logger.isInfoEnabled()) {
-				this.logger.info("Training iteration done, error: "
-						+ getError());
-			}
+			EncogLogging.log(EncogLogging.LEVEL_INFO,"Training iteration done, error: "
+						+ getError());			
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			EncogValidate.validateNetworkForTraining(this.network,
 					getTraining());
@@ -188,10 +180,9 @@ public abstract class Propagation extends BasicTraining {
 
 			postIteration();
 
-			if (this.logger.isInfoEnabled()) {
-				this.logger.info("Training iterations done, error: "
+			EncogLogging.log(EncogLogging.LEVEL_INFO,"Training iterations done, error: "
 						+ getError());
-			}
+			
 		} catch (final ArrayIndexOutOfBoundsException ex) {
 			EncogValidate.validateNetworkForTraining(this.network,
 					getTraining());

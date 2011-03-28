@@ -29,8 +29,6 @@ import java.util.List;
 import org.encog.bot.browse.range.DocumentRange;
 import org.encog.bot.browse.range.Link;
 import org.encog.bot.dataunit.DataUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Holds a web page that was loaded by the Browse class. Web pages are made up
@@ -57,12 +55,6 @@ public class WebPage {
 	 * The title of this HTML page.
 	 */
 	private DocumentRange title;
-
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Add to the content collection.

@@ -27,8 +27,7 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Attempt to automatically set the learning rate in a learning method that
@@ -75,11 +74,6 @@ public class SmartLearningRate implements Strategy {
 	private boolean ready;
 
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Initialize this strategy.
 	 * 
 	 * @param train
@@ -91,10 +85,8 @@ public class SmartLearningRate implements Strategy {
 		this.setter = (LearningRate) train;
 		this.trainingSize = train.getTraining().getRecordCount();
 		this.currentLearningRate = 1.0 / this.trainingSize;
-		if (this.logger.isInfoEnabled()) {
-			this.logger.info("Starting learning rate: {}",
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Starting learning rate: " + 
 					this.currentLearningRate);
-		}
 		this.setter.setLearningRate(this.currentLearningRate);
 	}
 
@@ -106,10 +98,8 @@ public class SmartLearningRate implements Strategy {
 			if (this.train.getError() > this.lastError) {
 				this.currentLearningRate *= SmartLearningRate.LEARNING_DECAY;
 				this.setter.setLearningRate(this.currentLearningRate);
-				if (this.logger.isInfoEnabled()) {
-					this.logger.info("Adjusting learning rate to {}",
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Adjusting learning rate to {}" +
 							this.currentLearningRate);
-				}
 			}
 		} else {
 			this.ready = true;

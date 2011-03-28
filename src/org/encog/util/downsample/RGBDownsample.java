@@ -28,8 +28,6 @@ import java.awt.image.PixelGrabber;
 
 import org.encog.EncogError;
 import org.encog.util.ImageSize;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Downsample an image keeping the RGB colors.
@@ -97,11 +95,6 @@ public class RGBDownsample implements Downsample {
 	private int currentGreen;
 
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Called to downsample the image and store it in the down sample component.
 	 * 
 	 * @param image
@@ -125,9 +118,6 @@ public class RGBDownsample implements Downsample {
 		try {
 			grabber.grabPixels();
 		} catch (final InterruptedException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
 			throw new EncogError(e);
 		}
 

@@ -29,8 +29,6 @@ import java.util.List;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An abstract class that implements basic training for most training
@@ -63,12 +61,6 @@ public abstract class BasicTraining implements Train {
 	private int iteration;
 	
 	private TrainingImplementationType implementationType;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	public BasicTraining(TrainingImplementationType implementationType) {
 		this.implementationType = implementationType;

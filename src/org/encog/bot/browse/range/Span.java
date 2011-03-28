@@ -24,8 +24,6 @@
 package org.encog.bot.browse.range;
 
 import org.encog.bot.browse.WebPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A document range that specifies a span tag, and any embedded tags.
@@ -34,12 +32,6 @@ import org.slf4j.LoggerFactory;
  *
  */
 public class Span extends DocumentRange {
-
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a span range from the specified web page.

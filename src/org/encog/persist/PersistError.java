@@ -24,8 +24,6 @@
 package org.encog.persist;
 
 import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * General error class for Encog persistence.
@@ -38,11 +36,7 @@ public class PersistError extends EncogError {
 	 * 
 	 */
 	private static final long serialVersionUID = 7380539044552943978L;
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
 	/**
 	 * Construct a message exception.

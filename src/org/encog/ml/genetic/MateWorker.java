@@ -25,8 +25,6 @@ package org.encog.ml.genetic;
 
 import org.encog.engine.concurrency.EngineTask;
 import org.encog.ml.genetic.genome.Genome;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is used in conjunction with a thread pool. This allows the genetic
@@ -48,12 +46,6 @@ public class MateWorker implements EngineTask {
 	 * The father.
 	 */
 	private final Genome father;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The mother.

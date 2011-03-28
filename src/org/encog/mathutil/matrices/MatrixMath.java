@@ -23,21 +23,12 @@
  */
 package org.encog.mathutil.matrices;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * This class can perform many different mathematical operations on matrixes.
  * The matrixes passed in will not be modified, rather a new matrix, with the
  * operation performed, will be returned.
  */
 public final class MatrixMath {
-
-	/**
-	 * The logging object.
-	 */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(MatrixMath.class);
 
 	/**
 	 * Add two matrixes.
@@ -50,29 +41,19 @@ public final class MatrixMath {
 	 */
 	public static Matrix add(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			final String str = 
+			throw new MatrixError( 
 				"To add the matrices they must have the same number of "
 					+ "rows and columns.  Matrix a has "
 					+ a.getRows()
-					+ " rows and matrix b has " + b.getRows() + " rows.";
-
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-
-			throw new MatrixError(str);
+					+ " rows and matrix b has " + b.getRows() + " rows.");
 		}
 
 		if (a.getCols() != b.getCols()) {
-			final String str = 
+			throw new MatrixError( 
 				"To add the matrices they must have the same number "
 					+ "of rows and columns.  Matrix a has "
 					+ a.getCols()
-					+ " cols and matrix b has " + b.getCols() + " cols.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+					+ " cols and matrix b has " + b.getCols() + " cols.");
 		}
 
 		final double[][] aa = a.getData();
@@ -121,13 +102,9 @@ public final class MatrixMath {
 	 */
 	public static Matrix deleteCol(final Matrix matrix, final int deleted) {
 		if (deleted >= matrix.getCols()) {
-			final String str = "Can't delete column " + deleted
+			throw new MatrixError( "Can't delete column " + deleted
 					+ " from matrix, it only has " + matrix.getCols()
-					+ " columns.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+					+ " columns.");
 		}
 		final double[][] newMatrix = new double[matrix.getRows()][matrix
 				.getCols() - 1];
@@ -162,14 +139,10 @@ public final class MatrixMath {
 	public static Matrix deleteRow(final Matrix matrix, final int deleted) {
 
 		if (deleted >= matrix.getRows()) {
-			final String str = "Can't delete row " + deleted
+			throw new MatrixError( "Can't delete row " + deleted
 					+ " from matrix, it only has " + matrix.getRows()
-					+ " rows.";
+					+ " rows.");
 
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
 		}
 		final double[][] newMatrix = new double[matrix.getRows() - 1][matrix
 				.getCols()];
@@ -219,26 +192,16 @@ public final class MatrixMath {
 	 */
 	public static double dotProduct(final Matrix a, final Matrix b) {
 		if (!a.isVector() || !b.isVector()) {
-			final String str = 
-				"To take the dot product, both matrices must be vectors.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
-
+			throw new MatrixError( "To take the dot product, both matrices must be vectors.");
 		}
 
 		final Double[] aArray = a.toPackedArray();
 		final Double[] bArray = b.toPackedArray();
 
 		if (aArray.length != bArray.length) {
-			final String str = 
-				"To take the dot product, both matrices must be of "
-					+ "the same length.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+			throw new MatrixError( "To take the dot product, both matrices must be of "
+					+ "the same length.");
+
 		}
 
 		double result = 0;
@@ -261,12 +224,8 @@ public final class MatrixMath {
 	 */
 	public static Matrix identity(final int size) {
 		if (size < 1) {
-			final String str = "Identity matrix must be at least of "
-					+ "size 1.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+			throw new MatrixError("Identity matrix must be at least of "
+					+ "size 1.");
 		}
 
 		final Matrix result = new Matrix(size, size);
@@ -313,14 +272,9 @@ public final class MatrixMath {
 	public static Matrix multiply(final Matrix a, final Matrix b) {
 
 		if (b.getRows() != a.getCols()) {
-			final String str = 
-				"To use ordinary matrix multiplication the number of "
+			throw new MatrixError("To use ordinary matrix multiplication the number of "
 					+ "columns on the first matrix must mat the number of "
-					+ "rows on the second.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+					+ "rows on the second.");
 		}
 
 		final double[][] aData = a.getData();
@@ -357,31 +311,22 @@ public final class MatrixMath {
 	 */
 	public static Matrix subtract(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			final String str = 
-				"To subtract the matrices they must have the same "
+				throw new MatrixError("To subtract the matrices they must have the same "
 					+ "number of rows and columns.  Matrix a has "
 					+ a.getRows()
 					+ " rows and matrix b has "
 					+ b.getRows()
-					+ " rows.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+					+ " rows.");
+
 		}
 
 		if (a.getCols() != b.getCols()) {
-			final String str = 
-				"To subtract the matrices they must have the same "
+			throw new MatrixError("To subtract the matrices they must have the same "
 					+ "number of rows and columns.  Matrix a has "
 					+ a.getCols()
 					+ " cols and matrix b has "
 					+ b.getCols()
-					+ " cols.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+					+ " cols.");
 		}
 
 		final double[][] result = new double[a.getRows()][a.getCols()];
@@ -431,11 +376,7 @@ public final class MatrixMath {
 	public static double vectorLength(final Matrix input) {
 
 		if (!input.isVector()) {
-			final String str = "Can only take the vector length of a vector.";
-			if (MatrixMath.LOGGER.isErrorEnabled()) {
-				MatrixMath.LOGGER.error(str);
-			}
-			throw new MatrixError(str);
+			throw new MatrixError("Can only take the vector length of a vector.");
 		}
 		final Double[] v = input.toPackedArray();
 		double rtn = 0.0;

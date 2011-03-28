@@ -30,8 +30,6 @@ import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Construct an ADALINE neural network.
@@ -48,10 +46,6 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 */
 	private int outputNeurons;
 
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Not used, the ADALINE has no hidden layers, this will throw an error.
@@ -60,12 +54,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 *            The neuron count.
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = "An ADALINE network has no hidden layers.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError("An ADALINE network has no hidden layers.");
 	}
 
 	/**
@@ -105,12 +94,7 @@ public class ADALINEPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "A ADALINE network can't specify a custom activation function.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError( "A ADALINE network can't specify a custom activation function.");
 	}
 
 	/**

@@ -27,9 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * URLUtility: A set of useful utilities for processing URL's.
  */
@@ -181,12 +178,6 @@ public final class URLUtility {
 
 		return result.toString();
 	}
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Private constructor.

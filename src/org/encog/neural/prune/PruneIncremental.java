@@ -26,6 +26,7 @@ package org.encog.neural.prune;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.EncogError;
 import org.encog.engine.StatusReportable;
 import org.encog.engine.concurrency.job.ConcurrentJob;
 import org.encog.engine.concurrency.job.JobUnitContext;
@@ -36,8 +37,7 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.networks.training.strategy.StopTrainingStrategy;
 import org.encog.neural.pattern.NeuralNetworkPattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This class is used to help determine the optimal configuration for the hidden
@@ -72,7 +72,7 @@ public class PruneIncremental extends ConcurrentJob {
 		int num = 1;
 
 		// display only hidden layers
-		for (int i = 1; i < network.getLayerCount()-1; i++) {
+		for (int i = 1; i < network.getLayerCount() - 1; i++) {
 
 			if (result.length() > 0) {
 				result.append(",");
@@ -90,12 +90,6 @@ public class PruneIncremental extends ConcurrentJob {
 	 * Are we done?
 	 */
 	private boolean done = false;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The training set to use as different neural networks are evaluated.
@@ -503,11 +497,9 @@ public class PruneIncremental extends ConcurrentJob {
 	public void process() {
 
 		if (this.hidden.size() == 0) {
-			final String str = "To calculate the optimal hidden size, at least "
-					+ "one hidden layer must be defined.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
-			}
+			throw new EncogError(
+					"To calculate the optimal hidden size, at least "
+							+ "one hidden layer must be defined.");
 		}
 
 		this.hiddenCounts = new int[this.hidden.size()];
@@ -523,12 +515,9 @@ public class PruneIncremental extends ConcurrentJob {
 
 		// make sure hidden layer 1 has at least one neuron
 		if (this.hiddenCounts[0] == 0) {
-			final String str = "To calculate the optimal hidden size, at least "
-					+ "one neuron must be the minimum for the first hidden layer.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
-			}
-
+			throw new EncogError(
+					"To calculate the optimal hidden size, at least "
+							+ "one neuron must be the minimum for the first hidden layer.");
 		}
 
 		super.process();
@@ -556,8 +545,11 @@ public class PruneIncremental extends ConcurrentJob {
 
 	/**
 	 * Update the best network.
-	 * @param network The network to consider.
-	 * @param error The error for this network.
+	 * 
+	 * @param network
+	 *            The network to consider.
+	 * @param error
+	 *            The error for this network.
 	 */
 	private synchronized void updateBest(final BasicNetwork network,
 			final double error) {
@@ -608,12 +600,11 @@ public class PruneIncremental extends ConcurrentJob {
 		}
 
 		if (choice != this.bestNetwork) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Prune found new best network: error="
-						+ error + ", network=" + choice);
-			}
-			this.bestNetwork = choice;
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG,
+					"Prune found new best network: error=" + error
+							+ ", network=" + choice);
 		}
-
+		
 	}
+
 }

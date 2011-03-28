@@ -24,8 +24,6 @@
 package org.encog.neural.data.buffer;
 
 import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An error occurs working with the Encog binary training format.
@@ -36,11 +34,7 @@ public class BufferedDataError extends EncogError {
 	 * The serial version.
 	 */
 	private static final long serialVersionUID = 2889950431643029874L;
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
 	/**
 	 * Construct a message exception.

@@ -24,8 +24,6 @@
 package org.encog.bot.browse.range;
 
 import org.encog.bot.browse.WebPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A document range that represents the beginning and ending DIV tag, as well as
@@ -36,11 +34,6 @@ import org.slf4j.LoggerFactory;
  */
 public class Div extends DocumentRange {
 
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a range to hold the DIV tag.

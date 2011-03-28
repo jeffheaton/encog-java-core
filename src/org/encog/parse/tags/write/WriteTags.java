@@ -33,8 +33,6 @@ import org.encog.EncogError;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.parse.ParseError;
 import org.encog.parse.tags.TagConst;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Class used to write out tags, such as XML or HTML.
@@ -57,11 +55,6 @@ public class WriteTags {
 	 * The attributes for the current tag.
 	 */
 	private final Map<String, String> attributes;
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct an object to write tags.
@@ -285,13 +278,10 @@ public class WriteTags {
 	 */
 	public void endTag(final String name) {
 		if (!this.tagStack.peek().equals(name)) {
-			final String str = "End tag mismatch, should be ending: "
+			throw new ParseError( "End tag mismatch, should be ending: "
 					+ this.tagStack.peek() + ", but trying to end: " + name
-					+ ".";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
-			}
-			throw new ParseError(str);
+					+ ".");
+
 		} else {
 			endTag();
 		}

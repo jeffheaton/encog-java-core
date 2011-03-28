@@ -29,8 +29,6 @@ import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.MLEncodable;
 import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides basic functionality that most randomizers will need.
@@ -39,12 +37,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public abstract class BasicRandomizer implements Randomizer {
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * The random number generator.

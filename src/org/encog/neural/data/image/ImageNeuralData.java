@@ -27,8 +27,6 @@ import java.awt.Image;
 
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.util.downsample.Downsample;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * An extension of the BasicNeuralData class that is designed to hold images for
@@ -52,12 +50,6 @@ public class ImageNeuralData extends BasicNeuralData {
 	 * The image associated with this class.
 	 */
 	private Image image;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct an object based on an image.

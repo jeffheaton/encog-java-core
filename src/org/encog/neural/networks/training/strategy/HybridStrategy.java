@@ -25,8 +25,7 @@ package org.encog.neural.networks.training.strategy;
 
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * A hybrid stragey allows a secondary training algorithm to be used. Once the
@@ -105,11 +104,6 @@ public class HybridStrategy implements Strategy {
 	private final int alternateCycles;
 
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Construct a hybrid strategy with the default minimum improvement
 	 * and toleration cycles.
 	 * @param altTrain The alternative training strategy.
@@ -157,9 +151,7 @@ public class HybridStrategy implements Strategy {
 			final double currentError = this.mainTrain.getError();
 			this.lastImprovement = (currentError - this.lastError)
 					/ this.lastError;
-			if (this.logger.isTraceEnabled()) {
-				this.logger.trace("Last improvement: {}", this.lastImprovement);
-			}
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Last improvement: " + this.lastImprovement);
 
 			if ((this.lastImprovement > 0)
 					|| (Math.abs(this.lastImprovement) < this.minImprovement)) {
@@ -168,9 +160,7 @@ public class HybridStrategy implements Strategy {
 				if (this.lastHybrid > this.tolerateMinImprovement) {
 					this.lastHybrid = 0;
 
-					if (this.logger.isDebugEnabled()) {
-						this.logger.debug("Performing hybrid cycle");
-					}
+					EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Performing hybrid cycle");
 
 					for (int i = 0; i < this.alternateCycles; i++) {
 						this.altTrain.iteration();

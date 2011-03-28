@@ -26,9 +26,6 @@ package org.encog.util.time;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A timespan between two Dates.
  * 
@@ -76,12 +73,6 @@ public class TimeSpan {
 	 * Years in a score.
 	 */
 	public static final int YEARS_SCORE = 20;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The from date.

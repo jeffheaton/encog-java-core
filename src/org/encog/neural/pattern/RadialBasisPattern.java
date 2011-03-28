@@ -27,8 +27,6 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.ml.MLMethod;
 import org.encog.neural.rbf.RBFNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A radial basis function (RBF) network uses several radial basis functions to
@@ -40,12 +38,6 @@ import org.slf4j.LoggerFactory;
  */
 public class RadialBasisPattern implements NeuralNetworkPattern {
 	public static final String RBF_LAYER = "RBF";
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The number of input neurons to use. Must be set, default to invalid -1
@@ -74,12 +66,9 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 */
 	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			final String str = "A RBF network usually has a single "
-					+ "hidden layer.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
-			}
-			throw new PatternError(str);
+			throw new PatternError("A RBF network usually has a single "
+					+ "hidden layer.");
+
 		} else {
 			this.hiddenNeurons = count;
 		}
@@ -111,12 +100,8 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 *            The new activation function.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "Can't set the activation function for "
-				+ "a radial basis function network.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
+		throw new PatternError( "Can't set the activation function for "
+				+ "a radial basis function network.");
 	}
 
 	/**

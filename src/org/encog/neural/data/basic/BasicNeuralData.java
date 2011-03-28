@@ -26,8 +26,6 @@ package org.encog.neural.data.basic;
 import java.io.Serializable;
 
 import org.encog.neural.data.NeuralData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Basic implementation of the NeuralData interface that stores the data in an
@@ -48,12 +46,6 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	 */
 	private double[] data;
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final transient Logger logger = LoggerFactory.getLogger(this
-			.getClass());
 
 	/**
 	 * Construct this object with the specified data.

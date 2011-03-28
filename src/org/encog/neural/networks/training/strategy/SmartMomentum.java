@@ -26,8 +26,7 @@ package org.encog.neural.networks.training.strategy;
 import org.encog.neural.networks.training.Momentum;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Attempt to automatically set a momentum in a training algorithm that supports
@@ -100,11 +99,6 @@ public class SmartMomentum implements Strategy {
 	private double currentMomentum;
 
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Initialize this strategy.
 	 * 
 	 * @param train
@@ -127,9 +121,7 @@ public class SmartMomentum implements Strategy {
 			final double currentError = this.train.getError();
 			this.lastImprovement = (currentError - this.lastError)
 					/ this.lastError;
-			if (this.logger.isTraceEnabled()) {
-				this.logger.trace("Last improvement: {}", this.lastImprovement);
-			}
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Last improvement: " + this.lastImprovement);			
 
 			if ((this.lastImprovement > 0)
 					|| (Math.abs(this.lastImprovement) 
@@ -144,15 +136,11 @@ public class SmartMomentum implements Strategy {
 					this.currentMomentum *= 
 						(1.0 + SmartMomentum.MOMENTUM_INCREASE);
 					this.setter.setMomentum(this.currentMomentum);
-					if (this.logger.isDebugEnabled()) {
-						this.logger.trace("Adjusting momentum: {}",
+					EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Adjusting momentum: " + 
 								this.currentMomentum);
-					}
 				}
 			} else {
-				if (this.logger.isDebugEnabled()) {
-					this.logger.trace("Setting momentum back to zero.");
-				}
+				EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Setting momentum back to zero.");
 
 				this.currentMomentum = 0;
 				this.setter.setMomentum(0);

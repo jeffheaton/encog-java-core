@@ -36,9 +36,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.encog.EncogError;
 import org.encog.bot.BotError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to construct responses to HTML forms. The class supports
@@ -132,11 +131,6 @@ public class FormUtility {
 	}
 
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * The boundary used for a multipart post. This field is null if this is not
 	 * a multipart form and has a value if this is a multipart form.
 	 */
@@ -204,9 +198,7 @@ public class FormUtility {
 				newline();
 			}
 		} catch (final IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
+			throw new BotError(e);
 		}
 	}
 
@@ -257,9 +249,6 @@ public class FormUtility {
 				this.os.flush();
 			}
 		} catch (final IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
 			throw (new BotError(e));
 		}
 	}
@@ -282,9 +271,6 @@ public class FormUtility {
 		try {
 			this.os.write(str.getBytes());
 		} catch (final IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
 			throw new BotError(e);
 		}
 	}

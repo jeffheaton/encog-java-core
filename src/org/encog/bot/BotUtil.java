@@ -55,8 +55,7 @@ import java.net.URL;
  */
 
 import org.encog.parse.tags.read.ReadHTML;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Utility class for bots.
@@ -70,11 +69,6 @@ public final class BotUtil {
 	 * How much data to read at once.
 	 */
 	public static final int BUFFER_SIZE = 32768;
-
-	/**
-	 * The logging object.
-	 */
-	private static final Logger LOGGER = LoggerFactory.getLogger(BotUtil.class);
 
 	/**
 	 * This method is very useful for grabbing information from a HTML page.
@@ -220,9 +214,7 @@ public final class BotUtil {
 
 			return result.toString();
 		} catch (final IOException e) {
-			if (BotUtil.LOGGER.isErrorEnabled()) {
-				BotUtil.LOGGER.error("Exception", e);
-			}
+			EncogLogging.log(e);
 			throw new BotError(e);
 		}
 	}
@@ -252,9 +244,7 @@ public final class BotUtil {
 
 			return result.toString();
 		} catch (final IOException e) {
-			if (BotUtil.LOGGER.isErrorEnabled()) {
-				BotUtil.LOGGER.error("Exception", e);
-			}
+			EncogLogging.log(e);
 			throw new BotError(e);
 		}
 	}
@@ -283,9 +273,7 @@ public final class BotUtil {
 
 			fos.close();
 		} catch (final IOException e) {
-			if (BotUtil.LOGGER.isErrorEnabled()) {
-				BotUtil.LOGGER.error("Exception", e);
-			}
+			EncogLogging.log(e);
 			throw new BotError(e);
 		}
 	}

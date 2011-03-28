@@ -30,19 +30,11 @@ import org.encog.ml.svm.SVM;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Provides training for Support Vector Machine networks.
  */
 public class SVMSearchTrain extends BasicTraining {
-
-	/**
-	 * The logger.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(SVMSearchTrain.class);
 
 	/**
 	 * The default starting number for C.

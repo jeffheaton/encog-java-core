@@ -24,8 +24,6 @@
 package org.encog.bot.browse.range;
 
 import org.encog.bot.browse.WebPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A form element that represents for input for text. These are of the form
@@ -40,12 +38,6 @@ public class Input extends FormElement {
 	 * The type of input element that this is.
 	 */
 	private String type;
-
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this Input element.

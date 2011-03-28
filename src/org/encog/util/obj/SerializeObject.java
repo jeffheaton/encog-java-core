@@ -31,8 +31,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Load or save an object using Java serialization.
@@ -82,12 +80,6 @@ public final class SerializeObject {
 		out.writeObject(object);
 		out.close();
 	}
-	
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Private constructor.

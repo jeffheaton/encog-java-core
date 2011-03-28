@@ -27,8 +27,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.encog.bot.BotError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This is a special input stream that allows the program to peek one or more
@@ -55,11 +53,6 @@ public class PeekableInputStream extends InputStream {
 	 * How many bytes have been peeked at.
 	 */
 	private int peekLength;
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The constructor accepts an InputStream to setup the object.
@@ -115,9 +108,6 @@ public class PeekableInputStream extends InputStream {
 				this.peekLength = depth + 1;
 			}
 		} catch (final IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
 			throw new BotError(e);
 		}
 

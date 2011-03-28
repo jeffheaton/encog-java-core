@@ -24,8 +24,6 @@
 package org.encog.bot.dataunit;
 
 import org.encog.parse.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A data unit that holds a tag.
@@ -39,12 +37,6 @@ public class TagDataUnit extends DataUnit {
 	 * The tag for this data unit.
 	 */
 	private Tag tag;
-
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * @return The tag that this data unit is based on.

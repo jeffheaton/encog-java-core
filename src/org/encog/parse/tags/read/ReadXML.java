@@ -29,8 +29,6 @@ import java.util.Map;
 
 import org.encog.parse.ParseError;
 import org.encog.parse.tags.Tag.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is designed to read XML. It has several helper methods, beyond
@@ -40,11 +38,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class ReadXML extends ReadTags {
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct an XML reader.
@@ -94,10 +87,7 @@ public class ReadXML extends ReadTags {
 		try {
 			final String str = readTextToTag();
 			return Integer.parseInt(str);
-		} catch (final NumberFormatException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
+		} catch (final NumberFormatException e) {			
 			throw new ParseError(e);
 		}
 	}

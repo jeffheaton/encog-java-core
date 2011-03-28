@@ -40,8 +40,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.encog.bot.BotError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -93,11 +92,6 @@ public class RSS {
 	}
 
 	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * All of the attributes for this RSS document.
 	 */
 	private final Map<String, String> attributes
@@ -139,9 +133,7 @@ public class RSS {
 	 */
 	public void load(final URL url, int timeout) {
 		try {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Loading RSS from:" + url);
-			}
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Loading RSS from:" + url);
 
 			final URLConnection http = url.openConnection();
 			if(timeout>0){
@@ -170,19 +162,13 @@ public class RSS {
 				}
 			}
 		} catch (final IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
+			EncogLogging.log(e);
 			throw new BotError(e);
 		} catch (final SAXException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
+			EncogLogging.log(e);
 			throw new BotError(e);
 		} catch (final ParserConfigurationException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
+			EncogLogging.log(e);
 			throw new BotError(e);
 		}
 	}
@@ -218,9 +204,7 @@ public class RSS {
 		final RSSItem rssItem = new RSSItem();
 		rssItem.load(item);
 		this.items.add(rssItem);
-		if (this.logger.isDebugEnabled()) {
-			this.logger.debug("Loaded RSS item:" + rssItem);
-		}
+		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Loaded RSS item:" + rssItem);
 	}
 
 	/**

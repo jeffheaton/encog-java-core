@@ -26,8 +26,6 @@ package org.encog.neural.pattern;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.neural.thermal.HopfieldNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Create a Hopfield pattern. A Hopfield neural network has a single layer that
@@ -39,11 +37,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class HopfieldPattern implements NeuralNetworkPattern {
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * How many neurons in the Hopfield network. Default to -1, which is
@@ -59,12 +52,7 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 *            The number of neurons.
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = "A Hopfield network has no hidden layers.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError("A Hopfield network has no hidden layers.");
 	}
 
 	/**
@@ -91,12 +79,8 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 *            The activation function to use.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "A Hopfield network will use the BiPolar activation "
-				+ "function, no activation function needs to be specified.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
+		throw new PatternError( "A Hopfield network will use the BiPolar activation "
+				+ "function, no activation function needs to be specified.");
 
 	}
 
@@ -120,12 +104,8 @@ public class HopfieldPattern implements NeuralNetworkPattern {
 	 *            The number of neurons.
 	 */
 	public void setOutputNeurons(final int count) {
-		final String str = "A Hopfield network has a single layer, so no need "
-				+ "to specify the output count.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
+		throw new PatternError( "A Hopfield network has a single layer, so no need "
+				+ "to specify the output count.");
 
 	}
 

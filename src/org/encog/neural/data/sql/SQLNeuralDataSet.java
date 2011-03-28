@@ -44,8 +44,6 @@ import org.encog.neural.data.buffer.MemoryDataLoader;
 import org.encog.neural.data.buffer.codec.CSVDataCODEC;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
 import org.encog.neural.data.buffer.codec.SQLCODEC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A dataset based on a SQL query. This is not a memory based dataset, so it can

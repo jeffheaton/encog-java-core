@@ -23,9 +23,6 @@
  */
 package org.encog.ml.anneal;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Simulated annealing is a common training method. This class implements a
  * simulated annealing algorithm that can be used both for neural networks, as
@@ -75,11 +72,6 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 */
 	private boolean shouldMinimize = true;
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Subclasses should provide a method that evaluates the score for the

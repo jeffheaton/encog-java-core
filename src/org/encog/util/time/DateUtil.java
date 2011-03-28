@@ -26,9 +26,6 @@ package org.encog.util.time;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Simple date utility class.
  * 
@@ -61,12 +58,6 @@ public final class DateUtil {
 		cal.set(Calendar.AM_PM, Calendar.AM);
 		return cal.getTime();
 	}
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Private constructor.

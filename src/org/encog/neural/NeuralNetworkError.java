@@ -24,8 +24,6 @@
 package org.encog.neural;
 
 import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Used by the neural network classes to indicate an error.
@@ -36,11 +34,6 @@ public class NeuralNetworkError extends EncogError {
 	 */
 	private static final long serialVersionUID = 7167228729133120101L;
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a message exception.

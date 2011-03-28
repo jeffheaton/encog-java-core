@@ -25,8 +25,6 @@ package org.encog.bot.browse.range;
 
 import org.encog.bot.browse.Address;
 import org.encog.bot.browse.WebPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A document range that represents a form, and all embedded tags.
@@ -62,12 +60,6 @@ public class Form extends DocumentRange {
 	 * The means by which the form will be sent.
 	 */
 	private Method method;
-
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a form on the specified web page.

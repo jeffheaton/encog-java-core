@@ -34,8 +34,6 @@ import org.encog.EncogError;
 import org.encog.parse.tags.Tag;
 import org.encog.parse.tags.read.ReadHTML;
 import org.encog.util.http.FormUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * YahooSearch: Perform a search using Yahoo.
@@ -51,12 +49,6 @@ public class YahooSearch {
 	 * How long to sleep between retry.
 	 */
 	private static final long RETRY_SLEEP = 5000;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Do a search using the Yahoo search engine. Called internally.

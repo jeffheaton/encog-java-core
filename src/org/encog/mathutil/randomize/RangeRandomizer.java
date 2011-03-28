@@ -23,9 +23,6 @@
  */
 package org.encog.mathutil.randomize;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A randomizer that will create random weight and bias values that are between
  * a specified range.
@@ -62,12 +59,6 @@ public class RangeRandomizer extends BasicRandomizer {
 	 * The maximum value for the random range.
 	 */
 	private final double max;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a range randomizer.

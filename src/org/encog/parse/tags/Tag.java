@@ -28,8 +28,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.encog.parse.ParseError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * HTMLTag: This class holds a single HTML tag. This class subclasses the
@@ -61,11 +59,6 @@ public class Tag {
 		 */
 		CDATA
 	};
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The attributes.
@@ -119,9 +112,6 @@ public class Tag {
 			final String str = getAttributeValue(attributeId);
 			return Integer.parseInt(str);
 		} catch (final NumberFormatException e) {
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error("Exception", e);
-			}
 			throw new ParseError(e);
 		}
 

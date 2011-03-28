@@ -46,8 +46,7 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
 import org.encog.util.simple.EncogUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * This class implements a neural network. This class works in conjunction the
@@ -79,12 +78,6 @@ public class BasicNetwork extends BasicML implements
 	 * Serial id for this class.
 	 */
 	private static final long serialVersionUID = -136440631687066461L;
-
-	/**
-	 * The logging object.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(BasicNetwork.class);
 	
 	public static final String TAG_CONNECTION_LIMIT = "connectionLimit";
 	public static final String TAG_BEGIN_TRAINING = "beginTraining";

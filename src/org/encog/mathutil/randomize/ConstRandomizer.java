@@ -23,9 +23,6 @@
  */
 package org.encog.mathutil.randomize;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A randomizer that will create always set the random number to a const value,
  * used mainly for testing.
@@ -37,12 +34,6 @@ public class ConstRandomizer extends BasicRandomizer {
 	 * The constant value.
 	 */
 	private final double value;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a range randomizer.

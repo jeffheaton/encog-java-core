@@ -29,9 +29,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * This class allows URLConnection objects to process cookies. The loadCookies
  * method grabs the Set-Cookie headers and loads the cookies into the map. The
@@ -43,12 +40,6 @@ public class CookieUtility {
 	 * Map that holds all of the cookie values.
 	 */
 	private final Map<String, String> map = new HashMap<String, String>();
-
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Allows access to the name/value pair list of cookies.

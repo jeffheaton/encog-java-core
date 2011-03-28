@@ -24,8 +24,6 @@
 package org.encog.bot.browse;
 
 import org.encog.bot.BotError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Thrown when any sort of error related to web browsing is encountered.
@@ -38,11 +36,7 @@ public class BrowseError extends BotError {
 	 * The serial id for this class.
 	 */
 	private static final long serialVersionUID = -7166136514935838114L;
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 
 	/**
 	 * Construct a message exception.

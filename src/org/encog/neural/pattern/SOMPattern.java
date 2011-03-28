@@ -26,8 +26,6 @@ package org.encog.neural.pattern;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.neural.som.SOM;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A self organizing map is a neural network pattern with an input and output
@@ -51,12 +49,6 @@ public class SOMPattern implements NeuralNetworkPattern {
 	private int outputNeurons;
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Add a hidden layer. SOM networks do not have hidden layers, so this will
 	 * throw an error.
 	 * 
@@ -64,12 +56,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 *            The number of hidden neurons.
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = "A SOM network does not have hidden layers.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError( "A SOM network does not have hidden layers." );
 	}
 
 	/**
@@ -97,11 +84,7 @@ public class SOMPattern implements NeuralNetworkPattern {
 	 *            The activation function to use.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "A SOM network can't define an activation function.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
+		throw new PatternError( "A SOM network can't define an activation function.");
 
 	}
 

@@ -23,9 +23,6 @@
  */
 package org.encog.bot.dataunit;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A data unit that holds code.
  *
@@ -38,12 +35,6 @@ public class CodeDataUnit extends DataUnit {
 	 * The code for this data unit.
 	 */
 	private String code;
-
-	/**
-	 * The logger for this data unit.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * @return THe code for this data unit.

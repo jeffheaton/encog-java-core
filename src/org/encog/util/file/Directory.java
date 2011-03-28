@@ -33,8 +33,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import org.encog.EncogError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Directory utilities.
@@ -48,11 +46,6 @@ public final class Directory {
 	 */
 	public static final int BUFFER_SIZE = 1024;
 
-	/**
-	 * The logging object.
-	 */
-	private static final Logger LOGGER = LoggerFactory
-			.getLogger(Directory.class);
 
 	/**
 	 * Copy the specified file.
@@ -134,7 +127,6 @@ public final class Directory {
 
 			return sb.toString();
 		} catch (final IOException e) {
-			Directory.LOGGER.error("Exception", e);
 			throw new EncogError(e);
 		}
 	}
@@ -162,7 +154,6 @@ public final class Directory {
 
 			return sb.toString();
 		} catch (final IOException e) {
-			Directory.LOGGER.error("Exception", e);
 			throw new EncogError(e);
 		}
 	}

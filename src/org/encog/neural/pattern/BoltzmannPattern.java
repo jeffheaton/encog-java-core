@@ -26,19 +26,12 @@ package org.encog.neural.pattern;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.neural.thermal.BoltzmannMachine;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Pattern to create a Boltzmann machine.
  * 
  */
 public class BoltzmannPattern implements NeuralNetworkPattern {
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The number of neurons in the Boltzmann network.
@@ -68,11 +61,7 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = "A Boltzmann network has no hidden layers.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
+		throw new PatternError("A Boltzmann network has no hidden layers.");
 	}
 
 	/**
@@ -124,13 +113,8 @@ public class BoltzmannPattern implements NeuralNetworkPattern {
 	 *            Not used.
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "A Boltzmann network will use the BiPolar activation "
-				+ "function, no activation function needs to be specified.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError( "A Boltzmann network will use the BiPolar activation "
+				+ "function, no activation function needs to be specified.");
 	}
 
 	/**

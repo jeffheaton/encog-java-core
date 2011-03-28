@@ -26,8 +26,6 @@ package org.encog.mathutil.randomize;
 import org.encog.EncogError;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.neural.networks.BasicNetwork;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A randomizer that attempts to create starting weight values that are
@@ -66,11 +64,6 @@ public class FanInRandomizer extends BasicRandomizer {
 	 * Should the square root of the number of rows be used?
 	 */
 	private final boolean sqrt;
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Create a fan-in randomizer with default values.
@@ -137,9 +130,6 @@ public class FanInRandomizer extends BasicRandomizer {
 	 * Throw an error if this class is used improperly.
 	 */
 	private void causeError() {
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(FanInRandomizer.ERROR);
-		}
 		throw new EncogError(FanInRandomizer.ERROR);
 	}
 

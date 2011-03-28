@@ -37,8 +37,6 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.util.obj.ReflectionUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Holds "cached" information about the structure of the neural network. This is
@@ -56,11 +54,6 @@ public class NeuralStructure implements Serializable {
 	 */
 	private static final long serialVersionUID = -2929683885395737817L;
 
-	/**
-	 * The logging object.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(NeuralStructure.class);
 
 	/**
 	 * The layers in this neural network.

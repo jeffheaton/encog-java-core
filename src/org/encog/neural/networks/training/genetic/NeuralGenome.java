@@ -29,8 +29,6 @@ import org.encog.ml.genetic.genome.BasicGenome;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Implements a genome that allows a feedforward neural network to be trained
@@ -43,12 +41,6 @@ public class NeuralGenome extends BasicGenome {
 	 * The chromosome.
 	 */
 	private final Chromosome networkChromosome;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a neural genome.

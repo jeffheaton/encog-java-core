@@ -25,8 +25,6 @@ package org.encog.neural.networks.training.strategy;
 
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This strategy will indicate once training is no longer improving the neural
@@ -87,12 +85,6 @@ public class StopTrainingStrategy implements EndTrainingStrategy {
 	 * The number of bad training cycles.
 	 */
 	private int badCycles;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct the strategy with default options.

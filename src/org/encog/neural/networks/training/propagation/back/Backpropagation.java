@@ -35,8 +35,6 @@ import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.networks.training.strategy.SmartLearningRate;
 import org.encog.neural.networks.training.strategy.SmartMomentum;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class implements a backpropagation training algorithm for feed forward
@@ -69,12 +67,6 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * The resume key for backpropagation.
 	 */
 	public final static String LAST_DELTA = "LAST_DELTA";
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Create a class to train using backpropagation. Use auto learn rate and

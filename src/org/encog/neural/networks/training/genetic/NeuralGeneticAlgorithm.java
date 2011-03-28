@@ -35,8 +35,7 @@ import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Implements a genetic algorithm that allows a feedforward or simple recurrent
@@ -82,11 +81,6 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		}
 
 	}
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Simple helper class that implements the required methods to implement a
@@ -157,9 +151,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 */
 	public void iteration() {
 
-		if (this.logger.isInfoEnabled()) {
-			this.logger.info("Performing Genetic iteration.");
-		}
+		EncogLogging.log(EncogLogging.LEVEL_INFO, "Performing Genetic iteration.");
 		preIteration();
 		getGenetic().iteration();
 		setError(getGenetic().getError());

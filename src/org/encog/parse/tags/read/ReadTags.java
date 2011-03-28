@@ -31,8 +31,6 @@ import org.encog.parse.PeekableInputStream;
 import org.encog.parse.tags.Tag;
 import org.encog.parse.tags.TagConst;
 import org.encog.parse.tags.Tag.Type;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class used to read tags. This base class is used by both the XML and
@@ -74,12 +72,6 @@ public class ReadTags {
 	 * 0.
 	 */
 	private final Tag tag = new Tag();
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Are we locked, looking for an end tag? Such as the end of a comment?

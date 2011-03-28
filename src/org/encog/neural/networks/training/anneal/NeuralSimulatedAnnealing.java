@@ -29,8 +29,7 @@ import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * This class implements a simulated annealing training algorithm for
@@ -57,11 +56,6 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * The cutoff for random data.
 	 */
 	public static final double CUT = 0.5;
-
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * The neural network that is to be trained.
@@ -120,9 +114,7 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	 * Perform one iteration of simulated annealing.
 	 */
 	public void iteration() {
-		if (this.logger.isInfoEnabled()) {
-			this.logger.info("Performing Simulated Annealing iteration.");
-		}
+		EncogLogging.log(EncogLogging.LEVEL_INFO, "Performing Simulated Annealing iteration.");
 		preIteration();
 		this.anneal.iteration();
 		setError(this.anneal.calculateScore());

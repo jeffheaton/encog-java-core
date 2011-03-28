@@ -37,8 +37,7 @@ import org.encog.bot.browse.range.FormElement;
 import org.encog.bot.browse.range.Input;
 import org.encog.bot.browse.range.Link;
 import org.encog.util.http.FormUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * The main class for web browsing. This class allows you to navigate to a
@@ -54,11 +53,6 @@ public class Browser {
 	 * The page that is currently being browsed.
 	 */
 	private WebPage currentPage;
-
-	/**
-	 * The logger.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * @return The page currently being browsed.
@@ -88,10 +82,7 @@ public class Browser {
 	public void navigate(final Form form, final Input submit) {
 
 		try {
-
-			if (this.logger.isInfoEnabled()) {
-				this.logger.info("Posting a form");
-			}
+			EncogLogging.log(EncogLogging.LEVEL_INFO, "Posting a form");
 
 			InputStream is;
 			URLConnection connection = null;
@@ -175,9 +166,7 @@ public class Browser {
 		try {
 			navigate(new URL(url));
 		} catch (final MalformedURLException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
+			EncogLogging.log(EncogLogging.LEVEL_ERROR, e);
 			throw new BrowseError(e);
 		}
 	}
@@ -191,17 +180,13 @@ public class Browser {
 	 */
 	public void navigate(final URL url) {
 		try {
-			if (this.logger.isInfoEnabled()) {
-				this.logger.info("Navigating to page:" + url);
-			}
+			EncogLogging.log(EncogLogging.LEVEL_INFO, "Navigating to page:" + url);
 			final URLConnection connection = url.openConnection();
 			final InputStream is = connection.getInputStream();
 			navigate(url, is);
 			is.close();
 		} catch (final IOException e) {
-			if (this.logger.isDebugEnabled()) {
-				this.logger.debug("Exception", e);
-			}
+			EncogLogging.log(EncogLogging.LEVEL_ERROR, e);
 			throw new BrowseError(e);
 		}
 	}
@@ -215,9 +200,7 @@ public class Browser {
 	 *            The data to post to the page.
 	 */
 	public void navigate(final URL url, final InputStream is) {
-		if (this.logger.isInfoEnabled()) {
-			this.logger.info("POSTing to page:" + url);
-		}
+		EncogLogging.log(EncogLogging.LEVEL_INFO, "POSTing to page:" + url);
 		final LoadWebPage load = new LoadWebPage(url);
 		this.currentPage = load.load(is);
 	}

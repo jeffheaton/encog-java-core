@@ -26,8 +26,6 @@ package org.encog.util.logging;
 import java.text.NumberFormat;
 
 import org.encog.mathutil.matrices.Matrix;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A utility for writing matrixes to the log.
@@ -94,12 +92,6 @@ public final class DumpMatrix {
 		}
 		return result.toString();
 	}
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Private constructor.

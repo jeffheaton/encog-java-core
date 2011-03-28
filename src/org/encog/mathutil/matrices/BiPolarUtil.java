@@ -23,9 +23,6 @@
  */
 package org.encog.mathutil.matrices;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * This class contains a number of utility methods used to work with bipolar
  * numbers. A bipolar number is another way to represent binary numbers. The
@@ -180,12 +177,6 @@ public final class BiPolarUtil {
 	public static double toNormalizedBinary(final double d) {
 		return BiPolarUtil.normalizeBinary(BiPolarUtil.toBinary(d));
 	}
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Private constructor.

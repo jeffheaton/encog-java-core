@@ -27,8 +27,6 @@ import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is used to generate an Jordan style recurrent neural network. This
@@ -67,12 +65,6 @@ public class JordanPattern implements NeuralNetworkPattern {
 	private ActivationFunction activation;
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Construct an object to create a Jordan type neural network.
 	 */
 	public JordanPattern() {
@@ -89,12 +81,8 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 */
 	public void addHiddenLayer(final int count) {
 		if (this.hiddenNeurons != -1) {
-			final String str = "A Jordan neural network should have only one hidden "
-					+ "layer.";
-			if (this.logger.isErrorEnabled()) {
-				this.logger.error(str);
-			}
-			throw new PatternError(str);
+			throw new PatternError("A Jordan neural network should have only one hidden "
+					+ "layer.");
 		}
 
 		this.hiddenNeurons = count;

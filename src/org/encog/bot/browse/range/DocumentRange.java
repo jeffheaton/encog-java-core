@@ -29,8 +29,6 @@ import java.util.List;
 import org.encog.bot.browse.WebPage;
 import org.encog.bot.dataunit.DataUnit;
 import org.encog.bot.dataunit.TextDataUnit;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Base class that represents a document range. A document range is a collection
@@ -78,11 +76,6 @@ public class DocumentRange {
 	 */
 	private DocumentRange parent;
 
-	/**
-	 * The logger.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a document range from the specified WebPage.

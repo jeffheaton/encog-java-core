@@ -29,16 +29,8 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralDataMapping;
 import org.encog.persist.PersistConst;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class BAM extends BasicML {
-
-	/**
-	 * The logging object.
-	 */
-	private static final transient Logger LOGGER = LoggerFactory
-			.getLogger(BAM.class);
 
 	private int f1Count;
 	private int f2Count;
@@ -103,12 +95,9 @@ public class BAM extends BasicML {
 	 * @return NOT USED
 	 */
 	public NeuralData compute(final NeuralData input) {
-		final String str = "Compute on BasicNetwork cannot be used, rather call"
-				+ " the compute(NeuralData) method on the BAMLogic.";
-		if (BAM.LOGGER.isErrorEnabled()) {
-			BAM.LOGGER.error(str);
-		}
-		throw new NeuralNetworkError(str);
+		throw new NeuralNetworkError("Compute on BasicNetwork cannot be used, rather call"
+				+ " the compute(NeuralData) method on the BAMLogic.");
+
 	}
 
 	/**

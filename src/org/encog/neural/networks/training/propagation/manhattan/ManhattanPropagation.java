@@ -31,8 +31,6 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.Propagation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * One problem that the backpropagation technique has is that the magnitude of
@@ -57,12 +55,6 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 * The default tolerance to determine of a number is close to zero.
 	 */
 	static final double DEFAULT_ZERO_TOLERANCE = 0.001;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a Manhattan propagation training object. Use the CPU to train.

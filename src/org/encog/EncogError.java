@@ -23,13 +23,12 @@
  */
 package org.encog;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
- * General error class for Encog.
- * 
- * @author jheaton
+ * General error class for Encog. All Encog errors should extend from this
+ * class. Doing this ensures that they will be caught as Encog errors. This also
+ * ensures that any subclasses will be logged.
  */
 public class EncogError extends RuntimeException {
 
@@ -39,12 +38,6 @@ public class EncogError extends RuntimeException {
 	private static final long serialVersionUID = -5909341149180956178L;
 
 	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-	/**
 	 * Construct a message exception.
 	 * 
 	 * @param msg
@@ -52,6 +45,7 @@ public class EncogError extends RuntimeException {
 	 */
 	public EncogError(final String msg) {
 		super(msg);
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, msg);
 	}
 
 	/**
@@ -62,8 +56,9 @@ public class EncogError extends RuntimeException {
 	 */
 	public EncogError(final Throwable t) {
 		super(t);
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
 	}
-	
+
 	/**
 	 * Construct an exception that holds another exception.
 	 * 
@@ -74,5 +69,7 @@ public class EncogError extends RuntimeException {
 	 */
 	public EncogError(final String msg, final Throwable t) {
 		super(msg, t);
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, msg);
+		EncogLogging.log(EncogLogging.LEVEL_ERROR, t);
 	}
 }

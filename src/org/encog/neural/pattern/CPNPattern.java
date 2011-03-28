@@ -26,8 +26,6 @@ package org.encog.neural.pattern;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.neural.cpn.CPN;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Pattern that creates a CPN neural network.
@@ -59,10 +57,6 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 */
 	private int inputCount;
 
-	/**
-	 * The logging object.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Not used, will throw an error. CPN networks already have a predefined
@@ -72,12 +66,8 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 *            NOT USED
 	 */
 	public void addHiddenLayer(final int count) {
-		final String str = "A CPN already has a predefined hidden layer.  No additional"
-				+ "specification is needed.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-
+		throw new PatternError("A CPN already has a predefined hidden layer.  No additional"
+				+ "specification is needed.");
 	}
 
 	/**
@@ -106,13 +96,8 @@ public class CPNPattern implements NeuralNetworkPattern {
 	 *            NOT USED
 	 */
 	public void setActivationFunction(final ActivationFunction activation) {
-		final String str = "A CPN network will use the BiPolar & competitive activation "
-				+ "functions, no activation function needs to be specified.";
-		if (this.logger.isErrorEnabled()) {
-			this.logger.error(str);
-		}
-		throw new PatternError(str);
-
+		throw new PatternError("A CPN network will use the BiPolar & competitive activation "
+				+ "functions, no activation function needs to be specified.");
 	}
 
 	/**

@@ -26,8 +26,6 @@ package org.encog.util.logging;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A simple formatter for logging.
@@ -36,12 +34,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class EncogFormatter extends Formatter {
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Format the log record.

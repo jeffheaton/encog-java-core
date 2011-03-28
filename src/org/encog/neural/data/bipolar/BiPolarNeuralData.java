@@ -28,8 +28,6 @@ import java.io.Serializable;
 import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * A NeuralData implementation designed to work with bipolar data. Bipolar data
@@ -48,12 +46,6 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	 * The data held by this object.
 	 */
 	private boolean[] data;
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final transient Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct this object with the specified data.

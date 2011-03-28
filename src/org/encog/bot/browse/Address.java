@@ -26,8 +26,7 @@ package org.encog.bot.browse;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * A URL address. Holds both the URL object, as well as original text.
@@ -45,11 +44,6 @@ public class Address {
 	 * The address as a URL.
 	 */
 	private URL url;
-
-	/**
-	 * The logger.
-	 */
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct the address from a URL.
@@ -75,7 +69,7 @@ public class Address {
 		try {
 			this.url = new URL(base, original);
 		} catch (final MalformedURLException e) {
-			this.logger.debug("Malformed URL", e);
+			EncogLogging.log(EncogLogging.LEVEL_ERROR, e);
 		}
 	}
 

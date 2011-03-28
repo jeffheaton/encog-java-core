@@ -24,8 +24,6 @@
 package org.encog.neural.pattern;
 
 import org.encog.neural.NeuralNetworkError;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class is thrown when an error occurs while using one of the neural
@@ -40,11 +38,6 @@ public class PatternError extends NeuralNetworkError {
 	 * The serial id for this class.
 	 */
 	private static final long serialVersionUID = 1828040493714503355L;
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Construct a message exception.

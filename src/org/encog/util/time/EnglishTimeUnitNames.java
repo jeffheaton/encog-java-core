@@ -23,9 +23,6 @@
  */
 package org.encog.util.time;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Class used to get the English names for TimeUnits.
  * 
@@ -34,11 +31,6 @@ import org.slf4j.LoggerFactory;
  */
 public class EnglishTimeUnitNames implements TimeUnitNames {
 
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	/**
 	 * Get the code for a TimeUnit.

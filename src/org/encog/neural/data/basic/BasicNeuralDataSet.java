@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.encog.EncogError;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.util.EngineArray;
@@ -35,8 +36,6 @@ import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.obj.ObjectCloner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * neural data in an ArrayList. This class is memory based, so large enough
@@ -87,11 +86,7 @@ public class BasicNeuralDataSet implements Serializable,
 		 * Removes are not supported.
 		 */
 		public void remove() {
-			if (BasicNeuralDataSet.this.logger.isErrorEnabled()) {
-				BasicNeuralDataSet.this.logger
-						.error("Called remove, unsupported operation.");
-			}
-			throw new UnsupportedOperationException();
+			throw new EncogError("Called remove, unsupported operation.");
 		}
 	}
 
@@ -100,11 +95,6 @@ public class BasicNeuralDataSet implements Serializable,
 	 */
 	private static final long serialVersionUID = -2279722928570071183L;
 
-	/**
-	 * The logging object.
-	 */
-	private final transient Logger logger = LoggerFactory.getLogger(this
-			.getClass());
 
 	/**
 	 * The data held by this object.

@@ -23,9 +23,6 @@
  */
 package org.encog.neural.som.training.basic.neighborhood;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * A very simple neighborhood function that will return 1.0 (full effect) for
  * the winning neuron, and 0.0 (no change) for everything else.
