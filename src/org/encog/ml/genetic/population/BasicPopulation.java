@@ -115,12 +115,6 @@ public class BasicPopulation implements Population {
 	private String name;
 
 	/**
-	 * The object description.
-	 */
-	private String description;
-
-
-	/**
 	 * Construct an empty population.
 	 */
 	public BasicPopulation() {
@@ -207,13 +201,6 @@ public class BasicPopulation implements Population {
 	}
 
 	/**
-	 * @return This object's description.
-	 */
-	public String getDescription() {
-		return this.description;
-	}
-
-	/**
 	 * @return The genomes in the population.
 	 */
 	public List<Genome> getGenomes() {
@@ -283,15 +270,6 @@ public class BasicPopulation implements Population {
 	 */
 	public double getYoungScoreBonus() {
 		return this.youngScoreBonus;
-	}
-
-	/**
-	 * Set the description.
-	 * @param theDescription The description.
-	 */
-	public void setDescription(final String theDescription) {
-		this.description = theDescription;
-
 	}
 
 	/**
