@@ -26,8 +26,6 @@ package org.encog.neural.networks.training.concurrent.jobs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
@@ -111,7 +109,7 @@ public abstract class TrainingJob {
 	 * Create a trainer to use.
 	 * @param profile The OpenCL training profile to use.
 	 */
-	public abstract void createTrainer(OpenCLTrainingProfile profile, boolean singleThreaded);
+	public abstract void createTrainer(boolean singleThreaded);
 
 	/**
 	 * @return the error

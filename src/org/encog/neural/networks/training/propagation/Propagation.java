@@ -26,7 +26,6 @@ package org.encog.neural.networks.training.propagation;
 import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -119,13 +118,6 @@ public abstract class Propagation extends BasicTraining {
 	 */
 	public int getNumThreads() {
 		return this.flatTraining.getNumThreads();
-	}
-
-	/**
-	 * @return The OpenCL device to use, or null for the CPU.
-	 */
-	public OpenCLTrainingProfile getProfile() {
-		return null;
 	}
 
 	/**

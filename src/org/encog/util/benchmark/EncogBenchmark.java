@@ -28,7 +28,6 @@ import java.io.PrintStream;
 
 import org.encog.Encog;
 import org.encog.engine.StatusReportable;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.Format;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
@@ -79,8 +78,6 @@ public class EncogBenchmark {
 	private int memoryScore;
 	private int binaryScore;
 
-	private EncogCLDevice device;
-
 	/**
 	 * Construct a benchmark object.
 	 * 
@@ -102,7 +99,6 @@ public class EncogBenchmark {
 		this.report.report(EncogBenchmark.STEPS, 0, "Beginning benchmark");
 
 		evalCPU();
-		evalOpenCL();
 		evalMemory();
 		evalBinary();
 
@@ -110,16 +106,6 @@ public class EncogBenchmark {
 
 		result.append("Encog Benchmark: CPU:");
 		result.append(Format.formatInteger(this.cpuScore));
-		result.append(", OpenCL");
-		if (this.device == null)
-			result.append("(none)");
-		else if (this.device.isCPU())
-			result.append("(cpu)");
-		else
-			result.append("(gpu)");
-
-		result.append(":");
-		result.append(Format.formatInteger(this.clScore));
 		result.append(", Memory:");
 		result.append(Format.formatInteger(this.memoryScore));
 		result.append(", Disk:");
@@ -158,83 +144,6 @@ public class EncogBenchmark {
 		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP1,
 				"CPU result: " + result);
 		this.cpuScore = result;
-	}
-
-	/**
-	 * Train the neural network with 0 hidden layers.
-	 * 
-	 * @return The amount of time this benchmark took.
-	 */
-	private void evalOpenCL() {
-
-		try {
-			// did the caller assign a device? If not, use the first GPU,
-			// failing that,
-			// use the first CPU. Failing that, as well, don't test OpenCL.
-			if (this.device == null) {
-				PrintStream saved = System.err;
-				System.setErr(null);// don't display OpenCL errors
-				try {
-					if (Encog.getInstance().getCL() == null)
-						Encog.getInstance().initCL();
-
-					this.device = Encog.getInstance().getCL().chooseDevice();
-				} finally {
-					System.setErr(saved);
-				}
-			}
-		} catch (Throwable t) {
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"No OpenCL devices, result: 0");
-			this.clScore = 0;
-		}
-
-		int small = 0, medium = 0, large = 0, huge = 0;
-
-		try {
-			small = Evaluate.evaluateTrain(device, 2, 4, 0, 1);
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"Evaluate OpenCL, tiny= "
-							+ Format.formatInteger(small / 100));
-		} catch (Throwable t) {
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"Evaluate OpenCL, tiny FAILED");
-		}
-
-		try {
-			medium = Evaluate.evaluateTrain(device, 10, 20, 0, 1);
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"Evaluate OpenCL, small= "
-							+ Format.formatInteger(medium / 30));
-		} catch (Throwable t) {
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"Evaluate OpenCL, small FAILED");
-		}
-
-		try {
-			large = Evaluate.evaluateTrain(device, 100, 200, 40, 5);
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"Evaluate OpenCL, large= " + Format.formatInteger(large));
-		} catch (Throwable t) {
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"Evaluate OpenCL, large FAILED");
-		}
-
-		try {
-			huge = Evaluate.evaluateTrain(device, 200, 300, 200, 50);
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"Evaluate OpenCL, huge= " + Format.formatInteger(huge));
-		} catch (Throwable t) {
-			this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-					"Evaluate OpenCL, huge FAILED");
-		}
-
-		int result = (small / 100) + (medium / 30) + large + huge;
-
-		this.report.report(EncogBenchmark.STEPS, EncogBenchmark.STEP2,
-				"OpenCL result: " + result);
-		this.clScore = result;
-
 	}
 
 	private void evalMemory() {
@@ -328,19 +237,6 @@ public class EncogBenchmark {
 		return binaryScore;
 	}
 
-	/**
-	 * @return the device
-	 */
-	public EncogCLDevice getDevice() {
-		return device;
-	}
 
-	/**
-	 * @param device
-	 *            the device to set
-	 */
-	public void setDevice(EncogCLDevice device) {
-		this.device = device;
-	}
 
 }

@@ -23,7 +23,6 @@
  */
 package org.encog.neural.networks.training.concurrent.jobs;
 
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -128,9 +127,9 @@ public class RPROPJob extends TrainingJob {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createTrainer(final OpenCLTrainingProfile profile, boolean singleThreaded) {
+	public void createTrainer(boolean singleThreaded) {
 		final Propagation train = new ResilientPropagation(getNetwork(),
-				getTraining(), profile, getInitialUpdate(), getMaxStep());
+				getTraining(), getInitialUpdate(), getMaxStep());
 
 		if( singleThreaded )
 			train.setNumThreads(1);

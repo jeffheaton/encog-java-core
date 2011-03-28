@@ -32,18 +32,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.encog.Encog;
 import org.encog.NullStatusReportable;
 import org.encog.engine.StatusReportable;
-import org.encog.engine.network.train.prop.RPROPConst;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.concurrent.jobs.RPROPJob;
 import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
 import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformer;
 import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformerCPU;
-import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformerOpenCL;
-import org.encog.neural.networks.training.strategy.end.EndIterationsStrategy;
-import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 
 /**
  * Concurrent training manager. This class allows you to queue up network
@@ -196,21 +188,6 @@ public final class ConcurrentTrainingManager implements Runnable {
 			int cpuCount = 1;
 			
 			this.setSingleThreaded(splitCores);
-
-			// handle OpenCL mode
-			if (Encog.getInstance().getCL() != null) {
-
-				// should we let OpenCL run the CPU?
-				if (Encog.getInstance().getCL().areCPUsPresent()) {
-					useCPU = false;
-				}
-
-				// add a performer for each OpenCL device.
-				for (final EncogCLDevice device : Encog.getInstance().getCL()
-						.getDevices()) {
-					addPerformer(new ConcurrentTrainingPerformerOpenCL(clCount++,device));
-				}
-			}
 
 			// now create CPU performers
 			if (useCPU && forceCoreCount>=0 ) {

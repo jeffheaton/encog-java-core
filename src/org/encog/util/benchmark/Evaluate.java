@@ -23,9 +23,7 @@
  */
 package org.encog.util.benchmark;
 
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.RPROPConst;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;
@@ -45,24 +43,16 @@ public final class Evaluate {
 	 */
 	public static final int MILIS = 1000;
 
-	public static int evaluateTrain(int input, int hidden1, int hidden2,
-			int output) {
-		return evaluateTrain(null, input,hidden1,hidden2,output);
-	}
 	
-	public static int evaluateTrain(EncogCLDevice device, int input, int hidden1, int hidden2,
+	public static int evaluateTrain(int input, int hidden1, int hidden2,
 			int output) {
 		final BasicNetwork network = EncogUtility.simpleFeedForward(input,
 				hidden1, hidden2, output, true);
 		final NeuralDataSet training = RandomTrainingFactory.generate(1000,
 				10000, input, output, -1, 1);
+	
 		
-		OpenCLTrainingProfile profile = null;
-		
-		if( device!=null )
-			profile = new OpenCLTrainingProfile(device);
-		
-		return evaluateTrain(profile, network, training);
+		return evaluateTrain(network, training);
 	}
 
 	/**
@@ -76,21 +66,12 @@ public final class Evaluate {
 	 *            The training data to use.
 	 * @return The lowest number of seconds that each of the ten attempts took.
 	 */
-	public static int evaluateTrain(final OpenCLTrainingProfile profile,
+	public static int evaluateTrain(
 			final BasicNetwork network, final NeuralDataSet training) {
 		// train the neural network
 		Train train;
 		
-		if( profile==null ) {
-			train = new ResilientPropagation(network, training);
-		} else {
-			train = new ResilientPropagation(
-					network, 
-					training, 
-					profile, 
-					RPROPConst.DEFAULT_INITIAL_UPDATE, 
-					RPROPConst.DEFAULT_MAX_STEP);
-		}
+		train = new ResilientPropagation(network, training);
 
 		final long start = System.currentTimeMillis();
 		final long stop = start + (10 * MILIS);

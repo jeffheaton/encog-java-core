@@ -23,10 +23,7 @@
  */
 package org.encog.neural.networks.training.propagation.manhattan;
 
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
-import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.engine.network.train.prop.TrainFlatNetworkManhattan;
-import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.LearningRate;
@@ -57,21 +54,6 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	static final double DEFAULT_ZERO_TOLERANCE = 0.001;
 
 	/**
-	 * Construct a Manhattan propagation training object. Use the CPU to train.
-	 * 
-	 * @param network
-	 *            The network to train.
-	 * @param training
-	 *            The training data to use.
-	 * @param learnRate
-	 *            The learning rate.
-	 */
-	public ManhattanPropagation(final BasicNetwork network,
-			final NeuralDataSet training, final double learnRate) {
-		this(network, training, null, learnRate);
-	}
-
-	/**
 	 * Construct a Manhattan propagation training object.
 	 * 
 	 * @param network
@@ -84,19 +66,12 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The OpenCL profile to use, null for CPU.
 	 */
 	public ManhattanPropagation(final BasicNetwork network,
-			final NeuralDataSet training, final OpenCLTrainingProfile profile,
+			final NeuralDataSet training, 
 			final double learnRate) {
 		super(network, training);
 
-		if (profile == null) {
-			setFlatTraining(new TrainFlatNetworkManhattan(network
-					.getStructure().getFlat(), getTraining(), learnRate));
-		} else {
-			final TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
-					network.getStructure().getFlat(), getTraining(), profile);
-			rpropFlat.learnManhattan(learnRate);
-			setFlatTraining(rpropFlat);
-		}
+		setFlatTraining(new TrainFlatNetworkManhattan(network
+				.getStructure().getFlat(), getTraining(), learnRate));
 
 	}
 

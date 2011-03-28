@@ -28,7 +28,6 @@ import java.util.Map;
 
 import org.encog.engine.EncogEngine;
 import org.encog.engine.concurrency.EngineConcurrency;
-import org.encog.engine.opencl.EncogCL;
 
 /**
  * Main Encog class, does little more than provide version information. Also
@@ -111,20 +110,6 @@ public final class Encog {
 		return this.properties;
 	}
 
-	/**
-	 * Enable OpenCL processing. OpenCL processing allows Encog to use GPU
-	 * devices to speed calculations. Not all areas of Encog can use this,
-	 * however, GPU's can currently accelerate the training of Feedforward
-	 * neural networks.
-	 * 
-	 * To make use of the GPU you must have OpenCL drivers installed. For more
-	 * information on getting OpenCL drivers, visit the following URL.
-	 * 
-	 * http://www.heatonresearch.com/encog/opencl
-	 */
-	public void initCL() {
-		EncogEngine.getInstance().initCL();
-	}
 
 	/**
 	 * Provides any shutdown that Encog may need. Currently this shuts down the
@@ -134,12 +119,5 @@ public final class Encog {
 		EngineConcurrency.getInstance().shutdown(10000);
 	}
 
-	/**
-	 * @return If Encog is not using GPU/CL processing this attribute will be
-	 *         null. Otherwise it holds the Encog CL object.
-	 */
-	public EncogCL getCL() {
-		return EncogEngine.getInstance().getCL();
-	}
 
 }

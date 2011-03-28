@@ -23,12 +23,9 @@
  */
 package org.encog.neural.networks.training.concurrent.jobs;
 
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
@@ -108,9 +105,9 @@ public class BPROPJob extends TrainingJob {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void createTrainer(final OpenCLTrainingProfile profile, boolean singleThreaded) {
+	public void createTrainer(boolean singleThreaded) {
 		final Propagation train = new Backpropagation(getNetwork(), getTraining(),
-				profile, getLearningRate(), getMomentum());
+				getLearningRate(), getMomentum());
 		
 		if( singleThreaded )
 			train.setNumThreads(1);

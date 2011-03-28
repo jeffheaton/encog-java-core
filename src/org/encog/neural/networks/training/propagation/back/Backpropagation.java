@@ -23,9 +23,7 @@
  */
 package org.encog.neural.networks.training.propagation.back;
 
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
 import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
-import org.encog.engine.network.train.prop.TrainFlatNetworkOpenCL;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.LearningRate;
@@ -79,14 +77,12 @@ public class Backpropagation extends Propagation implements Momentum,
 	 */
 	public Backpropagation(final BasicNetwork network,
 			final NeuralDataSet training) {
-		this(network, training, null, 0, 0);
+		this(network, training, 0, 0);
 		addStrategy(new SmartLearningRate());
 		addStrategy(new SmartMomentum());
 	}
 
 	/**
-	 * Train using the specified learning rate and momentum. Use the CPU to
-	 * train.
 	 * 
 	 * @param network
 	 *            The network that is to be trained
@@ -100,42 +96,14 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            have on the current iteration.
 	 */
 	public Backpropagation(final BasicNetwork network,
-			final NeuralDataSet training, final double learnRate,
-			final double momentum) {
-		this(network, training, null, learnRate, momentum);
-	}
-
-	/**
-	 * 
-	 * @param network
-	 *            The network that is to be trained
-	 * @param training
-	 *            The training set
-	 * @param profile
-	 *            The OpenCL profile to use, null for CPU.
-	 * @param learnRate
-	 *            The rate at which the weight matrix will be adjusted based on
-	 *            learning.
-	 * @param momentum
-	 *            The influence that previous iteration's training deltas will
-	 *            have on the current iteration.
-	 */
-	public Backpropagation(final BasicNetwork network,
-			final NeuralDataSet training, final OpenCLTrainingProfile profile,
+			final NeuralDataSet training, 
 			final double learnRate, final double momentum) {
 		super(network, training);
 
-		if (profile == null) {
-			final TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
-					network.getStructure().getFlat(), getTraining(), learnRate,
-					momentum);
-			setFlatTraining(backFlat);
-		} else {
-			final TrainFlatNetworkOpenCL rpropFlat = new TrainFlatNetworkOpenCL(
-					network.getStructure().getFlat(), getTraining(), profile);
-			rpropFlat.learnBPROP(learnRate, momentum);
-			setFlatTraining(rpropFlat);
-		}
+		final TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
+				network.getStructure().getFlat(), getTraining(), learnRate,
+				momentum);
+		setFlatTraining(backFlat);
 
 	}
 

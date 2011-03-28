@@ -26,8 +26,6 @@ package org.encog.neural.networks.training.concurrent.performers;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.encog.engine.concurrency.EngineConcurrency;
-import org.encog.engine.network.train.prop.OpenCLTrainingProfile;
-import org.encog.engine.opencl.EncogCLDevice;
 import org.encog.engine.util.Stopwatch;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.Train;
@@ -93,16 +91,8 @@ public class ConcurrentTrainingPerformerCPU implements
 		Stopwatch watch = new Stopwatch();
 		try {
 			watch.start();
-			OpenCLTrainingProfile profile = null;
-			if (this instanceof ConcurrentTrainingPerformerOpenCL) {
-				EncogCLDevice device = ((ConcurrentTrainingPerformerOpenCL)this).getDevice();
-				profile = new OpenCLTrainingProfile(device,
-						this.currentJob.getLocalRatio(),
-						this.currentJob.getGlobalRatio(),
-						this.currentJob.getSegmentationRatio());
-			}
 			
-			this.currentJob.createTrainer(profile, manager.isSingleThreaded());
+			this.currentJob.createTrainer(manager.isSingleThreaded());
 			final Train train = this.currentJob.getTrain();
 			int interation = 1;
 
