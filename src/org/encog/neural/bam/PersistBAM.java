@@ -9,7 +9,7 @@ import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
-import org.encog.persist.map.PersistConst;
+import org.encog.persist.PersistConst;
 
 public class PersistBAM implements EncogPersistor {
 

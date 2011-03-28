@@ -30,7 +30,7 @@ import java.util.List;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
-import org.encog.persist.map.PersistConst;
+import org.encog.persist.PersistConst;
 
 /**
  * Provides basic functionality for a species.

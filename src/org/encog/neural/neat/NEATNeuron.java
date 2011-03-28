@@ -27,7 +27,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.persist.map.PersistConst;
+import org.encog.persist.PersistConst;
 
 /**
  * Implements a NEAT neuron. Neat neurons are of a specific type, defined by the

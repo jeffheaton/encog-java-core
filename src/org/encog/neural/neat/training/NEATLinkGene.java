@@ -28,7 +28,7 @@ import java.io.Serializable;
 import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.neural.neat.NEATLink;
-import org.encog.persist.map.PersistConst;
+import org.encog.persist.PersistConst;
 
 /**
  * Implements a NEAT link gene. This describes a way in which two neurons are

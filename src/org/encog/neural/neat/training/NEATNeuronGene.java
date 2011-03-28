@@ -29,7 +29,7 @@ import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
 import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
-import org.encog.persist.map.PersistConst;
+import org.encog.persist.PersistConst;
 
 /**
  * Implements a NEAT neuron gene.

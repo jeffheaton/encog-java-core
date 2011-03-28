@@ -28,7 +28,7 @@ import org.encog.ml.BasicML;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralDataMapping;
-import org.encog.persist.map.PersistConst;
+import org.encog.persist.PersistConst;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

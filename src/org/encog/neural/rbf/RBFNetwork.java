@@ -41,8 +41,8 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.persist.PersistConst;
 import org.encog.persist.PersistError;
-import org.encog.persist.map.PersistConst;
 import org.encog.util.obj.ReflectionUtil;
 
 public class RBFNetwork  extends BasicML implements MLRegression  {

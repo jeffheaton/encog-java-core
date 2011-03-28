@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.persist.map;
+package org.encog.persist;
 
 public class PersistConst {
 	public static final String TYPE_HOPFIELD = "HopfieldNetwork";

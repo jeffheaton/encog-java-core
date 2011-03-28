@@ -45,7 +45,7 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.structure.NeuralStructure;
-import org.encog.persist.map.PersistConst;
+import org.encog.persist.PersistConst;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.obj.ObjectCloner;
