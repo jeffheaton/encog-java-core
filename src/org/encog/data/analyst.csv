@@ -31,11 +31,10 @@ SERIES:CONFIG,lag,int
 SERIES:CONFIG,includeTarget,boolean
 ML:CONFIG,trainingFile,file
 ML:CONFIG,evalFile,file
-ML:CONFIG,resourceFile,file
+ML:CONFIG,machineLearningFile,file
 ML:CONFIG,outputFile,file
 ML:CONFIG,type,string
 ML:CONFIG,architecture,string
-ML:CONFIG,resourceName,string
 ML:TRAIN,type,string
 ML:TRAIN,arguments,string
 ML:TRAIN,targetError,real

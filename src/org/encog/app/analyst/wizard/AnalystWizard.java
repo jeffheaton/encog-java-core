@@ -177,7 +177,10 @@ public class AnalystWizard {
 
 			if ((f.isInteger() || f.isReal()) && !f.isClass()) {
 				action = NormalizationAction.Normalize;
-				norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+				if( this.range == NormalizeRange.NegOne2One)
+					norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+				else
+					norm[i] = new NormalizedField(f.getName(), action, 1, 0);
 				norm[i].setActualHigh(f.getMax());
 				norm[i].setActualLow(f.getMin());
 			} else if (f.isClass()) {
