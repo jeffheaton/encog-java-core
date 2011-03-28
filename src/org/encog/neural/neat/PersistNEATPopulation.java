@@ -135,6 +135,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 				
 				result.setNeatActivationFunction(EncogFileSection.parseActivationFunction(params,NEATPopulation.PROPERTY_NEAT_ACTIVATION));
 				result.setOutputActivationFunction(EncogFileSection.parseActivationFunction(params,NEATPopulation.PROPERTY_OUTPUT_ACTIVATION));
+				result.setSnapshot(EncogFileSection.parseBoolean(params, PersistConst.SNAPSHOT));
 				result.setInputCount(EncogFileSection.parseInt(params,
 						PersistConst.INPUT_COUNT));
 				result.setOutputCount(EncogFileSection.parseInt(params,
@@ -197,6 +198,7 @@ public class PersistNEATPopulation implements EncogPersistor {
 		NEATPopulation pop = (NEATPopulation) obj;
 		out.addSection("NEAT-POPULATION");
 		out.addSubSection("CONFIG");
+		out.writeProperty(PersistConst.SNAPSHOT, pop.isSnapshot());
 		out.writeProperty(NEATPopulation.PROPERTY_OUTPUT_ACTIVATION, pop.getOutputActivationFunction());
 		out.writeProperty(NEATPopulation.PROPERTY_NEAT_ACTIVATION, pop.getNeatActivationFunction());
 		out.writeProperty(PersistConst.INPUT_COUNT, pop.getInputCount());

@@ -9,7 +9,6 @@ import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.neat.training.NEATGenome;
 import org.encog.neural.neat.training.NEATInnovationList;
-import org.encog.persist.map.PersistConst;
 
 public class NEATPopulation extends BasicPopulation implements Serializable {
 
