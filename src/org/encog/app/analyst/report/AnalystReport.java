@@ -98,13 +98,11 @@ public class AnalystReport {
 		
 		String t = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_type);
 		String a = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_architecture);
-		String rf = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
-		String rn = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
+		String rf = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
 		
 		report.tablePair("Type",t);
 		report.tablePair("Architecture",a);
-		report.tablePair("Resource File",rf);
-		report.tablePair("Resource Name",rn);
+		report.tablePair("Machine Learning File",rf);
 		report.endTable();
 		
 		

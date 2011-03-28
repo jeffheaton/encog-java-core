@@ -22,7 +22,7 @@ public class CmdTrain extends Cmd {
 
 	private MLMethod obtainMethod() {
 		String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_resourceFile);
+				ScriptProperties.ML_CONFIG_machineLearningFile);
 		String resourceFile = getProp().getFilename(resourceID);
 		
 		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(new File(resourceFile));
@@ -85,7 +85,7 @@ public class CmdTrain extends Cmd {
 		performTraining(trainer, method, trainingSet);
 		
 		String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_resourceFile);
+				ScriptProperties.ML_CONFIG_machineLearningFile);
 		String resourceFile = getProp().getFilename(resourceID);
 		EncogDirectoryPersistence.saveObject(new File(resourceFile), method);
 

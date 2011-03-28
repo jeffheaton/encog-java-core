@@ -31,7 +31,7 @@ public class CmdEvaluate extends Cmd {
 	public boolean executeCommand() {
 		// get filenames
 		String evalID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_evalFile);
-		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
+		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
 		
 		String evalFile = getProp().getFilename(evalID);
 		String resourceFile = getProp().getFilename(resourceID);
@@ -60,7 +60,7 @@ public class CmdEvaluate extends Cmd {
 
 		// get filenames
 		String evalID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_evalFile);
-		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
+		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
 		
 		String evalFile = getProp().getFilename(
 				evalID);

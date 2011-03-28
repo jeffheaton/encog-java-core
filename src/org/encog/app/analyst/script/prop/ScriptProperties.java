@@ -36,11 +36,10 @@ public class ScriptProperties {
 	public static final String GENERATE_CONFIG_targetFile = "GENERATE:CONFIG_targetFile";
 	public static final String ML_CONFIG_trainingFile = "ML:CONFIG_trainingFile";
 	public static final String ML_CONFIG_evalFile = "ML:CONFIG_evalFile";
-	public static final String ML_CONFIG_resourceFile = "ML:CONFIG_resourceFile";
+	public static final String ML_CONFIG_machineLearningFile = "ML:CONFIG_machineLearningFile";
 	public static final String ML_CONFIG_outputFile = "ML:CONFIG_outputFile";
 	public static final String ML_CONFIG_type = "ML:CONFIG_type";
 	public static final String ML_CONFIG_architecture = "ML:CONFIG_architecture";
-	public static final String ML_CONFIG_resourceName = "ML:CONFIG_resourceName";
 	public static final String ML_TRAIN_type = "ML:TRAIN_type";
 	public static final String ML_TRAIN_arguments = "ML:TRAIN_arguments";
 	public static final String ML_TRAIN_targetError = "ML:TRAIN_targetError";

@@ -22,12 +22,11 @@ public class CmdCreate extends Cmd {
 	public boolean executeCommand() {
 		// get filenames
 		String trainingID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_trainingFile);
-		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_resourceFile);
+		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
 		
 		String trainingFile = getProp().getFilename(trainingID);
 		String resourceFile = getProp().getFilename(resourceID);
 		
-		String resource = getProp().getPropertyString(ScriptProperties.ML_CONFIG_resourceName);
 		String type = getProp().getPropertyString(ScriptProperties.ML_CONFIG_type);
 		String arch = getProp().getPropertyString(ScriptProperties.ML_CONFIG_architecture);
 

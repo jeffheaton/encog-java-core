@@ -25,7 +25,7 @@ public class AnalystWizard {
 	public static final String FILE_TRAIN = "FILE_TRAIN";
 	public static final String FILE_EVAL = "FILE_EVAL";
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
-	public static final String FILE_EG = "FILE_EG";
+	public static final String FILE_ML = "FILE_ML";
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
 	public static final String FILE_SERIES = "FILE_SERIES";
 
@@ -91,7 +91,7 @@ public class AnalystWizard {
 			egName = new File(FileUtil.forceExtension(file.toString(), "eg"));
 		}
 
-		this.script.getProperties().setFilename(AnalystWizard.FILE_EG,
+		this.script.getProperties().setFilename(AnalystWizard.FILE_ML,
 				egName.toString());
 
 		String target;
@@ -146,7 +146,7 @@ public class AnalystWizard {
 				ScriptProperties.ML_CONFIG_trainingFile,
 				AnalystWizard.FILE_TRAINSET);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_resourceFile, AnalystWizard.FILE_EG);
+				ScriptProperties.ML_CONFIG_machineLearningFile, AnalystWizard.FILE_ML);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_outputFile,
 				AnalystWizard.FILE_OUTPUT);
@@ -304,8 +304,6 @@ public class AnalystWizard {
 					ScriptProperties.ML_CONFIG_architecture,
 					"?B->SIGMOID->" + hidden + "B->SIGMOID->?");
 		}
-		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_resourceName, "ml");
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
 				"rprop");
@@ -319,8 +317,6 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_architecture,
 				"?->C(type=new,kernel=gaussian)->?");
-		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_resourceName, "ml");
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
 				"svm-train");
@@ -336,8 +332,6 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_architecture,
 				"?->GAUSSIAN(" + hidden + ")->?");
-		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_resourceName, "ml");
 
 		if (outputColumns > 1)
 			this.script.getProperties().setProperty(
