@@ -47,6 +47,7 @@ public class PersistNEATNetwork implements EncogPersistor {
 				result.setInputCount( EncogFileSection.parseInt(params,PersistConst.INPUT_COUNT));
 				result.setOutputCount( EncogFileSection.parseInt(params,PersistConst.OUTPUT_COUNT));
 				result.setActivationFunction( EncogFileSection.parseActivationFunction(params,PersistConst.ACTIVATION_FUNCTION));
+				result.setOutputActivationFunction( EncogFileSection.parseActivationFunction(params,NEATPopulation.PROPERTY_OUTPUT_ACTIVATION));
 				result.setNetworkDepth( EncogFileSection.parseInt(params,PersistConst.DEPTH));
 				result.setSnapshot( EncogFileSection.parseBoolean(params, PersistConst.SNAPSHOT));
 			} else if( section.getSectionName().equals("NEAT") && section.getSubSectionName().equals("NEURONS") ) {
@@ -95,6 +96,7 @@ public class PersistNEATNetwork implements EncogPersistor {
 		out.writeProperty(PersistConst.INPUT_COUNT, neat.getInputCount());
 		out.writeProperty(PersistConst.OUTPUT_COUNT, neat.getOutputCount());
 		out.writeProperty(PersistConst.ACTIVATION_FUNCTION, neat.getActivationFunction());
+		out.writeProperty(NEATPopulation.PROPERTY_OUTPUT_ACTIVATION, neat.getOutputActivationFunction());
 		out.writeProperty(PersistConst.DEPTH, neat.getNetworkDepth());
 		out.writeProperty(PersistConst.SNAPSHOT, neat.isSnapshot());
 		

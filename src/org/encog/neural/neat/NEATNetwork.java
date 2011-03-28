@@ -74,6 +74,8 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 	 * The activation function.
 	 */
 	private ActivationFunction activationFunction;
+	
+	private ActivationFunction outputActivationFunction;
 
 	/**
 	 * The depth of the network.
@@ -118,10 +120,12 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 	public NEATNetwork(final int inputCount, 
 			final int outputCount,
 			final List<NEATNeuron> neurons,
-			final ActivationFunction activationFunction, 
+			final ActivationFunction activationFunction,
+			final ActivationFunction outputActivationFunction,
 			final int networkDepth) {
 		this.inputCount = inputCount;
 		this.outputCount = outputCount;
+		this.outputActivationFunction = outputActivationFunction;
 		this.neurons.addAll(neurons);
 		this.networkDepth = networkDepth;
 		this.activationFunction = activationFunction;
@@ -294,5 +298,24 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 		this.networkDepth = i;
 		
 	}
+
+	/**
+	 * @return the outputActivationFunction
+	 */
+	public ActivationFunction getOutputActivationFunction() {
+		return outputActivationFunction;
+	}
+
+	/**
+	 * @param outputActivationFunction the outputActivationFunction to set
+	 */
+	public void setOutputActivationFunction(
+			ActivationFunction outputActivationFunction) {
+		this.outputActivationFunction = outputActivationFunction;
+	}
+
+	
+	
+	
 	
 }
