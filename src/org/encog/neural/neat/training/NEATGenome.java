@@ -587,8 +587,7 @@ public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 				0);
 		
 		
-		network.setSnapshot(pop.isSnapshot());
-		network.setActivationFunction(pop.getOutputActivationFunction());		
+		network.setSnapshot(pop.isSnapshot());		
 		setOrganism(network);		
 	}
 

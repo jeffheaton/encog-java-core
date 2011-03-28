@@ -220,6 +220,8 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression {
 				index++;
 			}
 		}
+		
+		this.outputActivationFunction.activationFunction(result.getData(), 0, result.size());
 
 		return result;
 	}
