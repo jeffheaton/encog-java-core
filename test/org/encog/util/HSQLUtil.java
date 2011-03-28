@@ -28,9 +28,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * Utilities for using the Hypersonic SQL (HSQL) engine. Encog uses this SQL
  * database for in-memory spidering, as well as unit testing.
@@ -96,12 +93,6 @@ public final class HSQLUtil {
 	public static void shutdown() {
 
 	}
-
-	/**
-	 * The logging object.
-	 */
-	@SuppressWarnings("unused")
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	/**
 	 * Private constructor.
