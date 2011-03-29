@@ -44,6 +44,37 @@ import org.encog.util.simple.EncogUtility;
 public class SVMTrain extends BasicTraining {
 	
 	/**
+	 * The default starting number for C.
+	 */
+	public static final double DEFAULT_CONST_BEGIN = -5;
+	
+	/**
+	 * The default ending number for C.
+	 */
+	public static final double DEFAULT_CONST_END = 15;
+	
+	/**
+	 * The default step for C.
+	 */
+	public static final double DEFAULT_CONST_STEP = 2;
+	
+	/**
+	 * The default gamma begin.
+	 */
+	public static final double DEFAULT_GAMMA_BEGIN = -10;
+	
+	/**
+	 * The default gamma end.
+	 */
+	public static final double DEFAULT_GAMMA_END = 10;
+	
+	/**
+	 * The default gamma step.
+	 */
+	public static final double DEFAULT_GAMMA_STEP = 1;
+
+	
+	/**
 	 * The network that is to be trained.
 	 */
 	private SVM network;
