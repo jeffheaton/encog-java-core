@@ -35,6 +35,7 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.engine.util.Format;
+import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
@@ -460,5 +461,20 @@ public final class EncogUtility {
 			throw new EncogError(ex);
 		}
 		
+	}
+
+	public static double calculateClassificationError(MLClassification method,
+			NeuralDataSet data) {
+		int total = 0;
+		int correct = 0;
+		
+		for(NeuralDataPair pair : data ) {
+			int ideal = (int)pair.getIdeal().getData(0);
+			int actual = method.classify(pair.getInput());
+			if( actual==ideal )
+				correct++;
+			total++;
+		}
+		return (double)(total-correct) / (double)total;
 	}
 }

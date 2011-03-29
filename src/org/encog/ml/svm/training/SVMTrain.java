@@ -95,7 +95,7 @@ public class SVMTrain extends BasicTraining {
 		network.setModel( svm.svm_train(problem, network
 				.getParams()) );
 		
-		this.setError(EncogUtility.calculateRegressionError((MLRegression)this.network, this.getTraining()));
+		this.setError(this.network.calculateError(this.getTraining()));
 		this.trainingDone = true;
 	}
 	

@@ -28,9 +28,13 @@ import org.encog.mathutil.libsvm.svm_model;
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.ml.BasicML;
+import org.encog.ml.MLClassification;
+import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.util.simple.EncogUtility;
 
 /**
  * This is a network that is backed by one or more Support Vector Machines
@@ -50,7 +54,7 @@ import org.encog.neural.data.basic.BasicNeuralData;
  * neural network training classes will work. This class must be trained using
  * SVMTrain.
  */
-public class SVM extends BasicML implements MLRegression {
+public class SVM extends BasicML implements MLRegression, MLClassification, MLError {
 
 	/**
 	 * The SVM model to use.
@@ -288,5 +292,43 @@ public class SVM extends BasicML implements MLRegression {
 		default:
 			return null;
 		}
+	}
+
+	public void setInputCount(int i) {
+		this.inputCount = i;
+		
+	}
+	
+	/**
+	 * Calculate the error for this SVM. 
+	 * 
+	 * @param data
+	 *            The training set.
+	 * @return The error percentage.
+	 */
+	public double calculateError(final NeuralDataSet data) {
+		
+		switch (this.getSVMType()) {
+		case SupportVectorClassification:
+		case NewSupportVectorClassification:
+		case SupportVectorOneClass:
+			return EncogUtility.calculateClassificationError(this,data);
+		case EpsilonSupportVectorRegression:
+		case NewSupportVectorRegression:
+			return EncogUtility.calculateRegressionError(this,data);
+		}
+		
+		return EncogUtility.calculateRegressionError(this,data);
+	}
+
+	@Override
+	public int classify(NeuralData input) {
+		if (this.model == null) {
+			throw new EncogError(
+					"Can't use the SVM yet, it has not been trained, and no model exists.");
+		}
+
+		svm_node[] formattedInput = makeSparse(input);
+		return (int)svm.svm_predict(this.model, formattedInput);
 	}
 }

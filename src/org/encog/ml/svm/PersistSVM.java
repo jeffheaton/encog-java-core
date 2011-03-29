@@ -15,6 +15,7 @@ import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
+import org.encog.persist.PersistConst;
 import org.encog.persist.PersistError;
 
 public class PersistSVM implements EncogPersistor {
@@ -55,6 +56,7 @@ public class PersistSVM implements EncogPersistor {
 			if (section.getSectionName().equals("SVM")
 					&& section.getSubSectionName().equals("SVM-PARAM")) {
 				Map<String, String> params = section.parseParams();
+				result.setInputCount(EncogFileSection.parseInt(params, PersistConst.INPUT_COUNT));
 				result.getParams().C = EncogFileSection.parseDouble(params,
 						PersistSVM.PARAM_C);
 				result.getParams().cache_size = EncogFileSection.parseDouble(
@@ -114,6 +116,7 @@ public class PersistSVM implements EncogPersistor {
 		out.addSubSection("PARAMS");
 		out.addProperties(svm2.getProperties());
 		out.addSubSection("SVM-PARAM");
+		out.writeProperty(PersistConst.INPUT_COUNT, svm2.getInputCount());
 		out.writeProperty(PersistSVM.PARAM_C, svm2.getParams().C);
 		out.writeProperty(PersistSVM.PARAM_cacheSize,
 				svm2.getParams().cache_size);

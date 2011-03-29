@@ -16,7 +16,7 @@ public class MLTrainFactory {
 	public static final String TYPE_BACKPROP = "backprop";
 	public static final String TYPE_SCG = "scg";
 	public static final String TYPE_LMA = "lma";
-	public static final String TYPE_SVM = "svm";
+	public static final String TYPE_SVM = "svm-train";
 	public static final String TYPE_SVM_SEARCH = "svm-search";
 	
 	private final BackPropFactory backpropFactory = new BackPropFactory();
