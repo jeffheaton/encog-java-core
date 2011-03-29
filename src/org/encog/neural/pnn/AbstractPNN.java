@@ -28,39 +28,60 @@ import org.encog.neural.data.NeuralData;
 
 public abstract class AbstractPNN  extends BasicML {
 
-	// Input neuron count.
+	/**
+	 * Input neuron count.
+	 */
 	private final int inputCount;
 
-	// Output neuron count.
+	/**
+	 * Output neuron count. 
+	 */
 	private final int outputCount;
 
-	// Kernel type.
+	/**
+	 * Kernel type. 
+	 */
 	private final PNNKernelType kernel;
 
-	// Output mode.
-	private final PNNOutputMode outputMode; // Output model (see OUTMOD_? in
-											// CONST.H)
+	/**
+	 *  Output mode.
+	 */
+	private final PNNOutputMode outputMode; 
 
-	// Is trained.
+	/**
+	 * Is trained. 
+	 */
 	private boolean trained;
 
-	// Network error. (MSE)
+	/**
+	 * Network error. (MSE)
+	 */
 	private double error;
 
-	// Confusion work area.
+	/**
+	 * Confusion work area.
+	 */
 	private int[] confusion;
 
-	// First derivative.
+	/**
+	 * First derivative. 
+	 */
 	private final double[] deriv;
 
-	// Second derivative
+	/**
+	 * Second derivative
+	 */
 	private final double[] deriv2;
 
-	// Index of a sample to exclude.
+	/**
+	 * Index of a sample to exclude. 
+	 */
 	private int exclude;
 
-	// True, if we are using separate sigmas for each class.
-	boolean separateClass;
+	/**
+	 * True, if we are using separate sigmas for each class.
+	 */
+	private boolean separateClass;
 
 	/**
 	 * Constructor.

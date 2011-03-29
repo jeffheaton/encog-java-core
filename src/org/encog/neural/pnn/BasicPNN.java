@@ -56,7 +56,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	/**
 	 * The sigma's specify the widths of each kernel used.
 	 */
-	double[] sigma;
+	private double[] sigma;
 
 	/**
 	 * The training samples that form the memory of this network.
@@ -66,12 +66,12 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	/**
 	 * Used for classification, the number of cases in each class.
 	 */
-	int[] countPer;
+	private int[] countPer;
 
 	/**
 	 * The prior probability weights. 
 	 */
-	double[] priors;
+	private double[] priors;
 
 	/**
 	 * Construct a BasicPNN network.
