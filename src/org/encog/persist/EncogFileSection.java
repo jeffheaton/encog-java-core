@@ -214,5 +214,14 @@ public class EncogFileSection {
 		}
 	}
 
+	public String getLinesAsString() {
+		StringBuilder result = new StringBuilder();
+		for(String line : this.lines) {
+			result.append(line);
+			result.append("\n");
+		}
+		return result.toString();
+	}
+
 	
 }

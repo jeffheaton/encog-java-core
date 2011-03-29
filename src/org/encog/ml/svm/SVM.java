@@ -68,7 +68,7 @@ public class SVM extends BasicML implements MLRegression {
 	private int inputCount;
 
 	public SVM() {
-
+		this.params = new svm_parameter();
 	}
 
 	public SVM(svm_model model) {

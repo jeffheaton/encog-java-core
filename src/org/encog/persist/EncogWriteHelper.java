@@ -182,4 +182,8 @@ public class EncogWriteHelper {
 		}
 		writeProperty(name,result.toString());
 	}
+
+	public void write(String str) {
+		out.print(str);		
+	}
 }
