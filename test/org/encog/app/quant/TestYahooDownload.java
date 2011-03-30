@@ -1,6 +1,7 @@
 package org.encog.app.quant;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.GregorianCalendar;
@@ -18,7 +19,7 @@ public class TestYahooDownload extends TestCase {
 			YahooDownload yahoo = new YahooDownload();
 			yahoo.setPercision(2);
 			// load a non-sense ticker, should throw error
-			yahoo.loadAllData("sdfhusdhfuish", "test.txt", CSVFormat.ENGLISH,
+			yahoo.loadAllData("sdfhusdhfuish", new File("test.txt"), CSVFormat.ENGLISH,
 					new GregorianCalendar(2000, 00, 01).getTime(),
 					new GregorianCalendar(2000, 00, 10).getTime());
 
@@ -32,7 +33,7 @@ public class TestYahooDownload extends TestCase {
 	public void testYahooDownloadCSV() throws IOException {
 		YahooDownload yahoo = new YahooDownload();
 		yahoo.setPercision(2);
-		yahoo.loadAllData("yhoo", "test.txt", CSVFormat.ENGLISH,
+		yahoo.loadAllData("yhoo", new File("test.txt"), CSVFormat.ENGLISH,
 				new GregorianCalendar(2000, 00, 01).getTime(),
 				new GregorianCalendar(2000, 00, 10).getTime());
 		BufferedReader tr = new BufferedReader(new FileReader("test.txt"));
