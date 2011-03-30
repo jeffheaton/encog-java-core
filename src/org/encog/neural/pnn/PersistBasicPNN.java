@@ -2,8 +2,15 @@ package org.encog.neural.pnn;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 
+import org.encog.engine.util.EngineArray;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataPair;
+import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.data.basic.BasicNeuralDataPair;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
@@ -14,6 +21,8 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
 public class PersistBasicPNN implements EncogPersistor {
+	
+	public static final String PROPERTY_outputMode = "outputMode";
 
 	@Override
 	public String getPersistClassString() {
@@ -25,20 +34,52 @@ public class PersistBasicPNN implements EncogPersistor {
 		
 		EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
+		BasicNeuralDataSet samples = new BasicNeuralDataSet();
+		Map<String,String> networkParams = null;
+		PNNKernelType kernel = null; 
+		PNNOutputMode outmodel = null;
+		int inputCount = 0;
+		int outputCount = 0;
+		double error = 0;
+		double[] sigma = null;
 		
 		while( (section = in.readNextSection()) != null ) {
 			if( section.getSectionName().equals("PNN") && section.getSubSectionName().equals("PARAMS") ) {
-				Map<String,String> params = section.parseParams();
-				//result.getProperties().putAll(params);
+				networkParams = section.parseParams();
 			} if( section.getSectionName().equals("PNN") && section.getSubSectionName().equals("NETWORK") ) {
 				Map<String,String> params = section.parseParams();
-				//result.setWeights(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.WEIGHTS)));
-				//result.setCurrentState(NumberList.fromList(CSVFormat.EG_FORMAT, params.get(PersistConst.OUTPUT)));
-				//result.setNeuronCount(EncogFileSection.parseInt(params, PersistConst.NEURON_COUNT));
+				inputCount = EncogFileSection.parseInt(params, PersistConst.INPUT_COUNT);
+				outputCount = EncogFileSection.parseInt(params, PersistConst.OUTPUT_COUNT);
+				kernel = stringToKernel(params.get(PersistConst.KERNEL));
+				outmodel = stringToOutputMode(params.get(PROPERTY_outputMode));
+				error = EncogFileSection.parseDouble(params, PersistConst.ERROR);
+				sigma = EncogFileSection.parseDoubleArray(params, PersistConst.SIGMA);				
+			} if( section.getSectionName().equals("PNN") && section.getSubSectionName().equals("SAMPLES") ) {
+				for(String line: section.getLines()) {
+					List<String> cols = EncogFileSection.splitColumns(line);
+					int index = 0;
+					NeuralData inputData = new BasicNeuralData(inputCount);
+					for(int i=0;i<inputCount;i++) {
+						inputData.setData(i, CSVFormat.EG_FORMAT.parse(cols.get(index++)));
+					}
+					NeuralData idealData = new BasicNeuralData(inputCount);
+					for(int i=0;i<outputCount;i++) {
+						idealData.setData(i, CSVFormat.EG_FORMAT.parse(cols.get(index++)));
+					}
+					NeuralDataPair pair = new BasicNeuralDataPair(inputData,idealData);
+					samples.add(pair);
+				}
 			}
 		}
 		
-		BasicPNN result = null;// new BasicPNN();
+		BasicPNN result = new BasicPNN(kernel,outmodel,inputCount,outputCount);
+		if( networkParams!=null ) {
+			result.getProperties().putAll(networkParams);
+		}
+		result.setSamples(samples);
+		result.setError(error);
+		if( sigma!=null )
+			EngineArray.arrayCopy(sigma,result.getSigma());
 		
 		return result;
 	}
@@ -51,9 +92,25 @@ public class PersistBasicPNN implements EncogPersistor {
 		out.addSubSection("PARAMS");
 		out.addProperties(pnn.getProperties());
 		out.addSubSection("NETWORK");
-		//out.writeProperty(PersistConst.WEIGHTS, hopfield.getWeights());
-		//out.writeProperty(PersistConst.OUTPUT, hopfield.getCurrentState().getData());
-		//out.writeProperty(PersistConst.NEURON_COUNT, hopfield.getNeuronCount());
+		
+		out.writeProperty(PersistConst.ERROR,pnn.getError());
+		out.writeProperty(PersistConst.INPUT_COUNT,pnn.getInputCount());
+		out.writeProperty(PersistConst.KERNEL,kernelToString(pnn.getKernel()));
+		out.writeProperty(PersistConst.OUTPUT_COUNT,pnn.getOutputCount());
+		out.writeProperty(PROPERTY_outputMode,outputModeToString(pnn.getOutputMode()));
+		out.writeProperty(PersistConst.SIGMA,pnn.getSigma());
+		
+		out.addSubSection("SAMPLES");
+		for(NeuralDataPair pair: pnn.getSamples()) {
+			for(int i=0;i<pair.getInput().size();i++) {
+				out.addColumn(pair.getInput().getData(i));	
+			}
+			for(int i=0;i<pair.getIdeal().size();i++) {
+				out.addColumn(pair.getIdeal().getData(i));	
+			}
+			out.writeLine();
+		}
+		
 		out.flush();
 	}
 
@@ -62,5 +119,49 @@ public class PersistBasicPNN implements EncogPersistor {
 	public int getFileVersion() {
 		return 1;
 	}
-
+	
+	public static String kernelToString(PNNKernelType k) {
+		switch(k) {
+			case Gaussian:
+				return "gaussian";
+			case Reciprocal:
+				return "reciprocal";
+			default:
+				return null;
+		}
+	}
+	
+	public static PNNKernelType stringToKernel(String k) {
+		if( k.equalsIgnoreCase("gaussian")) {
+			return PNNKernelType.Gaussian;
+		} else if( k.equalsIgnoreCase("reciprocal")) {
+			return PNNKernelType.Reciprocal;
+		} else {
+			return null;
+		}		
+	}
+	
+	public static String outputModeToString(PNNOutputMode mode) {
+		switch(mode) {
+			case Regression:
+				return "regression";
+			case Unsupervised:
+				return "unsupervised";
+			case Classification:
+				return "classification";
+			default:
+				return null;
+		}
+	}
+	
+	public static PNNOutputMode stringToOutputMode(String mode) {
+		if( mode.equalsIgnoreCase("regression"))
+			return PNNOutputMode.Regression;
+		else if( mode.equalsIgnoreCase("unsupervised"))
+			return PNNOutputMode.Unsupervised;
+		else if( mode.equalsIgnoreCase("classification"))
+			return PNNOutputMode.Classification;
+		else
+			return null;
+	}
 }
