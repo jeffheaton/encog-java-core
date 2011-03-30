@@ -36,7 +36,6 @@ import org.encog.util.obj.SerializeObject;
 public class TestPersistART extends TestCase {
 	
 	public final String EG_FILENAME = "encogtest.eg";
-	public final String EG_RESOURCE = "test";
 	public final String SERIAL_FILENAME = "encogtest.ser";
 	
 	private ART1 create()
