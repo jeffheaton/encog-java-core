@@ -61,11 +61,8 @@ public class PersistConst {
 	public static final String PROPERTY_WEIGHTS_F1_F2 = "weightsF1F2";
 	public static final String PROPERTY_WEIGHTS_F2_F1 = "weightsF2F1";
 	public static final String ACTIVATION_FUNCTION = "activationFunction";
-	public static final String SUBTYPE_NEAT_NEURON = "NEATNeuron";
 	public static final String NEURONS = "neurons";
 	public static final String TYPE = "type";
-	public static final String SUBTYPE_NEAT_LINK = "NEATLink";
-	public static final String SUBTYPE_NEAT_LINK_GENE = "NEATLinkGene";
 	public static final String RECURRENT = "recurrent";
 	public static final String WEIGHT = "weight";
 	public static final String LINKS = "links";
@@ -76,8 +73,11 @@ public class PersistConst {
 	public static final String IDATA = "idata";
 	public static final String PROPERTIES = "properties";
 	public static final String VERSION = "ver";
-	public static final String DEPTH = "DEPTH";
-	public static final String SNAPSHOT = "SNAPSHOT";
+	public static final String DEPTH = "depth";
+	public static final String SNAPSHOT = "snapshot";
+	public static final String ERROR = "error";
+	public static final String SIGMA = "sigma";
+	public static final String KERNEL = "kernel";
 	
 
 }
