@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,8 +32,6 @@ import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.bot.BotUtil;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLTrain;
-import org.encog.neural.networks.training.Train;
-import org.encog.util.csv.CSVFormat;
 
 public class EncogAnalyst {
 
@@ -90,6 +87,7 @@ public class EncogAnalyst {
 		OutputStream fos = null;
 
 		try {
+			this.script.setBasePath(file.getParent());
 			fos = new FileOutputStream(file);
 			save(fos);
 		} catch (IOException ex) {
@@ -106,6 +104,7 @@ public class EncogAnalyst {
 
 	public void load(File file) {
 		InputStream fis = null;
+		this.script.setBasePath(file.getParent());
 
 		try {
 			fis = new FileInputStream(file);

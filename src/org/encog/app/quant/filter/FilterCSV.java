@@ -1,5 +1,6 @@
 package org.encog.app.quant.filter;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class FilterCSV extends BasicFile {
      * @param headers True, if headers are expected.
      * @param format The format.
      */
-    public void analyze(String inputFile, boolean headers, CSVFormat format)
+    public void analyze(File inputFile, boolean headers, CSVFormat format)
     {
         this.setInputFilename( inputFile );
         this.setExpectInputHeaders( headers );
@@ -91,9 +92,9 @@ public class FilterCSV extends BasicFile {
      * Process the input file.
      * @param outputFile The output file to write to.
      */
-    public void process(String outputFile)
+    public void process(File outputFile)
     {
-        ReadCSV csv = new ReadCSV(this.getInputFilename(), this.isExpectInputHeaders(), this.getInputFormat() );
+        ReadCSV csv = new ReadCSV(this.getInputFilename().toString(), this.isExpectInputHeaders(), this.getInputFormat() );
 
         PrintWriter tw = this.prepareOutputFile(outputFile);
         this.filteredCount = 0;

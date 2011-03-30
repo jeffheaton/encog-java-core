@@ -1,5 +1,6 @@
 package org.encog.app.quant.sort;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +40,7 @@ public class SortCSV extends BasicFile {
 	private void readInputFile() {
 		resetStatus();
 
-		ReadCSV csv = new ReadCSV(getInputFilename(), isExpectInputHeaders(),
+		ReadCSV csv = new ReadCSV(getInputFilename().toString(), isExpectInputHeaders(),
 				getInputFormat());
 		while (csv.next()&& !this.shouldStop()) {
 			updateStatus("Reading input file");
@@ -71,7 +72,7 @@ public class SortCSV extends BasicFile {
 	 * Write the sorted output file. 
 	 * @param outputFile The name of the output file.
 	 */
-	private void writeOutputFile(String outputFile) {
+	private void writeOutputFile(File outputFile) {
 		PrintWriter tw = this.prepareOutputFile(outputFile);
 		boolean[] nonNumeric = new boolean[this.getColumnCount()];
 		boolean first = true;
@@ -130,7 +131,7 @@ public class SortCSV extends BasicFile {
 	 * @param headers True, if headers are to be used.
 	 * @param format The format of the file.
 	 */
-	public void process(String inputFile, String outputFile, boolean headers,
+	public void process(File inputFile, File outputFile, boolean headers,
 			CSVFormat format) {
 		this.setInputFilename(inputFile);
 		this.setExpectInputHeaders(headers);

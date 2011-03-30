@@ -1,5 +1,6 @@
 package org.encog.app.analyst.evaluate;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,7 +36,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	 * @param format
 	 *            The format of the CSV file.
 	 */
-	public void analyze(String inputFile, boolean headers, CSVFormat format) {
+	public void analyze(File inputFile, boolean headers, CSVFormat format) {
 		this.inputFilename = inputFile;
 		this.setExpectInputHeaders(headers);
 		this.setInputFormat(format);
@@ -125,7 +126,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	public void process(String outputFile, EncogAnalyst analyst,
 			MLRegression method, String targetFieldName) {
 
-		ReadCSV csv = new ReadCSV(this.getInputFilename(),
+		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 				this.isExpectInputHeaders(), this.getInputFormat());
 
 		NeuralData output = null;

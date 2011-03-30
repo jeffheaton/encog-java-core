@@ -354,8 +354,8 @@ public final class EncogUtility {
 
 	}
 
-	public static NeuralDataSet loadEGB2Memory(String filename) {
-		BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(filename));
+	public static NeuralDataSet loadEGB2Memory(File filename) {
+		BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(filename);
 		return buffer.loadToMemory();
 	}
 
@@ -384,15 +384,15 @@ public final class EncogUtility {
         buffer.endLoad();
     }
     
-    public static void convertCSV2Binary(String csvFile, CSVFormat format,
-            String binFile, int[] input, int[] ideal,
+    public static void convertCSV2Binary(File csvFile, CSVFormat format,
+            File binFile, int[] input, int[] ideal,
             boolean headers)
    {
 
-       (new File(binFile)).delete();
+       binFile.delete();
        ReadCSV csv = new ReadCSV(csvFile.toString(), headers, format);
        
-       BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(binFile));
+       BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(binFile);
        buffer.beginLoad(input.length, ideal.length);
        while(csv.next())
        {

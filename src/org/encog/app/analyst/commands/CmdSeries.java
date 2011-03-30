@@ -1,5 +1,7 @@
 package org.encog.app.analyst.commands;
 
+import java.io.File;
+
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
@@ -24,8 +26,8 @@ public class CmdSeries extends Cmd {
 		String targetID = getProp().getPropertyString(
 				ScriptProperties.SERIES_CONFIG_targetFile);
 
-		String sourceFile = getProp().getFilename(sourceID);
-		String targetFile = getProp().getFilename(targetID);
+		File sourceFile = this.getScript().resolveFilename(sourceID);
+		File targetFile = this.getScript().resolveFilename(targetID);
 
 		// find out about the target field
 		String targetField = getProp().getPropertyString(

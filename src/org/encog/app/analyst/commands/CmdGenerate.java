@@ -1,5 +1,7 @@
 package org.encog.app.analyst.commands;
 
+import java.io.File;
+
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.util.csv.CSVFormat;
@@ -20,8 +22,8 @@ public class CmdGenerate extends Cmd {
 		String targetID = getProp().getPropertyString(ScriptProperties.GENERATE_CONFIG_targetFile);
 		CSVFormat format = this.getAnalyst().getScript().determineInputFormat(sourceID);
 		
-		String sourceFile = getProp().getFilename(sourceID);
-		String targetFile = getProp().getFilename(targetID);
+		File sourceFile = getScript().resolveFilename(sourceID);
+		File targetFile = getScript().resolveFilename(targetID);
 		
 		// mark generated
 		getScript().markGenerated(targetID);

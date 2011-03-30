@@ -1,5 +1,6 @@
 package org.encog.app.quant.evaluate;
 
+import java.io.File;
 import java.io.PrintWriter;
 
 import org.encog.app.quant.QuantError;
@@ -20,7 +21,7 @@ public class EvaluateCSV extends BasicFile {
      * @param headers True, if headers are present.
      * @param format The format of the CSV file.
      */
-    public void analyze(String inputFile, boolean headers, CSVFormat format)
+    public void analyze(File inputFile, boolean headers, CSVFormat format)
     {
         this.inputFilename = inputFile;
         this.setExpectInputHeaders( headers );
@@ -31,9 +32,9 @@ public class EvaluateCSV extends BasicFile {
         performBasicCounts();
     }
     
-    public void process(String outputFile, MLRegression method) {
+    public void process(File outputFile, MLRegression method) {
 
-        ReadCSV csv = new ReadCSV(this.getInputFilename(), this.isExpectInputHeaders(), this.getInputFormat() );
+        ReadCSV csv = new ReadCSV(this.getInputFilename().toString(), this.isExpectInputHeaders(), this.getInputFormat() );
 
         PrintWriter tw = this.prepareOutputFile(outputFile);
         NeuralData input = new BasicNeuralData(method.getInputCount());

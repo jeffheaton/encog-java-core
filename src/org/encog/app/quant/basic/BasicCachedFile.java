@@ -1,6 +1,7 @@
 package org.encog.app.quant.basic;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,7 +50,7 @@ public class BasicCachedFile extends BasicFile {
      * @param headers True, if there are headers.
      * @param format The format of the CSV data.
      */
-    public void analyze(String input, boolean headers, CSVFormat format)
+    public void analyze(File input, boolean headers, CSVFormat format)
     {
         resetStatus();
         setInputFilename(input);
@@ -96,7 +97,7 @@ public class BasicCachedFile extends BasicFile {
         ReadCSV csv = null;
         try
         {
-            csv = new ReadCSV(input, headers, format);
+            csv = new ReadCSV(input.toString(), headers, format);
             if (!csv.next())
             {
                 throw new QuantError("File is empty");

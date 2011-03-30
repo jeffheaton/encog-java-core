@@ -24,13 +24,13 @@ public class CmdCreate extends Cmd {
 		String trainingID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_trainingFile);
 		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
 		
-		String trainingFile = getProp().getFilename(trainingID);
-		String resourceFile = getProp().getFilename(resourceID);
+		File trainingFile = getScript().resolveFilename(trainingID);
+		File resourceFile = getScript().resolveFilename(resourceID);
 		
 		String type = getProp().getPropertyString(ScriptProperties.ML_CONFIG_type);
 		String arch = getProp().getPropertyString(ScriptProperties.ML_CONFIG_architecture);
 
-		EncogEGBFile egb = new EncogEGBFile(new File(trainingFile));
+		EncogEGBFile egb = new EncogEGBFile(trainingFile);
 		egb.open();
 		int input = egb.getInputCount();
 		int ideal = egb.getIdealCount();
@@ -39,7 +39,7 @@ public class CmdCreate extends Cmd {
 		MLMethodFactory factory = new MLMethodFactory();
 		MLMethod obj = factory.create(type, arch, input, ideal);
 
-		EncogDirectoryPersistence.saveObject(new File(resourceFile), obj);
+		EncogDirectoryPersistence.saveObject(resourceFile, obj);
 
 		return false;
 	}

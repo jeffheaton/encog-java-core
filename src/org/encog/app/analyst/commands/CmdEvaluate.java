@@ -33,15 +33,15 @@ public class CmdEvaluate extends Cmd {
 		String evalID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_evalFile);
 		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
 		
-		String evalFile = getProp().getFilename(evalID);
-		String resourceFile = getProp().getFilename(resourceID);
+		File evalFile = getScript().resolveFilename(evalID);
+		File resourceFile = getScript().resolveFilename(resourceID);
 
 		String outputFile = getProp().getFilename(
 				getProp().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
 		
 		String targetField = getProp().getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
 		
-		MLRegression method = (MLRegression)EncogDirectoryPersistence.loadObject(new File(resourceFile));
+		MLRegression method = (MLRegression)EncogDirectoryPersistence.loadObject(resourceFile);
 
 		boolean headers = getScript().expectInputHeaders(evalID);
 
@@ -62,15 +62,13 @@ public class CmdEvaluate extends Cmd {
 		String evalID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_evalFile);
 		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
 		
-		String evalFile = getProp().getFilename(
-				evalID);
-		String resourceFile = getProp().getFilename(
-				resourceID);
+		File evalFile = getScript().resolveFilename(evalID);
+		File resourceFile = getScript().resolveFilename(resourceID);
 
-		String outputFile = getProp().getFilename(
+		File outputFile = getScript().resolveFilename(
 				getProp().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
 
-		MLRegression method = (MLRegression)EncogDirectoryPersistence.loadObject(new File(resourceFile));
+		MLRegression method = (MLRegression)EncogDirectoryPersistence.loadObject(resourceFile);
 
 		boolean headers = getScript().expectInputHeaders(evalID);
 

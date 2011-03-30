@@ -1,5 +1,7 @@
 package org.encog.app.analyst.commands;
 
+import java.io.File;
+
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
@@ -22,8 +24,8 @@ public class CmdNormalize extends Cmd {
 		String sourceID = getProp().getPropertyString(ScriptProperties.NORMALIZE_CONFIG_sourceFile);
 		String targetID = getProp().getPropertyString(ScriptProperties.NORMALIZE_CONFIG_targetFile);
 		
-		String sourceFile = getProp().getFilename(sourceID);
-		String targetFile = getProp().getFilename(targetID);
+		File sourceFile = getScript().resolveFilename(sourceID);
+		File targetFile = getScript().resolveFilename(targetID);
 
 		// mark generated
 		getScript().markGenerated(targetID);

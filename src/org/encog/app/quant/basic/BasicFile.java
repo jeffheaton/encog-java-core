@@ -1,5 +1,6 @@
 package org.encog.app.quant.basic;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -39,7 +40,7 @@ public class BasicFile implements QuantTask {
 	/**
 	 * The input filename. This is the file being analyzed/processed.
 	 */
-	public String inputFilename;
+	public File inputFilename;
 
 	/**
 	 * True, if input headers should be expected.
@@ -116,7 +117,7 @@ public class BasicFile implements QuantTask {
 	 *            The name of the output file.
 	 * @return The output stream for the text file.
 	 */
-	public PrintWriter prepareOutputFile(String outputFile) {
+	public PrintWriter prepareOutputFile(File outputFile) {
 		try {
 			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 			if( this.outputFormat==null) {
@@ -223,7 +224,7 @@ public class BasicFile implements QuantTask {
 		
 		resetStatus();
 		int recordCount = 0;
-		ReadCSV csv = new ReadCSV(this.inputFilename, this.expectInputHeaders,
+		ReadCSV csv = new ReadCSV(this.inputFilename.toString(), this.expectInputHeaders,
 				this.inputFormat);
 		while (csv.next() && !this.cancel ) {
 			updateStatus(true);
@@ -385,7 +386,7 @@ public class BasicFile implements QuantTask {
 	/**
 	 * @return The input filename.
 	 */
-	public String getInputFilename() {
+	public File getInputFilename() {
 		return inputFilename;
 	}
 
@@ -395,7 +396,7 @@ public class BasicFile implements QuantTask {
 	 * @param inputFilename
 	 *            The input filename.
 	 */
-	public void setInputFilename(String inputFilename) {
+	public void setInputFilename(File inputFilename) {
 		this.inputFilename = inputFilename;
 	}
 

@@ -1,5 +1,6 @@
 package org.encog.app.quant.indicators;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -24,7 +25,7 @@ public class ProcessIndicators extends BasicCachedFile {
 
         try
         {
-            csv = new ReadCSV(getInputFilename(), isExpectInputHeaders(), getInputFormat());
+            csv = new ReadCSV(getInputFilename().toString(), isExpectInputHeaders(), getInputFormat());
 
             resetStatus();
             int row = 0;
@@ -97,7 +98,7 @@ public class ProcessIndicators extends BasicCachedFile {
      * Write the CSV.
      * @param filename The target filename.
      */
-    private void writeCSV(String filename)
+    private void writeCSV(File filename)
     {
         PrintWriter tw = null;
 
@@ -204,7 +205,7 @@ public class ProcessIndicators extends BasicCachedFile {
      * Process and write the specified output file.
      * @param output The output file.
      */
-    public void process(String output)
+    public void process(File output)
     {
         validateAnalyzed();
 

@@ -1,5 +1,6 @@
 package org.encog.app.quant.temporal;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -137,7 +138,7 @@ public class TemporalWindowCSV extends BasicFile {
      * Process the input file, and write to the output file.
      * @param outputFile The output file.
      */
-    public void process(String outputFile)
+    public void process(File outputFile)
     {
         if (inputWindow < 1)
         {
@@ -171,7 +172,7 @@ public class TemporalWindowCSV extends BasicFile {
 
         try
         {
-            csv = new ReadCSV(this.getInputFilename(), this.isExpectInputHeaders(), this.getInputFormat());
+            csv = new ReadCSV(this.getInputFilename().toString(), this.isExpectInputHeaders(), this.getInputFormat());
 
             tw = new PrintWriter(new FileWriter(outputFile));
 
@@ -335,13 +336,13 @@ public class TemporalWindowCSV extends BasicFile {
      * @param headers True, if the input file has headers.
      * @param format The format of the input file.
      */
-    public void analyze(String filename, boolean headers, CSVFormat format)
+    public void analyze(File filename, boolean headers, CSVFormat format)
     {
         ReadCSV csv = null;
 
         try
         {
-            csv = new ReadCSV(filename, headers, format);
+            csv = new ReadCSV(filename.toString(), headers, format);
             if (!csv.next()&& !this.shouldStop())
             {
                 throw new EncogError("Empty file");

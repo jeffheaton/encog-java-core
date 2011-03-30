@@ -1,5 +1,6 @@
 package org.encog.app.analyst.script;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,7 +30,11 @@ public class ScriptSave {
 		
 		for (String key : list) {
 			String value = this.script.getProperties().getFilename(key);
-			out.writeProperty(key, value);
+			File f = new File(value);
+			if( f.getParent().equalsIgnoreCase(script.getBasePath()))
+				out.writeProperty(key, f.getName());
+			else
+				out.writeProperty(key, value);
 		}
 	}
 	

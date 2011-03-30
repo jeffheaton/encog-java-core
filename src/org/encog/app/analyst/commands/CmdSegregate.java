@@ -1,5 +1,7 @@
 package org.encog.app.analyst.commands;
 
+import java.io.File;
+
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
@@ -21,7 +23,7 @@ public class CmdSegregate extends Cmd {
 		// get filenames
 		String sourceID = getProp().getPropertyString(ScriptProperties.SEGREGATE_CONFIG_sourceFile);
 		
-		String sourceFile = getProp().getFilename(sourceID);
+		File sourceFile = getScript().resolveFilename(sourceID);
 		
 		// get formats
 		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);
@@ -33,7 +35,7 @@ public class CmdSegregate extends Cmd {
 		getAnalyst().setCurrentQuantTask(seg);
 		for (AnalystSegregateTarget target : getScript().getSegregate()
 				.getSegregateTargets()) {
-			String filename = getScript().getProperties().getFilename(
+			File filename = getScript().resolveFilename(
 					target.getFile());
 			seg.getTargets().add(
 					new SegregateTargetPercent(filename, target.getPercent()));

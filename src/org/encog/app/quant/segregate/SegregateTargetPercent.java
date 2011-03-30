@@ -1,5 +1,7 @@
 package org.encog.app.quant.segregate;
 
+import java.io.File;
+
 /**
  * Specifies a segregation target, and what percent that target should need.
  *
@@ -19,14 +21,14 @@ public class SegregateTargetPercent {
     /**
      * Used internally to hold the target filename.
      */
-    private String filename;
+    private File filename;
 
     /**
      * Construct the object.
      * @param outputFile The output filename.
      * @param percent The target percent.
      */
-    public SegregateTargetPercent(String outputFile, int percent)
+    public SegregateTargetPercent(File outputFile, int percent)
     {
         this.percent = percent;
         this.filename = outputFile;
@@ -63,14 +65,14 @@ public class SegregateTargetPercent {
 	/**
 	 * @return the filename
 	 */
-	public String getFilename() {
+	public File getFilename() {
 		return filename;
 	}
 
 	/**
 	 * @param filename the filename to set
 	 */
-	public void setFilename(String filename) {
+	public void setFilename(File filename) {
 		this.filename = filename;
 	}
     

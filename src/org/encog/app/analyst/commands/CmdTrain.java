@@ -23,9 +23,9 @@ public class CmdTrain extends Cmd {
 	private MLMethod obtainMethod() {
 		String resourceID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_machineLearningFile);
-		String resourceFile = getProp().getFilename(resourceID);
+		File resourceFile = getScript().resolveFilename(resourceID);
 		
-		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(new File(resourceFile));
+		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(resourceFile);
 
 		if (!(method instanceof MLMethod)) {
 			throw new AnalystError(
@@ -40,7 +40,7 @@ public class CmdTrain extends Cmd {
 		String trainingID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_trainingFile);
 
-		String trainingFile = getProp().getFilename(trainingID);
+		File trainingFile = getScript().resolveFilename(trainingID);
 
 		NeuralDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
 

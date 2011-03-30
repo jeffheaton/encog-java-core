@@ -1,5 +1,7 @@
 package org.encog.app.analyst.commands;
 
+import java.io.File;
+
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -21,8 +23,8 @@ public class CmdRandomize extends Cmd {
 		String sourceID = getProp().getPropertyString(ScriptProperties.RANDOMIZE_CONFIG_sourceFile);
 		String targetID = getProp().getPropertyString(ScriptProperties.RANDOMIZE_CONFIG_targetFile);
 		
-		String sourceFile = getProp().getFilename(sourceID);
-		String targetFile = getProp().getFilename(targetID);
+		File sourceFile = this.getScript().resolveFilename(sourceID);
+		File targetFile = this.getScript().resolveFilename(targetID);
 
 		// get formats
 		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);

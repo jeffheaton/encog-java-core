@@ -1,5 +1,6 @@
 package org.encog.app.quant.shuffle;
 
+import java.io.File;
 import java.io.PrintWriter;
 
 import org.encog.app.quant.basic.BasicFile;
@@ -57,7 +58,7 @@ public class ShuffleCSV extends BasicFile {
 	 * @param headers True, if there are headers.
 	 * @param format The format of the CSV file.
 	 */
-	public void analyze(String inputFile, boolean headers, CSVFormat format) {
+	public void analyze(File inputFile, boolean headers, CSVFormat format) {
 		this.setInputFilename(inputFile);
 		this.setExpectInputHeaders(headers);
 		this.setInputFormat(format);
@@ -110,10 +111,10 @@ public class ShuffleCSV extends BasicFile {
 	 * Process, and generate the output file.
 	 * @param outputFile The output file.
 	 */
-	public void process(String outputFile) {
+	public void process(File outputFile) {
 		validateAnalyzed();
 
-		ReadCSV csv = new ReadCSV(this.getInputFilename(),
+		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 				this.isExpectInputHeaders(), this.getInputFormat());
 		LoadedRow row;
 

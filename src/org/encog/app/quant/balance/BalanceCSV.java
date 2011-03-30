@@ -1,5 +1,6 @@
 package org.encog.app.quant.balance;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class BalanceCSV extends BasicFile {
      * @param headers True, if headers are present.
      * @param format The format of the CSV file.
      */
-    public void Analyze(String inputFile, boolean headers, CSVFormat format)
+    public void Analyze(File inputFile, boolean headers, CSVFormat format)
     {
         this.inputFilename = inputFile;
         this.setExpectInputHeaders( headers );
@@ -56,14 +57,14 @@ public class BalanceCSV extends BasicFile {
      * this field determines the classes.
      * @param countPer The desired count per class.
      */
-    public void Process(String outputFile, int targetField, int countPer)
+    public void Process(File outputFile, int targetField, int countPer)
     {
         validateAnalyzed();
         PrintWriter tw = this.prepareOutputFile(outputFile);
         
         counts = new HashMap<String, Integer>();
 
-        ReadCSV csv = new ReadCSV(this.getInputFilename(), this.isExpectInputHeaders(), this.getInputFormat());
+        ReadCSV csv = new ReadCSV(this.getInputFilename().toString(), this.isExpectInputHeaders(), this.getInputFormat());
 
         resetStatus();
         while (csv.next() && !shouldStop() )

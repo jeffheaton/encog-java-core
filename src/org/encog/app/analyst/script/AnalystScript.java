@@ -1,5 +1,6 @@
 package org.encog.app.analyst.script;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class AnalystScript {
 	private final Set<String> generated = new HashSet<String>();
 	private final Map<String,AnalystTask> tasks = new HashMap<String,AnalystTask>();
 	private final ScriptProperties properties = new ScriptProperties();
-
+	private String basePath;
 
 	public AnalystScript() {
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, AnalystFileFormat.DECPNT_COMMA);
@@ -153,5 +154,24 @@ public class AnalystScript {
 		
 		return null;
 	}
+
+	public String getBasePath() {
+		return basePath;
+	}
+
+	public void setBasePath(String basePath) {
+		this.basePath = basePath;
+	}
+
+	public File resolveFilename(String sourceID) {
+		String name = this.getProperties().getFilename(sourceID);
+		
+		if( this.basePath!=null )
+			return new File(this.basePath,name);
+		else
+			return new File(name);
+	}
+	
+	
 	
 }

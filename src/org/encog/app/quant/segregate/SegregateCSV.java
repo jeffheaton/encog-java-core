@@ -1,5 +1,6 @@
 package org.encog.app.quant.segregate;
 
+import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -100,7 +101,7 @@ public class SegregateCSV extends BasicFile {
 	 * @param headers The headers.
 	 * @param format The format of the input file.
 	 */
-	public void analyze(String inputFile, boolean headers, CSVFormat format) {
+	public void analyze(File inputFile, boolean headers, CSVFormat format) {
 		this.setInputFilename( inputFile );
 		this.setExpectInputHeaders( headers );
 		this.setInputFormat( format );
@@ -119,7 +120,7 @@ public class SegregateCSV extends BasicFile {
     {
         validate();
 
-        ReadCSV csv = new ReadCSV(this.getInputFilename(), this.isExpectInputHeaders(), this.getInputFormat());
+        ReadCSV csv = new ReadCSV(this.getInputFilename().toString(), this.isExpectInputHeaders(), this.getInputFormat());
         resetStatus();
         for (SegregateTargetPercent target : this.targets)
         {

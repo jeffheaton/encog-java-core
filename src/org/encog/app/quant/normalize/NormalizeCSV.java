@@ -1,5 +1,6 @@
 package org.encog.app.quant.normalize;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -31,7 +32,7 @@ public class NormalizeCSV extends BasicFile {
 	 * @param headers True, if headers are to be expected.
 	 * @param format The format of the CSV file.
 	 */
-	public void setSourceFile(String file, boolean headers, CSVFormat format) {
+	public void setSourceFile(File file, boolean headers, CSVFormat format) {
 		this.setInputFilename(file);
 		this.setExpectInputHeaders(headers);
 		this.setInputFormat(format);
@@ -43,12 +44,12 @@ public class NormalizeCSV extends BasicFile {
 	 * @param headers True, if the file has headers.
 	 * @param format The format of the CSV file.
 	 */
-	public void analyze(String file, boolean headers, CSVFormat format) {
+	public void analyze(File file, boolean headers, CSVFormat format) {
 		ReadCSV csv = null;
 
 		try {
 			resetStatus();
-			csv = new ReadCSV(file, headers, format);
+			csv = new ReadCSV(file.toString(), headers, format);
 
 			if (!csv.next()) {
 				throw new EncogError("File is empty");
@@ -107,7 +108,7 @@ public class NormalizeCSV extends BasicFile {
 					"Can't denormalize, there are no stats loaded.");
 		}
 
-		ReadCSV csv = new ReadCSV(this.getInputFilename(),
+		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 				this.isExpectInputHeaders(), this.getInputFormat());
 		PrintWriter tw;
 		try {
@@ -197,7 +198,7 @@ public class NormalizeCSV extends BasicFile {
 	 * Normalize the input file.  Write to the specified file.
 	 * @param file The file to write to.
 	 */
-	public void normalize(String file) {
+	public void normalize(File file) {
 		if (this.stats.size() < 1)
 			throw new EncogError(
 					"Can't normalize yet, file has not been analyzed.");
@@ -211,7 +212,7 @@ public class NormalizeCSV extends BasicFile {
 
 
 		try {
-			csv = new ReadCSV(this.getInputFilename(),
+			csv = new ReadCSV(this.getInputFilename().toString(),
 					this.isExpectInputHeaders(), this.getInputFormat());
 
 			tw = new PrintWriter(new FileWriter(file));
@@ -383,7 +384,7 @@ public class NormalizeCSV extends BasicFile {
 		return this.stats;
 	}
 
-	public void analyze(String inputFilename, boolean expectInputHeaders,
+	public void analyze(File inputFilename, boolean expectInputHeaders,
 			CSVFormat inputFormat, NormalizationStats stats) {
 		this.inputFilename = inputFilename;
 		this.inputFormat = inputFormat;

@@ -1,5 +1,6 @@
 package org.encog.app.quant.ninja;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,9 +21,9 @@ public class NinjaFileConvert extends BasicCachedFile {
 	 * Process the file and output to the target file.
 	 * @param target The target file to write to.
 	 */
-	public void process(String target) {
+	public void process(File target) {
 		try {
-			ReadCSV csv = new ReadCSV(this.getInputFilename(),
+			ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 					this.isExpectInputHeaders(), this.getInputFormat());
 
 			PrintWriter tw = new PrintWriter(new FileWriter(target));
@@ -72,7 +73,7 @@ public class NinjaFileConvert extends BasicCachedFile {
 	 * @param headers True, if headers are present.
 	 * @param format The format of the input file.
 	 */
-	public void analyze(String input, boolean headers, CSVFormat format) {
+	public void analyze(File input, boolean headers, CSVFormat format) {
 		super.analyze(input, headers, format);
 	}
 
