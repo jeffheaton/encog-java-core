@@ -16,9 +16,9 @@ import org.encog.util.csv.CSVFormat;
 
 public class TestSegregateCSV extends TestCase {
 
-	public static final String INPUT_NAME = "test.csv";
-    public static final String OUTPUT1_NAME = "test2.csv";
-    public static final String OUTPUT2_NAME = "test3.csv";
+	public static final File INPUT_NAME = new File("test.csv");
+    public static final File OUTPUT1_NAME = new File("test2.csv");
+    public static final File OUTPUT2_NAME = new File("test3.csv");
 
     public void generateTestFileHeadings(boolean header) throws IOException
     {
@@ -60,9 +60,9 @@ public class TestSegregateCSV extends TestCase {
         Assert.assertNull(tr.readLine());
         tr.close();
 
-        (new File(INPUT_NAME)).delete();
-        (new File(OUTPUT1_NAME)).delete();
-        (new File(OUTPUT2_NAME)).delete();
+        INPUT_NAME.delete();
+        OUTPUT1_NAME.delete();
+        OUTPUT2_NAME.delete();
     }
 
     public void testFilterCSVNoHeaders() throws IOException
@@ -87,9 +87,9 @@ public class TestSegregateCSV extends TestCase {
         Assert.assertNull(tr.readLine());
         tr.close();
 
-        (new File(INPUT_NAME)).delete();
-        (new File(OUTPUT1_NAME)).delete();
-        (new File(OUTPUT2_NAME)).delete();
+        INPUT_NAME.delete();
+        OUTPUT1_NAME.delete();
+        OUTPUT2_NAME.delete();
     }
 	
 }

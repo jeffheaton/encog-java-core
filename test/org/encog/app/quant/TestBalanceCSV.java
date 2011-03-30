@@ -14,8 +14,8 @@ import org.encog.app.quant.balance.BalanceCSV;
 import org.encog.util.csv.CSVFormat;
 
 public class TestBalanceCSV extends TestCase {
-	public static final String INPUT_NAME = "test.csv";
-	public static final String OUTPUT_NAME = "test2.csv";
+	public static final File INPUT_NAME = new File("test.csv");
+	public static final File OUTPUT_NAME = new File("test2.csv");
 
 	public void generateTestFile(boolean header) throws IOException {
 		PrintWriter out = new PrintWriter(new FileWriter(INPUT_NAME));
@@ -53,8 +53,8 @@ public class TestBalanceCSV extends TestCase {
 		Assert.assertEquals(1, norm.getCounts().get("3").intValue());
 		tr.close();
 
-		(new File(INPUT_NAME)).delete();
-		(new File(OUTPUT_NAME)).delete();
+		INPUT_NAME.delete();
+		OUTPUT_NAME.delete();
 
 	}
 
@@ -76,8 +76,8 @@ public class TestBalanceCSV extends TestCase {
 		Assert.assertEquals(1, norm.getCounts().get("3").intValue());
 		tr.close();
 
-		(new File(INPUT_NAME)).delete();
-		(new File(OUTPUT_NAME)).delete();
+		INPUT_NAME.delete();
+		OUTPUT_NAME.delete();
 	}
 
 }

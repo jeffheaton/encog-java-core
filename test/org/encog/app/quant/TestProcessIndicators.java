@@ -18,8 +18,8 @@ import junit.framework.TestCase;
 
 public class TestProcessIndicators extends TestCase {
 
-    public final static String INPUT_NAME = "test.csv";
-    public final static String OUTPUT_NAME = "test2.csv";
+    public final static File INPUT_NAME = new File("test.csv");
+    public final static File OUTPUT_NAME = new File("test2.csv");
 
     public void generateTestFileHeadings(boolean header) throws IOException
     {
@@ -65,8 +65,8 @@ public class TestProcessIndicators extends TestCase {
 
         tr.close();
 
-        (new File(INPUT_NAME)).delete();
-        (new File(OUTPUT_NAME)).delete();
+        INPUT_NAME.delete();
+        OUTPUT_NAME.delete();
     }
 
     public void TestIndicatorsNoHeaders() throws IOException
@@ -90,8 +90,8 @@ public class TestProcessIndicators extends TestCase {
 
         tr.close();
 
-        (new File(INPUT_NAME)).delete();
-        (new File(OUTPUT_NAME)).delete();
+        INPUT_NAME.delete();
+        OUTPUT_NAME.delete();
     }
 	
 	

@@ -15,8 +15,8 @@ import junit.framework.TestCase;
 
 public class TestNinjaFileConvert extends TestCase {
 	
-    public static final String INPUT_NAME = "test.csv";
-    public static final String OUTPUT_NAME = "test2.csv";
+    public static final File INPUT_NAME = new File("test.csv");
+    public static final File OUTPUT_NAME = new File("test2.csv");
 
     public void generateTestFileHeadings(boolean header) throws IOException
     {
@@ -48,8 +48,8 @@ public class TestNinjaFileConvert extends TestCase {
 
         tr.close();
 
-        (new File(INPUT_NAME)).delete();
-        (new File(OUTPUT_NAME)).delete();
+        INPUT_NAME.delete();
+        OUTPUT_NAME.delete();
     }
 
 

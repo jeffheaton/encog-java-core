@@ -17,8 +17,8 @@ import junit.framework.TestCase;
 
 public class TestSort extends TestCase {
 
-	public static final String INPUT_NAME = "test.csv";
-    public static final String OUTPUT_NAME = "test2.csv";
+	public static final File INPUT_NAME = new File("test.csv");
+    public static final File OUTPUT_NAME = new File("test2.csv");
 
 
     public void generateTestFileHeadings(boolean header) throws IOException
