@@ -104,4 +104,30 @@ public class PNNPattern implements NeuralNetworkPattern {
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
 	}
+
+	public PNNKernelType getKernel() {
+		return kernel;
+	}
+
+	public void setKernel(PNNKernelType kernel) {
+		this.kernel = kernel;
+	}
+
+	public PNNOutputMode getOutmodel() {
+		return outmodel;
+	}
+
+	public void setOutmodel(PNNOutputMode outmodel) {
+		this.outmodel = outmodel;
+	}
+
+	public int getInputNeurons() {
+		return inputNeurons;
+	}
+
+	public int getOutputNeurons() {
+		return outputNeurons;
+	}
+	
+	
 }
