@@ -40,7 +40,8 @@ public class PersistART1 implements EncogPersistor {
 				result.setL(EncogFileSection.parseDouble(params, ART1.PROPERTY_L));
 				result.setVigilance(EncogFileSection.parseDouble(params, ART1.PROPERTY_VIGILANCE) );
 				result.setWeightsF1toF2(EncogFileSection.parseMatrix(params, PersistConst.PROPERTY_WEIGHTS_F1_F2));
-				result.setWeightsF2toF1(EncogFileSection.parseMatrix(params, PersistConst.PROPERTY_WEIGHTS_F2_F1));			
+				result.setWeightsF2toF1(EncogFileSection.parseMatrix(params, PersistConst.PROPERTY_WEIGHTS_F2_F1));	
+				
 			}
 		}
 		 

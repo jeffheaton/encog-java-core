@@ -497,11 +497,15 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	}
 
 	public void setF1Count(int i) {
-		this.f1Count = i;		
+		this.f1Count = i;	
+		this.outputF1 = new BiPolarNeuralData(f1Count);
+		
 	}
 	
 	public void setF2Count(int i) {
 		this.f2Count = i;		
+		this.inhibitF2 = new boolean[f2Count];
+		this.outputF2 = new BiPolarNeuralData(f2Count);
 	}
 
 	public void setNoWinner(int i) {
