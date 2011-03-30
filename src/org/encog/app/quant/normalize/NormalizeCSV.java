@@ -287,13 +287,13 @@ public class NormalizeCSV extends BasicFile {
 	 * Read the stats file.
 	 * @param filename The file to read from.
 	 */
-	public void readStatsFile(String filename) {
+	public void readStatsFile(File filename) {
 		List<NormalizedField> list = new ArrayList<NormalizedField>();
 
 		ReadCSV csv = null;
 
 		try {
-			csv = new ReadCSV(filename, true, CSVFormat.EG_FORMAT);
+			csv = new ReadCSV(filename.toString(), true, CSVFormat.EG_FORMAT);
 			while (csv.next()&& !this.shouldStop()) {
 				String type = csv.get(0);
 				if (type.equals("Normalize")) {
@@ -331,7 +331,7 @@ public class NormalizeCSV extends BasicFile {
 	 * Write the stats file.
 	 * @param filename The file to write to.
 	 */
-	public void writeStatsFile(String filename) {
+	public void writeStatsFile(File filename) {
 		PrintWriter tw = null;
 
 		try {

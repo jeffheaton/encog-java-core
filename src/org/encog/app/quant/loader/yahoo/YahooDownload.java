@@ -1,6 +1,7 @@
 package org.encog.app.quant.loader.yahoo;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -74,7 +75,7 @@ public class YahooDownload implements MarketLoader, QuantTask {
 		return new URL(str);
 	}
 
-    public void loadAllData(String ticker, String output, CSVFormat outputFormat, Date from,
+    public void loadAllData(String ticker, File output, CSVFormat outputFormat, Date from,
              Date to)
     {
     	try
