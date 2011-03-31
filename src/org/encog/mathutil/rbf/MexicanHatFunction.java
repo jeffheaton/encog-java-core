@@ -82,6 +82,10 @@ public class MexicanHatFunction extends BasicRBF {
 		setPeak(1.0);
 		setWidth(1.0);
 	}
+	
+	public MexicanHatFunction() {
+		
+	}
 
 	/**
 	 * Calculate the result from the function.

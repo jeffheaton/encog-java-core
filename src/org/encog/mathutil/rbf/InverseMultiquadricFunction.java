@@ -77,6 +77,10 @@ public class InverseMultiquadricFunction extends BasicRBF {
 		setPeak(1.0);
 		setWidth(1.0);
 	}
+	
+	public InverseMultiquadricFunction() {
+		
+	}
 
 	/**
 	 * {@inheritDoc}

@@ -37,8 +37,9 @@ import org.encog.neural.rbf.RBFNetwork;
  * 
  */
 public class RadialBasisPattern implements NeuralNetworkPattern {
-	public static final String RBF_LAYER = "RBF";
 
+	private RBFEnum rbfType = RBFEnum.Gaussian;
+	
 	/**
 	 * The number of input neurons to use. Must be set, default to invalid -1
 	 * value.
@@ -88,7 +89,7 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 */
 	public MLMethod generate() {
 
-		RBFNetwork result = new RBFNetwork(inputNeurons, this.hiddenNeurons ,outputNeurons,RBFEnum.Gaussian);
+		RBFNetwork result = new RBFNetwork(inputNeurons, this.hiddenNeurons ,outputNeurons,this.rbfType);
 		return result;
 	}
 
@@ -122,5 +123,10 @@ public class RadialBasisPattern implements NeuralNetworkPattern {
 	 */
 	public void setOutputNeurons(final int count) {
 		this.outputNeurons = count;
+	}
+
+	public void setRBF(RBFEnum type) {
+		this.rbfType = type;
+		
 	}
 }

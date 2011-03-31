@@ -73,6 +73,8 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 		// Literature seems to suggest this is a good default value.
 		double volumeNeuronWidth = 2.0 / hiddenCount;
 		
+		this.flat = new FlatNetworkRBF(inputCount,rbf.length,outputCount,rbf);
+		
 		try {
 			// try this
 			this.setRBFCentersAndWidthsEqualSpacing(-1, 1, t, inputCount, volumeNeuronWidth, false);
@@ -82,7 +84,7 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 		}
 		
 				
-		this.flat = new FlatNetworkRBF(inputCount,rbf.length,outputCount,rbf);
+		
 	}
 	
 	
