@@ -26,6 +26,7 @@ package org.encog.neural.cpn.training;
 import org.encog.engine.util.BoundMath;
 import org.encog.engine.util.EngineArray;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.cpn.CPN;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
@@ -59,10 +60,10 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	private double learningRate;
 
 	/**
-	 * If the weights have not been initialized, then they must be initialized
+	 * If the weights have not been initialized, then they can be initialized
 	 * before training begins. This will be done on the first iteration.
 	 */
-	private boolean mustInit = true;
+	private boolean mustInit;
 
 	/**
 	 * Construct the instar training object.
@@ -73,13 +74,18 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 *            The training data.
 	 * @param learningRate
 	 *            The learning rate.
+	 * @param initWeights
+	 *            True, if the weights should be initialized from the training
+	 *            data. If set to true, then you must have the same number of
+	 *            training elements as instar neurons.
 	 */
-	public TrainInstar(final CPN network,
-			final NeuralDataSet training, final double learningRate) {
+	public TrainInstar(final CPN network, final NeuralDataSet training,
+			final double learningRate, boolean initWeights) {
 		super(TrainingImplementationType.Iterative);
 		this.network = network;
 		this.training = training;
 		this.learningRate = learningRate;
+		this.mustInit = initWeights;
 	}
 
 	/**
@@ -100,6 +106,12 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * Approximate the weights based on the input values.
 	 */
 	private void initWeights() {
+
+		if (this.training.getRecordCount() != this.network.getInstarCount()) {
+			throw new NeuralNetworkError(
+					"If the weights are to be set from the training data, then there must be one instar neuron for each training element.");
+		}
+
 		int i = 0;
 		for (final NeuralDataPair pair : this.training) {
 			for (int j = 0; j < this.network.getInputCount(); j++) {
@@ -132,8 +144,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 			double distance = 0;
 			for (int i = 0; i < pair.getInput().size(); i++) {
 				final double diff = pair.getInput().getData(i)
-						- network.getWeightsInputToInstar().get(i,
-								winner);
+						- network.getWeightsInputToInstar().get(i, winner);
 				distance += diff * diff;
 			}
 			distance = BoundMath.sqrt(distance);
@@ -145,7 +156,8 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 			// train
 			for (int j = 0; j < network.getInputCount(); j++) {
 				final double delta = this.learningRate
-						* (pair.getInput().getData(j) - network.getWeightsInputToInstar().get(j, winner));
+						* (pair.getInput().getData(j) - network
+								.getWeightsInputToInstar().get(j, winner));
 
 				network.getWeightsInputToInstar().add(j, winner, delta);
 
@@ -164,7 +176,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	public void setLearningRate(final double rate) {
 		this.learningRate = rate;
 	}
-	
+
 	@Override
 	public boolean canContinue() {
 		return false;
@@ -177,8 +189,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 
 	@Override
 	public void resume(TrainingContinuation state) {
-		
-	}
 
+	}
 
 }

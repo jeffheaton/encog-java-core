@@ -126,8 +126,6 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 			final NeuralData out = network.computeInstar(
 					pair.getInput());
 
-			error.updateError(out.getData(), pair.getIdeal().getData());
-
 			final int j = EngineArray.indexOfLargest(out.getData());
 			for (int i = 0; i 
 				< network.getOutstarCount(); i++) {
@@ -135,7 +133,12 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 						* (pair.getIdeal().getData(i) - network.getWeightsInstarToOutstar().get(j, i));
 				network.getWeightsInstarToOutstar().add(j, i, delta);
 			}
+			
+			NeuralData out2 = this.network.computeOutstar(out);
+			error.updateError(out2.getData(), pair.getIdeal().getData());
 		}
+		
+		
 
 		setError(error.calculate());
 	}
