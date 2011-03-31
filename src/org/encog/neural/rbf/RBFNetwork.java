@@ -26,10 +26,12 @@ package org.encog.neural.rbf;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.flat.FlatNetworkRBF;
 import org.encog.engine.network.rbf.RadialBasisFunction;
+import org.encog.engine.util.Format;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.mathutil.rbf.GaussianFunction;
 import org.encog.mathutil.rbf.InverseMultiquadricFunction;
@@ -76,7 +78,14 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 		// Literature seems to suggest this is a good default value.
 		double volumeNeuronWidth = 2.0 / hiddenCount;
 		
-		this.setRBFCentersAndWidthsEqualSpacing(-1, 1, t, inputCount, volumeNeuronWidth, false);
+		try {
+			// try this
+			this.setRBFCentersAndWidthsEqualSpacing(-1, 1, t, inputCount, volumeNeuronWidth, false);
+		} catch(EncogError ex) {
+			// if we have the wrong number of hidden neurons, try this
+			this.randomizeRBFCentersAndWidths(inputCount, -1, 1, t);
+		}
+		
 				
 		this.flat = new FlatNetworkRBF(inputCount,rbf.length,outputCount,this.rbf);
 	}
@@ -152,10 +161,12 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 		// provided dimensions
 		final int expectedSideLength = (int) Math.pow(totalNumHiddenNeurons,
 				1.0 / dimensions);
-		if (expectedSideLength != Math.pow(totalNumHiddenNeurons,
-				1.0 / dimensions)) {
+		double cmp = Math.pow(totalNumHiddenNeurons,
+				1.0 / dimensions);
+		
+		if (expectedSideLength != cmp) {
 			throw new NeuralNetworkError(
-					"Total number of RBF neurons must be some integer to the power of 'dimensions'.");
+					"Total number of RBF neurons must be some integer to the power of 'dimensions'.\n"+Format.formatDouble(expectedSideLength,5)+" <> " + Format.formatDouble(cmp, 5));
 		}
 
 		final double edgeNeuronRBFWidth = 2.5 * volumeNeuronRBFWidth;
