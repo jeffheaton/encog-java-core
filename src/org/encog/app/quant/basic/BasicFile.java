@@ -525,4 +525,16 @@ public class BasicFile implements QuantTask {
 	public void setOutputFormat(CSVFormat outputFormat) {
 		this.outputFormat = outputFormat;
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" inputFilename=");
+		result.append(this.inputFilename);
+		result.append(", recordCount=");
+		result.append(this.recordCount);
+		result.append("]");
+		return result.toString();
+	}
 }

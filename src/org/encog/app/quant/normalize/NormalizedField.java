@@ -506,6 +506,20 @@ public class NormalizedField {
 	}
 
 	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.name);
+		result.append(", actualHigh=");
+		result.append(this.actualHigh);
+		result.append(", actualLow=");
+		result.append(this.actualLow);
+
+		result.append("]");
+		return result.toString();
+	}
 	
 	
 	

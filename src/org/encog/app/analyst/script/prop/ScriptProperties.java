@@ -197,4 +197,14 @@ public class ScriptProperties {
 		}
 		
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" :");
+		result.append(this.data.toString());
+		result.append("]");
+		return result.toString();
+	}
 }

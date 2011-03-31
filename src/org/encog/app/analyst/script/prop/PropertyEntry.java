@@ -44,4 +44,16 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 		return section  + "_" + name;
 	}
 	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.name);
+		result.append(", section=");
+		result.append(this.section);
+		result.append("]");
+		return result.toString();
+	}
+	
 }

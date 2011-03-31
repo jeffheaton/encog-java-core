@@ -29,5 +29,15 @@ public abstract class Cmd {
 	
 	public abstract boolean executeCommand();
 	public abstract String getName();
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.getName());
+		result.append("]");
+		return result.toString();
+	}
 
 }

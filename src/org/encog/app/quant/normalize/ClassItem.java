@@ -55,5 +55,18 @@ public class ClassItem {
 		this.index = index;
 	}
     
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.name);
+		result.append(", index=");
+		result.append(this.index);
+
+		result.append("]");
+		return result.toString();
+	}
+	
     
 }

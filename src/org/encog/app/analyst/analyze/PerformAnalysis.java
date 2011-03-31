@@ -166,5 +166,17 @@ public class PerformAnalysis {
 		target.getScript().setFields(df);
 
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" filename=");
+		result.append(this.filename);
+		result.append(", headers=");
+		result.append(this.headers);
+		result.append("]");
+		return result.toString();
+	}
 
 }

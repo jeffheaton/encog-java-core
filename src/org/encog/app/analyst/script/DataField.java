@@ -147,7 +147,20 @@ public class DataField {
 		return classMembers;
 	}
 	
-	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.name);
+		result.append(", min=");
+		result.append(this.min);
+		result.append(", max=");
+		result.append(this.max);
+
+		result.append("]");
+		return result.toString();
+	}
 	
 
 }

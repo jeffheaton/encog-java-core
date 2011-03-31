@@ -44,6 +44,16 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 		return this.code.compareTo(o.getCode());
 	}
 	
-	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.name);
+		result.append(", code=");
+		result.append(this.code);
+		result.append("]");
+		return result.toString();
+	}
 	
 }

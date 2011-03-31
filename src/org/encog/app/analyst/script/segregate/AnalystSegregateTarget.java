@@ -1,5 +1,7 @@
 package org.encog.app.analyst.script.segregate;
 
+import java.io.File;
+
 public class AnalystSegregateTarget {
 	private String file;
 	private int percent;
@@ -34,5 +36,16 @@ public class AnalystSegregateTarget {
 		this.percent = percent;
 	}
 	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" file=");
+		result.append(this.file.toString());
+		result.append(", percent=");
+		result.append(this.file);
+		result.append("]");
+		return result.toString();
+	}
 	
 }

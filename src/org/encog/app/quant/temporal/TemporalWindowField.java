@@ -86,4 +86,17 @@ public class TemporalWindowField {
 	public void setLastValue(String lastValue) {
 		this.lastValue = lastValue;
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.name);
+		result.append(", action=");
+		result.append(this.action);
+
+		result.append("]");
+		return result.toString();
+	}
 }

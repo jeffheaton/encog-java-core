@@ -53,4 +53,18 @@ public class ExcludedField {
 	public void setFieldValue(String fieldValue) {
 		this.fieldValue = fieldValue;
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" fieldNumber=");
+		result.append(this.fieldNumber);
+		result.append(", value=");
+		result.append(this.fieldValue);
+
+		result.append("]");
+		return result.toString();
+	}
+	
 }

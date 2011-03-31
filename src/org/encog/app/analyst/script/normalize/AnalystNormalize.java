@@ -79,4 +79,15 @@ public class AnalystNormalize {
 		}
 		return result;
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(": ");
+		if( this.normalizedFields!=null)
+			result.append(this.normalizedFields.toString());
+		result.append("]");
+		return result.toString();
+	}
 }

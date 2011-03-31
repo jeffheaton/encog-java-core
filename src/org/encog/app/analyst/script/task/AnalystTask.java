@@ -31,5 +31,14 @@ public class AnalystTask {
 		return lines;
 	}
 	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.name);
+		result.append("]");
+		return result.toString();
+	}
 	
 }

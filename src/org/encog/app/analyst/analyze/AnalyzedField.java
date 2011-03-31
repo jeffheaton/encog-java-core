@@ -138,4 +138,16 @@ public class AnalyzedField extends DataField {
 
 		return result;
 	}
+	
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" total=");
+		result.append(this.total);
+		result.append(", instances=");
+		result.append(this.instances);
+		result.append("]");
+		return result.toString();
+	}
 }

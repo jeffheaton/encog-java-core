@@ -76,5 +76,17 @@ public class SegregateTargetPercent {
 		this.filename = filename;
 	}
     
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" filename=");
+		result.append(this.filename.toString());
+		result.append(", percent=");
+		result.append(this.percent);
+
+		result.append("]");
+		return result.toString();
+	}
     
 }
