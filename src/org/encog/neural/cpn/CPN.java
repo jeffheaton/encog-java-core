@@ -66,8 +66,7 @@ public class CPN  extends BasicML implements MLRegression, MLResettable {
 
 	@Override
 	public int getOutputCount() {
-		// TODO Auto-generated method stub
-		return 0;
+		return outstarCount;
 	}
 	
 	public NeuralData computeOutstar(NeuralData input)
@@ -151,6 +150,10 @@ public class CPN  extends BasicML implements MLRegression, MLResettable {
 		ConsistentRandomizer randomize = new ConsistentRandomizer(-1,1,seed);
 		randomize.randomize(weightsInputToInstar);
 		randomize.randomize(weightsInstarToOutstar);		
+	}
+
+	public int getWinnerCount() {
+		return this.winnerCount;
 	}
 
 }

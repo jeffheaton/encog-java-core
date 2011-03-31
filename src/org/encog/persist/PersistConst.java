@@ -78,6 +78,7 @@ public class PersistConst {
 	public static final String ERROR = "error";
 	public static final String SIGMA = "sigma";
 	public static final String KERNEL = "kernel";
+	public static final String INSTAR = "instar";
 	
 
 }

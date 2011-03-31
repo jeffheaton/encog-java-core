@@ -6,6 +6,7 @@ import java.util.Map;
 import org.encog.ml.svm.PersistSVM;
 import org.encog.neural.art.PersistART1;
 import org.encog.neural.bam.PersistBAM;
+import org.encog.neural.cpn.PersistCPN;
 import org.encog.neural.neat.PersistNEATNetwork;
 import org.encog.neural.neat.PersistNEATPopulation;
 import org.encog.neural.networks.PersistBasicNetwork;
@@ -32,6 +33,7 @@ public class PersistorRegistry {
 		add(new PersistNEATPopulation());
 		add(new PersistNEATNetwork());
 		add(new PersistBasicPNN());
+		add(new PersistCPN());
 	}
 
 	public void add(EncogPersistor persistor) {

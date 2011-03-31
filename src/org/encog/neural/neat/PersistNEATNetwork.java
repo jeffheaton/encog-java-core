@@ -6,17 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.ml.genetic.genes.Gene;
-import org.encog.neural.neat.training.NEATLinkGene;
-import org.encog.neural.neat.training.NEATNeuronGene;
-import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
 import org.encog.persist.EncogWriteHelper;
 import org.encog.persist.PersistConst;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 
 public class PersistNEATNetwork implements EncogPersistor {
 
