@@ -27,12 +27,15 @@ import org.encog.Encog;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.ml.BasicML;
+import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.util.simple.EncogUtility;
 
-public class CPN  extends BasicML implements MLRegression, MLResettable {
+public class CPN  extends BasicML implements MLRegression, MLResettable, MLError {
 
 	private final int inputCount;
 	private final int instarCount;
@@ -155,6 +158,17 @@ public class CPN  extends BasicML implements MLRegression, MLResettable {
 
 	public int getWinnerCount() {
 		return this.winnerCount;
+	}
+	
+	/**
+	 * Calculate the error for this neural network. 
+	 * 
+	 * @param data
+	 *            The training set.
+	 * @return The error percentage.
+	 */
+	public double calculateError(final NeuralDataSet data) {
+		return EncogUtility.calculateRegressionError(this,data);
 	}
 
 }
