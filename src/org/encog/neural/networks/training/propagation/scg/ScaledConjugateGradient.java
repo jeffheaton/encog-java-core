@@ -26,6 +26,7 @@ package org.encog.neural.networks.training.propagation.scg;
 import org.encog.engine.network.train.prop.TrainFlatNetworkSCG;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.propagation.Propagation;
 
 /**
@@ -43,12 +44,12 @@ public class ScaledConjugateGradient extends Propagation {
 	 * @param training
 	 *            The training data.
 	 */
-	public ScaledConjugateGradient(final BasicNetwork network,
+	public ScaledConjugateGradient(final ContainsFlat network,
 			final NeuralDataSet training) {
 		super(network, training);
 
 		final TrainFlatNetworkSCG rpropFlat = new TrainFlatNetworkSCG(network
-				.getStructure().getFlat(), getTraining());
+				.getFlat(), getTraining());
 		setFlatTraining(rpropFlat);
 	}
 

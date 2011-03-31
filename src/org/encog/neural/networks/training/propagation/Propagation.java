@@ -26,9 +26,11 @@ package org.encog.neural.networks.training.propagation;
 import org.encog.EncogError;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.TrainFlatNetwork;
+import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.EncogValidate;
@@ -47,7 +49,7 @@ public abstract class Propagation extends BasicTraining {
 	/**
 	 * The network.
 	 */
-	private final BasicNetwork network;
+	private final ContainsFlat network;
 
 	/**
 	 * The current flat network we are using for training, or null for none.
@@ -68,7 +70,7 @@ public abstract class Propagation extends BasicTraining {
 	 * @param training
 	 *            The training set.
 	 */
-	public Propagation(final BasicNetwork network, 
+	public Propagation(final ContainsFlat network, 
 			final NeuralDataSet training) {
 		super(TrainingImplementationType.Iterative);
 		this.network = network;
@@ -109,7 +111,7 @@ public abstract class Propagation extends BasicTraining {
 	/**
 	 * @return The network.
 	 */
-	public BasicNetwork getNetwork() {
+	public MLMethod getNetwork() {
 		return this.network;
 	}
 

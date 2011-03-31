@@ -27,7 +27,7 @@ public class PersistRBFNetwork implements EncogPersistor {
 	@Override
 	public Object read(InputStream is) {
 		RBFNetwork result = new RBFNetwork();
-		FlatNetworkRBF flat =result.getFlatRBF();
+		FlatNetworkRBF flat =(FlatNetworkRBF)result.getFlat();
 		
 		EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
@@ -129,7 +129,7 @@ public class PersistRBFNetwork implements EncogPersistor {
 	public void save(OutputStream os, Object obj) {
 		EncogWriteHelper out = new EncogWriteHelper(os);
 		RBFNetwork net = (RBFNetwork)obj;
-		FlatNetworkRBF flat = net.getFlatRBF();
+		FlatNetworkRBF flat = (FlatNetworkRBF)net.getFlat();
 		out.addSection("RBF-NETWORK");
 		out.addSubSection("PARAMS");
 		out.addProperties(net.getProperties());

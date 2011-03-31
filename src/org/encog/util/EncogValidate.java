@@ -26,6 +26,7 @@ package org.encog.util;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.layers.Layer;
 
 /**
@@ -41,11 +42,11 @@ public final class EncogValidate {
 	 * @param training
 	 *            The training set to validate.
 	 */
-	public static void validateNetworkForTraining(final BasicNetwork network,
+	public static void validateNetworkForTraining(final ContainsFlat network,
 			final NeuralDataSet training) {
 
-		int inputCount = network.getInputCount();
-		int outputCount = network.getOutputCount();		
+		int inputCount = network.getFlat().getInputCount();
+		int outputCount = network.getFlat().getOutputCount();		
 
 		if (inputCount != training.getInputSize()) {
 			throw new NeuralNetworkError("The input layer size of "

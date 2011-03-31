@@ -25,6 +25,7 @@ package org.encog.neural.networks;
 
 import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
+import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
 import org.encog.mathutil.randomize.RangeRandomizer;
@@ -64,7 +65,7 @@ import org.encog.util.simple.EncogUtility;
  * Once the neural network has been completely constructed.
  * 
  */
-public class BasicNetwork extends BasicML implements 
+public class BasicNetwork extends BasicML implements ContainsFlat,
 		MLContext, MLRegression, MLEncodable, MLResettable, MLClassification, MLError {
 
 	/**
@@ -568,5 +569,10 @@ public class BasicNetwork extends BasicML implements
 	@Override
 	public int classify(NeuralData input) {
 		return winner(input);
+	}
+
+	@Override
+	public FlatNetwork getFlat() {
+		return this.getStructure().getFlat();
 	}
 }

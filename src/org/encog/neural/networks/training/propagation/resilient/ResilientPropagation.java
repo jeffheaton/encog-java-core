@@ -28,6 +28,7 @@ import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -93,7 +94,7 @@ public class ResilientPropagation extends Propagation {
 	 * @param profile
 	 *            The profile to use.
 	 */
-	public ResilientPropagation(final BasicNetwork network,
+	public ResilientPropagation(final ContainsFlat network,
 			final NeuralDataSet training) {
 		this(network, training, RPROPConst.DEFAULT_INITIAL_UPDATE,
 				RPROPConst.DEFAULT_MAX_STEP);
@@ -117,14 +118,14 @@ public class ResilientPropagation extends Propagation {
 	 * @param maxStep
 	 *            The maximum that a delta can reach.
 	 */
-	public ResilientPropagation(final BasicNetwork network,
+	public ResilientPropagation(final ContainsFlat network,
 			final NeuralDataSet training, 
 			final double initialUpdate, final double maxStep) {
 
 		super(network, training);
 
 		TrainFlatNetworkResilient rpropFlat = new TrainFlatNetworkResilient(
-				network.getStructure().getFlat(), this.getTraining(), RPROPConst.DEFAULT_ZERO_TOLERANCE, initialUpdate, maxStep);
+				network.getFlat(), this.getTraining(), RPROPConst.DEFAULT_ZERO_TOLERANCE, initialUpdate, maxStep);
 		this.setFlatTraining(rpropFlat);
 	}
 
@@ -153,7 +154,7 @@ public class ResilientPropagation extends Propagation {
 
 		final double[] d = (double[]) state
 				.get(ResilientPropagation.LAST_GRADIENTS);
-		return d.length == getNetwork().getStructure().calculateSize();
+		return d.length == ((ContainsFlat)getNetwork()).getFlat().getWeights().length;
 	}
 
 	/**

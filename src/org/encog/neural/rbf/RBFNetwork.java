@@ -23,12 +23,8 @@
  */
 package org.encog.neural.rbf;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.EncogError;
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLinear;
+import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.flat.FlatNetworkRBF;
 import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.Format;
@@ -38,19 +34,18 @@ import org.encog.mathutil.rbf.InverseMultiquadricFunction;
 import org.encog.mathutil.rbf.MultiquadricFunction;
 import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.ml.BasicML;
+import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.persist.PersistConst;
-import org.encog.persist.PersistError;
-import org.encog.util.obj.ReflectionUtil;
+import org.encog.neural.networks.ContainsFlat;
+import org.encog.util.simple.EncogUtility;
 
-public class RBFNetwork  extends BasicML implements MLRegression  {
+public class RBFNetwork  extends BasicML implements MLError, MLRegression, ContainsFlat  {
 	
 	private FlatNetworkRBF flat;	
-	private RadialBasisFunction[] rbf;
 	
 	public static final String TAG_RBF = "rbf";
 	public static final String TAG_RBF_CENTERS = "centers";
@@ -66,13 +61,13 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 			final int outputCount, final RadialBasisFunction[] rbf)
 	{
 		this.flat = new FlatNetworkRBF(inputCount,rbf.length,outputCount,rbf);
-		this.rbf = rbf;
+		this.flat.setRBF(rbf);
 	}
 	
 	public RBFNetwork(final int inputCount, int hiddenCount, 
 			final int outputCount, RBFEnum t)
 	{
-		this.rbf = new RadialBasisFunction[hiddenCount];
+		RadialBasisFunction[] rbf = new RadialBasisFunction[hiddenCount];
 		
 		// Set the standard RBF neuron width.
 		// Literature seems to suggest this is a good default value.
@@ -87,7 +82,7 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 		}
 		
 				
-		this.flat = new FlatNetworkRBF(inputCount,rbf.length,outputCount,this.rbf);
+		this.flat = new FlatNetworkRBF(inputCount,rbf.length,outputCount,rbf);
 	}
 	
 	
@@ -111,7 +106,7 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 			centers[i] = RangeRandomizer.randomize(min, max);
 		}
 
-		for (int i = 0; i < this.rbf.length; i++) {
+		for (int i = 0; i < this.flat.getRBF().length; i++) {
 			setRBFFunction(i, t, centers, RangeRandomizer.randomize(min, max));
 		}
 	}
@@ -129,7 +124,7 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 	 */
 	public void setRBFCentersAndWidths(final double[][] centers,
 			final double[] widths, final RBFEnum t) {
-		for (int i = 0; i < this.rbf.length; i++) {
+		for (int i = 0; i < this.flat.getRBF().length; i++) {
 			setRBFFunction(i, t, centers[i], widths[i]);
 		}
 	}
@@ -153,7 +148,7 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 			final double maxPosition, final RBFEnum t,
 			final int dimensions, final double volumeNeuronRBFWidth,
 			final boolean useWideEdgeRBFs) {
-		final int totalNumHiddenNeurons = this.rbf.length;
+		final int totalNumHiddenNeurons = this.flat.getRBF().length;
 
 		final double disMinMaxPosition = Math.abs(maxPosition - minPosition);
 
@@ -234,13 +229,13 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 	public void setRBFFunction(final int index, final RBFEnum t,
 			final double[] centers, final double width) {
 		if (t == RBFEnum.Gaussian) {
-			this.rbf[index] = new GaussianFunction(0.5,
+			this.flat.getRBF()[index] = new GaussianFunction(0.5,
 					centers, width);
 		} else if (t == RBFEnum.Multiquadric) {
-			this.rbf[index] = new MultiquadricFunction(0.5,
+			this.flat.getRBF()[index] = new MultiquadricFunction(0.5,
 					centers, width);
 		} else if (t == RBFEnum.InverseMultiquadric) {
-			this.rbf[index] = new InverseMultiquadricFunction(
+			this.flat.getRBF()[index] = new InverseMultiquadricFunction(
 					0.5, centers, width);
 		}
 	}
@@ -259,14 +254,8 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 	
 	public RadialBasisFunction[] getRBF()
 	{
-		return this.rbf;
+		return this.flat.getRBF();
 	}
-	
-	public FlatNetworkRBF getFlatRBF()
-	{
-		return this.flat;
-	}
-
 
 	@Override
 	public NeuralData compute(NeuralData input) {
@@ -282,11 +271,28 @@ public class RBFNetwork  extends BasicML implements MLRegression  {
 	
 
 	public void setRBF(RadialBasisFunction[] rbf) {
-		this.rbf = rbf;
+		this.flat.setRBF(rbf);
 	}
 
 	@Override
 	public void updateProperties() {
 		// unneeded
+	}
+
+	@Override
+	public FlatNetwork getFlat() {
+		return this.flat;
+	}
+
+	/**
+	 * Calculate the error for this neural network. 
+	 * 
+	 * @param data
+	 *            The training set.
+	 * @return The error percentage.
+	 */
+	@Override
+	public double calculateError(final NeuralDataSet data) {
+		return EncogUtility.calculateRegressionError(this,data);
 	}
 }

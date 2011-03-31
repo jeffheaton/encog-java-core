@@ -97,9 +97,9 @@ public class SVDTraining extends BasicTraining {
 		
 		double[][] matrix = new double[length][network.getOutputCount()];
 
-		flatToMatrix( this.network.getFlatRBF().getWeights(), 0, matrix );
+		flatToMatrix( this.network.getFlat().getWeights(), 0, matrix );
 		setError(SVD.svdfit(data.getA(), data.getB(), matrix, funcs));
-		matrixToFlat( matrix, this.network.getFlatRBF().getWeights(), 0);
+		matrixToFlat( matrix, this.network.getFlat().getWeights(), 0);
 	}
 	
 	public void flatToMatrix(double[] flat, int start, double[][] matrix)

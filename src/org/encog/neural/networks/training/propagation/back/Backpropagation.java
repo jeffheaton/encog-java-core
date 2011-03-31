@@ -26,6 +26,7 @@ package org.encog.neural.networks.training.propagation.back;
 import org.encog.engine.network.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
+import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Momentum;
 import org.encog.neural.networks.training.TrainingError;
@@ -75,7 +76,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 * @param training
 	 *            The training data to be used for backpropagation.
 	 */
-	public Backpropagation(final BasicNetwork network,
+	public Backpropagation(final ContainsFlat network,
 			final NeuralDataSet training) {
 		this(network, training, 0, 0);
 		addStrategy(new SmartLearningRate());
@@ -95,13 +96,13 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The influence that previous iteration's training deltas will
 	 *            have on the current iteration.
 	 */
-	public Backpropagation(final BasicNetwork network,
+	public Backpropagation(final ContainsFlat network,
 			final NeuralDataSet training, 
 			final double learnRate, final double momentum) {
 		super(network, training);
 
 		final TrainFlatNetworkBackPropagation backFlat = new TrainFlatNetworkBackPropagation(
-				network.getStructure().getFlat(), getTraining(), learnRate,
+				network.getFlat(), getTraining(), learnRate,
 				momentum);
 		setFlatTraining(backFlat);
 
@@ -150,7 +151,7 @@ public class Backpropagation extends Propagation implements Momentum,
 		}
 
 		final double[] d = (double[]) state.get(Backpropagation.LAST_DELTA);
-		return d.length == getNetwork().getStructure().calculateSize();
+		return d.length == ((ContainsFlat)getNetwork()).getFlat().getWeights().length;
 	}
 
 	/**
