@@ -23,6 +23,7 @@
  */
 package org.encog.neural.cpn;
 
+import org.encog.Encog;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.ml.BasicML;
@@ -112,7 +113,7 @@ public class CPN  extends BasicML implements MLRegression, MLResettable {
 			SumWinners += result.getData(Winner);
 		}
 		for (i = 0; i < this.instarCount; i++) {
-			if (winners[i])
+			if (winners[i] && Math.abs(SumWinners)>Encog.DEFAULT_DOUBLE_EQUAL) 
 				result.getData()[i] /= SumWinners;
 			else
 				result.getData()[i] = 0;
