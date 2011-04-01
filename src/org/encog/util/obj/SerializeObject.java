@@ -23,6 +23,7 @@
  */
 package org.encog.util.obj;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public final class SerializeObject {
 	 * @throws ClassNotFoundException
 	 *             The specified class can't be found.
 	 */
-	public static Serializable load(final String filename) throws IOException,
+	public static Serializable load(final File filename) throws IOException,
 			ClassNotFoundException {
 		Serializable object;
 		FileInputStream fis = null;
@@ -70,7 +71,7 @@ public final class SerializeObject {
 	 * @throws IOException
 	 *             An IO error occurred.
 	 */
-	public static void save(final String filename, final Serializable object)
+	public static void save(final File filename, final Serializable object)
 			throws IOException {
 		FileOutputStream fos = null;
 		ObjectOutputStream out = null;
