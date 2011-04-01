@@ -73,13 +73,15 @@ public class CmdTrain extends Cmd {
 		double targetError = this.getProp().getPropertyDouble(
 				ScriptProperties.ML_TRAIN_targetError);
 		this.getAnalyst().reportTrainingBegin();
+		int maxIteration = this.getAnalyst().getMaxIteration();
 
 		do {
 			train.iteration();
 			this.getAnalyst().reportTraining(train);
 		} while (train.getError() > targetError
 				&& !this.getAnalyst().shouldStopCommand()
-				&& !train.isTrainingDone());
+				&& !train.isTrainingDone()
+				&& (maxIteration==-1 || train.getIteration()<maxIteration));
 		train.finishTraining();
 
 		this.getAnalyst().reportTrainingEnd();

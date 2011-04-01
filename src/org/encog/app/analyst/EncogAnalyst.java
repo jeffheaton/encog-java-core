@@ -52,6 +52,7 @@ public class EncogAnalyst {
 	private List<AnalystListener> listeners = new ArrayList<AnalystListener>();
 	private QuantTask currentQuantTask = null;
 	private Map<String, Cmd> commands = new HashMap<String, Cmd>();
+	private int maxIteration = -1;
 
 	public EncogAnalyst() {
 		addCommand(new CmdCreate(this));
@@ -403,5 +404,15 @@ public class EncogAnalyst {
 
 		return result;
 	}
+
+	public void setMaxIteration(int i) {
+		this.maxIteration = i;		
+	}
+
+	public int getMaxIteration() {
+		return maxIteration;
+	}
+	
+	
 
 }

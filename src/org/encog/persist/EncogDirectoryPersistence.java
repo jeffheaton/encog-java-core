@@ -33,6 +33,7 @@ public class EncogDirectoryPersistence {
 			throw new PersistError(ex);
 		} finally {
 			try {
+				if( fos!=null )
 				fos.close();
 			} catch (IOException e) {
 
