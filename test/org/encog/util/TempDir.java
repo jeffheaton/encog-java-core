@@ -17,31 +17,8 @@ public class TempDir {
 	private File tempdir;
 
 	public TempDir() {
-		try {
-			final File sysTempDir = new File(
-					System.getProperty("java.io.tmpdir"));
-
-			final int maxAttempts = 9;
-			int attemptCount = 0;
-			do {
-				attemptCount++;
-				if (attemptCount > maxAttempts) {
-					throw new IOException(
-							"The highly improbable has occurred! Failed to "
-									+ "create a unique temporary directory after "
-									+ maxAttempts + " attempts.");
-				}
-				String dirName = UUID.randomUUID().toString();
-				tempdir = new File(sysTempDir, dirName);
-			} while (tempdir.exists());
-
-			if (!tempdir.mkdirs()) {
-				throw new IOException("Failed to create temp dir named "
-						+ tempdir.getAbsolutePath());
-			}
-		} catch (IOException e) {
-			throw new EncogError(e);
-		}
+		this.tempdir = new File(System.getProperty("java.io.tmpdir"),"encog-ut");
+		this.tempdir.mkdir();
 	}
 	
 	public File createFile(String filename) {
@@ -55,29 +32,23 @@ public class TempDir {
 	 * @return
 	 *          true iff all files are successfully deleted
 	 */
-	public boolean recursiveDelete(File fileOrDir)
+	public void recursiveDelete(File fileOrDir)
 	{
 	    if(fileOrDir.isDirectory())
 	    {
 	        // recursively delete contents
 	        for(File innerFile: fileOrDir.listFiles())
 	        {
-	            if(!recursiveDelete(innerFile))
-	            {
-	                return false;
-	            }
+	            recursiveDelete(innerFile);
 	        }
 	    }
 
-	    return fileOrDir.delete();
+	    fileOrDir.delete();
 	}
 
 	
 	public void dispose() {
-		if(!recursiveDelete(this.tempdir)) {
-			throw new EncogError("Failed to delete:" + this.tempdir.toString());
-		}
-
+		//recursiveDelete(this.tempdir);
 	}
 	
 	public String toString() {
