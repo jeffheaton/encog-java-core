@@ -186,11 +186,17 @@ public class ScriptSave {
 		EncogWriteHelper out = new EncogWriteHelper(stream);
 		saveSubSection(out,"HEADER","DATASOURCE");
 		saveConfig(out);
-		saveData(out);
-		saveNormalize(out);
+		
+		if( script.getFields()!=null ) {
+			saveData(out);
+			saveNormalize(out);
+		}
 		saveSubSection(out,"SERIES","CONFIG");
 		saveSubSection(out,"RANDOMIZE","CONFIG");
-		saveSegregate(out);
+		
+		if( this.script.getSegregate().getSegregateTargets()!=null ) {
+			saveSegregate(out);
+		}
 		saveSubSection(out,"GENERATE","CONFIG");
 		saveMachineLearning(out);
 		saveTasks(out);

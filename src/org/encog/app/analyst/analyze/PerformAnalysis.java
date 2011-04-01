@@ -2,6 +2,7 @@ package org.encog.app.analyst.analyze;
 
 import java.util.List;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystClassItem;
@@ -36,6 +37,9 @@ public class PerformAnalysis {
 	private void generateFieldsFromHeaders(ReadCSV csv) {
 		this.fields = new AnalyzedField[csv.getColumnCount()];
 		for (int i = 0; i < this.fields.length; i++) {
+			if( i>=csv.getColumnNames().size()) {
+				throw new AnalystError("CSV header count does not match column count");
+			}
 			this.fields[i] = new AnalyzedField(this.script, csv
 					.getColumnNames().get(i));
 		}
