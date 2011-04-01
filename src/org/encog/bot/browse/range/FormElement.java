@@ -116,4 +116,15 @@ public abstract class FormElement extends DocumentRange {
 		this.value = value;
 	}
 
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" name=");
+		result.append(this.name);
+		result.append(", value=");
+		result.append(this.value);
+		result.append("]");
+		return result.toString();
+	}
 }

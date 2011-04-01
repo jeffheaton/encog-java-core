@@ -215,4 +215,13 @@ public class Browser {
 		this.currentPage = currentPage;
 	}
 
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" currentPage=");
+		result.append(this.currentPage.toString());
+		result.append("]");
+		return result.toString();
+	}
 }
