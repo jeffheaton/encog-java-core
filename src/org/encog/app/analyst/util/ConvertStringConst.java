@@ -3,6 +3,10 @@ package org.encog.app.analyst.util;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * Convert several Analyst String to the correct object.
+ *
+ */
 public class ConvertStringConst {
 	
 	public static AnalystFileFormat string2AnalystFileFormat(String str)

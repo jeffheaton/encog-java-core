@@ -8,12 +8,15 @@ import java.util.List;
 
 import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
-import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.persist.EncogWriteHelper;
 
+/**
+ * Used to save an Encog Analyst script.
+ *
+ */
 public class ScriptSave {
 
 	private AnalystScript script;

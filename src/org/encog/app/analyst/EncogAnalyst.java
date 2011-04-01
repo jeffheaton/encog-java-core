@@ -33,6 +33,15 @@ import org.encog.bot.BotUtil;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLTrain;
 
+/**
+ * The Encog Analyst runs Encog Analyst Script files (EGA) to perform many
+ * common machine learning tasks. It is very much like Maven or ANT for Encog.
+ * Encog analyst files are made up of configuration information and tasks. Tasks
+ * are series of commands that make use of the configuration information to
+ * process CSV files.
+ * 
+ * 
+ */
 public class EncogAnalyst {
 
 	public final static String ACTION_ANALYZE = "ANALYZE";
@@ -42,31 +51,32 @@ public class EncogAnalyst {
 	private AnalystScript script = new AnalystScript();
 	private List<AnalystListener> listeners = new ArrayList<AnalystListener>();
 	private QuantTask currentQuantTask = null;
-	private Map<String,Cmd> commands = new HashMap<String,Cmd>();
-	private final CmdEvaluate evaluation;
-	
+	private Map<String, Cmd> commands = new HashMap<String, Cmd>();
+
 	public EncogAnalyst() {
 		addCommand(new CmdCreate(this));
-		addCommand(this.evaluation = new CmdEvaluate(this));
+		addCommand(new CmdEvaluate(this));
 		addCommand(new CmdGenerate(this));
 		addCommand(new CmdNormalize(this));
 		addCommand(new CmdRandomize(this));
 		addCommand(new CmdSegregate(this));
-		addCommand(new CmdTrain(this));		
+		addCommand(new CmdTrain(this));
 		addCommand(new CmdSeries(this));
 	}
 
 	public void analyze(File file, boolean headers, AnalystFileFormat format) {
-		script.getProperties().setFilename(AnalystWizard.FILE_RAW, file.toString());
-				
-		script.getProperties().setProperty(ScriptProperties.SETUP_CONFIG_inputHeaders, headers);
-		
+		script.getProperties().setFilename(AnalystWizard.FILE_RAW,
+				file.toString());
+
+		script.getProperties().setProperty(
+				ScriptProperties.SETUP_CONFIG_inputHeaders, headers);
+
 		PerformAnalysis a = new PerformAnalysis(script, file.toString(),
 				headers, format);
 		a.process(this);
 
 	}
-	
+
 	public void addCommand(Cmd cmd) {
 		this.commands.put(cmd.getName(), cmd);
 	}
@@ -270,8 +280,8 @@ public class EncogAnalyst {
 
 		String rawFile = this.script.getProperties().getPropertyFile(
 				ScriptProperties.HEADER_DATASOURCE_rawFile);
-		File rawFilename = new File(this.script.getProperties()
-				.getFilename(rawFile));
+		File rawFilename = new File(this.script.getProperties().getFilename(
+				rawFile));
 
 		if (!rawFilename.exists())
 			downloadPage(sourceURL, rawFilename);
@@ -284,15 +294,15 @@ public class EncogAnalyst {
 			this.reportCommandBegin(total, current, line);
 			line = line.trim();
 			boolean canceled = false;
-			
+
 			Cmd cmd = this.commands.get(line.toUpperCase());
-			
-			if( cmd!=null ) {
+
+			if (cmd != null) {
 				canceled = cmd.executeCommand();
 			} else {
 				throw new AnalystError("Unknown Command: " + line);
 			}
-			
+
 			this.reportCommandEnd(canceled);
 			setCurrentQuantTask(null);
 			current++;
@@ -310,7 +320,6 @@ public class EncogAnalyst {
 
 		executeTask(task);
 	}
-
 
 	/**
 	 * @return the listeners
@@ -336,58 +345,62 @@ public class EncogAnalyst {
 			this.currentQuantTask.requestStop();
 		}
 	}
-	
+
 	public int[] determineInputFields() {
 		List<Integer> fields = new ArrayList<Integer>();
-		String targetField = this.script.getProperties().getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
-		
+		String targetField = this.script.getProperties().getPropertyString(
+				ScriptProperties.DATA_CONFIG_targetField);
+
 		// calculate size of each field
 		int currentIndex = 0;
-		for(NormalizedField norm : this.script.getNormalize().getNormalizedFields() ) {
+		for (NormalizedField norm : this.script.getNormalize()
+				.getNormalizedFields()) {
 			int cols = norm.getColumnsNeeded();
-			
-			if( !norm.getName().equalsIgnoreCase(targetField) ) {
-				for(int i=0;i<cols;i++) {
+
+			if (!norm.getName().equalsIgnoreCase(targetField)) {
+				for (int i = 0; i < cols; i++) {
 					fields.add(currentIndex++);
 				}
 			} else {
-				currentIndex+=cols;
+				currentIndex += cols;
 			}
 		}
-		
+
 		// allocate result array
 		int[] result = new int[fields.size()];
-		for(int i=0;i<result.length;i++) {
+		for (int i = 0; i < result.length; i++) {
 			result[i] = fields.get(i);
 		}
-		
+
 		return result;
 	}
-	
+
 	public int[] determineIdealFields() {
 		List<Integer> fields = new ArrayList<Integer>();
-		String targetField = this.script.getProperties().getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
-		
+		String targetField = this.script.getProperties().getPropertyString(
+				ScriptProperties.DATA_CONFIG_targetField);
+
 		// calculate size of each field
 		int currentIndex = 0;
-		for(NormalizedField norm : this.script.getNormalize().getNormalizedFields() ) {
+		for (NormalizedField norm : this.script.getNormalize()
+				.getNormalizedFields()) {
 			int cols = norm.getColumnsNeeded();
-			
-			if( norm.getName().equalsIgnoreCase(targetField) ) {
-				for(int i=0;i<cols;i++) {
+
+			if (norm.getName().equalsIgnoreCase(targetField)) {
+				for (int i = 0; i < cols; i++) {
 					fields.add(currentIndex++);
 				}
 			} else {
-				currentIndex+=cols;
+				currentIndex += cols;
 			}
 		}
-		
+
 		// allocate result array
 		int[] result = new int[fields.size()];
-		for(int i=0;i<result.length;i++) {
+		for (int i = 0; i < result.length; i++) {
 			result[i] = fields.get(i);
 		}
-		
+
 		return result;
 	}
 

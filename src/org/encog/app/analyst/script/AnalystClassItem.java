@@ -1,10 +1,15 @@
 package org.encog.app.analyst.script;
 
+/**
+ * Holds a class item for the script. Some columns in a CSV are classes. This
+ * object holds the possible class types.
+ * 
+ */
 public class AnalystClassItem implements Comparable<AnalystClassItem> {
-	
+
 	private String code;
 	private String name;
-	
+
 	public AnalystClassItem(String code, String name) {
 		super();
 		this.code = code;
@@ -19,7 +24,8 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 	}
 
 	/**
-	 * @param code the code to set
+	 * @param code
+	 *            the code to set
 	 */
 	public void setCode(String code) {
 		this.code = code;
@@ -33,7 +39,8 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name
+	 *            the name to set
 	 */
 	public void setName(String name) {
 		this.name = name;
@@ -43,7 +50,7 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 	public int compareTo(AnalystClassItem o) {
 		return this.code.compareTo(o.getCode());
 	}
-	
+
 	/** {@inheritDoc} */
 	public String toString() {
 		StringBuilder result = new StringBuilder("[");
@@ -55,5 +62,5 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 		result.append("]");
 		return result.toString();
 	}
-	
+
 }

@@ -2,7 +2,16 @@ package org.encog.app.analyst;
 
 import org.encog.EncogError;
 
+/**
+ * An error has occured with the Encog Analyst.
+ *
+ */
 public class AnalystError extends EncogError {
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Construct a message exception.

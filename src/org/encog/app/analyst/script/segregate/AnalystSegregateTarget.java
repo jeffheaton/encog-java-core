@@ -1,7 +1,10 @@
 package org.encog.app.analyst.script.segregate;
 
-import java.io.File;
 
+/**
+ * This class specifies a target for the segregation process.
+ *
+ */
 public class AnalystSegregateTarget {
 	private String file;
 	private int percent;

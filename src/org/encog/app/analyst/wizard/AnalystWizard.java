@@ -17,6 +17,26 @@ import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.util.file.FileUtil;
 
+/**
+ * The Encog Analyst Wizard can be used to create Encog Analyst script files
+ * from a CSV file. This class is typically used by the Encog Workbench, but it
+ * can easily be used from any program to create a starting point for an Encog
+ * Analyst Script.
+ * 
+ * Several items must be provided to the wizard.
+ * 
+ * Desired Machine Learning Method: This is the machine learning method that you
+ * would like the wizard to use. This might be a neural network, SVM or other
+ * supported method.
+ * 
+ * Normalization Range: This is the range that the data should be normalized
+ * into. Some machine learning methods perform better with different ranges. The
+ * two ranges supported by the wizard are -1 to 1 and 0 to 1.
+ * 
+ * Goal: What are we trying to accomplish. Is this a classification, regression
+ * or autoassociation problem.
+ * 
+ */
 public class AnalystWizard {
 
 	public final static String FILE_RAW = "FILE_RAW";
@@ -146,7 +166,8 @@ public class AnalystWizard {
 				ScriptProperties.ML_CONFIG_trainingFile,
 				AnalystWizard.FILE_TRAINSET);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_machineLearningFile, AnalystWizard.FILE_ML);
+				ScriptProperties.ML_CONFIG_machineLearningFile,
+				AnalystWizard.FILE_ML);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_outputFile,
 				AnalystWizard.FILE_OUTPUT);
@@ -156,8 +177,7 @@ public class AnalystWizard {
 					AnalystWizard.FILE_EVAL);
 		} else {
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_CONFIG_evalFile,
-					target);
+					ScriptProperties.ML_CONFIG_evalFile, target);
 		}
 
 		// other
@@ -177,7 +197,7 @@ public class AnalystWizard {
 
 			if ((f.isInteger() || f.isReal()) && !f.isClass()) {
 				action = NormalizationAction.Normalize;
-				if( this.range == NormalizeRange.NegOne2One)
+				if (this.range == NormalizeRange.NegOne2One)
 					norm[i] = new NormalizedField(f.getName(), action, 1, -1);
 				else
 					norm[i] = new NormalizedField(f.getName(), action, 1, 0);
@@ -190,8 +210,8 @@ public class AnalystWizard {
 					action = NormalizationAction.Equilateral;
 				else
 					action = NormalizationAction.OneOf;
-				
-				if( this.range == NormalizeRange.NegOne2One)
+
+				if (this.range == NormalizeRange.NegOne2One)
 					norm[i] = new NormalizedField(f.getName(), action, 1, -1);
 				else
 					norm[i] = new NormalizedField(f.getName(), action, 1, 0);
@@ -297,11 +317,11 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_type,
 				MLMethodFactory.TYPE_FEEDFORWARD);
-		
-		if( this.range==NormalizeRange.NegOne2One) {
+
+		if (this.range == NormalizeRange.NegOne2One) {
 			this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_architecture,
-				"?B->TANH->" + hidden + "B->TANH->?");
+					ScriptProperties.ML_CONFIG_architecture,
+					"?B->TANH->" + hidden + "B->TANH->?");
 		} else {
 			this.script.getProperties().setProperty(
 					ScriptProperties.ML_CONFIG_architecture,
@@ -480,7 +500,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param lagWindowSize the lagWindowSize to set
+	 * @param lagWindowSize
+	 *            the lagWindowSize to set
 	 */
 	public void setLagWindowSize(int lagWindowSize) {
 		this.lagWindowSize = lagWindowSize;
@@ -494,7 +515,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param leadWindowSize the leadWindowSize to set
+	 * @param leadWindowSize
+	 *            the leadWindowSize to set
 	 */
 	public void setLeadWindowSize(int leadWindowSize) {
 		this.leadWindowSize = leadWindowSize;
@@ -508,7 +530,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param includeTargetField the includeTargetField to set
+	 * @param includeTargetField
+	 *            the includeTargetField to set
 	 */
 	public void setIncludeTargetField(boolean includeTargetField) {
 		this.includeTargetField = includeTargetField;
@@ -557,7 +580,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param projectFile the egName to set
+	 * @param projectFile
+	 *            the egName to set
 	 */
 	public void setEGName(File projectFile) {
 		this.egName = projectFile;
@@ -571,7 +595,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param taskSegregate the taskSegregate to set
+	 * @param taskSegregate
+	 *            the taskSegregate to set
 	 */
 	public void setTaskSegregate(boolean taskSegregate) {
 		this.taskSegregate = taskSegregate;
@@ -585,7 +610,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param taskRandomize the taskRandomize to set
+	 * @param taskRandomize
+	 *            the taskRandomize to set
 	 */
 	public void setTaskRandomize(boolean taskRandomize) {
 		this.taskRandomize = taskRandomize;
@@ -599,7 +625,8 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param taskNormalize the taskNormalize to set
+	 * @param taskNormalize
+	 *            the taskNormalize to set
 	 */
 	public void setTaskNormalize(boolean taskNormalize) {
 		this.taskNormalize = taskNormalize;
@@ -613,12 +640,11 @@ public class AnalystWizard {
 	}
 
 	/**
-	 * @param range the range to set
+	 * @param range
+	 *            the range to set
 	 */
 	public void setRange(NormalizeRange range) {
 		this.range = range;
 	}
-	
-	
 
 }

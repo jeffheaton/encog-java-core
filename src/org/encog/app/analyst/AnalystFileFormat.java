@@ -1,5 +1,9 @@
 package org.encog.app.analyst;
 
+/**
+ * CSV file formats used by the Encog Analyst.
+ *
+ */
 public enum AnalystFileFormat {
 
 	DECPNT_COMMA,

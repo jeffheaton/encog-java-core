@@ -14,6 +14,11 @@ import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.util.ConvertStringConst;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * Holds all of the properties for a script. Constants are provided to define
+ * "well known" properties.
+ * 
+ */
 public class ScriptProperties {
 
 	public static final String HEADER_DATASOURCE_sourceFile = "HEADER:DATASOURCE_sourceFile";
@@ -45,7 +50,7 @@ public class ScriptProperties {
 	public static final String ML_TRAIN_targetError = "ML:TRAIN_targetError";
 	public static final String SERIES_CONFIG_lead = "SERIES:CONFIG_lead";
 	public static final String SERIES_CONFIG_lag = "SERIES:CONFIG_lag";
-	public static final String SERIES_CONFIG_includeTarget = "SERIES:CONFIG_includeTarget";	
+	public static final String SERIES_CONFIG_includeTarget = "SERIES:CONFIG_includeTarget";
 	public static final String SERIES_CONFIG_sourceFile = "SERIES:CONFIG_sourceFile";
 	public static final String SERIES_CONFIG_targetFile = "SERIES:CONFIG_targetFile";
 
@@ -67,7 +72,7 @@ public class ScriptProperties {
 	}
 
 	public void setProperty(String name, AnalystFileFormat format) {
-		if( format==null ) {
+		if (format == null) {
 			data.put(name, "");
 		} else {
 			data.put(name, ConvertStringConst.analystFileFormat2String(format));
@@ -75,7 +80,7 @@ public class ScriptProperties {
 	}
 
 	public void setProperty(String name, boolean b) {
-		data.put(name, b?"t":"f");
+		data.put(name, b ? "t" : "f");
 	}
 
 	public void setProperty(String name, File analyzeFile) {
@@ -92,15 +97,16 @@ public class ScriptProperties {
 		return (String) data.get(name);
 
 	}
-	
+
 	public AnalystFileFormat getPropertyFormat(String name) {
 		String value = data.get(name);
 		return ConvertStringConst.string2AnalystFileFormat(value);
 	}
-	
+
 	public CSVFormat getPropertyCSVFormat(String name) {
 		String value = data.get(name);
-		AnalystFileFormat code = ConvertStringConst.string2AnalystFileFormat(value);
+		AnalystFileFormat code = ConvertStringConst
+				.string2AnalystFileFormat(value);
 		return ConvertStringConst.convertToCSVFormat(code);
 	}
 
@@ -134,24 +140,25 @@ public class ScriptProperties {
 		}
 		return result;
 	}
-	
+
 	public void setFilename(String key, String value) {
 		String key2 = "SETUP:FILENAMES_" + key;
 		this.data.put(key2, value);
-		
+
 	}
+
 	public String getFilename(String file) {
 		String key2 = "SETUP:FILENAMES_" + file;
-		
-		if( !this.data.containsKey(key2) ) {
+
+		if (!this.data.containsKey(key2)) {
 			throw new AnalystError("Undefined file: " + file);
 		}
-		
-		return (String)this.data.get(key2);
+
+		return (String) this.data.get(key2);
 	}
 
 	public boolean getPropertyBoolean(String name) {
-		if( !data.containsKey(name) )
+		if (!data.containsKey(name))
 			return false;
 		else
 			return data.get(name).toLowerCase().startsWith("t");
@@ -160,23 +167,22 @@ public class ScriptProperties {
 	public int getPropertyInt(String name) {
 		try {
 			String value = this.data.get(name);
-			if( value==null ) {
+			if (value == null) {
 				return 0;
 			}
 			return Integer.parseInt(value);
-		} catch(NumberFormatException ex)
-		{
+		} catch (NumberFormatException ex) {
 			throw new AnalystError(ex);
 		}
 	}
 
 	public void setProperty(String name, int i) {
-		this.data.put(name, ""+i);
-		
+		this.data.put(name, "" + i);
+
 	}
 
 	public void setProperty(String name, double d) {
-		this.data.put(name, CSVFormat.EG_FORMAT.format(d, 5));		
+		this.data.put(name, CSVFormat.EG_FORMAT.format(d, 5));
 	}
 
 	public double getPropertyDouble(String name) {
@@ -185,19 +191,19 @@ public class ScriptProperties {
 	}
 
 	public void setProperty(String name, AnalystGoal goal) {
-		switch(goal) {
-			case Classification:
-				data.put(name, "classification");
-				break;
-			case Regression:
-				data.put(name, "regression");
-				break;
-			default:
-				data.put(name, "");
+		switch (goal) {
+		case Classification:
+			data.put(name, "classification");
+			break;
+		case Regression:
+			data.put(name, "regression");
+			break;
+		default:
+			data.put(name, "");
 		}
-		
+
 	}
-	
+
 	/** {@inheritDoc} */
 	public String toString() {
 		StringBuilder result = new StringBuilder("[");

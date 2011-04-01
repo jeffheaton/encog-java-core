@@ -3,6 +3,10 @@ package org.encog.app.analyst.script.task;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Holds a task in the script.  A task is a named set of commands.
+ *
+ */
 public class AnalystTask {
 
 	

@@ -3,8 +3,11 @@ package org.encog.app.analyst;
 import org.encog.engine.util.Format;
 import org.encog.engine.util.Stopwatch;
 import org.encog.ml.MLTrain;
-import org.encog.neural.networks.training.Train;
 
+/**
+ * A console implementation of the Encog Analyst listener.  Will report all progress to the console.
+ *
+ */
 public class ConsoleAnalystListener implements AnalystListener {
 
 	private String currentTask = "";

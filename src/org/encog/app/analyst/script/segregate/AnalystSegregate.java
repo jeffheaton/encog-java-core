@@ -1,6 +1,9 @@
 package org.encog.app.analyst.script.segregate;
 
-
+/**
+ * Holds all of the segregation targets for a script.
+ *
+ */
 public class AnalystSegregate {
 	
 	private AnalystSegregateTarget[] segregateTargets;

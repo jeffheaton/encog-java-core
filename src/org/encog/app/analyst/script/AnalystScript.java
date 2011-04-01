@@ -16,6 +16,9 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * Holds a script for the Encog Analyst.
+ */
 public class AnalystScript {
 
 	private DataField[] fields;

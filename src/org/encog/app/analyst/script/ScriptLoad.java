@@ -18,6 +18,10 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
 
+/**
+ * Used to load an Encog Analyst script.
+ *
+ */
 public class ScriptLoad {
 	
 	private AnalystScript script;
