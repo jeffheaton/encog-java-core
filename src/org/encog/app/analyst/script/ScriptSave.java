@@ -34,7 +34,7 @@ public class ScriptSave {
 		for (String key : list) {
 			String value = this.script.getProperties().getFilename(key);
 			File f = new File(value);
-			if( f.getParent().equalsIgnoreCase(script.getBasePath()))
+			if( f.getParent()!=null && f.getParent().equalsIgnoreCase(script.getBasePath()))
 				out.writeProperty(key, f.getName());
 			else
 				out.writeProperty(key, value);

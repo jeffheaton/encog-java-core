@@ -40,12 +40,13 @@ public class CmdEvaluate extends Cmd {
 		String resourceID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_machineLearningFile);
 
+		String outputID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_outputFile);
+
 		File evalFile = getScript().resolveFilename(evalID);
 		File resourceFile = getScript().resolveFilename(resourceID);
 
-		String outputFile = getProp().getFilename(
-				getProp().getPropertyString(
-						ScriptProperties.ML_CONFIG_outputFile));
+		File outputFile = getAnalyst().getScript().resolveFilename(outputID);
 
 		String targetField = getProp().getPropertyString(
 				ScriptProperties.DATA_CONFIG_targetField);

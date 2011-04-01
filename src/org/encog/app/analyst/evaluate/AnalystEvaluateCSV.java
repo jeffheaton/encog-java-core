@@ -58,7 +58,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	 * @param method 
 	 * @return The output stream for the text file.
 	 */
-	public PrintWriter prepareOutputFile(String outputFile, int input, int output) {
+	public PrintWriter prepareOutputFile(File outputFile, int input, int output) {
 		try {
 			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 
@@ -127,7 +127,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	}
 
 
-	public void process(String outputFile, EncogAnalyst analyst,
+	public void process(File outputFile, EncogAnalyst analyst,
 			MLRegression method, String targetFieldName) {
 
 		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),

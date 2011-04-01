@@ -327,6 +327,10 @@ public class NormalizedField {
 		
 		this.owner = owner;
 		if (this.action == NormalizationAction.Equilateral) {
+			if( this.classes.size()<3 ) {
+				throw new QuantError("There must be at least three classes to make use of equilateral normalization.");
+			}
+						
 			this.eq = new Equilateral(this.classes.size(), this.normalizedHigh,
 					this.normalizedLow);
 		}

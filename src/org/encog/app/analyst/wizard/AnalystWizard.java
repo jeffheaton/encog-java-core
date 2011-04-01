@@ -442,10 +442,10 @@ public class AnalystWizard {
 		String rawID = this.script.getProperties().getPropertyFile(
 				ScriptProperties.HEADER_DATASOURCE_rawFile);
 
-		String rawFilename = this.script.getProperties().getFilename(rawID);
+		File rawFilename = this.analyst.getScript().resolveFilename(rawID);
 
 		this.analyst.analyze(
-				new File(rawFilename),
+				rawFilename,
 				this.script.getProperties().getPropertyBoolean(
 						ScriptProperties.SETUP_CONFIG_inputHeaders),
 				this.script.getProperties().getPropertyFormat(
