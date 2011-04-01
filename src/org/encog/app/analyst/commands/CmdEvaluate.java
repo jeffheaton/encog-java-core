@@ -13,16 +13,21 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.evaluate.EvaluateCSV;
 import org.encog.engine.util.Format;
-import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.persist.EncogDirectoryPersistence;
 
+/**
+ * This class is used to evaluate a machine learning method. Evaluation data is
+ * provided and the ideal and actual responses from the machine learning method
+ * are written to a file.
+ * 
+ */
 public class CmdEvaluate extends Cmd {
 
 	public final static String COMMAND_NAME = "EVALUATE";
 	private Map<String, Integer> classCorrect = new HashMap<String, Integer>();
 	private Map<String, Integer> classCount = new HashMap<String, Integer>();
-	
+
 	public CmdEvaluate(EncogAnalyst analyst) {
 		super(analyst);
 	}
@@ -30,56 +35,73 @@ public class CmdEvaluate extends Cmd {
 	@Override
 	public boolean executeCommand() {
 		// get filenames
-		String evalID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_evalFile);
-		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
-		
+		String evalID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_evalFile);
+		String resourceID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_machineLearningFile);
+
 		File evalFile = getScript().resolveFilename(evalID);
 		File resourceFile = getScript().resolveFilename(resourceID);
 
 		String outputFile = getProp().getFilename(
-				getProp().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
-		
-		String targetField = getProp().getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
-		
-		MLRegression method = (MLRegression)EncogDirectoryPersistence.loadObject(resourceFile);
+				getProp().getPropertyString(
+						ScriptProperties.ML_CONFIG_outputFile));
+
+		String targetField = getProp().getPropertyString(
+				ScriptProperties.DATA_CONFIG_targetField);
+
+		MLRegression method = (MLRegression) EncogDirectoryPersistence
+				.loadObject(resourceFile);
 
 		boolean headers = getScript().expectInputHeaders(evalID);
 
 		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this.getAnalyst()));
-		eval.analyze(evalFile, headers, getProp().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
-		eval.process(outputFile, getAnalyst(), method,targetField);
+		eval.analyze(
+				evalFile,
+				headers,
+				getProp().getPropertyCSVFormat(
+						ScriptProperties.SETUP_CONFIG_csvFormat));
+		eval.process(outputFile, getAnalyst(), method, targetField);
 		getAnalyst().setCurrentQuantTask(null);
 		this.classCorrect = eval.getClassCorrect();
 		this.classCount = eval.getClassCount();
 		return eval.shouldStop();
 	}
-	
+
 	public void evaluateRaw() {
 
 		// get filenames
-		String evalID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_evalFile);
-		String resourceID = getProp().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
-		
+		String evalID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_evalFile);
+		String resourceID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_machineLearningFile);
+
 		File evalFile = getScript().resolveFilename(evalID);
 		File resourceFile = getScript().resolveFilename(resourceID);
 
 		File outputFile = getScript().resolveFilename(
-				getProp().getPropertyString(ScriptProperties.ML_CONFIG_outputFile));
+				getProp().getPropertyString(
+						ScriptProperties.ML_CONFIG_outputFile));
 
-		MLRegression method = (MLRegression)EncogDirectoryPersistence.loadObject(resourceFile);
+		MLRegression method = (MLRegression) EncogDirectoryPersistence
+				.loadObject(resourceFile);
 
 		boolean headers = getScript().expectInputHeaders(evalID);
 
 		EvaluateCSV eval = new EvaluateCSV();
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(getAnalyst()));
-		eval.analyze(evalFile, headers, getProp().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+		eval.analyze(
+				evalFile,
+				headers,
+				getProp().getPropertyCSVFormat(
+						ScriptProperties.SETUP_CONFIG_csvFormat));
 		eval.process(outputFile, method);
 		getAnalyst().setCurrentQuantTask(null);
 	}
-	
+
 	public Map<String, Integer> getClassCorrect() {
 		return classCorrect;
 	}
@@ -95,7 +117,7 @@ public class CmdEvaluate extends Cmd {
 	public void setClassCount(Map<String, Integer> classCount) {
 		this.classCount = classCount;
 	}
-	
+
 	public String evalToString() {
 		List<String> list = new ArrayList<String>();
 		list.addAll(this.classCount.keySet());
@@ -118,8 +140,6 @@ public class CmdEvaluate extends Cmd {
 
 		return result.toString();
 	}
-
-
 
 	@Override
 	public String getName() {

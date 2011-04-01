@@ -20,6 +20,10 @@ import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
+/**
+ * Used by the analyst to evaluate a CSV file.
+ *
+ */
 public class AnalystEvaluateCSV extends BasicFile {
 
 	private final Map<String,Integer> classCorrect = new HashMap<String,Integer>();

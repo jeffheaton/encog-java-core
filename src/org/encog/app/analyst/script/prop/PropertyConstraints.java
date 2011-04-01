@@ -12,6 +12,10 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.file.ResourceInputStream;
 
+/**
+ * The constant key's for each of the analyst script.
+ *
+ */
 public class PropertyConstraints {
 
 	public final String HEADER_DATASOURCE_sourceFile = "HEADER_DATASOURCE_sourceFile";
@@ -52,7 +56,7 @@ public class PropertyConstraints {
 	private final Map<String,List<PropertyEntry>> data = new HashMap<String,List<PropertyEntry>>();
 
 	private PropertyConstraints() {
-		String currentClass = null;
+		
 		try {
 			
 			InputStream is = ResourceInputStream.openResourceInputStream("org/encog/data/analyst.csv");

@@ -12,6 +12,11 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.simple.EncogUtility;
 
+/**
+ * This command is used to perform training on a machine learning method and
+ * dataset.
+ * 
+ */
 public class CmdTrain extends Cmd {
 
 	public final static String COMMAND_NAME = "TRAIN";
@@ -24,8 +29,9 @@ public class CmdTrain extends Cmd {
 		String resourceID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_machineLearningFile);
 		File resourceFile = getScript().resolveFilename(resourceID);
-		
-		MLMethod method = (MLMethod)EncogDirectoryPersistence.loadObject(resourceFile);
+
+		MLMethod method = (MLMethod) EncogDirectoryPersistence
+				.loadObject(resourceFile);
 
 		if (!(method instanceof MLMethod)) {
 			throw new AnalystError(
@@ -50,10 +56,12 @@ public class CmdTrain extends Cmd {
 	private MLTrain createTrainer(MLMethod method, NeuralDataSet trainingSet) {
 
 		MLTrainFactory factory = new MLTrainFactory();
-		
-		String type = this.getProp().getPropertyString(ScriptProperties.ML_TRAIN_type);
-		String args = this.getProp().getPropertyString(ScriptProperties.ML_TRAIN_arguments);
-		
+
+		String type = this.getProp().getPropertyString(
+				ScriptProperties.ML_TRAIN_type);
+		String args = this.getProp().getPropertyString(
+				ScriptProperties.ML_TRAIN_arguments);
+
 		MLTrain train = factory.create(method, trainingSet, type, args);
 
 		return train;
@@ -62,15 +70,16 @@ public class CmdTrain extends Cmd {
 	private void performTraining(MLTrain train, MLMethod method,
 			NeuralDataSet trainingSet) {
 
-		double targetError = this.getProp().getPropertyDouble(ScriptProperties.ML_TRAIN_targetError);
+		double targetError = this.getProp().getPropertyDouble(
+				ScriptProperties.ML_TRAIN_targetError);
 		this.getAnalyst().reportTrainingBegin();
-				
+
 		do {
 			train.iteration();
 			this.getAnalyst().reportTraining(train);
 		} while (train.getError() > targetError
 				&& !this.getAnalyst().shouldStopCommand()
-				&& !train.isTrainingDone() );
+				&& !train.isTrainingDone());
 		train.finishTraining();
 
 		this.getAnalyst().reportTrainingEnd();
@@ -83,12 +92,11 @@ public class CmdTrain extends Cmd {
 		MLTrain trainer = createTrainer(method, trainingSet);
 
 		performTraining(trainer, method, trainingSet);
-		
+
 		String resourceID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_machineLearningFile);
 		String resourceFile = getProp().getFilename(resourceID);
 		EncogDirectoryPersistence.saveObject(new File(resourceFile), method);
-
 
 		return this.getAnalyst().shouldStopCommand();
 	}

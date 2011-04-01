@@ -2,13 +2,16 @@ package org.encog.app.analyst.commands;
 
 import java.io.File;
 
-import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.shuffle.ShuffleCSV;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * This command is used to randomize the lines in a CSV file.
+ *
+ */
 public class CmdRandomize extends Cmd {
 
 	public final static String COMMAND_NAME = "RANDOMIZE";	

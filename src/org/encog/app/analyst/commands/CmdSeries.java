@@ -10,6 +10,11 @@ import org.encog.app.quant.temporal.TemporalWindowCSV;
 import org.encog.app.quant.temporal.TemporalWindowField;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * This command is used to process time-series data. The data is processed in a
+ * way that a neural network can predict from.
+ * 
+ */
 public class CmdSeries extends Cmd {
 
 	public final static String COMMAND_NAME = "SERIES";

@@ -10,8 +10,14 @@ import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
-import org.encog.app.quant.normalize.ClassItem;
 
+/**
+ * This class represents a field that the Encog Analyst is in the process of
+ * analyzing. This class is used to track statistical information on the field
+ * that will help the Encog analyst determine what type of field this is, and
+ * how to normalize it.
+ * 
+ */
 public class AnalyzedField extends DataField {
 
 	private double total;
@@ -69,11 +75,12 @@ public class AnalyzedField extends DataField {
 
 		if (this.isClass()) {
 			if (!this.classMap.containsKey(str)) {
-				this.classMap.put(str, new AnalystClassItem(str,str));
+				this.classMap.put(str, new AnalystClassItem(str, str));
 			}
-			
-			int max = script.getProperties().getPropertyInt(ScriptProperties.SETUP_CONFIG_maxClassCount);
-			if (this.classMap.size() > max )
+
+			int max = script.getProperties().getPropertyInt(
+					ScriptProperties.SETUP_CONFIG_maxClassCount);
+			if (this.classMap.size() > max)
 				this.setClass(false);
 		}
 	}
@@ -105,14 +112,14 @@ public class AnalyzedField extends DataField {
 
 	public List<AnalystClassItem> getClassMembers() {
 		List<String> sorted = new ArrayList<String>();
-		sorted.addAll(this.classMap.keySet());		
+		sorted.addAll(this.classMap.keySet());
 		Collections.sort(sorted);
-		
+
 		List<AnalystClassItem> result = new ArrayList<AnalystClassItem>();
-		for(String str: sorted) {
+		for (String str : sorted) {
 			result.add(this.classMap.get(str));
 		}
-		
+
 		return result;
 	}
 
@@ -138,7 +145,7 @@ public class AnalyzedField extends DataField {
 
 		return result;
 	}
-	
+
 	/** {@inheritDoc} */
 	public String toString() {
 		StringBuilder result = new StringBuilder("[");

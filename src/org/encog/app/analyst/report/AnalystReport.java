@@ -8,12 +8,15 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
-import org.encog.app.quant.normalize.ClassItem;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.engine.util.Format;
 import org.encog.util.HTMLReport;
 import org.encog.util.file.FileUtil;
 
+/**
+ * Produce a simple report on the makeup of the script and data to be analyued.
+ *
+ */
 public class AnalystReport {
 
 	private EncogAnalyst analyst;

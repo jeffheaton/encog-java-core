@@ -1,12 +1,15 @@
 package org.encog.app.analyst.script.prop;
 
+/**
+ * A property entry for the Encog Analyst. Properties have a name and section.
+ * 
+ */
 public class PropertyEntry implements Comparable<PropertyEntry> {
-	
+
 	private final PropertyType entryType;
 	private final String name;
 	private final String section;
-	
-		
+
 	public PropertyEntry(PropertyType entryType, String name, String section) {
 		super();
 		this.entryType = entryType;
@@ -27,7 +30,7 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * @return the section
 	 */
@@ -41,9 +44,9 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 	}
 
 	public String getKey() {
-		return section  + "_" + name;
+		return section + "_" + name;
 	}
-	
+
 	/** {@inheritDoc} */
 	public String toString() {
 		StringBuilder result = new StringBuilder("[");
@@ -55,5 +58,5 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 		result.append("]");
 		return result.toString();
 	}
-	
+
 }

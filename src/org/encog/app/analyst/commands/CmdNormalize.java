@@ -10,10 +10,15 @@ import org.encog.app.quant.normalize.NormalizeCSV;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * The normalize command is used to normalize data. Data normalization generally
+ * maps values from one number range to another, typically to -1 to 1.
+ * 
+ */
 public class CmdNormalize extends Cmd {
 
 	public final static String COMMAND_NAME = "NORMALIZE";
-	
+
 	public CmdNormalize(EncogAnalyst analyst) {
 		super(analyst);
 	}
@@ -21,19 +26,21 @@ public class CmdNormalize extends Cmd {
 	@Override
 	public boolean executeCommand() {
 		// get filenames
-		String sourceID = getProp().getPropertyString(ScriptProperties.NORMALIZE_CONFIG_sourceFile);
-		String targetID = getProp().getPropertyString(ScriptProperties.NORMALIZE_CONFIG_targetFile);
-		
+		String sourceID = getProp().getPropertyString(
+				ScriptProperties.NORMALIZE_CONFIG_sourceFile);
+		String targetID = getProp().getPropertyString(
+				ScriptProperties.NORMALIZE_CONFIG_targetFile);
+
 		File sourceFile = getScript().resolveFilename(sourceID);
 		File targetFile = getScript().resolveFilename(targetID);
 
 		// mark generated
 		getScript().markGenerated(targetID);
-		
+
 		// get formats
 		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);
-		CSVFormat outputFormat = this.getScript().determineOutputFormat(); 
-					
+		CSVFormat outputFormat = this.getScript().determineOutputFormat();
+
 		// prepare to normalize
 		NormalizeCSV norm = new NormalizeCSV();
 		getAnalyst().setCurrentQuantTask(norm);
@@ -43,9 +50,11 @@ public class CmdNormalize extends Cmd {
 		NormalizationStats stats = new NormalizationStats(normFields);
 
 		boolean headers = getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers,inputFormat, stats);
+		norm.analyze(sourceFile, headers, inputFormat, stats);
 		norm.setOutputFormat(outputFormat);
-		norm.setProduceOutputHeaders(getScript().getProperties().getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders));
+		norm.setProduceOutputHeaders(getScript()
+				.getProperties()
+				.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders));
 		norm.normalize(targetFile);
 		getAnalyst().setCurrentQuantTask(null);
 		return norm.shouldStop();
