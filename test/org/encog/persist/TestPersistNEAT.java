@@ -41,14 +41,15 @@ import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 public class TestPersistNEAT extends TestCase {
 	
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String EG_RESOURCE = "test";
-	public final String SERIAL_FILENAME = "encogtest.ser";
-	
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
+		
 	private NEATNetwork create()
 	{
 		List<NEATNeuron> neurons = new ArrayList<NEATNeuron>();
@@ -127,8 +128,8 @@ public class TestPersistNEAT extends TestCase {
 	{
 		NEATNetwork network = create();
 
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		NEATNetwork network2 = (NEATNetwork)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject((EG_FILENAME), network);
+		NEATNetwork network2 = (NEATNetwork)EncogDirectoryPersistence.loadObject((EG_FILENAME));
 		
 		validate(network2);
 	}
@@ -170,5 +171,11 @@ public class TestPersistNEAT extends TestCase {
 		Assert.assertEquals(0, input.getInboundLinks().size());
 		Assert.assertEquals(0, output.getOutputboundLinks().size());
 		Assert.assertEquals(1, output.getInboundLinks().size());
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
 	}
 }

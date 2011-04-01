@@ -10,15 +10,17 @@ import org.encog.neural.networks.training.pnn.TrainBasicPNN;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 import junit.framework.TestCase;
 
 public class TestPersistPNN extends TestCase {
 	
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String SERIAL_FILENAME = "encogtest.ser";
-	
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
+		
 	public BasicPNN create() {
 		PNNOutputMode mode = PNNOutputMode.Regression;
 
@@ -39,8 +41,8 @@ public class TestPersistPNN extends TestCase {
 	{
 		BasicPNN network = create();
 
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		BasicPNN network2 = (BasicPNN)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject((EG_FILENAME), network);
+		BasicPNN network2 = (BasicPNN)EncogDirectoryPersistence.loadObject((EG_FILENAME));
 
 		XOR.verifyXOR(network2, 0.001);
 	}
@@ -53,5 +55,11 @@ public class TestPersistPNN extends TestCase {
 		BasicPNN network2 = (BasicPNN)SerializeObject.load(SERIAL_FILENAME);
 				
 		XOR.verifyXOR(network2, 0.001);
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
 	}
 }

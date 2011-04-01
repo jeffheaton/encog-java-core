@@ -31,14 +31,15 @@ import junit.framework.TestCase;
 
 import org.encog.neural.art.ART1;
 import org.encog.neural.bam.BAM;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 public class TestPersistBAM extends TestCase {
 	
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String EG_RESOURCE = "test";
-	public final String SERIAL_FILENAME = "encogtest.ser";
-	
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
+		
 	private BAM create()
 	{
 		BAM network = new BAM(6,3);
@@ -51,8 +52,8 @@ public class TestPersistBAM extends TestCase {
 	{
 		BAM network = create();
 
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		BAM network2 = (BAM)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject(EG_FILENAME, network);
+		BAM network2 = (BAM)EncogDirectoryPersistence.loadObject(EG_FILENAME);
 
 		validateBAM(network2);
 	}
@@ -75,5 +76,11 @@ public class TestPersistBAM extends TestCase {
 		Assert.assertEquals(18, network.getWeightsF2toF1().size());
 		Assert.assertEquals(2.0, network.getWeightsF1toF2().get(1, 1));
 		Assert.assertEquals(3.0, network.getWeightsF2toF1().get(2, 2));
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
 	}
 }

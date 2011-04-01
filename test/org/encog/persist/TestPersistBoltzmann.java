@@ -31,22 +31,23 @@ import junit.framework.TestCase;
 
 import org.encog.neural.thermal.BoltzmannMachine;
 import org.encog.neural.thermal.HopfieldNetwork;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 public class TestPersistBoltzmann extends TestCase {
 	
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String EG_RESOURCE = "test";
-	public final String SERIAL_FILENAME = "encogtest.ser";
-	
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
+		
 	public void testPersistEG()
 	{
 		BoltzmannMachine network = new BoltzmannMachine(4);
 		network.setWeight(1,1,1);
 		network.getThreshold()[2] = 2;
 		
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		BoltzmannMachine network2 = (BoltzmannMachine)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject(EG_FILENAME, network);
+		BoltzmannMachine network2 = (BoltzmannMachine)EncogDirectoryPersistence.loadObject(EG_FILENAME);
 		
 		validateHopfield(network2);
 	}
@@ -71,5 +72,11 @@ public class TestPersistBoltzmann extends TestCase {
 		Assert.assertEquals(16, network.getWeights().length);
 		Assert.assertEquals(1.0,network.getWeight(1, 1));
 		Assert.assertEquals(2.0,network.getThreshold()[2]);
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
 	}
 }

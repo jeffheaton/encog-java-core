@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import org.encog.neural.art.ART1;
 import org.encog.neural.cpn.CPN;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 import junit.framework.Assert;
@@ -12,8 +13,9 @@ import junit.framework.TestCase;
 
 public class TestPersistCPN extends TestCase {
 	
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String SERIAL_FILENAME = "encogtest.ser";
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
 	
 	private CPN create() {
 		CPN result = new CPN(5, 4, 3, 2);
@@ -24,8 +26,8 @@ public class TestPersistCPN extends TestCase {
 	{
 		CPN network = create();
 
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		CPN network2 = (CPN)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject(EG_FILENAME, network);
+		CPN network2 = (CPN)EncogDirectoryPersistence.loadObject(EG_FILENAME);
 
 		validate(network2);
 	}
@@ -50,5 +52,11 @@ public class TestPersistCPN extends TestCase {
 		Assert.assertEquals(4, cpn.getWeightsInputToInstar().getCols());
 		Assert.assertEquals(4, cpn.getWeightsInstarToOutstar().getRows());
 		Assert.assertEquals(3, cpn.getWeightsInstarToOutstar().getCols());
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
 	}
 }

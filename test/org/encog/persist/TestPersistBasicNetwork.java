@@ -9,15 +9,15 @@ import junit.framework.TestCase;
 import org.encog.neural.art.ART1;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 public class TestPersistBasicNetwork extends TestCase {
 	
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String EG_RESOURCE = "test";
-	public final String SERIAL_FILENAME = "encogtest.ser";
-	
-	
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
+		
 	public BasicNetwork create()
 	{
 		BasicNetwork network = XOR.createTrainedXOR();
@@ -39,8 +39,8 @@ public class TestPersistBasicNetwork extends TestCase {
 	{
 		BasicNetwork network = create();
 
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		BasicNetwork network2 = (BasicNetwork)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject(EG_FILENAME, network);
+		BasicNetwork network2 = (BasicNetwork)EncogDirectoryPersistence.loadObject(EG_FILENAME);
 
 		validate(network2);
 	}
@@ -53,6 +53,12 @@ public class TestPersistBasicNetwork extends TestCase {
 		BasicNetwork network2 = (BasicNetwork)SerializeObject.load(SERIAL_FILENAME);
 				
 		validate(network2);
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
 	}
 
 	

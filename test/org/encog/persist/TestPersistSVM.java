@@ -37,13 +37,14 @@ import org.encog.neural.art.ART1;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.XOR;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 public class TestPersistSVM extends TestCase {
 	
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String EG_RESOURCE = "test";
-	public final String SERIAL_FILENAME = "encogtest.ser";
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
 	
 	private SVM create()
 	{
@@ -58,8 +59,8 @@ public class TestPersistSVM extends TestCase {
 	{
 		SVM network = create();
 
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		SVM network2 = (SVM)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject((EG_FILENAME), network);
+		SVM network2 = (SVM)EncogDirectoryPersistence.loadObject((EG_FILENAME));
 		validate(network2);
 	}
 	
@@ -78,5 +79,11 @@ public class TestPersistSVM extends TestCase {
 		Assert.assertEquals(KernelType.RadialBasisFunction, svm.getKernelType());
 		Assert.assertEquals(SVMType.EpsilonSupportVectorRegression, svm.getSVMType());
 		Assert.assertEquals(4, svm.getModel().SV.length);
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
 	}
 }

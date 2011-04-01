@@ -31,13 +31,15 @@ import junit.framework.TestCase;
 
 import org.encog.neural.art.ART1;
 import org.encog.neural.som.SOM;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 public class TestPersistSOM extends TestCase {
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String EG_RESOURCE = "test";
-	public final String SERIAL_FILENAME = "encogtest.ser";
 	
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
+		
 	private SOM create()
 	{
 		SOM network = new SOM(4,2);
@@ -48,8 +50,8 @@ public class TestPersistSOM extends TestCase {
 	{
 		SOM network = create();
 
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		SOM network2 = (SOM)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject(EG_FILENAME, network);
+		SOM network2 = (SOM)EncogDirectoryPersistence.loadObject(EG_FILENAME);
 		
 		validate(network2);
 	}
@@ -68,5 +70,11 @@ public class TestPersistSOM extends TestCase {
 		Assert.assertEquals(4, network.getInputNeuronCount());
 		Assert.assertEquals(2, network.getOutputNeuronCount());
 		Assert.assertEquals(8, network.getWeights().toPackedArray().length);
+	}
+	
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
 	}
 }

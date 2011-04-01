@@ -29,14 +29,17 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.ml.svm.SVM;
 import org.encog.neural.art.ART1;
+import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
 public class TestPersistART extends TestCase {
 	
-	public final String EG_FILENAME = "encogtest.eg";
-	public final String SERIAL_FILENAME = "encogtest.ser";
+	public final TempDir TEMP_DIR = new TempDir();
+	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
+	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
+	
+
 	
 	private ART1 create()
 	{
@@ -50,8 +53,8 @@ public class TestPersistART extends TestCase {
 	{
 		ART1 network = create();
 
-		EncogDirectoryPersistence.saveObject(new File(EG_FILENAME), network);
-		ART1 network2 = (ART1)EncogDirectoryPersistence.loadObject(new File(EG_FILENAME));
+		EncogDirectoryPersistence.saveObject(EG_FILENAME, network);
+		ART1 network2 = (ART1)EncogDirectoryPersistence.loadObject(EG_FILENAME);
 
 		validate(network2);
 	}
@@ -80,4 +83,12 @@ public class TestPersistART extends TestCase {
 		Assert.assertEquals(0.9, network.getD1());
 		Assert.assertEquals(0.9, network.getVigilance());
 	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		super.tearDown();
+		TEMP_DIR.dispose();
+	}
+	
+	
 }
