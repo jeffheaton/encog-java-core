@@ -17,6 +17,8 @@ import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
+import org.encog.persist.EncogFileSection;
+import org.encog.persist.EncogReadHelper;
 
 /**
  * Used to load an Encog Analyst script.
@@ -241,8 +243,12 @@ public class ScriptLoad {
 		this.script.getSegregate().setSegregateTargets(array);
 	}
 	
-	private void processSubSection(String currentSection, String currentSubsection, List<String> list)
+	private void processSubSection(EncogFileSection section)
 	{
+		String currentSection = section.getSectionName();
+		String currentSubsection = section.getSubSectionName();
+		List<String> list = section.getLines();
+		
 		if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
 			loadSubSection(list,currentSection,currentSubsection);
 		} else if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("FILENAMES") ) {
@@ -292,78 +298,22 @@ public class ScriptLoad {
 	
 
 	public void load(InputStream stream) {
+		EncogReadHelper reader = null;
+		
 		try {
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					stream));
-			String line;
-			List<String> subSection = new ArrayList<String>();
-			String currentSection = "";
-			String currentSubSection = "";
-
-			while ((line = reader.readLine()) != null) {
-				line = line.trim();
-
-				// is it a comment
-				if (line.startsWith("//")) {
-					continue;
-				}
-
-				// is it a section or subsection
-				else if (line.startsWith("[")) {			
-					// handle previous section
-					this.processSubSection(currentSection, currentSubSection, subSection);
-					
-					// now begin the new section
-					subSection.clear();
-					String s = line.substring(1).trim();
-					if( !s.endsWith("]") )
-						throw new AnalystError("Invalid section: " + line);
-					s = s.substring(0, line.length()-2);
-					int idx = s.indexOf(':');
-					if (idx == -1) {
-						currentSection = s;
-						currentSubSection = "";
-					} else {
-						if (currentSection.length() < 1) {
-							throw new AnalystError(
-									"Can't begin subsection when a section has not yet been defined: "
-											+ line);
-						}
-
-						String newSection = s.substring(0, idx);
-						String newSubSection = s.substring(idx + 1);
-
-						if (!newSection.equals(currentSection)) {
-							throw new AnalystError("Can't begin subsection "
-									+ line
-									+ ", while we are still in the section: "
-									+ currentSection);
-						}
-
-						currentSubSection = newSubSection;
-					}
-				} else if( line.length()<1 ) {
-					continue;
-				}
-				else {
-					if (currentSection.length() <1) {
-						throw new AnalystError(
-								"Unknown command before first section: " + line);						
-					}
-					
-					subSection.add(line);
-				}
-				
-				
-			}
+			EncogFileSection section = null;
+			reader = new EncogReadHelper(stream);
 			
-			// handle final subsection
-			this.processSubSection(currentSection, currentSubSection, subSection);
+			while( (section = reader.readNextSection())!=null ) {
+				this.processSubSection(section);	
+			}
 			
 			// init the script
 			this.script.init();
-		} catch (IOException ex) {
-			throw new AnalystError(ex);
+		} finally {
+			if( reader!=null ) {
+				reader.close();
+			}
 		}
 	}
 

@@ -223,5 +223,16 @@ public class EncogFileSection {
 		return result.toString();
 	}
 
+	/** {@inheritDoc} */
+	public String toString() {
+		StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" sectionName=");
+		result.append(this.sectionName);
+		result.append(", subSectionName=");
+		result.append(this.subSectionName);
+		result.append("]");
+		return result.toString();
+	}
 	
 }
