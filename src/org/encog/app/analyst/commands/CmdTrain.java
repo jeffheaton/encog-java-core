@@ -97,8 +97,8 @@ public class CmdTrain extends Cmd {
 
 		String resourceID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_machineLearningFile);
-		String resourceFile = getProp().getFilename(resourceID);
-		EncogDirectoryPersistence.saveObject(new File(resourceFile), method);
+		File resourceFile = getAnalyst().getScript().resolveFilename(resourceID);
+		EncogDirectoryPersistence.saveObject(resourceFile, method);
 
 		return this.getAnalyst().shouldStopCommand();
 	}
