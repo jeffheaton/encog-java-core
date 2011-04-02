@@ -151,6 +151,10 @@ public class ResilientPropagation extends Propagation {
 						ResilientPropagation.UPDATE_VALUES)) {
 			return false;
 		}
+		
+		if( !state.getTrainingType().equals(getClass().getSimpleName())) {
+			return false;
+		}
 
 		final double[] d = (double[]) state
 				.get(ResilientPropagation.LAST_GRADIENTS);
@@ -164,6 +168,8 @@ public class ResilientPropagation extends Propagation {
 	 */
 	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
+		
+		result.setTrainingType(this.getClass().getSimpleName());
 
 		result.set(ResilientPropagation.LAST_GRADIENTS,
 				((TrainFlatNetworkResilient) this.getFlatTraining())

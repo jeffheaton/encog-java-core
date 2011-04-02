@@ -149,6 +149,10 @@ public class Backpropagation extends Propagation implements Momentum,
 		if (!state.getContents().containsKey(Backpropagation.LAST_DELTA)) {
 			return false;
 		}
+		
+		if( !state.getTrainingType().equals(getClass().getSimpleName())) {
+			return false;
+		}
 
 		final double[] d = (double[]) state.get(Backpropagation.LAST_DELTA);
 		return d.length == ((ContainsFlat)getNetwork()).getFlat().getWeights().length;
@@ -162,7 +166,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	@Override
 	public TrainingContinuation pause() {
 		final TrainingContinuation result = new TrainingContinuation();
-
+		result.setTrainingType(this.getClass().getSimpleName());
 		final TrainFlatNetworkBackPropagation backFlat = (TrainFlatNetworkBackPropagation) getFlatTraining();
 		final double[] d = backFlat.getLastDelta();
 		result.set(Backpropagation.LAST_DELTA, d);
@@ -180,7 +184,7 @@ public class Backpropagation extends Propagation implements Momentum,
 		if (!isValidResume(state)) {
 			throw new TrainingError("Invalid training resume data length");
 		}
-
+		
 		((TrainFlatNetworkBackPropagation) getFlatTraining())
 				.setLastDelta((double[]) state.get(Backpropagation.LAST_DELTA));
 

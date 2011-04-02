@@ -41,6 +41,11 @@ public class TrainingContinuation  {
 	 * The contents of this object.
 	 */
 	private final Map<String, Object> contents = new HashMap<String, Object>();
+	
+	/**
+	 * Training type.
+	 */
+	private String trainingType;
 
 	/**
 	 * Get an object by name.
@@ -75,4 +80,20 @@ public class TrainingContinuation  {
 	public void set(final String name, final Object value) {
 		this.contents.put(name, value);
 	}
+
+	/**
+	 * @return the trainingType
+	 */
+	public String getTrainingType() {
+		return trainingType;
+	}
+
+	/**
+	 * @param trainingType the trainingType to set
+	 */
+	public void setTrainingType(String trainingType) {
+		this.trainingType = trainingType;
+	}
+	
+	
 }
