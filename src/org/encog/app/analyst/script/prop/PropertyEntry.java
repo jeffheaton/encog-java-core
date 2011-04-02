@@ -73,14 +73,27 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 
 	public void validate(String section, String subSection, String name,
 			String value) {
+		if( value==null || value.length()==0 )
+			return;
+		
 		try {
 			switch (getEntryType()) {
 			case TypeBoolean:
+				if( Character.toUpperCase(value.charAt(0))!='T' && Character.toUpperCase(value.charAt(0))!='F' )
+				{
+					StringBuilder result = new StringBuilder();
+					result.append("Illegal boolean for ");
+					result.append(dotForm(section,subSection,name));
+					result.append(", value is ");
+					result.append(value);
+					result.append(".");
+					throw new AnalystError(result.toString());
+				}
 				break;
 			case TypeDouble:
 				Double.parseDouble(value);
 				break;
-			case typeFormat:
+			case typeFormat:				
 				break;
 			case TypeInteger:
 				Integer.parseInt(value);
