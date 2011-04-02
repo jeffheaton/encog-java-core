@@ -10,6 +10,7 @@ import org.encog.neural.cpn.PersistCPN;
 import org.encog.neural.neat.PersistNEATNetwork;
 import org.encog.neural.neat.PersistNEATPopulation;
 import org.encog.neural.networks.PersistBasicNetwork;
+import org.encog.neural.networks.training.propagation.PersistTrainingContinuation;
 import org.encog.neural.pnn.PersistBasicPNN;
 import org.encog.neural.rbf.PersistRBFNetwork;
 import org.encog.neural.som.PersistSOM;
@@ -34,6 +35,7 @@ public class PersistorRegistry {
 		add(new PersistNEATNetwork());
 		add(new PersistBasicPNN());
 		add(new PersistCPN());
+		add(new PersistTrainingContinuation());
 	}
 
 	public void add(EncogPersistor persistor) {

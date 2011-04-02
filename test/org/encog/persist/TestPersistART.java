@@ -38,9 +38,7 @@ public class TestPersistART extends TestCase {
 	public final TempDir TEMP_DIR = new TempDir();
 	public final File EG_FILENAME = TEMP_DIR.createFile("encogtest.eg");
 	public final File SERIAL_FILENAME = TEMP_DIR.createFile("encogtest.ser");
-	
-
-	
+		
 	private ART1 create()
 	{
 		ART1 network = new ART1(6,3);

@@ -97,6 +97,14 @@ public class XOR {
 			return network;
 		}
 		
+		public static BasicNetwork createUnTrainedXOR()
+		{
+			double[] TRAINED_XOR_WEIGHTS = { -0.427193285452972,0.92000502099534,-0.76598054603445,-0.921266548020219,-0.9223427050161919,-0.0588373209475093,-0.80109620509867,3.1764938777876837,0.98981535707951,-0.5552829139118,0.089976176012634,0.85166823997326,0.20561368661059,0.18307123471437,0.044949631177417,0.81815044327334,0.648991753485689 };
+			BasicNetwork network = EncogUtility.simpleFeedForward(2, 4, 0, 1, false);
+			NetworkCODEC.arrayToNetwork(TRAINED_XOR_WEIGHTS, network);
+			return network;
+		}
+		
 		public static BasicNetwork createThreeLayerNet()
 		{
 			BasicNetwork network = new BasicNetwork();
