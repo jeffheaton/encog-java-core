@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.app.analyst.AnalystError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 import org.encog.util.file.ResourceInputStream;
@@ -39,16 +40,18 @@ public class PropertyConstraints {
 				PropertyType t = null;
 				if ("boolean".equalsIgnoreCase(typeStr)) {
 					t = PropertyType.TypeBoolean;
-				} else if ("double".equalsIgnoreCase(typeStr)) {
+				} else if ("real".equalsIgnoreCase(typeStr)) {
 					t = PropertyType.TypeDouble;
 				} else if ("format".equalsIgnoreCase(typeStr)) {
 					t = PropertyType.typeFormat;
-				} else if ("integer".equalsIgnoreCase(typeStr)) {
+				} else if ("int".equalsIgnoreCase(typeStr)) {
 					t = PropertyType.TypeInteger;
-				} else if ("double".equalsIgnoreCase(typeStr)) {
+				} else if ("list-string".equalsIgnoreCase(typeStr)) {
 					t = PropertyType.TypeListString;
 				} else if ("string".equalsIgnoreCase(typeStr)) {
 					t = PropertyType.TypeString;
+				} else {
+					throw new AnalystError("Unknown type constraint: " + typeStr);
 				}
 
 				PropertyEntry entry = new PropertyEntry(t, nameStr, sectionStr);
@@ -82,6 +85,17 @@ public class PropertyConstraints {
 	public List<PropertyEntry> getEntries(String section, String subSection) {
 		String key = section + ":" + subSection;
 		return this.data.get(key);
+	}
+
+	public PropertyEntry getEntry(String section, String subSection, String name) {
+		String key = section + ":" + subSection;
+		List<PropertyEntry> list = this.data.get(key);
+		for(PropertyEntry entry: list) {
+			if( entry.getName().equalsIgnoreCase(name))
+				return entry;
+		}
+		
+		return null;		
 	}
 
 }

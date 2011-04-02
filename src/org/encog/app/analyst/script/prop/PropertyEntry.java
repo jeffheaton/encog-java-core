@@ -1,5 +1,7 @@
 package org.encog.app.analyst.script.prop;
 
+import org.encog.app.analyst.AnalystError;
+
 /**
  * A property entry for the Encog Analyst. Properties have a name and section.
  * 
@@ -59,4 +61,45 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 		return result.toString();
 	}
 
+	public static String dotForm(String section, String subSection, String name) {
+		StringBuilder result = new StringBuilder();
+		result.append(section);
+		result.append('.');
+		result.append(subSection);
+		result.append('.');
+		result.append(name);
+		return result.toString();
+	}
+
+	public void validate(String section, String subSection, String name,
+			String value) {
+		try {
+			switch (getEntryType()) {
+			case TypeBoolean:
+				break;
+			case TypeDouble:
+				Double.parseDouble(value);
+				break;
+			case typeFormat:
+				break;
+			case TypeInteger:
+				Integer.parseInt(value);
+				break;
+			case TypeListString:
+				break;
+			case TypeString:
+				break;
+			}
+		} catch (NumberFormatException ex) {
+			StringBuilder result = new StringBuilder();
+			result.append("Illegal value for ");
+			result.append(dotForm(section,subSection,name));
+			result.append(", expecting a ");
+			result.append(getEntryType().toString());
+			result.append(", but got ");
+			result.append(value);
+			result.append(".");
+			throw new AnalystError(result.toString());
+		}
+	}
 }

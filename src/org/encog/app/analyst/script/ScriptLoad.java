@@ -13,8 +13,12 @@ import java.util.Map.Entry;
 import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.script.prop.PropertyConstraints;
+import org.encog.app.analyst.script.prop.PropertyEntry;
+import org.encog.app.analyst.script.prop.PropertyType;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
+import org.encog.app.quant.QuantError;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.persist.EncogFileSection;
@@ -165,6 +169,15 @@ public class ScriptLoad {
 
 		this.script.getNormalize().setNormalizedFields(array);
 	}
+	
+	
+	private void validateProperty(String section, String subSection, String name, String value) {
+		PropertyEntry entry = PropertyConstraints.getInstance().getEntry(section,subSection,name);
+		if( entry==null ) {
+			throw new QuantError("Unknown property: " + PropertyEntry.dotForm(section,subSection,name));
+		}
+		entry.validate(section,subSection,name,value);
+	}
 
 	private void loadSubSection(EncogFileSection section) {
 		Map<String, String> prop = section.parseParams();
@@ -176,6 +189,7 @@ public class ScriptLoad {
 			if (value == null) {
 				value = "";
 			}
+			validateProperty(section.getSectionName(),section.getSubSectionName(),name,value);
 			this.script.getProperties().setProperty(key, value);
 		}
 	}
