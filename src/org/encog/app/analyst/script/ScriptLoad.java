@@ -1,21 +1,16 @@
 package org.encog.app.analyst.script;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
-import org.encog.app.analyst.script.prop.PropertyType;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.QuantError;

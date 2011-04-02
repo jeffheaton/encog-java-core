@@ -1,6 +1,7 @@
 package org.encog.app.analyst.script.prop;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.util.ConvertStringConst;
 
 /**
  * A property entry for the Encog Analyst. Properties have a name and section.
@@ -93,7 +94,16 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 			case TypeDouble:
 				Double.parseDouble(value);
 				break;
-			case typeFormat:				
+			case typeFormat:
+				if( ConvertStringConst.string2AnalystFileFormat(value)==null ) {
+					StringBuilder result = new StringBuilder();
+					result.append("Invalid file format for ");
+					result.append(dotForm(section,subSection,name));
+					result.append(", value is ");
+					result.append(value);
+					result.append(".");
+					throw new AnalystError(result.toString());					
+				}
 				break;
 			case TypeInteger:
 				Integer.parseInt(value);
