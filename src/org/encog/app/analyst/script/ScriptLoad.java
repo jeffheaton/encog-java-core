@@ -25,74 +25,34 @@ import org.encog.persist.EncogReadHelper;
  *
  */
 public class ScriptLoad {
-	
+
 	private AnalystScript script;
-	
+
 	public ScriptLoad(AnalystScript script) {
 		this.script = script;
 	}
-	
-	private Map<String,String> handleProperties(List<String> list)
-	{
-		Map<String,String> result = new HashMap<String,String>();
-		
-		for(String line: list) {
-			line = line.trim();
-			if(line.length()>0 ) {
-				int idx = line.indexOf('=');
-				if( idx==-1 ) {
-					throw new AnalystError("Invalid setup item: " + line);
-				}
-				String name = line.substring(0,idx).trim();
-				String value = line.substring(idx+1).trim();
-								
-				result.put(name, value);
-			}
-		}
-		
-		return result;
-	}
-	
-	private void handleFilenames(List<String> list) {
-		
-		Map<String,String> prop = handleProperties(list);
+
+	private void handleFilenames(EncogFileSection section) {
+
+		Map<String, String> prop = section.parseParams();
 		this.script.getProperties().clearFilenames();
-		
-		for(Entry<String, String> e : prop.entrySet() )
-		{
+
+		for (Entry<String, String> e : prop.entrySet()) {
 			this.script.getProperties().setFilename(e.getKey(), e.getValue());
 		}
 	}
-	
-	private List<String> splitColumns(String line) {
-		List<String> result = new ArrayList<String>();
-		StringTokenizer tok = new StringTokenizer(line,",");
-		while(tok.hasMoreTokens()) {
-			String str = tok.nextToken().trim();
-			if( str.length()>0 && str.charAt(0)=='\"')
-			{
-				str = str.substring(1);
-				if( str.endsWith("\""))
-				{
-					str = str.substring(0,str.length()-1);
-				}
-			}
-			result.add(str);
-		}
-		return result;
-	}
-	
-	private void handleDataStats(List<String> list) {
+
+	private void handleDataStats(EncogFileSection section) {
 		List<DataField> dfs = new ArrayList<DataField>();
 		boolean first = true;
-		for(String line: list) {
-			if(!first ) {
-				List<String> cols = splitColumns(line);
+		for (String line : section.getLines()) {
+			if (!first) {
+				List<String> cols = EncogFileSection.splitColumns(line);
 				String name = cols.get(0);
-				boolean isclass = Integer.parseInt(cols.get(1))>0;
-				boolean iscomplete = Integer.parseInt(cols.get(2))>0;
-				boolean isint = Integer.parseInt(cols.get(3))>0;
-				boolean isreal = Integer.parseInt(cols.get(4))>0;
+				boolean isclass = Integer.parseInt(cols.get(1)) > 0;
+				boolean iscomplete = Integer.parseInt(cols.get(2)) > 0;
+				boolean isint = Integer.parseInt(cols.get(3)) > 0;
+				boolean isreal = Integer.parseInt(cols.get(4)) > 0;
 				double amax = Double.parseDouble(cols.get(5));
 				double amin = Double.parseDouble(cols.get(6));
 				double mean = Double.parseDouble(cols.get(7));
@@ -109,53 +69,53 @@ public class ScriptLoad {
 				dfs.add(df);
 			} else {
 				first = false;
-			}			
+			}
 		}
-		
+
 		DataField[] array = new DataField[dfs.size()];
-		for(int i=0;i<array.length;i++) {
+		for (int i = 0; i < array.length; i++) {
 			array[i] = dfs.get(i);
 		}
-		
+
 		this.script.setFields(array);
 	}
-	
-	private void handleDataClasses(List<String> list) {
-		
-		Map<String,List<AnalystClassItem>> map = new HashMap<String,List<AnalystClassItem>>();
-		
+
+	private void handleDataClasses(EncogFileSection section) {
+
+		Map<String, List<AnalystClassItem>> map = new HashMap<String, List<AnalystClassItem>>();
+
 		boolean first = true;
-		for(String line: list) {
-			if(!first ) {
-				List<String> cols = splitColumns(line);
+		for (String line : section.getLines()) {
+			if (!first) {
+				List<String> cols = EncogFileSection.splitColumns(line);
 				String field = cols.get(0);
 				String code = cols.get(1);
 				String name = cols.get(2);
-				
+
 				DataField df = this.script.findDataField(field);
-				
-				if( df==null ) {
-					throw new AnalystError("Attempting to add class to unknown field: " + name);
+
+				if (df == null) {
+					throw new AnalystError(
+							"Attempting to add class to unknown field: " + name);
 				}
-				
+
 				List<AnalystClassItem> classItems;
-				
-				if( !map.containsKey(field) ) {
+
+				if (!map.containsKey(field)) {
 					classItems = new ArrayList<AnalystClassItem>();
 					map.put(field, classItems);
 				} else {
 					classItems = map.get(field);
 				}
-				
-				classItems.add(new AnalystClassItem(code,name));
+
+				classItems.add(new AnalystClassItem(code, name));
 			} else {
 				first = false;
-			}			
+			}
 		}
-		
-		for(DataField field: this.script.getFields())
-		{
-			if( field.isClass() ) {
+
+		for (DataField field : this.script.getFields()) {
+			if (field.isClass()) {
 				List<AnalystClassItem> classList = map.get(field.getName());
 				Collections.sort(classList);
 				field.getClassMembers().clear();
@@ -164,154 +124,169 @@ public class ScriptLoad {
 		}
 
 	}
-	
-	private void handleNormalizeRange(List<String> list) {
+
+	private void handleNormalizeRange(EncogFileSection section) {
 		List<NormalizedField> nfs = new ArrayList<NormalizedField>();
 		boolean first = true;
-		for(String line: list) {
-			if(!first ) {
-				List<String> cols = splitColumns(line);
-				String name = cols.get(0);				
+		for (String line : section.getLines()) {
+			if (!first) {
+				List<String> cols = EncogFileSection.splitColumns(line);
+				String name = cols.get(0);
 				String action = cols.get(1);
 				double high = Double.parseDouble(cols.get(2));
 				double low = Double.parseDouble(cols.get(3));
-				
+
 				NormalizationAction des = null;
-				if( action.equals("range")) {
+				if (action.equals("range")) {
 					des = NormalizationAction.Normalize;
-				} else if( action.equals("ignore")) {
+				} else if (action.equals("ignore")) {
 					des = NormalizationAction.Ignore;
-				} else if( action.equals("pass")) {
+				} else if (action.equals("pass")) {
 					des = NormalizationAction.PassThrough;
-				} else if( action.equals("equilateral")) {
+				} else if (action.equals("equilateral")) {
 					des = NormalizationAction.Equilateral;
-				} else if( action.equals("single")) {
+				} else if (action.equals("single")) {
 					des = NormalizationAction.SingleField;
-				} else if( action.equals("oneof")) {
+				} else if (action.equals("oneof")) {
 					des = NormalizationAction.OneOf;
-				} 
-				
-				NormalizedField nf = new NormalizedField(name,des,high,low);
+				}
+
+				NormalizedField nf = new NormalizedField(name, des, high, low);
 				nfs.add(nf);
 			} else {
 				first = false;
-			}			
+			}
 		}
-		
+
 		NormalizedField[] array = new NormalizedField[nfs.size()];
-		for(int i=0;i<array.length;i++) {
+		for (int i = 0; i < array.length; i++) {
 			array[i] = nfs.get(i);
 		}
-		
+
 		this.script.getNormalize().setNormalizedFields(array);
 	}
-	
-	private void loadSubSection(List<String> list, String section, String subSection) {
-		Map<String, String> prop = this.handleProperties(list);
-		
-		for(String name: prop.keySet()) {
-			String key = section.toUpperCase() + ":" + subSection.toUpperCase() + "_" + name;
+
+	private void loadSubSection(EncogFileSection section) {
+		Map<String, String> prop = section.parseParams();
+
+		for (String name : prop.keySet()) {
+			String key = section.getSectionName().toUpperCase() + ":"
+					+ section.getSubSectionName().toUpperCase() + "_" + name;
 			String value = prop.get(name);
-			if( value==null ) {
+			if (value == null) {
 				value = "";
 			}
 			this.script.getProperties().setProperty(key, value);
-		}		
+		}
 	}
-		
-	private void handleSegregateFiles(List<String> list) {
+
+	private void handleSegregateFiles(EncogFileSection section) {
 		List<AnalystSegregateTarget> nfs = new ArrayList<AnalystSegregateTarget>();
 		boolean first = true;
-		for(String line: list) {
-			if(!first ) {
-				List<String> cols = splitColumns(line);
-				String filename = cols.get(0);				
+		for (String line : section.getLines()) {
+			if (!first) {
+				List<String> cols = EncogFileSection.splitColumns(line);
+				String filename = cols.get(0);
 				int percent = Integer.parseInt(cols.get(1));
-				
-				AnalystSegregateTarget nf = new AnalystSegregateTarget(filename,percent);
+
+				AnalystSegregateTarget nf = new AnalystSegregateTarget(
+						filename, percent);
 				nfs.add(nf);
 			} else {
 				first = false;
-			}			
+			}
 		}
-		
+
 		AnalystSegregateTarget[] array = new AnalystSegregateTarget[nfs.size()];
-		for(int i=0;i<array.length;i++) {
+		for (int i = 0; i < array.length; i++) {
 			array[i] = nfs.get(i);
 		}
-		
+
 		this.script.getSegregate().setSegregateTargets(array);
 	}
-	
-	private void processSubSection(EncogFileSection section)
-	{
+
+	private void processSubSection(EncogFileSection section) {
 		String currentSection = section.getSectionName();
 		String currentSubsection = section.getSubSectionName();
 		List<String> list = section.getLines();
-		
-		if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("SETUP") && currentSubsection.equalsIgnoreCase("FILENAMES") ) {
-			handleFilenames(list);
-		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("STATS") ) {
-			handleDataStats(list);
-		} else if( currentSection.equals("DATA") && currentSubsection.equalsIgnoreCase("CLASSES") ) {
-			handleDataClasses(list);
-		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("RANGE") ) {
-			handleNormalizeRange(list);
-		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("NORMALIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("SERIES") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("RANDOMIZE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("SEGREGATE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("SEGREGATE") && currentSubsection.equalsIgnoreCase("FILES") ) {
-			handleSegregateFiles(list);
-		} else if( currentSection.equals("GENERATE") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("HEADER") && currentSubsection.equalsIgnoreCase("DATASOURCE") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("ML") && currentSubsection.equalsIgnoreCase("CONFIG") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("ML") && currentSubsection.equalsIgnoreCase("TRAIN") ) {
-			loadSubSection(list,currentSection,currentSubsection);
-		} else if( currentSection.equals("TASKS") && currentSubsection.length()>0 ) {
-			handleTask(list, currentSubsection);
+
+		if (currentSection.equals("SETUP")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("SETUP")
+				&& currentSubsection.equalsIgnoreCase("FILENAMES")) {
+			handleFilenames(section);
+		} else if (currentSection.equals("DATA")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("DATA")
+				&& currentSubsection.equalsIgnoreCase("STATS")) {
+			handleDataStats(section);
+		} else if (currentSection.equals("DATA")
+				&& currentSubsection.equalsIgnoreCase("CLASSES")) {
+			handleDataClasses(section);
+		} else if (currentSection.equals("NORMALIZE")
+				&& currentSubsection.equalsIgnoreCase("RANGE")) {
+			handleNormalizeRange(section);
+		} else if (currentSection.equals("NORMALIZE")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("NORMALIZE")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("SERIES")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("RANDOMIZE")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("SEGREGATE")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("SEGREGATE")
+				&& currentSubsection.equalsIgnoreCase("FILES")) {
+			handleSegregateFiles(section);
+		} else if (currentSection.equals("GENERATE")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("HEADER")
+				&& currentSubsection.equalsIgnoreCase("DATASOURCE")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("ML")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("ML")
+				&& currentSubsection.equalsIgnoreCase("TRAIN")) {
+			loadSubSection(section);
+		} else if (currentSection.equals("TASKS")
+				&& currentSubsection.length() > 0) {
+			handleTask(section);
 		}
 	}
-	
-	private void handleTask(List<String> list, String name)
-	{
-		AnalystTask task = new AnalystTask(name);
-		for( String line: list ) {
+
+	private void handleTask(EncogFileSection section) {
+		AnalystTask task = new AnalystTask(section.getSubSectionName());
+		for (String line : section.getLines()) {
 			task.getLines().add(line);
 		}
 		this.script.addTask(task);
 	}
 
-	
-
 	public void load(InputStream stream) {
 		EncogReadHelper reader = null;
-		
+
 		try {
 			EncogFileSection section = null;
 			reader = new EncogReadHelper(stream);
-			
-			while( (section = reader.readNextSection())!=null ) {
-				this.processSubSection(section);	
+
+			while ((section = reader.readNextSection()) != null) {
+				this.processSubSection(section);
 			}
-			
+
 			// init the script
 			this.script.init();
 		} finally {
-			if( reader!=null ) {
+			if (reader != null) {
 				reader.close();
 			}
 		}
