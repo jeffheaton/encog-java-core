@@ -194,6 +194,7 @@ public class ScriptSave {
 		}
 		saveSubSection(out,"SERIES","CONFIG");
 		saveSubSection(out,"RANDOMIZE","CONFIG");
+		saveSubSection(out,"BALANCE","CONFIG");
 		
 		if( this.script.getSegregate().getSegregateTargets()!=null ) {
 			saveSegregate(out);

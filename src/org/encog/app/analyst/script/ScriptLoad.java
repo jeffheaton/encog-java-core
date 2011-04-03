@@ -218,7 +218,6 @@ public class ScriptLoad {
 	private void processSubSection(EncogFileSection section) {
 		String currentSection = section.getSectionName();
 		String currentSubsection = section.getSubSectionName();
-		List<String> list = section.getLines();
 
 		if (currentSection.equals("SETUP")
 				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
@@ -271,6 +270,9 @@ public class ScriptLoad {
 		} else if (currentSection.equals("TASKS")
 				&& currentSubsection.length() > 0) {
 			handleTask(section);
+		}  else if (currentSection.equals("BALANCE")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
 		}
 	}
 

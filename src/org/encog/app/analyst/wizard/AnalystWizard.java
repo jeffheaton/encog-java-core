@@ -48,6 +48,7 @@ public class AnalystWizard {
 	public static final String FILE_ML = "FILE_ML";
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
 	public static final String FILE_SERIES = "FILE_SERIES";
+	public static final String FILE_BALANCE = "FILE_BALANCE";
 
 	private AnalystScript script;
 	private EncogAnalyst analyst;
@@ -63,6 +64,7 @@ public class AnalystWizard {
 	private boolean taskSegregate = true;
 	private boolean taskRandomize = true;
 	private boolean taskNormalize = true;
+	private boolean taskBalance = false;
 	private NormalizeRange range = NormalizeRange.NegOne2One;
 
 	public AnalystWizard(EncogAnalyst analyst) {
@@ -113,6 +115,11 @@ public class AnalystWizard {
 
 		this.script.getProperties().setFilename(AnalystWizard.FILE_ML,
 				egName.toString());
+		
+		if( !this.timeSeries && this.taskBalance ) {
+			this.script.getProperties().setFilename(AnalystWizard.FILE_BALANCE,
+					FileUtil.addFilenameBase(file, "_balance").toString());
+		}
 
 		String target;
 
@@ -129,6 +136,16 @@ public class AnalystWizard {
 			this.script.getProperties().setProperty(
 					ScriptProperties.RANDOMIZE_CONFIG_targetFile,
 					target = AnalystWizard.FILE_RANDOM);
+		}
+		
+		// balance
+		if( !this.timeSeries && this.taskBalance ) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.BALANCE_CONFIG_sourceFile,
+					target);
+			this.script.getProperties().setProperty(
+					ScriptProperties.BALANCE_CONFIG_targetFile,
+					target = AnalystWizard.FILE_BALANCE);
 		}
 
 		// segregate
@@ -281,6 +298,11 @@ public class AnalystWizard {
 				ScriptProperties.DATA_CONFIG_targetField, this.targetField);
 		this.script.getProperties().setProperty(
 				ScriptProperties.DATA_CONFIG_goal, this.goal);
+		
+		if( !this.timeSeries && this.taskBalance ) {
+			this.script.getProperties().setProperty(ScriptProperties.BALANCE_CONFIG_targetField,
+				targetField);
+		}
 
 	}
 
@@ -370,6 +392,10 @@ public class AnalystWizard {
 	public void generateTasks() {
 		AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
 		if (!this.timeSeries && this.taskRandomize) {
+			task1.getLines().add("randomize");
+		}
+		
+		if (!this.timeSeries && this.taskBalance) {
 			task1.getLines().add("randomize");
 		}
 
@@ -647,4 +673,17 @@ public class AnalystWizard {
 		this.range = range;
 	}
 
+	/**
+	 * @return the taskBalance
+	 */
+	public boolean isTaskBalance() {
+		return taskBalance;
+	}
+
+	/**
+	 * @param taskBalance the taskBalance to set
+	 */
+	public void setTaskBalance(boolean taskBalance) {
+		this.taskBalance = taskBalance;
+	}
 }

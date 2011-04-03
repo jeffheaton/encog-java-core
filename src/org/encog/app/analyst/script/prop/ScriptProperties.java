@@ -34,6 +34,10 @@ public class ScriptProperties {
 	public static final String DATA_CONFIG_goal = "DATA:CONFIG_goal";
 	public static final String NORMALIZE_CONFIG_sourceFile = "NORMALIZE:CONFIG_sourceFile";
 	public static final String NORMALIZE_CONFIG_targetFile = "NORMALIZE:CONFIG_targetFile";
+	public static final String BALANCE_CONFIG_sourceFile = "BALANCE:CONFIG_sourceFile";
+	public static final String BALANCE_CONFIG_targetFile = "BALANCE:CONFIG_targetFile";
+	public static final String BALANCE_CONFIG_targetField = "BALANCE:CONFIG_balanceField";
+	public static final String BALANCE_CONFIG_countPer = "BALANCE:CONFIG_countPer";
 	public static final String RANDOMIZE_CONFIG_sourceFile = "RANDOMIZE:CONFIG_sourceFile";
 	public static final String RANDOMIZE_CONFIG_targetFile = "RANDOMIZE:CONFIG_targetFile";
 	public static final String SEGREGATE_CONFIG_sourceFile = "SEGREGATE:CONFIG_sourceFile";

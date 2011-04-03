@@ -15,6 +15,7 @@ import java.util.zip.GZIPInputStream;
 
 import org.encog.app.analyst.analyze.PerformAnalysis;
 import org.encog.app.analyst.commands.Cmd;
+import org.encog.app.analyst.commands.CmdBalance;
 import org.encog.app.analyst.commands.CmdCreate;
 import org.encog.app.analyst.commands.CmdEvaluate;
 import org.encog.app.analyst.commands.CmdGenerate;
@@ -63,6 +64,7 @@ public class EncogAnalyst {
 		addCommand(new CmdSegregate(this));
 		addCommand(new CmdTrain(this));
 		addCommand(new CmdSeries(this));
+		addCommand(new CmdBalance(this));
 	}
 
 	public void analyze(File file, boolean headers, AnalystFileFormat format) {

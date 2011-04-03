@@ -174,6 +174,14 @@ public class AnalystScript {
 		else
 			return new File(name);
 	}
+
+	public int findDataFieldIndex(DataField df) {
+		for(int result = 0; result<this.fields.length; result++) {
+			if( df==this.fields[result])
+				return result;
+		}
+		return -1;
+	}
 	
 	
 	
