@@ -34,7 +34,7 @@ public class CmdBalance extends Cmd {
 		int countPer = getProp().getPropertyInt(
 				ScriptProperties.BALANCE_CONFIG_countPer);
 		String targetFieldStr = getProp().getPropertyString(
-				ScriptProperties.BALANCE_CONFIG_targetField);
+				ScriptProperties.BALANCE_CONFIG_balanceField);
 		DataField targetFieldDF = getAnalyst().getScript().findDataField(
 				targetFieldStr);
 		if (targetFieldDF == null) {

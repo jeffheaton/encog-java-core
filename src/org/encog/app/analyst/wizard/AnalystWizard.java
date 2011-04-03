@@ -300,7 +300,7 @@ public class AnalystWizard {
 				ScriptProperties.DATA_CONFIG_goal, this.goal);
 		
 		if( !this.timeSeries && this.taskBalance ) {
-			this.script.getProperties().setProperty(ScriptProperties.BALANCE_CONFIG_targetField,
+			this.script.getProperties().setProperty(ScriptProperties.BALANCE_CONFIG_balanceField,
 				targetField);
 		}
 

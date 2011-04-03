@@ -21,7 +21,7 @@ NORMALIZE:CONFIG,sourceFile,string
 NORMALIZE:CONFIG,targetFile,string
 BALANCE:CONFIG,sourceFile,string
 BALANCE:CONFIG,targetFile,string
-BALANCE:CONFIG,targetField,string
+BALANCE:CONFIG,balanceField,string
 BALANCE:CONFIG,countPer,int
 RANDOMIZE:CONFIG,sourceFile,string
 RANDOMIZE:CONFIG,targetFile,string
