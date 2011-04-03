@@ -342,7 +342,11 @@ public class ReadCSV {
 	public boolean next() {
 
 		try {
-			final String line = this.reader.readLine();
+			String line = null;
+			do {
+				line = this.reader.readLine();
+			} while( (line!=null) && line.trim().length()==0 );
+			
 			if (line == null) {
 				return false;
 			}
