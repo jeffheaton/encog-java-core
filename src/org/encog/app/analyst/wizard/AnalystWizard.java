@@ -302,6 +302,11 @@ public class AnalystWizard {
 		if( !this.timeSeries && this.taskBalance ) {
 			this.script.getProperties().setProperty(ScriptProperties.BALANCE_CONFIG_balanceField,
 				targetField);
+			DataField field = this.analyst.getScript().findDataField(targetField);
+			if( field!=null && field.isClass() ) {
+				int countPer = field.getMinClassCount();
+				this.script.getProperties().setProperty(ScriptProperties.BALANCE_CONFIG_countPer, countPer);
+			}
 		}
 
 	}
@@ -396,7 +401,7 @@ public class AnalystWizard {
 		}
 		
 		if (!this.timeSeries && this.taskBalance) {
-			task1.getLines().add("randomize");
+			task1.getLines().add("balance");
 		}
 
 		if (this.taskSegregate) {

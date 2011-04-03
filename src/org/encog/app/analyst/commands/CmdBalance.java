@@ -12,7 +12,7 @@ import org.encog.util.csv.CSVFormat;
 
 public class CmdBalance extends Cmd {
 
-	public final static String COMMAND_NAME = "EVALUATE";
+	public final static String COMMAND_NAME = "BALANCE";
 
 	public CmdBalance(EncogAnalyst analyst) {
 		super(analyst);

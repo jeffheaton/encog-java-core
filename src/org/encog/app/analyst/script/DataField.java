@@ -190,4 +190,12 @@ public class DataField {
 		return result.toString();
 	}
 
+	public int getMinClassCount() {
+		int min = Integer.MAX_VALUE;
+		for( AnalystClassItem cls : this.classMembers) {
+			min = Math.min(min, cls.getCount());
+		}
+		return min;
+	}
+
 }
