@@ -90,7 +90,8 @@ public class ScriptLoad {
 				String field = cols.get(0);
 				String code = cols.get(1);
 				String name = cols.get(2);
-
+				int count = Integer.parseInt(cols.get(3));
+				
 				DataField df = this.script.findDataField(field);
 
 				if (df == null) {
@@ -107,7 +108,7 @@ public class ScriptLoad {
 					classItems = map.get(field);
 				}
 
-				classItems.add(new AnalystClassItem(code, name));
+				classItems.add(new AnalystClassItem(code, name, count));
 			} else {
 				first = false;
 			}

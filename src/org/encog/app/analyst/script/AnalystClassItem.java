@@ -9,11 +9,13 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 
 	private String code;
 	private String name;
+	private int count;
 
-	public AnalystClassItem(String code, String name) {
+	public AnalystClassItem(String code, String name, int count) {
 		super();
 		this.code = code;
 		this.name = name;
+		this.count = count;
 	}
 
 	/**
@@ -49,6 +51,14 @@ public class AnalystClassItem implements Comparable<AnalystClassItem> {
 	@Override
 	public int compareTo(AnalystClassItem o) {
 		return this.code.compareTo(o.getCode());
+	}
+	
+	public int getCount() {
+		return this.count;
+	}
+	
+	public void increaseCount() {
+		this.count++;
 	}
 
 	/** {@inheritDoc} */

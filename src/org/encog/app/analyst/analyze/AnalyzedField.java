@@ -74,14 +74,23 @@ public class AnalyzedField extends DataField {
 		}
 
 		if (this.isClass()) {
+			AnalystClassItem item;
+			
+			// is this a new class?
 			if (!this.classMap.containsKey(str)) {
-				this.classMap.put(str, new AnalystClassItem(str, str));
+				this.classMap.put(str, item = new AnalystClassItem(str, str, 1));
+				
+				// do we have too many different classes?
+				int max = script.getProperties().getPropertyInt(
+						ScriptProperties.SETUP_CONFIG_maxClassCount);
+				if (this.classMap.size() > max)
+					this.setClass(false);
+			} else {
+				item = this.classMap.get(str);
+				item.increaseCount();
 			}
 
-			int max = script.getProperties().getPropertyInt(
-					ScriptProperties.SETUP_CONFIG_maxClassCount);
-			if (this.classMap.size() > max)
-				this.setClass(false);
+
 		}
 	}
 

@@ -131,4 +131,20 @@ public class HTMLReport {
 	public void endList() {
 		text.append("</ul>");		
 	}
+
+	public void beginTableInCell(int colSpan) {
+		text.append("<td");
+		if (colSpan > 0) {
+			text.append(" colspan=\"");
+			text.append(colSpan);
+			text.append("\"");
+		}
+		text.append(">");
+		text.append("<table border=\"1\" width=\"100%\">");
+	}
+
+	public void endTableInCell() {
+		text.append("</table></td>");
+		
+	}
 }

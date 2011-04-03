@@ -122,6 +122,7 @@ public class ScriptSave {
 					out.addColumn(field.getName());
 					out.addColumn(col.getCode());
 					out.addColumn(col.getName());
+					out.addColumn(col.getCount());
 					out.writeLine();
 				}
 			}

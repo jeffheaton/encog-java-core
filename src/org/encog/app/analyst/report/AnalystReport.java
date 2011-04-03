@@ -45,32 +45,46 @@ public class AnalystReport {
 		report.header("Mean");
 		report.header("Standard Deviation");
 		report.endRow();
-		
-		for( DataField df: this.analyst.getScript().getFields() ) {
+
+		for (DataField df : this.analyst.getScript().getFields()) {
 			report.beginRow();
 			report.cell(df.getName());
-			report.cell(df.isClass()?"Yes":"No");
-			report.cell(df.isComplete()?"Yes":"No");
-			report.cell(df.isInteger()?"Yes":"No");
-			report.cell(df.isReal()?"Yes":"No");
-			report.cell(Format.formatDouble(df.getMax(),5));
-			report.cell(Format.formatDouble(df.getMin(),5));
-			report.cell(Format.formatDouble(df.getMean(),5));
-			report.cell(Format.formatDouble(df.getStandardDeviation(),5));
+			report.cell(df.isClass() ? "Yes" : "No");
+			report.cell(df.isComplete() ? "Yes" : "No");
+			report.cell(df.isInteger() ? "Yes" : "No");
+			report.cell(df.isReal() ? "Yes" : "No");
+			report.cell(Format.formatDouble(df.getMax(), 5));
+			report.cell(Format.formatDouble(df.getMin(), 5));
+			report.cell(Format.formatDouble(df.getMean(), 5));
+			report.cell(Format.formatDouble(df.getStandardDeviation(), 5));
 			report.endRow();
+
 			
-			for( AnalystClassItem item : df.getClassMembers() ) {
+			if (df.getClassMembers().size() > 0) {
 				report.beginRow();
 				report.cell("&nbsp;");
-				report.cell(item.getName() + " => " + item.getCode(),8);
+				report.beginTableInCell(8);
+				report.beginRow();
+				report.header("Code");
+				report.header("Name");
+				report.header("Count");
 				report.endRow();
+				for (AnalystClassItem item : df.getClassMembers()) {
+					report.beginRow();
+					report.cell(item.getCode());
+					report.cell(item.getName());
+					report.cell(Format.formatInteger(item.getCount()));
+					report.endRow();
+				}
+				report.endTableInCell();
+				report.endRow();
+				
 			}
 			
 		}
-		
+
 		report.endTable();
-		
-		
+
 		report.h1("Normalization");
 		report.beginTable();
 		report.beginRow();
@@ -79,9 +93,9 @@ public class AnalystReport {
 		report.header("High");
 		report.header("Low");
 		report.endRow();
-		
-		for(NormalizedField item : this.analyst.getScript().getNormalize().getNormalizedFields() )
-		{
+
+		for (NormalizedField item : this.analyst.getScript().getNormalize()
+				.getNormalizedFields()) {
 			report.beginRow();
 			report.cell(item.getName());
 			report.cell(item.getAction().toString());
@@ -89,49 +103,53 @@ public class AnalystReport {
 			report.cell(Format.formatDouble(item.getNormalizedLow(), 5));
 			report.endRow();
 		}
-		
+
 		report.endTable();
-		
+
 		report.h1("Machine Learning");
 		report.beginTable();
 		report.beginRow();
 		report.header("Name");
 		report.header("Value");
 		report.endRow();
-		
-		String t = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_type);
-		String a = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_architecture);
-		String rf = this.analyst.getScript().getProperties().getPropertyString(ScriptProperties.ML_CONFIG_machineLearningFile);
-		
-		report.tablePair("Type",t);
-		report.tablePair("Architecture",a);
-		report.tablePair("Machine Learning File",rf);
+
+		String t = this.analyst.getScript().getProperties()
+				.getPropertyString(ScriptProperties.ML_CONFIG_type);
+		String a = this.analyst.getScript().getProperties()
+				.getPropertyString(ScriptProperties.ML_CONFIG_architecture);
+		String rf = this.analyst
+				.getScript()
+				.getProperties()
+				.getPropertyString(
+						ScriptProperties.ML_CONFIG_machineLearningFile);
+
+		report.tablePair("Type", t);
+		report.tablePair("Architecture", a);
+		report.tablePair("Machine Learning File", rf);
 		report.endTable();
-		
-		
+
 		report.h1("Files");
 		report.beginTable();
 		report.beginRow();
 		report.header("Name");
 		report.header("Filename");
 		report.endRow();
-		for( String key : this.analyst.getScript().getProperties().getFilenames() )
-		{
-			String value = this.analyst.getScript().getProperties().getFilename(key);
+		for (String key : this.analyst.getScript().getProperties()
+				.getFilenames()) {
+			String value = this.analyst.getScript().getProperties()
+					.getFilename(key);
 			report.beginRow();
 			report.cell(key);
 			report.cell(value);
 			report.endRow();
 		}
 		report.endTable();
-		
+
 		report.endBody();
 		report.endHTML();
 
 		return report.toString();
 	}
-	
-	
 
 	public void produceReport(File filename) {
 		try {
