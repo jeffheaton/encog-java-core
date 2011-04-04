@@ -20,7 +20,7 @@ public class CmdBalance extends Cmd {
 	}
 
 	@Override
-	public boolean executeCommand() {
+	public boolean executeCommand(String args) {
 		// get filenames
 		String sourceID = getProp().getPropertyString(
 				ScriptProperties.BALANCE_CONFIG_sourceFile);

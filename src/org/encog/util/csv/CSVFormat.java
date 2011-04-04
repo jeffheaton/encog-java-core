@@ -136,8 +136,11 @@ public class CSVFormat {
 	 * @return The number formatted as a string.
 	 */
 	public synchronized String format(final double d, final int digits) {
+		if( Double.isInfinite(d) || Double.isNaN(d) ) 
+			return "0";
 		this.numberFormatter.setGroupingUsed(false);
 		this.numberFormatter.setMaximumFractionDigits(digits);
+		
 		return this.numberFormatter.format(d);
 	}
 

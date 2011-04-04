@@ -32,7 +32,7 @@ public abstract class Cmd {
 		return this.properties;
 	}
 
-	public abstract boolean executeCommand();
+	public abstract boolean executeCommand(String args);
 
 	public abstract String getName();
 

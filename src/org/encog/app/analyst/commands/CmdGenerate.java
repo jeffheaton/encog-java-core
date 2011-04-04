@@ -31,10 +31,13 @@ public class CmdGenerate extends Cmd {
 
 		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
 			String baseName = headerList.getBaseHeader(currentIndex);
-			if (headerList.isSeriesInput(currentIndex)
-					|| !baseName.equalsIgnoreCase(targetField)) {
-				if (headerList.isSeriesInput(currentIndex)) {
-					fields.add(currentIndex++);
+			if( headerList.isSeries(currentIndex) ) {
+				if( headerList.isSeriesInput(currentIndex)) {
+					fields.add(currentIndex);
+				}
+			} else {
+				if( !baseName.equalsIgnoreCase(targetField) ) {
+					fields.add(currentIndex);
 				}
 			}
 		}
@@ -55,10 +58,13 @@ public class CmdGenerate extends Cmd {
 
 		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
 			String baseName = headerList.getBaseHeader(currentIndex);
-			if (headerList.isSeriesPredict(currentIndex)
-					|| baseName.equalsIgnoreCase(targetField)) {
-				if (!headerList.isSeriesInput(currentIndex)) {
-					fields.add(currentIndex++);
+			if( headerList.isSeries(currentIndex) ) {
+				if( headerList.isSeriesPredict(currentIndex)) {
+					fields.add(currentIndex);
+				}
+			} else {
+				if( baseName.equalsIgnoreCase(targetField) ) {
+					fields.add(currentIndex);
 				}
 			}
 		}
@@ -73,7 +79,7 @@ public class CmdGenerate extends Cmd {
 	}
 
 	@Override
-	public boolean executeCommand() {
+	public boolean executeCommand(String args) {
 		// get filenames
 		String sourceID = getProp().getPropertyString(
 				ScriptProperties.GENERATE_CONFIG_sourceFile);

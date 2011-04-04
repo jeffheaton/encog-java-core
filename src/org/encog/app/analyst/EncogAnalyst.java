@@ -21,8 +21,10 @@ import org.encog.app.analyst.commands.CmdEvaluate;
 import org.encog.app.analyst.commands.CmdGenerate;
 import org.encog.app.analyst.commands.CmdNormalize;
 import org.encog.app.analyst.commands.CmdRandomize;
+import org.encog.app.analyst.commands.CmdReset;
 import org.encog.app.analyst.commands.CmdSegregate;
 import org.encog.app.analyst.commands.CmdSeries;
+import org.encog.app.analyst.commands.CmdSet;
 import org.encog.app.analyst.commands.CmdTrain;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.prop.ScriptProperties;
@@ -65,6 +67,8 @@ public class EncogAnalyst {
 		addCommand(new CmdTrain(this));
 		addCommand(new CmdSeries(this));
 		addCommand(new CmdBalance(this));
+		addCommand(new CmdSet(this));
+		addCommand(new CmdReset(this));
 	}
 
 	public void analyze(File file, boolean headers, AnalystFileFormat format) {
@@ -297,11 +301,24 @@ public class EncogAnalyst {
 			this.reportCommandBegin(total, current, line);
 			line = line.trim();
 			boolean canceled = false;
+			String command;
+			String args;
 
-			Cmd cmd = this.commands.get(line.toUpperCase());
+			String line2 = line.trim();
+			int index = line2.indexOf(' ');
+			if( index!=-1 ) {
+				command = line2.substring(0, index).toUpperCase();
+				args = line2.substring(index+1);
+			} else {
+				command = line2.toUpperCase();
+				args = "";
+			}
+			
+			Cmd cmd = this.commands.get(command);
+			
 
 			if (cmd != null) {
-				canceled = cmd.executeCommand();
+				canceled = cmd.executeCommand(args);
 			} else {
 				throw new AnalystError("Unknown Command: " + line);
 			}

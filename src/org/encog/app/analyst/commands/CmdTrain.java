@@ -116,7 +116,7 @@ public class CmdTrain extends Cmd {
 		this.getAnalyst().reportTrainingEnd();
 	}
 
-	public boolean executeCommand() {
+	public boolean executeCommand(String args) {
 
 		this.kfold = obtainCross();
 		NeuralDataSet trainingSet = obtainTrainingSet();

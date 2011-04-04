@@ -24,7 +24,7 @@ public class CmdNormalize extends Cmd {
 	}
 
 	@Override
-	public boolean executeCommand() {
+	public boolean executeCommand(String args) {
 		// get filenames
 		String sourceID = getProp().getPropertyString(
 				ScriptProperties.NORMALIZE_CONFIG_sourceFile);

@@ -33,7 +33,7 @@ public class CmdEvaluate extends Cmd {
 	}
 
 	@Override
-	public boolean executeCommand() {
+	public boolean executeCommand(String args) {
 		// get filenames
 		String evalID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_evalFile);

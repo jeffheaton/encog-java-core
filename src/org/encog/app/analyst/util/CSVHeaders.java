@@ -54,6 +54,10 @@ public class CSVHeaders {
 		return( field.toLowerCase().startsWith("predict:"));
 	}
 	
+	public boolean isSeries(int index) {
+		return isSeriesInput(index) || isSeriesPredict(index);
+	}
+	
 	public String getBaseHeader(int index) { 
 		String result = this.headerList.get(index);
 		

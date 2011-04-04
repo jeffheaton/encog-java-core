@@ -23,7 +23,7 @@ public class CmdCreate extends Cmd {
 	}
 
 	@Override
-	public boolean executeCommand() {
+	public boolean executeCommand(String args) {
 		// get filenames
 		String trainingID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_trainingFile);
