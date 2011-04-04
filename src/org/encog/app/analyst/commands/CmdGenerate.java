@@ -1,9 +1,13 @@
 package org.encog.app.analyst.commands;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
+import org.encog.app.analyst.util.CSVHeaders;
+import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.simple.EncogUtility;
 
@@ -18,6 +22,54 @@ public class CmdGenerate extends Cmd {
 
 	public CmdGenerate(EncogAnalyst analyst) {
 		super(analyst);
+	}
+
+	public int[] determineInputFields(CSVHeaders headerList) {
+		List<Integer> fields = new ArrayList<Integer>();
+		String targetField = this.getScript().getProperties()
+				.getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
+
+		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
+			String baseName = headerList.getBaseHeader(currentIndex);
+			if (headerList.isSeriesInput(currentIndex)
+					|| !baseName.equalsIgnoreCase(targetField)) {
+				if (headerList.isSeriesInput(currentIndex)) {
+					fields.add(currentIndex++);
+				}
+			}
+		}
+
+		// allocate result array
+		int[] result = new int[fields.size()];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = fields.get(i);
+		}
+
+		return result;
+	}
+
+	public int[] determineIdealFields(CSVHeaders headerList) {
+		List<Integer> fields = new ArrayList<Integer>();
+		String targetField = this.getScript().getProperties()
+				.getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
+
+		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
+			String baseName = headerList.getBaseHeader(currentIndex);
+			if (headerList.isSeriesPredict(currentIndex)
+					|| baseName.equalsIgnoreCase(targetField)) {
+				if (!headerList.isSeriesInput(currentIndex)) {
+					fields.add(currentIndex++);
+				}
+			}
+		}
+
+		// allocate result array
+		int[] result = new int[fields.size()];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = fields.get(i);
+		}
+
+		return result;
 	}
 
 	@Override
@@ -36,14 +88,12 @@ public class CmdGenerate extends Cmd {
 		// mark generated
 		getScript().markGenerated(targetID);
 
-		// int input =
-		// getProp().getPropertyInt(ScriptProperties.GENERATE_CONFIG_input);
-		// int ideal =
-		// getProp().getPropertyInt(ScriptProperties.GENERATE_CONFIG_ideal);
-
+		// read file
 		boolean headers = getScript().expectInputHeaders(sourceID);
-		int[] input = this.getAnalyst().determineInputFields();
-		int[] ideal = this.getAnalyst().determineIdealFields();
+		CSVHeaders headerList = new CSVHeaders(sourceFile, headers, format);
+
+		int[] input = determineInputFields(headerList);
+		int[] ideal = determineIdealFields(headerList);
 
 		EncogUtility.convertCSV2Binary(sourceFile, format, targetFile, input,
 				ideal, headers);
