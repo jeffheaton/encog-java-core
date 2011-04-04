@@ -31,8 +31,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
-import org.encog.EncogError;
-
 /**
  * Load or save an object using Java serialization.
  */

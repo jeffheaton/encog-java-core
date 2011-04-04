@@ -37,6 +37,11 @@ import org.encog.util.simple.EncogUtility;
 
 public class CPN  extends BasicML implements MLRegression, MLResettable, MLError {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private final int inputCount;
 	private final int instarCount;
 	private final int outstarCount;

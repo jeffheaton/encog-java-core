@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -232,7 +231,6 @@ public final class ReflectionUtil {
 				ReflectionUtil.loadClassmap();
 			}
 		}
-		Map<String, Class<?>> i = ReflectionUtil.classMap;
 		return ReflectionUtil.classMap.get(name);
 	}
 

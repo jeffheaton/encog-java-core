@@ -33,6 +33,11 @@ import org.encog.neural.data.bipolar.BiPolarNeuralData;
 public class ART1 extends ART implements MLResettable, MLClassification {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * last winner in F2 layer.
 	 */
 	private int winner;

@@ -30,6 +30,11 @@ package org.encog.ml.genetic.genes;
 public class DoubleGene extends BasicGene {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The value of this gene.
 	 */
 	private double value;

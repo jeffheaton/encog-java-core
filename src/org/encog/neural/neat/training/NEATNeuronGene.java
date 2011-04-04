@@ -27,9 +27,7 @@ import java.io.Serializable;
 
 import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
-import org.encog.neural.neat.NEATNeuron;
 import org.encog.neural.neat.NEATNeuronType;
-import org.encog.persist.PersistConst;
 
 /**
  * Implements a NEAT neuron gene.
@@ -43,6 +41,11 @@ import org.encog.persist.PersistConst;
  */
 public class NEATNeuronGene extends BasicGene implements Serializable {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static final String PROPERTY_ACT_RESPONSE = "aResp";
 	public static final String PROPERTY_RECURRENT = "recurrent";
 	public static final String PROPERTY_SPLIT_X = "splitX";

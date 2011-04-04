@@ -32,6 +32,11 @@ import org.encog.engine.util.BoundMath;
 public class InverseMultiquadricFunction extends BasicRBF {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * Construct a single-dimension Inverse-Multiquadric function with the
 	 * specified peak, centers and widths.
 	 * 

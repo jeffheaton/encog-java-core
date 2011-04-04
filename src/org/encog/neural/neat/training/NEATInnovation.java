@@ -27,7 +27,6 @@ import java.io.Serializable;
 
 import org.encog.ml.genetic.innovation.BasicInnovation;
 import org.encog.neural.neat.NEATNeuronType;
-import org.encog.persist.PersistConst;
 
 /**
  * Implements a NEAT innovation. This lets NEAT track what changes it has
@@ -42,14 +41,11 @@ import org.encog.persist.PersistConst;
  */
 public class NEATInnovation extends BasicInnovation implements Serializable {
 
-	public final static String PROPERTY_FROM_NEURON_ID = "from";
-	public final static String PROPERTY_TO_NEURON_ID = "to";
-	public final static String PROPERTY_NEURON_ID = "neuron";
-	public final static String PROPERTY_SPLIT_X = "splitX";
-	public final static String PROPERTY_SPLIT_Y = "splitY";
-	public final static String PROPERTY_INNOVATION_TYPE = "type";
-
-	
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+		
 	/**
 	 * The from neuron id.
 	 */

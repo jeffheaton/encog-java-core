@@ -23,7 +23,6 @@
  */
 package org.encog.util.benchmark;
 
-import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;

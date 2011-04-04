@@ -33,6 +33,11 @@ import java.util.List;
 public class BasicInnovationList implements InnovationList, Serializable {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The list of innovations.
 	 */
 	private final List<Innovation> list = new ArrayList<Innovation>();

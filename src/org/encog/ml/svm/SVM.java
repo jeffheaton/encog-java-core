@@ -57,6 +57,11 @@ import org.encog.util.simple.EncogUtility;
 public class SVM extends BasicML implements MLRegression, MLClassification, MLError {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The SVM model to use.
 	 */
 	private svm_model model;

@@ -45,13 +45,13 @@ import org.encog.util.simple.EncogUtility;
 
 public class RBFNetwork  extends BasicML implements MLError, MLRegression, ContainsFlat  {
 	
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private FlatNetworkRBF flat;	
 	
-	public static final String TAG_RBF = "rbf";
-	public static final String TAG_RBF_CENTERS = "centers";
-	public static final String TAG_RBF_PEAK = "peak";
-	public static final String TAG_RBF_WIDTH = "width";
-	public static final String TAG_RBF_FUNCTION = "RBF";
 	
 	public RBFNetwork() {
 		this.flat = new FlatNetworkRBF();

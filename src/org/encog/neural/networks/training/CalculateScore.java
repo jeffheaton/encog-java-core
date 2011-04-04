@@ -24,7 +24,6 @@
 package org.encog.neural.networks.training;
 
 import org.encog.ml.MLRegression;
-import org.encog.neural.networks.BasicNetwork;
 
 /**
  * Used by simulated annealing and genetic algorithms to calculate the score

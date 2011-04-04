@@ -35,10 +35,15 @@ import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
-import org.encog.persist.PersistConst;
 
 public class SOM extends BasicML implements MLClassification, MLResettable,
 		MLError {
+	
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * Do not allow patterns to go below this very small number.
 	 */

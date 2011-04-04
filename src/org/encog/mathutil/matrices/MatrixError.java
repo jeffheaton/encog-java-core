@@ -24,7 +24,6 @@
 package org.encog.mathutil.matrices;
 
 import org.encog.EncogError;
-import org.encog.util.logging.EncogLogging;
 
 /**
  * Used by the matrix classes to indicate an error.

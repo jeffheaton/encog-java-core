@@ -30,13 +30,17 @@ import java.util.List;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.genetic.genome.Genome;
 import org.encog.ml.genetic.population.Population;
-import org.encog.persist.PersistConst;
 
 /**
  * Provides basic functionality for a species.
  */
 public class BasicSpecies  implements Species, Serializable {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static final String PROPERTY_AGE = "age";
 	public static final String PROPERTY_BEST_SCORE = "bestScore";
 	public static final String PROPERTY_GENS_NO_IMPROVE = "gensNoImprove";

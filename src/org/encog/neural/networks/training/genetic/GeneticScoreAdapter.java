@@ -26,7 +26,6 @@ package org.encog.neural.networks.training.genetic;
 import org.encog.ml.MLRegression;
 import org.encog.ml.genetic.genome.CalculateGenomeScore;
 import org.encog.ml.genetic.genome.Genome;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.CalculateScore;
 
 /**

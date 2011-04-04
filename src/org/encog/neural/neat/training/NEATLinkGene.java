@@ -27,8 +27,6 @@ import java.io.Serializable;
 
 import org.encog.ml.genetic.genes.BasicGene;
 import org.encog.ml.genetic.genes.Gene;
-import org.encog.neural.neat.NEATLink;
-import org.encog.persist.PersistConst;
 
 /**
  * Implements a NEAT link gene. This describes a way in which two neurons are
@@ -43,6 +41,11 @@ import org.encog.persist.PersistConst;
  */
 public class NEATLinkGene extends BasicGene implements Serializable {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	/**
 	 * The from neuron id.
 	 */

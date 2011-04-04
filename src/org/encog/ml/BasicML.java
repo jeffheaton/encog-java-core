@@ -2,10 +2,14 @@ package org.encog.ml;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class BasicML implements MLMethod, MLProperties, Serializable {
+	
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Properties about the neural network. Some NeuralLogic classes require

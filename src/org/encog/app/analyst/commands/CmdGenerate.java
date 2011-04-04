@@ -7,7 +7,6 @@ import java.util.List;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.CSVHeaders;
-import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.simple.EncogUtility;
 

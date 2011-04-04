@@ -3,10 +3,7 @@ package org.encog.ml.factory.train;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
-import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
 import org.encog.neural.rbf.RBFNetwork;
 import org.encog.neural.rbf.training.SVDTraining;
 

@@ -43,29 +43,19 @@ import org.encog.util.csv.CSVFormat;
 public class CSVNeuralDataSet extends BasicNeuralDataSet {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The CSV filename to read from.
 	 */
 	private final String filename;
 
 	/**
-	 * The number of columns of input data.
-	 */
-	private final int inputSize;
-
-	/**
-	 * The number of columns of ideal data.
-	 */
-	private final int idealSize;
-
-	/**
 	 * The format of this CSV file.
 	 */
 	private final CSVFormat format;
-
-	/**
-	 * Specifies if headers are present on the first row.
-	 */
-	private final boolean headers;
 
 
 	/**
@@ -103,10 +93,7 @@ public class CSVNeuralDataSet extends BasicNeuralDataSet {
 			final int idealSize, final boolean headers,
 			final CSVFormat format) {
 		this.filename = filename;
-		this.inputSize = inputSize;
-		this.idealSize = idealSize;
 		this.format = format;
-		this.headers = headers;
 		
         DataSetCODEC codec = new CSVDataCODEC(new File(filename), format, headers, inputSize, idealSize);
         MemoryDataLoader load = new MemoryDataLoader(codec);

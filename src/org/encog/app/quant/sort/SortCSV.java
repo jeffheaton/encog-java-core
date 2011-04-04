@@ -86,7 +86,6 @@ public class SortCSV extends BasicFile {
 			if (first) {
 				for (int i = 0; i < this.getColumnCount(); i++) {
 					try {
-						double d;
 						String str = row.getData()[i];
 						Double.parseDouble(str);
 						nonNumeric[i] = false;

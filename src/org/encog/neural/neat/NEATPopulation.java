@@ -12,6 +12,11 @@ import org.encog.neural.neat.training.NEATInnovationList;
 
 public class NEATPopulation extends BasicPopulation implements Serializable {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static final String PROPERTY_NEAT_ACTIVATION = "neatAct";
 	public static final String PROPERTY_OUTPUT_ACTIVATION = "outAct";
 

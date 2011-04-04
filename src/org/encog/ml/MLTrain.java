@@ -1,7 +1,6 @@
 package org.encog.ml;
 
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 public interface MLTrain {

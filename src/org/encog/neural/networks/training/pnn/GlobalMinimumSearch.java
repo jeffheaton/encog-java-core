@@ -23,7 +23,6 @@
  */
 package org.encog.neural.networks.training.pnn;
 
-import org.encog.neural.pnn.AbstractPNN;
 
 /**
  * Search sigma's for a global minimum. First do a rough search, and then

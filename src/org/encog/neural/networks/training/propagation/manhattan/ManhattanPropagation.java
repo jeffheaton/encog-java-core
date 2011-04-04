@@ -25,7 +25,6 @@ package org.encog.neural.networks.training.propagation.manhattan;
 
 import org.encog.engine.network.train.prop.TrainFlatNetworkManhattan;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.Propagation;

@@ -32,6 +32,11 @@ import java.io.Serializable;
 public class BasicGenerateID implements GenerateID, Serializable {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The current ID to generate.
 	 */
 	private long currentID;

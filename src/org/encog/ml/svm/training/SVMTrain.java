@@ -23,20 +23,16 @@
  */
 package org.encog.ml.svm.training;
 
-import org.encog.Encog;
 import org.encog.engine.util.ErrorCalculation;
 import org.encog.mathutil.libsvm.svm;
 import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.ml.MLMethod;
-import org.encog.ml.MLRegression;
 import org.encog.ml.TrainingImplementationType;
-import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
-import org.encog.util.simple.EncogUtility;
 
 /**
  * Provides training for Support Vector Machine networks.

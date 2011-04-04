@@ -103,10 +103,10 @@ public class JordanPattern implements NeuralNetworkPattern {
 	 */
 	public MLMethod generate() {
 		
-		BasicLayer input,hidden,output;
+		BasicLayer hidden,output;
 		
 		BasicNetwork network = new BasicNetwork();
-		network.addLayer(input = new BasicLayer(this.activation, true,this.inputNeurons));
+		network.addLayer(new BasicLayer(this.activation, true,this.inputNeurons));
 		network.addLayer(hidden = new BasicLayer(this.activation, true,this.hiddenNeurons));
 		network.addLayer(output = new BasicLayer(null, false,this.outputNeurons));
 		hidden.setContextFedBy(output);

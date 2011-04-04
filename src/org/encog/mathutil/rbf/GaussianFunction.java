@@ -31,6 +31,11 @@ package org.encog.mathutil.rbf;
 public class GaussianFunction extends BasicRBF {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * Default constructor, used for reflection.
 	 */
 	public GaussianFunction() {

@@ -1,6 +1,5 @@
 package org.encog.util.logging;
 
-import java.io.IOException;
 
 public class EncogLogging {
 	

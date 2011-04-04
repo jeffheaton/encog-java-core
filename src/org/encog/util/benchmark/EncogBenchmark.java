@@ -24,9 +24,7 @@
 package org.encog.util.benchmark;
 
 import java.io.File;
-import java.io.PrintStream;
 
-import org.encog.Encog;
 import org.encog.engine.StatusReportable;
 import org.encog.engine.util.Format;
 import org.encog.neural.data.NeuralDataPair;
@@ -53,10 +51,6 @@ public class EncogBenchmark {
 	 */
 	private static final int STEP1 = 1;
 
-	/**
-	 * The second step.
-	 */
-	private static final int STEP2 = 2;
 
 	/**
 	 * The third step.

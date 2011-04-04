@@ -26,7 +26,6 @@ package org.encog.neural.networks.training.cross;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.data.folded.FoldedDataSet;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 
 /**

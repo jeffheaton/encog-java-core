@@ -52,6 +52,11 @@ import org.encog.neural.neat.NEATPopulation;
  */
 public class NEATGenome extends BasicGenome implements Cloneable, Serializable {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static final String PROPERTY_NEURONS = "neurons";
 	public static final String PROPERTY_LINKS = "links";
 

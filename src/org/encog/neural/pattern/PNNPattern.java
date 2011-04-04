@@ -28,7 +28,6 @@ import org.encog.ml.MLMethod;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
-import org.encog.neural.som.SOM;
 
 public class PNNPattern implements NeuralNetworkPattern {
 

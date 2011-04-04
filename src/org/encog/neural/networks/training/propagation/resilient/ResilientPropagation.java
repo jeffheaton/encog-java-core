@@ -27,7 +27,6 @@ import org.encog.engine.network.train.prop.RPROPConst;
 import org.encog.engine.network.train.prop.TrainFlatNetworkResilient;
 import org.encog.engine.util.EngineArray;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.Propagation;

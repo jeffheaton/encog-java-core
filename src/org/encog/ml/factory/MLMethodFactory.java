@@ -1,19 +1,10 @@
 package org.encog.ml.factory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.EncogError;
-import org.encog.app.analyst.AnalystError;
-import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.method.FeedforwardFactory;
 import org.encog.ml.factory.method.RBFNetworkFactory;
 import org.encog.ml.factory.method.SVMFactory;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.Layer;
 
 public class MLMethodFactory {
 	

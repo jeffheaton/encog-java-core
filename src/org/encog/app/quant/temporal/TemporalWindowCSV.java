@@ -353,7 +353,6 @@ public class TemporalWindowCSV extends BasicFile {
             this.setInputFormat(format);
 
             this.fields = new TemporalWindowField[csv.getColumnCount()];
-            double d;
 
             for (int i = 0; i < csv.getColumnCount(); i++)
             {

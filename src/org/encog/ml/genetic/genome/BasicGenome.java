@@ -36,6 +36,11 @@ import org.encog.ml.genetic.population.Population;
  */
 public abstract class BasicGenome implements Genome, Serializable {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static final String PROPERTY_ADJUSTED_SCORE = "ascore";
 	public static final String PROPERTY_SCORE = "score";
 	public static final String PROPERTY_SPAWN_AMOUNT = "spawn";

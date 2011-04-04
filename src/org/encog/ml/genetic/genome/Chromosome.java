@@ -41,6 +41,11 @@ import org.encog.ml.genetic.genes.Gene;
 public class Chromosome implements Serializable {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The individual elements of this chromosome.
 	 */
 	private final List<Gene> genes = new ArrayList<Gene>();

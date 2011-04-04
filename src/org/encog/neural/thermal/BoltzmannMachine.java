@@ -31,6 +31,11 @@ import org.encog.neural.data.bipolar.BiPolarNeuralData;
 
 public class BoltzmannMachine extends ThermalNetwork {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public static final String RUN_CYCLES = "runCycles";
 	public static final String ANNEAL_CYCLES = "annealCycles";
 	

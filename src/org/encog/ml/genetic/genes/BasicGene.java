@@ -29,6 +29,11 @@ import java.io.Serializable;
  * Implements the basic functionality for a gene. This is an abstract class.
  */
 public abstract class BasicGene implements Gene, Serializable {
+	
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Is this gene enabled?

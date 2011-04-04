@@ -25,7 +25,6 @@ package org.encog.neural.networks.training;
 
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.error.CalculateRegressionError;
 
 /**

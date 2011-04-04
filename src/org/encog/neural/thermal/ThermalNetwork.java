@@ -34,6 +34,11 @@ import org.encog.neural.data.bipolar.BiPolarNeuralData;
 public abstract class ThermalNetwork extends BasicML implements MLMethod, MLAutoAssocation, MLResettable {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The current state of the thermal network.
 	 */
 	private BiPolarNeuralData currentState;

@@ -42,7 +42,7 @@ public class BasicPopulation implements Population {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4097921208348173582L;
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Generate gene id's.
@@ -368,14 +368,6 @@ public class BasicPopulation implements Population {
 	public boolean supportsMapPersistence()
 	{
 		return true;
-	}
-
-	private Genome findGenome(long id) {
-		for(Genome genome: this.genomes) {
-			if( genome.getGenomeID()==id)
-				return genome;
-		}
-		return null;
 	}
 
 	@Override

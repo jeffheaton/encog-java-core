@@ -31,7 +31,6 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.concurrent.ConcurrentTrainingManager;
 import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
-import org.encog.util.simple.EncogUtility;
 
 /**
  * This performer allows jobs to be performed by the CPU.

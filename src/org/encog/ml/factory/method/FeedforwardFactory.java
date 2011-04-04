@@ -1,8 +1,5 @@
 package org.encog.ml.factory.method;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.encog.app.analyst.AnalystError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;

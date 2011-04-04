@@ -37,6 +37,11 @@ package org.encog.mathutil.rbf;
 public class MexicanHatFunction extends BasicRBF {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * Construct a single-dimension Mexican hat function with the specified
 	 * peak, centers and widths.
 	 * 

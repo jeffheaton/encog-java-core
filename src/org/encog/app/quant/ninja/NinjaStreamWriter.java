@@ -37,11 +37,6 @@ public class NinjaStreamWriter {
     private PrintWriter tw;
 
     /**
-     * The filename to write to.
-     */
-    private String filename;
-
-    /**
      * True, if headers are present.
      */
     private boolean headers;

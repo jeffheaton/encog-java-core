@@ -23,7 +23,6 @@
  */
 package org.encog.neural.networks.training.strategy;
 
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;

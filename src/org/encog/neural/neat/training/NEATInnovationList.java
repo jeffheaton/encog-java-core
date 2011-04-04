@@ -47,6 +47,11 @@ import org.encog.neural.networks.training.TrainingError;
 public class NEATInnovationList extends BasicInnovationList implements Serializable {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The next neuron id.
 	 */
 	private long nextNeuronID = 0;

@@ -33,6 +33,11 @@ import org.encog.neural.data.bipolar.BiPolarNeuralData;
 
 public class HopfieldNetwork extends ThermalNetwork {
 
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	public HopfieldNetwork(int neuronCount) {
 		super(neuronCount);
 	}

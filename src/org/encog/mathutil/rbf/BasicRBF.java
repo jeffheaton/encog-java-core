@@ -33,6 +33,11 @@ import org.encog.engine.network.rbf.RadialBasisFunction;
 public abstract class BasicRBF implements RadialBasisFunction {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * The center of the RBF.
 	 */
 	private double[] center;

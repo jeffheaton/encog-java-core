@@ -27,6 +27,11 @@ import org.encog.ml.BasicML;
 
 public class ART extends BasicML {
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * Neural network property, the A1 parameter.
 	 */
 	public static final String PROPERTY_A1 = "A1";

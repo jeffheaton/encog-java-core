@@ -25,7 +25,6 @@ package org.encog.mathutil.randomize;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.MLMethod;
-import org.encog.neural.networks.BasicNetwork;
 
 /**
  * Defines the interface for a class that is capable of randomizing the weights

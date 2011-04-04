@@ -31,7 +31,6 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.QuantTask;
-import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.bot.BotUtil;
 import org.encog.engine.util.Format;
 import org.encog.ml.MLTrain;

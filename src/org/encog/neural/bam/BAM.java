@@ -28,9 +28,13 @@ import org.encog.ml.BasicML;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.networks.NeuralDataMapping;
-import org.encog.persist.PersistConst;
 
 public class BAM extends BasicML {
+	
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private int f1Count;
 	private int f2Count;

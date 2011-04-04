@@ -23,7 +23,6 @@
  */
 package org.encog.app.quant.loader;
 
-import org.encog.EncogError;
 import org.encog.app.quant.QuantError;
 
 /**
@@ -31,6 +30,11 @@ import org.encog.app.quant.QuantError;
  * 
  */
 public class LoaderError extends QuantError {
+
+	/**
+	 * The serial id.
+	 */
+	private static final long serialVersionUID = 7737393439642876303L;
 
 	/**
 	 * Construct a message exception.

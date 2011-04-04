@@ -36,7 +36,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-import org.encog.EncogError;
 import org.encog.bot.BotError;
 
 /**

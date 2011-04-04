@@ -199,15 +199,8 @@ public class BasicFile implements QuantTask {
 		StringBuilder line = new StringBuilder();
 
 		for (int i = 0; i < row.getData().length; i++) {
-			this.appendSeparator(line, this.outputFormat);			
-
-			/*
-			 * if (nonNumeric[i]) { line.Append("\""); line.Append(row.Data[i]);
-			 * line.Append("\""); } else
-			 */
-			{
-				line.append(row.getData()[i]);
-			}
+			BasicFile.appendSeparator(line, this.outputFormat);			
+			line.append(row.getData()[i]);
 		}
 
 		tw.println(line.toString());

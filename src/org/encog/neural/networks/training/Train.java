@@ -27,7 +27,6 @@ import java.util.List;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
-import org.encog.neural.data.NeuralDataSet;
 
 /**
  * Interface for all neural network training methods. This allows the training

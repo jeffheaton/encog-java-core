@@ -36,6 +36,11 @@ import org.encog.neural.networks.structure.NetworkCODEC;
  * is the weight and bias matrix.
  */
 public class NeuralGenome extends BasicGenome {
+	
+	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * The chromosome.

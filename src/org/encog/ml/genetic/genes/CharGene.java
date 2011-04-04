@@ -30,6 +30,11 @@ package org.encog.ml.genetic.genes;
 public class CharGene extends BasicGene {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * The character value of the gene.
 	 */
 	private char value;

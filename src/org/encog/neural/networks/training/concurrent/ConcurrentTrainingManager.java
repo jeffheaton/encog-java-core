@@ -29,7 +29,6 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
-import org.encog.Encog;
 import org.encog.NullStatusReportable;
 import org.encog.engine.StatusReportable;
 import org.encog.neural.NeuralNetworkError;
@@ -184,7 +183,6 @@ public final class ConcurrentTrainingManager implements Runnable {
 			boolean useCPU = true;
 			clearPerformers();
 			
-			int clCount = 1;
 			int cpuCount = 1;
 			
 			this.setSingleThreaded(splitCores);

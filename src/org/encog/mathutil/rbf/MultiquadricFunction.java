@@ -33,6 +33,11 @@ import org.encog.engine.util.BoundMath;
 public class MultiquadricFunction extends BasicRBF {
 
 	/**
+	 * Serial id.
+	 */
+	private static final long serialVersionUID = 1L;
+	
+	/**
 	 * Construct a single-dimension Multiquadric function with the specified
 	 * peak, centers and widths.
 	 * 

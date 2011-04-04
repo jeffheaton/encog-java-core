@@ -18,8 +18,7 @@ public class SVMFactory {
 			throw new EncogError("SVM's must have exactly three elements, separated by ->.");
 		}
 		
-		ArchitectureLayer inputLayer = ArchitectureParse.parseLayer(layers.get(0),input);
-		ArchitectureLayer svmLayer = ArchitectureParse.parseLayer(layers.get(1),-1);
+		ArchitectureLayer inputLayer = ArchitectureParse.parseLayer(layers.get(0),input);		
 		ArchitectureLayer outputLayer = ArchitectureParse.parseLayer(layers.get(2),output);
 		
 		int inputCount = inputLayer.getCount();
