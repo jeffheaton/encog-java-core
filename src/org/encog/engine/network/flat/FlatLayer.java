@@ -25,7 +25,6 @@ package org.encog.engine.network.flat;
 
 import org.encog.engine.EncogEngine;
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.util.EngineArray;
 
 /**
  * Used to configure a flat layer. Flat layers are not kept by a Flat Network,

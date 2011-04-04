@@ -26,6 +26,9 @@ package org.encog.engine.network.train;
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.flat.FlatNetwork;
 
+/**
+ * Common interface for training a flat neural network.
+ */
 public interface TrainFlatNetwork {
 
 	/**

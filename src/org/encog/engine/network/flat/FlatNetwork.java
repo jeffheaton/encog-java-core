@@ -34,7 +34,6 @@ import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
 import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.EngineArray;
@@ -519,7 +518,7 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	 *         function.
 	 */
 	public Class<?> hasSameActivationFunction() {
-		final List<Class> map = new ArrayList<Class>();
+		final List<Class<?>> map = new ArrayList<Class<?>>();
 
 		for (final ActivationFunction activation : this.activationFunctions) {
 			if (!map.contains(activation.getClass())) {

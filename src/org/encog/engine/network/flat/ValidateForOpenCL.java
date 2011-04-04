@@ -23,7 +23,6 @@
  */
 package org.encog.engine.network.flat;
 
-import org.encog.engine.EncogEngineError;
 import org.encog.engine.EngineMachineLearning;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.validate.BasicMachineLearningValidate;

@@ -27,7 +27,6 @@ import java.io.Serializable;
 
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.rbf.RadialBasisFunction;
-import org.encog.engine.util.BoundMath;
 import org.encog.engine.util.EngineArray;
 
 /**
@@ -35,6 +34,10 @@ import org.encog.engine.util.EngineArray;
  */
 public class FlatNetworkRBF extends FlatNetwork implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/**
 	 * The RBF's used.
 	 */
