@@ -27,7 +27,6 @@ public class ScriptProperties {
 	public static final String HEADER_DATASOURCE_sourceHeaders = "HEADER:DATASOURCE_sourceHeaders";
 	public static final String SETUP_CONFIG_maxClassCount = "SETUP:CONFIG_maxClassCount";
 	public static final String SETUP_CONFIG_allowedClasses = "SETUP:CONFIG_allowedClasses";
-	public static final String SETUP_CONFIG_outputHeaders = "SETUP:CONFIG_outputHeaders";
 	public static final String SETUP_CONFIG_inputHeaders = "SETUP:CONFIG_inputHeaders";
 	public static final String SETUP_CONFIG_csvFormat = "SETUP:CONFIG_csvFormat";
 	public static final String DATA_CONFIG_targetField = "DATA:CONFIG_targetField";

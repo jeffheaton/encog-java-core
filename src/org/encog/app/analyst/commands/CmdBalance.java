@@ -64,9 +64,7 @@ public class CmdBalance extends Cmd {
 		boolean headers = getScript().expectInputHeaders(sourceID);
 		balance.Analyze(sourceFile, headers, inputFormat);
 		balance.setOutputFormat(outputFormat);
-		balance.setProduceOutputHeaders(getScript()
-				.getProperties()
-				.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders));
+		balance.setProduceOutputHeaders(true);
 		balance.Process(targetFile, targetFieldIndex, countPer);
 		getAnalyst().setCurrentQuantTask(null);
 		return balance.shouldStop();

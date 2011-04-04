@@ -52,9 +52,7 @@ public class CmdNormalize extends Cmd {
 		boolean headers = getScript().expectInputHeaders(sourceID);
 		norm.analyze(sourceFile, headers, inputFormat, stats);
 		norm.setOutputFormat(outputFormat);
-		norm.setProduceOutputHeaders(getScript()
-				.getProperties()
-				.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders));
+		norm.setProduceOutputHeaders(true);
 		norm.normalize(targetFile);
 		getAnalyst().setCurrentQuantTask(null);
 		return norm.shouldStop();

@@ -4,7 +4,6 @@ HEADER:DATASOURCE,sourceFormat,format
 HEADER:DATASOURCE,sourceHeaders,boolean
 SETUP:CONFIG,maxClassCount,int
 SETUP:CONFIG,allowedClasses,list-string
-SETUP:CONFIG,outputHeaders,boolean
 SETUP:CONFIG,inputHeaders,boolean
 SETUP:CONFIG,csvFormat,format
 SETUP:FILENAMES,FILE_EVAL,string

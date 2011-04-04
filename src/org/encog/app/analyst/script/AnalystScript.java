@@ -33,7 +33,6 @@ public class AnalystScript {
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, AnalystFileFormat.DECPNT_COMMA);
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_maxClassCount, 50);
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_allowedClasses, "integer,string");
-		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_outputHeaders, true);
 	}
 	
 	/**
@@ -96,7 +95,7 @@ public class AnalystScript {
 	public boolean expectInputHeaders(String filename)
 	{
 		if( isGenerated(filename) )
-			return this.properties.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_outputHeaders); 
+			return true;
 		else
 			return this.properties.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_inputHeaders);
 	}

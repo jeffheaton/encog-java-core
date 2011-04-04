@@ -87,6 +87,11 @@ public class ScriptLoad {
 		for (String line : section.getLines()) {
 			if (!first) {
 				List<String> cols = EncogFileSection.splitColumns(line);
+				
+				if( cols.size()<4) {
+					throw new AnalystError("Invalid data class: " + line);
+				}
+				
 				String field = cols.get(0);
 				String code = cols.get(1);
 				String name = cols.get(2);
