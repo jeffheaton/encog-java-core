@@ -14,6 +14,7 @@ import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.simple.EncogUtility;
+import org.encog.util.validate.ValidateNetwork;
 
 /**
  * This command is used to perform training on a machine learning method and
@@ -99,6 +100,7 @@ public class CmdTrain extends Cmd {
 	private void performTraining(MLTrain train, MLMethod method,
 			NeuralDataSet trainingSet) {
 
+		ValidateNetwork.validateMethodToData(method, trainingSet);
 		double targetError = this.getProp().getPropertyDouble(
 				ScriptProperties.ML_TRAIN_targetError);
 		this.getAnalyst().reportTrainingBegin();

@@ -32,11 +32,11 @@ import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
+import org.encog.util.validate.ValidateNetwork;
 
 /**
  * Trains a neural network using a Levenberg Marquardt algorithm (LMA). This
@@ -192,6 +192,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	public LevenbergMarquardtTraining(final BasicNetwork network,
 			final NeuralDataSet training) {
 		super(TrainingImplementationType.Iterative);
+		ValidateNetwork.validateMethodToData(network, training);
 		if (network.getOutputCount() != 1) {
 			throw new TrainingError(
 					"Levenberg Marquardt requires an output layer with a single neuron.");
