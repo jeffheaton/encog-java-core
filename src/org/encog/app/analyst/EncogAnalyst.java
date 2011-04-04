@@ -56,6 +56,7 @@ public class EncogAnalyst {
 	private QuantTask currentQuantTask = null;
 	private Map<String, Cmd> commands = new HashMap<String, Cmd>();
 	private int maxIteration = -1;
+	private Map<String, String> revertData; 
 
 	public EncogAnalyst() {
 		addCommand(new CmdCreate(this));
@@ -145,6 +146,7 @@ public class EncogAnalyst {
 
 	public void load(InputStream stream) {
 		this.script.load(stream);
+		this.revertData = this.script.getProperties().prepareRevert();
 	}
 
 	/**
@@ -372,6 +374,10 @@ public class EncogAnalyst {
 
 	public int getMaxIteration() {
 		return maxIteration;
+	}
+
+	public Map<String, String> getRevertData() {
+		return revertData;
 	}
 	
 	

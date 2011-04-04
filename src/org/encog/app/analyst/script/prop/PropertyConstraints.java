@@ -88,14 +88,25 @@ public class PropertyConstraints {
 	}
 
 	public PropertyEntry getEntry(String section, String subSection, String name) {
-		String key = section + ":" + subSection;
+		String key = section.toUpperCase() + ":" + subSection.toUpperCase();
 		List<PropertyEntry> list = this.data.get(key);
+		if( list==null ) {
+			throw new AnalystError("Unknown section and subsection: " + section + "." + subSection);
+		}
 		for(PropertyEntry entry: list) {
 			if( entry.getName().equalsIgnoreCase(name))
 				return entry;
 		}
 		
 		return null;		
+	}
+
+	public PropertyEntry findEntry(String v) {
+		String[] cols = v.split("\\.");
+		String section = cols[0];
+		String subSection = cols[1];
+		String name = cols[2];
+		return getEntry(section,subSection,name);
 	}
 
 }

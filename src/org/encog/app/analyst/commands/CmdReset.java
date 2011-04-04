@@ -1,5 +1,7 @@
 package org.encog.app.analyst.commands;
 
+import java.util.Map;
+
 import org.encog.app.analyst.EncogAnalyst;
 
 public class CmdReset extends Cmd {
@@ -12,14 +14,14 @@ public class CmdReset extends Cmd {
 
 	@Override
 	public boolean executeCommand(String args) {
-		// TODO Auto-generated method stub
+		Map<String,String> revertedData = this.getAnalyst().getRevertData();
+		this.getScript().getProperties().performRevert(revertedData);		
 		return false;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return COMMAND_NAME;
 	}
 
 }

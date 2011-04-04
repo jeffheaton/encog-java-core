@@ -207,6 +207,17 @@ public class ScriptProperties {
 		}
 
 	}
+	
+	public Map<String, String> prepareRevert() {
+		Map<String, String> result = new HashMap<String, String>();
+		result.putAll(this.data);
+		return result;
+	}
+	
+	public void performRevert(Map<String, String> revertedData) {
+		this.data.clear();
+		this.data.putAll(revertedData);
+	}
 
 	/** {@inheritDoc} */
 	public String toString() {
