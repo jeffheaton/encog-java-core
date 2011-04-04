@@ -33,7 +33,7 @@ public class TestAnalystWizard extends TestCase {
 		encog.save(analystFile);
 		
 		AnalystReport report = new AnalystReport(encog);
-		//report.produceReport(new File(dir,"report.html"));
+		report.produceReport(TEMP_DIR.createFile("report.html"));
 		
 	}
 	

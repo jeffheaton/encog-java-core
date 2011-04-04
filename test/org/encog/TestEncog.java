@@ -23,6 +23,7 @@
  */
 package org.encog;
 
+import java.io.FileNotFoundException;
 import java.util.Map;
 
 import junit.framework.TestCase;
@@ -39,5 +40,20 @@ public class TestEncog extends TestCase {
 		Assert.assertSame(instance1, instance2);
 		Map<String, String> map = instance1.getProperties();
 		Assert.assertNotNull(map);
+	}
+	
+	public void testConsole() throws Throwable {
+		ConsoleStatusReportable console = new ConsoleStatusReportable();
+		console.report(0, 1, "Test console");
+		console.report(1, 1, "Test console");
+		
+		NullStatusReportable n = new NullStatusReportable();
+		n.report(0, 1, "Test console");
+		n.report(1, 1, "Test console");
+	}
+	
+	public void testException() throws Throwable {
+		FileNotFoundException ex = new FileNotFoundException();
+		new EncogError("Error",ex);
 	}
 }
