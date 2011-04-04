@@ -9,6 +9,9 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.folded.FoldedDataSet;
+import org.encog.neural.networks.training.Train;
+import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.simple.EncogUtility;
 
@@ -20,9 +23,27 @@ import org.encog.util.simple.EncogUtility;
 public class CmdTrain extends Cmd {
 
 	public final static String COMMAND_NAME = "TRAIN";
+	private int kfold;
 
 	public CmdTrain(EncogAnalyst analyst) {
 		super(analyst);
+	}
+	
+	private int obtainCross() {
+		String cross = getProp().getPropertyString(
+				ScriptProperties.ML_TRAIN_cross);
+		if( cross==null || cross.length()==0 ) {
+			return 0;
+		} else if( cross.toLowerCase().startsWith("kfold:") ) {
+			String str = cross.substring(6);
+			try {
+				return Integer.parseInt(str);
+			} catch(NumberFormatException ex) {
+				throw new AnalystError("Invalid kfold :" + str);
+			}
+		} else {
+			throw new AnalystError("Unknown cross validation: " + cross);
+		}
 	}
 
 	private MLMethod obtainMethod() {
@@ -49,6 +70,10 @@ public class CmdTrain extends Cmd {
 		File trainingFile = getScript().resolveFilename(trainingID);
 
 		NeuralDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
+		
+		if( this.kfold>0 ) {
+			trainingSet = new FoldedDataSet(trainingSet);
+		}
 
 		return trainingSet;
 	}
@@ -63,6 +88,10 @@ public class CmdTrain extends Cmd {
 				ScriptProperties.ML_TRAIN_arguments);
 
 		MLTrain train = factory.create(method, trainingSet, type, args);
+		
+		if( kfold>0 ) {
+			train = new CrossValidationKFold((Train)train,kfold);
+		}
 
 		return train;
 	}
@@ -89,8 +118,9 @@ public class CmdTrain extends Cmd {
 
 	public boolean executeCommand() {
 
-		MLMethod method = obtainMethod();
+		this.kfold = obtainCross();
 		NeuralDataSet trainingSet = obtainTrainingSet();
+		MLMethod method = obtainMethod();		
 		MLTrain trainer = createTrainer(method, trainingSet);
 
 		performTraining(trainer, method, trainingSet);

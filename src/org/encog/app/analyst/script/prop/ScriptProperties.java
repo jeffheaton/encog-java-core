@@ -52,6 +52,7 @@ public class ScriptProperties {
 	public static final String ML_TRAIN_type = "ML:TRAIN_type";
 	public static final String ML_TRAIN_arguments = "ML:TRAIN_arguments";
 	public static final String ML_TRAIN_targetError = "ML:TRAIN_targetError";
+	public static final String ML_TRAIN_cross = "ML:TRAIN_cross";
 	public static final String SERIES_CONFIG_lead = "SERIES:CONFIG_lead";
 	public static final String SERIES_CONFIG_lag = "SERIES:CONFIG_lag";
 	public static final String SERIES_CONFIG_includeTarget = "SERIES:CONFIG_includeTarget";

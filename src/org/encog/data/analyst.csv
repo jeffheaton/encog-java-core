@@ -42,3 +42,4 @@ ML:CONFIG,architecture,string
 ML:TRAIN,type,string
 ML:TRAIN,arguments,string
 ML:TRAIN,targetError,real
+ML:TRAIN,cross,string
