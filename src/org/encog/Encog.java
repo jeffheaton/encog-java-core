@@ -23,10 +23,14 @@
  */
 package org.encog;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.encog.engine.concurrency.EngineConcurrency;
+import org.encog.plugin.EncogPluginBase;
 
 /**
  * Main Encog class, does little more than provide version information. Also
@@ -73,6 +77,8 @@ public final class Encog {
 	 * The instance.
 	 */
 	private static Encog instance;
+	
+	private Map<Integer,List<EncogPluginBase>> plugins = new HashMap<Integer,List<EncogPluginBase>>();
 
 	/**
 	 * Get the instance to the singleton.
@@ -118,5 +124,40 @@ public final class Encog {
 		EngineConcurrency.getInstance().shutdown(10000);
 	}
 
+	public void registerPlugin(EncogPluginBase plugin) {
+		int type = plugin.getPluginType();
+		
+		// find or create the list
+		List<EncogPluginBase> list;
+		if( this.plugins.containsKey(type) ) {
+			list = this.plugins.get(type);
+		} else {
+			list = new ArrayList<EncogPluginBase>();
+			this.plugins.put(type, list);
+		}
+		
+		// does this plugin exist already?
+		boolean dontAdd = false;
+		
+		for(EncogPluginBase p: list) {
+			if(p.getPluginName().equalsIgnoreCase(plugin.getPluginName())) {
+				// did we just find a newer version?
+				if( p.getPluginVersion()<plugin.getPluginVersion()) {
+					list.remove(p);
+				} else {
+					dontAdd = true;
+				}
+			}
+		}
+		
+		// add the plugin
+		if( !dontAdd ) {
+			list.add(plugin);
+		}
+	}
+	
+	public void registerPluginDir(File dir) {
+		
+	}
 
 }
