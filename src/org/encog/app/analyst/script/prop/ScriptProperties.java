@@ -228,4 +228,17 @@ public class ScriptProperties {
 		result.append("]");
 		return result.toString();
 	}
+
+	public static String toDots(String str) {
+		int index1 = str.indexOf(':');
+		if( index1==-1)
+			return null;
+		int index2 = str.indexOf('_');
+		if( index2==-1)
+			return null;
+		String section = str.substring(0,index1);
+		String subSection = str.substring(index1+1,index2);
+		String name = str.substring(index2+1);
+		return section+"."+subSection+"."+name;
+	}
 }

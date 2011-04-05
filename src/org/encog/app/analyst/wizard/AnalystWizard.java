@@ -44,12 +44,27 @@ public class AnalystWizard {
 	public static final String FILE_RANDOM = "FILE_RANDOMIZE";
 	public static final String FILE_TRAIN = "FILE_TRAIN";
 	public static final String FILE_EVAL = "FILE_EVAL";
+	public static final String FILE_EVAL_NORM = "FILE_EVAL_NORM";
+	public static final String FILE_EVAL_SERIES = "FILE_EVAL_SERIES";
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
 	public static final String FILE_ML = "FILE_ML";
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
 	public static final String FILE_SERIES = "FILE_SERIES";
 	public static final String FILE_BALANCE = "FILE_BALANCE";
-
+	
+	private String filenameRaw;
+	private String filenameNorm;
+	private String filenameRandom;
+	private String filenameTrain;
+	private String filenameEval;
+	private String filenameEvalNorm;
+	private String filenameEvalSeries;
+	private String filenameTrainSet;
+	private String filenameML;
+	private String filenameOutput;
+	private String filenameSeries;
+	private String filenameBalance;
+	
 	private AnalystScript script;
 	private EncogAnalyst analyst;
 	private WizardMethodType methodType;
@@ -77,49 +92,38 @@ public class AnalystWizard {
 		this.lagWindowSize = 0;
 		this.includeTargetField = false;
 	}
-
-	private void generateSettings(File file) {
-		String train;
-		this.script.getProperties().setFilename(AnalystWizard.FILE_RAW,
-				file.toString());
-		this.script.getProperties().setFilename(AnalystWizard.FILE_NORMALIZE,
-				FileUtil.addFilenameBase(file, "_norm").toString());
-
-		if (!this.timeSeries) {
-			if (this.taskRandomize) {
-				this.script.getProperties().setFilename(
-						AnalystWizard.FILE_RANDOM,
-						FileUtil.addFilenameBase(file, "_random").toString());
-			}
-		} else {
-			this.script.getProperties().setFilename(AnalystWizard.FILE_SERIES,
-					FileUtil.addFilenameBase(file, "_series").toString());
-		}
-
-		this.script.getProperties().setFilename(AnalystWizard.FILE_OUTPUT,
-				FileUtil.addFilenameBase(file, "_output").toString());
-
-		this.script.getProperties().setFilename(AnalystWizard.FILE_TRAIN,
-				train = FileUtil.addFilenameBase(file, "_train").toString());
-
-		if (this.taskSegregate) {
-			this.script.getProperties().setFilename(AnalystWizard.FILE_EVAL,
-					FileUtil.addFilenameBase(file, "_eval").toString());
-		}
-		this.script.getProperties().setFilename(AnalystWizard.FILE_TRAINSET,
-				FileUtil.forceExtension(train, "egb"));
-
-		if (this.egName == null) {
-			egName = new File(FileUtil.forceExtension(file.toString(), "eg"));
-		}
-
-		this.script.getProperties().setFilename(AnalystWizard.FILE_ML,
-				egName.toString());
+	
+	private void generateFilenames(File rawFile) {
+		this.filenameRaw = rawFile.getName();
+		this.filenameNorm = FileUtil.addFilenameBase(rawFile, "_norm").toString();
+		this.filenameRandom = FileUtil.addFilenameBase(rawFile, "_random").toString();
+		this.filenameTrain = FileUtil.addFilenameBase(rawFile, "_train").toString();
+		this.filenameEval = FileUtil.addFilenameBase(rawFile, "_eval").toString();
+		this.filenameEvalNorm = FileUtil.addFilenameBase(rawFile, "_eval_norm").toString();
+		this.filenameEvalSeries = FileUtil.addFilenameBase(rawFile, "_eval_series").toString();
+		this.filenameTrainSet = FileUtil.forceExtension(this.filenameTrain, "egb");
+		this.filenameML = FileUtil.forceExtension(this.filenameTrain, "eg");
+		this.filenameOutput = FileUtil.addFilenameBase(rawFile, "_output").toString();
+		this.filenameSeries = FileUtil.addFilenameBase(rawFile, "_series").toString();
+		this.filenameBalance = FileUtil.addFilenameBase(rawFile, "_balance").toString();
 		
-		if( !this.timeSeries && this.taskBalance ) {
-			this.script.getProperties().setFilename(AnalystWizard.FILE_BALANCE,
-					FileUtil.addFilenameBase(file, "_balance").toString());
-		}
+		ScriptProperties p = this.script.getProperties();
+		
+		p.setFilename(FILE_RAW,this.filenameRaw);
+		p.setFilename(FILE_NORMALIZE,this.filenameNorm);
+		p.setFilename(FILE_RANDOM,this.filenameRandom);
+		p.setFilename(FILE_TRAIN,this.filenameTrain);
+		p.setFilename(FILE_EVAL,this.filenameEval);
+		p.setFilename(FILE_EVAL_NORM,this.filenameEvalNorm);
+		p.setFilename(FILE_EVAL_SERIES,this.filenameEvalSeries);
+		p.setFilename(FILE_TRAINSET,this.filenameTrainSet);
+		p.setFilename(FILE_ML,this.filenameML);
+		p.setFilename(FILE_OUTPUT,this.filenameOutput);
+		p.setFilename(FILE_SERIES,this.filenameSeries);
+		p.setFilename(FILE_BALANCE,this.filenameBalance);
+	}
+
+	private void generateSettings() {
 
 		String target;
 
@@ -393,6 +397,16 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
 				0.01);
 	}
+	
+	private String createSet(String setTarget, String setSource) {
+		StringBuilder result = new StringBuilder();
+		result.append("set ");
+		result.append(ScriptProperties.toDots(setTarget));
+		result.append("=\"");
+		result.append(setSource);
+		result.append("\"");
+		return result.toString();
+	}
 
 	public void generateTasks() {
 		AnalystTask task1 = new AnalystTask(EncogAnalyst.TASK_FULL);
@@ -417,6 +431,11 @@ public class AnalystWizard {
 		task1.getLines().add("generate");
 		task1.getLines().add("create");
 		task1.getLines().add("train");
+		if( this.timeSeries ) {
+			task1.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_sourceFile,AnalystWizard.FILE_EVAL));
+			task1.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_targetFile,AnalystWizard.FILE_EVAL_NORM));
+			task1.getLines().add("normalize");
+		}
 		task1.getLines().add("evaluate");
 
 		AnalystTask task2 = new AnalystTask("task-generate");
@@ -463,7 +482,8 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
 
-		this.generateSettings(analyzeFile);
+		this.generateFilenames(analyzeFile);
+		this.generateSettings();
 		analyst.download();
 
 		wizard(analyzeFile, b, format);
@@ -591,16 +611,17 @@ public class AnalystWizard {
 
 		this.timeSeries = (this.lagWindowSize > 0 || this.leadWindowSize > 0);
 
-		generateTasks();
+		
 		determineClassification();
-		generateSettings(analyzeFile);
+		this.generateFilenames(analyzeFile);
+		generateSettings();
 		this.analyst.analyze(analyzeFile, b, format);
 		generateNormalizedFields(analyzeFile);
 		generateSegregate(analyzeFile);
 
 		generateGenerate(analyzeFile);
 		generateTime(analyzeFile);
-
+		generateTasks();
 	}
 
 	/**

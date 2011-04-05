@@ -175,7 +175,7 @@ public class ScriptLoad {
 	private void validateProperty(String section, String subSection, String name, String value) {
 		PropertyEntry entry = PropertyConstraints.getInstance().getEntry(section,subSection,name);
 		if( entry==null ) {
-			throw new QuantError("Unknown property: " + PropertyEntry.dotForm(section,subSection,name));
+			throw new AnalystError("Unknown property: " + PropertyEntry.dotForm(section,subSection,name));
 		}
 		entry.validate(section,subSection,name,value);
 	}
