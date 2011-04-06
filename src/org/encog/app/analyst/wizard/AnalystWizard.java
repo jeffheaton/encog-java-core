@@ -47,11 +47,9 @@ public class AnalystWizard {
 	public static final String FILE_TRAIN = "FILE_TRAIN";
 	public static final String FILE_EVAL = "FILE_EVAL";
 	public static final String FILE_EVAL_NORM = "FILE_EVAL_NORM";
-	public static final String FILE_EVAL_SERIES = "FILE_EVAL_SERIES";
 	public static final String FILE_TRAINSET = "FILE_TRAINSET";
 	public static final String FILE_ML = "FILE_ML";
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
-	public static final String FILE_SERIES = "FILE_SERIES";
 	public static final String FILE_BALANCE = "FILE_BALANCE";
 	
 	private String filenameRaw;
@@ -117,11 +115,9 @@ public class AnalystWizard {
 		p.setFilename(FILE_TRAIN,this.filenameTrain);
 		p.setFilename(FILE_EVAL,this.filenameEval);
 		p.setFilename(FILE_EVAL_NORM,this.filenameEvalNorm);
-		p.setFilename(FILE_EVAL_SERIES,this.filenameEvalSeries);
 		p.setFilename(FILE_TRAINSET,this.filenameTrainSet);
 		p.setFilename(FILE_ML,this.filenameML);
 		p.setFilename(FILE_OUTPUT,this.filenameOutput);
-		p.setFilename(FILE_SERIES,this.filenameSeries);
 		p.setFilename(FILE_BALANCE,this.filenameBalance);
 	}
 
@@ -168,15 +164,6 @@ public class AnalystWizard {
 				ScriptProperties.NORMALIZE_CONFIG_targetFile,
 				target = AnalystWizard.FILE_NORMALIZE);
 
-		// series
-		if (this.timeSeries) {
-			this.script.getProperties().setProperty(
-					ScriptProperties.SERIES_CONFIG_sourceFile, target);
-			this.script.getProperties().setProperty(
-					ScriptProperties.SERIES_CONFIG_targetFile,
-					target = AnalystWizard.FILE_SERIES);
-		}
-
 		// generate
 		this.script.getProperties().setProperty(
 				ScriptProperties.GENERATE_CONFIG_sourceFile, target);
@@ -194,14 +181,10 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_outputFile,
 				AnalystWizard.FILE_OUTPUT);
-		if (this.taskSegregate) {
-			this.script.getProperties().setProperty(
-					ScriptProperties.ML_CONFIG_evalFile,
-					AnalystWizard.FILE_EVAL);
-		} else {
-			this.script.getProperties().setProperty(
-					ScriptProperties.ML_CONFIG_evalFile, target);
-		}
+		
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_evalFile,
+				AnalystWizard.FILE_EVAL_NORM);
 
 		// other
 		script.getProperties().setProperty(
@@ -315,7 +298,20 @@ public class AnalystWizard {
 				this.script.getProperties().setProperty(ScriptProperties.BALANCE_CONFIG_countPer, countPer);
 			}
 		}
-
+		
+		// now that the target field has been determined, set the analyst fields
+		AnalystField af = null;
+		for(AnalystField field : this.analyst.getScript().getNormalize().getNormalizedFields()) {
+			if( field.getAction()!=NormalizationAction.Ignore && field.getName().equalsIgnoreCase(this.targetField) ) {
+				if( af==null || af.getTimeSlice() < af.getTimeSlice()) {
+					af = field;
+				}
+			}
+		}
+		
+		if( af!= null ) {
+			af.setOutput(true);
+		}
 	}
 
 	private void generateGenerate(File file) {
@@ -434,11 +430,11 @@ public class AnalystWizard {
 		task1.getLines().add("generate");
 		task1.getLines().add("create");
 		task1.getLines().add("train");
-		if( this.timeSeries ) {
-			task1.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_sourceFile,AnalystWizard.FILE_EVAL));
-			task1.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_targetFile,AnalystWizard.FILE_EVAL_NORM));
-			task1.getLines().add("normalize");
-		}
+		
+		task1.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_sourceFile,AnalystWizard.FILE_EVAL));
+		task1.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_targetFile,AnalystWizard.FILE_EVAL_NORM));
+		task1.getLines().add("normalize");
+		
 		task1.getLines().add("evaluate");
 
 		AnalystTask task2 = new AnalystTask("task-generate");
