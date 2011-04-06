@@ -3,6 +3,8 @@ package org.encog.app.analyst.commands;
 import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.evaluate.AnalystNormalizeCSV;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.normalize.NormalizationStats;
@@ -42,15 +44,12 @@ public class CmdNormalize extends Cmd {
 		CSVFormat outputFormat = this.getScript().determineOutputFormat();
 
 		// prepare to normalize
-		NormalizeCSV norm = new NormalizeCSV();
+		AnalystNormalizeCSV norm = new AnalystNormalizeCSV();
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));
-		NormalizedField[] normFields = getScript().getNormalize()
-				.getNormalizedFields();
-		NormalizationStats stats = new NormalizationStats(normFields);
 
 		boolean headers = getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers, inputFormat, stats);
+		norm.analyze(sourceFile, headers, inputFormat, this.getAnalyst());
 		norm.setOutputFormat(outputFormat);
 		norm.setProduceOutputHeaders(true);
 		norm.normalize(targetFile);

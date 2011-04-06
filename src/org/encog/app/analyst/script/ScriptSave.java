@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
@@ -153,7 +154,7 @@ public class ScriptSave {
 		out.addColumn("high");
 		out.addColumn("low");
 		out.writeLine();
-		for (NormalizedField field : this.script.getNormalize()
+		for (AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
 			out.addColumn(field.getName());
 			switch (field.getAction()) {

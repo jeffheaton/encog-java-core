@@ -9,6 +9,7 @@ import org.encog.app.analyst.AnalystGoal;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
@@ -208,7 +209,7 @@ public class AnalystWizard {
 	}
 
 	private void generateNormalizedFields(File file) {
-		NormalizedField[] norm = new NormalizedField[this.script.getFields().length];
+		AnalystField[] norm = new AnalystField[this.script.getFields().length];
 		DataField[] dataFields = script.getFields();
 
 		for (int i = 0; i < this.script.getFields().length; i++) {
@@ -219,9 +220,9 @@ public class AnalystWizard {
 			if ((f.isInteger() || f.isReal()) && !f.isClass()) {
 				action = NormalizationAction.Normalize;
 				if (this.range == NormalizeRange.NegOne2One)
-					norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+					norm[i] = new AnalystField(f.getName(), action, 1, -1);
 				else
-					norm[i] = new NormalizedField(f.getName(), action, 1, 0);
+					norm[i] = new AnalystField(f.getName(), action, 1, 0);
 				norm[i].setActualHigh(f.getMax());
 				norm[i].setActualLow(f.getMin());
 			} else if (f.isClass()) {
@@ -233,12 +234,12 @@ public class AnalystWizard {
 					action = NormalizationAction.OneOf;
 
 				if (this.range == NormalizeRange.NegOne2One)
-					norm[i] = new NormalizedField(f.getName(), action, 1, -1);
+					norm[i] = new AnalystField(f.getName(), action, 1, -1);
 				else
-					norm[i] = new NormalizedField(f.getName(), action, 1, 0);
+					norm[i] = new AnalystField(f.getName(), action, 1, 0);
 			} else {
 				action = NormalizationAction.Ignore;
-				norm[i] = new NormalizedField(action, f.getName());
+				norm[i] = new AnalystField(action, f.getName());
 			}
 		}
 		this.script.getNormalize().setNormalizedFields(norm);
@@ -258,7 +259,7 @@ public class AnalystWizard {
 	}
 
 	private void determineTargetField() {
-		NormalizedField[] fields = this.script.getNormalize()
+		AnalystField[] fields = this.script.getNormalize()
 				.getNormalizedFields();
 
 		if (this.targetField.trim().length() == 0) {
@@ -317,7 +318,7 @@ public class AnalystWizard {
 
 	private void generateGenerate(File file) {
 		determineTargetField();
-		NormalizedField targetField = this.script
+		AnalystField targetField = this.script
 				.findNormalizedField(this.targetField);
 
 		if (targetField == null) {

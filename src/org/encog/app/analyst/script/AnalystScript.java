@@ -8,12 +8,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.encog.Encog;
 import org.encog.app.analyst.AnalystFileFormat;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.normalize.AnalystNormalize;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregate;
 import org.encog.app.analyst.script.task.AnalystTask;
-import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 
 /**
@@ -148,8 +149,8 @@ public class AnalystScript {
 		return getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat);
 	}
 
-	public NormalizedField findNormalizedField(String name) {
-		for(NormalizedField field: this.getNormalize().getNormalizedFields()) {
+	public AnalystField findNormalizedField(String name) {
+		for(AnalystField field: this.getNormalize().getNormalizedFields()) {
 			if( field.getName().equalsIgnoreCase(name))
 				return field;
 		}
@@ -180,6 +181,10 @@ public class AnalystScript {
 				return result;
 		}
 		return -1;
+	}
+
+	public int getPrecision() {
+		return Encog.DEFAULT_PRECISION;
 	}
 	
 	

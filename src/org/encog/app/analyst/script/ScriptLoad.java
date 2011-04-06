@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.encog.app.analyst.AnalystError;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
@@ -131,7 +132,7 @@ public class ScriptLoad {
 	}
 
 	private void handleNormalizeRange(EncogFileSection section) {
-		List<NormalizedField> nfs = new ArrayList<NormalizedField>();
+		List<AnalystField> nfs = new ArrayList<AnalystField>();
 		boolean first = true;
 		for (String line : section.getLines()) {
 			if (!first) {
@@ -156,14 +157,14 @@ public class ScriptLoad {
 					des = NormalizationAction.OneOf;
 				}
 
-				NormalizedField nf = new NormalizedField(name, des, high, low);
+				AnalystField nf = new AnalystField(name, des, high, low);
 				nfs.add(nf);
 			} else {
 				first = false;
 			}
 		}
 
-		NormalizedField[] array = new NormalizedField[nfs.size()];
+		AnalystField[] array = new AnalystField[nfs.size()];
 		for (int i = 0; i < array.length; i++) {
 			array[i] = nfs.get(i);
 		}

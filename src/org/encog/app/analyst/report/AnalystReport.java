@@ -7,6 +7,7 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.DataField;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.engine.util.Format;
@@ -94,7 +95,7 @@ public class AnalystReport {
 		report.header("Low");
 		report.endRow();
 
-		for (NormalizedField item : this.analyst.getScript().getNormalize()
+		for (AnalystField item : this.analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 			report.beginRow();
 			report.cell(item.getName());

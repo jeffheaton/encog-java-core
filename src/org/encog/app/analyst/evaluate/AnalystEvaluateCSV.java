@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
@@ -136,10 +137,10 @@ public class AnalystEvaluateCSV extends BasicFile {
 		NeuralData output = null;
 		
 		NeuralData input = new BasicNeuralData(method.getInputCount());
-		NormalizedField[] fields = analyst.getScript().getNormalize()
+		AnalystField[] fields = analyst.getScript().getNormalize()
 				.getNormalizedFields();
 		
-		NormalizedField targetField = analyst.getScript().findNormalizedField(targetFieldName);
+		AnalystField targetField = analyst.getScript().findNormalizedField(targetFieldName);
 
 		PrintWriter tw = this.prepareOutputFile(outputFile, analyst.getScript().getNormalize().countActiveFields()-1, 1);
 		
@@ -155,7 +156,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 			// build the input
 			for (int normFieldNumber = 0; normFieldNumber < fields.length; normFieldNumber++) {
-				NormalizedField field = fields[normFieldNumber];
+				AnalystField field = fields[normFieldNumber];
 
 				int columnsNeeded = field.getColumnsNeeded();
 				String str = row.getData()[inputIndex];
