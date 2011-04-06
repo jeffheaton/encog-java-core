@@ -150,6 +150,8 @@ public class ScriptSave {
 
 		out.addSubSection("RANGE");
 		out.addColumn("name");
+		out.addColumn("io");
+		out.addColumn("timeSlice");
 		out.addColumn("action");
 		out.addColumn("high");
 		out.addColumn("low");
@@ -157,6 +159,8 @@ public class ScriptSave {
 		for (AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
 			out.addColumn(field.getName());
+			out.addColumn(field.isInput()?"input":"output");
+			out.addColumn(field.getTimeSlice());
 			switch (field.getAction()) {
 			case Ignore:
 				out.addColumn("ignore");

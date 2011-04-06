@@ -2,6 +2,7 @@ package org.encog.app.analyst.wizard;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
@@ -209,7 +210,8 @@ public class AnalystWizard {
 	}
 
 	private void generateNormalizedFields(File file) {
-		AnalystField[] norm = new AnalystField[this.script.getFields().length];
+		List<AnalystField> norm = this.script.getNormalize().getNormalizedFields();
+		norm.clear();
 		DataField[] dataFields = script.getFields();
 
 		for (int i = 0; i < this.script.getFields().length; i++) {
@@ -219,12 +221,13 @@ public class AnalystWizard {
 
 			if ((f.isInteger() || f.isReal()) && !f.isClass()) {
 				action = NormalizationAction.Normalize;
+				AnalystField af;
 				if (this.range == NormalizeRange.NegOne2One)
-					norm[i] = new AnalystField(f.getName(), action, 1, -1);
+					norm.add( af = new AnalystField(f.getName(), action, 1, -1) );
 				else
-					norm[i] = new AnalystField(f.getName(), action, 1, 0);
-				norm[i].setActualHigh(f.getMax());
-				norm[i].setActualLow(f.getMin());
+					norm.add( af = new AnalystField(f.getName(), action, 1, 0) );
+				af.setActualHigh(f.getMax());
+				af.setActualLow(f.getMin());
 			} else if (f.isClass()) {
 				if (isLast && this.directClassification) {
 					action = NormalizationAction.SingleField;
@@ -234,15 +237,15 @@ public class AnalystWizard {
 					action = NormalizationAction.OneOf;
 
 				if (this.range == NormalizeRange.NegOne2One)
-					norm[i] = new AnalystField(f.getName(), action, 1, -1);
+					norm.add( new AnalystField(f.getName(), action, 1, -1) );
 				else
-					norm[i] = new AnalystField(f.getName(), action, 1, 0);
+					norm.add( new AnalystField(f.getName(), action, 1, 0) );
 			} else {
 				action = NormalizationAction.Ignore;
-				norm[i] = new AnalystField(action, f.getName());
+				norm.add( new AnalystField(action, f.getName()) );
 			}
 		}
-		this.script.getNormalize().setNormalizedFields(norm);
+		
 		this.script.getNormalize().init(this.script);
 	}
 
@@ -259,30 +262,29 @@ public class AnalystWizard {
 	}
 
 	private void determineTargetField() {
-		AnalystField[] fields = this.script.getNormalize()
-				.getNormalizedFields();
+		List<AnalystField> fields = this.script.getNormalize().getNormalizedFields();
 
 		if (this.targetField.trim().length() == 0) {
 			boolean success = false;
 
 			if (this.goal == AnalystGoal.Classification) {
 				// first try to the last classify field
-				for (int i = 0; i < fields.length; i++) {
-					DataField df = this.script.findDataField(fields[i]
+				for(AnalystField field : fields) {
+					DataField df = this.script.findDataField(field
 							.getName());
-					if (fields[i].getAction().isClassify() && df.isClass()) {
-						this.targetField = fields[i].getName();
+					if (field.getAction().isClassify() && df.isClass()) {
+						this.targetField = field.getName();
 						success = true;
 					}
 				}
 			} else {
 
 				// otherwise, just return the last regression field
-				for (int i = 0; i < fields.length; i++) {
-					DataField df = this.script.findDataField(fields[i]
+				for( AnalystField field: fields) {
+					DataField df = this.script.findDataField(field
 							.getName());
 					if (!df.isClass() && (df.isReal() || df.isInteger())) {
-						this.targetField = fields[i].getName();
+						this.targetField = field.getName();
 						success = true;
 					}
 				}

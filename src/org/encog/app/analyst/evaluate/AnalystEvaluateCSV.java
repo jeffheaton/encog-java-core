@@ -137,8 +137,6 @@ public class AnalystEvaluateCSV extends BasicFile {
 		NeuralData output = null;
 		
 		NeuralData input = new BasicNeuralData(method.getInputCount());
-		AnalystField[] fields = analyst.getScript().getNormalize()
-				.getNormalizedFields();
 		
 		AnalystField targetField = analyst.getScript().findNormalizedField(targetFieldName);
 
@@ -155,9 +153,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 			String idealClass = "";
 
 			// build the input
-			for (int normFieldNumber = 0; normFieldNumber < fields.length; normFieldNumber++) {
-				AnalystField field = fields[normFieldNumber];
-
+			for(AnalystField field : analyst.getScript().getNormalize().getNormalizedFields()) {
 				int columnsNeeded = field.getColumnsNeeded();
 				String str = row.getData()[inputIndex];
 

@@ -132,15 +132,17 @@ public class ScriptLoad {
 	}
 
 	private void handleNormalizeRange(EncogFileSection section) {
-		List<AnalystField> nfs = new ArrayList<AnalystField>();
+		this.script.getNormalize().getNormalizedFields().clear();
 		boolean first = true;
 		for (String line : section.getLines()) {
 			if (!first) {
 				List<String> cols = EncogFileSection.splitColumns(line);
 				String name = cols.get(0);
-				String action = cols.get(1);
-				double high = Double.parseDouble(cols.get(2));
-				double low = Double.parseDouble(cols.get(3));
+				boolean isOutput = cols.get(1).toLowerCase().equals("true");
+				int timeSlice = Integer.parseInt(cols.get(2));
+				String action = cols.get(3);
+				double high = Double.parseDouble(cols.get(4));
+				double low = Double.parseDouble(cols.get(5));
 
 				NormalizationAction des = null;
 				if (action.equals("range")) {
@@ -158,18 +160,14 @@ public class ScriptLoad {
 				}
 
 				AnalystField nf = new AnalystField(name, des, high, low);
-				nfs.add(nf);
+				nf.setTimeSlice(timeSlice);
+				nf.setOutput(isOutput);
+				this.script.getNormalize().getNormalizedFields().add(nf);
 			} else {
 				first = false;
 			}
 		}
 
-		AnalystField[] array = new AnalystField[nfs.size()];
-		for (int i = 0; i < array.length; i++) {
-			array[i] = nfs.get(i);
-		}
-
-		this.script.getNormalize().setNormalizedFields(array);
 	}
 	
 	

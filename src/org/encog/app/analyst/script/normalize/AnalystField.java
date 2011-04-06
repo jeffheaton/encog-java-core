@@ -64,6 +64,9 @@ public class AnalystField {
 	private Map<String, Integer> lookup = new HashMap<String, Integer>();
 	
 	private EncogAnalyst analyst;
+	
+	private boolean output;
+	private int timeSlice;
 
 	/**
 	 * Construct an object.
@@ -523,5 +526,33 @@ public class AnalystField {
 		result.append("]");
 		return result.toString();
 	}
+	
+	public boolean isInput() {
+		return !this.output;
+	}
+	
+	public boolean isOutput() {
+		return this.output;
+	}
+	
+	public void setOutput(boolean b) {
+		this.output = b;
+	}
+
+	/**
+	 * @return the timeSlice
+	 */
+	public int getTimeSlice() {
+		return timeSlice;
+	}
+
+	/**
+	 * @param timeSlice the timeSlice to set
+	 */
+	public void setTimeSlice(int timeSlice) {
+		this.timeSlice = timeSlice;
+	}
+	
+	
 
 }

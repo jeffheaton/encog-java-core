@@ -1,5 +1,8 @@
 package org.encog.app.analyst.script.normalize;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
@@ -14,21 +17,13 @@ import org.encog.app.quant.normalize.NormalizationAction;
  */
 public class AnalystNormalize {
 
-	private AnalystField[] normalizedFields;
+	private final List<AnalystField> normalizedFields = new ArrayList<AnalystField>();
 
 	/**
 	 * @return the normalizedFields
 	 */
-	public AnalystField[] getNormalizedFields() {
+	public List<AnalystField> getNormalizedFields() {
 		return normalizedFields;
-	}
-
-	/**
-	 * @param normalizedFields
-	 *            the normalizedFields to set
-	 */
-	public void setNormalizedFields(AnalystField[] normalizedFields) {
-		this.normalizedFields = normalizedFields;
 	}
 
 	public int calculateInputColumns(AnalystField targetField) {
@@ -78,8 +73,8 @@ public class AnalystNormalize {
 
 	public int countActiveFields() {
 		int result = 0;
-		for (int i = 0; i < this.normalizedFields.length; i++) {
-			if (this.normalizedFields[i].getAction() != NormalizationAction.Ignore)
+		for( AnalystField field : this.normalizedFields ) {
+			if (field.getAction() != NormalizationAction.Ignore)
 				result++;
 		}
 		return result;
