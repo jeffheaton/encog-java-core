@@ -8,6 +8,7 @@ import java.io.PrintWriter;
 import org.encog.EncogError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.normalize.AnalystField;
+import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.normalize.NormalizationAction;
@@ -51,7 +52,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 			int needed = stat.getColumnsNeeded();
 			
 			for(int i=0;i<needed;i++) {
-				line.append(this.tagColumn(stat.getName(), i, 0, needed>1));
+				line.append(CSVHeaders.tagColumn(stat.getName(), i, 0, needed>1));
 			}
 		}
 		tw.println(line.toString());
@@ -153,37 +154,6 @@ public class AnalystNormalizeCSV extends BasicFile {
 		{
 			field.init(this.analyst);
 		}
-	}
-	
-	public String tagColumn(String name, int part, int timeSlice, boolean multiPart) {
-		StringBuilder result = new StringBuilder();
-		result.append(name);
-		
-		// is there any suffix?
-		if( multiPart || timeSlice!=0 ) {
-			result.append('(');
-			
-			// is there a part?
-			if( multiPart ) {
-				result.append('p');
-				result.append(part);
-			}
-			
-			// is there a timeslice?
-			if( timeSlice!=0) {
-				if( multiPart )
-					result.append(',');
-				result.append('t');
-				if(timeSlice>0)
-					result.append('+');
-				result.append(timeSlice);
-				
-			}
-			
-			
-			result.append(')');
-		}
-		return result.toString();
 	}
 
 }

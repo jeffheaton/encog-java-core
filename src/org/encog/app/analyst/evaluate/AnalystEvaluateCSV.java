@@ -14,7 +14,6 @@ import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
 import org.encog.app.quant.normalize.ClassItem;
-import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;

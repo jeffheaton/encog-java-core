@@ -61,24 +61,43 @@ public class CSVHeaders {
 	public String getBaseHeader(int index) { 
 		String result = this.headerList.get(index);
 		
-		int loc = result.indexOf('-');
+		int loc = result.indexOf('(');
 		if( loc!=-1 ) {
 			result = result.substring(0,loc);
 		}
 		
-		loc = result.indexOf('(');
-		if( loc!=-1 ) {
-			result = result.substring(0,loc);
-		}
-		
-		if( result.toLowerCase().startsWith("input:")) {
-			result = result.substring(6);
-		}
-		
-		if( result.toLowerCase().startsWith("predict:")) {
-			result = result.substring(8);
-		}
-		
-		return result;
+		return result.trim();
 	}
+	
+	public static String tagColumn(String name, int part, int timeSlice, boolean multiPart) {
+		StringBuilder result = new StringBuilder();
+		result.append(name);
+		
+		// is there any suffix?
+		if( multiPart || timeSlice!=0 ) {
+			result.append('(');
+			
+			// is there a part?
+			if( multiPart ) {
+				result.append('p');
+				result.append(part);
+			}
+			
+			// is there a timeslice?
+			if( timeSlice!=0) {
+				if( multiPart )
+					result.append(',');
+				result.append('t');
+				if(timeSlice>0)
+					result.append('+');
+				result.append(timeSlice);
+				
+			}
+			
+			
+			result.append(')');
+		}
+		return result.toString();
+	}
+
 }
