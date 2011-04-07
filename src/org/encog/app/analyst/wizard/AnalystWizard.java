@@ -280,8 +280,6 @@ public class AnalystWizard {
 		}
 
 		this.script.getProperties().setProperty(
-				ScriptProperties.DATA_CONFIG_targetField, this.targetField);
-		this.script.getProperties().setProperty(
 				ScriptProperties.DATA_CONFIG_goal, this.goal);
 		
 		if( !this.timeSeries && this.taskBalance ) {

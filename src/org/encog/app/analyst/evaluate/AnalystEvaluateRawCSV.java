@@ -4,13 +4,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.normalize.AnalystField;
-import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
@@ -122,7 +119,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 	}
 
 	public void process(File outputFile, EncogAnalyst analyst,
-			MLRegression method, String targetFieldName) {
+			MLRegression method) {
 
 		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 				this.isExpectInputHeaders(), this.getInputFormat());

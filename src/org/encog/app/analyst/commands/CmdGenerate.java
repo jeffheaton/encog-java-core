@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.util.csv.CSVFormat;
@@ -25,19 +26,13 @@ public class CmdGenerate extends Cmd {
 
 	public int[] determineInputFields(CSVHeaders headerList) {
 		List<Integer> fields = new ArrayList<Integer>();
-		String targetField = this.getScript().getProperties()
-				.getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
 
 		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
 			String baseName = headerList.getBaseHeader(currentIndex);
-			if( headerList.isSeries(currentIndex) ) {
-				if( headerList.isSeriesInput(currentIndex)) {
-					fields.add(currentIndex);
-				}
-			} else {
-				if( !baseName.equalsIgnoreCase(targetField) ) {
-					fields.add(currentIndex);
-				}
+			AnalystField field = this.getAnalyst().getScript().findNormalizedField(baseName);
+			
+			if( field.isInput() ) {
+				fields.add(currentIndex);
 			}
 		}
 
@@ -52,19 +47,13 @@ public class CmdGenerate extends Cmd {
 
 	public int[] determineIdealFields(CSVHeaders headerList) {
 		List<Integer> fields = new ArrayList<Integer>();
-		String targetField = this.getScript().getProperties()
-				.getPropertyString(ScriptProperties.DATA_CONFIG_targetField);
 
 		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
 			String baseName = headerList.getBaseHeader(currentIndex);
-			if( headerList.isSeries(currentIndex) ) {
-				if( headerList.isSeriesPredict(currentIndex)) {
-					fields.add(currentIndex);
-				}
-			} else {
-				if( baseName.equalsIgnoreCase(targetField) ) {
-					fields.add(currentIndex);
-				}
+			AnalystField field = this.getAnalyst().getScript().findNormalizedField(baseName);
+			
+			if( field.isOutput() ) {
+				fields.add(currentIndex);
 			}
 		}
 

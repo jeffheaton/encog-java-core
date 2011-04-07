@@ -48,9 +48,6 @@ public class CmdEvaluate extends Cmd {
 
 		File outputFile = getAnalyst().getScript().resolveFilename(outputID);
 
-		String targetField = getProp().getPropertyString(
-				ScriptProperties.DATA_CONFIG_targetField);
-
 		MLRegression method = (MLRegression) EncogDirectoryPersistence
 				.loadObject(resourceFile);
 
@@ -65,7 +62,7 @@ public class CmdEvaluate extends Cmd {
 				headers,
 				getProp().getPropertyCSVFormat(
 						ScriptProperties.SETUP_CONFIG_csvFormat));
-		eval.process(outputFile, getAnalyst(), method, targetField);
+		eval.process(outputFile, getAnalyst(), method);
 		getAnalyst().setCurrentQuantTask(null);
 		this.classCorrect = eval.getClassCorrect();
 		this.classCount = eval.getClassCount();

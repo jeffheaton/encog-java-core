@@ -12,7 +12,6 @@ import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.normalize.ClassItem;
 import org.encog.app.quant.normalize.NormalizationAction;
-import org.encog.app.quant.normalize.NormalizationStats;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.csv.CSVFormat;
@@ -471,7 +470,6 @@ public class AnalystField {
 	}
 
 	public boolean isClassify() {
-		// TODO Auto-generated method stub
 		return this.action==NormalizationAction.Equilateral 
 			|| this.action==NormalizationAction.OneOf
 			|| this.action==NormalizationAction.SingleField;
@@ -536,7 +534,16 @@ public class AnalystField {
 	public boolean isIgnored() {
 		return this.action == NormalizationAction.Ignore;
 	}
-	
-	
 
+	public void addFieldHeading(StringBuilder line, String prefix,
+			CSVFormat format) {
+
+		BasicFile.appendSeparator(line, format);
+		line.append('\"');
+		if( prefix!=null )
+			line.append(prefix);
+		line.append(name);
+		line.append('\"');
+		
+	}
 }

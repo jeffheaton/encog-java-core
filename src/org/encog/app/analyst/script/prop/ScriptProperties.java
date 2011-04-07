@@ -29,7 +29,6 @@ public class ScriptProperties {
 	public static final String SETUP_CONFIG_allowedClasses = "SETUP:CONFIG_allowedClasses";
 	public static final String SETUP_CONFIG_inputHeaders = "SETUP:CONFIG_inputHeaders";
 	public static final String SETUP_CONFIG_csvFormat = "SETUP:CONFIG_csvFormat";
-	public static final String DATA_CONFIG_targetField = "DATA:CONFIG_targetField";
 	public static final String DATA_CONFIG_goal = "DATA:CONFIG_goal";
 	public static final String NORMALIZE_CONFIG_sourceFile = "NORMALIZE:CONFIG_sourceFile";
 	public static final String NORMALIZE_CONFIG_targetFile = "NORMALIZE:CONFIG_targetFile";
