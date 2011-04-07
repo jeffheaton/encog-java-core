@@ -28,12 +28,12 @@ public class TestAnalystWizard extends TestCase {
 		
 		wiz.wizard(rawFile, false, AnalystFileFormat.DECPNT_COMMA);
 
-		encog.executeTask("task-full");
+		/*encog.executeTask("task-full");
 		
 		encog.save(analystFile);
 		
 		AnalystReport report = new AnalystReport(encog);
-		report.produceReport(TEMP_DIR.createFile("report.html"));
+		report.produceReport(TEMP_DIR.createFile("report.html"));*/
 		
 	}
 	
