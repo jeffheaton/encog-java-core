@@ -18,12 +18,12 @@ import org.encog.app.analyst.commands.Cmd;
 import org.encog.app.analyst.commands.CmdBalance;
 import org.encog.app.analyst.commands.CmdCreate;
 import org.encog.app.analyst.commands.CmdEvaluate;
+import org.encog.app.analyst.commands.CmdEvaluateRaw;
 import org.encog.app.analyst.commands.CmdGenerate;
 import org.encog.app.analyst.commands.CmdNormalize;
 import org.encog.app.analyst.commands.CmdRandomize;
 import org.encog.app.analyst.commands.CmdReset;
 import org.encog.app.analyst.commands.CmdSegregate;
-import org.encog.app.analyst.commands.CmdSeries;
 import org.encog.app.analyst.commands.CmdSet;
 import org.encog.app.analyst.commands.CmdTrain;
 import org.encog.app.analyst.script.AnalystScript;
@@ -60,12 +60,12 @@ public class EncogAnalyst {
 	public EncogAnalyst() {
 		addCommand(new CmdCreate(this));
 		addCommand(new CmdEvaluate(this));
+		addCommand(new CmdEvaluateRaw(this));
 		addCommand(new CmdGenerate(this));
 		addCommand(new CmdNormalize(this));
 		addCommand(new CmdRandomize(this));
 		addCommand(new CmdSegregate(this));
 		addCommand(new CmdTrain(this));
-		addCommand(new CmdSeries(this));
 		addCommand(new CmdBalance(this));
 		addCommand(new CmdSet(this));
 		addCommand(new CmdReset(this));
