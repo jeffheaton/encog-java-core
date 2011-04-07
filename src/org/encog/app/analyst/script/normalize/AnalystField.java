@@ -268,41 +268,6 @@ public class AnalystField {
 		this.name = name;
 	}
 
-	public String encodeHeaders() {
-		StringBuilder line = new StringBuilder();
-		switch (this.action) {
-		case SingleField:
-			BasicFile.appendSeparator(line,CSVFormat.EG_FORMAT);
-			line.append('\"');
-			line.append(name);
-			line.append('\"');
-			break;
-		case Equilateral:
-			for (int i = 0; i < this.classes.size() - 1; i++) {
-				BasicFile.appendSeparator(line,CSVFormat.EG_FORMAT);
-				line.append('\"');
-				line.append(name);
-				line.append('-');
-				line.append(i);
-				line.append('\"');
-			}
-			break;
-		case OneOf:
-			for (int i = 0; i < this.classes.size(); i++) {
-				BasicFile.appendSeparator(line,CSVFormat.EG_FORMAT);
-				line.append('\"');
-				line.append(name);
-				line.append('-');
-				line.append(i);
-				line.append('\"');
-			}
-			break;
-		default:
-			return null;
-		}
-		return line.toString();
-	}
-
 	/** 
 	 * @return Returns the number of columns needed for this classification.  The number
 	 * of columns needed will vary, depending on the classification method used.

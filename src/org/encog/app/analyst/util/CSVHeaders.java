@@ -17,8 +17,8 @@ public class CSVHeaders {
 			csv = new ReadCSV(filename.toString(), headers, format);
 			if (csv.next()) {
 				if( headers ) {
-					for(int i=0;i<csv.getColumnCount();i++) {
-						headerList.add(csv.getColumnNames().get(i));
+					for( String str: csv.getColumnNames()) {
+						headerList.add(str);
 					}
 				} else {
 					for(int i=0;i<csv.getColumnCount();i++) {
