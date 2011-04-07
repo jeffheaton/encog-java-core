@@ -151,15 +151,13 @@ public class AnalystEvaluateCSV extends BasicFile {
 		while (csv.next()) {
 			updateStatus(false);
 			LoadedRow row = new LoadedRow(csv, 1);
-			int finalCol = row.getData().length - 1;
 
 			int outputIndex = 0;
-			String idealClass = "";
 
 			// build the input
 			for (AnalystField field : analyst.getScript().getNormalize()
 					.getNormalizedFields()) {
-				if (this.columnMapping.containsKey(field.getName())) {
+				if (this.columnMapping.containsKey(field)) {
 					int fieldIndex = this.columnMapping.get(field);
 					int columnsNeeded = field.getColumnsNeeded();
 					String str = row.getData()[fieldIndex];
@@ -175,30 +173,34 @@ public class AnalystEvaluateCSV extends BasicFile {
 								input.setData(outputIndex++, e[i]);
 							}
 						}
-					} 
+					}
 				}
 			}
 
 			// evaluation data
 			output = method.compute(input);
+			
+			// skip ideal data
+			int index = this.inputFieldCount + this.idealFieldCount;
 
-			// evaluate
-
+			// display output
 			for (AnalystField field : analyst.getScript().getNormalize()
 					.getNormalizedFields()) {
-				if (this.columnMapping.containsKey(field.getName())) {
-					//int fieldIndex = this.columnMapping.get(field);
+				if (this.columnMapping.containsKey(field)) {
+					// int fieldIndex = this.columnMapping.get(field);
 
-					if (field.isInput()) {			
+					if (field.isOutput()) {
 						if (field.isClassify()) {
 							// classification
-							ClassItem cls = field.determineClass(output.getData());
-							row.getData()[finalCol] = cls.getName();
+							ClassItem cls = field.determineClass(output
+									.getData());
+							row.getData()[index++] = cls.getName();
 						} else {
 							// regression
 							double n = output.getData(0);
 							n = field.deNormalize(n);
-							row.getData()[finalCol] = this.getInputFormat().format(n,this.getPrecision());
+							row.getData()[index++] = this.getInputFormat()
+									.format(n, this.getPrecision());
 						}
 					}
 				}
