@@ -26,8 +26,6 @@ import org.encog.persist.EncogDirectoryPersistence;
 public class CmdEvaluateRaw extends Cmd {
 
 	public final static String COMMAND_NAME = "EVALUATE-RAW";
-	private Map<String, Integer> classCorrect = new HashMap<String, Integer>();
-	private Map<String, Integer> classCount = new HashMap<String, Integer>();
 
 	public CmdEvaluateRaw(EncogAnalyst analyst) {
 		super(analyst);
@@ -68,8 +66,6 @@ public class CmdEvaluateRaw extends Cmd {
 						ScriptProperties.SETUP_CONFIG_csvFormat));
 		eval.process(outputFile, getAnalyst(), method, targetField);
 		getAnalyst().setCurrentQuantTask(null);
-		this.classCorrect = eval.getClassCorrect();
-		this.classCount = eval.getClassCount();
 		return eval.shouldStop();
 	}
 
@@ -103,45 +99,6 @@ public class CmdEvaluateRaw extends Cmd {
 						ScriptProperties.SETUP_CONFIG_csvFormat));
 		eval.process(outputFile, method);
 		getAnalyst().setCurrentQuantTask(null);
-	}
-
-	public Map<String, Integer> getClassCorrect() {
-		return classCorrect;
-	}
-
-	public void setClassCorrect(Map<String, Integer> classCorrect) {
-		this.classCorrect = classCorrect;
-	}
-
-	public Map<String, Integer> getClassCount() {
-		return classCount;
-	}
-
-	public void setClassCount(Map<String, Integer> classCount) {
-		this.classCount = classCount;
-	}
-
-	public String evalToString() {
-		List<String> list = new ArrayList<String>();
-		list.addAll(this.classCount.keySet());
-		Collections.sort(list);
-
-		StringBuilder result = new StringBuilder();
-		for (String key : list) {
-			result.append(key);
-			result.append(" ");
-			double correct = classCorrect.get(key);
-			double count = classCount.get(key);
-
-			result.append(Format.formatInteger((int) correct));
-			result.append('/');
-			result.append(Format.formatInteger((int) count));
-			result.append('(');
-			result.append(Format.formatPercent(correct / count));
-			result.append(")\n");
-		}
-
-		return result.toString();
 	}
 
 	@Override

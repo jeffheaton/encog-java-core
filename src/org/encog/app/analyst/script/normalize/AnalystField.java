@@ -532,6 +532,10 @@ public class AnalystField {
 			line.append('\"');
 		}		
 	}
+
+	public boolean isIgnored() {
+		return this.action == NormalizationAction.Ignore;
+	}
 	
 	
 

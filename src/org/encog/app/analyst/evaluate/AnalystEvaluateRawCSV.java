@@ -14,7 +14,6 @@ import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
-import org.encog.app.quant.normalize.ClassItem;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -27,13 +26,10 @@ import org.encog.util.csv.ReadCSV;
  */
 public class AnalystEvaluateRawCSV extends BasicFile {
 
-	private final Map<String, Integer> classCorrect = new HashMap<String, Integer>();
-	private final Map<String, Integer> classCount = new HashMap<String, Integer>();
 	private EncogAnalyst analyst;
 	private int inputCount;
 	private int outputCount;
 	private int idealCount;
-	private CSVHeaders actualHeaders;
 
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
@@ -69,7 +65,6 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 							+ (inputCount + outputCount) + ") count.");
 		}
 
-		this.actualHeaders = new CSVHeaders(this.inputHeadings);
 	}
 
 	/**
@@ -177,13 +172,4 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 		tw.close();
 		csv.close();
 	}
-
-	public Map<String, Integer> getClassCorrect() {
-		return classCorrect;
-	}
-
-	public Map<String, Integer> getClassCount() {
-		return classCount;
-	}
-
 }

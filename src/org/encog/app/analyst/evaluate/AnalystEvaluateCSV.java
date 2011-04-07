@@ -28,6 +28,12 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 	private final Map<String,Integer> classCorrect = new HashMap<String,Integer>();
 	private final Map<String,Integer> classCount = new HashMap<String,Integer>();
+	private final Map<AnalystField,Integer> columnMapping = new HashMap<AnalystField,Integer>();
+	private EncogAnalyst analyst;
+	private int inputFieldCount;
+	private int outputFieldCount;
+	private int idealFieldCount;
+
 	
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
@@ -40,14 +46,37 @@ public class AnalystEvaluateCSV extends BasicFile {
 	 * @param format
 	 *            The format of the CSV file.
 	 */
-	public void analyze(File inputFile, boolean headers, CSVFormat format) {
+	public void analyze(EncogAnalyst analyst, File inputFile, boolean headers, CSVFormat format) {
 		this.inputFilename = inputFile;
 		this.setExpectInputHeaders(headers);
 		this.setInputFormat(format);
 
 		this.setAnalyzed(true);
+		this.analyst = analyst;
 
 		performBasicCounts();
+		
+		this.inputFieldCount = this.analyst.determineInputFieldCount();
+		this.outputFieldCount = this.analyst.determineOutputFieldCount();
+		this.idealFieldCount = this.getInputHeadings().length - inputFieldCount;
+
+		if (this.getInputHeadings().length != inputFieldCount
+				&& this.getInputHeadings().length != (inputFieldCount + outputFieldCount)) {
+			throw new AnalystError(
+					"Invalid number of columns("+this.getInputHeadings().length+"), must match input(" + inputFieldCount
+							+ ") count or input+output("
+							+ (inputFieldCount + outputFieldCount) + ") count.");
+		}
+
+		
+		// perform mapping
+		for(int i=0;i<this.inputHeadings.length;i++) {
+			String heading = this.inputHeadings[i];
+			AnalystField field = this.analyst.getScript().findNormalizedField(heading);
+			if( field!=null ) {
+				this.columnMapping.put(field, i);
+			}
+		}
 	}
 	
 	/**
@@ -65,57 +94,35 @@ public class AnalystEvaluateCSV extends BasicFile {
 			// write headers, if needed
 			if (this.isProduceOutputHeaders()) {
 				StringBuilder line = new StringBuilder();
-				
-				if( this.getInputHeadings().length<input ) {
-					throw new AnalystError("Not enough input columns.");
-				}
-				
-				// display the input fields
-				if (this.inputHeadings != null) {
-					for(int i=0;i<input;i++) {
-						BasicFile.appendSeparator(line,this.getOutputFormat());
-						line.append("\"");
-						line.append(this.inputHeadings[i]);
-						line.append("\"");
-					}
-				} else {
-					for(int i=0;i<input;i++) {
-						BasicFile.appendSeparator(line,this.getOutputFormat());
-						line.append("\"input-");
-						line.append(i);
-						line.append("\"");
+
+				// first handle the input fields
+				for (AnalystField field : this.analyst.getScript()
+						.getNormalize().getNormalizedFields()) {
+					if (field.isInput()) {
+						field.addRawHeadings(line, null, this.getOutputFormat());
 					}
 				}
-				
-				// handle ideal fields
-				if( output>1 ) {
-					for(int i=0;i<output;i++) {
-						BasicFile.appendSeparator(line,this.getOutputFormat());
-						line.append("\"ideal");
-						line.append(i);
-						line.append("\"");
+
+				// now, handle any ideal fields
+				if (this.idealFieldCount > 0) {
+					for (AnalystField field : this.analyst.getScript()
+							.getNormalize().getNormalizedFields()) {
+						if (field.isOutput()) {
+							field.addRawHeadings(line, "ideal:",
+									this.getOutputFormat());
+						}
 					}
-				} else {
-					BasicFile.appendSeparator(line,this.getOutputFormat());
-					line.append("\"ideal");
-					line.append("\"");
 				}
-				
-				// handle actual fields
-				if( output>1 ) {
-					for(int i=0;i<output;i++) {
-						BasicFile.appendSeparator(line,this.getOutputFormat());
-						line.append("\"actual");
-						line.append(i);
-						line.append("\"");
+
+				// now, handle the output fields
+				for (AnalystField field : this.analyst.getScript()
+						.getNormalize().getNormalizedFields()) {
+					if (field.isOutput()) {
+						field.addRawHeadings(line, "output:",
+								this.getOutputFormat());
 					}
-				} else {
-					BasicFile.appendSeparator(line,this.getOutputFormat());
-					line.append("\"actual");
-					line.append("\"");
 				}
-				
-				
+
 				tw.println(line.toString());
 			}
 

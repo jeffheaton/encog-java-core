@@ -60,6 +60,7 @@ public class CmdEvaluate extends Cmd {
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this.getAnalyst()));
 		eval.analyze(
+				this.getAnalyst(),
 				evalFile,
 				headers,
 				getProp().getPropertyCSVFormat(

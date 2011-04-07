@@ -383,7 +383,7 @@ public class EncogAnalyst {
 	public int determineInputCount() {
 		int result = 0;
 		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( field.isInput() )
+			if( field.isInput() && !field.isIgnored() )
 				result+=field.getColumnsNeeded();
 		}
 		return result;
@@ -392,8 +392,26 @@ public class EncogAnalyst {
 	public int determineOutputCount() {
 		int result = 0;
 		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( field.isOutput() )
+			if( field.isOutput() && !field.isIgnored()  )
 				result+=field.getColumnsNeeded();
+		}
+		return result;
+	}
+
+	public int determineInputFieldCount() {
+		int result = 0;
+		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
+			if( field.isInput() && !field.isIgnored() )
+				result++;
+		}
+		return result;
+	}
+
+	public int determineOutputFieldCount() {
+		int result = 0;
+		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
+			if( field.isOutput() && !field.isIgnored() )
+				result++;
 		}
 		return result;
 	}
