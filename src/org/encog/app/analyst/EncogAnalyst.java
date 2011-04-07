@@ -27,6 +27,7 @@ import org.encog.app.analyst.commands.CmdSegregate;
 import org.encog.app.analyst.commands.CmdSet;
 import org.encog.app.analyst.commands.CmdTrain;
 import org.encog.app.analyst.script.AnalystScript;
+import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.wizard.AnalystWizard;
@@ -377,6 +378,24 @@ public class EncogAnalyst {
 
 	public Map<String, String> getRevertData() {
 		return revertData;
+	}
+
+	public int determineInputCount() {
+		int result = 0;
+		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
+			if( field.isInput() )
+				result+=field.getColumnsNeeded();
+		}
+		return result;
+	}
+
+	public int determineOutputCount() {
+		int result = 0;
+		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
+			if( field.isOutput() )
+				result+=field.getColumnsNeeded();
+		}
+		return result;
 	}
 	
 	

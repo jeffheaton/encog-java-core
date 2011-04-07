@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.encog.Encog;
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.normalize.ClassItem;
@@ -516,6 +517,20 @@ public class AnalystField {
 	 */
 	public void setTimeSlice(int timeSlice) {
 		this.timeSlice = timeSlice;
+	}
+
+	public void addRawHeadings(StringBuilder line, String prefix, CSVFormat format) {
+		int subFields = this.getColumnsNeeded();
+		
+		for(int i=0;i<subFields;i++) {
+			String str = CSVHeaders.tagColumn(name, i, timeSlice, subFields>1);
+			BasicFile.appendSeparator(line, format);
+			line.append('\"');
+			if( prefix!=null )
+				line.append(prefix);
+			line.append(str);
+			line.append('\"');
+		}		
 	}
 	
 	

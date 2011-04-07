@@ -32,6 +32,12 @@ public class CSVHeaders {
 		}
 	}
 	
+	public CSVHeaders(String[] inputHeadings) {
+		for(String header: inputHeadings) {
+			this.headerList.add(header);
+		}
+	}
+
 	public int size() {
 		return this.headerList.size();
 	}

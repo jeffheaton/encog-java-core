@@ -138,7 +138,7 @@ public class ScriptLoad {
 			if (!first) {
 				List<String> cols = EncogFileSection.splitColumns(line);
 				String name = cols.get(0);
-				boolean isOutput = cols.get(1).toLowerCase().equals("true");
+				boolean isOutput = cols.get(1).toLowerCase().equals("output");
 				int timeSlice = Integer.parseInt(cols.get(2));
 				String action = cols.get(3);
 				double high = Double.parseDouble(cols.get(4));

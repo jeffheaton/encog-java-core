@@ -186,7 +186,5 @@ public class AnalystScript {
 	public int getPrecision() {
 		return Encog.DEFAULT_PRECISION;
 	}
-	
-	
-	
+
 }

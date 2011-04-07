@@ -45,14 +45,13 @@ public class AnalystNormalizeCSV extends BasicFile {
 	private void writeHeaders(PrintWriter tw) {
 		StringBuilder line = new StringBuilder();
 		for (AnalystField stat : this.analyst.getScript().getNormalize().getNormalizedFields()) {
-			if (line.length() > 0
-					&& stat.getAction() != NormalizationAction.Ignore)
-				line.append(this.getInputFormat().getSeparator());
-
 			int needed = stat.getColumnsNeeded();
 			
 			for(int i=0;i<needed;i++) {
+				BasicFile.appendSeparator(line, this.getInputFormat());
+				line.append('\"');
 				line.append(CSVHeaders.tagColumn(stat.getName(), i, 0, needed>1));
+				line.append('\"');
 			}
 		}
 		tw.println(line.toString());

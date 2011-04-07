@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
+import org.encog.app.analyst.evaluate.AnalystEvaluateRawCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.evaluate.EvaluateCSV;
@@ -56,10 +57,11 @@ public class CmdEvaluateRaw extends Cmd {
 
 		boolean headers = getScript().expectInputHeaders(evalID);
 
-		AnalystEvaluateCSV eval = new AnalystEvaluateCSV();
+		AnalystEvaluateRawCSV eval = new AnalystEvaluateRawCSV();
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(this.getAnalyst()));
 		eval.analyze(
+				this.getAnalyst(),
 				evalFile,
 				headers,
 				getProp().getPropertyCSVFormat(
