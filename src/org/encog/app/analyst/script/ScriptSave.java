@@ -197,7 +197,7 @@ public class ScriptSave {
 			saveData(out);
 			saveNormalize(out);
 		}
-		saveSubSection(out,"SERIES","CONFIG");
+
 		saveSubSection(out,"RANDOMIZE","CONFIG");
 		saveSubSection(out,"BALANCE","CONFIG");
 		

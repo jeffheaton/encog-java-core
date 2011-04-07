@@ -27,11 +27,6 @@ RANDOMIZE:CONFIG,targetFile,string
 SEGREGATE:CONFIG,sourceFile,string
 GENERATE:CONFIG,sourceFile,string
 GENERATE:CONFIG,targetFile,string
-SERIES:CONFIG,sourceFile,string
-SERIES:CONFIG,targetFile,string
-SERIES:CONFIG,lead,int
-SERIES:CONFIG,lag,int
-SERIES:CONFIG,includeTarget,boolean
 ML:CONFIG,trainingFile,string
 ML:CONFIG,evalFile,string
 ML:CONFIG,machineLearningFile,string
