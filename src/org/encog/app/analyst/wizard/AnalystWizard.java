@@ -15,7 +15,6 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
-import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.util.file.FileUtil;
 
@@ -58,11 +57,9 @@ public class AnalystWizard {
 	private String filenameTrain;
 	private String filenameEval;
 	private String filenameEvalNorm;
-	private String filenameEvalSeries;
 	private String filenameTrainSet;
 	private String filenameML;
 	private String filenameOutput;
-	private String filenameSeries;
 	private String filenameBalance;
 	
 	private AnalystScript script;
@@ -100,11 +97,9 @@ public class AnalystWizard {
 		this.filenameTrain = FileUtil.addFilenameBase(rawFile, "_train").toString();
 		this.filenameEval = FileUtil.addFilenameBase(rawFile, "_eval").toString();
 		this.filenameEvalNorm = FileUtil.addFilenameBase(rawFile, "_eval_norm").toString();
-		this.filenameEvalSeries = FileUtil.addFilenameBase(rawFile, "_eval_series").toString();
 		this.filenameTrainSet = FileUtil.forceExtension(this.filenameTrain, "egb");
 		this.filenameML = FileUtil.forceExtension(this.filenameTrain, "eg");
 		this.filenameOutput = FileUtil.addFilenameBase(rawFile, "_output").toString();
-		this.filenameSeries = FileUtil.addFilenameBase(rawFile, "_series").toString();
 		this.filenameBalance = FileUtil.addFilenameBase(rawFile, "_balance").toString();
 		
 		ScriptProperties p = this.script.getProperties();
@@ -184,7 +179,7 @@ public class AnalystWizard {
 		
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_evalFile,
-				AnalystWizard.FILE_EVAL_NORM);
+				AnalystWizard.FILE_EVAL);
 
 		// other
 		script.getProperties().setProperty(
@@ -424,17 +419,10 @@ public class AnalystWizard {
 		if (this.taskNormalize) {
 			task1.getLines().add("normalize");
 		}
-		if (this.timeSeries) {
-			task1.getLines().add("series");
-		}
+
 		task1.getLines().add("generate");
 		task1.getLines().add("create");
-		task1.getLines().add("train");
-		
-		task1.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_sourceFile,AnalystWizard.FILE_EVAL));
-		task1.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_targetFile,AnalystWizard.FILE_EVAL_NORM));
-		task1.getLines().add("normalize");
-		
+		task1.getLines().add("train");		
 		task1.getLines().add("evaluate");
 
 		AnalystTask task2 = new AnalystTask("task-generate");
@@ -452,21 +440,32 @@ public class AnalystWizard {
 			task1.getLines().add("series");
 		}
 		task2.getLines().add("generate");
+		
+		
+		
+		AnalystTask task3 = new AnalystTask("task-evaluate-raw");
+		task3.getLines().add(createSet(ScriptProperties.ML_CONFIG_evalFile,AnalystWizard.FILE_EVAL_NORM));
+		task3.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_sourceFile,AnalystWizard.FILE_EVAL));
+		task3.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_targetFile,AnalystWizard.FILE_EVAL_NORM));
+		task3.getLines().add("normalize");
+		task3.getLines().add("evaluate-raw");
 
-		AnalystTask task3 = new AnalystTask("task-create");
-		task3.getLines().add("create");
+		
+		AnalystTask task4 = new AnalystTask("task-create");
+		task4.getLines().add("create");
 
-		AnalystTask task4 = new AnalystTask("task-train");
-		task4.getLines().add("train");
+		AnalystTask task5 = new AnalystTask("task-train");
+		task5.getLines().add("train");
 
-		AnalystTask task5 = new AnalystTask("task-evaluate");
-		task5.getLines().add("evaluate");
+		AnalystTask task6 = new AnalystTask("task-evaluate");
+		task6.getLines().add("evaluate");
 
 		this.script.addTask(task1);
 		this.script.addTask(task2);
 		this.script.addTask(task3);
 		this.script.addTask(task4);
 		this.script.addTask(task5);
+		this.script.addTask(task6);
 	}
 
 	public void wizard(URL url, File saveFile, File analyzeFile, boolean b,
