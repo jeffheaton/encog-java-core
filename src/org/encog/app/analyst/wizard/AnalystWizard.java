@@ -2,6 +2,7 @@ package org.encog.app.analyst.wizard;
 
 import java.io.File;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.app.analyst.AnalystError;
@@ -50,7 +51,7 @@ public class AnalystWizard {
 	public static final String FILE_ML = "FILE_ML";
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
 	public static final String FILE_BALANCE = "FILE_BALANCE";
-	
+
 	private String filenameRaw;
 	private String filenameNorm;
 	private String filenameRandom;
@@ -61,7 +62,7 @@ public class AnalystWizard {
 	private String filenameML;
 	private String filenameOutput;
 	private String filenameBalance;
-	
+
 	private AnalystScript script;
 	private EncogAnalyst analyst;
 	private WizardMethodType methodType;
@@ -89,31 +90,39 @@ public class AnalystWizard {
 		this.lagWindowSize = 0;
 		this.includeTargetField = false;
 	}
-	
+
 	private void generateFilenames(File rawFile) {
 		this.filenameRaw = rawFile.getName();
-		this.filenameNorm = FileUtil.addFilenameBase(rawFile, "_norm").toString();
-		this.filenameRandom = FileUtil.addFilenameBase(rawFile, "_random").toString();
-		this.filenameTrain = FileUtil.addFilenameBase(rawFile, "_train").toString();
-		this.filenameEval = FileUtil.addFilenameBase(rawFile, "_eval").toString();
-		this.filenameEvalNorm = FileUtil.addFilenameBase(rawFile, "_eval_norm").toString();
-		this.filenameTrainSet = FileUtil.forceExtension(this.filenameTrain, "egb");
+		this.filenameNorm = FileUtil.addFilenameBase(rawFile, "_norm")
+				.toString();
+		this.filenameRandom = FileUtil.addFilenameBase(rawFile, "_random")
+				.toString();
+		this.filenameTrain = FileUtil.addFilenameBase(rawFile, "_train")
+				.toString();
+		this.filenameEval = FileUtil.addFilenameBase(rawFile, "_eval")
+				.toString();
+		this.filenameEvalNorm = FileUtil.addFilenameBase(rawFile, "_eval_norm")
+				.toString();
+		this.filenameTrainSet = FileUtil.forceExtension(this.filenameTrain,
+				"egb");
 		this.filenameML = FileUtil.forceExtension(this.filenameTrain, "eg");
-		this.filenameOutput = FileUtil.addFilenameBase(rawFile, "_output").toString();
-		this.filenameBalance = FileUtil.addFilenameBase(rawFile, "_balance").toString();
-		
+		this.filenameOutput = FileUtil.addFilenameBase(rawFile, "_output")
+				.toString();
+		this.filenameBalance = FileUtil.addFilenameBase(rawFile, "_balance")
+				.toString();
+
 		ScriptProperties p = this.script.getProperties();
-		
-		p.setFilename(FILE_RAW,this.filenameRaw);
-		p.setFilename(FILE_NORMALIZE,this.filenameNorm);
-		p.setFilename(FILE_RANDOM,this.filenameRandom);
-		p.setFilename(FILE_TRAIN,this.filenameTrain);
-		p.setFilename(FILE_EVAL,this.filenameEval);
-		p.setFilename(FILE_EVAL_NORM,this.filenameEvalNorm);
-		p.setFilename(FILE_TRAINSET,this.filenameTrainSet);
-		p.setFilename(FILE_ML,this.filenameML);
-		p.setFilename(FILE_OUTPUT,this.filenameOutput);
-		p.setFilename(FILE_BALANCE,this.filenameBalance);
+
+		p.setFilename(FILE_RAW, this.filenameRaw);
+		p.setFilename(FILE_NORMALIZE, this.filenameNorm);
+		p.setFilename(FILE_RANDOM, this.filenameRandom);
+		p.setFilename(FILE_TRAIN, this.filenameTrain);
+		p.setFilename(FILE_EVAL, this.filenameEval);
+		p.setFilename(FILE_EVAL_NORM, this.filenameEvalNorm);
+		p.setFilename(FILE_TRAINSET, this.filenameTrainSet);
+		p.setFilename(FILE_ML, this.filenameML);
+		p.setFilename(FILE_OUTPUT, this.filenameOutput);
+		p.setFilename(FILE_BALANCE, this.filenameBalance);
 	}
 
 	private void generateSettings() {
@@ -134,12 +143,11 @@ public class AnalystWizard {
 					ScriptProperties.RANDOMIZE_CONFIG_targetFile,
 					target = AnalystWizard.FILE_RANDOM);
 		}
-		
+
 		// balance
-		if( !this.timeSeries && this.taskBalance ) {
+		if (!this.timeSeries && this.taskBalance) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.BALANCE_CONFIG_sourceFile,
-					target);
+					ScriptProperties.BALANCE_CONFIG_sourceFile, target);
 			this.script.getProperties().setProperty(
 					ScriptProperties.BALANCE_CONFIG_targetFile,
 					target = AnalystWizard.FILE_BALANCE);
@@ -176,10 +184,9 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_outputFile,
 				AnalystWizard.FILE_OUTPUT);
-		
+
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_evalFile,
-				AnalystWizard.FILE_EVAL);
+				ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);
 
 		// other
 		script.getProperties().setProperty(
@@ -188,7 +195,8 @@ public class AnalystWizard {
 	}
 
 	private void generateNormalizedFields(File file) {
-		List<AnalystField> norm = this.script.getNormalize().getNormalizedFields();
+		List<AnalystField> norm = this.script.getNormalize()
+				.getNormalizedFields();
 		norm.clear();
 		DataField[] dataFields = script.getFields();
 
@@ -201,9 +209,9 @@ public class AnalystWizard {
 				action = NormalizationAction.Normalize;
 				AnalystField af;
 				if (this.range == NormalizeRange.NegOne2One)
-					norm.add( af = new AnalystField(f.getName(), action, 1, -1) );
+					norm.add(af = new AnalystField(f.getName(), action, 1, -1));
 				else
-					norm.add( af = new AnalystField(f.getName(), action, 1, 0) );
+					norm.add(af = new AnalystField(f.getName(), action, 1, 0));
 				af.setActualHigh(f.getMax());
 				af.setActualLow(f.getMin());
 			} else if (f.isClass()) {
@@ -215,15 +223,15 @@ public class AnalystWizard {
 					action = NormalizationAction.OneOf;
 
 				if (this.range == NormalizeRange.NegOne2One)
-					norm.add( new AnalystField(f.getName(), action, 1, -1) );
+					norm.add(new AnalystField(f.getName(), action, 1, -1));
 				else
-					norm.add( new AnalystField(f.getName(), action, 1, 0) );
+					norm.add(new AnalystField(f.getName(), action, 1, 0));
 			} else {
 				action = NormalizationAction.Ignore;
-				norm.add( new AnalystField(action, f.getName()) );
+				norm.add(new AnalystField(action, f.getName()));
 			}
 		}
-		
+
 		this.script.getNormalize().init(this.script);
 	}
 
@@ -240,16 +248,16 @@ public class AnalystWizard {
 	}
 
 	private void determineTargetField() {
-		List<AnalystField> fields = this.script.getNormalize().getNormalizedFields();
+		List<AnalystField> fields = this.script.getNormalize()
+				.getNormalizedFields();
 
 		if (this.targetField.trim().length() == 0) {
 			boolean success = false;
 
 			if (this.goal == AnalystGoal.Classification) {
 				// first try to the last classify field
-				for(AnalystField field : fields) {
-					DataField df = this.script.findDataField(field
-							.getName());
+				for (AnalystField field : fields) {
+					DataField df = this.script.findDataField(field.getName());
 					if (field.getAction().isClassify() && df.isClass()) {
 						this.targetField = field.getName();
 						success = true;
@@ -258,9 +266,8 @@ public class AnalystWizard {
 			} else {
 
 				// otherwise, just return the last regression field
-				for( AnalystField field: fields) {
-					DataField df = this.script.findDataField(field
-							.getName());
+				for (AnalystField field : fields) {
+					DataField df = this.script.findDataField(field.getName());
 					if (!df.isClass() && (df.isReal() || df.isInteger())) {
 						this.targetField = field.getName();
 						success = true;
@@ -281,28 +288,32 @@ public class AnalystWizard {
 
 		this.script.getProperties().setProperty(
 				ScriptProperties.DATA_CONFIG_goal, this.goal);
-		
-		if( !this.timeSeries && this.taskBalance ) {
-			this.script.getProperties().setProperty(ScriptProperties.BALANCE_CONFIG_balanceField,
-				targetField);
-			DataField field = this.analyst.getScript().findDataField(targetField);
-			if( field!=null && field.isClass() ) {
+
+		if (!this.timeSeries && this.taskBalance) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.BALANCE_CONFIG_balanceField, targetField);
+			DataField field = this.analyst.getScript().findDataField(
+					targetField);
+			if (field != null && field.isClass()) {
 				int countPer = field.getMinClassCount();
-				this.script.getProperties().setProperty(ScriptProperties.BALANCE_CONFIG_countPer, countPer);
+				this.script.getProperties().setProperty(
+						ScriptProperties.BALANCE_CONFIG_countPer, countPer);
 			}
 		}
-		
+
 		// now that the target field has been determined, set the analyst fields
 		AnalystField af = null;
-		for(AnalystField field : this.analyst.getScript().getNormalize().getNormalizedFields()) {
-			if( field.getAction()!=NormalizationAction.Ignore && field.getName().equalsIgnoreCase(this.targetField) ) {
-				if( af==null || af.getTimeSlice() < af.getTimeSlice()) {
+		for (AnalystField field : this.analyst.getScript().getNormalize()
+				.getNormalizedFields()) {
+			if (field.getAction() != NormalizationAction.Ignore
+					&& field.getName().equalsIgnoreCase(this.targetField)) {
+				if (af == null || af.getTimeSlice() < af.getTimeSlice()) {
 					af = field;
 				}
 			}
 		}
-		
-		if( af!= null ) {
+
+		if (af != null) {
 			af.setOutput(true);
 		}
 	}
@@ -389,7 +400,7 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
 				0.01);
 	}
-	
+
 	private String createSet(String setTarget, String setSource) {
 		StringBuilder result = new StringBuilder();
 		result.append("set ");
@@ -405,7 +416,7 @@ public class AnalystWizard {
 		if (!this.timeSeries && this.taskRandomize) {
 			task1.getLines().add("randomize");
 		}
-		
+
 		if (!this.timeSeries && this.taskBalance) {
 			task1.getLines().add("balance");
 		}
@@ -420,7 +431,7 @@ public class AnalystWizard {
 
 		task1.getLines().add("generate");
 		task1.getLines().add("create");
-		task1.getLines().add("train");		
+		task1.getLines().add("train");
 		task1.getLines().add("evaluate");
 
 		AnalystTask task2 = new AnalystTask("task-generate");
@@ -438,17 +449,20 @@ public class AnalystWizard {
 			task1.getLines().add("series");
 		}
 		task2.getLines().add("generate");
-		
-		
-		
+
 		AnalystTask task3 = new AnalystTask("task-evaluate-raw");
-		task3.getLines().add(createSet(ScriptProperties.ML_CONFIG_evalFile,AnalystWizard.FILE_EVAL_NORM));
-		task3.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_sourceFile,AnalystWizard.FILE_EVAL));
-		task3.getLines().add(createSet(ScriptProperties.NORMALIZE_CONFIG_targetFile,AnalystWizard.FILE_EVAL_NORM));
+		task3.getLines().add(
+				createSet(ScriptProperties.ML_CONFIG_evalFile,
+						AnalystWizard.FILE_EVAL_NORM));
+		task3.getLines().add(
+				createSet(ScriptProperties.NORMALIZE_CONFIG_sourceFile,
+						AnalystWizard.FILE_EVAL));
+		task3.getLines().add(
+				createSet(ScriptProperties.NORMALIZE_CONFIG_targetFile,
+						AnalystWizard.FILE_EVAL_NORM));
 		task3.getLines().add("normalize");
 		task3.getLines().add("evaluate-raw");
 
-		
 		AnalystTask task4 = new AnalystTask("task-create");
 		task4.getLines().add("create");
 
@@ -607,7 +621,6 @@ public class AnalystWizard {
 
 		this.timeSeries = (this.lagWindowSize > 0 || this.leadWindowSize > 0);
 
-		
 		determineClassification();
 		this.generateFilenames(analyzeFile);
 		generateSettings();
@@ -618,6 +631,10 @@ public class AnalystWizard {
 		generateGenerate(analyzeFile);
 		generateTime(analyzeFile);
 		generateTasks();
+		if (this.timeSeries && this.lagWindowSize > 0
+				&& this.leadWindowSize > 0) {
+			expandTimeSlices();
+		}
 	}
 
 	/**
@@ -707,5 +724,41 @@ public class AnalystWizard {
 	 */
 	public void setTaskBalance(boolean taskBalance) {
 		this.taskBalance = taskBalance;
+	}
+
+	private void expandTimeSlices() {
+		List<AnalystField> oldList = this.script.getNormalize()
+				.getNormalizedFields();
+		List<AnalystField> newList = new ArrayList<AnalystField>();
+
+		// generate the new list
+		for (AnalystField field : oldList) {
+			if (!field.isIgnored()) {
+
+				if (this.includeTargetField || field.isInput()) {
+					for (int i = 1; i <= this.lagWindowSize; i++) {
+						AnalystField newField = new AnalystField(field);
+						newField.setTimeSlice(-i);
+						newField.setOutput(false);
+						newList.add(newField);
+					}
+				}
+
+				if (field.isOutput()) {
+					for (int i = 0; i < this.leadWindowSize; i++) {
+						AnalystField newField = new AnalystField(field);
+						newField.setTimeSlice(i);
+						newList.add(newField);
+					}
+				}
+			} else {
+				newList.add(field);
+			}
+		}
+
+		// swap back in
+		oldList.clear();
+		oldList.addAll(newList);
+
 	}
 }

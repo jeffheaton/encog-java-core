@@ -67,7 +67,18 @@ public class AnalystField {
 	
 	private boolean output;
 	private int timeSlice;
-
+	
+	public AnalystField(AnalystField field) {
+		this.actualHigh = field.actualHigh;
+		this.actualLow = field.actualLow;
+		this.normalizedHigh = field.normalizedHigh;
+		this.normalizedLow = field.normalizedLow;
+		this.action = field.action;
+		this.name = field.name;
+		this.output = field.output;
+		this.timeSlice = field.timeSlice;
+	}
+	
 	/**
 	 * Construct an object.
 	 * @param action The desired action.
