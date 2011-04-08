@@ -4,8 +4,11 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.encog.EncogError;
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.util.CSVHeaders;
@@ -22,6 +25,7 @@ import org.encog.util.csv.ReadCSV;
 public class AnalystNormalizeCSV extends BasicFile {
 
 	private EncogAnalyst analyst;
+	private Map<String,Integer> columnMapping = new HashMap<String,Integer>();
 	
 	/**
 	 * Set the source file.  This is useful if you want to use pre-existing stats 
@@ -50,7 +54,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 			for(int i=0;i<needed;i++) {
 				BasicFile.appendSeparator(line, this.getInputFormat());
 				line.append('\"');
-				line.append(CSVHeaders.tagColumn(stat.getName(), i, 0, needed>1));
+				line.append(CSVHeaders.tagColumn(stat.getName(), i, stat.getTimeSlice(), needed>1));
 				line.append('\"');
 			}
 		}
@@ -85,8 +89,12 @@ public class AnalystNormalizeCSV extends BasicFile {
 			while (csv.next()&& !this.shouldStop()) {
 				StringBuilder line = new StringBuilder();
 				updateStatus(false);
-				int index = 0;
+
 				for (AnalystField stat : this.analyst.getScript().getNormalize().getNormalizedFields()) {
+					if( this.columnMapping.containsValue(stat.getName().toLowerCase())) {
+						throw new AnalystError("Can't find column: " + stat.getName().toLowerCase());
+					}
+					int index = this.columnMapping.get(stat.getName().toLowerCase());
 					String str = csv.get(index++);
 					if (line.length() > 0
 							&& stat.getAction() != NormalizationAction.Ignore)
@@ -148,6 +156,13 @@ public class AnalystNormalizeCSV extends BasicFile {
 		this.expectInputHeaders = expectInputHeaders;
 		this.analyst = analyst;
 		this.analyzed = true;
+		
+		CSVHeaders headers = new CSVHeaders(inputFilename,expectInputHeaders,inputFormat);
+		
+		int index = 0;
+		for(String str : headers.getHeaders()) {
+			this.columnMapping.put(str.toLowerCase(), index++);
+		}
 		
 		for(AnalystField field: analyst.getScript().getNormalize().getNormalizedFields())
 		{
