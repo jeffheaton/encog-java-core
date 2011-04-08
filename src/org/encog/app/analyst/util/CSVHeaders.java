@@ -105,5 +105,55 @@ public class CSVHeaders {
 		}
 		return result.toString();
 	}
+	
+	public static int parseTimeSlice(String name) {
+		int index1 = name.indexOf('(');
+		if( index1==-1 )
+			return 0;
+		int index2 = name.indexOf(')');
+		if(index2==-1 )
+			return 0;
+		if( index2<index1) 
+			return 0;
+		String list = name.substring(index1+1,index2);
+		String[] values = list.split(",");
+		for(int i=0;i<values.length;i++) {
+			String str = values[i].trim();
+			if( str.toLowerCase().startsWith("t")) {
+				int slice = Integer.parseInt(str.substring(1));
+				return slice;
+			}
+		}
+		
+		return 0;
+	}
+
+	public int getSlice(int currentIndex) {
+		String name = this.headerList.get(currentIndex);
+		int index1 = name.indexOf('(');
+		if( index1==-1 )
+			return 0;
+		int index2 = name.indexOf(')');
+		if(index2==-1 )
+			return 0;
+		if( index2<index1) 
+			return 0;
+		String list = name.substring(index1+1,index2);
+		String[] values = list.split(",");
+		for(int i=0;i<values.length;i++) {
+			String str = values[i].trim();
+			if( str.toLowerCase().startsWith("t")) {
+				str = values[i].trim().substring(1).trim();
+				if(str.charAt(0)=='+') {
+					// since Integer.parseInt can't handle +1
+					str = str.substring(1);
+				}
+				int slice = Integer.parseInt(str);
+				return slice;
+			}
+		}
+		
+		return 0;
+	}
 
 }

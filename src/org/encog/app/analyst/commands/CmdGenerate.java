@@ -29,7 +29,8 @@ public class CmdGenerate extends Cmd {
 
 		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
 			String baseName = headerList.getBaseHeader(currentIndex);
-			AnalystField field = this.getAnalyst().getScript().findNormalizedField(baseName);
+			int slice = headerList.getSlice(currentIndex);
+			AnalystField field = this.getAnalyst().getScript().findNormalizedField(baseName,slice);
 			
 			if( field.isInput() ) {
 				fields.add(currentIndex);
@@ -50,7 +51,8 @@ public class CmdGenerate extends Cmd {
 
 		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
 			String baseName = headerList.getBaseHeader(currentIndex);
-			AnalystField field = this.getAnalyst().getScript().findNormalizedField(baseName);
+			int slice = headerList.getSlice(currentIndex);
+			AnalystField field = this.getAnalyst().getScript().findNormalizedField(baseName,slice);
 			
 			if( field.isOutput() ) {
 				fields.add(currentIndex);

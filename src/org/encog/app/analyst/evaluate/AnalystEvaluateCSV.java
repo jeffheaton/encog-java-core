@@ -72,7 +72,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 		for (int i = 0; i < this.inputHeadings.length; i++) {
 			String heading = this.inputHeadings[i];
 			AnalystField field = this.analyst.getScript().findNormalizedField(
-					heading);
+					heading,0);
 			if (field != null) {
 				this.columnMapping.put(field, i);
 			}

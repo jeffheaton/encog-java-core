@@ -26,17 +26,22 @@ public class AnalystNormalize {
 		return normalizedFields;
 	}
 
-	public int calculateInputColumns(AnalystField targetField) {
+	public int calculateInputColumns() {
 		int result = 0;
 		for (AnalystField field : this.normalizedFields) {
-			if (field != targetField)
+			if( field.isInput() )
 				result += field.getColumnsNeeded();
 		}
 		return result;
 	}
 
-	public int calculateOutputColumns(AnalystField targetField) {
-		return targetField.getColumnsNeeded();
+	public int calculateOutputColumns() {
+		int result = 0;
+		for (AnalystField field : this.normalizedFields) {
+			if( field.isOutput() )
+				result += field.getColumnsNeeded();
+		}
+		return result;
 	}
 
 	public void init(AnalystScript script) {

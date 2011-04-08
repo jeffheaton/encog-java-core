@@ -149,9 +149,9 @@ public class AnalystScript {
 		return getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat);
 	}
 
-	public AnalystField findNormalizedField(String name) {
+	public AnalystField findNormalizedField(String name, int slice) {
 		for(AnalystField field: this.getNormalize().getNormalizedFields()) {
-			if( field.getName().equalsIgnoreCase(name))
+			if( field.getName().equalsIgnoreCase(name) && field.getTimeSlice()==slice )
 				return field;
 		}
 		
@@ -186,5 +186,4 @@ public class AnalystScript {
 	public int getPrecision() {
 		return Encog.DEFAULT_PRECISION;
 	}
-
 }

@@ -320,8 +320,6 @@ public class AnalystWizard {
 
 	private void generateGenerate(File file) {
 		determineTargetField();
-		AnalystField targetField = this.script
-				.findNormalizedField(this.targetField);
 
 		if (targetField == null) {
 			throw new AnalystError(
@@ -329,10 +327,8 @@ public class AnalystWizard {
 							+ this.targetField);
 		}
 
-		int inputColumns = this.script.getNormalize().calculateInputColumns(
-				targetField);
-		int idealColumns = this.script.getNormalize().calculateOutputColumns(
-				targetField);
+		int inputColumns = this.script.getNormalize().calculateInputColumns();
+		int idealColumns = this.script.getNormalize().calculateOutputColumns();
 
 		switch (this.methodType) {
 		case FeedForward:
