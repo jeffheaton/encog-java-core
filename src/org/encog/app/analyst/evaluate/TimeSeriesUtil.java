@@ -24,8 +24,8 @@ public class TimeSeriesUtil {
 	public TimeSeriesUtil(EncogAnalyst analyst, List<String> headings) {
 		this.analyst = analyst;
 		this.lagDepth = analyst.getLagDepth();
-		this.leadDepth = analyst.getLagDepth();
-		this.totalDepth = this.lagDepth + this.leadDepth;
+		this.leadDepth = analyst.getLeadDepth();
+		this.totalDepth = this.lagDepth + this.leadDepth+1;
 		this.inputSize = analyst.countUniqueColumns();
 		this.outputSize = analyst.determineInputCount()
 				+ analyst.determineOutputCount();
@@ -62,7 +62,8 @@ public class TimeSeriesUtil {
 				}
 				int headingIndex = this.headingMap.get(field.getName());
 				int timeslice = translateTimeSlice(field.getTimeSlice());
-				double d = this.buffer.get(timeslice)[headingIndex];
+				double[] row = this.buffer.get(timeslice);
+				double d = row[headingIndex];
 				output[outputIndex++] = d;
 			}
 		}
