@@ -400,21 +400,17 @@ public class AnalystField {
 	 *            The class number.
 	 * @return The encoded columns.
 	 */
-	public String encodeOneOf(int classNumber) {
-		StringBuilder result = new StringBuilder();
-		CSVFormat outputFormat = this.analyst.getScript()
-				.determineOutputFormat();
+	public double[] encodeOneOf(int classNumber) {
+		double[] result = new double[this.getColumnsNeeded()];
+		
 		for (int i = 0; i < this.classes.size(); i++) {
-
-			BasicFile.appendSeparator(result, outputFormat);
-
 			if (i == classNumber) {
-				result.append(this.normalizedHigh);
+				result[i] = this.normalizedHigh;
 			} else {
-				result.append(this.normalizedLow);
+				result[i] = this.normalizedLow;
 			}
 		}
-		return result.toString();
+		return result;
 	}
 
 	/**
@@ -424,14 +420,8 @@ public class AnalystField {
 	 *            The class number.
 	 * @return The class to encode.
 	 */
-	public String encodeEquilateral(int classNumber) {
-		StringBuilder result = new StringBuilder();
-		double[] d = this.eq.encode(classNumber);
-		CSVFormat outputFormat = this.analyst.getScript()
-				.determineOutputFormat();
-		NumberList.toList(outputFormat,
-				this.analyst.getScript().getPrecision(), result, d);
-		return result.toString();
+	public double[] encodeEquilateral(int classNumber) {		
+		return this.eq.encode(classNumber);
 	}
 
 	/**
@@ -441,10 +431,10 @@ public class AnalystField {
 	 *            The class number to encode.
 	 * @return The encoded columns.
 	 */
-	public String encodeSingleField(int classNumber) {
-		StringBuilder result = new StringBuilder();
-		result.append(classNumber);
-		return result.toString();
+	public double[] encodeSingleField(int classNumber) {
+		double[] d = new double[1];
+		d[0] = classNumber;
+		return d;
 	}
 
 	/**
@@ -454,7 +444,7 @@ public class AnalystField {
 	 *            The class number.
 	 * @return The encoded class.
 	 */
-	public String encode(int classNumber) {
+	public double[] encode(int classNumber) {
 		switch (this.action) {
 		case OneOf:
 			return encodeOneOf(classNumber);
@@ -467,24 +457,17 @@ public class AnalystField {
 		}
 	}
 
-	public Object encode(String str) {
-		if (this.action == NormalizationAction.PassThrough) {
-			StringBuilder result = new StringBuilder();
-			result.append("\"");
-			result.append(str);
-			result.append("\"");
-			return result.toString();
-		} else {
-			int classNumber = this.lookup(str);
-			if (classNumber == -1) {
-				try {
-					classNumber = Integer.parseInt(str);
-				} catch (NumberFormatException ex) {
-					throw new QuantError("Can't determine class for: " + str);
-				}
+	public double[] encode(String str) {		
+		int classNumber = this.lookup(str);
+		if (classNumber == -1) {
+			try {
+				classNumber = Integer.parseInt(str);
+			} catch (NumberFormatException ex) {
+				throw new QuantError("Can't determine class for: " + str);
 			}
-			return encode(classNumber);
 		}
+		return encode(classNumber);
+		
 	}
 
 	public void makeClass(NormalizationAction action, int classFrom,

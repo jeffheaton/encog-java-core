@@ -16,6 +16,7 @@ import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.util.csv.CSVFormat;
+import org.encog.util.csv.NumberList;
 import org.encog.util.csv.ReadCSV;
 
 /**
@@ -26,6 +27,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 
 	private EncogAnalyst analyst;
 	private Map<String,Integer> columnMapping = new HashMap<String,Integer>();
+	private TimeSeriesUtil series;
 	
 	/**
 	 * Set the source file.  This is useful if you want to use pre-existing stats 
@@ -85,34 +87,34 @@ public class AnalystNormalizeCSV extends BasicFile {
 			}
 
 			resetStatus();
+			double[] output = new double[this.analyst.countUniqueColumns()];
+						
 			// write file contents
-			while (csv.next()&& !this.shouldStop()) {
-				StringBuilder line = new StringBuilder();
+			while (csv.next()&& !this.shouldStop()) {				
 				updateStatus(false);
 
+				int outputIndex = 0;
 				for (AnalystField stat : this.analyst.getScript().getNormalize().getNormalizedFields()) {
 					if( this.columnMapping.containsValue(stat.getName().toLowerCase())) {
 						throw new AnalystError("Can't find column: " + stat.getName().toLowerCase());
 					}
 					int index = this.columnMapping.get(stat.getName().toLowerCase());
 					String str = csv.get(index++);
-					if (line.length() > 0
-							&& stat.getAction() != NormalizationAction.Ignore)
-						line.append(this.getInputFormat().getSeparator());
-					
+										
 					if( stat.getAction()==NormalizationAction.Normalize ) {
-						try {
-							double d = this.getInputFormat().parse(str);
-							d = stat.normalize(d);
-							line.append(this.getInputFormat().format(d,
-									this.getPrecision()));
-						} catch (NumberFormatException ex) {
-							throw new AnalystError("Invalid number: " + str);
-						}
+						double d = this.getInputFormat().parse(str);
+						d = stat.normalize(d);
+						output[outputIndex++] = d;
 					} else {
-						line.append(stat.encode(str));
+						double[] d = stat.encode(str);
+						for(int i=0;i<d.length;i++) {
+							output[outputIndex++] = d[i];
+						}
 					}
 				}
+								
+				StringBuilder line = new StringBuilder();
+				NumberList.toList(this.getOutputFormat(), line, output);
 				tw.println(line);
 			}
 		} catch (IOException e) {
@@ -154,6 +156,8 @@ public class AnalystNormalizeCSV extends BasicFile {
 		{
 			field.init(this.analyst);
 		}
+		
+		this.series = new TimeSeriesUtil(analyst,headers.getHeaders());
 	}
 
 }

@@ -30,10 +30,6 @@ public class TimeSeriesUtil {
 		this.outputSize = analyst.determineInputCount()
 				+ analyst.determineOutputCount();
 
-		if (headings.size() != inputSize) {
-			throw new AnalystError("Headings provided must be: " + inputSize);
-		}
-
 		int headingIndex = 0;
 		for (String column : headings) {
 			headingMap.put(column, headingIndex++);
