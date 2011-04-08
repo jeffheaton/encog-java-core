@@ -731,29 +731,41 @@ public class AnalystWizard {
 				.getNormalizedFields();
 		List<AnalystField> newList = new ArrayList<AnalystField>();
 
-		// generate the new list
+		// generate the inputs for the new list
 		for (AnalystField field : oldList) {
 			if (!field.isIgnored()) {
 
 				if (this.includeTargetField || field.isInput()) {
-					for (int i = 1; i <= this.lagWindowSize; i++) {
+					for (int i = 0; i < this.lagWindowSize; i++) {
 						AnalystField newField = new AnalystField(field);
 						newField.setTimeSlice(-i);
 						newField.setOutput(false);
 						newList.add(newField);
 					}
 				}
-
+			} else {
+				newList.add(field);
+			}
+		}
+		
+		// generate the outputs for the new list
+		for (AnalystField field : oldList) {
+			if (!field.isIgnored()) {
 				if (field.isOutput()) {
-					for (int i = 0; i < this.leadWindowSize; i++) {
+					for (int i = 1; i <= this.leadWindowSize; i++) {
 						AnalystField newField = new AnalystField(field);
 						newField.setTimeSlice(i);
 						newList.add(newField);
 					}
 				}
-			} else {
-				newList.add(field);
 			}
+		}
+		
+		// generate the ignores for the new list
+		for (AnalystField field : oldList) {
+			if (field.isIgnored()) {
+				newList.add(field);
+			} 
 		}
 
 		// swap back in
