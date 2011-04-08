@@ -435,7 +435,19 @@ public class EncogAnalyst {
 		}
 		return result;
 	}
-	
-	
 
+	public int countUniqueColumns() {
+		Map<String,Object> used = new HashMap<String,Object>();
+		int result = 0;
+		
+		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
+			if( !field.isIgnored() ) {
+				String name = field.getName();
+				if( !used.containsKey(name) )
+					result+=field.getColumnsNeeded();
+			}
+		}
+		return result;
+	}
+	
 }
