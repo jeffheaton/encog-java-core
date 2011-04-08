@@ -416,6 +416,26 @@ public class EncogAnalyst {
 		return result;
 	}
 	
+	public int getLeadDepth() {
+		int result = 0;
+		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
+			if( field.getTimeSlice()>0 ) {
+				result = Math.max(result, field.getTimeSlice());
+			}
+		}
+		return result;
+	}
+	
+	public int getLagDepth() {
+		int result = 0;
+		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
+			if( field.getTimeSlice()<0 ) {
+				result = Math.max(result, Math.abs(field.getTimeSlice()) );
+			}
+		}
+		return result;
+	}
+	
 	
 
 }
