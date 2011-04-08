@@ -99,32 +99,18 @@ public class AnalystNormalizeCSV extends BasicFile {
 					if (line.length() > 0
 							&& stat.getAction() != NormalizationAction.Ignore)
 						line.append(this.getInputFormat().getSeparator());
-					switch (stat.getAction()) {
-					case PassThrough:
-						line.append("\"");
-						line.append(str);
-						line.append("\"");
-						break;
-					case Normalize:
+					
+					if( stat.getAction()==NormalizationAction.Normalize ) {
 						try {
 							double d = this.getInputFormat().parse(str);
 							d = stat.normalize(d);
 							line.append(this.getInputFormat().format(d,
 									this.getPrecision()));
 						} catch (NumberFormatException ex) {
-
+							throw new AnalystError("Invalid number: " + str);
 						}
-						break;
-
-					case OneOf:
+					} else {
 						line.append(stat.encode(str));
-						break;
-					case SingleField:
-						line.append(stat.encode(str));
-						break;
-					case Equilateral:
-						line.append(stat.encode(str));
-						break;
 					}
 				}
 				tw.println(line);

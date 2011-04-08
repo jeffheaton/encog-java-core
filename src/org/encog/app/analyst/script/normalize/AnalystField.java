@@ -62,12 +62,12 @@ public class AnalystField {
 	 * Allows the index of a field to be looked up.
 	 */
 	private Map<String, Integer> lookup = new HashMap<String, Integer>();
-	
+
 	private EncogAnalyst analyst;
-	
+
 	private boolean output;
 	private int timeSlice;
-	
+
 	public AnalystField(AnalystField field) {
 		this.actualHigh = field.actualHigh;
 		this.actualLow = field.actualLow;
@@ -78,11 +78,14 @@ public class AnalystField {
 		this.output = field.output;
 		this.timeSlice = field.timeSlice;
 	}
-	
+
 	/**
 	 * Construct an object.
-	 * @param action The desired action.
-	 * @param name The name of this column.
+	 * 
+	 * @param action
+	 *            The desired action.
+	 * @param name
+	 *            The name of this column.
 	 */
 	public AnalystField(NormalizationAction action, String name) {
 		this(action, name, 0, 0, 0, 0);
@@ -90,15 +93,22 @@ public class AnalystField {
 
 	/**
 	 * Construct the field, with no defaults.
-	 * @param action The normalization action to take.
-	 * @param name The name of this field.
-	 * @param ahigh The actual high.
-	 * @param alow The actual low.
-	 * @param nhigh The normalized high.
-	 * @param nlow The normalized low.
+	 * 
+	 * @param action
+	 *            The normalization action to take.
+	 * @param name
+	 *            The name of this field.
+	 * @param ahigh
+	 *            The actual high.
+	 * @param alow
+	 *            The actual low.
+	 * @param nhigh
+	 *            The normalized high.
+	 * @param nlow
+	 *            The normalized low.
 	 */
-	public AnalystField(NormalizationAction action, String name,
-			double ahigh, double alow, double nhigh, double nlow) {
+	public AnalystField(NormalizationAction action, String name, double ahigh,
+			double alow, double nhigh, double nlow) {
 		this.action = action;
 		this.actualHigh = ahigh;
 		this.actualLow = alow;
@@ -109,8 +119,11 @@ public class AnalystField {
 
 	/**
 	 * Construct the object.
-	 * @param normalizedHigh The normalized high.
-	 * @param normalizedLow The normalized low.
+	 * 
+	 * @param normalizedHigh
+	 *            The normalized high.
+	 * @param normalizedLow
+	 *            The normalized low.
 	 */
 	public AnalystField(double normalizedHigh, double normalizedLow) {
 		this.normalizedHigh = normalizedHigh;
@@ -127,8 +140,8 @@ public class AnalystField {
 		this(1, -1);
 	}
 
-	public AnalystField(String name, NormalizationAction action,
-			double high, double low) {
+	public AnalystField(String name, NormalizationAction action, double high,
+			double low) {
 		this.name = name;
 		this.action = action;
 		this.normalizedHigh = high;
@@ -147,8 +160,11 @@ public class AnalystField {
 	}
 
 	/**
-	 * Analyze the specified value.  Adjust min/max as needed.  Usually used only internally.
-	 * @param d The value to analyze.
+	 * Analyze the specified value. Adjust min/max as needed. Usually used only
+	 * internally.
+	 * 
+	 * @param d
+	 *            The value to analyze.
 	 */
 	public void analyze(double d) {
 		this.actualHigh = Math.max(this.actualHigh, d);
@@ -157,7 +173,9 @@ public class AnalystField {
 
 	/**
 	 * Normalize the specified value.
-	 * @param value The value to normalize.
+	 * 
+	 * @param value
+	 *            The value to normalize.
 	 * @return The normalized value.
 	 */
 	public double normalize(double value) {
@@ -167,7 +185,9 @@ public class AnalystField {
 
 	/**
 	 * Denormalize the specified value.
-	 * @param value The value to normalize.
+	 * 
+	 * @param value
+	 *            The value to normalize.
 	 * @return The normalized value.
 	 */
 	public double deNormalize(double value) {
@@ -178,7 +198,8 @@ public class AnalystField {
 	}
 
 	/**
-	 * Fix normalized fields that have a single value for the min/max.  Separate them by 2 units.
+	 * Fix normalized fields that have a single value for the min/max. Separate
+	 * them by 2 units.
 	 */
 	public void fixSingleValue() {
 		if (action == NormalizationAction.Normalize) {
@@ -198,7 +219,9 @@ public class AnalystField {
 
 	/**
 	 * Set the actual high for the field.
-	 * @param actualHigh The actual high for the field.
+	 * 
+	 * @param actualHigh
+	 *            The actual high for the field.
 	 */
 	public void setActualHigh(double actualHigh) {
 		this.actualHigh = actualHigh;
@@ -213,7 +236,9 @@ public class AnalystField {
 
 	/**
 	 * Set the actual low for the field.
-	 * @param actualLow The actual low for the field.
+	 * 
+	 * @param actualLow
+	 *            The actual low for the field.
 	 */
 	public void setActualLow(double actualLow) {
 		this.actualLow = actualLow;
@@ -228,7 +253,9 @@ public class AnalystField {
 
 	/**
 	 * Set the normalized high for the field.
-	 * @param normalizedHigh The normalized high for the field.
+	 * 
+	 * @param normalizedHigh
+	 *            The normalized high for the field.
 	 */
 	public void setNormalizedHigh(double normalizedHigh) {
 		this.normalizedHigh = normalizedHigh;
@@ -243,7 +270,9 @@ public class AnalystField {
 
 	/**
 	 * Set the normalized low for the field.
-	 * @param normalizedLow The normalized low for the field.
+	 * 
+	 * @param normalizedLow
+	 *            The normalized low for the field.
 	 */
 	public void setNormalizedLow(double normalizedLow) {
 		this.normalizedLow = normalizedLow;
@@ -258,7 +287,9 @@ public class AnalystField {
 
 	/**
 	 * Set the action for the field.
-	 * @param action The action for the field.
+	 * 
+	 * @param action
+	 *            The action for the field.
 	 */
 	public void setAction(NormalizationAction action) {
 		this.action = action;
@@ -273,15 +304,18 @@ public class AnalystField {
 
 	/**
 	 * Set the name of the field.
-	 * @param name The name of the field.
+	 * 
+	 * @param name
+	 *            The name of the field.
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
-	/** 
-	 * @return Returns the number of columns needed for this classification.  The number
-	 * of columns needed will vary, depending on the classification method used.
+	/**
+	 * @return Returns the number of columns needed for this classification. The
+	 *         number of columns needed will vary, depending on the
+	 *         classification method used.
 	 */
 	public int getColumnsNeeded() {
 		switch (this.action) {
@@ -299,15 +333,17 @@ public class AnalystField {
 
 	/**
 	 * Init any internal structures.
-	 * @param owner 
+	 * 
+	 * @param owner
 	 */
 	public void init(EncogAnalyst analyst) {
 		this.analyst = analyst;
 		if (this.action == NormalizationAction.Equilateral) {
-			if( this.classes.size()<3 ) {
-				throw new QuantError("There must be at least three classes to make use of equilateral normalization.");
+			if (this.classes.size() < 3) {
+				throw new QuantError(
+						"There must be at least three classes to make use of equilateral normalization.");
 			}
-						
+
 			this.eq = new Equilateral(this.classes.size(), this.normalizedHigh,
 					this.normalizedLow);
 		}
@@ -321,7 +357,9 @@ public class AnalystField {
 
 	/**
 	 * Lookup the specified field.
-	 * @param str The name of the field to lookup.
+	 * 
+	 * @param str
+	 *            The name of the field to lookup.
 	 * @return The index of the field, or -1 if not found.
 	 */
 	public int lookup(String str) {
@@ -332,7 +370,9 @@ public class AnalystField {
 
 	/**
 	 * Determine what class the specified data belongs to.
-	 * @param data The data to analyze.
+	 * 
+	 * @param data
+	 *            The data to analyze.
 	 * @return The class the data belongs to.
 	 */
 	public ClassItem determineClass(double[] data) {
@@ -355,14 +395,17 @@ public class AnalystField {
 
 	/**
 	 * Perform the encoding for "one of".
-	 * @param classNumber The class number.
+	 * 
+	 * @param classNumber
+	 *            The class number.
 	 * @return The encoded columns.
 	 */
 	public String encodeOneOf(int classNumber) {
 		StringBuilder result = new StringBuilder();
-		CSVFormat outputFormat = this.analyst.getScript().determineOutputFormat();
+		CSVFormat outputFormat = this.analyst.getScript()
+				.determineOutputFormat();
 		for (int i = 0; i < this.classes.size(); i++) {
-			
+
 			BasicFile.appendSeparator(result, outputFormat);
 
 			if (i == classNumber) {
@@ -376,21 +419,26 @@ public class AnalystField {
 
 	/**
 	 * Perform an equilateral encode.
-	 * @param classNumber The class number.
+	 * 
+	 * @param classNumber
+	 *            The class number.
 	 * @return The class to encode.
 	 */
 	public String encodeEquilateral(int classNumber) {
 		StringBuilder result = new StringBuilder();
 		double[] d = this.eq.encode(classNumber);
-		CSVFormat outputFormat = this.analyst.getScript().determineOutputFormat();
-		NumberList.toList(outputFormat, this.analyst.getScript().getPrecision(),
-				result, d);
+		CSVFormat outputFormat = this.analyst.getScript()
+				.determineOutputFormat();
+		NumberList.toList(outputFormat,
+				this.analyst.getScript().getPrecision(), result, d);
 		return result.toString();
 	}
 
 	/**
 	 * Encode a single field.
-	 * @param classNumber The class number to encode.
+	 * 
+	 * @param classNumber
+	 *            The class number to encode.
 	 * @return The encoded columns.
 	 */
 	public String encodeSingleField(int classNumber) {
@@ -401,7 +449,9 @@ public class AnalystField {
 
 	/**
 	 * Encode the class.
-	 * @param classNumber The class number.
+	 * 
+	 * @param classNumber
+	 *            The class number.
 	 * @return The encoded class.
 	 */
 	public String encode(int classNumber) {
@@ -418,58 +468,67 @@ public class AnalystField {
 	}
 
 	public Object encode(String str) {
-		int classNumber = this.lookup(str);
-		if (classNumber == -1) {
-			try {
-				classNumber = Integer.parseInt(str);
-			} catch (NumberFormatException ex) {
-				throw new QuantError("Can't determine class for: " + str);
+		if (this.action == NormalizationAction.PassThrough) {
+			StringBuilder result = new StringBuilder();
+			result.append("\"");
+			result.append(str);
+			result.append("\"");
+			return result.toString();
+		} else {
+			int classNumber = this.lookup(str);
+			if (classNumber == -1) {
+				try {
+					classNumber = Integer.parseInt(str);
+				} catch (NumberFormatException ex) {
+					throw new QuantError("Can't determine class for: " + str);
+				}
 			}
+			return encode(classNumber);
 		}
-		return encode(classNumber);
-	}
-	
-	public void makeClass(NormalizationAction action, int classFrom, int classTo, int high,
-			int low) {
-		
-		if( (action!=NormalizationAction.Equilateral) 
-				&& (action!=NormalizationAction.OneOf)
-				&& (action!=NormalizationAction.SingleField) ) {
-				throw new QuantError("Unsupported normalization type");
-			}
-			
-			this.action = action;
-			this.classes.clear();
-			this.normalizedHigh = high;
-			this.normalizedLow = low;
-			this.actualHigh = 0;
-			this.actualLow = 0;
-			
-			int index = 0;
-			for(int i = classFrom; i<classTo;i++) {
-				this.classes.add(new ClassItem(""+i, index++));
-			}
-		
 	}
 
-	public void makeClass(NormalizationAction action, String[] cls, double high, double low) {
-		if( (action!=NormalizationAction.Equilateral) 
-			&& (action!=NormalizationAction.OneOf)
-			&& (action!=NormalizationAction.SingleField) ) {
+	public void makeClass(NormalizationAction action, int classFrom,
+			int classTo, int high, int low) {
+
+		if ((action != NormalizationAction.Equilateral)
+				&& (action != NormalizationAction.OneOf)
+				&& (action != NormalizationAction.SingleField)) {
 			throw new QuantError("Unsupported normalization type");
 		}
-		
+
 		this.action = action;
 		this.classes.clear();
 		this.normalizedHigh = high;
 		this.normalizedLow = low;
 		this.actualHigh = 0;
 		this.actualLow = 0;
-		
-		for(int i = 0; i<cls.length;i++) {
+
+		int index = 0;
+		for (int i = classFrom; i < classTo; i++) {
+			this.classes.add(new ClassItem("" + i, index++));
+		}
+
+	}
+
+	public void makeClass(NormalizationAction action, String[] cls,
+			double high, double low) {
+		if ((action != NormalizationAction.Equilateral)
+				&& (action != NormalizationAction.OneOf)
+				&& (action != NormalizationAction.SingleField)) {
+			throw new QuantError("Unsupported normalization type");
+		}
+
+		this.action = action;
+		this.classes.clear();
+		this.normalizedHigh = high;
+		this.normalizedLow = low;
+		this.actualHigh = 0;
+		this.actualLow = 0;
+
+		for (int i = 0; i < cls.length; i++) {
 			this.classes.add(new ClassItem(cls[i], i));
 		}
-		
+
 	}
 
 	public List<ClassItem> getClasses() {
@@ -481,12 +540,11 @@ public class AnalystField {
 	}
 
 	public boolean isClassify() {
-		return this.action==NormalizationAction.Equilateral 
-			|| this.action==NormalizationAction.OneOf
-			|| this.action==NormalizationAction.SingleField;
+		return this.action == NormalizationAction.Equilateral
+				|| this.action == NormalizationAction.OneOf
+				|| this.action == NormalizationAction.SingleField;
 	}
 
-	
 	/** {@inheritDoc} */
 	public String toString() {
 		StringBuilder result = new StringBuilder("[");
@@ -501,15 +559,15 @@ public class AnalystField {
 		result.append("]");
 		return result.toString();
 	}
-	
+
 	public boolean isInput() {
 		return !this.output;
 	}
-	
+
 	public boolean isOutput() {
 		return this.output;
 	}
-	
+
 	public void setOutput(boolean b) {
 		this.output = b;
 	}
@@ -522,24 +580,27 @@ public class AnalystField {
 	}
 
 	/**
-	 * @param timeSlice the timeSlice to set
+	 * @param timeSlice
+	 *            the timeSlice to set
 	 */
 	public void setTimeSlice(int timeSlice) {
 		this.timeSlice = timeSlice;
 	}
 
-	public void addRawHeadings(StringBuilder line, String prefix, CSVFormat format) {
+	public void addRawHeadings(StringBuilder line, String prefix,
+			CSVFormat format) {
 		int subFields = this.getColumnsNeeded();
-		
-		for(int i=0;i<subFields;i++) {
-			String str = CSVHeaders.tagColumn(name, i, timeSlice, subFields>1);
+
+		for (int i = 0; i < subFields; i++) {
+			String str = CSVHeaders
+					.tagColumn(name, i, timeSlice, subFields > 1);
 			BasicFile.appendSeparator(line, format);
 			line.append('\"');
-			if( prefix!=null )
+			if (prefix != null)
 				line.append(prefix);
 			line.append(str);
 			line.append('\"');
-		}		
+		}
 	}
 
 	public boolean isIgnored() {
@@ -551,10 +612,10 @@ public class AnalystField {
 
 		BasicFile.appendSeparator(line, format);
 		line.append('\"');
-		if( prefix!=null )
+		if (prefix != null)
 			line.append(prefix);
 		line.append(name);
 		line.append('\"');
-		
+
 	}
 }
