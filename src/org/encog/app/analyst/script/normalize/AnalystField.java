@@ -587,16 +587,4 @@ public class AnalystField {
 	public boolean isIgnored() {
 		return this.action == NormalizationAction.Ignore;
 	}
-
-	public void addFieldHeading(StringBuilder line, String prefix,
-			CSVFormat format) {
-
-		BasicFile.appendSeparator(line, format);
-		line.append('\"');
-		if (prefix != null)
-			line.append(prefix);
-		line.append(name);
-		line.append('\"');
-
-	}
 }

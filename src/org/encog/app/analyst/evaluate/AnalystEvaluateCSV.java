@@ -7,9 +7,9 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.normalize.AnalystField;
+import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
@@ -28,11 +28,11 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 	private final Map<String, Integer> classCorrect = new HashMap<String, Integer>();
 	private final Map<String, Integer> classCount = new HashMap<String, Integer>();
-	private final Map<AnalystField, Integer> columnMapping = new HashMap<AnalystField, Integer>();
+	private final Map<String, Integer> columnMapping = new HashMap<String, Integer>();
 	private EncogAnalyst analyst;
-	private int inputFieldCount;
-	private int outputFieldCount;
-	private int idealFieldCount;
+	private int fileColumns;
+	private int outputColumns;
+	private TimeSeriesUtil series;
 
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
@@ -55,18 +55,8 @@ public class AnalystEvaluateCSV extends BasicFile {
 		this.analyst = analyst;
 
 		performBasicCounts();
-
-		this.inputFieldCount = this.analyst.determineInputFieldCount();
-		this.outputFieldCount = this.analyst.determineOutputFieldCount();
-		this.idealFieldCount = this.getInputHeadings().length - inputFieldCount;
-
-		if (this.getInputHeadings().length != inputFieldCount
-				&& this.getInputHeadings().length != (inputFieldCount + outputFieldCount)) {
-			throw new AnalystError("Invalid number of columns("
-					+ this.getInputHeadings().length + "), must match input("
-					+ inputFieldCount + ") count or input+output("
-					+ (inputFieldCount + outputFieldCount) + ") count.");
-		}
+		this.fileColumns = this.inputHeadings.length;
+		this.outputColumns = this.analyst.determineOutputFieldCount();
 
 		// perform mapping
 		for (int i = 0; i < this.inputHeadings.length; i++) {
@@ -74,9 +64,12 @@ public class AnalystEvaluateCSV extends BasicFile {
 			AnalystField field = this.analyst.getScript().findNormalizedField(
 					heading,0);
 			if (field != null) {
-				this.columnMapping.put(field, i);
+				this.columnMapping.put(field.getName(), i);
 			}
 		}
+		
+		CSVHeaders h = new CSVHeaders(this.inputHeadings);
+		this.series = new TimeSeriesUtil(analyst,h.getHeaders());
 	}
 
 	/**
@@ -94,35 +87,27 @@ public class AnalystEvaluateCSV extends BasicFile {
 			// write headers, if needed
 			if (this.isProduceOutputHeaders()) {
 				StringBuilder line = new StringBuilder();
-
-				// first handle the input fields
+				
+				// handle provided fields, not all may be used, but all should be displayed
+				for(String heading : this.inputHeadings ) {
+					BasicFile.appendSeparator(line, this.getOutputFormat());
+					line.append("\"");
+					line.append(heading);
+					line.append("\"");
+				}
+				
+				// now add the output fields that will be generated
 				for (AnalystField field : this.analyst.getScript()
 						.getNormalize().getNormalizedFields()) {
-					if (field.isInput()) {
-						field.addFieldHeading(line, null,
-								this.getOutputFormat());
+					if (field.isOutput() && !field.isIgnored()) {
+						BasicFile.appendSeparator(line, this.getOutputFormat());
+						line.append("\"Output:");
+						line.append(CSVHeaders.tagColumn(field.getName(), 0, field.getTimeSlice(), false));
+						line.append("\"");
 					}
 				}
 
-				// now, handle any ideal fields
-				if (this.idealFieldCount > 0) {
-					for (AnalystField field : this.analyst.getScript()
-							.getNormalize().getNormalizedFields()) {
-						if (field.isOutput()) {
-							field.addFieldHeading(line, "ideal:",
-									this.getOutputFormat());
-						}
-					}
-				}
-
-				// now, handle the output fields
-				for (AnalystField field : this.analyst.getScript()
-						.getNormalize().getNormalizedFields()) {
-					if (field.isOutput()) {
-						field.addFieldHeading(line, "output:",
-								this.getOutputFormat());
-					}
-				}
+				
 
 				tw.println(line.toString());
 			}
@@ -150,15 +135,15 @@ public class AnalystEvaluateCSV extends BasicFile {
 		resetStatus();
 		while (csv.next()) {
 			updateStatus(false);
-			LoadedRow row = new LoadedRow(csv, 1);
+			LoadedRow row = new LoadedRow(csv, this.outputColumns);
 
 			int outputIndex = 0;
 
 			// build the input
 			for (AnalystField field : analyst.getScript().getNormalize()
 					.getNormalizedFields()) {
-				if (this.columnMapping.containsKey(field)) {
-					int fieldIndex = this.columnMapping.get(field);
+				if (this.columnMapping.containsKey(field.getName())) {
+					int fieldIndex = this.columnMapping.get(field.getName());
 					int columnsNeeded = field.getColumnsNeeded();
 					String str = row.getData()[fieldIndex];
 
@@ -180,14 +165,14 @@ public class AnalystEvaluateCSV extends BasicFile {
 			// evaluation data
 			output = method.compute(input);
 			
-			// skip ideal data
-			int index = this.inputFieldCount + this.idealFieldCount;
+			// skip file data
+			int index = this.fileColumns;
+			outputIndex = 0;
 
 			// display output
 			for (AnalystField field : analyst.getScript().getNormalize()
 					.getNormalizedFields()) {
-				if (this.columnMapping.containsKey(field)) {
-					// int fieldIndex = this.columnMapping.get(field);
+				if (this.columnMapping.containsKey(field.getName())) {
 
 					if (field.isOutput()) {
 						if (field.isClassify()) {
@@ -197,7 +182,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 							row.getData()[index++] = cls.getName();
 						} else {
 							// regression
-							double n = output.getData(0);
+							double n = output.getData(outputIndex++);
 							n = field.deNormalize(n);
 							row.getData()[index++] = this.getInputFormat()
 									.format(n, this.getPrecision());

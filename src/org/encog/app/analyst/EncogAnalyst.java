@@ -400,13 +400,36 @@ public class EncogAnalyst {
 	}
 
 	public int determineInputFieldCount() {
+		int result = 0;
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isInput() && !field.isIgnored()) {
+				result++;
+			}
+
+		}
+		return result;
+	}
+
+	public int determineOutputFieldCount() {
+		int result = 0;
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isOutput() && !field.isIgnored())
+				result++;
+
+		}
+		return result;
+	}
+
+	public int determineUniqueInputFieldCount() {
 		Map<String, Object> map = new HashMap<String, Object>();
 
 		int result = 0;
 		for (AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
-			if (field.isInput() && !field.isIgnored()) {
-				if (!map.containsKey(field.getName())) {
+			if (!map.containsKey(field.getName())) {
+				if (field.isInput() && !field.isIgnored()) {
 					result++;
 					map.put(field.getName(), null);
 				}
@@ -415,7 +438,7 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int determineOutputFieldCount() {
+	public int determineUniqueOutputFieldCount() {
 		Map<String, Object> map = new HashMap<String, Object>();
 		int result = 0;
 		for (AnalystField field : this.script.getNormalize()
