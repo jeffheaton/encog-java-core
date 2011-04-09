@@ -26,8 +26,8 @@ import org.encog.util.csv.ReadCSV;
 public class AnalystNormalizeCSV extends BasicFile {
 
 	private EncogAnalyst analyst;
-	private Map<String, Integer> columnMapping = new HashMap<String, Integer>();
 	private TimeSeriesUtil series;
+	private CSVHeaders analystHeaders;
 
 	/**
 	 * Set the source file. This is useful if you want to use pre-existing stats
@@ -68,6 +68,31 @@ public class AnalystNormalizeCSV extends BasicFile {
 		}
 		tw.println(line.toString());
 	}
+	
+	public static double[] extractFields(EncogAnalyst analyst, CSVHeaders headers, ReadCSV csv, int outputLength) {
+		double[] output = new double[outputLength];
+		int outputIndex = 0;
+		for (AnalystField stat : analyst.getScript()
+				.getNormalize().getNormalizedFields()) {
+			
+			int index = headers.find(stat.getName());
+			String str = csv.get(index++);
+
+			if (stat.getAction() == NormalizationAction.Normalize) {
+				double d = csv.getFormat().parse(str);
+				d = stat.normalize(d);
+				output[outputIndex++] = d;
+			} else {
+				double[] d = stat.encode(str);
+				for (int i = 0; i < d.length; i++) {
+					output[outputIndex++] = d[i];
+				}
+			}
+		}
+
+		return output;
+		
+	}
 
 	/**
 	 * Normalize the input file. Write to the specified file.
@@ -95,44 +120,21 @@ public class AnalystNormalizeCSV extends BasicFile {
 			}
 
 			resetStatus();
-			double[] output = new double[this.analyst.determineUniqueColumns()];
+			int outputLength = this.analyst.determineUniqueColumns();
 
 			// write file contents
 			while (csv.next() && !this.shouldStop()) {
 				updateStatus(false);
 
-				int outputIndex = 0;
-				for (AnalystField stat : this.analyst.getScript()
-						.getNormalize().getNormalizedFields()) {
-					if (this.columnMapping.containsValue(stat.getName()
-							.toLowerCase())) {
-						throw new AnalystError("Can't find column: "
-								+ stat.getName().toLowerCase());
-					}
-					int index = this.columnMapping.get(stat.getName()
-							.toLowerCase());
-					String str = csv.get(index++);
+				double[] output = extractFields(analyst, this.analystHeaders, csv, outputLength);				
 
-					if (stat.getAction() == NormalizationAction.Normalize) {
-						double d = this.getInputFormat().parse(str);
-						d = stat.normalize(d);
-						output[outputIndex++] = d;
-					} else {
-						double[] d = stat.encode(str);
-						for (int i = 0; i < d.length; i++) {
-							output[outputIndex++] = d[i];
-						}
-					}
-				}
-
-				double[] out = output;
 				if (this.series.getTotalDepth() > 0) {
-					out = this.series.process(output);
+					output = this.series.process(output);
 				}
 
-				if (out != null) {
+				if (output != null) {
 					StringBuilder line = new StringBuilder();
-					NumberList.toList(this.getOutputFormat(), line, out);
+					NumberList.toList(this.getOutputFormat(), line, output);
 					tw.println(line);
 				}
 			}
@@ -164,20 +166,15 @@ public class AnalystNormalizeCSV extends BasicFile {
 		this.analyst = analyst;
 		this.analyzed = true;
 
-		CSVHeaders headers = new CSVHeaders(inputFilename, expectInputHeaders,
+		this.analystHeaders = new CSVHeaders(inputFilename, expectInputHeaders,
 				inputFormat);
-
-		int index = 0;
-		for (String str : headers.getHeaders()) {
-			this.columnMapping.put(str.toLowerCase(), index++);
-		}
 
 		for (AnalystField field : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 			field.init();
 		}
 
-		this.series = new TimeSeriesUtil(analyst, headers.getHeaders());
+		this.series = new TimeSeriesUtil(analyst, analystHeaders.getHeaders());
 	}
 
 }

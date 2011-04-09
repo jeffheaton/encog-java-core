@@ -2,14 +2,19 @@ package org.encog.app.analyst.util;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 public class CSVHeaders {
 	
 	private List<String> headerList = new ArrayList<String>();
+	private Map<String, Integer> columnMapping = new HashMap<String, Integer>();
+	
 	
 	public CSVHeaders(File filename, boolean headers, CSVFormat format) {
 		ReadCSV csv = null;
@@ -26,6 +31,12 @@ public class CSVHeaders {
 					}
 				}
 			}
+			
+			int index = 0;
+			for (String str : headerList ) {
+				this.columnMapping.put(str.toLowerCase(), index++);
+			}
+			
 		} finally {
 			if (csv != null)
 				csv.close();
@@ -154,6 +165,16 @@ public class CSVHeaders {
 		}
 		
 		return 0;
+	}
+
+	public int find(String name) {
+		if (this.columnMapping.containsValue(name
+				.toLowerCase())) {
+			throw new AnalystError("Can't find column: "
+					+ name.toLowerCase());
+		}
+
+		return this.columnMapping.get(name);
 	}
 
 }

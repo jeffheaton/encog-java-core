@@ -433,4 +433,8 @@ public class ReadCSV {
 		return this.columnNames;
 	}
 
+	public CSVFormat getFormat() {
+		return this.format;
+	}
+
 }
