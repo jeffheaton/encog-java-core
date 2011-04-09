@@ -125,7 +125,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 
 				double[] output = extractFields(analyst, this.analystHeaders, csv, outputLength);				
 
-				if (this.series.getTotalDepth() > 0) {
+				if (this.series.getTotalDepth() > 1) {
 					output = this.series.process(output);
 				}
 

@@ -128,7 +128,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 			double[] inputArray = AnalystNormalizeCSV.extractFields(analyst,
 					this.analystHeaders, csv, outputLength);
-			if (this.series.getTotalDepth() > 0) {
+			if (this.series.getTotalDepth() > 1) {
 				inputArray = this.series.process(inputArray);
 			}
 
