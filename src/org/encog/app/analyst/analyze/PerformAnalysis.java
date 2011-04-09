@@ -9,6 +9,7 @@ import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
+import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.analyst.util.ConvertStringConst;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -35,13 +36,13 @@ public class PerformAnalysis {
 	}
 
 	private void generateFieldsFromHeaders(ReadCSV csv) {
+		CSVHeaders headers = new CSVHeaders(csv.getColumnNames());
 		this.fields = new AnalyzedField[csv.getColumnCount()];
 		for (int i = 0; i < this.fields.length; i++) {
 			if( i>=csv.getColumnNames().size()) {
 				throw new AnalystError("CSV header count does not match column count");
 			}
-			this.fields[i] = new AnalyzedField(this.script, csv
-					.getColumnNames().get(i));
+			this.fields[i] = new AnalyzedField(this.script, headers.getHeader(i));
 		}
 	}
 

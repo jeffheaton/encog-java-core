@@ -32,14 +32,24 @@ public class CSVHeaders {
 				}
 			}
 			
-			int index = 0;
-			for (String str : headerList ) {
-				this.columnMapping.put(str.toLowerCase(), index++);
-			}
+			init();
 			
 		} finally {
 			if (csv != null)
 				csv.close();
+		}
+	}
+	
+	private void validateSameName() {
+		for(int i=0;i<headerList.size();i++) {
+			for(int j=0;j<headerList.size();j++) {
+				if( i==j )
+					continue;
+				
+				if( headerList.get(i).equalsIgnoreCase(headerList.get(j))) {
+					throw new AnalystError("Multiple fields named: " + headerList.get(i));
+				}
+			}
 		}
 	}
 	
@@ -48,10 +58,23 @@ public class CSVHeaders {
 			this.headerList.add(header);
 		}
 		
+		init();
+	}
+
+	public CSVHeaders(List<String> inputHeadings) {
+		for(String header: inputHeadings) {
+			this.headerList.add(header);
+		}
+		init();		
+	}
+	
+	private void init() {
 		int index = 0;
 		for (String str : headerList ) {
 			this.columnMapping.put(str.toLowerCase(), index++);
 		}
+		
+		validateSameName();
 	}
 
 	public int size() {
