@@ -56,7 +56,7 @@ public class EncogAnalyst {
 	private QuantTask currentQuantTask = null;
 	private Map<String, Cmd> commands = new HashMap<String, Cmd>();
 	private int maxIteration = -1;
-	private Map<String, String> revertData; 
+	private Map<String, String> revertData;
 
 	public EncogAnalyst() {
 		addCommand(new CmdCreate(this));
@@ -308,16 +308,15 @@ public class EncogAnalyst {
 
 			String line2 = line.trim();
 			int index = line2.indexOf(' ');
-			if( index!=-1 ) {
+			if (index != -1) {
 				command = line2.substring(0, index).toUpperCase();
-				args = line2.substring(index+1);
+				args = line2.substring(index + 1);
 			} else {
 				command = line2.toUpperCase();
 				args = "";
 			}
-			
+
 			Cmd cmd = this.commands.get(command);
-			
 
 			if (cmd != null) {
 				canceled = cmd.executeCommand(args);
@@ -369,7 +368,7 @@ public class EncogAnalyst {
 	}
 
 	public void setMaxIteration(int i) {
-		this.maxIteration = i;		
+		this.maxIteration = i;
 	}
 
 	public int getMaxIteration() {
@@ -382,72 +381,89 @@ public class EncogAnalyst {
 
 	public int determineInputCount() {
 		int result = 0;
-		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( field.isInput() && !field.isIgnored() )
-				result+=field.getColumnsNeeded();
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isInput() && !field.isIgnored())
+				result += field.getColumnsNeeded();
 		}
 		return result;
 	}
 
 	public int determineOutputCount() {
 		int result = 0;
-		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( field.isOutput() && !field.isIgnored()  )
-				result+=field.getColumnsNeeded();
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isOutput() && !field.isIgnored())
+				result += field.getColumnsNeeded();
 		}
 		return result;
 	}
 
 	public int determineInputFieldCount() {
+		Map<String, Object> map = new HashMap<String, Object>();
+
 		int result = 0;
-		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( field.isInput() && !field.isIgnored() )
-				result++;
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isInput() && !field.isIgnored()) {
+				if (!map.containsKey(field.getName())) {
+					result++;
+					map.put(field.getName(), null);
+				}
+			}
 		}
 		return result;
 	}
 
 	public int determineOutputFieldCount() {
+		Map<String, Object> map = new HashMap<String, Object>();
 		int result = 0;
-		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( field.isOutput() && !field.isIgnored() )
-				result++;
-		}
-		return result;
-	}
-	
-	public int getLeadDepth() {
-		int result = 0;
-		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( field.getTimeSlice()>0 ) {
-				result = Math.max(result, field.getTimeSlice());
-			}
-		}
-		return result;
-	}
-	
-	public int getLagDepth() {
-		int result = 0;
-		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( field.getTimeSlice()<0 ) {
-				result = Math.max(result, Math.abs(field.getTimeSlice()) );
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (!map.containsKey(field.getName())) {
+				if (field.isOutput() && !field.isIgnored())
+					result++;
+				map.put(field.getName(), null);
 			}
 		}
 		return result;
 	}
 
-	public int countUniqueColumns() {
-		Map<String,Object> used = new HashMap<String,Object>();
+	public int getLeadDepth() {
 		int result = 0;
-		
-		for(AnalystField field: this.script.getNormalize().getNormalizedFields()) {
-			if( !field.isIgnored() ) {
-				String name = field.getName();
-				if( !used.containsKey(name) )
-					result+=field.getColumnsNeeded();
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.getTimeSlice() > 0) {
+				result = Math.max(result, field.getTimeSlice());
 			}
 		}
 		return result;
 	}
-	
+
+	public int getLagDepth() {
+		int result = 0;
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.getTimeSlice() < 0) {
+				result = Math.max(result, Math.abs(field.getTimeSlice()));
+			}
+		}
+		return result;
+	}
+
+	public int determineUniqueColumns() {
+		Map<String, Object> used = new HashMap<String, Object>();
+		int result = 0;
+
+		for (AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (!field.isIgnored()) {
+				String name = field.getName();
+				if (!used.containsKey(name))
+					result += field.getColumnsNeeded();
+			}
+		}
+		return result;
+	}
+
 }

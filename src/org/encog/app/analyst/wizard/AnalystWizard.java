@@ -441,9 +441,6 @@ public class AnalystWizard {
 		if (this.taskNormalize) {
 			task2.getLines().add("normalize");
 		}
-		if (this.timeSeries) {
-			task1.getLines().add("series");
-		}
 		task2.getLines().add("generate");
 
 		AnalystTask task3 = new AnalystTask("task-evaluate-raw");

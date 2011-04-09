@@ -26,7 +26,7 @@ public class TimeSeriesUtil {
 		this.lagDepth = analyst.getLagDepth();
 		this.leadDepth = analyst.getLeadDepth();
 		this.totalDepth = this.lagDepth + this.leadDepth+1;
-		this.inputSize = analyst.countUniqueColumns();
+		this.inputSize = analyst.determineUniqueColumns();
 		this.outputSize = analyst.determineInputCount()
 				+ analyst.determineOutputCount();
 

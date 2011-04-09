@@ -63,8 +63,6 @@ public class AnalystField {
 	 */
 	private Map<String, Integer> lookup = new HashMap<String, Integer>();
 
-	private EncogAnalyst analyst;
-
 	private boolean output;
 	private int timeSlice;
 
@@ -336,8 +334,8 @@ public class AnalystField {
 	 * 
 	 * @param owner
 	 */
-	public void init(EncogAnalyst analyst) {
-		this.analyst = analyst;
+	public void init() {
+
 		if (this.action == NormalizationAction.Equilateral) {
 			if (this.classes.size() < 3) {
 				throw new QuantError(

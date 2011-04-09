@@ -95,7 +95,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 			}
 
 			resetStatus();
-			double[] output = new double[this.analyst.countUniqueColumns()];
+			double[] output = new double[this.analyst.determineUniqueColumns()];
 
 			// write file contents
 			while (csv.next() && !this.shouldStop()) {
@@ -174,7 +174,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 
 		for (AnalystField field : analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
-			field.init(this.analyst);
+			field.init();
 		}
 
 		this.series = new TimeSeriesUtil(analyst, headers.getHeaders());
