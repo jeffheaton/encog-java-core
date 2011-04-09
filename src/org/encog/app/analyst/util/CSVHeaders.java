@@ -47,6 +47,11 @@ public class CSVHeaders {
 		for(String header: inputHeadings) {
 			this.headerList.add(header);
 		}
+		
+		int index = 0;
+		for (String str : headerList ) {
+			this.columnMapping.put(str.toLowerCase(), index++);
+		}
 	}
 
 	public int size() {

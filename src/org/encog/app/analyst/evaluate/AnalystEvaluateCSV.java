@@ -26,13 +26,11 @@ import org.encog.util.csv.ReadCSV;
  */
 public class AnalystEvaluateCSV extends BasicFile {
 
-	private final Map<String, Integer> classCorrect = new HashMap<String, Integer>();
-	private final Map<String, Integer> classCount = new HashMap<String, Integer>();
-	private final Map<String, Integer> columnMapping = new HashMap<String, Integer>();
 	private EncogAnalyst analyst;
 	private int fileColumns;
 	private int outputColumns;
 	private TimeSeriesUtil series;
+	private CSVHeaders analystHeaders;
 
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
@@ -58,18 +56,10 @@ public class AnalystEvaluateCSV extends BasicFile {
 		this.fileColumns = this.inputHeadings.length;
 		this.outputColumns = this.analyst.determineOutputFieldCount();
 
-		// perform mapping
-		for (int i = 0; i < this.inputHeadings.length; i++) {
-			String heading = this.inputHeadings[i];
-			AnalystField field = this.analyst.getScript().findNormalizedField(
-					heading,0);
-			if (field != null) {
-				this.columnMapping.put(field.getName(), i);
-			}
-		}
-		
-		CSVHeaders h = new CSVHeaders(this.inputHeadings);
-		this.series = new TimeSeriesUtil(analyst,h.getHeaders());
+		this.analystHeaders = new CSVHeaders(this.inputHeadings);
+		this.series = new TimeSeriesUtil(analyst,
+				this.analystHeaders.getHeaders());
+
 	}
 
 	/**
@@ -87,27 +77,26 @@ public class AnalystEvaluateCSV extends BasicFile {
 			// write headers, if needed
 			if (this.isProduceOutputHeaders()) {
 				StringBuilder line = new StringBuilder();
-				
+
 				// handle provided fields, not all may be used, but all should be displayed
-				for(String heading : this.inputHeadings ) {
+				for (String heading : this.inputHeadings) {
 					BasicFile.appendSeparator(line, this.getOutputFormat());
 					line.append("\"");
 					line.append(heading);
 					line.append("\"");
 				}
-				
+
 				// now add the output fields that will be generated
 				for (AnalystField field : this.analyst.getScript()
 						.getNormalize().getNormalizedFields()) {
 					if (field.isOutput() && !field.isIgnored()) {
 						BasicFile.appendSeparator(line, this.getOutputFormat());
 						line.append("\"Output:");
-						line.append(CSVHeaders.tagColumn(field.getName(), 0, field.getTimeSlice(), false));
+						line.append(CSVHeaders.tagColumn(field.getName(), 0,
+								field.getTimeSlice(), false));
 						line.append("\"");
 					}
 				}
-
-				
 
 				tw.println(line.toString());
 			}
@@ -127,7 +116,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 		NeuralData output = null;
 
-		NeuralData input = new BasicNeuralData(method.getInputCount());
+		int outputLength = this.analyst.determineUniqueColumns();
 
 		PrintWriter tw = this.prepareOutputFile(outputFile, analyst.getScript()
 				.getNormalize().countActiveFields() - 1, 1);
@@ -137,55 +126,40 @@ public class AnalystEvaluateCSV extends BasicFile {
 			updateStatus(false);
 			LoadedRow row = new LoadedRow(csv, this.outputColumns);
 
-			int outputIndex = 0;
-
-			// build the input
-			for (AnalystField field : analyst.getScript().getNormalize()
-					.getNormalizedFields()) {
-				if (this.columnMapping.containsKey(field.getName())) {
-					int fieldIndex = this.columnMapping.get(field.getName());
-					int columnsNeeded = field.getColumnsNeeded();
-					String str = row.getData()[fieldIndex];
-
-					if (field.isInput()) {
-						if (columnsNeeded == 1) {
-							double d = this.getInputFormat().parse(str);
-							input.setData(outputIndex++, field.normalize(d));
-						} else if (columnsNeeded > 1) {
-							int idx = field.lookup(str);
-							double[] e = field.getEq().encode(idx);
-							for (int i = 0; i < e.length; i++) {
-								input.setData(outputIndex++, e[i]);
-							}
-						}
-					}
-				}
+			double[] inputArray = AnalystNormalizeCSV.extractFields(analyst,
+					this.analystHeaders, csv, outputLength);
+			if (this.series.getTotalDepth() > 0) {
+				inputArray = this.series.process(inputArray);
 			}
 
-			// evaluation data
-			output = method.compute(input);
-			
-			// skip file data
-			int index = this.fileColumns;
-			outputIndex = 0;
+			if (inputArray != null) {
+				NeuralData input = new BasicNeuralData(inputArray);
 
-			// display output
-			for (AnalystField field : analyst.getScript().getNormalize()
-					.getNormalizedFields()) {
-				if (this.columnMapping.containsKey(field.getName())) {
+				// evaluation data
+				output = method.compute(input);
 
-					if (field.isOutput()) {
-						if (field.isClassify()) {
-							// classification
-							ClassItem cls = field.determineClass(output
-									.getData());
-							row.getData()[index++] = cls.getName();
-						} else {
-							// regression
-							double n = output.getData(outputIndex++);
-							n = field.deNormalize(n);
-							row.getData()[index++] = this.getInputFormat()
-									.format(n, this.getPrecision());
+				// skip file data
+				int index = this.fileColumns;
+				int outputIndex = 0;
+
+				// display output
+				for (AnalystField field : analyst.getScript().getNormalize()
+						.getNormalizedFields()) {
+					if (this.analystHeaders.find(field.getName()) != -1) {
+
+						if (field.isOutput()) {
+							if (field.isClassify()) {
+								// classification
+								ClassItem cls = field.determineClass(output
+										.getData());
+								row.getData()[index++] = cls.getName();
+							} else {
+								// regression
+								double n = output.getData(outputIndex++);
+								n = field.deNormalize(n);
+								row.getData()[index++] = this.getInputFormat()
+										.format(n, this.getPrecision());
+							}
 						}
 					}
 				}
@@ -197,13 +171,4 @@ public class AnalystEvaluateCSV extends BasicFile {
 		tw.close();
 		csv.close();
 	}
-
-	public Map<String, Integer> getClassCorrect() {
-		return classCorrect;
-	}
-
-	public Map<String, Integer> getClassCount() {
-		return classCount;
-	}
-
 }
