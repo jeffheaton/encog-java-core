@@ -150,8 +150,8 @@ public class AnalystEvaluateCSV extends BasicFile {
 						if (field.isOutput()) {
 							if (field.isClassify()) {
 								// classification
-								ClassItem cls = field.determineClass(output
-										.getData());
+								ClassItem cls = field.determineClass(outputIndex,output.getData());
+								outputIndex+=field.getColumnsNeeded();
 								row.getData()[index++] = cls.getName();
 							} else {
 								// regression

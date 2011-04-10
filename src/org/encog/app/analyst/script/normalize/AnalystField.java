@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
-import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
@@ -15,7 +14,6 @@ import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 
 public class AnalystField {
 	/**
@@ -366,30 +364,6 @@ public class AnalystField {
 		return this.lookup.get(str);
 	}
 
-	/**
-	 * Determine what class the specified data belongs to.
-	 * 
-	 * @param data
-	 *            The data to analyze.
-	 * @return The class the data belongs to.
-	 */
-	public ClassItem determineClass(double[] data) {
-		int resultIndex = 0;
-
-		switch (this.action) {
-		case Equilateral:
-			resultIndex = this.eq.decode(data);
-			break;
-		case OneOf:
-			resultIndex = EngineArray.indexOfLargest(data);
-			break;
-		case SingleField:
-			resultIndex = (int) data[0];
-			break;
-		}
-
-		return this.classes.get(resultIndex);
-	}
 
 	/**
 	 * Perform the encoding for "one of".
@@ -586,5 +560,51 @@ public class AnalystField {
 
 	public boolean isIgnored() {
 		return this.action == NormalizationAction.Ignore;
+	}
+	
+	/**
+	 * Determine what class the specified data belongs to.
+	 * 
+	 * @param data
+	 *            The data to analyze.
+	 * @return The class the data belongs to.
+	 */
+	public ClassItem determineClass(double[] data) {
+		int resultIndex = 0;
+
+		switch (this.action) {
+		case Equilateral:
+			resultIndex = this.eq.decode(data);
+			break;
+		case OneOf:
+			resultIndex = EngineArray.indexOfLargest(data);
+			break;
+		case SingleField:
+			resultIndex = (int) data[0];
+			break;
+		}
+
+		return this.classes.get(resultIndex);
+	}
+
+
+	public ClassItem determineClass(int pos, double[] data) {
+		int resultIndex = 0;
+		double[] d = new double[this.getColumnsNeeded()];
+		EngineArray.arrayCopy(data,pos,d,0,d.length);
+
+		switch (this.action) {
+		case Equilateral:
+			resultIndex = this.eq.decode(d);
+			break;
+		case OneOf:
+			resultIndex = EngineArray.indexOfLargest(d);
+			break;
+		case SingleField:
+			resultIndex = (int) d[0];
+			break;
+		}
+
+		return this.classes.get(resultIndex);
 	}
 }
