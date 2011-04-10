@@ -4,6 +4,7 @@ import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.method.FeedforwardFactory;
 import org.encog.ml.factory.method.RBFNetworkFactory;
+import org.encog.ml.factory.method.SOMFactory;
 import org.encog.ml.factory.method.SVMFactory;
 
 public class MLMethodFactory {
@@ -11,10 +12,12 @@ public class MLMethodFactory {
 	public static final String TYPE_FEEDFORWARD = "feedforward";
 	public static final String TYPE_RBFNETWORK = "rbfnetwork";
 	public static final String TYPE_SVM = "svm";
+	public static final String TYPE_SOM = "som";
 	
 	private final FeedforwardFactory feedforwardFactory = new FeedforwardFactory();
 	private final SVMFactory svmFactory = new SVMFactory();
 	private final RBFNetworkFactory rbfFactory = new RBFNetworkFactory();
+	private final SOMFactory somFactory = new SOMFactory();
 	
 	public MLMethod create(String methodType, String architecture, int input, int output)
 	{
@@ -24,6 +27,8 @@ public class MLMethodFactory {
 			return rbfFactory.create(architecture,input,output);
 		} else if( TYPE_SVM.equals(methodType) ) {
 			return svmFactory.create(architecture,input,output);
+		} else if( TYPE_SOM.equals(methodType) ) {
+			return somFactory.create(architecture,input,output);
 		}
 		throw new EncogError("Unknown method type: " + methodType);
 	}
