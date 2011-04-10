@@ -14,6 +14,8 @@ import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
 import org.encog.app.quant.basic.LoadedRow;
 import org.encog.app.quant.normalize.ClassItem;
+import org.encog.ml.MLClassification;
+import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -109,7 +111,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	}
 
 	public void process(File outputFile, EncogAnalyst analyst,
-			MLRegression method) {
+			MLMethod method) {
 
 		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 				this.isExpectInputHeaders(), this.getInputFormat());
@@ -136,7 +138,15 @@ public class AnalystEvaluateCSV extends BasicFile {
 				NeuralData input = new BasicNeuralData(inputArray);
 
 				// evaluation data
-				output = method.compute(input);
+				if( method instanceof MLClassification && !(method instanceof MLRegression)) {
+					// classification only?
+					output = new BasicNeuralData(1);
+					output.setData(0, ((MLClassification)method).classify(input));
+				} else {
+					// regression
+					output = ((MLRegression)method).compute(input);	
+				}
+				
 
 				// skip file data
 				int index = this.fileColumns;
@@ -152,7 +162,11 @@ public class AnalystEvaluateCSV extends BasicFile {
 								// classification
 								ClassItem cls = field.determineClass(outputIndex,output.getData());
 								outputIndex+=field.getColumnsNeeded();
-								row.getData()[index++] = cls.getName();
+								if( cls==null ) {
+									row.getData()[index++] = "?Unknown?";
+								} else {
+									row.getData()[index++] = cls.getName();
+								}
 							} else {
 								// regression
 								double n = output.getData(outputIndex++);

@@ -17,6 +17,7 @@ import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.quant.normalize.NormalizationAction;
 import org.encog.ml.factory.MLMethodFactory;
+import org.encog.ml.factory.MLTrainFactory;
 import org.encog.util.file.FileUtil;
 
 /**
@@ -202,6 +203,7 @@ public class AnalystWizard {
 
 		for (int i = 0; i < this.script.getFields().length; i++) {
 			DataField f = dataFields[i];
+			
 			NormalizationAction action;
 			boolean isLast = i == this.script.getFields().length - 1;
 
@@ -339,6 +341,10 @@ public class AnalystWizard {
 			break;
 		case RBF:
 			generateRBF(inputColumns, idealColumns);
+			break;
+		case SOM:
+			generateSOM(inputColumns);
+			break;
 		}
 	}
 
@@ -395,6 +401,21 @@ public class AnalystWizard {
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
 				0.01);
+	}
+	
+	private void generateSOM(int inputColumns) {
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SOM);
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_CONFIG_architecture,
+				"?->?");
+
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
+				MLTrainFactory.TYPE_SOM_NEIGHBORHOOD);
+		
+		//ScriptProperties.ML_TRAIN_arguments
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_targetError, 0.01);
 	}
 
 	private String createSet(String setTarget, String setSource) {
@@ -525,7 +546,7 @@ public class AnalystWizard {
 	private void determineClassification() {
 		this.directClassification = false;
 
-		if (this.methodType == WizardMethodType.SVM) {
+		if (this.methodType == WizardMethodType.SVM || this.methodType==WizardMethodType.SOM ) {
 			this.directClassification = true;
 		}
 	}

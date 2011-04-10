@@ -7,6 +7,7 @@ import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.quant.evaluate.EvaluateCSV;
+import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.persist.EncogDirectoryPersistence;
 
@@ -40,7 +41,7 @@ public class CmdEvaluate extends Cmd {
 
 		File outputFile = getAnalyst().getScript().resolveFilename(outputID);
 
-		MLRegression method = (MLRegression) EncogDirectoryPersistence
+		MLMethod method = (MLMethod) EncogDirectoryPersistence
 				.loadObject(resourceFile);
 
 		boolean headers = getScript().expectInputHeaders(evalID);

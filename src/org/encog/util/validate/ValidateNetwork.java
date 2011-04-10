@@ -28,6 +28,7 @@ import org.encog.ml.MLInput;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLOutput;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.som.SOM;
 
 public class ValidateNetwork {
 	
@@ -36,10 +37,6 @@ public class ValidateNetwork {
 		
 		if( !(method instanceof MLInput) || !(method instanceof MLOutput) ) {
 			throw new EncogError("This machine learning method is not compatible with the provided data.");
-		}
-		
-		if( !training.isSupervised() && method instanceof MLOutput ) {
-			throw new EncogError("This machine learning method cannot be used with unsupervised data.");			
 		}
 		
 		int trainingInputCount = training.getInputSize();
@@ -59,7 +56,7 @@ public class ValidateNetwork {
 			throw new EncogError("The machine learning method has an input length of " + methodInputCount + ", but the training data has " + trainingInputCount  + ". They must be the same.");
 		}
 		
-		if( methodOutputCount != trainingOutputCount ) {
+		if( trainingOutputCount>0 && methodOutputCount != trainingOutputCount ) {
 			throw new EncogError("The machine learning method has an output length of " + methodOutputCount + ", but the training data has " + trainingOutputCount  + ". They must be the same.");
 		}
 		

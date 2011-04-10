@@ -24,6 +24,13 @@
 package org.encog.neural.som.training.basic.neighborhood;
 
 import org.encog.engine.network.rbf.RadialBasisFunction;
+import org.encog.engine.util.EngineArray;
+import org.encog.mathutil.rbf.GaussianFunction;
+import org.encog.mathutil.rbf.InverseMultiquadricFunction;
+import org.encog.mathutil.rbf.MexicanHatFunction;
+import org.encog.mathutil.rbf.MultiquadricFunction;
+import org.encog.mathutil.rbf.RBFEnum;
+import org.encog.neural.NeuralNetworkError;
 
 /**
  * A neighborhood function based on an RBF function.
@@ -47,6 +54,33 @@ public class NeighborhoodRBF1D implements NeighborhoodFunction {
 	 */
 	public NeighborhoodRBF1D(final RadialBasisFunction radial) {
 		this.radial = radial;
+	}
+	
+	/**
+	 * Construct a 1d neighborhood function.
+	 * @param type The RBF type to use.
+	 */
+	public NeighborhoodRBF1D(final RBFEnum type) {
+
+		switch(type)
+		{
+			case Gaussian:
+				this.radial = new GaussianFunction(1);
+				break;
+			case InverseMultiquadric:
+				this.radial = new InverseMultiquadricFunction(1);
+				break;
+			case Multiquadric:
+				this.radial = new MultiquadricFunction(1);
+				break;
+			case MexicanHat:
+				this.radial = new MexicanHatFunction(1);
+				break;		
+			default:
+				throw new NeuralNetworkError("Unknown RBF type: " + type.toString());
+		}
+		
+		this.radial.setWidth(1.0);
 	}
 
 	/**

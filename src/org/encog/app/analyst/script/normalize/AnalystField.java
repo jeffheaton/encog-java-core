@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.util.CSVHeaders;
 import org.encog.app.quant.QuantError;
 import org.encog.app.quant.basic.BasicFile;
@@ -603,8 +604,13 @@ public class AnalystField {
 		case SingleField:
 			resultIndex = (int) d[0];
 			break;
+		default:
+			throw new AnalystError("Invalid action: " + this.action);
 		}
 
+		if( resultIndex<0 )
+			return null;
+		
 		return this.classes.get(resultIndex);
 	}
 }

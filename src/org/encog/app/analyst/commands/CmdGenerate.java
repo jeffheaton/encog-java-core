@@ -8,6 +8,7 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.CSVHeaders;
+import org.encog.ml.factory.MLMethodFactory;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.simple.EncogUtility;
 
@@ -47,6 +48,17 @@ public class CmdGenerate extends Cmd {
 	}
 
 	public int[] determineIdealFields(CSVHeaders headerList) {
+		
+		int[] result;
+		String type = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_type);
+		
+		// is it non-supervised?
+		if( type.equals(MLMethodFactory.TYPE_SOM)) {
+			result = new int[0];
+			return result;
+		}
+		
 		List<Integer> fields = new ArrayList<Integer>();
 
 		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
@@ -60,7 +72,7 @@ public class CmdGenerate extends Cmd {
 		}
 
 		// allocate result array
-		int[] result = new int[fields.size()];
+		result = new int[fields.size()];
 		for (int i = 0; i < result.length; i++) {
 			result[i] = fields.get(i);
 		}
