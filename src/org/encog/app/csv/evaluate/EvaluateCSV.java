@@ -3,9 +3,9 @@ package org.encog.app.csv.evaluate;
 import java.io.File;
 import java.io.PrintWriter;
 
+import org.encog.app.csv.EncogCSVError;
 import org.encog.app.csv.basic.BasicFile;
 import org.encog.app.csv.basic.LoadedRow;
-import org.encog.app.quant.QuantError;
 import org.encog.ml.MLRegression;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralData;
@@ -41,7 +41,7 @@ public class EvaluateCSV extends BasicFile {
         
         int methodCount = method.getInputCount() + method.getOutputCount();
         if( methodCount!=this.getColumnCount()) {
-        	throw new QuantError("ML Method expects " + methodCount + ", however " + this.getColumnCount() + " columes are in the file.");
+        	throw new EncogCSVError("ML Method expects " + methodCount + ", however " + this.getColumnCount() + " columes are in the file.");
         }
 
         resetStatus();

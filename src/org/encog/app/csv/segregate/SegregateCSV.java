@@ -5,9 +5,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.encog.app.csv.EncogCSVError;
 import org.encog.app.csv.basic.BasicFile;
 import org.encog.app.csv.basic.LoadedRow;
-import org.encog.app.quant.QuantError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -37,12 +37,12 @@ public class SegregateCSV extends BasicFile {
 
         if (targets.size() < 1)
         {
-            throw new QuantError("There are no segregation targets.");
+            throw new EncogCSVError("There are no segregation targets.");
         }
 
         if (targets.size() < 2)
         {
-            throw new QuantError("There must be at least two segregation targets.");
+            throw new EncogCSVError("There must be at least two segregation targets.");
         }
 
         int total = 0;
@@ -53,7 +53,7 @@ public class SegregateCSV extends BasicFile {
 
         if (total != 100)
         {
-            throw new QuantError("Target percents must equal 100.");
+            throw new EncogCSVError("Target percents must equal 100.");
         }
     }
 

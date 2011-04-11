@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.app.quant.QuantError;
+import org.encog.app.csv.EncogCSVError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -76,7 +76,7 @@ public class BasicCachedFile extends BasicFile {
             this.setRecordCount( recordCount );
         }
         catch(IOException ex) {
-        	throw new QuantError(ex);
+        	throw new EncogCSVError(ex);
         }
         finally
         {
@@ -85,7 +85,7 @@ public class BasicCachedFile extends BasicFile {
                 try {
 					reader.close();
 				} catch (IOException e) {
-					throw new QuantError(e);
+					throw new EncogCSVError(e);
 				}
             }
             this.setInputFilename( input );
@@ -100,7 +100,7 @@ public class BasicCachedFile extends BasicFile {
             csv = new ReadCSV(input.toString(), headers, format);
             if (!csv.next())
             {
-                throw new QuantError("File is empty");
+                throw new EncogCSVError("File is empty");
             }
 
             for (int i = 0; i < csv.getColumnCount(); i++)

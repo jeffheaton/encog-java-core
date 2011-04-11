@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 
 import org.encog.Encog;
 import org.encog.NullStatusReportable;
-import org.encog.app.quant.QuantError;
+import org.encog.app.csv.EncogCSVError;
 import org.encog.app.quant.QuantTask;
 import org.encog.engine.StatusReportable;
 import org.encog.util.csv.CSVFormat;
@@ -152,7 +152,7 @@ public class BasicFile implements QuantTask {
 			return tw;
 
 		} catch (IOException e) {
-			throw new QuantError(e);
+			throw new EncogCSVError(e);
 		}
 	}
 
@@ -162,7 +162,7 @@ public class BasicFile implements QuantTask {
 	 */
 	public int getRecordCount() {
 		if (!analyzed) {
-			throw new QuantError("Must analyze file first.");
+			throw new EncogCSVError("Must analyze file first.");
 		}
 		return this.recordCount;
 
@@ -183,7 +183,7 @@ public class BasicFile implements QuantTask {
 	 */
 	public void validateAnalyzed() {
 		if (!analyzed) {
-			throw new QuantError("File must be analyzed first.");
+			throw new EncogCSVError("File must be analyzed first.");
 		}
 	}
 

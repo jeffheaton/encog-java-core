@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
+import org.encog.app.csv.EncogCSVError;
 import org.encog.app.csv.basic.BasicFile;
-import org.encog.app.quant.QuantError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.csv.ReadCSV;
@@ -114,7 +114,7 @@ public class NormalizeCSV extends BasicFile {
 		try {
 			tw = new PrintWriter(new FileWriter(targetFile));
 		} catch (IOException e) {
-			throw new QuantError(e);
+			throw new EncogCSVError(e);
 		}
 
 		if (!csv.next()) {
@@ -264,7 +264,7 @@ public class NormalizeCSV extends BasicFile {
 				tw.println(line);
 			}
 		} catch (IOException e) {
-			throw new QuantError(e);
+			throw new EncogCSVError(e);
 		} finally {
 			reportDone(false);
 			if (csv != null) {
@@ -369,7 +369,7 @@ public class NormalizeCSV extends BasicFile {
 				tw.println(line.toString());
 			}
 		} catch (IOException e) {
-			throw new QuantError(e);
+			throw new EncogCSVError(e);
 		} finally {
 			// close the stream
 			if (tw != null)

@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.Encog;
+import org.encog.app.csv.EncogCSVError;
 import org.encog.app.csv.basic.BasicFile;
-import org.encog.app.quant.QuantError;
 import org.encog.engine.util.EngineArray;
 import org.encog.mathutil.Equilateral;
 import org.encog.util.csv.CSVFormat;
@@ -328,7 +328,7 @@ public class NormalizedField {
 		this.owner = owner;
 		if (this.action == NormalizationAction.Equilateral) {
 			if( this.classes.size()<3 ) {
-				throw new QuantError("There must be at least three classes to make use of equilateral normalization.");
+				throw new EncogCSVError("There must be at least three classes to make use of equilateral normalization.");
 			}
 						
 			this.eq = new Equilateral(this.classes.size(), this.normalizedHigh,
@@ -445,7 +445,7 @@ public class NormalizedField {
 			try {
 				classNumber = Integer.parseInt(str);
 			} catch (NumberFormatException ex) {
-				throw new QuantError("Can't determine class for: " + str);
+				throw new EncogCSVError("Can't determine class for: " + str);
 			}
 		}
 		return encode(classNumber);
@@ -457,7 +457,7 @@ public class NormalizedField {
 		if( (action!=NormalizationAction.Equilateral) 
 				&& (action!=NormalizationAction.OneOf)
 				&& (action!=NormalizationAction.SingleField) ) {
-				throw new QuantError("Unsupported normalization type");
+				throw new EncogCSVError("Unsupported normalization type");
 			}
 			
 			this.action = action;
@@ -478,7 +478,7 @@ public class NormalizedField {
 		if( (action!=NormalizationAction.Equilateral) 
 			&& (action!=NormalizationAction.OneOf)
 			&& (action!=NormalizationAction.SingleField) ) {
-			throw new QuantError("Unsupported normalization type");
+			throw new EncogCSVError("Unsupported normalization type");
 		}
 		
 		this.action = action;
