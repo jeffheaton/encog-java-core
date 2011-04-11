@@ -10,8 +10,8 @@ import java.io.PrintWriter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.app.quant.normalize.NormalizationAction;
-import org.encog.app.quant.normalize.NormalizeCSV;
+import org.encog.app.csv.normalize.NormalizationAction;
+import org.encog.app.csv.normalize.NormalizeCSV;
 import org.encog.util.csv.CSVFormat;
 
 public class TestNormalizeCSV extends TestCase {

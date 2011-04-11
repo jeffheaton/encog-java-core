@@ -7,13 +7,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.encog.app.quant.sort.SortCSV;
-import org.encog.app.quant.sort.SortType;
-import org.encog.app.quant.sort.SortedField;
+import junit.framework.TestCase;
+
+import org.encog.app.csv.sort.SortCSV;
+import org.encog.app.csv.sort.SortType;
+import org.encog.app.csv.sort.SortedField;
 import org.encog.util.csv.CSVFormat;
 import org.junit.Assert;
-
-import junit.framework.TestCase;
 
 public class TestSort extends TestCase {
 

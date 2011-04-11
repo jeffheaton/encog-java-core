@@ -1,9 +1,9 @@
 package org.encog.app.quant;
 
-import org.encog.app.quant.normalize.NormalizeArray;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.app.csv.normalize.NormalizeArray;
 
 public class TestNormalizeArray extends TestCase {
 

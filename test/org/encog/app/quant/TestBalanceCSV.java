@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.app.quant.balance.BalanceCSV;
+import org.encog.app.csv.balance.BalanceCSV;
 import org.encog.util.csv.CSVFormat;
 
 public class TestBalanceCSV extends TestCase {

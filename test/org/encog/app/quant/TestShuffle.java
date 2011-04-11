@@ -9,11 +9,11 @@ import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.encog.app.quant.shuffle.ShuffleCSV;
+import junit.framework.TestCase;
+
+import org.encog.app.csv.shuffle.ShuffleCSV;
 import org.encog.util.csv.CSVFormat;
 import org.junit.Assert;
-
-import junit.framework.TestCase;
 
 public class TestShuffle extends TestCase {
 

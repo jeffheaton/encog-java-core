@@ -7,11 +7,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import org.encog.app.quant.filter.FilterCSV;
-import org.encog.util.csv.CSVFormat;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.app.csv.filter.FilterCSV;
+import org.encog.util.csv.CSVFormat;
 
 public class TestFilter extends TestCase {
 

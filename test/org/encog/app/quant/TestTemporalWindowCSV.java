@@ -9,8 +9,8 @@ import java.io.PrintWriter;
 
 import junit.framework.TestCase;
 
-import org.encog.app.quant.temporal.TemporalType;
-import org.encog.app.quant.temporal.TemporalWindowCSV;
+import org.encog.app.csv.temporal.TemporalType;
+import org.encog.app.csv.temporal.TemporalWindowCSV;
 import org.encog.util.csv.CSVFormat;
 import org.junit.Assert;
 
