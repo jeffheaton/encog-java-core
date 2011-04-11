@@ -2,8 +2,8 @@ package org.encog.app.quant.indicators;
 
 import java.util.Map;
 
+import org.encog.app.csv.basic.BaseCachedColumn;
 import org.encog.app.quant.QuantError;
-import org.encog.app.quant.basic.BaseCachedColumn;
 
 /**
  * An indicator, used by Encog.

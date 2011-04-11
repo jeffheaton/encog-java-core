@@ -30,7 +30,7 @@ import java.io.PrintWriter;
 
 import org.encog.Encog;
 import org.encog.EncogError;
-import org.encog.app.quant.basic.BasicFile;
+import org.encog.app.csv.basic.BasicFile;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.ErrorCalculation;

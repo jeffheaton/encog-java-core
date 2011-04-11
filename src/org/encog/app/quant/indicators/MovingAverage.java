@@ -3,8 +3,8 @@ package org.encog.app.quant.indicators;
 
 import java.util.Map;
 
-import org.encog.app.quant.basic.BaseCachedColumn;
-import org.encog.app.quant.basic.FileData;
+import org.encog.app.csv.basic.BaseCachedColumn;
+import org.encog.app.csv.basic.FileData;
 
 /**
  * A simple moving average.

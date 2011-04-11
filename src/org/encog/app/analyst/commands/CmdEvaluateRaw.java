@@ -1,19 +1,12 @@
 package org.encog.app.analyst.commands;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import org.encog.app.analyst.EncogAnalyst;
-import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.evaluate.AnalystEvaluateRawCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
-import org.encog.app.quant.evaluate.EvaluateCSV;
-import org.encog.engine.util.Format;
+import org.encog.app.csv.evaluate.EvaluateCSV;
 import org.encog.ml.MLRegression;
 import org.encog.persist.EncogDirectoryPersistence;
 

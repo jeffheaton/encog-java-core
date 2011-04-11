@@ -5,10 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import org.encog.app.csv.basic.BaseCachedColumn;
+import org.encog.app.csv.basic.BasicCachedFile;
+import org.encog.app.csv.basic.FileData;
 import org.encog.app.quant.QuantError;
-import org.encog.app.quant.basic.BaseCachedColumn;
-import org.encog.app.quant.basic.BasicCachedFile;
-import org.encog.app.quant.basic.FileData;
 import org.encog.util.csv.ReadCSV;
 
 /**

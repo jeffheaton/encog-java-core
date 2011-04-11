@@ -15,7 +15,7 @@ import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
-import org.encog.app.quant.normalize.NormalizationAction;
+import org.encog.app.csv.normalize.NormalizationAction;
 import org.encog.ml.factory.MLMethodFactory;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.util.file.FileUtil;

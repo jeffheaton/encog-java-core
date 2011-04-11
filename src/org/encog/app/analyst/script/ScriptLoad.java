@@ -14,9 +14,7 @@ import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
 import org.encog.app.analyst.script.segregate.AnalystSegregateTarget;
 import org.encog.app.analyst.script.task.AnalystTask;
-import org.encog.app.quant.QuantError;
-import org.encog.app.quant.normalize.NormalizationAction;
-import org.encog.app.quant.normalize.NormalizedField;
+import org.encog.app.csv.normalize.NormalizationAction;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogReadHelper;
 

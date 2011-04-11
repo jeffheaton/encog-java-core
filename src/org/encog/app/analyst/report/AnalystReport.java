@@ -9,7 +9,6 @@ import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.DataField;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
-import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.engine.util.Format;
 import org.encog.util.HTMLReport;
 import org.encog.util.file.FileUtil;

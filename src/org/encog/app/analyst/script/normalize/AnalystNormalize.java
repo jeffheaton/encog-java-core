@@ -7,8 +7,8 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.AnalystClassItem;
 import org.encog.app.analyst.script.AnalystScript;
 import org.encog.app.analyst.script.DataField;
-import org.encog.app.quant.normalize.ClassItem;
-import org.encog.app.quant.normalize.NormalizationAction;
+import org.encog.app.csv.normalize.ClassItem;
+import org.encog.app.csv.normalize.NormalizationAction;
 
 /**
  * This class holds information about the fields that the Encog Analyst will

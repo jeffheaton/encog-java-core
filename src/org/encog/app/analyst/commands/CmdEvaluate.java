@@ -6,7 +6,7 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.evaluate.AnalystEvaluateCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
-import org.encog.app.quant.evaluate.EvaluateCSV;
+import org.encog.app.csv.evaluate.EvaluateCSV;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.persist.EncogDirectoryPersistence;

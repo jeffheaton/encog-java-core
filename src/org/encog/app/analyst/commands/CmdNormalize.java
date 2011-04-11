@@ -4,12 +4,8 @@ import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.evaluate.AnalystNormalizeCSV;
-import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
-import org.encog.app.quant.normalize.NormalizationStats;
-import org.encog.app.quant.normalize.NormalizeCSV;
-import org.encog.app.quant.normalize.NormalizedField;
 import org.encog.util.csv.CSVFormat;
 
 /**
