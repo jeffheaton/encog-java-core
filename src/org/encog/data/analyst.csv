@@ -36,3 +36,6 @@ ML:TRAIN,type,string
 ML:TRAIN,arguments,string
 ML:TRAIN,targetError,real
 ML:TRAIN,cross,string
+CLUSTER:CONFIG,sourceFile,string
+CLUSTER:CONFIG,targetFile,string
+CLUSTER:CONFIG,type,string

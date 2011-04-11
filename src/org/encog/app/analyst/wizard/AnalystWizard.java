@@ -52,6 +52,7 @@ public class AnalystWizard {
 	public static final String FILE_ML = "FILE_ML";
 	public static final String FILE_OUTPUT = "FILE_OUTPUT";
 	public static final String FILE_BALANCE = "FILE_BALANCE";
+	public static final String FILE_CLUSTER = "FILE_CLUSTER";
 
 	private String filenameRaw;
 	private String filenameNorm;
@@ -63,6 +64,7 @@ public class AnalystWizard {
 	private String filenameML;
 	private String filenameOutput;
 	private String filenameBalance;
+	private String filenameCluster;
 
 	private AnalystScript script;
 	private EncogAnalyst analyst;
@@ -111,6 +113,8 @@ public class AnalystWizard {
 				.toString();
 		this.filenameBalance = FileUtil.addFilenameBase(rawFile, "_balance")
 				.toString();
+		this.filenameCluster = FileUtil.addFilenameBase(rawFile, "_cluster")
+				.toString();
 
 		ScriptProperties p = this.script.getProperties();
 
@@ -124,6 +128,7 @@ public class AnalystWizard {
 		p.setFilename(FILE_ML, this.filenameML);
 		p.setFilename(FILE_OUTPUT, this.filenameOutput);
 		p.setFilename(FILE_BALANCE, this.filenameBalance);
+		p.setFilename(FILE_CLUSTER, this.filenameCluster);
 	}
 
 	private void generateSettings() {

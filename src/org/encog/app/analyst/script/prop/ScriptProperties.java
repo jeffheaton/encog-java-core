@@ -55,7 +55,10 @@ public class ScriptProperties {
 	public static final String SERIES_CONFIG_lag = "SERIES:CONFIG_lag";
 	public static final String SERIES_CONFIG_includeTarget = "SERIES:CONFIG_includeTarget";
 	public static final String SERIES_CONFIG_sourceFile = "SERIES:CONFIG_sourceFile";
-	public static final String SERIES_CONFIG_targetFile = "SERIES:CONFIG_targetFile";
+	public static final String SERIES_CONFIG_targetFile = "SERIES:CONFIG_targetFile";	
+	public static final String CLUSTER_CONFIG_sourceFile = "CLUSTER:CONFIG_sourceFile";
+	public static final String CLUSTER_CONFIG_targetFile = "CLUSTER:CONFIG_targetFile";
+	public static final String CLUSTER_CONFIG_type = "CLUSTER:CONFIG_type";
 
 	private final Map<String, String> data = new HashMap<String, String>();
 
