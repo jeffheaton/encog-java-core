@@ -23,48 +23,67 @@
  */
 package org.encog.app.analyst.script.segregate;
 
-
 /**
  * This class specifies a target for the segregation process.
- *
+ * 
  */
 public class AnalystSegregateTarget {
-	private String file;
-	private int percent;
 	
-	public AnalystSegregateTarget(String file, int percent) {
+	/**
+	 * The file target.
+	 */
+	private String file;
+	
+	/**
+	 * The percent.
+	 */
+	private int percent;
+
+	/**
+	 * Construct the segregation target.
+	 * @param theFile The file.
+	 * @param thePercent The percent.
+	 */
+	public AnalystSegregateTarget(final String theFile, final int thePercent) {
 		super();
-		this.file = file;
-		this.percent = percent;
+		this.file = theFile;
+		this.percent = thePercent;
 	}
+
 	/**
 	 * @return the file
 	 */
-	public String getFile() {
-		return file;
+	public final String getFile() {
+		return this.file;
 	}
-	/**
-	 * @param file the file to set
-	 */
-	public void setFile(String file) {
-		this.file = file;
-	}
+
 	/**
 	 * @return the percent
 	 */
-	public int getPercent() {
-		return percent;
+	public final int getPercent() {
+		return this.percent;
 	}
+
 	/**
-	 * @param percent the percent to set
+	 * @param theFile
+	 *            the file to set
 	 */
-	public void setPercent(int percent) {
-		this.percent = percent;
+	public final void setFile(final String theFile) {
+		this.file = theFile;
 	}
-	
+
+	/**
+	 * @param thePercent
+	 *            the percent to set
+	 */
+	public final void setPercent(final int thePercent) {
+		this.percent = thePercent;
+	}
+
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" file=");
 		result.append(this.file.toString());
@@ -73,5 +92,5 @@ public class AnalystSegregateTarget {
 		result.append("]");
 		return result.toString();
 	}
-	
+
 }

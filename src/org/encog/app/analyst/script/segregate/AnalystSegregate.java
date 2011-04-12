@@ -25,27 +25,29 @@ package org.encog.app.analyst.script.segregate;
 
 /**
  * Holds all of the segregation targets for a script.
- *
+ * 
  */
 public class AnalystSegregate {
-	
+
+	/**
+	 * The segregation targets.
+	 */
 	private AnalystSegregateTarget[] segregateTargets;
-		
+
 	/**
-	 * @return the segregateTargets
+	 * @return the segregateTargets.
 	 */
-	public AnalystSegregateTarget[] getSegregateTargets() {
-		return segregateTargets;
+	public final AnalystSegregateTarget[] getSegregateTargets() {
+		return this.segregateTargets;
 	}
 
 	/**
-	 * @param segregateTargets the segregateTargets to set
+	 * @param theSegregateTargets
+	 *            the segregateTargets to set.
 	 */
-	public void setSegregateTargets(AnalystSegregateTarget[] segregateTargets) {
-		this.segregateTargets = segregateTargets;
+	public final void setSegregateTargets(
+			final AnalystSegregateTarget[] theSegregateTargets) {
+		this.segregateTargets = theSegregateTargets;
 	}
 
-	
-
-	
 }

@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.Encog;
 import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.AnalystFileFormat;
 import org.encog.app.analyst.AnalystGoal;
@@ -248,127 +249,71 @@ public class ScriptProperties {
 	public static final String CLUSTER_CONFIG_CLUSTERS 
 		= "CLUSTER:CONFIG_clusters";
 
+
+	/**
+	 * Convert a key to the dot form.
+	 * 
+	 * @param str
+	 *            The key form.
+	 * @return The dot form.
+	 */
+	public static final String toDots(final String str) {
+		final int index1 = str.indexOf(':');
+		if (index1 == -1) {
+			return null;
+		}
+		final int index2 = str.indexOf('_');
+		if (index2 == -1) {
+			return null;
+		}
+		final String section = str.substring(0, index1);
+		final String subSection = str.substring(index1 + 1, index2);
+		final String name = str.substring(index2 + 1);
+		return section + "." + subSection + "." + name;
+	}
+
 	/**
 	 * Properties are stored in this map.
 	 */
 	private final Map<String, String> data = new HashMap<String, String>();
 
 	/**
-	 * Set the property to the specified value.
-	 * @param name The property name.
-	 * @param value The property value.
+	 * Clear out all filenames.
 	 */
-	public final void setProperty(final String name, final String value) {
-		data.put(name, value);
-	}
-
-	/**
-	 * Get a property as an object.
-	 * @param name The name of the property.
-	 * @return The property value.
-	 */
-	public final Object getProperty(final String name) {
-		return data.get(name);
-	}
-
-	/**
-	 * Get a property as a string.
-	 * @param name The name of the property.
-	 * @return The property value.
-	 */
-	public final String getPropertyString(final String name) {
-		if (!data.containsKey(name)) {
-			return null;
-		}
-		return data.get(name).toString();
-	}
-
-	/**
-	 * Set the property to a format.
-	 * @param name The name of the property.
-	 * @param format The value of the property.
-	 */
-	public final void setProperty(final String name, 
-			final AnalystFileFormat format) {
-		if (format == null) {
-			data.put(name, "");
-		} else {
-			data.put(name, ConvertStringConst.analystFileFormat2String(format));
-		}
-	}
-
-	/**
-	 * Set a property as a boolean.
-	 * @param name The name of the property.
-	 * @param b The value to set.
-	 */
-	public final void setProperty(final String name, final boolean b) {
-		if (b) {
-			data.put(name, "t");	
-		} else {
-			data.put(name, "f");
-		}
-	}
-
-	/**
-	 * Get a property as an object.
-	 * @param name The name of the property.
-	 */
-	public void setProperty(String name, File analyzeFile) {
-		data.put(name, analyzeFile.toString());
-
-	}
-
-	/**
-	 * Get a property as an object.
-	 * @param name The name of the property.
-	 * @return The property value.
-	 */
-	public void setProperty(String name, URL url) {
-		data.put(name, url.toExternalForm());
-
-	}
-
-	public String getPropertyFile(String name) {
-		return (String) data.get(name);
-
-	}
-
-	public AnalystFileFormat getPropertyFormat(String name) {
-		String value = data.get(name);
-		return ConvertStringConst.string2AnalystFileFormat(value);
-	}
-
-	public CSVFormat getPropertyCSVFormat(String name) {
-		String value = data.get(name);
-		AnalystFileFormat code = ConvertStringConst
-				.string2AnalystFileFormat(value);
-		return ConvertStringConst.convertToCSVFormat(code);
-	}
-
-	public URL getPropertyURL(String name) {
-		try {
-			return new URL(data.get(name));
-		} catch (MalformedURLException e) {
-			throw new AnalystError(e);
-		}
-	}
-
-	public void clearFilenames() {
-		Object[] array = this.data.keySet().toArray();
-		for (int i = 0; i < array.length; i++) {
-			String key = (String) array[i];
+	public final void clearFilenames() {
+		final Object[] array = this.data.keySet().toArray();
+		for (final Object element : array) {
+			final String key = (String) element;
 			if (key.startsWith("SETUP:FILENAMES")) {
 				this.data.remove(key);
 			}
 		}
 	}
 
-	public List<String> getFilenames() {
-		List<String> result = new ArrayList<String>();
-		for (String key : this.data.keySet()) {
+	/**
+	 * Get a filename.
+	 * @param file The file.
+	 * @return The filename.
+	 */
+	public final String getFilename(final String file) {
+		final String key2 = "SETUP:FILENAMES_" + file;
+
+		if (!this.data.containsKey(key2)) {
+			throw new AnalystError("Undefined file: " + file);
+		}
+
+		return this.data.get(key2);
+	}
+
+	/**
+	 * Get all filenames.
+	 * @return The filenames in a list.
+	 */
+	public final List<String> getFilenames() {
+		final List<String> result = new ArrayList<String>();
+		for (final String key : this.data.keySet()) {
 			if (key.startsWith("SETUP:FILENAMES")) {
-				int index = key.indexOf('_');
+				final int index = key.indexOf('_');
 				if (index != -1) {
 					result.add(key.substring(index + 1));
 				}
@@ -377,100 +322,265 @@ public class ScriptProperties {
 		return result;
 	}
 
-	public void setFilename(String key, String value) {
-		String key2 = "SETUP:FILENAMES_" + key;
-		this.data.put(key2, value);
-
+	/**
+	 * Get a property as an object.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @return The property value.
+	 */
+	public final Object getProperty(final String name) {
+		return this.data.get(name);
 	}
 
-	public String getFilename(String file) {
-		String key2 = "SETUP:FILENAMES_" + file;
-
-		if (!this.data.containsKey(key2)) {
-			throw new AnalystError("Undefined file: " + file);
-		}
-
-		return (String) this.data.get(key2);
-	}
-
-	public boolean getPropertyBoolean(String name) {
-		if (!data.containsKey(name))
+	/**
+	 * Get a property as a boolean.
+	 * @param name The property name.
+	 * @return A boolean value.
+	 */
+	public final boolean getPropertyBoolean(final String name) {
+		if (!this.data.containsKey(name)) {
 			return false;
-		else
-			return data.get(name).toLowerCase().startsWith("t");
+		} else {
+			return this.data.get(name).toLowerCase().startsWith("t");
+		}
 	}
 
-	public int getPropertyInt(String name) {
+	/**
+	 * Get a property as a format.
+	 * @param name The property name.
+	 * @return A format value.
+	 */
+	public final CSVFormat getPropertyCSVFormat(final String name) {
+		final String value = this.data.get(name);
+		final AnalystFileFormat code = ConvertStringConst
+				.string2AnalystFileFormat(value);
+		return ConvertStringConst.convertToCSVFormat(code);
+	}
+
+	/**
+	 * Get a property as a double.
+	 * @param name The property name.
+	 * @return A double value.
+	 */
+	public final double getPropertyDouble(final String name) {
+		final String value = this.data.get(name);
+		return CSVFormat.EG_FORMAT.parse(value);
+	}
+
+	/**
+	 * Get a property as a file.
+	 * @param name The property name.
+	 * @return A file value.
+	 */
+	public final String getPropertyFile(final String name) {
+		return this.data.get(name);
+
+	}
+
+	/**
+	 * Get a property as a format.
+	 * @param name The property name.
+	 * @return A format value.
+	 */
+	public final AnalystFileFormat getPropertyFormat(final String name) {
+		final String value = this.data.get(name);
+		return ConvertStringConst.string2AnalystFileFormat(value);
+	}
+
+	/**
+	 * Get a property as a int.
+	 * @param name The property name.
+	 * @return A int value.
+	 */
+	public final int getPropertyInt(final String name) {
 		try {
-			String value = this.data.get(name);
+			final String value = this.data.get(name);
 			if (value == null) {
 				return 0;
 			}
 			return Integer.parseInt(value);
-		} catch (NumberFormatException ex) {
+		} catch (final NumberFormatException ex) {
 			throw new AnalystError(ex);
 		}
 	}
 
-	public void setProperty(String name, int i) {
+	/**
+	 * Get a property as a string.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @return The property value.
+	 */
+	public final String getPropertyString(final String name) {
+		if (!this.data.containsKey(name)) {
+			return null;
+		}
+		return this.data.get(name).toString();
+	}
+
+	/**
+	 * Get a property as a url.
+	 * @param name The property name.
+	 * @return A url value.
+	 */
+	public final URL getPropertyURL(final String name) {
+		try {
+			return new URL(this.data.get(name));
+		} catch (final MalformedURLException e) {
+			throw new AnalystError(e);
+		}
+	}
+
+	/**
+	 * Perform a revert.
+	 * @param revertedData The source data to revert from.
+	 */
+	public final void performRevert(final Map<String, String> revertedData) {
+		this.data.clear();
+		this.data.putAll(revertedData);
+	}
+	
+	/**
+	 * Prepare a revert. 
+	 * @return Data that can be used to revert properties.
+	 */
+	public final Map<String, String> prepareRevert() {
+		final Map<String, String> result = new HashMap<String, String>();
+		result.putAll(this.data);
+		return result;
+	}
+
+	/**
+	 * Set a filename.
+	 * @param key The key.
+	 * @param value The value.
+	 */
+	public final void setFilename(final String key, final String value) {
+		final String key2 = "SETUP:FILENAMES_" + key;
+		this.data.put(key2, value);
+
+	}
+
+	/**
+	 * Set the property to a format.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param format
+	 *            The value of the property.
+	 */
+	public final void setProperty(final String name,
+			final AnalystFileFormat format) {
+		if (format == null) {
+			this.data.put(name, "");
+		} else {
+			this.data.put(name,
+					ConvertStringConst.analystFileFormat2String(format));
+		}
+	}
+
+	/**
+	 * Set a property.
+	 * @param name The name.
+	 * @param value The value.
+	 */
+	public final void setProperty(final String name, final AnalystGoal value) {
+		switch (value) {
+		case Classification:
+			this.data.put(name, "classification");
+			break;
+		case Regression:
+			this.data.put(name, "regression");
+			break;
+		default:
+			this.data.put(name, "");
+		}
+
+	}
+
+	/**
+	 * Set a property as a boolean.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param b
+	 *            The value to set.
+	 */
+	public final void setProperty(final String name, final boolean b) {
+		if (b) {
+			this.data.put(name, "t");
+		} else {
+			this.data.put(name, "f");
+		}
+	}
+
+	/**
+	 * Set a property as a double.
+	 * @param name The name of the property.
+	 * @param d The value.
+	 */
+	public final void setProperty(final String name, final double d) {
+		this.data.put(name, CSVFormat.EG_FORMAT.format(d, 
+					Encog.DEFAULT_PRECISION));
+	}
+
+	/**
+	 * Get a property as an object.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param f
+	 *            The filename value.
+	 */
+	public final void setProperty(final String name, final File f) {
+		this.data.put(name, f.toString());
+
+	}
+
+	/**
+	 * Set a property to an int.
+	 * @param name The property name.
+	 * @param i The value.
+	 */
+	public final void setProperty(final String name, final int i) {
 		this.data.put(name, "" + i);
 
 	}
 
-	public void setProperty(String name, double d) {
-		this.data.put(name, CSVFormat.EG_FORMAT.format(d, 5));
+	/**
+	 * Set the property to the specified value.
+	 * 
+	 * @param name
+	 *            The property name.
+	 * @param value
+	 *            The property value.
+	 */
+	public final void setProperty(final String name, final String value) {
+		this.data.put(name, value);
 	}
 
-	public double getPropertyDouble(String name) {
-		String value = this.data.get(name);
-		return CSVFormat.EG_FORMAT.parse(value);
-	}
+	/**
+	 * Get a property as an object.
+	 * 
+	 * @param name
+	 *            The name of the property.
+	 * @param url
+	 *            The url of the property.
+	 */
+	public final void setProperty(final String name, final URL url) {
+		this.data.put(name, url.toExternalForm());
 
-	public void setProperty(String name, AnalystGoal goal) {
-		switch (goal) {
-		case Classification:
-			data.put(name, "classification");
-			break;
-		case Regression:
-			data.put(name, "regression");
-			break;
-		default:
-			data.put(name, "");
-		}
-
-	}
-	
-	public Map<String, String> prepareRevert() {
-		Map<String, String> result = new HashMap<String, String>();
-		result.putAll(this.data);
-		return result;
-	}
-	
-	public void performRevert(Map<String, String> revertedData) {
-		this.data.clear();
-		this.data.putAll(revertedData);
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" :");
 		result.append(this.data.toString());
 		result.append("]");
 		return result.toString();
-	}
-
-	public static String toDots(String str) {
-		int index1 = str.indexOf(':');
-		if( index1==-1)
-			return null;
-		int index2 = str.indexOf('_');
-		if( index2==-1)
-			return null;
-		String section = str.substring(0,index1);
-		String subSection = str.substring(index1+1,index2);
-		String name = str.substring(index2+1);
-		return section+"."+subSection+"."+name;
 	}
 }

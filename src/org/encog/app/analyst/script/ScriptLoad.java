@@ -144,9 +144,11 @@ public class ScriptLoad {
 		for (DataField field : this.script.getFields()) {
 			if (field.isClass()) {
 				List<AnalystClassItem> classList = map.get(field.getName());
-				Collections.sort(classList);
-				field.getClassMembers().clear();
-				field.getClassMembers().addAll(classList);
+				if( classList!=null ) {
+					Collections.sort(classList);
+					field.getClassMembers().clear();
+					field.getClassMembers().addAll(classList);
+				}
 			}
 		}
 

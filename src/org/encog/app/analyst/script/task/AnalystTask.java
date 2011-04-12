@@ -27,45 +27,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Holds a task in the script.  A task is a named set of commands.
- *
+ * Holds a task in the script. A task is a named set of commands.
+ * 
  */
 public class AnalystTask {
 
-	
+	/**
+	 * The name of the task.
+	 */
 	private String name;
+
+	/**
+	 * The "source code" for this task.
+	 */
 	private final List<String> lines = new ArrayList<String>();
-	
-	public AnalystTask(String name) {
-		this.name = name;
-	}
+
 	/**
-	 * @return the name
+	 * Construct an analyst task.
+	 * 
+	 * @param theName
+	 *            The name of this task.
 	 */
-	public String getName() {
-		return name;
+	public AnalystTask(final String theName) {
+		this.name = theName;
 	}
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+
 	/**
 	 * @return the lines
 	 */
-	public List<String> getLines() {
-		return lines;
+	public final List<String> getLines() {
+		return this.lines;
 	}
-	
+
+	/**
+	 * @return the name
+	 */
+	public final String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @param theName
+	 *            the name to set
+	 */
+	public final void setName(final String theName) {
+		this.name = theName;
+	}
+
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");
 		result.append(this.name);
 		result.append("]");
 		return result.toString();
 	}
-	
+
 }

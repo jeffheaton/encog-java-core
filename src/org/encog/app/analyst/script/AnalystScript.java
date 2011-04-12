@@ -44,34 +44,83 @@ import org.encog.util.csv.CSVFormat;
  * Holds a script for the Encog Analyst.
  */
 public class AnalystScript {
+	
+	/**
+	 * The default MAX size for a class.
+	 */
+	public static final int DEFAULT_MAX_CLASS = 50;
 
+	/**
+	 * The data fields, these are the raw data from the CSV file.
+	 */
 	private DataField[] fields;
+	
+	/**
+	 * Information about how to normalize.
+	 */
 	private final AnalystNormalize normalize = new AnalystNormalize();
+	
+	/**
+	 * Information about how to segregate.
+	 */
 	private final AnalystSegregate segregate = new AnalystSegregate();
+	
+	/**
+	 * Tracks which files were generated.
+	 */
 	private final Set<String> generated = new HashSet<String>();
-	private final Map<String, AnalystTask> tasks = new HashMap<String, AnalystTask>();
+	
+	/**
+	 * The tasks.
+	 */
+	private final Map<String, AnalystTask> tasks 
+		= new HashMap<String, AnalystTask>();
+	
+	/**
+	 * The properties.
+	 */
 	private final ScriptProperties properties = new ScriptProperties();
+	
+	/**
+	 * The base path.
+	 */
 	private String basePath;
 
+	/**
+	 * Construct an analyst script.
+	 */
 	public AnalystScript() {
 		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_CSV_FORMAT,
 				AnalystFileFormat.DECPNT_COMMA);
 		this.properties.setProperty(
-				ScriptProperties.SETUP_CONFIG_MAX_CLASS_COUNT, 50);
+				ScriptProperties.SETUP_CONFIG_MAX_CLASS_COUNT, 
+				DEFAULT_MAX_CLASS);
 		this.properties
 				.setProperty(ScriptProperties.SETUP_CONFIG_ALLOWED_CLASSES,
 						"integer,string");
 	}
 
-	public void addTask(final AnalystTask task) {
+	/**
+	 * Add a task.
+	 * @param task The task to add.
+	 */
+	public final void addTask(final AnalystTask task) {
 		this.tasks.put(task.getName(), task);
 	}
 
-	public void clearTasks() {
+	/**
+	 * Clear all tasks.
+	 */
+	public final void clearTasks() {
 		this.tasks.clear();
 	}
 
-	public CSVFormat determineInputFormat(final String sourceID) {
+	/**
+	 * Determine the input format for the specified file.
+	 * @param sourceID The file.
+	 * @return The input format.
+	 */
+	public final CSVFormat determineInputFormat(final String sourceID) {
 		final String rawID = getProperties().getPropertyString(
 				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
 		CSVFormat result;
@@ -87,21 +136,35 @@ public class AnalystScript {
 		return result;
 	}
 
-	public CSVFormat determineOutputFormat() {
+	/**
+	 * Determine the output format.
+	 * @return The output format.
+	 */
+	public final CSVFormat determineOutputFormat() {
 		return getProperties().getPropertyCSVFormat(
 				ScriptProperties.SETUP_CONFIG_CSV_FORMAT);
 	}
 
-	public boolean expectInputHeaders(final String filename) {
+	/**
+	 * Determine if input headers are expected.
+	 * @param filename The filename.
+	 * @return True if headers are expected.
+	 */
+	public final boolean expectInputHeaders(final String filename) {
 		if (isGenerated(filename)) {
 			return true;
 		} else {
-			return this.properties
-					.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_INPUT_HEADERS);
+			return this.properties.getPropertyBoolean(
+						ScriptProperties.SETUP_CONFIG_INPUT_HEADERS);
 		}
 	}
 
-	public DataField findDataField(final String name) {
+	/**
+	 * Find the specified data field.  Use name to find, and ignore case.
+	 * @param name The name to search for.
+	 * @return The specified data field.
+	 */
+	public final DataField findDataField(final String name) {
 		for (final DataField dataField : this.fields) {
 			if (dataField.getName().equalsIgnoreCase(name)) {
 				return dataField;
@@ -111,7 +174,12 @@ public class AnalystScript {
 		return null;
 	}
 
-	public int findDataFieldIndex(final DataField df) {
+	/**
+	 * Find the specified data field and return its index.
+	 * @param df The data field to search for.
+	 * @return The index of the specified data field, or -1 if not found.
+	 */
+	public final int findDataFieldIndex(final DataField df) {
 		for (int result = 0; result < this.fields.length; result++) {
 			if (df == this.fields[result]) {
 				return result;
@@ -120,7 +188,14 @@ public class AnalystScript {
 		return -1;
 	}
 
-	public AnalystField findNormalizedField(final String name, final int slice) {
+	/**
+	 * Find the specified normalized field.  Search without case.
+	 * @param name The name of the field we are searching for.
+	 * @param slice The timeslice.
+	 * @return The analyst field that was found.
+	 */
+	public final AnalystField findNormalizedField(final String name, 
+			final int slice) {
 		for (final AnalystField field : getNormalize().getNormalizedFields()) {
 			if (field.getName().equalsIgnoreCase(name)
 					&& (field.getTimeSlice() == slice)) {
@@ -131,71 +206,106 @@ public class AnalystScript {
 		return null;
 	}
 
-	public String getBasePath() {
+	/**
+	 * @return The base path.
+	 */
+	public final String getBasePath() {
 		return this.basePath;
 	}
 
 	/**
-	 * @return the fields
+	 * @return the data fields.
 	 */
-	public DataField[] getFields() {
+	public final DataField[] getFields() {
 		return this.fields;
 	}
 
 	/**
 	 * @return the normalize
 	 */
-	public AnalystNormalize getNormalize() {
+	public final AnalystNormalize getNormalize() {
 		return this.normalize;
 	}
 
-	public int getPrecision() {
+	/**
+	 * @return The precision.
+	 */
+	public final int getPrecision() {
 		return Encog.DEFAULT_PRECISION;
 	}
 
 	/**
 	 * @return the properties
 	 */
-	public ScriptProperties getProperties() {
+	public final ScriptProperties getProperties() {
 		return this.properties;
 	}
 
 	/**
 	 * @return the segregate
 	 */
-	public AnalystSegregate getSegregate() {
+	public final AnalystSegregate getSegregate() {
 		return this.segregate;
 	}
 
-	public AnalystTask getTask(final String name) {
+	/**
+	 * Get the specified task.
+	 * @param name The name of the testk.
+	 * @return The analyst task.
+	 */
+	public final AnalystTask getTask(final String name) {
 		if (!this.tasks.containsKey(name)) {
 			return null;
 		}
 		return this.tasks.get(name);
 	}
 
-	public Map<String, AnalystTask> getTasks() {
+	/**
+	 * @return The tasks.
+	 */
+	public final Map<String, AnalystTask> getTasks() {
 		return this.tasks;
 	}
 
-	public void init() {
+	/**
+	 * Init this script.
+	 */
+	public final void init() {
 		this.normalize.init(this);
 	}
 
-	public boolean isGenerated(final String filename) {
+	/**
+	 * Determine if the specified file was generated.
+	 * @param filename The filename to check.
+	 * @return True, if the specified file was generated.
+	 */
+	public final boolean isGenerated(final String filename) {
 		return this.generated.contains(filename);
 	}
 
-	public void load(final InputStream stream) {
+	/**
+	 * Load the script.
+	 * @param stream The stream to load from.
+	 */
+	public final void load(final InputStream stream) {
 		final ScriptLoad s = new ScriptLoad(this);
 		s.load(stream);
 	}
 
-	public void markGenerated(final String filename) {
+	/**
+	 * Mark the sepcified filename as generated.
+	 * @param filename The filename.
+	 */
+	public final void markGenerated(final String filename) {
 		this.generated.add(filename);
 	}
 
-	public File resolveFilename(final String sourceID) {
+	/**
+	 * Resolve the specified filename.
+	 * @param sourceID The filename to resolve.
+	 * @return The file path.
+	 */
+	public final File resolveFilename(final String sourceID) {
 		final String name = getProperties().getFilename(sourceID);
 
 		if (this.basePath != null) {
@@ -205,20 +315,28 @@ public class AnalystScript {
 		}
 	}
 
-	public void save(final OutputStream stream) {
+	/**
+	 * Save to the specified output stream.
+	 * @param stream The output stream.
+	 */
+	public final void save(final OutputStream stream) {
 		final ScriptSave s = new ScriptSave(this);
 		s.save(stream);
 	}
 
-	public void setBasePath(final String basePath) {
-		this.basePath = basePath;
+	/**
+	 * Set the base path.
+	 * @param theBasePath The base path.
+	 */
+	public final void setBasePath(final String theBasePath) {
+		this.basePath = theBasePath;
 	}
 
 	/**
-	 * @param fields
+	 * @param theFields
 	 *            the fields to set
 	 */
-	public void setFields(final DataField[] fields) {
-		this.fields = fields;
+	public final void setFields(final DataField[] theFields) {
+		this.fields = theFields;
 	}
 }

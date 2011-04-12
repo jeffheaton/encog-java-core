@@ -30,63 +30,92 @@ package org.encog.app.analyst.script;
  */
 public class AnalystClassItem implements Comparable<AnalystClassItem> {
 
+	/**
+	 * THe code for the class item.
+	 */
 	private String code;
+	
+	/**
+	 * The name for the class item.
+	 */
 	private String name;
+	
+	/**
+	 * THe count.
+	 */
 	private int count;
 
-	public AnalystClassItem(String code, String name, int count) {
+	/**
+	 * Construct a class item.
+	 * @param theCode The code, this is how it is in the CSV.
+	 * @param theName The name, a more meaningful name than code.  
+	 * Can be the same as code, if desired.
+	 * @param theCount The count.
+	 */
+	public AnalystClassItem(final String theCode, final String theName,
+			final int theCount) {
 		super();
-		this.code = code;
-		this.name = name;
-		this.count = count;
+		this.code = theCode;
+		this.name = theName;
+		this.count = theCount;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int compareTo(final AnalystClassItem o) {
+		return this.code.compareTo(o.getCode());
 	}
 
 	/**
 	 * @return the code
 	 */
-	public String getCode() {
-		return code;
+	public final String getCode() {
+		return this.code;
 	}
 
 	/**
-	 * @param code
-	 *            the code to set
+	 * @return The count.
 	 */
-	public void setCode(String code) {
-		this.code = code;
+	public final int getCount() {
+		return this.count;
 	}
 
 	/**
 	 * @return the name
 	 */
-	public String getName() {
-		return name;
+	public final String getName() {
+		return this.name;
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * Increase the count.
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public int compareTo(AnalystClassItem o) {
-		return this.code.compareTo(o.getCode());
-	}
-	
-	public int getCount() {
-		return this.count;
-	}
-	
-	public void increaseCount() {
+	public final void increaseCount() {
 		this.count++;
 	}
 
+	/**
+	 * @param theCode
+	 *            the code to set
+	 */
+	public final void setCode(final String theCode) {
+		this.code = theCode;
+	}
+
+	/**
+	 * @param theName
+	 *            the name to set
+	 */
+	public final void setName(final String theName) {
+		this.name = theName;
+	}
+
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");
 		result.append(this.name);
