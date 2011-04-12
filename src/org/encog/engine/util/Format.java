@@ -66,6 +66,11 @@ public final class Format {
 	public static final long MEMORY_TERA = (1024 * Format.MEMORY_GIG);
 
 	/**
+	 * How many miliseconds in a second.
+	 */
+	public static final long MILI_IN_SEC = 1000;
+
+	/**
 	 * Format a double.
 	 * 
 	 * @param d

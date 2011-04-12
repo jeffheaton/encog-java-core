@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst;
 
 import java.io.File;
@@ -48,17 +71,50 @@ import org.encog.ml.MLTrain;
  */
 public class EncogAnalyst {
 
-	public final static String ACTION_ANALYZE = "ANALYZE";
-
+	/**
+	 * The name of the task that SHOULD everything.
+	 */
 	public static final String TASK_FULL = "task-full";
 
+	/**
+	 * The analyst script.
+	 */
 	private final AnalystScript script = new AnalystScript();
-	private final List<AnalystListener> listeners = new ArrayList<AnalystListener>();
+	
+	/**
+	 * The listeners.
+	 */
+	private final List<AnalystListener> listeners 
+		= new ArrayList<AnalystListener>();
+	
+	/**
+	 * The update time for a download.
+	 */
+	public static final int UPDATE_TIME = 10;
+	
+	/**
+	 * The current task.
+	 */
 	private QuantTask currentQuantTask = null;
+	
+	/**
+	 * The commands.
+	 */
 	private final Map<String, Cmd> commands = new HashMap<String, Cmd>();
+	
+	/**
+	 * The max iterations, -1 unlimited.
+	 */
 	private int maxIteration = -1;
+	
+	/**
+	 * Holds a copy of the original property data, used to revert.
+	 */
 	private Map<String, String> revertData;
 
+	/**
+	 * Construct the Encog analyst.
+	 */
 	public EncogAnalyst() {
 		addCommand(new CmdCreate(this));
 		addCommand(new CmdEvaluate(this));
@@ -74,15 +130,29 @@ public class EncogAnalyst {
 		addCommand(new CmdCluster(this));
 	}
 
-	public void addAnalystListener(final AnalystListener listener) {
+	/**
+	 * Add a listener.
+	 * @param listener The listener to add.
+	 */
+	public final void addAnalystListener(final AnalystListener listener) {
 		this.listeners.add(listener);
 	}
 
-	public void addCommand(final Cmd cmd) {
+	/**
+	 * Add a command.
+	 * @param cmd The command to add.
+	 */
+	public final void addCommand(final Cmd cmd) {
 		this.commands.put(cmd.getName(), cmd);
 	}
 
-	public void analyze(final File file, final boolean headers,
+	/**
+	 * Analyze the specified file. Used by the wizard.
+	 * @param file The file to analyze.
+	 * @param headers True if headers are present.
+	 * @param format The format of the file.
+	 */
+	public final void analyze(final File file, final boolean headers,
 			final AnalystFileFormat format) {
 		this.script.getProperties().setFilename(AnalystWizard.FILE_RAW,
 				file.toString());
@@ -96,11 +166,11 @@ public class EncogAnalyst {
 
 	}
 
-	public void clear() {
-
-	}
-
-	public int determineInputCount() {
+	/**
+	 * Determine the input count.  This is the actual number of columns.
+	 * @return The input count.
+	 */
+	public final int determineInputCount() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -111,7 +181,12 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int determineInputFieldCount() {
+	/**
+	 * Determine the input field count, the fields are higher-level 
+	 * than columns.
+	 * @return The input field count.
+	 */
+	public final int determineInputFieldCount() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -123,7 +198,12 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int determineOutputCount() {
+	/**
+	 * Determine the output count, this is the number of output 
+	 * columns needed.
+	 * @return The output count.
+	 */
+	public final int determineOutputCount() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -134,7 +214,12 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int determineOutputFieldCount() {
+	/**
+	 * Determine the number of output fields.  Fields are higher 
+	 * level than columns.
+	 * @return The output field count.
+	 */
+	public final int determineOutputFieldCount() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -146,7 +231,12 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int determineUniqueColumns() {
+	/**
+	 * Determine how many unique columns there are.  Timeslices are not 
+	 * counted multiple times.
+	 * @return The number of columns.
+	 */
+	public final int determineUniqueColumns() {
 		final Map<String, Object> used = new HashMap<String, Object>();
 		int result = 0;
 
@@ -162,7 +252,12 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int determineUniqueInputFieldCount() {
+	/**
+	 * Determine the unique input field count.  Timeslices are not 
+	 * counted multiple times.
+	 * @return The number of unique input fields.
+	 */
+	public final int determineUniqueInputFieldCount() {
 		final Map<String, Object> map = new HashMap<String, Object>();
 
 		int result = 0;
@@ -178,7 +273,12 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int determineUniqueOutputFieldCount() {
+	/**
+	 * Determine the unique output field count.  Do not count timeslices 
+	 * multiple times.
+	 * @return The unique output field count.
+	 */
+	public final int determineUniqueOutputFieldCount() {
 		final Map<String, Object> map = new HashMap<String, Object>();
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
@@ -193,7 +293,10 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public void download() {
+	/**
+	 * Download a raw file from the Internet.
+	 */
+	public final void download() {
 		final URL sourceURL = this.script.getProperties().getPropertyURL(
 				ScriptProperties.HEADER_DATASOURCE_SOURCE_FILE);
 
@@ -207,6 +310,11 @@ public class EncogAnalyst {
 		}
 	}
 
+	/**
+	 * Down load a file from the specified URL, uncompress if needed.
+	 * @param url THe URL.
+	 * @param file The file to down load into.
+	 */
 	private void downloadPage(final URL url, final File file) {
 		try {
 			// download the URL
@@ -229,7 +337,7 @@ public class EncogAnalyst {
 					size += length;
 				}
 
-				if (lastUpdate > 10) {
+				if (lastUpdate > UPDATE_TIME) {
 					report(0, (int) (size / Format.MEMORY_MEG),
 							"Downloading... " + Format.formatMemory(size));
 					lastUpdate = 0;
@@ -256,9 +364,9 @@ public class EncogAnalyst {
 						size += length;
 					}
 
-					if (lastUpdate > 10) {
+					if (lastUpdate > UPDATE_TIME) {
 						report(0, (int) (size / Format.MEMORY_MEG),
-								"Uncompressing... " + Format.formatMemory(size));
+"Uncompressing... " + Format.formatMemory(size));
 						lastUpdate = 0;
 					}
 					lastUpdate++;
@@ -280,7 +388,11 @@ public class EncogAnalyst {
 		}
 	}
 
-	public void executeTask(final AnalystTask task) {
+	/**
+	 * Execute a task.
+	 * @param task The task to execute.
+	 */
+	public final void executeTask(final AnalystTask task) {
 		final int total = task.getLines().size();
 		int current = 1;
 		for (String line : task.getLines()) {
@@ -318,7 +430,11 @@ public class EncogAnalyst {
 		}
 	}
 
-	public void executeTask(final String name) {
+	/**
+	 * Execute a task.
+	 * @param name The name of the task to execute.
+	 */
+	public final void executeTask(final String name) {
 		final AnalystTask task = this.script.getTask(name);
 		if (task == null) {
 			throw new AnalystError("Can't find task: " + name);
@@ -327,7 +443,10 @@ public class EncogAnalyst {
 		executeTask(task);
 	}
 
-	public int getLagDepth() {
+	/**
+	 * @return The lag depth.
+	 */
+	public final int getLagDepth() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -338,7 +457,10 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int getLeadDepth() {
+	/**
+	 * @return The lead depth.
+	 */
+	public final int getLeadDepth() {
 		int result = 0;
 		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
@@ -352,26 +474,36 @@ public class EncogAnalyst {
 	/**
 	 * @return the listeners
 	 */
-	public List<AnalystListener> getListeners() {
+	public final List<AnalystListener> getListeners() {
 		return this.listeners;
 	}
 
-	public int getMaxIteration() {
+	/**
+	 * @return The max iterations.
+	 */
+	public final int getMaxIteration() {
 		return this.maxIteration;
 	}
 
-	public Map<String, String> getRevertData() {
+	/**
+	 * @return The reverted data.
+	 */
+	public final Map<String, String> getRevertData() {
 		return this.revertData;
 	}
 
 	/**
 	 * @return the script
 	 */
-	public AnalystScript getScript() {
+	public final AnalystScript getScript() {
 		return this.script;
 	}
 
-	public void load(final File file) {
+	/**
+	 * Load the specified script file.
+	 * @param file The file to load.
+	 */
+	public final void load(final File file) {
 		InputStream fis = null;
 		this.script.setBasePath(file.getParent());
 
@@ -391,25 +523,50 @@ public class EncogAnalyst {
 		}
 	}
 
-	public void load(final InputStream stream) {
+	/**
+	 * Load from an input stream.
+	 * @param stream The stream to load from.
+	 */
+	public final void load(final InputStream stream) {
 		this.script.load(stream);
 		this.revertData = this.script.getProperties().prepareRevert();
 	}
 
-	public void load(final String filename) {
+	/**
+	 * Load from the specified filename.
+	 * @param filename The filename to load from.
+	 */
+	public final void load(final String filename) {
 		load(new File(filename));
 	}
 
-	public void removeAnalystListener(final AnalystListener listener) {
+	/**
+	 * Remove a listener.
+	 * @param listener The listener to remove.
+	 */
+	public final void removeAnalystListener(final AnalystListener listener) {
 		this.listeners.remove(listener);
 	}
 
-	private void report(final int total, final int current, final String message) {
+	/**
+	 * Report progress.
+	 * @param total The total units.
+	 * @param current The current unit.
+	 * @param message The message.
+	 */
+	private void report(final int total, final int current, 
+			final String message) {
 		for (final AnalystListener listener : this.listeners) {
 			listener.report(total, current, message);
 		}
 	}
 
+	/**
+	 * Report a command has begin.
+	 * @param total The total units.
+	 * @param current The current unit.
+	 * @param name The command name.
+	 */
 	private void reportCommandBegin(final int total, final int current,
 			final String name) {
 		for (final AnalystListener listener : this.listeners) {
@@ -417,31 +574,49 @@ public class EncogAnalyst {
 		}
 	}
 
+	/**
+	 * Report a command has ended.
+	 * @param canceled Was the command canceled.
+	 */
 	private void reportCommandEnd(final boolean canceled) {
 		for (final AnalystListener listener : this.listeners) {
 			listener.reportCommandEnd(canceled);
 		}
 	}
 
-	public void reportTraining(final MLTrain train) {
+	/**
+	 * Report training.
+	 * @param train The trainer.
+	 */
+	public final void reportTraining(final MLTrain train) {
 		for (final AnalystListener listener : this.listeners) {
 			listener.reportTraining(train);
 		}
 	}
 
-	public void reportTrainingBegin() {
+	/**
+	 * Report that training has begun.
+	 */
+	public final void reportTrainingBegin() {
 		for (final AnalystListener listener : this.listeners) {
 			listener.reportTrainingBegin();
 		}
 	}
 
-	public void reportTrainingEnd() {
+	/**
+	 * Report that training has ended.
+	 */
+	public final void reportTrainingEnd() {
 		for (final AnalystListener listener : this.listeners) {
 			listener.reportTrainingEnd();
 		}
 	}
 
-	public void save(final File file) {
+	/**
+	 * Save the script to a file.
+	 * @param file The file to save to.
+	 */
+	public final void save(final File file) {
 		OutputStream fos = null;
 
 		try {
@@ -461,23 +636,43 @@ public class EncogAnalyst {
 		}
 	}
 
-	public void save(final OutputStream stream) {
+	/**
+	 * Save the script to a stream.
+	 * @param stream The stream to save to.
+	 */
+	public final void save(final OutputStream stream) {
 		this.script.save(stream);
 
 	}
 
-	public void save(final String filename) {
+	/**
+	 * Save the script to a filename.
+	 * @param filename The filename to save to.
+	 */
+	public final void save(final String filename) {
 		save(new File(filename));
 	}
 
-	public synchronized void setCurrentQuantTask(final QuantTask task) {
+	/**
+	 * Set the current task.
+	 * @param task The current task.
+	 */
+	public final synchronized void setCurrentQuantTask(final QuantTask task) {
 		this.currentQuantTask = task;
 	}
 
-	public void setMaxIteration(final int i) {
+	/**
+	 * Set the max iterations.
+	 * @param i The value for max iterations.
+	 */
+	public final void setMaxIteration(final int i) {
 		this.maxIteration = i;
 	}
 
+	/**
+	 * Should all commands be stopped.
+	 * @return True, if all commands should be stopped.
+	 */
 	private boolean shouldStopAll() {
 		for (final AnalystListener listener : this.listeners) {
 			if (listener.shouldShutDown()) {
@@ -487,7 +682,11 @@ public class EncogAnalyst {
 		return false;
 	}
 
-	public boolean shouldStopCommand() {
+	/**
+	 * Should the current command be stopped.
+	 * @return True if the current command should be stopped.
+	 */
+	public final boolean shouldStopCommand() {
 		for (final AnalystListener listener : this.listeners) {
 			if (listener.shouldStopCommand()) {
 				return true;
@@ -496,7 +695,10 @@ public class EncogAnalyst {
 		return false;
 	}
 
-	public synchronized void stopCurrentTask() {
+	/**
+	 * Stop the current task.
+	 */
+	public final synchronized void stopCurrentTask() {
 		if (this.currentQuantTask != null) {
 			this.currentQuantTask.requestStop();
 		}

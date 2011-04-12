@@ -21,35 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains Encog analyst wizard. The wizard can be used to 
+ * automatically create an EGA (Encog Analyst) file for a CSV file.
+ */
 package org.encog.app.analyst.wizard;
 
-/**
- * The machine learning method that the Encog Analyst Wizard should use.
- *
- */
-public enum WizardMethodType {
-	/**
-	 * Feed forward network.
-	 */
-	FeedForward,
-	/**
-	 * RBF network.
-	 */
-	RBF,
-	/**
-	 * SVM network.
-	 */
-	SVM,
-	/**
-	 * NEAT network.
-	 */
-	NEAT,
-	/**
-	 * PNN neural network.
-	 */
-	PNN,
-	/**
-	 * SOM neural network.
-	 */
-	SOM
-}
