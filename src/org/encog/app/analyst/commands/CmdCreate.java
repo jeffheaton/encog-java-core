@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.commands;
 
 import java.io.File;
@@ -16,45 +39,58 @@ import org.encog.persist.EncogDirectoryPersistence;
  */
 public class CmdCreate extends Cmd {
 
-	public final static String COMMAND_NAME = "CREATE";
+	/**
+	 * The name of this command.
+	 */
+	public static final String COMMAND_NAME = "CREATE";
 
-	public CmdCreate(EncogAnalyst analyst) {
-		super(analyst);
+	/**
+	 * Construct the create command.
+	 * @param theAnalyst The analyst to use.
+	 */
+	public CmdCreate(final EncogAnalyst theAnalyst) {
+		super(theAnalyst);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean executeCommand(String args) {
+	public final boolean executeCommand(final String args) {
 		// get filenames
-		String trainingID = getProp().getPropertyString(
+		final String trainingID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_trainingFile);
-		String resourceID = getProp().getPropertyString(
+		final String resourceID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_machineLearningFile);
 
-		File trainingFile = getScript().resolveFilename(trainingID);
-		File resourceFile = getScript().resolveFilename(resourceID);
+		final File trainingFile = getScript().resolveFilename(trainingID);
+		final File resourceFile = getScript().resolveFilename(resourceID);
 
-		String type = getProp().getPropertyString(
+		final String type = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_type);
-		String arch = getProp().getPropertyString(
+		final String arch = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_architecture);
 
-		EncogEGBFile egb = new EncogEGBFile(trainingFile);
+		final EncogEGBFile egb = new EncogEGBFile(trainingFile);
 		egb.open();
-		int input = egb.getInputCount();
-		int ideal = egb.getIdealCount();
+		final int input = egb.getInputCount();
+		final int ideal = egb.getIdealCount();
 		egb.close();
 
-		MLMethodFactory factory = new MLMethodFactory();
-		MLMethod obj = factory.create(type, arch, input, ideal);
+		final MLMethodFactory factory = new MLMethodFactory();
+		final MLMethod obj = factory.create(type, arch, input, ideal);
 
 		EncogDirectoryPersistence.saveObject(resourceFile, obj);
 
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getName() {
-		return COMMAND_NAME;
+	public final String getName() {
+		return CmdCreate.COMMAND_NAME;
 	}
 
 }

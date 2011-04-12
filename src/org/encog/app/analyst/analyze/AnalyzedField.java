@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.analyze;
 
 import java.util.ArrayList;
@@ -20,124 +43,157 @@ import org.encog.app.analyst.script.prop.ScriptProperties;
  */
 public class AnalyzedField extends DataField {
 
+	/**
+	 * Tge sum of all values of this field.
+	 */
 	private double total;
+	
+	/**
+	 * The number of instances of this field.
+	 */
 	private int instances;
+	
+	/**
+	 * The total for standard deviation calculation.
+	 */
 	private double devTotal;
-	private Map<String, AnalystClassItem> classMap = new HashMap<String, AnalystClassItem>();
-	private AnalystScript script;
+	
+	/**
+	 * A mapping between the class names that the class items.
+	 */
+	private final Map<String, AnalystClassItem> classMap 
+		= new HashMap<String, AnalystClassItem>();
+	
+	/**
+	 * The analyst script that the results are saved to.
+	 */
+	private final AnalystScript script;
 
-	public AnalyzedField(AnalystScript script, String name) {
+	/**
+	 * Construct an analyzed field.
+	 * @param theScript The script being analyzed.
+	 * @param name The name of the field.
+	 */
+	public AnalyzedField(final AnalystScript theScript, final String name) {
 		super(name);
 		this.instances = 0;
-		this.script = script;
+		this.script = theScript;
 	}
 
-	public void analyze1(String str) {
+	/**
+	 * Perform a pass one analysis of this field.
+	 * @param str The current value.
+	 */
+	public final void analyze1(final String str) {
 
 		boolean accountedFor = false;
-		
+
 		if (str.trim().length() == 0) {
-			this.setComplete(false);
+			setComplete(false);
 			return;
 		}
 
 		this.instances++;
 
-		if (this.isReal()) {
+		if (isReal()) {
 			try {
-				double d = Double.parseDouble(str);
-				this.setMax(Math.max(d, this.getMax()));
-				this.setMin(Math.min(d, this.getMin()));
+				final double d = Double.parseDouble(str);
+				setMax(Math.max(d, getMax()));
+				setMin(Math.min(d, getMin()));
 				this.total += d;
 				accountedFor = true;
-			} catch (NumberFormatException ex) {
-				this.setReal(false);
-				if (!this.isInteger()) {
-					this.setMax(0);
-					this.setMin(0);
-					this.setStandardDeviation(0);
-				}
-			}
-		}
-		
-		if (this.isInteger()) {
-			try {
-				int i = Integer.parseInt(str);
-				this.setMax(Math.max(i, this.getMax()));
-				this.setMin(Math.min(i, this.getMin()));
-				if(!accountedFor)
-					this.total += i;
-			} catch (NumberFormatException ex) {
-				this.setInteger(false);
-				if (!this.isReal()) {
-					this.setMax(0);
-					this.setMin(0);
-					this.setStandardDeviation(0);
+			} catch (final NumberFormatException ex) {
+				setReal(false);
+				if (!isInteger()) {
+					setMax(0);
+					setMin(0);
+					setStandardDeviation(0);
 				}
 			}
 		}
 
-		if (this.isClass()) {
+		if (isInteger()) {
+			try {
+				final int i = Integer.parseInt(str);
+				setMax(Math.max(i, getMax()));
+				setMin(Math.min(i, getMin()));
+				if (!accountedFor) {
+					this.total += i;
+				}
+			} catch (final NumberFormatException ex) {
+				setInteger(false);
+				if (!isReal()) {
+					setMax(0);
+					setMin(0);
+					setStandardDeviation(0);
+				}
+			}
+		}
+
+		if (isClass()) {
 			AnalystClassItem item;
-			
+
 			// is this a new class?
 			if (!this.classMap.containsKey(str)) {
-				this.classMap.put(str, item = new AnalystClassItem(str, str, 1));
-				
+				item = new AnalystClassItem(str, str, 1);
+				this.classMap.put(str, item);
+
 				// do we have too many different classes?
-				int max = script.getProperties().getPropertyInt(
+				final int max = this.script.getProperties().getPropertyInt(
 						ScriptProperties.SETUP_CONFIG_maxClassCount);
-				if (this.classMap.size() > max)
-					this.setClass(false);
+				if (this.classMap.size() > max) {
+					setClass(false);
+				}
 			} else {
 				item = this.classMap.get(str);
 				item.increaseCount();
 			}
 
-
 		}
 	}
 
-	public void completePass1() {
-
-		this.devTotal = 0;
-
-		if (this.instances == 0)
-			this.setMean(0);
-		else
-			this.setMean(this.total / this.instances);
-	}
-
-	public void analyze2(String str) {
+	/**
+	 * Perform a pass two analysis of this field.
+	 * @param str The current value.
+	 */
+	public final void analyze2(final String str) {
 		if (str.trim().length() == 0) {
 			return;
 		}
 
-		if (this.isReal() || this.isInteger()) {
-			double d = Double.parseDouble(str);
-			this.devTotal += Math.pow((d - this.getMean()), 2);
+		if (isReal() || isInteger()) {
+			final double d = Double.parseDouble(str);
+			this.devTotal += Math.pow((d - getMean()), 2);
 		}
 	}
 
-	public void completePass2() {
-		this.setStandardDeviation(Math.sqrt(this.devTotal / this.instances));
-	}
+	/**
+	 * Complete pass 1.
+	 */
+	public final void completePass1() {
 
-	public List<AnalystClassItem> getClassMembers() {
-		List<String> sorted = new ArrayList<String>();
-		sorted.addAll(this.classMap.keySet());
-		Collections.sort(sorted);
+		this.devTotal = 0;
 
-		List<AnalystClassItem> result = new ArrayList<AnalystClassItem>();
-		for (String str : sorted) {
-			result.add(this.classMap.get(str));
+		if (this.instances == 0) {
+			setMean(0);
+		} else {
+			setMean(this.total / this.instances);
 		}
-
-		return result;
 	}
 
-	public DataField finalizeField() {
-		DataField result = new DataField(this.getName());
+	/**
+	 * Complete pass 2.
+	 */
+	public final void completePass2() {
+		setStandardDeviation(Math.sqrt(this.devTotal / this.instances));
+	}
+
+	/**
+	 * Finalize the field, and create a DataField.
+	 * @return The new DataField.
+	 */
+	public final DataField finalizeField() {
+		final DataField result = new DataField(getName());
 
 		result.setName(getName());
 		result.setMin(getMin());
@@ -152,16 +208,35 @@ public class AnalyzedField extends DataField {
 		result.getClassMembers().clear();
 
 		if (result.isClass()) {
-			List<AnalystClassItem> list = getClassMembers();
+			final List<AnalystClassItem> list = getClassMembers();
 			result.getClassMembers().addAll(list);
 		}
 
 		return result;
 	}
 
+	/**
+	 * Get the class members.
+	 * @return The class members.
+	 */
+	@Override
+	public final List<AnalystClassItem> getClassMembers() {
+		final List<String> sorted = new ArrayList<String>();
+		sorted.addAll(this.classMap.keySet());
+		Collections.sort(sorted);
+
+		final List<AnalystClassItem> result = new ArrayList<AnalystClassItem>();
+		for (final String str : sorted) {
+			result.add(this.classMap.get(str));
+		}
+
+		return result;
+	}
+
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" total=");
 		result.append(this.total);

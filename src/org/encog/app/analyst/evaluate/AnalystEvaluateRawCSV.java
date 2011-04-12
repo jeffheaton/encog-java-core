@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.evaluate;
 
 import java.io.File;
@@ -23,43 +46,57 @@ import org.encog.util.csv.ReadCSV;
  */
 public class AnalystEvaluateRawCSV extends BasicFile {
 
+	/**
+	 * The analyst file to use.
+	 */
 	private EncogAnalyst analyst;
+	
+	/**
+	 * The input count.
+	 */
 	private int inputCount;
+	
+	/**
+	 * The output count.
+	 */
 	private int outputCount;
+	
+	/**
+	 * The ideal count.
+	 */
 	private int idealCount;
 
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
 	 * processed.
-	 * 
-	 * @param inputFile
-	 *            The input file to process.
-	 * @param headers
-	 *            True, if headers are present.
-	 * @param format
-	 *            The format of the CSV file.
+	 * @param theAnalyst The analyst to use.
+	 * @param inputFile The input file.
+	 * @param headers True if headers are present.
+	 * @param format The format the file is in.
 	 */
-	public void analyze(EncogAnalyst analyst, File inputFile, boolean headers,
-			CSVFormat format) {
+	public final void analyze(final EncogAnalyst theAnalyst, 
+			final File inputFile,
+			final boolean headers, final CSVFormat format) {
 		this.inputFilename = inputFile;
-		this.setExpectInputHeaders(headers);
-		this.setInputFormat(format);
-		this.analyst = analyst;
+		setExpectInputHeaders(headers);
+		setInputFormat(format);
+		this.analyst = theAnalyst;
 
-		this.setAnalyzed(true);
+		setAnalyzed(true);
 
 		performBasicCounts();
 
 		this.inputCount = this.analyst.determineInputCount();
 		this.outputCount = this.analyst.determineOutputCount();
-		this.idealCount = this.getInputHeadings().length - inputCount;
+		this.idealCount = getInputHeadings().length - this.inputCount;
 
-		if (this.getInputHeadings().length != inputCount
-				&& this.getInputHeadings().length != (inputCount + outputCount)) {
-			throw new AnalystError(
-					"Invalid number of columns("+this.getInputHeadings().length+"), must match input(" + inputCount
-							+ ") count or input+output("
-							+ (inputCount + outputCount) + ") count.");
+		if ((getInputHeadings().length != this.inputCount)
+				&& (getInputHeadings().length 
+						!= (this.inputCount + this.outputCount))) {
+			throw new AnalystError("Invalid number of columns("
+					+ getInputHeadings().length + "), must match input("
+					+ this.inputCount + ") count or input+output("
+					+ (this.inputCount + this.outputCount) + ") count.");
 		}
 
 	}
@@ -72,39 +109,39 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 	 * @param method
 	 * @return The output stream for the text file.
 	 */
-	public PrintWriter prepareOutputFile(File outputFile) {
+	private PrintWriter analystPrepareOutputFile(final File outputFile) {
 		try {
-			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
+			final PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 
 			// write headers, if needed
-			if (this.isProduceOutputHeaders()) {
-				StringBuilder line = new StringBuilder();
+			if (isProduceOutputHeaders()) {
+				final StringBuilder line = new StringBuilder();
 
 				// first handle the input fields
-				for (AnalystField field : this.analyst.getScript()
+				for (final AnalystField field : this.analyst.getScript()
 						.getNormalize().getNormalizedFields()) {
 					if (field.isInput()) {
-						field.addRawHeadings(line, null, this.getOutputFormat());
+						field.addRawHeadings(line, null, getOutputFormat());
 					}
 				}
 
 				// now, handle any ideal fields
 				if (this.idealCount > 0) {
-					for (AnalystField field : this.analyst.getScript()
+					for (final AnalystField field : this.analyst.getScript()
 							.getNormalize().getNormalizedFields()) {
 						if (field.isOutput()) {
 							field.addRawHeadings(line, "ideal:",
-									this.getOutputFormat());
+									getOutputFormat());
 						}
 					}
 				}
 
 				// now, handle the output fields
-				for (AnalystField field : this.analyst.getScript()
+				for (final AnalystField field : this.analyst.getScript()
 						.getNormalize().getNormalizedFields()) {
 					if (field.isOutput()) {
-						field.addRawHeadings(line, "output:",
-								this.getOutputFormat());
+						field.addRawHeadings(line, "output:", 
+								getOutputFormat());
 					}
 				}
 
@@ -113,16 +150,21 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 
 			return tw;
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new QuantError(e);
 		}
 	}
 
-	public void process(File outputFile, EncogAnalyst analyst,
-			MLRegression method) {
+	/**
+	 * Process the file.
+	 * @param outputFile The output file.
+	 * @param method The method to use.
+	 */
+	public final void process(final File outputFile, 			
+			final MLRegression method) {
 
-		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
-				this.isExpectInputHeaders(), this.getInputFormat());
+		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
+				isExpectInputHeaders(), getInputFormat());
 
 		if (method.getInputCount() != this.inputCount) {
 			throw new AnalystError("This machine learning method has "
@@ -132,20 +174,20 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 		}
 
 		NeuralData output = null;
-		NeuralData input = new BasicNeuralData(method.getInputCount());
+		final NeuralData input = new BasicNeuralData(method.getInputCount());
 
-		PrintWriter tw = this.prepareOutputFile(outputFile);
+		final PrintWriter tw = analystPrepareOutputFile(outputFile);
 
 		resetStatus();
 		while (csv.next()) {
 			updateStatus(false);
-			LoadedRow row = new LoadedRow(csv, this.idealCount);
+			final LoadedRow row = new LoadedRow(csv, this.idealCount);
 
 			int dataIndex = 0;
 			// load the input data
 			for (int i = 0; i < this.inputCount; i++) {
-				String str = row.getData()[i];
-				double d = this.getInputFormat().parse(str);
+				final String str = row.getData()[i];
+				final double d = getInputFormat().parse(str);
 				input.setData(i, d);
 				dataIndex++;
 			}
@@ -158,9 +200,9 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 
 			// display the computed result
 			for (int i = 0; i < this.outputCount; i++) {
-				double d = output.getData(i);
-				row.getData()[dataIndex++] = this.getInputFormat().format(d,
-						this.getPrecision());
+				final double d = output.getData(i);
+				row.getData()[dataIndex++] = getInputFormat().format(d,
+						getPrecision());
 			}
 
 			writeRow(tw, row);

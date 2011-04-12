@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.analyze;
 
 import java.util.List;
@@ -21,39 +44,59 @@ import org.encog.util.csv.ReadCSV;
  */
 public class PerformAnalysis {
 
-	private String filename;
-	private boolean headers;
-	private AnalystFileFormat format;
+	/**
+	 * The file name to analyze.
+	 */
+	private final String filename;
+
+	/**
+	 * True, if headers are present.
+	 */
+	private final boolean headers;
+
+	/**
+	 * The format of this file.
+	 */
+	private final AnalystFileFormat format;
+
+	/**
+	 * The fields to analyze.
+	 */
 	private AnalyzedField[] fields;
-	private AnalystScript script;
 
-	public PerformAnalysis(AnalystScript script, String filename,
-			boolean headers, AnalystFileFormat format) {
-		this.filename = filename;
-		this.headers = headers;
-		this.format = format;
-		this.script = script;
+	/**
+	 * The script to use.
+	 */
+	private final AnalystScript script;
+
+	/**
+	 * Construct the analysis object.
+	 * 
+	 * @param theScript
+	 *            The script to use.
+	 * @param theFilename
+	 *            The name of the file to analyze.
+	 * @param theHeaders
+	 *            True if headers are present.
+	 * @param theFormat
+	 *            The format of the file being analyzed.
+	 */
+	public PerformAnalysis(final AnalystScript theScript,
+			final String theFilename, final boolean theHeaders,
+			final AnalystFileFormat theFormat) {
+		this.filename = theFilename;
+		this.headers = theHeaders;
+		this.format = theFormat;
+		this.script = theScript;
 	}
 
-	private void generateFieldsFromHeaders(ReadCSV csv) {
-		CSVHeaders headers = new CSVHeaders(csv.getColumnNames());
-		this.fields = new AnalyzedField[csv.getColumnCount()];
-		for (int i = 0; i < this.fields.length; i++) {
-			if( i>=csv.getColumnNames().size()) {
-				throw new AnalystError("CSV header count does not match column count");
-			}
-			this.fields[i] = new AnalyzedField(this.script, headers.getHeader(i));
-		}
-	}
-
-	private void generateFieldsFromCount(ReadCSV csv) {
-		this.fields = new AnalyzedField[csv.getColumnCount()];
-		for (int i = 0; i < this.fields.length; i++) {
-			this.fields[i] = new AnalyzedField(this.script, "field:" + (i + 1));
-		}
-	}
-
-	private void generateFields(ReadCSV csv) {
+	/**
+	 * Generate the header fields.
+	 * 
+	 * @param csv
+	 *            The CSV file to use.
+	 */
+	private void generateFields(final ReadCSV csv) {
 		if (this.headers) {
 			generateFieldsFromHeaders(csv);
 		} else {
@@ -61,8 +104,43 @@ public class PerformAnalysis {
 		}
 	}
 
-	public void process(EncogAnalyst target) {
-		CSVFormat csvFormat = ConvertStringConst
+	/**
+	 * Generate the fields using counts, no headers provided.
+	 * 
+	 * @param csv
+	 *            The CSV file to use.
+	 */
+	private void generateFieldsFromCount(final ReadCSV csv) {
+		this.fields = new AnalyzedField[csv.getColumnCount()];
+		for (int i = 0; i < this.fields.length; i++) {
+			this.fields[i] = new AnalyzedField(this.script, "field:" + (i + 1));
+		}
+	}
+
+	/**
+	 * Generate the fields using header values.
+	 * 
+	 * @param csv
+	 *            The CSV file to use.
+	 */
+	private void generateFieldsFromHeaders(final ReadCSV csv) {
+		final CSVHeaders h = new CSVHeaders(csv.getColumnNames());
+		this.fields = new AnalyzedField[csv.getColumnCount()];
+		for (int i = 0; i < this.fields.length; i++) {
+			if (i >= csv.getColumnNames().size()) {
+				throw new AnalystError(
+						"CSV header count does not match column count");
+			}
+			this.fields[i] = new AnalyzedField(this.script, h.getHeader(i));
+		}
+	}
+
+	/**
+	 * Perform the analysis.
+	 * @param target The Encog analyst object to analyze.
+	 */
+	public final void process(final EncogAnalyst target) {
+		final CSVFormat csvFormat = ConvertStringConst
 				.convertToCSVFormat(this.format);
 		ReadCSV csv = new ReadCSV(this.filename, this.headers, csvFormat);
 
@@ -77,7 +155,7 @@ public class PerformAnalysis {
 			}
 		}
 
-		for (AnalyzedField field : this.fields) {
+		for (final AnalyzedField field : this.fields) {
 			field.completePass1();
 		}
 
@@ -91,24 +169,25 @@ public class PerformAnalysis {
 			}
 		}
 
-		for (AnalyzedField field : this.fields) {
+		for (final AnalyzedField field : this.fields) {
 			field.completePass2();
 		}
 
 		csv.close();
 
-		String str = script.getProperties().getPropertyString(
+		String str = this.script.getProperties().getPropertyString(
 				ScriptProperties.SETUP_CONFIG_allowedClasses);
 		if (str == null) {
 			str = "";
 		}
 
-		boolean allowInt = str.contains("int");
-		boolean allowReal = str.contains("real") || str.contains("double");
-		boolean allowString = str.contains("string");
+		final boolean allowInt = str.contains("int");
+		final boolean allowReal = str.contains("real")
+				|| str.contains("double");
+		final boolean allowString = str.contains("string");
 
 		// remove any classes that did not qualify
-		for (AnalyzedField field : this.fields) {
+		for (final AnalyzedField field : this.fields) {
 			if (field.isClass()) {
 				if (!allowInt && field.isInteger()) {
 					field.setClass(false);
@@ -122,29 +201,33 @@ public class PerformAnalysis {
 					field.setClass(false);
 				}
 
-				if (field.isInteger() && field.getClassMembers().size() <= 2) {
+				if (field.isInteger() && (field.getClassMembers().size() 
+						<= 2)) {
 					field.setClass(false);
 				}
 			}
 		}
 
 		// merge with existing
-		if (target.getScript().getFields() != null
-				&& fields.length == target.getScript().getFields().length) {
-			for (int i = 0; i < fields.length; i++) {
+		if ((target.getScript().getFields() != null)
+				&& (this.fields.length 
+						== target.getScript().getFields().length)) {
+			for (int i = 0; i < this.fields.length; i++) {
 				// copy the old field name
 				this.fields[i].setName(target.getScript().getFields()[i]
 						.getName());
 
 				if (this.fields[i].isClass()) {
-					List<AnalystClassItem> t = this.fields[i].getClassMembers();
-					List<AnalystClassItem> s = target.getScript().getFields()[i]
+					final List<AnalystClassItem> t = this.fields[i]
 							.getClassMembers();
+					final List<AnalystClassItem> s = target.getScript()
+							.getFields()[i].getClassMembers();
 
 					if (s.size() == t.size()) {
 						for (int j = 0; j < s.size(); j++) {
-							if (t.get(j).getCode().equals(s.get(j).getCode()))
+							if (t.get(j).getCode().equals(s.get(j).getCode())) {
 								t.get(j).setName(s.get(j).getName());
+							}
 						}
 					}
 				}
@@ -152,7 +235,7 @@ public class PerformAnalysis {
 		}
 
 		// now copy the fields
-		DataField[] df = new DataField[fields.length];
+		final DataField[] df = new DataField[this.fields.length];
 
 		for (int i = 0; i < df.length; i++) {
 			df[i] = this.fields[i].finalizeField();
@@ -163,8 +246,9 @@ public class PerformAnalysis {
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" filename=");
 		result.append(this.filename);

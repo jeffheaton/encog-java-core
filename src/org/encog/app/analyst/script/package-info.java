@@ -21,16 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.analyst.script.prop;
-
 /**
- * The property types supported for Encog Analyst.
+ * This package contains the script for the Encog analyst.
  */
-public enum PropertyType {
-	TypeBoolean,
-	TypeString,
-	TypeInteger,
-	TypeDouble,
-	TypeListString,
-	typeFormat
-}
+package org.encog.app.analyst.script;
+

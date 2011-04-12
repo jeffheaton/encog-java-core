@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.evaluate;
 
 import java.io.File;
@@ -26,31 +49,48 @@ import org.encog.util.csv.ReadCSV;
  */
 public class AnalystEvaluateCSV extends BasicFile {
 
+	/**
+	 * The analyst to use.
+	 */
 	private EncogAnalyst analyst;
+	
+	/**
+	 * The number of columns in the file.
+	 */
 	private int fileColumns;
+	
+	/**
+	 * The number of output columns.
+	 */
 	private int outputColumns;
+	
+	/**
+	 * Used to handle time series.
+	 */
 	private TimeSeriesUtil series;
+	
+	/**
+	 * The headers.
+	 */
 	private CSVHeaders analystHeaders;
 
 	/**
-	 * Analyze the data. This counts the records and prepares the data to be
+	 *  Analyze the data. This counts the records and prepares the data to be
 	 * processed.
-	 * 
-	 * @param inputFile
-	 *            The input file to process.
-	 * @param headers
-	 *            True, if headers are present.
-	 * @param format
-	 *            The format of the CSV file.
+	 * @param theAnalyst The analyst to use.
+	 * @param inputFile The input file.
+	 * @param headers True if headers are present.
+	 * @param format The format.
 	 */
-	public void analyze(EncogAnalyst analyst, File inputFile, boolean headers,
-			CSVFormat format) {
+	public final void analyze(final EncogAnalyst theAnalyst, 
+			final File inputFile,
+			final boolean headers, final CSVFormat format) {
 		this.inputFilename = inputFile;
-		this.setExpectInputHeaders(headers);
-		this.setInputFormat(format);
+		setExpectInputHeaders(headers);
+		setInputFormat(format);
 
-		this.setAnalyzed(true);
-		this.analyst = analyst;
+		setAnalyzed(true);
+		this.analyst = theAnalyst;
 
 		performBasicCounts();
 		this.fileColumns = this.inputHeadings.length;
@@ -64,33 +104,34 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 	/**
 	 * Prepare the output file, write headers if needed.
-	 * 
-	 * @param outputFile
-	 *            The name of the output file.
-	 * @param method
-	 * @return The output stream for the text file.
+	 * @param outputFile The output file.
+	 * @param input The input count.
+	 * @param output The output count.
+	 * @return The file to write to.
 	 */
-	public PrintWriter prepareOutputFile(File outputFile, int input, int output) {
+	private PrintWriter prepareOutputFile(final File outputFile,
+			final int input, final int output) {
 		try {
-			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
+			final PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 
 			// write headers, if needed
-			if (this.isProduceOutputHeaders()) {
-				StringBuilder line = new StringBuilder();
+			if (isProduceOutputHeaders()) {
+				final StringBuilder line = new StringBuilder();
 
-				// handle provided fields, not all may be used, but all should be displayed
-				for (String heading : this.inputHeadings) {
-					BasicFile.appendSeparator(line, this.getOutputFormat());
+				// handle provided fields, not all may be used, but all should
+				// be displayed
+				for (final String heading : this.inputHeadings) {
+					BasicFile.appendSeparator(line, getOutputFormat());
 					line.append("\"");
 					line.append(heading);
 					line.append("\"");
 				}
 
 				// now add the output fields that will be generated
-				for (AnalystField field : this.analyst.getScript()
+				for (final AnalystField field : this.analyst.getScript()
 						.getNormalize().getNormalizedFields()) {
 					if (field.isOutput() && !field.isIgnored()) {
-						BasicFile.appendSeparator(line, this.getOutputFormat());
+						BasicFile.appendSeparator(line, getOutputFormat());
 						line.append("\"Output:");
 						line.append(CSVHeaders.tagColumn(field.getName(), 0,
 								field.getTimeSlice(), false));
@@ -103,64 +144,71 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 			return tw;
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new QuantError(e);
 		}
 	}
 
-	public void process(File outputFile, EncogAnalyst analyst,
-			MLMethod method) {
+	/**
+	 * Process the file.
+	 * @param outputFile The output file.
+	 * @param method THe method to use.
+	 */
+	public final void process(final File outputFile, 
+			final MLMethod method) {
 
-		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
-				this.isExpectInputHeaders(), this.getInputFormat());
+		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
+				isExpectInputHeaders(), getInputFormat());
 
 		NeuralData output = null;
 
-		int outputLength = this.analyst.determineUniqueColumns();
+		final int outputLength = this.analyst.determineUniqueColumns();
 
-		PrintWriter tw = this.prepareOutputFile(outputFile, analyst.getScript()
-				.getNormalize().countActiveFields() - 1, 1);
+		final PrintWriter tw = this.prepareOutputFile(outputFile, this.analyst
+				.getScript().getNormalize().countActiveFields() - 1, 1);
 
 		resetStatus();
 		while (csv.next()) {
 			updateStatus(false);
-			LoadedRow row = new LoadedRow(csv, this.outputColumns);
+			final LoadedRow row = new LoadedRow(csv, this.outputColumns);
 
 			double[] inputArray = AnalystNormalizeCSV.extractFields(analyst,
-					this.analystHeaders, csv, outputLength,false);
+					this.analystHeaders, csv, outputLength, false);
 			if (this.series.getTotalDepth() > 1) {
 				inputArray = this.series.process(inputArray);
 			}
 
 			if (inputArray != null) {
-				NeuralData input = new BasicNeuralData(inputArray);
+				final NeuralData input = new BasicNeuralData(inputArray);
 
 				// evaluation data
-				if( method instanceof MLClassification && !(method instanceof MLRegression)) {
+				if ((method instanceof MLClassification)
+						&& !(method instanceof MLRegression)) {
 					// classification only?
 					output = new BasicNeuralData(1);
-					output.setData(0, ((MLClassification)method).classify(input));
+					output.setData(0,
+							((MLClassification) method).classify(input));
 				} else {
 					// regression
-					output = ((MLRegression)method).compute(input);	
+					output = ((MLRegression) method).compute(input);
 				}
-				
 
 				// skip file data
 				int index = this.fileColumns;
 				int outputIndex = 0;
 
 				// display output
-				for (AnalystField field : analyst.getScript().getNormalize()
-						.getNormalizedFields()) {
+				for (final AnalystField field : analyst.getScript()
+						.getNormalize().getNormalizedFields()) {
 					if (this.analystHeaders.find(field.getName()) != -1) {
 
 						if (field.isOutput()) {
 							if (field.isClassify()) {
 								// classification
-								ClassItem cls = field.determineClass(outputIndex,output.getData());
-								outputIndex+=field.getColumnsNeeded();
-								if( cls==null ) {
+								final ClassItem cls = field.determineClass(
+										outputIndex, output.getData());
+								outputIndex += field.getColumnsNeeded();
+								if (cls == null) {
 									row.getData()[index++] = "?Unknown?";
 								} else {
 									row.getData()[index++] = cls.getName();
@@ -169,8 +217,8 @@ public class AnalystEvaluateCSV extends BasicFile {
 								// regression
 								double n = output.getData(outputIndex++);
 								n = field.deNormalize(n);
-								row.getData()[index++] = this.getInputFormat()
-										.format(n, this.getPrecision());
+								row.getData()[index++] = getInputFormat()
+										.format(n, getPrecision());
 							}
 						}
 					}

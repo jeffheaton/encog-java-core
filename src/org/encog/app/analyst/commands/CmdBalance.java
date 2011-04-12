@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.commands;
 
 import java.io.File;
@@ -10,32 +33,48 @@ import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.csv.balance.BalanceCSV;
 import org.encog.util.csv.CSVFormat;
 
+/**
+ * Performs the balance command. This allows large classes to have members
+ * discarded.
+ * 
+ */
 public class CmdBalance extends Cmd {
 
-	public final static String COMMAND_NAME = "BALANCE";
+	/**
+	 * The name of this command.
+	 */
+	public static final String COMMAND_NAME = "BALANCE";
 
-	public CmdBalance(EncogAnalyst analyst) {
+	/**
+	 * Construct the balance command.
+	 * 
+	 * @param analyst
+	 *            The analyst to use with this command.
+	 */
+	public CmdBalance(final EncogAnalyst analyst) {
 		super(analyst);
-		// TODO Auto-generated constructor stub
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean executeCommand(String args) {
+	public final boolean executeCommand(final String args) {
 		// get filenames
-		String sourceID = getProp().getPropertyString(
+		final String sourceID = getProp().getPropertyString(
 				ScriptProperties.BALANCE_CONFIG_sourceFile);
-		String targetID = getProp().getPropertyString(
+		final String targetID = getProp().getPropertyString(
 				ScriptProperties.BALANCE_CONFIG_targetFile);
 
-		File sourceFile = getScript().resolveFilename(sourceID);
-		File targetFile = getScript().resolveFilename(targetID);
+		final File sourceFile = getScript().resolveFilename(sourceID);
+		final File targetFile = getScript().resolveFilename(targetID);
 
 		// get other config data
-		int countPer = getProp().getPropertyInt(
+		final int countPer = getProp().getPropertyInt(
 				ScriptProperties.BALANCE_CONFIG_countPer);
-		String targetFieldStr = getProp().getPropertyString(
+		final String targetFieldStr = getProp().getPropertyString(
 				ScriptProperties.BALANCE_CONFIG_balanceField);
-		DataField targetFieldDF = getAnalyst().getScript().findDataField(
+		final DataField targetFieldDF = getAnalyst().getScript().findDataField(
 				targetFieldStr);
 		if (targetFieldDF == null) {
 			throw new AnalystError("Can't find balance target field: "
@@ -46,22 +85,23 @@ public class CmdBalance extends Cmd {
 					+ targetFieldStr);
 		}
 
-		int targetFieldIndex = getAnalyst().getScript().findDataFieldIndex(
-				targetFieldDF);
+		final int targetFieldIndex = getAnalyst().getScript()
+				.findDataFieldIndex(targetFieldDF);
 
 		// mark generated
 		getScript().markGenerated(targetID);
 
 		// get formats
-		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);
-		CSVFormat outputFormat = this.getScript().determineOutputFormat();
+		final CSVFormat inputFormat = getScript()
+				.determineInputFormat(sourceID);
+		final CSVFormat outputFormat = getScript().determineOutputFormat();
 
 		// prepare to normalize
-		BalanceCSV balance = new BalanceCSV();
+		final BalanceCSV balance = new BalanceCSV();
 		getAnalyst().setCurrentQuantTask(balance);
 		balance.setReport(new AnalystReportBridge(getAnalyst()));
 
-		boolean headers = getScript().expectInputHeaders(sourceID);
+		final boolean headers = getScript().expectInputHeaders(sourceID);
 		balance.Analyze(sourceFile, headers, inputFormat);
 		balance.setOutputFormat(outputFormat);
 		balance.setProduceOutputHeaders(true);
@@ -70,9 +110,12 @@ public class CmdBalance extends Cmd {
 		return balance.shouldStop();
 	}
 
+	/**
+	 * {@inheritDoc} 
+	 */
 	@Override
-	public String getName() {
-		return COMMAND_NAME;
+	public final String getName() {
+		return CmdBalance.COMMAND_NAME;
 	}
 
 }

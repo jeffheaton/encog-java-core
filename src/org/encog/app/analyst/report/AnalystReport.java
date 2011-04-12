@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.report;
 
 import java.io.File;
@@ -15,18 +38,40 @@ import org.encog.util.file.FileUtil;
 
 /**
  * Produce a simple report on the makeup of the script and data to be analyued.
- *
+ * 
  */
 public class AnalystReport {
 
-	private EncogAnalyst analyst;
+	/**
+	 * Used as a col-span.
+	 */
+	public static final int FIVE_SPAN = 5;
+	
+	/**
+	 * Used as a col-span.
+	 */
+	public static final int EIGHT_SPAN = 5;
+	
+	
+	/**
+	 * The analyst to use.
+	 */
+	private final EncogAnalyst analyst;
 
-	public AnalystReport(EncogAnalyst analyst) {
-		this.analyst = analyst;
+	/**
+	 * Construct the report.
+	 * @param theAnalyst The analyst to use.
+	 */
+	public AnalystReport(final EncogAnalyst theAnalyst) {
+		this.analyst = theAnalyst;
 	}
 
-	public String produceReport() {
-		HTMLReport report = new HTMLReport();
+	/**
+	 * Produce the report.
+	 * @return The report.
+	 */
+	public final String produceReport() {
+		final HTMLReport report = new HTMLReport();
 
 		report.beginHTML();
 		report.title("Encog Analyst Report");
@@ -46,30 +91,30 @@ public class AnalystReport {
 		report.header("Standard Deviation");
 		report.endRow();
 
-		for (DataField df : this.analyst.getScript().getFields()) {
+		for (final DataField df : this.analyst.getScript().getFields()) {
 			report.beginRow();
 			report.cell(df.getName());
-			report.cell(df.isClass() ? "Yes" : "No");
-			report.cell(df.isComplete() ? "Yes" : "No");
-			report.cell(df.isInteger() ? "Yes" : "No");
-			report.cell(df.isReal() ? "Yes" : "No");
-			report.cell(Format.formatDouble(df.getMax(), 5));
-			report.cell(Format.formatDouble(df.getMin(), 5));
-			report.cell(Format.formatDouble(df.getMean(), 5));
-			report.cell(Format.formatDouble(df.getStandardDeviation(), 5));
+			report.cell(Format.formatYesNo(df.isClass()));
+			report.cell(Format.formatYesNo(df.isComplete()));
+			report.cell(Format.formatYesNo(df.isInteger()));
+			report.cell(Format.formatYesNo(df.isReal()));
+			report.cell(Format.formatDouble(df.getMax(), FIVE_SPAN));
+			report.cell(Format.formatDouble(df.getMin(), FIVE_SPAN));
+			report.cell(Format.formatDouble(df.getMean(), FIVE_SPAN));
+			report.cell(Format.formatDouble(df.getStandardDeviation(), 
+					FIVE_SPAN));
 			report.endRow();
 
-			
 			if (df.getClassMembers().size() > 0) {
 				report.beginRow();
 				report.cell("&nbsp;");
-				report.beginTableInCell(8);
+				report.beginTableInCell(EIGHT_SPAN);
 				report.beginRow();
 				report.header("Code");
 				report.header("Name");
 				report.header("Count");
 				report.endRow();
-				for (AnalystClassItem item : df.getClassMembers()) {
+				for (final AnalystClassItem item : df.getClassMembers()) {
 					report.beginRow();
 					report.cell(item.getCode());
 					report.cell(item.getName());
@@ -78,9 +123,9 @@ public class AnalystReport {
 				}
 				report.endTableInCell();
 				report.endRow();
-				
+
 			}
-			
+
 		}
 
 		report.endTable();
@@ -94,18 +139,20 @@ public class AnalystReport {
 		report.header("Low");
 		report.endRow();
 
-		for (AnalystField item : this.analyst.getScript().getNormalize()
+		for (final AnalystField item : this.analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
 			report.beginRow();
 			report.cell(item.getName());
 			report.cell(item.getAction().toString());
-			report.cell(Format.formatDouble(item.getNormalizedHigh(), 5));
-			report.cell(Format.formatDouble(item.getNormalizedLow(), 5));
+			report.cell(Format.formatDouble(item.getNormalizedHigh(), 
+					FIVE_SPAN));
+			report.cell(Format.formatDouble(item.getNormalizedLow(), 
+					FIVE_SPAN));
 			report.endRow();
 		}
 
 		report.endTable();
-
+		
 		report.h1("Machine Learning");
 		report.beginTable();
 		report.beginRow();
@@ -113,11 +160,11 @@ public class AnalystReport {
 		report.header("Value");
 		report.endRow();
 
-		String t = this.analyst.getScript().getProperties()
+		final String t = this.analyst.getScript().getProperties()
 				.getPropertyString(ScriptProperties.ML_CONFIG_type);
-		String a = this.analyst.getScript().getProperties()
+		final String a = this.analyst.getScript().getProperties()
 				.getPropertyString(ScriptProperties.ML_CONFIG_architecture);
-		String rf = this.analyst
+		final String rf = this.analyst
 				.getScript()
 				.getProperties()
 				.getPropertyString(
@@ -134,9 +181,9 @@ public class AnalystReport {
 		report.header("Name");
 		report.header("Filename");
 		report.endRow();
-		for (String key : this.analyst.getScript().getProperties()
+		for (final String key : this.analyst.getScript().getProperties()
 				.getFilenames()) {
-			String value = this.analyst.getScript().getProperties()
+			final String value = this.analyst.getScript().getProperties()
 					.getFilename(key);
 			report.beginRow();
 			report.cell(key);
@@ -151,11 +198,15 @@ public class AnalystReport {
 		return report.toString();
 	}
 
-	public void produceReport(File filename) {
+	/**
+	 * Produce a report for a filename.
+	 * @param filename The filename.
+	 */
+	public final void produceReport(final File filename) {
 		try {
-			String str = produceReport();
+			final String str = produceReport();
 			FileUtil.writeFileAsString(filename, str);
-		} catch (IOException ex) {
+		} catch (final IOException ex) {
 			throw new AnalystError(ex);
 		}
 	}

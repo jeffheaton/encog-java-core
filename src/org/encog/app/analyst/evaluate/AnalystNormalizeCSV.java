@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.evaluate;
 
 import java.io.File;
@@ -15,6 +38,7 @@ import org.encog.app.quant.QuantError;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.csv.ReadCSV;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Normalize, or denormalize, a CSV file.
@@ -22,9 +46,157 @@ import org.encog.util.csv.ReadCSV;
  */
 public class AnalystNormalizeCSV extends BasicFile {
 
+	/**
+	 * Extract fields from a file into a numeric array for machine learning.
+	 * @param analyst The analyst to use.
+	 * @param headers The headers for the input data.
+	 * @param csv The CSV that holds the input data.
+	 * @param outputLength The length of the returned array.
+	 * @param skipOutput True if the output should be skipped.
+	 * @return The encoded data.
+	 */
+	public static final double[] extractFields(final EncogAnalyst analyst,
+			final CSVHeaders headers, final ReadCSV csv,
+			final int outputLength, final boolean skipOutput) {
+		final double[] output = new double[outputLength];
+		int outputIndex = 0;
+		for (final AnalystField stat : analyst.getScript().getNormalize()
+				.getNormalizedFields()) {
+
+			if (stat.isOutput() && skipOutput) {
+				continue;
+			}
+
+			int index = headers.find(stat.getName());
+			final String str = csv.get(index++);
+
+			if (stat.getAction() == NormalizationAction.Normalize) {
+				double d = csv.getFormat().parse(str);
+				d = stat.normalize(d);
+				output[outputIndex++] = d;
+			} else {
+				final double[] d = stat.encode(str);
+				for (final double element : d) {
+					output[outputIndex++] = element;
+				}
+			}
+		}
+
+		return output;
+
+	}
+
+	/**
+	 * The analyst to use.
+	 */
 	private EncogAnalyst analyst;
+	
+	/**
+	 * Used to process time series.
+	 */
 	private TimeSeriesUtil series;
+
+	/**
+	 * THe headers.
+	 */
 	private CSVHeaders analystHeaders;
+
+	/**
+	 * Analyze the file.
+	 * @param inputFilename The input file.
+	 * @param expectInputHeaders True, if input headers are present.
+	 * @param inputFormat The format.
+	 * @param theAnalyst The analyst to use.
+	 */
+	public final void analyze(final File inputFilename,
+			final boolean expectInputHeaders, final CSVFormat inputFormat,
+			final EncogAnalyst theAnalyst) {
+		this.inputFilename = inputFilename;
+		this.inputFormat = inputFormat;
+		this.expectInputHeaders = expectInputHeaders;
+		this.analyst = theAnalyst;
+		this.analyzed = true;
+
+		this.analystHeaders = new CSVHeaders(inputFilename, expectInputHeaders,
+				inputFormat);
+
+		for (final AnalystField field : analyst.getScript().getNormalize()
+				.getNormalizedFields()) {
+			field.init();
+		}
+
+		this.series = new TimeSeriesUtil(analyst,
+				this.analystHeaders.getHeaders());
+	}
+
+	/**
+	 * Normalize the input file. Write to the specified file.
+	 * 
+	 * @param file
+	 *            The file to write to.
+	 */
+	public final void normalize(final File file) {
+		if (this.analyst == null) {
+			throw new EncogError(
+					"Can't normalize yet, file has not been analyzed.");
+		}
+
+		ReadCSV csv = null;
+		PrintWriter tw = null;
+
+		try {
+			csv = new ReadCSV(getInputFilename().toString(),
+					isExpectInputHeaders(), getInputFormat());
+
+			tw = new PrintWriter(new FileWriter(file));
+
+			// write headers, if needed
+			if (isProduceOutputHeaders()) {
+				writeHeaders(tw);
+			}
+
+			resetStatus();
+			final int outputLength = this.analyst.determineUniqueColumns();
+
+			// write file contents
+			while (csv.next() && !shouldStop()) {
+				updateStatus(false);
+
+				double[] output = AnalystNormalizeCSV.extractFields(
+						this.analyst, this.analystHeaders, csv, outputLength,
+						false);
+
+				if (this.series.getTotalDepth() > 1) {
+					output = this.series.process(output);
+				}
+
+				if (output != null) {
+					final StringBuilder line = new StringBuilder();
+					NumberList.toList(getOutputFormat(), line, output);
+					tw.println(line);
+				}
+			}
+		} catch (final IOException e) {
+			throw new QuantError(e);
+		} finally {
+			reportDone(false);
+			if (csv != null) {
+				try {
+					csv.close();
+				} catch (final Exception ex) {
+					EncogLogging.log(ex);
+				}
+			}
+
+			if (tw != null) {
+				try {
+					tw.close();
+				} catch (final Exception ex) {
+					EncogLogging.log(ex);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Set the source file. This is useful if you want to use pre-existing stats
@@ -37,10 +209,11 @@ public class AnalystNormalizeCSV extends BasicFile {
 	 * @param format
 	 *            The format of the CSV file.
 	 */
-	public void setSourceFile(File file, boolean headers, CSVFormat format) {
-		this.setInputFilename(file);
-		this.setExpectInputHeaders(headers);
-		this.setInputFormat(format);
+	public final void setSourceFile(final File file, final boolean headers,
+			final CSVFormat format) {
+		setInputFilename(file);
+		setExpectInputHeaders(headers);
+		setInputFormat(format);
 	}
 
 	/**
@@ -49,14 +222,14 @@ public class AnalystNormalizeCSV extends BasicFile {
 	 * @param tw
 	 *            The output stream.
 	 */
-	private void writeHeaders(PrintWriter tw) {
-		StringBuilder line = new StringBuilder();
-		for (AnalystField stat : this.analyst.getScript().getNormalize()
+	private void writeHeaders(final PrintWriter tw) {
+		final StringBuilder line = new StringBuilder();
+		for (final AnalystField stat : this.analyst.getScript().getNormalize()
 				.getNormalizedFields()) {
-			int needed = stat.getColumnsNeeded();
+			final int needed = stat.getColumnsNeeded();
 
 			for (int i = 0; i < needed; i++) {
-				BasicFile.appendSeparator(line, this.getInputFormat());
+				BasicFile.appendSeparator(line, getInputFormat());
 				line.append('\"');
 				line.append(CSVHeaders.tagColumn(stat.getName(), i,
 						stat.getTimeSlice(), needed > 1));
@@ -64,118 +237,6 @@ public class AnalystNormalizeCSV extends BasicFile {
 			}
 		}
 		tw.println(line.toString());
-	}
-	
-	public static double[] extractFields(EncogAnalyst analyst, CSVHeaders headers, ReadCSV csv, int outputLength, boolean skipOutput) {
-		double[] output = new double[outputLength];
-		int outputIndex = 0;
-		for (AnalystField stat : analyst.getScript()
-				.getNormalize().getNormalizedFields()) {
-			
-			if( stat.isOutput() && skipOutput ) {
-				continue;
-			}
-			
-			int index = headers.find(stat.getName());
-			String str = csv.get(index++);
-
-			if (stat.getAction() == NormalizationAction.Normalize) {
-				double d = csv.getFormat().parse(str);
-				d = stat.normalize(d);
-				output[outputIndex++] = d;
-			} else {
-				double[] d = stat.encode(str);
-				for (int i = 0; i < d.length; i++) {
-					output[outputIndex++] = d[i];
-				}
-			}
-		}
-
-		return output;
-		
-	}
-
-	/**
-	 * Normalize the input file. Write to the specified file.
-	 * 
-	 * @param file
-	 *            The file to write to.
-	 */
-	public void normalize(File file) {
-		if (this.analyst == null)
-			throw new EncogError(
-					"Can't normalize yet, file has not been analyzed.");
-
-		ReadCSV csv = null;
-		PrintWriter tw = null;
-
-		try {
-			csv = new ReadCSV(this.getInputFilename().toString(),
-					this.isExpectInputHeaders(), this.getInputFormat());
-
-			tw = new PrintWriter(new FileWriter(file));
-
-			// write headers, if needed
-			if (this.isProduceOutputHeaders()) {
-				writeHeaders(tw);
-			}
-
-			resetStatus();
-			int outputLength = this.analyst.determineUniqueColumns();
-
-			// write file contents
-			while (csv.next() && !this.shouldStop()) {
-				updateStatus(false);
-
-				double[] output = extractFields(analyst, this.analystHeaders, csv, outputLength, false);				
-
-				if (this.series.getTotalDepth() > 1) {
-					output = this.series.process(output);
-				}
-
-				if (output != null) {
-					StringBuilder line = new StringBuilder();
-					NumberList.toList(this.getOutputFormat(), line, output);
-					tw.println(line);
-				}
-			}
-		} catch (IOException e) {
-			throw new QuantError(e);
-		} finally {
-			reportDone(false);
-			if (csv != null) {
-				try {
-					csv.close();
-				} catch (Exception ex) {
-				}
-			}
-
-			if (tw != null) {
-				try {
-					tw.close();
-				} catch (Exception ex) {
-				}
-			}
-		}
-	}
-
-	public void analyze(File inputFilename, boolean expectInputHeaders,
-			CSVFormat inputFormat, EncogAnalyst analyst) {
-		this.inputFilename = inputFilename;
-		this.inputFormat = inputFormat;
-		this.expectInputHeaders = expectInputHeaders;
-		this.analyst = analyst;
-		this.analyzed = true;
-
-		this.analystHeaders = new CSVHeaders(inputFilename, expectInputHeaders,
-				inputFormat);
-
-		for (AnalystField field : analyst.getScript().getNormalize()
-				.getNormalizedFields()) {
-			field.init();
-		}
-
-		this.series = new TimeSeriesUtil(analyst, analystHeaders.getHeaders());
 	}
 
 }

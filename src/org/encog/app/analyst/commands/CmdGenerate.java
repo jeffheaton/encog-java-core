@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.commands;
 
 import java.io.File;
@@ -19,54 +42,46 @@ import org.encog.util.simple.EncogUtility;
  */
 public class CmdGenerate extends Cmd {
 
-	public final static String COMMAND_NAME = "GENERATE";
+	/**
+	 * The name of this command.
+	 */
+	public static final String COMMAND_NAME = "GENERATE";
 
-	public CmdGenerate(EncogAnalyst analyst) {
+	/**
+	 * Construct this generate command.
+	 * @param analyst The analyst to use.
+	 */
+	public CmdGenerate(final EncogAnalyst analyst) {
 		super(analyst);
 	}
 
-	public int[] determineInputFields(CSVHeaders headerList) {
-		List<Integer> fields = new ArrayList<Integer>();
+	/**
+	 * Determine the ideal fields.
+	 * @param headerList The headers.
+	 * @return The indexes of the ideal fields.
+	 */
+	private int[] determineIdealFields(final CSVHeaders headerList) {
 
-		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
-			String baseName = headerList.getBaseHeader(currentIndex);
-			int slice = headerList.getSlice(currentIndex);
-			AnalystField field = this.getAnalyst().getScript().findNormalizedField(baseName,slice);
-			
-			if( field.isInput() ) {
-				fields.add(currentIndex);
-			}
-		}
-
-		// allocate result array
-		int[] result = new int[fields.size()];
-		for (int i = 0; i < result.length; i++) {
-			result[i] = fields.get(i);
-		}
-
-		return result;
-	}
-
-	public int[] determineIdealFields(CSVHeaders headerList) {
-		
 		int[] result;
-		String type = getProp().getPropertyString(
+		final String type = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_type);
-		
+
 		// is it non-supervised?
-		if( type.equals(MLMethodFactory.TYPE_SOM)) {
+		if (type.equals(MLMethodFactory.TYPE_SOM)) {
 			result = new int[0];
 			return result;
 		}
-		
-		List<Integer> fields = new ArrayList<Integer>();
 
-		for (int currentIndex = 0; currentIndex < headerList.size(); currentIndex++) {
-			String baseName = headerList.getBaseHeader(currentIndex);
-			int slice = headerList.getSlice(currentIndex);
-			AnalystField field = this.getAnalyst().getScript().findNormalizedField(baseName,slice);
-			
-			if( field.isOutput() ) {
+		final List<Integer> fields = new ArrayList<Integer>();
+
+		for (int currentIndex = 0; currentIndex < headerList.size(); 
+			currentIndex++) {
+			final String baseName = headerList.getBaseHeader(currentIndex);
+			final int slice = headerList.getSlice(currentIndex);
+			final AnalystField field = getAnalyst().getScript()
+					.findNormalizedField(baseName, slice);
+
+			if (field.isOutput()) {
 				fields.add(currentIndex);
 			}
 		}
@@ -80,37 +95,73 @@ public class CmdGenerate extends Cmd {
 		return result;
 	}
 
-	@Override
-	public boolean executeCommand(String args) {
-		// get filenames
-		String sourceID = getProp().getPropertyString(
-				ScriptProperties.GENERATE_CONFIG_sourceFile);
-		String targetID = getProp().getPropertyString(
-				ScriptProperties.GENERATE_CONFIG_targetFile);
-		CSVFormat format = this.getAnalyst().getScript()
-				.determineInputFormat(sourceID);
+	/**
+	 * Determine the input fields.
+	 * @param headerList The headers.
+	 * @return The indexes of the input fields.
+	 */
+	private int[] determineInputFields(final CSVHeaders headerList) {
+		final List<Integer> fields = new ArrayList<Integer>();
 
-		File sourceFile = getScript().resolveFilename(sourceID);
-		File targetFile = getScript().resolveFilename(targetID);
+		for (int currentIndex = 0; currentIndex < headerList.size(); 
+			currentIndex++) {
+			final String baseName = headerList.getBaseHeader(currentIndex);
+			final int slice = headerList.getSlice(currentIndex);
+			final AnalystField field = getAnalyst().getScript()
+					.findNormalizedField(baseName, slice);
+
+			if (field.isInput()) {
+				fields.add(currentIndex);
+			}
+		}
+
+		// allocate result array
+		final int[] result = new int[fields.size()];
+		for (int i = 0; i < result.length; i++) {
+			result[i] = fields.get(i);
+		}
+
+		return result;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final boolean executeCommand(final String args) {
+		// get filenames
+		final String sourceID = getProp().getPropertyString(
+				ScriptProperties.GENERATE_CONFIG_sourceFile);
+		final String targetID = getProp().getPropertyString(
+				ScriptProperties.GENERATE_CONFIG_targetFile);
+		final CSVFormat format = getAnalyst().getScript().determineInputFormat(
+				sourceID);
+
+		final File sourceFile = getScript().resolveFilename(sourceID);
+		final File targetFile = getScript().resolveFilename(targetID);
 
 		// mark generated
 		getScript().markGenerated(targetID);
 
 		// read file
-		boolean headers = getScript().expectInputHeaders(sourceID);
-		CSVHeaders headerList = new CSVHeaders(sourceFile, headers, format);
+		final boolean headers = getScript().expectInputHeaders(sourceID);
+		final CSVHeaders headerList = new CSVHeaders(sourceFile, headers,
+				format);
 
-		int[] input = determineInputFields(headerList);
-		int[] ideal = determineIdealFields(headerList);
+		final int[] input = determineInputFields(headerList);
+		final int[] ideal = determineIdealFields(headerList);
 
 		EncogUtility.convertCSV2Binary(sourceFile, format, targetFile, input,
 				ideal, headers);
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getName() {
-		return COMMAND_NAME;
+	public final String getName() {
+		return CmdGenerate.COMMAND_NAME;
 	}
 
 }

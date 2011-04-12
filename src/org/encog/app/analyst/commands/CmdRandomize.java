@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.commands;
 
 import java.io.File;
@@ -10,38 +33,50 @@ import org.encog.util.csv.CSVFormat;
 
 /**
  * This command is used to randomize the lines in a CSV file.
- *
+ * 
  */
 public class CmdRandomize extends Cmd {
 
-	public final static String COMMAND_NAME = "RANDOMIZE";	
-	
-	public CmdRandomize(EncogAnalyst analyst) {
+	/**
+	 * The name of the command.
+	 */
+	public static final String COMMAND_NAME = "RANDOMIZE";
+
+	/**
+	 * Construct the randomize command.
+	 * @param analyst The analyst to use.
+	 */
+	public CmdRandomize(final EncogAnalyst analyst) {
 		super(analyst);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean executeCommand(String args) {
+	public final boolean executeCommand(final String args) {
 		// get filenames
-		String sourceID = getProp().getPropertyString(ScriptProperties.RANDOMIZE_CONFIG_sourceFile);
-		String targetID = getProp().getPropertyString(ScriptProperties.RANDOMIZE_CONFIG_targetFile);
-		
-		File sourceFile = this.getScript().resolveFilename(sourceID);
-		File targetFile = this.getScript().resolveFilename(targetID);
+		final String sourceID = getProp().getPropertyString(
+				ScriptProperties.RANDOMIZE_CONFIG_sourceFile);
+		final String targetID = getProp().getPropertyString(
+				ScriptProperties.RANDOMIZE_CONFIG_targetFile);
+
+		final File sourceFile = getScript().resolveFilename(sourceID);
+		final File targetFile = getScript().resolveFilename(targetID);
 
 		// get formats
-		CSVFormat inputFormat = this.getScript().determineInputFormat(sourceID);
-		CSVFormat outputFormat = this.getScript().determineOutputFormat(); 
-			
-		
+		final CSVFormat inputFormat = getScript()
+				.determineInputFormat(sourceID);
+		final CSVFormat outputFormat = getScript().determineOutputFormat();
+
 		// mark generated
 		getScript().markGenerated(targetID);
 
 		// prepare to normalize
-		ShuffleCSV norm = new ShuffleCSV();
+		final ShuffleCSV norm = new ShuffleCSV();
 		getAnalyst().setCurrentQuantTask(norm);
 		norm.setReport(new AnalystReportBridge(getAnalyst()));
-		boolean headers = this.getScript().expectInputHeaders(sourceID);
+		final boolean headers = getScript().expectInputHeaders(sourceID);
 		norm.analyze(sourceFile, headers, inputFormat);
 		norm.setOutputFormat(outputFormat);
 		norm.process(targetFile);
@@ -49,9 +84,12 @@ public class CmdRandomize extends Cmd {
 		return norm.shouldStop();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public String getName() {
-		return COMMAND_NAME;
+	public final String getName() {
+		return CmdRandomize.COMMAND_NAME;
 	}
 
 }

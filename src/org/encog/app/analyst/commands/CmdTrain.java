@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.commands;
 
 import java.io.File;
@@ -23,23 +46,93 @@ import org.encog.util.validate.ValidateNetwork;
  */
 public class CmdTrain extends Cmd {
 
-	public final static String COMMAND_NAME = "TRAIN";
+	/**
+	 * The name of this command.
+	 */
+	public static final String COMMAND_NAME = "TRAIN";
+	
+	/**
+	 * The number of folds, if kfold is used.
+	 */
 	private int kfold;
 
-	public CmdTrain(EncogAnalyst analyst) {
+	/**
+	 * Construct the train command.
+	 * @param analyst The analyst to use.
+	 */
+	public CmdTrain(final EncogAnalyst analyst) {
 		super(analyst);
 	}
-	
+
+	/**
+	 * Create a trainer, use cross validation if enabled.
+	 * @param method The method to use.
+	 * @param trainingSet The training set to use.
+	 * @return The trainer.
+	 */
+	private MLTrain createTrainer(final MLMethod method,
+			final NeuralDataSet trainingSet) {
+
+		final MLTrainFactory factory = new MLTrainFactory();
+
+		final String type = getProp().getPropertyString(
+				ScriptProperties.ML_TRAIN_type);
+		final String args = getProp().getPropertyString(
+				ScriptProperties.ML_TRAIN_arguments);
+
+		MLTrain train = factory.create(method, trainingSet, type, args);
+
+		if (this.kfold > 0) {
+			train = new CrossValidationKFold((Train) train, this.kfold);
+		}
+
+		return train;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final boolean executeCommand(final String args) {
+
+		this.kfold = obtainCross();
+		final NeuralDataSet trainingSet = obtainTrainingSet();
+		final MLMethod method = obtainMethod();
+		final MLTrain trainer = createTrainer(method, trainingSet);
+
+		performTraining(trainer, method, trainingSet);
+
+		final String resourceID = getProp().getPropertyString(
+				ScriptProperties.ML_CONFIG_machineLearningFile);
+		final File resourceFile = getAnalyst().getScript().resolveFilename(
+				resourceID);
+		EncogDirectoryPersistence.saveObject(resourceFile, method);
+
+		return getAnalyst().shouldStopCommand();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String getName() {
+		return CmdTrain.COMMAND_NAME;
+	}
+
+	/**
+	 * Obtain the number of folds for cross validation.
+	 * @return The number of folds.
+	 */
 	private int obtainCross() {
-		String cross = getProp().getPropertyString(
+		final String cross = getProp().getPropertyString(
 				ScriptProperties.ML_TRAIN_cross);
-		if( cross==null || cross.length()==0 ) {
+		if ((cross == null) || (cross.length() == 0)) {
 			return 0;
-		} else if( cross.toLowerCase().startsWith("kfold:") ) {
-			String str = cross.substring(6);
+		} else if (cross.toLowerCase().startsWith("kfold:")) {
+			final String str = cross.substring(6);
 			try {
 				return Integer.parseInt(str);
-			} catch(NumberFormatException ex) {
+			} catch (final NumberFormatException ex) {
 				throw new AnalystError("Invalid kfold :" + str);
 			}
 		} else {
@@ -47,12 +140,16 @@ public class CmdTrain extends Cmd {
 		}
 	}
 
+	/**
+	 * Obtain the ML method.
+	 * @return The method.
+	 */
 	private MLMethod obtainMethod() {
-		String resourceID = getProp().getPropertyString(
+		final String resourceID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_machineLearningFile);
-		File resourceFile = getScript().resolveFilename(resourceID);
+		final File resourceFile = getScript().resolveFilename(resourceID);
 
-		MLMethod method = (MLMethod) EncogDirectoryPersistence
+		final MLMethod method = (MLMethod) EncogDirectoryPersistence
 				.loadObject(resourceFile);
 
 		if (!(method instanceof MLMethod)) {
@@ -61,83 +158,54 @@ public class CmdTrain extends Cmd {
 							+ method.getClass().getSimpleName());
 		}
 
-		return (MLMethod) method;
+		return method;
 	}
 
+	/**
+	 * Obtain the training set.
+	 * @return The training set.
+	 */
 	private NeuralDataSet obtainTrainingSet() {
-		String trainingID = getProp().getPropertyString(
+		final String trainingID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_trainingFile);
 
-		File trainingFile = getScript().resolveFilename(trainingID);
+		final File trainingFile = getScript().resolveFilename(trainingID);
 
 		NeuralDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
-		
-		if( this.kfold>0 ) {
+
+		if (this.kfold > 0) {
 			trainingSet = new FoldedDataSet(trainingSet);
 		}
 
 		return trainingSet;
 	}
 
-	private MLTrain createTrainer(MLMethod method, NeuralDataSet trainingSet) {
-
-		MLTrainFactory factory = new MLTrainFactory();
-
-		String type = this.getProp().getPropertyString(
-				ScriptProperties.ML_TRAIN_type);
-		String args = this.getProp().getPropertyString(
-				ScriptProperties.ML_TRAIN_arguments);
-
-		MLTrain train = factory.create(method, trainingSet, type, args);
-		
-		if( kfold>0 ) {
-			train = new CrossValidationKFold((Train)train,kfold);
-		}
-
-		return train;
-	}
-
-	private void performTraining(MLTrain train, MLMethod method,
-			NeuralDataSet trainingSet) {
+	/**
+	 * Perform the training.
+	 * @param train The training method.
+	 * @param method The ML method.
+	 * @param trainingSet The training set.
+	 */
+	private void performTraining(final MLTrain train, final MLMethod method,
+			final NeuralDataSet trainingSet) {
 
 		ValidateNetwork.validateMethodToData(method, trainingSet);
-		double targetError = this.getProp().getPropertyDouble(
+		final double targetError = getProp().getPropertyDouble(
 				ScriptProperties.ML_TRAIN_targetError);
-		this.getAnalyst().reportTrainingBegin();
-		int maxIteration = this.getAnalyst().getMaxIteration();
+		getAnalyst().reportTrainingBegin();
+		final int maxIteration = getAnalyst().getMaxIteration();
 
 		do {
 			train.iteration();
-			this.getAnalyst().reportTraining(train);
-		} while (train.getError() > targetError
-				&& !this.getAnalyst().shouldStopCommand()
+			getAnalyst().reportTraining(train);
+		} while ((train.getError() > targetError)
+				&& !getAnalyst().shouldStopCommand()
 				&& !train.isTrainingDone()
-				&& (maxIteration==-1 || train.getIteration()<maxIteration));
+				&& ((maxIteration == -1) 
+				|| (train.getIteration() < maxIteration)));
 		train.finishTraining();
 
-		this.getAnalyst().reportTrainingEnd();
-	}
-
-	public boolean executeCommand(String args) {
-
-		this.kfold = obtainCross();
-		NeuralDataSet trainingSet = obtainTrainingSet();
-		MLMethod method = obtainMethod();		
-		MLTrain trainer = createTrainer(method, trainingSet);
-
-		performTraining(trainer, method, trainingSet);
-
-		String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_machineLearningFile);
-		File resourceFile = getAnalyst().getScript().resolveFilename(resourceID);
-		EncogDirectoryPersistence.saveObject(resourceFile, method);
-
-		return this.getAnalyst().shouldStopCommand();
-	}
-
-	@Override
-	public String getName() {
-		return COMMAND_NAME;
+		getAnalyst().reportTrainingEnd();
 	}
 
 }

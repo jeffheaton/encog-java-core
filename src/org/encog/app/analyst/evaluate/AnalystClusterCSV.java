@@ -1,11 +1,32 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.analyst.evaluate;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.util.CSVHeaders;
@@ -15,71 +36,77 @@ import org.encog.app.quant.QuantError;
 import org.encog.engine.data.EngineData;
 import org.encog.ml.kmeans.KMeansCluster;
 import org.encog.ml.kmeans.KMeansClustering;
-import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 /**
- * Used by the analyst to evaluate a CSV file.
+ * Used by the analyst to cluster a CSV file.
  * 
  */
 public class AnalystClusterCSV extends BasicFile {
 
+	/**
+	 * The analyst to use.
+	 */
 	private EncogAnalyst analyst;
-	private int fileColumns;
+	
+	/**
+	 * The headers.
+	 */
 	private CSVHeaders analystHeaders;
+	
+	/**
+	 * The training data used to send to KMeans.
+	 */
 	private BasicNeuralDataSet data;
 
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
 	 * processed.
-	 * 
-	 * @param inputFile
-	 *            The input file to process.
-	 * @param headers
-	 *            True, if headers are present.
-	 * @param format
-	 *            The format of the CSV file.
+	 * @param theAnalyst The analyst to use.
+	 * @param inputFile The input file to analyze.
+	 * @param headers True, if the input file has headers.
+	 * @param format The format of the input file.
 	 */
-	public void analyze(EncogAnalyst analyst, File inputFile, boolean headers,
-			CSVFormat format) {
+	public final void analyze(final EncogAnalyst theAnalyst, 
+			final File inputFile,
+			final boolean headers, final CSVFormat format) {
 		this.inputFilename = inputFile;
-		this.setExpectInputHeaders(headers);
-		this.setInputFormat(format);
+		setExpectInputHeaders(headers);
+		setInputFormat(format);
 
-		this.setAnalyzed(true);
-		this.analyst = analyst;
-				
-		if( this.getOutputFormat()==null) {
-			this.setOutputFormat(this.inputFormat);
+		setAnalyzed(true);
+		this.analyst = theAnalyst;
+
+		if (getOutputFormat() == null) {
+			setOutputFormat(this.inputFormat);
 		}
-		
-		data = new BasicNeuralDataSet();
+
+		this.data = new BasicNeuralDataSet();
 		resetStatus();
 		int recordCount = 0;
-		
-		int outputLength = this.analyst.determineUniqueColumns();
-		ReadCSV csv = new ReadCSV(this.inputFilename.toString(), this.expectInputHeaders,
-				this.inputFormat);
-		readHeaders(csv);
-		
-		this.analystHeaders = new CSVHeaders(this.inputHeadings);
-		this.fileColumns = this.analystHeaders.getHeaders().size();
-		
-		while (csv.next() && !this.shouldStop() ) {
-			updateStatus(true);
-			
-			LoadedRow row = new LoadedRow(csv, 1);
 
-			double[] inputArray = AnalystNormalizeCSV.extractFields(analyst, this.analystHeaders, csv, outputLength,true);
-			ClusterRow input = new ClusterRow(inputArray,row);
+		final int outputLength = this.analyst.determineUniqueColumns();
+		final ReadCSV csv = new ReadCSV(this.inputFilename.toString(),
+				this.expectInputHeaders, this.inputFormat);
+		readHeaders(csv);
+
+		this.analystHeaders = new CSVHeaders(this.inputHeadings);
+
+		while (csv.next() && !shouldStop()) {
+			updateStatus(true);
+
+			final LoadedRow row = new LoadedRow(csv, 1);
+
+			final double[] inputArray = AnalystNormalizeCSV.extractFields(
+					analyst, this.analystHeaders, csv, outputLength, true);
+			final ClusterRow input = new ClusterRow(inputArray, row);
 			this.data.add(input);
-			
+
 			recordCount++;
 		}
-		this.setRecordCount( recordCount );
+		setRecordCount(recordCount);
 		this.columnCount = csv.getColumnCount();
 
 		readHeaders(csv);
@@ -89,23 +116,26 @@ public class AnalystClusterCSV extends BasicFile {
 
 	/**
 	 * Prepare the output file, write headers if needed.
-	 * 
-	 * @param outputFile
-	 *            The name of the output file.
-	 * @param method
-	 * @return The output stream for the text file.
+	 * @param outputFile The output file.
+	 * @param input The number of input columns.
+	 * @param output The number of output columns.
+	 * @return The file to be written to.
 	 */
-	public PrintWriter prepareOutputFile(File outputFile, int input, int output) {
+	private PrintWriter prepareOutputFile(
+			final File outputFile,
+			final int input, 
+			final int output) {
 		try {
-			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
+			final PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
 
 			// write headers, if needed
-			if (this.isProduceOutputHeaders()) {
-				StringBuilder line = new StringBuilder();
+			if (isProduceOutputHeaders()) {
+				final StringBuilder line = new StringBuilder();
 
-				// handle provided fields, not all may be used, but all should be displayed
-				for (String heading : this.inputHeadings) {
-					BasicFile.appendSeparator(line, this.getOutputFormat());
+				// handle provided fields, not all may be used, but all should
+				// be displayed
+				for (final String heading : this.inputHeadings) {
+					BasicFile.appendSeparator(line, getOutputFormat());
 					line.append("\"");
 					line.append(heading);
 					line.append("\"");
@@ -119,29 +149,37 @@ public class AnalystClusterCSV extends BasicFile {
 
 			return tw;
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new QuantError(e);
 		}
 	}
 
-	public void process(File outputFile, int clusters, EncogAnalyst analyst) {
+	/**
+	 * Process the file and cluster.
+	 * @param outputFile The output file.
+	 * @param clusters The number of clusters.
+	 * @param theAnalyst The analyst to use.
+	 * @param iterations The number of iterations to use.
+	 */
+	public final void process(final File outputFile, final int clusters,
+			final EncogAnalyst theAnalyst, final int iterations) {
 
-		PrintWriter tw = this.prepareOutputFile(outputFile, analyst.getScript()
-				.getNormalize().countActiveFields() - 1, 1);
+		final PrintWriter tw = this.prepareOutputFile(outputFile, analyst
+				.getScript().getNormalize().countActiveFields() - 1, 1);
 
 		resetStatus();
-		
-		KMeansClustering cluster = new KMeansClustering(clusters,this.data);
-		cluster.iteration(100);
-		
+
+		final KMeansClustering cluster = new KMeansClustering(clusters,
+				this.data);
+		cluster.iteration(iterations);
+
 		int clusterNum = 0;
-		for(KMeansCluster cl : cluster.getClusters() )
-		{
-			for( EngineData data : cl.getData() ) {
-				ClusterRow row = (ClusterRow)data;
-				int clsIndex = row.getInput().size()-1;
-				LoadedRow lr = row.getRow();
-				lr.getData()[clsIndex] = ""+clusterNum;
+		for (final KMeansCluster cl : cluster.getClusters()) {
+			for (final EngineData item : cl.getData()) {
+				final ClusterRow row = (ClusterRow) item;
+				final int clsIndex = row.getInput().size() - 1;
+				final LoadedRow lr = row.getRow();
+				lr.getData()[clsIndex] = "" + clusterNum;
 				writeRow(tw, lr);
 			}
 			clusterNum++;

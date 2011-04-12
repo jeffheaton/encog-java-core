@@ -21,16 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package contains classes used to hold property info by the script.
+ */
 package org.encog.app.analyst.script.prop;
 
-/**
- * The property types supported for Encog Analyst.
- */
-public enum PropertyType {
-	TypeBoolean,
-	TypeString,
-	TypeInteger,
-	TypeDouble,
-	TypeListString,
-	typeFormat
-}
