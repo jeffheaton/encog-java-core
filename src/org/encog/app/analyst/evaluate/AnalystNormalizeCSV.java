@@ -66,11 +66,15 @@ public class AnalystNormalizeCSV extends BasicFile {
 		tw.println(line.toString());
 	}
 	
-	public static double[] extractFields(EncogAnalyst analyst, CSVHeaders headers, ReadCSV csv, int outputLength) {
+	public static double[] extractFields(EncogAnalyst analyst, CSVHeaders headers, ReadCSV csv, int outputLength, boolean skipOutput) {
 		double[] output = new double[outputLength];
 		int outputIndex = 0;
 		for (AnalystField stat : analyst.getScript()
 				.getNormalize().getNormalizedFields()) {
+			
+			if( stat.isOutput() && skipOutput ) {
+				continue;
+			}
 			
 			int index = headers.find(stat.getName());
 			String str = csv.get(index++);
@@ -123,7 +127,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 			while (csv.next() && !this.shouldStop()) {
 				updateStatus(false);
 
-				double[] output = extractFields(analyst, this.analystHeaders, csv, outputLength);				
+				double[] output = extractFields(analyst, this.analystHeaders, csv, outputLength, false);				
 
 				if (this.series.getTotalDepth() > 1) {
 					output = this.series.process(output);

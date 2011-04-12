@@ -52,10 +52,7 @@ public class AnalystClusterCSV extends BasicFile {
 
 		this.setAnalyzed(true);
 		this.analyst = analyst;
-
-		this.fileColumns = this.inputHeadings.length;
-		this.analystHeaders = new CSVHeaders(this.inputHeadings);
-		
+				
 		if( this.getOutputFormat()==null) {
 			this.setOutputFormat(this.inputFormat);
 		}
@@ -67,12 +64,17 @@ public class AnalystClusterCSV extends BasicFile {
 		int outputLength = this.analyst.determineUniqueColumns();
 		ReadCSV csv = new ReadCSV(this.inputFilename.toString(), this.expectInputHeaders,
 				this.inputFormat);
+		readHeaders(csv);
+		
+		this.analystHeaders = new CSVHeaders(this.inputHeadings);
+		this.fileColumns = this.analystHeaders.getHeaders().size();
+		
 		while (csv.next() && !this.shouldStop() ) {
 			updateStatus(true);
 			
 			LoadedRow row = new LoadedRow(csv, 1);
 
-			double[] inputArray = AnalystNormalizeCSV.extractFields(analyst, this.analystHeaders, csv, outputLength);
+			double[] inputArray = AnalystNormalizeCSV.extractFields(analyst, this.analystHeaders, csv, outputLength,true);
 			NeuralData input = new BasicNeuralData(inputArray);
 			this.data.add(input);
 			this.rowMap.put(input, row);

@@ -172,6 +172,16 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.NORMALIZE_CONFIG_targetFile,
 				target = AnalystWizard.FILE_NORMALIZE);
+		
+		// cluster
+		this.script.getProperties().setProperty(
+				ScriptProperties.CLUSTER_CONFIG_sourceFile, AnalystWizard.FILE_EVAL);
+		this.script.getProperties().setProperty(
+				ScriptProperties.CLUSTER_CONFIG_targetFile,
+				AnalystWizard.FILE_CLUSTER);
+		this.script.getProperties().setProperty(
+				ScriptProperties.CLUSTER_CONFIG_type,
+				"kmeans");
 
 		// generate
 		this.script.getProperties().setProperty(
@@ -490,6 +500,9 @@ public class AnalystWizard {
 
 		AnalystTask task6 = new AnalystTask("task-evaluate");
 		task6.getLines().add("evaluate");
+		
+		AnalystTask task7 = new AnalystTask("task-cluster");
+		task7.getLines().add("cluster");
 
 		this.script.addTask(task1);
 		this.script.addTask(task2);
@@ -497,6 +510,7 @@ public class AnalystWizard {
 		this.script.addTask(task4);
 		this.script.addTask(task5);
 		this.script.addTask(task6);
+		this.script.addTask(task7);
 	}
 
 	public void wizard(URL url, File saveFile, File analyzeFile, boolean b,

@@ -245,6 +245,9 @@ public class ScriptLoad {
 		} else if (currentSection.equals("NORMALIZE")
 				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
 			loadSubSection(section);
+		} else if (currentSection.equals("CLUSTER")
+				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
+			loadSubSection(section);
 		} else if (currentSection.equals("SERIES")
 				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
 			loadSubSection(section);
