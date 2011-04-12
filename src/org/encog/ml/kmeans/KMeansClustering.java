@@ -26,6 +26,7 @@ package org.encog.ml.kmeans;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
+import org.encog.neural.data.NeuralDataSet;
 
 /**
  * This class performs a basic K-Means clustering. This class can be used on
@@ -72,7 +73,7 @@ public class KMeansClustering {
 	 * @param set
 	 *            The dataset to cluster.
 	 */
-	public KMeansClustering(final int k, final EngineDataSet set) {
+	public KMeansClustering(final int k, final NeuralDataSet set) {
 
 		this.clusters = new KMeansCluster[k];
 		for (int i = 0; i < k; i++) {
@@ -85,10 +86,7 @@ public class KMeansClustering {
 		// break up the data over the clusters
 		int clusterNumber = 0;
 
-		for (int l = 0; l < this.set.getRecordCount(); l++) {
-			final EngineData pair = BasicEngineData.createPair(this.set
-					.getInputSize(), this.set.getIdealSize());
-			set.getRecord(l, pair);
+		for( EngineData pair: set) {
 
 			this.clusters[clusterNumber].add(pair);
 

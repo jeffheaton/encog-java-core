@@ -6,7 +6,6 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.evaluate.AnalystClusterCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
-import org.encog.app.csv.shuffle.ShuffleCSV;
 import org.encog.util.csv.CSVFormat;
 
 /**
@@ -26,6 +25,7 @@ public class CmdCluster extends Cmd {
 		// get filenames
 		String sourceID = getProp().getPropertyString(ScriptProperties.CLUSTER_CONFIG_sourceFile);
 		String targetID = getProp().getPropertyString(ScriptProperties.CLUSTER_CONFIG_targetFile);
+		int clusters =  getProp().getPropertyInt(ScriptProperties.CLUSTER_CONFIG_clusters);
 		String type = getProp().getPropertyString(ScriptProperties.CLUSTER_CONFIG_type);
 		
 		File sourceFile = this.getScript().resolveFilename(sourceID);
@@ -39,8 +39,6 @@ public class CmdCluster extends Cmd {
 		// mark generated
 		getScript().markGenerated(targetID);
 
-		//KMeansClustering kmeans = new KMeansClustering(2,set);
-		
 		// prepare to normalize
 		AnalystClusterCSV cluster = new AnalystClusterCSV();		
 		getAnalyst().setCurrentQuantTask(cluster);
@@ -48,7 +46,7 @@ public class CmdCluster extends Cmd {
 		boolean headers = this.getScript().expectInputHeaders(sourceID);
 		cluster.analyze(getAnalyst(), sourceFile, headers, inputFormat);
 		cluster.setOutputFormat(outputFormat);
-		cluster.process(targetFile, this.getAnalyst());
+		cluster.process(targetFile, clusters, this.getAnalyst());
 		getAnalyst().setCurrentQuantTask(null);
 		return cluster.shouldStop();
 	}

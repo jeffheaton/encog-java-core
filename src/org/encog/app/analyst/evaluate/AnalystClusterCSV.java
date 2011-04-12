@@ -31,7 +31,6 @@ public class AnalystClusterCSV extends BasicFile {
 	private int fileColumns;
 	private CSVHeaders analystHeaders;
 	private BasicNeuralDataSet data;
-	private Map<NeuralData,LoadedRow> rowMap = new HashMap<NeuralData,LoadedRow>();
 
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
@@ -75,9 +74,8 @@ public class AnalystClusterCSV extends BasicFile {
 			LoadedRow row = new LoadedRow(csv, 1);
 
 			double[] inputArray = AnalystNormalizeCSV.extractFields(analyst, this.analystHeaders, csv, outputLength,true);
-			NeuralData input = new BasicNeuralData(inputArray);
+			ClusterRow input = new ClusterRow(inputArray,row);
 			this.data.add(input);
-			this.rowMap.put(input, row);
 			
 			recordCount++;
 		}
@@ -126,24 +124,25 @@ public class AnalystClusterCSV extends BasicFile {
 		}
 	}
 
-	public void process(File outputFile, EncogAnalyst analyst) {
+	public void process(File outputFile, int clusters, EncogAnalyst analyst) {
 
 		PrintWriter tw = this.prepareOutputFile(outputFile, analyst.getScript()
 				.getNormalize().countActiveFields() - 1, 1);
 
 		resetStatus();
 		
-		KMeansClustering cluster = new KMeansClustering(5,this.data);
+		KMeansClustering cluster = new KMeansClustering(clusters,this.data);
 		cluster.iteration(100);
 		
 		int clusterNum = 0;
 		for(KMeansCluster cl : cluster.getClusters() )
 		{
 			for( EngineData data : cl.getData() ) {
-				LoadedRow row = this.rowMap.get(data);
-				int clsIndex = row.getData().length-1;
-				row.getData()[clsIndex] = ""+clusterNum;
-				writeRow(tw, row);
+				ClusterRow row = (ClusterRow)data;
+				int clsIndex = row.getInput().size()-1;
+				LoadedRow lr = row.getRow();
+				lr.getData()[clsIndex] = ""+clusterNum;
+				writeRow(tw, lr);
 			}
 			clusterNum++;
 		}

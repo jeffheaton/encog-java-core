@@ -39,3 +39,4 @@ ML:TRAIN,cross,string
 CLUSTER:CONFIG,sourceFile,string
 CLUSTER:CONFIG,targetFile,string
 CLUSTER:CONFIG,type,string
+CLUSTER:CONFIG,clusters,int

@@ -81,6 +81,7 @@ public class AnalystWizard {
 	private boolean taskRandomize = true;
 	private boolean taskNormalize = true;
 	private boolean taskBalance = false;
+	private boolean taskCluster = true;
 	private NormalizeRange range = NormalizeRange.NegOne2One;
 
 	public AnalystWizard(EncogAnalyst analyst) {
@@ -172,16 +173,18 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(
 				ScriptProperties.NORMALIZE_CONFIG_targetFile,
 				target = AnalystWizard.FILE_NORMALIZE);
-		
+
 		// cluster
-		this.script.getProperties().setProperty(
-				ScriptProperties.CLUSTER_CONFIG_sourceFile, AnalystWizard.FILE_EVAL);
-		this.script.getProperties().setProperty(
-				ScriptProperties.CLUSTER_CONFIG_targetFile,
-				AnalystWizard.FILE_CLUSTER);
-		this.script.getProperties().setProperty(
-				ScriptProperties.CLUSTER_CONFIG_type,
-				"kmeans");
+		if (this.taskCluster) {
+			this.script.getProperties().setProperty(
+					ScriptProperties.CLUSTER_CONFIG_sourceFile,
+					AnalystWizard.FILE_EVAL);
+			this.script.getProperties().setProperty(
+					ScriptProperties.CLUSTER_CONFIG_targetFile,
+					AnalystWizard.FILE_CLUSTER);
+			this.script.getProperties().setProperty(
+					ScriptProperties.CLUSTER_CONFIG_type, "kmeans");
+		}
 
 		// generate
 		this.script.getProperties().setProperty(
@@ -218,7 +221,7 @@ public class AnalystWizard {
 
 		for (int i = 0; i < this.script.getFields().length; i++) {
 			DataField f = dataFields[i];
-			
+
 			NormalizationAction action;
 			boolean isLast = i == this.script.getFields().length - 1;
 
@@ -333,6 +336,20 @@ public class AnalystWizard {
 		if (af != null) {
 			af.setOutput(true);
 		}
+
+		// set the clusters count
+		if (this.taskCluster) {
+			if (this.targetField.length() == 0
+					|| this.goal != AnalystGoal.Classification) {
+				this.script.getProperties().setProperty(
+						ScriptProperties.CLUSTER_CONFIG_clusters, 2);
+			} else {
+				DataField tf = this.script.findDataField(this.targetField);
+				this.script.getProperties().setProperty(
+						ScriptProperties.CLUSTER_CONFIG_clusters,
+						tf.getClassMembers().size());
+			}
+		}
 	}
 
 	private void generateGenerate(File file) {
@@ -417,17 +434,16 @@ public class AnalystWizard {
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
 				0.01);
 	}
-	
+
 	private void generateSOM(int inputColumns) {
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SOM);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_architecture,
-				"?->?");
+				ScriptProperties.ML_CONFIG_architecture, "?->?");
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
 				MLTrainFactory.TYPE_SOM_NEIGHBORHOOD);
-		
+
 		//ScriptProperties.ML_TRAIN_arguments
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_TRAIN_targetError, 0.01);
@@ -500,7 +516,7 @@ public class AnalystWizard {
 
 		AnalystTask task6 = new AnalystTask("task-evaluate");
 		task6.getLines().add("evaluate");
-		
+
 		AnalystTask task7 = new AnalystTask("task-cluster");
 		task7.getLines().add("cluster");
 
@@ -565,7 +581,8 @@ public class AnalystWizard {
 	private void determineClassification() {
 		this.directClassification = false;
 
-		if (this.methodType == WizardMethodType.SVM || this.methodType==WizardMethodType.SOM ) {
+		if (this.methodType == WizardMethodType.SVM
+				|| this.methodType == WizardMethodType.SOM) {
 			this.directClassification = true;
 		}
 	}
@@ -780,7 +797,7 @@ public class AnalystWizard {
 				newList.add(field);
 			}
 		}
-		
+
 		// generate the outputs for the new list
 		for (AnalystField field : oldList) {
 			if (!field.isIgnored()) {
@@ -793,12 +810,12 @@ public class AnalystWizard {
 				}
 			}
 		}
-		
+
 		// generate the ignores for the new list
 		for (AnalystField field : oldList) {
 			if (field.isIgnored()) {
 				newList.add(field);
-			} 
+			}
 		}
 
 		// swap back in
@@ -806,4 +823,19 @@ public class AnalystWizard {
 		oldList.addAll(newList);
 
 	}
+
+	/**
+	 * @return the taskCluster
+	 */
+	public boolean isTaskCluster() {
+		return taskCluster;
+	}
+
+	/**
+	 * @param taskCluster the taskCluster to set
+	 */
+	public void setTaskCluster(boolean taskCluster) {
+		this.taskCluster = taskCluster;
+	}
+
 }

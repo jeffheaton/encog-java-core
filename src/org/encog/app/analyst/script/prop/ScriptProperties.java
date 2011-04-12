@@ -59,6 +59,7 @@ public class ScriptProperties {
 	public static final String CLUSTER_CONFIG_sourceFile = "CLUSTER:CONFIG_sourceFile";
 	public static final String CLUSTER_CONFIG_targetFile = "CLUSTER:CONFIG_targetFile";
 	public static final String CLUSTER_CONFIG_type = "CLUSTER:CONFIG_type";
+	public static final String CLUSTER_CONFIG_clusters = "CLUSTER:CONFIG_clusters";
 
 	private final Map<String, String> data = new HashMap<String, String>();
 
