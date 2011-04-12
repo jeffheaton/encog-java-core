@@ -201,8 +201,8 @@ public class PerformAnalysis {
 					field.setClass(false);
 				}
 
-				if (field.isInteger() && (field.getAnalyzedClassMembers().size() 
-						<= 2)) {
+				if (field.isInteger() 
+						&& (field.getAnalyzedClassMembers().size() <= 2)) {
 					field.setClass(false);
 				}
 			}

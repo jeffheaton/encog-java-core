@@ -85,8 +85,14 @@ public class DataField {
 		= new ArrayList<AnalystClassItem>();
 
 
-	public DataField(String name) {
-		this.name = name;
+	/**
+	 * Construct the data field.
+	 * 
+	 * @param theName
+	 *            The name of this field.
+	 */
+	public DataField(final String theName) {
+		this.name = theName;
 		this.min = Double.MAX_VALUE;
 		this.max = Double.MIN_VALUE;
 		this.mean = Double.NaN;
@@ -98,167 +104,159 @@ public class DataField {
 	}
 
 	/**
-	 * @return the name
+	 * @return the classMembers
 	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the min
-	 */
-	public double getMin() {
-		return min;
-	}
-
-	/**
-	 * @param min
-	 *            the min to set
-	 */
-	public void setMin(double min) {
-		this.min = min;
+	public final List<AnalystClassItem> getClassMembers() {
+		return this.classMembers;
 	}
 
 	/**
 	 * @return the max
 	 */
-	public double getMax() {
-		return max;
-	}
-
-	/**
-	 * @param max
-	 *            the max to set
-	 */
-	public void setMax(double max) {
-		this.max = max;
+	public final double getMax() {
+		return this.max;
 	}
 
 	/**
 	 * @return the mean
 	 */
-	public double getMean() {
-		return mean;
+	public final double getMean() {
+		return this.mean;
 	}
 
 	/**
-	 * @param mean
-	 *            the mean to set
+	 * @return the min
 	 */
-	public void setMean(double mean) {
-		this.mean = mean;
+	public final double getMin() {
+		return this.min;
+	}
+
+	/**
+	 * Determine the minimum class count. This is the count of the
+	 * classification field that is the smallest.
+	 * 
+	 * @return The minimum class count.
+	 */
+	public final int getMinClassCount() {
+		int cmin = Integer.MAX_VALUE;
+		for (final AnalystClassItem cls : this.classMembers) {
+			cmin = Math.min(cmin, cls.getCount());
+		}
+		return cmin;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public final String getName() {
+		return this.name;
 	}
 
 	/**
 	 * @return the standardDeviation
 	 */
-	public double getStandardDeviation() {
-		return standardDeviation;
-	}
-
-	/**
-	 * @param standardDeviation
-	 *            the standardDeviation to set
-	 */
-	public void setStandardDeviation(double standardDeviation) {
-		this.standardDeviation = standardDeviation;
-	}
-
-	/**
-	 * @return the isInteger
-	 */
-	public boolean isInteger() {
-		return isInteger;
-	}
-
-	/**
-	 * @param isInteger
-	 *            the isInteger to set
-	 */
-	public void setInteger(boolean isInteger) {
-		this.isInteger = isInteger;
-	}
-
-	/**
-	 * @return the isReal
-	 */
-	public boolean isReal() {
-		return isReal;
-	}
-
-	/**
-	 * @param isReal
-	 *            the isReal to set
-	 */
-	public void setReal(boolean isReal) {
-		this.isReal = isReal;
+	public final double getStandardDeviation() {
+		return this.standardDeviation;
 	}
 
 	/**
 	 * @return the isClass
 	 */
-	public boolean isClass() {
-		return isClass;
-	}
-
-	/**
-	 * @param isClass
-	 *            the isClass to set
-	 */
-	public void setClass(boolean isClass) {
-		this.isClass = isClass;
+	public final boolean isClass() {
+		return this.isClass;
 	}
 
 	/**
 	 * @return the isComplete
 	 */
-	public boolean isComplete() {
-		return isComplete;
+	public final boolean isComplete() {
+		return this.isComplete;
 	}
 
 	/**
-	 * @param isComplete
+	 * @return the isInteger
+	 */
+	public final boolean isInteger() {
+		return this.isInteger;
+	}
+
+	/**
+	 * @return the isReal
+	 */
+	public final boolean isReal() {
+		return this.isReal;
+	}
+
+	/**
+	 * @param theClass
+	 *            the isClass to set
+	 */
+	public final void setClass(final boolean theClass) {
+		this.isClass = theClass;
+	}
+
+	/**
+	 * @param theComplete
 	 *            the isComplete to set
 	 */
-	public void setComplete(boolean isComplete) {
-		this.isComplete = isComplete;
+	public final void setComplete(final boolean theComplete) {
+		this.isComplete = theComplete;
 	}
 
 	/**
-	 * @return the classMembers
+	 * @param theInteger
+	 *            the isInteger to set
 	 */
-	public List<AnalystClassItem> getClassMembers() {
-		return classMembers;
+	public final void setInteger(final boolean theInteger) {
+		this.isInteger = theInteger;
 	}
 
-	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
-		result.append(getClass().getSimpleName());
-		result.append(" name=");
-		result.append(this.name);
-		result.append(", min=");
-		result.append(this.min);
-		result.append(", max=");
-		result.append(this.max);
-
-		result.append("]");
-		return result.toString();
+	/**
+	 * @param theMax
+	 *            the max to set
+	 */
+	public final void setMax(final double theMax) {
+		this.max = theMax;
 	}
 
-	public int getMinClassCount() {
-		int min = Integer.MAX_VALUE;
-		for( AnalystClassItem cls : this.classMembers) {
-			min = Math.min(min, cls.getCount());
-		}
-		return min;
+	/**
+	 * @param theMean
+	 *            the mean to set
+	 */
+	public final void setMean(final double theMean) {
+		this.mean = theMean;
 	}
+
+	/**
+	 * @param theMin
+	 *            the theMin to set
+	 */
+	public final void setMin(final double theMin) {
+		this.min = theMin;
+	}
+
+	/**
+	 * @param theName
+	 *            the name to set
+	 */
+	public final void setName(final String theName) {
+		this.name = theName;
+	}
+
+	/**
+	 * @param theReal
+	 *            the isReal to set
+	 */
+	public final void setReal(final boolean theReal) {
+		this.isReal = theReal;
+	}
+
+	/**
+	 * @param theStandardDeviation
+	 *            the standardDeviation to set
+	 */
+	public final void setStandardDeviation(final double theStandardDeviation) {
+		this.standardDeviation = theStandardDeviation;
+	}
+
 }
