@@ -208,7 +208,7 @@ public class AnalyzedField extends DataField {
 		result.getClassMembers().clear();
 
 		if (result.isClass()) {
-			final List<AnalystClassItem> list = getClassMembers();
+			final List<AnalystClassItem> list = getAnalyzedClassMembers();
 			result.getClassMembers().addAll(list);
 		}
 
@@ -219,8 +219,7 @@ public class AnalyzedField extends DataField {
 	 * Get the class members.
 	 * @return The class members.
 	 */
-	@Override
-	public final List<AnalystClassItem> getClassMembers() {
+	public final List<AnalystClassItem> getAnalyzedClassMembers() {
 		final List<String> sorted = new ArrayList<String>();
 		sorted.addAll(this.classMap.keySet());
 		Collections.sort(sorted);

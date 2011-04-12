@@ -33,16 +33,57 @@ import java.util.List;
  */
 public class DataField {
 
+	/**
+	 * The name of the field.
+	 */
 	private String name;
+
+	/**
+	 * The minimum value of this field.
+	 */
 	private double min;
+
+	/**
+	 * The maximum value of this field.
+	 */
 	private double max;
+
+	/**
+	 * The mean value of this field.
+	 */
 	private double mean;
+
+	/**
+	 * The standard deviation of this field.
+	 */
 	private double standardDeviation;
+
+	/**
+	 * Is this field an integer?
+	 */
 	private boolean isInteger;
+
+	/**
+	 * Is this field a real?
+	 */
 	private boolean isReal;
+
+	/**
+	 * Is this field a class?
+	 */
 	private boolean isClass;
+
+	/**
+	 * Is this field complete.
+	 */
 	private boolean isComplete;
-	private List<AnalystClassItem> classMembers = new ArrayList<AnalystClassItem>();
+
+	/**
+	 * The class members.
+	 */
+	private final List<AnalystClassItem> classMembers 
+		= new ArrayList<AnalystClassItem>();
+
 
 	public DataField(String name) {
 		this.name = name;

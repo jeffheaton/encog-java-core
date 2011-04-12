@@ -201,7 +201,7 @@ public class PerformAnalysis {
 					field.setClass(false);
 				}
 
-				if (field.isInteger() && (field.getClassMembers().size() 
+				if (field.isInteger() && (field.getAnalyzedClassMembers().size() 
 						<= 2)) {
 					field.setClass(false);
 				}
@@ -219,7 +219,7 @@ public class PerformAnalysis {
 
 				if (this.fields[i].isClass()) {
 					final List<AnalystClassItem> t = this.fields[i]
-							.getClassMembers();
+							.getAnalyzedClassMembers();
 					final List<AnalystClassItem> s = target.getScript()
 							.getFields()[i].getClassMembers();
 
