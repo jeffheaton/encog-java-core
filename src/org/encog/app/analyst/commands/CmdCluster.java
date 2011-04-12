@@ -3,6 +3,7 @@ package org.encog.app.analyst.commands;
 import java.io.File;
 
 import org.encog.app.analyst.EncogAnalyst;
+import org.encog.app.analyst.evaluate.AnalystClusterCSV;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.app.analyst.util.AnalystReportBridge;
 import org.encog.app.csv.shuffle.ShuffleCSV;
@@ -41,15 +42,15 @@ public class CmdCluster extends Cmd {
 		//KMeansClustering kmeans = new KMeansClustering(2,set);
 		
 		// prepare to normalize
-		ShuffleCSV norm = new ShuffleCSV();
-		getAnalyst().setCurrentQuantTask(norm);
-		norm.setReport(new AnalystReportBridge(getAnalyst()));
+		AnalystClusterCSV cluster = new AnalystClusterCSV();		
+		getAnalyst().setCurrentQuantTask(cluster);
+		cluster.setReport(new AnalystReportBridge(getAnalyst()));
 		boolean headers = this.getScript().expectInputHeaders(sourceID);
-		norm.analyze(sourceFile, headers, inputFormat);
-		norm.setOutputFormat(outputFormat);
-		norm.process(targetFile);
+		cluster.analyze(getAnalyst(), sourceFile, headers, inputFormat);
+		cluster.setOutputFormat(outputFormat);
+		cluster.process(targetFile, this.getAnalyst());
 		getAnalyst().setCurrentQuantTask(null);
-		return norm.shouldStop();
+		return cluster.shouldStop();
 	}
 
 	@Override
