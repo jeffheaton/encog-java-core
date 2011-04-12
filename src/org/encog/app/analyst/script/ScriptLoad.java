@@ -43,87 +43,77 @@ import org.encog.persist.EncogReadHelper;
 
 /**
  * Used to load an Encog Analyst script.
- *
+ * 
  */
 public class ScriptLoad {
 
-	private AnalystScript script;
+	/**
+	 * Column 1.
+	 */
+	public static final int COLUMN_ONE = 1;
+	
+	/**
+	 * Column 2.
+	 */
+	public static final int COLUMN_TWO = 2;
+	
+	/**
+	 * Column 3.
+	 */
+	public static final int COLUMN_THREE = 3;
+	
+	/**
+	 * Column 4.
+	 */
+	public static final int COLUMN_FOUR = 4;
+	
+	/**
+	 * Column 5.
+	 */
+	public static final int COLUMN_FIVE = 5;
+	
+	/**
+	 * The script being loaded.
+	 */
+	private final AnalystScript script;
 
-	public ScriptLoad(AnalystScript script) {
-		this.script = script;
+	/**
+	 * Construct a script loader.
+	 * @param theScript The script to load into.
+	 */
+	public ScriptLoad(final AnalystScript theScript) {
+		this.script = theScript;
 	}
 
-	private void handleFilenames(EncogFileSection section) {
+	/**
+	 * Handle loading the data classes.
+	 * @param section The section being loaded.
+	 */
+	private void handleDataClasses(final EncogFileSection section) {
 
-		Map<String, String> prop = section.parseParams();
-		this.script.getProperties().clearFilenames();
-
-		for (Entry<String, String> e : prop.entrySet()) {
-			this.script.getProperties().setFilename(e.getKey(), e.getValue());
-		}
-	}
-
-	private void handleDataStats(EncogFileSection section) {
-		List<DataField> dfs = new ArrayList<DataField>();
-		boolean first = true;
-		for (String line : section.getLines()) {
-			if (!first) {
-				List<String> cols = EncogFileSection.splitColumns(line);
-				String name = cols.get(0);
-				boolean isclass = Integer.parseInt(cols.get(1)) > 0;
-				boolean iscomplete = Integer.parseInt(cols.get(2)) > 0;
-				boolean isint = Integer.parseInt(cols.get(3)) > 0;
-				boolean isreal = Integer.parseInt(cols.get(4)) > 0;
-				double amax = Double.parseDouble(cols.get(5));
-				double amin = Double.parseDouble(cols.get(6));
-				double mean = Double.parseDouble(cols.get(7));
-				double sdev = Double.parseDouble(cols.get(8));
-				DataField df = new DataField(name);
-				df.setClass(isclass);
-				df.setComplete(iscomplete);
-				df.setInteger(isint);
-				df.setReal(isreal);
-				df.setMax(amax);
-				df.setMin(amin);
-				df.setMean(mean);
-				df.setStandardDeviation(sdev);
-				dfs.add(df);
-			} else {
-				first = false;
-			}
-		}
-
-		DataField[] array = new DataField[dfs.size()];
-		for (int i = 0; i < array.length; i++) {
-			array[i] = dfs.get(i);
-		}
-
-		this.script.setFields(array);
-	}
-
-	private void handleDataClasses(EncogFileSection section) {
-
-		Map<String, List<AnalystClassItem>> map = new HashMap<String, List<AnalystClassItem>>();
+		final Map<String, List<AnalystClassItem>> map 
+			= new HashMap<String, List<AnalystClassItem>>();
 
 		boolean first = true;
-		for (String line : section.getLines()) {
+		for (final String line : section.getLines()) {
 			if (!first) {
-				List<String> cols = EncogFileSection.splitColumns(line);
-				
-				if( cols.size()<4) {
+				final List<String> cols = EncogFileSection.splitColumns(line);
+
+				if (cols.size() < COLUMN_FOUR) {
 					throw new AnalystError("Invalid data class: " + line);
 				}
-				
-				String field = cols.get(0);
-				String code = cols.get(1);
-				String name = cols.get(2);
-				int count = Integer.parseInt(cols.get(3));
-				
-				DataField df = this.script.findDataField(field);
+
+				final String field = cols.get(0);
+				final String code = cols.get(1);
+				final String name = cols.get(2);
+				final int count = Integer.parseInt(cols.get(3));
+
+				final DataField df = this.script.findDataField(field);
 
 				if (df == null) {
 					throw new AnalystError(
-							"Attempting to add class to unknown field: " + name);
+							"Attempting to add class to unknown field: " 
+							+ name);
 				}
 
 				List<AnalystClassItem> classItems;
@@ -141,10 +131,11 @@ public class ScriptLoad {
 			}
 		}
 
-		for (DataField field : this.script.getFields()) {
+		for (final DataField field : this.script.getFields()) {
 			if (field.isClass()) {
-				List<AnalystClassItem> classList = map.get(field.getName());
-				if( classList!=null ) {
+				final List<AnalystClassItem> classList = map.get(field
+						.getName());
+				if (classList != null) {
 					Collections.sort(classList);
 					field.getClassMembers().clear();
 					field.getClassMembers().addAll(classList);
@@ -154,18 +145,81 @@ public class ScriptLoad {
 
 	}
 
-	private void handleNormalizeRange(EncogFileSection section) {
+	/**
+	 * Handle loading data stats.
+	 * @param section The section being loaded.
+	 */
+	private void handleDataStats(final EncogFileSection section) {
+		final List<DataField> dfs = new ArrayList<DataField>();
+		boolean first = true;
+		for (final String line : section.getLines()) {
+			if (!first) {
+				final List<String> cols = EncogFileSection.splitColumns(line);
+				final String name = cols.get(0);
+				final boolean isclass = Integer.parseInt(cols.get(1)) > 0;
+				final boolean iscomplete = Integer.parseInt(cols.get(2)) > 0;
+				final boolean isint = 
+					Integer.parseInt(cols.get(COLUMN_THREE)) > 0;
+				final boolean isreal = 
+					Integer.parseInt(cols.get(COLUMN_FOUR)) > 0;
+				final double amax = Double.parseDouble(cols.get(5));
+				final double amin = Double.parseDouble(cols.get(6));
+				final double mean = Double.parseDouble(cols.get(7));
+				final double sdev = Double.parseDouble(cols.get(8));
+				final DataField df = new DataField(name);
+				df.setClass(isclass);
+				df.setComplete(iscomplete);
+				df.setInteger(isint);
+				df.setReal(isreal);
+				df.setMax(amax);
+				df.setMin(amin);
+				df.setMean(mean);
+				df.setStandardDeviation(sdev);
+				dfs.add(df);
+			} else {
+				first = false;
+			}
+		}
+
+		final DataField[] array = new DataField[dfs.size()];
+		for (int i = 0; i < array.length; i++) {
+			array[i] = dfs.get(i);
+		}
+
+		this.script.setFields(array);
+	}
+
+	/**
+	 * Handle loading the filenames.
+	 * @param section The section being loaded.
+	 */
+	private void handleFilenames(final EncogFileSection section) {
+
+		final Map<String, String> prop = section.parseParams();
+		this.script.getProperties().clearFilenames();
+
+		for (final Entry<String, String> e : prop.entrySet()) {
+			this.script.getProperties().setFilename(e.getKey(), e.getValue());
+		}
+	}
+
+	/**
+	 * Handle normalization ranges.
+	 * @param section The section being loaded.
+	 */
+	private void handleNormalizeRange(final EncogFileSection section) {
 		this.script.getNormalize().getNormalizedFields().clear();
 		boolean first = true;
-		for (String line : section.getLines()) {
+		for (final String line : section.getLines()) {
 			if (!first) {
-				List<String> cols = EncogFileSection.splitColumns(line);
-				String name = cols.get(0);
-				boolean isOutput = cols.get(1).toLowerCase().equals("output");
-				int timeSlice = Integer.parseInt(cols.get(2));
-				String action = cols.get(3);
-				double high = Double.parseDouble(cols.get(4));
-				double low = Double.parseDouble(cols.get(5));
+				final List<String> cols = EncogFileSection.splitColumns(line);
+				final String name = cols.get(0);
+				final boolean isOutput = cols.get(1).toLowerCase()
+						.equals("output");
+				final int timeSlice = Integer.parseInt(cols.get(2));
+				final String action = cols.get(3);
+				final double high = Double.parseDouble(cols.get(4));
+				final double low = Double.parseDouble(cols.get(5));
 
 				NormalizationAction des = null;
 				if (action.equals("range")) {
@@ -182,7 +236,7 @@ public class ScriptLoad {
 					des = NormalizationAction.OneOf;
 				}
 
-				AnalystField nf = new AnalystField(name, des, high, low);
+				final AnalystField nf = new AnalystField(name, des, high, low);
 				nf.setTimeSlice(timeSlice);
 				nf.setOutput(isOutput);
 				this.script.getNormalize().getNormalizedFields().add(nf);
@@ -192,41 +246,22 @@ public class ScriptLoad {
 		}
 
 	}
-	
-	
-	private void validateProperty(String section, String subSection, String name, String value) {
-		PropertyEntry entry = PropertyConstraints.getInstance().getEntry(section,subSection,name);
-		if( entry==null ) {
-			throw new AnalystError("Unknown property: " + PropertyEntry.dotForm(section,subSection,name));
-		}
-		entry.validate(section,subSection,name,value);
-	}
 
-	private void loadSubSection(EncogFileSection section) {
-		Map<String, String> prop = section.parseParams();
-
-		for (String name : prop.keySet()) {
-			String key = section.getSectionName().toUpperCase() + ":"
-					+ section.getSubSectionName().toUpperCase() + "_" + name;
-			String value = prop.get(name);
-			if (value == null) {
-				value = "";
-			}
-			validateProperty(section.getSectionName(),section.getSubSectionName(),name,value);
-			this.script.getProperties().setProperty(key, value);
-		}
-	}
-
-	private void handleSegregateFiles(EncogFileSection section) {
-		List<AnalystSegregateTarget> nfs = new ArrayList<AnalystSegregateTarget>();
+	/**
+	 * Handle loading segregation info.
+	 * @param section The section being loaded.
+	 */
+	private void handleSegregateFiles(final EncogFileSection section) {
+		final List<AnalystSegregateTarget> nfs 
+			= new ArrayList<AnalystSegregateTarget>();
 		boolean first = true;
-		for (String line : section.getLines()) {
+		for (final String line : section.getLines()) {
 			if (!first) {
-				List<String> cols = EncogFileSection.splitColumns(line);
-				String filename = cols.get(0);
-				int percent = Integer.parseInt(cols.get(1));
+				final List<String> cols = EncogFileSection.splitColumns(line);
+				final String filename = cols.get(0);
+				final int percent = Integer.parseInt(cols.get(1));
 
-				AnalystSegregateTarget nf = new AnalystSegregateTarget(
+				final AnalystSegregateTarget nf = new AnalystSegregateTarget(
 						filename, percent);
 				nfs.add(nf);
 			} else {
@@ -234,7 +269,8 @@ public class ScriptLoad {
 			}
 		}
 
-		AnalystSegregateTarget[] array = new AnalystSegregateTarget[nfs.size()];
+		final AnalystSegregateTarget[] array = new AnalystSegregateTarget[nfs
+				.size()];
 		for (int i = 0; i < array.length; i++) {
 			array[i] = nfs.get(i);
 		}
@@ -242,9 +278,69 @@ public class ScriptLoad {
 		this.script.getSegregate().setSegregateTargets(array);
 	}
 
-	private void processSubSection(EncogFileSection section) {
-		String currentSection = section.getSectionName();
-		String currentSubsection = section.getSubSectionName();
+	/**
+	 * Handle loading a task.
+	 * @param section The section.
+	 */
+	private void handleTask(final EncogFileSection section) {
+		final AnalystTask task = new AnalystTask(section.getSubSectionName());
+		for (final String line : section.getLines()) {
+			task.getLines().add(line);
+		}
+		this.script.addTask(task);
+	}
+
+	/**
+	 * Load an Encog script.
+	 * @param stream The stream to load from.
+	 */
+	public final void load(final InputStream stream) {
+		EncogReadHelper reader = null;
+
+		try {
+			EncogFileSection section = null;
+			reader = new EncogReadHelper(stream);
+
+			while ((section = reader.readNextSection()) != null) {
+				processSubSection(section);
+			}
+
+			// init the script
+			this.script.init();
+		} finally {
+			if (reader != null) {
+				reader.close();
+			}
+		}
+	}
+
+	/**
+	 * Load a generic subsection.
+	 * @param section The section to load from.
+	 */
+	private void loadSubSection(final EncogFileSection section) {
+		final Map<String, String> prop = section.parseParams();
+
+		for (final String name : prop.keySet()) {
+			final String key = section.getSectionName().toUpperCase() + ":"
+					+ section.getSubSectionName().toUpperCase() + "_" + name;
+			String value = prop.get(name);
+			if (value == null) {
+				value = "";
+			}
+			validateProperty(section.getSectionName(),
+					section.getSubSectionName(), name, value);
+			this.script.getProperties().setProperty(key, value);
+		}
+	}
+
+	/**
+	 * Process one of the subsections.
+	 * @param section The section.
+	 */
+	private void processSubSection(final EncogFileSection section) {
+		final String currentSection = section.getSectionName();
+		final String currentSubsection = section.getSubSectionName();
 
 		if (currentSection.equals("SETUP")
 				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
@@ -298,40 +394,30 @@ public class ScriptLoad {
 				&& currentSubsection.equalsIgnoreCase("TRAIN")) {
 			loadSubSection(section);
 		} else if (currentSection.equals("TASKS")
-				&& currentSubsection.length() > 0) {
+				&& (currentSubsection.length() > 0)) {
 			handleTask(section);
-		}  else if (currentSection.equals("BALANCE")
+		} else if (currentSection.equals("BALANCE")
 				&& currentSubsection.equalsIgnoreCase("CONFIG")) {
 			loadSubSection(section);
 		}
 	}
 
-	private void handleTask(EncogFileSection section) {
-		AnalystTask task = new AnalystTask(section.getSubSectionName());
-		for (String line : section.getLines()) {
-			task.getLines().add(line);
+	/**
+	 * Validate a property.
+	 * @param section The section.
+	 * @param subSection The sub section.
+	 * @param name The name of the property.
+	 * @param value The new value for the property.
+	 */
+	private void validateProperty(final String section,
+			final String subSection, final String name, final String value) {
+		final PropertyEntry entry = PropertyConstraints.getInstance().getEntry(
+				section, subSection, name);
+		if (entry == null) {
+			throw new AnalystError("Unknown property: "
+					+ PropertyEntry.dotForm(section, subSection, name));
 		}
-		this.script.addTask(task);
-	}
-
-	public void load(InputStream stream) {
-		EncogReadHelper reader = null;
-
-		try {
-			EncogFileSection section = null;
-			reader = new EncogReadHelper(stream);
-
-			while ((section = reader.readNextSection()) != null) {
-				this.processSubSection(section);
-			}
-
-			// init the script
-			this.script.init();
-		} finally {
-			if (reader != null) {
-				reader.close();
-			}
-		}
+		entry.validate(section, subSection, name, value);
 	}
 
 }

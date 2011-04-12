@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.script.normalize.AnalystField;
 import org.encog.app.analyst.script.prop.PropertyConstraints;
 import org.encog.app.analyst.script.prop.PropertyEntry;
@@ -38,75 +39,87 @@ import org.encog.persist.EncogWriteHelper;
 
 /**
  * Used to save an Encog Analyst script.
- *
+ * 
  */
 public class ScriptSave {
 
-	private AnalystScript script;
+	/**
+	 * The script to save.
+	 */
+	private final AnalystScript script;
 
-	public ScriptSave(AnalystScript script) {
-		this.script = script;
+	/**
+	 * Construct the script.
+	 * 
+	 * @param theScript
+	 *            The script to save.
+	 */
+	public ScriptSave(final AnalystScript theScript) {
+		this.script = theScript;
 	}
 
-	private void saveConfig(EncogWriteHelper out) {
-		saveSubSection(out,"SETUP","CONFIG");
-		out.addSubSection("FILENAMES");
-		
-		List<String> list = this.script.getProperties().getFilenames();
-		
-		for (String key : list) {
-			String value = this.script.getProperties().getFilename(key);
-			File f = new File(value);
-			if( f.getParent()!=null && f.getParent().equalsIgnoreCase(script.getBasePath()))
-				out.writeProperty(key, f.getName());
-			else
-				out.writeProperty(key, value);
+	/**
+	 * Save the script to a stream.
+	 * 
+	 * @param stream
+	 *            The output stream.
+	 */
+	public final void save(final OutputStream stream) {
+		final EncogWriteHelper out = new EncogWriteHelper(stream);
+		saveSubSection(out, "HEADER", "DATASOURCE");
+		saveConfig(out);
+
+		if (this.script.getFields() != null) {
+			saveData(out);
+			saveNormalize(out);
 		}
+
+		saveSubSection(out, "RANDOMIZE", "CONFIG");
+		saveSubSection(out, "CLUSTER", "CONFIG");
+		saveSubSection(out, "BALANCE", "CONFIG");
+
+		if (this.script.getSegregate().getSegregateTargets() != null) {
+			saveSegregate(out);
+		}
+		saveSubSection(out, "GENERATE", "CONFIG");
+		saveMachineLearning(out);
+		saveTasks(out);
+		out.flush();
 	}
-	
-	
-	private void saveSubSection(EncogWriteHelper out, String section, String subSection)
-	{
-		if( !section.equals(out.getCurrentSection()) )
-			out.addSection(section);
-		out.addSubSection(subSection);
-		List<PropertyEntry> list = PropertyConstraints.getInstance().getEntries(section,subSection);
-		Collections.sort(list);
-		for(PropertyEntry entry:list) {
-			String key = section + ":" + subSection + "_" + entry.getName();
-			String value = this.script.getProperties().getPropertyString(key);
-			if( value!=null ) {
-				out.writeProperty(entry.getName(), value);
+
+	/**
+	 * Save the config info.
+	 * 
+	 * @param out
+	 *            THe output file.
+	 */
+	private void saveConfig(final EncogWriteHelper out) {
+		saveSubSection(out, "SETUP", "CONFIG");
+		out.addSubSection("FILENAMES");
+
+		final List<String> list = this.script.getProperties().getFilenames();
+
+		for (final String key : list) {
+			final String value = this.script.getProperties().getFilename(key);
+			final File f = new File(value);
+			if ((f.getParent() != null)
+					&& f.getParent()
+							.equalsIgnoreCase(this.script.getBasePath())) {
+				out.writeProperty(key, f.getName());
 			} else {
-				out.writeProperty(entry.getName(), "");
+				out.writeProperty(key, value);
 			}
 		}
 	}
-		
-	private void saveSegregate(EncogWriteHelper out)
-	{
-		saveSubSection(out,"SEGREGATE","CONFIG");
-		out.addSubSection("FILES");
-		out.addColumn("file");
-		out.addColumn("percent");
-		out.writeLine();
-		
-		for(AnalystSegregateTarget target: this.script.getSegregate().getSegregateTargets() ) {
-			out.addColumn(target.getFile());
-			out.addColumn(target.getPercent());
-			out.writeLine();
-		}
-	}
-	
-	private void saveMachineLearning(EncogWriteHelper out)
-	{
-		saveSubSection(out,"ML","CONFIG");
-		saveSubSection(out,"ML","TRAIN");
-		
-	}
 
-	private void saveData(EncogWriteHelper out) {
-		saveSubSection(out,"DATA","CONFIG");
+	/**
+	 * Save the data fields.
+	 * 
+	 * @param out
+	 *            The output file.
+	 */
+	private void saveData(final EncogWriteHelper out) {
+		saveSubSection(out, "DATA", "CONFIG");
 		out.addSubSection("STATS");
 		out.addColumn("name");
 		out.addColumn("isclass");
@@ -119,7 +132,7 @@ public class ScriptSave {
 		out.addColumn("sdev");
 		out.writeLine();
 
-		for (DataField field : this.script.getFields()) {
+		for (final DataField field : this.script.getFields()) {
 			out.addColumn(field.getName());
 			out.addColumn(field.isClass());
 			out.addColumn(field.isComplete());
@@ -138,10 +151,10 @@ public class ScriptSave {
 		out.addColumn("code");
 		out.addColumn("name");
 		out.writeLine();
-		
-		for (DataField field : this.script.getFields()) {
+
+		for (final DataField field : this.script.getFields()) {
 			if (field.isClass()) {
-				for(AnalystClassItem col: field.getClassMembers() ) {
+				for (final AnalystClassItem col : field.getClassMembers()) {
 					out.addColumn(field.getName());
 					out.addColumn(col.getCode());
 					out.addColumn(col.getName());
@@ -152,23 +165,27 @@ public class ScriptSave {
 		}
 
 	}
-	
-	private void saveTasks(EncogWriteHelper out) {
-		out.addSection("TASKS");
-		List<String> list = new ArrayList<String>();
-		list.addAll(this.script.getTasks().keySet());
-		Collections.sort(list);
-		for(String key: list) {
-			AnalystTask task = this.script.getTask(key);
-			out.addSubSection(task.getName());
-			for(String line: task.getLines()) {
-				out.addLine(line);
-			}
-		}
+
+	/**
+	 * Save the ML sections.
+	 * 
+	 * @param out
+	 *            The output file.
+	 */
+	private void saveMachineLearning(final EncogWriteHelper out) {
+		saveSubSection(out, "ML", "CONFIG");
+		saveSubSection(out, "ML", "TRAIN");
+
 	}
 
-	private void saveNormalize(EncogWriteHelper out) {
-		saveSubSection(out,"NORMALIZE","CONFIG");
+	/**
+	 * Save the normalization data.
+	 * 
+	 * @param out
+	 *            The output file.
+	 */
+	private void saveNormalize(final EncogWriteHelper out) {
+		saveSubSection(out, "NORMALIZE", "CONFIG");
 
 		out.addSubSection("RANGE");
 		out.addColumn("name");
@@ -178,10 +195,14 @@ public class ScriptSave {
 		out.addColumn("high");
 		out.addColumn("low");
 		out.writeLine();
-		for (AnalystField field : this.script.getNormalize()
+		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
 			out.addColumn(field.getName());
-			out.addColumn(field.isInput()?"input":"output");
+			if (field.isInput()) {
+				out.addColumn("input");
+			} else {
+				out.addColumn("output");
+			}
 			out.addColumn(field.getTimeSlice());
 			switch (field.getAction()) {
 			case Ignore:
@@ -201,7 +222,9 @@ public class ScriptSave {
 				break;
 			case SingleField:
 				out.addColumn("single");
-				break;			
+				break;
+			default:
+				throw new AnalystError("Unknown action: " + field.getAction());
 			}
 
 			out.addColumn(field.getNormalizedHigh());
@@ -210,26 +233,68 @@ public class ScriptSave {
 		}
 	}
 
-	public void save(OutputStream stream) {
-		EncogWriteHelper out = new EncogWriteHelper(stream);
-		saveSubSection(out,"HEADER","DATASOURCE");
-		saveConfig(out);
-		
-		if( script.getFields()!=null ) {
-			saveData(out);
-			saveNormalize(out);
-		}
+	/**
+	 * Save segregate info.
+	 * @param out The output file.
+	 */
+	private void saveSegregate(final EncogWriteHelper out) {
+		saveSubSection(out, "SEGREGATE", "CONFIG");
+		out.addSubSection("FILES");
+		out.addColumn("file");
+		out.addColumn("percent");
+		out.writeLine();
 
-		saveSubSection(out,"RANDOMIZE","CONFIG");
-		saveSubSection(out,"CLUSTER","CONFIG");
-		saveSubSection(out,"BALANCE","CONFIG");
-		
-		if( this.script.getSegregate().getSegregateTargets()!=null ) {
-			saveSegregate(out);
+		for (final AnalystSegregateTarget target : this.script.getSegregate()
+				.getSegregateTargets()) {
+			out.addColumn(target.getFile());
+			out.addColumn(target.getPercent());
+			out.writeLine();
 		}
-		saveSubSection(out,"GENERATE","CONFIG");
-		saveMachineLearning(out);
-		saveTasks(out);
-		out.flush();
+	}
+
+	/**
+	 * Save a subsection.
+	 * @param out The output file.
+	 * @param section The section.
+	 * @param subSection The subsection.
+	 */
+	private void saveSubSection(final EncogWriteHelper out,
+			final String section, final String subSection) {
+		if (!section.equals(out.getCurrentSection())) {
+			out.addSection(section);
+		}
+		out.addSubSection(subSection);
+		final List<PropertyEntry> list = PropertyConstraints.getInstance()
+				.getEntries(section, subSection);
+		Collections.sort(list);
+		for (final PropertyEntry entry : list) {
+			final String key = section + ":" + subSection + "_"
+					+ entry.getName();
+			final String value = this.script.getProperties().getPropertyString(
+					key);
+			if (value != null) {
+				out.writeProperty(entry.getName(), value);
+			} else {
+				out.writeProperty(entry.getName(), "");
+			}
+		}
+	}
+
+	/**
+	 * Save the tasks.
+	 * @param out The output file.
+	 */
+	private void saveTasks(final EncogWriteHelper out) {
+		out.addSection("TASKS");
+		final List<String> list = new ArrayList<String>();
+		list.addAll(this.script.getTasks().keySet());
+		Collections.sort(list);
+		for (final String key : list) {
+			final AnalystTask task = this.script.getTask(key);
+			out.addSubSection(task.getName());
+			for (final String line : task.getLines()) {
+				out.addLine(line);
+			}
+		}
 	}
 }
