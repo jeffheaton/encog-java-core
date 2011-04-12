@@ -44,64 +44,252 @@ import org.encog.util.csv.CSVFormat;
  */
 public class ScriptProperties {
 
-	public static final String HEADER_DATASOURCE_sourceFile = "HEADER:DATASOURCE_sourceFile";
-	public static final String HEADER_DATASOURCE_rawFile = "HEADER:DATASOURCE_rawFile";
-	public static final String HEADER_DATASOURCE_sourceFormat = "HEADER:DATASOURCE_sourceFormat";
-	public static final String HEADER_DATASOURCE_sourceHeaders = "HEADER:DATASOURCE_sourceHeaders";
-	public static final String SETUP_CONFIG_maxClassCount = "SETUP:CONFIG_maxClassCount";
-	public static final String SETUP_CONFIG_allowedClasses = "SETUP:CONFIG_allowedClasses";
-	public static final String SETUP_CONFIG_inputHeaders = "SETUP:CONFIG_inputHeaders";
-	public static final String SETUP_CONFIG_csvFormat = "SETUP:CONFIG_csvFormat";
-	public static final String DATA_CONFIG_goal = "DATA:CONFIG_goal";
-	public static final String NORMALIZE_CONFIG_sourceFile = "NORMALIZE:CONFIG_sourceFile";
-	public static final String NORMALIZE_CONFIG_targetFile = "NORMALIZE:CONFIG_targetFile";
-	public static final String BALANCE_CONFIG_sourceFile = "BALANCE:CONFIG_sourceFile";
-	public static final String BALANCE_CONFIG_targetFile = "BALANCE:CONFIG_targetFile";
-	public static final String BALANCE_CONFIG_balanceField = "BALANCE:CONFIG_balanceField";
-	public static final String BALANCE_CONFIG_countPer = "BALANCE:CONFIG_countPer";
-	public static final String RANDOMIZE_CONFIG_sourceFile = "RANDOMIZE:CONFIG_sourceFile";
-	public static final String RANDOMIZE_CONFIG_targetFile = "RANDOMIZE:CONFIG_targetFile";
-	public static final String SEGREGATE_CONFIG_sourceFile = "SEGREGATE:CONFIG_sourceFile";
-	public static final String GENERATE_CONFIG_sourceFile = "GENERATE:CONFIG_sourceFile";
-	public static final String GENERATE_CONFIG_targetFile = "GENERATE:CONFIG_targetFile";
-	public static final String ML_CONFIG_trainingFile = "ML:CONFIG_trainingFile";
-	public static final String ML_CONFIG_evalFile = "ML:CONFIG_evalFile";
-	public static final String ML_CONFIG_machineLearningFile = "ML:CONFIG_machineLearningFile";
-	public static final String ML_CONFIG_outputFile = "ML:CONFIG_outputFile";
-	public static final String ML_CONFIG_type = "ML:CONFIG_type";
-	public static final String ML_CONFIG_architecture = "ML:CONFIG_architecture";
-	public static final String ML_TRAIN_type = "ML:TRAIN_type";
-	public static final String ML_TRAIN_arguments = "ML:TRAIN_arguments";
-	public static final String ML_TRAIN_targetError = "ML:TRAIN_targetError";
-	public static final String ML_TRAIN_cross = "ML:TRAIN_cross";
-	public static final String SERIES_CONFIG_lead = "SERIES:CONFIG_lead";
-	public static final String SERIES_CONFIG_lag = "SERIES:CONFIG_lag";
-	public static final String SERIES_CONFIG_includeTarget = "SERIES:CONFIG_includeTarget";
-	public static final String SERIES_CONFIG_sourceFile = "SERIES:CONFIG_sourceFile";
-	public static final String SERIES_CONFIG_targetFile = "SERIES:CONFIG_targetFile";	
-	public static final String CLUSTER_CONFIG_sourceFile = "CLUSTER:CONFIG_sourceFile";
-	public static final String CLUSTER_CONFIG_targetFile = "CLUSTER:CONFIG_targetFile";
-	public static final String CLUSTER_CONFIG_type = "CLUSTER:CONFIG_type";
-	public static final String CLUSTER_CONFIG_clusters = "CLUSTER:CONFIG_clusters";
+	/**
+	 * Property for: "HEADER:DATASOURCE_sourceFile".
+	 */
+	public static final String HEADER_DATASOURCE_SOURCE_FILE 
+		= "HEADER:DATASOURCE_sourceFile";
+	
+	/**
+	 * Property for: "HEADER:DATASOURCE_rawFile".
+	 */
+	public static final String HEADER_DATASOURCE_RAW_FILE
+		= "HEADER:DATASOURCE_rawFile";
+	
+	/**
+	 * Property for: "HEADER:DATASOURCE_sourceFormat".
+	 */
+	public static final String HEADER_DATASOURCE_SOURCE_FORMAT 
+		= "HEADER:DATASOURCE_sourceFormat";
+	
+	/**
+	 * Property for: "HEADER:DATASOURCE_sourceHeaders".
+	 */
+	public static final String HEADER_DATASOURCE_SOURCE_HEADERS 
+		= "HEADER:DATASOURCE_sourceHeaders";
+	
+	/**
+	 * Property for: "SETUP:CONFIG_maxClassCount".
+	 */
+	public static final String SETUP_CONFIG_MAX_CLASS_COUNT 
+		= "SETUP:CONFIG_maxClassCount";
+	
+	/**
+	 * Property for: = "SETUP:CONFIG_allowedClasses". 
+	 */
+	public static final String SETUP_CONFIG_ALLOWED_CLASSES 
+		= "SETUP:CONFIG_allowedClasses";
+	
+	/**
+	 * Property for: "SETUP:CONFIG_inputHeaders". 
+	 */
+	public static final String SETUP_CONFIG_INPUT_HEADERS 
+		= "SETUP:CONFIG_inputHeaders";
+	
+	/**
+	 * Property for: "SETUP:CONFIG_csvFormat". 
+	 */
+	public static final String SETUP_CONFIG_CSV_FORMAT 
+		= "SETUP:CONFIG_csvFormat";
+	
+	/**
+	 * Property for: "DATA:CONFIG_goal". 
+	 */
+	public static final String DATA_CONFIG_GOAL 
+		= "DATA:CONFIG_goal";
+	
+	/**
+	 * Property for: "NORMALIZE:CONFIG_sourceFile". 
+	 */
+	public static final String NORMALIZE_CONFIG_SOURCE_FILE 
+		= "NORMALIZE:CONFIG_sourceFile";
+	
+	/**
+	 * Property for: "NORMALIZE:CONFIG_targetFile". 
+	 */
+	public static final String NORMALIZE_CONFIG_TARGET_FILE 
+		= "NORMALIZE:CONFIG_targetFile";
+	
+	/**
+	 * Property for: "BALANCE:CONFIG_sourceFile".
+	 */
+	public static final String BALANCE_CONFIG_SOURCE_FILE 
+		= "BALANCE:CONFIG_sourceFile";
+	
+	/**
+	 * Property for: "BALANCE:CONFIG_targetFile". 
+	 */
+	public static final String BALANCE_CONFIG_TARGET_FILE 
+		= "BALANCE:CONFIG_targetFile";
+	
+	/**
+	 * Property for: "BALANCE:CONFIG_balanceField". 
+	 */
+	public static final String BALANCE_CONFIG_BALANCE_FIELD 
+		= "BALANCE:CONFIG_balanceField";
+	
+	/**
+	 * Property for: "BALANCE:CONFIG_countPer". 
+	 */
+	public static final String BALANCE_CONFIG_COUNT_PER 
+		= "BALANCE:CONFIG_countPer";
+	
+	/**
+	 * Property for: "RANDOMIZE:CONFIG_sourceFile".
+	 */
+	public static final String RANDOMIZE_CONFIG_SOURCE_FILE 
+		= "RANDOMIZE:CONFIG_sourceFile";
+	
+	/**
+	 * Property for: "RANDOMIZE:CONFIG_targetFile". 
+	 */
+	public static final String RANDOMIZE_CONFIG_TARGET_FILE 
+		= "RANDOMIZE:CONFIG_targetFile";
+	
+	/**
+	 * Property for: "SEGREGATE:CONFIG_sourceFile". 
+	 */
+	public static final String SEGREGATE_CONFIG_SOURCE_FILE 
+		= "SEGREGATE:CONFIG_sourceFile";
+	
+	/**
+	 * Property for: "GENERATE:CONFIG_sourceFile". 
+	 */
+	public static final String GENERATE_CONFIG_SOURCE_FILE 
+		= "GENERATE:CONFIG_sourceFile";
+	
+	/**
+	 * Property for: "GENERATE:CONFIG_targetFile". 
+	 */
+	public static final String GENERATE_CONFIG_TARGET_FILE 
+		= "GENERATE:CONFIG_targetFile";
+	
+	/**
+	 * Property for: "ML:CONFIG_trainingFile". 
+	 */
+	public static final String ML_CONFIG_TRAINING_FILE
+		= "ML:CONFIG_trainingFile";
+		
+	/**
+	 * Property for: "ML:CONFIG_evalFile".
+	 */
+	public static final String ML_CONFIG_EVAL_FILE
+		= "ML:CONFIG_evalFile";
+	
+	/**
+	 * Property for: "ML:CONFIG_machineLearningFile".
+	 */
+	public static final String ML_CONFIG_MACHINE_LEARNING_FILE 
+		= "ML:CONFIG_machineLearningFile";
+	
+	/**
+	 * Property for: "ML:CONFIG_outputFile". 
+	 */
+	public static final String ML_CONFIG_OUTPUT_FILE 
+		= "ML:CONFIG_outputFile";
+	
+	/**
+	 * Property for: = ML:CONFIG_type". 
+	 */
+	public static final String ML_CONFIG_TYPE
+		= "ML:CONFIG_type";
+	
+	/**
+	 * Property for: "ML:CONFIG_architecture". 
+	 */
+	public static final String ML_CONFIG_ARCHITECTURE 
+		= "ML:CONFIG_architecture";
+	
+	/**
+	 * Property for: "ML:TRAIN_type". 
+	 */
+	public static final String ML_TRAIN_TYPE 
+		= "ML:TRAIN_type";
+	
+	/**
+	 * Property for: "ML:TRAIN_arguments". 
+	 */
+	public static final String ML_TRAIN_ARGUMENTS 
+		= "ML:TRAIN_arguments";
+	
+	/**
+	 * Property for: "ML:TRAIN_targetError". 
+	 */
+	public static final String ML_TRAIN_TARGET_ERROR 
+		= "ML:TRAIN_targetError";
+	
+	/**
+	 * Property for: "ML:TRAIN_cross". 
+	 */
+	public static final String ML_TRAIN_CROSS 
+		= "ML:TRAIN_cross";
+	
+	/**
+	 * Property for: "CLUSTER:CONFIG_sourceFile".
+	 */
+	public static final String CLUSTER_CONFIG_SOURCE_FILE 
+		= "CLUSTER:CONFIG_sourceFile";
+	
+	/**
+	 * Property for: "CLUSTER:CONFIG_targetFile". 
+	 */
+	public static final String CLUSTER_CONFIG_TARGET_FILE 
+		= "CLUSTER:CONFIG_targetFile";
+	
+	/**
+	 * Property for: "CLUSTER:CONFIG_type". 
+	 */
+	public static final String CLUSTER_CONFIG_TYPE 
+		= "CLUSTER:CONFIG_type";
+	
+	/**
+	 * Property for: "CLUSTER:CONFIG_clusters". 
+	 */
+	public static final String CLUSTER_CONFIG_CLUSTERS 
+		= "CLUSTER:CONFIG_clusters";
 
+	/**
+	 * Properties are stored in this map.
+	 */
 	private final Map<String, String> data = new HashMap<String, String>();
 
-	public void setProperty(String name, String value) {
+	/**
+	 * Set the property to the specified value.
+	 * @param name The property name.
+	 * @param value The property value.
+	 */
+	public final void setProperty(final String name, final String value) {
 		data.put(name, value);
 	}
 
-	public Object getProperty(String name) {
+	/**
+	 * Get a property as an object.
+	 * @param name The name of the property.
+	 * @return The property value.
+	 */
+	public final Object getProperty(final String name) {
 		return data.get(name);
 	}
 
-	public String getPropertyString(String name) {
+	/**
+	 * Get a property as a string.
+	 * @param name The name of the property.
+	 * @return The property value.
+	 */
+	public final String getPropertyString(final String name) {
 		if (!data.containsKey(name)) {
 			return null;
 		}
 		return data.get(name).toString();
 	}
 
-	public void setProperty(String name, AnalystFileFormat format) {
+	/**
+	 * Set the property to a format.
+	 * @param name The name of the property.
+	 * @param format The value of the property.
+	 */
+	public final void setProperty(final String name, 
+			final AnalystFileFormat format) {
 		if (format == null) {
 			data.put(name, "");
 		} else {
@@ -109,15 +297,33 @@ public class ScriptProperties {
 		}
 	}
 
-	public void setProperty(String name, boolean b) {
-		data.put(name, b ? "t" : "f");
+	/**
+	 * Set a property as a boolean.
+	 * @param name The name of the property.
+	 * @param b The value to set.
+	 */
+	public final void setProperty(final String name, final boolean b) {
+		if (b) {
+			data.put(name, "t");	
+		} else {
+			data.put(name, "f");
+		}
 	}
 
+	/**
+	 * Get a property as an object.
+	 * @param name The name of the property.
+	 */
 	public void setProperty(String name, File analyzeFile) {
 		data.put(name, analyzeFile.toString());
 
 	}
 
+	/**
+	 * Get a property as an object.
+	 * @param name The name of the property.
+	 * @return The property value.
+	 */
 	public void setProperty(String name, URL url) {
 		data.put(name, url.toExternalForm());
 

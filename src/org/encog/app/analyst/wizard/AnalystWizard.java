@@ -138,78 +138,78 @@ public class AnalystWizard {
 
 		// starting point
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_rawFile,
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE,
 				target = AnalystWizard.FILE_RAW);
 
 		// randomize
 		if (!this.timeSeries && this.taskRandomize) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.RANDOMIZE_CONFIG_sourceFile,
+					ScriptProperties.RANDOMIZE_CONFIG_SOURCE_FILE,
 					AnalystWizard.FILE_RAW);
 			this.script.getProperties().setProperty(
-					ScriptProperties.RANDOMIZE_CONFIG_targetFile,
+					ScriptProperties.RANDOMIZE_CONFIG_TARGET_FILE,
 					target = AnalystWizard.FILE_RANDOM);
 		}
 
 		// balance
 		if (!this.timeSeries && this.taskBalance) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.BALANCE_CONFIG_sourceFile, target);
+					ScriptProperties.BALANCE_CONFIG_SOURCE_FILE, target);
 			this.script.getProperties().setProperty(
-					ScriptProperties.BALANCE_CONFIG_targetFile,
+					ScriptProperties.BALANCE_CONFIG_TARGET_FILE,
 					target = AnalystWizard.FILE_BALANCE);
 		}
 
 		// segregate
 		if (this.taskSegregate) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.SEGREGATE_CONFIG_sourceFile, target);
+					ScriptProperties.SEGREGATE_CONFIG_SOURCE_FILE, target);
 			target = AnalystWizard.FILE_TRAIN;
 		}
 
 		// normalize
 		this.script.getProperties().setProperty(
-				ScriptProperties.NORMALIZE_CONFIG_sourceFile, target);
+				ScriptProperties.NORMALIZE_CONFIG_SOURCE_FILE, target);
 		this.script.getProperties().setProperty(
-				ScriptProperties.NORMALIZE_CONFIG_targetFile,
+				ScriptProperties.NORMALIZE_CONFIG_TARGET_FILE,
 				target = AnalystWizard.FILE_NORMALIZE);
 
 		// cluster
 		if (this.taskCluster) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.CLUSTER_CONFIG_sourceFile,
+					ScriptProperties.CLUSTER_CONFIG_SOURCE_FILE,
 					AnalystWizard.FILE_EVAL);
 			this.script.getProperties().setProperty(
-					ScriptProperties.CLUSTER_CONFIG_targetFile,
+					ScriptProperties.CLUSTER_CONFIG_TARGET_FILE,
 					AnalystWizard.FILE_CLUSTER);
 			this.script.getProperties().setProperty(
-					ScriptProperties.CLUSTER_CONFIG_type, "kmeans");
+					ScriptProperties.CLUSTER_CONFIG_TYPE, "kmeans");
 		}
 
 		// generate
 		this.script.getProperties().setProperty(
-				ScriptProperties.GENERATE_CONFIG_sourceFile, target);
+				ScriptProperties.GENERATE_CONFIG_SOURCE_FILE, target);
 		this.script.getProperties().setProperty(
-				ScriptProperties.GENERATE_CONFIG_targetFile,
+				ScriptProperties.GENERATE_CONFIG_TARGET_FILE,
 				AnalystWizard.FILE_TRAINSET);
 
 		// ML
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_trainingFile,
+				ScriptProperties.ML_CONFIG_TRAINING_FILE,
 				AnalystWizard.FILE_TRAINSET);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_machineLearningFile,
+				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE,
 				AnalystWizard.FILE_ML);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_outputFile,
+				ScriptProperties.ML_CONFIG_OUTPUT_FILE,
 				AnalystWizard.FILE_OUTPUT);
 
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_evalFile, AnalystWizard.FILE_EVAL);
+				ScriptProperties.ML_CONFIG_EVAL_FILE, AnalystWizard.FILE_EVAL);
 
 		// other
 		script.getProperties().setProperty(
-				ScriptProperties.SETUP_CONFIG_csvFormat,
+				ScriptProperties.SETUP_CONFIG_CSV_FORMAT,
 				AnalystFileFormat.DECPNT_COMMA);
 	}
 
@@ -307,17 +307,17 @@ public class AnalystWizard {
 		}
 
 		this.script.getProperties().setProperty(
-				ScriptProperties.DATA_CONFIG_goal, this.goal);
+				ScriptProperties.DATA_CONFIG_GOAL, this.goal);
 
 		if (!this.timeSeries && this.taskBalance) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.BALANCE_CONFIG_balanceField, targetField);
+					ScriptProperties.BALANCE_CONFIG_BALANCE_FIELD, targetField);
 			DataField field = this.analyst.getScript().findDataField(
 					targetField);
 			if (field != null && field.isClass()) {
 				int countPer = field.getMinClassCount();
 				this.script.getProperties().setProperty(
-						ScriptProperties.BALANCE_CONFIG_countPer, countPer);
+						ScriptProperties.BALANCE_CONFIG_COUNT_PER, countPer);
 			}
 		}
 
@@ -342,11 +342,11 @@ public class AnalystWizard {
 			if (this.targetField.length() == 0
 					|| this.goal != AnalystGoal.Classification) {
 				this.script.getProperties().setProperty(
-						ScriptProperties.CLUSTER_CONFIG_clusters, 2);
+						ScriptProperties.CLUSTER_CONFIG_CLUSTERS, 2);
 			} else {
 				DataField tf = this.script.findDataField(this.targetField);
 				this.script.getProperties().setProperty(
-						ScriptProperties.CLUSTER_CONFIG_clusters,
+						ScriptProperties.CLUSTER_CONFIG_CLUSTERS,
 						tf.getClassMembers().size());
 			}
 		}
@@ -383,70 +383,70 @@ public class AnalystWizard {
 	private void generateFeedForward(int inputColumns, int outputColumns) {
 		int hidden = (int) (((double) inputColumns) * 1.5);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_type,
+				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_FEEDFORWARD);
 
 		if (this.range == NormalizeRange.NegOne2One) {
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_CONFIG_architecture,
+					ScriptProperties.ML_CONFIG_ARCHITECTURE,
 					"?B->TANH->" + hidden + "B->TANH->?");
 		} else {
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_CONFIG_architecture,
+					ScriptProperties.ML_CONFIG_ARCHITECTURE,
 					"?B->SIGMOID->" + hidden + "B->SIGMOID->?");
 		}
 
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"rprop");
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_targetError, 0.01);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, 0.01);
 	}
 
 	private void generateSVM(int inputColumns, int outputColumns) {
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SVM);
+				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_SVM);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_architecture,
+				ScriptProperties.ML_CONFIG_ARCHITECTURE,
 				"?->C(type=new,kernel=gaussian)->?");
 
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"svm-train");
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_targetError, 0.01);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, 0.01);
 	}
 
 	private void generateRBF(int inputColumns, int outputColumns) {
 		int hidden = (int) (((double) inputColumns) * 1.5);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_type,
+				ScriptProperties.ML_CONFIG_TYPE,
 				MLMethodFactory.TYPE_RBFNETWORK);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_architecture,
+				ScriptProperties.ML_CONFIG_ARCHITECTURE,
 				"?->GAUSSIAN(" + hidden + ")->?");
 
 		if (outputColumns > 1)
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_TRAIN_type, "rprop");
+					ScriptProperties.ML_TRAIN_TYPE, "rprop");
 		else
 			this.script.getProperties().setProperty(
-					ScriptProperties.ML_TRAIN_type, "svd");
+					ScriptProperties.ML_TRAIN_TYPE, "svd");
 
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				0.01);
 	}
 
 	private void generateSOM(int inputColumns) {
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_type, MLMethodFactory.TYPE_SOM);
+				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_SOM);
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_CONFIG_architecture, "?->?");
+				ScriptProperties.ML_CONFIG_ARCHITECTURE, "?->?");
 
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_type,
+		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_SOM_NEIGHBORHOOD);
 
 		//ScriptProperties.ML_TRAIN_arguments
 		this.script.getProperties().setProperty(
-				ScriptProperties.ML_TRAIN_targetError, 0.01);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR, 0.01);
 	}
 
 	private String createSet(String setTarget, String setSource) {
@@ -497,13 +497,13 @@ public class AnalystWizard {
 
 		AnalystTask task3 = new AnalystTask("task-evaluate-raw");
 		task3.getLines().add(
-				createSet(ScriptProperties.ML_CONFIG_evalFile,
+				createSet(ScriptProperties.ML_CONFIG_EVAL_FILE,
 						AnalystWizard.FILE_EVAL_NORM));
 		task3.getLines().add(
-				createSet(ScriptProperties.NORMALIZE_CONFIG_sourceFile,
+				createSet(ScriptProperties.NORMALIZE_CONFIG_SOURCE_FILE,
 						AnalystWizard.FILE_EVAL));
 		task3.getLines().add(
-				createSet(ScriptProperties.NORMALIZE_CONFIG_targetFile,
+				createSet(ScriptProperties.NORMALIZE_CONFIG_TARGET_FILE,
 						AnalystWizard.FILE_EVAL_NORM));
 		task3.getLines().add("normalize");
 		task3.getLines().add("evaluate-raw");
@@ -533,13 +533,13 @@ public class AnalystWizard {
 			AnalystFileFormat format) {
 
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_sourceFile, url);
+				ScriptProperties.HEADER_DATASOURCE_SOURCE_FILE, url);
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
+				ScriptProperties.HEADER_DATASOURCE_SOURCE_FORMAT, format);
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
+				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, b);
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, analyzeFile);
 
 		this.generateFilenames(analyzeFile);
 		this.generateSettings();
@@ -550,16 +550,16 @@ public class AnalystWizard {
 
 	public void reanalyze() {
 		String rawID = this.script.getProperties().getPropertyFile(
-				ScriptProperties.HEADER_DATASOURCE_rawFile);
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
 
 		File rawFilename = this.analyst.getScript().resolveFilename(rawID);
 
 		this.analyst.analyze(
 				rawFilename,
 				this.script.getProperties().getPropertyBoolean(
-						ScriptProperties.SETUP_CONFIG_inputHeaders),
+						ScriptProperties.SETUP_CONFIG_INPUT_HEADERS),
 				this.script.getProperties().getPropertyFormat(
-						ScriptProperties.SETUP_CONFIG_csvFormat));
+						ScriptProperties.SETUP_CONFIG_CSV_FORMAT));
 
 	}
 
@@ -648,26 +648,14 @@ public class AnalystWizard {
 		this.includeTargetField = includeTargetField;
 	}
 
-	private void generateTime(File file) {
-
-		this.script.getProperties().setProperty(
-				ScriptProperties.SERIES_CONFIG_lag, this.lagWindowSize);
-		this.script.getProperties().setProperty(
-				ScriptProperties.SERIES_CONFIG_lead, this.leadWindowSize);
-		this.script.getProperties().setProperty(
-				ScriptProperties.SERIES_CONFIG_includeTarget,
-				this.includeTargetField);
-
-	}
-
 	public void wizard(File analyzeFile, boolean b, AnalystFileFormat format) {
 
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_sourceFormat, format);
+				ScriptProperties.HEADER_DATASOURCE_SOURCE_FORMAT, format);
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_sourceHeaders, b);
+				ScriptProperties.HEADER_DATASOURCE_SOURCE_HEADERS, b);
 		this.script.getProperties().setProperty(
-				ScriptProperties.HEADER_DATASOURCE_rawFile, analyzeFile);
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE, analyzeFile);
 
 		this.timeSeries = (this.lagWindowSize > 0 || this.leadWindowSize > 0);
 
@@ -679,7 +667,7 @@ public class AnalystWizard {
 		generateSegregate(analyzeFile);
 
 		generateGenerate(analyzeFile);
-		generateTime(analyzeFile);
+
 		generateTasks();
 		if (this.timeSeries && this.lagWindowSize > 0
 				&& this.leadWindowSize > 0) {

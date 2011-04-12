@@ -38,26 +38,50 @@ import org.encog.util.file.ResourceInputStream;
 
 /**
  * Holds constant type information for each of the properties that the script
- * might have. This constant information allows values to be validated.
+ * might have. This constant information allows values to be validated.  
+ * This class is a singleton.
  * 
  */
-public class PropertyConstraints {
+public final class PropertyConstraints {
 
+	/**
+	 * The instance.
+	 */
 	private static PropertyConstraints instance;
-	private final Map<String, List<PropertyEntry>> data = new HashMap<String, List<PropertyEntry>>();
 
+
+	/**
+	 * @return The instance.
+	 */
+	public static PropertyConstraints getInstance() {
+		if (PropertyConstraints.instance == null) {
+			PropertyConstraints.instance = new PropertyConstraints();
+		}
+
+		return PropertyConstraints.instance;
+	}
+
+	/**
+	 * The property data.
+	 */
+	private final Map<String, List<PropertyEntry>> data 
+		= new HashMap<String, List<PropertyEntry>>();
+
+	/**
+	 * Private constructor.
+	 */
 	private PropertyConstraints() {
 
 		try {
 
-			InputStream is = ResourceInputStream
+			final InputStream is = ResourceInputStream
 					.openResourceInputStream("org/encog/data/analyst.csv");
-			ReadCSV csv = new ReadCSV(is, false, CSVFormat.EG_FORMAT);
+			final ReadCSV csv = new ReadCSV(is, false, CSVFormat.EG_FORMAT);
 
 			while (csv.next()) {
-				String sectionStr = csv.get(0);
-				String nameStr = csv.get(1);
-				String typeStr = csv.get(2);
+				final String sectionStr = csv.get(0);
+				final String nameStr = csv.get(1);
+				final String typeStr = csv.get(2);
 
 				// determine type
 				PropertyType t = null;
@@ -74,14 +98,16 @@ public class PropertyConstraints {
 				} else if ("string".equalsIgnoreCase(typeStr)) {
 					t = PropertyType.TypeString;
 				} else {
-					throw new AnalystError("Unknown type constraint: " + typeStr);
+					throw new AnalystError("Unknown type constraint: "
+							+ typeStr);
 				}
 
-				PropertyEntry entry = new PropertyEntry(t, nameStr, sectionStr);
+				final PropertyEntry entry = new PropertyEntry(t, nameStr,
+						sectionStr);
 				List<PropertyEntry> list;
 
 				if (this.data.containsKey(sectionStr)) {
-					list = data.get(sectionStr);
+					list = this.data.get(sectionStr);
 				} else {
 					list = new ArrayList<PropertyEntry>();
 					this.data.put(sectionStr, list);
@@ -97,39 +123,55 @@ public class PropertyConstraints {
 		}
 	}
 
-	public static PropertyConstraints getInstance() {
-		if (instance == null) {
-			instance = new PropertyConstraints();
-		}
-
-		return instance;
+	/**
+	 * Find an entry based on a string.
+	 * @param v The property to find.
+	 * @return The property entry data.
+	 */
+	public PropertyEntry findEntry(final String v) {
+		final String[] cols = v.split("\\.");
+		final String section = cols[0];
+		final String subSection = cols[1];
+		final String name = cols[2];
+		return getEntry(section, subSection, name);
 	}
 
-	public List<PropertyEntry> getEntries(String section, String subSection) {
-		String key = section + ":" + subSection;
+	/**
+	 * Get all entries for a section/subsection.
+	 * @param section The section to find.
+	 * @param subSection The subsection to find.
+	 * @return A list of property entries.
+	 */
+	public List<PropertyEntry> getEntries(final String section,
+			final String subSection) {
+		final String key = section + ":" + subSection;
 		return this.data.get(key);
 	}
 
-	public PropertyEntry getEntry(String section, String subSection, String name) {
-		String key = section.toUpperCase() + ":" + subSection.toUpperCase();
-		List<PropertyEntry> list = this.data.get(key);
-		if( list==null ) {
-			throw new AnalystError("Unknown section and subsection: " + section + "." + subSection);
+	/**
+	 * Get a single property entry.  If the section and subsection do 
+	 * not exist, an error is thrown.
+	 * @param section The section.
+	 * @param subSection The subsection.
+	 * @param name The name of the property.
+	 * @return The property entry, or null if not found.
+	 */
+	public PropertyEntry getEntry(final String section,
+			final String subSection, final String name) {
+		final String key = section.toUpperCase() + ":"
+				+ subSection.toUpperCase();
+		final List<PropertyEntry> list = this.data.get(key);
+		if (list == null) {
+			throw new AnalystError("Unknown section and subsection: " + section
+					+ "." + subSection);
 		}
-		for(PropertyEntry entry: list) {
-			if( entry.getName().equalsIgnoreCase(name))
+		for (final PropertyEntry entry : list) {
+			if (entry.getName().equalsIgnoreCase(name)) {
 				return entry;
+			}
 		}
-		
-		return null;		
-	}
 
-	public PropertyEntry findEntry(String v) {
-		String[] cols = v.split("\\.");
-		String section = cols[0];
-		String subSection = cols[1];
-		String name = cols[2];
-		return getEntry(section,subSection,name);
+		return null;
 	}
 
 }

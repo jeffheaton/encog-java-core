@@ -176,7 +176,7 @@ public class PerformAnalysis {
 		csv.close();
 
 		String str = this.script.getProperties().getPropertyString(
-				ScriptProperties.SETUP_CONFIG_allowedClasses);
+				ScriptProperties.SETUP_CONFIG_ALLOWED_CLASSES);
 		if (str == null) {
 			str = "";
 		}

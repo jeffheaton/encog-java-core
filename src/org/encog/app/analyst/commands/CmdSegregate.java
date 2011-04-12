@@ -61,7 +61,7 @@ public class CmdSegregate extends Cmd {
 	public final boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
-				ScriptProperties.SEGREGATE_CONFIG_sourceFile);
+				ScriptProperties.SEGREGATE_CONFIG_SOURCE_FILE);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 

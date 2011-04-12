@@ -60,12 +60,12 @@ public class CmdEvaluateRaw extends Cmd {
 	public final boolean executeCommand(final String args) {
 		// get filenames
 		final String evalID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_evalFile);
+				ScriptProperties.ML_CONFIG_EVAL_FILE);
 		final String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_machineLearningFile);
+				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 
 		final String outputID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_outputFile);
+				ScriptProperties.ML_CONFIG_OUTPUT_FILE);
 
 		final File evalFile = getScript().resolveFilename(evalID);
 		final File resourceFile = getScript().resolveFilename(resourceID);
@@ -82,7 +82,8 @@ public class CmdEvaluateRaw extends Cmd {
 		getAnalyst().setCurrentQuantTask(eval);
 		eval.setReport(new AnalystReportBridge(getAnalyst()));
 		eval.analyze(getAnalyst(), evalFile, headers, getProp()
-				.getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat));
+				.getPropertyCSVFormat(
+						ScriptProperties.SETUP_CONFIG_CSV_FORMAT));
 		eval.process(outputFile, method);
 		getAnalyst().setCurrentQuantTask(null);
 		return eval.shouldStop();

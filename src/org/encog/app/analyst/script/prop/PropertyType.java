@@ -27,10 +27,28 @@ package org.encog.app.analyst.script.prop;
  * The property types supported for Encog Analyst.
  */
 public enum PropertyType {
+	/**
+	 * A boolean property.
+	 */
 	TypeBoolean,
+	/**
+	 * A string property.
+	 */
 	TypeString,
+	/**
+	 * An integer property.
+	 */
 	TypeInteger,
+	/**
+	 * A double property.
+	 */
 	TypeDouble,
+	/**
+	 * A list.
+	 */
 	TypeListString,
+	/**
+	 * A format.
+	 */
 	typeFormat
 }

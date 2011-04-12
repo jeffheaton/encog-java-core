@@ -62,18 +62,18 @@ public class CmdBalance extends Cmd {
 	public final boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
-				ScriptProperties.BALANCE_CONFIG_sourceFile);
+				ScriptProperties.BALANCE_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
-				ScriptProperties.BALANCE_CONFIG_targetFile);
+				ScriptProperties.BALANCE_CONFIG_TARGET_FILE);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);
 
 		// get other config data
 		final int countPer = getProp().getPropertyInt(
-				ScriptProperties.BALANCE_CONFIG_countPer);
+				ScriptProperties.BALANCE_CONFIG_COUNT_PER);
 		final String targetFieldStr = getProp().getPropertyString(
-				ScriptProperties.BALANCE_CONFIG_balanceField);
+				ScriptProperties.BALANCE_CONFIG_BALANCE_FIELD);
 		final DataField targetFieldDF = getAnalyst().getScript().findDataField(
 				targetFieldStr);
 		if (targetFieldDF == null) {

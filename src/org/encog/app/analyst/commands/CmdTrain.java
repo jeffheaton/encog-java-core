@@ -76,9 +76,9 @@ public class CmdTrain extends Cmd {
 		final MLTrainFactory factory = new MLTrainFactory();
 
 		final String type = getProp().getPropertyString(
-				ScriptProperties.ML_TRAIN_type);
+				ScriptProperties.ML_TRAIN_TYPE);
 		final String args = getProp().getPropertyString(
-				ScriptProperties.ML_TRAIN_arguments);
+				ScriptProperties.ML_TRAIN_ARGUMENTS);
 
 		MLTrain train = factory.create(method, trainingSet, type, args);
 
@@ -103,7 +103,7 @@ public class CmdTrain extends Cmd {
 		performTraining(trainer, method, trainingSet);
 
 		final String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_machineLearningFile);
+				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 		final File resourceFile = getAnalyst().getScript().resolveFilename(
 				resourceID);
 		EncogDirectoryPersistence.saveObject(resourceFile, method);
@@ -125,7 +125,7 @@ public class CmdTrain extends Cmd {
 	 */
 	private int obtainCross() {
 		final String cross = getProp().getPropertyString(
-				ScriptProperties.ML_TRAIN_cross);
+				ScriptProperties.ML_TRAIN_CROSS);
 		if ((cross == null) || (cross.length() == 0)) {
 			return 0;
 		} else if (cross.toLowerCase().startsWith("kfold:")) {
@@ -146,7 +146,7 @@ public class CmdTrain extends Cmd {
 	 */
 	private MLMethod obtainMethod() {
 		final String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_machineLearningFile);
+				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 		final File resourceFile = getScript().resolveFilename(resourceID);
 
 		final MLMethod method = (MLMethod) EncogDirectoryPersistence
@@ -167,7 +167,7 @@ public class CmdTrain extends Cmd {
 	 */
 	private NeuralDataSet obtainTrainingSet() {
 		final String trainingID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_trainingFile);
+				ScriptProperties.ML_CONFIG_TRAINING_FILE);
 
 		final File trainingFile = getScript().resolveFilename(trainingID);
 
@@ -191,7 +191,7 @@ public class CmdTrain extends Cmd {
 
 		ValidateNetwork.validateMethodToData(method, trainingSet);
 		final double targetError = getProp().getPropertyDouble(
-				ScriptProperties.ML_TRAIN_targetError);
+				ScriptProperties.ML_TRAIN_TARGET_ERROR);
 		getAnalyst().reportTrainingBegin();
 		final int maxIteration = getAnalyst().getMaxIteration();
 

@@ -57,9 +57,9 @@ public class CmdRandomize extends Cmd {
 	public final boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
-				ScriptProperties.RANDOMIZE_CONFIG_sourceFile);
+				ScriptProperties.RANDOMIZE_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
-				ScriptProperties.RANDOMIZE_CONFIG_targetFile);
+				ScriptProperties.RANDOMIZE_CONFIG_TARGET_FILE);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);

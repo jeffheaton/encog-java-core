@@ -59,9 +59,9 @@ public class CmdNormalize extends Cmd {
 	public final boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
-				ScriptProperties.NORMALIZE_CONFIG_sourceFile);
+				ScriptProperties.NORMALIZE_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
-				ScriptProperties.NORMALIZE_CONFIG_targetFile);
+				ScriptProperties.NORMALIZE_CONFIG_TARGET_FILE);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);

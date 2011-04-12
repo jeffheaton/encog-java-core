@@ -64,12 +64,12 @@ public class CmdCluster extends Cmd {
 	public final boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
-				ScriptProperties.CLUSTER_CONFIG_sourceFile);
+				ScriptProperties.CLUSTER_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
-				ScriptProperties.CLUSTER_CONFIG_targetFile);
+				ScriptProperties.CLUSTER_CONFIG_TARGET_FILE);
 		final int clusters = getProp().getPropertyInt(
-				ScriptProperties.CLUSTER_CONFIG_clusters);
-		getProp().getPropertyString(ScriptProperties.CLUSTER_CONFIG_type);
+				ScriptProperties.CLUSTER_CONFIG_CLUSTERS);
+		getProp().getPropertyString(ScriptProperties.CLUSTER_CONFIG_TYPE);
 
 		final File sourceFile = getScript().resolveFilename(sourceID);
 		final File targetFile = getScript().resolveFilename(targetID);

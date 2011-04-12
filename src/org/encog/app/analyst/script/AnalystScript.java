@@ -49,164 +49,176 @@ public class AnalystScript {
 	private final AnalystNormalize normalize = new AnalystNormalize();
 	private final AnalystSegregate segregate = new AnalystSegregate();
 	private final Set<String> generated = new HashSet<String>();
-	private final Map<String,AnalystTask> tasks = new HashMap<String,AnalystTask>();
+	private final Map<String, AnalystTask> tasks = new HashMap<String, AnalystTask>();
 	private final ScriptProperties properties = new ScriptProperties();
 	private String basePath;
 
 	public AnalystScript() {
-		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_csvFormat, AnalystFileFormat.DECPNT_COMMA);
-		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_maxClassCount, 50);
-		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_allowedClasses, "integer,string");
+		this.properties.setProperty(ScriptProperties.SETUP_CONFIG_CSV_FORMAT,
+				AnalystFileFormat.DECPNT_COMMA);
+		this.properties.setProperty(
+				ScriptProperties.SETUP_CONFIG_MAX_CLASS_COUNT, 50);
+		this.properties
+				.setProperty(ScriptProperties.SETUP_CONFIG_ALLOWED_CLASSES,
+						"integer,string");
 	}
-	
+
+	public void addTask(final AnalystTask task) {
+		this.tasks.put(task.getName(), task);
+	}
+
+	public void clearTasks() {
+		this.tasks.clear();
+	}
+
+	public CSVFormat determineInputFormat(final String sourceID) {
+		final String rawID = getProperties().getPropertyString(
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
+		CSVFormat result;
+
+		if (sourceID.equals(rawID)) {
+			result = getProperties().getPropertyCSVFormat(
+					ScriptProperties.HEADER_DATASOURCE_SOURCE_FORMAT);
+		} else {
+			result = getProperties().getPropertyCSVFormat(
+					ScriptProperties.SETUP_CONFIG_CSV_FORMAT);
+		}
+
+		return result;
+	}
+
+	public CSVFormat determineOutputFormat() {
+		return getProperties().getPropertyCSVFormat(
+				ScriptProperties.SETUP_CONFIG_CSV_FORMAT);
+	}
+
+	public boolean expectInputHeaders(final String filename) {
+		if (isGenerated(filename)) {
+			return true;
+		} else {
+			return this.properties
+					.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_INPUT_HEADERS);
+		}
+	}
+
+	public DataField findDataField(final String name) {
+		for (final DataField dataField : this.fields) {
+			if (dataField.getName().equalsIgnoreCase(name)) {
+				return dataField;
+			}
+		}
+
+		return null;
+	}
+
+	public int findDataFieldIndex(final DataField df) {
+		for (int result = 0; result < this.fields.length; result++) {
+			if (df == this.fields[result]) {
+				return result;
+			}
+		}
+		return -1;
+	}
+
+	public AnalystField findNormalizedField(final String name, final int slice) {
+		for (final AnalystField field : getNormalize().getNormalizedFields()) {
+			if (field.getName().equalsIgnoreCase(name)
+					&& (field.getTimeSlice() == slice)) {
+				return field;
+			}
+		}
+
+		return null;
+	}
+
+	public String getBasePath() {
+		return this.basePath;
+	}
+
 	/**
 	 * @return the fields
 	 */
 	public DataField[] getFields() {
-		return fields;
-	}
-
-	/**
-	 * @param fields the fields to set
-	 */
-	public void setFields(DataField[] fields) {
-		this.fields = fields;
-	}
-
-
-	public void save(OutputStream stream) {
-		ScriptSave s = new ScriptSave(this);
-		s.save(stream);
-	}
-	
-	public void load(InputStream stream) {
-		ScriptLoad s = new ScriptLoad(this);
-		s.load(stream);
+		return this.fields;
 	}
 
 	/**
 	 * @return the normalize
 	 */
 	public AnalystNormalize getNormalize() {
-		return normalize;
+		return this.normalize;
 	}
 
-	public DataField findDataField(String name) {
-		for(DataField dataField: this.fields) {
-			if( dataField.getName().equalsIgnoreCase(name))
-				return dataField;
-		}
-		
-		return null;
-	}
-		
-	
-	public void markGenerated(String filename) {
-		this.generated.add(filename);
-	}
-	
-	public boolean isGenerated(String filename) {
-		return this.generated.contains(filename);
-	}
-
-	/**
-	 * @return the segregate
-	 */
-	public AnalystSegregate getSegregate() {
-		return segregate;
-	}
-
-	public boolean expectInputHeaders(String filename)
-	{
-		if( isGenerated(filename) )
-			return true;
-		else
-			return this.properties.getPropertyBoolean(ScriptProperties.SETUP_CONFIG_inputHeaders);
-	}
-
-	public void clearTasks()
-	{
-		this.tasks.clear();
-	}
-	
-	public AnalystTask getTask(String name) {
-		if( !this.tasks.containsKey(name) ) {
-			return null;
-		}
-		return this.tasks.get(name);
-	}
-	
-	public void addTask(AnalystTask task) {
-		this.tasks.put(task.getName(), task);
-	}
-
-	public Map<String, AnalystTask> getTasks() {
-		return this.tasks;		
-	}
-
-	public void init() {
-		this.normalize.init(this);		
+	public int getPrecision() {
+		return Encog.DEFAULT_PRECISION;
 	}
 
 	/**
 	 * @return the properties
 	 */
 	public ScriptProperties getProperties() {
-		return properties;
+		return this.properties;
 	}
 
-	public CSVFormat determineInputFormat(String sourceID) {
-		String rawID = getProperties().getPropertyString(ScriptProperties.HEADER_DATASOURCE_rawFile);
-		CSVFormat result;
-		
-		if( sourceID.equals(rawID)) {
-			result = getProperties().getPropertyCSVFormat(ScriptProperties.HEADER_DATASOURCE_sourceFormat);
+	/**
+	 * @return the segregate
+	 */
+	public AnalystSegregate getSegregate() {
+		return this.segregate;
+	}
+
+	public AnalystTask getTask(final String name) {
+		if (!this.tasks.containsKey(name)) {
+			return null;
+		}
+		return this.tasks.get(name);
+	}
+
+	public Map<String, AnalystTask> getTasks() {
+		return this.tasks;
+	}
+
+	public void init() {
+		this.normalize.init(this);
+	}
+
+	public boolean isGenerated(final String filename) {
+		return this.generated.contains(filename);
+	}
+
+	public void load(final InputStream stream) {
+		final ScriptLoad s = new ScriptLoad(this);
+		s.load(stream);
+	}
+
+	public void markGenerated(final String filename) {
+		this.generated.add(filename);
+	}
+
+	public File resolveFilename(final String sourceID) {
+		final String name = getProperties().getFilename(sourceID);
+
+		if (this.basePath != null) {
+			return new File(this.basePath, name);
 		} else {
-			result = getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat);
+			return new File(name);
 		}
-		
-		return result;
-	}
-	
-	public CSVFormat determineOutputFormat() {		
-		return getProperties().getPropertyCSVFormat(ScriptProperties.SETUP_CONFIG_csvFormat);
 	}
 
-	public AnalystField findNormalizedField(String name, int slice) {
-		for(AnalystField field: this.getNormalize().getNormalizedFields()) {
-			if( field.getName().equalsIgnoreCase(name) && field.getTimeSlice()==slice )
-				return field;
-		}
-		
-		return null;
+	public void save(final OutputStream stream) {
+		final ScriptSave s = new ScriptSave(this);
+		s.save(stream);
 	}
 
-	public String getBasePath() {
-		return basePath;
-	}
-
-	public void setBasePath(String basePath) {
+	public void setBasePath(final String basePath) {
 		this.basePath = basePath;
 	}
 
-	public File resolveFilename(String sourceID) {
-		String name = this.getProperties().getFilename(sourceID);
-		
-		if( this.basePath!=null )
-			return new File(this.basePath,name);
-		else
-			return new File(name);
-	}
-
-	public int findDataFieldIndex(DataField df) {
-		for(int result = 0; result<this.fields.length; result++) {
-			if( df==this.fields[result])
-				return result;
-		}
-		return -1;
-	}
-
-	public int getPrecision() {
-		return Encog.DEFAULT_PRECISION;
+	/**
+	 * @param fields
+	 *            the fields to set
+	 */
+	public void setFields(final DataField[] fields) {
+		this.fields = fields;
 	}
 }

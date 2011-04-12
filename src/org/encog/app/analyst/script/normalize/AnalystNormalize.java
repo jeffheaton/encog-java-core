@@ -40,41 +40,72 @@ import org.encog.app.csv.normalize.NormalizationAction;
  */
 public class AnalystNormalize {
 
-	private final List<AnalystField> normalizedFields = new ArrayList<AnalystField>();
+	/**
+	 * The normalized fields.  These fields define the order and format 
+	 * that data will be presented to the ML method.
+	 */
+	private final List<AnalystField> normalizedFields 
+		= new ArrayList<AnalystField>();
+
+	/**
+	 * @return Calculate the input columns.
+	 */
+	public final int calculateInputColumns() {
+		int result = 0;
+		for (final AnalystField field : this.normalizedFields) {
+			if (field.isInput()) {
+				result += field.getColumnsNeeded();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Calculate the output columns.
+	 * @return The output columns.
+	 */
+	public final int calculateOutputColumns() {
+		int result = 0;
+		for (final AnalystField field : this.normalizedFields) {
+			if (field.isOutput()) {
+				result += field.getColumnsNeeded();
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * @return Count the active fields.
+	 */
+	public final int countActiveFields() {
+		int result = 0;
+		for (final AnalystField field : this.normalizedFields) {
+			if (field.getAction() != NormalizationAction.Ignore) {
+				result++;
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * @return the normalizedFields
 	 */
-	public List<AnalystField> getNormalizedFields() {
-		return normalizedFields;
+	public final List<AnalystField> getNormalizedFields() {
+		return this.normalizedFields;
 	}
 
-	public int calculateInputColumns() {
-		int result = 0;
-		for (AnalystField field : this.normalizedFields) {
-			if( field.isInput() )
-				result += field.getColumnsNeeded();
-		}
-		return result;
-	}
-
-	public int calculateOutputColumns() {
-		int result = 0;
-		for (AnalystField field : this.normalizedFields) {
-			if( field.isOutput() )
-				result += field.getColumnsNeeded();
-		}
-		return result;
-	}
-
-	public void init(AnalystScript script) {
+	/**
+	 * Init the normalized fields.
+	 * @param script The script.
+	 */
+	public final void init(final AnalystScript script) {
 
 		if (this.normalizedFields == null) {
 			return;
 		}
 
-		for (AnalystField norm : this.normalizedFields) {
-			DataField f = script.findDataField(norm.getName());
+		for (final AnalystField norm : this.normalizedFields) {
+			final DataField f = script.findDataField(norm.getName());
 
 			if (f == null) {
 				throw new AnalystError("Normalize specifies unknown field: "
@@ -86,12 +117,12 @@ public class AnalystNormalize {
 				norm.setActualLow(f.getMin());
 			}
 
-			if (norm.getAction() == NormalizationAction.Equilateral
-					|| norm.getAction() == NormalizationAction.OneOf
-					|| norm.getAction() == NormalizationAction.SingleField) {
+			if ((norm.getAction() == NormalizationAction.Equilateral)
+					|| (norm.getAction() == NormalizationAction.OneOf)
+					|| (norm.getAction() == NormalizationAction.SingleField)) {
 
 				int index = 0;
-				for (AnalystClassItem item : f.getClassMembers()) {
+				for (final AnalystClassItem item : f.getClassMembers()) {
 					norm.getClasses().add(
 							new ClassItem(item.getName(), index++));
 				}
@@ -99,22 +130,15 @@ public class AnalystNormalize {
 		}
 	}
 
-	public int countActiveFields() {
-		int result = 0;
-		for( AnalystField field : this.normalizedFields ) {
-			if (field.getAction() != NormalizationAction.Ignore)
-				result++;
-		}
-		return result;
-	}
-
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(": ");
-		if (this.normalizedFields != null)
+		if (this.normalizedFields != null) {
 			result.append(this.normalizedFields.toString());
+		}
 		result.append("]");
 		return result.toString();
 	}

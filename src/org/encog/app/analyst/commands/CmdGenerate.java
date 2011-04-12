@@ -64,7 +64,7 @@ public class CmdGenerate extends Cmd {
 
 		int[] result;
 		final String type = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_type);
+				ScriptProperties.ML_CONFIG_TYPE);
 
 		// is it non-supervised?
 		if (type.equals(MLMethodFactory.TYPE_SOM)) {
@@ -131,9 +131,9 @@ public class CmdGenerate extends Cmd {
 	public final boolean executeCommand(final String args) {
 		// get filenames
 		final String sourceID = getProp().getPropertyString(
-				ScriptProperties.GENERATE_CONFIG_sourceFile);
+				ScriptProperties.GENERATE_CONFIG_SOURCE_FILE);
 		final String targetID = getProp().getPropertyString(
-				ScriptProperties.GENERATE_CONFIG_targetFile);
+				ScriptProperties.GENERATE_CONFIG_TARGET_FILE);
 		final CSVFormat format = getAnalyst().getScript().determineInputFormat(
 				sourceID);
 

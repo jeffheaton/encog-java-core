@@ -32,50 +32,93 @@ import org.encog.app.analyst.util.ConvertStringConst;
  */
 public class PropertyEntry implements Comparable<PropertyEntry> {
 
+	/**
+	 * Put a property in dot form, which is "section.subsection.name".
+	 * @param section The section.
+	 * @param subSection The subsection.
+	 * @param name The name.
+	 * @return The property in dot form.
+	 */
+	public static String dotForm(final String section, final String subSection,
+			final String name) {
+		final StringBuilder result = new StringBuilder();
+		result.append(section);
+		result.append('.');
+		result.append(subSection);
+		result.append('.');
+		result.append(name);
+		return result.toString();
+	}
+
+	/**
+	 * The type of property.
+	 */
 	private final PropertyType entryType;
+	
+	/**
+	 * The name of the property.
+	 */
 	private final String name;
+
+	/**
+	 * The section of the property.
+	 */
 	private final String section;
 
-	public PropertyEntry(PropertyType entryType, String name, String section) {
+	/**
+	 * Construct a property entry.
+	 * @param theEntryType The entry type.
+	 * @param theName The name of the property.
+	 * @param theSection The section of the property.
+	 */
+	public PropertyEntry(final PropertyType theEntryType, final String theName,
+			final String theSection) {
 		super();
-		this.entryType = entryType;
-		this.name = name;
-		this.section = section;
+		this.entryType = theEntryType;
+		this.name = theName;
+		this.section = theSection;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int compareTo(final PropertyEntry o) {
+		return this.name.compareTo(o.name);
 	}
 
 	/**
 	 * @return the entryType
 	 */
-	public PropertyType getEntryType() {
-		return entryType;
+	public final PropertyType getEntryType() {
+		return this.entryType;
+	}
+
+	/**
+	 * @return The key.
+	 */
+	public final String getKey() {
+		return this.section + "_" + this.name;
 	}
 
 	/**
 	 * @return the name
 	 */
-	public String getName() {
-		return name;
+	public final String getName() {
+		return this.name;
 	}
 
 	/**
 	 * @return the section
 	 */
-	public String getSection() {
-		return section;
-	}
-
-	@Override
-	public int compareTo(PropertyEntry o) {
-		return this.name.compareTo(o.name);
-	}
-
-	public String getKey() {
-		return section + "_" + name;
+	public final String getSection() {
+		return this.section;
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");
 		result.append(this.name);
@@ -85,29 +128,28 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 		return result.toString();
 	}
 
-	public static String dotForm(String section, String subSection, String name) {
-		StringBuilder result = new StringBuilder();
-		result.append(section);
-		result.append('.');
-		result.append(subSection);
-		result.append('.');
-		result.append(name);
-		return result.toString();
-	}
-
-	public void validate(String section, String subSection, String name,
-			String value) {
-		if( value==null || value.length()==0 )
+	/**
+	 * Validate the specified property.
+	 * @param theSection The section.
+	 * @param subSection The sub section.
+	 * @param theName The name of the property.
+	 * @param value The value of the property.
+	 */
+	public final void validate(final String theSection, final String subSection,
+			final String theName, final String value) {
+		if ((value == null) || (value.length() == 0)) {
 			return;
-		
+		}
+
 		try {
 			switch (getEntryType()) {
 			case TypeBoolean:
-				if( Character.toUpperCase(value.charAt(0))!='T' && Character.toUpperCase(value.charAt(0))!='F' )
-				{
-					StringBuilder result = new StringBuilder();
+				if ((Character.toUpperCase(value.charAt(0)) != 'T')
+						&& (Character.toUpperCase(value.charAt(0)) != 'F')) {
+					final StringBuilder result = new StringBuilder();
 					result.append("Illegal boolean for ");
-					result.append(dotForm(section,subSection,name));
+					result.append(PropertyEntry.dotForm(section, subSection,
+							name));
 					result.append(", value is ");
 					result.append(value);
 					result.append(".");
@@ -118,14 +160,16 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 				Double.parseDouble(value);
 				break;
 			case typeFormat:
-				if( ConvertStringConst.string2AnalystFileFormat(value)==null ) {
-					StringBuilder result = new StringBuilder();
+				if (ConvertStringConst.string2AnalystFileFormat(value) 
+						== null) {
+					final StringBuilder result = new StringBuilder();
 					result.append("Invalid file format for ");
-					result.append(dotForm(section,subSection,name));
+					result.append(PropertyEntry.dotForm(section, subSection,
+							name));
 					result.append(", value is ");
 					result.append(value);
 					result.append(".");
-					throw new AnalystError(result.toString());					
+					throw new AnalystError(result.toString());
 				}
 				break;
 			case TypeInteger:
@@ -135,11 +179,13 @@ public class PropertyEntry implements Comparable<PropertyEntry> {
 				break;
 			case TypeString:
 				break;
+			default:
+				throw new AnalystError("Unsupported property type.");
 			}
-		} catch (NumberFormatException ex) {
-			StringBuilder result = new StringBuilder();
+		} catch (final NumberFormatException ex) {
+			final StringBuilder result = new StringBuilder();
 			result.append("Illegal value for ");
-			result.append(dotForm(section,subSection,name));
+			result.append(PropertyEntry.dotForm(section, subSection, name));
 			result.append(", expecting a ");
 			result.append(getEntryType().toString());
 			result.append(", but got ");

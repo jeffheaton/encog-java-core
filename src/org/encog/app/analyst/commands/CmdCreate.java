@@ -59,17 +59,17 @@ public class CmdCreate extends Cmd {
 	public final boolean executeCommand(final String args) {
 		// get filenames
 		final String trainingID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_trainingFile);
+				ScriptProperties.ML_CONFIG_TRAINING_FILE);
 		final String resourceID = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_machineLearningFile);
+				ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 
 		final File trainingFile = getScript().resolveFilename(trainingID);
 		final File resourceFile = getScript().resolveFilename(resourceID);
 
 		final String type = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_type);
+				ScriptProperties.ML_CONFIG_TYPE);
 		final String arch = getProp().getPropertyString(
-				ScriptProperties.ML_CONFIG_architecture);
+				ScriptProperties.ML_CONFIG_ARCHITECTURE);
 
 		final EncogEGBFile egb = new EncogEGBFile(trainingFile);
 		egb.open();

@@ -184,6 +184,19 @@ public final class Format {
 
 		return result.toString();
 	}
+	
+	/**
+	 * Format a boolean as yes/no.
+	 * @param b The boolean value.
+	 * @return The yes/no result.
+	 */
+	public static String formatYesNo(final boolean b) {
+		if (b) {
+			return "Yes";
+		} else {
+			return "No";
+		}
+	}
 
 	/**
 	 * Private constructor.

@@ -52,10 +52,10 @@ public class EncogAnalyst {
 
 	public static final String TASK_FULL = "task-full";
 
-	private AnalystScript script = new AnalystScript();
-	private List<AnalystListener> listeners = new ArrayList<AnalystListener>();
+	private final AnalystScript script = new AnalystScript();
+	private final List<AnalystListener> listeners = new ArrayList<AnalystListener>();
 	private QuantTask currentQuantTask = null;
-	private Map<String, Cmd> commands = new HashMap<String, Cmd>();
+	private final Map<String, Cmd> commands = new HashMap<String, Cmd>();
 	private int maxIteration = -1;
 	private Map<String, String> revertData;
 
@@ -74,88 +74,137 @@ public class EncogAnalyst {
 		addCommand(new CmdCluster(this));
 	}
 
-	public void analyze(File file, boolean headers, AnalystFileFormat format) {
-		script.getProperties().setFilename(AnalystWizard.FILE_RAW,
-				file.toString());
-
-		script.getProperties().setProperty(
-				ScriptProperties.SETUP_CONFIG_inputHeaders, headers);
-
-		PerformAnalysis a = new PerformAnalysis(script, file.toString(),
-				headers, format);
-		a.process(this);
-
+	public void addAnalystListener(final AnalystListener listener) {
+		this.listeners.add(listener);
 	}
 
-	public void addCommand(Cmd cmd) {
+	public void addCommand(final Cmd cmd) {
 		this.commands.put(cmd.getName(), cmd);
+	}
+
+	public void analyze(final File file, final boolean headers,
+			final AnalystFileFormat format) {
+		this.script.getProperties().setFilename(AnalystWizard.FILE_RAW,
+				file.toString());
+
+		this.script.getProperties().setProperty(
+				ScriptProperties.SETUP_CONFIG_INPUT_HEADERS, headers);
+
+		final PerformAnalysis a = new PerformAnalysis(this.script,
+				file.toString(), headers, format);
+		a.process(this);
+
 	}
 
 	public void clear() {
 
 	}
 
-	public void load(String filename) {
-		load(new File(filename));
-	}
-
-	public void save(String filename) {
-		save(new File(filename));
-	}
-
-	public void save(File file) {
-		OutputStream fos = null;
-
-		try {
-			this.script.setBasePath(file.getParent());
-			fos = new FileOutputStream(file);
-			save(fos);
-		} catch (IOException ex) {
-			throw new AnalystError(ex);
-		} finally {
-			if (fos != null)
-				try {
-					fos.close();
-				} catch (IOException e) {
-					throw new AnalystError(e);
-				}
+	public int determineInputCount() {
+		int result = 0;
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isInput() && !field.isIgnored()) {
+				result += field.getColumnsNeeded();
+			}
 		}
+		return result;
 	}
 
-	public void load(File file) {
-		InputStream fis = null;
-		this.script.setBasePath(file.getParent());
+	public int determineInputFieldCount() {
+		int result = 0;
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isInput() && !field.isIgnored()) {
+				result++;
+			}
 
-		try {
-			fis = new FileInputStream(file);
-			load(fis);
-		} catch (IOException ex) {
-			throw new AnalystError(ex);
-		} finally {
-			if (fis != null)
-				try {
-					fis.close();
-				} catch (IOException e) {
-					throw new AnalystError(e);
-				}
 		}
+		return result;
 	}
 
-	public void save(OutputStream stream) {
-		this.script.save(stream);
-
+	public int determineOutputCount() {
+		int result = 0;
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isOutput() && !field.isIgnored()) {
+				result += field.getColumnsNeeded();
+			}
+		}
+		return result;
 	}
 
-	public void load(InputStream stream) {
-		this.script.load(stream);
-		this.revertData = this.script.getProperties().prepareRevert();
+	public int determineOutputFieldCount() {
+		int result = 0;
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (field.isOutput() && !field.isIgnored()) {
+				result++;
+			}
+
+		}
+		return result;
 	}
 
-	/**
-	 * @return the script
-	 */
-	public AnalystScript getScript() {
-		return script;
+	public int determineUniqueColumns() {
+		final Map<String, Object> used = new HashMap<String, Object>();
+		int result = 0;
+
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (!field.isIgnored()) {
+				final String name = field.getName();
+				if (!used.containsKey(name)) {
+					result += field.getColumnsNeeded();
+				}
+			}
+		}
+		return result;
+	}
+
+	public int determineUniqueInputFieldCount() {
+		final Map<String, Object> map = new HashMap<String, Object>();
+
+		int result = 0;
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (!map.containsKey(field.getName())) {
+				if (field.isInput() && !field.isIgnored()) {
+					result++;
+					map.put(field.getName(), null);
+				}
+			}
+		}
+		return result;
+	}
+
+	public int determineUniqueOutputFieldCount() {
+		final Map<String, Object> map = new HashMap<String, Object>();
+		int result = 0;
+		for (final AnalystField field : this.script.getNormalize()
+				.getNormalizedFields()) {
+			if (!map.containsKey(field.getName())) {
+				if (field.isOutput() && !field.isIgnored()) {
+					result++;
+				}
+				map.put(field.getName(), null);
+			}
+		}
+		return result;
+	}
+
+	public void download() {
+		final URL sourceURL = this.script.getProperties().getPropertyURL(
+				ScriptProperties.HEADER_DATASOURCE_SOURCE_FILE);
+
+		final String rawFile = this.script.getProperties().getPropertyFile(
+				ScriptProperties.HEADER_DATASOURCE_RAW_FILE);
+		final File rawFilename = new File(this.script.getProperties()
+				.getFilename(rawFile));
+
+		if (!rawFilename.exists()) {
+			downloadPage(sourceURL, rawFilename);
+		}
 	}
 
 	private void downloadPage(final URL url, final File file) {
@@ -164,7 +213,7 @@ public class EncogAnalyst {
 			long size = 0;
 			final byte[] buffer = new byte[BotUtil.BUFFER_SIZE];
 
-			File tempFile = new File(file.getParentFile(), "temp.tmp");
+			final File tempFile = new File(file.getParentFile(), "temp.tmp");
 
 			int length;
 			int lastUpdate = 0;
@@ -192,8 +241,8 @@ public class EncogAnalyst {
 			// unzip if needed
 
 			if (url.toString().toLowerCase().endsWith(".gz")) {
-				FileInputStream fis = new FileInputStream(tempFile);
-				GZIPInputStream gis = new GZIPInputStream(fis);
+				final FileInputStream fis = new FileInputStream(tempFile);
+				final GZIPInputStream gis = new GZIPInputStream(fis);
 				fos = new FileOutputStream(file);
 
 				size = 0;
@@ -231,85 +280,18 @@ public class EncogAnalyst {
 		}
 	}
 
-	private void reportCommandBegin(int total, int current, String name) {
-		for (AnalystListener listener : this.listeners) {
-			listener.reportCommandBegin(total, current, name);
-		}
-	}
-
-	private void reportCommandEnd(boolean canceled) {
-		for (AnalystListener listener : this.listeners) {
-			listener.reportCommandEnd(canceled);
-		}
-	}
-
-	public void reportTrainingBegin() {
-		for (AnalystListener listener : this.listeners) {
-			listener.reportTrainingBegin();
-		}
-	}
-
-	public void reportTrainingEnd() {
-		for (AnalystListener listener : this.listeners) {
-			listener.reportTrainingEnd();
-		}
-	}
-
-	public void reportTraining(MLTrain train) {
-		for (AnalystListener listener : this.listeners) {
-			listener.reportTraining(train);
-		}
-	}
-
-	private void report(int total, int current, String message) {
-		for (AnalystListener listener : this.listeners) {
-			listener.report(total, current, message);
-		}
-	}
-
-	private boolean shouldStopAll() {
-		for (AnalystListener listener : this.listeners) {
-			if (listener.shouldShutDown()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public boolean shouldStopCommand() {
-		for (AnalystListener listener : this.listeners) {
-			if (listener.shouldStopCommand()) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	public void download() {
-		URL sourceURL = this.script.getProperties().getPropertyURL(
-				ScriptProperties.HEADER_DATASOURCE_sourceFile);
-
-		String rawFile = this.script.getProperties().getPropertyFile(
-				ScriptProperties.HEADER_DATASOURCE_rawFile);
-		File rawFilename = new File(this.script.getProperties().getFilename(
-				rawFile));
-
-		if (!rawFilename.exists())
-			downloadPage(sourceURL, rawFilename);
-	}
-
-	public void executeTask(AnalystTask task) {
-		int total = task.getLines().size();
+	public void executeTask(final AnalystTask task) {
+		final int total = task.getLines().size();
 		int current = 1;
 		for (String line : task.getLines()) {
-			this.reportCommandBegin(total, current, line);
+			reportCommandBegin(total, current, line);
 			line = line.trim();
 			boolean canceled = false;
 			String command;
 			String args;
 
-			String line2 = line.trim();
-			int index = line2.indexOf(' ');
+			final String line2 = line.trim();
+			final int index = line2.indexOf(' ');
 			if (index != -1) {
 				command = line2.substring(0, index).toUpperCase();
 				args = line2.substring(index + 1);
@@ -318,7 +300,7 @@ public class EncogAnalyst {
 				args = "";
 			}
 
-			Cmd cmd = this.commands.get(command);
+			final Cmd cmd = this.commands.get(command);
 
 			if (cmd != null) {
 				canceled = cmd.executeCommand(args);
@@ -326,17 +308,18 @@ public class EncogAnalyst {
 				throw new AnalystError("Unknown Command: " + line);
 			}
 
-			this.reportCommandEnd(canceled);
+			reportCommandEnd(canceled);
 			setCurrentQuantTask(null);
 			current++;
 
-			if (this.shouldStopAll())
+			if (shouldStopAll()) {
 				break;
+			}
 		}
 	}
 
-	public void executeTask(String name) {
-		AnalystTask task = this.script.getTask(name);
+	public void executeTask(final String name) {
+		final AnalystTask task = this.script.getTask(name);
 		if (task == null) {
 			throw new AnalystError("Can't find task: " + name);
 		}
@@ -344,130 +327,9 @@ public class EncogAnalyst {
 		executeTask(task);
 	}
 
-	/**
-	 * @return the listeners
-	 */
-	public List<AnalystListener> getListeners() {
-		return listeners;
-	}
-
-	public void addAnalystListener(AnalystListener listener) {
-		this.listeners.add(listener);
-	}
-
-	public void removeAnalystListener(AnalystListener listener) {
-		this.listeners.remove(listener);
-	}
-
-	public synchronized void setCurrentQuantTask(QuantTask task) {
-		this.currentQuantTask = task;
-	}
-
-	public synchronized void stopCurrentTask() {
-		if (this.currentQuantTask != null) {
-			this.currentQuantTask.requestStop();
-		}
-	}
-
-	public void setMaxIteration(int i) {
-		this.maxIteration = i;
-	}
-
-	public int getMaxIteration() {
-		return maxIteration;
-	}
-
-	public Map<String, String> getRevertData() {
-		return revertData;
-	}
-
-	public int determineInputCount() {
-		int result = 0;
-		for (AnalystField field : this.script.getNormalize()
-				.getNormalizedFields()) {
-			if (field.isInput() && !field.isIgnored())
-				result += field.getColumnsNeeded();
-		}
-		return result;
-	}
-
-	public int determineOutputCount() {
-		int result = 0;
-		for (AnalystField field : this.script.getNormalize()
-				.getNormalizedFields()) {
-			if (field.isOutput() && !field.isIgnored())
-				result += field.getColumnsNeeded();
-		}
-		return result;
-	}
-
-	public int determineInputFieldCount() {
-		int result = 0;
-		for (AnalystField field : this.script.getNormalize()
-				.getNormalizedFields()) {
-			if (field.isInput() && !field.isIgnored()) {
-				result++;
-			}
-
-		}
-		return result;
-	}
-
-	public int determineOutputFieldCount() {
-		int result = 0;
-		for (AnalystField field : this.script.getNormalize()
-				.getNormalizedFields()) {
-			if (field.isOutput() && !field.isIgnored())
-				result++;
-
-		}
-		return result;
-	}
-
-	public int determineUniqueInputFieldCount() {
-		Map<String, Object> map = new HashMap<String, Object>();
-
-		int result = 0;
-		for (AnalystField field : this.script.getNormalize()
-				.getNormalizedFields()) {
-			if (!map.containsKey(field.getName())) {
-				if (field.isInput() && !field.isIgnored()) {
-					result++;
-					map.put(field.getName(), null);
-				}
-			}
-		}
-		return result;
-	}
-
-	public int determineUniqueOutputFieldCount() {
-		Map<String, Object> map = new HashMap<String, Object>();
-		int result = 0;
-		for (AnalystField field : this.script.getNormalize()
-				.getNormalizedFields()) {
-			if (!map.containsKey(field.getName())) {
-				if (field.isOutput() && !field.isIgnored())
-					result++;
-				map.put(field.getName(), null);
-			}
-		}
-		return result;
-	}
-
-	public int getLeadDepth() {
-		int result = 0;
-		for (AnalystField field : this.script.getNormalize()
-				.getNormalizedFields()) {
-			if (field.getTimeSlice() > 0) {
-				result = Math.max(result, field.getTimeSlice());
-			}
-		}
-		return result;
-	}
-
 	public int getLagDepth() {
 		int result = 0;
-		for (AnalystField field : this.script.getNormalize()
+		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
 			if (field.getTimeSlice() < 0) {
 				result = Math.max(result, Math.abs(field.getTimeSlice()));
@@ -476,19 +338,168 @@ public class EncogAnalyst {
 		return result;
 	}
 
-	public int determineUniqueColumns() {
-		Map<String, Object> used = new HashMap<String, Object>();
+	public int getLeadDepth() {
 		int result = 0;
-
-		for (AnalystField field : this.script.getNormalize()
+		for (final AnalystField field : this.script.getNormalize()
 				.getNormalizedFields()) {
-			if (!field.isIgnored()) {
-				String name = field.getName();
-				if (!used.containsKey(name))
-					result += field.getColumnsNeeded();
+			if (field.getTimeSlice() > 0) {
+				result = Math.max(result, field.getTimeSlice());
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * @return the listeners
+	 */
+	public List<AnalystListener> getListeners() {
+		return this.listeners;
+	}
+
+	public int getMaxIteration() {
+		return this.maxIteration;
+	}
+
+	public Map<String, String> getRevertData() {
+		return this.revertData;
+	}
+
+	/**
+	 * @return the script
+	 */
+	public AnalystScript getScript() {
+		return this.script;
+	}
+
+	public void load(final File file) {
+		InputStream fis = null;
+		this.script.setBasePath(file.getParent());
+
+		try {
+			fis = new FileInputStream(file);
+			load(fis);
+		} catch (final IOException ex) {
+			throw new AnalystError(ex);
+		} finally {
+			if (fis != null) {
+				try {
+					fis.close();
+				} catch (final IOException e) {
+					throw new AnalystError(e);
+				}
+			}
+		}
+	}
+
+	public void load(final InputStream stream) {
+		this.script.load(stream);
+		this.revertData = this.script.getProperties().prepareRevert();
+	}
+
+	public void load(final String filename) {
+		load(new File(filename));
+	}
+
+	public void removeAnalystListener(final AnalystListener listener) {
+		this.listeners.remove(listener);
+	}
+
+	private void report(final int total, final int current, final String message) {
+		for (final AnalystListener listener : this.listeners) {
+			listener.report(total, current, message);
+		}
+	}
+
+	private void reportCommandBegin(final int total, final int current,
+			final String name) {
+		for (final AnalystListener listener : this.listeners) {
+			listener.reportCommandBegin(total, current, name);
+		}
+	}
+
+	private void reportCommandEnd(final boolean canceled) {
+		for (final AnalystListener listener : this.listeners) {
+			listener.reportCommandEnd(canceled);
+		}
+	}
+
+	public void reportTraining(final MLTrain train) {
+		for (final AnalystListener listener : this.listeners) {
+			listener.reportTraining(train);
+		}
+	}
+
+	public void reportTrainingBegin() {
+		for (final AnalystListener listener : this.listeners) {
+			listener.reportTrainingBegin();
+		}
+	}
+
+	public void reportTrainingEnd() {
+		for (final AnalystListener listener : this.listeners) {
+			listener.reportTrainingEnd();
+		}
+	}
+
+	public void save(final File file) {
+		OutputStream fos = null;
+
+		try {
+			this.script.setBasePath(file.getParent());
+			fos = new FileOutputStream(file);
+			save(fos);
+		} catch (final IOException ex) {
+			throw new AnalystError(ex);
+		} finally {
+			if (fos != null) {
+				try {
+					fos.close();
+				} catch (final IOException e) {
+					throw new AnalystError(e);
+				}
+			}
+		}
+	}
+
+	public void save(final OutputStream stream) {
+		this.script.save(stream);
+
+	}
+
+	public void save(final String filename) {
+		save(new File(filename));
+	}
+
+	public synchronized void setCurrentQuantTask(final QuantTask task) {
+		this.currentQuantTask = task;
+	}
+
+	public void setMaxIteration(final int i) {
+		this.maxIteration = i;
+	}
+
+	private boolean shouldStopAll() {
+		for (final AnalystListener listener : this.listeners) {
+			if (listener.shouldShutDown()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public boolean shouldStopCommand() {
+		for (final AnalystListener listener : this.listeners) {
+			if (listener.shouldStopCommand()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public synchronized void stopCurrentTask() {
+		if (this.currentQuantTask != null) {
+			this.currentQuantTask.requestStop();
+		}
 	}
 
 }

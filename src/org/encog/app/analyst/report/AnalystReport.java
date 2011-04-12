@@ -161,14 +161,14 @@ public class AnalystReport {
 		report.endRow();
 
 		final String t = this.analyst.getScript().getProperties()
-				.getPropertyString(ScriptProperties.ML_CONFIG_type);
+				.getPropertyString(ScriptProperties.ML_CONFIG_TYPE);
 		final String a = this.analyst.getScript().getProperties()
-				.getPropertyString(ScriptProperties.ML_CONFIG_architecture);
+				.getPropertyString(ScriptProperties.ML_CONFIG_ARCHITECTURE);
 		final String rf = this.analyst
 				.getScript()
 				.getProperties()
 				.getPropertyString(
-						ScriptProperties.ML_CONFIG_machineLearningFile);
+						ScriptProperties.ML_CONFIG_MACHINE_LEARNING_FILE);
 
 		report.tablePair("Type", t);
 		report.tablePair("Architecture", a);

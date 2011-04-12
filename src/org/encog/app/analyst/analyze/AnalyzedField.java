@@ -140,7 +140,7 @@ public class AnalyzedField extends DataField {
 
 				// do we have too many different classes?
 				final int max = this.script.getProperties().getPropertyInt(
-						ScriptProperties.SETUP_CONFIG_maxClassCount);
+						ScriptProperties.SETUP_CONFIG_MAX_CLASS_COUNT);
 				if (this.classMap.size() > max) {
 					setClass(false);
 				}

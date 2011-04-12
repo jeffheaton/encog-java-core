@@ -44,6 +44,12 @@ import org.encog.util.csv.CSVFormat;
  *
  */
 public class AnalystField {
+	
+	/**
+	 * Minimum classes for encode using equilateral.
+	 */
+	public static final int MIN_EQ_CLASSES = 3;
+	
 	/**
 	 * The actual high from the sample data.
 	 */
@@ -106,6 +112,10 @@ public class AnalystField {
 		this(1, -1);
 	}
 
+	/**
+	 * Construct an analyst field.  Works like a C++ copy constructor.  
+	 * @param field The field to clone.
+	 */
 	public AnalystField(final AnalystField field) {
 		this.actualHigh = field.actualHigh;
 		this.actualLow = field.actualLow;
@@ -120,14 +130,15 @@ public class AnalystField {
 	/**
 	 * Construct the object.
 	 * 
-	 * @param normalizedHigh
+	 * @param theNormalizedHigh
 	 *            The normalized high.
-	 * @param normalizedLow
+	 * @param theNormalizedLow
 	 *            The normalized low.
 	 */
-	public AnalystField(final double normalizedHigh, final double normalizedLow) {
-		this.normalizedHigh = normalizedHigh;
-		this.normalizedLow = normalizedLow;
+	public AnalystField(final double theNormalizedHigh, 
+				final double theNormalizedLow) {
+		this.normalizedHigh = theNormalizedHigh;
+		this.normalizedLow = theNormalizedLow;
 		this.actualHigh = Double.MIN_VALUE;
 		this.actualLow = Double.MAX_VALUE;
 		this.action = NormalizationAction.Normalize;
@@ -136,21 +147,22 @@ public class AnalystField {
 	/**
 	 * Construct an object.
 	 * 
-	 * @param action
+	 * @param theAction
 	 *            The desired action.
-	 * @param name
+	 * @param theName
 	 *            The name of this column.
 	 */
-	public AnalystField(final NormalizationAction action, final String name) {
-		this(action, name, 0, 0, 0, 0);
+	public AnalystField(final NormalizationAction theAction, 
+			final String theName) {
+		this(theAction, theName, 0, 0, 0, 0);
 	}
 
 	/**
 	 * Construct the field, with no defaults.
 	 * 
-	 * @param action
+	 * @param theAction
 	 *            The normalization action to take.
-	 * @param name
+	 * @param theName
 	 *            The name of this field.
 	 * @param ahigh
 	 *            The actual high.
@@ -161,26 +173,42 @@ public class AnalystField {
 	 * @param nlow
 	 *            The normalized low.
 	 */
-	public AnalystField(final NormalizationAction action, final String name,
+	public AnalystField(final NormalizationAction theAction, 
+			final String theName,
 			final double ahigh, final double alow, final double nhigh,
 			final double nlow) {
-		this.action = action;
+		this.action = theAction;
 		this.actualHigh = ahigh;
 		this.actualLow = alow;
 		this.normalizedHigh = nhigh;
 		this.normalizedLow = nlow;
-		this.name = name;
+		this.name = theName;
 	}
 
-	public AnalystField(final String name, final NormalizationAction action,
+	/**
+	 * Construct an analyst field to use.
+	 * @param theName The name of the field.
+	 * @param theAction The action to use.
+	 * @param high The high value.
+	 * @param low The low value.
+	 */
+	public AnalystField(final String theName, 
+			final NormalizationAction theAction,
 			final double high, final double low) {
-		this.name = name;
-		this.action = action;
+		this.name = theName;
+		this.action = theAction;
 		this.normalizedHigh = high;
 		this.normalizedLow = low;
 	}
 
-	public void addRawHeadings(final StringBuilder line, final String prefix,
+	/**
+	 * Add headings for a raw file.
+	 * @param line The line to write the raw headings to.
+	 * @param prefix The prefix to place.
+	 * @param format The format to use.
+	 */
+	public final void addRawHeadings(final StringBuilder line, 
+			final String prefix,
 			final CSVFormat format) {
 		final int subFields = getColumnsNeeded();
 
@@ -204,7 +232,7 @@ public class AnalystField {
 	 * @param d
 	 *            The value to analyze.
 	 */
-	public void analyze(final double d) {
+	public final void analyze(final double d) {
 		this.actualHigh = Math.max(this.actualHigh, d);
 		this.actualLow = Math.min(this.actualLow, d);
 	}
@@ -216,7 +244,7 @@ public class AnalystField {
 	 *            The value to normalize.
 	 * @return The normalized value.
 	 */
-	public double deNormalize(final double value) {
+	public final double deNormalize(final double value) {
 		final double result = ((this.actualLow - this.actualHigh) * value
 				- this.normalizedHigh * this.actualLow + this.actualHigh
 				* this.normalizedLow)
@@ -231,7 +259,7 @@ public class AnalystField {
 	 *            The data to analyze.
 	 * @return The class the data belongs to.
 	 */
-	public ClassItem determineClass(final double[] data) {
+	public final ClassItem determineClass(final double[] data) {
 		int resultIndex = 0;
 
 		switch (this.action) {
@@ -244,12 +272,20 @@ public class AnalystField {
 		case SingleField:
 			resultIndex = (int) data[0];
 			break;
+			default:
+				throw new AnalystError("Unknown action: " + this.action);
 		}
 
 		return this.classes.get(resultIndex);
 	}
 
-	public ClassItem determineClass(final int pos, final double[] data) {
+	/**
+	 * Determine the class using part of an array.
+	 * @param pos The position to begin.
+	 * @param data The array to check.
+	 * @return The class item.
+	 */
+	public final ClassItem determineClass(final int pos, final double[] data) {
 		int resultIndex = 0;
 		final double[] d = new double[getColumnsNeeded()];
 		EngineArray.arrayCopy(data, pos, d, 0, d.length);
@@ -282,7 +318,7 @@ public class AnalystField {
 	 *            The class number.
 	 * @return The encoded class.
 	 */
-	public double[] encode(final int classNumber) {
+	public final double[] encode(final int classNumber) {
 		switch (this.action) {
 		case OneOf:
 			return encodeOneOf(classNumber);
@@ -295,7 +331,12 @@ public class AnalystField {
 		}
 	}
 
-	public double[] encode(final String str) {
+	/**
+	 * Encode the string to numeric form.
+	 * @param str The string to encode.
+	 * @return The numeric form.
+	 */
+	public final double[] encode(final String str) {
 		int classNumber = lookup(str);
 		if (classNumber == -1) {
 			try {
@@ -315,7 +356,7 @@ public class AnalystField {
 	 *            The class number.
 	 * @return The class to encode.
 	 */
-	public double[] encodeEquilateral(final int classNumber) {
+	public final double[] encodeEquilateral(final int classNumber) {
 		return this.eq.encode(classNumber);
 	}
 
@@ -326,7 +367,7 @@ public class AnalystField {
 	 *            The class number.
 	 * @return The encoded columns.
 	 */
-	public double[] encodeOneOf(final int classNumber) {
+	private double[] encodeOneOf(final int classNumber) {
 		final double[] result = new double[getColumnsNeeded()];
 
 		for (int i = 0; i < this.classes.size(); i++) {
@@ -346,7 +387,7 @@ public class AnalystField {
 	 *            The class number to encode.
 	 * @return The encoded columns.
 	 */
-	public double[] encodeSingleField(final int classNumber) {
+	private double[] encodeSingleField(final int classNumber) {
 		final double[] d = new double[1];
 		d[0] = classNumber;
 		return d;
@@ -356,9 +397,10 @@ public class AnalystField {
 	 * Fix normalized fields that have a single value for the min/max. Separate
 	 * them by 2 units.
 	 */
-	public void fixSingleValue() {
+	public final void fixSingleValue() {
 		if (this.action == NormalizationAction.Normalize) {
-			if (Math.abs(this.actualHigh - this.actualLow) < Encog.DEFAULT_DOUBLE_EQUAL) {
+			if (Math.abs(this.actualHigh - this.actualLow) 
+					< Encog.DEFAULT_DOUBLE_EQUAL) {
 				this.actualHigh += 1;
 				this.actualLow -= 1;
 			}
@@ -368,25 +410,28 @@ public class AnalystField {
 	/**
 	 * @return The action for the field.
 	 */
-	public NormalizationAction getAction() {
+	public final NormalizationAction getAction() {
 		return this.action;
 	}
 
 	/**
 	 * @return The actual high for the field.
 	 */
-	public double getActualHigh() {
+	public final double getActualHigh() {
 		return this.actualHigh;
 	}
 
 	/**
 	 * @return The actual low for the field.
 	 */
-	public double getActualLow() {
+	public final double getActualLow() {
 		return this.actualLow;
 	}
 
-	public List<ClassItem> getClasses() {
+	/**
+	 * @return The classes.
+	 */
+	public final List<ClassItem> getClasses() {
 		return this.classes;
 	}
 
@@ -395,7 +440,7 @@ public class AnalystField {
 	 *         number of columns needed will vary, depending on the
 	 *         classification method used.
 	 */
-	public int getColumnsNeeded() {
+	public final int getColumnsNeeded() {
 		switch (this.action) {
 		case Ignore:
 			return 0;
@@ -409,35 +454,38 @@ public class AnalystField {
 
 	}
 
-	public Equilateral getEq() {
+	/**
+	 * @return The equilateral utility.
+	 */
+	public final Equilateral getEq() {
 		return this.eq;
 	}
 
 	/**
 	 * @return The name of the field.
 	 */
-	public String getName() {
+	public final String getName() {
 		return this.name;
 	}
 
 	/**
 	 * @return The normalized high for the field.
 	 */
-	public double getNormalizedHigh() {
+	public final double getNormalizedHigh() {
 		return this.normalizedHigh;
 	}
 
 	/**
 	 * @return The normalized low for the neural network.
 	 */
-	public double getNormalizedLow() {
+	public final double getNormalizedLow() {
 		return this.normalizedLow;
 	}
 
 	/**
 	 * @return the timeSlice
 	 */
-	public int getTimeSlice() {
+	public final int getTimeSlice() {
 		return this.timeSlice;
 	}
 
@@ -446,12 +494,13 @@ public class AnalystField {
 	 * 
 	 * @param owner
 	 */
-	public void init() {
+	public final void init() {
 
 		if (this.action == NormalizationAction.Equilateral) {
-			if (this.classes.size() < 3) {
+			if (this.classes.size() < MIN_EQ_CLASSES) {
 				throw new QuantError(
-						"There must be at least three classes to make use of equilateral normalization.");
+					"There must be at least three classes to make " 
+					+ "use of equilateral normalization.");
 			}
 
 			this.eq = new Equilateral(this.classes.size(), this.normalizedHigh,
@@ -465,21 +514,33 @@ public class AnalystField {
 		}
 	}
 
-	public boolean isClassify() {
+	/**
+	 * @return True if this field is classification.
+	 */
+	public final boolean isClassify() {
 		return (this.action == NormalizationAction.Equilateral)
 				|| (this.action == NormalizationAction.OneOf)
 				|| (this.action == NormalizationAction.SingleField);
 	}
 
-	public boolean isIgnored() {
+	/**
+	 * @return Is this field ignored.
+	 */
+	public final boolean isIgnored() {
 		return this.action == NormalizationAction.Ignore;
 	}
 
-	public boolean isInput() {
+	/**
+	 * @return Is this field input.
+	 */
+	public final boolean isInput() {
 		return !this.output;
 	}
 
-	public boolean isOutput() {
+	/**
+	 * @return Is this field output.
+	 */
+	public final boolean isOutput() {
 		return this.output;
 	}
 
@@ -490,14 +551,22 @@ public class AnalystField {
 	 *            The name of the field to lookup.
 	 * @return The index of the field, or -1 if not found.
 	 */
-	public int lookup(final String str) {
+	public final int lookup(final String str) {
 		if (!this.lookup.containsKey(str)) {
 			return -1;
 		}
 		return this.lookup.get(str);
 	}
 
-	public void makeClass(final NormalizationAction action,
+	/**
+	 * Make the classes based on numbers.
+	 * @param theAction The action.
+	 * @param classFrom The starting class.
+	 * @param classTo The ending class.
+	 * @param high The high value.
+	 * @param low The low value.
+	 */
+	public final void makeClass(final NormalizationAction theAction,
 			final int classFrom, final int classTo, final int high,
 			final int low) {
 
@@ -507,7 +576,7 @@ public class AnalystField {
 			throw new QuantError("Unsupported normalization type");
 		}
 
-		this.action = action;
+		this.action = theAction;
 		this.classes.clear();
 		this.normalizedHigh = high;
 		this.normalizedLow = low;
@@ -521,7 +590,15 @@ public class AnalystField {
 
 	}
 
-	public void makeClass(final NormalizationAction action, final String[] cls,
+	/**
+	 * Make the classes using names.
+	 * @param theAction The action to use.
+	 * @param cls The class names.
+	 * @param high The high value.
+	 * @param low The low value.
+	 */
+	public final void makeClass(final NormalizationAction theAction, 
+			final String[] cls,
 			final double high, final double low) {
 		if ((action != NormalizationAction.Equilateral)
 				&& (action != NormalizationAction.OneOf)
@@ -529,7 +606,7 @@ public class AnalystField {
 			throw new QuantError("Unsupported normalization type");
 		}
 
-		this.action = action;
+		this.action = theAction;
 		this.classes.clear();
 		this.normalizedHigh = high;
 		this.normalizedLow = low;
@@ -545,7 +622,7 @@ public class AnalystField {
 	/**
 	 * Make this a pass-through field.
 	 */
-	public void makePassThrough() {
+	public final void makePassThrough() {
 		this.normalizedHigh = 0;
 		this.normalizedLow = 0;
 		this.actualHigh = 0;
@@ -560,70 +637,70 @@ public class AnalystField {
 	 *            The value to normalize.
 	 * @return The normalized value.
 	 */
-	public double normalize(final double value) {
+	public final double normalize(final double value) {
 		return ((value - this.actualLow) / (this.actualHigh - this.actualLow))
 				* (this.normalizedHigh - this.normalizedLow)
 				+ this.normalizedLow;
 	}
 
 	/**
-	 * Set the action for the field.
+	 * Set the theAction for the field.
 	 * 
-	 * @param action
+	 * @param theAction
 	 *            The action for the field.
 	 */
-	public void setAction(final NormalizationAction action) {
-		this.action = action;
+	public final void setAction(final NormalizationAction theAction) {
+		this.action = theAction;
 	}
 
 	/**
 	 * Set the actual high for the field.
 	 * 
-	 * @param actualHigh
+	 * @param theActualHigh
 	 *            The actual high for the field.
 	 */
-	public void setActualHigh(final double actualHigh) {
-		this.actualHigh = actualHigh;
+	public final void setActualHigh(final double theActualHigh) {
+		this.actualHigh = theActualHigh;
 	}
 
 	/**
 	 * Set the actual low for the field.
 	 * 
-	 * @param actualLow
+	 * @param theActualLow
 	 *            The actual low for the field.
 	 */
-	public void setActualLow(final double actualLow) {
-		this.actualLow = actualLow;
+	public final void setActualLow(final double theActualLow) {
+		this.actualLow = theActualLow;
 	}
 
 	/**
 	 * Set the name of the field.
 	 * 
-	 * @param name
+	 * @param theName
 	 *            The name of the field.
 	 */
-	public void setName(final String name) {
-		this.name = name;
+	public final void setName(final String theName) {
+		this.name = theName;
 	}
 
 	/**
 	 * Set the normalized high for the field.
 	 * 
-	 * @param normalizedHigh
+	 * @param theNormalizedHigh
 	 *            The normalized high for the field.
 	 */
-	public void setNormalizedHigh(final double normalizedHigh) {
-		this.normalizedHigh = normalizedHigh;
+	public final void setNormalizedHigh(final double theNormalizedHigh) {
+		this.normalizedHigh = theNormalizedHigh;
 	}
 
 	/**
 	 * Set the normalized low for the field.
 	 * 
-	 * @param normalizedLow
+	 * @param theNormalizedLow
 	 *            The normalized low for the field.
 	 */
-	public final void setNormalizedLow(final double normalizedLow) {
-		this.normalizedLow = normalizedLow;
+	public final void setNormalizedLow(final double theNormalizedLow) {
+		this.normalizedLow = theNormalizedLow;
 	}
 
 	/**
