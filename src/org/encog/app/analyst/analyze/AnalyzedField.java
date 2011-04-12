@@ -34,6 +34,8 @@ public class AnalyzedField extends DataField {
 
 	public void analyze1(String str) {
 
+		boolean accountedFor = false;
+		
 		if (str.trim().length() == 0) {
 			this.setComplete(false);
 			return;
@@ -41,31 +43,33 @@ public class AnalyzedField extends DataField {
 
 		this.instances++;
 
-		if (this.isInteger()) {
-			try {
-				int i = Integer.parseInt(str);
-				this.setMax(Math.max(i, this.getMax()));
-				this.setMin(Math.min(i, this.getMin()));
-				this.total += i;
-			} catch (NumberFormatException ex) {
-				this.setInteger(false);
-				if (!this.isReal()) {
-					this.setMax(0);
-					this.setMin(0);
-					this.setStandardDeviation(0);
-				}
-			}
-		}
-
 		if (this.isReal()) {
 			try {
 				double d = Double.parseDouble(str);
 				this.setMax(Math.max(d, this.getMax()));
 				this.setMin(Math.min(d, this.getMin()));
 				this.total += d;
+				accountedFor = true;
 			} catch (NumberFormatException ex) {
 				this.setReal(false);
 				if (!this.isInteger()) {
+					this.setMax(0);
+					this.setMin(0);
+					this.setStandardDeviation(0);
+				}
+			}
+		}
+		
+		if (this.isInteger()) {
+			try {
+				int i = Integer.parseInt(str);
+				this.setMax(Math.max(i, this.getMax()));
+				this.setMin(Math.min(i, this.getMin()));
+				if(!accountedFor)
+					this.total += i;
+			} catch (NumberFormatException ex) {
+				this.setInteger(false);
+				if (!this.isReal()) {
 					this.setMax(0);
 					this.setMin(0);
 					this.setStandardDeviation(0);
