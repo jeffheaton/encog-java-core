@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
+import org.encog.ml.MLCluster;
 import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
@@ -34,7 +35,7 @@ public class TestKMeans extends TestCase {
         Assert.assertEquals(37, (int)kmeans.getWCSS());
                               
         int i = 1;
-        for(KMeansCluster cluster: kmeans.getClusters())
+        for(MLCluster cluster: kmeans.getClusters())
         {
         	EngineDataSet ds = cluster.createDataSet();
             EngineData pair = BasicEngineData.createPair(ds.getInputSize(), ds.getIdealSize());
