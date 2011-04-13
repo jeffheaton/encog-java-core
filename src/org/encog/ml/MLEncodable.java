@@ -23,6 +23,12 @@
  */
 package org.encog.ml;
 
+/**
+ * Defines a Machine Learning Method that can be encoded to a double array.  
+ * This is very useful for certain training, such as genetic algorithms 
+ * and simulated annealing. 
+ *
+ */
 public interface MLEncodable extends MLMethod {
 	int encodedArrayLength();
 	void encodeToArray(double[] encoded);

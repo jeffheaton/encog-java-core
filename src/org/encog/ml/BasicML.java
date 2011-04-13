@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * A class that provides basic property functionality for the 
+ * MLProperties interface.
+ */
 public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	
 	/**

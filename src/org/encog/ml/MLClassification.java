@@ -25,6 +25,15 @@ package org.encog.ml;
 
 import org.encog.neural.data.NeuralData;
 
+/**
+ * This interface defines a MLMethod that is used for classification.  
+ * Classification defines the output to be a class.  A MLMethod that uses 
+ * classification is attempting to use the input to place items into 
+ * classes.  It is assumed that an item will only be in one single class.  
+ * If an item can be in multiple classes, one option is to create additional 
+ * classes that represent the compound classes.
+ *
+ */
 public interface MLClassification extends MLInputOutput {
 	int classify(NeuralData input);
 }

@@ -25,6 +25,13 @@ package org.encog.ml;
 
 import org.encog.neural.data.NeuralData;
 
+/**
+ * Defines a Machine Learning Method that supports regression.  Regression 
+ * takes an input and produces numeric output.  Function approximation 
+ * uses regression.  Contrast this to classification, which uses the input 
+ * to assign a class.
+ *
+ */
 public interface MLRegression extends MLInputOutput {
 	NeuralData compute(NeuralData input);
 }

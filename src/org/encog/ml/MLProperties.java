@@ -2,6 +2,9 @@ package org.encog.ml;
 
 import java.util.Map;
 
+/**
+ * Defines a Machine Learning Method that holds properties.
+ */
 public interface MLProperties extends MLMethod {
 
 	/**

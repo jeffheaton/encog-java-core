@@ -3,6 +3,11 @@ package org.encog.ml;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
+/**
+ * Defines a training method for a machine learning method.  Most MLMethod 
+ * objects need to be trained in some way before they are ready for use.
+ *
+ */
 public interface MLTrain {
 	TrainingImplementationType getImplementationType();
 	

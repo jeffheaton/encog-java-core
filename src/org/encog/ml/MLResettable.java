@@ -23,6 +23,11 @@
  */
 package org.encog.ml;
 
+/**
+ * Defines a Machine Learning Method that can be reset to an untrained 
+ * starting point.  Most weight based machine learning methods, such
+ * as neural networks support this.  Support vector machines do not.
+ */
 public interface MLResettable extends MLMethod {
 	void reset();
 	void reset(int seed);
