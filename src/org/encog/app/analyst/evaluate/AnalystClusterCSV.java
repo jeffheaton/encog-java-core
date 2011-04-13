@@ -34,8 +34,10 @@ import org.encog.app.csv.basic.BasicFile;
 import org.encog.app.csv.basic.LoadedRow;
 import org.encog.app.quant.QuantError;
 import org.encog.engine.data.EngineData;
+import org.encog.ml.MLCluster;
 import org.encog.ml.kmeans.KMeansCluster;
 import org.encog.ml.kmeans.KMeansClustering;
+import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -174,8 +176,8 @@ public class AnalystClusterCSV extends BasicFile {
 		cluster.iteration(iterations);
 
 		int clusterNum = 0;
-		for (final KMeansCluster cl : cluster.getClusters()) {
-			for (final EngineData item : cl.getData()) {
+		for (final MLCluster cl : cluster.getClusters()) {
+			for (final NeuralData item : cl.getData()) {
 				final ClusterRow row = (ClusterRow) item;
 				final int clsIndex = row.getInput().size() - 1;
 				final LoadedRow lr = row.getRow();

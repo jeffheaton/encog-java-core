@@ -26,6 +26,10 @@ package org.encog.ml.kmeans;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
+import org.encog.ml.MLCluster;
+import org.encog.ml.MLClustering;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
@@ -36,11 +40,11 @@ import org.encog.neural.data.NeuralDataSet;
  * http://en.wikipedia.org/wiki/Kmeans
  * 
  */
-public class KMeansClustering {
+public class KMeansClustering implements MLClustering {
 
 	public static double calculateEuclideanDistance(final Centroid c,
-			final EngineData data) {
-		final double[] d = data.getInputArray();
+			final NeuralData data) {
+		final double[] d = data.getData();
 		double sum = 0;
 
 		for (int i = 0; i < c.getCenters().length; i++) {
@@ -86,9 +90,9 @@ public class KMeansClustering {
 		// break up the data over the clusters
 		int clusterNumber = 0;
 
-		for( EngineData pair: set) {
+		for( NeuralDataPair pair: set) {
 
-			this.clusters[clusterNumber].add(pair);
+			this.clusters[clusterNumber].add(pair.getInput());
 
 			clusterNumber++;
 
@@ -120,7 +124,7 @@ public class KMeansClustering {
 	/**
 	 * @return The clusters.
 	 */
-	public KMeansCluster[] getClusters() {
+	public MLCluster[] getClusters() {
 		return this.clusters;
 	}
 
@@ -187,7 +191,7 @@ public class KMeansClustering {
 		for (final KMeansCluster element : this.clusters) {
 			for (int k = 0; k < element.size(); k++) {
 
-				final EngineData data = element.get(k);
+				final NeuralData data = element.get(k);
 				double distance = KMeansClustering.calculateEuclideanDistance(
 						element.getCentroid(), data);
 				KMeansCluster tempCluster = null;

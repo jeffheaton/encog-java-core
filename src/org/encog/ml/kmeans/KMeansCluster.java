@@ -29,22 +29,26 @@ import java.util.List;
 import org.encog.engine.data.BasicEngineDataSet;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
+import org.encog.ml.MLCluster;
+import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 /**
  * 
  * @author jheaton
  * 
  */
-public class KMeansCluster {
+public class KMeansCluster implements MLCluster {
 
 	/**
 	 * The centroid.
 	 */
 	private Centroid centroid;
 	private double sumSqr;
-	private final List<EngineData> data = new ArrayList<EngineData>();
+	private final List<NeuralData> data = new ArrayList<NeuralData>();
 
-	public void add(final EngineData pair) { // called from CAInstance
+	public void add(final NeuralData pair) { // called from CAInstance
 		this.data.add(pair);
 		calcSumOfSquares();
 	}
@@ -59,17 +63,17 @@ public class KMeansCluster {
 		this.sumSqr = temp;
 	}
 
-	public EngineDataSet createDataSet() {
-		final BasicEngineDataSet result = new BasicEngineDataSet();
+	public NeuralDataSet createDataSet() {
+		final NeuralDataSet result = new BasicNeuralDataSet();
 
-		for (final EngineData data : this.data) {
+		for (final NeuralData data : this.data) {
 			result.add(data);
 		}
 
 		return result;
 	}
 
-	public EngineData get(final int pos) {
+	public NeuralData get(final int pos) {
 		return this.data.get(pos);
 	}
 
@@ -77,7 +81,7 @@ public class KMeansCluster {
 		return this.centroid;
 	}
 
-	public List<EngineData> getData() {
+	public List<NeuralData> getData() {
 		return this.data;
 	}
 
@@ -85,7 +89,7 @@ public class KMeansCluster {
 		return this.sumSqr;
 	}
 
-	public void remove(final EngineData pair) {
+	public void remove(final NeuralData pair) {
 		this.data.remove(pair);
 		calcSumOfSquares();
 	}

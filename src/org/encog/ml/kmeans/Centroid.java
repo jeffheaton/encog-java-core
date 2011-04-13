@@ -56,7 +56,7 @@ public class Centroid {
 		// caluclating the new Centroid
 		for (int i = 0; i < numDP; i++) {
 			for (int j = 0; j < temp.length; j++) {
-				temp[j] += this.cluster.get(i).getInputArray()[j];
+				temp[j] += this.cluster.get(i).getData(j);
 			}
 		}
 
