@@ -58,7 +58,7 @@ public class ArchitectureParse {
 		
 		layer.setName(check.substring(0,startIndex).trim());
 		
-		String paramStr = check.substring(startIndex+1,endIndex-1);
+		String paramStr = check.substring(startIndex+1,endIndex);
 		Map<String,String> params = parseParams(paramStr);
 		layer.getParams().putAll(params);
 		return layer;

@@ -769,11 +769,22 @@ public class AnalystWizard {
 	 * @param outputColumns The number of ideal columns.
 	 */
 	private void generateSVM(final int inputColumns, final int outputColumns) {
+		
+		StringBuilder arch = new StringBuilder();
+		arch.append("?->");
+		if( this.goal==AnalystGoal.Classification) {
+			arch.append("C");
+		} else {
+			arch.append("R");
+		}
+		arch.append("(type=new,kernel=rbf)->?");
+		
+		
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_TYPE, MLMethodFactory.TYPE_SVM);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_ARCHITECTURE,
-				"?->C(type=new,kernel=gaussian)->?");
+				arch.toString());
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				"svm-train");
