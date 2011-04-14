@@ -21,6 +21,12 @@ public class MLTrainFactory {
 	public static final String TYPE_SVM_SEARCH = "svm-search";
 	public static final String TYPE_SOM_NEIGHBORHOOD = "som-neighborhood";
 	
+	public static final String PROPERTY_LEARNING_RATE = "LR";
+	public static final String PROPERTY_LEARNING_MOMENTUM = "MOM";
+	public static final String PROPERTY_INITIAL_UPDATE = "INIT_UPDATE";
+	public static final String PROPERTY_MAX_STEP = "MAX_STEP";
+	public static final String BAYESIAN_REGULARIZATION = "BAYES_REG";
+	
 	private final BackPropFactory backpropFactory = new BackPropFactory();
 	private final LMAFactory lmaFactory = new LMAFactory();
 	private final RPROPFactory rpropFactory = new RPROPFactory();
