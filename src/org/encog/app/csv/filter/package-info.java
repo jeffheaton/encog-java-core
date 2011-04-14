@@ -21,49 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.csv.normalize;
-
 /**
- * Normalization actions desired.
+ * This package provides basic CSV files to be filtered based on fields.
  */
-public enum NormalizationAction {
-	/**
-	 * Do not normalize the column, just allow it to pass through. This allows
-	 * string fields to pass through as well.
-	 */
-	PassThrough,
+package org.encog.app.csv.filter;
 
-	/**
-	 * Normalize this column.
-	 */
-	Normalize,
-
-	/**
-	 * Ignore this column, do not include in the output.
-	 */
-	Ignore,
-
-	/**
-	 * Use the "one-of" classification method.
-	 */
-	OneOf,
-
-	/**
-	 * Use the equilateral classification method.
-	 */
-	Equilateral,
-
-	/**
-	 * Use a single-field classification method.
-	 */
-	SingleField;
-
-	/**
-	 * @return True, if this is a classify.
-	 */
-	public boolean isClassify() {
-		return (this == OneOf) || (this == SingleField)
-				|| (this == Equilateral);
-	}
-
-}

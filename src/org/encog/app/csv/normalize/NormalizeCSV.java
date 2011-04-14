@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.csv.normalize;
 
 import java.io.File;
@@ -13,10 +36,11 @@ import org.encog.app.csv.basic.BasicFile;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 import org.encog.util.csv.ReadCSV;
+import org.encog.util.logging.EncogLogging;
 
 /**
  * Normalize, or denormalize, a CSV file.
- *
+ * 
  */
 public class NormalizeCSV extends BasicFile {
 
@@ -26,25 +50,17 @@ public class NormalizeCSV extends BasicFile {
 	private NormalizationStats stats;
 
 	/**
-	 * Set the source file.  This is useful if you want to use pre-existing stats 
-	 * to normalize something and skip the analyze step.
-	 * @param file The file to use.
-	 * @param headers True, if headers are to be expected.
-	 * @param format The format of the CSV file.
-	 */
-	public void setSourceFile(File file, boolean headers, CSVFormat format) {
-		this.setInputFilename(file);
-		this.setExpectInputHeaders(headers);
-		this.setInputFormat(format);
-	}
-
-	/**
 	 * Analyze the file.
-	 * @param file The file to analyze.
-	 * @param headers True, if the file has headers.
-	 * @param format The format of the CSV file.
+	 * 
+	 * @param file
+	 *            The file to analyze.
+	 * @param headers
+	 *            True, if the file has headers.
+	 * @param format
+	 *            The format of the CSV file.
 	 */
-	public void analyze(File file, boolean headers, CSVFormat format) {
+	public final void analyze(final File file, final boolean headers,
+			final CSVFormat format) {
 		ReadCSV csv = null;
 
 		try {
@@ -55,70 +71,93 @@ public class NormalizeCSV extends BasicFile {
 				throw new EncogError("File is empty");
 			}
 
-			this.setInputFilename(file);
-			this.setExpectInputHeaders(headers);
-			this.setInputFormat(format);
+			setInputFilename(file);
+			setExpectInputHeaders(headers);
+			setInputFormat(format);
 
 			// analyze first row
-			int fieldCount = csv.getColumnCount();
+			final int fieldCount = csv.getColumnCount();
 			this.stats = new NormalizationStats(fieldCount);
-			this.stats.setFormat(this.getInputFormat());
-			this.stats.setPrecision(this.getPrecision());
+			this.stats.setFormat(getInputFormat());
+			this.stats.setPrecision(getPrecision());
 
 			for (int i = 0; i < fieldCount; i++) {
-				stats.getStats()[i] = new NormalizedField();
-				if (headers)
-					stats.getStats()[i].setName(csv.getColumnNames().get(i));
-				else
-					stats.getStats()[i].setName("field-" + i);
+				this.stats.getStats()[i] = new NormalizedField();
+				if (headers) {
+					this.stats.getStats()[i].setName(csv.getColumnNames()
+							.get(i));
+				} else {
+					this.stats.getStats()[i].setName("field-" + i);
+				}
 			}
 
 			// Read entire file to analyze
 			do {
 				for (int i = 0; i < fieldCount; i++) {
-					if (stats.getStats()[i].getAction() == NormalizationAction.Normalize) {
-						String str = csv.get(i);
+					if (this.stats.getStats()[i].getAction() 
+							== NormalizationAction.Normalize) {
+						final String str = csv.get(i);
 
 						try {
-							double d = Double.parseDouble(str);
-							stats.getStats()[i].analyze(d);
-						} catch (NumberFormatException ex) {
-							stats.getStats()[i].makePassThrough();
+							final double d = Double.parseDouble(str);
+							this.stats.getStats()[i].analyze(d);
+						} catch (final NumberFormatException ex) {
+							this.stats.getStats()[i].makePassThrough();
 						}
 					}
 				}
 				updateStatus(true);
-			} while (csv.next()&& !this.shouldStop());
+			} while (csv.next() && !shouldStop());
 		} finally {
 			reportDone(true);
 			// Close the CSV file
-			if (csv != null)
+			if (csv != null) {
 				csv.close();
+			}
 		}
 
 	}
 
 	/**
-	 * Denormalize the input file.
-	 * @param targetFile The file to write to.
+	 * Analyze a file prior to processing it.
+	 * @param inputFilename The input file name.
+	 * @param expectInputHeaders Are there input headers.
+	 * @param inputFormat The input format.
+	 * @param theStats The stats to use.
 	 */
-	public void deNormalize(String targetFile) {
+	public final void analyze(final File inputFilename,
+			final boolean expectInputHeaders, final CSVFormat inputFormat,
+			final NormalizationStats theStats) {
+		setInputFilename(inputFilename);
+		setInputFormat(inputFormat);
+		setExpectInputHeaders(expectInputHeaders);
+		this.stats = theStats;
+		setAnalyzed(true);
+	}
+
+	/**
+	 * Denormalize the input file.
+	 * 
+	 * @param targetFile
+	 *            The file to write to.
+	 */
+	public final void deNormalize(final String targetFile) {
 		if (this.stats.size() == 0) {
 			throw new EncogError(
 					"Can't denormalize, there are no stats loaded.");
 		}
 
-		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
-				this.isExpectInputHeaders(), this.getInputFormat());
+		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
+				isExpectInputHeaders(), getInputFormat());
 		PrintWriter tw;
 		try {
 			tw = new PrintWriter(new FileWriter(targetFile));
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new EncogCSVError(e);
 		}
 
 		if (!csv.next()) {
-			throw new EncogError("The source file " + this.getInputFilename()
+			throw new EncogError("The source file " + getInputFilename()
 					+ " is empty.");
 		}
 
@@ -129,22 +168,23 @@ public class NormalizeCSV extends BasicFile {
 		}
 
 		// write headers, if needed
-		if (this.isExpectInputHeaders()) {
+		if (isExpectInputHeaders()) {
 			writeHeaders(tw);
 		}
 
 		resetStatus();
 
 		do {
-			StringBuilder line = new StringBuilder();
+			final StringBuilder line = new StringBuilder();
 			updateStatus(false);
 
 			int index = 0;
-			for (NormalizedField stat : this.stats.getStats()) {
-				String str = csv.get(index++);
-				if (line.length() > 0
-						&& stat.getAction() != NormalizationAction.Ignore)
-					line.append(this.getInputFormat().getSeparator());
+			for (final NormalizedField stat : this.stats.getStats()) {
+				final String str = csv.get(index++);
+				if ((line.length() > 0)
+						&& (stat.getAction() != NormalizationAction.Ignore)) {
+					line.append(getInputFormat().getSeparator());
+				}
 				switch (stat.getAction()) {
 				case PassThrough:
 					line.append("\"");
@@ -155,16 +195,21 @@ public class NormalizeCSV extends BasicFile {
 					try {
 						double d = Double.parseDouble(str);
 						d = stat.deNormalize(d);
-						line.append(this.getInputFormat().format(d, 10));
-					} catch (NumberFormatException ex) {
-
+						line.append(getInputFormat().format(d, 
+								this.getPrecision()));
+					} catch (final NumberFormatException ex) {
+						EncogLogging.log(ex);
 					}
 
 					break;
+				default: 
+					throw new EncogCSVError("Unknown action:"  
+							+ stat.getAction());
 				}
+				
 			}
 			tw.println(line.toString());
-		} while (csv.next()&& !this.shouldStop());
+		} while (csv.next() && !shouldStop());
 
 		reportDone(false);
 		tw.close();
@@ -173,15 +218,188 @@ public class NormalizeCSV extends BasicFile {
 	}
 
 	/**
-	 * Write the headers.
-	 * @param tw The output stream.
+	 * @return The normalization stats.
 	 */
-	private void writeHeaders(PrintWriter tw) {
-		StringBuilder line = new StringBuilder();
-		for (NormalizedField stat : this.stats.getStats()) {
-			if (line.length() > 0
-					&& stat.getAction() != NormalizationAction.Ignore)
-				line.append(this.getInputFormat().getSeparator());
+	public final NormalizationStats getStats() {
+		return this.stats;
+	}
+
+	/**
+	 * Normalize the input file. Write to the specified file.
+	 * 
+	 * @param file
+	 *            The file to write to.
+	 */
+	public final void normalize(final File file) {
+		if (this.stats.size() < 1) {
+			throw new EncogError(
+					"Can't normalize yet, file has not been analyzed.");
+		}
+
+		this.stats.init();
+
+		ReadCSV csv = null;
+		PrintWriter tw = null;
+		this.stats.setFormat(getInputFormat());
+		this.stats.setPrecision(getPrecision());
+
+		try {
+			csv = new ReadCSV(getInputFilename().toString(),
+					isExpectInputHeaders(), getInputFormat());
+
+			tw = new PrintWriter(new FileWriter(file));
+
+			// write headers, if needed
+			if (isProduceOutputHeaders()) {
+				writeHeaders(tw);
+			}
+
+			resetStatus();
+			// write file contents
+			while (csv.next() && !shouldStop()) {
+				final StringBuilder line = new StringBuilder();
+				updateStatus(false);
+				int index = 0;
+				for (final NormalizedField stat : this.stats.getStats()) {
+					final String str = csv.get(index++);
+					if ((line.length() > 0)
+							&& (stat.getAction() 
+									!= NormalizationAction.Ignore)) {
+						line.append(getInputFormat().getSeparator());
+					}
+					switch (stat.getAction()) {
+					case PassThrough:
+						line.append("\"");
+						line.append(str);
+						line.append("\"");
+						break;
+					case Normalize:
+						try {
+							double d = getInputFormat().parse(str);
+							d = stat.normalize(d);
+							line.append(getInputFormat().format(d,
+									getPrecision()));
+						} catch (final NumberFormatException ex) {
+							EncogLogging.log(ex);
+						}
+						break;
+
+					case OneOf:
+						line.append(stat.encode(str));
+						break;
+					case SingleField:
+						line.append(stat.encode(str));
+						break;
+					case Equilateral:
+						line.append(stat.encode(str));
+						break;
+					default: 
+						throw new EncogCSVError("Unknown action:"  
+								+ stat.getAction());
+					}
+				}
+				tw.println(line);
+			}
+		} catch (final IOException e) {
+			throw new EncogCSVError(e);
+		} finally {
+			reportDone(false);
+			if (csv != null) {
+				try {
+					csv.close();
+				} catch (final Exception ex) {
+					EncogLogging.log(ex);
+				}
+			}
+
+			if (tw != null) {
+				try {
+					tw.close();
+				} catch (final Exception ex) {
+					EncogLogging.log(ex);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Read the stats file.
+	 * 
+	 * @param filename
+	 *            The file to read from.
+	 */
+	public final void readStatsFile(final File filename) {
+		final List<NormalizedField> list = new ArrayList<NormalizedField>();
+
+		ReadCSV csv = null;
+
+		try {
+			csv = new ReadCSV(filename.toString(), true, CSVFormat.EG_FORMAT);
+			while (csv.next() && !shouldStop()) {
+				final String type = csv.get(0);
+				if (type.equals("Normalize")) {
+					final String name = csv.get(1);
+					final double ahigh = csv.getDouble(2);
+					final double alow = csv.getDouble(3);
+					final double nhigh = csv.getDouble(4);
+					final double nlow = csv.getDouble(5);
+					list.add(new NormalizedField(NormalizationAction.Normalize,
+							name, ahigh, alow, nhigh, nlow));
+				} else if (type.equals("PassThrough")) {
+					final String name = csv.get(1);
+					list.add(new NormalizedField(
+							NormalizationAction.PassThrough, name));
+				} else if (type.equals("Ignore")) {
+					final String name = csv.get(1);
+					list.add(new NormalizedField(NormalizationAction.Ignore,
+							name));
+				}
+			}
+			csv.close();
+
+			this.stats = new NormalizationStats(list.size());
+			this.stats.setStats(new NormalizedField[list.size()]);
+			for (int i = 0; i < list.size(); i++) {
+				this.stats.getStats()[i] = list.get(i);
+			}
+		} finally {
+			if (csv != null) {
+				csv.close();
+			}
+		}
+	}
+
+	/**
+	 * Set the source file. This is useful if you want to use pre-existing stats
+	 * to normalize something and skip the analyze step.
+	 * 
+	 * @param file
+	 *            The file to use.
+	 * @param headers
+	 *            True, if headers are to be expected.
+	 * @param format
+	 *            The format of the CSV file.
+	 */
+	public final void setSourceFile(final File file, final boolean headers,
+			final CSVFormat format) {
+		setInputFilename(file);
+		setExpectInputHeaders(headers);
+		setInputFormat(format);
+	}
+
+	/**
+	 * Write the headers.
+	 * 
+	 * @param tw
+	 *            The output stream.
+	 */
+	private void writeHeaders(final PrintWriter tw) {
+		final StringBuilder line = new StringBuilder();
+		for (final NormalizedField stat : this.stats.getStats()) {
+			if ((line.length() > 0)
+					&& (stat.getAction() != NormalizationAction.Ignore)) {
+				line.append(getInputFormat().getSeparator());
+			}
 
 			if (stat.getColumnsNeeded() > 1) {
 				line.append(stat.encodeHeaders());
@@ -195,143 +413,12 @@ public class NormalizeCSV extends BasicFile {
 	}
 
 	/**
-	 * Normalize the input file.  Write to the specified file.
-	 * @param file The file to write to.
-	 */
-	public void normalize(File file) {
-		if (this.stats.size() < 1)
-			throw new EncogError(
-					"Can't normalize yet, file has not been analyzed.");
-
-		stats.init();
-
-		ReadCSV csv = null;
-		PrintWriter tw = null;
-		this.stats.setFormat(this.getInputFormat());
-		this.stats.setPrecision(this.getPrecision());
-
-
-		try {
-			csv = new ReadCSV(this.getInputFilename().toString(),
-					this.isExpectInputHeaders(), this.getInputFormat());
-
-			tw = new PrintWriter(new FileWriter(file));
-
-			// write headers, if needed
-			if (this.isProduceOutputHeaders()) {
-				writeHeaders(tw);
-			}
-
-			resetStatus();
-			// write file contents
-			while (csv.next()&& !this.shouldStop()) {
-				StringBuilder line = new StringBuilder();
-				updateStatus(false);
-				int index = 0;
-				for (NormalizedField stat : this.stats.getStats()) {
-					String str = csv.get(index++);
-					if (line.length() > 0
-							&& stat.getAction() != NormalizationAction.Ignore)
-						line.append(this.getInputFormat().getSeparator());
-					switch (stat.getAction()) {
-					case PassThrough:
-						line.append("\"");
-						line.append(str);
-						line.append("\"");
-						break;
-					case Normalize:
-						try {
-							double d = this.getInputFormat().parse(str);
-							d = stat.normalize(d);
-							line.append(this.getInputFormat().format(d,
-									this.getPrecision()));
-						} catch (NumberFormatException ex) {
-
-						}
-						break;
-
-					case OneOf:
-						line.append(stat.encode(str));
-						break;
-					case SingleField:
-						line.append(stat.encode(str));
-						break;
-					case Equilateral:
-						line.append(stat.encode(str));
-						break;
-					}
-				}
-				tw.println(line);
-			}
-		} catch (IOException e) {
-			throw new EncogCSVError(e);
-		} finally {
-			reportDone(false);
-			if (csv != null) {
-				try {
-					csv.close();
-				} catch (Exception ex) {
-				}
-			}
-
-			if (tw != null) {
-				try {
-					tw.close();
-				} catch (Exception ex) {
-				}
-			}
-		}
-	}
-
-	/**
-	 * Read the stats file.
-	 * @param filename The file to read from.
-	 */
-	public void readStatsFile(File filename) {
-		List<NormalizedField> list = new ArrayList<NormalizedField>();
-
-		ReadCSV csv = null;
-
-		try {
-			csv = new ReadCSV(filename.toString(), true, CSVFormat.EG_FORMAT);
-			while (csv.next()&& !this.shouldStop()) {
-				String type = csv.get(0);
-				if (type.equals("Normalize")) {
-					String name = csv.get(1);
-					double ahigh = csv.getDouble(2);
-					double alow = csv.getDouble(3);
-					double nhigh = csv.getDouble(4);
-					double nlow = csv.getDouble(5);
-					list.add(new NormalizedField(NormalizationAction.Normalize,
-							name, ahigh, alow, nhigh, nlow));
-				} else if (type.equals("PassThrough")) {
-					String name = csv.get(1);
-					list.add(new NormalizedField(
-							NormalizationAction.PassThrough, name));
-				} else if (type.equals("Ignore")) {
-					String name = csv.get(1);
-					list.add(new NormalizedField(NormalizationAction.Ignore,
-							name));
-				}
-			}
-			csv.close();
-
-			this.stats = new NormalizationStats(list.size());
-			this.stats.setStats(new NormalizedField[list.size()]);
-			for (int i = 0; i < list.size(); i++) {
-				this.stats.getStats()[i] = list.get(i);
-			}
-		} finally {
-			if (csv != null)
-				csv.close();
-		}
-	}
-
-	/**
 	 * Write the stats file.
-	 * @param filename The file to write to.
+	 * 
+	 * @param filename
+	 *            The file to write to.
 	 */
-	public void writeStatsFile(File filename) {
+	public final void writeStatsFile(final File filename) {
 		PrintWriter tw = null;
 
 		try {
@@ -339,8 +426,8 @@ public class NormalizeCSV extends BasicFile {
 
 			tw.println("type,name,ahigh,alow,nhigh,nlow");
 
-			for (NormalizedField stat : this.stats.getStats()) {
-				StringBuilder line = new StringBuilder();
+			for (final NormalizedField stat : this.stats.getStats()) {
+				final StringBuilder line = new StringBuilder();
 				switch (stat.getAction()) {
 				case Ignore:
 					line.append("Ignore,\"");
@@ -352,9 +439,10 @@ public class NormalizeCSV extends BasicFile {
 					line.append("\"");
 					line.append(stat.getName());
 					line.append("\",");
-					double[] d = { stat.getActualHigh(), stat.getActualLow(),
-							stat.getNormalizedHigh(), stat.getNormalizedLow() };
-					StringBuilder temp = new StringBuilder();
+					final double[] d = { stat.getActualHigh(),
+							stat.getActualLow(), stat.getNormalizedHigh(),
+							stat.getNormalizedLow() };
+					final StringBuilder temp = new StringBuilder();
 					NumberList.toList(CSVFormat.EG_FORMAT, temp, d);
 					line.append(temp);
 					break;
@@ -363,34 +451,22 @@ public class NormalizeCSV extends BasicFile {
 					line.append(stat.getName());
 					line.append("\",0,0,0,0");
 					break;
+				default: 
+					throw new EncogCSVError("Unknown action:"  
+							+ stat.getAction());
 
 				}
 
 				tw.println(line.toString());
 			}
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new EncogCSVError(e);
 		} finally {
 			// close the stream
-			if (tw != null)
+			if (tw != null) {
 				tw.close();
+			}
 		}
-	}
-
-	/**
-	 * @return The normalization stats.
-	 */
-	public NormalizationStats getStats() {
-		return this.stats;
-	}
-
-	public void analyze(File inputFilename, boolean expectInputHeaders,
-			CSVFormat inputFormat, NormalizationStats stats) {
-		this.setInputFilename( inputFilename);
-		this.setInputFormat( inputFormat);
-		this.setExpectInputHeaders( expectInputHeaders);
-		this.stats = stats;
-		this.setAnalyzed( true);
 	}
 
 }

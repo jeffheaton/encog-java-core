@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.csv.filter;
 
 /**
@@ -8,55 +31,60 @@ public class ExcludedField {
 	/**
 	 * The field number.
 	 */
-    private int fieldNumber;
-    
-    /**
-     * The field value to filter on.
-     */
-    private String fieldValue;
+	private int fieldNumber;
 
-    /**
-     * Construct the object.
-     * @param fieldNumber The field number.
-     * @param fieldValue The field value to filter on.
-     */
-    public ExcludedField(int fieldNumber, String fieldValue)
-    {
-        this.fieldNumber = fieldNumber;
-        this.fieldValue = fieldValue;
-    }
+	/**
+	 * The field value to filter on.
+	 */
+	private String fieldValue;
+
+	/**
+	 * Construct the object.
+	 * 
+	 * @param theFieldNumber
+	 *            The field number.
+	 * @param theFieldValue
+	 *            The field value to filter on.
+	 */
+	public ExcludedField(final int theFieldNumber, final String theFieldValue) {
+		this.fieldNumber = theFieldNumber;
+		this.fieldValue = theFieldValue;
+	}
 
 	/**
 	 * @return the fieldNumber
 	 */
-	public int getFieldNumber() {
-		return fieldNumber;
-	}
-
-	/**
-	 * @param fieldNumber the fieldNumber to set
-	 */
-	public void setFieldNumber(int fieldNumber) {
-		this.fieldNumber = fieldNumber;
+	public final int getFieldNumber() {
+		return this.fieldNumber;
 	}
 
 	/**
 	 * @return the fieldValue
 	 */
-	public String getFieldValue() {
-		return fieldValue;
+	public final String getFieldValue() {
+		return this.fieldValue;
 	}
 
 	/**
-	 * @param fieldValue the fieldValue to set
+	 * @param theFieldNumber
+	 *            the fieldNumber to set
 	 */
-	public void setFieldValue(String fieldValue) {
-		this.fieldValue = fieldValue;
+	public final void setFieldNumber(final int theFieldNumber) {
+		this.fieldNumber = theFieldNumber;
 	}
-	
+
+	/**
+	 * @param theFieldValue
+	 *            the fieldValue to set
+	 */
+	public final void setFieldValue(final String theFieldValue) {
+		this.fieldValue = theFieldValue;
+	}
+
 	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" fieldNumber=");
 		result.append(this.fieldNumber);
@@ -66,5 +94,5 @@ public class ExcludedField {
 		result.append("]");
 		return result.toString();
 	}
-	
+
 }

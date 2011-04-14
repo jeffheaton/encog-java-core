@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.csv.filter;
 
 import java.io.File;
@@ -11,107 +34,113 @@ import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 /**
- * This class can be used to remove certain rows from a CSV.  You can remove rows
+ * This class can be used to remove certain rows from a CSV. You can remove rows
  * where a specific field has a specific value
- *
+ * 
  */
 public class FilterCSV extends BasicFile {
 
-    /**
-     * @return A list of the fields and their values, that should be excluded.
-     */
-    public List<ExcludedField> getExcluded()
-    {
-    	return this.excludedFields;     
-    }
+	/**
+	 * The excluded fields.
+	 */
+	private final List<ExcludedField> excludedFields 
+		= new ArrayList<ExcludedField>();
 
-    /**
-     * @return A count of the filtered rows.  This is the resulting line count for the output CSV.
-     */
-    public int getFilteredRowCount()
-    {
-    	return this.filteredCount;
-    }
+	/**
+	 * A count of the filtered rows.
+	 */
+	private int filteredCount;
 
-    /**
-     * The excluded fields.
-     */
-    private List<ExcludedField> excludedFields = new ArrayList<ExcludedField>();
+	/**
+	 * Analyze the file.
+	 * 
+	 * @param inputFile
+	 *            The name of the input file.
+	 * @param headers
+	 *            True, if headers are expected.
+	 * @param format
+	 *            The format.
+	 */
+	public final void analyze(final File inputFile, final boolean headers,
+			final CSVFormat format) {
+		setInputFilename(inputFile);
+		setExpectInputHeaders(headers);
+		setInputFormat(format);
 
-    /**
-     * A count of the filtered rows.
-     */
-    private int filteredCount;
+		setAnalyzed(true);
 
-    /**
-     * Exclude rows where the specified field has the specified value.
-     * @param fieldNumber The field number.
-     * @param fieldValue The field value.
-     */
-    public void exclude(int fieldNumber, String fieldValue)
-    {
-        this.excludedFields.add(new ExcludedField(fieldNumber, fieldValue));
-    }
+		performBasicCounts();
+	}
 
-    /**
-     * Analyze the file.
-     * @param inputFile The name of the input file.
-     * @param headers True, if headers are expected.
-     * @param format The format.
-     */
-    public void analyze(File inputFile, boolean headers, CSVFormat format)
-    {
-        this.setInputFilename( inputFile );
-        this.setExpectInputHeaders( headers );
-        this.setInputFormat( format );
+	/**
+	 * Exclude rows where the specified field has the specified value.
+	 * 
+	 * @param fieldNumber
+	 *            The field number.
+	 * @param fieldValue
+	 *            The field value.
+	 */
+	public final void exclude(final int fieldNumber, final String fieldValue) {
+		this.excludedFields.add(new ExcludedField(fieldNumber, fieldValue));
+	}
 
-        this.setAnalyzed( true );
+	/**
+	 * @return A list of the fields and their values, that should be excluded.
+	 */
+	public final List<ExcludedField> getExcluded() {
+		return this.excludedFields;
+	}
 
-        performBasicCounts();
-    }
+	/**
+	 * @return A count of the filtered rows. This is the resulting line count
+	 *         for the output CSV.
+	 */
+	public final int getFilteredRowCount() {
+		return this.filteredCount;
+	}
 
-    /**
-     * Determine if the specified row should be processed, or not.
-     * @param row The row.
-     * @return True, if the row should be processed.
-     */
-    private boolean shouldProcess(LoadedRow row)
-    {
-        for(ExcludedField field : this.excludedFields)
-        {
-            if( row.getData()[field.getFieldNumber()].trim().equals(field.getFieldValue().trim()) )
-            {
-                return false;
-            }
-        }
+	/**
+	 * Process the input file.
+	 * 
+	 * @param outputFile
+	 *            The output file to write to.
+	 */
+	public final void process(final File outputFile) {
+		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
+				isExpectInputHeaders(), getInputFormat());
 
-        return true;
-    }
+		final PrintWriter tw = prepareOutputFile(outputFile);
+		this.filteredCount = 0;
 
-    /**
-     * Process the input file.
-     * @param outputFile The output file to write to.
-     */
-    public void process(File outputFile)
-    {
-        ReadCSV csv = new ReadCSV(this.getInputFilename().toString(), this.isExpectInputHeaders(), this.getInputFormat() );
+		resetStatus();
+		while (csv.next() && !shouldStop()) {
+			updateStatus(false);
+			final LoadedRow row = new LoadedRow(csv);
+			if (shouldProcess(row)) {
+				writeRow(tw, row);
+				this.filteredCount++;
+			}
+		}
+		reportDone(false);
+		tw.close();
+		csv.close();
+	}
 
-        PrintWriter tw = this.prepareOutputFile(outputFile);
-        this.filteredCount = 0;
+	/**
+	 * Determine if the specified row should be processed, or not.
+	 * 
+	 * @param row
+	 *            The row.
+	 * @return True, if the row should be processed.
+	 */
+	private boolean shouldProcess(final LoadedRow row) {
+		for (final ExcludedField field : this.excludedFields) {
+			if (row.getData()[field.getFieldNumber()].trim().equals(
+					field.getFieldValue().trim())) {
+				return false;
+			}
+		}
 
-        resetStatus();
-        while (csv.next() && !shouldStop() )
-        {
-            updateStatus(false);
-            LoadedRow row = new LoadedRow(csv);
-            if (shouldProcess(row))
-            {
-                writeRow(tw, row);
-                this.filteredCount++;
-            }
-        }
-        reportDone(false);
-        tw.close();
-        csv.close();
-    }
+		return true;
+	}
 }
