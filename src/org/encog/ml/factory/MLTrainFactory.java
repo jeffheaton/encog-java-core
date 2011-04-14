@@ -25,7 +25,9 @@ public class MLTrainFactory {
 	public static final String PROPERTY_LEARNING_MOMENTUM = "MOM";
 	public static final String PROPERTY_INITIAL_UPDATE = "INIT_UPDATE";
 	public static final String PROPERTY_MAX_STEP = "MAX_STEP";
-	public static final String BAYESIAN_REGULARIZATION = "BAYES_REG";
+	public static final String PROPERTY_BAYESIAN_REGULARIZATION = "BAYES_REG";
+	public static final String PROPERTY_GAMMA = "GAMMA";
+	public static final String PROPERTY_C = "C";
 	
 	private final BackPropFactory backpropFactory = new BackPropFactory();
 	private final LMAFactory lmaFactory = new LMAFactory();

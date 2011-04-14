@@ -82,7 +82,7 @@ public class ArchitectureParse {
 
             String value = parseValue(parser);
 
-            result.put(name, value);
+            result.put(name.toUpperCase(), value);
 
             if (!parser.parseThroughComma())
                 break;
