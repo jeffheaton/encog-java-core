@@ -48,35 +48,36 @@ public class FileData extends BaseCachedColumn {
 	/**
 	 * Construct the object.
 	 * 
-	 * @param name
+	 * @param theName
 	 *            The name of the object.
-	 * @param index
+	 * @param theIndex
 	 *            The index of the field.
-	 * @param input
+	 * @param theInput
 	 *            Is this field for input?
-	 * @param output
+	 * @param theOutput
 	 *            Is this field for output?
 	 */
-	public FileData(String name, int index, boolean input, boolean output) {
-		super(name, input, output);
-		this.setOutput(output);
-		this.index = index;
+	public FileData(final String theName, final int theIndex,
+			final boolean theInput, final boolean theOutput) {
+		super(theName, theInput, theOutput);
+		setOutput(theOutput);
+		this.index = theIndex;
 	}
 
 	/**
 	 * @return The index of this field.
 	 */
-	public int getIndex() {
-		return index;
+	public final int getIndex() {
+		return this.index;
 	}
 
 	/**
 	 * Set the index of this field.
 	 * 
-	 * @param index
+	 * @param theIndex
 	 *            The index of this field.
 	 */
-	public void setIndex(int index) {
-		this.index = index;
+	public final void setIndex(final int theIndex) {
+		this.index = theIndex;
 	}
 }

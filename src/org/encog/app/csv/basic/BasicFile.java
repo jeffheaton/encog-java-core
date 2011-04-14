@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.csv.basic;
 
 import java.io.File;
@@ -19,6 +42,28 @@ import org.encog.util.csv.ReadCSV;
  * CSV file processing.
  */
 public class BasicFile implements QuantTask {
+	
+	/**
+	 * The default report interval.
+	 */
+	public static final int REPORT_INTERVAL = 10000;
+
+	/**
+	 * Append a separator. The separator will only be appended if the line is
+	 * not empty.  This is used to build comma(or other) separated lists.
+	 * 
+	 * @param line
+	 *            The line to append to.
+	 * @param format
+	 * 			The format to use.
+	 */
+	public static void appendSeparator(final StringBuilder line,
+			final CSVFormat format) {
+		if ((line.length() > 0)
+				&& !line.toString().endsWith(format.getSeparator() + "")) {
+			line.append(format.getSeparator());
+		}
+	}
 
 	/**
 	 * The column headings from the input file.
@@ -88,12 +133,12 @@ public class BasicFile implements QuantTask {
 	 * Should output headers be produced?
 	 */
 	private boolean produceOutputHeaders;
-	
+
 	/**
 	 * True, if the process should stop.
 	 */
 	private boolean cancel;
-	
+
 	/**
 	 * The output format, usually, the same as the input format.
 	 */
@@ -105,9 +150,124 @@ public class BasicFile implements QuantTask {
 	public BasicFile() {
 		this.precision = Encog.DEFAULT_PRECISION;
 		this.report = new NullStatusReportable();
-		this.reportInterval = 10000;
+		this.reportInterval = REPORT_INTERVAL;
 		this.produceOutputHeaders = true;
 		resetStatus();
+	}
+
+	/**
+	 * @return The column count.
+	 */
+	public final int getColumnCount() {
+		return this.columnCount;
+	}
+
+	/**
+	 * @return The input filename.
+	 */
+	public final File getInputFilename() {
+		return this.inputFilename;
+	}
+
+	/**
+	 * @return THe input format.
+	 */
+	public final CSVFormat getInputFormat() {
+		return this.inputFormat;
+	}
+
+	/**
+	 * @return The input headings.
+	 */
+	public final String[] getInputHeadings() {
+		return this.inputHeadings;
+	}
+
+	/**
+	 * @return the outputFormat
+	 */
+	public final CSVFormat getOutputFormat() {
+		return this.outputFormat;
+	}
+
+	/**
+	 * @return The precision to use.
+	 */
+	public final int getPrecision() {
+		return this.precision;
+	}
+
+	/**
+	 * @return Get the record count. File must have been analyzed first to read
+	 *         the record count.
+	 */
+	public final int getRecordCount() {
+		if (!this.analyzed) {
+			throw new EncogCSVError("Must analyze file first.");
+		}
+		return this.recordCount;
+
+	}
+
+	/**
+	 * @return The status reporting object.
+	 */
+	public final StatusReportable getReport() {
+		return this.report;
+	}
+
+	/**
+	 * @return The reporting interval, an update will be sent for every block of
+	 *         rows that matches the size of this property.
+	 */
+	public final int getReportInterval() {
+		return this.reportInterval;
+	}
+
+	/**
+	 * @return Has the file been analyzed.
+	 */
+	public final boolean isAnalyzed() {
+		return this.analyzed;
+	}
+
+	/**
+	 * @return True if we are expecting input headers.
+	 */
+	public final boolean isExpectInputHeaders() {
+		return this.expectInputHeaders;
+	}
+
+	/**
+	 * @return the produceOutputHeaders
+	 */
+	public final boolean isProduceOutputHeaders() {
+		return this.produceOutputHeaders;
+	}
+
+	/**
+	 * Perform a basic analyze of the file. This method is used mostly
+	 * internally.
+	 */
+	public final void performBasicCounts() {
+		if (this.outputFormat == null) {
+			this.outputFormat = this.inputFormat;
+		}
+
+		resetStatus();
+		int rc = 0;
+		final ReadCSV csv = new ReadCSV(this.inputFilename.toString(),
+				this.expectInputHeaders, this.inputFormat);
+		while (csv.next() && !this.cancel) {
+			updateStatus(true);
+			rc++;
+		}
+		this.recordCount = rc;
+		this.columnCount = csv.getColumnCount();
+
+		readHeaders(csv);
+		csv.close();
+		reportDone(true);
 	}
 
 	/**
@@ -117,20 +277,20 @@ public class BasicFile implements QuantTask {
 	 *            The name of the output file.
 	 * @return The output stream for the text file.
 	 */
-	public PrintWriter prepareOutputFile(File outputFile) {
+	public final  PrintWriter prepareOutputFile(final File outputFile) {
 		try {
-			PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
-			if( this.outputFormat==null) {
+			final PrintWriter tw = new PrintWriter(new FileWriter(outputFile));
+			if (this.outputFormat == null) {
 				this.outputFormat = this.inputFormat;
 			}
 
 			// write headers, if needed
 			if (this.produceOutputHeaders) {
 				int index = 0;
-				StringBuilder line = new StringBuilder();
+				final StringBuilder line = new StringBuilder();
 
 				if (this.inputHeadings != null) {
-					for (String str : this.inputHeadings) {
+					for (final String str : this.inputHeadings) {
 						if (line.length() > 0) {
 							line.append(this.outputFormat.getSeparator());
 						}
@@ -140,7 +300,7 @@ public class BasicFile implements QuantTask {
 						index++;
 					}
 				} else {
-					for(int i=0;i<this.columnCount;i++) {
+					for (int i = 0; i < this.columnCount; i++) {
 						line.append("\"field-");
 						line.append(i);
 						line.append("\"");
@@ -151,84 +311,9 @@ public class BasicFile implements QuantTask {
 
 			return tw;
 
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new EncogCSVError(e);
 		}
-	}
-
-	/**
-	 * @return Get the record count. File must have been analyzed first to read
-	 *         the record count.
-	 */
-	public int getRecordCount() {
-		if (!analyzed) {
-			throw new EncogCSVError("Must analyze file first.");
-		}
-		return this.recordCount;
-
-	}
-
-	/**
-	 * Set the record count.
-	 * 
-	 * @param v
-	 *            The record count.
-	 */
-	public void setRecordCount(int v) {
-		this.recordCount = v;
-	}
-
-	/**
-	 * Validate that the file has been analyzed. Throw an error, if it has not.
-	 */
-	public void validateAnalyzed() {
-		if (!analyzed) {
-			throw new EncogCSVError("File must be analyzed first.");
-		}
-	}
-
-	/**
-	 * Write a row to the output file.
-	 * 
-	 * @param tw
-	 *            The output stream.
-	 * @param row
-	 *            The row to write out.
-	 */
-	public void writeRow(PrintWriter tw, LoadedRow row) {
-		StringBuilder line = new StringBuilder();
-
-		for (int i = 0; i < row.getData().length; i++) {
-			BasicFile.appendSeparator(line, this.outputFormat);			
-			line.append(row.getData()[i]);
-		}
-
-		tw.println(line.toString());
-	}
-
-	/**
-	 * Perform a basic analyze of the file. This method is used mostly
-	 * internally.
-	 */
-	public void performBasicCounts() {
-		if( this.outputFormat==null) {
-			this.outputFormat = this.inputFormat;
-		}
-		
-		resetStatus();
-		int recordCount = 0;
-		ReadCSV csv = new ReadCSV(this.inputFilename.toString(), this.expectInputHeaders,
-				this.inputFormat);
-		while (csv.next() && !this.cancel ) {
-			updateStatus(true);
-			recordCount++;
-		}
-		this.recordCount = recordCount;
-		this.columnCount = csv.getColumnCount();
-
-		readHeaders(csv);
-		csv.close();
-		reportDone(true);
 	}
 
 	/**
@@ -237,7 +322,7 @@ public class BasicFile implements QuantTask {
 	 * @param csv
 	 *            The CSV file to read from.
 	 */
-	public void readHeaders(ReadCSV csv) {
+	public final void readHeaders(final ReadCSV csv) {
 		if (this.expectInputHeaders) {
 			this.inputHeadings = new String[csv.getColumnNames().size()];
 			for (int i = 0; i < csv.getColumnNames().size(); i++) {
@@ -252,34 +337,12 @@ public class BasicFile implements QuantTask {
 	}
 
 	/**
-	 * Reset the reporting stats. Used internally.
-	 */
-	public void resetStatus() {
-		this.lastUpdate = 0;
-		this.currentRecord = 0;
-	}
-
-	/**
-	 * Update the status. Used internally.
-	 * 
-	 * @param isAnalyzing
-	 *            True if we are in the process of analyzing.
-	 */
-	public void updateStatus(boolean isAnalyzing) {
-		if (isAnalyzing) {
-			updateStatus("Analyzing");
-		} else {
-			updateStatus("Processing");
-		}
-	}
-
-	/**
 	 * Report that we are done. Used internally.
 	 * 
 	 * @param isAnalyzing
 	 *            True if we are analyzing.
 	 */
-	public void reportDone(boolean isAnalyzing) {
+	public final void reportDone(final boolean isAnalyzing) {
 		if (isAnalyzing) {
 			this.report.report(this.recordCount, this.recordCount,
 					"Done analyzing");
@@ -295,8 +358,176 @@ public class BasicFile implements QuantTask {
 	 * @param task
 	 *            The message.
 	 */
-	public void reportDone(String task) {
+	public final void reportDone(final String task) {
 		this.report.report(this.recordCount, this.recordCount, task);
+	}
+
+	/**
+	 * Request a stop.
+	 */
+	@Override
+	public final void requestStop() {
+		this.cancel = true;
+	}
+
+	/**
+	 * Reset the reporting stats. Used internally.
+	 */
+	public final void resetStatus() {
+		this.lastUpdate = 0;
+		this.currentRecord = 0;
+	}
+
+	/**
+	 * Set to true, if the file has been analyzed.
+	 * 
+	 * @param theAnalyzed
+	 *            True, if the file has been analyzed.
+	 */
+	public final void setAnalyzed(final boolean theAnalyzed) {
+		this.analyzed = theAnalyzed;
+	}
+
+	/**
+	 * Set the column count.
+	 * 
+	 * @param theColumnCount
+	 *            The new column count.
+	 */
+	public final void setColumnCount(final int theColumnCount) {
+		this.columnCount = theColumnCount;
+	}
+
+	/**
+	 * Set the flag to determine if we are expecting input headers.
+	 * 
+	 * @param theExpectInputHeaders Are input headers expected?
+	 */
+	public final void setExpectInputHeaders(
+			final boolean theExpectInputHeaders) {
+		this.expectInputHeaders = theExpectInputHeaders;
+	}
+
+	/**
+	 * Set the input filename.
+	 * 
+	 * @param theInputFilename
+	 *            The input filename.
+	 */
+	public final void setInputFilename(final File theInputFilename) {
+		this.inputFilename = theInputFilename;
+	}
+
+	/**
+	 * Set the input format.
+	 * 
+	 * @param theInputFormat
+	 *            The new inputFormat format.
+	 */
+	public final void setInputFormat(final CSVFormat theInputFormat) {
+		this.inputFormat = theInputFormat;
+	}
+
+	/**
+	 * Set the input headings.
+	 * 
+	 * @param theInputHeadings
+	 *            The new input headings.
+	 */
+	public final void setInputHeadings(final String[] theInputHeadings) {
+		this.inputHeadings = theInputHeadings;
+	}
+
+	/**
+	 * @param theOutputFormat
+	 *            the outputFormat to set
+	 */
+	public final void setOutputFormat(final CSVFormat theOutputFormat) {
+		this.outputFormat = theOutputFormat;
+	}
+
+	/**
+	 * Set the precision to use.
+	 * 
+	 * @param thePrecision
+	 *            The precision to use.
+	 */
+	public final void setPrecision(final int thePrecision) {
+		this.precision = thePrecision;
+	}
+
+	/**
+	 * @param theProduceOutputHeaders
+	 *            the produceOutputHeaders to set
+	 */
+	public final void setProduceOutputHeaders(
+			final boolean theProduceOutputHeaders) {
+		this.produceOutputHeaders = theProduceOutputHeaders;
+	}
+
+	/**
+	 * Set the record count.
+	 * 
+	 * @param v
+	 *            The record count.
+	 */
+	public final void setRecordCount(final int v) {
+		this.recordCount = v;
+	}
+
+	/**
+	 * Set the status reporting object.
+	 * 
+	 * @param theReport
+	 *            The status reporting object.
+	 */
+	public final void setReport(final StatusReportable theReport) {
+		this.report = theReport;
+	}
+
+	/**
+	 * Set the reporting interval.
+	 * 
+	 * @param theReportInterval
+	 *            The new reporting interval.
+	 */
+	public final void setReportInterval(final int theReportInterval) {
+		this.reportInterval = theReportInterval;
+	}
+
+	/**
+	 * @return Should we stop?
+	 */
+	@Override
+	public final boolean shouldStop() {
+		return this.cancel;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final String toString() {
+		final StringBuilder result = new StringBuilder("[");
+		result.append(getClass().getSimpleName());
+		result.append(" inputFilename=");
+		result.append(this.inputFilename);
+		result.append(", recordCount=");
+		result.append(this.recordCount);
+		result.append("]");
+		return result.toString();
+	}
+
+	/**
+	 * Update the status. Used internally.
+	 * 
+	 * @param isAnalyzing
+	 *            True if we are in the process of analyzing.
+	 */
+	public final void updateStatus(final boolean isAnalyzing) {
+		if (isAnalyzing) {
+			updateStatus("Analyzing");
+		} else {
+			updateStatus("Processing");
+		}
 	}
 
 	/**
@@ -305,7 +536,7 @@ public class BasicFile implements QuantTask {
 	 * @param task
 	 *            The string to report.
 	 */
-	public void updateStatus(String task) {
+	public final void updateStatus(final String task) {
 		boolean shouldDisplay = false;
 
 		if (this.currentRecord == 0) {
@@ -315,8 +546,8 @@ public class BasicFile implements QuantTask {
 		this.currentRecord++;
 		this.lastUpdate++;
 
-		if (lastUpdate > this.reportInterval) {
-			lastUpdate = 0;
+		if (this.lastUpdate > this.reportInterval) {
+			this.lastUpdate = 0;
 			shouldDisplay = true;
 		}
 
@@ -326,212 +557,31 @@ public class BasicFile implements QuantTask {
 	}
 
 	/**
-	 * @return The input headings.
+	 * Validate that the file has been analyzed. Throw an error, if it has not.
 	 */
-	public String[] getInputHeadings() {
-		return inputHeadings;
+	public final void validateAnalyzed() {
+		if (!this.analyzed) {
+			throw new EncogCSVError("File must be analyzed first.");
+		}
 	}
 
 	/**
-	 * Set the input headings.
+	 * Write a row to the output file.
 	 * 
-	 * @param inputHeadings
-	 *            The new input headings.
+	 * @param tw
+	 *            The output stream.
+	 * @param row
+	 *            The row to write out.
 	 */
-	public void setInputHeadings(String[] inputHeadings) {
-		this.inputHeadings = inputHeadings;
+	public final void writeRow(final PrintWriter tw, final LoadedRow row) {
+		final StringBuilder line = new StringBuilder();
+
+		for (int i = 0; i < row.getData().length; i++) {
+			BasicFile.appendSeparator(line, this.outputFormat);
+			line.append(row.getData()[i]);
+		}
+
+		tw.println(line.toString());
 	}
 
-	/**
-	 * @return The precision to use.
-	 */
-	public int getPrecision() {
-		return precision;
-	}
-
-	/**
-	 * Set the precision to use.
-	 * 
-	 * @param precision
-	 *            The precision to use.
-	 */
-	public void setPrecision(int precision) {
-		this.precision = precision;
-	}
-
-	/**
-	 * @return Has the file been analyzed.
-	 */
-	public boolean isAnalyzed() {
-		return analyzed;
-	}
-
-	/**
-	 * Set to true, if the file has been analyzed.
-	 * 
-	 * @param analyzed
-	 *            True, if the file has been analyzed.
-	 */
-	public void setAnalyzed(boolean analyzed) {
-		this.analyzed = analyzed;
-	}
-
-	/**
-	 * @return The input filename.
-	 */
-	public File getInputFilename() {
-		return inputFilename;
-	}
-
-	/**
-	 * Set the input filename.
-	 * 
-	 * @param inputFilename
-	 *            The input filename.
-	 */
-	public void setInputFilename(File inputFilename) {
-		this.inputFilename = inputFilename;
-	}
-
-	/**
-	 * @return True if we are expecting input headers.
-	 */
-	public boolean isExpectInputHeaders() {
-		return expectInputHeaders;
-	}
-
-	/**
-	 * Set the flag to determine if we are expecting input headers.
-	 * 
-	 * @param expectInputHeaders
-	 */
-	public void setExpectInputHeaders(boolean expectInputHeaders) {
-		this.expectInputHeaders = expectInputHeaders;
-	}
-
-	/**
-	 * @return THe input format.
-	 */
-	public CSVFormat getInputFormat() {
-		return inputFormat;
-	}
-
-	/**
-	 * Set the input format.
-	 * 
-	 * @param inputFormat
-	 *            The new input format.
-	 */
-	public void setInputFormat(CSVFormat inputFormat) {
-		this.inputFormat = inputFormat;
-	}
-
-	/**
-	 * @return The column count.
-	 */
-	public int getColumnCount() {
-		return columnCount;
-	}
-
-	/**
-	 * Set the column count.
-	 * 
-	 * @param columnCount
-	 *            The new column count.
-	 */
-	public void setColumnCount(int columnCount) {
-		this.columnCount = columnCount;
-	}
-
-	/**
-	 * @return The status reporting object.
-	 */
-	public StatusReportable getReport() {
-		return report;
-	}
-
-	/**
-	 * Set the status reporting object.
-	 * 
-	 * @param report
-	 *            The status reporting object.
-	 */
-	public void setReport(StatusReportable report) {
-		this.report = report;
-	}
-
-	/**
-	 * @return The reporting interval, an update will be sent for every block of
-	 *         rows that matches the size of this property.
-	 */
-	public int getReportInterval() {
-		return reportInterval;
-	}
-
-	/**
-	 * Set the reporting interval.
-	 * @param reportInterval The new reporting interval.
-	 */
-	public void setReportInterval(int reportInterval) {
-		this.reportInterval = reportInterval;
-	}
-
-	/**
-	 * @return the produceOutputHeaders
-	 */
-	public boolean isProduceOutputHeaders() {
-		return produceOutputHeaders;
-	}
-
-	/**
-	 * @param produceOutputHeaders the produceOutputHeaders to set
-	 */
-	public void setProduceOutputHeaders(boolean produceOutputHeaders) {
-		this.produceOutputHeaders = produceOutputHeaders;
-	}
-	
-	public static void appendSeparator(StringBuilder line, CSVFormat format) {
-		if( line.length()>0 && !line.toString().endsWith(format.getSeparator()+""))
-			line.append(format.getSeparator());		
-	}
-	
-	public void requestStop()
-	{
-		this.cancel = true;
-	}
-		
-	public boolean shouldStop()
-	{
-		return this.cancel;
-	}
-
-	/**
-	 * @return the outputFormat
-	 */
-	public CSVFormat getOutputFormat() {
-		return outputFormat;
-	}
-
-	/**
-	 * @param outputFormat the outputFormat to set
-	 */
-	public void setOutputFormat(CSVFormat outputFormat) {
-		this.outputFormat = outputFormat;
-	}
-	
-	/** {@inheritDoc} */
-	public String toString() {
-		StringBuilder result = new StringBuilder("[");
-		result.append(getClass().getSimpleName());
-		result.append(" inputFilename=");
-		result.append(this.inputFilename);
-		result.append(", recordCount=");
-		result.append(this.recordCount);
-		result.append("]");
-		return result.toString();
-	}
-	
-	
-	
-	
 }

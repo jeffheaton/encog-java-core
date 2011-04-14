@@ -72,7 +72,7 @@ public class AnalystClusterCSV extends BasicFile {
 	public final void analyze(final EncogAnalyst theAnalyst, 
 			final File inputFile,
 			final boolean headers, final CSVFormat format) {
-		this.setInputFilename( inputFile);
+		this.setInputFilename(inputFile);
 		setExpectInputHeaders(headers);
 		setInputFormat(format);
 
@@ -107,7 +107,7 @@ public class AnalystClusterCSV extends BasicFile {
 			recordCount++;
 		}
 		setRecordCount(recordCount);
-		this.setColumnCount( csv.getColumnCount());
+		this.setColumnCount(csv.getColumnCount());
 
 		readHeaders(csv);
 		csv.close();

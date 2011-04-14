@@ -111,11 +111,11 @@ public class AnalystNormalizeCSV extends BasicFile {
 	public final void analyze(final File inputFilename,
 			final boolean expectInputHeaders, final CSVFormat inputFormat,
 			final EncogAnalyst theAnalyst) {
-		this.setInputFilename( inputFilename);
-		this.setInputFormat( inputFormat);
-		this.setExpectInputHeaders( expectInputHeaders);
+		this.setInputFilename(inputFilename);
+		this.setInputFormat(inputFormat);
+		this.setExpectInputHeaders(expectInputHeaders);
 		this.analyst = theAnalyst;
-		this.setAnalyzed( true);
+		this.setAnalyzed(true);
 
 		this.analystHeaders = new CSVHeaders(inputFilename, expectInputHeaders,
 				inputFormat);

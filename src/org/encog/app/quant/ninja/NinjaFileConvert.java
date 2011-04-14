@@ -66,15 +66,4 @@ public class NinjaFileConvert extends BasicCachedFile {
 			throw new QuantError(ex);
 		}
 	}
-
-	/**
-	 * Analyze the input file.
-	 * @param input The name of the input file.
-	 * @param headers True, if headers are present.
-	 * @param format The format of the input file.
-	 */
-	public void analyze(File input, boolean headers, CSVFormat format) {
-		super.analyze(input, headers, format);
-	}
-
 }
