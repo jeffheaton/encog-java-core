@@ -66,7 +66,7 @@ public class BaseCachedColumn {
     /**
      * @return The name of this column
      */
-	public String getName() {
+	public final String getName() {
 		return name;
 	}
 

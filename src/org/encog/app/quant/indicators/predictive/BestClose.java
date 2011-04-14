@@ -42,14 +42,6 @@ public class BestClose extends Indicator {
     }
 
     /**
-     * The name of this indicator.
-     */
-    public String getName()
-    {
-        return NAME;
-    }
-
-    /**
      * Calculate the indicator.
      * @param data The data available to the indicator.
      * @param length The length available to the indicator.
