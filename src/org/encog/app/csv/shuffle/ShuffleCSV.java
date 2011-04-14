@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.csv.shuffle;
 
 import java.io.File;
@@ -13,6 +36,12 @@ import org.encog.util.csv.ReadCSV;
  * Randomly shuffle the lines of a CSV file.
  */
 public class ShuffleCSV extends BasicFile {
+	
+	/**
+	 * The default buffer size.
+	 */
+	public static final int DEFAULT_BUFFER_SIZE = 5000;
+	
 	/**
 	 * The buffer size.
 	 */
@@ -28,77 +57,58 @@ public class ShuffleCSV extends BasicFile {
 	 */
 	private int remaining;
 
-	/** 
-	 * @return The buffer size.  This is how many rows of data are loaded(and randomized),
-	 * at a time. The default is 5,000.
-	 */
-	public int getBufferSize() {
-		return this.bufferSize;
-	}
-
 	/**
-	 * Set the buffer size.
-	 * @param s The new buffer size.
-	 */
-	public void setBufferSize(int s) {
-		this.bufferSize = s;
-		this.buffer = new LoadedRow[this.bufferSize];
-	}
-
-	/**
-	 * Construct the object
+	 * Construct the object.
 	 */
 	public ShuffleCSV() {
-		this.setBufferSize(5000);
+		setBufferSize(DEFAULT_BUFFER_SIZE);
 	}
 
 	/**
 	 * Analyze the neural network.
-	 * @param inputFile The input file.
-	 * @param headers True, if there are headers.
-	 * @param format The format of the CSV file.
+	 * 
+	 * @param inputFile
+	 *            The input file.
+	 * @param headers
+	 *            True, if there are headers.
+	 * @param format
+	 *            The format of the CSV file.
 	 */
-	public void analyze(File inputFile, boolean headers, CSVFormat format) {
-		this.setInputFilename(inputFile);
-		this.setExpectInputHeaders(headers);
-		this.setInputFormat(format);
+	public final void analyze(final File inputFile, final boolean headers,
+			final CSVFormat format) {
+		setInputFilename(inputFile);
+		setExpectInputHeaders(headers);
+		setInputFormat(format);
 
-		this.setAnalyzed(true);
+		setAnalyzed(true);
 
 		performBasicCounts();
 	}
 
 	/**
-	 * Load the buffer from the underlying file.
-	 * @param csv The CSV file to load from.
+	 * @return The buffer size. This is how many rows of data are loaded(and
+	 *         randomized), at a time. The default is 5,000.
 	 */
-	private void loadBuffer(ReadCSV csv) {
-		for (int i = 0; i < this.buffer.length; i++)
-			this.buffer[i] = null;
-
-		int index = 0;
-		while (csv.next() && (index < this.bufferSize)&& !this.shouldStop()) {
-			LoadedRow row = new LoadedRow(csv);
-			buffer[index++] = row;
-		}
-
-		this.remaining = index;
+	public final int getBufferSize() {
+		return this.bufferSize;
 	}
 
 	/**
 	 * Get the next row from the underlying CSV file.
-	 * @param csv The underlying CSV file.
+	 * 
+	 * @param csv
+	 *            The underlying CSV file.
 	 * @return The loaded row.
 	 */
-	private LoadedRow GetNextRow(ReadCSV csv) {
-		if (remaining == 0) {
+	private LoadedRow getNextRow(final ReadCSV csv) {
+		if (this.remaining == 0) {
 			loadBuffer(csv);
 		}
 
-		while (remaining > 0) {
-			int index = RangeRandomizer.randomInt(0, this.bufferSize - 1);
+		while (this.remaining > 0) {
+			final int index = RangeRandomizer.randomInt(0, this.bufferSize - 1);
 			if (this.buffer[index] != null) {
-				LoadedRow result = this.buffer[index];
+				final LoadedRow result = this.buffer[index];
 				this.buffer[index] = null;
 				this.remaining--;
 				return result;
@@ -106,27 +116,60 @@ public class ShuffleCSV extends BasicFile {
 		}
 		return null;
 	}
-	
+
+	/**
+	 * Load the buffer from the underlying file.
+	 * 
+	 * @param csv
+	 *            The CSV file to load from.
+	 */
+	private void loadBuffer(final ReadCSV csv) {
+		for (int i = 0; i < this.buffer.length; i++) {
+			this.buffer[i] = null;
+		}
+
+		int index = 0;
+		while (csv.next() && (index < this.bufferSize) && !shouldStop()) {
+			final LoadedRow row = new LoadedRow(csv);
+			this.buffer[index++] = row;
+		}
+
+		this.remaining = index;
+	}
+
 	/**
 	 * Process, and generate the output file.
-	 * @param outputFile The output file.
+	 * 
+	 * @param outputFile
+	 *            The output file.
 	 */
-	public void process(File outputFile) {
+	public final void process(final File outputFile) {
 		validateAnalyzed();
 
-		ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
-				this.isExpectInputHeaders(), this.getInputFormat());
+		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
+				isExpectInputHeaders(), getInputFormat());
 		LoadedRow row;
 
-		PrintWriter tw = this.prepareOutputFile(outputFile);
+		final PrintWriter tw = prepareOutputFile(outputFile);
 
 		resetStatus();
-		while ((row = GetNextRow(csv)) != null) {
+		while ((row = getNextRow(csv)) != null) {
 			writeRow(tw, row);
 			updateStatus(false);
 		}
 		reportDone(false);
 		tw.close();
 		csv.close();
+	}
+
+	/**
+	 * Set the buffer size.
+	 * 
+	 * @param s
+	 *            The new buffer size.
+	 */
+	public final void setBufferSize(final int s) {
+		this.bufferSize = s;
+		this.buffer = new LoadedRow[this.bufferSize];
 	}
 }

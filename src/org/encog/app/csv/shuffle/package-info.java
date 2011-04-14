@@ -21,24 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.app.csv.sort;
-
 /**
- * The type of sort.
+ * This package provides a method to shuffle a CSV into random order.
  */
-public enum SortType {
-	/**
-	 * Sort fields as ints.
-	 */
-	SortInteger,
+package org.encog.app.csv.shuffle;
 
-	/**
-	 * Sort fields as strings.
-	 */
-	SortString,
-
-	/**
-	 * Sort fields as real numbers.
-	 */
-	SortDecimal
-}

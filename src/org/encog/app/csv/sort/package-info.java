@@ -21,24 +21,8 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
+/**
+ * This package provides a method to sort a CSV.
+ */
 package org.encog.app.csv.sort;
 
-/**
- * The type of sort.
- */
-public enum SortType {
-	/**
-	 * Sort fields as ints.
-	 */
-	SortInteger,
-
-	/**
-	 * Sort fields as strings.
-	 */
-	SortString,
-
-	/**
-	 * Sort fields as real numbers.
-	 */
-	SortDecimal
-}

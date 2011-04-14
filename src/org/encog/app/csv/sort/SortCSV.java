@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.csv.sort;
 
 import java.io.File;
@@ -18,21 +41,44 @@ import org.encog.util.csv.ReadCSV;
 public class SortCSV extends BasicFile {
 
 	/**
-	 * @return Used to specify the sort order.
-	 */
-	public List<SortedField> getSortOrder() {
-		return this.sortOrder;
-	}
-
-	/**
 	 * The loaded rows.
 	 */
-	private List<LoadedRow> data = new ArrayList<LoadedRow>();
+	private final List<LoadedRow> data = new ArrayList<LoadedRow>();
 
 	/**
 	 * The sort order.
 	 */
-	private List<SortedField> sortOrder = new ArrayList<SortedField>();
+	private final List<SortedField> sortOrder = new ArrayList<SortedField>();
+
+	/**
+	 * @return Used to specify the sort order.
+	 */
+	public final List<SortedField> getSortOrder() {
+		return this.sortOrder;
+	}
+
+	/**
+	 * Process, and sort the files.
+	 * 
+	 * @param inputFile
+	 *            The input file.
+	 * @param outputFile
+	 *            The output file.
+	 * @param headers
+	 *            True, if headers are to be used.
+	 * @param format
+	 *            The format of the file.
+	 */
+	public final void process(final File inputFile, final File outputFile,
+			final boolean headers, final CSVFormat format) {
+		setInputFilename(inputFile);
+		setExpectInputHeaders(headers);
+		setInputFormat(format);
+
+		readInputFile();
+		sortData();
+		writeOutputFile(outputFile);
+	}
 
 	/**
 	 * Read the input file.
@@ -40,20 +86,20 @@ public class SortCSV extends BasicFile {
 	private void readInputFile() {
 		resetStatus();
 
-		ReadCSV csv = new ReadCSV(getInputFilename().toString(), isExpectInputHeaders(),
-				getInputFormat());
-		while (csv.next()&& !this.shouldStop()) {
+		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
+				isExpectInputHeaders(), getInputFormat());
+		while (csv.next() && !shouldStop()) {
 			updateStatus("Reading input file");
-			LoadedRow row = new LoadedRow(csv);
+			final LoadedRow row = new LoadedRow(csv);
 			this.data.add(row);
 		}
 
-		this.setColumnCount(csv.getColumnCount());
+		setColumnCount(csv.getColumnCount());
 
-		if (this.isExpectInputHeaders()) {
-			this.setInputHeadings(new String[csv.getColumnNames().size()]);
+		if (isExpectInputHeaders()) {
+			setInputHeadings(new String[csv.getColumnNames().size()]);
 			for (int i = 0; i < csv.getColumnNames().size(); i++) {
-				this.getInputHeadings()[i] = csv.getColumnNames().get(i);
+				getInputHeadings()[i] = csv.getColumnNames().get(i);
 			}
 		}
 
@@ -64,32 +110,34 @@ public class SortCSV extends BasicFile {
 	 * Sort the loaded data.
 	 */
 	private void sortData() {
-		Comparator<LoadedRow> comp = new RowComparator(this);
+		final Comparator<LoadedRow> comp = new RowComparator(this);
 		Collections.sort(this.data, comp);
 	}
 
 	/**
-	 * Write the sorted output file. 
-	 * @param outputFile The name of the output file.
+	 * Write the sorted output file.
+	 * 
+	 * @param outputFile
+	 *            The name of the output file.
 	 */
-	private void writeOutputFile(File outputFile) {
-		PrintWriter tw = this.prepareOutputFile(outputFile);
-		boolean[] nonNumeric = new boolean[this.getColumnCount()];
+	private void writeOutputFile(final File outputFile) {
+		final PrintWriter tw = prepareOutputFile(outputFile);
+		final boolean[] nonNumeric = new boolean[getColumnCount()];
 		boolean first = true;
 
 		resetStatus();
 
 		// write the file
-		for (LoadedRow row : this.data) {
+		for (final LoadedRow row : this.data) {
 			updateStatus("Writing output");
 			// for the first row, determine types
 			if (first) {
-				for (int i = 0; i < this.getColumnCount(); i++) {
+				for (int i = 0; i < getColumnCount(); i++) {
 					try {
-						String str = row.getData()[i];
+						final String str = row.getData()[i];
 						Double.parseDouble(str);
 						nonNumeric[i] = false;
-					} catch (Exception ex) {
+					} catch (final Exception ex) {
 						nonNumeric[i] = true;
 					}
 				}
@@ -97,9 +145,9 @@ public class SortCSV extends BasicFile {
 			}
 
 			// write the row
-			StringBuilder line = new StringBuilder();
+			final StringBuilder line = new StringBuilder();
 
-			for (int i = 0; i < this.getColumnCount(); i++) {
+			for (int i = 0; i < getColumnCount(); i++) {
 				if (i > 0) {
 					line.append(",");
 				}
@@ -121,24 +169,6 @@ public class SortCSV extends BasicFile {
 		// close the file
 
 		tw.close();
-	}
-
-	/**
-	 * Process, and sort the files.
-	 * @param inputFile The input file.
-	 * @param outputFile The output file.
-	 * @param headers True, if headers are to be used.
-	 * @param format The format of the file.
-	 */
-	public void process(File inputFile, File outputFile, boolean headers,
-			CSVFormat format) {
-		this.setInputFilename(inputFile);
-		this.setExpectInputHeaders(headers);
-		this.setInputFormat(format);
-
-		readInputFile();
-		sortData();
-		writeOutputFile(outputFile);
 	}
 
 }

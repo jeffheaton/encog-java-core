@@ -71,6 +71,11 @@ public final class Format {
 	public static final long MILI_IN_SEC = 1000;
 
 	/**
+	 * One hundred percent.
+	 */
+	public static final double HUNDRED_PERCENT = 100.0;
+
+	/**
 	 * Format a double.
 	 * 
 	 * @param d

@@ -31,6 +31,11 @@ package org.encog.mathutil;
 public class Equilateral {
 
 	/**
+	 * The minimum number of fields to use equilateral encoding.
+	 */
+	public static final int MIN_EQ = 3;
+	
+	/**
 	 * The matrix of values that was generated.
 	 */
 	private final double[][] matrix;
