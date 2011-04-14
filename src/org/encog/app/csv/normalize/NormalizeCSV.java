@@ -63,7 +63,7 @@ public class NormalizeCSV extends BasicFile {
 			int fieldCount = csv.getColumnCount();
 			this.stats = new NormalizationStats(fieldCount);
 			this.stats.setFormat(this.getInputFormat());
-			this.stats.setPrecision(this.precision);
+			this.stats.setPrecision(this.getPrecision());
 
 			for (int i = 0; i < fieldCount; i++) {
 				stats.getStats()[i] = new NormalizedField();
@@ -208,7 +208,7 @@ public class NormalizeCSV extends BasicFile {
 		ReadCSV csv = null;
 		PrintWriter tw = null;
 		this.stats.setFormat(this.getInputFormat());
-		this.stats.setPrecision(this.precision);
+		this.stats.setPrecision(this.getPrecision());
 
 
 		try {
@@ -386,11 +386,11 @@ public class NormalizeCSV extends BasicFile {
 
 	public void analyze(File inputFilename, boolean expectInputHeaders,
 			CSVFormat inputFormat, NormalizationStats stats) {
-		this.inputFilename = inputFilename;
-		this.inputFormat = inputFormat;
-		this.expectInputHeaders = expectInputHeaders;
+		this.setInputFilename( inputFilename);
+		this.setInputFormat( inputFormat);
+		this.setExpectInputHeaders( expectInputHeaders);
 		this.stats = stats;
-		this.analyzed = true;
+		this.setAnalyzed( true);
 	}
 
 }

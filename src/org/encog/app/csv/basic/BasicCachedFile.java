@@ -64,7 +64,7 @@ public class BasicCachedFile extends BasicFile {
         try
         {
             int recordCount = 0;
-            reader = new BufferedReader(new FileReader(this.inputFilename));
+            reader = new BufferedReader(new FileReader(this.getInputFilename()));
             while (reader.readLine() != null)
             {
                 updateStatus(true);
@@ -90,7 +90,7 @@ public class BasicCachedFile extends BasicFile {
             }
             this.setInputFilename( input );
             this.setExpectInputHeaders( headers );
-            this.inputFormat = format;
+            this.setInputFormat( format );
         }
 
         // now analyze columns

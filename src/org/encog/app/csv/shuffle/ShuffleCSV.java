@@ -63,7 +63,7 @@ public class ShuffleCSV extends BasicFile {
 		this.setExpectInputHeaders(headers);
 		this.setInputFormat(format);
 
-		this.analyzed = true;
+		this.setAnalyzed(true);
 
 		performBasicCounts();
 	}

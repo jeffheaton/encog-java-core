@@ -77,7 +77,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 	public final void analyze(final EncogAnalyst theAnalyst, 
 			final File inputFile,
 			final boolean headers, final CSVFormat format) {
-		this.inputFilename = inputFile;
+		this.setInputFilename( inputFile );
 		setExpectInputHeaders(headers);
 		setInputFormat(format);
 		this.analyst = theAnalyst;

@@ -85,7 +85,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 	public final void analyze(final EncogAnalyst theAnalyst, 
 			final File inputFile,
 			final boolean headers, final CSVFormat format) {
-		this.inputFilename = inputFile;
+		this.setInputFilename(inputFile);
 		setExpectInputHeaders(headers);
 		setInputFormat(format);
 
@@ -93,10 +93,10 @@ public class AnalystEvaluateCSV extends BasicFile {
 		this.analyst = theAnalyst;
 
 		performBasicCounts();
-		this.fileColumns = this.inputHeadings.length;
+		this.fileColumns = this.getInputHeadings().length;
 		this.outputColumns = this.analyst.determineOutputFieldCount();
 
-		this.analystHeaders = new CSVHeaders(this.inputHeadings);
+		this.analystHeaders = new CSVHeaders(this.getInputHeadings());
 		this.series = new TimeSeriesUtil(analyst,
 				this.analystHeaders.getHeaders());
 
@@ -120,7 +120,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 
 				// handle provided fields, not all may be used, but all should
 				// be displayed
-				for (final String heading : this.inputHeadings) {
+				for (final String heading : this.getInputHeadings()) {
 					BasicFile.appendSeparator(line, getOutputFormat());
 					line.append("\"");
 					line.append(heading);

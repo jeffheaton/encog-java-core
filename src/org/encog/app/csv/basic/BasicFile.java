@@ -23,50 +23,50 @@ public class BasicFile implements QuantTask {
 	/**
 	 * The column headings from the input file.
 	 */
-	public String[] inputHeadings;
+	private String[] inputHeadings;
 
 	/**
 	 * The desired precision when numbers must be written. Defaults to 10
 	 * decimal places.
 	 */
-	public int precision;
+	private int precision;
 
 	/**
 	 * Most Encog CSV classes must analyze a CSV file before actually processing
 	 * it. This property specifies if the file has been analyzed yet.
 	 */
-	public boolean analyzed;
+	private boolean analyzed;
 
 	/**
 	 * The input filename. This is the file being analyzed/processed.
 	 */
-	public File inputFilename;
+	private File inputFilename;
 
 	/**
 	 * True, if input headers should be expected.
 	 */
-	public boolean expectInputHeaders;
+	private boolean expectInputHeaders;
 
 	/**
 	 * The format of the input file.
 	 */
-	public CSVFormat inputFormat;
+	private CSVFormat inputFormat;
 
 	/**
 	 * The number of columns in the input file.
 	 */
-	public int columnCount;
+	private int columnCount;
 
 	/**
 	 * Allows status to be reported. Defaults to no status reported.
 	 */
-	public StatusReportable report;
+	private StatusReportable report;
 
 	/**
 	 * The number of records to process before status is updated. Defaults to
 	 * 10k.
 	 */
-	public int reportInterval;
+	private int reportInterval;
 
 	/**
 	 * The number of records to process. This is determined when the file is
@@ -530,4 +530,8 @@ public class BasicFile implements QuantTask {
 		result.append("]");
 		return result.toString();
 	}
+	
+	
+	
+	
 }

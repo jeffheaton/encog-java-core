@@ -72,7 +72,7 @@ public class AnalystClusterCSV extends BasicFile {
 	public final void analyze(final EncogAnalyst theAnalyst, 
 			final File inputFile,
 			final boolean headers, final CSVFormat format) {
-		this.inputFilename = inputFile;
+		this.setInputFilename( inputFile);
 		setExpectInputHeaders(headers);
 		setInputFormat(format);
 
@@ -80,7 +80,7 @@ public class AnalystClusterCSV extends BasicFile {
 		this.analyst = theAnalyst;
 
 		if (getOutputFormat() == null) {
-			setOutputFormat(this.inputFormat);
+			setOutputFormat(this.getInputFormat());
 		}
 
 		this.data = new BasicNeuralDataSet();
@@ -88,11 +88,11 @@ public class AnalystClusterCSV extends BasicFile {
 		int recordCount = 0;
 
 		final int outputLength = this.analyst.determineUniqueColumns();
-		final ReadCSV csv = new ReadCSV(this.inputFilename.toString(),
-				this.expectInputHeaders, this.inputFormat);
+		final ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
+				this.isExpectInputHeaders(), this.getInputFormat());
 		readHeaders(csv);
 
-		this.analystHeaders = new CSVHeaders(this.inputHeadings);
+		this.analystHeaders = new CSVHeaders(this.getInputHeadings());
 
 		while (csv.next() && !shouldStop()) {
 			updateStatus(true);
@@ -107,7 +107,7 @@ public class AnalystClusterCSV extends BasicFile {
 			recordCount++;
 		}
 		setRecordCount(recordCount);
-		this.columnCount = csv.getColumnCount();
+		this.setColumnCount( csv.getColumnCount());
 
 		readHeaders(csv);
 		csv.close();
@@ -134,7 +134,7 @@ public class AnalystClusterCSV extends BasicFile {
 
 				// handle provided fields, not all may be used, but all should
 				// be displayed
-				for (final String heading : this.inputHeadings) {
+				for (final String heading : this.getInputHeadings()) {
 					BasicFile.appendSeparator(line, getOutputFormat());
 					line.append("\"");
 					line.append(heading);

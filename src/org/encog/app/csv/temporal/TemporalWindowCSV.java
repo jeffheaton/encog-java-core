@@ -236,7 +236,7 @@ public class TemporalWindowCSV extends BasicFile {
                             {
                                 if (line.length() > 0)
                                     line.append(',');
-                                line.append(this.getInputFormat().format(bar[index], precision));
+                                line.append(this.getInputFormat().format(bar[index], getPrecision()));
                                 index++;
                             }
                         }
@@ -254,7 +254,7 @@ public class TemporalWindowCSV extends BasicFile {
                             {
                                 if (line.length() > 0)
                                     line.append(getInputFormat().getSeparator());
-                                line.append(this.getInputFormat().format(bar[index], precision));
+                                line.append(this.getInputFormat().format(bar[index], getPrecision()));
                                 index++;
                             }
                         }

@@ -23,7 +23,7 @@ public class EvaluateCSV extends BasicFile {
      */
     public void analyze(File inputFile, boolean headers, CSVFormat format)
     {
-        this.inputFilename = inputFile;
+        this.setInputFilename(inputFile);
         this.setExpectInputHeaders( headers );
         this.setInputFormat( format );
 
@@ -57,7 +57,7 @@ public class EvaluateCSV extends BasicFile {
             
             for(int i=0;i<output.size();i++)
             {
-            	row.getData()[i+method.getInputCount()] = this.inputFormat.format(output.getData(i), this.getPrecision());
+            	row.getData()[i+method.getInputCount()] = this.getInputFormat().format(output.getData(i), this.getPrecision());
             }
             
             writeRow(tw, row);

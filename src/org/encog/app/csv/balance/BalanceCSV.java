@@ -63,7 +63,7 @@ public class BalanceCSV extends BasicFile {
 	 */
 	public final void analyze(final File inputFile, final boolean headers,
 			final CSVFormat format) {
-		this.inputFilename = inputFile;
+		this.setInputFilename(inputFile);
 		setExpectInputHeaders(headers);
 		setInputFormat(format);
 
