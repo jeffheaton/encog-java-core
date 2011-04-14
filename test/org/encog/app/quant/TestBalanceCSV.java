@@ -37,8 +37,8 @@ public class TestBalanceCSV extends TestCase {
 	public void testBalanceCSVHeaders() throws IOException {
 		generateTestFile(true);
 		BalanceCSV norm = new BalanceCSV();
-		norm.Analyze(INPUT_NAME, true, CSVFormat.ENGLISH);
-		norm.Process(OUTPUT_NAME, 1, 2);
+		norm.analyze(INPUT_NAME, true, CSVFormat.ENGLISH);
+		norm.process(OUTPUT_NAME, 1, 2);
 
 		BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
 
@@ -61,8 +61,8 @@ public class TestBalanceCSV extends TestCase {
 	public void TestBalanceCSVNoHeaders() throws IOException {
 		generateTestFile(false);
 		BalanceCSV norm = new BalanceCSV();
-		norm.Analyze(INPUT_NAME, false, CSVFormat.ENGLISH);
-		norm.Process(OUTPUT_NAME, 1, 2);
+		norm.analyze(INPUT_NAME, false, CSVFormat.ENGLISH);
+		norm.process(OUTPUT_NAME, 1, 2);
 
 		BufferedReader tr = new BufferedReader(new FileReader(OUTPUT_NAME));
 
