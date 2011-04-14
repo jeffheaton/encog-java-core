@@ -772,7 +772,7 @@ public class AnalystWizard {
 		
 		StringBuilder arch = new StringBuilder();
 		arch.append("?->");
-		if( this.goal==AnalystGoal.Classification) {
+		if (this.goal == AnalystGoal.Classification) {
 			arch.append("C");
 		} else {
 			arch.append("R");

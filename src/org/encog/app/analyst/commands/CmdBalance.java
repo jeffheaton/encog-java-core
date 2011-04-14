@@ -102,10 +102,10 @@ public class CmdBalance extends Cmd {
 		balance.setReport(new AnalystReportBridge(getAnalyst()));
 
 		final boolean headers = getScript().expectInputHeaders(sourceID);
-		balance.Analyze(sourceFile, headers, inputFormat);
+		balance.analyze(sourceFile, headers, inputFormat);
 		balance.setOutputFormat(outputFormat);
 		balance.setProduceOutputHeaders(true);
-		balance.Process(targetFile, targetFieldIndex, countPer);
+		balance.process(targetFile, targetFieldIndex, countPer);
 		getAnalyst().setCurrentQuantTask(null);
 		return balance.shouldStop();
 	}
