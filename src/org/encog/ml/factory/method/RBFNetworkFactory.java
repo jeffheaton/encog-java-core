@@ -5,9 +5,12 @@ import java.util.List;
 import org.encog.EncogError;
 import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.ml.MLMethod;
+import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureLayer;
 import org.encog.ml.factory.parse.ArchitectureParse;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.rbf.RBFNetwork;
+import org.encog.util.ParamsHolder;
 
 public class RBFNetworkFactory {
 	public MLMethod create(String architecture, int input, int output) {
@@ -35,9 +38,13 @@ public class RBFNetworkFactory {
 		else if( rbfLayer.getName().equalsIgnoreCase("MexicanHat"))
 			t = RBFEnum.MexicanHat;
 		else 
-			t = RBFEnum.Gaussian;
+			throw new NeuralNetworkError("Unknown RBF: " + rbfLayer.getName());
 		
-		RBFNetwork result = new RBFNetwork(inputCount,rbfLayer.getCount(),outputCount,t);
+		ParamsHolder holder = new ParamsHolder(rbfLayer.getParams());
+		
+		int rbfCount = holder.getInt("C", true, 0);
+		
+		RBFNetwork result = new RBFNetwork(inputCount,rbfCount,outputCount,t);
 		
 		return result;
 	}

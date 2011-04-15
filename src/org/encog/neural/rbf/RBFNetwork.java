@@ -67,6 +67,11 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 	public RBFNetwork(final int inputCount, int hiddenCount, 
 			final int outputCount, RBFEnum t)
 	{
+		
+		if( hiddenCount==0) {
+			throw new NeuralNetworkError("RBF network cannot have zero hidden neurons.");
+		}
+		
 		RadialBasisFunction[] rbf = new RadialBasisFunction[hiddenCount];
 		
 		// Set the standard RBF neuron width.

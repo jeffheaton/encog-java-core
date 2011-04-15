@@ -624,7 +624,7 @@ public class AnalystWizard {
 				MLMethodFactory.TYPE_RBFNETWORK);
 		this.script.getProperties().setProperty(
 				ScriptProperties.ML_CONFIG_ARCHITECTURE,
-				"?->GAUSSIAN(" + hidden + ")->?");
+				"?->GAUSSIAN(c=" + hidden + ")->?");
 
 		if (outputColumns > 1) {
 			this.script.getProperties().setProperty(
