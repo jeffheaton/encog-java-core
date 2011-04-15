@@ -2,6 +2,7 @@ package org.encog.ml.factory.train;
 
 import java.util.Map;
 
+import org.encog.EncogError;
 import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
@@ -22,6 +23,10 @@ import org.encog.util.csv.NumberList;
 public class NeighborhoodSOMFactory {
 	
 	public MLTrain create(MLMethod method, NeuralDataSet training, String argsStr) {
+		
+		if( !(method instanceof SOM) ) {
+			throw new EncogError("Neighborhood training cannot be used on a method of type: " + method.getClass().getName() );
+		}
 		
 		Map<String, String> args = ArchitectureParse.parseParams(argsStr);
 		ParamsHolder holder = new ParamsHolder(args);

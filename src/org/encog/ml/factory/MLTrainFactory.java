@@ -4,6 +4,7 @@ import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
 import org.encog.ml.factory.train.BackPropFactory;
+import org.encog.ml.factory.train.ClusterSOMFactory;
 import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
 import org.encog.ml.factory.train.RPROPFactory;
@@ -20,6 +21,7 @@ public class MLTrainFactory {
 	public static final String TYPE_SVM = "svm-train";
 	public static final String TYPE_SVM_SEARCH = "svm-search";
 	public static final String TYPE_SOM_NEIGHBORHOOD = "som-neighborhood";
+	public static final String TYPE_SOM_CLUSTER = "som-cluster";
 	
 	public static final String PROPERTY_LEARNING_RATE = "LR";
 	public static final String PROPERTY_LEARNING_MOMENTUM = "MOM";
@@ -45,6 +47,7 @@ public class MLTrainFactory {
 	private final SVMSearchFactory svmSearchFactory = new SVMSearchFactory();
 	private final SCGFactory scgFactory = new SCGFactory();
 	private final NeighborhoodSOMFactory neighborhoodFactory = new NeighborhoodSOMFactory();
+	private final ClusterSOMFactory somClusterFactory = new ClusterSOMFactory();
 	
 	public MLTrain create(MLMethod method, NeuralDataSet training, String type, String args) {
 		if( TYPE_RPROP.equalsIgnoreCase(type) ) {
@@ -61,7 +64,9 @@ public class MLTrainFactory {
 			return this.svmSearchFactory.create(method, training, args);
 		} else if( TYPE_SOM_NEIGHBORHOOD.equalsIgnoreCase(type) ) {
 			return this.neighborhoodFactory.create(method, training, args);
-		} 
+		} else if( TYPE_SOM_CLUSTER.equalsIgnoreCase(type)) {
+			return this.somClusterFactory.create(method, training, args);
+		}
 		else {
 			throw new EncogError("Unknown training type: " + type);
 		}

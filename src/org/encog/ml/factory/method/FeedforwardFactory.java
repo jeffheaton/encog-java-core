@@ -1,74 +1,64 @@
 package org.encog.ml.factory.method;
 
+import java.util.List;
+
 import org.encog.app.analyst.AnalystError;
 import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.MLMethod;
+import org.encog.ml.factory.parse.ArchitectureLayer;
+import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 
 public class FeedforwardFactory {
 
-	public MLMethod create(String a, int input, int output) {
+	public MLMethod create(String architecture, int input, int output) {
 		BasicNetwork result = new BasicNetwork();
-		boolean done = false;
-		int base = 0;
+		List<String> layers = ArchitectureParse.parseLayers(architecture);
+		ActivationFunction activation = new ActivationTANH();
 		
 		int questionPhase = 0;
-		String line = a.toLowerCase();
-		ActivationFunction activation = null;
-		
-		do {
-			String part;
-			int index = line.indexOf("->",base );
-			if( index!=-1 ) {
-				part = line.substring(base,index).trim();
-				base = index+2;
+		for(String layerStr: layers) {
+			int defaultCount;
+			// determine default
+			if( questionPhase==0 ) {
+				defaultCount = input;
 			} else {
-				part = line.substring(base).trim();
-				done = true;
+				defaultCount = output;
 			}
 			
-			boolean bias = part.endsWith("b");
-			if( bias ) {
-				part = part.substring(0, part.length()-1);
-			}
+			ArchitectureLayer layer = ArchitectureParse.parseLayer(layerStr,defaultCount);
+			boolean bias = layer.isBias();
 			
-			if (part.equals("?")) {
-				switch (questionPhase) {
-					case 0:
-						part = ""+input;
-						break;
-					case 1:
-						part = ""+output;
-						break;
-					case 2:
-						throw new AnalystError("At most two ?'s may be defined. " + a);
-				}
-				questionPhase++;
-			}
+			String part = layer.getName();
 			
-			if( part.equals("tanh")) {
+			if( "tanh".equalsIgnoreCase(part) ) {
 				activation = new ActivationTANH();
-			} else if( part.equals("linear")) {
+			} else if( "linear".equalsIgnoreCase(part) ) {
 				activation = new ActivationLinear();
-			} else if( part.equals("sigmoid")) {
+			} else if( "sigmoid".equalsIgnoreCase(part)) {
 				activation = new ActivationSigmoid();
 			} else {
 				try {
-					Integer i = Integer.parseInt(part);
-					Layer layer = new BasicLayer(activation,bias,i);
-					result.addLayer(layer);
+					if( layer.isUsedDefault() ) {
+						questionPhase++;
+						if( questionPhase>2 ) {
+							throw new AnalystError("Only two ?'s may be used.");
+						}
+					}
+					Layer layer2 = new BasicLayer(activation,bias,layer.getCount());
+					result.addLayer(layer2);
 				}
 				catch(NumberFormatException ex) {
-					throw new AnalystError("Unknown architecture: " + a + ", can't parse: " + part);
+					throw new AnalystError("Unknown architecture: " + activation + ", can't parse: " + part);
 				}
 			}
-		} while(!done);
-		
+		}
+				
 		result.getStructure().finalizeStructure();
 		result.reset();
 			

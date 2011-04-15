@@ -474,11 +474,11 @@ public class AnalystWizard {
 		if (this.range == NormalizeRange.NegOne2One) {
 			this.script.getProperties().setProperty(
 					ScriptProperties.ML_CONFIG_ARCHITECTURE,
-					"?B->TANH->" + hidden + "B->TANH->?");
+					"?:B->TANH->" + hidden + ":B->TANH->?");
 		} else {
 			this.script.getProperties().setProperty(
 					ScriptProperties.ML_CONFIG_ARCHITECTURE,
-					"?B->SIGMOID->" + hidden + "B->SIGMOID->?");
+					"?:B->SIGMOID->" + hidden + ":B->SIGMOID->?");
 		}
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,

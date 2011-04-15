@@ -18,7 +18,7 @@ public class ArchitectureParse {
 		
 		// first check for bias
 		if( check.endsWith(":B")) {
-			check = check.substring(0,check.length()-3);
+			check = check.substring(0,check.length()-2);
 			layer.setBias(true);
 		}
 		
@@ -39,6 +39,7 @@ public class ArchitectureParse {
 			}
 			else {
 				layer.setCount(defaultValue);
+				layer.setUsedDefault(true);
 				return layer;
 			}
 		}

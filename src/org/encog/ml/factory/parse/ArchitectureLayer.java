@@ -7,6 +7,7 @@ public class ArchitectureLayer {
 	private boolean bias;
 	private int count;
 	private String name;
+	private boolean usedDefault;
 	private final Map<String,String> params = new HashMap<String,String>();
 	/**
 	 * @return the bias
@@ -50,6 +51,19 @@ public class ArchitectureLayer {
 	public Map<String, String> getParams() {
 		return params;
 	}
+	/**
+	 * @return the usedDefault
+	 */
+	public boolean isUsedDefault() {
+		return usedDefault;
+	}
+	/**
+	 * @param usedDefault the usedDefault to set
+	 */
+	public void setUsedDefault(boolean usedDefault) {
+		this.usedDefault = usedDefault;
+	}
+	
 	
 	
 }
