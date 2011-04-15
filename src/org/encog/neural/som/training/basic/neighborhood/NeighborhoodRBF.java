@@ -41,12 +41,12 @@ public class NeighborhoodRBF implements NeighborhoodFunction {
 	 * The radial basis function to use.
 	 */
 	private RadialBasisFunction rbf;
-	
+
 	/**
 	 * The size of each dimension.
 	 */
 	private final int[] size;
-	
+
 	/**
 	 * The displacement of each dimension, when mapping the dimensions
 	 * to a 1d array.
@@ -60,8 +60,7 @@ public class NeighborhoodRBF implements NeighborhoodFunction {
 	 * @param x The size of the x-dimension.
 	 * @param y The size of the y-dimension.
 	 */
-	public NeighborhoodRBF(final RBFEnum type, 
-			final int x, final int y) {
+	public NeighborhoodRBF(final RBFEnum type, final int x, final int y) {
 		final int[] size = new int[2];
 		size[0] = x;
 		size[1] = y;
@@ -74,25 +73,24 @@ public class NeighborhoodRBF implements NeighborhoodFunction {
 		widthArray[0] = 1;
 		widthArray[1] = 1;
 
-		switch(type)
-		{
-			case Gaussian:
-				this.rbf = new GaussianFunction(2);
-				break;
-			case InverseMultiquadric:
-				this.rbf = new InverseMultiquadricFunction(2);
-				break;
-			case Multiquadric:
-				this.rbf = new MultiquadricFunction(2);
-				break;
-			case MexicanHat:
-				this.rbf = new MexicanHatFunction(2);
-				break;				
+		switch (type) {
+		case Gaussian:
+			this.rbf = new GaussianFunction(2);
+			break;
+		case InverseMultiquadric:
+			this.rbf = new InverseMultiquadricFunction(2);
+			break;
+		case Multiquadric:
+			this.rbf = new MultiquadricFunction(2);
+			break;
+		case MexicanHat:
+			this.rbf = new MexicanHatFunction(2);
+			break;
 		}
-		
+
 		this.rbf.setWidth(1);
 		EngineArray.arrayCopy(centerArray, this.rbf.getCenters());
-		
+
 		this.size = size;
 
 		calculateDisplacement();
@@ -103,9 +101,21 @@ public class NeighborhoodRBF implements NeighborhoodFunction {
 	 * @param size The sizes of each dimension.
 	 * @param rbf The multi-dimensional RBF to use.
 	 */
-	public NeighborhoodRBF(final int[] size,
-			final RadialBasisFunction rbf) {
-		this.rbf = rbf;
+	public NeighborhoodRBF(final int[] size, final RBFEnum type) {
+		switch (type) {
+		case Gaussian:
+			this.rbf = new GaussianFunction(2);
+			break;
+		case InverseMultiquadric:
+			this.rbf = new InverseMultiquadricFunction(2);
+			break;
+		case Multiquadric:
+			this.rbf = new MultiquadricFunction(2);
+			break;
+		case MexicanHat:
+			this.rbf = new MexicanHatFunction(2);
+			break;
+		}
 		this.size = size;
 		calculateDisplacement();
 	}

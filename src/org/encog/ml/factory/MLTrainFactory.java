@@ -28,6 +28,15 @@ public class MLTrainFactory {
 	public static final String PROPERTY_BAYESIAN_REGULARIZATION = "BAYES_REG";
 	public static final String PROPERTY_GAMMA = "GAMMA";
 	public static final String PROPERTY_C = "C";
+	public static final String PROPERTY_PROPERTY_NEIGHBORHOOD = "NEIGHBORHOOD";	
+	public static final String PROPERTY_ITERATIONS = "ITERATIONS";
+	public static final String PROPERTY_START_LEARNING_RATE = "START_LR";
+	public static final String PROPERTY_END_LEARNING_RATE = "END_LR";
+	public static final String PROPERTY_START_RADIUS = "START_RADIUS";
+	public static final String PROPERTY_END_RADIUS = "END_RADIUS";	
+	public static final String PROPERTY_NEIGHBORHOOD = "NEIGHBORHOOD";
+	public static final String PROPERTY_RBF_TYPE = "RBF_TYPE";
+	public static final String PROPERTY_DIMENSIONS = "DIM";
 	
 	private final BackPropFactory backpropFactory = new BackPropFactory();
 	private final LMAFactory lmaFactory = new LMAFactory();
