@@ -68,7 +68,7 @@ public class AnalystNormalizeCSV extends BasicFile {
 			}
 
 			int index = headers.find(stat.getName());
-			final String str = csv.get(index++);
+			final String str = csv.get(index);
 
 			if (stat.getAction() == NormalizationAction.Normalize) {
 				double d = csv.getFormat().parse(str);

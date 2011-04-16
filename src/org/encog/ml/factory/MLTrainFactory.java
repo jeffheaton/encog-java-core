@@ -50,22 +50,29 @@ public class MLTrainFactory {
 	private final ClusterSOMFactory somClusterFactory = new ClusterSOMFactory();
 	
 	public MLTrain create(MLMethod method, NeuralDataSet training, String type, String args) {
+		
+		String args2 = args;
+		
+		if( args2==null ) {
+			args2="";
+		}
+		
 		if( TYPE_RPROP.equalsIgnoreCase(type) ) {
-			return this.rpropFactory.create(method, training, args);
+			return this.rpropFactory.create(method, training, args2);
 		} else if( TYPE_BACKPROP.equalsIgnoreCase(type) ) {
-			return this.backpropFactory.create(method, training, args);
+			return this.backpropFactory.create(method, training, args2);
 		} else if( TYPE_SCG.equalsIgnoreCase(type) ) {
-			return this.scgFactory.create(method, training, args);
+			return this.scgFactory.create(method, training, args2);
 		} else if( TYPE_LMA.equalsIgnoreCase(type) ) {
-			return this.lmaFactory.create(method, training, args);
+			return this.lmaFactory.create(method, training, args2);
 		} else if( TYPE_SVM.equalsIgnoreCase(type) ) {
-			return this.svmFactory.create(method, training, args);
+			return this.svmFactory.create(method, training, args2);
 		} else if( TYPE_SVM_SEARCH.equalsIgnoreCase(type) ) {
-			return this.svmSearchFactory.create(method, training, args);
+			return this.svmSearchFactory.create(method, training, args2);
 		} else if( TYPE_SOM_NEIGHBORHOOD.equalsIgnoreCase(type) ) {
-			return this.neighborhoodFactory.create(method, training, args);
+			return this.neighborhoodFactory.create(method, training, args2);
 		} else if( TYPE_SOM_CLUSTER.equalsIgnoreCase(type)) {
-			return this.somClusterFactory.create(method, training, args);
+			return this.somClusterFactory.create(method, training, args2);
 		}
 		else {
 			throw new EncogError("Unknown training type: " + type);

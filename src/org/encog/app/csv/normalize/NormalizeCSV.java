@@ -87,7 +87,7 @@ public class NormalizeCSV extends BasicFile {
 					this.stats.getStats()[i].setName(csv.getColumnNames()
 							.get(i));
 				} else {
-					this.stats.getStats()[i].setName("field-" + i);
+					this.stats.getStats()[i].setName("field:" + i);
 				}
 			}
 
@@ -292,6 +292,8 @@ public class NormalizeCSV extends BasicFile {
 						break;
 					case Equilateral:
 						line.append(stat.encode(str));
+						break;
+					case Ignore:
 						break;
 					default: 
 						throw new EncogCSVError("Unknown action:"  

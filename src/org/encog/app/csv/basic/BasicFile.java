@@ -301,8 +301,8 @@ public class BasicFile implements QuantTask {
 					}
 				} else {
 					for (int i = 0; i < this.columnCount; i++) {
-						line.append("\"field-");
-						line.append(i);
+						line.append("\"field:");
+						line.append(i+1);
 						line.append("\"");
 					}
 				}
@@ -331,7 +331,7 @@ public class BasicFile implements QuantTask {
 		} else {
 			this.inputHeadings = new String[csv.getColumnCount()];
 			for (int i = 0; i < csv.getColumnCount(); i++) {
-				this.inputHeadings[i] = "field-" + i;
+				this.inputHeadings[i] = "field:" + (i+1);
 			}
 		}
 	}

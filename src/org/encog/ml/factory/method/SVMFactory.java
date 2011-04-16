@@ -58,15 +58,15 @@ public class SVMFactory {
 			throw new EncogError("Unsupported mode: " + name + ", must be C for classify or R for regression.");
 		}
 		
-		if( kernelStr.equalsIgnoreCase("linear")) {
+		if( "linear".equalsIgnoreCase(kernelStr) ) {
 			kernelType = KernelType.Linear;
-		} else if( kernelStr.equalsIgnoreCase("poly")) {
+		} else if( "poly".equalsIgnoreCase(kernelStr) ) {
 			kernelType = KernelType.Poly;
-		} else if( kernelStr.equalsIgnoreCase("precomputed")) {
+		} else if( "precomputed".equalsIgnoreCase(kernelStr) ) {
 			kernelType = KernelType.Precomputed;
-		} else if( kernelStr.equalsIgnoreCase("rbf")) {
+		} else if( "rbf".equalsIgnoreCase(kernelStr) ) {
 			kernelType = KernelType.RadialBasisFunction;
-		} else if( kernelStr.equalsIgnoreCase("sigmoid")) {
+		} else if( "sigmoid".equalsIgnoreCase(kernelStr) ) {
 			kernelType = KernelType.Sigmoid;
 		} else {
 			throw new EncogError("Unsupported kernel: " + kernelStr + ", must be linear,poly,precomputed,rbf or sigmoid.");

@@ -181,11 +181,13 @@ public class CSVHeaders {
 	 * @return The index of the column.
 	 */
 	public final int find(final String name) {
-		if (this.columnMapping.containsValue(name.toLowerCase())) {
+		String key = name.toLowerCase();
+		
+		if (!this.columnMapping.containsKey(key)) {
 			throw new AnalystError("Can't find column: " + name.toLowerCase());
 		}
 
-		return this.columnMapping.get(name);
+		return this.columnMapping.get(key);
 	}
 
 	/**
