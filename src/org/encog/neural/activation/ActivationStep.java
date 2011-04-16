@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.network.activation;
+package org.encog.neural.activation;
 
 /**
  * The step activation function is a very simple activation function. It is the

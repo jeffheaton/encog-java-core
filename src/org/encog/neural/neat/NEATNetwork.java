@@ -26,13 +26,13 @@ package org.encog.neural.neat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.ml.BasicML;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralData;

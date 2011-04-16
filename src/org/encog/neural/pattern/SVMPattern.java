@@ -23,11 +23,11 @@
  */
 package org.encog.neural.pattern;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
+import org.encog.neural.activation.ActivationFunction;
 
 public class SVMPattern implements NeuralNetworkPattern {
 	/**

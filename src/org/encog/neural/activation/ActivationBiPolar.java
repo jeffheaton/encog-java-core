@@ -21,38 +21,32 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.network.activation;
-
+package org.encog.neural.activation;
 
 /**
- * The Linear layer is really not an activation function at all. The input is
- * simply passed on, unmodified, to the output. This activation function is
- * primarily theoretical and of little actual use. Usually an activation
- * function that scales between 0 and 1 or -1 and 1 should be used.
+ * BiPolar activation function. This will scale the neural data into the bipolar
+ * range. Greater than zero becomes 1, less than or equal to zero becomes -1.
+ * 
+ * @author jheaton
+ * 
  */
-public class ActivationLinear implements ActivationFunction {
+public class ActivationBiPolar implements ActivationFunction {
 
 	/**
-	 * The offset to the parameter that holds the linear slope.
+	 * The serial id.
 	 */
-	public static final int PARAM_LINEAR_SLOPE = 0;
-	
-	/**
-	 * Serial id for this class.
-	 */
-	private static final long serialVersionUID = -5356580554235104944L;
+	private static final long serialVersionUID = -7166136514935838114L;
 
 	/**
 	 * The parameters.
 	 */
 	private double[] params;
-	
+
 	/**
-	 * Construct a linear activation function, with a slope of 1.
+	 * Construct the bipolar activation function.
 	 */
-	public ActivationLinear() {
-		this.params = new double[1];
-		this.params[ActivationLinear.PARAM_LINEAR_SLOPE] = 1;
+	public ActivationBiPolar() {
+		this.params = new double[0];
 	}
 
 	/**
@@ -60,31 +54,44 @@ public class ActivationLinear implements ActivationFunction {
 	 */
 	@Override
 	public ActivationFunction clone() {
-		return new ActivationLinear();
+		return new ActivationBiPolar();
 	}
 
 	/**
-	 * @return Return true, linear has a 1 derivative.
+	 * Implements the activation function derivative. The array is modified
+	 * according derivative of the activation function being used. See the class
+	 * description for more specific information on this type of activation
+	 * function. Propagation training requires the derivative. Some activation
+	 * functions do not support a derivative and will throw an error.
+	 * 
+	 * @param d
+	 *            The input array to the activation function.
+	 * @return The derivative.
+	 */
+	public double derivativeFunction(final double d) {
+		return 1;
+	}
+
+	/**
+	 * @return Return true, bipolar has a 1 for derivative.
 	 */
 	public boolean hasDerivative() {
 		return true;
 	}
 
 	/**
-	 * @return The slope of the activation function.
-	 */
-	public double getSlope() {
-		return this.params[ActivationLinear.PARAM_LINEAR_SLOPE];
-	}
-
-	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start, 
-			final int size) {		
+	public void activationFunction(final double[] x, final int start,
+			final int size) {
+
 		for (int i = start; i < start + size; i++) {
-			x[i] = x[i] * params[0];
+			if (x[i] > 0) {
+				x[i] = 1;
+			} else {
+				x[i] = -1;
+			}
 		}
 	}
 
@@ -92,16 +99,8 @@ public class ActivationLinear implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double derivativeFunction(final double d) {
-		return 1;
-	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public String[] getParamNames() {
-		final String[] result = { }; 
+		final String[] result = { "slope" };
 		return result;
 	}
 
@@ -118,18 +117,14 @@ public class ActivationLinear implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;		
+		this.params[index] = value;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String getOpenCLExpression(final boolean derivative) {
-		if (derivative) {
-			return "(1.0)";
-		} else {
-			return "(x)";
-		}
+		return null;
 	}
 }

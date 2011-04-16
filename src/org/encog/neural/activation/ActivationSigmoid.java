@@ -21,22 +21,21 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.network.activation;
+package org.encog.neural.activation;
 
+import org.encog.engine.util.BoundMath;
 
 /**
- * The hyperbolic tangent activation function takes the curved shape of the
- * hyperbolic tangent. This activation function produces both positive and
- * negative output. Use this activation function if both negative and positive
+ * The sigmoid activation function takes on a sigmoidal shape. Only positive
+ * numbers are generated. Do not use this activation function if negative number
  * output is desired.
- * 
  */
-public class ActivationTANH implements ActivationFunction {
+public class ActivationSigmoid implements ActivationFunction {
 
 	/**
 	 * Serial id for this class.
 	 */
-	private static final long serialVersionUID = 9121998892720207643L;
+	private static final long serialVersionUID = 5622349801036468572L;
 
 	/**
 	 * The parameters.
@@ -44,9 +43,9 @@ public class ActivationTANH implements ActivationFunction {
 	private double[] params;
 
 	/**
-	 * Construct a basic HTAN activation function, with a slope of 1.
+	 * Construct a basic sigmoid function, with a slope of 1.
 	 */
-	public ActivationTANH() {
+	public ActivationSigmoid() {
 		this.params = new double[0];
 	}
 
@@ -55,12 +54,13 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	@Override
 	public ActivationFunction clone() {
-		return new ActivationTANH();
+		return new ActivationSigmoid();
 	}
 
 	/**
-	 * @return Return true, TANH has a derivative.
+	 * @return True, sigmoid has a derivative.
 	 */
+	@Override
 	public boolean hasDerivative() {
 		return true;
 	}
@@ -72,7 +72,7 @@ public class ActivationTANH implements ActivationFunction {
 	public void activationFunction(final double[] x, final int start,
 			final int size) {
 		for (int i = start; i < start + size; i++) {
-			x[i] = Math.tanh(x[i]);
+			x[i] = 1.0 / (1.0 + BoundMath.exp(-1 * x[i]));
 		}
 	}
 
@@ -81,7 +81,7 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	@Override
 	public double derivativeFunction(final double x) {
-		return (1.0 - x * x);
+		return x * (1.0 - x);
 	}
 
 	/**
@@ -89,8 +89,8 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	@Override
 	public String[] getParamNames() {
-		final String[] result = {  };
-		return result;
+		final String[] results = { };
+		return results;
 	}
 
 	/**
@@ -114,11 +114,10 @@ public class ActivationTANH implements ActivationFunction {
 	 */
 	@Override
 	public String getOpenCLExpression(final boolean derivative) {
-
 		if (derivative) {
-			return "(1.0f - x * x)";
+			return "(x * (1.0f - x))";
 		} else {
-			return "tanh(x)";
+			return "(1.0f / (1.0f + exp(-1 * x)))";
 		}
 	}
 }

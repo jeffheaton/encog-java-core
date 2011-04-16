@@ -21,63 +21,50 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.network.activation;
+package org.encog.neural.activation;
+
+import org.encog.engine.util.BoundMath;
 
 /**
- * BiPolar activation function. This will scale the neural data into the bipolar
- * range. Greater than zero becomes 1, less than or equal to zero becomes -1.
+ * The softmax activation function.
  * 
  * @author jheaton
- * 
  */
-public class ActivationBiPolar implements ActivationFunction {
+public class ActivationSoftMax implements ActivationFunction {
 
 	/**
 	 * The serial id.
 	 */
-	private static final long serialVersionUID = -7166136514935838114L;
+	private static final long serialVersionUID = -960489243250457611L;
 
 	/**
 	 * The parameters.
 	 */
 	private double[] params;
-
+	
 	/**
-	 * Construct the bipolar activation function.
+	 * Construct the soft-max activation function.
 	 */
-	public ActivationBiPolar() {
+	public ActivationSoftMax() {
 		this.params = new double[0];
 	}
-
+	
 	/**
-	 * @return The object cloned.
+	 * @return The object cloned;
 	 */
 	@Override
 	public ActivationFunction clone() {
-		return new ActivationBiPolar();
+		return new ActivationSoftMax();
 	}
 
 	/**
-	 * Implements the activation function derivative. The array is modified
-	 * according derivative of the activation function being used. See the class
-	 * description for more specific information on this type of activation
-	 * function. Propagation training requires the derivative. Some activation
-	 * functions do not support a derivative and will throw an error.
-	 * 
-	 * @param d
-	 *            The input array to the activation function.
-	 * @return The derivative.
-	 */
-	public double derivativeFunction(final double d) {
-		return 1;
-	}
-
-	/**
-	 * @return Return true, bipolar has a 1 for derivative.
+	 * @return Return false, softmax has no derivative.
 	 */
 	public boolean hasDerivative() {
 		return true;
 	}
+		
+
 
 	/**
 	 * {@inheritDoc}
@@ -85,13 +72,13 @@ public class ActivationBiPolar implements ActivationFunction {
 	@Override
 	public void activationFunction(final double[] x, final int start,
 			final int size) {
-
+		double sum = 0;
 		for (int i = start; i < start + size; i++) {
-			if (x[i] > 0) {
-				x[i] = 1;
-			} else {
-				x[i] = -1;
-			}
+			x[i] = BoundMath.exp(x[i]);
+			sum += x[i];
+		}
+		for (int i = start; i < start + size; i++) {
+			x[i] = x[i] / sum;
 		}
 	}
 
@@ -99,8 +86,16 @@ public class ActivationBiPolar implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public double derivativeFunction(final double d) {
+		return 1.0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String[] getParamNames() {
-		final String[] result = { "slope" };
+		final String[] result = {};
 		return result;
 	}
 
@@ -117,9 +112,9 @@ public class ActivationBiPolar implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;
+		this.params[index] = value;		
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -127,4 +122,5 @@ public class ActivationBiPolar implements ActivationFunction {
 	public String getOpenCLExpression(final boolean derivative) {
 		return null;
 	}
+
 }

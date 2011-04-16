@@ -27,11 +27,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.flat.FlatLayer;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.neural.NeuralNetworkError;
+import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;

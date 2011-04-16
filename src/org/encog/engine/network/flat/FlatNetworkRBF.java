@@ -25,9 +25,9 @@ package org.encog.engine.network.flat;
 
 import java.io.Serializable;
 
-import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.rbf.RadialBasisFunction;
 import org.encog.engine.util.EngineArray;
+import org.encog.neural.activation.ActivationLinear;
 
 /**
  * A flat network designed to handle an RBF.

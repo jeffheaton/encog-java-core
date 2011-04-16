@@ -23,8 +23,8 @@
  */
 package org.encog.neural.pattern;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.ml.MLMethod;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.thermal.BoltzmannMachine;
 
 /**

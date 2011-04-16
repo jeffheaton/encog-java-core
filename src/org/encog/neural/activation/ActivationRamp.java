@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.network.activation;
+package org.encog.neural.activation;
 
 /**
  * A ramp activation function. This function has a high and low threshold. If

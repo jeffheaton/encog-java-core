@@ -21,39 +21,38 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.network.activation;
+package org.encog.neural.activation;
 
-import org.encog.engine.util.BoundMath;
 
 /**
- * An activation function based on the logarithm function.
- * 
- * This type of activation function can be useful to prevent saturation. A
- * hidden node of a neural network is said to be saturated on a given set of
- * inputs when its output is approximately 1 or -1 "most of the time". If this
- * phenomena occurs during training then the learning of the network can be
- * slowed significantly since the error surface is very at in this instance.
- * 
- * @author jheaton
- * 
+ * The Linear layer is really not an activation function at all. The input is
+ * simply passed on, unmodified, to the output. This activation function is
+ * primarily theoretical and of little actual use. Usually an activation
+ * function that scales between 0 and 1 or -1 and 1 should be used.
  */
-public class ActivationLOG implements ActivationFunction {
+public class ActivationLinear implements ActivationFunction {
 
 	/**
-	 * The serial id.
+	 * The offset to the parameter that holds the linear slope.
 	 */
-	private static final long serialVersionUID = 7134233791725797522L;
+	public static final int PARAM_LINEAR_SLOPE = 0;
+	
+	/**
+	 * Serial id for this class.
+	 */
+	private static final long serialVersionUID = -5356580554235104944L;
 
 	/**
 	 * The parameters.
 	 */
 	private double[] params;
-
+	
 	/**
-	 * Construct the activation function.
+	 * Construct a linear activation function, with a slope of 1.
 	 */
-	public ActivationLOG() {
-		this.params = new double[0];
+	public ActivationLinear() {
+		this.params = new double[1];
+		this.params[ActivationLinear.PARAM_LINEAR_SLOPE] = 1;
 	}
 
 	/**
@@ -61,14 +60,21 @@ public class ActivationLOG implements ActivationFunction {
 	 */
 	@Override
 	public ActivationFunction clone() {
-		return new ActivationLOG();
+		return new ActivationLinear();
 	}
 
 	/**
-	 * @return Return true, log has a derivative.
+	 * @return Return true, linear has a 1 derivative.
 	 */
 	public boolean hasDerivative() {
 		return true;
+	}
+
+	/**
+	 * @return The slope of the activation function.
+	 */
+	public double getSlope() {
+		return this.params[ActivationLinear.PARAM_LINEAR_SLOPE];
 	}
 
 	/**
@@ -76,14 +82,9 @@ public class ActivationLOG implements ActivationFunction {
 	 */
 	@Override
 	public void activationFunction(final double[] x, final int start, 
-			final int size) {
-
+			final int size) {		
 		for (int i = start; i < start + size; i++) {
-			if (x[i] >= 0) {
-				x[i] = BoundMath.log(1 + x[i]);
-			} else {
-				x[i] = -BoundMath.log(1 - x[i]);
-			}
+			x[i] = x[i] * params[0];
 		}
 	}
 
@@ -91,20 +92,16 @@ public class ActivationLOG implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double derivativeFunction(final double x) {
-		if (x >= 0) {
-			return 1 / (1 + x);
-		} else {
-			return 1 / (1 - x);
-		}
+	public double derivativeFunction(final double d) {
+		return 1;
 	}
-
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String[] getParamNames() {
-		final String[] result = {};
+		final String[] result = { }; 
 		return result;
 	}
 
@@ -121,8 +118,7 @@ public class ActivationLOG implements ActivationFunction {
 	 */
 	@Override
 	public void setParam(final int index, final double value) {
-		this.params[index] = value;
-
+		this.params[index] = value;		
 	}
 	
 	/**
@@ -130,7 +126,10 @@ public class ActivationLOG implements ActivationFunction {
 	 */
 	@Override
 	public String getOpenCLExpression(final boolean derivative) {
-		return null;
+		if (derivative) {
+			return "(1.0)";
+		} else {
+			return "(x)";
+		}
 	}
-
 }

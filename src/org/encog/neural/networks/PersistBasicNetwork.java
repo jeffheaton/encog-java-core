@@ -5,8 +5,8 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -61,7 +61,7 @@ public class PersistBasicNetwork implements EncogPersistor {
 				for(String line : section.getLines()) {
 					ActivationFunction af =  null;
 					List<String> cols = EncogFileSection.splitColumns(line);
-					String name = "org.encog.engine.network.activation." + cols.get(0);
+					String name = "org.encog.neural.activation." + cols.get(0);
 					try {
 						Class<?> clazz = Class.forName(name);
 						af = (ActivationFunction) clazz.newInstance();

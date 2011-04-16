@@ -26,11 +26,11 @@ package org.encog.engine.network.train.gradient;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.engine.network.flat.FlatNetwork;
 import org.encog.engine.network.train.prop.TrainFlatNetworkProp;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
+import org.encog.neural.activation.ActivationFunction;
 
 /**
  * Worker class for the mulithreaded training of flat networks.

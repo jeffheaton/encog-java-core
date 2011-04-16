@@ -25,9 +25,9 @@ package org.encog.neural.networks.layers;
 
 import java.io.Serializable;
 
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.network.flat.FlatLayer;
+import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 
 /**

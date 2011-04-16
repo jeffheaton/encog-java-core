@@ -7,8 +7,8 @@ import java.util.Map;
 import java.util.StringTokenizer;
 
 import org.encog.app.analyst.AnalystError;
-import org.encog.engine.network.activation.ActivationFunction;
 import org.encog.mathutil.matrices.Matrix;
+import org.encog.neural.activation.ActivationFunction;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;
 
@@ -191,7 +191,7 @@ public class EncogFileSection {
 			ActivationFunction af = null;
 			String[] cols = value.split("\\|");
 			
-			String afName = "org.encog.engine.network.activation." + cols[0];
+			String afName = "org.encog.neural.activation." + cols[0];
 			try {
 				Class<?> clazz = Class.forName(afName);
 				af = (ActivationFunction) clazz.newInstance();

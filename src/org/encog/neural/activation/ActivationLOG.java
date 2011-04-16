@@ -21,28 +21,28 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.network.activation;
+package org.encog.neural.activation;
 
 import org.encog.engine.util.BoundMath;
 
 /**
- * An activation function based on the sin function.
+ * An activation function based on the logarithm function.
+ * 
+ * This type of activation function can be useful to prevent saturation. A
+ * hidden node of a neural network is said to be saturated on a given set of
+ * inputs when its output is approximately 1 or -1 "most of the time". If this
+ * phenomena occurs during training then the learning of the network can be
+ * slowed significantly since the error surface is very at in this instance.
  * 
  * @author jheaton
+ * 
  */
-public class ActivationSIN implements ActivationFunction {
+public class ActivationLOG implements ActivationFunction {
 
 	/**
-	 * 
+	 * The serial id.
 	 */
-	private static final long serialVersionUID = 5301501177778271284L;
-
-	/**
-	 * Construct the sin activation function.
-	 */
-	public ActivationSIN() {
-		this.params = new double[0];
-	}
+	private static final long serialVersionUID = 7134233791725797522L;
 
 	/**
 	 * The parameters.
@@ -50,15 +50,22 @@ public class ActivationSIN implements ActivationFunction {
 	private double[] params;
 
 	/**
-	 * @return The object cloned;
+	 * Construct the activation function.
 	 */
-	@Override
-	public ActivationFunction clone() {
-		return new ActivationSIN();
+	public ActivationLOG() {
+		this.params = new double[0];
 	}
 
 	/**
-	 * @return Return true, sin has a derivative.
+	 * @return The object cloned.
+	 */
+	@Override
+	public ActivationFunction clone() {
+		return new ActivationLOG();
+	}
+
+	/**
+	 * @return Return true, log has a derivative.
 	 */
 	public boolean hasDerivative() {
 		return true;
@@ -68,10 +75,15 @@ public class ActivationSIN implements ActivationFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void activationFunction(final double[] x, final int start,
+	public void activationFunction(final double[] x, final int start, 
 			final int size) {
+
 		for (int i = start; i < start + size; i++) {
-			x[i] = BoundMath.sin(x[i]);
+			if (x[i] >= 0) {
+				x[i] = BoundMath.log(1 + x[i]);
+			} else {
+				x[i] = -BoundMath.log(1 - x[i]);
+			}
 		}
 	}
 
@@ -80,7 +92,11 @@ public class ActivationSIN implements ActivationFunction {
 	 */
 	@Override
 	public double derivativeFunction(final double x) {
-		return BoundMath.cos(x);
+		if (x >= 0) {
+			return 1 / (1 + x);
+		} else {
+			return 1 / (1 - x);
+		}
 	}
 
 	/**
@@ -106,8 +122,9 @@ public class ActivationSIN implements ActivationFunction {
 	@Override
 	public void setParam(final int index, final double value) {
 		this.params[index] = value;
-	}
 
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -115,4 +132,5 @@ public class ActivationSIN implements ActivationFunction {
 	public String getOpenCLExpression(final boolean derivative) {
 		return null;
 	}
+
 }

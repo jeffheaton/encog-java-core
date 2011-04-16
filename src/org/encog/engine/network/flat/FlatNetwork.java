@@ -32,11 +32,11 @@ import org.encog.EncogError;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
+import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 
 /**
