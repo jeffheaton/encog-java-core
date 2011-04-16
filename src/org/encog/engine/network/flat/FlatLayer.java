@@ -23,7 +23,7 @@
  */
 package org.encog.engine.network.flat;
 
-import org.encog.engine.EncogEngine;
+import org.encog.Encog;
 import org.encog.engine.network.activation.ActivationFunction;
 
 /**
@@ -126,7 +126,7 @@ public class FlatLayer {
 	 * @return the bias
 	 */
 	public boolean isBias() {
-		return Math.abs(this.biasActivation) > EncogEngine.DEFAULT_ZERO_TOLERANCE;
+		return Math.abs(this.biasActivation) > Encog.DEFAULT_DOUBLE_EQUAL;
 	}
 
 	/**

@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.encog.engine.EncogEngineError;
+import org.encog.EncogError;
 
 /**
  * This class abstracts thread pools, and potentially grids and other types of
@@ -88,7 +88,7 @@ public class EngineConcurrency {
 	 */
 	public void checkError() {
 		if (this.threadError != null) {
-			throw new EncogEngineError(this.threadError);
+			throw new EncogError(this.threadError);
 		}
 	}
 	
@@ -129,7 +129,7 @@ public class EngineConcurrency {
 			if (this.threadError != null) {
 				final Throwable t = this.threadError;
 				this.threadError = null;
-				throw new EncogEngineError(t);
+				throw new EncogError(t);
 			}
 
 			final PoolItem item = new PoolItem(task, group);
@@ -167,7 +167,7 @@ public class EngineConcurrency {
 				this.executor.awaitTermination(timeout, TimeUnit.SECONDS);
 				this.executor = null;
 			} catch (final InterruptedException e) {
-				throw new EncogEngineError(e);
+				throw new EncogError(e);
 			}
 		}
 	}

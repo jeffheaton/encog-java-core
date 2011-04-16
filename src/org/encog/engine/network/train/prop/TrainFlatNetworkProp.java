@@ -23,7 +23,7 @@
  */
 package org.encog.engine.network.train.prop;
 
-import org.encog.engine.EncogEngineError;
+import org.encog.EncogError;
 import org.encog.engine.concurrency.DetermineWorkload;
 import org.encog.engine.concurrency.EngineConcurrency;
 import org.encog.engine.concurrency.TaskGroup;
@@ -262,7 +262,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 		}
 		
 		if (this.reportedException != null) {
-			throw (new EncogEngineError(this.reportedException));
+			throw (new EncogError(this.reportedException));
 		}
 	}
 

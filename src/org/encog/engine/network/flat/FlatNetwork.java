@@ -27,9 +27,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.EncogEngine;
-import org.encog.engine.EncogEngineError;
-import org.encog.engine.EngineNeuralNetwork;
+import org.encog.Encog;
+import org.encog.EncogError;
 import org.encog.engine.data.BasicEngineData;
 import org.encog.engine.data.EngineData;
 import org.encog.engine.data.EngineDataSet;
@@ -38,6 +37,7 @@ import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.engine.util.EngineArray;
 import org.encog.engine.util.ErrorCalculation;
+import org.encog.neural.networks.BasicNetwork;
 
 /**
  * Implements a flat (vector based) neural network in the Encog Engine. This is
@@ -50,7 +50,7 @@ import org.encog.engine.util.ErrorCalculation;
  * network classes will make use of the GPU if you have enabled GPU processing.
  * See the Encog class for more info.
  */
-public class FlatNetwork implements EngineNeuralNetwork, Serializable {
+public class FlatNetwork implements Serializable {
 
 	/**
 	 * The serial ID.
@@ -394,10 +394,9 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	 * @param data
 	 *            The data to be decoded.
 	 */
-	@Override
 	public void decodeNetwork(final double[] data) {
 		if (data.length != this.weights.length) {
-			throw new EncogEngineError(
+			throw new EncogError(
 					"Incompatable weight sizes, can't assign length="
 							+ data.length + " to length=" + data.length);
 		}
@@ -412,7 +411,6 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	 * 
 	 * @return The encoded network.
 	 */
-	@Override
 	public double[] encodeNetwork() {
 		return this.weights;
 	}
@@ -435,7 +433,6 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	/**
 	 * @return The length of the array the network would encode to.
 	 */
-	@Override
 	public int getEncodeLength() {
 		return this.weights.length;
 	}
@@ -681,7 +678,7 @@ public class FlatNetwork implements EngineNeuralNetwork, Serializable {
 	 */
 	public void setConnectionLimit(double connectionLimit) {
 		this.connectionLimit = connectionLimit;
-		if (this.connectionLimit > EncogEngine.DEFAULT_ZERO_TOLERANCE)
+		if ( Math.abs(this.connectionLimit - BasicNetwork.DEFAULT_CONNECTION_LIMIT)<Encog.DEFAULT_DOUBLE_EQUAL )
 			this.isLimited = true;
 	}
 

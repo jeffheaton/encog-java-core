@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.engine.StatusReportable;
+import org.encog.StatusReportable;
 import org.encog.engine.concurrency.job.ConcurrentJob;
 import org.encog.engine.concurrency.job.JobUnitContext;
 import org.encog.neural.data.NeuralDataSet;

@@ -25,7 +25,7 @@ package org.encog.util.benchmark;
 
 import java.io.File;
 
-import org.encog.engine.StatusReportable;
+import org.encog.StatusReportable;
 import org.encog.engine.util.Format;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataPair;

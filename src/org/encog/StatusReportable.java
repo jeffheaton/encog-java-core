@@ -21,29 +21,23 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine;
+package org.encog;
 
 /**
- * An interface that defines a neural network. Mainly adds the ability to
- * encode/decode weights to/from a double array.
- * 
+ * This class allows for Encog jobs to report their current status, as they run.
  */
-public interface EngineNeuralNetwork extends EngineMachineLearning {
+public interface StatusReportable {
+
+	/**
+	 * Report on current status.
+	 * 
+	 * @param total
+	 *            The total amount of units to process.
+	 * @param current
+	 *            The current unit being processed.
+	 * @param message
+	 *            The message to currently display.
+	 */
+	void report(int total, int current, String message);
 	
-	/**
-	 * Decode an array to the neural network weights.
-	 * @param data The data to decode.
-	 */
-	void decodeNetwork(double[] data);
-
-	/**
-	 * Encode the neural network weights to an array.
-	 * @return The encoded neural network.
-	 */
-	double[] encodeNetwork();
-
-	/**
-	 * @return The length of the encoded array.
-	 */
-	int getEncodeLength();
 }

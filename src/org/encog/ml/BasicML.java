@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.encog.Encog;
+import org.encog.util.csv.CSVFormat;
+
 /**
  * A class that provides basic property functionality for the 
  * MLProperties interface.
@@ -70,7 +73,7 @@ public abstract class BasicML implements MLMethod, MLProperties, Serializable {
 	 *            The value of the property.
 	 */
 	public void setProperty(final String name, final double d) {
-		this.properties.put(name, "" + d);
+		this.properties.put(name, "" + CSVFormat.EG_FORMAT.format(d, Encog.DEFAULT_PRECISION));
 		updateProperties();
 	}
 

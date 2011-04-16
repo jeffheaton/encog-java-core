@@ -30,9 +30,9 @@ import java.io.PrintWriter;
 
 import org.encog.Encog;
 import org.encog.NullStatusReportable;
+import org.encog.StatusReportable;
 import org.encog.app.csv.EncogCSVError;
 import org.encog.app.quant.QuantTask;
-import org.encog.engine.StatusReportable;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 

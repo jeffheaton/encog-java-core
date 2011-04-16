@@ -23,7 +23,7 @@
  */
 package org.encog.neural.networks.training.pnn;
 
-import org.encog.engine.EncogEngine;
+import org.encog.Encog;
 import org.encog.engine.util.EngineArray;
 
 /**
@@ -130,7 +130,7 @@ public class DeriveMinimum {
 
 			double scale;
 
-			if (Math.abs(dot2) < EncogEngine.DEFAULT_ZERO_TOLERANCE) {
+			if (Math.abs(dot2) < Encog.DEFAULT_DOUBLE_EQUAL) {
 				scale = 0;
 			} else {
 				scale = dot1 / dot2;

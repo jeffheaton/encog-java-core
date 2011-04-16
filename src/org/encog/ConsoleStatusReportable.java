@@ -23,7 +23,6 @@
  */
 package org.encog;
 
-import org.encog.engine.StatusReportable;
 
 /**
  * A simple status report that goes to the console.

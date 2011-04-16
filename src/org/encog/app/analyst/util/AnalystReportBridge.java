@@ -23,9 +23,9 @@
  */
 package org.encog.app.analyst.util;
 
+import org.encog.StatusReportable;
 import org.encog.app.analyst.AnalystListener;
 import org.encog.app.analyst.EncogAnalyst;
-import org.encog.engine.StatusReportable;
 
 /**
  * Used to bridge the AnalystListerner to an StatusReportable object.

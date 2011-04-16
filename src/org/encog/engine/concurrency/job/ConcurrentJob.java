@@ -23,7 +23,7 @@
  */
 package org.encog.engine.concurrency.job;
 
-import org.encog.engine.StatusReportable;
+import org.encog.StatusReportable;
 import org.encog.engine.concurrency.EngineConcurrency;
 import org.encog.engine.concurrency.TaskGroup;
 

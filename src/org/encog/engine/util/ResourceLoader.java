@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import org.encog.engine.EncogEngineError;
+import org.encog.EncogError;
 
 /**
  * Used to load resources from the JAR file.
@@ -48,7 +48,7 @@ public final class ResourceLoader {
 
 		if (is == null) {
 			final String str = "Can't read resource: " + resource;
-			throw new EncogEngineError(str);
+			throw new EncogError(str);
 		}
 		return is;
 	}
@@ -72,14 +72,14 @@ public final class ResourceLoader {
 			}
 			return result.toString();
 		} catch (final IOException e) {
-			throw new EncogEngineError(e);
+			throw new EncogError(e);
 		} finally {
 			try {
 				if (is != null) {
 					is.close();
 				}
 			} catch (final IOException e) {
-				throw new EncogEngineError(e);
+				throw new EncogError(e);
 			}
 		}
 	}

@@ -23,7 +23,8 @@
  */
 package org.encog.engine.network.activation;
 
-import org.encog.engine.EncogEngineError;
+import org.encog.EncogError;
+
 
 /**
  * An activation function that only allows a specified number, usually one, of
@@ -125,7 +126,7 @@ public class ActivationCompetitive implements ActivationFunction {
 	 * @return The derivative.
 	 */
 	public double derivativeFunction(final double d) {
-		throw new EncogEngineError(
+		throw new EncogError(
 				"Can't use the competitive activation function "
 						+ "where a derivative is required.");
 

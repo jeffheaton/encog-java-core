@@ -30,7 +30,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.encog.NullStatusReportable;
-import org.encog.engine.StatusReportable;
+import org.encog.StatusReportable;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
 import org.encog.neural.networks.training.concurrent.performers.ConcurrentTrainingPerformer;
