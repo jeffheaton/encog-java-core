@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.csv.temporal;
 
 import java.io.File;
@@ -11,419 +34,383 @@ import org.encog.app.csv.basic.BasicFile;
 import org.encog.app.csv.util.BarBuffer;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
+import org.encog.util.logging.EncogLogging;
 
 /**
- * This class is used to break a CSV file into temporal windows.  This is used for 
- * predictive neural networks.
+ * This class is used to break a CSV file into temporal windows. This is used
+ * for predictive neural networks.
  */
 public class TemporalWindowCSV extends BasicFile {
+	
+	/**
+	 * The size of the input window.
+	 */
+	public static final int DEFAULT_INPUT = 10;
 
-    /**
-     * The size of the input window.
-     */
-    private int inputWindow;
+	/**
+	 * The size of the input window.
+	 */
+	private int inputWindow;
 
-    /**
-     * The size of the prediction window.
-     */
-    private int predictWindow;
+	/**
+	 * The size of the prediction window.
+	 */
+	private int predictWindow;
 
-    /**
-     * @return The fields that are to be processed.
-     */
-    public TemporalWindowField[] getFields()
-    {
-            return this.fields;     
-    }
+	/**
+	 * The fields that are to be processed.
+	 */
+	private TemporalWindowField[] fields;
 
-    /**
-     * The fields that are to be processed.
-     */
-    private TemporalWindowField[] fields;
+	/**
+	 * A buffer to hold the data.
+	 */
+	private BarBuffer buffer;
 
-    /**
-     * A buffer to hold the data.
-     */
-    private BarBuffer buffer;
+	/**
+	 * Construct the object and set the defaults.
+	 */
+	public TemporalWindowCSV() {
+		super();
+		this.inputWindow = DEFAULT_INPUT;
+		this.predictWindow = 1;
+	}
 
+	/**
+	 * Analyze the input file, prior to processing.
+	 * 
+	 * @param filename
+	 *            The filename to process.
+	 * @param headers
+	 *            True, if the input file has headers.
+	 * @param format
+	 *            The format of the input file.
+	 */
+	public final void analyze(final File filename, final boolean headers,
+			final CSVFormat format) {
+		ReadCSV csv = null;
 
-    /**
-     * Construct the object and set the defaults.
-     */
-    public TemporalWindowCSV()
-    {
-    	super();
-        inputWindow = 10;
-        predictWindow = 1;
-    }
-    
-    /**
-     * Format the headings to a string.
-     * @return The a string holding the headers, ready to be written.
-     */
-    private String writeHeaders()
-    {
-        StringBuilder line = new StringBuilder();
+		try {
+			csv = new ReadCSV(filename.toString(), headers, format);
+			if (!csv.next() && !shouldStop()) {
+				throw new EncogError("Empty file");
+			}
 
-        // write any passthrough fields
-        for(TemporalWindowField field : this.fields)
-        {
-            if (field.getAction() == TemporalType.PassThrough)
-            {
-                if (line.length() > 0)
-                {
-                    line.append(this.getInputFormat().getSeparator());
-                }
+			setInputFilename(filename);
+			setExpectInputHeaders(headers);
+			setInputFormat(format);
 
-                line.append(field.getName());
-            }
-        }
+			this.fields = new TemporalWindowField[csv.getColumnCount()];
 
-        // write any input fields
-        for (int i = 0; i < this.inputWindow; i++)
-        {
-            for(TemporalWindowField field : this.fields)
-            {
-                if (field.getInput())
-                {
-                    if (line.length() > 0)
-                    {
-                        line.append(",");
-                    }
+			for (int i = 0; i < csv.getColumnCount(); i++) {
+				final String str = csv.get(i);
+				String fieldname;
 
-                    line.append("Input:");
-                    line.append(field.getName());
+				if (isExpectInputHeaders()) {
+					fieldname = csv.getColumnNames().get(i);
+				} else {
+					fieldname = "Column-" + i;
+				}
 
-                    if (i > 0)
-                    {
-                        line.append("(t-");
-                        line.append(i);
-                        line.append(")");
-                    }
-                    else
-                    {
-                        line.append("(t)");
-                    }
-                }
-            }
-        }
-
-        // write any output fields
-        for (int i = 0; i < this.predictWindow; i++)
-        {
-            for(TemporalWindowField field : this.fields)
-            {
-                if (field.getPredict() )
-                {
-                    if (line.length() > 0)
-                    {
-                        line.append(",");
-                    }
-
-                    line.append("Predict:");
-                    line.append(field.getName());
-
-                    line.append("(t+");
-                    line.append(i + 1);
-                    line.append(")");
-                }
-
-            }
-        }
-
-        return line.toString();
-    }
-
-    /**
-     * Process the input file, and write to the output file.
-     * @param outputFile The output file.
-     */
-    public void process(File outputFile)
-    {
-        if (inputWindow < 1)
-        {
-            throw new EncogError("Input window must be greater than one.");
-        }
-
-        if (predictWindow < 1)
-        {
-            throw new EncogError("Predict window must be greater than one.");
-        }
-
-        int inputFieldCount = countInputFields();
-        int predictFieldCount = countPredictFields();
-
-        if (inputFieldCount < 1)
-        {
-            throw new EncogError("There must be at least 1 input field.");
-        }
-
-        if (predictFieldCount < 1)
-        {
-            throw new EncogError("There must be at least 1 input field.");
-        }
-
-        int barSize = inputFieldCount + predictFieldCount;
-
-        buffer = new BarBuffer(inputWindow + predictWindow);
-
-        ReadCSV csv = null;
-        PrintWriter tw = null;
-
-        try
-        {
-            csv = new ReadCSV(this.getInputFilename().toString(), this.isExpectInputHeaders(), this.getInputFormat());
-
-            tw = new PrintWriter(new FileWriter(outputFile));
-
-            // write headers, if needed
-            if (this.isExpectInputHeaders() )
-            {
-                tw.println(writeHeaders());
-            }
-
-            resetStatus();
-            while (csv.next()&& !this.shouldStop())
-            {
-                updateStatus(false);
-                // begin to populate the bar
-                double[] bar = new double[barSize];
-
-                int fieldIndex = 0;
-                int barIndex = 0;
-                for(TemporalWindowField field : this.fields)
-                {
-                    String str = csv.get(fieldIndex++);
-
-                    if (field.getAction() != TemporalType.Ignore && field.getAction()!=TemporalType.PassThrough)
-                    {
-                        bar[barIndex++] = this.getInputFormat().parse(str);
-                    }
-                    field.setLastValue(str);
-                }
-                buffer.add(bar);
-
-                // if the buffer is full, begin writing out temporal windows
-                if (buffer.getFull())
-                {
-                    StringBuilder line = new StringBuilder();
-                    
-                    // write passthroughs
-                    for(TemporalWindowField field : this.fields)
-                    {
-                        if (field.getAction() == TemporalType.PassThrough)
-                        {
-                            if (line.length() > 0)
-                            {
-                                line.append(",");
-                            }
-
-                            line.append("\"");
-                            line.append(field.getLastValue());
-                            line.append("\"");
-                        }
-                    }
-
-                    // write input
-                    for (int i = 0; i < this.inputWindow; i++)
-                    {
-                        bar = buffer.getData().get(buffer.getData().size() - 1 - i);
-
-                        int index = 0;
-                        for(TemporalWindowField field : this.fields)
-                        {
-                            if (field.getInput() )
-                            {
-                                if (line.length() > 0)
-                                    line.append(',');
-                                line.append(this.getInputFormat().format(bar[index], getPrecision()));
-                                index++;
-                            }
-                        }
-                    }
-
-                    // write prediction
-                    for (int i = 0; i < this.predictWindow; i++)
-                    {
-                        bar = buffer.getData().get(predictWindow - 1 - i);
-
-                        int index = 0;
-                        for(TemporalWindowField field : this.fields)
-                        {
-                            if (field.getPredict())
-                            {
-                                if (line.length() > 0)
-                                    line.append(getInputFormat().getSeparator());
-                                line.append(this.getInputFormat().format(bar[index], getPrecision()));
-                                index++;
-                            }
-                        }
-                    }
-
-                    // write the line
-                    tw.println(line.toString());
-                }
-            }
-        } catch (IOException e) {
-			throw new EncogCSVError(e);
+				this.fields[i] = new TemporalWindowField(fieldname);
+				try {
+					Double.parseDouble(str);
+					this.fields[i].setAction(TemporalType.Input);
+				} catch (final NumberFormatException ex) {
+					EncogLogging.log(ex);
+				}
+			}
+		} finally {
+			if (csv != null) {
+				csv.close();
+			}
 		}
-        finally
-        {
-            reportDone(false);
-            if (csv != null)
-            {
-                try
-                {
-                    csv.close();
-                }
-                catch (Exception ex)
-                {
-                }
-            }
-
-            if (tw != null)
-            {
-                try
-                {
-                    tw.close();
-                }
-                catch (Exception ex)
-                {
-                }
-            }
-        }
-
-
-    }
-
-    /**
-     * Count the number of fields that are that are in the prediction.
-     * @return The number of fields predicted.
-     */
-    public int countPredictFields()
-    {
-        int result = 0;
-
-        for(TemporalWindowField field : this.fields)
-        {
-            if (field.getPredict())
-                result++;
-        }
-
-        return result;
-    }
-
-    /**
-     * Count the number of input fields, or fields used to predict.
-     * @return The number of input fields.
-     */
-    public int countInputFields()
-    {
-        int result = 0;
-
-        for (TemporalWindowField field : this.fields)
-        {
-            if (field.getInput())
-                result++;
-        }
-
-        return result;
-    }
-
-    /**
-     * Analyze the input file, prior to processing.
-     * @param filename The filename to process.
-     * @param headers True, if the input file has headers.
-     * @param format The format of the input file.
-     */
-    public void analyze(File filename, boolean headers, CSVFormat format)
-    {
-        ReadCSV csv = null;
-
-        try
-        {
-            csv = new ReadCSV(filename.toString(), headers, format);
-            if (!csv.next()&& !this.shouldStop())
-            {
-                throw new EncogError("Empty file");
-            }
-
-            this.setInputFilename( filename);
-            this.setExpectInputHeaders( headers);
-            this.setInputFormat(format);
-
-            this.fields = new TemporalWindowField[csv.getColumnCount()];
-
-            for (int i = 0; i < csv.getColumnCount(); i++)
-            {
-                String str = csv.get(i);
-                String fieldname;
-
-                if (this.isExpectInputHeaders())
-                {
-                    fieldname = csv.getColumnNames().get(i);
-                }
-                else
-                {
-                    fieldname = "Column-" + i;
-                }
-
-                this.fields[i] = new TemporalWindowField(fieldname);
-                try
-                {
-                	Double.parseDouble(str);
-                	this.fields[i].setAction( TemporalType.Input);
-                }
-                catch(NumberFormatException ex)
-                {
-                	
-                }
-            }
-        }
-        finally
-        {
-            if (csv != null)
-            {
-                csv.close();
-            }
-        }
-    }
-
-	/**
-	 * @return the inputWindow
-	 */
-	public int getInputWindow() {
-		return inputWindow;
 	}
 
 	/**
-	 * @param inputWindow the inputWindow to set
+	 * Count the number of input fields, or fields used to predict.
+	 * 
+	 * @return The number of input fields.
 	 */
-	public void setInputWindow(int inputWindow) {
-		this.inputWindow = inputWindow;
+	public final int countInputFields() {
+		int result = 0;
+
+		for (final TemporalWindowField field : this.fields) {
+			if (field.getInput()) {
+				result++;
+			}
+		}
+
+		return result;
 	}
 
 	/**
-	 * @return the predictWindow
+	 * Count the number of fields that are that are in the prediction.
+	 * 
+	 * @return The number of fields predicted.
 	 */
-	public int getPredictWindow() {
-		return predictWindow;
-	}
+	public final int countPredictFields() {
+		int result = 0;
 
-	/**
-	 * @param predictWindow the predictWindow to set
-	 */
-	public void setPredictWindow(int predictWindow) {
-		this.predictWindow = predictWindow;
+		for (final TemporalWindowField field : this.fields) {
+			if (field.getPredict()) {
+				result++;
+			}
+		}
+
+		return result;
 	}
 
 	/**
 	 * @return the buffer
 	 */
-	public BarBuffer getBuffer() {
-		return buffer;
+	public final BarBuffer getBuffer() {
+		return this.buffer;
 	}
 
-    
-	
+	/**
+	 * @return The fields that are to be processed.
+	 */
+	public final TemporalWindowField[] getFields() {
+		return this.fields;
+	}
+
+	/**
+	 * @return the inputWindow
+	 */
+	public final int getInputWindow() {
+		return this.inputWindow;
+	}
+
+	/**
+	 * @return the predictWindow
+	 */
+	public final int getPredictWindow() {
+		return this.predictWindow;
+	}
+
+	/**
+	 * Process the input file, and write to the output file.
+	 * 
+	 * @param outputFile
+	 *            The output file.
+	 */
+	public final void process(final File outputFile) {
+		if (this.inputWindow < 1) {
+			throw new EncogError("Input window must be greater than one.");
+		}
+
+		if (this.predictWindow < 1) {
+			throw new EncogError("Predict window must be greater than one.");
+		}
+
+		final int inputFieldCount = countInputFields();
+		final int predictFieldCount = countPredictFields();
+
+		if (inputFieldCount < 1) {
+			throw new EncogError("There must be at least 1 input field.");
+		}
+
+		if (predictFieldCount < 1) {
+			throw new EncogError("There must be at least 1 input field.");
+		}
+
+		final int barSize = inputFieldCount + predictFieldCount;
+
+		this.buffer = new BarBuffer(this.inputWindow + this.predictWindow);
+
+		ReadCSV csv = null;
+		PrintWriter tw = null;
+
+		try {
+			csv = new ReadCSV(getInputFilename().toString(),
+					isExpectInputHeaders(), getInputFormat());
+
+			tw = new PrintWriter(new FileWriter(outputFile));
+
+			// write headers, if needed
+			if (isExpectInputHeaders()) {
+				tw.println(writeHeaders());
+			}
+
+			resetStatus();
+			while (csv.next() && !shouldStop()) {
+				updateStatus(false);
+				// begin to populate the bar
+				double[] bar = new double[barSize];
+
+				int fieldIndex = 0;
+				int barIndex = 0;
+				for (final TemporalWindowField field : this.fields) {
+					final String str = csv.get(fieldIndex++);
+
+					if ((field.getAction() != TemporalType.Ignore)
+							&& (field.getAction() 
+							!= TemporalType.PassThrough)) {
+						bar[barIndex++] = getInputFormat().parse(str);
+					}
+					field.setLastValue(str);
+				}
+				this.buffer.add(bar);
+
+				// if the buffer is full, begin writing out temporal windows
+				if (this.buffer.getFull()) {
+					final StringBuilder line = new StringBuilder();
+
+					// write passthroughs
+					for (final TemporalWindowField field : this.fields) {
+						if (field.getAction() == TemporalType.PassThrough) {
+							if (line.length() > 0) {
+								line.append(",");
+							}
+
+							line.append("\"");
+							line.append(field.getLastValue());
+							line.append("\"");
+						}
+					}
+
+					// write input
+					for (int i = 0; i < this.inputWindow; i++) {
+						bar = this.buffer.getData().get(
+								this.buffer.getData().size() - 1 - i);
+
+						int index = 0;
+						for (final TemporalWindowField field : this.fields) {
+							if (field.getInput()) {
+								if (line.length() > 0) {
+									line.append(',');
+								}
+								line.append(getInputFormat().format(bar[index],
+										getPrecision()));
+								index++;
+							}
+						}
+					}
+
+					// write prediction
+					for (int i = 0; i < this.predictWindow; i++) {
+						bar = this.buffer.getData().get(
+								this.predictWindow - 1 - i);
+
+						int index = 0;
+						for (final TemporalWindowField field : this.fields) {
+							if (field.getPredict()) {
+								if (line.length() > 0) {
+									line.append(
+									getInputFormat().getSeparator());
+								}
+								line.append(getInputFormat().format(bar[index],
+										getPrecision()));
+								index++;
+							}
+						}
+					}
+
+					// write the line
+					tw.println(line.toString());
+				}
+			}
+		} catch (final IOException e) {
+			throw new EncogCSVError(e);
+		} finally {
+			reportDone(false);
+			if (csv != null) {
+				try {
+					csv.close();
+				} catch (final Exception ex) {
+					EncogLogging.log(ex);
+				}
+			}
+
+			if (tw != null) {
+				try {
+					tw.close();
+				} catch (final Exception ex) {
+					EncogLogging.log(ex);
+				}
+			}
+		}
+
+	}
+
+	/**
+	 * @param theInputWindow
+	 *            the theInputWindow to set
+	 */
+	public final void setInputWindow(final int theInputWindow) {
+		this.inputWindow = theInputWindow;
+	}
+
+	/**
+	 * @param thePredictWindow
+	 *            the predictWindow to set
+	 */
+	public final void setPredictWindow(final int thePredictWindow) {
+		this.predictWindow = thePredictWindow;
+	}
+
+	/**
+	 * Format the headings to a string.
+	 * 
+	 * @return The a string holding the headers, ready to be written.
+	 */
+	private String writeHeaders() {
+		final StringBuilder line = new StringBuilder();
+
+		// write any passthrough fields
+		for (final TemporalWindowField field : this.fields) {
+			if (field.getAction() == TemporalType.PassThrough) {
+				if (line.length() > 0) {
+					line.append(getInputFormat().getSeparator());
+				}
+
+				line.append(field.getName());
+			}
+		}
+
+		// write any input fields
+		for (int i = 0; i < this.inputWindow; i++) {
+			for (final TemporalWindowField field : this.fields) {
+				if (field.getInput()) {
+					if (line.length() > 0) {
+						line.append(",");
+					}
+
+					line.append("Input:");
+					line.append(field.getName());
+
+					if (i > 0) {
+						line.append("(t-");
+						line.append(i);
+						line.append(")");
+					} else {
+						line.append("(t)");
+					}
+				}
+			}
+		}
+
+		// write any output fields
+		for (int i = 0; i < this.predictWindow; i++) {
+			for (final TemporalWindowField field : this.fields) {
+				if (field.getPredict()) {
+					if (line.length() > 0) {
+						line.append(",");
+					}
+
+					line.append("Predict:");
+					line.append(field.getName());
+
+					line.append("(t+");
+					line.append(i + 1);
+					line.append(")");
+				}
+
+			}
+		}
+
+		return line.toString();
+	}
+
 }

@@ -22,7 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 /**
- * This package provides basic utilities for Encog CSV processing.
+ * This package contains subpackages for downloading financial information.
  */
-package org.encog.app.csv.temporal;
+package org.encog.app.quant.loader;
 

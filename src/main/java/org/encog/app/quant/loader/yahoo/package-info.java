@@ -22,7 +22,8 @@
  * http://www.heatonresearch.com/copyright
  */
 /**
- * This package provides basic utilities for Encog CSV processing.
+ * This package contains all of the classes to download financial info 
+ * from Yahoo.
  */
-package org.encog.app.csv.temporal;
+package org.encog.app.quant.loader.yahoo;
 

@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.quant.indicators.predictive;
 
 import java.util.Map;
@@ -11,67 +34,70 @@ import org.encog.app.quant.indicators.Indicator;
  */
 public class BestReturn extends Indicator {
 
-    /**
-     * The name of this indicator.
-     */
-    public static final String NAME = "PredictBestReturn";
+	/**
+	 * The name of this indicator.
+	 */
+	public static final String NAME = "PredictBestReturn";
 
-    /**
-     * The number of periods this indicator is for.
-     */
-    private int periods;
+	/**
+	 * The number of periods this indicator is for.
+	 */
+	private final int periods;
 
-    /**
-     * @return The number of periods.
-     */
-    public int getPeriods()
-    {
-            return periods;
-    }
+	/**
+	 * Construct the object.
+	 * 
+	 * @param thePeriods
+	 *            The number of periods.
+	 * @param output
+	 *            True, if this indicator is to be predicted.
+	 */
+	public BestReturn(final int thePeriods, final boolean output) {
+		super(BestReturn.NAME, false, output);
+		this.periods = thePeriods;
+		setOutput(output);
+	}
 
-    /**
-     * Construct the object.
-     * @param periods The number of periods.
-     * @param output True, if this indicator is to be predicted.
-     */
-    public BestReturn(int periods, boolean output)
-    {
-        super(NAME,false,output);
-        this.periods = periods;
-        setOutput( output );
-    }
+	/**
+	 * Calculate the indicator.
+	 * 
+	 * @param data
+	 *            The data available to the indicator.
+	 * @param length
+	 *            The length of the data to calculate.
+	 */
+	@Override
+	public final void calculate(final Map<String, BaseCachedColumn> data,
+			final int length) {
+		final double[] close = data.get(FileData.CLOSE).getData();
+		final double[] output = getData();
 
-    /**
-     * Calculate the indicator.
-     * @param data The data available to the indicator.
-     * @param length The length of the data to calculate.
-     */
-    public void calculate(Map<String, BaseCachedColumn> data, int length)
-    {
-        double[] close = data.get(FileData.CLOSE).getData();
-        double[] output = this.getData();
+		final int stop = length - this.periods;
+		for (int i = 0; i < stop; i++) {
+			double bestReturn = Double.MIN_VALUE;
+			final double baseClose = close[i];
+			for (int j = 1; j <= this.periods; j++) {
+				final double newClose = close[i + j];
+				final double rtn = (newClose - baseClose) / baseClose;
+				bestReturn = Math.max(rtn, bestReturn);
+			}
+			output[i] = bestReturn;
+		}
 
-        int stop = length - periods;
-        for (int i = 0; i < stop; i++)
-        {
-            double bestReturn = Double.MIN_VALUE;
-            double baseClose = close[i];
-            for (int j = 1; j <= periods; j++)
-            {
-                double newClose = close[i + j];
-                double rtn = (newClose - baseClose) / baseClose;
-                bestReturn = Math.max(rtn, bestReturn);
-            }
-            output[i] = bestReturn;
-        }
+		for (int i = length - this.periods; i < length; i++) {
+			output[i] = 0;
+		}
 
-        for (int i = length - periods; i < length; i++)
-        {
-            output[i] = 0;
-        }
+		setBeginningIndex(0);
+		setEndingIndex(length - this.periods - 1);
+	}
 
-        this.setBeginningIndex( 0 );
-        this.setEndingIndex( length - periods - 1);
-    }
-	
+	/**
+	 * @return The number of periods.
+	 */
+	@Override
+	public final int getPeriods() {
+		return this.periods;
+	}
+
 }

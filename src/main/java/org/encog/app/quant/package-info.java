@@ -22,7 +22,9 @@
  * http://www.heatonresearch.com/copyright
  */
 /**
- * This package provides basic utilities for Encog CSV processing.
+ * This package contains all of the classes that the Encog analyst. 
+ * The Encog Analyst is a major part of the Encog framework that allows
+ * advanced analysis on files.
  */
-package org.encog.app.csv.temporal;
+package org.encog.app.quant;
 

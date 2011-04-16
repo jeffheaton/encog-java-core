@@ -24,5 +24,5 @@
 /**
  * This package provides basic utilities for Encog CSV processing.
  */
-package org.encog.app.csv.temporal;
+package org.encog.app.csv.util;
 

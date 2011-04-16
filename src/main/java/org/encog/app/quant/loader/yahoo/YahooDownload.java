@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.quant.loader.yahoo;
 
 import java.io.ByteArrayOutputStream;
@@ -8,11 +31,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.encog.Encog;
 import org.encog.app.quant.QuantTask;
 import org.encog.app.quant.loader.LoaderError;
 import org.encog.app.quant.loader.MarketLoader;
@@ -21,19 +44,42 @@ import org.encog.util.csv.ReadCSV;
 import org.encog.util.http.FormUtility;
 import org.encog.util.time.NumericDateUtil;
 
+/**
+ * Download financial data from Yahoo.
+ */
 public class YahooDownload implements MarketLoader, QuantTask {
 
-    public static final String INDEX_DJIA = "^dji";
-    public static final String INDEX_SP500 = "^gspc";
-    public static final String INDEX_NASDAQ = "^ixic";
-    
-    private int percision;    
-    private boolean cancel;
+	/**
+	 * The Dow Jones Industrial Average.
+	 */
+	public static final String INDEX_DJIA = "^dji";
+	
+	/**
+	 * The S&P 500.
+	 */
+	public static final String INDEX_SP500 = "^gspc";
+	
+	/**
+	 * The NASDAQ.
+	 */
+	public static final String INDEX_NASDAQ = "^ixic";
 
-    public YahooDownload()
-    {
-        setPercision( 10 );
-    }
+	/**
+	 * The precision to use.
+	 */
+	private int precision;
+	
+	/**
+	 * True, if we were canceled.
+	 */
+	private boolean cancel;
+
+	/**
+	 * Construct the object with default precision.
+	 */
+	public YahooDownload() {
+		setPercision(Encog.DEFAULT_PRECISION);
+	}
 
 	/**
 	 * This method builds a URL to load data from Yahoo Finance for a neural
@@ -49,8 +95,8 @@ public class YahooDownload implements MarketLoader, QuantTask {
 	 * @throws IOException
 	 *             An error accessing the data.
 	 */
-	private URL buildURL(final String ticker, final Date from,
-			final Date to) throws IOException {
+	private URL buildURL(final String ticker, final Date from, final Date to)
+			throws IOException {
 		// process the dates
 		final Calendar calendarFrom = Calendar.getInstance();
 		calendarFrom.setTime(from);
@@ -75,83 +121,93 @@ public class YahooDownload implements MarketLoader, QuantTask {
 		return new URL(str);
 	}
 
-    public void loadAllData(String ticker, File output, CSVFormat outputFormat, Date from,
-             Date to)
-    {
-    	try
-    	{
-		final URL url = buildURL(ticker, from, to);
-		final InputStream is = url.openStream();
-		final ReadCSV csv = new ReadCSV(is, true, CSVFormat.ENGLISH);
-		
-		PrintWriter tw = new PrintWriter(new FileWriter(output));
-        tw.println("date,time,open price,high price,low price,close price,volume,adjusted price");
+	/**
+	 * @return the precision.
+	 */
+	public final int getPrecision() {
+		return this.precision;
+	}
 
-		while (csv.next() && !shouldStop() ) {
-			final Date date = csv.getDate("date");
-			final double adjClose = csv.getDouble("adj close");
-			final double open = csv.getDouble("open");
-			final double close = csv.getDouble("close");
-			final double high = csv.getDouble("high");
-			final double low = csv.getDouble("low");
-			final double volume = csv.getDouble("volume");
+	/**
+	 * Load all data.
+	 * @param ticker The ticker.
+	 * @param output The output file.
+	 * @param outputFormat The format of the output file.
+	 * @param from Starting date.
+	 * @param to Ending date.
+	 */
+	public final void loadAllData(final String ticker, 
+			final File output,
+			final CSVFormat outputFormat, final Date from, final Date to) {
+		try {
+			final URL url = buildURL(ticker, from, to);
+			final InputStream is = url.openStream();
+			final ReadCSV csv = new ReadCSV(is, true, CSVFormat.ENGLISH);
 
-			NumberFormat df = DecimalFormat.getInstance();
-			df.setGroupingUsed(false);
-			
-            StringBuilder line = new StringBuilder();
-            line.append(NumericDateUtil.date2Long(date));
-            line.append(outputFormat.getSeparator());
-            line.append(NumericDateUtil.time2Int(date));
-            line.append(outputFormat.getSeparator());
-            line.append(outputFormat.format(open,percision));
-            line.append(outputFormat.getSeparator());
-            line.append(outputFormat.format(high, percision));
-            line.append(outputFormat.getSeparator());
-            line.append(outputFormat.format(low, percision));
-            line.append(outputFormat.getSeparator());
-            line.append(outputFormat.format(close, percision));
-            line.append(outputFormat.getSeparator());
-            line.append(df.format(volume));
-            line.append(outputFormat.getSeparator());
-            line.append(outputFormat.format(adjClose, percision));
-            tw.println(line.toString());
-        }
+			final PrintWriter tw = new PrintWriter(new FileWriter(output));
+			tw.println(
+		"date,time,open price,high price,low price," 
+					+ "close price,volume,adjusted price");
 
-        tw.close();
-    	}
-    	catch(IOException ex)
-    	{
+			while (csv.next() && !shouldStop()) {
+				final Date date = csv.getDate("date");
+				final double adjClose = csv.getDouble("adj close");
+				final double open = csv.getDouble("open");
+				final double close = csv.getDouble("close");
+				final double high = csv.getDouble("high");
+				final double low = csv.getDouble("low");
+				final double volume = csv.getDouble("volume");
+
+				final NumberFormat df = NumberFormat.getInstance();
+				df.setGroupingUsed(false);
+
+				final StringBuilder line = new StringBuilder();
+				line.append(NumericDateUtil.date2Long(date));
+				line.append(outputFormat.getSeparator());
+				line.append(NumericDateUtil.time2Int(date));
+				line.append(outputFormat.getSeparator());
+				line.append(outputFormat.format(open, this.precision));
+				line.append(outputFormat.getSeparator());
+				line.append(outputFormat.format(high, this.precision));
+				line.append(outputFormat.getSeparator());
+				line.append(outputFormat.format(low, this.precision));
+				line.append(outputFormat.getSeparator());
+				line.append(outputFormat.format(close, this.precision));
+				line.append(outputFormat.getSeparator());
+				line.append(df.format(volume));
+				line.append(outputFormat.getSeparator());
+				line.append(outputFormat.format(adjClose, this.precision));
+				tw.println(line.toString());
+			}
+
+			tw.close();
+		} catch (final IOException ex) {
 			throw new LoaderError(ex);
-    	}
-    }
-
-
-	/**
-	 * @return the percision
-	 */
-	public int getPercision() {
-		return percision;
+		}
 	}
 
-
 	/**
-	 * @param percision the percision to set
+	 * Request to stop.
 	 */
-	public void setPercision(int percision) {
-		this.percision = percision;
-	}
-
-
-	public void requestStop()
-	{
+	@Override
+	public final void requestStop() {
 		this.cancel = true;
 	}
-		
-	public boolean shouldStop()
-	{
+
+	/**
+	 * @param thePrecision
+	 *            the precision to set
+	 */
+	public final void setPercision(final int thePrecision) {
+		this.precision = thePrecision;
+	}
+
+	/**
+	 * @return True, if we should stop.
+	 */
+	@Override
+	public final boolean shouldStop() {
 		return this.cancel;
 	}
 
-	
 }

@@ -757,7 +757,8 @@ public class AnalystWizard {
 
 		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_TYPE,
 				MLTrainFactory.TYPE_SOM_NEIGHBORHOOD);
-		this.script.getProperties().setProperty(ScriptProperties.ML_TRAIN_ARGUMENTS, 
+		this.script.getProperties().setProperty(
+				ScriptProperties.ML_TRAIN_ARGUMENTS, 
 				"ITERATIONS=1000,NEIGHBORHOOD=rbf1d,RBF_TYPE=gaussian");
 
 		// ScriptProperties.ML_TRAIN_arguments

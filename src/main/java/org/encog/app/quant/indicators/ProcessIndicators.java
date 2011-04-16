@@ -1,3 +1,26 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.app.quant.indicators;
 
 import java.io.File;
@@ -17,201 +40,181 @@ import org.encog.util.csv.ReadCSV;
 public class ProcessIndicators extends BasicCachedFile {
 
 	/**
+	 * Allocate storage.
+	 */
+	private void allocateStorage() {
+		for (final BaseCachedColumn column : getColumns()) {
+			column.allocate(getRecordCount());
+		}
+	}
+
+	/**
+	 * Calculate the indicators.
+	 */
+	private void calculateIndicators() {
+		for (final BaseCachedColumn column : getColumns()) {
+			if (column.isOutput()) {
+				if (column instanceof Indicator) {
+					final Indicator indicator = (Indicator) column;
+					indicator.calculate(getColumnMapping(), getRecordCount());
+				}
+			}
+		}
+	}
+
+	/**
+	 * @return Get the beginning index.
+	 */
+	private int getBeginningIndex() {
+		int result = 0;
+
+		for (final BaseCachedColumn column : getColumns()) {
+			if (column instanceof Indicator) {
+				final Indicator ind = (Indicator) column;
+				result = Math.max(ind.getBeginningIndex(), result);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * @return Get the ending index.
+	 */
+	private int getEndingIndex() {
+		int result = getRecordCount() - 1;
+
+		for (final BaseCachedColumn column : getColumns()) {
+			if (column instanceof Indicator) {
+				final Indicator ind = (Indicator) column;
+				result = Math.min(ind.getEndingIndex(), result);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Process and write the specified output file.
+	 * 
+	 * @param output
+	 *            The output file.
+	 */
+	public final void process(final File output) {
+		validateAnalyzed();
+
+		allocateStorage();
+		readFile();
+		calculateIndicators();
+		writeCSV(output);
+	}
+
+	/**
 	 * Read the CSV file.
 	 */
-    private void readFile()
-    {
-        ReadCSV csv = null;
+	private void readFile() {
+		ReadCSV csv = null;
 
-        try
-        {
-            csv = new ReadCSV(getInputFilename().toString(), isExpectInputHeaders(), getInputFormat());
+		try {
+			csv = new ReadCSV(getInputFilename().toString(),
+					isExpectInputHeaders(), getInputFormat());
 
-            resetStatus();
-            int row = 0;
-            while (csv.next() && !shouldStop() )
-            {
-                updateStatus("Reading data");
-                for(BaseCachedColumn column : this.getColumns())
-                {
-                    if (column instanceof FileData)
-                    {
-                        if( column.isInput() )
-                        {
-                            FileData fd = (FileData)column;
-                            String str = csv.get(fd.getIndex());
-                            double d = this.getInputFormat().parse(str);
-                            fd.getData()[row] = d;
-                        }
-                    }
-                }
-                row++;
-            }
-        }
-        finally
-        {
-            reportDone("Reading data");
-            if (csv != null)
-                csv.close();
-        }
-    }
-
-    /**
-     * @return Get the beginning index.
-     */
-    private int getBeginningIndex()
-    {
-        int result = 0;
-
-        for(BaseCachedColumn column : getColumns() )
-        {
-            if (column instanceof Indicator)
-            {
-                Indicator ind = (Indicator)column;
-                result = Math.max(ind.getBeginningIndex(), result);
-            }
-        }
-
-        return result;
-    }
-
-    /** 
-     * @return Get the ending index.
-     */
-    private int getEndingIndex()
-    {
-        int result = this.getRecordCount()-1;
-
-        for(BaseCachedColumn column : getColumns() )
-        {
-            if (column instanceof Indicator)
-            {
-                Indicator ind = (Indicator)column;
-                result = Math.min(ind.getEndingIndex(), result);
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Write the CSV.
-     * @param filename The target filename.
-     */
-    private void writeCSV(File filename)
-    {
-        PrintWriter tw = null;
-
-        try
-        {
-            resetStatus();
-            tw = new PrintWriter(new FileWriter(filename));
-
-            // write the headers
-            if (this.isExpectInputHeaders())
-            {
-                StringBuilder line = new StringBuilder();
-
-                for(BaseCachedColumn column : getColumns())
-                {
-                    if (column.isOutput())
-                    {
-                        if (line.length() > 0)
-                            line.append(this.getInputFormat().getSeparator());
-                        line.append("\"");
-                        line.append(column.getName());
-                        line.append("\"");
-                    }
-                }
-
-                tw.println(line.toString());
-            }
-
-            // starting and ending index
-            int beginningIndex = getBeginningIndex();
-            int endingIndex = getEndingIndex();
-
-            // write the file data
-            for (int row = beginningIndex; row <= endingIndex; row++)
-            {
-                updateStatus("Writing data");
-                StringBuilder line = new StringBuilder();
-
-                for(BaseCachedColumn column : getColumns())
-                {
-                    if (column.isOutput())
-                    {
-                        if (line.length() > 0)
-                            line.append(this.getInputFormat().getSeparator());
-                        double d = column.getData()[row];
-                        line.append(this.getInputFormat().format(d, getPrecision()));
-                    }
-                }
-
-                tw.println(line.toString());
-            }
-        } catch (IOException e) {
-			throw( new QuantError(e));
+			resetStatus();
+			int row = 0;
+			while (csv.next() && !shouldStop()) {
+				updateStatus("Reading data");
+				for (final BaseCachedColumn column : getColumns()) {
+					if (column instanceof FileData) {
+						if (column.isInput()) {
+							final FileData fd = (FileData) column;
+							final String str = csv.get(fd.getIndex());
+							final double d = getInputFormat().parse(str);
+							fd.getData()[row] = d;
+						}
+					}
+				}
+				row++;
+			}
+		} finally {
+			reportDone("Reading data");
+			if (csv != null) {
+				csv.close();
+			}
 		}
-        finally
-        {
-            if (tw != null)
-                tw.close();
-        }
-    }
+	}
 
-    /**
-     * Allocate storage.
-     */
-    private void allocateStorage()
-    {
-        for(BaseCachedColumn column : this.getColumns())
-        {
-            column.allocate(this.getRecordCount());
-        }
-    }
+	/**
+	 * Rename a column.
+	 * 
+	 * @param index
+	 *            The column index.
+	 * @param newName
+	 *            The new name.
+	 */
+	public final void renameColumn(final int index, final String newName) {
+		getColumnMapping().remove(getColumns().get(index).getName());
+		getColumns().get(index).setName(newName);
+		getColumnMapping().put(newName, getColumns().get(index));
+	}
 
-    /**
-     * Calculate the indicators.
-     */
-    private void calculateIndicators()
-    {
-        for (BaseCachedColumn column : this.getColumns())
-        {
-            if (column.isOutput())
-            {
-                if (column instanceof Indicator)
-                {
-                    Indicator indicator = (Indicator)column;
-                    indicator.calculate(this.getColumnMapping(), this.getRecordCount());
-                }
-            }
-        }
-    }
+	/**
+	 * Write the CSV.
+	 * 
+	 * @param filename
+	 *            The target filename.
+	 */
+	private void writeCSV(final File filename) {
+		PrintWriter tw = null;
 
-    /**
-     * Rename a column.
-     * @param index The column index.
-     * @param newName The new name.
-     */
-    public void renameColumn(int index, String newName)
-    {
-        this.getColumnMapping().remove(getColumns().get(index).getName());
-        this.getColumns().get(index).setName(newName);
-        this.getColumnMapping().put(newName, this.getColumns().get(index));
-    }
+		try {
+			resetStatus();
+			tw = new PrintWriter(new FileWriter(filename));
 
-    /**
-     * Process and write the specified output file.
-     * @param output The output file.
-     */
-    public void process(File output)
-    {
-        validateAnalyzed();
+			// write the headers
+			if (isExpectInputHeaders()) {
+				final StringBuilder line = new StringBuilder();
 
-        allocateStorage();
-        readFile();
-        calculateIndicators();
-        writeCSV(output);
-    }	
+				for (final BaseCachedColumn column : getColumns()) {
+					if (column.isOutput()) {
+						if (line.length() > 0) {
+							line.append(getInputFormat().getSeparator());
+						}
+						line.append("\"");
+						line.append(column.getName());
+						line.append("\"");
+					}
+				}
+
+				tw.println(line.toString());
+			}
+
+			// starting and ending index
+			final int beginningIndex = getBeginningIndex();
+			final int endingIndex = getEndingIndex();
+
+			// write the file data
+			for (int row = beginningIndex; row <= endingIndex; row++) {
+				updateStatus("Writing data");
+				final StringBuilder line = new StringBuilder();
+
+				for (final BaseCachedColumn column : getColumns()) {
+					if (column.isOutput()) {
+						if (line.length() > 0) {
+							line.append(getInputFormat().getSeparator());
+						}
+						final double d = column.getData()[row];
+						line.append(getInputFormat().format(d, getPrecision()));
+					}
+				}
+
+				tw.println(line.toString());
+			}
+		} catch (final IOException e) {
+			throw (new QuantError(e));
+		} finally {
+			if (tw != null) {
+				tw.close();
+			}
+		}
+	}
 }

@@ -8,12 +8,11 @@ import java.io.PrintWriter;
 import org.encog.app.csv.basic.BasicCachedFile;
 import org.encog.app.csv.basic.FileData;
 import org.encog.app.quant.QuantError;
-import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
 /**
- * A simple class to convert financial data files into the format used by NinjaTrader for
- * input.
+ * A simple class to convert financial data files into the format used 
+ * by NinjaTrader for input.
  */
 public class NinjaFileConvert extends BasicCachedFile {
 	
@@ -21,7 +20,7 @@ public class NinjaFileConvert extends BasicCachedFile {
 	 * Process the file and output to the target file.
 	 * @param target The target file to write to.
 	 */
-	public void process(File target) {
+	public final void process(final File target) {
 		try {
 			ReadCSV csv = new ReadCSV(this.getInputFilename().toString(),
 					this.isExpectInputHeaders(), this.getInputFormat());

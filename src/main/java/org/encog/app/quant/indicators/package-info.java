@@ -22,7 +22,7 @@
  * http://www.heatonresearch.com/copyright
  */
 /**
- * This package provides basic utilities for Encog CSV processing.
+ * This package holds indicators.
  */
-package org.encog.app.csv.temporal;
+package org.encog.app.quant.indicators;
 
