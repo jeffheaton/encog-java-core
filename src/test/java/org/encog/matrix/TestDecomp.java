@@ -1,0 +1,130 @@
+package org.encog.matrix;
+
+import org.encog.mathutil.matrices.Matrix;
+import org.encog.mathutil.matrices.decomposition.CholeskyDecomposition;
+import org.encog.mathutil.matrices.decomposition.EigenvalueDecomposition;
+import org.encog.mathutil.matrices.decomposition.QRDecomposition;
+import org.encog.mathutil.matrices.decomposition.SingularValueDecomposition;
+
+import junit.framework.Assert;
+import junit.framework.TestCase;
+
+public class TestDecomp extends TestCase {
+	public void testSVD()
+	{
+		double m[][] = {
+				{1,2,3,4},
+				{5,6,7,8},
+				{9,10,11,12},
+				{13,14,15,16} };
+		Matrix matrix = new Matrix(m);
+		SingularValueDecomposition svd = new SingularValueDecomposition(matrix);
+		Assert.assertEquals(2147483647, (int)(svd.cond()) );
+		double[] d = svd.getSingularValues();
+		
+		Assert.assertEquals(4, d.length);
+
+	}
+	
+	public void testCholesky()
+	{
+		double m1[][] = {
+				{1,0,0,0},
+				{0,1,0,0},
+				{0,0,1,0},
+				{0,0,0,1} };
+		Matrix matrix1 = new Matrix(m1);
+		
+		double m2[][] = {
+				{17,18,19,20},
+				{21,22,23,24},
+				{25,27,28,29},
+				{37,33,31,30} };
+		Matrix matrix2 = new Matrix(m2);
+		
+		CholeskyDecomposition c = new CholeskyDecomposition(matrix1);
+		c.solve(matrix2);
+
+		Matrix mx = c.getL();
+		
+		Assert.assertEquals(1.0, mx.get(0,0));
+		Assert.assertEquals(1.0, mx.get(1,1));
+		Assert.assertEquals(1.0, mx.get(2,2));
+		Assert.assertEquals(4, mx.getRows());
+		Assert.assertEquals(4, mx.getCols());
+	}
+	
+	public void testEigenvalue()
+	{
+		double m1[][] = {
+				{1,0,0,0},
+				{0,1,0,0},
+				{0,0,1,0},
+				{0,0,0,1} };
+		Matrix matrix1 = new Matrix(m1);
+			
+		EigenvalueDecomposition e = new EigenvalueDecomposition(matrix1);
+		
+		double[] d1 = e.getImagEigenvalues();
+		double[] d2 = e.getRealEigenvalues();
+		Matrix mx = e.getV();
+		
+		Assert.assertEquals(1.0, mx.get(0,0));
+		Assert.assertEquals(1.0, mx.get(1,1));
+		Assert.assertEquals(1.0, mx.get(2,2));
+		Assert.assertEquals(4, mx.getRows());
+		Assert.assertEquals(4, mx.getCols());
+	}
+	
+	public void testEigenvalue2()
+	{
+		double m1[][] = {
+				{1,0,0,0},
+				{0,1,0,0},
+				{0,0,1,0},
+				{1,0,0,1} };
+		Matrix matrix1 = new Matrix(m1);
+			
+		EigenvalueDecomposition e = new EigenvalueDecomposition(matrix1);
+		
+		double[] d1 = e.getImagEigenvalues();
+		double[] d2 = e.getRealEigenvalues();
+		Matrix mx = e.getV();
+		
+		Assert.assertEquals(0.0, mx.get(0,0));
+		Assert.assertEquals(0.0, mx.get(1,1));
+		Assert.assertEquals(1.0, mx.get(2,2));
+		Assert.assertEquals(4, mx.getRows());
+		Assert.assertEquals(4, mx.getCols());
+	}
+
+	public void testQR()
+	{
+		double m1[][] = {
+				{1,0,0,0},
+				{0,1,0,0},
+				{0,0,1,0},
+				{0,0,0,1} };
+		Matrix matrix1 = new Matrix(m1);
+		
+		double m2[][] = {
+				{17,18,19,20},
+				{21,22,23,24},
+				{25,27,28,29},
+				{37,33,31,30} };
+		Matrix matrix2 = new Matrix(m2);
+		
+		QRDecomposition c = new QRDecomposition(matrix1);
+		Matrix mx = c.solve(matrix2);
+		
+		Assert.assertEquals(17.0, mx.get(0,0));
+		Assert.assertEquals(22.0, mx.get(1,1));
+		Assert.assertEquals(28.0, mx.get(2,2));
+		Assert.assertEquals(4, mx.getRows());
+		Assert.assertEquals(4, mx.getCols());
+	}
+
+	
+	
+	// QRDecomposition
+}
