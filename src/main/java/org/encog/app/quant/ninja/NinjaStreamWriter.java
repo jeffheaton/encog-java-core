@@ -190,9 +190,9 @@ public class NinjaStreamWriter {
 
 		final StringBuilder theLine = new StringBuilder();
 
-		line.append(FileData.DATE);
-		line.append(this.format.getSeparator());
-		line.append(FileData.TIME);
+		theLine.append(FileData.DATE);
+		theLine.append(this.format.getSeparator());
+		theLine.append(FileData.TIME);
 
 		for (final String str : this.columns) {
 			if (theLine.length() > 0) {
@@ -203,7 +203,7 @@ public class NinjaStreamWriter {
 			theLine.append(str);
 			theLine.append("\"");
 		}
-		this.tw.println(line.toString());
+		this.tw.println(theLine.toString());
 	}
 
 }
