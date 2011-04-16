@@ -31,6 +31,7 @@ public class TestAnalystWizard extends TestCase {
 		encog.executeTask("task-full");
 		
 		encog.save(analystFile);
+		encog.load(analystFile);
 		
 		AnalystReport report = new AnalystReport(encog);
 		report.produceReport(TEMP_DIR.createFile("report.html"));
