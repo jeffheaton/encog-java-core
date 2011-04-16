@@ -25,7 +25,7 @@ package org.encog.neural.activation;
 
 import junit.framework.TestCase;
 
-import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.neural.activation.ActivationTANH;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -29,12 +29,12 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.engine.network.activation.ActivationStep;
 import org.encog.ml.genetic.innovation.BasicInnovationList;
 import org.encog.ml.genetic.innovation.InnovationList;
 import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.BasicSpecies;
+import org.encog.neural.activation.ActivationStep;
 import org.encog.neural.art.ART1;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;

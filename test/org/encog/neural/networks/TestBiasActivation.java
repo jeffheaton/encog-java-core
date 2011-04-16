@@ -27,8 +27,8 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.Encog;
-import org.encog.engine.network.activation.ActivationSigmoid;
 import org.encog.engine.network.flat.FlatNetwork;
+import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.layers.BasicLayer;

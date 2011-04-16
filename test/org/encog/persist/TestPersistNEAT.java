@@ -33,9 +33,9 @@ import java.util.Map;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.engine.network.activation.ActivationFunction;
-import org.encog.engine.network.activation.ActivationSigmoid;
-import org.encog.engine.network.activation.ActivationStep;
+import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.activation.ActivationSigmoid;
+import org.encog.neural.activation.ActivationStep;
 import org.encog.neural.art.ART1;
 import org.encog.neural.neat.NEATLink;
 import org.encog.neural.neat.NEATNetwork;

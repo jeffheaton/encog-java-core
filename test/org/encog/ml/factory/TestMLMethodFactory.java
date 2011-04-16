@@ -1,9 +1,9 @@
 package org.encog.ml.factory;
 
 import org.encog.EncogError;
-import org.encog.engine.network.activation.ActivationLinear;
-import org.encog.engine.network.activation.ActivationTANH;
 import org.encog.ml.svm.SVM;
+import org.encog.neural.activation.ActivationLinear;
+import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.rbf.RBFNetwork;
 
