@@ -3,6 +3,7 @@ package org.encog.ml.factory;
 import org.encog.EncogError;
 import org.encog.engine.network.activation.ActivationLinear;
 import org.encog.engine.network.activation.ActivationTANH;
+import org.encog.ml.svm.SVM;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.rbf.RBFNetwork;
 
@@ -64,7 +65,11 @@ public class TestMLMethodFactory extends TestCase {
 	}
 	
 	public void testFactorySVM() {
-		
+		String architecture = "?->C(KERNEL=RBF,TYPE=NEW)->?";
+		MLMethodFactory factory = new MLMethodFactory();
+		SVM network = (SVM)factory.create(MLMethodFactory.TYPE_SVM, architecture, 4, 1);
+		Assert.assertEquals(4,network.getInputCount());
+		Assert.assertEquals(1,network.getOutputCount());
 	}
 	
 	public void testFactorySOM() {
