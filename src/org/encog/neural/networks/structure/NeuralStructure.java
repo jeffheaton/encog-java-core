@@ -35,7 +35,6 @@ import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
-import org.encog.util.obj.ReflectionUtil;
 
 /**
  * Holds "cached" information about the structure of the neural network. This is
@@ -102,23 +101,6 @@ public class NeuralStructure implements Serializable {
 	 */
 	public int calculateSize() {
 		return NetworkCODEC.networkSize(this.network);
-	}
-
-	/**
-	 * Determine if the network contains a layer of the specified type.
-	 * 
-	 * @param type
-	 *            The layer type we are looking for.
-	 * @return True if this layer type is present.
-	 */
-	public boolean containsLayerType(final Class<?> type) {
-		for (final Layer layer : this.layers) {
-			if (ReflectionUtil.isInstanceOf(layer.getClass(), type)) {
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 
