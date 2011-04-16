@@ -62,7 +62,7 @@ public class WebPage {
 	 * @param span
 	 *            The range to add to the collection.
 	 */
-	public void addContent(final DocumentRange span) {
+	public final void addContent(final DocumentRange span) {
 		span.setSource(this);
 		this.contents.add(span);
 	}
@@ -73,7 +73,7 @@ public class WebPage {
 	 * @param unit
 	 *            The data unit to load.
 	 */
-	public void addDataUnit(final DataUnit unit) {
+	public final void addDataUnit(final DataUnit unit) {
 		this.data.add(unit);
 	}
 
@@ -86,7 +86,7 @@ public class WebPage {
 	 *            The index to search from.
 	 * @return The document range that was found.
 	 */
-	public DocumentRange find(final Class< ? > c, final int index) {
+	public final DocumentRange find(final Class< ? > c, final int index) {
 		int i = index;
 		for (final DocumentRange span : getContents()) {
 			if (span.getClass().getName().equals(c.getName())) {
@@ -107,7 +107,7 @@ public class WebPage {
 	 *            The string to search for.
 	 * @return The link that contains the specified string.
 	 */
-	public Link findLink(final String str) {
+	public final Link findLink(final String str) {
 		for (final DocumentRange span : getContents()) {
 			if (span instanceof Link) {
 				final Link link = (Link) span;
@@ -123,14 +123,14 @@ public class WebPage {
 	 * @return The contents in a list collection.
 	 */
 
-	public List<DocumentRange> getContents() {
+	public final List<DocumentRange> getContents() {
 		return this.contents;
 	}
 
 	/**
 	 * @return The data units in a list collection.
 	 */
-	public List<DataUnit> getData() {
+	public final List<DataUnit> getData() {
 		return this.data;
 	}
 
@@ -139,7 +139,7 @@ public class WebPage {
 	 *
 	 * @return The size of the data unit.
 	 */
-	public int getDataSize() {
+	public final int getDataSize() {
 		return this.data.size();
 	}
 
@@ -150,7 +150,7 @@ public class WebPage {
 	 *            The index to use.
 	 * @return The DataUnit found at the specified index.
 	 */
-	public DataUnit getDataUnit(final int i) {
+	public final DataUnit getDataUnit(final int i) {
 		return this.data.get(i);
 	}
 
@@ -159,18 +159,18 @@ public class WebPage {
 	 *
 	 * @return The DocumentRange that specifies the title of this document.
 	 */
-	public DocumentRange getTitle() {
+	public final DocumentRange getTitle() {
 		return this.title;
 	}
 
 	/**
 	 * Set the title of this document.
 	 *
-	 * @param title
+	 * @param theTitle
 	 *            The DocumentRange that specifies the title.
 	 */
-	public void setTitle(final DocumentRange title) {
-		this.title = title;
+	public final void setTitle(final DocumentRange theTitle) {
+		this.title = theTitle;
 		this.title.setSource(this);
 	}
 
@@ -178,7 +178,7 @@ public class WebPage {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		for (final DocumentRange span : getContents()) {
 			result.append(span.toString());

@@ -39,7 +39,7 @@ public class CodeDataUnit extends DataUnit {
 	/**
 	 * @return THe code for this data unit.
 	 */
-	public String getCode() {
+	public final String getCode() {
 		return this.code;
 	}
 
@@ -49,7 +49,7 @@ public class CodeDataUnit extends DataUnit {
 	 * @param str
 	 *            The new code.
 	 */
-	public void setCode(final String str) {
+	public final void setCode(final String str) {
 		this.code = str;
 
 	}
@@ -58,7 +58,7 @@ public class CodeDataUnit extends DataUnit {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		return this.code;
 	}
 	

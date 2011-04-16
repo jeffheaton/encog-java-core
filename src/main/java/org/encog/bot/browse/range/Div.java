@@ -49,7 +49,7 @@ public class Div extends DocumentRange {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("[Div:class=");
 		result.append(getClassAttribute());

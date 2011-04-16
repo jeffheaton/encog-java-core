@@ -74,11 +74,11 @@ public class LoadWebPage {
 	/**
 	 * Construct a web page loader with the specified base URL.
 	 * 
-	 * @param base
+	 * @param theBase
 	 *            The base URL to use when loading.
 	 */
-	public LoadWebPage(final URL base) {
-		this.base = base;
+	public LoadWebPage(final URL theBase) {
+		this.base = theBase;
 	}
 
 	/**
@@ -148,7 +148,7 @@ public class LoadWebPage {
 	 * @return The index that the ending tag was found at. Returns -1 if not
 	 *         found.
 	 */
-	protected int findEndTag(final int index, final Tag tag) {
+	public final int findEndTag(final int index, final Tag tag) {
 		int depth = 0;
 		int count = index;
 
@@ -182,7 +182,7 @@ public class LoadWebPage {
 	 *            The input stream to load from.
 	 * @return The loaded web page.
 	 */
-	public WebPage load(final InputStream is) {
+	public final WebPage load(final InputStream is) {
 		this.page = new WebPage();
 
 		loadDataUnits(is);
@@ -198,7 +198,7 @@ public class LoadWebPage {
 	 *            A string containing HTML.
 	 * @return The loaded WebPage.
 	 */
-	public WebPage load(final String str) {
+	public final WebPage load(final String str) {
 		try {
 			final ByteArrayInputStream bis = new ByteArrayInputStream(str
 					.getBytes());
@@ -216,7 +216,7 @@ public class LoadWebPage {
 	 * load the contents of the web page. This includes the title, any links and
 	 * forms. Div tags and spans are also processed.
 	 */
-	protected void loadContents() {
+	protected final void loadContents() {
 		for (int index = 0; index < this.page.getDataSize(); index++) {
 			final DataUnit du = this.page.getDataUnit(index);
 			if (du instanceof TagDataUnit) {
@@ -269,7 +269,7 @@ public class LoadWebPage {
 	 * @param is
 	 *            The input stream that the data units are loaded from.
 	 */
-	protected void loadDataUnits(final InputStream is) {
+	protected final void loadDataUnits(final InputStream is) {
 		final StringBuilder text = new StringBuilder();
 		int ch;
 		final ReadHTML parse = new ReadHTML(is);
@@ -334,7 +334,7 @@ public class LoadWebPage {
 	 * @param tag
 	 *            The beginning tag.
 	 */
-	protected void loadForm(final int index, final Tag tag) {
+	protected final void loadForm(final int index, final Tag tag) {
 		final String method = tag.getAttributeValue("method");
 		final String action = tag.getAttributeValue("action");
 
@@ -366,7 +366,7 @@ public class LoadWebPage {
 	 * @param tag
 	 *            The beginning tag.
 	 */
-	protected void loadInput(final int index, final Tag tag) {
+	protected final void loadInput(final int index, final Tag tag) {
 		final String type = tag.getAttributeValue("type");
 		final String name = tag.getAttributeValue("name");
 		final String value = tag.getAttributeValue("value");
@@ -392,7 +392,7 @@ public class LoadWebPage {
 	 *            The beginning tag.
 	 */
 
-	protected void loadLink(final int index, final Tag tag) {
+	protected final void loadLink(final int index, final Tag tag) {
 		final Link link = new Link(this.page);
 		final String href = tag.getAttributeValue("href");
 
@@ -433,7 +433,7 @@ public class LoadWebPage {
 	 * @param tag
 	 *            The beginning tag.
 	 */
-	protected void loadTitle(final int index, final Tag tag) {
+	protected final void loadTitle(final int index, final Tag tag) {
 		final DocumentRange title = new DocumentRange(this.page);
 		title.setBegin(index);
 		title.setEnd(findEndTag(index + 1, tag));

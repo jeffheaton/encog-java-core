@@ -52,25 +52,25 @@ public class Link extends DocumentRange {
 	/**
 	 * @return The target of this link.
 	 */
-	public Address getTarget() {
+	public final Address getTarget() {
 		return this.target;
 	}
 
 	/**
 	 * Set the target of this link.
 	 *
-	 * @param target
+	 * @param theTarget
 	 *            The link target.
 	 */
-	public void setTarget(final Address target) {
-		this.target = target;
+	public final void setTarget(final Address theTarget) {
+		this.target = theTarget;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("[Link:");
 		result.append(this.target);

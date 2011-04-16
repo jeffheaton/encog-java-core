@@ -57,7 +57,7 @@ public class Browser {
 	/**
 	 * @return The page currently being browsed.
 	 */
-	public WebPage getCurrentPage() {
+	public final WebPage getCurrentPage() {
 		return this.currentPage;
 	}
 
@@ -67,7 +67,7 @@ public class Browser {
 	 * @param form
 	 *            The form to be submitted.
 	 */
-	public void navigate(final Form form) {
+	public final void navigate(final Form form) {
 		navigate(form, null);
 	}
 
@@ -79,7 +79,7 @@ public class Browser {
 	 * @param submit
 	 *            The submit button on the form to simulate clicking.
 	 */
-	public void navigate(final Form form, final Input submit) {
+	public final void navigate(final Form form, final Input submit) {
 
 		try {
 			EncogLogging.log(EncogLogging.LEVEL_INFO, "Posting a form");
@@ -144,7 +144,7 @@ public class Browser {
 	 * @param link
 	 *            The link to navigate to.
 	 */
-	public void navigate(final Link link) {
+	public final void navigate(final Link link) {
 
 		final Address address = link.getTarget();
 
@@ -162,7 +162,7 @@ public class Browser {
 	 * @param url
 	 *            The URL to navigate to.
 	 */
-	public void navigate(final String url) {
+	public final void navigate(final String url) {
 		try {
 			navigate(new URL(url));
 		} catch (final MalformedURLException e) {
@@ -178,9 +178,10 @@ public class Browser {
 	 * @param url
 	 *            The URL to navigate to.
 	 */
-	public void navigate(final URL url) {
+	public final void navigate(final URL url) {
 		try {
-			EncogLogging.log(EncogLogging.LEVEL_INFO, "Navigating to page:" + url);
+			EncogLogging.log(EncogLogging.LEVEL_INFO, 
+					"Navigating to page:" + url);
 			final URLConnection connection = url.openConnection();
 			final InputStream is = connection.getInputStream();
 			navigate(url, is);
@@ -199,7 +200,7 @@ public class Browser {
 	 * @param is
 	 *            The data to post to the page.
 	 */
-	public void navigate(final URL url, final InputStream is) {
+	public final void navigate(final URL url, final InputStream is) {
 		EncogLogging.log(EncogLogging.LEVEL_INFO, "POSTing to page:" + url);
 		final LoadWebPage load = new LoadWebPage(url);
 		this.currentPage = load.load(is);
@@ -208,15 +209,15 @@ public class Browser {
 	/**
 	 * Set the current page.
 	 * 
-	 * @param currentPage
+	 * @param theCurrentPage
 	 *            The current page.
 	 */
-	public void setCurrentPage(final WebPage currentPage) {
-		this.currentPage = currentPage;
+	public final void setCurrentPage(final WebPage theCurrentPage) {
+		this.currentPage = theCurrentPage;
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
+	public final String toString() {
 		StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" currentPage=");

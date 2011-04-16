@@ -52,7 +52,7 @@ public class Input extends FormElement {
 	/**
 	 * @return The type of this input.
 	 */
-	public String getType() {
+	public final String getType() {
 		return this.type;
 	}
 
@@ -62,34 +62,18 @@ public class Input extends FormElement {
 	 *         from sending ALL of them in a single post.
 	 */
 	@Override
-	public boolean isAutoSend() {
+	public final boolean isAutoSend() {
 		return !this.type.equalsIgnoreCase("submit");
 	}
 
 	/**
 	 * Set the type of this input element.
 	 *
-	 * @param type
+	 * @param theType
 	 *            The type of this input element.
 	 */
-	public void setType(final String type) {
-		this.type = type;
+	public final void setType(final String theType) {
+		this.type = theType;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder();
-		builder.append("[Input:");
-		builder.append("type=");
-		builder.append(getType());
-		builder.append(",name=");
-		builder.append(getName());
-		builder.append(",value=");
-		builder.append(getValue());
-		builder.append("]");
-		return builder.toString();
-	}
 }

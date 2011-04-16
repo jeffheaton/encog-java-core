@@ -58,11 +58,11 @@ public class ErrorCalculation {
 	 * preferred training method. Currently the only training method that does
 	 * this is Levenberg Marquardt (LMA).
 	 * 
-	 * @param mode
+	 * @param theMode
 	 *            The new mode.
 	 */
-	public static void setMode(final ErrorCalculationMode mode) {
-		ErrorCalculation.mode = mode;
+	public static void setMode(final ErrorCalculationMode theMode) {
+		ErrorCalculation.mode = theMode;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class ErrorCalculation {
 	 * 
 	 * @return The current error for the neural network.
 	 */
-	public double calculate() {
+	public final double calculate() {
 		if (this.setSize == 0) {
 			return 0;
 		}
@@ -103,7 +103,7 @@ public class ErrorCalculation {
 	 * 
 	 * @return The current error for the neural network.
 	 */
-	public double calculateARCTAN() {
+	public final double calculateARCTAN() {
 		return calculateMSE();
 	}
 
@@ -112,7 +112,7 @@ public class ErrorCalculation {
 	 * 
 	 * @return The current error for the neural network.
 	 */
-	public double calculateMSE() {
+	public final double calculateMSE() {
 		if (this.setSize == 0) {
 			return 0;
 		}
@@ -126,7 +126,7 @@ public class ErrorCalculation {
 	 * 
 	 * @return The current error for the neural network.
 	 */
-	public double calculateRMS() {
+	public final double calculateRMS() {
 		if (this.setSize == 0) {
 			return 0;
 		}
@@ -137,7 +137,7 @@ public class ErrorCalculation {
 	/**
 	 * Reset the error accumulation to zero.
 	 */
-	public void reset() {
+	public final void reset() {
 		this.globalError = 0;
 		this.setSize = 0;
 	}
@@ -150,7 +150,7 @@ public class ErrorCalculation {
 	 * @param ideal
 	 *            The ideal value.
 	 */
-	public void updateError(final double actual, final double ideal) {
+	public final void updateError(final double actual, final double ideal) {
 
 		double delta = ideal - actual;
 
@@ -172,7 +172,7 @@ public class ErrorCalculation {
 	 * @param ideal
 	 *            The ideal number.
 	 */
-	public void updateError(final double[] actual, final double[] ideal) {
+	public final void updateError(final double[] actual, final double[] ideal) {
 		for (int i = 0; i < actual.length; i++) {
 			double delta = ideal[i] - actual[i];
 

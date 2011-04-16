@@ -56,7 +56,7 @@ public class RSS {
 
 	/**
 	 * Simple utility method that obtains the text of an XML node.
-	 *
+	 * 
 	 * @param n
 	 *            The XML node.
 	 * @return The text of the specified XML node.
@@ -75,7 +75,7 @@ public class RSS {
 	/**
 	 * Simple utility function that converts a RSS formatted date into a Java
 	 * date.
-	 *
+	 * 
 	 * @param datestr
 	 *            The RSS formatted date.
 	 * @return A Java java.util.date
@@ -94,7 +94,7 @@ public class RSS {
 	/**
 	 * All of the attributes for this RSS document.
 	 */
-	private final Map<String, String> attributes
+	private final Map<String, String> attributes 
 		= new HashMap<String, String>();
 
 	/**
@@ -104,43 +104,48 @@ public class RSS {
 
 	/**
 	 * Get the list of attributes.
-	 *
+	 * 
 	 * @return the attributes
 	 */
-	public Map<String, String> getAttributes() {
+	public final Map<String, String> getAttributes() {
 		return this.attributes;
 	}
 
 	/**
 	 * @return the items
 	 */
-	public List<RSSItem> getItems() {
+	public final List<RSSItem> getItems() {
 		return this.items;
 	}
+
 	/**
 	 * Load all RSS data from the specified URL.
-	 * @param url
+	 * 
+	 * @param url The URL to load.
 	 */
-	public void load(final URL url){
+	public final void load(final URL url) {
 		load(url, -1);
 	}
+
 	/**
 	 * Load all RSS data from the specified URL.
-	 *
+	 * 
 	 * @param url
 	 *            URL that contains XML data.
-	 * @param timeout           
+	 * @param timeout The timeout value.
 	 */
-	public void load(final URL url, int timeout) {
+	public final void load(final URL url, final int timeout) {
 		try {
-			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Loading RSS from:" + url);
+			EncogLogging.log(EncogLogging.LEVEL_DEBUG, "Loading RSS from:"
+					+ url);
 
 			final URLConnection http = url.openConnection();
-			if(timeout>0){
+			if (timeout > 0) {
 				http.setConnectTimeout(timeout);
 			}
 			http.setRequestProperty("User-Agent",
-"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; Win64; x64; Trident/4.0)");
+					"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.1; " 
+					+ "Win64; x64; Trident/4.0)");
 			final InputStream is = http.getInputStream();
 
 			final DocumentBuilderFactory factory = DocumentBuilderFactory
@@ -175,7 +180,7 @@ public class RSS {
 
 	/**
 	 * Load the channle node.
-	 *
+	 * 
 	 * @param channel
 	 *            A node that contains a channel.
 	 */
@@ -196,7 +201,7 @@ public class RSS {
 
 	/**
 	 * Load the specified RSS item, or story.
-	 *
+	 * 
 	 * @param item
 	 *            A XML node that contains a RSS item.
 	 */
@@ -204,14 +209,15 @@ public class RSS {
 		final RSSItem rssItem = new RSSItem();
 		rssItem.load(item);
 		this.items.add(rssItem);
-		EncogLogging.log(EncogLogging.LEVEL_DEBUG,"Loaded RSS item:" + rssItem);
+		EncogLogging
+				.log(EncogLogging.LEVEL_DEBUG, "Loaded RSS item:" + rssItem);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder str = new StringBuilder();
 		final Set<String> set = this.attributes.keySet();
 		for (final String item : set) {

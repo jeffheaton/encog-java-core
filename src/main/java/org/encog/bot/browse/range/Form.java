@@ -80,7 +80,7 @@ public class Form extends DocumentRange {
 	 *            The index to begin searching at.
 	 * @return The Input object that was found.
 	 */
-	public Input findType(final String type, final int index) {
+	public final Input findType(final String type, final int index) {
 		int i = index;
 
 		for (final DocumentRange element : getElements()) {
@@ -100,42 +100,42 @@ public class Form extends DocumentRange {
 	/**
 	 * @return The URL to send the form to.
 	 */
-	public Address getAction() {
+	public final Address getAction() {
 		return this.action;
 	}
 
 	/**
 	 * @return How the form will be sent.
 	 */
-	public Method getMethod() {
+	public final Method getMethod() {
 		return this.method;
 	}
 
 	/**
 	 * Set the action for the form.
 	 *
-	 * @param action
+	 * @param theAction
 	 *            The URL to send the form to.
 	 */
-	public void setAction(final Address action) {
-		this.action = action;
+	public final void setAction(final Address theAction) {
+		this.action = theAction;
 	}
 
 	/**
 	 * Set the method to send the form.
 	 *
-	 * @param method
+	 * @param theMethod
 	 *            How to send the form.
 	 */
-	public void setMethod(final Method method) {
-		this.method = method;
+	public final void setMethod(final Method theMethod) {
+		this.method = theMethod;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("[Form:");
 		builder.append("method=");

@@ -59,7 +59,7 @@ public class RSSItem {
 	 *
 	 * @return The publication date.
 	 */
-	public Date getDate() {
+	public final Date getDate() {
 		return this.date;
 	}
 
@@ -68,7 +68,7 @@ public class RSSItem {
 	 *
 	 * @return The description.
 	 */
-	public String getDescription() {
+	public final String getDescription() {
 		return this.description;
 	}
 
@@ -77,7 +77,7 @@ public class RSSItem {
 	 *
 	 * @return The hyperlink.
 	 */
-	public String getLink() {
+	public final String getLink() {
 		return this.link;
 	}
 
@@ -86,7 +86,7 @@ public class RSSItem {
 	 *
 	 * @return The item title.
 	 */
-	public String getTitle() {
+	public final String getTitle() {
 		return this.title;
 	}
 
@@ -96,7 +96,7 @@ public class RSSItem {
 	 * @param node
 	 *            The Node to load the item from.
 	 */
-	public void load(final Node node) {
+	public final void load(final Node node) {
 		final NodeList nl = node.getChildNodes();
 		for (int i = 0; i < nl.getLength(); i++) {
 			final Node n = nl.item(i);
@@ -121,48 +121,48 @@ public class RSSItem {
 	/**
 	 * Set the publication date.
 	 *
-	 * @param date
+	 * @param theDate
 	 *            The new publication date.
 	 */
-	public void setDate(final Date date) {
-		this.date = date;
+	public final void setDate(final Date theDate) {
+		this.date = theDate;
 	}
 
 	/**
 	 * Get the description.
 	 *
-	 * @param description
+	 * @param theDescription
 	 *            The new description.
 	 */
-	public void setDescription(final String description) {
-		this.description = description;
+	public final void setDescription(final String theDescription) {
+		this.description = theDescription;
 	}
 
 	/**
 	 * Set the hyperlink.
 	 *
-	 * @param link
+	 * @param theLink
 	 *            The new hyperlink.
 	 */
-	public void setLink(final String link) {
-		this.link = link;
+	public final void setLink(final String theLink) {
+		this.link = theLink;
 	}
 
 	/**
 	 * Set the item title.
 	 *
-	 * @param title
+	 * @param theTitle
 	 *            The new item title.
 	 */
-	public void setTitle(final String title) {
-		this.title = title;
+	public final void setTitle(final String theTitle) {
+		this.title = theTitle;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder builder = new StringBuilder();
 		builder.append('[');
 		builder.append("title=\"");

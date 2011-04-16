@@ -38,7 +38,7 @@ public class TextDataUnit extends DataUnit {
 	/**
 	 * @return The text for this data unit.
 	 */
-	public String getText() {
+	public final String getText() {
 		return this.text;
 	}
 
@@ -48,7 +48,7 @@ public class TextDataUnit extends DataUnit {
 	 * @param str
 	 *            The text.
 	 */
-	public void setText(final String str) {
+	public final void setText(final String str) {
 		this.text = str;
 
 	}
@@ -56,7 +56,7 @@ public class TextDataUnit extends DataUnit {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		return this.text;
 	}
 

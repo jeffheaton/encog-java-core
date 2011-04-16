@@ -61,21 +61,21 @@ public abstract class FormElement extends DocumentRange {
 	/**
 	 * @return The name of this form.
 	 */
-	public String getName() {
+	public final String getName() {
 		return this.name;
 	}
 
 	/**
 	 * @return The owner of this form element.
 	 */
-	public Form getOwner() {
+	public final Form getOwner() {
 		return this.owner;
 	}
 
 	/**
 	 * @return The value of this form element.
 	 */
-	public String getValue() {
+	public final String getValue() {
 		return this.value;
 	}
 
@@ -89,35 +89,35 @@ public abstract class FormElement extends DocumentRange {
 	/**
 	 * Set the name of this form element.
 	 * 
-	 * @param name
+	 * @param theName
 	 *            The name of this form element.
 	 */
-	public void setName(final String name) {
-		this.name = name;
+	public final void setName(final String theName) {
+		this.name = theName;
 	}
 
 	/**
 	 * Set the owner of this form element.
 	 * 
-	 * @param owner
+	 * @param theOwner
 	 *            The owner of this form element.
 	 */
-	public void setOwner(final Form owner) {
-		this.owner = owner;
+	public final void setOwner(final Form theOwner) {
+		this.owner = theOwner;
 	}
 
 	/**
 	 * Set the value for this form element.
 	 * 
-	 * @param value
+	 * @param theValue
 	 *            The value for this form element.
 	 */
-	public void setValue(final String value) {
-		this.value = value;
+	public final void setValue(final String theValue) {
+		this.value = theValue;
 	}
 
 	/** {@inheritDoc} */
-	public String toString() {
+	public final String toString() {
 		StringBuilder result = new StringBuilder("[");
 		result.append(getClass().getSimpleName());
 		result.append(" name=");

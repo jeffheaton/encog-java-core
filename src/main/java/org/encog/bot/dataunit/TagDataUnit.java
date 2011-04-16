@@ -41,25 +41,25 @@ public class TagDataUnit extends DataUnit {
 	/**
 	 * @return The tag that this data unit is based on.
 	 */
-	public Tag getTag() {
+	public final Tag getTag() {
 		return this.tag;
 	}
 
 	/**
 	 * Set the tag that this data unit is based on.
 	 *
-	 * @param tag
-	 *            HTML tag.
+	 * @param theTag
+	 *            HTML theTag.
 	 */
-	public void setTag(final Tag tag) {
-		this.tag = tag;
+	public final void setTag(final Tag theTag) {
+		this.tag = theTag;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		return this.tag.toString();
 	}
 }

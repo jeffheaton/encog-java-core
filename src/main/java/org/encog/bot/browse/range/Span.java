@@ -47,7 +47,7 @@ public class Span extends DocumentRange {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("[Span:class=");
 		result.append(getClassAttribute());

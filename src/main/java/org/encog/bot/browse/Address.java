@@ -61,11 +61,11 @@ public class Address {
 	 *
 	 * @param base
 	 *            The base URL.
-	 * @param original
+	 * @param theOriginal
 	 *            A full URL or a URL relative to the base.
 	 */
-	public Address(final URL base, final String original) {
-		this.original = original;
+	public Address(final URL base, final String theOriginal) {
+		this.original = theOriginal;
 		try {
 			this.url = new URL(base, original);
 		} catch (final MalformedURLException e) {
@@ -76,14 +76,14 @@ public class Address {
 	/**
 	 * @return The original text from this URL.
 	 */
-	public String getOriginal() {
+	public final String getOriginal() {
 		return this.original;
 	}
 
 	/**
 	 * @return THe URL.
 	 */
-	public URL getUrl() {
+	public final URL getUrl() {
 		return this.url;
 	}
 
@@ -91,7 +91,7 @@ public class Address {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		if (this.url != null) {
 			return this.url.toString();
 		} else {

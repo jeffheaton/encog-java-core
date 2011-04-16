@@ -103,7 +103,7 @@ public class CholeskyDecomposition {
 	 * @return true if A is symmetric and positive definite.
 	 */
 
-	public boolean isSPD() {
+	public final boolean isSPD() {
 		return isspd;
 	}
 
@@ -113,7 +113,7 @@ public class CholeskyDecomposition {
 	 * @return L
 	 */
 
-	public Matrix getL() {
+	public final Matrix getL() {
 		return new Matrix(l);
 	}
 
@@ -124,7 +124,7 @@ public class CholeskyDecomposition {
 	 *            A Matrix with as many rows as A and any number of columns.
 	 * @return X so that L*L'*X = b.
 	 */
-	public Matrix solve(final Matrix b) {
+	public final Matrix solve(final Matrix b) {
 		if (b.getRows() != n) {
 			throw new MatrixError(
 					"Matrix row dimensions must agree.");

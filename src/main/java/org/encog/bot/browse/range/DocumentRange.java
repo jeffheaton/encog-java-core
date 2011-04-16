@@ -80,11 +80,11 @@ public class DocumentRange {
 	/**
 	 * Construct a document range from the specified WebPage.
 	 *
-	 * @param source
+	 * @param theSource
 	 *            The web page that this range belongs to.
 	 */
-	public DocumentRange(final WebPage source) {
-		this.source = source;
+	public DocumentRange(final WebPage theSource) {
+		this.source = theSource;
 	}
 
 	/**
@@ -93,7 +93,7 @@ public class DocumentRange {
 	 * @param element
 	 *            The element to add.
 	 */
-	public void addElement(final DocumentRange element) {
+	public final void addElement(final DocumentRange element) {
 		this.elements.add(element);
 		element.setParent(this);
 	}
@@ -101,49 +101,49 @@ public class DocumentRange {
 	/**
 	 * @return The beginning index.
 	 */
-	public int getBegin() {
+	public final int getBegin() {
 		return this.begin;
 	}
 
 	/**
 	 * @return the classAttribute
 	 */
-	public String getClassAttribute() {
+	public final String getClassAttribute() {
 		return this.classAttribute;
 	}
 
 	/**
 	 * @return The elements of this document range.
 	 */
-	public List<DocumentRange> getElements() {
+	public final List<DocumentRange> getElements() {
 		return this.elements;
 	}
 
 	/**
 	 * @return The ending index.
 	 */
-	public int getEnd() {
+	public final int getEnd() {
 		return this.end;
 	}
 
 	/**
 	 * @return the idAttribute
 	 */
-	public String getIdAttribute() {
+	public final String getIdAttribute() {
 		return this.idAttribute;
 	}
 
 	/**
 	 * @return The web page that owns this class.
 	 */
-	public DocumentRange getParent() {
+	public final DocumentRange getParent() {
 		return this.parent;
 	}
 
 	/**
 	 * @return The web page that this range is owned by.
 	 */
-	public WebPage getSource() {
+	public final WebPage getSource() {
 		return this.source;
 	}
 
@@ -152,7 +152,7 @@ public class DocumentRange {
 	 *
 	 * @return The text from this range.
 	 */
-	public String getTextOnly() {
+	public final String getTextOnly() {
 		final StringBuilder result = new StringBuilder();
 
 		for (int i = getBegin(); i < getEnd(); i++) {
@@ -169,65 +169,58 @@ public class DocumentRange {
 	/**
 	 * Set the beginning index.
 	 *
-	 * @param begin
+	 * @param theBegin
 	 *            The beginning index.
 	 */
-	public void setBegin(final int begin) {
-		this.begin = begin;
+	public final void setBegin(final int theBegin) {
+		this.begin = theBegin;
 	}
 
 	/**
-	 * @param classAttribute
+	 * @param theClassAttribute
 	 *            the classAttribute to set
 	 */
-	public void setClassAttribute(final String classAttribute) {
-		this.classAttribute = classAttribute;
+	public final void setClassAttribute(final String theClassAttribute) {
+		this.classAttribute = theClassAttribute;
 	}
 
 	/**
 	 * Set the ending index.
 	 *
-	 * @param end
+	 * @param theEnd
 	 *            The ending index.
 	 */
-	public void setEnd(final int end) {
-		this.end = end;
+	public final void setEnd(final int theEnd) {
+		this.end = theEnd;
 	}
 
 	/**
-	 * @param idAttribute
+	 * @param id
 	 *            the idAttribute to set
 	 */
-	public void setIdAttribute(final String idAttribute) {
-		this.idAttribute = idAttribute;
+	public final void setIdAttribute(final String id) {
+		this.idAttribute = id;
 	}
 
 	/**
 	 * Set the parent.
 	 *
-	 * @param parent
+	 * @param theParent
 	 *            The parent.
 	 */
-	public void setParent(final DocumentRange parent) {
-		this.parent = parent;
+	public final void setParent(final DocumentRange theParent) {
+		this.parent = theParent;
 	}
 
 	/**
 	 * Set the source web page.
 	 *
-	 * @param source
+	 * @param theSource
 	 *            The source web page.
 	 */
-	public void setSource(final WebPage source) {
-		this.source = source;
+	public final void setSource(final WebPage theSource) {
+		this.source = theSource;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		return getTextOnly();
-	}
 
 }
