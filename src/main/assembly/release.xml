@@ -27,6 +27,13 @@
       <includes>
         <include>apidocs/**</include>
       </includes>
+    </fileSet>
+    <fileSet>
+      <directory>${project.build.directory}</directory>
+      <outputDirectory>/lib</outputDirectory>
+      <includes>
+        <include>*-jar-with-dependencies*</include>
+      </includes>
     </fileSet>    
   </fileSets>
   
