@@ -4,6 +4,7 @@
   <id>release</id>
   <formats>
     <format>zip</format>
+    
   </formats>
   <fileSets>
     <fileSet>
