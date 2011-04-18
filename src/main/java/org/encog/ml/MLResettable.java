@@ -29,6 +29,15 @@ package org.encog.ml;
  * as neural networks support this.  Support vector machines do not.
  */
 public interface MLResettable extends MLMethod {
+	
+	/**
+	 * Reset the weights.
+	 */
 	void reset();
+	
+	/**
+	 * Reset the weights with a seed.
+	 * @param seed The seed value.
+	 */
 	void reset(int seed);
 }

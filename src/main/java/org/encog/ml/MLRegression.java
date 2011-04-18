@@ -33,5 +33,11 @@ import org.encog.neural.data.NeuralData;
  *
  */
 public interface MLRegression extends MLInputOutput {
+	
+	/**
+	 * Compute regression.
+	 * @param input The input data.
+	 * @return The output data.
+	 */
 	NeuralData compute(NeuralData input);
 }

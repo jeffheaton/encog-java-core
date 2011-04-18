@@ -30,7 +30,21 @@ package org.encog.ml;
  *
  */
 public interface MLEncodable extends MLMethod {
+	
+	/**
+	 * @return The length of an encoded array.
+	 */
 	int encodedArrayLength();
+	
+	/**
+	 * Encode the object to the specified array.
+	 * @param encoded The array.
+	 */
 	void encodeToArray(double[] encoded);
+	
+	/**
+	 * Decode an array to this object.
+	 * @param encoded The encoded array.
+	 */
 	void decodeFromArray(double[] encoded);
 }

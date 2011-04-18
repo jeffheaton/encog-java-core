@@ -42,10 +42,9 @@ public class Matrix implements Cloneable, Serializable {
 	 */
 	private static final long serialVersionUID = -7977897210426471675L;
 
-
 	/**
 	 * Turn an array of doubles into a column matrix.
-	 *
+	 * 
 	 * @param input
 	 *            A double array.
 	 * @return A column matrix.
@@ -60,7 +59,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Turn an array of doubles into a row matrix.
-	 *
+	 * 
 	 * @param input
 	 *            A double array.
 	 * @return A row matrix.
@@ -71,7 +70,6 @@ public class Matrix implements Cloneable, Serializable {
 		return new Matrix(d);
 	}
 
-
 	/**
 	 * The matrix data.
 	 */
@@ -79,7 +77,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Construct a bipolar matrix from an array of booleans.
-	 *
+	 * 
 	 * @param sourceMatrix
 	 *            The booleans to create the matrix from.
 	 */
@@ -98,7 +96,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Create a matrix from an array of doubles.
-	 *
+	 * 
 	 * @param sourceMatrix
 	 *            An array of doubles.
 	 */
@@ -113,7 +111,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Create a blank array with the specified number of rows and columns.
-	 *
+	 * 
 	 * @param rows
 	 *            How many rows in the matrix.
 	 * @param cols
@@ -125,7 +123,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Add a value to one cell in the matrix.
-	 *
+	 * 
 	 * @param row
 	 *            The row to add to.
 	 * @param col
@@ -133,7 +131,7 @@ public class Matrix implements Cloneable, Serializable {
 	 * @param value
 	 *            The value to add to the matrix.
 	 */
-	public void add(final int row, final int col, final double value) {
+	public final void add(final int row, final int col, final double value) {
 		validate(row, col);
 		final double newValue = this.matrix[row][col] + value;
 		set(row, col, newValue);
@@ -142,12 +140,12 @@ public class Matrix implements Cloneable, Serializable {
 	/**
 	 * Add the specified matrix to this matrix. This will modify the matrix to
 	 * hold the result of the addition.
-	 *
-	 * @param matrix
+	 * 
+	 * @param theMatrix
 	 *            The matrix to add.
 	 */
-	public void add(final Matrix matrix) {
-		final double[][] source = matrix.getData();
+	public final void add(final Matrix theMatrix) {
+		final double[][] source = theMatrix.getData();
 
 		for (int row = 0; row < getRows(); row++) {
 			for (int col = 0; col < getCols(); col++) {
@@ -159,7 +157,7 @@ public class Matrix implements Cloneable, Serializable {
 	/**
 	 * Set all rows and columns to zero.
 	 */
-	public void clear() {
+	public final void clear() {
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
 				this.matrix[r][c] = 0;
@@ -169,24 +167,24 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Create a copy of the matrix.
-	 *
+	 * 
 	 * @return A colne of the matrix.
 	 */
 	@Override
-	public Matrix clone() {
+	public final Matrix clone() {
 		return new Matrix(this.matrix);
 	}
 
 	/**
 	 * Compare to matrixes with the specified level of precision.
-	 *
-	 * @param matrix
+	 * 
+	 * @param theMatrix
 	 *            The other matrix to compare to.
 	 * @param precision
 	 *            How much precision to use.
 	 * @return True if the two matrixes are equal.
 	 */
-	public boolean equals(final Matrix matrix, final int precision) {
+	public final boolean equals(final Matrix theMatrix, final int precision) {
 
 		if (precision < 0) {
 			throw new MatrixError("Precision can't be a negative number.");
@@ -201,11 +199,11 @@ public class Matrix implements Cloneable, Serializable {
 		final int actualPrecision = (int) Math.pow(Encog.DEFAULT_PRECISION,
 				precision);
 
-		final double[][] data = matrix.getData();
+		final double[][] data = theMatrix.getData();
 
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
-				if ((long) (this.matrix[r][c] * actualPrecision)
+				if ((long) (this.matrix[r][c] * actualPrecision) 
 						!= (long) (data[r][c] * actualPrecision)) {
 					return false;
 				}
@@ -217,13 +215,13 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Check to see if this matrix equals another, using default precision.
-	 *
+	 * 
 	 * @param other
 	 *            The other matrix to compare.
 	 * @return True if the two matrixes are equal.
 	 */
 	@Override
-	public boolean equals(final Object other) {
+	public final boolean equals(final Object other) {
 		if (other instanceof Matrix) {
 			return equals((Matrix) other, Encog.DEFAULT_PRECISION);
 		} else {
@@ -233,14 +231,14 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Create a matrix from a packed array.
-	 *
+	 * 
 	 * @param array
 	 *            The packed array.
 	 * @param index
 	 *            Where to start in the packed array.
 	 * @return The new index after this matrix has been read.
 	 */
-	public int fromPackedArray(final Double[] array, final int index) {
+	public final int fromPackedArray(final Double[] array, final int index) {
 		int i = index;
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
@@ -253,14 +251,14 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Read the specified cell in the matrix.
-	 *
+	 * 
 	 * @param row
 	 *            The row to read.
 	 * @param col
 	 *            The column to read.
 	 * @return The value at the specified row and column.
 	 */
-	public double get(final int row, final int col) {
+	public final double get(final int row, final int col) {
 		validate(row, col);
 		return this.matrix[row][col];
 	}
@@ -268,7 +266,7 @@ public class Matrix implements Cloneable, Serializable {
 	/**
 	 * @return A COPY of this matrix as a 2d array.
 	 */
-	public double[][] getArrayCopy() {
+	public final double[][] getArrayCopy() {
 		final double[][] result = new double[getRows()][getCols()];
 		for (int i = 0; i < getRows(); i++) {
 			for (int j = 0; j < getCols(); j++) {
@@ -280,12 +278,12 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Read one entire column from the matrix as a sub-matrix.
-	 *
+	 * 
 	 * @param col
 	 *            The column to read.
 	 * @return The column as a sub-matrix.
 	 */
-	public Matrix getCol(final int col) {
+	public final Matrix getCol(final int col) {
 		if (col > getCols()) {
 			throw new MatrixError("Can't get column #" + col
 					+ " because it does not exist.");
@@ -302,23 +300,23 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Get the columns in the matrix.
-	 *
+	 * 
 	 * @return The number of columns in the matrix.
 	 */
-	public int getCols() {
+	public final int getCols() {
 		return this.matrix[0].length;
 	}
 
 	/**
 	 * @return Get the 2D matrix array.
 	 */
-	public double[][] getData() {
+	public final double[][] getData() {
 		return this.matrix;
 	}
 
 	/**
 	 * Get a submatrix.
-	 *
+	 * 
 	 * @param i0
 	 *            Initial row index.
 	 * @param i1
@@ -329,7 +327,7 @@ public class Matrix implements Cloneable, Serializable {
 	 *            Final column index.
 	 * @return The specified submatrix.
 	 */
-	public Matrix getMatrix(final int i0, final int i1, final int j0,
+	public final Matrix getMatrix(final int i0, final int i1, final int j0,
 			final int j1) {
 
 		final Matrix result = new Matrix(i1 - i0 + 1, j1 - j0 + 1);
@@ -348,7 +346,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Get a submatrix.
-	 *
+	 * 
 	 * @param i0
 	 *            Initial row index.
 	 * @param i1
@@ -357,7 +355,7 @@ public class Matrix implements Cloneable, Serializable {
 	 *            Array of column indices.
 	 * @return The specified submatrix.
 	 */
-	public Matrix getMatrix(final int i0, final int i1, final int[] c) {
+	public final Matrix getMatrix(final int i0, final int i1, final int[] c) {
 		final Matrix result = new Matrix(i1 - i0 + 1, c.length);
 		final double[][] b = result.getData();
 		try {
@@ -374,7 +372,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Get a submatrix.
-	 *
+	 * 
 	 * @param r
 	 *            Array of row indices.
 	 * @param j0
@@ -383,7 +381,7 @@ public class Matrix implements Cloneable, Serializable {
 	 *            Final column index
 	 * @return The specified submatrix.
 	 */
-	public Matrix getMatrix(final int[] r, final int j0, final int j1) {
+	public final Matrix getMatrix(final int[] r, final int j0, final int j1) {
 		final Matrix result = new Matrix(r.length, j1 - j0 + 1);
 		final double[][] b = result.getData();
 		try {
@@ -400,14 +398,14 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Get a submatrix.
-	 *
+	 * 
 	 * @param r
 	 *            Array of row indices.
 	 * @param c
 	 *            Array of column indices.
 	 * @return The specified submatrix.
 	 */
-	public Matrix getMatrix(final int[] r, final int[] c) {
+	public final Matrix getMatrix(final int[] r, final int[] c) {
 		final Matrix result = new Matrix(r.length, c.length);
 		final double[][] b = result.getData();
 		try {
@@ -424,12 +422,12 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Get the specified row as a sub-matrix.
-	 *
+	 * 
 	 * @param row
 	 *            The row to get.
 	 * @return A matrix.
 	 */
-	public Matrix getRow(final int row) {
+	public final Matrix getRow(final int row) {
 		if (row > getRows()) {
 			throw new MatrixError("Can't get row #" + row
 					+ " because it does not exist.");
@@ -446,20 +444,20 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Get the number of rows in the matrix.
-	 *
+	 * 
 	 * @return The number of rows in the matrix.
 	 */
-	public int getRows() {
+	public final int getRows() {
 		return this.matrix.length;
 	}
 
 	/**
 	 * Compute a hash code for this matrix.
-	 *
+	 * 
 	 * @return The hash code.
 	 */
 	@Override
-	public int hashCode() {
+	public final int hashCode() {
 		long result = 0;
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
@@ -472,17 +470,17 @@ public class Matrix implements Cloneable, Serializable {
 	/**
 	 * @return The matrix inverted.
 	 */
-	public Matrix inverse() {
+	public final Matrix inverse() {
 		return solve(MatrixMath.identity(getRows()));
 	}
 
 	/**
 	 * Determine if the matrix is a vector. A vector is has either a single
 	 * number of rows or columns.
-	 *
+	 * 
 	 * @return True if this matrix is a vector.
 	 */
-	public boolean isVector() {
+	public final boolean isVector() {
 		if (getRows() == 1) {
 			return true;
 		}
@@ -491,10 +489,10 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Return true if every value in the matrix is zero.
-	 *
+	 * 
 	 * @return True if the matrix is all zeros.
 	 */
-	public boolean isZero() {
+	public final boolean isZero() {
 		for (int row = 0; row < getRows(); row++) {
 			for (int col = 0; col < getCols(); col++) {
 				if (this.matrix[row][col] != 0) {
@@ -507,11 +505,11 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Multiply every value in the matrix by the specified value.
-	 *
+	 * 
 	 * @param value
 	 *            The value to multiply the matrix by.
 	 */
-	public void multiply(final double value) {
+	public final void multiply(final double value) {
 
 		for (int row = 0; row < getRows(); row++) {
 			for (int col = 0; col < getCols(); col++) {
@@ -522,13 +520,13 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Multiply every row by the specified vector.
-	 *
+	 * 
 	 * @param vector
 	 *            The vector to multiply by.
 	 * @param result
 	 *            The result to hold the values.
 	 */
-	public void multiply(final double[] vector, final double[] result) {
+	public final void multiply(final double[] vector, final double[] result) {
 		for (int i = 0; i < getRows(); i++) {
 			result[i] = 0;
 			for (int j = 0; j < getCols(); j++) {
@@ -538,12 +536,26 @@ public class Matrix implements Cloneable, Serializable {
 	}
 
 	/**
+	 * Randomize the matrix.
+	 * @param min Minimum random value.
+	 * @param max Maximum random value.
+	 */
+	public final void randomize(final double min, final double max) {
+		for (int row = 0; row < getRows(); row++) {
+			for (int col = 0; col < getCols(); col++) {
+				this.matrix[row][col] = RangeRandomizer.randomize(min, max);
+			}
+		}
+
+	}
+
+	/**
 	 * Set every value in the matrix to the specified value.
-	 *
+	 * 
 	 * @param value
 	 *            The value to set the matrix to.
 	 */
-	public void set(final double value) {
+	public final void set(final double value) {
 		for (int row = 0; row < getRows(); row++) {
 			for (int col = 0; col < getCols(); col++) {
 				this.matrix[row][col] = value;
@@ -554,7 +566,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Set an individual cell in the matrix to the specified value.
-	 *
+	 * 
 	 * @param row
 	 *            The row to set.
 	 * @param col
@@ -562,30 +574,30 @@ public class Matrix implements Cloneable, Serializable {
 	 * @param value
 	 *            The value to be set.
 	 */
-	public void set(final int row, final int col, final double value) {
+	public final void set(final int row, final int col, final double value) {
 		validate(row, col);
 		this.matrix[row][col] = value;
 	}
 
 	/**
 	 * Set this matrix's values to that of another matrix.
-	 *
-	 * @param matrix
+	 * 
+	 * @param theMatrix
 	 *            The other matrix.
 	 */
-	public void set(final Matrix matrix) {
-		final double[][] source = matrix.getData();
+	public final void set(final Matrix theMatrix) {
+		final double[][] source = theMatrix.getData();
 
 		for (int row = 0; row < getRows(); row++) {
 			for (int col = 0; col < getCols(); col++) {
 				this.matrix[row][col] = source[row][col];
 			}
 		}
-	}	
+	}
 
 	/**
 	 * Set a submatrix.
-	 *
+	 * 
 	 * @param i0
 	 *            Initial row index
 	 * @param i1
@@ -596,9 +608,9 @@ public class Matrix implements Cloneable, Serializable {
 	 *            Final column index
 	 * @param x
 	 *            A(i0:i1,j0:j1)
-	 *
+	 * 
 	 */
-	public void setMatrix(final int i0, final int i1, final int j0,
+	public final void setMatrix(final int i0, final int i1, final int j0,
 			final int j1, final Matrix x) {
 		try {
 			for (int i = i0; i <= i1; i++) {
@@ -613,7 +625,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Set a submatrix.
-	 *
+	 * 
 	 * @param i0
 	 *            Initial row index
 	 * @param i1
@@ -624,7 +636,7 @@ public class Matrix implements Cloneable, Serializable {
 	 *            The submatrix.
 	 */
 
-	public void setMatrix(final int i0, final int i1, final int[] c,
+	public final void setMatrix(final int i0, final int i1, final int[] c,
 			final Matrix x) {
 		try {
 			for (int i = i0; i <= i1; i++) {
@@ -639,7 +651,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Set a submatrix.
-	 *
+	 * 
 	 * @param r
 	 *            Array of row indices.
 	 * @param j0
@@ -650,7 +662,7 @@ public class Matrix implements Cloneable, Serializable {
 	 *            A(r(:),j0:j1)
 	 */
 
-	public void setMatrix(final int[] r, final int j0, final int j1,
+	public final void setMatrix(final int[] r, final int j0, final int j1,
 			final Matrix x) {
 		try {
 			for (int i = 0; i < r.length; i++) {
@@ -665,7 +677,7 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Set a submatrix.
-	 *
+	 * 
 	 * @param r
 	 *            Array of row indices.
 	 * @param c
@@ -673,7 +685,7 @@ public class Matrix implements Cloneable, Serializable {
 	 * @param x
 	 *            The matrix to set.
 	 */
-	public void setMatrix(final int[] r, final int[] c, final Matrix x) {
+	public final void setMatrix(final int[] r, final int[] c, final Matrix x) {
 		try {
 			for (int i = 0; i < r.length; i++) {
 				for (int j = 0; j < c.length; j++) {
@@ -683,26 +695,26 @@ public class Matrix implements Cloneable, Serializable {
 		} catch (final ArrayIndexOutOfBoundsException e) {
 			throw new MatrixError("Submatrix indices");
 		}
-	}	
+	}
 
 	/**
 	 * Get the size of the array. This is the number of elements it would take
 	 * to store the matrix as a packed array.
-	 *
+	 * 
 	 * @return The size of the matrix.
 	 */
-	public int size() {
+	public final int size() {
 		return this.matrix[0].length * this.matrix.length;
 	}
 
 	/**
 	 * Solve A*X = B.
-	 *
+	 * 
 	 * @param b
 	 *            right hand side.
 	 * @return Solution if A is square, least squares solution otherwise.
 	 */
-	public Matrix solve(final Matrix b) {
+	public final Matrix solve(final Matrix b) {
 		if (getRows() == getCols()) {
 			return (new LUDecomposition(this)).solve(b);
 		} else {
@@ -712,10 +724,10 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Sum all of the values in the matrix.
-	 *
+	 * 
 	 * @return The sum of the matrix.
 	 */
-	public double sum() {
+	public final double sum() {
 		double result = 0;
 		for (int r = 0; r < getRows(); r++) {
 			for (int c = 0; c < getCols(); c++) {
@@ -727,10 +739,10 @@ public class Matrix implements Cloneable, Serializable {
 
 	/**
 	 * Convert the matrix into a packed array.
-	 *
+	 * 
 	 * @return The matrix as a packed array.
 	 */
-	public Double[] toPackedArray() {
+	public final Double[] toPackedArray() {
 		final Double[] result = new Double[getRows() * getCols()];
 
 		int index = 0;
@@ -747,7 +759,7 @@ public class Matrix implements Cloneable, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("[Matrix: rows=");
 		result.append(getRows());
@@ -760,7 +772,7 @@ public class Matrix implements Cloneable, Serializable {
 	/**
 	 * Validate that the specified row and column are within the required
 	 * ranges. Otherwise throw a MatrixError exception.
-	 *
+	 * 
 	 * @param row
 	 *            The row to check.
 	 * @param col
@@ -778,16 +790,5 @@ public class Matrix implements Cloneable, Serializable {
 					+ getCols();
 			throw new MatrixError(str);
 		}
-	}
-
-	public void randomize(double min, double max) {
-		for(int row=0;row<getRows();row++)
-		{
-			for(int col=0;col<getCols();col++)
-			{
-				this.matrix[row][col] = RangeRandomizer.randomize(min, max);
-			}
-		}
-		
 	}
 }

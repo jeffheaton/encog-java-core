@@ -90,6 +90,6 @@ public interface Randomizer {
 	 * @param begin The beginning element.
 	 * @param size The size of the array.
 	 */
-	void randomize(final double[] d,int begin, int size);
+	void randomize(final double[] d, int begin, int size);
 
 }

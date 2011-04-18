@@ -30,5 +30,9 @@ package org.encog.ml;
  *
  */
 public interface MLContext extends MLMethod {
+	
+	/**
+	 * Clear the context.
+	 */
 	void clearContext();
 }

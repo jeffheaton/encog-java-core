@@ -41,19 +41,19 @@ public final class MatrixMath {
 	 */
 	public static Matrix add(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-			throw new MatrixError( 
-				"To add the matrices they must have the same number of "
-					+ "rows and columns.  Matrix a has "
-					+ a.getRows()
-					+ " rows and matrix b has " + b.getRows() + " rows.");
+			throw new MatrixError(
+					"To add the matrices they must have the same number of "
+							+ "rows and columns.  Matrix a has " + a.getRows()
+							+ " rows and matrix b has " + b.getRows()
+							+ " rows.");
 		}
 
 		if (a.getCols() != b.getCols()) {
-			throw new MatrixError( 
-				"To add the matrices they must have the same number "
-					+ "of rows and columns.  Matrix a has "
-					+ a.getCols()
-					+ " cols and matrix b has " + b.getCols() + " cols.");
+			throw new MatrixError(
+					"To add the matrices they must have the same number "
+							+ "of rows and columns.  Matrix a has "
+							+ a.getCols() + " cols and matrix b has "
+							+ b.getCols() + " cols.");
 		}
 
 		final double[][] aa = a.getData();
@@ -102,7 +102,7 @@ public final class MatrixMath {
 	 */
 	public static Matrix deleteCol(final Matrix matrix, final int deleted) {
 		if (deleted >= matrix.getCols()) {
-			throw new MatrixError( "Can't delete column " + deleted
+			throw new MatrixError("Can't delete column " + deleted
 					+ " from matrix, it only has " + matrix.getCols()
 					+ " columns.");
 		}
@@ -139,7 +139,7 @@ public final class MatrixMath {
 	public static Matrix deleteRow(final Matrix matrix, final int deleted) {
 
 		if (deleted >= matrix.getRows()) {
-			throw new MatrixError( "Can't delete row " + deleted
+			throw new MatrixError("Can't delete row " + deleted
 					+ " from matrix, it only has " + matrix.getRows()
 					+ " rows.");
 
@@ -192,15 +192,17 @@ public final class MatrixMath {
 	 */
 	public static double dotProduct(final Matrix a, final Matrix b) {
 		if (!a.isVector() || !b.isVector()) {
-			throw new MatrixError( "To take the dot product, both matrices must be vectors.");
+			throw new MatrixError(
+					"To take the dot product, both matrices must be vectors.");
 		}
 
 		final Double[] aArray = a.toPackedArray();
 		final Double[] bArray = b.toPackedArray();
 
 		if (aArray.length != bArray.length) {
-			throw new MatrixError( "To take the dot product, both matrices must be of "
-					+ "the same length.");
+			throw new MatrixError(
+					"To take the dot product, both matrices must be of "
+							+ "the same length.");
 
 		}
 
@@ -272,9 +274,10 @@ public final class MatrixMath {
 	public static Matrix multiply(final Matrix a, final Matrix b) {
 
 		if (b.getRows() != a.getCols()) {
-			throw new MatrixError("To use ordinary matrix multiplication the number of "
-					+ "columns on the first matrix must mat the number of "
-					+ "rows on the second.");
+			throw new MatrixError(
+					"To use ordinary matrix multiplication the number of "
+				+ "columns on the first matrix must mat the number of "
+							+ "rows on the second.");
 		}
 
 		final double[][] aData = a.getData();
@@ -311,22 +314,20 @@ public final class MatrixMath {
 	 */
 	public static Matrix subtract(final Matrix a, final Matrix b) {
 		if (a.getRows() != b.getRows()) {
-				throw new MatrixError("To subtract the matrices they must have the same "
-					+ "number of rows and columns.  Matrix a has "
-					+ a.getRows()
-					+ " rows and matrix b has "
-					+ b.getRows()
-					+ " rows.");
+			throw new MatrixError(
+					"To subtract the matrices they must have the same "
+							+ "number of rows and columns.  Matrix a has "
+							+ a.getRows() + " rows and matrix b has "
+							+ b.getRows() + " rows.");
 
 		}
 
 		if (a.getCols() != b.getCols()) {
-			throw new MatrixError("To subtract the matrices they must have the same "
-					+ "number of rows and columns.  Matrix a has "
-					+ a.getCols()
-					+ " cols and matrix b has "
-					+ b.getCols()
-					+ " cols.");
+			throw new MatrixError(
+					"To subtract the matrices they must have the same "
+							+ "number of rows and columns.  Matrix a has "
+							+ a.getCols() + " cols and matrix b has "
+							+ b.getCols() + " cols.");
 		}
 
 		final double[][] result = new double[a.getRows()][a.getCols()];
@@ -376,7 +377,8 @@ public final class MatrixMath {
 	public static double vectorLength(final Matrix input) {
 
 		if (!input.isVector()) {
-			throw new MatrixError("Can only take the vector length of a vector.");
+			throw new MatrixError(
+					"Can only take the vector length of a vector.");
 		}
 		final Double[] v = input.toPackedArray();
 		double rtn = 0.0;

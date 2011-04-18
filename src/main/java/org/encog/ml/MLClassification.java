@@ -35,5 +35,11 @@ import org.encog.neural.data.NeuralData;
  *
  */
 public interface MLClassification extends MLInputOutput {
+	
+	/**
+	 * Classify the input into a group.
+	 * @param input The input data to classify.
+	 * @return The group that the data was classified into.
+	 */
 	int classify(NeuralData input);
 }
