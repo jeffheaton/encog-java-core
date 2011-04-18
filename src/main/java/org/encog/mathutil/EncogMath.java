@@ -31,13 +31,6 @@ import org.encog.Encog;
 public final class EncogMath {
 
 	/**
-	 * Private constructor.
-	 */
-	private EncogMath() {
-
-	}
-
-	/**
 	 * Convert degrees to radians.
 	 * 
 	 * @param deg
@@ -46,6 +39,19 @@ public final class EncogMath {
 	 */
 	public static double deg2rad(final double deg) {
 		return deg * (Math.PI / MathConst.DEG_SEMICIRCLE);
+	}
+
+	/**
+	 * Determine if one double equals another, within the default percision.
+	 * 
+	 * @param d1
+	 *            The first number.
+	 * @param d2
+	 *            The second number.
+	 * @return True if the two doubles are equal.
+	 */
+	public static boolean doubleEquals(final double d1, final double d2) {
+		return Math.abs(d1 - d2) < Encog.DEFAULT_DOUBLE_EQUAL;
 	}
 
 	/**
@@ -72,6 +78,44 @@ public final class EncogMath {
 	}
 
 	/**
+	 * Get the index to the greatest number in a double array.
+	 * 
+	 * @param array
+	 *            The array to search.
+	 * @return The index of the greatest value, or -1 if empty.
+	 */
+	public static int maxIndex(final double[] array) {
+		int result = -1;
+
+		for (int i = 0; i < array.length; i++) {
+			if ((result == -1) || (array[result] < array[i])) {
+				result = i;
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Get the index to the smallest number in a double array.
+	 * 
+	 * @param array
+	 *            The array to search.
+	 * @return The index of the smallest value, or -1 if empty.
+	 */
+	public static int minIndex(final double[] array) {
+		int result = -1;
+
+		for (int i = 0; i < array.length; i++) {
+			if ((result == -1) || (array[result] > array[i])) {
+				result = i;
+			}
+		}
+
+		return result;
+	}
+
+	/**
 	 * Convert radians to degrees.
 	 * 
 	 * @param rad
@@ -83,53 +127,9 @@ public final class EncogMath {
 	}
 
 	/**
-	 * Determine if one double equals another, within the default percision.
-	 * 
-	 * @param d1
-	 *            The first number.
-	 * @param d2
-	 *            The second number.
-	 * @return True if the two doubles are equal.
+	 * Private constructor.
 	 */
-	public static boolean doubleEquals(final double d1, final double d2) {
-		return Math.abs(d1 - d2) < Encog.DEFAULT_DOUBLE_EQUAL;
-	}
+	private EncogMath() {
 
-	/**
-	 * Get the index to the greatest number in a double array.
-	 * 
-	 * @param array
-	 *            The array to search.
-	 * @return The index of the greatest value, or -1 if empty.
-	 */
-	public static int maxIndex(double[] array) {
-		int result = -1;
-
-		for (int i = 0; i < array.length; i++) {
-			if (result == -1 || array[result] < array[i]) {
-				result = i;
-			}
-		}
-
-		return result;
-	}
-	
-	/**
-	 * Get the index to the smallest number in a double array.
-	 * 
-	 * @param array
-	 *            The array to search.
-	 * @return The index of the smallest value, or -1 if empty.
-	 */
-	public static int minIndex(double[] array) {
-		int result = -1;
-
-		for (int i = 0; i < array.length; i++) {
-			if (result == -1 || array[result] > array[i]) {
-				result = i;
-			}
-		}
-
-		return result;
 	}
 }

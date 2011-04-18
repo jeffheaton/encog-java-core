@@ -73,10 +73,6 @@ public class MultiquadricFunction extends BasicRBF {
 		setPeak(peak);
 		setWidth(width);
 	}
-	
-	public MultiquadricFunction() {
-		
-	}
 
 	/**
 	 * Create centered at zero, width 0, and peak 0.
@@ -91,7 +87,7 @@ public class MultiquadricFunction extends BasicRBF {
 	/**
 	 * {@inheritDoc}
 	 */
-	public double calculate(final double[] x) {
+	public final double calculate(final double[] x) {
 		double value = 0;
 		final double[] center = getCenters();
 		final double width = getWidth();

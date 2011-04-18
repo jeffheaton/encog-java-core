@@ -62,7 +62,7 @@ public class Equilateral {
 	 *            The output from the neural network.
 	 * @return The set that these activations were closest too.
 	 */
-	public int decode(final double[] activations) {
+	public final int decode(final double[] activations) {
 		double minValue = Double.POSITIVE_INFINITY;
 		int minSet = -1;
 
@@ -83,7 +83,7 @@ public class Equilateral {
 	 *            The set to determine the activations for.
 	 * @return The activations for the specified sets.
 	 */
-	public double[] encode(final int set) {
+	public final double[] encode(final int set) {
 		return this.matrix[set];
 	}
 
@@ -147,7 +147,7 @@ public class Equilateral {
 	 * @param set The set to check.
 	 * @return The distance.
 	 */
-	public double getDistance(final double[] data, final int set) {
+	public final double getDistance(final double[] data, final int set) {
 		double result = 0;
 		for (int i = 0; i < data.length; i++) {
 			result += Math.pow(data[i] - this.matrix[set][i], 2);

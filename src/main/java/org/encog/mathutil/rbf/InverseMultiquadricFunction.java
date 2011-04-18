@@ -35,7 +35,7 @@ public class InverseMultiquadricFunction extends BasicRBF {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * Construct a single-dimension Inverse-Multiquadric function with the
 	 * specified peak, centers and widths.
@@ -75,22 +75,21 @@ public class InverseMultiquadricFunction extends BasicRBF {
 
 	/**
 	 * Create centered at zero, width 0, and peak 0.
-	 * @param dimensions The dimensions.
+	 * 
+	 * @param dimensions
+	 *            The dimensions.
 	 */
 	public InverseMultiquadricFunction(final int dimensions) {
 		setCenters(new double[dimensions]);
 		setPeak(1.0);
 		setWidth(1.0);
 	}
-	
-	public InverseMultiquadricFunction() {
-		
-	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public double calculate(final double[] x) {
+	@Override
+	public final double calculate(final double[] x) {
 		double value = 0;
 		final double[] center = getCenters();
 		final double width = getWidth();

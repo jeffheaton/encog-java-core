@@ -36,6 +36,26 @@ package org.encog.mathutil;
 public class LinearCongruentialGenerator {
 
 	/**
+	 * First part of default mod.
+	 */
+	public static final long DEFAULT_MOD1 = 2L;
+	
+	/**
+	 * Second part of default mod.
+	 */
+	public static final long DEFAULT_MOD2 = 32L;
+	
+	/**
+	 * Default mult.
+	 */
+	public static final long DEFAULT_MULT = 1103515245L;
+	
+	/**
+	 * Default inc.
+	 */
+	public static final long DEFAULT_INC = 12345L;
+	
+	/**
 	 * The modulus.
 	 */
 	private final long modulus;
@@ -62,11 +82,14 @@ public class LinearCongruentialGenerator {
 	public static final long MAX_RAND = 4294967295L;
 
 	/**
-	 * Construct the default LCG.  You need only specify a seed.
-	 * @param seed The seed to use.
+	 * Construct the default LCG. You need only specify a seed.
+	 * 
+	 * @param theSeed
+	 *            The seed to use.
 	 */
-	public LinearCongruentialGenerator(final long seed) {
-		this((long) Math.pow(2L, 32L), 1103515245L, 12345L, seed);
+	public LinearCongruentialGenerator(final long theSeed) {
+		this((long) Math.pow(DEFAULT_MOD1, DEFAULT_MOD2), 
+				DEFAULT_MULT, DEFAULT_INC, theSeed);
 	}
 
 	/**
@@ -76,44 +99,45 @@ public class LinearCongruentialGenerator {
 	 * compiler. Setting these values wrong can create fairly useless random
 	 * numbers.
 	 * 
-	 * @param modulus
+	 * @param theModulus
 	 *            The modulus for the LCG algorithm.
-	 * @param multiplier
+	 * @param theMultiplier
 	 *            The multiplier for the LCG algorithm.
-	 * @param increment
+	 * @param theIncrement
 	 *            The increment for the LCG algorithm.
-	 * @param seed
+	 * @param theSeed
 	 *            The seed for the LCG algorithm. Using the same seed will give
 	 *            the same random number sequence each time, whether in Java or
 	 *            DotNet.
 	 */
-	public LinearCongruentialGenerator(final long modulus,
-			final long multiplier, final long increment, final long seed) {
+	public LinearCongruentialGenerator(final long theModulus,
+			final long theMultiplier, final long theIncrement, 
+			final long theSeed) {
 		super();
-		this.modulus = modulus;
-		this.multiplier = multiplier;
-		this.increment = increment;
-		this.seed = seed;
+		this.modulus = theModulus;
+		this.multiplier = theMultiplier;
+		this.increment = theIncrement;
+		this.seed = theSeed;
 	}
 
 	/**
 	 * @return The LCG increment.
 	 */
-	public long getIncrement() {
+	public final long getIncrement() {
 		return this.increment;
 	}
 
 	/**
 	 * @return The LCG modulus.
 	 */
-	public long getModulus() {
+	public final long getModulus() {
 		return this.modulus;
 	}
 
 	/**
 	 * @return The LCG multiplier.
 	 */
-	public long getMultiplier() {
+	public final long getMultiplier() {
 		return this.multiplier;
 	}
 
@@ -121,21 +145,21 @@ public class LinearCongruentialGenerator {
 	 * @return The current seed. Set to a constant to start, thereafter the
 	 *         previously generated random number.
 	 */
-	public long getSeed() {
+	public final long getSeed() {
 		return this.seed;
 	}
 
 	/**
 	 * @return The next random number as a double between 0 and 1.
 	 */
-	public double nextDouble() {
+	public final double nextDouble() {
 		return (double) nextLong() / LinearCongruentialGenerator.MAX_RAND;
 	}
 
 	/**
 	 * @return The next random number as a long between 0 and MAX_RAND.
 	 */
-	public long nextLong() {
+	public final long nextLong() {
 		this.seed = (this.multiplier * this.seed + this.increment)
 				% this.modulus;
 		return this.seed;
@@ -150,7 +174,7 @@ public class LinearCongruentialGenerator {
 	 *            The maximum random number.
 	 * @return The generated random number.
 	 */
-	public double range(final double min, final double max) {
+	public final double range(final double min, final double max) {
 		final double range = max - min;
 		return (range * nextDouble()) - min;
 	}
@@ -159,10 +183,11 @@ public class LinearCongruentialGenerator {
 	 * Set the seed value. Setting a seed to a specific value will always result
 	 * in the same sequence of numbers, whether on Java or DotNet.
 	 * 
-	 * @param seed The seed value.
+	 * @param theSeed
+	 *            The seed value.
 	 */
-	public void setSeed(final long seed) {
-		this.seed = seed;
+	public final void setSeed(final long theSeed) {
+		this.seed = theSeed;
 	}
 
 }

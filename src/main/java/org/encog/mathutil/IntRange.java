@@ -41,49 +41,49 @@ public class IntRange {
 	/**
 	 * Construct an integer range.
 	 * 
-	 * @param high
+	 * @param theHigh
 	 *            The high end of the range.
-	 * @param low
+	 * @param theLow
 	 *            The low end of the range.
 	 */
-	public IntRange(final int high, final int low) {
+	public IntRange(final int theHigh, final int theLow) {
 		super();
-		this.high = high;
-		this.low = low;
+		this.high = theHigh;
+		this.low = theLow;
 	}
 
 	/**
 	 * @return The high end of the range.
 	 */
-	public int getHigh() {
+	public final int getHigh() {
 		return this.high;
 	}
 
 	/**
 	 * @return The low end of the range.
 	 */
-	public int getLow() {
+	public final int getLow() {
 		return this.low;
 	}
 
 	/**
 	 * Set the high end of the range.
 	 * 
-	 * @param high
+	 * @param theHigh
 	 *            The high end of the range.
 	 */
-	public void setHigh(final int high) {
-		this.high = high;
+	public final void setHigh(final int theHigh) {
+		this.high = theHigh;
 	}
 
 	/**
 	 * Set the low end of the range.
 	 * 
-	 * @param low
+	 * @param theLow
 	 *            The low end of the range.
 	 */
-	public void setLow(final int low) {
-		this.low = low;
+	public final void setLow(final int theLow) {
+		this.low = theLow;
 	}
 
 }

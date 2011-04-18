@@ -87,10 +87,6 @@ public class MexicanHatFunction extends BasicRBF {
 		setPeak(1.0);
 		setWidth(1.0);
 	}
-	
-	public MexicanHatFunction() {
-		
-	}
 
 	/**
 	 * Calculate the result from the function.
@@ -99,7 +95,7 @@ public class MexicanHatFunction extends BasicRBF {
 	 *            The parameters for the function, one for each dimension.
 	 * @return The result of the function.
 	 */
-	public double calculate(final double[] x) {
+	public final double calculate(final double[] x) {
 
 		final double[] center = getCenters();
 

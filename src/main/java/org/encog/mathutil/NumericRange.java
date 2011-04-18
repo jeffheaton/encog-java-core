@@ -34,6 +34,11 @@ import org.encog.util.Format;
  */
 public class NumericRange {
 	/**
+	 * Display to five decimal places.
+	 */
+	public static final int FIVE = 5;
+	
+	/**
 	 * The high number in the range.
 	 */
 	private final double high;
@@ -103,42 +108,42 @@ public class NumericRange {
 	/**
 	 * @return The high number in the range.
 	 */
-	public double getHigh() {
+	public final double getHigh() {
 		return this.high;
 	}
 
 	/**
 	 * @return The low number in the range.
 	 */
-	public double getLow() {
+	public final double getLow() {
 		return this.low;
 	}
 
 	/**
 	 * @return The mean in the range.
 	 */
-	public double getMean() {
+	public final double getMean() {
 		return this.mean;
 	}
 
 	/**
 	 * @return The root mean square of the range.
 	 */
-	public double getRms() {
+	public final double getRms() {
 		return this.rms;
 	}
 
 	/**
 	 * @return The number of samples in the range.
 	 */
-	public int getSamples() {
+	public final int getSamples() {
 		return this.samples;
 	}
 
 	/**
 	 * @return The standard deviation of the range.
 	 */
-	public double getStandardDeviation() {
+	public final double getStandardDeviation() {
 		return this.standardDeviation;
 	}
 
@@ -146,20 +151,20 @@ public class NumericRange {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append("Range: ");
-		result.append(Format.formatDouble(this.low, 5));
+		result.append(Format.formatDouble(this.low, FIVE));
 		result.append(" to ");
-		result.append(Format.formatDouble(this.high, 5));
+		result.append(Format.formatDouble(this.high, FIVE));
 		result.append(",samples: ");
 		result.append(Format.formatInteger(this.samples));
 		result.append(",mean: ");
-		result.append(Format.formatDouble(this.mean, 5));
+		result.append(Format.formatDouble(this.mean, FIVE));
 		result.append(",rms: ");
-		result.append(Format.formatDouble(this.rms, 5));
+		result.append(Format.formatDouble(this.rms, FIVE));
 		result.append(",s.deviation: ");
-		result.append(Format.formatDouble(this.standardDeviation, 5));
+		result.append(Format.formatDouble(this.standardDeviation, FIVE));
 
 		return result.toString();
 	}

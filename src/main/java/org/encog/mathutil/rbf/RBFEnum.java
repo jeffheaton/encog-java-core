@@ -45,7 +45,7 @@ public enum RBFEnum {
 	InverseMultiquadric,
 
 	/**
-	 * Mexican hat
+	 * Mexican hat.
 	 */
 	MexicanHat
 }

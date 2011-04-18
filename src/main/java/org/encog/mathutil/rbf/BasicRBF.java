@@ -56,7 +56,7 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double getCenter(int dimension) {
+	public final double getCenter(final int dimension) {
 		return this.center[dimension];
 	}
 
@@ -64,7 +64,7 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double[] getCenters() {
+	public final double[] getCenters() {
 		return this.center;
 	}
 
@@ -72,7 +72,7 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getDimensions() {
+	public final int getDimensions() {
 		return this.center.length;
 	}
 
@@ -80,7 +80,7 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double getPeak() {
+	public final double getPeak() {
 		return this.peak;
 	}
 
@@ -88,7 +88,7 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public double getWidth() {
+	public final double getWidth() {
 		return this.width;
 	}
 
@@ -96,7 +96,7 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setCenters(final double[] centers) {
+	public final void setCenters(final double[] centers) {
 		this.center = centers;
 
 	}
@@ -105,16 +105,16 @@ public abstract class BasicRBF implements RadialBasisFunction {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setWidth(final double width) {
-		this.width = width;
+	public final void setPeak(final double thePeak) {
+		this.peak = thePeak;
+
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setPeak(final double peak) {
-		this.peak = peak;
-
+	public final void setWidth(final double theWidth) {
+		this.width = theWidth;
 	}
 }

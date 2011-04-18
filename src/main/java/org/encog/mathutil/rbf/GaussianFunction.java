@@ -80,6 +80,7 @@ public class GaussianFunction extends BasicRBF {
 
 	/**
 	 * Create centered at zero, width 0, and peak 0.
+	 * @param dimensions The number of dimensions.
 	 */
 	public GaussianFunction(final int dimensions) {
 		setCenters(new double[dimensions]);
@@ -94,7 +95,7 @@ public class GaussianFunction extends BasicRBF {
 	 *            The parameters for the function, one for each dimension.
 	 * @return The result of the function.
 	 */
-	public double calculate(final double[] x) {
+	public final double calculate(final double[] x) {
 		double value = 0;
 		final double[] center = getCenters();
 		final double width = getWidth();
