@@ -66,12 +66,11 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	 * The current temperature.
 	 */
 	private double temperature;
-	
+
 	/**
 	 * Should the score be minimized.
 	 */
 	private boolean shouldMinimize = true;
-
 
 	/**
 	 * Subclasses should provide a method that evaluates the score for the
@@ -98,42 +97,49 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	/**
 	 * @return the cycles
 	 */
-	public int getCycles() {
+	public final int getCycles() {
 		return this.cycles;
 	}
 
 	/**
 	 * @return the globalScore
 	 */
-	public double getScore() {
+	public final double getScore() {
 		return this.score;
 	}
 
 	/**
 	 * @return the startTemperature
 	 */
-	public double getStartTemperature() {
+	public final double getStartTemperature() {
 		return this.startTemperature;
 	}
 
 	/**
 	 * @return the stopTemperature
 	 */
-	public double getStopTemperature() {
+	public final double getStopTemperature() {
 		return this.stopTemperature;
 	}
 
 	/**
 	 * @return the temperature
 	 */
-	public double getTemperature() {
+	public final double getTemperature() {
 		return this.temperature;
+	}
+
+	/**
+	 * @return True if the score should be minimized.
+	 */
+	public final boolean isShouldMinimize() {
+		return this.shouldMinimize;
 	}
 
 	/**
 	 * Called to perform one cycle of the annealing process.
 	 */
-	public void iteration() {
+	public final void iteration() {
 		UNIT_TYPE[] bestArray;
 
 		setScore(calculateScore());
@@ -180,60 +186,55 @@ public abstract class SimulatedAnnealing<UNIT_TYPE> {
 	public abstract void randomize();
 
 	/**
-	 * @param cycles
+	 * @param theCycles
 	 *            the cycles to set
 	 */
-	public void setCycles(final int cycles) {
-		this.cycles = cycles;
+	public final void setCycles(final int theCycles) {
+		this.cycles = theCycles;
 	}
 
 	/**
 	 * Set the score.
 	 * 
-	 * @param score
+	 * @param theScore
 	 *            The score to set.
 	 */
-	public void setScore(final double score) {
-		this.score = score;
-	}
-
-	/**
-	 * @param startTemperature
-	 *            the startTemperature to set
-	 */
-	public void setStartTemperature(final double startTemperature) {
-		this.startTemperature = startTemperature;
-	}
-
-	/**
-	 * @param stopTemperature
-	 *            the stopTemperature to set
-	 */
-	public void setStopTemperature(final double stopTemperature) {
-		this.stopTemperature = stopTemperature;
-	}
-
-	/**
-	 * @param temperature
-	 *            the temperature to set
-	 */
-	public void setTemperature(final double temperature) {
-		this.temperature = temperature;
-	}
-
-	/**
-	 * @return True if the score should be minimized.
-	 */
-	public boolean isShouldMinimize() {
-		return shouldMinimize;
+	public final void setScore(final double theScore) {
+		this.score = theScore;
 	}
 
 	/**
 	 * Should the score be minimized.
-	 * @param shouldMinimize True if the score should be minimized.
+	 * 
+	 * @param theShouldMinimize
+	 *            True if the score should be minimized.
 	 */
-	public void setShouldMinimize(boolean shouldMinimize) {
-		this.shouldMinimize = shouldMinimize;
+	public final void setShouldMinimize(final boolean theShouldMinimize) {
+		this.shouldMinimize = theShouldMinimize;
+	}
+
+	/**
+	 * @param theStartTemperature
+	 *            the startTemperature to set
+	 */
+	public final void setStartTemperature(final double theStartTemperature) {
+		this.startTemperature = theStartTemperature;
+	}
+
+	/**
+	 * @param theStopTemperature
+	 *            the stopTemperature to set
+	 */
+	public final void setStopTemperature(final double theStopTemperature) {
+		this.stopTemperature = theStopTemperature;
+	}
+
+	/**
+	 * @param theTemperature
+	 *            the temperature to set
+	 */
+	public final void setTemperature(final double theTemperature) {
+		this.temperature = theTemperature;
 	}
 
 }

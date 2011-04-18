@@ -1,69 +1,126 @@
+/*
+ * Encog(tm) Core v3.0 - Java Version
+ * http://www.heatonresearch.com/encog/
+ * http://code.google.com/p/encog-java/
+ 
+ * Copyright 2008-2011 Heaton Research, Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *   
+ * For more information on Heaton Research copyrights, licenses 
+ * and trademarks visit:
+ * http://www.heatonresearch.com/copyright
+ */
 package org.encog.ml.factory.parse;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Holds the parse results for one layer.
+ */
 public class ArchitectureLayer {
+	
+	/**
+	 * True/false if bias is present.
+	 */
 	private boolean bias;
+	
+	/**
+	 * The count.
+	 */
 	private int count;
+	
+	/**
+	 * The name of this layer.
+	 */
 	private String name;
+	
+	/**
+	 * True, if default counts should be used.
+	 */
 	private boolean usedDefault;
-	private final Map<String,String> params = new HashMap<String,String>();
+	
 	/**
-	 * @return the bias
+	 * Holds any paramaters that were specified for the layer.
 	 */
-	public boolean isBias() {
-		return bias;
-	}
+	private final Map<String, String> params = new HashMap<String, String>();
+
 	/**
-	 * @param bias the bias to set
+	 * @return the count.
 	 */
-	public void setBias(boolean bias) {
-		this.bias = bias;
+	public final int getCount() {
+		return this.count;
 	}
-	/**
-	 * @return the count
-	 */
-	public int getCount() {
-		return count;
-	}
-	/**
-	 * @param count the count to set
-	 */
-	public void setCount(int count) {
-		this.count = count;
-	}
+
 	/**
 	 * @return the name
 	 */
-	public String getName() {
-		return name;
+	public final String getName() {
+		return this.name;
 	}
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
+
 	/**
 	 * @return the params
 	 */
-	public Map<String, String> getParams() {
-		return params;
+	public final Map<String, String> getParams() {
+		return this.params;
 	}
+
+	/**
+	 * @return the bias
+	 */
+	public final boolean isBias() {
+		return this.bias;
+	}
+
 	/**
 	 * @return the usedDefault
 	 */
-	public boolean isUsedDefault() {
-		return usedDefault;
+	public final boolean isUsedDefault() {
+		return this.usedDefault;
 	}
+
 	/**
-	 * @param usedDefault the usedDefault to set
+	 * @param theBias
+	 *            the bias to set
 	 */
-	public void setUsedDefault(boolean usedDefault) {
-		this.usedDefault = usedDefault;
+	public final void setBias(final boolean theBias) {
+		this.bias = theBias;
 	}
-	
-	
-	
+
+	/**
+	 * @param theCount
+	 *            the count to set
+	 */
+	public final void setCount(final int theCount) {
+		this.count = theCount;
+	}
+
+	/**
+	 * @param theName
+	 *            the name to set
+	 */
+	public final void setName(final String theName) {
+		this.name = theName;
+	}
+
+	/**
+	 * @param theUsedDefault
+	 *            the usedDefault to set
+	 */
+	public final void setUsedDefault(final boolean theUsedDefault) {
+		this.usedDefault = theUsedDefault;
+	}
+
 }
