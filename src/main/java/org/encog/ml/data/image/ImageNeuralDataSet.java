@@ -23,7 +23,6 @@
  */
 package org.encog.ml.data.image;
 
-import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.NeuralNetworkError;
@@ -47,8 +46,8 @@ public class ImageNeuralDataSet extends BasicMLDataSet {
 	 * Error message to inform the caller that only ImageNeuralData objects can
 	 * be used with this collection.
 	 */
-	public static final String MUST_USE_IMAGE = 
-		"This data set only supports ImageNeuralData or Image objects.";
+	public static final String MUST_USE_IMAGE 
+	= "This data set only supports ImageNeuralData or Image objects.";
 
 	/**
 	 * The downsampler to use.
@@ -83,37 +82,37 @@ public class ImageNeuralDataSet extends BasicMLDataSet {
 	/**
 	 * Construct this class with the specified downsampler.
 	 * 
-	 * @param downsampler
+	 * @param theDownsampler
 	 *            The downsampler to use.
-	 * @param findBounds
+	 * @param theFindBounds
 	 *            Should the bounds be found and clipped.
-	 * @param hi
+	 * @param theHi
 	 *            The high value to normalize to.
-	 * @param lo
+	 * @param theLo
 	 *            The low value to normalize to.
 	 */
-	public ImageNeuralDataSet(final Downsample downsampler,
-			final boolean findBounds, final double hi, final double lo) {
-		this.downsampler = downsampler;
-		this.findBounds = findBounds;
+	public ImageNeuralDataSet(final Downsample theDownsampler,
+			final boolean theFindBounds, 
+			final double theHi, final double theLo) {
+		this.downsampler = theDownsampler;
+		this.findBounds = theFindBounds;
 		this.height = -1;
 		this.width = -1;
-		this.hi = hi;
-		this.lo = lo;
+		this.hi = theHi;
+		this.lo = theLo;
 	}
-
 
 	/**
 	 * Downsample all images and generate training data.
 	 * 
-	 * @param height
+	 * @param theHeight
 	 *            The height to downsample to.
-	 * @param width
+	 * @param theWidth
 	 *            the width to downsample to.
 	 */
-	public void downsample(final int height, final int width) {
-		this.height = height;
-		this.width = width;
+	public final void downsample(final int theHeight, final int theWidth) {
+		this.height = theHeight;
+		this.width = theWidth;
 
 		for (final MLDataPair pair : this) {
 			if (!(pair.getInput() instanceof ImageNeuralData)) {
@@ -132,14 +131,14 @@ public class ImageNeuralDataSet extends BasicMLDataSet {
 	/**
 	 * @return the height
 	 */
-	public int getHeight() {
+	public final int getHeight() {
 		return this.height;
 	}
 
 	/**
 	 * @return the width
 	 */
-	public int getWidth() {
+	public final int getWidth() {
 		return this.width;
 	}
 }

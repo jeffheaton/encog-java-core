@@ -54,12 +54,12 @@ public class ImageNeuralData extends BasicMLData {
 	/**
 	 * Construct an object based on an image.
 	 *
-	 * @param image
+	 * @param theImage
 	 *            The image to use.
 	 */
-	public ImageNeuralData(final Image image) {
+	public ImageNeuralData(final Image theImage) {
 		super(1);
-		this.image = image;
+		this.image = theImage;
 	}
 
 	/**
@@ -80,7 +80,7 @@ public class ImageNeuralData extends BasicMLData {
 	 * @param lo
 	 *            The low value to normalize to.
 	 */
-	public void downsample(final Downsample downsampler,
+	public final void downsample(final Downsample downsampler,
 			final boolean findBounds, final int height, final int width,
 			final double hi, final double lo) {
 		if (findBounds) {
@@ -102,15 +102,15 @@ public class ImageNeuralData extends BasicMLData {
 	/**
 	 * @return the image
 	 */
-	public Image getImage() {
+	public final Image getImage() {
 		return this.image;
 	}
 
 	/**
-	 * @param image
+	 * @param theImage
 	 *            the image to set
 	 */
-	public void setImage(final Image image) {
-		this.image = image;
+	public final void setImage(final Image theImage) {
+		this.image = theImage;
 	}
 }

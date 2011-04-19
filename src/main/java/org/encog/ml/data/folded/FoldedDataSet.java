@@ -44,7 +44,8 @@ public class FoldedDataSet implements MLDataSet {
 	/**
 	 * Error message: adds are not supported.
 	 */
-	public static final String ADD_NOT_SUPPORTED = "Direct adds to the folded dataset are not supported.";
+	public static final String ADD_NOT_SUPPORTED 
+		= "Direct adds to the folded dataset are not supported.";
 
 	/**
 	 * The underlying dataset.
@@ -81,20 +82,20 @@ public class FoldedDataSet implements MLDataSet {
 	 * The size of the current fold.
 	 */
 	private int currentFoldSize;
-	
+
 	/**
-	 * The owner object(from openAdditional)
+	 * The owner object(from openAdditional).
 	 */
 	private FoldedDataSet owner;
 
 	/**
 	 * Create a folded dataset.
 	 * 
-	 * @param underlying
+	 * @param theUnderlying
 	 *            The underlying folded dataset.
 	 */
-	public FoldedDataSet(final MLDataSet underlying) {
-		this.underlying = underlying;
+	public FoldedDataSet(final MLDataSet theUnderlying) {
+		this.underlying = theUnderlying;
 		fold(1);
 	}
 
@@ -105,7 +106,7 @@ public class FoldedDataSet implements MLDataSet {
 	 *            Not used.
 	 */
 	@Override
-	public void add(final MLData data1) {
+	public final void add(final MLData data1) {
 		throw new TrainingError(FoldedDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -119,7 +120,7 @@ public class FoldedDataSet implements MLDataSet {
 	 *            Not used.
 	 */
 	@Override
-	public void add(final MLData inputData, final MLData idealData) {
+	public final void add(final MLData inputData, final MLData idealData) {
 		throw new TrainingError(FoldedDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -131,7 +132,7 @@ public class FoldedDataSet implements MLDataSet {
 	 *            Not used.
 	 */
 	@Override
-	public void add(final MLDataPair inputData) {
+	public final void add(final MLDataPair inputData) {
 		throw new TrainingError(FoldedDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -140,60 +141,64 @@ public class FoldedDataSet implements MLDataSet {
 	 * Close the dataset.
 	 */
 	@Override
-	public void close() {
+	public final void close() {
 		this.underlying.close();
 	}
 
 	/**
 	 * Fold the dataset. Must be done before the dataset is used.
 	 * 
-	 * @param numFolds
+	 * @param theNumFolds
 	 *            The number of folds.
 	 */
-	public void fold(final int numFolds) {
-		this.numFolds = (int) Math.min(numFolds, this.underlying
-				.getRecordCount());
-		this.foldSize = (int) (this.underlying.getRecordCount() / this.numFolds);
-		this.lastFoldSize = (int) (this.underlying.getRecordCount() - (this.foldSize * this.numFolds));
+	public final void fold(final int theNumFolds) {
+		this.numFolds = (int) Math.min(theNumFolds,
+				this.underlying.getRecordCount());
+		this.foldSize = (int) (this.underlying.getRecordCount() 
+					/ this.numFolds);
+		this.lastFoldSize = (int) (this.underlying.getRecordCount() 
+					- (this.foldSize * this.numFolds));
 		setCurrentFold(0);
 	}
 
 	/**
 	 * @return the currentFold
 	 */
-	public int getCurrentFold() {
-		if( this.owner!=null )
-			return owner.getCurrentFold();
-		else
+	public final int getCurrentFold() {
+		if (this.owner != null) {
+			return this.owner.getCurrentFold();
+		} else {
 			return this.currentFold;
+		}
 	}
 
 	/**
 	 * @return the currentFoldOffset
 	 */
-	public int getCurrentFoldOffset() {
-		if( this.owner!=null )
-			return owner.getCurrentFoldOffset();
-		else
+	public final int getCurrentFoldOffset() {
+		if (this.owner != null) {
+			return this.owner.getCurrentFoldOffset();
+		} else {
 			return this.currentFoldOffset;
+		}
 	}
 
 	/**
 	 * @return the currentFoldSize
 	 */
-	public int getCurrentFoldSize() {
-		if( this.owner!=null )
+	public final int getCurrentFoldSize() {
+		if (this.owner != null) {
 			return this.owner.getCurrentFoldSize();
-		else
+		} else {
 			return this.currentFoldSize;
+		}
 	}
 
-	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getIdealSize() {
+	public final int getIdealSize() {
 		return this.underlying.getIdealSize();
 	}
 
@@ -201,37 +206,44 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getInputSize() {
+	public final int getInputSize() {
 		return this.underlying.getInputSize();
 	}
 
 	/**
 	 * @return the numFolds
 	 */
-	public int getNumFolds() {
+	public final int getNumFolds() {
 		return this.numFolds;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * @return The owner.
 	 */
-	@Override
-	public void getRecord(final long index, final MLDataPair pair) {
-		this.underlying.getRecord(this.getCurrentFoldOffset() + index, pair);
+	public final FoldedDataSet getOwner() {
+		return this.owner;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public long getRecordCount() {
+	public final void getRecord(final long index, final MLDataPair pair) {
+		this.underlying.getRecord(getCurrentFoldOffset() + index, pair);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final long getRecordCount() {
 		return getCurrentFoldSize();
 	}
 
 	/**
 	 * @return The underlying dataset.
 	 */
-	public MLDataSet getUnderlying() {
+	public final MLDataSet getUnderlying() {
 		return this.underlying;
 	}
 
@@ -239,31 +251,15 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean isSupervised() {
+	public final boolean isSupervised() {
 		return this.underlying.isSupervised();
-	}
-	
-	
-
-	/**
-	 * @return The owner.
-	 */
-	public FoldedDataSet getOwner() {
-		return owner;
-	}
-
-	/**
-	 * @param owner The owner.
-	 */
-	public void setOwner(FoldedDataSet owner) {
-		this.owner = owner;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Iterator<MLDataPair> iterator() {
+	public final Iterator<MLDataPair> iterator() {
 		return new FoldedIterator(this);
 	}
 
@@ -271,29 +267,32 @@ public class FoldedDataSet implements MLDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MLDataSet openAdditional() {
+	public final MLDataSet openAdditional() {
 		final FoldedDataSet folded = new FoldedDataSet(
-				(MLDataSet)this.underlying.openAdditional());
+				this.underlying.openAdditional());
 		folded.setOwner(this);
 		return folded;
 	}
 
 	/**
 	 * Set the current fold.
-	 * @param currentFold
+	 * 
+	 * @param theCurrentFold
 	 *            the currentFold to set
 	 */
-	public void setCurrentFold(final int currentFold) {
-		
-		if( this.owner!=null ) {
-			throw new TrainingError("Can't set the fold on a non-top-level set.");
+	public final void setCurrentFold(final int theCurrentFold) {
+
+		if (this.owner != null) {
+			throw new TrainingError(
+					"Can't set the fold on a non-top-level set.");
 		}
-		
+
 		if (currentFold >= this.numFolds) {
 			throw new TrainingError(
-					"Can't set the current fold to be greater than the number of folds.");
+		"Can't set the current fold to be greater than " 
+					+ "the number of folds.");
 		}
-		this.currentFold = currentFold;
+		this.currentFold = theCurrentFold;
 		this.currentFoldOffset = this.foldSize * this.currentFold;
 
 		if (this.currentFold == (this.numFolds - 1)) {
@@ -301,5 +300,13 @@ public class FoldedDataSet implements MLDataSet {
 		} else {
 			this.currentFoldSize = this.foldSize;
 		}
+	}
+
+	/**
+	 * @param theOwner
+	 *            The owner.
+	 */
+	public final void setOwner(final FoldedDataSet theOwner) {
+		this.owner = theOwner;
 	}
 }

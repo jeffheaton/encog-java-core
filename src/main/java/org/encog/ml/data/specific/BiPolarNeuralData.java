@@ -32,9 +32,9 @@ import org.encog.ml.data.MLlDataError;
 /**
  * A NeuralData implementation designed to work with bipolar data. Bipolar data
  * contains two values. True is stored as 1, and false is stored as -1.
- *
+ * 
  * @author jheaton
- *
+ * 
  */
 public class BiPolarNeuralData implements MLData, Serializable {
 
@@ -49,7 +49,7 @@ public class BiPolarNeuralData implements MLData, Serializable {
 
 	/**
 	 * Construct this object with the specified data.
-	 *
+	 * 
 	 * @param d
 	 *            The data to create this object with.
 	 */
@@ -60,7 +60,7 @@ public class BiPolarNeuralData implements MLData, Serializable {
 
 	/**
 	 * Construct a data object with the specified size.
-	 *
+	 * 
 	 * @param size
 	 *            The size of this data object.
 	 */
@@ -70,20 +70,22 @@ public class BiPolarNeuralData implements MLData, Serializable {
 
 	/**
 	 * This will throw an error, as "add" is not supported for bipolar.
-	 *
+	 * 
 	 * @param index
 	 *            Not used.
 	 * @param value
 	 *            Not used.
 	 */
-	public void add(final int index, final double value) {
+	@Override
+	public final void add(final int index, final double value) {
 		throw new MLlDataError("Add is not supported for bipolar data.");
 	}
 
 	/**
 	 * Set all data to false.
 	 */
-	public void clear() {
+	@Override
+	public final void clear() {
 		for (int i = 0; i < this.data.length; i++) {
 			this.data[i] = false;
 		}
@@ -94,7 +96,7 @@ public class BiPolarNeuralData implements MLData, Serializable {
 	 * @return A cloned copy of this object.
 	 */
 	@Override
-	public MLData clone() {
+	public final MLData clone() {
 		final BiPolarNeuralData result = new BiPolarNeuralData(size());
 		for (int i = 0; i < size(); i++) {
 			result.setData(i, getData(i));
@@ -104,77 +106,82 @@ public class BiPolarNeuralData implements MLData, Serializable {
 
 	/**
 	 * Get the specified data item as a boolean.
-	 *
+	 * 
 	 * @param i
 	 *            The index to read.
 	 * @return The specified data item's value.
 	 */
-	public boolean getBoolean(final int i) {
+	public final boolean getBoolean(final int i) {
 		return this.data[i];
 	}
 
 	/**
 	 * Get the data held by this object as an array of doubles.
-	 *
+	 * 
 	 * @return The data held by this object.
 	 */
-	public double[] getData() {
+	@Override
+	public final double[] getData() {
 		return BiPolarUtil.bipolar2double(this.data);
 	}
 
 	/**
 	 * Get the data held by the index.
-	 *
+	 * 
 	 * @param index
 	 *            The index to read.
 	 * @return Return the data held at the specified index.
 	 */
-	public double getData(final int index) {
+	@Override
+	public final double getData(final int index) {
 		return BiPolarUtil.bipolar2double(this.data[index]);
 	}
 
 	/**
 	 * Store the array.
-	 *
-	 * @param data
+	 * 
+	 * @param theData
 	 *            The data to store.
 	 */
-	public void setData(final double[] data) {
-		this.data = BiPolarUtil.double2bipolar(data);
+	@Override
+	public final void setData(final double[] theData) {
+		this.data = BiPolarUtil.double2bipolar(theData);
 	}
 
 	/**
 	 * Set the specified index of this object as a boolean. This value will be
 	 * converted into bipolar.
-	 *
+	 * 
 	 * @param index
 	 *            The index to set.
 	 * @param value
 	 *            The value to set.
 	 */
-	public void setData(final int index, final boolean value) {
+	public final void setData(final int index, final boolean value) {
 		this.data[index] = value;
 	}
 
 	/**
 	 * Set the specified index of this object as a double. This value will be
 	 * converted into bipolar.
-	 *
+	 * 
 	 * @param index
 	 *            The index to set.
 	 * @param d
 	 *            The value to set.
 	 */
-	public void setData(final int index, final double d) {
+	@Override
+	public final void setData(final int index, final double d) {
 		this.data[index] = BiPolarUtil.double2bipolar(d);
 	}
 
 	/**
 	 * Get the size of this data object.
-	 *
+	 * 
 	 * @return The size of this data object.
 	 */
-	public int size() {
+	@Override
+	public final int size() {
 		return this.data.length;
 	}
 
@@ -182,7 +189,7 @@ public class BiPolarNeuralData implements MLData, Serializable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
+	public final String toString() {
 		final StringBuilder result = new StringBuilder();
 		result.append('[');
 		for (int i = 0; i < size(); i++) {

@@ -46,7 +46,7 @@ public class CSVNeuralDataSet extends BasicMLDataSet {
 	 * Serial id.
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	/**
 	 * The CSV filename to read from.
 	 */
@@ -57,64 +57,69 @@ public class CSVNeuralDataSet extends BasicMLDataSet {
 	 */
 	private final CSVFormat format;
 
-
 	/**
 	 * Construct this data set using a comma as a delimiter.
 	 * 
-	 * @param filename
+	 * @param theFilename
 	 *            The CSV filename to read.
-	 * @param inputSize
+	 * @param theInputSize
 	 *            The number of columns that make up the input set. *
-	 * @param idealSize
+	 * @param theIdealSize
 	 *            The number of columns that make up the ideal set.
-	 * @param headers
+	 * @param theHeaders
 	 *            True if headers are present on the first line.
 	 */
-	public CSVNeuralDataSet(final String filename, final int inputSize,
-			final int idealSize, final boolean headers) {
-		this(filename, inputSize, idealSize, headers, CSVFormat.ENGLISH);
+	public CSVNeuralDataSet(
+			final String theFilename, 
+			final int theInputSize,
+			final int theIdealSize, 
+			final boolean theHeaders) {
+		this(theFilename, theInputSize, theIdealSize, theHeaders, 
+				CSVFormat.ENGLISH);
 	}
 
 	/**
 	 * Construct this data set using a comma as a delimiter.
 	 * 
-	 * @param filename
+	 * @param theFilename
 	 *            The CSV filename to read.
-	 * @param inputSize
+	 * @param theInputSize
 	 *            The number of columns that make up the input set. *
-	 * @param idealSize
+	 * @param theIdealSize
 	 *            The number of columns that make up the ideal set.
-	 * @param headers
+	 * @param theHeaders
 	 *            True if headers are present on the first line.
-	 * @param format
+	 * @param theFormat
 	 *            What CSV format to use.
 	 */
-	public CSVNeuralDataSet(final String filename, final int inputSize,
-			final int idealSize, final boolean headers,
-			final CSVFormat format) {
-		this.filename = filename;
-		this.format = format;
-		
-        DataSetCODEC codec = new CSVDataCODEC(new File(filename), format, headers, inputSize, idealSize);
-        MemoryDataLoader load = new MemoryDataLoader(codec);
-        load.setResult(this);
-        load.external2Memory();
-	}
+	public CSVNeuralDataSet(
+			final String theFilename, 
+			final int theInputSize,
+			final int theIdealSize, 
+			final boolean theHeaders, 
+			final CSVFormat theFormat) {
+		this.filename = theFilename;
+		this.format = theFormat;
 
+		final DataSetCODEC codec = new CSVDataCODEC(new File(filename), format,
+				theHeaders, theInputSize, theIdealSize);
+		final MemoryDataLoader load = new MemoryDataLoader(codec);
+		load.setResult(this);
+		load.external2Memory();
+	}
 
 	/**
 	 * @return the filename
 	 */
-	public String getFilename() {
+	public final String getFilename() {
 		return this.filename;
 	}
 
 	/**
 	 * @return the delimiter
 	 */
-	public CSVFormat getFormat() {
+	public final CSVFormat getFormat() {
 		return this.format;
 	}
-
 
 }

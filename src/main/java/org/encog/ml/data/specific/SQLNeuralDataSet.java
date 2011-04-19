@@ -44,22 +44,29 @@ import org.encog.ml.data.buffer.codec.SQLCODEC;
 public class SQLNeuralDataSet extends BasicMLDataSet {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Create a SQLNeuralDataSet based on the specified connection. This
 	 * connection WILL NOT be closed when the close method is called.
 	 * 
-	 * @param connection
+	 * @param theConnection
 	 *            The connection to use.
-	 * @param sql
+	 * @param theSQL
 	 *            The SQL command to execute.
-	 * @param inputSize
+	 * @param theInputSize
 	 *            The size of the input data.
-	 * @param idealSize
+	 * @param theIdealSize
 	 *            The size of the ideal data.
 	 */
-	public SQLNeuralDataSet(final Connection connection, final String sql,
-			final int inputSize, final int idealSize) {
+	public SQLNeuralDataSet(
+			final Connection theConnection, final String theSQL,
+			final int theInputSize, final int theIdealSize) {
 
-        DataSetCODEC codec = new SQLCODEC(connection,sql,inputSize,idealSize);
+		DataSetCODEC codec = new SQLCODEC(theConnection, theSQL, theInputSize,
+				theIdealSize);
         MemoryDataLoader load = new MemoryDataLoader(codec);
         load.setResult(this);
         load.external2Memory();
@@ -88,7 +95,8 @@ public class SQLNeuralDataSet extends BasicMLDataSet {
 			final int idealSize, final String driver, final String url,
 			final String uid, final String pwd) {
 
-        DataSetCODEC codec = new SQLCODEC(sql,inputSize,idealSize,driver,url,uid,pwd);
+		DataSetCODEC codec = new SQLCODEC(sql, inputSize, idealSize, driver,
+				url, uid, pwd);
         MemoryDataLoader load = new MemoryDataLoader(codec);
         load.setResult(this);
         load.external2Memory();

@@ -56,11 +56,11 @@ public class MemoryDataLoader {
 	/**
 	 * Construct a loader with the specified CODEC.
 	 * 
-	 * @param codec
+	 * @param theCodec
 	 *            The codec to use.
 	 */
-	public MemoryDataLoader(final DataSetCODEC codec) {
-		this.codec = codec;
+	public MemoryDataLoader(final DataSetCODEC theCodec) {
+		this.codec = theCodec;
 		this.status = new NullStatusReportable();
 	}
 
@@ -70,7 +70,7 @@ public class MemoryDataLoader {
 	 * 
 	 * @return The binary file to create.
 	 */
-	public MLDataSet external2Memory() {
+	public final MLDataSet external2Memory() {
 		this.status.report(0, 0, "Importing to memory");
 
 		if (this.result == null) {
@@ -110,24 +110,45 @@ public class MemoryDataLoader {
 		return this.result;
 	}
 
-	public DataSetCODEC getCodec() {
+	/**
+	 * @return The CODEC that is being used.
+	 */
+	public final DataSetCODEC getCodec() {
 		return this.codec;
 	}
 
-	public BasicMLDataSet getResult() {
+	/**
+	 * @return The resuling dataset.
+	 */
+	public final BasicMLDataSet getResult() {
 		return this.result;
 	}
 
-	public StatusReportable getStatus() {
+	/**
+	 * @return The object that status is reported to.
+	 */
+	public final StatusReportable getStatus() {
 		return this.status;
 	}
 
-	public void setResult(final BasicMLDataSet result) {
-		this.result = result;
+	/**
+	 * Set the resulting dataset.
+	 * 
+	 * @param theResult
+	 *            The resulting dataset.
+	 */
+	public final void setResult(final BasicMLDataSet theResult) {
+		this.result = theResult;
 	}
 
-	public void setStatus(final StatusReportable status) {
-		this.status = status;
+	/**
+	 * Set the object that status will be reported to.
+	 * 
+	 * @param theStatus
+	 *            The object to report status to.
+	 */
+	public final void setStatus(final StatusReportable theStatus) {
+		this.status = theStatus;
 	}
 
 }

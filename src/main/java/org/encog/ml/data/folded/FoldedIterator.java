@@ -46,10 +46,10 @@ public class FoldedIterator implements Iterator<MLDataPair> {
 
 	/**
 	 * Construct the folded iterator.
-	 * @param owner The owning dataset.
+	 * @param theOwner The owning dataset.
 	 */
-	public FoldedIterator(final FoldedDataSet owner) {
-		this.owner = owner;
+	public FoldedIterator(final FoldedDataSet theOwner) {
+		this.owner = theOwner;
 		this.currentIndex = 0;
 	}
 
@@ -57,7 +57,7 @@ public class FoldedIterator implements Iterator<MLDataPair> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean hasNext() {
+	public final boolean hasNext() {
 		return this.currentIndex < this.owner.getCurrentFoldSize();
 	}
 
@@ -65,7 +65,7 @@ public class FoldedIterator implements Iterator<MLDataPair> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MLDataPair next() {
+	public final MLDataPair next() {
 		if (hasNext()) {
 			final MLDataPair pair = BasicMLDataPair.createPair(
 					this.owner.getInputSize(), this.owner.getIdealSize());
@@ -80,7 +80,7 @@ public class FoldedIterator implements Iterator<MLDataPair> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void remove() {
+	public final void remove() {
 		throw new MLlDataError("Remove is not supported.");
 	}
 }
