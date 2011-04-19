@@ -28,7 +28,7 @@ import org.encog.StatusReportable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
@@ -88,10 +88,10 @@ public class MemoryDataLoader {
 		while (codec.read(input, ideal)) {
 			MLData a = null, b = null;
 
-			a = new BasicMLDataArray(input);
+			a = new BasicMLData(input);
 
 			if (codec.getIdealSize() > 0)
-				b = new BasicMLDataArray(ideal);
+				b = new BasicMLData(ideal);
 
 			MLDataPair pair = new BasicMLDataPair(a, b);
 			result.add(pair);

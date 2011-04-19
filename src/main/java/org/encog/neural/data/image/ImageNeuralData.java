@@ -25,7 +25,7 @@ package org.encog.neural.data.image;
 
 import java.awt.Image;
 
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.downsample.Downsample;
 
 /**
@@ -40,7 +40,7 @@ import org.encog.util.downsample.Downsample;
  * @author jheaton
  *
  */
-public class ImageNeuralData extends BasicMLDataArray {
+public class ImageNeuralData extends BasicMLData {
 
 	/**
 	 * The serial id.
