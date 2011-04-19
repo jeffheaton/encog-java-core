@@ -33,7 +33,7 @@ import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.simple.EncogUtility;
 
 /**
@@ -197,7 +197,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 					"Can't use the SVM yet, it has not been trained, and no model exists.");
 		}
 
-		MLData result = new BasicMLDataArray(1);
+		MLData result = new BasicMLData(1);
 
 		svm_node[] formattedInput = makeSparse(input);
 
