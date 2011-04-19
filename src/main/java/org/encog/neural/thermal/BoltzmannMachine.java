@@ -26,7 +26,7 @@ package org.encog.neural.thermal;
 import org.encog.mathutil.BoundMath;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.data.MLData;
-import org.encog.neural.data.bipolar.BiPolarNeuralData;
+import org.encog.ml.data.specific.BiPolarNeuralData;
 import org.encog.util.EngineArray;
 
 public class BoltzmannMachine extends ThermalNetwork {

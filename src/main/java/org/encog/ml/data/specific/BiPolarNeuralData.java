@@ -21,13 +21,13 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.bipolar;
+package org.encog.ml.data.specific;
 
 import java.io.Serializable;
 
 import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.ml.data.MLData;
-import org.encog.neural.data.NeuralDataError;
+import org.encog.ml.data.MLlDataError;
 
 /**
  * A NeuralData implementation designed to work with bipolar data. Bipolar data
@@ -77,7 +77,7 @@ public class BiPolarNeuralData implements MLData, Serializable {
 	 *            Not used.
 	 */
 	public void add(final int index, final double value) {
-		throw new NeuralDataError("Add is not supported for bipolar data.");
+		throw new MLlDataError("Add is not supported for bipolar data.");
 	}
 
 	/**

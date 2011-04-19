@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.image;
+package org.encog.ml.data.image;
 
 import java.awt.Image;
 

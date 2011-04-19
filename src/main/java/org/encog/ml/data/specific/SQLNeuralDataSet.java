@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.sql;
+package org.encog.ml.data.specific;
 
 import java.sql.Connection;
 

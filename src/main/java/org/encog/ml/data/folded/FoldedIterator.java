@@ -21,13 +21,13 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.folded;
+package org.encog.ml.data.folded;
 
 import java.util.Iterator;
 
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLlDataError;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.NeuralDataError;
 
 /**
  * Used to iterate over a folded data set.
@@ -81,6 +81,6 @@ public class FoldedIterator implements Iterator<MLDataPair> {
 	 */
 	@Override
 	public void remove() {
-		throw new NeuralDataError("Remove is not supported.");
+		throw new MLlDataError("Remove is not supported.");
 	}
 }

@@ -32,8 +32,8 @@ import java.util.List;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.MLlDataError;
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.neural.data.NeuralDataError;
 
 /**
  * This class is not memory based, so very long files can be used, without
@@ -181,7 +181,7 @@ public class BufferedNeuralDataSet implements
 	 */
 	public void add(final MLData data1) {
 		if (!this.loading) {
-			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
+			throw new MLlDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
 
 		egb.write(data1.getData());
@@ -198,7 +198,7 @@ public class BufferedNeuralDataSet implements
 	public void add(final MLData inputData, final MLData idealData) {
 
 		if (!this.loading) {
-			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
+			throw new MLlDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
 
 		this.egb.write(inputData.getData());
@@ -213,7 +213,7 @@ public class BufferedNeuralDataSet implements
 	 */
 	public void add(final MLDataPair pair) {
 		if (!this.loading) {
-			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
+			throw new MLlDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
 
 		this.egb.write(pair.getInputArray());

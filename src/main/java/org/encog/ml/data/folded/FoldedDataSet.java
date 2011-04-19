@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.folded;
+package org.encog.ml.data.folded;
 
 import java.util.Iterator;
 

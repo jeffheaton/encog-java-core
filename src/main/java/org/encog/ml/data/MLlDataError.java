@@ -21,12 +21,12 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data;
+package org.encog.ml.data;
 
 /**
  * Used by the neural network classes to indicate an error.
  */
-public class NeuralDataError extends RuntimeException {
+public class MLlDataError extends RuntimeException {
 	/**
 	 * Serial id for this class.
 	 */
@@ -38,7 +38,7 @@ public class NeuralDataError extends RuntimeException {
 	 * @param msg
 	 *            The exception message.
 	 */
-	public NeuralDataError(final String msg) {
+	public MLlDataError(final String msg) {
 		super(msg);
 	}
 
@@ -48,7 +48,7 @@ public class NeuralDataError extends RuntimeException {
 	 * @param t
 	 *            The other exception.
 	 */
-	public NeuralDataError(final Throwable t) {
+	public MLlDataError(final Throwable t) {
 		super(t);
 	}
 }

@@ -27,8 +27,8 @@ import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.specific.BiPolarNeuralData;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.util.EngineArray;
 
 public class HopfieldNetwork extends ThermalNetwork {

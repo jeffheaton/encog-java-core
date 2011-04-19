@@ -29,7 +29,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.encog.neural.data.NeuralDataError;
+import org.encog.ml.data.MLlDataError;
 
 /**
  * A CODEC that is designed to read data from an SQL source. This is a read-only
@@ -88,7 +88,7 @@ public class SQLCODEC implements DataSetCODEC {
 			// prepare the statement
 			this.statement = this.connection.prepareStatement(sql);
 		} catch (final SQLException e) {
-			throw new NeuralDataError(e);
+			throw new MLlDataError(e);
 		}
 	}
 
@@ -132,9 +132,9 @@ public class SQLCODEC implements DataSetCODEC {
 			this.statement = this.connection.prepareStatement(sql);
 
 		} catch (final ClassNotFoundException e) {
-			throw new NeuralDataError(e);
+			throw new MLlDataError(e);
 		} catch (final SQLException e) {
-			throw new NeuralDataError(e);
+			throw new MLlDataError(e);
 		}
 	}
 
@@ -160,19 +160,19 @@ public class SQLCODEC implements DataSetCODEC {
 
 			return true;
 		} catch (final SQLException e) {
-			throw new NeuralDataError(e);
+			throw new MLlDataError(e);
 		}
 	}
 
 	@Override
 	public void write(double[] input, double[] ideal) {
-		throw new NeuralDataError("Write not supported.");
+		throw new MLlDataError("Write not supported.");
 
 	}
 
 	@Override
 	public void prepareWrite(int recordCount, int inputSize, int idealSize) {
-		throw new NeuralDataError("Write not supported.");
+		throw new MLlDataError("Write not supported.");
 	}
 
 	@Override
@@ -184,7 +184,7 @@ public class SQLCODEC implements DataSetCODEC {
 			// execute the statement
 			this.results = this.statement.executeQuery();
 		} catch (final SQLException e) {
-			throw new NeuralDataError(e);
+			throw new MLlDataError(e);
 		}
 	}
 
@@ -203,7 +203,7 @@ public class SQLCODEC implements DataSetCODEC {
 		try {
 			this.results.close();
 		} catch (final SQLException e) {
-			throw new NeuralDataError(e);
+			throw new MLlDataError(e);
 		}
 	}
 }

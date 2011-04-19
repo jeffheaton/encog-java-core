@@ -23,7 +23,7 @@
  */
 package org.encog.neural.networks.training.cross;
 
-import org.encog.neural.data.folded.FoldedDataSet;
+import org.encog.ml.data.folded.FoldedDataSet;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;

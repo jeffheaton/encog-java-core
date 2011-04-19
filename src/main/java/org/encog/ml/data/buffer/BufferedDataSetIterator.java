@@ -26,8 +26,8 @@ package org.encog.ml.data.buffer;
 import java.util.Iterator;
 
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLlDataError;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.NeuralDataError;
 
 /**
  * An iterator for the BufferedNeuralDataSet.
@@ -83,7 +83,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 */
 	@Override
 	public void remove() {
-		throw new NeuralDataError("Remove is not supported.");
+		throw new MLlDataError("Remove is not supported.");
 	}
 
 }

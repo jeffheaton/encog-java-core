@@ -27,8 +27,8 @@ import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.specific.BiPolarNeuralData;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.bipolar.BiPolarNeuralData;
 
 public class ART1 extends ART implements MLResettable, MLClassification {
 
