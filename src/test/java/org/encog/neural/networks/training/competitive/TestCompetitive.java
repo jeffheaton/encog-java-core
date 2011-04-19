@@ -28,7 +28,7 @@ import junit.framework.TestCase;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.basic.BasicTrainSOM;
@@ -71,9 +71,9 @@ public class TestCompetitive extends TestCase  {
 			train.iteration();
 		}
 
-		final MLData data1 = new BasicMLDataArray(
+		final MLData data1 = new BasicMLData(
 				TestCompetitive.SOM_INPUT[0]);
-		final MLData data2 = new BasicMLDataArray(
+		final MLData data2 = new BasicMLData(
 				TestCompetitive.SOM_INPUT[1]);
 		
 		int result1 = network.winner(data1);
