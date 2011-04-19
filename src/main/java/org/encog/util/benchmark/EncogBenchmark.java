@@ -28,7 +28,7 @@ import java.io.File;
 import org.encog.StatusReportable;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.util.Format;
 import org.encog.util.logging.Logging;
@@ -141,7 +141,7 @@ public class EncogBenchmark {
 	}
 
 	private void evalMemory() {
-		final BasicNeuralDataSet training = RandomTrainingFactory.generate(
+		final BasicMLDataSet training = RandomTrainingFactory.generate(
 				1000, 10000, 10, 10, -1, 1);
 
 		final long start = System.currentTimeMillis();
@@ -169,7 +169,7 @@ public class EncogBenchmark {
 	private void evalBinary() {
 		File file = new File("temp.egb");
 
-		final BasicNeuralDataSet training = RandomTrainingFactory.generate(
+		final BasicMLDataSet training = RandomTrainingFactory.generate(
 				1000, 10000, 10, 10, -1, 1);
 
 		// create the binary file

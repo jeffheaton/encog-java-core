@@ -28,7 +28,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 
 /**
  * This class implements either a:
@@ -61,7 +61,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	/**
 	 * The training samples that form the memory of this network.
 	 */
-	private BasicNeuralDataSet samples;
+	private BasicMLDataSet samples;
 
 	/**
 	 * Used for classification, the number of cases in each class.
@@ -191,7 +191,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	/**
 	 * @return the samples
 	 */
-	public BasicNeuralDataSet getSamples() {
+	public BasicMLDataSet getSamples() {
 		return samples;
 	}
 
@@ -213,7 +213,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	 * @param samples
 	 *            the samples to set
 	 */
-	public void setSamples(BasicNeuralDataSet samples) {
+	public void setSamples(BasicMLDataSet samples) {
 		this.samples = samples;
 
 		// update counts per

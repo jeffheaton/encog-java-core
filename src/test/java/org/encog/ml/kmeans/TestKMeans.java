@@ -8,7 +8,7 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 
 public class TestKMeans extends TestCase {
 	public static final double[][] DATA = {
@@ -20,7 +20,7 @@ public class TestKMeans extends TestCase {
 	
     public void testCluster (){
                 
-        BasicNeuralDataSet set = new BasicNeuralDataSet();
+        BasicMLDataSet set = new BasicMLDataSet();
         
         for(int i=0;i<DATA.length;i++)
         {

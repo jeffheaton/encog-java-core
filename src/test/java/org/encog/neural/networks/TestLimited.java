@@ -26,7 +26,7 @@ package org.encog.neural.networks;
 import junit.framework.TestCase;
 
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.logging.Logging;
 import org.junit.Assert;
@@ -36,7 +36,7 @@ public class TestLimited extends TestCase {
 	public void testLimited()
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();		
 		
 		ResilientPropagation rprop = new ResilientPropagation(network,trainingData);

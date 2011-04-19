@@ -29,7 +29,7 @@ import junit.framework.TestCase;
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.Randomizer;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
@@ -41,7 +41,7 @@ public class TrainComplete extends TestCase {
 	public void testCompleteTrain()
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = EncogUtility.simpleFeedForward(2, 5, 7, 1, true);
 		Randomizer randomizer = new ConsistentRandomizer(-1, 1, 19);

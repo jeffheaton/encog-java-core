@@ -25,7 +25,7 @@ package org.encog.neural.data.image;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.util.downsample.Downsample;
 
@@ -36,7 +36,7 @@ import org.encog.util.downsample.Downsample;
  * 
  * @author jheaton
  */
-public class ImageNeuralDataSet extends BasicNeuralDataSet {
+public class ImageNeuralDataSet extends BasicMLDataSet {
 
 	/**
 	 * The serial id.

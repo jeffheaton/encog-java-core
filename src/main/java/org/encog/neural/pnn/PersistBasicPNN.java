@@ -9,7 +9,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -32,7 +32,7 @@ public class PersistBasicPNN implements EncogPersistor {
 		
 		EncogReadHelper in = new EncogReadHelper(is);
 		EncogFileSection section;
-		BasicNeuralDataSet samples = new BasicNeuralDataSet();
+		BasicMLDataSet samples = new BasicMLDataSet();
 		Map<String,String> networkParams = null;
 		PNNKernelType kernel = null; 
 		PNNOutputMode outmodel = null;

@@ -35,7 +35,7 @@ import org.encog.app.csv.basic.LoadedRow;
 import org.encog.app.quant.QuantError;
 import org.encog.ml.MLCluster;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.kmeans.KMeansClustering;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
@@ -59,7 +59,7 @@ public class AnalystClusterCSV extends BasicFile {
 	/**
 	 * The training data used to send to KMeans.
 	 */
-	private BasicNeuralDataSet data;
+	private BasicMLDataSet data;
 
 	/**
 	 * Analyze the data. This counts the records and prepares the data to be
@@ -83,7 +83,7 @@ public class AnalystClusterCSV extends BasicFile {
 			setOutputFormat(this.getInputFormat());
 		}
 
-		this.data = new BasicNeuralDataSet();
+		this.data = new BasicMLDataSet();
 		resetStatus();
 		int recordCount = 0;
 

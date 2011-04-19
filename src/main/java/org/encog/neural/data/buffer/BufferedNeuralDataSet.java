@@ -32,7 +32,7 @@ import java.util.List;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.data.NeuralDataError;
 
 /**
@@ -360,7 +360,7 @@ public class BufferedNeuralDataSet implements
 	 * @return A memory dataset.
 	 */
 	public MLDataSet loadToMemory() {
-		BasicNeuralDataSet result = new BasicNeuralDataSet();
+		BasicMLDataSet result = new BasicMLDataSet();
 
 		for (MLDataPair pair : this) {
 			result.add(pair);

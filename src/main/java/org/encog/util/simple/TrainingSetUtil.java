@@ -28,7 +28,7 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.ObjectPair;
 import org.encog.util.csv.CSVFormat;
@@ -47,7 +47,7 @@ public class TrainingSetUtil {
 	 */
 	public static MLDataSet loadCSVTOMemory(CSVFormat format,
 			String filename, boolean headers, int inputSize, int idealSize) {
-		MLDataSet result = new BasicNeuralDataSet();
+		MLDataSet result = new BasicMLDataSet();
 		ReadCSV csv = new ReadCSV(filename, headers, format);
 		while (csv.next()) {
 			MLData input = null;

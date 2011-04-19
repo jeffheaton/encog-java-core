@@ -28,7 +28,7 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 
 /**
  * Class used to generate random training sets.  This will always generate
@@ -55,14 +55,14 @@ public final class RandomTrainingFactory {
 	 *            The maximum random number.
 	 * @return The random training set.
 	 */
-	public static BasicNeuralDataSet generate(final long seed, 
+	public static BasicMLDataSet generate(final long seed, 
 			final int count, final int inputCount,
 			final int idealCount, final double min, final double max) {
 		
 		LinearCongruentialGenerator rand = 
 			new LinearCongruentialGenerator(seed);
 		
-		final BasicNeuralDataSet result = new BasicNeuralDataSet();
+		final BasicMLDataSet result = new BasicMLDataSet();
 		for (int i = 0; i < count; i++) {
 			final MLData inputData = new BasicMLDataArray(inputCount);
 

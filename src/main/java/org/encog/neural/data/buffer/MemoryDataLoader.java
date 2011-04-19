@@ -30,7 +30,7 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
 
 /**
@@ -51,7 +51,7 @@ public class MemoryDataLoader {
 	/**
 	 * The dataset to load into.
 	 */
-	private BasicNeuralDataSet result;
+	private BasicMLDataSet result;
 
 	/**
 	 * Construct a loader with the specified CODEC.
@@ -74,7 +74,7 @@ public class MemoryDataLoader {
 		status.report(0, 0, "Importing to memory");
 
 		if (result == null) {
-			this.result = new BasicNeuralDataSet();
+			this.result = new BasicMLDataSet();
 		}
 
 		double[] input = new double[this.codec.getInputSize()];
@@ -121,11 +121,11 @@ public class MemoryDataLoader {
 		return codec;
 	}
 
-	public BasicNeuralDataSet getResult() {
+	public BasicMLDataSet getResult() {
 		return result;
 	}
 
-	public void setResult(BasicNeuralDataSet result) {
+	public void setResult(BasicMLDataSet result) {
 		this.result = result;
 	}
 

@@ -27,7 +27,7 @@ import junit.framework.TestCase;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
@@ -52,7 +52,7 @@ public class TestTraining extends TestCase   {
 	public void testRPROP() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train rprop = new ResilientPropagation(network, trainingData);
@@ -63,7 +63,7 @@ public class TestTraining extends TestCase   {
 	public void testLMA() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train rprop = new LevenbergMarquardtTraining(network, trainingData);
@@ -74,7 +74,7 @@ public class TestTraining extends TestCase   {
 	public void testBPROP() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 
@@ -86,7 +86,7 @@ public class TestTraining extends TestCase   {
 	public void testManhattan() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train bprop = new ManhattanPropagation(network, trainingData, 0.01);
@@ -97,7 +97,7 @@ public class TestTraining extends TestCase   {
 	public void testSCG() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train bprop = new ScaledConjugateGradient(network, trainingData);
@@ -108,7 +108,7 @@ public class TestTraining extends TestCase   {
 	public void testAnneal() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
 		NeuralSimulatedAnnealing anneal = new NeuralSimulatedAnnealing(network,score,10,2,100);
@@ -119,7 +119,7 @@ public class TestTraining extends TestCase   {
 	public void testGenetic() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
+		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
 		NeuralGeneticAlgorithm genetic = new NeuralGeneticAlgorithm(network, new RangeRandomizer(-1,1), score, 500,0.1,0.25);
@@ -134,7 +134,7 @@ public class TestTraining extends TestCase   {
 		PNNOutputMode mode = PNNOutputMode.Regression;
 		BasicPNN network = new BasicPNN(PNNKernelType.Gaussian, mode, 2, 1);
 
-		BasicNeuralDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT,
+		BasicMLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT,
 				XOR.XOR_IDEAL);
 
 		TrainBasicPNN train = new TrainBasicPNN(network, trainingSet);
@@ -151,7 +151,7 @@ public class TestTraining extends TestCase   {
 		PNNOutputMode mode = PNNOutputMode.Classification;
 		BasicPNN network = new BasicPNN(PNNKernelType.Gaussian, mode, 2, 2);
 
-		BasicNeuralDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT,
+		BasicMLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT,
 				XOR.XOR_IDEAL);
 
 		TrainBasicPNN train = new TrainBasicPNN(network, trainingSet);

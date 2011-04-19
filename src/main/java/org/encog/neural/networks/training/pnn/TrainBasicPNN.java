@@ -28,7 +28,7 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
@@ -565,7 +565,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 	public void learn() {
 
 		if (!this.samplesLoaded) {
-			this.network.setSamples(new BasicNeuralDataSet(this.training));
+			this.network.setSamples(new BasicMLDataSet(this.training));
 			this.samplesLoaded = true;
 		}
 

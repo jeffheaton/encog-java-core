@@ -3,7 +3,7 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.art.ART1;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.pnn.TrainBasicPNN;
@@ -26,7 +26,7 @@ public class TestPersistPNN extends TestCase {
 
 		BasicPNN network = new BasicPNN(PNNKernelType.Gaussian, mode, 2, 1);
 
-		BasicNeuralDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT,
+		BasicMLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT,
 				XOR.XOR_IDEAL);
 
 		System.out.println("Learning...");

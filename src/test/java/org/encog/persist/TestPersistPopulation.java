@@ -30,7 +30,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.genetic.population.Population;
 import org.encog.neural.activation.ActivationStep;
 import org.encog.neural.neat.NEATPopulation;
@@ -49,7 +49,7 @@ public class TestPersistPopulation extends TestCase {
 	
 	private NEATPopulation generate()
 	{
-		MLDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);
+		MLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);
 		
 		CalculateScore score = new TrainingSetScore(trainingSet);
 		// train the neural network
@@ -93,7 +93,7 @@ public class TestPersistPopulation extends TestCase {
 		Assert.assertEquals(0.3,pop.getYoungScoreBonus());
 		
 		// see if the population can actually be used to train
-		MLDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		
+		MLDataSet trainingSet = new BasicMLDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		
 		CalculateScore score = new TrainingSetScore(trainingSet);
 		NEATTraining train = new NEATTraining(score,pop);
 		train.iteration();

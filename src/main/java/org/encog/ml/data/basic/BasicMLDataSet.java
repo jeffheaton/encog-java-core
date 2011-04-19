@@ -42,7 +42,7 @@ import org.encog.util.obj.ObjectCloner;
  * 
  * @author jheaton
  */
-public class BasicNeuralDataSet implements Serializable,
+public class BasicMLDataSet implements Serializable,
 MLDataSet {
 
 	/**
@@ -64,7 +64,7 @@ MLDataSet {
 		 * @return Returns true if there is more data to read.
 		 */
 		public boolean hasNext() {
-			return this.currentIndex < BasicNeuralDataSet.this.data.size();
+			return this.currentIndex < BasicMLDataSet.this.data.size();
 		}
 
 		/**
@@ -77,7 +77,7 @@ MLDataSet {
 				return null;
 			}
 
-			return BasicNeuralDataSet.this.data.get(this.currentIndex++);
+			return BasicMLDataSet.this.data.get(this.currentIndex++);
 		}
 
 		/**
@@ -102,7 +102,7 @@ MLDataSet {
 	/**
 	 * Default constructor.
 	 */
-	public BasicNeuralDataSet() {
+	public BasicMLDataSet() {
 	}
 
 	/**
@@ -113,7 +113,7 @@ MLDataSet {
 	 * @param ideal
 	 *            The ideal output for training.
 	 */
-	public BasicNeuralDataSet(final double[][] input, final double[][] ideal) {
+	public BasicMLDataSet(final double[][] input, final double[][] ideal) {
 		if (ideal != null) {
 			for (int i = 0; i < input.length; i++) {
 				final BasicMLDataArray inputData = new BasicMLDataArray(input[i]);
@@ -135,7 +135,7 @@ MLDataSet {
 	 * @param data
 	 *            The data to use.
 	 */
-	public BasicNeuralDataSet(final List<MLDataPair> data) {
+	public BasicMLDataSet(final List<MLDataPair> data) {
 		this.data = data;
 	}
 
@@ -143,7 +143,7 @@ MLDataSet {
 	 * Copy whatever dataset type is specified into a memory dataset.
 	 * @param set The dataset to copy.
 	 */
-	public BasicNeuralDataSet(MLDataSet set) {
+	public BasicMLDataSet(MLDataSet set) {
 		int inputCount = set.getInputSize();
 		int idealCount = set.getIdealSize();
 		
@@ -315,7 +315,7 @@ MLDataSet {
 	 * @return The additional data set.
 	 */
 	public MLDataSet openAdditional() {
-		return new BasicNeuralDataSet(this.data);
+		return new BasicMLDataSet(this.data);
 	}
 
 	/**

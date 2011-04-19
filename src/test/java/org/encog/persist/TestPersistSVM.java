@@ -30,7 +30,7 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
@@ -47,7 +47,7 @@ public class TestPersistSVM extends TestCase {
 	
 	private SVM create()
 	{
-		MLDataSet training = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet training = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		SVM result = new SVM(2,SVMType.EpsilonSupportVectorRegression,KernelType.RadialBasisFunction);
 		final SVMTrain train = new SVMTrain(result, training);
 		train.iteration();

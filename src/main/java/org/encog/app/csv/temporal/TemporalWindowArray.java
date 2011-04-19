@@ -28,7 +28,7 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 
 /**
  * Produce a time-series from an array.
@@ -145,7 +145,7 @@ public class TemporalWindowArray {
 	 * @return A neural data set that contains the time-series.
 	 */
 	public final MLDataSet process(final double[] data) {
-		final MLDataSet result = new BasicNeuralDataSet();
+		final MLDataSet result = new BasicMLDataSet();
 
 		final int totalWindowSize = this.inputWindow + this.predictWindow;
 		final int stopPoint = data.length - totalWindowSize;

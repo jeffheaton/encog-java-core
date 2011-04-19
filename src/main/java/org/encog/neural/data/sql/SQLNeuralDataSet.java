@@ -25,7 +25,7 @@ package org.encog.neural.data.sql;
 
 import java.sql.Connection;
 
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
 import org.encog.neural.data.buffer.codec.SQLCODEC;
@@ -41,7 +41,7 @@ import org.encog.neural.data.buffer.codec.SQLCODEC;
  * SQLCODEC.FETCH_SIZE = 1000; 
  * 
  */
-public class SQLNeuralDataSet extends BasicNeuralDataSet {
+public class SQLNeuralDataSet extends BasicMLDataSet {
 
 	/**
 	 * Create a SQLNeuralDataSet based on the specified connection. This

@@ -25,7 +25,7 @@ package org.encog.neural.data.csv;
 
 import java.io.File;
 
-import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
 import org.encog.neural.data.buffer.codec.CSVDataCODEC;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
@@ -40,7 +40,7 @@ import org.encog.util.csv.CSVFormat;
  * Because this class loads the CSV file to memory, it is quite fast, once the
  * data has been loaded.
  */
-public class CSVNeuralDataSet extends BasicNeuralDataSet {
+public class CSVNeuralDataSet extends BasicMLDataSet {
 
 	/**
 	 * Serial id.
