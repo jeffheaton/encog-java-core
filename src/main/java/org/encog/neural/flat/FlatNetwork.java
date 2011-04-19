@@ -29,13 +29,13 @@ import java.util.List;
 
 import org.encog.Encog;
 import org.encog.EncogError;
-import org.encog.engine.data.BasicEngineData;
-import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLData;
+import org.encog.engine.data.MLDataSet;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
+import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.util.EngineArray;
 
@@ -248,11 +248,11 @@ public class FlatNetwork implements Serializable {
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final EngineDataSet data) {
+	public double calculateError(final MLDataSet data) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		final double[] actual = new double[this.outputCount];
-		final EngineData pair = BasicEngineData.createPair(data.getInputSize(),
+		final MLData pair = BasicNeuralDataPair.createPair(data.getInputSize(),
 				data.getIdealSize());
 
 		for (int i = 0; i < data.getRecordCount(); i++) {

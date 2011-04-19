@@ -23,7 +23,7 @@
  */
 package org.encog.neural.flat.train.prop;
 
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 
 
@@ -53,7 +53,7 @@ public class TrainFlatNetworkManhattan extends TrainFlatNetworkProp {
 	 *            The learning rate to use.
 	 */
 	public TrainFlatNetworkManhattan(final FlatNetwork network,
-			final EngineDataSet training, final double learningRate) {
+			final MLDataSet training, final double learningRate) {
 		super(network, training);
 		this.learningRate = learningRate;
 		this.zeroTolerance = RPROPConst.DEFAULT_ZERO_TOLERANCE;

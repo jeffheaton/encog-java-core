@@ -23,7 +23,7 @@
  */
 package org.encog.neural.flat.train;
 
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 
 /**
@@ -44,7 +44,7 @@ public interface TrainFlatNetwork {
 	/**
 	 * @return The data we are training with.
 	 */
-	EngineDataSet getTraining();
+	MLDataSet getTraining();
 
 	/**
 	 * Perform one training iteration.

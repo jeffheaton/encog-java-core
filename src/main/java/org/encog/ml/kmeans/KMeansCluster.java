@@ -26,9 +26,6 @@ package org.encog.ml.kmeans;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.engine.data.BasicEngineDataSet;
-import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineDataSet;
 import org.encog.ml.MLCluster;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataSet;

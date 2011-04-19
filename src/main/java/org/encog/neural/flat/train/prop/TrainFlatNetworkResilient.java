@@ -23,7 +23,7 @@
  */
 package org.encog.neural.flat.train.prop;
 
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 
 
@@ -61,7 +61,7 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	 *            The maximum step value.
 	 */
 	public TrainFlatNetworkResilient(final FlatNetwork network,
-			final EngineDataSet training, final double zeroTolerance,
+			final MLDataSet training, final double zeroTolerance,
 			final double initialUpdate, final double maxStep) {
 		super(network, training);
 		this.updateValues = new double[network.getWeights().length];
@@ -81,7 +81,7 @@ public class TrainFlatNetworkResilient extends TrainFlatNetworkProp {
 	 *            The training data to use.
 	 */
 	public TrainFlatNetworkResilient(final FlatNetwork flat,
-			final EngineDataSet trainingSet) {
+			final MLDataSet trainingSet) {
 		this(flat, trainingSet, RPROPConst.DEFAULT_ZERO_TOLERANCE,
 				RPROPConst.DEFAULT_INITIAL_UPDATE, RPROPConst.DEFAULT_MAX_STEP);
 	}

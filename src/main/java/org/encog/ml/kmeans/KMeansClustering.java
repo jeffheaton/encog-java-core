@@ -23,14 +23,14 @@
  */
 package org.encog.ml.kmeans;
 
-import org.encog.engine.data.BasicEngineData;
-import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLData;
+import org.encog.engine.data.MLDataSet;
 import org.encog.ml.MLCluster;
 import org.encog.ml.MLClustering;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
+import org.encog.neural.data.basic.BasicNeuralDataPair;
 
 /**
  * This class performs a basic K-Means clustering. This class can be used on
@@ -62,7 +62,7 @@ public class KMeansClustering implements MLClustering {
 	/**
 	 * The dataset to cluster.
 	 */
-	private final EngineDataSet set;
+	private final MLDataSet set;
 
 	/**
 	 * Within-cluster sum of squares (WCSS).
@@ -147,7 +147,7 @@ public class KMeansClustering implements MLClustering {
 		final long count = this.set.getRecordCount();
 
 		for (int i = 0; i < count; i++) {
-			final EngineData pair = BasicEngineData.createPair(this.set
+			final MLData pair = BasicNeuralDataPair.createPair(this.set
 					.getInputSize(), this.set.getIdealSize());
 			this.set.getRecord(index, pair);
 			result = Math.max(result, pair.getInputArray()[index]);
@@ -165,7 +165,7 @@ public class KMeansClustering implements MLClustering {
 	private double getMinValue(final int index) {
 		double result = Double.MAX_VALUE;
 		final long count = this.set.getRecordCount();
-		final EngineData pair = BasicEngineData.createPair(this.set
+		final MLData pair = BasicNeuralDataPair.createPair(this.set
 				.getInputSize(), this.set.getIdealSize());
 
 		for (int i = 0; i < count; i++) {

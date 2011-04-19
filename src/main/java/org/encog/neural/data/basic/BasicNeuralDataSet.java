@@ -29,8 +29,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLData;
+import org.encog.engine.data.MLDataSet;
 import org.encog.neural.data.NeuralData;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -270,7 +270,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * @param pair
 	 *            The pair to hold the data.
 	 */
-	public void getRecord(final long index, final EngineData pair) {
+	public void getRecord(final long index, final MLData pair) {
 
 		final NeuralDataPair source = this.data.get((int) index);
 		pair.setInputArray(source.getInputArray());
@@ -316,7 +316,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * 
 	 * @return The additional data set.
 	 */
-	public EngineDataSet openAdditional() {
+	public MLDataSet openAdditional() {
 		return new BasicNeuralDataSet(this.data);
 	}
 

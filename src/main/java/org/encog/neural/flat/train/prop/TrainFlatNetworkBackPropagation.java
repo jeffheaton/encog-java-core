@@ -23,7 +23,7 @@
  */
 package org.encog.neural.flat.train.prop;
 
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 
 /**
@@ -59,7 +59,7 @@ public class TrainFlatNetworkBackPropagation extends TrainFlatNetworkProp {
 	 *            The momentum.
 	 */
 	public TrainFlatNetworkBackPropagation(final FlatNetwork network,
-			final EngineDataSet training, final double learningRate,
+			final MLDataSet training, final double learningRate,
 			final double momentum) {
 		super(network, training);
 		this.momentum = momentum;

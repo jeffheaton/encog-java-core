@@ -23,11 +23,11 @@
  */
 package org.encog.neural.flat.train.gradient;
 
-import org.encog.engine.data.BasicEngineData;
-import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLData;
+import org.encog.engine.data.MLDataSet;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkProp;
 import org.encog.util.EngineArray;
@@ -95,12 +95,12 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	/**
 	 * The pair to use for training.
 	 */
-	private final EngineData pair;
+	private final MLData pair;
 
 	/**
 	 * The training data.
 	 */
-	private final EngineDataSet training;
+	private final MLDataSet training;
 
 	/**
 	 * The high end of the training data.
@@ -133,7 +133,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	 */
 	public GradientWorkerCPU(final FlatNetwork network,
 			final TrainFlatNetworkProp owner,
-			final EngineDataSet training, final int low, final int high) {
+			final MLDataSet training, final int low, final int high) {
 		this.network = network;
 		this.training = training;
 		this.low = low;
@@ -151,7 +151,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		this.layerOutput = network.getLayerOutput();
 		this.layerFeedCounts = network.getLayerFeedCounts();
 
-		this.pair = BasicEngineData.createPair(network.getInputCount(), network
+		this.pair = BasicNeuralDataPair.createPair(network.getInputCount(), network
 				.getOutputCount());
 	}
 

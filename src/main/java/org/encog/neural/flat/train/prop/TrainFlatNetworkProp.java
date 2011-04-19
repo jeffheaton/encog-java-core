@@ -24,7 +24,7 @@
 package org.encog.neural.flat.train.prop;
 
 import org.encog.EncogError;
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLDataSet;
 import org.encog.mathutil.IntRange;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.TrainFlatNetwork;
@@ -70,12 +70,12 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * The training data.
 	 */
-	private final EngineDataSet training;
+	private final MLDataSet training;
 
 	/**
 	 * The network in indexable form.
 	 */
-	private final EngineDataSet indexable;
+	private final MLDataSet indexable;
 
 	/**
 	 * The workers.
@@ -111,7 +111,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	 *            The training data to use.
 	 */
 	public TrainFlatNetworkProp(final FlatNetwork network,
-			final EngineDataSet training) {
+			final MLDataSet training) {
 
 		this.training = training;
 		this.network = network;
@@ -213,7 +213,7 @@ public abstract class TrainFlatNetworkProp implements TrainFlatNetwork {
 	/**
 	 * {@inheritDoc}
 	 */
-	public EngineDataSet getTraining() {
+	public MLDataSet getTraining() {
 		return this.training;
 	}
 

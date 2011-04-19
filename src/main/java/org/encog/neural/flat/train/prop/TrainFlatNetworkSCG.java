@@ -23,7 +23,7 @@
  */
 package org.encog.neural.flat.train.prop;
 
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLDataSet;
 import org.encog.mathutil.BoundNumbers;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.util.EngineArray;
@@ -124,7 +124,7 @@ public class TrainFlatNetworkSCG extends TrainFlatNetworkProp {
 	 *            The training data to use.
 	 */
 	public TrainFlatNetworkSCG(final FlatNetwork network,
-			final EngineDataSet training) {
+			final MLDataSet training) {
 		super(network, training);
 
 		this.success = true;

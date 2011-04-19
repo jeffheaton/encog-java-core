@@ -23,7 +23,7 @@
  */
 package org.encog.neural.data;
 
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLDataSet;
 
 /**
  * An interface designed to abstract classes that store neural data. This
@@ -40,7 +40,7 @@ import org.encog.engine.data.EngineDataSet;
  * 
  * @author jheaton
  */
-public interface NeuralDataSet extends Iterable<NeuralDataPair>, EngineDataSet {
+public interface NeuralDataSet extends Iterable<NeuralDataPair>, MLDataSet {
 
 	/**
 	 * Add a NeuralData object to the dataset. This is used with unsupervised

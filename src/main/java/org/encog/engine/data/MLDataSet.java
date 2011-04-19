@@ -40,7 +40,7 @@ package org.encog.engine.data;
  * 
  * @author jheaton
  */
-public interface EngineDataSet {
+public interface MLDataSet {
 
 	/**
 	 * @return The size of the input data.
@@ -68,11 +68,11 @@ public interface EngineDataSet {
 	 * @param index The index to read.
 	 * @param pair The pair that the record will be copied into.
 	 */
-	void getRecord(long index, EngineData pair);
+	void getRecord(long index, MLData pair);
 
 	/**
 	 * Opens an additional instance of this dataset.  
 	 * @return The new instance.
 	 */
-	EngineDataSet openAdditional();
+	MLDataSet openAdditional();
 }
