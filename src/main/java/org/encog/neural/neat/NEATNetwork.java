@@ -32,7 +32,7 @@ import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
@@ -167,7 +167,7 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 * @return The output from this synapse.
 	 */
 	public MLData compute(final MLData input) {
-		final MLData result = new BasicMLDataArray(this.outputCount);
+		final MLData result = new BasicMLData(this.outputCount);
 
 		if (this.neurons.size() == 0) {
 			throw new NeuralNetworkError(
