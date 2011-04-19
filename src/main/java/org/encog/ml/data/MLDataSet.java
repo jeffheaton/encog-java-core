@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.engine.data;
+package org.encog.ml.data;
 
 
 /**

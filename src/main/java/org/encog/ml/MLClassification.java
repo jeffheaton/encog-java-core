@@ -23,7 +23,7 @@
  */
 package org.encog.ml;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 
 /**
  * This interface defines a MLMethod that is used for classification.  
@@ -41,5 +41,5 @@ public interface MLClassification extends MLInputOutput {
 	 * @param input The input data to classify.
 	 * @return The group that the data was classified into.
 	 */
-	int classify(NeuralData input);
+	int classify(MLDataArray input);
 }

@@ -25,12 +25,12 @@ package org.encog.neural.data.buffer;
 
 import org.encog.NullStatusReportable;
 import org.encog.StatusReportable;
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
 
 /**
@@ -86,12 +86,12 @@ public class MemoryDataLoader {
 		int lastUpdate = 0;
 
 		while (codec.read(input, ideal)) {
-			NeuralData a = null, b = null;
+			MLDataArray a = null, b = null;
 
-			a = new BasicNeuralData(input);
+			a = new BasicMLDataArray(input);
 
 			if (codec.getIdealSize() > 0)
-				b = new BasicNeuralData(ideal);
+				b = new BasicMLDataArray(ideal);
 
 			NeuralDataPair pair = new BasicNeuralDataPair(a, b);
 			result.add(pair);

@@ -30,9 +30,9 @@ import org.encog.ml.BasicML;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.util.simple.EncogUtility;
 
 public class CPN  extends BasicML implements MLRegression, MLResettable, MLError {
@@ -78,9 +78,9 @@ public class CPN  extends BasicML implements MLRegression, MLResettable, MLError
 		return outstarCount;
 	}
 	
-	public NeuralData computeOutstar(NeuralData input)
+	public MLDataArray computeOutstar(MLDataArray input)
 	{
-		NeuralData result = new BasicNeuralData(this.outstarCount);
+		MLDataArray result = new BasicMLDataArray(this.outstarCount);
 
 		double Sum = 0;
 		
@@ -94,9 +94,9 @@ public class CPN  extends BasicML implements MLRegression, MLResettable, MLError
 		return result;
 	}
 	
-	public NeuralData computeInstar(NeuralData input)
+	public MLDataArray computeInstar(MLDataArray input)
 	{
-		NeuralData result = new BasicNeuralData(this.instarCount);
+		MLDataArray result = new BasicMLDataArray(this.instarCount);
 		int w, i, j;
 		double Sum, SumWinners, MaxOut;
 		int Winner = 0;
@@ -131,8 +131,8 @@ public class CPN  extends BasicML implements MLRegression, MLResettable, MLError
 	}
 
 	@Override
-	public NeuralData compute(NeuralData input) {
-		NeuralData temp = computeInstar(input);
+	public MLDataArray compute(MLDataArray input) {
+		MLDataArray temp = computeInstar(input);
 		return computeOutstar(temp);
 	}
 

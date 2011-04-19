@@ -33,11 +33,11 @@ import org.encog.ml.MLEncodable;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
+import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
@@ -172,8 +172,8 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 * @param output The output.
 	 */
 	public void compute(final double[] input, final double[] output) {
-		final BasicNeuralData input2 = new BasicNeuralData(input);
-		final NeuralData output2 = this.compute(input2);
+		final BasicMLDataArray input2 = new BasicMLDataArray(input);
+		final MLDataArray output2 = this.compute(input2);
 		EngineArray.arrayCopy(output2.getData(), output);
 	}
 
@@ -184,9 +184,9 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The input to the neural network.
 	 * @return The output from the neural network.
 	 */
-	public NeuralData compute(final NeuralData input) {
+	public MLDataArray compute(final MLDataArray input) {
 		try {
-			NeuralData result = new BasicNeuralData(this.structure.getFlat()
+			MLDataArray result = new BasicMLDataArray(this.structure.getFlat()
 					.getOutputCount());
 			this.structure.getFlat().compute(input.getData(), result.getData());
 			return result;
@@ -490,8 +490,8 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The input patter to present to the neural network.
 	 * @return The winning neuron.
 	 */
-	public int winner(final NeuralData input) {
-		final NeuralData output = compute(input);
+	public int winner(final MLDataArray input) {
+		final MLDataArray output = compute(input);
 		return EngineArray.maxIndex(output.getData());
 	}
 
@@ -567,7 +567,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	}
 
 	@Override
-	public int classify(NeuralData input) {
+	public int classify(MLDataArray input) {
 		return winner(input);
 	}
 

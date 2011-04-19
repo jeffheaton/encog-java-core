@@ -23,7 +23,7 @@
  */
 package org.encog.neural.flat.train;
 
-import org.encog.engine.data.MLDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.FlatNetwork;
 
 /**

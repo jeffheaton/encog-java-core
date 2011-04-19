@@ -23,7 +23,7 @@
  */
 package org.encog.neural.data;
 
-import org.encog.engine.data.MLData;
+import org.encog.ml.data.MLData;
 
 /**
  * Training data is stored in two ways, depending on if the data is for
@@ -46,12 +46,12 @@ public interface NeuralDataPair extends MLData {
 	 * @return The ideal data that the neural network should produce for the
 	 *         specified input.
 	 */
-	NeuralData getIdeal();
+	MLDataArray getIdeal();
 
 	/**
 	 * @return The input that the neural network
 	 */
-	NeuralData getInput();
+	MLDataArray getInput();
 
 	/**
 	 * @return True if this training pair is supervised. That is, it has both

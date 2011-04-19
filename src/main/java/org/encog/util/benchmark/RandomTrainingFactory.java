@@ -24,11 +24,11 @@
 package org.encog.util.benchmark;
 
 import org.encog.mathutil.LinearCongruentialGenerator;
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 /**
  * Class used to generate random training sets.  This will always generate
@@ -64,13 +64,13 @@ public final class RandomTrainingFactory {
 		
 		final BasicNeuralDataSet result = new BasicNeuralDataSet();
 		for (int i = 0; i < count; i++) {
-			final NeuralData inputData = new BasicNeuralData(inputCount);
+			final MLDataArray inputData = new BasicMLDataArray(inputCount);
 
 			for (int j = 0; j < inputCount; j++) {
 				inputData.setData(j, rand.range(min, max));
 			}
 
-			final NeuralData idealData = new BasicNeuralData(idealCount);
+			final MLDataArray idealData = new BasicMLDataArray(idealCount);
 
 			for (int j = 0; j < idealCount; j++) {
 				idealData.setData(j, rand.range(min, max));
@@ -104,13 +104,13 @@ public final class RandomTrainingFactory {
 		int idealCount = training.getIdealSize();
 		
 		for (int i = 0; i < count; i++) {
-			final NeuralData inputData = new BasicNeuralData(inputCount);
+			final MLDataArray inputData = new BasicMLDataArray(inputCount);
 
 			for (int j = 0; j < inputCount; j++) {
 				inputData.setData(j, rand.range(min, max));
 			}
 
-			final NeuralData idealData = new BasicNeuralData(idealCount);
+			final MLDataArray idealData = new BasicMLDataArray(idealCount);
 
 			for (int j = 0; j < idealCount; j++) {
 				idealData.setData(j, rand.range(min, max));

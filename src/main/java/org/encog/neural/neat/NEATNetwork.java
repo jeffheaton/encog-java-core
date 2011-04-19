@@ -30,12 +30,12 @@ import org.encog.ml.BasicML;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.util.simple.EncogUtility;
 
 /**
@@ -166,8 +166,8 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 *            The input to this synapse.
 	 * @return The output from this synapse.
 	 */
-	public NeuralData compute(final NeuralData input) {
-		final NeuralData result = new BasicNeuralData(this.outputCount);
+	public MLDataArray compute(final MLDataArray input) {
+		final MLDataArray result = new BasicMLDataArray(this.outputCount);
 
 		if (this.neurons.size() == 0) {
 			throw new NeuralNetworkError(

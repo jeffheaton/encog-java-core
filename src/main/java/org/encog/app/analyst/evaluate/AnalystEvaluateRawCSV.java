@@ -35,8 +35,8 @@ import org.encog.app.csv.basic.BasicFile;
 import org.encog.app.csv.basic.LoadedRow;
 import org.encog.app.quant.QuantError;
 import org.encog.ml.MLRegression;
-import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.neural.data.MLDataArray;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -173,8 +173,8 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 					+ " inputs.");
 		}
 
-		NeuralData output = null;
-		final NeuralData input = new BasicNeuralData(method.getInputCount());
+		MLDataArray output = null;
+		final MLDataArray input = new BasicMLDataArray(method.getInputCount());
 
 		final PrintWriter tw = analystPrepareOutputFile(outputFile);
 

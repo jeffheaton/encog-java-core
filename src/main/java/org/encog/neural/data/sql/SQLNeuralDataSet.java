@@ -33,13 +33,13 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
 import org.encog.neural.data.buffer.codec.CSVDataCODEC;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;

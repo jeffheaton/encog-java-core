@@ -21,11 +21,11 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.basic;
+package org.encog.ml.data.basic;
 
 import java.io.Serializable;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 
 /**
@@ -51,12 +51,12 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * The the expected output from the neural network, or null for unsupervised
 	 * training.
 	 */
-	private final NeuralData ideal;
+	private final MLDataArray ideal;
 
 	/**
 	 * The training input to the neural network.
 	 */
-	private final NeuralData input;
+	private final MLDataArray input;
 
 	/**
 	 * Construct the object with only input. If this constructor is used, then
@@ -65,7 +65,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * @param input
 	 *            The input to the neural network.
 	 */
-	public BasicNeuralDataPair(final NeuralData input) {
+	public BasicNeuralDataPair(final MLDataArray input) {
 		this.input = input;
 		this.ideal = null;
 	}
@@ -79,7 +79,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * @param ideal
 	 *            The expected results from the neural network.
 	 */
-	public BasicNeuralDataPair(final NeuralData input, final NeuralData ideal) {
+	public BasicNeuralDataPair(final MLDataArray input, final MLDataArray ideal) {
 		this.input = input;
 		this.ideal = ideal;
 	}
@@ -89,7 +89,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 *
 	 * @return Returns the expected results, or null if unsupervised training.
 	 */
-	public NeuralData getIdeal() {
+	public MLDataArray getIdeal() {
 		return this.ideal;
 	}
 
@@ -98,7 +98,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 *
 	 * @return The input data.
 	 */
-	public NeuralData getInput() {
+	public MLDataArray getInput() {
 		return this.input;
 	}
 
@@ -137,10 +137,10 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 		NeuralDataPair result;
 
 		if (idealSize > 0) {
-			result = new BasicNeuralDataPair(new BasicNeuralData(inputSize),
-					new BasicNeuralData(idealSize));
+			result = new BasicNeuralDataPair(new BasicMLDataArray(inputSize),
+					new BasicMLDataArray(idealSize));
 		} else {
-			result = new BasicNeuralDataPair(new BasicNeuralData(inputSize));
+			result = new BasicNeuralDataPair(new BasicMLDataArray(inputSize));
 		}
 
 		return result;

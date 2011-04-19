@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.basic;
+package org.encog.ml.data.basic;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.engine.data.MLData;
-import org.encog.engine.data.MLDataSet;
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.EngineArray;
@@ -118,13 +118,13 @@ public class BasicNeuralDataSet implements Serializable,
 	public BasicNeuralDataSet(final double[][] input, final double[][] ideal) {
 		if (ideal != null) {
 			for (int i = 0; i < input.length; i++) {
-				final BasicNeuralData inputData = new BasicNeuralData(input[i]);
-				final BasicNeuralData idealData = new BasicNeuralData(ideal[i]);
+				final BasicMLDataArray inputData = new BasicMLDataArray(input[i]);
+				final BasicMLDataArray idealData = new BasicMLDataArray(ideal[i]);
 				this.add(inputData, idealData);
 			}
 		} else {
 			for (final double[] element : input) {
-				final BasicNeuralData inputData = new BasicNeuralData(element);
+				final BasicMLDataArray inputData = new BasicMLDataArray(element);
 				this.add(inputData);
 			}
 		}
@@ -151,16 +151,16 @@ public class BasicNeuralDataSet implements Serializable,
 		
 		for(NeuralDataPair pair: set) {
 			
-			BasicNeuralData input = null;
-			BasicNeuralData ideal = null;
+			BasicMLDataArray input = null;
+			BasicMLDataArray ideal = null;
 			
 			if( inputCount>0 ) {
-				input = new BasicNeuralData(inputCount);
+				input = new BasicMLDataArray(inputCount);
 				EngineArray.arrayCopy(pair.getInputArray(), input.getData());
 			}
 			
 			if( idealCount>0 ) {
-				ideal = new BasicNeuralData(idealCount);
+				ideal = new BasicMLDataArray(idealCount);
 				EngineArray.arrayCopy(pair.getIdealArray(), ideal.getData());
 			}
 			
@@ -175,7 +175,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * @param data
 	 *            The input to be added to the training set.
 	 */
-	public void add(final NeuralData data) {
+	public void add(final MLDataArray data) {
 		this.data.add(new BasicNeuralDataPair(data));
 	}
 
@@ -187,7 +187,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * @param idealData
 	 *            The ideal data to use for training.
 	 */
-	public void add(final NeuralData inputData, final NeuralData idealData) {
+	public void add(final MLDataArray inputData, final MLDataArray idealData) {
 
 		final NeuralDataPair pair = new BasicNeuralDataPair(inputData,
 				idealData);

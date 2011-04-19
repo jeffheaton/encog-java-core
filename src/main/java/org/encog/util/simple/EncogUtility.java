@@ -36,14 +36,14 @@ import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
 import org.encog.neural.data.buffer.codec.CSVDataCODEC;
@@ -120,7 +120,7 @@ public final class EncogUtility {
 	public static void evaluate(final MLRegression network,
 			final NeuralDataSet training) {
 		for (final NeuralDataPair pair : training) {
-			final NeuralData output = network.compute(pair.getInput());
+			final MLDataArray output = network.compute(pair.getInput());
 			System.out.println("Input="
 					+ EncogUtility.formatNeuralData(pair.getInput())
 					+ ", Actual=" + EncogUtility.formatNeuralData(output)
@@ -137,7 +137,7 @@ public final class EncogUtility {
 	 *            The neural data to format.
 	 * @return The formatted neural data.
 	 */
-	public static String formatNeuralData(final NeuralData data) {
+	public static String formatNeuralData(final MLDataArray data) {
 		final StringBuilder result = new StringBuilder();
 		for (int i = 0; i < data.size(); i++) {
 			if (i != 0) {
@@ -396,8 +396,8 @@ public final class EncogUtility {
        buffer.beginLoad(input.length, ideal.length);
        while(csv.next())
        {
-    	   BasicNeuralData inputData = new BasicNeuralData(input.length);
-    	   BasicNeuralData idealData = new BasicNeuralData(ideal.length);
+    	   BasicMLDataArray inputData = new BasicMLDataArray(input.length);
+    	   BasicMLDataArray idealData = new BasicMLDataArray(ideal.length);
     	   
     	   // handle input data
     	   for(int i=0;i<input.length;i++) {
@@ -424,7 +424,7 @@ public final class EncogUtility {
 			((MLContext)method).clearContext();
 
 		for (final NeuralDataPair pair : data) {
-			final NeuralData actual = method.compute(pair.getInput());
+			final MLDataArray actual = method.compute(pair.getInput());
 			errorCalculation.updateError(actual.getData(), pair.getIdeal()
 					.getData());
 		}

@@ -23,7 +23,7 @@
  */
 package org.encog.neural.networks;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 
 /**
  * Used to map one neural data object to another. Useful for a BAM network.
@@ -53,12 +53,12 @@ public class NeuralDataMapping {
 	/**
 	 * The source data.
 	 */
-	private NeuralData from;
+	private MLDataArray from;
 
 	/**
 	 * The target data.
 	 */
-	private NeuralData to;
+	private MLDataArray to;
 
 	/**
 	 * Construct the neural data mapping class, with null values.
@@ -76,7 +76,7 @@ public class NeuralDataMapping {
 	 * @param to
 	 *            The target data.
 	 */
-	public NeuralDataMapping(final NeuralData from, final NeuralData to) {
+	public NeuralDataMapping(final MLDataArray from, final MLDataArray to) {
 		this.from = from;
 		this.to = to;
 	}
@@ -84,14 +84,14 @@ public class NeuralDataMapping {
 	/**
 	 * @return The "from" data.
 	 */
-	public NeuralData getFrom() {
+	public MLDataArray getFrom() {
 		return this.from;
 	}
 
 	/**
 	 * @return The "to" data.
 	 */
-	public NeuralData getTo() {
+	public MLDataArray getTo() {
 		return this.to;
 	}
 
@@ -101,7 +101,7 @@ public class NeuralDataMapping {
 	 * @param from
 	 *            The from data.
 	 */
-	public void setFrom(final NeuralData from) {
+	public void setFrom(final MLDataArray from) {
 		this.from = from;
 	}
 
@@ -111,7 +111,7 @@ public class NeuralDataMapping {
 	 * @param to
 	 *            The target data.
 	 */
-	public void setTo(final NeuralData to) {
+	public void setTo(final MLDataArray to) {
 		this.to = to;
 	}
 }

@@ -26,7 +26,7 @@ package org.encog.neural.data.bipolar;
 import java.io.Serializable;
 
 import org.encog.mathutil.matrices.BiPolarUtil;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataError;
 
 /**
@@ -36,7 +36,7 @@ import org.encog.neural.data.NeuralDataError;
  * @author jheaton
  *
  */
-public class BiPolarNeuralData implements NeuralData, Serializable {
+public class BiPolarNeuralData implements MLDataArray, Serializable {
 
 	/**
 	 *
@@ -94,7 +94,7 @@ public class BiPolarNeuralData implements NeuralData, Serializable {
 	 * @return A cloned copy of this object.
 	 */
 	@Override
-	public NeuralData clone() {
+	public MLDataArray clone() {
 		final BiPolarNeuralData result = new BiPolarNeuralData(size());
 		for (int i = 0; i < size(); i++) {
 			result.setData(i, getData(i));

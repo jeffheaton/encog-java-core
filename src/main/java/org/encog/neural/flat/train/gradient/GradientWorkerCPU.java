@@ -23,11 +23,11 @@
  */
 package org.encog.neural.flat.train.gradient;
 
-import org.encog.engine.data.MLData;
-import org.encog.engine.data.MLDataSet;
 import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkProp;
 import org.encog.util.EngineArray;

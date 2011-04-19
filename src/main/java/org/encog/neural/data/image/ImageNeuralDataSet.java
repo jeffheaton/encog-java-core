@@ -23,10 +23,10 @@
  */
 package org.encog.neural.data.image;
 
+import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.util.downsample.Downsample;
 
 /**
@@ -109,7 +109,7 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 *            The data The object to add.
 	 */
 	@Override
-	public void add(final NeuralData data) {
+	public void add(final MLDataArray data) {
 		if (!(data instanceof ImageNeuralData)) {
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
 		}
@@ -126,7 +126,7 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 *            The expected otuput form this image.
 	 */
 	@Override
-	public void add(final NeuralData inputData, final NeuralData idealData) {
+	public void add(final MLDataArray inputData, final MLDataArray idealData) {
 		if (!(inputData instanceof ImageNeuralData)) {
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
 		}

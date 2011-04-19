@@ -29,7 +29,7 @@ package org.encog.neural.data;
  * 
  * @author jheaton
  */
-public interface NeuralData extends Cloneable {
+public interface MLDataArray extends Cloneable {
 
 	/**
 	 * Add a value to the specified index.
@@ -51,7 +51,7 @@ public interface NeuralData extends Cloneable {
 	 * 
 	 * @return A cloned version of this object.
 	 */
-	NeuralData clone();
+	MLDataArray clone();
 
 	/**
 	 * @return All of the elements as an array.

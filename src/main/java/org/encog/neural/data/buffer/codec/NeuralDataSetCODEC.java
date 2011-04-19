@@ -25,9 +25,9 @@ package org.encog.neural.data.buffer.codec;
 
 import java.util.Iterator;
 
+import org.encog.ml.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.util.EngineArray;
 
 /**

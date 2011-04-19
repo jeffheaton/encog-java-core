@@ -27,7 +27,7 @@ import org.encog.mathutil.matrices.BiPolarUtil;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.MatrixMath;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.util.EngineArray;
 
@@ -54,7 +54,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 * @param pattern
 	 *            The pattern to train for.
 	 */
-	public void addPattern(final NeuralData pattern) {
+	public void addPattern(final MLDataArray pattern) {
 
 		if( pattern.size()!=this.getNeuronCount() ) {
 			throw new NeuralNetworkError("Network with " + getNeuronCount() + " neurons, cannot learn a pattern of size " + pattern.size());
@@ -167,7 +167,7 @@ public class HopfieldNetwork extends ThermalNetwork {
 	 * @return The new current state.
 	 */
 	@Override
-	public NeuralData compute(NeuralData input) {
+	public MLDataArray compute(MLDataArray input) {
 		BiPolarNeuralData result = new BiPolarNeuralData(input.size());
 		EngineArray
 				.arrayCopy(input.getData(), this.getCurrentState().getData());

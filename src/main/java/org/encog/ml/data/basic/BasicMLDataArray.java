@@ -21,11 +21,11 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.basic;
+package org.encog.ml.data.basic;
 
 import java.io.Serializable;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 
 /**
  * Basic implementation of the NeuralData interface that stores the data in an
@@ -34,7 +34,7 @@ import org.encog.neural.data.NeuralData;
  * @author jheaton
  *
  */
-public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
+public class BasicMLDataArray implements MLDataArray, Serializable, Cloneable {
 
 	/**
 	 * The serial id.
@@ -53,7 +53,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	 * @param d
 	 *            The data to construct this object with.
 	 */
-	public BasicNeuralData(final double[] d) {
+	public BasicMLDataArray(final double[] d) {
 		this(d.length);
 		System.arraycopy(d, 0, this.data, 0, d.length);
 	}
@@ -64,7 +64,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	 * @param size
 	 *            The amount of data to store.
 	 */
-	public BasicNeuralData(final int size) {
+	public BasicMLDataArray(final int size) {
 		this.data = new double[size];
 	}
 
@@ -75,7 +75,7 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	 * @param d
 	 *            The object to be copied.
 	 */
-	public BasicNeuralData(final NeuralData d) {
+	public BasicMLDataArray(final MLDataArray d) {
 		this(d.size());
 		System.arraycopy(d.getData(), 0, this.data, 0, d.size());
 	}
@@ -105,8 +105,8 @@ public class BasicNeuralData implements NeuralData, Serializable, Cloneable {
 	 * @return A clone of this object.
 	 */
 	@Override
-	public NeuralData clone() {
-		return new BasicNeuralData(this);
+	public MLDataArray clone() {
+		return new BasicMLDataArray(this);
 	}
 
 	/**

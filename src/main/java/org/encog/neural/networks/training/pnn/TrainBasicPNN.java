@@ -23,12 +23,12 @@
  */
 package org.encog.neural.networks.training.pnn;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
@@ -218,17 +218,17 @@ public class TrainBasicPNN implements CalculationCriteria {
 
 			err = 0.0;
 
-			final NeuralData input = pair.getInput();
-			final NeuralData target = pair.getIdeal();
+			final MLDataArray input = pair.getInput();
+			final MLDataArray target = pair.getIdeal();
 
 			if (this.network.getOutputMode() == PNNOutputMode.Unsupervised) {
 				if (deriv) {
-					final NeuralData output = computeDeriv(input, target);
+					final MLDataArray output = computeDeriv(input, target);
 					for (int z = 0; z < this.network.getOutputCount(); z++) {
 						out[z] = output.getData(z);
 					}
 				} else {
-					final NeuralData output = this.network.compute(input);
+					final MLDataArray output = this.network.compute(input);
 					for (int z = 0; z < this.network.getOutputCount(); z++) {
 						out[z] = output.getData(z);
 					}
@@ -241,7 +241,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 
 			else if (this.network.getOutputMode() == PNNOutputMode.Classification) {
 				final int tclass = (int) target.getData(0);
-				NeuralData output;
+				MLDataArray output;
 				
 				if (deriv) {
 					output = computeDeriv(input, pair
@@ -266,12 +266,12 @@ public class TrainBasicPNN implements CalculationCriteria {
 
 			else if (this.network.getOutputMode() == PNNOutputMode.Regression) {
 				if (deriv) {
-					final NeuralData output = this.network.compute(input);
+					final MLDataArray output = this.network.compute(input);
 					for (int z = 0; z < this.network.getOutputCount(); z++) {
 						out[z] = output.getData(z);
 					}
 				} else {
-					final NeuralData output = this.network.compute(input);
+					final MLDataArray output = this.network.compute(input);
 					for (int z = 0; z < this.network.getOutputCount(); z++) {
 						out[z] = output.getData(z);
 					}
@@ -317,8 +317,8 @@ public class TrainBasicPNN implements CalculationCriteria {
 	 * @param target The target data.
 	 * @return The output.
 	 */
-	public NeuralData computeDeriv(final NeuralData input,
-			final NeuralData target) {
+	public MLDataArray computeDeriv(final MLDataArray input,
+			final MLDataArray target) {
 		int pop, ivar;
 		final int ibest = 0;
 		int outvar;
@@ -516,7 +516,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 		}
 
 		if (this.network.getOutputMode() == PNNOutputMode.Classification) {
-			final NeuralData result = new BasicNeuralData(1);
+			final MLDataArray result = new BasicMLDataArray(1);
 			result.setData(0, ibest);
 			return result;
 		}

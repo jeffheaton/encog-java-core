@@ -26,7 +26,7 @@ package org.encog.ml.svm.training;
 import org.encog.EncogError;
 import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_problem;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
@@ -64,8 +64,8 @@ public class EncodeSVMProblem {
 		int elementIndex = 0;
 
 		for (NeuralDataPair pair : training) {
-			NeuralData input = pair.getInput();
-			NeuralData output = pair.getIdeal();
+			MLDataArray input = pair.getInput();
+			MLDataArray output = pair.getIdeal();
 			result.x[elementIndex] = new svm_node[input.size()];
 
 			for (int i = 0; i < input.size(); i++) {

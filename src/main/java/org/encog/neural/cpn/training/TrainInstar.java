@@ -27,7 +27,7 @@ import org.encog.mathutil.BoundMath;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.cpn.CPN;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
@@ -135,7 +135,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 		double worstDistance = Double.NEGATIVE_INFINITY;
 
 		for (final NeuralDataPair pair : this.training) {
-			final NeuralData out = network.computeInstar(pair.getInput());
+			final MLDataArray out = network.computeInstar(pair.getInput());
 
 			// determine winner
 			final int winner = EngineArray.indexOfLargest(out.getData());

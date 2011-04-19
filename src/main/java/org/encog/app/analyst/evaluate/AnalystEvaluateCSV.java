@@ -38,8 +38,8 @@ import org.encog.app.quant.QuantError;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
-import org.encog.neural.data.NeuralData;
-import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.neural.data.MLDataArray;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -160,7 +160,7 @@ public class AnalystEvaluateCSV extends BasicFile {
 		final ReadCSV csv = new ReadCSV(getInputFilename().toString(),
 				isExpectInputHeaders(), getInputFormat());
 
-		NeuralData output = null;
+		MLDataArray output = null;
 
 		final int outputLength = this.analyst.determineUniqueColumns();
 
@@ -179,13 +179,13 @@ public class AnalystEvaluateCSV extends BasicFile {
 			}
 
 			if (inputArray != null) {
-				final NeuralData input = new BasicNeuralData(inputArray);
+				final MLDataArray input = new BasicMLDataArray(inputArray);
 
 				// evaluation data
 				if ((method instanceof MLClassification)
 						&& !(method instanceof MLRegression)) {
 					// classification only?
-					output = new BasicNeuralData(1);
+					output = new BasicMLDataArray(1);
 					output.setData(0,
 							((MLClassification) method).classify(input));
 				} else {

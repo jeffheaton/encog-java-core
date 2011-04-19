@@ -25,8 +25,8 @@ package org.encog.neural.data.folded;
 
 import java.util.Iterator;
 
-import org.encog.engine.data.MLData;
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.MLData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.TrainingError;
@@ -106,7 +106,7 @@ public class FoldedDataSet implements NeuralDataSet {
 	 *            Not used.
 	 */
 	@Override
-	public void add(final NeuralData data1) {
+	public void add(final MLDataArray data1) {
 		throw new TrainingError(FoldedDataSet.ADD_NOT_SUPPORTED);
 
 	}
@@ -120,7 +120,7 @@ public class FoldedDataSet implements NeuralDataSet {
 	 *            Not used.
 	 */
 	@Override
-	public void add(final NeuralData inputData, final NeuralData idealData) {
+	public void add(final MLDataArray inputData, final MLDataArray idealData) {
 		throw new TrainingError(FoldedDataSet.ADD_NOT_SUPPORTED);
 
 	}

@@ -23,7 +23,7 @@
  */
 package org.encog.ml;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 
 /**
  * Defines a Machine Learning Method that supports regression.  Regression 
@@ -39,5 +39,5 @@ public interface MLRegression extends MLInputOutput {
 	 * @param input The input data.
 	 * @return The output data.
 	 */
-	NeuralData compute(NeuralData input);
+	MLDataArray compute(MLDataArray input);
 }

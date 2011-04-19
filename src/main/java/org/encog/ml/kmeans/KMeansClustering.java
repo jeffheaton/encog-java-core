@@ -23,14 +23,14 @@
  */
 package org.encog.ml.kmeans;
 
-import org.encog.engine.data.MLData;
-import org.encog.engine.data.MLDataSet;
 import org.encog.ml.MLCluster;
 import org.encog.ml.MLClustering;
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
 
 /**
  * This class performs a basic K-Means clustering. This class can be used on
@@ -43,7 +43,7 @@ import org.encog.neural.data.basic.BasicNeuralDataPair;
 public class KMeansClustering implements MLClustering {
 
 	public static double calculateEuclideanDistance(final Centroid c,
-			final NeuralData data) {
+			final MLDataArray data) {
 		final double[] d = data.getData();
 		double sum = 0;
 
@@ -191,7 +191,7 @@ public class KMeansClustering implements MLClustering {
 		for (final KMeansCluster element : this.clusters) {
 			for (int k = 0; k < element.size(); k++) {
 
-				final NeuralData data = element.get(k);
+				final MLDataArray data = element.get(k);
 				double distance = KMeansClustering.calculateEuclideanDistance(
 						element.getCentroid(), data);
 				KMeansCluster tempCluster = null;

@@ -25,9 +25,9 @@ package org.encog.neural.data.folded;
 
 import java.util.Iterator;
 
+import org.encog.ml.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
 
 /**
  * Used to iterate over a folded data set.

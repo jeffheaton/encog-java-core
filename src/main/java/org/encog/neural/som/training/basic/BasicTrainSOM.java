@@ -25,7 +25,7 @@ package org.encog.neural.som.training.basic;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.TrainingImplementationType;
-import org.encog.neural.data.NeuralData;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
@@ -213,7 +213,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 *            The input pattern to copy.
 	 */
 	private void copyInputPattern(final Matrix matrix,
-			final int outputNeuron, final NeuralData input) {
+			final int outputNeuron, final MLDataArray input) {
 		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount;
 			inputNeuron++) {
 			matrix.set(inputNeuron, outputNeuron,
@@ -279,12 +279,12 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @return True if a winner was forced.
 	 */
 	private boolean forceWinners(final Matrix matrix, final int[] won,
-			final NeuralData leastRepresented) {
+			final MLDataArray leastRepresented) {
 
 		double maxActivation = Double.MIN_VALUE;
 		int maxActivationNeuron = -1;
 
-		final NeuralData output = this.network.compute(leastRepresented);
+		final MLDataArray output = this.network.compute(leastRepresented);
 
 		// Loop over all of the output neurons. Consider any neurons that were
 		// not the BMU (winner) for any pattern. Track which of these
@@ -366,7 +366,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 		this.bmuUtil.reset();
 		final int[] won = new int[this.outputNeuronCount];
 		double leastRepresentedActivation = Double.MAX_VALUE;
-		NeuralData leastRepresented = null;
+		MLDataArray leastRepresented = null;
 
 
 			// Reset the correction matrix for this synapse and iteration.
@@ -374,7 +374,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 
 			// Determine the BMU for each training element.
 			for (final NeuralDataPair pair : getTraining()) {
-				final NeuralData input = pair.getInput();
+				final MLDataArray input = pair.getInput();
 
 				final int bmu = this.bmuUtil.calculateBMU(input);
 
@@ -385,7 +385,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 
 					// Get the "output" from the network for this pattern. This
 					// gets the activation level of the BMU.
-					final NeuralData output = this.network.compute(pair
+					final MLDataArray output = this.network.compute(pair
 							.getInput());
 
 					// Track which training entry produces the least BMU. This
@@ -492,7 +492,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 *            The input to train for.
 	 */
 	private void train(final int bmu, final Matrix matrix,
-			final NeuralData input) {
+			final MLDataArray input) {
 		// adjust the weight for the BMU and its neighborhood
 		for (int outputNeuron = 0; outputNeuron < this.outputNeuronCount;
 			outputNeuron++) {
@@ -505,9 +505,9 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * neurons according to the neighborhood function.
 	 * @param pattern The pattern to train.
 	 */
-	public void trainPattern(final NeuralData pattern) {
+	public void trainPattern(final MLDataArray pattern) {
 
-		final NeuralData input = pattern;
+		final MLDataArray input = pattern;
 		final int bmu = this.bmuUtil.calculateBMU(input);
 		train(bmu, this.network.getWeights(), input);
 		applyCorrection();
@@ -526,7 +526,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	 * @param bmu
 	 *            The best matching unit, or winning output neuron.
 	 */
-	private void trainPattern(final Matrix matrix, final NeuralData input,
+	private void trainPattern(final Matrix matrix, final MLDataArray input,
 			final int current, final int bmu) {
 
 		for (int inputNeuron = 0; inputNeuron < this.inputNeuronCount;

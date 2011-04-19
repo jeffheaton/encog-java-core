@@ -26,11 +26,11 @@ package org.encog.neural.networks.training.lma;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.ml.TrainingImplementationType;
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
@@ -213,9 +213,9 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		this.gradient = new double[this.parametersLength];
 		this.diagonal = new double[this.parametersLength];
 
-		final BasicNeuralData input = new BasicNeuralData(
+		final BasicMLDataArray input = new BasicMLDataArray(
 				this.indexableTraining.getInputSize());
-		final BasicNeuralData ideal = new BasicNeuralData(
+		final BasicMLDataArray ideal = new BasicMLDataArray(
 				this.indexableTraining.getIdealSize());
 		this.pair = new BasicNeuralDataPair(input, ideal);
 	}
@@ -342,7 +342,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			sumOfSquaredErrors = 0.0;
 			for (int i = 0; i < this.trainingLength; i++) {
 				this.indexableTraining.getRecord(i, this.pair);
-				final NeuralData actual = this.network.compute(this.pair
+				final MLDataArray actual = this.network.compute(this.pair
 						.getInput());
 				final double e = this.pair.getIdeal().getData(0)
 						- actual.getData(0);

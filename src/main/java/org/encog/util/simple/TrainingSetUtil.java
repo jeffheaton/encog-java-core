@@ -23,12 +23,12 @@
  */
 package org.encog.util.simple;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.ObjectPair;
 import org.encog.util.csv.CSVFormat;
@@ -50,18 +50,18 @@ public class TrainingSetUtil {
 		NeuralDataSet result = new BasicNeuralDataSet();
 		ReadCSV csv = new ReadCSV(filename, headers, format);
 		while (csv.next()) {
-			NeuralData input = null;
-			NeuralData ideal = null;
+			MLDataArray input = null;
+			MLDataArray ideal = null;
 			int index = 0;
 
-			input = new BasicNeuralData(inputSize);
+			input = new BasicMLDataArray(inputSize);
 			for (int i = 0; i < inputSize; i++) {
 				double d = csv.getDouble(index++);
 				input.setData(i, d);
 			}
 
 			if (idealSize > 0) {
-				ideal = new BasicNeuralData(idealSize);
+				ideal = new BasicMLDataArray(idealSize);
 				for (int i = 0; i < idealSize; i++) {
 					double d = csv.getDouble(index++);
 					ideal.setData(i, d);
