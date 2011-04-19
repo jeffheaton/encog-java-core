@@ -6,7 +6,7 @@ import junit.framework.TestCase;
 import org.encog.ml.MLCluster;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 
@@ -24,7 +24,7 @@ public class TestKMeans extends TestCase {
         
         for(int i=0;i<DATA.length;i++)
         {
-        	set.add(new BasicMLDataArray(DATA[i]));
+        	set.add(new BasicMLData(DATA[i]));
         }
 
         KMeansClustering kmeans = new KMeansClustering(2,set);
