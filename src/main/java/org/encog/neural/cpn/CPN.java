@@ -32,7 +32,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.simple.EncogUtility;
 
 public class CPN  extends BasicML implements MLRegression, MLResettable, MLError {
@@ -80,7 +80,7 @@ public class CPN  extends BasicML implements MLRegression, MLResettable, MLError
 	
 	public MLData computeOutstar(MLData input)
 	{
-		MLData result = new BasicMLDataArray(this.outstarCount);
+		MLData result = new BasicMLData(this.outstarCount);
 
 		double Sum = 0;
 		
@@ -96,7 +96,7 @@ public class CPN  extends BasicML implements MLRegression, MLResettable, MLError
 	
 	public MLData computeInstar(MLData input)
 	{
-		MLData result = new BasicMLDataArray(this.instarCount);
+		MLData result = new BasicMLData(this.instarCount);
 		int w, i, j;
 		double Sum, SumWinners, MaxOut;
 		int Winner = 0;
