@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.persist.EncogFileSection;
@@ -56,11 +56,11 @@ public class PersistBasicPNN implements EncogPersistor {
 				for(String line: section.getLines()) {
 					List<String> cols = EncogFileSection.splitColumns(line);
 					int index = 0;
-					MLData inputData = new BasicMLDataArray(inputCount);
+					MLData inputData = new BasicMLData(inputCount);
 					for(int i=0;i<inputCount;i++) {
 						inputData.setData(i, CSVFormat.EG_FORMAT.parse(cols.get(index++)));
 					}
-					MLData idealData = new BasicMLDataArray(inputCount);
+					MLData idealData = new BasicMLData(inputCount);
 					for(int i=0;i<outputCount;i++) {
 						idealData.setData(i, CSVFormat.EG_FORMAT.parse(cols.get(index++)));
 					}

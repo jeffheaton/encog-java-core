@@ -27,7 +27,7 @@ import org.encog.mathutil.EncogMath;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
 
 /**
@@ -161,7 +161,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 				out[i] /= psum;
 			}
 
-			final MLData result = new BasicMLDataArray(1);
+			final MLData result = new BasicMLData(1);
 			result.setData(0, EncogMath.maxIndex(out));
 			return result;
 		}
@@ -178,7 +178,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 			}
 		}
 
-		return new BasicMLDataArray(out);
+		return new BasicMLData(out);
 	}
 
 	/**
