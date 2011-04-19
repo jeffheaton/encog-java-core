@@ -137,10 +137,10 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 		MLDataPair result;
 
 		if (idealSize > 0) {
-			result = new BasicMLDataPair(new BasicMLDataArray(inputSize),
-					new BasicMLDataArray(idealSize));
+			result = new BasicMLDataPair(new BasicMLData(inputSize),
+					new BasicMLData(idealSize));
 		} else {
-			result = new BasicMLDataPair(new BasicMLDataArray(inputSize));
+			result = new BasicMLDataPair(new BasicMLData(inputSize));
 		}
 
 		return result;

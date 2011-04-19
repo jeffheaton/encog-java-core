@@ -116,13 +116,13 @@ MLDataSet {
 	public BasicMLDataSet(final double[][] input, final double[][] ideal) {
 		if (ideal != null) {
 			for (int i = 0; i < input.length; i++) {
-				final BasicMLDataArray inputData = new BasicMLDataArray(input[i]);
-				final BasicMLDataArray idealData = new BasicMLDataArray(ideal[i]);
+				final BasicMLData inputData = new BasicMLData(input[i]);
+				final BasicMLData idealData = new BasicMLData(ideal[i]);
 				this.add(inputData, idealData);
 			}
 		} else {
 			for (final double[] element : input) {
-				final BasicMLDataArray inputData = new BasicMLDataArray(element);
+				final BasicMLData inputData = new BasicMLData(element);
 				this.add(inputData);
 			}
 		}
@@ -149,16 +149,16 @@ MLDataSet {
 		
 		for(MLDataPair pair: set) {
 			
-			BasicMLDataArray input = null;
-			BasicMLDataArray ideal = null;
+			BasicMLData input = null;
+			BasicMLData ideal = null;
 			
 			if( inputCount>0 ) {
-				input = new BasicMLDataArray(inputCount);
+				input = new BasicMLData(inputCount);
 				EngineArray.arrayCopy(pair.getInputArray(), input.getData());
 			}
 			
 			if( idealCount>0 ) {
-				ideal = new BasicMLDataArray(idealCount);
+				ideal = new BasicMLData(idealCount);
 				EngineArray.arrayCopy(pair.getIdealArray(), ideal.getData());
 			}
 			
