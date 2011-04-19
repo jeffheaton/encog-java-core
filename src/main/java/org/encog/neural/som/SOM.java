@@ -32,7 +32,7 @@ import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.util.EngineArray;
 
@@ -121,7 +121,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 */
 	public MLData compute(final MLData input) {
 
-		MLData result = new BasicMLDataArray(this.outputNeuronCount);
+		MLData result = new BasicMLData(this.outputNeuronCount);
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
 			final Matrix optr = this.weights.getCol(i);
