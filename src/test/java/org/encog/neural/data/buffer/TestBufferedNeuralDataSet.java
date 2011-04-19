@@ -30,7 +30,7 @@ import java.io.PrintStream;
 
 import junit.framework.TestCase;
 
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.networks.XOR;
 
 public class TestBufferedNeuralDataSet extends TestCase {
@@ -44,8 +44,8 @@ public class TestBufferedNeuralDataSet extends TestCase {
 		BufferedNeuralDataSet set = new BufferedNeuralDataSet(new File(FILENAME));
 		set.beginLoad(2, 1);
 		for(int i=0;i<XOR.XOR_INPUT.length;i++) {
-			BasicMLDataArray input = new BasicMLDataArray(XOR.XOR_INPUT[i]);
-			BasicMLDataArray ideal = new BasicMLDataArray(XOR.XOR_IDEAL[i]);
+			BasicMLData input = new BasicMLData(XOR.XOR_INPUT[i]);
+			BasicMLData ideal = new BasicMLData(XOR.XOR_IDEAL[i]);
 			set.add(input,ideal);
 		}
 		set.endLoad();
