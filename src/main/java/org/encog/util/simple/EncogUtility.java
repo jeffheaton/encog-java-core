@@ -39,7 +39,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.activation.ActivationSigmoid;
@@ -396,8 +396,8 @@ public final class EncogUtility {
        buffer.beginLoad(input.length, ideal.length);
        while(csv.next())
        {
-    	   BasicMLDataArray inputData = new BasicMLDataArray(input.length);
-    	   BasicMLDataArray idealData = new BasicMLDataArray(ideal.length);
+    	   BasicMLData inputData = new BasicMLData(input.length);
+    	   BasicMLData idealData = new BasicMLData(ideal.length);
     	   
     	   // handle input data
     	   for(int i=0;i<input.length;i++) {

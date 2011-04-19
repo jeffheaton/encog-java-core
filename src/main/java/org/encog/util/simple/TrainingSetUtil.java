@@ -26,7 +26,7 @@ package org.encog.util.simple;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.util.EngineArray;
@@ -54,14 +54,14 @@ public class TrainingSetUtil {
 			MLData ideal = null;
 			int index = 0;
 
-			input = new BasicMLDataArray(inputSize);
+			input = new BasicMLData(inputSize);
 			for (int i = 0; i < inputSize; i++) {
 				double d = csv.getDouble(index++);
 				input.setData(i, d);
 			}
 
 			if (idealSize > 0) {
-				ideal = new BasicMLDataArray(idealSize);
+				ideal = new BasicMLData(idealSize);
 				for (int i = 0; i < idealSize; i++) {
 					double d = csv.getDouble(index++);
 					ideal.setData(i, d);
