@@ -34,7 +34,7 @@ import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.FlatNetworkRBF;
@@ -266,7 +266,7 @@ public class RBFNetwork  extends BasicML implements MLError, MLRegression, Conta
 
 	@Override
 	public MLData compute(MLData input) {
-		MLData output = new BasicMLDataArray(getOutputCount());
+		MLData output = new BasicMLData(getOutputCount());
 		this.flat.compute(input.getData(), output.getData());
 		return output;
 	}
