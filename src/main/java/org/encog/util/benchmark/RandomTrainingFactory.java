@@ -26,7 +26,7 @@ package org.encog.util.benchmark;
 import org.encog.mathutil.LinearCongruentialGenerator;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 
@@ -64,13 +64,13 @@ public final class RandomTrainingFactory {
 		
 		final BasicMLDataSet result = new BasicMLDataSet();
 		for (int i = 0; i < count; i++) {
-			final MLData inputData = new BasicMLDataArray(inputCount);
+			final MLData inputData = new BasicMLData(inputCount);
 
 			for (int j = 0; j < inputCount; j++) {
 				inputData.setData(j, rand.range(min, max));
 			}
 
-			final MLData idealData = new BasicMLDataArray(idealCount);
+			final MLData idealData = new BasicMLData(idealCount);
 
 			for (int j = 0; j < idealCount; j++) {
 				idealData.setData(j, rand.range(min, max));
@@ -104,13 +104,13 @@ public final class RandomTrainingFactory {
 		int idealCount = training.getIdealSize();
 		
 		for (int i = 0; i < count; i++) {
-			final MLData inputData = new BasicMLDataArray(inputCount);
+			final MLData inputData = new BasicMLData(inputCount);
 
 			for (int j = 0; j < inputCount; j++) {
 				inputData.setData(j, rand.range(min, max));
 			}
 
-			final MLData idealData = new BasicMLDataArray(idealCount);
+			final MLData idealData = new BasicMLData(idealCount);
 
 			for (int j = 0; j < idealCount; j++) {
 				idealData.setData(j, rand.range(min, max));
