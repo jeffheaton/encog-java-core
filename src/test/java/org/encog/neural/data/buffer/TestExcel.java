@@ -28,8 +28,9 @@ import java.io.File;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.neural.data.buffer.codec.ArrayDataCODEC;
-import org.encog.neural.data.buffer.codec.ExcelCODEC;
+import org.encog.ml.data.buffer.BinaryDataLoader;
+import org.encog.ml.data.buffer.codec.ArrayDataCODEC;
+import org.encog.ml.data.buffer.codec.ExcelCODEC;
 import org.encog.neural.networks.XOR;
 
 

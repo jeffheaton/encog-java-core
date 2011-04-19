@@ -29,7 +29,7 @@ import java.util.List;
 import org.encog.EncogError;
 import org.encog.StatusReportable;
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.data.buffer.BufferedNeuralDataSet;
+import org.encog.ml.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;

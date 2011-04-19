@@ -31,6 +31,7 @@ import java.io.PrintStream;
 import junit.framework.TestCase;
 
 import org.encog.ml.data.basic.BasicMLData;
+import org.encog.ml.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.XOR;
 
 public class TestBufferedNeuralDataSet extends TestCase {

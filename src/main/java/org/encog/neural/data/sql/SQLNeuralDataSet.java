@@ -26,9 +26,9 @@ package org.encog.neural.data.sql;
 import java.sql.Connection;
 
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.neural.data.buffer.MemoryDataLoader;
-import org.encog.neural.data.buffer.codec.DataSetCODEC;
-import org.encog.neural.data.buffer.codec.SQLCODEC;
+import org.encog.ml.data.buffer.MemoryDataLoader;
+import org.encog.ml.data.buffer.codec.DataSetCODEC;
+import org.encog.ml.data.buffer.codec.SQLCODEC;
 
 /**
  * A dataset based on a SQL query. This is not a memory based dataset, so it can

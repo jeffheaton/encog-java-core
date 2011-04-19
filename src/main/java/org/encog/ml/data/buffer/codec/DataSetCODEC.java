@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.buffer.codec;
+package org.encog.ml.data.buffer.codec;
 
 /**
  * A CODEC is used to encode and decode data. The DataSetCODEC is designed to

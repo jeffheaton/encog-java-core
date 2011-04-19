@@ -21,13 +21,13 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.buffer;
+package org.encog.ml.data.buffer;
 
 import java.io.File;
 
 import org.encog.NullStatusReportable;
 import org.encog.StatusReportable;
-import org.encog.neural.data.buffer.codec.DataSetCODEC;
+import org.encog.ml.data.buffer.codec.DataSetCODEC;
 
 /**
  * This class is used, together with a CODEC, to move data to/from the Encog

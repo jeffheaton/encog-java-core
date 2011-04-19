@@ -25,14 +25,14 @@ package org.encog.neural.data.buffer;
 
 import java.io.File;
 
-import org.encog.neural.data.buffer.BinaryDataLoader;
-import org.encog.neural.data.buffer.codec.ArrayDataCODEC;
-import org.encog.neural.data.buffer.codec.CSVDataCODEC;
-import org.encog.neural.networks.XOR;
-import org.encog.util.csv.CSVFormat;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
+
+import org.encog.ml.data.buffer.BinaryDataLoader;
+import org.encog.ml.data.buffer.codec.ArrayDataCODEC;
+import org.encog.ml.data.buffer.codec.CSVDataCODEC;
+import org.encog.neural.networks.XOR;
+import org.encog.util.csv.CSVFormat;
 
 public class TestBinaryData extends TestCase {
 	

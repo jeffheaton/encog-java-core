@@ -28,8 +28,8 @@ import java.io.File;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
+import org.encog.ml.data.buffer.EncogEGBFile;
 import org.encog.ml.factory.MLMethodFactory;
-import org.encog.neural.data.buffer.EncogEGBFile;
 import org.encog.persist.EncogDirectoryPersistence;
 
 /**

@@ -21,14 +21,14 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.buffer.codec;
+package org.encog.ml.data.buffer.codec;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import org.encog.neural.data.buffer.BufferedDataError;
+import org.encog.ml.data.buffer.BufferedDataError;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.NumberList;

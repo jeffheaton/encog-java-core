@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data.buffer.codec;
+package org.encog.ml.data.buffer.codec;
 
 import org.encog.util.EngineArray;
 

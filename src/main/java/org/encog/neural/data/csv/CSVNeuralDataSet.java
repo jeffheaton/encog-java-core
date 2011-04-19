@@ -26,9 +26,9 @@ package org.encog.neural.data.csv;
 import java.io.File;
 
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.neural.data.buffer.MemoryDataLoader;
-import org.encog.neural.data.buffer.codec.CSVDataCODEC;
-import org.encog.neural.data.buffer.codec.DataSetCODEC;
+import org.encog.ml.data.buffer.MemoryDataLoader;
+import org.encog.ml.data.buffer.codec.CSVDataCODEC;
+import org.encog.ml.data.buffer.codec.DataSetCODEC;
 import org.encog.util.csv.CSVFormat;
 
 /**

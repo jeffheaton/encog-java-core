@@ -29,7 +29,7 @@ import org.encog.StatusReportable;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
-import org.encog.neural.data.buffer.BufferedNeuralDataSet;
+import org.encog.ml.data.buffer.BufferedNeuralDataSet;
 import org.encog.util.Format;
 import org.encog.util.logging.Logging;
 
