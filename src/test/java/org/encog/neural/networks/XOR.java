@@ -29,7 +29,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.structure.NetworkCODEC;
@@ -48,7 +48,7 @@ public class XOR {
 		{
 			for(int trainingSet=0;trainingSet<XOR.XOR_IDEAL.length;trainingSet++)
 			{
-				MLData actual = network.compute(new BasicMLDataArray(XOR.XOR_INPUT[trainingSet]));
+				MLData actual = network.compute(new BasicMLData(XOR.XOR_INPUT[trainingSet]));
 				
 				for(int i=0;i<XOR.XOR_IDEAL[0].length;i++)
 				{
