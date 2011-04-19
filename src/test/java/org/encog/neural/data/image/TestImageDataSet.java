@@ -26,19 +26,17 @@ package org.encog.neural.data.image;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.util.Iterator;
 
 import javax.swing.JFrame;
 
+import junit.framework.TestCase;
+
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.util.downsample.Downsample;
 import org.encog.util.downsample.SimpleIntensityDownsample;
-import org.junit.Assert;
-
-import junit.framework.TestCase;
 
 public class TestImageDataSet extends TestCase {
 
@@ -60,8 +58,8 @@ public class TestImageDataSet extends TestCase {
 		ImageNeuralData input = new ImageNeuralData(image);
 		set.add(input,ideal);
 		set.downsample(2,2);
-		Iterator<NeuralDataPair> itr = set.iterator();
-		NeuralDataPair pair = (NeuralDataPair)itr.next();
+		Iterator<MLDataPair> itr = set.iterator();
+		MLDataPair pair = (MLDataPair)itr.next();
 		MLDataArray data = pair.getInput();
 		double[] d = data.getData();
 		//Assert.assertEquals(d[0],-1.0, 0.1);

@@ -26,12 +26,11 @@ package org.encog.neural.networks;
 import junit.framework.TestCase;
 
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.util.simple.EncogUtility;
@@ -71,7 +70,7 @@ public class XOR {
 		public static void testXORDataSet(NeuralDataSet set)
 		{
 			int row = 0;
-			for(NeuralDataPair item: set)
+			for(MLDataPair item: set)
 			{
 				for(int i=0;i<XOR.XOR_INPUT[0].length;i++)
 				{
