@@ -4,10 +4,10 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.ml.MLCluster;
-import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 
 public class TestKMeans extends TestCase {
@@ -36,7 +36,7 @@ public class TestKMeans extends TestCase {
         for(MLCluster cluster: kmeans.getClusters())
         {
         	MLDataSet ds = cluster.createDataSet();
-            MLData pair = BasicNeuralDataPair.createPair(ds.getInputSize(), ds.getIdealSize());
+            MLDataPair pair = BasicMLDataPair.createPair(ds.getInputSize(), ds.getIdealSize());
             for(int j=0;j<ds.getRecordCount();j++)
             {
             	ds.getRecord(j, pair);
