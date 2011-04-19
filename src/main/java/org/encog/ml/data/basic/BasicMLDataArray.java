@@ -25,7 +25,7 @@ package org.encog.ml.data.basic;
 
 import java.io.Serializable;
 
-import org.encog.neural.data.MLDataArray;
+import org.encog.ml.data.MLData;
 
 /**
  * Basic implementation of the NeuralData interface that stores the data in an
@@ -34,7 +34,7 @@ import org.encog.neural.data.MLDataArray;
  * @author jheaton
  *
  */
-public class BasicMLDataArray implements MLDataArray, Serializable, Cloneable {
+public class BasicMLDataArray implements MLData, Serializable, Cloneable {
 
 	/**
 	 * The serial id.
@@ -75,7 +75,7 @@ public class BasicMLDataArray implements MLDataArray, Serializable, Cloneable {
 	 * @param d
 	 *            The object to be copied.
 	 */
-	public BasicMLDataArray(final MLDataArray d) {
+	public BasicMLDataArray(final MLData d) {
 		this(d.size());
 		System.arraycopy(d.getData(), 0, this.data, 0, d.size());
 	}
@@ -105,7 +105,7 @@ public class BasicMLDataArray implements MLDataArray, Serializable, Cloneable {
 	 * @return A clone of this object.
 	 */
 	@Override
-	public MLDataArray clone() {
+	public MLData clone() {
 		return new BasicMLDataArray(this);
 	}
 

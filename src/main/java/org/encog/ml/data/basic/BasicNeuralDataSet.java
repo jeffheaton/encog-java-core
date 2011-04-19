@@ -29,9 +29,9 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.EncogError;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.obj.ObjectCloner;
@@ -174,7 +174,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * @param data
 	 *            The input to be added to the training set.
 	 */
-	public void add(final MLDataArray data) {
+	public void add(final MLData data) {
 		this.data.add(new BasicMLDataPair(data));
 	}
 
@@ -186,7 +186,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * @param idealData
 	 *            The ideal data to use for training.
 	 */
-	public void add(final MLDataArray inputData, final MLDataArray idealData) {
+	public void add(final MLData inputData, final MLData idealData) {
 
 		final MLDataPair pair = new BasicMLDataPair(inputData,
 				idealData);

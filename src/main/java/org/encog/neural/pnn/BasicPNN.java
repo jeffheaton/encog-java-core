@@ -25,10 +25,10 @@ package org.encog.neural.pnn;
 
 import org.encog.mathutil.EncogMath;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.MLDataArray;
 
 /**
  * This class implements either a:
@@ -95,7 +95,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 	 * @return The output from the network.
 	 */
 	@Override
-	public MLDataArray compute(final MLDataArray input) {
+	public MLData compute(final MLData input) {
 
 		final double[] out = new double[getOutputCount()];
 
@@ -161,7 +161,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 				out[i] /= psum;
 			}
 
-			final MLDataArray result = new BasicMLDataArray(1);
+			final MLData result = new BasicMLDataArray(1);
 			result.setData(0, EncogMath.maxIndex(out));
 			return result;
 		}

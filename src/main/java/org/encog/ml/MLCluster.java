@@ -25,7 +25,7 @@ package org.encog.ml;
 
 import java.util.List;
 
-import org.encog.neural.data.MLDataArray;
+import org.encog.ml.data.MLData;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
@@ -38,7 +38,7 @@ public interface MLCluster {
 	 * Add data to this cluster.
 	 * @param pair The data to add.
 	 */
-	void add(final MLDataArray pair);
+	void add(final MLData pair);
 
 	/**
 	 * Create a machine learning dataset from the data.
@@ -51,18 +51,18 @@ public interface MLCluster {
 	 * @param pos The index of the data item to get.
 	 * @return The data item.
 	 */
-	MLDataArray get(final int pos);
+	MLData get(final int pos);
 
 	/**
 	 * @return The data in this cluster.
 	 */
-	List<MLDataArray> getData();
+	List<MLData> getData();
 
 	/**
 	 * Remove the specified item.
 	 * @param data The item to remove.
 	 */
-	void remove(final MLDataArray data);
+	void remove(final MLData data);
 
 	/**
 	 * @return The number of items.

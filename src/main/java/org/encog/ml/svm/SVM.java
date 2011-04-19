@@ -31,8 +31,8 @@ import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.simple.EncogUtility;
 
@@ -190,14 +190,14 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 	 *            The input to the SVM.
 	 * @return The results from the SVM.
 	 */
-	public MLDataArray compute(MLDataArray input) {
+	public MLData compute(MLData input) {
 
 		if (this.model == null) {
 			throw new EncogError(
 					"Can't use the SVM yet, it has not been trained, and no model exists.");
 		}
 
-		MLDataArray result = new BasicMLDataArray(1);
+		MLData result = new BasicMLDataArray(1);
 
 		svm_node[] formattedInput = makeSparse(input);
 
@@ -214,7 +214,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 	 *            The data to convert.
 	 * @return The SVM sparse data.
 	 */
-	public svm_node[] makeSparse(MLDataArray data) {
+	public svm_node[] makeSparse(MLData data) {
 		svm_node[] result = new svm_node[data.size()];
 		for (int i = 0; i < data.size(); i++) {
 			result[i] = new svm_node();
@@ -327,7 +327,7 @@ public class SVM extends BasicML implements MLRegression, MLClassification, MLEr
 	}
 
 	@Override
-	public int classify(MLDataArray input) {
+	public int classify(MLData input) {
 		if (this.model == null) {
 			throw new EncogError(
 					"Can't use the SVM yet, it has not been trained, and no model exists.");

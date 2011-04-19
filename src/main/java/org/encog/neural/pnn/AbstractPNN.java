@@ -24,7 +24,7 @@
 package org.encog.neural.pnn;
 
 import org.encog.ml.BasicML;
-import org.encog.neural.data.MLDataArray;
+import org.encog.ml.data.MLData;
 
 public abstract class AbstractPNN  extends BasicML {
 
@@ -114,7 +114,7 @@ public abstract class AbstractPNN  extends BasicML {
 	 * @param input The input to the network.
 	 * @return The output from the network.
 	 */
-	public abstract MLDataArray compute(MLDataArray input);
+	public abstract MLData compute(MLData input);
 
 	/**
 	 * @return the deriv

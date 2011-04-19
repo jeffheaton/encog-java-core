@@ -25,9 +25,9 @@ package org.encog.neural.networks.training.simple;
 
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
@@ -100,7 +100,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 
 		for (final MLDataPair pair : this.training) {
 			// calculate the error
-			final MLDataArray output = this.network.compute(pair.getInput());
+			final MLData output = this.network.compute(pair.getInput());
 
 			for (int currentAdaline = 0; currentAdaline < output.size(); 
 				currentAdaline++) {

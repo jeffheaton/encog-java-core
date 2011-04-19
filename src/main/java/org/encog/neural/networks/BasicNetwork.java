@@ -33,10 +33,10 @@ import org.encog.ml.MLEncodable;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.layers.Layer;
@@ -173,7 +173,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 */
 	public void compute(final double[] input, final double[] output) {
 		final BasicMLDataArray input2 = new BasicMLDataArray(input);
-		final MLDataArray output2 = this.compute(input2);
+		final MLData output2 = this.compute(input2);
 		EngineArray.arrayCopy(output2.getData(), output);
 	}
 
@@ -184,9 +184,9 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The input to the neural network.
 	 * @return The output from the neural network.
 	 */
-	public MLDataArray compute(final MLDataArray input) {
+	public MLData compute(final MLData input) {
 		try {
-			MLDataArray result = new BasicMLDataArray(this.structure.getFlat()
+			MLData result = new BasicMLDataArray(this.structure.getFlat()
 					.getOutputCount());
 			this.structure.getFlat().compute(input.getData(), result.getData());
 			return result;
@@ -490,8 +490,8 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The input patter to present to the neural network.
 	 * @return The winning neuron.
 	 */
-	public int winner(final MLDataArray input) {
-		final MLDataArray output = compute(input);
+	public int winner(final MLData input) {
+		final MLData output = compute(input);
 		return EngineArray.maxIndex(output.getData());
 	}
 
@@ -567,7 +567,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	}
 
 	@Override
-	public int classify(MLDataArray input) {
+	public int classify(MLData input) {
 		return winner(input);
 	}
 

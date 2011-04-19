@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.data;
+package org.encog.ml.data;
 
 /**
  * Defines an array of data. This is an array of double values that could be
@@ -29,7 +29,7 @@ package org.encog.neural.data;
  * 
  * @author jheaton
  */
-public interface MLDataArray extends Cloneable {
+public interface MLData extends Cloneable {
 
 	/**
 	 * Add a value to the specified index.
@@ -51,7 +51,7 @@ public interface MLDataArray extends Cloneable {
 	 * 
 	 * @return A cloned version of this object.
 	 */
-	MLDataArray clone();
+	MLData clone();
 
 	/**
 	 * @return All of the elements as an array.

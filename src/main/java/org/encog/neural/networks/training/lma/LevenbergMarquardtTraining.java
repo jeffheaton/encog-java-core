@@ -26,10 +26,10 @@ package org.encog.neural.networks.training.lma;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
@@ -342,7 +342,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 			sumOfSquaredErrors = 0.0;
 			for (int i = 0; i < this.trainingLength; i++) {
 				this.indexableTraining.getRecord(i, this.pair);
-				final MLDataArray actual = this.network.compute(this.pair
+				final MLData actual = this.network.compute(this.pair
 						.getInput());
 				final double e = this.pair.getIdeal().getData(0)
 						- actual.getData(0);

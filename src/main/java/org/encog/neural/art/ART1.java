@@ -26,8 +26,8 @@ package org.encog.neural.art;
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLResettable;
+import org.encog.ml.data.MLData;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 
 public class ART1 extends ART implements MLResettable, MLClassification {
@@ -189,7 +189,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	 *            The input to the network.
 	 * @return The output from the network.
 	 */
-	public MLDataArray compute(final MLDataArray input) {
+	public MLData compute(final MLData input) {
 		if (!(input instanceof BiPolarNeuralData)) {
 			throw new NeuralNetworkError("Input to ART1 logic network must be BiPolarNeuralData.");
 		}
@@ -462,7 +462,7 @@ public class ART1 extends ART implements MLResettable, MLClassification {
 	}
 
 	@Override
-	public int classify(MLDataArray input) {
+	public int classify(MLData input) {
 		BiPolarNeuralData input2 = new BiPolarNeuralData(this.f1Count);
 		BiPolarNeuralData output = new BiPolarNeuralData(this.f2Count);
 		

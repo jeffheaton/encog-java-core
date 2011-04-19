@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataSet;
 
@@ -179,7 +179,7 @@ public class BufferedNeuralDataSet implements
 	 * @param data1
 	 *            The data to be added.
 	 */
-	public void add(final MLDataArray data1) {
+	public void add(final MLData data1) {
 		if (!this.loading) {
 			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
@@ -195,7 +195,7 @@ public class BufferedNeuralDataSet implements
 	 * @param idealData
 	 *            The ideal data.
 	 */
-	public void add(final MLDataArray inputData, final MLDataArray idealData) {
+	public void add(final MLData inputData, final MLData idealData) {
 
 		if (!this.loading) {
 			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);

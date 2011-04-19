@@ -25,7 +25,7 @@ package org.encog.neural.som.training.basic;
 
 import org.encog.mathutil.BoundMath;
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.neural.data.MLDataArray;
+import org.encog.ml.data.MLData;
 import org.encog.neural.som.SOM;
 
 /**
@@ -72,7 +72,7 @@ public class BestMatchingUnit {
 	 *            The input vector.
 	 * @return The output neuron number that is the BMU.
 	 */
-	public int calculateBMU(final MLDataArray input) {
+	public int calculateBMU(final MLData input) {
 		int result = 0;
 		
 		// Track the lowest distance so far.
@@ -111,7 +111,7 @@ public class BestMatchingUnit {
 	 * @return The Euclidean distance.
 	 */
 	public double calculateEuclideanDistance(final Matrix matrix,
-			final MLDataArray input, final int outputNeuron) {
+			final MLData input, final int outputNeuron) {
 		double result = 0;
 		
 		// Loop over all input data.

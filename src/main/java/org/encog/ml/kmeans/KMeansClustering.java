@@ -25,10 +25,10 @@ package org.encog.ml.kmeans;
 
 import org.encog.ml.MLCluster;
 import org.encog.ml.MLClustering;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
@@ -42,7 +42,7 @@ import org.encog.neural.data.NeuralDataSet;
 public class KMeansClustering implements MLClustering {
 
 	public static double calculateEuclideanDistance(final Centroid c,
-			final MLDataArray data) {
+			final MLData data) {
 		final double[] d = data.getData();
 		double sum = 0;
 
@@ -190,7 +190,7 @@ public class KMeansClustering implements MLClustering {
 		for (final KMeansCluster element : this.clusters) {
 			for (int k = 0; k < element.size(); k++) {
 
-				final MLDataArray data = element.get(k);
+				final MLData data = element.get(k);
 				double distance = KMeansClustering.calculateEuclideanDistance(
 						element.getCentroid(), data);
 				KMeansCluster tempCluster = null;

@@ -23,7 +23,6 @@
  */
 package org.encog.ml.data;
 
-import org.encog.neural.data.MLDataArray;
 
 /**
  * Training data is stored in two ways, depending on if the data is for
@@ -79,11 +78,11 @@ public interface MLDataPair {
 	 * @return The ideal data that the neural network should produce for the
 	 *         specified input.
 	 */
-	MLDataArray getIdeal();
+	MLData getIdeal();
 
 	/**
 	 * @return The input that the neural network
 	 */
-	MLDataArray getInput();
+	MLData getInput();
 
 }

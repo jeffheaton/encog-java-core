@@ -25,7 +25,7 @@ package org.encog.neural.thermal;
 
 import org.encog.mathutil.BoundMath;
 import org.encog.mathutil.randomize.RangeRandomizer;
-import org.encog.neural.data.MLDataArray;
+import org.encog.ml.data.MLData;
 import org.encog.neural.data.bipolar.BiPolarNeuralData;
 import org.encog.util.EngineArray;
 
@@ -226,7 +226,7 @@ public class BoltzmannMachine extends ThermalNetwork {
 	 * @return The new current state.
 	 */
 	@Override
-	public MLDataArray compute(MLDataArray input) {
+	public MLData compute(MLData input) {
 		BiPolarNeuralData result = new BiPolarNeuralData(input.size());
 		EngineArray
 				.arrayCopy(input.getData(), this.getCurrentState().getData());

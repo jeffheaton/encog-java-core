@@ -30,8 +30,8 @@ import org.encog.app.csv.EncogCSVError;
 import org.encog.app.csv.basic.BasicFile;
 import org.encog.app.csv.basic.LoadedRow;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.neural.data.MLDataArray;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -74,7 +74,7 @@ public class EvaluateCSV extends BasicFile {
 				isExpectInputHeaders(), getInputFormat());
 
 		final PrintWriter tw = prepareOutputFile(outputFile);
-		final MLDataArray input = new BasicMLDataArray(method.getInputCount());
+		final MLData input = new BasicMLDataArray(method.getInputCount());
 
 		final int methodCount = method.getInputCount()
 				+ method.getOutputCount();
@@ -92,7 +92,7 @@ public class EvaluateCSV extends BasicFile {
 				final double d = getInputFormat().parse(row.getData()[i]);
 				input.setData(i, d);
 			}
-			final MLDataArray output = method.compute(input);
+			final MLData output = method.compute(input);
 
 			for (int i = 0; i < output.size(); i++) {
 				row.getData()[i + method.getInputCount()] = getInputFormat()

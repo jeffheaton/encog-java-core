@@ -36,13 +36,13 @@ import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
@@ -120,7 +120,7 @@ public final class EncogUtility {
 	public static void evaluate(final MLRegression network,
 			final NeuralDataSet training) {
 		for (final MLDataPair pair : training) {
-			final MLDataArray output = network.compute(pair.getInput());
+			final MLData output = network.compute(pair.getInput());
 			System.out.println("Input="
 					+ EncogUtility.formatNeuralData(pair.getInput())
 					+ ", Actual=" + EncogUtility.formatNeuralData(output)
@@ -137,7 +137,7 @@ public final class EncogUtility {
 	 *            The neural data to format.
 	 * @return The formatted neural data.
 	 */
-	public static String formatNeuralData(final MLDataArray data) {
+	public static String formatNeuralData(final MLData data) {
 		final StringBuilder result = new StringBuilder();
 		for (int i = 0; i < data.size(); i++) {
 			if (i != 0) {
@@ -424,7 +424,7 @@ public final class EncogUtility {
 			((MLContext)method).clearContext();
 
 		for (final MLDataPair pair : data) {
-			final MLDataArray actual = method.compute(pair.getInput());
+			final MLData actual = method.compute(pair.getInput());
 			errorCalculation.updateError(actual.getData(), pair.getIdeal()
 					.getData());
 		}

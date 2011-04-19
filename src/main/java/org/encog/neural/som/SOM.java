@@ -29,9 +29,9 @@ import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLError;
 import org.encog.ml.MLResettable;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.util.EngineArray;
@@ -106,9 +106,9 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * @param input The input pattern.
 	 * @return The winning neuron.
 	 */
-	public int winner(final MLDataArray input) {
+	public int winner(final MLData input) {
 
-		MLDataArray output = compute(input);
+		MLData output = compute(input);
 		int win = EngineArray.indexOfLargest(output.getData());
 		return win;
 	}
@@ -119,9 +119,9 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	 * @param input The input pattern.
 	 * @return The winning neuron.
 	 */
-	public MLDataArray compute(final MLDataArray input) {
+	public MLData compute(final MLData input) {
 
-		MLDataArray result = new BasicMLDataArray(this.outputNeuronCount);
+		MLData result = new BasicMLDataArray(this.outputNeuronCount);
 
 		for (int i = 0; i < this.outputNeuronCount; i++) {
 			final Matrix optr = this.weights.getCol(i);
@@ -162,8 +162,8 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	}
 
 	@Override
-	public int classify(MLDataArray input) {
-		MLDataArray result = this.compute(input);
+	public int classify(MLData input) {
+		MLData result = this.compute(input);
 		return EngineArray.maxIndex(result.getData());
 	}
 
@@ -191,7 +191,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 
 		// Determine the BMU for each training element.
 		for (final MLDataPair pair : data) {
-			final MLDataArray input = pair.getInput();
+			final MLData input = pair.getInput();
 			bmu.calculateBMU(input);
 		}
 

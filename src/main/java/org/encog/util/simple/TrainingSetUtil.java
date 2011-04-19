@@ -23,11 +23,11 @@
  */
 package org.encog.util.simple;
 
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.ObjectPair;
@@ -50,8 +50,8 @@ public class TrainingSetUtil {
 		NeuralDataSet result = new BasicNeuralDataSet();
 		ReadCSV csv = new ReadCSV(filename, headers, format);
 		while (csv.next()) {
-			MLDataArray input = null;
-			MLDataArray ideal = null;
+			MLData input = null;
+			MLData ideal = null;
 			int index = 0;
 
 			input = new BasicMLDataArray(inputSize);

@@ -25,9 +25,9 @@ package org.encog.neural.cpn.training;
 
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.neural.cpn.CPN;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
@@ -123,7 +123,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 		final ErrorCalculation error = new ErrorCalculation();
 
 		for (final MLDataPair pair : this.training) {
-			final MLDataArray out = network.computeInstar(
+			final MLData out = network.computeInstar(
 					pair.getInput());
 
 			final int j = EngineArray.indexOfLargest(out.getData());
@@ -134,7 +134,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 				network.getWeightsInstarToOutstar().add(j, i, delta);
 			}
 			
-			MLDataArray out2 = this.network.computeOutstar(out);
+			MLData out2 = this.network.computeOutstar(out);
 			error.updateError(out2.getData(), pair.getIdeal().getData());
 		}
 		

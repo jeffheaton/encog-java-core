@@ -25,8 +25,8 @@ package org.encog.ml.data.basic;
 
 import java.io.Serializable;
 
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.neural.data.MLDataArray;
 
 /**
  * A basic implementation of the NeuralDataPair interface. This implementation
@@ -51,12 +51,12 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * The the expected output from the neural network, or null for unsupervised
 	 * training.
 	 */
-	private final MLDataArray ideal;
+	private final MLData ideal;
 
 	/**
 	 * The training input to the neural network.
 	 */
-	private final MLDataArray input;
+	private final MLData input;
 
 	/**
 	 * Construct the object with only input. If this constructor is used, then
@@ -65,7 +65,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * @param input
 	 *            The input to the neural network.
 	 */
-	public BasicMLDataPair(final MLDataArray input) {
+	public BasicMLDataPair(final MLData input) {
 		this.input = input;
 		this.ideal = null;
 	}
@@ -79,7 +79,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 * @param ideal
 	 *            The expected results from the neural network.
 	 */
-	public BasicMLDataPair(final MLDataArray input, final MLDataArray ideal) {
+	public BasicMLDataPair(final MLData input, final MLData ideal) {
 		this.input = input;
 		this.ideal = ideal;
 	}
@@ -89,7 +89,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 *
 	 * @return Returns the expected results, or null if unsupervised training.
 	 */
-	public MLDataArray getIdeal() {
+	public MLData getIdeal() {
 		return this.ideal;
 	}
 
@@ -98,7 +98,7 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	 *
 	 * @return The input data.
 	 */
-	public MLDataArray getInput() {
+	public MLData getInput() {
 		return this.input;
 	}
 

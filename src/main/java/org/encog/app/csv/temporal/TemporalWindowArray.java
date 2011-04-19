@@ -23,11 +23,11 @@
  */
 package org.encog.app.csv.temporal;
 
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
@@ -151,9 +151,9 @@ public class TemporalWindowArray {
 		final int stopPoint = data.length - totalWindowSize;
 
 		for (int i = 0; i < stopPoint; i++) {
-			final MLDataArray inputData 
+			final MLData inputData 
 				= new BasicMLDataArray(this.inputWindow);
-			final MLDataArray idealData 
+			final MLData idealData 
 				= new BasicMLDataArray(this.predictWindow);
 
 			int index = i;

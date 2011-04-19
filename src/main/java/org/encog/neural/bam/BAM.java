@@ -25,8 +25,8 @@ package org.encog.neural.bam;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.BasicML;
+import org.encog.ml.data.MLData;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.MLDataArray;
 import org.encog.neural.networks.NeuralDataMapping;
 
 public class BAM extends BasicML {
@@ -66,8 +66,8 @@ public class BAM extends BasicML {
 	 * @param outputPattern
 	 *            The output pattern(for this input).
 	 */
-	public void addPattern(final MLDataArray inputPattern,
-			final MLDataArray outputPattern) {
+	public void addPattern(final MLData inputPattern,
+			final MLData outputPattern) {
 
 		int weight;
 
@@ -98,7 +98,7 @@ public class BAM extends BasicML {
 	 *            NOT USED
 	 * @return NOT USED
 	 */
-	public MLDataArray compute(final MLDataArray input) {
+	public MLData compute(final MLData input) {
 		throw new NeuralNetworkError("Compute on BasicNetwork cannot be used, rather call"
 				+ " the compute(NeuralData) method on the BAMLogic.");
 
@@ -141,7 +141,7 @@ public class BAM extends BasicML {
 	 *            input)
 	 * @return The value from the matrix.
 	 */
-	private double getWeight(final Matrix matrix, final MLDataArray input,
+	private double getWeight(final Matrix matrix, final MLData input,
 			final int x, final int y) {
 		if (matrix.getRows() != input.size()) {
 			return matrix.get(x, y);
@@ -163,7 +163,7 @@ public class BAM extends BasicML {
 	 * @return True if the network has become stable.
 	 */
 	private boolean propagateLayer(final Matrix matrix,
-			final MLDataArray input, final MLDataArray output) {
+			final MLData input, final MLData output) {
 		int i, j;
 		int sum, out = 0;
 		boolean stable;
