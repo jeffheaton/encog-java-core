@@ -26,7 +26,7 @@ package org.encog.neural.networks.training.pnn;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 import org.encog.neural.pnn.BasicPNN;
@@ -516,7 +516,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 		}
 
 		if (this.network.getOutputMode() == PNNOutputMode.Classification) {
-			final MLData result = new BasicMLDataArray(1);
+			final MLData result = new BasicMLData(1);
 			result.setData(0, ibest);
 			return result;
 		}

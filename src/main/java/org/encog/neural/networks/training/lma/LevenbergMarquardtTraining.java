@@ -29,7 +29,7 @@ import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
@@ -213,9 +213,9 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 		this.gradient = new double[this.parametersLength];
 		this.diagonal = new double[this.parametersLength];
 
-		final BasicMLDataArray input = new BasicMLDataArray(
+		final BasicMLData input = new BasicMLData(
 				this.indexableTraining.getInputSize());
-		final BasicMLDataArray ideal = new BasicMLDataArray(
+		final BasicMLData ideal = new BasicMLData(
 				this.indexableTraining.getIdealSize());
 		this.pair = new BasicMLDataPair(input, ideal);
 	}

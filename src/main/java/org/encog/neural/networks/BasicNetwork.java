@@ -35,7 +35,7 @@ import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.flat.FlatNetwork;
@@ -172,7 +172,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 * @param output The output.
 	 */
 	public void compute(final double[] input, final double[] output) {
-		final BasicMLDataArray input2 = new BasicMLDataArray(input);
+		final BasicMLData input2 = new BasicMLData(input);
 		final MLData output2 = this.compute(input2);
 		EngineArray.arrayCopy(output2.getData(), output);
 	}
@@ -186,7 +186,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 */
 	public MLData compute(final MLData input) {
 		try {
-			MLData result = new BasicMLDataArray(this.structure.getFlat()
+			MLData result = new BasicMLData(this.structure.getFlat()
 					.getOutputCount());
 			this.structure.getFlat().compute(input.getData(), result.getData());
 			return result;
