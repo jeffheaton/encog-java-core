@@ -3,12 +3,12 @@ package org.encog.ml.kmeans;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.engine.data.MLData;
-import org.encog.engine.data.MLDataSet;
 import org.encog.ml.MLCluster;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
+import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicNeuralDataSet;
 
 public class TestKMeans extends TestCase {
 	public static final double[][] DATA = {
@@ -24,7 +24,7 @@ public class TestKMeans extends TestCase {
         
         for(int i=0;i<DATA.length;i++)
         {
-        	set.add(new BasicNeuralData(DATA[i]));
+        	set.add(new BasicMLDataArray(DATA[i]));
         }
 
         KMeansClustering kmeans = new KMeansClustering(2,set);

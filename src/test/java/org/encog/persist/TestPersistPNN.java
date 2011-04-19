@@ -3,8 +3,8 @@ package org.encog.persist;
 import java.io.File;
 import java.io.IOException;
 
+import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.art.ART1;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.pnn.TrainBasicPNN;
 import org.encog.neural.pnn.BasicPNN;

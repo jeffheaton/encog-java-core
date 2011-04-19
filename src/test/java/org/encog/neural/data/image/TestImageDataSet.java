@@ -31,9 +31,9 @@ import java.util.Iterator;
 
 import javax.swing.JFrame;
 
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.basic.BasicNeuralData;
 import org.encog.util.downsample.Downsample;
 import org.encog.util.downsample.SimpleIntensityDownsample;
 import org.junit.Assert;
@@ -56,13 +56,13 @@ public class TestImageDataSet extends TestCase {
 		
 		Downsample downsample = new SimpleIntensityDownsample();
 		ImageNeuralDataSet set = new ImageNeuralDataSet(downsample,true,-1,1);
-		BasicNeuralData ideal = new BasicNeuralData(1);
+		BasicMLDataArray ideal = new BasicMLDataArray(1);
 		ImageNeuralData input = new ImageNeuralData(image);
 		set.add(input,ideal);
 		set.downsample(2,2);
 		Iterator<NeuralDataPair> itr = set.iterator();
 		NeuralDataPair pair = (NeuralDataPair)itr.next();
-		NeuralData data = pair.getInput();
+		MLDataArray data = pair.getInput();
 		double[] d = data.getData();
 		//Assert.assertEquals(d[0],-1.0, 0.1);
 		//Assert.assertEquals(d[5],1, 0.1);

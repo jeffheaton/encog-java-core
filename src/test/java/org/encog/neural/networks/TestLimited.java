@@ -25,8 +25,8 @@ package org.encog.neural.networks;
 
 import junit.framework.TestCase;
 
+import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.logging.Logging;
 import org.junit.Assert;

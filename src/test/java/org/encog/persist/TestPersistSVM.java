@@ -29,13 +29,13 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.art.ART1;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.XOR;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;

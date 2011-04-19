@@ -26,10 +26,10 @@ package org.encog.neural.networks.training.competitive;
 import junit.framework.TestCase;
 
 import org.encog.mathutil.matrices.Matrix;
-import org.encog.neural.data.NeuralData;
+import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicNeuralDataSet;
+import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.data.basic.BasicNeuralData;
-import org.encog.neural.data.basic.BasicNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.som.SOM;
@@ -73,9 +73,9 @@ public class TestCompetitive extends TestCase  {
 			train.iteration();
 		}
 
-		final NeuralData data1 = new BasicNeuralData(
+		final MLDataArray data1 = new BasicMLDataArray(
 				TestCompetitive.SOM_INPUT[0]);
-		final NeuralData data2 = new BasicNeuralData(
+		final MLDataArray data2 = new BasicMLDataArray(
 				TestCompetitive.SOM_INPUT[1]);
 		
 		int result1 = network.winner(data1);
