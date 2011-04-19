@@ -23,6 +23,7 @@
  */
 package org.encog.neural.data.bipolar;
 
+import org.encog.ml.data.specific.BiPolarNeuralData;
 import org.junit.Assert;
 
 import junit.framework.TestCase;

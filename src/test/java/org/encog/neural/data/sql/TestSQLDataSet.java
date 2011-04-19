@@ -29,6 +29,7 @@ import java.sql.Statement;
 import junit.framework.TestCase;
 
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.data.specific.SQLNeuralDataSet;
 import org.encog.neural.networks.XOR;
 import org.encog.util.HSQLUtil;
 
