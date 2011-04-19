@@ -24,9 +24,9 @@
 package org.encog.neural.flat.train.gradient;
 
 import org.encog.mathutil.error.ErrorCalculation;
-import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkProp;
@@ -95,7 +95,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 	/**
 	 * The pair to use for training.
 	 */
-	private final MLData pair;
+	private final MLDataPair pair;
 
 	/**
 	 * The training data.
@@ -151,7 +151,7 @@ public class GradientWorkerCPU implements FlatGradientWorker {
 		this.layerOutput = network.getLayerOutput();
 		this.layerFeedCounts = network.getLayerFeedCounts();
 
-		this.pair = BasicNeuralDataPair.createPair(network.getInputCount(), network
+		this.pair = BasicMLDataPair.createPair(network.getInputCount(), network
 				.getOutputCount());
 	}
 

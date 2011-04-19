@@ -24,7 +24,7 @@
 package org.encog.neural.networks.training.pnn;
 
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
@@ -207,7 +207,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 
 		this.network.setExclude((int) training.getRecordCount());
 
-		final NeuralDataPair pair = BasicNeuralDataPair.createPair(training
+		final NeuralDataPair pair = BasicMLDataPair.createPair(training
 				.getInputSize(), training.getIdealSize());
 
 		final double[] out = new double[this.network.getOutputCount()];
@@ -350,7 +350,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 			}
 		}
 
-		final NeuralDataPair pair = BasicNeuralDataPair.createPair(this.network
+		final NeuralDataPair pair = BasicMLDataPair.createPair(this.network
 				.getSamples().getInputSize(), this.network.getSamples()
 				.getIdealSize());
 

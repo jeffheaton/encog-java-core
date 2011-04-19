@@ -29,7 +29,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataError;
@@ -151,7 +151,7 @@ public class BufferedNeuralDataSet implements
 	 *            THe data to read.
 	 */
 	@Override
-	public void getRecord(final long index, final MLData pair) {
+	public void getRecord(final long index, final MLDataPair pair) {
 		this.egb.setLocation((int) index);
 		double[] inputTarget = pair.getInputArray();
 		this.egb.read(inputTarget);

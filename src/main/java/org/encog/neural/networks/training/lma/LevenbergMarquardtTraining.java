@@ -27,7 +27,7 @@ import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -217,7 +217,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 				this.indexableTraining.getInputSize());
 		final BasicMLDataArray ideal = new BasicMLDataArray(
 				this.indexableTraining.getIdealSize());
-		this.pair = new BasicNeuralDataPair(input, ideal);
+		this.pair = new BasicMLDataPair(input, ideal);
 	}
 
 	/**

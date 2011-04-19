@@ -26,7 +26,7 @@ package org.encog.util.benchmark;
 import java.io.File;
 
 import org.encog.StatusReportable;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
@@ -148,7 +148,7 @@ public class EncogBenchmark {
 		final long stop = start + (10 * Evaluate.MILIS);
 		int record = 0;
 
-		NeuralDataPair pair = BasicNeuralDataPair.createPair(10, 10);
+		NeuralDataPair pair = BasicMLDataPair.createPair(10, 10);
 
 		int iterations = 0;
 		while (System.currentTimeMillis() < stop) {
@@ -182,7 +182,7 @@ public class EncogBenchmark {
 		final long stop = start + (10 * Evaluate.MILIS);
 		int record = 0;
 
-		NeuralDataPair pair = BasicNeuralDataPair.createPair(10, 10);
+		NeuralDataPair pair = BasicMLDataPair.createPair(10, 10);
 
 		int iterations = 0;
 		while (System.currentTimeMillis() < stop) {

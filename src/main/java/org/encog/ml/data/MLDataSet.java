@@ -68,7 +68,7 @@ public interface MLDataSet {
 	 * @param index The index to read.
 	 * @param pair The pair that the record will be copied into.
 	 */
-	void getRecord(long index, MLData pair);
+	void getRecord(long index, MLDataPair pair);
 
 	/**
 	 * Opens an additional instance of this dataset.  

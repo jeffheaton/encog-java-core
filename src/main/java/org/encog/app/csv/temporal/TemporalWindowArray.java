@@ -24,7 +24,7 @@
 package org.encog.app.csv.temporal;
 
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
@@ -168,7 +168,7 @@ public class TemporalWindowArray {
 				idealData.setData(j, data[index++]);
 			}
 
-			final NeuralDataPair pair = new BasicNeuralDataPair(inputData,
+			final NeuralDataPair pair = new BasicMLDataPair(inputData,
 					idealData);
 			result.add(pair);
 		}

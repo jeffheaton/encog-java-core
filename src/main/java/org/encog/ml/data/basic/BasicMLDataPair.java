@@ -40,7 +40,7 @@ import org.encog.neural.data.NeuralDataPair;
  * @author jheaton
  *
  */
-public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
+public class BasicMLDataPair implements NeuralDataPair, Serializable {
 
 	/**
 	 * The serial ID.
@@ -65,7 +65,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * @param input
 	 *            The input to the neural network.
 	 */
-	public BasicNeuralDataPair(final MLDataArray input) {
+	public BasicMLDataPair(final MLDataArray input) {
 		this.input = input;
 		this.ideal = null;
 	}
@@ -79,7 +79,7 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 	 * @param ideal
 	 *            The expected results from the neural network.
 	 */
-	public BasicNeuralDataPair(final MLDataArray input, final MLDataArray ideal) {
+	public BasicMLDataPair(final MLDataArray input, final MLDataArray ideal) {
 		this.input = input;
 		this.ideal = ideal;
 	}
@@ -137,10 +137,10 @@ public class BasicNeuralDataPair implements NeuralDataPair, Serializable {
 		NeuralDataPair result;
 
 		if (idealSize > 0) {
-			result = new BasicNeuralDataPair(new BasicMLDataArray(inputSize),
+			result = new BasicMLDataPair(new BasicMLDataArray(inputSize),
 					new BasicMLDataArray(idealSize));
 		} else {
-			result = new BasicNeuralDataPair(new BasicMLDataArray(inputSize));
+			result = new BasicMLDataPair(new BasicMLDataArray(inputSize));
 		}
 
 		return result;

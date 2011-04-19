@@ -29,7 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.EncogError;
-import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
@@ -164,7 +164,7 @@ public class BasicNeuralDataSet implements Serializable,
 				EngineArray.arrayCopy(pair.getIdealArray(), ideal.getData());
 			}
 			
-			add(new BasicNeuralDataPair(input,ideal));
+			add(new BasicMLDataPair(input,ideal));
 		}
 	}
 
@@ -176,7 +176,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 *            The input to be added to the training set.
 	 */
 	public void add(final MLDataArray data) {
-		this.data.add(new BasicNeuralDataPair(data));
+		this.data.add(new BasicMLDataPair(data));
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 */
 	public void add(final MLDataArray inputData, final MLDataArray idealData) {
 
-		final NeuralDataPair pair = new BasicNeuralDataPair(inputData,
+		final NeuralDataPair pair = new BasicMLDataPair(inputData,
 				idealData);
 		this.data.add(pair);
 	}
@@ -270,7 +270,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * @param pair
 	 *            The pair to hold the data.
 	 */
-	public void getRecord(final long index, final MLData pair) {
+	public void getRecord(final long index, final MLDataPair pair) {
 
 		final NeuralDataPair source = this.data.get((int) index);
 		pair.setInputArray(source.getInputArray());

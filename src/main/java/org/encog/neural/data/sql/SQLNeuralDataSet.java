@@ -34,7 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataError;

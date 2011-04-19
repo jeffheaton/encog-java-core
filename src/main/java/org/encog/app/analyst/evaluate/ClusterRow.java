@@ -2,12 +2,12 @@ package org.encog.app.analyst.evaluate;
 
 import org.encog.app.csv.basic.LoadedRow;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 
 /**
  * Holds input data and the CSV row for a cluster item.
  */
-public class ClusterRow extends BasicNeuralDataPair {
+public class ClusterRow extends BasicMLDataPair {
 
 	/**
 	 * The serial id.

@@ -24,7 +24,7 @@
 package org.encog.neural.networks.training.lma;
 
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -115,7 +115,7 @@ public class JacobianChainRule implements ComputeJacobian {
 				this.indexableTraining.getInputSize());
 		final BasicMLDataArray ideal = new BasicMLDataArray(
 				this.indexableTraining.getIdealSize());
-		this.pair = new BasicNeuralDataPair(input, ideal);
+		this.pair = new BasicMLDataPair(input, ideal);
 	}
 
 	/**

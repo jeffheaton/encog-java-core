@@ -25,7 +25,7 @@ package org.encog.util.benchmark;
 
 import org.encog.mathutil.LinearCongruentialGenerator;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataSet;
@@ -76,7 +76,7 @@ public final class RandomTrainingFactory {
 				idealData.setData(j, rand.range(min, max));
 			}
 
-			final BasicNeuralDataPair pair = new BasicNeuralDataPair(inputData,
+			final BasicMLDataPair pair = new BasicMLDataPair(inputData,
 					idealData);
 			result.add(pair);
 
@@ -116,7 +116,7 @@ public final class RandomTrainingFactory {
 				idealData.setData(j, rand.range(min, max));
 			}
 
-			final BasicNeuralDataPair pair = new BasicNeuralDataPair(inputData,
+			final BasicMLDataPair pair = new BasicMLDataPair(inputData,
 					idealData);
 			training.add(pair);
 

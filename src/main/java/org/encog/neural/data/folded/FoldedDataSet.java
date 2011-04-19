@@ -25,7 +25,7 @@ package org.encog.neural.data.folded;
 
 import java.util.Iterator;
 
-import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -217,7 +217,7 @@ public class FoldedDataSet implements NeuralDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void getRecord(final long index, final MLData pair) {
+	public void getRecord(final long index, final MLDataPair pair) {
 		this.underlying.getRecord(this.getCurrentFoldOffset() + index, pair);
 	}
 

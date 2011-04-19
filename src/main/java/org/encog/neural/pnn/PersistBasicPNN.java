@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
@@ -66,7 +66,7 @@ public class PersistBasicPNN implements EncogPersistor {
 					for(int i=0;i<outputCount;i++) {
 						idealData.setData(i, CSVFormat.EG_FORMAT.parse(cols.get(index++)));
 					}
-					NeuralDataPair pair = new BasicNeuralDataPair(inputData,idealData);
+					NeuralDataPair pair = new BasicMLDataPair(inputData,idealData);
 					samples.add(pair);
 				}
 			}

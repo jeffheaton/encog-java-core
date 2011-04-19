@@ -38,7 +38,7 @@ package org.encog.ml.data;
  * 
  * @author jheaton
  */
-public interface MLData {
+public interface MLDataPair {
 
 	/**
 	 * @return The ideal data that the neural network should produce for the

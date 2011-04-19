@@ -25,9 +25,9 @@ package org.encog.ml.kmeans;
 
 import org.encog.ml.MLCluster;
 import org.encog.ml.MLClustering;
-import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
@@ -147,7 +147,7 @@ public class KMeansClustering implements MLClustering {
 		final long count = this.set.getRecordCount();
 
 		for (int i = 0; i < count; i++) {
-			final MLData pair = BasicNeuralDataPair.createPair(this.set
+			final MLDataPair pair = BasicMLDataPair.createPair(this.set
 					.getInputSize(), this.set.getIdealSize());
 			this.set.getRecord(index, pair);
 			result = Math.max(result, pair.getInputArray()[index]);
@@ -165,7 +165,7 @@ public class KMeansClustering implements MLClustering {
 	private double getMinValue(final int index) {
 		double result = Double.MAX_VALUE;
 		final long count = this.set.getRecordCount();
-		final MLData pair = BasicNeuralDataPair.createPair(this.set
+		final MLDataPair pair = BasicMLDataPair.createPair(this.set
 				.getInputSize(), this.set.getIdealSize());
 
 		for (int i = 0; i < count; i++) {

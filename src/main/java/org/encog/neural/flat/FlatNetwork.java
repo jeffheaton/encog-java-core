@@ -30,9 +30,9 @@ import java.util.List;
 import org.encog.Encog;
 import org.encog.EncogError;
 import org.encog.mathutil.error.ErrorCalculation;
-import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
@@ -252,7 +252,7 @@ public class FlatNetwork implements Serializable {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 
 		final double[] actual = new double[this.outputCount];
-		final MLData pair = BasicNeuralDataPair.createPair(data.getInputSize(),
+		final MLDataPair pair = BasicMLDataPair.createPair(data.getInputSize(),
 				data.getIdealSize());
 
 		for (int i = 0; i < data.getRecordCount(); i++) {

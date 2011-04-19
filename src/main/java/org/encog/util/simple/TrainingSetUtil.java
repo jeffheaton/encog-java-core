@@ -24,7 +24,7 @@
 package org.encog.util.simple;
 
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataPair;
@@ -68,7 +68,7 @@ public class TrainingSetUtil {
 				}
 			}
 
-			NeuralDataPair pair = new BasicNeuralDataPair(input, ideal);
+			NeuralDataPair pair = new BasicMLDataPair(input, ideal);
 			result.add(pair);
 		}
 

@@ -25,7 +25,7 @@ package org.encog.neural.data.buffer;
 
 import java.util.Iterator;
 
-import org.encog.ml.data.basic.BasicNeuralDataPair;
+import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.data.NeuralDataError;
 import org.encog.neural.data.NeuralDataPair;
 
@@ -72,7 +72,7 @@ public class BufferedDataSetIterator implements Iterator<NeuralDataPair> {
 		if (!hasNext())
 			return null;
 
-		NeuralDataPair pair = BasicNeuralDataPair.createPair(this.data
+		NeuralDataPair pair = BasicMLDataPair.createPair(this.data
 				.getInputSize(), this.data.getIdealSize());
 		this.data.getRecord(this.current++, pair);
 		return pair;

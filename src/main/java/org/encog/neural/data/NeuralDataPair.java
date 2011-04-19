@@ -23,7 +23,7 @@
  */
 package org.encog.neural.data;
 
-import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataPair;
 
 /**
  * Training data is stored in two ways, depending on if the data is for
@@ -40,7 +40,7 @@ import org.encog.ml.data.MLData;
  * 
  * @author jheaton
  */
-public interface NeuralDataPair extends MLData {
+public interface NeuralDataPair extends MLDataPair {
 
 	/**
 	 * @return The ideal data that the neural network should produce for the
