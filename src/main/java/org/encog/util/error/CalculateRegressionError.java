@@ -26,8 +26,8 @@ package org.encog.util.error;
 import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLDataPair;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
 public class CalculateRegressionError {
@@ -42,7 +42,7 @@ public class CalculateRegressionError {
 		}
 
 		// calculate error
-		for (final NeuralDataPair pair : data) {
+		for (final MLDataPair pair : data) {
 			final MLDataArray actual = method.compute(pair.getInput());
 			errorCalculation.updateError(actual.getData(), pair.getIdeal()
 					.getData());

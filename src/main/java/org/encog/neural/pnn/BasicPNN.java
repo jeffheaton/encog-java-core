@@ -25,10 +25,10 @@ package org.encog.neural.pnn;
 
 import org.encog.mathutil.EncogMath;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 
 /**
  * This class implements either a:
@@ -102,7 +102,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 		double psum = 0.0;
 
 		int r = -1;
-		for (NeuralDataPair pair : this.samples) {
+		for (MLDataPair pair : this.samples) {
 			r++;
 
 			if (r == getExclude()) {
@@ -222,7 +222,7 @@ public class BasicPNN extends AbstractPNN implements MLRegression {
 			this.countPer = new int[getOutputCount()];
 			this.priors = new double[getOutputCount()];
 			
-			for(NeuralDataPair pair: samples) {
+			for(MLDataPair pair: samples) {
 				int i = (int)pair.getIdeal().getData(0);
 				this.countPer[i]++;
 			}

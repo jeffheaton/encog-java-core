@@ -32,7 +32,6 @@ import org.encog.EncogError;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.obj.ObjectCloner;
@@ -53,7 +52,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * 
 	 * @author jheaton
 	 */
-	public class BasicNeuralIterator implements Iterator<NeuralDataPair> {
+	public class BasicNeuralIterator implements Iterator<MLDataPair> {
 
 		/**
 		 * The index that the iterator is currently at.
@@ -74,7 +73,7 @@ public class BasicNeuralDataSet implements Serializable,
 		 * 
 		 * @return The next item.
 		 */
-		public NeuralDataPair next() {
+		public MLDataPair next() {
 			if (!hasNext()) {
 				return null;
 			}
@@ -99,7 +98,7 @@ public class BasicNeuralDataSet implements Serializable,
 	/**
 	 * The data held by this object.
 	 */
-	private List<NeuralDataPair> data = new ArrayList<NeuralDataPair>();
+	private List<MLDataPair> data = new ArrayList<MLDataPair>();
 
 	/**
 	 * Default constructor.
@@ -137,7 +136,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * @param data
 	 *            The data to use.
 	 */
-	public BasicNeuralDataSet(final List<NeuralDataPair> data) {
+	public BasicNeuralDataSet(final List<MLDataPair> data) {
 		this.data = data;
 	}
 
@@ -149,7 +148,7 @@ public class BasicNeuralDataSet implements Serializable,
 		int inputCount = set.getInputSize();
 		int idealCount = set.getIdealSize();
 		
-		for(NeuralDataPair pair: set) {
+		for(MLDataPair pair: set) {
 			
 			BasicMLDataArray input = null;
 			BasicMLDataArray ideal = null;
@@ -189,7 +188,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 */
 	public void add(final MLDataArray inputData, final MLDataArray idealData) {
 
-		final NeuralDataPair pair = new BasicMLDataPair(inputData,
+		final MLDataPair pair = new BasicMLDataPair(inputData,
 				idealData);
 		this.data.add(pair);
 	}
@@ -201,7 +200,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 *            A NeuralDataPair object that contains both input and ideal
 	 *            data.
 	 */
-	public void add(final NeuralDataPair inputData) {
+	public void add(final MLDataPair inputData) {
 		this.data.add(inputData);
 	}
 
@@ -225,7 +224,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * 
 	 * @return the data
 	 */
-	public List<NeuralDataPair> getData() {
+	public List<MLDataPair> getData() {
 		return this.data;
 	}
 
@@ -239,7 +238,7 @@ public class BasicNeuralDataSet implements Serializable,
 		if (this.data.isEmpty()) {
 			return 0;
 		}
-		final NeuralDataPair first = this.data.get(0);
+		final MLDataPair first = this.data.get(0);
 		if (first.getIdeal() == null) {
 			return 0;
 		}
@@ -257,7 +256,7 @@ public class BasicNeuralDataSet implements Serializable,
 		if (this.data.isEmpty()) {
 			return 0;
 		}
-		final NeuralDataPair first = this.data.get(0);
+		final MLDataPair first = this.data.get(0);
 		return first.getInput().size();
 	}
 
@@ -272,7 +271,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 */
 	public void getRecord(final long index, final MLDataPair pair) {
 
-		final NeuralDataPair source = this.data.get((int) index);
+		final MLDataPair source = this.data.get((int) index);
 		pair.setInputArray(source.getInputArray());
 		if (pair.getIdealArray() != null) {
 			pair.setIdealArray(source.getIdealArray());
@@ -306,7 +305,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * 
 	 * @return An iterator to access this collection.
 	 */
-	public Iterator<NeuralDataPair> iterator() {
+	public Iterator<MLDataPair> iterator() {
 		final BasicNeuralIterator result = new BasicNeuralIterator();
 		return result;
 	}
@@ -324,7 +323,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * @param data
 	 *            the data to set
 	 */
-	public void setData(final List<NeuralDataPair> data) {
+	public void setData(final List<MLDataPair> data) {
 		this.data = data;
 	}
 

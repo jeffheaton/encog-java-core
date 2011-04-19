@@ -25,8 +25,8 @@ package org.encog.ml.data.basic;
 
 import java.io.Serializable;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 
 /**
  * A basic implementation of the NeuralDataPair interface. This implementation
@@ -40,7 +40,7 @@ import org.encog.neural.data.NeuralDataPair;
  * @author jheaton
  *
  */
-public class BasicMLDataPair implements NeuralDataPair, Serializable {
+public class BasicMLDataPair implements MLDataPair, Serializable {
 
 	/**
 	 * The serial ID.
@@ -133,8 +133,8 @@ public class BasicMLDataPair implements NeuralDataPair, Serializable {
 	 * @param idealSize The size of the ideal data.
 	 * @return A new neural data pair object.
 	 */
-	public static NeuralDataPair createPair(final int inputSize, final int idealSize) {
-		NeuralDataPair result;
+	public static MLDataPair createPair(final int inputSize, final int idealSize) {
+		MLDataPair result;
 
 		if (idealSize > 0) {
 			result = new BasicMLDataPair(new BasicMLDataArray(inputSize),

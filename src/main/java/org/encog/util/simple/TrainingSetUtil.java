@@ -23,11 +23,11 @@
  */
 package org.encog.util.simple;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.ObjectPair;
@@ -68,7 +68,7 @@ public class TrainingSetUtil {
 				}
 			}
 
-			NeuralDataPair pair = new BasicMLDataPair(input, ideal);
+			MLDataPair pair = new BasicMLDataPair(input, ideal);
 			result.add(pair);
 		}
 
@@ -82,7 +82,7 @@ public class TrainingSetUtil {
 		double[][] b = new double[length][training.getIdealSize()];
 
 		int index = 0;
-		for (NeuralDataPair pair : training) {
+		for (MLDataPair pair : training) {
 			EngineArray.arrayCopy(pair.getInputArray(), a[index]);
 			EngineArray.arrayCopy(pair.getIdealArray(), b[index]);
 			index++;

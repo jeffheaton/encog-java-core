@@ -23,10 +23,10 @@
  */
 package org.encog.neural.networks.training.lma;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 
@@ -82,7 +82,7 @@ public class JacobianChainRule implements ComputeJacobian {
 	/**
 	 * Used to read the training data.
 	 */
-	private final NeuralDataPair pair;
+	private final MLDataPair pair;
 
 	/**
 	 * The errors for each row in the Jacobian.
@@ -181,7 +181,7 @@ public class JacobianChainRule implements ComputeJacobian {
 	 *            The training set element.
 	 * @return The sum squared of errors.
 	 */
-	private double calculateDerivatives(final NeuralDataPair pair) {
+	private double calculateDerivatives(final MLDataPair pair) {
 		// error values
 		double e = 0.0;
 		double sum = 0.0;

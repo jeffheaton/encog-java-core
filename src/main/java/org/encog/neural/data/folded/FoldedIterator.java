@@ -25,14 +25,14 @@ package org.encog.neural.data.folded;
 
 import java.util.Iterator;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.data.NeuralDataError;
-import org.encog.neural.data.NeuralDataPair;
 
 /**
  * Used to iterate over a folded data set.
  */
-public class FoldedIterator implements Iterator<NeuralDataPair> {
+public class FoldedIterator implements Iterator<MLDataPair> {
 
 	/**
 	 * The owner.
@@ -65,9 +65,9 @@ public class FoldedIterator implements Iterator<NeuralDataPair> {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public NeuralDataPair next() {
+	public MLDataPair next() {
 		if (hasNext()) {
-			final NeuralDataPair pair = BasicMLDataPair.createPair(
+			final MLDataPair pair = BasicMLDataPair.createPair(
 					this.owner.getInputSize(), this.owner.getIdealSize());
 			this.owner.getRecord(this.currentIndex++, pair);
 			return pair;

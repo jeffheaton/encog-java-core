@@ -23,25 +23,10 @@
  */
 package org.encog.neural.data.sql;
 
-import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataError;
-import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
-import org.encog.neural.data.buffer.codec.CSVDataCODEC;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
 import org.encog.neural.data.buffer.codec.SQLCODEC;
 

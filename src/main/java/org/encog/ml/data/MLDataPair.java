@@ -23,6 +23,8 @@
  */
 package org.encog.ml.data;
 
+import org.encog.neural.data.MLDataArray;
+
 /**
  * Training data is stored in two ways, depending on if the data is for
  * supervised, or unsupervised training.
@@ -72,4 +74,16 @@ public interface MLDataPair {
 	 *         input and ideal data.
 	 */
 	boolean isSupervised();
+	
+	/**
+	 * @return The ideal data that the neural network should produce for the
+	 *         specified input.
+	 */
+	MLDataArray getIdeal();
+
+	/**
+	 * @return The input that the neural network
+	 */
+	MLDataArray getInput();
+
 }

@@ -23,11 +23,11 @@
  */
 package org.encog.app.csv.temporal;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
@@ -168,7 +168,7 @@ public class TemporalWindowArray {
 				idealData.setData(j, data[index++]);
 			}
 
-			final NeuralDataPair pair = new BasicMLDataPair(inputData,
+			final MLDataPair pair = new BasicMLDataPair(inputData,
 					idealData);
 			result.add(pair);
 		}

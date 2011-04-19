@@ -23,10 +23,10 @@
  */
 package org.encog.neural.data.image;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.util.downsample.Downsample;
 
 /**
@@ -141,7 +141,7 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 	 *            The input data to train on.
 	 */
 	@Override
-	public void add(final NeuralDataPair inputData) {
+	public void add(final MLDataPair inputData) {
 		if (!(inputData.getInput() instanceof ImageNeuralData)) {
 			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
 		}
@@ -161,7 +161,7 @@ public class ImageNeuralDataSet extends BasicNeuralDataSet {
 		this.height = height;
 		this.width = width;
 
-		for (final NeuralDataPair pair : this) {
+		for (final MLDataPair pair : this) {
 			if (!(pair.getInput() instanceof ImageNeuralData)) {
 				throw new NeuralNetworkError(
 						"Invalid class type found in ImageNeuralDataSet, only "

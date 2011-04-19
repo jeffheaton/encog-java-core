@@ -33,7 +33,6 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
 import org.encog.neural.data.NeuralDataError;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
@@ -125,7 +124,7 @@ public class BufferedNeuralDataSet implements
 	 * @return An iterator.
 	 */
 	@Override
-	public Iterator<NeuralDataPair> iterator() {
+	public Iterator<MLDataPair> iterator() {
 		return new BufferedDataSetIterator(this);
 	}
 
@@ -212,7 +211,7 @@ public class BufferedNeuralDataSet implements
 	 * @param pair
 	 *            The pair to add.
 	 */
-	public void add(final NeuralDataPair pair) {
+	public void add(final MLDataPair pair) {
 		if (!this.loading) {
 			throw new NeuralDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
@@ -363,7 +362,7 @@ public class BufferedNeuralDataSet implements
 	public NeuralDataSet loadToMemory() {
 		BasicNeuralDataSet result = new BasicNeuralDataSet();
 
-		for (NeuralDataPair pair : this) {
+		for (MLDataPair pair : this) {
 			result.add(pair);
 		}
 
@@ -378,7 +377,7 @@ public class BufferedNeuralDataSet implements
 	 */
 	public void load(final NeuralDataSet training) {
 		beginLoad(training.getInputSize(), training.getIdealSize());
-		for (final NeuralDataPair pair : training) {
+		for (final MLDataPair pair : training) {
 			add(pair);
 		}
 		endLoad();

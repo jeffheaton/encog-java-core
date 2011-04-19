@@ -2,8 +2,8 @@ package org.encog.neural.som.training.clustercopy;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLDataPair;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -47,7 +47,7 @@ public class SOMClusterCopyTraining extends BasicTraining {
 	@Override
 	public void iteration() {
 		int outputNeuron = 0;
-		for(NeuralDataPair pair: this.getTraining() ) {
+		for(MLDataPair pair: this.getTraining() ) {
 			copyInputPattern(outputNeuron++,pair.getInput());
 		}
 	}

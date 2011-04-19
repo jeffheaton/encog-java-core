@@ -29,9 +29,9 @@ import org.encog.ml.BasicML;
 import org.encog.ml.MLClassification;
 import org.encog.ml.MLError;
 import org.encog.ml.MLResettable;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.util.EngineArray;
@@ -190,7 +190,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 		bmu.reset();
 
 		// Determine the BMU for each training element.
-		for (final NeuralDataPair pair : data) {
+		for (final MLDataPair pair : data) {
 			final MLDataArray input = pair.getInput();
 			bmu.calculateBMU(input);
 		}

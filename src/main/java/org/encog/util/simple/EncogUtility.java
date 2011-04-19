@@ -36,13 +36,13 @@ import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
@@ -85,7 +85,7 @@ public final class EncogUtility {
 				inputCount, outputCount, false);
 		final BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(binFile);
 		buffer.beginLoad(inputCount, outputCount);
-		for (final NeuralDataPair pair : csv) {
+		for (final MLDataPair pair : csv) {
 			buffer.add(pair);
 		}
 		buffer.endLoad();
@@ -119,7 +119,7 @@ public final class EncogUtility {
 	 */
 	public static void evaluate(final MLRegression network,
 			final NeuralDataSet training) {
-		for (final NeuralDataPair pair : training) {
+		for (final MLDataPair pair : training) {
 			final MLDataArray output = network.compute(pair.getInput());
 			System.out.println("Input="
 					+ EncogUtility.formatNeuralData(pair.getInput())
@@ -377,7 +377,7 @@ public final class EncogUtility {
                inputCount, outputCount, headers);
         BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(new File(binFile));
         buffer.beginLoad(inputCount, outputCount);
-        for(NeuralDataPair pair : csv)
+        for(MLDataPair pair : csv)
         {
             buffer.add(pair);
         }
@@ -423,7 +423,7 @@ public final class EncogUtility {
 		if( method instanceof MLContext )
 			((MLContext)method).clearContext();
 
-		for (final NeuralDataPair pair : data) {
+		for (final MLDataPair pair : data) {
 			final MLDataArray actual = method.compute(pair.getInput());
 			errorCalculation.updateError(actual.getData(), pair.getIdeal()
 					.getData());
@@ -436,7 +436,7 @@ public final class EncogUtility {
 			FileWriter outFile = new FileWriter(targetFile);
 			PrintWriter out = new PrintWriter(outFile);
 			
-			for(NeuralDataPair data: set) {
+			for(MLDataPair data: set) {
 				StringBuilder line = new StringBuilder();
 				
 				for(int i=0;i<data.getInput().size();i++) {
@@ -468,7 +468,7 @@ public final class EncogUtility {
 		int total = 0;
 		int correct = 0;
 		
-		for(NeuralDataPair pair : data ) {
+		for(MLDataPair pair : data ) {
 			int ideal = (int)pair.getIdeal().getData(0);
 			int actual = method.classify(pair.getInput());
 			if( actual==ideal )

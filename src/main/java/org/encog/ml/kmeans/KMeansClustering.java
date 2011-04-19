@@ -29,7 +29,6 @@ import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 
 /**
@@ -90,7 +89,7 @@ public class KMeansClustering implements MLClustering {
 		// break up the data over the clusters
 		int clusterNumber = 0;
 
-		for( NeuralDataPair pair: set) {
+		for( MLDataPair pair: set) {
 
 			this.clusters[clusterNumber].add(pair.getInput());
 

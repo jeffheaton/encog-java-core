@@ -25,10 +25,10 @@ package org.encog.neural.cpn.training;
 
 import org.encog.mathutil.BoundMath;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLDataPair;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.cpn.CPN;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
@@ -113,7 +113,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 		}
 
 		int i = 0;
-		for (final NeuralDataPair pair : this.training) {
+		for (final MLDataPair pair : this.training) {
 			for (int j = 0; j < this.network.getInputCount(); j++) {
 				this.network.getWeightsInputToInstar().set(j, i,
 						pair.getInput().getData(j));
@@ -134,7 +134,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 
 		double worstDistance = Double.NEGATIVE_INFINITY;
 
-		for (final NeuralDataPair pair : this.training) {
+		for (final MLDataPair pair : this.training) {
 			final MLDataArray out = network.computeInstar(pair.getInput());
 
 			// determine winner

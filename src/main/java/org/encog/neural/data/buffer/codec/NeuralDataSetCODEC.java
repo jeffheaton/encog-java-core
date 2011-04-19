@@ -25,8 +25,8 @@ package org.encog.neural.data.buffer.codec;
 
 import java.util.Iterator;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.EngineArray;
 
@@ -53,7 +53,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	/**
 	 * The iterator used to read through the dataset.
 	 */
-	private Iterator<NeuralDataPair> iterator;
+	private Iterator<MLDataPair> iterator;
 
 	/**
 	 * Construct a CODEC.
@@ -89,7 +89,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 		if (!iterator.hasNext()) {
 			return false;
 		} else {
-			NeuralDataPair pair = iterator.next();
+			MLDataPair pair = iterator.next();
 			EngineArray.arrayCopy(pair.getInputArray(), input);
 			EngineArray.arrayCopy(pair.getIdealArray(), ideal);
 			return true;
@@ -101,7 +101,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 */
 	@Override
 	public void write(final double[] input, final double[] ideal) {
-		NeuralDataPair pair = BasicMLDataPair.createPair(inputSize,
+		MLDataPair pair = BasicMLDataPair.createPair(inputSize,
 				idealSize);
 		EngineArray.arrayCopy(input, pair.getIdealArray());
 		EngineArray.arrayCopy(ideal, pair.getIdealArray());

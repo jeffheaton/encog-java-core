@@ -25,8 +25,8 @@ package org.encog.neural.som.training.basic;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLDataPair;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
 import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
@@ -373,7 +373,7 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 			this.correctionMatrix.clear();
 
 			// Determine the BMU for each training element.
-			for (final NeuralDataPair pair : getTraining()) {
+			for (final MLDataPair pair : getTraining()) {
 				final MLDataArray input = pair.getInput();
 
 				final int bmu = this.bmuUtil.calculateBMU(input);

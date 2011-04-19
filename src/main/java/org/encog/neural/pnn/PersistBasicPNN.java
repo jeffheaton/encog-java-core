@@ -5,12 +5,11 @@ import java.io.OutputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.MLDataArray;
-import org.encog.neural.data.NeuralDataPair;
-import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.persist.EncogFileSection;
 import org.encog.persist.EncogPersistor;
 import org.encog.persist.EncogReadHelper;
@@ -18,7 +17,6 @@ import org.encog.persist.EncogWriteHelper;
 import org.encog.persist.PersistConst;
 import org.encog.util.EngineArray;
 import org.encog.util.csv.CSVFormat;
-import org.encog.util.csv.NumberList;
 
 public class PersistBasicPNN implements EncogPersistor {
 	
@@ -66,7 +64,7 @@ public class PersistBasicPNN implements EncogPersistor {
 					for(int i=0;i<outputCount;i++) {
 						idealData.setData(i, CSVFormat.EG_FORMAT.parse(cols.get(index++)));
 					}
-					NeuralDataPair pair = new BasicMLDataPair(inputData,idealData);
+					MLDataPair pair = new BasicMLDataPair(inputData,idealData);
 					samples.add(pair);
 				}
 			}
@@ -101,7 +99,7 @@ public class PersistBasicPNN implements EncogPersistor {
 		out.writeProperty(PersistConst.SIGMA,pnn.getSigma());
 		
 		out.addSubSection("SAMPLES");
-		for(NeuralDataPair pair: pnn.getSamples()) {
+		for(MLDataPair pair: pnn.getSamples()) {
 			for(int i=0;i<pair.getInput().size();i++) {
 				out.addColumn(pair.getInput().getData(i));	
 			}

@@ -23,6 +23,7 @@
  */
 package org.encog.neural.data;
 
+import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 
 /**
@@ -40,7 +41,7 @@ import org.encog.ml.data.MLDataSet;
  * 
  * @author jheaton
  */
-public interface NeuralDataSet extends Iterable<NeuralDataPair>, MLDataSet {
+public interface NeuralDataSet extends Iterable<MLDataPair>, MLDataSet {
 
 	/**
 	 * Add a NeuralData object to the dataset. This is used with unsupervised
@@ -73,7 +74,7 @@ public interface NeuralDataSet extends Iterable<NeuralDataPair>, MLDataSet {
 	 *            A NeuralDataPair object that contains both input and ideal
 	 *            data.
 	 */
-	void add(NeuralDataPair inputData);
+	void add(MLDataPair inputData);
 
 	/**
 	 * Close this datasource and release any resources obtained by it, including
