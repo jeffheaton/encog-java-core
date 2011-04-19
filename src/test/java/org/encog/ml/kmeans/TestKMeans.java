@@ -1,15 +1,13 @@
 package org.encog.ml.kmeans;
 
-import java.util.Arrays;
-
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.encog.engine.data.BasicEngineData;
-import org.encog.engine.data.EngineData;
-import org.encog.engine.data.EngineDataSet;
+import org.encog.engine.data.MLData;
+import org.encog.engine.data.MLDataSet;
 import org.encog.ml.MLCluster;
 import org.encog.neural.data.basic.BasicNeuralData;
+import org.encog.neural.data.basic.BasicNeuralDataPair;
 import org.encog.neural.data.basic.BasicNeuralDataSet;
 
 public class TestKMeans extends TestCase {
@@ -37,8 +35,8 @@ public class TestKMeans extends TestCase {
         int i = 1;
         for(MLCluster cluster: kmeans.getClusters())
         {
-        	EngineDataSet ds = cluster.createDataSet();
-            EngineData pair = BasicEngineData.createPair(ds.getInputSize(), ds.getIdealSize());
+        	MLDataSet ds = cluster.createDataSet();
+            MLData pair = BasicNeuralDataPair.createPair(ds.getInputSize(), ds.getIdealSize());
             for(int j=0;j<ds.getRecordCount();j++)
             {
             	ds.getRecord(j, pair);
