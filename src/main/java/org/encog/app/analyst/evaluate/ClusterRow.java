@@ -1,7 +1,7 @@
 package org.encog.app.analyst.evaluate;
 
 import org.encog.app.csv.basic.LoadedRow;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 
 /**
@@ -25,7 +25,7 @@ public class ClusterRow extends BasicMLDataPair {
 	  * @param theRow The CSV row.
 	  */
 	public ClusterRow(final double[] input, final LoadedRow theRow) {
-		super(new BasicMLDataArray(input));
+		super(new BasicMLData(input));
 		this.row = theRow;
 	}
 

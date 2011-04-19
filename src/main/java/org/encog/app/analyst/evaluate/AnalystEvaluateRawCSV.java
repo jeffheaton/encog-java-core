@@ -36,7 +36,7 @@ import org.encog.app.csv.basic.LoadedRow;
 import org.encog.app.quant.QuantError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -174,7 +174,7 @@ public class AnalystEvaluateRawCSV extends BasicFile {
 		}
 
 		MLData output = null;
-		final MLData input = new BasicMLDataArray(method.getInputCount());
+		final MLData input = new BasicMLData(method.getInputCount());
 
 		final PrintWriter tw = analystPrepareOutputFile(outputFile);
 

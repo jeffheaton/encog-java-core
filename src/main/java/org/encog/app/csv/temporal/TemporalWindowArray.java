@@ -26,7 +26,7 @@ package org.encog.app.csv.temporal;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicMLDataSet;
 
@@ -152,9 +152,9 @@ public class TemporalWindowArray {
 
 		for (int i = 0; i < stopPoint; i++) {
 			final MLData inputData 
-				= new BasicMLDataArray(this.inputWindow);
+				= new BasicMLData(this.inputWindow);
 			final MLData idealData 
-				= new BasicMLDataArray(this.predictWindow);
+				= new BasicMLData(this.predictWindow);
 
 			int index = i;
 

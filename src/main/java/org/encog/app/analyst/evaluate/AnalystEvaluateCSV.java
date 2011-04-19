@@ -39,7 +39,7 @@ import org.encog.ml.MLClassification;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
-import org.encog.ml.data.basic.BasicMLDataArray;
+import org.encog.ml.data.basic.BasicMLData;
 import org.encog.util.csv.CSVFormat;
 import org.encog.util.csv.ReadCSV;
 
@@ -179,13 +179,13 @@ public class AnalystEvaluateCSV extends BasicFile {
 			}
 
 			if (inputArray != null) {
-				final MLData input = new BasicMLDataArray(inputArray);
+				final MLData input = new BasicMLData(inputArray);
 
 				// evaluation data
 				if ((method instanceof MLClassification)
 						&& !(method instanceof MLRegression)) {
 					// classification only?
-					output = new BasicMLDataArray(1);
+					output = new BasicMLData(1);
 					output.setData(0,
 							((MLClassification) method).classify(input));
 				} else {
