@@ -32,9 +32,9 @@ import javax.swing.JFrame;
 
 import junit.framework.TestCase;
 
+import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.neural.data.MLDataArray;
 import org.encog.util.downsample.Downsample;
 import org.encog.util.downsample.SimpleIntensityDownsample;
 
@@ -60,7 +60,7 @@ public class TestImageDataSet extends TestCase {
 		set.downsample(2,2);
 		Iterator<MLDataPair> itr = set.iterator();
 		MLDataPair pair = (MLDataPair)itr.next();
-		MLDataArray data = pair.getInput();
+		MLData data = pair.getInput();
 		double[] d = data.getData();
 		//Assert.assertEquals(d[0],-1.0, 0.1);
 		//Assert.assertEquals(d[5],1, 0.1);
