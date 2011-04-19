@@ -28,8 +28,8 @@ import java.util.List;
 
 import org.encog.ml.MLCluster;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 
 /**
  * 
@@ -60,8 +60,8 @@ public class KMeansCluster implements MLCluster {
 		this.sumSqr = temp;
 	}
 
-	public NeuralDataSet createDataSet() {
-		final NeuralDataSet result = new BasicNeuralDataSet();
+	public MLDataSet createDataSet() {
+		final MLDataSet result = new BasicNeuralDataSet();
 
 		for (final MLData data : this.data) {
 			result.add(data);

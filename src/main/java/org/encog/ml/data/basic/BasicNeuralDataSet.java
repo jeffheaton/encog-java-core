@@ -32,7 +32,6 @@ import org.encog.EncogError;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.obj.ObjectCloner;
 
@@ -44,7 +43,7 @@ import org.encog.util.obj.ObjectCloner;
  * @author jheaton
  */
 public class BasicNeuralDataSet implements Serializable,
-		NeuralDataSet {
+MLDataSet {
 
 	/**
 	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
@@ -144,7 +143,7 @@ public class BasicNeuralDataSet implements Serializable,
 	 * Copy whatever dataset type is specified into a memory dataset.
 	 * @param set The dataset to copy.
 	 */
-	public BasicNeuralDataSet(NeuralDataSet set) {
+	public BasicNeuralDataSet(MLDataSet set) {
 		int inputCount = set.getInputSize();
 		int idealCount = set.getIdealSize();
 		

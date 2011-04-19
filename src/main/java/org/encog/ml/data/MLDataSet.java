@@ -40,7 +40,7 @@ package org.encog.ml.data;
  * 
  * @author jheaton
  */
-public interface MLDataSet {
+public interface MLDataSet extends Iterable<MLDataPair> {
 
 	/**
 	 * @return The size of the input data.
@@ -75,4 +75,43 @@ public interface MLDataSet {
 	 * @return The new instance.
 	 */
 	MLDataSet openAdditional();
+	
+	/**
+	 * Add a NeuralData object to the dataset. This is used with unsupervised
+	 * training, as no ideal output is provided. Note: not all implemenations
+	 * support the add methods.
+	 * 
+	 * @param data1
+	 *            The data item to be added.
+	 */
+	void add(MLData data1);
+
+	/**
+	 * Add a set of input and ideal data to the dataset. This is used with
+	 * supervised training, as ideal output is provided. Note: not all
+	 * implementations support the add methods.
+	 * 
+	 * @param inputData
+	 *            Input data.
+	 * @param idealData
+	 *            Ideal data.
+	 */
+	void add(MLData inputData, MLData idealData);
+
+	/**
+	 * Add a NeuralData object to the dataset. This is used with unsupervised
+	 * training, as no ideal output is provided. Note: not all implementations
+	 * support the add methods.
+	 * 
+	 * @param inputData
+	 *            A NeuralDataPair object that contains both input and ideal
+	 *            data.
+	 */
+	void add(MLDataPair inputData);
+
+	/**
+	 * Close this datasource and release any resources obtained by it, including
+	 * any iterators created.
+	 */
+	void close();
 }

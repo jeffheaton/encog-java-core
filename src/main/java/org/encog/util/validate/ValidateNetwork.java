@@ -27,13 +27,12 @@ import org.encog.EncogError;
 import org.encog.ml.MLInput;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLOutput;
-import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.som.SOM;
+import org.encog.ml.data.MLDataSet;
 
 public class ValidateNetwork {
 	
 	
-	public static void validateMethodToData(MLMethod method, NeuralDataSet training) {
+	public static void validateMethodToData(MLMethod method, MLDataSet training) {
 		
 		if( !(method instanceof MLInput) || !(method instanceof MLOutput) ) {
 			throw new EncogError("This machine learning method is not compatible with the provided data.");

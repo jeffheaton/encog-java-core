@@ -24,7 +24,7 @@
 package org.encog.neural.rbf.training;
 
 import org.encog.ml.TrainingImplementationType;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.rbf.RadialBasisFunction;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.TrainingError;
@@ -54,7 +54,7 @@ public class SVDTraining extends BasicTraining {
 	 * @param training The training data to use. Must be
 	 * indexable.
 	 */
-	public SVDTraining(RBFNetwork network, NeuralDataSet training) {
+	public SVDTraining(RBFNetwork network, MLDataSet training) {
 		super(TrainingImplementationType.OnePass);
 		if (network.getOutputCount() != 1) {
 			throw new TrainingError(

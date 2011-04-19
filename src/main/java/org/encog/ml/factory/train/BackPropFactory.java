@@ -27,9 +27,9 @@ import java.util.Map;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.util.ParamsHolder;
@@ -52,7 +52,7 @@ public class BackPropFactory {
 	 * @return The newly created trainer.
 	 */
 	public final MLTrain create(final MLMethod method,
-			final NeuralDataSet training, final String argsStr) {
+			final MLDataSet training, final String argsStr) {
 
 		final Map<String, String> args = ArchitectureParse.parseParams(argsStr);
 		final ParamsHolder holder = new ParamsHolder(args);

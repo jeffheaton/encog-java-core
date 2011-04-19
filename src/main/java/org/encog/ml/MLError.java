@@ -23,7 +23,8 @@
  */
 package org.encog.ml;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
+
 
 /**
  * Defines Machine Learning Method that can calculate an error based on a 
@@ -36,5 +37,5 @@ public interface MLError extends MLMethod {
 	 * @param data The dataset.
 	 * @return The error.
 	 */
-	double calculateError(final NeuralDataSet data);
+	double calculateError(final MLDataSet data);
 }

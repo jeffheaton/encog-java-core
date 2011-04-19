@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.TrainingImplementationType;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 
 /**
@@ -48,7 +48,7 @@ public abstract class BasicTraining implements Train {
 	/**
 	 * The training data.
 	 */
-	private NeuralDataSet training;
+	private MLDataSet training;
 
 	/**
 	 * The current error rate.
@@ -113,7 +113,7 @@ public abstract class BasicTraining implements Train {
 	/**
 	 * @return The training data to use.
 	 */
-	public NeuralDataSet getTraining() {
+	public MLDataSet getTraining() {
 		return this.training;
 	}
 
@@ -192,7 +192,7 @@ public abstract class BasicTraining implements Train {
 	 * @param training
 	 *            The training object.
 	 */
-	public void setTraining(final NeuralDataSet training) {
+	public void setTraining(final MLDataSet training) {
 		this.training = training;
 	}
 	

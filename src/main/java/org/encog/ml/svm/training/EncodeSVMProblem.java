@@ -28,7 +28,7 @@ import org.encog.mathutil.libsvm.svm_node;
 import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 
 /**
  * Encode an Encog dataset as a SVM problem.
@@ -52,7 +52,7 @@ public class EncodeSVMProblem {
 	 *            only a single output.  This value is typically zero.
 	 * @return The SVM problem.
 	 */
-	public static svm_problem encode(NeuralDataSet training, int outputIndex) {
+	public static svm_problem encode(MLDataSet training, int outputIndex) {
 		try {
 		svm_problem result = new svm_problem();
 

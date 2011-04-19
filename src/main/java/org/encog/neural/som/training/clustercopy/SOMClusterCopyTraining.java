@@ -4,7 +4,7 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 import org.encog.neural.som.SOM;
@@ -13,7 +13,7 @@ public class SOMClusterCopyTraining extends BasicTraining {
 
 	private SOM network;
 	
-	public SOMClusterCopyTraining(SOM network, NeuralDataSet training) {
+	public SOMClusterCopyTraining(SOM network, MLDataSet training) {
 		super(TrainingImplementationType.OnePass);
 		this.network = network;
 		setTraining(training);

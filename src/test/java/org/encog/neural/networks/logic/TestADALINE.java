@@ -23,16 +23,16 @@
  */
 package org.encog.neural.networks.logic;
 
+import junit.framework.TestCase;
+
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.simple.TrainAdaline;
 import org.encog.neural.pattern.ADALINEPattern;
-
-import junit.framework.TestCase;
 
 public class TestADALINE extends TestCase {
 
@@ -44,7 +44,7 @@ public class TestADALINE extends TestCase {
 		BasicNetwork network = (BasicNetwork)pattern.generate();
 		
 		// train it
-		NeuralDataSet training = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet training = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		Train train = new TrainAdaline(network,training,0.01);
 		NetworkUtil.testTraining(train,0.01);
 	}

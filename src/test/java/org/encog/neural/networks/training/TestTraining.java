@@ -23,24 +23,18 @@
  */
 package org.encog.neural.networks.training;
 
-import java.util.Iterator;
-
-import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
-import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.training.anneal.NeuralSimulatedAnnealing;
 import org.encog.neural.networks.training.genetic.NeuralGeneticAlgorithm;
 import org.encog.neural.networks.training.lma.LevenbergMarquardtTraining;
 import org.encog.neural.networks.training.pnn.TrainBasicPNN;
-import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.networks.training.propagation.manhattan.ManhattanPropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
@@ -48,9 +42,7 @@ import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradien
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
-import org.encog.neural.prune.PruneSelective;
 import org.encog.util.logging.Logging;
-import org.encog.util.simple.EncogUtility;
 import org.junit.Test;
 
 public class TestTraining extends TestCase   {
@@ -60,7 +52,7 @@ public class TestTraining extends TestCase   {
 	public void testRPROP() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train rprop = new ResilientPropagation(network, trainingData);
@@ -71,7 +63,7 @@ public class TestTraining extends TestCase   {
 	public void testLMA() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train rprop = new LevenbergMarquardtTraining(network, trainingData);
@@ -82,7 +74,7 @@ public class TestTraining extends TestCase   {
 	public void testBPROP() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 
@@ -94,7 +86,7 @@ public class TestTraining extends TestCase   {
 	public void testManhattan() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train bprop = new ManhattanPropagation(network, trainingData, 0.01);
@@ -105,7 +97,7 @@ public class TestTraining extends TestCase   {
 	public void testSCG() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		Train bprop = new ScaledConjugateGradient(network, trainingData);
@@ -116,7 +108,7 @@ public class TestTraining extends TestCase   {
 	public void testAnneal() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
 		NeuralSimulatedAnnealing anneal = new NeuralSimulatedAnnealing(network,score,10,2,100);
@@ -127,7 +119,7 @@ public class TestTraining extends TestCase   {
 	public void testGenetic() throws Throwable
 	{
 		Logging.stopConsoleLogging();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 		CalculateScore score = new TrainingSetScore(trainingData);
 		NeuralGeneticAlgorithm genetic = new NeuralGeneticAlgorithm(network, new RangeRandomizer(-1,1), score, 500,0.1,0.25);

@@ -27,9 +27,9 @@ import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.encog.Encog;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.activation.ActivationSigmoid;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
@@ -90,7 +90,7 @@ public class TestBiasActivation extends TestCase {
 		network2.setBiasActivation(-1);
 		network3.setBiasActivation(0.5);
 		
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		Train rprop1 = new ResilientPropagation(network1, trainingData);
 		Train rprop2 = new ResilientPropagation(network2, trainingData);

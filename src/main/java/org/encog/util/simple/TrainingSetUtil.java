@@ -25,10 +25,10 @@ package org.encog.util.simple;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.EngineArray;
 import org.encog.util.ObjectPair;
 import org.encog.util.csv.CSVFormat;
@@ -45,9 +45,9 @@ public class TrainingSetUtil {
 	 * @param idealSize The ideal size, 0 for unsupervised.
 	 * @return A NeuralDataSet that holds the contents of the CSV file.
 	 */
-	public static NeuralDataSet loadCSVTOMemory(CSVFormat format,
+	public static MLDataSet loadCSVTOMemory(CSVFormat format,
 			String filename, boolean headers, int inputSize, int idealSize) {
-		NeuralDataSet result = new BasicNeuralDataSet();
+		MLDataSet result = new BasicNeuralDataSet();
 		ReadCSV csv = new ReadCSV(filename, headers, format);
 		while (csv.next()) {
 			MLData input = null;
@@ -76,7 +76,7 @@ public class TrainingSetUtil {
 	}
 
 	public static ObjectPair<double[][], double[][]> trainingToArray(
-			NeuralDataSet training) {
+			MLDataSet training) {
 		int length = (int)training.getRecordCount();
 		double[][] a = new double[length][training.getInputSize()];
 		double[][] b = new double[length][training.getIdealSize()];

@@ -25,10 +25,10 @@ package org.encog.app.csv.temporal;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 
 /**
  * Produce a time-series from an array.
@@ -144,8 +144,8 @@ public class TemporalWindowArray {
 	 * @param data The array to process.
 	 * @return A neural data set that contains the time-series.
 	 */
-	public final NeuralDataSet process(final double[] data) {
-		final NeuralDataSet result = new BasicNeuralDataSet();
+	public final MLDataSet process(final double[] data) {
+		final MLDataSet result = new BasicNeuralDataSet();
 
 		final int totalWindowSize = this.inputWindow + this.predictWindow;
 		final int stopPoint = data.length - totalWindowSize;

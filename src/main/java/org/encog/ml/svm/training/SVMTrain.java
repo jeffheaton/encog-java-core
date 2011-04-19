@@ -29,8 +29,8 @@ import org.encog.mathutil.libsvm.svm_parameter;
 import org.encog.mathutil.libsvm.svm_problem;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.svm.SVM;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
@@ -98,7 +98,7 @@ public class SVMTrain extends BasicTraining {
 	 * @param network The network to train.
 	 * @param training The training data for this network.
 	 */
-	public SVMTrain(SVM network, NeuralDataSet training) {
+	public SVMTrain(SVM network, MLDataSet training) {
 		super(TrainingImplementationType.OnePass);
 		this.network = (SVM) network;
 		this.setTraining(training);

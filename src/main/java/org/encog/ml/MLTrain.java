@@ -23,7 +23,7 @@
  */
 package org.encog.ml;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
@@ -46,7 +46,7 @@ public interface MLTrain {
 	/**
 	 * @return The training data to use.
 	 */
-	NeuralDataSet getTraining();
+	MLDataSet getTraining();
 
 	/**
 	 * Perform one iteration of training.

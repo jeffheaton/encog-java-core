@@ -24,10 +24,10 @@
 package org.encog.neural.networks.training.lma;
 
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 
 /**
@@ -52,7 +52,7 @@ public class JacobianChainRule implements ComputeJacobian {
 	/**
 	 * THe training set to use. Must be indexable.
 	 */
-	private final NeuralDataSet indexableTraining;
+	private final MLDataSet indexableTraining;
 
 	/**
 	 * The number of training set elements.
@@ -103,7 +103,7 @@ public class JacobianChainRule implements ComputeJacobian {
 	 *            The training set to use.
 	 */
 	public JacobianChainRule(final BasicNetwork network,
-			final NeuralDataSet indexableTraining) {
+			final MLDataSet indexableTraining) {
 		this.indexableTraining = indexableTraining;
 		this.network = network;
 		this.parameterSize = network.getStructure().calculateSize();

@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.genome.Chromosome;
 import org.encog.ml.genetic.genome.Genome;
@@ -36,7 +37,6 @@ import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.BasicSpecies;
 import org.encog.ml.genetic.species.Species;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.networks.training.CalculateScore;
@@ -652,7 +652,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * @return null, not used.
 	 */
 	@Override
-	public NeuralDataSet getTraining() {
+	public MLDataSet getTraining() {
 		return null;
 	}
 

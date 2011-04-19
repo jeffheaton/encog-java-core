@@ -23,7 +23,7 @@
  */
 package org.encog.util.benchmark;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
@@ -47,7 +47,7 @@ public final class Evaluate {
 			int output) {
 		final BasicNetwork network = EncogUtility.simpleFeedForward(input,
 				hidden1, hidden2, output, true);
-		final NeuralDataSet training = RandomTrainingFactory.generate(1000,
+		final MLDataSet training = RandomTrainingFactory.generate(1000,
 				10000, input, output, -1, 1);
 	
 		
@@ -66,7 +66,7 @@ public final class Evaluate {
 	 * @return The lowest number of seconds that each of the ten attempts took.
 	 */
 	public static int evaluateTrain(
-			final BasicNetwork network, final NeuralDataSet training) {
+			final BasicNetwork network, final MLDataSet training) {
 		// train the neural network
 		Train train;
 		

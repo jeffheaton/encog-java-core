@@ -23,12 +23,11 @@
  */
 package org.encog.neural.networks.training;
 
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.back.Backpropagation;
 
 /**
@@ -42,9 +41,9 @@ public class EvaluateNuguyenWidrow {
 
    public static void main( String[] args ) {
    
-       NeuralDataSet trainingData1 = new BasicNeuralDataSet( XOR.XOR_INPUT, XOR.XOR_IDEAL );
-       NeuralDataSet trainingData2 = new BasicNeuralDataSet( XOR.XOR_INPUT, XOR.XOR_IDEAL );
-       NeuralDataSet trainingData3 = new BasicNeuralDataSet( XOR.XOR_INPUT, XOR.XOR_IDEAL );
+	   MLDataSet trainingData1 = new BasicNeuralDataSet( XOR.XOR_INPUT, XOR.XOR_IDEAL );
+	   MLDataSet trainingData2 = new BasicNeuralDataSet( XOR.XOR_INPUT, XOR.XOR_IDEAL );
+	   MLDataSet trainingData3 = new BasicNeuralDataSet( XOR.XOR_INPUT, XOR.XOR_IDEAL );
        
        for ( int i = 0; i < 1; i++ ) {
            

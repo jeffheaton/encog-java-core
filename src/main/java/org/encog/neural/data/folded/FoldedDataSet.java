@@ -27,7 +27,7 @@ import java.util.Iterator;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.training.TrainingError;
 
 /**
@@ -39,7 +39,7 @@ import org.encog.neural.networks.training.TrainingError;
  * folds (fold size 1). Call the fold method to create more folds.
  * 
  */
-public class FoldedDataSet implements NeuralDataSet {
+public class FoldedDataSet implements MLDataSet {
 
 	/**
 	 * Error message: adds are not supported.
@@ -49,7 +49,7 @@ public class FoldedDataSet implements NeuralDataSet {
 	/**
 	 * The underlying dataset.
 	 */
-	private final NeuralDataSet underlying;
+	private final MLDataSet underlying;
 
 	/**
 	 * The fold that we are currently on.
@@ -93,7 +93,7 @@ public class FoldedDataSet implements NeuralDataSet {
 	 * @param underlying
 	 *            The underlying folded dataset.
 	 */
-	public FoldedDataSet(final NeuralDataSet underlying) {
+	public FoldedDataSet(final MLDataSet underlying) {
 		this.underlying = underlying;
 		fold(1);
 	}
@@ -231,7 +231,7 @@ public class FoldedDataSet implements NeuralDataSet {
 	/**
 	 * @return The underlying dataset.
 	 */
-	public NeuralDataSet getUnderlying() {
+	public MLDataSet getUnderlying() {
 		return this.underlying;
 	}
 
@@ -271,9 +271,9 @@ public class FoldedDataSet implements NeuralDataSet {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public NeuralDataSet openAdditional() {
+	public MLDataSet openAdditional() {
 		final FoldedDataSet folded = new FoldedDataSet(
-				(NeuralDataSet)this.underlying.openAdditional());
+				(MLDataSet)this.underlying.openAdditional());
 		folded.setOwner(this);
 		return folded;
 	}

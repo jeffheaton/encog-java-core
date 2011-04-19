@@ -31,9 +31,9 @@ import java.util.List;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.neural.data.NeuralDataError;
-import org.encog.neural.data.NeuralDataSet;
 
 /**
  * This class is not memory based, so very long files can be used, without
@@ -57,7 +57,7 @@ import org.encog.neural.data.NeuralDataSet;
  * stored using "little endian" numbers.
  */
 public class BufferedNeuralDataSet implements
-		NeuralDataSet, Serializable {
+	MLDataSet, Serializable {
 
 	/**
 	 * The version.
@@ -359,7 +359,7 @@ public class BufferedNeuralDataSet implements
 	 * 
 	 * @return A memory dataset.
 	 */
-	public NeuralDataSet loadToMemory() {
+	public MLDataSet loadToMemory() {
 		BasicNeuralDataSet result = new BasicNeuralDataSet();
 
 		for (MLDataPair pair : this) {
@@ -375,7 +375,7 @@ public class BufferedNeuralDataSet implements
 	 * @param training
 	 *            The training set to load.
 	 */
-	public void load(final NeuralDataSet training) {
+	public void load(final MLDataSet training) {
 		beginLoad(training.getInputSize(), training.getIdealSize());
 		for (final MLDataPair pair : training) {
 			add(pair);

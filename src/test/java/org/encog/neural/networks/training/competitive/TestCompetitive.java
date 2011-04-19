@@ -27,11 +27,9 @@ import junit.framework.TestCase;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
-import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.basic.BasicTrainSOM;
 import org.encog.neural.som.training.basic.neighborhood.NeighborhoodSingle;
@@ -57,7 +55,7 @@ public class TestCompetitive extends TestCase  {
 		Logging.stopConsoleLogging();
 
 		// create the training set
-		final NeuralDataSet training = new BasicNeuralDataSet(
+		final MLDataSet training = new BasicNeuralDataSet(
 				TestCompetitive.SOM_INPUT, null);
 
 		// Create the neural network.

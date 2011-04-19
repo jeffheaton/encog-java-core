@@ -27,8 +27,8 @@ import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.cpn.CPN;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -56,7 +56,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 * The training data. Supervised training, so both input and ideal must be
 	 * provided.
 	 */
-	private final NeuralDataSet training;
+	private final MLDataSet training;
 
 	/**
 	 * If the weights have not been initialized, then they must be initialized
@@ -75,7 +75,7 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	 *            The learning rate.
 	 */
 	public TrainOutstar(final CPN network,
-			final NeuralDataSet training, final double learningRate) {
+			final MLDataSet training, final double learningRate) {
 		super(TrainingImplementationType.Iterative);
 		this.network = network;
 		this.training = training;

@@ -27,10 +27,10 @@ import org.encog.NullStatusReportable;
 import org.encog.StatusReportable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.codec.DataSetCODEC;
 
 /**
@@ -70,7 +70,7 @@ public class MemoryDataLoader {
 	 * 
 	 * @return The binary file to create.
 	 */
-	public NeuralDataSet external2Memory() {
+	public MLDataSet external2Memory() {
 		status.report(0, 0, "Importing to memory");
 
 		if (result == null) {

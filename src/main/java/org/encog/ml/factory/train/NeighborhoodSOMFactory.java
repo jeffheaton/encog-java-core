@@ -29,9 +29,9 @@ import org.encog.EncogError;
 import org.encog.mathutil.rbf.RBFEnum;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.basic.BasicTrainSOM;
 import org.encog.neural.som.training.basic.neighborhood.NeighborhoodBubble;
@@ -60,7 +60,7 @@ public class NeighborhoodSOMFactory {
 	 * @return The newly created trainer.
 	 */
 	public final MLTrain create(final MLMethod method, 
-			final NeuralDataSet training,
+			final MLDataSet training,
 			final String argsStr) {
 
 		if (!(method instanceof SOM)) {

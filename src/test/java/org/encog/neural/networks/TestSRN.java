@@ -23,13 +23,13 @@
  */
 package org.encog.neural.networks;
 
-import org.encog.neural.data.NeuralDataSet;
+import junit.framework.TestCase;
+
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.ElmanPattern;
 import org.encog.neural.pattern.JordanPattern;
 import org.encog.util.benchmark.RandomTrainingFactory;
-
-import junit.framework.TestCase;
 
 public class TestSRN  extends TestCase {
 	
@@ -41,7 +41,7 @@ public class TestSRN  extends TestCase {
 		elmanPattern.addHiddenLayer(hidden);
 		elmanPattern.setOutputNeurons(ideal);
 		BasicNetwork network = (BasicNetwork)elmanPattern.generate();
-		NeuralDataSet training = RandomTrainingFactory.generate(1000, 5, network.getInputCount(), network.getOutputCount(), -1, 1);
+		MLDataSet training = RandomTrainingFactory.generate(1000, 5, network.getInputCount(), network.getOutputCount(), -1, 1);
 		ResilientPropagation prop = new ResilientPropagation(network,training);
 		prop.iteration();
 		prop.iteration();		
@@ -55,7 +55,7 @@ public class TestSRN  extends TestCase {
 		jordanPattern.addHiddenLayer(hidden);
 		jordanPattern.setOutputNeurons(ideal);
 		BasicNetwork network = (BasicNetwork)jordanPattern.generate();
-		NeuralDataSet training = RandomTrainingFactory.generate(1000, 5, network.getInputCount(), network.getOutputCount(), -1, 1);
+		MLDataSet training = RandomTrainingFactory.generate(1000, 5, network.getInputCount(), network.getOutputCount(), -1, 1);
 		ResilientPropagation prop = new ResilientPropagation(network,training);
 		prop.iteration();
 		prop.iteration();		

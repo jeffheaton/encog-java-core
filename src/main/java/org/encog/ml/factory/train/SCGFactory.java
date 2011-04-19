@@ -26,7 +26,7 @@ package org.encog.ml.factory.train;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.scg.ScaledConjugateGradient;
 
@@ -48,7 +48,7 @@ public class SCGFactory {
 	 * @return The newly created trainer.
 	 */
 	public final MLTrain create(final MLMethod method, 
-			final NeuralDataSet training,
+			final MLDataSet training,
 			final String args) {
 
 		if (!(method instanceof BasicNetwork)) {

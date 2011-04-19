@@ -23,8 +23,8 @@
  */
 package org.encog.util;
 
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.ContainsFlat;
 
 /**
@@ -41,7 +41,7 @@ public final class EncogValidate {
 	 *            The training set to validate.
 	 */
 	public static void validateNetworkForTraining(final ContainsFlat network,
-			final NeuralDataSet training) {
+			final MLDataSet training) {
 
 		int inputCount = network.getFlat().getInputCount();
 		int outputCount = network.getFlat().getOutputCount();		

@@ -25,10 +25,10 @@ package org.encog.neural.networks.training.pnn;
 
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.pnn.BasicPNN;
 import org.encog.neural.pnn.PNNKernelType;
 import org.encog.neural.pnn.PNNOutputMode;
@@ -83,7 +83,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 	/**
 	 * The training data.
 	 */
-	private final NeuralDataSet training;
+	private final MLDataSet training;
 	
 	/**
 	 * The maximum error to allow.
@@ -120,7 +120,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 	 * @param network The network to train.
 	 * @param training The training data.
 	 */
-	public TrainBasicPNN(final BasicPNN network, final NeuralDataSet training) {
+	public TrainBasicPNN(final BasicPNN network, final MLDataSet training) {
 		this.network = network;
 		this.training = training;
 
@@ -187,7 +187,7 @@ public class TrainBasicPNN implements CalculationCriteria {
 	 * @param deriv Should we find the derivative.
 	 * @return The error.
 	 */
-	public double calculateError(final NeuralDataSet training,
+	public double calculateError(final MLDataSet training,
 			final boolean deriv) {
 
 		double err, tot_err;

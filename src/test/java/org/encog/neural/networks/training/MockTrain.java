@@ -23,10 +23,7 @@
  */
 package org.encog.neural.networks.training;
 
-import java.util.List;
-
 import org.encog.ml.TrainingImplementationType;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;

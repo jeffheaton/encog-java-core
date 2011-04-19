@@ -23,7 +23,7 @@
  */
 package org.encog.neural.networks.training.propagation.resilient;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.train.prop.RPROPConst;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkResilient;
 import org.encog.neural.networks.ContainsFlat;
@@ -94,7 +94,7 @@ public class ResilientPropagation extends Propagation {
 	 *            The profile to use.
 	 */
 	public ResilientPropagation(final ContainsFlat network,
-			final NeuralDataSet training) {
+			final MLDataSet training) {
 		this(network, training, RPROPConst.DEFAULT_INITIAL_UPDATE,
 				RPROPConst.DEFAULT_MAX_STEP);
 	}
@@ -118,7 +118,7 @@ public class ResilientPropagation extends Propagation {
 	 *            The maximum that a delta can reach.
 	 */
 	public ResilientPropagation(final ContainsFlat network,
-			final NeuralDataSet training, 
+			final MLDataSet training, 
 			final double initialUpdate, final double maxStep) {
 
 		super(network, training);

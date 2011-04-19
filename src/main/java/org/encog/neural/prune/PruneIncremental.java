@@ -28,7 +28,7 @@ import java.util.List;
 
 import org.encog.EncogError;
 import org.encog.StatusReportable;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.Propagation;
@@ -94,7 +94,7 @@ public class PruneIncremental extends ConcurrentJob {
 	/**
 	 * The training set to use as different neural networks are evaluated.
 	 */
-	private final NeuralDataSet training;
+	private final MLDataSet training;
 
 	/**
 	 * The pattern for which type of neural network we would like to create.
@@ -191,7 +191,7 @@ public class PruneIncremental extends ConcurrentJob {
 	 * @param report
 	 *            Object used to report status to.
 	 */
-	public PruneIncremental(final NeuralDataSet training,
+	public PruneIncremental(final MLDataSet training,
 			final NeuralNetworkPattern pattern, final int iterations,
 			final int weightTries, final int numTopResults,
 			final StatusReportable report) {
@@ -316,7 +316,7 @@ public class PruneIncremental extends ConcurrentJob {
 	/**
 	 * @return The training set to use.
 	 */
-	public NeuralDataSet getTraining() {
+	public MLDataSet getTraining() {
 		return this.training;
 	}
 
@@ -410,7 +410,7 @@ public class PruneIncremental extends ConcurrentJob {
 
 		final BasicNetwork network = (BasicNetwork) context.getJobUnit();
 		BufferedNeuralDataSet buffer = null;
-		NeuralDataSet useTraining = this.training;
+		MLDataSet useTraining = this.training;
 
 		if (this.training instanceof BufferedNeuralDataSet) {
 			buffer = (BufferedNeuralDataSet) this.training;

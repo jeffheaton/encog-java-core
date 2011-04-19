@@ -23,7 +23,7 @@
  */
 package org.encog.neural.networks.training.concurrent.jobs;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.propagation.Propagation;
@@ -60,7 +60,7 @@ public class BPROPJob extends TrainingJob {
 	 * @param momentum
 	 *            The momentum to use.
 	 */
-	public BPROPJob(final BasicNetwork network, final NeuralDataSet training,
+	public BPROPJob(final BasicNetwork network, final MLDataSet training,
 			final boolean loadToMemory, final double learningRate,
 			final double momentum) {
 		this(network,training,loadToMemory,learningRate,momentum,1.0,1,1.0,1);
@@ -89,7 +89,7 @@ public class BPROPJob extends TrainingJob {
 	 * @param iterationsPer
 	 * 			How many iterations to process per cycle.
 	 */
-	public BPROPJob(final BasicNetwork network, final NeuralDataSet training,
+	public BPROPJob(final BasicNetwork network, final MLDataSet training,
 			final boolean loadToMemory, final double learningRate,
 			final double momentum, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);

@@ -31,8 +31,8 @@ import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.simple.EncogUtility;
 
 public class CPN  extends BasicML implements MLRegression, MLResettable, MLError {
@@ -172,7 +172,7 @@ public class CPN  extends BasicML implements MLRegression, MLResettable, MLError
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final NeuralDataSet data) {
+	public double calculateError(final MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this,data);
 	}
 

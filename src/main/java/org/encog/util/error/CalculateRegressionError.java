@@ -28,12 +28,12 @@ import org.encog.ml.MLContext;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 
 public class CalculateRegressionError {
 	
 	public static double calculateError(final MLRegression method, 
-			final NeuralDataSet data) {
+			final MLDataSet data) {
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 		
 		// clear context

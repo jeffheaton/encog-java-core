@@ -38,12 +38,12 @@ import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.buffer.BufferedNeuralDataSet;
 import org.encog.neural.data.buffer.MemoryDataLoader;
 import org.encog.neural.data.buffer.codec.CSVDataCODEC;
@@ -100,11 +100,11 @@ public final class EncogUtility {
      * @param format The loaded dataset.
      * @return The loaded dataset.
      */
-    public static NeuralDataSet loadCSV2Memory(String filename, int input, int ideal, boolean headers, CSVFormat format)
+    public static MLDataSet loadCSV2Memory(String filename, int input, int ideal, boolean headers, CSVFormat format)
     {
         DataSetCODEC codec = new CSVDataCODEC(new File(filename), format, headers, input, ideal);
         MemoryDataLoader load = new MemoryDataLoader(codec);
-        NeuralDataSet dataset = load.external2Memory();
+        MLDataSet dataset = load.external2Memory();
         return dataset;
     }
 
@@ -118,7 +118,7 @@ public final class EncogUtility {
 	 *            The training set to evaluate.
 	 */
 	public static void evaluate(final MLRegression network,
-			final NeuralDataSet training) {
+			final MLDataSet training) {
 		for (final MLDataPair pair : training) {
 			final MLData output = network.compute(pair.getInput());
 			System.out.println("Input="
@@ -200,7 +200,7 @@ public final class EncogUtility {
 	 *            The number of minutes to train for.
 	 */
 	public static void trainConsole(final BasicNetwork network,
-			final NeuralDataSet trainingSet, final int minutes) {
+			final MLDataSet trainingSet, final int minutes) {
 		final Propagation train = new ResilientPropagation(network, trainingSet);
 		train.setNumThreads(0);
 		EncogUtility.trainConsole(train, network, trainingSet, minutes);
@@ -220,7 +220,7 @@ public final class EncogUtility {
 	 *            The number of minutes to train for.
 	 */
 	public static void trainConsole(final Train train,
-			final BasicNetwork network, final NeuralDataSet trainingSet,
+			final BasicNetwork network, final MLDataSet trainingSet,
 			final int minutes) {
 
 		long remaining;
@@ -255,7 +255,7 @@ public final class EncogUtility {
 	 *            The training set to use.
 	 */
 	public static void trainDialog(final BasicNetwork network,
-			final NeuralDataSet trainingSet) {
+			final MLDataSet trainingSet) {
 		final Propagation train = new ResilientPropagation(network, trainingSet);
 		train.setNumThreads(0);
 		EncogUtility.trainDialog(train, network, trainingSet);
@@ -273,7 +273,7 @@ public final class EncogUtility {
 	 *            The training set to use.
 	 */
 	public static void trainDialog(final Train train,
-			final BasicNetwork network, final NeuralDataSet trainingSet) {
+			final BasicNetwork network, final MLDataSet trainingSet) {
 
 		final TrainingDialog dialog = new TrainingDialog();
 		dialog.setVisible(true);
@@ -303,7 +303,7 @@ public final class EncogUtility {
 	 *            The error level to train to.
 	 */
 	public static void trainToError(final MLMethod network,
-			final NeuralDataSet trainingSet, final double error) {
+			final MLDataSet trainingSet, final double error) {
 
 		Train train;
 
@@ -329,7 +329,7 @@ public final class EncogUtility {
 	 *            The desired error level.
 	 */
 	public static void trainToError(final Train train,
-			final MLMethod network, final NeuralDataSet trainingSet,
+			final MLMethod network, final MLDataSet trainingSet,
 			final double error) {
 
 		int epoch = 1;
@@ -354,7 +354,7 @@ public final class EncogUtility {
 
 	}
 
-	public static NeuralDataSet loadEGB2Memory(File filename) {
+	public static MLDataSet loadEGB2Memory(File filename) {
 		BufferedNeuralDataSet buffer = new BufferedNeuralDataSet(filename);
 		return buffer.loadToMemory();
 	}
@@ -417,7 +417,7 @@ public final class EncogUtility {
    }
 
 	public static double calculateRegressionError(MLRegression method,
-			NeuralDataSet data) {
+			MLDataSet data) {
 		
 		final ErrorCalculation errorCalculation = new ErrorCalculation();
 		if( method instanceof MLContext )
@@ -431,7 +431,7 @@ public final class EncogUtility {
 		return errorCalculation.calculate();
 	}
 
-	public static void saveCSV(File targetFile, CSVFormat format, NeuralDataSet set) {
+	public static void saveCSV(File targetFile, CSVFormat format, MLDataSet set) {
 		try {
 			FileWriter outFile = new FileWriter(targetFile);
 			PrintWriter out = new PrintWriter(outFile);
@@ -464,7 +464,7 @@ public final class EncogUtility {
 	}
 
 	public static double calculateClassificationError(MLClassification method,
-			NeuralDataSet data) {
+			MLDataSet data) {
 		int total = 0;
 		int correct = 0;
 		

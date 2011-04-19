@@ -31,8 +31,8 @@ import org.encog.ml.MLError;
 import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.som.training.basic.BestMatchingUnit;
 import org.encog.util.EngineArray;
 
@@ -183,7 +183,7 @@ public class SOM extends BasicML implements MLClassification, MLResettable,
 	}
 
 	@Override
-	public double calculateError(NeuralDataSet data) {
+	public double calculateError(MLDataSet data) {
 
 		BestMatchingUnit bmu = new BestMatchingUnit(this);
 

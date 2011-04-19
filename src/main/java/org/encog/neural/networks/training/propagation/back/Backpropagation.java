@@ -23,7 +23,7 @@
  */
 package org.encog.neural.networks.training.propagation.back;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkBackPropagation;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
@@ -77,7 +77,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            The training data to be used for backpropagation.
 	 */
 	public Backpropagation(final ContainsFlat network,
-			final NeuralDataSet training) {		
+			final MLDataSet training) {		
 		this(network, training, 0, 0);		
 		addStrategy(new SmartLearningRate());
 		addStrategy(new SmartMomentum());
@@ -97,7 +97,7 @@ public class Backpropagation extends Propagation implements Momentum,
 	 *            have on the current iteration.
 	 */
 	public Backpropagation(final ContainsFlat network,
-			final NeuralDataSet training, 
+			final MLDataSet training, 
 			final double learnRate, final double momentum) {
 		super(network, training);
 		ValidateNetwork.validateMethodToData(network, training);

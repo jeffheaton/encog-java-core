@@ -27,8 +27,8 @@ import org.encog.mathutil.error.ErrorCalculation;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
@@ -47,7 +47,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	/**
 	 * The training data to use.
 	 */
-	private final NeuralDataSet training;
+	private final MLDataSet training;
 
 	/**
 	 * The learning rate.
@@ -65,7 +65,7 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	 *            The learning rate.
 	 */
 	public TrainAdaline(final BasicNetwork network,
-			final NeuralDataSet training, final double learningRate) {
+			final MLDataSet training, final double learningRate) {
 		super(TrainingImplementationType.Iterative);
 		if (network.getLayerCount() > 2) {
 			throw new NeuralNetworkError(

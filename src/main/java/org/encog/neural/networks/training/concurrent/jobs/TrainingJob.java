@@ -26,7 +26,7 @@ package org.encog.neural.networks.training.concurrent.jobs;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
@@ -45,7 +45,7 @@ public abstract class TrainingJob {
 	/**
 	 * The training data to use.
 	 */
-	private NeuralDataSet training;
+	private MLDataSet training;
 
 	/**
 	 * The strategies to use.
@@ -94,7 +94,7 @@ public abstract class TrainingJob {
 	 * @param loadToMemory True, if binary data should be loaded to memory.
 	 */
 	public TrainingJob(final BasicNetwork network,
-			final NeuralDataSet training, final boolean loadToMemory) {
+			final MLDataSet training, final boolean loadToMemory) {
 		super();
 		this.network = network;
 		this.training = training;
@@ -142,7 +142,7 @@ public abstract class TrainingJob {
 	/**
 	 * @return the training
 	 */
-	public NeuralDataSet getTraining() {
+	public MLDataSet getTraining() {
 		return this.training;
 	}
 
@@ -189,7 +189,7 @@ public abstract class TrainingJob {
 	 * @param training
 	 *            the training to set
 	 */
-	public void setTraining(final NeuralDataSet training) {
+	public void setTraining(final MLDataSet training) {
 		this.training = training;
 	}
 

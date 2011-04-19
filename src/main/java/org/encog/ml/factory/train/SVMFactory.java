@@ -28,11 +28,11 @@ import java.util.Map;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.ParamsHolder;
 
 /**
@@ -52,7 +52,7 @@ public class SVMFactory {
 	 * @return The newly created trainer.
 	 */
 	public final MLTrain create(final MLMethod method, 
-			final NeuralDataSet training,
+			final MLDataSet training,
 			final String argsStr) {
 
 		if (!(method instanceof SVM)) {

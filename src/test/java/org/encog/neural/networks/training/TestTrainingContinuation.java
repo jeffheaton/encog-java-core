@@ -23,8 +23,10 @@
  */
 package org.encog.neural.networks.training;
 
+import junit.framework.TestCase;
+
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
@@ -34,14 +36,12 @@ import org.encog.neural.networks.training.propagation.back.Backpropagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.junit.Assert;
 
-import junit.framework.TestCase;
-
 public class TestTrainingContinuation extends TestCase {
 	public void testContRPROP()
 	{
 		BasicNetwork network1 = NetworkUtil.createXORNetworkUntrained();
 		BasicNetwork network2 = NetworkUtil.createXORNetworkUntrained();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		// train network 1, no continue
 		ResilientPropagation rprop1 = new ResilientPropagation(network1,trainingData);
@@ -74,7 +74,7 @@ public class TestTrainingContinuation extends TestCase {
 	{
 		BasicNetwork network1 = NetworkUtil.createXORNetworkUntrained();
 		BasicNetwork network2 = NetworkUtil.createXORNetworkUntrained();
-		NeuralDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet trainingData = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		// train network 1, no continue
 		Backpropagation rprop1 = new Backpropagation(network1,trainingData,0.4,0.4);

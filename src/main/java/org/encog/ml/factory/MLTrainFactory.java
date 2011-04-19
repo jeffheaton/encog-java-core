@@ -26,6 +26,7 @@ package org.encog.ml.factory;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.train.BackPropFactory;
 import org.encog.ml.factory.train.ClusterSOMFactory;
 import org.encog.ml.factory.train.LMAFactory;
@@ -34,7 +35,6 @@ import org.encog.ml.factory.train.RPROPFactory;
 import org.encog.ml.factory.train.SCGFactory;
 import org.encog.ml.factory.train.SVMFactory;
 import org.encog.ml.factory.train.SVMSearchFactory;
-import org.encog.neural.data.NeuralDataSet;
 
 /**
  * This factory is used to create trainers for machine learning methods.
@@ -212,7 +212,7 @@ public class MLTrainFactory {
 	 * @return The new training method.
 	 */
 	public final MLTrain create(final MLMethod method, 
-			final NeuralDataSet training,
+			final MLDataSet training,
 			final String type, final String args) {
 
 		String args2 = args;

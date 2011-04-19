@@ -28,7 +28,7 @@ import java.sql.Statement;
 
 import junit.framework.TestCase;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.networks.XOR;
 import org.encog.util.HSQLUtil;
 
@@ -68,7 +68,7 @@ public class TestSQLDataSet extends TestCase {
 				HSQLUtil.UID,
 				HSQLUtil.PWD);
 		
-		XOR.testXORDataSet((NeuralDataSet)data);
+		XOR.testXORDataSet((MLDataSet)data);
 				
 		HSQLUtil.shutdown();
 		//DerbyUtil.cleanup();

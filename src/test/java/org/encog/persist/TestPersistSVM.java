@@ -29,13 +29,12 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.SVMType;
 import org.encog.ml.svm.training.SVMTrain;
-import org.encog.neural.art.ART1;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.XOR;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
@@ -48,7 +47,7 @@ public class TestPersistSVM extends TestCase {
 	
 	private SVM create()
 	{
-		NeuralDataSet training = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
+		MLDataSet training = new BasicNeuralDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		SVM result = new SVM(2,SVMType.EpsilonSupportVectorRegression,KernelType.RadialBasisFunction);
 		final SVMTrain train = new SVMTrain(result, training);
 		train.iteration();

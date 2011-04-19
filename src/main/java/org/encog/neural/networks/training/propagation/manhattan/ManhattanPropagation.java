@@ -23,7 +23,7 @@
  */
 package org.encog.neural.networks.training.propagation.manhattan;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.train.prop.TrainFlatNetworkManhattan;
 import org.encog.neural.networks.ContainsFlat;
 import org.encog.neural.networks.training.LearningRate;
@@ -66,7 +66,7 @@ public class ManhattanPropagation extends Propagation implements LearningRate {
 	 *            The OpenCL profile to use, null for CPU.
 	 */
 	public ManhattanPropagation(final ContainsFlat network,
-			final NeuralDataSet training, 
+			final MLDataSet training, 
 			final double learnRate) {
 		super(network, training);
 

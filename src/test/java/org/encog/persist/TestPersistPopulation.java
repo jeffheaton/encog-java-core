@@ -29,24 +29,15 @@ import java.io.IOException;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.ml.genetic.innovation.BasicInnovationList;
-import org.encog.ml.genetic.innovation.InnovationList;
-import org.encog.ml.genetic.population.BasicPopulation;
 import org.encog.ml.genetic.population.Population;
-import org.encog.ml.genetic.species.BasicSpecies;
 import org.encog.neural.activation.ActivationStep;
-import org.encog.neural.art.ART1;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.neat.NEATPopulation;
-import org.encog.neural.neat.training.NEATGenome;
-import org.encog.neural.neat.training.NEATInnovation;
-import org.encog.neural.neat.training.NEATInnovationType;
 import org.encog.neural.neat.training.NEATTraining;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.CalculateScore;
 import org.encog.neural.networks.training.TrainingSetScore;
-import org.encog.neural.thermal.HopfieldNetwork;
 import org.encog.util.TempDir;
 import org.encog.util.obj.SerializeObject;
 
@@ -58,7 +49,7 @@ public class TestPersistPopulation extends TestCase {
 	
 	private NEATPopulation generate()
 	{
-		NeuralDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);
+		MLDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);
 		
 		CalculateScore score = new TrainingSetScore(trainingSet);
 		// train the neural network
@@ -102,7 +93,7 @@ public class TestPersistPopulation extends TestCase {
 		Assert.assertEquals(0.3,pop.getYoungScoreBonus());
 		
 		// see if the population can actually be used to train
-		NeuralDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		
+		MLDataSet trainingSet = new BasicNeuralDataSet(XOR.XOR_INPUT, XOR.XOR_IDEAL);		
 		CalculateScore score = new TrainingSetScore(trainingSet);
 		NEATTraining train = new NEATTraining(score,pop);
 		train.iteration();

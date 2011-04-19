@@ -26,7 +26,7 @@ package org.encog.ml;
 import java.util.List;
 
 import org.encog.ml.data.MLData;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 
 /**
  * Defines a cluster. Usually used with the MLClustering method to break input
@@ -44,7 +44,7 @@ public interface MLCluster {
 	 * Create a machine learning dataset from the data.
 	 * @return A dataset.
 	 */
-	NeuralDataSet createDataSet();
+	MLDataSet createDataSet();
 
 	/**
 	 * Get the specified data item by index.

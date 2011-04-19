@@ -29,7 +29,6 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.NeuralDataSet;
 
 /**
  * This class performs a basic K-Means clustering. This class can be used on
@@ -76,7 +75,7 @@ public class KMeansClustering implements MLClustering {
 	 * @param set
 	 *            The dataset to cluster.
 	 */
-	public KMeansClustering(final int k, final NeuralDataSet set) {
+	public KMeansClustering(final int k, final MLDataSet set) {
 
 		this.clusters = new KMeansCluster[k];
 		for (int i = 0; i < k; i++) {

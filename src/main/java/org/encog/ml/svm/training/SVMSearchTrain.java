@@ -25,9 +25,9 @@ package org.encog.ml.svm.training;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.svm.KernelType;
 import org.encog.ml.svm.SVM;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
@@ -148,7 +148,7 @@ public class SVMSearchTrain extends BasicTraining {
 	 * @param network The network to train.
 	 * @param training The training data for this network.
 	 */
-	public SVMSearchTrain(SVM network, NeuralDataSet training) {
+	public SVMSearchTrain(SVM network, MLDataSet training) {
 		super(TrainingImplementationType.Iterative);
 		this.network = (SVM) network;
 		this.setTraining(training);

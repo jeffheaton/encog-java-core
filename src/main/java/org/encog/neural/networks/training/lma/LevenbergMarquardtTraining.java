@@ -28,9 +28,9 @@ import org.encog.mathutil.matrices.decomposition.LUDecomposition;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.structure.NetworkCODEC;
 import org.encog.neural.networks.training.BasicTraining;
@@ -105,7 +105,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	/**
 	 * The training set that we are using to train.
 	 */
-	private final NeuralDataSet indexableTraining;
+	private final MLDataSet indexableTraining;
 
 	/**
 	 * The training set length.
@@ -190,7 +190,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	 *            The training data to use. Must be indexable.
 	 */
 	public LevenbergMarquardtTraining(final BasicNetwork network,
-			final NeuralDataSet training) {
+			final MLDataSet training) {
 		super(TrainingImplementationType.Iterative);
 		ValidateNetwork.validateMethodToData(network, training);
 		if (network.getOutputCount() != 1) {

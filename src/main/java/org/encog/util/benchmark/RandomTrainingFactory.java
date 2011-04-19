@@ -25,10 +25,10 @@ package org.encog.util.benchmark;
 
 import org.encog.mathutil.LinearCongruentialGenerator;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.ml.data.basic.BasicMLDataPair;
 import org.encog.ml.data.basic.BasicNeuralDataSet;
-import org.encog.neural.data.NeuralDataSet;
 
 /**
  * Class used to generate random training sets.  This will always generate
@@ -92,7 +92,7 @@ public final class RandomTrainingFactory {
 	 * @param min The low random value.
 	 * @param max The high random value.
 	 */
-	public static void generate(final NeuralDataSet training, 
+	public static void generate(final MLDataSet training, 
 			final long seed,
 			final int count, 
 			final double min, final double max) {

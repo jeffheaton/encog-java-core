@@ -31,11 +31,11 @@ import org.encog.ml.MLContext;
 import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
 import org.encog.neural.activation.ActivationSigmoid;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.util.simple.EncogUtility;
 
 /**
@@ -326,7 +326,7 @@ public class NEATNetwork extends BasicML implements MLContext, MLRegression, MLE
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final NeuralDataSet data) {
+	public double calculateError(final MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this,data);
 	}	
 }

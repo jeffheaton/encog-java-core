@@ -24,7 +24,7 @@
 package org.encog.neural.networks.training;
 
 import org.encog.ml.MLRegression;
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.util.error.CalculateRegressionError;
 
 /**
@@ -37,7 +37,7 @@ public class TrainingSetScore implements CalculateScore {
 	/**
 	 * The training set.
 	 */
-	private final NeuralDataSet training;
+	private final MLDataSet training;
 
 	/**
 	 * Construct a training set score calculation.
@@ -45,7 +45,7 @@ public class TrainingSetScore implements CalculateScore {
 	 * @param training
 	 *            The training data to use.
 	 */
-	public TrainingSetScore(final NeuralDataSet training) {
+	public TrainingSetScore(final MLDataSet training) {
 		this.training = training;
 	}
 

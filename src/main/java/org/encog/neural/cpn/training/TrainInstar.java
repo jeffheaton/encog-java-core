@@ -27,9 +27,9 @@ import org.encog.mathutil.BoundMath;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.cpn.CPN;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.networks.training.BasicTraining;
 import org.encog.neural.networks.training.LearningRate;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -52,7 +52,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 * The training data. This is unsupervised training, so only the input
 	 * portion of the training data will be used.
 	 */
-	private final NeuralDataSet training;
+	private final MLDataSet training;
 
 	/**
 	 * The learning rate.
@@ -79,7 +79,7 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	 *            data. If set to true, then you must have the same number of
 	 *            training elements as instar neurons.
 	 */
-	public TrainInstar(final CPN network, final NeuralDataSet training,
+	public TrainInstar(final CPN network, final MLDataSet training,
 			final double learningRate, boolean initWeights) {
 		super(TrainingImplementationType.Iterative);
 		this.network = network;

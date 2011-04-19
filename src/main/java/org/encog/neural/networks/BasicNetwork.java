@@ -34,10 +34,10 @@ import org.encog.ml.MLError;
 import org.encog.ml.MLRegression;
 import org.encog.ml.MLResettable;
 import org.encog.ml.data.MLData;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataArray;
 import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationFunction;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
@@ -127,7 +127,7 @@ public class BasicNetwork extends BasicML implements ContainsFlat,
 	 *            The training set.
 	 * @return The error percentage.
 	 */
-	public double calculateError(final NeuralDataSet data) {
+	public double calculateError(final MLDataSet data) {
 		return EncogUtility.calculateRegressionError(this,data);
 	}
 

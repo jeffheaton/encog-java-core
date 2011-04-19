@@ -23,7 +23,7 @@
  */
 package org.encog.neural.networks.training.concurrent.jobs;
 
-import org.encog.neural.data.NeuralDataSet;
+import org.encog.ml.data.MLDataSet;
 import org.encog.neural.flat.train.prop.RPROPConst;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
@@ -56,7 +56,7 @@ public class RPROPJob extends TrainingJob {
 	 * @param loadToMemory
 	 *            True if binary training data should be loaded to memory.
 	 */
-	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
+	public RPROPJob(final BasicNetwork network, final MLDataSet training,
 			final boolean loadToMemory) {
 		this(network,training,loadToMemory,RPROPConst.DEFAULT_INITIAL_UPDATE,RPROPConst.DEFAULT_MAX_STEP,1,1,1,1);
 	}
@@ -80,7 +80,7 @@ public class RPROPJob extends TrainingJob {
 	 * @param iterationsPer
 	 * 			How many iterations to process per cycle.
 	 */
-	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
+	public RPROPJob(final BasicNetwork network, final MLDataSet training,
 			final boolean loadToMemory, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
 		
 		this(network,training,
@@ -111,7 +111,7 @@ public class RPROPJob extends TrainingJob {
 	 * @param iterationsPer
 	 * 			How many iterations to process per cycle.
 	 */
-	public RPROPJob(final BasicNetwork network, final NeuralDataSet training,
+	public RPROPJob(final BasicNetwork network, final MLDataSet training,
 			final boolean loadToMemory, final double initialUpdate,
 			final double maxStep, final double localRatio, final int globalRatio, final double segmentationRatio, final int iterationsPer) {
 		super(network, training, loadToMemory);

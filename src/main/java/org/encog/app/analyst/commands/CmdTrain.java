@@ -30,8 +30,8 @@ import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLTrain;
+import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
-import org.encog.neural.data.NeuralDataSet;
 import org.encog.neural.data.folded.FoldedDataSet;
 import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.cross.CrossValidationKFold;
@@ -71,7 +71,7 @@ public class CmdTrain extends Cmd {
 	 * @return The trainer.
 	 */
 	private MLTrain createTrainer(final MLMethod method,
-			final NeuralDataSet trainingSet) {
+			final MLDataSet trainingSet) {
 
 		final MLTrainFactory factory = new MLTrainFactory();
 
@@ -96,7 +96,7 @@ public class CmdTrain extends Cmd {
 	public final boolean executeCommand(final String args) {
 
 		this.kfold = obtainCross();
-		final NeuralDataSet trainingSet = obtainTrainingSet();
+		final MLDataSet trainingSet = obtainTrainingSet();
 		final MLMethod method = obtainMethod();
 		final MLTrain trainer = createTrainer(method, trainingSet);
 
@@ -165,13 +165,13 @@ public class CmdTrain extends Cmd {
 	 * Obtain the training set.
 	 * @return The training set.
 	 */
-	private NeuralDataSet obtainTrainingSet() {
+	private MLDataSet obtainTrainingSet() {
 		final String trainingID = getProp().getPropertyString(
 				ScriptProperties.ML_CONFIG_TRAINING_FILE);
 
 		final File trainingFile = getScript().resolveFilename(trainingID);
 
-		NeuralDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
+		MLDataSet trainingSet = EncogUtility.loadEGB2Memory(trainingFile);
 
 		if (this.kfold > 0) {
 			trainingSet = new FoldedDataSet(trainingSet);
@@ -187,7 +187,7 @@ public class CmdTrain extends Cmd {
 	 * @param trainingSet The training set.
 	 */
 	private void performTraining(final MLTrain train, final MLMethod method,
-			final NeuralDataSet trainingSet) {
+			final MLDataSet trainingSet) {
 
 		ValidateNetwork.validateMethodToData(method, trainingSet);
 		final double targetError = getProp().getPropertyDouble(
