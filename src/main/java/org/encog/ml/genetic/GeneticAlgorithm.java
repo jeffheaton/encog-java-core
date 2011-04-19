@@ -31,18 +31,16 @@ import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.mutate.Mutate;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.Species;
-import org.encog.util.concurrency.EngineConcurrency;
-import org.encog.util.concurrency.TaskGroup;
 
 /**
  * Implements a genetic algorithm. This is an abstract class. Other classes are
- * provided by Encog use this base class to train neural networks or
- * provide an answer to the traveling salesman problem.
- *
+ * provided by Encog use this base class to train neural networks or provide an
+ * answer to the traveling salesman problem.
+ * 
  * The genetic algorithm is also capable of using a thread pool to speed
  * execution.
  */
-public class GeneticAlgorithm {
+public abstract class GeneticAlgorithm {
 
 	/**
 	 * The score calculation object.
@@ -58,11 +56,6 @@ public class GeneticAlgorithm {
 	 * The crossover object.
 	 */
 	private Crossover crossover;
-	
-	/**
-	 * Is this the first iteration.
-	 */
-	private boolean first = true;
 
 	/**
 	 * Percent of the population that the mating population chooses partners.
@@ -92,202 +85,19 @@ public class GeneticAlgorithm {
 	private Population population;
 
 	/**
-	 * Calculate the score for this genome.  The genome's score will be set.
-	 * @param g The genome to calculate for.
-	 */
-	public void calculateScore(final Genome g) {
-		if( g.getOrganism() instanceof MLContext )
-			((MLContext)g.getOrganism()).clearContext();
-		final double score = calculateScore.calculateScore(g);
-		g.setScore(score);
-	}
-
-	/**
-	 * @return The score calculation object.
-	 */
-	public CalculateGenomeScore getCalculateScore() {
-		return calculateScore;
-	}
-
-	/**
-	 * @return The comparator.
-	 */
-	public GenomeComparator getComparator() {
-		return comparator;
-	}
-
-	/**
-	 * @return The crossover object.
-	 */
-	public Crossover getCrossover() {
-		return crossover;
-	}
-
-	/**
-	 * Get the mating population.
-	 *
-	 * @return The mating population percent.
-	 */
-	public double getMatingPopulation() {
-		return matingPopulation;
-	}
-
-	/**
-	 * @return The mutate object.
-	 */
-	public Mutate getMutate() {
-		return mutate;
-	}
-
-	/**
-	 * Get the mutation percent.
-	 *
-	 * @return The mutation percent.
-	 */
-	public double getMutationPercent() {
-		return mutationPercent;
-	}
-
-	/**
-	 * Get the percent to mate.
-	 *
-	 * @return The percent to mate.
-	 */
-	public double getPercentToMate() {
-		return percentToMate;
-	}
-
-	/**
-	 * @return The population.
-	 */
-	public Population getPopulation() {
-		return population;
-	}
-
-	/**
-	 * Modify the weight matrix and bias values based on the last call to
-	 * calcError.
-	 *
-	 * @throws NeuralNetworkException
-	 */
-	public void iteration() {
-		
-		if( first ) {
-			this.getPopulation().claim(this);
-			first = false;
-		}
-
-		final int countToMate = (int) (population.getPopulationSize() * getPercentToMate());
-		final int offspringCount = countToMate * 2;
-		int offspringIndex = population.getPopulationSize() - offspringCount;
-		final int matingPopulationSize = (int) (population.getPopulationSize() * getMatingPopulation());
-
-		final TaskGroup group = EngineConcurrency.getInstance()
-				.createTaskGroup();
-
-		// mate and form the next generation
-		for (int i = 0; i < countToMate; i++) {
-			final Genome mother = population.getGenomes().get(i);
-			final int fatherInt = (int) (Math.random() * matingPopulationSize);
-			final Genome father = population.getGenomes().get(fatherInt);
-			final Genome child1 = population.getGenomes().get(offspringIndex);
-			final Genome child2 = population.getGenomes().get(
-					offspringIndex + 1);
-
-			final MateWorker worker = new MateWorker(mother, father, child1,
-					child2);
-
-			EngineConcurrency.getInstance().processTask(worker, group);
-
-			offspringIndex += 2;
-		}
-
-		group.waitForComplete();
-
-		// sort the next generation
-		population.sort();
-	}
-
-	/**
-	 * Set the score calculation object.
-	 * @param calculateScore The score calculation object.
-	 */
-	public void setCalculateScore(final CalculateGenomeScore calculateScore) {
-		this.calculateScore = calculateScore;
-	}
-
-	/**
-	 * Set the comparator.
-	 * @param comparator The comparator.
-	 */
-	public void setComparator(final GenomeComparator comparator) {
-		this.comparator = comparator;
-	}
-
-	/**
-	 * Set the crossover object.
-	 * @param crossover The crossover object.
-	 */
-	public void setCrossover(final Crossover crossover) {
-		this.crossover = crossover;
-	}
-
-	/**
-	 * Set the mating population percent.
-	 *
-	 * @param matingPopulation
-	 *            The mating population percent.
-	 */
-	public void setMatingPopulation(final double matingPopulation) {
-		this.matingPopulation = matingPopulation;
-	}
-
-	/**
-	 * Set the mutate object.
-	 * @param mutate The mutate object.
-	 */
-	public void setMutate(final Mutate mutate) {
-		this.mutate = mutate;
-	}
-
-	/**
-	 * Set the mutation percent.
-	 *
-	 * @param mutationPercent
-	 *            The percent to mutate.
-	 */
-	public void setMutationPercent(final double mutationPercent) {
-		this.mutationPercent = mutationPercent;
-	}
-
-	/**
-	 * Set the percent to mate.
-	 *
-	 * @param percentToMate
-	 *            The percent to mate.
-	 */
-	public void setPercentToMate(final double percentToMate) {
-		this.percentToMate = percentToMate;
-	}
-
-	/**
-	 * Set the population.
-	 * @param population The population.
-	 */
-	public void setPopulation(final Population population) {
-		this.population = population;
-	}
-
-	/**
 	 * Add a genome.
-	 * @param species The species to add.
-	 * @param genome The genome to add.
+	 * 
+	 * @param species
+	 *            The species to add.
+	 * @param genome
+	 *            The genome to add.
 	 */
-	public void addSpeciesMember(final Species species, final Genome genome) {
+	public final void addSpeciesMember(final Species species, 
+			final Genome genome) {
 
-		if (this.getComparator().isBetterThan(genome.getScore(),
+		if (getComparator().isBetterThan(genome.getScore(),
 				species.getBestScore())) {
-			species.setBestScore( genome.getScore() );
+			species.setBestScore(genome.getScore());
 			species.setGensNoImprovement(0);
 			species.setLeader(genome);
 		}
@@ -295,4 +105,167 @@ public class GeneticAlgorithm {
 		species.getMembers().add(genome);
 
 	}
+
+	/**
+	 * Calculate the score for this genome. The genome's score will be set.
+	 * 
+	 * @param g
+	 *            The genome to calculate for.
+	 */
+	public final void calculateScore(final Genome g) {
+		if (g.getOrganism() instanceof MLContext) {
+			((MLContext) g.getOrganism()).clearContext();
+		}
+		final double score = this.calculateScore.calculateScore(g);
+		g.setScore(score);
+	}
+
+	/**
+	 * @return The score calculation object.
+	 */
+	public final CalculateGenomeScore getCalculateScore() {
+		return this.calculateScore;
+	}
+
+	/**
+	 * @return The comparator.
+	 */
+	public final GenomeComparator getComparator() {
+		return this.comparator;
+	}
+
+	/**
+	 * @return The crossover object.
+	 */
+	public final Crossover getCrossover() {
+		return this.crossover;
+	}
+
+	/**
+	 * Get the mating population.
+	 * 
+	 * @return The mating population percent.
+	 */
+	public final double getMatingPopulation() {
+		return this.matingPopulation;
+	}
+
+	/**
+	 * @return The mutate object.
+	 */
+	public final Mutate getMutate() {
+		return this.mutate;
+	}
+
+	/**
+	 * Get the mutation percent.
+	 * 
+	 * @return The mutation percent.
+	 */
+	public final double getMutationPercent() {
+		return this.mutationPercent;
+	}
+
+	/**
+	 * Get the percent to mate.
+	 * 
+	 * @return The percent to mate.
+	 */
+	public final double getPercentToMate() {
+		return this.percentToMate;
+	}
+
+	/**
+	 * @return The population.
+	 */
+	public final Population getPopulation() {
+		return this.population;
+	}
+
+
+	/**
+	 * Set the score calculation object.
+	 * 
+	 * @param theCalculateScore
+	 *            The score calculation object.
+	 */
+	public final void setCalculateScore(
+			final CalculateGenomeScore theCalculateScore) {
+		this.calculateScore = theCalculateScore;
+	}
+
+	/**
+	 * Set the comparator.
+	 * 
+	 * @param theComparator
+	 *            The comparator.
+	 */
+	public final void setComparator(final GenomeComparator theComparator) {
+		this.comparator = theComparator;
+	}
+
+	/**
+	 * Set the crossover object.
+	 * 
+	 * @param theCrossover
+	 *            The crossover object.
+	 */
+	public final void setCrossover(final Crossover theCrossover) {
+		this.crossover = theCrossover;
+	}
+
+	/**
+	 * Set the mating population percent.
+	 * 
+	 * @param theMatingPopulation
+	 *            The mating population percent.
+	 */
+	public final void setMatingPopulation(final double theMatingPopulation) {
+		this.matingPopulation = theMatingPopulation;
+	}
+
+	/**
+	 * Set the mutate object.
+	 * 
+	 * @param theMutate
+	 *            The mutate object.
+	 */
+	public final void setMutate(final Mutate theMutate) {
+		this.mutate = theMutate;
+	}
+
+	/**
+	 * Set the mutation percent.
+	 * 
+	 * @param theMutationPercent
+	 *            The percent to mutate.
+	 */
+	public final void setMutationPercent(final double theMutationPercent) {
+		this.mutationPercent = theMutationPercent;
+	}
+
+	/**
+	 * Set the percent to mate.
+	 * 
+	 * @param thePercentToMate
+	 *            The percent to mate.
+	 */
+	public final void setPercentToMate(final double thePercentToMate) {
+		this.percentToMate = thePercentToMate;
+	}
+
+	/**
+	 * Set the population.
+	 * 
+	 * @param thePopulation
+	 *            The population.
+	 */
+	public final void setPopulation(final Population thePopulation) {
+		this.population = thePopulation;
+	}
+	
+	/**
+	 * Perform one training iteration.
+	 */
+	public abstract void iteration ();
 }

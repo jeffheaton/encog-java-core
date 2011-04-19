@@ -42,6 +42,6 @@ public interface Crossover {
 	 * @param offspring2
 	 *            The second offspring.
 	 */
-	public void mate(final Chromosome mother, final Chromosome father,
+	void mate(final Chromosome mother, final Chromosome father,
 			final Chromosome offspring1, final Chromosome offspring2);
 }

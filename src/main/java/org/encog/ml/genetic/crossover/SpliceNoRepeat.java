@@ -67,17 +67,18 @@ public class SpliceNoRepeat implements Crossover {
 	/**
 	 * Construct a splice crossover.
 	 * 
-	 * @param cutLength
+	 * @param theCutLength
 	 *            The cut length.
 	 */
-	public SpliceNoRepeat(final int cutLength) {
-		this.cutLength = cutLength;
+	public SpliceNoRepeat(final int theCutLength) {
+		this.cutLength = theCutLength;
 	}
 
 	/**
 	 * Assuming this chromosome is the "mother" mate with the passed in
 	 * "father".
-	 * 
+	 * @param mother
+	 * 		The mother.
 	 * @param father
 	 *            The father.
 	 * @param offspring1
@@ -85,12 +86,13 @@ public class SpliceNoRepeat implements Crossover {
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public void mate(final Chromosome mother, final Chromosome father,
+	public final void mate(final Chromosome mother, final Chromosome father,
 			final Chromosome offspring1, final Chromosome offspring2) {
 		final int geneLength = father.getGenes().size();
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() * (geneLength - this.cutLength));
+		final int cutpoint1 = (int) (Math.random() 
+				* (geneLength - this.cutLength));
 		final int cutpoint2 = cutpoint1 + this.cutLength;
 
 		// keep track of which genes have been taken in each of the two

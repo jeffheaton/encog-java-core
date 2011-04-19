@@ -38,16 +38,17 @@ public class Splice implements Crossover {
 
 	/**
 	 * Create a slice crossover with the specified cut length.
-	 * @param cutLength The cut length.
+	 * @param theCutLength The cut length.
 	 */
-	public Splice(final int cutLength) {
-		this.cutLength = cutLength;
+	public Splice(final int theCutLength) {
+		this.cutLength = theCutLength;
 	}
 
 	/**
 	 * Assuming this chromosome is the "mother" mate with the passed in
 	 * "father".
-	 * 
+	 * @param mother
+	 * 			The mother.
 	 * @param father
 	 *            The father.
 	 * @param offspring1
@@ -55,12 +56,13 @@ public class Splice implements Crossover {
 	 * @param offspring2
 	 *            Returns the second offspring.
 	 */
-	public void mate(final Chromosome mother, final Chromosome father,
+	public final void mate(final Chromosome mother, final Chromosome father,
 			final Chromosome offspring1, final Chromosome offspring2) {
 		final int geneLength = mother.getGenes().size();
 
 		// the chromosome must be cut at two positions, determine them
-		final int cutpoint1 = (int) (Math.random() * (geneLength - this.cutLength));
+		final int cutpoint1 = (int) (Math.random() 
+				* (geneLength - this.cutLength));
 		final int cutpoint2 = cutpoint1 + this.cutLength;
 
 		// handle cut section

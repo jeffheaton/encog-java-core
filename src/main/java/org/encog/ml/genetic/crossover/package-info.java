@@ -21,54 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.genetic.genes;
-
-
 /**
- * A gene that holds a single character.
+ * This package provides classes to allow genetic algorithms to 
+ * implement crossover.
  */
-public class CharGene extends BasicGene {
+package org.encog.ml.genetic.crossover;
 
-	/**
-	 * Serial id.
-	 */
-	private static final long serialVersionUID = 1L;
-	
-	/**
-	 * The character value of the gene.
-	 */
-	private char value;
-
-	/**
-	 * Copy another gene to this gene.
-	 * @param gene The source gene.
-	 */
-	@Override
-	public final void copy(final Gene gene) {
-		this.value = ((CharGene) gene).getValue();
-	}
-
-	/**
-	 * @return The value of this gene.
-	 */
-	public final char getValue() {
-		return this.value;
-	}
-
-	/**
-	 * Set the value of this gene.
-	 * @param theValue The new value of this gene.
-	 */
-	public final void setValue(final char theValue) {
-		this.value = theValue;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String toString() {
-		return "" + this.value;
-	}
-
-}

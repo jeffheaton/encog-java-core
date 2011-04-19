@@ -54,27 +54,27 @@ public class MateWorker implements EngineTask {
 
 	/**
 	 * 
-	 * @param mother
+	 * @param theMother
 	 *            The mother.
-	 * @param father
+	 * @param theFather
 	 *            The father.
-	 * @param child1
+	 * @param theChild1
 	 *            The first child.
-	 * @param child2
+	 * @param theChild2
 	 *            The second child.
 	 */
-	public MateWorker(final Genome mother, final Genome father,
-			final Genome child1, final Genome child2) {
-		this.mother = mother;
-		this.father = father;
-		this.child1 = child1;
-		this.child2 = child2;
+	public MateWorker(final Genome theMother, final Genome theFather,
+			final Genome theChild1, final Genome theChild2) {
+		this.mother = theMother;
+		this.father = theFather;
+		this.child1 = theChild1;
+		this.child2 = theChild2;
 	}
 
 	/**
 	 * Mate the two chromosomes.
 	 */
-	public void run() {
+	public final void run() {
 		mother.mate(father, child1, child2);
 	}
 

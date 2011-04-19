@@ -187,15 +187,15 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * Determines if we are using snapshot mode.
 	 */
 	private boolean snapshot;
-	
+
 	/**
 	 * The iteration number.
 	 */
 	private int iteration;
 
 	/**
-	 * Construct a neat trainer with a new population.  The new population is created 
-	 * from the specified parameters.
+	 * Construct a neat trainer with a new population. The new population is
+	 * created from the specified parameters.
 	 * 
 	 * @param calculateScore
 	 *            The score calculation object.
@@ -215,8 +215,9 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 		setCalculateScore(new GeneticScoreAdapter(calculateScore));
 		setComparator(new GenomeComparator(getCalculateScore()));
-		setPopulation(new NEATPopulation(inputCount,outputCount,populationSize));
-		
+		setPopulation(new NEATPopulation(inputCount, outputCount,
+				populationSize));
+
 		init();
 	}
 
@@ -270,6 +271,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * @param strategy
 	 *            Not used.
 	 */
+	@Override
 	public void addStrategy(final Strategy strategy) {
 		throw new TrainingError(
 				"Strategies are not supported by this training method.");
@@ -325,6 +327,11 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 
 			}
 		}
+	}
+
+	@Override
+	public boolean canContinue() {
+		return false;
 	}
 
 	/**
@@ -458,13 +465,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 				mom.getOutputCount());
 		babyGenome.setGeneticAlgorithm(this);
 		babyGenome.setPopulation(getPopulation());
-		
+
 		return babyGenome;
 	}
 
 	/**
 	 * Called when training is done.
 	 */
+	@Override
 	public void finishTraining() {
 
 	}
@@ -472,8 +480,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	/**
 	 * return The error for the best genome.
 	 */
+	@Override
 	public double getError() {
 		return this.bestEverScore;
+	}
+
+	@Override
+	public TrainingImplementationType getImplementationType() {
+		return TrainingImplementationType.Iterative;
 	}
 
 	/**
@@ -490,9 +504,15 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		return this.inputCount;
 	}
 
+	@Override
+	public int getIteration() {
+		return this.iteration;
+	}
+
 	/**
 	 * @return A network created for the best genome.
 	 */
+	@Override
 	public NEATNetwork getNetwork() {
 		return this.bestEverNetwork;
 	}
@@ -621,6 +641,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * 
 	 * @return The strategies in use(none).
 	 */
+	@Override
 	public List<Strategy> getStrategies() {
 		return new ArrayList<Strategy>();
 	}
@@ -630,6 +651,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * 
 	 * @return null, not used.
 	 */
+	@Override
 	public NeuralDataSet getTraining() {
 		return null;
 	}
@@ -644,7 +666,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		} else {
 			this.bestEverScore = Double.MIN_VALUE;
 		}
-		
+
 		// check the population
 		for (final Genome obj : getPopulation().getGenomes()) {
 			if (!(obj instanceof NEATGenome)) {
@@ -663,7 +685,7 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 
 		getPopulation().claim(this);
-		
+
 		resetAndKill();
 		sortAndRecord();
 		speciateAndCalculateSpawnLevels();
@@ -674,6 +696,14 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 */
 	public boolean isSnapshot() {
 		return this.snapshot;
+	}
+
+	/**
+	 * @return True if training can progress no further.
+	 */
+	@Override
+	public boolean isTrainingDone() {
+		return false;
 	}
 
 	/**
@@ -791,6 +821,27 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	}
 
 	/**
+	 * Perform the specified number of training iterations. This is a basic
+	 * implementation that just calls iteration the specified number of times.
+	 * However, some training methods, particularly with the GPU, benefit
+	 * greatly by calling with higher numbers than 1.
+	 * 
+	 * @param count
+	 *            The number of training iterations.
+	 */
+	@Override
+	public void iteration(final int count) {
+		for (int i = 0; i < count; i++) {
+			iteration();
+		}
+	}
+
+	@Override
+	public TrainingContinuation pause() {
+		return null;
+	}
+
+	/**
 	 * Reset for an iteration.
 	 */
 	public void resetAndKill() {
@@ -811,6 +862,10 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 	}
 
+	@Override
+	public void resume(final TrainingContinuation state) {
+
+	}
 
 	/**
 	 * Not used.
@@ -818,7 +873,13 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 	 * @param error
 	 *            Not used.
 	 */
+	@Override
 	public void setError(final double error) {
+	}
+
+	@Override
+	public void setIteration(final int iteration) {
+		this.iteration = iteration;
 	}
 
 	/**
@@ -1104,58 +1165,6 @@ public class NEATTraining extends GeneticAlgorithm implements Train {
 		}
 
 		return (NEATGenome) getPopulation().get(ChosenOne);
-	}
-	
-	/**
-	 * @return True if training can progress no further.
-	 */
-	public boolean isTrainingDone()
-	{
-		return false;
-	}
-
-	/**
-	 * Perform the specified number of training iterations. This is a basic implementation 
-	 * that just calls iteration the specified number of times.  However, some training 
-	 * methods, particularly with the GPU, benefit greatly by calling with higher numbers than 1.
-	 * @param count The number of training iterations.
-	 */
-	public void iteration(int count) {
-		for(int i=0;i<count;i++) {
-			iteration();
-		}
-	}
-
-
-
-	@Override
-	public int getIteration() {
-		return this.iteration;
-	}
-
-	@Override
-	public void setIteration(int iteration) {
-		this.iteration = iteration;
-	}
-
-	@Override
-	public TrainingImplementationType getImplementationType() {
-		return TrainingImplementationType.Iterative;
-	}
-	
-	@Override
-	public boolean canContinue() {
-		return false;
-	}
-
-	@Override
-	public TrainingContinuation pause() {
-		return null;
-	}
-
-	@Override
-	public void resume(TrainingContinuation state) {
-		
 	}
 
 }

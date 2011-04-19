@@ -53,52 +53,52 @@ public abstract class BasicGene implements Gene, Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public int compareTo(final Gene o) {
+	public final int compareTo(final Gene o) {
 		return ((int) (getInnovationId() - o.getInnovationId()));
 	}
 
 	/**
 	 * @return The id of this gene.
 	 */
-	public long getId() {
+	public final long getId() {
 		return id;
 	}
 
 	/**
 	 * @return The innovation id of this gene.
 	 */
-	public long getInnovationId() {
+	public final long getInnovationId() {
 		return innovationId;
 	}
 
 	/**
 	 * @return True, if this gene is enabled.
 	 */
-	public boolean isEnabled() {
+	public final boolean isEnabled() {
 		return enabled;
 	}
 
 	/**
 	 * @param e True, if this gene is enabled.
 	 */
-	public void setEnabled(final boolean e) {
+	public final void setEnabled(final boolean e) {
 		enabled = e;
 	}
 
 	/**
 	 * Set the id for this gene.
-	 * @param id The id for this gene.
+	 * @param i The id for this gene.
 	 */
-	public void setId(final long id) {
-		this.id = id;
+	public final void setId(final long i) {
+		this.id = i;
 	}
 
 	/**
 	 * Set the innovation id for this gene.
-	 * @param innovationID The innovation id for this gene.
+	 * @param theInnovationID The innovation id for this gene.
 	 */
-	public void setInnovationId(final long innovationID) {
-		innovationId = innovationID;
+	public final void setInnovationId(final long theInnovationID) {
+		innovationId = theInnovationID;
 	}
 
 }

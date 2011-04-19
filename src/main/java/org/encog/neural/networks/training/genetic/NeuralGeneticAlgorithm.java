@@ -25,6 +25,7 @@ package org.encog.neural.networks.training.genetic;
 
 import org.encog.mathutil.randomize.Randomizer;
 import org.encog.ml.TrainingImplementationType;
+import org.encog.ml.genetic.BasicGeneticAlgorithm;
 import org.encog.ml.genetic.GeneticAlgorithm;
 import org.encog.ml.genetic.crossover.Splice;
 import org.encog.ml.genetic.genome.Genome;
@@ -61,7 +62,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	 * 
 	 * @author jheaton
 	 */
-	public class NeuralGeneticAlgorithmHelper extends GeneticAlgorithm {
+	public class NeuralGeneticAlgorithmHelper extends BasicGeneticAlgorithm {
 		/**
 		 * @return The error from the last iteration.
 		 */
