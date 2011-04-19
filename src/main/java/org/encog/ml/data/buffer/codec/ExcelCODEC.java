@@ -106,37 +106,37 @@ public class ExcelCODEC implements DataSetCODEC {
 	/**
 	 * Constructor to create Excel from binary.
 	 * 
-	 * @param file
+	 * @param theFile
 	 *            The CSV file to create.
 	 */
-	public ExcelCODEC(final File file) {
+	public ExcelCODEC(final File theFile) {
 
-		this.file = file;
+		this.file = theFile;
 	}
 
 	/**
 	 * Create a CODEC to load data from Excel to binary.
 	 * 
-	 * @param file
+	 * @param theFile
 	 *            The Excel file to load.
-	 * @param inputCount
+	 * @param theInputCount
 	 *            The number of input columns.
-	 * @param idealCount
+	 * @param theIdealCount
 	 *            The number of ideal columns.
 	 */
-	public ExcelCODEC(final File file, final int inputCount,
-			final int idealCount) {
+	public ExcelCODEC(final File theFile, final int theInputCount,
+			final int theIdealCount) {
 
-		this.file = file;
-		this.inputCount = inputCount;
-		this.idealCount = idealCount;
+		this.file = theFile;
+		this.inputCount = theInputCount;
+		this.idealCount = theIdealCount;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void close() {
+	public final void close() {
 		if (this.readZipFile != null) {
 			try {
 				this.readZipFile.close();
@@ -148,7 +148,8 @@ public class ExcelCODEC implements DataSetCODEC {
 
 		if (this.zos != null) {
 			try {
-				final ZipEntry entry = new ZipEntry("xl/worksheets/sheet1.xml");
+				final ZipEntry theEntry 
+					= new ZipEntry("xl/worksheets/sheet1.xml");
 				this.xmlOut.endTag();
 				this.xmlOut.addAttribute("left", "0.7");
 				this.xmlOut.addAttribute("right", "0.7");
@@ -163,10 +164,10 @@ public class ExcelCODEC implements DataSetCODEC {
 				this.xmlOut.endDocument();
 
 				final byte[] b = this.buffer.toByteArray();
-				entry.setSize(b.length);
-				entry.setCompressedSize(-1);
-				entry.setMethod(ZipEntry.DEFLATED);
-				this.zos.putNextEntry(entry);
+				theEntry.setSize(b.length);
+				theEntry.setCompressedSize(-1);
+				theEntry.setMethod(ZipEntry.DEFLATED);
+				this.zos.putNextEntry(theEntry);
 				this.zos.write(b);
 				this.zos.closeEntry();
 				this.zos.close();
@@ -190,7 +191,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getIdealSize() {
+	public final int getIdealSize() {
 		return this.idealCount;
 	}
 
@@ -198,7 +199,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getInputSize() {
+	public final int getInputSize() {
 		return this.inputCount;
 	}
 
@@ -206,7 +207,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void prepareRead() {
+	public final void prepareRead() {
 		try {
 			this.readZipFile = new ZipFile(this.file);
 
@@ -242,7 +243,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void prepareWrite(final int recordCount, final int inputSize,
+	public final void prepareWrite(final int recordCount, final int inputSize,
 			final int idealSize) {
 		this.inputCount = inputSize;
 		this.idealCount = idealSize;
@@ -251,23 +252,25 @@ public class ExcelCODEC implements DataSetCODEC {
 			this.fos = new FileOutputStream(this.file);
 			this.zos = new ZipOutputStream(this.fos);
 
-			InputStream is = ResourceInputStream.openResourceInputStream("org/encog/data/blank.xlsx");
+			final InputStream is = ResourceInputStream
+					.openResourceInputStream("org/encog/data/blank.xlsx");
 
 			final ZipInputStream zis = new ZipInputStream(is);
 
-			ZipEntry entry;
+			ZipEntry theEntry;
 
 			while (zis.available() > 0) {
-				entry = zis.getNextEntry();
+				theEntry = zis.getNextEntry();
 				if ((entry != null)
-						&& !"xl/worksheets/sheet1.xml".equals(entry.getName())) {
+			&& !"xl/worksheets/sheet1.xml".equals(entry.getName())) {
 
-					final ZipEntry entry2 = new ZipEntry(entry);
+					final ZipEntry entry2 = new ZipEntry(theEntry);
 					entry2.setCompressedSize(-1);
 					this.zos.putNextEntry(entry2);
-					final byte[] buffer = new byte[(int) entry.getSize()];
-					zis.read(buffer);
-					this.zos.write(buffer);
+					final byte[] theBuffer 
+						= new byte[(int) entry.getSize()];
+					zis.read(theBuffer);
+					this.zos.write(theBuffer);
 					this.zos.closeEntry();
 				}
 			}
@@ -279,10 +282,10 @@ public class ExcelCODEC implements DataSetCODEC {
 			this.xmlOut.beginDocument();
 			this.xmlOut
 					.addAttribute("xmlns",
-							"http://schemas.openxmlformats.org/spreadsheetml/2006/main");
+		"http://schemas.openxmlformats.org/spreadsheetml/2006/main");
 			this.xmlOut
 					.addAttribute("xmlns:r",
-							"http://schemas.openxmlformats.org/officeDocument/2006/relationships");
+"http://schemas.openxmlformats.org/officeDocument/2006/relationships");
 			this.xmlOut.beginTag("worksheet");
 			final StringBuilder d = new StringBuilder();
 			d.append(toColumn(this.inputCount + this.idealCount));
@@ -311,7 +314,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean read(final double[] input, final double[] ideal) {
+	public final boolean read(final double[] input, final double[] ideal) {
 
 		int ch;
 
@@ -330,7 +333,8 @@ public class ExcelCODEC implements DataSetCODEC {
 	/**
 	 * {@inheritDoc}
 	 */
-	private void readRow(final ReadXML xmlIn, final double[] input,
+	private void readRow(final ReadXML xmlIn, 
+			final double[] input,
 			final double[] ideal) {
 		int ch;
 
@@ -377,7 +381,7 @@ public class ExcelCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void write(final double[] input, final double[] ideal) {
+	public final void write(final double[] input, final double[] ideal) {
 		final StringBuilder builder = new StringBuilder();
 		builder.append("1");
 		builder.append(":");

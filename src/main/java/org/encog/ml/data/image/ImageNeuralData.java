@@ -113,21 +113,4 @@ public class ImageNeuralData extends BasicMLData {
 	public void setImage(final Image image) {
 		this.image = image;
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder("[ImageNeuralData:");
-		for (int i = 0; i < this.getData().length; i++) {
-			if (i != 0) {
-				builder.append(',');
-			}
-			builder.append(this.getData(i));
-		}
-		builder.append("]");
-		return builder.toString();
-	}
-
 }

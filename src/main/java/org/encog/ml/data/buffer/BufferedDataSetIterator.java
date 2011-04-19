@@ -37,7 +37,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	/**
 	 * The dataset being iterated over.
 	 */
-	private BufferedNeuralDataSet data;
+	private final BufferedNeuralDataSet data;
 
 	/**
 	 * The current record.
@@ -47,11 +47,11 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	/**
 	 * Construct the iterator.
 	 * 
-	 * @param data
+	 * @param theData
 	 *            The dataset to iterate over.
 	 */
-	public BufferedDataSetIterator(final BufferedNeuralDataSet data) {
-		this.data = data;
+	public BufferedDataSetIterator(final BufferedNeuralDataSet theData) {
+		this.data = theData;
 		this.current = 0;
 	}
 
@@ -59,21 +59,22 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 * @return True if there is are more records to read.
 	 */
 	@Override
-	public boolean hasNext() {
-		return this.current < data.getRecordCount();
+	public final boolean hasNext() {
+		return this.current < this.data.getRecordCount();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public MLDataPair next() {
+	public final MLDataPair next() {
 
-		if (!hasNext())
+		if (!hasNext()) {
 			return null;
+		}
 
-		MLDataPair pair = BasicMLDataPair.createPair(this.data
-				.getInputSize(), this.data.getIdealSize());
+		final MLDataPair pair = BasicMLDataPair.createPair(
+				this.data.getInputSize(), this.data.getIdealSize());
 		this.data.getRecord(this.current++, pair);
 		return pair;
 	}
@@ -82,7 +83,7 @@ public class BufferedDataSetIterator implements Iterator<MLDataPair> {
 	 * Not supported.
 	 */
 	@Override
-	public void remove() {
+	public final void remove() {
 		throw new MLlDataError("Remove is not supported.");
 	}
 

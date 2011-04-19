@@ -43,13 +43,20 @@ public class SQLCODEC implements DataSetCODEC {
 	 */
 	private ResultSet results;
 
-	private int inputSize;
-	private int idealSize;
+	/**
+	 * The size of the input data.
+	 */
+	private final int inputSize;
+
+	/**
+	 * The size of the ideal data.
+	 */
+	private final int idealSize;
 
 	/**
 	 * Should the connection be closed on a call to close.
 	 */
-	private boolean closeConnection;
+	private final boolean closeConnection;
 
 	/**
 	 * The JDBC connection.
@@ -60,33 +67,36 @@ public class SQLCODEC implements DataSetCODEC {
 	 * The JDBC statement.
 	 */
 	private PreparedStatement statement;
-	
-	public static int FETCH_SIZE = 0;
+
+	/**
+	 * The default fetch size.
+	 */
+	private int fetchSize = 0;
 
 	/**
 	 * Create a SQLNeuralDataSet based on the specified connection. This
 	 * connection WILL NOT be closed when the close method is called.
 	 * 
-	 * @param connection
+	 * @param theConnection
 	 *            The connection to use.
-	 * @param sql
+	 * @param theSQL
 	 *            The SQL command to execute.
-	 * @param inputSize
+	 * @param theInputSize
 	 *            The size of the input data.
-	 * @param idealSize
+	 * @param theIdealSize
 	 *            The size of the ideal data.
 	 */
-	public SQLCODEC(final Connection connection, final String sql,
-			final int inputSize, final int idealSize) {
+	public SQLCODEC(final Connection theConnection, final String theSQL,
+			final int theInputSize, final int theIdealSize) {
 
-		this.inputSize = inputSize;
-		this.idealSize = idealSize;
-		this.connection = connection;
+		this.inputSize = theInputSize;
+		this.idealSize = theIdealSize;
+		this.connection = theConnection;
 		this.closeConnection = false;
 
 		try {
 			// prepare the statement
-			this.statement = this.connection.prepareStatement(sql);
+			this.statement = this.connection.prepareStatement(theSQL);
 		} catch (final SQLException e) {
 			throw new MLlDataError(e);
 		}
@@ -96,40 +106,41 @@ public class SQLCODEC implements DataSetCODEC {
 	 * Construct a SQL dataset. A connection will be opened, this connection
 	 * will be closed when the close method is called.
 	 * 
-	 * @param sql
+	 * @param theSQL
 	 *            The SQL command to execute.
-	 * @param inputSize
+	 * @param theInputSize
 	 *            The size of the input data.
-	 * @param idealSize
+	 * @param theIdealSize
 	 *            The size of the ideal data.
-	 * @param driver
+	 * @param theDriver
 	 *            The driver to use.
-	 * @param url
+	 * @param theURL
 	 *            The database connection URL.
-	 * @param uid
+	 * @param theUID
 	 *            The database user id.
-	 * @param pwd
+	 * @param thePWD
 	 *            The database password.
 	 */
-	public SQLCODEC(final String sql, final int inputSize, final int idealSize,
-			final String driver, final String url, final String uid,
-			final String pwd) {
+	public SQLCODEC(final String theSQL, final int theInputSize,
+			final int theIdealSize, final String theDriver,
+			final String theURL, final String theUID, final String thePWD) {
 
-		this.inputSize = inputSize;
-		this.idealSize = idealSize;
+		this.inputSize = theInputSize;
+		this.idealSize = theIdealSize;
 		this.closeConnection = true;
 
 		try {
-			Class.forName(driver);
+			Class.forName(theDriver);
 
-			if ((uid == null) || (pwd == null)) {
-				this.connection = DriverManager.getConnection(url);
+			if ((theUID == null) || (thePWD == null)) {
+				this.connection = DriverManager.getConnection(theURL);
 			} else {
-				this.connection = DriverManager.getConnection(url, uid, pwd);
+				this.connection = DriverManager.getConnection(theURL, theUID,
+						thePWD);
 			}
 
 			// prepare the statement
-			this.statement = this.connection.prepareStatement(sql);
+			this.statement = this.connection.prepareStatement(theSQL);
 
 		} catch (final ClassNotFoundException e) {
 			throw new MLlDataError(e);
@@ -138,11 +149,73 @@ public class SQLCODEC implements DataSetCODEC {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public boolean read(double[] input, double[] ideal) {
+	public final void close() {
 		try {
-			if (!this.results.next())
+			if (this.closeConnection) {
+				this.connection.close();
+			}
+			this.results.close();
+		} catch (final SQLException e) {
+			throw new MLlDataError(e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getIdealSize() {
+		return this.idealSize;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final int getInputSize() {
+		return this.inputSize;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void prepareRead() {
+		try {
+			if (this.fetchSize != 0) {
+				this.statement.setFetchSize(this.fetchSize);
+			}
+			// execute the statement
+			this.results = this.statement.executeQuery();
+		} catch (final SQLException e) {
+			throw new MLlDataError(e);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void prepareWrite(final int recordCount, 
+			final int theInputSize,
+			final int theIdealSize) {
+		throw new MLlDataError("Write not supported.");
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final boolean read(final double[] input, 
+			final double[] ideal) {
+		try {
+			if (!this.results.next()) {
 				return false;
+			}
 
 			for (int i = 0; i < this.inputSize; i++) {
 				final double d = this.results.getDouble(i + 1);
@@ -164,46 +237,28 @@ public class SQLCODEC implements DataSetCODEC {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void write(double[] input, double[] ideal) {
-		throw new MLlDataError("Write not supported.");
-
-	}
-
-	@Override
-	public void prepareWrite(int recordCount, int inputSize, int idealSize) {
+	public final void write(final double[] input, final double[] ideal) {
 		throw new MLlDataError("Write not supported.");
 	}
 
-	@Override
-	public void prepareRead() {
-		try {
-			if( SQLCODEC.FETCH_SIZE!=0) {
-				this.statement.setFetchSize(SQLCODEC.FETCH_SIZE);
-			}
-			// execute the statement
-			this.results = this.statement.executeQuery();
-		} catch (final SQLException e) {
-			throw new MLlDataError(e);
-		}
+	/**
+	 * @return the fetchSize
+	 */
+	public final int getFetchSize() {
+		return fetchSize;
 	}
 
-	@Override
-	public int getInputSize() {
-		return this.inputSize;
+	/**
+	 * @param theFetchSize
+	 *            the fetchSize to set
+	 */
+	public final void setFetchSize(final int theFetchSize) {
+		this.fetchSize = theFetchSize;
 	}
-
-	@Override
-	public int getIdealSize() {
-		return this.idealSize;
-	}
-
-	@Override
-	public void close() {
-		try {
-			this.results.close();
-		} catch (final SQLException e) {
-			throw new MLlDataError(e);
-		}
-	}
+	
+	
 }

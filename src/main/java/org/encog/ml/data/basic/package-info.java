@@ -21,34 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml.data;
-
 /**
- * Used by the machine learning methods classes to indicate a data error.
+ * Package basic implementations of MLData, MLDataPair and MLDataSet.
+ * These implementations will be fine for most uses.
  */
-public class MLlDataError extends RuntimeException {
-	/**
-	 * Serial id for this class.
-	 */
-	private static final long serialVersionUID = 7167228729133120101L;
+package org.encog.ml.data.basic;
 
-	/**
-	 * Construct a message exception.
-	 * 
-	 * @param msg
-	 *            The exception message.
-	 */
-	public MLlDataError(final String msg) {
-		super(msg);
-	}
-
-	/**
-	 * Construct an exception that holds another exception.
-	 * 
-	 * @param t
-	 *            The other exception.
-	 */
-	public MLlDataError(final Throwable t) {
-		super(t);
-	}
-}

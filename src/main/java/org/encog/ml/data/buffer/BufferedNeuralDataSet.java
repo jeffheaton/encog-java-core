@@ -67,12 +67,14 @@ public class BufferedNeuralDataSet implements
 	/**
 	 * Error message for ADD.
 	 */
-	public static final String ERROR_ADD = "Add can only be used after calling beginLoad.";
+	public static final String ERROR_ADD 
+		= "Add can only be used after calling beginLoad.";
 
 	/**
 	 * Error message for REMOVE.
 	 */
-	public static final String ERROR_REMOVE = "Remove is not supported for BufferedNeuralDataSet.";
+	public static final String ERROR_REMOVE 
+		= "Remove is not supported for BufferedNeuralDataSet.";
 
 	/**
 	 * True, if we are in the process of loading.
@@ -92,7 +94,8 @@ public class BufferedNeuralDataSet implements
 	/**
 	 * Additional sets that were opened.
 	 */
-	private transient List<BufferedNeuralDataSet> additional = new ArrayList<BufferedNeuralDataSet>();
+	private transient List<BufferedNeuralDataSet> additional 
+		= new ArrayList<BufferedNeuralDataSet>();
 
 	/**
 	 * The owner.
@@ -116,7 +119,7 @@ public class BufferedNeuralDataSet implements
 	/**
 	 * Open the binary file for reading.
 	 */
-	public void open() {
+	public final void open() {
 		this.egb.open();
 	}
 
@@ -124,7 +127,7 @@ public class BufferedNeuralDataSet implements
 	 * @return An iterator.
 	 */
 	@Override
-	public Iterator<MLDataPair> iterator() {
+	public final Iterator<MLDataPair> iterator() {
 		return new BufferedDataSetIterator(this);
 	}
 
@@ -132,7 +135,7 @@ public class BufferedNeuralDataSet implements
 	 * @return The record count.
 	 */
 	@Override
-	public long getRecordCount() {
+	public final long getRecordCount() {
 		if (this.egb == null) {
 			return 0;
 		} else {
@@ -150,7 +153,7 @@ public class BufferedNeuralDataSet implements
 	 *            THe data to read.
 	 */
 	@Override
-	public void getRecord(final long index, final MLDataPair pair) {
+	public final void getRecord(final long index, final MLDataPair pair) {
 		this.egb.setLocation((int) index);
 		double[] inputTarget = pair.getInputArray();
 		this.egb.read(inputTarget);
@@ -165,7 +168,7 @@ public class BufferedNeuralDataSet implements
 	 * @return An additional training set.
 	 */
 	@Override
-	public BufferedNeuralDataSet openAdditional() {
+	public final BufferedNeuralDataSet openAdditional() {
 
 		BufferedNeuralDataSet result = new BufferedNeuralDataSet(this.file);
 		result.setOwner(this);
@@ -179,7 +182,7 @@ public class BufferedNeuralDataSet implements
 	 * @param data1
 	 *            The data to be added.
 	 */
-	public void add(final MLData data1) {
+	public final void add(final MLData data1) {
 		if (!this.loading) {
 			throw new MLlDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
@@ -195,7 +198,7 @@ public class BufferedNeuralDataSet implements
 	 * @param idealData
 	 *            The ideal data.
 	 */
-	public void add(final MLData inputData, final MLData idealData) {
+	public final void add(final MLData inputData, final MLData idealData) {
 
 		if (!this.loading) {
 			throw new MLlDataError(BufferedNeuralDataSet.ERROR_ADD);
@@ -211,7 +214,7 @@ public class BufferedNeuralDataSet implements
 	 * @param pair
 	 *            The pair to add.
 	 */
-	public void add(final MLDataPair pair) {
+	public final void add(final MLDataPair pair) {
 		if (!this.loading) {
 			throw new MLlDataError(BufferedNeuralDataSet.ERROR_ADD);
 		}
@@ -225,7 +228,7 @@ public class BufferedNeuralDataSet implements
 	 * Close the dataset.
 	 */
 	@Override
-	public void close() {
+	public final void close() {
 
 		Object[] obj = this.additional.toArray();
 
@@ -248,7 +251,7 @@ public class BufferedNeuralDataSet implements
 	 * @return The ideal data size.
 	 */
 	@Override
-	public int getIdealSize() {
+	public final int getIdealSize() {
 		if (this.egb == null) {
 			return 0;
 		} else {
@@ -260,7 +263,7 @@ public class BufferedNeuralDataSet implements
 	 * @return The input data size.
 	 */
 	@Override
-	public int getInputSize() {
+	public final int getInputSize() {
 		if (this.egb == null) {
 			return 0;
 		} else {
@@ -272,7 +275,7 @@ public class BufferedNeuralDataSet implements
 	 * @return True if this dataset is supervised.
 	 */
 	@Override
-	public boolean isSupervised() {
+	public final boolean isSupervised() {
 		if (this.egb == null) {
 			return false;
 		} else {
@@ -284,18 +287,18 @@ public class BufferedNeuralDataSet implements
 	 * @return If this dataset was created by openAdditional, the set that
 	 *         created this object is the owner. Return the owner.
 	 */
-	public BufferedNeuralDataSet getOwner() {
+	public final BufferedNeuralDataSet getOwner() {
 		return owner;
 	}
 
 	/**
 	 * Set the owner of this dataset.
 	 * 
-	 * @param owner
+	 * @param theOwner
 	 *            The owner.
 	 */
-	public void setOwner(final BufferedNeuralDataSet owner) {
-		this.owner = owner;
+	public final void setOwner(final BufferedNeuralDataSet theOwner) {
+		this.owner = theOwner;
 	}
 
 	/**
@@ -304,7 +307,7 @@ public class BufferedNeuralDataSet implements
 	 * @param child
 	 *            The additional dataset to remove.
 	 */
-	public void removeAdditional(final BufferedNeuralDataSet child) {
+	public final void removeAdditional(final BufferedNeuralDataSet child) {
 		synchronized (this) {
 			this.additional.remove(child);
 		}
@@ -319,7 +322,7 @@ public class BufferedNeuralDataSet implements
 	 * @param idealSize
 	 *            The ideal size.
 	 */
-	public void beginLoad(final int inputSize, final int idealSize) {
+	public final void beginLoad(final int inputSize, final int idealSize) {
 		this.egb.create(inputSize, idealSize);
 		this.loading = true;
 	}
@@ -329,7 +332,7 @@ public class BufferedNeuralDataSet implements
 	 * underlying file will be closed. The binary fill will then be opened for
 	 * reading.
 	 */
-	public void endLoad() {
+	public final void endLoad() {
 		if (!this.loading) {
 			throw new BufferedDataError("Must call beginLoad, before endLoad.");
 		}
@@ -343,14 +346,14 @@ public class BufferedNeuralDataSet implements
 	/**
 	 * @return The binary file used.
 	 */
-	public File getFile() {
+	public final File getFile() {
 		return this.file;
 	}
 
 	/**
 	 * @return The EGB file to use.
 	 */
-	public EncogEGBFile getEGB() {
+	public final EncogEGBFile getEGB() {
 		return this.egb;
 	}
 
@@ -359,7 +362,7 @@ public class BufferedNeuralDataSet implements
 	 * 
 	 * @return A memory dataset.
 	 */
-	public MLDataSet loadToMemory() {
+	public final MLDataSet loadToMemory() {
 		BasicMLDataSet result = new BasicMLDataSet();
 
 		for (MLDataPair pair : this) {
@@ -375,7 +378,7 @@ public class BufferedNeuralDataSet implements
 	 * @param training
 	 *            The training set to load.
 	 */
-	public void load(final MLDataSet training) {
+	public final void load(final MLDataSet training) {
 		beginLoad(training.getInputSize(), training.getIdealSize());
 		for (final MLDataPair pair : training) {
 			add(pair);

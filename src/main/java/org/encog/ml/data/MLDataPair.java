@@ -42,8 +42,8 @@ package org.encog.ml.data;
 public interface MLDataPair {
 
 	/**
-	 * @return The ideal data that the neural network should produce for the
-	 *         specified input.
+	 * @return The ideal data that the machine learning method should produce 
+	 * for the specified input.
 	 */
 	double[] getIdealArray();
 

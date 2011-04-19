@@ -41,7 +41,7 @@ public class MemoryDataLoader {
 	/**
 	 * The CODEC to use.
 	 */
-	private DataSetCODEC codec;
+	private final DataSetCODEC codec;
 
 	/**
 	 * Used to report the status.
@@ -59,7 +59,7 @@ public class MemoryDataLoader {
 	 * @param codec
 	 *            The codec to use.
 	 */
-	public MemoryDataLoader(DataSetCODEC codec) {
+	public MemoryDataLoader(final DataSetCODEC codec) {
 		this.codec = codec;
 		this.status = new NullStatusReportable();
 	}
@@ -71,30 +71,31 @@ public class MemoryDataLoader {
 	 * @return The binary file to create.
 	 */
 	public MLDataSet external2Memory() {
-		status.report(0, 0, "Importing to memory");
+		this.status.report(0, 0, "Importing to memory");
 
-		if (result == null) {
+		if (this.result == null) {
 			this.result = new BasicMLDataSet();
 		}
 
-		double[] input = new double[this.codec.getInputSize()];
-		double[] ideal = new double[this.codec.getIdealSize()];
+		final double[] input = new double[this.codec.getInputSize()];
+		final double[] ideal = new double[this.codec.getIdealSize()];
 
 		this.codec.prepareRead();
 
 		int currentRecord = 0;
 		int lastUpdate = 0;
 
-		while (codec.read(input, ideal)) {
+		while (this.codec.read(input, ideal)) {
 			MLData a = null, b = null;
 
 			a = new BasicMLData(input);
 
-			if (codec.getIdealSize() > 0)
+			if (this.codec.getIdealSize() > 0) {
 				b = new BasicMLData(ideal);
+			}
 
-			MLDataPair pair = new BasicMLDataPair(a, b);
-			result.add(pair);
+			final MLDataPair pair = new BasicMLDataPair(a, b);
+			this.result.add(pair);
 
 			currentRecord++;
 			lastUpdate++;
@@ -105,28 +106,28 @@ public class MemoryDataLoader {
 		}
 
 		this.codec.close();
-		status.report(0, 0, "Done importing to memory");
-		return result;
-	}
-
-	public StatusReportable getStatus() {
-		return status;
-	}
-
-	public void setStatus(StatusReportable status) {
-		this.status = status;
+		this.status.report(0, 0, "Done importing to memory");
+		return this.result;
 	}
 
 	public DataSetCODEC getCodec() {
-		return codec;
+		return this.codec;
 	}
 
 	public BasicMLDataSet getResult() {
-		return result;
+		return this.result;
 	}
 
-	public void setResult(BasicMLDataSet result) {
+	public StatusReportable getStatus() {
+		return this.status;
+	}
+
+	public void setResult(final BasicMLDataSet result) {
 		this.result = result;
+	}
+
+	public void setStatus(final StatusReportable status) {
+		this.status = status;
 	}
 
 }

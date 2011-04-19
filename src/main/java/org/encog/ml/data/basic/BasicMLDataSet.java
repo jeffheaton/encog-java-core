@@ -36,22 +36,21 @@ import org.encog.util.EngineArray;
 import org.encog.util.obj.ObjectCloner;
 
 /**
- * neural data in an ArrayList. This class is memory based, so large enough
+ * Stores data in an ArrayList. This class is memory based, so large enough
  * datasets could cause memory issues. Many other dataset types extend this
  * class.
  * 
  * @author jheaton
  */
-public class BasicMLDataSet implements Serializable,
-MLDataSet {
+public class BasicMLDataSet implements Serializable, MLDataSet {
 
 	/**
-	 * An iterator to be used with the BasicNeuralDataSet. This iterator does
-	 * not support removes.
+	 * An iterator to be used with the BasicMLDataSet. This iterator does not
+	 * support removes.
 	 * 
 	 * @author jheaton
 	 */
-	public class BasicNeuralIterator implements Iterator<MLDataPair> {
+	public class BasicMLIterator implements Iterator<MLDataPair> {
 
 		/**
 		 * The index that the iterator is currently at.
@@ -59,20 +58,18 @@ MLDataSet {
 		private int currentIndex = 0;
 
 		/**
-		 * Is there more data for the iterator to read?
-		 * 
-		 * @return Returns true if there is more data to read.
+		 * {@inheritDoc}
 		 */
-		public boolean hasNext() {
+		@Override
+		public final boolean hasNext() {
 			return this.currentIndex < BasicMLDataSet.this.data.size();
 		}
 
 		/**
-		 * Read the next item.
-		 * 
-		 * @return The next item.
+		 * {@inheritDoc}
 		 */
-		public MLDataPair next() {
+		@Override
+		public final MLDataPair next() {
 			if (!hasNext()) {
 				return null;
 			}
@@ -81,9 +78,10 @@ MLDataSet {
 		}
 
 		/**
-		 * Removes are not supported.
+		 * {@inheritDoc}
 		 */
-		public void remove() {
+		@Override
+		public final void remove() {
 			throw new EncogError("Called remove, unsupported operation.");
 		}
 	}
@@ -92,7 +90,6 @@ MLDataSet {
 	 * The serial id.
 	 */
 	private static final long serialVersionUID = -2279722928570071183L;
-
 
 	/**
 	 * The data held by this object.
@@ -109,7 +106,7 @@ MLDataSet {
 	 * Construct a data set from an input and idea array.
 	 * 
 	 * @param input
-	 *            The input into the neural network for training.
+	 *            The input into the machine learning method for training.
 	 * @param ideal
 	 *            The ideal output for training.
 	 */
@@ -132,89 +129,81 @@ MLDataSet {
 	 * Construct a data set from an already created list. Mostly used to
 	 * duplicate this class.
 	 * 
-	 * @param data
+	 * @param theData
 	 *            The data to use.
 	 */
-	public BasicMLDataSet(final List<MLDataPair> data) {
-		this.data = data;
+	public BasicMLDataSet(final List<MLDataPair> theData) {
+		this.data = theData;
 	}
 
 	/**
 	 * Copy whatever dataset type is specified into a memory dataset.
-	 * @param set The dataset to copy.
+	 * 
+	 * @param set
+	 *            The dataset to copy.
 	 */
-	public BasicMLDataSet(MLDataSet set) {
-		int inputCount = set.getInputSize();
-		int idealCount = set.getIdealSize();
-		
-		for(MLDataPair pair: set) {
-			
+	public BasicMLDataSet(final MLDataSet set) {
+		final int inputCount = set.getInputSize();
+		final int idealCount = set.getIdealSize();
+
+		for (final MLDataPair pair : set) {
+
 			BasicMLData input = null;
 			BasicMLData ideal = null;
-			
-			if( inputCount>0 ) {
+
+			if (inputCount > 0) {
 				input = new BasicMLData(inputCount);
 				EngineArray.arrayCopy(pair.getInputArray(), input.getData());
 			}
-			
-			if( idealCount>0 ) {
+
+			if (idealCount > 0) {
 				ideal = new BasicMLData(idealCount);
 				EngineArray.arrayCopy(pair.getIdealArray(), ideal.getData());
 			}
-			
-			add(new BasicMLDataPair(input,ideal));
+
+			add(new BasicMLDataPair(input, ideal));
 		}
 	}
 
 	/**
-	 * Add input to the training set with no expected output. This is used for
-	 * unsupervised training.
-	 * 
-	 * @param data
-	 *            The input to be added to the training set.
+	 * {@inheritDoc}
 	 */
-	public void add(final MLData data) {
-		this.data.add(new BasicMLDataPair(data));
+	@Override
+	public final void add(final MLData theData) {
+		this.data.add(new BasicMLDataPair(theData));
 	}
 
 	/**
-	 * Add input and expected output. This is used for supervised training.
-	 * 
-	 * @param inputData
-	 *            The input data to train on.
-	 * @param idealData
-	 *            The ideal data to use for training.
+	 * {@inheritDoc}
 	 */
-	public void add(final MLData inputData, final MLData idealData) {
+	@Override
+	public final void add(final MLData inputData, final MLData idealData) {
 
-		final MLDataPair pair = new BasicMLDataPair(inputData,
-				idealData);
+		final MLDataPair pair = new BasicMLDataPair(inputData, idealData);
 		this.data.add(pair);
 	}
 
 	/**
-	 * Add a neural data pair to the list.
-	 * 
-	 * @param inputData
-	 *            A NeuralDataPair object that contains both input and ideal
-	 *            data.
+	 * {@inheritDoc}
 	 */
-	public void add(final MLDataPair inputData) {
+	@Override
+	public final void add(final MLDataPair inputData) {
 		this.data.add(inputData);
 	}
 
 	/**
-	 * @return A cloned copy of this object.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public Object clone() {
+	public final Object clone() {
 		return ObjectCloner.deepCopy(this);
 	}
 
 	/**
-	 * Close this data set.
+	 * {@inheritDoc}
 	 */
-	public void close() {
+	@Override
+	public final void close() {
 		// nothing to close
 	}
 
@@ -223,17 +212,15 @@ MLDataSet {
 	 * 
 	 * @return the data
 	 */
-	public List<MLDataPair> getData() {
+	public final List<MLDataPair> getData() {
 		return this.data;
 	}
 
 	/**
-	 * Get the size of the ideal dataset. This is obtained from the first item
-	 * in the list.
-	 * 
-	 * @return The size of the ideal data.
+	 * {@inheritDoc}
 	 */
-	public int getIdealSize() {
+	@Override
+	public final int getIdealSize() {
 		if (this.data.isEmpty()) {
 			return 0;
 		}
@@ -246,12 +233,10 @@ MLDataSet {
 	}
 
 	/**
-	 * Get the size of the input dataset. This is obtained from the first item
-	 * in the list.
-	 * 
-	 * @return The size of the input data.
+	 * {@inheritDoc}
 	 */
-	public int getInputSize() {
+	@Override
+	public final int getInputSize() {
 		if (this.data.isEmpty()) {
 			return 0;
 		}
@@ -259,16 +244,11 @@ MLDataSet {
 		return first.getInput().size();
 	}
 
-
 	/**
-	 * Get a record by index into the specified pair.
-	 * 
-	 * @param index
-	 *            The index to read.
-	 * @param pair
-	 *            The pair to hold the data.
+	 * {@inheritDoc}
 	 */
-	public void getRecord(final long index, final MLDataPair pair) {
+	@Override
+	public final void getRecord(final long index, final MLDataPair pair) {
 
 		final MLDataPair source = this.data.get((int) index);
 		pair.setInputArray(source.getInputArray());
@@ -279,20 +259,18 @@ MLDataSet {
 	}
 
 	/**
-	 * @return The total number of records in the file.
+	 * {@inheritDoc}
 	 */
-	public long getRecordCount() {
+	@Override
+	public final long getRecordCount() {
 		return this.data.size();
 	}
 
 	/**
-	 * Determine if this neural data set is supervied. All of the pairs should
-	 * be either supervised or not, so simply check the first pair. If the list
-	 * is empty then assume unsupervised.
-	 * 
-	 * @return True if supervised.
+	 * {@inheritDoc}
 	 */
-	public boolean isSupervised() {
+	@Override
+	public final boolean isSupervised() {
 		if (this.data.size() == 0) {
 			return false;
 		}
@@ -300,30 +278,28 @@ MLDataSet {
 	}
 
 	/**
-	 * Create an iterator for this collection.
-	 * 
-	 * @return An iterator to access this collection.
+	 * {@inheritDoc}
 	 */
-	public Iterator<MLDataPair> iterator() {
-		final BasicNeuralIterator result = new BasicNeuralIterator();
+	@Override
+	public final Iterator<MLDataPair> iterator() {
+		final BasicMLIterator result = new BasicMLIterator();
 		return result;
 	}
 
 	/**
-	 * Create an additional data set. It will use the same list.
-	 * 
-	 * @return The additional data set.
+	 * {@inheritDoc}
 	 */
-	public MLDataSet openAdditional() {
+	@Override
+	public final MLDataSet openAdditional() {
 		return new BasicMLDataSet(this.data);
 	}
 
 	/**
-	 * @param data
+	 * @param theData
 	 *            the data to set
 	 */
-	public void setData(final List<MLDataPair> data) {
-		this.data = data;
+	public final void setData(final List<MLDataPair> theData) {
+		this.data = theData;
 	}
 
 }

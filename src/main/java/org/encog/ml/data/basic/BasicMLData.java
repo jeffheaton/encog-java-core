@@ -28,7 +28,7 @@ import java.io.Serializable;
 import org.encog.ml.data.MLData;
 
 /**
- * Basic implementation of the NeuralData interface that stores the data in an
+ * Basic implementation of the MLData interface that stores the data in an
  * array.
  *
  * @author jheaton
@@ -69,7 +69,7 @@ public class BasicMLData implements MLData, Serializable, Cloneable {
 	}
 
 	/**
-	 * Construct a new BasicNeuralData object from an existing one. This makes a
+	 * Construct a new BasicMLData object from an existing one. This makes a
 	 * copy of an array.
 	 *
 	 * @param d
@@ -81,82 +81,68 @@ public class BasicMLData implements MLData, Serializable, Cloneable {
 	}
 
 	/**
-	 * Add a value to the specified index.
-	 *
-	 * @param index
-	 *            The index to add to.
-	 * @param value
-	 *            The value to add.
+	 * {@inheritDoc}
 	 */
-	public void add(final int index, final double value) {
+	@Override
+	public final void add(final int index, final double value) {
 		this.data[index] += value;
 	}
 
 	/**
-	 * Set all data to zero.
+	 * {@inheritDoc}
 	 */
-	public void clear() {
+	@Override
+	public final void clear() {
 		for (int i = 0; i < this.data.length; i++) {
 			this.data[i] = 0;
 		}
 	}
 
 	/**
-	 * @return A clone of this object.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public MLData clone() {
+	public final MLData clone() {
 		return new BasicMLData(this);
 	}
 
 	/**
-	 * Get the data as an array.
-	 *
-	 * @return The data held by this object.
+	 * {@inheritDoc}
 	 */
-	public double[] getData() {
+	@Override
+	public final double[] getData() {
 		return this.data;
 	}
 
 	/**
-	 * Get a data value at the specified index.
-	 *
-	 * @param index
-	 *            The index to read.
-	 * @return The data at the specified index.
+	 * {@inheritDoc}
 	 */
-	public double getData(final int index) {
+	@Override
+	public final double getData(final int index) {
 		return this.data[index];
 	}
 
 	/**
-	 * Set the entire data array.
-	 *
-	 * @param data
-	 *            The data to store.
+	 * {@inheritDoc}
 	 */
-	public void setData(final double[] data) {
-		this.data = data;
+	@Override
+	public final void setData(final double[] theData) {
+		this.data = theData;
 	}
 
 	/**
-	 * Set the data element specified by the index.
-	 *
-	 * @param index
-	 *            The data element to set.
-	 * @param d
-	 *            The new value for the specified data element.
+	 * {@inheritDoc}
 	 */
-	public void setData(final int index, final double d) {
+	@Override
+	public final void setData(final int index, final double d) {
 		this.data[index] = d;
 	}
 
 	/**
-	 * Get the number of data elements present.
-	 *
-	 * @return The number of data elements present.
+	 * {@inheritDoc}
 	 */
-	public int size() {
+	@Override
+	public final int size() {
 		return this.data.length;
 	}
 
@@ -164,8 +150,10 @@ public class BasicMLData implements MLData, Serializable, Cloneable {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder("[BasicNeuralData:");
+	public final String toString() {
+		final StringBuilder builder = new StringBuilder("[");
+		builder.append(this.getClass().getSimpleName());
+		builder.append(":");
 		for (int i = 0; i < this.data.length; i++) {
 			if (i != 0) {
 				builder.append(',');

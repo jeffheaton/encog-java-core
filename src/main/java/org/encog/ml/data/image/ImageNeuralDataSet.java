@@ -102,52 +102,6 @@ public class ImageNeuralDataSet extends BasicMLDataSet {
 		this.lo = lo;
 	}
 
-	/**
-	 * Add the specified data, must be an ImageNeuralData class.
-	 * 
-	 * @param data
-	 *            The data The object to add.
-	 */
-	@Override
-	public void add(final MLData data) {
-		if (!(data instanceof ImageNeuralData)) {
-			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
-		}
-
-		super.add(data);
-	}
-
-	/**
-	 * Add the specified input and ideal object to the collection.
-	 * 
-	 * @param inputData
-	 *            The image to train with.
-	 * @param idealData
-	 *            The expected otuput form this image.
-	 */
-	@Override
-	public void add(final MLData inputData, final MLData idealData) {
-		if (!(inputData instanceof ImageNeuralData)) {
-			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
-		}
-
-		super.add(inputData, idealData);
-	}
-
-	/**
-	 * Add input and expected output. This is used for supervised training.
-	 * 
-	 * @param inputData
-	 *            The input data to train on.
-	 */
-	@Override
-	public void add(final MLDataPair inputData) {
-		if (!(inputData.getInput() instanceof ImageNeuralData)) {
-			throw new NeuralNetworkError(ImageNeuralDataSet.MUST_USE_IMAGE);
-		}
-
-		super.add(inputData);
-	}
 
 	/**
 	 * Downsample all images and generate training data.

@@ -29,16 +29,16 @@ import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 
 /**
- * A basic implementation of the NeuralDataPair interface. This implementation
- * simply holds and input and ideal NeuralData object.
- *
+ * A basic implementation of the MLDataPair interface. This implementation
+ * simply holds and input and ideal MLData object.
+ * 
  * For supervised training both input and ideal should be specified.
- *
+ * 
  * For unsupervised training the input property should be valid, however the
  * ideal property should contain null.
- *
+ * 
  * @author jheaton
- *
+ * 
  */
 public class BasicMLDataPair implements MLDataPair, Serializable {
 
@@ -48,92 +48,18 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 	private static final long serialVersionUID = -9068229682273861359L;
 
 	/**
-	 * The the expected output from the neural network, or null for unsupervised
-	 * training.
+	 * Create a new data pair object of the correct size for the machine
+	 * learning method that is being trained. This object will be passed to the
+	 * getPair method to allow the data pair objects to be copied to it.
+	 * 
+	 * @param inputSize
+	 *            The size of the input data.
+	 * @param idealSize
+	 *            The size of the ideal data.
+	 * @return A new data pair object.
 	 */
-	private final MLData ideal;
-
-	/**
-	 * The training input to the neural network.
-	 */
-	private final MLData input;
-
-	/**
-	 * Construct the object with only input. If this constructor is used, then
-	 * unsupervised training is being used.
-	 *
-	 * @param input
-	 *            The input to the neural network.
-	 */
-	public BasicMLDataPair(final MLData input) {
-		this.input = input;
-		this.ideal = null;
-	}
-
-	/**
-	 * Construct a BasicNeuralDataPair class with the specified input and ideal
-	 * values.
-	 *
-	 * @param input
-	 *            The input to the neural network.
-	 * @param ideal
-	 *            The expected results from the neural network.
-	 */
-	public BasicMLDataPair(final MLData input, final MLData ideal) {
-		this.input = input;
-		this.ideal = ideal;
-	}
-
-	/**
-	 * Get the expected results. Returns null if this is unsupervised training.
-	 *
-	 * @return Returns the expected results, or null if unsupervised training.
-	 */
-	public MLData getIdeal() {
-		return this.ideal;
-	}
-
-	/**
-	 * Get the input data.
-	 *
-	 * @return The input data.
-	 */
-	public MLData getInput() {
-		return this.input;
-	}
-
-	/**
-	 * Determine if this data pair is supervised.
-	 *
-	 * @return True if this data pair is supervised.
-	 */
-	public boolean isSupervised() {
-		return this.ideal != null;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public String toString() {
-		final StringBuilder builder = new StringBuilder("[NeuralDataPair:");
-		builder.append("Input:");
-		builder.append(getInput());
-		builder.append("Ideal:");
-		builder.append(getIdeal());
-		builder.append("]");
-		return builder.toString();
-	}
-
-	/**
-	 * Create a new neural data pair object of the correct size for the neural
-	 * network that is being trained. This object will be passed to the getPair
-	 * method to allow the neural data pair objects to be copied to it.
-	 * @param inputSize The size of the input data.
-	 * @param idealSize The size of the ideal data.
-	 * @return A new neural data pair object.
-	 */
-	public static MLDataPair createPair(final int inputSize, final int idealSize) {
+	public static MLDataPair createPair(final int inputSize, 
+			final int idealSize) {
 		MLDataPair result;
 
 		if (idealSize > 0) {
@@ -146,27 +72,117 @@ public class BasicMLDataPair implements MLDataPair, Serializable {
 		return result;
 	}
 
+	/**
+	 * The the expected output from the machine learning method, or null for
+	 * unsupervised training.
+	 */
+	private final MLData ideal;
+
+	/**
+	 * The training input to the machine learning method.
+	 */
+	private final MLData input;
+
+	/**
+	 * Construct the object with only input. If this constructor is used, then
+	 * unsupervised training is being used.
+	 * 
+	 * @param theInput
+	 *            The input to the machine learning method.
+	 */
+	public BasicMLDataPair(final MLData theInput) {
+		this.input = theInput;
+		this.ideal = null;
+	}
+
+	/**
+	 * Construct a BasicMLDataPair class with the specified input and ideal
+	 * values.
+	 * 
+	 * @param theInput
+	 *            The input to the machine learning method.
+	 * @param theIdeal
+	 *            The expected results from the machine learning method.
+	 */
+	public BasicMLDataPair(final MLData theInput, final MLData theIdeal) {
+		this.input = theInput;
+		this.ideal = theIdeal;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public double[] getIdealArray() {
-		if( this.ideal==null )
+	public final MLData getIdeal() {
+		return this.ideal;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final double[] getIdealArray() {
+		if (this.ideal == null) {
 			return null;
+		}
 		return this.ideal.getData();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public double[] getInputArray() {
+	public final MLData getInput() {
+		return this.input;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final double[] getInputArray() {
 		return this.input.getData();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setIdealArray(double[] data) {
+	public final boolean isSupervised() {
+		return this.ideal != null;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final void setIdealArray(final double[] data) {
 		this.ideal.setData(data);
 
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public void setInputArray(double[] data) {
+	public final void setInputArray(final double[] data) {
 		this.input.setData(data);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public final String toString() {
+		final StringBuilder builder = new StringBuilder("[");
+		builder.append(this.getClass().getSimpleName());
+		builder.append(":");
+		builder.append("Input:");
+		builder.append(getInput());
+		builder.append("Ideal:");
+		builder.append(getIdeal());
+		builder.append("]");
+		return builder.toString();
 	}
 
 }

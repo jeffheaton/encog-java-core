@@ -57,19 +57,19 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 
 	/**
 	 * Construct a CODEC.
-	 * @param dataset The dataset to use.
+	 * @param theDataset The dataset to use.
 	 */
-	public NeuralDataSetCODEC(final MLDataSet dataset) {
-		this.dataset = dataset;
-		this.inputSize = dataset.getInputSize();
-		this.idealSize = dataset.getIdealSize();
+	public NeuralDataSetCODEC(final MLDataSet theDataset) {
+		this.dataset = theDataset;
+		this.inputSize = theDataset.getInputSize();
+		this.idealSize = theDataset.getIdealSize();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getInputSize() {
+	public final int getInputSize() {
 		return inputSize;
 	}
 
@@ -77,7 +77,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getIdealSize() {
+	public final int getIdealSize() {
 		return idealSize;
 	}
 
@@ -85,7 +85,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean read(final double[] input, final double[] ideal) {
+	public final boolean read(final double[] input, final double[] ideal) {
 		if (!iterator.hasNext()) {
 			return false;
 		} else {
@@ -100,7 +100,7 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void write(final double[] input, final double[] ideal) {
+	public final void write(final double[] input, final double[] ideal) {
 		MLDataPair pair = BasicMLDataPair.createPair(inputSize,
 				idealSize);
 		EngineArray.arrayCopy(input, pair.getIdealArray());
@@ -111,17 +111,17 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void prepareWrite(final int recordCount, 
-			final int inputSize, final int idealSize) {
-		this.inputSize = inputSize;
-		this.idealSize = idealSize;
+	public final void prepareWrite(final int recordCount, 
+			final int theInputSize, final int theIdealSize) {
+		this.inputSize = theInputSize;
+		this.idealSize = theIdealSize;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void prepareRead() {
+	public final void prepareRead() {
 		this.iterator = this.dataset.iterator();
 	}
 
@@ -130,7 +130,6 @@ public class NeuralDataSetCODEC implements DataSetCODEC {
 	 */
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
 
 	}
 

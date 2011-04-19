@@ -58,12 +58,13 @@ public class ArrayDataCODEC implements DataSetCODEC {
 
 	/**
 	 * Construct an array CODEC.
-	 * @param input The input array.
-	 * @param ideal The ideal array.
+	 * @param theInput The input array.
+	 * @param theIdeal The ideal array.
 	 */
-	public ArrayDataCODEC(final double[][] input, final double[][] ideal) {
-		this.input = input;
-		this.ideal = ideal;
+	public ArrayDataCODEC(final double[][] theInput, 
+			final double[][] theIdeal) {
+		this.input = theInput;
+		this.ideal = theIdeal;
 		this.inputSize = input[0].length;
 		this.idealSize = ideal[0].length;
 		this.index = 0;
@@ -79,7 +80,7 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getInputSize() {
+	public final int getInputSize() {
 		return inputSize;
 	}
 
@@ -87,7 +88,7 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public int getIdealSize() {
+	public final int getIdealSize() {
 		return idealSize;
 	}
 
@@ -95,12 +96,13 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean read(final double[] input, final double[] ideal) {
+	public final boolean read(final double[] theInput, 
+			final double[] theIdeal) {
 		if (index >= this.input.length) {
 			return false;
 		} else {
-			EngineArray.arrayCopy(this.input[index], input);
-			EngineArray.arrayCopy(this.ideal[index], ideal);
+			EngineArray.arrayCopy(this.input[index], theInput);
+			EngineArray.arrayCopy(this.ideal[index], theIdeal);
 			index++;
 			return true;
 		}
@@ -110,9 +112,10 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void write(final double[] input, final double[] ideal) {
-		EngineArray.arrayCopy(input, this.input[index]);
-		EngineArray.arrayCopy(ideal, this.ideal[index]);
+	public final void write(final double[] theInput, 
+			final double[] theIdeal) {
+		EngineArray.arrayCopy(theInput, this.input[index]);
+		EngineArray.arrayCopy(theIdeal, this.ideal[index]);
 		index++;
 	}
 
@@ -120,26 +123,26 @@ public class ArrayDataCODEC implements DataSetCODEC {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void prepareWrite(final int recordCount, 
-			final int inputSize, final int idealSize) {
-		this.input = new double[recordCount][inputSize];
-		this.ideal = new double[recordCount][idealSize];
-		this.inputSize = inputSize;
-		this.idealSize = idealSize;
+	public final void prepareWrite(final int recordCount, 
+			final int theInputSize, final int theIdealSize) {
+		this.input = new double[recordCount][theInputSize];
+		this.ideal = new double[recordCount][theIdealSize];
+		this.inputSize = theInputSize;
+		this.idealSize = theIdealSize;
 		this.index = 0;
 	}
 
 	/**
 	 * @return The input array.
 	 */
-	public double[][] getInput() {
+	public final double[][] getInput() {
 		return input;
 	}
 	
 	/**
 	 * @return The ideal array.
 	 */
-	public double[][] getIdeal() {
+	public final double[][] getIdeal() {
 		return ideal;
 	}
 
