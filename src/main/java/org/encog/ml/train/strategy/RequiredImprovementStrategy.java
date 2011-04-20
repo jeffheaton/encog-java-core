@@ -122,7 +122,7 @@ public class RequiredImprovementStrategy implements Strategy {
 	public void init(final MLTrain train) {
 		this.train = train;
 		
-		if( !(train.getMethod() instanceof MLMethod) ) {
+		if( !(train.getMethod() instanceof MLResettable) ) {
 			throw new TrainingError("To use the required improvement strategy the machine learning method must support MLResettable.");
 		}
 		

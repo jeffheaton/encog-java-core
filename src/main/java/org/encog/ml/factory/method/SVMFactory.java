@@ -104,7 +104,9 @@ public class SVMFactory {
 					+ ", must be C for classify or R for regression.");
 		}
 
-		if ("linear".equalsIgnoreCase(kernelStr)) {
+		if( kernelStr==null ) {
+			kernelType = KernelType.RadialBasisFunction;
+		} else if ("linear".equalsIgnoreCase(kernelStr)) {
 			kernelType = KernelType.Linear;
 		} else if ("poly".equalsIgnoreCase(kernelStr)) {
 			kernelType = KernelType.Poly;
