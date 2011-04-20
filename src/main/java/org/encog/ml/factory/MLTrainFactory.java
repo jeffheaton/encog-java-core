@@ -26,8 +26,10 @@ package org.encog.ml.factory;
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.factory.train.AnnealFactory;
 import org.encog.ml.factory.train.BackPropFactory;
 import org.encog.ml.factory.train.ClusterSOMFactory;
+import org.encog.ml.factory.train.GeneticFactory;
 import org.encog.ml.factory.train.LMAFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
 import org.encog.ml.factory.train.RPROPFactory;
@@ -163,6 +165,43 @@ public class MLTrainFactory {
 	public static final String PROPERTY_DIMENSIONS = "DIM";
 
 	/**
+	 * The number of cycles.
+	 */
+	public static final String CYCLES = "cycles";
+
+	/**
+	 * The starting temperature.
+	 */
+	public static final String PROPERTY_TEMPERATURE_START = "startTemp";
+
+	/**
+	 * The ending temperature.
+	 */
+	public static final String PROPERTY_TEMPERATURE_STOP = "stopTemp";
+
+	/**
+	 * Use simulated annealing.
+	 */
+	public static final String TYPE_ANNEAL = "anneal";
+
+	/**
+	 * Population size.
+	 */
+	public static final String PROPERTY_POPULATION_SIZE = "population";
+
+	/**
+	 * Percent to mutate.
+	 */
+	public static final String PROPERTY_MUTATION = "mutate";
+
+	/**
+	 * Percent to mate.
+	 */
+	public static final String PROPERTY_MATE = "mate";
+
+	public static final String TYPE_GENETIC = "genetic";
+
+	/**
 	 * The factory for backprop.
 	 */
 	private final BackPropFactory backpropFactory = new BackPropFactory();
@@ -193,6 +232,11 @@ public class MLTrainFactory {
 	private final SCGFactory scgFactory = new SCGFactory();
 	
 	/**
+	 * The factory for simulated annealing.
+	 */
+	private final AnnealFactory annealFactory = new AnnealFactory();
+	
+	/**
 	 * The factory for neighborhood SOM.
 	 */
 	private final NeighborhoodSOMFactory neighborhoodFactory 
@@ -203,6 +247,11 @@ public class MLTrainFactory {
 	 */
 	private final ClusterSOMFactory somClusterFactory = new ClusterSOMFactory();
 
+	/**
+	 * The factory for genetic.
+	 */
+	private final GeneticFactory geneticFactory = new GeneticFactory();
+	
 	/**
 	 * Create a trainer.
 	 * @param method The method to train.
@@ -236,7 +285,12 @@ public class MLTrainFactory {
 		} else if (MLTrainFactory.TYPE_SOM_NEIGHBORHOOD.equalsIgnoreCase(
 				type)) {
 			return this.neighborhoodFactory.create(method, training, args2);
-		} else if (MLTrainFactory.TYPE_SOM_CLUSTER.equalsIgnoreCase(type)) {
+		} else if (MLTrainFactory.TYPE_ANNEAL.equalsIgnoreCase(type)) {
+			return this.annealFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_GENETIC.equalsIgnoreCase(type)) {
+			return this.geneticFactory.create(method, training, args2);
+		}  
+		else if (MLTrainFactory.TYPE_SOM_CLUSTER.equalsIgnoreCase(type)) {
 			return this.somClusterFactory.create(method, training, args2);
 		} else {
 			throw new EncogError("Unknown training type: " + type);
