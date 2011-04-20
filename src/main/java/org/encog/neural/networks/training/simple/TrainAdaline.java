@@ -24,6 +24,7 @@
 package org.encog.neural.networks.training.simple;
 
 import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
@@ -85,9 +86,9 @@ public class TrainAdaline extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * @return The network being trained.
+	 * {@inheritDoc}
 	 */
-	public BasicNetwork getNetwork() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 

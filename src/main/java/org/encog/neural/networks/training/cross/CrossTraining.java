@@ -64,10 +64,10 @@ public abstract class CrossTraining extends BasicTraining {
 	}
 
 	/**
-	 * @return The network.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public MLMethod getNetwork() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 

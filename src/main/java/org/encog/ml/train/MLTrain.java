@@ -117,11 +117,11 @@ public interface MLTrain {
 	void addStrategy(Strategy strategy);
 
 	/**
-	 * Get the current best network from the training.
+	 * Get the current best machine learning method from the training.
 	 * 
-	 * @return The best network.
+	 * @return The best machine learningm method.
 	 */
-	MLMethod getNetwork();
+	MLMethod getMethod();
 
 	/**
 	 * @return The strategies to use.

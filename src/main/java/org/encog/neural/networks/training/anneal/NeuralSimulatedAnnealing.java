@@ -102,11 +102,9 @@ public class NeuralSimulatedAnnealing extends BasicTraining {
 	}
 
 	/**
-	 * Get the best network from the training.
-	 *
-	 * @return The best network.
+	 * {@inheritDoc}
 	 */
-	public BasicNetwork getNetwork() {
+	public BasicNetwork getMethod() {
 		return this.network;
 	}
 

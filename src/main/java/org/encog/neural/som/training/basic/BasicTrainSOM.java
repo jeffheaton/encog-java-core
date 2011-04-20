@@ -332,9 +332,9 @@ public class BasicTrainSOM extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * @return The network being trained.
+	 * {@inheritDoc}
 	 */
-	public BasicNetwork getNetwork() {
+	public BasicNetwork getMethod() {
 		return null;
 	}
 

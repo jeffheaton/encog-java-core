@@ -155,7 +155,7 @@ public class Backpropagation extends Propagation implements Momentum,
 		}
 
 		final double[] d = (double[]) state.get(Backpropagation.LAST_DELTA);
-		return d.length == ((ContainsFlat)getNetwork()).getFlat().getWeights().length;
+		return d.length == ((ContainsFlat)getMethod()).getFlat().getWeights().length;
 	}
 
 	/**

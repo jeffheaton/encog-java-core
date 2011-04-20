@@ -66,9 +66,9 @@ public class SVDTraining extends BasicTraining {
 	}
 
 	/**
-	 * @return The trained network.
+	 * {@inheritDoc}
 	 */
-	public RBFNetwork getNetwork() {
+	public RBFNetwork getMethod() {
 		return this.network;
 	}
 

@@ -70,11 +70,11 @@ public class CrossValidationKFold extends CrossTraining {
 	 *            The number of folds.
 	 */
 	public CrossValidationKFold(final MLTrain train, final int k) {
-		super(train.getNetwork(), (FoldedDataSet) train.getTraining());
+		super(train.getMethod(), (FoldedDataSet) train.getTraining());
 		this.train = train;
 		getFolded().fold(k);
 
-		this.flatNetwork = ((BasicNetwork)train.getNetwork()).getStructure().getFlat();
+		this.flatNetwork = ((BasicNetwork)train.getMethod()).getStructure().getFlat();
 
 		this.networks = new NetworkFold[k];
 		for (int i = 0; i < networks.length; i++) {

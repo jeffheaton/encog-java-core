@@ -24,6 +24,7 @@
 package org.encog.neural.cpn.training;
 
 import org.encog.mathutil.error.ErrorCalculation;
+import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
@@ -90,9 +91,9 @@ public class TrainOutstar extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * @return The network being trained.
+	 * {@inheritDoc}
 	 */
-	public CPN getNetwork() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 

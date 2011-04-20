@@ -71,11 +71,11 @@ public class Greedy implements Strategy {
 		this.train = train;
 		this.ready = false;
 		
-		if( !(train.getNetwork() instanceof MLEncodable) ) {
+		if( !(train.getMethod() instanceof MLEncodable) ) {
 			throw new TrainingError("To make use of the Greedy strategy the machine learning method must support MLEncodable.");
 		}
 		
-		this.method = ((MLEncodable)train.getNetwork());
+		this.method = ((MLEncodable)train.getMethod());
 		this.lastNetwork = new double[this.method.encodedArrayLength()];
 	}
 

@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.genetic.GeneticAlgorithm;
@@ -513,7 +514,7 @@ public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 	 * @return A network created for the best genome.
 	 */
 	@Override
-	public NEATNetwork getNetwork() {
+	public MLMethod getMethod() {
 		return this.bestEverNetwork;
 	}
 

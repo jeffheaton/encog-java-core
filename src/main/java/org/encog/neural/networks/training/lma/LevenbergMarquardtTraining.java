@@ -25,6 +25,7 @@ package org.encog.neural.networks.training.lma;
 
 import org.encog.mathutil.matrices.Matrix;
 import org.encog.mathutil.matrices.decomposition.LUDecomposition;
+import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
@@ -271,7 +272,7 @@ public class LevenbergMarquardtTraining extends BasicTraining {
 	/**
 	 * @return The trained network.
 	 */
-	public BasicNetwork getNetwork() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 

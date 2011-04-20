@@ -96,9 +96,9 @@ public class TrainInstar extends BasicTraining implements LearningRate {
 	}
 
 	/**
-	 * @return The network being trained.
+	 * {@inheritDoc}
 	 */
-	public CPN getNetwork() {
+	public CPN getMethod() {
 		return this.network;
 	}
 

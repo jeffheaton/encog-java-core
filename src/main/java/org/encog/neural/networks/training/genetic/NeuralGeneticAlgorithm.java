@@ -24,6 +24,7 @@
 package org.encog.neural.networks.training.genetic;
 
 import org.encog.mathutil.randomize.Randomizer;
+import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.genetic.BasicGeneticAlgorithm;
 import org.encog.ml.genetic.GeneticAlgorithm;
@@ -76,7 +77,7 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 		 * 
 		 * @return The current best neural network.
 		 */
-		public BasicNetwork getNetwork() {
+		public MLMethod getMethod() {
 			final Genome genome = getPopulation().getBest();
 			return (BasicNetwork) genome.getOrganism();
 		}
@@ -141,10 +142,10 @@ public class NeuralGeneticAlgorithm extends BasicTraining {
 	}
 
 	/**
-	 * @return The network that is being trained.
+	 * {@inheritDoc}
 	 */
-	public BasicNetwork getNetwork() {
-		return getGenetic().getNetwork();
+	public MLMethod getMethod() {
+		return getGenetic().getMethod();
 	}
 
 	/**

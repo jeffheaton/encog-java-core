@@ -108,9 +108,9 @@ public abstract class Propagation extends BasicTraining {
 	}
 
 	/**
-	 * @return The network.
+	 * {@inheritDoc}
 	 */
-	public MLMethod getNetwork() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 

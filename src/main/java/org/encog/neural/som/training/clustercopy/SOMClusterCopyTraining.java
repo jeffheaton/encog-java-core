@@ -19,8 +19,11 @@ public class SOMClusterCopyTraining extends BasicTraining {
 		setTraining(training);
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
-	public MLMethod getNetwork() {
+	public final MLMethod getMethod() {
 		return this.network;
 	}
 	

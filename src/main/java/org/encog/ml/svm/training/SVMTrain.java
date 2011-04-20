@@ -199,10 +199,10 @@ public class SVMTrain extends BasicTraining {
 	}
 
 	/**
-	 * @return The trained network.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public MLMethod getNetwork() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 

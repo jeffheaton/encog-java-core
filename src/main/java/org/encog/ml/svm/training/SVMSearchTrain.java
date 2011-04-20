@@ -333,10 +333,10 @@ System.out.println( this.currentGamma + "," + this.currentConst + "," + e);
 	}
 
 	/**
-	 * @return The trained network.
+	 * {@inheritDoc}
 	 */
 	@Override
-	public MLMethod getNetwork() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 
@@ -347,16 +347,25 @@ System.out.println( this.currentGamma + "," + this.currentConst + "," + e);
 		return this.trainingDone;
 	}
 	
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean canContinue() {
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public TrainingContinuation pause() {
 		return null;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void resume(TrainingContinuation state) {
 		

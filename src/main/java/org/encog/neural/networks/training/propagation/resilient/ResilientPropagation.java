@@ -157,7 +157,7 @@ public class ResilientPropagation extends Propagation {
 
 		final double[] d = (double[]) state
 				.get(ResilientPropagation.LAST_GRADIENTS);
-		return d.length == ((ContainsFlat)getNetwork()).getFlat().getWeights().length;
+		return d.length == ((ContainsFlat)getMethod()).getFlat().getWeights().length;
 	}
 
 	/**
