@@ -25,8 +25,8 @@ public class TestMLMethodFactory extends TestCase {
 		Assert.assertFalse(network.isLayerBiased(1));
 		Assert.assertTrue(network.isLayerBiased(2));
 		Assert.assertEquals(3, network.getLayerCount());
-		Assert.assertTrue(network.getActivation(0) instanceof ActivationLinear );
-		Assert.assertTrue(network.getActivation(1) instanceof ActivationTANH );
+		Assert.assertTrue(network.getActivation(0) instanceof ActivationTANH );
+		Assert.assertTrue(network.getActivation(1) instanceof ActivationLinear );
 		Assert.assertTrue(network.getActivation(2) instanceof ActivationLinear );
 		Assert.assertEquals(18,network.encodedArrayLength());
 		Assert.assertEquals(1,network.getLayerNeuronCount(0));
