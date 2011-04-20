@@ -36,6 +36,7 @@ import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
+import org.encog.ml.MLTrain;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
@@ -293,26 +294,26 @@ public final class EncogUtility {
 	}
 
 	/**
-	 * Train the network, to a specific error, send the output to the console.
+	 * Train the method, to a specific error, send the output to the console.
 	 * 
-	 * @param network
-	 *            The network to train.
-	 * @param trainingSet
+	 * @param method
+	 *            The method to train.
+	 * @param dataSet
 	 *            The training set to use.
 	 * @param error
 	 *            The error level to train to.
 	 */
-	public static void trainToError(final MLMethod network,
-			final MLDataSet trainingSet, final double error) {
+	public static void trainToError(final MLMethod method,
+			final MLDataSet dataSet, final double error) {
 
 		Train train;
 
-		if (network instanceof SVM) {
-			train = new SVMTrain((SVM)network, trainingSet);
+		if (method instanceof SVM) {
+			train = new SVMTrain((SVM)method, dataSet);
 		} else {
-			train = new ResilientPropagation((BasicNetwork)network, trainingSet);
+			train = new ResilientPropagation((BasicNetwork)method, dataSet);
 		}
-		EncogUtility.trainToError(train, network, trainingSet, error);
+		EncogUtility.trainToError(train, error);
 	}
 
 	/**
@@ -321,15 +322,10 @@ public final class EncogUtility {
 	 * 
 	 * @param train
 	 *            The training method.
-	 * @param network
-	 *            The network to train.
-	 * @param trainingSet
-	 *            The training set to use.
 	 * @param error
 	 *            The desired error level.
 	 */
-	public static void trainToError(final Train train,
-			final MLMethod network, final MLDataSet trainingSet,
+	public static void trainToError(final MLTrain train,
 			final double error) {
 
 		int epoch = 1;
