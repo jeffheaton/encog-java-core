@@ -23,19 +23,18 @@
  */
 package org.encog.neural.networks.training;
 
+import junit.framework.TestCase;
+
+import org.encog.ml.train.strategy.Greedy;
+import org.encog.ml.train.strategy.HybridStrategy;
+import org.encog.ml.train.strategy.ResetStrategy;
+import org.encog.ml.train.strategy.StopTrainingStrategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
-import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.neural.networks.training.strategy.Greedy;
-import org.encog.neural.networks.training.strategy.HybridStrategy;
-import org.encog.neural.networks.training.strategy.ResetStrategy;
 import org.encog.neural.networks.training.strategy.SmartLearningRate;
 import org.encog.neural.networks.training.strategy.SmartMomentum;
-import org.encog.neural.networks.training.strategy.StopTrainingStrategy;
 import org.encog.neural.pattern.FeedForwardPattern;
 import org.junit.Assert;
-
-import junit.framework.TestCase;
 
 public class TestStrategy extends TestCase{
 	public void testDone()
