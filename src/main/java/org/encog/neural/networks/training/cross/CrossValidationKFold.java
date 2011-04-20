@@ -24,9 +24,9 @@
 package org.encog.neural.networks.training.cross;
 
 import org.encog.ml.data.folded.FoldedDataSet;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
@@ -49,7 +49,7 @@ public class CrossValidationKFold extends CrossTraining {
 	/**
 	 * The underlying trainer to use. This trainer does the actual training.
 	 */
-	private final Train train;
+	private final MLTrain train;
 
 	/**
 	 * The network folds.
@@ -69,7 +69,7 @@ public class CrossValidationKFold extends CrossTraining {
 	 * @param k
 	 *            The number of folds.
 	 */
-	public CrossValidationKFold(final Train train, final int k) {
+	public CrossValidationKFold(final MLTrain train, final int k) {
 		super(train.getNetwork(), (FoldedDataSet) train.getTraining());
 		this.train = train;
 		getFolded().fold(k);

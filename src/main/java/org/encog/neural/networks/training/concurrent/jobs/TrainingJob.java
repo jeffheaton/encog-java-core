@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.Strategy;
 import org.encog.ml.train.strategy.end.EndTrainingStrategy;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
 
 /**
  * Base class for all concurrent training jobs.
@@ -60,7 +60,7 @@ public abstract class TrainingJob {
 	/**
 	 * The trainer being used.
 	 */
-	private Train train;
+	private MLTrain train;
 
 	/**
 	 * Holds any errors that occur during training.
@@ -135,7 +135,7 @@ public abstract class TrainingJob {
 	/**
 	 * @return the train
 	 */
-	public Train getTrain() {
+	public MLTrain getTrain() {
 		return this.train;
 	}
 
@@ -181,7 +181,7 @@ public abstract class TrainingJob {
 	 * @param train
 	 *            the train to set
 	 */
-	public void setTrain(final Train train) {
+	public void setTrain(final MLTrain train) {
 		this.train = train;
 	}
 

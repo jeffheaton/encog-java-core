@@ -27,10 +27,10 @@ import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
-import org.encog.ml.MLTrain;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.flat.train.prop.RPROPConst;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;

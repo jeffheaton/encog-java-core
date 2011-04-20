@@ -28,9 +28,8 @@ import java.util.List;
 
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.strategy.Strategy;
 import org.encog.ml.train.strategy.end.EndTrainingStrategy;
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
 
 /**
  * An abstract class that implements basic training for most training
@@ -40,7 +39,7 @@ import org.encog.neural.networks.training.Train;
  * @author jheaton
  * 
  */
-public abstract class BasicTraining implements Train {
+public abstract class BasicTraining implements MLTrain {
 
 	/**
 	 * The training strategies to use.

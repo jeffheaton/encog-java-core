@@ -25,7 +25,6 @@ package org.encog.ml.factory;
 
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
-import org.encog.ml.MLTrain;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.train.BackPropFactory;
 import org.encog.ml.factory.train.ClusterSOMFactory;
@@ -35,6 +34,7 @@ import org.encog.ml.factory.train.RPROPFactory;
 import org.encog.ml.factory.train.SCGFactory;
 import org.encog.ml.factory.train.SVMFactory;
 import org.encog.ml.factory.train.SVMSearchFactory;
+import org.encog.ml.train.MLTrain;
 
 /**
  * This factory is used to create trainers for machine learning methods.

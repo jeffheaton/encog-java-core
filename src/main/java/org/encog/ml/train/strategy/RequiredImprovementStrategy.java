@@ -25,8 +25,7 @@ package org.encog.ml.train.strategy;
 
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLResettable;
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.logging.EncogLogging;
 
@@ -51,7 +50,7 @@ public class RequiredImprovementStrategy implements Strategy {
 	/**
 	 * The training algorithm that is using this strategy.
 	 */
-	private Train train;
+	private MLTrain train;
 
 	/**
 	 * How many bad cycles have there been so far.
@@ -120,7 +119,7 @@ public class RequiredImprovementStrategy implements Strategy {
 	 * @param train
 	 *            The training algorithm.
 	 */
-	public void init(final Train train) {
+	public void init(final MLTrain train) {
 		this.train = train;
 		
 		if( !(train.getNetwork() instanceof MLMethod) ) {

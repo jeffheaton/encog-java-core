@@ -57,7 +57,7 @@ import org.encog.app.analyst.script.task.AnalystTask;
 import org.encog.app.analyst.wizard.AnalystWizard;
 import org.encog.app.quant.QuantTask;
 import org.encog.bot.BotUtil;
-import org.encog.ml.MLTrain;
+import org.encog.ml.train.MLTrain;
 import org.encog.util.Format;
 
 /**

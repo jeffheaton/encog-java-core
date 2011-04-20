@@ -23,8 +23,8 @@
  */
 package org.encog.ml.train.strategy;
 
+import org.encog.ml.train.MLTrain;
 import org.encog.ml.train.strategy.end.EndTrainingStrategy;
-import org.encog.neural.networks.training.Train;
 
 /**
  * This strategy will indicate once training is no longer improving the neural
@@ -49,7 +49,7 @@ public class StopTrainingStrategy implements EndTrainingStrategy {
 	/**
 	 * The training algorithm that is using this strategy.
 	 */
-	private Train train;
+	private MLTrain train;
 	
 	/**
 	 * Flag to indicate if training should stop.
@@ -110,7 +110,7 @@ public class StopTrainingStrategy implements EndTrainingStrategy {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(final Train train) {
+	public void init(final MLTrain train) {
 		this.train = train;
 		this.shouldStop = false;
 		this.ready = false;

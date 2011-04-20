@@ -25,8 +25,8 @@ package org.encog.ml.factory.train;
 
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
-import org.encog.ml.MLTrain;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.som.SOM;
 import org.encog.neural.som.training.clustercopy.SOMClusterCopyTraining;
 

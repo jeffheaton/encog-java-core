@@ -23,7 +23,7 @@
  */
 package org.encog.ml.train.strategy.end;
 
-import org.encog.neural.networks.training.Strategy;
+import org.encog.ml.train.strategy.Strategy;
 
 public interface EndTrainingStrategy extends Strategy {
 	/**

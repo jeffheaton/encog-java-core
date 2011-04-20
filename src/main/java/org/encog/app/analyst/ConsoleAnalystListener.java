@@ -23,7 +23,7 @@
  */
 package org.encog.app.analyst;
 
-import org.encog.ml.MLTrain;
+import org.encog.ml.train.MLTrain;
 import org.encog.util.Format;
 import org.encog.util.Stopwatch;
 

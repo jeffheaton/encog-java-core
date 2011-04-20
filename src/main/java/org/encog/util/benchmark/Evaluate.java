@@ -24,8 +24,8 @@
 package org.encog.util.benchmark;
 
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.simple.EncogUtility;
 
@@ -68,7 +68,7 @@ public final class Evaluate {
 	public static int evaluateTrain(
 			final BasicNetwork network, final MLDataSet training) {
 		// train the neural network
-		Train train;
+		MLTrain train;
 		
 		train = new ResilientPropagation(network, training);
 

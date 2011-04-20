@@ -29,11 +29,10 @@ import org.encog.app.analyst.AnalystError;
 import org.encog.app.analyst.EncogAnalyst;
 import org.encog.app.analyst.script.prop.ScriptProperties;
 import org.encog.ml.MLMethod;
-import org.encog.ml.MLTrain;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.folded.FoldedDataSet;
 import org.encog.ml.factory.MLTrainFactory;
-import org.encog.neural.networks.training.Train;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.training.cross.CrossValidationKFold;
 import org.encog.persist.EncogDirectoryPersistence;
 import org.encog.util.simple.EncogUtility;
@@ -83,7 +82,7 @@ public class CmdTrain extends Cmd {
 		MLTrain train = factory.create(method, trainingSet, type, args);
 
 		if (this.kfold > 0) {
-			train = new CrossValidationKFold((Train) train, this.kfold);
+			train = new CrossValidationKFold(train, this.kfold);
 		}
 
 		return train;

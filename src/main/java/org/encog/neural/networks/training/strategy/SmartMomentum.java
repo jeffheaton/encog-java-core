@@ -23,9 +23,9 @@
  */
 package org.encog.neural.networks.training.strategy;
 
+import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.Momentum;
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -66,7 +66,7 @@ public class SmartMomentum implements Strategy {
 	/**
 	 * The training algorithm that is using this strategy.
 	 */
-	private Train train;
+	private MLTrain train;
 	
 	/**
 	 * The setter used to change momentum.
@@ -104,7 +104,7 @@ public class SmartMomentum implements Strategy {
 	 * @param train
 	 *            The training algorithm.
 	 */
-	public void init(final Train train) {
+	public void init(final MLTrain train) {
 		this.train = train;
 		this.setter = (Momentum) train;
 		this.ready = false;

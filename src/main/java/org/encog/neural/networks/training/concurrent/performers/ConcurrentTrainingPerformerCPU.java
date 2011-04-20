@@ -25,8 +25,8 @@ package org.encog.neural.networks.training.concurrent.performers;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.NeuralNetworkError;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.concurrent.ConcurrentTrainingManager;
 import org.encog.neural.networks.training.concurrent.jobs.TrainingJob;
 import org.encog.util.Stopwatch;
@@ -92,7 +92,7 @@ public class ConcurrentTrainingPerformerCPU implements
 			watch.start();
 			
 			this.currentJob.createTrainer(manager.isSingleThreaded());
-			final Train train = this.currentJob.getTrain();
+			final MLTrain train = this.currentJob.getTrain();
 			int interation = 1;
 
 			while (this.currentJob.shouldContinue()) {

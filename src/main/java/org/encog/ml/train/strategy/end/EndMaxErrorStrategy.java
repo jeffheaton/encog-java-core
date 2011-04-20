@@ -23,12 +23,13 @@
  */
 package org.encog.ml.train.strategy.end;
 
-import org.encog.neural.networks.training.Train;
+import org.encog.ml.train.MLTrain;
+
 
 public class EndMaxErrorStrategy implements EndTrainingStrategy {
 
 	private double maxError;
-	private Train train;
+	private MLTrain train;
 	private boolean started;
 	
 	public EndMaxErrorStrategy(double maxError) {
@@ -48,7 +49,7 @@ public class EndMaxErrorStrategy implements EndTrainingStrategy {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(Train train) {
+	public void init(MLTrain train) {
 		this.train = train;
 		this.started = false;
 	}

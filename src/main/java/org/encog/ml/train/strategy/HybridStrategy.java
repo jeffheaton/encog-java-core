@@ -23,8 +23,7 @@
  */
 package org.encog.ml.train.strategy;
 
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
+import org.encog.ml.train.MLTrain;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -58,12 +57,12 @@ public class HybridStrategy implements Strategy {
 	/**
 	 * The primary training method.
 	 */
-	private Train mainTrain;
+	private MLTrain mainTrain;
 	
 	/**
 	 * The alternate training method.
 	 */
-	private final Train altTrain;
+	private final MLTrain altTrain;
 	
 	/**
 	 * The last improvement.
@@ -108,7 +107,7 @@ public class HybridStrategy implements Strategy {
 	 * and toleration cycles.
 	 * @param altTrain The alternative training strategy.
 	 */
-	public HybridStrategy(final Train altTrain) {
+	public HybridStrategy(final MLTrain altTrain) {
 		this(altTrain, HybridStrategy.DEFAULT_MIN_IMPROVEMENT,
 				HybridStrategy.DEFAULT_TOLERATE_CYCLES,
 				HybridStrategy.DEFAULT_ALTERNATE_CYCLES);
@@ -123,7 +122,7 @@ public class HybridStrategy implements Strategy {
 	 * @param alternateCycles How many cycles should the alternate 
 	 * training algorithm be used for.
 	 */
-	public HybridStrategy(final Train altTrain, final double minImprovement,
+	public HybridStrategy(final MLTrain altTrain, final double minImprovement,
 			final int tolerateMinImprovement, final int alternateCycles) {
 		this.altTrain = altTrain;
 		this.ready = false;
@@ -139,7 +138,7 @@ public class HybridStrategy implements Strategy {
 	 * @param train
 	 *            The training algorithm.
 	 */
-	public void init(final Train train) {
+	public void init(final MLTrain train) {
 		this.mainTrain = train;
 	}
 

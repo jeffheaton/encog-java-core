@@ -21,7 +21,9 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training;
+package org.encog.ml.train.strategy;
+
+import org.encog.ml.train.MLTrain;
 
 /**
  * Training strategies can be added to training algorithms.  Training 
@@ -40,7 +42,7 @@ public interface Strategy {
 	 * Initialize this strategy.
 	 * @param train The training algorithm.
 	 */
-	void init(Train train);
+	void init(MLTrain train);
 	
 	/**
 	 * Called just before a training iteration.

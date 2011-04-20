@@ -23,13 +23,14 @@
  */
 package org.encog.ml.train.strategy.end;
 
-import org.encog.neural.networks.training.Train;
+import org.encog.ml.train.MLTrain;
+
 
 public class EndIterationsStrategy implements EndTrainingStrategy {
 
 	private int maxIterations;
 	private int currentIteration;
-	private Train train;
+	private MLTrain train;
 	
 	public EndIterationsStrategy(int maxIterations) {
 		this.maxIterations = maxIterations;
@@ -49,7 +50,7 @@ public class EndIterationsStrategy implements EndTrainingStrategy {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(Train train) {
+	public void init(MLTrain train) {
 		this.train = train;
 	}
 

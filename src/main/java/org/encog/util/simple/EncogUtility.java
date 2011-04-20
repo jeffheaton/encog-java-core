@@ -36,7 +36,6 @@ import org.encog.ml.MLClassification;
 import org.encog.ml.MLContext;
 import org.encog.ml.MLMethod;
 import org.encog.ml.MLRegression;
-import org.encog.ml.MLTrain;
 import org.encog.ml.data.MLData;
 import org.encog.ml.data.MLDataPair;
 import org.encog.ml.data.MLDataSet;
@@ -48,10 +47,10 @@ import org.encog.ml.data.buffer.codec.DataSetCODEC;
 import org.encog.ml.data.specific.CSVNeuralDataSet;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
 import org.encog.neural.networks.BasicNetwork;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.Propagation;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.neural.pattern.FeedForwardPattern;
@@ -220,7 +219,7 @@ public final class EncogUtility {
 	 * @param minutes
 	 *            The number of minutes to train for.
 	 */
-	public static void trainConsole(final Train train,
+	public static void trainConsole(final MLTrain train,
 			final BasicNetwork network, final MLDataSet trainingSet,
 			final int minutes) {
 
@@ -273,7 +272,7 @@ public final class EncogUtility {
 	 * @param trainingSet
 	 *            The training set to use.
 	 */
-	public static void trainDialog(final Train train,
+	public static void trainDialog(final MLTrain train,
 			final BasicNetwork network, final MLDataSet trainingSet) {
 
 		final TrainingDialog dialog = new TrainingDialog();
@@ -306,7 +305,7 @@ public final class EncogUtility {
 	public static void trainToError(final MLMethod method,
 			final MLDataSet dataSet, final double error) {
 
-		Train train;
+		MLTrain train;
 
 		if (method instanceof SVM) {
 			train = new SVMTrain((SVM)method, dataSet);

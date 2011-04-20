@@ -23,9 +23,9 @@
  */
 package org.encog.neural.networks.training.strategy;
 
+import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.LearningRate;
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
 import org.encog.util.logging.EncogLogging;
 
 /**
@@ -45,7 +45,7 @@ public class SmartLearningRate implements Strategy {
 	/**
 	 * The training algorithm that is using this strategy.
 	 */
-	private Train train;
+	private MLTrain train;
 
 	/**
 	 * The class that is to have the learning rate set for.
@@ -78,7 +78,7 @@ public class SmartLearningRate implements Strategy {
 	 * @param train
 	 *            The training algorithm.
 	 */
-	public void init(final Train train) {
+	public void init(final MLTrain train) {
 		this.train = train;
 		this.ready = false;
 		this.setter = (LearningRate) train;

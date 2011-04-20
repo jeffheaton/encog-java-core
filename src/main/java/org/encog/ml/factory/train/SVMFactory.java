@@ -27,12 +27,12 @@ import java.util.Map;
 
 import org.encog.EncogError;
 import org.encog.ml.MLMethod;
-import org.encog.ml.MLTrain;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.factory.MLTrainFactory;
 import org.encog.ml.factory.parse.ArchitectureParse;
 import org.encog.ml.svm.SVM;
 import org.encog.ml.svm.training.SVMTrain;
+import org.encog.ml.train.MLTrain;
 import org.encog.util.ParamsHolder;
 
 /**

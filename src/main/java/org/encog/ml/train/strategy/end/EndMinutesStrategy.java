@@ -25,7 +25,7 @@ package org.encog.ml.train.strategy.end;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.encog.neural.networks.training.Train;
+import org.encog.ml.train.MLTrain;
 
 public class EndMinutesStrategy implements EndTrainingStrategy {
 	
@@ -53,7 +53,7 @@ public class EndMinutesStrategy implements EndTrainingStrategy {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void init(Train train) {
+	public void init(MLTrain train) {
 		this.started = true;
 		this.startedTime = System.currentTimeMillis();
 	}

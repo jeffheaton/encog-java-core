@@ -37,11 +37,11 @@ import org.encog.ml.genetic.genome.GenomeComparator;
 import org.encog.ml.genetic.population.Population;
 import org.encog.ml.genetic.species.BasicSpecies;
 import org.encog.ml.genetic.species.Species;
+import org.encog.ml.train.MLTrain;
+import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.neat.NEATNetwork;
 import org.encog.neural.neat.NEATPopulation;
 import org.encog.neural.networks.training.CalculateScore;
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.neural.networks.training.genetic.GeneticScoreAdapter;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
@@ -71,7 +71,7 @@ enum NEATParent {
  * http://www.cs.ucf.edu/~kstanley/
  * 
  */
-public class NEATTraining extends GeneticAlgorithm implements Train {
+public class NEATTraining extends GeneticAlgorithm implements MLTrain {
 
 	/**
 	 * The average fit adjustment.

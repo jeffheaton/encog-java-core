@@ -23,7 +23,7 @@
  */
 package org.encog.app.analyst;
 
-import org.encog.ml.MLTrain;
+import org.encog.ml.train.MLTrain;
 
 /**
  * Reports the progress of the Encog Analyst. If you would like to use this with

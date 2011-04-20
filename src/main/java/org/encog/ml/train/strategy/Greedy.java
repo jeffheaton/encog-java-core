@@ -24,8 +24,7 @@
 package org.encog.ml.train.strategy;
 
 import org.encog.ml.MLEncodable;
-import org.encog.neural.networks.training.Strategy;
-import org.encog.neural.networks.training.Train;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.training.TrainingError;
 import org.encog.util.logging.EncogLogging;
 
@@ -43,7 +42,7 @@ public class Greedy implements Strategy {
 	/**
 	 * The training algorithm that is using this strategy.
 	 */
-	private Train train;
+	private MLTrain train;
 	
 	/**
 	 * The error rate from the previous iteration.
@@ -68,7 +67,7 @@ public class Greedy implements Strategy {
 	 * Initialize this strategy.
 	 * @param train The training algorithm.
 	 */
-	public void init(final Train train) {
+	public void init(final MLTrain train) {
 		this.train = train;
 		this.ready = false;
 		

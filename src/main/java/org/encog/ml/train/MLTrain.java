@@ -21,9 +21,14 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.ml;
+package org.encog.ml.train;
 
+import java.util.List;
+
+import org.encog.ml.MLMethod;
+import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.strategy.Strategy;
 import org.encog.neural.networks.training.propagation.TrainingContinuation;
 
 /**
@@ -102,7 +107,40 @@ public interface MLTrain {
 	 */
 	void resume(final TrainingContinuation state);
 
+	/**
+	 * Training strategies can be added to improve the training results. There
+	 * are a number to choose from, and several can be used at once.
+	 * 
+	 * @param strategy
+	 *            The strategy to add.
+	 */
+	void addStrategy(Strategy strategy);
 
+	/**
+	 * Get the current best network from the training.
+	 * 
+	 * @return The best network.
+	 */
+	MLMethod getNetwork();
+
+	/**
+	 * @return The strategies to use.
+	 */
+	List<Strategy> getStrategies();
+	
+
+	/**
+	 * @param error
+	 *            Set the current error rate. This is usually used by training
+	 *            strategies.
+	 */
+	void setError(double error);
+			
+	/**
+	 * Set the current training iteration.
+	 * @param iteration Iteration.
+	 */
+	void setIteration(int iteration);
 
 
 }
