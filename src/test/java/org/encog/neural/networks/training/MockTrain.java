@@ -23,6 +23,7 @@
  */
 package org.encog.neural.networks.training;
 
+import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.train.BasicTraining;
 import org.encog.neural.networks.BasicNetwork;
@@ -41,7 +42,7 @@ public class MockTrain extends BasicTraining implements LearningRate, Momentum {
 	private double learningRate;
 
 	
-	public BasicNetwork getNetwork() {
+	public MLMethod getMethod() {
 		return this.network;
 	}
 	
