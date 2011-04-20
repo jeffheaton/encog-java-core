@@ -81,4 +81,10 @@ public interface Layer {
 	 * @return The bias activation for this layer.
 	 */
 	double getBiasActivation();
+
+	/**
+	 * Set the activation function.
+	 * @param activation The activation function.
+	 */
+	void setActivation(ActivationFunction activation);
 }

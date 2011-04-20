@@ -35,7 +35,7 @@ public class FlatLayer {
 	/**
 	 * The activation function.
 	 */
-	private final ActivationFunction activation;
+	private ActivationFunction activation;
 
 	/**
 	 * The neuron count.
@@ -165,4 +165,13 @@ public class FlatLayer {
 		result.append("]");
 		return result.toString();
 	}
+
+	/**
+	 * @param activation the activation to set
+	 */
+	public final void setActivation(ActivationFunction activation) {
+		this.activation = activation;
+	}
+	
+	
 }

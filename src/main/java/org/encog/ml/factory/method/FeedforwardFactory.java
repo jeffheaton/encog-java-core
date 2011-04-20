@@ -29,7 +29,7 @@ import org.encog.EncogError;
 import org.encog.ml.MLMethod;
 import org.encog.ml.factory.parse.ArchitectureLayer;
 import org.encog.ml.factory.parse.ArchitectureParse;
-import org.encog.neural.activation.ActivationFunction;
+import org.encog.neural.NeuralNetworkError;
 import org.encog.neural.activation.ActivationLinear;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.activation.ActivationTANH;
@@ -44,6 +44,12 @@ import org.encog.neural.networks.layers.Layer;
 public class FeedforwardFactory {
 
 	/**
+	 * Error.
+	 */
+	public final static String CANT_DEFINE_ACT 
+		= "Can't define activation function before first layer.";
+
+	/**
 	 * Create a feed forward network.
 	 * @param architecture The architecture string to use.
 	 * @param input The input count.
@@ -54,7 +60,7 @@ public class FeedforwardFactory {
 			final int output) {
 		final BasicNetwork result = new BasicNetwork();
 		final List<String> layers = ArchitectureParse.parseLayers(architecture);
-		ActivationFunction activation = new ActivationLinear();
+		Layer lastLayerUsed = null;
 
 		int questionPhase = 0;
 		for (final String layerStr : layers) {
@@ -76,13 +82,22 @@ public class FeedforwardFactory {
 			} else {
 				part = "";
 			}
-
+			
 			if ("tanh".equalsIgnoreCase(part)) {
-				activation = new ActivationTANH();
+				if (lastLayerUsed == null) {
+					throw new NeuralNetworkError(CANT_DEFINE_ACT);
+				}
+				lastLayerUsed.setActivation(new ActivationTANH());
 			} else if ("linear".equalsIgnoreCase(part)) {
-				activation = new ActivationLinear();
+				if (lastLayerUsed == null) {
+					throw new NeuralNetworkError(CANT_DEFINE_ACT);
+				}
+				lastLayerUsed.setActivation(new ActivationLinear());
 			} else if ("sigmoid".equalsIgnoreCase(part)) {
-				activation = new ActivationSigmoid();
+				if (lastLayerUsed == null) {
+					throw new NeuralNetworkError(CANT_DEFINE_ACT);
+				}
+				lastLayerUsed.setActivation(new ActivationSigmoid());
 			} else {
 				if (layer.isUsedDefault()) {
 					questionPhase++;
@@ -95,9 +110,9 @@ public class FeedforwardFactory {
 					throw new EncogError("Unknown architecture element: "
 							+ architecture + ", can't parse: " + part);
 				}
-				final Layer layer2 = new BasicLayer(activation, bias,
+				lastLayerUsed = new BasicLayer(new ActivationLinear(), bias,
 						layer.getCount());
-				result.addLayer(layer2);
+				result.addLayer(lastLayerUsed);
 
 			}
 		}
