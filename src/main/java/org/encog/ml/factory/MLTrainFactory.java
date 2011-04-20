@@ -31,6 +31,7 @@ import org.encog.ml.factory.train.BackPropFactory;
 import org.encog.ml.factory.train.ClusterSOMFactory;
 import org.encog.ml.factory.train.GeneticFactory;
 import org.encog.ml.factory.train.LMAFactory;
+import org.encog.ml.factory.train.ManhattanFactory;
 import org.encog.ml.factory.train.NeighborhoodSOMFactory;
 import org.encog.ml.factory.train.RPROPFactory;
 import org.encog.ml.factory.train.SCGFactory;
@@ -201,6 +202,8 @@ public class MLTrainFactory {
 
 	public static final String TYPE_GENETIC = "genetic";
 
+	public static final String TYPE_MANHATTAN = "manhattan";
+
 	/**
 	 * The factory for backprop.
 	 */
@@ -253,6 +256,11 @@ public class MLTrainFactory {
 	private final GeneticFactory geneticFactory = new GeneticFactory();
 	
 	/**
+	 * The factory for Manhattan networks.
+	 */
+	private final ManhattanFactory manhattanFactory = new ManhattanFactory();
+	
+	/**
 	 * Create a trainer.
 	 * @param method The method to train.
 	 * @param training The training data.
@@ -289,9 +297,10 @@ public class MLTrainFactory {
 			return this.annealFactory.create(method, training, args2);
 		} else if (MLTrainFactory.TYPE_GENETIC.equalsIgnoreCase(type)) {
 			return this.geneticFactory.create(method, training, args2);
-		}  
-		else if (MLTrainFactory.TYPE_SOM_CLUSTER.equalsIgnoreCase(type)) {
+		} else if (MLTrainFactory.TYPE_SOM_CLUSTER.equalsIgnoreCase(type)) {
 			return this.somClusterFactory.create(method, training, args2);
+		} else if (MLTrainFactory.TYPE_MANHATTAN.equalsIgnoreCase(type)) {
+			return this.manhattanFactory.create(method, training, args2);
 		} else {
 			throw new EncogError("Unknown training type: " + type);
 		}
