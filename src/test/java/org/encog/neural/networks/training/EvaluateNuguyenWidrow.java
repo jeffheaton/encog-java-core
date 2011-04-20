@@ -25,6 +25,7 @@ package org.encog.neural.networks.training;
 
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
@@ -51,18 +52,18 @@ public class EvaluateNuguyenWidrow {
            
            BasicNetwork network3 = NetworkUtil.createXORNetworknNguyenWidrowUntrained();
            
-           Train bpropNguyen = new Backpropagation( network3, trainingData3, 0.9, 0.8 );     
+           MLTrain bpropNguyen = new Backpropagation( network3, trainingData3, 0.9, 0.8 );     
            train(i, bpropNguyen, "NguyenWidrowRandomizer" );
            
            BasicNetwork network2 = NetworkUtil.createXORNetworkUntrained();
            
-           Train bpropRange = new Backpropagation( network2, trainingData2, 0.9, 0.8 );     
+           MLTrain bpropRange = new Backpropagation( network2, trainingData2, 0.9, 0.8 );     
            train(i, bpropRange,  "RangeRandomizer       ");
  
        }
    } 
  
-   private final static void train( long it, Train train, String randomizerUsed ){
+   private final static void train( long it, MLTrain train, String randomizerUsed ){
       
            train.iteration();
            double error1 = train.getError();

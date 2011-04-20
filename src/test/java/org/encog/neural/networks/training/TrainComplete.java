@@ -30,6 +30,7 @@ import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.Randomizer;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.XOR;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
@@ -47,7 +48,7 @@ public class TrainComplete extends TestCase {
 		Randomizer randomizer = new ConsistentRandomizer(-1, 1, 19);
 		//randomizer.randomize(network);
 		System.out.println(network.dumpWeights());
-		Train rprop = new ResilientPropagation(network, trainingData);
+		MLTrain rprop = new ResilientPropagation(network, trainingData);
 		int iteration = 0;
 		do {
 			rprop.iteration();

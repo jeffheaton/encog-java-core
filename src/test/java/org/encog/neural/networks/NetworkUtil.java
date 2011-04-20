@@ -27,10 +27,9 @@ import junit.framework.Assert;
 
 import org.encog.mathutil.randomize.ConsistentRandomizer;
 import org.encog.mathutil.randomize.NguyenWidrowRandomizer;
-import org.encog.mathutil.randomize.RangeRandomizer;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.networks.layers.BasicLayer;
-import org.encog.neural.networks.training.Train;
 
 public class NetworkUtil {
 	
@@ -65,7 +64,7 @@ public class NetworkUtil {
         return network;
     }
 	
-	public static void testTraining(Train train, double requiredImprove)
+	public static void testTraining(MLTrain train, double requiredImprove)
 	{
 		train.iteration();
 		double error1 = train.getError();

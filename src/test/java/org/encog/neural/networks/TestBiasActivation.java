@@ -29,12 +29,12 @@ import junit.framework.TestCase;
 import org.encog.Encog;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.activation.ActivationSigmoid;
 import org.encog.neural.flat.FlatNetwork;
 import org.encog.neural.networks.layers.BasicLayer;
 import org.encog.neural.networks.layers.Layer;
 import org.encog.neural.networks.structure.NetworkCODEC;
-import org.encog.neural.networks.training.Train;
 import org.encog.neural.networks.training.propagation.resilient.ResilientPropagation;
 import org.encog.util.logging.Logging;
 
@@ -92,9 +92,9 @@ public class TestBiasActivation extends TestCase {
 		
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
-		Train rprop1 = new ResilientPropagation(network1, trainingData);
-		Train rprop2 = new ResilientPropagation(network2, trainingData);
-		Train rprop3 = new ResilientPropagation(network3, trainingData);
+		MLTrain rprop1 = new ResilientPropagation(network1, trainingData);
+		MLTrain rprop2 = new ResilientPropagation(network2, trainingData);
+		MLTrain rprop3 = new ResilientPropagation(network3, trainingData);
 
 		NetworkUtil.testTraining(rprop1,0.03);
 		NetworkUtil.testTraining(rprop2,0.01);

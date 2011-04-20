@@ -28,6 +28,7 @@ import junit.framework.TestCase;
 import org.encog.mathutil.randomize.RangeRandomizer;
 import org.encog.ml.data.MLDataSet;
 import org.encog.ml.data.basic.BasicMLDataSet;
+import org.encog.ml.train.MLTrain;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.NetworkUtil;
 import org.encog.neural.networks.XOR;
@@ -55,7 +56,7 @@ public class TestTraining extends TestCase   {
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
-		Train rprop = new ResilientPropagation(network, trainingData);
+		MLTrain rprop = new ResilientPropagation(network, trainingData);
 		NetworkUtil.testTraining(rprop,0.03);
 	}
 	
@@ -66,7 +67,7 @@ public class TestTraining extends TestCase   {
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
-		Train rprop = new LevenbergMarquardtTraining(network, trainingData);
+		MLTrain rprop = new LevenbergMarquardtTraining(network, trainingData);
 		NetworkUtil.testTraining(rprop,0.03);
 	}
 	
@@ -78,7 +79,7 @@ public class TestTraining extends TestCase   {
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
 
-		Train bprop = new Backpropagation(network, trainingData, 0.7, 0.9);
+		MLTrain bprop = new Backpropagation(network, trainingData, 0.7, 0.9);
 		NetworkUtil.testTraining(bprop,0.01);
 	}
 	
@@ -89,7 +90,7 @@ public class TestTraining extends TestCase   {
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
-		Train bprop = new ManhattanPropagation(network, trainingData, 0.01);
+		MLTrain bprop = new ManhattanPropagation(network, trainingData, 0.01);
 		NetworkUtil.testTraining(bprop,0.01);
 	}
 	
@@ -100,7 +101,7 @@ public class TestTraining extends TestCase   {
 		MLDataSet trainingData = new BasicMLDataSet(XOR.XOR_INPUT,XOR.XOR_IDEAL);
 		
 		BasicNetwork network = NetworkUtil.createXORNetworkUntrained();
-		Train bprop = new ScaledConjugateGradient(network, trainingData);
+		MLTrain bprop = new ScaledConjugateGradient(network, trainingData);
 		NetworkUtil.testTraining(bprop,0.04);
 	}
 	
