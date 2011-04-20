@@ -21,7 +21,7 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.strategy;
+package org.encog.ml.train.strategy;
 
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;

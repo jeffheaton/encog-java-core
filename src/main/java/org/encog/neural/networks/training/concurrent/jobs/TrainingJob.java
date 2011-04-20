@@ -27,10 +27,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.data.MLDataSet;
+import org.encog.ml.train.strategy.end.EndTrainingStrategy;
 import org.encog.neural.networks.BasicNetwork;
 import org.encog.neural.networks.training.Strategy;
 import org.encog.neural.networks.training.Train;
-import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 
 /**
  * Base class for all concurrent training jobs.

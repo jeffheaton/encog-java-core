@@ -21,10 +21,10 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.strategy;
+package org.encog.ml.train.strategy;
 
+import org.encog.ml.train.strategy.end.EndTrainingStrategy;
 import org.encog.neural.networks.training.Train;
-import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
 
 /**
  * This strategy will indicate once training is no longer improving the neural

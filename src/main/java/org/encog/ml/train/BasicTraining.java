@@ -21,14 +21,16 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training;
+package org.encog.ml.train;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.MLDataSet;
-import org.encog.neural.networks.training.strategy.end.EndTrainingStrategy;
+import org.encog.ml.train.strategy.end.EndTrainingStrategy;
+import org.encog.neural.networks.training.Strategy;
+import org.encog.neural.networks.training.Train;
 
 /**
  * An abstract class that implements basic training for most training

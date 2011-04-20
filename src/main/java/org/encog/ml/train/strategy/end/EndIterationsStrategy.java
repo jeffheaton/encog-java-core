@@ -21,27 +21,28 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.strategy.end;
+package org.encog.ml.train.strategy.end;
 
 import org.encog.neural.networks.training.Train;
 
-public class EndMaxErrorStrategy implements EndTrainingStrategy {
+public class EndIterationsStrategy implements EndTrainingStrategy {
 
-	private double maxError;
+	private int maxIterations;
+	private int currentIteration;
 	private Train train;
-	private boolean started;
 	
-	public EndMaxErrorStrategy(double maxError) {
-		this.maxError = maxError;
-		this.started = false;
-	}	
+	public EndIterationsStrategy(int maxIterations) {
+		this.maxIterations = maxIterations;
+		this.currentIteration = 0;
+	}
+	
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean shouldStop() {
-		return this.started && this.train.getError()<this.maxError;
+		return (this.currentIteration>=this.maxIterations);
 	}
 
 	/**
@@ -50,7 +51,6 @@ public class EndMaxErrorStrategy implements EndTrainingStrategy {
 	@Override
 	public void init(Train train) {
 		this.train = train;
-		this.started = false;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class EndMaxErrorStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public void postIteration() {
-		this.started = true;		
+		this.currentIteration = this.train.getIteration();
 	}
 
 	/**
@@ -66,7 +66,5 @@ public class EndMaxErrorStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public void preIteration() {
-	
 	}
-
 }

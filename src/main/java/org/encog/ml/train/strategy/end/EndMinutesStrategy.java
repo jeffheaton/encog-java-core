@@ -21,28 +21,32 @@
  * and trademarks visit:
  * http://www.heatonresearch.com/copyright
  */
-package org.encog.neural.networks.training.strategy.end;
+package org.encog.ml.train.strategy.end;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.encog.neural.networks.training.Train;
 
-public class EndIterationsStrategy implements EndTrainingStrategy {
-
-	private int maxIterations;
-	private int currentIteration;
-	private Train train;
+public class EndMinutesStrategy implements EndTrainingStrategy {
 	
-	public EndIterationsStrategy(int maxIterations) {
-		this.maxIterations = maxIterations;
-		this.currentIteration = 0;
+	private final int minutes;
+	private long startedTime;
+	private boolean started;
+	private final AtomicInteger minutesLeft = new AtomicInteger(0);
+	
+	public EndMinutesStrategy(int minutes)
+	{
+		this.minutes = minutes;
+		started = false;
+		this.minutesLeft.set(minutes);
 	}
-	
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public boolean shouldStop() {
-		return (this.currentIteration>=this.maxIterations);
+		return started && this.minutesLeft.get()>=0;
 	}
 
 	/**
@@ -50,7 +54,8 @@ public class EndIterationsStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public void init(Train train) {
-		this.train = train;
+		this.started = true;
+		this.startedTime = System.currentTimeMillis();
 	}
 
 	/**
@@ -58,7 +63,8 @@ public class EndIterationsStrategy implements EndTrainingStrategy {
 	 */
 	@Override
 	public void postIteration() {
-		this.currentIteration = this.train.getIteration();
+		long now = System.currentTimeMillis();
+		this.minutesLeft.set((int)((now - this.startedTime)/60000));
 	}
 
 	/**
@@ -67,4 +73,20 @@ public class EndIterationsStrategy implements EndTrainingStrategy {
 	@Override
 	public void preIteration() {
 	}
+
+	/**
+	 * @return the minutesLeft
+	 */
+	public int getMinutesLeft() {
+		return minutesLeft.get();
+	}
+
+	/**
+	 * @return the minutes
+	 */
+	public int getMinutes() {
+		return minutes;
+	}
+	
+	
 }

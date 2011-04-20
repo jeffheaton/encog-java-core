@@ -26,7 +26,7 @@ package org.encog.neural.networks.training.cross;
 import org.encog.ml.MLMethod;
 import org.encog.ml.TrainingImplementationType;
 import org.encog.ml.data.folded.FoldedDataSet;
-import org.encog.neural.networks.training.BasicTraining;
+import org.encog.ml.train.BasicTraining;
 
 /**
  * Base class for cross training trainers. Must use a folded dataset.  
